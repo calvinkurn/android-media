@@ -13,6 +13,7 @@ import android.os.Build;
 import android.os.Environment;
 import android.provider.DocumentsContract;
 import android.provider.MediaStore;
+import android.support.annotation.StringDef;
 import android.support.media.ExifInterface;
 import android.text.TextUtils;
 import android.webkit.MimeTypeMap;
@@ -29,6 +30,11 @@ import java.nio.channels.FileChannel;
 import java.util.ArrayList;
 import java.util.Random;
 
+import static com.tokopedia.imagepicker.common.util.ImageUtils.DirectoryDef.DIRECTORY_CAMERA;
+import static com.tokopedia.imagepicker.common.util.ImageUtils.DirectoryDef.DIRECTORY_DOWNLOAD;
+import static com.tokopedia.imagepicker.common.util.ImageUtils.DirectoryDef.DIRECTORY_TOKOPEDIA_EDIT;
+import static com.tokopedia.imagepicker.common.util.ImageUtils.DirectoryDef.DIRECTORY_TOKOPEDIA;
+
 /**
  * Created by hendry on 24/04/18.
  */
@@ -40,14 +46,21 @@ public class ImageUtils {
     private static final int DEF_WIDTH_CMPR = 2048;
     private static final int DEF_HEIGHT_CMPR = 2048;
 
-    private static final String DIRECTORY_TOKOPEDIA = "Tokopedia";
     private static final String TEMP_FILE_NAME = "temp.tmp";
     public static final String PNG_EXT = ".png";
     public static final String JPG_EXT = ".jpg";
     public static final String PNG = "png";
 
-    public static File getTokopediaPublicDirectory() {
-        String filePath = Environment.getExternalStorageDirectory().getAbsolutePath() + "/" + DIRECTORY_TOKOPEDIA + "/";
+    @StringDef({DIRECTORY_TOKOPEDIA, DIRECTORY_TOKOPEDIA_EDIT, DIRECTORY_CAMERA, DIRECTORY_DOWNLOAD})
+    public @interface DirectoryDef {
+        String DIRECTORY_TOKOPEDIA = "Tokopedia";
+        String DIRECTORY_TOKOPEDIA_EDIT = "Tokopedia/Edit";
+        String DIRECTORY_CAMERA = "Tokopedia/Camera";
+        String DIRECTORY_DOWNLOAD = "Tokopedia/Download";
+    }
+
+    public static File getTokopediaPublicDirectory(@DirectoryDef String directoryType) {
+        String filePath = Environment.getExternalStorageDirectory().getAbsolutePath() + "/" + directoryType + "/";
         File directory = new File(filePath);
         if (!directory.exists()) {
             if (!directory.mkdirs()) {
@@ -69,22 +82,22 @@ public class ImageUtils {
         return timeString + new Random().nextInt(10);
     }
 
-    public static File getTokopediaPhotoPath(boolean isPng) {
-        File directory = getTokopediaPublicDirectory();
+    public static File getTokopediaPhotoPath(@DirectoryDef String directoryDef, boolean isPng) {
+        File directory = getTokopediaPublicDirectory(directoryDef);
         return new File(directory.getAbsolutePath(), generateUniqueFileName() + (isPng ? PNG_EXT : JPG_EXT));
     }
 
-    public static File getTokopediaPhotoPath(String referencePath) {
-        return getTokopediaPhotoPath(referencePath.endsWith(PNG_EXT));
+    public static File getTokopediaPhotoPath(@DirectoryDef String directoryDef, String referencePath) {
+        return getTokopediaPhotoPath(directoryDef, referencePath.endsWith(PNG_EXT));
     }
 
     /**
      * write byte buffer to Cache File int TkpdCacheDirectory
      * This "cache file" is a representation of the bytes.
      */
-    public static File writeImageToTkpdPath(byte[] buffer, boolean isPng) {
+    public static File writeImageToTkpdPath(@DirectoryDef String directoryDef, byte[] buffer, boolean isPng) {
         if (buffer != null) {
-            File photo = getTokopediaPhotoPath(isPng);
+            File photo = getTokopediaPhotoPath(directoryDef, isPng);
             if (photo.exists()) {
                 photo.delete();
             }
@@ -100,16 +113,16 @@ public class ImageUtils {
      * The file represents the copy of the original bitmap and can be deleted/modified
      * without changing the original image
      */
-    public static File writeImageToTkpdPath(String galleryOrCameraPath) {
-        return writeImageToTkpdPath(convertLocalImagePathToBytes(galleryOrCameraPath, DEF_WIDTH_CMPR, DEF_HEIGHT_CMPR, 100),
+    public static File writeImageToTkpdPath(@DirectoryDef String directoryDef, String galleryOrCameraPath) {
+        return writeImageToTkpdPath(directoryDef, convertLocalImagePathToBytes(galleryOrCameraPath, DEF_WIDTH_CMPR, DEF_HEIGHT_CMPR, 100),
                 galleryOrCameraPath.endsWith(PNG));
     }
 
     /**
      * compress the bitmap, then write to Tkpd Cache Directory
      */
-    public static File writeImageToTkpdPath(Bitmap bitmap, boolean isPng) {
-        File file = getTokopediaPhotoPath(isPng);
+    public static File writeImageToTkpdPath(@DirectoryDef String directoryDef, Bitmap bitmap, boolean isPng) {
+        File file = getTokopediaPhotoPath(directoryDef, isPng);
         if (file.exists()) {
             file.delete();
         }
@@ -129,8 +142,8 @@ public class ImageUtils {
      * The file represents the copy of the original bitmap and can be deleted/modified
      * without changing the original image
      */
-    public static File writeImageToTkpdPath(InputStream source, boolean isPng) {
-        File photo = getTokopediaPhotoPath(isPng);
+    public static File writeImageToTkpdPath(@DirectoryDef String directoryDef, InputStream source, boolean isPng) {
+        File photo = getTokopediaPhotoPath(directoryDef, isPng);
         if (photo.exists()) {
             photo.delete();
         }
@@ -143,8 +156,8 @@ public class ImageUtils {
     /**
      * check if the file is in tkpdcache directory.
      */
-    public static boolean isInTkpdCache(File file) {
-        File tkpdCacheDirectory = getTokopediaPublicDirectory();
+    public static boolean isInTkpdCache(@DirectoryDef String directoryDef, File file) {
+        File tkpdCacheDirectory = getTokopediaPublicDirectory(directoryDef);
         String tkpdcacheDirPath = tkpdCacheDirectory.getAbsolutePath();
         return file.exists() && file.getAbsolutePath().contains(tkpdcacheDirPath);
     }
@@ -153,13 +166,13 @@ public class ImageUtils {
      * delete the inputted files (only process files in tkpd cache directory)
      * If the files are not in tkpd cache directory, ignore those.
      */
-    public static void deleteAllCacheTkpdFiles(ArrayList<String> filesToDelete) {
+    public static void deleteAllCacheTkpdFiles(@DirectoryDef String directoryDef, ArrayList<String> filesToDelete) {
         if (filesToDelete == null || filesToDelete.size() == 0) {
             return;
         }
         for (int i = 0, sizei = filesToDelete.size(); i < sizei; i++) {
             String filePathToDelete = filesToDelete.get(i);
-            deleteAllCacheTkpdFile(filePathToDelete);
+            deleteAllCacheTkpdFile(directoryDef, filePathToDelete);
         }
     }
 
@@ -167,22 +180,22 @@ public class ImageUtils {
      * delete the inputted file (only process files in tkpd cache directory)
      * If the file is not in tkpd cache directory, ignore it.
      */
-    public static void deleteAllCacheTkpdFile(String fileToDeletePath) {
+    public static void deleteAllCacheTkpdFile(@DirectoryDef String directoryDef, String fileToDeletePath) {
         if (TextUtils.isEmpty(fileToDeletePath)) {
             return;
         }
         File fileToDelete = new File(fileToDeletePath);
-        if (isInTkpdCache(fileToDelete)) {
+        if (isInTkpdCache(directoryDef, fileToDelete)) {
             fileToDelete.delete();
         }
     }
 
     // URI starts with "content://gmail-ls/"
-    public static String getPathFromGmail(Context context, Uri contentUri) {
+    public static String getPathFromGmail(Context context, Uri contentUri, @DirectoryDef String directoryDef) {
         File attach;
         try {
             InputStream attachment = context.getContentResolver().openInputStream(contentUri);
-            attach = ImageUtils.writeImageToTkpdPath(attachment, isPNGMimeType(getMimeType(context, contentUri)));
+            attach = ImageUtils.writeImageToTkpdPath(directoryDef, attachment, isPNGMimeType(getMimeType(context, contentUri)));
             if (attach == null) {
                 return null;
             }
@@ -192,7 +205,7 @@ public class ImageUtils {
         }
     }
 
-    public static String getTkpdPathFromURI(Context context, Uri uri) {
+    public static String getTkpdPathFromURI(Context context, Uri uri, @DirectoryDef String directoryDef) {
         InputStream is = null;
         String mimeType = getMimeType(context, uri);
         if (!isImageMimeType(mimeType)) {
@@ -246,7 +259,7 @@ public class ImageUtils {
                 if (bmp == null) {
                     return null;
                 }
-                File file = writeImageToTkpdPath(bmp, isPNG);
+                File file = writeImageToTkpdPath(directoryDef, bmp, isPNG);
                 bmp.recycle();
                 if (file != null) {
                     return file.getAbsolutePath();

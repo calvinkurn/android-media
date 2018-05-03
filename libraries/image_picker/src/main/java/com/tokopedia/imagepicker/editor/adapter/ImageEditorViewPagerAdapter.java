@@ -18,24 +18,27 @@ import java.util.ArrayList;
 public class ImageEditorViewPagerAdapter extends FragmentStatePagerAdapter {
 
     private SparseArrayCompat<Fragment> registeredFragments = new SparseArrayCompat<>();
-    private ArrayList<String> originalImagePaths;
-    private ArrayList<String> localImagePaths;
+    private ArrayList<String> localStep0ImagePaths;
+    private ArrayList<ArrayList<String>> edittedImagePaths;
+    private ArrayList<Integer> currentEditStepIndexList;
     private int minResolution;
 
     public ImageEditorViewPagerAdapter(FragmentManager fm,
-                                       ArrayList<String> originalImagePaths,
-                                       ArrayList<String> localImagePaths,
+                                       ArrayList<String> localStep0ImagePaths,
+                                       ArrayList<ArrayList<String>> edittedImagePaths,
+                                       ArrayList<Integer> currentEditStepIndexList,
                                        int minResolution) {
         super(fm);
-        this.originalImagePaths = originalImagePaths;
-        this.localImagePaths = localImagePaths;
+        this.localStep0ImagePaths = localStep0ImagePaths;
+        this.edittedImagePaths = edittedImagePaths;
+        this.currentEditStepIndexList = currentEditStepIndexList;
         this.minResolution = minResolution;
     }
 
     @Override
     public Fragment getItem(int position) {
-        String oriImagePath = originalImagePaths.get(position);
-        String localImagePath = localImagePaths.get(position);
+        String oriImagePath = localStep0ImagePaths.get(position);
+        String localImagePath = edittedImagePaths.get(position).get(currentEditStepIndexList.get(position));
         if (TextUtils.isEmpty(localImagePath)) {
             localImagePath = oriImagePath;
         }
@@ -61,6 +64,6 @@ public class ImageEditorViewPagerAdapter extends FragmentStatePagerAdapter {
 
     @Override
     public int getCount() {
-        return originalImagePaths.size();
+        return localStep0ImagePaths.size();
     }
 }

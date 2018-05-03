@@ -100,15 +100,20 @@ public class ImagePickerCameraFragment extends TkpdBaseV4Fragment {
                 generateImage(imageByte);
             }
         });
-        flashImageButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                int flashIndexTemp = flashIndex++ % 4;
-                Flash flash = supportedFlashList.get(flashIndexTemp);
-                cameraView.set(flash);
-                Toast.makeText(getActivity(), flash.name() + " - " + flash.ordinal(), Toast.LENGTH_SHORT).show();
-            }
-        });
+        if (supportedFlashList!= null && supportedFlashList.size() > 0) {
+            flashImageButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    int flashIndexTemp = flashIndex++ % 4;
+                    Flash flash = supportedFlashList.get(flashIndexTemp);
+                    cameraView.set(flash);
+                    Toast.makeText(getActivity(), flash.name() + " - " + flash.ordinal(), Toast.LENGTH_SHORT).show();
+                }
+            });
+            flashImageButton.setVisibility(View.VISIBLE);
+        } else {
+            flashImageButton.setVisibility(View.INVISIBLE);
+        }
         shutterImageButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -153,7 +158,7 @@ public class ImagePickerCameraFragment extends TkpdBaseV4Fragment {
         CameraUtils.decodeBitmap(imageByte, mCaptureNativeSize.getWidth(), mCaptureNativeSize.getHeight(), new CameraUtils.BitmapCallback() {
             @Override
             public void onBitmapReady(Bitmap bitmap) {
-                File file = ImageUtils.writeImageToTkpdPath(bitmap, false);
+                File file = ImageUtils.writeImageToTkpdPath(ImageUtils.DirectoryDef.DIRECTORY_CAMERA, bitmap, false);
                 onImagePickerCameraFragmentListener.onImageTaken(file.getAbsolutePath());
             }
         });

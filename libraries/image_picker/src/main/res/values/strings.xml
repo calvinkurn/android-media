@@ -18,4 +18,6 @@
     <string name="crop_and_rotate">Crop/Rotate</string>
     <string name="cancel">Batal</string>
     <string name="save">Simpan</string>
+    <string name="exit">Keluar</string>
+    <string name="image_edit_backpressed_title">Keluar dari halaman Edit Gambar?</string>
 </resources>

@@ -61,11 +61,20 @@
             android:clipToPadding="false"
             android:clipChildren="false">
 
-            <com.tokopedia.imagepicker.common.widget.NonSwipeableViewPager
-                android:id="@+id/view_pager"
+            <FrameLayout
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
-                android:layout_weight="1" />
+                android:layout_weight="1">
+                <com.tokopedia.imagepicker.picker.gallery.widget.SquareFrameLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="top">
+                    <com.tokopedia.imagepicker.common.widget.NonSwipeableViewPager
+                        android:id="@+id/view_pager"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent" />
+                </com.tokopedia.imagepicker.picker.gallery.widget.SquareFrameLayout>
+            </FrameLayout>
 
             <FrameLayout
                 android:id="@+id/vg_footer"

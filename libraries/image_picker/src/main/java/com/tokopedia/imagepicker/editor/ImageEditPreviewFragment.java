@@ -134,7 +134,7 @@ public class ImageEditPreviewFragment extends Fragment {
             Uri inputUri = Uri.fromFile(new File(edittedImagePath));
             GestureCropImageView gestureCropImageView = uCropView.getCropImageView();
             gestureCropImageView.setImageUri(inputUri,
-                    Uri.parse(ImageUtils.getTokopediaPhotoPath(edittedImagePath).toString()));
+                    Uri.parse(ImageUtils.getTokopediaPhotoPath(ImageUtils.DirectoryDef.DIRECTORY_TOKOPEDIA_EDIT, edittedImagePath).toString()));
         } catch (Exception e) {
 
         }
@@ -156,20 +156,21 @@ public class ImageEditPreviewFragment extends Fragment {
         overlayView.setCircleDimmedLayer(OverlayView.DEFAULT_CIRCLE_DIMMED_LAYER);
 
         overlayView.setShowCropFrame(OverlayView.DEFAULT_SHOW_CROP_FRAME);
-        overlayView.setCropFrameColor(getResources().getColor(com.yalantis.ucrop.R.color.ucrop_color_default_crop_frame));
-        overlayView.setCropFrameStrokeWidth(getResources().getDimensionPixelSize(com.yalantis.ucrop.R.dimen.ucrop_default_crop_frame_stoke_width));
+        overlayView.setCropFrameColor(getResources().getColor(R.color.white));
+        overlayView.setCropFrameStrokeWidth(getResources().getDimensionPixelSize(R.dimen.dp_1));
 
         overlayView.setShowCropGrid(OverlayView.DEFAULT_SHOW_CROP_GRID);
         overlayView.setCropGridRowCount(OverlayView.DEFAULT_CROP_GRID_ROW_COUNT);
         overlayView.setCropGridColumnCount(OverlayView.DEFAULT_CROP_GRID_COLUMN_COUNT);
-        overlayView.setCropGridColor(getResources().getColor(com.yalantis.ucrop.R.color.ucrop_color_default_crop_grid));
-        overlayView.setCropGridStrokeWidth(getResources().getDimensionPixelSize(com.yalantis.ucrop.R.dimen.ucrop_default_crop_grid_stoke_width));
+        overlayView.setCropGridColor(getResources().getColor(R.color.white_65));
+        overlayView.setCropGridStrokeWidth(getResources().getDimensionPixelSize(R.dimen.dp_1));
 
         // Aspect ratio options
         float aspectRatioX = 1;
         float aspectRatioY = 1;
         gestureCropImageView.setTargetAspectRatio(aspectRatioX / aspectRatioY);
 
+        // TODO
         // Result bitmap max size options
         int maxSizeX = 0;
         int maxSizeY = 0;
@@ -178,6 +179,8 @@ public class ImageEditPreviewFragment extends Fragment {
             gestureCropImageView.setMaxResultImageSizeX(maxSizeX);
             gestureCropImageView.setMaxResultImageSizeY(maxSizeY);
         }
+
+        //TODO setmaxscale for min resolution
     }
 
 

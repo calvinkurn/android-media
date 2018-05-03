@@ -52,7 +52,8 @@ public class ImageEditThumbnailListWidget extends FrameLayout implements ImageEd
     private void init() {
         LayoutInflater.from(getContext()).inflate(R.layout.widget_image_edit_thumbnail_list,
                 this, true);
-        imageEditThumbnailAdapter = new ImageEditThumbnailAdapter(getContext(), null, 0, this);
+        imageEditThumbnailAdapter = new ImageEditThumbnailAdapter(getContext(), null,
+                null, 0, this);
         RecyclerView recyclerView = findViewById(R.id.recycler_view);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
         recyclerView.setHasFixedSize(true);
@@ -63,8 +64,8 @@ public class ImageEditThumbnailListWidget extends FrameLayout implements ImageEd
         OnImageEditThumbnailListWidgetListener = onImageEditThumbnailListWidgetListener;
     }
 
-    public void setData(ArrayList<String> imagePathList, int imageIndex) {
-        imageEditThumbnailAdapter.setData(imagePathList, imageIndex);
+    public void setData(ArrayList<ArrayList<String>> imagePathList, ArrayList<Integer> currentEditStepIndexList, int imageIndex) {
+        imageEditThumbnailAdapter.setData(imagePathList, currentEditStepIndexList, imageIndex);
     }
 
     public void setIndex(int imageIndex) {

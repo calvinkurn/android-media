@@ -111,7 +111,7 @@ public class ImageDownloadPresenter extends BaseDaggerPresenter<ImageDownloadPre
                                 File cacheFile = future.get();
                                 String cacheFilePath = cacheFile.getAbsolutePath();
                                 File photo;
-                                photo = ImageUtils.writeImageToTkpdPath(cacheFilePath);
+                                photo = ImageUtils.writeImageToTkpdPath(ImageUtils.DirectoryDef.DIRECTORY_DOWNLOAD, cacheFilePath);
                                 if (photo != null) {
                                     return photo;
                                 }

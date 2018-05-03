@@ -2,11 +2,13 @@ package com.tokopedia.imagepicker.editor;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
+import android.support.v7.app.AlertDialog;
 import android.view.View;
 import android.webkit.URLUtil;
 
@@ -38,8 +40,9 @@ public class ImageEditorActivity extends BaseSimpleActivity implements ImageDown
     public static final String EXTRA_EDIT_ACTION_TYPE = "EDIT_ACTION_TYPE";
 
     public static final String SAVED_IMAGE_INDEX = "IMG_IDX";
-    public static final String SAVED_FINAL_PATHS = "SAVED_CROPPED_PATHS";
-    public static final String SAVED_LOCAL_IMAGE_PATH = "RES_PATH";
+    public static final String SAVED_EDITTED_PATHS = "SAVED_EDITTED_PATHS";
+    public static final String SAVED_CURRENT_STEP_INDEX = "SAVED_STEP_INDEX";
+    public static final String SAVED_LOCAL_IMAGE_PATH = "SAVED_LOCAL_STEP_0";
     public static final String SAVED_IN_EDIT_MODE = "SAVED_IN_EDIT_MODE";
     public static final String SAVED_EDIT_TYPE = "SAVED_EDIT_TYPE";
 
@@ -51,8 +54,11 @@ public class ImageEditorActivity extends BaseSimpleActivity implements ImageDown
     private @ImagePickerBuilder.ImageEditActionTypeDef
     int[] imageEditActionType;
 
-    private ArrayList<String> localImagePaths;
-    private ArrayList<String> finalImagePaths;
+    private ArrayList<String> localStep0ImagePaths;
+    private ArrayList<ArrayList<String>> edittedImagePaths;
+
+    // used in the future for undo things
+    private ArrayList<Integer> currentEditStepIndexList;
 
     private int currentImageIndex;
     private boolean isInEditMode;
@@ -71,6 +77,7 @@ public class ImageEditorActivity extends BaseSimpleActivity implements ImageDown
     private View editorMainView;
     private View editorControlView;
     private View editCancelView;
+    private View doneButton;
 
     public static Intent getIntent(Context context, ArrayList<String> imageUrls, int minResolution,
                                    @ImagePickerBuilder.ImageEditActionTypeDef int[] imageEditActionType) {
@@ -123,14 +130,15 @@ public class ImageEditorActivity extends BaseSimpleActivity implements ImageDown
 
         if (savedInstanceState == null) {
             currentImageIndex = 0;
-            localImagePaths = new ArrayList<>();
-            finalImagePaths = new ArrayList<>();
+            localStep0ImagePaths = new ArrayList<>();
+            edittedImagePaths = new ArrayList<>();
             isInEditMode = false;
             currentEditActionType = TYPE_CROP_ROTATE;
         } else {
             currentImageIndex = savedInstanceState.getInt(SAVED_IMAGE_INDEX, 0);
-            localImagePaths = savedInstanceState.getStringArrayList(SAVED_LOCAL_IMAGE_PATH);
-            finalImagePaths = savedInstanceState.getStringArrayList(SAVED_FINAL_PATHS);
+            localStep0ImagePaths = savedInstanceState.getStringArrayList(SAVED_LOCAL_IMAGE_PATH);
+            //noinspection unchecked
+            edittedImagePaths = (ArrayList<ArrayList<String>>) savedInstanceState.getSerializable(SAVED_EDITTED_PATHS);
             isInEditMode = savedInstanceState.getBoolean(SAVED_IN_EDIT_MODE);
             currentEditActionType = savedInstanceState.getInt(SAVED_EDIT_TYPE);
         }
@@ -144,6 +152,7 @@ public class ImageEditorActivity extends BaseSimpleActivity implements ImageDown
         editCancelView = findViewById(R.id.tv_edit_cancel);
         imageEditActionMainWidget = findViewById(R.id.image_edit_action_main_widget);
         imageEditThumbnailListWidget = findViewById(R.id.image_edit_thumbnail_list_widget);
+        doneButton = findViewById(R.id.tv_done);
 
         viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
@@ -163,31 +172,41 @@ public class ImageEditorActivity extends BaseSimpleActivity implements ImageDown
             }
         });
 
-        setupEditCancelButton();
-    }
-
-    private void setupEditCancelButton() {
         editCancelView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ImageEditPreviewFragment fragment = (ImageEditPreviewFragment)
-                        imageEditorViewPagerAdapter.getRegisteredFragment(currentImageIndex);
-                if (fragment != null) {
-                    switch (currentEditActionType) {
-                        case TYPE_CROP:
-                        case TYPE_ROTATE:
-                        case TYPE_CROP_ROTATE:
-                            fragment.cancelCropRotateImage();
-                            break;
-                        case TYPE_WATERMARK:
-                            //TODO undo watermark here
-                            break;
-                    }
-
-                }
-                setupEditMode(false, TYPE_CROP_ROTATE);
+                onCancelEditClicked();
             }
         });
+        doneButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onDoneButtonClicked();
+            }
+        });
+    }
+
+    private void onCancelEditClicked() {
+        ImageEditPreviewFragment fragment = (ImageEditPreviewFragment)
+                imageEditorViewPagerAdapter.getRegisteredFragment(currentImageIndex);
+        if (fragment != null) {
+            switch (currentEditActionType) {
+                case TYPE_CROP:
+                case TYPE_ROTATE:
+                case TYPE_CROP_ROTATE:
+                    fragment.cancelCropRotateImage();
+                    break;
+                case TYPE_WATERMARK:
+                    //TODO undo watermark here
+                    break;
+            }
+
+        }
+        setupEditMode(false, TYPE_CROP_ROTATE);
+    }
+
+    private void onDoneButtonClicked(){
+        //TODO on done button clicked
     }
 
     private void setupEditActionWidget() {
@@ -214,6 +233,7 @@ public class ImageEditorActivity extends BaseSimpleActivity implements ImageDown
         if (isInEditMode) {
             editorMainView.setVisibility(View.GONE);
             editorControlView.setVisibility(View.VISIBLE);
+            doneButton.setVisibility(View.GONE);
             if (fragment != null) {
                 fragment.setEditMode(true);
             }
@@ -234,6 +254,7 @@ public class ImageEditorActivity extends BaseSimpleActivity implements ImageDown
         } else {
             editorMainView.setVisibility(View.VISIBLE);
             editorControlView.setVisibility(View.GONE);
+            doneButton.setVisibility(View.VISIBLE);
 
             if (fragment != null) {
                 fragment.setEditMode(false);
@@ -243,8 +264,8 @@ public class ImageEditorActivity extends BaseSimpleActivity implements ImageDown
 
     private void setUpThumbnailPreview() {
         imageEditThumbnailListWidget.setOnImageEditThumbnailListWidgetListener(this);
-        imageEditThumbnailListWidget.setData(finalImagePaths, currentImageIndex);
-        imageEditThumbnailListWidget.setVisibility(finalImagePaths.size() <= 1 ? View.GONE : View.VISIBLE);
+        imageEditThumbnailListWidget.setData(edittedImagePaths, currentEditStepIndexList, currentImageIndex);
+        imageEditThumbnailListWidget.setVisibility(localStep0ImagePaths.size() <= 1 ? View.GONE : View.VISIBLE);
     }
 
     @Override
@@ -256,9 +277,13 @@ public class ImageEditorActivity extends BaseSimpleActivity implements ImageDown
 
     private void finishEditImage() {
         Intent intent = new Intent();
-        intent.putStringArrayListExtra(EDIT_RESULT_PATHS, finalImagePaths);
+        ArrayList<String> resultList = new ArrayList<>();
+        for (int i = 0, sizei = edittedImagePaths.size(); i < sizei; i++) {
+            resultList.add(edittedImagePaths.get(i).get(currentEditStepIndexList.get(i)));
+        }
+        //TODO delete file not in result.
+        intent.putStringArrayListExtra(EDIT_RESULT_PATHS, resultList);
         setResult(Activity.RESULT_OK, intent);
-
         finish();
     }
 
@@ -283,7 +308,7 @@ public class ImageEditorActivity extends BaseSimpleActivity implements ImageDown
     protected void onResume() {
         super.onResume();
         // download network image url if needed
-        if (localImagePaths == null || localImagePaths.size() == 0) {
+        if (localStep0ImagePaths == null || localStep0ImagePaths.size() == 0) {
             boolean hasNetworkImage = false;
             for (int i = 0, sizei = extraImageUrls.size(); i < sizei; i++) {
                 if (URLUtil.isNetworkUrl(extraImageUrls.get(i))) {
@@ -318,8 +343,9 @@ public class ImageEditorActivity extends BaseSimpleActivity implements ImageDown
         showContentView();
         if (imageEditorViewPagerAdapter == null) {
             imageEditorViewPagerAdapter = new ImageEditorViewPagerAdapter(getSupportFragmentManager(),
-                    localImagePaths,
-                    finalImagePaths,
+                    localStep0ImagePaths,
+                    edittedImagePaths,
+                    currentEditStepIndexList,
                     minResolution);
         }
         viewPager.setAdapter(imageEditorViewPagerAdapter);
@@ -353,92 +379,52 @@ public class ImageEditorActivity extends BaseSimpleActivity implements ImageDown
 
 
     private void copyToLocalUrl(ArrayList<String> imageUrls) {
-        localImagePaths = new ArrayList<>();
-        finalImagePaths = new ArrayList<>();
+        localStep0ImagePaths = new ArrayList<>();
+        edittedImagePaths = new ArrayList<>();
+        currentEditStepIndexList = new ArrayList<>(imageUrls.size());
         for (int i = 0, sizei = imageUrls.size(); i < sizei; i++) {
-            localImagePaths.add(imageUrls.get(i));
-            finalImagePaths.add(imageUrls.get(i));
+            localStep0ImagePaths.add(imageUrls.get(i));
+            ArrayList<String> stepArrayList = new ArrayList<>();
+            stepArrayList.add(imageUrls.get(i));
+            edittedImagePaths.add(stepArrayList);
+            currentEditStepIndexList.add(0);
         }
     }
 
-//    public void onSuccessCrop(String path){
-//        // save the new path
-//        if (localImagePaths == null) {
-//            return;
-//        }
-//        if (currentImageIndex >= localImagePaths.size()) {
-//            currentImageIndex = localImagePaths.size() - 1;
-//        }
-//        localImagePaths.set(currentImageIndex, path);
-//        addCroppedPath(path);
-//        currentImageIndex++;
-//        if (currentImageIndex == extraImageUrls.size()) {
-//            finishEditing(true);
-//        } else {
-//            // continue to next image index
-//            FragmentManager fragmentManager = getSupportFragmentManager();
-//            replaceEditorFragment(fragmentManager);
-//            setUpToolbarTitle();
-//        }
-//    }
+    @Override
+    public void onBackPressed() {
+        if (isInEditMode) { //backpressed will cancel the edit mode
+            onCancelEditClicked();
+        } else {
+            AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this, R.style.AppCompatAlertDialogStyle)
+                    .setTitle(getString(R.string.image_edit_backpressed_title))
+                    .setPositiveButton(getString(R.string.exit), new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            deleteNotUsedImage();
+                            ImageEditorActivity.super.onBackPressed();
+                        }
+                    }).setNegativeButton(getString(R.string.cancel), new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface arg0, int arg1) {
+                            // no op, just dismiss
+                        }
+                    });
+            AlertDialog dialog = alertDialogBuilder.create();
+            dialog.show();
+        }
+    }
 
-//    public void addCroppedPath(String path){
-//        finalImagePaths.add(path);
-//    }
-
-//    private void finishEditing(boolean isResultOK) {
-//        Intent intent = new Intent();
-//        if (isResultOK) {
-//            setResult(Activity.RESULT_OK, intent);
-//            intent.putExtra(SAVED_LOCAL_IMAGE_PATH, localImagePaths);
-//            if (getIntent().getBooleanExtra(EXTRA_DELETE_CACHE_WHEN_EXIT, true)) {
-//                deleteAllTkpdFilesNotInResult(finalImagePaths, localImagePaths);
-//            }
-//        } else {
-//            setResult(Activity.RESULT_CANCELED, intent);
-//            intent.putExtra(SAVED_LOCAL_IMAGE_PATH, getIntent().getStringArrayListExtra(EXTRA_IMAGE_URLS));
-//            if (getIntent().getBooleanExtra(EXTRA_DELETE_CACHE_WHEN_EXIT, true)) {
-//                deleteAllTkpdFilesNotInResult(finalImagePaths, getIntent().getStringArrayListExtra(EXTRA_IMAGE_URLS));
-//            }
-//        }
-//        finish();
-//    }
-
-//    private void deleteAllTkpdFilesNotInResult(ArrayList<String> savedCroppedPaths, ArrayList<String> resultImageUrls){
-//        ArrayList<String> toBeDeletedFiles = new ArrayList<>();
-//        for (int i=0, sizei = savedCroppedPaths.size(); i<sizei; i++) {
-//            String savedCroppedPath = savedCroppedPaths.get(i);
-//            boolean croppedFilesIsInResult = false;
-//            for (int j = 0, sizej = resultImageUrls.size(); j<sizej; j++) {
-//                if (savedCroppedPath.equals(resultImageUrls.get(j))) {
-//                    croppedFilesIsInResult = true;
-//                    break;
-//                }
-//            }
-//            if (!croppedFilesIsInResult) {
-//                toBeDeletedFiles.add(savedCroppedPath);
-//            }
-//        }
-//        FileUtils.deleteAllCacheTkpdFiles(toBeDeletedFiles);
-//    }
-
-//    @Override
-//    public void onBackPressed() {
-//        if (getSupportFragmentManager().getBackStackEntryCount() != 0) {
-//            currentImageIndex--;
-//            setUpToolbarTitle();
-//            getSupportFragmentManager().popBackStack();
-//        } else {
-//            finishEditing(false);
-//        }
-//    }
+    private void deleteNotUsedImage() {
+        //TODO to delete all file in editted paths, and localStep0Urls (if it is different with the original imageURLS)
+    }
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putInt(SAVED_IMAGE_INDEX, currentImageIndex);
-        outState.putStringArrayList(SAVED_LOCAL_IMAGE_PATH, localImagePaths);
-        outState.putStringArrayList(SAVED_FINAL_PATHS, finalImagePaths);
+        outState.putStringArrayList(SAVED_LOCAL_IMAGE_PATH, localStep0ImagePaths);
+        outState.putSerializable(SAVED_EDITTED_PATHS, edittedImagePaths);
+        outState.putIntegerArrayList(SAVED_CURRENT_STEP_INDEX, currentEditStepIndexList);
         outState.putBoolean(SAVED_IN_EDIT_MODE, isInEditMode);
         outState.putInt(SAVED_EDIT_TYPE, currentEditActionType);
     }
