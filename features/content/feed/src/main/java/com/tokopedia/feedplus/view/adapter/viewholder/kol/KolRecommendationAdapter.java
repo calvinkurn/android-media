@@ -17,7 +17,6 @@ import com.tokopedia.feedplus.view.analytics.FeedEnhancedTracking;
 import com.tokopedia.feedplus.view.listener.FeedPlus;
 import com.tokopedia.feedplus.view.viewmodel.kol.KolRecommendItemViewModel;
 import com.tokopedia.feedplus.view.viewmodel.kol.KolRecommendationViewModel;
-import com.tokopedia.feedplus.view.viewmodel.kol.KolViewModel;
 import com.tokopedia.kol.feature.post.view.viewmodel.KolPostViewModel;
 
 import java.util.ArrayList;

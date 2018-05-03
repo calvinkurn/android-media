@@ -135,9 +135,6 @@ public class FeedPlusFragment extends BaseDaggerFragment
     @Inject
     FeedPlusPresenter presenter;
 
-    @Inject
-    UserSession userSession;
-
     private LinearLayoutManager layoutManager;
     private FeedPlusAdapter adapter;
     private CallbackManager callbackManager;
@@ -1151,7 +1148,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
 
     @Override
     public UserSession getUserSession() {
-        return userSession;
+        return abstractionRouter.getSession();
     }
 
     @Override

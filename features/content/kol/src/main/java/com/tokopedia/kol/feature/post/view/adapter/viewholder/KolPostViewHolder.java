@@ -1,6 +1,5 @@
 package com.tokopedia.kol.feature.post.view.adapter.viewholder;
 
-import android.graphics.Bitmap;
 import android.support.annotation.LayoutRes;
 import android.text.Spanned;
 import android.text.TextUtils;
@@ -8,8 +7,6 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.bumptech.glide.request.animation.GlideAnimation;
-import com.bumptech.glide.request.target.SimpleTarget;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
@@ -17,6 +14,7 @@ import com.tokopedia.kol.R;
 import com.tokopedia.kol.analytics.KolEnhancedTracking;
 import com.tokopedia.kol.common.util.TimeConverter;
 import com.tokopedia.kol.feature.post.view.listener.KolPostListener;
+import com.tokopedia.kol.feature.post.view.util.KolGlideRequestListener;
 import com.tokopedia.kol.feature.post.view.viewmodel.KolPostViewModel;
 
 import java.util.ArrayList;
@@ -33,12 +31,12 @@ public class KolPostViewHolder extends AbstractViewHolder<KolPostViewModel> {
 
     private static final String DASH = "-";
 
-    private static final int MAX_CHAR = 250;
+    private static final int MAX_CHAR = 175;
     private final KolPostListener.View.ViewHolder viewListener;
+    private TextView title;
     private TextView name;
     private ImageView avatar;
     private TextView label;
-    private ImageView followIcon;
     private TextView followText;
     private View followButton;
     private ImageView reviewImage;
@@ -51,6 +49,7 @@ public class KolPostViewHolder extends AbstractViewHolder<KolPostViewModel> {
     private View commentButton;
     private View likeButton;
     private View topShadow;
+    private View topSeparator;
     private Type type;
 
     public enum Type {
@@ -63,10 +62,10 @@ public class KolPostViewHolder extends AbstractViewHolder<KolPostViewModel> {
         super(itemView);
         this.viewListener = viewListener;
         this.type = type;
+        title = itemView.findViewById(R.id.title);
         name = itemView.findViewById(R.id.name);
         avatar = itemView.findViewById(R.id.avatar);
         label = itemView.findViewById(R.id.label);
-        followIcon = itemView.findViewById(R.id.follow_icon);
         followText = itemView.findViewById(R.id.follow_text);
         followButton = itemView.findViewById(R.id.follow_button);
         reviewImage = itemView.findViewById(R.id.image);
@@ -79,20 +78,32 @@ public class KolPostViewHolder extends AbstractViewHolder<KolPostViewModel> {
         commentButton = itemView.findViewById(R.id.comment_button);
         likeButton = itemView.findViewById(R.id.like_button);
         topShadow = itemView.findViewById(R.id.top_shadow);
+        topSeparator = itemView.findViewById(R.id.separator2);
     }
 
     @Override
     public void bind(KolPostViewModel element) {
-        if (getAdapterPosition() == 0 ) {
-            topShadow.setVisibility(View.VISIBLE);
-        } else {
-            topShadow.setVisibility(View.GONE);
+        if (type == Type.PROFILE) {
+            title.setVisibility(View.GONE);
+            if (getAdapterPosition() == 0 ) {
+                topShadow.setVisibility(View.VISIBLE);
+            } else {
+                topShadow.setVisibility(View.GONE);
+            }
+        } else if (type == Type.FEED) {
+            if (TextUtils.isEmpty(element.getTitle())) {
+                title.setVisibility(View.GONE);
+            } else {
+                title.setVisibility(View.VISIBLE);
+                title.setText(MethodChecker.fromHtml(element.getTitle()));
+            }
         }
 
         name.setText(MethodChecker.fromHtml(element.getName()));
         ImageHandler.loadImageCircle2(avatar.getContext(), avatar, element.getAvatar());
 
         if (element.isFollowed()) {
+            //TODO milhamj unify this time
             label.setText(TimeConverter.generateTime(label.getContext(), element.getTime()));
         } else {
             label.setText(element.getLabel());
@@ -100,30 +111,28 @@ public class KolPostViewHolder extends AbstractViewHolder<KolPostViewModel> {
 
         if (element.isFollowed() && !element.isTemporarilyFollowed()) {
             followButton.setVisibility(View.GONE);
+            topSeparator.setVisibility(View.GONE);
         } else if (element.isFollowed() && element.isTemporarilyFollowed()) {
             followButton.setVisibility(View.VISIBLE);
+            followButton.setBackground(MethodChecker.getDrawable(followButton.getContext(),
+                    R.drawable.bg_button_white_border));
             followText.setText(R.string.following);
             followText.setTextColor(MethodChecker.getColor(followText.getContext(),
                     R.color.black_54));
-            ImageHandler.loadImageWithIdWithoutPlaceholder(followIcon, R.drawable.ic_tick);
+            topSeparator.setVisibility(View.VISIBLE);
         } else {
             followButton.setVisibility(View.VISIBLE);
-            ImageHandler.loadImageWithIdWithoutPlaceholder(followIcon, R.drawable.ic_plus_green);
+            followButton.setBackground(MethodChecker.getDrawable(followButton.getContext(),
+                    R.drawable.bg_button_green));
             followText.setTextColor(MethodChecker.getColor(followText.getContext(),
-                    R.color.green_500));
+                    R.color.white));
             followText.setText(R.string.action_follow);
+            topSeparator.setVisibility(View.VISIBLE);
         }
 
-        ImageHandler.loadImageWithTarget(
-                reviewImage.getContext(),
+        ImageHandler.loadImageWithRequestListener(reviewImage,
                 element.getKolImage(),
-                new SimpleTarget<Bitmap>() {
-                    @Override
-                    public void onResourceReady(Bitmap resource,
-                                                GlideAnimation<? super Bitmap> glideAnimation) {
-                        reviewImage.setImageBitmap(resource);
-                    }
-                });
+                new KolGlideRequestListener());
 
         if (TextUtils.isEmpty(element.getProductTooltip())) {
             tooltipClickArea.setVisibility(View.GONE);
@@ -166,17 +175,22 @@ public class KolPostViewHolder extends AbstractViewHolder<KolPostViewModel> {
         avatar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                viewListener.onGoToKolProfile(element.getPage(),
-                        getAdapterPosition(),
-                        String.valueOf(element.getUserId()),
-                        element.getContentId()
-                );
+                if (type == Type.FEED) {
+                    //TODO milhamj tracking
+//                    UnifyTracking.eventKolContentGoToProfilePage(element.isFollowed(), element.getTagsType());
+                    viewListener.onGoToKolProfile(element.getPage(),
+                            getAdapterPosition(),
+                            String.valueOf(element.getUserId()),
+                            element.getContentId()
+                    );
+                }
             }
         });
 
         name.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+//                UnifyTracking.eventKolContentGoToProfilePage(element.isFollowed(), element.getTagsType());
                 viewListener.onGoToKolProfile(element.getPage(),
                         getAdapterPosition(),
                         String.valueOf(element.getUserId()),
@@ -189,9 +203,11 @@ public class KolPostViewHolder extends AbstractViewHolder<KolPostViewModel> {
             @Override
             public void onClick(View v) {
                 if (element.isFollowed()) {
+//                    UnifyTracking.eventKolContentUnfollowClick(element.getTagsType());
                     viewListener.onUnfollowKolClicked(element.getPage(), getAdapterPosition(),
                             element.getUserId());
                 } else {
+//                    UnifyTracking.eventKolContentFollowClick(element.getTagsType());
                     viewListener.onFollowKolClicked(element.getPage(), getAdapterPosition(),
                             element.getUserId());
                 }
@@ -201,8 +217,9 @@ public class KolPostViewHolder extends AbstractViewHolder<KolPostViewModel> {
         kolText.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (kolText.getText().toString().endsWith(kolText.getContext().getString(R
-                        .string.read_more_english))) {
+                if (kolText.getText().toString().endsWith(
+                        kolText.getContext().getString(R.string.read_more_english))) {
+//                    UnifyTracking.eventKolContentReadMoreClick(element.isFollowed(), element.getTagsType());
                     kolText.setText(element.getReview());
                     element.setReviewExpanded(true);
                 }
@@ -213,9 +230,11 @@ public class KolPostViewHolder extends AbstractViewHolder<KolPostViewModel> {
             @Override
             public void onClick(View v) {
                 if (element.isLiked()) {
+//                    UnifyTracking.eventKolContentUnlike(element.isFollowed(), element.getTagsType());
                     viewListener.onUnlikeKolClicked(element.getPage(), getAdapterPosition(),
                             element.getId());
                 } else {
+//                    UnifyTracking.eventKolContentLike(element.isFollowed(), element.getTagsType());
                     viewListener.onLikeKolClicked(element.getPage(), getAdapterPosition(), element.getId());
                 }
             }
@@ -224,6 +243,7 @@ public class KolPostViewHolder extends AbstractViewHolder<KolPostViewModel> {
         commentButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+//                UnifyTracking.eventKolContentCommentClick(element.isFollowed(), element.getTagsType());
                 viewListener.onGoToKolComment(element.getPage(), getAdapterPosition(), element);
             }
         });
@@ -252,9 +272,9 @@ public class KolPostViewHolder extends AbstractViewHolder<KolPostViewModel> {
                     MAX_CHAR);
             return MethodChecker.fromHtml(
                     subDescription.replaceAll("(\r\n|\n)", "<br />") + "... "
-                            + "<font color='#42b549'>"
+                            + "<font color='#42b549'><b>"
                             + kolText.getContext().getString(R.string.read_more_english)
-                            + "</font>");
+                            + "</b></font>");
         } else {
             return MethodChecker.fromHtml(element.getReview().replaceAll("(\r\n|\n)", "<br />"));
         }
@@ -277,6 +297,22 @@ public class KolPostViewHolder extends AbstractViewHolder<KolPostViewModel> {
                 Integer.valueOf(!TextUtils.isEmpty(viewListener.getUserSession().getUserId()) ?
                         viewListener.getUserSession().getUserId() : "0")
         ));
+//        Feed tracking
+//        UnifyTracking.eventKolContentCtaClick(element.isFollowed(), element.getTagsType());
+//        List<FeedEnhancedTracking.Promotion> list = new ArrayList<>();
+//        list.add(new FeedEnhancedTracking.Promotion(
+//                element.getId(),
+//                FeedEnhancedTracking.Promotion.createContentName(
+//                        element.getTagsType(),
+//                        element.getCardType())
+//                ,
+//                element.getName().equals("")? "-" : element.getName(),
+//                getAdapterPosition(),
+//                element.getLabel().equals("")? "-" : element.getLabel(),
+//                element.getContentId(),
+//                element.getContentLink().equals("")? "-" : element.getContentLink()
+//        ));
+
         viewListener.getAbstractionRouter()
                 .getAnalyticTracker()
                 .sendEnhancedEcommerce(KolEnhancedTracking.getKolClickTracking(promotionList));

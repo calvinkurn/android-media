@@ -21,13 +21,14 @@ import com.tokopedia.feedplus.view.viewmodel.promo.PromotedShopViewModel;
 import com.tokopedia.feedplus.view.viewmodel.recentview.RecentViewViewModel;
 import com.tokopedia.feedplus.view.viewmodel.topads.FeedTopAdsViewModel;
 import com.tokopedia.feedplus.view.viewmodel.toppicks.ToppicksViewModel;
+import com.tokopedia.kol.feature.post.view.adapter.typefactory.KolPostTypeFactory;
 import com.tokopedia.kol.feature.post.view.viewmodel.KolPostViewModel;
 
 /**
  * @author by nisie on 5/15/17.
  */
 
-public interface FeedPlusTypeFactory {
+public interface FeedPlusTypeFactory extends KolPostTypeFactory {
 
     int type(ActivityCardViewModel viewModel);
 

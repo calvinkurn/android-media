@@ -43,8 +43,10 @@ import com.tokopedia.feedplus.view.viewmodel.promo.PromotedShopViewModel;
 import com.tokopedia.feedplus.view.viewmodel.recentview.RecentViewViewModel;
 import com.tokopedia.feedplus.view.viewmodel.topads.FeedTopAdsViewModel;
 import com.tokopedia.feedplus.view.viewmodel.toppicks.ToppicksViewModel;
+import com.tokopedia.kol.feature.post.view.adapter.viewholder.EmptyKolPostViewHolder;
 import com.tokopedia.kol.feature.post.view.adapter.viewholder.KolPostViewHolder;
 import com.tokopedia.kol.feature.post.view.listener.KolPostListener;
+import com.tokopedia.kol.feature.post.view.viewmodel.EmptyKolPostViewModel;
 import com.tokopedia.kol.feature.post.view.viewmodel.KolPostViewModel;
 import com.tokopedia.topads.sdk.listener.TopAdsInfoClickListener;
 import com.tokopedia.topads.sdk.listener.TopAdsItemClickListener;
@@ -141,6 +143,11 @@ public class FeedPlusTypeFactoryImpl extends BaseAdapterTypeFactory implements F
     }
 
     @Override
+    public int type(EmptyKolPostViewModel emptyKolPostViewModel) {
+        return EmptyKolPostViewHolder.LAYOUT;
+    }
+
+    @Override
     public int type(KolRecommendationViewModel kolRecommendationViewModel) {
         return KolRecommendationViewHolder.LAYOUT;
     }
@@ -217,6 +224,8 @@ public class FeedPlusTypeFactoryImpl extends BaseAdapterTypeFactory implements F
             viewHolder = new EmptyFeedBeforeLoginViewHolder(view, viewListener);
         else if (type == KolPostViewHolder.LAYOUT)
             viewHolder = new KolPostViewHolder(view, kolPostListener, KolPostViewHolder.Type.FEED);
+        else if (type == EmptyKolPostViewHolder.LAYOUT)
+            viewHolder = new EmptyKolPostViewHolder(view);
         else
             viewHolder = super.createViewHolder(view, type);
         return viewHolder;
