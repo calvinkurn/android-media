@@ -473,6 +473,9 @@ public class ChatRoomPresenter extends BaseDaggerPresenter<ChatRoomContract.View
     @Override
     public void getReply(int mode) {
         RequestParams requestParam;
+        if(TextUtils.isEmpty(getView().getArguments().getString(PARAM_MESSAGE_ID))){
+            return;
+        }
         if (mode == GET_CHAT_MODE) {
             requestParam = GetReplyListUseCase.generateParam(
                     getView().getArguments().getString(PARAM_MESSAGE_ID),

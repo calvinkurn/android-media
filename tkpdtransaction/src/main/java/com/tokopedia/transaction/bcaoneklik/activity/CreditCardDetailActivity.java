@@ -5,7 +5,12 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.tkpd.library.utils.ImageHandler;
@@ -44,11 +49,6 @@ public class CreditCardDetailActivity extends TActivity
     private static final String JCB_LARGE = "bg_jcb_large";
     private static final String EXPIRED_LARGE = "bg_expired_large";
 
-    @BindView(R2.id.iv_credit_card_large) ImageView mViewImageCc;
-    @BindView(R2.id.tv_credit_card_number) TextView mCreditCardNumber;
-    @BindView(R2.id.tv_credit_card_expiry) TextView mCardExpiry;
-    @BindView(R2.id.iv_credit_card_logo) ImageView mCreditCardLogo;
-
     @Inject ListPaymentTypePresenterImpl mListPaymentTypePresenter;
 
     private CreditCardModelItem mCreditCardModelItem;
@@ -59,14 +59,25 @@ public class CreditCardDetailActivity extends TActivity
 
         super.onCreate(savedInstanceState);
         inflateView(R.layout.credit_card_detail_layout);
-        ButterKnife.bind(this);
 
         initInjector();
+
+        ImageView mViewImageCc = findViewById(R.id.iv_credit_card_large);
+        TextView mCreditCardNumber = findViewById(R.id.tv_credit_card_number);
+        TextView mCardExpiry = findViewById(R.id.tv_credit_card_expiry);
+        ImageView mCreditCardLogo = findViewById(R.id.iv_credit_card_logo);
+        Button mButtonDeleteCc = findViewById(R.id.btn_delete_cc);
 
         ImageHandler.LoadImage(mViewImageCc, getBackgroundAssets(mCreditCardModelItem));
         mCreditCardNumber.setText(getSpacedText(mCreditCardModelItem.getMaskedNumber()));
         mCardExpiry.setText(getExpiredDate(mCreditCardModelItem));
         ImageHandler.LoadImage(mCreditCardLogo, mCreditCardModelItem.getCardTypeImage());
+        mButtonDeleteCc.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                showDeleteCcDialog();
+            }
+        });
     }
 
     private void initInjector() {
@@ -127,7 +138,6 @@ public class CreditCardDetailActivity extends TActivity
         return getTitle() + " " + mCreditCardModelItem.getCardType();
     }
 
-    @OnClick(R2.id.btn_delete_cc)
     public void showDeleteCcDialog() {
         DeleteCreditCardDialog creditCardDialog = DeleteCreditCardDialog.newInstance(
                 mCreditCardModelItem.getTokenId(),

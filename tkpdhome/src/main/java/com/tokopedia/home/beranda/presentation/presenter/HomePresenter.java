@@ -28,7 +28,7 @@ import com.tokopedia.home.beranda.presentation.view.HomeContract;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.BannerViewModel;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.HeaderViewModel;
 import com.tokopedia.home.beranda.presentation.view.subscriber.GetHomeFeedsSubscriber;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.usecase.GetHomeFeedsUseCase;
+import com.tokopedia.feedplus.domain.usecase.GetHomeFeedsUseCase;
 import com.tokopedia.usecase.RequestParams;
 
 import java.util.List;

@@ -51,8 +51,8 @@
             android:layout_height="wrap_content"
             android:layout_below="@id/holder_error"
             android:layout_centerVertical="true"
-            android:layout_toLeftOf="@+id/btn_overflow"
-            android:layout_toStartOf="@+id/btn_overflow"
+            android:layout_toLeftOf="@+id/edit_cart_label"
+            android:layout_toStartOf="@+id/edit_cart_label"
             android:gravity="center_vertical"
             android:maxLines="1"
             android:maxWidth="@dimen/store_name"
@@ -62,15 +62,19 @@
             android:textStyle="bold"
             tools:text="Shop Name" />
 
-        <ImageView
-            android:id="@+id/btn_overflow"
+        <TextView
+            android:id="@+id/edit_cart_label"
             android:layout_width="wrap_content"
-            android:layout_height="?actionBarSize"
+            android:layout_height="match_parent"
             android:layout_alignParentEnd="true"
             android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="@dimen/dp_10"
+            android:layout_marginEnd="@dimen/dp_10"
             android:layout_below="@+id/holder_error"
-            android:background="@drawable/overflow_selected"
-            app:srcCompat="@drawable/ic_new_action_overflow_black"
+            android:text="@string/change_cart_invoice"
+            android:textColor="@color/label_color"
+            android:textStyle="bold"
             tools:ignore="ContentDescription" />
 
     </RelativeLayout>
