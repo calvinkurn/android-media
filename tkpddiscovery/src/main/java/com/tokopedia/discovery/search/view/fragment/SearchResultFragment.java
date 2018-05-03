@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.tkpd.library.ui.view.LinearLayoutManager;
+import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.core.R2;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
@@ -108,6 +109,23 @@ public class SearchResultFragment extends TkpdBaseV4Fragment
     }
 
     @Override
+    public void onItemClicked(String applink, String webUrl) {
+        /*
+        if (getActivity() != null
+                && getActivity().getApplicationContext() instanceof AbstractionRouter) {
+            AbstractionRouter router = ((AbstractionRouter) getActivity().getApplicationContext());
+            if (router.isSupportApplink()) {
+
+            } else {
+
+            }
+        } else {
+
+        }
+        */
+    }
+
+    @Override
     public void onItemClicked(SearchItem item) {
         probeAnalytics(item);
         ((DiscoveryActivity) getActivity()).dropKeyboard();
@@ -142,7 +160,7 @@ public class SearchResultFragment extends TkpdBaseV4Fragment
                 UnifyTracking.eventClickPopularSearch(item.getKeyword());
                 break;
             case AppEventTracking.GTM.SEARCH_AUTOCOMPLETE_IN_CAT :
-                UnifyTracking.eventClickAutoCompleteCategory(item.getRecom(), item.getSc(), item.getKeyword());
+
                 break;
         }
     }

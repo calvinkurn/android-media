@@ -1,6 +1,5 @@
 package com.tokopedia.discovery.search.view.adapter;
 
-import com.tokopedia.discovery.search.domain.model.SearchData;
 import com.tokopedia.discovery.search.domain.model.SearchItem;
 
 /**
@@ -15,4 +14,6 @@ public interface ItemClickListener {
     void onDeleteRecentSearchItem(SearchItem item);
 
     void onDeleteAllRecentSearch();
+
+    void onItemClicked(String applink, String webUrl);
 }

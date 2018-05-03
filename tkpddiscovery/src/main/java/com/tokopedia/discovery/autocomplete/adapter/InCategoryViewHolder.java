@@ -8,6 +8,7 @@ import android.text.style.TextAppearanceSpan;
 import android.view.View;
 import android.widget.TextView;
 
+import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.discovery.R;
 import com.tokopedia.discovery.autocomplete.viewmodel.InCategorySearch;
@@ -32,7 +33,7 @@ public class InCategoryViewHolder extends AbstractViewHolder<InCategorySearch> {
     }
 
     @Override
-    public void bind(InCategorySearch element) {
+    public void bind(final InCategorySearch element) {
         int startIndex = indexOfSearchQuery(element.getKeyword(), element.getSearchTerm());
         if (startIndex == -1) {
             titleTextView.setText(element.getKeyword().toLowerCase());
@@ -49,6 +50,19 @@ public class InCategoryViewHolder extends AbstractViewHolder<InCategorySearch> {
         subTitleTextView.setText(
                 String.format(itemView.getContext().getString(R.string.formated_in_category), element.getRecom())
         );
+
+        itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                UnifyTracking.eventClickAutoCompleteCategory(
+                        element.getRecom(),
+                        element.getCategoryId(),
+                        element.getKeyword()
+                );
+                listener.onItemClicked(element.getApplink(), element.getUrl());
+            }
+        });
+
     }
 
     private int indexOfSearchQuery(String displayName, String searchTerm) {

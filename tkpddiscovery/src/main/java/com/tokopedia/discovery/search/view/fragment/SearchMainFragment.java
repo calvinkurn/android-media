@@ -151,7 +151,7 @@ public class SearchMainFragment extends TkpdBaseV4Fragment implements SearchCont
                                        TabAutoCompleteViewModel tabAutoCompleteViewModel) {
         adapter.setDefaultViewModel(defaultAutoCompleteViewModel);
         adapter.setSuggestionViewModel(tabAutoCompleteViewModel);
-        if (!tabAutoCompleteViewModel.getList().isEmpty()) {
+        if (defaultAutoCompleteViewModel.getList().isEmpty()) {
             recyclerView.scrollToPosition(1);
         } else {
             recyclerView.scrollToPosition(0);
@@ -205,6 +205,11 @@ public class SearchMainFragment extends TkpdBaseV4Fragment implements SearchCont
 
     public void deleteRecentSearch(String keyword){
         presenter.deleteRecentSearchItem(keyword);
+    }
+
+    @Override
+    public void onItemClicked(String applink, String webUrl) {
+
     }
 
     @Override
