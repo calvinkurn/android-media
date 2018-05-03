@@ -16,6 +16,7 @@ import android.text.TextUtils;
 import com.facebook.react.ReactApplication;
 import com.facebook.react.ReactNativeHost;
 import com.google.gson.Gson;
+import com.readystatesoftware.chuck.ChuckInterceptor;
 import com.tkpd.library.utils.AnalyticsLog;
 import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.LocalCacheHandler;
@@ -34,10 +35,7 @@ import com.tokopedia.checkout.domain.usecase.CheckPromoCodeCartListUseCase;
 import com.tokopedia.checkout.domain.usecase.CheckPromoCodeCartShipmentUseCase;
 import com.tokopedia.checkout.domain.usecase.GetCouponListCartMarketPlaceUseCase;
 import com.tokopedia.checkout.router.ICartCheckoutModuleRouter;
-import com.tokopedia.checkout.view.di.component.CartComponent;
 import com.tokopedia.checkout.view.di.component.CartComponentInjector;
-import com.tokopedia.checkout.view.di.component.DaggerCartComponent;
-import com.tokopedia.checkout.view.di.module.DataModule;
 import com.tokopedia.checkout.view.view.cartlist.CartActivity;
 import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.analytics.TrackingUtils;
@@ -66,6 +64,7 @@ import com.tokopedia.core.manage.general.districtrecommendation.domain.model.Tok
 import com.tokopedia.core.manage.general.districtrecommendation.view.DistrictRecommendationActivity;
 import com.tokopedia.core.manage.people.address.activity.ChooseAddressActivity;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
+import com.tokopedia.core.network.retrofit.interceptors.FingerprintInterceptor;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.network.retrofit.utils.ServerErrorHandler;
 import com.tokopedia.core.onboarding.OnboardingActivity;
@@ -314,7 +313,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     private ContentConsumerComponent contentConsumerComponent;
     private ProductComponent productComponent;
     private DaggerShopComponent.Builder daggerShopBuilder;
-    private CartComponent cartApiServiceComponent;
     private ShopComponent shopComponent;
     private ReactNativeComponent reactNativeComponent;
     private RemoteConfig remoteConfig;
@@ -395,10 +393,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         daggerContentBuilder = DaggerContentConsumerComponent.builder()
                 .feedPlusComponent(feedPlusComponent);
 
-        cartApiServiceComponent = DaggerCartComponent.builder()
-                .baseAppComponent((this).getBaseAppComponent())
-                .dataModule(new DataModule())
-                .build();
     }
 
     private void initRemoteConfig() {
@@ -1536,7 +1530,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     public Observable<AddToCartResult> addToCartProduct(AddToCartRequest addToCartRequest) {
         com.tokopedia.usecase.RequestParams requestParams = com.tokopedia.usecase.RequestParams.create();
         requestParams.putObject(AddToCartUseCase.PARAM_ADD_TO_CART, addToCartRequest);
-        return CartComponentInjector.newInstance(cartApiServiceComponent).getAddToCartUseCase()
+        return CartComponentInjector.newInstance(this).getAddToCartUseCase()
                 .createObservable(requestParams)
                 .map(new Func1<AddToCartDataResponse, AddToCartResult>() {
                     @Override
@@ -1622,7 +1616,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
                         this, param, userSession.getUserId(), userSession.getDeviceId()
                 ));
 
-        return CartComponentInjector.newInstance(cartApiServiceComponent)
+        return CartComponentInjector.newInstance(this)
                 .getCheckPromoCodeCartListUseCase()
                 .createObservable(requestParams);
     }
@@ -1644,7 +1638,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
                 com.tokopedia.abstraction.common.utils.network.AuthUtil.generateParamsNetwork(
                         this, param, userSession.getUserId(), userSession.getDeviceId())
         );
-        return CartComponentInjector.newInstance(cartApiServiceComponent)
+        return CartComponentInjector.newInstance(this)
                 .getCheckPromoCodeCartShipmentUseCase().createObservable(requestParams);
     }
 
@@ -1660,7 +1654,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
                         this, tkpdMapParam, userSession.getUserId(), userSession.getDeviceId()
                 )
         );
-        return CartComponentInjector.newInstance(cartApiServiceComponent)
+        return CartComponentInjector.newInstance(this)
                 .getGetCouponListCartMarketPlaceUseCase().createObservable(requestParams);
     }
 
@@ -1692,6 +1686,16 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
                                                                                 String districtName,
                                                                                 HashMap<String, String> params) {
         return PickupPointActivity.createInstance(activity, districtName, params);
+    }
+
+    @Override
+    public ChuckInterceptor getCartCheckoutChuckInterceptor() {
+        return getAppComponent().chuckInterceptor();
+    }
+
+    @Override
+    public FingerprintInterceptor getCartCheckoutFingerPrintInterceptor() {
+        return getAppComponent().fingerprintInterceptor();
     }
 
     @Override
@@ -2016,7 +2020,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public void updateMarketplaceCartCounter(TransactionRouter.CartNotificationListener listener) {
-        CartComponentInjector.newInstance(cartApiServiceComponent)
+        CartComponentInjector.newInstance(this)
                 .getGetMarketPlaceCartCounterUseCase()
                 .executeWithSubscriber(this, listener);
     }

@@ -1,5 +1,6 @@
 package com.tokopedia.checkout.data.repository;
 
+import com.tokopedia.checkout.data.apiservice.CartApi;
 import com.tokopedia.core.network.apiservices.transaction.TXActService;
 import com.tokopedia.core.network.retrofit.response.TkpdResponse;
 import com.tokopedia.transaction.common.data.cart.thankstoppaydata.ThanksTopPayData;

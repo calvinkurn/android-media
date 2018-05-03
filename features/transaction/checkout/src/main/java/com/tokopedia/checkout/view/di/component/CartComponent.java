@@ -10,6 +10,7 @@ import com.tokopedia.checkout.domain.mapper.IMapperUtil;
 import com.tokopedia.checkout.domain.mapper.IShipmentMapper;
 import com.tokopedia.checkout.domain.mapper.ITopPayMapper;
 import com.tokopedia.checkout.domain.mapper.IVoucherCouponMapper;
+import com.tokopedia.checkout.view.di.module.CheckoutRouterModule;
 import com.tokopedia.checkout.view.di.module.CartUseCaseModule;
 import com.tokopedia.checkout.view.di.module.CheckoutUseCaseModule;
 import com.tokopedia.checkout.view.di.module.DataMapperModule;
@@ -23,7 +24,7 @@ import dagger.Component;
  */
 @CartScope
 @Component(
-        modules = {DataModule.class, DataMapperModule.class, CartUseCaseModule.class, CheckoutUseCaseModule.class},
+        modules = {CheckoutRouterModule.class, DataModule.class, DataMapperModule.class, CartUseCaseModule.class, CheckoutUseCaseModule.class},
         dependencies = BaseAppComponent.class
 )
 public interface CartComponent {

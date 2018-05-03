@@ -11,7 +11,6 @@ import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentTransaction;
 
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
-import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.common.di.component.HasComponent;
 import com.tokopedia.abstraction.common.utils.network.AuthUtil;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
@@ -25,10 +24,8 @@ import com.tokopedia.checkout.view.base.BaseCheckoutActivity;
 import com.tokopedia.checkout.view.di.component.CartComponent;
 import com.tokopedia.checkout.view.di.component.CartComponentInjector;
 import com.tokopedia.checkout.view.di.component.CartShipmentComponent;
-import com.tokopedia.checkout.view.di.component.DaggerCartComponent;
 import com.tokopedia.checkout.view.di.component.DaggerCartShipmentComponent;
 import com.tokopedia.checkout.view.di.module.CartShipmentModule;
-import com.tokopedia.checkout.view.di.module.DataModule;
 import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.receiver.CartBadgeNotificationReceiver;
 import com.tokopedia.core.router.transactionmodule.TransactionPurchaseRouter;
@@ -372,11 +369,6 @@ public class CartShipmentActivity extends BaseCheckoutActivity implements ICartS
 
     @Override
     public CartComponent getComponent() {
-        return CartComponentInjector.newInstance(
-                DaggerCartComponent.builder()
-                        .baseAppComponent(((BaseMainApplication) getApplication()).getBaseAppComponent())
-                        .dataModule(new DataModule())
-                        .build())
-                .getCartApiServiceComponent();
+        return CartComponentInjector.newInstance(getApplication()).getCartApiServiceComponent();
     }
 }

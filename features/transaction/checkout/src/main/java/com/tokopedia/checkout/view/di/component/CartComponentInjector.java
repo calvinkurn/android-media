@@ -1,10 +1,18 @@
 package com.tokopedia.checkout.view.di.component;
 
+import android.app.Application;
+
+import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.checkout.domain.usecase.AddToCartUseCase;
 import com.tokopedia.checkout.domain.usecase.CheckPromoCodeCartListUseCase;
 import com.tokopedia.checkout.domain.usecase.CheckPromoCodeCartShipmentUseCase;
 import com.tokopedia.checkout.domain.usecase.GetCouponListCartMarketPlaceUseCase;
 import com.tokopedia.checkout.domain.usecase.GetMarketPlaceCartCounterUseCase;
+import com.tokopedia.checkout.view.di.module.CartUseCaseModule;
+import com.tokopedia.checkout.view.di.module.CheckoutRouterModule;
+import com.tokopedia.checkout.view.di.module.CheckoutUseCaseModule;
+import com.tokopedia.checkout.view.di.module.DataMapperModule;
+import com.tokopedia.checkout.view.di.module.DataModule;
 
 import javax.inject.Inject;
 
@@ -35,9 +43,18 @@ public class CartComponentInjector {
         return cartApiServiceComponent;
     }
 
-    public static CartComponentInjector newInstance(CartComponent cartApiServiceComponent) {
+    public static CartComponentInjector newInstance(Application application) {
         if (instance == null) {
-            instance = new CartComponentInjector(cartApiServiceComponent).inject();
+            instance = new CartComponentInjector(
+                    DaggerCartComponent.builder()
+                            .baseAppComponent(((BaseMainApplication) application).getBaseAppComponent())
+                            .checkoutRouterModule(new CheckoutRouterModule())
+                            .dataModule(new DataModule())
+                            .dataMapperModule(new DataMapperModule())
+                            .cartUseCaseModule(new CartUseCaseModule())
+                            .checkoutUseCaseModule(new CheckoutUseCaseModule())
+                            .build())
+                    .inject();
         }
         return instance;
     }
