@@ -110,6 +110,7 @@ public class DiscoverySearchView extends FrameLayout implements Filter.FilterLis
     private QueryListener queryListener;
     private ShowCaseDialog showCaseDialog;
     private RemoteConfig remoteConfig;
+    private boolean showShowCase = false;
 
     private interface QueryListener {
         void onQueryChanged(String query);
@@ -273,11 +274,19 @@ public class DiscoverySearchView extends FrameLayout implements Filter.FilterLis
 
         initSearchView();
 
-        if (isAllowImageSearch()) {
+        if (isAllowImageSearch() && !isShowShowCase()) {
             startShowCase();
         }
         mSuggestionView.setVisibility(GONE);
         setAnimationDuration(AnimationUtil.ANIMATION_DURATION_MEDIUM);
+    }
+
+    public void hideShowCaseDialog(boolean b) {
+        showShowCase = true;
+    }
+
+    public boolean isShowShowCase() {
+        return showShowCase;
     }
 
     private void initSearchView() {

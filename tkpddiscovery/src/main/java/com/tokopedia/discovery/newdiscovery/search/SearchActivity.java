@@ -167,6 +167,8 @@ public class SearchActivity extends DiscoveryActivity
                 intent.getClipData() != null &&
                 remoteConfig.getBoolean(TkpdCache.RemoteConfigKey.SHOW_IMAGE_SEARCH,
                         false)) {
+
+            searchView.hideShowCaseDialog(true);
             sendImageSearchFromGalleryGTM("");
             ClipData clipData = intent.getClipData();
             Uri uri = clipData.getItemAt(0).getUri();
