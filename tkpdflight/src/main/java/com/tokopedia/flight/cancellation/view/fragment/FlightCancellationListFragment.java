@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment;
 import com.tokopedia.flight.R;
 import com.tokopedia.flight.cancellation.di.FlightCancellationComponent;
+import com.tokopedia.flight.cancellation.view.activity.FlightCancellationDetailActivity;
 import com.tokopedia.flight.cancellation.view.adapter.FlightCancellationListAdapterTypeFactory;
 import com.tokopedia.flight.cancellation.view.contract.FlightCancellationListContract;
 import com.tokopedia.flight.cancellation.view.presenter.FlightCancellationListPresenter;
@@ -67,7 +68,7 @@ public class FlightCancellationListFragment extends BaseListFragment<FlightCance
 
     @Override
     public void onItemClicked(FlightCancellationListViewModel flightCancellationListViewModel) {
-
+        navigateToDetailPage(flightCancellationListViewModel);
     }
 
     @Override
@@ -79,6 +80,11 @@ public class FlightCancellationListFragment extends BaseListFragment<FlightCance
     @Override
     protected FlightCancellationListAdapterTypeFactory getAdapterTypeFactory() {
         return new FlightCancellationListAdapterTypeFactory();
+    }
+
+    @Override
+    public void navigateToDetailPage(FlightCancellationListViewModel passData) {
+        startActivity(FlightCancellationDetailActivity.createIntent(getContext(), passData));
     }
 
     @Override
@@ -100,4 +106,6 @@ public class FlightCancellationListFragment extends BaseListFragment<FlightCance
     public void setFlightCancellationList(List<FlightCancellationListViewModel> cancellationList) {
         this.cancellationListViewModelList = cancellationList;
     }
+
+
 }

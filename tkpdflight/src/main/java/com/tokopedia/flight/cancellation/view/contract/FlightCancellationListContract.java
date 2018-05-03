@@ -13,6 +13,8 @@ public interface FlightCancellationListContract {
 
     interface View extends CustomerView {
 
+        void navigateToDetailPage(FlightCancellationListViewModel passData);
+
         void renderList();
 
         List<FlightCancellationListViewModel> getFlightCancellationList();

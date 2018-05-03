@@ -12,7 +12,7 @@ import java.util.List;
  */
 
 public class FlightCancellationDetail implements Parcelable {
-    private int refundId;
+    private long refundId;
     private String createTime;
     private String estimatedRefund;
     private long estimatedRefundNumeric;
@@ -39,7 +39,7 @@ public class FlightCancellationDetail implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeInt(refundId);
+        dest.writeLong(refundId);
         dest.writeString(createTime);
         dest.writeString(estimatedRefund);
         dest.writeLong(estimatedRefundNumeric);
@@ -67,11 +67,11 @@ public class FlightCancellationDetail implements Parcelable {
         }
     };
 
-    public int getRefundId() {
+    public long getRefundId() {
         return refundId;
     }
 
-    public void setRefundId(int refundId) {
+    public void setRefundId(long refundId) {
         this.refundId = refundId;
     }
 
