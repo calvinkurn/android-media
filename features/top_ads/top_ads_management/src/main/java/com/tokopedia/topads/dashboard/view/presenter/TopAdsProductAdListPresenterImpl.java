@@ -3,6 +3,7 @@ package com.tokopedia.topads.dashboard.view.presenter;
 import android.content.Context;
 
 import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.topads.common.util.TopAdsSourceTaggingUseCaseUtil;
 import com.tokopedia.topads.dashboard.constant.SortTopAdsOption;
 import com.tokopedia.topads.dashboard.data.source.local.TopAdsCacheDataSourceImpl;
 import com.tokopedia.topads.dashboard.domain.interactor.ListenerInteractor;
@@ -14,9 +15,13 @@ import com.tokopedia.topads.dashboard.data.model.response.PageDataResponse;
 import com.tokopedia.topads.dashboard.data.source.cloud.apiservice.TopAdsManagementService;
 import com.tokopedia.seller.base.view.listener.BaseListViewListener;
 import com.tokopedia.topads.dashboard.view.model.TopAdsSortByModel;
+import com.tokopedia.topads.sourcetagging.constant.TopAdsSourceOption;
+import com.tokopedia.topads.sourcetagging.domain.interactor.TopAdsAddSourceTaggingUseCase;
 
 import java.util.Date;
 import java.util.List;
+
+import rx.Subscriber;
 
 /**
  * Created by zulfikarrahman on 12/16/16.
@@ -24,10 +29,13 @@ import java.util.List;
 public class TopAdsProductAdListPresenterImpl extends TopAdsAdListPresenterImpl<ProductAd> implements TopAdsProductAdListPresenter {
 
     protected final TopAdsProductAdInteractor productAdInteractor;
+    private final TopAdsAddSourceTaggingUseCase topAdsAddSourceTaggingUseCase;
 
     public TopAdsProductAdListPresenterImpl(Context context, BaseListViewListener topadsListViewListener) {
         super(context, topadsListViewListener);
-        this.productAdInteractor = new TopAdsProductAdInteractorImpl(new TopAdsManagementService(new SessionHandler(context)), new TopAdsCacheDataSourceImpl(context));
+        this.productAdInteractor = new TopAdsProductAdInteractorImpl(new TopAdsManagementService(new SessionHandler(context)),
+                new TopAdsCacheDataSourceImpl(context));
+        this.topAdsAddSourceTaggingUseCase = TopAdsSourceTaggingUseCaseUtil.getTopAdsAddSourceTaggingUseCase(context);
     }
 
     @Override
@@ -55,9 +63,27 @@ public class TopAdsProductAdListPresenterImpl extends TopAdsAdListPresenterImpl<
     }
 
     @Override
+    public void saveSourceTagging(@TopAdsSourceOption String source) {
+        topAdsAddSourceTaggingUseCase.execute(TopAdsAddSourceTaggingUseCase.createRequestParams(source),
+                new Subscriber<Void>() {
+                    @Override
+                    public void onCompleted() {}
+
+                    @Override
+                    public void onError(Throwable e) {}
+
+                    @Override
+                    public void onNext(Void aVoid) {}
+                });
+    }
+
+    @Override
     public void unSubscribe() {
         if (productAdInteractor != null) {
             productAdInteractor.unSubscribe();
+        }
+        if (topAdsAddSourceTaggingUseCase != null){
+            topAdsAddSourceTaggingUseCase.unsubscribe();
         }
     }
 }

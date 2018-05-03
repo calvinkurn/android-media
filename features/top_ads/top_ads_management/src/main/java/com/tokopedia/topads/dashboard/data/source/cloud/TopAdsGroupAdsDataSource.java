@@ -110,7 +110,7 @@ public class TopAdsGroupAdsDataSource {
                 topAdsDetailGroupDomainModel.getAdEndDate(),
                 topAdsDetailGroupDomainModel.getAdEndTime(),
                 topAdsDetailGroupDomainModel.getStickerId(),
-                TopAdsNetworkConstant.VALUE_SOURCE_ANDROID,
+                topAdsDetailGroupDomainModel.getSource(),
                 topAdsDetailGroupDomainModel.getSuggestionBidValue(),
                 topAdsDetailGroupDomainModel.getSuggestionBidButton()
         );

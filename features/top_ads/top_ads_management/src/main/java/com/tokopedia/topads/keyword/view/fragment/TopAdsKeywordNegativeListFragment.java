@@ -65,6 +65,7 @@ public class TopAdsKeywordNegativeListFragment extends TopAdsKeywordListFragment
 
     @Override
     public void onItemClicked(KeywordAd ad) {
+        topAdsKeywordListPresenter.saveSourceTagging(TopAdsSourceOption.SA_MANAGE_KEYWORD_NEGATIVE);
         startActivityForResult(TopAdsKeywordDetailNegativeActivity.createInstance(getActivity(), ad, ""), REQUEST_CODE_AD_CHANGE);
     }
 }
