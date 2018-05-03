@@ -1813,6 +1813,12 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
+    public boolean isSupportApplink(String appLink) {
+        DeepLinkDelegate deepLinkDelegate = DeeplinkHandlerActivity.getDelegateInstance();
+        return deepLinkDelegate.supportsUri(appLink);
+    }
+
+    @Override
     public void goToApplinkActivity(Context context, String applink) {
         DeepLinkDelegate deepLinkDelegate = DeeplinkHandlerActivity.getDelegateInstance();
         Intent intent = new Intent(context, DeeplinkHandlerActivity.class);

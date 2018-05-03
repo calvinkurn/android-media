@@ -24,7 +24,7 @@ import butterknife.OnClick;
 /**
  * @author erry on 14/02/17.
  */
-
+@Deprecated
 public class DefaultSearchViewHolder extends AbstractViewHolder<DefaultViewModel> {
 
     @LayoutRes

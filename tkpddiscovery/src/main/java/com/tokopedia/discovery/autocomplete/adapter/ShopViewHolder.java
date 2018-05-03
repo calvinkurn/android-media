@@ -42,7 +42,7 @@ public class ShopViewHolder extends AbstractViewHolder<ShopSearch> {
     }
 
     @Override
-    public void bind(ShopSearch element) {
+    public void bind(final ShopSearch element) {
         int startIndex = indexOfSearchQuery(element.getKeyword(), element.getSearchTerm());
         if(startIndex == -1){
             titleTextView.setText(element.getKeyword().toLowerCase());
@@ -68,7 +68,7 @@ public class ShopViewHolder extends AbstractViewHolder<ShopSearch> {
         itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                listener.onItemClicked(element.getApplink(), element.getUrl());
             }
         });
     }

@@ -1,21 +1,25 @@
 package com.tokopedia.discovery.search.view.fragment;
 
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.tkpd.library.ui.view.LinearLayoutManager;
 import com.tokopedia.abstraction.AbstractionRouter;
+import com.tokopedia.applink.ApplinkRouter;
 import com.tokopedia.core.R2;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.TkpdBaseV4Fragment;
 import com.tokopedia.core.base.adapter.Visitable;
+import com.tokopedia.core.home.BannerWebView;
 import com.tokopedia.discovery.DiscoveryRouter;
 import com.tokopedia.discovery.R;
 import com.tokopedia.discovery.catalog.analytics.AppScreen;
@@ -110,19 +114,25 @@ public class SearchResultFragment extends TkpdBaseV4Fragment
 
     @Override
     public void onItemClicked(String applink, String webUrl) {
-        /*
         if (getActivity() != null
-                && getActivity().getApplicationContext() instanceof AbstractionRouter) {
-            AbstractionRouter router = ((AbstractionRouter) getActivity().getApplicationContext());
-            if (router.isSupportApplink()) {
-
+                && getActivity().getApplicationContext() instanceof ApplinkRouter) {
+            ApplinkRouter router = ((ApplinkRouter) getActivity().getApplicationContext());
+            if (router.isSupportApplink(applink)) {
+                router.goToApplinkActivity(getActivity(), applink);
             } else {
-
+                openWebViewURL(webUrl, getActivity());
             }
         } else {
-
+            openWebViewURL(webUrl, getActivity());
         }
-        */
+    }
+
+    public void openWebViewURL(String url, Context context) {
+        if (!TextUtils.isEmpty(url) && context != null) {
+            Intent intent = new Intent(context, BannerWebView.class);
+            intent.putExtra("url", url);
+            startActivity(intent);
+        }
     }
 
     @Override
@@ -148,7 +158,7 @@ public class SearchResultFragment extends TkpdBaseV4Fragment
         switch (item.getEventAction())
         {
             case AppEventTracking.GTM.SEARCH_AUTOCOMPLETE :
-                UnifyTracking.eventClickAutoCompleteSearch(item.getKeyword());
+
                 break;
             case AppEventTracking.GTM.SEARCH_HOTLIST :
                 UnifyTracking.eventClickHotListSearch(item.getKeyword());

@@ -29,7 +29,7 @@ import butterknife.OnClick;
 /**
  * @author erry on 23/02/17.
  */
-
+@Deprecated
 public class ShopSearchResultAdapter extends RecyclerView.Adapter<ShopSearchResultAdapter.ViewHolder> {
 
     private List<SearchItem> items;
@@ -100,6 +100,7 @@ public class ShopSearchResultAdapter extends RecyclerView.Adapter<ShopSearchResu
         return -1;
     }
 
+    @Deprecated
     class ViewHolder extends RecyclerView.ViewHolder {
 
         @BindView(R2.id.title)

@@ -19,6 +19,7 @@ import butterknife.BindView;
  * @author erry on 20/02/17.
  */
 
+@Deprecated
 public class ShopSearchViewHolder extends AbstractViewHolder<ShopViewModel> {
     @LayoutRes
     public static final int LAYOUT = R.layout.shop_search_parent_list_item;

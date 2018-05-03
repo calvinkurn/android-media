@@ -77,7 +77,7 @@ public class CategoryViewHolder extends AbstractViewHolder<CategorySearch> {
             holder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-
+                    listener.onItemClicked(rowModel.getApplink(), rowModel.getUrl());
                 }
             });
         }

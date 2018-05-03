@@ -9,6 +9,7 @@ import android.text.style.TextAppearanceSpan;
 import android.view.View;
 import android.widget.TextView;
 
+import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.discovery.R;
 import com.tokopedia.discovery.autocomplete.viewmodel.AutoCompleteSearch;
@@ -34,7 +35,7 @@ public class AutoCompleteViewHolder extends AbstractViewHolder<AutoCompleteSearc
     }
 
     @Override
-    public void bind(AutoCompleteSearch element) {
+    public void bind(final AutoCompleteSearch element) {
         int startIndex = indexOfSearchQuery(element.getKeyword(), element.getSearchTerm());
         if (startIndex == -1) {
             titleTextView.setText(element.getKeyword().toLowerCase());
@@ -51,7 +52,8 @@ public class AutoCompleteViewHolder extends AbstractViewHolder<AutoCompleteSearc
         itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                UnifyTracking.eventClickAutoCompleteSearch(element.getKeyword());
+                listener.onItemClicked(element.getApplink(), element.getUrl());
             }
         });
     }

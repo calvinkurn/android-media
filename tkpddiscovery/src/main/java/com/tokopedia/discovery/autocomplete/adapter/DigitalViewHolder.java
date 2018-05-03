@@ -28,11 +28,11 @@ public class DigitalViewHolder extends AbstractViewHolder<DigitalSearch> {
     }
 
     @Override
-    public void bind(DigitalSearch element) {
+    public void bind(final DigitalSearch element) {
         itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                listener.onItemClicked(element.getApplink(), element.getUrl());
             }
         });
         titleTextView.setText(element.getRecom());

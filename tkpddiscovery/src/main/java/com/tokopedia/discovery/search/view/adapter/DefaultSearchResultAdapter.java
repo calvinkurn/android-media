@@ -28,6 +28,7 @@ import butterknife.OnClick;
  * @author erry on 20/02/17.
  */
 
+@Deprecated
 public class DefaultSearchResultAdapter extends RecyclerView.Adapter<DefaultSearchResultAdapter.ViewHolder> {
 
     private static final String TAG = DefaultSearchResultAdapter.class.getSimpleName();
@@ -69,6 +70,7 @@ public class DefaultSearchResultAdapter extends RecyclerView.Adapter<DefaultSear
         return model.getSearchItems().size();
     }
 
+    @Deprecated
     class ViewHolder extends RecyclerView.ViewHolder {
 
         @BindView(R2.id.title)
