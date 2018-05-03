@@ -80,9 +80,9 @@
             android:windowSoftInputMode="stateAlwaysHidden" />
         <activity
             android:name=".newdiscovery.search.SearchActivity"
-            android:label="Search Produk"
+            android:label="@string/image_search_title"
             android:launchMode="singleTask"
-            android:screenOrientation="portrait" >
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.SEND" />
                 <category android:name="android.intent.category.DEFAULT" />
