@@ -99,6 +99,8 @@ public class SubmitTicketPresenter extends BaseDaggerPresenter<SubmitTicketContr
                     ImageUpload image = uploadImageList.get(item);
                     if(!fileSizeValid(image.getFileLoc())){
                         showErrorMessage(MESSAGE_WRONG_FILE_SIZE);
+                    } else if(!getBitmapDimens(image.getFileLoc())){
+                        showErrorMessage(MESSAGE_WRONG_DIMENSION);
                     }
                 }
             }
@@ -108,6 +110,8 @@ public class SubmitTicketPresenter extends BaseDaggerPresenter<SubmitTicketContr
     private void showErrorMessage(int messageWrongParam) {
         if(messageWrongParam == MESSAGE_WRONG_FILE_SIZE){
             getView().setSnackBarErrorMessage("Ups! Ukuran gambar yang di-upload lebih dari 10MB");
+        } else if(messageWrongParam == MESSAGE_WRONG_DIMENSION){
+            getView().setSnackBarErrorMessage("Ups! Ukuran gambar yang Anda pilih terlalu kecil. Minimal 300 x 300 piksel.");
         }
     }
 
@@ -117,10 +121,12 @@ public class SubmitTicketPresenter extends BaseDaggerPresenter<SubmitTicketContr
         if(numOfImages > 0){
             for(int item = 0; item < numOfImages; item++){
                 ImageUpload image = uploadImageList.get(item);
-                if(fileSizeValid(image.getFileLoc())){
+                if(fileSizeValid(image.getFileLoc()) && getBitmapDimens(image.getFileLoc())){
                     return true;
                 }
             }
+        } else if (numOfImages == 0){
+            return true;
         }
         return false;
     }
@@ -138,10 +144,10 @@ public class SubmitTicketPresenter extends BaseDaggerPresenter<SubmitTicketContr
         BitmapFactory.decodeFile(new File(fileLoc).getAbsolutePath(), options);
         int imageHeight = options.outHeight;
         int imageWidth = options.outWidth;
-        if(imageHeight <= 300 && imageWidth <= 300){
-            return true;
+        if(imageHeight < 300 && imageWidth < 300){
+            return false;
         }
-        return false;
+        return true;
     }
 
     private ContactUsPass getSendTicketParam() {
@@ -180,5 +186,9 @@ public class SubmitTicketPresenter extends BaseDaggerPresenter<SubmitTicketContr
 
     public void sendCount(int count) {
 
+    }
+
+    public void onToolTipClick() {
+        getView().showToolTip();
     }
 }

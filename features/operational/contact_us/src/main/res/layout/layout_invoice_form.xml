@@ -234,14 +234,23 @@
 
     <!--Transparent Layer with Button starts here. Make Visible from Code-->
 
-    <FrameLayout
+    <android.support.constraint.ConstraintLayout
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:visibility="gone"
+        android:id="@+id/tooltiplayout"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" >
+
+        <FrameLayout
         android:id="@+id/transparet_layer"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:background="#a5ffffff"
         android:clickable="true"
         android:focusable="true"
-        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -251,7 +260,6 @@
         android:id="@+id/divider_2"
         android:layout_width="0dp"
         android:layout_height="5dp"
-        android:visibility="gone"
         app:layout_constraintBottom_toTopOf="@+id/iv_whiteholder"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -264,7 +272,6 @@
         android:background="@color/white"
         android:paddingBottom="@dimen/margin_default"
         android:paddingTop="@dimen/margin_default"
-        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -281,13 +288,12 @@
         android:paddingTop="@dimen/margin_default"
         android:textColor="@color/black3_text"
         android:textSize="@dimen/font_smaller"
-        android:visibility="gone"
         app:layout_constraintBottom_toTopOf="@+id/textview39"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="1.0"
-        tools:text="Lampiran" />
+        android:text="Lampiran" />
 
 
     <TextView
@@ -301,13 +307,12 @@
         android:layout_gravity="bottom|center_horizontal"
         android:textColor="@color/black4_text"
         android:textSize="@dimen/font_smaller"
-        android:visibility="gone"
         app:layout_constraintBottom_toTopOf="@+id/btn_tutup"
         app:layout_constraintEnd_toStartOf="@+id/iv_upload_image"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="1.0"
-        tools:text="Upload hingga 5 gambar dalam format .JPG, .JPEG, .PNG. dengan ukuran maksimum10 MB." />
+        android:text="Upload hingga 5 gambar dalam format .JPG, .JPEG, .PNG. dengan ukuran maksimum10 MB." />
 
     <ImageView
         android:id="@+id/iv_upload_image"
@@ -316,7 +321,6 @@
         android:layout_marginBottom="@dimen/new_margin_sm"
         android:layout_marginEnd="@dimen/margin_default"
         android:layout_marginRight="@dimen/margin_default"
-        android:visibility="gone"
         app:layout_constraintBottom_toTopOf="@+id/btn_tutup"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1.0"
@@ -334,12 +338,11 @@
         android:gravity="center"
         android:textColor="@color/white"
         android:textSize="@dimen/font_smaller"
-        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="1.0"
-        tools:text="Kirim" />
-
+        android:text="Kirim" />
+    </android.support.constraint.ConstraintLayout>
 </android.support.constraint.ConstraintLayout>
