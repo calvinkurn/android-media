@@ -167,10 +167,16 @@ public class SearchActivity extends DiscoveryActivity
                 intent.getClipData() != null &&
                 remoteConfig.getBoolean(TkpdCache.RemoteConfigKey.SHOW_IMAGE_SEARCH,
                         false)) {
+            sendImageSearchFromGalleryGTM("");
             ClipData clipData = intent.getClipData();
             Uri uri = clipData.getItemAt(0).getUri();
             onImagePickedSuccess(uri.toString());
         }
+    }
+
+
+    private void sendImageSearchFromGalleryGTM(String label) {
+        UnifyTracking.eventDiscoveryExternalImageSearch(label);
     }
 
     private void initInjector() {
