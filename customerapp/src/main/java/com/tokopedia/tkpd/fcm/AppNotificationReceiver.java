@@ -58,22 +58,11 @@ public class AppNotificationReceiver implements IAppNotificationReceiver {
         if (isApplinkNotification(bundle)) {
             if (!isInExcludedActivity(bundle)) {
                 PushNotification.notify(mContext, bundle);
-                extraAction(bundle);
             }
-
-            if(needExtraAction()){
-                broadcastNotifTopChat(bundle);
-            }
+            extraAction(bundle);
         } else {
             mAppNotificationReceiverUIBackground.notifyReceiverBackgroundMessage(bundle);
         }
-    }
-
-    private boolean needExtraAction() {
-        if(mActivitiesLifecycleCallbacks.getLiveActivityOrNull() instanceof ChatNotifInterface) {
-            return true;
-        }
-        return false;
     }
 
     private boolean isInExcludedActivity(Bundle data) {
@@ -93,9 +82,12 @@ public class AppNotificationReceiver implements IAppNotificationReceiver {
     }
 
     private void extraAction(Bundle data) {
-        if (canBroadcastPointReceived(
-                data.getString(Constants.ARG_NOTIFICATION_CODE, "0"))) {
+        String code = data.getString(Constants.ARG_NOTIFICATION_CODE, "0");
+        if (canBroadcastPointReceived(code)) {
             broadcastPointReceived(data);
+        }
+        if(canBroadcastChat(code)){
+            broadcastNotifTopChat(data);
         }
     }
 
@@ -119,6 +111,12 @@ public class AppNotificationReceiver implements IAppNotificationReceiver {
 
         return tkpCode.startsWith(GROUP_CHAT_BROADCAST_TKP_CODE)
                 && !tkpCode.equals(GROUP_CHAT_BROADCAST_TKP_CODE_GENERAL);
+    }
+
+
+    private boolean canBroadcastChat(String tkpCode){
+        final String CHAT_BROADCAST_TKP_CODE = "111";
+        return tkpCode.startsWith(CHAT_BROADCAST_TKP_CODE);
     }
 
     private boolean isApplinkNotification(Bundle data) {
