@@ -1,5 +1,6 @@
 package com.tokopedia.topads.dashboard.view.fragment;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
@@ -157,7 +158,9 @@ public class TopAdsCheckProductPromoFragment extends BasePresenterFragment<TopAd
 
     @Override
     public void moveToAdsDetail(String adsId) {
-        startActivity(TopAdsDetailProductActivity.getCallingIntent(getActivity(), adsId));
+        Intent intent = TopAdsDetailProductActivity.getCallingIntent(getActivity(), adsId);
+        intent.putExtra(TopAdsNewScheduleNewGroupFragment.EXTRA_IS_ENOUGH_DEPOSIT, true);
+        startActivity(intent);
         getActivity().finish();
     }
 }

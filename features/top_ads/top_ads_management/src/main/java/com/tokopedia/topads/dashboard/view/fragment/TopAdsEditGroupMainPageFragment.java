@@ -21,6 +21,8 @@ import com.tokopedia.topads.dashboard.view.activity.TopAdsEditGroupNameActivity;
 import com.tokopedia.topads.dashboard.view.activity.TopAdsEditScheduleExistingGroupActivity;
 import com.tokopedia.topads.dashboard.view.presenter.TopAdsDetailGroupPresenterImpl;
 import com.tokopedia.topads.keyword.view.activity.TopAdsKeywordNewChooseGroupActivity;
+import com.tokopedia.topads.sourcetagging.constant.TopAdsSourceOption;
+import com.tokopedia.topads.sourcetagging.domain.interactor.TopAdsAddSourceTaggingUseCase;
 
 import javax.inject.Inject;
 
@@ -60,7 +62,9 @@ public class TopAdsEditGroupMainPageFragment extends TopAdsDetailEditMainPageFra
     @Override
     protected void initialPresenter() {
         super.initialPresenter();
-        presenter = new TopAdsDetailGroupPresenterImpl(getActivity(), this, new TopAdsGroupAdInteractorImpl(getActivity()), topAdsGetDetailGroupUseCase, topAdsGetSuggestionUseCase);
+        presenter = new TopAdsDetailGroupPresenterImpl(getActivity(), this,
+                new TopAdsGroupAdInteractorImpl(getActivity()), topAdsGetDetailGroupUseCase,
+                topAdsGetSuggestionUseCase);
     }
 
     @Override

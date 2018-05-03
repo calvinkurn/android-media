@@ -24,6 +24,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.data.model.storage.CacheManager;
+import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.ApplinkRouter;
 import com.tokopedia.cacheapi.domain.interactor.CacheApiClearAllUseCase;
 import com.tokopedia.core.analytics.ScreenTracking;
@@ -1811,7 +1812,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
                 .getLaunchIntentForPackage(DrawerBuyerHelper.TOP_SELLER_APPLICATION_PACKAGE);
 
         if (topadsIntent != null) {
-            context.startActivity(topadsIntent);
+            goToApplinkActivity(context, ApplinkConst.SellerApp.TOPADS_DASHBOARD);
         } else {
             goToCreateMerchantRedirect(context);
         }

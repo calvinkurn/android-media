@@ -687,7 +687,8 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
         openPromoteAds(getActivity(),
                 TopAdsAppLinkUtil.createAppLink(userSession.getUserId(), productManageViewModel.getItemId(),
                         productManageViewModel.getProductShopId(),
-                        GlobalConfig.isSellerApp()? TopAdsSourceOption.SA_MANAGE_SHOP : TopAdsSourceOption.MA_MANAGE_SHOP));
+                        GlobalConfig.isSellerApp()? TopAdsSourceOption.SA_MANAGE_LIST_PRODUCT :
+                                TopAdsSourceOption.MA_MANAGE_LIST_PRODUCT));
     }
 
     private void openPromoteAds(Context context, String url) {

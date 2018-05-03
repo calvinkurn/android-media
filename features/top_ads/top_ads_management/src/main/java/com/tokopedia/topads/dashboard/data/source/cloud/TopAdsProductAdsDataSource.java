@@ -64,7 +64,7 @@ public class TopAdsProductAdsDataSource {
     private DataRequest<List<TopAdsProductDetailDataSourceModel>> getSaveProductDetailRequest(TopAdsDetailProductDomainModel topAdsDetailShopDomainModel) {
         DataRequest<List<TopAdsProductDetailDataSourceModel>> dataRequest = new DataRequest<>();
         List<TopAdsProductDetailDataSourceModel> dataRequestList = new ArrayList<>();
-        dataRequestList.add(convert(topAdsDetailShopDomainModel, ""));
+        dataRequestList.add(convert(topAdsDetailShopDomainModel, topAdsDetailShopDomainModel.getSource()));
         dataRequest.setData(dataRequestList);
         return dataRequest;
     }
