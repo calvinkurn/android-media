@@ -336,7 +336,7 @@ public class TopUpTokoCashActivity extends BasePresenterActivity<TopUpTokocashPr
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.action_menu_history_tokocash) {
-            startActivity(HistoryTokocashActivity.newInstance(this));
+//            startActivity(HistoryTokocashActivity.newInstance(this));
 
             //TODO in next sprint activate this code below to use the new version clean architecture
 //            Application application = this.getApplication();
