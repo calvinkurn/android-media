@@ -1,13 +1,22 @@
 apply plugin: 'com.android.library'
 apply plugin: 'com.jakewharton.butterknife'
 apply from: "$rootProject.projectDir/buildconfig/module.gradle"
+apply plugin: 'io.hansel.preprocessor.module'
 
+repositories {
+    maven { url 'https://hansel.io/maven' }
+}
 buildscript {
     repositories {
+        maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
         mavenCentral()
+        maven { url 'https://hansel.io/maven' }
     }
     dependencies {
-        classpath 'com.jakewharton:butterknife-gradle-plugin:8.4.0'
+        classpath ('com.jakewharton:butterknife-gradle-plugin:9.0.0-SNAPSHOT'){
+            exclude group: 'com.android.tools.build', module: 'gradle'
+        }
+        classpath rootProject.ext.miscDependencies.hansel
     }
 }
 
@@ -25,18 +34,18 @@ dependencies {
     implementation project(rootProject.ext.features.core)
     implementation project(rootProject.ext.libraries.design)
     implementation project(rootProject.ext.libraries.abstraction)
+    implementation rootProject.ext.tkpdLibDependencies.youtubePlayer
+
     implementation rootProject.ext.analyticsDependencies.appsflyer
+
     implementation rootProject.ext.playServicesDependencies.analytics
     implementation rootProject.ext.playServicesDependencies.appIndexing
     implementation rootProject.ext.playServicesDependencies.perfMon
-
     implementation rootProject.ext.playServicesDependencies.maps
+
     implementation rootProject.ext.viewDependencies.appIntro
 
     implementation rootProject.ext.networkDependencies.glide
-
-    implementation rootProject.ext.supportLibDependencies.design
-    implementation rootProject.ext.supportLibDependencies.cardViewV7
 
     implementation rootProject.ext.miscDependencies.multiDex
     implementation (rootProject.ext.miscDependencies.loaderviewlibrary){
@@ -44,14 +53,6 @@ dependencies {
     }
     implementation rootProject.ext.miscDependencies.roundCornerProgressBar
 
-    androidTestImplementation(rootProject.ext.testDependencies.espressoCore, {
-        exclude group: 'com.android.support', module: 'support-annotations'
-    })
-
-    implementation 'com.github.tommus:youtube-android-player-api:1.2.1'
-
-    testImplementation rootProject.ext.testDependencies.junit
-    testImplementation rootProject.ext.testDependencies.mockitorCore
     testImplementation rootProject.ext.testDependencies.assertJ
 
     implementation rootProject.ext.permissionDispatcherDependencies.permissionDispatcher
@@ -70,14 +71,9 @@ dependencies {
 
     implementation rootProject.ext.miscDependencies.chips
 
-    androidTestImplementation('com.android.support.test.espresso:espresso-core:2.2.2', {
-        exclude group: 'com.android.support', module: 'support-annotations'
-    })
-
     implementation(rootProject.ext.tkpdLibDependencies.showcase) {
         exclude group: "com.android.support"
     }
-
 }
 
 apply from: '../publish_local.gradle'

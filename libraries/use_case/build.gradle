@@ -4,18 +4,11 @@ apply from: "$rootProject.projectDir/buildconfig/module.gradle"
 project.ext {
     artifactId = 'usecase'
     groupId = 'com.tokopedia.usecase'
-    versionName = "2.22"
+    versionName = "2.23"
     artifactName ="use_case-release"
 }
 
 dependencies {
-    implementation rootProject.ext.miscDependencies.rxAndroid
-    implementation rootProject.ext.miscDependencies.rxJava
-
-    androidTestImplementation(rootProject.ext.testDependencies.espressoCore, {
-        exclude group: 'com.android.support', module: 'support-annotations'
-    })
-    testImplementation rootProject.ext.testDependencies.junit
 }
 
 apply from: '../../publish_local.gradle'

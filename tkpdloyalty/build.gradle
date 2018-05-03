@@ -1,13 +1,24 @@
 apply plugin: 'com.android.library'
 apply plugin: 'com.jakewharton.butterknife'
 apply from: "$rootProject.projectDir/buildconfig/module.gradle"
+apply plugin: 'io.hansel.preprocessor.module'
+
+repositories {
+    maven { url 'https://hansel.io/maven' }
+}
+
 
 buildscript {
     repositories {
+        maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
         mavenCentral()
+        maven { url 'https://hansel.io/maven' }
     }
     dependencies {
-        classpath 'com.jakewharton:butterknife-gradle-plugin:8.4.0'
+        classpath ('com.jakewharton:butterknife-gradle-plugin:9.0.0-SNAPSHOT'){
+            exclude group: 'com.android.tools.build', module: 'gradle'
+        }
+        classpath rootProject.ext.miscDependencies.hansel
     }
 }
 
@@ -22,7 +33,7 @@ dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
     implementation project(rootProject.ext.features.core)
-//    implementation rootProject.ext.tkpdDependencies.usecase
+
     implementation project(rootProject.ext.libraries.abstraction)
     implementation project(rootProject.ext.libraries.useCase)
     implementation project(rootProject.ext.libraries.design)
@@ -34,25 +45,10 @@ dependencies {
         exclude group: 'com.android.support'
     }
 
-    implementation rootProject.ext.supportLibDependencies.design
-    implementation rootProject.ext.supportLibDependencies.supportV13
-    implementation rootProject.ext.supportLibDependencies.cardViewV7
-
-    implementation rootProject.ext.networkDependencies.retrofit
-    implementation rootProject.ext.networkDependencies.converterGson
-    implementation rootProject.ext.networkDependencies.adapterRxJava
-    implementation rootProject.ext.networkDependencies.loggingInterceptor
-
     implementation rootProject.ext.playServicesDependencies.analytics
     implementation rootProject.ext.playServicesDependencies.maps
 
     implementation rootProject.ext.viewDependencies.appIntro
-
-    androidTestImplementation('com.android.support.test.espresso:espresso-core:2.2.2', {
-        exclude group: 'com.android.support', module: 'support-annotations'
-    })
-    testImplementation 'junit:junit:4.12'
-    testImplementation 'org.mockito:mockito-all:1.10.19'
 
     implementation rootProject.ext.permissionDispatcherDependencies.permissionDispatcher
     annotationProcessor  rootProject.ext.permissionDispatcherDependencies.permissionDispatcherProcessor
@@ -63,13 +59,9 @@ dependencies {
     implementation rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
     annotationProcessor  rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
 
-    implementation rootProject.ext.miscDependencies.dagger
-    annotationProcessor  rootProject.ext.miscDependencies.daggerCompiler
-
     compile(rootProject.ext.tkpdLibDependencies.showcase) {
         exclude group: "com.android.support"
     }
-
 }
 
 apply from: '../publish_local.gradle'

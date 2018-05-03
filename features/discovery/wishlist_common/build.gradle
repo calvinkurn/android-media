@@ -9,16 +9,9 @@ project.ext {
 }
 
 dependencies {
-//    implementation rootProject.ext.tkpdDependencies.usecase
-//    implementation rootProject.ext.tkpdDependencies.abstraction
-    
+
     implementation project(rootProject.ext.libraries.abstraction)
     implementation project(rootProject.ext.libraries.useCase)
-
-    testImplementation rootProject.ext.testDependencies.junit
-    androidTestImplementation(rootProject.ext.testDependencies.espressoCore, {
-        exclude group: 'com.android.support', module: 'support-annotations'
-    })
 }
 
 apply from: '../../../publish_local.gradle'

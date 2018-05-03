@@ -1,5 +1,19 @@
 apply plugin: 'com.android.library'
 apply from: "$rootProject.projectDir/buildconfig/module.gradle"
+apply plugin: 'io.hansel.preprocessor.module'
+
+repositories {
+    maven { url 'https://hansel.io/maven' }
+}
+buildscript {
+    repositories {
+        mavenCentral()
+        maven { url 'https://hansel.io/maven' }
+    }
+    dependencies {
+        classpath rootProject.ext.miscDependencies.hansel
+    }
+}
 
 android {
     defaultConfig {
@@ -20,25 +34,20 @@ project.ext {
 
 dependencies {
     implementation project(rootProject.ext.libraries.abstraction)
-//    implementation rootProject.ext.tkpdDependencies.usecase
     implementation project(rootProject.ext.libraries.useCase)
     implementation project(rootProject.ext.libraries.design)
 
     implementation rootProject.ext.networkDependencies.glide
 
-    implementation rootProject.ext.supportLibDependencies.design
-    implementation rootProject.ext.supportLibDependencies.cardViewV7
-
     implementation rootProject.ext.miscDependencies.multiDex
+    implementation rootProject.ext.miscDependencies.roundCornerProgressBar
     implementation (rootProject.ext.miscDependencies.loaderviewlibrary){
         exclude group: 'com.android.support'
     }
-    implementation rootProject.ext.miscDependencies.roundCornerProgressBar
 
     implementation(rootProject.ext.tkpdLibDependencies.expandableOption) {
         exclude group: "com.android.support"
     }
-    implementation rootProject.ext.supportLibDependencies.supportV4
 
     implementation rootProject.ext.playServicesDependencies.plus
     implementation rootProject.ext.playServicesDependencies.analytics
@@ -46,12 +55,9 @@ dependencies {
     implementation rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
     annotationProcessor rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
 
-    implementation 'com.android.support.constraint:constraint-layout:1.0.2'
-    provided rootProject.ext.miscDependencies.javaxAnnotation
-    implementation rootProject.ext.miscDependencies.dagger
-    annotationProcessor rootProject.ext.miscDependencies.daggerCompiler
+    implementation rootProject.ext.supportLibDependencies.constraintLayout
 
-    implementation 'com.sendbird.sdk:sendbird-android-sdk:3.0.49'
+    implementation rootProject.ext.miscDependencies.sendBird
 
     implementation(rootProject.ext.debugToolsDependencies.chuck) {
         exclude group: 'com.squareup.okhttp3'
@@ -62,11 +68,6 @@ dependencies {
     implementation(rootProject.ext.miscDependencies.facebook) {
         exclude group: 'com.android.support'
     }
-
-    androidTestImplementation(rootProject.ext.testDependencies.espressoCore, {
-        exclude group: 'com.android.support', module: 'support-annotations'
-    })
-    testImplementation rootProject.ext.testDependencies.junit
 }
 
 apply from: '../../../publish_local.gradle'

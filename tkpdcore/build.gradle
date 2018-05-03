@@ -2,17 +2,23 @@ apply plugin: 'com.android.library'
 apply from: "$rootProject.projectDir/buildconfig/module.gradle"
 apply plugin: 'io.fabric'
 apply plugin: 'com.jakewharton.butterknife'
+apply plugin: 'io.hansel.preprocessor.module'
 
 buildscript {
     repositories {
         maven { url 'https://maven.fabric.io/public' }
+        maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
         mavenCentral()
         jcenter()
+        maven { url 'https://hansel.io/maven' }
     }
     dependencies {
         classpath 'io.fabric.tools:gradle:1.+'
-        classpath 'com.jakewharton:butterknife-gradle-plugin:8.4.0'
+        classpath ('com.jakewharton:butterknife-gradle-plugin:9.0.0-SNAPSHOT'){
+            exclude group: 'com.android.tools.build', module: 'gradle'
+        }
         classpath 'com.google.gms:google-services:3.0.0'
+        classpath rootProject.ext.miscDependencies.hansel
     }
 }
 
@@ -29,7 +35,7 @@ android {
 project.ext {
     artifactId = 'core'
     groupId = 'com.tokopedia.core'
-    versionName = "2.22"
+    versionName = "2.23"
     artifactName ="tkpdcore-release"
 }
 
@@ -45,26 +51,17 @@ dependencies {
 
     implementation project(rootProject.ext.libraries.cacheApi)
     implementation project(rootProject.ext.libraries.abstraction)
-
-    // transitive from abstraction
     implementation project(rootProject.ext.libraries.design)
+    implementation rootProject.ext.tkpdLibDependencies.youtubePlayer
+
+    implementation rootProject.ext.miscDependencies.roundCornerProgressBar
     implementation (rootProject.ext.miscDependencies.loaderviewlibrary){
         exclude group: 'com.android.support'
     }
-    implementation rootProject.ext.miscDependencies.roundCornerProgressBar
 
-    testImplementation  rootProject.ext.testDependencies.junit
-    testImplementation  rootProject.ext.testDependencies.mockitorCore
     testImplementation  rootProject.ext.testDependencies.assertJ
 
     implementation rootProject.ext.serviceDependencies.hockeyApp
-
-    implementation rootProject.ext.supportLibDependencies.recyclerViewV7
-    implementation rootProject.ext.supportLibDependencies.supportV4
-    implementation rootProject.ext.supportLibDependencies.appCompactV7
-    implementation rootProject.ext.supportLibDependencies.supportV13
-    implementation rootProject.ext.supportLibDependencies.design
-    implementation rootProject.ext.supportLibDependencies.cardViewV7
 
     implementation rootProject.ext.playServicesDependencies.plus
     implementation rootProject.ext.playServicesDependencies.base
@@ -88,11 +85,6 @@ dependencies {
     annotationProcessor rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
 
     implementation rootProject.ext.networkDependencies.volley
-    implementation rootProject.ext.networkDependencies.retrofit
-    implementation rootProject.ext.networkDependencies.converterGson
-    implementation rootProject.ext.networkDependencies.adapterRxJava
-    implementation rootProject.ext.networkDependencies.okHttp
-    implementation rootProject.ext.networkDependencies.loggingInterceptor
     implementation rootProject.ext.networkDependencies.glide
 
     implementation 'com.github.tommus:youtube-android-player-api:1.2.1'
@@ -112,12 +104,11 @@ dependencies {
 
     implementation rootProject.ext.viewDependencies.recyclerMultiSelect
     implementation rootProject.ext.viewDependencies.appIntro
-    implementation rootProject.ext.miscDependencies.lottie
-
     implementation (rootProject.ext.viewDependencies.ahBottomNavigation) {
         exclude group: 'com.android.support', module: 'design'
     }
 
+    implementation rootProject.ext.miscDependencies.lottie
     implementation rootProject.ext.miscDependencies.scannerZxing
     implementation rootProject.ext.miscDependencies.multiDex
     implementation rootProject.ext.miscDependencies.parcelerApi
@@ -126,10 +117,6 @@ dependencies {
     implementation(rootProject.ext.miscDependencies.facebook) {
         exclude group: 'com.android.support'
     }
-
-    provided rootProject.ext.miscDependencies.javaxAnnotation
-    implementation rootProject.ext.miscDependencies.dagger
-    annotationProcessor rootProject.ext.miscDependencies.daggerCompiler
 
     implementation (rootProject.ext.debugToolsDependencies.chuck) {
         exclude group: 'com.squareup.okhttp3'

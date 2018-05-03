@@ -22,6 +22,9 @@ public class HotListModel extends RecyclerViewItem{
     String hotListBiggerImage;
     @SerializedName("url")
     String hotListProductUrl;
+    @SerializedName("applinks")
+    String hotListApplinks;
+
     String hotListKey;
     private int trackerEnhancePosition;
     private String trackerEnhanceName;
@@ -76,6 +79,14 @@ public class HotListModel extends RecyclerViewItem{
 
     public void setHotListProductUrl(String hotListProductUrl) {
         this.hotListProductUrl = hotListProductUrl;
+    }
+
+    public String getHotListApplinks() {
+        return hotListApplinks;
+    }
+
+    public void setHotListApplinks(String hotListApplinks) {
+        this.hotListApplinks = hotListApplinks;
     }
 
     @Override
@@ -139,6 +150,7 @@ public class HotListModel extends RecyclerViewItem{
         dest.writeString(this.hotListId);
         dest.writeString(this.trackerEnhanceName);
         dest.writeInt(this.trackerEnhancePosition);
+        dest.writeString(this.hotListApplinks);
     }
 
     protected HotListModel(Parcel in) {
@@ -152,6 +164,7 @@ public class HotListModel extends RecyclerViewItem{
         this.hotListId = in.readString();
         this.trackerEnhanceName = in.readString();
         this.trackerEnhancePosition = in.readInt();
+        this.hotListApplinks = in.readString();
     }
 
     public static final Creator<HotListModel> CREATOR = new Creator<HotListModel>() {

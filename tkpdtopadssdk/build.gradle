@@ -10,20 +10,15 @@ project.ext {
 
 
 dependencies {
-    androidTestCompile(rootProject.ext.testDependencies.espressoCore, {
-        exclude group: 'com.android.support', module: 'support-annotations'
-    })
-    androidTestCompile rootProject.ext.testDependencies.androidAnnotation
+    implementation project(rootProject.ext.libraries.design)
 
-    compile project(rootProject.ext.libraries.design)
+    androidTestImplementation rootProject.ext.testDependencies.androidAnnotation
 
-    testCompile rootProject.ext.testDependencies.junit
-    compile group: 'org.apache.commons', name: 'commons-text', version: '1.0'
-    compile rootProject.ext.supportLibDependencies.appCompactV7
-    compile rootProject.ext.supportLibDependencies.design
-    compile rootProject.ext.supportLibDependencies.cardViewV7
-    compile rootProject.ext.networkDependencies.glide
-    compile rootProject.ext.supportLibDependencies.constraintLayout
+    implementation group: 'org.apache.commons', name: 'commons-text', version: '1.0'
+
+    implementation rootProject.ext.networkDependencies.glide
+
+    implementation rootProject.ext.supportLibDependencies.constraintLayout
 }
 
 apply from: '../publish_local.gradle'

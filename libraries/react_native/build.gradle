@@ -1,5 +1,19 @@
 apply plugin: 'com.android.library'
 apply from: "$rootProject.projectDir/buildconfig/module.gradle"
+apply plugin: 'io.hansel.preprocessor.module'
+
+repositories {
+    maven { url 'https://hansel.io/maven' }
+}
+buildscript {
+    repositories {
+        mavenCentral()
+        maven { url 'https://hansel.io/maven' }
+    }
+    dependencies {
+        classpath rootProject.ext.miscDependencies.hansel
+    }
+}
 
 project.ext {
     artifactId = 'reactnative'
@@ -11,17 +25,10 @@ project.ext {
 dependencies {
     implementation project(rootProject.ext.features.core)
     implementation project(rootProject.ext.libraries.abstraction)
-    implementation rootProject.ext.miscDependencies.dagger
-    implementation rootProject.ext.miscDependencies.reactNative
-    implementation rootProject.ext.miscDependencies.codePushReactNative
-    annotationProcessor  rootProject.ext.miscDependencies.daggerCompiler
 
     implementation rootProject.ext.miscDependencies.multiDex
-
-    androidTestImplementation(rootProject.ext.testDependencies.espressoCore, {
-        exclude group: 'com.android.support', module: 'support-annotations'
-    })
-    testImplementation rootProject.ext.testDependencies.junit
+    implementation rootProject.ext.miscDependencies.reactNative
+    implementation rootProject.ext.miscDependencies.codePushReactNative
 }
 
 apply from: '../../publish_local.gradle'

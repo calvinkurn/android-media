@@ -56,6 +56,7 @@ public class TkpdCache extends com.tokopedia.abstraction.constant.TkpdCache {
     public static final String CACHE_PROMO_CODE = "CACHE_PROMO_CODE";
     public static final String REFERRAL = "REFERRAL";
     public static final String ADVERTISINGID = "ADVERTISINGID";
+    public static final String ANDROID_ID = "ANDROID_ID";
 
     public static void clearAllCache(Context context) {
         LocalCacheHandler.clearCache(context, TkpdCache.USER_INFO);
@@ -199,9 +200,6 @@ public class TkpdCache extends com.tokopedia.abstraction.constant.TkpdCache {
         public static final String DIGITAL_INSTANT_CHECKOUT_LAST_IS_CHECKED_CATEGORY = "DIGITAL_INSTANT_CHECKOUT_LAST_IS_CHECKED_CATEGORY_";
 
         public static final String DIGITAL_CATEGORY_ITEM_LIST = "DIGITAL_CATEGORY_ITEM_LIST";
-        public static final String DIGITAL_LAST_ORDER = "DIGITAL_LAST_ORDER";
-
-        public static final String DIGITAL_CATEGORY_DETAIL = "DIGITAL_CATEGORY_DETAIL";
 
         public static final String KEY_TOKOCASH_DATA = "TOKOCASH_DATA";
 
@@ -227,6 +225,7 @@ public class TkpdCache extends com.tokopedia.abstraction.constant.TkpdCache {
         public static final String KEY_ADVANCED_APP_RATING_VERSION = "ADVANCED_APP_RATING_VERSION";
         public static final String KEY_RATING = "RATING";
         public static final String KEY_ADVERTISINGID = "KEY_ADVERTISINGID";
+        public static final String KEY_ANDROID_ID = "KEY_ANDROID_ID";
 
 
     }

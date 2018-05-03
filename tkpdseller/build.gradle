@@ -3,7 +3,7 @@ apply from: "$rootProject.projectDir/buildconfig/module.gradle"
 
 buildscript {
     repositories {
-        maven { url "https://oss.sonatype.org/content/repositories/snapshots" }
+        maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
         mavenCentral()
     }
     dependencies {
@@ -36,23 +36,15 @@ dependencies {
     }
 
     implementation project(rootProject.ext.features.core)
-    implementation project(rootProject.ext.libraries.cacheApi)
-    implementation project(rootProject.ext.libraries.abstraction)
-//    implementation rootProject.ext.tkpdDependencies.usecase
-    implementation project(rootProject.ext.libraries.useCase)
     implementation project(rootProject.ext.features.payment)
-    implementation project(rootProject.ext.libraries.design)
     implementation project(rootProject.ext.features.reputationCommon)
 
-    implementation rootProject.ext.supportLibDependencies.appCompactV7
-    implementation rootProject.ext.supportLibDependencies.recyclerViewV7
-    implementation rootProject.ext.supportLibDependencies.cardViewV7
-    implementation rootProject.ext.supportLibDependencies.design
-    implementation rootProject.ext.supportLibDependencies.supportV13
+    implementation project(rootProject.ext.libraries.cacheApi)
+    implementation project(rootProject.ext.libraries.abstraction)
+    implementation project(rootProject.ext.libraries.useCase)
+    implementation project(rootProject.ext.libraries.design)
 
-    implementation rootProject.ext.networkDependencies.retrofit
     implementation rootProject.ext.networkDependencies.glide
-    implementation rootProject.ext.networkDependencies.loggingInterceptor
 
     implementation rootProject.ext.playServicesDependencies.maps
 
@@ -67,9 +59,6 @@ dependencies {
 
     implementation rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
     annotationProcessor  rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
-
-    implementation rootProject.ext.miscDependencies.dagger
-    annotationProcessor  rootProject.ext.miscDependencies.daggerCompiler
 
     implementation rootProject.ext.miscDependencies.parcelerApi
     annotationProcessor  rootProject.ext.miscDependencies.parceler
@@ -93,20 +82,12 @@ dependencies {
 
     implementation rootProject.ext.supportLibDependencies.constraintLayout
 
-    provided rootProject.ext.miscDependencies.javaxAnnotation
-
     implementation(rootProject.ext.tkpdLibDependencies.expandableOption) {
         exclude group: "com.android.support"
     }
-
     implementation(rootProject.ext.tkpdLibDependencies.showcase) {
         exclude group: "com.android.support"
     }
-
-    androidTestImplementation(rootProject.ext.testDependencies.espressoCore, {
-        exclude group: 'com.android.support', module: 'support-annotations'
-    })
-    testImplementation rootProject.ext.testDependencies.junit
 }
 
 apply from: '../publish_local.gradle'
