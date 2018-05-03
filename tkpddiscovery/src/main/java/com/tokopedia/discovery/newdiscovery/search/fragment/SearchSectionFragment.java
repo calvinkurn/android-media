@@ -169,9 +169,10 @@ public abstract class SearchSectionFragment extends BaseDaggerFragment
             this.redirectionListener = (RedirectionListener) context;
         }
         RemoteConfig remoteConfig = new FirebaseRemoteConfigImpl(context);
-        isUsingBottomSheetFilter = remoteConfig.getBoolean(
+        /*isUsingBottomSheetFilter = remoteConfig.getBoolean(
                 TkpdCache.RemoteConfigKey.ENABLE_BOTTOM_SHEET_FILTER,
-                false) && (this instanceof ProductListFragment);
+                false) && (this instanceof ProductListFragment);*/
+        isUsingBottomSheetFilter = this instanceof ProductListFragment;
     }
 
     @Override
