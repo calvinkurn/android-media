@@ -68,10 +68,10 @@ public class AppNotificationReceiver implements IAppNotificationReceiver {
     private boolean isInExcludedActivity(Bundle data) {
         ApplinkNotificationModel applinkNotificationModel = ApplinkNotificationHelper.convertToApplinkModel(data);
         int notificationId = ApplinkNotificationHelper.generateNotifictionId(applinkNotificationModel.getApplinks());
-        return notificationId == getCurrentActivity();
+        return notificationId == getCurrentNotifIdByActivity();
     }
 
-    private int getCurrentActivity(){
+    private int getCurrentNotifIdByActivity(){
         if(mActivitiesLifecycleCallbacks.getLiveActivityOrNull() == null){
             return 0;
         }

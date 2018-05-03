@@ -106,5 +106,6 @@ public class PushNotification {
                 .createNotification(applinkNotificationModel, notificationType, notificationType);
 
         notificationManagerCompat.notify(notificationType, notifChat);
+
     }
 }
