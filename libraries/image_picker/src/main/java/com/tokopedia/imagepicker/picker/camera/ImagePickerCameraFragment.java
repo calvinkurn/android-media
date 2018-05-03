@@ -153,15 +153,7 @@ public class ImagePickerCameraFragment extends TkpdBaseV4Fragment {
         CameraUtils.decodeBitmap(imageByte, mCaptureNativeSize.getWidth(), mCaptureNativeSize.getHeight(), new CameraUtils.BitmapCallback() {
             @Override
             public void onBitmapReady(Bitmap bitmap) {
-                File file = ImageUtils.getTokopediaPhotoPath(false);
-                try {
-                    FileOutputStream out = new FileOutputStream(file);
-                    bitmap.compress(Bitmap.CompressFormat.JPEG, 90, out);
-                    out.flush();
-                    out.close();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
+                File file = ImageUtils.writeImageToTkpdPath(bitmap, false);
                 onImagePickerCameraFragmentListener.onImageTaken(file.getAbsolutePath());
             }
         });

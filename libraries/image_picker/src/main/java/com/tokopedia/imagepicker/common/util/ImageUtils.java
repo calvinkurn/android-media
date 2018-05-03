@@ -42,6 +42,9 @@ public class ImageUtils {
 
     private static final String DIRECTORY_TOKOPEDIA = "Tokopedia";
     private static final String TEMP_FILE_NAME = "temp.tmp";
+    public static final String PNG_EXT = ".png";
+    public static final String JPG_EXT = ".jpg";
+    public static final String PNG = "png";
 
     public static File getTokopediaPublicDirectory() {
         String filePath = Environment.getExternalStorageDirectory().getAbsolutePath() + "/" + DIRECTORY_TOKOPEDIA + "/";
@@ -68,11 +71,11 @@ public class ImageUtils {
 
     public static File getTokopediaPhotoPath(boolean isPng) {
         File directory = getTokopediaPublicDirectory();
-        return new File(directory.getAbsolutePath(), generateUniqueFileName() + (isPng ? ".png" : ".jpg"));
+        return new File(directory.getAbsolutePath(), generateUniqueFileName() + (isPng ? PNG_EXT : JPG_EXT));
     }
 
     public static File getTokopediaPhotoPath(String referencePath) {
-        return getTokopediaPhotoPath(referencePath.endsWith(".png"));
+        return getTokopediaPhotoPath(referencePath.endsWith(PNG_EXT));
     }
 
     /**
@@ -99,24 +102,26 @@ public class ImageUtils {
      */
     public static File writeImageToTkpdPath(String galleryOrCameraPath) {
         return writeImageToTkpdPath(convertLocalImagePathToBytes(galleryOrCameraPath, DEF_WIDTH_CMPR, DEF_HEIGHT_CMPR, 100),
-                galleryOrCameraPath.endsWith("png"));
+                galleryOrCameraPath.endsWith(PNG));
     }
 
     /**
      * compress the bitmap, then write to Tkpd Cache Directory
-     * The file represents the copy of the original bitmap and can be deleted/modified
-     * without changing the original image
      */
     public static File writeImageToTkpdPath(Bitmap bitmap, boolean isPng) {
-        if (bitmap != null) {
-            ByteArrayOutputStream bao = new ByteArrayOutputStream();
-            byte[] bytes;
-            bitmap.compress(isPng ? Bitmap.CompressFormat.PNG : Bitmap.CompressFormat.JPEG, 100, bao);
-            bytes = bao.toByteArray();
-            return writeImageToTkpdPath(bytes, isPng);
-        } else {
-            return null;
+        File file = getTokopediaPhotoPath(isPng);
+        if (file.exists()) {
+            file.delete();
         }
+        try {
+            FileOutputStream out = new FileOutputStream(file);
+            bitmap.compress(isPng ? Bitmap.CompressFormat.PNG : Bitmap.CompressFormat.JPEG, 100, out);
+            out.flush();
+            out.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return file;
     }
 
     /**
@@ -287,7 +292,7 @@ public class ImageUtils {
     }
 
     private static boolean isPNGMimeType(String mimeType) {
-        return !TextUtils.isEmpty(mimeType) && mimeType.contains("png");
+        return !TextUtils.isEmpty(mimeType) && mimeType.contains(PNG);
     }
 
     public static String getPathFromMediaUri(Context context, Uri contentUri) {
@@ -488,7 +493,7 @@ public class ImageUtils {
     }
 
     public static byte[] convertLocalImagePathToBytes(String imagePathToCompress, int maxWidth, int maxHeight, int compressionQuality) {
-        boolean isPng = imagePathToCompress.endsWith("png");
+        boolean isPng = imagePathToCompress.endsWith(PNG);
         Bitmap tempPicToUpload = compressImageToBitmap(imagePathToCompress, maxWidth, maxHeight, compressionQuality);
         ByteArrayOutputStream bao = new ByteArrayOutputStream();
         if (tempPicToUpload != null) {
