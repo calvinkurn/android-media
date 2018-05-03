@@ -46,11 +46,6 @@ public class TopAdsDetailShopPresenterImpl extends TopAdsDetailPresenterImpl<Sho
     }
 
     @Override
-    public void saveSourceTagging(String source) {
-
-    }
-
-    @Override
     public void unSubscribe() {
         if (topAdsShopAdInteractor != null) {
             topAdsShopAdInteractor.unSubscribe();

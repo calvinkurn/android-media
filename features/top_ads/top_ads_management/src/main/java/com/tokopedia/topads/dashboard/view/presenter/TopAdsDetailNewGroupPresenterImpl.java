@@ -34,7 +34,6 @@ public class TopAdsDetailNewGroupPresenterImpl<T extends TopAdsDetailNewGroupVie
 
     private TopAdsCreateNewGroupUseCase topAdsCreateNewGroupUseCase;
     private TopAdsCreateDetailProductListUseCase topAdsCreateDetailProductListUseCase;
-    private TopAdsRemoveSourceTaggingUseCase topAdsRemoveSourceTaggingUseCase;
 
     public TopAdsDetailNewGroupPresenterImpl(TopAdsCreateNewGroupUseCase topAdsCreateNewGroupUseCase,
                                              TopAdsGetDetailGroupUseCase topAdsGetDetailGroupUseCase,
@@ -42,13 +41,11 @@ public class TopAdsDetailNewGroupPresenterImpl<T extends TopAdsDetailNewGroupVie
                                              TopAdsCreateDetailProductListUseCase topAdsCreateDetailProductListUseCase,
                                              TopAdsProductListUseCase topAdsProductListUseCase,
                                              TopAdsGetSuggestionUseCase topAdsGetSuggestionUseCase,
-                                             TopAdsGetSourceTaggingUseCase topAdsGetSourceTaggingUseCase,
-                                             TopAdsRemoveSourceTaggingUseCase topAdsRemoveSourceTaggingUseCase) {
+                                             TopAdsGetSourceTaggingUseCase topAdsGetSourceTaggingUseCase) {
         super(topAdsGetDetailGroupUseCase, topAdsSaveDetailGroupUseCase, topAdsProductListUseCase,
                 topAdsGetSuggestionUseCase, topAdsGetSourceTaggingUseCase);
         this.topAdsCreateNewGroupUseCase = topAdsCreateNewGroupUseCase;
         this.topAdsCreateDetailProductListUseCase = topAdsCreateDetailProductListUseCase;
-        this.topAdsRemoveSourceTaggingUseCase = topAdsRemoveSourceTaggingUseCase;
     }
 
     @Override

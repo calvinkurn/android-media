@@ -75,6 +75,7 @@ public class TopAdsProductAdListFragment extends TopAdsAdListFragment<TopAdsProd
     @Override
     public void onItemClicked(Ad ad) {
         if (ad instanceof ProductAd) {
+            presenter.saveSourceTagging(TopAdsSourceOption.SA_MANAGE_DASHBOARD_PRODUCT);
             Intent intent = new Intent(getActivity(), TopAdsDetailProductActivity.class);
             intent.putExtra(TopAdsExtraConstant.EXTRA_AD_ID, ad.getId());
             intent.putExtra(TopAdsExtraConstant.EXTRA_AD, ad);

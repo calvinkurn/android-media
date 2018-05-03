@@ -26,12 +26,10 @@ import rx.Subscriber;
 public class TopAdsDetailProductViewPresenterImpl<T extends Ad> extends TopAdsDetailProductPresenterImpl implements TopAdsDetailProductPresenter {
 
     private TopAdsDetailViewListener<T> topAdsDetailViewListener;
-    private TopAdsAddSourceTaggingUseCase topAdsAddSourceTaggingUseCase;
 
     public TopAdsDetailProductViewPresenterImpl(Context context, TopAdsDetailViewListener<T> topAdsDetailViewListener, TopAdsProductAdInteractor productAdInteractor) {
         super(context, topAdsDetailViewListener, productAdInteractor);
         this.topAdsDetailViewListener = topAdsDetailViewListener;
-        this.topAdsAddSourceTaggingUseCase = TopAdsSourceTaggingUseCaseUtil.getTopAdsAddSourceTaggingUseCase(context);
     }
 
     @Override
@@ -82,26 +80,6 @@ public class TopAdsDetailProductViewPresenterImpl<T extends Ad> extends TopAdsDe
         });
     }
 
-    public void saveSourceTagging(@TopAdsSourceOption String source){
-        topAdsAddSourceTaggingUseCase.execute(TopAdsAddSourceTaggingUseCase.createRequestParams(source),
-                new Subscriber<Void>() {
-                    @Override
-                    public void onCompleted() {
-
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-
-                    }
-
-                    @Override
-                    public void onNext(Void aVoid) {
-
-                    }
-                });
-    }
-
     @NonNull
     private DataRequest<ProductAdBulkAction> generateActionRequest(String id, String action) {
         DataRequest<ProductAdBulkAction> dataRequest = new DataRequest<>();
@@ -120,6 +98,5 @@ public class TopAdsDetailProductViewPresenterImpl<T extends Ad> extends TopAdsDe
     @Override
     public void unSubscribe() {
         super.unSubscribe();
-        topAdsAddSourceTaggingUseCase.unsubscribe();
     }
 }

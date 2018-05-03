@@ -27,9 +27,8 @@ public class TopAdsKeywordDetailModule extends TopAdsKeywordModule {
     @TopAdsKeywordScope
     @Provides
     TopadsKeywordDetailPresenter providePresenterKeywordDetail(TopAdsKeywordGetDetailUseCase topAdsKeywordGetDetailUseCase,
-                                                               TopAdsKeywordActionBulkUseCase topAdsKeywordActionBulkUseCase,
-                                                               TopAdsAddSourceTaggingUseCase topAdsAddSourceTaggingUseCase){
-        return new TopAdsKeywordDetailPresenterImpl(topAdsKeywordGetDetailUseCase, topAdsKeywordActionBulkUseCase, topAdsAddSourceTaggingUseCase);
+                                                               TopAdsKeywordActionBulkUseCase topAdsKeywordActionBulkUseCase){
+        return new TopAdsKeywordDetailPresenterImpl(topAdsKeywordGetDetailUseCase, topAdsKeywordActionBulkUseCase);
     }
 
     @TopAdsKeywordScope

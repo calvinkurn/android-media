@@ -211,6 +211,7 @@ public class TopAdsDashboardShopFragment extends TopAdsDashboardFragment<TopAdsD
     }
 
     void onShopItemClicked() {
+        presenter.saveSourceTagging(TopAdsSourceOption.SA_MANAGE_SHOP);
         Intent intent = new Intent(getActivity(), TopAdsDetailShopActivity.class);
         intent.putExtra(TopAdsExtraConstant.EXTRA_AD, shopAd);
         intent.putExtra(TopAdsNewScheduleNewGroupFragment.EXTRA_IS_ENOUGH_DEPOSIT,true);

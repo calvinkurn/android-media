@@ -58,9 +58,4 @@ public class TopAdsDetailProductPresenterImpl<T extends Ad> extends TopAdsDetail
             }
         });
     }
-
-    @Override
-    public void saveSourceTagging(String source) {
-
-    }
 }

@@ -22,12 +22,10 @@ import rx.Subscriber;
 public class TopAdsDetailShopViewPresenterImpl extends TopAdsDetailProductViewPresenterImpl<ShopAd> {
 
     private final TopAdsShopAdInteractor shopAdInteractor;
-    private final TopAdsAddSourceTaggingUseCase topAdsAddSourceTaggingUseCase;
 
     public TopAdsDetailShopViewPresenterImpl(Context context, TopAdsDetailViewListener<ShopAd> topAdsDetailViewListener, TopAdsProductAdInteractor productAdInteractor, TopAdsShopAdInteractor shopAdInteractor) {
         super(context, topAdsDetailViewListener, productAdInteractor);
         this.shopAdInteractor = shopAdInteractor;
-        this.topAdsAddSourceTaggingUseCase = TopAdsSourceTaggingUseCaseUtil.getTopAdsAddSourceTaggingUseCase(context);
     }
 
     @Override
@@ -56,27 +54,6 @@ public class TopAdsDetailShopViewPresenterImpl extends TopAdsDetailProductViewPr
         if (shopAdInteractor != null) {
             shopAdInteractor.unSubscribe();
         }
-    }
-
-    @Override
-    public void saveSourceTagging(String source) {
-        topAdsAddSourceTaggingUseCase.execute(TopAdsAddSourceTaggingUseCase
-                .createRequestParams(source), new Subscriber<Void>() {
-            @Override
-            public void onCompleted() {
-
-            }
-
-            @Override
-            public void onError(Throwable e) {
-
-            }
-
-            @Override
-            public void onNext(Void aVoid) {
-
-            }
-        });
     }
 
 }

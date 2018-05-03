@@ -10,6 +10,4 @@ import java.util.Date;
 
 public interface TopAdsDetailPresenter extends RetrofitPresenter {
     void refreshAd(Date startDate, Date endDate, String id);
-
-    void saveSourceTagging(@TopAdsSourceOption String source);
 }

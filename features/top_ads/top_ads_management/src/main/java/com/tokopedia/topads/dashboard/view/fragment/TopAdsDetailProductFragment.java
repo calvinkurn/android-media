@@ -139,7 +139,6 @@ public class TopAdsDetailProductFragment extends TopAdsDetailStatisticFragment<T
 
     @Override
     protected void editAd() {
-        presenter.saveSourceTagging(TopAdsSourceOption.SA_MANAGE_DASHBOARD_PRODUCT);
         if (isHasGroupAd()) {
             Intent intent = TopAdsGroupEditPromoActivity.createIntent(getActivity(),
                     ad.getId(), TopAdsGroupEditPromoFragment.EXIST_GROUP, ad.getGroupName(),

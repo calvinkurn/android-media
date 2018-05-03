@@ -140,7 +140,6 @@ public class TopAdsDetailShopFragment extends TopAdsDetailStatisticFragment<TopA
     @Override
     protected void editAd() {
         if (ad != null) {
-            presenter.saveSourceTagging(TopAdsSourceOption.SA_MANAGE_SHOP);
             Intent intent = TopAdsEditShopMainPageActivity.createIntent(getActivity(), ad.getId());
             startActivityForResult(intent, REQUEST_CODE_AD_EDIT);
         }

@@ -21,14 +21,11 @@ public class TopAdsKeywordDetailPresenterImpl extends TopadsKeywordDetailPresent
 
     private final TopAdsKeywordGetDetailUseCase topAdsKeywordGetDetailUseCase;
     private final TopAdsKeywordActionBulkUseCase topAdsKeywordActionBulkUseCase;
-    private final TopAdsAddSourceTaggingUseCase topAdsAddSourceTaggingUseCase;
 
     public TopAdsKeywordDetailPresenterImpl(TopAdsKeywordGetDetailUseCase topAdsKeywordGetDetailUseCase,
-                                            TopAdsKeywordActionBulkUseCase topAdsKeywordActionBulkUseCase,
-                                            TopAdsAddSourceTaggingUseCase topAdsAddSourceTaggingUseCase) {
+                                            TopAdsKeywordActionBulkUseCase topAdsKeywordActionBulkUseCase) {
         this.topAdsKeywordGetDetailUseCase = topAdsKeywordGetDetailUseCase;
         this.topAdsKeywordActionBulkUseCase = topAdsKeywordActionBulkUseCase;
-        this.topAdsAddSourceTaggingUseCase = topAdsAddSourceTaggingUseCase;
     }
 
     @Override
@@ -151,30 +148,8 @@ public class TopAdsKeywordDetailPresenterImpl extends TopadsKeywordDetailPresent
     }
 
     @Override
-    public void saveSourceTagging(@TopAdsSourceOption String source){
-        topAdsAddSourceTaggingUseCase.execute(TopAdsAddSourceTaggingUseCase.createRequestParams(source),
-                new Subscriber<Void>() {
-                    @Override
-                    public void onCompleted() {
-
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-
-                    }
-
-                    @Override
-                    public void onNext(Void aVoid) {
-
-                    }
-                });
-    }
-
-    @Override
     public void unSubscribe() {
         topAdsKeywordActionBulkUseCase.unsubscribe();
         topAdsKeywordGetDetailUseCase.unsubscribe();
-        topAdsAddSourceTaggingUseCase.unsubscribe();
     }
 }

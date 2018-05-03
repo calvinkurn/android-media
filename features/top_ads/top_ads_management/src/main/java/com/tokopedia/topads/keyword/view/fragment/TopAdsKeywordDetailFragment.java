@@ -115,7 +115,6 @@ public class TopAdsKeywordDetailFragment extends TopAdsDetailStatisticFragment<T
 
     @Override
     protected void editAd() {
-        topadsKeywordDetailPresenter.saveSourceTagging(TopAdsSourceOption.SA_MANAGE_KEYWORD_POSITIVE);
         startActivityForResult(TopAdsKeywordEditDetailPositiveActivity.createInstance(getActivity(), ad), REQUEST_CODE_AD_EDIT);
     }
 

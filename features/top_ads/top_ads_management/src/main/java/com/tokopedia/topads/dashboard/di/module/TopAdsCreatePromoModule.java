@@ -77,11 +77,10 @@ public class TopAdsCreatePromoModule {
                                                            TopAdsCreateDetailProductListUseCase topAdsCreateDetailProductListUseCase,
                                                            TopAdsProductListUseCase topAdsProductListUseCase,
                                                            TopAdsGetSuggestionUseCase topAdsGetSuggestionUseCase,
-                                                           TopAdsGetSourceTaggingUseCase topAdsGetSourceTaggingUseCase,
-                                                           TopAdsRemoveSourceTaggingUseCase topAdsRemoveSourceTaggingUseCase) {
+                                                           TopAdsGetSourceTaggingUseCase topAdsGetSourceTaggingUseCase) {
         return new TopAdsDetailNewGroupPresenterImpl(topAdsCreateNewGroupUseCase, topAdsGetDetailGroupUseCase,
                 topAdsSaveDetailGroupUseCase, topAdsCreateDetailProductListUseCase, topAdsProductListUseCase,
-                topAdsGetSuggestionUseCase, topAdsGetSourceTaggingUseCase, topAdsRemoveSourceTaggingUseCase);
+                topAdsGetSuggestionUseCase, topAdsGetSourceTaggingUseCase);
     }
 
     @TopAdsDashboardScope
@@ -97,11 +96,10 @@ public class TopAdsCreatePromoModule {
                                                                         TopAdsCreateDetailProductListUseCase topAdsCreateDetailProductListUseCase,
                                                                         TopAdsProductListUseCase topAdsProductListUseCase,
                                                                         TopAdsGetSuggestionUseCase topAdsGetSuggestionUseCase,
-                                                                        TopAdsGetSourceTaggingUseCase topAdsGetSourceTaggingUseCase,
-                                                                        TopAdsRemoveSourceTaggingUseCase topAdsRemoveSourceTaggingUseCase) {
+                                                                        TopAdsGetSourceTaggingUseCase topAdsGetSourceTaggingUseCase) {
         return new TopAdsDetailNewProductPresenterImpl(topAdsGetDetailProductUseCase, topAdsSaveDetailProductUseCase,
                 topAdsCreateDetailProductListUseCase, topAdsProductListUseCase, topAdsGetSuggestionUseCase,
-                topAdsGetSourceTaggingUseCase, topAdsRemoveSourceTaggingUseCase);
+                topAdsGetSourceTaggingUseCase);
     }
 
     @TopAdsDashboardScope

@@ -15,8 +15,6 @@ public abstract class TopadsKeywordDetailPresenter<T extends TopAdsDetailViewLis
 
     public abstract void deleteAd(String id, String groupId, String shopId);
 
-    public abstract void saveSourceTagging(@TopAdsSourceOption String source);
-
     public abstract void unSubscribe();
 
     public abstract void turnOnAd(String id, String groupId, String shopID);

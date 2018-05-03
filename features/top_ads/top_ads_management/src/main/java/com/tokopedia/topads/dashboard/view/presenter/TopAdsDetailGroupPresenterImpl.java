@@ -33,16 +33,13 @@ public class TopAdsDetailGroupPresenterImpl extends TopAdsDetailPresenterImpl<Gr
     protected final TopAdsGroupAdInteractor groupAdInteractor;
     private TopAdsGetDetailGroupUseCase topAdsGetDetailGroupUseCase;
     private TopAdsGetSuggestionUseCase getSuggestionUseCase;
-    protected TopAdsAddSourceTaggingUseCase topAdsAddSourceTaggingUseCase;
 
     public TopAdsDetailGroupPresenterImpl(Context context, TopAdsDetailListener<GroupAd> topAdsDetailListener, TopAdsGroupAdInteractor groupAdInteractor,
-                                          @Nullable TopAdsGetDetailGroupUseCase topAdsGetDetailGroupUseCase, @Nullable TopAdsGetSuggestionUseCase getSuggestionUseCase,
-                                          TopAdsAddSourceTaggingUseCase topAdsAddSourceTaggingUseCase) {
+                                          @Nullable TopAdsGetDetailGroupUseCase topAdsGetDetailGroupUseCase, @Nullable TopAdsGetSuggestionUseCase getSuggestionUseCase) {
         super(context, topAdsDetailListener);
         this.groupAdInteractor = groupAdInteractor;
         this.topAdsGetDetailGroupUseCase = topAdsGetDetailGroupUseCase;
         this.getSuggestionUseCase = getSuggestionUseCase;
-        this.topAdsAddSourceTaggingUseCase = topAdsAddSourceTaggingUseCase;
     }
 
     @Override
@@ -50,9 +47,6 @@ public class TopAdsDetailGroupPresenterImpl extends TopAdsDetailPresenterImpl<Gr
         super.unsubscribe();
         if (groupAdInteractor != null) {
             groupAdInteractor.unSubscribe();
-        }
-        if (topAdsAddSourceTaggingUseCase != null){
-            topAdsAddSourceTaggingUseCase.unsubscribe();
         }
     }
 
@@ -133,26 +127,5 @@ public class TopAdsDetailGroupPresenterImpl extends TopAdsDetailPresenterImpl<Gr
                 topAdsDetailListener.onAdLoaded(groupAd);
             }
         });
-    }
-
-    @Override
-    public void saveSourceTagging(@TopAdsSourceOption String source){
-        topAdsAddSourceTaggingUseCase.execute(TopAdsAddSourceTaggingUseCase.createRequestParams(source),
-                new Subscriber<Void>() {
-                    @Override
-                    public void onCompleted() {
-
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-
-                    }
-
-                    @Override
-                    public void onNext(Void aVoid) {
-
-                    }
-                });
     }
 }

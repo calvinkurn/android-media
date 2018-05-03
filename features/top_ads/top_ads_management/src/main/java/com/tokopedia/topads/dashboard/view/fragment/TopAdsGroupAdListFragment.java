@@ -62,6 +62,7 @@ public class TopAdsGroupAdListFragment extends TopAdsAdListFragment<TopAdsGroupA
     @Override
     public void onItemClicked(Ad ad) {
         if (ad instanceof GroupAd) {
+            presenter.saveSourceTagging(TopAdsSourceOption.SA_MANAGE_GROUP);
             Intent intent = new Intent(getActivity(), TopAdsDetailGroupActivity.class);
             intent.putExtra(TopAdsExtraConstant.EXTRA_AD_ID, ad.getId());
             intent.putExtra(TopAdsExtraConstant.EXTRA_AD, ad);

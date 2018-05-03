@@ -26,17 +26,14 @@ import rx.Subscriber;
 public class TopAdsDetailNewProductPresenterImpl extends TopAdsDetailEditProductPresenterImpl<TopAdsDetailEditView> implements TopAdsDetailNewProductPresenter {
 
     private TopAdsCreateDetailProductListUseCase topAdsSaveDetailProductListUseCase;
-    private TopAdsRemoveSourceTaggingUseCase topAdsRemoveSourceTaggingUseCase;
 
     public TopAdsDetailNewProductPresenterImpl(TopAdsGetDetailProductUseCase topAdsGetDetailProductUseCase,
                                                TopAdsSaveDetailProductUseCase topAdsSaveDetailProductUseCase,
                                                TopAdsCreateDetailProductListUseCase topAdsCreateDetailProductListUseCase,
                                                TopAdsProductListUseCase topAdsProductListUseCase, TopAdsGetSuggestionUseCase topAdsGetSuggestionUseCase,
-                                               TopAdsGetSourceTaggingUseCase topAdsGetSourceTaggingUseCase,
-                                               TopAdsRemoveSourceTaggingUseCase topAdsRemoveSourceTaggingUseCase) {
+                                               TopAdsGetSourceTaggingUseCase topAdsGetSourceTaggingUseCase) {
         super(topAdsGetDetailProductUseCase, topAdsSaveDetailProductUseCase, topAdsProductListUseCase, topAdsGetSuggestionUseCase, topAdsGetSourceTaggingUseCase);
         this.topAdsSaveDetailProductListUseCase = topAdsCreateDetailProductListUseCase;
-        this.topAdsRemoveSourceTaggingUseCase = topAdsRemoveSourceTaggingUseCase;
     }
 
     @Override

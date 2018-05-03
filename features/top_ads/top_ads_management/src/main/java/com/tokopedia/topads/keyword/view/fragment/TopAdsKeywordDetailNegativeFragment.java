@@ -70,7 +70,6 @@ public class TopAdsKeywordDetailNegativeFragment extends TopAdsKeywordDetailFrag
 
     @Override
     protected void editAd() {
-        topadsKeywordDetailPresenter.saveSourceTagging(TopAdsSourceOption.SA_MANAGE_KEYWORD_NEGATIVE);
         startActivityForResult(TopAdsKeywordEditDetailNegativeActivity.createInstance(getActivity(), ((KeywordAd)ad)), REQUEST_CODE_AD_EDIT);
     }
 }
