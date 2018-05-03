@@ -159,7 +159,7 @@ public class ProductManagePresenterImpl extends BaseDaggerPresenter<ProductManag
 
             @Override
             public void onNext(Void aVoid) {
-
+                //do nothing
             }
         });
     }

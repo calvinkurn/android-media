@@ -708,7 +708,6 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
             ((TkpdCoreRouter) context.getApplicationContext()).goToCreateMerchantRedirect(context);
             UnifyTracking.eventTopAdsSwitcher(AppEventTracking.Category.SWITCHER);
         }
-        //getActivity().finish();
     }
 
     private void onSetCashbackClicked(ProductManageViewModel productManageViewModel) {

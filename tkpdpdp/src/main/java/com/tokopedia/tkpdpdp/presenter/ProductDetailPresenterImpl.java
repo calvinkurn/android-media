@@ -1131,7 +1131,7 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
 
             @Override
             public void onNext(Void aVoid) {
-
+                //do nothing
             }
         });
     }
