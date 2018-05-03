@@ -33,6 +33,8 @@ import com.tokopedia.otp.cotp.view.viewmodel.VerificationPassModel;
 
 import com.tokopedia.otp.common.di.DaggerOtpComponent;
 import com.tokopedia.otp.cotp.di.DaggerCotpComponent;
+import com.tokopedia.user.session.UserSession;
+
 import javax.inject.Inject;
 
 /**
@@ -53,6 +55,9 @@ public class ChooseVerificationMethodFragment extends BaseDaggerFragment impleme
 
     @Inject
     OTPAnalytics analytics;
+
+    @Inject
+    UserSession userSession;
 
     VerificationMethodAdapter adapter;
     VerificationPassModel passModel;
@@ -127,7 +132,8 @@ public class ChooseVerificationMethodFragment extends BaseDaggerFragment impleme
                 .VERTICAL, false));
         methodListRecyclerView.setAdapter(adapter);
 
-        if (passModel.getOtpType() == RequestOtpUseCase.OTP_TYPE_REGISTER_PHONE_NUMBER) {
+        if (!userSession.isMsisdnVerified() ||
+                passModel.getOtpType() == RequestOtpUseCase.OTP_TYPE_REGISTER_PHONE_NUMBER) {
             changePhoneNumberButton.setVisibility(View.GONE);
         }
 
