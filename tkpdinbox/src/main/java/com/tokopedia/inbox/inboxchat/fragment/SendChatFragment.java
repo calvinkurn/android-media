@@ -220,7 +220,7 @@ public class SendChatFragment extends BaseDaggerFragment
 
     @Override
     public void onDestroy() {
-        super.onDestroy();
         presenter.detachView();
+        super.onDestroy();
     }
 }

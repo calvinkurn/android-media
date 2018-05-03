@@ -26,6 +26,8 @@ import com.tokopedia.discovery.applink.DiscoveryApplinkModule;
 import com.tokopedia.discovery.applink.DiscoveryApplinkModuleLoader;
 import com.tokopedia.events.deeplink.EventsDeepLinkModule;
 import com.tokopedia.events.deeplink.EventsDeepLinkModuleLoader;
+import com.tokopedia.feedplus.view.deeplink.FeedDeeplinkModule;
+import com.tokopedia.feedplus.view.deeplink.FeedDeeplinkModuleLoader;
 import com.tokopedia.flight.applink.FlightApplinkModule;
 import com.tokopedia.flight.applink.FlightApplinkModuleLoader;
 import com.tokopedia.gamification.applink.GamificationApplinkModule;
@@ -36,6 +38,8 @@ import com.tokopedia.home.applink.HomeApplinkModule;
 import com.tokopedia.home.applink.HomeApplinkModuleLoader;
 import com.tokopedia.inbox.deeplink.InboxDeeplinkModule;
 import com.tokopedia.inbox.deeplink.InboxDeeplinkModuleLoader;
+import com.tokopedia.kol.applink.KolApplinkModule;
+import com.tokopedia.kol.applink.KolApplinkModuleLoader;
 import com.tokopedia.loyalty.applink.LoyaltyAppLinkModule;
 import com.tokopedia.loyalty.applink.LoyaltyAppLinkModuleLoader;
 import com.tokopedia.profile.applink.ProfileApplinkModule;
@@ -52,8 +56,6 @@ import com.tokopedia.shop.applink.ShopAppLinkModule;
 import com.tokopedia.shop.applink.ShopAppLinkModuleLoader;
 import com.tokopedia.tkpd.deeplink.presenter.DeepLinkAnalyticsImpl;
 import com.tokopedia.tkpd.redirect.RedirectCreateShopActivity;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.view.deeplink.FeedDeeplinkModule;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.view.deeplink.FeedDeeplinkModuleLoader;
 import com.tokopedia.tkpd.tkpdreputation.applink.ReputationApplinkModule;
 import com.tokopedia.tkpd.tkpdreputation.applink.ReputationApplinkModuleLoader;
 import com.tokopedia.tkpdpdp.applink.PdpApplinkModule;
@@ -90,6 +92,7 @@ import io.branch.referral.BranchError;
         GroupChatApplinkModule.class,
         GamificationApplinkModule.class,
         ProfileApplinkModule.class,
+        KolApplinkModule.class
 })
 
 public class DeeplinkHandlerActivity extends AppCompatActivity {
@@ -116,7 +119,8 @@ public class DeeplinkHandlerActivity extends AppCompatActivity {
                 new ShopAppLinkModuleLoader(),
                 new GroupChatApplinkModuleLoader(),
                 new GamificationApplinkModuleLoader(),
-                new ProfileApplinkModuleLoader()
+                new ProfileApplinkModuleLoader(),
+                new KolApplinkModuleLoader()
         );
     }
 

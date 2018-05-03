@@ -218,13 +218,12 @@ public class ProductListFragment extends SearchSectionFragment
             }
         });
 
+        setHeaderTopAds(true);
         if (productViewModel.getProductList().isEmpty()) {
             setEmptyProduct();
-            setHeaderTopAds(false);
             showBottomBarNavigation(false);
         } else {
             setProductList(initMappingProduct());
-            setHeaderTopAds(true);
             showBottomBarNavigation(true);
         }
 
@@ -253,6 +252,7 @@ public class ProductListFragment extends SearchSectionFragment
         TopAdsParams adsParams = new TopAdsParams();
         adsParams.getParam().put(TopAdsParams.KEY_SRC, BrowseApi.DEFAULT_VALUE_SOURCE_SEARCH); //[TODO replace source with source from parameters
         adsParams.getParam().put(TopAdsParams.KEY_QUERY, getQueryKey());
+        adsParams.getParam().putAll(getAdditionalParams());
 
         if (getFlagFilterHelper() != null &&
                 !TextUtils.isEmpty(getFlagFilterHelper().getCategoryId())) {
