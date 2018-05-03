@@ -73,7 +73,6 @@ import com.tokopedia.feedplus.view.presenter.FeedPlusPresenter;
 import com.tokopedia.feedplus.view.util.NpaLinearLayoutManager;
 import com.tokopedia.feedplus.view.util.ShareBottomDialog;
 import com.tokopedia.feedplus.view.viewmodel.inspiration.InspirationViewModel;
-import com.tokopedia.feedplus.view.viewmodel.kol.KolViewModel;
 import com.tokopedia.feedplus.view.viewmodel.officialstore.OfficialStoreViewModel;
 import com.tokopedia.feedplus.view.viewmodel.product.ProductFeedViewModel;
 import com.tokopedia.feedplus.view.viewmodel.promo.PromoCardViewModel;
@@ -1040,11 +1039,10 @@ public class FeedPlusFragment extends BaseDaggerFragment
 
     @Override
     public void onSuccessFollowUnfollowKol(int rowNumber) {
-        if (adapter.getlist().get(rowNumber) instanceof KolViewModel) {
-            ((KolViewModel) adapter.getlist().get(rowNumber)).setFollowed(!((KolViewModel) adapter
-                    .getlist().get(rowNumber)).isFollowed());
-            ((KolViewModel) adapter.getlist().get(rowNumber)).setTemporarilyFollowed(!((KolViewModel) adapter
-                    .getlist().get(rowNumber)).isTemporarilyFollowed());
+        if (adapter.getlist().get(rowNumber) instanceof KolPostViewModel) {
+            KolPostViewModel kolPostViewModel = (KolPostViewModel) adapter.getlist().get(rowNumber);
+            kolPostViewModel.setFollowed(!(kolPostViewModel.isFollowed()));
+            kolPostViewModel.setTemporarilyFollowed(!(kolPostViewModel.isTemporarilyFollowed()));
             adapter.notifyItemChanged(rowNumber);
         }
     }
@@ -1057,14 +1055,14 @@ public class FeedPlusFragment extends BaseDaggerFragment
 
     @Override
     public void onSuccessLikeDislikeKolPost(int rowNumber) {
-        if (adapter.getlist().get(rowNumber) instanceof KolViewModel) {
-            ((KolViewModel) adapter.getlist().get(rowNumber)).setLiked(!((KolViewModel) adapter
-                    .getlist().get(rowNumber)).isLiked());
-            if (((KolViewModel) adapter.getlist().get(rowNumber)).isLiked()) {
-                ((KolViewModel) adapter.getlist().get(rowNumber)).setTotalLike(((KolViewModel)
+        if (adapter.getlist().get(rowNumber) instanceof KolPostViewModel) {
+            KolPostViewModel kolPostViewModel = (KolPostViewModel) adapter.getlist().get(rowNumber);
+            kolPostViewModel.setLiked(!(kolPostViewModel.isLiked()));
+            if (kolPostViewModel.isLiked()) {
+                kolPostViewModel.setTotalLike(((KolPostViewModel)
                         adapter.getlist().get(rowNumber)).getTotalLike() + 1);
             } else {
-                ((KolViewModel) adapter.getlist().get(rowNumber)).setTotalLike(((KolViewModel)
+                kolPostViewModel.setTotalLike(((KolPostViewModel)
                         adapter.getlist().get(rowNumber)).getTotalLike() - 1);
             }
             adapter.notifyItemChanged(rowNumber);
@@ -1091,9 +1089,10 @@ public class FeedPlusFragment extends BaseDaggerFragment
     }
 
     private void onSuccessAddDeleteKolComment(int rowNumber, int totalNewComment) {
-        if (adapter.getlist().get(rowNumber) instanceof KolViewModel) {
-            ((KolViewModel) adapter.getlist().get(rowNumber)).setTotalComment((
-                    (KolViewModel)
+        if (adapter.getlist().get(rowNumber) instanceof KolPostViewModel) {
+            KolPostViewModel kolPostViewModel = (KolPostViewModel) adapter.getlist().get(rowNumber);
+            kolPostViewModel.setTotalComment((
+                    (KolPostViewModel)
                             adapter.getlist().get(rowNumber)).getTotalComment() +
                     totalNewComment);
             adapter.notifyItemChanged(rowNumber);
@@ -1101,8 +1100,8 @@ public class FeedPlusFragment extends BaseDaggerFragment
     }
 
     private void onSuccessFollowUnfollowFromProfile(int rowNumber, int isFollowing) {
-        if (rowNumber != DEFAULT_VALUE && adapter.getlist().get(rowNumber) instanceof KolViewModel) {
-            KolViewModel kolViewModel = (KolViewModel) adapter.getlist().get(rowNumber);
+        if (rowNumber != DEFAULT_VALUE && adapter.getlist().get(rowNumber) instanceof KolPostViewModel) {
+            KolPostViewModel kolViewModel = (KolPostViewModel) adapter.getlist().get(rowNumber);
 
             if (isFollowing != DEFAULT_VALUE) {
                 kolViewModel.setFollowed(isFollowing == IS_FOLLOWING_TRUE);
@@ -1113,8 +1112,8 @@ public class FeedPlusFragment extends BaseDaggerFragment
     }
 
     private void updatePostState(int rowNumber, int isLiked, int totalLike, int totalComment) {
-        if (rowNumber != DEFAULT_VALUE && adapter.getlist().get(rowNumber) instanceof KolViewModel) {
-            KolViewModel kolViewModel = (KolViewModel) adapter.getlist().get(rowNumber);
+        if (rowNumber != DEFAULT_VALUE && adapter.getlist().get(rowNumber) instanceof KolPostViewModel) {
+            KolPostViewModel kolViewModel = (KolPostViewModel) adapter.getlist().get(rowNumber);
 
             if (isLiked != DEFAULT_VALUE) {
                 kolViewModel.setLiked(isLiked == IS_LIKE_TRUE);
