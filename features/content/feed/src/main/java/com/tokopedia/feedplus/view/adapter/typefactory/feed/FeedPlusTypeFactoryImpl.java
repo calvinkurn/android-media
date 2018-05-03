@@ -12,7 +12,6 @@ import com.tokopedia.feedplus.view.adapter.viewholder.favoritecta.FavoriteCtaVie
 import com.tokopedia.feedplus.view.adapter.viewholder.inspiration.InspirationViewHolder;
 import com.tokopedia.feedplus.view.adapter.viewholder.kol.ContentProductViewHolder;
 import com.tokopedia.feedplus.view.adapter.viewholder.kol.KolRecommendationViewHolder;
-import com.tokopedia.feedplus.view.adapter.viewholder.kol.KolViewHolder;
 import com.tokopedia.feedplus.view.adapter.viewholder.officialstore.OfficialStoreBrandsViewHolder;
 import com.tokopedia.feedplus.view.adapter.viewholder.officialstore.OfficialStoreCampaignViewHolder;
 import com.tokopedia.feedplus.view.adapter.viewholder.productcard.ActivityCardViewHolder;
@@ -204,8 +203,6 @@ public class FeedPlusTypeFactoryImpl extends BaseAdapterTypeFactory implements F
             viewHolder = new RecentViewViewHolder(view, viewListener);
         else if (type == ToppicksViewHolder.LAYOUT)
             viewHolder = new ToppicksViewHolder(view, toppicksListener);
-        else if (type == KolViewHolder.LAYOUT)
-            viewHolder = new KolViewHolder(view, kolViewListener);
         else if (type == KolRecommendationViewHolder.LAYOUT)
             viewHolder = new KolRecommendationViewHolder(view, kolViewListener);
         else if (type == FeedTopadsViewHolder.LAYOUT)
