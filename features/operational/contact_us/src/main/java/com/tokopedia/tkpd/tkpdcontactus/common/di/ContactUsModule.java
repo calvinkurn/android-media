@@ -6,6 +6,7 @@ import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.network.interceptor.ErrorResponseInterceptor;
+import com.tokopedia.abstraction.common.utils.GlobalConfig;
 import com.tokopedia.tkpd.tkpdcontactus.common.data.model.ContactUsErrorResponse;
 import com.tokopedia.tkpd.tkpdcontactus.common.di.network.ContactUsAuthInterceptor;
 import com.tokopedia.tkpd.tkpdcontactus.home.source.api.ContactUsAPI;
@@ -35,11 +36,15 @@ public class ContactUsModule {
 
     @Provides
     OkHttpClient provideOkHttpClient(ContactUsAuthInterceptor contactUsAuthInterceptor,HttpLoggingInterceptor httpLoggingInterceptor) {
-        return new OkHttpClient.Builder()
+        OkHttpClient.Builder builder = new OkHttpClient.Builder()
                 .addInterceptor(contactUsAuthInterceptor)
-                .addNetworkInterceptor(httpLoggingInterceptor)
-                .addInterceptor(new ErrorResponseInterceptor(ContactUsErrorResponse.class))
-                .build();
+                .addInterceptor(new ErrorResponseInterceptor(ContactUsErrorResponse.class));
+
+        if (GlobalConfig.isAllowDebuggingTools()) {
+            builder.addInterceptor(httpLoggingInterceptor);
+
+        }
+        return builder.build();
     }
 
     @Provides

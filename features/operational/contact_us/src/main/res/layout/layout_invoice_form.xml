@@ -138,6 +138,7 @@
         android:textColor="@color/black3_text"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
+        android:textSize="13sp"
         app:layout_constraintTop_toBottomOf="@+id/textView36"
         android:hint="Beritahukan kendala Anda (Minimum 30)" />
 
