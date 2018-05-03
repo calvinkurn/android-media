@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -13,6 +14,8 @@ import android.view.View;
 import android.webkit.URLUtil;
 
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
+import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
+import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.imagepicker.R;
 import com.tokopedia.imagepicker.common.widget.NonSwipeableViewPager;
 import com.tokopedia.imagepicker.editor.adapter.ImageEditorViewPagerAdapter;
@@ -77,7 +80,10 @@ public class ImageEditorActivity extends BaseSimpleActivity implements ImageDown
     private View editorMainView;
     private View editorControlView;
     private View editCancelView;
+    private View editSaveView;
     private View doneButton;
+    private View vCropProgressBar;
+    private View blockingView;
 
     public static Intent getIntent(Context context, ArrayList<String> imageUrls, int minResolution,
                                    @ImagePickerBuilder.ImageEditActionTypeDef int[] imageEditActionType) {
@@ -107,15 +113,9 @@ public class ImageEditorActivity extends BaseSimpleActivity implements ImageDown
         Intent intent = getIntent();
         //TODO for test only
         extraImageUrls = new ArrayList<>();
-        extraImageUrls.add("/storage/emulated/0/Tokopedia/738855.jpg");
-        extraImageUrls.add("/storage/emulated/0/Download/Guitar-PNG-Image-500x556.png");
         extraImageUrls.add("/storage/emulated/0/WhatsApp/Media/WhatsApp Documents/IMG_20180308_181928_HDR.jpg");
-        extraImageUrls.add("/storage/emulated/0/WhatsApp/Media/WhatsApp Images/IMG-20180111-WA0004.jpg");
-        extraImageUrls.add("/storage/emulated/0/Download/303836.jpg");
-        extraImageUrls.add("/storage/emulated/0/Tokopedia/738855.jpg");
+        extraImageUrls.add("/storage/emulated/0/DCIM/Camera/IMG_20180418_113022.jpg");
         extraImageUrls.add("/storage/emulated/0/Download/Guitar-PNG-Image-500x556.png");
-        extraImageUrls.add("/storage/emulated/0/WhatsApp/Media/WhatsApp Documents/IMG_20180308_181928_HDR.jpg");
-        extraImageUrls.add("/storage/emulated/0/WhatsApp/Media/WhatsApp Images/IMG-20180111-WA0004.jpg");
         extraImageUrls.add("/storage/emulated/0/Download/303836.jpg");
 
 //        if (intent.hasExtra(EXTRA_IMAGE_URLS)) {
@@ -150,9 +150,12 @@ public class ImageEditorActivity extends BaseSimpleActivity implements ImageDown
         editorMainView = findViewById(R.id.vg_editor_main);
         editorControlView = findViewById(R.id.vg_editor_control);
         editCancelView = findViewById(R.id.tv_edit_cancel);
+        editSaveView = findViewById(R.id.tv_edit_save);
         imageEditActionMainWidget = findViewById(R.id.image_edit_action_main_widget);
         imageEditThumbnailListWidget = findViewById(R.id.image_edit_thumbnail_list_widget);
         doneButton = findViewById(R.id.tv_done);
+        vCropProgressBar = findViewById(R.id.crop_progressbar);
+        blockingView = findViewById(R.id.crop_blocking_view);
 
         viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
@@ -178,6 +181,12 @@ public class ImageEditorActivity extends BaseSimpleActivity implements ImageDown
                 onCancelEditClicked();
             }
         });
+        editSaveView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onSaveEditClicked();
+            }
+        });
         doneButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -187,8 +196,7 @@ public class ImageEditorActivity extends BaseSimpleActivity implements ImageDown
     }
 
     private void onCancelEditClicked() {
-        ImageEditPreviewFragment fragment = (ImageEditPreviewFragment)
-                imageEditorViewPagerAdapter.getRegisteredFragment(currentImageIndex);
+        ImageEditPreviewFragment fragment = getCurrentFragment();
         if (fragment != null) {
             switch (currentEditActionType) {
                 case TYPE_CROP:
@@ -209,6 +217,43 @@ public class ImageEditorActivity extends BaseSimpleActivity implements ImageDown
         //TODO on done button clicked
     }
 
+    private void onSaveEditClicked(){
+        if (isInEditMode) {
+            showCropLoading();
+            ImageEditPreviewFragment fragment = getCurrentFragment();
+            if (fragment != null) {
+                fragment.saveEdittedImage();
+            }
+        }
+    }
+
+    @Override
+    public void onSuccessSaveEditImage(Uri resultUri) {
+        hideCropLoading();
+        //TODO
+    }
+
+    @Override
+    public void onErrorSaveEditImage(Throwable throwable) {
+        hideCropLoading();
+        NetworkErrorHelper.showRedCloseSnackbar(this, ErrorHandler.getErrorMessage(getContext(), throwable));
+        onCancelEditClicked();
+    }
+
+    private ImageEditPreviewFragment getCurrentFragment(){
+        return (ImageEditPreviewFragment) imageEditorViewPagerAdapter.getRegisteredFragment(currentImageIndex);
+    }
+
+    private void showCropLoading(){
+        vCropProgressBar.setVisibility(View.VISIBLE);
+        blockingView.setVisibility(View.VISIBLE);
+    }
+
+    private void hideCropLoading(){
+        vCropProgressBar.setVisibility(View.GONE);
+        blockingView.setVisibility(View.GONE);
+    }
+
     private void setupEditActionWidget() {
         imageEditActionMainWidget.setOnImageEditActionMainWidgetListener(this);
         imageEditActionMainWidget.setData(imageEditActionType);
@@ -223,13 +268,8 @@ public class ImageEditorActivity extends BaseSimpleActivity implements ImageDown
         this.isInEditMode = isInEditMode;
         this.currentEditActionType = editActionType;
 
-        // TODO setup edit/preview mode
-        // EDIT: have cancel and save
-        // NON-EDIT: have thumbnail and edit action
         viewPager.setCanSwipe(!isInEditMode);
-        int position = viewPager.getCurrentItem();
-        ImageEditPreviewFragment fragment = (ImageEditPreviewFragment)
-                imageEditorViewPagerAdapter.getRegisteredFragment(position);
+        ImageEditPreviewFragment fragment = getCurrentFragment();
         if (isInEditMode) {
             editorMainView.setVisibility(View.GONE);
             editorControlView.setVisibility(View.VISIBLE);
@@ -347,8 +387,14 @@ public class ImageEditorActivity extends BaseSimpleActivity implements ImageDown
                     edittedImagePaths,
                     currentEditStepIndexList,
                     minResolution);
+            viewPager.setAdapter(imageEditorViewPagerAdapter);
         }
-        viewPager.setAdapter(imageEditorViewPagerAdapter);
+        viewPager.post(new Runnable() {
+            @Override
+            public void run() {
+                viewPager.setCurrentItem(currentImageIndex);
+            }
+        });
 
         setupEditActionWidget();
         setupEditMode(isInEditMode, currentEditActionType);

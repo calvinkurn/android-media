@@ -1,11 +1,6 @@
 package com.tokopedia.imagepicker.editor.adapter;
 
 import android.content.Context;
-import android.graphics.PorterDuff;
-import android.graphics.drawable.Drawable;
-import android.support.annotation.ColorRes;
-import android.support.design.widget.TabLayout;
-import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -59,7 +54,7 @@ public class ImageEditorEditActionAdapter implements View.OnClickListener {
             viewGroup.removeAllViews();
         }
         for (int tabTypeDefItem : tabTypeDef) {
-            View view = LayoutInflater.from(context).inflate(R.layout.view_image_icon, viewGroup, false);
+            View view = LayoutInflater.from(context).inflate(R.layout.view_edit_image_icon, viewGroup, false);
             ImageView ivEdit = view.findViewById(R.id.iv_edit);
             TextView tvEdit = view.findViewById(R.id.tv_edit);
             view.setId(tabTypeDefItem);

@@ -3,6 +3,7 @@ package com.tokopedia.imagepicker.editor;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -18,6 +19,7 @@ import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.imagepicker.R;
 import com.tokopedia.imagepicker.common.util.ImageUtils;
+import com.yalantis.ucrop.callback.BitmapCropCallback;
 import com.yalantis.ucrop.view.CropImageView;
 import com.yalantis.ucrop.view.GestureCropImageView;
 import com.yalantis.ucrop.view.OverlayView;
@@ -51,6 +53,8 @@ public class ImageEditPreviewFragment extends Fragment {
 
     public interface OnImageEditPreviewFragmentListener {
         boolean isInEditMode();
+        void onSuccessSaveEditImage(Uri resultUri);
+        void onErrorSaveEditImage(Throwable throwable);
     }
 
     public static ImageEditPreviewFragment newInstance(String oriImagePath, String edittedImagePath, int minResolution) {
@@ -117,6 +121,20 @@ public class ImageEditPreviewFragment extends Fragment {
 
     }
 
+    public void saveEdittedImage(){
+        uCropView.getCropImageView().cropAndSaveImage(Bitmap.CompressFormat.JPEG, 100, new BitmapCropCallback() {
+            @Override
+            public void onBitmapCropped(@NonNull Uri resultUri, int offsetX, int offsetY, int imageWidth, int imageHeight) {
+                onImageEditPreviewFragmentListener.onSuccessSaveEditImage(resultUri);
+            }
+
+            @Override
+            public void onCropFailure(@NonNull Throwable t) {
+                onImageEditPreviewFragmentListener.onErrorSaveEditImage(t);
+            }
+        });
+    }
+
     private void initProgressBar(View view) {
         progressBar = view.findViewById(R.id.progressbar);
     }
@@ -146,6 +164,7 @@ public class ImageEditPreviewFragment extends Fragment {
         OverlayView overlayView = uCropView.getOverlayView();
 
         // Crop image view options
+        gestureCropImageView.setRotateEnabled(false);
         gestureCropImageView.setMaxScaleMultiplier(CropImageView.DEFAULT_MAX_SCALE_MULTIPLIER);
         gestureCropImageView.setImageToWrapCropBoundsAnimDuration(CropImageView.DEFAULT_IMAGE_TO_CROP_BOUNDS_ANIM_DURATION);
 

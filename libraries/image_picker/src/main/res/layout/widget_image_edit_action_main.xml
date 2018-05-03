@@ -19,7 +19,7 @@
         android:clipToPadding="false"
         android:gravity="center"
         android:orientation="horizontal">
-        <!-- layout in programmatically -->
+        <!-- layout in programmatically see ImageEditorEditActionAdapter -->
     </LinearLayout>
 
 </HorizontalScrollView>

@@ -23,7 +23,7 @@ import static com.tokopedia.imagepicker.picker.ImagePickerBuilder.ImageSelection
  */
 
 public enum ImagePickerBuilder {
-    ADD_PRODUCT(new int[]{TYPE_GALLERY, TYPE_CAMERA, TYPE_INSTAGRAM},
+    ADD_PRODUCT(new int[]{TYPE_GALLERY, TYPE_INSTAGRAM, TYPE_CAMERA},
             GalleryType.IMAGE_ONLY,
             ImageSelectionTypeDef.TYPE_SINGLE,
             300,
@@ -31,13 +31,18 @@ public enum ImagePickerBuilder {
             true,
             new int[]{TYPE_CROP_ROTATE});
 
-    private @ImagePickerTabTypeDef int[] tabTypeDef;
-    private @GalleryType int galleryType;
+    private @ImagePickerTabTypeDef
+    int[] tabTypeDef;
+    private @GalleryType
+    int galleryType;
     private int minResolution;
-    private @ExpectedImageRatioDef int expectedImageRatio;
-    private @ImageSelectionTypeDef int imageSelectionType;
+    private @ExpectedImageRatioDef
+    int expectedImageRatio;
+    private @ImageSelectionTypeDef
+    int imageSelectionType;
     private boolean continueToEditAfterPick;
-    private @ImageEditActionTypeDef int[] imageEditActionType;
+    private @ImageEditActionTypeDef
+    int[] imageEditActionType;
 
     @IntDef({TYPE_GALLERY, TYPE_CAMERA, TYPE_INSTAGRAM})
     public @interface ImagePickerTabTypeDef {
@@ -70,7 +75,7 @@ public enum ImagePickerBuilder {
 
     private ImagePickerBuilder(@ImagePickerTabTypeDef int[] imagePickerTabTypeDef,
                                @GalleryType int galleryType,
-                               @ImageSelectionTypeDef int selectionType ,
+                               @ImageSelectionTypeDef int selectionType,
                                int minResolution,
                                @ExpectedImageRatioDef int expectedImageRatio) {
         this.tabTypeDef = imagePickerTabTypeDef;
@@ -83,7 +88,7 @@ public enum ImagePickerBuilder {
 
     private ImagePickerBuilder(@ImagePickerTabTypeDef int[] imagePickerTabTypeDef,
                                @GalleryType int galleryType,
-                               @ImageSelectionTypeDef int selectionType ,
+                               @ImageSelectionTypeDef int selectionType,
                                int minResolution,
                                @ExpectedImageRatioDef int expectedImageRatio,
                                boolean continueToEditAfterPick,
@@ -127,7 +132,7 @@ public enum ImagePickerBuilder {
         return imageSelectionType;
     }
 
-    public boolean supportMultipleSelection(){
+    public boolean supportMultipleSelection() {
         return imageSelectionType != ImageSelectionTypeDef.TYPE_SINGLE;
     }
 
