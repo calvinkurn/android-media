@@ -22,6 +22,7 @@ import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.manage.general.ManageWebViewActivity;
 import com.tokopedia.core.network.NetworkErrorHelper;
+import com.tokopedia.core.referral.HeightWrappingViewPager;
 import com.tokopedia.core.referral.adapter.ReferralGuidePagerAdapter;
 import com.tokopedia.core.referral.di.DaggerReferralComponent;
 import com.tokopedia.core.referral.di.ReferralComponent;
@@ -61,7 +62,7 @@ public class FragmentReferral extends BasePresenterFragment<IReferralPresenter> 
 //    RelativeLayout referralCodeLayout;
 
     @BindView(R2.id.view_pager_referral_guide)
-    ViewPager pagerGuide;
+    HeightWrappingViewPager pagerGuide;
     @BindView(R2.id.tab_referral_guide)
     TabLayout tabGuide;
 
@@ -152,7 +153,9 @@ public class FragmentReferral extends BasePresenterFragment<IReferralPresenter> 
 
         referralGuidePagerAdapter = new ReferralGuidePagerAdapter(getActivity());
         pagerGuide.setAdapter(referralGuidePagerAdapter);
-        tabGuide.setupWithViewPager(pagerGuide);
+
+        pagerGuide.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabGuide));
+        tabGuide.addOnTabSelectedListener(new TabLayout.ViewPagerOnTabSelectedListener(pagerGuide));
     }
 
     @Override

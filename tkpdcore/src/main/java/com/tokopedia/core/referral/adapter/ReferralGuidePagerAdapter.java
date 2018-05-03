@@ -15,13 +15,7 @@ import com.tokopedia.core.R;
 
 public class ReferralGuidePagerAdapter extends PagerAdapter {
 
-    private int mLayouts[] = new int[]
-
-    {
-        R.layout.referral_how_it_works, R.layout.referral_terms
-    }
-
-    ;
+    private int mLayouts[] = new int[]{R.layout.referral_how_it_works, R.layout.referral_terms};
     private LayoutInflater mInflater;
     private final int HOW_TO_USE_POSITION = 0;
     private final int TERMS_POSITION = 1;
