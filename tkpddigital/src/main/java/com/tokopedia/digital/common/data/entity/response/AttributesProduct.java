@@ -15,6 +15,9 @@ public class AttributesProduct {
     @SerializedName("detail")
     @Expose
     private String detail;
+    @SerializedName("detail_compact")
+    @Expose
+    private String detailCompact;
     @SerializedName("detail_url")
     @Expose
     private String detailUrl;
@@ -45,6 +48,10 @@ public class AttributesProduct {
         return detail;
     }
 
+    public String getDetailCompact() {
+        return detailCompact;
+    }
+
     public String getDetailUrl() {
         return detailUrl;
     }
@@ -72,4 +79,5 @@ public class AttributesProduct {
     public int getStatus() {
         return status;
     }
+
 }
