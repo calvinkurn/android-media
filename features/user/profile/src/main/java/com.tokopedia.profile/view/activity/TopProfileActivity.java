@@ -8,6 +8,7 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.AppBarLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.content.res.AppCompatResources;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
@@ -22,6 +23,7 @@ import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
+import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh;
 import com.tokopedia.abstraction.common.utils.GlobalConfig;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.applink.ApplinkConst;
@@ -73,6 +75,7 @@ public class TopProfileActivity extends BaseSimpleActivity
     @Inject
     TopProfileActivityListener.Presenter presenter;
     private AppBarLayout appBarLayout;
+    private SwipeToRefresh swipeToRefresh;
 
     private Toolbar toolbar;
 
@@ -188,6 +191,10 @@ public class TopProfileActivity extends BaseSimpleActivity
 
     private void initView() {
         appBarLayout = findViewById(R.id.app_bar_layout);
+        swipeToRefresh = findViewById(R.id.swipe_refresh_layout);
+        swipeToRefresh.setProgressViewOffset(true,
+                -1 * swipeToRefresh.getProgressViewEndOffset(),
+                swipeToRefresh.getProgressViewEndOffset());
         toolbar = findViewById(R.id.toolbar);
         tabLayout = findViewById(R.id.tab_profile);
         viewPager = findViewById(R.id.pager);
@@ -232,6 +239,14 @@ public class TopProfileActivity extends BaseSimpleActivity
                 }
             });
         }
+
+        swipeToRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                presenter.getTopProfileData(userId);
+                swipeToRefresh.setRefreshing(true);
+            }
+        });
 
         favoriteShopLayout.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -334,6 +349,7 @@ public class TopProfileActivity extends BaseSimpleActivity
     @Override
     public void onSuccessGetProfileData(TopProfileViewModel topProfileViewModel) {
         this.topProfileViewModel = topProfileViewModel;
+        swipeToRefresh.setRefreshing(false);
 
         initTabLoad();
         populateData();
@@ -341,6 +357,7 @@ public class TopProfileActivity extends BaseSimpleActivity
 
     @Override
     public void onErrorGetProfileData(String message) {
+        swipeToRefresh.setRefreshing(false);
         showErrorScreen(message, tryAgainOnlickListener());
     }
 
@@ -379,7 +396,7 @@ public class TopProfileActivity extends BaseSimpleActivity
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == MANAGE_PEOPLE_CODE || requestCode == LOGIN_REQUEST_CODE) {
-            presenter.getTopProfileData(userId);
+            presenter.initView(userId);
         }
     }
 
@@ -471,6 +488,12 @@ public class TopProfileActivity extends BaseSimpleActivity
                     tvTitleToolbar.setVisibility(View.GONE);
                     buttonFollowToolbar.setVisibility(View.GONE);
                     isShow = false;
+                }
+
+                if (verticalOffset == 0) {
+                    swipeToRefresh.setEnabled(true);
+                } else {
+                    swipeToRefresh.setEnabled(false);
                 }
             }
         });
@@ -610,7 +633,7 @@ public class TopProfileActivity extends BaseSimpleActivity
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                presenter.getTopProfileData(userId);
+                presenter.initView(userId);
             }
         };
     }
