@@ -58,12 +58,14 @@ public class BottomSheetExpandableItemSelectedListAdapter extends
         private View itemContainer;
         private BottomSheetDynamicFilterView filterView;
         private BottomSheetExpandableItemSelectedListAdapter adapter;
+        private View ratingIcon;
 
         public ViewHolder(View itemView,
                           BottomSheetDynamicFilterView filterView,
                           BottomSheetExpandableItemSelectedListAdapter adapter) {
             super(itemView);
             itemText = itemView.findViewById(R.id.filter_item_text);
+            ratingIcon = itemView.findViewById(R.id.rating_icon);
             colorIcon = itemView.findViewById(R.id.color_icon);
             itemContainer = itemView.findViewById(R.id.filter_item_container);
             this.filterView = filterView;
@@ -71,12 +73,19 @@ public class BottomSheetExpandableItemSelectedListAdapter extends
         }
 
         public void bind(final Option option, final int position) {
+            if (Option.KEY_RATING.equals(option.getKey())) {
+                ratingIcon.setVisibility(View.VISIBLE);
+            } else {
+                ratingIcon.setVisibility(View.GONE);
+            }
+
             if (!TextUtils.isEmpty(option.getHexColor())) {
                 colorIcon.setVisibility(View.VISIBLE);
                 colorIcon.setColor(Color.parseColor(option.getHexColor()));
             } else {
                 colorIcon.setVisibility(View.GONE);
             }
+
             itemText.setText(option.getName());
 
             if (option.isCategoryOption()) {
