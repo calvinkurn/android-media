@@ -3,9 +3,9 @@ package com.tokopedia.feedplus.view.subscriber;
 import android.text.TextUtils;
 
 import com.tkpd.library.utils.LocalCacheHandler;
+import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.core.analytics.FeedTracking;
 import com.tokopedia.core.analytics.TrackingUtils;
-import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.core.network.retrofit.response.ErrorHandler;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.util.TimeConverter;
@@ -36,7 +36,6 @@ import com.tokopedia.feedplus.view.viewmodel.inspiration.InspirationViewModel;
 import com.tokopedia.feedplus.view.viewmodel.kol.ContentProductViewModel;
 import com.tokopedia.feedplus.view.viewmodel.kol.KolRecommendItemViewModel;
 import com.tokopedia.feedplus.view.viewmodel.kol.KolRecommendationViewModel;
-import com.tokopedia.feedplus.view.viewmodel.kol.KolViewModel;
 import com.tokopedia.feedplus.view.viewmodel.officialstore.OfficialStoreBrandsViewModel;
 import com.tokopedia.feedplus.view.viewmodel.officialstore.OfficialStoreCampaignProductViewModel;
 import com.tokopedia.feedplus.view.viewmodel.officialstore.OfficialStoreCampaignViewModel;
@@ -52,6 +51,7 @@ import com.tokopedia.feedplus.view.viewmodel.recentview.RecentViewViewModel;
 import com.tokopedia.feedplus.view.viewmodel.topads.FeedTopAdsViewModel;
 import com.tokopedia.feedplus.view.viewmodel.toppicks.ToppicksItemViewModel;
 import com.tokopedia.feedplus.view.viewmodel.toppicks.ToppicksViewModel;
+import com.tokopedia.kol.feature.post.view.viewmodel.KolPostViewModel;
 import com.tokopedia.topads.sdk.domain.model.Data;
 
 import java.util.ArrayList;
@@ -369,7 +369,7 @@ public class GetFirstPageFeedsSubscriber extends Subscriber<FeedResult> {
                     case TYPE_KOL:
                         if (domain.getContent() != null
                                 && domain.getContent().getKolPostDomain() != null) {
-                            KolViewModel kolViewModel = convertToKolViewModel(domain);
+                            KolPostViewModel kolViewModel = convertToKolViewModel(domain);
                             listFeedView.add(kolViewModel);
 
                             List<FeedEnhancedTracking.Promotion> list = new ArrayList<>();
@@ -504,9 +504,9 @@ public class GetFirstPageFeedsSubscriber extends Subscriber<FeedResult> {
         return new FeedTopAdsViewModel(topadsDataList);
     }
 
-    private KolViewModel convertToKolViewModel(DataFeedDomain domain) {
+    private KolPostViewModel convertToKolViewModel(DataFeedDomain domain) {
         KolPostDomain kolPostDomain = domain.getContent().getKolPostDomain();
-        return new KolViewModel(
+        return new KolPostViewModel(
                 kolPostDomain.getHeaderTitle(),
                 kolPostDomain.getUserName(),
                 kolPostDomain.getUserPhoto(),
