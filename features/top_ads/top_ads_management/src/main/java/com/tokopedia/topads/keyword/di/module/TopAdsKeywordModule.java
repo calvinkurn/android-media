@@ -62,7 +62,7 @@ public class TopAdsKeywordModule {
     @TopAdsKeywordScope
     @Provides
     TopAdsSourceTaggingLocal provideTopAdsSourceTracking(@ApplicationContext Context context){
-        return new TopAdsSourceTaggingLocal(context, TopAdsSourceTaggingConstant.KEY_SOURCE_PREFERENCE);
+        return new TopAdsSourceTaggingLocal(context);
     }
 
     @TopAdsKeywordScope

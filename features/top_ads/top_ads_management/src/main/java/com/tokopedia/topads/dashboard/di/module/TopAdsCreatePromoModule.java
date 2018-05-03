@@ -210,7 +210,7 @@ public class TopAdsCreatePromoModule {
     @TopAdsDashboardScope
     @Provides
     public TopAdsSourceTaggingLocal provideTopAdsSourceTracking(@ApplicationContext Context context){
-        return new TopAdsSourceTaggingLocal(context, TopAdsSourceTaggingConstant.KEY_SOURCE_PREFERENCE);
+        return new TopAdsSourceTaggingLocal(context);
     }
 
     @TopAdsDashboardScope

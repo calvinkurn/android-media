@@ -22,8 +22,8 @@ public class TopAdsSourceTaggingLocal {
         this.preferences = preferences;
     }
 
-    public TopAdsSourceTaggingLocal(Context context, String key) {
-        this.preferences = context.getSharedPreferences(key, Context.MODE_PRIVATE);
+    public TopAdsSourceTaggingLocal(Context context) {
+        this.preferences = context.getSharedPreferences(TopAdsSourceTaggingConstant.KEY_SOURCE_PREFERENCE, Context.MODE_PRIVATE);
     }
 
     public Observable<Void> savingSource(final TopAdsSourceTaggingModel data){

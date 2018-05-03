@@ -17,14 +17,12 @@ public class TopAdsSourceTaggingUseCaseUtil {
 
     public static TopAdsAddSourceTaggingUseCase getTopAdsAddSourceTaggingUseCase(Context context){
         return new TopAdsAddSourceTaggingUseCase(new TopAdsSourceTaggingRepositoryImpl(
-                new TopAdsSourceTaggingDataSource(new TopAdsSourceTaggingLocal(context,
-                        TopAdsSourceTaggingConstant.KEY_SOURCE_PREFERENCE))));
+                new TopAdsSourceTaggingDataSource(new TopAdsSourceTaggingLocal(context))));
     }
 
     public static TopAdsGetSourceTaggingUseCase getTopAdsGetSourceTaggingUseCase(Context context){
         return new TopAdsGetSourceTaggingUseCase(new TopAdsSourceTaggingRepositoryImpl(
-                new TopAdsSourceTaggingDataSource(new TopAdsSourceTaggingLocal(context,
-                        TopAdsSourceTaggingConstant.KEY_SOURCE_PREFERENCE))));
+                new TopAdsSourceTaggingDataSource(new TopAdsSourceTaggingLocal(context))));
     }
 
 }
