@@ -604,8 +604,10 @@ public class BottomSheetFilterView extends BaseCustomView implements BottomSheet
         buttonReset.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                resetAllFilter();
-                applyFilter();
+                if (isFilterActive()) {
+                    resetAllFilter();
+                    applyFilter();
+                }
             }
         });
         filterDetailTopBarButtonReset.setOnClickListener(new View.OnClickListener() {
@@ -621,6 +623,10 @@ public class BottomSheetFilterView extends BaseCustomView implements BottomSheet
                 applyFilter();
             }
         });
+    }
+
+    private boolean isFilterActive() {
+        return !savedCheckedState.isEmpty() || !savedTextInput.isEmpty() || isCategorySelected();
     }
 
     private void showFilterDetailPage() {
