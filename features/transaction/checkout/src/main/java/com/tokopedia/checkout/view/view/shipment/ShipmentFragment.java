@@ -26,6 +26,7 @@ import com.tokopedia.checkout.domain.datamodel.cartsingleshipment.ShipmentCostMo
 import com.tokopedia.checkout.domain.datamodel.shipmentrates.ShipmentDetailData;
 import com.tokopedia.checkout.domain.datamodel.voucher.PromoCodeAppliedData;
 import com.tokopedia.checkout.view.base.BaseCheckoutFragment;
+import com.tokopedia.checkout.view.di.component.CartComponent;
 import com.tokopedia.checkout.view.holderitemdata.CartItemPromoHolderData;
 import com.tokopedia.checkout.view.holderitemdata.CartItemTickerErrorHolderData;
 import com.tokopedia.checkout.view.view.cartlist.CartItemDecoration;
@@ -43,7 +44,6 @@ import com.tokopedia.design.component.ToasterError;
 import com.tokopedia.design.component.ToasterNormal;
 import com.tokopedia.payment.activity.TopPayActivity;
 import com.tokopedia.payment.model.PaymentPassData;
-import com.tokopedia.transaction.common.data.pickuppoint.Store;
 
 import java.util.List;
 
@@ -51,7 +51,6 @@ import javax.inject.Inject;
 
 import static com.tokopedia.checkout.view.view.shippingoptions.ShipmentDetailActivity.EXTRA_POSITION;
 import static com.tokopedia.checkout.view.view.shippingoptions.ShipmentDetailActivity.EXTRA_SHIPMENT_DETAIL_DATA;
-import static com.tokopedia.transaction.common.constant.PickupPointIntentConstant.INTENT_DATA_STORE;
 
 /**
  * @author Irfan Khoirul on 23/04/18.
@@ -109,6 +108,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     @Override
     protected void initInjector() {
         ShipmentComponent component = DaggerShipmentComponent.builder()
+                .cartComponent(getComponent(CartComponent.class))
                 .shipmentModule(new ShipmentModule(this))
                 .build();
         component.inject(this);

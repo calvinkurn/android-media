@@ -33,7 +33,6 @@ import com.tokopedia.checkout.domain.datamodel.cartlist.CartPromoSuggestion;
 import com.tokopedia.checkout.domain.datamodel.cartshipmentform.CartShipmentAddressFormData;
 import com.tokopedia.checkout.domain.datamodel.shipmentrates.ShipmentDetailData;
 import com.tokopedia.checkout.domain.datamodel.voucher.PromoCodeAppliedData;
-import com.tokopedia.checkout.domain.datamodel.voucher.PromoCodeCartListData;
 import com.tokopedia.checkout.router.ICartCheckoutModuleRouter;
 import com.tokopedia.checkout.view.adapter.MultipleAddressShipmentAdapter;
 import com.tokopedia.checkout.view.base.BaseCheckoutFragment;

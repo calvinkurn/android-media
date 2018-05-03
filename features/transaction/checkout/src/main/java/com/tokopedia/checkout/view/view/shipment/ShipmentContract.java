@@ -1,5 +1,7 @@
 package com.tokopedia.checkout.view.view.shipment;
 
+import android.app.Activity;
+
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
 import com.tokopedia.checkout.data.entity.request.CheckoutRequest;
@@ -37,6 +39,7 @@ public interface ShipmentContract {
 
         void renderCheckoutCartError(String message);
 
+        Activity getActivity();
     }
 
     interface Presenter extends CustomerPresenter<View> {

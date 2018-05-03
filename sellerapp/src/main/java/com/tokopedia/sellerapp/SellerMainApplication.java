@@ -232,4 +232,14 @@ public class SellerMainApplication extends SellerRouterApplication implements Mo
     public void updateMarketplaceCartCounter(TransactionRouter.CartNotificationListener listener) {
 
     }
+
+    @Override
+    public Intent getPromoListIntent(Activity activity) {
+        return null;
+    }
+
+    @Override
+    public Intent getPromoDetailIntent(Context context, String slug) {
+        return null;
+    }
 }

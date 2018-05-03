@@ -1,5 +1,6 @@
 package com.tokopedia.checkout.view.view.shipment.di;
 
+import com.tokopedia.checkout.view.di.component.CartComponent;
 import com.tokopedia.checkout.view.view.shipment.ShipmentFragment;
 
 import dagger.Component;
@@ -9,7 +10,7 @@ import dagger.Component;
  */
 
 @ShipmentScope
-@Component(modules = ShipmentModule.class)
+@Component(modules = ShipmentModule.class, dependencies = CartComponent.class)
 public interface ShipmentComponent {
     void inject(ShipmentFragment shipmentFragment);
 }

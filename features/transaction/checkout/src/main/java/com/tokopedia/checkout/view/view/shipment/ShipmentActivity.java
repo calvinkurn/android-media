@@ -6,16 +6,22 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 
+import com.tokopedia.abstraction.base.app.BaseMainApplication;
+import com.tokopedia.abstraction.common.di.component.HasComponent;
 import com.tokopedia.checkout.domain.datamodel.cartlist.CartPromoSuggestion;
 import com.tokopedia.checkout.domain.datamodel.cartshipmentform.CartShipmentAddressFormData;
 import com.tokopedia.checkout.domain.datamodel.voucher.PromoCodeAppliedData;
 import com.tokopedia.checkout.view.base.BaseCheckoutActivity;
+import com.tokopedia.checkout.view.di.component.CartComponent;
+import com.tokopedia.checkout.view.di.component.CartComponentInjector;
+import com.tokopedia.checkout.view.di.component.DaggerCartComponent;
+import com.tokopedia.checkout.view.di.module.DataModule;
 
 /**
  * @author Irfan Khoirul on 23/04/18.
  */
 
-public class ShipmentActivity extends BaseCheckoutActivity {
+public class ShipmentActivity extends BaseCheckoutActivity implements HasComponent<CartComponent> {
 
     public static final String EXTRA_SHIPMENT_FORM_DATA = "EXTRA_SHIPMENT_FORM_DATA";
     public static final String EXTRA_CART_PROMO_SUGGESTION = "EXTRA_CART_PROMO_SUGGESTION";
@@ -80,4 +86,16 @@ public class ShipmentActivity extends BaseCheckoutActivity {
                 (CartPromoSuggestion) getIntent().getParcelableExtra(EXTRA_CART_PROMO_SUGGESTION)
         );
     }
+
+    @Override
+    public CartComponent getComponent() {
+        return CartComponentInjector.newInstance(
+                DaggerCartComponent.builder()
+                        .baseAppComponent(((BaseMainApplication)getApplication()).getBaseAppComponent())
+                        .dataModule(new DataModule())
+                        .build())
+                .getCartApiServiceComponent();
+
+    }
+
 }
