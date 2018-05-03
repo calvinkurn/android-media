@@ -6,7 +6,6 @@ import android.content.res.Resources;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.core.base.presentation.CustomerPresenter;
 import com.tokopedia.core.base.presentation.CustomerView;
-import com.tokopedia.feedplus.view.viewmodel.kol.KolViewModel;
 import com.tokopedia.feedplus.view.viewmodel.officialstore.OfficialStoreViewModel;
 import com.tokopedia.feedplus.view.viewmodel.product.ProductFeedViewModel;
 
@@ -25,20 +24,6 @@ public interface FeedPlus {
         void finishLoadingProgress();
 
         interface Kol {
-            void onGoToKolProfile(int page, int rowNumber, String userId, int postId);
-
-            void onOpenKolTooltip(int page, int rowNumber, String url);
-
-            void onFollowKolClicked(int page, int rowNumber, int id);
-
-            void onUnfollowKolClicked(int page, int rowNumber, int id);
-
-            void onLikeKolClicked(int page, int rowNumber, int id);
-
-            void onUnlikeKolClicked(int page, int adapterPosition, int id);
-
-            void onGoToKolComment(int page, int rowNumber, KolViewModel kolViewModel);
-
             void onGoToListKolRecommendation(int page, int rowNumber, String url);
 
             void onErrorFollowKol(String errorMessage, int id, int status, int rowNumber);

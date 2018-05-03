@@ -34,7 +34,6 @@ import com.tokopedia.feedplus.view.viewmodel.blog.BlogViewModel;
 import com.tokopedia.feedplus.view.viewmodel.inspiration.InspirationViewModel;
 import com.tokopedia.feedplus.view.viewmodel.kol.ContentProductViewModel;
 import com.tokopedia.feedplus.view.viewmodel.kol.KolRecommendationViewModel;
-import com.tokopedia.feedplus.view.viewmodel.kol.KolViewModel;
 import com.tokopedia.feedplus.view.viewmodel.officialstore.OfficialStoreBrandsViewModel;
 import com.tokopedia.feedplus.view.viewmodel.officialstore.OfficialStoreCampaignViewModel;
 import com.tokopedia.feedplus.view.viewmodel.product.ActivityCardViewModel;
@@ -45,6 +44,9 @@ import com.tokopedia.feedplus.view.viewmodel.promo.PromotedShopViewModel;
 import com.tokopedia.feedplus.view.viewmodel.recentview.RecentViewViewModel;
 import com.tokopedia.feedplus.view.viewmodel.topads.FeedTopAdsViewModel;
 import com.tokopedia.feedplus.view.viewmodel.toppicks.ToppicksViewModel;
+import com.tokopedia.kol.feature.post.view.adapter.viewholder.KolPostViewHolder;
+import com.tokopedia.kol.feature.post.view.listener.KolPostListener;
+import com.tokopedia.kol.feature.post.view.viewmodel.KolPostViewModel;
 import com.tokopedia.topads.sdk.listener.TopAdsInfoClickListener;
 import com.tokopedia.topads.sdk.listener.TopAdsItemClickListener;
 
@@ -59,6 +61,7 @@ public class FeedPlusTypeFactoryImpl extends BaseAdapterTypeFactory implements F
     private final TopAdsInfoClickListener topAdsInfoClickListener;
     private final FeedPlus.View.Toppicks toppicksListener;
     private final FeedPlus.View.Kol kolViewListener;
+    private final KolPostListener.View.ViewHolder kolPostListener;
 
 
     public FeedPlusTypeFactoryImpl(FeedPlusFragment context) {
@@ -67,6 +70,7 @@ public class FeedPlusTypeFactoryImpl extends BaseAdapterTypeFactory implements F
         this.topAdsInfoClickListener = context;
         this.toppicksListener = context;
         this.kolViewListener = context;
+        this.kolPostListener = context;
     }
 
     @Override
@@ -133,8 +137,8 @@ public class FeedPlusTypeFactoryImpl extends BaseAdapterTypeFactory implements F
     }
 
     @Override
-    public int type(KolViewModel kolViewModel) {
-        return KolViewHolder.LAYOUT;
+    public int type(KolPostViewModel kolViewModel) {
+        return KolPostViewHolder.LAYOUT;
     }
 
     @Override
@@ -214,6 +218,8 @@ public class FeedPlusTypeFactoryImpl extends BaseAdapterTypeFactory implements F
             viewHolder = new ContentProductViewHolder(view, viewListener);
         else if (type == EmptyFeedBeforeLoginViewHolder.LAYOUT)
             viewHolder = new EmptyFeedBeforeLoginViewHolder(view, viewListener);
+        else if (type == KolPostViewHolder.LAYOUT)
+            viewHolder = new KolPostViewHolder(view, kolPostListener, KolPostViewHolder.Type.FEED);
         else
             viewHolder = super.createViewHolder(view, type);
         return viewHolder;

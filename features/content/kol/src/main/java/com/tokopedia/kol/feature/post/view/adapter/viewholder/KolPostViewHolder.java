@@ -6,7 +6,6 @@ import android.text.Spanned;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.request.animation.GlideAnimation;
@@ -35,7 +34,7 @@ public class KolPostViewHolder extends AbstractViewHolder<KolPostViewModel> {
     private static final String DASH = "-";
 
     private static final int MAX_CHAR = 250;
-    private final KolPostListener.View viewListener;
+    private final KolPostListener.View.ViewHolder viewListener;
     private TextView name;
     private ImageView avatar;
     private TextView label;
@@ -52,11 +51,18 @@ public class KolPostViewHolder extends AbstractViewHolder<KolPostViewModel> {
     private View commentButton;
     private View likeButton;
     private View topShadow;
-    private RelativeLayout containerView;
+    private Type type;
 
-    public KolPostViewHolder(View itemView, KolPostListener.View viewListener) {
+    public enum Type {
+        PROFILE, FEED
+    }
+
+    public KolPostViewHolder(View itemView,
+                             KolPostListener.View.ViewHolder viewListener,
+                             Type type) {
         super(itemView);
         this.viewListener = viewListener;
+        this.type = type;
         name = itemView.findViewById(R.id.name);
         avatar = itemView.findViewById(R.id.avatar);
         label = itemView.findViewById(R.id.label);
@@ -73,7 +79,6 @@ public class KolPostViewHolder extends AbstractViewHolder<KolPostViewModel> {
         commentButton = itemView.findViewById(R.id.comment_button);
         likeButton = itemView.findViewById(R.id.like_button);
         topShadow = itemView.findViewById(R.id.top_shadow);
-        containerView = itemView.findViewById(R.id.container_view);
     }
 
     @Override
@@ -161,16 +166,22 @@ public class KolPostViewHolder extends AbstractViewHolder<KolPostViewModel> {
         avatar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                viewListener.onGoToKolProfile(element.getPage(), getAdapterPosition(), element
-                        .getKolProfileUrl());
+                viewListener.onGoToKolProfile(element.getPage(),
+                        getAdapterPosition(),
+                        String.valueOf(element.getUserId()),
+                        element.getContentId()
+                );
             }
         });
 
         name.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                viewListener.onGoToKolProfile(element.getPage(), getAdapterPosition(), element
-                        .getKolProfileUrl());
+                viewListener.onGoToKolProfile(element.getPage(),
+                        getAdapterPosition(),
+                        String.valueOf(element.getUserId()),
+                        element.getContentId()
+                );
             }
         });
 
