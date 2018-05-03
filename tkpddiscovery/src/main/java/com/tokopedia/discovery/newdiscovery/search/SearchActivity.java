@@ -18,7 +18,10 @@ import com.tokopedia.core.analytics.SearchTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.network.apiservices.ace.apis.BrowseApi;
+import com.tokopedia.core.remoteconfig.FirebaseRemoteConfigImpl;
+import com.tokopedia.core.remoteconfig.RemoteConfig;
 import com.tokopedia.core.router.discovery.BrowseProductRouter;
+import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.discovery.R;
 import com.tokopedia.discovery.newdiscovery.base.DiscoveryActivity;
 import com.tokopedia.discovery.newdiscovery.base.RedirectionListener;
@@ -102,6 +105,7 @@ public class SearchActivity extends DiscoveryActivity
             Intent intent = new Intent(activity, SearchActivity.class);
             intent.putExtra(EXTRA_PRODUCT_VIEW_MODEL, productViewModel);
             intent.putExtra(EXTRA_FORCE_SWIPE_TO_SHOP, forceSwipeToShop);
+//            intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
             activity.startActivity(intent);
         }
     }
@@ -146,8 +150,24 @@ public class SearchActivity extends DiscoveryActivity
                 getIntent().getBooleanExtra(FROM_APP_SHORTCUTS, false)) {
             UnifyTracking.eventBeliLongClick();
         }
-        if (getIntent() != null && getIntent().getClipData() != null) {
-            ClipData clipData = getIntent().getClipData();
+        handleImageUri(getIntent());
+    }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        handleImageUri(intent);
+    }
+
+    private void handleImageUri(Intent intent) {
+
+        RemoteConfig remoteConfig = new FirebaseRemoteConfigImpl(this);
+
+        if (intent != null &&
+                intent.getClipData() != null &&
+                remoteConfig.getBoolean(TkpdCache.RemoteConfigKey.SHOW_IMAGE_SEARCH,
+                        false)) {
+            ClipData clipData = intent.getClipData();
             Uri uri = clipData.getItemAt(0).getUri();
             onImagePickedSuccess(uri.toString());
         }
