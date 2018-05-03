@@ -102,8 +102,8 @@
             android:windowSoftInputMode="stateAlwaysHidden|adjustPan"/>
         <activity
             android:name=".register.view.activity.SmartLockActivity"
-            android:screenOrientation="portrait"
-            android:theme="@style/DialogTheme"/>
+            android:theme="@style/TranslucentTheme"
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".google.GoogleSignInActivity"
             android:screenOrientation="portrait"
