@@ -26,4 +26,11 @@ public class SubmitTicketActivity extends BaseSimpleActivity{
     protected Fragment getNewFragment() {
         return SubmitTicketFragment.newInstance((SubmitTicketInvoiceData) getIntent().getSerializableExtra(KEY_QUERY_TICKET));
     }
+
+    @Override
+    public void onBackPressed() {
+        ((SubmitTicketFragment)getFragment()).onBackPressed();
+        //super.onBackPressed();
+
+    }
 }

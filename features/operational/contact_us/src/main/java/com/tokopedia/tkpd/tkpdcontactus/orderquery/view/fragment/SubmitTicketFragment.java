@@ -396,4 +396,26 @@ public class SubmitTicketFragment extends BaseDaggerFragment implements SubmitTi
     public void showToolTip() {
         toolTipLayout.setVisibility(View.VISIBLE);
     }
+
+    public void onBackPressed() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+        builder.setTitle(getString(R.string.title_dialog_wrong_scan));
+        builder.setMessage("Pesan Anda akan hilang jika menutup halaman ini, Anda yakin?");
+        builder.setPositiveButton(getString(R.string.batal),
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int i) {
+                        dialog.dismiss();
+                        //presenter.onRetryClick();
+                    }
+                });
+        builder.setNegativeButton(getString(R.string.keular),
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        getActivity().finish();
+                    }
+                }).create().show();
+
+    }
 }

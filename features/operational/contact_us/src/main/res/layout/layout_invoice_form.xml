@@ -135,7 +135,7 @@
         android:layout_marginStart="@dimen/margin_default"
         android:layout_marginTop="@dimen/margin_vvs"
         android:inputType="textPersonName"
-        android:textColor="@color/black5_text"
+        android:textColor="@color/black3_text"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView36"
