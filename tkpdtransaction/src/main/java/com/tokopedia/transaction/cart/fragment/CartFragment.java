@@ -124,6 +124,7 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
         TopPayBroadcastReceiver.ActionListener, TopAdsItemClickListener {
     private static final String ANALYTICS_GATEWAY_PAYMENT_FAILED = "payment failed";
     private static final int REQUEST_CHOOSE_PICKUP_POINT = 9;
+    private static final String MARKETPLACE_FLAG = "marketplace";
 
     @BindView(R2.id.pb_main_loading)
     ProgressBar pbMainLoading;
@@ -509,12 +510,10 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
             rootview.findViewById(com.tokopedia.core.R.id.main_retry).setVisibility(View.VISIBLE);
         } catch (NullPointerException e) {
             View emptyState = LayoutInflater.from(context).
-                    inflate(R.layout.layout_empty_shopping_chart, (ViewGroup) rootview);
+                    inflate(R.layout.layout_empty_shopping_cart, (ViewGroup) rootview);
             Button shop = emptyState.findViewById(R.id.shoping);
             final RelativeLayout autoApplyView = emptyState.findViewById(R.id.promo_result_empty_cart);
-            TextView labelPromoType = emptyState.findViewById(R.id.label_promo_type_empty_cart);
             TextView promoVoucherCode = emptyState.findViewById(R.id.voucher_code_empty_cart);
-            TextView voucherDescription = emptyState.findViewById(R.id.voucher_description_empty_cart);
             ImageView cancelPromoLayout = emptyState.findViewById(R.id.cancel_promo_layout_empty_cart);
 
             shop.setOnClickListener(getRetryEmptyCartClickListener());
@@ -541,13 +540,9 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
             if (autoApply != null && autoApply.isSuccess()) {
                 autoApplyView.setVisibility(View.VISIBLE);
                 if (autoApply.getIsCoupon() == 1) {
-                    labelPromoType.setText(String.format("%s : ", getString(R.string.title_coupon_code)));
                     promoVoucherCode.setText(autoApply.getTitleDescription());
-                    voucherDescription.setText(autoApply.getMessageSuccess());
                 } else {
-                    labelPromoType.setText(String.format("%s : ", getString(R.string.title_promo_code)));
-                    promoVoucherCode.setText(autoApply.getCode());
-                    voucherDescription.setText(autoApply.getMessageSuccess());
+                    promoVoucherCode.setText(autoApply.getTitleDescription());
                 }
 
                 cancelPromoLayout.setOnClickListener(new View.OnClickListener() {
@@ -834,7 +829,7 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
     }
 
     @Override
-    public void renderPromoView(final boolean isCouponActive) {
+    public void renderPromoView(final boolean isCouponActive, final String defaultPromoTab) {
         if (isCouponActive) promoActivationTitle.setText(R.string.title_use_promo_code_and_voucher);
         else promoActivationTitle.setText(R.string.title_use_promo_code);
 
@@ -842,24 +837,41 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
             @Override
             public void onClick(View view) {
 
-                if (getActivity().getApplication() instanceof ICartCheckoutModuleRouter) {
-                    if (isCouponActive) {
-                        startActivityForResult(
-                                ((ICartCheckoutModuleRouter) getActivity().getApplication())
-                                        .tkpdCartCheckoutGetLoyaltyOldCheckoutCouponActiveIntent(
-                                                getActivity(), "marketplace", "marketplace"
-                                        ), IRouterConstant.LoyaltyModule.LOYALTY_ACTIVITY_REQUEST_CODE
-                        );
+                Intent intent;
+                if (isCouponActive) {
+                    if(defaultPromoTab.equals(LoyaltyActivity.COUPON_STATE)) {
+                        intent = LoyaltyActivity
+                                .newInstanceCouponActiveAndSelected(
+                                        getActivity(),
+                                        MARKETPLACE_FLAG,
+                                        MARKETPLACE_FLAG
+                                );
                     } else {
-                        startActivityForResult(
-                                ((ICartCheckoutModuleRouter) getActivity().getApplication())
-                                        .tkpdCartCheckoutGetLoyaltyOldCheckoutCouponNotActiveIntent(
-                                                getActivity(), "marketplace", "marketplace"
-                                        ), IRouterConstant.LoyaltyModule.LOYALTY_ACTIVITY_REQUEST_CODE
+                        intent = LoyaltyActivity.newInstanceCouponActive(
+                                getActivity(), MARKETPLACE_FLAG, MARKETPLACE_FLAG
                         );
                     }
-
-                }
+                } else intent = LoyaltyActivity.newInstanceCouponNotActive(getActivity(),
+                        MARKETPLACE_FLAG, MARKETPLACE_FLAG);
+                startActivityForResult(intent, LoyaltyActivity.LOYALTY_REQUEST_CODE);
+//                if (getActivity().getApplication() instanceof ICartCheckoutModuleRouter) {
+//                    if (isCouponActive) {
+//                        startActivityForResult(
+//                                ((ICartCheckoutModuleRouter) getActivity().getApplication())
+//                                        .tkpdCartCheckoutGetLoyaltyOldCheckoutCouponActiveIntent(
+//                                                getActivity(), "marketplace", "marketplace"
+//                                        ), IRouterConstant.LoyaltyModule.LOYALTY_ACTIVITY_REQUEST_CODE
+//                        );
+//                    } else {
+//                        startActivityForResult(
+//                                ((ICartCheckoutModuleRouter) getActivity().getApplication())
+//                                        .tkpdCartCheckoutGetLoyaltyOldCheckoutCouponNotActiveIntent(
+//                                                getActivity(), "marketplace", "marketplace"
+//                                        ), IRouterConstant.LoyaltyModule.LOYALTY_ACTIVITY_REQUEST_CODE
+//                        );
+//                    }
+//
+//                }
             }
         });
     }

@@ -42,6 +42,8 @@ public class Authenticated extends BaseGTMModel {
     public static final String KEY_PAGE_TYPE = "pageType";
     public static final String KEY_PRODUCT_ID = "productId";
 
+    public static final String ANDROID_ID = "androidId";
+    public static final String ADS_ID = "adsId";
 
     private Map<String, Object> contactInfo = new HashMap<>();
     private Map<String, Object> userDefaultShipping = new HashMap<>();
@@ -57,6 +59,8 @@ public class Authenticated extends BaseGTMModel {
     private String cIntel;
     private String productId;
     private String pageType;
+    private String androidId;
+    private String adsId;
 
     public void setUserDefaultShipping(){
         contactInfo.put(KEY_USER_DEF_SHIPPING, userDefaultShipping);
@@ -192,5 +196,21 @@ public class Authenticated extends BaseGTMModel {
 
     public String getShopId() {
         return shopId;
+    }
+
+    public String getAndroidId() {
+        return androidId;
+    }
+
+    public void setAndroidId(String androidId) {
+        this.androidId = androidId;
+    }
+
+    public String getAdsId() {
+        return adsId;
+    }
+
+    public void setAdsId(String adsId) {
+        this.adsId = adsId;
     }
 }

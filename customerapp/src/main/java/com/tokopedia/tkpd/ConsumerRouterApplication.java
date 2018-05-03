@@ -234,18 +234,16 @@ import com.tokopedia.tkpd.home.ReactNativeOfficialStoreActivity;
 import com.tokopedia.tkpd.react.DaggerReactNativeComponent;
 import com.tokopedia.tkpd.react.ReactNativeComponent;
 import com.tokopedia.tkpd.redirect.RedirectCreateShopActivity;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.FeedModuleRouter;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.FollowKolDomain;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.LikeKolDomain;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.usecase.FollowKolPostUseCase;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.usecase.LikeKolPostUseCase;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.view.activity.KolCommentActivity;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.view.activity.KolFollowingListActivity;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.view.di.DaggerFeedPlusComponent;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.view.di.FeedPlusComponent;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.view.fragment.KolCommentFragment;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.kol.KolCommentHeaderViewModel;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.kol.KolCommentProductViewModel;
+import com.tokopedia.feedplus.FeedModuleRouter;
+import com.tokopedia.feedplus.domain.model.FollowKolDomain;
+import com.tokopedia.feedplus.domain.model.LikeKolDomain;
+import com.tokopedia.feedplus.domain.usecase.FollowKolPostUseCase;
+import com.tokopedia.feedplus.domain.usecase.LikeKolPostUseCase;
+import com.tokopedia.kol.feature.comment.view.activity.KolCommentActivity;
+import com.tokopedia.kol.feature.following_list.view.activity.KolFollowingListActivity;
+import com.tokopedia.feedplus.view.di.DaggerFeedPlusComponent;
+import com.tokopedia.feedplus.view.di.FeedPlusComponent;
+import com.tokopedia.kol.feature.comment.view.fragment.KolCommentFragment;
 import com.tokopedia.tkpd.tkpdreputation.ReputationRouter;
 import com.tokopedia.tkpd.tkpdreputation.TkpdReputationInternalRouter;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.activity.InboxReputationActivity;
@@ -905,8 +903,11 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    public BaseDaggerFragment getKolPostFragment(String userId) {
-        return KolPostFragment.newInstance(userId);
+    public BaseDaggerFragment getKolPostFragment(String userId,
+                                                 int postId,
+                                                 Intent resultIntent,
+                                                 Bundle bundle) {
+        return KolPostFragment.newInstanceFromFeed(userId, postId, resultIntent, bundle);
     }
 
     @Override
@@ -1815,17 +1816,8 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    public Intent getKolCommentActivity(Context context, String avatarUrl, String name,
-                                        String review, String time, String userId,
-                                        String productImageUrl, String contentName,
-                                        String price, boolean isWishlishted, int postId,
-                                        int rowNumber) {
-        return KolCommentActivity.getCallingIntent(context,
-                new KolCommentHeaderViewModel(avatarUrl, name, review, time, userId),
-                new KolCommentProductViewModel(productImageUrl, contentName, price, isWishlishted),
-                postId,
-                rowNumber
-        );
+    public Intent getKolCommentActivity(Context context, int postId, int rowNumber) {
+        return KolCommentActivity.getCallingIntent(context, postId, rowNumber);
     }
 
     @Override
