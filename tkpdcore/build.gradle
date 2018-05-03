@@ -87,8 +87,6 @@ dependencies {
     implementation rootProject.ext.networkDependencies.volley
     implementation rootProject.ext.networkDependencies.glide
 
-    implementation 'com.github.tommus:youtube-android-player-api:1.2.1'
-
     implementation rootProject.ext.analyticsDependencies.appsflyer
     implementation rootProject.ext.analyticsDependencies.installRef
 
