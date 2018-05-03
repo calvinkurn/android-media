@@ -61,16 +61,6 @@ public class SubmitTicketPresenter extends BaseDaggerPresenter<SubmitTicketContr
 
     @Override
     public void onSendButtonClick() {
-   /*     String description = getView().getDescription();
-        List<ImageUpload> imageUploadList = getView().getImageList();
-        SubmitTicketInvoiceData submitTicketInvoiceData = getView().getSubmitTicketInvoiceData();
-        RequestParams requestParams = RequestParams.create();
-        requestParams.putInt("solution_id", submitTicketInvoiceData.getQueryTicket().getId());
-        requestParams.putString("message",description);
-        if(imageUploadList != null && imageUploadList.size()>0) {
-            requestParams.putInt("p_photo",1);
-        }
-    }*/
         this.networkInteractor = new ContactUsRetrofitInteractorImpl();
         if (isTicketValid() && isUploadImageValid()) {
         networkInteractor.sendTicket( context,getSendTicketParam(), new ContactUsRetrofitInteractor.SendTicketListener() {
@@ -119,7 +109,6 @@ public class SubmitTicketPresenter extends BaseDaggerPresenter<SubmitTicketContr
         if(messageWrongParam == MESSAGE_WRONG_FILE_SIZE){
             getView().setSnackBarErrorMessage("Ups! Ukuran gambar yang di-upload lebih dari 10MB");
         }
-        //getView().setSnackBarErrorMessage("Ups! Ukuran gambar yang Anda pilih terlalu kecil. Minimal 300 x 300 piksel.");
     }
 
     private boolean isUploadImageValid() {
@@ -128,9 +117,7 @@ public class SubmitTicketPresenter extends BaseDaggerPresenter<SubmitTicketContr
         if(numOfImages > 0){
             for(int item = 0; item < numOfImages; item++){
                 ImageUpload image = uploadImageList.get(item);
-                /*if(getBitmapDimens(image.getFileLoc())){
-                    return true;
-                } else */if(fileSizeValid(image.getFileLoc())){
+                if(fileSizeValid(image.getFileLoc())){
                     return true;
                 }
             }

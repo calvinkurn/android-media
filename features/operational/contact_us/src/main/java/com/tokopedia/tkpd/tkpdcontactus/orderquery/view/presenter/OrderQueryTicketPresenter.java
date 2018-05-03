@@ -36,16 +36,6 @@ public class OrderQueryTicketPresenter extends BaseDaggerPresenter<OrderQueryTic
 
     public RequestParams createRequestParam(BuyerPurchaseList purchaseList ) {
         RequestParams requestParams = RequestParams.create();
-       /* requestParams.putString("order", 12517137+"");
-        requestParams.putString("order_type", 1+"");
-        requestParams.putString("product_type_id", 0+"");
-
-        requestParams.putString("selected_ord_status",10+"");
-        requestParams.putString("selected_pym_method",7+"");
-        requestParams.putString("selected_pg_id",8+"");
-*/
-
-
         requestParams.putString("order", buyerPurchaseList.getDetail().getId()+"");
         requestParams.putString("order_type", buyerPurchaseList.getDetail().getTypeId()+"");
         requestParams.putString("product_type_id", buyerPurchaseList.getDetail().getProductTypeId()+"");
