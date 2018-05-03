@@ -70,7 +70,8 @@
                 android:textColor="@color/black3_text"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/txt_title" />
+                app:layout_constraintTop_toBottomOf="@+id/txt_title"
+                android:gravity="start" />
 
 
         </android.support.constraint.ConstraintLayout>

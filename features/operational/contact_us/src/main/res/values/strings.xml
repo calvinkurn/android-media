@@ -9,4 +9,7 @@
     <string name="invoice_list_title">Riwayat Transaksi</string>
     <string name="order_query_ticket_title">Kendala</string>
     <string name="submit_ticket_title">Form Bantuan</string>
+    <string name="title_dialog_wrong_scan">Tunggu...</string>
+    <string name="batal">Batal</string>
+    <string name="keular">Keular</string>
 </resources>

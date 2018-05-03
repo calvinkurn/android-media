@@ -18,13 +18,13 @@
             android:exported="true"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White"
-            android:label="@string/contact_us_title_home" />
+            android:label="@string/order_query_ticket_title" />
 
         <activity android:name="com.tokopedia.tkpd.tkpdcontactus.orderquery.view.QueryTicketDetailActivity"
             android:exported="true"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White"
-            android:label="@string/contact_us_title_home"/>
+            android:label="@string/order_query_ticket_title"/>
 
         <activity android:name="com.tokopedia.tkpd.tkpdcontactus.orderquery.view.SubmitTicketActivity"
             android:exported="true"

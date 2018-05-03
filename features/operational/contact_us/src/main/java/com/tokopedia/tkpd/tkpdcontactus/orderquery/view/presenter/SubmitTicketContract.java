@@ -29,6 +29,8 @@ public interface SubmitTicketContract {
         void setSubmitButtonEnabled(boolean enabled);
 
         void setSnackBarErrorMessage(String hello);
+
+        void showToolTip();
     }
     public interface Presenter extends CustomerPresenter<View> {
         public void onSendButtonClick();

@@ -15,6 +15,7 @@ import android.support.design.widget.Snackbar;
 import android.support.v7.widget.AppCompatEditText;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.TooltipCompat;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -84,6 +85,10 @@ public class SubmitTicketFragment extends BaseDaggerFragment implements SubmitTi
     @BindView(R2.id.btn_send)
     TextView sendButton;
     ImageUploadAdapter imageUploadAdapter;
+    @BindView(R2.id.tooltiplayout)
+    ConstraintLayout toolTipLayout;
+
+
 
     OrderQueryComponent orderQueryComponent;
     @Inject
@@ -116,6 +121,7 @@ public class SubmitTicketFragment extends BaseDaggerFragment implements SubmitTi
         return view;
 
     }
+
     private TextWatcher watcher(final EditText editText) {
         return new TextWatcher() {
             @Override
@@ -125,7 +131,7 @@ public class SubmitTicketFragment extends BaseDaggerFragment implements SubmitTi
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                if(s.length() >= 30){
+                if (s.length() >= 30) {
                     setSubmitButtonEnabled(true);
                 } else {
                     setSubmitButtonEnabled(false);
@@ -138,6 +144,7 @@ public class SubmitTicketFragment extends BaseDaggerFragment implements SubmitTi
             }
         };
     }
+
     @Override
     protected String getScreenName() {
         return null;
@@ -194,7 +201,7 @@ public class SubmitTicketFragment extends BaseDaggerFragment implements SubmitTi
 
     @Override
     public void showMessage(String message) {
-        Toast.makeText(getContext(),message,Toast.LENGTH_LONG).show();
+        Toast.makeText(getContext(), message, Toast.LENGTH_LONG).show();
     }
 
     @Override
@@ -205,7 +212,7 @@ public class SubmitTicketFragment extends BaseDaggerFragment implements SubmitTi
     @Override
     public void setSubmitButtonEnabled(boolean enabled) {
         sendButton.setClickable(enabled);
-        if(enabled) {
+        if (enabled) {
             sendButton.setBackground(getResources().getDrawable(R.drawable.rounded_rectangle_green_solid));
         } else {
             sendButton.setBackground(getResources().getDrawable(R.drawable.rounded_rectangle_grey_solid));
@@ -214,7 +221,7 @@ public class SubmitTicketFragment extends BaseDaggerFragment implements SubmitTi
 
     @Override
     public void setSnackBarErrorMessage(String hello) {
-        final Snackbar snackbar = Snackbar.make(constraint_layout,hello,Snackbar.LENGTH_INDEFINITE);
+        final Snackbar snackbar = Snackbar.make(constraint_layout, hello, Snackbar.LENGTH_INDEFINITE);
         Snackbar.SnackbarLayout layout = (Snackbar.SnackbarLayout) snackbar.getView();
         //layout.setBackgroundColor(getResources().getColor(R.color.red_100));
         TextView textView = (TextView) layout.findViewById(android.support.design.R.id.snackbar_text);
@@ -255,7 +262,7 @@ public class SubmitTicketFragment extends BaseDaggerFragment implements SubmitTi
         if ((requestCode == ImageUploadHandler.REQUEST_CODE)
                 && (resultCode == Activity.RESULT_OK || resultCode == GalleryBrowser.RESULT_CODE)) {
 
-            if(rvSelectedImages != null && rvSelectedImages.getVisibility() == View.GONE){
+            if (rvSelectedImages != null && rvSelectedImages.getVisibility() == View.GONE) {
                 rvSelectedImages.setVisibility(View.VISIBLE);
             }
             int position = imageUploadAdapter.getItemCount();
@@ -371,11 +378,45 @@ public class SubmitTicketFragment extends BaseDaggerFragment implements SubmitTi
         SubmitTicketFragmentPermissionsDispatcher.onRequestPermissionsResult(this, requestCode, grantResults);
     }
 
-
-
+    @OnClick(R2.id.imageView8)
+    public void onToolTipImgClicked() {
+        presenter.onToolTipClick();
+    }
 
     @OnClick(R2.id.btn_send)
     public void onSendClick() {
         presenter.onSendButtonClick();
+    }
+
+    @OnClick(R2.id.btn_tutup)
+    public void ontutupClick(){
+        toolTipLayout.setVisibility(View.GONE);
+    }
+    @Override
+    public void showToolTip() {
+        toolTipLayout.setVisibility(View.VISIBLE);
+    }
+
+    public void onBackPressed() {
+        if(imageUploadAdapter.getItemCount()>0) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+            builder.setTitle(getString(R.string.title_dialog_wrong_scan));
+            builder.setMessage("Pesan Anda akan hilang jika menutup halaman ini, Anda yakin?");
+            builder.setNegativeButton(getString(R.string.batal),
+                    new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int i) {
+                            dialog.dismiss();
+                            //presenter.onRetryClick();
+                        }
+                    });
+            builder.setPositiveButton(getString(R.string.keular),
+                    new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            getActivity().finish();
+                        }
+                    }).create().show();
+        }
     }
 }
