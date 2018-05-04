@@ -1269,8 +1269,8 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
     public void onPromoAdsClicked() {
         ((PdpRouter) getActivity().getApplication()).goToCreateTopadsPromo(getActivity(),
                 String.valueOf(productData.getInfo().getProductId()), productData.getShopInfo().getShopId(),
-                GlobalConfig.isSellerApp()? TopAdsSourceOption.SA_MANAGE_LIST_PRODUCT :
-                        TopAdsSourceOption.MA_MANAGE_LIST_PRODUCT);
+                GlobalConfig.isSellerApp()? TopAdsSourceOption.SA_PDP :
+                        TopAdsSourceOption.MA_PDP);
     }
 
     @Override

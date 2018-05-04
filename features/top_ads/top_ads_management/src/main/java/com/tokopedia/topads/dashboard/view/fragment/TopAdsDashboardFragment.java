@@ -55,6 +55,7 @@ import com.tokopedia.topads.dashboard.view.adapter.TopAdsStatisticPagerAdapter;
 import com.tokopedia.topads.dashboard.view.listener.TopAdsDashboardView;
 import com.tokopedia.topads.dashboard.view.presenter.TopAdsDashboardPresenter;
 import com.tokopedia.topads.keyword.view.activity.TopAdsKeywordListActivity;
+import com.tokopedia.topads.sourcetagging.constant.TopAdsSourceOption;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -323,6 +324,7 @@ public class TopAdsDashboardFragment extends BaseDaggerFragment implements TopAd
     }
 
     private void onStoreClicked() {
+        topAdsDashboardPresenter.saveSourceTagging(TopAdsSourceOption.SA_MANAGE_SHOP);
         Intent intent = new Intent(getActivity(), TopAdsDetailShopActivity.class);
         startActivityForResult(intent, REQUEST_CODE_AD_STATUS);
     }
