@@ -118,7 +118,7 @@ public class SearchActivity extends DiscoveryActivity
         searchPresenter.attachView(this);
         searchPresenter.setDiscoveryView(this);
         initResources();
-
+        handleImageUri(getIntent());
         ProductViewModel productViewModel =
                 getIntent().getParcelableExtra(EXTRA_PRODUCT_VIEW_MODEL);
 
@@ -150,7 +150,6 @@ public class SearchActivity extends DiscoveryActivity
                 getIntent().getBooleanExtra(FROM_APP_SHORTCUTS, false)) {
             UnifyTracking.eventBeliLongClick();
         }
-        handleImageUri(getIntent());
     }
 
     @Override
