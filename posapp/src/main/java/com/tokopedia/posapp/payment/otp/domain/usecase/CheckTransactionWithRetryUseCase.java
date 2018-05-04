@@ -10,6 +10,8 @@ import com.tokopedia.usecase.UseCase;
 
 import java.util.concurrent.TimeUnit;
 
+import javax.inject.Inject;
+
 import rx.Observable;
 import rx.functions.Func0;
 import rx.functions.Func1;
@@ -24,6 +26,7 @@ public class CheckTransactionWithRetryUseCase extends UseCase<PaymentStatusDomai
     private static final int COUNTER_END = 4;
     private CheckTransactionUseCase checkTransactionUseCase;
 
+    @Inject
     CheckTransactionWithRetryUseCase(CheckTransactionUseCase checkTransactionUseCase) {
         this.checkTransactionUseCase = checkTransactionUseCase;
     }

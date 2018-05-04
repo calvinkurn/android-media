@@ -7,6 +7,8 @@ import com.tokopedia.posapp.payment.otp.domain.model.PaymentStatusDomain;
 import com.tokopedia.posapp.payment.otp.exception.TransactionFailedException;
 import com.tokopedia.posapp.payment.otp.exception.TransactionPendingException;
 
+import javax.inject.Inject;
+
 import retrofit2.Response;
 import rx.functions.Func1;
 
@@ -15,6 +17,11 @@ import rx.functions.Func1;
  */
 
 public class CheckTransactionMapper implements Func1<Response<DataResponse<CheckTransactionResponse>>, PaymentStatusDomain> {
+    @Inject
+    CheckTransactionMapper(){
+
+    }
+
     @Override
     public PaymentStatusDomain call(Response<DataResponse<CheckTransactionResponse>> response) {
         switch (response.body().getData().getTransactionStatus()) {

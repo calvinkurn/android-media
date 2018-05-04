@@ -1,17 +1,15 @@
 package com.tokopedia.posapp;
 
-import android.content.Context;
-
+import com.facebook.soloader.SoLoader;
 import com.raizlabs.android.dbflow.config.FlowConfig;
 import com.raizlabs.android.dbflow.config.FlowManager;
+import com.tokopedia.abstraction.common.utils.GlobalConfig;
 import com.tokopedia.abstraction.constant.AbstractionBaseURL;
 import com.tokopedia.cacheapi.domain.interactor.CacheApiWhiteListUseCase;
 import com.tokopedia.cacheapi.domain.model.CacheApiWhiteListDomain;
 import com.tokopedia.cacheapi.util.CacheApiLoggingUtils;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
-import com.tokopedia.abstraction.common.utils.GlobalConfig;
-import com.facebook.soloader.SoLoader;
 import com.tokopedia.network.SessionUrl;
 import com.tokopedia.posapp.common.PosUrl;
 
@@ -51,6 +49,8 @@ public class PosApplication extends PosRouterApplication {
     }
 
     private void setGlobalConfiguration() {
+        GlobalConfig.VERSION_CODE = BuildConfig.VERSION_CODE;
+        GlobalConfig.VERSION_NAME = BuildConfig.VERSION_NAME;
         GlobalConfig.APPLICATION_TYPE = GlobalConfig.POS_APPLICATION;
         GlobalConfig.PACKAGE_APPLICATION = GlobalConfig.PACKAGE_POS_APP;
         GlobalConfig.DEBUG = BuildConfig.DEBUG;
