@@ -208,4 +208,10 @@ public class AddEmailFragment extends BaseDaggerFragment implements AddEmailList
             }
         }
     }
+
+    @Override
+    public void onDestroy() {
+        presenter.detachView();
+        super.onDestroy();
+    }
 }
