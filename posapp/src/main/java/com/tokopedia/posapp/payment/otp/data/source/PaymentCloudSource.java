@@ -5,6 +5,7 @@ import android.util.Log;
 import com.google.gson.Gson;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.posapp.PosConstants;
+import com.tokopedia.posapp.payment.otp.data.mapper.CheckTransactionMapper;
 import com.tokopedia.posapp.payment.otp.data.mapper.CreateOrderMapper;
 import com.tokopedia.posapp.payment.otp.data.mapper.PaymentStatusMapper;
 import com.tokopedia.posapp.payment.otp.data.pojo.CreateOrderParameter;
@@ -30,14 +31,17 @@ public class PaymentCloudSource {
     private PaymentApi paymentApi;
     private PaymentStatusMapper paymentStatusMapper;
     private CreateOrderMapper createOrderMapper;
+    private CheckTransactionMapper checkTransactionMapper;
 
     @Inject
     public PaymentCloudSource(PaymentApi paymentApi,
                               PaymentStatusMapper paymentStatusMapper,
-                              CreateOrderMapper createOrderMapper) {
+                              CreateOrderMapper createOrderMapper,
+                              CheckTransactionMapper checkTransactionMapper) {
         this.paymentApi = paymentApi;
         this.paymentStatusMapper = paymentStatusMapper;
         this.createOrderMapper = createOrderMapper;
+        this.checkTransactionMapper = checkTransactionMapper;
     }
 
     public Observable<PaymentStatusDomain> getPaymentStatus(RequestParams requestParams) {
@@ -76,5 +80,9 @@ public class PaymentCloudSource {
         return paymentApi
                 .createOrder(new Gson().toJson(orderParam))
                 .map(createOrderMapper);
+    }
+
+    public Observable<PaymentStatusDomain> checkTransaction(RequestParams requestParams) {
+        return paymentApi.checkTransaction("").map(checkTransactionMapper);
     }
 }

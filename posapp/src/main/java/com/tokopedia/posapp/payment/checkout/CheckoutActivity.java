@@ -8,7 +8,6 @@ import com.airbnb.deeplinkdispatch.DeepLink;
 
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.posapp.applink.PosAppLink;
-import com.tokopedia.posapp.payment.PaymentConstant;
 import com.tokopedia.posapp.react.PosReactConst;
 import com.tokopedia.tkpdreactnative.react.ReactConst;
 import com.tokopedia.tkpdreactnative.react.app.ReactFragmentActivity;

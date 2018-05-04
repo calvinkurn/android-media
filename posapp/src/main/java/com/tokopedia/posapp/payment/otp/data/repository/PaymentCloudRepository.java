@@ -30,4 +30,9 @@ public class PaymentCloudRepository implements PaymentRepository {
     public Observable<CreateOrderDomain> createOrder(RequestParams requestParams) {
         return paymentCloudSource.createOrder(requestParams);
     }
+
+    @Override
+    public Observable<PaymentStatusDomain> checkTransaction(RequestParams requestParams) {
+        return paymentCloudSource.checkTransaction(requestParams);
+    }
 }

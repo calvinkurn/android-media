@@ -16,6 +16,7 @@ import com.tokopedia.posapp.cart.domain.model.CartDomain;
 import com.tokopedia.posapp.payment.otp.domain.model.PaymentStatusDomain;
 import com.tokopedia.posapp.payment.otp.domain.model.PaymentStatusItemDomain;
 import com.tokopedia.posapp.payment.otp.domain.usecase.CheckPaymentStatusUseCase;
+import com.tokopedia.posapp.payment.otp.domain.usecase.CheckTransactionWithRetryUseCase;
 import com.tokopedia.posapp.payment.otp.domain.usecase.CreateOrderUseCase;
 import com.tokopedia.posapp.cart.domain.usecase.GetAllCartUseCase;
 import com.tokopedia.posapp.payment.otp.OTP;
@@ -32,16 +33,13 @@ import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 
 import rx.Observable;
 import rx.Subscriber;
-import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Func1;
 import rx.functions.Func2;
-import rx.schedulers.Schedulers;
 
 /**
  * Created by okasurya on 10/5/17.
@@ -69,6 +67,7 @@ public class OTPPresenter implements OTP.Presenter {
     public static final String PARAM_BANK_NAME = "bank_name";
     public static final String PARAM_BANK_ID = "bank_id";
     public static final String PARAM_BANK_LOGO = "bank_logo";
+    public static final String REDIRECT_URL = "redirect_url";
 
     private OTP.View viewListener;
     private OTPData otpData;
@@ -76,6 +75,7 @@ public class OTPPresenter implements OTP.Presenter {
     private CheckPaymentStatusUseCase checkPaymentStatusUseCase;
     private CreateOrderUseCase createOrderUseCase;
     private GetAllCartUseCase getAllCartUseCase;
+    private CheckTransactionWithRetryUseCase confirmPaymentUseCase;
     private Context context;
     private BankDomain bankDomain;
     private String transactionId;
@@ -85,11 +85,13 @@ public class OTPPresenter implements OTP.Presenter {
     public OTPPresenter(CheckPaymentStatusUseCase checkPaymentStatusUseCase,
                         CreateOrderUseCase createOrderUseCase,
                         GetAllCartUseCase getAllCartUseCase,
+                        CheckTransactionWithRetryUseCase confirmPaymentUseCase,
                         @ApplicationContext Context context,
                         UserSession userSession) {
         this.checkPaymentStatusUseCase = checkPaymentStatusUseCase;
         this.createOrderUseCase = createOrderUseCase;
         this.getAllCartUseCase = getAllCartUseCase;
+        this.confirmPaymentUseCase = confirmPaymentUseCase;
         this.context = context;
         this.userSession = userSession;
     }
@@ -100,8 +102,8 @@ public class OTPPresenter implements OTP.Presenter {
 
     @Override
     public void initializeData(String jsonData) {
-        Log.d("o2o", jsonData);
         if (jsonData != null) {
+            Log.d("o2o", jsonData);
             try {
                 JSONObject response = new JSONObject(jsonData);
                 if (!response.isNull(PARAM_ERRORS)) {
@@ -115,14 +117,14 @@ public class OTPPresenter implements OTP.Presenter {
                 bankDomain = getBankData(response);
 
                 JSONObject data = response.getJSONObject(PARAM_DATA);
-                if (data != null
-                        && !data.getString(PARAM_URL).isEmpty()) {
+                if (data != null && !data.getString(PARAM_URL).isEmpty()) {
                     otpData = new OTPData();
                     otpData.setUrl(data.getString(PARAM_URL));
                     otpData.setMethod(data.getString(PARAM_METHOD));
                     otpData.setGateway(data.getString(PARAM_GATEWAY));
                     otpData.setParameters(getQueryParam(data.getJSONObject(PARAM_FORM)).getBytes(UTF_8));
                     otpData.setOtpDetailTransaction(getDetailTransaction(data.getJSONObject(PARAM_FORM)));
+                    otpData.setCallbackUrl(data.getString(REDIRECT_URL));
 
                     if (otpData.getMethod().equals(POST_METHOD)) {
                         viewListener.postOTPWebview(otpData);
@@ -135,6 +137,51 @@ public class OTPPresenter implements OTP.Presenter {
             } catch (Exception e) {
                 viewListener.onLoadDataError(e.getMessage());
             }
+        }
+    }
+
+    @Override
+    public boolean isPaymentProcessed(String url) {
+        return otpData != null && url.contains(otpData.getCallbackUrl());
+    }
+
+    @Override
+    public void confirmPayment() {
+        if (otpData != null
+                && otpData.getOtpDetailTransaction() != null
+                && otpData.getOtpDetailTransaction().getTransactionId() != null) {
+            RequestParams requestParams = RequestParams.create();
+            requestParams.putString(PARAM_MERCHANT_CODE, PosConstants.Payment.MERCHANT_CODE);
+            requestParams.putString(PARAM_TRANSACTION_ID, otpData.getOtpDetailTransaction().getTransactionId());
+            requestParams.putString(PARAM_IP_ADDRESS, "");
+
+            confirmPaymentUseCase.execute(RequestParams.create(), new Subscriber<PaymentStatusDomain>() {
+                @Override
+                public void onCompleted() {
+
+                }
+
+                @Override
+                public void onError(Throwable e) {
+                    viewListener.onPaymentError(e);
+                }
+
+                @Override
+                public void onNext(PaymentStatusDomain paymentStatusDomain) {
+                    viewListener.onPaymentCompleted(paymentStatusDomain);
+                }
+            });
+        } else {
+            viewListener.onPaymentError(new Exception("Data error"));
+        }
+    }
+
+    @Override
+    public void setTransactionId(String transactionId) {
+        if(transactionId != null && !transactionId.isEmpty()) {
+            this.transactionId = transactionId;
+        } else {
+            throw new RuntimeException("Transaction Id not found");
         }
     }
 
@@ -168,53 +215,6 @@ public class OTPPresenter implements OTP.Presenter {
             detailTransaction.setId(getFormItem(PARAM_ID, form));
         }
         return detailTransaction;
-    }
-
-    @Override
-    public void processPayment() {
-        if (otpData != null
-                && otpData.getOtpDetailTransaction() != null
-                && otpData.getOtpDetailTransaction().getTransactionId() != null) {
-            RequestParams requestParams = RequestParams.create();
-            requestParams.putString(PARAM_MERCHANT_CODE, PosConstants.Payment.MERCHANT_CODE);
-            requestParams.putString(PARAM_TRANSACTION_ID, otpData.getOtpDetailTransaction().getTransactionId());
-            requestParams.putString(PARAM_IP_ADDRESS, "");
-            Observable.just(requestParams)
-                    .delay(6, TimeUnit.SECONDS)
-                    .subscribeOn(Schedulers.newThread())
-                    .flatMap(checkPaymentStatus())
-                    .flatMap(getCartItem())
-                    .map(getBankDetail())
-                    .flatMap(createOrder())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(new Subscriber<PaymentStatusDomain>() {
-                        @Override
-                        public void onCompleted() {
-
-                        }
-
-                        @Override
-                        public void onError(Throwable e) {
-                            viewListener.onPaymentError(e);
-                        }
-
-                        @Override
-                        public void onNext(PaymentStatusDomain paymentStatusDomain) {
-                            viewListener.onPaymentCompleted(paymentStatusDomain);
-                        }
-                    });
-        } else {
-            viewListener.onPaymentError(new Exception("Data error"));
-        }
-    }
-
-    @Override
-    public void setTransactionId(String transactionId) {
-        if(transactionId != null && !transactionId.isEmpty()) {
-            this.transactionId = transactionId;
-        } else {
-            throw new RuntimeException("Transaction Id not found");
-        }
     }
 
     private Func1<RequestParams, Observable<PaymentStatusDomain>> checkPaymentStatus() {

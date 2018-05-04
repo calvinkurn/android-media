@@ -26,7 +26,8 @@ import rx.subscriptions.CompositeSubscription;
  * Created by okasurya on 8/29/17.
  */
 
-public class CachePresenter implements Cache.Presenter {
+public class
+CachePresenter implements Cache.Presenter {
     private GetBankUseCase getBankUseCase;
     private GetInstallmentUseCase getInstallmentUseCase;
     private GetBinUseCase getBinUseCase;

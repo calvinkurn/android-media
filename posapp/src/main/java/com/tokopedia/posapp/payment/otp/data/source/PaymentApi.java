@@ -1,8 +1,9 @@
 package com.tokopedia.posapp.payment.otp.data.source;
 
-import com.tokopedia.core.network.constants.TkpdBaseURL;
+import com.tokopedia.abstraction.common.data.model.response.DataResponse;
 import com.tokopedia.core.network.retrofit.response.TkpdResponse;
 import com.tokopedia.posapp.common.PosUrl;
+import com.tokopedia.posapp.payment.otp.data.pojo.transaction.CheckTransactionResponse;
 
 import java.util.Map;
 
@@ -27,4 +28,7 @@ public interface PaymentApi {
 
     @GET(PosUrl.Payment.GET_PAYMENT_STATUS)
     Observable<Response<TkpdResponse>> getPaymentStatus(@QueryMap Map<String, String> param);
+
+    @POST(PosUrl.Payment.CHECK_TRANSACTION_STATUS)
+    Observable<Response<DataResponse<CheckTransactionResponse>>> checkTransaction(@Body String json);
 }

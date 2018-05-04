@@ -22,6 +22,8 @@ import com.tokopedia.posapp.cart.view.CartMenu;
 import com.tokopedia.posapp.cart.view.activity.LocalCartActivity;
 import com.tokopedia.posapp.cart.view.presenter.CartMenuPresenter;
 import com.tokopedia.posapp.di.component.PosAppComponent;
+import com.tokopedia.posapp.payment.otp.OTP;
+import com.tokopedia.posapp.payment.otp.view.activity.OTPActivity;
 import com.tokopedia.posapp.payment.process.ReactInstallmentActivity;
 import com.tokopedia.posapp.product.productlist.view.fragment.ReactProductListFragment;
 
