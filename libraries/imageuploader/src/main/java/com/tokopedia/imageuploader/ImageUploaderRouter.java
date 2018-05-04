@@ -4,4 +4,6 @@ import okhttp3.Interceptor;
 
 public interface ImageUploaderRouter {
     Interceptor getChuckInterceptor();
+
+    Interceptor getAuthInterceptor();
 }

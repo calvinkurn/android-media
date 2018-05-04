@@ -2,31 +2,39 @@ package com.tokopedia.flight.cancellation.view.presenter;
 
 import android.net.Uri;
 import android.support.annotation.NonNull;
-import android.util.Log;
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
+import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
+import com.tokopedia.flight.FlightModuleRouter;
 import com.tokopedia.flight.R;
 import com.tokopedia.flight.airline.data.db.model.FlightAirlineDB;
 import com.tokopedia.flight.airline.domain.FlightAirlineUseCase;
-import com.tokopedia.flight.cancellation.domain.FlightCancellationUploadImageUseCase;
+import com.tokopedia.flight.cancellation.domain.model.AttachmentImageModel;
 import com.tokopedia.flight.cancellation.view.contract.FlightCancellationReasonAndProofContract;
 import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationAttachmentViewModel;
 import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationPassengerViewModel;
 import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationReasonAndAttachmentViewModel;
 import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationViewModel;
 import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationWrapperViewModel;
+import com.tokopedia.imageuploader.domain.UploadImageUseCase;
+import com.tokopedia.imageuploader.domain.model.ImageUploadDomainModel;
+import com.tokopedia.usecase.RequestParams;
 
+import java.io.File;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 
 import javax.inject.Inject;
 
+import okhttp3.MediaType;
+import okhttp3.RequestBody;
 import rx.Observable;
 import rx.Subscriber;
-import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action0;
 import rx.functions.Action1;
 import rx.functions.Func0;
 import rx.functions.Func1;
@@ -41,14 +49,20 @@ import rx.subscriptions.CompositeSubscription;
 public class FlightCancellationReasonAndProofPresenter extends BaseDaggerPresenter<FlightCancellationReasonAndProofContract.View> implements FlightCancellationReasonAndProofContract.Presenter {
 
     private FlightAirlineUseCase flightAirlineUseCase;
-    private FlightCancellationUploadImageUseCase flightCancellationUploadImageUseCase;
+    private UploadImageUseCase<AttachmentImageModel> uploadImageUseCase;
     private CompositeSubscription compositeSubscription;
+    private UserSession userSession;
+    private FlightModuleRouter flightModuleRouter;
 
     @Inject
     public FlightCancellationReasonAndProofPresenter(FlightAirlineUseCase flightAirlineUseCase,
-                                                     FlightCancellationUploadImageUseCase flightCancellationUploadImageUseCase) {
+                                                     UploadImageUseCase<AttachmentImageModel> uploadImageUseCase,
+                                                     UserSession userSession,
+                                                     FlightModuleRouter flightModuleRouter) {
         this.flightAirlineUseCase = flightAirlineUseCase;
-        this.flightCancellationUploadImageUseCase = flightCancellationUploadImageUseCase;
+        this.uploadImageUseCase = uploadImageUseCase;
+        this.userSession = userSession;
+        this.flightModuleRouter = flightModuleRouter;
         this.compositeSubscription = new CompositeSubscription();
     }
 
@@ -203,12 +217,16 @@ public class FlightCancellationReasonAndProofPresenter extends BaseDaggerPresent
                     @Override
                     public Observable<FlightCancellationAttachmentViewModel> call(FlightCancellationAttachmentViewModel attachmentViewModel) {
                         return Observable.zip(Observable.just(attachmentViewModel),
-                                flightCancellationUploadImageUseCase.createObservable(
-                                        flightCancellationUploadImageUseCase.createParam(attachmentViewModel.getFilepath())
-                                ), new Func2<FlightCancellationAttachmentViewModel, String, FlightCancellationAttachmentViewModel>() {
+                                uploadImageUseCase.createObservable(
+                                        createParam(attachmentViewModel.getFilepath())
+                                ), new Func2<FlightCancellationAttachmentViewModel, ImageUploadDomainModel<AttachmentImageModel>, FlightCancellationAttachmentViewModel>() {
                                     @Override
-                                    public FlightCancellationAttachmentViewModel call(FlightCancellationAttachmentViewModel attachmentViewModel, String s) {
-                                        attachmentViewModel.setImageurl(s);
+                                    public FlightCancellationAttachmentViewModel call(FlightCancellationAttachmentViewModel attachmentViewModel, ImageUploadDomainModel<AttachmentImageModel> uploadDomainModel) {
+                                        String url = uploadDomainModel.getDataResultImageUpload().getData().getPicSrc();
+                                        if (url.contains("100-square")){
+                                            url = url.replaceFirst("100-square", "300");
+                                        }
+                                        attachmentViewModel.setImageurl(url);
                                         return attachmentViewModel;
                                     }
                                 });
@@ -263,5 +281,17 @@ public class FlightCancellationReasonAndProofPresenter extends BaseDaggerPresent
             }
         }
         return uniquePassengers.size();
+    }
+
+    private RequestParams createParam(String cameraLoc) {
+        File photo = flightModuleRouter.writeImage(cameraLoc, 80);
+        Map<String, RequestBody> maps = new HashMap<String, RequestBody>();
+        RequestBody webService = RequestBody.create(MediaType.parse("text/plain"), "1");
+        RequestBody resolution = RequestBody.create(MediaType.parse("text/plain"), "300");
+        RequestBody id = RequestBody.create(MediaType.parse("text/plain"), userSession.getUserId() + UUID.randomUUID() + System.currentTimeMillis());
+        maps.put("web_service", webService);
+        maps.put("id", id);
+        maps.put("resolution", resolution);
+        return uploadImageUseCase.createRequestParam(photo.getAbsolutePath(), "/upload/attachment", "fileToUpload\"; filename=\"image.jpg", maps);
     }
 }

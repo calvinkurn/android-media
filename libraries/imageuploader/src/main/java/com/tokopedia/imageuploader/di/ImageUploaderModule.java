@@ -11,11 +11,11 @@ import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.network.OkHttpRetryPolicy;
 import com.tokopedia.abstraction.common.network.interceptor.ErrorResponseInterceptor;
 import com.tokopedia.abstraction.common.network.interceptor.TkpdAuthInterceptor;
-import com.tokopedia.abstraction.common.network.interceptor.TkpdBaseInterceptor;
 import com.tokopedia.abstraction.common.utils.GlobalConfig;
 import com.tokopedia.cacheapi.interceptor.CacheApiInterceptor;
 import com.tokopedia.imageuploader.ImageUploaderRouter;
 import com.tokopedia.imageuploader.data.GenerateHostRepositoryImpl;
+import com.tokopedia.imageuploader.data.StringResponseConverter;
 import com.tokopedia.imageuploader.data.UploadImageDataSource;
 import com.tokopedia.imageuploader.data.UploadImageRepositoryImpl;
 import com.tokopedia.imageuploader.data.entity.ImageUploaderResponseError;
@@ -23,6 +23,7 @@ import com.tokopedia.imageuploader.data.source.GenerateHostCloud;
 import com.tokopedia.imageuploader.data.source.GenerateHostDataSource;
 import com.tokopedia.imageuploader.data.source.UploadImageDataSourceCloud;
 import com.tokopedia.imageuploader.data.source.api.GenerateHostApi;
+import com.tokopedia.imageuploader.di.qualifier.ImageUploaderAuthInterceptorQualifier;
 import com.tokopedia.imageuploader.di.qualifier.ImageUploaderChuckQualifier;
 import com.tokopedia.imageuploader.di.qualifier.ImageUploaderQualifier;
 import com.tokopedia.imageuploader.domain.GenerateHostRepository;
@@ -33,7 +34,6 @@ import java.util.concurrent.TimeUnit;
 
 import dagger.Module;
 import dagger.Provides;
-import okhttp3.Cache;
 import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
@@ -44,9 +44,9 @@ import retrofit2.converter.gson.GsonConverterFactory;
 @Module
 public class ImageUploaderModule {
     private static final String GSON_DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ssZ";
-    private static final int NET_READ_TIMEOUT = 50;
-    private static final int NET_WRITE_TIMEOUT = 50;
-    private static final int NET_CONNECT_TIMEOUT = 50;
+    private static final int NET_READ_TIMEOUT = 100;
+    private static final int NET_WRITE_TIMEOUT = 100;
+    private static final int NET_CONNECT_TIMEOUT = 100;
     private static final int NET_RETRY = 1;
     private static String LIVE_DOMAIN = "https://ws.tokopedia.com/";
 
@@ -60,7 +60,6 @@ public class ImageUploaderModule {
                                             @ImageUploaderQualifier ErrorResponseInterceptor errorHandlerInterceptor,
                                             @ImageUploaderQualifier CacheApiInterceptor cacheApiInterceptor) {
         OkHttpClient.Builder builder = new OkHttpClient.Builder();
-        builder.addInterceptor(new TkpdBaseInterceptor());
         builder.addInterceptor(tkpdAuthInterceptor);
         builder.addInterceptor(cacheApiInterceptor);
         builder.addInterceptor(errorHandlerInterceptor);
@@ -116,6 +115,14 @@ public class ImageUploaderModule {
     public Interceptor provideInterceptor(@ImageUploaderQualifier Context context) {
         if (context instanceof ImageUploaderRouter) {
             return ((ImageUploaderRouter) context).getChuckInterceptor();
+        }
+        throw new RuntimeException("App should implement " + ImageUploaderRouter.class.getSimpleName());
+    }
+    @ImageUploaderAuthInterceptorQualifier
+    @Provides
+    public Interceptor provideAuthInterceptor(@ImageUploaderQualifier Context context) {
+        if (context instanceof ImageUploaderRouter) {
+            return ((ImageUploaderRouter) context).getAuthInterceptor();
         }
         throw new RuntimeException("App should implement " + ImageUploaderRouter.class.getSimpleName());
     }
@@ -179,8 +186,8 @@ public class ImageUploaderModule {
 
     @Provides
     @ImageUploaderQualifier
-    UploadImageDataSourceCloud provideUploadImageDataSourceCloud(@ImageUploaderQualifier Retrofit.Builder retrofit, @ImageUploaderQualifier OkHttpClient okHttpClient) {
-        return new UploadImageDataSourceCloud(retrofit, okHttpClient);
+    UploadImageDataSourceCloud provideUploadImageDataSourceCloud(@ImageUploaderQualifier Retrofit.Builder retrofit, @ImageUploaderQualifier OkHttpClient okHttpClient, @ImageUploaderQualifier UserSession userSession) {
+        return new UploadImageDataSourceCloud(retrofit, okHttpClient, userSession);
     }
 
     @Provides
@@ -205,6 +212,7 @@ public class ImageUploaderModule {
     @Provides
     public Retrofit.Builder provideRetrofitBuilder(@ImageUploaderQualifier Gson gson) {
         return new Retrofit.Builder()
+                .addConverterFactory(new StringResponseConverter())
                 .addConverterFactory(GsonConverterFactory.create(gson))
                 .addCallAdapterFactory(RxJavaCallAdapterFactory.create());
     }
