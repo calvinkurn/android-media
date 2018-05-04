@@ -107,7 +107,6 @@ public class ImageEditPreviewFragment extends Fragment {
                 // setScaleText(currentScale);
             }
         });
-
     }
 
     public void saveEdittedImage() {
