@@ -260,7 +260,6 @@ public class ChangePhoneNumberInputFragment extends BaseDaggerFragment implement
                 email,
                 RequestOtpUseCase.OTP_TYPE_CHANGE_PHONE_NUMBER,
                 true,
-                false,
                 RequestOtpUseCase.MODE_SMS
         );
         startActivityForResult(intent, REQUEST_VERIFY_CODE);

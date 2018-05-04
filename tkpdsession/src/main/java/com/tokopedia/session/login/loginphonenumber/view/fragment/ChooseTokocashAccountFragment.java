@@ -31,6 +31,7 @@ import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.util.BranchSdkUtils;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.di.DaggerSessionComponent;
+import com.tokopedia.otp.cotp.domain.interactor.RequestOtpUseCase;
 import com.tokopedia.otp.cotp.view.activity.VerificationActivity;
 import com.tokopedia.otp.tokocashotp.view.viewmodel.LoginTokoCashViewModel;
 import com.tokopedia.session.R;
@@ -44,6 +45,8 @@ import com.tokopedia.session.login.loginphonenumber.view.viewmodel.AccountTokoca
 import com.tokopedia.session.login.loginphonenumber.view.viewmodel.ChooseTokoCashAccountViewModel;
 
 import javax.inject.Inject;
+
+import static com.tokopedia.session.login.loginemail.view.fragment.LoginFragment.TYPE_SQ_PHONE;
 
 /**
  * @author by nisie on 12/4/17.
@@ -212,14 +215,14 @@ public class ChooseTokocashAccountFragment extends BaseDaggerFragment implements
     public void goToSecurityQuestion(AccountTokocash accountTokocash,
                                      LoginTokoCashViewModel loginTokoCashViewModel) {
 
-        Intent intent = VerificationActivity
-                .getSecurityQuestionVerificationIntent(getActivity(),
-                        loginTokoCashViewModel.getMakeLoginDomain().getSecurityDomain()
-                                .getUserCheckSecurity2(),
-                        loginTokoCashViewModel.getUserInfoDomain()
-                                .getGetUserInfoDomainData().getEmail(),
-                        loginTokoCashViewModel.getUserInfoDomain()
-                                .getGetUserInfoDomainData().getPhone());
+        Intent intent = VerificationActivity.getShowChooseVerificationMethodIntent(
+                getActivity(),
+                RequestOtpUseCase.OTP_TYPE_SECURITY_QUESTION,
+                loginTokoCashViewModel.getUserInfoDomain()
+                        .getGetUserInfoDomainData().getEmail(),
+                loginTokoCashViewModel.getUserInfoDomain()
+                        .getGetUserInfoDomainData().getPhone());
+        startActivityForResult(intent, REQUEST_SECURITY_QUESTION);
         intent.setFlags(Intent.FLAG_ACTIVITY_FORWARD_RESULT);
         startActivity(intent);
         getActivity().finish();

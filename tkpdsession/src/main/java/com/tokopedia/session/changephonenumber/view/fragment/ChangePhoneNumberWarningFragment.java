@@ -261,13 +261,10 @@ public class ChangePhoneNumberWarningFragment extends BaseDaggerFragment
 //        }
 
         Intent intent = VerificationActivity.
-                getCallingIntent(getContext(),
-                        phoneNumber,
-                        email,
+                getShowChooseVerificationMethodIntent(getContext(),
                         200,
-                        true,
-                        true,
-                        "");
+                        phoneNumber,
+                        email);
         startActivityForResult(intent, VERIFY_USER_CHANGE_PHONE_NUMBER);
     }
 

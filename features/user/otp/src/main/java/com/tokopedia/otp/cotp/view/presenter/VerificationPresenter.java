@@ -10,7 +10,6 @@ import com.tokopedia.otp.cotp.view.subscriber.RequestOtpSubscriber;
 import com.tokopedia.otp.cotp.view.subscriber.ValidateOtpLoginSubscriber;
 import com.tokopedia.otp.cotp.view.subscriber.VerifyOtpSubscriber;
 import com.tokopedia.otp.cotp.view.viewlistener.Verification;
-import com.tokopedia.otp.cotp.view.viewmodel.VerificationPassModel;
 import com.tokopedia.otp.cotp.view.viewmodel.VerificationViewModel;
 import com.tokopedia.user.session.UserSession;
 
@@ -52,38 +51,38 @@ public class VerificationPresenter extends BaseDaggerPresenter<Verification.View
     }
 
     @Override
-    public void requestOTP(VerificationViewModel viewModel, VerificationPassModel passModel) {
+    public void requestOTP(VerificationViewModel viewModel) {
         if (getView().isCountdownFinished()) {
             getView().showLoadingProgress();
-            int otpType = passModel.getOtpType();
+            int otpType = viewModel.getOtpType();
             switch (otpType) {
                 case RequestOtpUseCase.OTP_TYPE_SECURITY_QUESTION:
-                    handleOtpSecurityQuestion(viewModel, passModel);
+                    handleOtpSecurityQuestion(viewModel);
                     break;
                 default:
-                    handleOtp(viewModel, passModel);
+                    handleOtp(viewModel);
                     break;
 
             }
         }
     }
 
-    private void handleOtp(VerificationViewModel viewModel, VerificationPassModel passModel) {
+    private void handleOtp(VerificationViewModel viewModel) {
         switch (viewModel.getType()) {
             case RequestOtpUseCase.MODE_EMAIL:
-                if (!TextUtils.isEmpty(passModel.getEmail())) {
+                if (!TextUtils.isEmpty(viewModel.getEmail())) {
                     requestOtpUseCase.execute(RequestOtpUseCase.getParamEmail(
-                            passModel.getEmail(),
-                            passModel.getOtpType(),
+                            viewModel.getEmail(),
+                            viewModel.getOtpType(),
                             userSession.getUserId()
                     ), new RequestOtpSubscriber(getView()));
                 }
             default:
-                if (!TextUtils.isEmpty(passModel.getPhoneNumber())) {
+                if (!TextUtils.isEmpty(viewModel.getPhoneNumber())) {
                     requestOtpUseCase.execute(RequestOtpUseCase.getParam(
                             viewModel.getType(),
-                            passModel.getPhoneNumber(),
-                            passModel.getOtpType(),
+                            viewModel.getPhoneNumber(),
+                            viewModel.getOtpType(),
                             userSession.getUserId()
                     ), new RequestOtpSubscriber(getView()));
                 }
@@ -91,23 +90,23 @@ public class VerificationPresenter extends BaseDaggerPresenter<Verification.View
         }
     }
 
-    private void handleOtpSecurityQuestion(VerificationViewModel viewModel, VerificationPassModel passModel) {
+    private void handleOtpSecurityQuestion(VerificationViewModel viewModel) {
         switch (viewModel.getType()) {
             case RequestOtpUseCase.MODE_EMAIL:
-                if (!TextUtils.isEmpty(passModel.getEmail())) {
+                if (!TextUtils.isEmpty(viewModel.getEmail())) {
                     requestOtpUseCase.execute(RequestOtpUseCase.getParamEmail(
-                            passModel.getEmail(),
-                            passModel.getOtpType(),
+                            viewModel.getEmail(),
+                            viewModel.getOtpType(),
                             userSession.getTemporaryUserId()
                     ), new RequestOtpSubscriber(getView()));
                 }
                 break;
             default:
-                if (!TextUtils.isEmpty(passModel.getPhoneNumber())) {
+                if (!TextUtils.isEmpty(viewModel.getPhoneNumber())) {
                     requestOtpUseCase.execute(RequestOtpUseCase.getParam(
                             viewModel.getType(),
-                            passModel.getPhoneNumber(),
-                            passModel.getOtpType(),
+                            viewModel.getPhoneNumber(),
+                            viewModel.getOtpType(),
                             userSession.getTemporaryUserId()
                     ), new RequestOtpSubscriber(getView()));
                 }
@@ -116,15 +115,15 @@ public class VerificationPresenter extends BaseDaggerPresenter<Verification.View
     }
 
     @Override
-    public void verifyOtp(VerificationPassModel passModel, String otpCode) {
+    public void verifyOtp(int otpType, String phoneNumber, String email, String otpCode) {
         getView().dropKeyboard();
         getView().showLoadingProgress();
 
-        int otpType = passModel.getOtpType();
+
         switch (otpType) {
             case RequestOtpUseCase.OTP_TYPE_SECURITY_QUESTION:
                 validateOtpLoginUseCase.execute(ValidateOtpLoginUseCase.getParam(
-                        passModel.getOtpType(),
+                        otpType,
                         otpCode,
                         userSession.getTemporaryUserId(),
                         userSession.getDeviceId()
@@ -132,15 +131,15 @@ public class VerificationPresenter extends BaseDaggerPresenter<Verification.View
                 break;
             case RequestOtpUseCase.OTP_TYPE_REGISTER_PHONE_NUMBER:
                 validateOtpUseCase.execute(ValidateOtpUseCase.getRegisterPhoneNumberParam(
-                        passModel.getPhoneNumber(),
-                        passModel.getOtpType(),
+                        phoneNumber,
+                        otpType,
                         otpCode
                 ), new VerifyOtpSubscriber(getView()));
                 break;
             default:
                 validateOtpUseCase.execute(ValidateOtpUseCase.getParam(
                         userSession.getUserId(),
-                        passModel.getOtpType(),
+                        otpType,
                         otpCode
                 ), new VerifyOtpSubscriber(getView()));
                 break;

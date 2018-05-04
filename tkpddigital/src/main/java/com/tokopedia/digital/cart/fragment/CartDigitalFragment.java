@@ -60,8 +60,8 @@ import com.tokopedia.digital.common.data.apiservice.DigitalEndpointService;
 import com.tokopedia.digital.utils.DeviceUtil;
 import com.tokopedia.digital.utils.data.RequestBodyIdentifier;
 import com.tokopedia.loyalty.view.activity.LoyaltyActivity;
+import com.tokopedia.otp.cotp.domain.interactor.RequestOtpUseCase;
 import com.tokopedia.otp.cotp.view.activity.VerificationActivity;
-import com.tokopedia.otp.domain.interactor.RequestOtpUseCase;
 import com.tokopedia.payment.activity.TopPayActivity;
 import com.tokopedia.payment.model.PaymentPassData;
 
@@ -691,7 +691,7 @@ public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPrese
 
         Intent intent = VerificationActivity.getCallingIntent(getActivity(),
                 SessionHandler.getPhoneNumber(), RequestOtpUseCase.OTP_TYPE_CHECKOUT_DIGITAL,
-                true, false, RequestOtpUseCase.MODE_SMS);
+                true, RequestOtpUseCase.MODE_SMS);
         startActivityForResult(intent, OtpVerificationActivity.REQUEST_CODE);
     }
 

@@ -5,7 +5,6 @@ import android.content.Context;
 import com.readystatesoftware.chuck.ChuckInterceptor;
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
-import com.tokopedia.abstraction.common.data.model.storage.CacheManager;
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.network.interceptor.TkpdAuthInterceptor;
@@ -29,8 +28,6 @@ public interface OtpComponent {
     Context getApplicationContext();
 
     AnalyticTracker provideAnalyticTracker();
-
-    CacheManager globalCacheManager();
 
     UserSession provideUserSession();
 

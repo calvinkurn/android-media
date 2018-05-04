@@ -44,6 +44,10 @@ public class UserSession {
         this.context = context;
     }
 
+    /**
+     * GETTER METHOD
+     */
+
     public String getAccessToken() {
         SharedPreferences sharedPrefs = context.getSharedPreferences(LOGIN_SESSION,
                 Context.MODE_PRIVATE);
@@ -108,6 +112,25 @@ public class UserSession {
         return sharedPrefs.getString(GCM_ID, "");
     }
 
+    public String getTempEmail() {
+        SharedPreferences sharedPrefs = context.getSharedPreferences(LOGIN_SESSION, Context.MODE_PRIVATE);
+        return sharedPrefs.getString(TEMP_EMAIL, "");
+    }
+
+    public String getTempPhoneNumber() {
+        SharedPreferences sharedPrefs = context.getSharedPreferences(LOGIN_SESSION, Context.MODE_PRIVATE);
+        return sharedPrefs.getString(TEMP_PHONE_NUMBER, "");
+    }
+
+    public boolean isMsisdnVerified() {
+        SharedPreferences sharedPrefs = context.getSharedPreferences(GCM_STORAGE, Context.MODE_PRIVATE);
+        return sharedPrefs.getBoolean(IS_MSISDN_VERIFIED, false);
+    }
+
+    /**
+     * SETTER METHOD
+     */
+
     public void setUUID(String uuid) {
         SharedPreferences sharedPrefs = context.getSharedPreferences(LOGIN_UUID_KEY, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPrefs.edit();
@@ -146,13 +169,6 @@ public class UserSession {
         editor.apply();
     }
 
-
-    public String getTempEmail() {
-        SharedPreferences sharedPrefs = context.getSharedPreferences(LOGIN_SESSION, Context.MODE_PRIVATE);
-        return sharedPrefs.getString(TEMP_EMAIL, "");
-    }
-
-
     public void setEmail(String email) {
         SharedPreferences sharedPrefs = context.getSharedPreferences(LOGIN_SESSION, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPrefs.edit();
@@ -165,11 +181,6 @@ public class UserSession {
         SharedPreferences.Editor editor = sharedPrefs.edit();
         editor.putBoolean(IS_MSISDN_VERIFIED, isMsisdnVerified);
         editor.apply();
-    }
-
-    public String getTempPhoneNumber() {
-        SharedPreferences sharedPrefs = context.getSharedPreferences(LOGIN_SESSION, Context.MODE_PRIVATE);
-        return sharedPrefs.getString(TEMP_PHONE_NUMBER, "");
     }
 
     public void setPhoneNumber(String phoneNumber) {

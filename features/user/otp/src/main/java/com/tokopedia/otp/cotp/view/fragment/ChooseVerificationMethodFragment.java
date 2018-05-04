@@ -13,15 +13,15 @@ import android.view.ViewGroup;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.google.gson.Gson;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
-import com.tokopedia.abstraction.common.data.model.storage.CacheManager;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.otp.OtpModuleRouter;
 import com.tokopedia.otp.R;
 import com.tokopedia.otp.common.OTPAnalytics;
+import com.tokopedia.otp.common.di.DaggerOtpComponent;
 import com.tokopedia.otp.common.di.OtpComponent;
+import com.tokopedia.otp.cotp.di.DaggerCotpComponent;
 import com.tokopedia.otp.cotp.domain.interactor.RequestOtpUseCase;
 import com.tokopedia.otp.cotp.view.activity.VerificationActivity;
 import com.tokopedia.otp.cotp.view.adapter.VerificationMethodAdapter;
@@ -30,9 +30,8 @@ import com.tokopedia.otp.cotp.view.viewlistener.SelectVerification;
 import com.tokopedia.otp.cotp.view.viewmodel.ListVerificationMethod;
 import com.tokopedia.otp.cotp.view.viewmodel.MethodItem;
 import com.tokopedia.otp.cotp.view.viewmodel.VerificationPassModel;
+import com.tokopedia.user.session.UserSession;
 
-import com.tokopedia.otp.common.di.DaggerOtpComponent;
-import com.tokopedia.otp.cotp.di.DaggerCotpComponent;
 import javax.inject.Inject;
 
 /**
@@ -42,17 +41,18 @@ import javax.inject.Inject;
 public class ChooseVerificationMethodFragment extends BaseDaggerFragment implements
         SelectVerification.View {
 
+    private static final String PASS_MODEL = "pass_model";
     private RecyclerView methodListRecyclerView;
     TextView changePhoneNumberButton;
-
-    @Inject
-    CacheManager cacheManager;
 
     @Inject
     ChooseVerificationPresenter presenter;
 
     @Inject
     OTPAnalytics analytics;
+
+    @Inject
+    UserSession userSession;
 
     VerificationMethodAdapter adapter;
     VerificationPassModel passModel;
@@ -87,8 +87,10 @@ public class ChooseVerificationMethodFragment extends BaseDaggerFragment impleme
 
     }
 
-    public static Fragment createInstance(Bundle bundle) {
+    public static Fragment createInstance(VerificationPassModel passModel) {
         Fragment fragment = new ChooseVerificationMethodFragment();
+        Bundle bundle = new Bundle();
+        bundle.putParcelable(PASS_MODEL, passModel);
         fragment.setArguments(bundle);
         return fragment;
     }
@@ -97,11 +99,9 @@ public class ChooseVerificationMethodFragment extends BaseDaggerFragment impleme
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        Gson gson = new Gson();
-        VerificationPassModel tempPassModel = gson.fromJson(cacheManager.get(VerificationActivity
-                .PASS_MODEL), VerificationPassModel.class);
+        VerificationPassModel tempPassModel = getArguments().getParcelable(PASS_MODEL);
 
-        if (cacheManager != null && tempPassModel != null) {
+        if (tempPassModel != null) {
             passModel = tempPassModel;
         } else {
             getActivity().finish();
@@ -127,7 +127,8 @@ public class ChooseVerificationMethodFragment extends BaseDaggerFragment impleme
                 .VERTICAL, false));
         methodListRecyclerView.setAdapter(adapter);
 
-        if (passModel.getOtpType() == RequestOtpUseCase.OTP_TYPE_REGISTER_PHONE_NUMBER) {
+        if (!userSession.isMsisdnVerified() ||
+                passModel.getOtpType() == RequestOtpUseCase.OTP_TYPE_REGISTER_PHONE_NUMBER) {
             changePhoneNumberButton.setVisibility(View.GONE);
         }
 

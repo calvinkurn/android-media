@@ -45,7 +45,10 @@ public class VerificationMethodMapper implements Func1<Response<DataResponse<Lis
                     modePojo.getModeText(),
                     modePojo.getOtpListImgUrl(),
                     modePojo.getOtpListText(),
-                    modePojo.getNewAfterOtpListText()
+                    modePojo.getNewAfterOtpListText(),
+                    modePojo.isUsingPopUp(),
+                    modePojo.getPopUpHeader(),
+                    modePojo.getPopUpBody()
             ));
         }
         return new ListVerificationMethod(list);

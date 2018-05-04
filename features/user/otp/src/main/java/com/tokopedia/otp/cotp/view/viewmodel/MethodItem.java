@@ -17,34 +17,33 @@ public class MethodItem implements Parcelable {
     private String methodText;
     private String imageUrl;
     private String verificationText;
+    private boolean usingPopUp;
+    private String popUpHeader;
+    private String popUpBody;
 
-    public MethodItem(String mode, String imageUrl, String methodText, String verificationText) {
+    public MethodItem(String mode, String imageUrl, String methodText, String verificationText,
+                      boolean usingPopUp, String popUpHeader, String popUpBody) {
         this.modeName = mode;
         this.iconResId = 0;
         this.imageUrl = imageUrl;
         this.methodText = methodText;
         this.verificationText = verificationText;
+        this.usingPopUp = usingPopUp;
+        this.popUpHeader = popUpHeader;
+        this.popUpBody = popUpBody;
     }
 
-    protected MethodItem(Parcel in) {
-        modeName = in.readString();
-        iconResId = in.readInt();
-        methodText = in.readString();
-        imageUrl = in.readString();
-        verificationText = in.readString();
+    public MethodItem(String mode, int iconResId, String methodText, String verificationText,
+                      boolean usingPopUp, String popUpHeader, String popUpBody) {
+        this.modeName = mode;
+        this.iconResId = iconResId;
+        this.imageUrl = "";
+        this.methodText = methodText;
+        this.verificationText = verificationText;
+        this.usingPopUp = usingPopUp;
+        this.popUpHeader = popUpHeader;
+        this.popUpBody = popUpBody;
     }
-
-    public static final Creator<MethodItem> CREATOR = new Creator<MethodItem>() {
-        @Override
-        public MethodItem createFromParcel(Parcel in) {
-            return new MethodItem(in);
-        }
-
-        @Override
-        public MethodItem[] newArray(int size) {
-            return new MethodItem[size];
-        }
-    };
 
     public String getModeName() {
         return modeName;
@@ -52,20 +51,6 @@ public class MethodItem implements Parcelable {
 
     public String getMethodText() {
         return methodText;
-    }
-
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(modeName);
-        dest.writeInt(iconResId);
-        dest.writeString(methodText);
-        dest.writeString(imageUrl);
-        dest.writeString(verificationText);
     }
 
     public static String getSmsMethodText(String phoneNumber, Context context) {
@@ -89,5 +74,61 @@ public class MethodItem implements Parcelable {
 
     public String getVerificationText() {
         return verificationText;
+    }
+
+    public boolean isUsingPopUp() {
+        return usingPopUp;
+    }
+
+    public String getPopUpHeader() {
+        return popUpHeader;
+    }
+
+    public String getPopUpBody() {
+        return popUpBody;
+    }
+
+    public int getIconResId() {
+        return iconResId;
+    }
+
+    protected MethodItem(Parcel in) {
+        modeName = in.readString();
+        iconResId = in.readInt();
+        methodText = in.readString();
+        imageUrl = in.readString();
+        verificationText = in.readString();
+        usingPopUp = in.readByte() != 0;
+        popUpHeader = in.readString();
+        popUpBody = in.readString();
+    }
+
+    public static final Creator<MethodItem> CREATOR = new Creator<MethodItem>() {
+        @Override
+        public MethodItem createFromParcel(Parcel in) {
+            return new MethodItem(in);
+        }
+
+        @Override
+        public MethodItem[] newArray(int size) {
+            return new MethodItem[size];
+        }
+    };
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(modeName);
+        dest.writeInt(iconResId);
+        dest.writeString(methodText);
+        dest.writeString(imageUrl);
+        dest.writeString(verificationText);
+        dest.writeByte((byte) (usingPopUp ? 1 : 0));
+        dest.writeString(popUpHeader);
+        dest.writeString(popUpBody);
     }
 }
