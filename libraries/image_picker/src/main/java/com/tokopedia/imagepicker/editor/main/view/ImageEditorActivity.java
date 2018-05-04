@@ -53,7 +53,7 @@ public class ImageEditorActivity extends BaseSimpleActivity implements ImageDown
     public static final String SAVED_EDIT_TYPE = "SAVED_EDIT_TYPE";
 
     public static final String EDIT_RESULT_PATHS = "result_paths";
-    public static final int MAX_STEP_PER_IMAGE = 5;
+    public static final int MAX_HISTORY_PER_IMAGE = 5;
 
 
     private ArrayList<String> extraImageUrls;
@@ -229,12 +229,6 @@ public class ImageEditorActivity extends BaseSimpleActivity implements ImageDown
         setupEditMode(false, ImageEditActionTypeDef.TYPE_CROP_ROTATE);
     }
 
-    private void onDoneButtonClicked() {
-        //TODO on done button clicked
-        // will crop all image if the image is still local step 0 and width & height not same with expected ratio
-        // redownsampling the image
-    }
-
     private void onSaveEditClicked() {
         if (isInEditMode) {
             showCropLoading();
@@ -275,7 +269,7 @@ public class ImageEditorActivity extends BaseSimpleActivity implements ImageDown
         if (getMaxStepForCurrentImage() != getCurrentStepForCurrentImage() + 1) {
             //discard the next file to size and set currentStepIndex to current+1
             //discard unneeded files
-            for (int j = getMaxStepForCurrentImage() - 1; j > getCurrentStepForCurrentImage(); j++) {
+            for (int j = getMaxStepForCurrentImage() - 1; j > getCurrentStepForCurrentImage(); j--) {
                 String pathToDelete = edittedImagePaths.get(currentImageIndex).get(j);
                 deleteUnusedFile(pathToDelete);
                 edittedImagePaths.remove(j);
@@ -288,7 +282,7 @@ public class ImageEditorActivity extends BaseSimpleActivity implements ImageDown
 
         // if already 5 steps or more, delete the step no 1, we don't want to spam the history.
         // step no 0 should not be deleted. Perhaps someday it is used for reset to very first node.
-        if (lastEmptyStep > MAX_STEP_PER_IMAGE) {
+        if (lastEmptyStep > MAX_HISTORY_PER_IMAGE) {
             String stepNo1Path = edittedImagePaths.get(currentImageIndex).get(1);
             deleteUnusedFile(stepNo1Path);
             edittedImagePaths.remove(1);
@@ -373,7 +367,7 @@ public class ImageEditorActivity extends BaseSimpleActivity implements ImageDown
             if (fragment != null) {
                 fragment.setEditMode(true);
             }
-            //TODO show controls
+            //TODO show other controls
             switch (editActionType) {
                 case ImageEditActionTypeDef.TYPE_CROP:
                     //currently not supported.
@@ -401,7 +395,7 @@ public class ImageEditorActivity extends BaseSimpleActivity implements ImageDown
         }
     }
 
-    private void hideAllControls(){
+    private void hideAllControls() {
         // TODO hide other controls
         layoutRotateWheel.setVisibility(View.GONE);
         // currently no controls to hide, except layout rotate
@@ -415,7 +409,7 @@ public class ImageEditorActivity extends BaseSimpleActivity implements ImageDown
                         @Override
                         public void onScroll(float delta, float totalDistance) {
                             ImageEditPreviewFragment imageEditPreviewFragment = getCurrentFragment();
-                            if (imageEditPreviewFragment!= null) {
+                            if (imageEditPreviewFragment != null) {
                                 imageEditPreviewFragment.editRotateScrolled(delta);
                             }
                         }
@@ -423,7 +417,7 @@ public class ImageEditorActivity extends BaseSimpleActivity implements ImageDown
                         @Override
                         public void onScrollEnd() {
                             ImageEditPreviewFragment imageEditPreviewFragment = getCurrentFragment();
-                            if (imageEditPreviewFragment!= null) {
+                            if (imageEditPreviewFragment != null) {
                                 imageEditPreviewFragment.onEndEditScrolled();
                             }
                         }
@@ -431,7 +425,7 @@ public class ImageEditorActivity extends BaseSimpleActivity implements ImageDown
                         @Override
                         public void onScrollStart() {
                             ImageEditPreviewFragment imageEditPreviewFragment = getCurrentFragment();
-                            if (imageEditPreviewFragment!= null) {
+                            if (imageEditPreviewFragment != null) {
                                 imageEditPreviewFragment.onStartEditScrolled();
                             }
                         }
@@ -444,7 +438,7 @@ public class ImageEditorActivity extends BaseSimpleActivity implements ImageDown
                 @Override
                 public void onClick(View v) {
                     ImageEditPreviewFragment imageEditPreviewFragment = getCurrentFragment();
-                    if (imageEditPreviewFragment!= null) {
+                    if (imageEditPreviewFragment != null) {
                         imageEditPreviewFragment.resetRotation();
                     }
                 }
@@ -453,7 +447,7 @@ public class ImageEditorActivity extends BaseSimpleActivity implements ImageDown
                 @Override
                 public void onClick(View v) {
                     ImageEditPreviewFragment imageEditPreviewFragment = getCurrentFragment();
-                    if (imageEditPreviewFragment!= null) {
+                    if (imageEditPreviewFragment != null) {
                         imageEditPreviewFragment.rotateByAngle(90);
                     }
                 }
@@ -482,13 +476,20 @@ public class ImageEditorActivity extends BaseSimpleActivity implements ImageDown
         }
     }
 
-    private void finishEditImage() {
+    private void onDoneButtonClicked() {
+        blockingView.setVisibility(View.VISIBLE);
+
+        // TODO
+        // will crop all image if the image is still 1 and width & height not same with expected ratio
+        // redownsampling the image
+
+        deleteAllNotUsedImage(true);
+
         Intent intent = new Intent();
         ArrayList<String> resultList = new ArrayList<>();
         for (int i = 0, sizei = edittedImagePaths.size(); i < sizei; i++) {
             resultList.add(edittedImagePaths.get(i).get(currentEditStepIndexList.get(i)));
         }
-        //TODO delete file not in result.
         intent.putStringArrayListExtra(EDIT_RESULT_PATHS, resultList);
         setResult(Activity.RESULT_OK, intent);
         finish();
@@ -613,7 +614,6 @@ public class ImageEditorActivity extends BaseSimpleActivity implements ImageDown
                     .setPositiveButton(getString(R.string.exit), new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialogInterface, int i) {
-                            deleteNotUsedImage();
                             ImageEditorActivity.super.onBackPressed();
                         }
                     }).setNegativeButton(getString(R.string.cancel), new DialogInterface.OnClickListener() {
@@ -626,8 +626,28 @@ public class ImageEditorActivity extends BaseSimpleActivity implements ImageDown
         }
     }
 
-    private void deleteNotUsedImage() {
-        //TODO to delete all file in editted paths, and localStep0Urls (if it is different with the original imageURLS)
+    private void deleteAllNotUsedImage(boolean keepResultFiles) {
+        if (edittedImagePaths != null && edittedImagePaths.size() > 0) {
+            for (int i = edittedImagePaths.size() - 1; i >= 0; i--) {
+                ArrayList<String> historyList = edittedImagePaths.get(i);
+                if (historyList != null && historyList.size() > 0) {
+                    for (int j = historyList.size() - 1; j >= 0; j--) {
+                        String historyPathItem = historyList.get(j);
+                        if (keepResultFiles && j == currentEditStepIndexList.get(i)) {
+                            continue;
+                        }
+                        if (j == 0) { // first index, compare with the original,
+                            // we don't want to delete if it is same with original
+                            if (!historyPathItem.equals(extraImageUrls.get(i))) {
+                                deleteUnusedFile(historyPathItem);
+                            }
+                        } else {
+                            deleteUnusedFile(historyPathItem);
+                        }
+                    }
+                }
+            }
+        }
     }
 
     @Override
@@ -654,6 +674,6 @@ public class ImageEditorActivity extends BaseSimpleActivity implements ImageDown
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        deleteNotUsedImage();
+        deleteAllNotUsedImage(false);
     }
 }

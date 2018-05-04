@@ -170,12 +170,6 @@ public class ImagePickerGalleryFragment extends TkpdBaseV4Fragment
 
     @Override
     public void onMediaClick(MediaItem item, boolean isChecked, int adapterPosition) {
-        //getHeightAndWidth(item);
-        // TODO select the item
-//        Intent intent = new Intent();
-//        intent.putExtra(GallerySelectedFragment.EXTRA_RESULT_SELECTION, item);
-//        setResult(Activity.RESULT_OK, intent);
-//        finish();
         onImagePickerGalleryFragmentListener.onAlbumItemClicked(item, isChecked);
     }
 
@@ -183,7 +177,7 @@ public class ImagePickerGalleryFragment extends TkpdBaseV4Fragment
     public boolean isImageValid(MediaItem item) {
         //TODO check the image number allowed.
 
-        //TODO check image resolution
+        //check image resolution
         if (item.getWidth() < minImageResolution || item.getHeight() < minImageResolution) {
             NetworkErrorHelper.showRedCloseSnackbar(getView(), getString(R.string.image_under_x_resolution, minImageResolution));
             return false;
