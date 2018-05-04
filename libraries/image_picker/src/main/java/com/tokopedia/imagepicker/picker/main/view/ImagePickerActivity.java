@@ -1,4 +1,4 @@
-package com.tokopedia.imagepicker.picker;
+package com.tokopedia.imagepicker.picker.main.view;
 
 import android.Manifest;
 import android.app.Activity;
@@ -7,12 +7,12 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.os.Build;
+import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
-import android.os.Bundle;
 import android.support.v4.view.ViewPager;
 import android.text.TextUtils;
 import android.view.View;
@@ -29,13 +29,11 @@ import com.tokopedia.imagepicker.picker.camera.ImagePickerCameraFragment;
 import com.tokopedia.imagepicker.picker.gallery.ImagePickerGalleryFragment;
 import com.tokopedia.imagepicker.picker.gallery.model.AlbumItem;
 import com.tokopedia.imagepicker.picker.gallery.model.MediaItem;
+import com.tokopedia.imagepicker.picker.main.util.ImagePickerBuilder;
 import com.tokopedia.imagepicker.picker.widget.AlbumsSpinner;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import static com.tokopedia.imagepicker.editor.ImageEditorActivity.EDIT_RESULT_PATHS;
-import static com.tokopedia.imagepicker.picker.ImagePickerBuilder.ImageSelectionTypeDef.TYPE_MULTIPLE_WITH_PREVIEW;
 
 public class ImagePickerActivity extends BaseSimpleActivity
         implements AdapterView.OnItemSelectedListener,
@@ -108,7 +106,7 @@ public class ImagePickerActivity extends BaseSimpleActivity
     }
 
     private void setupViewPager() {
-        imagePickerViewPagerAdapter = new ImagePickerViewPagerAdapter(this,  getSupportFragmentManager(), imagePickerBuilder);
+        imagePickerViewPagerAdapter = new ImagePickerViewPagerAdapter(this, getSupportFragmentManager(), imagePickerBuilder);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
             int cameraIndex = imagePickerBuilder.indexTypeDef(ImagePickerBuilder.ImagePickerTabTypeDef.TYPE_CAMERA);
             int galleryIndex = imagePickerBuilder.indexTypeDef(ImagePickerBuilder.ImagePickerTabTypeDef.TYPE_GALLERY);
@@ -149,7 +147,7 @@ public class ImagePickerActivity extends BaseSimpleActivity
             @Override
             public void onPageSelected(int position) {
                 selectedTab = position;
-                if (tabLayoutImagePickerAdapter!= null) {
+                if (tabLayoutImagePickerAdapter != null) {
                     tabLayoutImagePickerAdapter.selectTab(position);
 
                 }
@@ -272,9 +270,9 @@ public class ImagePickerActivity extends BaseSimpleActivity
             }
             break;
             case ImagePickerBuilder.ImageSelectionTypeDef.TYPE_MULTIPLE_NO_PREVIEW:
-            case TYPE_MULTIPLE_WITH_PREVIEW: {
+            case ImagePickerBuilder.ImageSelectionTypeDef.TYPE_MULTIPLE_WITH_PREVIEW: {
                 // TODO change the UI of selection
-                if (imagePickerBuilder.getImageSelectionType() == TYPE_MULTIPLE_WITH_PREVIEW) {
+                if (imagePickerBuilder.getImageSelectionType() == ImagePickerBuilder.ImageSelectionTypeDef.TYPE_MULTIPLE_WITH_PREVIEW) {
                     // TODO show the preview
                 } else {
                     // TODO hide the preview
@@ -294,13 +292,13 @@ public class ImagePickerActivity extends BaseSimpleActivity
         }
     }
 
-    private void onFinishWithSingleImage (String imageUrlOrPath) {
+    private void onFinishWithSingleImage(String imageUrlOrPath) {
         ArrayList<String> finalPathList = new ArrayList<>();
         finalPathList.add(imageUrlOrPath);
         onFinishWithMultipleImage(finalPathList);
     }
 
-    private void onFinishWithMultipleImage (ArrayList<String> imageUrlOrPathList) {
+    private void onFinishWithMultipleImage(ArrayList<String> imageUrlOrPathList) {
         Intent intent = new Intent();
         intent.putStringArrayListExtra(PICKER_RESULT_PATHS, imageUrlOrPathList);
         setResult(Activity.RESULT_OK, intent);
@@ -313,8 +311,8 @@ public class ImagePickerActivity extends BaseSimpleActivity
         super.onActivityResult(requestCode, resultCode, data);
         switch (requestCode) {
             case REQUEST_CODE_EDITOR:
-                if (resultCode == Activity.RESULT_OK && data != null && data.hasExtra(EDIT_RESULT_PATHS)) {
-                    ArrayList<String> finalPathList = data.getStringArrayListExtra(EDIT_RESULT_PATHS);
+                if (resultCode == Activity.RESULT_OK && data != null && data.hasExtra(ImageEditorActivity.EDIT_RESULT_PATHS)) {
+                    ArrayList<String> finalPathList = data.getStringArrayListExtra(ImageEditorActivity.EDIT_RESULT_PATHS);
                     onFinishWithMultipleImage(finalPathList);
                 }
                 break;
@@ -332,9 +330,9 @@ public class ImagePickerActivity extends BaseSimpleActivity
             }
             break;
             case ImagePickerBuilder.ImageSelectionTypeDef.TYPE_MULTIPLE_NO_PREVIEW:
-            case TYPE_MULTIPLE_WITH_PREVIEW: {
+            case ImagePickerBuilder.ImageSelectionTypeDef.TYPE_MULTIPLE_WITH_PREVIEW: {
                 // TODO change the UI of selection
-                if (imagePickerBuilder.getImageSelectionType() == TYPE_MULTIPLE_WITH_PREVIEW) {
+                if (imagePickerBuilder.getImageSelectionType() == ImagePickerBuilder.ImageSelectionTypeDef.TYPE_MULTIPLE_WITH_PREVIEW) {
                     // TODO show the preview?
                 } else {
                     // TODO hide the preview?

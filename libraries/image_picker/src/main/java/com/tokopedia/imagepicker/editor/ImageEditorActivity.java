@@ -17,14 +17,9 @@ import com.tokopedia.imagepicker.editor.adapter.ImageEditorViewPagerAdapter;
 import com.tokopedia.imagepicker.editor.presenter.ImageDownloadPresenter;
 import com.tokopedia.imagepicker.editor.widget.ImageEditActionMainWidget;
 import com.tokopedia.imagepicker.editor.widget.ImageEditThumbnailListWidget;
-import com.tokopedia.imagepicker.picker.ImagePickerBuilder;
+import com.tokopedia.imagepicker.picker.main.util.ImagePickerBuilder;
 
 import java.util.ArrayList;
-
-import static com.tokopedia.imagepicker.picker.ImagePickerBuilder.ImageEditActionTypeDef.TYPE_CROP;
-import static com.tokopedia.imagepicker.picker.ImagePickerBuilder.ImageEditActionTypeDef.TYPE_CROP_ROTATE;
-import static com.tokopedia.imagepicker.picker.ImagePickerBuilder.ImageEditActionTypeDef.TYPE_ROTATE;
-import static com.tokopedia.imagepicker.picker.ImagePickerBuilder.ImageEditActionTypeDef.TYPE_WATERMARK;
 
 /**
  * Created by Hendry on 9/25/2017.
@@ -126,7 +121,7 @@ public class ImageEditorActivity extends BaseSimpleActivity implements ImageDown
             localImagePaths = new ArrayList<>();
             finalImagePaths = new ArrayList<>();
             isInEditMode = false;
-            currentEditActionType = TYPE_CROP_ROTATE;
+            currentEditActionType = ImagePickerBuilder.ImageEditActionTypeDef.TYPE_CROP_ROTATE;
         } else {
             currentImageIndex = savedInstanceState.getInt(SAVED_IMAGE_INDEX, 0);
             localImagePaths = savedInstanceState.getStringArrayList(SAVED_LOCAL_IMAGE_PATH);
@@ -174,18 +169,18 @@ public class ImageEditorActivity extends BaseSimpleActivity implements ImageDown
                         imageEditorViewPagerAdapter.getRegisteredFragment(currentImageIndex);
                 if (fragment != null) {
                     switch (currentEditActionType) {
-                        case TYPE_CROP:
-                        case TYPE_ROTATE:
-                        case TYPE_CROP_ROTATE:
+                        case ImagePickerBuilder.ImageEditActionTypeDef.TYPE_CROP:
+                        case ImagePickerBuilder.ImageEditActionTypeDef.TYPE_ROTATE:
+                        case ImagePickerBuilder.ImageEditActionTypeDef.TYPE_CROP_ROTATE:
                             fragment.cancelCropRotateImage();
                             break;
-                        case TYPE_WATERMARK:
+                        case ImagePickerBuilder.ImageEditActionTypeDef.TYPE_WATERMARK:
                             //TODO undo watermark here
                             break;
                     }
 
                 }
-                setupEditMode(false, TYPE_CROP_ROTATE);
+                setupEditMode(false, ImagePickerBuilder.ImageEditActionTypeDef.TYPE_CROP_ROTATE);
             }
         });
     }
@@ -219,7 +214,7 @@ public class ImageEditorActivity extends BaseSimpleActivity implements ImageDown
             }
             //TODO show controls
             switch (editActionType) {
-                case TYPE_CROP:
+                case ImagePickerBuilder.ImageEditActionTypeDef.TYPE_CROP:
                     //currently not supported.
                     break;
                 case ImagePickerBuilder.ImageEditActionTypeDef.TYPE_ROTATE:
@@ -228,7 +223,7 @@ public class ImageEditorActivity extends BaseSimpleActivity implements ImageDown
                 case ImagePickerBuilder.ImageEditActionTypeDef.TYPE_WATERMARK:
                     //currently not supported.
                     break;
-                case TYPE_CROP_ROTATE:
+                case ImagePickerBuilder.ImageEditActionTypeDef.TYPE_CROP_ROTATE:
                     break;
             }
         } else {
