@@ -8,10 +8,12 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AlertDialog;
 import android.view.View;
 import android.webkit.URLUtil;
+import android.widget.TextView;
 
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
@@ -25,9 +27,11 @@ import com.tokopedia.imagepicker.editor.widget.ImageEditActionMainWidget;
 import com.tokopedia.imagepicker.editor.widget.ImageEditThumbnailListWidget;
 import com.tokopedia.imagepicker.picker.main.util.ExpectedImageRatioDef;
 import com.tokopedia.imagepicker.picker.main.util.ImageEditActionTypeDef;
+import com.yalantis.ucrop.view.widget.HorizontalProgressWheelView;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Locale;
 
 /**
  * Created by Hendry on 9/25/2017.
@@ -45,7 +49,6 @@ public class ImageEditorActivity extends BaseSimpleActivity implements ImageDown
     public static final String SAVED_IMAGE_INDEX = "IMG_IDX";
     public static final String SAVED_EDITTED_PATHS = "SAVED_EDITTED_PATHS";
     public static final String SAVED_CURRENT_STEP_INDEX = "SAVED_STEP_INDEX";
-    public static final String SAVED_LOCAL_IMAGE_PATH = "SAVED_LOCAL_STEP_0";
     public static final String SAVED_IN_EDIT_MODE = "SAVED_IN_EDIT_MODE";
     public static final String SAVED_EDIT_TYPE = "SAVED_EDIT_TYPE";
 
@@ -87,6 +90,9 @@ public class ImageEditorActivity extends BaseSimpleActivity implements ImageDown
     private View doneButton;
     private View vCropProgressBar;
     private View blockingView;
+    private View layoutRotateWheel;
+    private boolean alreadySetupRotateWidget;
+    private TextView textViewRotateAngle;
 
     public static Intent getIntent(Context context, ArrayList<String> imageUrls, int minResolution,
                                    @ImageEditActionTypeDef int[] imageEditActionType,
@@ -165,6 +171,7 @@ public class ImageEditorActivity extends BaseSimpleActivity implements ImageDown
         doneButton = findViewById(R.id.tv_done);
         vCropProgressBar = findViewById(R.id.crop_progressbar);
         blockingView = findViewById(R.id.crop_blocking_view);
+        layoutRotateWheel = findViewById(R.id.layout_rotate_wheel);
 
         viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
@@ -254,7 +261,8 @@ public class ImageEditorActivity extends BaseSimpleActivity implements ImageDown
             return;
         }
 
-        //check the size is must be higher than the minimum resolution
+        // check the size is must be higher than the minimum resolution
+        // we need to recheck this even though the maxScale has been set (in case there is OOM)
         int resultMinResolution = ImageUtils.getMinResolution(file);
         if (resultMinResolution < minResolution) {
             file.delete();
@@ -377,6 +385,9 @@ public class ImageEditorActivity extends BaseSimpleActivity implements ImageDown
                     //currently not supported.
                     break;
                 case ImageEditActionTypeDef.TYPE_CROP_ROTATE:
+                    hideAllControls();
+                    setupRotateWidget();
+                    layoutRotateWheel.setVisibility(View.VISIBLE);
                     break;
             }
         } else {
@@ -387,6 +398,74 @@ public class ImageEditorActivity extends BaseSimpleActivity implements ImageDown
             if (fragment != null) {
                 fragment.setEditMode(false);
             }
+        }
+    }
+
+    private void hideAllControls(){
+        // TODO hide other controls
+        layoutRotateWheel.setVisibility(View.GONE);
+        // currently no controls to hide, except layout rotate
+    }
+
+    private void setupRotateWidget() {
+        if (!alreadySetupRotateWidget) {
+            textViewRotateAngle = findViewById(R.id.text_view_rotate);
+            ((HorizontalProgressWheelView) findViewById(R.id.rotate_scroll_wheel))
+                    .setScrollingListener(new HorizontalProgressWheelView.ScrollingListener() {
+                        @Override
+                        public void onScroll(float delta, float totalDistance) {
+                            ImageEditPreviewFragment imageEditPreviewFragment = getCurrentFragment();
+                            if (imageEditPreviewFragment!= null) {
+                                imageEditPreviewFragment.editRotateScrolled(delta);
+                            }
+                        }
+
+                        @Override
+                        public void onScrollEnd() {
+                            ImageEditPreviewFragment imageEditPreviewFragment = getCurrentFragment();
+                            if (imageEditPreviewFragment!= null) {
+                                imageEditPreviewFragment.onEndEditScrolled();
+                            }
+                        }
+
+                        @Override
+                        public void onScrollStart() {
+                            ImageEditPreviewFragment imageEditPreviewFragment = getCurrentFragment();
+                            if (imageEditPreviewFragment!= null) {
+                                imageEditPreviewFragment.onStartEditScrolled();
+                            }
+                        }
+                    });
+
+            ((HorizontalProgressWheelView) findViewById(R.id.rotate_scroll_wheel)).setMiddleLineColor(
+                    ContextCompat.getColor(getContext(), R.color.tkpd_main_green)
+            );
+            findViewById(R.id.wrapper_reset_rotate).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    ImageEditPreviewFragment imageEditPreviewFragment = getCurrentFragment();
+                    if (imageEditPreviewFragment!= null) {
+                        imageEditPreviewFragment.resetRotation();
+                    }
+                }
+            });
+            findViewById(com.yalantis.ucrop.R.id.wrapper_rotate_by_angle).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    ImageEditPreviewFragment imageEditPreviewFragment = getCurrentFragment();
+                    if (imageEditPreviewFragment!= null) {
+                        imageEditPreviewFragment.rotateByAngle(90);
+                    }
+                }
+            });
+        }
+        alreadySetupRotateWidget = true;
+    }
+
+    @Override
+    public void setRotateAngle(float angle) {
+        if (textViewRotateAngle != null) {
+            textViewRotateAngle.setText(String.format(Locale.getDefault(), "%.1f°", angle));
         }
     }
 

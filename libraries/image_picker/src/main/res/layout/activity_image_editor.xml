@@ -161,7 +161,7 @@
                         android:layout_marginRight="@dimen/dp_16"
                         android:visibility="gone"
                         tools:visibility="visible"
-                        layout="@layout/ucrop_layout_rotate_wheel"/>
+                        layout="@layout/ucrop_layout_rotate"/>
 
                     <View
                         android:layout_width="match_parent"

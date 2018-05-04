@@ -29,6 +29,7 @@ import com.yalantis.ucrop.view.TransformImageView;
 import com.yalantis.ucrop.view.UCropView;
 
 import java.io.File;
+import java.util.Locale;
 
 /**
  * Created by hendry on 25/04/18.
@@ -40,6 +41,7 @@ public class ImageEditPreviewFragment extends Fragment {
     public static final String ARG_MIN_RESOLUTION = "arg_min_resolution";
     public static final String ARG_EXPECTED_RATIO = "arg_expected_ratio";
     public static final String ARG_CIRCLE_PREVIEW = "arg_circle_preview";
+    public static final int ROTATE_WIDGET_SENSITIVITY = 42;
 
     private String edittedImagePath;
     private int minResolution = 0;
@@ -54,6 +56,8 @@ public class ImageEditPreviewFragment extends Fragment {
 
     private OnImageEditPreviewFragmentListener onImageEditPreviewFragmentListener;
     private boolean loadCompleted;
+    private GestureCropImageView gestureCropImageView;
+    private OverlayView overlayView;
 
     public interface OnImageEditPreviewFragmentListener {
         boolean isInEditMode();
@@ -61,6 +65,8 @@ public class ImageEditPreviewFragment extends Fragment {
         void onSuccessSaveEditImage(Uri resultUri);
 
         void onErrorSaveEditImage(Throwable throwable);
+
+        void setRotateAngle(float angle);
     }
 
     public static ImageEditPreviewFragment newInstance(String imagePath, int minResolution,
@@ -96,7 +102,7 @@ public class ImageEditPreviewFragment extends Fragment {
 
     private void initUCrop(final View view) {
         uCropView = view.findViewById(R.id.ucrop);
-        GestureCropImageView gestureCropImageView = uCropView.getCropImageView();
+        gestureCropImageView = uCropView.getCropImageView();
 
         gestureCropImageView.setTransformImageListener(new TransformImageView.TransformImageListener() {
             @Override
@@ -112,7 +118,7 @@ public class ImageEditPreviewFragment extends Fragment {
 
             @Override
             public void onRotate(float currentAngle) {
-                // setAngleText(currentAngle);
+                onImageEditPreviewFragmentListener.setRotateAngle(currentAngle);
             }
 
             @Override
@@ -152,7 +158,6 @@ public class ImageEditPreviewFragment extends Fragment {
         processOptions();
         try {
             Uri inputUri = Uri.fromFile(new File(edittedImagePath));
-            GestureCropImageView gestureCropImageView = uCropView.getCropImageView();
             gestureCropImageView.setImageUri(inputUri,
                     Uri.parse(ImageUtils.getTokopediaPhotoPath(ImageUtils.DirectoryDef.DIRECTORY_TOKOPEDIA_EDIT, edittedImagePath).toString()));
         } catch (Exception e) {
@@ -162,8 +167,8 @@ public class ImageEditPreviewFragment extends Fragment {
 
     private void processOptions() {
 
-        GestureCropImageView gestureCropImageView = uCropView.getCropImageView();
-        OverlayView overlayView = uCropView.getOverlayView();
+        gestureCropImageView = uCropView.getCropImageView();
+        overlayView = uCropView.getOverlayView();
 
         // Crop image view options
         gestureCropImageView.setRotateEnabled(false);
@@ -232,6 +237,27 @@ public class ImageEditPreviewFragment extends Fragment {
         gestureCropImageView.setMaxResultImageSizeY(maxSizeY);
     }
 
+    public void resetRotation() {
+        gestureCropImageView.postRotate(-gestureCropImageView.getCurrentAngle());
+        gestureCropImageView.setImageToWrapCropBounds();
+    }
+
+    public void rotateByAngle(int angle) {
+        gestureCropImageView.postRotate(angle);
+        gestureCropImageView.setImageToWrapCropBounds();
+    }
+
+    public void onStartEditScrolled() {
+        gestureCropImageView.cancelAllAnimations();
+    }
+
+    public void onEndEditScrolled() {
+        gestureCropImageView.setImageToWrapCropBounds();
+    }
+
+    public void editRotateScrolled(float delta) {
+        gestureCropImageView.postRotate(delta / ROTATE_WIDGET_SENSITIVITY);
+    }
 
     private void showLoadingAndHidePreview() {
         uCropView.setVisibility(View.INVISIBLE);
@@ -250,17 +276,16 @@ public class ImageEditPreviewFragment extends Fragment {
         if (loadCompleted) {
             if (isEditMode) {
                 blockingView.setVisibility(View.GONE);
-                uCropView.getOverlayView().setShowCropGrid(true);
+                overlayView.setShowCropGrid(true);
             } else {
                 blockingView.setVisibility(View.VISIBLE);
-                uCropView.getOverlayView().setShowCropGrid(false);
+                overlayView.setShowCropGrid(false);
             }
-            uCropView.getOverlayView().invalidate();
+            overlayView.invalidate();
         }
     }
 
     public void cancelCropRotateImage() {
-        GestureCropImageView gestureCropImageView = uCropView.getCropImageView();
         gestureCropImageView.postRotate(-gestureCropImageView.getCurrentAngle());
         gestureCropImageView.zoomOutImage(gestureCropImageView.getMinScale());
         gestureCropImageView.setImageToWrapCropBounds(false);
