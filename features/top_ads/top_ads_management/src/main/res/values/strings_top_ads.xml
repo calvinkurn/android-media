@@ -5,7 +5,7 @@
     <string name="top_ads_title_product">Produk</string>
     <string name="title_top_ads_store">Toko</string>
     <string name="title_top_ads_promo_group">Grup</string>
-    <string name="title_top_ads_add_credit">Tambah Kredit Iklan</string>
+    <string name="title_top_ads_add_credit">Tambah Kredit TopAds</string>
     <string name="title_top_ads_new_promo_shop">Pilih Atau Buat Iklan</string>
     <string name="title_top_ads_new_promo_product">Tambah Iklan Produk</string>
     <string name="title_top_ads_filter">Filter</string>
@@ -121,11 +121,11 @@
     <string name="topads_label_title_percentation_detail">Persentase Klik</string>
 
     <!-- Top Ads Statistic-->
-    <string name="title_top_ads_statistic_graph_impression">Jumlah orang yang melihat iklan anda.</string>
-    <string name="title_top_ads_statistic_graph_avg">Biaya rata-rata yang anda bayarkan untuk setiap klik.</string>
-    <string name="title_top_ads_statistic_graph_convertion">Jumlah favorit / transaksi dari iklan anda.</string>
-    <string name="title_top_ads_statistic_graph_ctr">Perbandingan orang yang melihat iklan anda dengan jumlah klik pada iklan tersebut.</string>
-    <string name="title_top_ads_statistic_graph_click">Jumlah klik pada iklan anda.</string>
+    <string name="title_top_ads_statistic_graph_impression">Jumlah orang yang melihat iklan Anda.</string>
+    <string name="title_top_ads_statistic_graph_avg">Biaya rata-rata yang Anda bayarkan untuk setiap klik.</string>
+    <string name="title_top_ads_statistic_graph_convertion">Jumlah favorit / transaksi dari iklan Anda.</string>
+    <string name="title_top_ads_statistic_graph_ctr">Perbandingan orang yang melihat iklan Anda dengan jumlah klik pada iklan tersebut.</string>
+    <string name="title_top_ads_statistic_graph_click">Jumlah klik pada iklan Anda.</string>
     <string name="title_top_ads_statistic_graph_spent">Jumlah anggaran yang telah terpakai untuk iklan ini.</string>
     <string name="title_activity_statistic">Statistik</string>
     <string name="top_ads_statistic_info_default_value">-</string>

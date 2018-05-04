@@ -73,7 +73,9 @@ public class TopAdsProductAdListPresenterImpl extends TopAdsAdListPresenterImpl<
                     public void onError(Throwable e) {}
 
                     @Override
-                    public void onNext(Void aVoid) {}
+                    public void onNext(Void aVoid) {
+                        //do nothing
+                    }
                 });
     }
 

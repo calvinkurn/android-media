@@ -189,4 +189,12 @@
         <key>mainapp_show_recomendation_button</key>
         <value>true</value>
     </entry>
+    <entry>
+        <key>mainapp_explore_native_enable</key>
+        <value>true</value>
+    </entry>
+    <entry>
+        <key>mainapp_explore_url</key>
+        <value>tokopedia://webview?url=https%3A%2F%2Fm.tokopedia.com%2Fcontent%2Fexplore%3Fwebview%3Dtrue</value>
+    </entry>
 </defaultsMap>

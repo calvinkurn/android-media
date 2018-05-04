@@ -62,7 +62,7 @@ public class TopAdsKeywordListPresenterImpl extends
 
             @Override
             public void onNext(Void aVoid) {
-
+                //do nothing
             }
         });
     }

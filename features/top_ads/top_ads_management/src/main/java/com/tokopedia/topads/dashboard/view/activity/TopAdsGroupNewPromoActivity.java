@@ -28,7 +28,6 @@ public class TopAdsGroupNewPromoActivity extends BaseSimpleActivity {
     public static final String PARAM_ITEM_ID = "item_id";
     public static final String PARAM_USER_ID = "user_id";
 
-    //@DeepLink(Constants.Applinks.SellerApp.TOPADS_PRODUCT_CREATE)
     public static Intent getCallingApplinkIntent(Context context, Bundle extras) {
         if (GlobalConfig.isSellerApp()) {
             String userId = extras.getString(PARAM_USER_ID, "");

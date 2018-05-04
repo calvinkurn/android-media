@@ -238,7 +238,6 @@ public class WelcomeFragment extends BaseDaggerFragment implements
                         }
                     });
                 } else if (listProvider.get(i).getId().equalsIgnoreCase("gplus")) {
-                    tv.setBorderColor(Color.BLACK);
                     tv.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
@@ -248,6 +247,7 @@ public class WelcomeFragment extends BaseDaggerFragment implements
                 } else {
                     tv.setOnClickListener(loginProvideOnClick(i));
                 }
+                tv.setBorderColor(Color.BLACK);
 
                 if (containerProvider != null) {
                     containerProvider.addView(tv, i, layoutParams);

@@ -15,15 +15,15 @@ public class IBasePresenter<T extends IMvpView> implements IPresenter<T> {
         mMvpView = null;
     }
 
-    private boolean isViewAttached() {
+    boolean isViewAttached() {
         return mMvpView != null;
     }
 
-    protected T getMvpView() {
+    T getMvpView() {
         return mMvpView;
     }
 
-    protected void checkViewAttached() {
+    void checkViewAttached() {
         if (!isViewAttached()) throw new MvpViewNotAttachedException();
     }
 

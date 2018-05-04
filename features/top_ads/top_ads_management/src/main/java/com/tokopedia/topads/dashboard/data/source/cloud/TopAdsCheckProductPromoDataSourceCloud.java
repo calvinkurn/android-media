@@ -18,6 +18,8 @@ public class TopAdsCheckProductPromoDataSourceCloud {
     private static final String PARAM_ADS_TYPE = "type";
     private static final String PARAM_DEVICE_ID = "device";
 
+    private static final String ADS_TYPE_PRODUCT = "1";
+
     private final PromoTopAdsApi promoTopAdsApi;
 
     public TopAdsCheckProductPromoDataSourceCloud(PromoTopAdsApi promoTopAdsApi) {
@@ -25,7 +27,7 @@ public class TopAdsCheckProductPromoDataSourceCloud {
     }
 
     public Observable<String> checkPromoAds(RequestParams requestParams) {
-        requestParams.putString(PARAM_ADS_TYPE, "1");
+        requestParams.putString(PARAM_ADS_TYPE, ADS_TYPE_PRODUCT);
         requestParams.putString(PARAM_DEVICE_ID, "android");
         return promoTopAdsApi.checkPromoAds(requestParams.getParamsAllValueInString())
                 .map(new Func1<Response<String>, String>() {

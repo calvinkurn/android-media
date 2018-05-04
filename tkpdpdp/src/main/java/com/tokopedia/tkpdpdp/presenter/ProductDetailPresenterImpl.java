@@ -711,7 +711,7 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
             getProductVariant(context,Integer.toString(productData.getInfo().getProductId()));
         } else if (productStockNonVariant != null ){
             viewListener.addProductStock(productStockNonVariant);
-        } else {
+        } else if (productData != null && productData.getInfo() != null) {
             getProductStock(context,Integer.toString(productData.getInfo().getProductId()));
         }
 
@@ -1131,7 +1131,7 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
 
             @Override
             public void onNext(Void aVoid) {
-
+                //do nothing
             }
         });
     }
