@@ -256,7 +256,7 @@ public class ImageEditorActivity extends BaseSimpleActivity implements ImageDown
         refreshViewPager();
         imageEditThumbnailListWidget.notifyDataSetChanged();
 
-        setupEditMode(false, TYPE_CROP_ROTATE);
+        setupEditMode(false, ImagePickerBuilder.ImageEditActionTypeDef.TYPE_CROP_ROTATE);
     }
 
     private void refreshViewPager(){
