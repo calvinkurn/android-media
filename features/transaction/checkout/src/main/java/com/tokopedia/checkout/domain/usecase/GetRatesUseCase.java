@@ -93,22 +93,22 @@ public class GetRatesUseCase extends UseCase<ShipmentDetailData> {
         return requestParams;
     }
 
-    interface Params {
-        String SERVICE = "service";
-        String NAMES = "names";
-        String ORIGIN = "origin";
-        String DESTINATION = "destination";
-        String WEIGHT = "weight";
-        String TYPE = "type";
-        String FROM = "from";
-        String TOKEN = "token";
-        String UT = "ut";
-        String INSURANCE = "insurance";
-        String PRODUCT_INSURANCE = "product_insurance";
-        String ORDER_VALUE = "order_value";
-        String CAT_ID = "cat_id";
-        String VALUE_ANDROID = "android";
-        String VALUE_CLIENT = "client";
+    private static final class Params {
+        static final String SERVICE = "service";
+        static final String NAMES = "names";
+        static final String ORIGIN = "origin";
+        static final String DESTINATION = "destination";
+        static final String WEIGHT = "weight";
+        static final String TYPE = "type";
+        static final String FROM = "from";
+        static final String TOKEN = "token";
+        static final String UT = "ut";
+        static final String INSURANCE = "insurance";
+        static final String PRODUCT_INSURANCE = "product_insurance";
+        static final String ORDER_VALUE = "order_value";
+        static final String CAT_ID = "cat_id";
+        static final String VALUE_ANDROID = "android";
+        static final String VALUE_CLIENT = "client";
     }
 
 }

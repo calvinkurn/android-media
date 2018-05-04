@@ -86,7 +86,6 @@ public class CartFragment extends BaseCheckoutFragment implements CartListAdapte
 
     private RecyclerView cartRecyclerView;
     private TextView btnToShipment;
-    private TextView tvItemCount;
     private TextView tvTotalPrice;
     private View bottomLayout;
     private TkpdProgressDialog progressDialogNormal;
@@ -185,7 +184,6 @@ public class CartFragment extends BaseCheckoutFragment implements CartListAdapte
     protected void initView(View view) {
         cartRecyclerView = view.findViewById(R.id.rv_cart);
         btnToShipment = view.findViewById(R.id.go_to_courier_page_button);
-        tvItemCount = view.findViewById(R.id.tv_item_count);
         tvTotalPrice = view.findViewById(R.id.tv_total_prices);
         bottomLayout = view.findViewById(R.id.bottom_layout);
 
@@ -334,7 +332,7 @@ public class CartFragment extends BaseCheckoutFragment implements CartListAdapte
 
     @Override
     public void onCartDataEnableToCheckout() {
-        btnToShipment.setBackgroundResource(R.drawable.medium_green_button_rounded);
+        btnToShipment.setBackgroundResource(R.drawable.orange_button_rounded);
         btnToShipment.setTextColor(getResources().getColor(R.color.white));
         btnToShipment.setOnClickListener(getOnClickButtonToShipmentListener());
     }
@@ -670,7 +668,6 @@ public class CartFragment extends BaseCheckoutFragment implements CartListAdapte
 
     @Override
     public void renderDetailInfoSubTotal(String qty, String subtotalPrice) {
-        tvItemCount.setText(MessageFormat.format("Harga Barang ({0} Item) : ", qty));
         tvTotalPrice.setText(subtotalPrice);
     }
 

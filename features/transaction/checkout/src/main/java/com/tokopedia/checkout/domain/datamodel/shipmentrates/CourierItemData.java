@@ -3,11 +3,13 @@ package com.tokopedia.checkout.domain.datamodel.shipmentrates;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.tokopedia.checkout.view.view.shipment.shippingoptions.viewmodel.ShipmentData;
+
 /**
  * Created by Irfan Khoirul on 25/01/18.
  */
 
-public class CourierItemData implements Parcelable {
+public class CourierItemData implements Parcelable, ShipmentData {
     private int shipperId;
     private int shipperProductId;
     private String name;

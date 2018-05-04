@@ -1,6 +1,7 @@
 package com.tokopedia.checkout.view.view.shipment;
 
 import android.app.Activity;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -11,6 +12,7 @@ import android.text.TextUtils;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
@@ -23,6 +25,7 @@ import com.tokopedia.checkout.domain.datamodel.cartcheckout.CheckoutData;
 import com.tokopedia.checkout.domain.datamodel.cartlist.CartPromoSuggestion;
 import com.tokopedia.checkout.domain.datamodel.cartshipmentform.CartShipmentAddressFormData;
 import com.tokopedia.checkout.domain.datamodel.cartsingleshipment.ShipmentCostModel;
+import com.tokopedia.checkout.domain.datamodel.shipmentrates.CourierItemData;
 import com.tokopedia.checkout.domain.datamodel.shipmentrates.ShipmentDetailData;
 import com.tokopedia.checkout.domain.datamodel.voucher.PromoCodeAppliedData;
 import com.tokopedia.checkout.view.base.BaseCheckoutFragment;
@@ -35,13 +38,16 @@ import com.tokopedia.checkout.view.view.shipment.converter.ShipmentDataConverter
 import com.tokopedia.checkout.view.view.shipment.di.DaggerShipmentComponent;
 import com.tokopedia.checkout.view.view.shipment.di.ShipmentComponent;
 import com.tokopedia.checkout.view.view.shipment.di.ShipmentModule;
+import com.tokopedia.checkout.view.view.shipment.shippingoptions.CourierBottomsheet;
 import com.tokopedia.checkout.view.view.shipment.viewmodel.ShipmentItem;
+import com.tokopedia.checkout.view.view.shippingoptions.ShipmentChoiceBottomSheet;
 import com.tokopedia.checkout.view.view.shippingoptions.ShipmentDetailActivity;
 import com.tokopedia.core.receiver.CartBadgeNotificationReceiver;
 import com.tokopedia.core.router.transactionmodule.TransactionPurchaseRouter;
 import com.tokopedia.core.router.transactionmodule.sharedata.CheckPromoCodeCartShipmentRequest;
 import com.tokopedia.design.component.ToasterError;
 import com.tokopedia.design.component.ToasterNormal;
+import com.tokopedia.design.utils.CurrencyFormatUtil;
 import com.tokopedia.payment.activity.TopPayActivity;
 import com.tokopedia.payment.model.PaymentPassData;
 
@@ -58,7 +64,7 @@ import static com.tokopedia.checkout.view.view.shippingoptions.ShipmentDetailAct
  */
 
 public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentContract.View,
-        ShipmentAdapterActionListener {
+        ShipmentAdapterActionListener, CourierBottomsheet.ActionListener {
 
     private static final int REQUEST_CODE_SHIPMENT_DETAIL = 11;
     private static final int REQUEST_CHOOSE_PICKUP_POINT = 12;
@@ -69,7 +75,6 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
 
     private RecyclerView rvShipment;
     private TextView tvSelectPaymentMethod;
-    private LinearLayout llTotalPaymentLayout;
     private TextView tvTotalPayment;
     private TextView tvPromoMessage;
     private CardView cvBottomLayout;
@@ -82,11 +87,12 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     private CartPromoSuggestion cartPromoSuggestion;
     private List<DataCheckoutRequest> mCheckoutRequestData;
     private CheckoutData checkoutData;
+    private CourierBottomsheet courierBottomsheet;
 
     @Inject
     ShipmentAdapter shipmentAdapter;
     @Inject
-    ShipmentPresenter shipmentPresenter;
+    ShipmentContract.Presenter shipmentPresenter;
     @Inject
     ShipmentDataConverter shipmentDataConverter;
     @Inject
@@ -174,7 +180,6 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     protected void initView(View view) {
         rvShipment = view.findViewById(R.id.rv_shipment);
         tvSelectPaymentMethod = view.findViewById(R.id.tv_select_payment_method);
-        llTotalPaymentLayout = view.findViewById(R.id.ll_total_payment_layout);
         tvTotalPayment = view.findViewById(R.id.tv_total_payment);
         tvPromoMessage = view.findViewById(R.id.tv_promo_message);
         cvBottomLayout = view.findViewById(R.id.bottom_layout);
@@ -195,7 +200,6 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                 super.onScrollStateChanged(recyclerView, newState);
                 if (rvShipment != null) {
                     boolean isReachBottomEnd = rvShipment.canScrollVertically(1);
-                    llTotalPaymentLayout.setVisibility(isReachBottomEnd ? View.VISIBLE : View.GONE);
                     if (!TextUtils.isEmpty(tvPromoMessage.getText().toString())) {
                         tvPromoMessage.setVisibility(isReachBottomEnd ? View.VISIBLE : View.GONE);
                     } else {
@@ -359,9 +363,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
 //                shipmentAdapter.setPickupPoint(pickupBooth);
                 break;
             case REQUEST_CODE_SHIPMENT_DETAIL:
-                ShipmentDetailData shipmentDetailData = data.getParcelableExtra(EXTRA_SHIPMENT_DETAIL_DATA);
-                int position = data.getIntExtra(EXTRA_POSITION, 0);
-                shipmentAdapter.setSelecteCourier(position, shipmentDetailData);
+
             default:
                 break;
         }
@@ -381,16 +383,25 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         if (shipmentItem.getSelectedShipmentDetailData() != null) {
             shipmentDetailData = shipmentItem.getSelectedShipmentDetailData();
         } else {
-            ShipmentRatesDataMapper shipmentRatesDataMapper = new ShipmentRatesDataMapper();
-
             shipmentDetailData = ratesDataConverter.getShipmentDetailData(shipmentItem,
                     recipientAddressModel);
         }
 
-        Intent intent = ShipmentDetailActivity.createInstance(getActivity(), shipmentDetailData,
-                position);
-        startActivityForResult(intent, REQUEST_CODE_SHIPMENT_DETAIL);
+        showCourierChoiceBottomSheet(shipmentDetailData, position);
+    }
 
+    private void showCourierChoiceBottomSheet(ShipmentDetailData shipmentDetailData, int position) {
+        if (courierBottomsheet == null || position != courierBottomsheet.getLastCartItemPosition()) {
+            courierBottomsheet = new CourierBottomsheet(getActivity(), shipmentDetailData, position);
+        }
+        courierBottomsheet.setListener(this);
+        courierBottomsheet.setOnShowListener(new DialogInterface.OnShowListener() {
+            @Override
+            public void onShow(DialogInterface dialogInterface) {
+                courierBottomsheet.updateHeight();
+            }
+        });
+        courierBottomsheet.show();
     }
 
     @Override
@@ -410,7 +421,9 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
 
     @Override
     public void onTotalPaymentChange(ShipmentCostModel shipmentCostModel) {
-
+        double price = shipmentCostModel.getTotalPrice();
+        tvTotalPayment.setText(price == 0 ? "-" : CurrencyFormatUtil.convertPriceValueToIdrFormat(
+                (int) price, true));
     }
 
     @Override
@@ -480,5 +493,10 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     @Override
     public void onCartItemTickerErrorActionClicked(CartItemTickerErrorHolderData data, int position) {
 
+    }
+
+    @Override
+    public void onShipmentItemClick(CourierItemData courierItemData, int cartItemPosition) {
+        shipmentAdapter.setSelecteCourier(cartItemPosition, courierItemData);
     }
 }

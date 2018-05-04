@@ -13,6 +13,7 @@ import com.tokopedia.checkout.domain.datamodel.addressoptions.RecipientAddressMo
 import com.tokopedia.checkout.domain.datamodel.cartlist.CartPromoSuggestion;
 import com.tokopedia.checkout.domain.datamodel.cartsingleshipment.CartItemModel;
 import com.tokopedia.checkout.domain.datamodel.cartsingleshipment.ShipmentCostModel;
+import com.tokopedia.checkout.domain.datamodel.shipmentrates.CourierItemData;
 import com.tokopedia.checkout.domain.datamodel.shipmentrates.ShipmentDetailData;
 import com.tokopedia.checkout.view.holderitemdata.CartItemPromoHolderData;
 import com.tokopedia.checkout.view.view.shipment.viewholder.ShipmentCostViewHolder;
@@ -215,10 +216,16 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         }
     }
 
-    public void setSelecteCourier(int position, ShipmentDetailData shipmentDetailData) {
+    public void setSelecteCourier(int position, CourierItemData courierItemData) {
         ShipmentData currentShipmentData = shipmentDataList.get(position);
         if (currentShipmentData instanceof ShipmentItem) {
-            ((ShipmentItem) currentShipmentData).setSelectedShipmentDetailData(shipmentDetailData);
+            if (((ShipmentItem) currentShipmentData).getSelectedShipmentDetailData() != null) {
+                ((ShipmentItem) currentShipmentData).getSelectedShipmentDetailData().setSelectedCourier(courierItemData);
+            } else {
+                ShipmentDetailData shipmentDetailData = new ShipmentDetailData();
+                shipmentDetailData.setSelectedCourier(courierItemData);
+                ((ShipmentItem) currentShipmentData).setSelectedShipmentDetailData(shipmentDetailData);
+            }
             updateCost();
             checkDataForCheckout();
         }
@@ -256,7 +263,6 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                                 .getSelectedCourier().getAdditionalPrice();
                         // Additional fee is included in shipping fee
                         shippingFee += additionalFee;
-                        totalPrice += (totalItemPrice + shippingFee + insuranceFee);
                     } else {
                         ShipmentMultipleAddressItem shipmentMultipleAddressItem =
                                 (ShipmentMultipleAddressItem) shipmentData;
@@ -275,18 +281,19 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                                 .getSelectedCourier().getAdditionalPrice();
                         // Additional fee is included in shipping fee
                         shippingFee += additionalFee;
-                        totalPrice += (totalItemPrice + shippingFee + insuranceFee);
                     }
                 }
             }
         }
+        totalPrice = totalItemPrice + shippingFee + insuranceFee;
         shipmentCostModel.setTotalWeight(totalWeight);
-        shipmentCostModel.setTotalPrice(totalPrice);
         shipmentCostModel.setAdditionalFee(additionalFee);
         shipmentCostModel.setTotalItemPrice(totalItemPrice);
         shipmentCostModel.setTotalItem(totalItem);
         shipmentCostModel.setShippingFee(shippingFee);
         shipmentCostModel.setInsuranceFee(insuranceFee);
+        shipmentCostModel.setTotalPrice(totalPrice);
+        shipmentAdapterActionListener.onTotalPaymentChange(shipmentCostModel);
     }
 
 }

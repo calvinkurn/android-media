@@ -19,6 +19,7 @@ import com.tokopedia.checkout.view.di.module.PeopleAddressModule;
 import com.tokopedia.checkout.view.di.module.UtilModule;
 import com.tokopedia.checkout.view.view.shipment.ShipmentAdapter;
 import com.tokopedia.checkout.view.view.shipment.ShipmentAdapterActionListener;
+import com.tokopedia.checkout.view.view.shipment.ShipmentContract;
 import com.tokopedia.checkout.view.view.shipment.ShipmentPresenter;
 import com.tokopedia.checkout.view.view.shipment.converter.RatesDataConverter;
 import com.tokopedia.checkout.view.view.shipment.converter.ShipmentDataConverter;
@@ -47,14 +48,12 @@ public class ShipmentModule {
         return new MapperUtil();
     }
 
-    // Inject composite subscription
     @Provides
     @ShipmentScope
     CompositeSubscription provideCompositeSubscription() {
         return new CompositeSubscription();
     }
 
-    // Inject CheckoutUseCase
     @Provides
     @ShipmentScope
     CheckoutUseCase provideCheckoutUseCase(ICartRepository cartRepository, ICheckoutMapper checkoutMapper) {
@@ -67,14 +66,12 @@ public class ShipmentModule {
         return new TXActService();
     }
 
-    // Inject GetThanksToppayUseCase
     @Provides
     @ShipmentScope
     GetThanksToppayUseCase provideGetThanksToppayUseCase(ITopPayRepository topPayRepository, ITopPayMapper topPayMapper) {
         return new GetThanksToppayUseCase(topPayRepository, topPayMapper);
     }
 
-    // Inject CheckPromoCodeCartShipmentUseCase
     @Provides
     @ShipmentScope
     CheckPromoCodeCartShipmentUseCase provideCheckPromoCodeCartShipmentUseCase(ICartRepository cartRepository,
@@ -82,7 +79,6 @@ public class ShipmentModule {
         return new CheckPromoCodeCartShipmentUseCase(cartRepository, voucherCouponMapper);
     }
 
-    // Inject ShipmentDataConverter
     @Provides
     @ShipmentScope
     ShipmentDataConverter provideShipmentDataConverter() {
@@ -95,12 +91,6 @@ public class ShipmentModule {
         return new CartMapper(mapperUtil);
     }
 
-//    @Provides
-//    @ShipmentScope
-//    IShipmentMapper provideIShipmentMapper(IMapperUtil mapperUtil) {
-//        return new ShipmentMapper(mapperUtil);
-//    }
-
     @Provides
     @ShipmentScope
     GetShipmentAddressFormUseCase provideGetShipmentAddressFormUseCase(ICartRepository cartRepository,
@@ -108,19 +98,17 @@ public class ShipmentModule {
         return new GetShipmentAddressFormUseCase(cartRepository, shipmentMapper);
     }
 
-    // Inject presenter
     @Provides
     @ShipmentScope
-    ShipmentPresenter provideShipmentPresenter(CompositeSubscription compositeSubscription,
-                                               CheckoutUseCase checkoutUseCase,
-                                               GetThanksToppayUseCase getThanksToppayUseCase,
-                                               CheckPromoCodeCartShipmentUseCase checkPromoCodeCartShipmentUseCase,
-                                               GetShipmentAddressFormUseCase getShipmentAddressFormUseCase) {
+    ShipmentContract.Presenter provideShipmentPresenter(CompositeSubscription compositeSubscription,
+                                                        CheckoutUseCase checkoutUseCase,
+                                                        GetThanksToppayUseCase getThanksToppayUseCase,
+                                                        CheckPromoCodeCartShipmentUseCase checkPromoCodeCartShipmentUseCase,
+                                                        GetShipmentAddressFormUseCase getShipmentAddressFormUseCase) {
         return new ShipmentPresenter(compositeSubscription, checkoutUseCase,
                 getThanksToppayUseCase, checkPromoCodeCartShipmentUseCase, getShipmentAddressFormUseCase);
     }
 
-    // Inject Adapter
     @Provides
     @ShipmentScope
     ShipmentAdapter provideShipmentAdapter() {
