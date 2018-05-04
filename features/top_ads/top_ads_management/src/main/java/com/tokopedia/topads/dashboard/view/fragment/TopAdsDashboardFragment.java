@@ -481,8 +481,34 @@ public class TopAdsDashboardFragment extends BaseDaggerFragment implements TopAd
             endDate = new Date(eDate);
             topAdsDashboardPresenter.saveDate(startDate, endDate);
             topAdsDashboardPresenter.saveSelectionDatePicker(selectionType, lastSelection);
-
+            trackingDateTopAds(lastSelection, selectionType);
             loadStatisticsData();
+        }
+    }
+
+    private void trackingDateTopAds(int lastSelection, int selectionType) {
+        if(selectionType == DatePickerConstant.SELECTION_TYPE_CUSTOM_DATE){
+            UnifyTracking.eventTopAdsShopChooseDateCustom();
+        }else if(selectionType == DatePickerConstant.SELECTION_TYPE_PERIOD_DATE) {
+            switch (lastSelection){
+                case 0:
+                    UnifyTracking.eventTopAdsShopDatePeriod(AppEventTracking.EventLabel.PERIOD_OPTION_TODAY);
+                    break;
+                case 1:
+                    UnifyTracking.eventTopAdsShopDatePeriod(AppEventTracking.EventLabel.PERIOD_OPTION_YESTERDAY);
+                    break;
+                case 2:
+                    UnifyTracking.eventTopAdsShopDatePeriod(AppEventTracking.EventLabel.PERIOD_OPTION_LAST_7_DAY);
+                    break;
+                case 3:
+                    UnifyTracking.eventTopAdsShopDatePeriod(AppEventTracking.EventLabel.PERIOD_OPTION_LAST_1_MONTH);
+                    break;
+                case 4:
+                    UnifyTracking.eventTopAdsShopDatePeriod(AppEventTracking.EventLabel.PERIOD_OPTION_THIS_MONTH);
+                    break;
+                default:
+                    break;
+            }
         }
     }
 
