@@ -13,7 +13,6 @@ import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.View;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.tokopedia.core.discovery.model.Filter;
@@ -32,7 +31,6 @@ import com.tokopedia.discovery.newdynamicfilter.helper.FilterFlagSelectedModel;
 import com.tokopedia.discovery.newdynamicfilter.helper.FilterHelper;
 import com.tokopedia.discovery.newdynamicfilter.helper.OptionHelper;
 import com.tokopedia.discovery.newdynamicfilter.view.BottomSheetDynamicFilterView;
-import com.tokopedia.discovery.newdynamicfilter.view.DynamicFilterDetailView;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -376,6 +374,7 @@ public class BottomSheetFilterView extends BaseCustomView implements BottomSheet
         removeFiltersWithEmptyOption(list);
         mergeSizeFilterOptionsWithSameValue(list);
         removeBrandFilterOptionsWithSameValue(list);
+        changeRatingFilterOptionToFourAndAboveOnly(list);
         mergeNonExpandableFiltersToOthers(list);
         removeNonExpandableFilters(list);
         filterMainAdapter.setFilterList(list);
@@ -466,6 +465,37 @@ public class BottomSheetFilterView extends BaseCustomView implements BottomSheet
         } else {
             return option.getName() + " " + option.getMetric();
         }
+    }
+
+    private void changeRatingFilterOptionToFourAndAboveOnly(List<Filter> filterList) {
+        Filter ratingFilter = getRatingFilter(filterList);
+        if (ratingFilter == null) {
+            return;
+        }
+
+        List<Option> ratingOptionList = new ArrayList<>();
+        ratingOptionList.add(createFourAndAboveRatingOption());
+
+        ratingFilter.setOptions(ratingOptionList);
+    }
+
+    private Filter getRatingFilter(List<Filter> filterList) {
+        for (Filter filter : filterList) {
+            if (filter.isRatingFilter()) return filter;
+        }
+        return null;
+    }
+
+    private Option createFourAndAboveRatingOption() {
+        Option option = new Option();
+        option.setPopular(true);
+        option.setInputState(Boolean.toString(false));
+        option.setIconUrl("");
+        option.setInputType(Option.INPUT_TYPE_CHECKBOX);
+        option.setKey(Option.KEY_RATING);
+        option.setName(Option.RATING_ABOVE_FOUR_NAME);
+        option.setValue(Option.RATING_ABOVE_FOUR_VALUE);
+        return option;
     }
 
     private void mergeNonExpandableFiltersToOthers(List<Filter> list) {
