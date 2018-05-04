@@ -62,7 +62,7 @@
         melakukan kegiatan selama 15 menit. Silakan masuk kembali untuk mengikuti Group Chat
         .</string>
     <string name="you_have_been_kicked">Anda Telah Dikeluarkan</string>
-    <string name="lets_join_channel">Yuk gabung sekarang di group chat %s</string>
+    <string name="lets_join_channel">Yuk gabung sekarang di Group Chat %s</string>
     <string name="title_group_chat">Chat</string>
     <string name="title_vote">Vote</string>
     <string name="official_partner">Official Partner</string>
@@ -78,6 +78,7 @@
     <string name="word_is_blocked">Maaf, pesan anda tidak dapat dikirim karena mengandung kata
         yang diblokir.</string>
     <string name="you_are_blocked_because_spam">Anda telah di blokir sementara karena terlalu banyak mengirim pesan dalam periode singkat.</string>
-    <string name="channel_not_belong_to_user">Anda belum terhubung dengan groupchat. Silahkan coba kembali.</string>
+    <string name="channel_not_belong_to_user">Anda belum terhubung dengan Group Chat. Silahkan
+        coba kembali.</string>
 
 </resources>
