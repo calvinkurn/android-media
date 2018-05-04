@@ -146,4 +146,13 @@ public class SearchTracking extends TrackingUtils {
         }
         return TextUtils.join("&", filterList);
     }
+
+    public static void eventSearchResultFilterJourney(String screenName, Map<String, String> selectedFilter) {
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.SEARCH_RESULT,
+                AppEventTracking.Category.FILTER_JOURNEY,
+                AppEventTracking.Action.FILTER.toLowerCase() + " - " + screenName,
+                generateFilterEventLabel(selectedFilter)
+        ).setUserId().getEvent());
+    }
 }

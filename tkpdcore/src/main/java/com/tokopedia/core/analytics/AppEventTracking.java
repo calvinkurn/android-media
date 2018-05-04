@@ -302,6 +302,7 @@ public interface AppEventTracking {
         String PROMO_MICROSITE_PROMO_TOOLTIP = "promo microsite - promo tooltip";
         String SORT_BY = "sort by";
         String FILTER_PRODUCT = "filter product";
+        String FILTER_JOURNEY = "filter journey";
         String LONG_PRESS = "Long Press";
 
         String HOME_BOTTOM_NAV = "bottom nav";

@@ -368,6 +368,7 @@ public class SearchActivity extends DiscoveryActivity
             public void onApplyFilter(HashMap<String, String> selectedFilter,
                                       FilterFlagSelectedModel filterFlagSelectedModel) {
                 applyFilter(selectedFilter, filterFlagSelectedModel);
+                sendBottomSheetApplyFilterEventForProductList();
             }
 
             @Override
@@ -402,6 +403,15 @@ public class SearchActivity extends DiscoveryActivity
                 FilterDetailActivityRouter.launchDetailActivity(SearchActivity.this, filter);
             }
         });
+    }
+
+    private void sendBottomSheetApplyFilterEventForProductList() {
+        SearchSectionFragment selectedFragment
+                = (SearchSectionFragment) searchSectionPagerAdapter.getItem(viewPager.getCurrentItem());
+
+        if (selectedFragment != null && selectedFragment instanceof ProductListFragment) {
+            selectedFragment.onBottomSheetApplyFilter();
+        }
     }
 
     private void sendBottomSheetHideEventForProductList() {
