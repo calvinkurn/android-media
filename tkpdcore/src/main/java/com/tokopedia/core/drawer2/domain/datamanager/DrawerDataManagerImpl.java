@@ -181,21 +181,6 @@ public class DrawerDataManagerImpl implements DrawerDataManager {
 
     private void renderWallet(UserData response) {
         if (response.getWallet() != null) {
-
-            //Check for session expired error
-            if (response.getWallet().getErrors() != null && response.getWallet().getErrors().size() > 0) {
-                for (ErrorEntity error : response.getWallet().getErrors()) {
-                    if (error.getMessage().equalsIgnoreCase("your session has expired, please login again")) {
-                        if (MainApplication.getAppContext() != null) {
-                            Intent intent = new Intent();
-                            intent.setAction(BaseActivity.FORCE_LOGOUT);
-                            MainApplication.getAppContext().sendBroadcast(intent);
-                        }
-                        break;
-                    }
-                }
-            }
-
             viewListener.onGetTokoCash(TokoCashUtil.convertToViewModel(response.getWallet(), viewListener.getActivity()));
         } else {
             viewListener.onErrorGetTokoCash(ErrorHandler.getErrorMessage(new IOException()));

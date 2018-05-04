@@ -1232,6 +1232,9 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
                         if (!isAdded() || context == null) {
                             return;
                         }
+                        if (GlobalConfig.isSellerApp()) {
+                            return;
+                        }
                         Intent intent = new Intent(context, SimpleHomeRouter.getSimpleHomeActivityClass());
                         intent.putExtra(
                                 SimpleHomeRouter.FRAGMENT_TYPE,
@@ -1326,7 +1329,7 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
     @Override
     public void addProductStock(Child productStock) {
         productStockNonVariant = productStock;
-        if(productStock.isEnabled()){
+        if(productData !=null && productData.getInfo() !=null && productStock.isEnabled()){
             productData.getInfo().setProductStockWording(productStockNonVariant.getStockWording());
             productData.getInfo().setLimitedStock(productStockNonVariant.isLimitedStock());
             headerInfoView.renderStockAvailability(productData.getInfo());
@@ -1531,14 +1534,14 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
                                 )
                         ),
                         "key", productData.getEnhanceUrl(productData.getInfo().getProductUrl()),
-                        "shop_name", productData.getShopInfo().getShopName(),
-                        "shop_id", productData.getShopInfo().getShopId(),
-                        "shop_domain", productData.getShopInfo().getShopDomain(),
-                        "shop_location", productData.getShopInfo().getShopLocation(),
-                        "shop_is_gold", String.valueOf(productData.getShopInfo().shopIsGoldBadge() ? 1 : 0),
-                        "category_id", productData.getBreadcrumb().get(productData.getBreadcrumb().size() - 1).getDepartmentId(),
+                        "shopName", productData.getShopInfo().getShopName(),
+                        "shopId", productData.getShopInfo().getShopId(),
+                        "shopDomain", productData.getShopInfo().getShopDomain(),
+                        "shopLocation", productData.getShopInfo().getShopLocation(),
+                        "shopIsGold", String.valueOf(productData.getShopInfo().shopIsGoldBadge() ? 1 : 0),
+                        "categoryId", productData.getBreadcrumb().get(productData.getBreadcrumb().size() - 1).getDepartmentId(),
                         "url", productData.getInfo().getProductUrl(),
-                        "shop_type", productData.getEnhanceShopType()
+                        "shopType", productData.getEnhanceShopType()
                 )
         );
     }
