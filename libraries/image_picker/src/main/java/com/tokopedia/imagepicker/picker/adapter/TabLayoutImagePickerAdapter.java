@@ -1,18 +1,11 @@
 package com.tokopedia.imagepicker.picker.adapter;
 
 import android.content.Context;
-import android.graphics.PorterDuff;
-import android.graphics.drawable.Drawable;
 import android.support.annotation.ColorRes;
 import android.support.design.widget.TabLayout;
-import android.support.v4.content.ContextCompat;
 
-import com.tokopedia.imagepicker.picker.ImagePickerBuilder;
 import com.tokopedia.imagepicker.R;
-
-import static com.tokopedia.imagepicker.picker.ImagePickerBuilder.ImagePickerTabTypeDef.TYPE_CAMERA;
-import static com.tokopedia.imagepicker.picker.ImagePickerBuilder.ImagePickerTabTypeDef.TYPE_GALLERY;
-import static com.tokopedia.imagepicker.picker.ImagePickerBuilder.ImagePickerTabTypeDef.TYPE_INSTAGRAM;
+import com.tokopedia.imagepicker.picker.main.util.ImagePickerBuilder;
 
 /**
  * Created by hendry on 19/04/18.
@@ -24,8 +17,10 @@ public class TabLayoutImagePickerAdapter {
     private Context context;
     private TabLayout tabLayout;
 
-    public static @ColorRes int SELECTED_COLOR = R.color.font_black_primary_70;
-    public static @ColorRes int UNSELECTED_COLOR = R.color.grey_500;
+    public static @ColorRes
+    int SELECTED_COLOR = R.color.font_black_primary_70;
+    public static @ColorRes
+    int UNSELECTED_COLOR = R.color.grey_500;
 
     public TabLayoutImagePickerAdapter(
             TabLayout tabLayout,
@@ -43,17 +38,17 @@ public class TabLayoutImagePickerAdapter {
         for (int tabTypeDefItem : tabTypeDef) {
             TabLayout.Tab tab = tabLayout.newTab();
             switch (tabTypeDefItem) {
-                case TYPE_GALLERY:
+                case ImagePickerBuilder.ImagePickerTabTypeDef.TYPE_GALLERY:
                     tab.setText(context.getString(R.string.gallery));
                     unselectTab(tab);
                     tabLayout.addTab(tab);
                     break;
-                case TYPE_CAMERA:
+                case ImagePickerBuilder.ImagePickerTabTypeDef.TYPE_CAMERA:
                     tab.setText(context.getString(R.string.camera));
                     unselectTab(tab);
                     tabLayout.addTab(tab);
                     break;
-                case TYPE_INSTAGRAM:
+                case ImagePickerBuilder.ImagePickerTabTypeDef.TYPE_INSTAGRAM:
                     tab.setText(context.getString(R.string.instagram));
                     unselectTab(tab);
                     tabLayout.addTab(tab);
@@ -64,7 +59,7 @@ public class TabLayoutImagePickerAdapter {
 
     public void selectTab(int position) {
         TabLayout.Tab tab = tabLayout.getTabAt(position);
-        if (tabLayout.getSelectedTabPosition()!= position) {
+        if (tabLayout.getSelectedTabPosition() != position) {
             tab.select();
         }
     }

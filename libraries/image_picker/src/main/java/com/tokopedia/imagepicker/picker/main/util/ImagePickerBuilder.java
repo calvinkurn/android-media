@@ -1,22 +1,22 @@
-package com.tokopedia.imagepicker.picker;
+package com.tokopedia.imagepicker.picker.main.util;
 
 import android.support.annotation.IntDef;
 
 import com.tokopedia.imagepicker.picker.gallery.type.GalleryType;
 
-import static com.tokopedia.imagepicker.picker.ImagePickerBuilder.ExpectedImageRatioDef.TYPE_1_1;
-import static com.tokopedia.imagepicker.picker.ImagePickerBuilder.ExpectedImageRatioDef.TYPE_4_5;
-import static com.tokopedia.imagepicker.picker.ImagePickerBuilder.ExpectedImageRatioDef.TYPE_5_4;
-import static com.tokopedia.imagepicker.picker.ImagePickerBuilder.ImageEditActionTypeDef.TYPE_CROP;
-import static com.tokopedia.imagepicker.picker.ImagePickerBuilder.ImageEditActionTypeDef.TYPE_CROP_ROTATE;
-import static com.tokopedia.imagepicker.picker.ImagePickerBuilder.ImageEditActionTypeDef.TYPE_ROTATE;
-import static com.tokopedia.imagepicker.picker.ImagePickerBuilder.ImageEditActionTypeDef.TYPE_WATERMARK;
-import static com.tokopedia.imagepicker.picker.ImagePickerBuilder.ImagePickerTabTypeDef.TYPE_CAMERA;
-import static com.tokopedia.imagepicker.picker.ImagePickerBuilder.ImagePickerTabTypeDef.TYPE_GALLERY;
-import static com.tokopedia.imagepicker.picker.ImagePickerBuilder.ImagePickerTabTypeDef.TYPE_INSTAGRAM;
-import static com.tokopedia.imagepicker.picker.ImagePickerBuilder.ImageSelectionTypeDef.TYPE_MULTIPLE_NO_PREVIEW;
-import static com.tokopedia.imagepicker.picker.ImagePickerBuilder.ImageSelectionTypeDef.TYPE_MULTIPLE_WITH_PREVIEW;
-import static com.tokopedia.imagepicker.picker.ImagePickerBuilder.ImageSelectionTypeDef.TYPE_SINGLE;
+import static com.tokopedia.imagepicker.picker.main.util.ImagePickerBuilder.ExpectedImageRatioDef.TYPE_1_1;
+import static com.tokopedia.imagepicker.picker.main.util.ImagePickerBuilder.ExpectedImageRatioDef.TYPE_4_5;
+import static com.tokopedia.imagepicker.picker.main.util.ImagePickerBuilder.ExpectedImageRatioDef.TYPE_5_4;
+import static com.tokopedia.imagepicker.picker.main.util.ImagePickerBuilder.ImageEditActionTypeDef.TYPE_CROP;
+import static com.tokopedia.imagepicker.picker.main.util.ImagePickerBuilder.ImageEditActionTypeDef.TYPE_CROP_ROTATE;
+import static com.tokopedia.imagepicker.picker.main.util.ImagePickerBuilder.ImageEditActionTypeDef.TYPE_ROTATE;
+import static com.tokopedia.imagepicker.picker.main.util.ImagePickerBuilder.ImageEditActionTypeDef.TYPE_WATERMARK;
+import static com.tokopedia.imagepicker.picker.main.util.ImagePickerBuilder.ImagePickerTabTypeDef.TYPE_CAMERA;
+import static com.tokopedia.imagepicker.picker.main.util.ImagePickerBuilder.ImagePickerTabTypeDef.TYPE_GALLERY;
+import static com.tokopedia.imagepicker.picker.main.util.ImagePickerBuilder.ImagePickerTabTypeDef.TYPE_INSTAGRAM;
+import static com.tokopedia.imagepicker.picker.main.util.ImagePickerBuilder.ImageSelectionTypeDef.TYPE_MULTIPLE_NO_PREVIEW;
+import static com.tokopedia.imagepicker.picker.main.util.ImagePickerBuilder.ImageSelectionTypeDef.TYPE_MULTIPLE_WITH_PREVIEW;
+import static com.tokopedia.imagepicker.picker.main.util.ImagePickerBuilder.ImageSelectionTypeDef.TYPE_SINGLE;
 
 /**
  * Created by hendry on 19/04/18.

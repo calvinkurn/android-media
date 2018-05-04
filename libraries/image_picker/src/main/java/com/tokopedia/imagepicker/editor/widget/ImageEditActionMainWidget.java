@@ -7,14 +7,13 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
-import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 
 import com.tokopedia.imagepicker.R;
 import com.tokopedia.imagepicker.editor.ImageEditPreviewFragment;
 import com.tokopedia.imagepicker.editor.adapter.ImageEditorEditActionAdapter;
-import com.tokopedia.imagepicker.picker.ImagePickerBuilder;
+import com.tokopedia.imagepicker.picker.main.util.ImagePickerBuilder;
 
 /**
  * Created by hendry on 30/04/18.
@@ -59,7 +58,7 @@ public class ImageEditActionMainWidget extends FrameLayout implements ImageEdito
         viewGroupMainContent = findViewById(R.id.vg_editor_main_content);
     }
 
-    public void setData(@ImagePickerBuilder.ImageEditActionTypeDef int[] imageEditActionType){
+    public void setData(@ImagePickerBuilder.ImageEditActionTypeDef int[] imageEditActionType) {
         ImageEditorEditActionAdapter imageEditorEditActionAdapter =
                 new ImageEditorEditActionAdapter(viewGroupMainContent, getContext(), imageEditActionType, this);
         imageEditorEditActionAdapter.renderView();

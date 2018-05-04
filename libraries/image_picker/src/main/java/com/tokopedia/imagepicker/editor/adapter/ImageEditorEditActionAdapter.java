@@ -8,12 +8,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.tokopedia.imagepicker.R;
-import com.tokopedia.imagepicker.picker.ImagePickerBuilder;
-
-import static com.tokopedia.imagepicker.picker.ImagePickerBuilder.ImageEditActionTypeDef.TYPE_CROP;
-import static com.tokopedia.imagepicker.picker.ImagePickerBuilder.ImageEditActionTypeDef.TYPE_CROP_ROTATE;
-import static com.tokopedia.imagepicker.picker.ImagePickerBuilder.ImageEditActionTypeDef.TYPE_ROTATE;
-import static com.tokopedia.imagepicker.picker.ImagePickerBuilder.ImageEditActionTypeDef.TYPE_WATERMARK;
+import com.tokopedia.imagepicker.picker.main.util.ImagePickerBuilder;
 
 /**
  * Created by hendry on 19/04/18.
@@ -29,12 +24,12 @@ public class ImageEditorEditActionAdapter implements View.OnClickListener {
 
     @Override
     public void onClick(View v) {
-        if (listener!=null) {
+        if (listener != null) {
             listener.onEditActionClicked(v.getId());
         }
     }
 
-    public interface OnImageEditorEditActionAdapterListener{
+    public interface OnImageEditorEditActionAdapterListener {
         void onEditActionClicked(@ImagePickerBuilder.ImageEditActionTypeDef int actionEditType);
     }
 
@@ -59,19 +54,19 @@ public class ImageEditorEditActionAdapter implements View.OnClickListener {
             TextView tvEdit = view.findViewById(R.id.tv_edit);
             view.setId(tabTypeDefItem);
             switch (tabTypeDefItem) {
-                case TYPE_CROP:
+                case ImagePickerBuilder.ImageEditActionTypeDef.TYPE_CROP:
                     ivEdit.setImageResource(R.drawable.ic_crop);
                     tvEdit.setText(context.getString(R.string.crop));
                     break;
-                case TYPE_ROTATE:
+                case ImagePickerBuilder.ImageEditActionTypeDef.TYPE_ROTATE:
                     ivEdit.setImageResource(R.drawable.ic_rotate);
                     tvEdit.setText(context.getString(R.string.rotate));
                     break;
-                case TYPE_WATERMARK:
+                case ImagePickerBuilder.ImageEditActionTypeDef.TYPE_WATERMARK:
                     ivEdit.setImageResource(R.drawable.circle_red);
                     tvEdit.setText(context.getString(R.string.watermark));
                     break;
-                case TYPE_CROP_ROTATE:
+                case ImagePickerBuilder.ImageEditActionTypeDef.TYPE_CROP_ROTATE:
                     ivEdit.setImageResource(R.drawable.ic_crop);
                     tvEdit.setText(context.getString(R.string.crop_and_rotate));
                     break;
