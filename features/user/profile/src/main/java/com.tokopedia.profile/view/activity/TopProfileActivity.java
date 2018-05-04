@@ -490,7 +490,7 @@ public class TopProfileActivity extends BaseSimpleActivity
                     isShow = false;
                 }
 
-                if (verticalOffset == 0) {
+                if (verticalOffset == 0 && topProfileViewModel.isKol()) {
                     swipeToRefresh.setEnabled(true);
                 } else {
                     swipeToRefresh.setEnabled(false);
