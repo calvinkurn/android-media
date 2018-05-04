@@ -51,7 +51,7 @@ public class HistoryTokoCashAdapter extends RecyclerView.Adapter {
             return new ItemViewHolderHistory(view);
         } else if (viewType == VIEW_TYPE_LOADING) {
             View view = LayoutInflater.from(parent.getContext()).inflate(
-                    R.layout.layout_loading_view, parent, false);
+                    R.layout.layout_progress_history, parent, false);
             return new ItemLoadingViewHolder(view);
         } else if (viewType == VIEW_EMPTY) {
             View view = LayoutInflater.from(parent.getContext()).inflate(
@@ -147,7 +147,7 @@ public class HistoryTokoCashAdapter extends RecyclerView.Adapter {
 
         public ItemLoadingViewHolder(View itemView) {
             super(itemView);
-            progressBarHistory = (ProgressBar) itemView.findViewById(R.id.progress_bar_history);
+            progressBarHistory = itemView.findViewById(R.id.progress_history);
         }
     }
 
