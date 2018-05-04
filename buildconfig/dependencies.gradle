@@ -240,7 +240,7 @@ ext {
             flight          : ":tkpdflight",
             flightNoOp      : ":features:digital:flight_no_op",
             mitraToppers    : ":features:fintech:mitra_toppers",
-            event           : ":tkpdevents",
+            event           : ":features:digital:tkpdevents",
             home            : ":tkpdhome",
             kol             : ":features:content:kol",
             groupchat       : ":features:user:groupchat",

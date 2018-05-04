@@ -129,8 +129,8 @@ public class EventsHomeActivity extends TActivity
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
+        super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_events_home_revamp);
         defaultSection = getIntent().getStringExtra(EXTRA_SECTION);
         if (defaultSection == null || defaultSection.length() <= 1)
