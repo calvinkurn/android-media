@@ -77,5 +77,7 @@
     <string name="has_voted_label">Sudah Memilih</string>
     <string name="word_is_blocked">Maaf, pesan anda tidak dapat dikirim karena mengandung kata
         yang diblokir.</string>
+    <string name="you_are_blocked_because_spam">Anda telah di blokir sementara karena terlalu banyak mengirim pesan dalam periode singkat.</string>
+    <string name="channel_not_belong_to_user">Anda belum terhubung dengan groupchat. Silahkan coba kembali.</string>
 
 </resources>
