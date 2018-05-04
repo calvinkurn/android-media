@@ -32,6 +32,7 @@ import com.tokopedia.checkout.view.base.BaseCheckoutFragment;
 import com.tokopedia.checkout.view.di.component.CartComponent;
 import com.tokopedia.checkout.view.holderitemdata.CartItemPromoHolderData;
 import com.tokopedia.checkout.view.holderitemdata.CartItemTickerErrorHolderData;
+import com.tokopedia.checkout.view.view.addressoptions.CartAddressChoiceActivity;
 import com.tokopedia.checkout.view.view.cartlist.CartItemDecoration;
 import com.tokopedia.checkout.view.view.shipment.converter.RatesDataConverter;
 import com.tokopedia.checkout.view.view.shipment.converter.ShipmentDataConverter;
@@ -40,6 +41,7 @@ import com.tokopedia.checkout.view.view.shipment.di.ShipmentComponent;
 import com.tokopedia.checkout.view.view.shipment.di.ShipmentModule;
 import com.tokopedia.checkout.view.view.shipment.shippingoptions.CourierBottomsheet;
 import com.tokopedia.checkout.view.view.shipment.viewmodel.ShipmentItem;
+import com.tokopedia.checkout.view.view.shipmentform.CartShipmentActivity;
 import com.tokopedia.checkout.view.view.shippingoptions.ShipmentChoiceBottomSheet;
 import com.tokopedia.checkout.view.view.shippingoptions.ShipmentDetailActivity;
 import com.tokopedia.core.receiver.CartBadgeNotificationReceiver;
@@ -353,6 +355,8 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         } else if ((requestCode == REQUEST_CHOOSE_PICKUP_POINT || requestCode == REQUEST_CODE_SHIPMENT_DETAIL)
                 && resultCode == Activity.RESULT_OK) {
             onResultFromRequestCodeCourierOptions(requestCode, data);
+        } else if (requestCode == CartAddressChoiceActivity.REQUEST_CODE) {
+            onResultFromRequestCodeAddressOptions(resultCode, data);
         }
     }
 
@@ -369,12 +373,41 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         }
     }
 
+    private void onResultFromRequestCodeAddressOptions(int resultCode, Intent data) {
+        switch (resultCode) {
+            case CartAddressChoiceActivity.RESULT_CODE_ACTION_SELECT_ADDRESS:
+                RecipientAddressModel selectedAddress = data.getParcelableExtra(
+                        CartAddressChoiceActivity.EXTRA_SELECTED_ADDRESS_DATA);
+
+                shipmentAdapter.updateSelectedAddress(selectedAddress);
+                break;
+            case CartAddressChoiceActivity.RESULT_CODE_ACTION_TO_MULTIPLE_ADDRESS_FORM:
+                // todo : reload fragment with multiple address
+//                Intent intent = new Intent();
+//                intent.putExtra(CartShipmentActivity.EXTRA_SELECTED_ADDRESS_RECIPIENT_DATA,
+//                        shipmentAdapter.getAddressShipmentData());
+//                cartShipmentActivityListener.closeWithResult(
+//                        CartShipmentActivity.RESULT_CODE_ACTION_TO_MULTIPLE_ADDRESS_FORM, intent);
+                break;
+
+            default:
+                break;
+        }
+    }
+
 
     // Adapter Listener
-
     @Override
     public void onAddOrChangeAddress() {
+        Intent intent = CartAddressChoiceActivity.createInstance(getActivity(),
+                CartAddressChoiceActivity.TYPE_REQUEST_SELECT_ADDRESS_FROM_SHORT_LIST);
 
+        startActivityForResult(intent, CartAddressChoiceActivity.REQUEST_CODE);
+    }
+
+    @Override
+    public void resetTotalPrice() {
+        tvTotalPayment.setText("-");
     }
 
     @Override

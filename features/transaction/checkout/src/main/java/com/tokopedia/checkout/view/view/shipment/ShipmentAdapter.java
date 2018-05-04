@@ -192,6 +192,39 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         checkDataForCheckout();
     }
 
+    public void updateSelectedAddress(RecipientAddressModel recipientAddress) {
+        for (ShipmentData item : shipmentDataList) {
+            if (item instanceof RecipientAddressModel) {
+                if (!((RecipientAddressModel) item).getId().equalsIgnoreCase(recipientAddress.getId())) {
+                    int index = shipmentDataList.indexOf(item);
+                    shipmentDataList.set(index, recipientAddress);
+                    this.recipientAddressModel = recipientAddress;
+                    resetCourier();
+                    notifyDataSetChanged();
+                    shipmentAdapterActionListener.resetTotalPrice();
+                }
+            }
+        }
+    }
+
+    public void resetCourier() {
+        for (ShipmentData item : shipmentDataList) {
+            if (item instanceof ShipmentItem) {
+                ((ShipmentItem) item).setSelectedShipmentDetailData(null);
+            } else if (item instanceof ShipmentCostModel) {
+                ((ShipmentCostModel) item).setAdditionalFee(0);
+                ((ShipmentCostModel) item).setInsuranceFee(0);
+                ((ShipmentCostModel) item).setShippingFee(0);
+                ((ShipmentCostModel) item).setTotalPrice(0);
+                ((ShipmentCostModel) item).setTotalItemPrice(0);
+            }
+        }
+    }
+
+    public RecipientAddressModel getAddressShipmentData() {
+        return recipientAddressModel;
+    }
+
     private void checkDataForCheckout() {
         boolean availableCheckout = true;
         for (ShipmentData shipmentData : shipmentDataList) {

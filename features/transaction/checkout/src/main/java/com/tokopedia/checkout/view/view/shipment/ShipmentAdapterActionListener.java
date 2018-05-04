@@ -37,4 +37,6 @@ public interface ShipmentAdapterActionListener extends CartAdapterActionListener
 
     void onRemovePromoCode();
 
+    void resetTotalPrice();
+
 }
