@@ -33,6 +33,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Created by hendry on 19/04/18.
@@ -83,8 +84,21 @@ public class ImagePickerCameraFragment extends TkpdBaseV4Fragment {
             @Override
             public void onCameraOpened(CameraOptions options) {
                 cameraView.setCropOutput(true);
-                supportedFlashList = new ArrayList<>(cameraView.getCameraOptions().getSupportedFlash());
+                initialFlash();
                 setPreviewCameraLayoutOneByOne();
+            }
+
+            private void initialFlash() {
+                supportedFlashList = new ArrayList<>();
+                if (cameraView == null || cameraView.getCameraOptions() == null) {
+                    return;
+                }
+                Set<Flash> flashSet = cameraView.getCameraOptions().getSupportedFlash();
+                for (Flash flash: flashSet) {
+                    if (flash != Flash.TORCH) {
+                        supportedFlashList.add(flash);
+                    }
+                }
             }
 
             private void setPreviewCameraLayoutOneByOne() {
@@ -103,7 +117,7 @@ public class ImagePickerCameraFragment extends TkpdBaseV4Fragment {
         flashImageButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                int flashIndexTemp = flashIndex++ % 4;
+                int flashIndexTemp = flashIndex++ % supportedFlashList.size();
                 Flash flash = supportedFlashList.get(flashIndexTemp);
                 cameraView.set(flash);
                 Toast.makeText(getActivity(), flash.name() + " - " + flash.ordinal(), Toast.LENGTH_SHORT).show();
