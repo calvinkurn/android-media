@@ -214,6 +214,7 @@ import com.tokopedia.kol.feature.following_list.view.activity.KolFollowingListAc
 import com.tokopedia.feedplus.view.di.DaggerFeedPlusComponent;
 import com.tokopedia.feedplus.view.di.FeedPlusComponent;
 import com.tokopedia.kol.feature.comment.view.fragment.KolCommentFragment;
+import com.tokopedia.tkpd.tkpdcontactus.home.view.ContactUsHomeActivity;
 import com.tokopedia.tkpd.tkpdreputation.ReputationRouter;
 import com.tokopedia.tkpd.tkpdreputation.TkpdReputationInternalRouter;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.activity.InboxReputationActivity;
@@ -1517,7 +1518,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public Intent getContactUsIntent(Context context) {
-        return new Intent(context, ContactUsActivity.class);
+        return new Intent(context, ContactUsHomeActivity.class);
     }
 
     @Override

@@ -5,6 +5,7 @@ import android.util.Log;
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
+import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.tkpd.tkpdcontactus.common.data.BuyerPurchaseList;
 import com.tokopedia.tkpd.tkpdcontactus.home.data.ContactUsArticleResponse;
 import com.tokopedia.tkpd.tkpdcontactus.home.data.TopBotStatus;
@@ -24,15 +25,17 @@ import rx.Subscriber;
 
 public class  ContactUsHomePresenter extends BaseDaggerPresenter<ContactUsHomeContract.View> implements ContactUsHomeContract.Presenter {
 
+    private final Context context;
     ContactUsArticleUseCase articleUseCase;
     ContactUsPurchaseListUseCase purchaseListUseCase;
     ContactUsTopBotUseCase topBotUseCase;
 
     @Inject
-    public ContactUsHomePresenter(ContactUsPurchaseListUseCase purchaseListUseCase,ContactUsArticleUseCase contactUsArticleUseCase, ContactUsTopBotUseCase topBotUseCase) {
+    public ContactUsHomePresenter(ContactUsPurchaseListUseCase purchaseListUseCase,ContactUsArticleUseCase contactUsArticleUseCase, ContactUsTopBotUseCase topBotUseCase,@ApplicationContext Context context) {
         this.articleUseCase = contactUsArticleUseCase;
         this.purchaseListUseCase = purchaseListUseCase;
         this.topBotUseCase = topBotUseCase;
+        this.context = context;
     }
 
     @Override
@@ -98,6 +101,7 @@ public class  ContactUsHomePresenter extends BaseDaggerPresenter<ContactUsHomeCo
                 if(topBotStatus.isIsActive()) {
                     getView().setChatBotVisible();
                     getView().setChatBotMessageId(topBotStatus.getMsgId());
+                    getView().setHighMessageUserName(SessionHandler.getLoginName(context));
                 }
 
             }

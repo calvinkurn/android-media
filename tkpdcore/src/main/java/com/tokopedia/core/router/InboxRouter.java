@@ -22,7 +22,7 @@ import com.tokopedia.core.util.RouterUtils;
 @Deprecated
 public class InboxRouter {
 
-    private static final String INBOX_CONTACT_US_ACTIVITY = "com.tokopedia.tkpd.tkpdcontactus.home.view.ContactUsHomeActivity";
+    private static final String INBOX_CONTACT_US_ACTIVITY = "com.tokopedia.inbox.contactus.activity.ContactUsActivity";
     private static final String CREATE_RESCENTER_ACTIVITY = "com.tokopedia.inbox.rescenter.create.activity.CreateResCenterActivity";
     private static final String INBOX_RESCENTER_ACTIVITY = "com.tokopedia.inbox.rescenter.inbox.activity.InboxResCenterActivity";
     private static final String INBOX_RESCENTER_FRAGMENT = "com.tokopedia.inbox.rescenter.inbox.fragment.InboxResCenterFragment";

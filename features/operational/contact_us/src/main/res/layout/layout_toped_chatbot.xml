@@ -23,7 +23,7 @@
             app:srcCompat="@drawable/ic_topedbot" />
 
         <TextView
-            android:id="@+id/textView18"
+            android:id="@+id/txt_hi_user"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/margin_default"
@@ -49,7 +49,7 @@
             android:textStyle="normal"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/imageView6"
-            app:layout_constraintTop_toBottomOf="@+id/textView18"
+            app:layout_constraintTop_toBottomOf="@+id/txt_hi_user"
             android:text="Kamu ada kendala terkait refund dan promo? Kamu bisa menanyakan hal tersebut ke Toped" />
 
         <TextView

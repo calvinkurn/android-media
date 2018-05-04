@@ -398,7 +398,7 @@ public class SubmitTicketFragment extends BaseDaggerFragment implements SubmitTi
         toolTipLayout.setVisibility(View.VISIBLE);
     }
 
-    public void onBackPressed() {
+    public boolean onBackPressed() {
         if(imageUploadAdapter.getItemCount()>0) {
             AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
             builder.setTitle(getString(R.string.title_dialog_wrong_scan));
@@ -418,6 +418,9 @@ public class SubmitTicketFragment extends BaseDaggerFragment implements SubmitTi
                             getActivity().finish();
                         }
                     }).create().show();
+            return true;
+        }else {
+            return false;
         }
     }
 }

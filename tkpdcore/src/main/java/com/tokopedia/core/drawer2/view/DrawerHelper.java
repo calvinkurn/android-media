@@ -119,9 +119,7 @@ public abstract class DrawerHelper implements DrawerItemDataBinder.DrawerItemLis
                 sendReferralGTMNavigationEvent(item);
                 break;
             case TkpdState.DrawerPosition.CONTACT_US:
-                intent = InboxRouter.getContactUsActivityIntent(context);
-                intent.putExtra(InboxRouter.PARAM_URL,
-                        URLGenerator.generateURLContactUs(TkpdBaseURL.BASE_CONTACT_US, context));
+                intent = ((TkpdInboxRouter)context.getApplication()).getContactUsIntent(context);
                 context.startActivity(intent);
                 break;
             case TkpdState.DrawerPosition.HELP:

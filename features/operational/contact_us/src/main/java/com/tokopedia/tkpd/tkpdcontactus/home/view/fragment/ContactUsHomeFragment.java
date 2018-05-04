@@ -60,6 +60,9 @@ public class ContactUsHomeFragment extends BaseDaggerFragment implements Contact
     View btnChat;
     @BindView(R2.id.view_full_purchaselist)
     TextView btnFullPurchaseList;
+    @BindView(R2.id.txt_hi_user)
+    TextView txtHiUser;
+
     String topBotUrl;
 
     private ContactUsComponent campaignComponent;
@@ -169,6 +172,11 @@ public class ContactUsHomeFragment extends BaseDaggerFragment implements Contact
     @Override
     public void setChatBotMessageId(int msgId) {
         topBotUrl = ContactUsURL.TOP_BOT_BASE_URL +msgId;
+    }
+
+    @Override
+    public void setHighMessageUserName(String userName) {
+        txtHiUser.setText(String.format(getResources().getString(R.string.hai_user),userName));
     }
 
 

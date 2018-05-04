@@ -29,7 +29,9 @@ public class SubmitTicketActivity extends BaseSimpleActivity{
 
     @Override
     public void onBackPressed() {
-        ((SubmitTicketFragment)getFragment()).onBackPressed();
+        if(!((SubmitTicketFragment)getFragment()).onBackPressed()) {
+            super.onBackPressed();
+        }
         //super.onBackPressed();
 
     }
