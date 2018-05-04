@@ -188,7 +188,7 @@ public class VerificationActivity extends BaseSimpleActivity {
     private VerificationViewModel createDynamicBundle(MethodItem methodItem) {
 
 
-        VerificationViewModel verificationViewModel = new VerificationViewModel(
+        return new VerificationViewModel(
                 passModel.getPhoneNumber(),
                 passModel.getEmail(),
                 passModel.getOtpType(),
@@ -201,8 +201,6 @@ public class VerificationActivity extends BaseSimpleActivity {
                 methodItem.getPopUpBody(),
                 passModel.canUseOtherMethod()
         );
-
-        return verificationViewModel;
     }
 
     private String getDynamicAppScreen(String mode) {

@@ -14,6 +14,7 @@ import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AlertDialog;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
@@ -34,6 +35,7 @@ import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
+import com.tokopedia.design.component.Dialog;
 import com.tokopedia.otp.OtpModuleRouter;
 import com.tokopedia.otp.R;
 import com.tokopedia.otp.common.OTPAnalytics;
@@ -326,6 +328,37 @@ public class VerificationFragment extends BaseDaggerFragment implements Verifica
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         initData();
+        if (viewModel.isUsingPopUp()
+                && !TextUtils.isEmpty(viewModel.getPopUpHeader())
+                && !TextUtils.isEmpty(viewModel.getPopUpBody())) {
+            showInterruptDialog();
+        } else {
+            presenter.requestOTP(viewModel);
+        }
+    }
+
+    private void showInterruptDialog() {
+        final Dialog dialog = new Dialog(getActivity(), Dialog.Type.LONG_PROMINANCE);
+
+        dialog.setTitle(viewModel.getPopUpHeader());
+        dialog.setDesc(viewModel.getPopUpBody());
+        dialog.setBtnOk(getString(R.string.btn_continue));
+        dialog.setOnOkClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+                presenter.requestOTP(viewModel);
+            }
+        });
+        dialog.setBtnCancel(getString(R.string.btn_cancel));
+        dialog.setOnCancelClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+                getActivity().finish();
+            }
+        });
+        dialog.show();
     }
 
     private void initData() {
@@ -339,7 +372,6 @@ public class VerificationFragment extends BaseDaggerFragment implements Verifica
         }
         message.setText(MethodChecker.fromHtml(viewModel.getMessage()));
         verifyButton.setEnabled(false);
-        presenter.requestOTP(viewModel);
     }
 
     @Override
