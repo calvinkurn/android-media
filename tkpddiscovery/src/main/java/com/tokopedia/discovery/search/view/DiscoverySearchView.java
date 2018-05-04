@@ -274,7 +274,9 @@ public class DiscoverySearchView extends FrameLayout implements Filter.FilterLis
 
         initSearchView();
 
-        if (isAllowImageSearch() && !isShowShowCase()) {
+        if (isAllowImageSearch() &&
+                !isShowShowCase() &&
+                (mImageSearchButton.getVisibility() == VISIBLE)) {
             startShowCase();
         }
         mSuggestionView.setVisibility(GONE);
