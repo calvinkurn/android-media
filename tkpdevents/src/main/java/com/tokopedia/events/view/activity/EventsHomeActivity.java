@@ -130,6 +130,7 @@ public class EventsHomeActivity extends TActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
         setContentView(R.layout.activity_events_home_revamp);
         defaultSection = getIntent().getStringExtra(EXTRA_SECTION);
         if (defaultSection == null || defaultSection.length() <= 1)
@@ -142,7 +143,6 @@ public class EventsHomeActivity extends TActivity
         mPresenter.getEventsList();
         setupToolbar();
         toolbar.setTitle("Events");
-        AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
         addToCalendar.setCompoundDrawablesWithIntrinsicBounds(null, null,
                 getResources().getDrawable(R.drawable.ic_event_calendar_green), null);
 
