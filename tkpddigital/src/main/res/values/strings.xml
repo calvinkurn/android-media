@@ -21,6 +21,10 @@
     <string name="label_total_payment_cart_digital">Total Pembayaran</string>
     <string name="label_btn_next_cart_digital">LANJUT</string>
     <string name="message_otp_verification_cancelled">Verifikasi kode keamanan dibatalkan</string>
+    <string name="msg_verification">Verifikasi</string>
+    <string name="tokocash_label_top_up">Top Up TokoCash</string>
+    <string name="title_topup_tokocash">Nominal Top Up</string>
+
 
     <string name="label_btn_buy_digital">Beli</string>
     <string name="label_btn_pay_digital">Bayar</string>
