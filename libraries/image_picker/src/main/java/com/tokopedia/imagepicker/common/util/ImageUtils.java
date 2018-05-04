@@ -13,6 +13,7 @@ import android.os.Build;
 import android.os.Environment;
 import android.provider.DocumentsContract;
 import android.provider.MediaStore;
+import android.support.annotation.NonNull;
 import android.support.annotation.StringDef;
 import android.support.media.ExifInterface;
 import android.text.TextUtils;
@@ -20,6 +21,7 @@ import android.webkit.MimeTypeMap;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -27,21 +29,18 @@ import java.io.OutputStream;
 import java.io.RandomAccessFile;
 import java.nio.MappedByteBuffer;
 import java.nio.channels.FileChannel;
-import java.util.ArrayList;
 import java.util.Random;
 
 import static com.tokopedia.imagepicker.common.util.ImageUtils.DirectoryDef.DIRECTORY_CAMERA;
 import static com.tokopedia.imagepicker.common.util.ImageUtils.DirectoryDef.DIRECTORY_DOWNLOAD;
 import static com.tokopedia.imagepicker.common.util.ImageUtils.DirectoryDef.DIRECTORY_TOKOPEDIA_EDIT;
-import static com.tokopedia.imagepicker.common.util.ImageUtils.DirectoryDef.DIRECTORY_TOKOPEDIA;
 
 /**
  * Created by hendry on 24/04/18.
  */
 
 public class ImageUtils {
-    private static final int IMAGE_WIDTH_HD = 1280;
-    private static final int IMAGE_WIDTH_MIN = 480;
+    private static final int IMAGE_WIDTH_MIN_HD = 1280;
 
     public static final int DEF_WIDTH = 2048;
     public static final int DEF_HEIGHT = 2048;
@@ -51,12 +50,11 @@ public class ImageUtils {
     public static final String JPG_EXT = ".jpg";
     public static final String PNG = "png";
 
-    @StringDef({DIRECTORY_TOKOPEDIA, DIRECTORY_TOKOPEDIA_EDIT, DIRECTORY_CAMERA, DIRECTORY_DOWNLOAD})
+    @StringDef({DIRECTORY_TOKOPEDIA_EDIT, DIRECTORY_CAMERA, DIRECTORY_DOWNLOAD})
     public @interface DirectoryDef {
-        String DIRECTORY_TOKOPEDIA = "Tokopedia";
-        String DIRECTORY_TOKOPEDIA_EDIT = "Tokopedia/Edit";
-        String DIRECTORY_CAMERA = "Tokopedia/Camera";
-        String DIRECTORY_DOWNLOAD = "Tokopedia/Download";
+        String DIRECTORY_TOKOPEDIA_EDIT = "Tokopedia/Tokopedia Edit";
+        String DIRECTORY_CAMERA = "Tokopedia/Tokopedia Camera";
+        String DIRECTORY_DOWNLOAD = "Tokopedia/Tokopedia Download";
     }
 
     public static File getTokopediaPublicDirectory(@DirectoryDef String directoryType) {
@@ -110,12 +108,38 @@ public class ImageUtils {
 
     /**
      * copy the bitmap (might from gallery or camera path) to Tkpd Cache Directory
-     * The file represents the copy of the original bitmap and can be deleted/modified
-     * without changing the original image
      */
     public static File writeImageToTkpdPath(@DirectoryDef String directoryDef, String galleryOrCameraPath) {
-        return writeImageToTkpdPath(directoryDef, convertLocalImagePathToBytes(galleryOrCameraPath, DEF_WIDTH, DEF_HEIGHT, 100),
-                galleryOrCameraPath.endsWith(PNG));
+        File file;
+        try {
+            file = getTokopediaPhotoPath(directoryDef, galleryOrCameraPath);
+            copyFile(galleryOrCameraPath,file.getAbsolutePath());
+        } catch (IOException e) {
+            return null;
+        }
+        if (file.exists()) {
+            return file;
+        } else {
+            return null;
+        }
+    }
+
+    public static void copyFile(@NonNull String pathFrom, @NonNull String pathTo) throws IOException {
+        if (pathFrom.equalsIgnoreCase(pathTo)) {
+            return;
+        }
+
+        FileChannel outputChannel = null;
+        FileChannel inputChannel = null;
+        try {
+            inputChannel = new FileInputStream(new File(pathFrom)).getChannel();
+            outputChannel = new FileOutputStream(new File(pathTo)).getChannel();
+            inputChannel.transferTo(0, inputChannel.size(), outputChannel);
+            inputChannel.close();
+        } finally {
+            if (inputChannel != null) inputChannel.close();
+            if (outputChannel != null) outputChannel.close();
+        }
     }
 
     /**
@@ -151,43 +175,6 @@ public class ImageUtils {
             return photo;
         }
         return null;
-    }
-
-    /**
-     * check if the file is in tkpdcache directory.
-     */
-    public static boolean isInTkpdCache(@DirectoryDef String directoryDef, File file) {
-        File tkpdCacheDirectory = getTokopediaPublicDirectory(directoryDef);
-        String tkpdcacheDirPath = tkpdCacheDirectory.getAbsolutePath();
-        return file.exists() && file.getAbsolutePath().contains(tkpdcacheDirPath);
-    }
-
-    /**
-     * delete the inputted files (only process files in tkpd cache directory)
-     * If the files are not in tkpd cache directory, ignore those.
-     */
-    public static void deleteAllCacheTkpdFiles(@DirectoryDef String directoryDef, ArrayList<String> filesToDelete) {
-        if (filesToDelete == null || filesToDelete.size() == 0) {
-            return;
-        }
-        for (int i = 0, sizei = filesToDelete.size(); i < sizei; i++) {
-            String filePathToDelete = filesToDelete.get(i);
-            deleteAllCacheTkpdFile(directoryDef, filePathToDelete);
-        }
-    }
-
-    /**
-     * delete the inputted file (only process files in tkpd cache directory)
-     * If the file is not in tkpd cache directory, ignore it.
-     */
-    public static void deleteAllCacheTkpdFile(@DirectoryDef String directoryDef, String fileToDeletePath) {
-        if (TextUtils.isEmpty(fileToDeletePath)) {
-            return;
-        }
-        File fileToDelete = new File(fileToDeletePath);
-        if (isInTkpdCache(directoryDef, fileToDelete)) {
-            fileToDelete.delete();
-        }
     }
 
     // URI starts with "content://gmail-ls/"
@@ -232,7 +219,7 @@ public class ImageUtils {
                         }
                         // estimate sample size
                         if (inSampleSize == 1 && is.available() >
-                                (1.5 * IMAGE_WIDTH_HD * IMAGE_WIDTH_HD)) {
+                                (1.5 * IMAGE_WIDTH_MIN_HD * IMAGE_WIDTH_MIN_HD)) {
                             inSampleSize = 2;
                         }
                         BitmapFactory.Options options = new BitmapFactory.Options();
@@ -542,41 +529,43 @@ public class ImageUtils {
     public static Bitmap compressImageToBitmap(String imagePathToCompress, int maxWidth, int maxHeight, int compressionQuality) {
         BitmapFactory.Options options = new BitmapFactory.Options();
         options.inPreferredConfig = Bitmap.Config.ARGB_8888;
-        BitmapFactory.Options checksize = new BitmapFactory.Options();
-        checksize.inPreferredConfig = Bitmap.Config.ARGB_8888;
-        checksize.inJustDecodeBounds = true;
-        BitmapFactory.decodeFile(imagePathToCompress, checksize);
-        options.inSampleSize = calculateInSampleSize(checksize);
+        options.inJustDecodeBounds = true;
+        BitmapFactory.decodeFile(imagePathToCompress, options);
+        options.inSampleSize = calculateInSampleSize(options, maxWidth, maxHeight);
+        options.inJustDecodeBounds = false;
         Bitmap tempPic = BitmapFactory.decodeFile(imagePathToCompress, options);
-        Bitmap tempPicToUpload;
+
+        boolean decodeAttemptSuccess = false;
+        while (!decodeAttemptSuccess) {
+            try {
+                tempPic = BitmapFactory.decodeFile(imagePathToCompress, options);
+                decodeAttemptSuccess = true;
+            } catch (OutOfMemoryError error) {
+                options.inSampleSize *= 2;
+            }
+        }
+
         if (tempPic != null) {
             try {
-                tempPic = rotate(tempPic, imagePathToCompress);
+                return rotate(tempPic, imagePathToCompress);
             } catch (IOException e1) {
-                e1.printStackTrace();
+                return tempPic;
             }
-            if (tempPic.getWidth() > maxWidth || tempPic.getHeight() > maxHeight) {
-                tempPicToUpload = resize(tempPic, compressionQuality);
-            } else {
-                tempPicToUpload = tempPic;
-            }
-            return tempPicToUpload;
         }
         return null;
     }
 
-    public static int calculateInSampleSize(BitmapFactory.Options options) {
+    public static int calculateInSampleSize(@NonNull BitmapFactory.Options options, int reqWidth, int reqHeight) {
+        // Raw height and width of image
         final int height = options.outHeight;
         final int width = options.outWidth;
         int inSampleSize = 1;
 
-        if (height > IMAGE_WIDTH_HD || width > IMAGE_WIDTH_HD) {
-
-            final int halfHeight = height / 2;
-            final int halfWidth = width / 2;
-            while ((halfHeight / inSampleSize) > IMAGE_WIDTH_MIN
-                    && (halfWidth / inSampleSize) > IMAGE_WIDTH_MIN) {
-                inSampleSize = inSampleSize * 2;
+        if (height > reqHeight || width > reqWidth) {
+            // Calculate the largest inSampleSize value that is a power of 2 and keeps both
+            // height and width lower or equal to the requested height and width.
+            while ((height / inSampleSize) > reqHeight || (width / inSampleSize) > reqWidth) {
+                inSampleSize *= 2;
             }
         }
         return inSampleSize;

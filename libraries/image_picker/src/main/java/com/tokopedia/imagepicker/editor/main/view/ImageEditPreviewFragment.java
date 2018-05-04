@@ -179,11 +179,14 @@ public class ImageEditPreviewFragment extends Fragment {
         while (maxWidthHeight > maxPreviewWidth) {
             maxWidthHeight = maxWidthHeight / 2;
         }
+
+        float scaleMultiplier;
         if (maxWidthHeight > minResolution) {
-            gestureCropImageView.setMaxScaleMultiplier((float) maxWidthHeight / minResolution);
+            scaleMultiplier = (float) maxWidthHeight / minResolution;
         } else {
-            gestureCropImageView.setMaxScaleMultiplier(1);
+            scaleMultiplier = 1;
         }
+        gestureCropImageView.setMaxScaleMultiplier(scaleMultiplier);
 
         gestureCropImageView.setImageToWrapCropBoundsAnimDuration(CropImageView.DEFAULT_IMAGE_TO_CROP_BOUNDS_ANIM_DURATION);
 
