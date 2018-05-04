@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AnimationUtils;
+import android.widget.TextView;
 
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.base.view.recyclerview.VerticalRecyclerView;
@@ -41,6 +42,8 @@ public class FlightCancellationDetailFragment extends BaseDaggerFragment
     private VerticalRecyclerView rvPassengers;
     private View layoutExpendablePassenger;
     private AppCompatImageView imageExpendablePassenger;
+    private TextView txtRealRefund;
+    private TextView txtEstimateRefund;
 
     private FlightDetailOrderAdapter flightDetailOrderAdapter;
     private FlightCancellationDetailPassengerAdapter flightCancellationDetailPassengerAdapter;
@@ -65,6 +68,8 @@ public class FlightCancellationDetailFragment extends BaseDaggerFragment
         imageExpendablePassenger = view.findViewById(R.id.image_expendable_passenger);
         rvFlights = view.findViewById(R.id.recycler_view_flight);
         rvPassengers = view.findViewById(R.id.recycler_view_data_passenger);
+        txtRealRefund = view.findViewById(R.id.total_price);
+        txtEstimateRefund = view.findViewById(R.id.estimate_refund);
 
         FlightDetailOrderTypeFactory flightDetailOrderTypeFactory = new FlightDetailOrderTypeFactory(this, JOURNEY_TITLE_FONT_SIZE);
         flightDetailOrderAdapter = new FlightDetailOrderAdapter(flightDetailOrderTypeFactory);
@@ -122,6 +127,9 @@ public class FlightCancellationDetailFragment extends BaseDaggerFragment
         flightCancellationDetailPassengerAdapter.addElement(flightCancellationListViewModel
                 .getCancellations().getPassengers());
         flightCancellationDetailPassengerAdapter.notifyDataSetChanged();
+
+        txtRealRefund.setText(flightCancellationListViewModel.getCancellations().getRealRefund());
+        txtEstimateRefund.setText(flightCancellationListViewModel.getCancellations().getEstimatedRefund());
     }
 
     @Override

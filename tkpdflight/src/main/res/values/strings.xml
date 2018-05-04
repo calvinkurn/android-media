@@ -392,4 +392,7 @@
     <string name="flight_cancellation_list_id" formatted="false">Cancellation ID: %s</string>
     <string name="flight_cancellation_list_created_time">Tanggal Pembatalan: %s</string>
     <string name="flight_cancellation_cancelled_passegner_detail">Detail Penumpang yang Dibatalkan</string>
+    <string name="flight_cancellation_detail_refund_information_label">Informasi Refund</string>
+    <string name="flight_cancellation_total_refund_label">Total Refund</string>
+    <string name="flight_cancellation_estimate_refund_label">Estimate Refund</string>
 </resources>
