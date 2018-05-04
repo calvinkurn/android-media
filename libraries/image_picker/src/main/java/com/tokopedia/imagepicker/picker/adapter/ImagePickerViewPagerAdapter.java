@@ -13,6 +13,7 @@ import com.tokopedia.imagepicker.picker.camera.ImagePickerCameraFragment;
 import com.tokopedia.imagepicker.picker.gallery.ImagePickerGalleryFragment;
 import com.tokopedia.imagepicker.picker.instagram.ImagePickerInstagramFragment;
 import com.tokopedia.imagepicker.picker.main.util.ImagePickerBuilder;
+import com.tokopedia.imagepicker.picker.main.util.ImagePickerTabTypeDef;
 
 /**
  * Created by hendry on 19/04/18.
@@ -35,14 +36,14 @@ public class ImagePickerViewPagerAdapter extends FragmentStatePagerAdapter {
     @Override
     public Fragment getItem(int position) {
         switch (imagePickerBuilder.getTabTypeDef(position)) {
-            case ImagePickerBuilder.ImagePickerTabTypeDef.TYPE_GALLERY:
+            case ImagePickerTabTypeDef.TYPE_GALLERY:
                 return ImagePickerGalleryFragment.newInstance(
                         imagePickerBuilder.getGalleryType(),
                         imagePickerBuilder.supportMultipleSelection() ,
                         imagePickerBuilder.getMinResolution());
-            case ImagePickerBuilder.ImagePickerTabTypeDef.TYPE_CAMERA:
+            case ImagePickerTabTypeDef.TYPE_CAMERA:
                 return ImagePickerCameraFragment.newInstance();
-            case ImagePickerBuilder.ImagePickerTabTypeDef.TYPE_INSTAGRAM:
+            case ImagePickerTabTypeDef.TYPE_INSTAGRAM:
                 return ImagePickerInstagramFragment.newInstance();
             default:
                 return new Fragment();
@@ -52,11 +53,11 @@ public class ImagePickerViewPagerAdapter extends FragmentStatePagerAdapter {
     @Override
     public CharSequence getPageTitle(int position) {
         switch (imagePickerBuilder.getTabTypeDef(position)) {
-            case ImagePickerBuilder.ImagePickerTabTypeDef.TYPE_GALLERY:
+            case ImagePickerTabTypeDef.TYPE_GALLERY:
                 return context.getString(R.string.gallery);
-            case ImagePickerBuilder.ImagePickerTabTypeDef.TYPE_CAMERA:
+            case ImagePickerTabTypeDef.TYPE_CAMERA:
                 return context.getString(R.string.camera);
-            case ImagePickerBuilder.ImagePickerTabTypeDef.TYPE_INSTAGRAM:
+            case ImagePickerTabTypeDef.TYPE_INSTAGRAM:
                 return context.getString(R.string.instagram);
             default:
                 return context.getString(R.string.gallery);

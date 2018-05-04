@@ -20,7 +20,8 @@ import java.util.ArrayList;
 public class ImageEditThumbnailAdapter extends RecyclerView.Adapter<ImageEditThumbnailAdapter.ImageEditThumbnailViewHolder> {
 
     private Context context;
-    private ArrayList<String> imagePathList;
+    private ArrayList<ArrayList<String>> imagePathList;
+    private ArrayList<Integer> currentEditStepIndexList;
     private RecyclerView recyclerView;
 
     private int selectedIndex = 0;
@@ -32,13 +33,16 @@ public class ImageEditThumbnailAdapter extends RecyclerView.Adapter<ImageEditThu
         void onThumbnailItemClicked(String imagePath, int position);
     }
 
-    public ImageEditThumbnailAdapter(Context context, ArrayList<String> imagePathList, int imageIndex,
+    public ImageEditThumbnailAdapter(Context context, ArrayList<ArrayList<String>> imagePathList,
+                                     ArrayList<Integer> currentEditStepIndexList,
+                                     int imageIndex,
                                      OnImageEditThumbnailAdapterListener onImageEditThumbnailAdapterListener) {
         this.context = context;
         this.imagePathList = imagePathList;
         this.selectedIndex = imageIndex;
         this.onImageEditThumbnailAdapterListener = onImageEditThumbnailAdapterListener;
         itemWidth = context.getResources().getDimensionPixelOffset(R.dimen.image_edit_thumbnail_width);
+        this.currentEditStepIndexList = currentEditStepIndexList;
     }
 
 
@@ -63,7 +67,7 @@ public class ImageEditThumbnailAdapter extends RecyclerView.Adapter<ImageEditThu
                 selectedIndex = position;
                 notifyDataSetChanged();
 
-                String imagePath = imagePathList.get(position);
+                String imagePath = imagePathList.get(position).get(currentEditStepIndexList.get(position));
                 onImageEditThumbnailAdapterListener.onThumbnailItemClicked(imagePath, position);
             }
         }
@@ -74,9 +78,10 @@ public class ImageEditThumbnailAdapter extends RecyclerView.Adapter<ImageEditThu
         ((LinearLayoutManager) recyclerView.getLayoutManager()).scrollToPositionWithOffset(position, centerOfScreen);
     }
 
-    public void setData(ArrayList<String> imagePathList, int imageIndex) {
+    public void setData(ArrayList<ArrayList<String>> imagePathList, ArrayList<Integer> currentEditStepIndexList, int imageIndex) {
         this.imagePathList = imagePathList;
         this.selectedIndex = imageIndex;
+        this.currentEditStepIndexList = currentEditStepIndexList;
         notifyDataSetChanged();
     }
 
@@ -97,7 +102,7 @@ public class ImageEditThumbnailAdapter extends RecyclerView.Adapter<ImageEditThu
 
     @Override
     public void onBindViewHolder(ImageEditThumbnailViewHolder holder, int position) {
-        String imagePath = imagePathList.get(position);
+        String imagePath = imagePathList.get(position).get(currentEditStepIndexList.get(position));
         ImageHandler.loadImageAndCache(holder.imageView, imagePath);
         holder.rectGreenView.setVisibility(selectedIndex == position ? View.VISIBLE : View.GONE);
     }

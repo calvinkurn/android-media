@@ -8,6 +8,7 @@
     android:paddingRight="@dimen/dp_16"
     android:paddingTop="@dimen/dp_2"
     android:paddingBottom="@dimen/dp_2"
+    android:layout_marginBottom="@dimen/dp_8"
     xmlns:android="http://schemas.android.com/apk/res/android">
 
     <LinearLayout
@@ -18,7 +19,7 @@
         android:clipToPadding="false"
         android:gravity="center"
         android:orientation="horizontal">
-        <!-- layout in programmatically -->
+        <!-- layout in programmatically see ImageEditorEditActionAdapter -->
     </LinearLayout>
 
 </HorizontalScrollView>

@@ -14,7 +14,7 @@
             android:screenOrientation="portrait"
             android:launchMode="singleTask"/>
 
-        <activity android:name=".editor.ImageEditorActivity"
+        <activity android:name=".editor.main.view.ImageEditorActivity"
             android:theme="@style/Theme.White"
             android:label="@string/edit_image"
             android:screenOrientation="portrait"

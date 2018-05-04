@@ -30,7 +30,6 @@ import com.tokopedia.imagepicker.R;
 import com.tokopedia.imagepicker.common.util.ImageUtils;
 
 import java.io.File;
-import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -114,15 +113,21 @@ public class ImagePickerCameraFragment extends TkpdBaseV4Fragment {
                 generateImage(imageByte);
             }
         });
-        flashImageButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                int flashIndexTemp = flashIndex++ % supportedFlashList.size();
-                Flash flash = supportedFlashList.get(flashIndexTemp);
-                cameraView.set(flash);
-                Toast.makeText(getActivity(), flash.name() + " - " + flash.ordinal(), Toast.LENGTH_SHORT).show();
-            }
-        });
+        if (supportedFlashList!= null && supportedFlashList.size() > 0) {
+            flashImageButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    int flashIndexTemp = flashIndex++ % supportedFlashList.size();
+                    Flash flash = supportedFlashList.get(flashIndexTemp);
+                    cameraView.set(flash);
+                    Toast.makeText(getActivity(), flash.name() + " - " + flash.ordinal(), Toast.LENGTH_SHORT).show();
+                }
+            });
+            flashImageButton.setVisibility(View.VISIBLE);
+        } else {
+            flashImageButton.setVisibility(View.INVISIBLE);
+        }
+
         shutterImageButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -167,15 +172,7 @@ public class ImagePickerCameraFragment extends TkpdBaseV4Fragment {
         CameraUtils.decodeBitmap(imageByte, mCaptureNativeSize.getWidth(), mCaptureNativeSize.getHeight(), new CameraUtils.BitmapCallback() {
             @Override
             public void onBitmapReady(Bitmap bitmap) {
-                File file = ImageUtils.getTokopediaPhotoPath(false);
-                try {
-                    FileOutputStream out = new FileOutputStream(file);
-                    bitmap.compress(Bitmap.CompressFormat.JPEG, 90, out);
-                    out.flush();
-                    out.close();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
+                File file = ImageUtils.writeImageToTkpdPath(ImageUtils.DirectoryDef.DIRECTORY_CAMERA, bitmap, false);
                 onImagePickerCameraFragmentListener.onImageTaken(file.getAbsolutePath());
             }
         });

@@ -21,15 +21,16 @@ import android.widget.TextView;
 
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.imagepicker.R;
-import com.tokopedia.imagepicker.editor.ImageEditorActivity;
+import com.tokopedia.imagepicker.editor.main.view.ImageEditorActivity;
 import com.tokopedia.imagepicker.picker.adapter.AlbumAdapter;
 import com.tokopedia.imagepicker.picker.adapter.ImagePickerViewPagerAdapter;
-import com.tokopedia.imagepicker.picker.adapter.TabLayoutImagePickerAdapter;
 import com.tokopedia.imagepicker.picker.camera.ImagePickerCameraFragment;
 import com.tokopedia.imagepicker.picker.gallery.ImagePickerGalleryFragment;
 import com.tokopedia.imagepicker.picker.gallery.model.AlbumItem;
 import com.tokopedia.imagepicker.picker.gallery.model.MediaItem;
 import com.tokopedia.imagepicker.picker.main.util.ImagePickerBuilder;
+import com.tokopedia.imagepicker.picker.main.util.ImagePickerTabTypeDef;
+import com.tokopedia.imagepicker.picker.main.util.ImageSelectionTypeDef;
 import com.tokopedia.imagepicker.picker.widget.AlbumsSpinner;
 
 import java.util.ArrayList;
@@ -60,7 +61,6 @@ public class ImagePickerActivity extends BaseSimpleActivity
     private TextView tvSelectedAlbum;
     private ImagePickerViewPagerAdapter imagePickerViewPagerAdapter;
     private List<String> permissionsToRequest;
-    private TabLayoutImagePickerAdapter tabLayoutImagePickerAdapter;
 
     public static Intent getIntent(Context context, ImagePickerBuilder imagePickerBuilder) {
         Intent intent = new Intent(context, ImagePickerActivity.class);
@@ -98,7 +98,7 @@ public class ImagePickerActivity extends BaseSimpleActivity
 
     private void setupPreview() {
         View vgPreviewContainer = findViewById(R.id.vg_preview_container);
-        if (imagePickerBuilder.getImageSelectionType() == ImagePickerBuilder.ImageSelectionTypeDef.TYPE_MULTIPLE_WITH_PREVIEW) {
+        if (imagePickerBuilder.getImageSelectionType() == ImageSelectionTypeDef.TYPE_MULTIPLE_WITH_PREVIEW) {
             vgPreviewContainer.setVisibility(View.VISIBLE);
         } else {
             vgPreviewContainer.setVisibility(View.GONE);
@@ -108,8 +108,8 @@ public class ImagePickerActivity extends BaseSimpleActivity
     private void setupViewPager() {
         imagePickerViewPagerAdapter = new ImagePickerViewPagerAdapter(this, getSupportFragmentManager(), imagePickerBuilder);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-            int cameraIndex = imagePickerBuilder.indexTypeDef(ImagePickerBuilder.ImagePickerTabTypeDef.TYPE_CAMERA);
-            int galleryIndex = imagePickerBuilder.indexTypeDef(ImagePickerBuilder.ImagePickerTabTypeDef.TYPE_GALLERY);
+            int cameraIndex = imagePickerBuilder.indexTypeDef(ImagePickerTabTypeDef.TYPE_CAMERA);
+            int galleryIndex = imagePickerBuilder.indexTypeDef(ImagePickerTabTypeDef.TYPE_GALLERY);
             String[] permissions = null;
             if (cameraIndex > -1) {
                 permissions = new String[]{
@@ -147,10 +147,6 @@ public class ImagePickerActivity extends BaseSimpleActivity
             @Override
             public void onPageSelected(int position) {
                 selectedTab = position;
-                if (tabLayoutImagePickerAdapter != null) {
-                    tabLayoutImagePickerAdapter.selectTab(position);
-
-                }
                 changeSpinnerVisibilityByPosition(position);
             }
 
@@ -170,7 +166,7 @@ public class ImagePickerActivity extends BaseSimpleActivity
 
     private void changeSpinnerVisibilityByPosition(int position) {
         switch (imagePickerBuilder.getTabTypeDef(position)) {
-            case ImagePickerBuilder.ImagePickerTabTypeDef.TYPE_GALLERY: {
+            case ImagePickerTabTypeDef.TYPE_GALLERY: {
                 getSupportActionBar().setTitle("");
                 if (TextUtils.isEmpty(tvSelectedAlbum.getText())) {
                     tvSelectedAlbum.setVisibility(View.GONE);
@@ -179,7 +175,7 @@ public class ImagePickerActivity extends BaseSimpleActivity
                 }
             }
             break;
-            case ImagePickerBuilder.ImagePickerTabTypeDef.TYPE_CAMERA: {
+            case ImagePickerTabTypeDef.TYPE_CAMERA: {
                 getSupportActionBar().setTitle(getString(R.string.take_picture));
                 tvSelectedAlbum.setVisibility(View.GONE);
             }
@@ -194,7 +190,7 @@ public class ImagePickerActivity extends BaseSimpleActivity
 
     private void setupAlbumSpinner() {
         tvSelectedAlbum = findViewById(R.id.selected_album);
-        if (imagePickerBuilder.indexTypeDef(ImagePickerBuilder.ImagePickerTabTypeDef.TYPE_GALLERY) > -1) {
+        if (imagePickerBuilder.indexTypeDef(ImagePickerTabTypeDef.TYPE_GALLERY) > -1) {
             albumAdapter = new AlbumAdapter(this, null, false);
             albumSpinner = new AlbumsSpinner(this);
             albumSpinner.setOnItemSelectedListener(this);
@@ -265,14 +261,14 @@ public class ImagePickerActivity extends BaseSimpleActivity
     @Override
     public void onAlbumItemClicked(MediaItem item, boolean isChecked) {
         switch (imagePickerBuilder.getImageSelectionType()) {
-            case ImagePickerBuilder.ImageSelectionTypeDef.TYPE_SINGLE: {
+            case ImageSelectionTypeDef.TYPE_SINGLE: {
                 onSingleImagePicked(item.getRealPath());
             }
             break;
-            case ImagePickerBuilder.ImageSelectionTypeDef.TYPE_MULTIPLE_NO_PREVIEW:
-            case ImagePickerBuilder.ImageSelectionTypeDef.TYPE_MULTIPLE_WITH_PREVIEW: {
+            case ImageSelectionTypeDef.TYPE_MULTIPLE_NO_PREVIEW:
+            case ImageSelectionTypeDef.TYPE_MULTIPLE_WITH_PREVIEW: {
                 // TODO change the UI of selection
-                if (imagePickerBuilder.getImageSelectionType() == ImagePickerBuilder.ImageSelectionTypeDef.TYPE_MULTIPLE_WITH_PREVIEW) {
+                if (imagePickerBuilder.getImageSelectionType() == ImageSelectionTypeDef.TYPE_MULTIPLE_WITH_PREVIEW) {
                     // TODO show the preview
                 } else {
                     // TODO hide the preview
@@ -285,7 +281,9 @@ public class ImagePickerActivity extends BaseSimpleActivity
     private void onSingleImagePicked(String imageUrlOrPath) {
         if (imagePickerBuilder.isContinueToEditAfterPick()) {
             Intent intent = ImageEditorActivity.getIntent(this, imageUrlOrPath,
-                    imagePickerBuilder.getMinResolution(), imagePickerBuilder.getImageEditActionType());
+                    imagePickerBuilder.getMinResolution(), imagePickerBuilder.getImageEditActionType(),
+                    imagePickerBuilder.getExpectedImageRatio(),
+                    imagePickerBuilder.isCirclePreview());
             startActivityForResult(intent, REQUEST_CODE_EDITOR);
         } else {
             onFinishWithSingleImage(imageUrlOrPath);
@@ -325,23 +323,17 @@ public class ImagePickerActivity extends BaseSimpleActivity
     @Override
     public void onImageTaken(String filePath) {
         switch (imagePickerBuilder.getImageSelectionType()) {
-            case ImagePickerBuilder.ImageSelectionTypeDef.TYPE_SINGLE: {
+            case ImageSelectionTypeDef.TYPE_SINGLE: {
                 onSingleImagePicked(filePath);
             }
             break;
-            case ImagePickerBuilder.ImageSelectionTypeDef.TYPE_MULTIPLE_NO_PREVIEW:
-            case ImagePickerBuilder.ImageSelectionTypeDef.TYPE_MULTIPLE_WITH_PREVIEW: {
+            case ImageSelectionTypeDef.TYPE_MULTIPLE_NO_PREVIEW:
+            case ImageSelectionTypeDef.TYPE_MULTIPLE_WITH_PREVIEW: {
                 // TODO change the UI of selection
-                if (imagePickerBuilder.getImageSelectionType() == ImagePickerBuilder.ImageSelectionTypeDef.TYPE_MULTIPLE_WITH_PREVIEW) {
+                if (imagePickerBuilder.getImageSelectionType() == ImageSelectionTypeDef.TYPE_MULTIPLE_WITH_PREVIEW) {
                     // TODO show the preview?
                 } else {
                     // TODO hide the preview?
-                }
-                //to cater the bug in library.
-                ImagePickerCameraFragment fragment = getCameraFragment();
-                if (fragment != null) {
-                    fragment.onPause();
-                    fragment.onResume();
                 }
             }
             break;
@@ -349,7 +341,7 @@ public class ImagePickerActivity extends BaseSimpleActivity
     }
 
     private ImagePickerGalleryFragment getGalleryFragment() {
-        int tabGallery = imagePickerBuilder.indexTypeDef(ImagePickerBuilder.ImagePickerTabTypeDef.TYPE_GALLERY);
+        int tabGallery = imagePickerBuilder.indexTypeDef(ImagePickerTabTypeDef.TYPE_GALLERY);
         if (tabGallery > -1) {
             Fragment fragment = imagePickerViewPagerAdapter.getRegisteredFragment(tabGallery);
             if (fragment instanceof ImagePickerGalleryFragment) {
@@ -362,7 +354,7 @@ public class ImagePickerActivity extends BaseSimpleActivity
     }
 
     private ImagePickerCameraFragment getCameraFragment() {
-        int tabCamera = imagePickerBuilder.indexTypeDef(ImagePickerBuilder.ImagePickerTabTypeDef.TYPE_CAMERA);
+        int tabCamera = imagePickerBuilder.indexTypeDef(ImagePickerTabTypeDef.TYPE_CAMERA);
         if (tabCamera > -1) {
             Fragment fragment = imagePickerViewPagerAdapter.getRegisteredFragment(tabCamera);
             if (fragment instanceof ImagePickerCameraFragment) {

@@ -1,78 +1,46 @@
 package com.tokopedia.imagepicker.picker.main.util;
 
-import android.support.annotation.IntDef;
-
 import com.tokopedia.imagepicker.picker.gallery.type.GalleryType;
 
-import static com.tokopedia.imagepicker.picker.main.util.ImagePickerBuilder.ExpectedImageRatioDef.TYPE_1_1;
-import static com.tokopedia.imagepicker.picker.main.util.ImagePickerBuilder.ExpectedImageRatioDef.TYPE_4_5;
-import static com.tokopedia.imagepicker.picker.main.util.ImagePickerBuilder.ExpectedImageRatioDef.TYPE_5_4;
-import static com.tokopedia.imagepicker.picker.main.util.ImagePickerBuilder.ImageEditActionTypeDef.TYPE_CROP;
-import static com.tokopedia.imagepicker.picker.main.util.ImagePickerBuilder.ImageEditActionTypeDef.TYPE_CROP_ROTATE;
-import static com.tokopedia.imagepicker.picker.main.util.ImagePickerBuilder.ImageEditActionTypeDef.TYPE_ROTATE;
-import static com.tokopedia.imagepicker.picker.main.util.ImagePickerBuilder.ImageEditActionTypeDef.TYPE_WATERMARK;
-import static com.tokopedia.imagepicker.picker.main.util.ImagePickerBuilder.ImagePickerTabTypeDef.TYPE_CAMERA;
-import static com.tokopedia.imagepicker.picker.main.util.ImagePickerBuilder.ImagePickerTabTypeDef.TYPE_GALLERY;
-import static com.tokopedia.imagepicker.picker.main.util.ImagePickerBuilder.ImagePickerTabTypeDef.TYPE_INSTAGRAM;
-import static com.tokopedia.imagepicker.picker.main.util.ImagePickerBuilder.ImageSelectionTypeDef.TYPE_MULTIPLE_NO_PREVIEW;
-import static com.tokopedia.imagepicker.picker.main.util.ImagePickerBuilder.ImageSelectionTypeDef.TYPE_MULTIPLE_WITH_PREVIEW;
-import static com.tokopedia.imagepicker.picker.main.util.ImagePickerBuilder.ImageSelectionTypeDef.TYPE_SINGLE;
+import static com.tokopedia.imagepicker.picker.main.util.ExpectedImageRatioDef.TYPE_1_1;
+import static com.tokopedia.imagepicker.picker.main.util.ImageEditActionTypeDef.TYPE_CROP_ROTATE;
+import static com.tokopedia.imagepicker.picker.main.util.ImagePickerTabTypeDef.TYPE_CAMERA;
+import static com.tokopedia.imagepicker.picker.main.util.ImagePickerTabTypeDef.TYPE_GALLERY;
+import static com.tokopedia.imagepicker.picker.main.util.ImagePickerTabTypeDef.TYPE_INSTAGRAM;
 
 /**
  * Created by hendry on 19/04/18.
  */
 
 public enum ImagePickerBuilder {
-    ADD_PRODUCT(new int[]{TYPE_GALLERY, TYPE_CAMERA, TYPE_INSTAGRAM},
+    ADD_PRODUCT(new int[]{TYPE_GALLERY, TYPE_INSTAGRAM, TYPE_CAMERA},
             GalleryType.IMAGE_ONLY,
             ImageSelectionTypeDef.TYPE_SINGLE,
             300,
             TYPE_1_1,
             true,
-            new int[]{TYPE_CROP_ROTATE});
+            new int[]{TYPE_CROP_ROTATE},
+            true);
 
-    private @ImagePickerTabTypeDef int[] tabTypeDef;
-    private @GalleryType int galleryType;
+    private @ImagePickerTabTypeDef
+    int[] tabTypeDef;
+    private @GalleryType
+    int galleryType;
     private int minResolution;
-    private @ExpectedImageRatioDef int expectedImageRatio;
-    private @ImageSelectionTypeDef int imageSelectionType;
+    private @ExpectedImageRatioDef
+    int expectedImageRatio;
+    private @ImageSelectionTypeDef
+    int imageSelectionType;
     private boolean continueToEditAfterPick;
-    private @ImageEditActionTypeDef int[] imageEditActionType;
+    private @ImageEditActionTypeDef
+    int[] imageEditActionType;
+    private boolean circlePreview;
 
-    @IntDef({TYPE_GALLERY, TYPE_CAMERA, TYPE_INSTAGRAM})
-    public @interface ImagePickerTabTypeDef {
-        int TYPE_GALLERY = 1;
-        int TYPE_CAMERA = 2;
-        int TYPE_INSTAGRAM = 3;
-    }
-
-    @IntDef({TYPE_CROP, TYPE_ROTATE, TYPE_WATERMARK, TYPE_CROP_ROTATE})
-    public @interface ImageEditActionTypeDef {
-        int TYPE_CROP = 1;
-        int TYPE_ROTATE = 2;
-        int TYPE_WATERMARK = 3;
-        int TYPE_CROP_ROTATE = 4;
-    }
-
-    @IntDef({TYPE_SINGLE, TYPE_MULTIPLE_NO_PREVIEW, TYPE_MULTIPLE_WITH_PREVIEW})
-    public @interface ImageSelectionTypeDef {
-        int TYPE_SINGLE = 1;
-        int TYPE_MULTIPLE_NO_PREVIEW = 2;
-        int TYPE_MULTIPLE_WITH_PREVIEW = 3;
-    }
-
-    @IntDef({TYPE_1_1, TYPE_4_5, TYPE_5_4})
-    public @interface ExpectedImageRatioDef {
-        int TYPE_1_1 = 1;
-        int TYPE_4_5 = 2;
-        int TYPE_5_4 = 3;
-    }
-
-    private ImagePickerBuilder(@ImagePickerTabTypeDef int[] imagePickerTabTypeDef,
-                               @GalleryType int galleryType,
-                               @ImageSelectionTypeDef int selectionType ,
-                               int minResolution,
-                               @ExpectedImageRatioDef int expectedImageRatio) {
+    ImagePickerBuilder(@ImagePickerTabTypeDef int[] imagePickerTabTypeDef,
+                       @GalleryType int galleryType,
+                       @ImageSelectionTypeDef int selectionType,
+                       int minResolution,
+                       @ExpectedImageRatioDef int expectedImageRatio) {
         this.tabTypeDef = imagePickerTabTypeDef;
         this.galleryType = galleryType;
         this.imageSelectionType = selectionType;
@@ -81,16 +49,18 @@ public enum ImagePickerBuilder {
         this.continueToEditAfterPick = false;
     }
 
-    private ImagePickerBuilder(@ImagePickerTabTypeDef int[] imagePickerTabTypeDef,
-                               @GalleryType int galleryType,
-                               @ImageSelectionTypeDef int selectionType ,
-                               int minResolution,
-                               @ExpectedImageRatioDef int expectedImageRatio,
-                               boolean continueToEditAfterPick,
-                               @ImageEditActionTypeDef int[] imageEditActionType) {
+    ImagePickerBuilder(@ImagePickerTabTypeDef int[] imagePickerTabTypeDef,
+                       @GalleryType int galleryType,
+                       @ImageSelectionTypeDef int selectionType,
+                       int minResolution,
+                       @ExpectedImageRatioDef int expectedImageRatio,
+                       boolean continueToEditAfterPick,
+                       @ImageEditActionTypeDef int[] imageEditActionType,
+                       boolean circlePreview) {
         this(imagePickerTabTypeDef, galleryType, selectionType, minResolution, expectedImageRatio);
         this.continueToEditAfterPick = continueToEditAfterPick;
         this.imageEditActionType = imageEditActionType;
+        this.circlePreview = circlePreview;
     }
 
     public int[] getTabTypeDef() {
@@ -127,7 +97,7 @@ public enum ImagePickerBuilder {
         return imageSelectionType;
     }
 
-    public boolean supportMultipleSelection(){
+    public boolean supportMultipleSelection() {
         return imageSelectionType != ImageSelectionTypeDef.TYPE_SINGLE;
     }
 
@@ -145,5 +115,9 @@ public enum ImagePickerBuilder {
 
     public int[] getImageEditActionType() {
         return imageEditActionType;
+    }
+
+    public boolean isCirclePreview() {
+        return circlePreview;
     }
 }

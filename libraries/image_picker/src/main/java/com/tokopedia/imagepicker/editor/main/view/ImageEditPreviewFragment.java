@@ -1,8 +1,9 @@
-package com.tokopedia.imagepicker.editor;
+package com.tokopedia.imagepicker.editor.main.view;
 
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -18,6 +19,9 @@ import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.imagepicker.R;
 import com.tokopedia.imagepicker.common.util.ImageUtils;
+import com.tokopedia.imagepicker.picker.main.util.ExpectedImageRatioDef;
+import com.yalantis.ucrop.callback.BitmapCropCallback;
+import com.yalantis.ucrop.util.BitmapLoadUtils;
 import com.yalantis.ucrop.view.CropImageView;
 import com.yalantis.ucrop.view.GestureCropImageView;
 import com.yalantis.ucrop.view.OverlayView;
@@ -25,6 +29,7 @@ import com.yalantis.ucrop.view.TransformImageView;
 import com.yalantis.ucrop.view.UCropView;
 
 import java.io.File;
+import java.util.Locale;
 
 /**
  * Created by hendry on 25/04/18.
@@ -32,13 +37,17 @@ import java.io.File;
 
 public class ImageEditPreviewFragment extends Fragment {
 
-    public static final String ARG_ORI_IMAGE_PATH = "arg_ori_img_path";
-    public static final String ARG_EDITTED_IMAGE_PATH = "arg_edit_img_path";
+    public static final String ARG_IMAGE_PATH = "arg_img_path";
     public static final String ARG_MIN_RESOLUTION = "arg_min_resolution";
+    public static final String ARG_EXPECTED_RATIO = "arg_expected_ratio";
+    public static final String ARG_CIRCLE_PREVIEW = "arg_circle_preview";
+    public static final int ROTATE_WIDGET_SENSITIVITY = 42;
 
-    private String oriImagePath;
     private String edittedImagePath;
     private int minResolution = 0;
+    private @ExpectedImageRatioDef
+    int expectedRatio;
+    private boolean isCirclePreview;
 
     private View progressBar;
 
@@ -47,17 +56,27 @@ public class ImageEditPreviewFragment extends Fragment {
 
     private OnImageEditPreviewFragmentListener onImageEditPreviewFragmentListener;
     private boolean loadCompleted;
-    private float currentScale;
+    private GestureCropImageView gestureCropImageView;
+    private OverlayView overlayView;
 
     public interface OnImageEditPreviewFragmentListener {
         boolean isInEditMode();
+
+        void onSuccessSaveEditImage(Uri resultUri);
+
+        void onErrorSaveEditImage(Throwable throwable);
+
+        void setRotateAngle(float angle);
     }
 
-    public static ImageEditPreviewFragment newInstance(String oriImagePath, String edittedImagePath, int minResolution) {
+    public static ImageEditPreviewFragment newInstance(String imagePath, int minResolution,
+                                                       @ExpectedImageRatioDef int ratioDef,
+                                                       boolean isCirclePreview) {
         Bundle args = new Bundle();
-        args.putString(ARG_ORI_IMAGE_PATH, oriImagePath);
-        args.putString(ARG_EDITTED_IMAGE_PATH, edittedImagePath);
+        args.putString(ARG_IMAGE_PATH, imagePath);
         args.putInt(ARG_MIN_RESOLUTION, minResolution);
+        args.putInt(ARG_EXPECTED_RATIO, ratioDef);
+        args.putBoolean(ARG_CIRCLE_PREVIEW, isCirclePreview);
         ImageEditPreviewFragment fragment = new ImageEditPreviewFragment();
         fragment.setArguments(args);
         return fragment;
@@ -68,7 +87,12 @@ public class ImageEditPreviewFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_image_edit_preview, container, false);
 
-        initVar(savedInstanceState);
+        Bundle bundle = getArguments();
+        minResolution = bundle.getInt(ARG_MIN_RESOLUTION);
+        edittedImagePath = bundle.getString(ARG_IMAGE_PATH);
+        expectedRatio = bundle.getInt(ARG_EXPECTED_RATIO);
+        isCirclePreview = bundle.getBoolean(ARG_CIRCLE_PREVIEW);
+
         initUCrop(view);
         initProgressBar(view);
 
@@ -76,21 +100,9 @@ public class ImageEditPreviewFragment extends Fragment {
         return view;
     }
 
-    private void initVar(@Nullable Bundle savedInstanceState) {
-        Bundle bundle = getArguments();
-        oriImagePath = bundle.getString(ARG_ORI_IMAGE_PATH);
-        minResolution = bundle.getInt(ARG_MIN_RESOLUTION);
-
-        if (savedInstanceState == null) {
-            edittedImagePath = getArguments().getString(ARG_EDITTED_IMAGE_PATH);
-        } else {
-            edittedImagePath = savedInstanceState.getString(ARG_EDITTED_IMAGE_PATH);
-        }
-    }
-
     private void initUCrop(final View view) {
         uCropView = view.findViewById(R.id.ucrop);
-        GestureCropImageView gestureCropImageView = uCropView.getCropImageView();
+        gestureCropImageView = uCropView.getCropImageView();
 
         gestureCropImageView.setTransformImageListener(new TransformImageView.TransformImageListener() {
             @Override
@@ -106,7 +118,7 @@ public class ImageEditPreviewFragment extends Fragment {
 
             @Override
             public void onRotate(float currentAngle) {
-                // setAngleText(currentAngle);
+                onImageEditPreviewFragmentListener.setRotateAngle(currentAngle);
             }
 
             @Override
@@ -114,7 +126,21 @@ public class ImageEditPreviewFragment extends Fragment {
                 // setScaleText(currentScale);
             }
         });
+    }
 
+    public void saveEdittedImage() {
+        uCropView.getCropImageView().cropAndSaveImage(
+                edittedImagePath.endsWith("png") ? Bitmap.CompressFormat.PNG : Bitmap.CompressFormat.JPEG, 100, new BitmapCropCallback() {
+                    @Override
+                    public void onBitmapCropped(@NonNull Uri resultUri, int offsetX, int offsetY, int imageWidth, int imageHeight) {
+                        onImageEditPreviewFragmentListener.onSuccessSaveEditImage(resultUri);
+                    }
+
+                    @Override
+                    public void onCropFailure(@NonNull Throwable t) {
+                        onImageEditPreviewFragmentListener.onErrorSaveEditImage(t);
+                    }
+                });
     }
 
     private void initProgressBar(View view) {
@@ -132,9 +158,8 @@ public class ImageEditPreviewFragment extends Fragment {
         processOptions();
         try {
             Uri inputUri = Uri.fromFile(new File(edittedImagePath));
-            GestureCropImageView gestureCropImageView = uCropView.getCropImageView();
             gestureCropImageView.setImageUri(inputUri,
-                    Uri.parse(ImageUtils.getTokopediaPhotoPath(edittedImagePath).toString()));
+                    Uri.parse(ImageUtils.getTokopediaPhotoPath(ImageUtils.DirectoryDef.DIRECTORY_TOKOPEDIA_EDIT, edittedImagePath).toString()));
         } catch (Exception e) {
 
         }
@@ -142,44 +167,97 @@ public class ImageEditPreviewFragment extends Fragment {
 
     private void processOptions() {
 
-        GestureCropImageView gestureCropImageView = uCropView.getCropImageView();
-        OverlayView overlayView = uCropView.getOverlayView();
+        gestureCropImageView = uCropView.getCropImageView();
+        overlayView = uCropView.getOverlayView();
 
         // Crop image view options
-        gestureCropImageView.setMaxScaleMultiplier(CropImageView.DEFAULT_MAX_SCALE_MULTIPLIER);
+        gestureCropImageView.setRotateEnabled(false);
+
+        // set preview max bitmap, so it will fit the screen can also be zoomed.
+        int maxPreviewWidth = BitmapLoadUtils.calculateMaxBitmapSize(getContext());
+        gestureCropImageView.setMaxBitmapSize(maxPreviewWidth);
+
+        // set max scale so it cannnot be zoomed under min resolution
+        // same logic with the calculateInSampleSize;
+        int[] widthHeight = ImageUtils.getWidthAndHeight(edittedImagePath);
+        int maxWidthHeight = Math.max(widthHeight[0], widthHeight[1]);
+        while (maxWidthHeight > maxPreviewWidth) {
+            maxWidthHeight = maxWidthHeight / 2;
+        }
+
+        float scaleMultiplier;
+        if (maxWidthHeight > minResolution) {
+            scaleMultiplier = (float) maxWidthHeight / minResolution;
+        } else {
+            scaleMultiplier = 1;
+        }
+        gestureCropImageView.setMaxScaleMultiplier(scaleMultiplier);
+
         gestureCropImageView.setImageToWrapCropBoundsAnimDuration(CropImageView.DEFAULT_IMAGE_TO_CROP_BOUNDS_ANIM_DURATION);
 
         // Overlay view options
         overlayView.setFreestyleCropMode(OverlayView.FREESTYLE_CROP_MODE_DISABLE);
 
-        overlayView.setDimmedColor(getResources().getColor(android.R.color.white));
-        overlayView.setCircleDimmedLayer(OverlayView.DEFAULT_CIRCLE_DIMMED_LAYER);
+        overlayView.setDimmedColor(getResources().getColor(R.color.grey_title));
+        overlayView.setCircleDimmedLayer(isCirclePreview);
 
         overlayView.setShowCropFrame(OverlayView.DEFAULT_SHOW_CROP_FRAME);
-        overlayView.setCropFrameColor(getResources().getColor(com.yalantis.ucrop.R.color.ucrop_color_default_crop_frame));
-        overlayView.setCropFrameStrokeWidth(getResources().getDimensionPixelSize(com.yalantis.ucrop.R.dimen.ucrop_default_crop_frame_stoke_width));
+        overlayView.setCropFrameColor(getResources().getColor(R.color.white));
+        overlayView.setCropFrameStrokeWidth(getResources().getDimensionPixelSize(R.dimen.dp_1));
 
         overlayView.setShowCropGrid(OverlayView.DEFAULT_SHOW_CROP_GRID);
         overlayView.setCropGridRowCount(OverlayView.DEFAULT_CROP_GRID_ROW_COUNT);
         overlayView.setCropGridColumnCount(OverlayView.DEFAULT_CROP_GRID_COLUMN_COUNT);
-        overlayView.setCropGridColor(getResources().getColor(com.yalantis.ucrop.R.color.ucrop_color_default_crop_grid));
-        overlayView.setCropGridStrokeWidth(getResources().getDimensionPixelSize(com.yalantis.ucrop.R.dimen.ucrop_default_crop_grid_stoke_width));
+        overlayView.setCropGridColor(getResources().getColor(R.color.white_65));
+        overlayView.setCropGridStrokeWidth(getResources().getDimensionPixelSize(R.dimen.dp_1));
 
-        // Aspect ratio options
         float aspectRatioX = 1;
         float aspectRatioY = 1;
+
+        // Aspect ratio options
+        switch (expectedRatio) {
+            case ExpectedImageRatioDef.TYPE_1_1:
+                aspectRatioX = 1;
+                aspectRatioY = 1;
+                break;
+            case ExpectedImageRatioDef.TYPE_4_5:
+                aspectRatioX = 4;
+                aspectRatioY = 5;
+                break;
+            case ExpectedImageRatioDef.TYPE_5_4:
+                aspectRatioX = 5;
+                aspectRatioY = 4;
+                break;
+        }
         gestureCropImageView.setTargetAspectRatio(aspectRatioX / aspectRatioY);
 
-        // Result bitmap max size options
-        int maxSizeX = 0;
-        int maxSizeY = 0;
-
-        if (maxSizeX > 0 && maxSizeY > 0) {
-            gestureCropImageView.setMaxResultImageSizeX(maxSizeX);
-            gestureCropImageView.setMaxResultImageSizeY(maxSizeY);
-        }
+        int maxSizeX = ImageUtils.DEF_WIDTH;
+        int maxSizeY = ImageUtils.DEF_HEIGHT;
+        gestureCropImageView.setMaxResultImageSizeX(maxSizeX);
+        gestureCropImageView.setMaxResultImageSizeY(maxSizeY);
     }
 
+    public void resetRotation() {
+        gestureCropImageView.postRotate(-gestureCropImageView.getCurrentAngle());
+        gestureCropImageView.setImageToWrapCropBounds();
+    }
+
+    public void rotateByAngle(int angle) {
+        gestureCropImageView.postRotate(angle);
+        gestureCropImageView.setImageToWrapCropBounds();
+    }
+
+    public void onStartEditScrolled() {
+        gestureCropImageView.cancelAllAnimations();
+    }
+
+    public void onEndEditScrolled() {
+        gestureCropImageView.setImageToWrapCropBounds();
+    }
+
+    public void editRotateScrolled(float delta) {
+        gestureCropImageView.postRotate(delta / ROTATE_WIDGET_SENSITIVITY);
+    }
 
     private void showLoadingAndHidePreview() {
         uCropView.setVisibility(View.INVISIBLE);
@@ -198,17 +276,16 @@ public class ImageEditPreviewFragment extends Fragment {
         if (loadCompleted) {
             if (isEditMode) {
                 blockingView.setVisibility(View.GONE);
-                uCropView.getOverlayView().setShowCropGrid(true);
+                overlayView.setShowCropGrid(true);
             } else {
                 blockingView.setVisibility(View.VISIBLE);
-                uCropView.getOverlayView().setShowCropGrid(false);
+                overlayView.setShowCropGrid(false);
             }
-            uCropView.getOverlayView().invalidate();
+            overlayView.invalidate();
         }
     }
 
     public void cancelCropRotateImage() {
-        GestureCropImageView gestureCropImageView = uCropView.getCropImageView();
         gestureCropImageView.postRotate(-gestureCropImageView.getCurrentAngle());
         gestureCropImageView.zoomOutImage(gestureCropImageView.getMinScale());
         gestureCropImageView.setImageToWrapCropBounds(false);
@@ -217,12 +294,6 @@ public class ImageEditPreviewFragment extends Fragment {
     @Override
     public void onDestroy() {
         super.onDestroy();
-    }
-
-    @Override
-    public void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-        outState.putString(ARG_EDITTED_IMAGE_PATH, edittedImagePath);
     }
 
     @TargetApi(23)

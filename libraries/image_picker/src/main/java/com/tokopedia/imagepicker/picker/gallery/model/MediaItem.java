@@ -8,6 +8,8 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import android.provider.MediaStore;
 
+import com.tokopedia.imagepicker.common.util.ImageUtils;
+
 import java.io.File;
 
 /**
@@ -61,11 +63,9 @@ public class MediaItem implements Parcelable {
 
     private void calculateWidthAndHeight() {
         if (width == 0 || height == 0) {
-            BitmapFactory.Options options = new BitmapFactory.Options();
-            options.inJustDecodeBounds = true;
-            BitmapFactory.decodeFile(new File(getRealPath()).getAbsolutePath(), options);
-            width = options.outWidth;
-            height = options.outHeight;
+            int[] widthHeight = ImageUtils.getWidthAndHeight(getRealPath());
+            width = widthHeight[0];
+            height = widthHeight[1];
         }
     }
 
