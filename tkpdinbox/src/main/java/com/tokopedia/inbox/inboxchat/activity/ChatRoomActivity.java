@@ -71,6 +71,8 @@ public class ChatRoomActivity extends BasePresenterActivity
     public static final String PARAM_AVATAR = "avatar";
 
     public static final String PARAM_WEBSOCKET = "create_websocket";
+    public static final String APPLINKS = "applinks";
+    public static final String MESSAGE_ID = "message_id";
     private BroadcastReceiver notifReceiver;
 
     @Override
@@ -88,8 +90,8 @@ public class ChatRoomActivity extends BasePresenterActivity
             notifReceiver = new BroadcastReceiver() {
                 @Override
                 public void onReceive(Context context, Intent intent) {
-                    String fromPushNotif = intent.getExtras().getString("applinks");
-                    String fromRoom = ApplinkConstant.TOPCHAT.concat(getIntent().getExtras().getString("message_id"));
+                    String fromPushNotif = intent.getExtras().getString(APPLINKS);
+                    String fromRoom = ApplinkConstant.TOPCHAT.concat(getIntent().getExtras().getString(MESSAGE_ID));
                     if (!fromRoom.equals(fromPushNotif)) {
                         PushNotification.notify(context, intent.getExtras());
                     }
