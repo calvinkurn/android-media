@@ -1307,7 +1307,8 @@ public abstract class SellerRouterApplication extends MainApplication
     public void gotoTopAdsDashboard(Context context){
         startActivity(TopAdsDashboardActivity.getCallingIntent(context));
     }
-      
+    
+    @Override            
     public void goToApplinkActivity(Context context, String applink) {
         DeepLinkDelegate deepLinkDelegate = DeepLinkHandlerActivity.getDelegateInstance();
         Intent intent = new Intent(context, DeepLinkHandlerActivity.class);
