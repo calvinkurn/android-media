@@ -38,6 +38,8 @@ import com.tkpd.library.utils.LocalCacheHandler;
 import com.tkpd.library.utils.SnackbarManager;
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
+import com.tokopedia.applink.ApplinkRouter;
+import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.ProductPageTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.BasePresenterFragment;
@@ -1262,10 +1264,10 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
 
     @Override
     public void onPromoAdsClicked() {
-        presenter.openPromoteAds(getActivity(),
-                TopAdsAppLinkUtil.createAppLink(userSession.getUserId(),
-                        String.valueOf(productData.getInfo().getProductId()), productData.getShopInfo().getShopId(),
-                        GlobalConfig.isSellerApp() ? TopAdsSourceOption.SA_PDP : TopAdsSourceOption.MA_PDP));
+        ((PdpRouter) getActivity().getApplication()).goToCreateTopadsPromo(getActivity(),
+                String.valueOf(productData.getInfo().getProductId()), productData.getShopInfo().getShopId(),
+                GlobalConfig.isSellerApp()? TopAdsSourceOption.SA_MANAGE_LIST_PRODUCT :
+                        TopAdsSourceOption.MA_MANAGE_LIST_PRODUCT);
     }
 
     @Override

@@ -620,7 +620,7 @@ public class DrawerBuyerHelper extends DrawerHelper
                 .getLaunchIntentForPackage(TOP_SELLER_APPLICATION_PACKAGE);
 
         if(context.getApplication() instanceof SellerModuleRouter) {
-            ((SellerModuleRouter) context.getApplication()).goToCreateTopadsPromo(context,"", "");
+            ((SellerModuleRouter) context.getApplication()).gotoTopAdsDashboard(context);
         }
 
         if (topadsIntent != null) {

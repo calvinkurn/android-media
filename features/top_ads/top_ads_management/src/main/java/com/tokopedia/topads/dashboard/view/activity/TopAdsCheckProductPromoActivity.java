@@ -82,6 +82,12 @@ public class TopAdsCheckProductPromoActivity extends BaseSimpleActivity implemen
         return intent;
     }
 
+    public static Intent createIntent(Context context, String shopId, String itemId, String source){
+        Intent intent = createIntent(context, shopId, itemId);
+        intent.putExtra(TopAdsSourceTaggingConstant.PARAM_KEY_SOURCE, source);
+        return intent;
+    }
+
     public static Intent getCallingIntent(Context context) {
         return new Intent(context, TopAdsCheckProductPromoActivity.class);
     }
