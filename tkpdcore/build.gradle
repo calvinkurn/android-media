@@ -134,7 +134,7 @@ dependencies {
 
     compile rootProject.ext.analyticsDependencies.logentries
 
-    compile rootProject.ext.analyticsDependencies.logentries
+    compile project(rootProject.ext.libraries.network)
 }
 
 apply plugin: 'com.google.gms.google-services'

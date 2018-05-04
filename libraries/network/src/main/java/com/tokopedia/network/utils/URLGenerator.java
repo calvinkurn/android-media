@@ -1,6 +1,6 @@
 package com.tokopedia.network.utils;
 
-import com.tokopedia.abstraction.constant.AbstractionBaseURL;
+import com.tokopedia.network.constant.TkpdBaseURL;
 
 /**
  * Created by ricoharisin on 9/29/15.
@@ -18,7 +18,7 @@ public class URLGenerator {
     }
 
     public static String getBaseUrl() {
-        return AbstractionBaseURL.JS_DOMAIN;
+        return TkpdBaseURL.JS_DOMAIN;
     }
 
 }

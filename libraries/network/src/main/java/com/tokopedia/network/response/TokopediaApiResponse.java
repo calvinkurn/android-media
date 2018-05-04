@@ -7,8 +7,6 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import com.tokopedia.abstraction.common.network.exception.ResponseDataNullException;
-import com.tokopedia.abstraction.common.network.exception.ResponseErrorException;
 import com.tokopedia.network.exception.ResponseDataNullException;
 import com.tokopedia.network.exception.ResponseErrorException;
 

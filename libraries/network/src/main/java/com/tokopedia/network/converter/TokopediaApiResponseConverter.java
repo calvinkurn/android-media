@@ -1,6 +1,6 @@
 package com.tokopedia.network.converter;
 
-import com.tokopedia.abstraction.common.network.response.TokopediaApiResponse;
+import com.tokopedia.network.response.TokopediaApiResponse;
 
 import java.io.IOException;
 import java.lang.annotation.Annotation;
