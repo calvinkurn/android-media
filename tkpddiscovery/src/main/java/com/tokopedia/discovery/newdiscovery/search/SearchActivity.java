@@ -165,6 +165,7 @@ public class SearchActivity extends DiscoveryActivity
 
         if (intent != null &&
                 intent.getClipData() != null &&
+                intent.getClipData().getItemCount() > 0 &&
                 remoteConfig.getBoolean(TkpdCache.RemoteConfigKey.SHOW_IMAGE_SEARCH,
                         false)) {
 
