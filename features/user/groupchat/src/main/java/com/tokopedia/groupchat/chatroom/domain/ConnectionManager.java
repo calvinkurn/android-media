@@ -1,5 +1,7 @@
 package com.tokopedia.groupchat.chatroom.domain;
 
+import android.util.Log;
+
 import com.sendbird.android.SendBird;
 import com.sendbird.android.SendBirdException;
 import com.sendbird.android.User;
@@ -39,10 +41,12 @@ public class ConnectionManager {
         SendBird.addConnectionHandler(handlerId, new SendBird.ConnectionHandler() {
             @Override
             public void onReconnectStarted() {
+                Log.d("NISNIS","onReconnectStarted");
             }
 
             @Override
             public void onReconnectSucceeded() {
+                Log.d("NISNIS","onReconnectSucceeded " + String.valueOf(handler!= null));
                 if (handler != null) {
                     handler.onConnected(true);
                 }
@@ -50,6 +54,7 @@ public class ConnectionManager {
 
             @Override
             public void onReconnectFailed() {
+                Log.d("NISNIS","onReconnectFailed");
             }
         });
 
@@ -58,10 +63,15 @@ public class ConnectionManager {
                 handler.onConnected(false);
             }
         } else if (SendBird.getConnectionState() == SendBird.ConnectionState.CLOSED) { // push notification or system kill
+            Log.d("NISNIS","sendbirdClosed");
+
             SendBird.connect(userId, new SendBird.ConnectHandler() {
                 @Override
                 public void onConnected(User user, SendBirdException e) {
+                    Log.d("NISNIS","sendbirdClosedconnect " + String.valueOf(handler!= null));
+
                     if (e != null) {
+                        Log.d("NISNIS",e.toString());
                         return;
                     }
 

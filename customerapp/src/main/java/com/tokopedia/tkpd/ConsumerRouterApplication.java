@@ -1771,12 +1771,12 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public boolean isEnabledGroupChat() {
-        return remoteConfig.getBoolean(TkpdInboxRouter.ENABLE_GROUPCHAT);
+        return true;
     }
 
     @Override
     public boolean isEnabledGroupChatRoom() {
-        return remoteConfig.getBoolean(GroupChatModuleRouter.ENABLE_GROUPCHAT_ROOM);
+        return true;
     }
 
     @Override
