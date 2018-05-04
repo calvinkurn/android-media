@@ -273,12 +273,6 @@ public class DiscoverySearchView extends FrameLayout implements Filter.FilterLis
         showImageSearch(true);
 
         initSearchView();
-
-        if (isAllowImageSearch() &&
-                !isShowShowCase() &&
-                (mImageSearchButton.getVisibility() == VISIBLE)) {
-            startShowCase();
-        }
         mSuggestionView.setVisibility(GONE);
         setAnimationDuration(AnimationUtil.ANIMATION_DURATION_MEDIUM);
     }
@@ -338,35 +332,42 @@ public class DiscoverySearchView extends FrameLayout implements Filter.FilterLis
     }
 
     private void startShowCase() {
-        final String showCaseTag = "Image Search ShowCase";
-        if (ShowCasePreference.hasShown(mContext, showCaseTag)) {
-            return;
-        }
-        if (showCaseDialog != null) {
-            return;
-        }
-        showCaseDialog = createShowCase();
-        showCaseDialog.setShowCaseStepListener(new ShowCaseDialog.OnShowCaseStepListener() {
-            @Override
-            public boolean onShowCaseGoTo(int previousStep, int nextStep, ShowCaseObject showCaseObject) {
-                return false;
+
+        if (isAllowImageSearch() &&
+                !isShowShowCase()) {
+
+
+            final String showCaseTag = "Image Search ShowCase";
+            if (ShowCasePreference.hasShown(mContext, showCaseTag)) {
+                return;
             }
-        });
+            if (showCaseDialog != null) {
+                return;
+            }
+            showCaseDialog = createShowCase();
+            showCaseDialog.setShowCaseStepListener(new ShowCaseDialog.OnShowCaseStepListener() {
+                @Override
+                public boolean onShowCaseGoTo(int previousStep, int nextStep, ShowCaseObject showCaseObject) {
+                    return false;
+                }
+            });
 
-        if (remoteConfig == null) {
-            remoteConfig = new FirebaseRemoteConfigImpl(getContext());
+            if (remoteConfig == null) {
+                remoteConfig = new FirebaseRemoteConfigImpl(getContext());
+            }
+
+            mImageSearchButton.setWillNotCacheDrawing(false);
+            ArrayList<ShowCaseObject> showCaseObjectList = new ArrayList<>();
+            showCaseObjectList.add(new ShowCaseObject(
+                    mImageSearchButton,
+                    mContext.getResources().getString(R.string.on_board_title),
+                    remoteConfig.getString(TkpdCache.RemoteConfigKey.IMAGE_SEARCH_ONBOARD_DESC,
+                            mContext.getResources().getString(R.string.on_board_desc)),
+                    ShowCaseContentPosition.UNDEFINED,
+                    R.color.tkpd_main_green));
+            showCaseDialog.show(((Activity) mContext), showCaseTag, showCaseObjectList);
+
         }
-
-        mImageSearchButton.setWillNotCacheDrawing(false);
-        ArrayList<ShowCaseObject> showCaseObjectList = new ArrayList<>();
-        showCaseObjectList.add(new ShowCaseObject(
-                mImageSearchButton,
-                mContext.getResources().getString(R.string.on_board_title),
-                remoteConfig.getString(TkpdCache.RemoteConfigKey.IMAGE_SEARCH_ONBOARD_DESC,
-                        mContext.getResources().getString(R.string.on_board_desc)),
-                ShowCaseContentPosition.UNDEFINED,
-                R.color.tkpd_main_green));
-        showCaseDialog.show(((Activity) mContext), showCaseTag, showCaseObjectList);
     }
 
     private ShowCaseDialog createShowCase() {
@@ -649,6 +650,7 @@ public class DiscoverySearchView extends FrameLayout implements Filter.FilterLis
                 if (finishOnClose) {
                     setFinishOnClose(false);
                 }
+                startShowCase();
                 return true;
             }
         });
@@ -690,6 +692,7 @@ public class DiscoverySearchView extends FrameLayout implements Filter.FilterLis
             }, 500);
         }
         showSearch(animate);
+        startShowCase();
     }
 
     public boolean isFinishOnClose() {
