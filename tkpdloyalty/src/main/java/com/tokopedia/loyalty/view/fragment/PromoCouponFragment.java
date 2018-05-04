@@ -12,9 +12,6 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.BasePresenterFragment;
@@ -70,6 +67,8 @@ public class PromoCouponFragment extends BasePresenterFragment
     private static final String DIGITAL_CATEGORY_ID = "DIGI_CATEGORY_ID";
 
     private static final String DIGITAL_PRODUCT_ID = "DIGI_PRODUCT_ID";
+
+    private static final String CHECKOUT = "checkoutdata";
 
     @Override
     protected boolean isRetainInstance() {
@@ -390,17 +389,11 @@ public class PromoCouponFragment extends BasePresenterFragment
         if (getArguments().getString(PLATFORM_KEY).equals(DIGITAL_STRING)) {
             dPresenter.submitDigitalVoucher(data, getArguments().getString(CATEGORY_KEY));
         } else if (getArguments().getString(PLATFORM_KEY).equals(EVENT_STRING)) {
-            String jsonbody = getActivity().getIntent().getStringExtra("checkoutdata");
-            JsonObject requestBody;
-            if (jsonbody != null || jsonbody.length() > 0) {
-                JsonElement jsonElement = new JsonParser().parse(jsonbody);
-                requestBody = jsonElement.getAsJsonObject();
-                dPresenter.submitEventVoucher(data, requestBody, false);
-            }
-
-        }else if (getArguments().getString(PLATFORM_KEY).equalsIgnoreCase(FLIGHT_STRING)) {
+            String jsonbody = getActivity().getIntent().getStringExtra(CHECKOUT);
+            dPresenter.parseAndSubmitEventVoucher(jsonbody, data);
+        } else if (getArguments().getString(PLATFORM_KEY).equalsIgnoreCase(FLIGHT_STRING)) {
             dPresenter.submitFlightVoucher(data, getArguments().getString(EXTRA_CART_ID));
-        }else {
+        } else {
             dPresenter.submitVoucher(data);
         }
     }

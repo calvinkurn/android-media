@@ -273,5 +273,8 @@ public class Utils {
         public final static String TOP_EVENTS = "TOP EVENTS";
         public final static String CHECKOUTDATA = "checkoutdata";
         public final static String PRODUCTID = "product_id";
+        public final static String TOPEVENTS = "TOPEVENTS";
+        public final static String EVENTS = "events";
+        public final static String HOMEDATA = "homedata";
     }
 }

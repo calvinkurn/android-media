@@ -97,7 +97,7 @@ public class EventSearchPresenter
         if (isEventCalendar) {
             searchSubmitted("");
         } else {
-            mTopEvents = getView().getActivity().getIntent().getParcelableArrayListExtra("TOPEVENTS");
+            mTopEvents = getView().getActivity().getIntent().getParcelableArrayListExtra(Utils.Constants.TOPEVENTS);
             getView().setTopEvents(mTopEvents);
         }
     }

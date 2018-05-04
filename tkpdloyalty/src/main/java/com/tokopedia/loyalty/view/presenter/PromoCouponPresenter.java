@@ -2,7 +2,9 @@ package com.tokopedia.loyalty.view.presenter;
 
 import android.support.annotation.NonNull;
 
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import com.tokopedia.abstraction.common.network.exception.MessageErrorException;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.TkpdCoreRouter;
@@ -321,6 +323,16 @@ public class PromoCouponPresenter implements IPromoCouponPresenter {
             }
         });
 
+    }
+
+    @Override
+    public void parseAndSubmitEventVoucher(String jsonbody,CouponData data) {
+        JsonObject requestBody;
+        if (jsonbody != null || jsonbody.length() > 0) {
+            JsonElement jsonElement = new JsonParser().parse(jsonbody);
+            requestBody = jsonElement.getAsJsonObject();
+            submitEventVoucher(data, requestBody, false);
+        }
     }
 
     private Subscriber<CouponViewModel> makeCouponSubscriber(final CouponData couponData) {

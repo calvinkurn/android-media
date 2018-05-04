@@ -174,7 +174,7 @@ public class EventHomePresenter extends BaseDaggerPresenter<EventsContract.View>
     public void showEventDetails(CategoryItemsViewModel model) {
         Intent detailsIntent = new Intent(getView().getActivity(), EventDetailsActivity.class);
         detailsIntent.putExtra(EventDetailsActivity.FROM, EventDetailsActivity.FROM_HOME_OR_SEARCH);
-        detailsIntent.putExtra("homedata", model);
+        detailsIntent.putExtra(Utils.Constants.HOMEDATA, model);
         getView().getActivity().startActivity(detailsIntent);
     }
 
@@ -245,7 +245,8 @@ public class EventHomePresenter extends BaseDaggerPresenter<EventsContract.View>
         if (requestCode == 1099) {
             if (SessionHandler.isV4Login(getView().getActivity())) {
                 getView().hideProgressBar();
-                getView().showMessage("You can now like or share events");
+                getView().showMessage(getView().getActivity().getResources()
+                        .getString(R.string.like_share_events));
             } else {
                 getView().hideProgressBar();
             }

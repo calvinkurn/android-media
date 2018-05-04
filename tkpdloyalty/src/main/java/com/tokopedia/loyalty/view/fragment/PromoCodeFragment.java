@@ -54,6 +54,8 @@ public class PromoCodeFragment extends BasePresenterFragment implements IPromoCo
 
     private static final String CATEGORY_KEY = "CATEGORY_KEY";
 
+    private static final String CHECKOUT = "checkoutdata";
+
     @Override
     protected boolean isRetainInstance() {
         return false;
@@ -191,7 +193,7 @@ public class PromoCodeFragment extends BasePresenterFragment implements IPromoCo
                 if (voucherCodeField.getText().toString().isEmpty()) {
                     textHolder.setError(getActivity().getString(R.string.error_empty_voucher_code));
                 } else {
-                    String jsonbody = getActivity().getIntent().getStringExtra("checkoutdata");
+                    String jsonbody = getActivity().getIntent().getStringExtra(CHECKOUT);
                     JsonObject requestBody = null;
                     if (jsonbody != null || jsonbody.length() > 0) {
                         JsonElement jsonElement = new JsonParser().parse(jsonbody);

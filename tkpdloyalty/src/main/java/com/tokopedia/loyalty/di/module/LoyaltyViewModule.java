@@ -31,6 +31,7 @@ import static com.tokopedia.loyalty.view.activity.LoyaltyActivity.EXTRA_PRODUCTI
 public class LoyaltyViewModule {
 
     private final Activity activity;
+    private String events = "events";
 
     public LoyaltyViewModule(Activity activity) {
         this.activity = activity;
@@ -67,7 +68,7 @@ public class LoyaltyViewModule {
                         .tabTitle("Kode Promo")
                         .build()
         );
-        if (activity.getIntent().getExtras().getString(EXTRA_PLATFORM, "").equals("events")) {
+        if (activity.getIntent().getExtras().getString(EXTRA_PLATFORM, "").equals(events)) {
             loyaltyPagerItemList.add(
                     new LoyaltyPagerItem.Builder()
                             .fragment(PromoCouponFragment.newInstance(

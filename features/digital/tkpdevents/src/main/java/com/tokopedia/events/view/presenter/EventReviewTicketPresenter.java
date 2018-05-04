@@ -188,7 +188,7 @@ public class EventReviewTicketPresenter
 
     private void goToLoyaltyActivity() {
         JsonObject requestBody = convertPackageToCartItem(checkoutData);
-        Intent loyaltyIntent = LoyaltyActivity.newInstanceCouponActive(getView().getActivity(), "events", "events");
+        Intent loyaltyIntent = LoyaltyActivity.newInstanceCouponActive(getView().getActivity(), Utils.Constants.EVENTS, Utils.Constants.EVENTS);
         loyaltyIntent.putExtra(Utils.Constants.CHECKOUTDATA, requestBody.toString());
         loyaltyIntent.putExtra(LoyaltyActivity.EXTRA_PRODUCTID, checkoutData.getDigitalProductID());
         loyaltyIntent.putExtra(LoyaltyActivity.EXTRA_CATEGORYID, checkoutData.getDigitalCategoryID());
