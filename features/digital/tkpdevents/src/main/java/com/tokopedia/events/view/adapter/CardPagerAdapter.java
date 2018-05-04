@@ -114,10 +114,15 @@ public class CardPagerAdapter extends PagerAdapter implements CardAdapter, Event
             tvAddToWishlist.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_event_wishlist_red,
                     0, 0, 0);
             tvAddToWishlist.setTextColor(view.getResources().getColor(R.color.red_1));
+        } else {
+            tvAddToWishlist.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_event_wishlist,
+                    0, 0, 0);
+            tvAddToWishlist.setTextColor(view.getResources().getColor(R.color.black_54));
         }
 
         tvAddToWishlist.setOnClickListener(clickListener);
         TextView tvEventShare = view.findViewById(R.id.tv_event_share);
+        tvEventShare.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_event_share, 0, 0, 0);
         tvEventShare.setOnClickListener(clickListener);
         ImageView ivEventThumb = view.findViewById(R.id.iv_event_thumb);
         ivEventThumb.setOnClickListener(clickListener);
@@ -134,6 +139,7 @@ public class CardPagerAdapter extends PagerAdapter implements CardAdapter, Event
         else
             tv3Tag.setVisibility(View.GONE);
         TextView tv4DateTime = view.findViewById(R.id.tv4_date_time);
+        tv4DateTime.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_event_calendar_white,0,0,0);
         if (item.getMinStartDate() == 0) {
             tv4DateTime.setVisibility(View.GONE);
         } else {
@@ -145,6 +151,7 @@ public class CardPagerAdapter extends PagerAdapter implements CardAdapter, Event
         }
         tv4DateTime.setOnClickListener(clickListener);
         TextView tv4Location = view.findViewById(R.id.tv4_location);
+        tv4Location.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_putih,0,0,0);
         tv4Location.setText(item.getCityName());
         tv4Location.setOnClickListener(clickListener);
         TextView tv4EventTitle = view.findViewById(R.id.tv4_event_title);

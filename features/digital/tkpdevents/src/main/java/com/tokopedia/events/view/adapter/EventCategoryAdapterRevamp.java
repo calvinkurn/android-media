@@ -86,7 +86,10 @@ public class EventCategoryAdapterRevamp extends RecyclerView.Adapter<EventCatego
 
             eventTitle.setText(data.getDisplayName());
             eventPrice.setText("Rp" + " " + CurrencyUtil.convertToCurrencyString(data.getSalesPrice()));
+            eventLocation.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_putih, 0, 0, 0);
+            tvEventShare.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_event_share, 0, 0, 0);
             eventLocation.setText(data.getCityName());
+            eventTime.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_event_calendar_white, 0, 0, 0);
             if (data.getMinStartDate() == 0) {
                 eventTime.setVisibility(View.GONE);
             } else {
