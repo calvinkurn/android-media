@@ -379,6 +379,7 @@ public class SearchActivity extends DiscoveryActivity
             @Override
             public void onHide() {
                 enableAutoShowBottomNav();
+                sendBottomSheetHideEventForProductList();
             }
 
             @Override
@@ -401,6 +402,15 @@ public class SearchActivity extends DiscoveryActivity
                 FilterDetailActivityRouter.launchDetailActivity(SearchActivity.this, filter);
             }
         });
+    }
+
+    private void sendBottomSheetHideEventForProductList() {
+        SearchSectionFragment selectedFragment
+                = (SearchSectionFragment) searchSectionPagerAdapter.getItem(viewPager.getCurrentItem());
+
+        if (selectedFragment != null && selectedFragment instanceof ProductListFragment) {
+            selectedFragment.onBottomSheetHide();
+        }
     }
 
     @Override

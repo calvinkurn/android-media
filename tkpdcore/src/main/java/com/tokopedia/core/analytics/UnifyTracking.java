@@ -3316,15 +3316,6 @@ public class UnifyTracking extends TrackingUtils {
         ).setUserId().getEvent());
     }
 
-    public static void eventSearchResultFilter(String screenName, Map<String, String> selectedFilter) {
-        sendGTMEvent(new EventTracking(
-                AppEventTracking.Event.SEARCH_RESULT,
-                AppEventTracking.Category.FILTER_PRODUCT,
-                AppEventTracking.Action.FILTER.toLowerCase() + " - " + screenName,
-                generateFilterEventLabel(selectedFilter)
-        ).setUserId().getEvent());
-    }
-
     public static void eventSearchResultQuickFilter(String filterName, String filterValue, boolean isSelected) {
         sendGTMEvent(new EventTracking(
                 AppEventTracking.Event.SEARCH_RESULT,
@@ -3332,14 +3323,6 @@ public class UnifyTracking extends TrackingUtils {
                 AppEventTracking.Action.QUICK_FILTER,
                 filterName + " - " + filterValue + " - " + Boolean.toString(isSelected)
         ).setUserId().getEvent());
-    }
-
-    private static String generateFilterEventLabel(Map<String, String> selectedFilter) {
-        List<String> filterList = new ArrayList<>();
-        for (Map.Entry<String, String> entry : selectedFilter.entrySet()) {
-            filterList.add(entry.getKey() + "=" + entry.getValue());
-        }
-        return TextUtils.join("&", filterList);
     }
 
     public static void eventBeliLongClick() {

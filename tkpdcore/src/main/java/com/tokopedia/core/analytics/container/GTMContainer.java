@@ -732,7 +732,8 @@ public class GTMContainer implements IGTMContainer {
     @Override
     public void enhanceClickSearchResultProduct(Object object,
                                                 String keyword,
-                                                String actionField) {
+                                                String actionField,
+                                                String activeFilter) {
 
         clearEnhanceEcommerce();
 
@@ -747,7 +748,8 @@ public class GTMContainer implements IGTMContainer {
                                         DataLayer.mapOf("list", actionField),
                                         "products", DataLayer.listOf(object)
                                 )
-                        )
+                        ),
+                        "activeFilter", activeFilter
                 )
         );
     }

@@ -548,7 +548,8 @@ public class ProductListFragment extends SearchSectionFragment
             SearchTracking.trackEventClickSearchResultProduct(
                     item.getProductAsObjectDataLayer(userId),
                     item.getPageNumber(),
-                    productViewModel.getQuery()
+                    productViewModel.getQuery(),
+                    getSelectedFilter()
             );
         }
     }

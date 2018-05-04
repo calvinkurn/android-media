@@ -1,8 +1,12 @@
 package com.tokopedia.core.analytics;
 
+import android.text.TextUtils;
+
 import com.tokopedia.core.analytics.nishikino.model.EventTracking;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by henrypriyono on 1/5/18.
@@ -19,9 +23,10 @@ public class SearchTracking extends TrackingUtils {
 
     public static void trackEventClickSearchResultProduct(Object item,
                                                           int pageNumber,
-                                                          String eventLabel) {
+                                                          String eventLabel,
+                                                          Map<String, String> selectedFilter) {
         getGTMEngine().enhanceClickSearchResultProduct(item,
-                eventLabel, getActionFieldString(pageNumber));
+                eventLabel, getActionFieldString(pageNumber), generateFilterEventLabel(selectedFilter));
     }
 
     public static void trackEventClickImageSearchResultProduct(Object item, int position) {
@@ -123,5 +128,22 @@ public class SearchTracking extends TrackingUtils {
                 AppEventTracking.Action.CLICK_TAB,
                 tabTitle
         ).setUserId().getEvent());
+    }
+
+    public static void eventSearchResultFilter(String screenName, Map<String, String> selectedFilter) {
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.SEARCH_RESULT,
+                AppEventTracking.Category.FILTER_PRODUCT,
+                AppEventTracking.Action.FILTER.toLowerCase() + " - " + screenName,
+                generateFilterEventLabel(selectedFilter)
+        ).setUserId().getEvent());
+    }
+
+    private static String generateFilterEventLabel(Map<String, String> selectedFilter) {
+        List<String> filterList = new ArrayList<>();
+        for (Map.Entry<String, String> entry : selectedFilter.entrySet()) {
+            filterList.add(entry.getKey() + "=" + entry.getValue());
+        }
+        return TextUtils.join("&", filterList);
     }
 }

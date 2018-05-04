@@ -314,7 +314,7 @@ public abstract class SearchSectionFragment extends BaseDaggerFragment
             } else if (requestCode == getFilterRequestCode()) {
                 setFlagFilterHelper((FilterFlagSelectedModel) data.getParcelableExtra(RevampedDynamicFilterActivity.EXTRA_SELECTED_FLAG_FILTER));
                 setSelectedFilter((HashMap<String, String>) data.getSerializableExtra(RevampedDynamicFilterActivity.EXTRA_SELECTED_FILTERS));
-                UnifyTracking.eventSearchResultFilter(getScreenName(), getSelectedFilter());
+                SearchTracking.eventSearchResultFilter(getScreenName(), getSelectedFilter());
                 clearDataFilterSort();
                 showBottomBarNavigation(false);
                 updateDepartmentId(getFlagFilterHelper().getCategoryId());
@@ -567,5 +567,9 @@ public abstract class SearchSectionFragment extends BaseDaggerFragment
                 }
             }
         };
+    }
+
+    public void onBottomSheetHide() {
+        SearchTracking.eventSearchResultFilter(getScreenName(), getSelectedFilter());
     }
 }
