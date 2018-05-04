@@ -42,6 +42,7 @@ import com.tokopedia.seller.product.edit.data.source.cloud.model.catalogdata.Cat
 import com.tokopedia.seller.product.edit.view.activity.ProductAddCatalogPickerActivity;
 import com.tokopedia.seller.product.edit.view.activity.ProductAddDescriptionPickerActivity;
 import com.tokopedia.seller.product.edit.view.activity.ProductAddVideoActivity;
+import com.tokopedia.seller.product.edit.view.activity.ProductAddWholesaleActivity;
 import com.tokopedia.seller.product.edit.view.activity.ProductScoringDetailActivity;
 import com.tokopedia.seller.product.edit.view.dialog.ProductAddImageDialogFragment;
 import com.tokopedia.seller.product.edit.view.dialog.ProductAddImageDescriptionDialog;
@@ -62,6 +63,7 @@ import com.tokopedia.seller.product.edit.view.model.categoryrecomm.ProductCatego
 import com.tokopedia.seller.product.edit.view.model.edit.ProductPictureViewModel;
 import com.tokopedia.seller.product.edit.view.model.edit.ProductVideoViewModel;
 import com.tokopedia.seller.product.edit.view.model.edit.ProductViewModel;
+import com.tokopedia.seller.product.edit.view.model.edit.ProductWholesaleViewModel;
 import com.tokopedia.seller.product.edit.view.model.scoringproduct.DataScoringProductView;
 import com.tokopedia.seller.product.edit.view.model.scoringproduct.ValueIndicatorScoreModel;
 import com.tokopedia.seller.product.edit.view.model.upload.intdef.ProductStatus;
@@ -527,6 +529,15 @@ public abstract class BaseProductAddEditFragment<T extends ProductAddPresenter>
                 });
             }
         });
+    }
+
+    @Override
+    public void startProductAddWholesaleActivity() {
+        ArrayList<ProductWholesaleViewModel> productWholesaleViewModelList = (ArrayList<ProductWholesaleViewModel>) currentProductViewModel.getProductWholesale();
+        Intent intent = ProductAddWholesaleActivity.getIntent(getActivity(),
+                productWholesaleViewModelList,
+                currentProductViewModel.getProductPrice());
+        startActivityForResult(intent, ProductPriceViewHolder.REQUEST_CODE_GET_PRODUCT_WHOLESALE);
     }
 
     public void onChangeAllPriceVariantSubmit(int currencyType, double currencyValue) {

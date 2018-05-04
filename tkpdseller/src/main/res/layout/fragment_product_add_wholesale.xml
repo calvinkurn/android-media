@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_height="match_parent"
+    android:layout_width="match_parent"
+    android:background="@color/white"
+    android:orientation="vertical">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1">
+
+        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:tools="http://schemas.android.com/tools"
+            style="@style/LabelLayout.InnerExpandable"
+            android:orientation="vertical"
+            android:padding="@dimen/padding_med">
+
+            <TextView
+                style="@style/TextView.Micro"
+                android:text="@string/product_label_product_main_price" />
+
+            <TextView
+                android:id="@+id/text_main_price"
+                style="@style/TextView.TitleBig"
+                android:layout_marginTop="@dimen/dp_8"
+                tools:text="Rp 25.000" />
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/recycler_view_wholesale"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/dp_16">
+
+            </android.support.v7.widget.RecyclerView>
+
+            <TextView
+                android:id="@+id/text_view_add_wholesale"
+                style="@style/TextView.Small.Green"
+                android:layout_marginTop="@dimen/dp_15"
+                android:text="@string/product_label_add_wholesale" />
+
+        </LinearLayout>
+    </ScrollView>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:divider="@drawable/bg_line_separator"
+        android:showDividers="beginning"
+        android:background="@color/white">
+        <Button
+            android:id="@+id/button_save"
+            style="@style/Button.Submit.Green"
+            android:layout_marginLeft="@dimen/new_margin_med"
+            android:layout_marginRight="@dimen/new_margin_med"
+            android:layout_marginTop="@dimen/margin_small_sm"
+            android:layout_marginBottom="@dimen/margin_small_sm"
+            android:text="@string/label_variant_save" />
+    </LinearLayout>
+
+</LinearLayout>

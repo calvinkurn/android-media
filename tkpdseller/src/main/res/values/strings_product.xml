@@ -2,7 +2,7 @@
 <resources>
 
     <!-- Product add -->
-    <string name="product_label_wholesale">Grosir</string>
+    <string name="product_label_wholesale">Harga Grosir</string>
     <string name="product_label_po">PO</string>
     <string name="product_label_product_info">Info Produk</string>
     <string name="product_label_name">Nama Produk</string>
@@ -11,6 +11,8 @@
     <string name="product_label_category">Kategori</string>
     <string name="product_label_etalase">Etalase</string>
     <string name="product_label_choose">Pilih</string>
+    <string name="product_label_add">Tambah</string>
+    <string name="product_label_price">harga</string>
     <string name="product_label_product_recommendation">Rekomendasi Kategori</string>
     <string name="product_label_product_about">Tentang Produk</string>
     <string name="product_label_product_price">Harga Produk</string>
@@ -18,6 +20,7 @@
     <string name="product_label_wholesale_price">Harga Grosir</string>
     <string name="product_label_product_weight">Berat Produk</string>
     <string name="product_label_add_wholesale">+ Tambah Harga Grosir</string>
+    <string name="product_label_product_main_price">Harga Utama Produk</string>
     <string name="product_label_time_process">Waktu Proses</string>
     <string name="product_label_minimum_buy">Pemesanan Minimum</string>
     <string name="product_label_minimum_whole_sale">Jumlah Minimal</string>
@@ -34,6 +37,7 @@
     <string name="product_add_sku_hint">Tulis SKU Produk</string>
     <string name="product_add_sku_allowed_character">0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ./-</string>
     <string name="product_label_product_description">Deskripsi Produk</string>
+    <string name="product_label_product_wholesale">Grosir</string>
     <string name="product_label_enter_product_description">Tulis dengan lengkap dan jelas deskripsi produk Anda</string>
     <string name="product_label_upload_and_add_new_product">Upload dan Tambah Produk Baru</string>
     <string name="product_label_upload_this_product">Upload Produk Ini</string>

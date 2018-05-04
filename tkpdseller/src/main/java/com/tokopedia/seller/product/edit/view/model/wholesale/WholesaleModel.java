@@ -26,6 +26,7 @@ public class WholesaleModel implements Parcelable, ItemType {
      */
     private long qtyMin = 0;
     private double qtyPrice = 0;
+    private String status = "";
     private int level;
 
     public WholesaleModel(long quantityOne, double wholeSalePrice) {
@@ -37,6 +38,7 @@ public class WholesaleModel implements Parcelable, ItemType {
         this.qtyMin = in.readLong();
         this.qtyPrice = in.readDouble();
         this.level = in.readInt();
+        this.setStatus(in.readString());
     }
 
     public static WholesaleModel invalidWholeSaleModel() {
@@ -75,10 +77,19 @@ public class WholesaleModel implements Parcelable, ItemType {
         dest.writeLong(this.qtyMin);
         dest.writeDouble(this.qtyPrice);
         dest.writeInt(this.level);
+        dest.writeString(this.status);
     }
 
     @Override
     public int getType() {
         return TYPE;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
     }
 }
