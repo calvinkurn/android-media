@@ -43,6 +43,7 @@ import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.di.DaggerSessionComponent;
+import com.tokopedia.otp.cotp.domain.interactor.RequestOtpUseCase;
 import com.tokopedia.otp.cotp.view.activity.VerificationActivity;
 import com.tokopedia.otp.phoneverification.view.activity.PhoneVerificationActivationActivity;
 import com.tokopedia.session.R;
@@ -490,8 +491,9 @@ public class RegisterInitialFragment extends BaseDaggerFragment
 
     @Override
     public void onGoToSecurityQuestion(SecurityDomain securityDomain, String fullName, String email, String phone) {
-        Intent intent = VerificationActivity.getSecurityQuestionVerificationIntent(getActivity(),
-                        securityDomain.getUserCheckSecurity2(), email, phone);
+
+        Intent intent = VerificationActivity.getShowChooseVerificationMethodIntent(
+                getActivity(), RequestOtpUseCase.OTP_TYPE_SECURITY_QUESTION, phone, email);
         startActivityForResult(intent, REQUEST_SECURITY_QUESTION);
     }
 

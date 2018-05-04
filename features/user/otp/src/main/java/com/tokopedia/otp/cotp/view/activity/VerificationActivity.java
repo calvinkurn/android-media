@@ -9,13 +9,8 @@ import android.support.v4.app.FragmentTransaction;
 import android.text.TextUtils;
 import android.util.Log;
 
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
-import com.tokopedia.abstraction.common.data.model.storage.CacheManager;
-import com.tokopedia.core.database.CacheUtil;
-import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.otp.R;
 import com.tokopedia.otp.common.OTPAnalytics;
 import com.tokopedia.otp.common.di.DaggerOtpComponent;
@@ -26,15 +21,11 @@ import com.tokopedia.otp.cotp.view.fragment.ChooseVerificationMethodFragment;
 import com.tokopedia.otp.cotp.view.fragment.VerificationFragment;
 import com.tokopedia.otp.cotp.view.viewmodel.MethodItem;
 import com.tokopedia.otp.cotp.view.viewmodel.VerificationPassModel;
-
-import javax.inject.Inject;
+import com.tokopedia.otp.cotp.view.viewmodel.VerificationViewModel;
 
 
 /**
  * @author by nisie on 11/29/17.
- * <p>
- * Please build VerificationPassModel and put it to cachemanager with key PASS_MODEL.
- * This is to prevent TransactionTooLarge.
  */
 
 public class VerificationActivity extends BaseSimpleActivity {
@@ -43,23 +34,11 @@ public class VerificationActivity extends BaseSimpleActivity {
 
     public static final String PARAM_REQUEST_OTP_MODE = "fragmentType";
 
-    public static final String PARAM_IMAGE = "image";
-    public static final String PARAM_IMAGE_URL = "image_url";
-    public static final String PARAM_PHONE_NUMBER = "phone";
-    public static final String PARAM_EMAIL = "email";
-    public static final String PARAM_APP_SCREEN = "app_screen";
-    public static final String PARAM_MESSAGE = "message";
-
     private static final String FIRST_FRAGMENT_TAG = "first";
     private static final String CHOOSE_FRAGMENT_TAG = "choose";
-
-    public static final int TYPE_SQ_PHONE = 1;
-    public static final int TYPE_SQ_EMAIL = 2;
+    private static final String IS_SHOW_CHOOSE_METHOD = "is_show_choose_method";
 
     private VerificationPassModel passModel;
-
-    @Inject
-    CacheManager cacheManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -88,20 +67,18 @@ public class VerificationActivity extends BaseSimpleActivity {
 
         setupPassdata();
 
-        Bundle bundle = new Bundle();
-        if (getIntent().getExtras() != null)
-            bundle.putAll(getIntent().getExtras());
-
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
         Fragment fragment;
 
-        if (passModel.canUseOtherMethod() && passModel.isShowChooseMethod()) {
-            fragment = ChooseVerificationMethodFragment.createInstance(bundle);
+        if (passModel.canUseOtherMethod()
+                && getIntent().getExtras().getBoolean(IS_SHOW_CHOOSE_METHOD, true)) {
+            fragment = ChooseVerificationMethodFragment.createInstance(passModel);
             fragmentTransaction.add(R.id.parent_view, fragment, FIRST_FRAGMENT_TAG);
             fragmentTransaction.addToBackStack(FIRST_FRAGMENT_TAG);
         } else {
-            fragment =
-                    getDefaultFragment(getIntent().getExtras().getString(PARAM_REQUEST_OTP_MODE, ""), bundle);
+            fragment = getDefaultFragment(
+                    getIntent().getExtras().getString(PARAM_REQUEST_OTP_MODE, ""),
+                    passModel);
             fragmentTransaction.add(R.id.parent_view, fragment, FIRST_FRAGMENT_TAG);
             fragmentTransaction.addToBackStack(FIRST_FRAGMENT_TAG);
         }
@@ -111,12 +88,8 @@ public class VerificationActivity extends BaseSimpleActivity {
     }
 
     private void setupPassdata() {
-        Gson gson = new Gson();
-        VerificationPassModel tempPassModel = gson.fromJson(cacheManager
-                .get(VerificationActivity.PASS_MODEL), VerificationPassModel.class);
-
-        if (cacheManager != null
-                && tempPassModel != null) {
+        VerificationPassModel tempPassModel = getIntent().getParcelableExtra(PASS_MODEL);
+        if (tempPassModel != null) {
             passModel = tempPassModel;
         } else {
             Log.d(VerificationActivity.class.getSimpleName(), "Error no pass data");
@@ -124,7 +97,7 @@ public class VerificationActivity extends BaseSimpleActivity {
         }
     }
 
-    private Fragment getDefaultFragment(String mode, Bundle bundle) {
+    private Fragment getDefaultFragment(String mode, VerificationPassModel passModel) {
         Fragment fragment;
         switch (mode) {
             case RequestOtpUseCase.MODE_SMS: {
@@ -139,7 +112,7 @@ public class VerificationActivity extends BaseSimpleActivity {
                 break;
             }
             default: {
-                fragment = ChooseVerificationMethodFragment.createInstance(bundle);
+                fragment = ChooseVerificationMethodFragment.createInstance(passModel);
                 break;
             }
         }
@@ -156,31 +129,11 @@ public class VerificationActivity extends BaseSimpleActivity {
                 ChooseVerificationMethodFragment)) {
             FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
 
-            Fragment fragment = ChooseVerificationMethodFragment.createInstance(getIntent().getExtras());
+            Fragment fragment = ChooseVerificationMethodFragment.createInstance(passModel);
             fragmentTransaction.setCustomAnimations(R.animator.slide_in_left, 0, 0,
                     R.animator.slide_out_right);
             fragmentTransaction.add(R.id.parent_view, fragment, CHOOSE_FRAGMENT_TAG);
             fragmentTransaction.addToBackStack(CHOOSE_FRAGMENT_TAG);
-            fragmentTransaction.commit();
-        }
-    }
-
-    /**
-     * @param mode should be from {@link com.tokopedia.otp.cotp.domain.interactor.RequestOtpUseCase}
-     *             Do not use this for dynamic verification page. This should only be used for default page.
-     */
-    public void goToDefaultVerificationPage(String mode) {
-        if (!(getSupportFragmentManager().findFragmentById(R.id.parent_view) instanceof
-                VerificationFragment)) {
-
-            getSupportFragmentManager().popBackStack(FIRST_FRAGMENT_TAG, FragmentManager.POP_BACK_STACK_INCLUSIVE);
-            FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-
-            Fragment fragment = getDefaultFragment(mode, getIntent().getExtras());
-            fragmentTransaction.setCustomAnimations(R.animator.slide_in_left, 0, 0,
-                    R.animator.slide_out_right);
-            fragmentTransaction.add(R.id.parent_view, fragment, FIRST_FRAGMENT_TAG);
-            fragmentTransaction.addToBackStack(FIRST_FRAGMENT_TAG);
             fragmentTransaction.commit();
         }
     }
@@ -204,40 +157,52 @@ public class VerificationActivity extends BaseSimpleActivity {
         }
     }
 
-    private Bundle createSmsBundle(String phoneNumber, int otpType) {
-        Bundle bundle = new Bundle();
-        bundle.putString(PARAM_REQUEST_OTP_MODE, RequestOtpUseCase.MODE_SMS);
-        bundle.putInt(PARAM_IMAGE, R.drawable.ic_verification_sms);
-        bundle.putString(PARAM_PHONE_NUMBER, phoneNumber);
-        bundle.putString(PARAM_MESSAGE, createSmsMessage(phoneNumber, otpType));
-        if (otpType == RequestOtpUseCase.OTP_TYPE_REGISTER_PHONE_NUMBER) {
-            bundle.putString(PARAM_APP_SCREEN, OTPAnalytics.Screen.SCREEN_PHONE_NUMBER_VERIFICATION);
-        } else {
-            bundle.putString(PARAM_APP_SCREEN, OTPAnalytics.Screen.SCREEN_COTP_SMS);
-        }
-        return bundle;
+    private VerificationViewModel createSmsBundle(String phoneNumber, int otpType) {
+
+        return new VerificationViewModel(
+                passModel.getPhoneNumber(),
+                passModel.getEmail(),
+                passModel.getOtpType(),
+                RequestOtpUseCase.MODE_SMS,
+                R.drawable.ic_verification_sms,
+                createSmsMessage(phoneNumber, otpType),
+                OTPAnalytics.Screen.SCREEN_COTP_SMS,
+                passModel.canUseOtherMethod()
+        );
     }
 
-    private Bundle createEmailBundle(String email) {
-        Bundle bundle = new Bundle();
-        bundle.putString(PARAM_REQUEST_OTP_MODE, RequestOtpUseCase.MODE_EMAIL);
-        bundle.putInt(PARAM_IMAGE, R.drawable.ic_verification_email);
-        bundle.putString(PARAM_EMAIL, email);
-        bundle.putString(PARAM_MESSAGE, createEmailMessage(email));
-        bundle.putString(PARAM_APP_SCREEN, OTPAnalytics.Screen.SCREEN_COTP_EMAIL);
-        return bundle;
+    private VerificationViewModel createEmailBundle(String email) {
+
+        return new VerificationViewModel(
+                passModel.getPhoneNumber(),
+                passModel.getEmail(),
+                passModel.getOtpType(),
+                RequestOtpUseCase.MODE_EMAIL,
+                R.drawable.ic_verification_email,
+                createEmailMessage(email),
+                OTPAnalytics.Screen.SCREEN_COTP_EMAIL,
+                passModel.canUseOtherMethod()
+        );
     }
 
-    private Bundle createDynamicBundle(MethodItem methodItem) {
-        Bundle bundle = new Bundle();
-        bundle.putString(PARAM_REQUEST_OTP_MODE, methodItem.getModeName());
-        bundle.putInt(PARAM_IMAGE, 0);
-        bundle.putString(PARAM_IMAGE_URL, methodItem.getImageUrl());
-        bundle.putString(PARAM_PHONE_NUMBER, passModel.getPhoneNumber());
-        bundle.putString(PARAM_EMAIL, passModel.getEmail());
-        bundle.putString(PARAM_MESSAGE, methodItem.getVerificationText());
-        bundle.putString(PARAM_APP_SCREEN, getDynamicAppScreen(methodItem.getModeName()));
-        return bundle;
+    private VerificationViewModel createDynamicBundle(MethodItem methodItem) {
+
+
+        VerificationViewModel verificationViewModel = new VerificationViewModel(
+                passModel.getPhoneNumber(),
+                passModel.getEmail(),
+                passModel.getOtpType(),
+                methodItem.getModeName(),
+                methodItem.getImageUrl(),
+                methodItem.getVerificationText(),
+                getDynamicAppScreen(methodItem.getModeName()),
+                methodItem.isUsingPopUp(),
+                methodItem.getPopUpHeader(),
+                methodItem.getPopUpBody(),
+                passModel.canUseOtherMethod()
+        );
+
+        return verificationViewModel;
     }
 
     private String getDynamicAppScreen(String mode) {
@@ -282,81 +247,100 @@ public class VerificationActivity extends BaseSimpleActivity {
         }
     }
 
-    public static Intent getSecurityQuestionVerificationIntent(Context context, int
-            typeSecurityQuestion, String email, String phone) {
-
-        GlobalCacheManager cacheManager = new GlobalCacheManager();
-
-        VerificationPassModel passModel = new
-                VerificationPassModel(phone, email,
-                RequestOtpUseCase.OTP_TYPE_SECURITY_QUESTION,
-                typeSecurityQuestion == VerificationActivity.TYPE_SQ_PHONE,
-                typeSecurityQuestion == VerificationActivity.TYPE_SQ_PHONE
-        );
-        cacheManager.setKey(VerificationActivity.PASS_MODEL);
-        cacheManager.setValue(CacheUtil.convertModelToString(passModel,
-                new TypeToken<VerificationPassModel>() {
-                }.getType()));
-        cacheManager.store();
-
-        Intent intent = new Intent(context, VerificationActivity.class);
-        Bundle bundle = new Bundle();
-        if (typeSecurityQuestion == TYPE_SQ_PHONE) {
-            bundle.putString(PARAM_REQUEST_OTP_MODE, RequestOtpUseCase.MODE_SMS);
-        } else {
-            bundle.putString(PARAM_REQUEST_OTP_MODE, RequestOtpUseCase.MODE_EMAIL);
-        }
-        intent.putExtras(bundle);
-        return intent;
-    }
-
-    public static Intent getCallingIntent(Context context, String phoneNumber, int otpType,
-                                          boolean canUseOtherMethod, boolean showChooseMethod,
-                                          String requestMode) {
-        VerificationPassModel passModel = new VerificationPassModel(phoneNumber,
-                otpType,
-                canUseOtherMethod,
-                showChooseMethod);
-
-        GlobalCacheManager cacheManager = new GlobalCacheManager();
-        cacheManager.setKey(VerificationActivity.PASS_MODEL);
-        cacheManager.setValue(CacheUtil.convertModelToString(passModel,
-                new TypeToken<VerificationPassModel>() {
-                }.getType()));
-        cacheManager.store();
-
-        Intent intent = new Intent(context, VerificationActivity.class);
-        Bundle bundle = new Bundle();
-        bundle.putString(PARAM_REQUEST_OTP_MODE, requestMode);
-        intent.putExtras(bundle);
-        return intent;
-    }
-
     @Override
     protected Fragment getNewFragment() {
         return null;
     }
 
-    public static Intent getCallingIntent(Context context, String phoneNumber, String email,
-                                          int otpType, boolean canUseOtherMethod,
-                                          boolean showChooseMethod, String requestMode) {
-        VerificationPassModel passModel = new VerificationPassModel(phoneNumber,
-                email,
-                otpType,
-                canUseOtherMethod,
-                showChooseMethod);
+    /**
+     * Default method to go to choose verification method page.
+     *
+     * @param context     either activity context or fragment context
+     * @param otpType     use OTP_TYPE from @see{@link RequestOtpUseCase}. If you have new otp
+     *                    type, please add there.
+     * @param phoneNumber user phone number
+     * @param email       user email
+     * @return Intent
+     */
+    public static Intent getShowChooseVerificationMethodIntent(Context context,
+                                                               int otpType,
+                                                               String phoneNumber,
+                                                               String email) {
 
-        GlobalCacheManager cacheManager = new GlobalCacheManager();
-        cacheManager.setKey(VerificationActivity.PASS_MODEL);
-        cacheManager.setValue(CacheUtil.convertModelToString(passModel,
-                new TypeToken<VerificationPassModel>() {
-                }.getType()));
-        cacheManager.store();
+        VerificationPassModel passModel = new VerificationPassModel(
+                phoneNumber, email,
+                otpType, true
+        );
 
         Intent intent = new Intent(context, VerificationActivity.class);
         Bundle bundle = new Bundle();
-        bundle.putString(PARAM_REQUEST_OTP_MODE, requestMode);
+        bundle.putParcelable(PASS_MODEL, passModel);
+        bundle.putBoolean(IS_SHOW_CHOOSE_METHOD, true);
         intent.putExtras(bundle);
         return intent;
     }
+
+    /**
+     * Default method to immediately go to OTP Page.
+     * Default supported otp mode is only SMS and EMAIL. If you want to add other method, please
+     * add a case in {@link #getDefaultFragment}
+     *
+     * @param context            either activity context or fragment context
+     * @param phoneNumber        user phone number
+     * @param email              user email
+     * @param otpType            use OTP_TYPE from @see{@link RequestOtpUseCase}. If you have new otp
+     *                           type, please add there.
+     * @param canUseOtherMethod  set true if user can use other method for otp.
+     * @param defaultRequestMode default mode (sms/email).Use MODE
+     *                           from@see{@link RequestOtpUseCase}.
+     * @return Intent
+     */
+    public static Intent getCallingIntent(Context context, String phoneNumber, String email,
+                                          int otpType, boolean canUseOtherMethod,
+                                          String defaultRequestMode) {
+        VerificationPassModel passModel = new VerificationPassModel(
+                phoneNumber,
+                email,
+                otpType,
+                canUseOtherMethod);
+
+        Intent intent = new Intent(context, VerificationActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putParcelable(PASS_MODEL, passModel);
+        bundle.putString(PARAM_REQUEST_OTP_MODE, defaultRequestMode);
+        bundle.putBoolean(IS_SHOW_CHOOSE_METHOD, false);
+        intent.putExtras(bundle);
+        return intent;
+    }
+
+    /**
+     * Only use this method when you don't need OTP to email.
+     * Default supported otp mode is only SMS. If you want to add other method, please add a case
+     * in {@link #getDefaultFragment}
+     *
+     * @param context            either activity context or fragment context
+     * @param phoneNumber        user phone number
+     * @param otpType            use OTP_TYPE from @see{@link RequestOtpUseCase}. If you have new otp
+     *                           type, please add there.
+     * @param canUseOtherMethod  set true if user can use other method for otp.
+     * @param defaultRequestMode default mode (sms/etc).Use MODE from@see{@link RequestOtpUseCase}.
+     * @return Intent
+     */
+    public static Intent getCallingIntent(Context context, String phoneNumber, int otpType,
+                                          boolean canUseOtherMethod,
+                                          String defaultRequestMode) {
+        VerificationPassModel passModel = new VerificationPassModel(phoneNumber,
+                otpType,
+                canUseOtherMethod);
+
+        Intent intent = new Intent(context, VerificationActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putParcelable(PASS_MODEL, passModel);
+        bundle.putString(PARAM_REQUEST_OTP_MODE, defaultRequestMode);
+        bundle.putBoolean(IS_SHOW_CHOOSE_METHOD, false);
+        intent.putExtras(bundle);
+        return intent;
+    }
+
+
 }

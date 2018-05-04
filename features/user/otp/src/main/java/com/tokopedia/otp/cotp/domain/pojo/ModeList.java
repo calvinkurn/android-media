@@ -24,52 +24,49 @@ public class ModeList {
     @SerializedName("otp_list_img_url")
     @Expose
     private String otpListImgUrl;
+    @SerializedName("using_pop_up")
+    @Expose
+    private boolean usingPopUp;
+    @SerializedName("pop_up_header")
+    @Expose
+    private String popUpHeader;
+    @SerializedName("pop_up_body")
+    @Expose
+    private String popUpBody;
 
     public int getModeCode() {
         return modeCode;
-    }
-
-    public void setModeCode(int modeCode) {
-        this.modeCode = modeCode;
     }
 
     public String getModeText() {
         return modeText;
     }
 
-    public void setModeText(String modeText) {
-        this.modeText = modeText;
-    }
-
     public String getOtpListText() {
         return otpListText;
-    }
-
-    public void setOtpListText(String otpListText) {
-        this.otpListText = otpListText;
     }
 
     public String getAfterOtpListText() {
         return afterOtpListText;
     }
 
-    public void setAfterOtpListText(String afterOtpListText) {
-        this.afterOtpListText = afterOtpListText;
-    }
-
     public String getOtpListImgUrl() {
         return otpListImgUrl;
-    }
-
-    public void setOtpListImgUrl(String otpListImgUrl) {
-        this.otpListImgUrl = otpListImgUrl;
     }
 
     public String getNewAfterOtpListText() {
         return newAfterOtpListText;
     }
 
-    public void setNewAfterOtpListText(String newAfterOtpListText) {
-        this.newAfterOtpListText = newAfterOtpListText;
+    public boolean isUsingPopUp() {
+        return usingPopUp;
+    }
+
+    public String getPopUpHeader() {
+        return popUpHeader;
+    }
+
+    public String getPopUpBody() {
+        return popUpBody;
     }
 }

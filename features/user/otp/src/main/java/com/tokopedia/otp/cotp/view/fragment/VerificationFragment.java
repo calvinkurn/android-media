@@ -27,10 +27,8 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.google.gson.Gson;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
-import com.tokopedia.abstraction.common.data.model.storage.CacheManager;
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
@@ -40,22 +38,20 @@ import com.tokopedia.otp.OtpModuleRouter;
 import com.tokopedia.otp.R;
 import com.tokopedia.otp.common.OTPAnalytics;
 import com.tokopedia.otp.common.design.PinInputEditText;
+import com.tokopedia.otp.common.di.DaggerOtpComponent;
 import com.tokopedia.otp.common.di.OtpComponent;
 import com.tokopedia.otp.common.util.IncomingSmsReceiver;
 import com.tokopedia.otp.common.util.RequestPermissionUtil;
+import com.tokopedia.otp.cotp.di.DaggerCotpComponent;
 import com.tokopedia.otp.cotp.domain.interactor.RequestOtpUseCase;
 import com.tokopedia.otp.cotp.view.activity.VerificationActivity;
 import com.tokopedia.otp.cotp.view.presenter.VerificationPresenter;
 import com.tokopedia.otp.cotp.view.viewlistener.Verification;
-import com.tokopedia.otp.cotp.view.viewmodel.VerificationPassModel;
 import com.tokopedia.otp.cotp.view.viewmodel.VerificationViewModel;
 
 import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
-
-import com.tokopedia.otp.common.di.DaggerOtpComponent;
-import com.tokopedia.otp.cotp.di.DaggerCotpComponent;
 
 import permissions.dispatcher.NeedsPermission;
 import permissions.dispatcher.OnNeverAskAgain;
@@ -73,6 +69,7 @@ public class VerificationFragment extends BaseDaggerFragment implements Verifica
         IncomingSmsReceiver.ReceiveSMSListener {
 
     private static final String ARGS_DATA = "ARGS_DATA";
+    private static final String ARGS_PASS_DATA = "pass_data";
 
     private static final int COUNTDOWN_LENGTH = 90;
     private static final int INTERVAL = 1000;
@@ -81,7 +78,6 @@ public class VerificationFragment extends BaseDaggerFragment implements Verifica
     private static final String CACHE_OTP = "CACHE_OTP";
     private static final String HAS_TIMER = "has_timer";
 
-    private static final int REQUEST_VERIFY_PHONE_NUMBER = 243;
     private static final CharSequence VERIFICATION_CODE = "Kode verifikasi";
 
     ImageView icon;
@@ -101,13 +97,9 @@ public class VerificationFragment extends BaseDaggerFragment implements Verifica
     private boolean isRunningTimer = false;
     protected LocalCacheHandler cacheHandler;
     private VerificationViewModel viewModel;
-    private VerificationPassModel verificationPassModel;
 
     @Inject
     VerificationPresenter presenter;
-
-    @Inject
-    CacheManager cacheManager;
 
     @Inject
     IncomingSmsReceiver smsReceiver;
@@ -115,8 +107,10 @@ public class VerificationFragment extends BaseDaggerFragment implements Verifica
     @Inject
     OTPAnalytics analytics;
 
-    public static Fragment createInstance(Bundle bundle) {
+    public static Fragment createInstance(VerificationViewModel passModel) {
         Fragment fragment = new VerificationFragment();
+        Bundle bundle = new Bundle();
+        bundle.putParcelable(ARGS_PASS_DATA, passModel);
         fragment.setArguments(bundle);
         return fragment;
     }
@@ -139,18 +133,9 @@ public class VerificationFragment extends BaseDaggerFragment implements Verifica
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        if (getArguments() != null) {
-            viewModel = createViewModel(getArguments());
-        } else {
-            getActivity().finish();
-        }
-
-        Gson gson = new Gson();
-        VerificationPassModel tempPassModel = gson.fromJson(cacheManager
-                .get(VerificationActivity.PASS_MODEL), VerificationPassModel.class);
-
-        if (cacheManager != null && tempPassModel != null) {
-            verificationPassModel = tempPassModel;
+        if (getArguments() != null
+                && getArguments().getParcelable(ARGS_PASS_DATA) != null) {
+            viewModel = parseViewModel(getArguments());
         } else {
             getActivity().finish();
         }
@@ -162,9 +147,8 @@ public class VerificationFragment extends BaseDaggerFragment implements Verifica
     @Override
     public void onResume() {
         super.onResume();
-        if (getArguments() != null
-                && getArguments().getString(VerificationActivity.PARAM_REQUEST_OTP_MODE, "")
-                .equals(RequestOtpUseCase.MODE_SMS)) {
+        if (viewModel != null
+                && viewModel.getType().equals(RequestOtpUseCase.MODE_SMS)) {
             smsReceiver.registerSmsReceiver(getActivity());
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                 showCheckSMSPermission();
@@ -176,9 +160,8 @@ public class VerificationFragment extends BaseDaggerFragment implements Verifica
     public void onPause() {
         super.onPause();
         if (smsReceiver != null
-                && getArguments() != null
-                && getArguments().getString(VerificationActivity.PARAM_REQUEST_OTP_MODE, "")
-                .equals(RequestOtpUseCase.MODE_SMS)) {
+                && viewModel != null
+                && viewModel.getType().equals(RequestOtpUseCase.MODE_SMS)) {
             getActivity().unregisterReceiver(smsReceiver);
         }
     }
@@ -217,14 +200,9 @@ public class VerificationFragment extends BaseDaggerFragment implements Verifica
         }
     }
 
-    private VerificationViewModel createViewModel(Bundle bundle) {
-        return new VerificationViewModel(
-                bundle.getString(VerificationActivity.PARAM_REQUEST_OTP_MODE, ""),
-                bundle.getInt(VerificationActivity.PARAM_IMAGE, -1),
-                bundle.getString(VerificationActivity.PARAM_IMAGE_URL, ""),
-                bundle.getString(VerificationActivity.PARAM_MESSAGE, ""),
-                bundle.getString(VerificationActivity.PARAM_APP_SCREEN, "")
-        );
+    private VerificationViewModel parseViewModel(Bundle bundle) {
+        viewModel = bundle.getParcelable(ARGS_PASS_DATA);
+        return viewModel;
     }
 
     @Override
@@ -303,7 +281,8 @@ public class VerificationFragment extends BaseDaggerFragment implements Verifica
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
                 if (actionId == EditorInfo.IME_ACTION_DONE
                         && inputOtp.length() == MAX_OTP_LENGTH) {
-                    presenter.verifyOtp(verificationPassModel, inputOtp.getText().toString());
+                    presenter.verifyOtp(viewModel.getOtpType(), viewModel.getPhoneNumber(), viewModel
+                            .getEmail(), inputOtp.getText().toString());
                     return true;
                 }
                 return false;
@@ -313,7 +292,8 @@ public class VerificationFragment extends BaseDaggerFragment implements Verifica
         verifyButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                presenter.verifyOtp(verificationPassModel, inputOtp.getText().toString());
+                presenter.verifyOtp(viewModel.getOtpType(), viewModel.getPhoneNumber(), viewModel
+                        .getEmail(), inputOtp.getText().toString());
             }
         });
 
@@ -359,7 +339,7 @@ public class VerificationFragment extends BaseDaggerFragment implements Verifica
         }
         message.setText(MethodChecker.fromHtml(viewModel.getMessage()));
         verifyButton.setEnabled(false);
-        presenter.requestOTP(viewModel, verificationPassModel);
+        presenter.requestOTP(viewModel);
     }
 
     @Override
@@ -491,15 +471,15 @@ public class VerificationFragment extends BaseDaggerFragment implements Verifica
             public void onClick(View v) {
                 inputOtp.setText("");
                 removeErrorOtp();
-                presenter.requestOTP(viewModel, verificationPassModel);
+                presenter.requestOTP(viewModel);
             }
         });
 
         TextView useOtherMethod = finishCountdownView.findViewById(R.id.use_other_method);
         TextView or = finishCountdownView.findViewById(R.id.or);
 
-        if (verificationPassModel != null
-                && verificationPassModel.canUseOtherMethod()) {
+        if (viewModel != null
+                && viewModel.canUseOtherMethod()) {
             or.setVisibility(View.VISIBLE);
             useOtherMethod.setVisibility(View.VISIBLE);
 
@@ -527,8 +507,8 @@ public class VerificationFragment extends BaseDaggerFragment implements Verifica
         finishCountdownView.setVisibility(View.GONE);
         noCodeText.setVisibility(View.GONE);
 
-        if (verificationPassModel != null
-                && verificationPassModel.canUseOtherMethod()) {
+        if (viewModel != null
+                && viewModel.canUseOtherMethod()) {
             countdownText.setVisibility(View.VISIBLE);
             countdownText.setTextColor(MethodChecker.getColor(getActivity(), R.color.tkpd_main_green));
             countdownText.setText(R.string.login_with_other_method);
@@ -579,7 +559,7 @@ public class VerificationFragment extends BaseDaggerFragment implements Verifica
     }
 
     public void setData(Bundle bundle) {
-        viewModel = createViewModel(bundle);
+        viewModel = parseViewModel(bundle);
     }
 
     @Override
@@ -591,7 +571,8 @@ public class VerificationFragment extends BaseDaggerFragment implements Verifica
     public void processOTPSMS(String otpCode) {
         if (inputOtp != null)
             inputOtp.setText(otpCode);
-        presenter.verifyOtp(verificationPassModel, otpCode);
+        presenter.verifyOtp(viewModel.getOtpType(), viewModel.getPhoneNumber(), viewModel.getEmail(),
+                otpCode);
     }
 
     @NeedsPermission(Manifest.permission.READ_SMS)

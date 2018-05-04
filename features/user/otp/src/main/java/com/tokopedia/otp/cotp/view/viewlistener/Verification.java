@@ -40,8 +40,8 @@ public interface Verification {
 
     interface Presenter extends CustomerPresenter<Verification.View> {
 
-        void requestOTP(VerificationViewModel viewModel, VerificationPassModel passModel);
+        void requestOTP(VerificationViewModel viewModel);
 
-        void verifyOtp(VerificationPassModel phoneNumber, String otpCode);
+        void verifyOtp(int otpType, String phoneNumber, String email, String otpCode);
     }
 }
