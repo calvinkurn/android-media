@@ -6,13 +6,14 @@ import android.support.design.widget.TabLayout;
 
 import com.tokopedia.imagepicker.R;
 import com.tokopedia.imagepicker.picker.main.util.ImagePickerBuilder;
+import com.tokopedia.imagepicker.picker.main.util.ImagePickerTabTypeDef;
 
 /**
  * Created by hendry on 19/04/18.
  */
 
 public class TabLayoutImagePickerAdapter {
-    private @ImagePickerBuilder.ImagePickerTabTypeDef
+    private @ImagePickerTabTypeDef
     int[] tabTypeDef;
     private Context context;
     private TabLayout tabLayout;
@@ -25,7 +26,7 @@ public class TabLayoutImagePickerAdapter {
     public TabLayoutImagePickerAdapter(
             TabLayout tabLayout,
             Context context,
-            @ImagePickerBuilder.ImagePickerTabTypeDef int[] tabTypeDef) {
+            @ImagePickerTabTypeDef int[] tabTypeDef) {
         this.tabLayout = tabLayout;
         this.tabTypeDef = tabTypeDef;
         this.context = context;
@@ -38,17 +39,17 @@ public class TabLayoutImagePickerAdapter {
         for (int tabTypeDefItem : tabTypeDef) {
             TabLayout.Tab tab = tabLayout.newTab();
             switch (tabTypeDefItem) {
-                case ImagePickerBuilder.ImagePickerTabTypeDef.TYPE_GALLERY:
+                case ImagePickerTabTypeDef.TYPE_GALLERY:
                     tab.setText(context.getString(R.string.gallery));
                     unselectTab(tab);
                     tabLayout.addTab(tab);
                     break;
-                case ImagePickerBuilder.ImagePickerTabTypeDef.TYPE_CAMERA:
+                case ImagePickerTabTypeDef.TYPE_CAMERA:
                     tab.setText(context.getString(R.string.camera));
                     unselectTab(tab);
                     tabLayout.addTab(tab);
                     break;
-                case ImagePickerBuilder.ImagePickerTabTypeDef.TYPE_INSTAGRAM:
+                case ImagePickerTabTypeDef.TYPE_INSTAGRAM:
                     tab.setText(context.getString(R.string.instagram));
                     unselectTab(tab);
                     tabLayout.addTab(tab);

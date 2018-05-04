@@ -43,8 +43,8 @@ public class ImageUtils {
     private static final int IMAGE_WIDTH_HD = 1280;
     private static final int IMAGE_WIDTH_MIN = 480;
 
-    private static final int DEF_WIDTH_CMPR = 2048;
-    private static final int DEF_HEIGHT_CMPR = 2048;
+    public static final int DEF_WIDTH = 2048;
+    public static final int DEF_HEIGHT = 2048;
 
     private static final String TEMP_FILE_NAME = "temp.tmp";
     public static final String PNG_EXT = ".png";
@@ -114,7 +114,7 @@ public class ImageUtils {
      * without changing the original image
      */
     public static File writeImageToTkpdPath(@DirectoryDef String directoryDef, String galleryOrCameraPath) {
-        return writeImageToTkpdPath(directoryDef, convertLocalImagePathToBytes(galleryOrCameraPath, DEF_WIDTH_CMPR, DEF_HEIGHT_CMPR, 100),
+        return writeImageToTkpdPath(directoryDef, convertLocalImagePathToBytes(galleryOrCameraPath, DEF_WIDTH, DEF_HEIGHT, 100),
                 galleryOrCameraPath.endsWith(PNG));
     }
 
@@ -279,6 +279,28 @@ public class ImageUtils {
             }
         }
         return null;
+    }
+
+    public static int[] getWidthAndHeight(String filePath) {
+        return getWidthAndHeight(new File(filePath));
+    }
+
+    public static int[] getWidthAndHeight(File file) {
+        BitmapFactory.Options options = new BitmapFactory.Options();
+        options.inJustDecodeBounds = true;
+        BitmapFactory.decodeFile(file.getAbsolutePath(), options);
+        return new int[]{options.outWidth, options.outHeight};
+    }
+
+    public static int getMinResolution(String filePath) {
+        return getMinResolution(new File(filePath));
+    }
+
+    public static int getMinResolution(File file) {
+        BitmapFactory.Options options = new BitmapFactory.Options();
+        options.inJustDecodeBounds = true;
+        BitmapFactory.decodeFile(file.getAbsolutePath(), options);
+        return Math.min(options.outWidth, options.outHeight);
     }
 
     private static String getMimeType(Context context, Uri uri) {
