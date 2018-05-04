@@ -1,7 +1,10 @@
 package com.tokopedia.checkout.view.view.shipment.viewholder;
 
+import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.widget.CheckBox;
+import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -11,6 +14,7 @@ import android.widget.TextView;
 import com.tokopedia.checkout.R;
 import com.tokopedia.checkout.domain.datamodel.addressoptions.RecipientAddressModel;
 import com.tokopedia.checkout.view.view.shipment.viewmodel.ShipmentItem;
+import com.tokopedia.design.bottomsheet.BottomSheetView;
 import com.tokopedia.design.pickuppoint.PickupPointLayout;
 import com.tokopedia.showcase.ShowCaseObject;
 
@@ -63,8 +67,6 @@ public abstract class ShipmentItemViewHolder extends RecyclerView.ViewHolder {
     RelativeLayout rlExpandOtherProduct;
     TextView tvTextShipment;
     TextView chooseCourierButton;
-    TextView tvSelectedShipment;
-    LinearLayout llSelectedCourier;
     LinearLayout llShipmentOptionViewLayout;
     TextView tvCartSubTotal;
     ImageView ivDetailOptionChevron;
@@ -80,6 +82,20 @@ public abstract class ShipmentItemViewHolder extends RecyclerView.ViewHolder {
     TextView tvPromoText;
     TextView tvPromoPrice;
     RelativeLayout rlShipmentCost;
+    LinearLayout llSelectedCourier;
+    TextView tvCourierName;
+    TextView tvCourierPrice;
+    TextView tvChangeCourier;
+    LinearLayout llInsurance;
+    CheckBox cbInsurance;
+    ImageView imgInsuranceInfo;
+    LinearLayout llDropshipper;
+    CheckBox cbDropshipper;
+    ImageView imgDropshipperInfo;
+    LinearLayout llDropshipperInfo;
+    EditText etShipperName;
+    EditText etShipperPhone;
+    View vSeparatorMultipleProductSameStore;
 
     public ShipmentItemViewHolder(View itemView) {
         super(itemView);
@@ -123,8 +139,6 @@ public abstract class ShipmentItemViewHolder extends RecyclerView.ViewHolder {
         rlExpandOtherProduct = itemView.findViewById(R.id.rl_expand_other_product);
         tvTextShipment = itemView.findViewById(R.id.tv_text_shipment);
         chooseCourierButton = itemView.findViewById(R.id.choose_courier_button);
-        tvSelectedShipment = itemView.findViewById(R.id.tv_selected_shipment);
-        llSelectedCourier = itemView.findViewById(R.id.ll_selected_courier);
         llShipmentOptionViewLayout = itemView.findViewById(R.id.ll_shipment_option_view_layout);
         tvCartSubTotal = itemView.findViewById(R.id.tv_cart_sub_total);
         ivDetailOptionChevron = itemView.findViewById(R.id.iv_detail_option_chevron);
@@ -140,10 +154,37 @@ public abstract class ShipmentItemViewHolder extends RecyclerView.ViewHolder {
         tvPromoText = itemView.findViewById(R.id.tv_promo_text);
         tvPromoPrice = itemView.findViewById(R.id.tv_promo_price);
         rlShipmentCost = itemView.findViewById(R.id.rl_shipment_cost);
+        llSelectedCourier = itemView.findViewById(R.id.ll_selected_courier);
+        tvCourierName = itemView.findViewById(R.id.tv_courier_name);
+        tvCourierPrice = itemView.findViewById(R.id.tv_courier_price);
+        tvChangeCourier = itemView.findViewById(R.id.tv_change_courier);
+        llInsurance = itemView.findViewById(R.id.ll_insurance);
+        cbInsurance = itemView.findViewById(R.id.cb_insurance);
+        imgInsuranceInfo = itemView.findViewById(R.id.img_insurance_info);
+        llDropshipper = itemView.findViewById(R.id.ll_dropshipper);
+        cbDropshipper = itemView.findViewById(R.id.cb_dropshipper);
+        imgDropshipperInfo = itemView.findViewById(R.id.img_dropshipper_info);
+        llDropshipperInfo = itemView.findViewById(R.id.ll_dropshipper_info);
+        etShipperName = itemView.findViewById(R.id.et_shipper_name);
+        etShipperPhone = itemView.findViewById(R.id.et_shipper_phone);
+        vSeparatorMultipleProductSameStore = itemView.findViewById(R.id.v_separator_multiple_product_same_store);
     }
 
     protected abstract void bindViewHolder(ShipmentItem shipmentSingleAddressItem,
                                            RecipientAddressModel recipientAddressModel,
                                            ArrayList<ShowCaseObject> showCaseObjectList);
+
+    protected void showBottomSheet(Context context, String title, String message, int image) {
+        BottomSheetView bottomSheetView = new BottomSheetView(context);
+        bottomSheetView.renderBottomSheet(new BottomSheetView.BottomSheetField
+                .BottomSheetFieldBuilder()
+                .setTitle(title)
+                .setBody(message)
+                .setImg(image)
+                .build());
+
+        bottomSheetView.show();
+    }
+
 
 }

@@ -155,15 +155,18 @@
             style="@style/TextSmallNormalBlack70"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/dp_8"
             android:layout_marginTop="8dp"
             tools:text="Saya pesan warna merah yah min.. jangan sampai salah kirim barangnya gan!" />
 
     </LinearLayout>
 
     <View
+        android:id="@+id/v_separator_multiple_product_same_store"
         android:layout_width="match_parent"
         android:layout_height="0.5dp"
         android:layout_marginTop="16dp"
-        android:background="#e0e0e0" />
+        android:background="@color/grey_300"
+        android:visibility="gone" />
 
 </LinearLayout>

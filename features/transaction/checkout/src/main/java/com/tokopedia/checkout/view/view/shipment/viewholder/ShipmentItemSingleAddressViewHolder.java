@@ -8,6 +8,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CompoundButton;
 
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.checkout.R;
@@ -57,7 +58,7 @@ public class ShipmentItemSingleAddressViewHolder extends ShipmentItemViewHolder 
 
         bindFirstCartItem(cartItemModelList.remove(FIRST_ELEMENT));
         bindOtherCartItems(shipmentSingleAddressItem, cartItemModelList);
-        bindChooseCourier(shipmentSingleAddressItem, shipmentSingleAddressItem.getSelectedShipmentDetailData(),
+        bindCourier(shipmentSingleAddressItem, shipmentSingleAddressItem.getSelectedShipmentDetailData(),
                 recipientAddressModel);
         bindCostDetail(shipmentSingleAddressItem);
         bindError(shipmentSingleAddressItem);
@@ -90,6 +91,9 @@ public class ShipmentItemSingleAddressViewHolder extends ShipmentItemViewHolder 
 
     private void bindOtherCartItems(ShipmentSingleAddressItem shipmentItem, List<CartItemModel> cartItemModels) {
         if (cartItemModels != null) {
+            if (cartItemModels.size() > 0) {
+                vSeparatorMultipleProductSameStore.setVisibility(View.VISIBLE);
+            }
             rlExpandOtherProduct.setVisibility(cartItemModels.isEmpty() ?
                     View.GONE : View.VISIBLE);
             tvExpandOtherProduct.setText(getOtherCartItemsLabel(cartItemModels,
@@ -104,21 +108,85 @@ public class ShipmentItemSingleAddressViewHolder extends ShipmentItemViewHolder 
         }
     }
 
-    private void bindChooseCourier(ShipmentSingleAddressItem shipmentSingleAddressItem,
-                                   ShipmentDetailData shipmentDetailData,
-                                   RecipientAddressModel recipientAddressModel) {
+    private void bindCourier(ShipmentSingleAddressItem shipmentSingleAddressItem,
+                             final ShipmentDetailData shipmentDetailData,
+                             RecipientAddressModel recipientAddressModel) {
         chooseCourierButton.setOnClickListener(selectShippingOptionListener(getAdapterPosition(),
                 shipmentSingleAddressItem, recipientAddressModel));
-        llSelectedCourier.setOnClickListener(selectShippingOptionListener(getAdapterPosition(),
+        tvChangeCourier.setOnClickListener(selectShippingOptionListener(getAdapterPosition(),
                 shipmentSingleAddressItem, recipientAddressModel));
+        llInsurance.setOnClickListener(getInsuranceClickListener());
+        imgInsuranceInfo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                showBottomSheet(imgInsuranceInfo.getContext(),
+                        imgInsuranceInfo.getContext().getString(R.string.title_bottomsheet_insurance),
+                        shipmentDetailData.getSelectedCourier().getInsuranceUsedInfo(),
+                        R.drawable.ic_insurance);
+            }
+        });
+        cbInsurance.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean checked) {
+                shipmentDetailData.setUseInsurance(checked);
+            }
+        });
+
+        llDropshipper.setOnClickListener(getDropshipperClickListener());
+        imgDropshipperInfo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                showBottomSheet(imgDropshipperInfo.getContext(),
+                        imgDropshipperInfo.getContext().getString(R.string.label_dropshipper_new),
+                        imgDropshipperInfo.getContext().getString(R.string.label_dropshipper_info),
+                        R.drawable.ic_dropshipper);
+            }
+        });
+        cbDropshipper.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean checked) {
+                if (checked) {
+                    llDropshipperInfo.setVisibility(View.VISIBLE);
+                } else {
+                    llDropshipperInfo.setVisibility(View.GONE);
+                }
+                shipmentDetailData.setUseDropshipper(checked);
+            }
+        });
 
         boolean isCourierSelected = shipmentDetailData != null
                 && shipmentDetailData.getSelectedCourier() != null;
 
-        chooseCourierButton.setVisibility(isCourierSelected ? View.GONE : View.VISIBLE);
-        tvSelectedShipment.setText(isCourierSelected ?
-                shipmentDetailData.getSelectedCourier().getName() : "");
-        llSelectedCourier.setVisibility(isCourierSelected ? View.VISIBLE : View.GONE);
+        if (isCourierSelected) {
+            tvCourierName.setText(shipmentDetailData.getSelectedCourier().getName());
+            String courierPrice = CurrencyFormatUtil.convertPriceValueToIdrFormat(
+                    shipmentDetailData.getSelectedCourier().getDeliveryPrice(), true);
+            tvCourierPrice.setText(courierPrice);
+            llShipmentOptionViewLayout.setVisibility(View.GONE);
+            llSelectedCourier.setVisibility(View.VISIBLE);
+        } else {
+            llSelectedCourier.setVisibility(View.GONE);
+            llShipmentOptionViewLayout.setVisibility(View.VISIBLE);
+        }
+
+    }
+
+    private View.OnClickListener getInsuranceClickListener() {
+        return new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                cbInsurance.setChecked(!cbInsurance.isChecked());
+            }
+        };
+    }
+
+    private View.OnClickListener getDropshipperClickListener() {
+        return new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                cbDropshipper.setChecked(!cbDropshipper.isChecked());
+            }
+        };
     }
 
     private void bindCostDetail(ShipmentSingleAddressItem shipmentSingleAddressItem) {

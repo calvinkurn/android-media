@@ -40,13 +40,6 @@ import java.util.List;
 
 public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
-    // Adapter Data :
-    // - Promo
-    // - Promo Suggestion
-    // - Address (For single address)
-    // - Product List
-    // - Price summary
-
     private static final int ITEM_VIEW_RECIPIENT_ADDRESS = R.layout.view_item_shipment_recipient_address;
     private static final int ITEM_VIEW_SHIPMENT_COST = R.layout.view_item_shipment_cost_details;
     private static final int ITEM_VIEW_SHIPMENT_SINGLE_ADDRESS = R.layout.item_shipment_single;
