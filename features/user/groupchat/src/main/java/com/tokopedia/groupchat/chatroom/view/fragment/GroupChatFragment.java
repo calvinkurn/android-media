@@ -92,7 +92,7 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
     private View sendButton;
     private View divider;
     private View main, loading;
-    private GroupChatAdapter adapter;
+    private GroupChatAdapter adapteradapter;
     private LinearLayoutManager layoutManager;
     private View chatNotificationView;
     private View login;
@@ -374,7 +374,7 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
                             sprintSaleViewModel.getSprintSaleType()
                     );
 
-                    if (adapter.getItemAt(adapter.getItemCount() - 1) != null
+                    if (.getItemAt(adapter.getItemCount() - 1) != null
                             && !(adapter.getItemAt(adapter.getItemCount() - 1) instanceof
                             SprintSaleAnnouncementViewModel)) {
                         addIncomingMessage(sprintSaleAnnouncementViewModel);

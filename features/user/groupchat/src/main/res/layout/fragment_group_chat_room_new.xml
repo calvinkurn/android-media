@@ -105,7 +105,7 @@
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:scrollbars="vertical"
-            app:layout_constraintBottom_toTopOf="@+id/bottom"
+            app:layout_constraintBottom_toTopOf="@+id/pinned_message"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_weight="1"
             app:layout_constraintStart_toStartOf="parent"
@@ -132,7 +132,7 @@
             android:paddingTop="@dimen/space_small"
             android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="@+id/chat_list"
-            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintEnd_toEndOf="@id/pinned_message"
             app:layout_constraintStart_toStartOf="parent"
             tools:visibility="visible">
 
@@ -164,7 +164,7 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/dp_15"
             android:layout_marginRight="@dimen/dp_15"
-            app:layout_constraintBottom_toTopOf="@id/bottom"
+            app:layout_constraintBottom_toTopOf="@id/pinned_message"
             app:layout_constraintEnd_toEndOf="parent">
 
             <ImageView
@@ -193,6 +193,16 @@
                 tools:text="Berlangsung"/>
 
         </RelativeLayout>
+
+        <include
+            android:id="@+id/pinned_message"
+            layout="@layout/pinned_message_view_holder"
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            app:layout_constraintBottom_toTopOf="@id/bottom"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:visibility="gone"
+            />
 
     </android.support.constraint.ConstraintLayout>
 
