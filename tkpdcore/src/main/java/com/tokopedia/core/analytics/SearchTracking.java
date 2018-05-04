@@ -140,6 +140,9 @@ public class SearchTracking extends TrackingUtils {
     }
 
     private static String generateFilterEventLabel(Map<String, String> selectedFilter) {
+        if (selectedFilter == null) {
+            return "";
+        }
         List<String> filterList = new ArrayList<>();
         for (Map.Entry<String, String> entry : selectedFilter.entrySet()) {
             filterList.add(entry.getKey() + "=" + entry.getValue());
