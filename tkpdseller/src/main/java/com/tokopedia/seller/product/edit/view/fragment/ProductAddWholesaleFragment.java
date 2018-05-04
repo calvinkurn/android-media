@@ -76,7 +76,9 @@ public class ProductAddWholesaleFragment extends BaseDaggerFragment implements W
         recyclerViewWholesale.setLayoutManager(new LinearLayoutManager(recyclerViewWholesale.getContext(), LinearLayoutManager.VERTICAL, false));
         wholesaleAdapter = new WholesaleAddAdapter();
         wholesaleAdapter.setListener(this);
+        wholesaleAdapter.setHasStableIds(true);
         recyclerViewWholesale.setAdapter(wholesaleAdapter);
+        recyclerViewWholesale.setNestedScrollingEnabled(false);
 
         textMainPrice = root.findViewById(R.id.text_main_price);
 
@@ -84,9 +86,11 @@ public class ProductAddWholesaleFragment extends BaseDaggerFragment implements W
         textViewAddWholesale.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                WholesaleModel newWholesale = new WholesaleModel(2, productPrice - 1);
                 WholesaleModel lastItem = wholesaleAdapter.getLastItem();
-                WholesaleModel newWholesale = new WholesaleModel(lastItem.getQtyMin() + 1,
-                        lastItem.getQtyPrice() - 1);
+                if(lastItem!=null)
+                    newWholesale = new WholesaleModel(lastItem.getQtyMin() + 1, lastItem.getQtyPrice() - 1);
+
                 wholesaleAdapter.addItem(newWholesale);
                 updateWholesaleButton();
             }
@@ -116,7 +120,9 @@ public class ProductAddWholesaleFragment extends BaseDaggerFragment implements W
     }
 
     public void setWholesalePrice(List<ProductWholesaleViewModel> wholesalePrice) {
-        wholesaleAdapter.addAllWholeSalePrice(wholesalePrice);
+        if(wholesalePrice!=null)
+            wholesaleAdapter.addAllWholeSalePrice(wholesalePrice);
+
         updateWholesaleButton();
     }
 
@@ -147,6 +153,7 @@ public class ProductAddWholesaleFragment extends BaseDaggerFragment implements W
                         public void onClick(DialogInterface dialogInterface, int i) {
                             wholesaleAdapter.removeAll();
                             wholesaleAdapter.notifyDataSetChanged();
+                            notifySizeChanged(wholesaleAdapter.getItemSize());
                         }
                     }).setNegativeButton(getString(R.string.label_cancel), new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface arg0, int arg1) {
