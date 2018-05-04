@@ -166,6 +166,7 @@ import com.tokopedia.topads.dashboard.di.component.DaggerTopAdsComponent;
 import com.tokopedia.topads.dashboard.di.component.TopAdsComponent;
 import com.tokopedia.topads.dashboard.di.module.TopAdsModule;
 import com.tokopedia.topads.dashboard.domain.interactor.GetDepositTopAdsUseCase;
+import com.tokopedia.topads.dashboard.view.activity.TopAdsCheckProductPromoActivity;
 import com.tokopedia.topads.dashboard.view.activity.TopAdsDashboardActivity;
 import com.tokopedia.topads.dashboard.view.activity.TopAdsGroupNewPromoActivity;
 import com.tokopedia.transaction.bcaoneklik.activity.ListPaymentTypeActivity;
@@ -1051,8 +1052,8 @@ public abstract class SellerRouterApplication extends MainApplication
     }
 
     @Override
-    public void goToCreateTopadsPromo(Context activity, String productId, String source) {
-        Intent intent = TopAdsGroupNewPromoActivity.createIntent(activity, productId, source);
+    public void goToCreateTopadsPromo(Context activity, String productId, String shopId, String source) {
+        Intent intent = TopAdsCheckProductPromoActivity.createIntent(activity, shopId, productId, source);
         activity.startActivity(intent);
     }
 
@@ -1303,6 +1304,11 @@ public abstract class SellerRouterApplication extends MainApplication
     }
 
     @Override
+    public void gotoTopAdsDashboard(Context context){
+        startActivity(TopAdsDashboardActivity.getCallingIntent(context));
+    }
+    
+    @Override            
     public void goToApplinkActivity(Context context, String applink) {
         DeepLinkDelegate deepLinkDelegate = DeepLinkHandlerActivity.getDelegateInstance();
         Intent intent = new Intent(context, DeepLinkHandlerActivity.class);
@@ -1321,6 +1327,5 @@ public abstract class SellerRouterApplication extends MainApplication
         intent.setData(Uri.parse(applink));
 
         return intent;
-
     }
 }

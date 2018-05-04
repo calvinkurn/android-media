@@ -67,7 +67,9 @@ public class TopAdsGroupAdListPresenterImpl extends TopAdsAdListPresenterImpl<Gr
             public void onError(Throwable e) {}
 
             @Override
-            public void onNext(Void aVoid) {}
+            public void onNext(Void aVoid) {
+                //do nothing
+            }
         });
     }
 

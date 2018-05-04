@@ -27,6 +27,7 @@ import com.tokopedia.abstraction.common.data.model.storage.CacheManager;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.ApplinkRouter;
 import com.tokopedia.cacheapi.domain.interactor.CacheApiClearAllUseCase;
+import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.UnifyTracking;
@@ -236,6 +237,7 @@ import com.tokopedia.groupchat.common.analytics.GroupChatAnalytics;
 import com.tokopedia.tokocash.WalletUserSession;
 import com.tokopedia.tokocash.di.DaggerTokoCashComponent;
 import com.tokopedia.tokocash.di.TokoCashComponent;
+import com.tokopedia.topads.sourcetagging.util.TopAdsAppLinkUtil;
 import com.tokopedia.transaction.bcaoneklik.activity.ListPaymentTypeActivity;
 import com.tokopedia.transaction.purchase.detail.activity.OrderDetailActivity;
 import com.tokopedia.transaction.purchase.detail.activity.OrderHistoryActivity;
@@ -1807,14 +1809,16 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    public void goToCreateTopadsPromo(Context context,String productId, String source) {
+    public void goToCreateTopadsPromo(Context context, String productId, String shopId, String source) {
+
         Intent topadsIntent = context.getPackageManager()
                 .getLaunchIntentForPackage(DrawerBuyerHelper.TOP_SELLER_APPLICATION_PACKAGE);
-
         if (topadsIntent != null) {
-            goToApplinkActivity(context, ApplinkConst.SellerApp.TOPADS_DASHBOARD);
+            goToApplinkActivity(context, TopAdsAppLinkUtil.createAppLink(userSession.getUserId(),
+                    productId, shopId, source));
         } else {
             goToCreateMerchantRedirect(context);
+            UnifyTracking.eventTopAdsSwitcher(AppEventTracking.Category.SWITCHER);
         }
     }
 
@@ -1887,5 +1891,17 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @Override
     public String getDesktopLinkGroupChat() {
         return ChatroomUrl.DESKTOP_URL;
+    }
+
+    @Override
+    public void gotoTopAdsDashboard(Context context){
+        Intent topadsIntent = context.getPackageManager()
+                .getLaunchIntentForPackage(DrawerBuyerHelper.TOP_SELLER_APPLICATION_PACKAGE);
+
+        if (topadsIntent != null) {
+            goToApplinkActivity(context, ApplinkConst.SellerApp.TOPADS_DASHBOARD);
+        } else {
+            goToCreateMerchantRedirect(context);
+        }
     }
 }

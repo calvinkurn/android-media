@@ -84,7 +84,9 @@ public class TopAdsDashboardShopPresenterImpl extends TopAdsDashboardPresenterIm
                     public void onError(Throwable e) {}
 
                     @Override
-                    public void onNext(Void aVoid) {}
+                    public void onNext(Void aVoid) {
+                        //do nothing
+                    }
                 });
     }
 
