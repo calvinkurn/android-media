@@ -26,7 +26,7 @@ public class FlightCancellationDetail implements Parcelable {
     }
 
     protected FlightCancellationDetail(Parcel in) {
-        refundId = in.readInt();
+        refundId = in.readLong();
         createTime = in.readString();
         estimatedRefund = in.readString();
         estimatedRefundNumeric = in.readLong();

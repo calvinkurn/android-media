@@ -72,11 +72,13 @@ public class FlightOrderEntityToCancellationListMapper {
 
     private List<FlightOrderJourney> transform(List<JourneyEntity> journeys, List<CancellationDetailsAttribute> details) {
         List<FlightOrderJourney> flightOrderJourneyList = new ArrayList<>();
+        List<Long> journeyIds = new ArrayList<>();
 
         for (CancellationDetailsAttribute cancellationItem : details) {
             for (JourneyEntity item : journeys) {
-                if (cancellationItem.getJourneyId() == item.getId()) {
+                if (cancellationItem.getJourneyId() == item.getId() && !journeyIds.contains(item.getId())) {
                     flightOrderJourneyList.add(flightOrderJourneyMapper.transform(item));
+                    journeyIds.add(item.getId());
                 }
             }
         }
@@ -97,6 +99,7 @@ public class FlightOrderEntityToCancellationListMapper {
                     passengerItem.setFirstName(item.getFirstName());
                     passengerItem.setLastName(item.getLastName());
                     passengerItem.setAmenities(flightOrderPassengerViewModelMapper.transformAmenities(item.getAmenities()));
+                    passengerItem.setJourneyId(cancellationItem.getJourneyId());
 
                     passengerViewModelList.add(passengerItem);
                 }

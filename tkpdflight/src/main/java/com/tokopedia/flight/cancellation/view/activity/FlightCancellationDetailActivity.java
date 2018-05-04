@@ -11,12 +11,15 @@ import com.tokopedia.flight.FlightModuleRouter;
 import com.tokopedia.flight.R;
 import com.tokopedia.flight.cancellation.di.DaggerFlightCancellationComponent;
 import com.tokopedia.flight.cancellation.di.FlightCancellationComponent;
+import com.tokopedia.flight.cancellation.view.fragment.FlightCancellationDetailFragment;
 import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationListViewModel;
 import com.tokopedia.flight.common.view.BaseFlightActivity;
 
 import static com.tokopedia.flight.cancellation.view.fragment.FlightCancellationDetailFragment.EXTRA_CANCELLATION_DETAIL_PASS_DATA;
 
 public class FlightCancellationDetailActivity extends BaseFlightActivity implements HasComponent<FlightCancellationComponent> {
+
+    FlightCancellationListViewModel flightCancellationListViewModel;
 
     public static Intent createIntent(Context context,
                                       FlightCancellationListViewModel cancellationListViewModel) {
@@ -28,6 +31,9 @@ public class FlightCancellationDetailActivity extends BaseFlightActivity impleme
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        flightCancellationListViewModel = getIntent()
+                .getExtras().getParcelable(EXTRA_CANCELLATION_DETAIL_PASS_DATA);
 
         setupToolbar();
     }
@@ -45,13 +51,12 @@ public class FlightCancellationDetailActivity extends BaseFlightActivity impleme
 
     @Override
     protected Fragment getNewFragment() {
-        return null;
+        flightCancellationListViewModel = getIntent()
+                .getExtras().getParcelable(EXTRA_CANCELLATION_DETAIL_PASS_DATA);
+        return new FlightCancellationDetailFragment().createInstance(flightCancellationListViewModel);
     }
 
     private void setupToolbar() {
-        FlightCancellationListViewModel flightCancellationListViewModel = getIntent()
-                .getExtras().getParcelable(EXTRA_CANCELLATION_DETAIL_PASS_DATA);
-
         toolbar.setContentInsetStartWithNavigation(0);
         toolbar.setSubtitleTextColor(ContextCompat.getColor(this, R.color.grey_500));
         String title = getString(R.string.flight_cancellation_list_title);

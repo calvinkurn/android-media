@@ -74,6 +74,8 @@ public class FlightDetailOrderFragment extends BaseDaggerFragment implements Fli
     private static final String RESEND_ETICKET_DIALOG_TAG = "resend_eticket_dialog_tag";
     public static final String EXTRA_ORDER_DETAIL_PASS = "EXTRA_ORDER_DETAIL_PASS";
     private static final String CANCEL_SOLUTION_ID = "1378";
+    private static final float JOURNEY_TITLE_FONT_SIZE = 18;
+
     @Inject
     FlightDetailOrderPresenter flightDetailOrderPresenter;
     private TextView orderId;
@@ -83,7 +85,6 @@ public class FlightDetailOrderFragment extends BaseDaggerFragment implements Fli
     private TextView orderStatus;
     private TextView transactionDate;
     private View layoutExpendablePassenger;
-    private TextView titleExpendablePassenger;
     private AppCompatImageView imageExpendablePassenger;
     private VerticalRecyclerView recyclerViewFlight;
     private VerticalRecyclerView recyclerViewPassenger;
@@ -148,7 +149,6 @@ public class FlightDetailOrderFragment extends BaseDaggerFragment implements Fli
         orderStatus = view.findViewById(R.id.status_ticket);
         transactionDate = view.findViewById(R.id.transaction_date);
         layoutExpendablePassenger = view.findViewById(R.id.layout_expendable_passenger);
-        titleExpendablePassenger = view.findViewById(R.id.title_expendable_passenger);
         imageExpendablePassenger = view.findViewById(R.id.image_expendable_passenger);
         recyclerViewFlight = view.findViewById(R.id.recycler_view_flight);
         recyclerViewPassenger = view.findViewById(R.id.recycler_view_data_passenger);
@@ -174,7 +174,7 @@ public class FlightDetailOrderFragment extends BaseDaggerFragment implements Fli
 
         setViewClickListener();
 
-        FlightDetailOrderTypeFactory flightDetailOrderTypeFactory = new FlightDetailOrderTypeFactory(this);
+        FlightDetailOrderTypeFactory flightDetailOrderTypeFactory = new FlightDetailOrderTypeFactory(this, JOURNEY_TITLE_FONT_SIZE);
         flightDetailOrderAdapter = new FlightDetailOrderAdapter(flightDetailOrderTypeFactory);
         FlightBookingReviewPassengerAdapterTypeFactory flightBookingReviewPassengerAdapterTypeFactory = new FlightBookingReviewPassengerAdapterTypeFactory();
         flightBookingReviewPassengerAdapter = new FlightBookingReviewPassengerAdapter(flightBookingReviewPassengerAdapterTypeFactory);

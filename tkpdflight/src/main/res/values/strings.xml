@@ -391,4 +391,5 @@
     <string name="flight_cancellation_list_title">Detail Pembatalan</string>
     <string name="flight_cancellation_list_id" formatted="false">Cancellation ID: %s</string>
     <string name="flight_cancellation_list_created_time">Tanggal Pembatalan: %s</string>
+    <string name="flight_cancellation_cancelled_passegner_detail">Detail Penumpang yang Dibatalkan</string>
 </resources>
