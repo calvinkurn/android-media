@@ -33,6 +33,8 @@ import com.tokopedia.core.drawer2.view.databinder.DrawerSellerHeaderDataBinder;
 import com.tokopedia.core.gcm.NotificationReceivedListener;
 import com.tokopedia.core.router.digitalmodule.IDigitalModuleRouter;
 import com.tokopedia.core.router.loyaltytokopoint.ILoyaltyRouter;
+import com.tokopedia.core.router.wallet.IWalletRouter;
+import com.tokopedia.core.router.wallet.TokoCashCoreRouter;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.SessionHandler;
@@ -79,8 +81,8 @@ public abstract class DrawerPresenterActivity<T> extends BasePresenterActivity
     }
 
     protected void registerBroadcastReceiverHeaderTokoCashPending() {
-        if (getApplication() instanceof IDigitalModuleRouter) {
-            broadcastReceiverPendingTokocash = ((IDigitalModuleRouter) getApplication()).getBroadcastReceiverTokocashPending();
+        if (getApplication() instanceof TokoCashCoreRouter) {
+            broadcastReceiverPendingTokocash = ((TokoCashCoreRouter) getApplication()).getBroadcastReceiverTokocashPending();
             registerReceiver(
                     broadcastReceiverPendingTokocash,
                     new IntentFilter(TokocashPendingDataBroadcastReceiverConstant.INTENT_ACTION_MAIN_APP)

@@ -2,8 +2,8 @@ package com.tokopedia.tokocash.historytokocash.presentation;
 
 import android.content.Context;
 
-import com.tokopedia.core.router.digitalmodule.sellermodule.PeriodRangeModelCore;
 import com.tokopedia.tokocash.R;
+import com.tokopedia.tokocash.historytokocash.presentation.model.PeriodRangeModelData;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -15,8 +15,8 @@ import java.util.List;
 
 public class DatePickerTokoCashUtil {
 
-    public static List<PeriodRangeModelCore> getPeriodRangeModel(Context context) {
-        List<PeriodRangeModelCore> periodRangeModelCoreList = new ArrayList<>();
+    public static List<PeriodRangeModelData> getPeriodRangeModel(Context context) {
+        List<PeriodRangeModelData> periodRangeModelCoreList = new ArrayList<>();
         Calendar startCalendar = Calendar.getInstance();
         Calendar endCalendar = Calendar.getInstance();
         endCalendar.add(Calendar.DATE, 0);
@@ -49,7 +49,7 @@ public class DatePickerTokoCashUtil {
         return periodRangeModelCoreList;
     }
 
-    private static PeriodRangeModelCore convert(long startDate, long endDate, String label) {
-        return new PeriodRangeModelCore(startDate, endDate, label);
+    private static PeriodRangeModelData convert(long startDate, long endDate, String label) {
+        return new PeriodRangeModelData(startDate, endDate, label);
     }
 }
