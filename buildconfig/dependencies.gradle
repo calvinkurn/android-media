@@ -257,7 +257,8 @@ ext {
             cacheApi        : ":libraries:cache_api",
             useCase         : ":libraries:use_case",
             userSession     : ":libraries:user_session",
-            config          : ":libraries:global_config"
+            config          : ":libraries:global_config",
+            network          : ":libraries:network"
     ]
 
 }

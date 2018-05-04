@@ -1,6 +1,6 @@
 package com.tokopedia.network.exception;
 
-import com.tokopedia.abstraction.common.network.constant.ErrorNetMessage;
+import com.tokopedia.network.constant.ErrorNetMessage;
 
 import java.io.IOException;
 

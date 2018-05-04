@@ -2,11 +2,10 @@ package com.tokopedia.network.interceptor;
 
 import android.content.Context;
 
-import com.tokopedia.abstraction.AbstractionRouter;
-import com.tokopedia.abstraction.common.data.model.session.UserSession;
-import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
-import com.tokopedia.abstraction.common.utils.network.AuthUtil;
-import com.tokopedia.abstraction.common.utils.view.MethodChecker;
+import com.tokopedia.network.NetworkRouter;
+import com.tokopedia.network.utils.AuthUtil;
+import com.tokopedia.network.utils.CommonUtils;
+import com.tokopedia.user.session.UserSession;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -17,8 +16,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
-
-import javax.inject.Inject;
 
 import okhttp3.Request;
 import okhttp3.Response;
@@ -60,23 +57,25 @@ public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
     private static final String REQUEST_PARAM_REFRESH_TOKEN = "refresh_token";
 
     private Context context;
-    private AbstractionRouter abstractionRouter;
     protected UserSession userSession;
     protected String authKey;
+    private NetworkRouter networkRouter;
 
-    public TkpdAuthInterceptor(@ApplicationContext Context context,
-                               AbstractionRouter abstractionRouter,
+    public TkpdAuthInterceptor(Context context,
+                               NetworkRouter networkRouter,
                                UserSession userSession) {
-        this(context, abstractionRouter, userSession, AuthUtil.KEY.KEY_WSV4);
+        this.context = context;
+        this.networkRouter = networkRouter;
+        this.userSession = userSession;
+        this.authKey = AuthUtil.KEY.KEY_WSV4_NEW;
     }
 
-    @Inject
-    public TkpdAuthInterceptor(@ApplicationContext Context context,
-                               AbstractionRouter abstractionRouter,
+    public TkpdAuthInterceptor(Context context,
+                               NetworkRouter networkRouter,
                                UserSession userSession,
                                String authKey) {
         this.context = context;
-        this.abstractionRouter = abstractionRouter;
+        this.networkRouter = networkRouter;
         this.userSession = userSession;
         this.authKey = authKey;
     }
@@ -108,7 +107,7 @@ public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
     protected void checkResponse(String string, Response response) {
         String bodyResponse = string;
 
-        if (isOnBetaServer(response)) abstractionRouter.showForceHockeyAppDialog();
+        if (isOnBetaServer(response)) networkRouter.showForceHockeyAppDialog();
 
         if (isMaintenance(bodyResponse)) {
             showMaintenancePage();
@@ -131,7 +130,7 @@ public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
     }
 
     protected boolean isTimezoneNotAutomatic() {
-        return MethodChecker.isTimezoneNotAutomatic(context);
+        return CommonUtils.isTimezoneNotAutomatic(context);
     }
 
     protected boolean isForbiddenRequest(String bodyResponse, int code) {
@@ -295,24 +294,20 @@ public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
         return builder.build();
     }
 
-    @Deprecated
     protected void showTimezoneErrorSnackbar() {
-        abstractionRouter.showTimezoneErrorSnackbar();
+        networkRouter.showTimezoneErrorSnackbar();
     }
 
-    @Deprecated
     protected void showMaintenancePage() {
-        abstractionRouter.showMaintenancePage();
+        networkRouter.showMaintenancePage();
     }
 
-    @Deprecated
     protected void showForceLogoutDialog(Response response) {
-        abstractionRouter.showForceLogoutDialog(response);
+        networkRouter.showForceLogoutDialog(response);
     }
 
-    @Deprecated
     protected void showServerError(Response response) {
-        abstractionRouter.showServerError(response);
+        networkRouter.showServerError(response);
     }
 
     protected Boolean isNeedGcmUpdate(Response response) {
@@ -352,12 +347,11 @@ public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
     }
 
     protected void refreshTokenAndGcmUpdate() throws IOException {
-        abstractionRouter.refreshToken();
-        abstractionRouter.gcmUpdate();
+       // TODO
     }
 
     protected void refreshToken() throws IOException {
-        abstractionRouter.refreshToken();
+        // TODO
     }
 
     private Request recreateRequestWithNewAccessToken(Chain chain) {
@@ -385,7 +379,7 @@ public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
                 Request newest = recreateRequestWithNewAccessToken(chain);
                 return checkShowForceLogout(chain, newest);
             } else if (isInvalidGrantWhenRefreshToken(finalRequest, response)) {
-                abstractionRouter.logInvalidGrant(response);
+                networkRouter.logInvalidGrant(response);
                 return response;
             } else {
                 return response;
@@ -408,7 +402,7 @@ public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
     private Response checkShowForceLogout(Chain chain, Request newestRequest) throws IOException {
         Response response = chain.proceed(newestRequest);
         if (isUnauthorized(newestRequest, response) || isNeedGcmUpdate(response)) {
-            abstractionRouter.showForceLogoutDialog(response);
+            networkRouter.showForceLogoutDialog(response);
         }
         return response;
     }

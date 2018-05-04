@@ -1,6 +1,10 @@
-package com.tokopedia.network;
+package com.tokopedia.network.utils;
 
-import com.tokopedia.abstraction.common.network.interceptor.TkpdBaseInterceptor;
+import android.content.Context;
+
+import com.readystatesoftware.chuck.ChuckInterceptor;
+import com.tokopedia.config.GlobalConfig;
+import com.tokopedia.network.interceptor.TkpdBaseInterceptor;
 
 import java.util.concurrent.TimeUnit;
 
@@ -14,9 +18,11 @@ import okhttp3.OkHttpClient;
 public class TkpdOkHttpBuilder {
 
     private OkHttpClient.Builder builder;
+    private Context context;
 
-    public TkpdOkHttpBuilder(OkHttpClient.Builder builder) {
+    public TkpdOkHttpBuilder(Context context, OkHttpClient.Builder builder) {
         this.builder = builder;
+        this.context = context;
     }
 
     public OkHttpClient.Builder getBuilder() {
@@ -28,19 +34,10 @@ public class TkpdOkHttpBuilder {
         return this;
     }
 
-    public TkpdOkHttpBuilder addNetworkInterceptor(Interceptor interceptor) {
-        builder.addNetworkInterceptor(interceptor);
-        return this;
-    }
-
     public TkpdOkHttpBuilder addDebugInterceptor() {
-//        if (GlobalConfig.isAllowDebuggingTools()) {
-//            LocalCacheHandler cache = new LocalCacheHandler(MainApplication.getAppContext(), DeveloperOptions.CHUCK_ENABLED);
-//            Boolean allowLogOnNotification = cache.getBoolean(DeveloperOptions.IS_CHUCK_ENABLED, false);
-//            this.addInterceptor(new ChuckInterceptor(MainApplication.getAppContext())
-//                    .showNotification(allowLogOnNotification));
-//            this.addInterceptor(new DebugInterceptor());
-//        }
+        if (GlobalConfig.isAllowDebuggingTools()) {
+            this.addInterceptor(new ChuckInterceptor(context));
+        }
 
         return this;
     }
@@ -59,6 +56,7 @@ public class TkpdOkHttpBuilder {
     }
 
     public OkHttpClient build() {
+        addDebugInterceptor();
         return builder.build();
     }
 }

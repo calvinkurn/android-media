@@ -1,4 +1,4 @@
-package com.tokopedia.network;
+package com.tokopedia.network.utils;
 
 /**
  * Created by ricoharisin on 2/28/17.
@@ -10,6 +10,7 @@ public class OkHttpRetryPolicy {
     public int writeTimeout;
     public int connectTimeout;
     public int maxRetryAttempt;
+
 
     public OkHttpRetryPolicy(int readTimeout, int writeTimeout, int connectTimeout, int maxRetryAttempt) {
         this.readTimeout = readTimeout;
@@ -27,4 +28,11 @@ public class OkHttpRetryPolicy {
         return new OkHttpRetryPolicy(45, 45, 45, 0);
     }
 
+    public static OkHttpRetryPolicy createdOkHttpRetryPolicyQuickTimeOut() {
+        return new OkHttpRetryPolicy(1, 1, 1, 0);
+    }
+
+    public static OkHttpRetryPolicy createdOkHttpRetryPolicyQuickNoRetry() {
+        return new OkHttpRetryPolicy(45, 45, 45, 0);
+    }
 }
