@@ -2,6 +2,8 @@ package com.tokopedia.discovery.autocomplete;
 
 import android.support.annotation.LayoutRes;
 import android.support.v4.app.FragmentManager;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
@@ -13,6 +15,9 @@ import com.tokopedia.discovery.autocomplete.viewmodel.RecentSearch;
 import com.tokopedia.discovery.autocomplete.viewmodel.TitleSearch;
 import com.tokopedia.discovery.search.domain.model.SearchData;
 import com.tokopedia.discovery.search.domain.model.SearchItem;
+import com.tokopedia.discovery.search.view.adapter.ItemClickListener;
+import com.tokopedia.discovery.search.view.adapter.SearchAdapter;
+import com.tokopedia.discovery.search.view.adapter.factory.SearchAdapterTypeFactory;
 import com.tokopedia.discovery.search.view.fragment.SearchResultFragment;
 
 import java.util.ArrayList;
@@ -22,21 +27,28 @@ public class DefaultAutoCompleteViewHolder extends AbstractViewHolder<DefaultAut
 
     @LayoutRes
     public static final int LAYOUT = R.layout.layout_simple_page_autocomplete;
-    private final SearchResultFragment fragment;
+    private SearchAdapter adapter;
+    private RecyclerView recyclerView;
 
-    public DefaultAutoCompleteViewHolder(View view, FragmentManager fm) {
+    public DefaultAutoCompleteViewHolder(View view, ItemClickListener clickListener) {
         super(view);
-        fragment = (SearchResultFragment) fm.findFragmentById(R.id.searchResultFragment);
+        recyclerView = view.findViewById(R.id.recyclerView);
+        SearchAdapterTypeFactory typeFactory = new SearchAdapterTypeFactory(clickListener);
+        LinearLayoutManager layoutManager = new LinearLayoutManager(view.getContext(),
+                LinearLayoutManager.VERTICAL, false);
+        adapter = new SearchAdapter(typeFactory);
+        recyclerView.setAdapter(adapter);
+        recyclerView.setLayoutManager(layoutManager);
     }
 
     @Override
     public void bind(DefaultAutoCompleteViewModel element) {
-        fragment.clearData();
+        adapter.clearData();
         for (SearchData searchData : element.getList()) {
             List<Visitable> list;
             switch (searchData.getId()) {
                 case "recent_search":
-                    fragment.addBulkSearchResult(
+                    adapter.addAll(
                             insertTitle(
                                     prepareRecentSearch(searchData, element.getSearchTerm()),
                                     searchData.getName()
@@ -44,7 +56,7 @@ public class DefaultAutoCompleteViewHolder extends AbstractViewHolder<DefaultAut
                     );
                     continue;
                 case "popular_search":
-                    fragment.addBulkSearchResult(
+                    adapter.addAll(
                             insertTitle(
                                     preparePopularSearch(searchData, element.getSearchTerm()),
                                     searchData.getName()
