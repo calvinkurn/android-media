@@ -26,6 +26,7 @@ dependencies {
     implementation project(rootProject.ext.features.topAdsSdk)
     implementation project(rootProject.ext.features.payment)
     implementation project(rootProject.ext.libraries.design)
+    implementation project(rootProject.ext.libraries.useCase)
     implementation project(rootProject.ext.features.loyalty)
     implementation project(rootProject.ext.libraries.fingerprint)
     implementation project(rootProject.ext.libraries.abstraction)

@@ -14,6 +14,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.useCase)
     implementation project(rootProject.ext.libraries.abstraction)
     implementation project(rootProject.ext.libraries.design)
+    implementation project(rootProject.ext.features.core)
 
     implementation rootProject.ext.miscDependencies.multiDex
 
