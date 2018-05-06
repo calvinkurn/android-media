@@ -50,6 +50,9 @@ public class SearchResultFragment extends TkpdBaseV4Fragment
     @BindView(R2.id.list)
     RecyclerView recyclerView;
 
+    public SearchResultFragment() {
+    }
+
     public static SearchResultFragment newInstance() {
 
         Bundle args = new Bundle();

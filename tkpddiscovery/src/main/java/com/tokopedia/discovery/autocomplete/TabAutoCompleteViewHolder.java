@@ -18,7 +18,6 @@ import com.tokopedia.discovery.autocomplete.viewmodel.ShopSearch;
 import com.tokopedia.discovery.autocomplete.viewmodel.TitleSearch;
 import com.tokopedia.discovery.search.domain.model.SearchData;
 import com.tokopedia.discovery.search.domain.model.SearchItem;
-import com.tokopedia.discovery.search.view.adapter.ItemClickListener;
 import com.tokopedia.discovery.search.view.adapter.SearchPageAdapter;
 import com.tokopedia.discovery.search.view.fragment.SearchResultFragment;
 
@@ -37,8 +36,7 @@ public class TabAutoCompleteViewHolder extends AbstractViewHolder<TabAutoComplet
     private ViewPager viewPager;
 
     public TabAutoCompleteViewHolder(View view,
-                                     FragmentManager fragmentManager,
-                                     ItemClickListener clickListener) {
+                                     FragmentManager fragmentManager) {
         super(view);
         this.fragmentManager = fragmentManager;
         tabLayout = view.findViewById(R.id.tabLayout);

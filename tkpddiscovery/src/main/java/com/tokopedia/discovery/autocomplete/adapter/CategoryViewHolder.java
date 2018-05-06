@@ -24,7 +24,7 @@ import java.util.List;
 public class CategoryViewHolder extends AbstractViewHolder<CategorySearch> {
 
     @LayoutRes
-    public static final int LAYOUT = R.layout.layout_category_auto_complete;
+    public static final int LAYOUT = R.layout.layout_recyclerview_autocomplete;
 
     private final ItemClickListener listener;
     private final RecyclerView recyclerView;
@@ -66,7 +66,7 @@ public class CategoryViewHolder extends AbstractViewHolder<CategorySearch> {
 
         @Override
         public ItemAdapter.ItemViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-            return new ItemAdapter.ItemViewHolder(LayoutInflater.from(context).inflate(R.layout.layout_category_auto_complete_item, parent, false));
+            return new ItemAdapter.ItemViewHolder(LayoutInflater.from(context).inflate(R.layout.layout_category_item_autocomplete, parent, false));
         }
 
         @Override

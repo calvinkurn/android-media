@@ -6,7 +6,6 @@ import android.view.View;
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.discovery.search.view.adapter.ItemClickListener;
-import com.tokopedia.discovery.search.view.adapter.SearchPageAdapter;
 
 public class HostAutoCompleteFactory extends BaseAdapterTypeFactory
         implements HostAutoCompleteTypeFactory {
@@ -34,9 +33,9 @@ public class HostAutoCompleteFactory extends BaseAdapterTypeFactory
     public AbstractViewHolder createViewHolder(View view, int viewType) {
         AbstractViewHolder viewHolder;
         if (viewType == DefaultAutoCompleteViewHolder.LAYOUT) {
-            viewHolder = new DefaultAutoCompleteViewHolder(view, clickListener);
+            viewHolder = new DefaultAutoCompleteViewHolder(view, fragmentManager);
         } else if (viewType == TabAutoCompleteViewHolder.LAYOUT) {
-            viewHolder = new TabAutoCompleteViewHolder(view, fragmentManager, clickListener);
+            viewHolder = new TabAutoCompleteViewHolder(view, fragmentManager);
         } else {
             viewHolder = super.createViewHolder(view, viewType);
         }
