@@ -16,7 +16,7 @@ import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.BaseChatViewMode
  * @author by nisie on 2/27/18.
  */
 
-abstract class BaseChatViewHolder<T extends Visitable> extends AbstractViewHolder<T> {
+public abstract class BaseChatViewHolder<T extends Visitable> extends AbstractViewHolder<T> {
 
     protected TextView nickname;
     protected TextView postTime;
@@ -39,8 +39,8 @@ abstract class BaseChatViewHolder<T extends Visitable> extends AbstractViewHolde
     public void bind(T element) {
         if (element instanceof BaseChatViewModel) {
             BaseChatViewModel viewModel = (BaseChatViewModel) element;
-
-            ImageHandler.loadImageCircle2(avatar.getContext(), avatar, viewModel.getSenderIconUrl());
+            ImageHandler.loadImageCircle2(avatar.getContext(), avatar, viewModel.getSenderIconUrl
+                    (), R.drawable.ic_loading_toped_new);
             nickname.setText(MethodChecker.fromHtml(viewModel.getSenderName()));
             postTime.setText(viewModel.getFormattedCreatedAt());
 
@@ -66,6 +66,12 @@ abstract class BaseChatViewHolder<T extends Visitable> extends AbstractViewHolde
             } else {
                 headerTime.setVisibility(View.GONE);
             }
+        }
+    }
+
+    public void onViewRecycled() {
+        if(avatar != null) {
+           ImageHandler.clearImage(avatar);
         }
     }
 }
