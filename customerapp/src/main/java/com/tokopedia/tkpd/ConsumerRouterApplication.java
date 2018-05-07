@@ -55,7 +55,9 @@ import com.tokopedia.core.loyaltysystem.util.URLGenerator;
 import com.tokopedia.core.manage.general.districtrecommendation.domain.model.Token;
 import com.tokopedia.core.manage.general.districtrecommendation.view.DistrictRecommendationActivity;
 import com.tokopedia.core.manage.people.address.activity.ChooseAddressActivity;
+import com.tokopedia.core.myproduct.utils.FileUtils;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
+import com.tokopedia.core.network.retrofit.interceptors.TkpdAuthInterceptor;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.network.retrofit.utils.ServerErrorHandler;
 import com.tokopedia.core.onboarding.OnboardingActivity;
@@ -113,6 +115,7 @@ import com.tokopedia.flight.review.domain.FlightVoucherCodeWrapper;
 import com.tokopedia.flight.review.view.model.FlightCheckoutViewModel;
 import com.tokopedia.gamification.GamificationRouter;
 import com.tokopedia.home.IHomeRouter;
+import com.tokopedia.imageuploader.ImageUploaderRouter;
 import com.tokopedia.inbox.contactus.ContactUsConstant;
 import com.tokopedia.inbox.contactus.activity.ContactUsActivity;
 import com.tokopedia.inbox.contactus.activity.ContactUsCreateTicketActivity;
@@ -247,6 +250,7 @@ import com.tokopedia.transaction.purchase.detail.activity.OrderDetailActivity;
 import com.tokopedia.transaction.purchase.detail.activity.OrderHistoryActivity;
 import com.tokopedia.transaction.wallet.WalletActivity;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -277,7 +281,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         AbstractionRouter, FlightModuleRouter, LogisticRouter, FeedModuleRouter, IHomeRouter,
         DiscoveryRouter, RideModuleRouter, DigitalModuleRouter, com.tokopedia.tokocash.TokoCashRouter,
         DigitalRouter, KolRouter, GroupChatModuleRouter, ApplinkRouter, ShopModuleRouter, LoyaltyModuleRouter,
-        GamificationRouter {
+        GamificationRouter, ImageUploaderRouter {
 
     @Inject
     ReactNativeHost reactNativeHost;
@@ -724,6 +728,11 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @Override
     public Interceptor getChuckInterceptor() {
         return getAppComponent().chuckInterceptor();
+    }
+
+    @Override
+    public Interceptor getAuthInterceptor() {
+        return new TkpdAuthInterceptor();
     }
 
     @Override
@@ -1775,6 +1784,11 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     public Intent getPromoDetailIntent(Context context, String slug) {
         return PromoDetailActivity.getCallingIntent(context, slug);
+    }
+
+    @Override
+    public File writeImage(String filePath, int qualityProcentage) {
+        return FileUtils.writeImageToTkpdPath(filePath, qualityProcentage);
     }
 
     public Intent getProductDetailIntent(Context context, ProductPass productPass) {

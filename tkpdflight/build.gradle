@@ -11,6 +11,7 @@ apt {
 dependencies {
 
     compile project(rootProject.ext.libraries.useCase)
+    compile project(rootProject.ext.libraries.imageuploader)
     compile project(rootProject.ext.libraries.abstraction)
 
     compile(rootProject.ext.tkpdLibDependencies.expandableOption) {

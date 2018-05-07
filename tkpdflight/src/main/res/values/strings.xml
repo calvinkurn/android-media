@@ -387,4 +387,13 @@
     <string name="flight_cancellation_terms_and_condition_button_text">Selengkapnya</string>
     <string name="flight_cancellation_terms_and_condition_title">Syarat dan Ketentuan</string>
     <string name="flight_cancellation_terms_and_cancellation_text"><![CDATA[<p align=\'justify\'>Refund, pembatalan, penggantian jadwal, ketentuan boarding, bagasi yang diperbolehkan, pengembalian dana serta hal-hal lain yang berhubungan dengan penggunaan layanan transportasi pesawat merupakan kebijakan dan tanggung jawab dari maskapai dengan merujuk kepada Syarat dan Ketentuan yang ditetapkan oleh maskapai. Setelah kami menerima pembatalan tiket pesawat Anda dari mitra kami, jika metode pembayaran yang Anda pilih adalah metode kartu kredit maka pengembalian dana akan dilakukan ke limit kartu kredit Anda. Jika Anda menggunakan TokoCash untuk melakukan pembayaran tiket penerbangan Anda, dana tersebut akan dikembalikan ke saldo TokoCash. Jika Anda menggunakan metode pembayaran lain, dana akan dikembalikan ke saldo Tokopedia ataupun saldo TokoCash Anda berdasarkan ketersediaan Limit di akun TokoCash.</p>]]></string>
+    <string name="flight_cancellation_refund_description">Pengembalian dana dapat melalui TokoCash atau kartu kredit. Pelajari lebih lanjut.</string>
+    <string-array name="flight_cancellation_refund_title">
+        <item>Untuk pembayaran selain kartu kredit</item>
+        <item>Untuk pembayaran dengan kartu kredit</item>
+    </string-array>
+    <string-array name="flight_cancellation_refund_subtitle">
+        <item>pengembalian dana akan dikirim ke TokoCash Anda. Jika saldo TokoCash Anda telah melebihi nominal yang ditetapkan, sisa dana pengembalian akan dikirim ke Saldo Tokopedia.</item>
+        <item>pengembalian dana akan dikembalikan ke limit kartu kredit Anda dalam kurun waktu maksimum 14 hari kerja.</item>
+    </string-array>
 </resources>

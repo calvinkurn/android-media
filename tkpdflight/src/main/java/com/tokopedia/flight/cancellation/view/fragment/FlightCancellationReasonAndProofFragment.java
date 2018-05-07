@@ -23,6 +23,7 @@ import android.widget.ProgressBar;
 
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
+import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
 import com.tokopedia.flight.FlightModuleRouter;
 import com.tokopedia.flight.R;
 import com.tokopedia.flight.cancellation.di.FlightCancellationComponent;
@@ -303,5 +304,12 @@ public class FlightCancellationReasonAndProofFragment extends BaseDaggerFragment
         presenter.onDestroy();
         presenter.detachView();
         super.onDestroyView();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        etReason.clearFocus();
+        KeyboardHandler.hideSoftKeyboard(getActivity());
     }
 }
