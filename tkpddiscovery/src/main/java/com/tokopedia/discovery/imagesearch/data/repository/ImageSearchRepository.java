@@ -11,5 +11,6 @@ import rx.Observable;
 
 public interface ImageSearchRepository {
 
-    Observable<SearchResultModel> getImageSearchResults(TKPDMapParam<String, Object> param);
+    Observable<SearchResultModel> getImageSearchResults(TKPDMapParam<String, Object> queryParam,
+                                                        TKPDMapParam<String, Object> formParam);
 }

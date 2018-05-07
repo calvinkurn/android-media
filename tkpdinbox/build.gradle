@@ -2,14 +2,21 @@ apply plugin: 'com.android.library'
 apply plugin: 'com.jakewharton.butterknife'
 apply plugin: 'android-apt'
 apply from: "$rootProject.projectDir/buildconfig/module.gradle"
+apply plugin: 'io.hansel.preprocessor.module'
+
+repositories {
+    maven { url 'https://hansel.io/maven' }
+}
 
 buildscript {
     repositories {
         mavenCentral()
         jcenter()
+        maven { url 'https://hansel.io/maven' }
     }
     dependencies {
         classpath 'com.jakewharton:butterknife-gradle-plugin:8.4.0'
+        classpath rootProject.ext.miscDependencies.hansel
     }
 }
 
@@ -19,6 +26,7 @@ dependencies {
     compile project(rootProject.ext.features.core)
     compile project(rootProject.ext.libraries.design)
     compile project(rootProject.ext.libraries.useCase)
+    compile project(rootProject.ext.libraries.pushNotif)
 
     compile rootProject.ext.permissionDispatcherDependencies.permissionDispatcher
     apt rootProject.ext.permissionDispatcherDependencies.permissionDispatcherProcessor
