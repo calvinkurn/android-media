@@ -16,7 +16,6 @@ import com.tokopedia.seller.product.edit.constant.CurrencyTypeDef;
 import com.tokopedia.seller.product.edit.utils.ProductPriceRangeUtils;
 import com.tokopedia.seller.product.edit.view.model.edit.ProductWholesaleViewModel;
 import com.tokopedia.seller.product.edit.view.model.wholesale.WholesaleModel;
-import com.tokopedia.seller.util.CurrencyIdrTextWatcher;
 
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
@@ -31,13 +30,14 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 public class WholesaleAddAdapter extends RecyclerView.Adapter<WholesaleAddAdapter.ViewHolder> {
 
-    private static final String DECIMAL_FORMAT = "#.##";
     private List<WholesaleModel> wholesaleModels;
     private Listener listener;
     private int currentPositionFocusPriceEdittext = 0;
+    private double mainPrice;
 
-    public WholesaleAddAdapter() {
+    public WholesaleAddAdapter(double mainPrice) {
         wholesaleModels = new CopyOnWriteArrayList<>();
+        this.mainPrice = mainPrice;
     }
 
     public void setListener(Listener listener) {
@@ -199,6 +199,11 @@ public class WholesaleAddAdapter extends RecyclerView.Adapter<WholesaleAddAdapte
                 }
                 if (model.getQtyPrice() >= getItem(position-1).getQtyPrice()) {
                     model.setStatusPrice(tilWholeSalePrice.getContext().getString(R.string.product_price_should_be_cheaper_than_previous_wholesale_price));
+                    return;
+                }
+            } else {
+                if (model.getQtyPrice() >= mainPrice) {
+                    model.setStatusPrice(tilWholeSalePrice.getContext().getString(R.string.product_price_should_be_cheaper_than_main_price));
                     return;
                 }
             }

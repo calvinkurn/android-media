@@ -74,7 +74,7 @@ public class ProductAddWholesaleFragment extends BaseDaggerFragment implements W
 
         RecyclerView recyclerViewWholesale = root.findViewById(R.id.recycler_view_wholesale);
         recyclerViewWholesale.setLayoutManager(new LinearLayoutManager(recyclerViewWholesale.getContext(), LinearLayoutManager.VERTICAL, false));
-        wholesaleAdapter = new WholesaleAddAdapter();
+        wholesaleAdapter = new WholesaleAddAdapter(productPrice);
         wholesaleAdapter.setListener(this);
         wholesaleAdapter.setHasStableIds(true);
         recyclerViewWholesale.setAdapter(wholesaleAdapter);
