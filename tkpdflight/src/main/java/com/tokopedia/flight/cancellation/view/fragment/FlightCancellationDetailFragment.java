@@ -18,7 +18,6 @@ import com.tokopedia.flight.cancellation.view.adapter.FlightCancellationDetailPa
 import com.tokopedia.flight.cancellation.view.contract.FlightCancellationDetailContract;
 import com.tokopedia.flight.cancellation.view.presenter.FlightCancellationDetailPresenter;
 import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationListViewModel;
-import com.tokopedia.flight.common.view.FullDividerItemDecoration;
 import com.tokopedia.flight.detail.presenter.ExpandableOnClickListener;
 import com.tokopedia.flight.detail.view.adapter.FlightDetailOrderAdapter;
 import com.tokopedia.flight.detail.view.adapter.FlightDetailOrderTypeFactory;
@@ -122,24 +121,12 @@ public class FlightCancellationDetailFragment extends BaseDaggerFragment
                 .getCancellations().getJourneys());
         flightDetailOrderAdapter.notifyDataSetChanged();
 
-        presenter.checkPassengersSize();
-
         flightCancellationDetailPassengerAdapter.addElement(flightCancellationListViewModel
                 .getCancellations().getPassengers());
         flightCancellationDetailPassengerAdapter.notifyDataSetChanged();
 
         txtRealRefund.setText(flightCancellationListViewModel.getCancellations().getRealRefund());
         txtEstimateRefund.setText(flightCancellationListViewModel.getCancellations().getEstimatedRefund());
-    }
-
-    @Override
-    public void removePassengerRecyclerDivider() {
-        rvPassengers.clearItemDecoration();
-    }
-
-    @Override
-    public void addPassengerRecyclerDivider() {
-        rvPassengers.addItemDecoration(new FullDividerItemDecoration(rvPassengers.getContext()));
     }
 
     @Override

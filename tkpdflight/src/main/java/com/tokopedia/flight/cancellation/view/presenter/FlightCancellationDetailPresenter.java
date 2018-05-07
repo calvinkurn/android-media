@@ -26,15 +26,6 @@ public class FlightCancellationDetailPresenter extends BaseDaggerPresenter<Fligh
         addAirportDetailsToPassengers();
     }
 
-    @Override
-    public void checkPassengersSize() {
-        if (getView().getFlightCancellationList().getCancellations().getPassengers().size() > 2) {
-            getView().addPassengerRecyclerDivider();
-        } else {
-            getView().removePassengerRecyclerDivider();
-        }
-    }
-
     private void addAirportDetailsToPassengers() {
         FlightCancellationListViewModel cancellationListViewModelList = getView().getFlightCancellationList();
 

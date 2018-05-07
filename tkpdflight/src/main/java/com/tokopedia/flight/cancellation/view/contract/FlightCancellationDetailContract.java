@@ -10,17 +10,11 @@ import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationListVi
 public interface FlightCancellationDetailContract {
     interface View extends CustomerView {
 
-        void removePassengerRecyclerDivider();
-
-        void addPassengerRecyclerDivider();
-
         FlightCancellationListViewModel getFlightCancellationList();
 
     }
 
     interface Presenter {
-
-        void checkPassengersSize();
 
         void onViewCreated();
 
