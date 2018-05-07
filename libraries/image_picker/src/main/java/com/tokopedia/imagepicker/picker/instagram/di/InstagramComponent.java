@@ -1,0 +1,15 @@
+package com.tokopedia.imagepicker.picker.instagram.di;
+
+import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
+import com.tokopedia.imagepicker.picker.instagram.view.instagram.ImagePickerInstagramFragment;
+
+import dagger.Component;
+
+/**
+ * Created by zulfikarrahman on 5/4/18.
+ */
+@InstagramScope
+@Component(modules = InstagramModule.class, dependencies = BaseAppComponent.class)
+public interface InstagramComponent {
+    void inject(ImagePickerInstagramFragment imagePickerInstagramFragment);
+}
