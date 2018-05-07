@@ -7,7 +7,6 @@ import com.tokopedia.core.database.CacheUtil;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.network.retrofit.response.TkpdDigitalResponse;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
-import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.digital.common.constant.DigitalCache;
 import com.tokopedia.digital.common.constant.DigitalCategoryConstant;
 import com.tokopedia.digital.common.constant.DigitalUrl;
@@ -104,9 +103,7 @@ public class CategoryDetailDataSource {
     private Func1<DigitalCategoryDetailEntity, CategoryData> getFuncTransformCategoryData() {
         return new Func1<DigitalCategoryDetailEntity, CategoryData>() {
             @Override
-            public CategoryData call(
-                    DigitalCategoryDetailEntity digitalCategoryDetailEntity
-            ) {
+            public CategoryData call(DigitalCategoryDetailEntity digitalCategoryDetailEntity) {
                 return productDigitalMapper.transformCategoryData(
                         digitalCategoryDetailEntity.getData(),
                         digitalCategoryDetailEntity.getIncluded()

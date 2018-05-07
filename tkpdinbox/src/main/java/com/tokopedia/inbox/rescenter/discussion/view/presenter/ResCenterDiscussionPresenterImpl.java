@@ -129,6 +129,7 @@ public class ResCenterDiscussionPresenterImpl implements ResCenterDiscussionPres
         loadMoreUseCase.unsubscribe();
         getDiscussionUseCase.unsubscribe();
         sendDiscussionUseCase.unsubscribe();
+        sendDiscussionV2UseCase.unsubscribe();
     }
 
     @Override

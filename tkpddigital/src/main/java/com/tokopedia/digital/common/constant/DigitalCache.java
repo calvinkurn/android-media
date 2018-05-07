@@ -1,7 +1,7 @@
 package com.tokopedia.digital.common.constant;
 
 /**
- * Created by Rizky on 30/04/18.
+ * @author rizkyfadillah on 30/04/18.
  */
 public class DigitalCache {
 
