@@ -7,8 +7,6 @@ import android.support.v4.util.SparseArrayCompat;
 import android.view.ViewGroup;
 
 import com.tokopedia.imagepicker.editor.main.view.ImageEditPreviewFragment;
-import com.tokopedia.imagepicker.picker.main.util.ExpectedImageRatioDef;
-
 import java.util.ArrayList;
 
 /**
@@ -21,20 +19,21 @@ public class ImageEditorViewPagerAdapter extends FragmentStatePagerAdapter {
     private ArrayList<ArrayList<String>> edittedImagePaths;
     private ArrayList<Integer> currentEditStepIndexList;
     private int minResolution;
-    private @ExpectedImageRatioDef int ratioDef;
+    private int ratioX, ratioY;
     private boolean isCirclePreview;
 
     public ImageEditorViewPagerAdapter(FragmentManager fm,
                                        ArrayList<ArrayList<String>> edittedImagePaths,
                                        ArrayList<Integer> currentEditStepIndexList,
                                        int minResolution,
-                                       @ExpectedImageRatioDef int ratioDef,
+                                       int ratioX, int ratioY,
                                        boolean isCirclePreview) {
         super(fm);
         this.edittedImagePaths = edittedImagePaths;
         this.currentEditStepIndexList = currentEditStepIndexList;
         this.minResolution = minResolution;
-        this.ratioDef = ratioDef;
+        this.ratioX = ratioX;
+        this.ratioY = ratioY;
         this.isCirclePreview = isCirclePreview;
     }
 
@@ -49,7 +48,7 @@ public class ImageEditorViewPagerAdapter extends FragmentStatePagerAdapter {
     @Override
     public Fragment getItem(int position) {
         String localImagePath = edittedImagePaths.get(position).get(currentEditStepIndexList.get(position));
-        return ImageEditPreviewFragment.newInstance(localImagePath, minResolution, ratioDef, isCirclePreview);
+        return ImageEditPreviewFragment.newInstance(localImagePath, minResolution, ratioX, ratioY, isCirclePreview);
     }
 
     @Override

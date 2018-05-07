@@ -1,6 +1,7 @@
 package com.tokopedia.imagepicker.editor.main.view;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -22,28 +23,29 @@ import com.tokopedia.imagepicker.R;
 import com.tokopedia.imagepicker.common.util.ImageUtils;
 import com.tokopedia.imagepicker.common.widget.NonSwipeableViewPager;
 import com.tokopedia.imagepicker.editor.adapter.ImageEditorViewPagerAdapter;
-import com.tokopedia.imagepicker.editor.presenter.ImageDownloadPresenter;
+import com.tokopedia.imagepicker.editor.presenter.ImagePickerPresenter;
 import com.tokopedia.imagepicker.editor.widget.ImageEditActionMainWidget;
 import com.tokopedia.imagepicker.editor.widget.ImageEditThumbnailListWidget;
-import com.tokopedia.imagepicker.picker.main.util.ExpectedImageRatioDef;
 import com.tokopedia.imagepicker.picker.main.util.ImageEditActionTypeDef;
 import com.yalantis.ucrop.view.widget.HorizontalProgressWheelView;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 
 /**
  * Created by Hendry on 9/25/2017.
  */
 
-public class ImageEditorActivity extends BaseSimpleActivity implements ImageDownloadPresenter.ImageDownloadView,
+public class ImageEditorActivity extends BaseSimpleActivity implements ImagePickerPresenter.ImageDownloadView,
         ImageEditPreviewFragment.OnImageEditPreviewFragmentListener, ImageEditThumbnailListWidget.OnImageEditThumbnailListWidgetListener, ImageEditActionMainWidget.OnImageEditActionMainWidgetListener {
 
     public static final String EXTRA_IMAGE_URLS = "IMG_URLS";
     public static final String EXTRA_MIN_RESOLUTION = "MIN_IMG_RESOLUTION";
     public static final String EXTRA_EDIT_ACTION_TYPE = "EDIT_ACTION_TYPE";
-    public static final String EXTRA_RATIO_DEF = "RATIO_DEF";
+    public static final String EXTRA_RATIO_X = "RATIO_X";
+    public static final String EXTRA_RATIO_Y = "RATIO_Y";
     public static final String EXTRA_IS_CIRCLE_PREVIEW = "IS_CIRCLE_PREVIEW";
 
     public static final String SAVED_IMAGE_INDEX = "IMG_IDX";
@@ -70,12 +72,11 @@ public class ImageEditorActivity extends BaseSimpleActivity implements ImageDown
     private boolean isInEditMode;
     private @ImageEditActionTypeDef
     int currentEditActionType;
-    private @ExpectedImageRatioDef
-    int ratioDef;
+    private int ratioX, ratioY;
     private boolean isCirclePreview;
 
     private View vgDownloadProgressBar;
-    private ImageDownloadPresenter imageDownloadPresenter;
+    private ImagePickerPresenter imagePickerPresenter;
 
     private View vgContentContainer;
     private NonSwipeableViewPager viewPager;
@@ -93,27 +94,29 @@ public class ImageEditorActivity extends BaseSimpleActivity implements ImageDown
     private View layoutRotateWheel;
     private boolean alreadySetupRotateWidget;
     private TextView textViewRotateAngle;
+    private ProgressDialog progressDialog;
 
     public static Intent getIntent(Context context, ArrayList<String> imageUrls, int minResolution,
                                    @ImageEditActionTypeDef int[] imageEditActionType,
-                                   @ExpectedImageRatioDef int ratioDef,
+                                   int ratioX, int ratioY,
                                    boolean isCirclePreview) {
         Intent intent = new Intent(context, ImageEditorActivity.class);
         intent.putExtra(EXTRA_IMAGE_URLS, imageUrls);
         intent.putExtra(EXTRA_MIN_RESOLUTION, minResolution);
         intent.putExtra(EXTRA_EDIT_ACTION_TYPE, imageEditActionType);
-        intent.putExtra(EXTRA_RATIO_DEF, ratioDef);
+        intent.putExtra(EXTRA_RATIO_X, ratioX);
+        intent.putExtra(EXTRA_RATIO_Y, ratioY);
         intent.putExtra(EXTRA_IS_CIRCLE_PREVIEW, isCirclePreview);
         return intent;
     }
 
     public static Intent getIntent(Context context, String imageUrl, int minResolution,
                                    @ImageEditActionTypeDef int[] imageEditActionType,
-                                   @ExpectedImageRatioDef int ratioDef,
+                                   int ratioX, int ratioY,
                                    boolean isCirclePreview) {
         ArrayList<String> imageUrls = new ArrayList<>();
         imageUrls.add(imageUrl);
-        return getIntent(context, imageUrls, minResolution, imageEditActionType, ratioDef, isCirclePreview);
+        return getIntent(context, imageUrls, minResolution, imageEditActionType, ratioX, ratioY, isCirclePreview);
     }
 
     @Override
@@ -142,7 +145,8 @@ public class ImageEditorActivity extends BaseSimpleActivity implements ImageDown
 
         minResolution = intent.getIntExtra(EXTRA_MIN_RESOLUTION, 0);
         imageEditActionType = intent.getIntArrayExtra(EXTRA_EDIT_ACTION_TYPE);
-        ratioDef = intent.getIntExtra(EXTRA_RATIO_DEF, ExpectedImageRatioDef.TYPE_1_1);
+        ratioX = intent.getIntExtra(EXTRA_RATIO_X, 1);
+        ratioY = intent.getIntExtra(EXTRA_RATIO_Y, 1);
         isCirclePreview = intent.getBooleanExtra(EXTRA_IS_CIRCLE_PREVIEW, false);
 
         if (savedInstanceState == null) {
@@ -479,20 +483,47 @@ public class ImageEditorActivity extends BaseSimpleActivity implements ImageDown
     private void onDoneButtonClicked() {
         blockingView.setVisibility(View.VISIBLE);
 
-        // TODO
-        // will crop all image if the image is still 1 and width & height not same with expected ratio
-        // redownsampling the image
-
-        deleteAllNotUsedImage(true);
-
-        Intent intent = new Intent();
+        ArrayList<String> step0Paths = new ArrayList<>();
         ArrayList<String> resultList = new ArrayList<>();
         for (int i = 0, sizei = edittedImagePaths.size(); i < sizei; i++) {
+            step0Paths.add(edittedImagePaths.get(i).get(0));
             resultList.add(edittedImagePaths.get(i).get(currentEditStepIndexList.get(i)));
         }
-        intent.putStringArrayListExtra(EDIT_RESULT_PATHS, resultList);
+
+        showDoneLoading();
+        initImagePickerPresenter();
+        imagePickerPresenter.cropBitmapToExpectedRatio(extraImageUrls, step0Paths, resultList, ratioX, ratioY );
+    }
+
+    @Override
+    public void onSuccessCropImageToRatio(ArrayList<String> cropppedImagePaths) {
+        hideDoneLoading();
+        deleteAllNotUsedImage(true);
+        Intent intent = new Intent();
+        intent.putStringArrayListExtra(EDIT_RESULT_PATHS, cropppedImagePaths);
         setResult(Activity.RESULT_OK, intent);
         finish();
+    }
+
+    @Override
+    public void onErrorCropImageToRatio(Throwable e) {
+        NetworkErrorHelper.showRedCloseSnackbar(this, ErrorHandler.getErrorMessage(this, e));
+        hideDoneLoading();
+    }
+
+    private void showDoneLoading(){
+        if (progressDialog == null) {
+            progressDialog = new ProgressDialog(this);
+            progressDialog.setCancelable(false);
+            progressDialog.setMessage(getString(R.string.title_loading));
+        }
+        progressDialog.show();
+    }
+
+    private void hideDoneLoading(){
+        if (progressDialog!= null) {
+            progressDialog.hide();
+        }
     }
 
     @Override
@@ -525,11 +556,10 @@ public class ImageEditorActivity extends BaseSimpleActivity implements ImageDown
                 }
             }
             if (hasNetworkImage) {
-                showProgressDialog();
+                showDownloadProgressDialog();
                 hideContentView();
-                imageDownloadPresenter = new ImageDownloadPresenter();
-                imageDownloadPresenter.attachView(this);
-                imageDownloadPresenter.convertHttpPathToLocalPath(extraImageUrls);
+                initImagePickerPresenter();
+                imagePickerPresenter.convertHttpPathToLocalPath(extraImageUrls);
             } else {
                 copyToLocalUrl(extraImageUrls);
                 startEditLocalImages();
@@ -539,11 +569,18 @@ public class ImageEditorActivity extends BaseSimpleActivity implements ImageDown
         }
     }
 
+    private void initImagePickerPresenter(){
+        if (imagePickerPresenter == null) {
+            imagePickerPresenter = new ImagePickerPresenter();
+            imagePickerPresenter.attachView(this);
+        }
+    }
+
     @Override
     protected void onPause() {
         super.onPause();
-        if (imageDownloadPresenter != null) {
-            imageDownloadPresenter.detachView();
+        if (imagePickerPresenter != null) {
+            imagePickerPresenter.detachView();
         }
     }
 
@@ -554,7 +591,7 @@ public class ImageEditorActivity extends BaseSimpleActivity implements ImageDown
                     edittedImagePaths,
                     currentEditStepIndexList,
                     minResolution,
-                    ratioDef,
+                    ratioX, ratioY,
                     isCirclePreview);
             viewPager.setAdapter(imageEditorViewPagerAdapter);
         }
@@ -572,7 +609,7 @@ public class ImageEditorActivity extends BaseSimpleActivity implements ImageDown
 
     }
 
-    private void showProgressDialog() {
+    private void showDownloadProgressDialog() {
         vgDownloadProgressBar.setVisibility(View.VISIBLE);
     }
 
@@ -614,6 +651,7 @@ public class ImageEditorActivity extends BaseSimpleActivity implements ImageDown
                     .setPositiveButton(getString(R.string.exit), new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialogInterface, int i) {
+                            deleteAllNotUsedImage(false);
                             ImageEditorActivity.super.onBackPressed();
                         }
                     }).setNegativeButton(getString(R.string.cancel), new DialogInterface.OnClickListener() {
@@ -671,9 +709,5 @@ public class ImageEditorActivity extends BaseSimpleActivity implements ImageDown
         return isInEditMode;
     }
 
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        deleteAllNotUsedImage(false);
-    }
+
 }

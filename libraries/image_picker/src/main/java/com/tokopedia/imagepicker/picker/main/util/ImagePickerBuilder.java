@@ -2,7 +2,6 @@ package com.tokopedia.imagepicker.picker.main.util;
 
 import com.tokopedia.imagepicker.picker.gallery.type.GalleryType;
 
-import static com.tokopedia.imagepicker.picker.main.util.ExpectedImageRatioDef.TYPE_1_1;
 import static com.tokopedia.imagepicker.picker.main.util.ImageEditActionTypeDef.TYPE_CROP_ROTATE;
 import static com.tokopedia.imagepicker.picker.main.util.ImagePickerTabTypeDef.TYPE_CAMERA;
 import static com.tokopedia.imagepicker.picker.main.util.ImagePickerTabTypeDef.TYPE_GALLERY;
@@ -17,7 +16,8 @@ public enum ImagePickerBuilder {
             GalleryType.IMAGE_ONLY,
             ImageSelectionTypeDef.TYPE_SINGLE,
             300,
-            TYPE_1_1,
+            1,
+            1,
             true,
             new int[]{TYPE_CROP_ROTATE},
             true);
@@ -27,25 +27,26 @@ public enum ImagePickerBuilder {
     private @GalleryType
     int galleryType;
     private int minResolution;
-    private @ExpectedImageRatioDef
-    int expectedImageRatio;
     private @ImageSelectionTypeDef
     int imageSelectionType;
     private boolean continueToEditAfterPick;
     private @ImageEditActionTypeDef
     int[] imageEditActionType;
     private boolean circlePreview;
+    private int ratioX;
+    private int ratioY;
 
     ImagePickerBuilder(@ImagePickerTabTypeDef int[] imagePickerTabTypeDef,
                        @GalleryType int galleryType,
                        @ImageSelectionTypeDef int selectionType,
                        int minResolution,
-                       @ExpectedImageRatioDef int expectedImageRatio) {
+                       int ratioX, int ratioY) {
         this.tabTypeDef = imagePickerTabTypeDef;
         this.galleryType = galleryType;
         this.imageSelectionType = selectionType;
         this.minResolution = minResolution;
-        this.expectedImageRatio = expectedImageRatio;
+        this.ratioX = ratioX;
+        this.ratioY = ratioY;
         this.continueToEditAfterPick = false;
     }
 
@@ -53,11 +54,11 @@ public enum ImagePickerBuilder {
                        @GalleryType int galleryType,
                        @ImageSelectionTypeDef int selectionType,
                        int minResolution,
-                       @ExpectedImageRatioDef int expectedImageRatio,
+                       int ratioX, int ratioY,
                        boolean continueToEditAfterPick,
                        @ImageEditActionTypeDef int[] imageEditActionType,
                        boolean circlePreview) {
-        this(imagePickerTabTypeDef, galleryType, selectionType, minResolution, expectedImageRatio);
+        this(imagePickerTabTypeDef, galleryType, selectionType, minResolution, ratioX, ratioY);
         this.continueToEditAfterPick = continueToEditAfterPick;
         this.imageEditActionType = imageEditActionType;
         this.circlePreview = circlePreview;
@@ -105,8 +106,12 @@ public enum ImagePickerBuilder {
         return minResolution;
     }
 
-    public int getExpectedImageRatio() {
-        return expectedImageRatio;
+    public int getRatioX() {
+        return ratioX;
+    }
+
+    public int getRatioY() {
+        return ratioY;
     }
 
     public boolean isContinueToEditAfterPick() {
