@@ -1,5 +1,8 @@
 package com.tokopedia.payment.fingerprint.domain;
 
+import com.tokopedia.abstraction.common.data.model.session.UserSession;
+import com.tokopedia.core.network.retrofit.utils.AuthUtil;
+import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.usecase.UseCase;
 
@@ -24,16 +27,20 @@ public class SaveFingerPrintUseCase extends UseCase<Boolean> {
     public static final String OS_ANDROID_VALUE = "1";
     private FingerprintRepository fingerprintRepository;
     private SavePublicKeyUseCase savePublicKeyUseCase;
+    private UserSession userSession;
 
     @Inject
     public SaveFingerPrintUseCase(FingerprintRepository fingerprintRepository,
-                                  SavePublicKeyUseCase savePublicKeyUseCase) {
+                                  SavePublicKeyUseCase savePublicKeyUseCase, UserSession userSession) {
         this.fingerprintRepository = fingerprintRepository;
         this.savePublicKeyUseCase = savePublicKeyUseCase;
+        this.userSession = userSession;
     }
 
     @Override
     public Observable<Boolean> createObservable(final RequestParams requestParams) {
+        TKPDMapParam<String, String> params = AuthUtil.generateParamsNetwork(userSession.getUserId(), userSession.getDeviceId(), new TKPDMapParam<String, String>());
+        requestParams.putAllString(params);
         return savePublicKeyUseCase.createObservable(savePublicKeyUseCase.createRequestParams(requestParams.getString(USER_ID, ""),
                 requestParams.getString(PUBLIC_KEY, "")))
                 .flatMap(new Func1<Boolean, Observable<Boolean>>() {

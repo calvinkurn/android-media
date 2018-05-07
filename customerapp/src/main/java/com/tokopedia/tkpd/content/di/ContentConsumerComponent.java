@@ -1,7 +1,7 @@
 package com.tokopedia.tkpd.content.di;
 
 import com.tokopedia.tkpd.content.ContentGetFeedUseCase;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.view.di.FeedPlusComponent;
+import com.tokopedia.feedplus.view.di.FeedPlusComponent;
 
 import dagger.Component;
 

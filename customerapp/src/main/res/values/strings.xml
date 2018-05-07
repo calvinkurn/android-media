@@ -98,7 +98,8 @@
     <string name="drawer_title_travel_flight_transaction_list">Daftar Tiket Pesawat</string>
     <string name="drawer_title_travel_train_transaction_list">Daftar Tiket Kereta Api</string>
     <string name="exit_message">Tekan sekali lagi untuk keluar</string>
+    <string name="sedang_dalam_proses_shake">Sedang dalam Proses Shake</string>
+    <string name="cancel_shake_shake">Memuat Shake-Shake</string>
+    <string name="shake_shake_terus">Shake sekali lagi</string>
     <string name="yes">Ya</string>
-
-
 </resources>
