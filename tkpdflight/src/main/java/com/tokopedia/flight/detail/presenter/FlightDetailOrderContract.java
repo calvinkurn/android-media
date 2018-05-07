@@ -72,6 +72,10 @@ public interface FlightDetailOrderContract {
 
         void hidePaymentDueDate();
 
+        void showCancellationStatus();
+
+        void showCancellationStatusInProgress(int numberOfProcess);
+
         void showCancellationContainer();
 
         void hideCancellationContainer();

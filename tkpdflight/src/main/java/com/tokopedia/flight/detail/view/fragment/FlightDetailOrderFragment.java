@@ -14,6 +14,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.TaskStackBuilder;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.AppCompatImageView;
+import android.support.v7.widget.AppCompatTextView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -41,7 +42,6 @@ import com.tokopedia.flight.cancellation.view.activity.FlightCancellationListAct
 import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationJourney;
 import com.tokopedia.flight.common.util.FlightErrorUtil;
 import com.tokopedia.flight.common.view.FullDividerItemDecoration;
-import com.tokopedia.flight.contactus.model.FlightContactUsPassData;
 import com.tokopedia.flight.dashboard.view.activity.FlightDashboardActivity;
 import com.tokopedia.flight.detail.presenter.ExpandableOnClickListener;
 import com.tokopedia.flight.detail.presenter.FlightDetailOrderContract;
@@ -113,6 +113,8 @@ public class FlightDetailOrderFragment extends BaseDaggerFragment implements Fli
     private TextView tvPaymentCost;
     private TextView tvPaymentCostLabel;
     private TextView tvPaymentDueDate;
+    private LinearLayout containerTicketCancellationStatus;
+    private AppCompatTextView tvTicketCancellationStatus;
 
     public static Fragment createInstance(FlightOrderDetailPassData flightOrderDetailPassData) {
         FlightDetailOrderFragment flightDetailOrderFragment = new FlightDetailOrderFragment();
@@ -171,6 +173,8 @@ public class FlightDetailOrderFragment extends BaseDaggerFragment implements Fli
         progressDialog = new ProgressDialog(getActivity());
 
         containerCancellation = view.findViewById(R.id.cancellation_container);
+        containerTicketCancellationStatus = view.findViewById(R.id.container_cancellation_warning);
+        tvTicketCancellationStatus = view.findViewById(R.id.tv_cancellation_ticket_status);
 
         setViewClickListener();
 
@@ -445,28 +449,6 @@ public class FlightDetailOrderFragment extends BaseDaggerFragment implements Fli
 
     }
 
-    private Intent getCallintIntent(String solutionId,
-                                    String orderId,
-                                    String descriptionTitle,
-                                    String attachmentTitle,
-                                    String description,
-                                    String toolbarTitle) {
-
-        FlightContactUsPassData passData = new FlightContactUsPassData();
-        passData.setSolutionId(solutionId);
-        passData.setOrderId(orderId);
-        passData.setDescriptionTitle(descriptionTitle);
-        passData.setAttachmentTitle(attachmentTitle);
-        passData.setDescription(description);
-        passData.setToolbarTitle(toolbarTitle);
-
-        if (getActivity().getApplication() instanceof FlightModuleRouter) {
-            return ((FlightModuleRouter) getActivity().getApplication()).getContactUsIntent(getActivity(), passData);
-        } else {
-            throw new RuntimeException("Application Module should implement FlightModuleRouter");
-        }
-    }
-
     @Override
     public void onCloseExpand(int position) {
         // do something to scroll the view
@@ -514,6 +496,19 @@ public class FlightDetailOrderFragment extends BaseDaggerFragment implements Fli
     @Override
     public void hidePaymentDueDate() {
         paymentDueDateLayout.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void showCancellationStatus() {
+        tvTicketCancellationStatus.setText(getString(R.string.flight_cancellation_ticket_status));
+        containerTicketCancellationStatus.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void showCancellationStatusInProgress(int numberOfProcess) {
+        tvTicketCancellationStatus.setText(String.format(getString(
+                R.string.flight_cancellation_ticket_status_in_progress), numberOfProcess));
+        containerTicketCancellationStatus.setVisibility(View.VISIBLE);
     }
 
     @Override
