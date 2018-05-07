@@ -4,14 +4,7 @@ apply from: "$rootProject.projectDir/buildconfig/module.gradle"
 dependencies {
 
     compile rootProject.ext.supportLibDependencies.design
-    compile rootProject.ext.supportLibDependencies.cardViewV7
-    compile rootProject.ext.supportLibDependencies.constraintLayout
-    compile (rootProject.ext.miscDependencies.loaderviewlibrary){
-        exclude group: 'com.android.support'
-    }
-
-    compile rootProject.ext.networkDependencies.glide
-
+    compile rootProject.ext.supportLibDependencies.appCompactV7
     androidTestCompile(rootProject.ext.testDependencies.espressoCore, {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
