@@ -25,7 +25,7 @@ public class AutoCompleteDataSource {
     }
 
     public Observable<List<SearchData>> getUniverseAutoComplete(TKPDMapParam<String, Object> param) {
-        return browseApi.getUniverseAutoComplete(param)
+        return browseApi.getUniverseAutoCompleteV5(param)
                 .doOnNext(new Action1<Response<String>>() {
                     @Override
                     public void call(Response<String> response) {
