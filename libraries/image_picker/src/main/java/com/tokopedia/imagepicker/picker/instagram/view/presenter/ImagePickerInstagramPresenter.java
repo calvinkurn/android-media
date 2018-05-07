@@ -35,11 +35,7 @@ public class ImagePickerInstagramPresenter extends BaseDaggerPresenter<ImagePick
 
             @Override
             public void onError(Throwable e) {
-                if(e instanceof ShouldLoginInstagramException){
-                    getView().onErrorShouldLoginInstagram();
-                }else{
-                    getView().showGetListError(e);
-                }
+                getView().showGetListError(e);
             }
 
             @Override

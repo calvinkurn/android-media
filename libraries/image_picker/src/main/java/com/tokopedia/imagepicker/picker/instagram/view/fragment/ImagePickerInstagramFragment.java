@@ -11,9 +11,11 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
+import com.tokopedia.abstraction.base.view.adapter.model.ErrorNetworkModel;
 import com.tokopedia.imagepicker.R;
 import com.tokopedia.imagepicker.picker.gallery.widget.MediaGridInset;
 import com.tokopedia.imagepicker.picker.instagram.InstagramConstant;
+import com.tokopedia.imagepicker.picker.instagram.data.source.exception.ShouldLoginInstagramException;
 import com.tokopedia.imagepicker.picker.instagram.di.DaggerInstagramComponent;
 
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment;
@@ -21,6 +23,7 @@ import com.tokopedia.imagepicker.picker.instagram.di.InstagramModule;
 import com.tokopedia.imagepicker.picker.instagram.view.adapter.ImageInstagramAdapterTypeFactory;
 import com.tokopedia.imagepicker.picker.instagram.view.adapter.ImagePickerInstagramViewHolder;
 import com.tokopedia.imagepicker.picker.instagram.view.dialog.InstagramLoginDialog;
+import com.tokopedia.imagepicker.picker.instagram.view.model.InstagramErrorLoginModel;
 import com.tokopedia.imagepicker.picker.instagram.view.model.InstagramMediaModel;
 import com.tokopedia.imagepicker.picker.instagram.view.presenter.ImagePickerInstagramContract;
 import com.tokopedia.imagepicker.picker.instagram.view.presenter.ImagePickerInstagramPresenter;
@@ -34,7 +37,7 @@ import javax.inject.Inject;
  * Created by hendry on 19/04/18.
  */
 
-public class ImagePickerInstagramFragment extends BaseListFragment<InstagramMediaModel, ImageInstagramAdapterTypeFactory> implements ImagePickerInstagramContract.View, InstagramLoginDialog.ListenerLoginInstagram {
+public class ImagePickerInstagramFragment extends BaseListFragment<InstagramMediaModel, ImageInstagramAdapterTypeFactory> implements ImagePickerInstagramContract.View, InstagramLoginDialog.ListenerLoginInstagram, InstagramErrorLoginModel.ListenerLoginInstagram {
 
     @Inject
     ImagePickerInstagramPresenter imagePickerInstagramPresenter;
@@ -131,11 +134,15 @@ public class ImagePickerInstagramFragment extends BaseListFragment<InstagramMedi
     }
 
     @Override
-    public void onErrorShouldLoginInstagram() {
-        showGetListError(new Throwable());
-        InstagramLoginDialog instagramLoginDialog = new InstagramLoginDialog();
-        instagramLoginDialog.setListenerLoginInstagram(this);
-        instagramLoginDialog.show(getActivity().getSupportFragmentManager(), "instagram_dialog");
+    public void showGetListError(Throwable throwable) {
+        if(throwable instanceof ShouldLoginInstagramException){
+            InstagramErrorLoginModel instagramErrorLoginModel = new InstagramErrorLoginModel();
+            instagramErrorLoginModel.setListenerLoginInstagram(this);
+            getAdapter().setErrorNetworkModel(instagramErrorLoginModel);
+        }else{
+            getAdapter().setErrorNetworkModel(new ErrorNetworkModel());
+        }
+        super.showGetListError(throwable);
     }
 
     @Override
@@ -149,6 +156,13 @@ public class ImagePickerInstagramFragment extends BaseListFragment<InstagramMedi
     public void onSuccessLogin(String code) {
         this.code = code;
         loadInitialData();
+    }
+
+    @Override
+    public void onClickLoginInstagram() {
+        InstagramLoginDialog instagramLoginDialog = new InstagramLoginDialog();
+        instagramLoginDialog.setListenerLoginInstagram(this);
+        instagramLoginDialog.show(getActivity().getSupportFragmentManager(), "instagram_dialog");
     }
 
     public interface ListenerImagePickerInstagram{

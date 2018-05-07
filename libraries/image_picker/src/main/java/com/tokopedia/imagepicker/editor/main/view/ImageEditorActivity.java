@@ -127,18 +127,18 @@ public class ImageEditorActivity extends BaseSimpleActivity implements ImageDown
 
         Intent intent = getIntent();
         //TODO for test only
-        extraImageUrls = new ArrayList<>();
-        extraImageUrls.add("/storage/emulated/0/WhatsApp/Media/WhatsApp Documents/IMG_20180308_181928_HDR.jpg");
-        extraImageUrls.add("/storage/emulated/0/DCIM/Camera/IMG_20180418_113022.jpg");
-        extraImageUrls.add("/storage/emulated/0/Download/Guitar-PNG-Image-500x556.png");
-        extraImageUrls.add("/storage/emulated/0/Download/303836.jpg");
+//        extraImageUrls = new ArrayList<>();
+//        extraImageUrls.add("/storage/emulated/0/WhatsApp/Media/WhatsApp Documents/IMG_20180308_181928_HDR.jpg");
+//        extraImageUrls.add("/storage/emulated/0/DCIM/Camera/IMG_20180418_113022.jpg");
+//        extraImageUrls.add("/storage/emulated/0/Download/Guitar-PNG-Image-500x556.png");
+//        extraImageUrls.add("/storage/emulated/0/Download/303836.jpg");
 
-//        if (intent.hasExtra(EXTRA_IMAGE_URLS)) {
-//            extraImageUrls = intent.getStringArrayListExtra(EXTRA_IMAGE_URLS);
-//        } else {
-//            finish();
-//            return;
-//        }
+        if (intent.hasExtra(EXTRA_IMAGE_URLS)) {
+            extraImageUrls = intent.getStringArrayListExtra(EXTRA_IMAGE_URLS);
+        } else {
+            finish();
+            return;
+        }
 
         minResolution = intent.getIntExtra(EXTRA_MIN_RESOLUTION, 0);
         imageEditActionType = intent.getIntArrayExtra(EXTRA_EDIT_ACTION_TYPE);
