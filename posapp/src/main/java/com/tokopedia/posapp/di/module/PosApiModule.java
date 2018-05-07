@@ -7,6 +7,7 @@ import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.network.OkHttpRetryPolicy;
 import com.tokopedia.abstraction.common.network.interceptor.DebugInterceptor;
 import com.tokopedia.abstraction.common.utils.GlobalConfig;
+import com.tokopedia.core.network.retrofit.interceptors.FingerprintInterceptor;
 import com.tokopedia.posapp.PosSessionHandler;
 import com.tokopedia.posapp.common.PosAuthInterceptor;
 import com.tokopedia.posapp.common.PosUrl;
@@ -28,15 +29,23 @@ import retrofit2.Retrofit;
 public class PosApiModule {
     @Provides
     @PosApplicationScope
+    public FingerprintInterceptor provideFingerprintInterceptor() {
+        return new FingerprintInterceptor();
+    }
+
+    @Provides
+    @PosApplicationScope
     public OkHttpClient provideOkHttpClient(@ApplicationContext Context context,
                                             HttpLoggingInterceptor httpLoggingInterceptor,
-                                            PosAuthInterceptor posAuthInterceptor) {
+                                            PosAuthInterceptor posAuthInterceptor,
+                                            FingerprintInterceptor fingerprintInterceptor) {
         OkHttpRetryPolicy okHttpRetryPolicy = OkHttpRetryPolicy.createdDefaultOkHttpRetryPolicy();
         OkHttpClient.Builder builder = new OkHttpClient.Builder();
         builder.readTimeout(okHttpRetryPolicy.readTimeout, TimeUnit.SECONDS)
                 .writeTimeout(okHttpRetryPolicy.writeTimeout, TimeUnit.SECONDS)
                 .connectTimeout(okHttpRetryPolicy.connectTimeout, TimeUnit.SECONDS)
                 .addInterceptor(posAuthInterceptor)
+                .addInterceptor(fingerprintInterceptor)
                 .addInterceptor(httpLoggingInterceptor);
 
         if (GlobalConfig.isAllowDebuggingTools()) {

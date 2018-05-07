@@ -17,6 +17,7 @@ public class ProductConstant {
         public static final String PAGE = "page";
         public static final String OUTLET_ID = "outlet_id";
         public static final String EDIT_PRODUCT_REQUEST = "edit_product_request";
+        public static final String OUTLET_NAME = "outlet_name";
     }
 
     public static class Status {

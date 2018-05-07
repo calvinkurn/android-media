@@ -1,10 +1,13 @@
 package com.tokopedia.posapp.outlet.view.presenter;
 
-import com.tokopedia.posapp.cart.domain.model.ATCStatusDomain;
-import com.tokopedia.posapp.cart.domain.usecase.DeleteAllCartUsecase;
+import com.tokopedia.core.network.constants.TkpdBaseURL;
+import com.tokopedia.posapp.PosSessionHandler;
 import com.tokopedia.posapp.outlet.domain.usecase.GetOutletUseCase;
+import com.tokopedia.posapp.outlet.domain.usecase.SelectOutletUseCase;
 import com.tokopedia.posapp.outlet.view.GetOutletSubscriber;
 import com.tokopedia.posapp.outlet.view.Outlet;
+import com.tokopedia.posapp.outlet.view.viewmodel.OutletItemViewModel;
+import com.tokopedia.posapp.product.common.ProductConstant;
 import com.tokopedia.usecase.RequestParams;
 
 import javax.inject.Inject;
@@ -26,13 +29,17 @@ public class OutletPresenter implements Outlet.Presenter {
 
     private Outlet.View view;
     private GetOutletUseCase getOutletUseCase;
-    private DeleteAllCartUsecase deleteAllCartUsecase;
+
+    private SelectOutletUseCase selectOutletUseCase;
+    private PosSessionHandler posSessionHandler;
 
     @Inject
     public OutletPresenter(GetOutletUseCase outletUseCase,
-                           DeleteAllCartUsecase deleteAllCartUsecase) {
+                           SelectOutletUseCase selectOutletUseCase,
+                           PosSessionHandler posSessionHandler) {
         this.getOutletUseCase = outletUseCase;
-        this.deleteAllCartUsecase = deleteAllCartUsecase;
+        this.selectOutletUseCase = selectOutletUseCase;
+        this.posSessionHandler = posSessionHandler;
     }
 
     @Override
@@ -86,5 +93,28 @@ public class OutletPresenter implements Outlet.Presenter {
 //        } catch (Exception e) {
 //            e.printStackTrace();
 //        }
+    }
+
+    @Override
+    public void selectOutlet(OutletItemViewModel outlet) {
+        RequestParams requestParams = RequestParams.create();
+        requestParams.putString(ProductConstant.Key.OUTLET_ID, outlet.getOutletId());
+        requestParams.putString(ProductConstant.Key.OUTLET_NAME, outlet.getOutletName());
+        selectOutletUseCase.execute(requestParams, new Subscriber<Boolean>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                view.onErrorSelectOutlet();
+            }
+
+            @Override
+            public void onNext(Boolean aBoolean) {
+                view.onOutletSelected();
+            }
+        });
     }
 }

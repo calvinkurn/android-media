@@ -11,4 +11,6 @@ import rx.Observable;
 
 public interface OutletRepository {
     Observable<OutletDomain> getOutlet(RequestParams requestParams);
+
+    Observable<Boolean> selectOutlet(RequestParams requestParams);
 }

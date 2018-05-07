@@ -32,7 +32,7 @@ public class GetProductListMapper implements Func1<Response<PosSimpleResponse<Li
                     .map(mapToDomain()).flatMapIterable(iterateList()).filter(filterData()).toList();
         }
 
-        return null;
+        return Observable.error(new RuntimeException("No Product"));
     }
 
     private Func1<List<ProductDetail>, List<ProductDomain>> mapToDomain() {

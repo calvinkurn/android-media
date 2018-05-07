@@ -84,7 +84,6 @@ public class DescriptionView extends BaseView<ProductDetailData, ProductDetailVi
                 ? getResources().getString(com.tokopedia.tkpdpdp.R.string.no_description_pdp) : description);
         tvDesc.setAutoLinkMask(0);
         Linkify.addLinks(tvDesc, Linkify.WEB_URLS);
-        tvDesc.setText(MethodChecker.fromHtml(tvDesc.getText().toString()));
         descriptionContainer.setVisibility(VISIBLE);
         setVisibility(VISIBLE);
     }

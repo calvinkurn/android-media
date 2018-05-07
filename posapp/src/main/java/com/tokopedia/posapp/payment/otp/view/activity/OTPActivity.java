@@ -23,8 +23,6 @@ import android.widget.Toast;
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.google.gson.Gson;
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
-import com.tokopedia.abstraction.base.app.BaseMainApplication;
-import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.core.base.di.component.HasComponent;
 import com.tokopedia.payment.utils.ErrorNetMessage;
@@ -125,6 +123,8 @@ public class OTPActivity extends BasePresenterActivity<OTP.Presenter>
         scroogeWebView.setWebViewClient(new OTPWebViewClient());
         scroogeWebView.setWebChromeClient(new OTPWebViewChromeClient());
         scroogeWebView.setOnKeyListener(getWebViewOnKeyListener());
+
+        confirmPayment();
     }
 
     @Override
@@ -173,8 +173,8 @@ public class OTPActivity extends BasePresenterActivity<OTP.Presenter>
         @Override
         public boolean shouldOverrideUrlLoading(WebView view, String url) {
             Log.d("o2o override ", url);
-            if(url.contains("/payment/thanks")) {
-                processPayment();
+            if(presenter.isPaymentProcessed(url)) {
+                confirmPayment();
                 return true;
             }
             return super.shouldOverrideUrlLoading(view, url);
@@ -215,8 +215,8 @@ public class OTPActivity extends BasePresenterActivity<OTP.Presenter>
         public void onPageStarted(final WebView view, String url, Bitmap favicon) {
             Log.d("o2o", "initial " + url);
             progressBar.setVisibility(View.VISIBLE);
-            if(url.contains("/payment/thanks")) {
-                processPayment();
+            if(presenter.isPaymentProcessed(url)) {
+                confirmPayment();
                 return;
             }
             super.onPageStarted(view, url, favicon);
@@ -243,13 +243,13 @@ public class OTPActivity extends BasePresenterActivity<OTP.Presenter>
         }
     }
 
-    private void processPayment() {
+    private void confirmPayment() {
         tkpdProgressDialog.showDialog();
         scroogeWebView.stopLoading();
         scroogeWebView.destroy();
         scroogeWebView.setEnabled(false);
         scroogeWebView.setVisibility(View.GONE);
-        otpPresenter.processPayment();
+        otpPresenter.confirmPayment();
     }
 
     private class OTPWebViewChromeClient extends WebChromeClient {

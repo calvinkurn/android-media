@@ -10,6 +10,7 @@ public class OTPData {
     private String gateway;
     private byte[] parameters;
     private OTPDetailTransaction otpDetailTransaction;
+    private String callbackUrl;
 
     public String getUrl() {
         return url;
@@ -49,5 +50,13 @@ public class OTPData {
 
     public void setOtpDetailTransaction(OTPDetailTransaction otpDetailTransaction) {
         this.otpDetailTransaction = otpDetailTransaction;
+    }
+
+    public String getCallbackUrl() {
+        return callbackUrl;
+    }
+
+    public void setCallbackUrl(String callbackUrl) {
+        this.callbackUrl = callbackUrl;
     }
 }

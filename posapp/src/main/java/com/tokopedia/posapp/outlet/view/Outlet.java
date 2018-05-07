@@ -13,7 +13,9 @@ public interface Outlet {
     interface View extends CustomerView {
         void clearOutletData();
 
-        void onOutletClicked(OutletItemViewModel outletItem);
+        void onOutletClicked(OutletItemViewModel outlet);
+
+        void onOutletSelected();
 
         void onSuccessGetOutlet(OutletViewModel outlet);
 
@@ -22,6 +24,8 @@ public interface Outlet {
         void startLoading();
 
         void finishLoading();
+
+        void onErrorSelectOutlet();
     }
 
     interface Presenter extends CustomerPresenter<View> {
@@ -30,5 +34,7 @@ public interface Outlet {
         void setHasNextPage(String uriNext);
 
         void getNextOutlet(String query);
+
+        void selectOutlet(OutletItemViewModel outletItem);
     }
 }

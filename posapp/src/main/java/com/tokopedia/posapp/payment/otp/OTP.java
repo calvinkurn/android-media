@@ -11,7 +11,9 @@ public interface OTP {
     interface Presenter {
         void initializeData(String jsonData);
 
-        void processPayment();
+        boolean isPaymentProcessed(String url);
+
+        void confirmPayment();
 
         void setTransactionId(String transactionId);
     }

@@ -40,6 +40,14 @@ public class PosSessionHandler extends SessionHandler {
         return getOutletName(getContext());
     }
 
+    public void setOutletId(String id) {
+        setOutletId(getContext(), id);
+    }
+
+    public void setOutletName(String name) {
+        setOutletName(getContext(), name);
+    }
+
     public static void setOutletId(Context context, String id) {
         SharedPreferences sharedPrefs = context.getSharedPreferences(LOGIN_SESSION, Context.MODE_PRIVATE);
         sharedPrefs.edit().putString(OUTLET_ID, id).apply();
