@@ -6,7 +6,8 @@ dependencies {
     compile project(rootProject.ext.features.core)
     compile project(rootProject.ext.libraries.design)
     compile project(rootProject.ext.features.payment)
-    compile project(rootProject.ext.features.useCase)
+    compile project(rootProject.ext.libraries.useCase)
+    compile rootProject.ext.supportLibDependencies.constraintLayout
 
     androidTestCompile(rootProject.ext.testDependencies.espressoCore, {
         exclude group: 'com.android.support', module: 'support-annotations'

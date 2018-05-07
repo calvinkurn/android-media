@@ -32,6 +32,7 @@ public class DynamicHomeChannel {
         public static final String LAYOUT_SPRINT = "sprint_3_image";
         public static final String LAYOUT_6_IMAGE = "6_image";
         public static final String LAYOUT_SPRINT_CAROUSEL = "sprint_carousel";
+        public static final String LAYOUT_DIGITAL_WIDGET = "digital_widget";
 
         @Expose
         @SerializedName("id")
@@ -62,6 +63,8 @@ public class DynamicHomeChannel {
         private Header header;
         @SerializedName("promoName")
         private String promoName;
+        @SerializedName("homeAttribution")
+        private String homeAttribution;
 
         public String getId() {
             return id;
@@ -119,7 +122,7 @@ public class DynamicHomeChannel {
             this.hero = hero;
         }
 
-        public Map<String, Object> getEnhanceImpressionSprintSaleHomePage() {
+        public Map<String, Object> getEnhanceImpressionSprintSaleHomePage(int position) {
             List<Object> list = convertProductEnhanceSprintSaleDataLayer(getGrids());
             return DataLayer.mapOf(
                     "event", "productView",
@@ -131,28 +134,70 @@ public class DynamicHomeChannel {
                             "impressions", DataLayer.listOf(
                                     list.toArray(new Object[list.size()])
 
-                            ))
+                            )),
+                    "attribution", getHomeAttribution(position + 1, "")
+            );
+        }
+
+        public Map<String, Object> getEnhanceImpressionSprintSaleCarouselHomePage(int position) {
+            List<Object> list = convertProductEnhanceSprintSaleCarouselDataLayer(getGrids());
+            return DataLayer.mapOf(
+                    "event", "promoView",
+                    "eventCategory", "homepage",
+                    "eventAction", "sprint sale banner impression",
+                    "eventLabel", "",
+                    "ecommerce", DataLayer.mapOf(
+                            "promoView", DataLayer.mapOf(
+                                    "promotions", DataLayer.listOf(
+                                            list.toArray(new Object[list.size()])
+                                    )
+                            )
+                    ),
+                    "attribution", getHomeAttribution(position + 1, "")
             );
         }
 
         private List<Object> convertProductEnhanceSprintSaleDataLayer(Grid[] grids) {
             List<Object> list = new ArrayList<>();
-            for (int i = 0; i < grids.length; i++) {
-                Grid grid = grids[i];
-                list.add(
-                        DataLayer.mapOf(
-                                "name", grid.getName(),
-                                "id", grid.getId(),
-                                "price", Integer.toString(CurrencyFormatHelper.convertRupiahToInt(
-                                        grid.getPrice()
-                                )),
-                                "brand", "none / other",
-                                "category", "none / other",
-                                "variant", "none / other",
-                                "list", "/ - p1 - sprint sale",
-                                "position", i + 1
-                        )
-                );
+
+            if (grids != null) {
+                for (int i = 0; i < grids.length; i++) {
+                    Grid grid = grids[i];
+                    list.add(
+                            DataLayer.mapOf(
+                                    "name", grid.getName(),
+                                    "id", grid.getId(),
+                                    "price", Integer.toString(CurrencyFormatHelper.convertRupiahToInt(
+                                            grid.getPrice()
+                                    )),
+                                    "brand", "none / other",
+                                    "category", "none / other",
+                                    "variant", "none / other",
+                                    "list", "/ - p1 - sprint sale",
+                                    "position", String.valueOf(i + 1)
+                            )
+                    );
+                }
+            }
+            return list;
+        }
+
+        private List<Object> convertProductEnhanceSprintSaleCarouselDataLayer(Grid[] grids) {
+            List<Object> list = new ArrayList<>();
+
+            if (grids != null) {
+                for (int i = 0; i < grids.length; i++) {
+                    Grid grid = grids[i];
+                    list.add(
+                            DataLayer.mapOf(
+                                    "id", grid.getId(),
+                                    "name", "/ - p2 - sprint sale banner",
+                                    "position", String.valueOf(i + 1),
+                                    "creative", grid.getName(),
+                                    "creative_url", grid.getImageUrl()
+                            )
+                    );
+                }
             }
             return list;
         }
@@ -178,15 +223,78 @@ public class DynamicHomeChannel {
                                                     "category", "none / other",
                                                     "variant", "none / other",
                                                     "list", "/ - p1 - sprint sale",
-                                                    "position", position + 1
+                                                    "position", String.valueOf(position + 1),
+                                                    "dimension38", getHomeAttribution(position + 1, getGrids()[position].getId())
                                             )
                                     )
                             )
-                    )
+                    ),
+                    "attribution", getHomeAttribution(position + 1, getGrids()[position].getId())
             );
         }
 
-        public Map<String, Object> getEnhanceImpressionDynamicChannelHomePage() {
+        public Map<String, Object> getEnhanceClickSprintSaleCarouselHomePage(int position, String countDown, String label) {
+            return DataLayer.mapOf(
+                    "event", "promoClick",
+                    "eventCategory", "homepage",
+                    "eventAction", "sprint sale banner click",
+                    "eventLabel", String.format("%s - %s", countDown, label),
+                    "ecommerce", DataLayer.mapOf(
+                            "promoClick", DataLayer.mapOf(
+                                    "promotions", DataLayer.listOf(
+                                            DataLayer.mapOf(
+                                                    "id", getGrids()[position].getId(),
+                                                    "name", "/ - p2 - sprint sale banner",
+                                                    "position", String.valueOf(position + 1),
+                                                    "creative", getGrids()[position].getName(),
+                                                    "creative_url", getGrids()[position].getImageUrl()
+                                            )
+                                    )
+                            )
+                    ),
+                    "attribution", getHomeAttribution(position + 1, getGrids()[position].getId())
+            );
+        }
+
+        public Map<String, Object> getEnhanceImpressionLegoBannerHomePage(int position) {
+            List<Object> list = convertPromoEnhanceLegoBannerDataLayer(getGrids(), getPromoName());
+            return DataLayer.mapOf(
+                    "event", "promoView",
+                    "eventCategory", "homepage",
+                    "eventAction", "lego banner impression",
+                    "eventLabel", "",
+                    "ecommerce", DataLayer.mapOf(
+                            "promoView", DataLayer.mapOf(
+                                    "promotions", DataLayer.listOf(
+                                            list.toArray(new Object[list.size()])
+                                    )
+                            )
+                    ),
+                    "attribution", getHomeAttribution(position + 1, "")
+            );
+        }
+
+        private List<Object> convertPromoEnhanceLegoBannerDataLayer(Grid[] grids, String promoName) {
+            List<Object> list = new ArrayList<>();
+
+            if (grids != null) {
+                for (int i = 0; i < grids.length; i++) {
+                    Grid grid = grids[i];
+                    list.add(
+                            DataLayer.mapOf(
+                                    "id", grid.getId(),
+                                    "name", promoName,
+                                    "creative", grid.getAttribution(),
+                                    "creative_url", grid.getImageUrl(),
+                                    "position", String.valueOf(i + 1)
+                            )
+                    );
+                }
+            }
+            return list;
+        }
+
+        public Map<String, Object> getEnhanceImpressionDynamicChannelHomePage(int position) {
             List<Object> list = convertPromoEnhanceDynamicChannelDataLayer(getHero(), getGrids(), getPromoName());
             return DataLayer.mapOf(
                     "event", "promoView",
@@ -199,7 +307,8 @@ public class DynamicHomeChannel {
                                             list.toArray(new Object[list.size()])
                                     )
                             )
-                    )
+                    ),
+                    "attribution", getHomeAttribution(position + 1, getHeader().getName())
             );
         }
 
@@ -209,7 +318,7 @@ public class DynamicHomeChannel {
                 list.add(DataLayer.mapOf(
                         "id", hero[0].getId(),
                         "name", promoName,
-                        "creative", hero[0].getName(),
+                        "creative", hero[0].getAttribution(),
                         "position", String.valueOf(1)
                 ));
             }
@@ -221,7 +330,7 @@ public class DynamicHomeChannel {
                             DataLayer.mapOf(
                                     "id", grid.getId(),
                                     "name", promoName,
-                                    "creative", grid.getName(),
+                                    "creative", grid.getAttribution(),
                                     "position", String.valueOf(i + 2)
                             )
                     );
@@ -242,12 +351,13 @@ public class DynamicHomeChannel {
                                             DataLayer.mapOf(
                                                     "id", hero.getId(),
                                                     "name", getPromoName(),
-                                                    "creative", hero.getName(),
+                                                    "creative", hero.getAttribution(),
                                                     "position", String.valueOf(position)
                                             )
                                     )
                             )
-                    )
+                    ),
+                    "attribution", getHomeAttribution(position, hero.getAttribution())
             );
         }
 
@@ -263,12 +373,36 @@ public class DynamicHomeChannel {
                                             DataLayer.mapOf(
                                                     "id", grid.getId(),
                                                     "name", getPromoName(),
-                                                    "creative", grid.getName(),
+                                                    "creative", grid.getAttribution(),
                                                     "position", String.valueOf(position)
                                             )
                                     )
                             )
-                    )
+                    ),
+                    "attribution", getHomeAttribution(position, grid.getAttribution())
+            );
+        }
+
+        public Map<String, Object> getEnhanceClickLegoBannerHomePage(Grid grid, int position) {
+            return DataLayer.mapOf(
+                    "event", "promoClick",
+                    "eventCategory", "homepage",
+                    "eventAction", "lego banner click",
+                    "eventLabel", grid.getName(),
+                    "ecommerce", DataLayer.mapOf(
+                            "promoClick", DataLayer.mapOf(
+                                    "promotions", DataLayer.listOf(
+                                            DataLayer.mapOf(
+                                                    "id", grid.getId(),
+                                                    "name", getPromoName(),
+                                                    "creative", grid.getAttribution(),
+                                                    "creative_url", grid.getImageUrl(),
+                                                    "position", String.valueOf(position)
+                                            )
+                                    )
+                            )
+                    ),
+                    "attribution", getHomeAttribution(position, grid.getAttribution())
             );
         }
 
@@ -278,6 +412,18 @@ public class DynamicHomeChannel {
 
         public String getPromoName() {
             return promoName;
+        }
+
+        public String getHomeAttribution(int position, String creativeName) {
+            return homeAttribution.replace("$1", Integer.toString(position)).replace("$2", (creativeName != null) ? creativeName : "");
+        }
+
+        public void setHomeAttribution(String homeAttribution) {
+            this.homeAttribution = homeAttribution;
+        }
+
+        public String getHomeAttribution() {
+            return homeAttribution;
         }
     }
 
@@ -301,6 +447,10 @@ public class DynamicHomeChannel {
         @Expose
         @SerializedName("url")
         private String url;
+
+        @Expose
+        @SerializedName("attribution")
+        private String attribution;
 
         public String getId() {
             return id;
@@ -340,6 +490,14 @@ public class DynamicHomeChannel {
 
         public void setUrl(String url) {
             this.url = url;
+        }
+
+        public String getAttribution() {
+            return attribution;
+        }
+
+        public void setAttribution(String attribution) {
+            this.attribution = attribution;
         }
     }
 
@@ -383,6 +541,10 @@ public class DynamicHomeChannel {
         @Expose
         @SerializedName("soldPercentage")
         private int soldPercentage;
+
+        @Expose
+        @SerializedName("attribution")
+        private String attribution;
 
         public String getLabel() {
             return label;
@@ -462,6 +624,14 @@ public class DynamicHomeChannel {
 
         public void setSlashedPrice(String slashedPrice) {
             this.slashedPrice = slashedPrice;
+        }
+
+        public String getAttribution() {
+            return attribution;
+        }
+
+        public void setAttribution(String attribution) {
+            this.attribution = attribution;
         }
     }
 

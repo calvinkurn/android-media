@@ -32,7 +32,7 @@
                 layout="@layout/partial_gm_statistic_compare_date"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/margin_med" />
+                android:layout_marginTop="@dimen/dp_20" />
         </LinearLayout>
     </ScrollView>
 

@@ -29,13 +29,16 @@
 
             <TextView
                 android:id="@+id/channel_discount"
-                style="@style/TextView.Nano.Red.Bold"
-                android:background="@drawable/home_channel_discount_text_background"
+                style="@style/TextView.Nano"
+                android:textStyle="bold"
+                android:textColor="@color/discount_color_selector"
+                android:background="@drawable/home_channel_discount_bg"
                 android:paddingTop="@dimen/label_padding_top_bottom"
                 android:paddingBottom="@dimen/label_padding_top_bottom"
                 android:paddingLeft="@dimen/label_padding_left_right"
                 android:paddingRight="@dimen/label_padding_left_right"
                 android:layout_gravity="top|right"
+                android:textIsSelectable="true"
                 android:text="50% OFF"/>
         </FrameLayout>
 
@@ -71,7 +74,9 @@
             android:layout_height="4dp"
             android:layout_marginBottom="3dp"
             android:progress="80"
-            android:progressBackgroundTint="#e0e0e0"
+            android:secondaryProgress="100"
+            android:progressBackgroundTintMode="src_in"
+            android:progressBackgroundTint="@color/grey_hint_full"
             android:progressDrawable="@drawable/gradient_progress" />
 
         <com.tokopedia.design.component.TextViewCompat

@@ -45,10 +45,14 @@ public interface HomeContract {
         Activity getActivity();
 
         void updateListOnResume(List<Visitable> visitables);
+
+        void showRecomendationButton();
     }
 
     interface Presenter extends CustomerPresenter<View> {
         void getHomeData();
+
+        void updateHomeData();
 
         void getHeaderData(boolean initialStart);
 
@@ -73,5 +77,7 @@ public interface HomeContract {
         void onResume();
 
         void onFirstLaunch();
+
+        void onDestroy();
     }
 }

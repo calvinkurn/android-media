@@ -17,8 +17,6 @@ import android.widget.TextView;
 
 import com.tokopedia.home.R;
 
-import org.w3c.dom.Text;
-
 import java.util.Date;
 import java.util.Locale;
 
@@ -113,7 +111,9 @@ public class CountDownView extends FrameLayout {
     private void handleExpiredTime(CountDownListener listener) {
         stopAutoRefreshCounter();
         setTime(0, 0, 0);
-        listener.onCountDownFinished();
+        if (listener != null) {
+            listener.onCountDownFinished();
+        }
     }
 
     private boolean isExpired(Date expiredTime) {
@@ -155,8 +155,19 @@ public class CountDownView extends FrameLayout {
     }
 
     @Override
-    protected Parcelable onSaveInstanceState() {
+    protected void onDetachedFromWindow() {
+        super.onDetachedFromWindow();
         stopAutoRefreshCounter();
+    }
+
+    @Override
+    protected void onAttachedToWindow() {
+        super.onAttachedToWindow();
+        startAutoRefreshCounter();
+    }
+
+    @Override
+    protected Parcelable onSaveInstanceState() {
         return super.onSaveInstanceState();
     }
 

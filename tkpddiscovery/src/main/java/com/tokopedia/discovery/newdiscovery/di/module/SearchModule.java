@@ -3,13 +3,13 @@ package com.tokopedia.discovery.newdiscovery.di.module;
 import android.content.Context;
 
 import com.tokopedia.core.base.di.qualifier.ApplicationContext;
+import com.tokopedia.discovery.imagesearch.di.module.ImageSearchModule;
+import com.tokopedia.discovery.imagesearch.domain.usecase.GetImageSearchUseCase;
+import com.tokopedia.discovery.imagesearch.search.fragment.product.ImageProductListPresenter;
+import com.tokopedia.discovery.imagesearch.search.fragment.product.ImageProductListPresenterImpl;
 import com.tokopedia.discovery.newdiscovery.di.scope.SearchScope;
-import com.tokopedia.discovery.newdiscovery.domain.usecase.AddWishlistActionUseCase;
 import com.tokopedia.discovery.newdiscovery.domain.usecase.GetProductUseCase;
-import com.tokopedia.discovery.newdiscovery.domain.usecase.GetShopUseCase;
-import com.tokopedia.discovery.newdiscovery.domain.usecase.RemoveWishlistActionUseCase;
 import com.tokopedia.discovery.newdiscovery.search.SearchPresenter;
-import com.tokopedia.discovery.newdiscovery.search.fragment.catalog.presenter.CatalogPresenter;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.ProductListPresenter;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.ProductListPresenterImpl;
 import com.tokopedia.discovery.newdiscovery.search.fragment.shop.ShopListPresenter;
@@ -23,7 +23,7 @@ import dagger.Provides;
  */
 
 @SearchScope
-@Module(includes = {GuidedSearchModule.class, ProductModule.class, BannerModule.class, ApiModule.class, CatalogModule.class, ShopModule.class, AttributeModule.class})
+@Module(includes = {GuidedSearchModule.class, ProductModule.class, ImageSearchModule.class, BannerModule.class, ApiModule.class, CatalogModule.class, ShopModule.class, AttributeModule.class})
 public class SearchModule {
 
     @SearchScope
@@ -34,14 +34,20 @@ public class SearchModule {
 
     @SearchScope
     @Provides
+    ImageProductListPresenter provideImageProductListPresenter(@ApplicationContext Context context) {
+        return new ImageProductListPresenterImpl(context);
+    }
+
+    @SearchScope
+    @Provides
     ShopListPresenter provideShopListPresenter(@ApplicationContext Context context) {
         return new ShopListPresenterImpl(context);
     }
 
     @SearchScope
     @Provides
-    SearchPresenter provideSearchPresenter(GetProductUseCase getProductUseCase) {
-        return new SearchPresenter(getProductUseCase);
+    SearchPresenter provideSearchPresenter(GetProductUseCase getProductUseCase, GetImageSearchUseCase getImageSearchUseCase) {
+        return new SearchPresenter(getProductUseCase, getImageSearchUseCase);
     }
 
 }

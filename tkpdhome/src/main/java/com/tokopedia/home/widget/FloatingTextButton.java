@@ -4,6 +4,7 @@ package com.tokopedia.home.widget;
  * Created by errysuprayogi on 3/16/18.
  */
 
+import android.animation.Animator;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Color;
@@ -11,13 +12,22 @@ import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.support.annotation.ColorInt;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.support.design.widget.CoordinatorLayout;
+import android.support.v4.view.ViewPropertyAnimatorCompat;
+import android.support.v4.view.animation.FastOutSlowInInterpolator;
+import android.support.v7.content.res.AppCompatResources;
 import android.support.v7.widget.CardView;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.animation.AccelerateInterpolator;
+import android.view.animation.DecelerateInterpolator;
+import android.view.animation.Interpolator;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
+
 import com.tokopedia.home.R;
 import com.tokopedia.home.util.DimensionUtils;
 
@@ -35,11 +45,30 @@ public class FloatingTextButton extends FrameLayout {
     private Drawable rightIcon;
     private int background;
     private boolean titleAllCaps;
+    private static final String TAG = FloatingTextButton.class.getSimpleName();
+    private static final Interpolator INTERPOLATOR = new FastOutSlowInInterpolator();
+    private static final Long DURATION = 250L;
+    private ViewPropertyAnimatorCompat animation = null;
+    private boolean forceHide = false;
+    private boolean animationStart;
 
     public FloatingTextButton(Context context, AttributeSet attrs) {
         super(context, attrs);
         inflateLayout(context);
         initAttributes(attrs);
+        initView();
+    }
+
+    public FloatingTextButton(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
+        super(context, attrs, defStyleAttr);
+        inflateLayout(context);
+        initAttributes(attrs);
+        initView();
+    }
+
+    public FloatingTextButton(@NonNull Context context) {
+        super(context);
+        inflateLayout(context);
         initView();
     }
 
@@ -64,7 +93,8 @@ public class FloatingTextButton extends FrameLayout {
         titleView.setTextColor(color);
     }
 
-    public @ColorInt int getTitleColor() {
+    public @ColorInt
+    int getTitleColor() {
         return titleColor;
     }
 
@@ -73,7 +103,8 @@ public class FloatingTextButton extends FrameLayout {
         container.setCardBackgroundColor(color);
     }
 
-    public @ColorInt int getBackgroundColor() {
+    public @ColorInt
+    int getBackgroundColor() {
         return background;
     }
 
@@ -143,10 +174,19 @@ public class FloatingTextButton extends FrameLayout {
 
         title = styleable.getString(R.styleable.FloatingTextButton_floating_title);
         titleColor = styleable.getColor(R.styleable.FloatingTextButton_floating_title_color, Color.BLACK);
-        leftIcon = styleable.getDrawable(R.styleable.FloatingTextButton_floating_left_icon);
-        rightIcon = styleable.getDrawable(R.styleable.FloatingTextButton_floating_right_icon);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            leftIcon = styleable.getDrawable(R.styleable.FloatingTextButton_floating_left_icon);
+            rightIcon = styleable.getDrawable(R.styleable.FloatingTextButton_floating_right_icon);
+        } else {
+            final int drawableLeftId = styleable.getResourceId(R.styleable.FloatingTextButton_floating_left_icon, -1);
+            final int drawableRightId = styleable.getResourceId(R.styleable.FloatingTextButton_floating_right_icon, -1);
+            if (drawableLeftId != -1)
+                leftIcon = AppCompatResources.getDrawable(getContext(), drawableLeftId);
+            if (drawableRightId != -1)
+                rightIcon = AppCompatResources.getDrawable(getContext(), drawableRightId);
+        }
         background = styleable.getColor(R.styleable.FloatingTextButton_floating_background_color, Color.WHITE);
-        titleAllCaps = styleable.getBoolean(R.styleable.FloatingButton_buttonTextAllCaps, true);
+        titleAllCaps = styleable.getBoolean(R.styleable.FloatingTextButton_floating_title_allcaps, false);
         titleView.setAllCaps(titleAllCaps);
         styleable.recycle();
     }
@@ -157,48 +197,112 @@ public class FloatingTextButton extends FrameLayout {
         setLeftIconDrawable(leftIcon);
         setRightIconDrawable(rightIcon);
         setBackgroundColor(background);
-
-        container.setContentPadding(
-                getHorizontalPaddingValue(8),
-                getVerticalPaddingValue(8),
-                getHorizontalPaddingValue(8),
-                getVerticalPaddingValue(8)
-        );
-        initViewRadius();
     }
 
-    @Override
-    protected void onVisibilityChanged(@NonNull View changedView, int visibility) {
-        super.onVisibilityChanged(changedView, visibility);
-        if(visibility==VISIBLE) {
-            initViewRadius();
-        }
-    }
-
-    private void initViewRadius() {
-        container.post(new Runnable() {
-            @Override
-            public void run() {
-                container.setRadius(container.getHeight() / 2);
-            }
-        });
-    }
 
     @SuppressWarnings("SameParameterValue")
     private int getVerticalPaddingValue(int dp) {
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
-            return DimensionUtils.dpToPx(getContext(), dp) / 4;
-        } else {
-            return DimensionUtils.dpToPx(getContext(), dp);
-        }
+        return DimensionUtils.convertDpToPixel(dp, getContext());
     }
 
     @SuppressWarnings("SameParameterValue")
     private int getHorizontalPaddingValue(int dp) {
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
-            return DimensionUtils.dpToPx(getContext(), dp) / 2;
-        } else {
-            return DimensionUtils.dpToPx(getContext(), dp);
+        return DimensionUtils.convertDpToPixel(dp, getContext());
+    }
+
+    public void show() {
+        show(-1);
+    }
+
+    private void show(final int visibility) {
+        if (forceHide)
+            return;
+        animate().translationY(0).setInterpolator(new DecelerateInterpolator(2))
+                .setListener(new Animator.AnimatorListener() {
+                    @Override
+                    public void onAnimationStart(Animator animator) {
+                        animationStart = true;
+                        if (visibility >= 0) {
+                            FloatingTextButton.super.setVisibility(visibility);
+                        }
+                    }
+
+                    @Override
+                    public void onAnimationEnd(Animator animator) {
+                        animationStart = false;
+                    }
+
+                    @Override
+                    public void onAnimationCancel(Animator animator) {
+                        animationStart = false;
+                    }
+
+                    @Override
+                    public void onAnimationRepeat(Animator animator) {
+
+                    }
+                })
+                .setDuration(DURATION)
+                .start();
+    }
+
+    public void hide() {
+        hide(-1);
+    }
+
+    private void hide(final int visibility) {
+        CoordinatorLayout.LayoutParams layoutParams = (CoordinatorLayout.LayoutParams) getLayoutParams();
+        int fab_bottomMargin = layoutParams.bottomMargin;
+        animate().translationY(getHeight() + fab_bottomMargin).setInterpolator(new AccelerateInterpolator(2))
+                .setListener(new Animator.AnimatorListener() {
+                    @Override
+                    public void onAnimationStart(Animator animator) {
+                        animationStart = true;
+                    }
+
+                    @Override
+                    public void onAnimationEnd(Animator animator) {
+                        animationStart = false;
+                        if (visibility >= 0) {
+                            FloatingTextButton.super.setVisibility(visibility);
+                        }
+                    }
+
+                    @Override
+                    public void onAnimationCancel(Animator animator) {
+                        animationStart = false;
+                    }
+
+                    @Override
+                    public void onAnimationRepeat(Animator animator) {
+
+                    }
+                })
+                .setDuration(DURATION)
+                .start();
+    }
+
+    public boolean isAnimationStart() {
+        return animationStart;
+    }
+
+    @Override
+    public void setVisibility(int visibility) {
+        if (getVisibility() != visibility) {
+            if (visibility == VISIBLE) {
+                show(visibility);
+            } else if ((visibility == INVISIBLE) || (visibility == GONE)) {
+                hide(visibility);
+            }
         }
+    }
+
+    public void forceHide() {
+        forceHide = true;
+        hide();
+    }
+
+    public void resetState() {
+        this.forceHide = false;
     }
 }

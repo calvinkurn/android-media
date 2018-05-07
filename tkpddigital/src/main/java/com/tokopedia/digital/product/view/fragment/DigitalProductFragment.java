@@ -44,8 +44,10 @@ import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
+import com.tokopedia.core.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.core.router.digitalmodule.IDigitalModuleRouter;
 import com.tokopedia.core.router.digitalmodule.passdata.DigitalCheckoutPassData;
+import com.tokopedia.core.util.DeepLinkChecker;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.RequestPermissionUtil;
 import com.tokopedia.core.util.SessionHandler;
@@ -762,10 +764,39 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
 
     @Override
     public void onBannerItemClicked(BannerData bannerData) {
-        if (TextUtils.isEmpty(bannerData.getLink())) return;
-        navigateToActivity(DigitalWebActivity.newInstance(
-                getActivity(), bannerData.getLink())
-        );
+        if (!TextUtils.isEmpty(bannerData.getLink())) {
+            int deeplinkType = DeepLinkChecker.getDeepLinkType(bannerData.getLink());
+            if (deeplinkType == DeepLinkChecker.PROMO) {
+                Uri uriData = Uri.parse(bannerData.getLink());
+                List<String> linkSegment = uriData.getPathSegments();
+                openPromo(bannerData.getLink(), linkSegment);
+            } else {
+                navigateToActivity(DigitalWebActivity.newInstance(
+                        getActivity(), bannerData.getLink())
+                );
+            }
+        }
+    }
+
+    private void openPromo(String url, List<String> linkSegment) {
+        IDigitalModuleRouter router = ((IDigitalModuleRouter) getActivity().getApplication());
+        if (linkSegment.size() == 2) {
+            Intent intent = router.getPromoDetailIntent(context, linkSegment.get(1));
+            startActivity(intent);
+        } else if (linkSegment.size() == 1) {
+            FirebaseRemoteConfigImpl remoteConfig = new FirebaseRemoteConfigImpl(context);
+            boolean remoteConfigEnable = remoteConfig.getBoolean(
+                    TkpdCache.RemoteConfigKey.MAINAPP_NATIVE_PROMO_LIST
+            );
+            if (remoteConfigEnable) {
+                Intent intent = router.getPromoListIntent(getActivity());
+                startActivity(intent);
+            } else {
+                navigateToActivity(DigitalWebActivity.newInstance(
+                        getActivity(), url)
+                );
+            }
+        }
     }
 
     @Override
@@ -931,16 +962,19 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
     public void checkBalanceByUSSD(int simPosition, String ussdCode) {
         presenter.processToCheckBalance(null, simPosition, ussdCode);
         UnifyTracking.eventUssd(AppEventTracking.Action.CLICK_USSD_CEK_SALDO, DeviceUtil.getOperatorName(getActivity(), simPosition) + " - " + presenter.getDeviceMobileNumber(simPosition));
+        UnifyTracking.eventUssdAttempt(getString(R.string.ussd_permission_allowed_label));
     }
 
     @OnPermissionDenied({Manifest.permission.CALL_PHONE, Manifest.permission.READ_PHONE_STATE})
     void showDeniedForPhone() {
         RequestPermissionUtil.onPermissionDenied(getActivity(), Manifest.permission.CALL_PHONE);
+        UnifyTracking.eventUssdAttempt(getString(R.string.ussd_permission_denied_label));
     }
 
     @OnNeverAskAgain({Manifest.permission.CALL_PHONE, Manifest.permission.READ_PHONE_STATE})
     void showNeverAskForPhone() {
         RequestPermissionUtil.onNeverAskAgain(getActivity(), Manifest.permission.CALL_PHONE);
+        UnifyTracking.eventUssdAttempt(getString(R.string.ussd_permission_denied_label));
     }
 
     private void renderContactDataToClientNumber(ContactData contactData) {
@@ -1099,11 +1133,13 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
             }
             if (pulsaBalance != null && pulsaBalance.isSuccess()) {
                 pulsaBalance.setMobileNumber(number);
+                UnifyTracking.eventUssdAttempt(getString(R.string.status_success_label) );
                 startActivity(DigitalUssdActivity.newInstance(getActivity(), pulsaBalance, presenter.getSelectedUssdOperator(selectedSim),
                         categoryDataState.getClientNumberList().get(0).getValidation(),
                         categoryId, categoryDataState.getName(), selectedSim, presenter.getSelectedUssdOperatorList(selectedSim)));
             } else {
                 showMessageAlert(getActivity().getString(R.string.error_message_ussd_msg_not_parsed), getActivity().getString(R.string.message_ussd_title));
+                UnifyTracking.eventUssdAttempt(getString(R.string.status_failed_label) +  getActivity().getString(R.string.error_message_ussd_msg_not_parsed));
             }
         }
     }

@@ -29,8 +29,6 @@ import com.tokopedia.core.util.SessionHandler;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-import static com.tokopedia.core.drawer2.data.source.CloudDepositSource.DRAWER_CACHE_DEPOSIT;
-
 /**
  * Created by nisie on 1/11/17.
  */
@@ -164,7 +162,8 @@ public class DrawerHeaderDataBinder extends DataBinder<DrawerHeaderDataBinder.Vi
     private DrawerData createDataFromCache(LocalCacheHandler drawerCache) {
         DrawerData data = new DrawerData();
         DrawerDeposit deposit = new DrawerDeposit();
-        deposit.setDeposit(drawerCache.getString(DRAWER_CACHE_DEPOSIT, ""));
+        deposit.setDeposit("");
+        //deposit.setDeposit(drawerCache.getString(DRAWER_CACHE_DEPOSIT, ""));
 
         data.setDrawerDeposit(deposit);
         return data;

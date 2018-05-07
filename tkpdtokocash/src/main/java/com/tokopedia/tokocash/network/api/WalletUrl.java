@@ -9,6 +9,7 @@ public interface WalletUrl {
     class BaseUrl {
         public static String ACCOUNTS_DOMAIN = "https://accounts.tokopedia.com/";
         public static String WALLET_DOMAIN = "https://www.tokocash.com/";
+        public static String WEB_DOMAIN = "https://www.tokpedia.com/";
     }
 
     class KeyHmac {
@@ -34,4 +35,7 @@ public interface WalletUrl {
         public static final String GET_BALANCE = "api/v1/wallet/balance";
     }
 
+    public interface AutoSweep {
+        String API_AUTO_SWEEP_HOME = "mutualfund/api/user/autosweep";
+    }
 }

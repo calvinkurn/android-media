@@ -135,6 +135,10 @@
         <value>false</value>
     </entry>
     <entry>
+        <key>app_double_shake_enabled</key>
+        <value>true</value>
+    </entry>
+    <entry>
         <key>mainapp_show_simple_app_rating</key>
         <value>true</value>
     </entry>
@@ -144,7 +148,11 @@
     </entry>
     <entry>
         <key>flight_airport</key>
-        <value>3</value>
+        <value>7</value>
+    </entry>
+    <entry>
+        <key>flight_airline</key>
+        <value>1</value>
     </entry>
     <entry>
         <key>notification_logger</key>
@@ -178,7 +186,27 @@
         <value>true</value>
     </entry>
     <entry>
+        <key>mainapp_flight_transaction_menu</key>
+        <value>false</value>
+    </entry>
+    <entry>
         <key>mainapp_show_recomendation_button</key>
         <value>true</value>
+    </entry>
+    <entry>
+        <key>mainapp_enable_fingerprint</key>
+        <value>true</value>
+    </entry>
+    <entry>
+        <key>sellerapp_enable_fingerprint</key>
+        <value>true</value>
+    </entry>
+    <entry>
+        <key>mainapp_explore_native_enable</key>
+        <value>true</value>
+    </entry>
+    <entry>
+        <key>mainapp_explore_url</key>
+        <value>tokopedia://webview?url=https%3A%2F%2Fm.tokopedia.com%2Fcontent%2Fexplore%3Fwebview%3Dtrue</value>
     </entry>
 </defaultsMap>

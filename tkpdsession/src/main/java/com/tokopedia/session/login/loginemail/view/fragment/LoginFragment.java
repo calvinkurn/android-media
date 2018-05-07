@@ -56,6 +56,7 @@ import com.tokopedia.core.util.BranchSdkUtils;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.design.text.TkpdHintTextInputLayout;
 import com.tokopedia.di.DaggerSessionComponent;
+import com.tokopedia.di.SessionModule;
 import com.tokopedia.otp.cotp.view.activity.VerificationActivity;
 import com.tokopedia.otp.cotp.view.viewmodel.InterruptVerificationViewModel;
 import com.tokopedia.otp.cotp.view.viewmodel.VerificationPassModel;
@@ -119,6 +120,9 @@ public class LoginFragment extends BaseDaggerFragment
     public static final String AUTO_LOGIN_PASS = "pw";
     private static final int MINIMAL_HEIGHT = 1200;
 
+    public static final String IS_AUTO_FILL = "auto_fill";
+    public static final String AUTO_FILL_EMAIL = "email";
+
     AutoCompleteTextView emailEditText;
     TextInputEditText passwordEditText;
     ScrollView loginView;
@@ -165,6 +169,18 @@ public class LoginFragment extends BaseDaggerFragment
                         .build();
 
         daggerSessionComponent.inject(this);
+    }
+
+    public void initOuterInjector(SessionModule sessionModule){
+        AppComponent appComponent = getComponent(AppComponent.class);
+        DaggerSessionComponent daggerSessionComponent = (DaggerSessionComponent)
+                DaggerSessionComponent.builder()
+                        .appComponent(appComponent)
+                        .sessionModule(sessionModule)
+                        .build();
+        daggerSessionComponent.inject(this);
+
+        presenter.attachView(this);
     }
 
     @Override
@@ -218,7 +234,6 @@ public class LoginFragment extends BaseDaggerFragment
         super.onCreate(savedInstanceState);
         UserAuthenticationAnalytics.setActiveLogin();
         callbackManager = CallbackManager.Factory.create();
-        sessionHandler.clearToken();
     }
 
     @Nullable
@@ -322,8 +337,9 @@ public class LoginFragment extends BaseDaggerFragment
         emailEditText.setAdapter(autoCompleteAdapter);
 
         presenter.discoverLogin();
-
-        if (getArguments().getBoolean(IS_AUTO_LOGIN, false)) {
+        if (getArguments().getBoolean(IS_AUTO_FILL, false)) {
+            emailEditText.setText(getArguments().getString(AUTO_FILL_EMAIL, ""));
+        }else if (getArguments().getBoolean(IS_AUTO_LOGIN, false)) {
             switch (getArguments().getInt(AUTO_LOGIN_METHOD)) {
                 case LoginActivity.METHOD_FACEBOOK:
                     onLoginFacebookClick();
@@ -503,6 +519,7 @@ public class LoginFragment extends BaseDaggerFragment
         for (int i = 0; i < listProvider.size(); i++) {
             int colorInt = Color.parseColor(COLOR_WHITE);
             LoginTextView tv = new LoginTextView(getActivity(), colorInt);
+            tv.setTag(listProvider.get(i).getId());
             tv.setText(listProvider.get(i).getName());
             if (!TextUtils.isEmpty(listProvider.get(i).getImage())) {
                 tv.setImage(listProvider.get(i).getImage());
@@ -592,11 +609,6 @@ public class LoginFragment extends BaseDaggerFragment
         saveSmartLock(SmartLockActivity.RC_SAVE_SECURITY_QUESTION,
                 emailEditText.getText().toString(),
                 passwordEditText.getText().toString());
-    }
-
-    @Override
-    public void resetToken() {
-        presenter.resetToken();
     }
 
     @Override
@@ -815,28 +827,24 @@ public class LoginFragment extends BaseDaggerFragment
         } else if (requestCode == REQUEST_SECURITY_QUESTION && resultCode == Activity.RESULT_CANCELED) {
             dismissLoadingLogin();
             getActivity().setResult(Activity.RESULT_CANCELED);
-            sessionHandler.clearToken();
         } else if (requestCode == REQUEST_LOGIN_PHONE_NUMBER && resultCode == Activity.RESULT_OK) {
             getActivity().setResult(Activity.RESULT_OK);
             getActivity().finish();
         } else if (requestCode == REQUEST_LOGIN_PHONE_NUMBER && resultCode == Activity.RESULT_CANCELED) {
             dismissLoadingLogin();
             getActivity().setResult(Activity.RESULT_CANCELED);
-            sessionHandler.clearToken();
         } else if (requestCode == REQUESTS_CREATE_PASSWORD && resultCode == Activity.RESULT_OK) {
             getActivity().setResult(Activity.RESULT_OK);
             getActivity().finish();
         } else if (requestCode == REQUESTS_CREATE_PASSWORD && resultCode == Activity.RESULT_CANCELED) {
             dismissLoadingLogin();
             getActivity().setResult(Activity.RESULT_CANCELED);
-            sessionHandler.clearToken();
         } else if (requestCode == REQUEST_ACTIVATE_ACCOUNT && resultCode == Activity.RESULT_OK) {
             getActivity().setResult(Activity.RESULT_OK);
             getActivity().finish();
         } else if (requestCode == REQUEST_ACTIVATE_ACCOUNT && resultCode == Activity.RESULT_CANCELED) {
             dismissLoadingLogin();
             getActivity().setResult(Activity.RESULT_CANCELED);
-            sessionHandler.clearToken();
         } else if (requestCode == REQUEST_VERIFY_PHONE) {
             getActivity().setResult(Activity.RESULT_OK);
             getActivity().finish();

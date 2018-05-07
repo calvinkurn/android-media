@@ -3,6 +3,7 @@ package com.tokopedia.flight.dashboard.view.fragment;
 import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
@@ -21,8 +22,8 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
-import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
+import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
 import com.tokopedia.design.banner.BannerView;
 import com.tokopedia.flight.FlightModuleRouter;
 import com.tokopedia.flight.R;
@@ -55,10 +56,11 @@ import javax.inject.Inject;
 
 /**
  * @author by nathan on 10/19/17.
- *         modified by al
+ * modified by al
  */
 
 public class FlightDashboardFragment extends BaseDaggerFragment implements FlightDashboardContract.View {
+    private static final String PROMO_PATH = "promo";
 
     public static final String EXTRA_TRIP = "EXTRA_TRIP";
     public static final String EXTRA_CLASS = "EXTRA_CLASS";
@@ -398,7 +400,7 @@ public class FlightDashboardFragment extends BaseDaggerFragment implements Fligh
         DatePickerDialog datePicker = new DatePickerDialog(getActivity(), new DatePickerDialog.OnDateSetListener() {
             @Override
             public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
-                presenter.onDepartureDateChange(year, month, dayOfMonth);
+                presenter.onDepartureDateChange(year, month, dayOfMonth, true);
             }
         }, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DATE));
         DatePicker datePicker1 = datePicker.getDatePicker();
@@ -414,7 +416,7 @@ public class FlightDashboardFragment extends BaseDaggerFragment implements Fligh
         DatePickerDialog datePicker = new DatePickerDialog(getActivity(), new DatePickerDialog.OnDateSetListener() {
             @Override
             public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
-                presenter.onReturnDateChange(year, month, dayOfMonth);
+                presenter.onReturnDateChange(year, month, dayOfMonth, true);
             }
         }, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DATE));
         DatePicker datePicker1 = datePicker.getDatePicker();
@@ -589,24 +591,52 @@ public class FlightDashboardFragment extends BaseDaggerFragment implements Fligh
     }
 
     private void bannerClickAction(int position) {
-        if (getBannerData(position) != null) {
-            if (getActivity().getApplication() instanceof FlightModuleRouter
-                    && ((FlightModuleRouter) getActivity().getApplication())
-                    .getBannerWebViewIntent(getActivity(), getBannerData(position).getAttributes().getImgUrl()) != null) {
-                presenter.onBannerItemClick(position, getBannerData(position));
-                startActivity(((FlightModuleRouter) getActivity().getApplication())
-                        .getBannerWebViewIntent(getActivity(), getBannerData(position).getAttributes().getImgUrl()));
+        if (getBannerData(position) != null && getBannerData(position).getAttributes() != null) {
+            String url = getBannerData(position).getAttributes().getImgUrl();
+            Uri uri = Uri.parse(url);
+            boolean isPromoNativeActive = isPromoNativeActive();
+            if (isPromoNativeActive && uri != null
+                    && uri.getPathSegments() != null
+                    && uri.getPathSegments().size() == 2
+                    && uri.getPathSegments().get(0).equalsIgnoreCase(PROMO_PATH)) {
+                String slug = uri.getPathSegments().get(1);
+                if (getActivity().getApplication() instanceof FlightModuleRouter
+                        && ((FlightModuleRouter) getActivity().getApplication())
+                        .getPromoDetailIntent(getActivity(), slug) != null) {
+                    presenter.onBannerItemClick(position, getBannerData(position));
+                    startActivity(((FlightModuleRouter) getActivity().getApplication())
+                            .getPromoDetailIntent(getActivity(), slug));
+                }
+            } else {
+                if (getActivity().getApplication() instanceof FlightModuleRouter
+                        && ((FlightModuleRouter) getActivity().getApplication())
+                        .getBannerWebViewIntent(getActivity(), url) != null) {
+                    presenter.onBannerItemClick(position, getBannerData(position));
+                    startActivity(((FlightModuleRouter) getActivity().getApplication())
+                            .getBannerWebViewIntent(getActivity(), url));
+                }
             }
         }
     }
 
-    private void bannerAllClickAction() {
-        if (getActivity().getApplication() instanceof FlightModuleRouter
-                && ((FlightModuleRouter) getActivity().getApplication())
-                .getBannerWebViewIntent(getActivity(), FlightUrl.ALL_PROMO_LINK) != null) {
+    private boolean isPromoNativeActive() {
+        if (getActivity() != null && getActivity().getApplication() instanceof FlightModuleRouter) {
+            return ((FlightModuleRouter) getActivity().getApplication())
+                    .isPromoNativeEnable();
+        } else {
+            return false;
+        }
+    }
 
-            startActivity(((FlightModuleRouter) getActivity().getApplication())
-                    .getBannerWebViewIntent(getActivity(), FlightUrl.ALL_PROMO_LINK));
+    private void bannerAllClickAction() {
+        if (getActivity() != null && getActivity().getApplication() instanceof FlightModuleRouter) {
+            if (isPromoNativeActive()) {
+                startActivity(((FlightModuleRouter) getActivity().getApplication())
+                        .getPromoListIntent(getActivity()));
+            } else {
+                startActivity(((FlightModuleRouter) getActivity().getApplication())
+                        .getBannerWebViewIntent(getActivity(), FlightUrl.ALL_PROMO_LINK));
+            }
         }
     }
 

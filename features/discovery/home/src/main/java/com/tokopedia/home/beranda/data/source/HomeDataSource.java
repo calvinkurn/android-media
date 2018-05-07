@@ -18,6 +18,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import retrofit2.Response;
 import rx.Observable;
@@ -53,6 +54,7 @@ public class HomeDataSource {
                 String cache = cacheManager.getValueString(TkpdCache.Key.HOME_DATA_CACHE);
                 if (cache != null) {
                     HomeData homeData = gson.fromJson(cache, HomeData.class);
+                    homeData.setCache(true);
                     GraphqlResponse<HomeData> graphqlResponse = new GraphqlResponse<>();
                     graphqlResponse.setData(homeData);
                     return Response.success(graphqlResponse);
@@ -63,7 +65,10 @@ public class HomeDataSource {
     }
 
     public Observable<List<Visitable>> getHomeData() {
-        return homeDataApi.getHomeData(getRequestPayload()).map(saveToCache()).map(homeMapper);
+        return homeDataApi.getHomeData(getRequestPayload())
+                .debounce(200, TimeUnit.MILLISECONDS)
+                .map(saveToCache())
+                .map(homeMapper);
     }
 
     private Func1<Response<GraphqlResponse<HomeData>>, Response<GraphqlResponse<HomeData>>> saveToCache() {

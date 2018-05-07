@@ -1,13 +1,8 @@
 package com.tokopedia.inbox.inboxchat.viewmodel;
 
 
-import android.text.Spanned;
-
-import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.inbox.inboxchat.adapter.ChatRoomTypeFactory;
 import com.tokopedia.inbox.inboxchat.domain.model.ListReplyViewModel;
-import com.tokopedia.inbox.inboxchat.domain.model.reply.Attachment;
-import com.tokopedia.inbox.inboxchat.viewholder.MyChatViewHolder;
 
 /**
  * Created by Hendri on 20/02/18.
@@ -28,33 +23,81 @@ public class AttachProductViewModel extends ListReplyViewModel {
     }
 
     public AttachProductViewModel(OppositeChatViewModel source){
-        super(source.getMsgId(),source.getUserId(),source.getReplyId(),source.getSenderId()
-                ,source.getSenderName(),source.getRole(),source.getMsg(),source.getSpanned(),
-                source.getReplyTime(),source.getFraudStatus(),source.getReadTime(),source.getAttachment(),
-                source.getAttachmentId(),source.getOldMsgId(),source.isShowTime(),source.isShowHour(),
-                source.isOpposite(),source.isHighlight(),source.getOldMessageTitle());
+        super(source.getMsgId(),
+                source.getUserId(),
+                source.getReplyId(),
+                source.getSenderId(),
+                source.getSenderName(),
+                source.getRole(),
+                source.getMsg(),
+                source.getSpanned(),
+                source.getReplyTime(),
+                source.getFraudStatus(),
+                source.getReadTime(),
+                source.getAttachment(),
+                source.getAttachmentId(),
+                source.getOldMsgId(),
+                source.isShowTime(),
+                source.isShowHour(),
+                source.isOpposite(),
+                source.isHighlight(),
+                source.getOldMessageTitle(),
+                source.isShowRating(),
+                source.getRatingStatus());
         this.isDummy = false;
         this.isRetry = false;
         this.isSender = false;
     }
 
     public AttachProductViewModel(ThumbnailChatViewModel source){
-        super(source.getMsgId(),source.getUserId(),source.getReplyId(),source.getSenderId()
-                ,source.getSenderName(),source.getRole(),source.getMsg(),source.getSpanned(),
-                source.getReplyTime(),source.getFraudStatus(),source.getReadTime(),source.getAttachment(),
-                source.getAttachmentId(),source.getOldMsgId(),source.isShowTime(),source.isShowHour(),
-                source.isOpposite(),source.isHighlight(),source.getOldMessageTitle());
+        super(source.getMsgId(),
+                source.getUserId(),
+                source.getReplyId(),
+                source.getSenderId(),
+                source.getSenderName(),
+                source.getRole(),
+                source.getMsg(),
+                source.getSpanned(),
+                source.getReplyTime(),
+                source.getFraudStatus(),
+                source.getReadTime(),
+                source.getAttachment(),
+                source.getAttachmentId(),
+                source.getOldMsgId(),
+                source.isShowTime(),
+                source.isShowHour(),
+                source.isOpposite(),
+                source.isHighlight(),
+                source.getOldMessageTitle(),
+                source.isShowRating(),
+                source.getRatingStatus());
         this.isDummy = false;
         this.isRetry = false;
         this.isSender = false;
     }
 
     public AttachProductViewModel(MyChatViewModel source){
-        super(source.getMsgId(),source.getUserId(),source.getReplyId(),source.getSenderId()
-                ,source.getSenderName(),source.getRole(),source.getMsg(),source.getSpanned(),
-                source.getReplyTime(),source.getFraudStatus(),source.getReadTime(),source.getAttachment(),
-                source.getAttachmentId(),source.getOldMsgId(),source.isShowTime(),source.isShowHour(),
-                source.isOpposite(),source.isHighlight(),source.getOldMessageTitle());
+        super(source.getMsgId(),
+                source.getUserId(),
+                source.getReplyId(),
+                source.getSenderId(),
+                source.getSenderName(),
+                source.getRole(),
+                source.getMsg(),
+                source.getSpanned(),
+                source.getReplyTime(),
+                source.getFraudStatus(),
+                source.getReadTime(),
+                source.getAttachment(),
+                source.getAttachmentId(),
+                source.getOldMsgId(),
+                source.isShowTime(),
+                source.isShowHour(),
+                source.isOpposite(),
+                source.isHighlight(),
+                source.getOldMessageTitle(),
+                source.isShowRating(),
+                source.getRatingStatus());
         this.isDummy = source.isDummy();
         this.readStatus = source.isReadStatus();
         this.isRetry = source.isRetry();

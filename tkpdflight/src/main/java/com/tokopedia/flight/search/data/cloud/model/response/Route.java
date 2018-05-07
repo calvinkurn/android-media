@@ -47,6 +47,12 @@ public class Route implements Parcelable {
     @SerializedName("amenities")
     @Expose
     private List<Amenity> amenities = null;
+    @SerializedName("stop")
+    @Expose
+    private int stops;
+    @SerializedName("stop_detail")
+    @Expose
+    private List<StopDetailEntity> stopDetails;
 
     private String airlineName; // mergeResult
     private String airlineLogo; // mergeResult
@@ -56,6 +62,40 @@ public class Route implements Parcelable {
 
     private String arrivalAirportName; // mergeResult
     private String arrivalAirportCity; // mergeResult
+
+    protected Route(Parcel in) {
+        airline = in.readString();
+        departureAirport = in.readString();
+        departureTimestamp = in.readString();
+        arrivalAirport = in.readString();
+        arrivalTimestamp = in.readString();
+        duration = in.readString();
+        layover = in.readString();
+        infos = in.createTypedArrayList(Info.CREATOR);
+        flightNumber = in.readString();
+        isRefundable = in.readByte() != 0;
+        amenities = in.createTypedArrayList(Amenity.CREATOR);
+        stops = in.readInt();
+        stopDetails = in.createTypedArrayList(StopDetailEntity.CREATOR);
+        airlineName = in.readString();
+        airlineLogo = in.readString();
+        departureAirportName = in.readString();
+        departureAirportCity = in.readString();
+        arrivalAirportName = in.readString();
+        arrivalAirportCity = in.readString();
+    }
+
+    public static final Creator<Route> CREATOR = new Creator<Route>() {
+        @Override
+        public Route createFromParcel(Parcel in) {
+            return new Route(in);
+        }
+
+        @Override
+        public Route[] newArray(int size) {
+            return new Route[size];
+        }
+    };
 
     public String getAirline() {
         return airline;
@@ -152,61 +192,47 @@ public class Route implements Parcelable {
     public Route() {
     }
 
+    public int getStops() {
+        return stops;
+    }
+
+    public void setStops(int stops) {
+        this.stops = stops;
+    }
+
+    public List<StopDetailEntity> getStopDetails() {
+        return stopDetails;
+    }
+
+    public void setStopDetails(List<StopDetailEntity> stopDetails) {
+        this.stopDetails = stopDetails;
+    }
+
     @Override
     public int describeContents() {
         return 0;
     }
 
     @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(this.airline);
-        dest.writeString(this.departureAirport);
-        dest.writeString(this.departureTimestamp);
-        dest.writeString(this.arrivalAirport);
-        dest.writeString(this.arrivalTimestamp);
-        dest.writeString(this.duration);
-        dest.writeString(this.layover);
-        dest.writeTypedList(this.infos);
-        dest.writeString(this.flightNumber);
-        dest.writeByte(this.isRefundable ? (byte) 1 : (byte) 0);
-        dest.writeTypedList(this.amenities);
-        dest.writeString(this.airlineName);
-        dest.writeString(this.airlineLogo);
-        dest.writeString(this.departureAirportName);
-        dest.writeString(this.departureAirportCity);
-        dest.writeString(this.arrivalAirportName);
-        dest.writeString(this.arrivalAirportCity);
+    public void writeToParcel(Parcel parcel, int i) {
+        parcel.writeString(airline);
+        parcel.writeString(departureAirport);
+        parcel.writeString(departureTimestamp);
+        parcel.writeString(arrivalAirport);
+        parcel.writeString(arrivalTimestamp);
+        parcel.writeString(duration);
+        parcel.writeString(layover);
+        parcel.writeTypedList(infos);
+        parcel.writeString(flightNumber);
+        parcel.writeByte((byte) (isRefundable ? 1 : 0));
+        parcel.writeTypedList(amenities);
+        parcel.writeInt(stops);
+        parcel.writeTypedList(stopDetails);
+        parcel.writeString(airlineName);
+        parcel.writeString(airlineLogo);
+        parcel.writeString(departureAirportName);
+        parcel.writeString(departureAirportCity);
+        parcel.writeString(arrivalAirportName);
+        parcel.writeString(arrivalAirportCity);
     }
-
-    protected Route(Parcel in) {
-        this.airline = in.readString();
-        this.departureAirport = in.readString();
-        this.departureTimestamp = in.readString();
-        this.arrivalAirport = in.readString();
-        this.arrivalTimestamp = in.readString();
-        this.duration = in.readString();
-        this.layover = in.readString();
-        this.infos = in.createTypedArrayList(Info.CREATOR);
-        this.flightNumber = in.readString();
-        this.isRefundable = in.readByte() != 0;
-        this.amenities = in.createTypedArrayList(Amenity.CREATOR);
-        this.airlineName = in.readString();
-        this.airlineLogo = in.readString();
-        this.departureAirportName = in.readString();
-        this.departureAirportCity = in.readString();
-        this.arrivalAirportName = in.readString();
-        this.arrivalAirportCity = in.readString();
-    }
-
-    public static final Parcelable.Creator<Route> CREATOR = new Parcelable.Creator<Route>() {
-        @Override
-        public Route createFromParcel(Parcel source) {
-            return new Route(source);
-        }
-
-        @Override
-        public Route[] newArray(int size) {
-            return new Route[size];
-        }
-    };
 }

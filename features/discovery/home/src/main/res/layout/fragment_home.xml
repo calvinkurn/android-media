@@ -51,8 +51,19 @@
         android:layout_gravity="center_horizontal|bottom"
         android:layout_margin="@dimen/margin_card_home"
         android:visibility="gone"
+        app:layout_behavior="com.tokopedia.home.widget.FabBehaviour"
         app:floating_title_allcaps="false"
-        app:floating_left_icon="@drawable/ic_info"
+        app:floating_left_icon="@drawable/ic_drop_down_arrow"
         app:floating_title="@string/cek_recomendasi" />
+
+    <fragment
+        android:id="@+id/floating_egg_fragment"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        android:name="com.tokopedia.gamification.floating.view.fragment.FloatingEggButtonFragment"
+        android:tag="floating_egg"
+        app:draggable="true"
+        app:margin_bottom="@dimen/new_margin_sm"/>
 
 </android.support.design.widget.CoordinatorLayout>
