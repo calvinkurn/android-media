@@ -145,12 +145,17 @@ public class ShakeDetectCampaignActivity extends BaseSimpleActivity implements S
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle(getString(R.string.title_dialog_wrong_scan));
         builder.setMessage(message);
+        builder.setOnDismissListener(new DialogInterface.OnDismissListener() {
+            @Override
+            public void onDismiss(DialogInterface dialogInterface) {
+                presenter.onRetryClick();
+            }
+        });
         builder.setPositiveButton(getString(R.string.btn_dialog_wrong_scan),
                 new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int i) {
                         dialog.dismiss();
-                        presenter.onRetryClick();
                     }
                 }).create().show();
     }
