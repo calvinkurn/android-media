@@ -1,6 +1,7 @@
 package com.tokopedia.kol.common.util;
 
 import android.os.Build;
+import android.text.TextUtils;
 import android.text.util.Linkify;
 import android.widget.TextView;
 
@@ -18,7 +19,12 @@ public class UrlUtil {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             Linkify.addLinks(textView, pattern, SCHEMES[0], SCHEMES, null, null);
         } else {
-            Linkify.addLinks(textView, pattern, SCHEMES[0]);
+            String text = textView.getText().toString();
+            if (!TextUtils.isEmpty(text)) {
+                text = text.replace(SCHEMES[1], SCHEMES[0]);
+                textView.setText(text);
+                Linkify.addLinks(textView, pattern, SCHEMES[0]);
+            }
         }
     }
 }
