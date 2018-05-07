@@ -4,6 +4,7 @@ import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.domain.UseCase;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
+import com.tokopedia.topads.dashboard.constant.TopAdsExtraConstant;
 import com.tokopedia.topads.dashboard.constant.TopAdsNetworkConstant;
 import com.tokopedia.topads.dashboard.domain.TopAdsProductAdsRepository;
 import com.tokopedia.topads.dashboard.domain.model.TopAdsDetailGroupDomainModel;
@@ -37,17 +38,21 @@ public class TopAdsCreateDetailProductListUseCase extends UseCase<TopAdsDetailPr
 
     @Override
     public Observable<TopAdsDetailProductDomainModel> createObservable(RequestParams requestParams) {
-        return topAdsProductAdsRepository.saveDetailListProduct((List<TopAdsDetailProductDomainModel>) requestParams.getObject(TopAdsNetworkConstant.PARAM_AD));
+        return topAdsProductAdsRepository.saveDetailListProduct((List<TopAdsDetailProductDomainModel>) requestParams.getObject(TopAdsNetworkConstant.PARAM_AD),
+                requestParams.getString(TopAdsExtraConstant.EXTRA_SOURCE, "")
+                );
     }
 
-    public static RequestParams createRequestParams(List<TopAdsDetailProductDomainModel> topAdsDetailProductDomainModels){
+    public static RequestParams createRequestParams(List<TopAdsDetailProductDomainModel> topAdsDetailProductDomainModels, String source){
         RequestParams params = RequestParams.create();
         params.putObject(TopAdsNetworkConstant.PARAM_AD, topAdsDetailProductDomainModels);
+        params.putString(TopAdsExtraConstant.EXTRA_SOURCE, source);
         return params;
     }
 
     public static RequestParams createRequestParams(TopAdsDetailGroupDomainModel topAdsDetailGroupDomainModel ,
-                                                    List<TopAdsProductViewModel> topAdsProductViewModelList) {
+                                                    List<TopAdsProductViewModel> topAdsProductViewModelList,
+                                                    String source) {
         List<TopAdsDetailProductDomainModel> topAdsDetailProductDomainModels = new ArrayList<>();
         for(TopAdsProductViewModel topAdsProductViewModel : topAdsProductViewModelList){
             TopAdsDetailGroupDomainModel detailGroupDomainModel = topAdsDetailGroupDomainModel.copy();
@@ -61,6 +66,7 @@ public class TopAdsCreateDetailProductListUseCase extends UseCase<TopAdsDetailPr
 
         RequestParams params = RequestParams.create();
         params.putObject(TopAdsNetworkConstant.PARAM_AD, topAdsDetailProductDomainModels);
+        params.putString(TopAdsExtraConstant.EXTRA_SOURCE, source);
         return params;
     }
 }

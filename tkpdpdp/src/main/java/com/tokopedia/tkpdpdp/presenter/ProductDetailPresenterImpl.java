@@ -11,7 +11,6 @@ import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
@@ -19,10 +18,10 @@ import android.widget.Toast;
 import com.appsflyer.AFInAppEventType;
 import com.google.android.gms.appindexing.Action;
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
+import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.CurrencyFormatHelper;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.analytics.AppEventTracking;
-import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.PaymentTracking;
 import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.analytics.TrackingUtils;
@@ -71,6 +70,12 @@ import com.tokopedia.tkpdpdp.R;
 import com.tokopedia.tkpdpdp.dialog.DialogToEtalase;
 import com.tokopedia.tkpdpdp.fragment.ProductDetailFragment;
 import com.tokopedia.tkpdpdp.listener.ProductDetailView;
+import com.tokopedia.topads.sourcetagging.constant.TopAdsSourceTaggingConstant;
+import com.tokopedia.topads.sourcetagging.data.repository.TopAdsSourceTaggingRepositoryImpl;
+import com.tokopedia.topads.sourcetagging.data.source.TopAdsSourceTaggingDataSource;
+import com.tokopedia.topads.sourcetagging.data.source.TopAdsSourceTaggingLocal;
+import com.tokopedia.topads.sourcetagging.domain.interactor.TopAdsAddSourceTaggingUseCase;
+import com.tokopedia.topads.sourcetagging.domain.repository.TopAdsSourceTaggingRepository;
 
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -81,6 +86,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+
+import rx.Subscriber;
 
 import static com.tokopedia.core.network.apiservices.galadriel.GaladrielApi.VALUE_TARGET_GOLD_MERCHANT;
 import static com.tokopedia.core.network.apiservices.galadriel.GaladrielApi.VALUE_TARGET_GUEST;
@@ -111,9 +118,12 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
     private ProductDetailView viewListener;
     private RetrofitInteractor retrofitInteractor;
     private CacheInteractor cacheInteractor;
+    private TopAdsSourceTaggingLocal topAdsSourceTaggingLocal;
     private int counter = 0;
     LocalCacheHandler cacheHandler;
     DateFormat df;
+
+    private TopAdsAddSourceTaggingUseCase topAdsAddSourceTaggingUseCase;
 
     public ProductDetailPresenterImpl(ProductDetailView viewListener) {
         this.viewListener = viewListener;
@@ -275,8 +285,17 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
         UnifyTracking.eventPDPDetail(pdt);
         TrackingUtils.sendMoEngageOpenProductEvent(successResult);
 
-        if (successResult.getShopInfo().getShopIsOfficial() == 1) {
-            ScreenTracking.eventOfficialStoreScreenAuth(successResult.getShopInfo().getShopId(), AppScreen.SCREEN_OFFICIAL_STORE);
+        try {
+            if (successResult.getShopInfo().getShopIsOfficial() == 1) {
+                ScreenTracking.eventOfficialStoreScreenAuth(successResult.getShopInfo().getShopId(), "official_store", "/product", String.valueOf(successResult.getInfo().getProductId()));
+            } else if (successResult.getShopInfo().getShopIsGold() == 1) {
+                ScreenTracking.eventOfficialStoreScreenAuth(successResult.getShopInfo().getShopId(), "gold_merchant", "/product", String.valueOf(successResult.getInfo().getProductId()));
+            } else {
+                ScreenTracking.eventOfficialStoreScreenAuth(successResult.getShopInfo().getShopId(), "reguler", "/product", String.valueOf(successResult.getInfo().getProductId()));
+            }
+        }catch(Exception e){
+            e.printStackTrace();
+            CommonUtils.dumper("GAv4 error "+e.getMessage());
         }
 
     }
@@ -511,6 +530,9 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
     @Override
     public void onDestroyView(@NonNull Context context) {
         retrofitInteractor.unSubscribeObservable();
+        if (topAdsAddSourceTaggingUseCase != null){
+            topAdsAddSourceTaggingUseCase.unsubscribe();
+        }
         cacheHandler = null;
         df = null;
     }
@@ -689,7 +711,7 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
             getProductVariant(context,Integer.toString(productData.getInfo().getProductId()));
         } else if (productStockNonVariant != null ){
             viewListener.addProductStock(productStockNonVariant);
-        } else {
+        } else if (productData != null && productData.getInfo() != null) {
             getProductStock(context,Integer.toString(productData.getInfo().getProductId()));
         }
 
@@ -1041,6 +1063,9 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
 
     @Override
     public void onPromoAdsClicked(final Context context, String shopId, final int itemId, final String userId) {
+        if (topAdsSourceTaggingLocal == null){
+            topAdsSourceTaggingLocal = new TopAdsSourceTaggingLocal(context);
+        }
         retrofitInteractor.checkPromoAds(shopId, itemId, userId, new RetrofitInteractor.CheckPromoAdsListener() {
             @Override
             public void onSuccess(String adsId) {
@@ -1063,7 +1088,8 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
         retrofitInteractor.updateRecentView(context, Integer.toString(productId));
     }
 
-    private void openPromoteAds(Context context, String url) {
+    @Override
+    public void openPromoteAds(Context context, String url) {
         Intent topadsIntent = context.getPackageManager()
                 .getLaunchIntentForPackage(GlobalConfig.PACKAGE_SELLER_APP);
         if (topadsIntent != null) {
@@ -1080,6 +1106,34 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
             ((TkpdCoreRouter) context.getApplicationContext()).goToCreateMerchantRedirect(context);
             UnifyTracking.eventTopAdsSwitcher(AppEventTracking.Category.SWITCHER);
         }
+    }
+
+    @Override
+    public void initTopAdsSourceTaggingUseCase(Context context) {
+        TopAdsSourceTaggingLocal topAdsSourceTaggingLocal = new TopAdsSourceTaggingLocal(context);
+        TopAdsSourceTaggingDataSource topAdsSourceTaggingDataSource = new TopAdsSourceTaggingDataSource(topAdsSourceTaggingLocal);
+        TopAdsSourceTaggingRepository topAdsSourceTaggingRepository = new TopAdsSourceTaggingRepositoryImpl(topAdsSourceTaggingDataSource);
+        topAdsAddSourceTaggingUseCase = new TopAdsAddSourceTaggingUseCase(topAdsSourceTaggingRepository);
+    }
+
+    @Override
+    public void saveSource(String source){
+        topAdsAddSourceTaggingUseCase.execute(TopAdsAddSourceTaggingUseCase.createRequestParams(source), new Subscriber<Void>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+
+            }
+
+            @Override
+            public void onNext(Void aVoid) {
+                //do nothing
+            }
+        });
     }
 
     public void getProductVariant(@NonNull Context context, @NonNull String id) {
