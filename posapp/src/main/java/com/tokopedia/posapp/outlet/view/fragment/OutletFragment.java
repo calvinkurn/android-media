@@ -97,9 +97,8 @@ public class OutletFragment extends BaseDaggerFragment implements Outlet.View, S
                 .setPositiveButton(getString(R.string.yes), new PosAlertDialog.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface) {
-                        setChosenOutlet(outlet);
-                        getActivity().startActivity(new Intent(getContext(), ProductListActivity.class));
-                        getActivity().finish();
+                        outletPresenter.selectOutlet(outlet);
+                        dialogInterface.dismiss();
                     }
                 })
                 .setNegativeButton(getString(R.string.No), new PosAlertDialog.OnClickListener() {
@@ -113,9 +112,10 @@ public class OutletFragment extends BaseDaggerFragment implements Outlet.View, S
                 .show();
     }
 
-    private void setChosenOutlet(OutletItemViewModel outlet) {
-        PosSessionHandler.setOutletId(getContext(), outlet.getOutletId());
-        PosSessionHandler.setOutletName(getContext(), outlet.getOutletName());
+    @Override
+    public void onOutletSelected() {
+        getActivity().startActivity(new Intent(getContext(), ProductListActivity.class));
+        getActivity().finish();
     }
 
     @Override
@@ -149,6 +149,11 @@ public class OutletFragment extends BaseDaggerFragment implements Outlet.View, S
 
     @Override
     public void finishLoading() {
+
+    }
+
+    @Override
+    public void onErrorSelectOutlet() {
 
     }
 

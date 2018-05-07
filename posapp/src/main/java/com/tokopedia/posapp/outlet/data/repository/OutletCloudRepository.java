@@ -24,4 +24,9 @@ public class OutletCloudRepository implements OutletRepository {
     public Observable<OutletDomain> getOutlet(RequestParams requestParams) {
         return outletCloudSource.getOutlet(requestParams);
     }
+
+    @Override
+    public Observable<Boolean> selectOutlet(RequestParams requestParams) {
+        return Observable.error(new Exception("Method not implemented"));
+    }
 }
