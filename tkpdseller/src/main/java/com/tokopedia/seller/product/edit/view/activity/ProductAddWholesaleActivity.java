@@ -10,6 +10,7 @@ import android.os.Bundle;
 
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.seller.R;
+import com.tokopedia.seller.product.edit.constant.CurrencyTypeDef;
 import com.tokopedia.seller.product.edit.view.fragment.ProductAddWholesaleFragment;
 import com.tokopedia.seller.product.edit.view.model.edit.ProductWholesaleViewModel;
 import com.tokopedia.seller.product.variant.view.activity.ProductVariantDashboardActivity;
@@ -24,16 +25,20 @@ public class ProductAddWholesaleActivity extends BaseSimpleActivity {
 
     public static final String EXTRA_PRODUCT_WHOLESALE_LIST = "EXTRA_PRODUCT_WHOLESALE_LIST";
     public static final String EXTRA_PRODUCT_MAIN_PRICE = "EXTRA_PRODUCT_MAIN_PRICE";
+    public static final String EXTRA_PRODUCT_CURRENCY = "EXTRA_PRODUCT_CURRENCY";
+    public static final String EXTRA_OFFICIAL_STORE = "EXTRA_OFFICIAL_STORE";
 
     @Override
     protected Fragment getNewFragment() {
         return ProductAddWholesaleFragment.newInstance();
     }
 
-    public static Intent getIntent(Context context, ArrayList<ProductWholesaleViewModel> productWholesaleViewModelList, double productPrice) {
+    public static Intent getIntent(Context context, ArrayList<ProductWholesaleViewModel> productWholesaleViewModelList, @CurrencyTypeDef int currencyType, double productPrice, boolean officialStore) {
         Intent intent = new Intent(context, ProductAddWholesaleActivity.class);
         intent.putExtra(EXTRA_PRODUCT_WHOLESALE_LIST, productWholesaleViewModelList);
+        intent.putExtra(EXTRA_PRODUCT_CURRENCY, currencyType);
         intent.putExtra(EXTRA_PRODUCT_MAIN_PRICE, productPrice);
+        intent.putExtra(EXTRA_OFFICIAL_STORE, officialStore);
         return intent;
     }
 

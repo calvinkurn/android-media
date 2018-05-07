@@ -3,6 +3,7 @@ package com.tokopedia.seller.product.edit.view.adapter;
 import android.support.design.widget.TextInputLayout;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,6 +17,8 @@ import com.tokopedia.seller.product.edit.constant.CurrencyTypeDef;
 import com.tokopedia.seller.product.edit.utils.ProductPriceRangeUtils;
 import com.tokopedia.seller.product.edit.view.model.edit.ProductWholesaleViewModel;
 import com.tokopedia.seller.product.edit.view.model.wholesale.WholesaleModel;
+import com.tokopedia.seller.util.CurrencyIdrTextWatcher;
+import com.tokopedia.seller.util.CurrencyUsdTextWatcher;
 
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
@@ -32,12 +35,15 @@ public class WholesaleAddAdapter extends RecyclerView.Adapter<WholesaleAddAdapte
 
     private List<WholesaleModel> wholesaleModels;
     private Listener listener;
-    private int currentPositionFocusPriceEdittext = 0;
+    private int currentPositionFocusPrice = 0;
+    private int currentPositionFocusQty = -1;
     private double mainPrice;
+    private boolean officialStore;
 
-    public WholesaleAddAdapter(double mainPrice) {
+    public WholesaleAddAdapter(double mainPrice, boolean officialStore) {
         wholesaleModels = new CopyOnWriteArrayList<>();
         this.mainPrice = mainPrice;
+        this.officialStore = officialStore;
     }
 
     public void setListener(Listener listener) {
@@ -54,18 +60,12 @@ public class WholesaleAddAdapter extends RecyclerView.Adapter<WholesaleAddAdapte
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        NumberFormat quantityNumberFormat = new DecimalFormat();
-        quantityNumberFormat.setMinimumIntegerDigits(0);
-        holder.etRangeWholesale.setText(holder.formatValue((double)wholesaleModels.get(position).getQtyMin()));
-        holder.etWholeSalePrice.setText(holder.formatValue(wholesaleModels.get(position).getQtyPrice()));
+        holder.setEditTextValue(wholesaleModels.get(position));
         holder.isPriceValid(wholesaleModels.get(position), position);
+        holder.isQtyValid(wholesaleModels.get(position), position);
         holder.initFocus(position);
-
-        if(!TextUtils.isEmpty(wholesaleModels.get(position).getStatusPrice())){
-            holder.setErrorEditText(position);
-        } else {
-            holder.removeErrorEdittext();
-        }
+        holder.setEditTextState(wholesaleModels.get(position));
+        setButtonSaveState();
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
@@ -76,7 +76,6 @@ public class WholesaleAddAdapter extends RecyclerView.Adapter<WholesaleAddAdapte
         private final PrefixEditText etWholeSalePrice;
         private final TextInputLayout tilWholeSalePrice;
         private final Locale dollarLocale = Locale.US;
-        private final Locale idrLocale = new Locale("in", "ID");
         private NumberFormat formatter;
 
         public ViewHolder(View itemView) {
@@ -97,15 +96,46 @@ public class WholesaleAddAdapter extends RecyclerView.Adapter<WholesaleAddAdapte
             etRangeWholesale.setPrefix(MethodChecker.fromHtml("&#8805; &emsp;").toString());
             etWholeSalePrice.setPrefix(MethodChecker.fromHtml("Rp ").toString());
 
+            TextWatcher textWatcher = new CurrencyIdrTextWatcher(etWholeSalePrice);
+            switch (listener.getCurrencyType()) {
+                case CurrencyTypeDef.TYPE_USD:
+                    textWatcher = new CurrencyUsdTextWatcher(etWholeSalePrice) {
+                        @Override
+                        public void onNumberChanged(double number) {
+                            setValueAndRefresh(number);
+                        }
+                    };
+                    break;
+                case CurrencyTypeDef.TYPE_IDR:
+                    textWatcher = new CurrencyIdrTextWatcher(etWholeSalePrice) {
+                        @Override
+                        public void onNumberChanged(double number) {
+                            setValueAndRefresh(number);
+                        }
+                    };
+                    break;
+            }
+            etWholeSalePrice.addTextChangedListener(textWatcher);
 
-            etWholeSalePrice.addTextChangedListener(new NumberTextWatcher(etWholeSalePrice){
+            etWholeSalePrice.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+                @Override
+                public void onFocusChange(View v, boolean hasFocus) {
+                    if (hasFocus) {
+                        setFocusFalse();
+                        wholesaleModels.get(getAdapterPosition()).setFocusPrice(true);
+                    }
+                }
+            });
+
+            etRangeWholesale.addTextChangedListener(new NumberTextWatcher(etRangeWholesale){
                 @Override
                 public void onNumberChanged(double number) {
-                    if(wholesaleModels.get(getAdapterPosition()).isFocusPrice()){
-                        wholesaleModels.get(getAdapterPosition()).setQtyPrice(number);
-                        wholesaleModels.get(getAdapterPosition()).setFocusPrice(false);
-                        currentPositionFocusPriceEdittext = getAdapterPosition();
-                        etWholeSalePrice.post(new Runnable() {
+                    if(wholesaleModels.get(getAdapterPosition()).isFocusQty()){
+                        wholesaleModels.get(getAdapterPosition()).setQtyMin((int)number);
+                        wholesaleModels.get(getAdapterPosition()).setFocusQty(false);
+                        currentPositionFocusQty = getAdapterPosition();
+                        currentPositionFocusPrice = -1;
+                        etRangeWholesale.post(new Runnable() {
                             @Override
                             public void run() {
                                 notifyDataSetChanged();
@@ -115,12 +145,12 @@ public class WholesaleAddAdapter extends RecyclerView.Adapter<WholesaleAddAdapte
                 }
             });
 
-            etWholeSalePrice.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            etRangeWholesale.setOnFocusChangeListener(new View.OnFocusChangeListener() {
                 @Override
                 public void onFocusChange(View v, boolean hasFocus) {
                     if (hasFocus) {
                         setFocusFalse();
-                        wholesaleModels.get(getAdapterPosition()).setFocusPrice(true);
+                        wholesaleModels.get(getAdapterPosition()).setFocusQty(true);
                     }
                 }
             });
@@ -133,13 +163,34 @@ public class WholesaleAddAdapter extends RecyclerView.Adapter<WholesaleAddAdapte
             });
         }
 
+        private void setValueAndRefresh(double number){
+            if (wholesaleModels.get(getAdapterPosition()).isFocusPrice()) {
+                wholesaleModels.get(getAdapterPosition()).setQtyPrice(number);
+                wholesaleModels.get(getAdapterPosition()).setFocusPrice(false);
+                currentPositionFocusPrice = getAdapterPosition();
+                currentPositionFocusQty = -1;
+                etWholeSalePrice.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        notifyDataSetChanged();
+                    }
+                });
+            }
+        }
+
         private void initFocus(int position){
-            if(currentPositionFocusPriceEdittext == position){
+            if(currentPositionFocusPrice == position){
                 wholesaleModels.get(position).setFocusPrice(true);
+            }
+            if(currentPositionFocusQty == position){
+                wholesaleModels.get(position).setFocusQty(true);
             }
 
             if(wholesaleModels.get(position).isFocusPrice()){
                 etWholeSalePrice.requestFocus();
+            }
+            if(wholesaleModels.get(position).isFocusQty()){
+                etRangeWholesale.requestFocus();
             }
         }
 
@@ -150,21 +201,35 @@ public class WholesaleAddAdapter extends RecyclerView.Adapter<WholesaleAddAdapte
             }
         }
 
-        private void removeErrorEdittext(){
-            tilWholeSalePrice.setError(null);
-            etWholeSalePrice.setEnabled(true);
-            tilWholeSalePrice.setErrorEnabled(false);
+        private void setEditTextValue(WholesaleModel model){
+            NumberFormat quantityNumberFormat = new DecimalFormat();
+            quantityNumberFormat.setMinimumIntegerDigits(0);
+            etRangeWholesale.setText(formatValue((double)model.getQtyMin()));
+            etWholeSalePrice.setText(formatValue(model.getQtyPrice()));
         }
 
-        private void setErrorEditText(int position){
-            tilWholeSalePrice.setErrorEnabled(true);
-            tilWholeSalePrice.setError(wholesaleModels.get(position).getStatusPrice());
-            if(wholesaleModels.get(position).getStatusPrice().equalsIgnoreCase(tilWholeSalePrice.getContext().getString(R.string.product_fix_previous_wholesale)))
-            {
-                etWholeSalePrice.setEnabled(false);
+        private void setEditTextState(WholesaleModel model){
+            if(!TextUtils.isEmpty(model.getStatusPrice())){
+                setErrorEditText(tilWholeSalePrice, model.getStatusPrice());
             } else {
-                etWholeSalePrice.setEnabled(true);
+                removeErrorEdittext(tilWholeSalePrice);
             }
+
+            if(!TextUtils.isEmpty(model.getStatusQty())){
+                setErrorEditText(tilRangeWholesale, model.getStatusQty());
+            } else {
+                removeErrorEdittext(tilRangeWholesale);
+            }
+        }
+
+        private void removeErrorEdittext(TextInputLayout textInputLayout){
+            textInputLayout.setError(null);
+            textInputLayout.setErrorEnabled(false);
+        }
+
+        private void setErrorEditText(TextInputLayout textInputLayout, String message){
+            textInputLayout.setErrorEnabled(true);
+            textInputLayout.setError(message);
         }
 
         protected void formatter() {
@@ -185,13 +250,12 @@ public class WholesaleAddAdapter extends RecyclerView.Adapter<WholesaleAddAdapte
         }
 
         private void isPriceValid(WholesaleModel model, int position) {
-            if (!ProductPriceRangeUtils.isPriceValid(model.getQtyPrice(), listener.getCurrencyType(), false)) {
+            if (!ProductPriceRangeUtils.isPriceValid(model.getQtyPrice(), listener.getCurrencyType(), officialStore)) {
                 model.setStatusPrice(tilWholeSalePrice.getContext().getString(R.string.product_error_product_price_not_valid,
-                        ProductPriceRangeUtils.getMinPriceString(listener.getCurrencyType(), false),
-                        ProductPriceRangeUtils.getMaxPriceString(listener.getCurrencyType(), false)));
+                        ProductPriceRangeUtils.getMinPriceString(listener.getCurrencyType(), officialStore),
+                        ProductPriceRangeUtils.getMaxPriceString(listener.getCurrencyType(), officialStore)));
                 return;
             }
-
             if(position > 0){
                 if(!getItem(position-1).getStatusPrice().equalsIgnoreCase("")){
                     model.setStatusPrice(tilWholeSalePrice.getContext().getString(R.string.product_fix_previous_wholesale));
@@ -207,47 +271,22 @@ public class WholesaleAddAdapter extends RecyclerView.Adapter<WholesaleAddAdapte
                     return;
                 }
             }
-
             model.setStatusPrice("");
         }
 
-        private boolean isQtyValid(WholesaleModel model, final int position, TextInputLayout tilRangeWholesale, PrefixEditText etRangeWholesale) {
+        private void isQtyValid(WholesaleModel model, final int position) {
             if(position > 0){
+                if(!getItem(position-1).getStatusQty().equalsIgnoreCase("")){
+                    model.setStatusQty(tilRangeWholesale.getContext().getString(R.string.product_fix_previous_wholesale));
+                    return;
+                }
                 if (model.getQtyMin() <= getItem(position-1).getQtyMin()) {
-                    tilRangeWholesale.setErrorEnabled(true);
-                    tilRangeWholesale.setError(tilRangeWholesale.getContext().getString(R.string.wholesale_qty_not_valid));
-                    return false;
-                } else if (position < wholesaleModels.size()-1 && getItem(position+1).getQtyMin() <= model.getQtyMin()) {
-                    wholesaleModels.get(position).setStatusQty("");
-                    tilRangeWholesale.setError(null);
-                    etRangeWholesale.setEnabled(true);
-                    tilRangeWholesale.setErrorEnabled(false);
-                    wholesaleModels.get(position+1).setStatusQty(tilRangeWholesale.getContext().getString(R.string.wholesale_qty_not_valid));
-                    tilRangeWholesale.post(new Runnable() {
-                        @Override
-                        public void run() {
-                            notifyItemChanged(position+1);
-                        }
-                    });
-                    return false;
+                    model.setStatusQty(tilRangeWholesale.getContext().getString(R.string.wholesale_qty_not_valid));
+                    return;
                 }
             }
-
-            tilRangeWholesale.setError(null);
-            etRangeWholesale.setEnabled(true);
-            tilRangeWholesale.setErrorEnabled(false);
-            return true;
+            model.setStatusQty("");
         }
-
-        private void refreshLayout(){
-            notifyItemRangeChanged(0, getItemSize());
-        }
-    }
-
-
-    @Override
-    public long getItemId(int position) {
-        return position;
     }
 
     @Override
@@ -266,16 +305,11 @@ public class WholesaleAddAdapter extends RecyclerView.Adapter<WholesaleAddAdapte
     }
 
     public synchronized void removeItem(int position) {
-
         if (isWithinDataset(position)) {
             wholesaleModels.remove(position);
         }
-
+        listener.notifySizeChanged(wholesaleModels.size());
         notifyItemRemoved(position);
-
-        if (listener != null) {
-            listener.notifySizeChanged(wholesaleModels.size());
-        }
     }
 
     public synchronized void removeAll() {
@@ -308,11 +342,10 @@ public class WholesaleAddAdapter extends RecyclerView.Adapter<WholesaleAddAdapte
             );
             wholesaleModels.add(wholesaleModel);
         }
-        notifyDataSetChanged();
     }
 
-    public synchronized List<ProductWholesaleViewModel> getProductWholesaleViewModels() {
-        List<ProductWholesaleViewModel> productWholesaleViewModels =
+    public synchronized ArrayList<ProductWholesaleViewModel> getProductWholesaleViewModels() {
+        ArrayList<ProductWholesaleViewModel> productWholesaleViewModels =
                 new ArrayList<>();
         for (int i = 0; i < wholesaleModels.size(); i++) {
             ProductWholesaleViewModel productWholesaleViewModel
@@ -326,9 +359,23 @@ public class WholesaleAddAdapter extends RecyclerView.Adapter<WholesaleAddAdapte
         return productWholesaleViewModels;
     }
 
+    private void setButtonSaveState() {
+        for(int i = 0; i < getItemSize(); i++){
+            if(!wholesaleModels.get(i).getStatusPrice().equalsIgnoreCase("") ||
+                    !wholesaleModels.get(i).getStatusQty().equalsIgnoreCase("") )
+            {
+                listener.setButtonSubmit(false);
+                return;
+            }
+        }
+        listener.setButtonSubmit(true);
+    }
+
     public interface Listener {
 
         void notifySizeChanged(int currentSize);
+
+        void setButtonSubmit(boolean state);
 
         @CurrencyTypeDef
         int getCurrencyType();

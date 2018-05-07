@@ -121,6 +121,7 @@ public abstract class BaseProductAddEditFragment<T extends ProductAddPresenter>
     private boolean hasOriginalVariantLevel1;
     private boolean hasOriginalVariantLevel2;
     private boolean hasLoadShopInfo;
+    private boolean officialStore;
 
     public interface Listener {
         void startUploadProduct(long productId);
@@ -533,10 +534,13 @@ public abstract class BaseProductAddEditFragment<T extends ProductAddPresenter>
 
     @Override
     public void startProductAddWholesaleActivity() {
+        productPriceViewHolder.updateModel(currentProductViewModel);
         ArrayList<ProductWholesaleViewModel> productWholesaleViewModelList = (ArrayList<ProductWholesaleViewModel>) currentProductViewModel.getProductWholesale();
         Intent intent = ProductAddWholesaleActivity.getIntent(getActivity(),
                 productWholesaleViewModelList,
-                currentProductViewModel.getProductPrice());
+                (int) currentProductViewModel.getProductPriceCurrency(),
+                currentProductViewModel.getProductPrice(),
+                officialStore);
         startActivityForResult(intent, ProductPriceViewHolder.REQUEST_CODE_GET_PRODUCT_WHOLESALE);
     }
 
@@ -667,6 +671,7 @@ public abstract class BaseProductAddEditFragment<T extends ProductAddPresenter>
         productDeliveryInfoViewHolder.showViewFreeReturn(isFreeReturn);
 
         hasLoadShopInfo = true;
+        this.officialStore = officialStore;
     }
 
     public boolean isHasLoadShopInfo() {
@@ -825,6 +830,7 @@ public abstract class BaseProductAddEditFragment<T extends ProductAddPresenter>
         productImageViewHolder.onActivityResult(requestCode, resultCode, data);
         productManageViewHolder.onActivityResult(requestCode, resultCode, data);
         productDescriptionViewHolder.onActivityResult(requestCode, resultCode, data);
+        productPriceViewHolder.onActivityResult(requestCode, resultCode, data);
         super.onActivityResult(requestCode, resultCode, data);
     }
 
