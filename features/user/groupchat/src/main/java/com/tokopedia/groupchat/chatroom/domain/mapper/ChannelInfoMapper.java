@@ -2,6 +2,7 @@ package com.tokopedia.groupchat.chatroom.domain.mapper;
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.common.data.model.response.DataResponse;
+import com.tokopedia.groupchat.chatroom.domain.pojo.PinnedMessage;
 import com.tokopedia.groupchat.chatroom.domain.pojo.channelinfo.Channel;
 import com.tokopedia.groupchat.chatroom.domain.pojo.channelinfo.ChannelInfoPojo;
 import com.tokopedia.groupchat.chatroom.domain.pojo.channelinfo.Flashsale;
@@ -14,6 +15,7 @@ import com.tokopedia.groupchat.chatroom.domain.pojo.poll.StatisticOption;
 import com.tokopedia.groupchat.chatroom.view.viewmodel.ChannelInfoViewModel;
 import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.ChannelPartnerChildViewModel;
 import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.ChannelPartnerViewModel;
+import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.PinnedMessageViewModel;
 import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.SprintSaleProductViewModel;
 import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.SprintSaleViewModel;
 import com.tokopedia.groupchat.vote.view.model.VoteInfoViewModel;
@@ -69,8 +71,13 @@ public class ChannelInfoMapper implements Func1<Response<DataResponse<ChannelInf
                 pojo.getChannel().getBannedMessage() != null ? pojo.getChannel().getBannedMessage() : "",
                 pojo.getChannel().getKickedMessage() != null ? pojo.getChannel().getKickedMessage
                         () : "",
-                pojo.getChannel().isIsFreeze()
+                pojo.getChannel().isIsFreeze(),
+                mapToPinnedMessageViewModel(pojo.getChannel().getPinnedMessage)
         );
+    }
+
+    private PinnedMessageViewModel mapToPinnedMessageViewModel(PinnedMessage pinnedMessage) {
+        return new PinnedMessageViewModel("","","","");
     }
 
     private SprintSaleViewModel mapToSprintSaleViewModel(Flashsale flashsale) {

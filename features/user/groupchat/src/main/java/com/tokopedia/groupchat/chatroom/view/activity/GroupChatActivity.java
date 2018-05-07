@@ -13,6 +13,7 @@ import android.os.Handler;
 import android.os.VibrationEffect;
 import android.os.Vibrator;
 import android.preference.PreferenceManager;
+import android.support.annotation.Nullable;
 import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.BottomSheetBehavior;
 import android.support.design.widget.BottomSheetDialog;
@@ -72,6 +73,7 @@ import com.tokopedia.groupchat.chatroom.view.presenter.GroupChatPresenter;
 import com.tokopedia.groupchat.chatroom.view.viewmodel.ChannelInfoViewModel;
 import com.tokopedia.groupchat.chatroom.view.viewmodel.GroupChatViewModel;
 import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.GroupChatPointsViewModel;
+import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.PinnedMessageViewModel;
 import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.SprintSaleAnnouncementViewModel;
 import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.SprintSaleViewModel;
 import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.UserActionViewModel;
@@ -1408,6 +1410,16 @@ public class GroupChatActivity extends BaseSimpleActivity
         if (viewModel != null && viewModel.getChannelInfoViewModel() != null && viewModel
                 .getChannelInfoViewModel().getSprintSaleViewModel() != null) {
             return viewModel.getChannelInfoViewModel().getSprintSaleViewModel();
+        } else {
+            return null;
+        }
+    }
+
+    @Override
+    public PinnedMessageViewModel getPinnedMessage() {
+        if (viewModel != null && viewModel.getChannelInfoViewModel() != null && viewModel
+                .getChannelInfoViewModel().getPinnedMessageViewModel() != null) {
+            return viewModel.getChannelInfoViewModel().getPinnedMessageViewModel();
         } else {
             return null;
         }

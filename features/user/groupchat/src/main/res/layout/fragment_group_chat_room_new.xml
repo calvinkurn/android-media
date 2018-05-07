@@ -201,7 +201,11 @@
             android:layout_width="match_parent"
             app:layout_constraintBottom_toTopOf="@id/bottom"
             app:layout_constraintEnd_toEndOf="parent"
-            android:visibility="gone"
+            android:visibility="visible"
+            android:paddingLeft="@dimen/dp_16"
+            android:paddingTop="@dimen/dp_12"
+            android:paddingBottom="@dimen/dp_12"
+            android:paddingRight="@dimen/dp_8"
             />
 
     </android.support.constraint.ConstraintLayout>

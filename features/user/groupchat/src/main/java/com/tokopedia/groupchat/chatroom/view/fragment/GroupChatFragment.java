@@ -19,6 +19,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.sendbird.android.OpenChannel;
@@ -28,6 +29,7 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
+import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.groupchat.GroupChatModuleRouter;
@@ -45,6 +47,7 @@ import com.tokopedia.groupchat.chatroom.view.viewmodel.ChannelInfoViewModel;
 import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.ChatViewModel;
 import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.GroupChatPointsViewModel;
 import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.PendingChatViewModel;
+import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.PinnedMessageViewModel;
 import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.SprintSaleAnnouncementViewModel;
 import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.SprintSaleProductViewModel;
 import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.SprintSaleViewModel;
@@ -92,7 +95,7 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
     private View sendButton;
     private View divider;
     private View main, loading;
-    private GroupChatAdapter adapteradapter;
+    private GroupChatAdapter adapter;
     private LinearLayoutManager layoutManager;
     private View chatNotificationView;
     private View login;
@@ -253,6 +256,8 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
                 onSprintSaleIconClicked(sprintSaleViewModel);
             }
         });
+
+        setPinnedMessage(((GroupChatContract.View) getActivity()).getPinnedMessage());
     }
 
     private void setSendButtonEnabled(boolean isEnabled) {
@@ -319,6 +324,25 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
         }
     }
 
+
+    private void setPinnedMessage(PinnedMessageViewModel pinnedMessage) {
+        if(getView()!=null) {
+            ChannelInfoViewModel channelInfoViewModel = ((GroupChatContract.View) getActivity()).getChannelInfoViewModel();
+            View pinnedMessageView = getView().findViewById(R.id.pinned_message);
+            if (pinnedMessage != null) {
+                pinnedMessageView.setVisibility(View.VISIBLE);
+                ImageHandler.loadImageCircle2(getActivity(), (ImageView)pinnedMessageView.findViewById(R.id.pinned_message_avatar)
+                        , channelInfoViewModel.getAdminPicture(), R.drawable.ic_loading_toped_new);
+                ((TextView)pinnedMessageView.findViewById(R.id.chat_header).findViewById(R.id.nickname)).setText(channelInfoViewModel.getAdminName());
+                pinnedMessageView.findViewById(R.id.message);
+                pinnedMessageView.findViewById(R.id.thumbnail);
+            } else {
+                pinnedMessageView.setVisibility(View.GONE);
+            }
+        }
+    }
+
+
     private void setupSprintSaleIcon(SprintSaleViewModel sprintSaleViewModel) {
         if (sprintSaleViewModel.getSprintSaleType().equals(SprintSaleViewModel.TYPE_UPCOMING)) {
             MethodChecker.setBackground(sprintSaleText, MethodChecker.getDrawable(getActivity(),
@@ -374,7 +398,7 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
                             sprintSaleViewModel.getSprintSaleType()
                     );
 
-                    if (.getItemAt(adapter.getItemCount() - 1) != null
+                    if (adapter.getItemAt(adapter.getItemCount() - 1) != null
                             && !(adapter.getItemAt(adapter.getItemCount() - 1) instanceof
                             SprintSaleAnnouncementViewModel)) {
                         addIncomingMessage(sprintSaleAnnouncementViewModel);
@@ -488,7 +512,7 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
                         ((GroupChatContract.View) getActivity()).getChannelInfoViewModel());
 
                 setSprintSaleIcon(((GroupChatContract.View) getActivity()).getSprintSaleViewModel());
-
+                setPinnedMessage(((GroupChatContract.View) getActivity()).getPinnedMessage());
             }
 
             if (getActivity() != null
@@ -582,6 +606,7 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
                     ((GroupChatContract.View) getActivity()).getChannelInfoViewModel());
 
             setSprintSaleIcon(((GroupChatContract.View) getActivity()).getSprintSaleViewModel());
+            setPinnedMessage(((GroupChatContract.View) getActivity()).getPinnedMessage());
         }
 
         setSendButtonEnabled(true);
@@ -591,6 +616,10 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
     public void onMessageReceived(Visitable messageItem) {
         if (messageItem instanceof SprintSaleAnnouncementViewModel) {
             setSprintSaleIcon(((GroupChatContract.View) getActivity()).getSprintSaleViewModel());
+        }
+
+        if (messageItem instanceof PinnedMessageViewModel) {
+            setPinnedMessage((PinnedMessageViewModel) messageItem);
         }
 
         if (!groupChatMessagesMapper.shouldHideMessage(messageItem)) {
