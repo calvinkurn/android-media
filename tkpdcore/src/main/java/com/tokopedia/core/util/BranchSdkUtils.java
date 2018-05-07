@@ -156,11 +156,9 @@ public class BranchSdkUtils {
             if (purchase != null && purchase.getListProduct() != null) {
                 List<BranchUniversalObject> branchUniversalObjects = new ArrayList<>();
                 SessionHandler sessionHandler = new SessionHandler(MainApplication.getAppContext());
-
                 for (Object objProduct : purchase.getListProduct()) {
                     Map<String, Object> product = (Map<String, Object>) objProduct;
                     BranchUniversalObject buo = new BranchUniversalObject()
-
                             .setTitle(String.valueOf(product.get(Product.KEY_NAME)))
                             .setContentMetadata(
                                     new ContentMetadata()
@@ -173,11 +171,22 @@ public class BranchSdkUtils {
                                             .setContentSchema(BranchContentSchema.COMMERCE_PRODUCT));
                     branchUniversalObjects.add(buo);
                 }
+
+                double revenuePrice;
+                double shippingPrice;
+                if (PRODUCTTYPE_MARKETPLACE.equalsIgnoreCase(productType)) {
+                    revenuePrice = Double.parseDouble(String.valueOf(purchase.getRevenue()));
+                    shippingPrice = Double.parseDouble(String.valueOf(purchase.getShipping()));
+                } else {
+                    revenuePrice = convertIDRtoDouble(String.valueOf(purchase.getRevenue()));
+                    shippingPrice = convertIDRtoDouble(String.valueOf(purchase.getShipping()));
+                }
+
                 new BranchEvent(BRANCH_STANDARD_EVENT.PURCHASE)
                         .setTransactionID(String.valueOf(purchase.getTransactionID()))
                         .setCurrency(CurrencyType.IDR)
-                        .setShipping(convertIDRtoDouble(String.valueOf(purchase.getShipping())))
-                        .setRevenue(convertIDRtoDouble(String.valueOf(purchase.getRevenue())))
+                        .setShipping(shippingPrice)
+                        .setRevenue(revenuePrice)
                         .addCustomDataProperty(PAYMENT_KEY, purchase.getPaymentId())
                         .addCustomDataProperty(PRODUCTTYPE_KEY, productType)
                         .addCustomDataProperty(USERID_KEY, sessionHandler.getLoginID())
@@ -225,7 +234,7 @@ public class BranchSdkUtils {
     private static double convertIDRtoDouble(String value) {
         double result = 0;
         try {
-            result = CurrencyFormatHelper.convertRupiahToInt(value);
+            result = CurrencyFormatHelper.convertRupiahToLong(value);
         } catch (NumberFormatException ex) {
             ex.printStackTrace();
         }

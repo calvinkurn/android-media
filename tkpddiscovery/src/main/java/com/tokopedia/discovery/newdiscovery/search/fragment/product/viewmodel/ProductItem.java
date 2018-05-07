@@ -10,7 +10,6 @@ import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.core.network.apiservices.ace.apis.BrowseApi;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.adapter.typefactory.ProductListTypeFactory;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
