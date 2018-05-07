@@ -1,7 +1,6 @@
 package com.tokopedia.checkout.data.repository;
 
 import com.google.gson.Gson;
-import com.tokopedia.abstraction.common.utils.TKPDMapParam;
 import com.tokopedia.checkout.data.entity.response.rates.RatesResponse;
 import com.tokopedia.checkout.data.service.RatesService;
 

@@ -10,8 +10,6 @@ import com.tokopedia.core.router.productdetail.passdata.ProductPass;
 
 import java.util.HashMap;
 
-import okhttp3.Interceptor;
-
 /**
  * @author anggaprasetiyo on 28/02/18.
  */

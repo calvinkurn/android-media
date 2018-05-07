@@ -1,6 +1,5 @@
 package com.tokopedia.checkout.data.service;
 
-import com.tokopedia.abstraction.common.utils.TKPDMapParam;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 
 import java.util.Map;

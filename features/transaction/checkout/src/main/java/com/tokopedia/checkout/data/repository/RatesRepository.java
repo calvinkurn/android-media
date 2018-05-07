@@ -1,6 +1,5 @@
 package com.tokopedia.checkout.data.repository;
 
-import com.tokopedia.abstraction.common.utils.TKPDMapParam;
 import com.tokopedia.checkout.data.entity.response.rates.RatesResponse;
 import com.tokopedia.checkout.data.mapper.ShipmentRatesDataMapper;
 import com.tokopedia.checkout.domain.datamodel.shipmentrates.ShipmentDetailData;
