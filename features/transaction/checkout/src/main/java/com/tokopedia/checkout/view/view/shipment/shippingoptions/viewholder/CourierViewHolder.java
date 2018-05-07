@@ -15,6 +15,10 @@ import com.tokopedia.design.utils.CurrencyFormatUtil;
 
 import java.util.List;
 
+/**
+ * @author Irfan Khoirul on 04/05/18.
+ */
+
 public class CourierViewHolder extends RecyclerView.ViewHolder {
 
     private TextView tvCourierName;

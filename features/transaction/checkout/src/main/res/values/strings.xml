@@ -99,5 +99,8 @@
     <string name="alert_payment_canceled_or_failed_transaction_module">Pembayaran tidak berhasil atau dibatalkan</string>
     <string name="message_payment_succeded_transaction_module">Pembayaran berhasil</string>
     <string name="label_cashback">Cashback</string>
+    <string name="weight_unit_gram">gr</string>
+    <string name="weight_unit_kilogram">Kg</string>
+    <string name="label_shipping_price_format" formatted="false">Ongkos Kirim (%s %s)</string>
 
 </resources>

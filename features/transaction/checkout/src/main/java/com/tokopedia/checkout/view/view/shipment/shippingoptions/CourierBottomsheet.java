@@ -26,6 +26,10 @@ import com.tokopedia.checkout.view.view.shipment.shippingoptions.di.DaggerCourie
 
 import javax.inject.Inject;
 
+/**
+ * @author Irfan Khoirul on 04/05/18.
+ */
+
 public class CourierBottomsheet extends BottomSheetDialog implements CourierContract.View, CourierAdapterActionListener {
 
     private ImageButton imgBtClose;

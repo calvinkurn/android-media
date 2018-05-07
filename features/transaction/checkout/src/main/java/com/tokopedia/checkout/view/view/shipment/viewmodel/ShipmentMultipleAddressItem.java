@@ -13,10 +13,13 @@ public class ShipmentMultipleAddressItem extends ShipmentItem {
     private String productImageUrl;
     private int productPrice;
     private String productName;
-    private long subTotal;
-    private long productPriceNumber;
+    private int subTotal;
+    private int productPriceNumber;
+    private boolean productIsPreorder;
     private boolean productIsFreeReturns;
     private boolean productReturnable;
+    private boolean produstHasCasback;
+    private String cashback;
 
     public ShipmentMultipleAddressItem() {
     }
@@ -66,15 +69,15 @@ public class ShipmentMultipleAddressItem extends ShipmentItem {
         return subTotal;
     }
 
-    public void setSubTotal(long subTotal) {
+    public void setSubTotal(int subTotal) {
         this.subTotal = subTotal;
     }
 
-    public long getProductPriceNumber() {
+    public int getProductPriceNumber() {
         return productPriceNumber;
     }
 
-    public void setProductPriceNumber(long productPriceNumber) {
+    public void setProductPriceNumber(int productPriceNumber) {
         this.productPriceNumber = productPriceNumber;
     }
 
@@ -93,4 +96,29 @@ public class ShipmentMultipleAddressItem extends ShipmentItem {
     public void setProductReturnable(boolean productReturnable) {
         this.productReturnable = productReturnable;
     }
+
+    public boolean isProdustHasCasback() {
+        return produstHasCasback;
+    }
+
+    public void setProdustHasCasback(boolean produstHasCasback) {
+        this.produstHasCasback = produstHasCasback;
+    }
+
+    public String getCashback() {
+        return cashback;
+    }
+
+    public void setCashback(String cashback) {
+        this.cashback = cashback;
+    }
+
+    public boolean isProductIsPreorder() {
+        return productIsPreorder;
+    }
+
+    public void setProductIsPreorder(boolean productIsPreorder) {
+        this.productIsPreorder = productIsPreorder;
+    }
+
 }

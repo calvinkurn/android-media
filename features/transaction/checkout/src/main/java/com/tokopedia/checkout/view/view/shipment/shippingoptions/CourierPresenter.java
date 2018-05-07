@@ -23,6 +23,10 @@ import javax.inject.Inject;
 
 import rx.Subscriber;
 
+/**
+ * @author Irfan Khoirul on 04/05/18.
+ */
+
 public class CourierPresenter extends BaseDaggerPresenter<CourierContract.View>
         implements CourierContract.Presenter {
 

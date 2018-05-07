@@ -7,6 +7,10 @@ import android.widget.TextView;
 import com.tokopedia.checkout.R;
 import com.tokopedia.checkout.view.view.shipment.shippingoptions.viewmodel.ShipmentTypeData;
 
+/**
+ * @author Irfan Khoirul on 04/05/18.
+ */
+
 public class CourierHeaderViewHolder extends RecyclerView.ViewHolder {
 
     TextView tvShipmentType;

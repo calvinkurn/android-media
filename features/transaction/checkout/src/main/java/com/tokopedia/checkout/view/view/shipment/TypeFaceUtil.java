@@ -3,6 +3,10 @@ package com.tokopedia.checkout.view.view.shipment;
 import android.graphics.Typeface;
 import android.widget.TextView;
 
+/**
+ * @author Irfan Khoirul on 04/05/18.
+ */
+
 public class TypeFaceUtil {
 
     private static final String FONT_FAMILY_SANS_SERIF = "sans-serif";

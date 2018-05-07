@@ -41,6 +41,8 @@ import com.tokopedia.checkout.view.view.shipment.di.ShipmentComponent;
 import com.tokopedia.checkout.view.view.shipment.di.ShipmentModule;
 import com.tokopedia.checkout.view.view.shipment.shippingoptions.CourierBottomsheet;
 import com.tokopedia.checkout.view.view.shipment.viewmodel.ShipmentItem;
+import com.tokopedia.checkout.view.view.shipment.viewmodel.ShipmentMultipleAddressItem;
+import com.tokopedia.checkout.view.view.shipment.viewmodel.ShipmentSingleAddressItem;
 import com.tokopedia.checkout.view.view.shipmentform.CartShipmentActivity;
 import com.tokopedia.checkout.view.view.shippingoptions.ShipmentChoiceBottomSheet;
 import com.tokopedia.checkout.view.view.shippingoptions.ShipmentDetailActivity;
@@ -383,11 +385,11 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                 break;
             case CartAddressChoiceActivity.RESULT_CODE_ACTION_TO_MULTIPLE_ADDRESS_FORM:
                 // todo : reload fragment with multiple address
-//                Intent intent = new Intent();
-//                intent.putExtra(CartShipmentActivity.EXTRA_SELECTED_ADDRESS_RECIPIENT_DATA,
-//                        shipmentAdapter.getAddressShipmentData());
-//                cartShipmentActivityListener.closeWithResult(
-//                        CartShipmentActivity.RESULT_CODE_ACTION_TO_MULTIPLE_ADDRESS_FORM, intent);
+                Intent intent = new Intent();
+                intent.putExtra(CartShipmentActivity.EXTRA_SELECTED_ADDRESS_RECIPIENT_DATA,
+                        shipmentAdapter.getAddressShipmentData());
+                getActivity().setResult(CartShipmentActivity.RESULT_CODE_ACTION_TO_MULTIPLE_ADDRESS_FORM, intent);
+                getActivity().finish();
                 break;
 
             default:
@@ -412,15 +414,16 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
 
     @Override
     public void onChooseShipment(int position, ShipmentItem shipmentItem, RecipientAddressModel recipientAddressModel) {
-        ShipmentDetailData shipmentDetailData;
+        ShipmentDetailData shipmentDetailData = null;
         if (shipmentItem.getSelectedShipmentDetailData() != null) {
             shipmentDetailData = shipmentItem.getSelectedShipmentDetailData();
         } else {
             shipmentDetailData = ratesDataConverter.getShipmentDetailData(shipmentItem,
                     recipientAddressModel);
         }
-
-        showCourierChoiceBottomSheet(shipmentDetailData, position);
+        if (shipmentDetailData != null) {
+            showCourierChoiceBottomSheet(shipmentDetailData, position);
+        }
     }
 
     private void showCourierChoiceBottomSheet(ShipmentDetailData shipmentDetailData, int position) {

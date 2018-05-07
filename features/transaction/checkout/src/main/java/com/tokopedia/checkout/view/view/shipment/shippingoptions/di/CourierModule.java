@@ -12,6 +12,10 @@ import com.tokopedia.checkout.view.view.shipment.shippingoptions.CourierPresente
 import dagger.Module;
 import dagger.Provides;
 
+/**
+ * @author Irfan Khoirul on 04/05/18.
+ */
+
 @Module
 public class CourierModule {
 

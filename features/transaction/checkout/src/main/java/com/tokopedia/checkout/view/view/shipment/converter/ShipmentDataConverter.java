@@ -148,6 +148,8 @@ public class ShipmentDataConverter {
                     shipmentMultipleAddressItem.setProductIsPreorder(currentProduct.isProductIsPreorder());
                     shipmentMultipleAddressItem.setProductFcancelPartial(currentProduct.isProductFcancelPartial());
                     shipmentMultipleAddressItem.setProductFinsurance(currentProduct.isProductFinsurance());
+                    shipmentMultipleAddressItem.setProdustHasCasback(!TextUtils.isEmpty(currentProduct.getProductCashback()));
+                    shipmentMultipleAddressItem.setCashback(currentProduct.getProductCashback());
 
                     shipmentMultipleAddressItem.setShipmentCartData(new RatesDataConverter()
                             .getShipmentCartData(currentAddress.getUserAddress(), currentGroupShop,
@@ -179,7 +181,6 @@ public class ShipmentDataConverter {
         // This is something that not well planned
         Fobject fobject = levelUpParametersFromProductToCartSeller(cartItemModels);
         shipmentSingleAddressItem.setProductFcancelPartial(fobject.isFcancelPartial() == 1);
-        shipmentSingleAddressItem.setProductIsPreorder(fobject.isPreOrder() == 1);
         shipmentSingleAddressItem.setCartItemModels(cartItemModels);
 
         shipmentSingleAddressItem.setShipmentCartData(new RatesDataConverter()

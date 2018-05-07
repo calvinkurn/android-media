@@ -5,7 +5,6 @@ import android.text.TextUtils;
 import com.tokopedia.checkout.data.entity.response.rates.Attribute;
 import com.tokopedia.checkout.data.entity.response.rates.RatesResponse;
 import com.tokopedia.checkout.domain.datamodel.addressoptions.RecipientAddressModel;
-import com.tokopedia.checkout.domain.datamodel.cartshipmentform.CartShipmentAddressFormData;
 import com.tokopedia.checkout.domain.datamodel.cartshipmentform.GroupShop;
 import com.tokopedia.checkout.domain.datamodel.cartshipmentform.Product;
 import com.tokopedia.checkout.domain.datamodel.cartshipmentform.ShipProd;
@@ -34,19 +33,28 @@ public class RatesDataConverter {
     public ShipmentDetailData getShipmentDetailData(ShipmentItem shipmentItem,
                                                     RecipientAddressModel recipientAddressModel) {
         ShipmentDetailData shipmentDetailData = new ShipmentDetailData();
-        ShipmentCartData shipmentCartData = shipmentItem.getShipmentCartData();
-        shipmentCartData.setDestinationAddress(recipientAddressModel.getAddressStreet());
-        shipmentCartData.setDestinationDistrictId(recipientAddressModel.getDestinationDistrictId());
-        shipmentCartData.setDestinationLatitude(recipientAddressModel.getLatitude());
-        shipmentCartData.setDestinationLongitude(recipientAddressModel.getLongitude());
-        shipmentCartData.setDestinationPostalCode(recipientAddressModel.getAddressPostalCode());
-        shipmentDetailData.setShipmentCartData(shipmentCartData);
         if (shipmentItem instanceof ShipmentSingleAddressItem) {
+            ShipmentCartData shipmentCartData = shipmentItem.getShipmentCartData();
+            shipmentCartData.setDestinationAddress(recipientAddressModel.getAddressStreet());
+            shipmentCartData.setDestinationDistrictId(recipientAddressModel.getDestinationDistrictId());
+            shipmentCartData.setDestinationLatitude(recipientAddressModel.getLatitude());
+            shipmentCartData.setDestinationLongitude(recipientAddressModel.getLongitude());
+            shipmentCartData.setDestinationPostalCode(recipientAddressModel.getAddressPostalCode());
+            shipmentDetailData.setShipmentCartData(shipmentCartData);
             int totalQuantity = 0;
             for (CartItemModel cartItemModel : ((ShipmentSingleAddressItem) shipmentItem).getCartItemModels()) {
                 totalQuantity += cartItemModel.getQuantity();
             }
             shipmentDetailData.setTotalQuantity(totalQuantity);
+        } else if (shipmentItem instanceof ShipmentMultipleAddressItem) {
+//            ShipmentCartData shipmentCartData = shipmentItem.getShipmentCartData();
+            ShipmentMultipleAddressItem shipmentMultipleAddressItem = (ShipmentMultipleAddressItem) shipmentItem;
+//            shipmentCartData.setDestinationAddress(shipmentMultipleAddressItem.getMultipleAddressItemData().getAddressStreet());
+//            shipmentCartData.setDestinationDistrictId(shipmentMultipleAddressItem.getMultipleAddressItemData().getDestinationDistrictId());
+//            shipmentCartData.setDestinationLatitude(shipmentMultipleAddressItem.getMultipleAddressItemData().getLatitude());
+//            shipmentCartData.setDestinationLongitude(shipmentMultipleAddressItem.getMultipleAddressItemData().getLongitude());
+//            shipmentCartData.setDestinationPostalCode(shipmentMultipleAddressItem.getMultipleAddressItemData().getAddressPostalCode());
+            shipmentDetailData.setShipmentCartData(shipmentMultipleAddressItem.getShipmentCartData());
         }
         return shipmentDetailData;
     }

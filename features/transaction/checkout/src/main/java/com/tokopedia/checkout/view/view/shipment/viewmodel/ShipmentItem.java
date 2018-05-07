@@ -22,7 +22,6 @@ public abstract class ShipmentItem implements ShipmentData {
     private String shopName;
 
     private int weightUnit;
-    private boolean productIsPreorder;
     private boolean productFinsurance;
     private boolean productFcancelPartial;
 
@@ -101,14 +100,6 @@ public abstract class ShipmentItem implements ShipmentData {
 
     public void setShopName(String shopName) {
         this.shopName = shopName;
-    }
-
-    public boolean isProductIsPreorder() {
-        return productIsPreorder;
-    }
-
-    public void setProductIsPreorder(boolean productIsPreorder) {
-        this.productIsPreorder = productIsPreorder;
     }
 
     public boolean isProductFinsurance() {
