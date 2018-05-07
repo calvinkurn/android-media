@@ -2,7 +2,6 @@ package com.tokopedia.kol.feature.post.view.adapter.viewholder;
 
 import android.graphics.Bitmap;
 import android.support.annotation.LayoutRes;
-import android.text.Spanned;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
@@ -129,7 +128,7 @@ public class KolPostViewHolder extends AbstractViewHolder<KolPostViewModel> {
         }
 
         kolText.setText(getKolText(element));
-        UrlUtil.convertTokopediaUrlToBeClickable(kolText);
+        UrlUtil.setTextWithClickableTokopediaUrl(kolText, getKolText(element));
 
         if (element.isLiked()) {
             ImageHandler.loadImageWithIdWithoutPlaceholder(likeIcon, R.drawable.ic_thumb_green);
@@ -194,8 +193,7 @@ public class KolPostViewHolder extends AbstractViewHolder<KolPostViewModel> {
             public void onClick(View v) {
                 if (kolText.getText().toString().endsWith(kolText.getContext().getString(R
                         .string.read_more_english))) {
-                    kolText.setText(MethodChecker.fromHtml(element.getReview()));
-                    UrlUtil.convertTokopediaUrlToBeClickable(kolText);
+                    UrlUtil.setTextWithClickableTokopediaUrl(kolText, element.getReview());
                     element.setReviewExpanded(true);
                 }
             }
@@ -237,18 +235,17 @@ public class KolPostViewHolder extends AbstractViewHolder<KolPostViewModel> {
 
     }
 
-    private Spanned getKolText(KolPostViewModel element) {
+    private String getKolText(KolPostViewModel element) {
         if (!element.isReviewExpanded() && MethodChecker.fromHtml(element.getReview()).length() >
                 MAX_CHAR) {
             String subDescription = MethodChecker.fromHtml(element.getReview()).toString().substring(0,
                     MAX_CHAR);
-            return MethodChecker.fromHtml(
-                    subDescription.replaceAll("(\r\n|\n)", "<br />") + "... "
+            return subDescription.replaceAll("(\r\n|\n)", "<br />") + "... "
                             + "<font color='#42b549'>"
                             + kolText.getContext().getString(R.string.read_more_english)
-                            + "</font>");
+                            + "</font>";
         } else {
-            return MethodChecker.fromHtml(element.getReview().replaceAll("(\r\n|\n)", "<br />"));
+            return element.getReview().replaceAll("(\r\n|\n)", "<br />");
         }
     }
 

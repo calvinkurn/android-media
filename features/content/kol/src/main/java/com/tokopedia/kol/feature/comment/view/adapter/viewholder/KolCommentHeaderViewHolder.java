@@ -9,7 +9,6 @@ import android.widget.TextView;
 
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
-import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.kol.R;
 import com.tokopedia.kol.common.util.UrlUtil;
 import com.tokopedia.kol.feature.comment.view.listener.KolComment;
@@ -61,8 +60,7 @@ public class KolCommentHeaderViewHolder extends AbstractViewHolder<KolCommentHea
         });
 
         badge.setVisibility(View.VISIBLE);
-        comment.setText(MethodChecker.fromHtml(SPACE + getCommentText(element)));
-        UrlUtil.convertTokopediaUrlToBeClickable(comment);
+        UrlUtil.setTextWithClickableTokopediaUrl(comment, SPACE + getCommentText(element));
 
         if (element.isCanLoadMore())
             loadMore.setVisibility(View.VISIBLE);
