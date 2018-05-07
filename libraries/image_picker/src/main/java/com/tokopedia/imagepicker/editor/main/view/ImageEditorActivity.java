@@ -5,7 +5,6 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -23,9 +22,10 @@ import com.tokopedia.imagepicker.R;
 import com.tokopedia.imagepicker.common.util.ImageUtils;
 import com.tokopedia.imagepicker.common.widget.NonSwipeableViewPager;
 import com.tokopedia.imagepicker.editor.adapter.ImageEditorViewPagerAdapter;
-import com.tokopedia.imagepicker.editor.presenter.ImagePickerPresenter;
+import com.tokopedia.imagepicker.editor.presenter.ImageEditorPresenter;
 import com.tokopedia.imagepicker.editor.widget.ImageEditActionMainWidget;
 import com.tokopedia.imagepicker.editor.widget.ImageEditThumbnailListWidget;
+import com.tokopedia.imagepicker.editor.widget.TwoLineSeekBar;
 import com.tokopedia.imagepicker.picker.main.util.ImageEditActionTypeDef;
 import com.yalantis.ucrop.view.widget.HorizontalProgressWheelView;
 
@@ -37,7 +37,7 @@ import java.util.Locale;
  * Created by Hendry on 9/25/2017.
  */
 
-public class ImageEditorActivity extends BaseSimpleActivity implements ImagePickerPresenter.ImageDownloadView,
+public class ImageEditorActivity extends BaseSimpleActivity implements ImageEditorPresenter.ImageEditorView,
         ImageEditPreviewFragment.OnImageEditPreviewFragmentListener, ImageEditThumbnailListWidget.OnImageEditThumbnailListWidgetListener, ImageEditActionMainWidget.OnImageEditActionMainWidgetListener {
 
     public static final String EXTRA_IMAGE_URLS = "IMG_URLS";
@@ -75,7 +75,7 @@ public class ImageEditorActivity extends BaseSimpleActivity implements ImagePick
     private boolean isCirclePreview;
 
     private View vgDownloadProgressBar;
-    private ImagePickerPresenter imagePickerPresenter;
+    private ImageEditorPresenter imageEditorPresenter;
 
     private View vgContentContainer;
     private NonSwipeableViewPager viewPager;
@@ -88,12 +88,17 @@ public class ImageEditorActivity extends BaseSimpleActivity implements ImagePick
     private View editCancelView;
     private View editSaveView;
     private View doneButton;
-    private View vCropProgressBar;
+    private View vEditProgressBar;
     private View blockingView;
     private View layoutRotateWheel;
-    private boolean alreadySetupRotateWidget;
+    private View layoutBrightness;
+    private View layoutContrast;
     private TextView textViewRotateAngle;
+    private TextView textViewBrightness;
+    private TextView textViewContrast;
     private ProgressDialog progressDialog;
+    private TwoLineSeekBar brightnessSeekbar;
+    private TwoLineSeekBar contrastSeekbar;
 
     public static Intent getIntent(Context context, ArrayList<String> imageUrls, int minResolution,
                                    @ImageEditActionTypeDef int[] imageEditActionType,
@@ -131,7 +136,7 @@ public class ImageEditorActivity extends BaseSimpleActivity implements ImagePick
         //TODO for test only
         extraImageUrls = new ArrayList<>();
         extraImageUrls.add("/storage/emulated/0/WhatsApp/Media/WhatsApp Documents/IMG_20180308_181928_HDR.jpg");
-        extraImageUrls.add("/storage/emulated/0/DCIM/Camera/IMG_20180418_113022.jpg");
+        extraImageUrls.add("/storage/emulated/0/Tokopedia/Tokopedia Camera/6319516.jpg");
         extraImageUrls.add("/storage/emulated/0/Download/Guitar-PNG-Image-500x556.png");
         extraImageUrls.add("/storage/emulated/0/Download/303836.jpg");
 
@@ -172,9 +177,11 @@ public class ImageEditorActivity extends BaseSimpleActivity implements ImagePick
         imageEditActionMainWidget = findViewById(R.id.image_edit_action_main_widget);
         imageEditThumbnailListWidget = findViewById(R.id.image_edit_thumbnail_list_widget);
         doneButton = findViewById(R.id.tv_done);
-        vCropProgressBar = findViewById(R.id.crop_progressbar);
+        vEditProgressBar = findViewById(R.id.crop_progressbar);
         blockingView = findViewById(R.id.crop_blocking_view);
         layoutRotateWheel = findViewById(R.id.layout_rotate_wheel);
+        layoutBrightness = findViewById(R.id.layout_brightness);
+        layoutContrast = findViewById(R.id.layout_contrast);
 
         viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
@@ -226,6 +233,12 @@ public class ImageEditorActivity extends BaseSimpleActivity implements ImagePick
                 case ImageEditActionTypeDef.ACTION_WATERMARK:
                     //TODO undo watermark here
                     break;
+                case ImageEditActionTypeDef.ACTION_BRIGHTNESS:
+                    fragment.cancelBrightness();
+                    break;
+                case ImageEditActionTypeDef.ACTION_CONTRAST:
+                    fragment.cancelContrast();
+                    break;
             }
 
         }
@@ -234,26 +247,37 @@ public class ImageEditorActivity extends BaseSimpleActivity implements ImagePick
 
     private void onSaveEditClicked() {
         if (isInEditMode) {
-            showCropLoading();
+            showEditLoading();
             ImageEditPreviewFragment fragment = getCurrentFragment();
             switch (currentEditActionType) {
                 case ImageEditActionTypeDef.ACTION_CROP:
                 case ImageEditActionTypeDef.ACTION_ROTATE:
                 case ImageEditActionTypeDef.ACTION_CROP_ROTATE:
                     if (fragment != null) {
-                        fragment.saveEdittedImage();
+                        fragment.cropAndSaveImage();
                     }
                     break;
                 case ImageEditActionTypeDef.ACTION_WATERMARK:
+                    // currently not supported
+                    break;
+                case ImageEditActionTypeDef.ACTION_BRIGHTNESS:
+                    if (fragment != null) {
+                        fragment.saveBrightnessImage();
+                    }
+                    break;
+                case ImageEditActionTypeDef.ACTION_CONTRAST:
+                    if (fragment != null) {
+                        fragment.saveContrastImage();
+                    }
                     break;
             }
         }
     }
 
     @Override
-    public void onSuccessSaveEditImage(Uri resultUri) {
-        hideCropLoading();
-        File file = new File(resultUri.getPath());
+    public void onSuccessSaveEditImage(String path) {
+        hideEditLoading();
+        File file = new File(path);
         if (!file.exists()) {
             return;
         }
@@ -267,14 +291,11 @@ public class ImageEditorActivity extends BaseSimpleActivity implements ImagePick
             return;
         }
 
-        String path = file.getAbsolutePath();
         // it is on the last node on the step
         if (getMaxStepForCurrentImage() != getCurrentStepForCurrentImage() + 1) {
             //discard the next file to size and set currentStepIndex to current+1
             //discard unneeded files
             for (int j = getMaxStepForCurrentImage() - 1; j > getCurrentStepForCurrentImage(); j--) {
-                String pathToDelete = edittedImagePaths.get(currentImageIndex).get(j);
-                deleteUnusedFile(pathToDelete);
                 edittedImagePaths.remove(j);
             }
         }
@@ -286,8 +307,6 @@ public class ImageEditorActivity extends BaseSimpleActivity implements ImagePick
         // if already 5 steps or more, delete the step no 1, we don't want to spam the history.
         // step no 0 should not be deleted. Perhaps someday it is used for reset to very first node.
         if (lastEmptyStep > MAX_HISTORY_PER_IMAGE) {
-            String stepNo1Path = edittedImagePaths.get(currentImageIndex).get(1);
-            deleteUnusedFile(stepNo1Path);
             edittedImagePaths.remove(1);
             //since the paths is removed by 1, decrease the lastStep by 1.
             currentEditStepIndexList.set(currentImageIndex, lastEmptyStep - 1);
@@ -296,6 +315,12 @@ public class ImageEditorActivity extends BaseSimpleActivity implements ImagePick
         refreshViewPager();
         imageEditThumbnailListWidget.notifyDataSetChanged();
 
+        setupEditMode(false, ImageEditActionTypeDef.ACTION_CROP_ROTATE);
+    }
+
+    @Override
+    public void onEditDoNothing() {
+        hideEditLoading();
         setupEditMode(false, ImageEditActionTypeDef.ACTION_CROP_ROTATE);
     }
 
@@ -319,16 +344,9 @@ public class ImageEditorActivity extends BaseSimpleActivity implements ImagePick
         return edittedImagePaths.get(currentImageIndex).size();
     }
 
-    private void deleteUnusedFile(String path) {
-        File file = new File(path);
-        if (file.exists()) {
-            file.delete();
-        }
-    }
-
     @Override
     public void onErrorSaveEditImage(Throwable throwable) {
-        hideCropLoading();
+        hideEditLoading();
         NetworkErrorHelper.showRedCloseSnackbar(this, ErrorHandler.getErrorMessage(getContext(), throwable));
         onCancelEditClicked();
     }
@@ -337,13 +355,13 @@ public class ImageEditorActivity extends BaseSimpleActivity implements ImagePick
         return (ImageEditPreviewFragment) imageEditorViewPagerAdapter.getRegisteredFragment(currentImageIndex);
     }
 
-    private void showCropLoading() {
-        vCropProgressBar.setVisibility(View.VISIBLE);
+    private void showEditLoading() {
+        vEditProgressBar.setVisibility(View.VISIBLE);
         blockingView.setVisibility(View.VISIBLE);
     }
 
-    private void hideCropLoading() {
-        vCropProgressBar.setVisibility(View.GONE);
+    private void hideEditLoading() {
+        vEditProgressBar.setVisibility(View.GONE);
         blockingView.setVisibility(View.GONE);
     }
 
@@ -367,10 +385,7 @@ public class ImageEditorActivity extends BaseSimpleActivity implements ImagePick
             editorMainView.setVisibility(View.GONE);
             editorControlView.setVisibility(View.VISIBLE);
             doneButton.setVisibility(View.GONE);
-            if (fragment != null) {
-                fragment.setEditMode(true);
-            }
-            //TODO show other controls
+
             switch (editActionType) {
                 case ImageEditActionTypeDef.ACTION_CROP:
                     //currently not supported.
@@ -382,9 +397,30 @@ public class ImageEditorActivity extends BaseSimpleActivity implements ImagePick
                     //currently not supported.
                     break;
                 case ImageEditActionTypeDef.ACTION_CROP_ROTATE:
+                    if (fragment != null) {
+                        fragment.setEditMode(true);
+                    }
                     hideAllControls();
                     setupRotateWidget();
                     layoutRotateWheel.setVisibility(View.VISIBLE);
+                    break;
+                case ImageEditActionTypeDef.ACTION_BRIGHTNESS:
+                    hideAllControls();
+                    setupBrightnessWidget();
+                    if (fragment!= null) {
+                        float brightness = fragment.getBrightness();
+                        setUIBrightnessValue(brightness);
+                    }
+                    layoutBrightness.setVisibility(View.VISIBLE);
+                    break;
+                case ImageEditActionTypeDef.ACTION_CONTRAST:
+                    hideAllControls();
+                    setupContrastWidget();
+                    if (fragment!= null) {
+                        float contrast = fragment.getContrast();
+                        setUIContrastValue(contrast);
+                    }
+                    layoutContrast.setVisibility(View.VISIBLE);
                     break;
             }
         } else {
@@ -399,13 +435,13 @@ public class ImageEditorActivity extends BaseSimpleActivity implements ImagePick
     }
 
     private void hideAllControls() {
-        // TODO hide other controls
         layoutRotateWheel.setVisibility(View.GONE);
-        // currently no controls to hide, except layout rotate
+        layoutBrightness.setVisibility(View.GONE);
+        layoutContrast.setVisibility(View.GONE);
     }
 
     private void setupRotateWidget() {
-        if (!alreadySetupRotateWidget) {
+        if (textViewRotateAngle== null) {
             textViewRotateAngle = findViewById(R.id.text_view_rotate);
             ((HorizontalProgressWheelView) findViewById(R.id.rotate_scroll_wheel))
                     .setScrollingListener(new HorizontalProgressWheelView.ScrollingListener() {
@@ -456,13 +492,78 @@ public class ImageEditorActivity extends BaseSimpleActivity implements ImagePick
                 }
             });
         }
-        alreadySetupRotateWidget = true;
+    }
+
+    private void setupBrightnessWidget() {
+        if (textViewBrightness == null) {
+            textViewBrightness = findViewById(R.id.text_view_brightness);
+            brightnessSeekbar = findViewById(R.id.seekBar_brightness);
+            brightnessSeekbar.reset();
+            brightnessSeekbar.setSeekLength(-500, 500, 0, 1f);
+            brightnessSeekbar.setOnSeekChangeListener(new TwoLineSeekBar.OnSeekChangeListener() {
+                @Override
+                public void onSeekChanged(float value, float step) {
+                    setUIBrightnessValue(value);
+                    ImageEditPreviewFragment imageEditPreviewFragment = getCurrentFragment();
+                    if (imageEditPreviewFragment != null) {
+                        imageEditPreviewFragment.setBrightness(value);
+                    }
+                }
+
+                @Override
+                public void onSeekStopped(float value, float step) {
+                    // no need to hide loading, etc.
+                }
+            });
+        }
+    }
+
+    private void setupContrastWidget() {
+        if (textViewContrast == null) {
+            textViewContrast = findViewById(R.id.text_view_contrast);
+            contrastSeekbar = findViewById(R.id.seekBar_contrast);
+            contrastSeekbar.reset();
+            contrastSeekbar.setSeekLength(50, 150, 100, 1f);
+            contrastSeekbar.setOnSeekChangeListener(new TwoLineSeekBar.OnSeekChangeListener() {
+                @Override
+                public void onSeekChanged(float value, float step) {
+                    setUIContrastValue(value);
+                    ImageEditPreviewFragment imageEditPreviewFragment = getCurrentFragment();
+                    if (imageEditPreviewFragment != null) {
+                        imageEditPreviewFragment.setContrast(value);
+                    }
+                }
+
+                @Override
+                public void onSeekStopped(float value, float step) {
+                    // no need to hide loading, etc.
+                }
+            });
+        }
     }
 
     @Override
     public void setRotateAngle(float angle) {
         if (textViewRotateAngle != null) {
             textViewRotateAngle.setText(String.format(Locale.getDefault(), "%.1f°", angle));
+        }
+    }
+
+    public void setUIBrightnessValue(float brightnessValue) {
+        if (textViewBrightness != null) {
+            textViewBrightness.setText(String.format(Locale.getDefault(), "%.1f", brightnessValue / 10));
+        }
+        if (brightnessSeekbar!= null && brightnessSeekbar.getValue() != brightnessValue) {
+            brightnessSeekbar.setValue(brightnessValue);
+        }
+    }
+
+    public void setUIContrastValue(float contrastValue) {
+        if (textViewContrast != null) {
+            textViewContrast.setText(String.format(Locale.getDefault(), "%.2f", contrastValue / 100));
+        }
+        if (contrastSeekbar!= null && contrastSeekbar.getValue() != contrastValue) {
+            contrastSeekbar.setValue(contrastValue);
         }
     }
 
@@ -491,17 +592,23 @@ public class ImageEditorActivity extends BaseSimpleActivity implements ImagePick
 
         showDoneLoading();
         initImagePickerPresenter();
-        imagePickerPresenter.cropBitmapToExpectedRatio(extraImageUrls, step0Paths, resultList, ratioX, ratioY );
+        imageEditorPresenter.cropBitmapToExpectedRatio(extraImageUrls, step0Paths, resultList, ratioX, ratioY );
     }
 
     @Override
     public void onSuccessCropImageToRatio(ArrayList<String> cropppedImagePaths) {
         hideDoneLoading();
-        deleteAllNotUsedImage(true);
-        Intent intent = new Intent();
-        intent.putStringArrayListExtra(EDIT_RESULT_PATHS, cropppedImagePaths);
-        setResult(Activity.RESULT_OK, intent);
-        finish();
+        ArrayList<String> resultList;
+        try {
+            resultList = ImageUtils.copyFiles(cropppedImagePaths, ImageUtils.DirectoryDef.DIRECTORY_TOKOPEDIA_EDIT_RESULT);
+            ImageUtils.deleteCacheFolder();
+            Intent intent = new Intent();
+            intent.putStringArrayListExtra(EDIT_RESULT_PATHS, resultList);
+            setResult(Activity.RESULT_OK, intent);
+            finish();
+        } catch (Exception e) {
+            NetworkErrorHelper.showRedCloseSnackbar(this, ErrorHandler.getErrorMessage(this, e));
+        }
     }
 
     @Override
@@ -558,7 +665,7 @@ public class ImageEditorActivity extends BaseSimpleActivity implements ImagePick
                 showDownloadProgressDialog();
                 hideContentView();
                 initImagePickerPresenter();
-                imagePickerPresenter.convertHttpPathToLocalPath(extraImageUrls);
+                imageEditorPresenter.convertHttpPathToLocalPath(extraImageUrls);
             } else {
                 copyToLocalUrl(extraImageUrls);
                 startEditLocalImages();
@@ -569,17 +676,17 @@ public class ImageEditorActivity extends BaseSimpleActivity implements ImagePick
     }
 
     private void initImagePickerPresenter(){
-        if (imagePickerPresenter == null) {
-            imagePickerPresenter = new ImagePickerPresenter();
-            imagePickerPresenter.attachView(this);
+        if (imageEditorPresenter == null) {
+            imageEditorPresenter = new ImageEditorPresenter();
+            imageEditorPresenter.attachView(this);
         }
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        if (imagePickerPresenter != null) {
-            imagePickerPresenter.detachView();
+        if (imageEditorPresenter != null) {
+            imageEditorPresenter.detachView();
         }
     }
 
@@ -650,7 +757,7 @@ public class ImageEditorActivity extends BaseSimpleActivity implements ImagePick
                     .setPositiveButton(getString(R.string.exit), new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialogInterface, int i) {
-                            deleteAllNotUsedImage(false);
+                            ImageUtils.deleteCacheFolder();
                             ImageEditorActivity.super.onBackPressed();
                         }
                     }).setNegativeButton(getString(R.string.cancel), new DialogInterface.OnClickListener() {
@@ -660,30 +767,6 @@ public class ImageEditorActivity extends BaseSimpleActivity implements ImagePick
                     });
             AlertDialog dialog = alertDialogBuilder.create();
             dialog.show();
-        }
-    }
-
-    private void deleteAllNotUsedImage(boolean keepResultFiles) {
-        if (edittedImagePaths != null && edittedImagePaths.size() > 0) {
-            for (int i = edittedImagePaths.size() - 1; i >= 0; i--) {
-                ArrayList<String> historyList = edittedImagePaths.get(i);
-                if (historyList != null && historyList.size() > 0) {
-                    for (int j = historyList.size() - 1; j >= 0; j--) {
-                        String historyPathItem = historyList.get(j);
-                        if (keepResultFiles && j == currentEditStepIndexList.get(i)) {
-                            continue;
-                        }
-                        if (j == 0) { // first index, compare with the original,
-                            // we don't want to delete if it is same with original
-                            if (!historyPathItem.equals(extraImageUrls.get(i))) {
-                                deleteUnusedFile(historyPathItem);
-                            }
-                        } else {
-                            deleteUnusedFile(historyPathItem);
-                        }
-                    }
-                }
-            }
         }
     }
 

@@ -71,6 +71,14 @@ public class ImageEditorEditActionAdapter implements View.OnClickListener {
                     ivEdit.setImageResource(R.drawable.ic_crop);
                     tvEdit.setText(context.getString(R.string.crop_and_rotate));
                     break;
+                case ImageEditActionTypeDef.ACTION_BRIGHTNESS:
+                    ivEdit.setImageResource(R.drawable.ic_brightness);
+                    tvEdit.setText(context.getString(R.string.brightness));
+                    break;
+                case ImageEditActionTypeDef.ACTION_CONTRAST:
+                    ivEdit.setImageResource(R.drawable.ic_contrast);
+                    tvEdit.setText(context.getString(R.string.contrast));
+                    break;
             }
             view.setOnClickListener(this);
             viewGroup.addView(view);

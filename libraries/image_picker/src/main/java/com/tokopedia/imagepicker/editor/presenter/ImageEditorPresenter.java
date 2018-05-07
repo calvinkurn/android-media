@@ -23,19 +23,15 @@ import rx.Subscriber;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Func1;
-import rx.functions.Func2;
 import rx.functions.Func3;
 import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 
-public class ImagePickerPresenter extends BaseDaggerPresenter<ImagePickerPresenter.ImageDownloadView> {
-
-    private static final int WIDTH_DOWNLOAD = 1024;
-    private static final int HEIGHT_DOWNLOAD = 1024;
+public class ImageEditorPresenter extends BaseDaggerPresenter<ImageEditorPresenter.ImageEditorView> {
 
     private CompositeSubscription compositeSubscription;
 
-    public interface ImageDownloadView extends CustomerView {
+    public interface ImageEditorView extends CustomerView {
         Context getContext();
 
         void onErrorDownloadImageToLocal(Throwable e);
@@ -124,9 +120,6 @@ public class ImagePickerPresenter extends BaseDaggerPresenter<ImagePickerPresent
                                 } else {
                                     String outputPath;
                                     outputPath = trimBitmap(imagePath, expectedRatio, currentRatio);
-                                    if (!oriImagePath.equals(imagePath)) {
-                                        deleteUnusedFile(imagePath);
-                                    }
                                     return outputPath;
                                 }
                             }
@@ -190,7 +183,7 @@ public class ImagePickerPresenter extends BaseDaggerPresenter<ImagePickerPresent
         Canvas canvas = new Canvas(outputBitmap);
         canvas.drawBitmap(bitmapToEdit, new Rect(left, top, right, bottom),
                 new Rect(0, 0, expectedWidth, expectedHeight), null);
-        File file = ImageUtils.writeImageToTkpdPath(ImageUtils.DirectoryDef.DIRECTORY_TOKOPEDIA_EDIT,
+        File file = ImageUtils.writeImageToTkpdPath(ImageUtils.DirectoryDef.TOKOPEDIA_TOKOPEDIA_CACHE,
                 outputBitmap, isPng);
         bitmapToEdit.recycle();
         outputBitmap.recycle();
@@ -198,13 +191,6 @@ public class ImagePickerPresenter extends BaseDaggerPresenter<ImagePickerPresent
         System.gc();
 
         return file.getAbsolutePath();
-    }
-
-    private void deleteUnusedFile(String path) {
-        File file = new File(path);
-        if (file.exists()) {
-            file.delete();
-        }
     }
 
     private Observable<List<File>> downloadImages(final List<String> urls) {
@@ -230,7 +216,7 @@ public class ImagePickerPresenter extends BaseDaggerPresenter<ImagePickerPresent
                             }
                             FutureTarget<File> future = Glide.with(getView().getContext())
                                     .load(url)
-                                    .downloadOnly(WIDTH_DOWNLOAD, HEIGHT_DOWNLOAD);
+                                    .downloadOnly(ImageUtils.DEF_WIDTH, ImageUtils.DEF_HEIGHT);
                             try {
                                 File cacheFile = future.get();
                                 String cacheFilePath = cacheFile.getAbsolutePath();
