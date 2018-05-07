@@ -1,12 +1,10 @@
 package com.tokopedia.groupchat.chatroom.view.adapter.chatroom.viewholder;
 
 import android.graphics.Typeface;
-import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
@@ -73,7 +71,7 @@ public abstract class BaseChatViewHolder<T extends Visitable> extends AbstractVi
 
     public void onViewRecycled() {
         if(avatar != null) {
-            Glide.clear(avatar);
+           ImageHandler.clearImage(avatar);
         }
     }
 }
