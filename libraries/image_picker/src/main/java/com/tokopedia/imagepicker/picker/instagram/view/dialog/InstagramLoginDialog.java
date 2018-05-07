@@ -5,6 +5,7 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.net.http.SslError;
 import android.view.View;
+import android.view.WindowManager;
 import android.webkit.SslErrorHandler;
 import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
@@ -60,6 +61,12 @@ public class InstagramLoginDialog extends BottomSheets {
         super.setupDialog(dialog, style);
         int screenHeight = getResources().getDisplayMetrics().heightPixels;
         updateHeight(screenHeight/2);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        getDialog().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
     }
 
     public void setListenerLoginInstagram(ListenerLoginInstagram listenerLoginInstagram) {
