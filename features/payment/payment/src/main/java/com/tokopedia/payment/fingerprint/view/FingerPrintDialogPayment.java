@@ -123,6 +123,11 @@ public class FingerPrintDialogPayment extends FingerPrintDialog implements Finge
     }
 
     @Override
+    protected void onCloseButtonClick() {
+        listenerPayment.onGoToOtpPage(transactionId, urlOtp);
+    }
+
+    @Override
     public void onAuthenticationError(int errMsgId, CharSequence errString) {
         updateCounterError();
     }
@@ -146,6 +151,12 @@ public class FingerPrintDialogPayment extends FingerPrintDialog implements Finge
         if(updateCounterError()){
             startListening();
         }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        getDialog().setCanceledOnTouchOutside(false);
     }
 
     public interface ListenerPayment {
