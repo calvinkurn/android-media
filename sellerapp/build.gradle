@@ -223,7 +223,7 @@ dependencies {
     compile project(rootProject.ext.features.goldMerchant)
     compile project(rootProject.ext.features.session)
     compile project(rootProject.ext.features.inbox)
-    compile project(rootProject.ext.features.digital)
+    compile project(rootProject.ext.features.digitalproduct)
     compile project(rootProject.ext.features.transaction)
     compile project(rootProject.ext.features.reputation)
     compile project(rootProject.ext.features.mitraToppers)
