@@ -11,14 +11,14 @@ import javax.inject.Inject;
 import rx.Observable;
 
 /**
- * @author okasurya on 5/7/18.
+ * Created by yoshua on 30/04/18.
  */
 
 public class DeleteAllCartUseCase extends UseCase<ATCStatusDomain> {
     private CartRepository cartRepository;
 
     @Inject
-    DeleteAllCartUseCase(CartLocalRepository cartRepository) {
+    public DeleteAllCartUseCase(CartLocalRepository cartRepository) {
         this.cartRepository = cartRepository;
     }
 

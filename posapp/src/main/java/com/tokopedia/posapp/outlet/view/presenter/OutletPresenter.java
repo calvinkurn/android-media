@@ -1,7 +1,7 @@
 package com.tokopedia.posapp.outlet.view.presenter;
 
-import com.tokopedia.core.network.constants.TkpdBaseURL;
-import com.tokopedia.posapp.PosSessionHandler;
+import com.tokopedia.posapp.cart.domain.model.ATCStatusDomain;
+import com.tokopedia.posapp.cart.domain.usecase.DeleteAllCartUseCase;
 import com.tokopedia.posapp.outlet.domain.usecase.GetOutletUseCase;
 import com.tokopedia.posapp.outlet.domain.usecase.SelectOutletUseCase;
 import com.tokopedia.posapp.outlet.view.GetOutletSubscriber;
@@ -13,7 +13,6 @@ import com.tokopedia.usecase.RequestParams;
 import javax.inject.Inject;
 
 import rx.Subscriber;
-import rx.subscriptions.CompositeSubscription;
 
 /**
  * Created by okasurya on 7/31/17.
@@ -29,17 +28,16 @@ public class OutletPresenter implements Outlet.Presenter {
 
     private Outlet.View view;
     private GetOutletUseCase getOutletUseCase;
-
     private SelectOutletUseCase selectOutletUseCase;
-    private PosSessionHandler posSessionHandler;
+    private DeleteAllCartUseCase deleteAllCartUseCase;
 
     @Inject
     public OutletPresenter(GetOutletUseCase outletUseCase,
                            SelectOutletUseCase selectOutletUseCase,
-                           PosSessionHandler posSessionHandler) {
+                           DeleteAllCartUseCase deleteAllCartUseCase) {
         this.getOutletUseCase = outletUseCase;
         this.selectOutletUseCase = selectOutletUseCase;
-        this.posSessionHandler = posSessionHandler;
+        this.deleteAllCartUseCase = deleteAllCartUseCase;
     }
 
     @Override
@@ -51,6 +49,8 @@ public class OutletPresenter implements Outlet.Presenter {
     public void detachView() {
         this.view = null;
         getOutletUseCase.unsubscribe();
+        selectOutletUseCase.unsubscribe();
+        deleteAllCartUseCase.unsubscribe();
     }
 
     @Override
@@ -58,41 +58,29 @@ public class OutletPresenter implements Outlet.Presenter {
         view.startLoading();
         view.clearOutletData();
         getOutletUseCase.execute(RequestParams.create(), new GetOutletSubscriber(view));
-        deleteAllCartUsecase.execute(RequestParams.create(), new Subscriber<ATCStatusDomain>() {
+        deleteAllCartUseCase.execute(RequestParams.create(), new Subscriber<ATCStatusDomain>() {
             @Override
-            public void onCompleted() {}
+            public void onCompleted() {
+            }
 
             @Override
-            public void onError(Throwable e) {}
+            public void onError(Throwable e) {
+            }
 
             @Override
-            public void onNext(ATCStatusDomain atcStatusDomain) {}
+            public void onNext(ATCStatusDomain atcStatusDomain) {
+            }
         });
     }
 
     @Override
     public void setHasNextPage(String uriNext) {
-//        pagingHandler.setHasNext(PagingHandler.CheckHasNext(uriNext));
-//        if(pagingHandler.CheckNextPage()) {
-//            PagingHandler.PagingHandlerModel pagingHandlerModel = new PagingHandler.PagingHandlerModel();
-//            pagingHandlerModel.setUriNext(uriNext);
-//            pagingHandler.setPagingHandlerModel(pagingHandlerModel);
-//        }
+
     }
 
     @Override
     public void getNextOutlet(String query) {
-//        try {
-//            if (pagingHandler.CheckNextPage()) {
-//                RequestParams params = AuthUtil.generateRequestParamsNetwork(context);
-//                params.putString(PARAM_PAGE, pagingHandler.getNextPage() + "");
-//                params.putString(PARAM_QUERY, query);
-//                params.putString(PARAM_ORDER_BY, ORDER_BY_ADDRESS_NAME);
-//                getOutletUseCase.execute(params, new GetOutletSubscriber(view()));
-//            }
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
+
     }
 
     @Override

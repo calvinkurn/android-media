@@ -12,6 +12,7 @@ import com.tokopedia.posapp.product.management.view.subscriber.EditProductStatus
 import com.tokopedia.posapp.product.management.view.subscriber.GetProductManagementSubscriber;
 import com.tokopedia.posapp.product.management.view.subscriber.LoadMoreProductManagementSubscriber;
 import com.tokopedia.posapp.product.management.view.viewmodel.ProductViewModel;
+import com.tokopedia.posapp.product.productdetail.view.Product;
 import com.tokopedia.usecase.RequestParams;
 
 import java.util.ArrayList;
@@ -87,14 +88,13 @@ public class ProductManagementPresenter implements ProductManagement.Presenter {
         EditProductRequest editProductRequest = new EditProductRequest();
 
         ProductPriceRequest productPriceRequest = new ProductPriceRequest();
+        if(status) productPriceRequest.setStatus(ProductConstant.Status.LOCAL_PRICE_SHOW);
+        else productPriceRequest.setStatus(ProductConstant.Status.ONLINE_PRICE_HIDDEN);
+
         if(productViewModel.getOutletPriceUnformatted() == 0) {
             productPriceRequest.setPrice(0);
-            if(status) productPriceRequest.setStatus(ProductConstant.Status.ONLINE_PRICE_SHOW);
-            else productPriceRequest.setStatus(ProductConstant.Status.ONLINE_PRICE_HIDDEN);
         } else {
             productPriceRequest.setPrice((int) productViewModel.getOutletPriceUnformatted());
-            if(status) productPriceRequest.setStatus(ProductConstant.Status.LOCAL_PRICE_SHOW);
-            else productPriceRequest.setStatus(ProductConstant.Status.LOCAL_PRICE_HIDDEN);
         }
 
         productPriceRequest.setProductId(Long.parseLong(productViewModel.getId()));
