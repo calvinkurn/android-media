@@ -27,9 +27,9 @@ public class DescriptionActivity extends TActivity implements View.OnClickListen
     public static final String KEY_VIDEO = "PRODUCT_DETAIL_VIDEO";
 
     private TextView topBarTitle;
-    private DescriptionTextView tvDesc;
-    private ScrollView descriptionContainer;
-    private ProductVideoHorizontalScroll productVideoHorizontalScroll;
+    protected DescriptionTextView tvDesc;
+    protected ScrollView descriptionContainer;
+    protected ProductVideoHorizontalScroll productVideoHorizontalScroll;
     private boolean isBackPressed;
 
 

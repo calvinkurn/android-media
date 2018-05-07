@@ -102,6 +102,9 @@
             android:name=".product.management.view.activity.ProductManagementActivity"
             android:theme="@style/Theme.Green"
             android:screenOrientation="portrait" />
+        <activity
+            android:name=".product.productdetail.view.activity.PosDescriptionActivity"
+            android:screenOrientation="portrait" />
     </application>
 
 </manifest>

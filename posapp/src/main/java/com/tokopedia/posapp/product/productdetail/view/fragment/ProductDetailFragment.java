@@ -39,6 +39,7 @@ import com.tokopedia.posapp.product.productdetail.view.Product;
 import com.tokopedia.posapp.cart.view.activity.LocalCartActivity;
 import com.tokopedia.posapp.payment.process.ReactInstallmentActivity;
 import com.tokopedia.posapp.cart.view.presenter.AddToCartPresenter;
+import com.tokopedia.posapp.product.productdetail.view.activity.PosDescriptionActivity;
 import com.tokopedia.posapp.product.productdetail.view.presenter.ProductPresenter;
 import com.tokopedia.posapp.product.productdetail.view.widget.DescriptionView;
 import com.tokopedia.posapp.product.productdetail.view.widget.HeaderInfoView;
@@ -335,7 +336,7 @@ public class ProductDetailFragment extends BaseDaggerFragment
 
     @Override
     public void onDescriptionClicked(@NonNull Bundle bundle) {
-        Intent intent = new Intent(context, DescriptionActivity.class);
+        Intent intent = new Intent(context, PosDescriptionActivity.class);
         intent.putExtras(bundle);
         startActivity(intent);
         getActivity().overridePendingTransition(0, 0);
