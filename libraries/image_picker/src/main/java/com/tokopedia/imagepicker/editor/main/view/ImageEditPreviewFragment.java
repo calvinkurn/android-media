@@ -210,6 +210,7 @@ public class ImageEditPreviewFragment extends Fragment implements ImageEditPrevi
         if (gestureCropImageView.getCurrentAngle() == 0 &&
                 gestureCropImageView.getCurrentScale() == gestureCropImageView.getMinScale()) {
             onImageEditPreviewFragmentListener.onEditDoNothing();
+            return;
         }
         uCropView.getCropImageView().cropAndSaveImage(
                 ImageUtils.isPng(edittedImagePath) ? Bitmap.CompressFormat.PNG : Bitmap.CompressFormat.JPEG, 100, new BitmapCropCallback() {
@@ -228,6 +229,7 @@ public class ImageEditPreviewFragment extends Fragment implements ImageEditPrevi
     public void saveBrightnessImage() {
         if (brightness == 0) {
             onImageEditPreviewFragmentListener.onEditDoNothing();
+            return;
         }
         Bitmap bitmap = gestureCropImageView.getViewBitmap();
         imageEditPreviewPresenter.saveBrightnessImage(bitmap, brightness / BRIGHTNESS_PRECISION, ImageUtils.isPng(edittedImagePath));
@@ -236,6 +238,7 @@ public class ImageEditPreviewFragment extends Fragment implements ImageEditPrevi
     public void saveContrastImage() {
         if (contrast == INITIAL_CONTRAST_VALUE) {
             onImageEditPreviewFragmentListener.onEditDoNothing();
+            return;
         }
         Bitmap bitmap = gestureCropImageView.getViewBitmap();
         imageEditPreviewPresenter.saveContrastImage(bitmap, contrast / CONTRAST_PRECISION, ImageUtils.isPng(edittedImagePath));
