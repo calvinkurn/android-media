@@ -1,5 +1,7 @@
 package com.tokopedia.flight.cancellation.view.contract;
 
+import android.support.annotation.StringRes;
+
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationListViewModel;
 
@@ -12,11 +14,15 @@ public interface FlightCancellationDetailContract {
 
         FlightCancellationListViewModel getFlightCancellationList();
 
+        void renderCancellationStatus(@StringRes int resId);
+
     }
 
     interface Presenter {
 
         void onViewCreated();
+
+        void checkCancellationStatus();
 
     }
 }

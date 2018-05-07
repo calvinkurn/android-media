@@ -3,6 +3,7 @@ package com.tokopedia.flight.cancellation.view.fragment;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.AppCompatImageView;
+import android.support.v7.widget.AppCompatTextView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,6 +19,7 @@ import com.tokopedia.flight.cancellation.view.adapter.FlightCancellationDetailPa
 import com.tokopedia.flight.cancellation.view.contract.FlightCancellationDetailContract;
 import com.tokopedia.flight.cancellation.view.presenter.FlightCancellationDetailPresenter;
 import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationListViewModel;
+import com.tokopedia.flight.common.util.FlightDateUtil;
 import com.tokopedia.flight.detail.presenter.ExpandableOnClickListener;
 import com.tokopedia.flight.detail.view.adapter.FlightDetailOrderAdapter;
 import com.tokopedia.flight.detail.view.adapter.FlightDetailOrderTypeFactory;
@@ -41,6 +43,8 @@ public class FlightCancellationDetailFragment extends BaseDaggerFragment
     private VerticalRecyclerView rvPassengers;
     private View layoutExpendablePassenger;
     private AppCompatImageView imageExpendablePassenger;
+    private AppCompatTextView txtCancellationStatus;
+    private TextView txtCancellationDate;
     private TextView txtRealRefund;
     private TextView txtEstimateRefund;
 
@@ -69,6 +73,8 @@ public class FlightCancellationDetailFragment extends BaseDaggerFragment
         rvPassengers = view.findViewById(R.id.recycler_view_data_passenger);
         txtRealRefund = view.findViewById(R.id.total_price);
         txtEstimateRefund = view.findViewById(R.id.estimate_refund);
+        txtCancellationStatus = view.findViewById(R.id.cancellation_status);
+        txtCancellationDate = view.findViewById(R.id.cancellation_date);
 
         FlightDetailOrderTypeFactory flightDetailOrderTypeFactory = new FlightDetailOrderTypeFactory(this, JOURNEY_TITLE_FONT_SIZE);
         flightDetailOrderAdapter = new FlightDetailOrderAdapter(flightDetailOrderTypeFactory);
@@ -127,11 +133,22 @@ public class FlightCancellationDetailFragment extends BaseDaggerFragment
 
         txtRealRefund.setText(flightCancellationListViewModel.getCancellations().getRealRefund());
         txtEstimateRefund.setText(flightCancellationListViewModel.getCancellations().getEstimatedRefund());
+
+        txtCancellationDate.setText(FlightDateUtil.formatDate(FlightDateUtil.FORMAT_DATE_API_DETAIL,
+                FlightDateUtil.DEFAULT_VIEW_FORMAT,
+                flightCancellationListViewModel.getCancellations().getCreateTime()));
+        presenter.checkCancellationStatus();
+
     }
 
     @Override
     public FlightCancellationListViewModel getFlightCancellationList() {
         return flightCancellationListViewModel;
+    }
+
+    @Override
+    public void renderCancellationStatus(int resId) {
+        txtCancellationStatus.setText(getString(resId));
     }
 
     private void togglePassengerInfo() {
