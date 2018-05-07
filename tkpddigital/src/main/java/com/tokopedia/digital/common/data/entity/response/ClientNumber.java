@@ -8,7 +8,7 @@ import com.google.gson.annotations.SerializedName;
 /**
  * Vishal Gupta 7th May, 2018
  */
-public class Field {
+public class ClientNumber {
 
     @SerializedName("name")
     @Expose
@@ -28,9 +28,6 @@ public class Field {
     @SerializedName("validation")
     @Expose
     private List<Validation> validation = null;
-    @SerializedName("__typename")
-    @Expose
-    private String typename;
 
     public String getName() {
         return name;
@@ -80,12 +77,5 @@ public class Field {
         this.validation = validation;
     }
 
-    public String getTypename() {
-        return typename;
-    }
-
-    public void setTypename(String typename) {
-        this.typename = typename;
-    }
 
 }

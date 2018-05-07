@@ -7,7 +7,7 @@ import com.google.gson.annotations.SerializedName;
 /**
  * Vishal Gupta 7th May, 2018
  */
-public class Product {
+public class OperatorBannerEntity {
 
     @SerializedName("type")
     @Expose
@@ -17,7 +17,7 @@ public class Product {
     private String id;
     @SerializedName("attributes")
     @Expose
-    private Attributes_ attributes;
+    private Attributes attributes;
     @SerializedName("__typename")
     @Expose
     private String typename;
@@ -38,11 +38,11 @@ public class Product {
         this.id = id;
     }
 
-    public Attributes_ getAttributes() {
+    public Attributes getAttributes() {
         return attributes;
     }
 
-    public void setAttributes(Attributes_ attributes) {
+    public void setAttributes(Attributes attributes) {
         this.attributes = attributes;
     }
 

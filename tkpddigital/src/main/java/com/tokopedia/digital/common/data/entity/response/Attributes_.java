@@ -1,13 +1,13 @@
+
 package com.tokopedia.digital.common.data.entity.response;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 /**
- * @author anggaprasetiyo on 4/28/17.
+ * Vishal Gupta 7th May, 2018
  */
-
-public class AttributesProduct {
+public class Attributes_ {
 
     @SerializedName("desc")
     @Expose
@@ -15,15 +15,6 @@ public class AttributesProduct {
     @SerializedName("detail")
     @Expose
     private String detail;
-    @SerializedName("detail_compact")
-    @Expose
-    private String detailCompact;
-    @SerializedName("detail_url")
-    @Expose
-    private String detailUrl;
-    @SerializedName("detail_url_text")
-    @Expose
-    private String detailUrlText;
     @SerializedName("info")
     @Expose
     private String info;
@@ -32,52 +23,67 @@ public class AttributesProduct {
     private String price;
     @SerializedName("price_plain")
     @Expose
-    private int pricePlain;
+    private Integer pricePlain;
     @SerializedName("promo")
     @Expose
     private Promo promo;
     @SerializedName("status")
     @Expose
-    private int status;
+    private Integer status;
 
     public String getDesc() {
         return desc;
+    }
+
+    public void setDesc(String desc) {
+        this.desc = desc;
     }
 
     public String getDetail() {
         return detail;
     }
 
-    public String getDetailCompact() {
-        return detailCompact;
-    }
-
-    public String getDetailUrl() {
-        return detailUrl;
-    }
-
-    public String getDetailUrlText() {
-        return detailUrlText;
+    public void setDetail(String detail) {
+        this.detail = detail;
     }
 
     public String getInfo() {
         return info;
     }
 
+    public void setInfo(String info) {
+        this.info = info;
+    }
+
     public String getPrice() {
         return price;
     }
 
-    public int getPricePlain() {
+    public void setPrice(String price) {
+        this.price = price;
+    }
+
+    public Integer getPricePlain() {
         return pricePlain;
+    }
+
+    public void setPricePlain(Integer pricePlain) {
+        this.pricePlain = pricePlain;
     }
 
     public Promo getPromo() {
         return promo;
     }
 
-    public int getStatus() {
+    public void setPromo(Promo promo) {
+        this.promo = promo;
+    }
+
+    public Integer getStatus() {
         return status;
     }
 
+    public void setStatus(Integer status) {
+        this.status = status;
+    }
 }

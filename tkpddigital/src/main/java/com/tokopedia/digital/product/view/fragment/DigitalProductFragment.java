@@ -56,6 +56,7 @@ import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.digital.R;
 import com.tokopedia.digital.R2;
 import com.tokopedia.digital.common.data.apiservice.DigitalEndpointService;
+import com.tokopedia.digital.common.data.apiservice.DigitalGqlApiService;
 import com.tokopedia.digital.common.data.mapper.FavoriteNumberListDataMapper;
 import com.tokopedia.digital.common.data.mapper.ProductDigitalMapper;
 import com.tokopedia.digital.common.data.repository.DigitalCategoryRepository;
@@ -270,8 +271,9 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
         bannerAdapter = new BannerAdapter(this);
 
         DigitalEndpointService digitalEndpointService = new DigitalEndpointService();
+        DigitalGqlApiService digitalGqlEndpointService = new DigitalGqlApiService();
         CategoryDetailDataSource categoryDetailDataSource = new CategoryDetailDataSource(
-                digitalEndpointService, new GlobalCacheManager(), new ProductDigitalMapper()
+                digitalGqlEndpointService, new GlobalCacheManager(), new ProductDigitalMapper()
         );
         FavoriteListDataSource favoriteListDataSource = new FavoriteListDataSource(
                 digitalEndpointService, new FavoriteNumberListDataMapper()

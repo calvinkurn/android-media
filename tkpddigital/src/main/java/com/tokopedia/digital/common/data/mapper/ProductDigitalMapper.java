@@ -1,8 +1,8 @@
 package com.tokopedia.digital.common.data.mapper;
 
 import com.tokopedia.digital.common.data.entity.response.Field;
-import com.tokopedia.digital.common.data.entity.response.ResponseCategoryDetailData;
-import com.tokopedia.digital.common.data.entity.response.ResponseCategoryDetailIncluded;
+import com.tokopedia.digital.common.data.entity.response.OperatorBannerEntity;
+import com.tokopedia.digital.common.data.entity.response.RechargeCategoryDetail;
 import com.tokopedia.digital.common.data.entity.response.Validation;
 import com.tokopedia.digital.exception.MapperDataException;
 import com.tokopedia.digital.product.view.model.BannerData;
@@ -12,7 +12,6 @@ import com.tokopedia.digital.product.view.model.Operator;
 import com.tokopedia.digital.product.view.model.Product;
 import com.tokopedia.digital.product.view.model.Promo;
 import com.tokopedia.digital.product.view.model.Rule;
-import com.tokopedia.digital.product.view.model.Teaser;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,46 +22,127 @@ import java.util.List;
 
 public class ProductDigitalMapper {
 
-    public CategoryData transformCategoryData(
-            ResponseCategoryDetailData responseCategoryDetailData,
-            List<ResponseCategoryDetailIncluded> responseCategoryDetailIncludedList
-    ) throws MapperDataException {
+    public CategoryData transformCategoryData(RechargeCategoryDetail entity) throws MapperDataException {
         CategoryData categoryData = new CategoryData();
-        categoryData.setTitleText(responseCategoryDetailData.getAttributes().getTitle());
-        categoryData.setCategoryId(responseCategoryDetailData.getId());
-        categoryData.setCategoryType(responseCategoryDetailData.getType());
-        categoryData.setDefaultOperatorId(
-                responseCategoryDetailData.getAttributes().getDefaultOperatorId()
-        );
-        categoryData.setIcon(responseCategoryDetailData.getAttributes().getIcon());
-        categoryData.setIconUrl(responseCategoryDetailData.getAttributes().getIconUrl());
-        categoryData.setName(responseCategoryDetailData.getAttributes().getName());
-        categoryData.setInstantCheckout(
-                responseCategoryDetailData.getAttributes().isInstantCheckout()
-        );
-        categoryData.setNew(responseCategoryDetailData.getAttributes().isNew());
-        categoryData.setSlug(responseCategoryDetailData.getAttributes().getSlug());
-        categoryData.setOperatorStyle(
-                responseCategoryDetailData.getAttributes().getOperatorStyle()
-        );
-        categoryData.setOperatorLabel(
-                responseCategoryDetailData.getAttributes().getOperatorLabel()
-        );
+        categoryData.setTitleText(entity.getTitle());
+        categoryData.setCategoryId(entity.getId());
+        categoryData.setDefaultOperatorId(entity.getDefaultOperatorId());
+        categoryData.setIcon(entity.getIcon());
+        categoryData.setIconUrl(entity.getIconUrl());
+        categoryData.setName(entity.getName());
+        categoryData.setInstantCheckout(entity.getInstantCheckout());
+        categoryData.setNew(entity.getIsNew());
+        categoryData.setSlug(entity.getSlug());
+        categoryData.setOperatorStyle(entity.getOperatorStyle());
+        categoryData.setOperatorLabel(entity.getOperatorLabel());
 
+        categoryData.setClientNumberList(transformClientNumberList(entity));
+        categoryData.setOperatorList(transformOperators(entity));
+        categoryData.setBannerDataListIncluded(transformBanners(entity.getBanners()));
+        categoryData.setOtherBannerDataListIncluded(transformBanners(entity.getOtherBanners()));
+
+        return categoryData;
+    }
+
+    /**
+     * Helper function to transfor client number list
+     *
+     * @param entity
+     * @return
+     */
+    private List<ClientNumber> transformClientNumberList(RechargeCategoryDetail entity) {
         List<ClientNumber> clientNumberCategoryList = new ArrayList<>();
-        for (Field field
-                : responseCategoryDetailData.getAttributes().getFields()) {
-            if (field.getName().equalsIgnoreCase(ClientNumber.DEFAULT_TYPE_CONTRACT)) {
-                ClientNumber clientNumberCategory = new ClientNumber();
-                clientNumberCategory.setName(field.getName());
-                clientNumberCategory.set_default(field.get_default());
-                clientNumberCategory.setType(field.getType());
-                clientNumberCategory.setHelp(field.getHelp());
-                clientNumberCategory.setPlaceholder(field.getPlaceholder());
-                clientNumberCategory.setText(field.getText());
+
+        if (entity != null && entity.getClientNumber() != null && entity.getClientNumber().getName().equalsIgnoreCase(ClientNumber.DEFAULT_TYPE_CONTRACT)) {
+            ClientNumber clientNumberCategory = new ClientNumber();
+            clientNumberCategory.setName(entity.getClientNumber().getName());
+            clientNumberCategory.set_default(entity.getClientNumber().getDefault());
+            clientNumberCategory.setType(entity.getClientNumber().getType());
+            clientNumberCategory.setPlaceholder(entity.getClientNumber().getPlaceholder());
+            clientNumberCategory.setText(entity.getClientNumber().getText());
+            List<com.tokopedia.digital.product.view.model.Validation> validationCategoryList
+                    = new ArrayList<>();
+            for (Validation validation
+                    : entity.getClientNumber().getValidation()) {
+                com.tokopedia.digital.product.view.model.Validation validationCategory =
+                        new com.tokopedia.digital.product.view.model.Validation();
+                validationCategory.setError(validation.getError());
+                validationCategory.setRegex(validation.getRegex());
+                validationCategoryList.add(validationCategory);
+            }
+            clientNumberCategory.setValidation(validationCategoryList);
+            clientNumberCategoryList.add(clientNumberCategory);
+        }
+
+        return clientNumberCategoryList;
+    }
+
+    /**
+     * Helper function to transform operator list
+     *
+     * @param entity
+     * @return
+     */
+    private List<Operator> transformOperators(RechargeCategoryDetail entity) {
+        List<Operator> operatorCategoryList = new ArrayList<>();
+
+        if (entity == null) return operatorCategoryList;
+
+        for (OperatorBannerEntity categoryDetailIncluded : entity.getOperators()) {
+            Operator operatorCategory = new Operator();
+            operatorCategory.setName(categoryDetailIncluded.getAttributes().getName());
+            operatorCategory.setDefaultProductId(
+                    categoryDetailIncluded.getAttributes().getDefaultProductId()
+            );
+            operatorCategory.setImage(categoryDetailIncluded.getAttributes().getImage());
+            operatorCategory.setUssdCode(categoryDetailIncluded.getAttributes().getUssd());
+            operatorCategory.setLastorderUrl(
+                    categoryDetailIncluded.getAttributes().getLastorderUrl()
+            );
+            operatorCategory.setOperatorId(categoryDetailIncluded.getId());
+            operatorCategory.setPrefixList(categoryDetailIncluded.getAttributes().getPrefix());
+            operatorCategory.setOperatorType(categoryDetailIncluded.getType());
+            List<Product> productOperatorList = new ArrayList<>();
+            for (com.tokopedia.digital.common.data.entity.response.Product product
+                    : categoryDetailIncluded.getAttributes().getProduct()) {
+                if (product.getAttributes().getStatus() != Product.STATUS_INACTIVE) {
+                    Product productOperator = new Product();
+                    productOperator.setDesc(product.getAttributes().getDesc());
+                    productOperator.setDetail(product.getAttributes().getDetail());
+                    productOperator.setInfo(product.getAttributes().getInfo());
+                    productOperator.setPrice(product.getAttributes().getPrice());
+                    productOperator.setPricePlain(product.getAttributes().getPricePlain());
+                    productOperator.setProductType(product.getType());
+                    productOperator.setProductId(product.getId());
+                    productOperator.setStatus(product.getAttributes().getStatus());
+                    if (product.getAttributes().getPromo() != null) {
+                        Promo productPromo = new Promo();
+                        productPromo.setBonusText(product.getAttributes().getPromo().getBonusText());
+                        productPromo.setId(product.getAttributes().getPromo().getId());
+                        productPromo.setNewPrice(product.getAttributes().getPromo().getNewPrice());
+                        productPromo.setNewPricePlain(
+                                product.getAttributes().getPromo().getNewPricePlain()
+                        );
+                        productPromo.setTag(product.getAttributes().getPromo().getTag());
+                        productPromo.setTerms(product.getAttributes().getPromo().getTerms());
+                        productPromo.setValueText(product.getAttributes().getPromo().getValueText());
+                        productOperator.setPromo(productPromo);
+                    }
+                    productOperatorList.add(productOperator);
+                }
+            }
+            List<ClientNumber> clientNumberOperatorList = new ArrayList<>();
+            for (Field field
+                    : categoryDetailIncluded.getAttributes().getFields()) {
+                ClientNumber clientNumberOperator = new ClientNumber();
+                clientNumberOperator.setName(field.getName());
+                clientNumberOperator.set_default(field.getDefault());
+                clientNumberOperator.setType(field.getType());
+                clientNumberOperator.setPlaceholder(field.getPlaceholder());
+                clientNumberOperator.setText(field.getText());
                 List<com.tokopedia.digital.product.view.model.Validation> validationCategoryList
                         = new ArrayList<>();
-                for (Validation validation
+                for (com.tokopedia.digital.common.data.entity.response.Validation validation
                         : field.getValidation()) {
                     com.tokopedia.digital.product.view.model.Validation validationCategory =
                             new com.tokopedia.digital.product.view.model.Validation();
@@ -70,158 +150,66 @@ public class ProductDigitalMapper {
                     validationCategory.setRegex(validation.getRegex());
                     validationCategoryList.add(validationCategory);
                 }
-                clientNumberCategory.setValidation(validationCategoryList);
-                clientNumberCategoryList.add(clientNumberCategory);
+                clientNumberOperator.setValidation(validationCategoryList);
+                clientNumberOperatorList.add(clientNumberOperator);
             }
+            operatorCategory.setProductList(productOperatorList);
+            operatorCategory.setClientNumberList(clientNumberOperatorList);
+
+            Rule operatorRule = new Rule();
+            operatorRule.setMaximumLength(
+                    categoryDetailIncluded.getAttributes().getRule().getMaximumLength()
+            );
+            operatorRule.setEnableVoucher(
+                    categoryDetailIncluded.getAttributes().getRule().getEnableVoucher()
+            );
+            operatorRule.setShowPrice(
+                    categoryDetailIncluded.getAttributes().getRule().getShowPrice()
+            );
+            operatorRule.setProductText(
+                    categoryDetailIncluded.getAttributes().getRule().getProductText()
+            );
+            operatorRule.setProductViewStyle(
+                    categoryDetailIncluded.getAttributes().getRule().getProductViewStyle()
+            );
+            operatorRule.setButtonText(
+                    categoryDetailIncluded.getAttributes().getRule().getButtonText()
+            );
+            operatorCategory.setRule(operatorRule);
+
+            operatorCategoryList.add(operatorCategory);
         }
-        categoryData.setClientNumberList(clientNumberCategoryList);
 
-        List<Operator> operatorCategoryList = new ArrayList<>();
+        return operatorCategoryList;
+    }
+
+    /**
+     * Helper function to transform banner list
+     *
+     * @param entity
+     * @return
+     */
+    private List<BannerData> transformBanners(List<OperatorBannerEntity> entity) {
         List<BannerData> bannerDataList = new ArrayList<>();
-        List<BannerData> otherBannerDataList = new ArrayList<>();
-        for (ResponseCategoryDetailIncluded categoryDetailIncluded
-                : responseCategoryDetailIncludedList) {
-            if (categoryDetailIncluded.getType().equalsIgnoreCase(Operator.DEFAULT_TYPE_CONTRACT)) {
-                Operator operatorCategory = new Operator();
-                operatorCategory.setName(categoryDetailIncluded.getAttributes().getName());
-                operatorCategory.setDefaultProductId(
-                        categoryDetailIncluded.getAttributes().getDefaultProductId()
-                );
-                operatorCategory.setImage(categoryDetailIncluded.getAttributes().getImage());
-                operatorCategory.setUssdCode(categoryDetailIncluded.getAttributes().getUssdCode());
-                operatorCategory.setLastorderUrl(
-                        categoryDetailIncluded.getAttributes().getLastorderUrl()
-                );
-                operatorCategory.setOperatorId(categoryDetailIncluded.getId());
-                operatorCategory.setPrefixList(categoryDetailIncluded.getAttributes().getPrefix());
-                operatorCategory.setOperatorType(categoryDetailIncluded.getType());
-                List<Product> productOperatorList = new ArrayList<>();
-                for (com.tokopedia.digital.common.data.entity.response.Product product
-                        : categoryDetailIncluded.getAttributes().getProduct()) {
-                    if (product.getAttributes().getStatus() != Product.STATUS_INACTIVE) {
-                        Product productOperator = new Product();
-                        productOperator.setDesc(product.getAttributes().getDesc());
-                        productOperator.setDetail(product.getAttributes().getDetail());
-                        productOperator.setDetailUrl(product.getAttributes().getDetailUrl());
-                        productOperator.setDetailCompact(product.getAttributes().getDetailCompact());
-                        productOperator.setDetailUrlText(product.getAttributes().getDetailUrlText());
-                        productOperator.setInfo(product.getAttributes().getInfo());
-                        productOperator.setPrice(product.getAttributes().getPrice());
-                        productOperator.setPricePlain(product.getAttributes().getPricePlain());
-                        productOperator.setProductType(product.getType());
-                        productOperator.setProductId(product.getId());
-                        productOperator.setStatus(product.getAttributes().getStatus());
-                        if (product.getAttributes().getPromo() != null) {
-                            Promo productPromo = new Promo();
-                            productPromo.setBonusText(product.getAttributes().getPromo().getBonusText());
-                            productPromo.setId(product.getAttributes().getPromo().getId());
-                            productPromo.setNewPrice(product.getAttributes().getPromo().getNewPrice());
-                            productPromo.setNewPricePlain(
-                                    product.getAttributes().getPromo().getNewPricePlain()
-                            );
-                            productPromo.setTag(product.getAttributes().getPromo().getTag());
-                            productPromo.setTerms(product.getAttributes().getPromo().getTerms());
-                            productPromo.setValueText(product.getAttributes().getPromo().getValueText());
-                            productOperator.setPromo(productPromo);
-                        }
-                        productOperatorList.add(productOperator);
-                    }
-                }
-                List<ClientNumber> clientNumberOperatorList = new ArrayList<>();
-                for (Field field
-                        : categoryDetailIncluded.getAttributes().getFields()) {
-                    ClientNumber clientNumberOperator = new ClientNumber();
-                    clientNumberOperator.setName(field.getName());
-                    clientNumberOperator.set_default(field.get_default());
-                    clientNumberOperator.setType(field.getType());
-                    clientNumberOperator.setHelp(field.getHelp());
-                    clientNumberOperator.setPlaceholder(field.getPlaceholder());
-                    clientNumberOperator.setText(field.getText());
-                    List<com.tokopedia.digital.product.view.model.Validation> validationCategoryList
-                            = new ArrayList<>();
-                    for (com.tokopedia.digital.common.data.entity.response.Validation validation
-                            : field.getValidation()) {
-                        com.tokopedia.digital.product.view.model.Validation validationCategory =
-                                new com.tokopedia.digital.product.view.model.Validation();
-                        validationCategory.setError(validation.getError());
-                        validationCategory.setRegex(validation.getRegex());
-                        validationCategoryList.add(validationCategory);
-                    }
-                    clientNumberOperator.setValidation(validationCategoryList);
-                    clientNumberOperatorList.add(clientNumberOperator);
-                }
-                operatorCategory.setProductList(productOperatorList);
-                operatorCategory.setClientNumberList(clientNumberOperatorList);
 
-                Rule operatorRule = new Rule();
-                operatorRule.setMaximumLength(
-                        categoryDetailIncluded.getAttributes().getRule().getMaximumLength()
-                );
-                operatorRule.setEnableVoucher(
-                        categoryDetailIncluded.getAttributes().getRule().isEnableVoucher()
-                );
-                operatorRule.setShowPrice(
-                        categoryDetailIncluded.getAttributes().getRule().isShowPrice()
-                );
-                operatorRule.setProductText(
-                        categoryDetailIncluded.getAttributes().getRule().getProductText()
-                );
-                operatorRule.setProductViewStyle(
-                        categoryDetailIncluded.getAttributes().getRule().getProductViewStyle()
-                );
-                operatorRule.setButtonText(
-                        categoryDetailIncluded.getAttributes().getRule().getButtonText()
-                );
-                operatorCategory.setRule(operatorRule);
-
-                operatorCategoryList.add(operatorCategory);
-            } else if (categoryDetailIncluded.getType()
-                    .equalsIgnoreCase(BannerData.DEFAULT_TYPE_CONTRACT)) {
+        if (entity != null) {
+            for (OperatorBannerEntity bannerEntity : entity) {
                 bannerDataList.add(
                         new BannerData.Builder()
-                                .id(categoryDetailIncluded.getId())
-                                .type(categoryDetailIncluded.getType())
-                                .title(categoryDetailIncluded.getAttributes().getTitle())
-                                .subtitle(categoryDetailIncluded.getAttributes().getSubtitle())
-                                .promocode(categoryDetailIncluded.getAttributes().getPromocode())
-                                .image(categoryDetailIncluded.getAttributes().getImage())
-                                .dataTitle(categoryDetailIncluded.getAttributes().getDataTitle())
-                                .link(categoryDetailIncluded.getAttributes().getLink())
+                                .id(bannerEntity.getId())
+                                .type(bannerEntity.getType())
+                                .title(bannerEntity.getAttributes().getTitle())
+                                .subtitle(bannerEntity.getAttributes().getSubTitle())
+                                .promocode(bannerEntity.getAttributes().getPromocode())
+                                .image(bannerEntity.getAttributes().getImage())
+                                .dataTitle(bannerEntity.getAttributes().getDataTitle())
+                                .link(bannerEntity.getAttributes().getLink())
                                 .build()
                 );
-            } else if (categoryDetailIncluded.getType()
-                    .equalsIgnoreCase(BannerData.OTHER_TYPE_CONTRACT)) {
-                if (categoryDetailIncluded.getAttributes() != null) {
-                    otherBannerDataList.add(
-                            new BannerData.Builder()
-                                    .id(categoryDetailIncluded.getId())
-                                    .type(categoryDetailIncluded.getType())
-                                    .title(categoryDetailIncluded.getAttributes().getTitle())
-                                    .subtitle(categoryDetailIncluded.getAttributes().getSubtitle())
-                                    .promocode(categoryDetailIncluded.getAttributes().getPromocode())
-                                    .image(categoryDetailIncluded.getAttributes().getImage())
-                                    .dataTitle(categoryDetailIncluded.getAttributes().getDataTitle())
-                                    .link(categoryDetailIncluded.getAttributes().getLink())
-                                    .build()
-                    );
-                }
             }
         }
-        categoryData.setOperatorList(operatorCategoryList);
-        categoryData.setBannerDataListIncluded(bannerDataList);
-        categoryData.setOtherBannerDataListIncluded(otherBannerDataList);
 
-        if (responseCategoryDetailData.getAttributes().getTeaser() != null) {
-            Teaser categoryTeaser = new Teaser();
-            categoryTeaser.setContent(
-                    responseCategoryDetailData.getAttributes().getTeaser().getContent()
-            );
-            categoryTeaser.setTitle(
-                    responseCategoryDetailData.getAttributes().getTeaser().getTitle()
-            );
-            categoryData.setTeaser(categoryTeaser);
-        }
-        return categoryData;
+        return bannerDataList;
     }
 
 }

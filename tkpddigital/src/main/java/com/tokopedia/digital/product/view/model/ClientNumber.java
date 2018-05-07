@@ -19,7 +19,6 @@ public class ClientNumber implements Parcelable {
     private String name;
     private String type;
     private String text;
-    private String help;
     private String placeholder;
     private String _default;
     private List<Validation> validation = new ArrayList<>();
@@ -46,14 +45,6 @@ public class ClientNumber implements Parcelable {
 
     public void setText(String text) {
         this.text = text;
-    }
-
-    public String getHelp() {
-        return help;
-    }
-
-    public void setHelp(String help) {
-        this.help = help;
     }
 
     public String getPlaceholder() {
@@ -91,7 +82,6 @@ public class ClientNumber implements Parcelable {
         dest.writeString(this.name);
         dest.writeString(this.type);
         dest.writeString(this.text);
-        dest.writeString(this.help);
         dest.writeString(this.placeholder);
         dest.writeString(this._default);
         dest.writeList(this.validation);
@@ -104,7 +94,6 @@ public class ClientNumber implements Parcelable {
         this.name = in.readString();
         this.type = in.readString();
         this.text = in.readString();
-        this.help = in.readString();
         this.placeholder = in.readString();
         this._default = in.readString();
         this.validation = new ArrayList<Validation>();

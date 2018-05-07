@@ -19,6 +19,7 @@ import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.util.VersionInfo;
 import com.tokopedia.digital.R;
 import com.tokopedia.digital.common.data.apiservice.DigitalEndpointService;
+import com.tokopedia.digital.common.data.apiservice.DigitalGqlApiService;
 import com.tokopedia.digital.common.data.mapper.FavoriteNumberListDataMapper;
 import com.tokopedia.digital.common.data.mapper.ProductDigitalMapper;
 import com.tokopedia.digital.common.data.repository.DigitalCategoryRepository;
@@ -72,8 +73,9 @@ public class TopupTokoCashFragment extends BaseDaggerFragment implements TopupTo
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         DigitalEndpointService digitalEndpointService = new DigitalEndpointService();
+        DigitalGqlApiService digitalGqlEndpointService = new DigitalGqlApiService();
         CategoryDetailDataSource categoryDetailDataSource = new CategoryDetailDataSource(
-                digitalEndpointService, new GlobalCacheManager(), new ProductDigitalMapper()
+                digitalGqlEndpointService, new GlobalCacheManager(), new ProductDigitalMapper()
         );
         FavoriteListDataSource favoriteListDataSource = new FavoriteListDataSource(
                 digitalEndpointService, new FavoriteNumberListDataMapper()
