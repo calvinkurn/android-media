@@ -13,12 +13,15 @@ import android.os.Build;
 import android.os.Environment;
 import android.provider.DocumentsContract;
 import android.provider.MediaStore;
+import android.support.annotation.NonNull;
+import android.support.annotation.StringDef;
 import android.support.media.ExifInterface;
 import android.text.TextUtils;
 import android.webkit.MimeTypeMap;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -26,25 +29,36 @@ import java.io.OutputStream;
 import java.io.RandomAccessFile;
 import java.nio.MappedByteBuffer;
 import java.nio.channels.FileChannel;
-import java.util.ArrayList;
 import java.util.Random;
+
+import static com.tokopedia.imagepicker.common.util.ImageUtils.DirectoryDef.DIRECTORY_CAMERA;
+import static com.tokopedia.imagepicker.common.util.ImageUtils.DirectoryDef.DIRECTORY_DOWNLOAD;
+import static com.tokopedia.imagepicker.common.util.ImageUtils.DirectoryDef.DIRECTORY_TOKOPEDIA_EDIT;
 
 /**
  * Created by hendry on 24/04/18.
  */
 
 public class ImageUtils {
-    private static final int IMAGE_WIDTH_HD = 1280;
-    private static final int IMAGE_WIDTH_MIN = 480;
+    private static final int IMAGE_WIDTH_MIN_HD = 1280;
 
-    private static final int DEF_WIDTH_CMPR = 2048;
-    private static final int DEF_HEIGHT_CMPR = 2048;
+    public static final int DEF_WIDTH = 2048;
+    public static final int DEF_HEIGHT = 2048;
 
-    private static final String DIRECTORY_TOKOPEDIA = "Tokopedia";
     private static final String TEMP_FILE_NAME = "temp.tmp";
+    public static final String PNG_EXT = ".png";
+    public static final String JPG_EXT = ".jpg";
+    public static final String PNG = "png";
 
-    public static File getTokopediaPublicDirectory() {
-        String filePath = Environment.getExternalStorageDirectory().getAbsolutePath() + "/" + DIRECTORY_TOKOPEDIA + "/";
+    @StringDef({DIRECTORY_TOKOPEDIA_EDIT, DIRECTORY_CAMERA, DIRECTORY_DOWNLOAD})
+    public @interface DirectoryDef {
+        String DIRECTORY_TOKOPEDIA_EDIT = "Tokopedia/Tokopedia Edit";
+        String DIRECTORY_CAMERA = "Tokopedia/Tokopedia Camera";
+        String DIRECTORY_DOWNLOAD = "Tokopedia/Tokopedia Download";
+    }
+
+    public static File getTokopediaPublicDirectory(@DirectoryDef String directoryType) {
+        String filePath = Environment.getExternalStorageDirectory().getAbsolutePath() + "/" + directoryType + "/";
         File directory = new File(filePath);
         if (!directory.exists()) {
             if (!directory.mkdirs()) {
@@ -66,22 +80,22 @@ public class ImageUtils {
         return timeString + new Random().nextInt(10);
     }
 
-    public static File getTokopediaPhotoPath(boolean isPng) {
-        File directory = getTokopediaPublicDirectory();
-        return new File(directory.getAbsolutePath() + generateUniqueFileName() + (isPng ? ".png" : ".jpg"));
+    public static File getTokopediaPhotoPath(@DirectoryDef String directoryDef, boolean isPng) {
+        File directory = getTokopediaPublicDirectory(directoryDef);
+        return new File(directory.getAbsolutePath(), generateUniqueFileName() + (isPng ? PNG_EXT : JPG_EXT));
     }
 
-    public static File getTokopediaPhotoPath(String referencePath) {
-        return getTokopediaPhotoPath(referencePath.endsWith(".png"));
+    public static File getTokopediaPhotoPath(@DirectoryDef String directoryDef, String referencePath) {
+        return getTokopediaPhotoPath(directoryDef, referencePath.endsWith(PNG_EXT));
     }
 
     /**
      * write byte buffer to Cache File int TkpdCacheDirectory
      * This "cache file" is a representation of the bytes.
      */
-    public static File writeImageToTkpdPath(byte[] buffer, boolean isPng) {
+    public static File writeImageToTkpdPath(@DirectoryDef String directoryDef, byte[] buffer, boolean isPng) {
         if (buffer != null) {
-            File photo = getTokopediaPhotoPath(isPng);
+            File photo = getTokopediaPhotoPath(directoryDef, isPng);
             if (photo.exists()) {
                 photo.delete();
             }
@@ -94,29 +108,57 @@ public class ImageUtils {
 
     /**
      * copy the bitmap (might from gallery or camera path) to Tkpd Cache Directory
-     * The file represents the copy of the original bitmap and can be deleted/modified
-     * without changing the original image
      */
-    public static File writeImageToTkpdPath(String galleryOrCameraPath) {
-        return writeImageToTkpdPath(convertLocalImagePathToBytes(galleryOrCameraPath, DEF_WIDTH_CMPR, DEF_HEIGHT_CMPR, 100),
-                galleryOrCameraPath.endsWith("png"));
+    public static File writeImageToTkpdPath(@DirectoryDef String directoryDef, String galleryOrCameraPath) {
+        File file;
+        try {
+            file = getTokopediaPhotoPath(directoryDef, galleryOrCameraPath);
+            copyFile(galleryOrCameraPath,file.getAbsolutePath());
+        } catch (IOException e) {
+            return null;
+        }
+        if (file.exists()) {
+            return file;
+        } else {
+            return null;
+        }
+    }
+
+    public static void copyFile(@NonNull String pathFrom, @NonNull String pathTo) throws IOException {
+        if (pathFrom.equalsIgnoreCase(pathTo)) {
+            return;
+        }
+
+        FileChannel outputChannel = null;
+        FileChannel inputChannel = null;
+        try {
+            inputChannel = new FileInputStream(new File(pathFrom)).getChannel();
+            outputChannel = new FileOutputStream(new File(pathTo)).getChannel();
+            inputChannel.transferTo(0, inputChannel.size(), outputChannel);
+            inputChannel.close();
+        } finally {
+            if (inputChannel != null) inputChannel.close();
+            if (outputChannel != null) outputChannel.close();
+        }
     }
 
     /**
      * compress the bitmap, then write to Tkpd Cache Directory
-     * The file represents the copy of the original bitmap and can be deleted/modified
-     * without changing the original image
      */
-    public static File writeImageToTkpdPath(Bitmap bitmap, boolean isPng) {
-        if (bitmap != null) {
-            ByteArrayOutputStream bao = new ByteArrayOutputStream();
-            byte[] bytes;
-            bitmap.compress(isPng ? Bitmap.CompressFormat.PNG : Bitmap.CompressFormat.JPEG, 100, bao);
-            bytes = bao.toByteArray();
-            return writeImageToTkpdPath(bytes, isPng);
-        } else {
-            return null;
+    public static File writeImageToTkpdPath(@DirectoryDef String directoryDef, Bitmap bitmap, boolean isPng) {
+        File file = getTokopediaPhotoPath(directoryDef, isPng);
+        if (file.exists()) {
+            file.delete();
         }
+        try {
+            FileOutputStream out = new FileOutputStream(file);
+            bitmap.compress(isPng ? Bitmap.CompressFormat.PNG : Bitmap.CompressFormat.JPEG, 100, out);
+            out.flush();
+            out.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return file;
     }
 
     /**
@@ -124,8 +166,8 @@ public class ImageUtils {
      * The file represents the copy of the original bitmap and can be deleted/modified
      * without changing the original image
      */
-    public static File writeImageToTkpdPath(InputStream source, boolean isPng) {
-        File photo = getTokopediaPhotoPath(isPng);
+    public static File writeImageToTkpdPath(@DirectoryDef String directoryDef, InputStream source, boolean isPng) {
+        File photo = getTokopediaPhotoPath(directoryDef, isPng);
         if (photo.exists()) {
             photo.delete();
         }
@@ -135,49 +177,12 @@ public class ImageUtils {
         return null;
     }
 
-    /**
-     * check if the file is in tkpdcache directory.
-     */
-    public static boolean isInTkpdCache(File file) {
-        File tkpdCacheDirectory = getTokopediaPublicDirectory();
-        String tkpdcacheDirPath = tkpdCacheDirectory.getAbsolutePath();
-        return file.exists() && file.getAbsolutePath().contains(tkpdcacheDirPath);
-    }
-
-    /**
-     * delete the inputted files (only process files in tkpd cache directory)
-     * If the files are not in tkpd cache directory, ignore those.
-     */
-    public static void deleteAllCacheTkpdFiles(ArrayList<String> filesToDelete) {
-        if (filesToDelete == null || filesToDelete.size() == 0) {
-            return;
-        }
-        for (int i = 0, sizei = filesToDelete.size(); i < sizei; i++) {
-            String filePathToDelete = filesToDelete.get(i);
-            deleteAllCacheTkpdFile(filePathToDelete);
-        }
-    }
-
-    /**
-     * delete the inputted file (only process files in tkpd cache directory)
-     * If the file is not in tkpd cache directory, ignore it.
-     */
-    public static void deleteAllCacheTkpdFile(String fileToDeletePath) {
-        if (TextUtils.isEmpty(fileToDeletePath)) {
-            return;
-        }
-        File fileToDelete = new File(fileToDeletePath);
-        if (isInTkpdCache(fileToDelete)) {
-            fileToDelete.delete();
-        }
-    }
-
     // URI starts with "content://gmail-ls/"
-    public static String getPathFromGmail(Context context, Uri contentUri) {
+    public static String getPathFromGmail(Context context, Uri contentUri, @DirectoryDef String directoryDef) {
         File attach;
         try {
             InputStream attachment = context.getContentResolver().openInputStream(contentUri);
-            attach = ImageUtils.writeImageToTkpdPath(attachment, isPNGMimeType(getMimeType(context, contentUri)));
+            attach = ImageUtils.writeImageToTkpdPath(directoryDef, attachment, isPNGMimeType(getMimeType(context, contentUri)));
             if (attach == null) {
                 return null;
             }
@@ -187,7 +192,7 @@ public class ImageUtils {
         }
     }
 
-    public static String getTkpdPathFromURI(Context context, Uri uri) {
+    public static String getTkpdPathFromURI(Context context, Uri uri, @DirectoryDef String directoryDef) {
         InputStream is = null;
         String mimeType = getMimeType(context, uri);
         if (!isImageMimeType(mimeType)) {
@@ -214,7 +219,7 @@ public class ImageUtils {
                         }
                         // estimate sample size
                         if (inSampleSize == 1 && is.available() >
-                                (1.5 * IMAGE_WIDTH_HD * IMAGE_WIDTH_HD)) {
+                                (1.5 * IMAGE_WIDTH_MIN_HD * IMAGE_WIDTH_MIN_HD)) {
                             inSampleSize = 2;
                         }
                         BitmapFactory.Options options = new BitmapFactory.Options();
@@ -241,7 +246,7 @@ public class ImageUtils {
                 if (bmp == null) {
                     return null;
                 }
-                File file = writeImageToTkpdPath(bmp, isPNG);
+                File file = writeImageToTkpdPath(directoryDef, bmp, isPNG);
                 bmp.recycle();
                 if (file != null) {
                     return file.getAbsolutePath();
@@ -261,6 +266,28 @@ public class ImageUtils {
             }
         }
         return null;
+    }
+
+    public static int[] getWidthAndHeight(String filePath) {
+        return getWidthAndHeight(new File(filePath));
+    }
+
+    public static int[] getWidthAndHeight(File file) {
+        BitmapFactory.Options options = new BitmapFactory.Options();
+        options.inJustDecodeBounds = true;
+        BitmapFactory.decodeFile(file.getAbsolutePath(), options);
+        return new int[]{options.outWidth, options.outHeight};
+    }
+
+    public static int getMinResolution(String filePath) {
+        return getMinResolution(new File(filePath));
+    }
+
+    public static int getMinResolution(File file) {
+        BitmapFactory.Options options = new BitmapFactory.Options();
+        options.inJustDecodeBounds = true;
+        BitmapFactory.decodeFile(file.getAbsolutePath(), options);
+        return Math.min(options.outWidth, options.outHeight);
     }
 
     private static String getMimeType(Context context, Uri uri) {
@@ -287,7 +314,7 @@ public class ImageUtils {
     }
 
     private static boolean isPNGMimeType(String mimeType) {
-        return !TextUtils.isEmpty(mimeType) && mimeType.contains("png");
+        return !TextUtils.isEmpty(mimeType) && mimeType.contains(PNG);
     }
 
     public static String getPathFromMediaUri(Context context, Uri contentUri) {
@@ -488,7 +515,7 @@ public class ImageUtils {
     }
 
     public static byte[] convertLocalImagePathToBytes(String imagePathToCompress, int maxWidth, int maxHeight, int compressionQuality) {
-        boolean isPng = imagePathToCompress.endsWith("png");
+        boolean isPng = imagePathToCompress.endsWith(PNG);
         Bitmap tempPicToUpload = compressImageToBitmap(imagePathToCompress, maxWidth, maxHeight, compressionQuality);
         ByteArrayOutputStream bao = new ByteArrayOutputStream();
         if (tempPicToUpload != null) {
@@ -502,41 +529,43 @@ public class ImageUtils {
     public static Bitmap compressImageToBitmap(String imagePathToCompress, int maxWidth, int maxHeight, int compressionQuality) {
         BitmapFactory.Options options = new BitmapFactory.Options();
         options.inPreferredConfig = Bitmap.Config.ARGB_8888;
-        BitmapFactory.Options checksize = new BitmapFactory.Options();
-        checksize.inPreferredConfig = Bitmap.Config.ARGB_8888;
-        checksize.inJustDecodeBounds = true;
-        BitmapFactory.decodeFile(imagePathToCompress, checksize);
-        options.inSampleSize = calculateInSampleSize(checksize);
+        options.inJustDecodeBounds = true;
+        BitmapFactory.decodeFile(imagePathToCompress, options);
+        options.inSampleSize = calculateInSampleSize(options, maxWidth, maxHeight);
+        options.inJustDecodeBounds = false;
         Bitmap tempPic = BitmapFactory.decodeFile(imagePathToCompress, options);
-        Bitmap tempPicToUpload;
+
+        boolean decodeAttemptSuccess = false;
+        while (!decodeAttemptSuccess) {
+            try {
+                tempPic = BitmapFactory.decodeFile(imagePathToCompress, options);
+                decodeAttemptSuccess = true;
+            } catch (OutOfMemoryError error) {
+                options.inSampleSize *= 2;
+            }
+        }
+
         if (tempPic != null) {
             try {
-                tempPic = rotate(tempPic, imagePathToCompress);
+                return rotate(tempPic, imagePathToCompress);
             } catch (IOException e1) {
-                e1.printStackTrace();
+                return tempPic;
             }
-            if (tempPic.getWidth() > maxWidth || tempPic.getHeight() > maxHeight) {
-                tempPicToUpload = resize(tempPic, compressionQuality);
-            } else {
-                tempPicToUpload = tempPic;
-            }
-            return tempPicToUpload;
         }
         return null;
     }
 
-    public static int calculateInSampleSize(BitmapFactory.Options options) {
+    public static int calculateInSampleSize(@NonNull BitmapFactory.Options options, int reqWidth, int reqHeight) {
+        // Raw height and width of image
         final int height = options.outHeight;
         final int width = options.outWidth;
         int inSampleSize = 1;
 
-        if (height > IMAGE_WIDTH_HD || width > IMAGE_WIDTH_HD) {
-
-            final int halfHeight = height / 2;
-            final int halfWidth = width / 2;
-            while ((halfHeight / inSampleSize) > IMAGE_WIDTH_MIN
-                    && (halfWidth / inSampleSize) > IMAGE_WIDTH_MIN) {
-                inSampleSize = inSampleSize * 2;
+        if (height > reqHeight || width > reqWidth) {
+            // Calculate the largest inSampleSize value that is a power of 2 and keeps both
+            // height and width lower or equal to the requested height and width.
+            while ((height / inSampleSize) > reqHeight || (width / inSampleSize) > reqWidth) {
+                inSampleSize *= 2;
             }
         }
         return inSampleSize;

@@ -7,13 +7,12 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
-import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 
 import com.tokopedia.imagepicker.R;
 import com.tokopedia.imagepicker.editor.adapter.ImageEditorEditActionAdapter;
-import com.tokopedia.imagepicker.picker.ImagePickerBuilder;
+import com.tokopedia.imagepicker.picker.main.util.ImageEditActionTypeDef;
 
 /**
  * Created by hendry on 30/04/18.
@@ -22,6 +21,11 @@ import com.tokopedia.imagepicker.picker.ImagePickerBuilder;
 public class ImageEditActionMainWidget extends FrameLayout implements ImageEditorEditActionAdapter.OnImageEditorEditActionAdapterListener {
 
     private ViewGroup viewGroupMainContent;
+
+    private OnImageEditActionMainWidgetListener onImageEditActionMainWidgetListener;
+    public interface OnImageEditActionMainWidgetListener{
+        void onEditActionClicked (@ImageEditActionTypeDef int editActionType);
+    }
 
     public ImageEditActionMainWidget(@NonNull Context context) {
         super(context);
@@ -43,20 +47,26 @@ public class ImageEditActionMainWidget extends FrameLayout implements ImageEdito
         super(context, attrs, defStyleAttr, defStyleRes);
     }
 
+    public void setOnImageEditActionMainWidgetListener(OnImageEditActionMainWidgetListener onImageEditActionMainWidgetListener) {
+        this.onImageEditActionMainWidgetListener = onImageEditActionMainWidgetListener;
+    }
+
     private void init() {
-        View view = LayoutInflater.from(getContext()).inflate(R.layout.widget_image_edit_action_main,
+        LayoutInflater.from(getContext()).inflate(R.layout.widget_image_edit_action_main,
                 this, true);
         viewGroupMainContent = findViewById(R.id.vg_editor_main_content);
     }
 
-    public void setData(@ImagePickerBuilder.ImageEditActionTypeDef int[] imageEditActionType){
+    public void setData(@ImageEditActionTypeDef int[] imageEditActionType) {
         ImageEditorEditActionAdapter imageEditorEditActionAdapter =
                 new ImageEditorEditActionAdapter(viewGroupMainContent, getContext(), imageEditActionType, this);
         imageEditorEditActionAdapter.renderView();
     }
 
     @Override
-    public void onEditActionClicked(@ImagePickerBuilder.ImageEditActionTypeDef int actionEditType) {
-        //TODO
+    public void onEditActionClicked(@ImageEditActionTypeDef int actionEditType) {
+        if (onImageEditActionMainWidgetListener!= null) {
+            onImageEditActionMainWidgetListener.onEditActionClicked(actionEditType);
+        }
     }
 }
