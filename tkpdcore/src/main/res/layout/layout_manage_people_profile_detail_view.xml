@@ -74,6 +74,7 @@
     <android.support.design.widget.TextInputLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:hint="@string/title_dob"
         android:layout_marginBottom="@dimen/margin_small">
 
         <EditText
@@ -83,7 +84,6 @@
             android:layout_marginBottom="@dimen/margin_small"
             android:focusable="false"
             android:gravity="left"
-            android:hint="@string/title_dob"
             android:inputType="date"
             android:textSize="@dimen/fonts"/>
 
