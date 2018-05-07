@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/container"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/grey_200"
-    android:orientation="vertical">
+                xmlns:app="http://schemas.android.com/apk/res-auto"
+                xmlns:tools="http://schemas.android.com/tools"
+                android:id="@+id/container"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/grey_200"
+                android:orientation="vertical">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -17,17 +17,17 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:cardCornerRadius="0dp"
-            app:cardElevation="@dimen/card_elevation_checkout">
+            app:cardElevation="@dimen/dp_3">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@color/white"
                 android:orientation="vertical"
-                android:paddingBottom="8dp"
-                android:paddingLeft="16dp"
-                android:paddingRight="16dp"
-                android:paddingTop="8dp">
+                android:paddingBottom="@dimen/dp_8"
+                android:paddingLeft="@dimen/dp_16"
+                android:paddingRight="@dimen/dp_16"
+                android:paddingTop="@dimen/dp_8">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -37,35 +37,37 @@
                         style="@style/TextSmallMediumBlack38"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Penjual : " />
+                        android:text="@string/checkout_module_label_penjual"/>
 
                     <TextView
                         android:id="@+id/sender_name"
                         style="@style/TextSmallMediumBlack70"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Adidas" />
+                        tools:text="Adidas"/>
 
                 </LinearLayout>
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/margin_small">
+                    android:layout_marginTop="@dimen/dp_10"
+                    tools:ignore="UseCompoundDrawables">
 
                     <ImageView
                         android:id="@+id/product_image"
                         android:layout_width="52dp"
                         android:layout_height="52dp"
-                        android:src="@drawable/googleg_standard_color_18" />
+                        android:src="@drawable/empty_photo"
+                        tools:ignore="ContentDescription"/>
 
                     <TextView
                         android:id="@+id/product_name"
                         style="@style/TextMidMediumBlack70"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_margin="@dimen/margin_small"
-                        tools:text="Kaos Adidas Camo Tongue Tee... White and Red, XS" />
+                        android:layout_margin="@dimen/dp_10"
+                        tools:text="Kaos Adidas Camo Tongue Tee... White and Red, XS"/>
                 </LinearLayout>
 
             </LinearLayout>
@@ -75,17 +77,17 @@
         <android.support.v7.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/new_margin_med"
-            android:layout_marginLeft="@dimen/margin_ms"
-            android:layout_marginRight="@dimen/margin_ms"
-            android:layout_marginTop="@dimen/new_margin_med"
-            app:cardCornerRadius="0dp"
-            app:cardElevation="@dimen/card_elevation_checkout">
+            android:layout_marginBottom="@dimen/dp_16"
+            android:layout_marginLeft="@dimen/dp_8"
+            android:layout_marginRight="@dimen/dp_8"
+            android:layout_marginTop="@dimen/dp_16"
+            app:cardCornerRadius="@dimen/dp_0"
+            app:cardElevation="@dimen/dp_3">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="16dp"
+                android:layout_margin="@dimen/dp_16"
                 android:background="@color/white"
                 android:orientation="vertical">
 
@@ -99,7 +101,7 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:text="@string/label_item_count" />
+                        android:text="@string/label_item_count"/>
 
                     <LinearLayout
                         android:layout_width="0dp"
@@ -111,7 +113,8 @@
                             android:id="@+id/decrease_quantity"
                             android:layout_width="28dp"
                             android:layout_height="28dp"
-                            android:src="@drawable/bg_button_counter_minus" />
+                            android:src="@drawable/bg_button_counter_minus"
+                            tools:ignore="ContentDescription"/>
 
                         <EditText
                             android:id="@+id/quantity_field"
@@ -120,13 +123,15 @@
                             android:gravity="center"
                             android:inputType="number"
                             android:maxLength="7"
-                            android:textSize="16sp" />
+                            android:textSize="16sp"
+                            tools:ignore="LabelFor"/>
 
                         <ImageView
                             android:id="@+id/increase_quantity"
                             android:layout_width="28dp"
                             android:layout_height="28dp"
-                            android:src="@drawable/bg_button_counter_plus" />
+                            android:src="@drawable/bg_button_counter_plus"
+                            tools:ignore="ContentDescription"/>
 
                     </LinearLayout>
 
@@ -136,7 +141,7 @@
                     android:id="@+id/quantity_error_layout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="@dimen/margin_vs"
+                    android:layout_marginBottom="@dimen/dp_5"
                     android:visibility="gone"
                     tools:visibility="visible">
 
@@ -145,7 +150,7 @@
                         style="@style/TextSmallError"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        tools:text="Jumlah barang terlalu banyak" />
+                        tools:text="Jumlah barang terlalu banyak"/>
 
                 </LinearLayout>
 
@@ -153,7 +158,7 @@
                     android:id="@+id/empty_notes_layout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/margin_small"
+                    android:layout_marginTop="@dimen/dp_10"
                     android:visibility="gone"
                     tools:visibility="visible">
 
@@ -162,26 +167,26 @@
                         style="@style/TextSmallNormalBlack38"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@string/label_note_for_seller" />
+                        android:text="@string/label_note_for_seller"/>
 
                     <TextView
                         android:id="@+id/insert_notes_button"
                         style="@style/TextSmallMedium"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginLeft="@dimen/margin_small"
-                        android:layout_marginStart="@dimen/margin_small"
+                        android:layout_marginLeft="@dimen/dp_10"
+                        android:layout_marginStart="@dimen/dp_10"
                         android:layout_toEndOf="@id/label_notes_for_seller"
                         android:layout_toRightOf="@id/label_notes_for_seller"
                         android:text="@string/label_button_add_note"
-                        android:textColor="@color/tkpd_main_green" />
+                        android:textColor="@color/tkpd_main_green"/>
 
                     <View
                         android:layout_width="match_parent"
                         android:layout_height="0.5dp"
                         android:layout_below="@id/label_notes_for_seller"
-                        android:layout_marginTop="@dimen/margin_vs"
-                        android:background="@color/grey_400" />
+                        android:layout_marginTop="@dimen/dp_5"
+                        android:background="@color/grey_400"/>
 
                 </RelativeLayout>
 
@@ -189,7 +194,7 @@
                     android:id="@+id/notes_layout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/margin_small"
+                    android:layout_marginTop="@dimen/dp_10"
                     android:orientation="vertical"
                     android:visibility="gone"
                     tools:visibility="visible">
@@ -198,15 +203,16 @@
                         style="@style/TextSmallNormalBlack38"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@string/label_note_for_seller" />
+                        android:text="@string/label_note_for_seller"/>
 
                     <EditText
-                        android:includeFontPadding="false"
-                        tools:text="Tolong segera dikirim ya gan. Saya tunggu, soalnya ini barang sangat penting dan mahal"
                         android:id="@+id/notes_edit_text"
                         style="@style/TextSmallNormalBlack70"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content" />
+                        android:layout_height="wrap_content"
+                        android:includeFontPadding="false"
+                        tools:ignore="LabelFor,TextFields"
+                        tools:text="Tolong segera dikirim ya gan. Saya tunggu, soalnya ini barang sangat penting dan mahal"/>
 
                 </LinearLayout>
 
@@ -216,17 +222,18 @@
                     android:layout_height="wrap_content"
                     android:text="@string/label_error_note_too_long"
                     android:textColor="@color/red_500"
-                    android:textSize="11sp"
+                    android:textSize="@dimen/sp_11"
                     android:visibility="gone"
-                    tools:visibility="visible" />
+                    tools:visibility="visible"/>
 
                 <LinearLayout
                     android:id="@+id/address_layout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="@dimen/margin_small"
-                    android:layout_marginTop="@dimen/margin_small"
-                    android:gravity="center_vertical">
+                    android:layout_marginBottom="@dimen/dp_10"
+                    android:layout_marginTop="@dimen/dp_10"
+                    android:gravity="center_vertical"
+                    tools:ignore="DisableBaselineAlignment">
 
                     <LinearLayout
                         android:layout_width="0dp"
@@ -239,7 +246,7 @@
                             style="@style/TextSmallNormalBlack38"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            tools:text="Alamat Kantor" />
+                            tools:text="Alamat Kantor"/>
 
                         <TextView
                             android:id="@+id/address_receiver_name"
@@ -247,7 +254,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:lineSpacingExtra="5sp"
-                            tools:text="Agus Maulana" />
+                            tools:text="Agus Maulana"/>
 
                         <TextView
                             android:id="@+id/address"
@@ -255,21 +262,22 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:lineSpacingExtra="6sp"
-                            tools:text="Jl. Letjen S. Parman Kav.77, Wisma 77 Tower 2, Tokopedia Lt. 2, Jakarta, 0817 1234 5678" />
+                            tools:text="Jl. Letjen S. Parman Kav.77, Wisma 77 Tower 2, Tokopedia Lt. 2, Jakarta, 0817 1234 5678"/>
 
                     </LinearLayout>
 
                     <LinearLayout
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
-                        android:layout_marginTop="@dimen/margin_vs"
+                        android:layout_marginTop="@dimen/dp_5"
                         android:gravity="center_vertical|end">
 
                         <ImageView
-                            android:layout_width="10dp"
-                            android:layout_height="10dp"
-                            android:src="@drawable/chevron_thin_right"
-                            android:tint="#999999" />
+                            android:layout_width="@dimen/dp_10"
+                            android:layout_height="@dimen/dp_10"
+                            android:src="@drawable/ic_chevron_right_grey_checkout_module"
+                            android:tint="#999999"
+                            tools:ignore="ContentDescription"/>
 
                     </LinearLayout>
 
@@ -294,7 +302,7 @@
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:text="@string/label_shipment" />
+                            android:text="@string/label_shipment"/>
 
                         <TextView
                             style="@style/TextSmallMedium"
@@ -303,27 +311,28 @@
                             android:layout_weight="1"
                             android:gravity="end"
                             android:text="@string/label_choose_address"
-                            android:textColor="@color/tkpd_main_green" />
+                            android:textColor="@color/tkpd_main_green"/>
 
                         <ImageView
                             android:layout_width="10dp"
                             android:layout_height="10dp"
-                            android:layout_marginLeft="@dimen/margin_ms"
-                            android:layout_marginStart="@dimen/margin_ms"
-                            android:src="@drawable/chevron_thin_right"
-                            android:tint="@color/tkpd_main_green" />
+                            android:layout_marginLeft="@dimen/dp_8"
+                            android:layout_marginStart="@dimen/dp_8"
+                            android:src="@drawable/ic_chevron_right_grey_checkout_module"
+                            android:tint="@color/tkpd_main_green"
+                            tools:ignore="ContentDescription"/>
                     </LinearLayout>
 
                     <TextView
                         android:id="@+id/add_address_error_warning"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="@dimen/margin_vs"
+                        android:layout_marginTop="@dimen/dp_5"
                         android:text="@string/label_error_choose_address"
                         android:textColor="@color/red_500"
-                        android:textSize="11sp"
+                        android:textSize="@dimen/sp_11"
                         android:visibility="gone"
-                        tools:visibility="visible" />
+                        tools:visibility="visible"/>
 
                 </LinearLayout>
 
@@ -336,27 +345,27 @@
     <TextView
         android:id="@+id/disabled_save_changes_button"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/btn_height"
+        android:layout_height="@dimen/dp_44"
         android:layout_alignParentBottom="true"
-        android:layout_margin="@dimen/margin_small"
+        android:layout_margin="@dimen/dp_10"
         android:background="@color/grey_400"
         android:fontFamily="sans-serif-medium"
         android:gravity="center"
-        android:text="@string/title_save"
+        android:text="@string/checkout_module_label_simpan"
         android:textColor="@color/grey_600"
-        android:textSize="13sp" />
+        android:textSize="@dimen/sp_13"/>
 
     <TextView
         android:id="@+id/save_changes_button"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/btn_height"
+        android:layout_height="@dimen/dp_44"
         android:layout_alignParentBottom="true"
-        android:layout_margin="@dimen/margin_small"
-        android:background="@drawable/green_button_rounded_unify"
+        android:layout_margin="@dimen/dp_10"
+        android:background="@drawable/medium_green_button_rounded"
         android:fontFamily="sans-serif-medium"
         android:gravity="center"
-        android:text="@string/title_save"
+        android:text="@string/checkout_module_label_simpan"
         android:textColor="@color/white"
-        android:textSize="13sp" />
+        android:textSize="13sp"/>
 
 </RelativeLayout>

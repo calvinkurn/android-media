@@ -9,13 +9,13 @@
 
         <activity
             android:name=".view.view.cartlist.CartActivity"
-            android:label="@string/title_activity_cart"
+            android:label="@string/checkout_module_title_activity_cart"
             android:launchMode="singleTask"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White"/>
         <activity
             android:name=".view.view.shipmentform.CartShipmentActivity"
-            android:label="@string/title_activity_cart"
+            android:label="@string/checkout_module_title_activity_cart"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White"/>
 
@@ -28,21 +28,21 @@
 
         <activity
             android:name=".view.view.addressoptions.CartAddressChoiceActivity"
-            android:label="@string/title_shipping_dest"
+            android:label="@string/checkout_module_title_shipping_dest"
             android:launchMode="singleTask"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White"/>
 
         <activity
             android:name=".view.view.multipleaddressform.MultipleAddressFormActivity"
-            android:label="@string/title_shipping_dest"
+            android:label="@string/checkout_module_title_shipping_dest"
             android:launchMode="singleTask"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White"/>
 
         <activity
             android:name=".view.view.multipleaddressform.AddShipmentAddressActivity"
-            android:label="@string/title_activity_people_tx_details"
+            android:label="@string/checkout_module_title_activity_people_tx_details"
             android:theme="@style/Theme.White"/>
 
 

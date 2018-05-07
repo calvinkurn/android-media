@@ -252,7 +252,7 @@ public class CartAddressChoiceFragment extends BaseCheckoutFragment
         ShipmentAddressListFragment fragment = ShipmentAddressListFragment.newInstance();
         getFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
         getFragmentManager().beginTransaction()
-                .add(R.id.container, fragment, fragment.getClass().getSimpleName())
+                .add(R.id.parent_view, fragment, fragment.getClass().getSimpleName())
                 .addToBackStack(fragment.getClass().getSimpleName())
                 .commit();
     }

@@ -1,19 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:orientation="vertical"
-    android:paddingEnd="@dimen/padding_med"
-    android:paddingLeft="@dimen/padding_med"
-    android:paddingRight="@dimen/padding_med"
-    android:paddingStart="@dimen/padding_med">
+              xmlns:app="http://schemas.android.com/apk/res-auto"
+              xmlns:tools="http://schemas.android.com/tools"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:orientation="vertical"
+              android:paddingEnd="@dimen/dp_20"
+              android:paddingLeft="@dimen/dp_20"
+              android:paddingRight="@dimen/dp_20"
+              android:paddingStart="@dimen/dp_20">
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center_vertical"
-        android:paddingTop="@dimen/padding_small">
+        android:paddingTop="@dimen/dp_10">
 
         <TextView
             android:id="@+id/shipping_index"
@@ -21,7 +22,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:lineSpacingExtra="3sp"
-            android:text="@string/label_shipment_counter" />
+            android:text="@string/label_shipment_counter"
+            tools:ignore="RelativeOverlap"/>
 
         <LinearLayout
             android:layout_width="wrap_content"
@@ -34,15 +36,17 @@
                 android:id="@+id/edit_button"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:src="@drawable/ic_edit_grey" />
+                app:srcCompat="@drawable/ic_edit_grey"
+                tools:ignore="ContentDescription"/>
 
             <ImageView
                 android:id="@+id/delete_button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/margin_vs"
-                android:layout_marginStart="@dimen/margin_vs"
-                android:src="@drawable/ic_action_delete" />
+                android:layout_marginLeft="@dimen/dp_5"
+                android:layout_marginStart="@dimen/dp_5"
+                app:srcCompat="@drawable/ic_delete_cart"
+                tools:ignore="ContentDescription"/>
 
         </LinearLayout>
 
@@ -98,8 +102,9 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingBottom="@dimen/padding_small"
-        android:paddingTop="16dp">
+        android:baselineAligned="false"
+        android:paddingBottom="@dimen/dp_10"
+        android:paddingTop="@dimen/dp_16">
 
         <LinearLayout
             android:layout_width="0dp"
@@ -110,15 +115,16 @@
                 style="@style/TextSmallNormalBlack38"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginRight="@dimen/new_margin_small"
-                android:text="@string/label_weight" />
+                android:layout_marginEnd="@dimen/dp_8"
+                android:layout_marginRight="@dimen/dp_8"
+                android:text="@string/label_weight"/>
 
             <TextView
                 android:id="@+id/product_weight"
                 style="@style/TextSmallNormalBlack70"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                tools:text="3 Kg" />
+                tools:text="3 Kg"/>
 
         </LinearLayout>
 
@@ -132,15 +138,16 @@
                 style="@style/TextSmallNormalBlack38"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginRight="@dimen/new_margin_small"
-                android:text="@string/label_count" />
+                android:layout_marginEnd="@dimen/dp_8"
+                android:layout_marginRight="@dimen/dp_8"
+                android:text="@string/label_count"/>
 
             <TextView
                 android:id="@+id/product_qty"
                 style="@style/TextSmallNormalBlack70"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/default_quantity" />
+                android:text="@string/default_quantity"/>
 
         </LinearLayout>
 
@@ -150,8 +157,8 @@
         style="@style/TextSmallNormalBlack38"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="3dp"
-        android:text="@string/label_note_for_seller_optional" />
+        android:layout_marginBottom="@dimen/dp_3"
+        android:text="@string/label_note_for_seller_optional"/>
 
     <TextView
         android:id="@+id/notes_for_seller"
@@ -159,23 +166,23 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="@string/hint_no_note"
-        tools:text="Saya kirim warna merah ya min! jangan sampai salah kirim barangnya" />
+        tools:text="Saya kirim warna merah ya min! jangan sampai salah kirim barangnya"/>
 
     <include
         android:id="@+id/address_layout"
         layout="@layout/item_recipient_address"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp" />
+        android:layout_marginTop="@dimen/dp_16"/>
 
     <View
         android:id="@+id/border_line"
         android:layout_width="match_parent"
         android:layout_height="0.5dp"
-        android:layout_marginBottom="@dimen/margin_small"
-        android:layout_marginTop="@dimen/margin_small"
+        android:layout_marginBottom="@dimen/dp_10"
+        android:layout_marginTop="@dimen/dp_10"
         android:background="@color/grey_300"
         android:visibility="gone"
-        tools:visibility="visible" />
+        tools:visibility="visible"/>
 
 </LinearLayout>

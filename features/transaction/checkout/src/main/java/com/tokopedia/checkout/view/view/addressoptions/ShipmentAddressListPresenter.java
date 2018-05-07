@@ -7,8 +7,8 @@ import com.tokopedia.checkout.R;
 import com.tokopedia.checkout.domain.datamodel.addressoptions.RecipientAddressModel;
 import com.tokopedia.checkout.domain.usecase.GetPeopleAddressUseCase;
 import com.tokopedia.checkout.view.base.CartMvpPresenter;
+import com.tokopedia.checkout.view.utils.PagingHandler;
 import com.tokopedia.core.network.exception.model.UnProcessableHttpException;
-import com.tokopedia.core.util.PagingHandler;
 
 import java.net.ConnectException;
 import java.net.SocketTimeoutException;

@@ -568,7 +568,7 @@ public class ShipmentDetailFragment extends BaseCheckoutFragment
     }
 
     private void renderButtonSaveDisabled() {
-        btSave.setBackgroundResource(R.drawable.bg_grey_button_rounded);
+        btSave.setBackgroundResource(R.drawable.bg_grey_button_rounded_checkout_module);
         btSave.setTextColor(getResources().getColor(R.color.grey_500));
         btSave.setClickable(false);
     }

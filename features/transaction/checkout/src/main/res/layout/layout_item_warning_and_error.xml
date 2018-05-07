@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:gravity="center"
-    android:orientation="vertical">
+              xmlns:tools="http://schemas.android.com/tools"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:gravity="center"
+              android:orientation="vertical">
 
     <FrameLayout
         android:id="@+id/layout_error"
@@ -18,19 +18,19 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:drawableLeft="@drawable/ic_warning_red"
-            android:drawablePadding="5dp"
+            android:drawablePadding="@dimen/dp_5"
             android:drawableStart="@drawable/ic_warning_red"
             android:fontFamily="sans-serif"
             android:maxLines="2"
-            android:paddingBottom="@dimen/padding_ms"
-            android:paddingLeft="@dimen/padding_med"
-            android:paddingRight="@dimen/padding_med"
-            android:paddingTop="@dimen/padding_ms"
+            android:paddingBottom="@dimen/dp_8"
+            android:paddingLeft="@dimen/dp_20"
+            android:paddingRight="@dimen/dp_20"
+            android:paddingTop="@dimen/dp_8"
             android:textColor="#d30b16"
-            android:textSize="11sp"
+            android:textSize="@dimen/sp_11"
             android:textStyle="normal"
             tools:ignore="SmallSp"
-            tools:text="Toko sedang tutup semdaksd laslknlaksndfa" />
+            tools:text="Toko sedang tutup semdaksd laslknlaksndfa"/>
 
     </FrameLayout>
 
@@ -46,19 +46,19 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:drawableLeft="@drawable/ic_warning_grey"
-            android:drawablePadding="5dp"
+            android:drawablePadding="@dimen/dp_5"
             android:drawableStart="@drawable/ic_warning_grey"
             android:fontFamily="sans-serif"
             android:maxLines="2"
-            android:paddingBottom="@dimen/padding_ms"
-            android:paddingLeft="@dimen/padding_med"
-            android:paddingRight="@dimen/padding_med"
-            android:paddingTop="@dimen/padding_ms"
+            android:paddingBottom="@dimen/dp_8"
+            android:paddingLeft="@dimen/dp_20"
+            android:paddingRight="@dimen/dp_20"
+            android:paddingTop="@dimen/dp_8"
             android:textColor="@color/black_54"
-            android:textSize="11sp"
+            android:textSize="@dimen/sp_11"
             android:textStyle="normal"
             tools:ignore="SmallSp"
-            tools:text="Toko sedang alsnfd;slkndf ljkasdaksd laslknlaksndfa" />
+            tools:text="Toko sedang alsnfd;slkndf ljkasdaksd laslknlaksndfa"/>
 
     </FrameLayout>
 

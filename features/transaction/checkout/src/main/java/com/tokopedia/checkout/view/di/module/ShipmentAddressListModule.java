@@ -1,10 +1,10 @@
 package com.tokopedia.checkout.view.di.module;
 
-import com.tokopedia.core.util.PagingHandler;
 import com.tokopedia.checkout.data.repository.PeopleAddressRepository;
 import com.tokopedia.checkout.domain.usecase.GetPeopleAddressUseCase;
 import com.tokopedia.checkout.view.adapter.ShipmentAddressListAdapter;
 import com.tokopedia.checkout.view.di.scope.ShipmentAddressListScope;
+import com.tokopedia.checkout.view.utils.PagingHandler;
 import com.tokopedia.checkout.view.view.addressoptions.ShipmentAddressListFragment;
 import com.tokopedia.checkout.view.view.addressoptions.ShipmentAddressListPresenter;
 

@@ -32,7 +32,6 @@ import com.tokopedia.checkout.domain.datamodel.cartlist.CartPromoSuggestion;
 import com.tokopedia.checkout.domain.datamodel.cartlist.CartTickerErrorData;
 import com.tokopedia.checkout.domain.datamodel.cartshipmentform.CartShipmentAddressFormData;
 import com.tokopedia.checkout.domain.datamodel.voucher.PromoCodeAppliedData;
-import com.tokopedia.checkout.domain.datamodel.voucher.PromoCodeCartListData;
 import com.tokopedia.checkout.router.ICartCheckoutModuleRouter;
 import com.tokopedia.checkout.view.adapter.CartListAdapter;
 import com.tokopedia.checkout.view.base.BaseCheckoutFragment;
@@ -340,7 +339,7 @@ public class CartFragment extends BaseCheckoutFragment implements CartListAdapte
 
     @Override
     public void onCartDataDisableToCheckout() {
-        btnToShipment.setBackgroundResource(R.drawable.bg_grey_button_rounded);
+        btnToShipment.setBackgroundResource(R.drawable.bg_grey_button_rounded_checkout_module);
         btnToShipment.setTextColor(getResources().getColor(R.color.grey_500));
         btnToShipment.setOnClickListener(null);
     }
