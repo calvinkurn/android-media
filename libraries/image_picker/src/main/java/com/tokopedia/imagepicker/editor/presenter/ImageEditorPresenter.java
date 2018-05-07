@@ -183,7 +183,7 @@ public class ImageEditorPresenter extends BaseDaggerPresenter<ImageEditorPresent
         Canvas canvas = new Canvas(outputBitmap);
         canvas.drawBitmap(bitmapToEdit, new Rect(left, top, right, bottom),
                 new Rect(0, 0, expectedWidth, expectedHeight), null);
-        File file = ImageUtils.writeImageToTkpdPath(ImageUtils.DirectoryDef.TOKOPEDIA_TOKOPEDIA_CACHE,
+        File file = ImageUtils.writeImageToTkpdPath(ImageUtils.DirectoryDef.DIRECTORY_TOKOPEDIA_CACHE,
                 outputBitmap, isPng);
         bitmapToEdit.recycle();
         outputBitmap.recycle();
@@ -224,14 +224,15 @@ public class ImageEditorPresenter extends BaseDaggerPresenter<ImageEditorPresent
                                 photo = ImageUtils.writeImageToTkpdPath(ImageUtils.DirectoryDef.DIRECTORY_DOWNLOAD, cacheFilePath);
                                 if (photo != null) {
                                     return photo;
+                                } else {
+                                    return cacheFile;
                                 }
                             } catch (InterruptedException | ExecutionException e) {
                                 e.printStackTrace();
                                 throw new RuntimeException(e.getMessage());
                             }
-                            return null;
                         } else {
-                            return new File(url);
+                            return null;
                         }
                     }
                 });

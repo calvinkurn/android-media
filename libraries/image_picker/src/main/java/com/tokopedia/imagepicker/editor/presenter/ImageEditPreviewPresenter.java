@@ -137,7 +137,7 @@ public class ImageEditPreviewPresenter extends BaseDaggerPresenter<ImageEditPrev
                     @Override
                     public Observable<String> call(Bitmap bitmap) {
                         Bitmap resultBitmap = ImageUtils.brightBitmap(bitmap, brightnessValue);
-                        File file = ImageUtils.writeImageToTkpdPath(ImageUtils.DirectoryDef.TOKOPEDIA_TOKOPEDIA_CACHE, resultBitmap, isPng);
+                        File file = ImageUtils.writeImageToTkpdPath(ImageUtils.DirectoryDef.DIRECTORY_TOKOPEDIA_CACHE, resultBitmap, isPng);
                         return Observable.just(file.getAbsolutePath());
                     }
                 })
@@ -175,7 +175,7 @@ public class ImageEditPreviewPresenter extends BaseDaggerPresenter<ImageEditPrev
                     @Override
                     public Observable<String> call(Bitmap bitmap) {
                         Bitmap resultBitmap = ImageUtils.contrastBitmap(bitmap, contrastValue);
-                        File file = ImageUtils.writeImageToTkpdPath(ImageUtils.DirectoryDef.TOKOPEDIA_TOKOPEDIA_CACHE, resultBitmap, isPng);
+                        File file = ImageUtils.writeImageToTkpdPath(ImageUtils.DirectoryDef.DIRECTORY_TOKOPEDIA_CACHE, resultBitmap, isPng);
                         return Observable.just(file.getAbsolutePath());
                     }
                 })

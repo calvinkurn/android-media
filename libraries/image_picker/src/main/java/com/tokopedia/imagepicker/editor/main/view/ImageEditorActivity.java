@@ -133,19 +133,15 @@ public class ImageEditorActivity extends BaseSimpleActivity implements ImageEdit
         super.onCreate(savedInstanceState);
 
         Intent intent = getIntent();
-        //TODO for test only
-        extraImageUrls = new ArrayList<>();
-        extraImageUrls.add("/storage/emulated/0/WhatsApp/Media/WhatsApp Documents/IMG_20180308_181928_HDR.jpg");
-        extraImageUrls.add("/storage/emulated/0/Tokopedia/Tokopedia Camera/6319516.jpg");
-        extraImageUrls.add("/storage/emulated/0/Download/Guitar-PNG-Image-500x556.png");
-        extraImageUrls.add("/storage/emulated/0/Download/303836.jpg");
+        //for test only
+        //extraImageUrls.add("https://scontent-sit4-1.cdninstagram.com/vp/4d462c7e62452e54862602872a4f2f55/5B772ADA/t51.2885-15/e35/30603662_2044572549200360_6725615414816014336_n.jpg");
 
-//        if (intent.hasExtra(EXTRA_IMAGE_URLS)) {
-//            extraImageUrls = intent.getStringArrayListExtra(EXTRA_IMAGE_URLS);
-//        } else {
-//            finish();
-//            return;
-//        }
+        if (intent.hasExtra(EXTRA_IMAGE_URLS)) {
+            extraImageUrls = intent.getStringArrayListExtra(EXTRA_IMAGE_URLS);
+        } else {
+            finish();
+            return;
+        }
 
         minResolution = intent.getIntExtra(EXTRA_MIN_RESOLUTION, 0);
         imageEditActionType = intent.getIntArrayExtra(EXTRA_EDIT_ACTION_TYPE);
@@ -551,7 +547,8 @@ public class ImageEditorActivity extends BaseSimpleActivity implements ImageEdit
 
     public void setUIBrightnessValue(float brightnessValue) {
         if (textViewBrightness != null) {
-            textViewBrightness.setText(String.format(Locale.getDefault(), "%.1f", brightnessValue / 10));
+            float brightnessDiv = brightnessValue / 10;
+            textViewBrightness.setText(String.format(Locale.getDefault(), "%.1f", brightnessDiv));
         }
         if (brightnessSeekbar!= null && brightnessSeekbar.getValue() != brightnessValue) {
             brightnessSeekbar.setValue(brightnessValue);

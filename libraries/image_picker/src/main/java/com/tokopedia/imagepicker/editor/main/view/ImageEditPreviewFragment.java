@@ -283,7 +283,7 @@ public class ImageEditPreviewFragment extends Fragment implements ImageEditPrevi
         try {
             Uri inputUri = Uri.fromFile(new File(edittedImagePath));
             gestureCropImageView.setImageUri(inputUri,
-                    Uri.parse(ImageUtils.getTokopediaPhotoPath(ImageUtils.DirectoryDef.TOKOPEDIA_TOKOPEDIA_CACHE, edittedImagePath).toString()));
+                    Uri.parse(ImageUtils.getTokopediaPhotoPath(ImageUtils.DirectoryDef.DIRECTORY_TOKOPEDIA_CACHE, edittedImagePath).toString()));
         } catch (Exception e) {
 
         }
