@@ -1,6 +1,7 @@
 package com.tokopedia.groupchat.chatroom.view.activity;
 
 import android.app.Activity;
+import android.app.Dialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -32,6 +33,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewTreeObserver;
+import android.view.Window;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -599,11 +601,39 @@ public class GroupChatActivity extends BaseSimpleActivity
 
     @Override
     public void onBackPressed() {
-        if (isTaskRoot()) {
-            startActivity(((GroupChatModuleRouter) getApplicationContext()).getInboxChannelsIntent(this));
-            finish();
+        if(currentFragmentIsVote() || currentFragmentIsInfo()){
+            showFragment(CHATROOM_FRAGMENT);
+        }else {
+            showDialogConfirmToExit();
         }
-        super.onBackPressed();
+    }
+
+    private void showDialogConfirmToExit() {
+        final android.app.AlertDialog.Builder myAlertDialog = new android.app.AlertDialog.Builder(this);
+        myAlertDialog.setTitle(getString(R.string.exit_group_chat_title));
+        myAlertDialog.setMessage(getString(R.string.exit_group_chat_body));
+        final Context context = this;
+        myAlertDialog.setPositiveButton(getString(R.string.exit_group_chat_yes), new
+                DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        if (isTaskRoot()) {
+                            startActivity(((GroupChatModuleRouter) getApplicationContext()).getInboxChannelsIntent(context));
+                        }
+                        finish();
+                        GroupChatActivity.super.onBackPressed();
+                    }
+                });
+        myAlertDialog.setNegativeButton(getString(R.string.exit_group_chat_no), new
+                DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        dialogInterface.cancel();
+                    }
+                });
+        Dialog dialog = myAlertDialog.create();
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.show();
     }
 
     @Override
