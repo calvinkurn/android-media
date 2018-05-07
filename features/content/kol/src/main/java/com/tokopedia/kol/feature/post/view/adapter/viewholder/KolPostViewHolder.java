@@ -17,6 +17,7 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.kol.R;
 import com.tokopedia.kol.analytics.KolTracking;
 import com.tokopedia.kol.common.util.TimeConverter;
+import com.tokopedia.kol.common.util.UrlUtil;
 import com.tokopedia.kol.feature.post.view.listener.KolPostListener;
 import com.tokopedia.kol.feature.post.view.viewmodel.KolPostViewModel;
 
@@ -128,6 +129,7 @@ public class KolPostViewHolder extends AbstractViewHolder<KolPostViewModel> {
         }
 
         kolText.setText(getKolText(element));
+        UrlUtil.convertToClickableUrl(kolText);
 
         if (element.isLiked()) {
             ImageHandler.loadImageWithIdWithoutPlaceholder(likeIcon, R.drawable.ic_thumb_green);
@@ -192,7 +194,8 @@ public class KolPostViewHolder extends AbstractViewHolder<KolPostViewModel> {
             public void onClick(View v) {
                 if (kolText.getText().toString().endsWith(kolText.getContext().getString(R
                         .string.read_more_english))) {
-                    kolText.setText(element.getReview());
+                    kolText.setText(MethodChecker.fromHtml(element.getReview()));
+                    UrlUtil.convertToClickableUrl(kolText);
                     element.setReviewExpanded(true);
                 }
             }
