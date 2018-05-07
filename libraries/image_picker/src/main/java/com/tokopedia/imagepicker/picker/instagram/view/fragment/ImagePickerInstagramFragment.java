@@ -1,4 +1,4 @@
-package com.tokopedia.imagepicker.picker.instagram.view.instagram;
+package com.tokopedia.imagepicker.picker.instagram.view.fragment;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -10,13 +10,11 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
-import com.tokopedia.design.component.Dialog;
 import com.tokopedia.imagepicker.R;
 import com.tokopedia.imagepicker.picker.instagram.InstagramConstant;
 import com.tokopedia.imagepicker.picker.instagram.di.DaggerInstagramComponent;
 
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment;
-import com.tokopedia.imagepicker.picker.instagram.di.InstagramComponent;
 import com.tokopedia.imagepicker.picker.instagram.di.InstagramModule;
 import com.tokopedia.imagepicker.picker.instagram.view.adapter.ImageInstagramAdapterTypeFactory;
 import com.tokopedia.imagepicker.picker.instagram.view.dialog.InstagramLoginDialog;

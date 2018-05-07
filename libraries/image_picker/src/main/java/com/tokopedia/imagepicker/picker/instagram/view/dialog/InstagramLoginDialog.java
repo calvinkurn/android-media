@@ -1,6 +1,5 @@
 package com.tokopedia.imagepicker.picker.instagram.view.dialog;
 
-import android.app.Activity;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.net.http.SslError;
@@ -13,10 +12,8 @@ import android.webkit.WebViewClient;
 import android.widget.ProgressBar;
 
 import com.tokopedia.design.component.BottomSheets;
-import com.tokopedia.design.component.Dialog;
 import com.tokopedia.imagepicker.R;
 import com.tokopedia.imagepicker.picker.instagram.InstagramConstant;
-import com.tokopedia.imagepicker.picker.instagram.view.instagram.ImagePickerInstagramFragment;
 
 /**
  * Created by zulfikarrahman on 5/4/18.

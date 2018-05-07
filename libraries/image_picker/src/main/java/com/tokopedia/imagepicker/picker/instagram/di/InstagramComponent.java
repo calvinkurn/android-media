@@ -1,7 +1,7 @@
 package com.tokopedia.imagepicker.picker.instagram.di;
 
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
-import com.tokopedia.imagepicker.picker.instagram.view.instagram.ImagePickerInstagramFragment;
+import com.tokopedia.imagepicker.picker.instagram.view.fragment.ImagePickerInstagramFragment;
 
 import dagger.Component;
 
