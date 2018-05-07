@@ -187,4 +187,5 @@ public class BannerSlidesModel {
     public void setPromoCode(String promoCode) {
         this.promoCode = promoCode;
     }
+
 }

@@ -28,7 +28,7 @@ import com.tokopedia.home.beranda.presentation.view.HomeContract;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.BannerViewModel;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.HeaderViewModel;
 import com.tokopedia.home.beranda.presentation.view.subscriber.GetHomeFeedsSubscriber;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.usecase.GetHomeFeedsUseCase;
+import com.tokopedia.feedplus.domain.usecase.GetHomeFeedsUseCase;
 import com.tokopedia.usecase.RequestParams;
 
 import java.util.List;
@@ -470,4 +470,26 @@ public class HomePresenter extends BaseDaggerPresenter<HomeContract.View> implem
         return false;
     }
 
+    @Override
+    public void onDestroy() {
+        unsubscribeAllUseCase();
+    }
+
+    private void unsubscribeAllUseCase(){
+        if(getHomeDataUseCase != null){
+            getHomeFeedsUseCase.unsubscribe();
+        }
+
+        if(getHomeFeedsUseCase != null){
+            getHomeFeedsUseCase.unsubscribe();
+        }
+
+        if(localHomeDataUseCase != null){
+            localHomeDataUseCase.unsubscribe();
+        }
+
+        if(subscription != null){
+            subscription.unsubscribe();
+        }
+    }
 }

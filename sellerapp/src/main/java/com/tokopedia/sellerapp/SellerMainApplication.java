@@ -29,6 +29,8 @@ import com.tokopedia.core.util.HockeyAppHelper;
 import com.tokopedia.digital.common.constant.DigitalUrl;
 import com.tokopedia.mitratoppers.common.constant.MitraToppersBaseURL;
 import com.tokopedia.network.SessionUrl;
+import com.tokopedia.payment.fingerprint.util.PaymentFingerprintConstant;
+import com.tokopedia.pushnotif.PushNotification;
 import com.tokopedia.reputation.common.constant.ReputationCommonUrl;
 import com.tokopedia.sellerapp.deeplink.DeepLinkActivity;
 import com.tokopedia.sellerapp.deeplink.DeepLinkHandlerActivity;
@@ -182,6 +184,9 @@ public class SellerMainApplication extends SellerRouterApplication implements Mo
         MitraToppersBaseURL.WEB_DOMAIN = SellerAppBaseUrl.BASE_WEB_DOMAIN;
         MitraToppersBaseURL.PATH_MITRA_TOPPERS = SellerAppBaseUrl.PATH_MITRA_TOPPERS;
         DigitalUrl.WEB_DOMAIN = SellerAppBaseUrl.BASE_WEB_DOMAIN;
+        PaymentFingerprintConstant.ACCOUNTS_DOMAIN = SellerAppBaseUrl.ACCOUNTS_DOMAIN;
+        PaymentFingerprintConstant.TOP_PAY_DOMAIN = SellerAppBaseUrl.TOP_PAY_DOMAIN;
+        TkpdBaseURL.HOME_DATA_BASE_URL = SellerAppBaseUrl.HOME_DATA_BASE_URL;
     }
 
     private void generateSellerAppNetworkKeys() {
@@ -199,6 +204,7 @@ public class SellerMainApplication extends SellerRouterApplication implements Mo
         FlowManager.initModule(TkpdSellerGeneratedDatabaseHolder.class);
         FlowManager.initModule(TkpdGMGeneratedDatabaseHolder.class);
         FlowManager.initModule(TkpdCacheApiGeneratedDatabaseHolder.class);
+        PushNotification.initDatabase(getApplicationContext());
     }
 
     private void initCacheApi() {

@@ -12,10 +12,6 @@ import com.tokopedia.discovery.newdiscovery.base.BaseDiscoveryContract.View;
 import com.tokopedia.discovery.newdiscovery.domain.usecase.GetProductUseCase;
 import com.tokopedia.discovery.newdiscovery.util.SearchParameter;
 
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.IOException;
-
 /**
  * Created by hangnadi on 9/28/17.
  */

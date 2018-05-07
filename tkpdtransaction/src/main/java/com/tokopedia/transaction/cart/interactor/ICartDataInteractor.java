@@ -52,7 +52,7 @@ public interface ICartDataInteractor {
                              TKPDMapParam<String, String> paramCart,
                              Subscriber<ResponseTransform<CartData>> subscriber);
 
-    void getParameterTopPay(TKPDMapParam<String, String> params, Scheduler schedulers,
+    void getParameterTopPay(TKPDMapParam<String, Object> params, Scheduler schedulers,
                             Subscriber<TopPayParameterData> subscriber);
 
     void getThanksTopPay(TKPDMapParam<String, String> params, Scheduler schedulers,
@@ -61,7 +61,7 @@ public interface ICartDataInteractor {
     void checkVoucherCode(TKPDMapParam<String, String> stringStringTKPDMapParam,
                           Subscriber<ResponseTransform<VoucherData>> subscriber);
 
-    void cancelVoucherCache(Subscriber<Boolean> subscriber);
+    void cancelVoucherCache(Context context, Subscriber<Boolean> subscriber);
 
     void unSubscribeObservable();
 

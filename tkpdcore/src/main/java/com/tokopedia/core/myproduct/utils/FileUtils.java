@@ -208,13 +208,6 @@ public class FileUtils {
         }
         if (uri.getAuthority() != null) {
             try {
-                String path = getPathFromMediaUri(context, uri);
-                if (TextUtils.isEmpty(path)) {
-                    path = getPath(context, uri);
-                }
-                if (TextUtils.isEmpty(path)) {
-                    return null;
-                }
                 Bitmap bmp = null;
                 int inSampleSize = 1;
                 boolean oomError;
@@ -236,13 +229,8 @@ public class FileUtils {
                         if (bmp == null) {
                             return null;
                         }
-                        bmp = ImageHandler.RotatedBitmap(bmp, path);
                         oomError = false;
                     } catch (OutOfMemoryError outOfMemoryError) {
-                        if (bmp != null) {
-                            bmp.recycle();
-                            bmp = null;
-                        }
                         inSampleSize *= 2;
                         oomError = true;
                         if (inSampleSize > 16) {
