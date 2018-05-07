@@ -1,5 +1,6 @@
 package com.tokopedia.posapp.product.management.view.subscriber;
 
+import com.tokopedia.design.utils.CurrencyFormatHelper;
 import com.tokopedia.posapp.base.domain.model.DataStatus;
 import com.tokopedia.posapp.product.management.ProductManagementConstant;
 import com.tokopedia.posapp.product.management.view.EditProduct;
@@ -38,6 +39,7 @@ public class EditProductSubscriber extends Subscriber<DataStatus> {
     @Override
     public void onNext(DataStatus dataStatus) {
         productViewModel.setOutletPrice(price);
+        productViewModel.setOutletPriceUnformatted(CurrencyFormatHelper.convertRupiahToInt(price));
         if(dataStatus.isOk()) view.onSuccessSave(productViewModel, position);
         else view.onErrorSave(dataStatus.getMessage());
     }

@@ -29,6 +29,7 @@ public class OutletPresenter implements Outlet.Presenter {
 
     private Outlet.View view;
     private GetOutletUseCase getOutletUseCase;
+
     private SelectOutletUseCase selectOutletUseCase;
     private PosSessionHandler posSessionHandler;
 
@@ -56,8 +57,17 @@ public class OutletPresenter implements Outlet.Presenter {
     public void getOutlet(String query) {
         view.startLoading();
         view.clearOutletData();
-
         getOutletUseCase.execute(RequestParams.create(), new GetOutletSubscriber(view));
+        deleteAllCartUsecase.execute(RequestParams.create(), new Subscriber<ATCStatusDomain>() {
+            @Override
+            public void onCompleted() {}
+
+            @Override
+            public void onError(Throwable e) {}
+
+            @Override
+            public void onNext(ATCStatusDomain atcStatusDomain) {}
+        });
     }
 
     @Override
