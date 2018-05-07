@@ -27,7 +27,7 @@ import com.tokopedia.gm.statistic.constant.GMTransactionTableSortType;
 import com.tokopedia.gm.statistic.di.component.DaggerGMStatisticTransactionComponent;
 import com.tokopedia.gm.statistic.di.module.GMStatisticModule;
 import com.tokopedia.gm.statistic.utils.GMStatisticDateUtils;
-import com.tokopedia.seller.common.williamchart.util.GMStatisticUtil;
+import com.db.williamchart.util.GMStatisticUtil;
 import com.tokopedia.gm.statistic.view.adapter.GMStatRetryDataBinder;
 import com.tokopedia.gm.statistic.view.adapter.GMStatisticTransactionTableAdapter;
 import com.tokopedia.gm.statistic.view.adapter.model.GMStatisticTransactionTableModel;

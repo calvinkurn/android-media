@@ -3,7 +3,7 @@ package com.tokopedia.gm.statistic.data.source;
 import com.google.gson.reflect.TypeToken;
 import com.tokopedia.core.common.mapper.SimpleResponseMapper;
 import com.tokopedia.core.database.CacheUtil;
-import com.tokopedia.seller.common.williamchart.util.GoldMerchantDateUtils;
+import com.db.williamchart.util.GoldMerchantDateUtils;
 import com.tokopedia.gm.statistic.constant.GMTransactionTableSortBy;
 import com.tokopedia.gm.statistic.constant.GMTransactionTableSortType;
 import com.tokopedia.gm.statistic.data.source.cache.GMStatCache;
