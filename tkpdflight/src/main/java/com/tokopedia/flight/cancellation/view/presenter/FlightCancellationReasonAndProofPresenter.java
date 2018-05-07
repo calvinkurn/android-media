@@ -47,6 +47,13 @@ import rx.subscriptions.CompositeSubscription;
  */
 
 public class FlightCancellationReasonAndProofPresenter extends BaseDaggerPresenter<FlightCancellationReasonAndProofContract.View> implements FlightCancellationReasonAndProofContract.Presenter {
+    private static final String DEFAULT_RESOLUTION = "100-square";
+    private static final String RESOLUTION_300 = "300";
+    private static final String PARAM_ID = "id";
+    private static final String PARAM_WEB_SERVICE = "web_service";
+    private static final String PARAM_RESOLUTION = "param_resolution";
+    private static final String DEFAULT_UPLOAD_PATH = "/upload/attachment";
+    private static final String DEFAULT_UPLOAD_TYPE = "fileToUpload\"; filename=\"image.jpg";
 
     private FlightAirlineUseCase flightAirlineUseCase;
     private UploadImageUseCase<AttachmentImageModel> uploadImageUseCase;
@@ -223,8 +230,8 @@ public class FlightCancellationReasonAndProofPresenter extends BaseDaggerPresent
                                     @Override
                                     public FlightCancellationAttachmentViewModel call(FlightCancellationAttachmentViewModel attachmentViewModel, ImageUploadDomainModel<AttachmentImageModel> uploadDomainModel) {
                                         String url = uploadDomainModel.getDataResultImageUpload().getData().getPicSrc();
-                                        if (url.contains("100-square")){
-                                            url = url.replaceFirst("100-square", "300");
+                                        if (url.contains(DEFAULT_RESOLUTION)) {
+                                            url = url.replaceFirst(DEFAULT_RESOLUTION, RESOLUTION_300);
                                         }
                                         attachmentViewModel.setImageurl(url);
                                         return attachmentViewModel;
@@ -287,11 +294,11 @@ public class FlightCancellationReasonAndProofPresenter extends BaseDaggerPresent
         File photo = flightModuleRouter.writeImage(cameraLoc, 80);
         Map<String, RequestBody> maps = new HashMap<String, RequestBody>();
         RequestBody webService = RequestBody.create(MediaType.parse("text/plain"), "1");
-        RequestBody resolution = RequestBody.create(MediaType.parse("text/plain"), "300");
+        RequestBody resolution = RequestBody.create(MediaType.parse("text/plain"), RESOLUTION_300);
         RequestBody id = RequestBody.create(MediaType.parse("text/plain"), userSession.getUserId() + UUID.randomUUID() + System.currentTimeMillis());
-        maps.put("web_service", webService);
-        maps.put("id", id);
-        maps.put("resolution", resolution);
-        return uploadImageUseCase.createRequestParam(photo.getAbsolutePath(), "/upload/attachment", "fileToUpload\"; filename=\"image.jpg", maps);
+        maps.put(PARAM_WEB_SERVICE, webService);
+        maps.put(PARAM_ID, id);
+        maps.put(PARAM_RESOLUTION, resolution);
+        return uploadImageUseCase.createRequestParam(photo.getAbsolutePath(), DEFAULT_UPLOAD_PATH, DEFAULT_UPLOAD_TYPE, maps);
     }
 }
