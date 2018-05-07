@@ -2,11 +2,19 @@ package com.tokopedia.flight.cancellation.view.fragment;
 
 
 import android.content.Intent;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.BottomSheetBehavior;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.AppCompatButton;
 import android.support.v7.widget.AppCompatTextView;
+import android.text.SpannableString;
+import android.text.Spanned;
+import android.text.TextPaint;
+import android.text.method.LinkMovementMethod;
+import android.text.style.ClickableSpan;
+import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,6 +27,7 @@ import com.tokopedia.flight.R;
 import com.tokopedia.flight.cancellation.di.FlightCancellationComponent;
 import com.tokopedia.flight.cancellation.view.activity.FlightCancellationReviewActivity;
 import com.tokopedia.flight.cancellation.view.contract.FlightCancellationRefundDetailContract;
+import com.tokopedia.flight.cancellation.view.fragment.customview.FlightCancellationRefundBottomSheet;
 import com.tokopedia.flight.cancellation.view.presenter.FlightCancellationRefundDetailPresenter;
 import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationWrapperViewModel;
 
@@ -53,6 +62,7 @@ public class FlightCancellationRefundDetailFragment extends BaseDaggerFragment i
     private LinearLayout container;
     private AppCompatTextView tvTotalRefund;
     private AppCompatButton btnNext;
+    private AppCompatTextView tvDescription;
 
     @Inject
     FlightCancellationRefundDetailPresenter presenter;
@@ -83,6 +93,9 @@ public class FlightCancellationRefundDetailFragment extends BaseDaggerFragment i
         container = (LinearLayout) view.findViewById(R.id.container);
         tvStepTitle = (AppCompatTextView) view.findViewById(R.id.tv_step_title);
         tvTotalRefund = (AppCompatTextView) view.findViewById(R.id.tv_total_refund);
+        tvDescription = (AppCompatTextView) view.findViewById(R.id.tv_description_refund);
+        tvDescription.setText(setDescriptionText());
+        tvDescription.setMovementMethod(LinkMovementMethod.getInstance());
         btnNext = (AppCompatButton) view.findViewById(R.id.btn_next);
         btnNext.setOnClickListener(getNextButtonClickListener());
 
@@ -163,7 +176,7 @@ public class FlightCancellationRefundDetailFragment extends BaseDaggerFragment i
         super.onActivityResult(requestCode, resultCode, data);
 
         switch (requestCode) {
-            case REQUEST_REVIEW_CODE :
+            case REQUEST_REVIEW_CODE:
                 if (resultCode == RESULT_OK) {
                     closeRefundPage();
                 }
@@ -174,5 +187,31 @@ public class FlightCancellationRefundDetailFragment extends BaseDaggerFragment i
     private void closeRefundPage() {
         getActivity().setResult(RESULT_OK);
         getActivity().finish();
+    }
+
+    private SpannableString setDescriptionText() {
+        final int color = getContext().getResources().getColor(R.color.green_500);
+        int startIndex = getString(R.string.flight_cancellation_refund_description).indexOf("Pelajari");
+        int stopIndex = getString(R.string.flight_cancellation_refund_description).length();
+        SpannableString description = new SpannableString(getContext().getString(
+                R.string.flight_cancellation_refund_description));
+        ClickableSpan clickableSpan = new ClickableSpan() {
+            @Override
+            public void onClick(View widget) {
+                FlightCancellationRefundBottomSheet bottomSheet = new FlightCancellationRefundBottomSheet();
+                bottomSheet.show(getChildFragmentManager(), "Refund Detail");
+
+            }
+
+            @Override
+            public void updateDrawState(TextPaint ds) {
+                super.updateDrawState(ds);
+                ds.setUnderlineText(false);
+                ds.setColor(color);
+                ds.setTypeface(Typeface.create(Typeface.DEFAULT, Typeface.BOLD));
+            }
+        };
+        description.setSpan(clickableSpan, startIndex, stopIndex, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        return description;
     }
 }
