@@ -28,6 +28,7 @@ import com.tokopedia.imagepicker.picker.camera.ImagePickerCameraFragment;
 import com.tokopedia.imagepicker.picker.gallery.ImagePickerGalleryFragment;
 import com.tokopedia.imagepicker.picker.gallery.model.AlbumItem;
 import com.tokopedia.imagepicker.picker.gallery.model.MediaItem;
+import com.tokopedia.imagepicker.picker.instagram.view.fragment.ImagePickerInstagramFragment;
 import com.tokopedia.imagepicker.picker.main.util.ImagePickerBuilder;
 import com.tokopedia.imagepicker.picker.main.util.ImagePickerTabTypeDef;
 import com.tokopedia.imagepicker.picker.main.util.ImageSelectionTypeDef;
@@ -39,7 +40,8 @@ import java.util.List;
 public class ImagePickerActivity extends BaseSimpleActivity
         implements AdapterView.OnItemSelectedListener,
         ImagePickerGalleryFragment.OnImagePickerGalleryFragmentListener,
-        ImagePickerCameraFragment.OnImagePickerCameraFragmentListener {
+        ImagePickerCameraFragment.OnImagePickerCameraFragmentListener,
+        ImagePickerInstagramFragment.ListenerImagePickerInstagram{
 
     public static final String EXTRA_IMAGE_PICKER_BUILDER = "x_img_pick_builder";
 
@@ -278,6 +280,26 @@ public class ImagePickerActivity extends BaseSimpleActivity
         }
     }
 
+    @Override
+    public void onClickImageInstagram(String url, boolean isChecked) {
+        switch (imagePickerBuilder.getImageSelectionType()) {
+            case ImageSelectionTypeDef.TYPE_SINGLE: {
+                onSingleImagePicked(url);
+            }
+            break;
+            case ImageSelectionTypeDef.TYPE_MULTIPLE_NO_PREVIEW:
+            case ImageSelectionTypeDef.TYPE_MULTIPLE_WITH_PREVIEW: {
+                // TODO change the UI of selection
+                if (imagePickerBuilder.getImageSelectionType() == ImageSelectionTypeDef.TYPE_MULTIPLE_WITH_PREVIEW) {
+                    // TODO show the preview
+                } else {
+                    // TODO hide the preview
+                }
+            }
+            break;
+        }
+    }
+
     private void onSingleImagePicked(String imageUrlOrPath) {
         if (imagePickerBuilder.isContinueToEditAfterPick()) {
             Intent intent = ImageEditorActivity.getIntent(this, imageUrlOrPath,
@@ -371,5 +393,4 @@ public class ImagePickerActivity extends BaseSimpleActivity
         super.onSaveInstanceState(outState);
         outState.putInt(SAVED_SELECTED_TAB, tabLayout.getSelectedTabPosition());
     }
-
 }

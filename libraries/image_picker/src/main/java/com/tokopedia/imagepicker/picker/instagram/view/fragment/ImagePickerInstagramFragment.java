@@ -1,5 +1,6 @@
 package com.tokopedia.imagepicker.picker.instagram.view.fragment;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.GridLayoutManager;
@@ -11,12 +12,14 @@ import android.view.ViewGroup;
 
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.imagepicker.R;
+import com.tokopedia.imagepicker.picker.gallery.widget.MediaGridInset;
 import com.tokopedia.imagepicker.picker.instagram.InstagramConstant;
 import com.tokopedia.imagepicker.picker.instagram.di.DaggerInstagramComponent;
 
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment;
 import com.tokopedia.imagepicker.picker.instagram.di.InstagramModule;
 import com.tokopedia.imagepicker.picker.instagram.view.adapter.ImageInstagramAdapterTypeFactory;
+import com.tokopedia.imagepicker.picker.instagram.view.adapter.ImagePickerInstagramViewHolder;
 import com.tokopedia.imagepicker.picker.instagram.view.dialog.InstagramLoginDialog;
 import com.tokopedia.imagepicker.picker.instagram.view.model.InstagramMediaModel;
 import com.tokopedia.imagepicker.picker.instagram.view.presenter.ImagePickerInstagramContract;
@@ -36,6 +39,7 @@ public class ImagePickerInstagramFragment extends BaseListFragment<InstagramMedi
     @Inject
     ImagePickerInstagramPresenter imagePickerInstagramPresenter;
 
+    private ListenerImagePickerInstagram listenerImagePickerInstagram;
     private String code = "";
     private String nextMediaId = "";
 
@@ -54,10 +58,24 @@ public class ImagePickerInstagramFragment extends BaseListFragment<InstagramMedi
         imagePickerInstagramPresenter.attachView(this);
     }
 
+    @Override
+    public void onDestroy() {
+        imagePickerInstagramPresenter.detachView();
+        super.onDestroy();
+    }
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_image_picker_instagram, container, false);
+    }
+
+    @Override
+    public RecyclerView getRecyclerView(View view) {
+        RecyclerView recyclerView = super.getRecyclerView(view);
+        int spacing = getResources().getDimensionPixelSize(R.dimen.media_grid_spacing);
+        recyclerView.addItemDecoration(new MediaGridInset(InstagramConstant.SPAN_COUNT, spacing, false));
+        return recyclerView;
     }
 
     @Override
@@ -67,12 +85,33 @@ public class ImagePickerInstagramFragment extends BaseListFragment<InstagramMedi
 
     @Override
     protected RecyclerView.LayoutManager getRecyclerViewLayoutManager() {
-        return new GridLayoutManager(getActivity(), InstagramConstant.SPAN_COUNT, LinearLayoutManager.VERTICAL, false);
+        GridLayoutManager gridLayoutManager = new GridLayoutManager(getActivity(), InstagramConstant.SPAN_COUNT, LinearLayoutManager.VERTICAL, false);
+        gridLayoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
+            @Override
+            public int getSpanSize(int position) {
+                if (getAdapter().getItemViewType(position) == ImagePickerInstagramViewHolder.LAYOUT) {
+                    return InstagramConstant.SPAN_LOOK_UP;
+                }
+                return InstagramConstant.SPAN_COUNT;
+            }
+        });
+        return gridLayoutManager;
     }
 
     @Override
     protected ImageInstagramAdapterTypeFactory getAdapterTypeFactory() {
-        return new ImageInstagramAdapterTypeFactory();
+        return new ImageInstagramAdapterTypeFactory(getImageResize());
+    }
+
+    private int getImageResize() {
+        int imageResize;
+        int spanCount = InstagramConstant.SPAN_COUNT;
+        int screenWidth = getResources().getDisplayMetrics().widthPixels;
+        int availableWidth = screenWidth - getResources().getDimensionPixelSize(
+                R.dimen.media_grid_spacing) * (spanCount - 1);
+        imageResize = availableWidth / spanCount;
+        imageResize = (int) (imageResize * 0.85f);
+        return imageResize;
     }
 
     @Override
@@ -82,11 +121,18 @@ public class ImagePickerInstagramFragment extends BaseListFragment<InstagramMedi
 
     @Override
     public void onItemClicked(InstagramMediaModel instagramMediaModel) {
+        listenerImagePickerInstagram.onClickImageInstagram(instagramMediaModel.getImageStandardResolution(), true);
+    }
 
+    @Override
+    protected void onAttachActivity(Context context) {
+        super.onAttachActivity(context);
+        listenerImagePickerInstagram = (ListenerImagePickerInstagram)context;
     }
 
     @Override
     public void onErrorShouldLoginInstagram() {
+        showGetListError(new Throwable());
         InstagramLoginDialog instagramLoginDialog = new InstagramLoginDialog();
         instagramLoginDialog.setListenerLoginInstagram(this);
         instagramLoginDialog.show(getActivity().getSupportFragmentManager(), "instagram_dialog");
@@ -103,5 +149,9 @@ public class ImagePickerInstagramFragment extends BaseListFragment<InstagramMedi
     public void onSuccessLogin(String code) {
         this.code = code;
         loadInitialData();
+    }
+
+    public interface ListenerImagePickerInstagram{
+        void onClickImageInstagram(String url, boolean isChecked);
     }
 }
