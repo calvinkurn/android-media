@@ -2,9 +2,9 @@ package com.tokopedia.topads.keyword.view.presenter;
 
 import android.support.annotation.NonNull;
 
+import com.tokopedia.abstraction.common.utils.view.DateFormatUtils;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.seller.base.view.listener.BaseListViewListener;
-import com.tokopedia.seller.common.williamchart.util.GoldMerchantDateUtils;
 import com.tokopedia.topads.sourcetagging.constant.TopAdsSourceOption;
 import com.tokopedia.topads.sourcetagging.domain.interactor.TopAdsAddSourceTaggingUseCase;
 import com.tokopedia.topads.dashboard.data.model.data.GroupAd;
@@ -134,9 +134,7 @@ public class TopAdsKeywordListPresenterImpl extends
     }
 
     private String formatDate(long date) {
-        return GoldMerchantDateUtils.getDateFormatForInput(
-                date, KEYWORD_DATE_FORMAT
-        );
+        return DateFormatUtils.getFormattedDate(date, KEYWORD_DATE_FORMAT);
     }
 
     @Override

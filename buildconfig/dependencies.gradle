@@ -257,7 +257,10 @@ ext {
             pushNotif       : ":libraries:push_notification",
             applink         : ":libraries:applink",
             cacheApi        : ":libraries:cache_api",
-            useCase         : ":libraries:use_case"
+            reactNative     : ":libraries:react_native",
+            useCase         : ":libraries:use_case",
+            williamchart    : ":libraries:williamchart",
+            bottomSheetBuilder: ":libraries:bottom_sheet_builder"
     ]
 
 }
