@@ -11,6 +11,7 @@ apt {
 dependencies {
 
     compile project(rootProject.ext.features.seller)
+    compile project(rootProject.ext.libraries.bottomSheetBuilder)
 
     compile rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
     apt rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
