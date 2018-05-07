@@ -24,9 +24,9 @@ public interface TokoCashHistoryContract {
 
         void renderEmptyTokoCashHistory(List<HeaderHistory> headerHistoryList);
 
-        void renderErrorMessage(String message);
+        void renderErrorMessage(Throwable throwable);
 
-        void renderEmptyPage(String message);
+        void renderEmptyPage(Throwable throwable);
 
         void renderWaitingTransaction(TokoCashHistoryData tokoCashHistoryData);
 
@@ -35,7 +35,7 @@ public interface TokoCashHistoryContract {
         RequestParams getHistoryTokoCashParam(boolean isWaitingTransaction, int page);
     }
 
-    interface Presenter extends CustomerPresenter<View>{
+    interface Presenter extends CustomerPresenter<View> {
 
         void getWaitingTransaction();
 

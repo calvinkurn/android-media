@@ -3,7 +3,9 @@ package com.tokopedia.discovery.newdiscovery.search.fragment.product;
 import android.os.Bundle;
 
 import com.tokopedia.core.base.adapter.Visitable;
+import com.tokopedia.core.discovery.model.DynamicFilterModel;
 import com.tokopedia.discovery.newdiscovery.search.fragment.SearchSectionFragmentView;
+import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.GuidedSearchViewModel;
 import com.tokopedia.discovery.newdiscovery.util.SearchParameter;
 
 import java.util.List;
@@ -22,6 +24,8 @@ public interface ProductListFragmentView extends SearchSectionFragmentView {
     void initTopAdsParams();
 
     void incrementStart();
+
+    boolean isEvenPage();
 
     void storeTotalData(int totalData);
 
@@ -51,4 +55,12 @@ public interface ProductListFragmentView extends SearchSectionFragmentView {
     void setSearchParameter(SearchParameter searchParameter);
 
     void backToTop();
+
+    void addGuidedSearch();
+
+    void onGetGuidedSearchComplete(GuidedSearchViewModel guidedSearchViewModel);
+
+    void getQuickFilter();
+
+    void renderQuickFilter(DynamicFilterModel dynamicFilterModel);
 }

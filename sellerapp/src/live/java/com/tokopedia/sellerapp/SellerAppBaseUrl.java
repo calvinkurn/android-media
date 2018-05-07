@@ -10,7 +10,6 @@ public class SellerAppBaseUrl {
     public static final String BASE_ACE_DOMAIN = "https://ace.tokopedia.com/";
     public static final String BASE_TOME_DOMAIN = "https://tome.tokopedia.com/";
     public static final String BASE_API_DOMAIN = "https://api.tokopedia.com/";
-    public static final String BASE_CLOVER_DOMAIN = "https://points.tokopedia.com/";
     public static final String BASE_TOPADS_DOMAIN = "https://ta.tokopedia.com/";
     public static final String BASE_MOJITO_DOMAIN = "https://mojito.tokopedia.com/";
     public static final String BASE_HADES_DOMAIN = "https://hades.tokopedia.com";
@@ -32,4 +31,5 @@ public class SellerAppBaseUrl {
     public static final String BASE_SCROOGE_CREDIT_CARD_DOMAIN = "https://pay.tokopedia.id/";
     public static final String BASE_WALLET = "https://www.tokocash.com/";
     public static final String PATH_MITRA_TOPPERS = "mitra-toppers/";
+    public static final String HOME_DATA_BASE_URL = "https://gql.tokopedia.com/";
 }

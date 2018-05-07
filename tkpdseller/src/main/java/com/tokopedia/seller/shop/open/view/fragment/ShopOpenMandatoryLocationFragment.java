@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,6 +23,7 @@ import com.tokopedia.core.manage.people.address.ManageAddressConstant;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.retrofit.response.ErrorHandler;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
+import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.seller.LogisticRouter;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.base.view.activity.BaseStepperActivity;
@@ -64,6 +66,7 @@ public class ShopOpenMandatoryLocationFragment extends BaseDaggerFragment implem
     private static final String TAG = "ShopOpenMandatoryLocati";
     private LocationShippingViewHolder locationShippingViewHolder;
     private LocationMapViewHolder locationMapViewHolder;
+    private final String SCREEN_NAME = "Alamat Pengiriman";
 
     @Inject
     ShopOpenLocPresenterImpl shopOpenLocPresenter;
@@ -106,6 +109,7 @@ public class ShopOpenMandatoryLocationFragment extends BaseDaggerFragment implem
 
     private void initView(View root) {
 
+        trackingOpenShop.eventMoEngageOpenShop(SCREEN_NAME);
         new LocationHeaderViewHolder(root, new LocationHeaderViewHolder.ViewHolderListener() {
             @Override
             public void navigateToChooseAddressActivityRequest() {
@@ -223,6 +227,16 @@ public class ShopOpenMandatoryLocationFragment extends BaseDaggerFragment implem
 
     @Override
     public void navigateToGoogleMap(String generatedMap, LocationPass locationPass) {
+
+        if(!TextUtils.isEmpty(locationShippingViewHolder.getDistrictName())
+                && !TextUtils.isEmpty(locationShippingViewHolder.getCityName())) {
+
+            if(locationPass == null)
+                locationPass = new LocationPass();
+
+            locationPass.setDistrictName(locationShippingViewHolder.getDistrictName());
+            locationPass.setCityName(locationShippingViewHolder.getCityName());
+        }
         logisticRouter.navigateToGeoLocationActivityRequest(
                 ShopOpenMandatoryLocationFragment.this,
                 REQUEST_CODE_GOOGLE_MAP,
@@ -385,9 +399,10 @@ public class ShopOpenMandatoryLocationFragment extends BaseDaggerFragment implem
 
     @Override
     public void onFailedSaveInfoShop(Throwable t) {
-
+		if (!GlobalConfig.DEBUG) {
+        		Crashlytics.logException(t);
+        	}
         String errorMessage;
-        Crashlytics.logException(t);
         if (t instanceof TomeException) {
             errorMessage = t.getMessage();
         } else {

@@ -5,8 +5,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -25,7 +23,9 @@ import com.tokopedia.di.DaggerSessionComponent;
 import com.tokopedia.otp.tokocashotp.view.activity.VerificationActivity;
 import com.tokopedia.otp.tokocashotp.view.viewmodel.MethodItem;
 import com.tokopedia.session.R;
+import com.tokopedia.session.login.loginemail.view.activity.ForbiddenActivity;
 import com.tokopedia.session.login.loginphonenumber.view.activity.ChooseTokocashAccountActivity;
+import com.tokopedia.session.login.loginphonenumber.view.activity.LoginPhoneNumberActivity;
 import com.tokopedia.session.login.loginphonenumber.view.activity.NotConnectedTokocashActivity;
 import com.tokopedia.session.login.loginphonenumber.view.presenter.LoginPhoneNumberPresenter;
 import com.tokopedia.session.login.loginphonenumber.view.viewlistener.LoginPhoneNumber;
@@ -51,6 +51,7 @@ public class LoginPhoneNumberFragment extends BaseDaggerFragment
     TextView nextButton;
     TextView message;
     TextView errorText;
+    String phoneNumberString;
 
     TkpdProgressDialog progressDialog;
 
@@ -96,8 +97,8 @@ public class LoginPhoneNumberFragment extends BaseDaggerFragment
         message = view.findViewById(R.id.message);
         nextButton = view.findViewById(R.id.next_btn);
         errorText = view.findViewById(R.id.error);
-        prepareView();
         presenter.attachView(this);
+        prepareView();
         return view;
     }
 
@@ -123,6 +124,14 @@ public class LoginPhoneNumberFragment extends BaseDaggerFragment
                 presenter.loginWithPhoneNumber(phoneNumber.getText().toString());
             }
         });
+
+        if (getArguments() != null) {
+            if (getArguments().get(LoginPhoneNumberActivity.PARAM_PHONE_NUMBER) != null) {
+                phoneNumberString = getArguments().getString(LoginPhoneNumberActivity.PARAM_PHONE_NUMBER);
+                phoneNumber.setText(phoneNumberString);
+                nextButton.performClick();
+            }
+        }
     }
 
     @Override
@@ -165,6 +174,11 @@ public class LoginPhoneNumberFragment extends BaseDaggerFragment
                     .NORMAL_PROGRESS);
 
         progressDialog.showDialog();
+    }
+
+    @Override
+    public void onForbidden() {
+        ForbiddenActivity.startActivity(getActivity());
     }
 
     private ArrayList<MethodItem> getListVerificationMethod() {

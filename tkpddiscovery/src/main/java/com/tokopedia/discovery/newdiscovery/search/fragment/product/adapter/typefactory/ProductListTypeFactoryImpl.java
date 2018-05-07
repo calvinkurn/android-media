@@ -9,8 +9,10 @@ import com.tokopedia.discovery.newdiscovery.search.fragment.SearchSectionTypeFac
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.adapter.listener.ItemClickListener;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.adapter.viewholder.EmptySearchViewHolder;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.adapter.viewholder.GridProductItemViewHolder;
+import com.tokopedia.discovery.newdiscovery.search.fragment.product.adapter.viewholder.GuidedSearchViewHolder;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.adapter.viewholder.ListProductItemViewHolder;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.adapter.viewholder.HeaderViewHolder;
+import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.GuidedSearchViewModel;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.HeaderViewModel;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.adapter.viewholder.EmptyViewHolder;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.EmptySearchModel;
@@ -34,6 +36,11 @@ public class ProductListTypeFactoryImpl extends SearchSectionTypeFactoryImpl imp
     @Override
     public int type(HeaderViewModel headerViewModel) {
         return HeaderViewHolder.LAYOUT;
+    }
+
+    @Override
+    public int type(GuidedSearchViewModel guidedSearchViewModel) {
+        return GuidedSearchViewHolder.LAYOUT;
     }
 
     @Override
@@ -71,6 +78,8 @@ public class ProductListTypeFactoryImpl extends SearchSectionTypeFactoryImpl imp
             viewHolder = new HeaderViewHolder(view, itemClickListener, topAdsConfig);
         } else if (type == EmptySearchViewHolder.LAYOUT) {
             viewHolder = new EmptySearchViewHolder(view, itemClickListener, topAdsConfig);
+        } else if (type == GuidedSearchViewHolder.LAYOUT) {
+            viewHolder = new GuidedSearchViewHolder(view, itemClickListener);
         } else {
             viewHolder = super.createViewHolder(view, type);
         }

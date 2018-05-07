@@ -20,7 +20,6 @@ import com.tokopedia.core.network.entity.variant.Option;
 import com.tokopedia.core.network.entity.variant.ProductVariant;
 import com.tokopedia.core.network.entity.variant.Variant;
 import com.tokopedia.core.product.model.productdetail.ProductDetailData;
-import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.tkpdpdp.adapter.VariantOptionAdapter;
 
 import java.util.ArrayList;
@@ -60,12 +59,14 @@ public class VariantActivity extends TActivity  implements VariantOptionAdapter.
     private TextView selectedLevel2;
     private TextView sizeChartLevel1;
     private TextView sizeChartLevel2;
+    private TextView textStock;
 
     private VariantOptionAdapter variantOptionAdapterLevel2;
     private VariantOptionAdapter variantOptionAdapterLevel1;
 
     private ProductVariant productVariant;
     private ProductDetailData productDetailData;
+    private String mainImage = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -100,6 +101,7 @@ public class VariantActivity extends TActivity  implements VariantOptionAdapter.
         selectedLevel2 = findViewById(R.id.selected_variant_level2);
         sizeChartLevel1 = findViewById(R.id.sizechart_level1);
         sizeChartLevel2 = findViewById(R.id.sizechart_level2);
+        textStock = findViewById(R.id.text_variant_stock);
         ImageHandler.LoadImage(productImage, productDetailData.getProductImages().get(0).getImageSrc300());
         if (!TextUtils.isEmpty(productVariant.getSizechart()) &&
                 productVariant.getVariant().get(0).getIdentifier().equals(IDENTIFIER_SIZE)) {
@@ -265,6 +267,19 @@ public class VariantActivity extends TActivity  implements VariantOptionAdapter.
             defaultChild = productVariant.getChildFromProductId(productVariant.getDefaultChild());
         }
 
+        if (defaultChild != null && TextUtils.isEmpty(defaultChild.getPicture().getThumbnail())) {
+            mainImage = new String (productDetailData.getProductImages().get(0).getImageSrc());
+        } else if (productDetailData.getProductImages().size()>1) {
+            mainImage = new String (productDetailData.getProductImages().get(1).getImageSrc());
+        }
+
+        for (Child child: productVariant.getChildren()) {
+            if (TextUtils.isEmpty(child.getPicture().getThumbnail())) {
+                child.getPicture().setThumbnail(mainImage);
+                child.getPicture().setOriginal(mainImage);
+            }
+        }
+
         if (defaultChild!=null && defaultChild.getOptionIds() != null && defaultChild.getOptionIds().size()>0) {
             int option1 = defaultChild.getOptionIds().get(0);
             if (getIntent().getParcelableExtra(KEY_LEVEL1_SELECTED) != null
@@ -365,11 +380,22 @@ public class VariantActivity extends TActivity  implements VariantOptionAdapter.
         }
         Child child = getProductDatumSelected();
         if (child!=null) {
+            if(child.isEnabled()){
+                if(child.isLimitedStock()){
+                    textStock.setTextColor(ContextCompat.getColor(VariantActivity.this, R.color.tkpd_dark_red));
+                } else {
+                    textStock.setTextColor(ContextCompat.getColor(VariantActivity.this, R.color.black_70));
+                }
+                textStock.setText(child.getStockWording());
+                textStock.setVisibility(View.VISIBLE);
+            }
             productDetailData.getInfo().setProductId(child.getProductId());
             productDetailData.getInfo().setProductName(child.getName());
             productDetailData.getInfo().setProductPrice(child.getPriceFmt());
             productDetailData.getInfo().setProductUrl(child.getUrl());
             productDetailData.getInfo().setProductAlreadyWishlist(child.isWishlist()?1:0);
+            productDetailData.getInfo().setProductStockWording(child.getStockWording());
+            productDetailData.getInfo().setLimitedStock(child.isLimitedStock());
             productDetailData.setCampaign(child.getCampaign());
             if (!TextUtils.isEmpty(child.getPicture().getThumbnail()))  {
                 productDetailData.getProductImages().get(0).setImageSrc300(child.getPicture().getThumbnail());
@@ -393,9 +419,9 @@ public class VariantActivity extends TActivity  implements VariantOptionAdapter.
             setResult(VariantActivity.SELECTED_VARIANT_RESULT, generateExtraSelectedIntent());
         } else {
             Intent intent = new Intent();
-            intent.putExtra(KEY_PRODUCT_DETAIL_DATA,productDetailData);
-            intent.putExtra(KEY_VARIANT_DATA,productVariant);
-            setResult(VariantActivity.SELECTED_VARIANT_RESULT,intent);
+            intent.putExtra(KEY_PRODUCT_DETAIL_DATA, productDetailData);
+            intent.putExtra(KEY_VARIANT_DATA, productVariant);
+            setResult(VariantActivity.SELECTED_VARIANT_RESULT, intent);
         }
         finish();
         VariantActivity.this.overridePendingTransition(0,com.tokopedia.core.R.anim.push_down);

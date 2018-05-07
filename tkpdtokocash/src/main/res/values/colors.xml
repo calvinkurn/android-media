@@ -11,4 +11,8 @@
 
     <color name="grey_text">#61000000</color>
     <color name="grey_nonactive_text">#42000000</color>
+    <color name="bg_white_activation">#e0e0e0</color>
+    <color name="text_grey_activation">#a6a6a6</color>
+    <color name="separator_activation">#f1f1f1</color>
+
 </resources>

@@ -9,14 +9,13 @@ import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
 import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
-import com.tokopedia.core.people.activity.PeopleInfoNoDrawerActivity;
 import com.tokopedia.core.router.TkpdInboxRouter;
 import com.tokopedia.core.util.PagingHandler;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.inbox.R;
 import com.tokopedia.inbox.inboxchat.ChatWebSocketListenerImpl;
 import com.tokopedia.inbox.inboxchat.activity.ChatRoomActivity;
-import com.tokopedia.inbox.inboxchat.analytics.TopChatTrackingEventLabel;
+import com.tokopedia.inbox.inboxchat.analytics.TopChatAnalytics;
 import com.tokopedia.inbox.inboxchat.domain.usecase.DeleteMessageListUseCase;
 import com.tokopedia.inbox.inboxchat.domain.usecase.GetMessageListUseCase;
 import com.tokopedia.inbox.inboxchat.domain.usecase.SearchMessageUseCase;
@@ -46,6 +45,7 @@ import static com.tokopedia.inbox.inboxchat.domain.usecase.SearchMessageUseCase.
 public class InboxChatPresenter extends BaseDaggerPresenter<InboxChatContract.View>
         implements InboxChatContract.Presenter, InboxMessageConstant {
 
+    private final SessionHandler sessionHandler;
     private GetMessageListUseCase getMessageListUseCase;
     private SearchMessageUseCase searchMessageUseCase;
     private DeleteMessageListUseCase deleteMessageListUseCase;
@@ -67,10 +67,12 @@ public class InboxChatPresenter extends BaseDaggerPresenter<InboxChatContract.Vi
     @Inject
     InboxChatPresenter(GetMessageListUseCase getMessageListUseCase,
                        SearchMessageUseCase searchMessageUseCase,
-                       DeleteMessageListUseCase deleteMessageListUseCase) {
+                       DeleteMessageListUseCase deleteMessageListUseCase,
+                       SessionHandler sessionHandler) {
         this.getMessageListUseCase = getMessageListUseCase;
         this.searchMessageUseCase = searchMessageUseCase;
         this.deleteMessageListUseCase = deleteMessageListUseCase;
+        this.sessionHandler = sessionHandler;
     }
 
     @Override
@@ -255,9 +257,9 @@ public class InboxChatPresenter extends BaseDaggerPresenter<InboxChatContract.Vi
         ws.close(1000, "");
         getView().dropKeyboard();
 
-        UnifyTracking.eventOpenTopChat(TopChatTrackingEventLabel.Category.INBOX_CHAT,
-                TopChatTrackingEventLabel.Action.INBOX_CHAT_CLICK,
-                TopChatTrackingEventLabel.Name.INBOX_CHAT);
+        UnifyTracking.eventOpenTopChat(TopChatAnalytics.Category.INBOX_CHAT,
+                TopChatAnalytics.Action.INBOX_CHAT_CLICK,
+                TopChatAnalytics.Name.INBOX_CHAT);
 
         getView().getAdapter().notifyItemChanged(position);
         Intent intent = ChatRoomActivity.getCallingIntent(getView().getActivity(),
@@ -277,9 +279,12 @@ public class InboxChatPresenter extends BaseDaggerPresenter<InboxChatContract.Vi
     }
 
     public void goToProfile(int userId) {
-        getView().startActivity(
-                PeopleInfoNoDrawerActivity.createInstance(getView().getActivity(), String.valueOf(userId))
-        );
+        if (getView().getActivity().getApplicationContext() instanceof TkpdInboxRouter) {
+            getView().startActivity(
+                    ((TkpdInboxRouter) getView().getActivity().getApplicationContext())
+                            .getTopProfileIntent(getView().getActivity(), String.valueOf(userId))
+            );
+        }
     }
 
     public void goToShop(int shopId) {
@@ -401,6 +406,10 @@ public class InboxChatPresenter extends BaseDaggerPresenter<InboxChatContract.Vi
         try {
             Request request = new Request.Builder().url(magicString)
                     .header("Origin", TkpdBaseURL.WEB_DOMAIN)
+                    .header("Accounts-Authorization",
+                            sessionHandler.getTokenType(getView().getContext())
+                                    + " " +
+                                    sessionHandler.getAuthAccessToken())
                     .build();
             ws = client.newWebSocket(request, listener);
             attempt++;

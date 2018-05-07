@@ -18,6 +18,9 @@ public class ModeList {
     @SerializedName("after_otp_list_text")
     @Expose
     private String afterOtpListText;
+    @SerializedName("after_otp_list_text_html")
+    @Expose
+    private String newAfterOtpListText;
     @SerializedName("otp_list_img_url")
     @Expose
     private String otpListImgUrl;
@@ -62,4 +65,11 @@ public class ModeList {
         this.otpListImgUrl = otpListImgUrl;
     }
 
+    public String getNewAfterOtpListText() {
+        return newAfterOtpListText;
+    }
+
+    public void setNewAfterOtpListText(String newAfterOtpListText) {
+        this.newAfterOtpListText = newAfterOtpListText;
+    }
 }

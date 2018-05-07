@@ -5,41 +5,41 @@ import java.util.List;
 
 public class Group {
 
-    private Integer id;
-    private Integer productId;
-    private Integer productScheduleId;
+    private int id;
+    private int productId;
+    private int productScheduleId;
     private String providerGroupId;
     private String name;
     private String description;
     private String tnc;
     private String providerMetaData;
-    private Integer status;
+    private int status;
     private String createdAt;
     private String updatedAt;
 
     private List<Package> packages = null;
 
-    public Integer getId() {
+    public int getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(int id) {
         this.id = id;
     }
 
-    public Integer getProductId() {
+    public int getProductId() {
         return productId;
     }
 
-    public void setProductId(Integer productId) {
+    public void setProductId(int productId) {
         this.productId = productId;
     }
 
-    public Integer getProductScheduleId() {
+    public int getProductScheduleId() {
         return productScheduleId;
     }
 
-    public void setProductScheduleId(Integer productScheduleId) {
+    public void setProductScheduleId(int productScheduleId) {
         this.productScheduleId = productScheduleId;
     }
 
@@ -83,11 +83,11 @@ public class Group {
         this.providerMetaData = providerMetaData;
     }
 
-    public Integer getStatus() {
+    public int getStatus() {
         return status;
     }
 
-    public void setStatus(Integer status) {
+    public void setStatus(int status) {
         this.status = status;
     }
 

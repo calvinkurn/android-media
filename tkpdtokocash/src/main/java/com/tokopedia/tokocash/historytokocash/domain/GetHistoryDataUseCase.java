@@ -26,6 +26,6 @@ public class GetHistoryDataUseCase extends UseCase<TokoCashHistoryData> {
 
     @Override
     public Observable<TokoCashHistoryData> createObservable(RequestParams requestParams) {
-        return walletRepository.getTokoCashHistoryData(requestParams.getParameters());
+        return walletRepository.getTokoCashHistoryData(requestParams.getParamsAllValueInString());
     }
 }

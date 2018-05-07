@@ -30,8 +30,6 @@ public class EventsContract {
 
         RequestParams getParams();
 
-        int getBannerPosition();
-
         android.view.View getRootView();
 
         void showProgressBar();
@@ -55,5 +53,7 @@ public class EventsContract {
         void onBannerSlide(int page);
 
         boolean onOptionMenuClick(int id);
+
+        public String getSCREEN_NAME();
     }
 }

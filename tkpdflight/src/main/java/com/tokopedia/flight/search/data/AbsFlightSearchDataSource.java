@@ -50,4 +50,8 @@ public class AbsFlightSearchDataSource extends DataSource<FlightDataResponse<Lis
     public Observable<FlightSearchSingleRouteDB> getSingleFlight(String id) {
         return absFlightSearchDataDBSource.find(id);
     }
+
+    public Observable<Boolean> isDataAvailable() {
+        return absFlightSearchDataDBSource.isDataAvailable();
+    }
 }

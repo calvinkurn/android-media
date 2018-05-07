@@ -13,7 +13,6 @@ import android.widget.TextView;
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.core.R;
 import com.tokopedia.core.app.TkpdCoreRouter;
-import com.tokopedia.core.people.activity.PeopleInfoNoDrawerActivity;
 import com.tokopedia.core.reputationproduct.util.ReputationLevelUtils;
 import com.tokopedia.core.talkview.fragment.TalkViewFragment;
 import com.tokopedia.core.talkview.method.DeleteTalkDialog;
@@ -120,9 +119,12 @@ public class ProductTalkViewAdapter extends TalkViewAdapter{
                     Intent intent = tkpdCoreRouter.getShopPageIntent(context, talk.getCommentShopId());
                     context.startActivity(intent);
                 } else {
-                    context.startActivity(
-                            PeopleInfoNoDrawerActivity.createInstance(context, String.valueOf(talk.getCommentUserId()))
-                    );
+                    if (context.getApplicationContext() instanceof TkpdCoreRouter) {
+                        context.startActivity(
+                                ((TkpdCoreRouter) context.getApplicationContext())
+                                        .getTopProfileIntent(context,
+                                                String.valueOf(talk.getCommentUserId())));
+                    }
                 }
             }
         });

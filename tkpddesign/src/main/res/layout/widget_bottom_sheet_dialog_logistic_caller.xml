@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              xmlns:tools="http://schemas.android.com/tools"
-              android:layout_width="match_parent"
-              android:layout_height="wrap_content"
-              android:orientation="vertical"
-              android:padding="20dp">
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:padding="20dp">
 
     <TextView
         android:id="@+id/tv_title"
@@ -29,7 +30,7 @@
             android:layout_width="35dp"
             android:layout_height="35dp"
             android:padding="5dp"
-            android:src="@drawable/ic_phone_black_36dp"
+            app:srcCompat="@drawable/ic_phone_black_36dp"
             tools:ignore="ContentDescription"/>
 
         <TextView
@@ -57,7 +58,7 @@
             android:layout_width="35dp"
             android:layout_height="35dp"
             android:padding="5dp"
-            android:src="@drawable/ic_textsms_action"
+            app:srcCompat="@drawable/ic_textsms_action"
             tools:ignore="ContentDescription"/>
 
         <TextView

@@ -78,4 +78,12 @@ public interface ManagePeopleProfileFragmentView {
     void finishActivity();
 
     void startChangePhoneNumber();
+
+    void showDialogChangePhoneNumberEmptyEmail();
+
+    void startAddEmailActivity();
+
+    void startChangeNameActivity();
+
+    void storeImageToUserSession(String userImage);
 }

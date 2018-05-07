@@ -1,4 +1,4 @@
-package com.tokopedia.core;
+package com.tokopedia.tkpd;
 
 /**
  * To work on unit tests, switch the Test Artifact in the Build Variants view.

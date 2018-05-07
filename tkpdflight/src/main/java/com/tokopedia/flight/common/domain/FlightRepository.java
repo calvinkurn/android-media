@@ -8,6 +8,9 @@ import com.tokopedia.flight.booking.data.cloud.requestbody.FlightCartRequest;
 import com.tokopedia.flight.dashboard.data.cloud.entity.flightclass.FlightClassEntity;
 import com.tokopedia.flight.orderlist.data.cloud.entity.SendEmailEntity;
 import com.tokopedia.flight.orderlist.domain.model.FlightOrder;
+import com.tokopedia.flight.passenger.data.cloud.requestbody.DeletePassengerRequest;
+import com.tokopedia.flight.passenger.data.cloud.requestbody.UpdatePassengerRequest;
+import com.tokopedia.flight.passenger.data.db.model.FlightPassengerDb;
 import com.tokopedia.flight.review.data.model.AttributesVoucher;
 import com.tokopedia.flight.review.data.model.FlightCheckoutEntity;
 import com.tokopedia.flight.review.domain.checkout.FlightCheckoutRequest;
@@ -21,6 +24,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import retrofit2.Response;
 import rx.Observable;
 
 /**
@@ -31,6 +35,8 @@ public interface FlightRepository {
     Observable<List<FlightAirportDB>> getAirportList(String query);
 
     Observable<FlightAirportDB> getAirportById(String aiport);
+
+    Observable<FlightAirportDB> getAirportWithParam(Map<String, String> params);
 
     Observable<List<FlightAirportDB>> getAirportList(String query, String idCountry);
 
@@ -79,4 +85,22 @@ public interface FlightRepository {
     Observable<FlightAirlineDB> getAirlineById(String airlineId);
 
     Observable<SendEmailEntity> sendEmail(Map<String, Object> params);
+
+    Observable<Boolean> isSearchCacheExpired(boolean isReturn);
+
+    Observable<List<FlightPassengerDb>> getPassengerList(String passengerId);
+
+    Observable<FlightPassengerDb> getSinglePassengerById(String passengerId);
+
+    Observable<Boolean> updateIsSelected(String passengerId, int isSelected);
+
+    Observable<Boolean> deleteAllListPassenger();
+
+    Observable<Boolean> deletePassenger(DeletePassengerRequest request, String idempotencyKey);
+
+    Observable<Boolean> updatePassengerListData(UpdatePassengerRequest request, String idempotencyKey);
+
+    Observable<List<FlightAirlineDB>> refreshAirlines();
+
+    Observable<FlightAirlineDB> getAirlineCacheById(String airlineId);
 }

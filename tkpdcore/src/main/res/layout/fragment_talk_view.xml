@@ -1,4 +1,5 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/main"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -86,7 +87,7 @@
             android:paddingLeft="@dimen/padding_small"
             android:paddingTop="@dimen/padding_small"
             android:paddingBottom="@dimen/padding_small"
-            android:src="@drawable/ic_action_attachment" />
+            app:srcCompat="@drawable/ic_action_attachment" />
 
 
         <EditText
@@ -110,7 +111,7 @@
             android:layout_centerVertical="true"
             android:layout_gravity="center"
             android:padding="@dimen/padding_small"
-            android:src="@drawable/ic_send_24dp_green" />
+            app:srcCompat="@drawable/ic_send_24dp_green" />
 
 
     </RelativeLayout>

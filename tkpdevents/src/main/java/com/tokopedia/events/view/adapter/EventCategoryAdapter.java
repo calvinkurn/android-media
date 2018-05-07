@@ -11,9 +11,11 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.tkpd.library.utils.ImageHandler;
+import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.events.R;
 import com.tokopedia.events.view.activity.EventDetailsActivity;
 import com.tokopedia.events.view.utils.CurrencyUtil;
+import com.tokopedia.events.view.utils.EventsGAConst;
 import com.tokopedia.events.view.utils.Utils;
 import com.tokopedia.events.view.viewmodel.CategoryItemsViewModel;
 
@@ -27,6 +29,7 @@ public class EventCategoryAdapter extends RecyclerView.Adapter<EventCategoryAdap
 
     private List<CategoryItemsViewModel> categoryItems;
     private Context context;
+    private boolean isTrackingEnabled = false;
 
     public EventCategoryAdapter(Context context, List<CategoryItemsViewModel> categoryItems) {
         this.context = context;
@@ -42,7 +45,8 @@ public class EventCategoryAdapter extends RecyclerView.Adapter<EventCategoryAdap
         public TextView eventTime;
         public LinearLayout eventTimeLayout;
         public TextView tvDisplayTag;
-        int index;
+        private int index;
+        private boolean isShown = false;
 
         public ViewHolder(View itemLayoutView) {
             super(itemLayoutView);
@@ -65,6 +69,13 @@ public class EventCategoryAdapter extends RecyclerView.Adapter<EventCategoryAdap
             return this.index;
         }
 
+        public boolean isShown() {
+            return isShown;
+        }
+
+        public void setShown(boolean shown) {
+            isShown = shown;
+        }
     }
 
     @Override
@@ -89,10 +100,11 @@ public class EventCategoryAdapter extends RecyclerView.Adapter<EventCategoryAdap
         holder.eventTitle.setText(model.getDisplayName());
         holder.eventPrice.setText("Rp" + " " + CurrencyUtil.convertToCurrencyString(model.getSalesPrice()));
         holder.eventLocation.setText(model.getCityName());
+        holder.setShown(model.isTrack());
         if (model.getMinStartDate() == 0) {
             holder.eventTimeLayout.setVisibility(View.GONE);
         } else {
-            if (model.getMinStartDate().equals(model.getMaxEndDate()))
+            if (model.getMinStartDate() == model.getMaxEndDate())
                 holder.eventTime.setText(Utils.convertEpochToString(model.getMinStartDate()));
             else
                 holder.eventTime.setText(Utils.convertEpochToString(model.getMinStartDate())
@@ -114,6 +126,22 @@ public class EventCategoryAdapter extends RecyclerView.Adapter<EventCategoryAdap
         holder.itemView.setOnClickListener(listener);
     }
 
+    @Override
+    public void onViewAttachedToWindow(ViewHolder holder) {
+        super.onViewAttachedToWindow(holder);
+        if (!holder.isShown() && isTrackingEnabled) {
+            holder.setShown(true);
+            categoryItems.get(holder.getIndex()).setTrack(true);
+            UnifyTracking.eventDigitalEventTracking(EventsGAConst.EVENT_PRODUCT_IMPRESSION, categoryItems.get(holder.getIndex()).getTitle()
+                    + " - " + holder.getIndex());
+        }
+    }
+
+    @Override
+    public void onAttachedToRecyclerView(RecyclerView recyclerView) {
+        super.onAttachedToRecyclerView(recyclerView);
+    }
+
     class CategoryItemViewListener implements View.OnClickListener {
 
         ViewHolder mViewHolder;
@@ -128,7 +156,17 @@ public class EventCategoryAdapter extends RecyclerView.Adapter<EventCategoryAdap
             detailsIntent.putExtra(EventDetailsActivity.FROM, EventDetailsActivity.FROM_HOME_OR_SEARCH);
             detailsIntent.putExtra("homedata", categoryItems.get(mViewHolder.getIndex()));
             context.startActivity(detailsIntent);
+            UnifyTracking.eventDigitalEventTracking(EventsGAConst.EVENT_PRODUCT_CLICK, categoryItems.get(mViewHolder.getIndex()).getTitle()
+                    + "-" + String.valueOf(mViewHolder.getIndex()));
         }
+    }
+
+    public void enableTracking() {
+        isTrackingEnabled = true;
+    }
+
+    public void disableTracking() {
+        isTrackingEnabled = false;
     }
 
 }

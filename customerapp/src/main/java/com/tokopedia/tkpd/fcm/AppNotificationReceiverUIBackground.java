@@ -5,10 +5,10 @@ import android.app.Application;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v4.content.LocalBroadcastManager;
 import android.text.TextUtils;
 
 import com.tkpd.library.utils.CommonUtils;
-import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.gcm.NotificationReceivedListener;
@@ -25,10 +25,11 @@ import com.tokopedia.core.gcm.notification.promotions.PromoNotification;
 import com.tokopedia.core.gcm.notification.promotions.WishlistNotification;
 import com.tokopedia.core.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.core.remoteconfig.RemoteConfig;
-import com.tokopedia.core.router.TkpdInboxRouter;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.inbox.inboxchat.ChatNotifInterface;
+import com.tokopedia.pushnotif.ApplinkNotificationHelper;
+import com.tokopedia.pushnotif.PushNotification;
 import com.tokopedia.ride.deeplink.RidePushNotificationBuildAndShow;
 import com.tokopedia.tkpd.deeplink.DeeplinkHandlerActivity;
 import com.tokopedia.tkpd.fcm.applink.ApplinkBuildAndShowNotification;
@@ -50,11 +51,6 @@ import com.tokopedia.tkpd.fcm.notification.ResCenterBuyerReplyNotification;
 import java.util.Map;
 
 import rx.Observable;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action1;
-import rx.functions.Actions;
-import rx.functions.Func1;
-import rx.schedulers.Schedulers;
 
 import static com.tokopedia.core.gcm.Constants.ARG_NOTIFICATION_CODE;
 
@@ -75,34 +71,29 @@ public class AppNotificationReceiverUIBackground extends BaseAppNotificationRece
     }
 
     @Override
-    public void notifyReceiverBackgroundMessage(Observable<Bundle> data) {
-        data.map(new Func1<Bundle, Boolean>() {
-            @Override
-            public Boolean call(Bundle bundle) {
-                if (isAllowedNotification(bundle)) {
-                    mFCMCacheManager.setCache();
-                    //TODO this function for divide the new and old flow(that still supported)
-                    // next if complete new plz to delete
-                    if (isSupportedApplinkNotification(bundle)) {
-                        handleApplinkNotification(bundle);
+    public void notifyReceiverBackgroundMessage(Bundle bundle) {
+        if (isAllowedNotification(bundle)) {
+            mFCMCacheManager.setCache();
+            if (isApplinkNotification(bundle)) {
+                PushNotification.notify(mContext, bundle);
+            } else {
+                //TODO this function for divide the new and old flow(that still supported)
+                // next if complete new plz to delete
+                if (isSupportedApplinkNotification(bundle)) {
+                    handleApplinkNotification(bundle);
+                } else {
+                    if (isDedicatedNotification(bundle)) {
+                        handleDedicatedNotification(bundle);
                     } else {
-                        if (isDedicatedNotification(bundle)) {
-                            handleDedicatedNotification(bundle);
-                        } else {
-                            prepareAndExecutePromoNotification(bundle);
-                        }
+                        prepareAndExecutePromoNotification(bundle);
                     }
                 }
-                return true;
             }
-        }).subscribeOn(Schedulers.newThread())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(Actions.empty(), new Action1<Throwable>() {
-                    @Override
-                    public void call(Throwable throwable) {
-                        throwable.printStackTrace();
-                    }
-                });
+        }
+    }
+
+    private boolean isApplinkNotification(Bundle data) {
+        return !data.getString(Constants.ARG_NOTIFICATION_APPLINK, "").equals("");
     }
 
     private boolean isAllowedNotification(Bundle data) {
@@ -115,10 +106,9 @@ public class AppNotificationReceiverUIBackground extends BaseAppNotificationRece
 
     private void handleApplinkNotification(Bundle data) {
         if (data.getString(Constants.ARG_NOTIFICATION_APPLINK_LOGIN_REQUIRED, "false").equals("true")) {
-            if (SessionHandler.isV4Login(mContext)
-                    && SessionHandler.getLoginID(mContext).equals(
+            if (SessionHandler.getLoginID(mContext).equals(
                     data.getString(Constants.ARG_NOTIFICATION_TARGET_USER_ID))
-                    ) {
+            ) {
                 resetNotificationStatus(data);
                 prepareAndExecuteApplinkNotification(data);
                 refreshUI(data);
@@ -134,27 +124,18 @@ public class AppNotificationReceiverUIBackground extends BaseAppNotificationRece
     }
 
     private void prepareAndExecuteApplinkNotification(Bundle data) {
+
+        if (canBroadcastPointReceived(
+                data.getString(Constants.ARG_NOTIFICATION_CODE, "0"))) {
+            broadcastPointReceived(data);
+        }
+
         if (!isRefreshCart(data)) {
             String applinks = data.getString(Constants.ARG_NOTIFICATION_APPLINK);
             String category = Uri.parse(applinks).getHost();
             String customIndex = "";
             String serverId = "";
             switch (category) {
-                case Constants.ARG_NOTIFICATION_APPLINK_MESSAGE:
-                    if (!remoteConfig.getBoolean(TkpdInboxRouter.ENABLE_TOPCHAT)) {
-                        customIndex = data.getString(Constants.ARG_NOTIFICATION_APPLINK_MESSAGE_CUSTOM_INDEX);
-                        if (!TextUtils.isEmpty(Uri.parse(applinks).getLastPathSegment())) {
-                            serverId = Uri.parse(applinks).getLastPathSegment();
-                        }
-                        saveApplinkPushNotification(
-                                category,
-                                convertBundleToJsonString(data),
-                                customIndex,
-                                serverId,
-                                new SavePushNotificationCallback()
-                        );
-                    }
-                    break;
                 case Constants.ARG_NOTIFICATION_APPLINK_DISCUSSION:
                     customIndex = data.getString(Constants.ARG_NOTIFICATION_APPLINK_DISCUSSION_CUSTOM_INDEX);
                     if (!TextUtils.isEmpty(Uri.parse(applinks).getLastPathSegment())) {
@@ -179,18 +160,18 @@ public class AppNotificationReceiverUIBackground extends BaseAppNotificationRece
                     break;
 
                 case Constants.ARG_NOTIFICATION_APPLINK_TOPCHAT:
-                    if (remoteConfig.getBoolean(TkpdInboxRouter.ENABLE_TOPCHAT)) {
-                        if (mActivitiesLifecycleCallbacks.getLiveActivityOrNull() != null
-                                && mActivitiesLifecycleCallbacks.getLiveActivityOrNull() instanceof ChatNotifInterface) {
-                            ((ChatNotifInterface) mActivitiesLifecycleCallbacks.getLiveActivityOrNull()).onGetNotif(data);
-                        } else {
-                            String applink = data.getString(Constants.ARG_NOTIFICATION_APPLINK);
-                            String fullname = data
-                                    .getString("full_name");
-                            applink += "?" + "fullname=" + fullname;
-                            data.putString(Constants.ARG_NOTIFICATION_APPLINK, applink);
-                            buildNotifByData(data);
-                        }
+                    if (mActivitiesLifecycleCallbacks.getLiveActivityOrNull() != null
+                            && mActivitiesLifecycleCallbacks.getLiveActivityOrNull() instanceof ChatNotifInterface) {
+                        ((ChatNotifInterface) mActivitiesLifecycleCallbacks.getLiveActivityOrNull()).onGetNotif(data);
+                    } else {
+                        String applink = data.getString(Constants.ARG_NOTIFICATION_APPLINK);
+                        String fullname = data.getString("full_name");
+
+                            applink = String.format("%s?fullname=%s", applink, fullname);
+
+                        data.putString(Constants.ARG_NOTIFICATION_APPLINK, applink);
+                        buildNotifByData(data);
+
                     }
                     break;
                 case Constants.ARG_NOTIFICATION_APPLINK_SELLER_INFO:
@@ -203,6 +184,21 @@ public class AppNotificationReceiverUIBackground extends BaseAppNotificationRece
                     break;
             }
         }
+    }
+
+    private boolean canBroadcastPointReceived(String tkpCode) {
+        final String GROUP_CHAT_BROADCAST_TKP_CODE = "140";
+        final String GROUP_CHAT_BROADCAST_TKP_CODE_GENERAL = "1400";
+
+        return tkpCode.startsWith(GROUP_CHAT_BROADCAST_TKP_CODE)
+                && !tkpCode.equals(GROUP_CHAT_BROADCAST_TKP_CODE_GENERAL);
+    }
+
+    private void broadcastPointReceived(Bundle data) {
+        Intent loyaltyGroupChat = new Intent(com.tokopedia.abstraction.constant
+                .TkpdState.LOYALTY_GROUP_CHAT);
+        loyaltyGroupChat.putExtras(data);
+        LocalBroadcastManager.getInstance(mContext).sendBroadcast(loyaltyGroupChat);
     }
 
     private void buildNotifByData(Bundle data) {
@@ -226,7 +222,7 @@ public class AppNotificationReceiverUIBackground extends BaseAppNotificationRece
     private void refreshUI(Bundle data) {
         if (!mActivitiesLifecycleCallbacks.isAppOnBackground()) {
             Activity currentActivity = mActivitiesLifecycleCallbacks.getLiveActivityOrNull();
-            if(currentActivity != null && currentActivity instanceof NotificationReceivedListener) {
+            if (currentActivity != null && currentActivity instanceof NotificationReceivedListener) {
                 NotificationReceivedListener listener = (NotificationReceivedListener) currentActivity;
                 listener.onGetNotif();
                 if (isRefreshCart(data)) {
@@ -268,7 +264,7 @@ public class AppNotificationReceiverUIBackground extends BaseAppNotificationRece
     }
 
     private void prepareAndExecuteDedicatedNotification(Bundle data) {
-        if (!isRefreshCart(data)){
+        if (!isRefreshCart(data)) {
             Map<Integer, Visitable> visitables = getCommonDedicatedNotification();
             visitables.put(TkpdState.GCMServiceState.GCM_REPUTATION_SMILEY_TO_BUYER, new ReputationSmileyToBuyerNotification(mContext));
             visitables.put(TkpdState.GCMServiceState.GCM_REPUTATION_EDIT_SMILEY_TO_BUYER, new ReputationSmileyToBuyerEditNotification(mContext));

@@ -52,25 +52,24 @@ public class HomePresenter extends BaseDaggerPresenter<HomeContract.View> implem
 
     private static final String TAG = HomePresenter.class.getSimpleName();
     private static final String CURSOR_NO_NEXT_PAGE_FEED = "CURSOR_NO_NEXT_PAGE_FEED";
-
+    private final Context context;
+    protected CompositeSubscription compositeSubscription;
+    protected Subscription subscription;
     @Inject
     GetLocalHomeDataUseCase localHomeDataUseCase;
     @Inject
     GetHomeDataUseCase getHomeDataUseCase;
     @Inject
     GetHomeFeedsUseCase getHomeFeedsUseCase;
-
-
     private SessionHandler sessionHandler;
-    protected CompositeSubscription compositeSubscription;
-    protected Subscription subscription;
-    private final Context context;
     private GetShopInfoRetrofit getShopInfoRetrofit;
     private String currentCursor = "";
     private PagingHandler pagingHandler;
     private HomeFeedListener feedListener;
-
     private HeaderViewModel headerViewModel;
+    private boolean fetchFirstData;
+    private long REQUEST_DELAY = 180000;// 3 minutes
+    private static long lastRequestTime;
 
     public HomePresenter(Context context) {
         this.context = context;
@@ -93,7 +92,49 @@ public class HomePresenter extends BaseDaggerPresenter<HomeContract.View> implem
     private Observable<List<Visitable>> getDataFromNetwork() {
         return getHomeDataUseCase.getExecuteObservable(RequestParams.EMPTY)
                 .subscribeOn(Schedulers.newThread())
+                .unsubscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
+    }
+
+    @Override
+    public void onFirstLaunch() {
+        this.fetchFirstData = true;
+    }
+
+    @Override
+    public void onResume() {
+        boolean needRefresh = (lastRequestTime + REQUEST_DELAY < System.currentTimeMillis());
+        if (isViewAttached() && !this.fetchFirstData && needRefresh) {
+            updateHomeData();
+        }
+    }
+
+    @Override
+    public void updateHomeData() {
+        subscription = getHomeDataUseCase.getExecuteObservable(RequestParams.EMPTY)
+                .subscribeOn(Schedulers.io())
+                .unsubscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Subscriber<List<Visitable>>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+
+                    }
+
+                    @Override
+                    public void onNext(List<Visitable> visitables) {
+                        if (isViewAttached()) {
+                            getView().updateListOnResume(visitables);
+                        }
+                        lastRequestTime = System.currentTimeMillis();
+                    }
+                });
+        compositeSubscription.add(subscription);
     }
 
     @Override
@@ -101,10 +142,11 @@ public class HomePresenter extends BaseDaggerPresenter<HomeContract.View> implem
         initHeaderViewModelData();
         subscription = localHomeDataUseCase.getExecuteObservable(RequestParams.EMPTY)
                 .subscribeOn(Schedulers.io())
+                .unsubscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnNext(refreshData())
                 .onErrorResumeNext(getDataFromNetwork())
-                .subscribe(new HomeDataSubscriber());
+                .subscribe(createHomeDataSubscriber());
         compositeSubscription.add(subscription);
     }
 
@@ -112,7 +154,6 @@ public class HomePresenter extends BaseDaggerPresenter<HomeContract.View> implem
         if (SessionHandler.isV4Login(context)) {
             if (headerViewModel == null) {
                 headerViewModel = new HeaderViewModel();
-                headerViewModel.setType(HeaderViewModel.TYPE_EMPTY);
             }
             headerViewModel.setPendingTokocashChecked(false);
         }
@@ -123,18 +164,33 @@ public class HomePresenter extends BaseDaggerPresenter<HomeContract.View> implem
         return new Action1<List<Visitable>>() {
             @Override
             public void call(List<Visitable> visitables) {
-                compositeSubscription.add(getDataFromNetwork().subscribe(new HomeDataSubscriber()));
+                compositeSubscription.add(getDataFromNetwork().subscribe(createHomeDataSubscriber()));
             }
         };
+    }
+
+    private HomeDataSubscriber createHomeDataSubscriber() {
+        return new HomeDataSubscriber(this);
     }
 
     @Override
     public void updateHeaderTokoCashData(HomeHeaderWalletAction homeHeaderWalletAction) {
         if (headerViewModel == null) {
             headerViewModel = new HeaderViewModel();
-            headerViewModel.setType(HeaderViewModel.TYPE_EMPTY);
         }
+        headerViewModel.setWalletDataSuccess();
         headerViewModel.setHomeHeaderWalletActionData(homeHeaderWalletAction);
+        getView().updateHeaderItem(headerViewModel);
+    }
+
+    @Override
+    public void onHeaderTokocashErrorFromBroadcast() {
+        if (headerViewModel == null) {
+            headerViewModel = new HeaderViewModel();
+        }
+
+        headerViewModel.setWalletDataError();
+        headerViewModel.setHomeHeaderWalletActionData(null);
         getView().updateHeaderItem(headerViewModel);
     }
 
@@ -142,8 +198,8 @@ public class HomePresenter extends BaseDaggerPresenter<HomeContract.View> implem
     public void updateHeaderTokoCashPendingData(CashBackData cashBackData) {
         if (headerViewModel == null) {
             headerViewModel = new HeaderViewModel();
-            headerViewModel.setType(HeaderViewModel.TYPE_EMPTY);
         }
+        headerViewModel.setWalletDataSuccess();
         headerViewModel.setCashBackData(cashBackData);
         headerViewModel.setPendingTokocashChecked(true);
         getView().updateHeaderItem(headerViewModel);
@@ -153,12 +209,49 @@ public class HomePresenter extends BaseDaggerPresenter<HomeContract.View> implem
     public void updateHeaderTokoPointData(TokoPointDrawerData tokoPointDrawerData) {
         if (headerViewModel == null) {
             headerViewModel = new HeaderViewModel();
-            headerViewModel.setType(HeaderViewModel.TYPE_EMPTY);
         }
+        headerViewModel.setTokoPointDataSuccess();
         headerViewModel.setTokoPointDrawerData(tokoPointDrawerData);
         getView().updateHeaderItem(headerViewModel);
     }
 
+    @Override
+    public void onHeaderTokopointErrorFromBroadcast() {
+        if (headerViewModel == null) {
+            headerViewModel = new HeaderViewModel();
+        }
+        headerViewModel.setTokoPointDataError();
+        headerViewModel.setTokoPointDrawerData(null);
+        getView().updateHeaderItem(headerViewModel);
+    }
+
+    @Override
+    public void onRefreshTokoPoint() {
+        Intent intentGetTokoPoint = new Intent(TokoPointDrawerBroadcastReceiverConstant.INTENT_ACTION_MAIN_APP);
+        if (headerViewModel == null) {
+            headerViewModel = new HeaderViewModel();
+        }
+        headerViewModel.setTokoPointDataSuccess();
+        headerViewModel.setTokoPointDrawerData(null);
+        getView().updateHeaderItem(headerViewModel);
+        context.sendBroadcast(intentGetTokoPoint);
+    }
+
+    @Override
+    public void onRefreshTokoCash() {
+        if (!SessionHandler.isV4Login(context)) return;
+        Intent intentGetTokocash = new Intent(DrawerActivityBroadcastReceiverConstant.INTENT_ACTION_MAIN_APP);
+        intentGetTokocash.putExtra(DrawerActivityBroadcastReceiverConstant.EXTRA_ACTION_RECEIVER,
+                DrawerActivityBroadcastReceiverConstant.ACTION_RECEIVER_GET_TOKOCASH_DATA);
+
+        if (headerViewModel == null) {
+            headerViewModel = new HeaderViewModel();
+        }
+        headerViewModel.setWalletDataSuccess();
+        headerViewModel.setHomeHeaderWalletActionData(null);
+        getView().updateHeaderItem(headerViewModel);
+        context.sendBroadcast(intentGetTokocash);
+    }
 
     @Override
     public void getShopInfo(final String url, String shopDomain) {
@@ -295,61 +388,108 @@ public class HomePresenter extends BaseDaggerPresenter<HomeContract.View> implem
         return !CURSOR_NO_NEXT_PAGE_FEED.equals(currentCursor);
     }
 
-    private class HomeDataSubscriber extends Subscriber<List<Visitable>> {
+    public HeaderViewModel getHeaderViewModel() {
+        return headerViewModel;
+    }
 
-        public HomeDataSubscriber() {
+    public void setFetchFirstData(boolean fetchFirstData) {
+        this.fetchFirstData = fetchFirstData;
+    }
+
+    public boolean isLogin() {
+        return SessionHandler.isV4Login(context);
+    }
+
+    public void showNetworkError() {
+        getView().showNetworkError(context.getString(R.string.msg_network_error));
+    }
+
+    private static class HomeDataSubscriber extends Subscriber<List<Visitable>> {
+
+        HomePresenter homePresenter;
+
+        public HomeDataSubscriber(HomePresenter homePresenter) {
+            this.homePresenter = homePresenter;
         }
 
         @Override
         public void onStart() {
-            if (isViewAttached()) {
-                getView().showLoading();
+            if (homePresenter != null && homePresenter.isViewAttached()) {
+                homePresenter.getView().showLoading();
             }
         }
 
         @Override
         public void onCompleted() {
-            if (isViewAttached()) {
-                getView().hideLoading();
+            if (homePresenter != null && homePresenter.isViewAttached()) {
+                homePresenter.getView().hideLoading();
+                homePresenter.setFetchFirstData(false);
+                homePresenter = null;
             }
         }
 
         @Override
         public void onError(Throwable e) {
-            if (isViewAttached()) {
-                getView().showNetworkError(ErrorHandler.getErrorMessage(e));
+            if (homePresenter != null && homePresenter.isViewAttached()) {
+                homePresenter.getView().showNetworkError(ErrorHandler.getErrorMessage(e));
                 onCompleted();
             }
         }
 
         @Override
         public void onNext(List<Visitable> visitables) {
-            if (isViewAttached()) {
-                if (SessionHandler.isV4Login(context) && headerViewModel != null) {
-                    visitables.add(0, headerViewModel);
+            if (homePresenter != null && homePresenter.isViewAttached()) {
+                if (homePresenter.isLogin() && homePresenter.getHeaderViewModel() != null) {
+                    visitables.add(0, homePresenter.getHeaderViewModel());
                 }
-                getView().setItems(visitables);
-                if (isDataValid(visitables)) {
-                    getView().removeNetworkError();
+                homePresenter.getView().setItems(visitables);
+                if (visitables.size() > 0) {
+                    homePresenter.getView().showRecomendationButton();
+                }
+                if (homePresenter.isDataValid(visitables)) {
+                    homePresenter.getView().removeNetworkError();
                 } else {
-                    getView().showNetworkError(context.getString(R.string.msg_network_error));
+                    homePresenter.showNetworkError();
                 }
             }
-        }
-
-        private boolean isDataValid(List<Visitable> visitables) {
-            return containsInstance(visitables, BannerViewModel.class);
-        }
-
-        public <E> boolean containsInstance(List<E> list, Class<? extends E> clazz) {
-            for (E e : list) {
-                if (clazz.isInstance(e)) {
-                    return true;
-                }
-            }
-            return false;
+            lastRequestTime = System.currentTimeMillis();
         }
 
     }
 
+    private boolean isDataValid(List<Visitable> visitables) {
+        return containsInstance(visitables, BannerViewModel.class);
+    }
+
+    public <E> boolean containsInstance(List<E> list, Class<? extends E> clazz) {
+        for (E e : list) {
+            if (clazz.isInstance(e)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    @Override
+    public void onDestroy() {
+        unsubscribeAllUseCase();
+    }
+
+    private void unsubscribeAllUseCase(){
+        if(getHomeDataUseCase != null){
+            getHomeFeedsUseCase.unsubscribe();
+        }
+
+        if(getHomeFeedsUseCase != null){
+            getHomeFeedsUseCase.unsubscribe();
+        }
+
+        if(localHomeDataUseCase != null){
+            localHomeDataUseCase.unsubscribe();
+        }
+
+        if(subscription != null){
+            subscription.unsubscribe();
+        }
+    }
 }

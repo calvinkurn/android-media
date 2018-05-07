@@ -7,6 +7,7 @@ import com.google.android.gms.tagmanager.DataLayer;
 import com.tkpd.library.utils.CurrencyFormatHelper;
 import com.tokopedia.core.analytics.SearchTracking;
 import com.tokopedia.core.base.adapter.Visitable;
+import com.tokopedia.core.network.apiservices.ace.apis.BrowseApi;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.adapter.typefactory.ProductListTypeFactory;
 
 import java.util.ArrayList;
@@ -154,6 +155,10 @@ public class ProductItem implements Parcelable, Visitable<ProductListTypeFactory
         return labelList;
     }
 
+    public int getPageNumber() {
+        return (position - 1) / Integer.parseInt(BrowseApi.DEFAULT_VALUE_OF_PARAMETER_ROWS) + 1;
+    }
+
     public int getPosition() {
         return position;
     }
@@ -175,10 +180,22 @@ public class ProductItem implements Parcelable, Visitable<ProductListTypeFactory
                 "name", getProductName(),
                 "id", getProductID(),
                 "price", Integer.toString(CurrencyFormatHelper.convertRupiahToInt(getPrice())),
-                "brand", "",
+                "brand", "none / other",
+                "category", "none / other",
+                "variant", "none / other",
+                "list", SearchTracking.getActionFieldString(getPageNumber()),
+                "position", Integer.toString(getPosition()),
+                "userId", userId
+        );
+    }
+
+    public Object getProductAsObjectDataLayerForImageSearch(String userId) {
+        return DataLayer.mapOf(
+                "name", getProductName(),
+                "id", getProductID(),
+                "price", Integer.toString(CurrencyFormatHelper.convertRupiahToInt(getPrice())),
                 "category", "",
-                "variant", "",
-                "list", SearchTracking.ACTION_FIELD,
+                "list", String.format(SearchTracking.imageClick, getPosition()),
                 "position", Integer.toString(getPosition()),
                 "userId", userId
         );

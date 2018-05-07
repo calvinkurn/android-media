@@ -5,6 +5,7 @@ import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.network.entity.discovery.BrowseCatalogModel;
 import com.tokopedia.core.network.entity.discovery.BrowseProductModel;
 import com.tokopedia.core.network.entity.discovery.BrowseShopModel;
+import com.tokopedia.core.network.entity.discovery.GuidedSearchResponse;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 
 import java.util.Map;
@@ -32,6 +33,7 @@ public interface BrowseApi {
     String DEFAULT_VALUE_SOURCE_PRODUCT = "search_product";
     String DEFAULT_VALUE_SOURCE_CATALOG = "search_catalog";
     String DEFAULT_VALUE_SOURCE_SHOP = "search_shop";
+    String DEFAULT_VALUE_SOURCE_QUICK_FILTER = "quick_filter";
     String DEFAULT_VALUE_OF_PARAMETER_TERM = "true";
     String DEFAULT_VALUE_OF_PARAMETER_BREADCRUMB = "false";
     String DEFAULT_VALUE_OF_PARAMETER_START = "0";
@@ -57,6 +59,7 @@ public interface BrowseApi {
     String SEARCH_V1_SHOP = "v1/shop";
     String SEARCH_V1_CATALOG = "v1/catalog";
     String SEARCH_V2_CATALOG = "v2.1/catalog";
+    String GUIDE_V1 = "guide/v1";
     String DEVICE = "device";
     String START = "start";
     String ROWS = "rows";
@@ -226,4 +229,8 @@ public interface BrowseApi {
             @QueryMap TKPDMapParam<String, Object> parameters
     );
 
+    @GET(GUIDE_V1)
+    Observable<Response<GuidedSearchResponse>> getGuidedSearch(
+            @Query(Q) String query
+    );
 }

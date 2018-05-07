@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_gravity="center"
-    android:background="@color/tkpd_bg_color"
+    android:background="@color/white"
     android:descendantFocusability="blocksDescendants">
 
     <com.tokopedia.core.customwidget.SwipeToRefresh
@@ -17,10 +18,11 @@
             android:id="@+id/recycler_view"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginBottom="@dimen/margin_small"
-            android:layout_marginTop="@dimen/margin_small"
+            android:layout_marginBottom="@dimen/dp_10"
+            android:layout_marginTop="@dimen/dp_10"
             android:clipToPadding="false"
-            android:scrollbars="vertical" />
+            android:scrollbars="vertical"
+            android:paddingTop="@dimen/dp_10"/>
     </com.tokopedia.core.customwidget.SwipeToRefresh>
 
 
@@ -29,13 +31,13 @@
         android:layout_width="@dimen/label_new_feed_width"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="@dimen/margin_sm"
+        android:layout_marginTop="@dimen/dp_15"
         android:layout_gravity="center_horizontal"
         android:background="@drawable/label_new_feed"
+        android:elevation="@dimen/cardview_default_elevation"
         android:gravity="center"
         android:orientation="horizontal"
-        android:padding="@dimen/padding_vs"
-        android:elevation="@dimen/cardview_default_elevation"
+        android:padding="@dimen/dp_5"
         android:visibility="gone"
         tools:visibility="visible">
 
@@ -44,15 +46,15 @@
             android:layout_width="@dimen/arrow_size"
             android:layout_height="@dimen/arrow_size"
             android:layout_gravity="center_vertical"
-            android:layout_marginRight="@dimen/margin_sm"
-            android:src="@drawable/ic_arrow_up_green" />
+            android:layout_marginRight="@dimen/dp_15"
+            app:srcCompat="@drawable/ic_arrow_up_green" />
 
         <TextView
             android:id="@+id/new_feed"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/you_have_new_feed"
             android:fontFamily="sans-serif"
+            android:text="@string/you_have_new_feed"
             android:textColor="@color/medium_green"
             android:textSize="@dimen/fontvs" />
     </LinearLayout>

@@ -21,9 +21,9 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import java.util.Random;
 import java.util.TimeZone;
 
@@ -100,25 +100,35 @@ public class Utils {
         if (source != null) {
             SearchViewModel searchModelItem;
             for (CategoryViewModel item : source) {
-                List<CategoryItemsViewModel> sourceModels = item.getItems();
-                for (CategoryItemsViewModel sourceItem : sourceModels) {
-                    if (sourceItem.getIsTop() == 1) {
-                        searchModelItem = new SearchViewModel();
-                        searchModelItem.setCityName(sourceItem.getCityName());
-                        searchModelItem.setDisplayName(sourceItem.getDisplayName());
-                        searchModelItem.setImageApp(sourceItem.getImageApp());
-                        searchModelItem.setMaxEndDate(sourceItem.getMaxEndDate());
-                        searchModelItem.setMinStartDate(sourceItem.getMinStartDate());
-                        searchModelItem.setSalesPrice(sourceItem.getSalesPrice());
-                        searchModelItem.setTitle(sourceItem.getTitle());
-                        searchModelItem.setUrl(sourceItem.getUrl());
-                        searchViewModels.add(searchModelItem);
+                if (item.getItems() != null) {
+                    List<CategoryItemsViewModel> sourceModels = item.getItems();
+                    for (CategoryItemsViewModel sourceItem : sourceModels) {
+                        if (sourceItem.getIsTop() == 1 && !isPresent(searchViewModels, sourceItem.getTitle())) {
+                            searchModelItem = new SearchViewModel();
+                            searchModelItem.setCityName(sourceItem.getCityName());
+                            searchModelItem.setDisplayName(sourceItem.getDisplayName());
+                            searchModelItem.setImageApp(sourceItem.getImageApp());
+                            searchModelItem.setMaxEndDate(sourceItem.getMaxEndDate());
+                            searchModelItem.setMinStartDate(sourceItem.getMinStartDate());
+                            searchModelItem.setSalesPrice(sourceItem.getSalesPrice());
+                            searchModelItem.setTitle(sourceItem.getTitle());
+                            searchModelItem.setUrl(sourceItem.getUrl());
+                            searchViewModels.add(searchModelItem);
+                        }
                     }
                 }
 
             }
         }
         return searchViewModels;
+    }
+
+    private boolean isPresent(ArrayList<SearchViewModel> searchViewModels, String title) {
+        for (SearchViewModel viewModel : searchViewModels) {
+            if (viewModel.getTitle().equals(title))
+                return true;
+        }
+        return false;
     }
 
     public List<SearchViewModel> convertSearchResultsToModel(List<CategoryItemsViewModel> categoryItemsViewModels) {
@@ -176,7 +186,7 @@ public class Utils {
 
 
     public static String convertEpochToString(int time) {
-        SimpleDateFormat sdf = new SimpleDateFormat("EEE, d MMM yyyy");
+        SimpleDateFormat sdf = new SimpleDateFormat("EEEE, d MMM yyyy", new Locale("in", "ID", ""));
         sdf.setTimeZone(TimeZone.getTimeZone("Asia/Jakarta"));
         Long epochTime = time * 1000L;
         Date date = new Date(epochTime);

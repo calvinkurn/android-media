@@ -25,7 +25,7 @@ import com.tkpd.library.ui.expandablelayout.ExpandableRelativeLayout;
 import com.tkpd.library.ui.utilities.DatePickerUtil;
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tokopedia.core.R;
-import com.tokopedia.core.R2;
+
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.SnackbarRetry;
 import com.tokopedia.seller.selling.SellingService;

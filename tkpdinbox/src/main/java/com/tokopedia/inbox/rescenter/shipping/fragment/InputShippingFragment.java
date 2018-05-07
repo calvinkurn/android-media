@@ -24,6 +24,7 @@ import android.widget.TextView;
 import com.tkpd.library.utils.ImageHandler;
 import com.tkpd.library.utils.KeyboardHandler;
 import com.tokopedia.core.R2;
+import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.database.model.AttachmentResCenterVersion2DB;
 import com.tokopedia.core.network.NetworkErrorHelper;
@@ -39,6 +40,7 @@ import com.tokopedia.inbox.rescenter.shipping.model.ResCenterKurir;
 import com.tokopedia.inbox.rescenter.shipping.presenter.InputShippingFragmentImpl;
 import com.tokopedia.inbox.rescenter.shipping.presenter.InputShippingFragmentPresenter;
 import com.tokopedia.inbox.rescenter.shipping.view.InputShippingFragmentView;
+import com.tokopedia.inbox.util.analytics.InboxAnalytics;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -96,6 +98,12 @@ public class InputShippingFragment extends BasePresenterFragment<InputShippingFr
 
     @OnClick(R2.id.confirm_button)
     public void setOnConfirmButtonClick() {
+        if (paramsModel.isFromChat()) {
+            if (paramsModel.isEdit())
+                UnifyTracking.eventTracking(InboxAnalytics.eventResoChatClickSaveEditAWB(paramsModel.getResolutionID()));
+            else
+                UnifyTracking.eventTracking(InboxAnalytics.eventResoChatClickSaveInputAWB(paramsModel.getResolutionID()));
+        }
         presenter.onConfirrmButtonClick();
     }
 

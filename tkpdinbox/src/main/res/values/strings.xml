@@ -65,6 +65,7 @@
     <string name="error_reply_discussion_resolution_reach_max">Maksimal video yg dapat diupload 1 buah</string>
     <string name="error_reply_discussion_resolution_not_support">Extensi file belum disupport</string>
     <string name="error_reply_discussion_resolution_file_not_allowed">Maaf, file Extension tidak disupport</string>
+    <string name="error_reply_discussion_resolution_version_minimum">Mohon maaf device Anda tidak dapat menggunakan fitur ini</string>
     <string name="error_reply_discussion_resolution_reach_max_size_video">Maksimum ukuran file adalah 20mb</string>
     <string name="error_reply_discussion_resolution_reach_max_size_image">Maksimum ukuran gambar adalah 15mb</string>
     <string name="error_reply_discussion_resolution_min_size">Ukuran panjang dan lebar minimal adalah 300px</string>
@@ -302,4 +303,20 @@ yang ditemukan</string>
     <string name="string_other_products">Produk Lainnya</string>
     <string name="date_error_overflow">Tidak dapat memilih tanggal melebihi hari ini.</string>
     <string name="date_error">Tanggal yang dipilih tidak valid.</string>
+
+    <string name="string_attach_product_add_product_now">Tambah Produk Sekarang</string>
+    <string name="string_attach_product_empty_product">Toko Anda belum memiliki produk</string>
+    <string name="string_attach_product_warning_max_product_format">Maksimal melampirkan %1$s produk</string>
+    <string name="string_attach_product_send_button_text">Kirim (%1$s/%2$s)</string>
+    <string name="string_attach_product_search_placeholder_text">Cari produk di semua etalase</string>
+    <string name="string_attach_product_activity_title">Lampirkan Produk</string>
+
+    <string name="string_attach_invoice_activity_title">Pilih Transaksi</string>
+
+    <string name="title_personal">Personal</string>
+    <string name="title_community">Channel</string>
+    <string name="chat_title">Chat ( %d )</string>
+
+    <!-- attach invoice -->
+    <string name="total_invoice">Total: </string>
 </resources>

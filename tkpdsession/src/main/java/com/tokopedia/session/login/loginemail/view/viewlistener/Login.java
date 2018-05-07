@@ -6,8 +6,8 @@ import android.support.v4.app.Fragment;
 
 import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
-import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
+import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
 import com.tokopedia.core.profile.model.GetUserInfoDomainData;
 import com.tokopedia.session.data.viewmodel.SecurityDomain;
 import com.tokopedia.session.register.view.subscriber.registerinitial.GetFacebookCredentialSubscriber;
@@ -57,8 +57,6 @@ public interface Login {
 
         void setSmartLock();
 
-        void resetToken();
-
         void onErrorLogin(String errorMessage, int codeError);
 
         void onGoToActivationPage(String email);
@@ -72,6 +70,8 @@ public interface Login {
         void disableArrow();
 
         void enableArrow();
+
+        void onForbidden();
     }
 
     interface Presenter extends CustomerPresenter<View> {
@@ -92,6 +92,5 @@ public interface Login {
 
         void loginFacebook(AccessToken accessToken, String email);
 
-        void resetToken();
     }
 }

@@ -58,6 +58,7 @@ public class GoogleMapPresenterImpl implements GoogleMapPresenter, LocationListe
     private final RetrofitInteractor retrofitInteractor;
     private final GoogleApiClient googleApiClient;
     private final LocationRequest locationRequest;
+    private final boolean hasLocation;
 
     private Context context;
 
@@ -66,7 +67,11 @@ public class GoogleMapPresenterImpl implements GoogleMapPresenter, LocationListe
 
     private LocationPass locationPass;
 
-    public GoogleMapPresenterImpl(Context context, GoogleMapFragment googleMapFragment, LocationPass locationPass) {
+    public GoogleMapPresenterImpl(
+            Context context,
+            GoogleMapFragment googleMapFragment,
+            LocationPass locationPass,
+            boolean hasLocation) {
         this.context = context;
         this.view = googleMapFragment;
         this.retrofitInteractor = new RetrofitInteractorImpl();
@@ -82,7 +87,8 @@ public class GoogleMapPresenterImpl implements GoogleMapPresenter, LocationListe
                 .build();
         this.isAllowGenerateAddress = true;
         this.locationPass = locationPass;
-        if(locationPass!=null)
+        this.hasLocation = hasLocation;
+        if(hasLocation)
         {
             Location location = new Location(LocationManager.NETWORK_PROVIDER);
             location.setLatitude(Double.parseDouble(locationPass.getLatitude()));
@@ -93,7 +99,7 @@ public class GoogleMapPresenterImpl implements GoogleMapPresenter, LocationListe
 
     @Override
     public void onLocationChanged(Location location) {
-        Log.d(TAG, "onLocationChanged");
+        Log.d(TAG, "PORING onLocationChanged");
         view.moveMap(GeoLocationUtils.generateLatLng(location.getLatitude(), location.getLongitude()));
         LocationCache.saveLocation(context, location);
         removeLocationUpdate();
@@ -109,8 +115,6 @@ public class GoogleMapPresenterImpl implements GoogleMapPresenter, LocationListe
     }
 
     private void getExistingLocation() {
-        checkLocationSettings();
-        setExistingLocationState(true);
         view.moveMap(GeoLocationUtils.generateLatLng(locationPass.getLatitude(), locationPass.getLongitude()));
     }
 
@@ -307,7 +311,7 @@ public class GoogleMapPresenterImpl implements GoogleMapPresenter, LocationListe
 
     @Override
     public void prepareDetailDestination(View rootview) {
-        if (locationPass != null) {
+        if (hasLocation) {
             if (locationPass.getManualAddress() == null) {
                 view.hideDetailDestination();
             } else {
@@ -321,7 +325,7 @@ public class GoogleMapPresenterImpl implements GoogleMapPresenter, LocationListe
 
     @Override
     public void onMapReady() {
-        if (locationPass == null) {
+        if (!hasLocation) {
             getNewLocation();
         } else {
             getExistingLocation();
@@ -393,4 +397,5 @@ public class GoogleMapPresenterImpl implements GoogleMapPresenter, LocationListe
             }
         };
     }
+
 }

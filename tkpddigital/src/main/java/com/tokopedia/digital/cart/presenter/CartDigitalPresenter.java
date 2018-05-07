@@ -4,18 +4,18 @@ import android.support.annotation.NonNull;
 import android.text.TextUtils;
 import android.util.Log;
 
-import com.google.firebase.FirebaseApp;
-import com.google.firebase.iid.FirebaseInstanceId;
-import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
 import com.tokopedia.core.analytics.TrackingUtils;
+import com.tokopedia.core.analytics.UnifyTracking;
+import com.tokopedia.core.analytics.nishikino.model.GTMCart;
+import com.tokopedia.core.analytics.nishikino.model.Product;
 import com.tokopedia.core.network.exception.HttpErrorException;
 import com.tokopedia.core.network.exception.ResponseDataNullException;
 import com.tokopedia.core.network.exception.ResponseErrorException;
 import com.tokopedia.core.network.retrofit.utils.ErrorNetMessage;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
-import com.tokopedia.core.util.BranchSdkUtils;
 import com.tokopedia.core.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.core.remoteconfig.RemoteConfig;
+import com.tokopedia.core.util.BranchSdkUtils;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.digital.R;
@@ -28,6 +28,7 @@ import com.tokopedia.digital.cart.data.entity.requestbody.checkout.Data;
 import com.tokopedia.digital.cart.data.entity.requestbody.checkout.Relationships;
 import com.tokopedia.digital.cart.data.entity.requestbody.checkout.RequestBodyCheckout;
 import com.tokopedia.digital.cart.data.entity.requestbody.otpcart.RequestBodyOtpSuccess;
+import com.tokopedia.digital.cart.data.entity.requestbody.voucher.RequestBodyCancelVoucher;
 import com.tokopedia.digital.cart.interactor.ICartDigitalInteractor;
 import com.tokopedia.digital.cart.listener.IDigitalCartView;
 import com.tokopedia.digital.cart.model.CartDigitalInfoData;
@@ -43,18 +44,17 @@ import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.locks.ReentrantLock;
 
 import rx.Subscriber;
 
 import static com.tokopedia.digital.cart.model.NOTPExotelVerification.FIREBASE_NOTP_REMOTE_CONFIG_KEY;
-import static com.tokopedia.digital.cart.model.NOTPExotelVerification.FIREBASE_NOTP_TEST_REMOTE_CONFIG_KEY;
 
 /**
  * @author anggaprasetiyo on 2/24/17.
  */
 
 public class CartDigitalPresenter implements ICartDigitalPresenter {
+
     private static final String TAG = CartDigitalPresenter.class.getSimpleName();
     private final IDigitalCartView view;
     private final ICartDigitalInteractor cartDigitalInteractor;
@@ -165,6 +165,56 @@ public class CartDigitalPresenter implements ICartDigitalPresenter {
     @Override
     public void callPermissionCheckFail() {
         view.interruptRequestTokenVerification();
+    }
+
+    @Override
+    public void sendAnalyticsATCSuccess(CartDigitalInfoData cartDigitalInfoData) {
+        Product product = new Product();
+        String productName = cartDigitalInfoData.getAttributes().getOperatorName() + " " +
+        cartDigitalInfoData.getAttributes().getPrice();
+        product.setProductName(productName);
+        product.setProductID(cartDigitalInfoData.getRelationships().getRelationProduct().getData().getId()); // product digital id
+        product.setPrice(String.valueOf(cartDigitalInfoData.getAttributes().getPricePlain())); // price
+        product.setBrand(cartDigitalInfoData.getAttributes().getOperatorName()); // brand
+        product.setCategory(cartDigitalInfoData.getAttributes().getCategoryName()); // category
+        product.setVariant("none"); // variant
+        product.setQty("1"); // quantity
+        product.setShopId(cartDigitalInfoData.getRelationships().getRelationOperator().getData().getId()); // shop_id
+        // shop_type
+        // shop_name
+        product.setCategoryId(cartDigitalInfoData.getRelationships().getRelationCategory().getData().getId()); // category_id
+        product.setCartId(cartDigitalInfoData.getId()); // cart_id
+
+        GTMCart gtmCart = new GTMCart();
+        gtmCart.addProduct(product.getProduct());
+        gtmCart.setCurrencyCode("IDR");
+        gtmCart.setAddAction(GTMCart.ADD_ACTION);
+
+        UnifyTracking.eventATCSuccess(gtmCart);
+    }
+
+    @Override
+    public void onClearVoucher() {
+        RequestBodyCancelVoucher requestBodyCancelVoucher = new RequestBodyCancelVoucher();
+        com.tokopedia.digital.cart.data.entity.requestbody.voucher.Attributes attributes = new com.tokopedia.digital.cart.data.entity.requestbody.voucher.Attributes();
+        attributes.setIdentifier(view.getDigitalIdentifierParam());
+        requestBodyCancelVoucher.setAttributes(attributes);
+        cartDigitalInteractor.cancelVoucher(requestBodyCancelVoucher, new Subscriber<String>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                e.printStackTrace();
+            }
+
+            @Override
+            public void onNext(String s) {
+
+            }
+        });
     }
 
     @NonNull

@@ -63,7 +63,7 @@ public class CustomSeatAreaLayout extends LinearLayout {
         }
     }
 
-    public void addColumn(String text, int status, int maxTickets, int rowId, char rowName) {
+    public void addColumn(String text, int status, int maxTickets, int rowId, String rowName) {
         final CustomSeatLayout customSeatLayout = new CustomSeatLayout(getContext(), mPresenter, maxTickets, rowId, rowName);
         customSeatLayout.setText(text, status);
         seatTextLayout.addView(customSeatLayout);

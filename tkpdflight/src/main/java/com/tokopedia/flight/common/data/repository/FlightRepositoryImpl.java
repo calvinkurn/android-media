@@ -19,6 +19,10 @@ import com.tokopedia.flight.orderlist.data.cloud.entity.OrderEntity;
 import com.tokopedia.flight.orderlist.data.cloud.entity.SendEmailEntity;
 import com.tokopedia.flight.orderlist.domain.model.FlightOrder;
 import com.tokopedia.flight.orderlist.domain.model.FlightOrderMapper;
+import com.tokopedia.flight.passenger.data.FlightPassengerFactorySource;
+import com.tokopedia.flight.passenger.data.cloud.requestbody.DeletePassengerRequest;
+import com.tokopedia.flight.passenger.data.cloud.requestbody.UpdatePassengerRequest;
+import com.tokopedia.flight.passenger.data.db.model.FlightPassengerDb;
 import com.tokopedia.flight.review.data.FlightBookingDataSource;
 import com.tokopedia.flight.review.data.FlightCheckVoucheCodeDataSource;
 import com.tokopedia.flight.review.data.model.AttributesVoucher;
@@ -40,16 +44,16 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import retrofit2.Response;
 import rx.Observable;
-import rx.functions.Action1;
 import rx.functions.Func1;
+import rx.functions.Func2;
 
 /**
  * Created by zulfikarrahman on 10/25/17.
  */
 
 public class FlightRepositoryImpl implements FlightRepository {
-
     private BannerDataSource bannerDataSource;
     private FlightAirportDataListSource flightAirportDataListSource;
     private FlightAirlineDataListSource flightAirlineDataListSource;
@@ -64,6 +68,7 @@ public class FlightRepositoryImpl implements FlightRepository {
     private FlightAirportVersionDBSource flightAirportVersionDBSource;
     private FlightOrderDataSource flightOrderDataSource;
     private FlightOrderMapper flightOrderMapper;
+    private FlightPassengerFactorySource flightPassengerFactorySource;
 
     public FlightRepositoryImpl(BannerDataSource bannerDataSource,
                                 FlightAirportDataListSource flightAirportDataListSource,
@@ -78,7 +83,8 @@ public class FlightRepositoryImpl implements FlightRepository {
                                 FlightBookingDataSource flightBookingDataSource,
                                 FlightAirportVersionDBSource flightAirportVersionDBSource,
                                 FlightOrderDataSource flightOrderDataSource,
-                                FlightOrderMapper flightOrderMapper) {
+                                FlightOrderMapper flightOrderMapper,
+                                FlightPassengerFactorySource flightPassengerFactorySource) {
         this.bannerDataSource = bannerDataSource;
         this.flightAirportDataListSource = flightAirportDataListSource;
         this.flightAirlineDataListSource = flightAirlineDataListSource;
@@ -93,6 +99,7 @@ public class FlightRepositoryImpl implements FlightRepository {
         this.flightAirportVersionDBSource = flightAirportVersionDBSource;
         this.flightOrderDataSource = flightOrderDataSource;
         this.flightOrderMapper = flightOrderMapper;
+        this.flightPassengerFactorySource = flightPassengerFactorySource;
     }
 
     @Override
@@ -106,8 +113,27 @@ public class FlightRepositoryImpl implements FlightRepository {
     }
 
     @Override
-    public Observable<List<FlightAirportDB>> getAirportList(String query, String idCountry) {
-        return flightAirportDataListSource.getAirportList(query, idCountry);
+    public Observable<FlightAirportDB> getAirportWithParam(Map<String, String> params) {
+        return flightAirportDataListSource.getAirport(params);
+    }
+
+    @Override
+    public Observable<List<FlightAirportDB>> getAirportList(final String query, final String idCountry) {
+        if (query != null && query.length() > 0 && idCountry != null && idCountry.length() > 0) {
+            return flightAirportDataListSource.getAirportList(query, idCountry);
+        } else {
+            return flightAirportDataListSource.getAirportCount(query, idCountry)
+                    .flatMap(new Func1<Integer, Observable<List<FlightAirportDB>>>() {
+                        @Override
+                        public Observable<List<FlightAirportDB>> call(Integer airportTotal) {
+                            if (airportTotal == 0) {
+                                flightAirportDataListSource.deleteCache();
+                                flightAirlineDataListSource.setCacheExpired();
+                            }
+                            return flightAirportDataListSource.getAirportList(query, idCountry);
+                        }
+                    });
+        }
     }
 
     @Override
@@ -123,6 +149,29 @@ public class FlightRepositoryImpl implements FlightRepository {
     @Override
     public Observable<SendEmailEntity> sendEmail(Map<String, Object> params) {
         return flightOrderDataSource.sendEmail(params);
+    }
+
+    @Override
+    public Observable<Boolean> isSearchCacheExpired(boolean isReturn) {
+        if (isReturn) {
+            return flightSearchReturnDataListSource.isCacheExpired()
+                    .zipWith(flightSearchReturnDataListSource.isDataAvailable(),
+                            new Func2<Boolean, Boolean, Boolean>() {
+                                @Override
+                                public Boolean call(Boolean isExpired, Boolean isLocalDataAvailable) {
+                                    return isExpired && isLocalDataAvailable;
+                                }
+                            });
+        } else {
+            return flightSearchSingleDataListSource.isCacheExpired()
+                    .zipWith(flightSearchSingleDataListSource.isDataAvailable(),
+                            new Func2<Boolean, Boolean, Boolean>() {
+                                @Override
+                                public Boolean call(Boolean isExpired, Boolean isLocalDataAvailable) {
+                                    return isExpired && isLocalDataAvailable;
+                                }
+                            });
+        }
     }
 
     @Override
@@ -325,5 +374,45 @@ public class FlightRepositoryImpl implements FlightRepository {
     @Override
     public Observable<List<BannerDetail>> getBanners(Map<String, String> params) {
         return bannerDataSource.getBannerData(params);
+    }
+
+    @Override
+    public Observable<List<FlightPassengerDb>> getPassengerList(String passengerId) {
+        return flightPassengerFactorySource.getPassengerList(passengerId);
+    }
+
+    @Override
+    public Observable<FlightPassengerDb> getSinglePassengerById(String passengerId) {
+        return flightPassengerFactorySource.getSinglePassenger(passengerId);
+    }
+
+    @Override
+    public Observable<Boolean> updateIsSelected(String passengerId, int isSelected) {
+        return flightPassengerFactorySource.updateIsSelected(passengerId, isSelected);
+    }
+
+    @Override
+    public Observable<Boolean> deleteAllListPassenger() {
+        return flightPassengerFactorySource.deleteAllListPassenger();
+    }
+
+    @Override
+    public Observable<Boolean> deletePassenger(DeletePassengerRequest request, String idempotencyKey) {
+        return flightPassengerFactorySource.deletePassenger(request, idempotencyKey);
+    }
+
+    @Override
+    public Observable<Boolean> updatePassengerListData(UpdatePassengerRequest request, String idempotencyKey) {
+        return flightPassengerFactorySource.updatePassenger(request, idempotencyKey);
+    }
+
+    @Override
+    public Observable<List<FlightAirlineDB>> refreshAirlines() {
+        return flightAirlineDataListSource.getAirlineList();
+    }
+
+    @Override
+    public Observable<FlightAirlineDB> getAirlineCacheById(String airlineId) {
+        return flightAirlineDataListSource.getCacheAirline(airlineId);
     }
 }
