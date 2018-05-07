@@ -542,7 +542,7 @@ public class FlightDetailOrderPresenter extends BaseDaggerPresenter<FlightDetail
     private void countCancellationStatus(List<CancellationEntity> cancellationEntityList) {
         int numberOfProgress = 0;
         for (CancellationEntity item : cancellationEntityList) {
-            if (item.getStatus() == FlightCancellationStatus.PENDING) {
+            if (item.getStatus() == FlightCancellationStatus.PENDING || item.getStatus() == FlightCancellationStatus.REQUESTED) {
                 numberOfProgress++;
             }
         }
