@@ -494,6 +494,7 @@ public class FlightDetailOrderPresenter extends BaseDaggerPresenter<FlightDetail
                     flightOrderPassengerViewModel.getPassengerFirstName(), flightOrderPassengerViewModel.getPassengerLastName()));
             flightDetailPassenger.setPassengerType(flightOrderPassengerViewModel.getType());
             flightDetailPassenger.setInfoPassengerList(transformToSimpleModelPassenger(flightOrderPassengerViewModel.getAmenities()));
+            flightDetailPassenger.setPassengerStatus(flightOrderPassengerViewModel.getStatus());
             flightDetailPassengers.add(flightDetailPassenger);
         }
         return flightDetailPassengers;

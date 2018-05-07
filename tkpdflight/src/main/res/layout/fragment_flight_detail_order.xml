@@ -288,8 +288,7 @@
                 android:layout_height="wrap_content"
                 android:descendantFocusability="blocksDescendants"
                 android:nestedScrollingEnabled="false"
-                android:paddingLeft="@dimen/dp_20"
-                android:paddingRight="@dimen/dp_20" />
+                android:paddingBottom="@dimen/dp_16"/>
 
         </LinearLayout>
 

@@ -12,6 +12,7 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.flight.R;
 import com.tokopedia.flight.booking.constant.FlightBookingPassenger;
 import com.tokopedia.flight.booking.view.viewmodel.SimpleViewModel;
+import com.tokopedia.flight.cancellation.constant.FlightCancellationStatus;
 import com.tokopedia.flight.review.view.model.FlightDetailPassenger;
 
 import java.util.ArrayList;
@@ -24,6 +25,7 @@ import java.util.List;
 public class FlightBookingReviewPassengerViewHolder extends AbstractViewHolder<FlightDetailPassenger> {
     @LayoutRes
     public static int LAYOUT = R.layout.item_flight_review_passenger;
+    private View containerView;
     private ReviewPassengerDetailAdapter reviewPassengerDetailAdapter;
     private TextView passengerNumber;
     private TextView passengerName;
@@ -32,6 +34,12 @@ public class FlightBookingReviewPassengerViewHolder extends AbstractViewHolder<F
 
     @Override
     public void bind(FlightDetailPassenger flightDetailPassenger) {
+
+        if (shouldChangeBackground(flightDetailPassenger.getPassengerStatus())) {
+            containerView.setBackgroundColor(containerView.getContext()
+                    .getResources().getColor(R.color.background_apps));
+        }
+
         passengerNumber.setText(String.format("%d.", getAdapterPosition() + 1));
         passengerName.setText(flightDetailPassenger.getPassengerName());
         passengerCategory.setText(getPassengerType(flightDetailPassenger.getPassengerType()));
@@ -58,6 +66,8 @@ public class FlightBookingReviewPassengerViewHolder extends AbstractViewHolder<F
 
     public FlightBookingReviewPassengerViewHolder(View layoutView) {
         super(layoutView);
+
+        containerView = layoutView;
         passengerNumber = (TextView) layoutView.findViewById(R.id.passenger_number);
         passengerName = (TextView) layoutView.findViewById(R.id.passenger_name);
         passengerCategory = (TextView) layoutView.findViewById(R.id.passenger_category);
@@ -66,6 +76,16 @@ public class FlightBookingReviewPassengerViewHolder extends AbstractViewHolder<F
         recyclerViewPassengerDetail.setLayoutManager(new LinearLayoutManager(itemView.getContext()));
         reviewPassengerDetailAdapter = new ReviewPassengerDetailAdapter();
         recyclerViewPassengerDetail.setAdapter(reviewPassengerDetailAdapter);
+    }
+
+    private boolean shouldChangeBackground(int status) {
+        switch (status) {
+            case FlightCancellationStatus.PENDING : return true;
+            case FlightCancellationStatus.REFUNDED : return true;
+            case FlightCancellationStatus.ABORTED : return false;
+            case FlightCancellationStatus.REQUESTED : return false;
+            default: return false;
+        }
     }
 
     private class ReviewPassengerDetailAdapter extends RecyclerView.Adapter<PassengerDetailViewHolder> {
