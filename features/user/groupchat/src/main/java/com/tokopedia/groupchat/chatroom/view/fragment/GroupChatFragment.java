@@ -333,8 +333,9 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
                 pinnedMessageView.setVisibility(View.VISIBLE);
                 ImageHandler.loadImageCircle2(getActivity(), (ImageView)pinnedMessageView.findViewById(R.id.pinned_message_avatar)
                         , channelInfoViewModel.getAdminPicture(), R.drawable.ic_loading_toped_new);
-                ((TextView)pinnedMessageView.findViewById(R.id.chat_header).findViewById(R.id.nickname)).setText(channelInfoViewModel.getAdminName());
-                pinnedMessageView.findViewById(R.id.message);
+                ((TextView)pinnedMessageView.findViewById(R.id.chat_header).findViewById(R.id.nickname))
+                        .setText(channelInfoViewModel.getAdminName());
+                ((TextView)pinnedMessageView.findViewById(R.id.message)).setText(pinnedMessage.getMessage());
                 pinnedMessageView.findViewById(R.id.thumbnail);
             } else {
                 pinnedMessageView.setVisibility(View.GONE);

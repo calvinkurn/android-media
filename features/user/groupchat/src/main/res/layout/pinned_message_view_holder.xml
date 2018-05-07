@@ -62,9 +62,14 @@
                 android:textStyle="normal"
                 android:visibility="visible"
                 android:maxLines="1"
+                android:ellipsize="end"
                 tools:text="Wuuu baik om! Go Brazil go!"/>
 
         </RelativeLayout>
+
+        <android.support.v4.widget.Space
+            android:layout_width="@dimen/dp_8"
+            android:layout_height="wrap_content" />
 
         <ImageView
             android:id="@+id/thumbnail"
