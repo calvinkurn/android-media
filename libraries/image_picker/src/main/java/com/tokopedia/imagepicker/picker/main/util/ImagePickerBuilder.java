@@ -2,7 +2,7 @@ package com.tokopedia.imagepicker.picker.main.util;
 
 import com.tokopedia.imagepicker.picker.gallery.type.GalleryType;
 
-import static com.tokopedia.imagepicker.picker.main.util.ImageEditActionTypeDef.TYPE_CROP_ROTATE;
+import static com.tokopedia.imagepicker.picker.main.util.ImageEditActionTypeDef.ACTION_CROP_ROTATE;
 import static com.tokopedia.imagepicker.picker.main.util.ImagePickerTabTypeDef.TYPE_CAMERA;
 import static com.tokopedia.imagepicker.picker.main.util.ImagePickerTabTypeDef.TYPE_GALLERY;
 import static com.tokopedia.imagepicker.picker.main.util.ImagePickerTabTypeDef.TYPE_INSTAGRAM;
@@ -19,7 +19,7 @@ public enum ImagePickerBuilder {
             1,
             1,
             true,
-            new int[]{TYPE_CROP_ROTATE},
+            new int[]{ACTION_CROP_ROTATE},
             true);
 
     private @ImagePickerTabTypeDef

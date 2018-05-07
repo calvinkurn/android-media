@@ -31,7 +31,6 @@ import com.yalantis.ucrop.view.widget.HorizontalProgressWheelView;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Locale;
 
 /**
@@ -153,7 +152,7 @@ public class ImageEditorActivity extends BaseSimpleActivity implements ImagePick
             currentImageIndex = 0;
             edittedImagePaths = new ArrayList<>();
             isInEditMode = false;
-            currentEditActionType = ImageEditActionTypeDef.TYPE_CROP_ROTATE;
+            currentEditActionType = ImageEditActionTypeDef.ACTION_CROP_ROTATE;
         } else {
             currentImageIndex = savedInstanceState.getInt(SAVED_IMAGE_INDEX, 0);
             //noinspection unchecked
@@ -219,18 +218,18 @@ public class ImageEditorActivity extends BaseSimpleActivity implements ImagePick
         ImageEditPreviewFragment fragment = getCurrentFragment();
         if (fragment != null) {
             switch (currentEditActionType) {
-                case ImageEditActionTypeDef.TYPE_CROP:
-                case ImageEditActionTypeDef.TYPE_ROTATE:
-                case ImageEditActionTypeDef.TYPE_CROP_ROTATE:
+                case ImageEditActionTypeDef.ACTION_CROP:
+                case ImageEditActionTypeDef.ACTION_ROTATE:
+                case ImageEditActionTypeDef.ACTION_CROP_ROTATE:
                     fragment.cancelCropRotateImage();
                     break;
-                case ImageEditActionTypeDef.TYPE_WATERMARK:
+                case ImageEditActionTypeDef.ACTION_WATERMARK:
                     //TODO undo watermark here
                     break;
             }
 
         }
-        setupEditMode(false, ImageEditActionTypeDef.TYPE_CROP_ROTATE);
+        setupEditMode(false, ImageEditActionTypeDef.ACTION_CROP_ROTATE);
     }
 
     private void onSaveEditClicked() {
@@ -238,14 +237,14 @@ public class ImageEditorActivity extends BaseSimpleActivity implements ImagePick
             showCropLoading();
             ImageEditPreviewFragment fragment = getCurrentFragment();
             switch (currentEditActionType) {
-                case ImageEditActionTypeDef.TYPE_CROP:
-                case ImageEditActionTypeDef.TYPE_ROTATE:
-                case ImageEditActionTypeDef.TYPE_CROP_ROTATE:
+                case ImageEditActionTypeDef.ACTION_CROP:
+                case ImageEditActionTypeDef.ACTION_ROTATE:
+                case ImageEditActionTypeDef.ACTION_CROP_ROTATE:
                     if (fragment != null) {
                         fragment.saveEdittedImage();
                     }
                     break;
-                case ImageEditActionTypeDef.TYPE_WATERMARK:
+                case ImageEditActionTypeDef.ACTION_WATERMARK:
                     break;
             }
         }
@@ -297,7 +296,7 @@ public class ImageEditorActivity extends BaseSimpleActivity implements ImagePick
         refreshViewPager();
         imageEditThumbnailListWidget.notifyDataSetChanged();
 
-        setupEditMode(false, ImageEditActionTypeDef.TYPE_CROP_ROTATE);
+        setupEditMode(false, ImageEditActionTypeDef.ACTION_CROP_ROTATE);
     }
 
     private void refreshViewPager() {
@@ -373,16 +372,16 @@ public class ImageEditorActivity extends BaseSimpleActivity implements ImagePick
             }
             //TODO show other controls
             switch (editActionType) {
-                case ImageEditActionTypeDef.TYPE_CROP:
+                case ImageEditActionTypeDef.ACTION_CROP:
                     //currently not supported.
                     break;
-                case ImageEditActionTypeDef.TYPE_ROTATE:
+                case ImageEditActionTypeDef.ACTION_ROTATE:
                     //currently not supported.
                     break;
-                case ImageEditActionTypeDef.TYPE_WATERMARK:
+                case ImageEditActionTypeDef.ACTION_WATERMARK:
                     //currently not supported.
                     break;
-                case ImageEditActionTypeDef.TYPE_CROP_ROTATE:
+                case ImageEditActionTypeDef.ACTION_CROP_ROTATE:
                     hideAllControls();
                     setupRotateWidget();
                     layoutRotateWheel.setVisibility(View.VISIBLE);
