@@ -62,7 +62,7 @@ public class KolCommentHeaderViewHolder extends AbstractViewHolder<KolCommentHea
 
         badge.setVisibility(View.VISIBLE);
         comment.setText(MethodChecker.fromHtml(SPACE + getCommentText(element)));
-        UrlUtil.convertToClickableUrl(comment);
+        UrlUtil.convertTokopediaUrlToBeClickable(comment);
 
         if (element.isCanLoadMore())
             loadMore.setVisibility(View.VISIBLE);

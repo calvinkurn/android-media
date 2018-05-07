@@ -129,7 +129,7 @@ public class KolPostViewHolder extends AbstractViewHolder<KolPostViewModel> {
         }
 
         kolText.setText(getKolText(element));
-        UrlUtil.convertToClickableUrl(kolText);
+        UrlUtil.convertTokopediaUrlToBeClickable(kolText);
 
         if (element.isLiked()) {
             ImageHandler.loadImageWithIdWithoutPlaceholder(likeIcon, R.drawable.ic_thumb_green);
@@ -195,7 +195,7 @@ public class KolPostViewHolder extends AbstractViewHolder<KolPostViewModel> {
                 if (kolText.getText().toString().endsWith(kolText.getContext().getString(R
                         .string.read_more_english))) {
                     kolText.setText(MethodChecker.fromHtml(element.getReview()));
-                    UrlUtil.convertToClickableUrl(kolText);
+                    UrlUtil.convertTokopediaUrlToBeClickable(kolText);
                     element.setReviewExpanded(true);
                 }
             }
