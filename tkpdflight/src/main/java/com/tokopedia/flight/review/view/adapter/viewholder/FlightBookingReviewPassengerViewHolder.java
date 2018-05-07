@@ -1,6 +1,7 @@
 package com.tokopedia.flight.review.view.adapter.viewholder;
 
 import android.support.annotation.LayoutRes;
+import android.support.v7.widget.AppCompatTextView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -30,6 +31,7 @@ public class FlightBookingReviewPassengerViewHolder extends AbstractViewHolder<F
     private TextView passengerNumber;
     private TextView passengerName;
     private TextView passengerCategory;
+    private AppCompatTextView passengerCancellationStatus;
     private RecyclerView recyclerViewPassengerDetail;
 
     @Override
@@ -38,6 +40,7 @@ public class FlightBookingReviewPassengerViewHolder extends AbstractViewHolder<F
         if (shouldChangeBackground(flightDetailPassenger.getPassengerStatus())) {
             containerView.setBackgroundColor(containerView.getContext()
                     .getResources().getColor(R.color.background_apps));
+            passengerCancellationStatus.setVisibility(View.VISIBLE);
         }
 
         passengerNumber.setText(String.format("%d.", getAdapterPosition() + 1));
@@ -46,7 +49,7 @@ public class FlightBookingReviewPassengerViewHolder extends AbstractViewHolder<F
         if (flightDetailPassenger.getInfoPassengerList().size() > 0) {
             recyclerViewPassengerDetail.setVisibility(View.VISIBLE);
             reviewPassengerDetailAdapter.addData(flightDetailPassenger.getInfoPassengerList());
-        }else {
+        } else {
             recyclerViewPassengerDetail.setVisibility(View.GONE);
         }
     }
@@ -71,6 +74,7 @@ public class FlightBookingReviewPassengerViewHolder extends AbstractViewHolder<F
         passengerNumber = (TextView) layoutView.findViewById(R.id.passenger_number);
         passengerName = (TextView) layoutView.findViewById(R.id.passenger_name);
         passengerCategory = (TextView) layoutView.findViewById(R.id.passenger_category);
+        passengerCancellationStatus = layoutView.findViewById(R.id.txt_passenger_cancellation_status);
         recyclerViewPassengerDetail = (RecyclerView) layoutView.findViewById(R.id.recycler_view_passenger_detail);
 
         recyclerViewPassengerDetail.setLayoutManager(new LinearLayoutManager(itemView.getContext()));
@@ -80,11 +84,20 @@ public class FlightBookingReviewPassengerViewHolder extends AbstractViewHolder<F
 
     private boolean shouldChangeBackground(int status) {
         switch (status) {
-            case FlightCancellationStatus.PENDING : return true;
-            case FlightCancellationStatus.REFUNDED : return true;
-            case FlightCancellationStatus.ABORTED : return false;
-            case FlightCancellationStatus.REQUESTED : return false;
-            default: return false;
+            case FlightCancellationStatus.PENDING:
+                passengerCancellationStatus.setText(String.format(getString(
+                        R.string.flight_cancellation_passenger_status), "sedang di proses."));
+                return true;
+            case FlightCancellationStatus.REFUNDED:
+                passengerCancellationStatus.setText(String.format(getString(
+                        R.string.flight_cancellation_passenger_status), "sedang di proses."));
+                return true;
+            case FlightCancellationStatus.ABORTED:
+                return false;
+            case FlightCancellationStatus.REQUESTED:
+                return false;
+            default:
+                return false;
         }
     }
 
