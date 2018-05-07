@@ -49,7 +49,7 @@ public class DefaultAutoCompleteViewHolder extends AbstractViewHolder<DefaultAut
             switch (searchData.getId()) {
                 case "recent_search":
                     adapter.addAll(
-                            insertTitle(
+                            insertTitleWithDeleteAll(
                                     prepareRecentSearch(searchData, element.getSearchTerm()),
                                     searchData.getName()
                             )
@@ -109,6 +109,13 @@ public class DefaultAutoCompleteViewHolder extends AbstractViewHolder<DefaultAut
 
     private List<Visitable> insertTitle(List<Visitable> list, String name) {
         TitleSearch titleSearch = new TitleSearch();
+        titleSearch.setTitle(name);
+        list.add(0, titleSearch);
+        return list;
+    }
+
+    private List<Visitable> insertTitleWithDeleteAll(List<Visitable> list, String name) {
+        TitleSearch titleSearch = new TitleSearch(true);
         titleSearch.setTitle(name);
         list.add(0, titleSearch);
         return list;

@@ -11,7 +11,7 @@ public interface ItemClickListener {
 
     void copyTextToSearchView(String text);
 
-    void onDeleteRecentSearchItem(SearchItem item);
+    void onDeleteRecentSearchItem(String keyword);
 
     void onDeleteAllRecentSearch();
 

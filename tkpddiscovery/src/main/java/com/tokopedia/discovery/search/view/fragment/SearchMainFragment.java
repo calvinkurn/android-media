@@ -16,6 +16,7 @@ import android.view.ViewGroup;
 import com.tokopedia.applink.ApplinkRouter;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
+import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TkpdBaseV4Fragment;
 import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.core.home.BannerWebView;
@@ -26,15 +27,18 @@ import com.tokopedia.discovery.autocomplete.HostAutoCompleteFactory;
 import com.tokopedia.discovery.autocomplete.HostAutoCompleteTypeFactory;
 import com.tokopedia.discovery.autocomplete.DefaultAutoCompleteViewModel;
 import com.tokopedia.discovery.autocomplete.TabAutoCompleteViewModel;
+import com.tokopedia.discovery.autocomplete.di.DaggerAutoCompleteComponent;
+import com.tokopedia.discovery.autocomplete.di.AutoCompleteComponent;
 import com.tokopedia.discovery.catalog.analytics.AppScreen;
 import com.tokopedia.discovery.newdiscovery.base.DiscoveryActivity;
 import com.tokopedia.discovery.search.SearchPresenter;
 import com.tokopedia.discovery.search.domain.model.SearchItem;
 import com.tokopedia.discovery.search.view.SearchContract;
 import com.tokopedia.discovery.search.view.adapter.ItemClickListener;
-import com.tokopedia.discovery.search.view.adapter.SearchPageAdapter;
 
 import java.util.List;
+
+import javax.inject.Inject;
 
 /**
  * @author erry on 23/02/17.
@@ -53,7 +57,9 @@ public class SearchMainFragment extends TkpdBaseV4Fragment implements SearchCont
 //    TabLayout tabLayout;
 //    ViewPager viewPager;
 
+    @Inject
     SearchPresenter presenter;
+
     private HostAutoCompleteAdapter adapter;
 //    private SearchPageAdapter pageAdapter;
     private String mSearch = "";
@@ -81,7 +87,11 @@ public class SearchMainFragment extends TkpdBaseV4Fragment implements SearchCont
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         initResources();
-        presenter = new SearchPresenter(getActivity());
+        AutoCompleteComponent component = DaggerAutoCompleteComponent.builder()
+                .appComponent(((MainApplication) getActivity().getApplication()).getAppComponent())
+                .build();
+        component.inject(this);
+        component.inject(presenter);
         setRetainInstance(true);
     }
 
@@ -280,8 +290,8 @@ public class SearchMainFragment extends TkpdBaseV4Fragment implements SearchCont
     }
 
     @Override
-    public void onDeleteRecentSearchItem(SearchItem item) {
-        ((DiscoveryActivity) getActivity()).deleteRecentSearch(item.getKeyword());
+    public void onDeleteRecentSearchItem(String keyword) {
+        ((DiscoveryActivity) getActivity()).deleteRecentSearch(keyword);
     }
 
     @Override

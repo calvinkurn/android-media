@@ -13,15 +13,17 @@ import com.google.android.flexbox.FlexboxItemDecoration;
 import com.google.android.flexbox.FlexboxLayoutManager;
 import com.google.android.flexbox.JustifyContent;
 import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
+import com.tokopedia.design.item.DeletableItemView;
 import com.tokopedia.discovery.R;
 import com.tokopedia.discovery.autocomplete.viewmodel.BaseItemAutoCompleteSearch;
 import com.tokopedia.discovery.autocomplete.viewmodel.PopularSearch;
+import com.tokopedia.discovery.autocomplete.viewmodel.RecentSearch;
 import com.tokopedia.discovery.search.view.adapter.ItemClickListener;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class RecentViewHolder extends AbstractViewHolder<PopularSearch> {
+public class RecentViewHolder extends AbstractViewHolder<RecentSearch> {
 
     @LayoutRes
     public static final int LAYOUT = R.layout.layout_recentsearch_autocomplete;
@@ -48,7 +50,7 @@ public class RecentViewHolder extends AbstractViewHolder<PopularSearch> {
     }
 
     @Override
-    public void bind(PopularSearch element) {
+    public void bind(RecentSearch element) {
         adapter.setData(element.getList());
     }
 
@@ -70,7 +72,7 @@ public class RecentViewHolder extends AbstractViewHolder<PopularSearch> {
         @Override
         public RecentViewHolder.ItemAdapter.ItemViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
             View itemView = LayoutInflater.from(parent.getContext())
-                    .inflate(R.layout.layout_popular_item_autocomplete, parent, false);
+                    .inflate(R.layout.layout_recent_item_autocomplete, parent, false);
             return new RecentViewHolder.ItemAdapter.ItemViewHolder(itemView, listener);
         }
 
@@ -87,7 +89,7 @@ public class RecentViewHolder extends AbstractViewHolder<PopularSearch> {
         public class ItemViewHolder extends RecyclerView.ViewHolder {
 
             private final ItemClickListener clickListener;
-            TextView textView;
+            DeletableItemView textView;
 
             public ItemViewHolder(View itemView, ItemClickListener clickListener) {
                 super(itemView);
@@ -96,11 +98,11 @@ public class RecentViewHolder extends AbstractViewHolder<PopularSearch> {
             }
 
             public void bind(final BaseItemAutoCompleteSearch item) {
-                textView.setText(item.getKeyword());
-                textView.setOnClickListener(new View.OnClickListener() {
+                textView.setItemName(item.getKeyword());
+                textView.setOnDeleteListener(new DeletableItemView.OnDeleteListener() {
                     @Override
-                    public void onClick(View view) {
-                        clickListener.onItemClicked(item.getApplink(), item.getUrl());
+                    public void onDelete() {
+                        clickListener.onDeleteRecentSearchItem(item.getKeyword());
                     }
                 });
             }

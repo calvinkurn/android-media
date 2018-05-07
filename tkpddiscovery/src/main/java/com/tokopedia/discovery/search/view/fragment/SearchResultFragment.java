@@ -12,7 +12,6 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.tkpd.library.ui.view.LinearLayoutManager;
-import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.applink.ApplinkRouter;
 import com.tokopedia.core.R2;
 import com.tokopedia.core.analytics.AppEventTracking;
@@ -184,8 +183,8 @@ public class SearchResultFragment extends TkpdBaseV4Fragment
     }
 
     @Override
-    public void onDeleteRecentSearchItem(SearchItem item) {
-        ((DiscoveryActivity) getActivity()).deleteRecentSearch(item.getKeyword());
+    public void onDeleteRecentSearchItem(String keyword) {
+        ((DiscoveryActivity) getActivity()).deleteRecentSearch(keyword);
     }
 
     @Override

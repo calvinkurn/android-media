@@ -95,7 +95,7 @@ public class DefaultSearchResultAdapter extends RecyclerView.Adapter<DefaultSear
             SearchItem item = model.getSearchItems().get(getAdapterPosition());
             switch (model.getId()) {
                 case "recent_search":
-                    clickListener.onDeleteRecentSearchItem(item);
+                    clickListener.onDeleteRecentSearchItem(item.getKeyword());
                     break;
                 default:
                     clickListener.copyTextToSearchView(item.getKeyword());
