@@ -1,13 +1,21 @@
 package com.tokopedia.core.invoice.activity;
 
 import android.annotation.SuppressLint;
+import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.net.http.SslError;
+import android.os.Build;
 import android.os.Bundle;
+import android.print.PrintAttributes;
+import android.print.PrintDocumentAdapter;
+import android.print.PrintJob;
+import android.print.PrintManager;
 import android.view.KeyEvent;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.webkit.SslErrorHandler;
@@ -16,8 +24,10 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.FrameLayout;
 import android.widget.ProgressBar;
+import android.widget.Toast;
 
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
+import com.tokopedia.abstraction.common.utils.GlobalConfig;
 import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
 import com.tokopedia.core.analytics.AppScreen;
@@ -145,6 +155,17 @@ public class InvoiceRendererActivity extends BasePresenterActivity<InvoiceRender
                 });
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menu_transaction_invoice, menu);
+        if (android.os.Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT) {
+            MenuItem menuItem = menu.findItem(R.id.action_print);
+            menuItem.setVisible(false);
+        }
+        return super.onCreateOptionsMenu(menu);
+    }
+
     private class MyWebChrome extends WebChromeClient {
         @Override
         public void onProgressChanged(WebView view, int newProgress) {
@@ -179,14 +200,45 @@ public class InvoiceRendererActivity extends BasePresenterActivity<InvoiceRender
         }
     }
 
+    private void onMenuPrintClcked() {
+        if (GlobalConfig.isSellerApp()) {
+            createWebPagePrint(webViewOauth);
+        } else {
+            // Show dialog
+        }
+    }
+
+    @TargetApi(Build.VERSION_CODES.KITKAT)
+    public void createWebPagePrint(WebView webView) {
+        PrintManager printManager = (PrintManager) getSystemService(Context.PRINT_SERVICE);
+        String jobName = getString(R.string.app_name) + " Document";
+        PrintDocumentAdapter printAdapter;
+        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            printAdapter = webView.createPrintDocumentAdapter(jobName);
+        } else {
+            printAdapter = webView.createPrintDocumentAdapter();
+        }
+        PrintAttributes.Builder builder = new PrintAttributes.Builder();
+        builder.setMediaSize(PrintAttributes.MediaSize.ISO_A5);
+        PrintJob printJob = printManager.print(jobName, printAdapter, builder.build());
+        if (printJob.isCompleted()) {
+            Toast.makeText(getApplicationContext(), "Complete", Toast.LENGTH_LONG).show();
+        } else if (printJob.isFailed()) {
+            Toast.makeText(getApplicationContext(), "Failed", Toast.LENGTH_LONG).show();
+        }
+    }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case android.R.id.home:
-                onBackPressed();
-                return true;
+        if (item.getItemId() == R.id.action_print) {
+            onMenuPrintClcked();
+            return true;
+        } else if(item.getItemId() == android.R.id.home){
+            onBackPressed();
+            return true;
+        } else {
+            return super.onOptionsItemSelected(item);
         }
-        return super.onOptionsItemSelected(item);
     }
 
     @Override

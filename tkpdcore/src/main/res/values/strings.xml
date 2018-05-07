@@ -12,6 +12,7 @@
     <string name="action_settings">Pengaturan</string>
     <string name="action_logout">Keluar</string>
     <string name="action_refresh">Refresh</string>
+    <string name="action_print">Print</string>
     <string name="btn_send">Kirim</string>
     <string name="title_activity_main">Memulai</string>
     <string name="title_warning">Peringatan</string>
