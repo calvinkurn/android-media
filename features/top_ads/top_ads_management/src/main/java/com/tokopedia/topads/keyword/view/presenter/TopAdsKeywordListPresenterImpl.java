@@ -5,6 +5,8 @@ import android.support.annotation.NonNull;
 import com.tokopedia.abstraction.common.utils.view.DateFormatUtils;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.seller.base.view.listener.BaseListViewListener;
+import com.tokopedia.topads.sourcetagging.constant.TopAdsSourceOption;
+import com.tokopedia.topads.sourcetagging.domain.interactor.TopAdsAddSourceTaggingUseCase;
 import com.tokopedia.topads.dashboard.data.model.data.GroupAd;
 import com.tokopedia.topads.dashboard.view.presenter.TopAdsAdListPresenter;
 import com.tokopedia.topads.keyword.constant.KeywordTypeDef;
@@ -36,10 +38,33 @@ public class TopAdsKeywordListPresenterImpl extends
     private static final String TAG = "TopAdsKeywordListPresen";
 
     private KeywordDashboardUseCase keywordDashboardUseCase;
+    private TopAdsAddSourceTaggingUseCase topAdsAddSourceTaggingUseCase;
 
     @Inject
-    public TopAdsKeywordListPresenterImpl(KeywordDashboardUseCase keywordDashboardUseCase) {
+    public TopAdsKeywordListPresenterImpl(KeywordDashboardUseCase keywordDashboardUseCase,
+                                          TopAdsAddSourceTaggingUseCase topAdsAddSourceTaggingUseCase) {
         this.keywordDashboardUseCase = keywordDashboardUseCase;
+        this.topAdsAddSourceTaggingUseCase = topAdsAddSourceTaggingUseCase;
+    }
+
+    public void saveSourceTagging(@TopAdsSourceOption String source){
+        topAdsAddSourceTaggingUseCase.execute(TopAdsAddSourceTaggingUseCase
+                .createRequestParams(source), new Subscriber<Void>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+
+            }
+
+            @Override
+            public void onNext(Void aVoid) {
+                //do nothing
+            }
+        });
     }
 
     public void fetchKeyword(final BaseKeywordParam baseKeywordParam) {
@@ -99,7 +124,7 @@ public class TopAdsKeywordListPresenterImpl extends
         return keywordAd;
     }
 
-    protected void revealData(KeywodDashboardViewModel keywordDashboardViewModel) {
+    private void revealData(KeywodDashboardViewModel keywordDashboardViewModel) {
         if (isViewAttached()) {
             getView().onSearchLoaded(
                     keywordDashboardViewModel.getData(),
@@ -147,11 +172,11 @@ public class TopAdsKeywordListPresenterImpl extends
         return new KeywordPositiveParam();
     }
 
-    public KeywordNegativeParam generateKeywordNegativeParam() {
+    private KeywordNegativeParam generateKeywordNegativeParam() {
         return new KeywordNegativeParam();
     }
 
-    public BaseKeywordParam generateParam(String query, int page, boolean isPositive
+    private BaseKeywordParam generateParam(String query, int page, boolean isPositive
     ) {
         BaseKeywordParam baseKeywordParam = isPositive ? generateKeywordPositiveParam() : generateKeywordNegativeParam();
         if (query != null)

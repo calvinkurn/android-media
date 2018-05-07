@@ -46,21 +46,25 @@ public class TopAdsCreatePromoExistingGroupActivity extends BaseStepperActivity<
     public TopAdsCreatePromoExistingGroupModel createNewStepperModel() {
         String groupId = null;
         String itemIdToAdd = null;
+        String source = "";
         if (getIntent() != null && getIntent().getExtras() != null) {
             groupId = getIntent().getStringExtra(TopAdsExtraConstant.EXTRA_AD_ID);
             itemIdToAdd = getIntent().getStringExtra(TopAdsExtraConstant.EXTRA_ITEM_ID);
+            source = getIntent().getStringExtra(TopAdsExtraConstant.EXTRA_SOURCE);
         }
         stepperModel = new TopAdsCreatePromoExistingGroupModel();
         ((TopAdsCreatePromoExistingGroupModel) stepperModel).setGroupId(groupId);
         ((TopAdsCreatePromoExistingGroupModel) stepperModel).setIdToAdd(itemIdToAdd);
+        ((TopAdsCreatePromoExistingGroupModel) stepperModel).setSource(source);
         return stepperModel;
     }
 
 
-    public static Intent createIntent(Context context, String groupId, String itemIdToAdd) {
+    public static Intent createIntent(Context context, String groupId, String itemIdToAdd, String source) {
         Intent intent = new Intent(context, TopAdsCreatePromoExistingGroupActivity.class);
         intent.putExtra(TopAdsExtraConstant.EXTRA_AD_ID, groupId);
         intent.putExtra(TopAdsExtraConstant.EXTRA_ITEM_ID, itemIdToAdd);
+        intent.putExtra(TopAdsExtraConstant.EXTRA_SOURCE, source);
         return intent;
     }
 

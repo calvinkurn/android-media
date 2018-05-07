@@ -24,6 +24,7 @@ dependencies {
     compile project(rootProject.ext.libraries.bottomSheetBuilder)
     compile project(rootProject.ext.features.payment)
     compile project(rootProject.ext.libraries.williamchart)
+    compile project(rootProject.ext.features.topAdsSourceTagging)
 
     compile rootProject.ext.permissionDispatcherDependencies.permissionDispatcher
     apt rootProject.ext.permissionDispatcherDependencies.permissionDispatcherProcessor

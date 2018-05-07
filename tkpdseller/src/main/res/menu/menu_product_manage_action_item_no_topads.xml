@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <group>
+        <item
+            android:id="@+id/edit_product_menu"
+            android:icon="@drawable/ic_edit_grey"
+            android:title="@string/title_edit" />
+        <item
+            android:id="@+id/duplicat_product_menu"
+            android:icon="@drawable/ic_dupclicate_menu"
+            android:title="@string/product_manage_title_duplicate_product_menu" />
+        <item
+            android:id="@+id/delete_product_menu"
+            android:icon="@drawable/ic_delete_menu"
+            android:title="@string/label_delete" />
+    </group>
+
+    <group>
+        <item
+            android:title="@string/product_manage_menu_set_cashback"
+            android:id="@+id/set_cashback_product_menu"
+            android:icon="@drawable/ic_set_cashback_menu"/>
+        <item
+            android:id="@+id/change_price_product_menu"
+            android:icon="@drawable/ic_menu_set_price"
+            android:title="@string/product_manage_menu_set_price" />
+        <item
+            android:id="@+id/share_product_menu"
+            android:icon="@drawable/ic_share_menu"
+            android:title="@string/title_share" />
+    </group>
+
+</menu>
