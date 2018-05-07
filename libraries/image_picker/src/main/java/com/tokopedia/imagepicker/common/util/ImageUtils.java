@@ -86,7 +86,11 @@ public class ImageUtils {
     }
 
     public static File getTokopediaPhotoPath(@DirectoryDef String directoryDef, String referencePath) {
-        return getTokopediaPhotoPath(directoryDef, referencePath.endsWith(PNG_EXT));
+        return getTokopediaPhotoPath(directoryDef, isPng(referencePath));
+    }
+
+    public static boolean isPng(String referencePath){
+        return referencePath.endsWith(PNG_EXT);
     }
 
     /**
@@ -514,45 +518,36 @@ public class ImageUtils {
 
     }
 
-    public static byte[] convertLocalImagePathToBytes(String imagePathToCompress, int maxWidth, int maxHeight, int compressionQuality) {
-        boolean isPng = imagePathToCompress.endsWith(PNG);
-        Bitmap tempPicToUpload = compressImageToBitmap(imagePathToCompress, maxWidth, maxHeight, compressionQuality);
-        ByteArrayOutputStream bao = new ByteArrayOutputStream();
-        if (tempPicToUpload != null) {
-            tempPicToUpload.compress(isPng ? Bitmap.CompressFormat.PNG : Bitmap.CompressFormat.JPEG, compressionQuality, bao);
-            return bao.toByteArray();
-        }
-        return null;
-    }
 
-
-    public static Bitmap compressImageToBitmap(String imagePathToCompress, int maxWidth, int maxHeight, int compressionQuality) {
+    public static Bitmap getBitmapFromPath(String imagePath, int maxWidth, int maxHeight, boolean needCheckRotate) {
         BitmapFactory.Options options = new BitmapFactory.Options();
         options.inPreferredConfig = Bitmap.Config.ARGB_8888;
         options.inJustDecodeBounds = true;
-        BitmapFactory.decodeFile(imagePathToCompress, options);
+        BitmapFactory.decodeFile(imagePath, options);
         options.inSampleSize = calculateInSampleSize(options, maxWidth, maxHeight);
         options.inJustDecodeBounds = false;
-        Bitmap tempPic = BitmapFactory.decodeFile(imagePathToCompress, options);
+        Bitmap tempPic = BitmapFactory.decodeFile(imagePath, options);
 
         boolean decodeAttemptSuccess = false;
         while (!decodeAttemptSuccess) {
             try {
-                tempPic = BitmapFactory.decodeFile(imagePathToCompress, options);
+                tempPic = BitmapFactory.decodeFile(imagePath, options);
                 decodeAttemptSuccess = true;
             } catch (OutOfMemoryError error) {
                 options.inSampleSize *= 2;
             }
         }
 
-        if (tempPic != null) {
-            try {
-                return rotate(tempPic, imagePathToCompress);
-            } catch (IOException e1) {
-                return tempPic;
+        if (needCheckRotate) {
+            if (tempPic != null) {
+                try {
+                    return rotate(tempPic, imagePath);
+                } catch (IOException e1) {
+                    return tempPic;
+                }
             }
         }
-        return null;
+        return tempPic;
     }
 
     public static int calculateInSampleSize(@NonNull BitmapFactory.Options options, int reqWidth, int reqHeight) {

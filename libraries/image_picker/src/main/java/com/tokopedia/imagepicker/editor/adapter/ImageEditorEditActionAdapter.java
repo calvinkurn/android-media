@@ -55,19 +55,19 @@ public class ImageEditorEditActionAdapter implements View.OnClickListener {
             TextView tvEdit = view.findViewById(R.id.tv_edit);
             view.setId(tabTypeDefItem);
             switch (tabTypeDefItem) {
-                case ImageEditActionTypeDef.TYPE_CROP:
+                case ImageEditActionTypeDef.ACTION_CROP:
                     ivEdit.setImageResource(R.drawable.ic_crop);
                     tvEdit.setText(context.getString(R.string.crop));
                     break;
-                case ImageEditActionTypeDef.TYPE_ROTATE:
+                case ImageEditActionTypeDef.ACTION_ROTATE:
                     ivEdit.setImageResource(R.drawable.ic_rotate);
                     tvEdit.setText(context.getString(R.string.rotate));
                     break;
-                case ImageEditActionTypeDef.TYPE_WATERMARK:
+                case ImageEditActionTypeDef.ACTION_WATERMARK:
                     ivEdit.setImageResource(R.drawable.circle_red);
                     tvEdit.setText(context.getString(R.string.watermark));
                     break;
-                case ImageEditActionTypeDef.TYPE_CROP_ROTATE:
+                case ImageEditActionTypeDef.ACTION_CROP_ROTATE:
                     ivEdit.setImageResource(R.drawable.ic_crop);
                     tvEdit.setText(context.getString(R.string.crop_and_rotate));
                     break;
