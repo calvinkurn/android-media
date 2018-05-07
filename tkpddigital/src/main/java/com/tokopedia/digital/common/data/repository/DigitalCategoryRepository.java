@@ -1,11 +1,8 @@
 package com.tokopedia.digital.common.data.repository;
 
-import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.digital.common.data.source.CategoryDetailDataSource;
-import com.tokopedia.digital.common.data.source.FavoriteListDataSource;
 import com.tokopedia.digital.common.domain.IDigitalCategoryRepository;
-import com.tokopedia.digital.product.view.model.CategoryData;
-import com.tokopedia.digital.widget.view.model.DigitalNumberList;
+import com.tokopedia.digital.product.view.model.ProductDigitalData;
 
 import rx.Observable;
 
@@ -16,22 +13,19 @@ import rx.Observable;
 public class DigitalCategoryRepository implements IDigitalCategoryRepository {
 
     private CategoryDetailDataSource categoryDetailDataSource;
-    private FavoriteListDataSource favoriteListDataSource;
 
-    public DigitalCategoryRepository(CategoryDetailDataSource categoryDetailDataSource,
-                                     FavoriteListDataSource favoriteListDataSource) {
+    public DigitalCategoryRepository(CategoryDetailDataSource categoryDetailDataSource) {
         this.categoryDetailDataSource = categoryDetailDataSource;
-        this.favoriteListDataSource = favoriteListDataSource;
     }
 
     @Override
-    public Observable<CategoryData> getCategory(String categoryId, TKPDMapParam<String, String> param) {
-        return categoryDetailDataSource.getCategory(categoryId, param);
+    public Observable<ProductDigitalData> getCategory(String categoryId) {
+        return categoryDetailDataSource.getCategory(categoryId);
     }
 
     @Override
-    public Observable<DigitalNumberList> getFavoriteList(TKPDMapParam<String, String> param) {
-        return favoriteListDataSource.getFavoriteList(param);
+    public Observable<ProductDigitalData> getCategoryWithFavorit(String categoryId, String operatorId, String clientNumber, String productId) {
+        return categoryDetailDataSource.getCategoryDetailWithFavorit(categoryId, operatorId, clientNumber, productId);
     }
 
     @Override

@@ -9,15 +9,14 @@ import com.tokopedia.abstraction.common.data.model.response.GraphqlResponse;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.database.CacheUtil;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
-import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.digital.R;
 import com.tokopedia.digital.common.constant.DigitalCache;
 import com.tokopedia.digital.common.constant.DigitalCategoryConstant;
 import com.tokopedia.digital.common.constant.DigitalUrl;
 import com.tokopedia.digital.common.data.apiservice.DigitalGqlApiService;
-import com.tokopedia.digital.common.data.entity.response.RechargeCategoryDetailEntity;
+import com.tokopedia.digital.common.data.entity.response.RechargeResponseEntity;
 import com.tokopedia.digital.common.data.mapper.ProductDigitalMapper;
-import com.tokopedia.digital.product.view.model.CategoryData;
+import com.tokopedia.digital.product.view.model.ProductDigitalData;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -49,54 +48,110 @@ public class CategoryDetailDataSource {
         context = MainApplication.getAppContext();
     }
 
-    public Observable<CategoryData> getCategory(String categoryId, TKPDMapParam<String, String> param) {
-        return Observable.concat(getDataFromLocal(categoryId), getDataFromCloud(categoryId, param))
-                .first(new Func1<CategoryData, Boolean>() {
+    /**
+     * Fetches Category Detail Data, first this function try to fetch data from local if exists
+     *
+     * @param categoryId
+     * @return
+     */
+    public Observable<ProductDigitalData> getCategory(String categoryId) {
+        return Observable.concat(getCategoryDataFromLocal(categoryId), getCategoryDataFromCloud(categoryId))
+                .first(new Func1<ProductDigitalData, Boolean>() {
                     @Override
-                    public Boolean call(CategoryData categoryData) {
+                    public Boolean call(ProductDigitalData categoryData) {
                         return categoryData != null;
                     }
                 });
     }
 
-    private Observable<CategoryData> getDataFromLocal(String categoryId) {
-        RechargeCategoryDetailEntity digitalCategoryDetailEntity;
+    /**
+     * Fetches CategoryDetail and Favorit Number Combined, first this function try to fetch data from local if exists
+     *
+     * @param categoryId
+     * @param operatorId
+     * @param clientNumber
+     * @param productId
+     * @return
+     */
+    public Observable<ProductDigitalData> getCategoryDetailWithFavorit(String categoryId, String operatorId, String clientNumber, String productId) {
+        return Observable.concat(getCategoryAndFavDataFromLocal(categoryId), getCategoryAndFavoritFromCloud(categoryId))
+                .first(new Func1<ProductDigitalData, Boolean>() {
+                    @Override
+                    public Boolean call(ProductDigitalData productDigitalData) {
+                        return productDigitalData != null;
+                    }
+                });
+    }
+
+    private Observable<ProductDigitalData> getCategoryDataFromLocal(String categoryId) {
+        RechargeResponseEntity digitalCategoryDetailEntity;
         try {
             digitalCategoryDetailEntity = CacheUtil.convertStringToModel(
                     globalCacheManager.getValueString(DigitalCache.NEW_DIGITAL_CATEGORY_DETAIL + "/" + categoryId),
-                    new TypeToken<RechargeCategoryDetailEntity>() {
+                    new TypeToken<RechargeResponseEntity>() {
                     }.getType());
         } catch (RuntimeException e) {
             digitalCategoryDetailEntity = null;
         }
 
-        CategoryData categoryData = null;
-        if (digitalCategoryDetailEntity != null && digitalCategoryDetailEntity.getRechargeCategoryDetail() != null) {
-            categoryData = productDigitalMapper.transformCategoryData(digitalCategoryDetailEntity.getRechargeCategoryDetail());
+        ProductDigitalData categoryData = null;
+        if (digitalCategoryDetailEntity != null) {
+            categoryData = productDigitalMapper.transformCategoryData(digitalCategoryDetailEntity);
         }
 
         return Observable.just(categoryData);
     }
 
-    private Observable<CategoryData> getDataFromCloud(String categoryId, TKPDMapParam<String, String> param) {
-        return digitalEndpointService.getApi().getCategory(String.format(getRequestPayload(), categoryId))
-                .map(new Func1<Response<GraphqlResponse<RechargeCategoryDetailEntity>>, RechargeCategoryDetailEntity>() {
+    private Observable<ProductDigitalData> getCategoryDataFromCloud(String categoryId) {
+        return digitalEndpointService.getApi().getCategory(String.format(getCategoryRequestPayload(), categoryId))
+                .map(new Func1<Response<GraphqlResponse<RechargeResponseEntity>>, RechargeResponseEntity>() {
                     @Override
-                    public RechargeCategoryDetailEntity call(Response<GraphqlResponse<RechargeCategoryDetailEntity>> response) {
+                    public RechargeResponseEntity call(Response<GraphqlResponse<RechargeResponseEntity>> response) {
                         return response.body().getData();
                     }
                 })
-                //.doOnNext(saveToCache(categoryId))
+                .doOnNext(saveCategoryDetailToCache(categoryId))
                 .map(getFuncTransformCategoryData());
     }
 
-    private Action1<RechargeCategoryDetailEntity> saveToCache(final String categoryId) {
-        return new Action1<RechargeCategoryDetailEntity>() {
+    private Observable<ProductDigitalData> getCategoryAndFavDataFromLocal(String categoryId) {
+        RechargeResponseEntity digitalCategoryDetailEntity;
+        try {
+            digitalCategoryDetailEntity = CacheUtil.convertStringToModel(
+                    globalCacheManager.getValueString(DigitalCache.NEW_DIGITAL_CATEGORY_AND_FAV + "/" + categoryId),
+                    new TypeToken<RechargeResponseEntity>() {
+                    }.getType());
+        } catch (RuntimeException e) {
+            digitalCategoryDetailEntity = null;
+        }
+
+        ProductDigitalData categoryData = null;
+        if (digitalCategoryDetailEntity != null) {
+            categoryData = productDigitalMapper.transformCategoryData(digitalCategoryDetailEntity);
+        }
+
+        return Observable.just(categoryData);
+    }
+
+    private Observable<ProductDigitalData> getCategoryAndFavoritFromCloud(String categoryId) {
+        return digitalEndpointService.getApi().getCategoryAndFavoriteList(String.format(getCategoryWithFavRequestPayload(), categoryId, categoryId))
+                .map(new Func1<Response<GraphqlResponse<RechargeResponseEntity>>, RechargeResponseEntity>() {
+                    @Override
+                    public RechargeResponseEntity call(Response<GraphqlResponse<RechargeResponseEntity>> response) {
+                        return response.body().getData();
+                    }
+                })
+                .doOnNext(saveCategoryDetailAndFavToCache(categoryId))
+                .map(getFuncTransformCategoryData());
+    }
+
+    private Action1<RechargeResponseEntity> saveCategoryDetailToCache(final String categoryId) {
+        return new Action1<RechargeResponseEntity>() {
             @Override
-            public void call(RechargeCategoryDetailEntity digitalCategoryDetailEntity) {
+            public void call(RechargeResponseEntity digitalCategoryDetailEntity) {
                 globalCacheManager.setKey(DigitalCache.NEW_DIGITAL_CATEGORY_DETAIL + "/" + categoryId);
                 globalCacheManager.setValue(CacheUtil.convertModelToString(digitalCategoryDetailEntity,
-                        new TypeToken<RechargeCategoryDetailEntity>() {
+                        new TypeToken<RechargeResponseEntity>() {
                         }.getType()));
                 globalCacheManager.setCacheDuration(600); // 10 minutes
                 globalCacheManager.store();
@@ -104,12 +159,26 @@ public class CategoryDetailDataSource {
         };
     }
 
-    @NonNull
-    private Func1<RechargeCategoryDetailEntity, CategoryData> getFuncTransformCategoryData() {
-        return new Func1<RechargeCategoryDetailEntity, CategoryData>() {
+    private Action1<RechargeResponseEntity> saveCategoryDetailAndFavToCache(final String categoryId) {
+        return new Action1<RechargeResponseEntity>() {
             @Override
-            public CategoryData call(RechargeCategoryDetailEntity digitalCategoryDetailEntity) {
-                return productDigitalMapper.transformCategoryData(digitalCategoryDetailEntity.getRechargeCategoryDetail());
+            public void call(RechargeResponseEntity digitalCategoryDetailEntity) {
+                globalCacheManager.setKey(DigitalCache.NEW_DIGITAL_CATEGORY_AND_FAV + "/" + categoryId);
+                globalCacheManager.setValue(CacheUtil.convertModelToString(digitalCategoryDetailEntity,
+                        new TypeToken<RechargeResponseEntity>() {
+                        }.getType()));
+                globalCacheManager.setCacheDuration(3600); // 1 Hour
+                globalCacheManager.store();
+            }
+        };
+    }
+
+    @NonNull
+    private Func1<RechargeResponseEntity, ProductDigitalData> getFuncTransformCategoryData() {
+        return new Func1<RechargeResponseEntity, ProductDigitalData>() {
+            @Override
+            public ProductDigitalData call(RechargeResponseEntity digitalCategoryDetailEntity) {
+                return productDigitalMapper.transformCategoryData(digitalCategoryDetailEntity);
             }
         };
     }
@@ -177,8 +246,12 @@ public class CategoryDetailDataSource {
         return Observable.just(result);
     }
 
-    private String getRequestPayload() {
+    private String getCategoryRequestPayload() {
         return loadRawString(context.getResources(), R.raw.digital_category_query);
+    }
+
+    private String getCategoryWithFavRequestPayload() {
+        return loadRawString(context.getResources(), R.raw.digital_category_favourites_query);
     }
 
     private String loadRawString(Resources resources, int resId) {

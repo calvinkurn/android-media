@@ -7,11 +7,15 @@ import com.google.gson.annotations.SerializedName;
 /**
  * Vishal Gupta 7th May, 2018
  */
-public class RechargeCategoryDetailEntity {
+public class RechargeResponseEntity {
 
     @SerializedName("recharge_category_detail")
     @Expose
     private RechargeCategoryDetail rechargeCategoryDetail;
+
+    @SerializedName("recharge_favorite_number")
+    @Expose
+    private RechargeFavoritNumberResponseEntity rechargeFavoritNumberResponseEntity;
 
     public RechargeCategoryDetail getRechargeCategoryDetail() {
         return rechargeCategoryDetail;
@@ -21,4 +25,11 @@ public class RechargeCategoryDetailEntity {
         this.rechargeCategoryDetail = rechargeCategoryDetail;
     }
 
+    public RechargeFavoritNumberResponseEntity getRechargeFavoritNumberResponseEntity() {
+        return rechargeFavoritNumberResponseEntity;
+    }
+
+    public void setRechargeFavoritNumberResponseEntity(RechargeFavoritNumberResponseEntity rechargeFavoritNumberResponseEntity) {
+        this.rechargeFavoritNumberResponseEntity = rechargeFavoritNumberResponseEntity;
+    }
 }

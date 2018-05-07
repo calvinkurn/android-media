@@ -31,8 +31,8 @@ import rx.functions.Func1;
  */
 
 // TODO: all implementation of this repository should be removed
-    // change to DigitalWidgetUseCase and new DigitalWidgetRepository
-    // without operator/list and product/list
+// change to DigitalWidgetUseCase and new DigitalWidgetRepository
+// without operator/list and product/list
 
 @Deprecated
 public class DigitalWidgetRepository implements IDigitalWidgetRepository {
@@ -274,7 +274,7 @@ public class DigitalWidgetRepository implements IDigitalWidgetRepository {
                 ResponseMetaFavoriteNumber responseMetaFavoriteNumber =
                         tkpdDigitalResponseResponse.body().convertMetaObj(ResponseMetaFavoriteNumber.class);
 
-                ResponseFavoriteList responseFavoriteList =  new ResponseFavoriteList(responseMetaFavoriteNumber,
+                ResponseFavoriteList responseFavoriteList = new ResponseFavoriteList(responseMetaFavoriteNumber,
                         responseFavoriteNumbers);
 
                 return favoriteNumberMapper

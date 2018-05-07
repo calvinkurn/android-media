@@ -20,11 +20,9 @@ import com.tokopedia.core.util.VersionInfo;
 import com.tokopedia.digital.R;
 import com.tokopedia.digital.common.data.apiservice.DigitalEndpointService;
 import com.tokopedia.digital.common.data.apiservice.DigitalGqlApiService;
-import com.tokopedia.digital.common.data.mapper.FavoriteNumberListDataMapper;
 import com.tokopedia.digital.common.data.mapper.ProductDigitalMapper;
 import com.tokopedia.digital.common.data.repository.DigitalCategoryRepository;
 import com.tokopedia.digital.common.data.source.CategoryDetailDataSource;
-import com.tokopedia.digital.common.data.source.FavoriteListDataSource;
 import com.tokopedia.digital.common.domain.IDigitalCategoryRepository;
 import com.tokopedia.digital.common.domain.interactor.GetCategoryByIdUseCase;
 import com.tokopedia.digital.common.view.compoundview.BaseDigitalProductView;
@@ -77,12 +75,8 @@ public class TopupTokoCashFragment extends BaseDaggerFragment implements TopupTo
         CategoryDetailDataSource categoryDetailDataSource = new CategoryDetailDataSource(
                 digitalGqlEndpointService, new GlobalCacheManager(), new ProductDigitalMapper()
         );
-        FavoriteListDataSource favoriteListDataSource = new FavoriteListDataSource(
-                digitalEndpointService, new FavoriteNumberListDataMapper()
-        );
-        IDigitalCategoryRepository digitalCategoryRepository = new DigitalCategoryRepository(
-                categoryDetailDataSource, favoriteListDataSource
-        );
+
+        IDigitalCategoryRepository digitalCategoryRepository = new DigitalCategoryRepository(categoryDetailDataSource);
 
         GetCategoryByIdUseCase getCategoryByIdUseCase = new GetCategoryByIdUseCase(
                 getActivity(), digitalCategoryRepository

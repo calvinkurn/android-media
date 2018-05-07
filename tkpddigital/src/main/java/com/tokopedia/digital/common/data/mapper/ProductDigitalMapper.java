@@ -3,13 +3,19 @@ package com.tokopedia.digital.common.data.mapper;
 import com.tokopedia.digital.common.data.entity.response.Field;
 import com.tokopedia.digital.common.data.entity.response.OperatorBannerEntity;
 import com.tokopedia.digital.common.data.entity.response.RechargeCategoryDetail;
+import com.tokopedia.digital.common.data.entity.response.RechargeFavoritNumber;
+import com.tokopedia.digital.common.data.entity.response.RechargeFavoritNumberResponseEntity;
+import com.tokopedia.digital.common.data.entity.response.RechargeResponseEntity;
 import com.tokopedia.digital.common.data.entity.response.Validation;
 import com.tokopedia.digital.exception.MapperDataException;
 import com.tokopedia.digital.product.view.model.BannerData;
 import com.tokopedia.digital.product.view.model.CategoryData;
 import com.tokopedia.digital.product.view.model.ClientNumber;
+import com.tokopedia.digital.product.view.model.HistoryClientNumber;
 import com.tokopedia.digital.product.view.model.Operator;
+import com.tokopedia.digital.product.view.model.OrderClientNumber;
 import com.tokopedia.digital.product.view.model.Product;
+import com.tokopedia.digital.product.view.model.ProductDigitalData;
 import com.tokopedia.digital.product.view.model.Promo;
 import com.tokopedia.digital.product.view.model.Rule;
 
@@ -22,27 +28,40 @@ import java.util.List;
 
 public class ProductDigitalMapper {
 
-    public CategoryData transformCategoryData(RechargeCategoryDetail entity) throws MapperDataException {
+    public ProductDigitalData transformCategoryData(RechargeResponseEntity entity) throws MapperDataException {
         CategoryData categoryData = new CategoryData();
-        categoryData.setTitleText(entity.getTitle());
-        categoryData.setCategoryId(entity.getId());
-        categoryData.setDefaultOperatorId(entity.getDefaultOperatorId());
-        categoryData.setIcon(entity.getIcon());
-        categoryData.setIconUrl(entity.getIconUrl());
-        categoryData.setName(entity.getName());
-        categoryData.setInstantCheckout(entity.getInstantCheckout());
-        categoryData.setNew(entity.getIsNew());
-        categoryData.setSlug(entity.getSlug());
-        categoryData.setOperatorStyle(entity.getOperatorStyle());
-        categoryData.setOperatorLabel(entity.getOperatorLabel());
+        if (entity != null && entity.getRechargeCategoryDetail() != null) {
+            RechargeCategoryDetail categoryDetail = entity.getRechargeCategoryDetail();
 
-        categoryData.setClientNumberList(transformClientNumberList(entity));
-        categoryData.setOperatorList(transformOperators(entity));
-        categoryData.setBannerDataListIncluded(transformBanners(entity.getBanners()));
-        categoryData.setOtherBannerDataListIncluded(transformBanners(entity.getOtherBanners()));
+            categoryData.setTitleText(categoryDetail.getTitle());
+            categoryData.setCategoryId(categoryDetail.getId());
+            categoryData.setDefaultOperatorId(categoryDetail.getDefaultOperatorId());
+            categoryData.setIcon(categoryDetail.getIcon());
+            categoryData.setIconUrl(categoryDetail.getIconUrl());
+            categoryData.setName(categoryDetail.getName());
+            categoryData.setInstantCheckout(categoryDetail.getInstantCheckout());
+            categoryData.setNew(categoryDetail.getIsNew());
+            categoryData.setSlug(categoryDetail.getSlug());
+            categoryData.setOperatorStyle(categoryDetail.getOperatorStyle());
+            categoryData.setOperatorLabel(categoryDetail.getOperatorLabel());
 
-        return categoryData;
+            categoryData.setClientNumberList(transformClientNumberList(categoryDetail));
+            categoryData.setOperatorList(transformOperators(categoryDetail));
+            categoryData.setBannerDataListIncluded(transformBanners(categoryDetail.getBanners()));
+            categoryData.setOtherBannerDataListIncluded(transformBanners(categoryDetail.getOtherBanners()));
+        }
+
+        return new ProductDigitalData.Builder()
+                .historyClientNumber(new HistoryClientNumber.Builder()
+                        .lastOrderClientNumber(getLastOrder(entity.getRechargeFavoritNumberResponseEntity()))
+                        .recentClientNumberList(getOrderList(entity.getRechargeFavoritNumberResponseEntity()))
+                        .build())
+                .categoryData(categoryData)
+                .bannerDataList(categoryData.getBannerDataListIncluded())
+                .otherBannerDataList(categoryData.getOtherBannerDataListIncluded())
+                .build();
     }
+
 
     /**
      * Helper function to transfor client number list
@@ -212,4 +231,41 @@ public class ProductDigitalMapper {
         return bannerDataList;
     }
 
+
+    private OrderClientNumber getLastOrder(RechargeFavoritNumberResponseEntity entity) {
+        if (entity == null) {
+            return null;
+        }
+
+        OrderClientNumber orderClientNumber = new OrderClientNumber();
+
+        orderClientNumber.setCategoryId(entity.getCategoryId());
+        orderClientNumber.setClientNumber(entity.getClientNumber());
+        orderClientNumber.setOperatorId(entity.getOperatorId());
+        orderClientNumber.setProductId(entity.getProductId());
+
+        return orderClientNumber;
+    }
+
+
+    private List<OrderClientNumber> getOrderList(RechargeFavoritNumberResponseEntity entity) {
+        List<OrderClientNumber> clientNumbers = new ArrayList<>();
+
+        if (entity != null && entity.getList() != null) {
+
+            for (RechargeFavoritNumber favoritNumber : entity.getList()) {
+                OrderClientNumber orderClientNumber = new OrderClientNumber();
+
+                orderClientNumber.setCategoryId(favoritNumber.getCategoryId());
+                orderClientNumber.setClientNumber(favoritNumber.getClientNumber());
+                orderClientNumber.setOperatorId(favoritNumber.getOperatorId());
+                orderClientNumber.setProductId(favoritNumber.getProductId());
+                orderClientNumber.setName(favoritNumber.getLabel());
+
+                clientNumbers.add(orderClientNumber);
+            }
+        }
+
+        return clientNumbers;
+    }
 }
