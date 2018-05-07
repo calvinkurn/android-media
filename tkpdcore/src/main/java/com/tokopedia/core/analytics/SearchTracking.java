@@ -150,12 +150,16 @@ public class SearchTracking extends TrackingUtils {
         return TextUtils.join("&", filterList);
     }
 
-    public static void eventSearchResultFilterJourney(String screenName, Map<String, String> selectedFilter) {
+    public static void eventSearchResultFilterJourney(String filterName,
+                                                      String filterValue,
+                                                      boolean isInsideDetail, boolean isActive) {
         sendGTMEvent(new EventTracking(
                 AppEventTracking.Event.SEARCH_RESULT,
                 AppEventTracking.Category.FILTER_JOURNEY,
-                AppEventTracking.Action.FILTER.toLowerCase() + " - " + screenName,
-                generateFilterEventLabel(selectedFilter)
+                AppEventTracking.Action.CLICK.toLowerCase() + " - "
+                        + filterName + ": " + filterValue + " - "
+                        + (isInsideDetail ? "inside lihat semua" : "outside lihat semua"),
+                Boolean.toString(isActive)
         ).setUserId().getEvent());
     }
 }

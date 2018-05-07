@@ -25,16 +25,18 @@ public class BottomSheetExpandableItemSelectedListAdapter extends
 
     private List<Option> selectedOptionsList = new ArrayList<>();
     private BottomSheetDynamicFilterView filterView;
+    private String filterTitle;
 
-    public BottomSheetExpandableItemSelectedListAdapter(BottomSheetDynamicFilterView filterView) {
+    public BottomSheetExpandableItemSelectedListAdapter(BottomSheetDynamicFilterView filterView, String filterTitle) {
         this.filterView = filterView;
+        this.filterTitle = filterTitle;
     }
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater
                 .from(parent.getContext()).inflate(R.layout.bottom_sheet_selected_filter_item, parent, false);
-        return new ViewHolder(view, filterView, this);
+        return new ViewHolder(view, filterView, this, filterTitle);
     }
 
     @Override
@@ -58,11 +60,13 @@ public class BottomSheetExpandableItemSelectedListAdapter extends
         private View itemContainer;
         private BottomSheetDynamicFilterView filterView;
         private BottomSheetExpandableItemSelectedListAdapter adapter;
+        private String filterTitle;
         private View ratingIcon;
 
         public ViewHolder(View itemView,
                           BottomSheetDynamicFilterView filterView,
-                          BottomSheetExpandableItemSelectedListAdapter adapter) {
+                          BottomSheetExpandableItemSelectedListAdapter adapter,
+                          String filterTitle) {
             super(itemView);
             itemText = itemView.findViewById(R.id.filter_item_text);
             ratingIcon = itemView.findViewById(R.id.rating_icon);
@@ -70,6 +74,7 @@ public class BottomSheetExpandableItemSelectedListAdapter extends
             itemContainer = itemView.findViewById(R.id.filter_item_container);
             this.filterView = filterView;
             this.adapter = adapter;
+            this.filterTitle = filterTitle;
         }
 
         public void bind(final Option option, final int position) {
@@ -105,9 +110,9 @@ public class BottomSheetExpandableItemSelectedListAdapter extends
                 @Override
                 public void onClick(View view) {
                     if (filterView.isSelectedCategory(option)) {
-                        filterView.removeSelectedOption(option);
+                        filterView.removeSelectedOption(option, filterTitle);
                     } else {
-                        filterView.selectCategory(option);
+                        filterView.selectCategory(option, filterTitle);
                     }
                     adapter.notifyDataSetChanged();
                 }
@@ -124,7 +129,7 @@ public class BottomSheetExpandableItemSelectedListAdapter extends
                 @Override
                 public void onClick(View view) {
                     boolean newCheckedState = !Boolean.parseBoolean(option.getInputState());
-                    filterView.saveCheckedState(option, newCheckedState);
+                    filterView.saveCheckedState(option, newCheckedState, filterTitle);
                     option.setInputState(Boolean.toString(newCheckedState));
                     adapter.notifyItemChanged(position);
                 }
