@@ -151,7 +151,7 @@ public class CardPagerAdapter extends PagerAdapter implements CardAdapter, Event
         }
         tv4DateTime.setOnClickListener(clickListener);
         TextView tv4Location = view.findViewById(R.id.tv4_location);
-        tv4Location.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_putih,0,0,0);
+        tv4Location.setCompoundDrawablesWithIntrinsicBounds(R.drawable.event_ic_putih,0,0,0);
         tv4Location.setText(item.getCityName());
         tv4Location.setOnClickListener(clickListener);
         TextView tv4EventTitle = view.findViewById(R.id.tv4_event_title);
