@@ -14,7 +14,9 @@ import static com.tokopedia.imagepicker.picker.main.util.ImagePickerTabTypeDef.T
  */
 
 public enum ImagePickerBuilder {
-    ADD_PRODUCT(new int[]{TYPE_GALLERY, TYPE_CAMERA},
+    ADD_PRODUCT(
+            "Gambar Produk",
+            new int[]{TYPE_GALLERY, TYPE_CAMERA},
             GalleryType.IMAGE_ONLY,
             ImageSelectionTypeDef.TYPE_SINGLE,
             300,
@@ -24,6 +26,7 @@ public enum ImagePickerBuilder {
             new int[]{ACTION_CROP_ROTATE, ACTION_BRIGHTNESS, ACTION_CONTRAST},
             true);
 
+    private String title;
     private @ImagePickerTabTypeDef
     int[] tabTypeDef;
     private @GalleryType
@@ -38,11 +41,13 @@ public enum ImagePickerBuilder {
     private int ratioX;
     private int ratioY;
 
-    ImagePickerBuilder(@ImagePickerTabTypeDef int[] imagePickerTabTypeDef,
+    ImagePickerBuilder(String title,
+                       @ImagePickerTabTypeDef int[] imagePickerTabTypeDef,
                        @GalleryType int galleryType,
                        @ImageSelectionTypeDef int selectionType,
                        int minResolution,
                        int ratioX, int ratioY) {
+        this.title = title;
         this.tabTypeDef = imagePickerTabTypeDef;
         this.galleryType = galleryType;
         this.imageSelectionType = selectionType;
@@ -52,7 +57,8 @@ public enum ImagePickerBuilder {
         this.continueToEditAfterPick = false;
     }
 
-    ImagePickerBuilder(@ImagePickerTabTypeDef int[] imagePickerTabTypeDef,
+    ImagePickerBuilder(String title,
+                       @ImagePickerTabTypeDef int[] imagePickerTabTypeDef,
                        @GalleryType int galleryType,
                        @ImageSelectionTypeDef int selectionType,
                        int minResolution,
@@ -60,7 +66,7 @@ public enum ImagePickerBuilder {
                        boolean continueToEditAfterPick,
                        @ImageEditActionTypeDef int[] imageEditActionType,
                        boolean circlePreview) {
-        this(imagePickerTabTypeDef, galleryType, selectionType, minResolution, ratioX, ratioY);
+        this(title, imagePickerTabTypeDef, galleryType, selectionType, minResolution, ratioX, ratioY);
         this.continueToEditAfterPick = continueToEditAfterPick;
         this.imageEditActionType = imageEditActionType;
         this.circlePreview = circlePreview;
@@ -126,5 +132,9 @@ public enum ImagePickerBuilder {
 
     public boolean isCirclePreview() {
         return circlePreview;
+    }
+
+    public String getTitle() {
+        return title;
     }
 }

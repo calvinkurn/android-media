@@ -12,6 +12,7 @@ import android.widget.ImageView;
 import com.tokopedia.imagepicker.R;
 import com.tokopedia.imagepicker.picker.gallery.model.MediaItem;
 import com.tokopedia.imagepicker.picker.gallery.widget.MediaGrid;
+import com.tokopedia.imagepicker.picker.main.adapter.RecyclerViewCursorAdapter;
 
 import java.util.ArrayList;
 

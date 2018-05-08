@@ -224,7 +224,7 @@ public class ImageEditorPresenter extends BaseDaggerPresenter<ImageEditorPresent
                                 throw new RuntimeException(e.getMessage());
                             }
                         } else {
-                            return null;
+                            return new File(url);
                         }
                     }
                 });

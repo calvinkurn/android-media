@@ -1,4 +1,4 @@
-package com.tokopedia.imagepicker.picker.gallery.adapter;
+package com.tokopedia.imagepicker.picker.main.adapter;
 
 import android.database.Cursor;
 import android.provider.MediaStore;
@@ -10,7 +10,7 @@ public abstract class RecyclerViewCursorAdapter<VH extends RecyclerView.ViewHold
     private Cursor mCursor;
     private int mRowIDColumn;
 
-    RecyclerViewCursorAdapter(Cursor c) {
+    public RecyclerViewCursorAdapter(Cursor c) {
         setHasStableIds(true);
         swapCursor(c);
     }

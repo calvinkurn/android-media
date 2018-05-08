@@ -5,40 +5,31 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.database.Cursor;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
-import android.text.TextUtils;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.TextView;
 
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.imagepicker.R;
 import com.tokopedia.imagepicker.editor.main.view.ImageEditorActivity;
-import com.tokopedia.imagepicker.picker.adapter.AlbumAdapter;
-import com.tokopedia.imagepicker.picker.adapter.ImagePickerViewPagerAdapter;
+import com.tokopedia.imagepicker.picker.main.adapter.ImagePickerViewPagerAdapter;
 import com.tokopedia.imagepicker.picker.camera.ImagePickerCameraFragment;
 import com.tokopedia.imagepicker.picker.gallery.ImagePickerGalleryFragment;
-import com.tokopedia.imagepicker.picker.gallery.model.AlbumItem;
 import com.tokopedia.imagepicker.picker.gallery.model.MediaItem;
 import com.tokopedia.imagepicker.picker.main.util.ImagePickerBuilder;
 import com.tokopedia.imagepicker.picker.main.util.ImagePickerTabTypeDef;
 import com.tokopedia.imagepicker.picker.main.util.ImageSelectionTypeDef;
-import com.tokopedia.imagepicker.picker.widget.AlbumsSpinner;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class ImagePickerActivity extends BaseSimpleActivity
-        implements AdapterView.OnItemSelectedListener,
-        ImagePickerGalleryFragment.OnImagePickerGalleryFragmentListener,
+        implements ImagePickerGalleryFragment.OnImagePickerGalleryFragmentListener,
         ImagePickerCameraFragment.OnImagePickerCameraFragmentListener {
 
     public static final String EXTRA_IMAGE_PICKER_BUILDER = "x_img_pick_builder";
@@ -53,12 +44,8 @@ public class ImagePickerActivity extends BaseSimpleActivity
     private ImagePickerBuilder imagePickerBuilder;
 
     private int selectedTab = 0;
-    private int selectedAlbumPos = 0;
     private ViewPager viewPager;
 
-    private AlbumsSpinner albumSpinner;
-    private AlbumAdapter albumAdapter;
-    private TextView tvSelectedAlbum;
     private ImagePickerViewPagerAdapter imagePickerViewPagerAdapter;
     private List<String> permissionsToRequest;
 
@@ -90,10 +77,11 @@ public class ImagePickerActivity extends BaseSimpleActivity
         viewPager = findViewById(R.id.view_pager);
         tabLayout = findViewById(R.id.tab_layout);
 
+        getSupportActionBar().setTitle(imagePickerBuilder.getTitle());
+
         setupPreview();
         setupViewPager();
         setupTabLayout();
-        setupAlbumSpinner();
     }
 
     private void setupPreview() {
@@ -147,12 +135,17 @@ public class ImagePickerActivity extends BaseSimpleActivity
             @Override
             public void onPageSelected(int position) {
                 selectedTab = position;
-                changeSpinnerVisibilityByPosition(position);
             }
 
             @Override
             public void onPageScrollStateChanged(int state) {
 
+            }
+        });
+        viewPager.post(new Runnable() {
+            @Override
+            public void run() {
+                viewPager.setCurrentItem(selectedTab, false);
             }
         });
     }
@@ -164,54 +157,9 @@ public class ImagePickerActivity extends BaseSimpleActivity
         }
     }
 
-    private void changeSpinnerVisibilityByPosition(int position) {
-        switch (imagePickerBuilder.getTabTypeDef(position)) {
-            case ImagePickerTabTypeDef.TYPE_GALLERY: {
-                getSupportActionBar().setTitle("");
-                if (TextUtils.isEmpty(tvSelectedAlbum.getText())) {
-                    tvSelectedAlbum.setVisibility(View.GONE);
-                } else {
-                    tvSelectedAlbum.setVisibility(View.VISIBLE);
-                }
-            }
-            break;
-            case ImagePickerTabTypeDef.TYPE_CAMERA: {
-                getSupportActionBar().setTitle(getString(R.string.take_picture));
-                tvSelectedAlbum.setVisibility(View.GONE);
-            }
-            break;
-            default: {
-                getSupportActionBar().setTitle(getTitle());
-                tvSelectedAlbum.setVisibility(View.GONE);
-            }
-            break;
-        }
-    }
-
-    private void setupAlbumSpinner() {
-        tvSelectedAlbum = findViewById(R.id.selected_album);
-        if (imagePickerBuilder.indexTypeDef(ImagePickerTabTypeDef.TYPE_GALLERY) > -1) {
-            albumAdapter = new AlbumAdapter(this, null, false);
-            albumSpinner = new AlbumsSpinner(this);
-            albumSpinner.setOnItemSelectedListener(this);
-            albumSpinner.setSelectedTextView(tvSelectedAlbum);
-            albumSpinner.setPopupAnchorView(toolbar);
-            albumSpinner.setAdapter(albumAdapter);
-        }
-        changeSpinnerVisibilityByPosition(selectedTab);
-    }
-
     @Override
     protected Fragment getNewFragment() {
         return null;
-    }
-
-    @Override
-    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-        if (selectedAlbumPos != position) {
-            selectedAlbumPos = position;
-            onAlbumLoaded(albumAdapter.getCursor());
-        }
     }
 
     @Override
@@ -227,34 +175,6 @@ public class ImagePickerActivity extends BaseSimpleActivity
             if (allIsAllowed) {
                 viewPager.setAdapter(imagePickerViewPagerAdapter);
             }
-        }
-    }
-
-    @Override
-    public void onNothingSelected(AdapterView<?> parent) {
-
-    }
-
-    @Override
-    public void onAlbumLoaded(final Cursor cursor) {
-        albumAdapter.swapCursor(cursor);
-        if (cursor != null && cursor.getCount() > selectedAlbumPos) {
-            new Handler().post(new Runnable() {
-                @Override
-                public void run() {
-                    cursor.moveToPosition(selectedAlbumPos);
-                    albumSpinner.setSelection(ImagePickerActivity.this, selectedAlbumPos);
-                    AlbumItem albumItem = AlbumItem.valueOf(cursor);
-                    if (albumItem.isAll()) {
-                        albumItem.addCaptureCount();
-                    }
-                    ImagePickerGalleryFragment imagePickerGalleryFragment = getGalleryFragment();
-                    if (imagePickerGalleryFragment != null) {
-                        imagePickerGalleryFragment.selectAlbum(albumItem);
-                    }
-                    changeSpinnerVisibilityByPosition(selectedTab);
-                }
-            });
         }
     }
 

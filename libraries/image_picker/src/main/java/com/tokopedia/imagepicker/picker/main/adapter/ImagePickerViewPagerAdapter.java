@@ -1,4 +1,4 @@
-package com.tokopedia.imagepicker.picker.adapter;
+package com.tokopedia.imagepicker.picker.main.adapter;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
