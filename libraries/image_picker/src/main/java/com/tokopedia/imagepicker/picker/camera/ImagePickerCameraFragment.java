@@ -11,7 +11,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.annotation.RequiresPermission;
-import android.util.Log;
 import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -40,7 +39,6 @@ import java.util.Set;
  */
 
 public class ImagePickerCameraFragment extends TkpdBaseV4Fragment {
-    private static final String TAG = ImagePickerCameraFragment.class.getSimpleName();
 
     private CameraView cameraView;
     private ImageButton flashImageButton;
@@ -122,7 +120,7 @@ public class ImagePickerCameraFragment extends TkpdBaseV4Fragment {
                     int flashIndexTemp = flashIndex++ % supportedFlashList.size();
                     Flash flash = supportedFlashList.get(flashIndexTemp);
                     cameraView.set(flash);
-                    Log.i(TAG, flash.name() + " - " + flash.ordinal());
+                    Toast.makeText(getActivity(), flash.name() + " - " + flash.ordinal(), Toast.LENGTH_SHORT).show();
                 }
             });
             flashImageButton.setVisibility(View.VISIBLE);
