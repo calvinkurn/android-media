@@ -2,6 +2,7 @@ package com.tokopedia.tkpdreactnative.react;
 
 import android.content.Context;
 
+import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
@@ -28,8 +29,8 @@ public class ReactCommonModule extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
-    public String getImageHost() {
+    public void getImageHost(Promise promise) {
         RemoteConfig remoteConfig = new FirebaseRemoteConfigImpl(context);
-        return remoteConfig.getString(TkpdCache.RemoteConfigKey.IMAGE_HOST, "http://ecs7.tokopedia.net");
+        promise.resolve(remoteConfig.getString(TkpdCache.RemoteConfigKey.IMAGE_HOST, "http://ecs7.tokopedia.net"));
     }
 }
