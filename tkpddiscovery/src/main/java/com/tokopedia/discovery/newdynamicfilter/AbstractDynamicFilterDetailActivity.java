@@ -16,6 +16,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import com.tkpd.library.utils.KeyboardHandler;
+import com.tokopedia.core.analytics.SearchTracking;
 import com.tokopedia.core.app.BaseActivity;
 import com.tokopedia.core.discovery.model.Option;
 import com.tokopedia.design.search.EmptySearchResultView;
@@ -46,6 +47,7 @@ public abstract class AbstractDynamicFilterDetailActivity<T extends RecyclerView
     protected static final String EXTRA_SEARCH_HINT = "EXTRA_SEARCH_HINT";
     protected static final String EXTRA_IS_SEARCHABLE = "EXTRA_IS_SEARCHABLE";
     protected static final String EXTRA_PAGE_TITLE = "EXTRA_PAGE_TITLE";
+    protected static final String EXTRA_IS_USING_TRACKING = "EXTRA_IS_USING_TRACKING";
 
     protected List<Option> optionList;
     protected T adapter;
@@ -66,6 +68,7 @@ public abstract class AbstractDynamicFilterDetailActivity<T extends RecyclerView
     private String pageTitle;
     private boolean isAutoTextChange = false;
     private Subscription subscription;
+    private boolean isUsingTracking;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -114,6 +117,7 @@ public abstract class AbstractDynamicFilterDetailActivity<T extends RecyclerView
         isSearchable = getIntent().getBooleanExtra(EXTRA_IS_SEARCHABLE, false);
         searchHint = getIntent().getStringExtra(EXTRA_SEARCH_HINT);
         pageTitle = getIntent().getStringExtra(EXTRA_PAGE_TITLE);
+        isUsingTracking = getIntent().getBooleanExtra(EXTRA_IS_USING_TRACKING, false);
     }
 
     protected void bindView() {
@@ -221,6 +225,9 @@ public abstract class AbstractDynamicFilterDetailActivity<T extends RecyclerView
     public void onItemCheckedChanged(Option option, boolean isChecked) {
         option.setInputState(Boolean.toString(isChecked));
         hideKeyboard();
+        if (isUsingTracking) {
+            SearchTracking.eventSearchResultFilterJourney(pageTitle, option.getName(), true, isChecked);
+        }
     }
 
     private void hideKeyboard() {
