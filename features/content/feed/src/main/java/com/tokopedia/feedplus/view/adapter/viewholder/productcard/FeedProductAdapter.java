@@ -202,6 +202,8 @@ public class FeedProductAdapter extends RecyclerView.Adapter<FeedProductAdapter.
         int paddingSide, paddingTop, paddingBottom;
         Resources resources = context.getResources();
 
+        holder.productName.setMinLines(2);
+
         if (getItemCount() == 1) {
             paddingTop = (int) resources.getDimension(R.dimen.product_padding_medium);
             paddingBottom = (int) resources.getDimension(R.dimen.product_padding_medium);
