@@ -19,6 +19,7 @@ import com.tokopedia.inbox.attachproduct.view.resultmodel.ResultProduct;
 import com.tokopedia.inbox.inboxchat.ChatWebSocketListenerImpl;
 import com.tokopedia.inbox.inboxchat.InboxChatConstant;
 import com.tokopedia.inbox.inboxchat.data.pojo.SetChatRatingPojo;
+import com.tokopedia.inbox.inboxchat.domain.WebSocketMapper;
 import com.tokopedia.inbox.inboxchat.domain.model.replyaction.ReplyActionData;
 import com.tokopedia.inbox.inboxchat.domain.model.websocket.WebSocketResponse;
 import com.tokopedia.inbox.inboxchat.domain.usecase.AttachImageUseCase;
@@ -85,6 +86,7 @@ public class ChatRoomPresenter extends BaseDaggerPresenter<ChatRoomContract.View
     final static String SELLER = "shop";
     private SendMessageUseCase sendMessageUseCase;
     private WebSocketUseCase webSocketUseCase;
+    private WebSocketMapper webSocketMapper;
 
     @Inject
     ChatRoomPresenter(GetReplyListUseCase getReplyListUseCase,
@@ -93,7 +95,8 @@ public class ChatRoomPresenter extends BaseDaggerPresenter<ChatRoomContract.View
                       SendMessageUseCase sendMessageUseCase,
                       AttachImageUseCase attachImageUseCase,
                       SetChatRatingUseCase setChatRatingUseCase,
-                      SessionHandler sessionHandler) {
+                      SessionHandler sessionHandler,
+                      WebSocketMapper webSocketMapper) {
         this.getReplyListUseCase = getReplyListUseCase;
         this.replyMessageUseCase = replyMessageUseCase;
         this.getTemplateUseCase = getTemplateUseCase;
@@ -101,6 +104,7 @@ public class ChatRoomPresenter extends BaseDaggerPresenter<ChatRoomContract.View
         this.attachImageUseCase = attachImageUseCase;
         this.setChatRatingUseCase = setChatRatingUseCase;
         this.sessionHandler = sessionHandler;
+        this.webSocketMapper = webSocketMapper;
     }
 
     @Override
@@ -115,7 +119,7 @@ public class ChatRoomPresenter extends BaseDaggerPresenter<ChatRoomContract.View
                 "?os_type=1" +
                 "&device_id=" + GCMHandler.getRegistrationId(getView().getContext()) +
                 "&user_id=" + SessionHandler.getLoginID(getView().getContext());
-        listener = new ChatWebSocketListenerImpl(getView().getInterface());
+        listener = new ChatWebSocketListenerImpl(getView().getInterface(), webSocketMapper);
         isFirstTime = true;
 
         imageUploadHandler = ImageUploadHandlerChat.createInstance(getView().getFragment());
