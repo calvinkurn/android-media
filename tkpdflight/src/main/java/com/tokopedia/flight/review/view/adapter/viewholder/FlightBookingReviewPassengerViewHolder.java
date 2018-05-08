@@ -85,9 +85,12 @@ public class FlightBookingReviewPassengerViewHolder extends AbstractViewHolder<F
     private boolean shouldChangeBackground(int status) {
         switch (status) {
             case FlightCancellationStatus.REQUESTED:
+                passengerCancellationStatus.setText(String.format(getString(
+                        R.string.flight_cancellation_passenger_status), "sedang dalam pengajuan."));
+                return true;
             case FlightCancellationStatus.PENDING:
                 passengerCancellationStatus.setText(String.format(getString(
-                        R.string.flight_cancellation_passenger_status), "sedang di proses."));
+                        R.string.flight_cancellation_passenger_status), "sedang menunggu persetujuan."));
                 return true;
             case FlightCancellationStatus.REFUNDED:
                 passengerCancellationStatus.setText(String.format(getString(
