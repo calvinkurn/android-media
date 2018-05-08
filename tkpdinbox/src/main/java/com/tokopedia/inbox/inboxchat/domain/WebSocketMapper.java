@@ -11,6 +11,8 @@ import com.tokopedia.inbox.inboxchat.viewmodel.chatroom.QuickReplyViewModel;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.inject.Inject;
+
 /**
  * @author by nisie on 5/8/18.
  */
@@ -18,6 +20,7 @@ public class WebSocketMapper {
 
     private static final String TYPE_QUICK_REPLY = "8";
 
+    @Inject
     public WebSocketMapper() {
     }
 
@@ -43,7 +46,6 @@ public class WebSocketMapper {
 //        WebSocketResponse pojo = new GsonBuilder().create().fromJson(json, WebSocketResponse.class);
 
         return new QuickReplyListViewModel(
-                "",
                 "",
                 "",
                 "",

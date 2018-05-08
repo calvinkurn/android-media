@@ -248,7 +248,8 @@ public class ChatRoomFragment extends BaseDaggerFragment
                 ""))) {
             String customMessage = "\n" + getArguments().getString(SendMessageActivity
                     .PARAM_CUSTOM_MESSAGE, "");
-            replyColumn.setText(customMessage);
+            replyColumn.setText(customMessage
+            );
         }
 
         if (isChatBot) {
@@ -408,6 +409,8 @@ public class ChatRoomFragment extends BaseDaggerFragment
                 UnifyTracking.sendChat(TopChatAnalytics.Category.CHAT_DETAIL,
                         TopChatAnalytics.Action.CHAT_DETAIL_SEND,
                         TopChatAnalytics.Name.CHAT_DETAIL);
+
+
             }
         };
     }

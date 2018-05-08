@@ -9,7 +9,6 @@ public class BaseChatViewModel {
     private String fromUid;
     private String from;
     private String fromRole;
-    private String toUid;
     private MessageViewModel message;
     private String attachmentId;
     private String attachmentType;
@@ -19,7 +18,6 @@ public class BaseChatViewModel {
                              String fromUid,
                              String from,
                              String fromRole,
-                             String toUid,
                              MessageViewModel message,
                              String attachmentId,
                              String attachmentType,
@@ -28,7 +26,6 @@ public class BaseChatViewModel {
         this.fromUid = fromUid;
         this.from = from;
         this.fromRole = fromRole;
-        this.toUid = toUid;
         this.message = message;
         this.attachmentId = attachmentId;
         this.attachmentType = attachmentType;
@@ -49,10 +46,6 @@ public class BaseChatViewModel {
 
     public String getFromRole() {
         return fromRole;
-    }
-
-    public String getToUid() {
-        return toUid;
     }
 
     public MessageViewModel getMessage() {
