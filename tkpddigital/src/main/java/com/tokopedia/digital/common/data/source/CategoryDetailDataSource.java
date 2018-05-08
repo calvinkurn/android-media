@@ -30,6 +30,7 @@ import rx.functions.Func1;
 
 /**
  * @author rizkyfadillah on 19/01/18.
+ *         Modified by Vishal Gupta on 8th May, 2018
  */
 
 public class CategoryDetailDataSource {
@@ -68,13 +69,10 @@ public class CategoryDetailDataSource {
      * Fetches CategoryDetail and Favorit Number Combined, first this function try to fetch data from local if exists
      *
      * @param categoryId
-     * @param operatorId
-     * @param clientNumber
-     * @param productId
      * @return
      */
-    public Observable<ProductDigitalData> getCategoryDetailWithFavorit(String categoryId, String operatorId, String clientNumber, String productId) {
-        return Observable.concat(getCategoryAndFavDataFromLocal(categoryId), getCategoryAndFavoritFromCloud(categoryId))
+    public Observable<ProductDigitalData> getCategoryDetailWithFavorit(String categoryId) {
+        return Observable.concat(getCategoryAndFavDataFromLocal(categoryId), getCategoryAndFavoritFromCloud(categoryId, "", "", ""))
                 .first(new Func1<ProductDigitalData, Boolean>() {
                     @Override
                     public Boolean call(ProductDigitalData productDigitalData) {
@@ -83,6 +81,13 @@ public class CategoryDetailDataSource {
                 });
     }
 
+    /**
+     * Fetched category detail data from local cache and returns if expired or not present,
+     * Cache Expiry Time is 15 minutes
+     *
+     * @param categoryId
+     * @return
+     */
     private Observable<ProductDigitalData> getCategoryDataFromLocal(String categoryId) {
         RechargeResponseEntity digitalCategoryDetailEntity;
         try {
@@ -102,6 +107,12 @@ public class CategoryDetailDataSource {
         return Observable.just(categoryData);
     }
 
+    /**
+     * Get Category detail from network
+     *
+     * @param categoryId
+     * @return
+     */
     private Observable<ProductDigitalData> getCategoryDataFromCloud(String categoryId) {
         return digitalEndpointService.getApi().getCategory(String.format(getCategoryRequestPayload(), categoryId))
                 .map(new Func1<Response<GraphqlResponse<RechargeResponseEntity>>, RechargeResponseEntity>() {
@@ -114,6 +125,12 @@ public class CategoryDetailDataSource {
                 .map(getFuncTransformCategoryData());
     }
 
+    /**
+     * Get category and favourite numbers data from local, cache expiry time is 15 minutes
+     *
+     * @param categoryId
+     * @return
+     */
     private Observable<ProductDigitalData> getCategoryAndFavDataFromLocal(String categoryId) {
         RechargeResponseEntity digitalCategoryDetailEntity;
         try {
@@ -133,8 +150,8 @@ public class CategoryDetailDataSource {
         return Observable.just(categoryData);
     }
 
-    private Observable<ProductDigitalData> getCategoryAndFavoritFromCloud(String categoryId) {
-        return digitalEndpointService.getApi().getCategoryAndFavoriteList(String.format(getCategoryWithFavRequestPayload(), categoryId, categoryId))
+    public Observable<ProductDigitalData> getCategoryAndFavoritFromCloud(String categoryId, String operatorId, String clientNumber, String productId) {
+        return digitalEndpointService.getApi().getCategoryAndFavoriteList(String.format(getCategoryAndFavRequestPayload(), categoryId, categoryId))
                 .map(new Func1<Response<GraphqlResponse<RechargeResponseEntity>>, RechargeResponseEntity>() {
                     @Override
                     public RechargeResponseEntity call(Response<GraphqlResponse<RechargeResponseEntity>> response) {
@@ -153,7 +170,7 @@ public class CategoryDetailDataSource {
                 globalCacheManager.setValue(CacheUtil.convertModelToString(digitalCategoryDetailEntity,
                         new TypeToken<RechargeResponseEntity>() {
                         }.getType()));
-                globalCacheManager.setCacheDuration(600); // 10 minutes
+                globalCacheManager.setCacheDuration(900); // 15 minutes
                 globalCacheManager.store();
             }
         };
@@ -167,7 +184,7 @@ public class CategoryDetailDataSource {
                 globalCacheManager.setValue(CacheUtil.convertModelToString(digitalCategoryDetailEntity,
                         new TypeToken<RechargeResponseEntity>() {
                         }.getType()));
-                globalCacheManager.setCacheDuration(3600); // 1 Hour
+                globalCacheManager.setCacheDuration(900); // 15 //fetch category detail if user is not logged in
                 globalCacheManager.store();
             }
         };
@@ -250,7 +267,7 @@ public class CategoryDetailDataSource {
         return loadRawString(context.getResources(), R.raw.digital_category_query);
     }
 
-    private String getCategoryWithFavRequestPayload() {
+    private String getCategoryAndFavRequestPayload() {
         return loadRawString(context.getResources(), R.raw.digital_category_favourites_query);
     }
 

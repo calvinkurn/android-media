@@ -7,16 +7,14 @@ import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.digital.common.domain.IDigitalCategoryRepository;
+import com.tokopedia.digital.product.view.model.HistoryClientNumber;
 import com.tokopedia.digital.product.view.model.OrderClientNumber;
 import com.tokopedia.digital.product.view.model.ProductDigitalData;
-import com.tokopedia.digital.widget.view.model.DigitalNumberList;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.usecase.UseCase;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import rx.Observable;
+import rx.functions.Func1;
 
 /**
  * @author rizkyfadillah on 19/01/18.
@@ -46,10 +44,10 @@ public class GetCategoryByIdUseCase extends UseCase<ProductDigitalData> {
 
     @Override
     public Observable<ProductDigitalData> createObservable(RequestParams requestParams) {
-        String categoryId = requestParams.getString(PARAM_CATEGORY_ID, "");
-        String operatorId = requestParams.getString(PARAM_OPERATOR_ID, "");
-        String productId = requestParams.getString(PARAM_PRODUCT_ID, "");
-        String clientNumber = requestParams.getString(PARAM_CLIENT_NUMBER, "");
+        final String categoryId = requestParams.getString(PARAM_CATEGORY_ID, "");
+        final String operatorId = requestParams.getString(PARAM_OPERATOR_ID, "");
+        final String productId = requestParams.getString(PARAM_PRODUCT_ID, "");
+        final String clientNumber = requestParams.getString(PARAM_CLIENT_NUMBER, "");
         String sort = requestParams.getString(PARAM_SORT, "");
         boolean needFavoriteList = requestParams.getBoolean(PARAM_NEED_FAVORITE_LIST, false);
 
@@ -59,7 +57,35 @@ public class GetCategoryByIdUseCase extends UseCase<ProductDigitalData> {
 //        }
 
         if (needFavoriteList) {
-            return digitalCategoryRepository.getCategoryWithFavorit(categoryId, operatorId, clientNumber, productId);
+            //fetch category detail and favorit both if user is not logged in
+            if (SessionHandler.isV4Login(MainApplication.getAppContext())) {
+                return digitalCategoryRepository.getCategoryWithFavorit(categoryId, operatorId, clientNumber, productId);
+            }
+
+            //fetch category detail if user is not logged in
+            return digitalCategoryRepository.getCategory(categoryId)
+                    .map(new Func1<ProductDigitalData, ProductDigitalData>() {
+                        @Override
+                        public ProductDigitalData call(ProductDigitalData productDigitalData) {
+                            if (productDigitalData != null) {
+                                OrderClientNumber orderClientNumber = new OrderClientNumber.Builder()
+                                        .categoryId(categoryId)
+                                        .operatorId(operatorId)
+                                        .clientNumber(clientNumber)
+                                        .name(DEFAULT_EMPTY_FIELD)
+                                        .productId(productId)
+                                        .build();
+
+                                HistoryClientNumber historyClientNumber = productDigitalData.getHistoryClientNumber();
+                                if (historyClientNumber == null) {
+                                    historyClientNumber = new HistoryClientNumber();
+                                }
+                                historyClientNumber.setLastOrderClientNumber(orderClientNumber);
+                                productDigitalData.setHistoryClientNumber(historyClientNumber);
+                            }
+                            return productDigitalData;
+                        }
+                    });
         } else {
             return digitalCategoryRepository.getCategory(categoryId);
         }

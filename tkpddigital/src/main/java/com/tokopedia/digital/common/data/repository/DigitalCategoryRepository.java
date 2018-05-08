@@ -1,5 +1,7 @@
 package com.tokopedia.digital.common.data.repository;
 
+import android.text.TextUtils;
+
 import com.tokopedia.digital.common.data.source.CategoryDetailDataSource;
 import com.tokopedia.digital.common.domain.IDigitalCategoryRepository;
 import com.tokopedia.digital.product.view.model.ProductDigitalData;
@@ -25,7 +27,11 @@ public class DigitalCategoryRepository implements IDigitalCategoryRepository {
 
     @Override
     public Observable<ProductDigitalData> getCategoryWithFavorit(String categoryId, String operatorId, String clientNumber, String productId) {
-        return categoryDetailDataSource.getCategoryDetailWithFavorit(categoryId, operatorId, clientNumber, productId);
+        if (TextUtils.isEmpty(operatorId) && TextUtils.isEmpty(clientNumber) && TextUtils.isEmpty(productId)) {
+            return categoryDetailDataSource.getCategoryDetailWithFavorit(categoryId);
+        }
+
+        return categoryDetailDataSource.getCategoryAndFavoritFromCloud(categoryId, operatorId, clientNumber, productId);
     }
 
     @Override
