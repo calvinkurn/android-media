@@ -1,5 +1,6 @@
 package com.tokopedia.feedplus.view.adapter.viewholder.kol;
 
+import android.content.res.Resources;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -38,6 +39,19 @@ public class ProductCommunicationAdapter
 
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
+        if (position == 0) {
+            RecyclerView.LayoutParams layoutParams = new RecyclerView.LayoutParams(
+                    RecyclerView.LayoutParams.WRAP_CONTENT,
+                    RecyclerView.LayoutParams.WRAP_CONTENT);
+
+            Resources resources = holder.parentView.getContext().getResources();
+            int marginStart = (int) resources.getDimension(R.dimen.dp_20);
+            int marginOthers = (int) resources.getDimension(R.dimen.dp_4);
+            layoutParams.setMargins(marginStart, marginOthers, marginOthers, marginOthers);
+
+            holder.parentView.setLayoutParams(layoutParams);
+        }
+
         ImageHandler.loadImage2(holder.image,
                 itemViewModels.get(position).getImageUrl(),
                 R.drawable.ic_loading_image);
