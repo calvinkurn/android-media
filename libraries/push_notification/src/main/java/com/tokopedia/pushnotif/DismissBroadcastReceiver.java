@@ -16,9 +16,9 @@ public class DismissBroadcastReceiver extends BroadcastReceiver{
         int notificationId = intent.getIntExtra(Constant.EXTRA_NOTIFICATION_ID, 0);
 
         if (notificationId == 0) {
-            HistoryNotification.clearAllHistoryNotification(context, notificationType);
+            HistoryNotification.clearAllHistoryNotification(notificationType);
         } else {
-            HistoryNotification.clearHistoryNotification(context, notificationType, notificationId);
+            HistoryNotification.clearHistoryNotification(notificationType, notificationId);
         }
     }
 }

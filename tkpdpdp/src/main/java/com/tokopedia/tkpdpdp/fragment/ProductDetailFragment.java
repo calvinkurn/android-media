@@ -1229,6 +1229,9 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
                         if (!isAdded() || context == null) {
                             return;
                         }
+                        if (GlobalConfig.isSellerApp()) {
+                            return;
+                        }
                         Intent intent = new Intent(context, SimpleHomeRouter.getSimpleHomeActivityClass());
                         intent.putExtra(
                                 SimpleHomeRouter.FRAGMENT_TYPE,
@@ -1321,7 +1324,7 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
     @Override
     public void addProductStock(Child productStock) {
         productStockNonVariant = productStock;
-        if(productStock.isEnabled()){
+        if(productData !=null && productData.getInfo() !=null && productStock.isEnabled()){
             productData.getInfo().setProductStockWording(productStockNonVariant.getStockWording());
             productData.getInfo().setLimitedStock(productStockNonVariant.isLimitedStock());
             headerInfoView.renderStockAvailability(productData.getInfo());

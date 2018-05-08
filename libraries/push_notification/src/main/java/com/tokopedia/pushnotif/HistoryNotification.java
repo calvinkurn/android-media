@@ -33,17 +33,22 @@ public class HistoryNotification {
     }
 
 
-    public static void clearHistoryNotification(Context context, int notificationType, int notificationId) {
+    public static void clearHistoryNotification(int notificationType, int notificationId) {
         SQLite.delete().from(HistoryNotificationDB.class)
                 .where(HistoryNotificationDB_Table.notification_type.eq(notificationType))
                 .and(HistoryNotificationDB_Table.notification_id.eq(notificationId))
                 .execute();
     }
 
-    public static void clearAllHistoryNotification(Context context, int notificationType) {
+    public static void clearAllHistoryNotification(int notificationType) {
         SQLite.delete().from(HistoryNotificationDB.class)
                 .where(HistoryNotificationDB_Table.notification_type.eq(notificationType))
                 .execute();
+    }
+
+    public static Boolean isSingleNotification(int notificationType) {
+        List<HistoryNotificationDB> listHistoryNotification = getListHistoryNotification(notificationType);
+        return listHistoryNotification.size() == 0;
     }
 
 
