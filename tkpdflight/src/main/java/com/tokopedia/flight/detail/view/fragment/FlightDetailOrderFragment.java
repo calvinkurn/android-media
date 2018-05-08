@@ -29,7 +29,6 @@ import android.widget.Toast;
 
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.base.view.recyclerview.VerticalRecyclerView;
-import com.tokopedia.abstraction.base.view.widget.DividerItemDecoration;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.design.component.Dialog;
@@ -311,12 +310,6 @@ public class FlightDetailOrderFragment extends BaseDaggerFragment implements Fli
 
     @Override
     public void updatePassengerList(List<FlightDetailPassenger> flightDetailPassengers) {
-        if (flightDetailPassengers.size() < 2) {
-            removePassengerRecyclerDivider();
-        } else {
-            addPassengerRecyclerDivider();
-        }
-
         flightBookingReviewPassengerAdapter.addElement(flightDetailPassengers);
         flightBookingReviewPassengerAdapter.notifyDataSetChanged();
     }
@@ -338,14 +331,6 @@ public class FlightDetailOrderFragment extends BaseDaggerFragment implements Fli
         this.eticketLink = eTicketLink;
         this.invoiceLink = invoiceLink;
         this.cancelMessage = cancelMessage;
-    }
-
-    private void removePassengerRecyclerDivider() {
-        recyclerViewPassenger.clearItemDecoration();
-    }
-
-    private void addPassengerRecyclerDivider() {
-        recyclerViewPassenger.addItemDecoration(new DividerItemDecoration(recyclerViewPassenger.getContext()));
     }
 
     private void togglePassengerInfo() {
