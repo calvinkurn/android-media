@@ -56,11 +56,11 @@ public class ImageEditorEditActionAdapter implements View.OnClickListener {
             view.setId(tabTypeDefItem);
             switch (tabTypeDefItem) {
                 case ImageEditActionTypeDef.ACTION_CROP:
-                    ivEdit.setImageResource(R.drawable.ic_crop);
+                    ivEdit.setImageResource(R.drawable.ic_crop_rotate);
                     tvEdit.setText(context.getString(R.string.crop));
                     break;
                 case ImageEditActionTypeDef.ACTION_ROTATE:
-                    ivEdit.setImageResource(R.drawable.ic_rotate);
+                    ivEdit.setImageResource(R.drawable.ic_crop_rotate);
                     tvEdit.setText(context.getString(R.string.rotate));
                     break;
                 case ImageEditActionTypeDef.ACTION_WATERMARK:
@@ -68,8 +68,16 @@ public class ImageEditorEditActionAdapter implements View.OnClickListener {
                     tvEdit.setText(context.getString(R.string.watermark));
                     break;
                 case ImageEditActionTypeDef.ACTION_CROP_ROTATE:
-                    ivEdit.setImageResource(R.drawable.ic_crop);
+                    ivEdit.setImageResource(R.drawable.ic_crop_rotate);
                     tvEdit.setText(context.getString(R.string.crop_and_rotate));
+                    break;
+                case ImageEditActionTypeDef.ACTION_BRIGHTNESS:
+                    ivEdit.setImageResource(R.drawable.ic_brightness);
+                    tvEdit.setText(context.getString(R.string.brightness));
+                    break;
+                case ImageEditActionTypeDef.ACTION_CONTRAST:
+                    ivEdit.setImageResource(R.drawable.ic_contrast);
+                    tvEdit.setText(context.getString(R.string.contrast));
                     break;
             }
             view.setOnClickListener(this);

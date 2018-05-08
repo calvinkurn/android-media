@@ -16,9 +16,13 @@
     <string name="rotate">Rotate</string>
     <string name="watermark">Watermark</string>
     <string name="instagram_label_login">Instagram Login</string>
-    <string name="crop_and_rotate">Crop/Rotate</string>
+    <string name="crop_and_rotate">Edit</string>
     <string name="cancel">Batal</string>
     <string name="save">Simpan</string>
     <string name="exit">Keluar</string>
     <string name="image_edit_backpressed_title">Keluar dari halaman Edit Gambar?</string>
+    <string name="brightness">Brightness</string>
+    <string name="contrast">Contrast</string>
+    <string name="default_brightness_value">0</string>
+    <string name="default_rotate_value">0°</string>
 </resources>

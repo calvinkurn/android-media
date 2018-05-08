@@ -4,6 +4,7 @@ import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.ColorMatrixColorFilter;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -19,6 +20,7 @@ import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.imagepicker.R;
 import com.tokopedia.imagepicker.common.util.ImageUtils;
+import com.tokopedia.imagepicker.editor.presenter.ImageEditPreviewPresenter;
 import com.yalantis.ucrop.callback.BitmapCropCallback;
 import com.yalantis.ucrop.util.BitmapLoadUtils;
 import com.yalantis.ucrop.view.CropImageView;
@@ -33,7 +35,7 @@ import java.io.File;
  * Created by hendry on 25/04/18.
  */
 
-public class ImageEditPreviewFragment extends Fragment {
+public class ImageEditPreviewFragment extends Fragment implements ImageEditPreviewPresenter.ImageEditPreviewView {
 
     public static final String ARG_IMAGE_PATH = "arg_img_path";
     public static final String ARG_MIN_RESOLUTION = "arg_min_resolution";
@@ -42,10 +44,17 @@ public class ImageEditPreviewFragment extends Fragment {
     public static final String ARG_CIRCLE_PREVIEW = "arg_circle_preview";
     public static final int ROTATE_WIDGET_SENSITIVITY = 42;
 
+    public static final String SAVED_BRIGHTNESS = "svd_brightness";
+    public static final String SAVED_CONTRAST = "svd_contrast";
+    public static final int INITIAL_CONTRAST_VALUE = 100;
+    public static final int BRIGHTNESS_PRECISION = 10;
+    public static final int CONTRAST_PRECISION = 100;
+
     private String edittedImagePath;
     private int minResolution = 0;
     private int expectedRatioX, expectedRatioY;
     private boolean isCirclePreview;
+    private float brightness = 0, contrast = INITIAL_CONTRAST_VALUE;
 
     private View progressBar;
 
@@ -57,10 +66,14 @@ public class ImageEditPreviewFragment extends Fragment {
     private GestureCropImageView gestureCropImageView;
     private OverlayView overlayView;
 
+    private ImageEditPreviewPresenter imageEditPreviewPresenter;
+
     public interface OnImageEditPreviewFragmentListener {
         boolean isInEditMode();
 
-        void onSuccessSaveEditImage(Uri resultUri);
+        void onEditDoNothing();
+
+        void onSuccessSaveEditImage(String path);
 
         void onErrorSaveEditImage(Throwable throwable);
 
@@ -81,6 +94,13 @@ public class ImageEditPreviewFragment extends Fragment {
         return fragment;
     }
 
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        imageEditPreviewPresenter = new ImageEditPreviewPresenter();
+        imageEditPreviewPresenter.attachView(this);
+    }
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -92,6 +112,14 @@ public class ImageEditPreviewFragment extends Fragment {
         expectedRatioX = bundle.getInt(ARG_EXPECTED_RATIO_X);
         expectedRatioY = bundle.getInt(ARG_EXPECTED_RATIO_Y);
         isCirclePreview = bundle.getBoolean(ARG_CIRCLE_PREVIEW);
+
+        if (savedInstanceState == null) {
+            brightness = 0;
+            contrast = INITIAL_CONTRAST_VALUE;
+        } else {
+            brightness = savedInstanceState.getFloat(SAVED_BRIGHTNESS);
+            contrast = savedInstanceState.getFloat(SAVED_CONTRAST);
+        }
 
         initUCrop(view);
         initProgressBar(view);
@@ -123,17 +151,72 @@ public class ImageEditPreviewFragment extends Fragment {
 
             @Override
             public void onScale(float currentScale) {
-                // setScaleText(currentScale);
+                // no scale Text shown.
             }
         });
+
+        if (brightness != 0) {
+            gestureCropImageView.setColorFilter(imageEditPreviewPresenter.getBrightnessMatrix(brightness / BRIGHTNESS_PRECISION));
+        }
+
+        if (contrast!= INITIAL_CONTRAST_VALUE) {
+            gestureCropImageView.setColorFilter(imageEditPreviewPresenter.getContrastMatrix(contrast / CONTRAST_PRECISION));
+        }
     }
 
-    public void saveEdittedImage() {
+    public float getBrightness() {
+        return brightness;
+    }
+
+    public float getContrast() {
+        return contrast;
+    }
+
+    public void setBrightness(float brightnessValue) {
+        if (brightness != brightnessValue) {
+            this.brightness = brightnessValue;
+            imageEditPreviewPresenter.getDebounceBrightnessMatrix(brightnessValue / BRIGHTNESS_PRECISION);
+        }
+    }
+
+    public void setContrast(float contrastValue) {
+        if (contrast != contrastValue) {
+            this.contrast = contrastValue;
+            imageEditPreviewPresenter.getDebounceContrastMatrix(contrastValue / CONTRAST_PRECISION);
+        }
+    }
+
+    @Override
+    public void onSuccessGetBrightnessMatrix(ColorMatrixColorFilter colorMatrixColorFilter) {
+        gestureCropImageView.setColorFilter(colorMatrixColorFilter);
+    }
+
+    @Override
+    public void onErrorGetBrightnessMatrix(Throwable e) {
+        NetworkErrorHelper.showRedCloseSnackbar(getActivity(), ErrorHandler.getErrorMessage(getContext(), e));
+    }
+
+    @Override
+    public void onSuccessGetContrastMatrix(ColorMatrixColorFilter colorMatrixColorFilter) {
+        gestureCropImageView.setColorFilter(colorMatrixColorFilter);
+    }
+
+    @Override
+    public void onErrorGetContrastMatrix(Throwable e) {
+        NetworkErrorHelper.showRedCloseSnackbar(getActivity(), ErrorHandler.getErrorMessage(getContext(), e));
+    }
+
+    public void cropAndSaveImage() {
+        if (gestureCropImageView.getCurrentAngle() == 0 &&
+                gestureCropImageView.getCurrentScale() == gestureCropImageView.getMinScale()) {
+            onImageEditPreviewFragmentListener.onEditDoNothing();
+            return;
+        }
         uCropView.getCropImageView().cropAndSaveImage(
-                edittedImagePath.endsWith("png") ? Bitmap.CompressFormat.PNG : Bitmap.CompressFormat.JPEG, 100, new BitmapCropCallback() {
+                ImageUtils.isPng(edittedImagePath) ? Bitmap.CompressFormat.PNG : Bitmap.CompressFormat.JPEG, 100, new BitmapCropCallback() {
                     @Override
                     public void onBitmapCropped(@NonNull Uri resultUri, int offsetX, int offsetY, int imageWidth, int imageHeight) {
-                        onImageEditPreviewFragmentListener.onSuccessSaveEditImage(resultUri);
+                        onImageEditPreviewFragmentListener.onSuccessSaveEditImage(resultUri.getPath());
                     }
 
                     @Override
@@ -141,6 +224,47 @@ public class ImageEditPreviewFragment extends Fragment {
                         onImageEditPreviewFragmentListener.onErrorSaveEditImage(t);
                     }
                 });
+    }
+
+    public void saveBrightnessImage() {
+        if (brightness == 0) {
+            onImageEditPreviewFragmentListener.onEditDoNothing();
+            return;
+        }
+        Bitmap bitmap = gestureCropImageView.getViewBitmap();
+        imageEditPreviewPresenter.saveBrightnessImage(bitmap, brightness / BRIGHTNESS_PRECISION, ImageUtils.isPng(edittedImagePath));
+    }
+
+    public void saveContrastImage() {
+        if (contrast == INITIAL_CONTRAST_VALUE) {
+            onImageEditPreviewFragmentListener.onEditDoNothing();
+            return;
+        }
+        Bitmap bitmap = gestureCropImageView.getViewBitmap();
+        imageEditPreviewPresenter.saveContrastImage(bitmap, contrast / CONTRAST_PRECISION, ImageUtils.isPng(edittedImagePath));
+    }
+
+    @Override
+    public void onErrorSaveBrightnessImage(Throwable e) {
+        onImageEditPreviewFragmentListener.onErrorSaveEditImage(e);
+    }
+
+    @Override
+    public void onSuccessSaveBrightnessImage(String filePath) {
+        brightness = 0;
+        onImageEditPreviewFragmentListener.onSuccessSaveEditImage(filePath);
+    }
+
+
+    @Override
+    public void onErrorSaveContrastImage(Throwable e) {
+        onImageEditPreviewFragmentListener.onErrorSaveEditImage(e);
+    }
+
+    @Override
+    public void onSuccessSaveContrastImage(String filePath) {
+        contrast = INITIAL_CONTRAST_VALUE;
+        onImageEditPreviewFragmentListener.onSuccessSaveEditImage(filePath);
     }
 
     private void initProgressBar(View view) {
@@ -159,7 +283,7 @@ public class ImageEditPreviewFragment extends Fragment {
         try {
             Uri inputUri = Uri.fromFile(new File(edittedImagePath));
             gestureCropImageView.setImageUri(inputUri,
-                    Uri.parse(ImageUtils.getTokopediaPhotoPath(ImageUtils.DirectoryDef.DIRECTORY_TOKOPEDIA_EDIT, edittedImagePath).toString()));
+                    Uri.parse(ImageUtils.getTokopediaPhotoPath(ImageUtils.DirectoryDef.DIRECTORY_TOKOPEDIA_CACHE, edittedImagePath).toString()));
         } catch (Exception e) {
 
         }
@@ -273,9 +397,22 @@ public class ImageEditPreviewFragment extends Fragment {
         gestureCropImageView.setImageToWrapCropBounds(false);
     }
 
+    public void cancelBrightness() {
+        gestureCropImageView.clearColorFilter();
+        brightness = 0;
+    }
+
+    public void cancelContrast() {
+        gestureCropImageView.clearColorFilter();
+        contrast = INITIAL_CONTRAST_VALUE;
+    }
+
     @Override
     public void onDestroy() {
         super.onDestroy();
+        if (imageEditPreviewPresenter != null) {
+            imageEditPreviewPresenter.detachView();
+        }
     }
 
     @TargetApi(23)
@@ -296,6 +433,13 @@ public class ImageEditPreviewFragment extends Fragment {
 
     protected void onAttachActivity(Context context) {
         onImageEditPreviewFragmentListener = (OnImageEditPreviewFragmentListener) context;
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putFloat(SAVED_BRIGHTNESS, brightness);
+        outState.putFloat(SAVED_CONTRAST, contrast);
     }
 
 }

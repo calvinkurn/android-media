@@ -7,7 +7,11 @@ import android.content.Context;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
+import android.graphics.ColorMatrix;
+import android.graphics.ColorMatrixColorFilter;
 import android.graphics.Matrix;
+import android.graphics.Paint;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
@@ -19,7 +23,6 @@ import android.support.media.ExifInterface;
 import android.text.TextUtils;
 import android.webkit.MimeTypeMap;
 
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -29,11 +32,12 @@ import java.io.OutputStream;
 import java.io.RandomAccessFile;
 import java.nio.MappedByteBuffer;
 import java.nio.channels.FileChannel;
+import java.util.ArrayList;
 import java.util.Random;
 
 import static com.tokopedia.imagepicker.common.util.ImageUtils.DirectoryDef.DIRECTORY_CAMERA;
-import static com.tokopedia.imagepicker.common.util.ImageUtils.DirectoryDef.DIRECTORY_DOWNLOAD;
-import static com.tokopedia.imagepicker.common.util.ImageUtils.DirectoryDef.DIRECTORY_TOKOPEDIA_EDIT;
+import static com.tokopedia.imagepicker.common.util.ImageUtils.DirectoryDef.DIRECTORY_TOKOPEDIA_CACHE;
+import static com.tokopedia.imagepicker.common.util.ImageUtils.DirectoryDef.DIRECTORY_TOKOPEDIA_EDIT_RESULT;
 
 /**
  * Created by hendry on 24/04/18.
@@ -50,11 +54,11 @@ public class ImageUtils {
     public static final String JPG_EXT = ".jpg";
     public static final String PNG = "png";
 
-    @StringDef({DIRECTORY_TOKOPEDIA_EDIT, DIRECTORY_CAMERA, DIRECTORY_DOWNLOAD})
+    @StringDef({DIRECTORY_TOKOPEDIA_CACHE, DIRECTORY_TOKOPEDIA_EDIT_RESULT, DIRECTORY_CAMERA})
     public @interface DirectoryDef {
-        String DIRECTORY_TOKOPEDIA_EDIT = "Tokopedia/Tokopedia Edit";
-        String DIRECTORY_CAMERA = "Tokopedia/Tokopedia Camera";
-        String DIRECTORY_DOWNLOAD = "Tokopedia/Tokopedia Download";
+        String DIRECTORY_TOKOPEDIA_CACHE = "Tokopedia/Tokopedia Cache/";
+        String DIRECTORY_TOKOPEDIA_EDIT_RESULT = "Tokopedia/Tokopedia Edit/";
+        String DIRECTORY_CAMERA = "Tokopedia/Tokopedia Camera/";
     }
 
     public static File getTokopediaPublicDirectory(@DirectoryDef String directoryType) {
@@ -71,13 +75,12 @@ public class ImageUtils {
     public static String generateUniqueFileName() {
         String timeString = String.valueOf(System.currentTimeMillis());
         int length = timeString.length();
-        int startIndex = length - 7;
+        int startIndex = length - 5;
         if (startIndex < 0) {
             startIndex = 0;
         }
-        int endIndex = length - 2;
-        timeString = timeString.substring(startIndex, endIndex);
-        return timeString + new Random().nextInt(10);
+        timeString = timeString.substring(startIndex);
+        return timeString + new Random().nextInt(100);
     }
 
     public static File getTokopediaPhotoPath(@DirectoryDef String directoryDef, boolean isPng) {
@@ -87,6 +90,13 @@ public class ImageUtils {
 
     public static File getTokopediaPhotoPath(@DirectoryDef String directoryDef, String referencePath) {
         return getTokopediaPhotoPath(directoryDef, isPng(referencePath));
+    }
+
+    public static void deleteCacheFolder(){
+        File directory = getTokopediaPublicDirectory(DIRECTORY_TOKOPEDIA_CACHE);
+        if (directory.exists()) {
+            directory.delete();
+        }
     }
 
     public static boolean isPng(String referencePath){
@@ -143,6 +153,27 @@ public class ImageUtils {
         } finally {
             if (inputChannel != null) inputChannel.close();
             if (outputChannel != null) outputChannel.close();
+        }
+    }
+
+    public static ArrayList<String> copyFiles(ArrayList<String> cropppedImagePaths,
+                                              @DirectoryDef String directoryDef) throws IOException {
+        ArrayList<String> resultList = new ArrayList<>();
+        for (String imagePathFrom: cropppedImagePaths) {
+            File outputFile = getTokopediaPhotoPath(directoryDef, imagePathFrom);
+            String resultPath = outputFile.getAbsolutePath();
+            copyFile(imagePathFrom, resultPath);
+            resultList.add(resultPath);
+        }
+        return resultList;
+    }
+
+    public static void deleteFile(String path) throws IOException {
+        if (!TextUtils.isEmpty(path)) {
+            File file = new File(path);
+            if (file.exists()){
+                file.delete();
+            }
         }
     }
 
@@ -653,6 +684,54 @@ public class ImageUtils {
         matrix.postScale(scale, scale);
         Bitmap resultBitmap = Bitmap.createBitmap(bitmap, 0, 0, width, height, matrix, true);
         bitmap.recycle();
+        return resultBitmap;
+    }
+
+    public static Bitmap brightBitmap(Bitmap bitmap, float brightness) {
+        float[] colorTransform = {
+                1, 0, 0, 0, brightness,
+                0, 1, 0, 0, brightness,
+                0, 0, 1, 0, brightness,
+                0, 0, 0, 1, 0};
+
+        ColorMatrix colorMatrix = new ColorMatrix();
+        colorMatrix.setSaturation(0f);
+        colorMatrix.set(colorTransform);
+
+        ColorMatrixColorFilter colorFilter = new ColorMatrixColorFilter(colorMatrix);
+        Paint paint = new Paint();
+        paint.setColorFilter(colorFilter);
+
+        Bitmap resultBitmap = bitmap.copy(Bitmap.Config.ARGB_8888, true);
+        Canvas canvas = new Canvas(resultBitmap);
+        canvas.drawBitmap(resultBitmap, 0, 0, paint);
+
+        bitmap.recycle();
+
+        return resultBitmap;
+    }
+
+    public static Bitmap contrastBitmap(Bitmap bitmap, float contrast) {
+        float[] colorTransform = new float[]{
+                contrast, 0, 0, 0, 0,
+                0, contrast, 0, 0, 0,
+                0, 0, contrast, 0, 0,
+                0, 0, 0, 1, 0};
+
+        ColorMatrix colorMatrix = new ColorMatrix();
+        colorMatrix.setSaturation(0f);
+        colorMatrix.set(colorTransform);
+
+        ColorMatrixColorFilter colorFilter = new ColorMatrixColorFilter(colorMatrix);
+        Paint paint = new Paint();
+        paint.setColorFilter(colorFilter);
+
+        Bitmap resultBitmap = bitmap.copy(Bitmap.Config.ARGB_8888, true);
+        Canvas canvas = new Canvas(resultBitmap);
+        canvas.drawBitmap(resultBitmap, 0, 0, paint);
+
+        bitmap.recycle();
+
         return resultBitmap;
     }
 
