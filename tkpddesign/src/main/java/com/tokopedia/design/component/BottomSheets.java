@@ -70,6 +70,7 @@ public abstract class BottomSheets extends BottomSheetDialogFragment {
             @Override
             public void onClick(View v) {
                 bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+                dismiss();
             }
         });
 

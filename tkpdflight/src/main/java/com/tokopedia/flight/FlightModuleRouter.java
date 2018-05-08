@@ -12,6 +12,8 @@ import com.tokopedia.flight.contactus.model.FlightContactUsPassData;
 import com.tokopedia.flight.review.domain.FlightVoucherCodeWrapper;
 import com.tokopedia.flight.review.view.model.FlightCheckoutViewModel;
 
+import java.io.File;
+
 import okhttp3.Interceptor;
 import rx.Observable;
 
@@ -66,4 +68,6 @@ public interface FlightModuleRouter {
     Intent getPromoListIntent(Activity activity);
 
     Intent getPromoDetailIntent(Context context, String slug);
+
+    File writeImage(String filePath, int qualityProcentage);
 }

@@ -8,8 +8,8 @@ import com.tokopedia.flight.cancellation.view.contract.FlightCancellationReviewC
 import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationAttachmentViewModel;
 import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationViewModel;
 import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationWrapperViewModel;
-import com.tokopedia.flight.common.util.FlightErrorUtil;
 
+import java.util.Iterator;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -34,9 +34,12 @@ public class FlightCancellationReviewPresenter extends BaseDaggerPresenter<Fligh
     public void onViewCreated() {
         FlightCancellationWrapperViewModel flightCancellationWrapperViewModel = getView().getCancellationWrapperViewModel();
 
-        for (FlightCancellationViewModel item : flightCancellationWrapperViewModel.getGetCancellations()) {
+        Iterator<FlightCancellationViewModel> iterator = flightCancellationWrapperViewModel.getGetCancellations().iterator();
+
+        while (iterator.hasNext()) {
+            FlightCancellationViewModel item = iterator.next();
             if (item.getPassengerViewModelList() == null || item.getPassengerViewModelList().size() == 0) {
-                flightCancellationWrapperViewModel.getGetCancellations().remove(item);
+                iterator.remove();
             }
         }
 

@@ -127,6 +127,10 @@ public class FileUtils {
         return writeImageToTkpdPath(convertLocalImagePathToBytes(galleryOrCameraPath, DEF_WIDTH_CMPR,
                 DEF_WIDTH_CMPR, DEF_QLTY_COMPRESS));
     }
+    public static File writeImageToTkpdPath(String galleryOrCameraPath,  int compressionQuality) {
+        return writeImageToTkpdPath(convertLocalImagePathToBytes(galleryOrCameraPath, DEF_WIDTH_CMPR,
+                DEF_WIDTH_CMPR, compressionQuality));
+    }
 
     /**
      * copy the inputstream to Tkpd Cache Directory

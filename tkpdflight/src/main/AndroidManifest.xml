@@ -105,6 +105,7 @@
         <activity
             android:name=".cancellation.view.activity.FlightCancellationReasonAndProofActivity"
             android:label="@string/activity_label_flight_cancellation"
+            android:windowSoftInputMode="stateHidden"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White.Flight" />
         <activity

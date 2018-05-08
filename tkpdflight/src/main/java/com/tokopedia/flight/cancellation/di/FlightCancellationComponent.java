@@ -18,6 +18,7 @@ import dagger.Component;
 @FlightCancellationScope
 @Component(modules = FlightCancellationModule.class, dependencies = FlightComponent.class)
 public interface FlightCancellationComponent {
+    FlightModuleRouter flightModuleRouter();
 
     UserSession userSession();
 
