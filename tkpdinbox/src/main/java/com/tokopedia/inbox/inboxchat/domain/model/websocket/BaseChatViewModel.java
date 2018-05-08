@@ -1,7 +1,5 @@
 package com.tokopedia.inbox.inboxchat.domain.model.websocket;
 
-import com.tokopedia.inbox.inboxchat.domain.model.reply.FallbackAttachment;
-
 /**
  * @author by yfsx on 08/05/18.
  */
@@ -12,24 +10,24 @@ public class BaseChatViewModel {
     private String from;
     private String fromRole;
     private String toUid;
-    private Message message;
+    private MessageViewModel message;
     private String startTime;
     private String imageUri;
     private String attachmentId;
     private String attachmentType;
-    private FallbackAttachment fallbackAttachment;
+    private FallbackAttachmentViewModel fallbackAttachment;
 
     public BaseChatViewModel(String msgId,
                              String fromUid,
                              String from,
                              String fromRole,
                              String toUid,
-                             Message message,
+                             MessageViewModel message,
                              String startTime,
                              String imageUri,
                              String attachmentId,
                              String attachmentType,
-                             FallbackAttachment fallbackAttachment) {
+                             FallbackAttachmentViewModel fallbackAttachment) {
         this.msgId = msgId;
         this.fromUid = fromUid;
         this.from = from;
@@ -63,7 +61,7 @@ public class BaseChatViewModel {
         return toUid;
     }
 
-    public Message getMessage() {
+    public MessageViewModel getMessage() {
         return message;
     }
 
@@ -83,7 +81,7 @@ public class BaseChatViewModel {
         return attachmentType;
     }
 
-    public FallbackAttachment getFallbackAttachment() {
+    public FallbackAttachmentViewModel getFallbackAttachment() {
         return fallbackAttachment;
     }
 
