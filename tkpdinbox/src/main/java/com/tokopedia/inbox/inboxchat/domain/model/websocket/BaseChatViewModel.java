@@ -18,8 +18,11 @@ public class BaseChatViewModel {
     private boolean showRating;
     private int ratingStatus;
     private int attachmentId;
-    private String attachmentType;
+    private int attachmentType;
     private FallbackAttachment fallbackAttachment;
+
+    public BaseChatViewModel() {
+    }
 
     public BaseChatViewModel(int msgId,
                              int fromUid,
@@ -32,7 +35,7 @@ public class BaseChatViewModel {
                              boolean showRating,
                              int ratingStatus,
                              int attachmentId,
-                             String attachmentType,
+                             int attachmentType,
                              FallbackAttachment fallbackAttachment) {
         this.msgId = msgId;
         this.fromUid = fromUid;
@@ -137,11 +140,11 @@ public class BaseChatViewModel {
         this.attachmentId = attachmentId;
     }
 
-    public String getAttachmentType() {
+    public int getAttachmentType() {
         return attachmentType;
     }
 
-    public void setAttachmentType(String attachmentType) {
+    public void setAttachmentType(int attachmentType) {
         this.attachmentType = attachmentType;
     }
 
