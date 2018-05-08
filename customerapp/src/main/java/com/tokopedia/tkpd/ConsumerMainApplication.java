@@ -13,7 +13,6 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.content.LocalBroadcastManager;
 
-import com.facebook.imagepipeline.producers.Consumer;
 import com.facebook.soloader.SoLoader;
 import com.moengage.inapp.InAppManager;
 import com.moengage.inapp.InAppMessage;
@@ -42,13 +41,9 @@ import com.tokopedia.groupchat.common.data.SendbirdKey;
 import com.tokopedia.inbox.inboxchat.data.network.ChatBotUrl;
 import com.tokopedia.kol.common.network.KolUrl;
 import com.tokopedia.network.SessionUrl;
-<<<<<<< HEAD
 import com.tokopedia.otp.cotp.data.CotpUrl;
 import com.tokopedia.otp.cotp.data.SQLoginUrl;
-import com.tokopedia.pushnotif.PushNotification;
-=======
 import com.tokopedia.payment.fingerprint.util.PaymentFingerprintConstant;
->>>>>>> 0963ed8be8782d88db14656dfa5aabf1d8a963e4
 import com.tokopedia.profile.data.network.ProfileUrl;
 import com.tokopedia.pushnotif.PushNotification;
 import com.tokopedia.reputation.common.constant.ReputationCommonUrl;
@@ -58,14 +53,12 @@ import com.tokopedia.tkpd.deeplink.DeeplinkHandlerActivity;
 import com.tokopedia.tkpd.deeplink.activity.DeepLinkActivity;
 import com.tokopedia.tkpd.fcm.ApplinkResetReceiver;
 import com.tokopedia.tkpd.utils.CacheApiWhiteList;
-import com.tokopedia.shop.common.constant.ShopCommonUrl;
-import com.tokopedia.shop.common.constant.ShopUrl;
-import com.tokopedia.kol.common.network.KolUrl;
 import com.tokopedia.tkpdreactnative.react.fingerprint.utils.FingerprintConstantRegister;
 import com.tokopedia.tokocash.network.api.WalletUrl;
 import com.tokopedia.transaction.network.TransactionUrl;
 
 import io.hansel.hanselsdk.Hansel;
+import retrofit2.http.HEAD;
 
 /**
  * Created by ricoharisin on 11/11/16.
@@ -195,16 +188,12 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         GroupChatUrl.BASE_URL = ConsumerAppBaseUrl.CHAT_DOMAIN;
         GamificationUrl.GQL_BASE_URL = ConsumerAppBaseUrl.GAMIFICATION_BASE_URL;
         ChatBotUrl.BASE_URL = ConsumerAppBaseUrl.CHATBOT_DOMAIN;
-<<<<<<< HEAD
         CotpUrl.BASE_URL = ConsumerAppBaseUrl.BASE_ACCOUNTS_DOMAIN;
         SQLoginUrl.BASE_URL = ConsumerAppBaseUrl.BASE_DOMAIN;
-
-=======
         PaymentFingerprintConstant.ACCOUNTS_DOMAIN = ConsumerAppBaseUrl.ACCOUNTS_DOMAIN;
         PaymentFingerprintConstant.TOP_PAY_DOMAIN = ConsumerAppBaseUrl.TOP_PAY_DOMAIN;
         FingerprintConstantRegister.ACCOUNTS_DOMAIN = ConsumerAppBaseUrl.ACCOUNTS_DOMAIN;
         FingerprintConstantRegister.TOP_PAY_DOMAIN = ConsumerAppBaseUrl.TOP_PAY_DOMAIN;
->>>>>>> 0963ed8be8782d88db14656dfa5aabf1d8a963e4
     }
 
     private void generateConsumerAppNetworkKeys() {
