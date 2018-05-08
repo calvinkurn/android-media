@@ -304,7 +304,7 @@ public class ImagePickerActivity extends BaseSimpleActivity
         if (imagePickerBuilder.isContinueToEditAfterPick()) {
             Intent intent = ImageEditorActivity.getIntent(this, imageUrlOrPath,
                     imagePickerBuilder.getMinResolution(), imagePickerBuilder.getImageEditActionType(),
-                    imagePickerBuilder.getExpectedImageRatio(),
+                    imagePickerBuilder.getRatioX(), imagePickerBuilder.getRatioY(),
                     imagePickerBuilder.isCirclePreview());
             startActivityForResult(intent, REQUEST_CODE_EDITOR);
         } else {

@@ -1,10 +1,10 @@
 package com.tokopedia.imagepicker.editor.main.view;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -22,10 +22,10 @@ import com.tokopedia.imagepicker.R;
 import com.tokopedia.imagepicker.common.util.ImageUtils;
 import com.tokopedia.imagepicker.common.widget.NonSwipeableViewPager;
 import com.tokopedia.imagepicker.editor.adapter.ImageEditorViewPagerAdapter;
-import com.tokopedia.imagepicker.editor.presenter.ImageDownloadPresenter;
+import com.tokopedia.imagepicker.editor.presenter.ImageEditorPresenter;
 import com.tokopedia.imagepicker.editor.widget.ImageEditActionMainWidget;
 import com.tokopedia.imagepicker.editor.widget.ImageEditThumbnailListWidget;
-import com.tokopedia.imagepicker.picker.main.util.ExpectedImageRatioDef;
+import com.tokopedia.imagepicker.editor.widget.TwoLineSeekBar;
 import com.tokopedia.imagepicker.picker.main.util.ImageEditActionTypeDef;
 import com.yalantis.ucrop.view.widget.HorizontalProgressWheelView;
 
@@ -37,13 +37,14 @@ import java.util.Locale;
  * Created by Hendry on 9/25/2017.
  */
 
-public class ImageEditorActivity extends BaseSimpleActivity implements ImageDownloadPresenter.ImageDownloadView,
+public class ImageEditorActivity extends BaseSimpleActivity implements ImageEditorPresenter.ImageEditorView,
         ImageEditPreviewFragment.OnImageEditPreviewFragmentListener, ImageEditThumbnailListWidget.OnImageEditThumbnailListWidgetListener, ImageEditActionMainWidget.OnImageEditActionMainWidgetListener {
 
     public static final String EXTRA_IMAGE_URLS = "IMG_URLS";
     public static final String EXTRA_MIN_RESOLUTION = "MIN_IMG_RESOLUTION";
     public static final String EXTRA_EDIT_ACTION_TYPE = "EDIT_ACTION_TYPE";
-    public static final String EXTRA_RATIO_DEF = "RATIO_DEF";
+    public static final String EXTRA_RATIO_X = "RATIO_X";
+    public static final String EXTRA_RATIO_Y = "RATIO_Y";
     public static final String EXTRA_IS_CIRCLE_PREVIEW = "IS_CIRCLE_PREVIEW";
 
     public static final String SAVED_IMAGE_INDEX = "IMG_IDX";
@@ -53,7 +54,7 @@ public class ImageEditorActivity extends BaseSimpleActivity implements ImageDown
     public static final String SAVED_EDIT_TYPE = "SAVED_EDIT_TYPE";
 
     public static final String EDIT_RESULT_PATHS = "result_paths";
-    public static final int MAX_STEP_PER_IMAGE = 5;
+    public static final int MAX_HISTORY_PER_IMAGE = 5;
 
 
     private ArrayList<String> extraImageUrls;
@@ -70,12 +71,11 @@ public class ImageEditorActivity extends BaseSimpleActivity implements ImageDown
     private boolean isInEditMode;
     private @ImageEditActionTypeDef
     int currentEditActionType;
-    private @ExpectedImageRatioDef
-    int ratioDef;
+    private int ratioX, ratioY;
     private boolean isCirclePreview;
 
     private View vgDownloadProgressBar;
-    private ImageDownloadPresenter imageDownloadPresenter;
+    private ImageEditorPresenter imageEditorPresenter;
 
     private View vgContentContainer;
     private NonSwipeableViewPager viewPager;
@@ -88,32 +88,39 @@ public class ImageEditorActivity extends BaseSimpleActivity implements ImageDown
     private View editCancelView;
     private View editSaveView;
     private View doneButton;
-    private View vCropProgressBar;
+    private View vEditProgressBar;
     private View blockingView;
     private View layoutRotateWheel;
-    private boolean alreadySetupRotateWidget;
+    private View layoutBrightness;
+    private View layoutContrast;
     private TextView textViewRotateAngle;
+    private TextView textViewBrightness;
+    private TextView textViewContrast;
+    private ProgressDialog progressDialog;
+    private TwoLineSeekBar brightnessSeekbar;
+    private TwoLineSeekBar contrastSeekbar;
 
     public static Intent getIntent(Context context, ArrayList<String> imageUrls, int minResolution,
                                    @ImageEditActionTypeDef int[] imageEditActionType,
-                                   @ExpectedImageRatioDef int ratioDef,
+                                   int ratioX, int ratioY,
                                    boolean isCirclePreview) {
         Intent intent = new Intent(context, ImageEditorActivity.class);
         intent.putExtra(EXTRA_IMAGE_URLS, imageUrls);
         intent.putExtra(EXTRA_MIN_RESOLUTION, minResolution);
         intent.putExtra(EXTRA_EDIT_ACTION_TYPE, imageEditActionType);
-        intent.putExtra(EXTRA_RATIO_DEF, ratioDef);
+        intent.putExtra(EXTRA_RATIO_X, ratioX);
+        intent.putExtra(EXTRA_RATIO_Y, ratioY);
         intent.putExtra(EXTRA_IS_CIRCLE_PREVIEW, isCirclePreview);
         return intent;
     }
 
     public static Intent getIntent(Context context, String imageUrl, int minResolution,
                                    @ImageEditActionTypeDef int[] imageEditActionType,
-                                   @ExpectedImageRatioDef int ratioDef,
+                                   int ratioX, int ratioY,
                                    boolean isCirclePreview) {
         ArrayList<String> imageUrls = new ArrayList<>();
         imageUrls.add(imageUrl);
-        return getIntent(context, imageUrls, minResolution, imageEditActionType, ratioDef, isCirclePreview);
+        return getIntent(context, imageUrls, minResolution, imageEditActionType, ratioX, ratioY, isCirclePreview);
     }
 
     @Override
@@ -126,12 +133,8 @@ public class ImageEditorActivity extends BaseSimpleActivity implements ImageDown
         super.onCreate(savedInstanceState);
 
         Intent intent = getIntent();
-        //TODO for test only
-//        extraImageUrls = new ArrayList<>();
-//        extraImageUrls.add("/storage/emulated/0/WhatsApp/Media/WhatsApp Documents/IMG_20180308_181928_HDR.jpg");
-//        extraImageUrls.add("/storage/emulated/0/DCIM/Camera/IMG_20180418_113022.jpg");
-//        extraImageUrls.add("/storage/emulated/0/Download/Guitar-PNG-Image-500x556.png");
-//        extraImageUrls.add("/storage/emulated/0/Download/303836.jpg");
+        //for test only
+        //extraImageUrls.add("https://scontent-sit4-1.cdninstagram.com/vp/4d462c7e62452e54862602872a4f2f55/5B772ADA/t51.2885-15/e35/30603662_2044572549200360_6725615414816014336_n.jpg");
 
         if (intent.hasExtra(EXTRA_IMAGE_URLS)) {
             extraImageUrls = intent.getStringArrayListExtra(EXTRA_IMAGE_URLS);
@@ -142,14 +145,15 @@ public class ImageEditorActivity extends BaseSimpleActivity implements ImageDown
 
         minResolution = intent.getIntExtra(EXTRA_MIN_RESOLUTION, 0);
         imageEditActionType = intent.getIntArrayExtra(EXTRA_EDIT_ACTION_TYPE);
-        ratioDef = intent.getIntExtra(EXTRA_RATIO_DEF, ExpectedImageRatioDef.TYPE_1_1);
+        ratioX = intent.getIntExtra(EXTRA_RATIO_X, 1);
+        ratioY = intent.getIntExtra(EXTRA_RATIO_Y, 1);
         isCirclePreview = intent.getBooleanExtra(EXTRA_IS_CIRCLE_PREVIEW, false);
 
         if (savedInstanceState == null) {
             currentImageIndex = 0;
             edittedImagePaths = new ArrayList<>();
             isInEditMode = false;
-            currentEditActionType = ImageEditActionTypeDef.TYPE_CROP_ROTATE;
+            currentEditActionType = ImageEditActionTypeDef.ACTION_CROP_ROTATE;
         } else {
             currentImageIndex = savedInstanceState.getInt(SAVED_IMAGE_INDEX, 0);
             //noinspection unchecked
@@ -169,9 +173,11 @@ public class ImageEditorActivity extends BaseSimpleActivity implements ImageDown
         imageEditActionMainWidget = findViewById(R.id.image_edit_action_main_widget);
         imageEditThumbnailListWidget = findViewById(R.id.image_edit_thumbnail_list_widget);
         doneButton = findViewById(R.id.tv_done);
-        vCropProgressBar = findViewById(R.id.crop_progressbar);
+        vEditProgressBar = findViewById(R.id.crop_progressbar);
         blockingView = findViewById(R.id.crop_blocking_view);
         layoutRotateWheel = findViewById(R.id.layout_rotate_wheel);
+        layoutBrightness = findViewById(R.id.layout_brightness);
+        layoutContrast = findViewById(R.id.layout_contrast);
 
         viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
@@ -215,48 +221,59 @@ public class ImageEditorActivity extends BaseSimpleActivity implements ImageDown
         ImageEditPreviewFragment fragment = getCurrentFragment();
         if (fragment != null) {
             switch (currentEditActionType) {
-                case ImageEditActionTypeDef.TYPE_CROP:
-                case ImageEditActionTypeDef.TYPE_ROTATE:
-                case ImageEditActionTypeDef.TYPE_CROP_ROTATE:
+                case ImageEditActionTypeDef.ACTION_CROP:
+                case ImageEditActionTypeDef.ACTION_ROTATE:
+                case ImageEditActionTypeDef.ACTION_CROP_ROTATE:
                     fragment.cancelCropRotateImage();
                     break;
-                case ImageEditActionTypeDef.TYPE_WATERMARK:
+                case ImageEditActionTypeDef.ACTION_WATERMARK:
                     //TODO undo watermark here
+                    break;
+                case ImageEditActionTypeDef.ACTION_BRIGHTNESS:
+                    fragment.cancelBrightness();
+                    break;
+                case ImageEditActionTypeDef.ACTION_CONTRAST:
+                    fragment.cancelContrast();
                     break;
             }
 
         }
-        setupEditMode(false, ImageEditActionTypeDef.TYPE_CROP_ROTATE);
-    }
-
-    private void onDoneButtonClicked() {
-        //TODO on done button clicked
-        // will crop all image if the image is still local step 0 and width & height not same with expected ratio
-        // redownsampling the image
+        setupEditMode(false, ImageEditActionTypeDef.ACTION_CROP_ROTATE);
     }
 
     private void onSaveEditClicked() {
         if (isInEditMode) {
-            showCropLoading();
+            showEditLoading();
             ImageEditPreviewFragment fragment = getCurrentFragment();
             switch (currentEditActionType) {
-                case ImageEditActionTypeDef.TYPE_CROP:
-                case ImageEditActionTypeDef.TYPE_ROTATE:
-                case ImageEditActionTypeDef.TYPE_CROP_ROTATE:
+                case ImageEditActionTypeDef.ACTION_CROP:
+                case ImageEditActionTypeDef.ACTION_ROTATE:
+                case ImageEditActionTypeDef.ACTION_CROP_ROTATE:
                     if (fragment != null) {
-                        fragment.saveEdittedImage();
+                        fragment.cropAndSaveImage();
                     }
                     break;
-                case ImageEditActionTypeDef.TYPE_WATERMARK:
+                case ImageEditActionTypeDef.ACTION_WATERMARK:
+                    // currently not supported
+                    break;
+                case ImageEditActionTypeDef.ACTION_BRIGHTNESS:
+                    if (fragment != null) {
+                        fragment.saveBrightnessImage();
+                    }
+                    break;
+                case ImageEditActionTypeDef.ACTION_CONTRAST:
+                    if (fragment != null) {
+                        fragment.saveContrastImage();
+                    }
                     break;
             }
         }
     }
 
     @Override
-    public void onSuccessSaveEditImage(Uri resultUri) {
-        hideCropLoading();
-        File file = new File(resultUri.getPath());
+    public void onSuccessSaveEditImage(String path) {
+        hideEditLoading();
+        File file = new File(path);
         if (!file.exists()) {
             return;
         }
@@ -270,14 +287,11 @@ public class ImageEditorActivity extends BaseSimpleActivity implements ImageDown
             return;
         }
 
-        String path = file.getAbsolutePath();
         // it is on the last node on the step
         if (getMaxStepForCurrentImage() != getCurrentStepForCurrentImage() + 1) {
             //discard the next file to size and set currentStepIndex to current+1
             //discard unneeded files
-            for (int j = getMaxStepForCurrentImage() - 1; j > getCurrentStepForCurrentImage(); j++) {
-                String pathToDelete = edittedImagePaths.get(currentImageIndex).get(j);
-                deleteUnusedFile(pathToDelete);
+            for (int j = getMaxStepForCurrentImage() - 1; j > getCurrentStepForCurrentImage(); j--) {
                 edittedImagePaths.remove(j);
             }
         }
@@ -288,9 +302,7 @@ public class ImageEditorActivity extends BaseSimpleActivity implements ImageDown
 
         // if already 5 steps or more, delete the step no 1, we don't want to spam the history.
         // step no 0 should not be deleted. Perhaps someday it is used for reset to very first node.
-        if (lastEmptyStep > MAX_STEP_PER_IMAGE) {
-            String stepNo1Path = edittedImagePaths.get(currentImageIndex).get(1);
-            deleteUnusedFile(stepNo1Path);
+        if (lastEmptyStep > MAX_HISTORY_PER_IMAGE) {
             edittedImagePaths.remove(1);
             //since the paths is removed by 1, decrease the lastStep by 1.
             currentEditStepIndexList.set(currentImageIndex, lastEmptyStep - 1);
@@ -299,7 +311,13 @@ public class ImageEditorActivity extends BaseSimpleActivity implements ImageDown
         refreshViewPager();
         imageEditThumbnailListWidget.notifyDataSetChanged();
 
-        setupEditMode(false, ImageEditActionTypeDef.TYPE_CROP_ROTATE);
+        setupEditMode(false, ImageEditActionTypeDef.ACTION_CROP_ROTATE);
+    }
+
+    @Override
+    public void onEditDoNothing() {
+        hideEditLoading();
+        setupEditMode(false, ImageEditActionTypeDef.ACTION_CROP_ROTATE);
     }
 
     private void refreshViewPager() {
@@ -322,16 +340,9 @@ public class ImageEditorActivity extends BaseSimpleActivity implements ImageDown
         return edittedImagePaths.get(currentImageIndex).size();
     }
 
-    private void deleteUnusedFile(String path) {
-        File file = new File(path);
-        if (file.exists()) {
-            file.delete();
-        }
-    }
-
     @Override
     public void onErrorSaveEditImage(Throwable throwable) {
-        hideCropLoading();
+        hideEditLoading();
         NetworkErrorHelper.showRedCloseSnackbar(this, ErrorHandler.getErrorMessage(getContext(), throwable));
         onCancelEditClicked();
     }
@@ -340,13 +351,13 @@ public class ImageEditorActivity extends BaseSimpleActivity implements ImageDown
         return (ImageEditPreviewFragment) imageEditorViewPagerAdapter.getRegisteredFragment(currentImageIndex);
     }
 
-    private void showCropLoading() {
-        vCropProgressBar.setVisibility(View.VISIBLE);
+    private void showEditLoading() {
+        vEditProgressBar.setVisibility(View.VISIBLE);
         blockingView.setVisibility(View.VISIBLE);
     }
 
-    private void hideCropLoading() {
-        vCropProgressBar.setVisibility(View.GONE);
+    private void hideEditLoading() {
+        vEditProgressBar.setVisibility(View.GONE);
         blockingView.setVisibility(View.GONE);
     }
 
@@ -370,24 +381,42 @@ public class ImageEditorActivity extends BaseSimpleActivity implements ImageDown
             editorMainView.setVisibility(View.GONE);
             editorControlView.setVisibility(View.VISIBLE);
             doneButton.setVisibility(View.GONE);
-            if (fragment != null) {
-                fragment.setEditMode(true);
-            }
-            //TODO show controls
+
             switch (editActionType) {
-                case ImageEditActionTypeDef.TYPE_CROP:
+                case ImageEditActionTypeDef.ACTION_CROP:
                     //currently not supported.
                     break;
-                case ImageEditActionTypeDef.TYPE_ROTATE:
+                case ImageEditActionTypeDef.ACTION_ROTATE:
                     //currently not supported.
                     break;
-                case ImageEditActionTypeDef.TYPE_WATERMARK:
+                case ImageEditActionTypeDef.ACTION_WATERMARK:
                     //currently not supported.
                     break;
-                case ImageEditActionTypeDef.TYPE_CROP_ROTATE:
+                case ImageEditActionTypeDef.ACTION_CROP_ROTATE:
+                    if (fragment != null) {
+                        fragment.setEditMode(true);
+                    }
                     hideAllControls();
                     setupRotateWidget();
                     layoutRotateWheel.setVisibility(View.VISIBLE);
+                    break;
+                case ImageEditActionTypeDef.ACTION_BRIGHTNESS:
+                    hideAllControls();
+                    setupBrightnessWidget();
+                    if (fragment!= null) {
+                        float brightness = fragment.getBrightness();
+                        setUIBrightnessValue(brightness);
+                    }
+                    layoutBrightness.setVisibility(View.VISIBLE);
+                    break;
+                case ImageEditActionTypeDef.ACTION_CONTRAST:
+                    hideAllControls();
+                    setupContrastWidget();
+                    if (fragment!= null) {
+                        float contrast = fragment.getContrast();
+                        setUIContrastValue(contrast);
+                    }
+                    layoutContrast.setVisibility(View.VISIBLE);
                     break;
             }
         } else {
@@ -401,21 +430,21 @@ public class ImageEditorActivity extends BaseSimpleActivity implements ImageDown
         }
     }
 
-    private void hideAllControls(){
-        // TODO hide other controls
+    private void hideAllControls() {
         layoutRotateWheel.setVisibility(View.GONE);
-        // currently no controls to hide, except layout rotate
+        layoutBrightness.setVisibility(View.GONE);
+        layoutContrast.setVisibility(View.GONE);
     }
 
     private void setupRotateWidget() {
-        if (!alreadySetupRotateWidget) {
+        if (textViewRotateAngle== null) {
             textViewRotateAngle = findViewById(R.id.text_view_rotate);
             ((HorizontalProgressWheelView) findViewById(R.id.rotate_scroll_wheel))
                     .setScrollingListener(new HorizontalProgressWheelView.ScrollingListener() {
                         @Override
                         public void onScroll(float delta, float totalDistance) {
                             ImageEditPreviewFragment imageEditPreviewFragment = getCurrentFragment();
-                            if (imageEditPreviewFragment!= null) {
+                            if (imageEditPreviewFragment != null) {
                                 imageEditPreviewFragment.editRotateScrolled(delta);
                             }
                         }
@@ -423,7 +452,7 @@ public class ImageEditorActivity extends BaseSimpleActivity implements ImageDown
                         @Override
                         public void onScrollEnd() {
                             ImageEditPreviewFragment imageEditPreviewFragment = getCurrentFragment();
-                            if (imageEditPreviewFragment!= null) {
+                            if (imageEditPreviewFragment != null) {
                                 imageEditPreviewFragment.onEndEditScrolled();
                             }
                         }
@@ -431,7 +460,7 @@ public class ImageEditorActivity extends BaseSimpleActivity implements ImageDown
                         @Override
                         public void onScrollStart() {
                             ImageEditPreviewFragment imageEditPreviewFragment = getCurrentFragment();
-                            if (imageEditPreviewFragment!= null) {
+                            if (imageEditPreviewFragment != null) {
                                 imageEditPreviewFragment.onStartEditScrolled();
                             }
                         }
@@ -444,7 +473,7 @@ public class ImageEditorActivity extends BaseSimpleActivity implements ImageDown
                 @Override
                 public void onClick(View v) {
                     ImageEditPreviewFragment imageEditPreviewFragment = getCurrentFragment();
-                    if (imageEditPreviewFragment!= null) {
+                    if (imageEditPreviewFragment != null) {
                         imageEditPreviewFragment.resetRotation();
                     }
                 }
@@ -453,19 +482,85 @@ public class ImageEditorActivity extends BaseSimpleActivity implements ImageDown
                 @Override
                 public void onClick(View v) {
                     ImageEditPreviewFragment imageEditPreviewFragment = getCurrentFragment();
-                    if (imageEditPreviewFragment!= null) {
+                    if (imageEditPreviewFragment != null) {
                         imageEditPreviewFragment.rotateByAngle(90);
                     }
                 }
             });
         }
-        alreadySetupRotateWidget = true;
+    }
+
+    private void setupBrightnessWidget() {
+        if (textViewBrightness == null) {
+            textViewBrightness = findViewById(R.id.text_view_brightness);
+            brightnessSeekbar = findViewById(R.id.seekBar_brightness);
+            brightnessSeekbar.reset();
+            brightnessSeekbar.setSeekLength(-500, 500, 0, 1f);
+            brightnessSeekbar.setOnSeekChangeListener(new TwoLineSeekBar.OnSeekChangeListener() {
+                @Override
+                public void onSeekChanged(float value, float step) {
+                    setUIBrightnessValue(value);
+                    ImageEditPreviewFragment imageEditPreviewFragment = getCurrentFragment();
+                    if (imageEditPreviewFragment != null) {
+                        imageEditPreviewFragment.setBrightness(value);
+                    }
+                }
+
+                @Override
+                public void onSeekStopped(float value, float step) {
+                    // no need to hide loading, etc.
+                }
+            });
+        }
+    }
+
+    private void setupContrastWidget() {
+        if (textViewContrast == null) {
+            textViewContrast = findViewById(R.id.text_view_contrast);
+            contrastSeekbar = findViewById(R.id.seekBar_contrast);
+            contrastSeekbar.reset();
+            contrastSeekbar.setSeekLength(50, 150, 100, 1f);
+            contrastSeekbar.setOnSeekChangeListener(new TwoLineSeekBar.OnSeekChangeListener() {
+                @Override
+                public void onSeekChanged(float value, float step) {
+                    setUIContrastValue(value);
+                    ImageEditPreviewFragment imageEditPreviewFragment = getCurrentFragment();
+                    if (imageEditPreviewFragment != null) {
+                        imageEditPreviewFragment.setContrast(value);
+                    }
+                }
+
+                @Override
+                public void onSeekStopped(float value, float step) {
+                    // no need to hide loading, etc.
+                }
+            });
+        }
     }
 
     @Override
     public void setRotateAngle(float angle) {
         if (textViewRotateAngle != null) {
             textViewRotateAngle.setText(String.format(Locale.getDefault(), "%.1f°", angle));
+        }
+    }
+
+    public void setUIBrightnessValue(float brightnessValue) {
+        if (textViewBrightness != null) {
+            float brightnessDiv = brightnessValue / 10;
+            textViewBrightness.setText(String.format(Locale.getDefault(), "%.1f", brightnessDiv));
+        }
+        if (brightnessSeekbar!= null && brightnessSeekbar.getValue() != brightnessValue) {
+            brightnessSeekbar.setValue(brightnessValue);
+        }
+    }
+
+    public void setUIContrastValue(float contrastValue) {
+        if (textViewContrast != null) {
+            textViewContrast.setText(String.format(Locale.getDefault(), "%.2f", contrastValue / 100));
+        }
+        if (contrastSeekbar!= null && contrastSeekbar.getValue() != contrastValue) {
+            contrastSeekbar.setValue(contrastValue);
         }
     }
 
@@ -482,16 +577,56 @@ public class ImageEditorActivity extends BaseSimpleActivity implements ImageDown
         }
     }
 
-    private void finishEditImage() {
-        Intent intent = new Intent();
+    private void onDoneButtonClicked() {
+        blockingView.setVisibility(View.VISIBLE);
+
+        ArrayList<String> step0Paths = new ArrayList<>();
         ArrayList<String> resultList = new ArrayList<>();
         for (int i = 0, sizei = edittedImagePaths.size(); i < sizei; i++) {
+            step0Paths.add(edittedImagePaths.get(i).get(0));
             resultList.add(edittedImagePaths.get(i).get(currentEditStepIndexList.get(i)));
         }
-        //TODO delete file not in result.
-        intent.putStringArrayListExtra(EDIT_RESULT_PATHS, resultList);
-        setResult(Activity.RESULT_OK, intent);
-        finish();
+
+        showDoneLoading();
+        initImagePickerPresenter();
+        imageEditorPresenter.cropBitmapToExpectedRatio(extraImageUrls, step0Paths, resultList, ratioX, ratioY );
+    }
+
+    @Override
+    public void onSuccessCropImageToRatio(ArrayList<String> cropppedImagePaths) {
+        hideDoneLoading();
+        ArrayList<String> resultList;
+        try {
+            resultList = ImageUtils.copyFiles(cropppedImagePaths, ImageUtils.DirectoryDef.DIRECTORY_TOKOPEDIA_EDIT_RESULT);
+            ImageUtils.deleteCacheFolder();
+            Intent intent = new Intent();
+            intent.putStringArrayListExtra(EDIT_RESULT_PATHS, resultList);
+            setResult(Activity.RESULT_OK, intent);
+            finish();
+        } catch (Exception e) {
+            NetworkErrorHelper.showRedCloseSnackbar(this, ErrorHandler.getErrorMessage(this, e));
+        }
+    }
+
+    @Override
+    public void onErrorCropImageToRatio(Throwable e) {
+        NetworkErrorHelper.showRedCloseSnackbar(this, ErrorHandler.getErrorMessage(this, e));
+        hideDoneLoading();
+    }
+
+    private void showDoneLoading(){
+        if (progressDialog == null) {
+            progressDialog = new ProgressDialog(this);
+            progressDialog.setCancelable(false);
+            progressDialog.setMessage(getString(R.string.title_loading));
+        }
+        progressDialog.show();
+    }
+
+    private void hideDoneLoading(){
+        if (progressDialog!= null) {
+            progressDialog.hide();
+        }
     }
 
     @Override
@@ -524,11 +659,10 @@ public class ImageEditorActivity extends BaseSimpleActivity implements ImageDown
                 }
             }
             if (hasNetworkImage) {
-                showProgressDialog();
+                showDownloadProgressDialog();
                 hideContentView();
-                imageDownloadPresenter = new ImageDownloadPresenter();
-                imageDownloadPresenter.attachView(this);
-                imageDownloadPresenter.convertHttpPathToLocalPath(extraImageUrls);
+                initImagePickerPresenter();
+                imageEditorPresenter.convertHttpPathToLocalPath(extraImageUrls);
             } else {
                 copyToLocalUrl(extraImageUrls);
                 startEditLocalImages();
@@ -538,11 +672,18 @@ public class ImageEditorActivity extends BaseSimpleActivity implements ImageDown
         }
     }
 
+    private void initImagePickerPresenter(){
+        if (imageEditorPresenter == null) {
+            imageEditorPresenter = new ImageEditorPresenter();
+            imageEditorPresenter.attachView(this);
+        }
+    }
+
     @Override
     protected void onPause() {
         super.onPause();
-        if (imageDownloadPresenter != null) {
-            imageDownloadPresenter.detachView();
+        if (imageEditorPresenter != null) {
+            imageEditorPresenter.detachView();
         }
     }
 
@@ -553,7 +694,7 @@ public class ImageEditorActivity extends BaseSimpleActivity implements ImageDown
                     edittedImagePaths,
                     currentEditStepIndexList,
                     minResolution,
-                    ratioDef,
+                    ratioX, ratioY,
                     isCirclePreview);
             viewPager.setAdapter(imageEditorViewPagerAdapter);
         }
@@ -571,7 +712,7 @@ public class ImageEditorActivity extends BaseSimpleActivity implements ImageDown
 
     }
 
-    private void showProgressDialog() {
+    private void showDownloadProgressDialog() {
         vgDownloadProgressBar.setVisibility(View.VISIBLE);
     }
 
@@ -613,7 +754,7 @@ public class ImageEditorActivity extends BaseSimpleActivity implements ImageDown
                     .setPositiveButton(getString(R.string.exit), new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialogInterface, int i) {
-                            deleteNotUsedImage();
+                            ImageUtils.deleteCacheFolder();
                             ImageEditorActivity.super.onBackPressed();
                         }
                     }).setNegativeButton(getString(R.string.cancel), new DialogInterface.OnClickListener() {
@@ -624,10 +765,6 @@ public class ImageEditorActivity extends BaseSimpleActivity implements ImageDown
             AlertDialog dialog = alertDialogBuilder.create();
             dialog.show();
         }
-    }
-
-    private void deleteNotUsedImage() {
-        //TODO to delete all file in editted paths, and localStep0Urls (if it is different with the original imageURLS)
     }
 
     @Override
@@ -651,9 +788,5 @@ public class ImageEditorActivity extends BaseSimpleActivity implements ImageDown
         return isInEditMode;
     }
 
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        deleteNotUsedImage();
-    }
+
 }

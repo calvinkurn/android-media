@@ -2,19 +2,24 @@ package com.tokopedia.imagepicker.picker.main.util;
 
 import android.support.annotation.IntDef;
 
-import static com.tokopedia.imagepicker.picker.main.util.ImageEditActionTypeDef.TYPE_CROP;
-import static com.tokopedia.imagepicker.picker.main.util.ImageEditActionTypeDef.TYPE_CROP_ROTATE;
-import static com.tokopedia.imagepicker.picker.main.util.ImageEditActionTypeDef.TYPE_ROTATE;
-import static com.tokopedia.imagepicker.picker.main.util.ImageEditActionTypeDef.TYPE_WATERMARK;
+import static com.tokopedia.imagepicker.picker.main.util.ImageEditActionTypeDef.ACTION_BRIGHTNESS;
+import static com.tokopedia.imagepicker.picker.main.util.ImageEditActionTypeDef.ACTION_CONTRAST;
+import static com.tokopedia.imagepicker.picker.main.util.ImageEditActionTypeDef.ACTION_CROP;
+import static com.tokopedia.imagepicker.picker.main.util.ImageEditActionTypeDef.ACTION_CROP_ROTATE;
+import static com.tokopedia.imagepicker.picker.main.util.ImageEditActionTypeDef.ACTION_ROTATE;
+import static com.tokopedia.imagepicker.picker.main.util.ImageEditActionTypeDef.ACTION_WATERMARK;
 
 /**
  * Created by hendry on 04/05/18.
  */
 
-@IntDef({TYPE_CROP, TYPE_ROTATE, TYPE_WATERMARK, TYPE_CROP_ROTATE})
+@IntDef({ACTION_CROP, ACTION_ROTATE, ACTION_WATERMARK, ACTION_CROP_ROTATE,
+        ACTION_BRIGHTNESS, ACTION_CONTRAST})
 public @interface ImageEditActionTypeDef {
-    int TYPE_CROP = 1;
-    int TYPE_ROTATE = 2;
-    int TYPE_WATERMARK = 3;
-    int TYPE_CROP_ROTATE = 4;
+    int ACTION_CROP = 1;
+    int ACTION_ROTATE = 2;
+    int ACTION_WATERMARK = 3;
+    int ACTION_CROP_ROTATE = 4;
+    int ACTION_BRIGHTNESS = 5;
+    int ACTION_CONTRAST = 6;
 }

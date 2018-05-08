@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/control_height"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:visibility="gone"
+    tools:visibility="visible">
+
+    <TextView
+        android:id="@+id/text_view_brightness"
+        style="@style/TextView.Micro"
+        android:layout_centerHorizontal="true"
+        android:text="@string/default_brightness_value"
+        android:layout_marginTop="@dimen/dp_8"/>
+
+    <com.tokopedia.imagepicker.editor.widget.TwoLineSeekBar
+        android:id="@+id/seekBar_brightness"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/text_view_brightness"
+        app:high_color="@color/tkpd_main_green"
+        app:line_color="@color/grey_700"
+        app:line_width="@dimen/dp_2"
+        app:nail_color="@color/tkpd_main_green"
+        app:nail_radius="@dimen/dp_4"
+        app:nail_stroke_width="@dimen/dp_3"
+        app:thumb_color="@color/tkpd_main_green"
+        app:thumb_radius="@dimen/dp_8"
+        android:layout_marginLeft="@dimen/dp_40"
+        android:layout_marginRight="@dimen/dp_40"/>
+
+</RelativeLayout>
