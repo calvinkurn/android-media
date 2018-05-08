@@ -2,8 +2,9 @@ package com.tokopedia.inbox.inboxchat.adapter;
 
 import android.view.View;
 
-import com.tokopedia.core.base.adapter.BaseAdapterTypeFactory;
-import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
+import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory;
+import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
+import com.tokopedia.inbox.inboxchat.adapter.viewholder.QuickReplyViewHolder;
 import com.tokopedia.inbox.inboxchat.fragment.ChatRoomFragment;
 import com.tokopedia.inbox.inboxchat.presenter.ChatRoomContract;
 import com.tokopedia.inbox.inboxchat.viewholder.AttachImageViewHolder;
@@ -23,6 +24,7 @@ import com.tokopedia.inbox.inboxchat.viewmodel.MyChatViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.OppositeChatViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.ThumbnailChatViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.TypingChatModel;
+import com.tokopedia.inbox.inboxchat.viewmodel.chatroom.QuickReplyListViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.chatroom.TimeMachineChatModel;
 
 /**
@@ -77,11 +79,16 @@ public class ChatRoomTypeFactoryImpl extends BaseAdapterTypeFactory implements C
         return AttachedInvoiceSentViewHolder.LAYOUT;
     }
 
-
     @Override
     public int type(AttachInvoiceSelectionViewModel attachInvoiceSelectionViewModel) {
         return AttachedInvoiceSelectionViewHolder.LAYOUT;
     }
+
+    @Override
+    public int type(QuickReplyListViewModel quickReplyListViewModel) {
+        return QuickReplyViewHolder.LAYOUT;
+    }
+
     @Override
     public AbstractViewHolder createViewHolder(View view, int type) {
 
@@ -105,6 +112,8 @@ public class ChatRoomTypeFactoryImpl extends BaseAdapterTypeFactory implements C
             viewHolder = new AttachedInvoiceSentViewHolder(view);
         else if(type == AttachedInvoiceSelectionViewHolder.LAYOUT)
             viewHolder = new AttachedInvoiceSelectionViewHolder(view, viewListener);
+        else if(type == QuickReplyViewHolder.LAYOUT)
+            viewHolder = new QuickReplyViewHolder(view);
         else
             return super.createViewHolder(view, type);
 

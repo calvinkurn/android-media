@@ -2,7 +2,7 @@ package com.tokopedia.inbox.inboxchat.viewmodel.chatroom;
 
 import android.text.TextUtils;
 
-import com.tokopedia.core.base.adapter.Visitable;
+import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.inbox.inboxchat.adapter.ChatRoomTypeFactory;
 
