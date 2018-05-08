@@ -9,26 +9,25 @@ import com.tokopedia.feedplus.view.listener.FeedPlus;
 import com.tokopedia.feedplus.view.viewmodel.kol.ProductCommunicationViewModel;
 
 /**
- * Created by yfsx on 02/01/18.
+ * @author by milhamj on 08/05/18.
  */
 
-public class ContentProductViewHolder extends AbstractViewHolder<ProductCommunicationViewModel> {
+public class ProductCommunicationViewHolder extends
+        AbstractViewHolder<ProductCommunicationViewModel> {
+
+    private final FeedPlus.View viewListener;
 
     @LayoutRes
     public static final int LAYOUT = R.layout.product_communication;
 
-    private FeedPlus.View mainView;
 
-    public ContentProductViewHolder(View itemView, FeedPlus.View viewListener) {
+    public ProductCommunicationViewHolder(View itemView, FeedPlus.View viewListener) {
         super(itemView);
-        mainView = viewListener;
+        this.viewListener = viewListener;
     }
 
     @Override
     public void bind(ProductCommunicationViewModel element) {
-        initView();
-    }
 
-    private void initView() {
     }
 }

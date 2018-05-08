@@ -11,9 +11,9 @@ import com.tokopedia.feedplus.view.adapter.viewholder.blog.ImageBlogViewHolder;
 import com.tokopedia.feedplus.view.adapter.viewholder.blog.VideoBlogViewHolder;
 import com.tokopedia.feedplus.view.adapter.viewholder.favoritecta.FavoriteCtaViewHolder;
 import com.tokopedia.feedplus.view.adapter.viewholder.inspiration.InspirationViewHolder;
-import com.tokopedia.feedplus.view.adapter.viewholder.kol.ContentProductViewHolder;
 import com.tokopedia.feedplus.view.adapter.viewholder.kol.KolRecommendationViewHolder;
 import com.tokopedia.feedplus.view.adapter.viewholder.kol.KolViewHolder;
+import com.tokopedia.feedplus.view.adapter.viewholder.kol.ProductCommunicationViewHolder;
 import com.tokopedia.feedplus.view.adapter.viewholder.officialstore.OfficialStoreBrandsViewHolder;
 import com.tokopedia.feedplus.view.adapter.viewholder.officialstore.OfficialStoreCampaignViewHolder;
 import com.tokopedia.feedplus.view.adapter.viewholder.productcard.ActivityCardViewHolder;
@@ -154,7 +154,7 @@ public class FeedPlusTypeFactoryImpl extends BaseAdapterTypeFactory implements F
 
     @Override
     public int type(ProductCommunicationViewModel productCommunicationViewModel) {
-        return ContentProductViewHolder.LAYOUT;
+        return ProductCommunicationViewHolder.LAYOUT;
     }
 
     @Override
@@ -210,8 +210,8 @@ public class FeedPlusTypeFactoryImpl extends BaseAdapterTypeFactory implements F
                     topAdsInfoClickListener);
         else if (type == FavoriteCtaViewHolder.LAYOUT)
             viewHolder = new FavoriteCtaViewHolder(view, viewListener);
-        else if (type == ContentProductViewHolder.LAYOUT)
-            viewHolder = new ContentProductViewHolder(view, viewListener);
+        else if (type == ProductCommunicationViewHolder.LAYOUT)
+            viewHolder = new ProductCommunicationViewHolder(view, viewListener);
         else if (type == EmptyFeedBeforeLoginViewHolder.LAYOUT)
             viewHolder = new EmptyFeedBeforeLoginViewHolder(view, viewListener);
         else
