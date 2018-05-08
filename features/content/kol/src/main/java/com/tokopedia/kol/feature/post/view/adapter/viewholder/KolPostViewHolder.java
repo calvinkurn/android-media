@@ -144,7 +144,6 @@ public class KolPostViewHolder extends AbstractViewHolder<KolPostViewModel> {
             tooltip.setText(element.getProductTooltip());
         }
 
-        kolText.setText(getKolText(element));
         UrlUtil.setTextWithClickableTokopediaUrl(kolText, getKolText(element));
 
         if (element.isLiked()) {
