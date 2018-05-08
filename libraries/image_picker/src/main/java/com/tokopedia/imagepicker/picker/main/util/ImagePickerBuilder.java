@@ -14,7 +14,7 @@ import static com.tokopedia.imagepicker.picker.main.util.ImagePickerTabTypeDef.T
  */
 
 public enum ImagePickerBuilder {
-    ADD_PRODUCT(new int[]{TYPE_GALLERY, TYPE_INSTAGRAM, TYPE_CAMERA},
+    ADD_PRODUCT(new int[]{TYPE_GALLERY, TYPE_CAMERA},
             GalleryType.IMAGE_ONLY,
             ImageSelectionTypeDef.TYPE_SINGLE,
             300,
