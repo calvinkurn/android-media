@@ -454,7 +454,11 @@ public class ProductPriceViewHolder extends ProductViewHolder
             case REQUEST_CODE_GET_PRODUCT_WHOLESALE:
                 if (resultCode == Activity.RESULT_OK) {
                     ArrayList<ProductWholesaleViewModel> productWholesaleViewModelArrayList = data.getParcelableArrayListExtra(ProductAddWholesaleFragment.EXTRA_PRODUCT_WHOLESALE);
-                    wholesaleLabelView.setContent(String.valueOf(productWholesaleViewModelArrayList.size()) + " " + editPriceImageButton.getContext().getString(R.string.product_label_price));
+                    if(productWholesaleViewModelArrayList.size()>0)
+                        wholesaleLabelView.setContent(String.valueOf(productWholesaleViewModelArrayList.size()) + " " + editPriceImageButton.getContext().getString(R.string.product_label_price));
+                    else
+                        wholesaleLabelView.setContent(editPriceImageButton.getContext().getString(R.string.product_label_add));
+
                     productWholesaleViewModels = productWholesaleViewModelArrayList;
                 }
                 break;

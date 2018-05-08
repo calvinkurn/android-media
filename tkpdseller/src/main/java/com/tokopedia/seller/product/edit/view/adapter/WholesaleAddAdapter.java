@@ -121,8 +121,10 @@ public class WholesaleAddAdapter extends RecyclerView.Adapter<WholesaleAddAdapte
                 @Override
                 public void onFocusChange(View v, boolean hasFocus) {
                     if (hasFocus) {
-                        setFocusFalse();
-                        wholesaleModels.get(getAdapterPosition()).setFocusPrice(true);
+                        if(isWithinDataset(getAdapterPosition())){
+                            setFocusFalse();
+                            wholesaleModels.get(getAdapterPosition()).setFocusPrice(true);
+                        }
                     }
                 }
             });
@@ -149,8 +151,10 @@ public class WholesaleAddAdapter extends RecyclerView.Adapter<WholesaleAddAdapte
                 @Override
                 public void onFocusChange(View v, boolean hasFocus) {
                     if (hasFocus) {
-                        setFocusFalse();
-                        wholesaleModels.get(getAdapterPosition()).setFocusQty(true);
+                        if(isWithinDataset(getAdapterPosition())){
+                            setFocusFalse();
+                            wholesaleModels.get(getAdapterPosition()).setFocusQty(true);
+                        }
                     }
                 }
             });
@@ -191,13 +195,6 @@ public class WholesaleAddAdapter extends RecyclerView.Adapter<WholesaleAddAdapte
             }
             if(wholesaleModels.get(position).isFocusQty()){
                 etRangeWholesale.requestFocus();
-            }
-        }
-
-        private void setFocusFalse(){
-            for(int i = 0; i < getItemSize(); i++){
-                wholesaleModels.get(i).setFocusQty(false);
-                wholesaleModels.get(i).setFocusPrice(false);
             }
         }
 
@@ -289,9 +286,24 @@ public class WholesaleAddAdapter extends RecyclerView.Adapter<WholesaleAddAdapte
         }
     }
 
+    private void setFocusFalse(){
+        for(int i = 0; i < getItemSize(); i++){
+            wholesaleModels.get(i).setFocusQty(false);
+            wholesaleModels.get(i).setFocusPrice(false);
+        }
+    }
+
+    @Override
+    public long getItemId(int position) {
+        if (isWithinDataset(position)) {
+            return wholesaleModels.get(position).getQtyMin();
+        }
+        return 0;
+    }
+
     @Override
     public int getItemCount() {
-        return wholesaleModels.size();
+        return (null != wholesaleModels ? wholesaleModels.size() : 0);
     }
 
     public int getItemSize() {
@@ -306,10 +318,13 @@ public class WholesaleAddAdapter extends RecyclerView.Adapter<WholesaleAddAdapte
 
     public synchronized void removeItem(int position) {
         if (isWithinDataset(position)) {
+            setFocusFalse();
+            currentPositionFocusPrice = 0;
+            currentPositionFocusQty = -1;
             wholesaleModels.remove(position);
+            notifyDataSetChanged();
         }
         listener.notifySizeChanged(wholesaleModels.size());
-        notifyItemRemoved(position);
     }
 
     public synchronized void removeAll() {
