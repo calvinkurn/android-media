@@ -9,8 +9,8 @@ buildCache {
         push = isCiServer
 
         credentials {
-            username = 'dev'
-            password = 'tokopedia789'
+            username = "${ci_username}"
+            password = "${ci_password}"
         }
     }
 }
