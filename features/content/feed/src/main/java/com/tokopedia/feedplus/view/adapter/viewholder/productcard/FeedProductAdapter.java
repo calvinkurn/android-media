@@ -90,7 +90,7 @@ public class FeedProductAdapter extends RecyclerView.Adapter<FeedProductAdapter.
             holder.extraProduct.setBackground(null);
             holder.extraProduct.setVisibility(View.GONE);
 
-            holder.productName.setText(MethodChecker.fromHtml(list.get(position).getName()));
+            holder.productName.setText(list.get(position).getName());
 
             holder.productPrice.setVisibility(View.VISIBLE);
             holder.productPrice.setText(list.get(position).getPrice());
