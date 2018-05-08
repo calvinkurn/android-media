@@ -394,12 +394,14 @@ public class SearchActivity extends DiscoveryActivity
 
             @Override
             public void launchFilterCategoryPage(Filter filter, String selectedCategoryRootId, String selectedCategoryId) {
+                SearchTracking.eventSearchResultNavigateToFilterDetail(getResources().getString(R.string.title_category));
                 FilterDetailActivityRouter.launchCategoryActivity(SearchActivity.this,
                         filter, selectedCategoryRootId, selectedCategoryId, true);
             }
 
             @Override
             public void launchFilterDetailPage(Filter filter) {
+                SearchTracking.eventSearchResultNavigateToFilterDetail(filter.getTitle());
                 FilterDetailActivityRouter.launchDetailActivity(SearchActivity.this, filter, true);
             }
         });

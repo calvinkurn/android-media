@@ -408,6 +408,7 @@ public interface AppEventTracking {
         String CLICK_PRODUCT_LIST = "click product list";
         String CLICK_SORT_PRODUCT = "click sort product";
         String CLICK_FILTER_PRODUCT = "click filter product";
+        String CLICK_FILTER = "click filter";
         String CLICK_OVERFLOW_MENU = "click overflow menu";
 
         String CLICK_WIDGET_BAR = "click widget";

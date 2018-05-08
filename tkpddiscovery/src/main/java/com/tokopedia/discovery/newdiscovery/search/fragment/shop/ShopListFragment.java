@@ -295,6 +295,7 @@ public class ShopListFragment extends SearchSectionFragment
             public boolean onTabSelected(final int position, boolean wasSelected) {
                 switch (position) {
                     case 0:
+                        SearchTracking.eventSearchResultOpenFilterPageShop();
                         openFilterActivity();
                         return true;
                     case 1:

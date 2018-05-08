@@ -162,4 +162,52 @@ public class SearchTracking extends TrackingUtils {
                 Boolean.toString(isActive)
         ).setUserId().getEvent());
     }
+
+    public static void eventSearchResultApplyFilterDetail(String filterName) {
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.SEARCH_RESULT,
+                AppEventTracking.Category.FILTER_JOURNEY,
+                "click simpan on lihat semua " + filterName,
+                ""
+        ).setUserId().getEvent());
+    }
+
+    public static void eventSearchResultBackFromFilterDetail(String filterName) {
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.SEARCH_RESULT,
+                AppEventTracking.Category.FILTER_JOURNEY,
+                "click back on lihat semua " + filterName,
+                ""
+        ).setUserId().getEvent());
+    }
+
+    public static void eventSearchResultNavigateToFilterDetail(String filterName) {
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.SEARCH_RESULT,
+                AppEventTracking.Category.FILTER_JOURNEY,
+                "click lihat semua " + filterName,
+                ""
+        ).setUserId().getEvent());
+    }
+
+    public static void eventSearchResultOpenFilterPageProduct() {
+        eventSearchResultOpenFilterPage("product");
+    }
+
+    public static void eventSearchResultOpenFilterPageCatalog() {
+        eventSearchResultOpenFilterPage("catalog");
+    }
+
+    public static void eventSearchResultOpenFilterPageShop() {
+        eventSearchResultOpenFilterPage("shop");
+    }
+
+    private static void eventSearchResultOpenFilterPage(String tabName) {
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.SEARCH_RESULT,
+                AppEventTracking.Category.FILTER.toLowerCase() + " " + tabName,
+                AppEventTracking.Action.CLICK_FILTER,
+                ""
+        ).setUserId().getEvent());
+    }
 }

@@ -149,9 +149,20 @@ public abstract class AbstractDynamicFilterDetailActivity<T extends RecyclerView
         buttonApply.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if (isUsingTracking) {
+                    SearchTracking.eventSearchResultApplyFilterDetail(pageTitle);
+                }
                 applyFilter();
             }
         });
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (isUsingTracking) {
+            SearchTracking.eventSearchResultBackFromFilterDetail(pageTitle);
+        }
+        super.onBackPressed();
     }
 
     protected void showLoading() {

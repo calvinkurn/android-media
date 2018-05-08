@@ -432,8 +432,10 @@ public class ProductListFragment extends SearchSectionFragment
                     case 1:
                         if (productViewModel.isImageSearch())
                             startShareActivity(productViewModel.getShareUrl());
-                        else
+                        else {
+                            SearchTracking.eventSearchResultOpenFilterPageProduct();
                             openFilterActivity();
+                        }
                         return true;
                     case 2:
                         switchLayoutType();
