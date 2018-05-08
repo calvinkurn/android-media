@@ -95,7 +95,7 @@ public class CrackEmptyTokenFragment extends BaseDaggerFragment {
         getMoreTokenBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (getActivity().getApplication() instanceof AbstractionRouter) {
+                if (getActivity() != null && getActivity().getApplication() instanceof AbstractionRouter) {
                     ((AbstractionRouter) getActivity().getApplication())
                             .getAnalyticTracker()
                             .sendEventTracking(
@@ -129,7 +129,7 @@ public class CrackEmptyTokenFragment extends BaseDaggerFragment {
         ivFullLp.topMargin = imageMarginTop;
         tokenEmptyImage.requestLayout();
 
-        int titleMarginTop = imageMarginTop - getContext().getResources().getDimensionPixelOffset(R.dimen.dp_112);
+        int titleMarginTop = imageMarginTop - getActivity().getResources().getDimensionPixelOffset(R.dimen.dp_112);
         FrameLayout.LayoutParams titleLp = (FrameLayout.LayoutParams) title.getLayoutParams();
         ivFullLp.gravity = CENTER_HORIZONTAL;
         titleLp.topMargin = titleMarginTop;
