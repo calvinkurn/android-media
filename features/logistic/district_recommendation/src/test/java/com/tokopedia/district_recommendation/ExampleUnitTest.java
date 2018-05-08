@@ -1,4 +1,4 @@
-package com.example.district_recommendation;
+package com.tokopedia.district_recommendation;
 
 import org.junit.Test;
 

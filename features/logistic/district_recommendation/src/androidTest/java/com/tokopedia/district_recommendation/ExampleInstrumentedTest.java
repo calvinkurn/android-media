@@ -1,4 +1,4 @@
-package com.example.district_recommendation;
+package com.tokopedia.district_recommendation;
 
 import android.content.Context;
 import android.support.test.InstrumentationRegistry;
