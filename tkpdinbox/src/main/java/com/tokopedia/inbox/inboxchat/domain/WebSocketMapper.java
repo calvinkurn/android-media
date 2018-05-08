@@ -27,19 +27,19 @@ public class WebSocketMapper {
 
     public BaseChatViewModel map(String json) {
         WebSocketResponse pojo = new GsonBuilder().create().fromJson(json, WebSocketResponse.class);
-
-        if (pojo != null
-                && pojo.getData() != null
-                && pojo.getData().getAttachment() != null) {
-            switch (pojo.getData().getAttachment().getType()) {
-                case TYPE_QUICK_REPLY:
-                    return convertToQuickReplyModel(json);
-                default:
-                    return null;
-            }
-        } else {
-            return null;
-        }
+        return convertToQuickReplyModel(json);
+//        if (pojo != null
+//                && pojo.getData() != null
+//                && pojo.getData().getAttachment() != null) {
+//            switch (pojo.getData().getAttachment().getType()) {
+//                case TYPE_QUICK_REPLY:
+//                    return convertToQuickReplyModel(json);
+//                default:
+//                    return null;
+//            }
+//        } else {
+//            return null;
+//        }
     }
 
     private QuickReplyListViewModel convertToQuickReplyModel(String json) {
