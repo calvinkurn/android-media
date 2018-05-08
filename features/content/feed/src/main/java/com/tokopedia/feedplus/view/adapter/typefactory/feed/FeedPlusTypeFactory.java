@@ -6,9 +6,9 @@ import com.tokopedia.core.base.adapter.model.EmptyModel;
 import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.feedplus.view.viewmodel.EmptyFeedBeforeLoginModel;
 import com.tokopedia.feedplus.view.viewmodel.FavoriteCtaViewModel;
-import com.tokopedia.feedplus.view.viewmodel.kol.ContentProductViewModel;
 import com.tokopedia.feedplus.view.viewmodel.kol.KolRecommendationViewModel;
 import com.tokopedia.feedplus.view.viewmodel.kol.KolViewModel;
+import com.tokopedia.feedplus.view.viewmodel.kol.ProductCommunicationViewModel;
 import com.tokopedia.feedplus.view.viewmodel.officialstore.OfficialStoreBrandsViewModel;
 import com.tokopedia.feedplus.view.viewmodel.product.AddFeedModel;
 import com.tokopedia.feedplus.view.viewmodel.blog.BlogViewModel;
@@ -60,7 +60,7 @@ public interface FeedPlusTypeFactory {
 
     int type(FavoriteCtaViewModel favoriteCtaViewModel);
 
-    int type(ContentProductViewModel contentProductViewModel);
+    int type(ProductCommunicationViewModel productCommunicationViewModel);
 
     int type(EmptyFeedBeforeLoginModel emptyFeedBeforeLoginModel);
 

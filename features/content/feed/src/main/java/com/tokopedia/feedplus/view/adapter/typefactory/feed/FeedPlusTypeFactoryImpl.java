@@ -32,9 +32,9 @@ import com.tokopedia.feedplus.view.viewmodel.EmptyFeedBeforeLoginModel;
 import com.tokopedia.feedplus.view.viewmodel.FavoriteCtaViewModel;
 import com.tokopedia.feedplus.view.viewmodel.blog.BlogViewModel;
 import com.tokopedia.feedplus.view.viewmodel.inspiration.InspirationViewModel;
-import com.tokopedia.feedplus.view.viewmodel.kol.ContentProductViewModel;
 import com.tokopedia.feedplus.view.viewmodel.kol.KolRecommendationViewModel;
 import com.tokopedia.feedplus.view.viewmodel.kol.KolViewModel;
+import com.tokopedia.feedplus.view.viewmodel.kol.ProductCommunicationViewModel;
 import com.tokopedia.feedplus.view.viewmodel.officialstore.OfficialStoreBrandsViewModel;
 import com.tokopedia.feedplus.view.viewmodel.officialstore.OfficialStoreCampaignViewModel;
 import com.tokopedia.feedplus.view.viewmodel.product.ActivityCardViewModel;
@@ -153,7 +153,7 @@ public class FeedPlusTypeFactoryImpl extends BaseAdapterTypeFactory implements F
     }
 
     @Override
-    public int type(ContentProductViewModel contentProductViewModel) {
+    public int type(ProductCommunicationViewModel productCommunicationViewModel) {
         return ContentProductViewHolder.LAYOUT;
     }
 

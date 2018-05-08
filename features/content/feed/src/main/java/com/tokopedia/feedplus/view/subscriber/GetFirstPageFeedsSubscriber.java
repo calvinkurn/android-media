@@ -33,10 +33,11 @@ import com.tokopedia.feedplus.view.viewmodel.FavoriteCtaViewModel;
 import com.tokopedia.feedplus.view.viewmodel.LabelsViewModel;
 import com.tokopedia.feedplus.view.viewmodel.inspiration.InspirationProductViewModel;
 import com.tokopedia.feedplus.view.viewmodel.inspiration.InspirationViewModel;
-import com.tokopedia.feedplus.view.viewmodel.kol.ContentProductViewModel;
 import com.tokopedia.feedplus.view.viewmodel.kol.KolRecommendItemViewModel;
 import com.tokopedia.feedplus.view.viewmodel.kol.KolRecommendationViewModel;
 import com.tokopedia.feedplus.view.viewmodel.kol.KolViewModel;
+import com.tokopedia.feedplus.view.viewmodel.kol.ProductCommunicationItemViewModel;
+import com.tokopedia.feedplus.view.viewmodel.kol.ProductCommunicationViewModel;
 import com.tokopedia.feedplus.view.viewmodel.officialstore.OfficialStoreBrandsViewModel;
 import com.tokopedia.feedplus.view.viewmodel.officialstore.OfficialStoreCampaignProductViewModel;
 import com.tokopedia.feedplus.view.viewmodel.officialstore.OfficialStoreCampaignViewModel;
@@ -440,10 +441,14 @@ public class GetFirstPageFeedsSubscriber extends Subscriber<FeedResult> {
                     case TYPE_KOL_CTA:
                         if (domain.getContent() != null
                                 && domain.getContent().getKolCtaDomain() != null) {
-                            ContentProductViewModel contentProductViewModel =
-                                    convertContentProductViewModel(domain.getContent().getKolCtaDomain());
-                            if (contentProductViewModel.isContentProductShowing())
-                                listFeedView.add(contentProductViewModel);
+
+                            ProductCommunicationViewModel productCommunicationViewModel =
+                                    convertToProductCommunicationViewModel(
+                                            domain.getContent().getKolCtaDomain()
+                                    );
+                            if (productCommunicationViewModel != null) {
+                                listFeedView.add(productCommunicationViewModel);
+                            }
                         }
                         break;
                     default:
@@ -744,22 +749,24 @@ public class GetFirstPageFeedsSubscriber extends Subscriber<FeedResult> {
         return listPromo;
     }
 
-    private ContentProductViewModel convertContentProductViewModel(KolCtaDomain domain) {
-        if (!TextUtils.isEmpty(domain.getImageUrl())
-                || !TextUtils.isEmpty(domain.getApplink())
-                || !TextUtils.isEmpty(domain.getButtonTitle())
-                || !TextUtils.isEmpty(domain.getApplink())
-                || !TextUtils.isEmpty(domain.getTextHeader())
-                || !TextUtils.isEmpty(domain.getTextDescription()))
-            return new ContentProductViewModel(
-                    domain.getImageUrl(),
-                    domain.getApplink(),
-                    domain.getButtonTitle(),
-                    domain.getTextHeader(),
-                    domain.getTextDescription(),
-                    true);
-        return new ContentProductViewModel(
-                false);
+    private ProductCommunicationViewModel convertToProductCommunicationViewModel(
+            KolCtaDomain domain) {
+        //TODO milhamj map the data from API
+        List<ProductCommunicationItemViewModel> viewModelList = new ArrayList<>();
+        ProductCommunicationItemViewModel itemViewModel1 =
+                new ProductCommunicationItemViewModel(
+                        "https://ecs7.tokopedia.net/img/cache/200-square/product-1/2016/7/27/53001967/53001967_e327abdf-1714-4ae3-8a61-3c9bf00330a2.jpg",
+                        "tokopedia://people/28596211");
+        viewModelList.add(itemViewModel1);
+
+
+        ProductCommunicationItemViewModel itemViewModel2 =
+                new ProductCommunicationItemViewModel(
+                        "https://ecs7.tokopedia.net/img/cache/200-square/product-1/2017/5/11/420425/420425_ea61af83-eb25-4ebe-85cd-78a272105399.jpg",
+                        "tokopedia://people/12573588");
+        viewModelList.add(itemViewModel2);
+
+        return new ProductCommunicationViewModel(viewModelList);
     }
 
     private void addSeeMorePromo(DataFeedDomain dataFeedDomain, ArrayList<PromoViewModel> listPromo) {
