@@ -20,12 +20,11 @@ import okio.ByteString;
 public class ChatWebSocketListenerImpl extends WebSocketListener {
     private static final int NORMAL_CLOSURE_STATUS = 1000;
     private final WebSocketInterface listener;
+    private WebSocketMapper webSocketMapper;
 
-    @Inject
-    WebSocketMapper webSocketMapper;
-
-    public ChatWebSocketListenerImpl(WebSocketInterface webSocketInterface) {
+    public ChatWebSocketListenerImpl(WebSocketInterface webSocketInterface, WebSocketMapper webSocketMapper) {
         listener = webSocketInterface;
+        this.webSocketMapper= webSocketMapper;
     }
 
     @Override
@@ -44,9 +43,6 @@ public class ChatWebSocketListenerImpl extends WebSocketListener {
             WebSocketResponse response = process(text);
             listener.onIncomingEvent(response);
         }
-
-        WebSocketResponse response = process(text);
-        listener.onIncomingEvent(response);
     }
 
     private WebSocketResponse process(String text) {
