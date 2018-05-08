@@ -1,9 +1,9 @@
-package com.tokopedia.groupchat.vote.domain.usecase;
+package com.tokopedia.vote.domain.usecase;
 
-import com.tokopedia.groupchat.vote.domain.source.VotingSource;
-import com.tokopedia.groupchat.vote.view.model.VoteStatisticViewModel;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.usecase.UseCase;
+import com.tokopedia.vote.domain.model.VoteStatisticDomainModel;
+import com.tokopedia.vote.domain.source.VotingSource;
 
 import java.util.HashMap;
 
@@ -15,7 +15,7 @@ import rx.Observable;
  * @author by StevenFredian on 21/02/18.
  */
 
-public class SendVoteUseCase extends UseCase<VoteStatisticViewModel> {
+public class SendVoteUseCase extends UseCase<VoteStatisticDomainModel> {
 
     private static final String PARAM_OPTION_ID = "option_id";
     private static final String PARAM_POLL_ID = "poll_id";
@@ -27,7 +27,7 @@ public class SendVoteUseCase extends UseCase<VoteStatisticViewModel> {
     }
 
     @Override
-    public Observable<VoteStatisticViewModel> createObservable(RequestParams requestParams) {
+    public Observable<VoteStatisticDomainModel> createObservable(RequestParams requestParams) {
         return votingSource.sendVote(requestParams.getString(PARAM_POLL_ID, ""),
                 getRequestParamToSend(requestParams));
     }

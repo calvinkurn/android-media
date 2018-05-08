@@ -1,29 +1,19 @@
 apply plugin: 'com.android.library'
-
-android {
-    compileSdkVersion 26
-    buildToolsVersion "27.0.3"
-
-
-    defaultConfig {
-        minSdkVersion 16
-        targetSdkVersion 26
-        versionCode 1
-        versionName "1.0"
-
-        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
-
-    }
-
-    buildTypes {
-        release {
-            minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-        }
-    }
-
-}
+apply plugin: 'android-apt'
+apply from: "$rootProject.projectDir/buildconfig/module.gradle"
 
 dependencies {
-    compile 'com.android.support:appcompat-v7:26.1.0'
+
+    compile project(rootProject.ext.libraries.useCase)
+    compile project(rootProject.ext.libraries.abstraction)
+
+    provided rootProject.ext.miscDependencies.javaxAnnotation
+    compile rootProject.ext.miscDependencies.dagger
+    apt rootProject.ext.miscDependencies.daggerCompiler
+
+    compile(rootProject.ext.debugToolsDependencies.chuck) {
+        exclude group: 'com.squareup.okhttp3'
+        exclude group: 'com.squareup.okio'
+        exclude group: 'com.android.support'
+    }
 }

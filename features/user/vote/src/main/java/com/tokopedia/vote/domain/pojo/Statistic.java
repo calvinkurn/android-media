@@ -1,9 +1,10 @@
 
-package com.tokopedia.groupchat.vote.domain.pojo;
+package com.tokopedia.vote.domain.pojo;
 
-import java.util.List;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+
+import java.util.List;
 
 public class Statistic {
 

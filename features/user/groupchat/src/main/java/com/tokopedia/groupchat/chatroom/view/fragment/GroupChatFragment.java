@@ -56,6 +56,7 @@ import com.tokopedia.groupchat.common.design.CloseableBottomSheetDialog;
 import com.tokopedia.groupchat.common.design.SpaceItemDecoration;
 import com.tokopedia.groupchat.common.di.component.DaggerGroupChatComponent;
 import com.tokopedia.groupchat.common.di.component.GroupChatComponent;
+import com.tokopedia.vote.di.VoteModule;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -118,7 +119,8 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
     @Override
     protected void initInjector() {
         GroupChatComponent streamComponent = DaggerGroupChatComponent.builder().baseAppComponent(
-                ((BaseMainApplication) getActivity().getApplication()).getBaseAppComponent()).build();
+                ((BaseMainApplication) getActivity().getApplication()).getBaseAppComponent())
+                .build();
 
         DaggerChatroomComponent.builder()
                 .groupChatComponent(streamComponent)

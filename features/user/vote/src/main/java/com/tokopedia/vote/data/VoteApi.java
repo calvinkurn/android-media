@@ -1,7 +1,8 @@
-package com.tokopedia.groupchat.common.data;
+package com.tokopedia.vote.data;
+
 
 import com.tokopedia.abstraction.common.data.model.response.DataResponse;
-import com.tokopedia.groupchat.vote.domain.pojo.SendVotePojo;
+import com.tokopedia.vote.domain.pojo.SendVotePojo;
 
 import java.util.Map;
 
@@ -23,3 +24,5 @@ public interface VoteApi {
     Observable<Response<DataResponse<SendVotePojo>>> sendVote(@Path(VoteUrl.PATH_POLL_ID) String pollId,
                                                               @FieldMap Map<String, Object> keyword);
 }
+
+

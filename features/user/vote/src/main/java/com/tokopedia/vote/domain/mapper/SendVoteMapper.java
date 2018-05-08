@@ -1,11 +1,12 @@
-package com.tokopedia.groupchat.vote.domain.mapper;
+package com.tokopedia.vote.domain.mapper;
+
 
 import com.tokopedia.abstraction.common.data.model.response.DataResponse;
-import com.tokopedia.groupchat.vote.domain.pojo.SendVotePojo;
-import com.tokopedia.groupchat.vote.domain.pojo.Statistic;
-import com.tokopedia.groupchat.vote.domain.pojo.StatisticOption;
-import com.tokopedia.groupchat.vote.view.model.VoteStatisticViewModel;
-import com.tokopedia.groupchat.vote.view.model.VoteViewModel;
+import com.tokopedia.vote.domain.model.VoteItemDomainModel;
+import com.tokopedia.vote.domain.model.VoteStatisticDomainModel;
+import com.tokopedia.vote.domain.pojo.SendVotePojo;
+import com.tokopedia.vote.domain.pojo.Statistic;
+import com.tokopedia.vote.domain.pojo.StatisticOption;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,29 +20,29 @@ import rx.functions.Func1;
  * @author by StevenFredian on 21/02/18.
  */
 
-public class SendVoteMapper implements Func1<Response<DataResponse<SendVotePojo>>, VoteStatisticViewModel> {
+public class SendVoteMapper implements Func1<Response<DataResponse<SendVotePojo>>, VoteStatisticDomainModel> {
 
     @Inject
     public SendVoteMapper() {
     }
 
     @Override
-    public VoteStatisticViewModel call(Response<DataResponse<SendVotePojo>> dataResponseResponse) {
+    public VoteStatisticDomainModel call(Response<DataResponse<SendVotePojo>> dataResponseResponse) {
         SendVotePojo pojo = dataResponseResponse.body().getData();
         return mappingToViewModel(pojo.getStatistic());
     }
 
-    private VoteStatisticViewModel mappingToViewModel(Statistic statistic) {
-        return new VoteStatisticViewModel(
+    private VoteStatisticDomainModel mappingToViewModel(Statistic statistic) {
+        return new VoteStatisticDomainModel(
                 String.valueOf(statistic.getTotalVoter()),
                 mappingToListOption(statistic.getStatisticOptions())
         );
     }
 
-    private List<VoteViewModel> mappingToListOption(List<StatisticOption> statisticOptions) {
-        List<VoteViewModel> list = new ArrayList<>();
+    private List<VoteItemDomainModel> mappingToListOption(List<StatisticOption> statisticOptions) {
+        List<VoteItemDomainModel> list = new ArrayList<>();
         for (StatisticOption option : statisticOptions) {
-            list.add(new VoteViewModel(
+            list.add(new VoteItemDomainModel(
                     option.getOptionId() != null ? option.getOptionId() : "",
                     option.getOption() != null ? option.getOption() : "",
                     option.getPercentage(),

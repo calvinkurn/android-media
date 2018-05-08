@@ -1,5 +1,5 @@
 
-package com.tokopedia.groupchat.vote.domain.pojo;
+package com.tokopedia.vote.domain.pojo;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;

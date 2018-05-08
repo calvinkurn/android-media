@@ -24,6 +24,8 @@ apt {
 
 dependencies {
 
+    compile project(rootProject.ext.features.vote)
+
     compile project(rootProject.ext.libraries.abstraction)
     compile project(rootProject.ext.libraries.useCase)
     compile project(rootProject.ext.libraries.design)

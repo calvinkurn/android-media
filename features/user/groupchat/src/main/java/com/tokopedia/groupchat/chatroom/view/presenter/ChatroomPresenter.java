@@ -1,12 +1,9 @@
 package com.tokopedia.groupchat.chatroom.view.presenter;
 
-import android.text.TextUtils;
-
 import com.sendbird.android.OpenChannel;
 import com.sendbird.android.PreviousMessageListQuery;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
-import com.tokopedia.groupchat.R;
 import com.tokopedia.groupchat.chatroom.domain.usecase.GetGroupChatMessagesFirstTimeUseCase;
 import com.tokopedia.groupchat.chatroom.domain.usecase.LoadPreviousChatMessagesUseCase;
 import com.tokopedia.groupchat.chatroom.domain.usecase.RefreshMessageUseCase;
@@ -14,7 +11,6 @@ import com.tokopedia.groupchat.chatroom.domain.usecase.SendGroupChatMessageUseCa
 import com.tokopedia.groupchat.chatroom.view.listener.ChatroomContract;
 import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.ChatViewModel;
 import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.PendingChatViewModel;
-import com.tokopedia.groupchat.vote.domain.usecase.SendVoteUseCase;
 
 import java.util.List;
 
@@ -28,7 +24,6 @@ public class ChatroomPresenter extends BaseDaggerPresenter<ChatroomContract.View
         ChatroomContract.Presenter {
 
     private static final int MAX_CHARACTER_LENGTH = 200;
-    private final SendVoteUseCase sendVoteUseCase;
 
     private final GetGroupChatMessagesFirstTimeUseCase getGroupChatMessagesFirstTimeUseCase;
     private final RefreshMessageUseCase refreshMessageUseCase;
@@ -40,13 +35,11 @@ public class ChatroomPresenter extends BaseDaggerPresenter<ChatroomContract.View
                                      getGroupChatMessagesFirstTimeUseCase,
                              RefreshMessageUseCase refreshMessageUseCase,
                              LoadPreviousChatMessagesUseCase loadPreviousChatMessagesUseCase,
-                             SendGroupChatMessageUseCase sendMessageUseCase,
-                             SendVoteUseCase sendVoteUseCase) {
+                             SendGroupChatMessageUseCase sendMessageUseCase) {
         this.getGroupChatMessagesFirstTimeUseCase = getGroupChatMessagesFirstTimeUseCase;
         this.refreshMessageUseCase = refreshMessageUseCase;
         this.loadPreviousChatMessagesUseCase = loadPreviousChatMessagesUseCase;
         this.sendMessageUseCase = sendMessageUseCase;
-        this.sendVoteUseCase = sendVoteUseCase;
     }
 
     @Override
@@ -152,7 +145,6 @@ public class ChatroomPresenter extends BaseDaggerPresenter<ChatroomContract.View
     @Override
     public void detachView() {
         super.detachView();
-        sendVoteUseCase.unsubscribe();
     }
 
 }
