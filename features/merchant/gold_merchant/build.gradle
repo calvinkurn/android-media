@@ -5,6 +5,8 @@ apply from: "$rootProject.projectDir/buildconfig/module.gradle"
 dependencies {
 
     compile project(rootProject.ext.features.seller)
+    compile project(rootProject.ext.libraries.bottomSheetBuilder)
+    compile project(rootProject.ext.libraries.williamchart)
 
     compile rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
     apt rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
