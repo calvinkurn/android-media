@@ -98,7 +98,7 @@ public class ShopProductViewHolder extends AbstractViewHolder<ShopProductViewMod
     }
 
     protected void onProductClicked(ShopProductViewModel shopProductViewModel) {
-        shopProductClickedListener.onProductClicked(shopProductViewModel, getAdapterPosition());
+        shopProductClickedListener.onProductClicked(shopProductViewModel);
     }
 
     private void updateDisplayRating(final ShopProductViewModel shopProductViewModel) {
