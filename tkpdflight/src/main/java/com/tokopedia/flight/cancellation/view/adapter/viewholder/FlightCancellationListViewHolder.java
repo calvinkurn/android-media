@@ -6,6 +6,7 @@ import android.view.View;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.design.component.TextViewCompat;
 import com.tokopedia.flight.R;
+import com.tokopedia.flight.cancellation.constant.FlightCancellationStatus;
 import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationListViewModel;
 
 /**
@@ -19,6 +20,7 @@ public class FlightCancellationListViewHolder extends AbstractViewHolder<FlightC
     TextViewCompat txtCancellationId;
     TextViewCompat txtJourney;
     TextViewCompat txtCreatedTime;
+    TextViewCompat txtCancellationStatus;
     Context context;
 
     public FlightCancellationListViewHolder(View itemView) {
@@ -29,6 +31,7 @@ public class FlightCancellationListViewHolder extends AbstractViewHolder<FlightC
         txtCancellationId = itemView.findViewById(R.id.txt_cancellation_id);
         txtJourney = itemView.findViewById(R.id.txt_cancellation_journey);
         txtCreatedTime = itemView.findViewById(R.id.txt_cancellation_created_time);
+        txtCancellationStatus = itemView.findViewById(R.id.txt_cancellation_status);
     }
 
     @Override
@@ -42,6 +45,24 @@ public class FlightCancellationListViewHolder extends AbstractViewHolder<FlightC
                 element.getCancellations().getJourneys().get(0).getDepartureAiportId(),
                 element.getCancellations().getJourneys().get(0).getArrivalCity(),
                 element.getCancellations().getJourneys().get(0).getArrivalAirportId()));
+        checkCancellationStatus(element.getCancellations().getStatus());
+    }
+
+    private void checkCancellationStatus(int status) {
+        switch (status) {
+            case FlightCancellationStatus.REQUESTED:
+                txtCancellationStatus.setText(R.string.flight_cancellation_list_status_requested);
+                break;
+            case FlightCancellationStatus.PENDING:
+                txtCancellationStatus.setText(R.string.flight_cancellation_list_status_pending);
+                break;
+            case FlightCancellationStatus.REFUNDED:
+                txtCancellationStatus.setText(R.string.flight_cancellation_list_status_refunded);
+                break;
+            case FlightCancellationStatus.ABORTED:
+                txtCancellationStatus.setText(R.string.flight_cancellation_list_status_aborted);
+                break;
+        }
     }
 
 }

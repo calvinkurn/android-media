@@ -31,8 +31,15 @@
         style="@style/TextView.Small"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingBottom="@dimen/dp_16"
         android:paddingRight="@dimen/dp_16"
         tools:text="Tanggal Pembatalan: 12 Apr 2018, 11:30" />
+
+    <com.tokopedia.design.component.TextViewCompat
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/txt_cancellation_status"
+        android:paddingBottom="@dimen/dp_16"
+        tools:text="Berhasil"
+        />
 
 </LinearLayout>
