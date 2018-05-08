@@ -759,12 +759,17 @@ public class GetFirstPageFeedsSubscriber extends Subscriber<FeedResult> {
                         "tokopedia://people/28596211");
         viewModelList.add(itemViewModel1);
 
-
         ProductCommunicationItemViewModel itemViewModel2 =
                 new ProductCommunicationItemViewModel(
                         "https://ecs7.tokopedia.net/img/cache/200-square/product-1/2017/5/11/420425/420425_ea61af83-eb25-4ebe-85cd-78a272105399.jpg",
                         "tokopedia://people/12573588");
         viewModelList.add(itemViewModel2);
+
+        ProductCommunicationItemViewModel itemViewModel3 =
+                new ProductCommunicationItemViewModel(
+                        "https://apollo2.dl.playstation.net/cdn/UP0001/CUSA04071_00/FREE_CONTENTKj7WKRpM0PNOMmE130x7/PREVIEW_SCREENSHOT2_122976.jpg",
+                        "tokopedia://people/12573588");
+        viewModelList.add(itemViewModel3);
 
         return new ProductCommunicationViewModel(viewModelList);
     }

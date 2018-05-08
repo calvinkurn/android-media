@@ -1,6 +1,7 @@
 package com.tokopedia.feedplus.view.adapter.viewholder.kol;
 
 import android.support.annotation.LayoutRes;
+import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
 import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
@@ -15,7 +16,7 @@ import com.tokopedia.feedplus.view.viewmodel.kol.ProductCommunicationViewModel;
 public class ProductCommunicationViewHolder extends
         AbstractViewHolder<ProductCommunicationViewModel> {
 
-    private final FeedPlus.View viewListener;
+    private final ProductCommunicationAdapter adapter;
 
     @LayoutRes
     public static final int LAYOUT = R.layout.product_communication;
@@ -23,11 +24,14 @@ public class ProductCommunicationViewHolder extends
 
     public ProductCommunicationViewHolder(View itemView, FeedPlus.View viewListener) {
         super(itemView);
-        this.viewListener = viewListener;
+        RecyclerView productCommunicationRv = itemView.findViewById(R.id.product_communication_rv);
+
+        adapter = new ProductCommunicationAdapter(viewListener);
+        productCommunicationRv.setAdapter(adapter);
     }
 
     @Override
     public void bind(ProductCommunicationViewModel element) {
-
+        adapter.setData(element.getItemViewModels());
     }
 }

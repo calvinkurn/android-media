@@ -2,6 +2,7 @@ package com.tokopedia.feedplus.view.viewmodel.kol;
 
 import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.feedplus.view.adapter.typefactory.feed.FeedPlusTypeFactory;
+import com.tokopedia.feedplus.view.adapter.viewholder.kol.ProductCommunicationViewHolder;
 
 import java.util.List;
 
@@ -23,7 +24,7 @@ public class ProductCommunicationViewModel implements Visitable<FeedPlusTypeFact
 
     @Override
     public int type(FeedPlusTypeFactory typeFactory) {
-        return 0;
+        return ProductCommunicationViewHolder.LAYOUT;
     }
     
 }
