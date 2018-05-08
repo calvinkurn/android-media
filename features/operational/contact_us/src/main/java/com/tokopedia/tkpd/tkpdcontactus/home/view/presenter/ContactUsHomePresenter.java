@@ -75,6 +75,8 @@ public class  ContactUsHomePresenter extends BaseDaggerPresenter<ContactUsHomeCo
             public void onNext(List<BuyerPurchaseList> buyerPurchaseLists) {
                 if(buyerPurchaseLists.size()>0) {
                     getView().setEmptyPurchaseListHide();
+                }else {
+                    return;
                 }
                 if(buyerPurchaseLists.size()>4) {
                     getView().setPurchaseList(buyerPurchaseLists.subList(0, 4));

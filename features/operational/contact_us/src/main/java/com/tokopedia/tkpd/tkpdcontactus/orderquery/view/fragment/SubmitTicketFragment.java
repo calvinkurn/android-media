@@ -201,6 +201,12 @@ public class SubmitTicketFragment extends BaseDaggerFragment implements SubmitTi
     }
 
     @Override
+    public void addimage(ImageUpload image) {
+        imageUploadAdapter.addImage(image);
+    }
+
+
+    @Override
     public void showMessage(String message) {
         Toast.makeText(getContext(), message, Toast.LENGTH_LONG).show();
     }
@@ -281,7 +287,7 @@ public class SubmitTicketFragment extends BaseDaggerFragment implements SubmitTi
                 default:
                     break;
             }
-            imageUploadAdapter.addImage(image);
+            presenter.onImageSelect(image);
 
         }
 

@@ -23,6 +23,9 @@ public interface SubmitTicketContract {
         public void setInvoiceTitle(String description);
         public void setInvoiceImage(String imagePath);
 
+
+        public void addimage(ImageUpload image);
+
         public void showMessage(String showToast);
         public void finish();
 
@@ -34,5 +37,6 @@ public interface SubmitTicketContract {
     }
     public interface Presenter extends CustomerPresenter<View> {
         public void onSendButtonClick();
+        public void onImageSelect(ImageUpload image);
     }
 }

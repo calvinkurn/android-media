@@ -105,6 +105,17 @@ public class SubmitTicketPresenter extends BaseDaggerPresenter<SubmitTicketContr
         }
 }
 
+    @Override
+    public void onImageSelect(ImageUpload image) {
+        if(!fileSizeValid(image.getFileLoc())){
+            showErrorMessage(MESSAGE_WRONG_FILE_SIZE);
+        } else if(!getBitmapDimens(image.getFileLoc())) {
+            showErrorMessage(MESSAGE_WRONG_DIMENSION);
+        } else {
+            getView().addimage(image);
+        }
+    }
+
     private void showErrorMessage(int messageWrongParam) {
         if(messageWrongParam == MESSAGE_WRONG_FILE_SIZE){
             getView().setSnackBarErrorMessage(context.getString(R.string.error_msg_wrong_size));
