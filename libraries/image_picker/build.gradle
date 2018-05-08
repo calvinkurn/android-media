@@ -13,8 +13,11 @@ dependencies {
     compile rootProject.ext.supportLibDependencies.appCompactV7
     compile rootProject.ext.supportLibDependencies.exifinterface
 
+    compile project(rootProject.ext.libraries.useCase)
     compile project(rootProject.ext.libraries.abstraction)
     compile project(rootProject.ext.libraries.design)
+    compile rootProject.ext.miscDependencies.dagger
+    apt rootProject.ext.miscDependencies.daggerCompiler
 
 //    compile project(rootProject.ext.libraries.applink)
 
