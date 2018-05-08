@@ -2,6 +2,7 @@ package com.tokopedia.digital.common.domain;
 
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.digital.product.view.model.CategoryData;
+import com.tokopedia.digital.product.view.model.ProductDigitalData;
 import com.tokopedia.digital.widget.view.model.DigitalNumberList;
 
 import rx.Observable;
@@ -12,9 +13,9 @@ import rx.Observable;
 
 public interface IDigitalCategoryRepository {
 
-    Observable<CategoryData> getCategory(String categoryId, TKPDMapParam<String, String> param);
+    Observable<ProductDigitalData> getCategory(String categoryIds);
 
-    Observable<DigitalNumberList> getFavoriteList(TKPDMapParam<String, String> param);
+    Observable<ProductDigitalData> getCategoryWithFavorit(String categoryId, String operatorId, String clientNumber, String productId);
 
     Observable<String> getHelpUrl(String categoryId);
 }

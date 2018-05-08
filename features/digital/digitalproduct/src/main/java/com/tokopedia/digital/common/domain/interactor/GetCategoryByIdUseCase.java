@@ -1,30 +1,20 @@
 package com.tokopedia.digital.common.domain.interactor;
 
 import android.content.Context;
-import android.support.annotation.NonNull;
-import android.text.TextUtils;
 
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
-import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.digital.common.domain.IDigitalCategoryRepository;
-import com.tokopedia.digital.product.view.model.BannerData;
-import com.tokopedia.digital.product.view.model.CategoryData;
 import com.tokopedia.digital.product.view.model.HistoryClientNumber;
 import com.tokopedia.digital.product.view.model.OrderClientNumber;
 import com.tokopedia.digital.product.view.model.ProductDigitalData;
-import com.tokopedia.digital.widget.view.model.DigitalNumberList;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.usecase.UseCase;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import rx.Observable;
 import rx.functions.Func1;
-import rx.functions.Func2;
 
 /**
  * @author rizkyfadillah on 19/01/18.
@@ -54,108 +44,80 @@ public class GetCategoryByIdUseCase extends UseCase<ProductDigitalData> {
 
     @Override
     public Observable<ProductDigitalData> createObservable(RequestParams requestParams) {
-        String categoryId = requestParams.getString(PARAM_CATEGORY_ID, "");
-        String operatorId = requestParams.getString(PARAM_OPERATOR_ID, "");
-        String productId = requestParams.getString(PARAM_PRODUCT_ID, "");
-        String clientNumber = requestParams.getString(PARAM_CLIENT_NUMBER, "");
+        final String categoryId = requestParams.getString(PARAM_CATEGORY_ID, "");
+        final String operatorId = requestParams.getString(PARAM_OPERATOR_ID, "");
+        final String productId = requestParams.getString(PARAM_PRODUCT_ID, "");
+        final String clientNumber = requestParams.getString(PARAM_CLIENT_NUMBER, "");
         String sort = requestParams.getString(PARAM_SORT, "");
         boolean needFavoriteList = requestParams.getBoolean(PARAM_NEED_FAVORITE_LIST, false);
 
-        TKPDMapParam<String, String> paramQueryCategory = new TKPDMapParam<>();
-        if (GlobalConfig.isSellerApp()) {
-            paramQueryCategory.put(PARAM_IS_RESELLER, PARAM_VALUE_IS_RESELLER);
-        }
+//        TKPDMapParam<String, String> paramQueryCategory = new TKPDMapParam<>();
+//        if (GlobalConfig.isSellerApp()) {
+//            paramQueryCategory.put(PARAM_IS_RESELLER, PARAM_VALUE_IS_RESELLER);
+//        }
 
         if (needFavoriteList) {
-            TKPDMapParam<String, String> paramQueryFavoriteList = new TKPDMapParam<>();
-            paramQueryFavoriteList.put(PARAM_CATEGORY_ID, categoryId);
-            if (!TextUtils.isEmpty(operatorId)) {
-                paramQueryFavoriteList.put(PARAM_OPERATOR_ID, operatorId);
+            //fetch category detail and favorit both if user is not logged in
+            if (SessionHandler.isV4Login(MainApplication.getAppContext())) {
+                return digitalCategoryRepository.getCategoryWithFavorit(categoryId, operatorId, clientNumber, productId);
             }
-            if (!TextUtils.isEmpty(productId)) {
-                paramQueryFavoriteList.put(PARAM_PRODUCT_ID, productId);
-            }
-            if (!TextUtils.isEmpty(clientNumber)) {
-                paramQueryFavoriteList.put(PARAM_CLIENT_NUMBER, clientNumber);
-            }
-            paramQueryFavoriteList.put(PARAM_SORT, sort);
 
-            return Observable.zip(
-                    digitalCategoryRepository.getCategory(categoryId, getGeneratedAuthParamNetwork(paramQueryCategory)),
-                    getFavoriteList(getGeneratedAuthParamNetwork(paramQueryFavoriteList)),
-                    getZipFunctionProductDigitalData());
-        } else {
-            return digitalCategoryRepository.getCategory(categoryId, getGeneratedAuthParamNetwork(paramQueryCategory))
-                    .map(new Func1<CategoryData, ProductDigitalData>() {
+            //fetch category detail if user is not logged in
+            return digitalCategoryRepository.getCategory(categoryId)
+                    .map(new Func1<ProductDigitalData, ProductDigitalData>() {
                         @Override
-                        public ProductDigitalData call(CategoryData categoryData) {
-                            return new ProductDigitalData.Builder()
-                                    .categoryData(categoryData)
-                                    .build();
+                        public ProductDigitalData call(ProductDigitalData productDigitalData) {
+                            if (productDigitalData != null) {
+                                OrderClientNumber orderClientNumber = new OrderClientNumber.Builder()
+                                        .categoryId(categoryId)
+                                        .operatorId(operatorId)
+                                        .clientNumber(clientNumber)
+                                        .name(DEFAULT_EMPTY_FIELD)
+                                        .productId(productId)
+                                        .build();
+
+                                HistoryClientNumber historyClientNumber = productDigitalData.getHistoryClientNumber();
+                                if (historyClientNumber == null) {
+                                    historyClientNumber = new HistoryClientNumber();
+                                }
+                                historyClientNumber.setLastOrderClientNumber(orderClientNumber);
+                                productDigitalData.setHistoryClientNumber(historyClientNumber);
+                            }
+                            return productDigitalData;
                         }
                     });
-        }
-    }
-
-    private Observable<DigitalNumberList> getFavoriteList
-            (TKPDMapParam<String, String> paramQueryLastNumber) {
-        if (SessionHandler.isV4Login(MainApplication.getAppContext())) {
-            return digitalCategoryRepository.getFavoriteList(paramQueryLastNumber);
         } else {
-            List<OrderClientNumber> orderClientNumbers = new ArrayList<>();
-            DigitalNumberList digitalNumberList = new DigitalNumberList(orderClientNumbers, null);
-            if (paramQueryLastNumber.get(PARAM_CATEGORY_ID) != null
-                    && paramQueryLastNumber.get(PARAM_OPERATOR_ID) != null) {
-                String productId =
-                        paramQueryLastNumber.get(PARAM_OPERATOR_ID) == null ? DEFAULT_EMPTY_FIELD :
-                                paramQueryLastNumber.get(PARAM_OPERATOR_ID);
-                String clientNumber =
-                        paramQueryLastNumber.get(PARAM_CLIENT_NUMBER) == null ? DEFAULT_EMPTY_FIELD :
-                                paramQueryLastNumber.get(PARAM_CLIENT_NUMBER);
-                OrderClientNumber orderClientNumber = new OrderClientNumber.Builder()
-                        .categoryId(paramQueryLastNumber.get(PARAM_CATEGORY_ID))
-                        .operatorId(paramQueryLastNumber.get(PARAM_OPERATOR_ID))
-                        .clientNumber(clientNumber)
-                        .name(DEFAULT_EMPTY_FIELD)
-                        .productId(productId)
-                        .build();
-                digitalNumberList = new DigitalNumberList(orderClientNumbers, orderClientNumber);
-            }
-            return Observable.just(digitalNumberList);
+            return digitalCategoryRepository.getCategory(categoryId);
         }
     }
 
-    @NonNull
-    private Func2<CategoryData, DigitalNumberList, ProductDigitalData> getZipFunctionProductDigitalData() {
-        return new Func2<CategoryData, DigitalNumberList, ProductDigitalData>() {
-            @Override
-            public ProductDigitalData call(
-                    CategoryData categoryData,
-                    DigitalNumberList digitalNumberList
-            ) {
-                List<BannerData> bannerDataList = new ArrayList<>();
-                bannerDataList.addAll(categoryData.getBannerDataListIncluded());
-
-                List<BannerData> otherBannerDataList = new ArrayList<>();
-                otherBannerDataList.addAll(categoryData.getOtherBannerDataListIncluded());
-
-                OrderClientNumber lastOrder = null;
-                if (digitalNumberList.getLastOrder() != null) {
-                    lastOrder = digitalNumberList.getLastOrder();
-                }
-                List<OrderClientNumber> numberList = digitalNumberList.getOrderClientNumbers();
-                return new ProductDigitalData.Builder()
-                        .historyClientNumber(new HistoryClientNumber.Builder()
-                                .lastOrderClientNumber(lastOrder)
-                                .recentClientNumberList(numberList)
-                                .build())
-                        .categoryData(categoryData)
-                        .bannerDataList(bannerDataList)
-                        .otherBannerDataList(otherBannerDataList)
-                        .build();
-            }
-        };
-    }
+//    private Observable<DigitalNumberList> getFavoriteList
+//            (TKPDMapParam<String, String> paramQueryLastNumber) {
+//        if (SessionHandler.isV4Login(MainApplication.getAppContext())) {
+//            return digitalCategoryRepository.getFavoriteList(paramQueryLastNumber);
+//        } else {
+//            List<OrderClientNumber> orderClientNumbers = new ArrayList<>();
+//            DigitalNumberList digitalNumberList = new DigitalNumberList(orderClientNumbers, null);
+//            if (paramQueryLastNumber.get(PARAM_CATEGORY_ID) != null
+//                    && paramQueryLastNumber.get(PARAM_OPERATOR_ID) != null) {
+//                String productId =
+//                        paramQueryLastNumber.get(PARAM_OPERATOR_ID) == null ? DEFAULT_EMPTY_FIELD :
+//                                paramQueryLastNumber.get(PARAM_OPERATOR_ID);
+//                String clientNumber =
+//                        paramQueryLastNumber.get(PARAM_CLIENT_NUMBER) == null ? DEFAULT_EMPTY_FIELD :
+//                                paramQueryLastNumber.get(PARAM_CLIENT_NUMBER);
+//                OrderClientNumber orderClientNumber = new OrderClientNumber.Builder()
+//                        .categoryId(paramQueryLastNumber.get(PARAM_CATEGORY_ID))
+//                        .operatorId(paramQueryLastNumber.get(PARAM_OPERATOR_ID))
+//                        .clientNumber(clientNumber)
+//                        .name(DEFAULT_EMPTY_FIELD)
+//                        .productId(productId)
+//                        .build();
+//                digitalNumberList = new DigitalNumberList(orderClientNumbers, orderClientNumber);
+//            }
+//            return Observable.just(digitalNumberList);
+//        }
+//    }
 
     public RequestParams createRequestParam(String categoryId) {
         RequestParams requestParams = RequestParams.create();

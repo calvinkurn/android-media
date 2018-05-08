@@ -15,13 +15,11 @@ import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
-import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.core.base.data.executor.JobExecutor;
 import com.tokopedia.core.base.presentation.UIThread;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
-import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.apiservices.tokocash.TokoCashService;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
@@ -33,7 +31,7 @@ import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.design.bottomsheet.BottomSheetView;
 import com.tokopedia.digital.R;
 import com.tokopedia.digital.R2;
-import com.tokopedia.digital.common.data.apiservice.DigitalEndpointService;
+import com.tokopedia.digital.common.data.apiservice.DigitalGqlApiService;
 import com.tokopedia.digital.common.data.mapper.ProductDigitalMapper;
 import com.tokopedia.digital.common.data.repository.DigitalCategoryRepository;
 import com.tokopedia.digital.common.data.source.CategoryDetailDataSource;
@@ -141,15 +139,14 @@ public class TopUpTokoCashActivity extends BasePresenterActivity<TopUpTokocashPr
                 new JobExecutor(),
                 new UIThread());
 
-        DigitalEndpointService digitalEndpointService = new DigitalEndpointService();
+        DigitalGqlApiService digitalEndpointService = new DigitalGqlApiService();
 
         CategoryDetailDataSource categoryDetailDataSource = new CategoryDetailDataSource(
                 digitalEndpointService, new GlobalCacheManager(), new ProductDigitalMapper()
         );
 
         IDigitalCategoryRepository digitalCategoryRepository = new DigitalCategoryRepository(
-                categoryDetailDataSource, null
-        );
+                categoryDetailDataSource);
 
         GetCategoryByIdUseCase getCategoryByIdUseCase = new GetCategoryByIdUseCase(this,
                 digitalCategoryRepository);

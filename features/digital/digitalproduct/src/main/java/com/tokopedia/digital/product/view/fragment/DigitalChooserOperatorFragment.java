@@ -19,7 +19,7 @@ import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.digital.R;
 import com.tokopedia.digital.R2;
-import com.tokopedia.digital.common.data.apiservice.DigitalEndpointService;
+import com.tokopedia.digital.common.data.apiservice.DigitalGqlApiService;
 import com.tokopedia.digital.common.data.mapper.ProductDigitalMapper;
 import com.tokopedia.digital.common.data.repository.DigitalCategoryRepository;
 import com.tokopedia.digital.common.data.source.CategoryDetailDataSource;
@@ -118,15 +118,13 @@ public class DigitalChooserOperatorFragment extends BasePresenterFragment<IOpera
     protected void initialPresenter() {
         if (compositeSubscription == null) compositeSubscription = new CompositeSubscription();
 
-        DigitalEndpointService digitalEndpointService = new DigitalEndpointService();
+        DigitalGqlApiService digitalGqlApiService = new DigitalGqlApiService();
 
         CategoryDetailDataSource categoryDetailDataSource = new CategoryDetailDataSource(
-                digitalEndpointService, new GlobalCacheManager(), new ProductDigitalMapper()
+                digitalGqlApiService, new GlobalCacheManager(), new ProductDigitalMapper()
         );
 
-        DigitalCategoryRepository digitalCategoryRepository = new DigitalCategoryRepository(
-                categoryDetailDataSource, null
-        );
+        DigitalCategoryRepository digitalCategoryRepository = new DigitalCategoryRepository(categoryDetailDataSource);
 
         GetCategoryByIdUseCase getCategoryByIdUseCase = new GetCategoryByIdUseCase(
                 getActivity(), digitalCategoryRepository
@@ -235,11 +233,11 @@ public class DigitalChooserOperatorFragment extends BasePresenterFragment<IOpera
             operatorChooserAdapter.setSearchResultData(operators);
     }
 
-    private View.OnFocusChangeListener onAnalyticsFocusChangedListener(){
-        return new View.OnFocusChangeListener(){
+    private View.OnFocusChangeListener onAnalyticsFocusChangedListener() {
+        return new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View view, boolean b) {
-                if(b){
+                if (b) {
                     UnifyTracking.eventClickSearchBar(categoryName, categoryName);
                 }
             }

@@ -12,7 +12,7 @@ import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.digital.R;
 import com.tokopedia.digital.R2;
-import com.tokopedia.digital.common.data.apiservice.DigitalEndpointService;
+import com.tokopedia.digital.common.data.apiservice.DigitalGqlApiService;
 import com.tokopedia.digital.common.data.mapper.ProductDigitalMapper;
 import com.tokopedia.digital.common.data.repository.DigitalCategoryRepository;
 import com.tokopedia.digital.common.data.source.CategoryDetailDataSource;
@@ -103,15 +103,13 @@ public class DigitalChooserProductFragment extends BasePresenterFragment<IProduc
     protected void initialPresenter() {
         if (compositeSubscription == null) compositeSubscription = new CompositeSubscription();
 
-        DigitalEndpointService digitalEndpointService = new DigitalEndpointService();
+        DigitalGqlApiService digitalEndpointService = new DigitalGqlApiService();
 
         CategoryDetailDataSource categoryDetailDataSource = new CategoryDetailDataSource(
                 digitalEndpointService, new GlobalCacheManager(), new ProductDigitalMapper()
         );
 
-        DigitalCategoryRepository digitalCategoryRepository = new DigitalCategoryRepository(
-                categoryDetailDataSource, null
-        );
+        DigitalCategoryRepository digitalCategoryRepository = new DigitalCategoryRepository(categoryDetailDataSource);
 
         GetCategoryByIdUseCase getCategoryByIdUseCase = new GetCategoryByIdUseCase(
                 getActivity(), digitalCategoryRepository

@@ -38,7 +38,6 @@ public class CategoryData implements Parcelable {
     private String name;
     private String icon;
     private String iconUrl;
-    private Teaser teaser;
     private boolean isNew;
     private boolean instantCheckout;
     private String slug;
@@ -52,12 +51,10 @@ public class CategoryData implements Parcelable {
 
     private CategoryData(Builder builder) {
         setCategoryId(builder.categoryId);
-        setCategoryType(builder.categoryType);
         setTitleText(builder.titleText);
         setName(builder.name);
         setIcon(builder.icon);
         setIconUrl(builder.iconUrl);
-        setTeaser(builder.teaser);
         setNew(builder.isNew);
         setInstantCheckout(builder.instantCheckout);
         setSlug(builder.slug);
@@ -92,14 +89,6 @@ public class CategoryData implements Parcelable {
 
     public void setIconUrl(String iconUrl) {
         this.iconUrl = iconUrl;
-    }
-
-    public Teaser getTeaser() {
-        return teaser;
-    }
-
-    public void setTeaser(Teaser teaser) {
-        this.teaser = teaser;
     }
 
     public boolean isNew() {
@@ -166,14 +155,6 @@ public class CategoryData implements Parcelable {
         this.categoryId = categoryId;
     }
 
-    public String getCategoryType() {
-        return categoryType;
-    }
-
-    public void setCategoryType(String categoryType) {
-        this.categoryType = categoryType;
-    }
-
     public List<Operator> getOperatorList() {
         return operatorList;
     }
@@ -227,7 +208,6 @@ public class CategoryData implements Parcelable {
         dest.writeString(this.name);
         dest.writeString(this.icon);
         dest.writeString(this.iconUrl);
-        dest.writeParcelable(this.teaser, flags);
         dest.writeByte(this.isNew ? (byte) 1 : (byte) 0);
         dest.writeByte(this.instantCheckout ? (byte) 1 : (byte) 0);
         dest.writeString(this.slug);
@@ -247,7 +227,6 @@ public class CategoryData implements Parcelable {
         this.name = in.readString();
         this.icon = in.readString();
         this.iconUrl = in.readString();
-        this.teaser = in.readParcelable(Teaser.class.getClassLoader());
         this.isNew = in.readByte() != 0;
         this.instantCheckout = in.readByte() != 0;
         this.slug = in.readString();

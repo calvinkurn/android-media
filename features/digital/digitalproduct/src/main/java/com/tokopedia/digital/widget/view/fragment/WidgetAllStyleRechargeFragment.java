@@ -30,11 +30,10 @@ import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.digital.R;
 import com.tokopedia.digital.R2;
 import com.tokopedia.digital.common.data.apiservice.DigitalEndpointService;
-import com.tokopedia.digital.common.data.mapper.FavoriteNumberListDataMapper;
+import com.tokopedia.digital.common.data.apiservice.DigitalGqlApiService;
 import com.tokopedia.digital.common.data.mapper.ProductDigitalMapper;
 import com.tokopedia.digital.common.data.repository.DigitalCategoryRepository;
 import com.tokopedia.digital.common.data.source.CategoryDetailDataSource;
-import com.tokopedia.digital.common.data.source.FavoriteListDataSource;
 import com.tokopedia.digital.common.domain.IDigitalCategoryRepository;
 import com.tokopedia.digital.common.domain.interactor.GetCategoryByIdUseCase;
 import com.tokopedia.digital.common.view.compoundview.BaseDigitalProductView;
@@ -126,18 +125,13 @@ public class WidgetAllStyleRechargeFragment extends BasePresenterFragmentV4<IDig
     @Override
     protected void initialPresenter() {
         DigitalEndpointService digitalEndpointService = new DigitalEndpointService();
+        DigitalGqlApiService digitalGqlApiService = new DigitalGqlApiService();
         CategoryDetailDataSource categoryDetailDataSource = new CategoryDetailDataSource(
-                digitalEndpointService, new GlobalCacheManager(), new ProductDigitalMapper()
+                digitalGqlApiService, new GlobalCacheManager(), new ProductDigitalMapper()
         );
-        FavoriteListDataSource favoriteListDataSource = new FavoriteListDataSource(
-                digitalEndpointService, new FavoriteNumberListDataMapper()
-        );
-        IDigitalCategoryRepository digitalRepository = new DigitalCategoryRepository(
-                categoryDetailDataSource, favoriteListDataSource
-        );
-        GetCategoryByIdUseCase getCategoryByIdUseCase = new GetCategoryByIdUseCase(
-                getContext(), digitalRepository
-        );
+
+        IDigitalCategoryRepository digitalRepository = new DigitalCategoryRepository(categoryDetailDataSource);
+        GetCategoryByIdUseCase getCategoryByIdUseCase = new GetCategoryByIdUseCase(getContext(), digitalRepository);
 
         presenter = new DigitalWidgetPresenter(getActivity(),
                 new LocalCacheHandler(getActivity(), TkpdCache.DIGITAL_LAST_INPUT_CLIENT_NUMBER),

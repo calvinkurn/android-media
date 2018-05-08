@@ -226,8 +226,6 @@ public class TkpdCache extends com.tokopedia.abstraction.constant.TkpdCache {
         public static final String KEY_RATING = "RATING";
         public static final String KEY_ADVERTISINGID = "KEY_ADVERTISINGID";
         public static final String KEY_ANDROID_ID = "KEY_ANDROID_ID";
-
-
     }
 
     public class RemoteConfigKey {
@@ -261,6 +259,9 @@ public class TkpdCache extends com.tokopedia.abstraction.constant.TkpdCache {
         public static final String MAINAPP_FLIGHT_TRANSACTION_MENU = "mainapp_flight_transaction_menu";
         public static final String SHOW_IMAGE_SEARCH = "enable_image_search";
         public static final String IMAGE_SEARCH_ONBOARD_DESC = "app_image_search_showcase_message";
+
+        public static final String IMAGE_HOST = "image_host";
+
     }
 
 }

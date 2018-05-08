@@ -28,11 +28,6 @@ public interface DigitalApi {
     @GET(TkpdBaseURL.DigitalApi.PATH_STATUS)
     Observable<Response<TkpdDigitalResponse>> getStatus();
 
-    @GET(TkpdBaseURL.DigitalApi.PATH_CATEGORY + "/{categoryId}")
-    Observable<Response<TkpdDigitalResponse>> getCategory(
-            @Path("categoryId") String categoryId, @QueryMap Map<String, String> params
-    );
-
     @GET(TkpdBaseURL.DigitalApi.PATH_CATEGORY_LIST)
     Observable<Response<TkpdDigitalResponse>> getCategoryList();
 

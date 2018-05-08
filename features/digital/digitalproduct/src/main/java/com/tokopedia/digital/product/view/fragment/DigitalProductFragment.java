@@ -56,11 +56,10 @@ import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.digital.R;
 import com.tokopedia.digital.R2;
 import com.tokopedia.digital.common.data.apiservice.DigitalEndpointService;
-import com.tokopedia.digital.common.data.mapper.FavoriteNumberListDataMapper;
+import com.tokopedia.digital.common.data.apiservice.DigitalGqlApiService;
 import com.tokopedia.digital.common.data.mapper.ProductDigitalMapper;
 import com.tokopedia.digital.common.data.repository.DigitalCategoryRepository;
 import com.tokopedia.digital.common.data.source.CategoryDetailDataSource;
-import com.tokopedia.digital.common.data.source.FavoriteListDataSource;
 import com.tokopedia.digital.common.domain.IDigitalCategoryRepository;
 import com.tokopedia.digital.common.domain.interactor.GetCategoryByIdUseCase;
 import com.tokopedia.digital.common.router.DigitalModuleRouter;
@@ -270,15 +269,12 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
         bannerAdapter = new BannerAdapter(this);
 
         DigitalEndpointService digitalEndpointService = new DigitalEndpointService();
+        DigitalGqlApiService digitalGqlEndpointService = new DigitalGqlApiService();
         CategoryDetailDataSource categoryDetailDataSource = new CategoryDetailDataSource(
-                digitalEndpointService, new GlobalCacheManager(), new ProductDigitalMapper()
+                digitalGqlEndpointService, new GlobalCacheManager(), new ProductDigitalMapper()
         );
-        FavoriteListDataSource favoriteListDataSource = new FavoriteListDataSource(
-                digitalEndpointService, new FavoriteNumberListDataMapper()
-        );
-        IDigitalCategoryRepository digitalCategoryRepository = new DigitalCategoryRepository(
-                categoryDetailDataSource, favoriteListDataSource
-        );
+
+        IDigitalCategoryRepository digitalCategoryRepository = new DigitalCategoryRepository(categoryDetailDataSource);
 
         IUssdCheckBalanceRepository ussdCheckBalanceRepository = new UssdCheckBalanceRepository(
                 digitalEndpointService, new USSDMapper());
@@ -1133,13 +1129,13 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
             }
             if (pulsaBalance != null && pulsaBalance.isSuccess()) {
                 pulsaBalance.setMobileNumber(number);
-                UnifyTracking.eventUssdAttempt(getString(R.string.status_success_label) );
+                UnifyTracking.eventUssdAttempt(getString(R.string.status_success_label));
                 startActivity(DigitalUssdActivity.newInstance(getActivity(), pulsaBalance, presenter.getSelectedUssdOperator(selectedSim),
                         categoryDataState.getClientNumberList().get(0).getValidation(),
                         categoryId, categoryDataState.getName(), selectedSim, presenter.getSelectedUssdOperatorList(selectedSim)));
             } else {
                 showMessageAlert(getActivity().getString(R.string.error_message_ussd_msg_not_parsed), getActivity().getString(R.string.message_ussd_title));
-                UnifyTracking.eventUssdAttempt(getString(R.string.status_failed_label) +  getActivity().getString(R.string.error_message_ussd_msg_not_parsed));
+                UnifyTracking.eventUssdAttempt(getString(R.string.status_failed_label) + getActivity().getString(R.string.error_message_ussd_msg_not_parsed));
             }
         }
     }
@@ -1193,7 +1189,7 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
 
     @Override
     public void showPulsaBalanceError(String message) {
-        if(getActivity() != null) {
+        if (getActivity() != null) {
             ussdInProgress = false;
             if (selectedCheckPulsaBalanceView != null)
                 selectedCheckPulsaBalanceView.hideProgressbar();
