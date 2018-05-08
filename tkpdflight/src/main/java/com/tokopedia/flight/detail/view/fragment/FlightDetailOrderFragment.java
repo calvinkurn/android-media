@@ -29,6 +29,7 @@ import android.widget.Toast;
 
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.base.view.recyclerview.VerticalRecyclerView;
+import com.tokopedia.abstraction.base.view.widget.DividerItemDecoration;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.design.component.Dialog;
@@ -41,7 +42,6 @@ import com.tokopedia.flight.cancellation.view.activity.FlightCancellationActivit
 import com.tokopedia.flight.cancellation.view.activity.FlightCancellationListActivity;
 import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationJourney;
 import com.tokopedia.flight.common.util.FlightErrorUtil;
-import com.tokopedia.flight.common.view.FullDividerItemDecoration;
 import com.tokopedia.flight.dashboard.view.activity.FlightDashboardActivity;
 import com.tokopedia.flight.detail.presenter.ExpandableOnClickListener;
 import com.tokopedia.flight.detail.presenter.FlightDetailOrderContract;
@@ -345,7 +345,7 @@ public class FlightDetailOrderFragment extends BaseDaggerFragment implements Fli
     }
 
     private void addPassengerRecyclerDivider() {
-        recyclerViewPassenger.addItemDecoration(new FullDividerItemDecoration(recyclerViewPassenger.getContext()));
+        recyclerViewPassenger.addItemDecoration(new DividerItemDecoration(recyclerViewPassenger.getContext()));
     }
 
     private void togglePassengerInfo() {
