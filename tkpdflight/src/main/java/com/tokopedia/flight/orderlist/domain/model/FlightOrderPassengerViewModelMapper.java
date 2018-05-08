@@ -73,7 +73,8 @@ public class FlightOrderPassengerViewModelMapper {
         for (CancellationEntity item : cancellations) {
             if (item.getDetails().contains(passenger)) {
                 if (item.getStatus() == FlightCancellationStatus.PENDING ||
-                        item.getStatus() == FlightCancellationStatus.REFUNDED) {
+                        item.getStatus() == FlightCancellationStatus.REFUNDED ||
+                        item.getStatus() == FlightCancellationStatus.REQUESTED) {
                     status = item.getStatus();
                     break;
                 } else if (item.getStatus() == FlightCancellationStatus.ABORTED) {
