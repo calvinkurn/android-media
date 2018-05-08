@@ -27,6 +27,7 @@ import com.tokopedia.design.utils.CurrencyFormatUtil;
 
 public class ShipmentCostViewHolder extends RecyclerView.ViewHolder {
 
+    public static final int ITEM_VIEW_SHIPMENT_COST = R.layout.view_item_shipment_cost_details;
     private static final String FONT_FAMILY_SANS_SERIF_MEDIUM = "sans-serif-medium";
 
     private static final int GRAM = 0;

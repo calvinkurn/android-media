@@ -24,6 +24,8 @@ import java.util.ArrayList;
 
 public class ShipmentItemMultipleAddressViewHolder extends ShipmentItemViewHolder {
 
+    public static final int ITEM_VIEW_SHIPMENT_MULTIPLE_ADDRESS = R.layout.item_shipment_multiple;
+
     public ShipmentItemMultipleAddressViewHolder(View itemView, Context context,
                                                  ShipmentAdapterActionListener actionListener,
                                                  ShipmentAdapter shipmentAdapter) {

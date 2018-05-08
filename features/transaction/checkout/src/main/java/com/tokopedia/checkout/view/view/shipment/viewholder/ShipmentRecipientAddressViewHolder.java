@@ -22,6 +22,8 @@ import java.util.ArrayList;
 
 public class ShipmentRecipientAddressViewHolder extends RecyclerView.ViewHolder {
 
+    public static final int ITEM_VIEW_RECIPIENT_ADDRESS = R.layout.view_item_shipment_recipient_address;
+
     private static final int PRIME_ADDRESS = 2;
 
     private RelativeLayout rlRecipientAddressLayout;

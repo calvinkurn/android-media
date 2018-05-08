@@ -53,7 +53,8 @@
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:paddingBottom="@dimen/padding_small"
-        android:paddingTop="@dimen/padding_small">
+        android:paddingTop="@dimen/padding_small"
+        tools:visibility="gone">
 
         <View
             android:layout_width="match_parent"
@@ -84,6 +85,12 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:visibility="gone" />
+
+    <View
+        android:id="@+id/v_separator_multiple_product_same_store"
+        android:layout_width="match_parent"
+        android:layout_height="0.5dp"
+        android:background="@color/grey_300" />
 
     <RelativeLayout
         android:id="@+id/rl_expand_other_product"
@@ -273,7 +280,7 @@
             android:layout_marginTop="@dimen/margin_ms"
             android:orientation="vertical"
             android:visibility="gone"
-            tools:visibility="visible">
+            tools:visibility="gone">
 
             <android.support.design.widget.TextInputLayout
                 android:id="@+id/text_input_layout_shipper_name"
@@ -320,13 +327,14 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/white"
-        android:orientation="vertical"
-        android:padding="16dp">
+        android:orientation="vertical">
 
         <RelativeLayout
             android:id="@+id/rl_cart_sub_total"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:foreground="?selectableItemBackground"
+            android:padding="@dimen/dp_16">
 
             <TextView
                 android:id="@+id/tv_cart_sub_total"
@@ -346,7 +354,7 @@
                 android:layout_marginLeft="5dp"
                 android:layout_marginStart="5dp"
                 android:padding="5dp"
-                android:src="@drawable/chevron_thin_down"
+                android:src="@drawable/chevron_thin_right"
                 android:tint="@color/black_54"
                 tools:ignore="ContentDescription" />
 
@@ -382,7 +390,9 @@
             android:id="@+id/rl_shipment_cost"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingTop="16dp"
+            android:paddingBottom="@dimen/dp_16"
+            android:paddingLeft="@dimen/dp_16"
+            android:paddingRight="@dimen/dp_16"
             android:visibility="visible">
 
             <TextView

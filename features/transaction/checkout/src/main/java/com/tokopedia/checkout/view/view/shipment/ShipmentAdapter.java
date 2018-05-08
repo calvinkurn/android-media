@@ -41,11 +41,6 @@ import java.util.List;
 
 public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
-    private static final int ITEM_VIEW_RECIPIENT_ADDRESS = R.layout.view_item_shipment_recipient_address;
-    private static final int ITEM_VIEW_SHIPMENT_COST = R.layout.view_item_shipment_cost_details;
-    private static final int ITEM_VIEW_SHIPMENT_SINGLE_ADDRESS = R.layout.item_shipment_single;
-    private static final int ITEM_VIEW_SHIPMENT_MULTIPLE_ADDRESS = R.layout.item_shipment_multiple;
-
     public static final int DEFAULT_ERROR_POSITION = -1;
 
     private ArrayList<ShowCaseObject> showCaseObjectList;
@@ -75,13 +70,13 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         } else if (item instanceof CartPromoSuggestion) {
             return CartPromoSuggestionViewHolder.TYPE_VIEW_PROMO_SUGGESTION;
         } else if (item instanceof RecipientAddressModel) {
-            return ITEM_VIEW_RECIPIENT_ADDRESS;
+            return ShipmentRecipientAddressViewHolder.ITEM_VIEW_RECIPIENT_ADDRESS;
         } else if (item instanceof ShipmentSingleAddressCartItem) {
-            return ITEM_VIEW_SHIPMENT_SINGLE_ADDRESS;
+            return ShipmentItemSingleAddressViewHolder.ITEM_VIEW_SHIPMENT_SINGLE_ADDRESS;
         } else if (item instanceof ShipmentMultipleAddressCartItem) {
-            return ITEM_VIEW_SHIPMENT_MULTIPLE_ADDRESS;
+            return ShipmentItemMultipleAddressViewHolder.ITEM_VIEW_SHIPMENT_MULTIPLE_ADDRESS;
         } else if (item instanceof ShipmentCostModel) {
-            return ITEM_VIEW_SHIPMENT_COST;
+            return ShipmentCostViewHolder.ITEM_VIEW_SHIPMENT_COST;
         }
 
         return super.getItemViewType(position);
@@ -95,13 +90,13 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             return new CartVoucherPromoViewHolder(view, shipmentAdapterActionListener);
         } else if (viewType == CartPromoSuggestionViewHolder.TYPE_VIEW_PROMO_SUGGESTION) {
             return new CartPromoSuggestionViewHolder(view, shipmentAdapterActionListener);
-        } else if (viewType == ITEM_VIEW_RECIPIENT_ADDRESS) {
+        } else if (viewType == ShipmentRecipientAddressViewHolder.ITEM_VIEW_RECIPIENT_ADDRESS) {
             return new ShipmentRecipientAddressViewHolder(view, shipmentAdapterActionListener);
-        } else if (viewType == ITEM_VIEW_SHIPMENT_SINGLE_ADDRESS) {
+        } else if (viewType == ShipmentItemSingleAddressViewHolder.ITEM_VIEW_SHIPMENT_SINGLE_ADDRESS) {
             return new ShipmentItemSingleAddressViewHolder(view, parent.getContext(), shipmentAdapterActionListener, this);
-        } else if (viewType == ITEM_VIEW_SHIPMENT_MULTIPLE_ADDRESS) {
+        } else if (viewType == ShipmentItemMultipleAddressViewHolder.ITEM_VIEW_SHIPMENT_MULTIPLE_ADDRESS) {
             return new ShipmentItemMultipleAddressViewHolder(view, parent.getContext(), shipmentAdapterActionListener, this);
-        } else if (viewType == ITEM_VIEW_SHIPMENT_COST) {
+        } else if (viewType == ShipmentCostViewHolder.ITEM_VIEW_SHIPMENT_COST) {
             return new ShipmentCostViewHolder(view, shipmentAdapterActionListener);
         }
         throw new RuntimeException("No view holder type found");
@@ -116,17 +111,17 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             ((CartVoucherPromoViewHolder) holder).bindData((CartItemPromoHolderData) data, position);
         } else if (viewType == CartPromoSuggestionViewHolder.TYPE_VIEW_PROMO_SUGGESTION) {
             ((CartPromoSuggestionViewHolder) holder).bindData((CartPromoSuggestion) data, position);
-        } else if (viewType == ITEM_VIEW_RECIPIENT_ADDRESS) {
+        } else if (viewType == ShipmentRecipientAddressViewHolder.ITEM_VIEW_RECIPIENT_ADDRESS) {
             ((ShipmentRecipientAddressViewHolder) holder).bindViewHolder((RecipientAddressModel) data,
                     showCaseObjectList);
-        } else if (viewType == ITEM_VIEW_SHIPMENT_SINGLE_ADDRESS) {
+        } else if (viewType == ShipmentItemSingleAddressViewHolder.ITEM_VIEW_SHIPMENT_SINGLE_ADDRESS) {
             ((ShipmentItemSingleAddressViewHolder) holder).bindViewHolder(
                     (ShipmentSingleAddressCartItem) data, recipientAddressModel, showCaseObjectList);
             setShowCase(holder.itemView.getContext());
-        } else if (viewType == ITEM_VIEW_SHIPMENT_MULTIPLE_ADDRESS) {
+        } else if (viewType == ShipmentItemMultipleAddressViewHolder.ITEM_VIEW_SHIPMENT_MULTIPLE_ADDRESS) {
             ((ShipmentItemMultipleAddressViewHolder) holder).bindViewHolder(
                     (ShipmentMultipleAddressCartItem) data, recipientAddressModel, showCaseObjectList);
-        } else if (viewType == ITEM_VIEW_SHIPMENT_COST) {
+        } else if (viewType == ShipmentCostViewHolder.ITEM_VIEW_SHIPMENT_COST) {
             ((ShipmentCostViewHolder) holder).bindViewHolder((ShipmentCostModel) data);
         }
     }
@@ -279,14 +274,14 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 shipmentDetailData.setShipmentCartData(((ShipmentCartItem) currentShipmentData).getShipmentCartData());
                 ((ShipmentCartItem) currentShipmentData).setSelectedShipmentDetailData(shipmentDetailData);
             }
-            updateShipmentCostModel(position);
+            updateShipmentCostModel();
             checkDataForCheckout();
         }
         notifyItemChanged(getItemCount() - 1);
         notifyItemChanged(position);
     }
 
-    public void updateShipmentCostModel(int position) {
+    public void updateShipmentCostModel() {
         double totalWeight = 0;
         double totalPrice = 0;
         double additionalFee = 0;

@@ -32,6 +32,8 @@ import java.util.List;
 
 public class ShipmentItemSingleAddressViewHolder extends ShipmentItemViewHolder {
 
+    public static final int ITEM_VIEW_SHIPMENT_SINGLE_ADDRESS = R.layout.item_shipment_single;
+
     private static final int FIRST_ELEMENT = 0;
 
     public ShipmentItemSingleAddressViewHolder(View itemView, Context context,
@@ -51,7 +53,13 @@ public class ShipmentItemSingleAddressViewHolder extends ShipmentItemViewHolder 
         ShipmentSingleAddressCartItem shipmentSingleAddressItem = (ShipmentSingleAddressCartItem) shipmentCartItem;
         List<CartItemModel> cartItemModelList = new ArrayList<>(shipmentSingleAddressItem.getCartItemModels());
         renderFirstCartItem(cartItemModelList.remove(FIRST_ELEMENT));
-        renderOtherCartItems(shipmentSingleAddressItem, cartItemModelList);
+        if (shipmentSingleAddressItem.getCartItemModels() != null && shipmentSingleAddressItem.getCartItemModels().size() > 1) {
+            rlExpandOtherProduct.setVisibility(View.VISIBLE);
+            renderOtherCartItems(shipmentSingleAddressItem, cartItemModelList);
+        } else {
+            rlExpandOtherProduct.setVisibility(View.GONE);
+            vSeparatorMultipleProductSameStore.setVisibility(View.GONE);
+        }
 
         setShowCase(llShipmentOptionViewLayout, showCaseObjectList);
     }
@@ -79,29 +87,22 @@ public class ShipmentItemSingleAddressViewHolder extends ShipmentItemViewHolder 
     }
 
     private void renderOtherCartItems(ShipmentSingleAddressCartItem shipmentItem, List<CartItemModel> cartItemModels) {
-        if (cartItemModels != null) {
-            if (cartItemModels.size() > 0) {
-                vSeparatorMultipleProductSameStore.setVisibility(View.VISIBLE);
-            } else {
-                vSeparatorMultipleProductSameStore.setVisibility(View.GONE);
-            }
-            rlExpandOtherProduct.setVisibility(cartItemModels.isEmpty() ?
-                    View.GONE : View.VISIBLE);
-            tvExpandOtherProduct.setText(getOtherCartItemsLabel(cartItemModels,
-                    shipmentItem.isStateAllItemViewExpanded()));
-
-            ivDetailOptionChevron.setImageResource(getResourceDrawerChevron(
-                    shipmentItem.isStateAllItemViewExpanded()));
-            rlExpandOtherProduct.setOnClickListener(showAllProductListener(shipmentItem, cartItemModels));
-            tvExpandOtherProduct.setOnClickListener(showAllProductListener(shipmentItem, cartItemModels));
-
-            initInnerRecyclerView(cartItemModels);
+        rlExpandOtherProduct.setOnClickListener(showAllProductListener(shipmentItem));
+        tvExpandOtherProduct.setOnClickListener(showAllProductListener(shipmentItem));
+        initInnerRecyclerView(cartItemModels);
+        if (shipmentItem.isStateAllItemViewExpanded()) {
+            rvCartItem.setVisibility(View.VISIBLE);
+            vSeparatorMultipleProductSameStore.setVisibility(View.VISIBLE);
+            tvExpandOtherProduct.setText(R.string.label_hide_other_item);
+        } else {
+            rvCartItem.setVisibility(View.GONE);
+            vSeparatorMultipleProductSameStore.setVisibility(View.GONE);
+            tvExpandOtherProduct.setText(String.format(context.getString(R.string.label_other_item_count_format),
+                    String.valueOf(cartItemModels.size())));
         }
     }
 
     private void initInnerRecyclerView(List<CartItemModel> cartItemList) {
-//        rvCartItem.setVisibility(View.GONE);
-
         rvCartItem.setHasFixedSize(true);
         LinearLayoutManager layoutManager = new LinearLayoutManager(context);
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
@@ -118,28 +119,14 @@ public class ShipmentItemSingleAddressViewHolder extends ShipmentItemViewHolder 
                 || cartItemModel.isPreOrder();
     }
 
-    private String getOtherCartItemsLabel(List<CartItemModel> cartItemList,
-                                          boolean isExpandAllProduct) {
-        return isExpandAllProduct ? "Tutup" :
-                String.format("+%s Produk Lainnya", cartItemList.size());
-    }
-
-    private View.OnClickListener showAllProductListener(final ShipmentCartItem shipmentCartItem,
-                                                        final List<CartItemModel> cartItemList) {
+    private View.OnClickListener showAllProductListener(final ShipmentCartItem shipmentCartItem) {
         return new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                toggleShowAllProduct(shipmentCartItem, cartItemList);
+                shipmentCartItem.setStateAllItemViewExpanded(!shipmentCartItem.isStateAllItemViewExpanded());
+                mActionListener.onViewVisibilityStateChanged(getAdapterPosition());
             }
         };
-    }
-
-    private void toggleShowAllProduct(ShipmentCartItem shipmentCartItem, List<CartItemModel> cartItemList) {
-        shipmentCartItem.setStateAllItemViewExpanded(!shipmentCartItem.isStateAllItemViewExpanded());
-        rvCartItem.setVisibility(shipmentCartItem.isStateAllItemViewExpanded() ? View.VISIBLE : View.GONE);
-
-        tvExpandOtherProduct.setText(getOtherCartItemsLabel(cartItemList,
-                shipmentCartItem.isStateAllItemViewExpanded()));
     }
 
     private void setShowCase(ViewGroup viewGroup, ArrayList<ShowCaseObject> showCaseObjectList) {

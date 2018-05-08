@@ -46,7 +46,7 @@ public abstract class ShipmentItemViewHolder extends RecyclerView.ViewHolder {
     private static final int GRAM = 0;
     private static final int KILOGRAM = 1;
 
-    private ShipmentAdapterActionListener mActionListener;
+    protected ShipmentAdapterActionListener mActionListener;
     private ShipmentAdapter shipmentAdapter;
     protected Context context;
 
@@ -263,6 +263,14 @@ public abstract class ShipmentItemViewHolder extends RecyclerView.ViewHolder {
         int subTotalPrice = 0;
         int totalItemPrice = 0;
 
+        if (shipmentCartItem.isStateDetailSubtotalViewExpanded()) {
+            rlShipmentCost.setVisibility(View.VISIBLE);
+            ivDetailOptionChevron.setImageResource(R.drawable.chevron_thin_up);
+        } else {
+            rlShipmentCost.setVisibility(View.GONE);
+            ivDetailOptionChevron.setImageResource(R.drawable.chevron_thin_down);
+        }
+
         String tvShippingFeeLabel = tvShippingFee.getContext().getString(R.string.label_delivery_price);
         String tvTotalItemLabel = tvTotalItem.getContext().getString(R.string.label_item_count_without_format);
 
@@ -327,12 +335,8 @@ public abstract class ShipmentItemViewHolder extends RecyclerView.ViewHolder {
             cbDropshipper.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                 @Override
                 public void onCheckedChanged(CompoundButton compoundButton, boolean checked) {
-                    if (checked) {
-                        llDropshipperInfo.setVisibility(View.VISIBLE);
-                    } else {
-                        llDropshipperInfo.setVisibility(View.GONE);
-                    }
                     shipmentCartItem.getSelectedShipmentDetailData().setUseDropshipper(checked);
+                    mActionListener.onViewVisibilityStateChanged(getAdapterPosition());
                 }
             });
 
@@ -474,13 +478,6 @@ public abstract class ShipmentItemViewHolder extends RecyclerView.ViewHolder {
         return price == 0 ? "-" : CurrencyFormatUtil.convertPriceValueToIdrFormat(price, true);
     }
 
-    private void toggleShowCostDetail(ShipmentCartItem shipmentCartItem) {
-        shipmentCartItem.setStateDetailSubtotalViewExpanded(!shipmentCartItem.isStateDetailSubtotalViewExpanded());
-        ivDetailOptionChevron.setImageResource(getResourceDrawerChevron(shipmentCartItem.isStateDetailSubtotalViewExpanded()));
-
-        rlShipmentCost.setVisibility(shipmentCartItem.isStateDetailSubtotalViewExpanded() ? View.VISIBLE : View.GONE);
-    }
-
     protected int getResourceDrawerChevron(boolean isExpanded) {
         return isExpanded ? R.drawable.chevron_thin_up : R.drawable.chevron_thin_down;
     }
@@ -489,7 +486,8 @@ public abstract class ShipmentItemViewHolder extends RecyclerView.ViewHolder {
         return new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                toggleShowCostDetail(shipmentCartItem);
+                shipmentCartItem.setStateDetailSubtotalViewExpanded(!shipmentCartItem.isStateDetailSubtotalViewExpanded());
+                mActionListener.onViewVisibilityStateChanged(getAdapterPosition());
             }
         };
     }
@@ -509,6 +507,7 @@ public abstract class ShipmentItemViewHolder extends RecyclerView.ViewHolder {
             @Override
             public void onClick(View view) {
                 cbDropshipper.setChecked(!cbDropshipper.isChecked());
+                mActionListener.onViewVisibilityStateChanged(getAdapterPosition());
             }
         };
     }

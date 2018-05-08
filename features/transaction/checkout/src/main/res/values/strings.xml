@@ -103,5 +103,7 @@
     <string name="weight_unit_gram">gr</string>
     <string name="weight_unit_kilogram">Kg</string>
     <string name="label_shipping_price_format" formatted="false">Ongkos Kirim (%s %s)</string>
+    <string name="label_hide_other_item">Tutup</string>
+    <string name="label_other_item_count_format" formatted="false">+%s Produk Lainnya</string>
 
 </resources>

@@ -264,7 +264,14 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     @Override
     public void showToastError(String message) {
         if (getView() != null) {
-            ToasterError.make(getView(), message, 5000).show();
+            ToasterError.make(getView(), message, 5000)
+                    .setAction(getActivity().getString(R.string.label_action_snackbar_close), new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+
+                        }
+                    })
+                    .show();
         }
     }
 
@@ -542,7 +549,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
 
     @Override
     public void onInsuranceChecked(final int position) {
-        shipmentAdapter.updateShipmentCostModel(position);
+        shipmentAdapter.updateShipmentCostModel();
         if (rvShipment.isComputingLayout()) {
             rvShipment.post(new Runnable() {
                 @Override
@@ -552,6 +559,20 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
             });
         } else {
             shipmentAdapter.updateItemAndTotalCost(position);
+        }
+    }
+
+    @Override
+    public void onViewVisibilityStateChanged(final int position) {
+        if (rvShipment.isComputingLayout()) {
+            rvShipment.post(new Runnable() {
+                @Override
+                public void run() {
+                    shipmentAdapter.notifyItemChanged(position);
+                }
+            });
+        } else {
+            shipmentAdapter.notifyItemChanged(position);
         }
     }
 }
