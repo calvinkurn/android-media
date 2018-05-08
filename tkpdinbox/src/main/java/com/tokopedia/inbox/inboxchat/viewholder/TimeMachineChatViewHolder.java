@@ -33,8 +33,10 @@ public class TimeMachineChatViewHolder extends AbstractViewHolder<TimeMachineCha
         this.viewListener = viewListener;
         timeMachineText = (TextView) itemView.findViewById(R.id.time_machine_text);
 
-        Spannable spannable = new SpannableString(MainApplication.getAppContext().getString(R.string
-                .time_machine_chat));
+        String securityInfo = MainApplication.getAppContext().getString(R.string.security_info_chat);
+        String securityInfoLink = MainApplication.getAppContext().getString(R.string.security_info_chat_link);
+
+        Spannable spannable = new SpannableString(String.format("%s\n%s", securityInfo, securityInfoLink));
 
         spannable.setSpan(new ClickableSpan() {
                               @Override
@@ -49,9 +51,8 @@ public class TimeMachineChatViewHolder extends AbstractViewHolder<TimeMachineCha
                                           .getAppContext(), R.color.medium_green));
                               }
                           }
-                , MainApplication.getAppContext().getString(R.string.time_machine_chat).indexOf
-                        ("Riwayat")
-                , MainApplication.getAppContext().getString(R.string.time_machine_chat).length()
+                , securityInfo.length()
+                , spannable.length()
                 , 0);
 
         timeMachineText.setText(spannable, TextView.BufferType.SPANNABLE);
