@@ -1,4 +1,3 @@
-include ':vote'
 apply from: "features/settings-features.gradle"
 apply from: "libraries/settings-libraries.gradle"
 
