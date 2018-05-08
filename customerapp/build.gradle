@@ -267,7 +267,7 @@ dependencies {
     compile project(rootProject.ext.libraries.pushNotif)
     compile project(rootProject.ext.libraries.applink)
     compile project(rootProject.ext.features.gamification)
-    compile project(rootProject.ext.features.contact_us)
+    compile project(rootProject.ext.features.contactUs)
 
 
     androidTestCompile(rootProject.ext.testDependencies.espressoCore, {

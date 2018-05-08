@@ -246,7 +246,7 @@ ext {
             groupchat       : ":features:user:groupchat",
             gamification    : ":features:promo:gamification",
             profile         : ":features:user:profile",
-            contact_us      : ":features:operational:contact_us"
+            contactUs       : ":features:operational:contact_us"
     ]
 
     libraries = [
