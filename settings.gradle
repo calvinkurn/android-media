@@ -5,7 +5,7 @@ buildCache {
         enabled = !isCiServer
     }
     remote(HttpBuildCache) {
-        url = "$ci_url"
+        url = "${ci_url}"
         push = isCiServer
 
         credentials {
