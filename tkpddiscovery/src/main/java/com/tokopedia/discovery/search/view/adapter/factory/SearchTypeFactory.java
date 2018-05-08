@@ -11,18 +11,12 @@ import com.tokopedia.discovery.autocomplete.viewmodel.PopularSearch;
 import com.tokopedia.discovery.autocomplete.viewmodel.RecentSearch;
 import com.tokopedia.discovery.autocomplete.viewmodel.ShopSearch;
 import com.tokopedia.discovery.autocomplete.viewmodel.TitleSearch;
-import com.tokopedia.discovery.search.view.adapter.viewmodel.DefaultViewModel;
-import com.tokopedia.discovery.search.view.adapter.viewmodel.ShopViewModel;
 
 /**
  * @author erry on 14/02/17.
  */
 
 public interface SearchTypeFactory {
-
-    int type(DefaultViewModel viewModel);
-
-    int type(ShopViewModel viewModel);
 
     int type(TitleSearch viewModel);
 

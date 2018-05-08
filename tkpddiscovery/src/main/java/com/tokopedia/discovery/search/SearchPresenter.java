@@ -13,8 +13,6 @@ import com.tokopedia.discovery.autocomplete.usecase.AutoCompleteUseCase;
 import com.tokopedia.discovery.autocomplete.usecase.DeleteRecentSearchUseCase;
 import com.tokopedia.discovery.search.domain.model.SearchData;
 import com.tokopedia.discovery.search.view.SearchContract;
-import com.tokopedia.discovery.search.view.adapter.viewmodel.DefaultViewModel;
-import com.tokopedia.discovery.search.view.adapter.viewmodel.ShopViewModel;
 
 import java.net.UnknownHostException;
 import java.util.ArrayList;
@@ -93,22 +91,6 @@ public class SearchPresenter extends BaseDaggerPresenter<SearchContract.View>
     public void detachView() {
         super.detachView();
         autoCompleteUseCase.unsubscribe();
-    }
-
-    private DefaultViewModel prepareDefaultViewModel(SearchData data) {
-        DefaultViewModel viewModel = new DefaultViewModel();
-        viewModel.setId(data.getId());
-        viewModel.setSearchItems(data.getItems());
-        viewModel.setSearchTerm(querySearch);
-        return viewModel;
-    }
-
-    private ShopViewModel prepareShopViewModel(SearchData data) {
-        ShopViewModel viewModel = new ShopViewModel();
-        viewModel.setId(data.getId());
-        viewModel.setSearchItems(data.getItems());
-        viewModel.setSearchTerm(querySearch);
-        return viewModel;
     }
 
     private class SearchSubscriber extends Subscriber<List<SearchData>> {
