@@ -20,6 +20,8 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.data.model.storage.CacheManager;
+import com.tokopedia.applink.ApplinkRouter;
+import com.tokopedia.applink.RouteManager;
 import com.tokopedia.cacheapi.domain.interactor.CacheApiClearAllUseCase;
 import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.analytics.TrackingUtils;
@@ -74,6 +76,7 @@ import com.tokopedia.digital.common.router.DigitalModuleRouter;
 import com.tokopedia.digital.product.view.activity.DigitalProductActivity;
 import com.tokopedia.digital.product.view.activity.DigitalWebActivity;
 import com.tokopedia.digital.receiver.TokocashPendingDataBroadcastReceiver;
+import com.tokopedia.fingerprint.util.FingerprintConstant;
 import com.tokopedia.gm.GMModuleRouter;
 import com.tokopedia.gm.cashback.domain.GetCashbackUseCase;
 import com.tokopedia.gm.cashback.domain.SetCashbackUseCase;
@@ -182,7 +185,7 @@ public abstract class SellerRouterApplication extends MainApplication
         implements TkpdCoreRouter, SellerModuleRouter, PdpRouter, GMModuleRouter, TopAdsModuleRouter,
         IPaymentModuleRouter, IDigitalModuleRouter, TkpdInboxRouter, TransactionRouter,
         ReputationRouter, LogisticRouter, SessionRouter, ProfileModuleRouter,
-        MitraToppersRouter, AbstractionRouter, DigitalModuleRouter, ShopModuleRouter {
+        MitraToppersRouter, AbstractionRouter, DigitalModuleRouter, ShopModuleRouter, ApplinkRouter {
 
     protected RemoteConfig remoteConfig;
     private DaggerProductComponent.Builder daggerProductBuilder;
@@ -431,7 +434,10 @@ public abstract class SellerRouterApplication extends MainApplication
     }
 
     @Override
-    public BaseDaggerFragment getKolPostFragment(String userId) {
+    public BaseDaggerFragment getKolPostFragment(String userId,
+                                                 int postId,
+                                                 Intent resultIntent,
+                                                 Bundle bundle) {
         return null;
     }
 
@@ -721,6 +727,12 @@ public abstract class SellerRouterApplication extends MainApplication
                 urlQuery != null ? urlQuery : "",
                 "GET",
                 AuthUtil.KEY.KEY_WSV4);
+    }
+
+    @Override
+    public boolean getEnableFingerprintPayment() {
+        RemoteConfig remoteConfig = new FirebaseRemoteConfigImpl(this);
+        return remoteConfig.getBoolean(FingerprintConstant.ENABLE_FINGERPRINT_SELLERAPP);
     }
 
     @Override
@@ -1288,6 +1300,25 @@ public abstract class SellerRouterApplication extends MainApplication
     @Override
     public Intent getProfileCompletionIntent(Context context) {
         Intent intent = new Intent(context, ProfileCompletionActivity.class);
+        return intent;
+
+    public void goToApplinkActivity(Context context, String applink) {
+        DeepLinkDelegate deepLinkDelegate = DeepLinkHandlerActivity.getDelegateInstance();
+        Intent intent = new Intent(context, DeepLinkHandlerActivity.class);
+        intent.setData(Uri.parse(applink));
+
+        if (context instanceof Activity) {
+            deepLinkDelegate.dispatchFrom((Activity) context, intent);
+        } else {
+            context.startActivity(intent);
+        }
+    }
+
+    @Override
+    public Intent getApplinkIntent(Context context, String applink) {
+        Intent intent = new Intent(context, DeepLinkHandlerActivity.class);
+        intent.setData(Uri.parse(applink));
+
         return intent;
     }
 }

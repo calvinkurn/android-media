@@ -2,6 +2,7 @@ package com.tokopedia.profile;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.Bundle;
 
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.profile.view.subscriber.FollowKolSubscriber;
@@ -18,7 +19,10 @@ public interface ProfileModuleRouter {
 
     void doUnfollowKolPost(int id, FollowKolSubscriber followKolPostSubscriber);
 
-    BaseDaggerFragment getKolPostFragment(String userId);
+    BaseDaggerFragment getKolPostFragment(String userId,
+                                          int postId,
+                                          Intent resultIntent,
+                                          Bundle bundle);
 
     Interceptor getChuckInterceptor();
 

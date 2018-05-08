@@ -133,4 +133,10 @@ public interface HotListView extends BaseView {
     void startIntentActivity(Intent intent);
 
     void openSearch(String url);
+
+    boolean isSupportApplink(String hotListApplinks);
+
+    void openApplink(String hotListApplinks);
+
+    void openWebView(String url);
 }
