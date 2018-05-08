@@ -342,7 +342,7 @@ public class CartFragment extends BaseCheckoutFragment implements CartListAdapte
 
     @Override
     public void onCartDataDisableToCheckout() {
-        btnToShipment.setBackgroundResource(R.drawable.bg_grey_button_rounded);
+        btnToShipment.setBackgroundResource(R.drawable.bg_grey_button_rounded_checkout_module);
         btnToShipment.setTextColor(getResources().getColor(R.color.grey_500));
         btnToShipment.setOnClickListener(null);
     }

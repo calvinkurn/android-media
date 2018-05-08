@@ -8,7 +8,6 @@ import com.tokopedia.checkout.data.repository.ICartRepository;
 import com.tokopedia.checkout.domain.datamodel.ResetAndRefreshCartListData;
 import com.tokopedia.checkout.domain.datamodel.cartlist.CartListData;
 import com.tokopedia.checkout.domain.datamodel.cartlist.ResetCartData;
-import com.tokopedia.checkout.domain.mapper.CartMapper;
 import com.tokopedia.checkout.domain.mapper.ICartMapper;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.usecase.RequestParams;

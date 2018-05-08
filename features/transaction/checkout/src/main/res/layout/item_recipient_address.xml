@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:layout_alignParentLeft="true"
-    android:layout_alignParentStart="true"
-    android:background="@color/white">
+                xmlns:tools="http://schemas.android.com/tools"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:background="@color/white">
 
     <LinearLayout
         android:id="@+id/ll_address_name"
@@ -19,11 +19,11 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="3dp"
-            android:layout_marginEnd="@dimen/margin_ms"
-            android:layout_marginRight="@dimen/margin_ms"
+            android:layout_marginEnd="@dimen/dp_8"
+            android:layout_marginRight="@dimen/dp_8"
             android:lineSpacingExtra="4sp"
             tools:ignore="SmallSp"
-            tools:text="Alamat Kantor" />
+            tools:text="Alamat Kantor"/>
 
         <TextView
             android:id="@+id/tv_address_status"
@@ -31,16 +31,16 @@
             android:layout_height="wrap_content"
             android:background="@drawable/bg_outline_address_identifier"
             android:fontFamily="sans-serif"
-            android:paddingBottom="4dp"
-            android:paddingLeft="16dp"
-            android:paddingRight="16dp"
-            android:paddingTop="4dp"
+            android:paddingBottom="@dimen/dp_4"
+            android:paddingLeft="@dimen/dp_16"
+            android:paddingRight="@dimen/dp_16"
+            android:paddingTop="@dimen/dp_4"
             android:text="@string/label_main_address"
-            android:textColor="@color/medium_green"
-            android:textSize="10sp"
+            android:textColor="@color/tkpd_main_green"
+            android:textSize="@dimen/sp_10"
             android:textStyle="normal"
             android:visibility="gone"
-            tools:ignore="SmallSp" />
+            tools:ignore="SmallSp"/>
 
     </LinearLayout>
 
@@ -49,12 +49,12 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/ll_address_name"
-        android:layout_marginBottom="3dp"
+        android:layout_marginBottom="@dimen/dp_3"
         android:textColor="@color/black_54"
-        android:textSize="12sp"
+        android:textSize="@dimen/sp_12"
         android:textStyle="bold"
         tools:ignore="SmallSp"
-        tools:text="Agus Maulana" />
+        tools:text="Agus Maulana"/>
 
     <TextView
         android:id="@+id/tv_recipient_address"
@@ -65,31 +65,31 @@
         android:textColor="@color/black_54"
         android:textSize="12sp"
         tools:ignore="SmallSp"
-        tools:text="Jl. Letjen S. Parman Kav.77, Wisma 77 Tower 2,\nTokopedia Lt. 2, Jakarta" />
+        tools:text="Jl. Letjen S. Parman Kav.77, Wisma 77 Tower 2,\nTokopedia Lt. 2, Jakarta"/>
 
     <TextView
         android:id="@+id/tv_recipient_phone"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/tv_recipient_address"
-        android:layout_marginTop="6dp"
-        android:lineSpacingExtra="3dp"
+        android:layout_marginTop="@dimen/dp_6"
+        android:lineSpacingExtra="@dimen/dp_3"
         android:textColor="@color/black_54"
-        android:textSize="12sp"
-        tools:text="080989999" />
+        android:textSize="@dimen/sp_12"
+        tools:text="080989999"/>
 
     <TextView
         android:id="@+id/tv_change_address"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/tv_recipient_phone"
-        android:layout_marginTop="@dimen/margin_ms"
+        android:layout_marginTop="@dimen/dp_8"
         android:drawableLeft="@drawable/ic_edit_grey"
-        android:drawablePadding="@dimen/padding_ms"
+        android:drawablePadding="@dimen/dp_8"
         android:drawableStart="@drawable/ic_edit_grey"
         android:gravity="center_vertical"
-        android:text="@string/action_edit"
-        android:textSize="11sp"
-        android:visibility="visible" />
+        android:text="@string/checkout_module_label_ubah"
+        android:textSize="@dimen/sp_11"
+        android:visibility="visible"/>
 
 </RelativeLayout>

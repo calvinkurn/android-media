@@ -434,7 +434,10 @@ public abstract class SellerRouterApplication extends MainApplication
     }
 
     @Override
-    public BaseDaggerFragment getKolPostFragment(String userId) {
+    public BaseDaggerFragment getKolPostFragment(String userId,
+                                                 int postId,
+                                                 Intent resultIntent,
+                                                 Bundle bundle) {
         return null;
     }
 

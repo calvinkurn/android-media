@@ -11,7 +11,7 @@ import dagger.Component;
  */
 
 @ShipmentDetailScope
-@Component(modules = ShipmentDetailModule.class)
+@Component(modules = ShipmentDetailModule.class, dependencies = CartComponent.class)
 public interface ShipmentDetailComponent {
     void inject(ShipmentDetailFragment shipmentDetailFragment);
 }

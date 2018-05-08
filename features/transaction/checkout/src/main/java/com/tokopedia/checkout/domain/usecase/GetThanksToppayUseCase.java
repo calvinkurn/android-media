@@ -1,11 +1,9 @@
 package com.tokopedia.checkout.domain.usecase;
 
+import com.tokopedia.abstraction.common.utils.TKPDMapParam;
 import com.tokopedia.checkout.data.repository.ITopPayRepository;
 import com.tokopedia.checkout.domain.datamodel.toppay.ThanksTopPayData;
 import com.tokopedia.checkout.domain.mapper.ITopPayMapper;
-import com.tokopedia.core.app.MainApplication;
-import com.tokopedia.core.network.retrofit.utils.AuthUtil;
-import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.usecase.UseCase;
 
@@ -19,6 +17,7 @@ import rx.functions.Func1;
  */
 
 public class GetThanksToppayUseCase extends UseCase<ThanksTopPayData> {
+    public static final String PARAM_REQUEST_AUTH_MAP_STRING = "PARAM_REQUEST_AUTH_MAP_STRING";
     public static final String PARAM_TRANSACTION_ID = "id";
     private final ITopPayRepository topPayRepository;
     private final ITopPayMapper topPayMapper;
@@ -30,18 +29,19 @@ public class GetThanksToppayUseCase extends UseCase<ThanksTopPayData> {
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public Observable<ThanksTopPayData> createObservable(RequestParams requestParams) {
-        TKPDMapParam<String, String> param = new TKPDMapParam<>();
-        param.put(PARAM_TRANSACTION_ID, requestParams.getString(PARAM_TRANSACTION_ID, ""));
-        return topPayRepository.getThanksTopPay(
-                AuthUtil.generateParamsNetwork(MainApplication.getAppContext(), param)
-        ).map(new Func1<com.tokopedia.transaction.common.data.cart.thankstoppaydata.ThanksTopPayData, ThanksTopPayData>() {
-            @Override
-            public ThanksTopPayData call(
-                    com.tokopedia.transaction.common.data.cart.thankstoppaydata.ThanksTopPayData
-                            thanksTopPayData) {
-                return topPayMapper.convertThanksTopPayData(thanksTopPayData);
-            }
-        });
+        TKPDMapParam<String, String> param =
+                (TKPDMapParam<String, String>) requestParams.getObject(PARAM_REQUEST_AUTH_MAP_STRING);
+        return topPayRepository.getThanksTopPay(param)
+                .map(new Func1<com.tokopedia.transaction.common.data.cart.thankstoppaydata.ThanksTopPayData,
+                        ThanksTopPayData>() {
+                    @Override
+                    public ThanksTopPayData call(
+                            com.tokopedia.transaction.common.data.cart.thankstoppaydata.ThanksTopPayData
+                                    thanksTopPayData) {
+                        return topPayMapper.convertThanksTopPayData(thanksTopPayData);
+                    }
+                });
     }
 }

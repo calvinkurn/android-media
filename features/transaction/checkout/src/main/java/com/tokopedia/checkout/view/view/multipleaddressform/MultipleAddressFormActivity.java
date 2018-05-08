@@ -15,6 +15,10 @@ import com.tokopedia.checkout.view.base.BaseCheckoutActivity;
 import com.tokopedia.checkout.view.di.component.CartComponent;
 import com.tokopedia.checkout.view.di.component.CartComponentInjector;
 import com.tokopedia.checkout.view.di.component.DaggerCartComponent;
+import com.tokopedia.checkout.view.di.module.CartUseCaseModule;
+import com.tokopedia.checkout.view.di.module.CheckoutRouterModule;
+import com.tokopedia.checkout.view.di.module.CheckoutUseCaseModule;
+import com.tokopedia.checkout.view.di.module.DataMapperModule;
 import com.tokopedia.checkout.view.di.module.DataModule;
 import com.tokopedia.checkout.view.view.shipmentform.ResetShipmentFormDialog;
 
@@ -109,11 +113,6 @@ public class MultipleAddressFormActivity extends BaseCheckoutActivity implements
 
     @Override
     public CartComponent getComponent() {
-        return CartComponentInjector.newInstance(
-                DaggerCartComponent.builder()
-                        .baseAppComponent(((BaseMainApplication) getApplication()).getBaseAppComponent())
-                        .dataModule(new DataModule())
-                        .build())
-                .getCartApiServiceComponent();
+        return CartComponentInjector.newInstance(getApplication()).getCartApiServiceComponent();
     }
 }

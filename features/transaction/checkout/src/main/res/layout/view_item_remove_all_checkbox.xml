@@ -1,25 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:background="@color/white"
-    android:paddingBottom="8dp"
-    android:paddingTop="8dp">
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/white"
+                android:paddingBottom="@dimen/dp_8"
+                android:paddingTop="@dimen/dp_8">
 
     <FrameLayout
         android:id="@+id/fl_select_to_remove"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
-        android:layout_marginEnd="8dp"
-        android:layout_marginLeft="8dp"
-        android:layout_marginStart="8dp">
+        android:layout_marginEnd="@dimen/dp_8"
+        android:layout_marginLeft="@dimen/dp_8"
+        android:layout_marginStart="@dimen/dp_8">
 
         <CheckBox
             android:id="@+id/checkBox"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:theme="@style/TransactionCheckbox" />
+            android:theme="@style/TransactionCheckbox"/>
     </FrameLayout>
 
     <LinearLayout
@@ -35,9 +35,10 @@
             style="@style/TextMidMediumBlack54"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginRight="16dp"
+            android:layout_marginEnd="@dimen/dp_16"
+            android:layout_marginRight="@dimen/dp_16"
             android:lineSpacingExtra="5sp"
-            android:text="@string/label_select_all" />
+            android:text="@string/label_select_all"/>
 
     </LinearLayout>
 

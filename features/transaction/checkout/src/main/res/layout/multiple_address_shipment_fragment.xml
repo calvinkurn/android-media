@@ -13,7 +13,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         app:cardCornerRadius="0dp"
-        app:cardElevation="@dimen/card_elevation_checkout">
+        app:cardElevation="@dimen/dp_3">
 
         <LinearLayout
             android:id="@+id/sticky_button_layout"
@@ -30,14 +30,14 @@
             <LinearLayout
                 android:id="@+id/total_payment_layout"
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/btn_height"
+                android:layout_height="@dimen/dp_44"
                 android:gravity="center_vertical"
-                android:paddingBottom="@dimen/padding_small"
-                android:paddingEnd="@dimen/padding_med"
-                android:paddingLeft="@dimen/padding_med"
-                android:paddingRight="@dimen/padding_med"
-                android:paddingStart="@dimen/padding_med"
-                android:paddingTop="@dimen/padding_small">
+                android:paddingBottom="@dimen/dp_10"
+                android:paddingEnd="@dimen/dp_20"
+                android:paddingLeft="@dimen/dp_20"
+                android:paddingRight="@dimen/dp_20"
+                android:paddingStart="@dimen/dp_20"
+                android:paddingTop="@dimen/dp_10">
 
                 <TextView
                     style="@style/TextSmallNormalBlack70"
@@ -53,7 +53,8 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:gravity="end"
-                    android:text="-"/>
+                    android:text="-"
+                    tools:ignore="HardcodedText"/>
 
             </LinearLayout>
 
@@ -62,9 +63,9 @@
                 style="@style/TextSmallNormalBlack54"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/new_margin_med"
-                android:paddingLeft="@dimen/padding_med"
-                android:paddingRight="@dimen/padding_med"
+                android:layout_marginBottom="@dimen/dp_16"
+                android:paddingLeft="@dimen/dp_20"
+                android:paddingRight="@dimen/dp_20"
                 android:visibility="gone"
                 tools:text="Anda mendapat gratis ongkir Rp20.000"
                 tools:visibility="visible"/>
@@ -77,14 +78,14 @@
             <TextView
                 android:id="@+id/confirm_payment_button"
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/btn_height"
-                android:layout_margin="@dimen/margin_small"
+                android:layout_height="@dimen/dp_44"
+                android:layout_margin="@dimen/dp_10"
                 android:background="@drawable/bg_button_disabled"
                 android:gravity="center"
                 android:text="@string/label_button_choose_payment_method"
                 android:textAllCaps="false"
                 android:textColor="@color/grey_500"
-                android:textSize="13sp"/>
+                android:textSize="@dimen/sp_13"/>
 
         </LinearLayout>
 

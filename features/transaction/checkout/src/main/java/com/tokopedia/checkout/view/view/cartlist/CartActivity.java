@@ -4,15 +4,12 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 
-import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.common.di.component.HasComponent;
 import com.tokopedia.checkout.R;
 import com.tokopedia.checkout.domain.datamodel.cartlist.CartItemData;
 import com.tokopedia.checkout.view.base.BaseCheckoutActivity;
 import com.tokopedia.checkout.view.di.component.CartComponent;
 import com.tokopedia.checkout.view.di.component.CartComponentInjector;
-import com.tokopedia.checkout.view.di.component.DaggerCartComponent;
-import com.tokopedia.checkout.view.di.module.DataModule;
 
 import java.util.List;
 
@@ -96,11 +93,6 @@ public class CartActivity extends BaseCheckoutActivity implements CartFragment.A
 
     @Override
     public CartComponent getComponent() {
-        return CartComponentInjector.newInstance(
-                DaggerCartComponent.builder()
-                        .baseAppComponent(((BaseMainApplication) getApplication()).getBaseAppComponent())
-                        .dataModule(new DataModule())
-                        .build())
-                .getCartApiServiceComponent();
+        return CartComponentInjector.newInstance(getApplication()).getCartApiServiceComponent();
     }
 }

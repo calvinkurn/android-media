@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
+import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
@@ -51,7 +52,7 @@ public class LoyaltyActivity extends BasePresenterActivity
         PromoCodeFragment.ManualInsertCodeListener,
         PromoCouponFragment.ChooseCouponListener {
 
-
+    public static final String DEFAULT_COUPON_TAB_SELECTED = "coupon";
     @BindView(R2.id.pager)
     ViewPager viewPager;
     @BindView(R2.id.indicator)
@@ -280,7 +281,7 @@ public class LoyaltyActivity extends BasePresenterActivity
         }
     }
 
-
+    @Deprecated
     public static Intent newInstanceCouponActiveAndSelected(Context context, String platform, String categoryId) {
         Intent intent = new Intent(context, LoyaltyActivity.class);
         Bundle bundle = new Bundle();
@@ -293,12 +294,27 @@ public class LoyaltyActivity extends BasePresenterActivity
         return intent;
     }
 
+    @Deprecated
     public static Intent newInstanceCouponActive(Context context, String platform, String category) {
         Intent intent = new Intent(context, LoyaltyActivity.class);
         Bundle bundle = new Bundle();
         bundle.putBoolean(IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.EXTRA_COUPON_ACTIVE, true);
         bundle.putString(IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.EXTRA_PLATFORM, platform);
         bundle.putString(IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.EXTRA_CATEGORY, category);
+        intent.putExtras(bundle);
+        return intent;
+    }
+
+    public static Intent newInstanceCouponActive(Context context, String platform, String category, String defaultSelectedTab) {
+        Intent intent = new Intent(context, LoyaltyActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putBoolean(IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.EXTRA_COUPON_ACTIVE, true);
+        bundle.putString(IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.EXTRA_PLATFORM, platform);
+        bundle.putString(IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.EXTRA_CATEGORY, category);
+        if (!TextUtils.isEmpty(defaultSelectedTab) && DEFAULT_COUPON_TAB_SELECTED.equalsIgnoreCase(defaultSelectedTab)) {
+            bundle.putInt(IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.EXTRA_SELECTED_TAB,
+                    IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.COUPON_TAB);
+        }
         intent.putExtras(bundle);
         return intent;
     }

@@ -21,7 +21,6 @@ import com.tokopedia.checkout.domain.datamodel.shipmentrates.ShipmentDetailData;
 import com.tokopedia.checkout.domain.datamodel.voucher.PromoCodeAppliedData;
 import com.tokopedia.checkout.domain.usecase.CheckPromoCodeCartListUseCase;
 import com.tokopedia.checkout.domain.usecase.GetShipmentAddressFormUseCase;
-import com.tokopedia.checkout.domain.usecase.ICartListInteractor;
 import com.tokopedia.checkout.view.holderitemdata.CartItemPromoHolderData;
 import com.tokopedia.core.router.transactionmodule.sharedata.CheckPromoCodeCartListResult;
 import com.tokopedia.core.router.transactionmodule.sharedata.CheckPromoCodeCartShipmentRequest;

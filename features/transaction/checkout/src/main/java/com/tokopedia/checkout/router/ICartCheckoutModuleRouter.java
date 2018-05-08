@@ -4,9 +4,13 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 
+import com.readystatesoftware.chuck.ChuckInterceptor;
+import com.tokopedia.core.network.retrofit.interceptors.FingerprintInterceptor;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
 
 import java.util.HashMap;
+
+import retrofit2.Converter;
 
 /**
  * @author anggaprasetiyo on 28/02/18.
@@ -38,4 +42,12 @@ public interface ICartCheckoutModuleRouter {
 
     Intent tkpdTransactionPickupPointActivityFromCartSingleAddressIntent(Activity activity, String districtName,
                                                                          HashMap<String, String> params);
+
+    ChuckInterceptor getCartCheckoutChuckInterceptor();
+
+    FingerprintInterceptor getCartCheckoutFingerPrintInterceptor();
+
+    Converter.Factory cartCheckoutModuleGetWS4TkpdResponseConverter();
+
+    Converter.Factory cartCheckoutModuleGetStringResponseConverter();
 }

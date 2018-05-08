@@ -23,6 +23,7 @@ import com.tokopedia.checkout.R;
 import com.tokopedia.checkout.domain.datamodel.shipmentrates.ShipmentDetailData;
 import com.tokopedia.checkout.domain.datamodel.shipmentrates.ShipmentItemData;
 import com.tokopedia.checkout.view.adapter.ShipmentChoiceAdapter;
+import com.tokopedia.checkout.view.di.component.CartComponent;
 import com.tokopedia.checkout.view.di.component.DaggerShipmentChoiceComponent;
 import com.tokopedia.checkout.view.di.component.ShipmentChoiceComponent;
 
@@ -185,5 +186,7 @@ public class ShipmentChoiceBottomSheet extends BottomSheetDialog
 
     public interface ActionListener {
         void onShipmentItemClick(ShipmentItemData shipmentItemData);
+
+        CartComponent getCartComponent();
     }
 }

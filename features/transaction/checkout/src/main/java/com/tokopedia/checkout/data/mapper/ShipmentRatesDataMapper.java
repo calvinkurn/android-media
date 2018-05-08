@@ -24,6 +24,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.annotation.Nullable;
+import javax.inject.Inject;
 
 /**
  * Created by Irfan Khoirul on 20/02/18.
@@ -33,6 +34,10 @@ public class ShipmentRatesDataMapper {
 
     private static final int DAY_IN_SECONDS = 86400;
     private static final int HOUR_IN_SECONDS = 3600;
+
+    @Inject
+    public ShipmentRatesDataMapper() {
+    }
 
     public ShipmentDetailData getShipmentDetailData(CartSellerItemModel cartSellerItemModel,
                                                     RecipientAddressModel recipientAddressModel) {

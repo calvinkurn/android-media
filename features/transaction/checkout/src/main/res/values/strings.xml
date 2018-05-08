@@ -99,6 +99,28 @@
     <string name="title_bottomsheet_insurance">Asuransi Pengiriman</string>
     <string name="alert_payment_canceled_or_failed_transaction_module">Pembayaran tidak berhasil atau dibatalkan</string>
     <string name="message_payment_succeded_transaction_module">Pembayaran berhasil</string>
+    <string name="checkout_module_label_penjual">Penjual :</string>
+    <string name="checkout_module_label_simpan">Simpan</string>
+    <string name="checkout_module_label_hapus">Hapus</string>
+    <string name="checkout_module_label_asuransi">Asuransi</string>
+    <string name="checkout_module_message_tnc_insurance">Dengan membayar, saya menyetujui syarat dan ketentuan asuransi</string>
+    <string name="checkout_module_label_cashback_5">Cashback 5%</string>
+    <string name="checkout_module_label_berat">Berat :</string>
+    <string name="checkout_module_label_jumlah">Jumlah</string>
+    <string name="checkout_module_message_cart_error">Terjadi kendala pada pesanan Anda, lihat di bawah untuk info lebih lengkap.</string>
+    <string name="checkout_module_message_cart_error_action">Hapus produk yang berkendala</string>
+    <string name="checkout_module_label_biaya_asuransi">Biaya Asuransi</string>
+    <string name="checkout_module_keranjang_belanja_kosong">Keranjang Belanja Kosong</string>
+    <string name="checkout_module_untuk_saat_ini_anda_tidak_ada_keranjang_belanja">Untuk saat ini anda tidak ada keranjang belanja</string>
+    <string name="checkout_module_belanja_sekarang">Belanja Sekarang</string>
+    <string name="checkout_module_label_free_returns">Free Returns</string>
+    <string name="checkout_module_label_po">PO</string>
+    <string name="checkout_module_label_ubah">Ubah</string>
+
+
+    <string name="checkout_module_title_activity_cart">Keranjang</string>
+    <string name="checkout_module_title_shipping_dest">Tujuan Pengiriman</string>
+    <string name="checkout_module_title_activity_people_tx_details">Detil Transaksi</string>
     <string name="label_cashback">Cashback</string>
     <string name="weight_unit_gram">gr</string>
     <string name="weight_unit_kilogram">Kg</string>

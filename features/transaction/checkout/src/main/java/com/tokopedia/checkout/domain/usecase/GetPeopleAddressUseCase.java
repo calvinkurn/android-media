@@ -2,9 +2,9 @@ package com.tokopedia.checkout.domain.usecase;
 
 import android.content.Context;
 
-import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.checkout.data.repository.PeopleAddressRepository;
 import com.tokopedia.checkout.domain.datamodel.addressoptions.RecipientAddressModel;
+import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.usecase.UseCase;
 

@@ -6,15 +6,18 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 
+import com.tokopedia.abstraction.common.di.component.HasComponent;
 import com.tokopedia.checkout.domain.datamodel.shipmentrates.ShipmentDetailData;
 import com.tokopedia.checkout.view.base.BaseCheckoutActivity;
+import com.tokopedia.checkout.view.di.component.CartComponent;
+import com.tokopedia.checkout.view.di.component.CartComponentInjector;
 
 /**
  * Created by Irfan Khoirul on 26/01/18.
  */
 
 public class ShipmentDetailActivity extends BaseCheckoutActivity
-        implements ShipmentDetailFragment.FragmentListener {
+        implements ShipmentDetailFragment.FragmentListener, HasComponent<CartComponent> {
 
     public static final String EXTRA_SHIPMENT_DETAIL_DATA = "shipmentDetailData";
     public static final String EXTRA_POSITION = "position";
@@ -75,5 +78,10 @@ public class ShipmentDetailActivity extends BaseCheckoutActivity
         return ShipmentDetailFragment.newInstance(
                 (ShipmentDetailData) getIntent().getParcelableExtra(EXTRA_SHIPMENT_DETAIL_DATA)
         );
+    }
+
+    @Override
+    public CartComponent getComponent() {
+        return CartComponentInjector.newInstance(getApplication()).getCartApiServiceComponent();
     }
 }

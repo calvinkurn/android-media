@@ -3,15 +3,20 @@ package com.tokopedia.checkout.data.apiservice;
 import android.content.Context;
 import android.util.Log;
 
+import com.google.gson.Gson;
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
+import com.tokopedia.abstraction.common.network.exception.HttpErrorException;
 import com.tokopedia.abstraction.common.network.interceptor.TkpdAuthInterceptor;
+import com.tokopedia.abstraction.common.utils.GlobalConfig;
 import com.tokopedia.abstraction.common.utils.network.AuthUtil;
-import com.tokopedia.core.util.GlobalConfig;
 
+import java.io.IOException;
 import java.util.Map;
 
 import javax.inject.Inject;
+
+import okhttp3.Response;
 
 /**
  * @author anggaprasetiyo on 23/04/18.
@@ -22,6 +27,23 @@ public class CartApiInterceptor extends TkpdAuthInterceptor {
     public CartApiInterceptor(Context context, AbstractionRouter abstractionRouter,
                               UserSession userSession, String authKey) {
         super(context, abstractionRouter, userSession, authKey);
+    }
+
+    @Override
+    public void throwChainProcessCauseHttpError(Response response) throws IOException {
+        String responseError = response.body().string();
+        Log.d("CARTAPI ERROR = ", responseError);
+        if (responseError != null && !responseError.isEmpty() && responseError.contains("header")) {
+            CartErrorResponse cartErrorResponse = new Gson().fromJson(
+                    responseError, CartErrorResponse.class
+            );
+            if (cartErrorResponse.getCartHeaderResponse() != null) {
+                throw new CartResponseErrorException(
+                        response.code(),
+                        cartErrorResponse.getCartHeaderResponse());
+            }
+        }
+        throw new HttpErrorException(response.code());
     }
 
     @Override
