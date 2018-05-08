@@ -594,6 +594,11 @@ public class MultipleAddressShipmentFragment extends BaseCheckoutFragment implem
     }
 
     @Override
+    public void onDropshipperValidationResult(boolean result, int position) {
+
+    }
+
+    @Override
     public void onCartDataEnableToCheckout() {
         confirmButton.setBackgroundResource(R.drawable.bg_button_orange_enabled);
         confirmButton.setTextColor(getResources().getColor(R.color.white));

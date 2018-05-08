@@ -28,4 +28,6 @@ public interface CartAdapterActionListener {
 
     void onCartItemTickerErrorActionClicked(CartItemTickerErrorHolderData data, int position);
 
+    void onDropshipperValidationResult(boolean result, int position);
+
 }

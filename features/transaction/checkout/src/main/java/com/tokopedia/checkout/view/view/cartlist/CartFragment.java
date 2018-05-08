@@ -329,6 +329,11 @@ public class CartFragment extends BaseCheckoutFragment implements CartListAdapte
     }
 
     @Override
+    public void onDropshipperValidationResult(boolean result, int position) {
+
+    }
+
+    @Override
     public void onCartDataEnableToCheckout() {
         btnToShipment.setBackgroundResource(R.drawable.orange_button_rounded);
         btnToShipment.setTextColor(getResources().getColor(R.color.white));

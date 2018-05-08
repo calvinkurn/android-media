@@ -1,8 +1,11 @@
 package com.tokopedia.checkout.view.view.shipment.viewholder;
 
 import android.content.Context;
+import android.support.design.widget.TextInputLayout;
 import android.support.v7.widget.RecyclerView;
+import android.text.Editable;
 import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
@@ -21,6 +24,7 @@ import com.tokopedia.checkout.domain.datamodel.shipmentrates.ShipmentDetailData;
 import com.tokopedia.checkout.view.constants.InsuranceConstant;
 import com.tokopedia.checkout.view.view.shipment.ShipmentAdapter;
 import com.tokopedia.checkout.view.view.shipment.ShipmentAdapterActionListener;
+import com.tokopedia.checkout.view.view.shipment.ShipmentData;
 import com.tokopedia.checkout.view.view.shipment.viewmodel.ShipmentItem;
 import com.tokopedia.checkout.view.view.shipment.viewmodel.ShipmentMultipleAddressItem;
 import com.tokopedia.checkout.view.view.shipment.viewmodel.ShipmentSingleAddressItem;
@@ -114,6 +118,8 @@ public abstract class ShipmentItemViewHolder extends RecyclerView.ViewHolder {
     LinearLayout llDropshipperInfo;
     EditText etShipperName;
     EditText etShipperPhone;
+    TextInputLayout textInputLayoutShipperName;
+    TextInputLayout textInputLayoutShipperPhone;
     View vSeparatorMultipleProductSameStore;
 
     public ShipmentItemViewHolder(View itemView, Context context, ShipmentAdapterActionListener actionListener,
@@ -193,6 +199,8 @@ public abstract class ShipmentItemViewHolder extends RecyclerView.ViewHolder {
         llDropshipperInfo = itemView.findViewById(R.id.ll_dropshipper_info);
         etShipperName = itemView.findViewById(R.id.et_shipper_name);
         etShipperPhone = itemView.findViewById(R.id.et_shipper_phone);
+        textInputLayoutShipperName = itemView.findViewById(R.id.text_input_layout_shipper_name);
+        textInputLayoutShipperPhone = itemView.findViewById(R.id.text_input_layout_shipper_phone);
         vSeparatorMultipleProductSameStore = itemView.findViewById(R.id.v_separator_multiple_product_same_store);
     }
 
@@ -326,6 +334,52 @@ public abstract class ShipmentItemViewHolder extends RecyclerView.ViewHolder {
                         llDropshipperInfo.setVisibility(View.GONE);
                     }
                     shipmentItem.getSelectedShipmentDetailData().setUseDropshipper(checked);
+                }
+            });
+
+            textInputLayoutShipperName.setError(context.getString(R.string.message_error_dropshipper_name));
+            etShipperName.addTextChangedListener(new TextWatcher() {
+                @Override
+                public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+                }
+
+                @Override
+                public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                    shipmentItem.getSelectedShipmentDetailData().setDropshipperName(charSequence.toString());
+                    if (charSequence.length() == 0) {
+                        textInputLayoutShipperName.setError(context.getString(R.string.message_error_dropshipper_name));
+                    } else {
+                        textInputLayoutShipperName.setErrorEnabled(false);
+                    }
+                }
+
+                @Override
+                public void afterTextChanged(Editable editable) {
+
+                }
+            });
+
+            textInputLayoutShipperPhone.setError(context.getString(R.string.message_error_dropshipper_phone));
+            etShipperPhone.addTextChangedListener(new TextWatcher() {
+                @Override
+                public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+                }
+
+                @Override
+                public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                    shipmentItem.getSelectedShipmentDetailData().setDropshipperPhone(charSequence.toString());
+                    if (charSequence.length() == 0) {
+                        textInputLayoutShipperPhone.setError(context.getString(R.string.message_error_dropshipper_phone));
+                    } else {
+                        textInputLayoutShipperPhone.setErrorEnabled(false);
+                    }
+                }
+
+                @Override
+                public void afterTextChanged(Editable editable) {
+
                 }
             });
 

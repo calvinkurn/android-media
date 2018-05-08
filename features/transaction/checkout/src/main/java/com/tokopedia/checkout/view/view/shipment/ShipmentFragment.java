@@ -239,7 +239,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         return new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                shipmentPresenter.processCheckShipmentPrepareCheckout();
+                shipmentAdapter.checkDropshipperValidation();
             }
         };
     }
@@ -516,6 +516,18 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         tvSelectPaymentMethod.setBackgroundResource(R.drawable.bg_button_disabled);
         tvSelectPaymentMethod.setTextColor(getResources().getColor(R.color.grey_500));
         tvSelectPaymentMethod.setOnClickListener(null);
+    }
+
+    @Override
+    public void onDropshipperValidationResult(boolean result, int errorPosition) {
+        if (!result) {
+            if (errorPosition != ShipmentAdapter.DEFAULT_ERROR_POSITION) {
+                rvShipment.smoothScrollToPosition(errorPosition);
+            }
+            showToastError(getActivity().getString(R.string.message_error_dropshipper));
+        } else {
+            shipmentPresenter.processCheckShipmentPrepareCheckout();
+        }
     }
 
     @Override

@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -44,6 +45,8 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     private static final int ITEM_VIEW_SHIPMENT_COST = R.layout.view_item_shipment_cost_details;
     private static final int ITEM_VIEW_SHIPMENT_SINGLE_ADDRESS = R.layout.item_shipment_single;
     private static final int ITEM_VIEW_SHIPMENT_MULTIPLE_ADDRESS = R.layout.item_shipment_multiple;
+
+    public static final int DEFAULT_ERROR_POSITION = -1;
 
     private ArrayList<ShowCaseObject> showCaseObjectList;
     private ShipmentAdapterActionListener shipmentAdapterActionListener;
@@ -243,6 +246,25 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         } else {
             shipmentAdapterActionListener.onCartDataDisableToCheckout();
         }
+    }
+
+    public void checkDropshipperValidation() {
+        boolean availableCheckout = true;
+        int errorPosition = DEFAULT_ERROR_POSITION;
+        for (int i = 0; i < shipmentDataList.size(); i++) {
+            ShipmentData shipmentData = shipmentDataList.get(i);
+            if (shipmentData instanceof ShipmentItem) {
+                if (((ShipmentItem) shipmentData).getSelectedShipmentDetailData() != null &&
+                        ((ShipmentItem) shipmentData).getSelectedShipmentDetailData().getUseDropshipper()) {
+                    if (TextUtils.isEmpty(((ShipmentItem) shipmentData).getSelectedShipmentDetailData().getDropshipperName()) ||
+                            TextUtils.isEmpty(((ShipmentItem) shipmentData).getSelectedShipmentDetailData().getDropshipperPhone())) {
+                        availableCheckout = false;
+                        errorPosition = i;
+                    }
+                }
+            }
+        }
+        shipmentAdapterActionListener.onDropshipperValidationResult(availableCheckout, errorPosition);
     }
 
     public void setSelecteCourier(int position, CourierItemData courierItemData) {

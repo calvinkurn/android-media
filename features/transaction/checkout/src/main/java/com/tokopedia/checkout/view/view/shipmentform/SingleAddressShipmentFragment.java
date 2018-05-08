@@ -443,6 +443,10 @@ public class SingleAddressShipmentFragment extends BaseCheckoutFragment
 
     }
 
+    @Override
+    public void onDropshipperValidationResult(boolean result, int position) {
+
+    }
 
     @Override
     public void onShowPromoMessage(String promoMessage) {
