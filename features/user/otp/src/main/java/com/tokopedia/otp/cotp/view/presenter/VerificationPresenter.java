@@ -77,6 +77,7 @@ public class VerificationPresenter extends BaseDaggerPresenter<Verification.View
                             userSession.getUserId()
                     ), new RequestOtpSubscriber(getView()));
                 }
+                break;
             default:
                 if (!TextUtils.isEmpty(viewModel.getPhoneNumber())) {
                     requestOtpUseCase.execute(RequestOtpUseCase.getParam(

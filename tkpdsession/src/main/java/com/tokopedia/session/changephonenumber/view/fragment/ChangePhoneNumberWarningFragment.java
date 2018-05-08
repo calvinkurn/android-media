@@ -285,6 +285,10 @@ public class ChangePhoneNumberWarningFragment extends BaseDaggerFragment
                             ),
                             REQUEST_CHANGE_PHONE_NUMBER);
                 }
+
+                else if (resultCode == Activity.RESULT_CANCELED){
+                    getActivity().finish();
+                }
                 break;
             case REQUEST_CHANGE_PHONE_NUMBER:
                 getActivity().setResult(resultCode);

@@ -4,8 +4,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.support.v4.app.FragmentActivity;
 
-import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
-
 import okhttp3.Interceptor;
 
 /**
@@ -14,8 +12,6 @@ import okhttp3.Interceptor;
 
 public interface SessionRouter {
     Intent getHomeIntent(Context context);
-
-    BaseDaggerFragment getKolPostFragment(String userId);
 
     Intent getTopProfileIntent(Context context, String userId);
 
