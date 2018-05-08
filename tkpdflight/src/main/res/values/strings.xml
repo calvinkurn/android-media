@@ -356,4 +356,5 @@
     <string name="flight_detail_transit_label">Transit :</string>
     <string name="flight_booking_passenger_birthdate_child_sholud_lessthan_than_equal_12years">Umur penumpang anak maksimal 12 tahun saat waktu pemberangkatan</string>
     <string name="flight_passenger_choose_salutation">Pilih Titel</string>
+    <string name="flight_review_minus_discount_prefix">- %1$s</string>
 </resources>
