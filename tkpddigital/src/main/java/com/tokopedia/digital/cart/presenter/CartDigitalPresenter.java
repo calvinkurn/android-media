@@ -4,10 +4,12 @@ import android.support.annotation.NonNull;
 import android.text.TextUtils;
 import android.util.Log;
 
+import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.analytics.nishikino.model.GTMCart;
 import com.tokopedia.core.analytics.nishikino.model.Product;
+import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.network.exception.HttpErrorException;
 import com.tokopedia.core.network.exception.ResponseDataNullException;
 import com.tokopedia.core.network.exception.ResponseErrorException;
@@ -37,6 +39,7 @@ import com.tokopedia.digital.cart.model.CheckoutDigitalData;
 import com.tokopedia.digital.cart.model.InstantCheckoutData;
 import com.tokopedia.digital.cart.model.NOTPExotelVerification;
 import com.tokopedia.digital.cart.model.VoucherDigital;
+import com.tokopedia.digital.common.constant.DigitalCache;
 import com.tokopedia.digital.utils.DeviceUtil;
 
 import java.net.ConnectException;
@@ -171,7 +174,7 @@ public class CartDigitalPresenter implements ICartDigitalPresenter {
     public void sendAnalyticsATCSuccess(CartDigitalInfoData cartDigitalInfoData) {
         Product product = new Product();
         String productName = cartDigitalInfoData.getAttributes().getOperatorName() + " " +
-        cartDigitalInfoData.getAttributes().getPrice();
+                cartDigitalInfoData.getAttributes().getPrice();
         product.setProductName(productName);
         product.setProductID(cartDigitalInfoData.getRelationships().getRelationProduct().getData().getId()); // product digital id
         product.setPrice(String.valueOf(cartDigitalInfoData.getAttributes().getPricePlain())); // price
@@ -215,6 +218,17 @@ public class CartDigitalPresenter implements ICartDigitalPresenter {
 
             }
         });
+    }
+
+    @Override
+    public void onPaymentSuccess(String categoryId) {
+        //Delete Category and Favorit List Cache
+        CommonUtils.dumper("Vishal in onPaymentSuccess :: " + categoryId);
+        if (!TextUtils.isEmpty(categoryId)) {
+            GlobalCacheManager globalCacheManager = new GlobalCacheManager();
+            globalCacheManager.delete(DigitalCache.NEW_DIGITAL_CATEGORY_AND_FAV + "/" + categoryId);
+            CommonUtils.dumper("Vishal in onPaymentSuccess cache deleted :: " + categoryId);
+        }
     }
 
     @NonNull
@@ -411,31 +425,32 @@ public class CartDigitalPresenter implements ICartDigitalPresenter {
 
 
     private void startOTPProcess() {
-        if(GlobalConfig.isSellerApp() && isNOTPEnabled()) {
-            Log.e(TAG,"nOTP Enabled");
+        if (GlobalConfig.isSellerApp() && isNOTPEnabled()) {
+            Log.e(TAG, "nOTP Enabled");
             view.checkCallPermissionForNOTP();
-        }else {
+        } else {
 
-            if(GlobalConfig.isSellerApp()) {
+            if (GlobalConfig.isSellerApp()) {
                 Log.e(TAG, "nOTP Disabled");
                 NOTPTracking.eventNOTPConfiguration(true, false, false);
             }
             view.interruptRequestTokenVerification();
         }
     }
+
     private RemoteConfig remoteConfig;
+
     private void initRemoteConfig() {
         remoteConfig = new FirebaseRemoteConfigImpl(view.getActivity());
     }
 
 
-
-/*
-TO CHECK IF NOTP ENABLED FROM FIREBASE OR NOT
- */
+    /*
+    TO CHECK IF NOTP ENABLED FROM FIREBASE OR NOT
+     */
     private boolean isNOTPEnabled() {
         // add here different conditions
-             return remoteConfig.getBoolean(FIREBASE_NOTP_REMOTE_CONFIG_KEY,true);
+        return remoteConfig.getBoolean(FIREBASE_NOTP_REMOTE_CONFIG_KEY, true);
 
     }
 /*
@@ -444,13 +459,13 @@ TO CHECK IF NOTP ENABLED FROM FIREBASE OR NOT
 
     private void needToVerifyOTP() {
 
-        view.showProgressLoading("",view.getApplicationContext().getResources().getString(R.string.msg_verification));
+        view.showProgressLoading("", view.getApplicationContext().getResources().getString(R.string.msg_verification));
         NOTPExotelVerification.getmInstance().verifyNo(SessionHandler.getPhoneNumber(), view.getActivity(), new NOTPExotelVerification.NOTPVerificationListener() {
             @Override
             public void onVerificationSuccess() {
                 view.hideProgressLoading();
                 NOTPTracking.eventSuccessNOTPVerification(SessionHandler.getPhoneNumber());
-                if(view.getActivity() != null) {
+                if (view.getActivity() != null) {
                     processPatchOtpCart(view.getPassData().getCategoryId());
                 }
             }
@@ -459,7 +474,7 @@ TO CHECK IF NOTP ENABLED FROM FIREBASE OR NOT
             public void onVerificationFail() {
                 view.hideProgressLoading();
                 NOTPTracking.eventFailNOTPVerification(SessionHandler.getPhoneNumber());
-                if(view.getActivity() != null) {
+                if (view.getActivity() != null) {
                     view.interruptRequestTokenVerification();
                 }
             }
@@ -618,7 +633,7 @@ TO CHECK IF NOTP ENABLED FROM FIREBASE OR NOT
         }
     }
 
-    private void removeBranchPromoIfNeeded(){
+    private void removeBranchPromoIfNeeded() {
         BranchSdkUtils.removeCouponCode(view.getActivity());
     }
 }

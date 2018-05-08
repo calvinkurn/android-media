@@ -796,6 +796,9 @@ public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPrese
                             closeView();
                         }
                     });
+
+                    presenter.onPaymentSuccess(passData.getCategoryId());
+
                     break;
                 case TopPayActivity.PAYMENT_FAILED:
                     showToastMessage(
