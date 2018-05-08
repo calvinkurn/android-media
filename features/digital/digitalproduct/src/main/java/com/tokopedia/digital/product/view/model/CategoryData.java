@@ -25,7 +25,6 @@ public class CategoryData implements Parcelable {
     public static final String STYLE_PRODUCT_CATEGORY_99 = "style_99";
     public static final String SLUG_PRODUCT_CATEGORY_PULSA = "pulsa";
 
-
     private static final String[] STYLE_COLLECTION_SUPPORTED = new String[]{
             STYLE_PRODUCT_CATEGORY_1, STYLE_PRODUCT_CATEGORY_2, STYLE_PRODUCT_CATEGORY_2,
             STYLE_PRODUCT_CATEGORY_3, STYLE_PRODUCT_CATEGORY_4, STYLE_PRODUCT_CATEGORY_5,
@@ -361,29 +360,6 @@ public class CategoryData implements Parcelable {
         public CategoryData build() {
             return new CategoryData(this);
         }
-    }
-
-    @Override
-    public String toString() {
-        return "CategoryData{" +
-                "categoryId='" + categoryId + '\'' +
-                ", categoryType='" + categoryType + '\'' +
-                ", titleText='" + titleText + '\'' +
-                ", name='" + name + '\'' +
-                ", icon='" + icon + '\'' +
-                ", iconUrl='" + iconUrl + '\'' +
-                ", teaser=" + teaser +
-                ", isNew=" + isNew +
-                ", instantCheckout=" + instantCheckout +
-                ", slug='" + slug + '\'' +
-                ", defaultOperatorId='" + defaultOperatorId + '\'' +
-                ", operatorStyle='" + operatorStyle + '\'' +
-                ", operatorLabel='" + operatorLabel + '\'' +
-                ", clientNumberList=" + clientNumberList +
-                ", operatorList=" + operatorList +
-                ", bannerDataListIncluded=" + bannerDataListIncluded +
-                ", otherBannerDataListIncluded=" + otherBannerDataListIncluded +
-                '}';
     }
 
 }
