@@ -9,11 +9,11 @@ import java.util.List;
  * @author Irfan Khoirul on 23/04/18.
  */
 
-public class ShipmentSingleAddressItem extends ShipmentItem {
+public class ShipmentSingleAddressCartItem extends ShipmentCartItem {
 
     private List<CartItemModel> cartItemModels = new ArrayList<>();
 
-    public ShipmentSingleAddressItem() {
+    public ShipmentSingleAddressCartItem() {
     }
 
     public List<CartItemModel> getCartItemModels() {

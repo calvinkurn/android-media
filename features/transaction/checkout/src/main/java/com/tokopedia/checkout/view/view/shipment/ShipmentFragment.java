@@ -38,7 +38,7 @@ import com.tokopedia.checkout.view.view.shipment.di.DaggerShipmentComponent;
 import com.tokopedia.checkout.view.view.shipment.di.ShipmentComponent;
 import com.tokopedia.checkout.view.view.shipment.di.ShipmentModule;
 import com.tokopedia.checkout.view.view.shipment.shippingoptions.CourierBottomsheet;
-import com.tokopedia.checkout.view.view.shipment.viewmodel.ShipmentItem;
+import com.tokopedia.checkout.view.view.shipment.viewmodel.ShipmentCartItem;
 import com.tokopedia.checkout.view.view.shipmentform.CartShipmentActivity;
 import com.tokopedia.core.receiver.CartBadgeNotificationReceiver;
 import com.tokopedia.core.router.transactionmodule.TransactionPurchaseRouter;
@@ -76,7 +76,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
 
     private TkpdProgressDialog progressDialogNormal;
 
-    private List<ShipmentItem> shipmentItems;
+    private List<ShipmentCartItem> shipmentCartItems;
     private RecipientAddressModel recipientAddressModel;
     private PromoCodeAppliedData promoCodeAppliedData;
     private CartPromoSuggestion cartPromoSuggestion;
@@ -159,7 +159,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
             if (!cartShipmentAddressFormData.isMultiple()) {
                 recipientAddressModel = shipmentDataConverter.getRecipientAddressModel(cartShipmentAddressFormData);
             }
-            shipmentItems = shipmentDataConverter.getShipmentItems(cartShipmentAddressFormData);
+            shipmentCartItems = shipmentDataConverter.getShipmentItems(cartShipmentAddressFormData);
         }
 
         promoCodeAppliedData = arguments.getParcelable(ARG_EXTRA_PROMO_CODE_APPLIED_DATA);
@@ -220,7 +220,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         if (recipientAddressModel != null) {
             shipmentAdapter.addAddressShipmentData(recipientAddressModel);
         }
-        shipmentAdapter.addCartItemDataList(shipmentItems);
+        shipmentAdapter.addCartItemDataList(shipmentCartItems);
         shipmentAdapter.addShipmentCostData(new ShipmentCostModel());
     }
 
@@ -405,12 +405,12 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     }
 
     @Override
-    public void onChooseShipment(int position, ShipmentItem shipmentItem, RecipientAddressModel recipientAddressModel) {
+    public void onChooseShipment(int position, ShipmentCartItem shipmentCartItem, RecipientAddressModel recipientAddressModel) {
         ShipmentDetailData shipmentDetailData = null;
-        if (shipmentItem.getSelectedShipmentDetailData() != null) {
-            shipmentDetailData = shipmentItem.getSelectedShipmentDetailData();
+        if (shipmentCartItem.getSelectedShipmentDetailData() != null) {
+            shipmentDetailData = shipmentCartItem.getSelectedShipmentDetailData();
         } else {
-            shipmentDetailData = ratesDataConverter.getShipmentDetailData(shipmentItem,
+            shipmentDetailData = ratesDataConverter.getShipmentDetailData(shipmentCartItem,
                     recipientAddressModel);
         }
         if (shipmentDetailData != null) {

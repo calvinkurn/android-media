@@ -16,8 +16,8 @@ import com.tokopedia.checkout.domain.datamodel.cartsingleshipment.CartItemModel;
 import com.tokopedia.checkout.view.adapter.InnerProductListAdapter;
 import com.tokopedia.checkout.view.view.shipment.ShipmentAdapter;
 import com.tokopedia.checkout.view.view.shipment.ShipmentAdapterActionListener;
-import com.tokopedia.checkout.view.view.shipment.viewmodel.ShipmentItem;
-import com.tokopedia.checkout.view.view.shipment.viewmodel.ShipmentSingleAddressItem;
+import com.tokopedia.checkout.view.view.shipment.viewmodel.ShipmentCartItem;
+import com.tokopedia.checkout.view.view.shipment.viewmodel.ShipmentSingleAddressCartItem;
 import com.tokopedia.design.utils.CurrencyFormatUtil;
 import com.tokopedia.showcase.ShowCaseContentPosition;
 import com.tokopedia.showcase.ShowCaseObject;
@@ -41,14 +41,14 @@ public class ShipmentItemSingleAddressViewHolder extends ShipmentItemViewHolder 
     }
 
     @Override
-    public void bindViewHolder(ShipmentItem shipmentItem,
+    public void bindViewHolder(ShipmentCartItem shipmentCartItem,
                                RecipientAddressModel recipientAddressModel,
                                ArrayList<ShowCaseObject> showCaseObjectList) {
-        super.bindViewHolder(shipmentItem, recipientAddressModel, showCaseObjectList);
+        super.bindViewHolder(shipmentCartItem, recipientAddressModel, showCaseObjectList);
 
         addressLayout.setVisibility(View.GONE);
 
-        ShipmentSingleAddressItem shipmentSingleAddressItem = (ShipmentSingleAddressItem) shipmentItem;
+        ShipmentSingleAddressCartItem shipmentSingleAddressItem = (ShipmentSingleAddressCartItem) shipmentCartItem;
         List<CartItemModel> cartItemModelList = new ArrayList<>(shipmentSingleAddressItem.getCartItemModels());
         renderFirstCartItem(cartItemModelList.remove(FIRST_ELEMENT));
         renderOtherCartItems(shipmentSingleAddressItem, cartItemModelList);
@@ -78,7 +78,7 @@ public class ShipmentItemSingleAddressViewHolder extends ShipmentItemViewHolder 
         tvCashback.setText(cashback);
     }
 
-    private void renderOtherCartItems(ShipmentSingleAddressItem shipmentItem, List<CartItemModel> cartItemModels) {
+    private void renderOtherCartItems(ShipmentSingleAddressCartItem shipmentItem, List<CartItemModel> cartItemModels) {
         if (cartItemModels != null) {
             if (cartItemModels.size() > 0) {
                 vSeparatorMultipleProductSameStore.setVisibility(View.VISIBLE);
@@ -88,10 +88,10 @@ public class ShipmentItemSingleAddressViewHolder extends ShipmentItemViewHolder 
             rlExpandOtherProduct.setVisibility(cartItemModels.isEmpty() ?
                     View.GONE : View.VISIBLE);
             tvExpandOtherProduct.setText(getOtherCartItemsLabel(cartItemModels,
-                    shipmentItem.isAllItemViewStateExpanded()));
+                    shipmentItem.isStateAllItemViewExpanded()));
 
             ivDetailOptionChevron.setImageResource(getResourceDrawerChevron(
-                    shipmentItem.isAllItemViewStateExpanded()));
+                    shipmentItem.isStateAllItemViewExpanded()));
             rlExpandOtherProduct.setOnClickListener(showAllProductListener(shipmentItem, cartItemModels));
             tvExpandOtherProduct.setOnClickListener(showAllProductListener(shipmentItem, cartItemModels));
 
@@ -124,22 +124,22 @@ public class ShipmentItemSingleAddressViewHolder extends ShipmentItemViewHolder 
                 String.format("+%s Produk Lainnya", cartItemList.size());
     }
 
-    private View.OnClickListener showAllProductListener(final ShipmentItem shipmentItem,
+    private View.OnClickListener showAllProductListener(final ShipmentCartItem shipmentCartItem,
                                                         final List<CartItemModel> cartItemList) {
         return new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                toggleShowAllProduct(shipmentItem, cartItemList);
+                toggleShowAllProduct(shipmentCartItem, cartItemList);
             }
         };
     }
 
-    private void toggleShowAllProduct(ShipmentItem shipmentItem, List<CartItemModel> cartItemList) {
-        shipmentItem.setAllItemViewStateExpanded(!shipmentItem.isAllItemViewStateExpanded());
-        rvCartItem.setVisibility(shipmentItem.isAllItemViewStateExpanded() ? View.VISIBLE : View.GONE);
+    private void toggleShowAllProduct(ShipmentCartItem shipmentCartItem, List<CartItemModel> cartItemList) {
+        shipmentCartItem.setStateAllItemViewExpanded(!shipmentCartItem.isStateAllItemViewExpanded());
+        rvCartItem.setVisibility(shipmentCartItem.isStateAllItemViewExpanded() ? View.VISIBLE : View.GONE);
 
         tvExpandOtherProduct.setText(getOtherCartItemsLabel(cartItemList,
-                shipmentItem.isAllItemViewStateExpanded()));
+                shipmentCartItem.isStateAllItemViewExpanded()));
     }
 
     private void setShowCase(ViewGroup viewGroup, ArrayList<ShowCaseObject> showCaseObjectList) {

@@ -9,7 +9,7 @@ import com.tokopedia.transaction.common.data.pickuppoint.Store;
  * @author Irfan Khoirul on 23/04/18.
  */
 
-public abstract class ShipmentItem implements ShipmentData {
+public abstract class ShipmentCartItem implements ShipmentData {
 
     private boolean isError;
     private String errorMessage;
@@ -32,10 +32,11 @@ public abstract class ShipmentItem implements ShipmentData {
     private String unixTime;
     private Store store;
 
-    private boolean detailSubtotalViewStateExpanded;
-    private boolean allItemViewStateExpanded;
+    private boolean stateDetailSubtotalViewExpanded;
+    private boolean stateAllItemViewExpanded;
+    private boolean stateDropshipperDetailExpanded;
 
-    public ShipmentItem() {
+    public ShipmentCartItem() {
     }
 
     public boolean isError() {
@@ -166,19 +167,27 @@ public abstract class ShipmentItem implements ShipmentData {
         this.weightUnit = weightUnit;
     }
 
-    public boolean isDetailSubtotalViewStateExpanded() {
-        return detailSubtotalViewStateExpanded;
+    public boolean isStateDetailSubtotalViewExpanded() {
+        return stateDetailSubtotalViewExpanded;
     }
 
-    public void setDetailSubtotalViewStateExpanded(boolean detailSubtotalViewStateExpanded) {
-        this.detailSubtotalViewStateExpanded = detailSubtotalViewStateExpanded;
+    public void setStateDetailSubtotalViewExpanded(boolean stateDetailSubtotalViewExpanded) {
+        this.stateDetailSubtotalViewExpanded = stateDetailSubtotalViewExpanded;
     }
 
-    public boolean isAllItemViewStateExpanded() {
-        return allItemViewStateExpanded;
+    public boolean isStateAllItemViewExpanded() {
+        return stateAllItemViewExpanded;
     }
 
-    public void setAllItemViewStateExpanded(boolean allItemViewStateExpanded) {
-        this.allItemViewStateExpanded = allItemViewStateExpanded;
+    public void setStateAllItemViewExpanded(boolean stateAllItemViewExpanded) {
+        this.stateAllItemViewExpanded = stateAllItemViewExpanded;
+    }
+
+    public boolean isStateDropshipperDetailExpanded() {
+        return stateDropshipperDetailExpanded;
+    }
+
+    public void setStateDropshipperDetailExpanded(boolean stateDropshipperDetailExpanded) {
+        this.stateDropshipperDetailExpanded = stateDropshipperDetailExpanded;
     }
 }

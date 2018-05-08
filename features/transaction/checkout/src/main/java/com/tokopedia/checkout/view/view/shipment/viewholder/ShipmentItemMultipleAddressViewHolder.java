@@ -10,8 +10,8 @@ import com.tokopedia.checkout.domain.datamodel.MultipleAddressItemData;
 import com.tokopedia.checkout.domain.datamodel.addressoptions.RecipientAddressModel;
 import com.tokopedia.checkout.view.view.shipment.ShipmentAdapter;
 import com.tokopedia.checkout.view.view.shipment.ShipmentAdapterActionListener;
-import com.tokopedia.checkout.view.view.shipment.viewmodel.ShipmentItem;
-import com.tokopedia.checkout.view.view.shipment.viewmodel.ShipmentMultipleAddressItem;
+import com.tokopedia.checkout.view.view.shipment.viewmodel.ShipmentCartItem;
+import com.tokopedia.checkout.view.view.shipment.viewmodel.ShipmentMultipleAddressCartItem;
 import com.tokopedia.design.utils.CurrencyFormatUtil;
 import com.tokopedia.showcase.ShowCaseObject;
 
@@ -31,20 +31,20 @@ public class ShipmentItemMultipleAddressViewHolder extends ShipmentItemViewHolde
     }
 
     @Override
-    public void bindViewHolder(ShipmentItem shipmentItem,
+    public void bindViewHolder(ShipmentCartItem shipmentCartItem,
                                RecipientAddressModel recipientAddressModel,
                                ArrayList<ShowCaseObject> showCaseObjectList) {
-        super.bindViewHolder(shipmentItem, recipientAddressModel, showCaseObjectList);
+        super.bindViewHolder(shipmentCartItem, recipientAddressModel, showCaseObjectList);
         rlExpandOtherProduct.setVisibility(View.GONE);
 
-        ShipmentMultipleAddressItem shipmentMultipleAddressItem = (ShipmentMultipleAddressItem) shipmentItem;
+        ShipmentMultipleAddressCartItem shipmentMultipleAddressItem = (ShipmentMultipleAddressCartItem) shipmentCartItem;
         MultipleAddressItemData multipleAddressItemData = shipmentMultipleAddressItem.getMultipleAddressItemData();
 
         renderItem(shipmentMultipleAddressItem, multipleAddressItemData);
         renderAddress(multipleAddressItemData);
     }
 
-    private void renderItem(ShipmentMultipleAddressItem shipmentMultipleAddressItem, MultipleAddressItemData multipleAddressItemData) {
+    private void renderItem(ShipmentMultipleAddressCartItem shipmentMultipleAddressItem, MultipleAddressItemData multipleAddressItemData) {
         ImageHandler.LoadImage(ivProductImage, shipmentMultipleAddressItem.getProductImageUrl());
         tvProductName.setText(shipmentMultipleAddressItem.getProductName());
         tvProductPrice.setText(CurrencyFormatUtil.convertPriceValueToIdrFormat(
@@ -78,7 +78,7 @@ public class ShipmentItemMultipleAddressViewHolder extends ShipmentItemViewHolde
         tvChangeAddress.setVisibility(View.GONE);
     }
 
-    private boolean isPoliciesVisible(ShipmentMultipleAddressItem shipmentMultipleAddressItem) {
+    private boolean isPoliciesVisible(ShipmentMultipleAddressCartItem shipmentMultipleAddressItem) {
         return shipmentMultipleAddressItem.isProdustHasCasback()
                 || shipmentMultipleAddressItem.isProductIsFreeReturns()
                 || shipmentMultipleAddressItem.isProductIsPreorder();
