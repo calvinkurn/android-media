@@ -1,5 +1,6 @@
 package com.tokopedia.checkout.view.view.shipment.shippingoptions;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.res.Resources;
 import android.support.annotation.NonNull;
@@ -16,10 +17,13 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.tokopedia.abstraction.common.di.component.HasComponent;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.checkout.R;
 import com.tokopedia.checkout.domain.datamodel.shipmentrates.CourierItemData;
 import com.tokopedia.checkout.domain.datamodel.shipmentrates.ShipmentDetailData;
+import com.tokopedia.checkout.view.di.component.CartComponent;
+import com.tokopedia.checkout.view.di.component.CartComponentInjector;
 import com.tokopedia.checkout.view.view.shipment.shippingoptions.di.CourierComponent;
 import com.tokopedia.checkout.view.view.shipment.shippingoptions.di.CourierModule;
 import com.tokopedia.checkout.view.view.shipment.shippingoptions.di.DaggerCourierComponent;
@@ -30,7 +34,8 @@ import javax.inject.Inject;
  * @author Irfan Khoirul on 04/05/18.
  */
 
-public class CourierBottomsheet extends BottomSheetDialog implements CourierContract.View, CourierAdapterActionListener {
+public class CourierBottomsheet extends BottomSheetDialog implements CourierContract.View,
+        CourierAdapterActionListener, HasComponent<CartComponent> {
 
     private ImageButton imgBtClose;
     private Toolbar toolbar;
@@ -45,6 +50,7 @@ public class CourierBottomsheet extends BottomSheetDialog implements CourierCont
     private ActionListener actionListener;
     private int cartItemPosition;
     private ShipmentDetailData shipmentDetailData;
+    private Activity activity;
 
     @Inject
     CourierContract.Presenter presenter;
@@ -52,13 +58,14 @@ public class CourierBottomsheet extends BottomSheetDialog implements CourierCont
     @Inject
     CourierAdapter courierAdapter;
 
-    public CourierBottomsheet(@NonNull Context context, @NonNull ShipmentDetailData shipmentDetailData,
+    public CourierBottomsheet(@NonNull Activity activity, @NonNull ShipmentDetailData shipmentDetailData,
                               @NonNull int cartItemPosition) {
-        super(context);
+        super(activity);
+        this.activity = activity;
         this.cartItemPosition = cartItemPosition;
         this.shipmentDetailData = shipmentDetailData;
         initializeInjector();
-        initializeView(context);
+        initializeView(activity);
         initializeData(shipmentDetailData);
     }
 
@@ -127,6 +134,7 @@ public class CourierBottomsheet extends BottomSheetDialog implements CourierCont
 
     private void initializeInjector() {
         CourierComponent component = DaggerCourierComponent.builder()
+                .cartComponent(getComponent())
                 .courierModule(new CourierModule())
                 .build();
 
@@ -204,6 +212,11 @@ public class CourierBottomsheet extends BottomSheetDialog implements CourierCont
     @Override
     public void onSelectedCourierItemLoaded(CourierItemData courierItemData) {
 
+    }
+
+    @Override
+    public CartComponent getComponent() {
+        return CartComponentInjector.newInstance(activity.getApplication()).getCartApiServiceComponent();
     }
 
     public interface ActionListener {

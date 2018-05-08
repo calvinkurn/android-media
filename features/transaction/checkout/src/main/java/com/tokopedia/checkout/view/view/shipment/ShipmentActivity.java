@@ -98,13 +98,7 @@ public class ShipmentActivity extends BaseCheckoutActivity implements HasCompone
 
     @Override
     public CartComponent getComponent() {
-        return CartComponentInjector.newInstance(
-                DaggerCartComponent.builder()
-                        .baseAppComponent(((BaseMainApplication) getApplication()).getBaseAppComponent())
-                        .dataModule(new DataModule())
-                        .build())
-                .getCartApiServiceComponent();
-
+        return CartComponentInjector.newInstance(getApplication()).getCartApiServiceComponent();
     }
 
     @Override
