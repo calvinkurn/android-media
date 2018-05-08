@@ -11,11 +11,11 @@
 
     <ImageView
         android:id="@+id/iv_edit"
-        android:layout_width="@dimen/dp_32"
-        android:layout_height="@dimen/dp_32"
+        android:layout_width="@dimen/dp_24"
+        android:layout_height="@dimen/dp_24"
         android:layout_gravity="center_horizontal"
         android:scaleType="fitCenter"
-        tools:src="@drawable/ic_crop" />
+        tools:src="@drawable/ic_crop_rotate" />
     <TextView
         style="@style/TextView.Micro.BlackSecondary"
         android:id="@+id/tv_edit"

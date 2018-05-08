@@ -218,15 +218,7 @@ public class ImageEditorPresenter extends BaseDaggerPresenter<ImageEditorPresent
                                     .load(url)
                                     .downloadOnly(ImageUtils.DEF_WIDTH, ImageUtils.DEF_HEIGHT);
                             try {
-                                File cacheFile = future.get();
-                                String cacheFilePath = cacheFile.getAbsolutePath();
-                                File photo;
-                                photo = ImageUtils.writeImageToTkpdPath(ImageUtils.DirectoryDef.DIRECTORY_DOWNLOAD, cacheFilePath);
-                                if (photo != null) {
-                                    return photo;
-                                } else {
-                                    return cacheFile;
-                                }
+                                return future.get();
                             } catch (InterruptedException | ExecutionException e) {
                                 e.printStackTrace();
                                 throw new RuntimeException(e.getMessage());
