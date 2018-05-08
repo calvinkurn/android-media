@@ -44,7 +44,7 @@ public class ProductListActivity extends ReactDrawerPresenterActivity implements
         Uri uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon().build();
         Intent intent = new Intent(context, ProductListActivity.class)
                 .setData(uri);
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         return intent;
     }
 
