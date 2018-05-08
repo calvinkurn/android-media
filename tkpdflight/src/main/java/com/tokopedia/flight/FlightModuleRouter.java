@@ -7,7 +7,6 @@ import android.support.v4.app.FragmentActivity;
 
 import com.tokopedia.flight.booking.domain.subscriber.model.ProfileInfo;
 import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationCameraPassData;
-import com.tokopedia.flight.common.view.BaseFlightActivity;
 import com.tokopedia.flight.contactus.model.FlightContactUsPassData;
 import com.tokopedia.flight.review.domain.FlightVoucherCodeWrapper;
 import com.tokopedia.flight.review.view.model.FlightCheckoutViewModel;
