@@ -5,7 +5,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 
-import com.tokopedia.core.base.adapter.Visitable;
+import com.tokopedia.abstraction.base.view.adapter.Visitable;
+import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.core.base.presentation.CustomerPresenter;
 import com.tokopedia.core.base.presentation.CustomerView;
 import com.tokopedia.inbox.attachinvoice.view.resultmodel.SelectedInvoice;
@@ -16,6 +17,7 @@ import com.tokopedia.inbox.inboxchat.domain.model.replyaction.ReplyActionData;
 import com.tokopedia.inbox.inboxchat.domain.model.websocket.WebSocketResponse;
 import com.tokopedia.inbox.inboxchat.viewmodel.AttachInvoiceSingleViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.ChatRoomViewModel;
+import com.tokopedia.inbox.inboxchat.viewmodel.DummyChatViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.MyChatViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.OppositeChatViewModel;
 
@@ -31,13 +33,9 @@ public class ChatRoomContract {
 
         Bundle getArguments();
 
-        void showLoading();
-
-        void finishLoading();
-
         void setHeader();
 
-        void setTextAreaReply(boolean b);
+        void displayReplyField(boolean b);
 
         ChatRoomAdapter getAdapter();
 
@@ -103,8 +101,6 @@ public class ChatRoomContract {
 
         void onSuccessInitMessage();
 
-        void addInitialMessageBalloon();
-
         void disableAction();
 
         void onErrorInitMessage(String s);
@@ -144,6 +140,8 @@ public class ChatRoomContract {
         boolean shouldHandleUrlManually(String url);
 
         void showSnackbarError(String string);
+
+        UserSession getUserSession();
     }
 
     interface Presenter extends CustomerPresenter<View>{
@@ -157,7 +155,7 @@ public class ChatRoomContract {
 
         void onGoToDetail(String userId, String role);
 
-        void sendMessageWithApi();
+        void sendMessage(int networkType);
 
         void addMessageChatBalloon(WebSocketResponse response);
 
@@ -165,7 +163,7 @@ public class ChatRoomContract {
 
         void openCamera();
 
-        void startUpload(List<MyChatViewModel> list, int network);
+        void startUpload(List<DummyChatViewModel> list, int network);
 
         String getFileLocFromCamera();
 
