@@ -239,15 +239,12 @@ import com.tokopedia.tkpdpdp.ProductInfoActivity;
 import com.tokopedia.tkpdreactnative.react.ReactConst;
 import com.tokopedia.tkpdreactnative.react.ReactUtils;
 import com.tokopedia.tkpdreactnative.react.di.ReactNativeModule;
-<<<<<<< HEAD
-=======
 import com.tokopedia.groupchat.GroupChatModuleRouter;
 import com.tokopedia.groupchat.channel.view.fragment.ChannelFragment;
 import com.tokopedia.groupchat.chatroom.data.ChatroomUrl;
 import com.tokopedia.groupchat.chatroom.view.activity.GroupChatActivity;
 import com.tokopedia.groupchat.common.analytics.GroupChatAnalytics;
 import com.tokopedia.tkpdreactnative.router.ReactNativeRouter;
->>>>>>> 0963ed8be8782d88db14656dfa5aabf1d8a963e4
 import com.tokopedia.tokocash.WalletUserSession;
 import com.tokopedia.tokocash.di.DaggerTokoCashComponent;
 import com.tokopedia.tokocash.di.TokoCashComponent;
@@ -289,11 +286,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         AbstractionRouter, FlightModuleRouter, LogisticRouter, FeedModuleRouter, IHomeRouter,
         DiscoveryRouter, RideModuleRouter, DigitalModuleRouter, com.tokopedia.tokocash.TokoCashRouter,
         DigitalRouter, KolRouter, GroupChatModuleRouter, ApplinkRouter, ShopModuleRouter,
-<<<<<<< HEAD
-        LoyaltyModuleRouter, GamificationRouter, ProfileModuleRouter, OtpModuleRouter {
-=======
-        LoyaltyModuleRouter, GamificationRouter, ProfileModuleRouter, ReactNativeRouter {
->>>>>>> 0963ed8be8782d88db14656dfa5aabf1d8a963e4
+        LoyaltyModuleRouter, GamificationRouter, ProfileModuleRouter, ReactNativeRouter, OtpModuleRouter {
 
     @Inject
     ReactNativeHost reactNativeHost;
@@ -1906,14 +1899,13 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-<<<<<<< HEAD
     public Intent getChangePhoneNumberRequestIntent(Context context) {
         return ChangePhoneNumberRequestActivity.getCallingIntent(context);
     }
-=======
+
+    @Override
     public UseCase<String> setCreditCardSingleAuthentication() {
         return new CreditCardFingerPrintUseCase();
     }
 
->>>>>>> 0963ed8be8782d88db14656dfa5aabf1d8a963e4
 }
