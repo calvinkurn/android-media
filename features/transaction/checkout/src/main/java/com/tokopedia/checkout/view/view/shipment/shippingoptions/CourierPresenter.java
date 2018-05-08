@@ -88,15 +88,26 @@ public class CourierPresenter extends BaseDaggerPresenter<CourierContract.View>
             public void onNext(ShipmentDetailData shipmentDetailData) {
                 if (isViewAttached()) {
                     getView().hideLoading();
-                    CourierPresenter.this.shipmentDetailData = shipmentDetailData;
                     List<ShipmentItemData> shipmentItemDataList = shipmentDetailData.getShipmentItemData();
                     for (ShipmentItemData shipmentItemData : shipmentItemDataList) {
                         ShipmentTypeData shipmentTypeData = new ShipmentTypeData();
                         shipmentTypeData.setShipmentType(shipmentItemData.getType());
                         shipmentDataList.add(shipmentTypeData);
-                        List<CourierItemData> courierItemData = shipmentItemData.getCourierItemData();
-                        shipmentDataList.addAll(courierItemData);
+                        List<CourierItemData> courierItemDataList = shipmentItemData.getCourierItemData();
+                        if (CourierPresenter.this.shipmentDetailData.getSelectedCourier() != null) {
+                            for (CourierItemData courierItemData : courierItemDataList) {
+                                int courierShipperProductId = courierItemData.getShipperProductId();
+                                int selectedCourierShipperProductId = CourierPresenter.this
+                                        .shipmentDetailData.getSelectedCourier().getShipperProductId();
+                                if (courierShipperProductId == selectedCourierShipperProductId) {
+                                    courierItemData.setSelected(true);
+                                    break;
+                                }
+                            }
+                        }
+                        shipmentDataList.addAll(courierItemDataList);
                     }
+                    CourierPresenter.this.shipmentDetailData = shipmentDetailData;
                     getView().showData();
                 }
             }

@@ -8,18 +8,16 @@ import android.support.annotation.NonNull;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SimpleItemAnimator;
 import android.text.TextUtils;
 import android.view.View;
-import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.checkout.R;
 import com.tokopedia.checkout.data.entity.request.CheckoutRequest;
 import com.tokopedia.checkout.data.entity.request.DataCheckoutRequest;
-import com.tokopedia.checkout.data.mapper.ShipmentRatesDataMapper;
 import com.tokopedia.checkout.domain.datamodel.addressoptions.RecipientAddressModel;
 import com.tokopedia.checkout.domain.datamodel.cartcheckout.CheckoutData;
 import com.tokopedia.checkout.domain.datamodel.cartlist.CartPromoSuggestion;
@@ -41,11 +39,7 @@ import com.tokopedia.checkout.view.view.shipment.di.ShipmentComponent;
 import com.tokopedia.checkout.view.view.shipment.di.ShipmentModule;
 import com.tokopedia.checkout.view.view.shipment.shippingoptions.CourierBottomsheet;
 import com.tokopedia.checkout.view.view.shipment.viewmodel.ShipmentItem;
-import com.tokopedia.checkout.view.view.shipment.viewmodel.ShipmentMultipleAddressItem;
-import com.tokopedia.checkout.view.view.shipment.viewmodel.ShipmentSingleAddressItem;
 import com.tokopedia.checkout.view.view.shipmentform.CartShipmentActivity;
-import com.tokopedia.checkout.view.view.shippingoptions.ShipmentChoiceBottomSheet;
-import com.tokopedia.checkout.view.view.shippingoptions.ShipmentDetailActivity;
 import com.tokopedia.core.receiver.CartBadgeNotificationReceiver;
 import com.tokopedia.core.router.transactionmodule.TransactionPurchaseRouter;
 import com.tokopedia.core.router.transactionmodule.sharedata.CheckPromoCodeCartShipmentRequest;
@@ -58,9 +52,6 @@ import com.tokopedia.payment.model.PaymentPassData;
 import java.util.List;
 
 import javax.inject.Inject;
-
-import static com.tokopedia.checkout.view.view.shippingoptions.ShipmentDetailActivity.EXTRA_POSITION;
-import static com.tokopedia.checkout.view.view.shippingoptions.ShipmentDetailActivity.EXTRA_SHIPMENT_DETAIL_DATA;
 
 /**
  * @author Irfan Khoirul on 23/04/18.
@@ -188,6 +179,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         tvPromoMessage = view.findViewById(R.id.tv_promo_message);
         cvBottomLayout = view.findViewById(R.id.bottom_layout);
         progressDialogNormal = new TkpdProgressDialog(getActivity(), TkpdProgressDialog.NORMAL_PROGRESS);
+        ((SimpleItemAnimator) rvShipment.getItemAnimator()).setSupportsChangeAnimations(false);
     }
 
     @Override
@@ -534,5 +526,20 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     @Override
     public void onShipmentItemClick(CourierItemData courierItemData, int cartItemPosition) {
         shipmentAdapter.setSelecteCourier(cartItemPosition, courierItemData);
+    }
+
+    @Override
+    public void onInsuranceChecked(final int position) {
+        shipmentAdapter.updateShipmentCostModel(position);
+        if (rvShipment.isComputingLayout()) {
+            rvShipment.post(new Runnable() {
+                @Override
+                public void run() {
+                    shipmentAdapter.updateItemAndTotalCost(position);
+                }
+            });
+        } else {
+            shipmentAdapter.updateItemAndTotalCost(position);
+        }
     }
 }

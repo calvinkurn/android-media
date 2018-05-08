@@ -14,6 +14,7 @@ import com.tokopedia.checkout.R;
 import com.tokopedia.checkout.domain.datamodel.addressoptions.RecipientAddressModel;
 import com.tokopedia.checkout.domain.datamodel.cartsingleshipment.CartItemModel;
 import com.tokopedia.checkout.view.adapter.InnerProductListAdapter;
+import com.tokopedia.checkout.view.view.shipment.ShipmentAdapter;
 import com.tokopedia.checkout.view.view.shipment.ShipmentAdapterActionListener;
 import com.tokopedia.checkout.view.view.shipment.viewmodel.ShipmentItem;
 import com.tokopedia.checkout.view.view.shipment.viewmodel.ShipmentSingleAddressItem;
@@ -34,8 +35,9 @@ public class ShipmentItemSingleAddressViewHolder extends ShipmentItemViewHolder 
     private static final int FIRST_ELEMENT = 0;
 
     public ShipmentItemSingleAddressViewHolder(View itemView, Context context,
-                                               ShipmentAdapterActionListener actionListener) {
-        super(itemView, context, actionListener);
+                                               ShipmentAdapterActionListener actionListener,
+                                               ShipmentAdapter shipmentAdapter) {
+        super(itemView, context, actionListener, shipmentAdapter);
     }
 
     @Override
@@ -47,15 +49,14 @@ public class ShipmentItemSingleAddressViewHolder extends ShipmentItemViewHolder 
         addressLayout.setVisibility(View.GONE);
 
         ShipmentSingleAddressItem shipmentSingleAddressItem = (ShipmentSingleAddressItem) shipmentItem;
-        tvShopName.setText(shipmentSingleAddressItem.getShopName());
         List<CartItemModel> cartItemModelList = new ArrayList<>(shipmentSingleAddressItem.getCartItemModels());
-        bindFirstCartItem(cartItemModelList.remove(FIRST_ELEMENT));
-        bindOtherCartItems(shipmentSingleAddressItem, cartItemModelList);
+        renderFirstCartItem(cartItemModelList.remove(FIRST_ELEMENT));
+        renderOtherCartItems(shipmentSingleAddressItem, cartItemModelList);
 
         setShowCase(llShipmentOptionViewLayout, showCaseObjectList);
     }
 
-    private void bindFirstCartItem(CartItemModel cartItemModel) {
+    private void renderFirstCartItem(CartItemModel cartItemModel) {
         ImageHandler.LoadImage(ivProductImage, cartItemModel.getImageUrl());
         tvProductName.setText(cartItemModel.getName());
         tvProductPrice.setText(CurrencyFormatUtil.convertPriceValueToIdrFormat(
@@ -77,10 +78,12 @@ public class ShipmentItemSingleAddressViewHolder extends ShipmentItemViewHolder 
         tvCashback.setText(cashback);
     }
 
-    private void bindOtherCartItems(ShipmentSingleAddressItem shipmentItem, List<CartItemModel> cartItemModels) {
+    private void renderOtherCartItems(ShipmentSingleAddressItem shipmentItem, List<CartItemModel> cartItemModels) {
         if (cartItemModels != null) {
             if (cartItemModels.size() > 0) {
                 vSeparatorMultipleProductSameStore.setVisibility(View.VISIBLE);
+            } else {
+                vSeparatorMultipleProductSameStore.setVisibility(View.GONE);
             }
             rlExpandOtherProduct.setVisibility(cartItemModels.isEmpty() ?
                     View.GONE : View.VISIBLE);

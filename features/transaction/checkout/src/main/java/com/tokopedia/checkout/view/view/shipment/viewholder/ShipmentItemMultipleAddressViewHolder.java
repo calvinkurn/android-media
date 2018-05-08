@@ -8,6 +8,7 @@ import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.checkout.R;
 import com.tokopedia.checkout.domain.datamodel.MultipleAddressItemData;
 import com.tokopedia.checkout.domain.datamodel.addressoptions.RecipientAddressModel;
+import com.tokopedia.checkout.view.view.shipment.ShipmentAdapter;
 import com.tokopedia.checkout.view.view.shipment.ShipmentAdapterActionListener;
 import com.tokopedia.checkout.view.view.shipment.viewmodel.ShipmentItem;
 import com.tokopedia.checkout.view.view.shipment.viewmodel.ShipmentMultipleAddressItem;
@@ -24,8 +25,9 @@ import java.util.ArrayList;
 public class ShipmentItemMultipleAddressViewHolder extends ShipmentItemViewHolder {
 
     public ShipmentItemMultipleAddressViewHolder(View itemView, Context context,
-                                                 ShipmentAdapterActionListener actionListener) {
-        super(itemView, context, actionListener);
+                                                 ShipmentAdapterActionListener actionListener,
+                                                 ShipmentAdapter shipmentAdapter) {
+        super(itemView, context, actionListener, shipmentAdapter);
     }
 
     @Override
@@ -38,16 +40,15 @@ public class ShipmentItemMultipleAddressViewHolder extends ShipmentItemViewHolde
         ShipmentMultipleAddressItem shipmentMultipleAddressItem = (ShipmentMultipleAddressItem) shipmentItem;
         MultipleAddressItemData multipleAddressItemData = shipmentMultipleAddressItem.getMultipleAddressItemData();
 
-        bindItem(shipmentMultipleAddressItem, multipleAddressItemData);
-
-        bindAddress(multipleAddressItemData);
+        renderItem(shipmentMultipleAddressItem, multipleAddressItemData);
+        renderAddress(multipleAddressItemData);
     }
 
-    private void bindItem(ShipmentMultipleAddressItem shipmentMultipleAddressItem, MultipleAddressItemData multipleAddressItemData) {
+    private void renderItem(ShipmentMultipleAddressItem shipmentMultipleAddressItem, MultipleAddressItemData multipleAddressItemData) {
         ImageHandler.LoadImage(ivProductImage, shipmentMultipleAddressItem.getProductImageUrl());
         tvProductName.setText(shipmentMultipleAddressItem.getProductName());
         tvProductPrice.setText(CurrencyFormatUtil.convertPriceValueToIdrFormat(
-                (int) shipmentMultipleAddressItem.getProductPriceNumber(), true));
+                shipmentMultipleAddressItem.getProductPriceNumber(), true));
         tvProductWeight.setText(multipleAddressItemData.getProductWeight());
         tvProductTotalItem.setText(String.valueOf(multipleAddressItemData.getProductQty()));
 
@@ -65,7 +66,7 @@ public class ShipmentItemMultipleAddressViewHolder extends ShipmentItemViewHolde
         tvCashback.setText(cashback);
     }
 
-    private void bindAddress(MultipleAddressItemData multipleAddressItemData) {
+    private void renderAddress(MultipleAddressItemData multipleAddressItemData) {
         String fullAddress = multipleAddressItemData.getAddressStreet()
                 + ", " + multipleAddressItemData.getAddressCityName()
                 + ", " + multipleAddressItemData.getAddressProvinceName()
@@ -76,20 +77,6 @@ public class ShipmentItemMultipleAddressViewHolder extends ShipmentItemViewHolde
         tvRecipientPhone.setText(multipleAddressItemData.getRecipientPhoneNumber());
         tvChangeAddress.setVisibility(View.GONE);
     }
-
-//    private void bindCostDetail(ShipmentMultipleAddressItem shipmentMultipleAddressItem) {
-//        rlCartSubTotal.setVisibility(View.VISIBLE);
-//        rlShipmentCost.setVisibility(shipmentMultipleAddressItem.isDetailSubtotalViewStateExpanded() ? View.VISIBLE : View.GONE);
-//
-//        int totalItem = 0;
-//        double totalWeight = 0;
-//        int shippingPrice = 0;
-//        int insurancePrice = 0;
-//        int additionalPrice = 0;
-//        int subTotalPrice = 0;
-//        int totalItemPrice = 0;
-//
-//    }
 
     private boolean isPoliciesVisible(ShipmentMultipleAddressItem shipmentMultipleAddressItem) {
         return shipmentMultipleAddressItem.isProdustHasCasback()

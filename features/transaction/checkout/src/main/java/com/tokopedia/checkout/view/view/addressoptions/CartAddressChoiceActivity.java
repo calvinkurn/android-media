@@ -114,7 +114,7 @@ public class CartAddressChoiceActivity extends BaseCheckoutActivity
 
                 getSupportFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
                 getSupportFragmentManager().beginTransaction()
-                        .add(R.id.parent_view, fragment, fragment.getClass().getSimpleName())
+                        .add(R.id.container, fragment, fragment.getClass().getSimpleName())
                         .commit();
                 break;
 

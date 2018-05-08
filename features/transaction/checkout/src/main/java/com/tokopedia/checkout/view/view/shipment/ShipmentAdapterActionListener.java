@@ -39,4 +39,6 @@ public interface ShipmentAdapterActionListener extends CartAdapterActionListener
 
     void resetTotalPrice();
 
+    void onInsuranceChecked(int position);
+
 }

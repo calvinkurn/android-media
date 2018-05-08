@@ -35,7 +35,7 @@
                 android:id="@+id/rv_address_list"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_below="@id/rl_search_address_container" />
+                android:layout_below="@+id/rl_search_address_container" />
 
             <LinearLayout
                 android:id="@+id/ll_no_result"

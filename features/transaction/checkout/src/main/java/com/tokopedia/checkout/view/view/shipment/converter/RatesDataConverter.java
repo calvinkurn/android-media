@@ -47,13 +47,7 @@ public class RatesDataConverter {
             }
             shipmentDetailData.setTotalQuantity(totalQuantity);
         } else if (shipmentItem instanceof ShipmentMultipleAddressItem) {
-//            ShipmentCartData shipmentCartData = shipmentItem.getShipmentCartData();
             ShipmentMultipleAddressItem shipmentMultipleAddressItem = (ShipmentMultipleAddressItem) shipmentItem;
-//            shipmentCartData.setDestinationAddress(shipmentMultipleAddressItem.getMultipleAddressItemData().getAddressStreet());
-//            shipmentCartData.setDestinationDistrictId(shipmentMultipleAddressItem.getMultipleAddressItemData().getDestinationDistrictId());
-//            shipmentCartData.setDestinationLatitude(shipmentMultipleAddressItem.getMultipleAddressItemData().getLatitude());
-//            shipmentCartData.setDestinationLongitude(shipmentMultipleAddressItem.getMultipleAddressItemData().getLongitude());
-//            shipmentCartData.setDestinationPostalCode(shipmentMultipleAddressItem.getMultipleAddressItemData().getAddressPostalCode());
             shipmentDetailData.setShipmentCartData(shipmentMultipleAddressItem.getShipmentCartData());
         }
         return shipmentDetailData;

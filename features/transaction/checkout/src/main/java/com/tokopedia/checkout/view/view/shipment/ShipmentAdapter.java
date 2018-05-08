@@ -55,6 +55,8 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     private RecipientAddressModel recipientAddressModel;
     private ShipmentCostModel shipmentCostModel;
 
+    private boolean hasShownShowCase;
+
     public ShipmentAdapter(ShipmentAdapterActionListener shipmentAdapterActionListener) {
         this.shipmentAdapterActionListener = shipmentAdapterActionListener;
         this.shipmentDataList = new ArrayList<>();
@@ -92,12 +94,12 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             return new CartPromoSuggestionViewHolder(view, shipmentAdapterActionListener);
         } else if (viewType == ITEM_VIEW_RECIPIENT_ADDRESS) {
             return new ShipmentRecipientAddressViewHolder(view, shipmentAdapterActionListener);
+        } else if (viewType == ITEM_VIEW_SHIPMENT_SINGLE_ADDRESS) {
+            return new ShipmentItemSingleAddressViewHolder(view, parent.getContext(), shipmentAdapterActionListener, this);
+        } else if (viewType == ITEM_VIEW_SHIPMENT_MULTIPLE_ADDRESS) {
+            return new ShipmentItemMultipleAddressViewHolder(view, parent.getContext(), shipmentAdapterActionListener, this);
         } else if (viewType == ITEM_VIEW_SHIPMENT_COST) {
             return new ShipmentCostViewHolder(view, shipmentAdapterActionListener);
-        } else if (viewType == ITEM_VIEW_SHIPMENT_SINGLE_ADDRESS) {
-            return new ShipmentItemSingleAddressViewHolder(view, parent.getContext(), shipmentAdapterActionListener);
-        } else if (viewType == ITEM_VIEW_SHIPMENT_MULTIPLE_ADDRESS) {
-            return new ShipmentItemMultipleAddressViewHolder(view, parent.getContext(), shipmentAdapterActionListener);
         }
         throw new RuntimeException("No view holder type found");
     }
@@ -109,20 +111,20 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
         if (viewType == CartVoucherPromoViewHolder.TYPE_VIEW_PROMO) {
             ((CartVoucherPromoViewHolder) holder).bindData((CartItemPromoHolderData) data, position);
-//            setShowCase(holder.itemView.getContext());
         } else if (viewType == CartPromoSuggestionViewHolder.TYPE_VIEW_PROMO_SUGGESTION) {
             ((CartPromoSuggestionViewHolder) holder).bindData((CartPromoSuggestion) data, position);
         } else if (viewType == ITEM_VIEW_RECIPIENT_ADDRESS) {
             ((ShipmentRecipientAddressViewHolder) holder).bindViewHolder((RecipientAddressModel) data,
                     showCaseObjectList);
-        } else if (viewType == ITEM_VIEW_SHIPMENT_COST) {
-            ((ShipmentCostViewHolder) holder).bindViewHolder((ShipmentCostModel) data);
         } else if (viewType == ITEM_VIEW_SHIPMENT_SINGLE_ADDRESS) {
             ((ShipmentItemSingleAddressViewHolder) holder).bindViewHolder(
                     (ShipmentSingleAddressItem) data, recipientAddressModel, showCaseObjectList);
+            setShowCase(holder.itemView.getContext());
         } else if (viewType == ITEM_VIEW_SHIPMENT_MULTIPLE_ADDRESS) {
             ((ShipmentItemMultipleAddressViewHolder) holder).bindViewHolder(
                     (ShipmentMultipleAddressItem) data, recipientAddressModel, showCaseObjectList);
+        } else if (viewType == ITEM_VIEW_SHIPMENT_COST) {
+            ((ShipmentCostViewHolder) holder).bindViewHolder((ShipmentCostModel) data);
         }
     }
 
@@ -132,7 +134,8 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     }
 
     private void setShowCase(Context context) {
-        if (!ShowCasePreference.hasShown(context, SingleAddressShipmentFragment.class.getName())) {
+        if (!hasShownShowCase && !ShowCasePreference.hasShown(context, SingleAddressShipmentFragment.class.getName())) {
+            hasShownShowCase = true;
             createShowCaseDialog().show((Activity) context,
                     SingleAddressShipmentFragment.class.getName(),
                     showCaseObjectList
@@ -207,7 +210,7 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         }
     }
 
-    public void resetCourier() {
+    private void resetCourier() {
         for (ShipmentData item : shipmentDataList) {
             if (item instanceof ShipmentItem) {
                 ((ShipmentItem) item).setSelectedShipmentDetailData(null);
@@ -246,20 +249,22 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         ShipmentData currentShipmentData = shipmentDataList.get(position);
         if (currentShipmentData instanceof ShipmentItem) {
             if (((ShipmentItem) currentShipmentData).getSelectedShipmentDetailData() != null) {
+                ((ShipmentItem) currentShipmentData).getSelectedShipmentDetailData().setUseInsurance(null);
                 ((ShipmentItem) currentShipmentData).getSelectedShipmentDetailData().setSelectedCourier(courierItemData);
             } else {
                 ShipmentDetailData shipmentDetailData = new ShipmentDetailData();
                 shipmentDetailData.setSelectedCourier(courierItemData);
+                shipmentDetailData.setShipmentCartData(((ShipmentItem) currentShipmentData).getShipmentCartData());
                 ((ShipmentItem) currentShipmentData).setSelectedShipmentDetailData(shipmentDetailData);
             }
-            updateCost();
+            updateShipmentCostModel(position);
             checkDataForCheckout();
         }
+        notifyItemChanged(getItemCount() - 1);
         notifyItemChanged(position);
-        notifyItemChanged(shipmentDataList.size() - 1);
     }
 
-    private void updateCost() {
+    public void updateShipmentCostModel(int position) {
         double totalWeight = 0;
         double totalPrice = 0;
         double additionalFee = 0;
@@ -270,6 +275,7 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         for (ShipmentData shipmentData : shipmentDataList) {
             if (shipmentData instanceof ShipmentItem) {
                 if (((ShipmentItem) shipmentData).getSelectedShipmentDetailData() != null) {
+                    Boolean useInsurance = ((ShipmentItem) shipmentData).getSelectedShipmentDetailData().getUseInsurance();
                     if (shipmentData instanceof ShipmentSingleAddressItem) {
                         ShipmentSingleAddressItem shipmentSingleAddressItem =
                                 (ShipmentSingleAddressItem) shipmentData;
@@ -281,8 +287,8 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                         }
                         shippingFee += shipmentSingleAddressItem.getSelectedShipmentDetailData()
                                 .getSelectedCourier().getDeliveryPrice();
-                        if (shipmentSingleAddressItem.getSelectedShipmentDetailData().getUseInsurance()) {
-                            insuranceFee = shipmentSingleAddressItem.getSelectedShipmentDetailData()
+                        if (useInsurance != null && useInsurance) {
+                            insuranceFee += shipmentSingleAddressItem.getSelectedShipmentDetailData()
                                     .getSelectedCourier().getInsurancePrice();
                         }
                         additionalFee += shipmentSingleAddressItem.getSelectedShipmentDetailData()
@@ -297,7 +303,7 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                         totalItem += Integer.parseInt(shipmentMultipleAddressItem.getMultipleAddressItemData().getProductQty());
                         shippingFee += shipmentMultipleAddressItem.getSelectedShipmentDetailData()
                                 .getSelectedCourier().getDeliveryPrice();
-                        if (shipmentMultipleAddressItem.getSelectedShipmentDetailData().getUseInsurance()) {
+                        if (useInsurance != null && useInsurance) {
                             insuranceFee += shipmentMultipleAddressItem.getSelectedShipmentDetailData()
                                     .getSelectedCourier().getInsurancePrice();
                         }
@@ -320,6 +326,11 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         shipmentCostModel.setInsuranceFee(insuranceFee);
         shipmentCostModel.setTotalPrice(totalPrice);
         shipmentAdapterActionListener.onTotalPaymentChange(shipmentCostModel);
+    }
+
+    public void updateItemAndTotalCost(int position) {
+        notifyItemChanged(getItemCount() - 1);
+        notifyItemChanged(position);
     }
 
 }
