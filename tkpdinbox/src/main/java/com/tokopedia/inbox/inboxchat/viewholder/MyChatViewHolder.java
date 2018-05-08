@@ -12,6 +12,7 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.tkpd.library.utils.KeyboardHandler;
+
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.inbox.R;
@@ -174,17 +175,11 @@ public class MyChatViewHolder extends AbstractViewHolder<MyChatViewModel> {
     }
 
     private SpannableString highlight(Context context, Spanned span, String keyword) {
-        //Get the text from text view and create a spannable string
         SpannableString spannableString = new SpannableString(span);
-
-        //Search for all occurrences of the keyword in the string
         int indexOfKeyword = spannableString.toString().toLowerCase().indexOf(keyword);
 
         while (indexOfKeyword < span.length() && indexOfKeyword >= 0) {
-            //Create a background color span on the keyword
             spannableString.setSpan(new BackgroundColorSpan(MethodChecker.getColor(context,R.color.orange_300)), indexOfKeyword, indexOfKeyword + keyword.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-
-            //Get the next index of the keyword
             indexOfKeyword = spannableString.toString().indexOf(keyword, indexOfKeyword + keyword.length());
         }
 

@@ -11,8 +11,6 @@ public class BaseChatViewModel {
     private String fromRole;
     private String toUid;
     private MessageViewModel message;
-    private String startTime;
-    private String imageUri;
     private String attachmentId;
     private String attachmentType;
     private FallbackAttachmentViewModel fallbackAttachment;
@@ -23,8 +21,6 @@ public class BaseChatViewModel {
                              String fromRole,
                              String toUid,
                              MessageViewModel message,
-                             String startTime,
-                             String imageUri,
                              String attachmentId,
                              String attachmentType,
                              FallbackAttachmentViewModel fallbackAttachment) {
@@ -34,8 +30,6 @@ public class BaseChatViewModel {
         this.fromRole = fromRole;
         this.toUid = toUid;
         this.message = message;
-        this.startTime = startTime;
-        this.imageUri = imageUri;
         this.attachmentId = attachmentId;
         this.attachmentType = attachmentType;
         this.fallbackAttachment = fallbackAttachment;
@@ -63,14 +57,6 @@ public class BaseChatViewModel {
 
     public MessageViewModel getMessage() {
         return message;
-    }
-
-    public String getStartTime() {
-        return startTime;
-    }
-
-    public String getImageUri() {
-        return imageUri;
     }
 
     public String getAttachmentId() {

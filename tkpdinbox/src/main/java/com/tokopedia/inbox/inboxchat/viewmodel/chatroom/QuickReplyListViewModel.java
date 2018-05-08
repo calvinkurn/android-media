@@ -2,9 +2,9 @@ package com.tokopedia.inbox.inboxchat.viewmodel.chatroom;
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.inbox.inboxchat.adapter.ChatRoomTypeFactory;
-import com.tokopedia.inbox.inboxchat.domain.model.reply.FallbackAttachment;
 import com.tokopedia.inbox.inboxchat.domain.model.websocket.BaseChatViewModel;
-import com.tokopedia.inbox.inboxchat.domain.model.websocket.Message;
+import com.tokopedia.inbox.inboxchat.domain.model.websocket.FallbackAttachmentViewModel;
+import com.tokopedia.inbox.inboxchat.domain.model.websocket.MessageViewModel;
 
 import java.util.List;
 
@@ -12,24 +12,23 @@ import java.util.List;
  * @author by yfsx on 08/05/18.
  */
 
-public class QuickReplyListViewModel implements Visitable<ChatRoomTypeFactory> {
+public class QuickReplyListViewModel extends BaseChatViewModel implements
+        Visitable<ChatRoomTypeFactory> {
 
     public List<QuickReplyViewModel> quickReplies;
 
-    public QuickReplyListViewModel(int msgId,
-                                   int fromUid,
+    public QuickReplyListViewModel(String msgId,
+                                   String fromUid,
                                    String from,
                                    String fromRole,
-                                   int toUid,
-                                   Message message,
-                                   String startTime,
-                                   String imageUri,
+                                   String toUid,
+                                   MessageViewModel message,
                                    String attachmentId,
                                    String attachmentType,
-                                   FallbackAttachment fallbackAttachment,
+                                   FallbackAttachmentViewModel fallbackAttachment,
                                    List<QuickReplyViewModel> quickReplies) {
-//        super(msgId, fromUid, from, fromRole, toUid, message, startTime, imageUri,
-//                attachmentId, attachmentType, fallbackAttachment);
+        super(msgId, fromUid, from, fromRole, toUid, message,
+                attachmentId, attachmentType, fallbackAttachment);
         this.quickReplies = quickReplies;
     }
 

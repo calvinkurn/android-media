@@ -31,7 +31,7 @@ import com.tokopedia.inbox.inboxchat.viewmodel.chatroom.TimeMachineChatModel;
  * Created by stevenfredian on 9/27/17.
  */
 
-public class ChatRoomTypeFactoryImpl extends BaseAdapterTypeFactory implements ChatRoomTypeFactory{
+public class ChatRoomTypeFactoryImpl extends BaseAdapterTypeFactory implements ChatRoomTypeFactory {
 
     ChatRoomContract.View viewListener;
 
@@ -79,6 +79,7 @@ public class ChatRoomTypeFactoryImpl extends BaseAdapterTypeFactory implements C
         return AttachedInvoiceSentViewHolder.LAYOUT;
     }
 
+
     @Override
     public int type(AttachInvoiceSelectionViewModel attachInvoiceSelectionViewModel) {
         return AttachedInvoiceSelectionViewHolder.LAYOUT;
@@ -107,12 +108,12 @@ public class ChatRoomTypeFactoryImpl extends BaseAdapterTypeFactory implements C
         else if (type == ThumbnailChatViewHolder.LAYOUT)
             viewHolder = new ThumbnailChatViewHolder(view, viewListener);
         else if (type == AttachedProductViewHolder.LAYOUT)
-            viewHolder = new AttachedProductViewHolder(view,viewListener);
-        else if(type == AttachedInvoiceSentViewHolder.LAYOUT)
+            viewHolder = new AttachedProductViewHolder(view, viewListener);
+        else if (type == AttachedInvoiceSentViewHolder.LAYOUT)
             viewHolder = new AttachedInvoiceSentViewHolder(view);
-        else if(type == AttachedInvoiceSelectionViewHolder.LAYOUT)
+        else if (type == AttachedInvoiceSelectionViewHolder.LAYOUT)
             viewHolder = new AttachedInvoiceSelectionViewHolder(view, viewListener);
-        else if(type == QuickReplyViewHolder.LAYOUT)
+        else if (type == QuickReplyViewHolder.LAYOUT)
             viewHolder = new QuickReplyViewHolder(view);
         else
             return super.createViewHolder(view, type);
