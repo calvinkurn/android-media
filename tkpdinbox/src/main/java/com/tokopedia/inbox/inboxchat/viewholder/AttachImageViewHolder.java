@@ -1,11 +1,10 @@
 package com.tokopedia.inbox.inboxchat.viewholder;
 
 import android.support.annotation.LayoutRes;
-import android.view.Gravity;
 import android.view.View;
 
-import com.tkpd.library.utils.ImageHandler;
-import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
+import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
+import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.core.customwidget.SquareImageView;
 import com.tokopedia.inbox.R;
 import com.tokopedia.inbox.inboxchat.viewmodel.AttachImageModel;

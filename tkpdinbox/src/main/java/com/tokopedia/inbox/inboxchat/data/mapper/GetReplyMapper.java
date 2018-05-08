@@ -2,8 +2,8 @@ package com.tokopedia.inbox.inboxchat.data.mapper;
 
 import android.text.TextUtils;
 
+import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.core.app.MainApplication;
-import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.core.network.ErrorMessageException;
 import com.tokopedia.core.network.retrofit.response.ErrorHandler;
 import com.tokopedia.core.network.retrofit.response.TkpdResponse;

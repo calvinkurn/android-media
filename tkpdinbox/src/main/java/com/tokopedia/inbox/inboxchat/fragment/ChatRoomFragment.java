@@ -85,6 +85,7 @@ import com.tokopedia.inbox.inboxchat.domain.model.reply.AttachmentInvoice;
 import com.tokopedia.inbox.inboxchat.domain.model.reply.AttachmentInvoiceAttributes;
 import com.tokopedia.inbox.inboxchat.domain.model.reply.AttachmentProductProfile;
 import com.tokopedia.inbox.inboxchat.domain.model.replyaction.ReplyActionData;
+import com.tokopedia.inbox.inboxchat.domain.model.websocket.BaseChatViewModel;
 import com.tokopedia.inbox.inboxchat.domain.model.websocket.WebSocketResponse;
 import com.tokopedia.inbox.inboxchat.helper.AttachmentChatHelper;
 import com.tokopedia.inbox.inboxchat.presenter.ChatRoomContract;
@@ -414,7 +415,7 @@ public class ChatRoomFragment extends BaseDaggerFragment
                 presenter.getAttachProductDialog(
                         getArguments().getString(ChatRoomActivity
                                 .PARAM_SENDER_ID, ""),
-                        getArguments().getString(ChatRoomActivity.PARAM_SENDER_NAME, ""),
+                        getArguments().getString(PARAM_SENDER_NAME, ""),
                         getArguments().getString(PARAM_SENDER_ROLE, "")
                 );
             }
@@ -1048,6 +1049,21 @@ public class ChatRoomFragment extends BaseDaggerFragment
                 break;
         }
 
+    }
+
+    @Override
+    public void onReceiveMessage(BaseChatViewModel message) {
+//        if(message instanceof QuickReplyListViewModel){
+//            showQuickReplyView();
+//        }
+    }
+
+    private void showQuickReplyView() {
+        //TODO NISIE : Show Quick Reply View
+    }
+
+    private void hideQuickReplyView(){
+        //TODO NISIE : Hide Quick Reply View
     }
 
     @Override

@@ -1,5 +1,6 @@
 package com.tokopedia.inbox.inboxchat;
 
+import com.tokopedia.inbox.inboxchat.domain.model.websocket.BaseChatViewModel;
 import com.tokopedia.inbox.inboxchat.domain.model.websocket.WebSocketResponse;
 
 /**
@@ -12,4 +13,6 @@ public interface WebSocketInterface {
     void onErrorWebSocket();
 
     void onOpenWebSocket();
+
+    void onReceiveMessage(BaseChatViewModel message);
 }
