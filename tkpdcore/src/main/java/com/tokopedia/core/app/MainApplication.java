@@ -15,6 +15,8 @@ import android.support.v7.app.AppCompatDelegate;
 
 import com.crashlytics.android.Crashlytics;
 import com.facebook.stetho.Stetho;
+import com.google.firebase.FirebaseApp;
+import com.google.firebase.FirebaseOptions;
 import com.raizlabs.android.dbflow.config.FlowConfig;
 import com.raizlabs.android.dbflow.config.FlowLog;
 import com.raizlabs.android.dbflow.config.FlowManager;
@@ -346,5 +348,12 @@ public abstract class MainApplication extends BaseMainApplication{
         if (SessionHandler.isV4Login(this)) {
             BranchSdkUtils.sendIdentityEvent(SessionHandler.getLoginID(this));
         }
+    }
+
+    private void initFirebase() {
+        FirebaseOptions.Builder builder = new FirebaseOptions.Builder();
+        builder.setApplicationId("1:692092518182:android:9bb64c665e7c68ee");
+        builder.setApiKey("AIzaSyDan4qOIiANywQFOk-AG-WhRxsEMVqfcbg");
+        FirebaseApp.initializeApp(this, builder.build());
     }
 }
