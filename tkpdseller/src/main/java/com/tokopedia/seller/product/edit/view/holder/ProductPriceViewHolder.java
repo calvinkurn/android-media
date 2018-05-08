@@ -1,7 +1,9 @@
 package com.tokopedia.seller.product.edit.view.holder;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.StringRes;
@@ -11,7 +13,6 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
-import android.util.Pair;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.EditText;
@@ -33,6 +34,7 @@ import com.tokopedia.seller.common.widget.LabelView;
 import com.tokopedia.seller.product.edit.constant.CurrencyTypeDef;
 import com.tokopedia.seller.product.edit.utils.ProductPriceRangeUtils;
 import com.tokopedia.seller.product.edit.view.adapter.WholesaleAdapter;
+import com.tokopedia.seller.product.edit.view.fragment.ProductAddWholesaleFragment;
 import com.tokopedia.seller.product.edit.view.model.edit.ProductViewModel;
 import com.tokopedia.seller.product.edit.view.model.edit.ProductWholesaleViewModel;
 import com.tokopedia.seller.product.edit.view.model.wholesale.WholesaleModel;
@@ -50,6 +52,7 @@ public class ProductPriceViewHolder extends ProductViewHolder
     public static final int REQUEST_CODE_GET_PRODUCT_WHOLESALE = 100;
     private static final int MAX_WHOLESALE = 5;
 
+    List<ProductWholesaleViewModel> productWholesaleViewModels;
     private WholesaleAdapter wholesaleAdapter;
     private ImageButton editPriceImageButton;
     private SpinnerCounterInputView priceSpinnerCounterInputView;
@@ -222,11 +225,13 @@ public class ProductPriceViewHolder extends ProductViewHolder
 
                 Context context = wholesaleLabelView.getContext();
 
-                if(model.getProductWholesale().isEmpty()){
-                    wholesaleLabelView.setContent(context.getString(R.string.product_label_add));
-                }
-                else {
-                    wholesaleLabelView.setContent(String.valueOf(model.getProductWholesale().size()) + " " + context.getString(R.string.product_label_price));
+                if (model.getProductWholesale() != null){
+                    if(model.getProductWholesale().isEmpty()){
+                        wholesaleLabelView.setContent(context.getString(R.string.product_label_add));
+                    }
+                    else {
+                        wholesaleLabelView.setContent(String.valueOf(model.getProductWholesale().size()) + " " + context.getString(R.string.product_label_price));
+                    }
                 }
 
 
@@ -276,7 +281,7 @@ public class ProductPriceViewHolder extends ProductViewHolder
     }
 
     public void setWholesalePrice(List<ProductWholesaleViewModel> wholesalePrice) {
-        // parse to wholesaleadapter
+        productWholesaleViewModels = wholesalePrice;
         wholesaleAdapter.addAllWholeSalePrice(wholesalePrice);
         updateWholesaleButton();
     }
@@ -348,11 +353,7 @@ public class ProductPriceViewHolder extends ProductViewHolder
 
     public @NonNull
     List<ProductWholesaleViewModel> getProductWholesaleViewModels() {
-        if (wholesaleExpandableOptionSwitch.getVisibility() != View.VISIBLE ||
-                !wholesaleExpandableOptionSwitch.isExpanded()) {
-            return new ArrayList<>();
-        }
-        return wholesaleAdapter.getProductWholesaleViewModels();
+        return productWholesaleViewModels;
     }
 
     private boolean isPriceValid() {
@@ -445,6 +446,18 @@ public class ProductPriceViewHolder extends ProductViewHolder
         this.officialStore = officialStore;
         if (getPriceValue() > 0) {
             setPriceValue(priceSpinnerCounterInputView.getCounterValue());
+        }
+    }
+
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        switch (requestCode) {
+            case REQUEST_CODE_GET_PRODUCT_WHOLESALE:
+                if (resultCode == Activity.RESULT_OK) {
+                    ArrayList<ProductWholesaleViewModel> productWholesaleViewModelArrayList = data.getParcelableArrayListExtra(ProductAddWholesaleFragment.EXTRA_PRODUCT_WHOLESALE);
+                    wholesaleLabelView.setContent(String.valueOf(productWholesaleViewModelArrayList.size()) + " " + editPriceImageButton.getContext().getString(R.string.product_label_price));
+                    productWholesaleViewModels = productWholesaleViewModelArrayList;
+                }
+                break;
         }
     }
 

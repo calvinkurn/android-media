@@ -1,5 +1,6 @@
 package com.tokopedia.seller.product.edit.view.fragment;
 
+import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -15,6 +16,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.seller.R;
@@ -33,11 +35,16 @@ import java.util.List;
 
 public class ProductAddWholesaleFragment extends BaseDaggerFragment implements WholesaleAddAdapter.Listener {
 
+    public static final String EXTRA_PRODUCT_WHOLESALE = "EXTRA_PRODUCT_WHOLESALE";
     private static final int MAX_WHOLESALE = 5;
     private WholesaleAddAdapter wholesaleAdapter;
     private TextView textViewAddWholesale, textMainPrice;
+    private Button buttonSave;
     private ArrayList<ProductWholesaleViewModel> productWholesaleViewModelList;
     private double productPrice;
+    private boolean officialStore;
+    @CurrencyTypeDef
+    private int currencyType;
 
     public static ProductAddWholesaleFragment newInstance() {
         Bundle args = new Bundle();
@@ -65,6 +72,8 @@ public class ProductAddWholesaleFragment extends BaseDaggerFragment implements W
 
         productWholesaleViewModelList = activityIntent.getParcelableArrayListExtra(ProductAddWholesaleActivity.EXTRA_PRODUCT_WHOLESALE_LIST);
         productPrice = activityIntent.getDoubleExtra(ProductAddWholesaleActivity.EXTRA_PRODUCT_MAIN_PRICE, 0);
+        officialStore = activityIntent.getBooleanExtra(ProductAddWholesaleActivity.EXTRA_OFFICIAL_STORE, false);
+        initCurrency(activityIntent.getIntExtra(ProductAddWholesaleActivity.EXTRA_PRODUCT_CURRENCY, 1));
     }
 
     @Nullable
@@ -74,10 +83,13 @@ public class ProductAddWholesaleFragment extends BaseDaggerFragment implements W
 
         RecyclerView recyclerViewWholesale = root.findViewById(R.id.recycler_view_wholesale);
         recyclerViewWholesale.setLayoutManager(new LinearLayoutManager(recyclerViewWholesale.getContext(), LinearLayoutManager.VERTICAL, false));
-        wholesaleAdapter = new WholesaleAddAdapter();
+        wholesaleAdapter = new WholesaleAddAdapter(productPrice, officialStore);
         wholesaleAdapter.setListener(this);
+        wholesaleAdapter.setHasStableIds(true);
         recyclerViewWholesale.setAdapter(wholesaleAdapter);
+        recyclerViewWholesale.setNestedScrollingEnabled(false);
 
+        buttonSave =  root.findViewById(R.id.button_save);
         textMainPrice = root.findViewById(R.id.text_main_price);
 
         textViewAddWholesale = root.findViewById(R.id.text_view_add_wholesale);
@@ -85,18 +97,34 @@ public class ProductAddWholesaleFragment extends BaseDaggerFragment implements W
             @Override
             public void onClick(View v) {
                 WholesaleModel lastItem = wholesaleAdapter.getLastItem();
-                WholesaleModel newWholesale = new WholesaleModel(lastItem.getQtyMin() + 1,
-                        lastItem.getQtyPrice() - 1);
+                WholesaleModel newWholesale;
+                switch (currencyType) {
+                    case CurrencyTypeDef.TYPE_USD:
+                        newWholesale = new WholesaleModel(2, productPrice - 0.01);
+                        if(lastItem!=null)
+                            newWholesale = new WholesaleModel(lastItem.getQtyMin() + 1, lastItem.getQtyPrice() - 0.01);
+                        break;
+                    default:
+                    case CurrencyTypeDef.TYPE_IDR:
+                        newWholesale = new WholesaleModel(2, productPrice - 1);
+                        if(lastItem!=null)
+                            newWholesale = new WholesaleModel(lastItem.getQtyMin() + 1, lastItem.getQtyPrice() - 1);
+                        break;
+
+                }
+
                 wholesaleAdapter.addItem(newWholesale);
                 updateWholesaleButton();
             }
         });
 
-        Button buttonSave = root.findViewById(R.id.button_save);
         buttonSave.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                Intent intent = new Intent();
+                intent.putParcelableArrayListExtra(EXTRA_PRODUCT_WHOLESALE, wholesaleAdapter.getProductWholesaleViewModels());
+                getActivity().setResult(Activity.RESULT_OK, intent);
+                getActivity().finish();
             }
         });
 
@@ -112,11 +140,25 @@ public class ProductAddWholesaleFragment extends BaseDaggerFragment implements W
 
     @Override
     public int getCurrencyType() {
-        return CurrencyTypeDef.TYPE_IDR;
+        return currencyType;
+    }
+
+    private void initCurrency(@CurrencyTypeDef int currencyType){
+        switch (currencyType) {
+            case CurrencyTypeDef.TYPE_USD:
+                this.currencyType = CurrencyTypeDef.TYPE_USD;
+                break;
+            default:
+            case CurrencyTypeDef.TYPE_IDR:
+                this.currencyType = CurrencyTypeDef.TYPE_IDR;
+                break;
+        }
     }
 
     public void setWholesalePrice(List<ProductWholesaleViewModel> wholesalePrice) {
-        wholesaleAdapter.addAllWholeSalePrice(wholesalePrice);
+        if(wholesalePrice!=null)
+            wholesaleAdapter.addAllWholeSalePrice(wholesalePrice);
+
         updateWholesaleButton();
     }
 
@@ -127,6 +169,14 @@ public class ProductAddWholesaleFragment extends BaseDaggerFragment implements W
     @Override
     public void notifySizeChanged(int currentSize) {
         updateWholesaleButton();
+    }
+
+    @Override
+    public void setButtonSubmit(boolean state) {
+        if(state)
+            buttonSave.setEnabled(true);
+        else
+            buttonSave.setEnabled(false);
     }
 
     @Override
@@ -147,6 +197,7 @@ public class ProductAddWholesaleFragment extends BaseDaggerFragment implements W
                         public void onClick(DialogInterface dialogInterface, int i) {
                             wholesaleAdapter.removeAll();
                             wholesaleAdapter.notifyDataSetChanged();
+                            notifySizeChanged(wholesaleAdapter.getItemSize());
                         }
                     }).setNegativeButton(getString(R.string.label_cancel), new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface arg0, int arg1) {

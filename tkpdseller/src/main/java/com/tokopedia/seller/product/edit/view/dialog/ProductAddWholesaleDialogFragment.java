@@ -128,6 +128,7 @@ public class ProductAddWholesaleDialogFragment extends DialogFragment {
                 isMinQuantityValid(minQuantity);
             }
         });
+
         isMinQuantityValid(minQuantityCounterInputView.getDoubleValue());
 
         switch (currencyType) {

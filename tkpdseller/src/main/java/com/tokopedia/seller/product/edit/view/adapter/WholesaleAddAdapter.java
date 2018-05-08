@@ -3,14 +3,14 @@ package com.tokopedia.seller.product.edit.view.adapter;
 import android.support.design.widget.TextInputLayout;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
-import com.tkpd.library.utils.CurrencyFormatHelper;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
-import com.tokopedia.core.customadapter.BaseLinearRecyclerViewAdapter;
+import com.tokopedia.design.text.watcher.NumberTextWatcher;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.common.widget.PrefixEditText;
 import com.tokopedia.seller.product.edit.constant.CurrencyTypeDef;
@@ -18,6 +18,7 @@ import com.tokopedia.seller.product.edit.utils.ProductPriceRangeUtils;
 import com.tokopedia.seller.product.edit.view.model.edit.ProductWholesaleViewModel;
 import com.tokopedia.seller.product.edit.view.model.wholesale.WholesaleModel;
 import com.tokopedia.seller.util.CurrencyIdrTextWatcher;
+import com.tokopedia.seller.util.CurrencyUsdTextWatcher;
 
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
@@ -30,14 +31,19 @@ import java.util.concurrent.CopyOnWriteArrayList;
  * Created by yoshua on 02/05/18.
  */
 
-public class WholesaleAddAdapter extends BaseLinearRecyclerViewAdapter {
+public class WholesaleAddAdapter extends RecyclerView.Adapter<WholesaleAddAdapter.ViewHolder> {
+
     private List<WholesaleModel> wholesaleModels;
     private Listener listener;
+    private int currentPositionFocusPrice = 0;
+    private int currentPositionFocusQty = -1;
+    private double mainPrice;
+    private boolean officialStore;
 
-    WholesaleModel currentModel;
-
-    public WholesaleAddAdapter() {
+    public WholesaleAddAdapter(double mainPrice, boolean officialStore) {
         wholesaleModels = new CopyOnWriteArrayList<>();
+        this.mainPrice = mainPrice;
+        this.officialStore = officialStore;
     }
 
     public void setListener(Listener listener) {
@@ -45,140 +51,24 @@ public class WholesaleAddAdapter extends BaseLinearRecyclerViewAdapter {
     }
 
     @Override
-    public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
-        switch (viewType) {
-            case WholesaleModel.TYPE:
-                View itemLayoutView = LayoutInflater.from(viewGroup.getContext())
-                        .inflate(R.layout.item_product_add_wholesale, viewGroup, false);
-                return new ViewHolder(itemLayoutView);
-            default:
-                return super.onCreateViewHolder(viewGroup, viewType);
-        }
+    public WholesaleAddAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        LayoutInflater inflater = LayoutInflater.from(
+                parent.getContext());
+        View v = inflater.inflate(R.layout.item_product_add_wholesale, parent, false);
+        return new ViewHolder(v);
     }
 
     @Override
-    public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-        switch (getItemViewType(position)) {
-            case WholesaleModel.TYPE:
-                ((ViewHolder) holder).bindData(
-                        wholesaleModels.get(position)
-                );
-                break;
-            default:
-                super.onBindViewHolder(holder, position);
-                break;
-        }
+    public void onBindViewHolder(ViewHolder holder, int position) {
+        holder.setEditTextValue(wholesaleModels.get(position));
+        holder.isPriceValid(wholesaleModels.get(position), position);
+        holder.isQtyValid(wholesaleModels.get(position), position);
+        holder.initFocus(position);
+        holder.setEditTextState(wholesaleModels.get(position));
+        setButtonSaveState();
     }
 
-    @Override
-    public int getItemViewType(int position) {
-        if (isLastItemPosition(position) && (wholesaleModels.isEmpty() || isLoading() || isRetry())) {
-            return super.getItemViewType(position);
-        } else {
-            return wholesaleModels.get(position).getType();
-        }
-    }
-
-    @Override
-    public int getItemCount() {
-        return wholesaleModels.size() + super.getItemCount();
-    }
-
-    public int getItemSize() {
-        return wholesaleModels.size();
-    }
-
-    public synchronized int addItem(WholesaleModel wholesaleModel) {
-        wholesaleModels.add(wholesaleModel);
-        notifyItemInserted(wholesaleModels.size() - 1);
-        return wholesaleModels.size() - 1;
-    }
-
-    public synchronized void removeItem(int position) {
-
-        if (isWithinDataset(position)) {
-            wholesaleModels.remove(position);
-        }
-
-        notifyItemRemoved(position);
-
-        if (listener != null) {
-            listener.notifySizeChanged(wholesaleModels.size());
-        }
-    }
-
-    public synchronized void removeAll() {
-        wholesaleModels.clear();
-    }
-
-    protected WholesaleModel getItem(int prevPosition) {
-        if (isWithinDataset(prevPosition)) {
-            return wholesaleModels.get(prevPosition);
-        }
-        return null;
-    }
-
-    private boolean isWithinDataset(int position) {
-        return position >= 0 && position <= wholesaleModels.size() - 1;
-    }
-
-    private boolean isLastItemPosition(int position) {
-        return position == wholesaleModels.size();
-    }
-
-    public WholesaleModel getLastItem() {
-        if (isWithinDataset(wholesaleModels.size() - 1)) {
-            return getItem(wholesaleModels.size() - 1);
-        }
-        return null;
-    }
-
-    public void addAllWholeSalePrice(List<ProductWholesaleViewModel> wholesalePrice) {
-        for (int i = 0; i < wholesalePrice.size(); i++) {
-
-            WholesaleModel wholesaleModel = new WholesaleModel(
-                    wholesalePrice.get(i).getMinQty(),
-                    wholesalePrice.get(i).getPriceValue()
-            );
-
-            wholesaleModels.add(wholesaleModel);
-        }
-        notifyDataSetChanged();
-    }
-
-    public void clearAll() {
-        wholesaleModels.clear();
-    }
-
-    public synchronized List<ProductWholesaleViewModel> getProductWholesaleViewModels() {
-        List<ProductWholesaleViewModel> productWholesaleViewModels =
-                new ArrayList<>();
-        for (int i = 0; i < wholesaleModels.size(); i++) {
-            ProductWholesaleViewModel productWholesaleViewModel
-                    = new ProductWholesaleViewModel();
-            WholesaleModel wholesaleModel = wholesaleModels.get(i);
-            productWholesaleViewModel.setMinQty(wholesaleModel.getQtyMin());
-            productWholesaleViewModel.setPriceValue(wholesaleModel.getQtyPrice());
-
-            productWholesaleViewModels.add(productWholesaleViewModel);
-        }
-        return productWholesaleViewModels;
-    }
-
-    public interface Listener {
-        /**
-         * notify data size changed
-         *
-         * @param currentSize size of {@link WholesaleAddAdapter#wholesaleModels} not included
-         *                    parent adapter size.
-         */
-        void notifySizeChanged(int currentSize);
-
-        @CurrencyTypeDef
-        int getCurrencyType();
-    }
-
-    private class ViewHolder extends RecyclerView.ViewHolder {
+    public class ViewHolder extends RecyclerView.ViewHolder {
 
         private final PrefixEditText etRangeWholesale;
         private final TextInputLayout tilRangeWholesale;
@@ -186,7 +76,6 @@ public class WholesaleAddAdapter extends BaseLinearRecyclerViewAdapter {
         private final PrefixEditText etWholeSalePrice;
         private final TextInputLayout tilWholeSalePrice;
         private final Locale dollarLocale = Locale.US;
-        private final Locale idrLocale = new Locale("in", "ID");
         private NumberFormat formatter;
 
         public ViewHolder(View itemView) {
@@ -207,12 +96,140 @@ public class WholesaleAddAdapter extends BaseLinearRecyclerViewAdapter {
             etRangeWholesale.setPrefix(MethodChecker.fromHtml("&#8805; &emsp;").toString());
             etWholeSalePrice.setPrefix(MethodChecker.fromHtml("Rp ").toString());
 
+            TextWatcher textWatcher = new CurrencyIdrTextWatcher(etWholeSalePrice);
+            switch (listener.getCurrencyType()) {
+                case CurrencyTypeDef.TYPE_USD:
+                    textWatcher = new CurrencyUsdTextWatcher(etWholeSalePrice) {
+                        @Override
+                        public void onNumberChanged(double number) {
+                            setValueAndRefresh(number);
+                        }
+                    };
+                    break;
+                case CurrencyTypeDef.TYPE_IDR:
+                    textWatcher = new CurrencyIdrTextWatcher(etWholeSalePrice) {
+                        @Override
+                        public void onNumberChanged(double number) {
+                            setValueAndRefresh(number);
+                        }
+                    };
+                    break;
+            }
+            etWholeSalePrice.addTextChangedListener(textWatcher);
+
+            etWholeSalePrice.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+                @Override
+                public void onFocusChange(View v, boolean hasFocus) {
+                    if (hasFocus) {
+                        setFocusFalse();
+                        wholesaleModels.get(getAdapterPosition()).setFocusPrice(true);
+                    }
+                }
+            });
+
+            etRangeWholesale.addTextChangedListener(new NumberTextWatcher(etRangeWholesale){
+                @Override
+                public void onNumberChanged(double number) {
+                    if(wholesaleModels.get(getAdapterPosition()).isFocusQty()){
+                        wholesaleModels.get(getAdapterPosition()).setQtyMin((int)number);
+                        wholesaleModels.get(getAdapterPosition()).setFocusQty(false);
+                        currentPositionFocusQty = getAdapterPosition();
+                        currentPositionFocusPrice = -1;
+                        etRangeWholesale.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                notifyDataSetChanged();
+                            }
+                        });
+                    }
+                }
+            });
+
+            etRangeWholesale.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+                @Override
+                public void onFocusChange(View v, boolean hasFocus) {
+                    if (hasFocus) {
+                        setFocusFalse();
+                        wholesaleModels.get(getAdapterPosition()).setFocusQty(true);
+                    }
+                }
+            });
+
             imageWholesale.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     removeItem(getAdapterPosition());
                 }
             });
+        }
+
+        private void setValueAndRefresh(double number){
+            if (wholesaleModels.get(getAdapterPosition()).isFocusPrice()) {
+                wholesaleModels.get(getAdapterPosition()).setQtyPrice(number);
+                wholesaleModels.get(getAdapterPosition()).setFocusPrice(false);
+                currentPositionFocusPrice = getAdapterPosition();
+                currentPositionFocusQty = -1;
+                etWholeSalePrice.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        notifyDataSetChanged();
+                    }
+                });
+            }
+        }
+
+        private void initFocus(int position){
+            if(currentPositionFocusPrice == position){
+                wholesaleModels.get(position).setFocusPrice(true);
+            }
+            if(currentPositionFocusQty == position){
+                wholesaleModels.get(position).setFocusQty(true);
+            }
+
+            if(wholesaleModels.get(position).isFocusPrice()){
+                etWholeSalePrice.requestFocus();
+            }
+            if(wholesaleModels.get(position).isFocusQty()){
+                etRangeWholesale.requestFocus();
+            }
+        }
+
+        private void setFocusFalse(){
+            for(int i = 0; i < getItemSize(); i++){
+                wholesaleModels.get(i).setFocusQty(false);
+                wholesaleModels.get(i).setFocusPrice(false);
+            }
+        }
+
+        private void setEditTextValue(WholesaleModel model){
+            NumberFormat quantityNumberFormat = new DecimalFormat();
+            quantityNumberFormat.setMinimumIntegerDigits(0);
+            etRangeWholesale.setText(formatValue((double)model.getQtyMin()));
+            etWholeSalePrice.setText(formatValue(model.getQtyPrice()));
+        }
+
+        private void setEditTextState(WholesaleModel model){
+            if(!TextUtils.isEmpty(model.getStatusPrice())){
+                setErrorEditText(tilWholeSalePrice, model.getStatusPrice());
+            } else {
+                removeErrorEdittext(tilWholeSalePrice);
+            }
+
+            if(!TextUtils.isEmpty(model.getStatusQty())){
+                setErrorEditText(tilRangeWholesale, model.getStatusQty());
+            } else {
+                removeErrorEdittext(tilRangeWholesale);
+            }
+        }
+
+        private void removeErrorEdittext(TextInputLayout textInputLayout){
+            textInputLayout.setError(null);
+            textInputLayout.setErrorEnabled(false);
+        }
+
+        private void setErrorEditText(TextInputLayout textInputLayout, String message){
+            textInputLayout.setErrorEnabled(true);
+            textInputLayout.setError(message);
         }
 
         protected void formatter() {
@@ -228,75 +245,139 @@ public class WholesaleAddAdapter extends BaseLinearRecyclerViewAdapter {
             }
         }
 
-        public void bindData(final WholesaleModel wholesaleModel) {
-            formatter();
-            NumberFormat quantityNumberFormat = new DecimalFormat();
-            quantityNumberFormat.setMinimumIntegerDigits(0);
-            String qtyMin = quantityNumberFormat.format(wholesaleModel.getQtyMin());
-            etRangeWholesale.setText(qtyMin);
-            String qtyPrice = wholesaleModel.getQtyPrice() + "";
-            etWholeSalePrice.setText(formatValue(qtyPrice));
-            etWholeSalePrice.addTextChangedListener(new CurrencyIdrTextWatcher(etWholeSalePrice){
-                @Override
-                public void onNumberChanged(double number) {
-                    wholesaleModel.setQtyPrice(number);
-                    isPriceValid(wholesaleModel, getAdapterPosition(), tilWholeSalePrice);
-                }
-            });
-            if(!TextUtils.isEmpty(wholesaleModel.getStatus())){
-                tilWholeSalePrice.setErrorEnabled(true);
-                tilWholeSalePrice.setError(wholesaleModel.getStatus());
-            }
-        }
-
-        private String formatValue(String s) {
-            String valueString = CurrencyFormatHelper.removeCurrencyPrefix(s);
-            valueString = CurrencyFormatHelper.RemoveNonNumeric(valueString);
-            if (TextUtils.isEmpty(valueString)) {
-                return null;
-            }
-            double value = Double.parseDouble(valueString);
+        private String formatValue(Double value) {
             return formatter.format(value);
         }
-    }
 
-    protected boolean isPriceValid(WholesaleModel model, int position, TextInputLayout tilWholeSalePrice) {
-        if (!ProductPriceRangeUtils.isPriceValid(model.getQtyPrice(), listener.getCurrencyType(), false)) {
-            tilWholeSalePrice.setErrorEnabled(true);
-            tilWholeSalePrice.setError(tilWholeSalePrice.getContext().getString(R.string.product_error_product_price_not_valid,
-                    ProductPriceRangeUtils.getMinPriceString(listener.getCurrencyType(), false),
-                    ProductPriceRangeUtils.getMaxPriceString(listener.getCurrencyType(), false)));
-            setStatusElementAfterCurrent(position, tilWholeSalePrice, "perbaiki dulu atasnya");
-            return false;
-        }
-
-        if(position > 0){
-            if (model.getQtyPrice() >= getItem(position-1).getQtyPrice()) {
-                tilWholeSalePrice.setErrorEnabled(true);
-                tilWholeSalePrice.setError(tilWholeSalePrice.getContext().getString(R.string.product_price_should_be_cheaper_than_previous_wholesale_price));
-                setStatusElementAfterCurrent(position, tilWholeSalePrice,"perbaiki dulu atasnya");
-                return false;
+        private void isPriceValid(WholesaleModel model, int position) {
+            if (!ProductPriceRangeUtils.isPriceValid(model.getQtyPrice(), listener.getCurrencyType(), officialStore)) {
+                model.setStatusPrice(tilWholeSalePrice.getContext().getString(R.string.product_error_product_price_not_valid,
+                        ProductPriceRangeUtils.getMinPriceString(listener.getCurrencyType(), officialStore),
+                        ProductPriceRangeUtils.getMaxPriceString(listener.getCurrencyType(), officialStore)));
+                return;
             }
-            else{
-                tilWholeSalePrice.setError(null);
-                tilWholeSalePrice.setErrorEnabled(false);
-                setStatusElementAfterCurrent(position, tilWholeSalePrice,"");
-            }
-        }
-
-        return true;
-    }
-
-    private void setStatusElementAfterCurrent(int position, TextInputLayout tilWholeSalePrice, String message){
-        for(int i = position+1; i < getItemSize(); i++){
-            wholesaleModels.get(i).setStatus(message);
-            final int j = i;
-            tilWholeSalePrice.post(new Runnable() {
-                @Override
-                public void run() {
-                    notifyItemChanged(j);
+            if(position > 0){
+                if(!getItem(position-1).getStatusPrice().equalsIgnoreCase("")){
+                    model.setStatusPrice(tilWholeSalePrice.getContext().getString(R.string.product_fix_previous_wholesale));
+                    return;
                 }
-            });
+                if (model.getQtyPrice() >= getItem(position-1).getQtyPrice()) {
+                    model.setStatusPrice(tilWholeSalePrice.getContext().getString(R.string.product_price_should_be_cheaper_than_previous_wholesale_price));
+                    return;
+                }
+            } else {
+                if (model.getQtyPrice() >= mainPrice) {
+                    model.setStatusPrice(tilWholeSalePrice.getContext().getString(R.string.product_price_should_be_cheaper_than_main_price));
+                    return;
+                }
+            }
+            model.setStatusPrice("");
         }
+
+        private void isQtyValid(WholesaleModel model, final int position) {
+            if(position > 0){
+                if(!getItem(position-1).getStatusQty().equalsIgnoreCase("")){
+                    model.setStatusQty(tilRangeWholesale.getContext().getString(R.string.product_fix_previous_wholesale));
+                    return;
+                }
+                if (model.getQtyMin() <= getItem(position-1).getQtyMin()) {
+                    model.setStatusQty(tilRangeWholesale.getContext().getString(R.string.wholesale_qty_not_valid));
+                    return;
+                }
+            }
+            model.setStatusQty("");
+        }
+    }
+
+    @Override
+    public int getItemCount() {
+        return wholesaleModels.size();
+    }
+
+    public int getItemSize() {
+        return wholesaleModels.size();
+    }
+
+    public synchronized int addItem(WholesaleModel wholesaleModel) {
+        wholesaleModels.add(wholesaleModel);
+        notifyItemInserted(wholesaleModels.size() - 1);
+        return wholesaleModels.size() - 1;
+    }
+
+    public synchronized void removeItem(int position) {
+        if (isWithinDataset(position)) {
+            wholesaleModels.remove(position);
+        }
+        listener.notifySizeChanged(wholesaleModels.size());
+        notifyItemRemoved(position);
+    }
+
+    public synchronized void removeAll() {
+        wholesaleModels.clear();
+    }
+
+    protected WholesaleModel getItem(int prevPosition) {
+        if (isWithinDataset(prevPosition)) {
+            return wholesaleModels.get(prevPosition);
+        }
+        return null;
+    }
+
+    private boolean isWithinDataset(int position) {
+        return position >= 0 && position <= wholesaleModels.size() - 1;
+    }
+
+    public WholesaleModel getLastItem() {
+        if (isWithinDataset(wholesaleModels.size() - 1)) {
+            return getItem(wholesaleModels.size() - 1);
+        }
+        return null;
+    }
+
+    public void addAllWholeSalePrice(List<ProductWholesaleViewModel> wholesalePrice) {
+        for (int i = 0; i < wholesalePrice.size(); i++) {
+            WholesaleModel wholesaleModel = new WholesaleModel(
+                    wholesalePrice.get(i).getMinQty(),
+                    wholesalePrice.get(i).getPriceValue()
+            );
+            wholesaleModels.add(wholesaleModel);
+        }
+    }
+
+    public synchronized ArrayList<ProductWholesaleViewModel> getProductWholesaleViewModels() {
+        ArrayList<ProductWholesaleViewModel> productWholesaleViewModels =
+                new ArrayList<>();
+        for (int i = 0; i < wholesaleModels.size(); i++) {
+            ProductWholesaleViewModel productWholesaleViewModel
+                    = new ProductWholesaleViewModel();
+            WholesaleModel wholesaleModel = wholesaleModels.get(i);
+            productWholesaleViewModel.setMinQty(wholesaleModel.getQtyMin());
+            productWholesaleViewModel.setPriceValue(wholesaleModel.getQtyPrice());
+
+            productWholesaleViewModels.add(productWholesaleViewModel);
+        }
+        return productWholesaleViewModels;
+    }
+
+    private void setButtonSaveState() {
+        for(int i = 0; i < getItemSize(); i++){
+            if(!wholesaleModels.get(i).getStatusPrice().equalsIgnoreCase("") ||
+                    !wholesaleModels.get(i).getStatusQty().equalsIgnoreCase("") )
+            {
+                listener.setButtonSubmit(false);
+                return;
+            }
+        }
+        listener.setButtonSubmit(true);
+    }
+
+    public interface Listener {
+
+        void notifySizeChanged(int currentSize);
+
+        void setButtonSubmit(boolean state);
+
+        @CurrencyTypeDef
+        int getCurrencyType();
     }
 }

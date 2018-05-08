@@ -26,7 +26,10 @@ public class WholesaleModel implements Parcelable, ItemType {
      */
     private long qtyMin = 0;
     private double qtyPrice = 0;
-    private String status = "";
+    private String statusPrice = "";
+    private String statusQty = "";
+    private boolean focusPrice = false;
+    private boolean focusQty = false;
     private int level;
 
     public WholesaleModel(long quantityOne, double wholeSalePrice) {
@@ -38,7 +41,6 @@ public class WholesaleModel implements Parcelable, ItemType {
         this.qtyMin = in.readLong();
         this.qtyPrice = in.readDouble();
         this.level = in.readInt();
-        this.setStatus(in.readString());
     }
 
     public static WholesaleModel invalidWholeSaleModel() {
@@ -77,7 +79,6 @@ public class WholesaleModel implements Parcelable, ItemType {
         dest.writeLong(this.qtyMin);
         dest.writeDouble(this.qtyPrice);
         dest.writeInt(this.level);
-        dest.writeString(this.status);
     }
 
     @Override
@@ -85,11 +86,35 @@ public class WholesaleModel implements Parcelable, ItemType {
         return TYPE;
     }
 
-    public String getStatus() {
-        return status;
+    public boolean isFocusPrice() {
+        return focusPrice;
     }
 
-    public void setStatus(String status) {
-        this.status = status;
+    public void setFocusPrice(boolean focusPrice) {
+        this.focusPrice = focusPrice;
+    }
+
+    public boolean isFocusQty() {
+        return focusQty;
+    }
+
+    public void setFocusQty(boolean focusQty) {
+        this.focusQty = focusQty;
+    }
+
+    public String getStatusPrice() {
+        return statusPrice;
+    }
+
+    public void setStatusPrice(String statusPrice) {
+        this.statusPrice = statusPrice;
+    }
+
+    public String getStatusQty() {
+        return statusQty;
+    }
+
+    public void setStatusQty(String statusQty) {
+        this.statusQty = statusQty;
     }
 }
