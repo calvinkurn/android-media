@@ -570,7 +570,6 @@ public class FlightDashboardPresenter extends BaseDaggerPresenter<FlightDashboar
                                     getView().hideProgressBar();
                                     getView().showFormContainer();
                                 }
-
                             }
 
                             @Override
