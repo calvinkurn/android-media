@@ -1,7 +1,5 @@
 package com.tokopedia.inbox.inboxchat.domain.model.websocket;
 
-import com.tokopedia.inbox.inboxchat.domain.model.reply.FallbackAttachment;
-
 /**
  * @author by yfsx on 08/05/18.
  */
@@ -12,14 +10,14 @@ public class BaseChatViewModel {
     private String from;
     private String fromRole;
     private int toUid;
-    private Message message;
+    private MessageViewModel message;
     private String startTime;
     private String imageUri;
     private boolean showRating;
     private int ratingStatus;
     private int attachmentId;
     private int attachmentType;
-    private FallbackAttachment fallbackAttachment;
+    private FallbackAttachmentViewModel fallbackAttachment;
 
     public BaseChatViewModel() {
     }
@@ -29,14 +27,14 @@ public class BaseChatViewModel {
                              String from,
                              String fromRole,
                              int toUid,
-                             Message message,
+                             MessageViewModel message,
                              String startTime,
                              String imageUri,
                              boolean showRating,
                              int ratingStatus,
                              int attachmentId,
                              int attachmentType,
-                             FallbackAttachment fallbackAttachment) {
+                             FallbackAttachmentViewModel fallbackAttachment) {
         this.msgId = msgId;
         this.fromUid = fromUid;
         this.from = from;
@@ -92,11 +90,11 @@ public class BaseChatViewModel {
         this.toUid = toUid;
     }
 
-    public Message getMessage() {
+    public MessageViewModel getMessage() {
         return message;
     }
 
-    public void setMessage(Message message) {
+    public void setMessage(MessageViewModel message) {
         this.message = message;
     }
 
@@ -148,11 +146,11 @@ public class BaseChatViewModel {
         this.attachmentType = attachmentType;
     }
 
-    public FallbackAttachment getFallbackAttachment() {
+    public FallbackAttachmentViewModel getFallbackAttachment() {
         return fallbackAttachment;
     }
 
-    public void setFallbackAttachment(FallbackAttachment fallbackAttachment) {
+    public void setFallbackAttachment(FallbackAttachmentViewModel fallbackAttachment) {
         this.fallbackAttachment = fallbackAttachment;
     }
 }
