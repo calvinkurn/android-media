@@ -1,6 +1,6 @@
 package com.tokopedia.checkout.data.repository;
 
-import com.tokopedia.core.network.apiservices.transaction.TXActService;
+import com.tokopedia.checkout.data.apiservice.TxActApi;
 import com.tokopedia.core.network.retrofit.response.TkpdResponse;
 import com.tokopedia.transaction.common.data.cart.thankstoppaydata.ThanksTopPayData;
 
@@ -18,16 +18,16 @@ import rx.functions.Func1;
 
 public class TopPayRepository implements ITopPayRepository {
 
-    private final TXActService txActService;
+    private final TxActApi txActApi;
 
     @Inject
-    public TopPayRepository(TXActService txActService) {
-        this.txActService = txActService;
+    public TopPayRepository(TxActApi txActApi) {
+        this.txActApi = txActApi;
     }
 
     @Override
     public Observable<ThanksTopPayData> getThanksTopPay(Map<String, String> param) {
-        return txActService.getApi().getThanksDynamicPayment(param).map(
+        return txActApi.getThanksDynamicPayment(param).map(
                 new Func1<Response<TkpdResponse>, ThanksTopPayData>() {
                     @Override
                     public ThanksTopPayData call(Response<TkpdResponse> tkpdResponseResponse) {

@@ -9,21 +9,35 @@ import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.di.scope.ApplicationScope;
 import com.tokopedia.abstraction.common.network.OkHttpRetryPolicy;
+import com.tokopedia.abstraction.common.network.interceptor.TkpdAuthInterceptor;
 import com.tokopedia.abstraction.common.utils.GlobalConfig;
+import com.tokopedia.checkout.data.ConstantApiUrl;
 import com.tokopedia.checkout.data.apiservice.CartApi;
 import com.tokopedia.checkout.data.apiservice.CartApiInterceptor;
 import com.tokopedia.checkout.data.apiservice.CartResponseConverter;
+import com.tokopedia.checkout.data.apiservice.RatesApi;
+import com.tokopedia.checkout.data.apiservice.TxActApi;
+import com.tokopedia.checkout.data.mapper.ShipmentRatesDataMapper;
 import com.tokopedia.checkout.data.repository.CartRepository;
 import com.tokopedia.checkout.data.repository.ICartRepository;
 import com.tokopedia.checkout.data.repository.ITopPayRepository;
+import com.tokopedia.checkout.data.repository.RatesDataStore;
+import com.tokopedia.checkout.data.repository.RatesRepository;
 import com.tokopedia.checkout.data.repository.TopPayRepository;
 import com.tokopedia.checkout.router.ICartCheckoutModuleRouter;
+import com.tokopedia.checkout.view.di.qualifier.CartApiInterceptorQualifier;
+import com.tokopedia.checkout.view.di.qualifier.CartApiOkHttpClientQualifier;
+import com.tokopedia.checkout.view.di.qualifier.CartApiRetrofitQualifier;
 import com.tokopedia.checkout.view.di.qualifier.CartChuckApiInterceptorQualifier;
 import com.tokopedia.checkout.view.di.qualifier.CartFingerPrintApiInterceptorQualifier;
+import com.tokopedia.checkout.view.di.qualifier.CartKeroRatesApiInterceptorQualifier;
+import com.tokopedia.checkout.view.di.qualifier.CartKeroRatesApiRetrofitQualifier;
+import com.tokopedia.checkout.view.di.qualifier.CartKeroRatesOkHttpQualifier;
 import com.tokopedia.checkout.view.di.qualifier.CartQualifier;
-import com.tokopedia.core.network.apiservices.transaction.TXActService;
+import com.tokopedia.checkout.view.di.qualifier.CartTxActApiInterceptorQualifier;
+import com.tokopedia.checkout.view.di.qualifier.CartTxActApiRetrofitQualifier;
+import com.tokopedia.checkout.view.di.qualifier.CartTxActOkHttpClientQualifier;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
-import com.tokopedia.core.network.retrofit.coverters.StringResponseConverter;
 import com.tokopedia.core.network.retrofit.interceptors.FingerprintInterceptor;
 
 import java.util.concurrent.TimeUnit;
@@ -67,17 +81,35 @@ public class DataModule {
     }
 
     @Provides
-    @CartQualifier
+    @CartApiInterceptorQualifier
     CartApiInterceptor getCartApiInterceptor(@ApplicationContext Context context,
                                              UserSession userSession,
                                              AbstractionRouter abstractionRouter) {
         return new CartApiInterceptor(context, abstractionRouter, userSession, TkpdBaseURL.Cart.HMAC_KEY);
     }
 
+
     @Provides
-    @CartQualifier
-    public OkHttpClient provideOkHttpClient(@ApplicationScope HttpLoggingInterceptor httpLoggingInterceptor,
-                                            @CartQualifier CartApiInterceptor cartApiInterceptor,
+    @CartKeroRatesApiInterceptorQualifier
+    TkpdAuthInterceptor provideKeroRatesInterceptor(@ApplicationContext Context context,
+                                                    UserSession userSession,
+                                                    AbstractionRouter abstractionRouter) {
+        return new TkpdAuthInterceptor(context, abstractionRouter, userSession);
+    }
+
+    @Provides
+    @CartTxActApiInterceptorQualifier
+    TkpdAuthInterceptor provideTxActInterceptor(@ApplicationContext Context context,
+                                                UserSession userSession,
+                                                AbstractionRouter abstractionRouter) {
+        return new TkpdAuthInterceptor(context, abstractionRouter, userSession);
+    }
+
+
+    @Provides
+    @CartApiOkHttpClientQualifier
+    OkHttpClient provideCartApiOkHttpClient(@ApplicationScope HttpLoggingInterceptor httpLoggingInterceptor,
+                                            @CartApiInterceptorQualifier CartApiInterceptor cartApiInterceptor,
                                             @CartQualifier OkHttpRetryPolicy okHttpRetryPolicy,
                                             @CartFingerPrintApiInterceptorQualifier FingerprintInterceptor fingerprintInterceptor,
                                             @CartChuckApiInterceptorQualifier ChuckInterceptor chuckInterceptor) {
@@ -95,13 +127,91 @@ public class DataModule {
         return builder.build();
     }
 
+
     @Provides
-    @CartQualifier
-    public Retrofit provideCartRetrofit(@CartQualifier OkHttpClient okHttpClient) {
+    @CartKeroRatesOkHttpQualifier
+    OkHttpClient provideKeroRatesApiOkHttpClient(@ApplicationScope HttpLoggingInterceptor httpLoggingInterceptor,
+                                                 @CartKeroRatesApiInterceptorQualifier TkpdAuthInterceptor keroRatesInterceptor,
+                                                 @CartQualifier OkHttpRetryPolicy okHttpRetryPolicy,
+                                                 @CartFingerPrintApiInterceptorQualifier FingerprintInterceptor fingerprintInterceptor,
+                                                 @CartChuckApiInterceptorQualifier ChuckInterceptor chuckInterceptor) {
+
+        OkHttpClient.Builder builder = new OkHttpClient.Builder()
+                .readTimeout(okHttpRetryPolicy.readTimeout, TimeUnit.SECONDS)
+                .writeTimeout(okHttpRetryPolicy.writeTimeout, TimeUnit.SECONDS)
+                .connectTimeout(okHttpRetryPolicy.connectTimeout, TimeUnit.SECONDS)
+                .addInterceptor(fingerprintInterceptor)
+                .addInterceptor(keroRatesInterceptor);
+        if (GlobalConfig.isAllowDebuggingTools()) {
+            builder.addInterceptor(httpLoggingInterceptor)
+                    .addInterceptor(chuckInterceptor);
+        }
+        return builder.build();
+    }
+
+    @Provides
+    @CartTxActOkHttpClientQualifier
+    OkHttpClient provideTxActApiOkHttpClient(@ApplicationScope HttpLoggingInterceptor httpLoggingInterceptor,
+                                             @CartTxActApiInterceptorQualifier TkpdAuthInterceptor txActInterceptor,
+                                             @CartQualifier OkHttpRetryPolicy okHttpRetryPolicy,
+                                             @CartFingerPrintApiInterceptorQualifier FingerprintInterceptor fingerprintInterceptor,
+                                             @CartChuckApiInterceptorQualifier ChuckInterceptor chuckInterceptor) {
+
+        OkHttpClient.Builder builder = new OkHttpClient.Builder()
+                .readTimeout(okHttpRetryPolicy.readTimeout, TimeUnit.SECONDS)
+                .writeTimeout(okHttpRetryPolicy.writeTimeout, TimeUnit.SECONDS)
+                .connectTimeout(okHttpRetryPolicy.connectTimeout, TimeUnit.SECONDS)
+                .addInterceptor(fingerprintInterceptor)
+                .addInterceptor(txActInterceptor);
+        if (GlobalConfig.isAllowDebuggingTools()) {
+            builder.addInterceptor(httpLoggingInterceptor)
+                    .addInterceptor(chuckInterceptor);
+        }
+        return builder.build();
+    }
+
+    @Provides
+    @CartApiRetrofitQualifier
+    Retrofit provideCartApiRetrofit(
+            ICartCheckoutModuleRouter cartCheckoutModuleRouter,
+            @CartApiOkHttpClientQualifier OkHttpClient okHttpClient) {
         return new Retrofit.Builder()
-                .baseUrl(TkpdBaseURL.BASE_API_DOMAIN)
+                .baseUrl(ConstantApiUrl.Cart.BASE_URL)
                 .addConverterFactory(CartResponseConverter.create())
-                .addConverterFactory(new StringResponseConverter())
+                .addConverterFactory(cartCheckoutModuleRouter.cartCheckoutModuleGetStringResponseConverter())
+                .addConverterFactory(GsonConverterFactory.create(new Gson()))
+                .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
+                .client(okHttpClient)
+                .build();
+    }
+
+    @Provides
+    @CartKeroRatesApiRetrofitQualifier
+    Retrofit provideCartKeroRatesRetrofit(
+            ICartCheckoutModuleRouter cartCheckoutModuleRouter,
+            @CartKeroRatesOkHttpQualifier OkHttpClient okHttpClient
+    ) {
+        return new Retrofit.Builder()
+                .baseUrl(ConstantApiUrl.KeroRates.BASE_URL)
+                .addConverterFactory(cartCheckoutModuleRouter.cartCheckoutModuleGetWS4TkpdResponseConverter())
+                .addConverterFactory(cartCheckoutModuleRouter.cartCheckoutModuleGetStringResponseConverter())
+                .addConverterFactory(GsonConverterFactory.create(new Gson()))
+                .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
+                .client(okHttpClient)
+                .build();
+    }
+
+
+    @Provides
+    @CartTxActApiRetrofitQualifier
+    Retrofit provideCartTxActRetrofit(
+            ICartCheckoutModuleRouter cartCheckoutModuleRouter,
+            @CartTxActOkHttpClientQualifier OkHttpClient okHttpClient
+    ) {
+        return new Retrofit.Builder()
+                .baseUrl(ConstantApiUrl.TransactionAction.BASE_URL)
+                .addConverterFactory(cartCheckoutModuleRouter.cartCheckoutModuleGetWS4TkpdResponseConverter())
+                .addConverterFactory(cartCheckoutModuleRouter.cartCheckoutModuleGetStringResponseConverter())
                 .addConverterFactory(GsonConverterFactory.create(new Gson()))
                 .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
                 .client(okHttpClient)
@@ -110,8 +220,20 @@ public class DataModule {
 
     @Provides
     @CartQualifier
-    public CartApi provideCartApi(@CartQualifier Retrofit retrofit) {
+    CartApi provideCartApi(@CartApiRetrofitQualifier Retrofit retrofit) {
         return retrofit.create(CartApi.class);
+    }
+
+    @Provides
+    @CartQualifier
+    RatesApi provideRatesApi(@CartKeroRatesApiRetrofitQualifier Retrofit retrofit) {
+        return retrofit.create(RatesApi.class);
+    }
+
+    @Provides
+    @CartQualifier
+    TxActApi provideTxActsApi(@CartTxActApiRetrofitQualifier Retrofit retrofit) {
+        return retrofit.create(TxActApi.class);
     }
 
     @Provides
@@ -120,13 +242,19 @@ public class DataModule {
     }
 
     @Provides
-    @CartQualifier
-    TXActService provideTXActService() {
-        return new TXActService();
+    ITopPayRepository provideITopPayRepository(@CartQualifier TxActApi txActApi) {
+        return new TopPayRepository(txActApi);
     }
 
     @Provides
-    ITopPayRepository provideITopPayRepository(@CartQualifier TXActService txActService) {
-        return new TopPayRepository(txActService);
+    RatesDataStore provideRatesDataStore(@CartQualifier RatesApi ratesApi) {
+        return new RatesDataStore(ratesApi);
     }
+
+    @Provides
+    RatesRepository provideRatesRepository(RatesDataStore ratesDataStore,
+                                           ShipmentRatesDataMapper shipmentRatesDataMapper) {
+        return new RatesRepository(ratesDataStore, shipmentRatesDataMapper);
+    }
+
 }

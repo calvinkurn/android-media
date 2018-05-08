@@ -64,6 +64,8 @@ import com.tokopedia.core.manage.general.districtrecommendation.domain.model.Tok
 import com.tokopedia.core.manage.general.districtrecommendation.view.DistrictRecommendationActivity;
 import com.tokopedia.core.manage.people.address.activity.ChooseAddressActivity;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
+import com.tokopedia.core.network.retrofit.coverters.StringResponseConverter;
+import com.tokopedia.core.network.retrofit.coverters.TkpdResponseConverter;
 import com.tokopedia.core.network.retrofit.interceptors.FingerprintInterceptor;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.network.retrofit.utils.ServerErrorHandler;
@@ -275,6 +277,7 @@ import javax.inject.Inject;
 
 import okhttp3.Interceptor;
 import okhttp3.Response;
+import retrofit2.Converter;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Func1;
@@ -1697,6 +1700,16 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @Override
     public FingerprintInterceptor getCartCheckoutFingerPrintInterceptor() {
         return getAppComponent().fingerprintInterceptor();
+    }
+
+    @Override
+    public Converter.Factory cartCheckoutModuleGetWS4TkpdResponseConverter() {
+        return new TkpdResponseConverter();
+    }
+
+    @Override
+    public Converter.Factory cartCheckoutModuleGetStringResponseConverter() {
+        return new StringResponseConverter();
     }
 
     @Override

@@ -4,17 +4,18 @@ import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.checkout.data.repository.ICartRepository;
 import com.tokopedia.checkout.data.repository.ITopPayRepository;
+import com.tokopedia.checkout.data.repository.RatesRepository;
 import com.tokopedia.checkout.domain.mapper.ICartMapper;
 import com.tokopedia.checkout.domain.mapper.ICheckoutMapper;
-import com.tokopedia.checkout.domain.mapper.IMapperUtil;
 import com.tokopedia.checkout.domain.mapper.IShipmentMapper;
 import com.tokopedia.checkout.domain.mapper.ITopPayMapper;
 import com.tokopedia.checkout.domain.mapper.IVoucherCouponMapper;
-import com.tokopedia.checkout.view.di.module.CheckoutRouterModule;
 import com.tokopedia.checkout.view.di.module.CartUseCaseModule;
+import com.tokopedia.checkout.view.di.module.CheckoutRouterModule;
 import com.tokopedia.checkout.view.di.module.CheckoutUseCaseModule;
 import com.tokopedia.checkout.view.di.module.DataMapperModule;
 import com.tokopedia.checkout.view.di.module.DataModule;
+import com.tokopedia.checkout.view.di.module.ShipmentUseCaseModule;
 import com.tokopedia.checkout.view.di.scope.CartScope;
 
 import dagger.Component;
@@ -24,7 +25,15 @@ import dagger.Component;
  */
 @CartScope
 @Component(
-        modules = {CheckoutRouterModule.class, DataModule.class, DataMapperModule.class, CartUseCaseModule.class, CheckoutUseCaseModule.class},
+        modules =
+                {
+                        CheckoutRouterModule.class,
+                        DataMapperModule.class,
+                        DataModule.class,
+                        CartUseCaseModule.class,
+                        CheckoutUseCaseModule.class,
+                        ShipmentUseCaseModule.class
+                },
         dependencies = BaseAppComponent.class
 )
 public interface CartComponent {
@@ -32,7 +41,7 @@ public interface CartComponent {
 
     ITopPayRepository topPayRepository();
 
-    IMapperUtil mapperUtil();
+    RatesRepository ratesRepository();
 
     ICartMapper cartMapper();
 

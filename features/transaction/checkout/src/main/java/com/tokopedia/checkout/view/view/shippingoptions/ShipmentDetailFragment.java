@@ -52,8 +52,10 @@ import com.tokopedia.checkout.router.ICartCheckoutModuleRouter;
 import com.tokopedia.checkout.view.adapter.CourierChoiceAdapter;
 import com.tokopedia.checkout.view.base.BaseCheckoutFragment;
 import com.tokopedia.checkout.view.constants.InsuranceConstant;
+import com.tokopedia.checkout.view.di.component.CartComponent;
 import com.tokopedia.checkout.view.di.component.DaggerShipmentDetailComponent;
 import com.tokopedia.checkout.view.di.component.ShipmentDetailComponent;
+import com.tokopedia.checkout.view.di.module.ShipmentDetailModule;
 import com.tokopedia.core.geolocation.activity.GeolocationActivity;
 import com.tokopedia.core.geolocation.model.autocomplete.LocationPass;
 import com.tokopedia.design.bottomsheet.BottomSheetView;
@@ -155,6 +157,8 @@ public class ShipmentDetailFragment extends BaseCheckoutFragment
     @Override
     protected void initInjector() {
         ShipmentDetailComponent shipmentDetailComponent = DaggerShipmentDetailComponent.builder()
+                .cartComponent(getComponent(CartComponent.class))
+                .shipmentDetailModule(new ShipmentDetailModule())
                 .build();
         shipmentDetailComponent.inject(this);
     }
@@ -929,6 +933,11 @@ public class ShipmentDetailFragment extends BaseCheckoutFragment
             renderPartialOrderView();
             renderButtonSaveDisabled();
         }
+    }
+
+    @Override
+    public CartComponent getCartComponent() {
+        return getComponent(CartComponent.class);
     }
 
     @Override

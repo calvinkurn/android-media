@@ -10,6 +10,8 @@ import com.tokopedia.core.router.productdetail.passdata.ProductPass;
 
 import java.util.HashMap;
 
+import retrofit2.Converter;
+
 /**
  * @author anggaprasetiyo on 28/02/18.
  */
@@ -44,4 +46,8 @@ public interface ICartCheckoutModuleRouter {
     ChuckInterceptor getCartCheckoutChuckInterceptor();
 
     FingerprintInterceptor getCartCheckoutFingerPrintInterceptor();
+
+    Converter.Factory cartCheckoutModuleGetWS4TkpdResponseConverter();
+
+    Converter.Factory cartCheckoutModuleGetStringResponseConverter();
 }

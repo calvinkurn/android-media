@@ -1,4 +1,4 @@
-package com.tokopedia.checkout.data.service;
+package com.tokopedia.checkout.data.apiservice;
 
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 
