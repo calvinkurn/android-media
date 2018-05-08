@@ -636,4 +636,18 @@ public class ImageHandler {
                 .error(placeHolder)
                 .into(getCircleImageViewTarget(imageView));
     }
+
+    public static void loadImageWithRequestListener(ImageView imageview,
+                                                    String url,
+                                                    RequestListener<String, GlideDrawable>
+                                                            requestListener) {
+        if (url != null) {
+            Glide.with(imageview.getContext())
+                    .load(url)
+                    .dontAnimate()
+                    .listener(requestListener)
+                    .placeholder(R.drawable.loading_page)
+                    .into(imageview);
+        }
+    }
 }
