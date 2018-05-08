@@ -32,6 +32,10 @@ import java.util.List;
 
 import butterknife.BindView;
 
+import static com.tokopedia.core.router.transactionmodule.TransactionPurchaseRouter.TAB_POSITION_ORDER_DIGITAL;
+import static com.tokopedia.core.router.transactionmodule.TransactionPurchaseRouter.TAB_POSITION_ORDER_FLIGHT;
+import static com.tokopedia.core.router.transactionmodule.TransactionPurchaseRouter.TAB_POSITION_ORDER_GOLD;
+import static com.tokopedia.core.router.transactionmodule.TransactionPurchaseRouter.TAB_POSITION_ORDER_MARKETPLACE;
 import static com.tokopedia.core.router.transactionmodule.TransactionPurchaseRouter.EXTRA_STATE_TAB_POSITION;
 import static com.tokopedia.core.router.transactionmodule.TransactionPurchaseRouter.TAB_POSITION_PURCHASE_ALL_ORDER;
 import static com.tokopedia.core.router.transactionmodule.TransactionPurchaseRouter.TAB_POSITION_PURCHASE_DELIVER_ORDER;
@@ -151,16 +155,16 @@ public class PurchaseActivity extends DrawerPresenterActivity implements
     @Override
     protected void initVar() {
         tabContents = new ArrayList<>();
-        tabContents.add(TransactionPurchaseRouter.TAB_POSITION_PURCHASE_SUMMARY,
-                getString(R.string.title_tab_purchase_summary));
-        tabContents.add(TAB_POSITION_PURCHASE_VERIFICATION,
-                getString(R.string.title_tab_purchase_status_payment));
-        tabContents.add(TAB_POSITION_PURCHASE_STATUS_ORDER,
-                getString(R.string.title_tab_purchase_status_order));
-        tabContents.add(TAB_POSITION_PURCHASE_DELIVER_ORDER,
-                getString(R.string.title_tab_purchase_confirm_deliver));
-        tabContents.add(TAB_POSITION_PURCHASE_ALL_ORDER,
-                getString(R.string.title_tab_purchase_transactions));
+        tabContents.add(TransactionPurchaseRouter.TAB_POSITION_ORDER_ALL,
+                getString(R.string.order_all));
+        tabContents.add(TAB_POSITION_ORDER_GOLD,
+                getString(R.string.order_gold));
+        tabContents.add(TAB_POSITION_ORDER_DIGITAL,
+                getString(R.string.order_digital));
+        tabContents.add(TAB_POSITION_ORDER_MARKETPLACE,
+                getString(R.string.order_marketplace));
+        tabContents.add(TAB_POSITION_ORDER_FLIGHT,
+                getString(R.string.order_flight));
     }
 
     @Override

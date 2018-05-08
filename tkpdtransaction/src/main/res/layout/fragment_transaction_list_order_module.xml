@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:focusable="true"
+    android:focusableInTouchMode="true">
+
+    <com.tokopedia.core.customwidget.SwipeToRefresh
+        android:id="@+id/swipe_refresh_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@+id/layout_filter">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/order_list_rv"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:divider="@android:color/transparent"
+                android:listSelector="@android:color/transparent" />
+        </LinearLayout>
+    </com.tokopedia.core.customwidget.SwipeToRefresh>
+
+    <!--<com.tokopedia.design.button.BottomActionView
+        android:id="@+id/bottom_action_filter_sort"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/margin_sm"
+        app:bav_1_display="true"
+        app:bav_2_display="true"
+        android:layout_gravity="bottom|center_horizontal"
+        app:bav_icon_1="@drawable/ic_search_sort"
+        app:bav_icon_2="@drawable/ic_search_filter"
+        app:bav_label_1="@string/search_sort_label"
+        app:bav_label_2="@string/search_filter_label" />-->
+</android.support.design.widget.CoordinatorLayout>

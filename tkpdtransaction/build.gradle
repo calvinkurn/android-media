@@ -38,5 +38,6 @@ dependencies {
 
     //compile rootProject.ext.miscDependencies.bcaOneClick
     compile(group: 'com.bca.widget', name: 'oneclick', version: '1.0', ext: 'aar')
+    compile project(path: rootProject.ext.libraries.applink)
 }
 

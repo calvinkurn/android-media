@@ -23,4 +23,9 @@
             <enum name="overshoot" value="10"/>
         </attr>
     </declare-styleable>
+    <declare-styleable name="DoubleText">
+        <attr name="topText" format="string" />
+        <attr name="bottomText" format="string" />
+        <attr name="android:ems" />
+    </declare-styleable>
 </resources>

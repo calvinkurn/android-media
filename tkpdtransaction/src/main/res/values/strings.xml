@@ -222,4 +222,15 @@
     <string name="apply">Terapkan</string>
     <string name="single_spacing">\u0020</string>
     <string name="title_payment_procedure">Cara Pembayaran</string>
+    <string name="order_all">ALL</string>
+    <string name="order_gold">GOLD</string>
+    <string name="order_digital">DIGITAL</string>
+    <string name="order_marketplace">MARKETPLACE</string>
+    <string name="order_flight">FLIGHT</string>
+    <string name="search_input_hint">Cari produk atau invoice</string>
+    <string name="flight_order_waiting_for_payment_title">Menunggu Pemayaran</string>
+    <string name="total">Total</string>
+    <string name="unggah_bukti">Unggah Bukti</string>
+    <string name="search_sort_label">Urutkan</string>
+    <string name="search_filter_label">Filter</string>
 </resources>

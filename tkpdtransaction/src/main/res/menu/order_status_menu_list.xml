@@ -6,4 +6,9 @@
         android:orderInCategory="100"
         android:title="@string/cancel_replacement"
         app:showAsAction="never" />
+    <item
+        android:id="@+id/action_next_replacement"
+        android:orderInCategory="100"
+        android:title="@string/cancel_replacement"
+        app:showAsAction="never" />
 </menu>
