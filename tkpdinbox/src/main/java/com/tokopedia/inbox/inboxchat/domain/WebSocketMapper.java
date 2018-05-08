@@ -1,9 +1,9 @@
 package com.tokopedia.inbox.inboxchat.domain;
 
 import com.google.gson.GsonBuilder;
-import com.tokopedia.inbox.inboxchat.domain.model.reply.FallbackAttachment;
 import com.tokopedia.inbox.inboxchat.domain.model.websocket.BaseChatViewModel;
-import com.tokopedia.inbox.inboxchat.domain.model.websocket.Message;
+import com.tokopedia.inbox.inboxchat.domain.model.websocket.FallbackAttachmentViewModel;
+import com.tokopedia.inbox.inboxchat.domain.model.websocket.MessageViewModel;
 import com.tokopedia.inbox.inboxchat.domain.model.websocket.WebSocketResponse;
 import com.tokopedia.inbox.inboxchat.viewmodel.chatroom.QuickReplyListViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.chatroom.QuickReplyViewModel;
@@ -30,11 +30,9 @@ public class WebSocketMapper {
                 && pojo.getData().getAttachment() != null) {
             switch (pojo.getData().getAttachment().getType()) {
                 case TYPE_QUICK_REPLY:
-//                    return convertToQuickReplyModel(json);
-                    return null;
+                    return convertToQuickReplyModel(json);
                 default:
                     return null;
-
             }
         } else {
             return null;
@@ -45,19 +43,17 @@ public class WebSocketMapper {
 //        WebSocketResponse pojo = new GsonBuilder().create().fromJson(json, WebSocketResponse.class);
 
         return new QuickReplyListViewModel(
-                0,
-                0,
                 "",
                 "",
-                0,
-                new Message(),
                 "",
                 "",
+                "",
+                new MessageViewModel(),
                 "",
                 TYPE_QUICK_REPLY,
-                new FallbackAttachment(),
+                new FallbackAttachmentViewModel(),
                 convertToQuickReplyList()
-                );
+        );
     }
 
     private List<QuickReplyViewModel> convertToQuickReplyList() {

@@ -100,6 +100,7 @@ import com.tokopedia.inbox.inboxchat.viewmodel.ChatRoomViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.InboxChatViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.MyChatViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.OppositeChatViewModel;
+import com.tokopedia.inbox.inboxchat.viewmodel.chatroom.QuickReplyListViewModel;
 import com.tokopedia.inbox.inboxmessage.InboxMessageConstant;
 
 import org.json.JSONException;
@@ -1053,9 +1054,9 @@ public class ChatRoomFragment extends BaseDaggerFragment
 
     @Override
     public void onReceiveMessage(BaseChatViewModel message) {
-//        if(message instanceof QuickReplyListViewModel){
-//            showQuickReplyView();
-//        }
+        if(message instanceof QuickReplyListViewModel){
+            showQuickReplyView();
+        }
     }
 
     private void showQuickReplyView() {
