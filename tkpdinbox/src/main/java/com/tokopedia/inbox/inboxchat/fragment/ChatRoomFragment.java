@@ -74,6 +74,7 @@ import com.tokopedia.inbox.inboxchat.activity.TimeMachineActivity;
 import com.tokopedia.inbox.inboxchat.adapter.ChatRoomAdapter;
 import com.tokopedia.inbox.inboxchat.adapter.ChatRoomTypeFactory;
 import com.tokopedia.inbox.inboxchat.adapter.ChatRoomTypeFactoryImpl;
+import com.tokopedia.inbox.inboxchat.adapter.QuickReplyAdapter;
 import com.tokopedia.inbox.inboxchat.adapter.TemplateChatAdapter;
 import com.tokopedia.inbox.inboxchat.adapter.TemplateChatTypeFactory;
 import com.tokopedia.inbox.inboxchat.adapter.TemplateChatTypeFactoryImpl;
@@ -149,6 +150,7 @@ public class ChatRoomFragment extends BaseDaggerFragment
     private int networkType;
     private RecyclerView recyclerView;
     private RecyclerView templateRecyclerView;
+    private RecyclerView rvQuickReply;
     private ProgressBar progressBar;
     private View replyView;
 
@@ -159,6 +161,7 @@ public class ChatRoomFragment extends BaseDaggerFragment
 
     ChatRoomAdapter adapter;
     TemplateChatAdapter templateAdapter;
+    QuickReplyAdapter quickReplyAdapter;
 
     private ChatRoomTypeFactory typeFactory;
     private TemplateChatTypeFactory templateChatFactory;
@@ -213,6 +216,7 @@ public class ChatRoomFragment extends BaseDaggerFragment
         progressBar = rootView.findViewById(R.id.progress);
         recyclerView = rootView.findViewById(R.id.reply_list);
         templateRecyclerView = rootView.findViewById(R.id.list_template);
+        rvQuickReply = rootView.findViewById(R.id.list_quick_reply);
         replyView = rootView.findViewById(R.id.add_comment_area);
         sendButton = rootView.findViewById(R.id.send_but);
         replyColumn = rootView.findViewById(R.id.new_comment);
@@ -224,6 +228,7 @@ public class ChatRoomFragment extends BaseDaggerFragment
         replyWatcher = Events.text(replyColumn);
         recyclerView.setHasFixedSize(true);
         templateRecyclerView.setHasFixedSize(true);
+        rvQuickReply.setHasFixedSize(true);
         presenter.attachView(this);
         uploading = false;
         prepareView();
@@ -554,6 +559,7 @@ public class ChatRoomFragment extends BaseDaggerFragment
 
         recyclerView.setLayoutManager(layoutManager);
         templateRecyclerView.setLayoutManager(templateLayoutManager);
+        rvQuickReply.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false));
 
         recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
@@ -1369,14 +1375,18 @@ public class ChatRoomFragment extends BaseDaggerFragment
 
     @Override
     public void onReceiveMessage(BaseChatViewModel message) {
+        rvQuickReply.setVisibility(View.GONE);
         if(message instanceof QuickReplyListViewModel){
             //TODO YOAS :
-            showQuickReplyView();
+            showQuickReplyView((QuickReplyListViewModel) message);
         }
     }
 
-    private void showQuickReplyView() {
-
+    private void showQuickReplyView(QuickReplyListViewModel model) {
+        rvQuickReply.setVisibility(View.VISIBLE);
+        quickReplyAdapter = new QuickReplyAdapter(model);
+        rvQuickReply.setAdapter(quickReplyAdapter);
+        rvQuickReply.getAdapter().notifyDataSetChanged();
     }
 
     @Override
