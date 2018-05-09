@@ -15,7 +15,6 @@ public class ShipmentMultipleAddressCartItem extends ShipmentCartItem {
     private String productName;
     private int subTotal;
     private int productPriceNumber;
-    private boolean productIsPreorder;
     private boolean productIsFreeReturns;
     private boolean productReturnable;
     private boolean produstHasCasback;
@@ -111,14 +110,6 @@ public class ShipmentMultipleAddressCartItem extends ShipmentCartItem {
 
     public void setCashback(String cashback) {
         this.cashback = cashback;
-    }
-
-    public boolean isProductIsPreorder() {
-        return productIsPreorder;
-    }
-
-    public void setProductIsPreorder(boolean productIsPreorder) {
-        this.productIsPreorder = productIsPreorder;
     }
 
 }

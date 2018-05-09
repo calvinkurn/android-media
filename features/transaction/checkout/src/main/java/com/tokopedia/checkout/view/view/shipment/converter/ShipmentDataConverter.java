@@ -182,6 +182,7 @@ public class ShipmentDataConverter {
         Fobject fobject = levelUpParametersFromProductToCartSeller(cartItemModels);
         shipmentSingleAddressItem.setProductFcancelPartial(fobject.isFcancelPartial() == 1);
         shipmentSingleAddressItem.setCartItemModels(cartItemModels);
+        shipmentSingleAddressItem.setProductIsPreorder(fobject.isPreOrder() == 1);
 
         shipmentSingleAddressItem.setShipmentCartData(new RatesDataConverter()
                 .getShipmentCartData(userAddress, groupShop, shipmentSingleAddressItem, keroToken, keroUnixTime));

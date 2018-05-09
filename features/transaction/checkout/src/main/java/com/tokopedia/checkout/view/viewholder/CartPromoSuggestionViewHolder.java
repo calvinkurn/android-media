@@ -48,7 +48,7 @@ public class CartPromoSuggestionViewHolder extends RecyclerView.ViewHolder {
         layoutParamsGone = new RecyclerView.LayoutParams(0, 0);
     }
 
-    public void bindData(final CartPromoSuggestion data, final int position) {
+    public void bindData(CartPromoSuggestion data, int position) {
         cartPromoSuggestion = data;
         if (data.isVisible()) {
             mRlPromoSuggestionLayout.setVisibility(View.VISIBLE);
