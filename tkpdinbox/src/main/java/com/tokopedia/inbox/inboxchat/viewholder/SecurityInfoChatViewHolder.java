@@ -16,19 +16,19 @@ import com.tokopedia.inbox.inboxchat.presenter.ChatRoomContract;
 import com.tokopedia.inbox.inboxchat.viewmodel.chatroom.TimeMachineChatModel;
 
 /**
- * @author by nisie on 10/24/17.
+ * @author by steven on 05/09/18.
  */
 
-public class TimeMachineChatViewHolder extends AbstractViewHolder<TimeMachineChatModel> {
+public class SecurityInfoChatViewHolder extends AbstractViewHolder<TimeMachineChatModel> {
 
     @LayoutRes
-    public static final int LAYOUT = R.layout.time_machine_chatroom_layout;
+    public static final int LAYOUT = R.layout.security_info_chatroom_layout;
 
     private final ChatRoomContract.View viewListener;
     private TextView timeMachineText;
 
 
-    public TimeMachineChatViewHolder(View itemView, ChatRoomContract.View viewListener) {
+    public SecurityInfoChatViewHolder(View itemView, ChatRoomContract.View viewListener) {
         super(itemView);
         this.viewListener = viewListener;
         timeMachineText = (TextView) itemView.findViewById(R.id.time_machine_text);

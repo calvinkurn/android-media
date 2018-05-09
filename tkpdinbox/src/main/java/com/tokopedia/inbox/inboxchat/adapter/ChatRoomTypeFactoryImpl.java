@@ -13,7 +13,7 @@ import com.tokopedia.inbox.inboxchat.viewholder.AttachedProductViewHolder;
 import com.tokopedia.inbox.inboxchat.viewholder.MyChatViewHolder;
 import com.tokopedia.inbox.inboxchat.viewholder.OppositeChatViewHolder;
 import com.tokopedia.inbox.inboxchat.viewholder.ThumbnailChatViewHolder;
-import com.tokopedia.inbox.inboxchat.viewholder.TimeMachineChatViewHolder;
+import com.tokopedia.inbox.inboxchat.viewholder.SecurityInfoChatViewHolder;
 import com.tokopedia.inbox.inboxchat.viewholder.TypingChatViewHolder;
 import com.tokopedia.inbox.inboxchat.viewmodel.AttachImageModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.AttachInvoiceSelectionViewModel;
@@ -54,7 +54,7 @@ public class ChatRoomTypeFactoryImpl extends BaseAdapterTypeFactory implements C
 
     @Override
     public int type(TimeMachineChatModel timeMachineChatModel) {
-        return TimeMachineChatViewHolder.LAYOUT;
+        return SecurityInfoChatViewHolder.LAYOUT;
     }
 
     @Override
@@ -91,8 +91,8 @@ public class ChatRoomTypeFactoryImpl extends BaseAdapterTypeFactory implements C
             viewHolder = new OppositeChatViewHolder(view, viewListener);
         else if (type == MyChatViewHolder.LAYOUT)
             viewHolder = new MyChatViewHolder(view, viewListener);
-        else if (type == TimeMachineChatViewHolder.LAYOUT)
-            viewHolder = new TimeMachineChatViewHolder(view, viewListener);
+        else if (type == SecurityInfoChatViewHolder.LAYOUT)
+            viewHolder = new SecurityInfoChatViewHolder(view, viewListener);
         else if (type == TypingChatViewHolder.LAYOUT)
             viewHolder = new TypingChatViewHolder(view);
         else if (type == AttachImageViewHolder.LAYOUT)
