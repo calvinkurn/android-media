@@ -18,6 +18,7 @@ import com.tokopedia.discovery.autocomplete.viewmodel.ShopSearch;
 import com.tokopedia.discovery.autocomplete.viewmodel.TitleSearch;
 import com.tokopedia.discovery.search.domain.model.SearchData;
 import com.tokopedia.discovery.search.domain.model.SearchItem;
+import com.tokopedia.discovery.search.view.adapter.ItemClickListener;
 import com.tokopedia.discovery.search.view.adapter.SearchPageAdapter;
 import com.tokopedia.discovery.search.view.fragment.SearchResultFragment;
 
@@ -29,6 +30,7 @@ public class TabAutoCompleteViewHolder extends AbstractViewHolder<TabAutoComplet
     @LayoutRes
     public static final int LAYOUT = R.layout.layout_suggestion_tabbing;
     private final FragmentManager fragmentManager;
+    private final ItemClickListener clickListener;
 
     private SearchPageAdapter pageAdapter;
 
@@ -36,12 +38,13 @@ public class TabAutoCompleteViewHolder extends AbstractViewHolder<TabAutoComplet
     private ViewPager viewPager;
 
     public TabAutoCompleteViewHolder(View view,
-                                     FragmentManager fragmentManager) {
+                                     FragmentManager fragmentManager, ItemClickListener clickListener) {
         super(view);
         this.fragmentManager = fragmentManager;
+        this.clickListener = clickListener;
         tabLayout = view.findViewById(R.id.tabLayout);
         viewPager = view.findViewById(R.id.viewPager);
-        pageAdapter = new SearchPageAdapter(fragmentManager, itemView.getContext());
+        pageAdapter = new SearchPageAdapter(fragmentManager, itemView.getContext(), clickListener);
         viewPager.setOffscreenPageLimit(3);
         viewPager.setAdapter(pageAdapter);
         tabLayout.setupWithViewPager(viewPager);
@@ -49,6 +52,22 @@ public class TabAutoCompleteViewHolder extends AbstractViewHolder<TabAutoComplet
 
     @Override
     public void bind(TabAutoCompleteViewModel element) {
+        viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+                clickListener.setOnTabShop(position == 2);
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+
+            }
+        });
         SearchResultFragment allFragment = pageAdapter.getRegisteredFragment(0);
         allFragment.clearData();
         SearchResultFragment productFragment = pageAdapter.getRegisteredFragment(1);

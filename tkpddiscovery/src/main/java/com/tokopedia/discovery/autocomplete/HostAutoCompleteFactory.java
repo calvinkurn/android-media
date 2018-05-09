@@ -35,7 +35,7 @@ public class HostAutoCompleteFactory extends BaseAdapterTypeFactory
         if (viewType == DefaultAutoCompleteViewHolder.LAYOUT) {
             viewHolder = new DefaultAutoCompleteViewHolder(view, clickListener);
         } else if (viewType == TabAutoCompleteViewHolder.LAYOUT) {
-            viewHolder = new TabAutoCompleteViewHolder(view, fragmentManager);
+            viewHolder = new TabAutoCompleteViewHolder(view, fragmentManager, clickListener);
         } else {
             viewHolder = super.createViewHolder(view, viewType);
         }

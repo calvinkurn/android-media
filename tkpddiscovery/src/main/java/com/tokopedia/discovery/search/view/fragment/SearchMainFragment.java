@@ -51,16 +51,15 @@ public class SearchMainFragment extends TkpdBaseV4Fragment implements SearchCont
     private static final String SEARCH_INIT_KEY = "SEARCH_INIT_KEY";
 
     RecyclerView recyclerView;
-//    TabLayout tabLayout;
-//    ViewPager viewPager;
+    LinearLayoutManager layoutManager;
 
     @Inject
     SearchPresenter presenter;
 
     private HostAutoCompleteAdapter adapter;
-//    private SearchPageAdapter pageAdapter;
     private String mSearch = "";
     private String networkErrorMessage;
+    private boolean onTabShop;
 
     public static SearchMainFragment newInstance() {
         
@@ -112,7 +111,7 @@ public class SearchMainFragment extends TkpdBaseV4Fragment implements SearchCont
                 this,
                 getChildFragmentManager()
         );
-        LinearLayoutManager layoutManager =
+        layoutManager =
                 new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false) {
                     @Override
                     public boolean canScrollVertically() {
@@ -123,11 +122,6 @@ public class SearchMainFragment extends TkpdBaseV4Fragment implements SearchCont
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setHasFixedSize(true);
-
-//        pageAdapter = new SearchPageAdapter(getChildFragmentManager(), getActivity());
-//        viewPager.setOffscreenPageLimit(2);
-//        viewPager.setAdapter(pageAdapter);
-//        tabLayout.setupWithViewPager(viewPager);
     }
 
     public void setCurrentTab(final int pos) {
@@ -142,8 +136,11 @@ public class SearchMainFragment extends TkpdBaseV4Fragment implements SearchCont
     }
 
     public int getCurrentTab() {
-        return 0;
-//        return viewPager.getCurrentItem();
+        if (layoutManager.findFirstCompletelyVisibleItemPosition() == 1) {
+            return isOnTabShop() ? SearchMainFragment.PAGER_POSITION_SHOP : SearchMainFragment.PAGER_POSITION_PRODUCT;
+        } else {
+            return SearchMainFragment.PAGER_POSITION_PRODUCT;
+        }
     }
 
     @Override
@@ -167,21 +164,6 @@ public class SearchMainFragment extends TkpdBaseV4Fragment implements SearchCont
         } else {
             recyclerView.scrollToPosition(0);
         }
-    }
-
-    @Override
-    public void showSearchResult(final List<Visitable> list) {
-//        SearchResultFragment resultFragment = pageAdapter.getRegisteredFragment(0);
-//        resultFragment.clearData();
-//        SearchResultFragment shopFragment = pageAdapter.getRegisteredFragment(1);
-//        shopFragment.clearData();
-//        for (Visitable visitable : list) {
-//            if(visitable instanceof ShopViewModel){
-//                shopFragment.addSearchResult(visitable);
-//            } else {
-//                resultFragment.addSearchResult(visitable);
-//            }
-//        }
     }
 
     @Override
@@ -264,5 +246,14 @@ public class SearchMainFragment extends TkpdBaseV4Fragment implements SearchCont
     @Override
     public void onDeleteAllRecentSearch() {
         ((DiscoveryActivity) getActivity()).deleteAllRecentSearch();
+    }
+
+    @Override
+    public void setOnTabShop(boolean onTabShop) {
+        this.onTabShop = onTabShop;
+    }
+
+    public boolean isOnTabShop() {
+        return onTabShop;
     }
 }

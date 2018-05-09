@@ -1,24 +1,18 @@
 package com.tokopedia.discovery.search.view.fragment;
 
-import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
-import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.tkpd.library.ui.view.LinearLayoutManager;
-import com.tokopedia.applink.ApplinkRouter;
 import com.tokopedia.core.R2;
 import com.tokopedia.core.app.TkpdBaseV4Fragment;
 import com.tokopedia.core.base.adapter.Visitable;
-import com.tokopedia.core.home.BannerWebView;
 import com.tokopedia.discovery.R;
 import com.tokopedia.discovery.catalog.analytics.AppScreen;
-import com.tokopedia.discovery.newdiscovery.base.DiscoveryActivity;
 import com.tokopedia.discovery.search.view.adapter.ItemClickListener;
 import com.tokopedia.discovery.search.view.adapter.SearchAdapter;
 import com.tokopedia.discovery.search.view.adapter.factory.SearchAdapterTypeFactory;
@@ -33,13 +27,13 @@ import butterknife.Unbinder;
  * @author erry on 23/02/17.
  */
 
-public class SearchResultFragment extends TkpdBaseV4Fragment
-        implements ItemClickListener {
+public class SearchResultFragment extends TkpdBaseV4Fragment {
 
     private static final String TAG = SearchResultFragment.class.getSimpleName();
     private Unbinder unbinder;
     private SearchAdapter adapter;
     private LinearLayoutManager layoutManager;
+    private ItemClickListener clickListener;
 
     @BindView(R2.id.list)
     RecyclerView recyclerView;
@@ -47,13 +41,18 @@ public class SearchResultFragment extends TkpdBaseV4Fragment
     public SearchResultFragment() {
     }
 
-    public static SearchResultFragment newInstance() {
+    public static SearchResultFragment newInstance(ItemClickListener clickListener) {
 
         Bundle args = new Bundle();
 
         SearchResultFragment fragment = new SearchResultFragment();
+        fragment.setCallBackListener(clickListener);
         fragment.setArguments(args);
         return fragment;
+    }
+
+    private void setCallBackListener(ItemClickListener clickListener) {
+        this.clickListener = clickListener;
     }
 
     @Override
@@ -95,7 +94,7 @@ public class SearchResultFragment extends TkpdBaseV4Fragment
     }
 
     private void prepareView(View view) {
-        SearchAdapterTypeFactory typeFactory = new SearchAdapterTypeFactory(this);
+        SearchAdapterTypeFactory typeFactory = new SearchAdapterTypeFactory(clickListener);
         layoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
         adapter = new SearchAdapter(typeFactory);
         recyclerView.setAdapter(adapter);
@@ -109,52 +108,4 @@ public class SearchResultFragment extends TkpdBaseV4Fragment
         }
     }
 
-    @Override
-    public void onItemClicked(String applink, String webUrl) {
-        if (getActivity() != null
-                && getActivity().getApplicationContext() instanceof ApplinkRouter) {
-            ApplinkRouter router = ((ApplinkRouter) getActivity().getApplicationContext());
-            if (router.isSupportApplink(applink)) {
-                router.goToApplinkActivity(getActivity(), applink);
-            } else {
-                openWebViewURL(webUrl, getActivity());
-            }
-        } else {
-            openWebViewURL(webUrl, getActivity());
-        }
-    }
-
-    public void openWebViewURL(String url, Context context) {
-        if (!TextUtils.isEmpty(url) && context != null) {
-            Intent intent = new Intent(context, BannerWebView.class);
-            intent.putExtra("url", url);
-            startActivity(intent);
-        }
-    }
-
-    @Override
-    public void onItemSearchClicked(String keyword, String categoryId) {
-        ((DiscoveryActivity) getActivity()).dropKeyboard();
-
-        if (!TextUtils.isEmpty(categoryId)) {
-            ((DiscoveryActivity) getActivity()).onSuggestionProductClick(keyword, categoryId);
-        } else {
-            ((DiscoveryActivity) getActivity()).onSuggestionProductClick(keyword);
-        }
-    }
-
-    @Override
-    public void copyTextToSearchView(String text) {
-        ((DiscoveryActivity) getActivity()).setSearchQuery(text + " ");
-    }
-
-    @Override
-    public void onDeleteRecentSearchItem(String keyword) {
-        ((DiscoveryActivity) getActivity()).deleteRecentSearch(keyword);
-    }
-
-    @Override
-    public void onDeleteAllRecentSearch() {
-        ((DiscoveryActivity) getActivity()).deleteAllRecentSearch();
-    }
 }
