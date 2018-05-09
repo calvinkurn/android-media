@@ -13,6 +13,7 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationManagerCompat;
+import android.widget.Switch;
 
 import com.bumptech.glide.Glide;
 import com.tokopedia.abstraction.AbstractionRouter;
@@ -70,32 +71,50 @@ public class ApplinkNotificationHelper {
     }
 
     public static int getNotificationId(String appLinks) {
-        Uri uri = Uri.parse(appLinks);
-        if (appLinks.contains("talk") || appLinks.contains("chat")) {
-            return Integer.parseInt(uri.getLastPathSegment());
-        }
+        try {
+            Uri uri = Uri.parse(appLinks);
+            if (uri.getPathSegments().size() > 0) {
+                String firstPathSegment = uri.getPathSegments().get(0);
+                if (firstPathSegment.equals("talk") || firstPathSegment.equals("chat")) {
+                    return Integer.parseInt(uri.getLastPathSegment());
+                }
+            }
 
-        return 0;
+            return 0;
+        } catch (Exception e) {
+            return 0;
+        }
     }
 
     public static int generateNotifictionId(String appLink) {
-        if (appLink.contains("talk")) {
-            return Constant.NotificationId.TALK;
-        } else if (appLink.contains("message")) {
+        try {
+            Uri uri = Uri.parse(appLink);
+            if (uri.getPathSegments().size() > 0) {
+                String firstPathSegment = uri.getPathSegments().get(0);
+                switch (firstPathSegment) {
+                    case "talk":
+                        return Constant.NotificationId.TALK;
+                    case "message":
+                        return Constant.NotificationId.GENERAL;
+                    case "groupchat":
+                        return Constant.NotificationId.GROUPCHAT;
+                    case "chat":
+                        return Constant.NotificationId.CHAT;
+                    case "buyer":
+                        return Constant.NotificationId.TRANSACTION;
+                    case "seller":
+                        return Constant.NotificationId.SELLER;
+                    case "resolution":
+                        return Constant.NotificationId.RESOLUTION;
+                    default:
+                        return Constant.NotificationId.GENERAL;
+                }
+            }
             return Constant.NotificationId.GENERAL;
-        } else if (appLink.contains("groupchat")) {
-            return Constant.NotificationId.GROUPCHAT;
-        } else if (appLink.contains("chat")) {
-            return Constant.NotificationId.CHAT;
-        } else if (appLink.contains("buyer")) {
-            return Constant.NotificationId.TRANSACTION;
-        } else if (appLink.contains("seller")) {
-            return Constant.NotificationId.SELLER;
-        } else if (appLink.contains("resolution")) {
-            return Constant.NotificationId.RESOLUTION;
-        } else {
+        } catch (Exception e) {
             return Constant.NotificationId.GENERAL;
         }
+
     }
 
     public static boolean checkLocalNotificationAppSettings(Context context, int code) {
