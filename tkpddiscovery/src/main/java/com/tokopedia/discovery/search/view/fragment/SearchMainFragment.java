@@ -122,6 +122,7 @@ public class SearchMainFragment extends TkpdBaseV4Fragment implements SearchCont
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setHasFixedSize(true);
+        recyclerView.scrollToPosition(0);
     }
 
     public void setCurrentTab(final int pos) {

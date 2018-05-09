@@ -15,7 +15,7 @@
         android:textSize="@dimen/sp_18"
         android:fontFamily="sans-serif-medium"
         android:textStyle="normal"
-        android:textColor="@color/black_54"
+        android:textColor="@color/colorSheetTitle"
         android:lineSpacingExtra="3sp"
         tools:text="Toko"
         />
@@ -30,10 +30,11 @@
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true"
         android:textSize="@dimen/sp_14"
-        android:fontFamily="sans-serif-medium"
+        android:fontFamily="sans-serif"
         android:textStyle="normal"
-        android:textColor="@color/black_54"
-        android:lineSpacingExtra="3sp"
+        android:textColor="@color/background_error"
+        android:lineSpacingExtra="-2sp"
+        android:gravity="end"
         android:text="@string/delete_all"
         />
 
