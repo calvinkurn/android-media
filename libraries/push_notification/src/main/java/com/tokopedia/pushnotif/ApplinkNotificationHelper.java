@@ -73,13 +73,10 @@ public class ApplinkNotificationHelper {
     public static int getNotificationId(String appLinks) {
         try {
             Uri uri = Uri.parse(appLinks);
-            if (uri.getPathSegments().size() > 0) {
-                String firstPathSegment = uri.getPathSegments().get(0);
-                if (firstPathSegment.equals("talk") || firstPathSegment.equals("chat")) {
-                    return Integer.parseInt(uri.getLastPathSegment());
-                }
+            String host = uri.getHost();
+            if (host.equals("talk") || host.equals("topchat")) {
+                return Integer.parseInt(uri.getLastPathSegment());
             }
-
             return 0;
         } catch (Exception e) {
             return 0;
@@ -89,28 +86,23 @@ public class ApplinkNotificationHelper {
     public static int generateNotifictionId(String appLink) {
         try {
             Uri uri = Uri.parse(appLink);
-            if (uri.getPathSegments().size() > 0) {
-                String firstPathSegment = uri.getPathSegments().get(0);
-                switch (firstPathSegment) {
-                    case "talk":
-                        return Constant.NotificationId.TALK;
-                    case "message":
-                        return Constant.NotificationId.GENERAL;
-                    case "groupchat":
-                        return Constant.NotificationId.GROUPCHAT;
-                    case "chat":
-                        return Constant.NotificationId.CHAT;
-                    case "buyer":
-                        return Constant.NotificationId.TRANSACTION;
-                    case "seller":
-                        return Constant.NotificationId.SELLER;
-                    case "resolution":
-                        return Constant.NotificationId.RESOLUTION;
-                    default:
-                        return Constant.NotificationId.GENERAL;
-                }
+            String host = uri.getHost();
+            switch (host) {
+                case "talk":
+                    return Constant.NotificationId.TALK;
+                case "groupchat":
+                    return Constant.NotificationId.GROUPCHAT;
+                case "topchat":
+                    return Constant.NotificationId.CHAT;
+                case "buyer":
+                    return Constant.NotificationId.TRANSACTION;
+                case "seller":
+                    return Constant.NotificationId.SELLER;
+                case "resolution":
+                    return Constant.NotificationId.RESOLUTION;
+                default:
+                    return Constant.NotificationId.GENERAL;
             }
-            return Constant.NotificationId.GENERAL;
         } catch (Exception e) {
             return Constant.NotificationId.GENERAL;
         }
