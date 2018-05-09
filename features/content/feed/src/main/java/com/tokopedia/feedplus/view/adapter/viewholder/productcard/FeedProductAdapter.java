@@ -56,7 +56,7 @@ public class FeedProductAdapter extends RecyclerView.Adapter<FeedProductAdapter.
     }
 
     @Override
-    public void onBindViewHolder(ViewHolder holder, final int position) {
+    public void onBindViewHolder(final ViewHolder holder, int position) {
         final ArrayList<ProductFeedViewModel> list = activityCardViewModel.getListProduct();
         ImageHandler.loadImage2(
                 holder.productImage,
@@ -98,7 +98,7 @@ public class FeedProductAdapter extends RecyclerView.Adapter<FeedProductAdapter.
             holder.container.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    goToProductDetail(list, position);
+                    goToProductDetail(list, holder.getAdapterPosition());
                 }
             });
         }
@@ -202,14 +202,13 @@ public class FeedProductAdapter extends RecyclerView.Adapter<FeedProductAdapter.
         int paddingSide, paddingTop, paddingBottom;
         Resources resources = context.getResources();
 
-        holder.productName.setMinLines(2);
+        holder.productName.setLines(2);
 
         if (getItemCount() == 1) {
             paddingTop = (int) resources.getDimension(R.dimen.product_padding_medium);
             paddingBottom = (int) resources.getDimension(R.dimen.product_padding_medium);
 
-            holder.productName.setMinLines(1);
-            holder.productName.setMaxLines(1);
+            holder.productName.setLines(1);
         } else if (getItemCount() == MAX_FEED_SIZE_SMALL) {
             paddingTop = (int) resources.getDimension(R.dimen.product_padding_small);
             paddingBottom = (int) resources.getDimension(R.dimen.product_padding_small);
