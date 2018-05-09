@@ -5,16 +5,19 @@ import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.ColorMatrixColorFilter;
+import android.graphics.PorterDuff;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AccelerateInterpolator;
+import android.widget.ImageView;
 
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
@@ -31,12 +34,17 @@ import com.yalantis.ucrop.view.UCropView;
 
 import java.io.File;
 
+import static com.tokopedia.imagepicker.editor.main.Constant.BRIGHTNESS_PRECISION;
+import static com.tokopedia.imagepicker.editor.main.Constant.CONTRAST_PRECISION;
+import static com.tokopedia.imagepicker.editor.main.Constant.INITIAL_CONTRAST_VALUE;
+
 /**
  * Created by hendry on 25/04/18.
  */
 
 public class ImageEditPreviewFragment extends Fragment implements ImageEditPreviewPresenter.ImageEditPreviewView {
 
+    public static final String ARG_IMAGE_INDEX = "arg_img_index";
     public static final String ARG_IMAGE_PATH = "arg_img_path";
     public static final String ARG_MIN_RESOLUTION = "arg_min_resolution";
     public static final String ARG_EXPECTED_RATIO_X = "arg_expected_ratio_x";
@@ -46,9 +54,6 @@ public class ImageEditPreviewFragment extends Fragment implements ImageEditPrevi
 
     public static final String SAVED_BRIGHTNESS = "svd_brightness";
     public static final String SAVED_CONTRAST = "svd_contrast";
-    public static final int INITIAL_CONTRAST_VALUE = 100;
-    public static final int BRIGHTNESS_PRECISION = 10;
-    public static final int CONTRAST_PRECISION = 100;
 
     private String edittedImagePath;
     private int minResolution = 0;
@@ -66,7 +71,11 @@ public class ImageEditPreviewFragment extends Fragment implements ImageEditPrevi
     private GestureCropImageView gestureCropImageView;
     private OverlayView overlayView;
 
+    private ImageView ivUndo;
+    private ImageView ivRedo;
+
     private ImageEditPreviewPresenter imageEditPreviewPresenter;
+    private int imageIndex;
 
     public interface OnImageEditPreviewFragmentListener {
         boolean isInEditMode();
@@ -78,12 +87,24 @@ public class ImageEditPreviewFragment extends Fragment implements ImageEditPrevi
         void onErrorSaveEditImage(Throwable throwable);
 
         void setRotateAngle(float angle);
+
+        void undoToPrevImage(int imageIndex);
+
+        void redoToPrevImage(int imageIndex);
+
+        boolean hasHistory(int imageIndex);
+
+        boolean canUndo(int imageIndex);
+
+        boolean canRedo(int imageIndex);
     }
 
-    public static ImageEditPreviewFragment newInstance(String imagePath, int minResolution,
+    public static ImageEditPreviewFragment newInstance(int imageIndex,
+                                                       String imagePath, int minResolution,
                                                        int ratioX, int ratioY,
                                                        boolean isCirclePreview) {
         Bundle args = new Bundle();
+        args.putInt(ARG_IMAGE_INDEX, imageIndex);
         args.putString(ARG_IMAGE_PATH, imagePath);
         args.putInt(ARG_MIN_RESOLUTION, minResolution);
         args.putInt(ARG_EXPECTED_RATIO_X, ratioX);
@@ -107,6 +128,7 @@ public class ImageEditPreviewFragment extends Fragment implements ImageEditPrevi
         View view = inflater.inflate(R.layout.fragment_image_edit_preview, container, false);
 
         Bundle bundle = getArguments();
+        imageIndex = bundle.getInt(ARG_IMAGE_INDEX);
         minResolution = bundle.getInt(ARG_MIN_RESOLUTION);
         edittedImagePath = bundle.getString(ARG_IMAGE_PATH);
         expectedRatioX = bundle.getInt(ARG_EXPECTED_RATIO_X);
@@ -125,7 +147,60 @@ public class ImageEditPreviewFragment extends Fragment implements ImageEditPrevi
         initProgressBar(view);
 
         blockingView = view.findViewById(R.id.blocking_view);
+
+        setupUndoRedo(view);
+
         return view;
+    }
+
+    private void setupUndoRedo(View view){
+        ivUndo = view.findViewById(R.id.iv_undo);
+        ivRedo = view.findViewById(R.id.iv_redo);
+        ivUndo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onUndoButtonClicked();
+            }
+        });
+        ivRedo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onRedoButtonClicked();
+            }
+        });
+        renderUndoRedo();
+    }
+
+    private void renderUndoRedo(){
+        if (onImageEditPreviewFragmentListener.hasHistory(imageIndex) && onImageEditPreviewFragmentListener.isInEditMode()) {
+
+            if (onImageEditPreviewFragmentListener.canUndo(imageIndex)) {
+                ivUndo.getDrawable().clearColorFilter();
+            } else {
+                ivUndo.getDrawable().setColorFilter(ContextCompat.getColor(getContext(), R.color.grey_700),
+                        PorterDuff.Mode.MULTIPLY);
+            }
+            ivUndo.setVisibility(View.VISIBLE);
+
+            if (onImageEditPreviewFragmentListener.canRedo(imageIndex)) {
+                ivRedo.getDrawable().clearColorFilter();
+            } else {
+                ivRedo.getDrawable().setColorFilter(ContextCompat.getColor(getContext(), R.color.grey_700),
+                        PorterDuff.Mode.MULTIPLY);
+            }
+            ivRedo.setVisibility(View.VISIBLE);
+        } else {
+            ivUndo.setVisibility(View.GONE);
+            ivRedo.setVisibility(View.GONE);
+        }
+    }
+
+    private void onUndoButtonClicked() {
+        onImageEditPreviewFragmentListener.undoToPrevImage(imageIndex);
+    }
+
+    private void onRedoButtonClicked() {
+        onImageEditPreviewFragmentListener.redoToPrevImage(imageIndex);
     }
 
     private void initUCrop(final View view) {
@@ -159,7 +234,7 @@ public class ImageEditPreviewFragment extends Fragment implements ImageEditPrevi
             gestureCropImageView.setColorFilter(imageEditPreviewPresenter.getBrightnessMatrix(brightness / BRIGHTNESS_PRECISION));
         }
 
-        if (contrast!= INITIAL_CONTRAST_VALUE) {
+        if (contrast != INITIAL_CONTRAST_VALUE) {
             gestureCropImageView.setColorFilter(imageEditPreviewPresenter.getContrastMatrix(contrast / CONTRAST_PRECISION));
         }
     }
@@ -184,6 +259,10 @@ public class ImageEditPreviewFragment extends Fragment implements ImageEditPrevi
             this.contrast = contrastValue;
             imageEditPreviewPresenter.getDebounceContrastMatrix(contrastValue / CONTRAST_PRECISION);
         }
+    }
+
+    public int getImageIndex() {
+        return imageIndex;
     }
 
     @Override
@@ -389,10 +468,6 @@ public class ImageEditPreviewFragment extends Fragment implements ImageEditPrevi
             }
             overlayView.invalidate();
         }
-    }
-
-    public void setScaleEnabled(boolean isScaleEnabled) {
-        gestureCropImageView.setScaleEnabled(isScaleEnabled);
     }
 
     public void cancelCropRotateImage() {

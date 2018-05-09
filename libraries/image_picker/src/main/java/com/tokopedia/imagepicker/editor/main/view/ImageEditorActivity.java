@@ -29,6 +29,11 @@ import com.tokopedia.imagepicker.picker.main.builder.ImageEditActionTypeDef;
 import java.io.File;
 import java.util.ArrayList;
 
+import static com.tokopedia.imagepicker.editor.main.Constant.HALF_BRIGHTNESS_RANGE;
+import static com.tokopedia.imagepicker.editor.main.Constant.HALF_CONTRAST_RANGE;
+import static com.tokopedia.imagepicker.editor.main.Constant.HALF_ROTATE_RANGE;
+import static com.tokopedia.imagepicker.editor.main.Constant.INITIAL_CONTRAST_VALUE;
+
 /**
  * Created by Hendry on 9/25/2017.
  */
@@ -50,8 +55,8 @@ public class ImageEditorActivity extends BaseSimpleActivity implements ImageEdit
     public static final String SAVED_EDIT_TYPE = "SAVED_EDIT_TYPE";
 
     public static final String EDIT_RESULT_PATHS = "result_paths";
-    public static final int MAX_HISTORY_PER_IMAGE = 5;
 
+    public static final int MAX_HISTORY_PER_IMAGE = 5;
 
     private ArrayList<String> extraImageUrls;
     private int minResolution;
@@ -129,7 +134,8 @@ public class ImageEditorActivity extends BaseSimpleActivity implements ImageEdit
 
         Intent intent = getIntent();
         //for test only
-        //extraImageUrls.add("https://scontent-sit4-1.cdninstagram.com/vp/4d462c7e62452e54862602872a4f2f55/5B772ADA/t51.2885-15/e35/30603662_2044572549200360_6725615414816014336_n.jpg");
+//        extraImageUrls = new ArrayList<>();
+//        extraImageUrls.add("https://scontent-sit4-1.cdninstagram.com/vp/4d462c7e62452e54862602872a4f2f55/5B772ADA/t51.2885-15/e35/30603662_2044572549200360_6725615414816014336_n.jpg");
 
         if (intent.hasExtra(EXTRA_IMAGE_URLS)) {
             extraImageUrls = intent.getStringArrayListExtra(EXTRA_IMAGE_URLS);
@@ -290,7 +296,7 @@ public class ImageEditorActivity extends BaseSimpleActivity implements ImageEdit
                 //delete the file, so we can reserve space more
                 String pathToDelete = edittedImagePaths.get(currentImageIndex).get(j);
                 ImageUtils.deleteFile(pathToDelete);
-                edittedImagePaths.remove(j);
+                edittedImagePaths.get(currentImageIndex).remove(j);
             }
         }
         // append the path to array
@@ -305,12 +311,12 @@ public class ImageEditorActivity extends BaseSimpleActivity implements ImageEdit
             String stepNo1Path = edittedImagePaths.get(currentImageIndex).get(1);
             ImageUtils.deleteFile(stepNo1Path);
 
-            edittedImagePaths.remove(1);
+            edittedImagePaths.get(currentImageIndex).remove(1);
             //since the paths is removed by 1, decrease the lastStep by 1.
             currentEditStepIndexList.set(currentImageIndex, lastEmptyStep - 1);
         }
 
-        refreshViewPager();
+        refreshCurrentPage();
         imageEditThumbnailListWidget.notifyDataSetChanged();
 
         setupEditMode(false, ImageEditActionTypeDef.ACTION_CROP_ROTATE);
@@ -322,16 +328,18 @@ public class ImageEditorActivity extends BaseSimpleActivity implements ImageEdit
         setupEditMode(false, ImageEditActionTypeDef.ACTION_CROP_ROTATE);
     }
 
-    private void refreshViewPager() {
-        imageEditorViewPagerAdapter.setEdittedImagePaths(edittedImagePaths);
+    private void refreshCurrentPage() {
+        refreshPage(currentImageIndex);
+    }
+
+    private void refreshPage(int imageIndex) {
         imageEditorViewPagerAdapter.setCurrentEditStepIndexList(currentEditStepIndexList);
-        viewPager.setAdapter(imageEditorViewPagerAdapter);
-        viewPager.post(new Runnable() {
-            @Override
-            public void run() {
-                viewPager.setCurrentItem(currentImageIndex, false);
-            }
-        });
+        imageEditorViewPagerAdapter.setEdittedImagePaths(edittedImagePaths);
+        ImageEditPreviewFragment fragment = getFragment(imageIndex);
+        if (fragment != null) {
+            imageEditorViewPagerAdapter.destroyIndex(imageIndex);
+            imageEditorViewPagerAdapter.notifyDataSetChanged();
+        }
     }
 
     private int getCurrentStepForCurrentImage() {
@@ -351,6 +359,10 @@ public class ImageEditorActivity extends BaseSimpleActivity implements ImageEdit
 
     private ImageEditPreviewFragment getCurrentFragment() {
         return (ImageEditPreviewFragment) imageEditorViewPagerAdapter.getRegisteredFragment(currentImageIndex);
+    }
+
+    private ImageEditPreviewFragment getFragment(int imageIndex) {
+        return (ImageEditPreviewFragment) imageEditorViewPagerAdapter.getRegisteredFragment(imageIndex);
     }
 
     private void showEditLoading() {
@@ -447,7 +459,7 @@ public class ImageEditorActivity extends BaseSimpleActivity implements ImageEdit
         if (brightnessSeekbar == null) {
             brightnessSeekbar = findViewById(R.id.seekBar_brightness);
             brightnessSeekbar.reset();
-            brightnessSeekbar.setSeekLength(-500, 500, 0, 1f);
+            brightnessSeekbar.setSeekLength(-HALF_BRIGHTNESS_RANGE, HALF_BRIGHTNESS_RANGE, 0, 1f);
             brightnessSeekbar.setOnSeekChangeListener(new TwoLineSeekBar.OnSeekChangeListener() {
                 @Override
                 public void onSeekChanged(float previousValue, float value, float step) {
@@ -470,8 +482,7 @@ public class ImageEditorActivity extends BaseSimpleActivity implements ImageEdit
         if (rotateSeekbar == null) {
             rotateSeekbar = findViewById(R.id.seekBar_rotate);
             rotateSeekbar.reset();
-            rotateSeekbar.setSeekLength(-45, 45, 0, 1f);
-            rotateSeekbar.setValue(0);
+            rotateSeekbar.setSeekLength(-HALF_ROTATE_RANGE, HALF_ROTATE_RANGE, 0, 1f);
 
             rotateSeekbar.setOnSeekChangeListener(new TwoLineSeekBar.OnSeekChangeListener() {
                 @Override
@@ -490,13 +501,16 @@ public class ImageEditorActivity extends BaseSimpleActivity implements ImageEdit
                 }
             });
         }
+        rotateSeekbar.setValue(0);
     }
 
     private void setupContrastWidget() {
         if (contrastSeekbar == null) {
             contrastSeekbar = findViewById(R.id.seekBar_contrast);
             contrastSeekbar.reset();
-            contrastSeekbar.setSeekLength(50, 150, 100, 1f);
+            contrastSeekbar.setSeekLength(INITIAL_CONTRAST_VALUE - HALF_CONTRAST_RANGE,
+                    INITIAL_CONTRAST_VALUE + HALF_CONTRAST_RANGE,
+                    INITIAL_CONTRAST_VALUE, 1f);
             contrastSeekbar.setOnSeekChangeListener(new TwoLineSeekBar.OnSeekChangeListener() {
                 @Override
                 public void onSeekChanged(float previousValue, float value, float step) {
@@ -519,6 +533,44 @@ public class ImageEditorActivity extends BaseSimpleActivity implements ImageEdit
     public void setRotateAngle(float angle) {
         // update view when the angle is changed by pinching
         // currently no operation.
+    }
+
+    public void undoToPrevImage(int imageIndex) {
+        int currentStep = currentEditStepIndexList.get(imageIndex);
+        // check if can undo
+        if (currentStep > 0) {
+            currentEditStepIndexList.set(imageIndex, currentStep - 1);
+            refreshPage(imageIndex);
+            imageEditThumbnailListWidget.notifyDataSetChanged();
+        }
+    }
+
+    @Override
+    public void redoToPrevImage(int imageIndex) {
+        int currentStep = currentEditStepIndexList.get(imageIndex);
+        if (canRedo(imageIndex)) {
+            currentEditStepIndexList.set(imageIndex, currentStep + 1);
+            refreshPage(imageIndex);
+            imageEditThumbnailListWidget.notifyDataSetChanged();
+        }
+    }
+
+    @Override
+    public boolean hasHistory(int imageIndex) {
+        return edittedImagePaths.get(imageIndex).size() > 1;
+    }
+
+    @Override
+    public boolean canUndo(int imageIndex) {
+        return currentEditStepIndexList.get(imageIndex) > 0;
+    }
+
+    @Override
+    public boolean canRedo(int imageIndex) {
+        ArrayList<String> currentImagePaths = edittedImagePaths.get(imageIndex);
+        int size = currentImagePaths.size();
+        int currentStep = currentEditStepIndexList.get(imageIndex);
+        return currentStep < size - 1;
     }
 
     public void setUIBrightnessValue(float brightnessValue) {
