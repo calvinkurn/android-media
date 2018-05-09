@@ -6,11 +6,8 @@
 
     <com.tokopedia.design.item.DeletableItemView
         android:id="@+id/autocomplete_chips_item"
-        style="@style/TextView.Small.BlackSecondary"
-        android:paddingTop="@dimen/dp_12"
-        android:paddingBottom="@dimen/dp_12"
-        android:paddingLeft="@dimen/dp_12"
-        android:paddingRight="@dimen/dp_12"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         tools:text="superstar"
         />
 

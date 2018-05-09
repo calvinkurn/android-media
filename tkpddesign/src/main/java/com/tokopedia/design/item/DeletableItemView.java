@@ -26,6 +26,7 @@ public class DeletableItemView extends BaseCustomView {
     private ImageView imageView;
 
     private OnDeleteListener onDeleteListener;
+    private OnTextClickListener onTextClickListener;
 
     public DeletableItemView(@NonNull Context context) {
         super(context);
@@ -45,6 +46,14 @@ public class DeletableItemView extends BaseCustomView {
     private void init(Context context) {
         rootView = inflate(context, R.layout.widget_deletable_item_view, this);
         textView = (TextView) rootView.findViewById(R.id.item_name);
+        textView.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (onTextClickListener != null) {
+                    onTextClickListener.onClick();
+                }
+            }
+        });
         imageView = (ImageView) rootView.findViewById(R.id.item_image);
         buttonView = rootView.findViewById(R.id.delete_button);
         buttonView.setOnClickListener(new OnClickListener() {
@@ -83,7 +92,15 @@ public class DeletableItemView extends BaseCustomView {
         this.onDeleteListener = onDeleteListener;
     }
 
+    public void setOnTextClickListener(OnTextClickListener onTextClickListener) {
+        this.onTextClickListener = onTextClickListener;
+    }
+
     public interface OnDeleteListener {
         void onDelete();
+    }
+
+    public interface OnTextClickListener {
+        void onClick();
     }
 }

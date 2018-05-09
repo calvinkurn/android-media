@@ -104,9 +104,9 @@ public class RecentViewHolder extends AbstractViewHolder<RecentSearch> {
                         clickListener.onDeleteRecentSearchItem(item.getKeyword());
                     }
                 });
-                itemView.setOnClickListener(new View.OnClickListener() {
+                textView.setOnTextClickListener(new DeletableItemView.OnTextClickListener() {
                     @Override
-                    public void onClick(View v) {
+                    public void onClick() {
                         UnifyTracking.eventClickRecentSearch(item.getKeyword());
                         clickListener.onItemSearchClicked(
                                 item.getKeyword(),
