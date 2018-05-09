@@ -8,6 +8,7 @@ import com.sendbird.android.SendBirdException;
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.groupchat.R;
 import com.tokopedia.groupchat.common.network.ErrorNetworkException;
+import com.tokopedia.vote.network.VoteErrorException;
 
 import java.io.IOException;
 import java.net.SocketTimeoutException;
@@ -98,6 +99,15 @@ public class GroupChatErrorHandler {
             return formattedString(e.getMessage(),
                     ((ErrorNetworkException) e).getErrorCode(), withCode);
         } else if (e instanceof ErrorNetworkException
+                && !TextUtils.isEmpty(e.getMessage())) {
+            return formattedString(e.getMessage(),
+                    GroupChatErrorCode.WS_ERROR, withCode);
+        } else if (e instanceof VoteErrorException
+                && !TextUtils.isEmpty(e.getMessage())
+                && !TextUtils.isEmpty(((VoteErrorException) e).getErrorCode())) {
+            return formattedString(e.getMessage(),
+                    ((VoteErrorException) e).getErrorCode(), withCode);
+        } else if (e instanceof VoteErrorException
                 && !TextUtils.isEmpty(e.getMessage())) {
             return formattedString(e.getMessage(),
                     GroupChatErrorCode.WS_ERROR, withCode);
