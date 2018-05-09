@@ -850,7 +850,6 @@ Ingatlah untuk mengkonfirmasi bahwa email di atas adalah benar dan periksa junk 
     <string name="title_activity_browse_category">Direktori</string>
     <string name="title_activity_manage_product">Daftar Produk</string>
     <string name="title_activity_choose_address">Alamat</string>
-    <string name="title_activity_search_address">Tulis Kota/Kecamatan</string>
     <string name="title_activity_cart">Keranjang</string>
     <string name="title_activity_shop_editor">Ubah Informasi Toko</string>
     <string name="title_activity_share">Bagikan</string>

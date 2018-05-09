@@ -225,6 +225,7 @@ ext {
             seller          : ":tkpdseller",
             payment         : ":features:payment:payment",
             wishlistCommon  : ":features:discovery:wishlist_common",
+            districtRecommendation: ":features:logistic:district_recommendation",
             goldMerchantCommon: ":features:merchant:gold_merchant_common",
             goldMerchant    : ":features:merchant:gold_merchant",
             reputationCommon: ":features:merchant:reputation_common",
