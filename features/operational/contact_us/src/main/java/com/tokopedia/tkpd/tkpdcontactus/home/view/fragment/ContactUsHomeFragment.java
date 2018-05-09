@@ -15,13 +15,13 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.tkpd.library.viewpagerindicator.CirclePageIndicator;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.di.component.HasComponent;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.contactus.R;
 import com.tokopedia.contactus.R2;
-import com.tokopedia.core.router.TkpdInboxRouter;
 import com.tokopedia.inbox.inboxticket.activity.InboxTicketActivity;
 import com.tokopedia.tkpd.tkpdcontactus.common.api.ContactUsURL;
 import com.tokopedia.tkpd.tkpdcontactus.common.customview.ShadowTransformer;
@@ -65,6 +65,8 @@ public class ContactUsHomeFragment extends BaseDaggerFragment implements Contact
     TextView txtHiUser;
 
     String topBotUrl;
+    @BindView(R2.id.pager_indicator)
+    CirclePageIndicator pagerIndicator;
 
     private ContactUsComponent campaignComponent;
 
@@ -88,7 +90,7 @@ public class ContactUsHomeFragment extends BaseDaggerFragment implements Contact
         cardAdapter = new CardPagerAdapter();
         ShadowTransformer shadowTransformer = new ShadowTransformer(orderListViewpager, cardAdapter);
         orderListViewpager.setPageTransformer(false, shadowTransformer);
-        orderListViewpager.setPageMargin((int)getResources().getDimension(R.dimen.product_item_margin));
+        orderListViewpager.setPageMargin((int) getResources().getDimension(R.dimen.product_item_margin));
         orderListViewpager.setOffscreenPageLimit(3);
         setHasOptionsMenu(true);
         return view;
@@ -97,14 +99,14 @@ public class ContactUsHomeFragment extends BaseDaggerFragment implements Contact
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
-        inflater.inflate(R.menu.contactus_menu_home,menu);
+        inflater.inflate(R.menu.contactus_menu_home, menu);
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int i = item.getItemId();
         if (i == R.id.action_inbox) {
-            startActivity(new Intent(getContext(),InboxTicketActivity.class));
+            startActivity(new Intent(getContext(), InboxTicketActivity.class));
             return true;
         }
         return super.onOptionsItemSelected(item);
@@ -159,10 +161,12 @@ public class ContactUsHomeFragment extends BaseDaggerFragment implements Contact
     @Override
     public void setPurchaseList(List<BuyerPurchaseList> buyerPurchaseLists) {
         orderList.setVisibility(View.VISIBLE);
-        if(buyerPurchaseLists.size()<=0)
+        if (buyerPurchaseLists.size() <= 0)
             btnFullPurchaseList.setVisibility(View.GONE);
         cardAdapter.addData(buyerPurchaseLists);
         orderListViewpager.setAdapter(cardAdapter);
+        if(buyerPurchaseLists.size()>1)
+            pagerIndicator.setViewPager(orderListViewpager);
     }
 
     @Override
@@ -172,12 +176,12 @@ public class ContactUsHomeFragment extends BaseDaggerFragment implements Contact
 
     @Override
     public void setChatBotMessageId(int msgId) {
-        topBotUrl = ContactUsURL.TOP_BOT_BASE_URL +msgId;
+        topBotUrl = ContactUsURL.TOP_BOT_BASE_URL + msgId;
     }
 
     @Override
     public void setHighMessageUserName(String userName) {
-        txtHiUser.setText(String.format(getResources().getString(R.string.hai_user),userName));
+        txtHiUser.setText(String.format(getResources().getString(R.string.hai_user), userName));
     }
 
 
@@ -194,12 +198,13 @@ public class ContactUsHomeFragment extends BaseDaggerFragment implements Contact
 
     @OnClick(R2.id.btn_contact_us)
     public void onBtnContactUsClicked() {
-        startActivity(((TkpdInboxRouter)getContext().getApplicationContext()).getHelpUsIntent(getContext()));
+
+        RouteManager.route(getContext(), ContactUsURL.NAVIGATE_NEXT_URL);
     }
 
     @OnClick(R2.id.btn_chat_toped)
     public void onBtnChatClicked() {
-        RouteManager.route(getContext(),topBotUrl);
+        RouteManager.route(getContext(), topBotUrl);
     }
 
     @Override
