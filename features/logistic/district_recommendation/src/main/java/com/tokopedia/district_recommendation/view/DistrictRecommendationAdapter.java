@@ -6,15 +6,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.tokopedia.core.R;
-import com.tokopedia.core.R2;
 import com.tokopedia.core.customadapter.BaseLinearRecyclerViewAdapter;
+import com.tokopedia.district_recommendation.R;
 import com.tokopedia.district_recommendation.domain.model.Address;
 
 import java.util.ArrayList;
-
-import butterknife.BindView;
-import butterknife.ButterKnife;
 
 /**
  * Created by Irfan Khoirul on 31/10/17.
@@ -93,13 +89,12 @@ public class DistrictRecommendationAdapter extends BaseLinearRecyclerViewAdapter
 
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
-        @BindView(R2.id.tvAddress)
-        TextView tvAddress;
+        private TextView tvAddress;
 
         public ViewHolder(View itemView) {
             super(itemView);
+            tvAddress = itemView.findViewById(R.id.tvAddress);
             itemView.setOnClickListener(this);
-            ButterKnife.bind(this, itemView);
         }
 
         @Override

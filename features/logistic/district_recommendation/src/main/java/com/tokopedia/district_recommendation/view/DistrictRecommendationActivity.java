@@ -7,8 +7,8 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 
-import com.tokopedia.core.R;
 import com.tokopedia.core.app.BasePresenterActivity;
+import com.tokopedia.district_recommendation.R;
 import com.tokopedia.district_recommendation.domain.model.Token;
 
 import static com.tokopedia.district_recommendation.view.DistrictRecommendationContract.Constant.ARGUMENT_DATA_TOKEN;

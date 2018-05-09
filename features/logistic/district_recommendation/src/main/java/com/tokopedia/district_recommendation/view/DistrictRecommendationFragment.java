@@ -14,12 +14,11 @@ import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.tokopedia.core.R;
-import com.tokopedia.core.R2;
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.base.data.executor.JobExecutor;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.presentation.UIThread;
+import com.tokopedia.district_recommendation.R;
 import com.tokopedia.district_recommendation.di.DaggerDistrictRecommendationComponent;
 import com.tokopedia.district_recommendation.di.DistrictRecommendationComponent;
 import com.tokopedia.district_recommendation.domain.model.Address;
@@ -30,7 +29,6 @@ import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 
-import butterknife.BindView;
 import rx.Observable;
 import rx.Subscriber;
 import rx.schedulers.Schedulers;
@@ -44,16 +42,13 @@ public class DistrictRecommendationFragment
         implements DistrictRecommendationContract.View, DistrictRecommendationAdapter.Listener {
 
     private static final int THRESHOLD = 3;
-    @BindView(R2.id.search_address)
-    SearchView searchAddress;
-    @BindView(R2.id.recycler_view_suggestion)
-    RecyclerView rvAddressSuggestion;
-    @BindView(R2.id.pb_loading)
-    ProgressBar pbLoading;
-    @BindView(R2.id.tv_message)
-    TextView tvMessage;
-    @BindView(R2.id.network_error_view)
-    LinearLayout networkErrorView;
+
+    private SearchView searchAddress;
+    private RecyclerView rvAddressSuggestion;
+    private ProgressBar pbLoading;
+    private TextView tvMessage;
+    private LinearLayout networkErrorView;
+
     private int maxItemPosition;
     private OnQueryListener queryListener;
     private DistrictRecommendationAdapter adapter;
@@ -132,7 +127,13 @@ public class DistrictRecommendationFragment
 
     @Override
     protected void initView(View view) {
-        searchAddress.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+        this.searchAddress = view.findViewById(R.id.search_address);
+        this.rvAddressSuggestion = view.findViewById(R.id.recycler_view_suggestion);
+        this.pbLoading = view.findViewById(R.id.pb_loading);
+        this.tvMessage = view.findViewById(R.id.tv_message);
+        this.networkErrorView = view.findViewById(R.id.network_error_view);
+
+        this.searchAddress.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
                 submitQuery(query);
