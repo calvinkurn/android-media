@@ -24,6 +24,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.data.model.storage.CacheManager;
+import com.tokopedia.abstraction.common.utils.TKPDMapParam;
 import com.tokopedia.applink.ApplinkRouter;
 import com.tokopedia.cacheapi.domain.interactor.CacheApiClearAllUseCase;
 import com.tokopedia.core.analytics.ScreenTracking;
@@ -93,6 +94,9 @@ import com.tokopedia.digital.product.view.activity.DigitalWebActivity;
 import com.tokopedia.digital.tokocash.TopupTokoCashFragment;
 import com.tokopedia.discovery.DiscoveryRouter;
 import com.tokopedia.discovery.intermediary.view.IntermediaryActivity;
+import com.tokopedia.events.data.entity.response.verifyresponse.VerifyCartResponse;
+import com.tokopedia.events.di.EventComponent;
+import com.tokopedia.events.di.EventModule;
 import com.tokopedia.feedplus.FeedModuleRouter;
 import com.tokopedia.feedplus.domain.model.FollowKolDomain;
 import com.tokopedia.feedplus.domain.model.LikeKolDomain;
@@ -231,6 +235,7 @@ import com.tokopedia.tkpdreactnative.router.ReactNativeRouter;
 import com.tokopedia.tokocash.TokoCashRouter;
 import com.tokopedia.tokocash.WalletUserSession;
 import com.tokopedia.tokocash.di.DaggerTokoCashComponent;
+import com.tokopedia.events.di.DaggerEventComponent;
 import com.tokopedia.tokocash.di.TokoCashComponent;
 import com.tokopedia.tokocash.historytokocash.presentation.model.PeriodRangeModelData;
 import com.tokopedia.tokocash.pendingcashback.domain.PendingCashback;
@@ -283,6 +288,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     private DaggerReactNativeComponent.Builder daggerReactNativeBuilder;
     private DaggerFlightConsumerComponent.Builder daggerFlightBuilder;
     private DaggerContentConsumerComponent.Builder daggerContentBuilder;
+    private EventComponent eventComponent;
     private FlightConsumerComponent flightConsumerComponent;
     private ContentConsumerComponent contentConsumerComponent;
     private ProductComponent productComponent;
@@ -354,6 +360,11 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
         daggerContentBuilder = DaggerContentConsumerComponent.builder()
                 .feedPlusComponent(feedPlusComponent);
+
+        eventComponent = DaggerEventComponent.builder()
+                .appComponent(getApplicationComponent())
+                .eventModule(new EventModule(this))
+                .build();
     }
 
     private void initRemoteConfig() {
@@ -1242,6 +1253,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         return sessionHandler.getEmail();
     }
 
+    @Override
     public Fragment getTopupTokoCashFragment() {
         return TopupTokoCashFragment.newInstance();
     }
@@ -1807,6 +1819,23 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
             @Override
             public void onCreateShareContents(String shareContents, String shareUri, String branchUrl) {
                 listener.onGenerateLink(shareContents, shareUri);
+            }
+        });
+    }
+
+    @Override
+    public Observable<TKPDMapParam<String, Object>> verifyEventPromo(RequestParams requestParams) {
+        return eventComponent.getPostVerifyCartUseCase().getExecuteObservableAsync(requestParams).map(new Func1<VerifyCartResponse, TKPDMapParam<String, Object>>() {
+            @Override
+            public TKPDMapParam<String, Object> call(VerifyCartResponse verifyCartResponse) {
+                TKPDMapParam<String, Object> resultMap = new TKPDMapParam<>();
+                resultMap.put("promocode", verifyCartResponse.getCart().getPromocode());
+                resultMap.put("promocode_discount", verifyCartResponse.getCart().getPromocodeDiscount());
+                resultMap.put("promocode_cashback", verifyCartResponse.getCart().getPromocodeCashback());
+                resultMap.put("promocode_failure_message", verifyCartResponse.getCart().getPromocodeFailureMessage());
+                resultMap.put("promocode_success_message", verifyCartResponse.getCart().getPromocodeSuccessMessage());
+                resultMap.put("promocode_status", verifyCartResponse.getCart().getPromocodeStatus());
+                return resultMap;
             }
         });
     }
