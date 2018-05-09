@@ -1892,5 +1892,9 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     public UseCase<String> setCreditCardSingleAuthentication() {
         return new CreditCardFingerPrintUseCase();
     }
+    @Override
+    public Intent getHelpUsIntent(Context context) {
+       return  new Intent(context,ContactUsActivity.class);
+    }
 
 }

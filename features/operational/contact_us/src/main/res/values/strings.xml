@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">feature/operational/contact_us</string>
     <string name="mail_us">Email</string>
-    <string name="hai_user">Hai %S!</string>
+    <string name="hai_user">Hai %s!</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
 
@@ -11,7 +11,7 @@
     <string name="submit_ticket_title">Form Bantuan</string>
     <string name="title_dialog_wrong_scan">Tunggu...</string>
     <string name="batal">Batal</string>
-    <string name="keular">Keular</string>
+    <string name="keular">Keluar</string>
     <string name="error_msg_wrong_size">Ups! Ukuran gambar yang di-upload lebih dari 10MB</string>
     <string name="error_msg_wrong_height_width">Ups! Ukuran gambar yang Anda pilih terlalu kecil. Minimal 300 x 300 piksel.</string>
 </resources>

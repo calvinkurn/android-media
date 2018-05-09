@@ -66,5 +66,7 @@ public interface TkpdInboxRouter {
 
     void startAddProduct(Activity activity, String shopId);
 
+    Intent getHelpUsIntent(Context context);
+
     boolean isEnabledGroupChat();
 }

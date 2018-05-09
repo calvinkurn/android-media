@@ -13,8 +13,8 @@
 
         <ImageView
             android:id="@+id/imageView6"
-            android:layout_width="80dp"
-            android:layout_height="67dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/margin_med"
             android:layout_marginStart="@dimen/margin_med"
             android:layout_marginTop="@dimen/new_margin_big"
