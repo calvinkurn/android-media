@@ -3,6 +3,7 @@ package com.tokopedia.kol.feature.post.view.adapter.viewholder;
 import android.support.annotation.LayoutRes;
 import android.text.TextUtils;
 import android.view.View;
+import android.view.ViewTreeObserver;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -16,7 +17,6 @@ import com.tokopedia.kol.analytics.KolEventTracking;
 import com.tokopedia.kol.common.util.TimeConverter;
 import com.tokopedia.kol.common.util.UrlUtil;
 import com.tokopedia.kol.feature.post.view.listener.KolPostListener;
-import com.tokopedia.kol.feature.post.view.util.KolGlideRequestListener;
 import com.tokopedia.kol.feature.post.view.viewmodel.KolPostViewModel;
 
 import java.util.ArrayList;
@@ -85,7 +85,7 @@ public class KolPostViewHolder extends AbstractViewHolder<KolPostViewModel> {
     }
 
     @Override
-    public void bind(KolPostViewModel element) {
+    public void bind(final KolPostViewModel element) {
         if (type == Type.PROFILE) {
             title.setVisibility(View.GONE);
             if (getAdapterPosition() == 0 ) {
@@ -133,9 +133,22 @@ public class KolPostViewHolder extends AbstractViewHolder<KolPostViewModel> {
             topSeparator.setVisibility(View.VISIBLE);
         }
 
-        ImageHandler.loadImageWithRequestListener(reviewImage,
+        reviewImage.getViewTreeObserver().addOnGlobalLayoutListener(
+                new ViewTreeObserver.OnGlobalLayoutListener() {
+                    @Override
+                    public void onGlobalLayout() {
+                        ViewTreeObserver viewTreeObserver = reviewImage.getViewTreeObserver();
+                        viewTreeObserver.removeOnGlobalLayoutListener(this);
+
+                        reviewImage.setMaxHeight(reviewImage.getWidth());
+                        reviewImage.requestLayout();
+                    }
+                }
+        );
+
+        ImageHandler.loadImage2(reviewImage,
                 element.getKolImage(),
-                new KolGlideRequestListener());
+                R.drawable.ic_loading_image);
 
         if (TextUtils.isEmpty(element.getProductTooltip())) {
             tooltipClickArea.setVisibility(View.GONE);
