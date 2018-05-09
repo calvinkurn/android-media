@@ -19,6 +19,7 @@ dependencies {
     compile project(rootProject.ext.libraries.design)
     compile project(rootProject.ext.features.loyalty)
     compile project(rootProject.ext.libraries.fingerprint)
+    compile project(rootProject.ext.features.districtRecommendation)
 
     androidTestCompile(rootProject.ext.testDependencies.espressoCore, {
         exclude group: 'com.android.support', module: 'support-annotations'

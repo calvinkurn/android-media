@@ -1,9 +1,5 @@
 package com.tokopedia.transaction.insurance.data;
 
-import com.tokopedia.core.manage.general.districtrecommendation.data.DistrictRecommendationEntityMapper;
-import com.tokopedia.district_recommendation.data.entity.AddressResponseEntity;
-import com.tokopedia.district_recommendation.data.source.DistrictRecommendationDataStore;
-
 import javax.inject.Inject;
 
 import rx.Observable;
