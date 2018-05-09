@@ -28,6 +28,8 @@ import com.tokopedia.seller.product.edit.view.model.wholesale.WholesaleModel;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * Created by yoshua on 02/05/18.
@@ -48,6 +50,7 @@ public class ProductAddWholesaleFragment extends BaseDaggerFragment implements W
     private TextView textViewAddWholesale, textMainPrice;
     private Button buttonSave;
     private ArrayList<ProductWholesaleViewModel> productWholesaleViewModelList;
+    private ArrayList<ProductWholesaleViewModel> productWholesaleViewModelListTemp;
     private double productPrice;
     private boolean officialStore;
     private boolean hasVariant;
@@ -79,6 +82,7 @@ public class ProductAddWholesaleFragment extends BaseDaggerFragment implements W
         Intent activityIntent = getActivity().getIntent();
 
         productWholesaleViewModelList = activityIntent.getParcelableArrayListExtra(ProductAddWholesaleActivity.EXTRA_PRODUCT_WHOLESALE_LIST);
+        productWholesaleViewModelListTemp = activityIntent.getParcelableArrayListExtra(ProductAddWholesaleActivity.EXTRA_PRODUCT_WHOLESALE_LIST);
         productPrice = activityIntent.getDoubleExtra(ProductAddWholesaleActivity.EXTRA_PRODUCT_MAIN_PRICE, 0);
         officialStore = activityIntent.getBooleanExtra(ProductAddWholesaleActivity.EXTRA_OFFICIAL_STORE, false);
         hasVariant = activityIntent.getBooleanExtra(ProductAddWholesaleActivity.EXTRA_HAS_VARIANT, false);
@@ -259,5 +263,22 @@ public class ProductAddWholesaleFragment extends BaseDaggerFragment implements W
             }
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    public boolean isAnyWholesaleChange() {
+        productWholesaleViewModelList = wholesaleAdapter.getProductWholesaleViewModels();
+        if (productWholesaleViewModelListTemp == null) {
+            productWholesaleViewModelListTemp = new ArrayList<>();
+        }
+
+        for (ProductWholesaleViewModel productWholesaleViewModel : productWholesaleViewModelList){
+            for (ProductWholesaleViewModel temp : productWholesaleViewModelListTemp){
+                if(productWholesaleViewModel.getPriceValue() != temp.getPriceValue() ||
+                        productWholesaleViewModel.getMinQty() != temp.getMinQty()){
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 }

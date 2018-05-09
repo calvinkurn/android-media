@@ -46,25 +46,28 @@ public class ProductAddWholesaleActivity extends BaseSimpleActivity {
 
     @Override
     public void onBackPressed() {
-//        if (hasVariantChangedFromResult) {
-            AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this, R.style.AppCompatAlertDialogStyle)
-                    .setTitle(getString(R.string.product_dialog_cancel_title))
-                    .setMessage(getString(R.string.product_dialog_cancel_message))
-                    .setPositiveButton(getString(R.string.label_exit), new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialogInterface, int i) {
-                            ProductAddWholesaleActivity.super.onBackPressed();
-                        }
-                    }).setNegativeButton(getString(R.string.label_cancel), new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface arg0, int arg1) {
-                            // no op, just dismiss
-                        }
-                    });
-            AlertDialog dialog = alertDialogBuilder.create();
-            dialog.show();
+        Fragment fragment = getFragment();
+        if (fragment != null && fragment instanceof ProductAddWholesaleFragment) {
+            if (((ProductAddWholesaleFragment) fragment).isAnyWholesaleChange()) {
+                AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this, R.style.AppCompatAlertDialogStyle)
+                        .setTitle(getString(R.string.product_dialog_cancel_title))
+                        .setMessage(getString(R.string.product_dialog_cancel_message))
+                        .setPositiveButton(getString(R.string.label_exit), new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                ProductAddWholesaleActivity.super.onBackPressed();
+                            }
+                        }).setNegativeButton(getString(R.string.label_cancel), new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface arg0, int arg1) {
+                                // no op, just dismiss
+                            }
+                        });
+                AlertDialog dialog = alertDialogBuilder.create();
+                dialog.show();
+            } else {
+                super.onBackPressed();
+            }
         }
-//        else {
-//            super.onBackPressed();
-//        }
+    }
 
 }
