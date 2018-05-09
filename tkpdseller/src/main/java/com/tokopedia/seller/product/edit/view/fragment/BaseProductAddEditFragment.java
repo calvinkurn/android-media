@@ -129,8 +129,6 @@ public abstract class BaseProductAddEditFragment<T extends ProductAddPresenter>
 
         void startUploadProductWithShare(long productId);
 
-        void startAddWholeSaleDialog(@CurrencyTypeDef int currencyType, WholesaleModel previousWholesalePrice, boolean officialStore);
-
         void startUploadProductAndAddWithShare(Long productId);
 
         void startUploadProductAndAdd(Long productId);
@@ -256,12 +254,6 @@ public abstract class BaseProductAddEditFragment<T extends ProductAddPresenter>
             presenter.getCategoryRecommendation(productName);
         }
     }
-
-    @Override
-    public void startAddWholeSaleDialog(@CurrencyTypeDef int currencyType, WholesaleModel previousWholesalePrice, boolean officialStore) {
-        listener.startAddWholeSaleDialog(currencyType, previousWholesalePrice, officialStore);
-    }
-
 
     // Clicked Part
     @Override
@@ -443,6 +435,7 @@ public abstract class BaseProductAddEditFragment<T extends ProductAddPresenter>
 
     @Override
     public final void startProductVariantActivity(ArrayList<ProductVariantByCatModel> productVariantByCatModelList) {
+        productPriceViewHolder.updateModel(currentProductViewModel);
         if (productVariantByCatModelList == null || productVariantByCatModelList.size() == 0) {
             NetworkErrorHelper.createSnackbarWithAction(getActivity(), new NetworkErrorHelper.RetryClickedListener() {
                 @Override
@@ -582,6 +575,7 @@ public abstract class BaseProductAddEditFragment<T extends ProductAddPresenter>
     public void onChangeAllPriceVariantSubmit(int currencyType, double currencyValue) {
         currentProductViewModel.setProductPriceCurrency(productPriceViewHolder.getCurrencyType());
         currentProductViewModel.changePriceTo(currencyType, currencyValue);
+        currentProductViewModel.setProductWholesale(new ArrayList<ProductWholesaleViewModel>());
         productPriceViewHolder.renderData(currentProductViewModel);
     }
 
@@ -783,10 +777,6 @@ public abstract class BaseProductAddEditFragment<T extends ProductAddPresenter>
 
     protected final void checkIfCatalogExist(String productName, long categoryId) {
         presenter.fetchCatalogData(productName, categoryId, 0, 1);
-    }
-
-    public final void addWholesaleItem(WholesaleModel wholesaleModel) {
-        productPriceViewHolder.addWholesaleItem(wholesaleModel);
     }
 
     @Override

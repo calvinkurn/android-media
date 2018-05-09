@@ -242,6 +242,7 @@ public class ProductAddWholesaleFragment extends BaseDaggerFragment implements W
                                 wholesaleAdapter.removeAll();
                                 wholesaleAdapter.notifyDataSetChanged();
                                 notifySizeChanged(wholesaleAdapter.getItemSize());
+                                exitWholesaleActivity();
                             }
                         }).setNegativeButton(getString(R.string.label_cancel), new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface arg0, int arg1) {
@@ -254,6 +255,7 @@ public class ProductAddWholesaleFragment extends BaseDaggerFragment implements W
                 wholesaleAdapter.removeAll();
                 wholesaleAdapter.notifyDataSetChanged();
                 notifySizeChanged(wholesaleAdapter.getItemSize());
+                exitWholesaleActivity();
             }
         }
         return super.onOptionsItemSelected(item);

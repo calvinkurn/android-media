@@ -296,7 +296,7 @@ public class WholesaleAddAdapter extends RecyclerView.Adapter<WholesaleAddAdapte
     @Override
     public long getItemId(int position) {
         if (isWithinDataset(position)) {
-            return wholesaleModels.get(position).getQtyMin();
+            return position;
         }
         return 0;
     }
