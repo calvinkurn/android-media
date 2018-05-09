@@ -24,7 +24,7 @@ import java.util.List;
 public class CategoryViewHolder extends AbstractViewHolder<CategorySearch> {
 
     @LayoutRes
-    public static final int LAYOUT = R.layout.layout_recyclerview_autocomplete;
+    public static final int LAYOUT = R.layout.layout_category_autocomplete;
 
     private final ItemClickListener listener;
     private final RecyclerView recyclerView;
