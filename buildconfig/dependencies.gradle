@@ -214,7 +214,7 @@ ext {
             loyalty         : ":tkpdloyalty",
             ride            : ":tkpdride",
             feed            : ":features:content:feed",
-            digital         : ":tkpddigital",
+            digitalproduct  : ":features:digital:digitalproduct",
             core            : ":tkpdcore",
             inbox           : ":tkpdinbox",
             discovery       : ":tkpddiscovery",
