@@ -16,11 +16,10 @@ import com.tokopedia.checkout.data.apiservice.CartApi;
 import com.tokopedia.checkout.data.apiservice.CartApiInterceptor;
 import com.tokopedia.checkout.data.apiservice.CartResponseConverter;
 import com.tokopedia.checkout.data.apiservice.TxActApi;
-import com.tokopedia.checkout.data.mapper.ShipmentRatesDataMapper;
 import com.tokopedia.checkout.data.repository.CartRepository;
 import com.tokopedia.checkout.data.repository.ICartRepository;
 import com.tokopedia.checkout.data.repository.ITopPayRepository;
-import com.tokopedia.checkout.data.repository.RatesRepository;
+import com.tokopedia.logisticdata.data.repository.RatesRepository;
 import com.tokopedia.checkout.data.repository.TopPayRepository;
 import com.tokopedia.checkout.router.ICheckoutModuleRouter;
 import com.tokopedia.checkout.view.di.qualifier.CartApiInterceptorQualifier;
@@ -39,7 +38,6 @@ import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.network.retrofit.interceptors.FingerprintInterceptor;
 import com.tokopedia.logisticdata.data.apiservice.RatesApi;
 import com.tokopedia.logisticdata.data.constant.LogisticDataConstantUrl;
-import com.tokopedia.logisticdata.data.repository.RatesDataStore;
 
 import java.util.concurrent.TimeUnit;
 
@@ -248,14 +246,8 @@ public class DataModule {
     }
 
     @Provides
-    RatesDataStore provideRatesDataStore(@CartQualifier RatesApi ratesApi) {
-        return new RatesDataStore(ratesApi);
-    }
-
-    @Provides
-    RatesRepository provideRatesRepository(RatesDataStore ratesDataStore,
-                                           ShipmentRatesDataMapper shipmentRatesDataMapper) {
-        return new RatesRepository(ratesDataStore, shipmentRatesDataMapper);
+    RatesRepository provideRatesRepository(@CartQualifier RatesApi ratesApi) {
+        return new RatesRepository(ratesApi);
     }
 
 }

@@ -1,6 +1,7 @@
 package com.tokopedia.checkout.view.di.module;
 
-import com.tokopedia.checkout.data.repository.RatesRepository;
+import com.tokopedia.checkout.data.mapper.ShipmentRatesDataMapper;
+import com.tokopedia.logisticdata.data.repository.RatesRepository;
 import com.tokopedia.checkout.domain.usecase.GetRatesUseCase;
 
 import dagger.Module;
@@ -13,7 +14,8 @@ import dagger.Provides;
 public class ShipmentUseCaseModule {
 
     @Provides
-    GetRatesUseCase getRatesUseCase(RatesRepository ratesRepository) {
-        return new GetRatesUseCase(ratesRepository);
+    GetRatesUseCase getRatesUseCase(RatesRepository ratesRepository,
+                                    ShipmentRatesDataMapper shipmentRatesDataMapper) {
+        return new GetRatesUseCase(ratesRepository, shipmentRatesDataMapper);
     }
 }
