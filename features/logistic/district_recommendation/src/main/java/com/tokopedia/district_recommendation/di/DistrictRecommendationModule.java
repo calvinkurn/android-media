@@ -1,12 +1,11 @@
-package com.tokopedia.core.manage.general.districtrecommendation.di;
+package com.tokopedia.district_recommendation.di;
 
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.core.manage.general.districtrecommendation.data.DistrictRecommendationEntityMapper;
-import com.tokopedia.core.manage.general.districtrecommendation.data.repository.DistrictRecommendationRepository;
-import com.tokopedia.core.manage.general.districtrecommendation.data.source.DistrictRecommendationDataStore;
-import com.tokopedia.core.manage.general.districtrecommendation.domain.model.Token;
-import com.tokopedia.core.manage.general.districtrecommendation.domain.usecase.GetDistrictRequestUseCase;
+import com.tokopedia.district_recommendation.data.repository.DistrictRecommendationRepository;
+import com.tokopedia.district_recommendation.data.source.DistrictRecommendationDataStore;
+import com.tokopedia.district_recommendation.domain.usecase.GetDistrictRequestUseCase;
 import com.tokopedia.core.manage.general.districtrecommendation.view.DistrictRecommendationContract;
 import com.tokopedia.core.manage.general.districtrecommendation.view.DistrictRecommendationPresenter;
 import com.tokopedia.core.network.apiservices.kero.KeroAuthService;

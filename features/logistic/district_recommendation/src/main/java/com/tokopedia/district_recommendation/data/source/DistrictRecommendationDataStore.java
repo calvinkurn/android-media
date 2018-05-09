@@ -1,7 +1,7 @@
-package com.tokopedia.core.manage.general.districtrecommendation.data.source;
+package com.tokopedia.district_recommendation.data.source;
 
 import com.google.gson.Gson;
-import com.tokopedia.core.manage.general.districtrecommendation.data.entity.AddressResponseEntity;
+import com.tokopedia.district_recommendation.data.entity.AddressResponseEntity;
 import com.tokopedia.core.network.apiservices.kero.KeroAuthService;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 

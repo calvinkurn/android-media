@@ -1,4 +1,4 @@
-package com.tokopedia.core.manage.general.districtrecommendation.view;
+package com.tokopedia.district_recommendation.view;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -22,8 +22,8 @@ import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.presentation.UIThread;
 import com.tokopedia.core.manage.general.districtrecommendation.di.DaggerDistrictRecommendationComponent;
 import com.tokopedia.core.manage.general.districtrecommendation.di.DistrictRecommendationComponent;
-import com.tokopedia.core.manage.general.districtrecommendation.domain.model.Address;
-import com.tokopedia.core.manage.general.districtrecommendation.domain.model.Token;
+import com.tokopedia.district_recommendation.domain.model.Address;
+import com.tokopedia.district_recommendation.domain.model.Token;
 import com.tokopedia.core.network.NetworkErrorHelper;
 
 import java.util.concurrent.TimeUnit;
@@ -36,8 +36,8 @@ import rx.Subscriber;
 import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 
-import static com.tokopedia.core.manage.general.districtrecommendation.view.DistrictRecommendationContract.Constant.ARGUMENT_DATA_TOKEN;
-import static com.tokopedia.core.manage.general.districtrecommendation.view.DistrictRecommendationContract.Constant.INTENT_DATA_ADDRESS;
+import static com.tokopedia.district_recommendation.view.DistrictRecommendationContract.Constant.ARGUMENT_DATA_TOKEN;
+import static com.tokopedia.district_recommendation.view.DistrictRecommendationContract.Constant.INTENT_DATA_ADDRESS;
 
 public class DistrictRecommendationFragment
         extends BasePresenterFragment<DistrictRecommendationContract.Presenter>

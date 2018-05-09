@@ -1,11 +1,11 @@
-package com.tokopedia.core.manage.general.districtrecommendation.data;
+package com.tokopedia.district_recommendation.data;
 
-import com.tokopedia.core.manage.general.districtrecommendation.data.entity.AddressEntity;
-import com.tokopedia.core.manage.general.districtrecommendation.data.entity.AddressResponseEntity;
-import com.tokopedia.core.manage.general.districtrecommendation.data.entity.TokenEntity;
-import com.tokopedia.core.manage.general.districtrecommendation.domain.model.Address;
-import com.tokopedia.core.manage.general.districtrecommendation.domain.model.AddressResponse;
-import com.tokopedia.core.manage.general.districtrecommendation.domain.model.Token;
+import com.tokopedia.district_recommendation.data.entity.AddressEntity;
+import com.tokopedia.district_recommendation.data.entity.AddressResponseEntity;
+import com.tokopedia.district_recommendation.data.entity.TokenEntity;
+import com.tokopedia.district_recommendation.domain.model.Address;
+import com.tokopedia.district_recommendation.domain.model.AddressResponse;
+import com.tokopedia.district_recommendation.domain.model.Token;
 
 import java.util.ArrayList;
 

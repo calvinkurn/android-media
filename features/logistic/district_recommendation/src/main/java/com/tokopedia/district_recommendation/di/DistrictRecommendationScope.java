@@ -1,4 +1,4 @@
-package com.tokopedia.core.manage.general.districtrecommendation.di;
+package com.tokopedia.district_recommendation.di;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;

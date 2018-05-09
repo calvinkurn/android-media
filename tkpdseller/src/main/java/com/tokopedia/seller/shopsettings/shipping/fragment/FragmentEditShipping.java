@@ -27,7 +27,7 @@ import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.geolocation.activity.GeolocationActivity;
 import com.tokopedia.core.geolocation.model.autocomplete.LocationPass;
-import com.tokopedia.core.manage.general.districtrecommendation.domain.model.Address;
+import com.tokopedia.district_recommendation.domain.model.Address;
 import com.tokopedia.core.manage.general.districtrecommendation.view.DistrictRecommendationActivity;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.seller.R;

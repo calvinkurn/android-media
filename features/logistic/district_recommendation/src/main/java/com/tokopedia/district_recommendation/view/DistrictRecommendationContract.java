@@ -1,12 +1,12 @@
-package com.tokopedia.core.manage.general.districtrecommendation.view;
+package com.tokopedia.district_recommendation.view;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
 
 import com.tokopedia.core.base.presentation.CustomerPresenter;
 import com.tokopedia.core.base.presentation.CustomerView;
-import com.tokopedia.core.manage.general.districtrecommendation.domain.model.Address;
-import com.tokopedia.core.manage.general.districtrecommendation.domain.model.Token;
+import com.tokopedia.district_recommendation.domain.model.Address;
+import com.tokopedia.district_recommendation.domain.model.Token;
 
 import java.util.ArrayList;
 

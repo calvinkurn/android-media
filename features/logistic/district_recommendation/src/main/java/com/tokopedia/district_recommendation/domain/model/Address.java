@@ -1,37 +1,48 @@
-package com.tokopedia.core.manage.general.districtrecommendation.data.entity;
+package com.tokopedia.district_recommendation.domain.model;
 
-import com.google.gson.annotations.Expose;
-import com.google.gson.annotations.SerializedName;
+import android.os.Parcel;
+import android.os.Parcelable;
 
 import java.util.ArrayList;
 
 /**
- * Created by Irfan Khoirul on 31/10/17.
+ * Created by Irfan Khoirul on 17/11/17.
  */
 
-public class AddressEntity {
+public class Address implements Parcelable {
 
-    @SerializedName("district_id")
-    @Expose
     private int districtId;
-    @SerializedName("district_name")
-    @Expose
     private String districtName;
-    @SerializedName("city_id")
-    @Expose
     private int cityId;
-    @SerializedName("city_name")
-    @Expose
     private String cityName;
-    @SerializedName("province_id")
-    @Expose
     private int provinceId;
-    @SerializedName("province_name")
-    @Expose
     private String provinceName;
-    @SerializedName("zip_code")
-    @Expose
     private ArrayList<String> zipCodes;
+
+    public Address() {
+    }
+
+    protected Address(Parcel in) {
+        districtId = in.readInt();
+        districtName = in.readString();
+        cityId = in.readInt();
+        cityName = in.readString();
+        provinceId = in.readInt();
+        provinceName = in.readString();
+        zipCodes = in.createStringArrayList();
+    }
+
+    public static final Creator<Address> CREATOR = new Creator<Address>() {
+        @Override
+        public Address createFromParcel(Parcel in) {
+            return new Address(in);
+        }
+
+        @Override
+        public Address[] newArray(int size) {
+            return new Address[size];
+        }
+    };
 
     public int getDistrictId() {
         return districtId;
@@ -89,4 +100,20 @@ public class AddressEntity {
         this.zipCodes = zipCodes;
     }
 
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeInt(districtId);
+        dest.writeString(districtName);
+        dest.writeInt(cityId);
+        dest.writeString(cityName);
+        dest.writeInt(provinceId);
+        dest.writeString(provinceName);
+        dest.writeStringList(zipCodes);
+        dest.writeList(zipCodes);
+    }
 }

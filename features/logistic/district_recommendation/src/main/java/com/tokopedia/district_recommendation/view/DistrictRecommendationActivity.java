@@ -1,4 +1,4 @@
-package com.tokopedia.core.manage.general.districtrecommendation.view;
+package com.tokopedia.district_recommendation.view;
 
 import android.app.Activity;
 import android.app.FragmentManager;
@@ -9,9 +9,9 @@ import android.os.Bundle;
 
 import com.tokopedia.core.R;
 import com.tokopedia.core.app.BasePresenterActivity;
-import com.tokopedia.core.manage.general.districtrecommendation.domain.model.Token;
+import com.tokopedia.district_recommendation.domain.model.Token;
 
-import static com.tokopedia.core.manage.general.districtrecommendation.view.DistrictRecommendationContract.Constant.ARGUMENT_DATA_TOKEN;
+import static com.tokopedia.district_recommendation.view.DistrictRecommendationContract.Constant.ARGUMENT_DATA_TOKEN;
 
 public class DistrictRecommendationActivity extends BasePresenterActivity {
 

@@ -1,4 +1,4 @@
-package com.tokopedia.core.manage.general.districtrecommendation.di;
+package com.tokopedia.district_recommendation.di;
 
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;

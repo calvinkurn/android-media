@@ -1,11 +1,11 @@
-package com.tokopedia.core.manage.general.districtrecommendation.domain.usecase;
+package com.tokopedia.district_recommendation.domain.usecase;
 
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.domain.UseCase;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
-import com.tokopedia.core.manage.general.districtrecommendation.data.repository.DistrictRecommendationRepository;
-import com.tokopedia.core.manage.general.districtrecommendation.domain.model.AddressResponse;
+import com.tokopedia.district_recommendation.data.repository.DistrictRecommendationRepository;
+import com.tokopedia.district_recommendation.domain.model.AddressResponse;
 
 import javax.inject.Inject;
 

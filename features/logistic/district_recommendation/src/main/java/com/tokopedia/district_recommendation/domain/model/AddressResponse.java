@@ -1,4 +1,4 @@
-package com.tokopedia.core.manage.general.districtrecommendation.domain.model;
+package com.tokopedia.district_recommendation.domain.model;
 
 import android.os.Parcel;
 import android.os.Parcelable;

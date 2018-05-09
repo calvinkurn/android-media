@@ -1,9 +1,9 @@
-package com.tokopedia.core.manage.general.districtrecommendation.data.repository;
+package com.tokopedia.district_recommendation.data.repository;
 
-import com.tokopedia.core.manage.general.districtrecommendation.data.DistrictRecommendationEntityMapper;
-import com.tokopedia.core.manage.general.districtrecommendation.data.entity.AddressResponseEntity;
-import com.tokopedia.core.manage.general.districtrecommendation.data.source.DistrictRecommendationDataStore;
-import com.tokopedia.core.manage.general.districtrecommendation.domain.model.AddressResponse;
+import com.tokopedia.district_recommendation.data.DistrictRecommendationEntityMapper;
+import com.tokopedia.district_recommendation.data.entity.AddressResponseEntity;
+import com.tokopedia.district_recommendation.data.source.DistrictRecommendationDataStore;
+import com.tokopedia.district_recommendation.domain.model.AddressResponse;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 
 import javax.inject.Inject;

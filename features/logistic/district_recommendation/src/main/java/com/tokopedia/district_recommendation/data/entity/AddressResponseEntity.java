@@ -1,4 +1,4 @@
-package com.tokopedia.core.manage.general.districtrecommendation.data.entity;
+package com.tokopedia.district_recommendation.data.entity;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
