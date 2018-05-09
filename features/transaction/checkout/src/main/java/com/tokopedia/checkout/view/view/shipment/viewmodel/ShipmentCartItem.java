@@ -24,6 +24,7 @@ public abstract class ShipmentCartItem implements ShipmentData {
     private int weightUnit;
     private boolean productFinsurance;
     private boolean productFcancelPartial;
+    private boolean productIsPreorder;
 
     // For pickup point
     private String destinationDistrictId;
@@ -189,5 +190,13 @@ public abstract class ShipmentCartItem implements ShipmentData {
 
     public void setStateDropshipperDetailExpanded(boolean stateDropshipperDetailExpanded) {
         this.stateDropshipperDetailExpanded = stateDropshipperDetailExpanded;
+    }
+
+    public boolean isProductIsPreorder() {
+        return productIsPreorder;
+    }
+
+    public void setProductIsPreorder(boolean productIsPreorder) {
+        this.productIsPreorder = productIsPreorder;
     }
 }

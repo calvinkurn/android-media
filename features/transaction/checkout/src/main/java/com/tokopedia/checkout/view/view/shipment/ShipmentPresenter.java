@@ -2,24 +2,36 @@ package com.tokopedia.checkout.view.view.shipment;
 
 import android.support.annotation.NonNull;
 
+import com.google.gson.Gson;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.abstraction.common.utils.TKPDMapParam;
 import com.tokopedia.abstraction.common.utils.network.AuthUtil;
 import com.tokopedia.checkout.data.entity.request.CheckoutRequest;
+import com.tokopedia.checkout.data.entity.request.DataCheckoutRequest;
+import com.tokopedia.checkout.domain.datamodel.addressoptions.RecipientAddressModel;
 import com.tokopedia.checkout.domain.datamodel.cartcheckout.CheckoutData;
+import com.tokopedia.checkout.domain.datamodel.cartlist.CartPromoSuggestion;
 import com.tokopedia.checkout.domain.datamodel.cartshipmentform.CartShipmentAddressFormData;
 import com.tokopedia.checkout.domain.datamodel.cartshipmentform.GroupAddress;
 import com.tokopedia.checkout.domain.datamodel.cartshipmentform.GroupShop;
+import com.tokopedia.checkout.domain.datamodel.cartsingleshipment.ShipmentCostModel;
 import com.tokopedia.checkout.domain.datamodel.toppay.ThanksTopPayData;
+import com.tokopedia.checkout.domain.datamodel.voucher.PromoCodeAppliedData;
+import com.tokopedia.checkout.domain.usecase.CheckPromoCodeCartListUseCase;
 import com.tokopedia.checkout.domain.usecase.CheckPromoCodeCartShipmentUseCase;
 import com.tokopedia.checkout.domain.usecase.CheckoutUseCase;
 import com.tokopedia.checkout.domain.usecase.GetShipmentAddressFormUseCase;
 import com.tokopedia.checkout.domain.usecase.GetThanksToppayUseCase;
+import com.tokopedia.checkout.view.view.shipment.viewmodel.ShipmentCartItem;
 import com.tokopedia.core.gcm.GCMHandler;
+import com.tokopedia.core.router.transactionmodule.sharedata.CheckPromoCodeCartListResult;
 import com.tokopedia.core.router.transactionmodule.sharedata.CheckPromoCodeCartShipmentRequest;
 import com.tokopedia.core.router.transactionmodule.sharedata.CheckPromoCodeCartShipmentResult;
 import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.payment.utils.ErrorNetMessage;
 import com.tokopedia.usecase.RequestParams;
+
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -40,18 +52,30 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     private final GetThanksToppayUseCase getThanksToppayUseCase;
     private final CheckPromoCodeCartShipmentUseCase checkPromoCodeCartShipmentUseCase;
     private final GetShipmentAddressFormUseCase getShipmentAddressFormUseCase;
+    private final CheckPromoCodeCartListUseCase checkPromoCodeCartListUseCase;
+
+    private List<ShipmentCartItem> shipmentCartItemList;
+    private RecipientAddressModel recipientAddressModel;
+    private PromoCodeAppliedData promoCodeAppliedData;
+    private CartPromoSuggestion cartPromoSuggestion;
+    private ShipmentCostModel shipmentCostModel;
+    private List<DataCheckoutRequest> dataCheckoutRequestList;
+    private List<CheckPromoCodeCartShipmentRequest.Data> promoCodeCartShipmentRequestDataList;
+    private CheckoutData checkoutData;
 
     @Inject
     public ShipmentPresenter(CompositeSubscription compositeSubscription,
                              CheckoutUseCase checkoutUseCase,
                              GetThanksToppayUseCase getThanksToppayUseCase,
                              CheckPromoCodeCartShipmentUseCase checkPromoCodeCartShipmentUseCase,
-                             GetShipmentAddressFormUseCase getShipmentAddressFormUseCase) {
+                             GetShipmentAddressFormUseCase getShipmentAddressFormUseCase,
+                             CheckPromoCodeCartListUseCase checkPromoCodeCartListUseCase) {
         this.compositeSubscription = compositeSubscription;
         this.checkoutUseCase = checkoutUseCase;
         this.getThanksToppayUseCase = getThanksToppayUseCase;
         this.checkPromoCodeCartShipmentUseCase = checkPromoCodeCartShipmentUseCase;
         this.getShipmentAddressFormUseCase = getShipmentAddressFormUseCase;
+        this.checkPromoCodeCartListUseCase = checkPromoCodeCartListUseCase;
     }
 
     @Override
@@ -62,10 +86,12 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     @Override
     public void detachView() {
         super.detachView();
-        checkoutUseCase.unsubscribe();
         compositeSubscription.unsubscribe();
+        checkoutUseCase.unsubscribe();
         getThanksToppayUseCase.unsubscribe();
         checkPromoCodeCartShipmentUseCase.unsubscribe();
+        getShipmentAddressFormUseCase.unsubscribe();
+        checkPromoCodeCartListUseCase.unsubscribe();
     }
 
     @Override
@@ -136,17 +162,23 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     }
 
     @Override
-    public void processCheckout(CheckoutRequest checkoutRequest) {
-        getView().showLoading();
-        RequestParams requestParams = RequestParams.create();
-        requestParams.putObject(CheckoutUseCase.PARAM_CARTS, checkoutRequest);
-        compositeSubscription.add(
-                checkoutUseCase.createObservable(requestParams)
-                        .subscribeOn(Schedulers.newThread())
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .unsubscribeOn(Schedulers.newThread())
-                        .subscribe(getSubscriberCheckoutCart())
+    public void processCheckout() {
+        CheckoutRequest checkoutRequest = generateCheckoutRequest(
+                promoCodeAppliedData != null && promoCodeAppliedData.getPromoCode() != null ?
+                        promoCodeAppliedData.getPromoCode() : "", 0
         );
+        if (checkoutRequest != null) {
+            getView().showLoading();
+            RequestParams requestParams = RequestParams.create();
+            requestParams.putObject(CheckoutUseCase.PARAM_CARTS, checkoutRequest);
+            compositeSubscription.add(
+                    checkoutUseCase.createObservable(requestParams)
+                            .subscribeOn(Schedulers.newThread())
+                            .observeOn(AndroidSchedulers.mainThread())
+                            .unsubscribeOn(Schedulers.newThread())
+                            .subscribe(getSubscriberCheckoutCart())
+            );
+        }
     }
 
     @Override
@@ -163,16 +195,51 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     }
 
     @Override
-    public void checkPromoShipment(Subscriber<CheckPromoCodeCartShipmentResult> subscriber,
-                                   CheckPromoCodeCartShipmentRequest checkPromoCodeCartShipmentRequest) {
+    public void checkPromoShipment() {
+        CheckPromoCodeCartShipmentRequest checkPromoCodeCartShipmentRequest =
+                new CheckPromoCodeCartShipmentRequest.Builder()
+                        .promoCode(promoCodeAppliedData.getPromoCode())
+                        .data(promoCodeCartShipmentRequestDataList)
+                        .build();
+
+        TKPDMapParam<String, String> param = new TKPDMapParam<>();
+        param.put(CheckPromoCodeCartShipmentUseCase.PARAM_CARTS,
+                new Gson().toJson(checkPromoCodeCartShipmentRequest));
+        param.put(CheckPromoCodeCartShipmentUseCase.PARAM_PROMO_LANG,
+                CheckPromoCodeCartShipmentUseCase.PARAM_VALUE_LANG_ID);
+        param.put(CheckPromoCodeCartShipmentUseCase.PARAM_PROMO_SUGGESTED,
+                CheckPromoCodeCartShipmentUseCase.PARAM_VALUE_NOT_SUGGESTED);
+
         RequestParams requestParams = RequestParams.create();
-        requestParams.putObject(CheckPromoCodeCartShipmentUseCase.PARAM_CARTS, checkPromoCodeCartShipmentRequest);
+        requestParams.putObject(CheckPromoCodeCartShipmentUseCase.PARAM_REQUEST_AUTH_MAP_STRING_CHECK_PROMO,
+                getGeneratedAuthParamNetwork(param));
+
         compositeSubscription.add(
                 checkPromoCodeCartShipmentUseCase.createObservable(requestParams)
                         .subscribeOn(Schedulers.newThread())
                         .observeOn(AndroidSchedulers.mainThread())
                         .unsubscribeOn(Schedulers.newThread())
-                        .subscribe(subscriber)
+                        .subscribe(new Subscriber<CheckPromoCodeCartShipmentResult>() {
+                            @Override
+                            public void onCompleted() {
+
+                            }
+
+                            @Override
+                            public void onError(Throwable e) {
+                                e.printStackTrace();
+                                getView().renderErrorCheckPromoShipmentData(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
+                            }
+
+                            @Override
+                            public void onNext(CheckPromoCodeCartShipmentResult checkPromoCodeCartShipmentResult) {
+                                if (!checkPromoCodeCartShipmentResult.isError()) {
+                                    getView().renderCheckPromoShipmentDataSuccess(checkPromoCodeCartShipmentResult);
+                                } else {
+                                    getView().renderErrorCheckPromoShipmentData(checkPromoCodeCartShipmentResult.getErrorMessage());
+                                }
+                            }
+                        })
         );
     }
 
@@ -208,7 +275,6 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
             public void onError(Throwable e) {
                 getView().hideLoading();
                 e.printStackTrace();
-
             }
 
             @Override
@@ -223,4 +289,139 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         };
     }
 
+    @Override
+    public void processCheckPromoCodeFromSuggestedPromo(String promoCode) {
+        getView().showLoading();
+        TKPDMapParam<String, String> param = new TKPDMapParam<>();
+        param.put("promo_code", promoCode);
+        param.put("lang", "id");
+
+        RequestParams requestParams = RequestParams.create();
+        requestParams.putObject(CheckPromoCodeCartListUseCase.PARAM_REQUEST_AUTH_MAP_STRING_CHECK_PROMO,
+                getGeneratedAuthParamNetwork(param));
+        compositeSubscription.add(
+                checkPromoCodeCartListUseCase.createObservable(requestParams)
+                        .subscribeOn(Schedulers.newThread())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .unsubscribeOn(Schedulers.newThread())
+                        .subscribe(new Subscriber<CheckPromoCodeCartListResult>() {
+                            @Override
+                            public void onCompleted() {
+
+                            }
+
+                            @Override
+                            public void onError(Throwable e) {
+                                e.printStackTrace();
+                                getView().hideLoading();
+                            }
+
+                            @Override
+                            public void onNext(CheckPromoCodeCartListResult
+                                                       promoCodeCartListData) {
+                                getView().hideLoading();
+                                if (!promoCodeCartListData.isError()) {
+                                    getView().renderCheckPromoCodeFromSuggestedPromoSuccess(promoCodeCartListData);
+                                } else {
+                                    getView().renderErrorCheckPromoCodeFromSuggestedPromo(promoCodeCartListData.getErrorMessage());
+                                }
+                            }
+                        })
+        );
+    }
+
+    private CheckoutRequest generateCheckoutRequest(String promoCode, int isDonation) {
+        if (dataCheckoutRequestList == null) {
+            // Show error cant checkout
+            return null;
+        }
+
+        return new CheckoutRequest.Builder()
+                .promoCode(promoCode)
+                .isDonation(isDonation)
+                .data(dataCheckoutRequestList)
+                .build();
+    }
+
+    @Override
+    public RecipientAddressModel getRecipientAddressModel() {
+        return recipientAddressModel;
+    }
+
+    @Override
+    public void setRecipientAddressModel(RecipientAddressModel recipientAddressModel) {
+        this.recipientAddressModel = recipientAddressModel;
+    }
+
+    @Override
+    public List<ShipmentCartItem> getShipmentCartItemList() {
+        return shipmentCartItemList;
+    }
+
+    @Override
+    public void setShipmentCartItemList(List<ShipmentCartItem> recipientCartItemList) {
+        this.shipmentCartItemList = recipientCartItemList;
+    }
+
+    @Override
+    public PromoCodeAppliedData getPromoCodeAppliedData() {
+        return promoCodeAppliedData;
+    }
+
+    @Override
+    public void setPromoCodeAppliedData(PromoCodeAppliedData promoCodeAppliedData) {
+        this.promoCodeAppliedData = promoCodeAppliedData;
+    }
+
+    @Override
+    public CartPromoSuggestion getCartPromoSuggestion() {
+        return cartPromoSuggestion;
+    }
+
+    @Override
+    public void setCartPromoSuggestion(CartPromoSuggestion cartPromoSuggestion) {
+        this.cartPromoSuggestion = cartPromoSuggestion;
+    }
+
+    @Override
+    public CheckoutData getCheckoutData() {
+        return checkoutData;
+    }
+
+    @Override
+    public void setCheckoutData(CheckoutData checkoutData) {
+        this.checkoutData = checkoutData;
+    }
+
+    @Override
+    public List<DataCheckoutRequest> getDataCheckoutRequestList() {
+        return dataCheckoutRequestList;
+    }
+
+    @Override
+    public void setDataCheckoutRequestList(List<DataCheckoutRequest> dataCheckoutRequestList) {
+        this.dataCheckoutRequestList = dataCheckoutRequestList;
+    }
+
+    @Override
+    public List<CheckPromoCodeCartShipmentRequest.Data> getPromoCodeCartShipmentRequestData() {
+        return promoCodeCartShipmentRequestDataList;
+    }
+
+    @Override
+    public void setPromoCodeCartShipmentRequestData(
+            List<CheckPromoCodeCartShipmentRequest.Data> promoCodeCartShipmentRequestData
+    ) {
+        this.promoCodeCartShipmentRequestDataList = promoCodeCartShipmentRequestData;
+    }
+
+    @Override
+    public ShipmentCostModel getShipmentCostModel() {
+        return shipmentCostModel;
+    }
+
+    @Override
+    public void setShipmentCostModel(ShipmentCostModel shipmentCostModel) {
+        this.shipmentCostModel = shipmentCostModel;
+    }
 }
