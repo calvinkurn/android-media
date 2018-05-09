@@ -115,7 +115,6 @@ public class CartDigitalActivity extends BasePresenterActivity implements
         if (fragment == null || !(fragment instanceof CartDigitalFragment))
             getFragmentManager().beginTransaction().replace(R.id.container,
                     CartDigitalFragment.newInstance(passData)).commit();
-
     }
 
     @Override
