@@ -194,8 +194,6 @@ public class ProductPriceViewHolder extends ProductViewHolder
 
     @Override
     public void renderData(ProductViewModel model) {
-        boolean hasVariant = model.hasVariant();
-
         double price = model.getPrdPriceOrMinVariantProductPrice();
 
         // to sync price variant with the price in the main product.
@@ -204,39 +202,24 @@ public class ProductPriceViewHolder extends ProductViewHolder
         setPriceUnit((int) model.getProductPriceCurrency());
         setPriceValue(price);
 
-        if (hasVariant) {
-            model.setProductWholesale(new ArrayList<ProductWholesaleViewModel>());
-
-            wholesaleExpandableOptionSwitch.setVisibility(View.GONE);
-            vWholeSaleVariantInfo.setVisibility(View.VISIBLE);
-
-            priceSpinnerCounterInputView.setEnabled(false);
-            editPriceImageButton.setVisibility(View.VISIBLE);
-        } else {
-            vWholeSaleVariantInfo.setVisibility(View.GONE);
-            if (price > 0) {
-                if (model.getProductWholesale() == null || model.getProductWholesale().size() == 0) {
-                    expandWholesale(false);
-                } else {
-                    expandWholesale(true);
-                    setWholesalePrice(model.getProductWholesale());
-                }
-                wholesaleExpandableOptionSwitch.setVisibility(View.VISIBLE);
-
-                Context context = wholesaleLabelView.getContext();
-
-                if (model.getProductWholesale() != null){
-                    if(model.getProductWholesale().isEmpty()){
-                        wholesaleLabelView.setContent(context.getString(R.string.product_label_add));
-                    }
-                    else {
-                        wholesaleLabelView.setContent(String.valueOf(model.getProductWholesale().size()) + " " + context.getString(R.string.product_label_price));
-                    }
-                }
-
-
+        if (price > 0) {
+            if (model.getProductWholesale() == null || model.getProductWholesale().size() == 0) {
+                expandWholesale(false);
             } else {
-                wholesaleExpandableOptionSwitch.setVisibility(View.GONE);
+                expandWholesale(true);
+                setWholesalePrice(model.getProductWholesale());
+            }
+            wholesaleExpandableOptionSwitch.setVisibility(View.VISIBLE);
+
+            Context context = wholesaleLabelView.getContext();
+
+            if (model.getProductWholesale() != null){
+                if(model.getProductWholesale().isEmpty()){
+                    wholesaleLabelView.setContent(context.getString(R.string.product_label_add));
+                }
+                else {
+                    wholesaleLabelView.setContent(String.valueOf(model.getProductWholesale().size()) + " " + context.getString(R.string.product_label_price));
+                }
             }
         }
 

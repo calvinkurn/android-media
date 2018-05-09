@@ -186,7 +186,9 @@ Ingatlah untuk mengkonfirmasi bahwa email di atas adalah benar dan periksa junk 
     <string name="dialog_delete_product">Apakah Anda ingin menghapus produk ini?</string>
     <string name="dialog_cancel_add_product">Perubahan yang anda lakukan tidak akan tersimpan. Lanjutkan?</string>
     <string name="dialog_delete_wholesale_title">Hapus Grosir?</string>
+    <string name="dialog_add_wholesale_title">Tambah Grosir?</string>
     <string name="dialog_delete_wholesale_message">Anda bisa kembali mengubah harga per varian setelah menghapus harga grosir?</string>
+    <string name="dialog_add_wholesale_message">Anda tidak dapat mengubah harga per varian setelah menambah harga grosir?</string>
     <string name="dialog_no_memory_card">No memory card!</string>
     <string name="dialog_upload_option">Bagaimana Anda ingin mengatur gambar Anda ?</string>
     <string name="title_gallery">Gallery</string>
