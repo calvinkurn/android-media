@@ -12,6 +12,7 @@ import com.google.android.flexbox.FlexDirection;
 import com.google.android.flexbox.FlexboxItemDecoration;
 import com.google.android.flexbox.FlexboxLayoutManager;
 import com.google.android.flexbox.JustifyContent;
+import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.discovery.R;
 import com.tokopedia.discovery.autocomplete.viewmodel.BaseItemAutoCompleteSearch;
@@ -54,11 +55,11 @@ public class PopularViewHolder extends AbstractViewHolder<PopularSearch> {
 
     private class ItemAdapter extends RecyclerView.Adapter<PopularViewHolder.ItemAdapter.ItemViewHolder> {
 
-        private final ItemClickListener listener;
+        private final ItemClickListener clickListener;
         private List<BaseItemAutoCompleteSearch> data;
 
         public ItemAdapter(ItemClickListener clickListener) {
-            this.listener = clickListener;
+            this.clickListener = clickListener;
             this.data = new ArrayList<>();
         }
 
@@ -100,7 +101,11 @@ public class PopularViewHolder extends AbstractViewHolder<PopularSearch> {
                 textView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        clickListener.onItemClicked(item.getApplink(), item.getUrl());
+                        UnifyTracking.eventClickPopularSearch(item.getKeyword());
+                        clickListener.onItemSearchClicked(
+                                item.getKeyword(),
+                                item.getCategoryId()
+                        );
                     }
                 });
             }

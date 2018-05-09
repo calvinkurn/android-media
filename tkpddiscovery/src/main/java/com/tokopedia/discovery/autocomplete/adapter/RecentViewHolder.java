@@ -6,17 +6,16 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
 import com.google.android.flexbox.FlexDirection;
 import com.google.android.flexbox.FlexboxItemDecoration;
 import com.google.android.flexbox.FlexboxLayoutManager;
 import com.google.android.flexbox.JustifyContent;
+import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.design.item.DeletableItemView;
 import com.tokopedia.discovery.R;
 import com.tokopedia.discovery.autocomplete.viewmodel.BaseItemAutoCompleteSearch;
-import com.tokopedia.discovery.autocomplete.viewmodel.PopularSearch;
 import com.tokopedia.discovery.autocomplete.viewmodel.RecentSearch;
 import com.tokopedia.discovery.search.view.adapter.ItemClickListener;
 
@@ -28,13 +27,13 @@ public class RecentViewHolder extends AbstractViewHolder<RecentSearch> {
     @LayoutRes
     public static final int LAYOUT = R.layout.layout_recentsearch_autocomplete;
 
-    private final ItemClickListener listener;
+    private final ItemClickListener clickListener;
     private final RecyclerView recyclerView;
     private final RecentViewHolder.ItemAdapter adapter;
 
     public RecentViewHolder(View itemView, ItemClickListener clickListener) {
         super(itemView);
-        this.listener = clickListener;
+        this.clickListener = clickListener;
         recyclerView = itemView.findViewById(R.id.recyclerView);
         FlexboxLayoutManager flexboxLayoutManager = new FlexboxLayoutManager(itemView.getContext());
         flexboxLayoutManager.setFlexDirection(FlexDirection.ROW);
@@ -103,6 +102,16 @@ public class RecentViewHolder extends AbstractViewHolder<RecentSearch> {
                     @Override
                     public void onDelete() {
                         clickListener.onDeleteRecentSearchItem(item.getKeyword());
+                    }
+                });
+                itemView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        UnifyTracking.eventClickRecentSearch(item.getKeyword());
+                        clickListener.onItemSearchClicked(
+                                item.getKeyword(),
+                                item.getCategoryId()
+                        );
                     }
                 });
             }

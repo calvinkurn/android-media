@@ -1,13 +1,10 @@
 package com.tokopedia.discovery.search.view.adapter;
 
-import com.tokopedia.discovery.search.domain.model.SearchItem;
-
 /**
  * Created by eriksuprayogi on 2/21/17.
  */
 
 public interface ItemClickListener {
-    void onItemClicked(SearchItem item);
 
     void copyTextToSearchView(String text);
 
@@ -16,4 +13,6 @@ public interface ItemClickListener {
     void onDeleteAllRecentSearch();
 
     void onItemClicked(String applink, String webUrl);
+
+    void onItemSearchClicked(String keyword, String categoryId);
 }

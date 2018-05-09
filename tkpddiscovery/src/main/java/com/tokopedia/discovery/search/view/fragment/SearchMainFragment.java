@@ -2,7 +2,6 @@ package com.tokopedia.discovery.search.view.fragment;
 
 import android.content.Context;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
@@ -16,13 +15,10 @@ import android.view.ViewGroup;
 
 import com.tokopedia.abstraction.common.utils.snackbar.SnackbarManager;
 import com.tokopedia.applink.ApplinkRouter;
-import com.tokopedia.core.analytics.AppEventTracking;
-import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TkpdBaseV4Fragment;
 import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.core.home.BannerWebView;
-import com.tokopedia.discovery.DiscoveryRouter;
 import com.tokopedia.discovery.R;
 import com.tokopedia.discovery.autocomplete.HostAutoCompleteAdapter;
 import com.tokopedia.discovery.autocomplete.HostAutoCompleteFactory;
@@ -34,7 +30,6 @@ import com.tokopedia.discovery.autocomplete.di.AutoCompleteComponent;
 import com.tokopedia.discovery.catalog.analytics.AppScreen;
 import com.tokopedia.discovery.newdiscovery.base.DiscoveryActivity;
 import com.tokopedia.discovery.search.SearchPresenter;
-import com.tokopedia.discovery.search.domain.model.SearchItem;
 import com.tokopedia.discovery.search.view.SearchContract;
 import com.tokopedia.discovery.search.view.adapter.ItemClickListener;
 
@@ -246,42 +241,13 @@ public class SearchMainFragment extends TkpdBaseV4Fragment implements SearchCont
     }
 
     @Override
-    public void onItemClicked(SearchItem item) {
-        probeAnalytics(item);
+    public void onItemSearchClicked(String keyword, String categoryId) {
         ((DiscoveryActivity) getActivity()).dropKeyboard();
-        if (item.getEventAction().equals("shop") && item.getApplink() != null) {
-            List<String> segments = Uri.parse(item.getApplink()).getPathSegments();
-            if (segments != null && segments.size() > 0) {
-                Intent intent = ((DiscoveryRouter) getActivity().getApplication()).getShopPageIntent(getActivity(), segments.get(0));
-                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                getActivity().startActivity(intent);
-            }
-        } else if (item.getSc() != null && !item.getSc().isEmpty()) {
-            ((DiscoveryActivity) getActivity()).onSuggestionProductClick(item.getKeyword(), item.getSc());
+
+        if (!TextUtils.isEmpty(categoryId)) {
+            ((DiscoveryActivity) getActivity()).onSuggestionProductClick(keyword, categoryId);
         } else {
-            ((DiscoveryActivity) getActivity()).onSuggestionProductClick(item.getKeyword());
-        }
-    }
-
-
-    private void probeAnalytics(SearchItem item){
-        switch (item.getEventAction())
-        {
-            case AppEventTracking.GTM.SEARCH_AUTOCOMPLETE :
-                UnifyTracking.eventClickAutoCompleteSearch(item.getKeyword());
-                break;
-            case AppEventTracking.GTM.SEARCH_HOTLIST :
-                UnifyTracking.eventClickHotListSearch(item.getKeyword());
-                break;
-            case AppEventTracking.GTM.SEARCH_RECENT :
-                UnifyTracking.eventClickRecentSearch(item.getKeyword());
-                break;
-            case AppEventTracking.GTM.SEARCH_POPULAR :
-                UnifyTracking.eventClickPopularSearch(item.getKeyword());
-                break;
-            case AppEventTracking.GTM.SEARCH_AUTOCOMPLETE_IN_CAT :
-                UnifyTracking.eventClickAutoCompleteCategory(item.getRecom(), item.getSc(), item.getKeyword());
-                break;
+            ((DiscoveryActivity) getActivity()).onSuggestionProductClick(keyword);
         }
     }
 

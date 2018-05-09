@@ -53,7 +53,10 @@ public class AutoCompleteViewHolder extends AbstractViewHolder<AutoCompleteSearc
             @Override
             public void onClick(View v) {
                 UnifyTracking.eventClickAutoCompleteSearch(element.getKeyword());
-                listener.onItemClicked(element.getApplink(), element.getUrl());
+                listener.onItemSearchClicked(
+                        element.getKeyword(),
+                        element.getCategoryId()
+                );
             }
         });
     }
