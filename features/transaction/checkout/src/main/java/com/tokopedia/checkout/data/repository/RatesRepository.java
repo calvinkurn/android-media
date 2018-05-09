@@ -1,8 +1,9 @@
 package com.tokopedia.checkout.data.repository;
 
-import com.tokopedia.checkout.data.entity.response.rates.RatesResponse;
+import com.tokopedia.logisticdata.data.entity.rates.RatesResponse;
 import com.tokopedia.checkout.data.mapper.ShipmentRatesDataMapper;
 import com.tokopedia.checkout.domain.datamodel.shipmentrates.ShipmentDetailData;
+import com.tokopedia.logisticdata.data.repository.RatesDataStore;
 
 import java.util.Map;
 

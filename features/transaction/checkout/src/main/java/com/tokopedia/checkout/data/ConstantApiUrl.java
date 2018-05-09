@@ -38,14 +38,4 @@ public class ConstantApiUrl {
         public static final String PATH_GET_PARAMETER_DYNAMIC_PAYMENT = VERSION + BASE_PATH + "toppay_get_parameter.pl";
         public static final String PATH_THANKS_DYNAMIC_PAYMENT = VERSION + BASE_PATH + "toppay_thanks_action.pl";
     }
-
-    public static class KeroRates {
-        static public String BASE_URL = "https://gw.tokopedia.com/";
-
-        public static final String HMAC_KEY = "web_service_v4";
-        public static final String VERSION = "v2/";
-        static final String BASE_PATH = "";
-
-        public static final String PATH_RATES_V2 = VERSION + BASE_PATH + "rates";
-    }
 }

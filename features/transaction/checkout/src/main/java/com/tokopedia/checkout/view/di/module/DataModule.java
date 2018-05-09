@@ -15,16 +15,14 @@ import com.tokopedia.checkout.data.ConstantApiUrl;
 import com.tokopedia.checkout.data.apiservice.CartApi;
 import com.tokopedia.checkout.data.apiservice.CartApiInterceptor;
 import com.tokopedia.checkout.data.apiservice.CartResponseConverter;
-import com.tokopedia.checkout.data.apiservice.RatesApi;
 import com.tokopedia.checkout.data.apiservice.TxActApi;
 import com.tokopedia.checkout.data.mapper.ShipmentRatesDataMapper;
 import com.tokopedia.checkout.data.repository.CartRepository;
 import com.tokopedia.checkout.data.repository.ICartRepository;
 import com.tokopedia.checkout.data.repository.ITopPayRepository;
-import com.tokopedia.checkout.data.repository.RatesDataStore;
 import com.tokopedia.checkout.data.repository.RatesRepository;
 import com.tokopedia.checkout.data.repository.TopPayRepository;
-import com.tokopedia.checkout.router.ICartCheckoutModuleRouter;
+import com.tokopedia.checkout.router.ICheckoutModuleRouter;
 import com.tokopedia.checkout.view.di.qualifier.CartApiInterceptorQualifier;
 import com.tokopedia.checkout.view.di.qualifier.CartApiOkHttpClientQualifier;
 import com.tokopedia.checkout.view.di.qualifier.CartApiRetrofitQualifier;
@@ -39,6 +37,9 @@ import com.tokopedia.checkout.view.di.qualifier.CartTxActApiRetrofitQualifier;
 import com.tokopedia.checkout.view.di.qualifier.CartTxActOkHttpClientQualifier;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.network.retrofit.interceptors.FingerprintInterceptor;
+import com.tokopedia.logisticdata.data.apiservice.RatesApi;
+import com.tokopedia.logisticdata.data.constant.LogisticDataConstantUrl;
+import com.tokopedia.logisticdata.data.repository.RatesDataStore;
 
 import java.util.concurrent.TimeUnit;
 
@@ -70,14 +71,14 @@ public class DataModule {
 
     @Provides
     @CartChuckApiInterceptorQualifier
-    ChuckInterceptor provideChuckInterceptor(ICartCheckoutModuleRouter cartCheckoutModuleRouter) {
-        return cartCheckoutModuleRouter.getCartCheckoutChuckInterceptor();
+    ChuckInterceptor provideChuckInterceptor(ICheckoutModuleRouter cartCheckoutModuleRouter) {
+        return cartCheckoutModuleRouter.checkoutModuleRouterGetCartCheckoutChuckInterceptor();
     }
 
     @Provides
     @CartFingerPrintApiInterceptorQualifier
-    FingerprintInterceptor fingerprintInterceptor(ICartCheckoutModuleRouter cartCheckoutModuleRouter) {
-        return cartCheckoutModuleRouter.getCartCheckoutFingerPrintInterceptor();
+    FingerprintInterceptor fingerprintInterceptor(ICheckoutModuleRouter cartCheckoutModuleRouter) {
+        return cartCheckoutModuleRouter.checkoutModuleRouterGetCartCheckoutFingerPrintInterceptor();
     }
 
     @Provides
@@ -173,12 +174,12 @@ public class DataModule {
     @Provides
     @CartApiRetrofitQualifier
     Retrofit provideCartApiRetrofit(
-            ICartCheckoutModuleRouter cartCheckoutModuleRouter,
+            ICheckoutModuleRouter cartCheckoutModuleRouter,
             @CartApiOkHttpClientQualifier OkHttpClient okHttpClient) {
         return new Retrofit.Builder()
                 .baseUrl(ConstantApiUrl.Cart.BASE_URL)
                 .addConverterFactory(CartResponseConverter.create())
-                .addConverterFactory(cartCheckoutModuleRouter.cartCheckoutModuleGetStringResponseConverter())
+                .addConverterFactory(cartCheckoutModuleRouter.checkoutModuleRouterGetStringResponseConverter())
                 .addConverterFactory(GsonConverterFactory.create(new Gson()))
                 .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
                 .client(okHttpClient)
@@ -188,13 +189,13 @@ public class DataModule {
     @Provides
     @CartKeroRatesApiRetrofitQualifier
     Retrofit provideCartKeroRatesRetrofit(
-            ICartCheckoutModuleRouter cartCheckoutModuleRouter,
+            ICheckoutModuleRouter cartCheckoutModuleRouter,
             @CartKeroRatesOkHttpQualifier OkHttpClient okHttpClient
     ) {
         return new Retrofit.Builder()
-                .baseUrl(ConstantApiUrl.KeroRates.BASE_URL)
-                .addConverterFactory(cartCheckoutModuleRouter.cartCheckoutModuleGetWS4TkpdResponseConverter())
-                .addConverterFactory(cartCheckoutModuleRouter.cartCheckoutModuleGetStringResponseConverter())
+                .baseUrl(LogisticDataConstantUrl.KeroRates.BASE_URL)
+                .addConverterFactory(cartCheckoutModuleRouter.checkoutModuleRouterGetWS4TkpdResponseConverter())
+                .addConverterFactory(cartCheckoutModuleRouter.checkoutModuleRouterGetStringResponseConverter())
                 .addConverterFactory(GsonConverterFactory.create(new Gson()))
                 .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
                 .client(okHttpClient)
@@ -205,13 +206,13 @@ public class DataModule {
     @Provides
     @CartTxActApiRetrofitQualifier
     Retrofit provideCartTxActRetrofit(
-            ICartCheckoutModuleRouter cartCheckoutModuleRouter,
+            ICheckoutModuleRouter cartCheckoutModuleRouter,
             @CartTxActOkHttpClientQualifier OkHttpClient okHttpClient
     ) {
         return new Retrofit.Builder()
                 .baseUrl(ConstantApiUrl.TransactionAction.BASE_URL)
-                .addConverterFactory(cartCheckoutModuleRouter.cartCheckoutModuleGetWS4TkpdResponseConverter())
-                .addConverterFactory(cartCheckoutModuleRouter.cartCheckoutModuleGetStringResponseConverter())
+                .addConverterFactory(cartCheckoutModuleRouter.checkoutModuleRouterGetWS4TkpdResponseConverter())
+                .addConverterFactory(cartCheckoutModuleRouter.checkoutModuleRouterGetStringResponseConverter())
                 .addConverterFactory(GsonConverterFactory.create(new Gson()))
                 .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
                 .client(okHttpClient)

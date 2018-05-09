@@ -1,6 +1,6 @@
-package com.tokopedia.checkout.data.apiservice;
+package com.tokopedia.logisticdata.data.apiservice;
 
-import com.tokopedia.core.network.constants.TkpdBaseURL;
+import com.tokopedia.logisticdata.data.constant.LogisticDataConstantUrl;
 
 import java.util.Map;
 
@@ -15,7 +15,7 @@ import rx.Observable;
 
 public interface RatesApi {
 
-    @GET(TkpdBaseURL.Shipment.PATH_RATES_V2)
+    @GET(LogisticDataConstantUrl.KeroRates.PATH_RATES_V2)
     Observable<Response<String>> calculateShippingRate(
             @QueryMap Map<String, String> stringStringMap
     );

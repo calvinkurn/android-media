@@ -1,4 +1,4 @@
-package com.tokopedia.checkout.data.entity.response.rates;
+package com.tokopedia.logisticdata.data.entity.rates;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;

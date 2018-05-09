@@ -1,8 +1,8 @@
-package com.tokopedia.checkout.data.repository;
+package com.tokopedia.logisticdata.data.repository;
 
 import com.google.gson.Gson;
-import com.tokopedia.checkout.data.entity.response.rates.RatesResponse;
-import com.tokopedia.checkout.data.apiservice.RatesApi;
+import com.tokopedia.logisticdata.data.entity.rates.RatesResponse;
+import com.tokopedia.logisticdata.data.apiservice.RatesApi;
 
 import java.util.Map;
 

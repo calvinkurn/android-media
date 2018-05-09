@@ -43,7 +43,7 @@ import com.tokopedia.checkout.domain.datamodel.cartsingleshipment.SingleShipment
 import com.tokopedia.checkout.domain.datamodel.shipmentrates.ShipmentDetailData;
 import com.tokopedia.checkout.domain.datamodel.voucher.PromoCodeAppliedData;
 import com.tokopedia.checkout.domain.mapper.CartShipmentAddressFormDataConverter;
-import com.tokopedia.checkout.router.ICartCheckoutModuleRouter;
+import com.tokopedia.checkout.router.ICheckoutModuleRouter;
 import com.tokopedia.checkout.view.adapter.SingleAddressShipmentAdapter;
 import com.tokopedia.checkout.view.base.BaseCheckoutFragment;
 import com.tokopedia.checkout.view.di.component.CartComponent;
@@ -336,8 +336,8 @@ public class SingleAddressShipmentFragment extends BaseCheckoutFragment
     public void onChoosePickupPoint(RecipientAddressModel addressAdapterData) {
         HashMap<String, String> params = mSingleAddressShipmentPresenter.generatePickupPointParams(addressAdapterData);
 
-        startActivityForResult(((ICartCheckoutModuleRouter) getActivity().getApplication())
-                .tkpdTransactionPickupPointActivityFromCartSingleAddressIntent(getActivity(),
+        startActivityForResult(((ICheckoutModuleRouter) getActivity().getApplication())
+                .checkoutModuleRouterGetPickupPointActivityFromCartSingleAddressIntent(getActivity(),
                         addressAdapterData.getDestinationDistrictName(), params), REQUEST_CHOOSE_PICKUP_POINT);
     }
 
@@ -350,8 +350,8 @@ public class SingleAddressShipmentFragment extends BaseCheckoutFragment
     public void onEditPickupPoint(RecipientAddressModel addressAdapterData) {
         HashMap<String, String> params = mSingleAddressShipmentPresenter.generatePickupPointParams(addressAdapterData);
 
-        startActivityForResult(((ICartCheckoutModuleRouter) getActivity().getApplication())
-                .tkpdTransactionPickupPointActivityFromCartSingleAddressIntent(getActivity(),
+        startActivityForResult(((ICheckoutModuleRouter) getActivity().getApplication())
+                .checkoutModuleRouterGetPickupPointActivityFromCartSingleAddressIntent(getActivity(),
                         addressAdapterData.getDestinationDistrictName(), params), REQUEST_CHOOSE_PICKUP_POINT);
     }
 
@@ -368,10 +368,10 @@ public class SingleAddressShipmentFragment extends BaseCheckoutFragment
 
     @Override
     public void onCartPromoUseVoucherPromoClicked(CartItemPromoHolderData cartPromo, int position) {
-        if (getActivity().getApplication() instanceof ICartCheckoutModuleRouter) {
+        if (getActivity().getApplication() instanceof ICheckoutModuleRouter) {
             startActivityForResult(
-                    ((ICartCheckoutModuleRouter) getActivity().getApplication())
-                            .tkpdCartCheckoutGetLoyaltyNewCheckoutMarketplaceCartListIntent(
+                    ((ICheckoutModuleRouter) getActivity().getApplication())
+                            .checkoutModuleRouterGetLoyaltyNewCheckoutMarketplaceCartListIntent(
                                     getActivity(), true
                             ), IRouterConstant.LoyaltyModule.LOYALTY_ACTIVITY_REQUEST_CODE
             );

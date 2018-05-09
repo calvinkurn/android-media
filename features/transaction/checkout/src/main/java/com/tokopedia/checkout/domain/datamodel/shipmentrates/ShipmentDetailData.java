@@ -17,7 +17,7 @@ public class ShipmentDetailData implements Parcelable {
     private ShipmentCartData shipmentCartData;
     private ShipmentItemData selectedShipment;
     private CourierItemData selectedCourier;
-    private Boolean useInsurance;
+    private boolean useInsurance;
     private boolean usePartialOrder;
     private boolean useDropshipper;
     private String dropshipperName;

@@ -243,7 +243,8 @@ ext {
             kol             : ":features:content:kol",
             groupchat       : ":features:user:groupchat",
             gamification    : ":features:promo:gamification",
-            profile         : ":features:user:profile"
+            profile         : ":features:user:profile",
+            logisticdata    : ":features:logistic:logisticdata"
     ]
 
     libraries = [

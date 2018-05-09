@@ -34,7 +34,7 @@ import com.tokopedia.checkout.domain.usecase.AddToCartUseCase;
 import com.tokopedia.checkout.domain.usecase.CheckPromoCodeCartListUseCase;
 import com.tokopedia.checkout.domain.usecase.CheckPromoCodeCartShipmentUseCase;
 import com.tokopedia.checkout.domain.usecase.GetCouponListCartMarketPlaceUseCase;
-import com.tokopedia.checkout.router.ICartCheckoutModuleRouter;
+import com.tokopedia.checkout.router.ICheckoutModuleRouter;
 import com.tokopedia.checkout.view.di.component.CartComponentInjector;
 import com.tokopedia.checkout.view.view.cartlist.CartActivity;
 import com.tokopedia.core.analytics.ScreenTracking;
@@ -327,7 +327,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         ShopModuleRouter,
         LoyaltyModuleRouter,
         ITkpdLoyaltyModuleRouter,
-        ICartCheckoutModuleRouter,
+        ICheckoutModuleRouter,
         com.tokopedia.transaction.router.ICartCheckoutModuleRouter,
         GamificationRouter,
         ProfileModuleRouter,
@@ -1616,7 +1616,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    public Intent tkpdCartCheckoutGetLoyaltyNewCheckoutMarketplaceCartListIntent(
+    public Intent checkoutModuleRouterGetLoyaltyNewCheckoutMarketplaceCartListIntent(
             Context context, boolean couponActive
     ) {
         return couponActive ? LoyaltyActivity.newInstanceNewCheckoutCartListCouponActive(context)
@@ -1624,7 +1624,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    public Intent tkpdCartCheckoutGetLoyaltyNewCheckoutMarketplaceCartShipmentIntent(
+    public Intent checkoutModuleRouterGetLoyaltyNewCheckoutMarketplaceCartShipmentIntent(
             Context context, String additionalDataString, boolean couponActive
     ) {
         return couponActive ? LoyaltyActivity.newInstanceNewCheckoutCartShipmentCouponActive(
@@ -1695,52 +1695,52 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    public Intent tkpdCartCheckoutGetProductDetailIntent(Context context, ProductPass productPass) {
+    public Intent checkoutModuleRouterGetProductDetailIntent(Context context, ProductPass productPass) {
         return ProductInfoActivity.createInstance(context, productPass);
     }
 
     @Override
-    public Intent tkpdCartCheckoutGetShopInfoIntent(Context context, String shopId) {
+    public Intent checkoutModuleRouterGetShopInfoIntent(Context context, String shopId) {
         return ShopInfoActivity.createIntent(context, shopId);
     }
 
     @Override
-    public Intent tkpdTransactionInsuranceTncActivityIntent() {
+    public Intent checkoutModuleRouterGetInsuranceTncActivityIntent() {
         return new Intent(this, InsuranceTnCActivity.class);
     }
 
     @Override
-    public Intent tkpdTransactionPickupPointActivityFromCartMultipleAddressIntent(Activity activity,
-                                                                                  int cartPosition,
-                                                                                  String districtName,
-                                                                                  HashMap<String, String> params) {
+    public Intent checkoutModuleRouterGetPickupPointActivityFromCartMultipleAddressIntent(Activity activity,
+                                                                                          int cartPosition,
+                                                                                          String districtName,
+                                                                                          HashMap<String, String> params) {
         return PickupPointActivity.createInstance(activity, cartPosition, districtName, params);
     }
 
     @Override
-    public Intent tkpdTransactionPickupPointActivityFromCartSingleAddressIntent(Activity activity,
-                                                                                String districtName,
-                                                                                HashMap<String, String> params) {
+    public Intent checkoutModuleRouterGetPickupPointActivityFromCartSingleAddressIntent(Activity activity,
+                                                                                        String districtName,
+                                                                                        HashMap<String, String> params) {
         return PickupPointActivity.createInstance(activity, districtName, params);
     }
 
     @Override
-    public ChuckInterceptor getCartCheckoutChuckInterceptor() {
+    public ChuckInterceptor checkoutModuleRouterGetCartCheckoutChuckInterceptor() {
         return getAppComponent().chuckInterceptor();
     }
 
     @Override
-    public FingerprintInterceptor getCartCheckoutFingerPrintInterceptor() {
+    public FingerprintInterceptor checkoutModuleRouterGetCartCheckoutFingerPrintInterceptor() {
         return getAppComponent().fingerprintInterceptor();
     }
 
     @Override
-    public Converter.Factory cartCheckoutModuleGetWS4TkpdResponseConverter() {
+    public Converter.Factory checkoutModuleRouterGetWS4TkpdResponseConverter() {
         return new TkpdResponseConverter();
     }
 
     @Override
-    public Converter.Factory cartCheckoutModuleGetStringResponseConverter() {
+    public Converter.Factory checkoutModuleRouterGetStringResponseConverter() {
         return new StringResponseConverter();
     }
 

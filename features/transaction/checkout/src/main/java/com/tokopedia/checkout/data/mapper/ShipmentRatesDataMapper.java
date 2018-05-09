@@ -2,9 +2,9 @@ package com.tokopedia.checkout.data.mapper;
 
 import android.text.TextUtils;
 
-import com.tokopedia.checkout.data.entity.response.rates.Attribute;
-import com.tokopedia.checkout.data.entity.response.rates.Product;
-import com.tokopedia.checkout.data.entity.response.rates.RatesResponse;
+import com.tokopedia.logisticdata.data.entity.rates.Attribute;
+import com.tokopedia.logisticdata.data.entity.rates.Product;
+import com.tokopedia.logisticdata.data.entity.rates.RatesResponse;
 import com.tokopedia.checkout.domain.datamodel.shipmentrates.CourierItemData;
 import com.tokopedia.checkout.domain.datamodel.MultipleAddressShipmentAdapterData;
 import com.tokopedia.checkout.domain.datamodel.shipmentrates.ShipmentCartData;
@@ -23,7 +23,6 @@ import org.apache.commons.lang3.text.WordUtils;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.annotation.Nullable;
 import javax.inject.Inject;
 
 /**

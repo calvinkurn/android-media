@@ -1,8 +1,6 @@
 package com.tokopedia.checkout.view.view.shipment.shippingoptions.di;
 
-import com.tokopedia.checkout.data.apiservice.RatesApi;
 import com.tokopedia.checkout.data.mapper.ShipmentRatesDataMapper;
-import com.tokopedia.checkout.data.repository.RatesDataStore;
 import com.tokopedia.checkout.data.repository.RatesRepository;
 import com.tokopedia.checkout.domain.usecase.GetRatesUseCase;
 import com.tokopedia.checkout.view.view.shipment.shippingoptions.CourierAdapter;

@@ -48,7 +48,7 @@ import com.tokopedia.checkout.R;
 import com.tokopedia.checkout.domain.datamodel.shipmentrates.CourierItemData;
 import com.tokopedia.checkout.domain.datamodel.shipmentrates.ShipmentDetailData;
 import com.tokopedia.checkout.domain.datamodel.shipmentrates.ShipmentItemData;
-import com.tokopedia.checkout.router.ICartCheckoutModuleRouter;
+import com.tokopedia.checkout.router.ICheckoutModuleRouter;
 import com.tokopedia.checkout.view.adapter.CourierChoiceAdapter;
 import com.tokopedia.checkout.view.base.BaseCheckoutFragment;
 import com.tokopedia.checkout.view.constants.InsuranceConstant;
@@ -591,7 +591,7 @@ public class ShipmentDetailFragment extends BaseCheckoutFragment
         tosAgreementText.setSpan(new ClickableSpan() {
             @Override
             public void onClick(View widget) {
-                startActivity(((ICartCheckoutModuleRouter) getActivity().getApplication()).tkpdTransactionInsuranceTncActivityIntent());
+                startActivity(((ICheckoutModuleRouter) getActivity().getApplication()).checkoutModuleRouterGetInsuranceTncActivityIntent());
             }
         }, startSpan, endSpan, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
         tvInsuranceTerms.setMovementMethod(LinkMovementMethod.getInstance());
