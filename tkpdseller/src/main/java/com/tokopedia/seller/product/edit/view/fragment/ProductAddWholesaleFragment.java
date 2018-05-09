@@ -39,6 +39,11 @@ public class ProductAddWholesaleFragment extends BaseDaggerFragment implements W
     public static final String SAVE_PRODUCT_WHOLESALE = "SAVE_PRODUCT_WHOLESALE";
 
     private static final int MAX_WHOLESALE = 5;
+    private static final int DEFAULT_QTY_WHOLESALE = 2;
+    private static final int DEFAULT_ADD_QTY = 1;
+    private static final int DEFAULT_LESS_PRICE_RP = 1;
+    private static final double DEFAULT_LESS_PRICE_USD = 0.01;
+
     private WholesaleAddAdapter wholesaleAdapter;
     private TextView textViewAddWholesale, textMainPrice;
     private Button buttonSave;
@@ -104,15 +109,15 @@ public class ProductAddWholesaleFragment extends BaseDaggerFragment implements W
                 WholesaleModel newWholesale;
                 switch (currencyType) {
                     case CurrencyTypeDef.TYPE_USD:
-                        newWholesale = new WholesaleModel(2, productPrice - 0.01);
+                        newWholesale = new WholesaleModel(DEFAULT_QTY_WHOLESALE, productPrice - DEFAULT_LESS_PRICE_USD);
                         if(lastItem!=null)
-                            newWholesale = new WholesaleModel(lastItem.getQtyMin() + 1, lastItem.getQtyPrice() - 0.01);
+                            newWholesale = new WholesaleModel(lastItem.getQtyMin() + DEFAULT_ADD_QTY, lastItem.getQtyPrice() - DEFAULT_LESS_PRICE_USD);
                         break;
                     default:
                     case CurrencyTypeDef.TYPE_IDR:
-                        newWholesale = new WholesaleModel(2, productPrice - 1);
+                        newWholesale = new WholesaleModel(DEFAULT_QTY_WHOLESALE, productPrice - DEFAULT_LESS_PRICE_RP);
                         if(lastItem!=null)
-                            newWholesale = new WholesaleModel(lastItem.getQtyMin() + 1, lastItem.getQtyPrice() - 1);
+                            newWholesale = new WholesaleModel(lastItem.getQtyMin() + DEFAULT_ADD_QTY, lastItem.getQtyPrice() - DEFAULT_LESS_PRICE_RP);
                         break;
 
                 }
