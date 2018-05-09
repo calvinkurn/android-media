@@ -48,7 +48,7 @@ public class ProductAddWholesaleActivity extends BaseSimpleActivity {
     public void onBackPressed() {
         Fragment fragment = getFragment();
         if (fragment != null && fragment instanceof ProductAddWholesaleFragment) {
-            if (((ProductAddWholesaleFragment) fragment).isAnyWholesaleChange()) {
+            if (!((ProductAddWholesaleFragment) fragment).isAnyWholesaleChange()) {
                 AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this, R.style.AppCompatAlertDialogStyle)
                         .setTitle(getString(R.string.product_dialog_cancel_title))
                         .setMessage(getString(R.string.product_dialog_cancel_message))

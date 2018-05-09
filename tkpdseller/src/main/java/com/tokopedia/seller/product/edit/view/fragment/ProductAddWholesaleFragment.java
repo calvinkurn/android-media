@@ -18,6 +18,7 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.product.edit.constant.CurrencyTypeDef;
@@ -271,14 +272,8 @@ public class ProductAddWholesaleFragment extends BaseDaggerFragment implements W
             productWholesaleViewModelListTemp = new ArrayList<>();
         }
 
-        for (ProductWholesaleViewModel productWholesaleViewModel : productWholesaleViewModelList){
-            for (ProductWholesaleViewModel temp : productWholesaleViewModelListTemp){
-                if(productWholesaleViewModel.getPriceValue() != temp.getPriceValue() ||
-                        productWholesaleViewModel.getMinQty() != temp.getMinQty()){
-                    return true;
-                }
-            }
-        }
-        return false;
+        boolean state = new Gson().toJson(productWholesaleViewModelList).equalsIgnoreCase(new Gson().toJson(productWholesaleViewModelListTemp));
+
+        return state;
     }
 }
