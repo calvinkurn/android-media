@@ -50,12 +50,19 @@ public class WebSocketMapper {
                 "",
                 "",
                 "",
-                new MessageViewModel(),
+                getDummyMessage(),
                 "",
                 TYPE_QUICK_REPLY,
                 new FallbackAttachmentViewModel(),
                 convertToQuickReplyList()
         );
+    }
+
+    private MessageViewModel getDummyMessage() {
+        MessageViewModel message = new MessageViewModel();
+        message.setCensoredReply("Test reply from Yoas");
+        message.setOriginalReply("Task By Nisie dongzzz");
+        return message;
     }
 
     private List<QuickReplyViewModel> convertToQuickReplyList() {

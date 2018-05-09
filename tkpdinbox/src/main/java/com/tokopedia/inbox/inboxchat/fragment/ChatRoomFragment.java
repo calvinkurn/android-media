@@ -103,6 +103,7 @@ import com.tokopedia.inbox.inboxchat.viewmodel.InboxChatViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.MyChatViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.OppositeChatViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.chatroom.QuickReplyListViewModel;
+import com.tokopedia.inbox.inboxchat.viewmodel.chatroom.QuickReplyViewModel;
 import com.tokopedia.inbox.inboxmessage.InboxMessageConstant;
 
 import java.util.ArrayList;
@@ -228,7 +229,6 @@ public class ChatRoomFragment extends BaseDaggerFragment
         replyWatcher = Events.text(replyColumn);
         recyclerView.setHasFixedSize(true);
         templateRecyclerView.setHasFixedSize(true);
-        rvQuickReply.setHasFixedSize(true);
         presenter.attachView(this);
         uploading = false;
         prepareView();
@@ -1281,9 +1281,9 @@ public class ChatRoomFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void addDummyMessage() {
+    public void addDummyMessage(String dummyText) {
         DummyChatViewModel item = new DummyChatViewModel();
-        item.setMsg(getReplyMessage());
+        item.setMsg(dummyText.length() != 0 ? dummyText : getReplyMessage());
         if(!TextUtils.isEmpty(getArguments().getString(InboxMessageConstant.PARAM_MESSAGE_ID))) {
             item.setMsgId(Integer.parseInt(getArguments().getString(InboxMessageConstant.PARAM_MESSAGE_ID)));
         }
@@ -1378,24 +1378,34 @@ public class ChatRoomFragment extends BaseDaggerFragment
 
     @Override
     public void onReceiveMessage(BaseChatViewModel message) {
-        rvQuickReply.setVisibility(View.GONE);
-        if(message instanceof QuickReplyListViewModel){
+        if(message instanceof QuickReplyListViewModel) {
             //TODO YOAS :
             showQuickReplyView((QuickReplyListViewModel) message);
         }
     }
 
     private void showQuickReplyView(QuickReplyListViewModel model) {
-        rvQuickReply.setVisibility(View.VISIBLE);
-        quickReplyAdapter = new QuickReplyAdapter(model);
-        rvQuickReply.setAdapter(quickReplyAdapter);
-        rvQuickReply.getAdapter().notifyDataSetChanged();
+        if (model.getQuickReplies().size() != 0) {
+            rvQuickReply.setVisibility(View.VISIBLE);
+            quickReplyAdapter = new QuickReplyAdapter(model, this);
+            rvQuickReply.setAdapter(quickReplyAdapter);
+            rvQuickReply.getAdapter().notifyDataSetChanged();
+        }
+    }
+
+    @Override
+    public void onQuickReplyClicked(QuickReplyViewModel quickReply) {
+        rvQuickReply.setVisibility(View.GONE);
+        presenter.sendMessage(networkType, quickReply.getMessage());
     }
 
     @Override
     public void onSuccessSendReply(ReplyActionData replyData, String reply) {
         adapter.removeLast();
         addView(replyData, reply);
+        if (quickReplyAdapter.getItemCount() != 0) {
+            quickReplyAdapter.clearData();
+        }
     }
 
     @Override
@@ -1405,6 +1415,9 @@ public class ChatRoomFragment extends BaseDaggerFragment
         replyColumn.setText("");
         showError(getActivity().getString(R.string.delete_error).concat("\n").concat(getString(R
                 .string.string_general_error)));
+        if (quickReplyAdapter.getItemCount() != 0) {
+            rvQuickReply.setVisibility(View.VISIBLE);
+        }
     }
 
     @Override

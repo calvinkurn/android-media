@@ -7,6 +7,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.tokopedia.inbox.R;
+import com.tokopedia.inbox.inboxchat.presenter.ChatRoomContract;
 import com.tokopedia.inbox.inboxchat.viewmodel.chatroom.QuickReplyListViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.chatroom.QuickReplyViewModel;
 
@@ -17,9 +18,11 @@ import com.tokopedia.inbox.inboxchat.viewmodel.chatroom.QuickReplyViewModel;
 public class QuickReplyAdapter extends RecyclerView.Adapter<QuickReplyAdapter.Holder> {
 
     private QuickReplyListViewModel quickReplyListViewModel;
+    private ChatRoomContract.View mainView;
 
-    public QuickReplyAdapter(QuickReplyListViewModel quickReplyListViewModel) {
+    public QuickReplyAdapter(QuickReplyListViewModel quickReplyListViewModel, ChatRoomContract.View mainView) {
         this.quickReplyListViewModel = quickReplyListViewModel;
+        this.mainView = mainView;
     }
 
     @Override
@@ -30,13 +33,24 @@ public class QuickReplyAdapter extends RecyclerView.Adapter<QuickReplyAdapter.Ho
 
     @Override
     public void onBindViewHolder(Holder holder, int position) {
-        QuickReplyViewModel model = quickReplyListViewModel.getQuickReplies().get(position);
+        final QuickReplyViewModel model = quickReplyListViewModel.getQuickReplies().get(position);
         holder.text.setText(model.getMessage());
+        holder.text.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mainView.onQuickReplyClicked(model);
+            }
+        });
     }
 
     @Override
     public int getItemCount() {
         return quickReplyListViewModel.getQuickReplies().size();
+    }
+
+    public void clearData() {
+        quickReplyListViewModel = quickReplyListViewModel.EMPTY();
+        notifyDataSetChanged();
     }
 
     public class Holder extends RecyclerView.ViewHolder {

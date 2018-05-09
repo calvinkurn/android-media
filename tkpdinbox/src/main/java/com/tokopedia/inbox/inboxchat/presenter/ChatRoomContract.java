@@ -15,11 +15,11 @@ import com.tokopedia.inbox.inboxchat.adapter.ChatRoomAdapter;
 import com.tokopedia.inbox.inboxchat.domain.model.reply.Attachment;
 import com.tokopedia.inbox.inboxchat.domain.model.replyaction.ReplyActionData;
 import com.tokopedia.inbox.inboxchat.domain.model.websocket.WebSocketResponse;
-import com.tokopedia.inbox.inboxchat.viewmodel.AttachInvoiceSingleViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.ChatRoomViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.DummyChatViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.MyChatViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.OppositeChatViewModel;
+import com.tokopedia.inbox.inboxchat.viewmodel.chatroom.QuickReplyViewModel;
 
 import java.util.List;
 
@@ -49,7 +49,7 @@ public class ChatRoomContract {
 
         void setViewEnabled(boolean b);
 
-        void addDummyMessage();
+        void addDummyMessage(String dummyText);
 
         void setCanLoadMore(boolean hasNext);
 
@@ -127,6 +127,8 @@ public class ChatRoomContract {
 
         boolean isChatBot();
 
+        void onQuickReplyClicked(QuickReplyViewModel quickReply);
+
         void onInvoiceSelected(SelectedInvoice selectedInvoice);
 
         void onClickRating(OppositeChatViewModel element, int rating);
@@ -156,6 +158,8 @@ public class ChatRoomContract {
         void onGoToDetail(String userId, String role);
 
         void sendMessage(int networkType);
+
+        void sendMessage(int networkType, String reply);
 
         void addMessageChatBalloon(WebSocketResponse response);
 
