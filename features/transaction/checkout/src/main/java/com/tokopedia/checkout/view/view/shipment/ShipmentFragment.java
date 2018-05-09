@@ -50,6 +50,7 @@ import com.tokopedia.checkout.view.view.shipment.di.ShipmentComponent;
 import com.tokopedia.checkout.view.view.shipment.di.ShipmentModule;
 import com.tokopedia.checkout.view.view.shipment.shippingoptions.CourierBottomsheet;
 import com.tokopedia.checkout.view.view.shipment.viewmodel.ShipmentCartItem;
+import com.tokopedia.checkout.view.view.shipment.viewmodel.ShipmentInsuranceTncItem;
 import com.tokopedia.checkout.view.view.shipmentform.CartShipmentActivity;
 import com.tokopedia.core.receiver.CartBadgeNotificationReceiver;
 import com.tokopedia.core.router.transactionmodule.TransactionPurchaseRouter;
@@ -181,6 +182,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         shipmentPresenter.setCartPromoSuggestion(
                 (CartPromoSuggestion) arguments.getParcelable(ARG_EXTRA_CART_PROMO_SUGGESTION));
         shipmentPresenter.setShipmentCostModel(new ShipmentCostModel());
+        shipmentPresenter.setShipmentInsuranceTncItem(new ShipmentInsuranceTncItem());
     }
 
     @Override
@@ -239,6 +241,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         }
         shipmentAdapter.addCartItemDataList(shipmentPresenter.getShipmentCartItemList());
         shipmentAdapter.addShipmentCostData(shipmentPresenter.getShipmentCostModel());
+        shipmentAdapter.addShipmentInsuranceTncData(shipmentPresenter.getShipmentInsuranceTncItem());
     }
 
     @Override
@@ -333,6 +336,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         shipmentAdapter.addAddressShipmentData(shipmentPresenter.getRecipientAddressModel());
         shipmentAdapter.addCartItemDataList(shipmentPresenter.getShipmentCartItemList());
         shipmentAdapter.addShipmentCostData(shipmentPresenter.getShipmentCostModel());
+        shipmentAdapter.addShipmentInsuranceTncData(shipmentPresenter.getShipmentInsuranceTncItem());
     }
 
     @Override
@@ -731,10 +735,12 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                 @Override
                 public void run() {
                     shipmentAdapter.updateItemAndTotalCost(position);
+                    shipmentAdapter.updateInsuranceTncVisibility();
                 }
             });
         } else {
             shipmentAdapter.updateItemAndTotalCost(position);
+            shipmentAdapter.updateInsuranceTncVisibility();
         }
     }
 
@@ -750,5 +756,10 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         } else {
             shipmentAdapter.notifyItemChanged(position);
         }
+    }
+
+    @Override
+    public void onInsuranceTncClicked() {
+        startActivity(((ICheckoutModuleRouter) getActivity().getApplication()).checkoutModuleRouterGetInsuranceTncActivityIntent());
     }
 }

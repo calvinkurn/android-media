@@ -9,7 +9,7 @@ import com.tokopedia.checkout.domain.datamodel.shipmentrates.ShipmentCartData;
 import com.tokopedia.checkout.domain.datamodel.shipmentrates.ShipmentDetailData;
 import com.tokopedia.checkout.domain.datamodel.shipmentrates.ShipmentItemData;
 import com.tokopedia.checkout.domain.usecase.GetRatesUseCase;
-import com.tokopedia.checkout.view.view.shipment.shippingoptions.viewmodel.ShipmentData;
+import com.tokopedia.checkout.view.view.shipment.shippingoptions.viewmodel.ShipmentOptionData;
 import com.tokopedia.checkout.view.view.shipment.shippingoptions.viewmodel.ShipmentTypeData;
 import com.tokopedia.core.network.exception.model.UnProcessableHttpException;
 
@@ -31,7 +31,7 @@ public class CourierPresenter extends BaseDaggerPresenter<CourierContract.View>
         implements CourierContract.Presenter {
 
     private ShipmentDetailData shipmentDetailData;
-    private List<ShipmentData> shipmentDataList = new ArrayList<>();
+    private List<ShipmentOptionData> shipmentDataList = new ArrayList<>();
     private final GetRatesUseCase getRatesUseCase;
 
     @Inject
@@ -124,7 +124,7 @@ public class CourierPresenter extends BaseDaggerPresenter<CourierContract.View>
     }
 
     @Override
-    public List<ShipmentData> getShipmentDataList() {
+    public List<ShipmentOptionData> getShipmentDataList() {
         return shipmentDataList;
     }
 }

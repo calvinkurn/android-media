@@ -23,6 +23,7 @@ import com.tokopedia.checkout.domain.usecase.CheckoutUseCase;
 import com.tokopedia.checkout.domain.usecase.GetShipmentAddressFormUseCase;
 import com.tokopedia.checkout.domain.usecase.GetThanksToppayUseCase;
 import com.tokopedia.checkout.view.view.shipment.viewmodel.ShipmentCartItem;
+import com.tokopedia.checkout.view.view.shipment.viewmodel.ShipmentInsuranceTncItem;
 import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.router.transactionmodule.sharedata.CheckPromoCodeCartListResult;
 import com.tokopedia.core.router.transactionmodule.sharedata.CheckPromoCodeCartShipmentRequest;
@@ -59,6 +60,8 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     private PromoCodeAppliedData promoCodeAppliedData;
     private CartPromoSuggestion cartPromoSuggestion;
     private ShipmentCostModel shipmentCostModel;
+    private ShipmentInsuranceTncItem shipmentInsuranceTncItem;
+
     private List<DataCheckoutRequest> dataCheckoutRequestList;
     private List<CheckPromoCodeCartShipmentRequest.Data> promoCodeCartShipmentRequestDataList;
     private CheckoutData checkoutData;
@@ -423,5 +426,15 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     @Override
     public void setShipmentCostModel(ShipmentCostModel shipmentCostModel) {
         this.shipmentCostModel = shipmentCostModel;
+    }
+
+    @Override
+    public ShipmentInsuranceTncItem getShipmentInsuranceTncItem() {
+        return shipmentInsuranceTncItem;
+    }
+
+    @Override
+    public void setShipmentInsuranceTncItem(ShipmentInsuranceTncItem shipmentInsuranceTncItem) {
+        this.shipmentInsuranceTncItem = shipmentInsuranceTncItem;
     }
 }

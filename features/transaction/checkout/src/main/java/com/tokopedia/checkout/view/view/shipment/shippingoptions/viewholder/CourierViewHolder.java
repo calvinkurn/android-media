@@ -10,7 +10,7 @@ import com.tokopedia.checkout.R;
 import com.tokopedia.checkout.domain.datamodel.shipmentrates.CourierItemData;
 import com.tokopedia.checkout.view.view.shipment.TypeFaceUtil;
 import com.tokopedia.checkout.view.view.shipment.shippingoptions.CourierAdapter;
-import com.tokopedia.checkout.view.view.shipment.shippingoptions.viewmodel.ShipmentData;
+import com.tokopedia.checkout.view.view.shipment.shippingoptions.viewmodel.ShipmentOptionData;
 import com.tokopedia.design.utils.CurrencyFormatUtil;
 
 import java.util.List;
@@ -69,8 +69,8 @@ public class CourierViewHolder extends RecyclerView.ViewHolder {
             @Override
             public void onClick(View v) {
                 CourierItemData selectedCourier = null;
-                List<ShipmentData> shipmentDataList = courierAdapter.getShipmentDataList();
-                for (ShipmentData shipmentData : shipmentDataList) {
+                List<ShipmentOptionData> shipmentDataList = courierAdapter.getShipmentDataList();
+                for (ShipmentOptionData shipmentData : shipmentDataList) {
                     if (shipmentData instanceof CourierItemData) {
                         CourierItemData courier = (CourierItemData) shipmentData;
                         if (courier.getShipperProductId() ==

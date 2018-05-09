@@ -9,7 +9,7 @@ import com.tokopedia.checkout.R;
 import com.tokopedia.checkout.domain.datamodel.shipmentrates.CourierItemData;
 import com.tokopedia.checkout.view.view.shipment.shippingoptions.viewholder.CourierHeaderViewHolder;
 import com.tokopedia.checkout.view.view.shipment.shippingoptions.viewholder.CourierViewHolder;
-import com.tokopedia.checkout.view.view.shipment.shippingoptions.viewmodel.ShipmentData;
+import com.tokopedia.checkout.view.view.shipment.shippingoptions.viewmodel.ShipmentOptionData;
 import com.tokopedia.checkout.view.view.shipment.shippingoptions.viewmodel.ShipmentTypeData;
 
 import java.util.List;
@@ -24,17 +24,17 @@ public class CourierAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     private static final int ITEM_VIEW_SHIPMENT_TYPE = R.layout.item_shipment_category;
 
     private CourierAdapterActionListener actionListener;
-    private List<ShipmentData> shipmentDataList;
+    private List<ShipmentOptionData> shipmentDataList;
 
     public void setViewListener(CourierAdapterActionListener viewListener) {
         this.actionListener = viewListener;
     }
 
-    public void setShipmentDataList(List<ShipmentData> shipmentDataList) {
+    public void setShipmentDataList(List<ShipmentOptionData> shipmentDataList) {
         this.shipmentDataList = shipmentDataList;
     }
 
-    public List<ShipmentData> getShipmentDataList() {
+    public List<ShipmentOptionData> getShipmentDataList() {
         return shipmentDataList;
     }
 
@@ -44,7 +44,7 @@ public class CourierAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
     @Override
     public int getItemViewType(int position) {
-        ShipmentData shipmentData = shipmentDataList.get(position);
+        ShipmentOptionData shipmentData = shipmentDataList.get(position);
 
         if (shipmentData instanceof CourierItemData) {
             return ITEM_VIEW_COURIER;
@@ -70,7 +70,7 @@ public class CourierAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     @Override
     public void onBindViewHolder(final RecyclerView.ViewHolder holder, final int position) {
         int viewType = getItemViewType(position);
-        ShipmentData shipmentData = shipmentDataList.get(position);
+        ShipmentOptionData shipmentData = shipmentDataList.get(position);
 
         if (viewType == ITEM_VIEW_COURIER) {
             ((CourierViewHolder) holder).bindData(this, (CourierItemData) shipmentData);

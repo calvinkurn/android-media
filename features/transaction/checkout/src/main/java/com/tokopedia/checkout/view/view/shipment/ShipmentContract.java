@@ -12,6 +12,7 @@ import com.tokopedia.checkout.domain.datamodel.cartshipmentform.CartShipmentAddr
 import com.tokopedia.checkout.domain.datamodel.cartsingleshipment.ShipmentCostModel;
 import com.tokopedia.checkout.domain.datamodel.voucher.PromoCodeAppliedData;
 import com.tokopedia.checkout.view.view.shipment.viewmodel.ShipmentCartItem;
+import com.tokopedia.checkout.view.view.shipment.viewmodel.ShipmentInsuranceTncItem;
 import com.tokopedia.core.router.transactionmodule.sharedata.CheckPromoCodeCartListResult;
 import com.tokopedia.core.router.transactionmodule.sharedata.CheckPromoCodeCartShipmentRequest;
 import com.tokopedia.core.router.transactionmodule.sharedata.CheckPromoCodeCartShipmentResult;
@@ -100,6 +101,10 @@ public interface ShipmentContract {
         ShipmentCostModel getShipmentCostModel();
 
         void setShipmentCostModel(ShipmentCostModel shipmentCostModel);
+
+        ShipmentInsuranceTncItem getShipmentInsuranceTncItem();
+
+        void setShipmentInsuranceTncItem(ShipmentInsuranceTncItem shipmentInsuranceTncItem);
     }
 
 }

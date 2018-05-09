@@ -42,4 +42,6 @@ public interface ShipmentAdapterActionListener extends CartAdapterActionListener
 
     void onViewVisibilityStateChanged(int position);
 
+    void onInsuranceTncClicked();
+
 }

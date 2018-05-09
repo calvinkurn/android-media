@@ -17,13 +17,16 @@ import com.tokopedia.checkout.domain.datamodel.cartsingleshipment.CartItemModel;
 import com.tokopedia.checkout.domain.datamodel.cartsingleshipment.ShipmentCostModel;
 import com.tokopedia.checkout.domain.datamodel.shipmentrates.CourierItemData;
 import com.tokopedia.checkout.domain.datamodel.shipmentrates.ShipmentDetailData;
+import com.tokopedia.checkout.domain.datamodel.shipmentrates.ShipmentItemData;
 import com.tokopedia.checkout.view.holderitemdata.CartItemPromoHolderData;
 import com.tokopedia.checkout.view.view.shipment.converter.ShipmentDataRequestConverter;
 import com.tokopedia.checkout.view.view.shipment.viewholder.ShipmentCostViewHolder;
+import com.tokopedia.checkout.view.view.shipment.viewholder.ShipmentInsuranceTncViewHolder;
 import com.tokopedia.checkout.view.view.shipment.viewholder.ShipmentItemMultipleAddressViewHolder;
 import com.tokopedia.checkout.view.view.shipment.viewholder.ShipmentItemSingleAddressViewHolder;
 import com.tokopedia.checkout.view.view.shipment.viewholder.ShipmentRecipientAddressViewHolder;
 import com.tokopedia.checkout.view.view.shipment.viewmodel.ShipmentCartItem;
+import com.tokopedia.checkout.view.view.shipment.viewmodel.ShipmentInsuranceTncItem;
 import com.tokopedia.checkout.view.view.shipment.viewmodel.ShipmentMultipleAddressCartItem;
 import com.tokopedia.checkout.view.view.shipment.viewmodel.ShipmentSingleAddressCartItem;
 import com.tokopedia.checkout.view.view.shipmentform.SingleAddressShipmentFragment;
@@ -59,6 +62,7 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     private List<ShipmentCartItem> shipmentCartItemList;
     private RecipientAddressModel recipientAddressModel;
     private ShipmentCostModel shipmentCostModel;
+    private ShipmentInsuranceTncItem shipmentInsuranceTncItem;
     private ShipmentDataRequestConverter shipmentDataRequestConverter;
 
     private boolean hasShownShowCase;
@@ -88,6 +92,8 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             return ShipmentItemMultipleAddressViewHolder.ITEM_VIEW_SHIPMENT_MULTIPLE_ADDRESS;
         } else if (item instanceof ShipmentCostModel) {
             return ShipmentCostViewHolder.ITEM_VIEW_SHIPMENT_COST;
+        } else if (item instanceof ShipmentInsuranceTncItem) {
+            return ShipmentInsuranceTncViewHolder.ITEM_VIEW_INSURANCE_TNC;
         }
 
         return super.getItemViewType(position);
@@ -109,6 +115,8 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             return new ShipmentItemMultipleAddressViewHolder(view, parent.getContext(), shipmentAdapterActionListener, this);
         } else if (viewType == ShipmentCostViewHolder.ITEM_VIEW_SHIPMENT_COST) {
             return new ShipmentCostViewHolder(view, shipmentAdapterActionListener);
+        } else if (viewType == ShipmentInsuranceTncViewHolder.ITEM_VIEW_INSURANCE_TNC) {
+            return new ShipmentInsuranceTncViewHolder(view, shipmentAdapterActionListener);
         }
         throw new RuntimeException("No view holder type found");
     }
@@ -134,6 +142,8 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                     (ShipmentMultipleAddressCartItem) data, recipientAddressModel, showCaseObjectList);
         } else if (viewType == ShipmentCostViewHolder.ITEM_VIEW_SHIPMENT_COST) {
             ((ShipmentCostViewHolder) holder).bindViewHolder((ShipmentCostModel) data);
+        } else if (viewType == ShipmentInsuranceTncViewHolder.ITEM_VIEW_INSURANCE_TNC) {
+            ((ShipmentInsuranceTncViewHolder) holder).bindViewHolder((ShipmentInsuranceTncItem) data);
         }
     }
 
@@ -205,6 +215,37 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         shipmentDataList.add(shipmentCostModel);
         notifyDataSetChanged();
         checkDataForCheckout();
+    }
+
+    public void addShipmentInsuranceTncData(ShipmentInsuranceTncItem shipmentInsuranceTncItem) {
+        this.shipmentInsuranceTncItem = shipmentInsuranceTncItem;
+        shipmentDataList.add(shipmentInsuranceTncItem);
+        notifyDataSetChanged();
+    }
+
+    public void updateInsuranceTncVisibility() {
+        shipmentInsuranceTncItem.setVisible(checkItemUseInsuranceExist());
+        for (int i = 0; i < shipmentDataList.size(); i++) {
+            if (shipmentDataList.get(i) instanceof ShipmentInsuranceTncItem) {
+                notifyItemChanged(i);
+                break;
+            }
+        }
+    }
+
+    private boolean checkItemUseInsuranceExist() {
+        for (ShipmentData shipmentData : shipmentDataList) {
+            if (shipmentData instanceof ShipmentCartItem) {
+                ShipmentCartItem shipmentCartItem = (ShipmentCartItem) shipmentData;
+                if (shipmentCartItem.getSelectedShipmentDetailData() != null &&
+                        shipmentCartItem.getSelectedShipmentDetailData().getSelectedCourier() != null &&
+                        shipmentCartItem.getSelectedShipmentDetailData().getUseInsurance() != null &&
+                        shipmentCartItem.getSelectedShipmentDetailData().getUseInsurance()) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     public void updateSelectedAddress(RecipientAddressModel recipientAddress) {
