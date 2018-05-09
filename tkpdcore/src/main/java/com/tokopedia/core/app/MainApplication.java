@@ -276,7 +276,6 @@ public abstract class MainApplication extends BaseMainApplication{
         initBranch();
         NotificationUtils.setNotificationChannel(this);
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
-        initFirebase();
     }
 
 
