@@ -53,4 +53,10 @@ public class LocalCartActivity extends ReactNativeActivity {
 
         return bundle;
     }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        finish();
+    }
 }
