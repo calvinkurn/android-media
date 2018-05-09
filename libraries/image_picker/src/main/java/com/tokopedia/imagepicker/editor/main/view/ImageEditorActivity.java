@@ -12,6 +12,7 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.AlertDialog;
 import android.view.View;
 import android.webkit.URLUtil;
+import android.widget.TextView;
 
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
@@ -29,6 +30,7 @@ import com.tokopedia.imagepicker.picker.main.builder.ImageEditActionTypeDef;
 import java.io.File;
 import java.util.ArrayList;
 
+import static com.tokopedia.imagepicker.editor.main.Constant.BRIGHTNESS_PRECISION;
 import static com.tokopedia.imagepicker.editor.main.Constant.HALF_BRIGHTNESS_RANGE;
 import static com.tokopedia.imagepicker.editor.main.Constant.HALF_CONTRAST_RANGE;
 import static com.tokopedia.imagepicker.editor.main.Constant.HALF_ROTATE_RANGE;
@@ -99,6 +101,8 @@ public class ImageEditorActivity extends BaseSimpleActivity implements ImageEdit
     private TwoLineSeekBar brightnessSeekbar;
     private TwoLineSeekBar contrastSeekbar;
     private TwoLineSeekBar rotateSeekbar;
+    private TextView tvBrightness;
+    private TextView tvContrast;
 
     public static Intent getIntent(Context context, ArrayList<String> imageUrls, int minResolution,
                                    @ImageEditActionTypeDef int[] imageEditActionType,
@@ -405,9 +409,6 @@ public class ImageEditorActivity extends BaseSimpleActivity implements ImageEdit
                     layoutCrop.setVisibility(View.VISIBLE);
                     break;
                 case ImageEditActionTypeDef.ACTION_ROTATE:
-                    if (fragment != null) {
-                        fragment.setEditMode(true);
-                    }
                     hideAllControls();
                     setupRotateWidget();
                     layoutRotate.setVisibility(View.VISIBLE);
@@ -475,6 +476,7 @@ public class ImageEditorActivity extends BaseSimpleActivity implements ImageEdit
                     // no need to hide loading, etc.
                 }
             });
+            tvBrightness = findViewById(R.id.tv_brightness);
         }
     }
 
@@ -498,6 +500,28 @@ public class ImageEditorActivity extends BaseSimpleActivity implements ImageEdit
                 @Override
                 public void onSeekStopped(float value, float step) {
                     // no need to hide loading, etc.
+                }
+            });
+            View vReset = findViewById(R.id.tv_reset);
+            vReset.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    ImageEditPreviewFragment imageEditPreviewFragment = getCurrentFragment();
+                    if (imageEditPreviewFragment != null) {
+                        imageEditPreviewFragment.cancelCropRotateImage();
+                    }
+                    rotateSeekbar.setValue(0);
+                }
+            });
+
+            View vRotate90 = findViewById(R.id.iv_rotate_90);
+            vRotate90.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    ImageEditPreviewFragment imageEditPreviewFragment = getCurrentFragment();
+                    if (imageEditPreviewFragment != null) {
+                        imageEditPreviewFragment.rotateByAngle(90);
+                    }
                 }
             });
         }
@@ -526,6 +550,8 @@ public class ImageEditorActivity extends BaseSimpleActivity implements ImageEdit
                     // no need to hide loading, etc.
                 }
             });
+
+            tvContrast = findViewById(R.id.tv_contrast);
         }
     }
 
@@ -574,15 +600,14 @@ public class ImageEditorActivity extends BaseSimpleActivity implements ImageEdit
     }
 
     public void setUIBrightnessValue(float brightnessValue) {
-        // float brightnessDiv = brightnessValue / 10;
-        // String.format(Locale.getDefault(), "%.1f", brightnessDiv));
+        tvBrightness.setText(String.valueOf((int) brightnessValue / BRIGHTNESS_PRECISION));
         if (brightnessSeekbar != null && brightnessSeekbar.getValue() != brightnessValue) {
             brightnessSeekbar.setValue(brightnessValue);
         }
     }
 
     public void setUIContrastValue(float contrastValue) {
-        // String.format(Locale.getDefault(), "%.2f", contrastValue / 100));
+        tvContrast.setText(String.valueOf((int) contrastValue - INITIAL_CONTRAST_VALUE));
         if (contrastSeekbar != null && contrastSeekbar.getValue() != contrastValue) {
             contrastSeekbar.setValue(contrastValue);
         }

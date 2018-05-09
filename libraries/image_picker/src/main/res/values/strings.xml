@@ -28,4 +28,6 @@
     <string name="default_all_album">Semua Gambar</string>
     <string name="album">Album</string>
     <string name="ratio_1_1">1:1</string>
+    <string name="reset">Reset</string>
+    <string name="default_contrast">1</string>
 </resources>

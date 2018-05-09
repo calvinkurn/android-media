@@ -8,5 +8,5 @@
     <dimen name="editor_main_height">64dp</dimen>
     <dimen name="editor_footer_height">150dp</dimen>
     <dimen name="image_edit_thumbnail_width">72dp</dimen>
-    <dimen name="control_height">64dp</dimen>
+    <dimen name="control_height">72dp</dimen>
 </resources>

@@ -153,7 +153,7 @@ public class ImageEditPreviewFragment extends Fragment implements ImageEditPrevi
         return view;
     }
 
-    private void setupUndoRedo(View view){
+    private void setupUndoRedo(View view) {
         ivUndo = view.findViewById(R.id.iv_undo);
         ivRedo = view.findViewById(R.id.iv_redo);
         ivUndo.setOnClickListener(new View.OnClickListener() {
@@ -171,7 +171,7 @@ public class ImageEditPreviewFragment extends Fragment implements ImageEditPrevi
         renderUndoRedo();
     }
 
-    private void renderUndoRedo(){
+    private void renderUndoRedo() {
         if (onImageEditPreviewFragmentListener.hasHistory(imageIndex) && onImageEditPreviewFragmentListener.isInEditMode()) {
 
             if (onImageEditPreviewFragmentListener.canUndo(imageIndex)) {
@@ -472,7 +472,7 @@ public class ImageEditPreviewFragment extends Fragment implements ImageEditPrevi
 
     public void cancelCropRotateImage() {
         gestureCropImageView.postRotate(-gestureCropImageView.getCurrentAngle());
-        gestureCropImageView.zoomOutImage(gestureCropImageView.getMinScale());
+        gestureCropImageView.zoomOutImage(gestureCropImageView.getMinScale() + 0.1f);
         gestureCropImageView.setImageToWrapCropBounds(false);
     }
 

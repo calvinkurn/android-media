@@ -1,26 +1,49 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="@dimen/control_height"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
     android:visibility="gone"
-    tools:visibility="visible">
+    tools:visibility="visible"
+    android:clipChildren="false"
+    android:clipToPadding="false">
 
-    <com.tokopedia.imagepicker.editor.widget.TwoLineSeekBar
-        android:id="@+id/seekBar_brightness"
+    <TextView
+        android:id="@+id/tv_brightness"
+        style="@style/TextView.Title"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/dp_24"
+        android:layout_gravity="center_horizontal"
+        android:text="@string/default_brightness_value" />
+
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_centerVertical="true"
-        app:high_color="@color/tkpd_main_green"
-        app:line_color="@color/grey_700"
-        app:line_width="@dimen/dp_2"
-        app:nail_color="@color/tkpd_main_green"
-        app:nail_radius="@dimen/dp_4"
-        app:nail_stroke_width="@dimen/dp_3"
-        app:thumb_color="@color/tkpd_main_green"
-        app:thumb_radius="@dimen/dp_8"
-        android:layout_marginLeft="@dimen/dp_40"
-        android:layout_marginRight="@dimen/dp_40"/>
+        android:layout_height="match_parent"
+        android:orientation="horizontal"
+        android:clipChildren="false"
+        android:clipToPadding="false">
 
-</RelativeLayout>
+        <com.tokopedia.imagepicker.editor.widget.TwoLineSeekBar
+            android:id="@+id/seekBar_brightness"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginLeft="@dimen/dp_48"
+            android:layout_marginRight="@dimen/dp_48"
+            app:high_color="@color/tkpd_main_green"
+            app:line_color="@color/grey_700"
+            app:line_width="@dimen/dp_2"
+            app:nail_color="@color/tkpd_main_green"
+            app:nail_radius="@dimen/dp_4"
+            app:nail_stroke_width="@dimen/dp_3"
+            app:thumb_color="@color/white"
+            app:thumb_radius="@dimen/dp_12"
+            android:clipChildren="false"
+            android:clipToPadding="false"
+            android:paddingLeft="@dimen/dp_2"
+            android:paddingRight="@dimen/dp_2"/>
+    </FrameLayout>
+
+</LinearLayout>
