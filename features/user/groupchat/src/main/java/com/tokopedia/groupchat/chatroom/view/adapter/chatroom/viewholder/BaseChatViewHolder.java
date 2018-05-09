@@ -40,7 +40,7 @@ public abstract class BaseChatViewHolder<T extends Visitable> extends AbstractVi
         if (element instanceof BaseChatViewModel) {
             BaseChatViewModel viewModel = (BaseChatViewModel) element;
             ImageHandler.loadImageCircle2(avatar.getContext(), avatar, viewModel.getSenderIconUrl
-                    (), R.drawable.ic_loading_toped_new);
+                    (), R.drawable.ic_default_avatar_group_chat);
             nickname.setText(MethodChecker.fromHtml(viewModel.getSenderName()));
             postTime.setText(viewModel.getFormattedCreatedAt());
 
