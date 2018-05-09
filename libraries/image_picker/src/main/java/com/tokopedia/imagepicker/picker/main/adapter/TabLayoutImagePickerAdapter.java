@@ -1,4 +1,4 @@
-package com.tokopedia.imagepicker.picker.adapter;
+package com.tokopedia.imagepicker.picker.main.adapter;
 
 import android.content.Context;
 import android.support.annotation.ColorRes;
