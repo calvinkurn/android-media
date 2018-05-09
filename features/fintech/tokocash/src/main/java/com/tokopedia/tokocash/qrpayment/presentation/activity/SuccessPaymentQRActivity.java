@@ -16,12 +16,11 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.abstraction.common.di.component.HasComponent;
 import com.tokopedia.design.utils.CurrencyFormatHelper;
 import com.tokopedia.tokocash.R;
-import com.tokopedia.tokocash.di.DaggerTokoCashComponent;
+import com.tokopedia.tokocash.TokoCashComponentInstance;
 import com.tokopedia.tokocash.di.TokoCashComponent;
 import com.tokopedia.tokocash.qrpayment.presentation.contract.SuccessQrPaymentContract;
 import com.tokopedia.tokocash.qrpayment.presentation.model.QrPaymentTokoCash;
@@ -73,8 +72,6 @@ public class SuccessPaymentQRActivity extends BaseSimpleActivity implements Succ
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        initInjector();
-        presenter.attachView(this);
         initView();
         initVar();
         setActionVar();
@@ -175,9 +172,8 @@ public class SuccessPaymentQRActivity extends BaseSimpleActivity implements Succ
     }
 
     private void initInjector() {
-        tokoCashComponent = DaggerTokoCashComponent.builder()
-                .baseAppComponent(((BaseMainApplication) getApplication()).getBaseAppComponent())
-                .build();
+        tokoCashComponent = TokoCashComponentInstance.getComponent(getApplication());
         tokoCashComponent.inject(this);
+        presenter.attachView(this);
     }
 }

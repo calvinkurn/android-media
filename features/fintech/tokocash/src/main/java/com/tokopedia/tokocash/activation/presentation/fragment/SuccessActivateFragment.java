@@ -15,8 +15,9 @@ import com.tokopedia.abstraction.common.data.model.storage.CacheManager;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.tokocash.CacheUtil;
 import com.tokopedia.tokocash.R;
-import com.tokopedia.tokocash.di.TokoCashComponent;
+import com.tokopedia.tokocash.TokoCashComponentInstance;
 import com.tokopedia.tokocash.WalletUserSession;
+import com.tokopedia.tokocash.di.TokoCashComponent;
 
 import javax.inject.Inject;
 
@@ -86,7 +87,8 @@ public class SuccessActivateFragment extends BaseDaggerFragment {
 
     @Override
     protected void initInjector() {
-        getComponent(TokoCashComponent.class).inject(this);
+        TokoCashComponent tokoCashComponent = TokoCashComponentInstance.getComponent(getActivity().getApplication());
+        tokoCashComponent.inject(this);
     }
 
     public interface ActionListener {

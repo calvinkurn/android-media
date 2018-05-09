@@ -5,7 +5,7 @@ import android.os.Bundle;
 
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
-import com.tokopedia.tokocash.qrpayment.presentation.model.BalanceTokoCash;
+import com.tokopedia.tokocash.balance.view.BalanceTokoCash;
 
 /**
  * Created by nabillasabbaha on 2/6/18.

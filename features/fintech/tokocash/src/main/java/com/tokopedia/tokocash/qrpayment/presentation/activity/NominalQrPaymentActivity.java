@@ -12,7 +12,6 @@ import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.abstraction.common.di.component.HasComponent;
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
@@ -20,11 +19,11 @@ import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.design.text.watcher.NumberTextWatcher;
 import com.tokopedia.design.utils.CurrencyFormatHelper;
 import com.tokopedia.tokocash.R;
-import com.tokopedia.tokocash.di.DaggerTokoCashComponent;
+import com.tokopedia.tokocash.TokoCashComponentInstance;
 import com.tokopedia.tokocash.di.TokoCashComponent;
 import com.tokopedia.tokocash.qrpayment.domain.PostQrPaymentUseCase;
 import com.tokopedia.tokocash.qrpayment.presentation.contract.QrPaymentContract;
-import com.tokopedia.tokocash.qrpayment.presentation.model.BalanceTokoCash;
+import com.tokopedia.tokocash.balance.view.BalanceTokoCash;
 import com.tokopedia.tokocash.qrpayment.presentation.model.InfoQrTokoCash;
 import com.tokopedia.tokocash.qrpayment.presentation.model.QrPaymentTokoCash;
 import com.tokopedia.tokocash.qrpayment.presentation.presenter.QrPaymentPresenter;
@@ -67,9 +66,6 @@ public class NominalQrPaymentActivity extends BaseSimpleActivity implements QrPa
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        initInjector();
-        presenter.attachView(this);
-
         updateTitle(getString(R.string.title_input_nominal));
         Bundle bundle = getIntent().getExtras();
         infoQrTokoCash = bundle.getParcelable(INFO_QR);
@@ -125,10 +121,9 @@ public class NominalQrPaymentActivity extends BaseSimpleActivity implements QrPa
     }
 
     private void initInjector() {
-        tokoCashComponent = DaggerTokoCashComponent.builder()
-                .baseAppComponent(((BaseMainApplication) getApplication()).getBaseAppComponent())
-                .build();
+        tokoCashComponent = TokoCashComponentInstance.getComponent(getApplication());
         tokoCashComponent.inject(this);
+        presenter.attachView(this);
     }
 
     @Override

@@ -24,6 +24,7 @@ import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.common.utils.snackbar.SnackbarRetry;
 import com.tokopedia.design.utils.CurrencyFormatUtil;
 import com.tokopedia.tokocash.R;
+import com.tokopedia.tokocash.TokoCashComponentInstance;
 import com.tokopedia.tokocash.autosweepmf.view.contract.SetAutoSweepLimitContract;
 import com.tokopedia.tokocash.autosweepmf.view.model.AutoSweepLimit;
 import com.tokopedia.tokocash.autosweepmf.view.presenter.SetAutoSweepLimitPresenter;
@@ -37,7 +38,8 @@ import static com.tokopedia.tokocash.autosweepmf.view.util.CommonConstant.AUTO_S
 /**
  * Autosweep limit set/reset screen, once scuccessful reset limit it will also fire a broadcasts message for current auto sweep status
  */
-public class SetAutoSweepLimitFragment extends BaseDaggerFragment implements SetAutoSweepLimitContract.View, View.OnClickListener {
+public class SetAutoSweepLimitFragment extends BaseDaggerFragment
+        implements SetAutoSweepLimitContract.View, View.OnClickListener {
 
     private AppCompatSeekBar mSeekBarAmount;
     private AppCompatEditText mEditAmount;
@@ -115,7 +117,6 @@ public class SetAutoSweepLimitFragment extends BaseDaggerFragment implements Set
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        initInjector();
         View view = inflater.inflate(R.layout.fragment_set_autosweep_limit, container, false);
         initViews(view);
         return view;
@@ -124,7 +125,6 @@ public class SetAutoSweepLimitFragment extends BaseDaggerFragment implements Set
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        mPresenter.attachView(this);
         initListener();
     }
 
@@ -214,7 +214,10 @@ public class SetAutoSweepLimitFragment extends BaseDaggerFragment implements Set
 
     @Override
     protected void initInjector() {
-        getComponent(TokoCashComponent.class).inject(this);
+        TokoCashComponent tokoCashComponent =
+                TokoCashComponentInstance.getComponent(getActivity().getApplication());
+        tokoCashComponent.inject(this);
+        mPresenter.attachView(this);
     }
 
     @Override

@@ -6,25 +6,18 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
-import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
-import com.tokopedia.abstraction.common.di.component.HasComponent;
 import com.tokopedia.tokocash.ApplinkConstant;
 import com.tokopedia.tokocash.R;
 import com.tokopedia.tokocash.activation.presentation.fragment.ActivateTokoCashFragment;
 import com.tokopedia.tokocash.activation.presentation.fragment.RequestOTPWalletFragment;
-import com.tokopedia.tokocash.di.DaggerTokoCashComponent;
-import com.tokopedia.tokocash.di.TokoCashComponent;
 
 /**
  * Created by nabillasabbaha on 7/24/17.
  */
 
 public class ActivateTokoCashActivity extends BaseSimpleActivity
-        implements ActivateTokoCashFragment.ActionListener, RequestOTPWalletFragment.ActionListener,
-        HasComponent<TokoCashComponent> {
-
-    private TokoCashComponent tokoCashComponent;
+        implements ActivateTokoCashFragment.ActionListener, RequestOTPWalletFragment.ActionListener {
 
     @SuppressWarnings("unused")
     @DeepLink(ApplinkConstant.WALLET_ACTIVATION)
@@ -69,17 +62,5 @@ public class ActivateTokoCashActivity extends BaseSimpleActivity
             getFragmentManager().popBackStackImmediate();
         else
             super.onBackPressed();
-    }
-
-    @Override
-    public TokoCashComponent getComponent() {
-        if (tokoCashComponent == null) initInjector();
-        return tokoCashComponent;
-    }
-
-    private void initInjector() {
-        tokoCashComponent = DaggerTokoCashComponent.builder()
-                .baseAppComponent(((BaseMainApplication) getApplication()).getBaseAppComponent())
-                .build();
     }
 }

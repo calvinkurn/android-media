@@ -17,6 +17,7 @@ import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.common.utils.view.RefreshHandler;
 import com.tokopedia.tokocash.R;
+import com.tokopedia.tokocash.TokoCashComponentInstance;
 import com.tokopedia.tokocash.TokoCashRouter;
 import com.tokopedia.tokocash.accountsetting.presentation.adapter.LinkedAccountAdapter;
 import com.tokopedia.tokocash.accountsetting.presentation.contract.AccountSettingContract;
@@ -58,8 +59,6 @@ public class AccountSettingFragment extends BaseDaggerFragment implements Accoun
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        initInjector();
-        presenter.attachView(this);
         View view = inflater.inflate(R.layout.fragment_account_setting_tokocash, container, false);
         mainContainer = view.findViewById(R.id.main_container);
         nameAccount = view.findViewById(R.id.name_account);
@@ -219,7 +218,10 @@ public class AccountSettingFragment extends BaseDaggerFragment implements Accoun
 
     @Override
     protected void initInjector() {
-        getComponent(TokoCashComponent.class).inject(this);
+        TokoCashComponent tokoCashComponent =
+                TokoCashComponentInstance.getComponent(getActivity().getApplication());
+        tokoCashComponent.inject(this);
+        presenter.attachView(this);
     }
 
     public interface ActionListener {

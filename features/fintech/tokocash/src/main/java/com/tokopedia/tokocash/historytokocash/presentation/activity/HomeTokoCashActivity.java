@@ -10,27 +10,21 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
-import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
-import com.tokopedia.abstraction.common.di.component.HasComponent;
 import com.tokopedia.tokocash.ApplinkConstant;
 import com.tokopedia.tokocash.R;
 import com.tokopedia.tokocash.TokoCashRouter;
 import com.tokopedia.tokocash.accountsetting.presentation.activity.AccountSettingActivity;
-import com.tokopedia.tokocash.di.DaggerTokoCashComponent;
-import com.tokopedia.tokocash.di.TokoCashComponent;
 import com.tokopedia.tokocash.historytokocash.presentation.fragment.HomeTokoCashFragment;
 
 /**
  * Created by nabillasabbaha on 2/5/18.
  */
 
-public class HomeTokoCashActivity extends BaseSimpleActivity implements HomeTokoCashFragment.ActionListener,
-        HasComponent<TokoCashComponent> {
+public class HomeTokoCashActivity extends BaseSimpleActivity
+        implements HomeTokoCashFragment.ActionListener {
 
     public static final String EXTRA_TOP_UP_AVAILABLE = "EXTRA_TOP_UP_AVAILABLE";
-
-    private TokoCashComponent tokoCashComponent;
 
     @SuppressWarnings("unused")
     @DeepLink(ApplinkConstant.WALLET_HOME)
@@ -53,18 +47,6 @@ public class HomeTokoCashActivity extends BaseSimpleActivity implements HomeToko
     @Override
     protected Fragment getNewFragment() {
         return HomeTokoCashFragment.newInstance(getIntent().getBooleanExtra(EXTRA_TOP_UP_AVAILABLE, false));
-    }
-
-    @Override
-    public TokoCashComponent getComponent() {
-        if (tokoCashComponent == null) initInjector();
-        return tokoCashComponent;
-    }
-
-    private void initInjector() {
-        tokoCashComponent = DaggerTokoCashComponent.builder()
-                .baseAppComponent(((BaseMainApplication) getApplication()).getBaseAppComponent())
-                .build();
     }
 
     @Override

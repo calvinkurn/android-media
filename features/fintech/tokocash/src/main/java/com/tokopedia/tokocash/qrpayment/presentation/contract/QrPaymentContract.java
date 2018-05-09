@@ -2,7 +2,7 @@ package com.tokopedia.tokocash.qrpayment.presentation.contract;
 
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
-import com.tokopedia.tokocash.qrpayment.presentation.model.BalanceTokoCash;
+import com.tokopedia.tokocash.balance.view.BalanceTokoCash;
 import com.tokopedia.tokocash.qrpayment.presentation.model.QrPaymentTokoCash;
 import com.tokopedia.usecase.RequestParams;
 

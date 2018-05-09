@@ -1,8 +1,9 @@
 
-package com.tokopedia.tokocash.qrpayment.data.entity;
+package com.tokopedia.tokocash.balance.data.entity;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import com.tokopedia.tokocash.qrpayment.data.entity.ActionBalanceEntity;
 
 import java.util.List;
 

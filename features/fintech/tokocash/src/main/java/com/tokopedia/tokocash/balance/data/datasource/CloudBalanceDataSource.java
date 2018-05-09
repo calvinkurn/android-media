@@ -1,4 +1,4 @@
-package com.tokopedia.tokocash.qrpayment.data.datasource;
+package com.tokopedia.tokocash.balance.data.datasource;
 
 import android.content.Context;
 import android.content.res.Resources;

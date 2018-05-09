@@ -1,5 +1,5 @@
 
-package com.tokopedia.tokocash.qrpayment.presentation.model;
+package com.tokopedia.tokocash.balance.view;
 
 import android.os.Parcel;
 import android.os.Parcelable;

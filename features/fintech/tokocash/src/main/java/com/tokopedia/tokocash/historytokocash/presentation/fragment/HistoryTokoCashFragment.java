@@ -28,6 +28,7 @@ import com.tokopedia.design.button.BottomActionView;
 import com.tokopedia.design.quickfilter.QuickFilterItem;
 import com.tokopedia.design.quickfilter.QuickSingleFilterView;
 import com.tokopedia.tokocash.R;
+import com.tokopedia.tokocash.TokoCashComponentInstance;
 import com.tokopedia.tokocash.TokoCashRouter;
 import com.tokopedia.tokocash.di.TokoCashComponent;
 import com.tokopedia.tokocash.historytokocash.domain.GetHistoryDataUseCase;
@@ -133,8 +134,6 @@ public class HistoryTokoCashFragment extends BaseDaggerFragment implements TokoC
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        initInjector();
-        presenter.attachView(this);
         initVar(view, savedInstanceState);
         setActionVar();
     }
@@ -449,7 +448,10 @@ public class HistoryTokoCashFragment extends BaseDaggerFragment implements TokoC
 
     @Override
     protected void initInjector() {
-        getComponent(TokoCashComponent.class).inject(this);
+        TokoCashComponent tokoCashComponent =
+                TokoCashComponentInstance.getComponent(getActivity().getApplication());
+        tokoCashComponent.inject(this);
+        presenter.attachView(this);
     }
 
     @Override

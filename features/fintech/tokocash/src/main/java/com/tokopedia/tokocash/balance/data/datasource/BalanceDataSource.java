@@ -1,7 +1,6 @@
-package com.tokopedia.tokocash.qrpayment.data.datasource;
+package com.tokopedia.tokocash.balance.data.datasource;
 
 import com.tokopedia.core.drawer2.data.pojo.Wallet;
-import com.tokopedia.tokocash.qrpayment.data.entity.BalanceTokoCashEntity;
 
 import rx.Observable;
 

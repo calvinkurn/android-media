@@ -1,9 +1,9 @@
-package com.tokopedia.tokocash.qrpayment.data.repository;
+package com.tokopedia.tokocash.balance.data.repository;
 
-import com.tokopedia.tokocash.qrpayment.data.datasource.BalanceDataSourceFactory;
-import com.tokopedia.tokocash.qrpayment.data.mapper.BalanceTokoCashMapper;
-import com.tokopedia.tokocash.qrpayment.domain.IBalanceRepository;
-import com.tokopedia.tokocash.qrpayment.presentation.model.BalanceTokoCash;
+import com.tokopedia.tokocash.balance.data.datasource.BalanceDataSourceFactory;
+import com.tokopedia.tokocash.balance.data.mapper.BalanceTokoCashMapper;
+import com.tokopedia.tokocash.balance.domain.IBalanceRepository;
+import com.tokopedia.tokocash.balance.view.BalanceTokoCash;
 
 import javax.inject.Inject;
 

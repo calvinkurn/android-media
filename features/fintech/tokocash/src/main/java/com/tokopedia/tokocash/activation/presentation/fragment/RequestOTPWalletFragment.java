@@ -31,6 +31,7 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.core.msisdn.IncomingSmsReceiver;
 import com.tokopedia.core.util.RequestPermissionUtil;
 import com.tokopedia.tokocash.R;
+import com.tokopedia.tokocash.TokoCashComponentInstance;
 import com.tokopedia.tokocash.activation.presentation.contract.RequestOtpTokoCashContract;
 import com.tokopedia.tokocash.activation.presentation.presenter.RequestOTPWalletPresenter;
 import com.tokopedia.tokocash.di.TokoCashComponent;
@@ -83,7 +84,6 @@ public class RequestOTPWalletFragment extends BaseDaggerFragment implements Requ
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        presenter.attachView(this);
         View view = inflater.inflate(R.layout.fragment_request_otp, container, false);
         walletPhoneNumber = view.findViewById(R.id.wallet_phone_number);
         sendSmsVerification = view.findViewById(R.id.send_sms_verification);
@@ -339,7 +339,10 @@ public class RequestOTPWalletFragment extends BaseDaggerFragment implements Requ
 
     @Override
     protected void initInjector() {
-        getComponent(TokoCashComponent.class).inject(this);
+        TokoCashComponent tokoCashComponent =
+                TokoCashComponentInstance.getComponent(getActivity().getApplication());
+        tokoCashComponent.inject(this);
+        presenter.attachView(this);
     }
 
     public interface ActionListener {

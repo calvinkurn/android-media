@@ -1,9 +1,8 @@
-package com.tokopedia.tokocash.qrpayment.data.datasource;
+package com.tokopedia.tokocash.balance.data.datasource;
 
 import android.content.Context;
 
 import com.tokopedia.abstraction.common.data.model.storage.CacheManager;
-import com.tokopedia.core.base.di.qualifier.ApplicationContext;
 import com.tokopedia.tokocash.network.api.WalletBalanceApi;
 
 import javax.inject.Inject;

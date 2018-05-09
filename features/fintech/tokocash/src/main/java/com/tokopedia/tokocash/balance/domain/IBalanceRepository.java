@@ -1,6 +1,6 @@
-package com.tokopedia.tokocash.qrpayment.domain;
+package com.tokopedia.tokocash.balance.domain;
 
-import com.tokopedia.tokocash.qrpayment.presentation.model.BalanceTokoCash;
+import com.tokopedia.tokocash.balance.view.BalanceTokoCash;
 
 import rx.Observable;
 

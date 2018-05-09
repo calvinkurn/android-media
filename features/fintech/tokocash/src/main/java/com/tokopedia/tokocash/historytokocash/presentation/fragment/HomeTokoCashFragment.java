@@ -17,6 +17,7 @@ import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.design.bottomsheet.BottomSheetView;
 import com.tokopedia.tokocash.R;
+import com.tokopedia.tokocash.TokoCashComponentInstance;
 import com.tokopedia.tokocash.TokoCashRouter;
 import com.tokopedia.tokocash.autosweepmf.view.fragment.AutoSweepHomeFragment;
 import com.tokopedia.tokocash.di.TokoCashComponent;
@@ -24,7 +25,7 @@ import com.tokopedia.tokocash.historytokocash.presentation.compoundview.BalanceT
 import com.tokopedia.tokocash.historytokocash.presentation.compoundview.ReceivedTokoCashView;
 import com.tokopedia.tokocash.historytokocash.presentation.contract.HomeTokoCashContract;
 import com.tokopedia.tokocash.historytokocash.presentation.presenter.HomeTokoCashPresenter;
-import com.tokopedia.tokocash.qrpayment.presentation.model.BalanceTokoCash;
+import com.tokopedia.tokocash.balance.view.BalanceTokoCash;
 
 import javax.inject.Inject;
 
@@ -62,8 +63,6 @@ public class HomeTokoCashFragment extends BaseDaggerFragment implements HomeToko
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        initInjector();
-        presenter.attachView(this);
         View view = inflater.inflate(R.layout.fragment_home_tokocash, container, false);
         balanceTokoCashView = view.findViewById(R.id.balance_tokocash_layout);
         receivedTokoCashView = view.findViewById(R.id.received_tokocash_layout);
@@ -193,7 +192,10 @@ public class HomeTokoCashFragment extends BaseDaggerFragment implements HomeToko
 
     @Override
     protected void initInjector() {
-        getComponent(TokoCashComponent.class).inject(this);
+        TokoCashComponent tokoCashComponent =
+                TokoCashComponentInstance.getComponent(getActivity().getApplication());
+        tokoCashComponent.inject(this);
+        presenter.attachView(this);
     }
 
     public interface ActionListener {

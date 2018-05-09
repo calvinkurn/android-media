@@ -1,9 +1,9 @@
-package com.tokopedia.tokocash.qrpayment.data.mapper;
+package com.tokopedia.tokocash.balance.data.mapper;
 
 import com.tokopedia.core.drawer2.data.pojo.AbTag;
 import com.tokopedia.core.drawer2.data.pojo.Wallet;
-import com.tokopedia.tokocash.qrpayment.presentation.model.ActionBalance;
-import com.tokopedia.tokocash.qrpayment.presentation.model.BalanceTokoCash;
+import com.tokopedia.tokocash.balance.view.ActionBalance;
+import com.tokopedia.tokocash.balance.view.BalanceTokoCash;
 
 import java.util.ArrayList;
 

@@ -5,23 +5,16 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 
-import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
-import com.tokopedia.abstraction.common.di.component.HasComponent;
 import com.tokopedia.tokocash.R;
 import com.tokopedia.tokocash.activation.presentation.fragment.SuccessActivateFragment;
-import com.tokopedia.tokocash.di.TokoCashComponent;
-
-import com.tokopedia.tokocash.di.DaggerTokoCashComponent;
 
 /**
  * Created by nabillasabbaha on 7/25/17.
  */
 
 public class SuccessActivateTokoCashActivity extends BaseSimpleActivity
-        implements SuccessActivateFragment.ActionListener, HasComponent<TokoCashComponent> {
-
-    private TokoCashComponent tokoCashComponent;
+        implements SuccessActivateFragment.ActionListener {
 
     public static Intent newInstance(Context context) {
         return new Intent(context, SuccessActivateTokoCashActivity.class);
@@ -61,17 +54,5 @@ public class SuccessActivateTokoCashActivity extends BaseSimpleActivity
         super.onBackPressed();
         setResult(RESULT_OK);
         finish();
-    }
-
-    @Override
-    public TokoCashComponent getComponent() {
-        if (tokoCashComponent == null) initInjector();
-        return tokoCashComponent;
-    }
-
-    private void initInjector() {
-        tokoCashComponent = DaggerTokoCashComponent.builder()
-                .baseAppComponent(((BaseMainApplication) getApplication()).getBaseAppComponent())
-                .build();
     }
 }

@@ -15,6 +15,7 @@ import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.design.utils.CurrencyFormatHelper;
 import com.tokopedia.tokocash.R;
+import com.tokopedia.tokocash.TokoCashComponentInstance;
 import com.tokopedia.tokocash.di.TokoCashComponent;
 import com.tokopedia.tokocash.historytokocash.presentation.activity.ThankYouMoveToSaldoActivity;
 import com.tokopedia.tokocash.historytokocash.presentation.contract.MoveToSaldoContract;
@@ -64,8 +65,6 @@ public class MoveToSaldoFragment extends BaseDaggerFragment implements MoveToSal
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        initInjector();
-        presenter.attachView(this);
         View view = inflater.inflate(R.layout.fragment_move_to_saldo, container, false);
         mainContainer = view.findViewById(R.id.main_container);
         mainProgressBar = view.findViewById(R.id.pb_main_loading);
@@ -232,7 +231,10 @@ public class MoveToSaldoFragment extends BaseDaggerFragment implements MoveToSal
 
     @Override
     protected void initInjector() {
-        getComponent(TokoCashComponent.class).inject(this);
+        TokoCashComponent tokoCashComponent =
+                TokoCashComponentInstance.getComponent(getActivity().getApplication());
+        tokoCashComponent.inject(this);
+        presenter.attachView(this);
     }
 
     @Override

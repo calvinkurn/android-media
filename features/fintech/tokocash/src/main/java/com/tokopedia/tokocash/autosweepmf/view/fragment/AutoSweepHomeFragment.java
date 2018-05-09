@@ -31,6 +31,7 @@ import com.tokopedia.core.home.SimpleWebViewWithFilePickerActivity;
 import com.tokopedia.design.bottomsheet.BottomSheetView;
 import com.tokopedia.design.utils.CurrencyFormatUtil;
 import com.tokopedia.tokocash.R;
+import com.tokopedia.tokocash.TokoCashComponentInstance;
 import com.tokopedia.tokocash.autosweepmf.view.activity.SetAutoSweepLimitActivity;
 import com.tokopedia.tokocash.autosweepmf.view.contract.AutoSweepHomeContract;
 import com.tokopedia.tokocash.autosweepmf.view.model.AutoSweepDetail;
@@ -48,7 +49,8 @@ import static com.facebook.FacebookSdk.getApplicationContext;
  * Landing page for auto sweep features which can be added into any activity or fragment
  * It will taking the current tokocash balance as an argument param
  */
-public class AutoSweepHomeFragment extends BaseDaggerFragment implements AutoSweepHomeContract.View, View.OnClickListener {
+public class AutoSweepHomeFragment extends BaseDaggerFragment
+        implements AutoSweepHomeContract.View, View.OnClickListener {
 
     private static final int AUTO_SWEEP_INACTIVE = 0;
     private static final int AUTO_SWEEP_ACTIVE = 1;
@@ -90,7 +92,6 @@ public class AutoSweepHomeFragment extends BaseDaggerFragment implements AutoSwe
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        initInjector();
         View view = inflater.inflate(R.layout.fragment_home_autosweepmf, container, false);
         initViews(view);
         return view;
@@ -99,7 +100,6 @@ public class AutoSweepHomeFragment extends BaseDaggerFragment implements AutoSwe
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        mPresenter.attachView(this);
         initListener();
         mPresenter.getAutoSweepDetail();
 
@@ -320,7 +320,10 @@ public class AutoSweepHomeFragment extends BaseDaggerFragment implements AutoSwe
 
     @Override
     protected void initInjector() {
-        getComponent(TokoCashComponent.class).inject(this);
+        TokoCashComponent tokoCashComponent =
+                TokoCashComponentInstance.getComponent(getActivity().getApplication());
+        tokoCashComponent.inject(this);
+        mPresenter.attachView(this);
     }
 
     @Override

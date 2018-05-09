@@ -22,6 +22,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.tokocash.R;
+import com.tokopedia.tokocash.TokoCashComponentInstance;
 import com.tokopedia.tokocash.TokoCashRouter;
 import com.tokopedia.tokocash.activation.presentation.contract.LinkedTokoCashContract;
 import com.tokopedia.tokocash.activation.presentation.presenter.LinkedTokoCashPresenter;
@@ -57,7 +58,6 @@ public class ActivateTokoCashFragment extends BaseDaggerFragment implements Link
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        presenter.attachView(this);
         View view = inflater.inflate(R.layout.fragment_activate_tokocash, container, false);
         walletPhoneNumber = view.findViewById(R.id.wallet_phone_number);
         activationButton = view.findViewById(R.id.activation_btn);
@@ -156,7 +156,10 @@ public class ActivateTokoCashFragment extends BaseDaggerFragment implements Link
 
     @Override
     protected void initInjector() {
-        getComponent(TokoCashComponent.class).inject(this);
+        TokoCashComponent tokoCashComponent =
+                TokoCashComponentInstance.getComponent(getActivity().getApplication());
+        tokoCashComponent.inject(this);
+        presenter.attachView(this);
     }
 
     public interface ActionListener {

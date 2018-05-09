@@ -1,4 +1,4 @@
-package com.tokopedia.tokocash.qrpayment.data.datasource;
+package com.tokopedia.tokocash.balance.data.datasource;
 
 import com.google.gson.reflect.TypeToken;
 import com.tokopedia.abstraction.common.data.model.storage.CacheManager;

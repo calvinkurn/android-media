@@ -21,6 +21,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.tokocash.R;
+import com.tokopedia.tokocash.TokoCashComponentInstance;
 import com.tokopedia.tokocash.di.TokoCashComponent;
 import com.tokopedia.tokocash.historytokocash.presentation.activity.HelpHistoryDetailActivity;
 import com.tokopedia.tokocash.historytokocash.presentation.adapter.HelpHistoryAdapter;
@@ -78,8 +79,6 @@ public class HelpHistoryDetailFragment extends BaseDaggerFragment implements Hel
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        initInjector();
-        presenter.attachView(this);
         transactionId = getArguments().getString(HelpHistoryDetailActivity.TRANSACTION_ID);
 
         selectedCategory = "";
@@ -183,7 +182,10 @@ public class HelpHistoryDetailFragment extends BaseDaggerFragment implements Hel
 
     @Override
     protected void initInjector() {
-        getComponent(TokoCashComponent.class).inject(this);
+        TokoCashComponent tokoCashComponent =
+                TokoCashComponentInstance.getComponent(getActivity().getApplication());
+        tokoCashComponent.inject(this);
+        presenter.attachView(this);
     }
 
     @Override

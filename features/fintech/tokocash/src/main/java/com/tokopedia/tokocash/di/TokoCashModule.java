@@ -41,9 +41,9 @@ import com.tokopedia.tokocash.network.model.TokoCashErrorResponse;
 import com.tokopedia.tokocash.network.model.WalletErrorResponse;
 import com.tokopedia.tokocash.pendingcashback.data.PendingCashbackRepository;
 import com.tokopedia.tokocash.pendingcashback.domain.GetPendingCasbackUseCase;
-import com.tokopedia.tokocash.qrpayment.data.repository.BalanceRepository;
+import com.tokopedia.tokocash.balance.data.repository.BalanceRepository;
 import com.tokopedia.tokocash.qrpayment.data.repository.QrPaymentRepository;
-import com.tokopedia.tokocash.qrpayment.domain.GetBalanceTokoCashUseCase;
+import com.tokopedia.tokocash.balance.domain.GetBalanceTokoCashUseCase;
 import com.tokopedia.tokocash.qrpayment.domain.GetInfoQrTokoCashUseCase;
 import com.tokopedia.tokocash.qrpayment.domain.PostQrPaymentUseCase;
 

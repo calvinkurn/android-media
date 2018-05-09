@@ -6,24 +6,18 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 
-import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
-import com.tokopedia.abstraction.common.di.component.HasComponent;
 import com.tokopedia.tokocash.R;
-import com.tokopedia.tokocash.di.DaggerTokoCashComponent;
-import com.tokopedia.tokocash.di.TokoCashComponent;
 import com.tokopedia.tokocash.historytokocash.presentation.fragment.HelpHistoryDetailFragment;
 
 /**
  * Created by nabillasabbaha on 2/19/18.
  */
 
-public class HelpHistoryDetailActivity extends BaseSimpleActivity implements HasComponent<TokoCashComponent>,
+public class HelpHistoryDetailActivity extends BaseSimpleActivity implements
         HelpHistoryDetailFragment.ActionListener {
 
     public static final String TRANSACTION_ID = "transaction_id";
-
-    private TokoCashComponent tokoCashComponent;
 
     public static Intent newInstance(Context context) {
         return new Intent(context, HelpHistoryDetailActivity.class);
@@ -38,18 +32,6 @@ public class HelpHistoryDetailActivity extends BaseSimpleActivity implements Has
     @Override
     protected Fragment getNewFragment() {
         return HelpHistoryDetailFragment.newInstance(getIntent().getStringExtra(TRANSACTION_ID));
-    }
-
-    @Override
-    public TokoCashComponent getComponent() {
-        if (tokoCashComponent == null) initInjector();
-        return tokoCashComponent;
-    }
-
-    private void initInjector() {
-        tokoCashComponent = DaggerTokoCashComponent.builder()
-                .baseAppComponent(((BaseMainApplication) getApplication()).getBaseAppComponent())
-                .build();
     }
 
     @Override

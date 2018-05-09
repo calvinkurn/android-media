@@ -8,7 +8,7 @@ import com.tokopedia.tokocash.activation.data.entity.PendingCashbackEntity;
 import com.tokopedia.tokocash.historytokocash.data.entity.HelpHistoryTokoCashEntity;
 import com.tokopedia.tokocash.historytokocash.data.entity.TokoCashHistoryEntity;
 import com.tokopedia.tokocash.historytokocash.data.entity.WithdrawSaldoEntity;
-import com.tokopedia.tokocash.qrpayment.data.entity.BalanceTokoCashEntity;
+import com.tokopedia.tokocash.balance.data.entity.BalanceTokoCashEntity;
 import com.tokopedia.tokocash.qrpayment.data.entity.InfoQrEntity;
 import com.tokopedia.tokocash.qrpayment.data.entity.QrPaymentEntity;
 

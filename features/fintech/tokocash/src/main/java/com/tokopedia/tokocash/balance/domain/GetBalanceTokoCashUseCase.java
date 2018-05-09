@@ -1,7 +1,7 @@
-package com.tokopedia.tokocash.qrpayment.domain;
+package com.tokopedia.tokocash.balance.domain;
 
-import com.tokopedia.tokocash.qrpayment.data.repository.BalanceRepository;
-import com.tokopedia.tokocash.qrpayment.presentation.model.BalanceTokoCash;
+import com.tokopedia.tokocash.balance.data.repository.BalanceRepository;
+import com.tokopedia.tokocash.balance.view.BalanceTokoCash;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.usecase.UseCase;
 
