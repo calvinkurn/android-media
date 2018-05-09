@@ -27,7 +27,7 @@ import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.constant.IRouterConstant;
 import com.tokopedia.checkout.R;
-import com.tokopedia.checkout.data.mapper.ShipmentRatesDataMapper;
+import com.tokopedia.checkout.domain.mapper.ShipmentRatesDataMapper;
 import com.tokopedia.checkout.domain.datamodel.MultipleAddressShipmentAdapterData;
 import com.tokopedia.checkout.domain.datamodel.cartlist.CartPromoSuggestion;
 import com.tokopedia.checkout.domain.datamodel.cartshipmentform.CartShipmentAddressFormData;

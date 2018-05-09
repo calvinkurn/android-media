@@ -1,6 +1,6 @@
 package com.tokopedia.checkout.domain.mapper;
 
-import com.tokopedia.checkout.data.entity.response.shippingaddressform.ShipmentAddressFormDataResponse;
+import com.tokopedia.transactiondata.entity.response.shippingaddressform.ShipmentAddressFormDataResponse;
 import com.tokopedia.checkout.domain.datamodel.cartshipmentform.CartShipmentAddressFormData;
 
 /**

@@ -1,6 +1,6 @@
 package com.tokopedia.checkout.view.di.module;
 
-import com.tokopedia.checkout.data.repository.ICartRepository;
+import com.tokopedia.transactiondata.repository.ICartRepository;
 import com.tokopedia.checkout.domain.usecase.SubmitMultipleAddressUseCase;
 import com.tokopedia.checkout.view.di.scope.MultipleAddressScope;
 import com.tokopedia.checkout.view.view.multipleaddressform.IMultipleAddressPresenter;

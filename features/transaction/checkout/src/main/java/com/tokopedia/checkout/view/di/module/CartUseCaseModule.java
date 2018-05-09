@@ -1,7 +1,7 @@
 package com.tokopedia.checkout.view.di.module;
 
 import com.google.gson.Gson;
-import com.tokopedia.checkout.data.repository.ICartRepository;
+import com.tokopedia.transactiondata.repository.ICartRepository;
 import com.tokopedia.checkout.domain.mapper.ICartMapper;
 import com.tokopedia.checkout.domain.mapper.IShipmentMapper;
 import com.tokopedia.checkout.domain.mapper.IVoucherCouponMapper;

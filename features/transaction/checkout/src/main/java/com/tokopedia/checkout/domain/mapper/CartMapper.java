@@ -1,10 +1,10 @@
 package com.tokopedia.checkout.domain.mapper;
 
-import com.tokopedia.checkout.data.entity.response.cartlist.CartDataListResponse;
-import com.tokopedia.checkout.data.entity.response.cartlist.CartList;
-import com.tokopedia.checkout.data.entity.response.deletecart.DeleteCartDataResponse;
-import com.tokopedia.checkout.data.entity.response.resetcart.ResetCartDataResponse;
-import com.tokopedia.checkout.data.entity.response.updatecart.UpdateCartDataResponse;
+import com.tokopedia.transactiondata.entity.response.cartlist.CartDataListResponse;
+import com.tokopedia.transactiondata.entity.response.cartlist.CartList;
+import com.tokopedia.transactiondata.entity.response.deletecart.DeleteCartDataResponse;
+import com.tokopedia.transactiondata.entity.response.resetcart.ResetCartDataResponse;
+import com.tokopedia.transactiondata.entity.response.updatecart.UpdateCartDataResponse;
 import com.tokopedia.checkout.domain.datamodel.cartlist.CartItemData;
 import com.tokopedia.checkout.domain.datamodel.cartlist.CartListData;
 import com.tokopedia.checkout.domain.datamodel.cartlist.CartPromoSuggestion;

@@ -3,7 +3,7 @@ package com.tokopedia.checkout.domain.usecase;
 import android.text.TextUtils;
 
 import com.tokopedia.abstraction.common.utils.TKPDMapParam;
-import com.tokopedia.checkout.data.mapper.ShipmentRatesDataMapper;
+import com.tokopedia.checkout.domain.mapper.ShipmentRatesDataMapper;
 import com.tokopedia.logisticdata.data.repository.RatesRepository;
 import com.tokopedia.checkout.domain.datamodel.shipmentrates.ShipmentDetailData;
 import com.tokopedia.logisticdata.data.entity.rates.RatesResponse;

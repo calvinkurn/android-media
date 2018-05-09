@@ -2,8 +2,8 @@ package com.tokopedia.checkout.view.di.component;
 
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
-import com.tokopedia.checkout.data.repository.ICartRepository;
-import com.tokopedia.checkout.data.repository.ITopPayRepository;
+import com.tokopedia.transactiondata.repository.ICartRepository;
+import com.tokopedia.transactiondata.repository.ITopPayRepository;
 import com.tokopedia.logisticdata.data.repository.RatesRepository;
 import com.tokopedia.checkout.domain.mapper.ICartMapper;
 import com.tokopedia.checkout.domain.mapper.ICheckoutMapper;

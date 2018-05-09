@@ -2,8 +2,8 @@ package com.tokopedia.checkout.view.view.cartlist;
 
 import com.google.gson.Gson;
 import com.tokopedia.abstraction.common.utils.TKPDMapParam;
-import com.tokopedia.checkout.data.entity.request.RemoveCartRequest;
-import com.tokopedia.checkout.data.entity.request.UpdateCartRequest;
+import com.tokopedia.transactiondata.entity.request.RemoveCartRequest;
+import com.tokopedia.transactiondata.entity.request.UpdateCartRequest;
 import com.tokopedia.checkout.domain.datamodel.DeleteUpdateCartData;
 import com.tokopedia.checkout.domain.datamodel.cartlist.CartItemData;
 import com.tokopedia.checkout.domain.datamodel.cartlist.DeleteCartData;

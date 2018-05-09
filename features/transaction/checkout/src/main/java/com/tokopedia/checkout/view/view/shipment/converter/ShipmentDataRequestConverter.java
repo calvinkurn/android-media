@@ -1,10 +1,10 @@
 package com.tokopedia.checkout.view.view.shipment.converter;
 
-import com.tokopedia.checkout.data.entity.request.DataCheckoutRequest;
-import com.tokopedia.checkout.data.entity.request.DropshipDataCheckoutRequest;
-import com.tokopedia.checkout.data.entity.request.ProductDataCheckoutRequest;
-import com.tokopedia.checkout.data.entity.request.ShippingInfoCheckoutRequest;
-import com.tokopedia.checkout.data.entity.request.ShopProductCheckoutRequest;
+import com.tokopedia.transactiondata.entity.request.DataCheckoutRequest;
+import com.tokopedia.transactiondata.entity.request.DropshipDataCheckoutRequest;
+import com.tokopedia.transactiondata.entity.request.ProductDataCheckoutRequest;
+import com.tokopedia.transactiondata.entity.request.ShippingInfoCheckoutRequest;
+import com.tokopedia.transactiondata.entity.request.ShopProductCheckoutRequest;
 import com.tokopedia.checkout.domain.datamodel.addressoptions.RecipientAddressModel;
 import com.tokopedia.checkout.domain.datamodel.cartsingleshipment.CartItemModel;
 import com.tokopedia.checkout.domain.datamodel.shipmentrates.CourierItemData;

@@ -1,6 +1,6 @@
 package com.tokopedia.checkout.domain.mapper;
 
-import com.tokopedia.checkout.data.entity.response.shippingaddressform.ShipmentAddressFormDataResponse;
+import com.tokopedia.transactiondata.entity.response.shippingaddressform.ShipmentAddressFormDataResponse;
 import com.tokopedia.checkout.domain.datamodel.cartshipmentform.CartShipmentAddressFormData;
 import com.tokopedia.checkout.domain.datamodel.cartshipmentform.GroupAddress;
 import com.tokopedia.checkout.domain.datamodel.cartshipmentform.GroupShop;
@@ -45,7 +45,7 @@ public class ShipmentMapper implements IShipmentMapper {
 
         if (!mapperUtil.isEmpty(shipmentAddressFormDataResponse.getGroupAddress())) {
             List<GroupAddress> groupAddressListResult = new ArrayList<>();
-            for (com.tokopedia.checkout.data.entity.response.shippingaddressform.GroupAddress
+            for (com.tokopedia.transactiondata.entity.response.shippingaddressform.GroupAddress
                     groupAddress : shipmentAddressFormDataResponse.getGroupAddress()) {
                 GroupAddress groupAddressResult = new GroupAddress();
                 groupAddressResult.setError(!mapperUtil.isEmpty(groupAddress.getErrors()));
@@ -79,7 +79,7 @@ public class ShipmentMapper implements IShipmentMapper {
 
                 if (!mapperUtil.isEmpty(groupAddress.getGroupShop())) {
                     List<GroupShop> groupShopListResult = new ArrayList<>();
-                    for (com.tokopedia.checkout.data.entity.response.shippingaddressform.GroupShop
+                    for (com.tokopedia.transactiondata.entity.response.shippingaddressform.GroupShop
                             groupShop : groupAddress.getGroupShop()) {
                         com.tokopedia.checkout.domain.datamodel.cartshipmentform.GroupShop groupShopResult =
                                 new com.tokopedia.checkout.domain.datamodel.cartshipmentform.GroupShop();
@@ -119,7 +119,7 @@ public class ShipmentMapper implements IShipmentMapper {
 
                         if (!mapperUtil.isEmpty(groupShop.getShopShipments())) {
                             List<ShopShipment> shopShipmentListResult = new ArrayList<>();
-                            for (com.tokopedia.checkout.data.entity.response.shippingaddressform.ShopShipment shopShipment :
+                            for (com.tokopedia.transactiondata.entity.response.shippingaddressform.ShopShipment shopShipment :
                                     groupShop.getShopShipments()) {
                                 ShopShipment shopShipmentResult = new ShopShipment();
                                 shopShipmentResult.setDropshipEnabled(shopShipment.getIsDropshipEnabled() == 1);
@@ -129,7 +129,7 @@ public class ShipmentMapper implements IShipmentMapper {
                                 shopShipmentResult.setShipName(shopShipment.getShipName());
                                 if (!mapperUtil.isEmpty(shopShipment.getShipProds())) {
                                     List<ShipProd> shipProdListResult = new ArrayList<>();
-                                    for (com.tokopedia.checkout.data.entity.response.shippingaddressform.ShipProd shipProd :
+                                    for (com.tokopedia.transactiondata.entity.response.shippingaddressform.ShipProd shipProd :
                                             shopShipment.getShipProds()) {
                                         ShipProd shipProdResult = new ShipProd();
                                         shipProdResult.setAdditionalFee(shipProd.getAdditionalFee());
@@ -149,7 +149,7 @@ public class ShipmentMapper implements IShipmentMapper {
 
                         if (!mapperUtil.isEmpty(groupShop.getProducts())) {
                             List<Product> productListResult = new ArrayList<>();
-                            for (com.tokopedia.checkout.data.entity.response.shippingaddressform.Product product
+                            for (com.tokopedia.transactiondata.entity.response.shippingaddressform.Product product
                                     : groupShop.getProducts()) {
                                 Product productResult = new Product();
 
@@ -188,7 +188,7 @@ public class ShipmentMapper implements IShipmentMapper {
 
                                 if (!mapperUtil.isEmpty(product.getProductShipment())) {
                                     List<ProductShipment> productShipmentListResult = new ArrayList<>();
-                                    for (com.tokopedia.checkout.data.entity.response.shippingaddressform.ProductShipment
+                                    for (com.tokopedia.transactiondata.entity.response.shippingaddressform.ProductShipment
                                             productShipment : product.getProductShipment()) {
                                         ProductShipment productShipmentResult = new ProductShipment();
                                         productShipmentResult.setServiceId(productShipment.getServiceId());
@@ -201,7 +201,7 @@ public class ShipmentMapper implements IShipmentMapper {
                                 if (!mapperUtil.isEmpty(product.getProductShipmentMapping())) {
 
                                     List<ProductShipmentMapping> productShipmentMappingListResult = new ArrayList<>();
-                                    for (com.tokopedia.checkout.data.entity.response.shippingaddressform.ProductShipmentMapping
+                                    for (com.tokopedia.transactiondata.entity.response.shippingaddressform.ProductShipmentMapping
                                             productShipmentMapping : product.getProductShipmentMapping()) {
                                         ProductShipmentMapping productShipmentMappingResult = new ProductShipmentMapping();
                                         productShipmentMappingResult.setShipmentId(productShipmentMapping.getShipmentId());
@@ -209,7 +209,7 @@ public class ShipmentMapper implements IShipmentMapper {
 
                                         if (!mapperUtil.isEmpty(productShipmentMapping.getServiceIds())) {
                                             List<ServiceId> serviceIdListResult = new ArrayList<>();
-                                            for (com.tokopedia.checkout.data.entity.response.shippingaddressform.ServiceId serviceId :
+                                            for (com.tokopedia.transactiondata.entity.response.shippingaddressform.ServiceId serviceId :
                                                     productShipmentMapping.getServiceIds()) {
                                                 ServiceId serviceIdResult = new ServiceId();
                                                 serviceIdResult.setServiceId(serviceId.getServiceId());

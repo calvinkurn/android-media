@@ -9,7 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.tokopedia.checkout.R;
-import com.tokopedia.checkout.data.entity.request.DataCheckoutRequest;
+import com.tokopedia.transactiondata.entity.request.DataCheckoutRequest;
 import com.tokopedia.checkout.domain.datamodel.addressoptions.RecipientAddressModel;
 import com.tokopedia.checkout.domain.datamodel.cartlist.CartPromoSuggestion;
 import com.tokopedia.checkout.domain.datamodel.cartsingleshipment.CartSellerItemModel;

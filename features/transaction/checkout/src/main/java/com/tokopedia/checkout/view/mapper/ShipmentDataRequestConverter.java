@@ -1,11 +1,11 @@
 package com.tokopedia.checkout.view.mapper;
 
 import com.tokopedia.core.router.transactionmodule.sharedata.CheckPromoCodeCartShipmentRequest;
-import com.tokopedia.checkout.data.entity.request.DataCheckoutRequest;
-import com.tokopedia.checkout.data.entity.request.DropshipDataCheckoutRequest;
-import com.tokopedia.checkout.data.entity.request.ProductDataCheckoutRequest;
-import com.tokopedia.checkout.data.entity.request.ShippingInfoCheckoutRequest;
-import com.tokopedia.checkout.data.entity.request.ShopProductCheckoutRequest;
+import com.tokopedia.transactiondata.entity.request.DataCheckoutRequest;
+import com.tokopedia.transactiondata.entity.request.DropshipDataCheckoutRequest;
+import com.tokopedia.transactiondata.entity.request.ProductDataCheckoutRequest;
+import com.tokopedia.transactiondata.entity.request.ShippingInfoCheckoutRequest;
+import com.tokopedia.transactiondata.entity.request.ShopProductCheckoutRequest;
 import com.tokopedia.checkout.domain.datamodel.shipmentrates.CourierItemData;
 import com.tokopedia.checkout.domain.datamodel.shipmentrates.ShipmentDetailData;
 import com.tokopedia.checkout.domain.datamodel.addressoptions.RecipientAddressModel;

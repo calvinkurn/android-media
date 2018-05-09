@@ -6,7 +6,7 @@ import android.support.annotation.Nullable;
 import com.tokopedia.checkout.view.base.IBaseView;
 import com.tokopedia.core.router.transactionmodule.sharedata.CheckPromoCodeCartShipmentRequest;
 import com.tokopedia.core.router.transactionmodule.sharedata.CheckPromoCodeCartShipmentResult;
-import com.tokopedia.checkout.data.entity.request.CheckoutRequest;
+import com.tokopedia.transactiondata.entity.request.CheckoutRequest;
 import com.tokopedia.checkout.domain.datamodel.cartcheckout.CheckoutData;
 
 import rx.Subscriber;
