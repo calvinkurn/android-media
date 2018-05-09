@@ -15,7 +15,7 @@ android {
 project.ext {
     artifactId = 'cacheapi'
     groupId = 'com.tokopedia.cacheapi'
-    versionName = "2.22"
+    versionName = "${tkpdCacheApiVersion}"
     artifactName ="cache_api-release"
 }
 

@@ -4,7 +4,7 @@ apply from: "$rootProject.projectDir/buildconfig/module.gradle"
 project.ext {
     artifactId = 'applink'
     groupId = 'com.tokopedia.applink'
-    versionName = "2.22"
+    versionName = "${tkpdApplinkVersion}"
     artifactName ="applink-release"
 }
 

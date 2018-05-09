@@ -215,7 +215,7 @@ ext {
             payment             : "com.tokopedia.payment:payment:${tkpdPaymentVersion}",
             tkpdpdp             : "com.tokopedia.tkpdpdp:tkpdpdp:${tkpdPdpVersion}",
             design              : "com.tokopedia.design:design:${tkpdDesignVersion}",
-            feed                : "com.tokopedia.feed:feed:${tkpdFeedVersion}",
+            feed                : "com.tokopedia.feedplus:feed:${tkpdFeedVersion}",
             ride                : "com.tokopedia.ride:ride:${tkpdRideVersion}",
             reactNative         : "com.tokopedia.tkpdreactnative:reactnative:${tkpdReactNativeVersion}",
             loyalty             : "com.tokopedia.loyalty:loyalty:${tkpdLoyaltyVersion}",
