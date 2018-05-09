@@ -3,6 +3,7 @@ package com.tokopedia.imagepicker.picker.instagram.view.adapter;
 import android.view.View;
 import android.widget.ImageView;
 
+import com.bumptech.glide.Glide;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.imagepicker.R;
@@ -16,14 +17,17 @@ public class ImagePickerInstagramViewHolder extends AbstractViewHolder<Instagram
     public static final int LAYOUT = R.layout.item_media_instagram;
 
     private ImageView imageInstagram;
+    private int imageResize;
 
-    public ImagePickerInstagramViewHolder(View itemView) {
+    public ImagePickerInstagramViewHolder(View itemView, int imageResize) {
         super(itemView);
         imageInstagram = itemView.findViewById(R.id.image_instagram);
+        this.imageResize = imageResize;
     }
 
     @Override
     public void bind(InstagramMediaModel element) {
-        ImageHandler.LoadImage(imageInstagram, element.getThumbnail());
+        ImageHandler.LoadImageResize(imageInstagram.getContext(), imageInstagram, element.getThumbnail(),
+                imageResize, imageResize);
     }
 }

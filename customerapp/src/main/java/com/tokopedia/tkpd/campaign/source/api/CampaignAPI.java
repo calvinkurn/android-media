@@ -10,10 +10,12 @@ import okhttp3.RequestBody;
 import retrofit2.Response;
 import retrofit2.http.FieldMap;
 import retrofit2.http.FormUrlEncoded;
+import retrofit2.http.GET;
 import retrofit2.http.Multipart;
 import retrofit2.http.POST;
 import retrofit2.http.Part;
 import retrofit2.http.PartMap;
+import retrofit2.http.QueryMap;
 import rx.Observable;
 
 /**
@@ -21,17 +23,15 @@ import rx.Observable;
  */
 
 public interface CampaignAPI {
-    @FormUrlEncoded
-    @POST(CampaignURL.BARCODE_CAMPAIGN)
-    Observable<Response<DataResponse<CampaignResponseEntity>>> getCampaign(@FieldMap Map<String, Object> param);
+    @GET(CampaignURL.BARCODE_CAMPAIGN)
+    Observable<Response<DataResponse<CampaignResponseEntity>>> getCampaign(@QueryMap Map<String, Object> param);
 
     //TODO Audio_Campagin multipart handling
     @Multipart
     @POST(CampaignURL.SHAKE_CAMPAIGN)
     Observable<Response<DataResponse<CampaignResponseEntity>>> getCampaignAudio(@PartMap Map<String, RequestBody> param,@Part MultipartBody.Part  audioFile);
 
-    @Multipart
-    @POST(CampaignURL.SHAKE_CAMPAIGN)
-    Observable<Response<DataResponse<CampaignResponseEntity>>> getCampaignForShake(@PartMap Map<String, RequestBody> param);
+    @GET(CampaignURL.SHAKE_CAMPAIGN)
+    Observable<Response<DataResponse<CampaignResponseEntity>>> getCampaignForShake(@QueryMap Map<String, Object> param);
 
 }

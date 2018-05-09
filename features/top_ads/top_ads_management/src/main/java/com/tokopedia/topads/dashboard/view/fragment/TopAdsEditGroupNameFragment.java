@@ -13,16 +13,13 @@ import android.widget.Button;
 import android.widget.EditText;
 
 import com.tokopedia.core.analytics.UnifyTracking;
-import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.topads.R;
 import com.tokopedia.seller.base.view.fragment.BasePresenterFragment;
-import com.tokopedia.topads.TopAdsModuleRouter;
 import com.tokopedia.topads.common.util.TopAdsComponentUtils;
 import com.tokopedia.topads.dashboard.constant.TopAdsExtraConstant;
 import com.tokopedia.topads.dashboard.data.model.response.GetSuggestionResponse;
 import com.tokopedia.topads.dashboard.di.component.DaggerTopAdsCreatePromoComponent;
-import com.tokopedia.topads.dashboard.di.component.TopAdsComponent;
 import com.tokopedia.topads.dashboard.di.module.TopAdsCreatePromoModule;
 import com.tokopedia.topads.dashboard.view.listener.TopAdsDetailEditView;
 import com.tokopedia.topads.dashboard.view.model.TopAdsDetailAdViewModel;
