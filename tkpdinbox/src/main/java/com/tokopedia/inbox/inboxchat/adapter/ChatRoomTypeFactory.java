@@ -4,6 +4,7 @@ import android.view.View;
 
 
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
+import com.tokopedia.inbox.inboxchat.domain.model.websocket.FallbackAttachmentViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.AttachImageModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.AttachInvoiceSelectionViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.AttachInvoiceSentViewModel;
@@ -43,4 +44,7 @@ public interface ChatRoomTypeFactory {
     int type(AttachInvoiceSelectionViewModel attachInvoiceSelectionViewModel);
 
     int type(QuickReplyListViewModel quickReplyListViewModel);
+
+    int type(FallbackAttachmentViewModel fallbackAttachmentViewModel);
+
 }

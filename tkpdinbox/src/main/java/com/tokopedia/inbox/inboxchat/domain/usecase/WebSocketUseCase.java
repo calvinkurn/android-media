@@ -36,12 +36,13 @@ public class WebSocketUseCase {
     private UserSession userSession;
 
 
-    public WebSocketUseCase(String magicString, UserSession session, ChatWebSocketListenerImpl listene) {
-        client = new OkHttpClient();
-        url = magicString;
-        userSession = session;
-        listener = listene;
-        countDownTimer = new CountDownTimer(5000, 1000) {
+    public WebSocketUseCase(String magicString, UserSession session, ChatWebSocketListenerImpl
+            listener) {
+        this.client = new OkHttpClient();
+        this.url = magicString;
+        this.userSession = session;
+        this.listener = listener;
+        this.countDownTimer = new CountDownTimer(5000, 1000) {
             @Override
             public void onTick(long l) {
 
