@@ -10,6 +10,8 @@ import com.tokopedia.core.network.retrofit.response.TkpdResponse;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.inbox.R;
+import com.tokopedia.inbox.inboxchat.data.pojo.QuickReplyListPojo;
+import com.tokopedia.inbox.inboxchat.data.pojo.QuickReplyPojo;
 import com.tokopedia.inbox.inboxchat.domain.model.reply.Attachment;
 import com.tokopedia.inbox.inboxchat.domain.model.reply.Contact;
 import com.tokopedia.inbox.inboxchat.domain.model.reply.ListReply;
@@ -21,6 +23,8 @@ import com.tokopedia.inbox.inboxchat.viewmodel.ChatRoomViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.MyChatViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.OppositeChatViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.ThumbnailChatViewModel;
+import com.tokopedia.inbox.inboxchat.viewmodel.chatroom.QuickReplyListViewModel;
+import com.tokopedia.inbox.inboxchat.viewmodel.chatroom.QuickReplyViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.mapper.AttachInvoiceMapper;
 
 import java.util.ArrayList;
@@ -37,6 +41,7 @@ import rx.functions.Func1;
 public class GetReplyMapper implements Func1<Response<TkpdResponse>, ChatRoomViewModel> {
 
     private static final String TOKOPEDIA = "Tokopedia";
+    private static final String TYPE_QUICK_REPLY = "8";
     private final SessionHandler sessionHandler;
 
     public GetReplyMapper(SessionHandler sessionHandler) {
@@ -70,8 +75,6 @@ public class GetReplyMapper implements Func1<Response<TkpdResponse>, ChatRoomVie
         }
     }
 
-
-
     private ChatRoomViewModel mappingToDomain(ReplyData data) {
 
         ChatRoomViewModel chatRoomViewModel = new ChatRoomViewModel();
@@ -79,6 +82,7 @@ public class GetReplyMapper implements Func1<Response<TkpdResponse>, ChatRoomVie
         ArrayList<Visitable> list = new ArrayList<>();
 
         for (ListReply item : data.getList()) {
+
             if (item.getRole().contains(TOKOPEDIA)) {
                 ThumbnailChatViewModel temp = new ThumbnailChatViewModel();
                 temp.setReplyId(item.getReplyId());
@@ -99,8 +103,21 @@ public class GetReplyMapper implements Func1<Response<TkpdResponse>, ChatRoomVie
                 }
                 temp.setAttachment(item.getAttachment());
                 list.add(checkAndConvertItemModelToAttachmentType(temp,temp.getAttachment()));
-            }else {
-                if (!item.isOpposite()) {
+            } else {
+                if (item.getAttachment() != null && item.getAttachment().getType().equals(TYPE_QUICK_REPLY)) {
+                    QuickReplyListViewModel quickReplyListViewModel = new QuickReplyListViewModel(
+                            String.valueOf(item.getMsgId()),
+                            String.valueOf(item.getSenderId()),
+                            item.getSenderName(),
+                            item.getRole(),
+                            item.getMsg(),
+                            item.getAttachment().getId(),
+                            TYPE_QUICK_REPLY,
+                            item.getReplyTime(),
+                            convertQuickItemChatList(item.getAttachment().getQuickReplies())
+                    );
+                    list.add(quickReplyListViewModel);
+                } else if (!item.isOpposite()) {
                     MyChatViewModel temp = new MyChatViewModel();
                     temp.setReplyId(item.getReplyId());
                     temp.setSenderId(item.getSenderId());
@@ -175,6 +192,15 @@ public class GetReplyMapper implements Func1<Response<TkpdResponse>, ChatRoomVie
 
             }
         }
+    }
+
+    private List<QuickReplyViewModel> convertQuickItemChatList(QuickReplyListPojo pojoList) {
+        List<QuickReplyViewModel> list = new ArrayList<>();
+        for (QuickReplyPojo pojo : pojoList.getQuickReplies()) {
+            QuickReplyViewModel model = new QuickReplyViewModel(pojo.getMessage());
+            list.add(model);
+        }
+        return list;
     }
 
     private Visitable checkAndConvertItemModelToAttachmentType(Visitable input, Attachment attachment){

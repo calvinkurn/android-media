@@ -43,6 +43,7 @@ import com.tokopedia.inbox.inboxchat.viewmodel.MyChatViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.OppositeChatViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.SendMessageViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.TemplateChatModel;
+import com.tokopedia.inbox.inboxchat.viewmodel.chatroom.QuickReplyListViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.mapper.AttachInvoiceMapper;
 
 import java.util.ArrayList;
@@ -460,6 +461,12 @@ public class ChatRoomPresenter extends BaseDaggerPresenter<ChatRoomContract.View
             getView().getAdapter().setList(replyData.getChatList());
             getView().scrollToBottom();
             getView().hideMainLoading();
+            if (replyData.getChatList().get(0)
+                    instanceof QuickReplyListViewModel) {
+                QuickReplyListViewModel model =
+                        (QuickReplyListViewModel)replyData.getChatList().get(0);
+                getView().showQuickReplyView(model);
+            }
         } else {
             getView().getAdapter().addList(replyData.getChatList());
         }
@@ -469,6 +476,7 @@ public class ChatRoomPresenter extends BaseDaggerPresenter<ChatRoomContract.View
         if (!replyData.isHasNext() && replyData.isHasTimeMachine()) {
             getView().addTimeMachine();
         }
+
     }
 
     public void finishRequest() {

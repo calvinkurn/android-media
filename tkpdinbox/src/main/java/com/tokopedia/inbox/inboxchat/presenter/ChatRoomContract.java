@@ -19,6 +19,7 @@ import com.tokopedia.inbox.inboxchat.viewmodel.ChatRoomViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.DummyChatViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.MyChatViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.OppositeChatViewModel;
+import com.tokopedia.inbox.inboxchat.viewmodel.chatroom.QuickReplyListViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.chatroom.QuickReplyViewModel;
 
 import java.util.List;
@@ -131,6 +132,8 @@ public class ChatRoomContract {
         boolean isChatBot();
 
         void onQuickReplyClicked(QuickReplyViewModel quickReply);
+
+        void showQuickReplyView(QuickReplyListViewModel model);
 
         void onInvoiceSelected(SelectedInvoice selectedInvoice);
 

@@ -1427,7 +1427,8 @@ public class ChatRoomFragment extends BaseDaggerFragment
         }
     }
 
-    private void showQuickReplyView(QuickReplyListViewModel model) {
+    @Override
+    public void showQuickReplyView(QuickReplyListViewModel model) {
         if (model.getQuickReplies().size() != 0) {
             rvQuickReply.setVisibility(View.VISIBLE);
             quickReplyAdapter = new QuickReplyAdapter(model, this);
