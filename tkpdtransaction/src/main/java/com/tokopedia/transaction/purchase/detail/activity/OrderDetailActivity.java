@@ -300,7 +300,7 @@ public class OrderDetailActivity extends TActivity
         ViewGroup invoiceLayout = findViewById(R.id.invoice_layout);
         TextView invoiceNumber = findViewById(R.id.invoice_number);
         invoiceNumber.setText(data.getInvoiceNumber());
-        invoiceLayout.setOnClickListener(onInvoiceClickedListener(data));
+        invoiceLayout.setOnClickListener(onInvoiceClickedListener(data, getExtraUserMode() == SELLER_MODE));
     }
 
     private void setDescriptionView(OrderDetailData data) {
@@ -722,11 +722,11 @@ public class OrderDetailActivity extends TActivity
         presenter.onDestroyed();
     }
 
-    private View.OnClickListener onInvoiceClickedListener(final OrderDetailData data) {
+    private View.OnClickListener onInvoiceClickedListener(final OrderDetailData data, final boolean seller) {
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                presenter.processInvoice(OrderDetailActivity.this, data);
+                presenter.processInvoice(OrderDetailActivity.this, data, seller);
             }
         };
     }

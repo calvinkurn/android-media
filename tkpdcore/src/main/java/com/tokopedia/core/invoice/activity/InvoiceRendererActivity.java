@@ -50,6 +50,7 @@ public class InvoiceRendererActivity extends BasePresenterActivity<InvoiceRender
     private static final String TAG = InvoiceRendererActivity.class.getSimpleName();
 
     private static final String EXTRA_INVOICE_RENDER_PARAM = "EXTRA_INVOICE_RENDER_PARAM";
+    private static final String EXTRA_INVOICE_SELLER = "EXTRA_INVOICE_SELLER";
 
     @BindView(R2.id.webview)
     TkpdWebView webViewOauth;
@@ -60,10 +61,12 @@ public class InvoiceRendererActivity extends BasePresenterActivity<InvoiceRender
 
     private InvoiceRenderParam invoiceParam;
     private TkpdProgressDialog progressDialog;
+    private boolean seller;
 
-    public static Intent newInstance(Context context, InvoiceRenderParam data) {
+    public static Intent newInstance(Context context, InvoiceRenderParam data, boolean seller) {
         Intent intent = new Intent(context, InvoiceRendererActivity.class);
         intent.putExtra(EXTRA_INVOICE_RENDER_PARAM, data);
+        intent.putExtra(EXTRA_INVOICE_SELLER, seller);
         return intent;
     }
 
@@ -79,7 +82,8 @@ public class InvoiceRendererActivity extends BasePresenterActivity<InvoiceRender
 
     @Override
     protected void setupBundlePass(Bundle extras) {
-        this.invoiceParam = extras.getParcelable(EXTRA_INVOICE_RENDER_PARAM);
+        invoiceParam = extras.getParcelable(EXTRA_INVOICE_RENDER_PARAM);
+        seller = extras.getBoolean(EXTRA_INVOICE_SELLER);
     }
 
     @Override
@@ -159,7 +163,7 @@ public class InvoiceRendererActivity extends BasePresenterActivity<InvoiceRender
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.menu_transaction_invoice, menu);
-        if (android.os.Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT) {
+        if (!seller || android.os.Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT) {
             MenuItem menuItem = menu.findItem(R.id.action_print);
             menuItem.setVisible(false);
         }
@@ -203,8 +207,9 @@ public class InvoiceRendererActivity extends BasePresenterActivity<InvoiceRender
     private void onMenuPrintClcked() {
         if (GlobalConfig.isSellerApp()) {
             createWebPagePrint(webViewOauth);
-        } else {
+        } else if (seller) {
             // Show dialog
+            Toast.makeText(this, "I'm Seller", Toast.LENGTH_LONG).show();
         }
     }
 
