@@ -606,8 +606,6 @@ public class TopAdsDashboardFragment extends BaseDaggerFragment implements TopAd
                     }
                 }).createDialog();
         bottomSheetDialog.show();
-
-
     }
 
     public void startShowCase(){

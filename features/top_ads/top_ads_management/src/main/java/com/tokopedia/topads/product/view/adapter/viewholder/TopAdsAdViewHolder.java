@@ -2,13 +2,15 @@ package com.tokopedia.topads.product.view.adapter.viewholder;
 
 import android.graphics.drawable.Drawable;
 import android.support.annotation.LayoutRes;
+import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
 import android.view.View;
+import android.widget.CheckBox;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.topads.R;
+import com.tokopedia.topads.common.view.adapter.viewholder.BaseMultipleCheckViewHolder;
 import com.tokopedia.topads.dashboard.constant.TopAdsConstant;
 import com.tokopedia.topads.dashboard.data.model.data.ProductAd;
 
@@ -16,7 +18,7 @@ import com.tokopedia.topads.dashboard.data.model.data.ProductAd;
  * Created by hadi.putra on 07/05/18.
  */
 
-public class TopAdsAdViewHolder extends AbstractViewHolder<ProductAd> {
+public class TopAdsAdViewHolder extends BaseMultipleCheckViewHolder<ProductAd> {
     @LayoutRes
     public final static int LAYOUT = R.layout.item_top_ads_ad;
 
@@ -30,6 +32,8 @@ public class TopAdsAdViewHolder extends AbstractViewHolder<ProductAd> {
     private View progressBarLayout;
     private ProgressBar progressBarPromo;
     private TextView groupNameView;
+    private View optionImageButton;
+    private CheckBox checkBox;
 
     public TopAdsAdViewHolder(View view) {
         super(view);
@@ -43,6 +47,8 @@ public class TopAdsAdViewHolder extends AbstractViewHolder<ProductAd> {
         progressBarLayout = view.findViewById(R.id.progress_bar_layout);
         progressBarPromo = (ProgressBar) view.findViewById(R.id.progress_bar);
         groupNameView = (TextView) view.findViewById(R.id.group_name);
+        optionImageButton = view.findViewById(R.id.image_button_option);
+        checkBox = (CheckBox) view.findViewById(R.id.check_box_product);
 
         // programmatically styling for ProgressBar
         // http://stackoverflow.com/questions/16893209/how-to-customize-a-progress-bar-in-android
@@ -67,10 +73,10 @@ public class TopAdsAdViewHolder extends AbstractViewHolder<ProductAd> {
 
         long groupId = -1;
         String groupName = "";
-        if(ad instanceof ProductAd){
-            groupId = ((ProductAd) ad).getGroupId();
-            groupName = ((ProductAd) ad).getGroupName();
-        }
+        //if(ad instanceof ProductAd){
+            groupId = ad.getGroupId();
+            groupName = ad.getGroupName();
+        //}
         if (TextUtils.isEmpty(ad.getPriceDailyBar()) || groupId > 0) {
             progressBarLayout.setVisibility(View.GONE);
             if(groupId > 0){
@@ -87,5 +93,50 @@ public class TopAdsAdViewHolder extends AbstractViewHolder<ProductAd> {
             dailySpentTextView.setText(ad.getPriceDailySpentFmt());
             dailyTotalTextView.setText(ad.getPriceDailyFmt());
         }
+    }
+
+    @Override
+    public boolean isChecked() {
+        return checkBox.isChecked();
+    }
+
+    @Override
+    public void setChecked(boolean checked) {
+        checkBox.setChecked(checked);
+        setBackground(checked);
+    }
+
+    @Override
+    public void showCheckButton(boolean isInActionMode) {
+        if (isInActionMode) {
+            checkBox.setVisibility(View.VISIBLE);
+            optionImageButton.setVisibility(View.GONE);
+        } else {
+            checkBox.setVisibility(View.GONE);
+            optionImageButton.setVisibility(View.VISIBLE);
+        }
+    }
+
+    public void setBackground(boolean isChecked) {
+        if (isChecked) {
+            itemView.setBackgroundColor(ContextCompat.getColor(itemView.getContext(), R.color.light_green));
+        } else {
+            itemView.setBackgroundColor(ContextCompat.getColor(itemView.getContext(), R.color.white));
+        }
+    }
+
+    @Override
+    public void bindObject(final ProductAd item, boolean isChecked) {
+        bind(item);
+        setChecked(isChecked);
+        checkBox.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (checkedCallback != null){
+                    checkedCallback.onItemChecked(item, checkBox.isChecked());
+                }
+                setChecked(checkBox.isChecked());
+            }
+        });
     }
 }

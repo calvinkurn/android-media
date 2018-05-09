@@ -61,13 +61,16 @@ public class TopAdsProductAdListPresenter extends TopAdsBaseListPresenter<TopAds
 
             @Override
             public void onError(Throwable e) {
-
+                if (isViewAttached()){
+                    getView().showListError(e);
+                }
             }
 
             @Override
             public void onNext(PageDataResponse<List<ProductAd>> listPageDataResponse) {
                 if (isViewAttached()){
-                    getView().onSearchLoaded(listPageDataResponse.getData(), page < listPageDataResponse.getPage().getTotal());
+                    boolean hasNextData = listPageDataResponse.getPage().getPerPage()*page < listPageDataResponse.getPage().getTotal();
+                    getView().onSearchLoaded(listPageDataResponse.getData(), hasNextData);
                 }
             }
         });

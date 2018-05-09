@@ -1,4 +1,4 @@
-package com.tokopedia.topads.product.view.adapter.viewholder;
+package com.tokopedia.topads.common.view.adapter.viewholder;
 
 import android.support.annotation.LayoutRes;
 import android.view.View;
@@ -12,7 +12,7 @@ import com.tokopedia.topads.R;
 
 public class LoadingViewHolder extends LoadingViewholder{
     @LayoutRes
-    public final static int LAYOUT = R.layout.loading_layout;
+    public final static int LAYOUT = R.layout.top_ads_loading_layout;
 
     public LoadingViewHolder(View itemView) {
         super(itemView);

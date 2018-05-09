@@ -9,6 +9,8 @@ import java.util.List;
  * Created by hadi.putra on 04/05/18.
  */
 
-public interface TopAdsProductAdListView extends CustomerView{
+public interface TopAdsProductAdListView extends CustomerView {
     void onSearchLoaded(List<ProductAd> productAds, boolean hasNextPage);
+
+    void showListError(Throwable throwable);
 }

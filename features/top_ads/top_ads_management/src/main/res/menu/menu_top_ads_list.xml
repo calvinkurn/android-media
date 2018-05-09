@@ -9,4 +9,10 @@
         android:visible="true"
         app:showAsAction="always|collapseActionView" />
 
+    <item
+        android:id="@+id/menu_multi_select"
+        android:icon="@drawable/checked_thin"
+        android:title="@string/title_multiple_select"
+        app:showAsAction="always"/>
+
 </menu>
