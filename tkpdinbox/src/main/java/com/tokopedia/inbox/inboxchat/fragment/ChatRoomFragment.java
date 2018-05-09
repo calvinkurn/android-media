@@ -330,9 +330,9 @@ public class ChatRoomFragment extends BaseDaggerFragment
                     }
                 });
 
-        if(needCreateWebSocket()) {
+        if (needCreateWebSocket()) {
             sendButton.setOnClickListener(generateSendClickListener());
-        }else {
+        } else {
             sendButton.setOnClickListener(getSendInitMessage());
         }
 
@@ -477,30 +477,28 @@ public class ChatRoomFragment extends BaseDaggerFragment
 
         Uri uri = Uri.parse(url);
         KeyboardHandler.DropKeyboard(getActivity(), getView());
-        if(uri != null) {
+        if (uri != null) {
             boolean isTargetDomainTokopedia = uri.getHost().endsWith("tokopedia.com");
-            boolean isTargetTkpMeAndNotRedirect = (TextUtils.equals(uri.getHost(),BASE_DOMAIN_SHORTENED) &&
-                    !TextUtils.equals(uri.getEncodedPath(),"/r"));
+            boolean isTargetTkpMeAndNotRedirect = (TextUtils.equals(uri.getHost(), BASE_DOMAIN_SHORTENED) &&
+                    !TextUtils.equals(uri.getEncodedPath(), "/r"));
             boolean isNeedAuthToken = (isTargetDomainTokopedia || isTargetTkpMeAndNotRedirect);
-            
-            if(uri.getScheme().equals(APPLINK_SCHEME)){
+
+            if (uri.getScheme().equals(APPLINK_SCHEME)) {
                 ((TkpdInboxRouter) getActivity().getApplicationContext())
                         .actionNavigateByApplinksUrl(getActivity(), url, new Bundle());
-            }
-            else if (uri.getPathSegments().contains(CONTACT_US_PATH_SEGMENT)) {
+            } else if (uri.getPathSegments().contains(CONTACT_US_PATH_SEGMENT)) {
                 Intent intent = ((TkpdInboxRouter) MainApplication
                         .getAppContext())
                         .getContactUsIntent(getContext());
                 intent.putExtra(ContactUsConstant.PARAM_URL,
                         URLGenerator.generateURLContactUs(url, getContext()));
-                intent.putExtra(ContactUsConstant.IS_CHAT_BOT,true);
+                intent.putExtra(ContactUsConstant.IS_CHAT_BOT, true);
                 startActivity(intent);
-            } else if(isChatBot && isNeedAuthToken) {
+            } else if (isChatBot && isNeedAuthToken) {
                 startActivity(ChatMarketingThumbnailActivity.getCallingIntent(getActivity(),
-                        URLGenerator.generateURLSessionLoginV4(url,getContext())));
-            }
-            else {
-                startActivity(ChatMarketingThumbnailActivity.getCallingIntent(getActivity(),url));
+                        URLGenerator.generateURLSessionLoginV4(url, getContext())));
+            } else {
+                startActivity(ChatMarketingThumbnailActivity.getCallingIntent(getActivity(), url));
             }
         }
     }
@@ -1129,9 +1127,14 @@ public class ChatRoomFragment extends BaseDaggerFragment
                 .getAppContext()));
     }
 
+    @Deprecated
     @Override
     public boolean isCurrentThread(int msgId) {
-        return getArguments().getString(PARAM_MESSAGE_ID).equals(String.valueOf(msgId));
+        return getArguments().getString(PARAM_MESSAGE_ID, "").equals(String.valueOf(msgId));
+    }
+
+    public boolean isCurrentThread(String msgId) {
+        return getArguments().getString(PARAM_MESSAGE_ID, "").equals(msgId);
     }
 
     public boolean isAllowedTemplate() {
@@ -1174,7 +1177,7 @@ public class ChatRoomFragment extends BaseDaggerFragment
         return invoiceToSend;
     }
 
-    public DummyChatViewModel generateChatViewModelWithImage(String imageUrl){
+    public DummyChatViewModel generateChatViewModelWithImage(String imageUrl) {
         scrollToBottom();
         ImageUpload model = new ImageUpload();
         model.setImageId(String.valueOf(System.currentTimeMillis() / MILIS_TO_SECOND));
@@ -1278,7 +1281,7 @@ public class ChatRoomFragment extends BaseDaggerFragment
     public void addDummyMessage() {
         DummyChatViewModel item = new DummyChatViewModel();
         item.setMsg(getReplyMessage());
-        if(!TextUtils.isEmpty(getArguments().getString(InboxMessageConstant.PARAM_MESSAGE_ID))) {
+        if (!TextUtils.isEmpty(getArguments().getString(InboxMessageConstant.PARAM_MESSAGE_ID))) {
             item.setMsgId(Integer.parseInt(getArguments().getString(InboxMessageConstant.PARAM_MESSAGE_ID)));
         }
         item.setReplyTime(DummyChatViewModel.SENDING_TEXT);
@@ -1371,12 +1374,50 @@ public class ChatRoomFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void onReceiveMessage(BaseChatViewModel message) {
-        if(message instanceof QuickReplyListViewModel){
-            if(!TextUtils.isEmpty(message.getMessage())) {
-                adapter.addReply((Visitable) message);
+    public void onReceiveMessage(final BaseChatViewModel message) {
+        if (getActivity() != null) {
+            getActivity().runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    processReceiveMessage(message);
+                }
+            });
+        }
+    }
+
+    private void processReceiveMessage(BaseChatViewModel message) {
+        if (isCurrentThread(message.getMessageId())) {
+            if (message instanceof QuickReplyListViewModel) {
+                showQuickReplyView();
+                if (!TextUtils.isEmpty(message.getMessage())) {
+                    addMessageToList(message);
+                    scrollToBottomWithCheck();
+                }
+            } else {
+                addMessageToList(message);
+                scrollToBottomWithCheck();
             }
-            showQuickReplyView();
+
+            readMessage(message.getMessageId());
+        }
+    }
+
+    private void readMessage(String messageId) {
+        if (!TextUtils.isEmpty(messageId)) {
+            presenter.readMessage(messageId);
+        }
+    }
+
+    private void addMessageToList(BaseChatViewModel message) {
+        removeIsTyping();
+        setViewEnabled(true);
+        adapter.addReply((Visitable) message);
+        setResult();
+    }
+
+    private void removeIsTyping() {
+        if (adapter.isTyping()) {
+            adapter.removeTyping();
         }
     }
 

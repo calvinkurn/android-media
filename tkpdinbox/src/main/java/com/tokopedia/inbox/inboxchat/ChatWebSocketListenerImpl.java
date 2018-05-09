@@ -6,8 +6,6 @@ import com.tokopedia.inbox.inboxchat.domain.WebSocketMapper;
 import com.tokopedia.inbox.inboxchat.domain.model.websocket.BaseChatViewModel;
 import com.tokopedia.inbox.inboxchat.domain.model.websocket.WebSocketResponse;
 
-import javax.inject.Inject;
-
 import okhttp3.Response;
 import okhttp3.WebSocket;
 import okhttp3.WebSocketListener;
@@ -36,8 +34,28 @@ public class ChatWebSocketListenerImpl extends WebSocketListener {
     public void onMessage(WebSocket webSocket, String text) {
         CommonUtils.dumper("WS Message: " + text);
 
-        text = "{      \"code\":103,    \"data\":{         \"msg_id\":12247,       \"from_uid\":2059,    " +
-                "   \"from\":\"Ryan Test\",       \"to_uid\":2059,       \"message\":{            \"censored_reply\":\"halo selamat pagi\",          \"original_reply\":\"halo selamat pagi\",          \"timestamp\":\"2017-08-28T11:12:23.919172567+07:00\",          \"timestamp_fmt\":\"28 August 2017, 11:12 WIB\"       },       \"start_time\":\"2017-08-28T04:12:23.915Z\",       \"attachment_id\":1,       \"attachment\":{            \"id\":1,          \"type\":8,          \"attributes\":{               \"quick_replies\":[                {\"message\":\"Selamat pagi juga kak\"},                {\"message\":\"pagi juga kak\"},                {\"message\":\"pagi\"}             ]          },          \"fallback_attachment\":{               \"message\":\"halo selamat pagi\",             \"html\":\"halo selamat pagi\"          }       }    } }";
+        if (text.contains("NISEEH")) {
+            text = "{      \"code\":103,    \"data\":{         \"msg_id\":8695843,       \"from_uid\":2059,    " +
+                    "   \"from\":\"Ryan Test\",       \"to_uid\":2590134,       \"message\":{            \"censored_reply\":\"halo selamat pagi\",          \"original_reply\":\"halo selamat pagi\",          \"timestamp\":\"2017-08-28T11:12:23.919172567+07:00\",          \"timestamp_fmt\":\"28 August 2017, 11:12 WIB\"       },       \"start_time\":\"2017-08-28T04:12:23.915Z\",       \"attachment_id\":1,       \"attachment\":{            \"id\":1,          \"type\":8,          \"attributes\":{               \"quick_replies\":[                {\"message\":\"Selamat pagi juga kak\"},                {\"message\":\"pagi juga kak\"},                {\"message\":\"pagi\"}             ]          },          \"fallback_attachment\":{               \"message\":\"halo selamat pagi\",             \"html\":\"halo selamat pagi\"          }       }    } }";
+        }else if (text.contains("AYAM")){
+            text = "{      \"code\":103,    \"data\":{         \"msg_id\":8695843,       \"from_uid\":2059,    " +
+                    "   \"from\":\"Ryan Test\",       \"to_uid\":2590134,       \"message\":{    " +
+                    "   " +
+                    "     \"censored_reply\":\"halo selamat\",          \"original_reply\":\"halo" +
+                    " selamat pagi\",          " +
+                    "\"timestamp\":\"2017-08-28T11:12:23.919172567+07:00\",          " +
+                    "\"timestamp_fmt\":\"28 August 2017, 11:12 WIB\"       },       " +
+                    "\"start_time\":\"2017-08-28T04:12:23.915Z\",       \"attachment_id\":1,     " +
+                    "  \"attachment\":{            \"id\":1,          \"type\":0,          " +
+                    "\"attributes\":{               \"quick_replies\":[                " +
+                    "{\"message\":\"Selamat pagi juga kak\"},                {\"message\":\"pagi " +
+                    "juga kak\"},                {\"message\":\"pagi\"}             ]          }," +
+                    "          \"fallback_attachment\":{               \"message\":\"halo selamat" +
+                    " fallback\",             \"html\":\"halo selamat fallback\"          }      " +
+                    " }" +
+                    "    } }";
+        }
+
         BaseChatViewModel message = webSocketMapper.map(text);
         if (message != null) {
             listener.onReceiveMessage(message);

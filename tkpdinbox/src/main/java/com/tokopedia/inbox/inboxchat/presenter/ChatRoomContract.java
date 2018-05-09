@@ -81,7 +81,10 @@ public class ChatRoomContract {
 
         void resetReplyColumn();
 
+        @Deprecated
         boolean isCurrentThread(int msgId);
+
+        boolean isCurrentThread(String msgId);
 
         boolean isMyMessage(int fromUid);
 
