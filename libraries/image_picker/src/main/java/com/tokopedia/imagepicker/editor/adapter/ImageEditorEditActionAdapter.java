@@ -8,8 +8,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.tokopedia.imagepicker.R;
-import com.tokopedia.imagepicker.picker.main.util.ImageEditActionTypeDef;
-import com.tokopedia.imagepicker.picker.main.util.ImagePickerTabTypeDef;
+import com.tokopedia.imagepicker.picker.main.builder.ImageEditActionTypeDef;
+import com.tokopedia.imagepicker.picker.main.builder.ImagePickerTabTypeDef;
 
 /**
  * Created by hendry on 19/04/18.
@@ -56,15 +56,15 @@ public class ImageEditorEditActionAdapter implements View.OnClickListener {
             view.setId(tabTypeDefItem);
             switch (tabTypeDefItem) {
                 case ImageEditActionTypeDef.ACTION_CROP:
-                    ivEdit.setImageResource(R.drawable.ic_crop_rotate);
+                    ivEdit.setImageResource(R.drawable.ic_crop);
                     tvEdit.setText(context.getString(R.string.crop));
                     break;
                 case ImageEditActionTypeDef.ACTION_ROTATE:
-                    ivEdit.setImageResource(R.drawable.ic_crop_rotate);
+                    ivEdit.setImageResource(R.drawable.ic_rotate);
                     tvEdit.setText(context.getString(R.string.rotate));
                     break;
                 case ImageEditActionTypeDef.ACTION_WATERMARK:
-                    ivEdit.setImageResource(R.drawable.circle_red);
+                    ivEdit.setImageResource(R.drawable.ic_crop_rotate);
                     tvEdit.setText(context.getString(R.string.watermark));
                     break;
                 case ImageEditActionTypeDef.ACTION_CROP_ROTATE:

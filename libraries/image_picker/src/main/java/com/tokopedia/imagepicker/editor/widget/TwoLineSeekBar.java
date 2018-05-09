@@ -291,9 +291,10 @@ public class TwoLineSeekBar extends View {
         if (newValue == mCurrentValue) {
             return;
         }
+        int previousValue = mCurrentValue;
         mCurrentValue = newValue;
         if (mListener != null) {
-            mListener.onSeekChanged((mStep * value), mStep);
+            mListener.onSeekChanged(previousValue * value, (mStep * value), mStep);
         }
         updateThumbOffset();
         postInvalidate();
@@ -319,9 +320,10 @@ public class TwoLineSeekBar extends View {
         if (mCurrentValue == value) {
             return;
         }
+        int previousValue = mCurrentValue;
         mCurrentValue = value;
         if (mListener != null) {
-            mListener.onSeekChanged(((float) (mStartValue + value) * mStep), mStep);
+            mListener.onSeekChanged(((float) (mStartValue + previousValue) * mStep), ((float) (mStartValue + value) * mStep), mStep);
         }
     }
 
@@ -466,7 +468,7 @@ public class TwoLineSeekBar extends View {
 
     public static abstract interface OnSeekChangeListener {
 
-        public abstract void onSeekChanged(float value, float step);
+        public abstract void onSeekChanged(float previousValue, float value, float step);
 
         public abstract void onSeekStopped(float value, float step);
     }

@@ -8,7 +8,7 @@
     tools:visibility="visible">
 
     <com.tokopedia.imagepicker.editor.widget.TwoLineSeekBar
-        android:id="@+id/seekBar_contrast"
+        android:id="@+id/seekBar_rotate"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"

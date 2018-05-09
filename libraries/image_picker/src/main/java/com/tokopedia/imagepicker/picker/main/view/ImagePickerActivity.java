@@ -22,9 +22,9 @@ import com.tokopedia.imagepicker.picker.camera.ImagePickerCameraFragment;
 import com.tokopedia.imagepicker.picker.gallery.ImagePickerGalleryFragment;
 import com.tokopedia.imagepicker.picker.gallery.model.MediaItem;
 import com.tokopedia.imagepicker.picker.instagram.view.fragment.ImagePickerInstagramFragment;
-import com.tokopedia.imagepicker.picker.main.util.ImagePickerBuilder;
-import com.tokopedia.imagepicker.picker.main.util.ImagePickerTabTypeDef;
-import com.tokopedia.imagepicker.picker.main.util.ImageSelectionTypeDef;
+import com.tokopedia.imagepicker.picker.main.builder.ImagePickerBuilder;
+import com.tokopedia.imagepicker.picker.main.builder.ImagePickerTabTypeDef;
+import com.tokopedia.imagepicker.picker.main.builder.ImageSelectionTypeDef;
 
 import java.util.ArrayList;
 import java.util.List;

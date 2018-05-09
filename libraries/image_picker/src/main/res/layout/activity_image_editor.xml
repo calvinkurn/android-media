@@ -30,7 +30,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="end"
                 style="@style/TextView.Title.Green"
-                android:text="@string/label_done"
+                android:text="@string/label_next"
                 android:paddingTop="@dimen/dp_8"
                 android:paddingBottom="@dimen/dp_8"
                 android:paddingLeft="@dimen/dp_8"
@@ -154,14 +154,24 @@
                         android:layout_weight="1"/>
 
                     <include
-                        android:id="@+id/layout_rotate_wheel"
+                        android:id="@+id/layout_crop"
                         android:layout_height="@dimen/control_height"
                         android:layout_width="match_parent"
                         android:layout_marginLeft="@dimen/dp_16"
                         android:layout_marginRight="@dimen/dp_16"
                         android:visibility="gone"
                         tools:visibility="visible"
-                        layout="@layout/ucrop_layout_rotate"/>
+                        layout="@layout/layout_crop"/>
+
+                    <include
+                        android:id="@+id/layout_rotate"
+                        android:layout_height="@dimen/control_height"
+                        android:layout_width="match_parent"
+                        android:layout_marginLeft="@dimen/dp_16"
+                        android:layout_marginRight="@dimen/dp_16"
+                        android:visibility="gone"
+                        tools:visibility="visible"
+                        layout="@layout/layout_rotate"/>
 
                     <include
                         android:id="@+id/layout_brightness"

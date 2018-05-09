@@ -42,7 +42,7 @@ public class ImageEditPreviewFragment extends Fragment implements ImageEditPrevi
     public static final String ARG_EXPECTED_RATIO_X = "arg_expected_ratio_x";
     public static final String ARG_EXPECTED_RATIO_Y = "arg_expected_ratio_y";
     public static final String ARG_CIRCLE_PREVIEW = "arg_circle_preview";
-    public static final int ROTATE_WIDGET_SENSITIVITY = 42;
+    public static final int ROTATE_WIDGET_SENSITIVITY = 1;
 
     public static final String SAVED_BRIGHTNESS = "svd_brightness";
     public static final String SAVED_CONTRAST = "svd_contrast";
@@ -348,7 +348,7 @@ public class ImageEditPreviewFragment extends Fragment implements ImageEditPrevi
         gestureCropImageView.setImageToWrapCropBounds();
     }
 
-    public void rotateByAngle(int angle) {
+    public void rotateByAngle(float angle) {
         gestureCropImageView.postRotate(angle);
         gestureCropImageView.setImageToWrapCropBounds();
     }
@@ -389,6 +389,10 @@ public class ImageEditPreviewFragment extends Fragment implements ImageEditPrevi
             }
             overlayView.invalidate();
         }
+    }
+
+    public void setScaleEnabled(boolean isScaleEnabled) {
+        gestureCropImageView.setScaleEnabled(isScaleEnabled);
     }
 
     public void cancelCropRotateImage() {

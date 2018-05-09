@@ -1,13 +1,14 @@
-package com.tokopedia.imagepicker.picker.main.util;
+package com.tokopedia.imagepicker.picker.main.builder;
 
 import com.tokopedia.imagepicker.picker.gallery.type.GalleryType;
 
-import static com.tokopedia.imagepicker.picker.main.util.ImageEditActionTypeDef.ACTION_BRIGHTNESS;
-import static com.tokopedia.imagepicker.picker.main.util.ImageEditActionTypeDef.ACTION_CONTRAST;
-import static com.tokopedia.imagepicker.picker.main.util.ImageEditActionTypeDef.ACTION_CROP_ROTATE;
-import static com.tokopedia.imagepicker.picker.main.util.ImagePickerTabTypeDef.TYPE_CAMERA;
-import static com.tokopedia.imagepicker.picker.main.util.ImagePickerTabTypeDef.TYPE_GALLERY;
-import static com.tokopedia.imagepicker.picker.main.util.ImagePickerTabTypeDef.TYPE_INSTAGRAM;
+import static com.tokopedia.imagepicker.picker.main.builder.ImageEditActionTypeDef.ACTION_BRIGHTNESS;
+import static com.tokopedia.imagepicker.picker.main.builder.ImageEditActionTypeDef.ACTION_CONTRAST;
+import static com.tokopedia.imagepicker.picker.main.builder.ImageEditActionTypeDef.ACTION_CROP;
+import static com.tokopedia.imagepicker.picker.main.builder.ImageEditActionTypeDef.ACTION_CROP_ROTATE;
+import static com.tokopedia.imagepicker.picker.main.builder.ImageEditActionTypeDef.ACTION_ROTATE;
+import static com.tokopedia.imagepicker.picker.main.builder.ImagePickerTabTypeDef.TYPE_CAMERA;
+import static com.tokopedia.imagepicker.picker.main.builder.ImagePickerTabTypeDef.TYPE_GALLERY;
 
 /**
  * Created by hendry on 19/04/18.
@@ -23,7 +24,7 @@ public enum ImagePickerBuilder {
             1,
             1,
             true,
-            new int[]{ACTION_CROP_ROTATE, ACTION_BRIGHTNESS, ACTION_CONTRAST},
+            new int[]{ACTION_BRIGHTNESS, ACTION_CONTRAST, ACTION_CROP, ACTION_ROTATE},
             true);
 
     private String title;

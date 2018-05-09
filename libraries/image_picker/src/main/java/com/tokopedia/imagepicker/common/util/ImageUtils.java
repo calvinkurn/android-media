@@ -168,7 +168,7 @@ public class ImageUtils {
         return resultList;
     }
 
-    public static void deleteFile(String path) throws IOException {
+    public static void deleteFile(String path) {
         if (!TextUtils.isEmpty(path)) {
             File file = new File(path);
             if (file.exists()){

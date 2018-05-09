@@ -12,7 +12,7 @@ import android.widget.FrameLayout;
 
 import com.tokopedia.imagepicker.R;
 import com.tokopedia.imagepicker.editor.adapter.ImageEditorEditActionAdapter;
-import com.tokopedia.imagepicker.picker.main.util.ImageEditActionTypeDef;
+import com.tokopedia.imagepicker.picker.main.builder.ImageEditActionTypeDef;
 
 /**
  * Created by hendry on 30/04/18.

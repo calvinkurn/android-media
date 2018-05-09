@@ -13,7 +13,7 @@
     <string name="edit_image">Edit Gambar</string>
     <string name="downloading_images">Mengunduh Gambar</string>
     <string name="crop">Crop</string>
-    <string name="rotate">Rotate</string>
+    <string name="rotate">Rotasi</string>
     <string name="watermark">Watermark</string>
     <string name="instagram_label_login">Instagram Login</string>
     <string name="crop_and_rotate">Edit</string>
@@ -27,4 +27,5 @@
     <string name="default_rotate_value">0°</string>
     <string name="default_all_album">Semua Gambar</string>
     <string name="album">Album</string>
+    <string name="ratio_1_1">1:1</string>
 </resources>
