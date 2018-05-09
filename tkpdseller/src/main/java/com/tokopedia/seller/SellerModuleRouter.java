@@ -34,8 +34,6 @@ public interface SellerModuleRouter {
 
     void goToGMSubscribe(Activity activity);
 
-    Observable<Boolean> setCashBack(String productId, int cashback);
-
     Observable<List<DataCashbackModel>> getCashbackList(List<String> productIds);
 
     GetShopInfoUseCase getShopInfo();
