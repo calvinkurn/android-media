@@ -217,18 +217,21 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         checkDataForCheckout();
     }
 
-    public void addShipmentInsuranceTncData(ShipmentInsuranceTncItem shipmentInsuranceTncItem) {
-        this.shipmentInsuranceTncItem = shipmentInsuranceTncItem;
-        shipmentDataList.add(shipmentInsuranceTncItem);
-        notifyDataSetChanged();
-    }
-
     public void updateInsuranceTncVisibility() {
-        shipmentInsuranceTncItem.setVisible(checkItemUseInsuranceExist());
-        for (int i = 0; i < shipmentDataList.size(); i++) {
-            if (shipmentDataList.get(i) instanceof ShipmentInsuranceTncItem) {
-                notifyItemChanged(i);
-                break;
+        if (checkItemUseInsuranceExist()) {
+            if (shipmentInsuranceTncItem == null) {
+                shipmentInsuranceTncItem = new ShipmentInsuranceTncItem();
+                shipmentInsuranceTncItem.setVisible(true);
+                shipmentDataList.add(shipmentInsuranceTncItem);
+                notifyItemInserted(shipmentDataList.size() - 1);
+            }
+        } else {
+            for (int i = 0; i < shipmentDataList.size(); i++) {
+                if (shipmentDataList.get(i) instanceof ShipmentInsuranceTncItem) {
+                    shipmentInsuranceTncItem = null;
+                    shipmentDataList.remove(i);
+                    notifyItemRemoved(i);
+                }
             }
         }
     }
