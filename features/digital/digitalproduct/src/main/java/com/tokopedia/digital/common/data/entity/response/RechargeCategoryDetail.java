@@ -52,7 +52,7 @@ public class RechargeCategoryDetail {
     @SerializedName("operator")
     @Expose
     private List<OperatorBannerEntity> operators;
-    @SerializedName("banner")
+    @SerializedName("banners")
     @Expose
     private List<OperatorBannerEntity> banners;
     @SerializedName("other_banners")
