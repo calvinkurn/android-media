@@ -174,6 +174,11 @@ public class KolPostViewHolder extends AbstractViewHolder<KolPostViewModel> {
         setListener(element);
     }
 
+    public void onViewRecycled() {
+        ImageHandler.clearImage(reviewImage);
+        ImageHandler.clearImage(avatar);
+    }
+
     private void setListener(final KolPostViewModel element) {
         avatar.setOnClickListener(new View.OnClickListener() {
             @Override

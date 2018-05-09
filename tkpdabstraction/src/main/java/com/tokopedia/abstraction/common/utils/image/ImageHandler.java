@@ -653,6 +653,8 @@ public class ImageHandler {
     }
 
     public static void clearImage(ImageView imageView) {
-        Glide.clear(imageView);
+        if (imageView != null) {
+            Glide.clear(imageView);
+        }
     }
 }
