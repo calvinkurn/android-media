@@ -151,7 +151,7 @@ public class CategoryDetailDataSource {
     }
 
     public Observable<ProductDigitalData> getCategoryAndFavoritFromCloud(String categoryId, String operatorId, String clientNumber, String productId) {
-        return digitalEndpointService.getApi().getCategoryAndFavoriteList(String.format(getCategoryAndFavRequestPayload(), categoryId, categoryId))
+        return digitalEndpointService.getApi().getCategoryAndFavoriteList(getCategoryAndFavRequestPayload(categoryId, operatorId, clientNumber, productId))
                 .map(new Func1<Response<GraphqlResponse<RechargeResponseEntity>>, RechargeResponseEntity>() {
                     @Override
                     public RechargeResponseEntity call(Response<GraphqlResponse<RechargeResponseEntity>> response) {
@@ -267,8 +267,23 @@ public class CategoryDetailDataSource {
         return loadRawString(context.getResources(), R.raw.digital_category_query);
     }
 
-    private String getCategoryAndFavRequestPayload() {
-        return loadRawString(context.getResources(), R.raw.digital_category_favourites_query);
+    private String getCategoryAndFavRequestPayload(String categoryId, String operatorId, String clientNumber, String productId) {
+
+        String query = loadRawString(context.getResources(), R.raw.digital_category_favourites_query);
+
+        if (operatorId == null) {
+            operatorId = "";
+        }
+
+        if (clientNumber == null) {
+            clientNumber = "";
+        }
+
+        if (productId == null) {
+            productId = "";
+        }
+
+        return String.format(query, categoryId, categoryId, operatorId, productId, clientNumber);
     }
 
     private String loadRawString(Resources resources, int resId) {
