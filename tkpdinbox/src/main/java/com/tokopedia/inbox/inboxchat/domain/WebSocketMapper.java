@@ -3,8 +3,8 @@ package com.tokopedia.inbox.inboxchat.domain;
 import com.google.gson.GsonBuilder;
 import com.tokopedia.inbox.inboxchat.domain.model.websocket.BaseChatViewModel;
 import com.tokopedia.inbox.inboxchat.domain.model.websocket.FallbackAttachmentViewModel;
-import com.tokopedia.inbox.inboxchat.domain.model.websocket.MessageViewModel;
 import com.tokopedia.inbox.inboxchat.domain.model.websocket.WebSocketResponse;
+import com.tokopedia.inbox.inboxchat.domain.model.websocket.WebSocketResponseData;
 import com.tokopedia.inbox.inboxchat.viewmodel.chatroom.QuickReplyListViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.chatroom.QuickReplyViewModel;
 
@@ -33,27 +33,42 @@ public class WebSocketMapper {
                 && pojo.getData().getAttachment() != null) {
             switch (pojo.getData().getAttachment().getType()) {
                 case TYPE_QUICK_REPLY:
-                    return convertToQuickReplyModel(json);
+                    return convertToQuickReplyModel(pojo.getData());
                 default:
-                    return null;
+                    return convertToFallBackModel(pojo.getData());
             }
         } else {
             return null;
         }
     }
 
-    private QuickReplyListViewModel convertToQuickReplyModel(String json) {
-//        WebSocketResponse pojo = new GsonBuilder().create().fromJson(json, WebSocketResponse.class);
+    private BaseChatViewModel convertToFallBackModel(WebSocketResponseData pojo) {
+        return new FallbackAttachmentViewModel(
+                String.valueOf(pojo.getMsgId()),
+                String.valueOf(pojo.getFromUid()),
+                pojo.getFrom(),
+                pojo.getFromRole(),
+                pojo.getAttachment().getFallbackAttachment().getMessage(),
+                pojo.getAttachment().getId(),
+                pojo.getAttachment().getType(),
+                pojo.getMessage().getTimeStampUnix(),
+                pojo.getAttachment().getFallbackAttachment().getMessage(),
+                pojo.getAttachment().getFallbackAttachment().getUrl(),
+                pojo.getAttachment().getFallbackAttachment().getSpan(),
+                pojo.getAttachment().getFallbackAttachment().getHtml()
+        );
+    }
 
+    private QuickReplyListViewModel convertToQuickReplyModel(WebSocketResponseData pojo) {
         return new QuickReplyListViewModel(
-                "",
-                "",
-                "",
-                "",
-                new MessageViewModel(),
-                "",
+                String.valueOf(pojo.getMsgId()),
+                String.valueOf(pojo.getFromUid()),
+                pojo.getFrom(),
+                pojo.getFromRole(),
+                pojo.getMessage().getCensoredReply(),
+                pojo.getAttachment().getId(),
                 TYPE_QUICK_REPLY,
-                new FallbackAttachmentViewModel(),
+                pojo.getMessage().getTimeStampUnix(),
                 convertToQuickReplyList()
         );
     }

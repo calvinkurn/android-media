@@ -67,14 +67,19 @@ public abstract class ListReplyViewModel implements
 //        super(String.valueOf(msgId), senderId, senderName, role, new MessageViewModel()
 //                , String.valueOf(attachmentId), attachment.getType(),
 //                new FallbackAttachmentViewModel());
+        this.msgId = msgId;
         this.userId = userId;
         this.replyId = replyId;
+        this.senderId = senderId;
+        this.senderName = senderName;
+        this.role = role;
         this.msg = msg;
         this.spanned = spanned;
         this.replyTime = replyTime;
         this.fraudStatus = fraudStatus;
         this.readTime = readTime;
         this.attachment = attachment;
+        this.attachmentId = attachmentId;
         this.oldMsgId = oldMsgId;
         this.showTime = showTime;
         this.showHour = showHour;

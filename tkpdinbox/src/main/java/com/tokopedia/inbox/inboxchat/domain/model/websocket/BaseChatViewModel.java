@@ -5,35 +5,52 @@ package com.tokopedia.inbox.inboxchat.domain.model.websocket;
  */
 
 public class BaseChatViewModel {
-    private String msgId;
+    private String messageId;
     private String fromUid;
     private String from;
     private String fromRole;
-    private MessageViewModel message;
+    private String message;
     private String attachmentId;
     private String attachmentType;
-    private FallbackAttachmentViewModel fallbackAttachment;
+    private String replyTime;
+    private boolean showHour = false;
+    private boolean showTime = false;
 
-    public BaseChatViewModel(String msgId,
+    /**
+     * Constructor for WebSocketResponse / API Response
+     * {@link com.tokopedia.inbox.inboxchat.ChatWebSocketListenerImpl}
+     * {@link com.tokopedia.inbox.inboxchat.domain.usecase.GetReplyListUseCase}
+     *
+     * @param messageId      messageId
+     * @param fromUid        userId of sender
+     * @param from           name of sender
+     * @param fromRole       role of sender
+     * @param message        censored message
+     * @param attachmentId   attachment id
+     * @param attachmentType attachment type. Please refer to
+     *                       {@link com.tokopedia.inbox.inboxchat.domain.WebSocketMapper} types
+     *                       @param replyTime
+     */
+    public BaseChatViewModel(String messageId,
                              String fromUid,
                              String from,
                              String fromRole,
-                             MessageViewModel message,
+                             String message,
                              String attachmentId,
                              String attachmentType,
-                             FallbackAttachmentViewModel fallbackAttachment) {
-        this.msgId = msgId;
+                             String replyTime) {
+        this.messageId = messageId;
         this.fromUid = fromUid;
         this.from = from;
         this.fromRole = fromRole;
         this.message = message;
         this.attachmentId = attachmentId;
         this.attachmentType = attachmentType;
-        this.fallbackAttachment = fallbackAttachment;
+        this.replyTime = replyTime;
     }
 
-    public String getMsgId() {
-        return msgId;
+    public String getMessageId() {
+        return messageId;
     }
 
     public String getFromUid() {
@@ -48,7 +65,7 @@ public class BaseChatViewModel {
         return fromRole;
     }
 
-    public MessageViewModel getMessage() {
+    public String getMessage() {
         return message;
     }
 
@@ -60,8 +77,33 @@ public class BaseChatViewModel {
         return attachmentType;
     }
 
-    public FallbackAttachmentViewModel getFallbackAttachment() {
-        return fallbackAttachment;
+    public String getReplyTime() {
+        return replyTime;
     }
 
+    public boolean isShowHour() {
+        return showHour;
+    }
+
+    /**
+     * Set in {@link com.tokopedia.inbox.inboxchat.adapter.ChatRoomAdapter}
+     *
+     * @param showHour set true to show hour in bottom of chat
+     */
+    public void setShowHour(boolean showHour) {
+        this.showHour = showHour;
+    }
+
+    public boolean isShowTime() {
+        return showTime;
+    }
+
+    /**
+     * Set in {@link com.tokopedia.inbox.inboxchat.adapter.ChatRoomAdapter}
+     *
+     * @param showTime set true to show time in header of chat
+     */
+    public void setShowTime(boolean showTime) {
+        this.showTime = showTime;
+    }
 }

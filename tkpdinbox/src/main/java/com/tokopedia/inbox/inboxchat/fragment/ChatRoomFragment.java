@@ -1373,7 +1373,9 @@ public class ChatRoomFragment extends BaseDaggerFragment
     @Override
     public void onReceiveMessage(BaseChatViewModel message) {
         if(message instanceof QuickReplyListViewModel){
-            //TODO YOAS :
+            if(!TextUtils.isEmpty(message.getMessage())) {
+                adapter.addReply((Visitable) message);
+            }
             showQuickReplyView();
         }
     }

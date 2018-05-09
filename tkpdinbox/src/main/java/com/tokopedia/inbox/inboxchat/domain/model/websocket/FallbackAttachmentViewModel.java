@@ -1,13 +1,33 @@
 
 package com.tokopedia.inbox.inboxchat.domain.model.websocket;
 
+import com.tokopedia.abstraction.base.view.adapter.Visitable;
+import com.tokopedia.inbox.inboxchat.adapter.ChatRoomTypeFactory;
+
 /**
  * @author by yfsx on 08/05/18.
  */
 
-public class FallbackAttachmentViewModel {
+public class FallbackAttachmentViewModel extends BaseChatViewModel implements
+        Visitable<ChatRoomTypeFactory> {
 
-    public FallbackAttachmentViewModel() {
+    public FallbackAttachmentViewModel(String msgId,
+                                       String fromUid,
+                                       String from,
+                                       String fromRole,
+                                       String message,
+                                       String attachmentId,
+                                       String attachmentType,
+                                       String replyTime,
+                                       String fallbackMessage,
+                                       String url,
+                                       String span,
+                                       String html) {
+        super(msgId, fromUid, from, fromRole, message, attachmentId, attachmentType, replyTime);
+        this.message = fallbackMessage;
+        this.url = url;
+        this.span = span;
+        this.html = html;
     }
 
     private String message;
@@ -19,9 +39,6 @@ public class FallbackAttachmentViewModel {
         return message;
     }
 
-    public void setMessage(String message) {
-        this.message = message;
-    }
 
     public String getUrl() {
         return url;
@@ -47,4 +64,8 @@ public class FallbackAttachmentViewModel {
         this.html = html;
     }
 
+    @Override
+    public int type(ChatRoomTypeFactory typeFactory) {
+        return typeFactory.type(this);
+    }
 }

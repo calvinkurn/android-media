@@ -44,6 +44,7 @@ public class ChatRoomAdapter extends RecyclerView.Adapter<AbstractViewHolder> {
     private LoadingMoreModel loadingModel;
     private TimeMachineChatModel timeMachineChatModel;
     private TypingChatModel typingModel;
+
     public ChatRoomAdapter(ChatRoomTypeFactory typeFactory) {
         this.list = new ArrayList<>();
         this.typeFactory = typeFactory;
@@ -72,20 +73,19 @@ public class ChatRoomAdapter extends RecyclerView.Adapter<AbstractViewHolder> {
     @Override
     public void onViewRecycled(AbstractViewHolder holder) {
         super.onViewRecycled(holder);
-        if(holder instanceof MyChatViewHolder) {
+        if (holder instanceof MyChatViewHolder) {
             ((MyChatViewHolder) holder).onViewRecycled();
-        }
-        else if(holder instanceof AttachedProductViewHolder) {
+        } else if (holder instanceof AttachedProductViewHolder) {
             ((AttachedProductViewHolder) holder).onViewRecycled();
-        }else if(holder instanceof AttachedInvoiceSentViewHolder){
+        } else if (holder instanceof AttachedInvoiceSentViewHolder) {
             ((AttachedInvoiceSentViewHolder) holder).onViewRecycled();
         }
     }
 
-    private ListReplyViewModel getLastPrevListReplyViewModel(int initialPosition){
+    private ListReplyViewModel getLastPrevListReplyViewModel(int initialPosition) {
         int position = initialPosition;
-        while(position < list.size()){
-            if(list.get(position) instanceof ListReplyViewModel){
+        while (position < list.size()) {
+            if (list.get(position) instanceof ListReplyViewModel) {
                 return (ListReplyViewModel) list.get(position);
             }
             position++;
@@ -94,14 +94,14 @@ public class ChatRoomAdapter extends RecyclerView.Adapter<AbstractViewHolder> {
     }
 
     private void showTime(Context context, int position) {
-        if (position != list.size()-1) {
+        if (position != list.size() - 1) {
             try {
                 ListReplyViewModel now = (ListReplyViewModel) list.get(position);
-                ListReplyViewModel prev = getLastPrevListReplyViewModel(position+1);
+                ListReplyViewModel prev = getLastPrevListReplyViewModel(position + 1);
 
                 long myTime = Long.parseLong(now.getReplyTime());
                 long prevTime = 0;
-                if(prev != null) {
+                if (prev != null) {
                     prevTime = Long.parseLong(prev.getReplyTime());
                 }
 
@@ -155,7 +155,7 @@ public class ChatRoomAdapter extends RecyclerView.Adapter<AbstractViewHolder> {
         int positionStart = this.list.size();
         this.list.addAll(newItems);
         notifyItemRangeInserted(positionStart, newItems.size());
-        notifyItemRangeChanged(positionStart-10, 10);
+        notifyItemRangeChanged(positionStart - 10, 10);
     }
 
     public void showEmpty() {
@@ -178,14 +178,14 @@ public class ChatRoomAdapter extends RecyclerView.Adapter<AbstractViewHolder> {
 
     }
 
-    public void removeLastProductWithId(Integer productId){
+    public void removeLastProductWithId(Integer productId) {
         if ((list != null && !list.isEmpty())) {
             ListIterator<Visitable> iterator = list.listIterator(list.size());
             while (iterator.hasPrevious()) {
                 int position = iterator.previousIndex();
                 Visitable visitable = iterator.previous();
                 Attachment attachment = getProductAttachmentFromVisitable(visitable);
-                if(isAttachmentMatched(attachment,productId)) {
+                if (isAttachmentMatched(attachment, productId)) {
                     iterator.remove();
                     notifyItemRemoved(position);
                 }
@@ -193,7 +193,7 @@ public class ChatRoomAdapter extends RecyclerView.Adapter<AbstractViewHolder> {
         }
     }
 
-    private boolean isAttachmentMatched(Attachment attachment, Integer productId){
+    private boolean isAttachmentMatched(Attachment attachment, Integer productId) {
         if (attachment != null) {
             if (attachment.getId().equals(productId.toString())) {
                 return true;
@@ -202,7 +202,7 @@ public class ChatRoomAdapter extends RecyclerView.Adapter<AbstractViewHolder> {
         return false;
     }
 
-    private Attachment getProductAttachmentFromVisitable(Visitable visitable){
+    private Attachment getProductAttachmentFromVisitable(Visitable visitable) {
         if ((visitable instanceof AttachProductViewModel)) {
             AttachProductViewModel viewModel = (AttachProductViewModel) visitable;
             if (viewModel.getAttachment() != null && viewModel.getAttachment().getType().equals(AttachmentChatHelper.PRODUCT_ATTACHED)) {
@@ -226,7 +226,7 @@ public class ChatRoomAdapter extends RecyclerView.Adapter<AbstractViewHolder> {
     }
 
     public void addReply(Visitable item) {
-        this.list.add(0,item);
+        this.list.add(0, item);
         notifyItemInserted(0);
         notifyItemRangeChanged(0, 2);
     }
@@ -240,7 +240,7 @@ public class ChatRoomAdapter extends RecyclerView.Adapter<AbstractViewHolder> {
     }
 
     public void showLoading() {
-        this.list.add(list.size(),loadingModel);
+        this.list.add(list.size(), loadingModel);
         notifyItemInserted(list.size());
     }
 
@@ -262,7 +262,7 @@ public class ChatRoomAdapter extends RecyclerView.Adapter<AbstractViewHolder> {
 
 
     public boolean checkLoadMore(int index) {
-        if (index == getItemCount()-1) {
+        if (index == getItemCount() - 1) {
             return (list.get(index) instanceof LoadingMoreModel);
         }
         return false;
@@ -293,19 +293,17 @@ public class ChatRoomAdapter extends RecyclerView.Adapter<AbstractViewHolder> {
         for (int i = 0; i < list.size(); i++) {
             Visitable currentItem = list.get(i);
             if (currentItem instanceof ListReplyViewModel) {
-                if(currentItem instanceof MyChatViewModel){
+                if (currentItem instanceof MyChatViewModel) {
                     if (((MyChatViewModel) list.get(i)).isReadStatus()) {
                         break;
-                    }
-                    else {
+                    } else {
                         ((MyChatViewModel) list.get(i)).setReadStatus(true);
                         notifyItemRangeChanged(i, 1);
                     }
-                }else if(currentItem instanceof AttachProductViewModel){
+                } else if (currentItem instanceof AttachProductViewModel) {
                     if (((AttachProductViewModel) list.get(i)).isReadStatus()) {
                         break;
-                    }
-                    else {
+                    } else {
                         ((AttachProductViewModel) list.get(i)).setReadStatus(true);
                         notifyItemRangeChanged(i, 1);
                     }
@@ -321,7 +319,7 @@ public class ChatRoomAdapter extends RecyclerView.Adapter<AbstractViewHolder> {
 
     public void showRetryFor(MyChatViewModel model, boolean b) {
         int position = list.indexOf(model);
-        if(position >= 0 && list.get(position) instanceof  MyChatViewModel) {
+        if (position >= 0 && list.get(position) instanceof MyChatViewModel) {
             ((MyChatViewModel) list.get(position)).setRetry(true);
             notifyItemChanged(position);
         }

@@ -4,7 +4,9 @@ import android.view.View;
 
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
+import com.tokopedia.inbox.inboxchat.adapter.viewholder.FallbackAttachmentViewHolder;
 import com.tokopedia.inbox.inboxchat.adapter.viewholder.QuickReplyViewHolder;
+import com.tokopedia.inbox.inboxchat.domain.model.websocket.FallbackAttachmentViewModel;
 import com.tokopedia.inbox.inboxchat.fragment.ChatRoomFragment;
 import com.tokopedia.inbox.inboxchat.presenter.ChatRoomContract;
 import com.tokopedia.inbox.inboxchat.viewholder.AttachImageViewHolder;
@@ -91,6 +93,11 @@ public class ChatRoomTypeFactoryImpl extends BaseAdapterTypeFactory implements C
     }
 
     @Override
+    public int type(FallbackAttachmentViewModel fallbackAttachmentViewModel) {
+        return FallbackAttachmentViewHolder.LAYOUT;
+    }
+
+    @Override
     public AbstractViewHolder createViewHolder(View view, int type) {
 
         AbstractViewHolder viewHolder;
@@ -114,7 +121,10 @@ public class ChatRoomTypeFactoryImpl extends BaseAdapterTypeFactory implements C
         else if (type == AttachedInvoiceSelectionViewHolder.LAYOUT)
             viewHolder = new AttachedInvoiceSelectionViewHolder(view, viewListener);
         else if (type == QuickReplyViewHolder.LAYOUT)
-            viewHolder = new QuickReplyViewHolder(view);
+            viewHolder = new QuickReplyViewHolder(view, viewListener);
+        else if (type == FallbackAttachmentViewHolder.LAYOUT)
+            viewHolder = new FallbackAttachmentViewHolder(view, viewListener);
+
         else
             return super.createViewHolder(view, type);
 

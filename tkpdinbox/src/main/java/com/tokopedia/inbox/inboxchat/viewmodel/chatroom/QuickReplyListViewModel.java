@@ -21,13 +21,13 @@ public class QuickReplyListViewModel extends BaseChatViewModel implements
                                    String fromUid,
                                    String from,
                                    String fromRole,
-                                   MessageViewModel message,
+                                   String message,
                                    String attachmentId,
                                    String attachmentType,
-                                   FallbackAttachmentViewModel fallbackAttachment,
+                                   String replyTime,
                                    List<QuickReplyViewModel> quickReplies) {
         super(msgId, fromUid, from, fromRole, message,
-                attachmentId, attachmentType, fallbackAttachment);
+                attachmentId, attachmentType, replyTime);
         this.quickReplies = quickReplies;
     }
 
