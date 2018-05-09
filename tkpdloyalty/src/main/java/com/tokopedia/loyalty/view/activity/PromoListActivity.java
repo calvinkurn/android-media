@@ -28,6 +28,7 @@ import com.tokopedia.loyalty.view.adapter.PromoPagerAdapter;
 import com.tokopedia.loyalty.view.compoundview.MenuPromoTab;
 import com.tokopedia.loyalty.view.data.PromoMenuData;
 import com.tokopedia.loyalty.view.fragment.PromoDetailFragment;
+import com.tokopedia.loyalty.view.fragment.PromoListFragment;
 import com.tokopedia.loyalty.view.presenter.IPromoListActivityPresenter;
 import com.tokopedia.loyalty.view.view.IPromoListActivityView;
 
@@ -42,7 +43,7 @@ import butterknife.BindView;
  */
 
 public class PromoListActivity extends BasePresenterActivity implements HasComponent<AppComponent>,
-        IPromoListActivityView {
+        IPromoListActivityView, PromoListFragment.OnFragmentInteractionListener {
 
     private static final String EXTRA_AUTO_SELECTED_MENU_ID = "EXTRA_AUTO_SELECTED_MENU_ID";
     private static final String EXTRA_AUTO_SELECTED_CATEGORY_ID = "EXTRA_AUTO_SELECTED_CATEGORY_ID";
@@ -77,6 +78,19 @@ public class PromoListActivity extends BasePresenterActivity implements HasCompo
                 .putExtra(EXTRA_AUTO_SELECTED_CATEGORY_ID, DEFAULT_AUTO_SELECTED_CATEGORY_ID);
     }
 
+    @Override
+    protected void onSaveInstanceState(Bundle savedInstanceState) {
+        savedInstanceState.putString(EXTRA_AUTO_SELECTED_MENU_ID, autoSelectedMenuId);
+        savedInstanceState.putString(EXTRA_AUTO_SELECTED_CATEGORY_ID, autoSelectedCategoryId);
+
+        super.onSaveInstanceState(savedInstanceState);
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        autoSelectedMenuId = savedInstanceState.getString(EXTRA_AUTO_SELECTED_MENU_ID);
+        autoSelectedCategoryId = savedInstanceState.getString(EXTRA_AUTO_SELECTED_CATEGORY_ID);
+    }
 
     @SuppressWarnings("unused")
     @DeepLink(LoyaltyAppLink.PROMO_NATIVE)
@@ -157,20 +171,26 @@ public class PromoListActivity extends BasePresenterActivity implements HasCompo
         adapter = new PromoPagerAdapter(getFragmentManager(), promoMenuDataList, autoSelectedCategoryId);
         viewPager.setAdapter(adapter);
         tabLayout.setupWithViewPager(viewPager);
-        int indexMenuAutoSelected = 0;
+
+        int indexMenuAutoSelected = Integer.parseInt(autoSelectedMenuId);
+
         for (int i = 0; i < promoMenuDataList.size(); i++) {
             MenuPromoTab menuPromoTab = new MenuPromoTab(this);
             menuPromoTab.renderData(promoMenuDataList.get(i));
             tabLayout.getTabAt(i).setCustomView(menuPromoTab);
-            if (promoMenuDataList.get(i).getMenuId().equalsIgnoreCase(autoSelectedMenuId)) {
+
+            String menuId = promoMenuDataList.get(i).getMenuId();
+            if (menuId.equalsIgnoreCase(autoSelectedMenuId)) {
                 indexMenuAutoSelected = i;
             }
         }
+
         tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
                 if (tab.getCustomView() != null) {
                     ((MenuPromoTab) tab.getCustomView()).renderActiveState();
+                    autoSelectedMenuId = String.valueOf(tab.getPosition());
                 }
                 UnifyTracking.eventPromoListClickCategory(
                         promoMenuDataList.get(tab.getPosition()).getTitle()
@@ -189,6 +209,7 @@ public class PromoListActivity extends BasePresenterActivity implements HasCompo
 
             }
         });
+
         tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
         tabLayout.setTabMode(TabLayout.MODE_FIXED);
         TabLayout.Tab firstTab = tabLayout.getTabAt(indexMenuAutoSelected);
@@ -297,6 +318,10 @@ public class PromoListActivity extends BasePresenterActivity implements HasCompo
         return true;
     }
 
+    @Override
+    public void onChangeFilter(String categoryId) {
+        autoSelectedCategoryId = categoryId;
+    }
 
     private void handlerError(String message) {
         viewPager.setVisibility(View.GONE);

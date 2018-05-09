@@ -40,6 +40,8 @@ import com.tokopedia.core.home.TopPicksWebView;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.product.model.share.ShareData;
+import com.tokopedia.core.remoteconfig.FirebaseRemoteConfigImpl;
+import com.tokopedia.core.remoteconfig.RemoteConfig;
 import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.router.productdetail.PdpRouter;
 import com.tokopedia.core.router.productdetail.ProductDetailRouter;
@@ -103,6 +105,9 @@ public class FeedPlusFragment extends BaseDaggerFragment
     private static final int OPEN_KOL_COMMENT = 101;
 
     private static final String FIRST_CURSOR = "FIRST_CURSOR";
+    public static final String KEY_EXPLORE_NATIVE_ENABLE = "mainapp_explore_native_enable";
+    public static final String KEY_EXPLORE_URL = "mainapp_explore_url";
+    public static final String DEFAULT_EXPLORE_URL = "tokopedia://webview?url=https%3A%2F%2Fm.tokopedia.com%2Fcontent%2Fexplore%3Fwebview%3Dtrue";
     RecyclerView recyclerView;
     SwipeToRefresh swipeToRefresh;
     RelativeLayout mainContent;
@@ -110,6 +115,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
     Trace trace;
     private ShareBottomDialog shareBottomDialog;
     private TkpdProgressDialog progressDialog;
+    private RemoteConfig remoteConfig;
 
     @Inject
     FeedPlusPresenter presenter;
@@ -280,6 +286,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        remoteConfig = new FirebaseRemoteConfigImpl(getActivity());
     }
 
     @Override
@@ -974,6 +981,9 @@ public class FeedPlusFragment extends BaseDaggerFragment
 
     @Override
     public void onGoToListKolRecommendation(int page, int rowNumber, String url) {
+        if(remoteConfig != null && !remoteConfig.getBoolean(KEY_EXPLORE_NATIVE_ENABLE, false)) {
+            url = remoteConfig.getString(KEY_EXPLORE_URL, DEFAULT_EXPLORE_URL);
+        }
         ((TkpdCoreRouter) getActivity().getApplication()).actionAppLink(getActivity(), url);
     }
 

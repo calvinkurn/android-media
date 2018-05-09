@@ -3,19 +3,31 @@ package com.tokopedia.topads.dashboard.di.module;
 import android.content.Context;
 
 import com.tokopedia.core.base.di.qualifier.ApplicationContext;
+import com.tokopedia.core.network.apiservices.product.apis.PromoTopAdsApi;
 import com.tokopedia.core.network.di.qualifier.TopAdsQualifier;
 import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.topads.sourcetagging.constant.TopAdsSourceTaggingConstant;
+import com.tokopedia.topads.sourcetagging.data.repository.TopAdsSourceTaggingRepositoryImpl;
+import com.tokopedia.topads.sourcetagging.data.source.TopAdsSourceTaggingDataSource;
+import com.tokopedia.topads.sourcetagging.data.source.TopAdsSourceTaggingLocal;
+import com.tokopedia.topads.sourcetagging.domain.interactor.TopAdsGetSourceTaggingUseCase;
+import com.tokopedia.topads.sourcetagging.domain.interactor.TopAdsRemoveSourceTaggingUseCase;
+import com.tokopedia.topads.sourcetagging.domain.repository.TopAdsSourceTaggingRepository;
 import com.tokopedia.topads.dashboard.data.factory.TopAdsGroupAdFactory;
 import com.tokopedia.topads.dashboard.data.factory.TopAdsProductAdFactory;
 import com.tokopedia.topads.dashboard.data.factory.TopAdsShopAdFactory;
+import com.tokopedia.topads.dashboard.data.repository.TopAdsCheckProductPromoRepositoryImpl;
 import com.tokopedia.topads.dashboard.data.repository.TopAdsGroupAdsRepositoryImpl;
 import com.tokopedia.topads.dashboard.data.repository.TopAdsProductAdsRepositoryImpl;
 import com.tokopedia.topads.dashboard.data.repository.TopAdsSearchProductRepositoryImpl;
 import com.tokopedia.topads.dashboard.data.repository.TopAdsShopAdsRepositoryImpl;
+import com.tokopedia.topads.dashboard.data.source.TopAdsCheckProductPromoDataSource;
 import com.tokopedia.topads.dashboard.data.source.cloud.CloudTopAdsSearchProductDataSource;
+import com.tokopedia.topads.dashboard.data.source.cloud.TopAdsCheckProductPromoDataSourceCloud;
 import com.tokopedia.topads.dashboard.data.source.cloud.apiservice.TopAdsManagementService;
 import com.tokopedia.topads.dashboard.data.source.cloud.apiservice.api.TopAdsManagementApi;
 import com.tokopedia.topads.dashboard.di.scope.TopAdsDashboardScope;
+import com.tokopedia.topads.dashboard.domain.TopAdsCheckProductPromoRepository;
 import com.tokopedia.topads.dashboard.domain.TopAdsGroupAdsRepository;
 import com.tokopedia.topads.dashboard.domain.TopAdsProductAdsRepository;
 import com.tokopedia.topads.dashboard.domain.TopAdsSearchProductRepository;
@@ -64,9 +76,11 @@ public class TopAdsCreatePromoModule {
                                                            TopAdsSaveDetailGroupUseCase topAdsSaveDetailGroupUseCase,
                                                            TopAdsCreateDetailProductListUseCase topAdsCreateDetailProductListUseCase,
                                                            TopAdsProductListUseCase topAdsProductListUseCase,
-                                                           TopAdsGetSuggestionUseCase topAdsGetSuggestionUseCase) {
+                                                           TopAdsGetSuggestionUseCase topAdsGetSuggestionUseCase,
+                                                           TopAdsGetSourceTaggingUseCase topAdsGetSourceTaggingUseCase) {
         return new TopAdsDetailNewGroupPresenterImpl(topAdsCreateNewGroupUseCase, topAdsGetDetailGroupUseCase,
-                topAdsSaveDetailGroupUseCase, topAdsCreateDetailProductListUseCase, topAdsProductListUseCase, topAdsGetSuggestionUseCase);
+                topAdsSaveDetailGroupUseCase, topAdsCreateDetailProductListUseCase, topAdsProductListUseCase,
+                topAdsGetSuggestionUseCase, topAdsGetSourceTaggingUseCase);
     }
 
     @TopAdsDashboardScope
@@ -81,9 +95,11 @@ public class TopAdsCreatePromoModule {
                                                                         TopAdsSaveDetailProductUseCase topAdsSaveDetailProductUseCase,
                                                                         TopAdsCreateDetailProductListUseCase topAdsCreateDetailProductListUseCase,
                                                                         TopAdsProductListUseCase topAdsProductListUseCase,
-                                                                        TopAdsGetSuggestionUseCase topAdsGetSuggestionUseCase) {
-        return new TopAdsDetailNewProductPresenterImpl(topAdsGetDetailProductUseCase, topAdsSaveDetailProductUseCase, topAdsCreateDetailProductListUseCase,
-                topAdsProductListUseCase, topAdsGetSuggestionUseCase);
+                                                                        TopAdsGetSuggestionUseCase topAdsGetSuggestionUseCase,
+                                                                        TopAdsGetSourceTaggingUseCase topAdsGetSourceTaggingUseCase) {
+        return new TopAdsDetailNewProductPresenterImpl(topAdsGetDetailProductUseCase, topAdsSaveDetailProductUseCase,
+                topAdsCreateDetailProductListUseCase, topAdsProductListUseCase, topAdsGetSuggestionUseCase,
+                topAdsGetSourceTaggingUseCase);
     }
 
     @TopAdsDashboardScope
@@ -91,9 +107,11 @@ public class TopAdsCreatePromoModule {
     TopAdsDetailNewShopPresenter provideTopAdsDetailShopPresenter(TopAdsGetDetailShopUseCase topAdsGetDetailShopUseCase,
                                                                      TopAdsSaveDetailShopUseCase topAdsSaveDetailShopUseCase,
                                                                      TopAdsCreateDetailShopUseCase topAdsCreateDetailShopUseCase,
-                                                                     TopAdsProductListUseCase topAdsProductListUseCase) {
-        return new TopAdsDetailNewShopPresenterImpl(topAdsGetDetailShopUseCase, topAdsSaveDetailShopUseCase, topAdsCreateDetailShopUseCase,
-                topAdsProductListUseCase);
+                                                                     TopAdsProductListUseCase topAdsProductListUseCase,
+                                                                  TopAdsGetSourceTaggingUseCase topAdsGetSourceTaggingUseCase) {
+        return new TopAdsDetailNewShopPresenterImpl(topAdsGetDetailShopUseCase,
+                topAdsSaveDetailShopUseCase, topAdsCreateDetailShopUseCase,
+                topAdsProductListUseCase, topAdsGetSourceTaggingUseCase);
     }
 
     @TopAdsDashboardScope
@@ -101,8 +119,10 @@ public class TopAdsCreatePromoModule {
     TopAdsDetailEditProductPresenter provideTopadsDetailEditProductPresenter(TopAdsGetDetailProductUseCase topAdsGetDetailProductUseCase,
                                                                              TopAdsSaveDetailProductUseCase topAdsSaveDetailProductUseCase,
                                                                              TopAdsProductListUseCase topAdsProductListUseCase,
-                                                                             TopAdsGetSuggestionUseCase topAdsGetSuggestionUseCase){
-        return new TopAdsDetailEditProductPresenterImpl(topAdsGetDetailProductUseCase, topAdsSaveDetailProductUseCase, topAdsProductListUseCase, topAdsGetSuggestionUseCase);
+                                                                             TopAdsGetSuggestionUseCase topAdsGetSuggestionUseCase,
+                                                                             TopAdsGetSourceTaggingUseCase topAdsGetSourceTaggingUseCase){
+        return new TopAdsDetailEditProductPresenterImpl(topAdsGetDetailProductUseCase,
+                topAdsSaveDetailProductUseCase, topAdsProductListUseCase, topAdsGetSuggestionUseCase, topAdsGetSourceTaggingUseCase);
     }
 
     @TopAdsDashboardScope
@@ -110,16 +130,20 @@ public class TopAdsCreatePromoModule {
     TopAdsDetailEditGroupPresenter provideTopadsDetailEditGroupPresenter(TopAdsGetDetailGroupUseCase topAdsGetDetailGroupUseCase,
                                                                            TopAdsSaveDetailGroupUseCase topAdsSaveDetailGroupUseCase,
                                                                            TopAdsProductListUseCase topAdsProductListUseCase,
-                                                                         TopAdsGetSuggestionUseCase topAdsGetSuggestionUseCase){
-        return new TopAdsDetailEditGroupPresenterImpl(topAdsGetDetailGroupUseCase, topAdsSaveDetailGroupUseCase, topAdsProductListUseCase, topAdsGetSuggestionUseCase);
+                                                                         TopAdsGetSuggestionUseCase topAdsGetSuggestionUseCase,
+                                                                         TopAdsGetSourceTaggingUseCase topAdsGetSourceTaggingUseCase){
+        return new TopAdsDetailEditGroupPresenterImpl(topAdsGetDetailGroupUseCase, topAdsSaveDetailGroupUseCase,
+                topAdsProductListUseCase, topAdsGetSuggestionUseCase, topAdsGetSourceTaggingUseCase);
     }
 
     @TopAdsDashboardScope
     @Provides
     TopAdsDetailEditShopPresenter provideTopAdsDetailEditShopPresenter(TopAdsGetDetailShopUseCase topAdsGetDetailShopUseCase,
                                                                           TopAdsSaveDetailShopUseCase topAdsSaveDetailShopUseCase,
-                                                                          TopAdsProductListUseCase topAdsProductListUseCase){
-        return new TopAdsDetailEditShopPresenterImpl(topAdsGetDetailShopUseCase, topAdsSaveDetailShopUseCase, topAdsProductListUseCase);
+                                                                          TopAdsProductListUseCase topAdsProductListUseCase,
+                                                                       TopAdsGetSourceTaggingUseCase topAdsGetSourceTaggingUseCase){
+        return new TopAdsDetailEditShopPresenterImpl(topAdsGetDetailShopUseCase, topAdsSaveDetailShopUseCase,
+                topAdsProductListUseCase, topAdsGetSourceTaggingUseCase);
     }
 
     @TopAdsDashboardScope
@@ -157,6 +181,48 @@ public class TopAdsCreatePromoModule {
     @Provides
     TopAdsManagementService provideTopAdsManagementService(@ApplicationContext Context context) {
         return new TopAdsManagementService(new SessionHandler(context));
+    }
+
+    @TopAdsDashboardScope
+    @Provides
+    public PromoTopAdsApi providePromoTopAdsApi(@TopAdsQualifier Retrofit retrofit){
+        return retrofit.create(PromoTopAdsApi.class);
+    }
+
+    @TopAdsDashboardScope
+    @Provides
+    public TopAdsCheckProductPromoDataSourceCloud provideTopAdsCheckProductPromoDataSourceCloud(PromoTopAdsApi promoTopAdsApi){
+        return new TopAdsCheckProductPromoDataSourceCloud(promoTopAdsApi);
+    }
+
+    @TopAdsDashboardScope
+    @Provides
+    public TopAdsCheckProductPromoDataSource provideTopAdsCheckProductPromoDataSource(TopAdsCheckProductPromoDataSourceCloud dataSourceCloud){
+        return new TopAdsCheckProductPromoDataSource(dataSourceCloud);
+    }
+
+    @TopAdsDashboardScope
+    @Provides
+    public TopAdsCheckProductPromoRepository provideGetProductSellingPromoTopAdsRepository(TopAdsCheckProductPromoDataSource dataSource){
+        return new TopAdsCheckProductPromoRepositoryImpl(dataSource);
+    }
+
+    @TopAdsDashboardScope
+    @Provides
+    public TopAdsSourceTaggingLocal provideTopAdsSourceTracking(@ApplicationContext Context context){
+        return new TopAdsSourceTaggingLocal(context);
+    }
+
+    @TopAdsDashboardScope
+    @Provides
+    public TopAdsSourceTaggingDataSource provideTopAdsSourceTaggingDataSource(TopAdsSourceTaggingLocal topAdsSourceTaggingLocal){
+        return new TopAdsSourceTaggingDataSource(topAdsSourceTaggingLocal);
+    }
+
+    @TopAdsDashboardScope
+    @Provides
+    public TopAdsSourceTaggingRepository provideTopAdsSourceTaggingRepository(TopAdsSourceTaggingDataSource dataSource){
+        return new TopAdsSourceTaggingRepositoryImpl(dataSource);
     }
 
 }

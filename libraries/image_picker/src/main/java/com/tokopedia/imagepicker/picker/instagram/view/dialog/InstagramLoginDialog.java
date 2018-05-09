@@ -1,9 +1,11 @@
 package com.tokopedia.imagepicker.picker.instagram.view.dialog;
 
+import android.app.Dialog;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.net.http.SslError;
 import android.view.View;
+import android.view.WindowManager;
 import android.webkit.SslErrorHandler;
 import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
@@ -52,6 +54,19 @@ public class InstagramLoginDialog extends BottomSheets {
         instagramWebview.setWebChromeClient(new MyWebChromeClient());
         instagramWebview.loadUrl(InstagramConstant.URL_LOGIN_INSTAGRAM);
         instagramWebview.clearCache(true);
+    }
+
+    @Override
+    public void setupDialog(Dialog dialog, int style) {
+        super.setupDialog(dialog, style);
+        int screenHeight = getResources().getDisplayMetrics().heightPixels;
+        updateHeight(screenHeight/2);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        getDialog().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
     }
 
     public void setListenerLoginInstagram(ListenerLoginInstagram listenerLoginInstagram) {

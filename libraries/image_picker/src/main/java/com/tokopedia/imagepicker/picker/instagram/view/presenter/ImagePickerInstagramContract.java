@@ -18,8 +18,6 @@ public interface ImagePickerInstagramContract {
 
     interface View extends BaseListViewListener<InstagramMediaModel> {
 
-        void onErrorShouldLoginInstagram();
-
         void renderList(List<InstagramMediaModel> instagramMediaModels, boolean hasNextPage, String nextMaxIdPage);
     }
 }
