@@ -73,6 +73,13 @@ public class WebSocketMapper {
         );
     }
 
+    private MessageViewModel getDummyMessage() {
+        MessageViewModel message = new MessageViewModel();
+        message.setCensoredReply("Test reply from Yoas");
+        message.setOriginalReply("Task By Nisie dongzzz");
+        return message;
+    }
+
     private List<QuickReplyViewModel> convertToQuickReplyList() {
         List<QuickReplyViewModel> list = new ArrayList<>();
         list.add(new QuickReplyViewModel("Tes 1"));

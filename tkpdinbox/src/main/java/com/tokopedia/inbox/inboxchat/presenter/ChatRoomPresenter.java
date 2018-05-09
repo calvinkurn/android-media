@@ -201,9 +201,15 @@ public class ChatRoomPresenter extends BaseDaggerPresenter<ChatRoomContract.View
     @Override
     public void sendMessage(int networkType) {
         if (isValidReply()) {
-            getView().addDummyMessage();
-            getView().setViewEnabled(false);
             final String reply = (getView().getReplyMessage());
+            sendMessage(networkType, reply);
+        }
+    }
+
+    public void sendMessage(int networkType, final String reply) {
+        if (isValidReply(reply)) {
+            getView().addDummyMessage(reply);
+            getView().setViewEnabled(false);
             String messageId = (getView().getArguments().getString(PARAM_MESSAGE_ID));
 
             if(networkType == InboxChatConstant.MODE_WEBSOCKET) {
@@ -315,7 +321,7 @@ public class ChatRoomPresenter extends BaseDaggerPresenter<ChatRoomContract.View
     @Override
     public void initMessage(String message, String source, String toShopId, String toUserId) {
         if (isValidReply()) {
-            getView().addDummyMessage();
+            getView().addDummyMessage(message);
             getView().disableAction();
             sendMessageUseCase.execute(SendMessageUseCase.getParam(
                     message,
@@ -470,7 +476,11 @@ public class ChatRoomPresenter extends BaseDaggerPresenter<ChatRoomContract.View
     }
 
     private boolean isValidReply() {
-        if (getView().getReplyMessage().trim().length() == 0) {
+        return isValidReply(getView().getReplyMessage().trim());
+    }
+
+    private boolean isValidReply(String message) {
+        if (message.trim().length() == 0) {
             getView().showSnackbarError(getView().getString(R.string.error_empty_report));
             return false;
         }

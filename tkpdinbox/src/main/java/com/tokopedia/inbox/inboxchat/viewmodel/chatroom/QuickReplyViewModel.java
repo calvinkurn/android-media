@@ -6,7 +6,7 @@ package com.tokopedia.inbox.inboxchat.viewmodel.chatroom;
 
 public class QuickReplyViewModel{
 
-    public String message;
+    private String message;
 
     public QuickReplyViewModel(String message) {
 

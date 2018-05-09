@@ -6,6 +6,7 @@ import com.tokopedia.inbox.inboxchat.domain.model.websocket.BaseChatViewModel;
 import com.tokopedia.inbox.inboxchat.domain.model.websocket.FallbackAttachmentViewModel;
 import com.tokopedia.inbox.inboxchat.domain.model.websocket.MessageViewModel;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -16,6 +17,7 @@ public class QuickReplyListViewModel extends BaseChatViewModel implements
         Visitable<ChatRoomTypeFactory> {
 
     public List<QuickReplyViewModel> quickReplies;
+
 
     public QuickReplyListViewModel(String msgId,
                                    String fromUid,
@@ -38,5 +40,18 @@ public class QuickReplyListViewModel extends BaseChatViewModel implements
     @Override
     public int type(ChatRoomTypeFactory typeFactory) {
         return typeFactory.type(this);
+    }
+
+    public QuickReplyListViewModel EMPTY() {
+        return new QuickReplyListViewModel(
+                "",
+                "",
+                "",
+                "",
+                new MessageViewModel(),
+                "",
+                "",
+                new FallbackAttachmentViewModel(),
+                new ArrayList<QuickReplyViewModel>());
     }
 }
