@@ -2,13 +2,13 @@ package com.tokopedia.district_recommendation.di;
 
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
-import com.tokopedia.core.manage.general.districtrecommendation.data.DistrictRecommendationEntityMapper;
+import com.tokopedia.district_recommendation.data.DistrictRecommendationEntityMapper;
 import com.tokopedia.district_recommendation.data.repository.DistrictRecommendationRepository;
 import com.tokopedia.district_recommendation.data.source.DistrictRecommendationDataStore;
 import com.tokopedia.district_recommendation.domain.usecase.GetDistrictRequestUseCase;
-import com.tokopedia.core.manage.general.districtrecommendation.view.DistrictRecommendationContract;
-import com.tokopedia.core.manage.general.districtrecommendation.view.DistrictRecommendationPresenter;
 import com.tokopedia.core.network.apiservices.kero.KeroAuthService;
+import com.tokopedia.district_recommendation.view.DistrictRecommendationContract;
+import com.tokopedia.district_recommendation.view.DistrictRecommendationPresenter;
 
 import dagger.Module;
 import dagger.Provides;

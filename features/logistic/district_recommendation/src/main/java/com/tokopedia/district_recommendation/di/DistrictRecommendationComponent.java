@@ -3,7 +3,7 @@ package com.tokopedia.district_recommendation.di;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
-import com.tokopedia.core.manage.general.districtrecommendation.view.DistrictRecommendationFragment;
+import com.tokopedia.district_recommendation.view.DistrictRecommendationFragment;
 
 import dagger.Component;
 
