@@ -1,6 +1,6 @@
 package com.tokopedia.checkout.view.di.module;
 
-import com.tokopedia.checkout.data.mapper.ShipmentRatesDataMapper;
+import com.tokopedia.checkout.domain.mapper.ShipmentRatesDataMapper;
 import com.tokopedia.logisticdata.data.repository.RatesRepository;
 import com.tokopedia.checkout.domain.usecase.GetRatesUseCase;
 

@@ -1,7 +1,7 @@
 package com.tokopedia.checkout.view.view.shipment.di;
 
-import com.tokopedia.checkout.data.repository.ICartRepository;
-import com.tokopedia.checkout.data.repository.ITopPayRepository;
+import com.tokopedia.transactiondata.repository.ICartRepository;
+import com.tokopedia.transactiondata.repository.ITopPayRepository;
 import com.tokopedia.checkout.domain.mapper.CartMapper;
 import com.tokopedia.checkout.domain.mapper.ICartMapper;
 import com.tokopedia.checkout.domain.mapper.ICheckoutMapper;

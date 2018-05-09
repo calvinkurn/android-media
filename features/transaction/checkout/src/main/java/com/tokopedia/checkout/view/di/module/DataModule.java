@@ -11,16 +11,14 @@ import com.tokopedia.abstraction.common.di.scope.ApplicationScope;
 import com.tokopedia.abstraction.common.network.OkHttpRetryPolicy;
 import com.tokopedia.abstraction.common.network.interceptor.TkpdAuthInterceptor;
 import com.tokopedia.abstraction.common.utils.GlobalConfig;
-import com.tokopedia.checkout.data.ConstantApiUrl;
-import com.tokopedia.checkout.data.apiservice.CartApi;
-import com.tokopedia.checkout.data.apiservice.CartApiInterceptor;
-import com.tokopedia.checkout.data.apiservice.CartResponseConverter;
-import com.tokopedia.checkout.data.apiservice.TxActApi;
-import com.tokopedia.checkout.data.repository.CartRepository;
-import com.tokopedia.checkout.data.repository.ICartRepository;
-import com.tokopedia.checkout.data.repository.ITopPayRepository;
-import com.tokopedia.logisticdata.data.repository.RatesRepository;
-import com.tokopedia.checkout.data.repository.TopPayRepository;
+import com.tokopedia.transactiondata.apiservice.CartApi;
+import com.tokopedia.transactiondata.apiservice.CartApiInterceptor;
+import com.tokopedia.transactiondata.apiservice.CartResponseConverter;
+import com.tokopedia.transactiondata.apiservice.TxActApi;
+import com.tokopedia.transactiondata.repository.CartRepository;
+import com.tokopedia.transactiondata.repository.ICartRepository;
+import com.tokopedia.transactiondata.repository.ITopPayRepository;
+import com.tokopedia.transactiondata.repository.TopPayRepository;
 import com.tokopedia.checkout.router.ICheckoutModuleRouter;
 import com.tokopedia.checkout.view.di.qualifier.CartApiInterceptorQualifier;
 import com.tokopedia.checkout.view.di.qualifier.CartApiOkHttpClientQualifier;
@@ -38,6 +36,8 @@ import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.network.retrofit.interceptors.FingerprintInterceptor;
 import com.tokopedia.logisticdata.data.apiservice.RatesApi;
 import com.tokopedia.logisticdata.data.constant.LogisticDataConstantUrl;
+import com.tokopedia.logisticdata.data.repository.RatesRepository;
+import com.tokopedia.transactiondata.constant.TransactionDataApiUrl;
 
 import java.util.concurrent.TimeUnit;
 
@@ -175,7 +175,7 @@ public class DataModule {
             ICheckoutModuleRouter cartCheckoutModuleRouter,
             @CartApiOkHttpClientQualifier OkHttpClient okHttpClient) {
         return new Retrofit.Builder()
-                .baseUrl(ConstantApiUrl.Cart.BASE_URL)
+                .baseUrl(TransactionDataApiUrl.Cart.BASE_URL)
                 .addConverterFactory(CartResponseConverter.create())
                 .addConverterFactory(cartCheckoutModuleRouter.checkoutModuleRouterGetStringResponseConverter())
                 .addConverterFactory(GsonConverterFactory.create(new Gson()))
@@ -208,7 +208,7 @@ public class DataModule {
             @CartTxActOkHttpClientQualifier OkHttpClient okHttpClient
     ) {
         return new Retrofit.Builder()
-                .baseUrl(ConstantApiUrl.TransactionAction.BASE_URL)
+                .baseUrl(TransactionDataApiUrl.TransactionAction.BASE_URL)
                 .addConverterFactory(cartCheckoutModuleRouter.checkoutModuleRouterGetWS4TkpdResponseConverter())
                 .addConverterFactory(cartCheckoutModuleRouter.checkoutModuleRouterGetStringResponseConverter())
                 .addConverterFactory(GsonConverterFactory.create(new Gson()))

@@ -1,8 +1,8 @@
 package com.tokopedia.checkout.domain.usecase;
 
 import com.tokopedia.abstraction.common.utils.TKPDMapParam;
-import com.tokopedia.checkout.data.entity.response.cartlist.CartDataListResponse;
-import com.tokopedia.checkout.data.repository.ICartRepository;
+import com.tokopedia.transactiondata.entity.response.cartlist.CartDataListResponse;
+import com.tokopedia.transactiondata.repository.ICartRepository;
 import com.tokopedia.checkout.domain.datamodel.cartlist.CartListData;
 import com.tokopedia.checkout.domain.mapper.ICartMapper;
 import com.tokopedia.usecase.RequestParams;

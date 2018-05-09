@@ -1,7 +1,7 @@
 package com.tokopedia.checkout.domain.usecase;
 
 import com.tokopedia.abstraction.common.utils.TKPDMapParam;
-import com.tokopedia.checkout.data.repository.ITopPayRepository;
+import com.tokopedia.transactiondata.repository.ITopPayRepository;
 import com.tokopedia.checkout.domain.datamodel.toppay.ThanksTopPayData;
 import com.tokopedia.checkout.domain.mapper.ITopPayMapper;
 import com.tokopedia.usecase.RequestParams;
