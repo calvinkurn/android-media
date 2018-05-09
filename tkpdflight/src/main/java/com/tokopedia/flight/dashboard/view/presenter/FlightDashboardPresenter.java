@@ -6,8 +6,11 @@ import android.text.TextUtils;
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
+import com.tokopedia.flight.FlightModuleRouter;
 import com.tokopedia.flight.R;
 import com.tokopedia.flight.airport.data.source.db.model.FlightAirportDB;
+import com.tokopedia.flight.airport.domain.interactor.FlightAirportVersionCheckUseCase;
+import com.tokopedia.flight.airport.service.GetAirportListService;
 import com.tokopedia.flight.banner.data.source.cloud.model.BannerDetail;
 import com.tokopedia.flight.banner.domain.interactor.BannerGetDataUseCase;
 import com.tokopedia.flight.common.constant.FlightUrl;
@@ -58,6 +61,7 @@ public class FlightDashboardPresenter extends BaseDaggerPresenter<FlightDashboar
     private static final int DEFAULT_ADULT_PASSENGER = 1;
     private static final int DEFAULT_CHILD_PASSENGER = 0;
     private static final int DEFAULT_INFANT_PASSENGER = 0;
+    private static final String FLIGHT_AIRPORT = "flight_airport";
 
     private BannerGetDataUseCase bannerGetDataUseCase;
     private FlightDashboardValidator validator;
@@ -70,6 +74,8 @@ public class FlightDashboardPresenter extends BaseDaggerPresenter<FlightDashboar
     private FlightAnalytics flightAnalytics;
     private CompositeSubscription compositeSubscription;
     private FlightSelectPassengerValidator passengerValidator;
+    private FlightAirportVersionCheckUseCase flightAirportVersionCheckUseCase;
+    private FlightModuleRouter flightModuleRouter;
 
     @Inject
     public FlightDashboardPresenter(BannerGetDataUseCase bannerGetDataUseCase,
@@ -81,7 +87,8 @@ public class FlightDashboardPresenter extends BaseDaggerPresenter<FlightDashboar
                                     FlightDashboardCache flightDashboardCache,
                                     UserSession userSession,
                                     FlightAnalytics flightAnalytics,
-                                    FlightSelectPassengerValidator passengerValidator) {
+                                    FlightSelectPassengerValidator passengerValidator,
+                                    FlightAirportVersionCheckUseCase flightAirportVersionCheckUseCase, FlightModuleRouter flightModuleRouter) {
         this.bannerGetDataUseCase = bannerGetDataUseCase;
         this.validator = validator;
         this.deleteFlightCacheUseCase = deleteFlightCacheUseCase;
@@ -92,6 +99,8 @@ public class FlightDashboardPresenter extends BaseDaggerPresenter<FlightDashboar
         this.userSession = userSession;
         this.flightAnalytics = flightAnalytics;
         this.passengerValidator = passengerValidator;
+        this.flightAirportVersionCheckUseCase = flightAirportVersionCheckUseCase;
+        this.flightModuleRouter = flightModuleRouter;
         this.compositeSubscription = new CompositeSubscription();
     }
 
@@ -560,7 +569,7 @@ public class FlightDashboardPresenter extends BaseDaggerPresenter<FlightDashboar
                         .subscribe(new Subscriber<FlightDashboardAirportAndClassWrapper>() {
                             @Override
                             public void onCompleted() {
-
+                                actionAirportSync();
                             }
 
                             @Override
@@ -606,6 +615,30 @@ public class FlightDashboardPresenter extends BaseDaggerPresenter<FlightDashboar
                             }
                         })
         );
+    }
+
+    private void actionAirportSync() {
+        if (isViewAttached()){
+            flightAirportVersionCheckUseCase.execute(flightAirportVersionCheckUseCase.createRequestParams(flightModuleRouter.getLongConfig(FLIGHT_AIRPORT)),
+                    new Subscriber<Boolean>() {
+                        @Override
+                        public void onCompleted() {
+
+                        }
+
+                        @Override
+                        public void onError(Throwable e) {
+
+                        }
+
+                        @Override
+                        public void onNext(Boolean aBoolean) {
+                            if (aBoolean){
+                                getView().startAirportSyncInBackground(flightModuleRouter.getLongConfig(FLIGHT_AIRPORT));
+                            }
+                        }
+                    });
+        }
     }
 
     @Override

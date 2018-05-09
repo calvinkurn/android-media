@@ -33,7 +33,6 @@ public class FlightAirportDB extends BaseModel implements Parcelable, Visitable<
     @PrimaryKey
     @Column(name = "country_id")
     String countryId;
-    @PrimaryKey
     @Column(name = "city_id")
     String cityId;
     @PrimaryKey

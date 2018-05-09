@@ -88,6 +88,8 @@ public interface FlightDashboardContract {
         void hideProgressBar();
 
         void showFormContainer();
+
+        void startAirportSyncInBackground(long airportVersion);
     }
 
     interface Presenter extends CustomerPresenter<View> {

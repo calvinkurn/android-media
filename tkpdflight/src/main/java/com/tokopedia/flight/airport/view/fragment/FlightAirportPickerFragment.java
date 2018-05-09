@@ -35,7 +35,7 @@ public class FlightAirportPickerFragment extends BaseSearchListFragment<FlightAi
         implements FlightAirportPickerView, FlightAirportViewHolder.FilterTextListener {
 
     public static final String EXTRA_SELECTED_AIRPORT = "extra_selected_aiport";
-    public static final String FLIGHT_AIRPORT = "flight_airport";
+
     private static final long DELAY_TEXT_CHANGED = TimeUnit.MILLISECONDS.toMillis(0);
     @Inject
     FlightAirportPickerPresenter flightAirportPickerPresenter;
@@ -104,14 +104,8 @@ public class FlightAirportPickerFragment extends BaseSearchListFragment<FlightAi
     }
 
     @Override
-    public void updateAirportListOnBackground() {
-        GetAirportListService.startService(getActivity(), ((FlightModuleRouter)getActivity().getApplication()).getLongConfig(FLIGHT_AIRPORT));
-    }
-
-    @Override
     public void renderList(@NonNull List<FlightAirportDB> list) {
         if (isFirstTime) {
-            flightAirportPickerPresenter.checkAirportVersion(((FlightModuleRouter) getActivity().getApplication()).getLongConfig(FLIGHT_AIRPORT));
             searchInputView.setVisibility(View.VISIBLE);
             isFirstTime = false;
         }

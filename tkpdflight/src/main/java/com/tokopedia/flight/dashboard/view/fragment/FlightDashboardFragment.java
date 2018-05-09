@@ -28,6 +28,7 @@ import com.tokopedia.design.banner.BannerView;
 import com.tokopedia.flight.FlightModuleRouter;
 import com.tokopedia.flight.R;
 import com.tokopedia.flight.airport.data.source.db.model.FlightAirportDB;
+import com.tokopedia.flight.airport.service.GetAirportListService;
 import com.tokopedia.flight.airport.view.activity.FlightAirportPickerActivity;
 import com.tokopedia.flight.airport.view.fragment.FlightAirportPickerFragment;
 import com.tokopedia.flight.banner.data.source.cloud.model.BannerDetail;
@@ -325,6 +326,13 @@ public class FlightDashboardFragment extends BaseDaggerFragment implements Fligh
     @Override
     public void showFormContainer() {
         formContainerLayout.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void startAirportSyncInBackground(long airportVersion) {
+        if (getActivity() != null) {
+            GetAirportListService.startService(getActivity(), airportVersion);
+        }
     }
 
     @Override

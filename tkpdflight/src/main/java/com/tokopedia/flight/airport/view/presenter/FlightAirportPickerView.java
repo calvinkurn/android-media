@@ -10,7 +10,6 @@ import com.tokopedia.flight.airport.data.source.db.model.FlightAirportDB;
  */
 
 public interface FlightAirportPickerView extends BaseListViewListener<FlightAirportDB> {
-    void updateAirportListOnBackground();
 
     void showGetAirportListLoading();
 
