@@ -611,9 +611,6 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
         RxUtils.getNewCompositeSubIfUnsubscribed(subscription);
         FCMCacheManager.checkAndSyncFcmId(getApplicationContext());
         if (SessionHandler.isV4Login(this) && isUserFirstTimeLogin) {
-            initStateFragment = INIT_STATE_FRAGMENT_HOME;
-            adapter = new PagerAdapter(getSupportFragmentManager());
-            setupViewPager();
             adapter.notifyDataSetChanged();
         }
 
