@@ -1,15 +1,10 @@
 package com.tokopedia.core.manage.people.address.presenter;
 
-import android.view.View;
-
 import com.google.android.gms.maps.model.LatLng;
 import com.tokopedia.core.R;
 import com.tokopedia.core.database.model.City;
 import com.tokopedia.core.database.model.Province;
 import com.tokopedia.core.manage.people.address.ManageAddressConstant;
-import com.tokopedia.core.manage.people.address.fragment.adapter.ProvinceAdapter;
-import com.tokopedia.core.manage.people.address.fragment.adapter.RegencyAdapter;
-import com.tokopedia.core.manage.people.address.fragment.adapter.SubDistrictAdapter;
 import com.tokopedia.core.manage.people.address.interactor.AddAddressRetrofitInteractor;
 import com.tokopedia.core.manage.people.address.interactor.AddAddressRetrofitInteractorImpl;
 import com.tokopedia.core.manage.people.address.listener.AddAddressFragmentView;
@@ -25,7 +20,6 @@ import java.util.Map;
  */
 public class AddAddressPresenterImpl implements AddAddressPresenter, ManageAddressConstant {
 
-
     private static final double MONAS_LATITUDE = -6.175794;
     private static final double MONAS_LONGITUDE = 106.826457;
     private final AddAddressFragmentView viewListener;
@@ -36,7 +30,6 @@ public class AddAddressPresenterImpl implements AddAddressPresenter, ManageAddre
         this.viewListener = viewListener;
         this.networkInteractor = new AddAddressRetrofitInteractorImpl();
         this.address = new Destination();
-
     }
 
     @Override
@@ -123,15 +116,8 @@ public class AddAddressPresenterImpl implements AddAddressPresenter, ManageAddre
     private Map<String, String> getParam() {
         address.setAddressName(viewListener.getAddressType().getText().toString());
         address.setAddressStreet(viewListener.getAddress().getText().toString());
-        address.setCityId(((RegencyAdapter) viewListener.getSpinnerRegency().getAdapter()).getList().get(viewListener.getSpinnerRegency().getSelectedItemPosition() - 1).getCityId());
-        address.setCityName(((RegencyAdapter) viewListener.getSpinnerRegency().getAdapter()).getList().get(viewListener.getSpinnerRegency().getSelectedItemPosition() - 1).getCityName());
-        address.setDistrictId(((SubDistrictAdapter) viewListener.getSpinnerSubDistrict().getAdapter()).getList().get(viewListener.getSpinnerSubDistrict().getSelectedItemPosition() - 1).getDistrictId());
-        address.setDistrictName(((SubDistrictAdapter) viewListener.getSpinnerSubDistrict().getAdapter()).getList().get(viewListener.getSpinnerSubDistrict().getSelectedItemPosition() - 1).getDistrictName());
-        address.setProvinceId(((ProvinceAdapter) viewListener.getSpinnerProvince().getAdapter()).getList().get(viewListener.getSpinnerProvince().getSelectedItemPosition() - 1).getProvinceId());
-        address.setProvinceName(((ProvinceAdapter) viewListener.getSpinnerProvince().getAdapter()).getList().get(viewListener.getSpinnerProvince().getSelectedItemPosition() - 1).getProvinceName());
         address.setReceiverName(viewListener.getReceiverName().getText().toString());
         address.setReceiverPhone(viewListener.getReceiverPhone().getText().toString());
-        address.setPostalCode(viewListener.getPostCode().getText().toString());
         if (viewListener.getArguments().getBoolean(IS_EDIT, false)) {
             Destination editParam = viewListener.getArguments().getParcelable(EDIT_PARAM);
             if (editParam != null)
@@ -307,19 +293,6 @@ public class AddAddressPresenterImpl implements AddAddressPresenter, ManageAddre
             viewListener.getReceiverPhone().requestFocus();
             isValid = false;
         }
-        if (viewListener.getPostCode().getText().length() == 0) {
-            viewListener.setError(viewListener.getPostCodeLayout(), viewListener.getString(R.string.error_field_required));
-            viewListener.getPostCode().requestFocus();
-            isValid = false;
-        } else if (viewListener.getPostCode().getText().length() < 5) {
-            viewListener.setError(viewListener.getPostCodeLayout(), viewListener.getString(R.string.error_min_5_character));
-            viewListener.getPostCode().requestFocus();
-            isValid = false;
-        } else if (viewListener.getPostCode().getText().length() > 10) {
-            viewListener.setError(viewListener.getPostCodeLayout(), viewListener.getString(R.string.error_max_post_code));
-            viewListener.getPostCode().requestFocus();
-            isValid = false;
-        }
         if (viewListener.getAddress().getText().length() <= 20) {
             viewListener.setError(viewListener.getAddressLayout(), viewListener.getString(R.string.error_min_address));
             viewListener.getAddress().requestFocus();
@@ -343,21 +316,6 @@ public class AddAddressPresenterImpl implements AddAddressPresenter, ManageAddre
         if (viewListener.getAddressType().getText().length() == 0) {
             viewListener.setError(viewListener.getAddressTypeLayout(), viewListener.getString(R.string.error_field_required));
             viewListener.getAddressType().requestFocus();
-            isValid = false;
-        }
-        if (viewListener.getSpinnerProvince().getSelectedItemPosition() == 0) {
-            viewListener.getSpinnerProvinceError().setVisibility(View.VISIBLE);
-            isValid = false;
-        }
-        if (viewListener.getSpinnerProvince().getSelectedItemPosition() != 0 &&
-                viewListener.getSpinnerRegency().getSelectedItemPosition() == 0) {
-            viewListener.getSpinnerRegencyError().setVisibility(View.VISIBLE);
-            isValid = false;
-        }
-        if (viewListener.getSpinnerProvince().getSelectedItemPosition() != 0 &&
-                viewListener.getSpinnerRegency().getSelectedItemPosition() != 0 &&
-                viewListener.getSpinnerSubDistrict().getSelectedItemPosition() == 0) {
-            viewListener.getSpinnerSubDistrictError().setVisibility(View.VISIBLE);
             isValid = false;
         }
 

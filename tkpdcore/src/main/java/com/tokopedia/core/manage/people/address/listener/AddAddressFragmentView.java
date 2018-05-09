@@ -27,17 +27,9 @@ public interface AddAddressFragmentView {
 
     EditText getReceiverPhone();
 
-    EditText getPostCode();
-
     EditText getAddressType();
 
     EditText getAddress();
-
-    Spinner getSpinnerProvince();
-
-    Spinner getSpinnerRegency();
-
-    Spinner getSpinnerSubDistrict();
 
     String getString(int stringId);
 
@@ -49,15 +41,7 @@ public interface AddAddressFragmentView {
 
     TextInputLayout getAddressTypeLayout();
 
-    TextInputLayout getPostCodeLayout();
-
     TextInputLayout getReceiverPhoneLayout();
-
-    TextView getSpinnerProvinceError();
-
-    TextView getSpinnerRegencyError();
-
-    TextView getSpinnerSubDistrictError();
 
     boolean isEdit();
 
