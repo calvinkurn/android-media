@@ -33,7 +33,7 @@ import com.tokopedia.checkout.domain.datamodel.cartlist.CartPromoSuggestion;
 import com.tokopedia.checkout.domain.datamodel.cartshipmentform.CartShipmentAddressFormData;
 import com.tokopedia.checkout.domain.datamodel.shipmentrates.ShipmentDetailData;
 import com.tokopedia.checkout.domain.datamodel.voucher.PromoCodeAppliedData;
-import com.tokopedia.checkout.router.ICartCheckoutModuleRouter;
+import com.tokopedia.checkout.router.ICheckoutModuleRouter;
 import com.tokopedia.checkout.view.adapter.MultipleAddressShipmentAdapter;
 import com.tokopedia.checkout.view.base.BaseCheckoutFragment;
 import com.tokopedia.checkout.view.di.component.CartComponent;
@@ -282,8 +282,8 @@ public class MultipleAddressShipmentFragment extends BaseCheckoutFragment implem
     public void onChoosePickupPoint(MultipleAddressShipmentAdapterData addressAdapterData, int position) {
         HashMap<String, String> params = presenter.generatePickupPointParams(addressAdapterData);
 
-        startActivityForResult(((ICartCheckoutModuleRouter) getActivity().getApplication())
-                        .tkpdTransactionPickupPointActivityFromCartMultipleAddressIntent(
+        startActivityForResult(((ICheckoutModuleRouter) getActivity().getApplication())
+                        .checkoutModuleRouterGetPickupPointActivityFromCartMultipleAddressIntent(
                                 getActivity(), position, addressAdapterData.getDestinationDistrictName(), params),
                 REQUEST_CHOOSE_PICKUP_POINT);
     }
@@ -297,8 +297,8 @@ public class MultipleAddressShipmentFragment extends BaseCheckoutFragment implem
     public void onEditPickupPoint(MultipleAddressShipmentAdapterData addressAdapterData, int position) {
         HashMap<String, String> params = presenter.generatePickupPointParams(addressAdapterData);
 
-        startActivityForResult(((ICartCheckoutModuleRouter) getActivity().getApplication())
-                        .tkpdTransactionPickupPointActivityFromCartMultipleAddressIntent(
+        startActivityForResult(((ICheckoutModuleRouter) getActivity().getApplication())
+                        .checkoutModuleRouterGetPickupPointActivityFromCartMultipleAddressIntent(
                                 getActivity(), position, addressAdapterData.getDestinationDistrictName(), params),
                 REQUEST_CHOOSE_PICKUP_POINT);
     }
@@ -563,10 +563,10 @@ public class MultipleAddressShipmentFragment extends BaseCheckoutFragment implem
 
     @Override
     public void onCartPromoUseVoucherPromoClicked(CartItemPromoHolderData cartPromo, int position) {
-        if (getActivity().getApplication() instanceof ICartCheckoutModuleRouter) {
+        if (getActivity().getApplication() instanceof ICheckoutModuleRouter) {
             startActivityForResult(
-                    ((ICartCheckoutModuleRouter) getActivity().getApplication())
-                            .tkpdCartCheckoutGetLoyaltyNewCheckoutMarketplaceCartListIntent(
+                    ((ICheckoutModuleRouter) getActivity().getApplication())
+                            .checkoutModuleRouterGetLoyaltyNewCheckoutMarketplaceCartListIntent(
                                     getActivity(), true
                             ), IRouterConstant.LoyaltyModule.LOYALTY_ACTIVITY_REQUEST_CODE
             );

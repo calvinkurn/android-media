@@ -32,7 +32,7 @@ import com.tokopedia.checkout.domain.datamodel.cartlist.CartPromoSuggestion;
 import com.tokopedia.checkout.domain.datamodel.cartlist.CartTickerErrorData;
 import com.tokopedia.checkout.domain.datamodel.cartshipmentform.CartShipmentAddressFormData;
 import com.tokopedia.checkout.domain.datamodel.voucher.PromoCodeAppliedData;
-import com.tokopedia.checkout.router.ICartCheckoutModuleRouter;
+import com.tokopedia.checkout.router.ICheckoutModuleRouter;
 import com.tokopedia.checkout.view.adapter.CartListAdapter;
 import com.tokopedia.checkout.view.base.BaseCheckoutFragment;
 import com.tokopedia.checkout.view.di.component.CartComponent;
@@ -44,7 +44,6 @@ import com.tokopedia.checkout.view.holderitemdata.CartItemPromoHolderData;
 import com.tokopedia.checkout.view.holderitemdata.CartItemTickerErrorHolderData;
 import com.tokopedia.checkout.view.view.addressoptions.CartAddressChoiceActivity;
 import com.tokopedia.checkout.view.view.multipleaddressform.MultipleAddressFormActivity;
-import com.tokopedia.checkout.view.view.shipment.ShipmentActivity;
 import com.tokopedia.checkout.view.view.shipmentform.CartShipmentActivity;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.gcm.GCMHandler;
@@ -243,8 +242,8 @@ public class CartFragment extends BaseCheckoutFragment implements CartListAdapte
 
     @Override
     public void onCartItemProductClicked(CartItemHolderData cartItemHolderData, int position) {
-        if (getActivity().getApplication() instanceof ICartCheckoutModuleRouter) {
-            startActivity(((ICartCheckoutModuleRouter) getActivity().getApplication()).tkpdCartCheckoutGetProductDetailIntent(
+        if (getActivity().getApplication() instanceof ICheckoutModuleRouter) {
+            startActivity(((ICheckoutModuleRouter) getActivity().getApplication()).checkoutModuleRouterGetProductDetailIntent(
                     getActivity(),
                     ProductPass.Builder.aProductPass()
                             .setProductId(cartItemHolderData.getCartItemData().getOriginData().getProductId())
@@ -258,8 +257,8 @@ public class CartFragment extends BaseCheckoutFragment implements CartListAdapte
 
     @Override
     public void onCartItemShopNameClicked(CartItemHolderData cartItemHolderData, int position) {
-        if (getActivity().getApplication() instanceof ICartCheckoutModuleRouter) {
-            startActivity(((ICartCheckoutModuleRouter) getActivity().getApplication()).tkpdCartCheckoutGetShopInfoIntent(
+        if (getActivity().getApplication() instanceof ICheckoutModuleRouter) {
+            startActivity(((ICheckoutModuleRouter) getActivity().getApplication()).checkoutModuleRouterGetShopInfoIntent(
                     getActivity(),
                     cartItemHolderData.getCartItemData().getOriginData().getShopId()
             ));
@@ -290,10 +289,10 @@ public class CartFragment extends BaseCheckoutFragment implements CartListAdapte
 
     @Override
     public void onCartPromoUseVoucherPromoClicked(CartItemPromoHolderData cartItemPromoHolderData, int position) {
-        if (getActivity().getApplication() instanceof ICartCheckoutModuleRouter) {
+        if (getActivity().getApplication() instanceof ICheckoutModuleRouter) {
             startActivityForResult(
-                    ((ICartCheckoutModuleRouter) getActivity().getApplication())
-                            .tkpdCartCheckoutGetLoyaltyNewCheckoutMarketplaceCartListIntent(
+                    ((ICheckoutModuleRouter) getActivity().getApplication())
+                            .checkoutModuleRouterGetLoyaltyNewCheckoutMarketplaceCartListIntent(
                                     getActivity(), cartListData.isPromoCouponActive()
                             ), IRouterConstant.LoyaltyModule.LOYALTY_ACTIVITY_REQUEST_CODE
             );
@@ -505,11 +504,11 @@ public class CartFragment extends BaseCheckoutFragment implements CartListAdapte
 
     @Override
     public void renderToShipmentFormSuccess(CartShipmentAddressFormData shipmentAddressFormData) {
-        Intent intent = ShipmentActivity.createInstance(getActivity(), shipmentAddressFormData,
-                promoCodeAppliedData, cartListData.getCartPromoSuggestion()
-        );
-        startActivityForResult(intent, CartShipmentActivity.REQUEST_CODE);
-/*
+//        Intent intent = ShipmentActivity.createInstance(getActivity(), shipmentAddressFormData,
+//                promoCodeAppliedData, cartListData.getCartPromoSuggestion()
+//        );
+//        startActivityForResult(intent, CartShipmentActivity.REQUEST_CODE);
+
         if (shipmentAddressFormData.isMultiple()) {
             Intent intent = CartShipmentActivity.createInstanceMultipleAddress(
                     getActivity(), shipmentAddressFormData, this.promoCodeAppliedData,
@@ -523,7 +522,7 @@ public class CartFragment extends BaseCheckoutFragment implements CartListAdapte
             );
             startActivityForResult(intent, CartShipmentActivity.REQUEST_CODE);
         }
-*/
+
     }
 
     @Override

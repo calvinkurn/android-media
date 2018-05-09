@@ -1,6 +1,8 @@
 package com.tokopedia.tkpdreactnative.react;
 
+import android.app.ProgressDialog;
 import android.content.Context;
+import android.view.View;
 
 import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactApplicationContext;
@@ -8,21 +10,19 @@ import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
 import com.facebook.react.bridge.ReadableMap;
 import com.tokopedia.abstraction.AbstractionRouter;
-import com.tokopedia.abstraction.common.data.model.session.UserSession;
-import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.TrackingUtils;
-import com.tokopedia.core.analytics.UnifyTracking;
-import com.tokopedia.core.analytics.container.GTMDataLayer;
-import com.tokopedia.core.analytics.nishikino.model.EventTracking;
-import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.router.digitalmodule.IDigitalModuleRouter;
 import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.design.component.Dialog;
+import com.tokopedia.tkpdreactnative.R;
 import com.tokopedia.tkpdreactnative.react.app.ReactNativeView;
-
-import org.json.JSONObject;
+import com.tokopedia.tkpdreactnative.react.fingerprint.view.FingerPrintUIHelper;
+import com.tokopedia.tkpdreactnative.react.fingerprint.view.FingerprintDialogConfirmation;
+import com.tokopedia.tkpdreactnative.react.singleauthpayment.view.SingleAuthPaymentDialog;
+import com.tokopedia.tkpdreactnative.router.ReactNativeRouter;
 
 import java.util.HashMap;
 
@@ -32,10 +32,11 @@ import static com.facebook.react.bridge.UiThreadUtil.runOnUiThread;
  * @author ricoharisin .
  */
 
-public class ReactNavigationModule extends ReactContextBaseJavaModule {
+public class ReactNavigationModule extends ReactContextBaseJavaModule implements FingerPrintUIHelper.Callback {
     private static final int LOGIN_REQUEST_CODE = 1005;
 
     private Context context;
+    private ProgressDialog progressDialog;
 
     public ReactNavigationModule(ReactApplicationContext reactContext) {
         super(reactContext);
@@ -49,7 +50,7 @@ public class ReactNavigationModule extends ReactContextBaseJavaModule {
 
     @ReactMethod
     public void navigate(String appLinks, String extra) {
-        if(!extra.isEmpty()) {
+        if (!extra.isEmpty()) {
             ((TkpdCoreRouter) context.getApplicationContext())
                     .actionApplink(this.getCurrentActivity(), appLinks, extra);
         } else {
@@ -84,9 +85,9 @@ public class ReactNavigationModule extends ReactContextBaseJavaModule {
 
 
     @ReactMethod
-    public void getCurrentDeviceId(Promise promise){
-        if(context.getApplicationContext() instanceof AbstractionRouter) {
-            promise.resolve( ((AbstractionRouter) context.getApplicationContext()).getSession().getDeviceId() );
+    public void getCurrentDeviceId(Promise promise) {
+        if (context.getApplicationContext() instanceof AbstractionRouter) {
+            promise.resolve(((AbstractionRouter) context.getApplicationContext()).getSession().getDeviceId());
         }
     }
 
@@ -101,15 +102,59 @@ public class ReactNavigationModule extends ReactContextBaseJavaModule {
                 } else {
                     promise.resolve("NOT OK");
                 }
-
             }
         });
+    }
 
+    @ReactMethod
+    public void goToRBAInfo() {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                final Dialog dialog = new Dialog(getCurrentActivity(), Dialog.Type.RETORIC);
+                dialog.setBtnOk(getCurrentActivity().getString(R.string.title_ok));
+                dialog.setDesc(getCurrentActivity().getString(R.string.single_auth_label_desc_info));
+                dialog.setTitle(getCurrentActivity().getString(R.string.single_auth_label_setting_credit_card));
+                dialog.setOnOkClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        dialog.dismiss();
+                    }
+                });
+                dialog.show();
+            }
+        });
+    }
+
+    @ReactMethod
+    public void goToRBAThanks() {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                SingleAuthPaymentDialog singleAuthPaymentDialog = new SingleAuthPaymentDialog(getCurrentActivity(), Dialog.Type.PROMINANCE, ReactNavigationModule.this);
+                singleAuthPaymentDialog.show();
+            }
+        });
+    }
+
+    @ReactMethod
+    public void goToFingerprintThanks(final String transactionId) {
+        if (getCurrentActivity().getApplication() instanceof ReactNativeRouter) {
+            if (((ReactNativeRouter) getCurrentActivity().getApplication()).getEnableFingerprintPayment()) {
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        FingerprintDialogConfirmation dialogPreferenceHide = new FingerprintDialogConfirmation(getCurrentActivity(), Dialog.Type.PROMINANCE, transactionId, ReactNavigationModule.this);
+                        dialogPreferenceHide.show();
+                    }
+                });
+            }
+        }
     }
 
     @ReactMethod
     public void getFlavor(Promise promise) {
-        if (getCurrentActivity() != null && getCurrentActivity().getApplication() instanceof TkpdCoreRouter){
+        if (getCurrentActivity() != null && getCurrentActivity().getApplication() instanceof TkpdCoreRouter) {
             promise.resolve(((TkpdCoreRouter) getCurrentActivity().getApplication()).getFlavor());
         } else {
             promise.resolve("");
@@ -126,11 +171,25 @@ public class ReactNavigationModule extends ReactContextBaseJavaModule {
     public void getGraphQLRequestHeader(Promise promise) {
         promise.resolve(AuthUtil.getHeaderRequestReactNative(context));
     }
-  
+
     @ReactMethod
     public void finish() {
-        if(getCurrentActivity() != null) {
+        if (getCurrentActivity() != null) {
             getCurrentActivity().finish();
+        }
+    }
+
+    @Override
+    public void showProgressDialog() {
+        progressDialog = new ProgressDialog(getCurrentActivity());
+        progressDialog.setMessage(getCurrentActivity().getString(R.string.title_loading));
+        progressDialog.show();
+    }
+
+    @Override
+    public void hideProgressDialog() {
+        if (progressDialog != null && progressDialog.isShowing()) {
+            progressDialog.dismiss();
         }
     }
 }

@@ -2,8 +2,8 @@ package com.tokopedia.checkout.view.view.shipment.converter;
 
 import android.text.TextUtils;
 
-import com.tokopedia.checkout.data.entity.response.rates.Attribute;
-import com.tokopedia.checkout.data.entity.response.rates.RatesResponse;
+import com.tokopedia.logisticdata.data.entity.rates.Attribute;
+import com.tokopedia.logisticdata.data.entity.rates.RatesResponse;
 import com.tokopedia.checkout.domain.datamodel.addressoptions.RecipientAddressModel;
 import com.tokopedia.checkout.domain.datamodel.cartshipmentform.GroupShop;
 import com.tokopedia.checkout.domain.datamodel.cartshipmentform.Product;
@@ -201,15 +201,15 @@ public class RatesDataConverter {
         return shipmentItemData;
     }
 
-    private List<CourierItemData> getCourierItemDataList(List<com.tokopedia.checkout.data.entity.response.rates.Product> products) {
+    private List<CourierItemData> getCourierItemDataList(List<com.tokopedia.logisticdata.data.entity.rates.Product> products) {
         List<CourierItemData> courierItemDataList = new ArrayList<>();
-        for (com.tokopedia.checkout.data.entity.response.rates.Product product : products) {
+        for (com.tokopedia.logisticdata.data.entity.rates.Product product : products) {
             courierItemDataList.add(getCourierItemData(product));
         }
         return courierItemDataList;
     }
 
-    private CourierItemData getCourierItemData(com.tokopedia.checkout.data.entity.response.rates.Product product) {
+    private CourierItemData getCourierItemData(com.tokopedia.logisticdata.data.entity.rates.Product product) {
         CourierItemData courierItemData = new CourierItemData();
         courierItemData.setUsePinPoint(product.getIsShowMap() == 1);
         courierItemData.setName(product.getShipperName() + " " + product.getShipperProductName());

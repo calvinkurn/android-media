@@ -3,14 +3,17 @@ package com.tokopedia.checkout.domain.usecase;
 import android.text.TextUtils;
 
 import com.tokopedia.abstraction.common.utils.TKPDMapParam;
-import com.tokopedia.checkout.data.repository.RatesRepository;
+import com.tokopedia.checkout.data.mapper.ShipmentRatesDataMapper;
+import com.tokopedia.logisticdata.data.repository.RatesRepository;
 import com.tokopedia.checkout.domain.datamodel.shipmentrates.ShipmentDetailData;
+import com.tokopedia.logisticdata.data.entity.rates.RatesResponse;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.usecase.UseCase;
 
 import javax.inject.Inject;
 
 import rx.Observable;
+import rx.functions.Func1;
 
 /**
  * Created by Irfan Khoirul on 20/02/18.
@@ -21,10 +24,12 @@ public class GetRatesUseCase extends UseCase<ShipmentDetailData> {
     private static final int KILOGRAM_DIVIDER = 1000;
     private RatesRepository repository;
     private ShipmentDetailData shipmentDetailData;
+    private ShipmentRatesDataMapper shipmentRatesDataMapper;
 
     @Inject
-    public GetRatesUseCase(RatesRepository repository) {
+    public GetRatesUseCase(RatesRepository repository, ShipmentRatesDataMapper shipmentRatesDataMapper) {
         this.repository = repository;
+        this.shipmentRatesDataMapper = shipmentRatesDataMapper;
     }
 
     public void setShipmentDetailData(ShipmentDetailData shipmentDetailData) {
@@ -35,7 +40,12 @@ public class GetRatesUseCase extends UseCase<ShipmentDetailData> {
     public Observable<ShipmentDetailData> createObservable(RequestParams requestParams) {
         TKPDMapParam<String, String> mapParam = new TKPDMapParam<>();
         mapParam.putAll(requestParams.getParamsAllValueInString());
-        return repository.getRates(shipmentDetailData, mapParam);
+        return repository.getRates(mapParam).map(new Func1<RatesResponse, ShipmentDetailData>() {
+            @Override
+            public ShipmentDetailData call(RatesResponse ratesResponse) {
+                return shipmentRatesDataMapper.getShipmentDetailData(shipmentDetailData, ratesResponse);
+            }
+        });
     }
 
     public RequestParams getParams() {

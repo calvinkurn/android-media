@@ -9,6 +9,7 @@ dependencies {
     compile project(rootProject.ext.libraries.design)
     compile project(rootProject.ext.features.topAdsSdk)
     compile project(rootProject.ext.features.payment)
+    compile project(rootProject.ext.features.logisticdata)
 
     compile(rootProject.ext.tkpdLibDependencies.showcase) {
         exclude group: "com.android.support"

@@ -34,7 +34,7 @@ import com.tokopedia.checkout.domain.usecase.AddToCartUseCase;
 import com.tokopedia.checkout.domain.usecase.CheckPromoCodeCartListUseCase;
 import com.tokopedia.checkout.domain.usecase.CheckPromoCodeCartShipmentUseCase;
 import com.tokopedia.checkout.domain.usecase.GetCouponListCartMarketPlaceUseCase;
-import com.tokopedia.checkout.router.ICartCheckoutModuleRouter;
+import com.tokopedia.checkout.router.ICheckoutModuleRouter;
 import com.tokopedia.checkout.view.di.component.CartComponentInjector;
 import com.tokopedia.checkout.view.view.cartlist.CartActivity;
 import com.tokopedia.core.analytics.ScreenTracking;
@@ -257,15 +257,18 @@ import com.tokopedia.tkpdpdp.ProductInfoActivity;
 import com.tokopedia.tkpdreactnative.react.ReactConst;
 import com.tokopedia.tkpdreactnative.react.ReactUtils;
 import com.tokopedia.tkpdreactnative.react.di.ReactNativeModule;
+import com.tokopedia.tkpdreactnative.router.ReactNativeRouter;
 import com.tokopedia.tokocash.WalletUserSession;
 import com.tokopedia.tokocash.di.DaggerTokoCashComponent;
 import com.tokopedia.tokocash.di.TokoCashComponent;
 import com.tokopedia.transaction.bcaoneklik.activity.ListPaymentTypeActivity;
+import com.tokopedia.transaction.bcaoneklik.usecase.CreditCardFingerPrintUseCase;
 import com.tokopedia.transaction.insurance.view.InsuranceTnCActivity;
 import com.tokopedia.transaction.pickuppoint.view.activity.PickupPointActivity;
 import com.tokopedia.transaction.purchase.detail.activity.OrderDetailActivity;
 import com.tokopedia.transaction.purchase.detail.activity.OrderHistoryActivity;
 import com.tokopedia.transaction.wallet.WalletActivity;
+import com.tokopedia.usecase.UseCase;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -293,13 +296,42 @@ import static com.tokopedia.core.router.productdetail.ProductDetailRouter.SHARE_
  */
 
 public abstract class ConsumerRouterApplication extends MainApplication implements
-        TkpdCoreRouter, SellerModuleRouter, IDigitalModuleRouter, PdpRouter,
-        OtpRouter, IPaymentModuleRouter, TransactionRouter, IReactNativeRouter, ReactApplication,
-        TkpdInboxRouter, TokoCashRouter, IWalletRouter, LoyaltyRouter, ReputationRouter, SessionRouter,
-        AbstractionRouter, FlightModuleRouter, LogisticRouter, FeedModuleRouter, IHomeRouter,
-        DiscoveryRouter, RideModuleRouter, DigitalModuleRouter, com.tokopedia.tokocash.TokoCashRouter,
-        DigitalRouter, KolRouter, GroupChatModuleRouter, ApplinkRouter, ShopModuleRouter, LoyaltyModuleRouter, ITkpdLoyaltyModuleRouter,
-        ICartCheckoutModuleRouter, com.tokopedia.transaction.router.ICartCheckoutModuleRouter, GamificationRouter, ProfileModuleRouter {
+        TkpdCoreRouter,
+        SellerModuleRouter,
+        IDigitalModuleRouter,
+        PdpRouter,
+        OtpRouter,
+        IPaymentModuleRouter,
+        TransactionRouter,
+        IReactNativeRouter,
+        ReactApplication,
+        TkpdInboxRouter,
+        TokoCashRouter,
+        IWalletRouter,
+        LoyaltyRouter,
+        ReputationRouter,
+        SessionRouter,
+        AbstractionRouter,
+        FlightModuleRouter,
+        LogisticRouter,
+        FeedModuleRouter,
+        IHomeRouter,
+        DiscoveryRouter,
+        RideModuleRouter,
+        DigitalModuleRouter,
+        com.tokopedia.tokocash.TokoCashRouter,
+        DigitalRouter,
+        KolRouter,
+        GroupChatModuleRouter,
+        ApplinkRouter,
+        ShopModuleRouter,
+        LoyaltyModuleRouter,
+        ITkpdLoyaltyModuleRouter,
+        ICheckoutModuleRouter,
+        com.tokopedia.transaction.router.ICartCheckoutModuleRouter,
+        GamificationRouter,
+        ProfileModuleRouter,
+        ReactNativeRouter {
 
     @Inject
     ReactNativeHost reactNativeHost;
@@ -1584,7 +1616,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    public Intent tkpdCartCheckoutGetLoyaltyNewCheckoutMarketplaceCartListIntent(
+    public Intent checkoutModuleRouterGetLoyaltyNewCheckoutMarketplaceCartListIntent(
             Context context, boolean couponActive
     ) {
         return couponActive ? LoyaltyActivity.newInstanceNewCheckoutCartListCouponActive(context)
@@ -1592,7 +1624,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    public Intent tkpdCartCheckoutGetLoyaltyNewCheckoutMarketplaceCartShipmentIntent(
+    public Intent checkoutModuleRouterGetLoyaltyNewCheckoutMarketplaceCartShipmentIntent(
             Context context, String additionalDataString, boolean couponActive
     ) {
         return couponActive ? LoyaltyActivity.newInstanceNewCheckoutCartShipmentCouponActive(
@@ -1663,52 +1695,52 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    public Intent tkpdCartCheckoutGetProductDetailIntent(Context context, ProductPass productPass) {
+    public Intent checkoutModuleRouterGetProductDetailIntent(Context context, ProductPass productPass) {
         return ProductInfoActivity.createInstance(context, productPass);
     }
 
     @Override
-    public Intent tkpdCartCheckoutGetShopInfoIntent(Context context, String shopId) {
+    public Intent checkoutModuleRouterGetShopInfoIntent(Context context, String shopId) {
         return ShopInfoActivity.createIntent(context, shopId);
     }
 
     @Override
-    public Intent tkpdTransactionInsuranceTncActivityIntent() {
+    public Intent checkoutModuleRouterGetInsuranceTncActivityIntent() {
         return new Intent(this, InsuranceTnCActivity.class);
     }
 
     @Override
-    public Intent tkpdTransactionPickupPointActivityFromCartMultipleAddressIntent(Activity activity,
-                                                                                  int cartPosition,
-                                                                                  String districtName,
-                                                                                  HashMap<String, String> params) {
+    public Intent checkoutModuleRouterGetPickupPointActivityFromCartMultipleAddressIntent(Activity activity,
+                                                                                          int cartPosition,
+                                                                                          String districtName,
+                                                                                          HashMap<String, String> params) {
         return PickupPointActivity.createInstance(activity, cartPosition, districtName, params);
     }
 
     @Override
-    public Intent tkpdTransactionPickupPointActivityFromCartSingleAddressIntent(Activity activity,
-                                                                                String districtName,
-                                                                                HashMap<String, String> params) {
+    public Intent checkoutModuleRouterGetPickupPointActivityFromCartSingleAddressIntent(Activity activity,
+                                                                                        String districtName,
+                                                                                        HashMap<String, String> params) {
         return PickupPointActivity.createInstance(activity, districtName, params);
     }
 
     @Override
-    public ChuckInterceptor getCartCheckoutChuckInterceptor() {
+    public ChuckInterceptor checkoutModuleRouterGetCartCheckoutChuckInterceptor() {
         return getAppComponent().chuckInterceptor();
     }
 
     @Override
-    public FingerprintInterceptor getCartCheckoutFingerPrintInterceptor() {
+    public FingerprintInterceptor checkoutModuleRouterGetCartCheckoutFingerPrintInterceptor() {
         return getAppComponent().fingerprintInterceptor();
     }
 
     @Override
-    public Converter.Factory cartCheckoutModuleGetWS4TkpdResponseConverter() {
+    public Converter.Factory checkoutModuleRouterGetWS4TkpdResponseConverter() {
         return new TkpdResponseConverter();
     }
 
     @Override
-    public Converter.Factory cartCheckoutModuleGetStringResponseConverter() {
+    public Converter.Factory checkoutModuleRouterGetStringResponseConverter() {
         return new StringResponseConverter();
     }
 
@@ -2101,4 +2133,10 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     public String getDesktopLinkGroupChat() {
         return ChatroomUrl.DESKTOP_URL;
     }
+
+    @Override
+    public UseCase<String> setCreditCardSingleAuthentication() {
+        return new CreditCardFingerPrintUseCase();
+    }
+
 }

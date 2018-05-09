@@ -666,7 +666,8 @@ public class AddToCartActivity extends BasePresenterActivity<AddToCartPresenter>
                 setInsuranceInfoButtonVisibility(product);
             }
 
-            if (product.getMaxHoursId() != null && product.getDescHoursId() != null) {
+            if (!TextUtils.isEmpty(product.getMaxHoursId())
+                    && !TextUtils.isEmpty(product.getDescHoursId())) {
                 arrowMaxHour.setText(product.getMaxHoursId());
                 descMaxHour.setText(product.getDescHoursId());
                 shipmentHourAtcLayout.setVisibility(View.VISIBLE);
