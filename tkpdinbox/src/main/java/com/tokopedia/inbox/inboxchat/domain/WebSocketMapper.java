@@ -3,6 +3,7 @@ package com.tokopedia.inbox.inboxchat.domain;
 import com.google.gson.GsonBuilder;
 import com.tokopedia.inbox.inboxchat.domain.model.websocket.BaseChatViewModel;
 import com.tokopedia.inbox.inboxchat.domain.model.websocket.FallbackAttachmentViewModel;
+import com.tokopedia.inbox.inboxchat.domain.model.websocket.MessageViewModel;
 import com.tokopedia.inbox.inboxchat.domain.model.websocket.WebSocketResponse;
 import com.tokopedia.inbox.inboxchat.domain.model.websocket.WebSocketResponseData;
 import com.tokopedia.inbox.inboxchat.viewmodel.chatroom.QuickReplyListViewModel;

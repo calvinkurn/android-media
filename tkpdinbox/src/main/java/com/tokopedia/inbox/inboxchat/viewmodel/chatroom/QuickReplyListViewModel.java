@@ -3,8 +3,6 @@ package com.tokopedia.inbox.inboxchat.viewmodel.chatroom;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.inbox.inboxchat.adapter.ChatRoomTypeFactory;
 import com.tokopedia.inbox.inboxchat.domain.model.websocket.BaseChatViewModel;
-import com.tokopedia.inbox.inboxchat.domain.model.websocket.FallbackAttachmentViewModel;
-import com.tokopedia.inbox.inboxchat.domain.model.websocket.MessageViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -48,10 +46,10 @@ public class QuickReplyListViewModel extends BaseChatViewModel implements
                 "",
                 "",
                 "",
-                new MessageViewModel(),
                 "",
                 "",
-                new FallbackAttachmentViewModel(),
+                "",
+                "",
                 new ArrayList<QuickReplyViewModel>());
     }
 }
