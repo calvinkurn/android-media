@@ -1,13 +1,13 @@
-package com.tokopedia.topads.product.view.fragment;
+package com.tokopedia.topads.group.view.fragment;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.text.TextUtils;
 import android.view.View;
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
+import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory;
 import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
@@ -18,16 +18,15 @@ import com.tokopedia.topads.common.view.fragment.TopAdsBaseListFragment;
 import com.tokopedia.topads.dashboard.constant.SortTopAdsOption;
 import com.tokopedia.topads.dashboard.constant.TopAdsExtraConstant;
 import com.tokopedia.topads.dashboard.data.model.data.GroupAd;
-import com.tokopedia.topads.dashboard.data.model.data.ProductAd;
-import com.tokopedia.topads.dashboard.view.activity.TopAdsDetailProductActivity;
-import com.tokopedia.topads.dashboard.view.activity.TopAdsFilterProductActivity;
+import com.tokopedia.topads.dashboard.view.activity.TopAdsDetailGroupActivity;
+import com.tokopedia.topads.dashboard.view.activity.TopAdsFilterGroupActivity;
 import com.tokopedia.topads.dashboard.view.activity.TopAdsGroupNewPromoActivity;
 import com.tokopedia.topads.dashboard.view.activity.TopAdsSortByActivity;
 import com.tokopedia.topads.dashboard.view.fragment.TopAdsNewScheduleNewGroupFragment;
-import com.tokopedia.topads.product.di.component.DaggerTopAdsProductAdListComponent;
+import com.tokopedia.topads.group.di.component.DaggerTopAdsGroupAdListComponent;
+import com.tokopedia.topads.group.view.listener.TopAdsGroupAdListView;
+import com.tokopedia.topads.group.view.presenter.TopAdsGroupAdListPresenter;
 import com.tokopedia.topads.common.view.adapter.TopAdsListAdapterTypeFactory;
-import com.tokopedia.topads.product.view.listener.TopAdsProductAdListView;
-import com.tokopedia.topads.product.view.presenter.TopAdsProductAdListPresenter;
 import com.tokopedia.topads.sourcetagging.constant.TopAdsSourceOption;
 
 import java.util.List;
@@ -35,31 +34,24 @@ import java.util.List;
 import javax.inject.Inject;
 
 /**
- * Created by hadi.putra on 04/05/18.
+ * Created by hadi.putra on 09/05/18.
  */
 
-public class TopAdsProductListFragment extends TopAdsBaseListFragment<ProductAd,
-        TopAdsListAdapterTypeFactory, TopAdsProductAdListPresenter>
-        implements TopAdsProductAdListView {
+public class TopAdsGroupAdListFragment extends TopAdsBaseListFragment<GroupAd, BaseAdapterTypeFactory,
+        TopAdsGroupAdListPresenter> implements TopAdsGroupAdListView {
 
-    private long groupId;
-    private GroupAd groupAd;
-
-    @Inject TopAdsProductAdListPresenter presenter;
+    @Inject TopAdsGroupAdListPresenter presenter;
 
     @Override
     protected void initInjector() {
-        DaggerTopAdsProductAdListComponent.builder()
+        DaggerTopAdsGroupAdListComponent.builder()
                 .topAdsComponent(TopAdsComponentInstance.getComponent(getActivity().getApplication()))
                 .build()
                 .inject(this);
     }
 
-    public static Fragment createInstance(GroupAd groupAd) {
-        TopAdsProductListFragment fragment = new TopAdsProductListFragment();
-        Bundle bundle = new Bundle();
-        bundle.putParcelable(TopAdsExtraConstant.EXTRA_GROUP, groupAd);
-        fragment.setArguments(bundle);
+    public static Fragment createInstance() {
+        TopAdsGroupAdListFragment fragment = new TopAdsGroupAdListFragment();
         return fragment;
     }
 
@@ -75,7 +67,6 @@ public class TopAdsProductListFragment extends TopAdsBaseListFragment<ProductAd,
         // check if the request code is the same
         if (requestCode == REQUEST_CODE_AD_FILTER && intent != null) {
             status = intent.getIntExtra(TopAdsExtraConstant.EXTRA_FILTER_SELECTED_STATUS, status);
-            groupId = intent.getLongExtra(TopAdsExtraConstant.EXTRA_FILTER_SELECTED_GROUP_ID, groupId);
             loadInitialData();
         } else if (requestCode == REQUEST_CODE_AD_SORT_BY && intent != null) {
             selectedSort = intent.getParcelableExtra(TopAdsSortByActivity.EXTRA_SORT_SELECTED);
@@ -85,43 +76,38 @@ public class TopAdsProductListFragment extends TopAdsBaseListFragment<ProductAd,
 
     @Override
     public void loadData(int page) {
-        presenter.searchAd(startDate, endDate, keyword, status, groupId, page,
+        presenter.searchAd(startDate, endDate, keyword, status, page,
                 selectedSort != null ? selectedSort.getId() : SortTopAdsOption.LATEST);
     }
 
     @Override
     public void goToFilter() {
-        Intent intent = new Intent(getActivity(), TopAdsFilterProductActivity.class);
+        Intent intent = new Intent(getActivity(), TopAdsFilterGroupActivity.class);
         intent.putExtra(TopAdsExtraConstant.EXTRA_FILTER_SELECTED_STATUS, status);
-        intent.putExtra(TopAdsExtraConstant.EXTRA_FILTER_SELECTED_GROUP_ID, groupId);
-        if (groupAd != null) {
-            intent.putExtra(TopAdsExtraConstant.EXTRA_FILTER_CURRENT_GROUP_ID, groupAd.getId());
-            intent.putExtra(TopAdsExtraConstant.EXTRA_FILTER_CURRENT_GROUP_NAME, groupAd.getName());
-        }
         startActivityForResult(intent, REQUEST_CODE_AD_FILTER);
     }
 
     @Override
-    public TopAdsProductAdListPresenter getPresenter() {
+    public TopAdsGroupAdListPresenter getPresenter() {
         return presenter;
     }
 
     @Override
     public void onCreateAd() {
-        UnifyTracking.eventTopAdsProductNewPromoProduct();
-        presenter.saveSourceTagging(TopAdsSourceOption.SA_MANAGE_DASHBOARD_PRODUCT);
+        presenter.saveSourceTagging(TopAdsSourceOption.SA_MANAGE_GROUP);
+        UnifyTracking.eventTopAdsProductNewPromoGroup();
         Intent intent = new Intent(getActivity(), TopAdsGroupNewPromoActivity.class);
-        this.startActivityForResult(intent, REQUEST_CODE_AD_ADD);
+        startActivityForResult(intent, REQUEST_CODE_AD_ADD);
     }
 
     @Override
     protected TopAdsListAdapterTypeFactory getAdapterTypeFactory() {
-        return new TopAdsListAdapterTypeFactory<ProductAd>();
+        return new TopAdsListAdapterTypeFactory<GroupAd>();
     }
 
     @Override
-    public void onSearchLoaded(List<ProductAd> productAds, boolean hasNextPage) {
-        super.onSuccessLoadedData(productAds, hasNextPage);
+    public void onSearchLoaded(List<GroupAd> groupAds, boolean hasNextPage) {
+        super.onSuccessLoadedData(groupAds, hasNextPage);
     }
 
     @Override
@@ -133,57 +119,51 @@ public class TopAdsProductListFragment extends TopAdsBaseListFragment<ProductAd,
     }
 
     @Override
-    public void onItemClicked(ProductAd ad) {
+    public void onItemClicked(GroupAd groupAd) {
 
     }
 
     @Override
     public Visitable getDefaultEmptyViewModel() {
         EmptyModel emptyModel = new EmptyModel();
-        emptyModel.setIconRes(R.drawable.ic_promo_product_empty);
-        emptyModel.setTitle(getString(R.string.top_ads_empty_product_title_promo_text));
-        emptyModel.setContent(getString(R.string.top_ads_empty_product_promo_content_text));
-        emptyModel.setButtonTitle(getString(R.string.menu_top_ads_add_promo_product));
+        emptyModel.setIconRes(R.drawable.ic_promo_group);
+        emptyModel.setTitle(getString(R.string.top_ads_empty_group_title_promo_text));
+        emptyModel.setContent(getString(R.string.top_ads_empty_group_promo_content_text));
+        emptyModel.setButtonTitle(getString(R.string.menu_top_ads_add_promo_group));
         emptyModel.setCallback(this);
         return emptyModel;
     }
 
     @Override
     public void onFirstTimeLaunched() {
-        groupAd = getArguments().getParcelable(TopAdsExtraConstant.EXTRA_GROUP);
-        if (groupAd != null && !TextUtils.isEmpty(groupAd.getId())) {
-            groupId = Integer.valueOf(groupAd.getId());
-        }
+
     }
 
     @Override
     public void onRestoreState(Bundle savedInstanceState) {
-        groupAd = savedInstanceState.getParcelable(TopAdsExtraConstant.EXTRA_GROUP);
-        if (groupAd != null && !TextUtils.isEmpty(groupAd.getId())) {
-            groupId = Integer.valueOf(groupAd.getId());
-        }
+
     }
 
     @Override
     public void trackingDateTopAds(int lastSelection, int selectionType) {
         if(selectionType == DatePickerConstant.SELECTION_TYPE_CUSTOM_DATE){
-            UnifyTracking.eventTopAdsProductPageProductDateCustom();
+            UnifyTracking.eventTopAdsProductPageGroupDateCustom();
         }else if(selectionType == DatePickerConstant.SELECTION_TYPE_PERIOD_DATE) {
             switch (lastSelection){
                 case 0:
-                    UnifyTracking.eventTopAdsProductPageProductDatePeriod(AppEventTracking.EventLabel.PERIOD_OPTION_TODAY);
+                    UnifyTracking.eventTopAdsProductPageGroupDatePeriod(AppEventTracking.EventLabel.PERIOD_OPTION_TODAY);
                     break;
                 case 1:
-                    UnifyTracking.eventTopAdsProductPageProductDatePeriod(AppEventTracking.EventLabel.PERIOD_OPTION_YESTERDAY);
+                    UnifyTracking.eventTopAdsProductPageGroupDatePeriod(AppEventTracking.EventLabel.PERIOD_OPTION_YESTERDAY);
                     break;
                 case 2:
-                    UnifyTracking.eventTopAdsProductPageProductDatePeriod(AppEventTracking.EventLabel.PERIOD_OPTION_LAST_7_DAY);
+                    UnifyTracking.eventTopAdsProductPageGroupDatePeriod(AppEventTracking.EventLabel.PERIOD_OPTION_LAST_7_DAY);
                     break;
                 case 3:
-                    UnifyTracking.eventTopAdsProductPageProductDatePeriod(AppEventTracking.EventLabel.PERIOD_OPTION_LAST_1_MONTH);
+                    UnifyTracking.eventTopAdsProductPageGroupDatePeriod(AppEventTracking.EventLabel.PERIOD_OPTION_LAST_1_MONTH);
                     break;
                 case 4:
-                    UnifyTracking.eventTopAdsProductPageProductDatePeriod(AppEventTracking.EventLabel.PERIOD_OPTION_THIS_MONTH);
+                    UnifyTracking.eventTopAdsProductPageGroupDatePeriod(AppEventTracking.EventLabel.PERIOD_OPTION_THIS_MONTH);
                     break;
                 default:
                     break;
@@ -192,12 +172,11 @@ public class TopAdsProductListFragment extends TopAdsBaseListFragment<ProductAd,
     }
 
     @Override
-    public void onAdClicked(ProductAd ad) {
-        presenter.saveSourceTagging(TopAdsSourceOption.SA_MANAGE_DASHBOARD_PRODUCT);
-        Intent intent = new Intent(getActivity(), TopAdsDetailProductActivity.class);
+    public void onAdClicked(GroupAd ad) {
+        presenter.saveSourceTagging(TopAdsSourceOption.SA_MANAGE_GROUP);
+        Intent intent = new Intent(getActivity(), TopAdsDetailGroupActivity.class);
         intent.putExtra(TopAdsExtraConstant.EXTRA_AD_ID, ad.getId());
         intent.putExtra(TopAdsExtraConstant.EXTRA_AD, ad);
-        intent.putExtra(TopAdsExtraConstant.EXTRA_FORCE_REFRESH, true);
         intent.putExtra(TopAdsNewScheduleNewGroupFragment.EXTRA_IS_ENOUGH_DEPOSIT, true);
         startActivityForResult(intent, REQUEST_CODE_AD_CHANGE);
     }

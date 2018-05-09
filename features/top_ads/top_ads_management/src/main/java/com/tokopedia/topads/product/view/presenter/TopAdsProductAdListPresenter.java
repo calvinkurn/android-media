@@ -7,7 +7,7 @@ import com.tokopedia.topads.dashboard.data.model.data.ProductAd;
 import com.tokopedia.topads.dashboard.data.model.request.SearchAdRequest;
 import com.tokopedia.topads.dashboard.data.model.response.PageDataResponse;
 import com.tokopedia.topads.dashboard.domain.interactor.TopAdsDatePickerInteractor;
-import com.tokopedia.topads.product.domain.usecase.TopAdsGetProductAdsUseCase;
+import com.tokopedia.topads.product.domain.usecase.TopAdsGetProductAdUseCase;
 import com.tokopedia.topads.product.view.listener.TopAdsProductAdListView;
 import com.tokopedia.topads.sourcetagging.domain.interactor.TopAdsAddSourceTaggingUseCase;
 
@@ -24,21 +24,21 @@ import rx.Subscriber;
 
 public class TopAdsProductAdListPresenter extends TopAdsBaseListPresenter<TopAdsProductAdListView> {
 
-    private final TopAdsGetProductAdsUseCase topAdsGetProductAdsUseCase;
+    private final TopAdsGetProductAdUseCase topAdsGetProductAdUseCase;
 
     @Inject
     public TopAdsProductAdListPresenter(TopAdsDatePickerInteractor topAdsDatePickerInteractor,
                                         TopAdsAddSourceTaggingUseCase topAdsAddSourceTaggingUseCase,
-                                        TopAdsGetProductAdsUseCase topAdsGetProductAdsUseCase,
+                                        TopAdsGetProductAdUseCase topAdsGetProductAdUseCase,
                                         UserSession userSession) {
         super(topAdsDatePickerInteractor, topAdsAddSourceTaggingUseCase, userSession);
-        this.topAdsGetProductAdsUseCase = topAdsGetProductAdsUseCase;
+        this.topAdsGetProductAdUseCase = topAdsGetProductAdUseCase;
     }
 
     @Override
     public void detachView() {
         super.detachView();
-        topAdsGetProductAdsUseCase.unsubscribe();
+        topAdsGetProductAdUseCase.unsubscribe();
     }
 
     public void searchAd(Date startDate, Date endDate, String keyword, int status, long groupId,
@@ -52,7 +52,7 @@ public class TopAdsProductAdListPresenter extends TopAdsBaseListPresenter<TopAds
         searchAdRequest.setGroup(groupId);
         searchAdRequest.setPage(page);
         searchAdRequest.setSort(sortId);
-        topAdsGetProductAdsUseCase.execute(TopAdsGetProductAdsUseCase.createRequestParams(searchAdRequest),
+        topAdsGetProductAdUseCase.execute(TopAdsGetProductAdUseCase.createRequestParams(searchAdRequest),
                 new Subscriber<PageDataResponse<List<ProductAd>>>() {
             @Override
             public void onCompleted() {

@@ -1,4 +1,4 @@
-package com.tokopedia.topads.product.view.adapter.viewholder;
+package com.tokopedia.topads.common.view.adapter.viewholder;
 
 import android.graphics.drawable.Drawable;
 import android.support.annotation.LayoutRes;
@@ -9,16 +9,18 @@ import android.widget.CheckBox;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.topads.R;
 import com.tokopedia.topads.common.view.adapter.viewholder.BaseMultipleCheckViewHolder;
 import com.tokopedia.topads.dashboard.constant.TopAdsConstant;
 import com.tokopedia.topads.dashboard.data.model.data.ProductAd;
+import com.tokopedia.topads.dashboard.view.model.Ad;
 
 /**
  * Created by hadi.putra on 07/05/18.
  */
 
-public class TopAdsAdViewHolder extends BaseMultipleCheckViewHolder<ProductAd> {
+public class TopAdsAdViewHolder<T extends Ad & Visitable> extends BaseMultipleCheckViewHolder<T> {
     @LayoutRes
     public final static int LAYOUT = R.layout.item_top_ads_ad;
 
@@ -57,7 +59,7 @@ public class TopAdsAdViewHolder extends BaseMultipleCheckViewHolder<ProductAd> {
     }
 
     @Override
-    public void bind(ProductAd ad) {
+    public void bind(T ad) {
         titleProduct.setText(ad.getName());
         statusActive.setText(ad.getStatusDesc());
         switch (ad.getStatus()) {
@@ -73,10 +75,10 @@ public class TopAdsAdViewHolder extends BaseMultipleCheckViewHolder<ProductAd> {
 
         long groupId = -1;
         String groupName = "";
-        //if(ad instanceof ProductAd){
-            groupId = ad.getGroupId();
-            groupName = ad.getGroupName();
-        //}
+        if(ad instanceof ProductAd){
+            groupId = ((ProductAd) ad).getGroupId();
+            groupName = ((ProductAd) ad).getGroupName();
+        }
         if (TextUtils.isEmpty(ad.getPriceDailyBar()) || groupId > 0) {
             progressBarLayout.setVisibility(View.GONE);
             if(groupId > 0){
@@ -126,7 +128,7 @@ public class TopAdsAdViewHolder extends BaseMultipleCheckViewHolder<ProductAd> {
     }
 
     @Override
-    public void bindObject(final ProductAd item, boolean isChecked) {
+    public void bindObject(final T item, boolean isChecked) {
         bind(item);
         setChecked(isChecked);
         checkBox.setOnClickListener(new View.OnClickListener() {

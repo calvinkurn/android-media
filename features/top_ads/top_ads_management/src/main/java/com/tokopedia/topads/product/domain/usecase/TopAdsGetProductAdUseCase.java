@@ -17,11 +17,11 @@ import rx.Observable;
  * Created by hadi.putra on 04/05/18.
  */
 
-public class TopAdsGetProductAdsUseCase extends UseCase<PageDataResponse<List<ProductAd>>> {
+public class TopAdsGetProductAdUseCase extends UseCase<PageDataResponse<List<ProductAd>>> {
     private final TopAdsProductAdRepository repository;
 
     @Inject
-    public TopAdsGetProductAdsUseCase(TopAdsProductAdRepository repository) {
+    public TopAdsGetProductAdUseCase(TopAdsProductAdRepository repository) {
         this.repository = repository;
     }
 
