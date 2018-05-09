@@ -73,6 +73,7 @@ import com.tokopedia.seller.product.edit.view.widget.ImagesSelectView;
 import com.tokopedia.seller.product.etalase.view.activity.EtalasePickerActivity;
 import com.tokopedia.seller.product.variant.data.model.variantbycat.ProductVariantByCatModel;
 import com.tokopedia.seller.product.variant.data.model.variantbyprd.ProductVariantViewModel;
+import com.tokopedia.seller.product.variant.data.model.variantbyprd.variantcombination.ProductVariantCombinationViewModel;
 import com.tokopedia.seller.product.variant.view.activity.ProductVariantDashboardActivity;
 
 import java.util.ArrayList;
@@ -127,8 +128,6 @@ public abstract class BaseProductAddEditFragment<T extends ProductAddPresenter>
         void startUploadProduct(long productId);
 
         void startUploadProductWithShare(long productId);
-
-        void startAddWholeSaleDialog(@CurrencyTypeDef int currencyType, WholesaleModel previousWholesalePrice, boolean officialStore);
 
         void startUploadProductAndAddWithShare(Long productId);
 
@@ -255,12 +254,6 @@ public abstract class BaseProductAddEditFragment<T extends ProductAddPresenter>
             presenter.getCategoryRecommendation(productName);
         }
     }
-
-    @Override
-    public void startAddWholeSaleDialog(@CurrencyTypeDef int currencyType, WholesaleModel previousWholesalePrice, boolean officialStore) {
-        listener.startAddWholeSaleDialog(currencyType, previousWholesalePrice, officialStore);
-    }
-
 
     // Clicked Part
     @Override
@@ -442,6 +435,7 @@ public abstract class BaseProductAddEditFragment<T extends ProductAddPresenter>
 
     @Override
     public final void startProductVariantActivity(ArrayList<ProductVariantByCatModel> productVariantByCatModelList) {
+        productPriceViewHolder.updateModel(currentProductViewModel);
         if (productVariantByCatModelList == null || productVariantByCatModelList.size() == 0) {
             NetworkErrorHelper.createSnackbarWithAction(getActivity(), new NetworkErrorHelper.RetryClickedListener() {
                 @Override
@@ -451,6 +445,16 @@ public abstract class BaseProductAddEditFragment<T extends ProductAddPresenter>
             }).showRetrySnackbar();
             return;
         }
+
+        boolean hasWholesale = false;
+        if(currentProductViewModel.getProductWholesale()!=null){
+            if(currentProductViewModel.getProductWholesale().size()>0){
+                hasWholesale = true;
+            } else {
+                hasWholesale = false;
+            }
+        }
+
         Intent intent = ProductVariantDashboardActivity.getIntent(getActivity(),
                 productVariantByCatModelList,
                 currentProductViewModel.getProductVariant(),
@@ -462,7 +466,8 @@ public abstract class BaseProductAddEditFragment<T extends ProductAddPresenter>
                 isEdittingDraft(),
                 currentProductViewModel.getProductSizeChart(),
                 hasOriginalVariantLevel1,
-                hasOriginalVariantLevel2);
+                hasOriginalVariantLevel2,
+                hasWholesale);
         startActivityForResult(intent, ProductManageViewHolder.REQUEST_CODE_VARIANT);
     }
 
@@ -534,19 +539,43 @@ public abstract class BaseProductAddEditFragment<T extends ProductAddPresenter>
 
     @Override
     public void startProductAddWholesaleActivity() {
+        if(hasVariant()){
+            double defaultPricaVar = currentProductViewModel.getProductVariant().getProductVariant().get(0).getPriceVar();
+            for(ProductVariantCombinationViewModel productVariantCombinationViewModel : currentProductViewModel.getProductVariant().getProductVariant()){
+                if(defaultPricaVar != productVariantCombinationViewModel.getPriceVar()){
+                    AlertDialog.Builder builder = new AlertDialog.Builder(getActivity(),
+                            R.style.AppCompatAlertDialogStyle);
+                    builder.setTitle(R.string.product_wholesale_price_locked);
+                    builder.setMessage(R.string.product_wholesale_locked_description);
+                    builder.setCancelable(true);
+                    builder.setNegativeButton(R.string.close, new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                            dialog.cancel();
+                        }
+                    });
+
+                    AlertDialog alert = builder.create();
+                    alert.show();
+                    return;
+                }
+            }
+        }
+
         productPriceViewHolder.updateModel(currentProductViewModel);
         ArrayList<ProductWholesaleViewModel> productWholesaleViewModelList = (ArrayList<ProductWholesaleViewModel>) currentProductViewModel.getProductWholesale();
         Intent intent = ProductAddWholesaleActivity.getIntent(getActivity(),
                 productWholesaleViewModelList,
                 (int) currentProductViewModel.getProductPriceCurrency(),
                 currentProductViewModel.getProductPrice(),
-                officialStore);
+                officialStore,
+                hasVariant());
         startActivityForResult(intent, ProductPriceViewHolder.REQUEST_CODE_GET_PRODUCT_WHOLESALE);
     }
 
     public void onChangeAllPriceVariantSubmit(int currencyType, double currencyValue) {
         currentProductViewModel.setProductPriceCurrency(productPriceViewHolder.getCurrencyType());
         currentProductViewModel.changePriceTo(currencyType, currencyValue);
+        currentProductViewModel.setProductWholesale(new ArrayList<ProductWholesaleViewModel>());
         productPriceViewHolder.renderData(currentProductViewModel);
     }
 
@@ -748,10 +777,6 @@ public abstract class BaseProductAddEditFragment<T extends ProductAddPresenter>
 
     protected final void checkIfCatalogExist(String productName, long categoryId) {
         presenter.fetchCatalogData(productName, categoryId, 0, 1);
-    }
-
-    public final void addWholesaleItem(WholesaleModel wholesaleModel) {
-        productPriceViewHolder.addWholesaleItem(wholesaleModel);
     }
 
     @Override

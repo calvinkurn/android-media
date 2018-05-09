@@ -36,13 +36,21 @@ import java.util.List;
 public class ProductAddWholesaleFragment extends BaseDaggerFragment implements WholesaleAddAdapter.Listener {
 
     public static final String EXTRA_PRODUCT_WHOLESALE = "EXTRA_PRODUCT_WHOLESALE";
+    public static final String SAVE_PRODUCT_WHOLESALE = "SAVE_PRODUCT_WHOLESALE";
+
     private static final int MAX_WHOLESALE = 5;
+    private static final int DEFAULT_QTY_WHOLESALE = 2;
+    private static final int DEFAULT_ADD_QTY = 1;
+    private static final int DEFAULT_LESS_PRICE_RP = 1;
+    private static final double DEFAULT_LESS_PRICE_USD = 0.01;
+
     private WholesaleAddAdapter wholesaleAdapter;
     private TextView textViewAddWholesale, textMainPrice;
     private Button buttonSave;
     private ArrayList<ProductWholesaleViewModel> productWholesaleViewModelList;
     private double productPrice;
     private boolean officialStore;
+    private boolean hasVariant;
     @CurrencyTypeDef
     private int currencyType;
 
@@ -73,6 +81,7 @@ public class ProductAddWholesaleFragment extends BaseDaggerFragment implements W
         productWholesaleViewModelList = activityIntent.getParcelableArrayListExtra(ProductAddWholesaleActivity.EXTRA_PRODUCT_WHOLESALE_LIST);
         productPrice = activityIntent.getDoubleExtra(ProductAddWholesaleActivity.EXTRA_PRODUCT_MAIN_PRICE, 0);
         officialStore = activityIntent.getBooleanExtra(ProductAddWholesaleActivity.EXTRA_OFFICIAL_STORE, false);
+        hasVariant = activityIntent.getBooleanExtra(ProductAddWholesaleActivity.EXTRA_HAS_VARIANT, false);
         initCurrency(activityIntent.getIntExtra(ProductAddWholesaleActivity.EXTRA_PRODUCT_CURRENCY, 1));
     }
 
@@ -100,15 +109,15 @@ public class ProductAddWholesaleFragment extends BaseDaggerFragment implements W
                 WholesaleModel newWholesale;
                 switch (currencyType) {
                     case CurrencyTypeDef.TYPE_USD:
-                        newWholesale = new WholesaleModel(2, productPrice - 0.01);
+                        newWholesale = new WholesaleModel(DEFAULT_QTY_WHOLESALE, productPrice - DEFAULT_LESS_PRICE_USD);
                         if(lastItem!=null)
-                            newWholesale = new WholesaleModel(lastItem.getQtyMin() + 1, lastItem.getQtyPrice() - 0.01);
+                            newWholesale = new WholesaleModel(lastItem.getQtyMin() + DEFAULT_ADD_QTY, lastItem.getQtyPrice() - DEFAULT_LESS_PRICE_USD);
                         break;
                     default:
                     case CurrencyTypeDef.TYPE_IDR:
-                        newWholesale = new WholesaleModel(2, productPrice - 1);
+                        newWholesale = new WholesaleModel(DEFAULT_QTY_WHOLESALE, productPrice - DEFAULT_LESS_PRICE_RP);
                         if(lastItem!=null)
-                            newWholesale = new WholesaleModel(lastItem.getQtyMin() + 1, lastItem.getQtyPrice() - 1);
+                            newWholesale = new WholesaleModel(lastItem.getQtyMin() + DEFAULT_ADD_QTY, lastItem.getQtyPrice() - DEFAULT_LESS_PRICE_RP);
                         break;
 
                 }
@@ -121,16 +130,50 @@ public class ProductAddWholesaleFragment extends BaseDaggerFragment implements W
         buttonSave.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent();
-                intent.putParcelableArrayListExtra(EXTRA_PRODUCT_WHOLESALE, wholesaleAdapter.getProductWholesaleViewModels());
-                getActivity().setResult(Activity.RESULT_OK, intent);
-                getActivity().finish();
+                if(hasVariant) {
+                    AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getActivity(), R.style.AppCompatAlertDialogStyle)
+                            .setTitle(getString(R.string.dialog_add_wholesale_title))
+                            .setMessage(getString(R.string.dialog_add_wholesale_message))
+                            .setPositiveButton(getString(R.string.label_add), new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialogInterface, int i) {
+                                    exitWholesaleActivity();
+                                }
+                            }).setNegativeButton(getString(R.string.label_cancel), new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface arg0, int arg1) {
+
+                                }
+                            });
+                    AlertDialog dialog = alertDialogBuilder.create();
+                    dialog.show();
+                } else{
+                    exitWholesaleActivity();
+                }
             }
         });
 
+        if (savedInstanceState != null) {
+            if (savedInstanceState.containsKey(SAVE_PRODUCT_WHOLESALE)) {
+                productWholesaleViewModelList = savedInstanceState.getParcelableArrayList(SAVE_PRODUCT_WHOLESALE);
+            }
+        }
         renderData(productWholesaleViewModelList, productPrice);
 
         return root;
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        productWholesaleViewModelList = wholesaleAdapter.getProductWholesaleViewModels();
+        outState.putParcelableArrayList(SAVE_PRODUCT_WHOLESALE, productWholesaleViewModelList);
+    }
+
+    public void exitWholesaleActivity(){
+        Intent intent = new Intent();
+        intent.putParcelableArrayListExtra(EXTRA_PRODUCT_WHOLESALE, wholesaleAdapter.getProductWholesaleViewModels());
+        getActivity().setResult(Activity.RESULT_OK, intent);
+        getActivity().finish();
     }
 
     public void renderData(ArrayList<ProductWholesaleViewModel> productWholesaleViewModelArrayList, double productPrice){
@@ -189,23 +232,31 @@ public class ProductAddWholesaleFragment extends BaseDaggerFragment implements W
     public boolean onOptionsItemSelected(MenuItem item) {
         int itemId = item.getItemId();
         if (itemId == R.id.action_delete_wholesale) {
-            AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getActivity(), R.style.AppCompatAlertDialogStyle)
-                    .setTitle(getString(R.string.dialog_delete_wholesale_title))
-                    .setMessage(getString(R.string.dialog_delete_wholesale_message))
-                    .setPositiveButton(getString(R.string.label_delete), new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialogInterface, int i) {
-                            wholesaleAdapter.removeAll();
-                            wholesaleAdapter.notifyDataSetChanged();
-                            notifySizeChanged(wholesaleAdapter.getItemSize());
-                        }
-                    }).setNegativeButton(getString(R.string.label_cancel), new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface arg0, int arg1) {
+            if(hasVariant) {
+                AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getActivity(), R.style.AppCompatAlertDialogStyle)
+                        .setTitle(getString(R.string.dialog_delete_wholesale_title))
+                        .setMessage(getString(R.string.dialog_delete_wholesale_message))
+                        .setPositiveButton(getString(R.string.label_delete), new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                wholesaleAdapter.removeAll();
+                                wholesaleAdapter.notifyDataSetChanged();
+                                notifySizeChanged(wholesaleAdapter.getItemSize());
+                                exitWholesaleActivity();
+                            }
+                        }).setNegativeButton(getString(R.string.label_cancel), new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface arg0, int arg1) {
 
-                        }
-                    });
-            AlertDialog dialog = alertDialogBuilder.create();
-            dialog.show();
+                            }
+                        });
+                AlertDialog dialog = alertDialogBuilder.create();
+                dialog.show();
+            } else {
+                wholesaleAdapter.removeAll();
+                wholesaleAdapter.notifyDataSetChanged();
+                notifySizeChanged(wholesaleAdapter.getItemSize());
+                exitWholesaleActivity();
+            }
         }
         return super.onOptionsItemSelected(item);
     }
