@@ -135,6 +135,10 @@
         <value>false</value>
     </entry>
     <entry>
+        <key>app_double_shake_enabled</key>
+        <value>true</value>
+    </entry>
+    <entry>
         <key>mainapp_show_simple_app_rating</key>
         <value>true</value>
     </entry>
@@ -187,6 +191,14 @@
     </entry>
     <entry>
         <key>mainapp_show_recomendation_button</key>
+        <value>true</value>
+    </entry>
+    <entry>
+        <key>mainapp_enable_fingerprint</key>
+        <value>true</value>
+    </entry>
+    <entry>
+        <key>sellerapp_enable_fingerprint</key>
         <value>true</value>
     </entry>
     <entry>

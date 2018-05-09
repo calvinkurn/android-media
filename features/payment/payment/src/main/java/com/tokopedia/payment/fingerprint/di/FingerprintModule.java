@@ -83,9 +83,9 @@ public class FingerprintModule {
 
     @FingerprintScope
     @Provides
-    public OkHttpClient provideOkHttpClient(TkpdAuthInterceptor tkpdAuthInterceptor, HttpLoggingInterceptor httpLoggingInterceptor) {
+    public OkHttpClient provideOkHttpClient(HttpLoggingInterceptor httpLoggingInterceptor){
         OkHttpClient.Builder builder = new OkHttpClient.Builder()
-                .addInterceptor(tkpdAuthInterceptor)
+                .addInterceptor(new TkpdAuthInterceptor())
                 .readTimeout(READ_TIMEOUT, TimeUnit.SECONDS)
                 .writeTimeout(WRITE_TIMEOUT, TimeUnit.SECONDS);
         if (GlobalConfig.isAllowDebuggingTools()) {

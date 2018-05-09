@@ -85,11 +85,7 @@ public abstract class BottomSheets extends BottomSheetDialogFragment {
         btnClose.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (bottomSheetBehavior.getState() == BottomSheetBehavior.STATE_EXPANDED) {
-                    bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
-                } else if (bottomSheetBehavior.getState() == BottomSheetBehavior.STATE_COLLAPSED) {
-                    BottomSheets.this.dismiss();
-                }
+                onCloseButtonClick();
             }
         });
 
@@ -97,6 +93,14 @@ public abstract class BottomSheets extends BottomSheetDialogFragment {
         View subView = View.inflate(getContext(), getLayoutResourceId(), null);
         initView(subView);
         frameParent.addView(subView);
+    }
+
+    protected void onCloseButtonClick() {
+        if (bottomSheetBehavior.getState() == BottomSheetBehavior.STATE_EXPANDED) {
+            bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+        } else if (bottomSheetBehavior.getState() == BottomSheetBehavior.STATE_COLLAPSED) {
+            BottomSheets.this.dismiss();
+        }
     }
 
     protected void updateHeight() {
