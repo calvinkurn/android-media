@@ -2,17 +2,17 @@ package com.tokopedia.feedplus.view.adapter.typefactory.feeddetail;
 
 import android.view.View;
 
-import com.tokopedia.core.base.adapter.BaseAdapterTypeFactory;
-import com.tokopedia.core.base.adapter.model.EmptyModel;
-import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
-import com.tokopedia.feedplus.view.listener.FeedPlusDetail;
+import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory;
+import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel;
+import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.feedplus.view.adapter.viewholder.feeddetail.EmptyFeedDetailViewHolder;
 import com.tokopedia.feedplus.view.adapter.viewholder.feeddetail.FeedDetailHeaderViewHolder;
 import com.tokopedia.feedplus.view.adapter.viewholder.feeddetail.FeedDetailViewHolder;
 import com.tokopedia.feedplus.view.adapter.viewholder.feeddetail.SingleFeedDetailViewHolder;
-import com.tokopedia.feedplus.view.viewmodel.feeddetail.SingleFeedDetailViewModel;
+import com.tokopedia.feedplus.view.listener.FeedPlusDetail;
 import com.tokopedia.feedplus.view.viewmodel.feeddetail.FeedDetailHeaderViewModel;
 import com.tokopedia.feedplus.view.viewmodel.feeddetail.FeedDetailViewModel;
+import com.tokopedia.feedplus.view.viewmodel.feeddetail.SingleFeedDetailViewModel;
 
 /**
  * @author by nisie on 5/18/17.

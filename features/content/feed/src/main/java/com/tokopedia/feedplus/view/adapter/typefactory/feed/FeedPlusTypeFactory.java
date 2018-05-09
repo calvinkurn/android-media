@@ -2,31 +2,33 @@ package com.tokopedia.feedplus.view.adapter.typefactory.feed;
 
 import android.view.View;
 
+import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.core.base.adapter.model.EmptyModel;
-import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.feedplus.view.viewmodel.EmptyFeedBeforeLoginModel;
 import com.tokopedia.feedplus.view.viewmodel.FavoriteCtaViewModel;
-import com.tokopedia.feedplus.view.viewmodel.kol.KolRecommendationViewModel;
-import com.tokopedia.feedplus.view.viewmodel.kol.KolViewModel;
-import com.tokopedia.feedplus.view.viewmodel.kol.ProductCommunicationViewModel;
-import com.tokopedia.feedplus.view.viewmodel.officialstore.OfficialStoreBrandsViewModel;
-import com.tokopedia.feedplus.view.viewmodel.product.AddFeedModel;
+import com.tokopedia.feedplus.view.viewmodel.RetryModel;
 import com.tokopedia.feedplus.view.viewmodel.blog.BlogViewModel;
 import com.tokopedia.feedplus.view.viewmodel.inspiration.InspirationViewModel;
+import com.tokopedia.feedplus.view.viewmodel.kol.KolRecommendationViewModel;
+import com.tokopedia.feedplus.view.viewmodel.kol.ProductCommunicationViewModel;
+import com.tokopedia.feedplus.view.viewmodel.officialstore.OfficialStoreBrandsViewModel;
 import com.tokopedia.feedplus.view.viewmodel.officialstore.OfficialStoreCampaignViewModel;
 import com.tokopedia.feedplus.view.viewmodel.product.ActivityCardViewModel;
+import com.tokopedia.feedplus.view.viewmodel.product.AddFeedModel;
 import com.tokopedia.feedplus.view.viewmodel.promo.PromoCardViewModel;
 import com.tokopedia.feedplus.view.viewmodel.promo.PromotedProductViewModel;
 import com.tokopedia.feedplus.view.viewmodel.promo.PromotedShopViewModel;
 import com.tokopedia.feedplus.view.viewmodel.recentview.RecentViewViewModel;
 import com.tokopedia.feedplus.view.viewmodel.topads.FeedTopAdsViewModel;
 import com.tokopedia.feedplus.view.viewmodel.toppicks.ToppicksViewModel;
+import com.tokopedia.kol.feature.post.view.adapter.typefactory.KolPostTypeFactory;
+import com.tokopedia.kol.feature.post.view.viewmodel.KolPostViewModel;
 
 /**
  * @author by nisie on 5/15/17.
  */
 
-public interface FeedPlusTypeFactory {
+public interface FeedPlusTypeFactory extends KolPostTypeFactory {
 
     int type(ActivityCardViewModel viewModel);
 
@@ -52,7 +54,7 @@ public interface FeedPlusTypeFactory {
 
     int type(ToppicksViewModel toppicksViewModel);
 
-    int type(KolViewModel kolViewModel);
+    int type(KolPostViewModel kolPostViewModel);
 
     int type(KolRecommendationViewModel kolRecommendationViewModel);
 
@@ -63,6 +65,8 @@ public interface FeedPlusTypeFactory {
     int type(ProductCommunicationViewModel productCommunicationViewModel);
 
     int type(EmptyFeedBeforeLoginModel emptyFeedBeforeLoginModel);
+
+    int type(RetryModel retryModel);
 
     AbstractViewHolder createViewHolder(View view, int viewType);
 }

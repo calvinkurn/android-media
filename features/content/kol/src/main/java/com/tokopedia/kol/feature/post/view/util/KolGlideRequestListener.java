@@ -1,4 +1,4 @@
-package com.tokopedia.feedplus.view.util;
+package com.tokopedia.kol.feature.post.view.util;
 
 import android.view.ViewGroup;
 import android.widget.ImageView;
