@@ -11,6 +11,8 @@ import java.util.Map;
 
 public class HomePageTracking extends TrackingUtils {
 
+    public static final String CLICK_HOME_PAGE = "clickHomePage";
+    public static final String EVENT_IMPRESSION_HOME_PAGE = "eventImpressionHomePage";
     private static String STATIC_VALUE_CLICK_HOMEPAGE = "clickHomePage";
     private static String STATIC_VALUE_HOMEPAGE = "homepage";
     public static final String BELI_INI_ITU_CLICK = "beli ini itu click";
@@ -41,6 +43,24 @@ public class HomePageTracking extends TrackingUtils {
     private static void flushEventTracker() {
         sendGTMEvent(new EventTracking(
                 null, null, null, null
+        ).getEvent());
+    }
+
+    public static void eventClickJumpRecomendation() {
+        sendGTMEvent(new EventTracking(
+                CLICK_HOME_PAGE,
+                STATIC_VALUE_HOMEPAGE,
+                "cek rekomendasi jumper click",
+                ""
+        ).getEvent());
+    }
+
+    public static void eventImpressionJumpRecomendation() {
+        sendGTMEvent(new EventTracking(
+                EVENT_IMPRESSION_HOME_PAGE,
+                STATIC_VALUE_HOMEPAGE,
+                "cek rekomendasi jumper impression",
+                ""
         ).getEvent());
     }
 
@@ -76,6 +96,15 @@ public class HomePageTracking extends TrackingUtils {
                 STATIC_VALUE_CLICK_HOMEPAGE,
                 STATIC_VALUE_HOMEPAGE,
                 "sprint sale click view all",
+                ""
+        ).getEvent());
+    }
+
+    public static void eventClickSeeAllProductSprintBackground() {
+        sendGTMEvent(new EventTracking(
+                STATIC_VALUE_CLICK_HOMEPAGE,
+                STATIC_VALUE_HOMEPAGE,
+                "sprint sale with backgroud click view all",
                 ""
         ).getEvent());
     }

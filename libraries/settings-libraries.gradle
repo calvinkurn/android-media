@@ -1,2 +1,7 @@
 include "libraries:react_native"
 include "libraries:analytics"
+include "libraries:fingerprint"
+include "libraries:push_notification"
+include "libraries:applink"
+include "libraries:cache_api"
+include "libraries:use_case"

@@ -13,7 +13,7 @@
         android:layout_height="wrap_content"
         android:text="@string/label_card_number"
         android:textColor="@color/grey_700"
-        android:textSize="@dimen/font_small" />
+        android:textSize="@dimen/sp_14" />
 
 
     <EditText
@@ -29,13 +29,13 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/padding_med"
+        android:layout_marginTop="@dimen/dp_20"
         android:orientation="horizontal">
 
         <LinearLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginRight="@dimen/margin_ms"
+            android:layout_marginRight="@dimen/dp_8"
             android:layout_weight="1"
             android:orientation="vertical">
 
@@ -44,7 +44,7 @@
                 android:layout_height="wrap_content"
                 android:text="@string/label_expiration_date"
                 android:textColor="@color/grey_700"
-                android:textSize="@dimen/font_small" />
+                android:textSize="@dimen/sp_14" />
 
 
             <com.tokopedia.design.component.EditTextCompat
@@ -62,7 +62,7 @@
         <LinearLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/margin_ms"
+            android:layout_marginLeft="@dimen/dp_8"
             android:layout_weight="1"
             android:orientation="vertical">
 
@@ -72,7 +72,7 @@
                 android:inputType="date"
                 android:text="@string/label_cvv"
                 android:textColor="@color/grey_700"
-                android:textSize="@dimen/font_small" />
+                android:textSize="@dimen/sp_14" />
 
 
             <com.tokopedia.design.component.EditTextCompat
@@ -93,16 +93,16 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/padding_med"
+        android:layout_marginTop="@dimen/dp_20"
         android:inputType="date"
         android:text="@string/label_country"
         android:textColor="@color/grey_700"
-        android:textSize="@dimen/font_small" />
+        android:textSize="@dimen/sp_14" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/margin_ms"
+        android:layout_marginTop="@dimen/dp_8"
         android:inputType="date"
         android:textColor="@color/black"
         android:textSize="@dimen/font_medium"

@@ -8,17 +8,17 @@
         android:id="@+id/tv_filter_label"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/margin_default"
-        android:layout_marginTop="@dimen/margin_default"
-        android:paddingEnd="@dimen/margin_default"
-        android:paddingStart="@dimen/margin_default"
+        android:layout_marginBottom="@dimen/dp_16"
+        android:layout_marginTop="@dimen/dp_16"
+        android:paddingEnd="@dimen/dp_16"
+        android:paddingStart="@dimen/dp_16"
         android:textStyle="normal"
-        android:textSize="@dimen/font_small" />
+        android:textSize="@dimen/sp_14" />
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/rv_filter_list"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingEnd="@dimen/margin_default"
-        android:paddingStart="@dimen/margin_default" />
+        android:paddingEnd="@dimen/dp_16"
+        android:paddingStart="@dimen/dp_16" />
 </LinearLayout>

@@ -18,9 +18,7 @@ import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.retrofit.response.ErrorHandler;
-import com.tokopedia.core.people.activity.PeopleInfoNoDrawerActivity;
 import com.tokopedia.core.router.productdetail.PdpRouter;
-import com.tokopedia.core.shopinfo.ShopInfoActivity;
 import com.tokopedia.design.quickfilter.QuickFilterItem;
 import com.tokopedia.design.quickfilter.QuickSingleFilterView;
 import com.tokopedia.design.quickfilter.custom.CustomViewQuickFilterItem;
@@ -33,17 +31,14 @@ import com.tokopedia.tkpd.tkpdreputation.domain.model.LikeDislikeDomain;
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.inboxdetail.DeleteReviewResponseDomain;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.activity.InboxReputationReportActivity;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.inboxdetail.ImageUpload;
-import com.tokopedia.tkpd.tkpdreputation.review.product.data.model.reviewstarcount
-        .DataResponseReviewStarCount;
-import com.tokopedia.tkpd.tkpdreputation.review.product.data.model.reviewstarcount
-        .DetailReviewStarCount;
+import com.tokopedia.tkpd.tkpdreputation.review.product.data.model.reviewstarcount.DataResponseReviewStarCount;
+import com.tokopedia.tkpd.tkpdreputation.review.product.data.model.reviewstarcount.DetailReviewStarCount;
 import com.tokopedia.tkpd.tkpdreputation.review.product.view.adapter.ReviewProductAdapter;
 import com.tokopedia.tkpd.tkpdreputation.review.product.view.adapter.ReviewProductContentViewHolder;
 import com.tokopedia.tkpd.tkpdreputation.review.product.view.adapter.ReviewProductModel;
 import com.tokopedia.tkpd.tkpdreputation.review.product.view.adapter.ReviewProductModelContent;
 import com.tokopedia.tkpd.tkpdreputation.review.product.view.adapter.ReviewProductModelTitleHeader;
-import com.tokopedia.tkpd.tkpdreputation.review.product.view.adapter
-        .ReviewProductTypeFactoryAdapter;
+import com.tokopedia.tkpd.tkpdreputation.review.product.view.adapter.ReviewProductTypeFactoryAdapter;
 import com.tokopedia.tkpd.tkpdreputation.review.product.view.presenter.ReviewProductContract;
 import com.tokopedia.tkpd.tkpdreputation.review.product.view.presenter.ReviewProductPresenter;
 import com.tokopedia.tkpd.tkpdreputation.review.product.view.widget.RatingBarReview;
@@ -184,7 +179,7 @@ public class ReviewProductFragment extends BaseListFragment<ReviewProductModel, 
     }
 
     @Override
-    public void onGoToProfile(String reviewerId) {
+    public void onGoToProfile(String reviewerId, int adapterPosition) {
         if (getActivity().getApplicationContext() instanceof ReputationRouter) {
             startActivity(((ReputationRouter) getActivity().getApplicationContext())
                     .getTopProfileIntent(getActivity(),
@@ -214,13 +209,12 @@ public class ReviewProductFragment extends BaseListFragment<ReviewProductModel, 
 
     @Override
     public void onGoToShopInfo(String shopId) {
-        Intent intent = new Intent(MainApplication.getAppContext(), ShopInfoActivity.class);
-        intent.putExtras(ShopInfoActivity.createBundle(String.valueOf(shopId), ""));
+        Intent intent = ((ReputationRouter) getActivity().getApplication()).getShopPageIntent(getActivity(), String.valueOf(shopId));
         startActivity(intent);
     }
 
     @Override
-    public void onDeleteReviewResponse(ReviewProductModelContent element) {
+    public void onDeleteReviewResponse(ReviewProductModelContent element, int adapterPosition) {
         productReviewPresenter.deleteReview(element.getReviewId(), element.getReputationId(), productId);
     }
 
@@ -230,7 +224,7 @@ public class ReviewProductFragment extends BaseListFragment<ReviewProductModel, 
     }
 
     @Override
-    public void onGoToReportReview(String shopId, String reviewId) {
+    public void onGoToReportReview(String shopId, String reviewId, int adapterPosition) {
         startActivity(InboxReputationReportActivity.getCallingIntent(
                 getActivity(),
                 Integer.valueOf(shopId),
@@ -340,8 +334,18 @@ public class ReviewProductFragment extends BaseListFragment<ReviewProductModel, 
     }
 
     @Override
-    public void onLikeDislikePressed(String reviewId, int likeStatus, String productId) {
+    public void onLikeDislikePressed(String reviewId, int likeStatus, String productId, boolean status, int adapterPosition) {
         productReviewPresenter.postLikeDislikeReview(reviewId, likeStatus, productId);
+    }
+
+    @Override
+    public void onMenuClicked(int adapterPosition) {
+
+    }
+
+    @Override
+    public void onSeeReplied(int adapterPosition) {
+
     }
 
     @Override

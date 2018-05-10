@@ -1,58 +1,76 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/view_group_product_info"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical">
+    tools:orientation="vertical"
+    tools:parentTag="LinearLayout">
 
     <LinearLayout
         style="@style/LabelLayout"
-        android:background="@android:color/transparent"
-        android:orientation="vertical">
+        android:layout_marginTop="@dimen/activity_vertical_margin">
 
-        <TextView
-            style="@style/TextView.Small.BlackSecondary"
+        <android.support.v7.widget.AppCompatTextView
+            style="@style/TextView.Title.Bold"
             android:text="@string/product_label_product_info" />
-
     </LinearLayout>
 
-    <FrameLayout style="@style/LabelLayout">
-
-        <android.support.design.widget.TextInputLayout
-            android:id="@+id/text_input_layout_name"
-            style="@style/TextInputLayout"
-            android:hint="@string/product_label_name"
-            app:counterEnabled="true"
-            app:counterMaxLength="@integer/product_max_character_name">
-
-            <EditText
-                android:id="@+id/edit_text_name"
-                style="@style/EditText"
-                android:layout_width="match_parent"
-                android:inputType="text"
-                android:maxLength="@integer/product_max_character_name"
-                android:imeOptions="actionDone"/>
-
-        </android.support.design.widget.TextInputLayout>
-    </FrameLayout>
 
     <LinearLayout
+        android:id="@+id/view_group_product_info"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/margin_med"
-        android:divider="@color/grey_300"
-        android:orientation="vertical">
+        android:divider="@drawable/line_divider"
+        android:orientation="vertical"
+        android:showDividers="middle|end">
+
+        <LinearLayout
+            android:id="@+id/view_group_product_image"
+            style="@style/LabelLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <com.tokopedia.seller.product.edit.view.widget.ImagesSelectView
+                android:id="@+id/image_select_view"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:addPictureSrc="@drawable/ic_add_product"
+                app:imageLimit="5"
+                app:primaryImageString="@string/prompt_main_picture"
+                app:recyclerviewPadding="0dp"
+                app:titleString="@string/product_upload_product_image" />
+
+            <com.tokopedia.design.text.TkpdHintTextInputLayout
+                android:id="@+id/text_input_layout_name"
+                style="@style/HintTextInputLayout"
+                android:layout_marginTop="@dimen/margin_med"
+                android:hint="@string/product_label_name"
+                app:counterEnabled="true"
+                app:counterMaxLength="@integer/product_max_character_name">
+
+                <EditText
+                    android:id="@+id/edit_text_name"
+                    style="@style/EditText"
+                    android:layout_width="match_parent"
+                    android:hint="@string/product_enter_label_name"
+                    android:imeOptions="actionDone"
+                    android:inputType="textCapSentences"
+                    android:maxLength="@integer/product_max_character_name" />
+
+            </com.tokopedia.design.text.TkpdHintTextInputLayout>
+        </LinearLayout>
 
         <LinearLayout
             android:id="@+id/view_group_category_recomm"
             style="@style/LabelLayout"
             android:orientation="vertical"
-            android:visibility="gone">
+            android:visibility="gone"
+            tools:visibility="visible">
 
             <TextView
-                android:id="@+id/text_view_shop_title"
-                style="@style/TextView.Small.BlackSecondary"
+                style="@style/TextView.Micro.BlackSecondary"
                 android:text="@string/product_label_product_recommendation" />
 
             <RadioGroup
@@ -66,28 +84,36 @@
 
             </RadioGroup>
 
-
         </LinearLayout>
 
         <com.tokopedia.seller.common.widget.LabelView
             android:id="@+id/label_view_category"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:focusable="true"
             app:content="@string/product_label_choose"
             app:content_color="@color/tkpd_main_green"
             app:content_max_lines="5"
-            app:title="@string/product_label_category"
-            android:focusable="true"/>
+            app:title="@string/product_label_category" />
+
+        <com.tokopedia.seller.common.widget.LabelView
+            android:id="@+id/label_view_catalog"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            app:content="@string/product_label_choose"
+            app:content_color="@color/tkpd_main_green"
+            app:title="@string/product_label_catalog"
+            tools:visibility="visible" />
+
+        <com.tokopedia.seller.common.widget.LabelView
+            android:id="@+id/label_view_etalase"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:focusable="true"
+            app:content="@string/product_label_choose"
+            app:content_color="@color/tkpd_main_green"
+            app:title="@string/product_label_etalase" />
+
     </LinearLayout>
-
-    <com.tokopedia.seller.common.widget.LabelView
-        android:id="@+id/label_view_catalog"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/margin_med"
-        android:visibility="gone"
-        app:content="@string/product_label_choose"
-        app:content_color="@color/tkpd_main_green"
-        app:title="@string/product_label_catalog" />
-
-</LinearLayout>
+</merge>

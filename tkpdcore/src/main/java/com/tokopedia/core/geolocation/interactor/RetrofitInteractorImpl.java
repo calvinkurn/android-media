@@ -109,6 +109,34 @@ public class RetrofitInteractorImpl implements RetrofitInteractor {
     }
 
     @Override
+    public void generateLatLngGeoCode(Context context, TKPDMapParam<String, String> param,
+                                      final GenerateLatLongListener listener) {
+        TKPDMapParam<String, Object> paramaters = new TKPDMapParam<>();
+        paramaters.putAll(param);
+        compositeSubscription.add(mapsRepository.getLatLngFromGeocode(service, paramaters)
+                .unsubscribeOn(Schedulers.newThread())
+                .subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Subscriber<CoordinateViewModel>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        if(e instanceof RuntimeException)
+                            listener.onError(e.getMessage());
+                    }
+
+                    @Override
+                    public void onNext(CoordinateViewModel model) {
+                        listener.onSuccess(model);
+                    }
+                }));
+    }
+
+    @Override
     public CompositeSubscription getCompositeSubscription() {
         return compositeSubscription;
     }

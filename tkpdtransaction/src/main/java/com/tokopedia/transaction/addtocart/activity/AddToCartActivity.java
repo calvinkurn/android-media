@@ -33,8 +33,8 @@ import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.core.analytics.AppScreen;
-import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.UnifyTracking;
+import com.tokopedia.core.analytics.container.GTMContainer;
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.core.geolocation.activity.GeolocationActivity;
 import com.tokopedia.core.geolocation.model.autocomplete.LocationPass;
@@ -636,7 +636,8 @@ public class AddToCartActivity extends BasePresenterActivity<AddToCartPresenter>
                 setInsuranceInfoButtonVisibility(product);
             }
 
-            if (product.getMaxHoursId() != null && product.getDescHoursId() != null) {
+            if (!TextUtils.isEmpty(product.getMaxHoursId())
+                    && !TextUtils.isEmpty(product.getDescHoursId())) {
                 arrowMaxHour.setText(product.getMaxHoursId());
                 descMaxHour.setText(product.getDescHoursId());
                 shipmentHourAtcLayout.setVisibility(View.VISIBLE);
@@ -786,21 +787,6 @@ public class AddToCartActivity extends BasePresenterActivity<AddToCartPresenter>
         if (presenter.isValidOrder(this, orderData)) {
             presenter.addToCartService(this, atcReceiver, createFinalOrderData());
             presenter.sendAppsFlyerATC(this, orderData);
-
-            processCartAnalytics(mProductDetail);
-        }
-    }
-
-    private void processCartAnalytics(ProductDetail productDetail) {
-        if (productDetail != null) {
-            com.tokopedia.core.analytics.model.Product product = new com.tokopedia.core.analytics.model.Product();
-            product.setCategoryName(productDetail.getProductCatName());
-            product.setCategoryId(productDetail.getProductCatId());
-            product.setName(productDetail.getProductName());
-            product.setId(productDetail.getProductId());
-            product.setPrice(productDetail.getProductPrice());
-
-            TrackingUtils.sendMoEngageAddToCart(product);
         }
     }
 
@@ -892,7 +878,10 @@ public class AddToCartActivity extends BasePresenterActivity<AddToCartPresenter>
                 break;
             case ATCIntentService.RESULT_ADD_TO_CART_SUCCESS:
                 hideProgressLoading();
-                presenter.sendAnalyticsATCSuccess(this, productCartPass, createFinalOrderData());
+                presenter.sendAddToCartCheckoutAnalytic(this,
+                        productCartPass,
+                        mProductDetail,
+                        etQuantity.getText().toString());
                 presenter.processAddToCartSuccess(this,
                         resultData.getString(ATCIntentService.EXTRA_MESSAGE));
                 presenter.setCacheCart(this);
@@ -939,6 +928,8 @@ public class AddToCartActivity extends BasePresenterActivity<AddToCartPresenter>
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        GTMContainer gtmContainer = new GTMContainer(this);
+        gtmContainer.clearEnhanceEcommerce();
         if (savedInstanceState != null) {
             this.orderData = savedInstanceState.getParcelable(EXTRA_STATE_ORDER_DATA);
             this.mDestination = savedInstanceState.getParcelable(EXTRA_STATE_DESTINATION_DATA);

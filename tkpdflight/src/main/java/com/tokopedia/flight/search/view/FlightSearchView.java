@@ -18,10 +18,6 @@ public interface FlightSearchView extends BaseListViewListener<FlightSearchViewM
 
     void setSelectedSortItem(int itemId);
 
-    void showSortRouteLoading();
-
-    void hideSortRouteLoading();
-
     void onSuccessGetDataFromCloud(boolean isDataEmpty, FlightMetaDataDB flightMetaDataDB);
 
     void onErrorDeleteFlightCache(Throwable throwable);
@@ -79,4 +75,12 @@ public interface FlightSearchView extends BaseListViewListener<FlightSearchViewM
     void showEmptyFlightStateView();
 
     void removeBottomPaddingForSortAndFilterActionButton();
+
+    void loadInitialData();
+
+    void actionFetchFlightSearchData();
+
+    void setNeedRefreshAirline(boolean needRefresh);
+
+    boolean isNeedRefreshAirline();
 }

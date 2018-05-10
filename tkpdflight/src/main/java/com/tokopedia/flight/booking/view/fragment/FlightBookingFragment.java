@@ -28,6 +28,7 @@ import android.widget.RelativeLayout;
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
+import com.tokopedia.abstraction.base.view.recyclerview.VerticalRecyclerView;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.design.text.TkpdHintTextInputLayout;
@@ -56,6 +57,7 @@ import com.tokopedia.flight.common.util.FlightDateUtil;
 import com.tokopedia.flight.common.util.FlightErrorUtil;
 import com.tokopedia.flight.common.util.FlightFlowUtil;
 import com.tokopedia.flight.common.util.FlightRequestUtil;
+import com.tokopedia.flight.common.view.FullDividerItemDecoration;
 import com.tokopedia.flight.detail.view.activity.FlightDetailActivity;
 import com.tokopedia.flight.detail.view.model.FlightDetailViewModel;
 import com.tokopedia.flight.review.view.activity.FlightBookingReviewActivity;
@@ -81,6 +83,7 @@ public class FlightBookingFragment extends BaseDaggerFragment implements FlightB
     private static final String INTERRUPT_DIALOG_TAG = "interrupt_dialog";
     private static final String KEY_CART_DATA = "KEY_CART_DATA";
     private static final String KEY_PARAM_VIEW_MODEL_DATA = "KEY_PARAM_VIEW_MODEL_DATA";
+    private static final String KEY_PARAM_EXPIRED_DATE = "KEY_PARAM_EXPIRED_DATE";
 
     private static final int REQUEST_CODE_PASSENGER = 1;
     private static final int REQUEST_CODEP_PHONE_CODE = 2;
@@ -118,6 +121,7 @@ public class FlightBookingFragment extends BaseDaggerFragment implements FlightB
     private FlightBookingPassengerAdapter adapter;
     private String contactBirthdate;
     private int contactGender;
+    private Date expiredTransactionDate;
 
     public FlightBookingFragment() {
         // Required empty public constructor
@@ -150,11 +154,15 @@ public class FlightBookingFragment extends BaseDaggerFragment implements FlightB
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
+        paramViewModel.setContactName(getContactName());
+        paramViewModel.setContactPhone(getContactPhoneNumber());
+        paramViewModel.setContactEmail(getContactEmail());
         outState.putParcelable(EXTRA_SEARCH_PASS_DATA, paramViewModel.getSearchParam());
         outState.putString(EXTRA_FLIGHT_DEPARTURE_ID, departureTripId);
         outState.putString(EXTRA_FLIGHT_ARRIVAL_ID, returnTripId);
         outState.putParcelable(KEY_CART_DATA, flightBookingCartData);
         outState.putParcelable(KEY_PARAM_VIEW_MODEL_DATA, paramViewModel);
+        outState.putSerializable(KEY_PARAM_EXPIRED_DATE, expiredTransactionDate);
     }
 
     @Override
@@ -167,6 +175,7 @@ public class FlightBookingFragment extends BaseDaggerFragment implements FlightB
         departureInfoView = (CardWithActionView) view.findViewById(R.id.cwa_departure_info);
         returnInfoView = (CardWithActionView) view.findViewById(R.id.cwa_return_info);
         passengerRecyclerView = (RecyclerView) view.findViewById(R.id.rv_passengers);
+        passengerRecyclerView.addItemDecoration(new FullDividerItemDecoration(passengerRecyclerView.getContext()));
         submitButton = (AppCompatButton) view.findViewById(R.id.button_submit);
         tilContactName = (TkpdHintTextInputLayout) view.findViewById(R.id.til_contact_name);
         etContactName = (AppCompatEditText) view.findViewById(R.id.et_contact_name);
@@ -245,16 +254,14 @@ public class FlightBookingFragment extends BaseDaggerFragment implements FlightB
         super.onViewCreated(view, savedInstanceState);
         presenter.attachView(this);
         if (savedInstanceState == null) {
-            presenter.processGetCartData();
+            presenter.initialize();
         } else {
             flightBookingCartData = savedInstanceState.getParcelable(KEY_CART_DATA);
             paramViewModel = savedInstanceState.getParcelable(KEY_PARAM_VIEW_MODEL_DATA);
+            expiredTransactionDate = (Date) savedInstanceState.getSerializable(KEY_PARAM_EXPIRED_DATE);
             hideFullPageLoading();
             presenter.renderUi(flightBookingCartData, true);
         }
-
-        presenter.onGetProfileData();
-        presenter.initialize();
     }
 
     @Override
@@ -437,8 +444,8 @@ public class FlightBookingFragment extends BaseDaggerFragment implements FlightB
                 airLineSection = getString(R.string.flight_booking_multiple_airline_trip_card);
             }
         }
-        if (returnTrip.getRouteList().size() > 1) {
-            tripInfo += String.format(getString(R.string.flight_booking_trip_info_format), returnTrip.getRouteList().size() - 1, getString(R.string.flight_booking_transit_trip_card));
+        if (returnTrip.getTotalTransit() > 0) {
+            tripInfo += String.format(getString(R.string.flight_booking_trip_info_format), returnTrip.getTotalTransit(), getString(R.string.flight_booking_transit_trip_card));
         } else {
             tripInfo += String.format(getString(R.string.flight_booking_trip_info_format_without_count), getString(R.string.flight_booking_directly_trip_card));
         }
@@ -461,8 +468,8 @@ public class FlightBookingFragment extends BaseDaggerFragment implements FlightB
                 airLineSection = getString(R.string.flight_booking_multiple_airline_trip_card);
             }
         }
-        if (departureTrip.getRouteList().size() > 1) {
-            tripInfo += String.format(getString(R.string.flight_booking_trip_info_format), departureTrip.getRouteList().size() - 1, getString(R.string.flight_booking_transit_trip_card));
+        if (departureTrip.getTotalTransit() > 0) {
+            tripInfo += String.format(getString(R.string.flight_booking_trip_info_format), departureTrip.getTotalTransit(), getString(R.string.flight_booking_transit_trip_card));
         } else {
             tripInfo += String.format(getString(R.string.flight_booking_trip_info_format_without_count), getString(R.string.flight_booking_directly_trip_card));
         }
@@ -551,6 +558,7 @@ public class FlightBookingFragment extends BaseDaggerFragment implements FlightB
 
     @Override
     public void renderFinishTimeCountDown(Date date) {
+        expiredTransactionDate = date;
         countdownFinishTransactionView.setListener(new CountdownTimeView.OnActionListener() {
             @Override
             public void onFinished() {
@@ -563,9 +571,9 @@ public class FlightBookingFragment extends BaseDaggerFragment implements FlightB
     }
 
     @Override
-    public void showExpireTransactionDialog() {
+    public void showExpireTransactionDialog(String message) {
         AlertDialog.Builder dialog = new AlertDialog.Builder(getActivity());
-        dialog.setMessage(R.string.flight_booking_expired_booking_label);
+        dialog.setMessage(message);
         dialog.setPositiveButton(getActivity().getString(R.string.title_ok),
                 new DialogInterface.OnClickListener() {
                     @Override
@@ -584,6 +592,24 @@ public class FlightBookingFragment extends BaseDaggerFragment implements FlightB
     public void setCartId(String id) {
         flightBookingCartData.setId(id);
         getCurrentBookingParamViewModel().setId(id);
+    }
+
+    @Override
+    public void showSoldOutDialog() {
+        AlertDialog.Builder dialog = new AlertDialog.Builder(getActivity());
+        dialog.setMessage(R.string.flight_booking_sold_out_label);
+        dialog.setPositiveButton(getActivity().getString(R.string.title_ok),
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        FlightFlowUtil.actionSetResultAndClose(getActivity(),
+                                getActivity().getIntent(),
+                                FlightFlowConstant.EXPIRED_JOURNEY
+                        );
+                    }
+                });
+        dialog.setCancelable(false);
+        dialog.create().show();
     }
 
     @Override
@@ -726,16 +752,17 @@ public class FlightBookingFragment extends BaseDaggerFragment implements FlightB
         getActivity().finish();
     }
 
-    public void onBackPressed() {
-        presenter.deleteAllPassengerList();
-    }
-
     @Override
     public void setSameAsContactChecked(boolean isChecked) {
         // ((CompoundButton) sameAsContactCheckbox).setChecked(isChecked);
     }
 
-//    private View.OnClickListener getCheckboxClickListener() {
+    @Override
+    public Date getExpiredTransactionDate() {
+        return expiredTransactionDate;
+    }
+
+    //    private View.OnClickListener getCheckboxClickListener() {
 //        return new View.OnClickListener() {
 //            @Override
 //            public void onClick(View v) {

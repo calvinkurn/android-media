@@ -2,7 +2,6 @@ package com.tokopedia.inbox.inboxchat.activity;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Rect;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -14,6 +13,7 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
+import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.DrawerPresenterActivity;
 import com.tokopedia.core.app.MainApplication;
@@ -33,6 +33,7 @@ import com.tokopedia.inbox.common.applink.ApplinkConstant;
 import com.tokopedia.inbox.common.util.SpaceItemDecoration;
 import com.tokopedia.inbox.inboxchat.ChatNotifInterface;
 import com.tokopedia.inbox.inboxchat.adapter.IndicatorAdapter;
+import com.tokopedia.inbox.inboxchat.analytics.TopChatAnalytics;
 import com.tokopedia.inbox.inboxchat.fragment.InboxChatFragment;
 import com.tokopedia.inbox.inboxchat.viewmodel.IndicatorItem;
 import com.tokopedia.inbox.inboxmessage.InboxMessageConstant;
@@ -52,6 +53,7 @@ public class InboxChatActivity extends DrawerPresenterActivity
     private static final String ACTIVE_INDICATOR_POSITION = "active";
     IndicatorAdapter indicatorAdapter;
     RecyclerView indicator;
+    View indicatorLayout;
 
     @Inject
     SessionHandler sessionHandler;
@@ -134,7 +136,7 @@ public class InboxChatActivity extends DrawerPresenterActivity
     @Override
     protected void initView() {
         super.initView();
-
+        indicatorLayout = findViewById(R.id.indicator_layout);
         indicator = findViewById(R.id.indicator);
         indicatorAdapter = IndicatorAdapter.createInstance(getIndicatorList(), this);
         indicator.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager
@@ -143,9 +145,9 @@ public class InboxChatActivity extends DrawerPresenterActivity
         indicator.setAdapter(indicatorAdapter);
 
         if (isEnabledGroupChat()) {
-            indicator.setVisibility(View.VISIBLE);
+            indicatorLayout.setVisibility(View.VISIBLE);
         } else {
-            indicator.setVisibility(View.GONE);
+            indicatorLayout.setVisibility(View.GONE);
         }
 
         if (getIntent().getExtras() != null
@@ -241,6 +243,9 @@ public class InboxChatActivity extends DrawerPresenterActivity
                 initTopChatFragment();
                 break;
             case POSITION_GROUP_CHAT:
+                AbstractionRouter abstractionRouter = (AbstractionRouter) getActivity().getApplicationContext();
+                abstractionRouter.getAnalyticTracker().sendEventTracking(
+                        TopChatAnalytics.eventClickInboxChannel().getEvent());
                 initGroupChatFragment();
                 break;
             default:
@@ -290,12 +295,12 @@ public class InboxChatActivity extends DrawerPresenterActivity
     }
 
     public void hideIndicators() {
-        indicator.setVisibility(View.GONE);
+        indicatorLayout.setVisibility(View.GONE);
     }
 
     public void showIndicators() {
         if (!GlobalConfig.isSellerApp() && isEnabledGroupChat()) {
-            indicator.setVisibility(View.VISIBLE);
+            indicatorLayout.setVisibility(View.VISIBLE);
         }
     }
 }

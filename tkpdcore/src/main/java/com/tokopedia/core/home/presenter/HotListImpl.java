@@ -341,30 +341,36 @@ public class HotListImpl implements HotList {
         if (temp == null) {
             throw new RuntimeException("invalid passing data !!! at " + HotListImpl.class.getSimpleName());
         }
-        String url = temp.getHotListProductUrl();
-        urlParser = new URLParser(url);
-        Log.d(TAG, "urlParser type " + urlParser.getType());
-        switch (urlParser.getType()) {
-            case HOT_KEY:
-                hotListView.openHotlistActivity(temp.getHotListProductUrl());
-                break;
-            case CATALOG_KEY:
-                hotListView.startIntentActivity(
-                        DetailProductRouter.getCatalogDetailActivity(mContext, urlParser.getHotAlias()));
-                break;
-            case TOPPICKS_KEY:
-                if (!TextUtils.isEmpty(url)) {
-                    hotListView.startIntentActivity(TopPicksWebView.newInstance(mContext, url));
-                }
-                break;
-            case CATEGORY:
-                hotListView.openCategory(url);
-                break;
-            case SEARCH:
-                hotListView.openSearch(url);
-                break;
-            default:
-                throw new RuntimeException("dont know yet: " + url);
+
+        if (hotListView.isSupportApplink(temp.getHotListApplinks())) {
+            hotListView.openApplink(temp.getHotListApplinks());
+        } else {
+            String url = temp.getHotListProductUrl();
+            urlParser = new URLParser(url);
+            Log.d(TAG, "urlParser type " + urlParser.getType());
+            switch (urlParser.getType()) {
+                case HOT_KEY:
+                    hotListView.openHotlistActivity(temp.getHotListProductUrl());
+                    break;
+                case CATALOG_KEY:
+                    hotListView.startIntentActivity(
+                            DetailProductRouter.getCatalogDetailActivity(mContext, urlParser.getHotAlias()));
+                    break;
+                case TOPPICKS_KEY:
+                    if (!TextUtils.isEmpty(url)) {
+                        hotListView.startIntentActivity(TopPicksWebView.newInstance(mContext, url));
+                    }
+                    break;
+                case CATEGORY:
+                    hotListView.openCategory(url);
+                    break;
+                case SEARCH:
+                    hotListView.openSearch(url);
+                    break;
+                default:
+                    hotListView.openWebView(url);
+                    break;
+            }
         }
     }
 
@@ -596,7 +602,7 @@ public class HotListImpl implements HotList {
                         List<HotListModel> list = CacheUtil.convertStringToListModel(listHot.toString(), listType);
                         trackingHotlist(list);
 
-                        temps = new GsonBuilder().create().fromJson(listHot.toString(), listType);
+                        return list;
                     } catch (JSONException json) {
                         Log.e(TAG, HotListImpl.class.getSimpleName() + " is error : " + json.getLocalizedMessage());
                     }

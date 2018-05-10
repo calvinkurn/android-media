@@ -14,17 +14,19 @@ import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
 import android.support.design.widget.Snackbar;
 import android.support.v4.widget.NestedScrollView;
-import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import com.google.gson.reflect.TypeToken;
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
+import com.tokopedia.abstraction.common.utils.network.CacheUtil;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.apprating.AdvancedAppRatingDialog;
 import com.tokopedia.core.apprating.AppRatingDialog;
+import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
@@ -47,6 +49,7 @@ import com.tokopedia.digital.cart.domain.CheckoutRepository;
 import com.tokopedia.digital.cart.domain.VoucherDigitalRepository;
 import com.tokopedia.digital.cart.interactor.CartDigitalInteractor;
 import com.tokopedia.digital.cart.listener.IDigitalCartView;
+import com.tokopedia.digital.cart.model.CartAutoApplyVoucher;
 import com.tokopedia.digital.cart.model.CartDigitalInfoData;
 import com.tokopedia.digital.cart.model.CheckoutDataParameter;
 import com.tokopedia.digital.cart.model.CheckoutDigitalData;
@@ -60,6 +63,9 @@ import com.tokopedia.digital.common.data.apiservice.DigitalEndpointService;
 import com.tokopedia.digital.utils.DeviceUtil;
 import com.tokopedia.digital.utils.data.RequestBodyIdentifier;
 import com.tokopedia.loyalty.view.activity.LoyaltyActivity;
+import com.tokopedia.otp.cotp.view.activity.VerificationActivity;
+import com.tokopedia.otp.cotp.view.viewmodel.VerificationPassModel;
+import com.tokopedia.otp.domain.interactor.RequestOtpUseCase;
 import com.tokopedia.payment.activity.TopPayActivity;
 import com.tokopedia.payment.model.PaymentPassData;
 
@@ -164,17 +170,17 @@ public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPrese
         return false;
     }
 
-    @NeedsPermission({Manifest.permission.WRITE_CALL_LOG,Manifest.permission.CALL_PHONE,Manifest.permission.READ_PHONE_STATE,Manifest.permission.READ_CALL_LOG})
+    @NeedsPermission({Manifest.permission.WRITE_CALL_LOG, Manifest.permission.CALL_PHONE, Manifest.permission.READ_PHONE_STATE, Manifest.permission.READ_CALL_LOG})
     void requestNOtpWithPermission() {
         presenter.callPermissionCheckSuccess();
     }
 
-    @OnPermissionDenied({Manifest.permission.WRITE_CALL_LOG,Manifest.permission.CALL_PHONE,Manifest.permission.READ_PHONE_STATE,Manifest.permission.READ_CALL_LOG})
+    @OnPermissionDenied({Manifest.permission.WRITE_CALL_LOG, Manifest.permission.CALL_PHONE, Manifest.permission.READ_PHONE_STATE, Manifest.permission.READ_CALL_LOG})
     void requestNOtpPermissionDenied() {
         presenter.callPermissionCheckFail();
     }
 
-    @OnNeverAskAgain({Manifest.permission.WRITE_CALL_LOG,Manifest.permission.CALL_PHONE,Manifest.permission.READ_PHONE_STATE,Manifest.permission.READ_CALL_LOG})
+    @OnNeverAskAgain({Manifest.permission.WRITE_CALL_LOG, Manifest.permission.CALL_PHONE, Manifest.permission.READ_PHONE_STATE, Manifest.permission.READ_CALL_LOG})
     void requestNOtpPermissionNeverAsk() {
         presenter.callPermissionCheckFail();
     }
@@ -257,11 +263,11 @@ public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPrese
         mainContainer.setVisibility(View.VISIBLE);
     }
 
-
     @Override
-    public void showProgressLoading(String title,String message) {
-        progressDialogNormal.showDialog(title,message);
+    public void showProgressLoading(String title, String message) {
+        progressDialogNormal.showDialog(title, message);
     }
+
     @Override
     public void showProgressLoading() {
         progressDialogNormal.showDialog();
@@ -348,8 +354,21 @@ public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPrese
                     cartDigitalInfoDataState.getAttributes().getOperatorName());
 
             if (cartDigitalInfoData.getAttributes().isEnableVoucher() &&
-                    !TextUtils.isEmpty(cartDigitalInfoData.getAttributes().getVoucherAutoCode())) {
-                presenter.processCheckVoucher(cartDigitalInfoData.getAttributes().getVoucherAutoCode(), passData.getCategoryId());
+                    cartDigitalInfoData.getAttributes().getAutoApplyVoucher() != null &&
+                    cartDigitalInfoData.getAttributes().getAutoApplyVoucher().isSuccess()) {
+                if (!(cartDigitalInfoData.getAttributes().isCouponActive() == 0 && cartDigitalInfoData.getAttributes().getAutoApplyVoucher().isCoupon() == 1)) {
+                    CartAutoApplyVoucher cartAutoApplyVoucher = cartDigitalInfoData.getAttributes().getAutoApplyVoucher();
+                    VoucherDigital voucherDigital = new VoucherDigital();
+                    VoucherAttributeDigital voucherAttributeDigital = new VoucherAttributeDigital();
+                    voucherAttributeDigital.setVoucherCode(cartAutoApplyVoucher.getCode());
+                    voucherAttributeDigital.setDiscountAmountPlain(cartAutoApplyVoucher.getDiscountAmount());
+                    voucherAttributeDigital.setMessage(cartAutoApplyVoucher.getMessageSuccess());
+                    voucherAttributeDigital.setIsCoupon(cartAutoApplyVoucher.isCoupon());
+                    voucherAttributeDigital.setTitle(cartAutoApplyVoucher.getTitle());
+                    voucherDigital.setAttributeVoucher(voucherAttributeDigital);
+
+                    renderCouponAndVoucher(voucherDigital);
+                }
             }
         }
         itemCartHolderView.renderAdditionalInfo(cartDigitalInfoData.getAdditionalInfos());
@@ -366,15 +385,7 @@ public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPrese
                 cartDigitalInfoData.getAttributes().getPricePlain()
         );
         if (voucherDigitalState != null) {
-            voucherCartHachikoView.setVoucher(
-                    voucherDigitalState.getAttributeVoucher().getVoucherCode(),
-                    voucherDigitalState.getAttributeVoucher().getMessage()
-            );
-            if (voucherDigitalState.getAttributeVoucher().getDiscountAmountPlain() > 0) {
-                checkoutHolderView.enableVoucherDiscount(
-                        voucherDigitalState.getAttributeVoucher().getDiscountAmountPlain()
-                );
-            }
+            renderCouponAndVoucher(voucherDigitalState);
         }
         if (passData.getInstantCheckout().equals("1") && !cartDigitalInfoData.isForceRenderCart()) {
             pbMainLoading.setVisibility(View.VISIBLE);
@@ -395,6 +406,14 @@ public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPrese
         );
 
         presenter.autoApplyCouponIfAvailable(passData.getCategoryId());
+    }
+
+    private void renderCouponAndVoucher(VoucherDigital voucherDigital) {
+        if (voucherDigital.getAttributeVoucher().getIsCoupon() == 1) {
+            renderCouponInfoData(voucherDigital);
+        } else {
+            renderVoucherInfoData(voucherDigital);
+        }
     }
 
     private void sendGTMAnalytics(String ec, String el, boolean analyticsKind) {
@@ -501,6 +520,18 @@ public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPrese
             checkoutHolderView.enableVoucherDiscount(
                     voucherDigital.getAttributeVoucher().getDiscountAmountPlain()
             );
+        }
+    }
+
+    @Override
+    public void renderCouponInfoData(VoucherDigital voucherDigital) {
+        this.voucherDigitalState = voucherDigital;
+        voucherCartHachikoView.setCoupon(voucherDigital.getAttributeVoucher().getTitle(),
+                voucherDigital.getAttributeVoucher().getMessage(),
+                voucherDigital.getAttributeVoucher().getVoucherCode()
+        );
+        if (voucherDigital.getAttributeVoucher().getDiscountAmountPlain() > 0) {
+            checkoutHolderView.enableVoucherDiscount(voucherDigital.getAttributeVoucher().getDiscountAmountPlain());
         }
     }
 
@@ -661,10 +692,20 @@ public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPrese
 
     @Override
     public void interruptRequestTokenVerification() {
-        navigateToActivityRequest(
-                OtpVerificationActivity.newInstance(getActivity()),
-                OtpVerificationActivity.REQUEST_CODE
+        VerificationPassModel passModel = new
+                VerificationPassModel(SessionHandler.getPhoneNumber(),
+                RequestOtpUseCase.OTP_TYPE_CHECKOUT_DIGITAL,
+                true
         );
+        GlobalCacheManager cacheManager = new GlobalCacheManager();
+        cacheManager.setKey(VerificationActivity.PASS_MODEL);
+        cacheManager.setValue(CacheUtil.convertModelToString(passModel,
+                new TypeToken<VerificationPassModel>() {
+                }.getType()));
+        cacheManager.store();
+        startActivityForResult(VerificationActivity.getCallingIntent(getActivity(),
+                RequestOtpUseCase.MODE_SMS),
+                OtpVerificationActivity.REQUEST_CODE);
     }
 
     @Override
@@ -695,12 +736,17 @@ public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPrese
 
     @Override
     public void onClickUseVoucher() {
-        if(cartDigitalInfoDataState.getAttributes().isEnableVoucher()) {
+        if (cartDigitalInfoDataState.getAttributes().isEnableVoucher()) {
             Intent intent;
-            if( cartDigitalInfoDataState.getAttributes().isCouponActive() == COUPON_ACTIVE){
-        intent = LoyaltyActivity.newInstanceCouponActive(context, "digital", passData.getCategoryId());
-        } else {
-                intent = LoyaltyActivity.newInstanceCouponNotActive(context, "digital", passData.getCategoryId());
+            if (cartDigitalInfoDataState.getAttributes().isCouponActive() == COUPON_ACTIVE) {
+                if (cartDigitalInfoDataState.getAttributes().getDefaultPromoTab() != null &&
+                        cartDigitalInfoDataState.getAttributes().getDefaultPromoTab().equalsIgnoreCase(LoyaltyActivity.COUPON_STATE)) {
+                    intent = LoyaltyActivity.newInstanceCouponActiveAndSelected(context, LoyaltyActivity.DIGITAL_STRING, passData.getCategoryId());
+                } else {
+                    intent = LoyaltyActivity.newInstanceCouponActive(context, LoyaltyActivity.DIGITAL_STRING, passData.getCategoryId());
+                }
+            } else {
+                intent = LoyaltyActivity.newInstanceCouponNotActive(context, LoyaltyActivity.DIGITAL_STRING, passData.getCategoryId());
             }
             navigateToActivityRequest(intent, LoyaltyActivity.LOYALTY_REQUEST_CODE);
         } else {
@@ -710,6 +756,7 @@ public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPrese
 
     @Override
     public void disableVoucherDisount() {
+        presenter.onClearVoucher();
         this.voucherDigitalState = null;
         checkoutHolderView.disableVoucherDiscount();
     }
@@ -723,25 +770,21 @@ public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPrese
     public void trackingCancelledVoucher() {
         UnifyTracking.eventClickCancelVoucher("", "");
     }
+
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        CartDigitalFragmentPermissionsDispatcher.onRequestPermissionsResult(this,requestCode,grantResults);
+        CartDigitalFragmentPermissionsDispatcher.onRequestPermissionsResult(this, requestCode, grantResults);
     }
+
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == OtpVerificationActivity.REQUEST_CODE) {
-            String message = data.getStringExtra(OtpVerificationActivity.EXTRA_MESSAGE);
-            switch (resultCode) {
-                case OtpVerificationActivity.RESULT_OTP_VERIFIED:
-                    presenter.processPatchOtpCart(passData.getCategoryId());
-                    if (message != null) showToastMessage(message);
-                    break;
-                default:
-                    if (message != null) closeViewWithMessageAlert(message);
-                    else closeView();
-                    break;
+            if (resultCode == Activity.RESULT_OK) {
+                presenter.processPatchOtpCart(passData.getCategoryId());
+            } else {
+                closeView();
             }
         } else if (requestCode == TopPayActivity.REQUEST_CODE) {
             switch (resultCode) {
@@ -783,7 +826,9 @@ public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPrese
                     voucherAttributeDigital.setVoucherCode(voucherCode);
                     voucherAttributeDigital.setDiscountAmountPlain(voucherDiscountAmount);
                     voucherAttributeDigital.setMessage(voucherMessage);
+                    voucherAttributeDigital.setIsCoupon(0);
                     voucherDigital.setAttributeVoucher(voucherAttributeDigital);
+
 
                     voucherDigitalState = voucherDigital;
 
@@ -803,6 +848,8 @@ public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPrese
 
                     VoucherDigital voucherDigital = new VoucherDigital();
                     VoucherAttributeDigital voucherAttributeDigital = new VoucherAttributeDigital();
+                    voucherAttributeDigital.setIsCoupon(1);
+                    voucherAttributeDigital.setTitle(couponTitle);
                     voucherAttributeDigital.setVoucherCode(couponCode);
                     voucherAttributeDigital.setDiscountAmountPlain(couponDiscountAmount);
                     voucherAttributeDigital.setMessage(couponMessage);

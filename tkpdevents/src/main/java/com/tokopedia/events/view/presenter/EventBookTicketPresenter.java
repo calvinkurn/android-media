@@ -6,6 +6,7 @@ import android.util.TypedValue;
 import android.view.View;
 
 import com.google.gson.Gson;
+import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
@@ -25,6 +26,8 @@ import com.tokopedia.events.view.adapter.AddTicketAdapter;
 import com.tokopedia.events.view.contractor.EventBookTicketContract;
 import com.tokopedia.events.view.fragment.FragmentAddTickets;
 import com.tokopedia.events.view.mapper.SeatLayoutResponseToSeatLayoutViewModelMapper;
+import com.tokopedia.events.view.utils.CurrencyUtil;
+import com.tokopedia.events.view.utils.EventsGAConst;
 import com.tokopedia.events.view.utils.Utils;
 import com.tokopedia.events.view.viewmodel.EventsDetailsViewModel;
 import com.tokopedia.events.view.viewmodel.LocationDateModel;
@@ -189,7 +192,15 @@ public class EventBookTicketPresenter
         validateShow.setScheduleId(selectedPackageViewModel.getProductScheduleId());
         validateShow.setProductId(selectedPackageViewModel.getProductId());
         postValidateShowUseCase.setValidateShowModel(validateShow);
+        UnifyTracking.eventDigitalEventTracking(EventsGAConst.EVENT_CHECKOUT, selectedPackageViewModel.getTitle() + " - " +
+                selectedPackageViewModel.getDisplayName() + " - " +
+                CurrencyUtil.convertToCurrencyString(selectedPackageViewModel.getSalesPrice() * selectedPackageViewModel.getSelectedQuantity()));
         getProfile();
+    }
+
+    @Override
+    public String getSCREEN_NAME() {
+        return EventsGAConst.EVENTS_TICKET_PAGE;
     }
 
     public void addTickets(int index, PackageViewModel packageVM, AddTicketAdapter.TicketViewHolder ticketViewHolder) {
@@ -197,6 +208,7 @@ public class EventBookTicketPresenter
             selectedPackageViewModel.setSelectedQuantity(0);
             selectedViewHolder.setTvTicketCnt(selectedPackageViewModel.getSelectedQuantity());
             selectedViewHolder.setTicketViewColor(getView().getActivity().getResources().getColor(R.color.white));
+            selectedViewHolder.toggleMinTicketWarning(View.INVISIBLE, selectedPackageViewModel.getMinQty());
             mSelectedPackage = index;
             selectedPackageViewModel = packageVM;
             selectedViewHolder = ticketViewHolder;
@@ -208,14 +220,24 @@ public class EventBookTicketPresenter
             scrollToLastIfNeeded();
         }
         int selectedCount = selectedPackageViewModel.getSelectedQuantity();
-        if (selectedCount < selectedPackageViewModel.getAvailable() && selectedCount < selectedPackageViewModel.getMaxQty()) {
+        if (selectedCount < selectedPackageViewModel.getAvailable()
+                && selectedCount < selectedPackageViewModel.getMaxQty()) {
             selectedPackageViewModel.setSelectedQuantity(++selectedCount);
             selectedViewHolder.setTvTicketCnt(selectedCount);
             selectedViewHolder.setTicketViewColor(getView().getActivity().getResources().getColor(R.color.light_green));
         } else {
             selectedViewHolder.toggleMaxTicketWarning(View.VISIBLE, selectedPackageViewModel.getSelectedQuantity());
         }
-        getView().showPayButton(selectedCount, selectedPackageViewModel.getSalesPrice(), selectedPackageViewModel.getDisplayName());
+        if (selectedCount < selectedPackageViewModel.getMinQty()) {
+            selectedViewHolder.toggleMinTicketWarning(View.VISIBLE, selectedPackageViewModel.getMinQty());
+            getView().hidePayButton();
+        }
+        else {
+            getView().showPayButton(selectedCount, selectedPackageViewModel.getSalesPrice(), selectedPackageViewModel.getDisplayName());
+        }
+        UnifyTracking.eventDigitalEventTracking(EventsGAConst.EVENT_ADD_TICKET, "add - " + selectedPackageViewModel.getTitle() + " - " +
+                selectedPackageViewModel.getDisplayName() + " - " +
+                CurrencyUtil.convertToCurrencyString(selectedPackageViewModel.getSalesPrice() * selectedPackageViewModel.getSelectedQuantity()));
     }
 
     public void removeTickets() {
@@ -223,16 +245,26 @@ public class EventBookTicketPresenter
         if (selectedCount != 0) {
             selectedPackageViewModel.setSelectedQuantity(--selectedCount);
             selectedViewHolder.setTvTicketCnt(selectedCount);
-            selectedViewHolder.toggleMaxTicketWarning(View.INVISIBLE, 4);
-            getView().showPayButton(selectedCount, selectedPackageViewModel.getSalesPrice(), selectedPackageViewModel.getDisplayName());
+            selectedViewHolder.toggleMaxTicketWarning(View.INVISIBLE, selectedPackageViewModel.getMaxQty());
+            if (selectedCount < selectedPackageViewModel.getMinQty()) {
+                selectedViewHolder.toggleMinTicketWarning(View.VISIBLE, selectedPackageViewModel.getMinQty());
+                getView().hidePayButton();
+            } else {
+                selectedViewHolder.toggleMinTicketWarning(View.INVISIBLE, selectedPackageViewModel.getMinQty());
+                getView().showPayButton(selectedCount, selectedPackageViewModel.getSalesPrice(), selectedPackageViewModel.getDisplayName());
+            }
         }
         if (selectedCount == 0) {
             selectedViewHolder.setTicketViewColor(getView().getActivity().getResources().getColor(R.color.white));
+            selectedViewHolder.toggleMinTicketWarning(View.INVISIBLE, selectedPackageViewModel.getMinQty());
             mSelectedPackage = -1;
             selectedViewHolder = null;
             mChildFragment.setDecorationHeight(0);
             getView().hidePayButton();
         }
+        UnifyTracking.eventDigitalEventTracking(EventsGAConst.EVENT_REMOVE_TICKET, "remove - " + selectedPackageViewModel.getTitle() + " - " +
+                selectedPackageViewModel.getDisplayName() + " - " +
+                CurrencyUtil.convertToCurrencyString(selectedPackageViewModel.getSalesPrice() * selectedPackageViewModel.getSelectedQuantity()));
     }
 
     private void getSeatSelectionDetails() {
@@ -259,7 +291,6 @@ public class EventBookTicketPresenter
 
             @Override
             public void onNext(List<SeatLayoutItem> response) {
-                getView().hideProgressBar();
                 seatLayoutViewModel = convertResponseToViewModel(convertoSeatLayoutResponse(response.get(0)));
                 validateSelection();
             }

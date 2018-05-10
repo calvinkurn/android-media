@@ -79,7 +79,7 @@ public class ProductChooserAdapter extends RecyclerView.Adapter<RecyclerView.Vie
     public int getItemViewType(int position) {
         if (productList.get(position).getPromo() != null)
             return TYPE_HOLDER_PRODUCT_PROMO;
-        else if (!TextUtils.isEmpty(productList.get(position).getDetail()))
+        else if (!TextUtils.isEmpty(productList.get(position).getDetailCompact()))
             return TYPE_HOLDER_PRODUCT_PRICE_PLUS_ADMIN_AND_DESC;
         else return TYPE_HOLDER_PRODUCT_DESC_AND_PRICE_ITEM;
     }
@@ -146,8 +146,8 @@ public class ProductChooserAdapter extends RecyclerView.Adapter<RecyclerView.Vie
         }
 
         private void enableView() {
-            tvTitlePrice.setTextColor(hostFragment.getResources().getColor(R.color.black));
-            tvPrice.setTextColor(hostFragment.getResources().getColor(R.color.black));
+            tvTitlePrice.setTextColor(hostFragment.getResources().getColor(R.color.digital_item_title));
+            tvPrice.setTextColor(hostFragment.getResources().getColor(R.color.digital_item_title));
         }
     }
 
@@ -197,11 +197,11 @@ public class ProductChooserAdapter extends RecyclerView.Adapter<RecyclerView.Vie
                 tvProductTotalPrice.setText(product.getPrice());
             }
 
-            if (TextUtils.isEmpty(product.getDetail())) {
+            if (TextUtils.isEmpty(product.getDetailCompact())) {
                 tvProductDescription.setVisibility(View.GONE);
             } else {
                 tvProductDescription.setVisibility(View.VISIBLE);
-                tvProductDescription.setText(MethodChecker.fromHtml(product.getDetail()));
+                tvProductDescription.setText(MethodChecker.fromHtml(product.getDetailCompact()));
             }
         }
 
@@ -219,11 +219,11 @@ public class ProductChooserAdapter extends RecyclerView.Adapter<RecyclerView.Vie
 
         private void enableView() {
             tvProductPrice.setTextColor(hostFragment.getResources()
-                    .getColor(R.color.black));
+                    .getColor(R.color.digital_item_title));
             tvProductDescription.setTextColor(hostFragment.getResources()
                     .getColor(R.color.grey_500));
             tvProductTotalPrice.setTextColor(hostFragment.getResources()
-                    .getColor(R.color.black));
+                    .getColor(R.color.digital_item_title));
         }
     }
 
@@ -264,11 +264,11 @@ public class ProductChooserAdapter extends RecyclerView.Adapter<RecyclerView.Vie
 
         private void setViewPromo(Product product) {
             tvProductPromoTitle.setText(product.getDesc());
-            if (TextUtils.isEmpty(product.getDetail())) {
+            if (TextUtils.isEmpty(product.getDetailCompact())) {
                 tvProductPromoDescription.setVisibility(View.GONE);
             } else {
                 tvProductPromoDescription.setVisibility(View.VISIBLE);
-                tvProductPromoDescription.setText(MethodChecker.fromHtml(product.getDetail()));
+                tvProductPromoDescription.setText(MethodChecker.fromHtml(product.getDetailCompact()));
             }
             if (TextUtils.isEmpty(product.getPromo().getTag())) {
                 tvProductPromoTag.setVisibility(View.GONE);
@@ -297,13 +297,13 @@ public class ProductChooserAdapter extends RecyclerView.Adapter<RecyclerView.Vie
 
         private void enableView() {
             tvProductPromoTitle.setTextColor(hostFragment.getResources()
-                    .getColor(R.color.black));
+                    .getColor(R.color.digital_item_title));
             tvProductPromoTag.setTextColor(hostFragment.getResources()
                     .getColor(R.color.deep_orange_500));
             tvProductPromoDescription.setTextColor(hostFragment.getResources()
                     .getColor(R.color.grey_500));
             tvProductPromoOldPrice.setTextColor(hostFragment.getResources()
-                    .getColor(R.color.black));
+                    .getColor(R.color.digital_item_title));
             tvPromoProductPrice.setTextColor(hostFragment.getResources()
                     .getColor(R.color.deep_orange_500));
         }

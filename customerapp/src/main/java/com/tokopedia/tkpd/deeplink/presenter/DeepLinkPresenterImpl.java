@@ -35,7 +35,7 @@ import com.tokopedia.core.session.model.AccountsModel;
 import com.tokopedia.core.session.model.AccountsParameter;
 import com.tokopedia.core.session.model.InfoModel;
 import com.tokopedia.core.session.model.SecurityModel;
-import com.tokopedia.core.shopinfo.ShopInfoActivity;
+import com.tokopedia.shop.page.view.activity.ShopPageActivity;
 import com.tokopedia.core.shopinfo.models.shopmodel.ShopModel;
 import com.tokopedia.core.util.AppUtils;
 import com.tokopedia.core.util.DeepLinkChecker;
@@ -43,6 +43,7 @@ import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.webview.fragment.FragmentGeneralWebView;
 import com.tokopedia.discovery.intermediary.view.IntermediaryActivity;
 import com.tokopedia.discovery.newdiscovery.category.presentation.CategoryActivity;
+import com.tokopedia.loyalty.LoyaltyRouter;
 import com.tokopedia.session.domain.interactor.SignInInteractor;
 import com.tokopedia.session.domain.interactor.SignInInteractorImpl;
 import com.tokopedia.tkpd.deeplink.WhitelistItem;
@@ -53,6 +54,7 @@ import com.tokopedia.tkpd.deeplink.domain.GetShopInfoUseCase;
 import com.tokopedia.tkpd.deeplink.domain.interactor.MapUrlUseCase;
 import com.tokopedia.tkpd.deeplink.listener.DeepLinkView;
 import com.tokopedia.tkpd.home.ReactNativeDiscoveryActivity;
+import com.tokopedia.tkpdpdp.ProductInfoActivity;
 import com.tokopedia.tkpdreactnative.react.ReactConst;
 
 import java.io.UnsupportedEncodingException;
@@ -78,6 +80,7 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
     private static final String AF_ONELINK_HOST = "tokopedia.onelink.me";
     public static final String IS_DEEP_LINK_SEARCH = "IS_DEEP_LINK_SEARCH";
     private static final String OVERRIDE_URL = "override_url";
+    private static final String TAG_FRAGMENT_CATALOG_DETAIL = "TAG_FRAGMENT_CATALOG_DETAIL";
 
 
     private final Activity context;
@@ -206,7 +209,7 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
             CommonUtils.dumper("FCM wvlogin deeplink type " + type);
             switch (type) {
                 case DeepLinkChecker.HOME:
-                    screenName = AppScreen.SCREEN_INDEX_HOME;
+                    screenName = AppScreen.UnifyScreenTracker.SCREEN_UNIFY_HOME_BERANDA;
                     sendCampaignGTM(uriData.toString(), screenName);
                     openHomepage();
                     break;
@@ -229,7 +232,7 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
                     openHomepageHot();
                     break;
                 case DeepLinkChecker.CATALOG:
-                    openCatalogProduct(linkSegment, uriData);
+                    openCatalogDetail(linkSegment, uriData);
                     screenName = AppScreen.SCREEN_CATALOG;
                     break;
                 case DeepLinkChecker.DISCOVERY_PAGE:
@@ -275,7 +278,7 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
                     }
                     break;
                 case DeepLinkChecker.PELUANG:
-                    screenName = AppScreen.SCREEN_INDEX_HOME;
+                    screenName = AppScreen.UnifyScreenTracker.SCREEN_UNIFY_HOME_BERANDA;
                     sendCampaignGTM(uriData.toString(), screenName);
                     openPeluangPage(uriData.getPathSegments(), uriData);
                     break;
@@ -286,6 +289,10 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
                 case DeepLinkChecker.GROUPCHAT:
                     openGroupChat(linkSegment);
                     screenName = AppScreen.GROUP_CHAT;
+                    break;
+                case DeepLinkChecker.PROMO:
+                    openPromo(linkSegment);
+                    screenName = "";
                     break;
                 default:
                     prepareOpenWebView(uriData);
@@ -300,10 +307,10 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
         int SEGMENT_GROUPCHAT = 2;
         Intent intent;
         if (linkSegment.size() == SEGMENT_GROUPCHAT) {
-            intent = ((TkpdCoreRouter) context).getGroupChatIntent(
+            intent = ((TkpdCoreRouter) context.getApplication()).getGroupChatIntent(
                     context, linkSegment.get(1));
         } else {
-            intent = ((TkpdCoreRouter) context).getInboxChannelsIntent(
+            intent = ((TkpdCoreRouter) context.getApplication()).getInboxChannelsIntent(
                     context);
         }
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
@@ -331,6 +338,18 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        context.startActivity(intent);
+        context.finish();
+    }
+
+    private void openPromo(List<String> linkSegment) {
+        LoyaltyRouter router = ((LoyaltyRouter) context.getApplication());
+        Intent intent = router.getPromoDetailIntent(context, linkSegment.get(1));
+
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+
         context.startActivity(intent);
         context.finish();
     }
@@ -486,10 +505,8 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
             public void onNext(ShopModel shopModel) {
                 viewListener.finishLoading();
                 if (shopModel != null && shopModel.info != null) {
-                    viewListener.goToActivity(
-                            ShopInfoActivity.class,
-                            ShopInfoActivity.createBundle(shopModel.info.getShopId(), linkSegment.get(0))
-                    );
+                    Intent intent = ((TkpdCoreRouter) context.getApplication()).getShopPageIntent(context, shopModel.info.getShopId());
+                    context.startActivity(intent);
                 } else {
                     prepareOpenWebView(uriData);
                 }
@@ -499,20 +516,18 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
 
     private void openDetailProduct(List<String> linkSegment, Uri uriData) {
         CommonUtils.dumper("wvlogin opened product");
-        Fragment fragment = ProductDetailRouter.instanceDeeplink(
-                context,
-                ProductPass.Builder.aProductPass()
-                        .setProductKey(linkSegment.get(1))
-                        .setShopDomain(linkSegment.get(0))
-                        .setProductUri(uriData.toString())
-                        .build());
-        viewListener.inflateFragment(fragment, "DETAIL_PRODUCT");
-        viewListener.hideActionBar();
+        Intent productInfoIntent = ProductInfoActivity.createInstance(context, ProductPass.Builder.aProductPass()
+                .setProductKey(linkSegment.get(1))
+                .setShopDomain(linkSegment.get(0))
+                .setProductUri(uriData.toString())
+                .build());
+        productInfoIntent.setData(uriData);
+        viewListener.goToPage(productInfoIntent);
     }
 
-    private void openCatalogProduct(List<String> linkSegment, Uri uriData) {
+    private void openCatalogDetail(List<String> linkSegment, Uri uriData) {
         viewListener.inflateFragment(DetailProductRouter
-                .getCatalogDetailListFragment(context, linkSegment.get(1)), "CATALOG_PRODUCT");
+                .getCatalogDetailFragment(context, linkSegment.get(1)), TAG_FRAGMENT_CATALOG_DETAIL);
     }
 
     private void openHotProduct(List<String> linkSegment, Uri uriData) {

@@ -3,6 +3,8 @@ package com.tokopedia.core.analytics.container;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.provider.Settings;
+import android.text.TextUtils;
 import android.util.Log;
 
 import com.google.android.gms.analytics.GoogleAnalytics;
@@ -23,13 +25,13 @@ import com.tokopedia.core.analytics.nishikino.model.Authenticated;
 import com.tokopedia.core.analytics.nishikino.model.ButtonClickEvent;
 import com.tokopedia.core.analytics.nishikino.model.Campaign;
 import com.tokopedia.core.analytics.nishikino.model.Checkout;
-import com.tokopedia.core.analytics.nishikino.model.EventTracking;
 import com.tokopedia.core.analytics.nishikino.model.GTMCart;
+import com.tokopedia.core.analytics.nishikino.model.Product;
 import com.tokopedia.core.analytics.nishikino.model.ProductDetail;
-import com.tokopedia.core.analytics.nishikino.model.Promotion;
 import com.tokopedia.core.analytics.nishikino.model.Purchase;
 import com.tokopedia.core.analytics.nishikino.singleton.ContainerHolderSingleton;
 import com.tokopedia.core.app.MainApplication;
+import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdCache;
 
@@ -82,8 +84,8 @@ public class GTMContainer implements IGTMContainer {
         }
     }
 
-    private Boolean isAllowRefreshDefault() {
-        long lastRefresh = ContainerHolderSingleton.getContainerHolder().getContainer().getLastRefreshTime();
+    private Boolean isAllowRefreshDefault(ContainerHolder containerHolder) {
+        long lastRefresh = containerHolder.getContainer().getLastRefreshTime();
         Log.i("GTM TKPD", "Last refresh " + CommonUtils.getDate(lastRefresh));
         return System.currentTimeMillis() - lastRefresh > EXPIRE_CONTAINER_TIME_DEFAULT;
     }
@@ -107,6 +109,14 @@ public class GTMContainer implements IGTMContainer {
 
     private void validateGTM() {
         if (ContainerHolderSingleton.getContainerHolder().getStatus().isSuccess()) {
+            Log.i(TAG, STR_GTM_EXCEPTION_ENABLED + TrackingUtils.getGtmString(GTMContainer.IS_EXCEPTION_ENABLED));
+        } else {
+            Log.e("GTMContainer", "failure loading container");
+        }
+    }
+
+    private void validateGTM(ContainerHolder containerHolder) {
+        if (containerHolder.getStatus().isSuccess()) {
             Log.i(TAG, STR_GTM_EXCEPTION_ENABLED + TrackingUtils.getGtmString(GTMContainer.IS_EXCEPTION_ENABLED));
         } else {
             Log.e("GTMContainer", "failure loading container");
@@ -139,13 +149,13 @@ public class GTMContainer implements IGTMContainer {
                 @Override
                 public void onResult(ContainerHolder cHolder) {
                     ContainerHolderSingleton.setContainerHolder(cHolder);
-                    if (isAllowRefreshDefault()) {
+                    if (isAllowRefreshDefault(cHolder)) {
                         Log.i("GTM TKPD", "Refreshed Container ");
-                        ContainerHolderSingleton.getContainerHolder().refresh();
+                        cHolder.refresh();
                         //setExpiryRefresh();
                     }
 
-                    validateGTM();
+                    validateGTM(cHolder);
                 }
             }, 2, TimeUnit.SECONDS);
         } catch (Exception e) {
@@ -189,6 +199,25 @@ public class GTMContainer implements IGTMContainer {
     }
 
     @Override
+    public GTMContainer eventCheckout(Checkout checkout, String paymentId) {
+        Log.i("Tag Manager", "UA-9801603-15: Send Checkout Event");
+        Log.i("Tag Manager", "UA-9801603-15: MAP: " + checkout.getCheckoutMap().toString());
+
+        GTMDataLayer.pushGeneral(context,
+                DataLayer.mapOf(
+                        AppEventTracking.EVENT, AppEventTracking.Event.EVENT_CHECKOUT,
+                        AppEventTracking.PAYMENT_ID, paymentId,
+                        AppEventTracking.EVENT_CATEGORY, AppEventTracking.Category.ECOMMERCE,
+                        AppEventTracking.EVENT_ACTION, AppEventTracking.Action.CHECKOUT,
+                        AppEventTracking.EVENT_LABEL, checkout.getStep(),
+                        AppEventTracking.ECOMMERCE, DataLayer.mapOf(
+                                AppEventTracking.Event.EVENT_CHECKOUT, checkout.getCheckoutMapEvent()
+                        )));
+
+        return this;
+    }
+
+    @Override
     public GTMContainer eventCheckout(Checkout checkout) {
         Log.i("Tag Manager", "UA-9801603-15: Send Checkout Event");
         Log.i("Tag Manager", "UA-9801603-15: MAP: " + checkout.getCheckoutMap().toString());
@@ -200,8 +229,8 @@ public class GTMContainer implements IGTMContainer {
                         AppEventTracking.EVENT_ACTION, AppEventTracking.Action.CHECKOUT,
                         AppEventTracking.EVENT_LABEL, checkout.getStep(),
                         AppEventTracking.ECOMMERCE, DataLayer.mapOf(
-                        AppEventTracking.Event.EVENT_CHECKOUT, checkout.getCheckoutMapEvent()
-        )));
+                                AppEventTracking.Event.EVENT_CHECKOUT, checkout.getCheckoutMapEvent()
+                        )));
 
         return this;
     }
@@ -219,23 +248,6 @@ public class GTMContainer implements IGTMContainer {
         authEvent.setUserID(SessionHandler.getGTMLoginID(context));
         authEvent.setShopID(SessionHandler.getShopID(context));
         authEvent.setShopId(SessionHandler.getShopID(context));
-        authEvent.setUserSeller(SessionHandler.isUserHasShop(context)? 1 : 0);
-
-        CommonUtils.dumper("GAv4 appdata " + new JSONObject(authEvent.getAuthDataLayar()).toString());
-
-        eventAuthenticate(authEvent);
-        sendScreen(screenName);
-
-        return this;
-    }
-
-    @Override
-    public GTMContainer sendScreenAuthenticatedOfficialStore(String screenName, String shopID, String shopType) {
-        Authenticated authEvent = new Authenticated();
-        authEvent.setUserFullName(SessionHandler.getLoginName(context));
-        authEvent.setUserID(SessionHandler.getGTMLoginID(context));
-        authEvent.setShopId(shopID);
-        authEvent.setShopType(shopType);
         authEvent.setUserSeller(SessionHandler.isUserHasShop(context) ? 1 : 0);
 
         CommonUtils.dumper("GAv4 appdata " + new JSONObject(authEvent.getAuthDataLayar()).toString());
@@ -247,15 +259,61 @@ public class GTMContainer implements IGTMContainer {
     }
 
     @Override
+    public GTMContainer sendScreenAuthenticatedOfficialStore(String screenName, String shopID, String shopType, String pageType, String productId) {
+        Authenticated authEvent = new Authenticated();
+        authEvent.setUserFullName(SessionHandler.getLoginName(context));
+        authEvent.setUserID(SessionHandler.getGTMLoginID(context));
+        authEvent.setShopId(shopID);
+        authEvent.setShopType(shopType);
+        authEvent.setPageType(pageType);
+        authEvent.setProductId(productId);
+        authEvent.setUserSeller(SessionHandler.isUserHasShop(context) ? 1 : 0);
+
+        CommonUtils.dumper("GAv4 appdata authenticated " + new JSONObject(authEvent.getAuthDataLayar()).toString());
+
+        eventAuthenticate(authEvent).sendScreen(screenName);
+
+        return this;
+    }
+
+    @Override
     public GTMContainer eventAuthenticate(Authenticated authenticated) {
         CommonUtils.dumper("GAv4 send authenticated");
-        GTMDataLayer.pushEvent(context, "authenticated", DataLayer.mapOf(
-                Authenticated.KEY_CONTACT_INFO, authenticated.getAuthDataLayar(),
-                Authenticated.KEY_SHOP_ID_SELLER, authenticated.getShopId(),
-                Authenticated.KEY_SHOP_TYPE, authenticated.getShopType(),
-                Authenticated.KEY_NETWORK_SPEED, authenticated.getNetworkSpeed(),
-                Authenticated.KEY_COMPETITOR_INTELLIGENCE, authenticated.getcIntel()
-        ));
+
+        final LocalCacheHandler localCacheHandler = new LocalCacheHandler(context, TkpdCache.ADVERTISINGID);
+        String adsId = localCacheHandler.getString(TkpdCache.Key.KEY_ADVERTISINGID);
+        if (adsId != null && !"".equalsIgnoreCase(adsId.trim())) {
+            authenticated.setAdsId(adsId);
+        }
+
+        authenticated.setAndroidId(getAndroidId(context));
+
+
+        if (TextUtils.isEmpty(authenticated.getcIntel())) {
+            GTMDataLayer.pushEvent(context, "authenticated", DataLayer.mapOf(
+                    Authenticated.KEY_CONTACT_INFO, authenticated.getAuthDataLayar(),
+                    Authenticated.KEY_SHOP_ID_SELLER, authenticated.getShopId(),
+                    Authenticated.KEY_SHOP_TYPE, authenticated.getShopType(),
+                    Authenticated.KEY_PAGE_TYPE, authenticated.getPageType(),
+                    Authenticated.KEY_PRODUCT_ID, authenticated.getProductId(),
+                    Authenticated.KEY_NETWORK_SPEED, authenticated.getNetworkSpeed(),
+                    Authenticated.ANDROID_ID, authenticated.getAndroidId(),
+                    Authenticated.ADS_ID, authenticated.getAdsId()
+            ));
+
+        } else {
+            GTMDataLayer.pushEvent(context, "authenticated", DataLayer.mapOf(
+                    Authenticated.KEY_CONTACT_INFO, authenticated.getAuthDataLayar(),
+                    Authenticated.KEY_SHOP_ID_SELLER, authenticated.getShopId(),
+                    Authenticated.KEY_SHOP_TYPE, authenticated.getShopType(),
+                    Authenticated.KEY_NETWORK_SPEED, authenticated.getNetworkSpeed(),
+                    Authenticated.KEY_PAGE_TYPE, authenticated.getPageType(),
+                    Authenticated.KEY_PRODUCT_ID, authenticated.getProductId(),
+                    Authenticated.KEY_COMPETITOR_INTELLIGENCE, authenticated.getcIntel(),
+                    Authenticated.ANDROID_ID, authenticated.getAndroidId(),
+                    Authenticated.ADS_ID, authenticated.getAdsId()
+            ));
+        }
 
         return this;
     }
@@ -565,6 +623,8 @@ public class GTMContainer implements IGTMContainer {
                         "eventCategory", null,
                         "eventAction", null,
                         "eventLabel", null,
+                        "products", null,
+                        "promotions", null,
                         "ecommerce", null
                 )
         );
@@ -612,6 +672,49 @@ public class GTMContainer implements IGTMContainer {
         );
     }
 
+    @Override
+    public GTMContainer eventAddToCartPurchase(Product product) {
+        try {
+            GTMDataLayer.pushEvent(
+                    context, "addToCart", DataLayer.mapOf(
+                            AppEventTracking.ECOMMERCE, DataLayer.mapOf(
+                                    "currencyCode", "IDR",
+                                    "add", DataLayer.mapOf(
+                                            "products", product.getProduct())
+                            )
+                    )
+            );
+        } catch (Exception e) {
+            CommonUtils.dumper("GAv4 DATA LAYER " + e.getMessage());
+            e.printStackTrace();
+        }
+
+        CommonUtils.dumper("GAv4 DATA LAYER " + DataLayer.mapOf(
+                AppEventTracking.EVENT, "addToCart",
+                AppEventTracking.ECOMMERCE, DataLayer.mapOf(
+                        "currencyCode", "IDR",
+                        "add", DataLayer.mapOf(
+                                "products", product.getProduct())
+                )
+        ));
+        return this;
+    }
+
+    @Override
+    public GTMContainer eventRemoveFromCartPurchase(Product product) {
+        GTMDataLayer.pushEvent(
+                context, "removeFromCart",
+                DataLayer.mapOf(
+                        AppEventTracking.ECOMMERCE, DataLayer.mapOf(
+                                "currencyCode", "IDR",
+                                "remove", DataLayer.mapOf(
+                                        "products", product.getProduct())
+                        )
+                )
+        );
+        return this;
+    }
+
     public void eventImpressionCategoryLifestyle(List<Object> list) {
         clearEnhanceEcommerce();
         GTMDataLayer.pushGeneral(
@@ -622,7 +725,7 @@ public class GTMContainer implements IGTMContainer {
                         "ecommerce", DataLayer.mapOf(
                                 "promoView", DataLayer.mapOf(
                                         "promotions", DataLayer.listOf(list.toArray(new Object[list.size()]))))
-                        )
+                )
         );
     }
 
@@ -666,6 +769,26 @@ public class GTMContainer implements IGTMContainer {
     }
 
     @Override
+    public void enhanceClickImageSearchResultProduct(Object object, String actionField) {
+        clearEnhanceEcommerce();
+
+        GTMDataLayer.pushGeneral(
+                context,
+                DataLayer.mapOf("event", "productClick",
+                        "eventCategory", "search result",
+                        "eventAction", "click - product",
+                        "eventLabel", "",
+                        "ecommerce", DataLayer.mapOf("click",
+                                DataLayer.mapOf("actionField",
+                                        DataLayer.mapOf("list", actionField),
+                                        "products", DataLayer.listOf(object)
+                                )
+                        )
+                )
+        );
+    }
+
+    @Override
     public void enhanceImpressionSearchResultProduct(List<Object> objects, String keyword) {
         clearEnhanceEcommerce();
 
@@ -682,5 +805,43 @@ public class GTMContainer implements IGTMContainer {
                                 ))
                 )
         );
+    }
+
+    @Override
+    public void enhanceImpressionImageSearchResultProduct(List<Object> objects) {
+        clearEnhanceEcommerce();
+
+        GTMDataLayer.pushGeneral(
+                context,
+                DataLayer.mapOf("event", "productView",
+                        "eventCategory", AppEventTracking.Category.IMAGE_SEARCH_RESULT,
+                        "eventAction", "impression - product",
+                        "eventLabel", "",
+                        "ecommerce", DataLayer.mapOf(
+                                "currencyCode", "IDR",
+                                "impressions", DataLayer.listOf(
+                                        objects.toArray(new Object[objects.size()])
+                                ))
+                )
+        );
+    }
+
+    private static String getAndroidId(Context context) {
+
+        final LocalCacheHandler localCacheHandler = new LocalCacheHandler(context, TkpdCache.ANDROID_ID);
+
+        String androidId = localCacheHandler.getString(TkpdCache.Key.KEY_ANDROID_ID);
+        if (androidId != null && !"".equalsIgnoreCase(androidId.trim())) {
+            return androidId;
+        } else {
+            String android_id = AuthUtil.md5(Settings.Secure.getString(context.getContentResolver(),
+                    Settings.Secure.ANDROID_ID));
+            if (!TextUtils.isEmpty(android_id)) {
+                localCacheHandler.putString(TkpdCache.Key.KEY_ANDROID_ID, android_id);
+                localCacheHandler.applyEditor();
+            }
+            return android_id;
+        }
+
     }
 }

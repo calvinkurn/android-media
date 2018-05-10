@@ -34,22 +34,20 @@ public class CategorySectionViewHolder extends AbstractViewHolder<CategorySectio
     public static final int LAYOUT = R.layout.layout_category_section;
     private RecyclerView recyclerView;
     private SectionItemAdapter adapter;
-    private Context context;
     private static final int spanCount = 5;
     private HomeCategoryListener listener;
 
     public CategorySectionViewHolder(View itemView, HomeCategoryListener listener) {
         super(itemView);
         ButterKnife.bind(this, itemView);
-        this.context = itemView.getContext();
         this.listener = listener;
-        adapter = new SectionItemAdapter();
+        adapter = new SectionItemAdapter(listener);
         recyclerView = itemView.findViewById(R.id.list);
         recyclerView.setAdapter(adapter);
-        recyclerView.setLayoutManager(new GridLayoutManager(context, spanCount,
+        recyclerView.setLayoutManager(new GridLayoutManager(itemView.getContext(), spanCount,
                 GridLayoutManager.VERTICAL, false));
         recyclerView.addItemDecoration(new GridSpacingItemDecoration(spanCount,
-                context.getResources().getDimensionPixelSize(R.dimen.home_card_category_item_margin), true));
+                itemView.getResources().getDimensionPixelSize(R.dimen.home_card_category_item_margin), true));
     }
 
     @Override
@@ -57,11 +55,13 @@ public class CategorySectionViewHolder extends AbstractViewHolder<CategorySectio
         adapter.setSectionViewModel(element);
     }
 
-    public class SectionItemAdapter extends RecyclerView.Adapter<SectionItemViewHolder> {
+    public static class SectionItemAdapter extends RecyclerView.Adapter<SectionItemViewHolder> {
 
         private CategorySectionViewModel sectionViewModel;
+        private HomeCategoryListener listener;
 
-        public SectionItemAdapter() {
+        public SectionItemAdapter(HomeCategoryListener listener) {
+            this.listener = listener;
         }
 
         public void setSectionViewModel(CategorySectionViewModel sectionViewModel) {
@@ -71,13 +71,13 @@ public class CategorySectionViewHolder extends AbstractViewHolder<CategorySectio
 
         @Override
         public SectionItemViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-            return new SectionItemViewHolder(LayoutInflater.from(context).inflate(R.layout.layout_section_item, parent, false));
+            return new SectionItemViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.layout_section_item, parent, false));
         }
 
         @Override
         public void onBindViewHolder(SectionItemViewHolder holder, final int position) {
             holder.title.setText(sectionViewModel.getSectionList().get(position).getTitle());
-            ImageHandler.loadImageThumbs(context, holder.icon, sectionViewModel.getSectionList().get(position).getIcon());
+            ImageHandler.loadImageThumbs(holder.getContext(), holder.icon, sectionViewModel.getSectionList().get(position).getIcon());
             holder.container.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -103,17 +103,23 @@ public class CategorySectionViewHolder extends AbstractViewHolder<CategorySectio
         }
     }
 
-    public class SectionItemViewHolder extends RecyclerView.ViewHolder {
+    public static class SectionItemViewHolder extends RecyclerView.ViewHolder {
 
         private AppCompatImageView icon;
         private TextView title;
         private LinearLayout container;
+        private View view;
 
         public SectionItemViewHolder(View itemView) {
             super(itemView);
+            this.view = itemView;
             icon = itemView.findViewById(R.id.icon);
             title = itemView.findViewById(R.id.title);
             container = itemView.findViewById(R.id.container);
+        }
+
+        public Context getContext() {
+            return view.getContext();
         }
     }
 }
