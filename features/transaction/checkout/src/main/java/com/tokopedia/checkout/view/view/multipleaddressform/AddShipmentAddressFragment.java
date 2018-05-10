@@ -369,9 +369,11 @@ public class AddShipmentAddressFragment extends BaseCheckoutFragment {
     ) {
         if (notes.length() > data.getMaxRemark()) {
             notesErrorWarningTextView.setVisibility(View.VISIBLE);
-            notesErrorWarningTextView.setText(data.getErrorFieldMaxChar()
-                    .replace("{{value}}", String.valueOf(data.getMaxRemark())));
-            saveChangesButton.setVisibility(View.GONE);
+            if (data.getErrorFieldMaxChar() != null) {
+                notesErrorWarningTextView.setText(data.getErrorFieldMaxChar()
+                        .replace("{{value}}", String.valueOf(data.getMaxRemark())));
+                saveChangesButton.setVisibility(View.GONE);
+            }
         } else {
             notesErrorWarningTextView.setVisibility(View.GONE);
             if (quantityErrorLayout.getVisibility() != View.VISIBLE &&

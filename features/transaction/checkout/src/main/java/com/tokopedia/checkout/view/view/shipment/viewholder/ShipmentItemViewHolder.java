@@ -66,11 +66,8 @@ public abstract class ShipmentItemViewHolder extends RecyclerView.ViewHolder {
     TextView tvFreeReturnLabel;
     TextView tvPreOrder;
     TextView tvCashback;
-    RelativeLayout rlProductPoliciesLayout;
-    TextView tvTextProductWeight;
-    TextView tvProductWeight;
-    TextView tvProductTotalItem;
-    TextView tvLabelItemCount;
+    LinearLayout llProductPoliciesLayout;
+    TextView tvItemCountAndWeight;
     TextView tvNoteToSellerLabel;
     TextView tvOptionalNoteToSeller;
     LinearLayout llOptionalNoteToSellerLayout;
@@ -147,11 +144,8 @@ public abstract class ShipmentItemViewHolder extends RecyclerView.ViewHolder {
         tvFreeReturnLabel = itemView.findViewById(R.id.tv_free_return_label);
         tvPreOrder = itemView.findViewById(R.id.tv_pre_order);
         tvCashback = itemView.findViewById(R.id.tv_cashback);
-        rlProductPoliciesLayout = itemView.findViewById(R.id.layout_policy);
-        tvTextProductWeight = itemView.findViewById(R.id.tv_text_product_weight);
-        tvProductWeight = itemView.findViewById(R.id.tv_product_weight);
-        tvProductTotalItem = itemView.findViewById(R.id.tv_product_total_item);
-        tvLabelItemCount = itemView.findViewById(R.id.tv_label_item_count);
+        llProductPoliciesLayout = itemView.findViewById(R.id.layout_policy);
+        tvItemCountAndWeight = itemView.findViewById(R.id.tv_item_count_and_weight);
         tvNoteToSellerLabel = itemView.findViewById(R.id.tv_note_to_seller_label);
         tvOptionalNoteToSeller = itemView.findViewById(R.id.tv_optional_note_to_seller);
         llOptionalNoteToSellerLayout = itemView.findViewById(R.id.ll_optional_note_to_seller_layout);

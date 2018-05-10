@@ -51,14 +51,16 @@ public class ShipmentItemMultipleAddressViewHolder extends ShipmentItemViewHolde
         tvProductName.setText(shipmentMultipleAddressItem.getProductName());
         tvProductPrice.setText(CurrencyFormatUtil.convertPriceValueToIdrFormat(
                 shipmentMultipleAddressItem.getProductPriceNumber(), true));
-        tvProductWeight.setText(multipleAddressItemData.getProductWeight());
-        tvProductTotalItem.setText(String.valueOf(multipleAddressItemData.getProductQty()));
+        tvItemCountAndWeight.setText(String.format(tvItemCountAndWeight.getContext()
+                        .getString(R.string.iotem_count_and_weight_format),
+                String.valueOf(multipleAddressItemData.getProductQty()), multipleAddressItemData.getProductWeight()));
+
 
         boolean isEmptyNotes = TextUtils.isEmpty(multipleAddressItemData.getProductNotes());
         llOptionalNoteToSellerLayout.setVisibility(isEmptyNotes ? View.GONE : View.VISIBLE);
         tvOptionalNoteToSeller.setText(multipleAddressItemData.getProductNotes());
 
-        rlProductPoliciesLayout.setVisibility(isPoliciesVisible(shipmentMultipleAddressItem) ?
+        llProductPoliciesLayout.setVisibility(isPoliciesVisible(shipmentMultipleAddressItem) ?
                 View.VISIBLE : View.GONE);
         ivFreeReturnIcon.setVisibility(shipmentMultipleAddressItem.isProductIsFreeReturns() ? View.VISIBLE : View.GONE);
         tvFreeReturnLabel.setVisibility(shipmentMultipleAddressItem.isProductIsFreeReturns() ? View.VISIBLE : View.GONE);

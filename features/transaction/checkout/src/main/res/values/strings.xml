@@ -127,5 +127,8 @@
     <string name="label_shipping_price_format" formatted="false">Ongkos Kirim (%s %s)</string>
     <string name="label_hide_other_item">Tutup</string>
     <string name="label_other_item_count_format" formatted="false">+%s Produk Lainnya</string>
+    <string name="label_pay">Bayar</string>
+    <string name="iotem_count_and_weight_format" formatted="false">%s barang (%s)</string>
+    <string name="cart_item_count_format" formatted="false">Harga Barang (%s Item) :</string>
 
 </resources>

@@ -79,7 +79,7 @@
                     android:layout_weight="1"
                     android:background="@drawable/orange_button_rounded"
                     android:gravity="center"
-                    android:text="Bayar"
+                    android:text="@string/label_pay"
                     android:textAllCaps="false"
                     android:textColor="@color/white" />
 

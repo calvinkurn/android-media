@@ -69,14 +69,15 @@ public class ShipmentItemSingleAddressViewHolder extends ShipmentItemViewHolder 
         tvProductName.setText(cartItemModel.getName());
         tvProductPrice.setText(CurrencyFormatUtil.convertPriceValueToIdrFormat(
                 (int) cartItemModel.getPrice(), true));
-        tvProductWeight.setText(cartItemModel.getWeightFmt());
-        tvProductTotalItem.setText(String.valueOf(cartItemModel.getQuantity()));
+        tvItemCountAndWeight.setText(String.format(tvItemCountAndWeight.getContext()
+                        .getString(R.string.iotem_count_and_weight_format),
+                String.valueOf(cartItemModel.getQuantity()), cartItemModel.getWeightFmt()));
 
         boolean isEmptyNotes = TextUtils.isEmpty(cartItemModel.getNoteToSeller());
         llOptionalNoteToSellerLayout.setVisibility(isEmptyNotes ? View.GONE : View.VISIBLE);
         tvOptionalNoteToSeller.setText(cartItemModel.getNoteToSeller());
 
-        rlProductPoliciesLayout.setVisibility(isPoliciesVisible(cartItemModel) ?
+        llProductPoliciesLayout.setVisibility(isPoliciesVisible(cartItemModel) ?
                 View.VISIBLE : View.GONE);
         ivFreeReturnIcon.setVisibility(cartItemModel.isFreeReturn() ? View.VISIBLE : View.GONE);
         tvFreeReturnLabel.setVisibility(cartItemModel.isFreeReturn() ? View.VISIBLE : View.GONE);
@@ -92,7 +93,7 @@ public class ShipmentItemSingleAddressViewHolder extends ShipmentItemViewHolder 
         initInnerRecyclerView(cartItemModels);
         if (shipmentItem.isStateAllItemViewExpanded()) {
             rvCartItem.setVisibility(View.VISIBLE);
-            vSeparatorMultipleProductSameStore.setVisibility(View.VISIBLE);
+            vSeparatorMultipleProductSameStore.setVisibility(View.GONE);
             tvExpandOtherProduct.setText(R.string.label_hide_other_item);
         } else {
             rvCartItem.setVisibility(View.GONE);
@@ -154,10 +155,6 @@ public class ShipmentItemSingleAddressViewHolder extends ShipmentItemViewHolder 
         tvProductPrice.setTextColor(ContextCompat.getColor(context, R.color.grey_nonactive_text));
         tvFreeReturnLabel.setTextColor(ContextCompat.getColor(context, R.color.grey_nonactive_text));
         tvPreOrder.setTextColor(ContextCompat.getColor(context, R.color.grey_nonactive_text));
-        tvTextProductWeight.setTextColor(ContextCompat.getColor(context, R.color.grey_nonactive_text));
-        tvProductWeight.setTextColor(ContextCompat.getColor(context, R.color.grey_nonactive_text));
-        tvLabelItemCount.setTextColor(ContextCompat.getColor(context, R.color.grey_nonactive_text));
-        tvProductTotalItem.setTextColor(ContextCompat.getColor(context, R.color.grey_nonactive_text));
         tvNoteToSellerLabel.setTextColor(ContextCompat.getColor(context, R.color.grey_nonactive_text));
         tvOptionalNoteToSeller.setTextColor(ContextCompat.getColor(context, R.color.grey_nonactive_text));
         tvCashback.setBackgroundColor(ContextCompat.getColor(context, R.color.grey_nonactive_text));
@@ -177,13 +174,9 @@ public class ShipmentItemSingleAddressViewHolder extends ShipmentItemViewHolder 
         tvProductPrice.setTextColor(ContextCompat.getColor(context, R.color.orange_red));
         tvFreeReturnLabel.setTextColor(ContextCompat.getColor(context, R.color.font_black_secondary_54));
         tvPreOrder.setTextColor(ContextCompat.getColor(context, R.color.font_black_secondary_54));
-        tvTextProductWeight.setTextColor(ContextCompat.getColor(context, R.color.black_38));
-        tvProductWeight.setTextColor(ContextCompat.getColor(context, R.color.font_black_secondary_54));
-        tvLabelItemCount.setTextColor(ContextCompat.getColor(context, R.color.black_38));
-        tvProductTotalItem.setTextColor(ContextCompat.getColor(context, R.color.font_black_secondary_54));
         tvNoteToSellerLabel.setTextColor(ContextCompat.getColor(context, R.color.black_38));
         tvOptionalNoteToSeller.setTextColor(ContextCompat.getColor(context, R.color.black_70));
-        tvCashback.setBackground(ContextCompat.getDrawable(context, R.drawable.layout_bg_cashback));
+        tvCashback.setBackground(ContextCompat.getDrawable(context, R.drawable.bg_cashback));
         setImageFilterNormal();
     }
 

@@ -10,6 +10,7 @@ import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SimpleItemAnimator;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -86,6 +87,7 @@ public class CartFragment extends BaseCheckoutFragment implements CartListAdapte
     private TextView btnToShipment;
     private TextView tvTotalPrice;
     private View bottomLayout;
+    private TextView tvItemCount;
     private TkpdProgressDialog progressDialogNormal;
 
     @Inject
@@ -184,12 +186,14 @@ public class CartFragment extends BaseCheckoutFragment implements CartListAdapte
         btnToShipment = view.findViewById(R.id.go_to_courier_page_button);
         tvTotalPrice = view.findViewById(R.id.tv_total_prices);
         bottomLayout = view.findViewById(R.id.bottom_layout);
+        tvItemCount = view.findViewById(R.id.tv_item_count);
 
         progressDialogNormal = new TkpdProgressDialog(getActivity(), TkpdProgressDialog.NORMAL_PROGRESS);
         refreshHandler = new RefreshHandler(getActivity(), view, this);
         cartRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         cartRecyclerView.setAdapter(cartListAdapter);
         cartRecyclerView.addItemDecoration(cartItemDecoration);
+        ((SimpleItemAnimator) cartRecyclerView.getItemAnimator()).setSupportsChangeAnimations(false);
     }
 
     @Override
@@ -672,8 +676,8 @@ public class CartFragment extends BaseCheckoutFragment implements CartListAdapte
     @Override
     public void renderDetailInfoSubTotal(String qty, String subtotalPrice) {
         tvTotalPrice.setText(subtotalPrice);
+        tvItemCount.setText(String.format(getActivity().getString(R.string.cart_item_count_format), qty));
     }
-
 
     @Override
     public void renderPromoVoucher() {
