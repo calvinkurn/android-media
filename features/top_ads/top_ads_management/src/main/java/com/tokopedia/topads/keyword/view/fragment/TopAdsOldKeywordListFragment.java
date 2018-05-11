@@ -15,6 +15,7 @@ import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.seller.base.view.adapter.BaseListAdapter;
 import com.tokopedia.seller.base.view.fragment.TopAdsFilterListFragment;
 import com.tokopedia.topads.R;
+import com.tokopedia.topads.keyword.view.presenter.TopAdsOldKeywordListPresenterImpl;
 import com.tokopedia.topads.sourcetagging.constant.TopAdsSourceOption;
 import com.tokopedia.topads.dashboard.constant.TopAdsExtraConstant;
 import com.tokopedia.topads.dashboard.data.model.data.GroupAd;
@@ -33,7 +34,6 @@ import com.tokopedia.topads.keyword.view.activity.TopAdsKeywordNewChooseGroupAct
 import com.tokopedia.topads.keyword.view.adapter.TopAdsKeywordAdapter;
 import com.tokopedia.topads.keyword.view.model.BaseKeywordParam;
 import com.tokopedia.topads.keyword.view.model.KeywordAd;
-import com.tokopedia.topads.keyword.view.presenter.TopAdsKeywordListPresenterImpl;
 
 import java.util.List;
 
@@ -42,7 +42,7 @@ import javax.inject.Inject;
 /**
  * @author normansyahputa on 5/17/17.
  */
-public class TopAdsKeywordListFragment extends TopAdsAdListFragment<TopAdsKeywordListPresenterImpl, KeywordAd>
+public class TopAdsOldKeywordListFragment extends TopAdsAdListFragment<TopAdsOldKeywordListPresenterImpl, KeywordAd>
         implements TopAdsEmptyAdDataBinder.Callback {
 
     protected int filterStatus;
@@ -50,13 +50,13 @@ public class TopAdsKeywordListFragment extends TopAdsAdListFragment<TopAdsKeywor
     protected int selectedPosition;
 
     @Inject
-    TopAdsKeywordListPresenterImpl topAdsKeywordListPresenter;
+    TopAdsOldKeywordListPresenterImpl topAdsKeywordListPresenter;
 
     private boolean hasData;
     private GroupTopAdsListener groupTopAdsListener;
 
     public static Fragment createInstance() {
-        return new TopAdsKeywordListFragment();
+        return new TopAdsOldKeywordListFragment();
     }
 
     @Override
@@ -224,7 +224,7 @@ public class TopAdsKeywordListFragment extends TopAdsAdListFragment<TopAdsKeywor
                 Intent intent = new Intent(getActivity(), TopAdsGroupNewPromoActivity.class);
                 topAdsKeywordListPresenter.saveSourceTagging(isPositive()? TopAdsSourceOption.SA_MANAGE_KEYWORD_POSITIVE :
                 TopAdsSourceOption.SA_MANAGE_KEYWORD_NEGATIVE);
-                TopAdsKeywordListFragment.this.startActivityForResult(intent, TopAdsGroupNewPromoFragment.REQUEST_CODE_AD_STATUS);
+                TopAdsOldKeywordListFragment.this.startActivityForResult(intent, TopAdsGroupNewPromoFragment.REQUEST_CODE_AD_STATUS);
             }
         });
 

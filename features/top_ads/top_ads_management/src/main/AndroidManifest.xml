@@ -67,7 +67,11 @@
             android:label="@string/title_activity_top_ads_list"
             android:theme="@style/Theme.Tokopedia3" />
         <activity
-            android:name=".keyword.view.activity.TopAdsKeywordListActivity"
+            android:name=".keyword.view.activity.TopAdsOldKeywordListActivity"
+            android:label="@string/title_top_ads_keyword"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".keyword.view.activity.TopAdsKeywordAdListActivity"
             android:label="@string/title_top_ads_keyword"
             android:screenOrientation="portrait" />
         <activity

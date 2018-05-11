@@ -9,7 +9,7 @@ import com.tokopedia.seller.product.variant.data.cloud.api.TomeProductApi;
 import com.tokopedia.seller.shop.common.di.ShopQualifier;
 import com.tokopedia.seller.shop.common.domain.repository.ShopInfoRepository;
 import com.tokopedia.topads.dashboard.di.qualifier.TopAdsManagementQualifier;
-import com.tokopedia.topads.keyword.data.repository.TopAdsKeywordRepositoryImpl;
+import com.tokopedia.topads.keyword.data.repository.TopAdsOldKeywordRepositoryImpl;
 import com.tokopedia.topads.keyword.data.source.KeywordDashboardDataSouce;
 import com.tokopedia.topads.keyword.data.source.cloud.api.KeywordApi;
 import com.tokopedia.topads.keyword.di.scope.TopAdsKeywordScope;
@@ -45,7 +45,7 @@ public class TopAdsKeywordEditDetailModule {
     @TopAdsKeywordScope
     @Provides
     TopAdsKeywordRepository provideTopAdsKeywordRepository(KeywordDashboardDataSouce keywordDashboardDataSouce, ShopInfoRepository shopInfoRepository){
-        return new TopAdsKeywordRepositoryImpl(keywordDashboardDataSouce, shopInfoRepository);
+        return new TopAdsOldKeywordRepositoryImpl(keywordDashboardDataSouce, shopInfoRepository);
     }
 
     @TopAdsKeywordScope

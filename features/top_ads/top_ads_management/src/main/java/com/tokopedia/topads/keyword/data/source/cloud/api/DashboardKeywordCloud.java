@@ -24,6 +24,7 @@ import rx.Observable;
  * Created by normansyahputa on 5/18/17.
  */
 
+@Deprecated
 public class DashboardKeywordCloud {
 
     private KeywordApi keywordApi;

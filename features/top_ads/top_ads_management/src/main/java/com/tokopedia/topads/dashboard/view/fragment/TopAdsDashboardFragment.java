@@ -2,11 +2,13 @@ package com.tokopedia.topads.dashboard.view.fragment;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.PorterDuff;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.BottomSheetDialog;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.NestedScrollView;
 import android.text.Html;
@@ -25,7 +27,6 @@ import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.listener.GlobalMainTabSelectedListener;
 import com.tokopedia.design.bottomsheet.BottomSheetBuilder;
-import com.tokopedia.design.bottomsheet.BottomSheetCustomContentView;
 import com.tokopedia.design.bottomsheet.adapter.BottomSheetItemClickListener;
 import com.tokopedia.design.bottomsheet.custom.CheckedBottomSheetBuilder;
 import com.tokopedia.design.component.FloatingButton;
@@ -54,7 +55,7 @@ import com.tokopedia.topads.dashboard.view.activity.TopAdsProductAdListActivity;
 import com.tokopedia.topads.dashboard.view.adapter.TopAdsStatisticPagerAdapter;
 import com.tokopedia.topads.dashboard.view.listener.TopAdsDashboardView;
 import com.tokopedia.topads.dashboard.view.presenter.TopAdsDashboardPresenter;
-import com.tokopedia.topads.keyword.view.activity.TopAdsKeywordListActivity;
+import com.tokopedia.topads.keyword.view.activity.TopAdsKeywordAdListActivity;
 import com.tokopedia.topads.sourcetagging.constant.TopAdsSourceOption;
 
 import java.util.ArrayList;
@@ -331,7 +332,7 @@ public class TopAdsDashboardFragment extends BaseDaggerFragment implements TopAd
 
     private void onSummaryKeywordClicked() {
         UnifyTracking.eventTopAdsProductClickKeywordDashboard();
-        Intent intent = new Intent(getActivity(), TopAdsKeywordListActivity.class);
+        Intent intent = new Intent(getActivity(), TopAdsKeywordAdListActivity.class);
         if (totalGroupAd >= 0) {
             intent.putExtra(TopAdsExtraConstant.EXTRA_TOTAL_GROUP_ADS, totalGroupAd);
         }
@@ -695,6 +696,8 @@ public class TopAdsDashboardFragment extends BaseDaggerFragment implements TopAd
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.menu_top_ads_dashboard, menu);
+        MenuItem item = menu.findItem(R.id.menu_more);
+        item.getIcon().setColorFilter(ContextCompat.getColor(getActivity(), R.color.white), PorterDuff.Mode.SRC_ATOP);
         super.onCreateOptionsMenu(menu, inflater);
     }
 

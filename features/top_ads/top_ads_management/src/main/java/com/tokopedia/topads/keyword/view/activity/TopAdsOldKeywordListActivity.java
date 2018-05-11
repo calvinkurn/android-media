@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
-import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -22,9 +21,8 @@ import com.tokopedia.topads.R;
 import com.tokopedia.topads.common.view.utils.ShowCaseDialogFactory;
 import com.tokopedia.topads.dashboard.constant.TopAdsExtraConstant;
 import com.tokopedia.topads.dashboard.view.fragment.TopAdsAdListFragment;
-import com.tokopedia.topads.dashboard.view.listener.OneUseGlobalLayoutListener;
 import com.tokopedia.topads.keyword.view.adapter.TopAdsPagerAdapter;
-import com.tokopedia.topads.keyword.view.fragment.TopAdsKeywordListFragment;
+import com.tokopedia.topads.keyword.view.fragment.TopAdsOldKeywordListFragment;
 import com.tokopedia.topads.keyword.view.listener.AdListMenuListener;
 
 import java.util.ArrayList;
@@ -33,12 +31,13 @@ import java.util.ArrayList;
  * Created by nathan on 5/15/17.
  */
 
-public class TopAdsKeywordListActivity extends BaseTabActivity implements
+@Deprecated
+public class TopAdsOldKeywordListActivity extends BaseTabActivity implements
         HasComponent<AppComponent>,
-        TopAdsAdListFragment.OnAdListFragmentListener, TopAdsKeywordListFragment.GroupTopAdsListener {
+        TopAdsAdListFragment.OnAdListFragmentListener, TopAdsOldKeywordListFragment.GroupTopAdsListener {
 
     public static final int OFFSCREEN_PAGE_LIMIT = 2;
-    private static final String TAG = TopAdsKeywordListActivity.class.getName();
+    private static final String TAG = TopAdsOldKeywordListActivity.class.getName();
     private static final int DELAY_SHOW_CASE_THREAD = 300;//ms
     boolean isShowingShowCase = false;
     private ShowCaseDialog showCaseDialog;
@@ -144,13 +143,13 @@ public class TopAdsKeywordListActivity extends BaseTabActivity implements
     }
 
     private void displayShowCase() {
-        final TopAdsKeywordListFragment topAdsKeywordListFragment = (TopAdsKeywordListFragment) getCurrentFragment();
-        if (topAdsKeywordListFragment == null || topAdsKeywordListFragment.getView() == null) {
+        final TopAdsOldKeywordListFragment topAdsOldKeywordListFragment = (TopAdsOldKeywordListFragment) getCurrentFragment();
+        if (topAdsOldKeywordListFragment == null || topAdsOldKeywordListFragment.getView() == null) {
             return;
         }
         final ArrayList<ShowCaseObject> showCaseList = new ArrayList<>();
 
-        View searchView = topAdsKeywordListFragment.getSearchView();
+        View searchView = topAdsOldKeywordListFragment.getSearchView();
         if (searchView == null) {
             return;
         }
@@ -166,19 +165,19 @@ public class TopAdsKeywordListActivity extends BaseTabActivity implements
         // Filter
         showCaseList.add(
                 new ShowCaseObject(
-                        topAdsKeywordListFragment.getFilterView(),
+                        topAdsOldKeywordListFragment.getFilterView(),
                         getString(R.string.topads_showcase_keyword_list_title_2),
                         getString(R.string.topads_showcase_keyword_list_desc_2),
                         ShowCaseContentPosition.UNDEFINED));
 
-        RecyclerView recyclerView = topAdsKeywordListFragment.getRecyclerView();
+        RecyclerView recyclerView = topAdsOldKeywordListFragment.getRecyclerView();
         recyclerView.postDelayed(new Runnable() {
             @Override
             public void run() {
-                if (topAdsKeywordListFragment.getView() == null) {
+                if (topAdsOldKeywordListFragment.getView() == null) {
                     return;
                 }
-                View dateView = topAdsKeywordListFragment.getDateView();
+                View dateView = topAdsOldKeywordListFragment.getDateView();
                 if (dateView != null) {
                     dateView.setVisibility(View.VISIBLE);
                     showCaseList.add(
@@ -188,7 +187,7 @@ public class TopAdsKeywordListActivity extends BaseTabActivity implements
                                     getString(R.string.topads_showcase_keyword_list_desc_3)));
                 }
 
-                View itemView = topAdsKeywordListFragment.getItemRecyclerView();
+                View itemView = topAdsOldKeywordListFragment.getItemRecyclerView();
                 if (itemView != null) {
                     showCaseList.add(
                             new ShowCaseObject(
@@ -199,7 +198,7 @@ public class TopAdsKeywordListActivity extends BaseTabActivity implements
                                     Color.WHITE));
                 }
 
-                View fabView = topAdsKeywordListFragment.getFab();
+                View fabView = topAdsOldKeywordListFragment.getFab();
                 if (fabView != null) {
                     showCaseList.add(
                             new ShowCaseObject(
@@ -208,7 +207,7 @@ public class TopAdsKeywordListActivity extends BaseTabActivity implements
                                     getString(R.string.topads_showcase_keyword_list_desc_5)));
                 }
                 showCaseDialog = ShowCaseDialogFactory.createTkpdShowCase();
-                showCaseDialog.show(TopAdsKeywordListActivity.this, TAG, showCaseList);
+                showCaseDialog.show(TopAdsOldKeywordListActivity.this, TAG, showCaseList);
             }
         }, DELAY_SHOW_CASE_THREAD);
     }

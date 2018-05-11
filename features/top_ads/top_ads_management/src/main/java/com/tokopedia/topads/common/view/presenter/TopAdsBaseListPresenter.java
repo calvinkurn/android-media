@@ -23,7 +23,7 @@ import rx.Subscriber;
 public class TopAdsBaseListPresenter<T extends CustomerView> extends BaseDaggerPresenter<T> {
     private final TopAdsDatePickerInteractor topAdsDatePickerInteractor;
     private final TopAdsAddSourceTaggingUseCase topAdsAddSourceTaggingUseCase;
-    private final UserSession userSession;
+    protected final UserSession userSession;
 
     public TopAdsBaseListPresenter(TopAdsDatePickerInteractor topAdsDatePickerInteractor,
                                    TopAdsAddSourceTaggingUseCase topAdsAddSourceTaggingUseCase,

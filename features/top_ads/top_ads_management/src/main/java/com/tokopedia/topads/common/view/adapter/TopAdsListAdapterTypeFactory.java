@@ -10,6 +10,8 @@ import com.tokopedia.topads.common.view.adapter.viewholder.LoadingViewHolder;
 import com.tokopedia.topads.dashboard.view.model.Ad;
 import com.tokopedia.topads.common.view.adapter.viewholder.TopAdsAdViewHolder;
 import com.tokopedia.topads.common.view.adapter.viewholder.TopAdsErrorNetworkViewHolder;
+import com.tokopedia.topads.keyword.view.adapter.viewholder.TopAdsKeywordViewHolder;
+import com.tokopedia.topads.keyword.view.model.KeywordAd;
 
 /**
  * Created by hadi.putra on 04/05/18.
@@ -28,7 +30,11 @@ public class TopAdsListAdapterTypeFactory<T extends Ad> extends BaseAdapterTypeF
     }
 
     public int type(T ad){
-        return TopAdsAdViewHolder.LAYOUT;
+        if (ad instanceof KeywordAd){
+            return TopAdsKeywordViewHolder.LAYOUT;
+        } else {
+            return TopAdsAdViewHolder.LAYOUT;
+        }
     }
 
     @Override
@@ -37,6 +43,8 @@ public class TopAdsListAdapterTypeFactory<T extends Ad> extends BaseAdapterTypeF
             return new LoadingViewHolder(parent);
         } else if (type == TopAdsAdViewHolder.LAYOUT) {
             return new TopAdsAdViewHolder(parent);
+        } else if (type == TopAdsKeywordViewHolder.LAYOUT){
+            return new TopAdsKeywordViewHolder(parent);
         } else if (type == TopAdsErrorNetworkViewHolder.LAYOUT){
             return new TopAdsErrorNetworkViewHolder(parent);
         } else {
