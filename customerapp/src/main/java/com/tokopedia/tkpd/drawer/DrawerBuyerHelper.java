@@ -502,8 +502,7 @@ public class DrawerBuyerHelper extends DrawerHelper
                     sendGTMNavigationEvent(AppEventTracking.EventLabel.PURCHASE_LIST);
                     break;
                 case TkpdState.DrawerPosition.PEOPLE_DIGITAL_TRANSACTION_LIST:
-                    context.startActivity(DigitalWebActivity.newInstance(context, TkpdBaseURL.DIGITAL_WEBSITE_DOMAIN
-                            + TkpdBaseURL.DigitalWebsite.PATH_TRANSACTION_LIST));
+                    context.startActivity(TransactionPurchaseRouter.createIntentOrderListSummary(context));
                     sendGTMNavigationEvent(AppEventTracking.EventLabel.DIGITAL_TRANSACTION_LIST);
                     break;
                 case TkpdState.DrawerPosition.PEOPLE_FLIGHT_TRANSACTION_LIST:

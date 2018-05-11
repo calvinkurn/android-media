@@ -36,7 +36,7 @@
     <string name="msg_new_order">Toko Anda mendapat pesanan baru, mohon diproses</string>
     <string name="reorder">Transaksi dibatalkan</string>
     <string name="title_sales">Penjualan</string>
-    <string name="title_purchase">Pembelian</string>
+    <string name="title_purchase">Daftar Top-Up &amp; Tagihan</string>
     <string name="title_edit_review">Ulasan yang diubah</string>
     <string name="title_reply_review">Ulasan yang dibalas</string>
     <!-- end of Strings related notification -->

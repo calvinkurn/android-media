@@ -32,6 +32,14 @@
             android:label="@string/title_purchase"
             android:screenOrientation="portrait" />
         <activity
+            android:name=".orders.orderlist.view.activity.OrderListActivity"
+            android:label="@string/title_purchase"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".orders.orderdetails.view.activity.OrderListDetailActivity"
+            android:label="@string/title_order_detail"
+            android:screenOrientation="portrait" />
+        <activity
             android:name=".cart.activity.CartActivity"
             android:label="@string/title_activity_cart"
             android:launchMode="singleTask"

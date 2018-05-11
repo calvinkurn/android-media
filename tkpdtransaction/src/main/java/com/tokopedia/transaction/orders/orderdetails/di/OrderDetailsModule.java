@@ -1,4 +1,4 @@
-package com.tokopedia.transaction.orders.orderlist.di;
+package com.tokopedia.transaction.orders.orderdetails.di;
 
 import android.content.Context;
 
@@ -8,11 +8,18 @@ import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.transaction.orders.common.OrderListAuthInterceptor;
 import com.tokopedia.transaction.orders.common.url.OrderURL;
+import com.tokopedia.transaction.orders.orderdetails.domain.OrderDetailsRepository;
+import com.tokopedia.transaction.orders.orderdetails.domain.OrderDetailsUseCase;
+import com.tokopedia.transaction.orders.orderdetails.source.OrderDetailsDataApi;
+import com.tokopedia.transaction.orders.orderdetails.source.OrderDetailsFactory;
+import com.tokopedia.transaction.orders.orderdetails.source.OrderDetailsRepositoryImpl;
 import com.tokopedia.transaction.orders.orderlist.domain.OrderListRepository;
 import com.tokopedia.transaction.orders.orderlist.domain.OrderListUseCase;
 import com.tokopedia.transaction.orders.orderlist.source.OrderListFactory;
 import com.tokopedia.transaction.orders.orderlist.source.OrderListRepositoryImpl;
 import com.tokopedia.transaction.orders.orderlist.source.api.OrderListDataApi;
+
+import javax.inject.Inject;
 
 import dagger.Module;
 import dagger.Provides;
@@ -25,20 +32,28 @@ import retrofit2.Retrofit;
  */
 
 @Module
-public class OrderListModule {
+public class OrderDetailsModule {
     @Provides
-    OrderListRepository provideOrderListRepository(OrderListFactory orderListFactory){
-        return new OrderListRepositoryImpl(orderListFactory);
+    OrderDetailsRepository provideOrderDetailsRepository(OrderDetailsFactory orderDetailsFactory){
+        return new OrderDetailsRepositoryImpl(orderDetailsFactory);
     }
 
     @Provides
-    OrderListUseCase provideOrderListUseCase(OrderListRepository orderListRepository){
-        return new OrderListUseCase(orderListRepository);
+    OrderDetailsUseCase provideOrderDetailsUseCase(OrderDetailsRepository orderDetailsRepository){
+        return new OrderDetailsUseCase(orderDetailsRepository);
     }
+
+    @Provides
+    OrderDetailsFactory provideOrderDetailsFactory(OrderDetailsDataApi orderDetailsDataApi,Gson gson){
+        return new OrderDetailsFactory(orderDetailsDataApi,gson);
+    }
+    @Provides
+    OrderDetailsDataApi provideapi(Retrofit retrofit){ return retrofit.create(OrderDetailsDataApi.class);}
 
     @Provides
     Retrofit provideRetrofit(Retrofit.Builder builder, OkHttpClient okHttpClient){
-            return builder.baseUrl(OrderURL.BASE_URL).client(okHttpClient).build();
+
+        return builder.baseUrl(OrderURL.BASE_URL).client(okHttpClient).build();
     }
 
     @Provides
@@ -47,16 +62,6 @@ public class OrderListModule {
                 .addInterceptor(httpLoggingInterceptor)
                 .addInterceptor(authInterceptor)
                 .build();
-    }
-
-    @Provides
-    OrderListDataApi provide(Retrofit retrofit){
-        return retrofit.create(OrderListDataApi.class);
-    }
-
-    @Provides
-    OrderListFactory provideOrderListFactory(OrderListDataApi orderListDataApi,Gson gson){
-        return new OrderListFactory(orderListDataApi,gson);
     }
 
     @Provides

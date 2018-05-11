@@ -28,7 +28,6 @@ public class ListAdapterPresenterImpl implements ListAdapterPresenter {
 
     @Override
     public void setActionButtonData(List<ActionButton> actionButtons) {
-        Log.e("sandeep","actionButton size = "+actionButtons.size()+"  actionbutton ="+actionButtons);
         if (actionButtons.size() == 2) {
             ActionButton leftActionButton = actionButtons.get(0);
             ActionButton rightActionButton = actionButtons.get(1);
@@ -40,7 +39,7 @@ public class ListAdapterPresenterImpl implements ListAdapterPresenter {
             } else {
                 adapterListenter.setButtonData(View.GONE, View.VISIBLE, null, actionButton.label(), null, actionButton.uri(), null, null, null, actionButton.color());
             }
-        } else{
+        } else {
             adapterListenter.setButtonData(View.GONE, View.GONE, null, null, null, null, null, null, null, null);
         }
     }
@@ -60,31 +59,31 @@ public class ListAdapterPresenterImpl implements ListAdapterPresenter {
     @Override
     public void setViewData(Order order) {
         adapterListenter.setStatus(order.statusStr());
-        if(!order.statusColor().equals("")){
+        if (!order.statusColor().equals("")) {
             adapterListenter.setStatusBgColor(Color.parseColor(order.statusColor()));
         }
-        if(!order.conditionalInfo().text().equals("")) {
+        if (!order.conditionalInfo().text().equals("")) {
             ConditionalInfo conditionalInfo = order.conditionalInfo();
-            if(!order.status().equals("")) {
+            if (!order.status().equals("")) {
                 int status = Integer.parseInt(order.status());
                 adapterListenter.setConditionalInfo(View.VISIBLE, conditionalInfo.text(), conditionalInfo.color());
             }
         } else {
-            adapterListenter.setConditionalInfo(View.GONE,null, null);
+            adapterListenter.setConditionalInfo(View.GONE, null, null);
         }
         adapterListenter.setInvoice(order.invoiceRefNum());
         String date = order.createdAt();
-        if(date != null && date.contains("T")){
+        if (date != null && date.contains("T")) {
             date = lastUpdatedDate(order.createdAt());
         }
         adapterListenter.setDate(date);
 
         adapterListenter.setCategoryAndTitle(order.categoryName(), order.title());
-        List <MetaData> metaDataList = order.metaData();
-        for(MetaData metaData : metaDataList){
-            if((order.status().equals("103") || order.status().equals("107")) &&
-            metaData.label().equalsIgnoreCase("Metode Pembayaran")
-                    || metaData.label().equalsIgnoreCase("Kode Pembayaran"))
+        List<MetaData> metaDataList = order.metaData();
+        for (MetaData metaData : metaDataList) {
+            if ((order.status().equals("103") || order.status().equals("107")) &&
+                    (metaData.label().equalsIgnoreCase("Metode Pembayaran")
+                            || metaData.label().equalsIgnoreCase("Kode Pembayaran")))
                 continue;
             adapterListenter.setMetaDataToCustomView(metaData);
         }

@@ -16,17 +16,13 @@ public class TransactionPurchaseRouter {
 
     private static final String TRANSACTION_PURCHASE_ACTIVITY
             = "com.tokopedia.transaction.purchase.activity.PurchaseActivity";
+    private static final String TRANSACTION_ORDER_LIST_ACTIVITY
+            = "com.tokopedia.transaction.orders.orderlist.view.activity.OrderListActivity";
     private static final String TRANSACTION_TX_LIST_FRAGMENT
             = "com.tokopedia.transaction.purchase.fragment.TxListFragment";
 
     public static final String EXTRA_STATE_TAB_POSITION = "EXTRA_STATE_TAB_POSITION";
     public static final String EXTRA_STATE_TX_FILTER = "EXTRA_STATE_TX_FILTER";
-
-    public static final int TAB_POSITION_ORDER_ALL = 0;
-    public final static int TAB_POSITION_ORDER_GOLD = 1;
-    public final static int TAB_POSITION_ORDER_DIGITAL = 2;
-    public final static int TAB_POSITION_ORDER_MARKETPLACE = 3;
-    public final static int TAB_POSITION_ORDER_FLIGHT = 4;
 
     public final static int TAB_POSITION_PURCHASE_SUMMARY = 0;
     public final static int TAB_POSITION_PURCHASE_VERIFICATION = 1;
@@ -56,6 +52,12 @@ public class TransactionPurchaseRouter {
     public static Intent createIntentTxSummary(Context context) {
         Intent intent = RouterUtils.getActivityIntent(context, TRANSACTION_PURCHASE_ACTIVITY);
         intent.putExtra(EXTRA_STATE_TAB_POSITION, TAB_POSITION_PURCHASE_SUMMARY);
+        return intent;
+    }
+
+    public static Intent createIntentOrderListSummary(Context context) {
+        Intent intent = RouterUtils.getActivityIntent(context, TRANSACTION_ORDER_LIST_ACTIVITY);
+        intent.putExtra(EXTRA_STATE_TAB_POSITION, TAB_POSITION_PURCHASE_ALL_ORDER);
         return intent;
     }
 

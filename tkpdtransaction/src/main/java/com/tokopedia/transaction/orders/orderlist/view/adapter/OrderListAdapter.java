@@ -23,13 +23,14 @@ import com.tokopedia.applink.RouteManager;
 import com.tokopedia.core.home.SimpleWebViewWithFilePickerActivity;
 import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.R2;
+import com.tokopedia.transaction.orders.orderdetails.view.activity.OrderListDetailActivity;
 import com.tokopedia.transaction.orders.orderlist.data.ActionButton;
 import com.tokopedia.transaction.orders.orderlist.data.Color;
 import com.tokopedia.transaction.orders.orderlist.data.DotMenuList;
 import com.tokopedia.transaction.orders.orderlist.data.MetaData;
 import com.tokopedia.transaction.orders.orderlist.data.Order;
 import com.tokopedia.transaction.orders.orderlist.data.Popup;
-import com.tokopedia.transaction.orders.orderlist.view.customview.DoubleTextView;
+import com.tokopedia.transaction.orders.common.view.DoubleTextView;
 import com.tokopedia.transaction.orders.orderlist.view.presenter.ListAdapterListenter;
 import com.tokopedia.transaction.orders.orderlist.view.presenter.ListAdapterPresenter;
 import com.tokopedia.transaction.orders.orderlist.view.presenter.ListAdapterPresenterImpl;
@@ -83,13 +84,7 @@ public class OrderListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
         if (holder instanceof OrderListViewHolder) {
             currentHolder = (OrderListViewHolder) holder;
             if (mOrderList != null) {
-                Order order = mOrderList.get(position);
-                orderListPresenter.setViewData(order);
-                currentHolder.parentMetadataLayout.removeAllViews();
-                orderListPresenter.setActionButtonData(order.actionButtons());
-                orderListPresenter.setDotMenuVisibility(order.dotMenuList());
-                ImageHandler.loadImageThumbs(context, currentHolder.imgShopAvatar, order.items().get(0).imageUrl());
-                registerViewClickListener(currentHolder, order);
+                currentHolder.bindData(mOrderList.get(position), position);
             }
         } else {
             ((ProgressViewHolder) holder).progressBar.setIndeterminate(true);
@@ -248,7 +243,7 @@ public class OrderListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
 
     @Override
     public void setMetaDataToCustomView(MetaData metaData) {
-        DoubleTextView childLayout = new DoubleTextView(context, null);
+        DoubleTextView childLayout = new DoubleTextView(context, LinearLayout.VERTICAL);
         childLayout.setTopText(metaData.label());
         childLayout.setBottomText(metaData.value());
         currentHolder.parentMetadataLayout.addView(childLayout);
@@ -335,7 +330,7 @@ public class OrderListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
         }
     }
 
-    class OrderListViewHolder extends RecyclerView.ViewHolder {
+    class OrderListViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
         @BindView(R2.id.list_element_status)
         TextView status;
         @BindView(R2.id.date)
@@ -367,9 +362,31 @@ public class OrderListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
         @BindView(R2.id.metadata)
         LinearLayout parentMetadataLayout;
 
+        View itemView;
+        String orderId;
+
         public OrderListViewHolder(View itemView) {
             super(itemView);
+            this.itemView=itemView;
             ButterKnife.bind(this, itemView);
+        }
+
+        @Override
+        public void onClick(View view) {
+            context.startActivity(OrderListDetailActivity.createInstance(context, orderId));
+        }
+
+        public void bindData(Order order, int position) {
+            if (order != null) {
+                orderId = order.id();
+                parentMetadataLayout.removeAllViews();
+                orderListPresenter.setViewData(order);
+                orderListPresenter.setActionButtonData(order.actionButtons());
+                orderListPresenter.setDotMenuVisibility(order.dotMenuList());
+                ImageHandler.loadImageThumbs(context, imgShopAvatar, order.items().get(0).imageUrl());
+                registerViewClickListener(this, order);
+                itemView.setOnClickListener(this);
+            }
         }
     }
 

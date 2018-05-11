@@ -16,7 +16,6 @@ import javax.inject.Inject;
 import rx.Subscriber;
 
 public class OrderListPresenterImpl extends BaseDaggerPresenter<OrderListContract.View> implements OrderListContract.Presenter {
-   // private Context mContext;
     private OrderListUseCase getOrderListUseCase;
 
     @Inject
@@ -24,7 +23,6 @@ public class OrderListPresenterImpl extends BaseDaggerPresenter<OrderListContrac
         this.getOrderListUseCase = getOrderListUseCase;
 
     }
-
 
     @Override
     public void getAllOrderData(Context context, OrderCategory orderCategory, int typeRequest, int page) {
@@ -49,19 +47,10 @@ public class OrderListPresenterImpl extends BaseDaggerPresenter<OrderListContrac
                 if (s != null && !s.orders().isEmpty()) {
                     getView().renderDataList(s.orders());
                 } else if(s.orders().isEmpty()){
-                    Log.e("sandeep","empty list");
-                    //viewListener.notifyAllDataLoaded();
                     getView().unregisterScrollListener();
                 }
-
             }
         });
-
-
-    }
-
-
-    private void fetchRepositoryDetails() {
     }
 
 }
