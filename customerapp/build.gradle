@@ -46,7 +46,7 @@ def allowProguard() {
 }
 
 def getTkpdVersionCode() {
-    return project.hasProperty('versionCode') ? Integer.parseInt(versionCode) * 10 : project.defaultVersionCode;
+    return project.hasProperty('versionCode') ? Integer.parseInt(versionCode) : project.defaultVersionCode;
 }
 
 def getTkpdVersionName() {
