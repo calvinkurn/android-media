@@ -40,6 +40,8 @@ public class ProductAddWholesaleFragment extends BaseDaggerFragment implements W
 
     public static final String EXTRA_PRODUCT_WHOLESALE = "EXTRA_PRODUCT_WHOLESALE";
     public static final String SAVE_PRODUCT_WHOLESALE = "SAVE_PRODUCT_WHOLESALE";
+    public static final String RUPIAH_CURRENCY = "Rp ";
+    public static final String USD_CURRENCY = "US$ ";
 
     private static final int MAX_WHOLESALE = 5;
     private static final int DEFAULT_QTY_WHOLESALE = 2;
@@ -183,7 +185,16 @@ public class ProductAddWholesaleFragment extends BaseDaggerFragment implements W
 
     public void renderData(ArrayList<ProductWholesaleViewModel> productWholesaleViewModelArrayList, double productPrice){
         setWholesalePrice(productWholesaleViewModelArrayList);
-        textMainPrice.setText("Rp " + productPrice);
+        switch (currencyType) {
+            case CurrencyTypeDef.TYPE_USD:
+                textMainPrice.setText(USD_CURRENCY + productPrice);
+                break;
+            default:
+            case CurrencyTypeDef.TYPE_IDR:
+                textMainPrice.setText(RUPIAH_CURRENCY + productPrice);
+                break;
+
+        }
     }
 
     @Override
