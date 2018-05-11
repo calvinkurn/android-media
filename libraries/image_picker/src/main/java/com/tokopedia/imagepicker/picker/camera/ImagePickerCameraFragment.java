@@ -40,6 +40,8 @@ import java.util.Set;
 
 public class ImagePickerCameraFragment extends TkpdBaseV4Fragment {
 
+    public static final String SAVED_FLASH_INDEX = "saved_flash_index";
+
     private CameraView cameraView;
     private ImageButton flashImageButton;
     private ImageButton shutterImageButton;
@@ -62,6 +64,14 @@ public class ImagePickerCameraFragment extends TkpdBaseV4Fragment {
     @RequiresPermission("android.permission.CAMERA")
     public static ImagePickerCameraFragment newInstance() {
         return new ImagePickerCameraFragment();
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        if (savedInstanceState != null) {
+            flashIndex = savedInstanceState.getInt(SAVED_FLASH_INDEX, 0);
+        }
     }
 
     @Nullable
@@ -93,7 +103,7 @@ public class ImagePickerCameraFragment extends TkpdBaseV4Fragment {
                     return;
                 }
                 Set<Flash> flashSet = cameraView.getCameraOptions().getSupportedFlash();
-                for (Flash flash: flashSet) {
+                for (Flash flash : flashSet) {
                     if (flash != Flash.TORCH) {
                         supportedFlashList.add(flash);
                     }
@@ -113,17 +123,15 @@ public class ImagePickerCameraFragment extends TkpdBaseV4Fragment {
                 generateImage(imageByte);
             }
         });
-        if (supportedFlashList!= null && supportedFlashList.size() > 0) {
+        if (supportedFlashList != null && supportedFlashList.size() > 0) {
             flashImageButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    int flashIndexTemp = flashIndex++ % supportedFlashList.size();
-                    Flash flash = supportedFlashList.get(flashIndexTemp);
-                    cameraView.set(flash);
-                    Toast.makeText(getActivity(), flash.name() + " - " + flash.ordinal(), Toast.LENGTH_SHORT).show();
+                    flashIndex = (flashIndex+1) % supportedFlashList.size();
+                    setCameraFlash();
                 }
             });
-            flashImageButton.setVisibility(View.VISIBLE);
+            setCameraFlash();
         } else {
             flashImageButton.setVisibility(View.INVISIBLE);
         }
@@ -156,6 +164,26 @@ public class ImagePickerCameraFragment extends TkpdBaseV4Fragment {
         progressDialog = new ProgressDialog(getActivity());
         progressDialog.setCancelable(false);
         progressDialog.setMessage(getString(R.string.title_loading));
+    }
+
+    private void setCameraFlash(){
+        Flash flash = supportedFlashList.get(flashIndex);
+        if (flash.ordinal() == Flash.TORCH.ordinal()) {
+            flashIndex = (flashIndex+1) % supportedFlashList.size();
+            flash = supportedFlashList.get(flashIndex);
+        }
+        cameraView.set(flash);
+        setUIFlashCamera(flash.ordinal());
+    }
+
+    private void setUIFlashCamera(int flashEnum) {
+        if (flashEnum == Flash.AUTO.ordinal()) {
+            flashImageButton.setImageResource(R.drawable.ic_flash_auto);
+        } else if (flashEnum == Flash.ON.ordinal()) {
+            flashImageButton.setImageResource(R.drawable.ic_flash_on);
+        } else if (flashEnum == Flash.OFF.ordinal()) {
+            flashImageButton.setImageResource(R.drawable.ic_flash_off);
+        }
     }
 
 
@@ -242,4 +270,9 @@ public class ImagePickerCameraFragment extends TkpdBaseV4Fragment {
         onImagePickerCameraFragmentListener = (OnImagePickerCameraFragmentListener) context;
     }
 
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putInt(SAVED_FLASH_INDEX, flashIndex);
+    }
 }

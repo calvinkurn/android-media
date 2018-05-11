@@ -3,6 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_centerInParent="true">
 
     <RelativeLayout
@@ -30,37 +31,39 @@
             app:cameraPlaySounds="true"
             app:cameraSessionType="picture" />
 
-        <LinearLayout
+        <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
-            android:layout_marginBottom="@dimen/dp_20">
+            android:layout_marginBottom="@dimen/dp_20"
+            android:layout_marginLeft="@dimen/dp_20"
+            android:layout_marginRight="@dimen/dp_20">
 
             <ImageButton
                 android:id="@+id/image_button_flash"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
+                android:layout_width="@dimen/dp_24"
+                android:layout_height="@dimen/dp_24"
+                android:layout_gravity="start|bottom"
                 android:background="@android:color/transparent"
-                app:srcCompat="@drawable/ic_smiley_good" />
+                app:srcCompat="@drawable/ic_flash_auto" />
 
             <ImageButton
                 android:id="@+id/image_button_shutter"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
+                android:layout_width="@dimen/dp_56"
+                android:layout_height="@dimen/dp_56"
+                android:layout_gravity="center"
                 android:background="@android:color/transparent"
-                app:srcCompat="@drawable/ic_smiley_neutral" />
+                app:srcCompat="@drawable/take_photo_button" />
 
             <ImageButton
                 android:id="@+id/image_button_flip"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
+                android:layout_width="@dimen/dp_24"
+                android:layout_height="@dimen/dp_24"
+                android:layout_gravity="end|bottom"
                 android:background="@android:color/transparent"
-                app:srcCompat="@drawable/ic_smiley_bad" />
+                app:srcCompat="@drawable/ic_flip_camera" />
 
-        </LinearLayout>
+        </FrameLayout>
 
     </RelativeLayout>
 </FrameLayout>
