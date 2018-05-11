@@ -6,6 +6,7 @@ import android.content.Intent;
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
 import com.tokopedia.abstraction.base.view.widget.TouchViewPager;
+import com.tokopedia.digital_deals.view.viewmodel.BrandViewModel;
 import com.tokopedia.digital_deals.view.viewmodel.CategoryViewModel;
 import com.tokopedia.usecase.RequestParams;
 
@@ -20,7 +21,7 @@ public class DealsContract {
 
         void navigateToActivityRequest(Intent intent, int requestCode);
 
-        void renderCategoryList(List<CategoryViewModel> categoryList);
+        void renderCategoryList(List<CategoryViewModel> categoryList, List<BrandViewModel> brandList);
 
         RequestParams getParams();
 
@@ -30,9 +31,9 @@ public class DealsContract {
 
         void hideProgressBar();
 
-        void hideSearchButton();
+        void hideFavouriteButton();
 
-        void showSearchButton();
+        void showFavouriteButton();
 
     }
 

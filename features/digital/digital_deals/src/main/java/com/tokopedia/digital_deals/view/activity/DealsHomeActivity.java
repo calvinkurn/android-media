@@ -6,11 +6,12 @@ import android.content.Intent;
 import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Bundle;
-
 import android.support.annotation.Nullable;
+import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Layout;
 import android.text.SpannableString;
@@ -20,7 +21,7 @@ import android.text.style.StyleSpan;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.FrameLayout;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
@@ -33,11 +34,14 @@ import com.tokopedia.digital_deals.R;
 import com.tokopedia.digital_deals.di.DaggerDealsComponent;
 import com.tokopedia.digital_deals.di.DealsComponent;
 import com.tokopedia.digital_deals.di.DealsModule;
+import com.tokopedia.digital_deals.view.adapter.DealsBrandAdapter;
 import com.tokopedia.digital_deals.view.adapter.DealsCategoryAdapter;
 import com.tokopedia.digital_deals.view.adapter.DealsCategoryItemAdapter;
 import com.tokopedia.digital_deals.view.adapter.SlidingImageAdapter;
 import com.tokopedia.digital_deals.view.contractor.DealsContract;
+import com.tokopedia.digital_deals.view.customview.SearchInputView;
 import com.tokopedia.digital_deals.view.presenter.DealsHomePresenter;
+import com.tokopedia.digital_deals.view.viewmodel.BrandViewModel;
 import com.tokopedia.digital_deals.view.viewmodel.CategoryViewModel;
 import com.tokopedia.usecase.RequestParams;
 
@@ -47,7 +51,7 @@ import javax.inject.Inject;
 
 import static com.tokopedia.abstraction.constant.TkpdAppLink.DIGITAL_DEALS;
 
-public class DealsHomeActivity extends BaseSimpleActivity implements HasComponent<DealsComponent>, DealsContract.View {
+public class DealsHomeActivity extends BaseSimpleActivity implements HasComponent<DealsComponent>, DealsContract.View, View.OnClickListener {
 
     private Menu mMenu;
     DealsComponent mdealsComponent;
@@ -59,23 +63,28 @@ public class DealsHomeActivity extends BaseSimpleActivity implements HasComponen
     private TouchViewPager viewPager;
     private CirclePageIndicator circlePageIndicator;
 
-    private FrameLayout mainContent;
+    private CoordinatorLayout mainContent;
 
     private View progressBarLayout;
     private ProgressBar progBar;
 
     private RecyclerView recyclerViewCatItems;
-    private RecyclerView recyclerView;
+    private RecyclerView recyclerViewAllDeals;
+    private RecyclerView recyclerViewTrendingDeals;
+    private RecyclerView recyclerViewBrandItems;
     private CoordinatorLayout baseMainContent;
     private int mBannnerPos;
     private final static String THEMEPARK = "themepark";
     private final static String TOP = "top";
+    private LinearLayout searchInputView;
+    private final boolean IS_SHORT_LAYOUT=false;
 
 
     public static final int REQUEST_CODE_EVENTLOCATIONACTIVITY = 101;
     public static final int REQUEST_CODE_EVENTSEARCHACTIVITY = 901;
 
     public final static String EXTRA_SECTION = "extra_section";
+    private ConstraintLayout clSearch;
 
     private SlidingImageAdapter adapter;
 
@@ -113,19 +122,25 @@ public class DealsHomeActivity extends BaseSimpleActivity implements HasComponen
         executeInjector();
         mPresenter.attachView(this);
         mPresenter.getDealsList();
-        Intent detailsIntent = new Intent(context, BrandOutletDetailsActivity.class);
-        startActivity(detailsIntent);
+//        Intent detailsIntent = new Intent(context, BrandOutletDetailsActivity.class);
+//        startActivity(detailsIntent);
     }
 
     private void setUpVariables() {
         recyclerViewCatItems = findViewById(R.id.recyclerViewCatItems);
-        recyclerView = findViewById(R.id.recyclerView);
+        recyclerViewAllDeals = findViewById(R.id.recyclerViewAllDeals);
+        recyclerViewBrandItems = findViewById(R.id.recyclerViewBrandItems);
+        recyclerViewTrendingDeals = findViewById(R.id.recyclerViewTrendingDeals);
         viewPager = findViewById(R.id.deals_bannerpager);
         circlePageIndicator = findViewById(R.id.pager_indicator);
         mainContent = findViewById(R.id.main_content);
         progressBarLayout = findViewById(R.id.progress_bar_layout);
         progBar = findViewById(R.id.prog_bar);
         baseMainContent = findViewById(R.id.base_main_content);
+        searchInputView = findViewById(R.id.search_input_view);
+        clSearch = findViewById(R.id.cl_search_view);
+        searchInputView.setOnClickListener(this);
+        recyclerViewTrendingDeals.setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false));
     }
 
     private void initInjector() {
@@ -167,15 +182,19 @@ public class DealsHomeActivity extends BaseSimpleActivity implements HasComponen
     }
 
     @Override
-    public void renderCategoryList(List<CategoryViewModel> categoryList) {
+    public void renderCategoryList(List<CategoryViewModel> categoryList, List<BrandViewModel> brandList) {
         DealsCategoryAdapter categoryAdapter;
         DealsCategoryItemAdapter categoryItemAdapter;
+        DealsBrandAdapter brandAdapter;
 
-        if (categoryList.get(0).getItems() != null || categoryList.get(0).getItems().size() != 0) {
-            if (categoryList.get(0).getName().equalsIgnoreCase("top")) {
-                categoryAdapter = new DealsCategoryAdapter(context, categoryList.get(0).getItems());
-                recyclerView.setAdapter(categoryAdapter);
-            } else {
+        if (categoryList.get(0).getName().equalsIgnoreCase("top")) {
+            if (categoryList.get(0).getItems() != null && categoryList.get(0).getItems().size() != 0) {
+                categoryAdapter = new DealsCategoryAdapter(context, categoryList.get(0).getItems(), IS_SHORT_LAYOUT);
+                recyclerViewAllDeals.setAdapter(categoryAdapter);
+                recyclerViewTrendingDeals.setAdapter(categoryAdapter);
+            }
+        } else {
+            if (categoryList.get(0).getItems() != null && categoryList.get(0).getItems().size() != 0) {
                 adapter = new SlidingImageAdapter(context, mPresenter.getCarouselImages(categoryList.get(0).getItems()), mPresenter);
                 setViewPagerListener();
                 circlePageIndicator.setViewPager(viewPager);
@@ -183,21 +202,28 @@ public class DealsHomeActivity extends BaseSimpleActivity implements HasComponen
             }
         }
 
-        if (categoryList.get(1).getItems() != null || categoryList.get(1).getItems().size() != 0) {
-            if (categoryList.get(1).getName().equalsIgnoreCase("top")) {
+        if (categoryList.get(1).getName().equalsIgnoreCase("top")) {
+            if (categoryList.get(1).getItems() != null && categoryList.get(1).getItems().size() != 0) {
+                categoryAdapter = new DealsCategoryAdapter(context, categoryList.get(1).getItems(), IS_SHORT_LAYOUT);
+                recyclerViewAllDeals.setAdapter(categoryAdapter);
+                recyclerViewTrendingDeals.setAdapter(categoryAdapter);
+            }
+        } else {
+            if (categoryList.get(1).getItems() != null && categoryList.get(1).getItems().size() != 0) {
 
-            } else {
-                categoryAdapter = new DealsCategoryAdapter(context, categoryList.get(1).getItems());
-                recyclerView.setAdapter(categoryAdapter);
                 adapter = new SlidingImageAdapter(context, mPresenter.getCarouselImages(categoryList.get(1).getItems()), mPresenter);
                 setViewPagerListener();
                 circlePageIndicator.setViewPager(viewPager);
                 mPresenter.startBannerSlide(viewPager);
             }
         }
+
         categoryItemAdapter = new DealsCategoryItemAdapter(context, categoryList);
+        brandAdapter = new DealsBrandAdapter(context, brandList);
         recyclerViewCatItems.setAdapter(categoryItemAdapter);
+        recyclerViewBrandItems.setAdapter(brandAdapter);
         baseMainContent.setVisibility(View.VISIBLE);
+        clSearch.setVisibility(View.VISIBLE);
     }
 
 
@@ -247,15 +273,15 @@ public class DealsHomeActivity extends BaseSimpleActivity implements HasComponen
     }
 
     @Override
-    public void hideSearchButton() {
-        MenuItem item = mMenu.findItem(R.id.action_menu_search);
+    public void hideFavouriteButton() {
+        MenuItem item = mMenu.findItem(R.id.action_menu_favourite);
         item.setVisible(false);
         item.setEnabled(false);
     }
 
     @Override
-    public void showSearchButton() {
-        MenuItem item = mMenu.findItem(R.id.action_menu_search);
+    public void showFavouriteButton() {
+        MenuItem item = mMenu.findItem(R.id.action_menu_favourite);
         item.setVisible(true);
         item.setEnabled(true);
     }
@@ -281,4 +307,9 @@ public class DealsHomeActivity extends BaseSimpleActivity implements HasComponen
         return mPresenter.onOptionMenuClick(id);
     }
 
+    @Override
+    public void onClick(View v) {
+        mPresenter.onOptionMenuClick(v.getId());
+
+    }
 }

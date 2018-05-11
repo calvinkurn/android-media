@@ -1,9 +1,10 @@
 package com.tokopedia.digital_deals.data;
 
-import com.tokopedia.digital_deals.data.entity.response.DealsResponseEntity;
+import com.tokopedia.digital_deals.data.entity.response.branddetailsresponse.BrandDetailsResponse;
+import com.tokopedia.digital_deals.data.entity.response.dealdetailsresponse.DealDetailsResponse;
+import com.tokopedia.digital_deals.data.entity.response.homeresponse.DealsResponse;
 import com.tokopedia.digital_deals.data.entity.response.searchresponse.SearchResponse;
 import com.tokopedia.digital_deals.data.source.DealsApi;
-import com.tokopedia.digital_deals.domain.model.searchdomainmodel.SearchDomainModel;
 
 import java.util.HashMap;
 import rx.Observable;
@@ -17,7 +18,7 @@ public class CloudDealsDataStore implements DealsDataStore {
     }
 
     @Override
-    public Observable<DealsResponseEntity> getDeals(HashMap<String, Object> params) {
+    public Observable<DealsResponse> getDeals(HashMap<String, Object> params) {
         return dealsApi.getDeals();
     }
 
@@ -30,4 +31,16 @@ public class CloudDealsDataStore implements DealsDataStore {
     public Observable<SearchResponse> getSearchNext(String nextUrl) {
         return dealsApi.getSearchNext(nextUrl);
     }
+
+    @Override
+    public Observable<BrandDetailsResponse> getBrandDetails(String url) {
+        return dealsApi.getBrandDetails(url);
+    }
+
+    @Override
+    public Observable<DealDetailsResponse> getDealDetails(String url) {
+        return dealsApi.getDealDetails(url);
+    }
+
+
 }

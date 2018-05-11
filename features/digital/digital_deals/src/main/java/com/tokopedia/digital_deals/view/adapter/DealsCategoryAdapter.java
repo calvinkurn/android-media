@@ -9,11 +9,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.digital_deals.R;
-import com.tokopedia.digital_deals.view.activity.BrandOutletDetailsActivity;
-import com.tokopedia.digital_deals.view.activity.DealDetailActivity;
+import com.tokopedia.digital_deals.view.activity.DealDetailsActivity;
+import com.tokopedia.digital_deals.view.presenter.DealDetailsPresenter;
+import com.tokopedia.digital_deals.view.presenter.DealsBrandPresenter;
+import com.tokopedia.digital_deals.view.utils.Utils;
 import com.tokopedia.digital_deals.view.viewmodel.CategoryItemsViewModel;
 
 import java.util.List;
@@ -24,13 +27,15 @@ public class DealsCategoryAdapter extends RecyclerView.Adapter<RecyclerView.View
     private Context context;
     private static final int ITEM = 1;
     private static final int FOOTER = 2;
+    private static final int ITEM2 = 3;
     private boolean isFooterAdded = false;
+    private boolean isShortLayout;
 
 
-
-    public DealsCategoryAdapter(Context context, List<CategoryItemsViewModel> categoryItems) {
+    public DealsCategoryAdapter(Context context, List<CategoryItemsViewModel> categoryItems, boolean isShortLayout) {
         this.context = context;
         this.categoryItems = categoryItems;
+        this.isShortLayout = isShortLayout;
     }
 
     @Override
@@ -58,6 +63,9 @@ public class DealsCategoryAdapter extends RecyclerView.Adapter<RecyclerView.View
                 v = inflater.inflate(R.layout.footer_layout, parent, false);
                 holder = new FooterViewHolder(v);
                 break;
+            case ITEM2:
+                v = inflater.inflate(R.layout.deal_item_card_short, parent, false);
+                holder = new ItemViewHolder2(v);
             default:
                 break;
         }
@@ -74,6 +82,10 @@ public class DealsCategoryAdapter extends RecyclerView.Adapter<RecyclerView.View
                 break;
             case FOOTER:
                 break;
+            case ITEM2:
+                ((ItemViewHolder2) holder).bindData(categoryItems.get(position), position);
+                ((ItemViewHolder2) holder).setIndex(position);
+                break;
             default:
                 break;
         }
@@ -82,7 +94,8 @@ public class DealsCategoryAdapter extends RecyclerView.Adapter<RecyclerView.View
 
     @Override
     public int getItemViewType(int position) {
-        return (isLastPosition(position) && isFooterAdded) ? FOOTER : ITEM;
+
+        return isShortLayout ? ITEM2 : (isLastPosition(position) && isFooterAdded) ? FOOTER : ITEM;
     }
 
     private boolean isLastPosition(int position) {
@@ -128,40 +141,47 @@ public class DealsCategoryAdapter extends RecyclerView.Adapter<RecyclerView.View
         private ImageView dealImage;
         private ImageView brandImage;
         private TextView discount;
-        private TextView textView1;
+        private TextView likes;
         private TextView dealsDetails;
-        private TextView dealOfferer;
+        private TextView brandName;
         private TextView dealavailableLocations;
         private TextView dealListPrice;
+        private ImageView ivFavourite;
+        private ImageView ivShareVia;
         private TextView dealSellingPrice;
+        private TextView hotDeal;
         private int index;
-        private int mPosition;
 
         public ItemViewHolder(View itemView) {
             super(itemView);
             this.itemView = itemView;
             dealImage = itemView.findViewById(R.id.imageView);
-            textView1 = itemView.findViewById(R.id.tv_days_left);
-            discount = itemView.findViewById(R.id.tv_discount);
+            likes = itemView.findViewById(R.id.tv_wish_list);
+            discount = itemView.findViewById(R.id.tv_off);
             dealsDetails = itemView.findViewById(R.id.tv_deal_intro);
-            dealOfferer = itemView.findViewById(R.id.tv_brand_name);
+            brandName = itemView.findViewById(R.id.tv_brand_name);
+            ivFavourite = itemView.findViewById(R.id.iv_wish_list);
             dealavailableLocations = itemView.findViewById(R.id.tv_available_locations);
             dealListPrice = itemView.findViewById(R.id.tv_Mrp);
-            brandImage=itemView.findViewById(R.id.iv_brand);
+            brandImage = itemView.findViewById(R.id.iv_brand);
+            ivShareVia = itemView.findViewById(R.id.iv_share);
             dealSellingPrice = itemView.findViewById(R.id.tv_salesPrice);
+            hotDeal = itemView.findViewById(R.id.tv_hot_deal);
         }
 
         public void bindData(final CategoryItemsViewModel categoryItemsViewModel, int position) {
-//            discount.setText(categoryItemsViewModel.getd);
-            mPosition=position;
             dealsDetails.setText(categoryItemsViewModel.getDisplayName());
             ImageHandler.loadImageCover2(dealImage, categoryItemsViewModel.getImageWeb());
-
-            dealListPrice.setText("Rp " + categoryItemsViewModel.getMrp());
+            likes.setText(String.valueOf(categoryItemsViewModel.getLikes()));
+            dealListPrice.setText(Utils.convertToCurrencyString(categoryItemsViewModel.getMrp()));
             dealListPrice.setPaintFlags(dealListPrice.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
-
-            dealSellingPrice.setText("Rp " + categoryItemsViewModel.getSalesPrice());
+            discount.setText(categoryItemsViewModel.getSavingPercentage());
+            dealSellingPrice.setText(Utils.convertToCurrencyString(categoryItemsViewModel.getSalesPrice()));
+            ImageHandler.loadImageCover2(brandImage, categoryItemsViewModel.getBrand().getFeaturedThumbnailImage());
+            brandName.setText(categoryItemsViewModel.getBrand().getTitle());
             itemView.setOnClickListener(this);
+            ivShareVia.setOnClickListener(this);
+            ivFavourite.setOnClickListener(this);
         }
 
         public void setIndex(int position) {
@@ -174,9 +194,75 @@ public class DealsCategoryAdapter extends RecyclerView.Adapter<RecyclerView.View
 
         @Override
         public void onClick(View v) {
-            Intent detailsIntent = new Intent(context, BrandOutletDetailsActivity.class);
+            if (v.getId() == R.id.iv_share) {
+                Toast.makeText(context, "iv_share", Toast.LENGTH_SHORT).show();
+            } else if (v.getId() == R.id.iv_wish_list) {
+                Toast.makeText(context, "iv_favourite", Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(context, "iv_card", Toast.LENGTH_SHORT).show();
+                Intent detailsIntent = new Intent(context, DealDetailsActivity.class);
 //            detailsIntent.putExtra(EventDetailsActivity.FROM, EventDetailsActivity.FROM_HOME_OR_SEARCH);
-//            detailsIntent.putExtra("homedata", categoryItems.get(mViewHolder.getIndex()));
+                detailsIntent.putExtra(DealDetailsPresenter.HOME_DATA, categoryItems.get(getIndex()));
+                context.startActivity(detailsIntent);
+            }
+        }
+    }
+
+    public class ItemViewHolder2 extends RecyclerView.ViewHolder implements View.OnClickListener {
+        private View itemView;
+        private ImageView dealImage;
+        private ImageView brandImage;
+        private TextView discount;
+        private TextView dealsDetails;
+        private TextView brandName;
+        private TextView dealListPrice;
+        private TextView dealSellingPrice;
+        private TextView hotDeal;
+        private int index;
+
+        public ItemViewHolder2(View itemView) {
+            super(itemView);
+            this.itemView = itemView;
+            dealImage = itemView.findViewById(R.id.imageView);
+            discount = itemView.findViewById(R.id.tv_off);
+            dealsDetails = itemView.findViewById(R.id.tv_deal_intro);
+            brandName = itemView.findViewById(R.id.tv_brand_name);
+            dealListPrice = itemView.findViewById(R.id.tv_Mrp);
+            brandImage = itemView.findViewById(R.id.iv_brand);
+            dealSellingPrice = itemView.findViewById(R.id.tv_salesPrice);
+            hotDeal = itemView.findViewById(R.id.tv_hot_deal);
+
+        }
+
+        public void bindData(final CategoryItemsViewModel categoryItemsViewModel, int position) {
+            dealsDetails.setText(categoryItemsViewModel.getDisplayName());
+            ImageHandler.loadImageCover2(dealImage, categoryItemsViewModel.getImageWeb());
+            ImageHandler.loadImageCover2(brandImage, categoryItemsViewModel.getBrand().getFeaturedThumbnailImage());
+            brandName.setText(categoryItemsViewModel.getBrand().getTitle());
+
+            dealListPrice.setText(Utils.convertToCurrencyString(categoryItemsViewModel.getMrp()));
+            dealListPrice.setPaintFlags(dealListPrice.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+            discount.setText(categoryItemsViewModel.getSavingPercentage());
+            dealSellingPrice.setText(Utils.convertToCurrencyString(categoryItemsViewModel.getSalesPrice()));
+            itemView.setOnClickListener(this);
+
+        }
+
+        public void setIndex(int position) {
+            this.index = position;
+        }
+
+        public int getIndex() {
+            return this.index;
+        }
+
+        @Override
+        public void onClick(View v) {
+
+            Toast.makeText(context, "iv_card", Toast.LENGTH_SHORT).show();
+            Intent detailsIntent = new Intent(context, DealDetailsActivity.class);
+//            detailsIntent.putExtra(EventDetailsActivity.FROM, EventDetailsActivity.FROM_HOME_OR_SEARCH);
+            detailsIntent.putExtra(DealDetailsPresenter.HOME_DATA, categoryItems.get(getIndex()));
             context.startActivity(detailsIntent);
         }
     }
@@ -187,7 +273,7 @@ public class DealsCategoryAdapter extends RecyclerView.Adapter<RecyclerView.View
 
         private FooterViewHolder(View itemView) {
             super(itemView);
-            loadingLayout=itemView.findViewById(R.id.loading_fl);
+            loadingLayout = itemView.findViewById(R.id.loading_fl);
         }
     }
 

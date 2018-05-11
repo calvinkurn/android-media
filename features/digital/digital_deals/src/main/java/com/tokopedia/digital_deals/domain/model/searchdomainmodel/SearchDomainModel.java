@@ -1,20 +1,20 @@
 package com.tokopedia.digital_deals.domain.model.searchdomainmodel;
 
-import com.tokopedia.digital_deals.domain.model.DealsItemDomain;
+import com.tokopedia.digital_deals.domain.model.DealsCategoryItemDomain;
 
 import java.util.List;
 
 
 public class SearchDomainModel {
-    private List<DealsItemDomain> deals;
+    private List<DealsCategoryItemDomain> deals;
     private List<FilterDomainModel> filters;
     private PageDomain page;
 
-    public List<DealsItemDomain> getDeals() {
+    public List<DealsCategoryItemDomain> getDeals() {
         return deals;
     }
 
-    public void setEvents(List<DealsItemDomain> deals) {
+    public void setEvents(List<DealsCategoryItemDomain> deals) {
         this.deals = deals;
     }
 

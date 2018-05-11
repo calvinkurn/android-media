@@ -23,7 +23,7 @@ public class DealsCategoryItemAdapter extends RecyclerView.Adapter<DealsCategory
     public DealsCategoryItemAdapter(Context context, List<CategoryViewModel> categoryItems) {
         this.context = context;
         this.categoryItems=new ArrayList<>();
-        if(categoryItems!=null || categoryItems.size()>2){
+        if(categoryItems!=null && categoryItems.size()>2){
             for(int i=2; i<categoryItems.size(); i++){
                 this.categoryItems.add(categoryItems.get(i));
             }

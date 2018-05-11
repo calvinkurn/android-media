@@ -15,7 +15,7 @@ public class DealsCategoryDomain {
     private String name;
     @SerializedName("items")
     @Expose
-    private List<DealsItemDomain> items = null;
+    private List<DealsCategoryItemDomain> items = null;
 
     public String getTitle() {
         return title;
@@ -33,11 +33,11 @@ public class DealsCategoryDomain {
         this.name = name;
     }
 
-    public List<DealsItemDomain> getItems() {
+    public List<DealsCategoryItemDomain> getItems() {
         return items;
     }
 
-    public void setItems(List<DealsItemDomain> items) {
+    public void setItems(List<DealsCategoryItemDomain> items) {
         this.items = items;
     }
 }

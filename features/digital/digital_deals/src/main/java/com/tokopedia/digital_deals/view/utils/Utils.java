@@ -10,16 +10,23 @@ import android.view.View;
 import android.widget.LinearLayout;
 
 import com.tokopedia.digital_deals.R;
+import com.tokopedia.digital_deals.domain.model.branddetailsmodel.BrandDomain;
 import com.tokopedia.digital_deals.domain.model.DealsCategoryDomain;
-import com.tokopedia.digital_deals.domain.model.DealsItemDomain;
+import com.tokopedia.digital_deals.domain.model.DealsCategoryItemDomain;
+import com.tokopedia.digital_deals.domain.model.dealdetailsdomailmodel.DealsDetailsDomain;
+import com.tokopedia.digital_deals.domain.model.dealdetailsdomailmodel.Outlet;
+import com.tokopedia.digital_deals.view.viewmodel.BrandViewModel;
 import com.tokopedia.digital_deals.view.viewmodel.CategoryItemsViewModel;
 import com.tokopedia.digital_deals.view.viewmodel.CategoryViewModel;
+import com.tokopedia.digital_deals.view.viewmodel.DealsDetailsViewModel;
+import com.tokopedia.digital_deals.view.viewmodel.OutletViewModel;
 import com.tokopedia.digital_deals.view.viewmodel.SearchViewModel;
 
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -46,23 +53,23 @@ public class Utils {
 
         List<CategoryViewModel> categoryViewModels = new ArrayList<>();
         if (categoryList != null) {
-            for (DealsCategoryDomain eventsCategoryDomain : categoryList) {
+            for (DealsCategoryDomain dealsCategoryDomain : categoryList) {
 
-                switch (eventsCategoryDomain.getName().toLowerCase()) {
+                switch (dealsCategoryDomain.getName().toLowerCase()) {
                     case "top":
-                        categoryViewModels.add(0, new CategoryViewModel(eventsCategoryDomain.getTitle(),
-                                eventsCategoryDomain.getName(),
-                                convertIntoCategoryListItemsViewModel(eventsCategoryDomain.getItems())));
+                        categoryViewModels.add(0, new CategoryViewModel(dealsCategoryDomain.getTitle(),
+                                dealsCategoryDomain.getName(),
+                                convertIntoCategoryListItemsViewModel(dealsCategoryDomain.getItems())));
                         break;
                     case "carousel":
-                        categoryViewModels.add(0, new CategoryViewModel(eventsCategoryDomain.getTitle(),
-                                eventsCategoryDomain.getName(),
-                                convertIntoCategoryListItemsViewModel(eventsCategoryDomain.getItems())));
+                        categoryViewModels.add(0, new CategoryViewModel(dealsCategoryDomain.getTitle(),
+                                dealsCategoryDomain.getName(),
+                                convertIntoCategoryListItemsViewModel(dealsCategoryDomain.getItems())));
                         break;
                     default:
-                        categoryViewModels.add(new CategoryViewModel(eventsCategoryDomain.getTitle(),
-                                eventsCategoryDomain.getName(),
-                                convertIntoCategoryListItemsViewModel(eventsCategoryDomain.getItems())));
+                        categoryViewModels.add(new CategoryViewModel(dealsCategoryDomain.getTitle(),
+                                dealsCategoryDomain.getName(),
+                                convertIntoCategoryListItemsViewModel(dealsCategoryDomain.getItems())));
                         break;
 
                 }
@@ -72,11 +79,11 @@ public class Utils {
         return categoryViewModels;
     }
 
-    public List<CategoryItemsViewModel> convertIntoCategoryListItemsViewModel(List<DealsItemDomain> categoryResponseItemsList) {
+    public List<CategoryItemsViewModel> convertIntoCategoryListItemsViewModel(List<DealsCategoryItemDomain> categoryResponseItemsList) {
         List<CategoryItemsViewModel> categoryItemsViewModelList = new ArrayList<>();
         if (categoryResponseItemsList != null) {
             CategoryItemsViewModel categoryItemsViewModel;
-            for (DealsItemDomain categoryEntity : categoryResponseItemsList) {
+            for (DealsCategoryItemDomain categoryEntity : categoryResponseItemsList) {
                 categoryItemsViewModel = new CategoryItemsViewModel();
                 categoryItemsViewModel.setMrp(categoryEntity.getMrp());
                 categoryItemsViewModel.setDisplayName(categoryEntity.getDisplayName());
@@ -86,7 +93,14 @@ public class Utils {
                 categoryItemsViewModel.setImageWeb(categoryEntity.getImageWeb());
                 categoryItemsViewModel.setMrp(categoryEntity.getMrp());
                 categoryItemsViewModel.setThumbnailWeb(categoryEntity.getThumbnailWeb());
+                categoryItemsViewModel.setLikes(categoryEntity.getLikes());
+                categoryItemsViewModel.setSavingPercentage(categoryEntity.getSavingPercentage());
 
+                BrandViewModel brandViewModel=new BrandViewModel();
+                brandViewModel.setTitle(categoryEntity.getBrand().getTitle());
+                brandViewModel.setFeaturedImage(categoryEntity.getBrand().getFeaturedImage());
+                brandViewModel.setFeaturedThumbnailImage(categoryEntity.getBrand().getFeaturedThumbnailImage());
+                categoryItemsViewModel.setBrand(brandViewModel);
 //                categoryItemsViewModel.setThumbnailApp(categoryEntity.getThumbnailApp());
 //                categoryItemsViewModel.setMinStartTime(categoryEntity.getMinStartTime());
                 categoryItemsViewModel.setCityName(categoryEntity.getCityName());
@@ -105,6 +119,68 @@ public class Utils {
     }
 
 
+    public DealsDetailsViewModel convertIntoDealDetailsViewModel(DealsDetailsDomain detailsDomain) {
+        DealsDetailsViewModel viewModel = new DealsDetailsViewModel();
+        viewModel.setDisplayName(detailsDomain.getDisplayName());
+        viewModel.setLongRichDesc(detailsDomain.getLongRichDesc());
+        viewModel.setMrp(detailsDomain.getMrp());
+        viewModel.setSalesPrice(detailsDomain.getSalesPrice());
+        viewModel.setSavingPercentage(detailsDomain.getSavingPercentage());
+        viewModel.setSaleEndDate(detailsDomain.getSaleEndDate());
+        viewModel.setLikes(detailsDomain.getLikes());
+        List<OutletViewModel> outletViewModel = null;
+        if (detailsDomain.getOutlets() != null && detailsDomain.getOutlets().size() != 0) {
+
+            outletViewModel = new ArrayList<>();
+            for (Outlet outlet : detailsDomain.getOutlets()) {
+                outletViewModel.add(convertIntoOutletViewModel(outlet));
+            }
+
+
+        }
+        viewModel.setOutlets(outletViewModel);
+        viewModel.setImageWeb(detailsDomain.getImageWeb());
+        viewModel.setThumbnailWeb(detailsDomain.getThumbnailWeb());
+
+        return viewModel;
+    }
+
+    public OutletViewModel convertIntoOutletViewModel(Outlet outlet) {
+        OutletViewModel viewModel = new OutletViewModel();
+        viewModel.setProductId(outlet.getProductId());
+        viewModel.setLocationId(outlet.getLocationId());
+        viewModel.setName(outlet.getName());
+        viewModel.setSearchName(outlet.getSearchName());
+        viewModel.setDistrict(outlet.getDistrict());
+        viewModel.setGmapAddress(outlet.getGmapAddress());
+        viewModel.setNeighbourhood(outlet.getNeighbourhood());
+        viewModel.setCoordinates(outlet.getCoordinates());
+        viewModel.setState(outlet.getState());
+        viewModel.setCountry(outlet.getCountry());
+        return viewModel;
+    }
+
+    public List<BrandViewModel> convertIntoBrandListViewModel(List<BrandDomain> brandList) {
+
+        List<BrandViewModel> brandViewModels = new ArrayList<>();
+        if (brandList != null) {
+            for (BrandDomain brandDomain : brandList) {
+                brandViewModels.add(convertIntoBrandViewModel(brandDomain));
+            }
+        }
+        return brandViewModels;
+    }
+
+    public BrandViewModel convertIntoBrandViewModel(BrandDomain brandDomain) {
+        BrandViewModel brandViewModel = new BrandViewModel();
+        brandViewModel.setTitle(brandDomain.getTitle());
+        brandViewModel.setFeaturedImage(brandDomain.getFeaturedImage());
+        brandViewModel.setDescription(brandDomain.getDescription());
+        brandViewModel.setFeaturedThumbnailImage(brandDomain.getFeaturedThumbnailImage());
+        brandViewModel.setUrl(brandDomain.getUrl());
+        brandViewModel.setSeoUrl(brandDomain.getSeoUrl());
+        return brandViewModel;
+    }
 
     public ArrayList<SearchViewModel> convertIntoSearchViewModel(List<CategoryViewModel> source) {
         ArrayList<SearchViewModel> searchViewModels = new ArrayList<>();
@@ -115,16 +191,16 @@ public class Utils {
                     List<CategoryItemsViewModel> sourceModels = item.getItems();
                     for (CategoryItemsViewModel sourceItem : sourceModels) {
 //                        if (sourceItem.getIsTop() == 1 && !isPresent(searchViewModels, sourceItem.getTitle())) {
-                            searchModelItem = new SearchViewModel();
-                            searchModelItem.setCityName(sourceItem.getCityName());
-                            searchModelItem.setDisplayName(sourceItem.getDisplayName());
+                        searchModelItem = new SearchViewModel();
+                        searchModelItem.setCityName(sourceItem.getCityName());
+                        searchModelItem.setDisplayName(sourceItem.getDisplayName());
 //                            searchModelItem.setImageApp(sourceItem.getImageApp());
-                            searchModelItem.setMaxEndDate(sourceItem.getMaxEndDate());
-                            searchModelItem.setMinStartDate(sourceItem.getMinStartDate());
-                            searchModelItem.setSalesPrice(sourceItem.getSalesPrice());
-                            searchModelItem.setTitle(sourceItem.getDisplayName());
-                            searchModelItem.setUrl(sourceItem.getUrl());
-                            searchViewModels.add(searchModelItem);
+                        searchModelItem.setMaxEndDate(sourceItem.getMaxEndDate());
+                        searchModelItem.setMinStartDate(sourceItem.getMinStartDate());
+                        searchModelItem.setSalesPrice(sourceItem.getSalesPrice());
+                        searchModelItem.setTitle(sourceItem.getDisplayName());
+                        searchModelItem.setUrl(sourceItem.getUrl());
+                        searchViewModels.add(searchModelItem);
 //                        }
                     }
                 }
@@ -196,15 +272,6 @@ public class Utils {
     }
 
 
-    public static String convertEpochToString(int time) {
-        SimpleDateFormat sdf = new SimpleDateFormat("EEEE, d MMM yyyy", new Locale("in", "ID", ""));
-        sdf.setTimeZone(TimeZone.getTimeZone("Asia/Jakarta"));
-        Long epochTime = time * 1000L;
-        Date date = new Date(epochTime);
-        String dateString = sdf.format(date);
-        return dateString;
-    }
-
     public static String[] getDateArray(String dateRange) {
         String[] date = new String[3];
         date[0] = dateRange.substring(0, 3);//day
@@ -264,5 +331,21 @@ public class Utils {
             e.printStackTrace();
         }
 
+    }
+
+
+    public static String convertEpochToString(int time) {
+        SimpleDateFormat sdf = new SimpleDateFormat("d MMM yyyy", new Locale("in", "ID", ""));
+        sdf.setTimeZone(TimeZone.getTimeZone("Asia/Jakarta"));
+        Long epochTime = time * 1000L;
+        Date date = new Date(epochTime);
+        String dateString = sdf.format(date);
+        return dateString;
+    }
+
+    public static Locale locale = new Locale("in", "ID");
+    public static final String RUPIAH_FORMAT = "Rp %s";
+    public static String convertToCurrencyString(Integer value){
+        return String.format(RUPIAH_FORMAT, NumberFormat.getNumberInstance(locale).format(value.longValue()));
     }
 }

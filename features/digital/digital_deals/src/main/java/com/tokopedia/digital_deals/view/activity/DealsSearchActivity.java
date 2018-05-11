@@ -57,6 +57,8 @@ public class DealsSearchActivity extends BaseSimpleActivity implements
     private ImageView back;
     private LinearLayoutManager layoutManager;
     private LinearLayout noContent;
+    private final boolean IS_SHORT_LAYOUT=true;
+
 
 
     @Override
@@ -128,10 +130,10 @@ public class DealsSearchActivity extends BaseSimpleActivity implements
     public void renderFromSearchResults(List<CategoryItemsViewModel> categoryItemsViewModels) {
         if (categoryItemsViewModels != null && categoryItemsViewModels.size() != 0) {
             LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
-            DealsCategoryAdapter eventCategoryAdapter = new DealsCategoryAdapter(getActivity(), categoryItemsViewModels);
+            DealsCategoryAdapter dealsCategoryAdapter = new DealsCategoryAdapter(getActivity(), categoryItemsViewModels, IS_SHORT_LAYOUT);
             rvSearchResults.addOnScrollListener(rvOnScrollListener);
             rvSearchResults.setLayoutManager(linearLayoutManager);
-            rvSearchResults.setAdapter(eventCategoryAdapter);
+            rvSearchResults.setAdapter(dealsCategoryAdapter);
             rvSearchResults.setVisibility(View.VISIBLE);
             noContent.setVisibility(View.GONE);
             llTopEvents.setVisibility(View.GONE);

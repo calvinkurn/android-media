@@ -44,7 +44,7 @@
 
 
             <TextView
-                android:id="@+id/tv_featured_brand"
+                android:id="@+id/tv_popular_brand"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/dp_16"
@@ -66,9 +66,9 @@
                 android:textColor="@color/green_nob"
                 android:textSize="@dimen/sp_12"
                 android:textStyle="normal"
-                app:layout_constraintBottom_toBottomOf="@+id/tv_featured_brand"
+                app:layout_constraintBottom_toBottomOf="@+id/tv_popular_brand"
                 app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toTopOf="@id/tv_featured_brand" />
+                app:layout_constraintTop_toTopOf="@id/tv_popular_brand" />
 
 
             <android.support.v7.widget.RecyclerView
@@ -79,7 +79,7 @@
                 android:layout_marginRight="@dimen/dp_16"
                 android:layout_marginTop="@dimen/dp_16"
                 app:layoutManager="android.support.v7.widget.GridLayoutManager"
-                app:layout_constraintTop_toBottomOf="@+id/tv_featured_brand"
+                app:layout_constraintTop_toBottomOf="@+id/tv_popular_brand"
                 app:spanCount="4"
                 tools:listitem="@layout/item_category_brand" />
 

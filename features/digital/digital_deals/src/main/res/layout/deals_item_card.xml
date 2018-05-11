@@ -2,7 +2,7 @@
 <android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="wrap_content"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginBottom="@dimen/dp_16"
     android:layout_marginLeft="@dimen/dp_16"
@@ -12,7 +12,7 @@
 
 
     <android.support.constraint.ConstraintLayout
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:paddingBottom="@dimen/dp_8">
 
@@ -54,7 +54,9 @@
             android:layout_marginLeft="@dimen/dp_8"
             android:layout_marginRight="@dimen/dp_8"
             android:layout_marginTop="@dimen/dp_8"
+            android:ellipsize="end"
             android:fontFamily="sans-serif-medium"
+            android:maxLines="2"
             android:text="1 Set Jumbo Bento for 2 persons on Weekdays (Monday - Friday)"
             android:textColor="@color/black_39"
             android:textSize="@dimen/sp_14"
@@ -86,7 +88,7 @@
 
         <TextView
             android:id="@+id/tv_brand_name"
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/dp_4"
             android:layout_marginLeft="@dimen/dp_8"
@@ -97,8 +99,7 @@
             android:textSize="@dimen/sp_12"
             android:textStyle="normal"
             app:layout_constraintBottom_toTopOf="@+id/tv_available_locations"
-            app:layout_constraintLeft_toRightOf="@+id/cv_brand"
-            app:layout_constraintRight_toLeftOf="@+id/tv_Mrp" />
+            app:layout_constraintLeft_toRightOf="@+id/cv_brand" />
 
 
         <TextView
@@ -131,8 +132,7 @@
             android:textSize="@dimen/sp_11"
             android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="@+id/cv_brand"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/tv_days_left" />
+            app:layout_constraintRight_toRightOf="parent" />
 
 
         <View
@@ -157,7 +157,7 @@
             android:gravity="end"
             android:text="Rp50.000.000"
             android:textColor="@color/black_40"
-            android:textSize="10sp"
+            android:textSize="@dimen/sp_10"
             android:textStyle="normal"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/divider" />
@@ -181,19 +181,19 @@
             android:layout_width="@dimen/image_width_24"
             android:layout_height="@dimen/image_width_24"
             android:layout_marginLeft="@dimen/dp_16"
-            android:layout_marginTop="14dp"
             app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/divider"
+            app:layout_constraintTop_toTopOf="@+id/tv_Mrp"
+            app:layout_constraintBottom_toBottomOf="@+id/tv_salesPrice"
             app:srcCompat="@drawable/ic_wishlist_unfilled" />
 
         <TextView
             android:id="@+id/tv_wish_list"
             android:layout_width="wrap_content"
-            android:layout_height="0dp"
+            android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/dp_8"
             android:fontFamily="sans-serif-medium"
-            android:textColor="#8a000000"
-            android:textSize="12sp"
+            android:textColor="@color/black_40"
+            android:textSize="@dimen/sp_12"
             android:textStyle="normal"
             app:layout_constraintBottom_toBottomOf="@+id/iv_wish_list"
             app:layout_constraintLeft_toRightOf="@+id/iv_wish_list"
@@ -205,10 +205,11 @@
             android:layout_width="@dimen/image_width_24"
             android:layout_height="@dimen/image_width_24"
             android:layout_marginLeft="@dimen/dp_16"
-            android:layout_marginTop="11dp"
-            app:layout_constraintLeft_toRightOf="@+id/tv_wish_list"
-            app:layout_constraintTop_toBottomOf="@+id/divider"
-            app:srcCompat="@drawable/ic_share" />
+            android:clickable="true"
+            app:layout_constraintTop_toTopOf="@+id/tv_Mrp"
+            app:layout_constraintBottom_toBottomOf="@+id/tv_salesPrice"
+            app:layout_constraintLeft_toRightOf="@id/tv_wish_list"
+            app:srcCompat="@drawable/ic_share_via" />
     </android.support.constraint.ConstraintLayout>
 </android.support.v7.widget.CardView>
 

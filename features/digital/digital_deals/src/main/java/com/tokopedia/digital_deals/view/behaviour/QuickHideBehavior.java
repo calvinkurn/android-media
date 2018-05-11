@@ -15,6 +15,7 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
+import com.tokopedia.core.shop.model.shopData.Image;
 import com.tokopedia.design.button.BottomActionView;
 import com.tokopedia.digital_deals.R;
 
@@ -138,7 +139,7 @@ public class QuickHideBehavior extends CoordinatorLayout.Behavior<View> {
     }
 
     private float getTargetHideValue(ViewGroup parent, View target) {
-        if (target instanceof ImageView) {
+        if (target instanceof ConstraintLayout) {
             return -target.getHeight();
         } else if (target instanceof BottomActionView) {
             return parent.getHeight() - target.getTop();

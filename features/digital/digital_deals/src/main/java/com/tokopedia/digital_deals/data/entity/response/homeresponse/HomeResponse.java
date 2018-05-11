@@ -1,10 +1,10 @@
-package com.tokopedia.digital_deals.data.entity.response;
+package com.tokopedia.digital_deals.data.entity.response.homeresponse;
 
 import com.google.gson.JsonObject;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class HomeResponseEntity {
+public class HomeResponse {
 
     @SerializedName("layout")
     private JsonObject layout;

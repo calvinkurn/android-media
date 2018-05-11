@@ -1,20 +1,18 @@
 package com.tokopedia.digital_deals.data.mapper;
 
 import com.tkpd.library.utils.CommonUtils;
-import com.tokopedia.digital_deals.data.entity.response.DealsResponseEntity;
-import com.tokopedia.digital_deals.domain.model.DealsCategoryDomain;
-
-import java.util.List;
+import com.tokopedia.digital_deals.data.entity.response.homeresponse.DealsResponse;
+import com.tokopedia.digital_deals.domain.model.DealsDomain;
 
 import rx.functions.Func1;
 
-public class DealsTransformMapper implements Func1<DealsResponseEntity, List<DealsCategoryDomain>> {
+public class DealsTransformMapper implements Func1<DealsResponse, DealsDomain> {
 
     @Override
-    public List<DealsCategoryDomain> call(DealsResponseEntity dealsResponseEntity) {
-        CommonUtils.dumper("inside DealsResponseEntity = " + dealsResponseEntity);
+    public DealsDomain call(DealsResponse dealsResponse) {
+        CommonUtils.dumper("inside DealsResponse = " + dealsResponse);
         DealsEntityMapper dealsEntityMapper = new DealsEntityMapper();
 
-        return dealsEntityMapper.transform(dealsResponseEntity);
+        return dealsEntityMapper.transform(dealsResponse);
     }
 }

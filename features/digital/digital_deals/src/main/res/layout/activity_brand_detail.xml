@@ -2,6 +2,7 @@
 <android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main_content"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -21,35 +22,43 @@
             app:expandedTitleTextAppearance="@style/ToolbarExpandedTitle"
             app:layout_scrollFlags="scroll|exitUntilCollapsed">
 
-
-            <ImageView
+            <FrameLayout
+                android:id="@+id/fl_header"
                 android:layout_width="match_parent"
-                android:layout_height="160dp"
-                android:scaleType="centerCrop"
-                android:src="@color/tkpd_green_onboarding"
-                app:layout_scrollFlags="scroll|enterAlways|enterAlwaysCollapsed" />
-
-
-            <android.support.v7.widget.CardView
-                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:layout_marginTop="107dp"
-                app:cardCornerRadius="8dp"
                 app:layout_scrollFlags="scroll|enterAlways|enterAlwaysCollapsed">
 
                 <ImageView
-                    android:layout_width="@dimen/image_width_brand"
-                    android:layout_height="@dimen/image_width_brand"
-                    android:background="@color/black"
+                    android:id="@+id/header_image"
+                    android:layout_width="match_parent"
+                    android:layout_height="160dp"
+                    android:scaleType="centerCrop"
+                    android:src="@color/tkpd_green_onboarding"
                     app:layout_scrollFlags="scroll|enterAlways|enterAlwaysCollapsed" />
 
-            </android.support.v7.widget.CardView>
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:layout_marginTop="201dp" />
+                <android.support.v7.widget.CardView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="107dp"
+                    app:cardCornerRadius="8dp"
+                    app:layout_scrollFlags="scroll|enterAlways|enterAlwaysCollapsed">
+
+                    <ImageView
+                        android:id="@+id/iv_brand_logo"
+                        android:layout_width="@dimen/image_width_brand"
+                        android:layout_height="@dimen/image_width_brand"
+                        android:background="@color/card_loading_color"
+                        app:layout_scrollFlags="scroll|enterAlways|enterAlwaysCollapsed" />
+
+                </android.support.v7.widget.CardView>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:layout_marginTop="201dp" />
+            </FrameLayout>
 
             <android.support.v7.widget.Toolbar
                 android:id="@+id/toolbar"
@@ -66,15 +75,16 @@
     <android.support.v4.widget.NestedScrollView
         android:id="@+id/nestedScroll"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginBottom="@dimen/bottom_view_height"
+        android:layout_height="wrap_content"
         android:clipToPadding="false"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
         <android.support.constraint.ConstraintLayout
+            android:id="@+id/base_main_content"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/deals_backgroud_color">
+            android:background="@color/deals_backgroud_color"
+            android:visibility="gone">
 
 
             <at.blogc.android.views.ExpandableTextView
@@ -87,14 +97,14 @@
                 android:ellipsize="end"
                 android:fontFamily="sans-serif"
                 android:maxLines="3"
-                android:text="@string/bigcontent"
                 android:textColor="@color/expandable_text_color"
                 android:textSize="@dimen/sp_14"
                 android:textStyle="normal"
-
                 app:animation_duration="300"
+
                 app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintRight_toRightOf="parent" />
+                app:layout_constraintRight_toRightOf="parent"
+                tools:text="@string/bigcontent" />
 
             <LinearLayout
                 android:id="@+id/expand_view_description"
@@ -142,6 +152,7 @@
                 android:layout_marginLeft="@dimen/dp_16"
                 android:layout_marginTop="@dimen/dp_16"
                 android:background="@color/card_loading_color"
+                android:visibility="gone"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/divider1" />
 
@@ -155,6 +166,7 @@
                 android:textColor="@color/black_39"
                 android:textSize="@dimen/sp_14"
                 android:textStyle="normal"
+                android:visibility="gone"
                 app:layout_constraintBottom_toBottomOf="@+id/iv_map"
                 app:layout_constraintLeft_toRightOf="@+id/iv_map"
                 app:layout_constraintTop_toTopOf="@+id/iv_map"
@@ -169,6 +181,7 @@
                 android:textColor="@color/black_39"
                 android:textSize="@dimen/sp_14"
                 android:textStyle="bold"
+                android:visibility="gone"
                 app:layout_constraintBottom_toBottomOf="@+id/iv_map"
                 app:layout_constraintLeft_toRightOf="@id/tv_available_locations"
                 app:layout_constraintTop_toTopOf="@+id/iv_map"
@@ -181,6 +194,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginRight="@dimen/dp_16"
                 android:tint="@color/grey_400"
+                android:visibility="gone"
                 app:layout_constraintBottom_toBottomOf="@+id/iv_map"
                 app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintTop_toTopOf="@+id/iv_map"
@@ -192,6 +206,7 @@
                 android:layout_height="@dimen/dp_2"
                 android:layout_marginTop="@dimen/dp_16"
                 android:background="@color/divider_color"
+                android:visibility="gone"
                 app:layout_constraintTop_toBottomOf="@+id/iv_map" />
 
             <TextView
@@ -235,5 +250,20 @@
         </android.support.constraint.ConstraintLayout>
     </android.support.v4.widget.NestedScrollView>
 
+    <FrameLayout
+        android:id="@+id/progress_bar_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/black_12"
+        android:clickable="true"
+        android:focusable="true"
+        android:visibility="gone">
+
+        <ProgressBar
+            android:id="@+id/prog_bar"
+            android:layout_width="@dimen/dp_50"
+            android:layout_height="@dimen/dp_50"
+            android:layout_gravity="center" />
+    </FrameLayout>
 
 </android.support.design.widget.CoordinatorLayout>

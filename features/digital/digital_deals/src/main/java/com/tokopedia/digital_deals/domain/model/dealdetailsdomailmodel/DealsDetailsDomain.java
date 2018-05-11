@@ -1,20 +1,36 @@
-
-package com.tokopedia.digital_deals.domain.model;
+package com.tokopedia.digital_deals.domain.model.dealdetailsdomailmodel;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class DealsItemDomain {
+import java.util.List;
 
+public class DealsDetailsDomain {
+
+    @SerializedName("id")
+    @Expose
+    private Integer id;
+    @SerializedName("brand_id")
+    @Expose
+    private Integer brandId;
+    @SerializedName("category_id")
+    @Expose
+    private Integer categoryId;
+    @SerializedName("provider_id")
+    @Expose
+    private Integer providerId;
+    @SerializedName("provider_product_id")
+    @Expose
+    private String providerProductId;
+    @SerializedName("provider_product_name")
+    @Expose
+    private String providerProductName;
     @SerializedName("display_name")
     @Expose
     private String displayName;
     @SerializedName("url")
     @Expose
     private String url;
-    @SerializedName("seo_url")
-    @Expose
-    private String seoUrl;
     @SerializedName("image_web")
     @Expose
     private String imageWeb;
@@ -45,9 +61,9 @@ public class DealsItemDomain {
     @SerializedName("thumbs_down")
     @Expose
     private Integer thumbsDown;
-    @SerializedName("is_featured")
+    @SerializedName("status")
     @Expose
-    private Integer isFeatured;
+    private Integer status;
     @SerializedName("min_start_date")
     @Expose
     private Integer minStartDate;
@@ -66,18 +82,24 @@ public class DealsItemDomain {
     @SerializedName("updated_at")
     @Expose
     private String updatedAt;
+    @SerializedName("min_start_time")
+    @Expose
+    private String minStartTime;
+    @SerializedName("max_end_time")
+    @Expose
+    private String maxEndTime;
+    @SerializedName("sale_start_time")
+    @Expose
+    private String saleStartTime;
+    @SerializedName("sale_end_time")
+    @Expose
+    private String saleEndTime;
     @SerializedName("date_range")
     @Expose
     private Boolean dateRange;
     @SerializedName("city_name")
     @Expose
     private String cityName;
-    @SerializedName("rating")
-    @Expose
-    private Integer rating;
-    @SerializedName("likes")
-    @Expose
-    private Integer likes;
     @SerializedName("schedules")
     @Expose
     private Object schedules;
@@ -87,34 +109,69 @@ public class DealsItemDomain {
     @SerializedName("media")
     @Expose
     private Object media;
-    @SerializedName("id")
+    @SerializedName("outlets")
     @Expose
-    private Integer id;
-    @SerializedName("is_searchable")
+    private List<Outlet> outlets = null;
+    @SerializedName("rating")
     @Expose
-    private Integer isSearchable;
-    @SerializedName("category_id")
+    private Integer rating;
+    @SerializedName("likes")
     @Expose
-    private Integer categoryId;
-    @SerializedName("provider_id")
+    private Integer likes;
+    @SerializedName("catalog")
     @Expose
-    private Integer providerId;
-    @SerializedName("provider_product_id")
+    private Catalog catalog;
+    @SerializedName("saving_percentage")
     @Expose
-    private String providerProductId;
-    @SerializedName("provider_product_name")
-    @Expose
-    private String providerProductName;
-    @SerializedName("sale_start_time")
-    @Expose
-    private String saleStartTime;
-    @SerializedName("sale_end_time")
-    @Expose
-    private String saleEndTime;
-    @SerializedName("status")
-    @Expose
-    private Integer status;
+    private String savingPercentage;
 
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    public Integer getBrandId() {
+        return brandId;
+    }
+
+    public void setBrandId(Integer brandId) {
+        this.brandId = brandId;
+    }
+
+    public Integer getCategoryId() {
+        return categoryId;
+    }
+
+    public void setCategoryId(Integer categoryId) {
+        this.categoryId = categoryId;
+    }
+
+    public Integer getProviderId() {
+        return providerId;
+    }
+
+    public void setProviderId(Integer providerId) {
+        this.providerId = providerId;
+    }
+
+    public String getProviderProductId() {
+        return providerProductId;
+    }
+
+    public void setProviderProductId(String providerProductId) {
+        this.providerProductId = providerProductId;
+    }
+
+    public String getProviderProductName() {
+        return providerProductName;
+    }
+
+    public void setProviderProductName(String providerProductName) {
+        this.providerProductName = providerProductName;
+    }
 
     public String getDisplayName() {
         return displayName;
@@ -130,14 +187,6 @@ public class DealsItemDomain {
 
     public void setUrl(String url) {
         this.url = url;
-    }
-
-    public String getSeoUrl() {
-        return seoUrl;
-    }
-
-    public void setSeoUrl(String seoUrl) {
-        this.seoUrl = seoUrl;
     }
 
     public String getImageWeb() {
@@ -220,12 +269,12 @@ public class DealsItemDomain {
         this.thumbsDown = thumbsDown;
     }
 
-    public Integer getIsFeatured() {
-        return isFeatured;
+    public Integer getStatus() {
+        return status;
     }
 
-    public void setIsFeatured(Integer isFeatured) {
-        this.isFeatured = isFeatured;
+    public void setStatus(Integer status) {
+        this.status = status;
     }
 
     public Integer getMinStartDate() {
@@ -276,85 +325,20 @@ public class DealsItemDomain {
         this.updatedAt = updatedAt;
     }
 
-    public Boolean getDateRange() {
-        return dateRange;
+    public String getMinStartTime() {
+        return minStartTime;
     }
 
-    public void setDateRange(Boolean dateRange) {
-        this.dateRange = dateRange;
+    public void setMinStartTime(String minStartTime) {
+        this.minStartTime = minStartTime;
     }
 
-    public String getCityName() {
-        return cityName;
+    public String getMaxEndTime() {
+        return maxEndTime;
     }
 
-    public void setCityName(String cityName) {
-        this.cityName = cityName;
-    }
-
-    public Integer getRating() {
-        return rating;
-    }
-
-    public void setRating(Integer rating) {
-        this.rating = rating;
-    }
-
-    public Integer getLikes() {
-        return likes;
-    }
-
-    public void setLikes(Integer likes) {
-        this.likes = likes;
-    }
-
-
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    public Integer getIsSearchable() {
-        return isSearchable;
-    }
-
-    public void setIsSearchable(Integer isSearchable) {
-        this.isSearchable = isSearchable;
-    }
-
-    public Integer getCategoryId() {
-        return categoryId;
-    }
-
-    public void setCategoryId(Integer categoryId) {
-        this.categoryId = categoryId;
-    }
-
-    public Integer getProviderId() {
-        return providerId;
-    }
-
-    public void setProviderId(Integer providerId) {
-        this.providerId = providerId;
-    }
-
-    public String getProviderProductId() {
-        return providerProductId;
-    }
-
-    public void setProviderProductId(String providerProductId) {
-        this.providerProductId = providerProductId;
-    }
-
-    public String getProviderProductName() {
-        return providerProductName;
-    }
-
-    public void setProviderProductName(String providerProductName) {
-        this.providerProductName = providerProductName;
+    public void setMaxEndTime(String maxEndTime) {
+        this.maxEndTime = maxEndTime;
     }
 
     public String getSaleStartTime() {
@@ -373,12 +357,20 @@ public class DealsItemDomain {
         this.saleEndTime = saleEndTime;
     }
 
-    public Integer getStatus() {
-        return status;
+    public Boolean getDateRange() {
+        return dateRange;
     }
 
-    public void setStatus(Integer status) {
-        this.status = status;
+    public void setDateRange(Boolean dateRange) {
+        this.dateRange = dateRange;
+    }
+
+    public String getCityName() {
+        return cityName;
+    }
+
+    public void setCityName(String cityName) {
+        this.cityName = cityName;
     }
 
     public Object getSchedules() {
@@ -405,7 +397,46 @@ public class DealsItemDomain {
         this.media = media;
     }
 
+    public List<Outlet> getOutlets() {
+        return outlets;
+    }
 
+    public void setOutlets(List<Outlet> outlets) {
+        this.outlets = outlets;
+    }
 
+    public Integer getRating() {
+        return rating;
+    }
+
+    public void setRating(Integer rating) {
+        this.rating = rating;
+    }
+
+    public Integer getLikes() {
+        return likes;
+    }
+
+    public void setLikes(Integer likes) {
+        this.likes = likes;
+    }
+
+    public Catalog getCatalog() {
+        return catalog;
+    }
+
+    public void setCatalog(Catalog catalog) {
+        this.catalog = catalog;
+    }
+
+    public String getSavingPercentage() {
+        return savingPercentage;
+    }
+
+    public void setSavingPercentage(String savingPercentage) {
+        this.savingPercentage = savingPercentage;
+    }
 
 }
+
+

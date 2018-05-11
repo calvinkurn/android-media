@@ -11,6 +11,8 @@ import com.tokopedia.digital_deals.data.DealsRepositoryData;
 import com.tokopedia.digital_deals.data.source.DealsApi;
 import com.tokopedia.digital_deals.di.scope.DealsScope;
 import com.tokopedia.digital_deals.domain.DealsRepository;
+import com.tokopedia.digital_deals.domain.GetBrandDetailsUseCase;
+import com.tokopedia.digital_deals.domain.GetDealDetailsUseCase;
 import com.tokopedia.digital_deals.domain.GetDealsListRequestUseCase;
 import com.tokopedia.digital_deals.domain.GetSearchDealsListRequestUseCase;
 import com.tokopedia.digital_deals.domain.GetSearchNextUseCase;
@@ -57,13 +59,25 @@ public class DealsModule {
     @Provides
     @DealsScope
     GetSearchDealsListRequestUseCase provideGetSearchDealsListRequestUseCase(DealsRepository dealsRepository) {
-        return new GetSearchDealsListRequestUseCase( dealsRepository);
+        return new GetSearchDealsListRequestUseCase(dealsRepository);
     }
 
     @Provides
     @DealsScope
-    GetSearchNextUseCase providesGetSearchNextUseCase(DealsRepository dealsRepository){
+    GetSearchNextUseCase providesGetSearchNextUseCase(DealsRepository dealsRepository) {
         return new GetSearchNextUseCase(dealsRepository);
+    }
+
+    @Provides
+    @DealsScope
+    GetBrandDetailsUseCase provideGetBrandDetailsUseCase(DealsRepository dealsRepository) {
+        return new GetBrandDetailsUseCase(dealsRepository);
+    }
+
+    @Provides
+    @DealsScope
+    GetDealDetailsUseCase provideGetDealDetailsUseCase(DealsRepository dealsRepository) {
+        return new GetDealDetailsUseCase(dealsRepository);
     }
 
     @Provides

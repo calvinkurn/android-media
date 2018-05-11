@@ -1,159 +1,191 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main_content"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-
     android:background="@color/bottomnav_bg">
 
 
     <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"
-        android:layout_gravity="top"
         android:layout_height="wrap_content">
 
-        <android.support.v7.widget.Toolbar xmlns:app="http://schemas.android.com/apk/res-auto"
+        <android.support.v7.widget.Toolbar
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             android:minHeight="?attr/actionBarSize" />
+
+        <android.support.constraint.ConstraintLayout
+            android:id="@+id/cl_search_view"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:visibility="gone"
+            android:background="@color/bottomnav_bg"
+            app:layout_behavior="com.tokopedia.digital_deals.view.behaviour.QuickHideBehavior">
+
+            <LinearLayout
+                android:id="@+id/search_input_view"
+                android:layout_width="0dp"
+                android:layout_height="@dimen/dp_40"
+                android:layout_marginBottom="@dimen/dp_8"
+
+                android:layout_marginLeft="@dimen/dp_16"
+                android:layout_marginTop="@dimen/dp_8"
+                android:background="@drawable/rect_white_rounded_stroke_gray"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:padding="@dimen/dp_10"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toLeftOf="@+id/guideline"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <ImageView
+                    android:id="@+id/image_view_search"
+                    android:layout_width="@dimen/dp_16"
+                    android:layout_height="@dimen/dp_16"
+                    app:srcCompat="@drawable/ic_search_grey" />
+
+                <TextView
+                    android:id="@+id/edit_text_search"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/dp_15"
+                    android:layout_marginRight="@dimen/dp_15"
+                    android:layout_weight="1"
+                    android:background="@null"
+                    android:ellipsize="end"
+                    android:hint="@string/search_input_hint_deals"
+                    android:maxLines="1"
+                    android:textColor="@color/black_70"
+                    android:textSize="@dimen/sp_14" />
+
+
+            </LinearLayout>
+
+
+            <android.support.constraint.Guideline
+                android:id="@+id/guideline"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                app:layout_constraintGuide_percent="0.67" />
+
+
+            <android.support.constraint.ConstraintLayout
+                android:layout_width="0dp"
+                android:layout_height="@dimen/dp_40"
+                android:orientation="horizontal"
+                android:paddingBottom="@dimen/dp_8"
+                android:paddingTop="@dimen/dp_8"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintLeft_toRightOf="@id/guideline"
+
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+
+                <ImageView
+                    android:id="@+id/iv_map"
+                    android:layout_width="@dimen/dp_24"
+                    android:layout_height="@dimen/dp_24"
+                    android:layout_marginRight="@dimen/dp_8"
+                    android:background="@color/card_loading_color"
+                    app:layout_constraintRight_toLeftOf="@+id/tv_location_name" />
+
+
+                <TextView
+                    android:id="@+id/tv_location_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="@dimen/dp_16"
+                    android:fontFamily="sans-serif"
+                    android:text="Surabaya"
+                    android:textColor="@color/black_39"
+                    android:textSize="@dimen/sp_14"
+                    android:textStyle="normal"
+                    app:layout_constraintBottom_toBottomOf="@+id/iv_map"
+                    app:layout_constraintRight_toRightOf="parent"
+                    app:layout_constraintTop_toTopOf="@+id/iv_map" />
+            </android.support.constraint.ConstraintLayout>
+
+        </android.support.constraint.ConstraintLayout>
+
     </android.support.design.widget.AppBarLayout>
 
-    <android.support.design.widget.CoordinatorLayout xmlns:app="http://schemas.android.com/apk/res-auto"
-        xmlns:tools="http://schemas.android.com/tools"
+    <android.support.design.widget.CoordinatorLayout
         android:id="@+id/base_main_content"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="?attr/actionBarSize"
+        android:visibility="gone"
         android:background="@color/bottomnav_bg"
-        tools:context="com.tokopedia.events.view.activity.EventsHomeActivity">
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
         <android.support.design.widget.AppBarLayout
             android:id="@+id/app_bar_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-
             android:background="@color/bottomnav_bg">
 
-            <android.support.design.widget.CollapsingToolbarLayout
-                android:id="@+id/collapse_toolbar"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="@color/bottomnav_bg"
-
-                app:expandedTitleTextAppearance="@style/TextAppearance.AppCompat.Title"
-                app:layout_scrollFlags="scroll|exitUntilCollapsed"
-                app:titleEnabled="false">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="@color/bottomnav_bg"
-                    android:orientation="vertical"
-                    app:layout_collapseMode="parallax">
-
-                    <include
-
-                        layout="@layout/deals_category" />
-
-                </LinearLayout>
-            </android.support.design.widget.CollapsingToolbarLayout>
 
             <android.support.constraint.ConstraintLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/dp_16"
-                android:layout_marginTop="@dimen/dp_16"
-                android:background="@color/bottomnav_bg"
-                app:layout_scrollFlags="scroll|snap">
+                android:layout_height="match_parent"
+                app:layout_scrollFlags="scroll|exitUntilCollapsed">
 
-                <TextView
-                    android:id="@+id/tv_popular"
+                <com.tokopedia.abstraction.base.view.widget.TouchViewPager
+                    android:id="@+id/deals_bannerpager"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/banner_height_deals" />
+
+
+                <com.tokopedia.design.viewpagerindicator.CirclePageIndicator
+                    android:id="@+id/pager_indicator"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_height="@dimen/dp_12"
+                    android:layout_gravity="center_vertical"
                     android:layout_marginLeft="@dimen/dp_16"
                     android:layout_marginTop="@dimen/dp_16"
-                    android:fontFamily="sans-serif-medium"
-                    android:text="Populer di Jakarta "
-                    android:textColor="@color/black_39"
-                    android:textSize="@dimen/sp_17"
-                    android:textStyle="normal"
-                    app:layout_constraintLeft_toLeftOf="parent" />
-
-                <TextView
-                    android:id="@+id/number_of_locations"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="sans-serif-medium"
-                    android:text="(25)"
-                    android:textColor="@color/black_38"
-                    android:textSize="@dimen/sp_17"
-                    android:textStyle="normal"
-                    app:layout_constraintBottom_toBottomOf="@+id/tv_popular"
-                    app:layout_constraintLeft_toRightOf="@+id/tv_popular"
-                    app:layout_constraintTop_toTopOf="@+id/tv_popular"
-                     />
-
-                <TextView
-                    android:id="@+id/tv_see_all"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginRight="@dimen/dp_16"
-                    android:fontFamily="sans-serif-medium"
-                    android:text="Lihat Semua"
-                    android:textColor="@color/medium_green"
-                    android:textSize="@dimen/sp_12"
-                    android:textStyle="normal"
-                    app:layout_constraintBottom_toBottomOf="@+id/tv_popular"
-                    app:layout_constraintRight_toRightOf="parent"
-                    app:layout_constraintTop_toTopOf="@+id/tv_popular"
-                    app:layout_constraintVertical_bias="0.5" />
-
-            </android.support.constraint.ConstraintLayout>
-
-
-            <android.support.v7.widget.RecyclerView
-                android:id="@+id/recyclerView"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:layoutManager="android.support.v7.widget.LinearLayoutManager"
-                app:layout_behavior="@string/appbar_scrolling_view_behavior" />
-
-            <android.support.constraint.ConstraintLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="@color/bottomnav_bg"
-                app:layout_collapseMode="parallax">
-
-
-                <TextView
-                    android:id="@+id/tv_featured_brand"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="@dimen/dp_16"
-                    android:layout_marginTop="@dimen/dp_24"
-                    android:fontFamily="sans-serif-medium"
-                    android:text="Brand Unggulan"
-                    android:textColor="@color/black_39"
-                    android:textSize="@dimen/sp_17"
-                    android:textStyle="normal"
+                    android:padding="@dimen/dp_2"
+                    app:centered="false"
+                    app:fillColor="@color/green_nob"
                     app:layout_constraintLeft_toLeftOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
+                    app:layout_constraintTop_toBottomOf="@+id/deals_bannerpager"
+                    app:pageColor="@color/grey_400"
+                    app:radius="@dimen/dp_4"
+                    app:strokeColor="@color/grey_400" />
 
                 <TextView
                     android:id="@+id/textView"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginRight="@dimen/dp_16"
-                    android:text="Lihat Semua"
+                    android:gravity="top"
+                    android:text="@string/promo_button_text"
                     android:textColor="@color/green_nob"
                     android:textSize="@dimen/sp_12"
                     android:textStyle="normal"
-                    app:layout_constraintBottom_toBottomOf="@+id/tv_featured_brand"
+                    app:layout_constraintBottom_toBottomOf="@+id/pager_indicator"
                     app:layout_constraintRight_toRightOf="parent"
-                    app:layout_constraintTop_toTopOf="@id/tv_featured_brand" />
+                    app:layout_constraintTop_toTopOf="@+id/pager_indicator"
+                    app:layout_constraintVertical_bias="0.5" />
 
+
+                <TextView
+                    android:id="@+id/tv_popular_category"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/dp_24"
+                    android:fontFamily="sans-serif-medium"
+                    android:text="Kategori Voucher"
+                    android:textColor="@color/black_39"
+                    android:textSize="@dimen/font_medium"
+                    android:textStyle="normal"
+                    app:layout_constraintLeft_toLeftOf="@+id/pager_indicator"
+                    app:layout_constraintTop_toBottomOf="@+id/pager_indicator" />
 
                 <android.support.v7.widget.RecyclerView
                     android:id="@+id/recyclerViewCatItems"
@@ -163,16 +195,101 @@
                     android:layout_marginRight="@dimen/dp_16"
                     android:layout_marginTop="@dimen/dp_16"
                     app:layoutManager="android.support.v7.widget.GridLayoutManager"
-                    app:layout_constraintTop_toBottomOf="@+id/tv_featured_brand"
+                    app:layout_constraintTop_toBottomOf="@+id/tv_popular_category"
+                    app:spanCount="4"
+                    tools:listitem="@layout/category_item" />
+
+                <TextView
+                    android:id="@+id/tv_popular"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/dp_16"
+                    android:fontFamily="sans-serif-medium"
+                    android:paddingBottom="@dimen/dp_16"
+                    android:paddingTop="@dimen/dp_16"
+                    android:text="@string/text_trending_deals"
+                    android:textColor="@color/black_39"
+                    android:textSize="@dimen/sp_17"
+                    android:textStyle="normal"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/recyclerViewCatItems" />
+
+
+                <android.support.v7.widget.RecyclerView
+                    android:id="@+id/recyclerViewTrendingDeals"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintTop_toBottomOf="@id/tv_popular" />
+
+
+                <TextView
+                    android:id="@+id/tv_popular_brand"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/dp_16"
+                    android:layout_marginTop="@dimen/dp_32"
+                    android:fontFamily="sans-serif-medium"
+                    android:text="Brand Populer"
+                    android:textColor="@color/black_39"
+                    android:textSize="@dimen/sp_17"
+                    android:textStyle="normal"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/recyclerViewTrendingDeals" />
+
+                <TextView
+                    android:id="@+id/tv_see_all_brands"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="@dimen/dp_16"
+                    android:text="Lihat Semua"
+                    android:textColor="@color/green_nob"
+                    android:textSize="@dimen/sp_12"
+                    android:textStyle="normal"
+                    app:layout_constraintBottom_toBottomOf="@+id/tv_popular_brand"
+                    app:layout_constraintRight_toRightOf="parent"
+                    app:layout_constraintTop_toTopOf="@+id/tv_popular_brand" />
+
+
+                <android.support.v7.widget.RecyclerView
+                    android:id="@+id/recyclerViewBrandItems"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/dp_16"
+                    android:layout_marginRight="@dimen/dp_16"
+                    android:layout_marginTop="@dimen/dp_16"
+                    app:layoutManager="android.support.v7.widget.GridLayoutManager"
+                    app:layout_constraintTop_toBottomOf="@+id/tv_popular_brand"
                     app:spanCount="4"
                     tools:listitem="@layout/item_category_brand" />
 
-
+                <TextView
+                    android:id="@+id/tv_all_deals"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/dp_16"
+                    android:fontFamily="sans-serif-medium"
+                    android:paddingBottom="@dimen/dp_16"
+                    android:paddingTop="@dimen/dp_16"
+                    android:text="@string/text_all_deals"
+                    android:textColor="@color/black_39"
+                    android:textSize="@dimen/sp_17"
+                    android:textStyle="normal"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/recyclerViewBrandItems" />
             </android.support.constraint.ConstraintLayout>
 
 
         </android.support.design.widget.AppBarLayout>
 
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/recyclerViewAllDeals"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layoutManager="android.support.v7.widget.LinearLayoutManager"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior"
+            app:layout_constraintTop_toBottomOf="@id/tv_all_deals"
+            tools:listitem="@layout/deals_item_card" />
 
 
     </android.support.design.widget.CoordinatorLayout>
@@ -184,7 +301,7 @@
         android:background="@color/black_12"
         android:clickable="true"
         android:focusable="true"
-        android:visibility="gone">
+        >
 
         <ProgressBar
             android:id="@+id/prog_bar"
@@ -192,4 +309,4 @@
             android:layout_height="@dimen/dp_50"
             android:layout_gravity="center" />
     </FrameLayout>
-</FrameLayout>
+</android.support.design.widget.CoordinatorLayout><!--http://www.androhub.com/bottom-navigation-view-android/-->

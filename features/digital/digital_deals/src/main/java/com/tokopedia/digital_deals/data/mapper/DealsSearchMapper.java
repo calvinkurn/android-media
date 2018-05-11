@@ -6,7 +6,7 @@ import com.tokopedia.digital_deals.data.entity.response.searchresponse.FiltersIt
 import com.tokopedia.digital_deals.data.entity.response.searchresponse.GridLayoutItem;
 import com.tokopedia.digital_deals.data.entity.response.searchresponse.SearchResponse;
 import com.tokopedia.digital_deals.data.entity.response.searchresponse.ValuesItem;
-import com.tokopedia.digital_deals.domain.model.DealsItemDomain;
+import com.tokopedia.digital_deals.domain.model.DealsCategoryItemDomain;
 import com.tokopedia.digital_deals.domain.model.searchdomainmodel.FilterDomainModel;
 import com.tokopedia.digital_deals.domain.model.searchdomainmodel.PageDomain;
 import com.tokopedia.digital_deals.domain.model.searchdomainmodel.SearchDomainModel;
@@ -31,12 +31,12 @@ public class DealsSearchMapper {
 
     public SearchDomainModel convertToSearchDomain(SearchResponse source) {
         SearchDomainModel target = new SearchDomainModel();
-        List<DealsItemDomain> dealsItemDomains = new ArrayList<>();
+        List<DealsCategoryItemDomain> dealsItemDomains = new ArrayList<>();
         List<FilterDomainModel> filterDomainModels = new ArrayList<>();
         try {
             if(source.getData().getGridLayout()!=null) {
                 for (GridLayoutItem dealItem : source.getData().getGridLayout()) {
-                    DealsItemDomain itemDomain = new DealsItemDomain();
+                    DealsCategoryItemDomain itemDomain = new DealsCategoryItemDomain();
                     itemDomain.setCategoryId(dealItem.getCategoryId());
                     itemDomain.setCityName(dealItem.getCityName());
 

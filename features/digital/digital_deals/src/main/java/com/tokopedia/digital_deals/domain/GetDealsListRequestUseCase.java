@@ -1,8 +1,6 @@
 package com.tokopedia.digital_deals.domain;
 
-import android.util.Log;
-
-import com.tokopedia.digital_deals.domain.model.DealsCategoryDomain;
+import com.tokopedia.digital_deals.domain.model.DealsDomain;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.usecase.UseCase;
 
@@ -11,7 +9,7 @@ import java.util.List;
 import rx.Observable;
 
 
-public class GetDealsListRequestUseCase extends UseCase<List<DealsCategoryDomain>> {
+public class GetDealsListRequestUseCase extends UseCase<DealsDomain> {
     private final DealsRepository dealsRepository;
 
     public GetDealsListRequestUseCase(DealsRepository eventRepository) {
@@ -20,7 +18,7 @@ public class GetDealsListRequestUseCase extends UseCase<List<DealsCategoryDomain
     }
 
     @Override
-    public Observable<List<DealsCategoryDomain>> createObservable(RequestParams requestParams) {
+    public Observable<DealsDomain> createObservable(RequestParams requestParams) {
         return dealsRepository.getDeals(requestParams.getParameters());
     }
 }

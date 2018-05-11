@@ -15,7 +15,7 @@
             android:name=".view.activity.DealsSearchActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".view.activity.DealDetailActivity"
+            android:name=".view.activity.DealDetailsActivity"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White" />
         <activity
@@ -29,7 +29,12 @@
         <activity
             android:name=".view.activity.AllBrandsActivity"
             android:label="@string/title_activity_all_brands"
-            android:theme="@style/AppTheme"></activity>
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme" />
+        <activity
+            android:name=".view.activity.BrandDetailsActivity"
+            android:screenOrientation="portrait" />
+
     </application>
 
 </manifest>

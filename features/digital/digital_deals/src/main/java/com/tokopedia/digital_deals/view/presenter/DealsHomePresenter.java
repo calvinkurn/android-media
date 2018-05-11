@@ -11,11 +11,12 @@ import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.digital_deals.R;
 import com.tokopedia.digital_deals.domain.GetDealsListRequestUseCase;
-import com.tokopedia.digital_deals.domain.model.DealsCategoryDomain;
+import com.tokopedia.digital_deals.domain.model.DealsDomain;
 import com.tokopedia.digital_deals.view.activity.DealsHomeActivity;
 import com.tokopedia.digital_deals.view.activity.DealsSearchActivity;
 import com.tokopedia.digital_deals.view.contractor.DealsContract;
 import com.tokopedia.digital_deals.view.utils.Utils;
+import com.tokopedia.digital_deals.view.viewmodel.BrandViewModel;
 import com.tokopedia.digital_deals.view.viewmodel.CategoryItemsViewModel;
 import com.tokopedia.digital_deals.view.viewmodel.CategoryViewModel;
 import com.tokopedia.digital_deals.view.viewmodel.SearchViewModel;
@@ -37,6 +38,7 @@ public class DealsHomePresenter extends BaseDaggerPresenter<DealsContract.View>
     private GetDealsListRequestUseCase getDealsListRequestUseCase;
     private CategoryViewModel carousel;
     private List<CategoryViewModel> categoryViewModels;
+    private List<BrandViewModel> brandViewModels;
     private TouchViewPager mTouchViewPager;
     private int currentPage, totalPages;
     String PROMOURL = "https://www.tokopedia.com/promo/tiket/events/";
@@ -55,7 +57,7 @@ public class DealsHomePresenter extends BaseDaggerPresenter<DealsContract.View>
 
     @Override
     public void onDestroy() {
-
+        getDealsListRequestUseCase.unsubscribe();
     }
 
     @Override
@@ -100,12 +102,14 @@ public class DealsHomePresenter extends BaseDaggerPresenter<DealsContract.View>
 
     @Override
     public boolean onOptionMenuClick(int id) {
-        if (id == R.id.action_menu_search) {
+        if (id == R.id.search_input_view) {
             ArrayList<SearchViewModel> searchViewModelList = Utils.getSingletonInstance().convertIntoSearchViewModel(categoryViewModels);
             Intent searchIntent = DealsSearchActivity.getCallingIntent(getView().getActivity());
             searchIntent.putParcelableArrayListExtra("TOPDEALS", searchViewModelList);
             getView().navigateToActivityRequest(searchIntent,
                     DealsHomeActivity.REQUEST_CODE_EVENTSEARCHACTIVITY);
+        } else if (id == R.id.action_menu_favourite) {
+
         } else if (id == R.id.action_promo) {
             startGeneralWebView(PROMOURL);
         } else if (id == R.id.action_booked_history) {
@@ -120,7 +124,8 @@ public class DealsHomePresenter extends BaseDaggerPresenter<DealsContract.View>
 
     public void getDealsList() {
         getView().showProgressBar();
-        getDealsListRequestUseCase.execute(getView().getParams(), new Subscriber<List<DealsCategoryDomain>>() {
+        getDealsListRequestUseCase.execute(getView().getParams(), new Subscriber<DealsDomain>() {
+
             @Override
             public void onCompleted() {
                 CommonUtils.dumper("enter onCompleted");
@@ -140,13 +145,14 @@ public class DealsHomePresenter extends BaseDaggerPresenter<DealsContract.View>
             }
 
             @Override
-            public void onNext(List<DealsCategoryDomain> categoryEntities) {
+            public void onNext(DealsDomain dealEntity) {
                 getView().hideProgressBar();
                 categoryViewModels = Utils.getSingletonInstance()
-                        .convertIntoCategoryListViewModel(categoryEntities);
+                        .convertIntoCategoryListViewModel(dealEntity.getDealsCategory());
+                brandViewModels =Utils.getSingletonInstance().convertIntoBrandListViewModel(dealEntity.getDealsBrands());
                 getCarousel(categoryViewModels);
-                getView().renderCategoryList(categoryViewModels);
-                getView().showSearchButton();
+                getView().renderCategoryList(categoryViewModels, brandViewModels);
+                getView().showFavouriteButton();
                 CommonUtils.dumper("enter onNext");
             }
         });

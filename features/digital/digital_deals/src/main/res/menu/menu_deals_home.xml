@@ -3,10 +3,10 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
     <item
-        android:id="@+id/action_menu_search"
-        android:icon="@drawable/ic_search_icon"
+        android:id="@+id/action_menu_favourite"
+        android:icon="@drawable/ic_wishlist_unfilled"
         android:orderInCategory="100"
-        android:title="@string/search"
+        android:title="@string/favourite"
         android:visible="false"
         app:showAsAction="always"
         tools:ignore="AppCompatResource" />
