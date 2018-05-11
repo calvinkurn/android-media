@@ -35,6 +35,7 @@ import java.util.ArrayList;
 
 import static com.tokopedia.imagepicker.picker.album.AlbumPickerActivity.EXTRA_ALBUM_ITEM;
 import static com.tokopedia.imagepicker.picker.album.AlbumPickerActivity.EXTRA_ALBUM_POSITION;
+import static com.tokopedia.imagepicker.picker.gallery.model.AlbumItem.ALBUM_ID_ALL;
 
 /**
  * Created by hendry on 19/04/18.
@@ -208,6 +209,9 @@ public class ImagePickerGalleryFragment extends TkpdBaseV4Fragment
     }
 
     private void onAlbumLoaded(AlbumItem albumItem) {
+        if (albumItem == null) {
+            albumItem = new AlbumItem(ALBUM_ID_ALL, null,null, 0);
+        }
         if (albumItem.isAll()) {
             albumItem.addCaptureCount();
         }
