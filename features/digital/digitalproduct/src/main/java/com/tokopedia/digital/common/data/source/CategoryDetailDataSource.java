@@ -115,7 +115,7 @@ public class CategoryDetailDataSource {
      * @return
      */
     private Observable<ProductDigitalData> getCategoryDataFromCloud(String categoryId) {
-        return digitalEndpointService.getApi().getCategory(String.format(getCategoryRequestPayload(), categoryId))
+        return digitalEndpointService.getApi().getCategory(getCategoryRequestPayload(categoryId))
                 .map(new Func1<Response<GraphqlResponse<RechargeResponseEntity>>, RechargeResponseEntity>() {
                     @Override
                     public RechargeResponseEntity call(Response<GraphqlResponse<RechargeResponseEntity>> response) {
