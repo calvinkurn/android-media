@@ -37,10 +37,10 @@
             android:paddingRight="@dimen/dp_2"
             app:high_color="@color/tkpd_main_green"
             app:line_color="@color/grey_700"
-            app:line_width="@dimen/dp_2"
-            app:nail_color="@color/tkpd_main_green"
-            app:nail_radius="@dimen/dp_4"
-            app:nail_stroke_width="@dimen/dp_3"
+            app:line_width="@dimen/dp_1"
+            app:nail_color="@color/grey_700"
+            app:nail_radius="@dimen/dp_0"
+            app:nail_stroke_width="@dimen/dp_0"
             app:thumb_color="@color/white"
             app:thumb_radius="@dimen/dp_12" />
 

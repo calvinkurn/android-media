@@ -171,8 +171,8 @@ public class ImageEditPreviewFragment extends Fragment implements ImageEditPrevi
         renderUndoRedo();
     }
 
-    private void renderUndoRedo() {
-        if (onImageEditPreviewFragmentListener.hasHistory(imageIndex) && onImageEditPreviewFragmentListener.isInEditMode()) {
+    public void renderUndoRedo() {
+        if (onImageEditPreviewFragmentListener.hasHistory(imageIndex) && !onImageEditPreviewFragmentListener.isInEditMode()) {
 
             if (onImageEditPreviewFragmentListener.canUndo(imageIndex)) {
                 ivUndo.getDrawable().clearColorFilter();
@@ -453,7 +453,6 @@ public class ImageEditPreviewFragment extends Fragment implements ImageEditPrevi
     private void hideLoadingAndShowPreview() {
         progressBar.setVisibility(View.GONE);
         uCropView.setVisibility(View.VISIBLE);
-        uCropView.animate().alpha(1).setDuration(300).setInterpolator(new AccelerateInterpolator());
         setEditMode(onImageEditPreviewFragmentListener.isInEditMode());
     }
 

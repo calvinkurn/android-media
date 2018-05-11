@@ -106,6 +106,7 @@ public class ImageEditorActivity extends BaseSimpleActivity implements ImageEdit
     private TextView tvBrightness;
     private TextView tvContrast;
     private long prevTimeClicked;
+    private TextView tvActionTitle;
 
     public static Intent getIntent(Context context, ArrayList<String> imageUrls, int minResolution,
                                    @ImageEditActionTypeDef int[] imageEditActionType,
@@ -140,10 +141,10 @@ public class ImageEditorActivity extends BaseSimpleActivity implements ImageEdit
         super.onCreate(savedInstanceState);
 
         Intent intent = getIntent();
-        //for test only
-//        extraImageUrls = new ArrayList<>();
-//        extraImageUrls.add("https://scontent-sit4-1.cdninstagram.com/vp/4d462c7e62452e54862602872a4f2f55/5B772ADA/t51.2885-15/e35/30603662_2044572549200360_6725615414816014336_n.jpg");
 
+        // For test:
+        // extraImageUrls = new ArrayList<>();
+        // extraImageUrls.add("https://scontent-sit4-1.cdninstagram.com/vp/4d462c7e62452e54862602872a4f2f55/5B772ADA/t51.2885-15/e35/30603662_2044572549200360_6725615414816014336_n.jpg");
         if (intent.hasExtra(EXTRA_IMAGE_URLS)) {
             extraImageUrls = intent.getStringArrayListExtra(EXTRA_IMAGE_URLS);
         } else {
@@ -187,6 +188,7 @@ public class ImageEditorActivity extends BaseSimpleActivity implements ImageEdit
         layoutRotate = findViewById(R.id.layout_rotate);
         layoutBrightness = findViewById(R.id.layout_brightness);
         layoutContrast = findViewById(R.id.layout_contrast);
+        tvActionTitle = findViewById(R.id.tv_action_title);
 
         viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
@@ -403,6 +405,10 @@ public class ImageEditorActivity extends BaseSimpleActivity implements ImageEdit
             editorControlView.setVisibility(View.VISIBLE);
             doneButton.setVisibility(View.GONE);
 
+            getSupportActionBar().setHomeButtonEnabled(false);
+            getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+            getSupportActionBar().setTitle("");
+
             switch (editActionType) {
                 case ImageEditActionTypeDef.ACTION_CROP:
                     if (fragment != null) {
@@ -410,11 +416,13 @@ public class ImageEditorActivity extends BaseSimpleActivity implements ImageEdit
                     }
                     hideAllControls();
                     layoutCrop.setVisibility(View.VISIBLE);
+                    tvActionTitle.setText(getString(R.string.crop));
                     break;
                 case ImageEditActionTypeDef.ACTION_ROTATE:
                     hideAllControls();
                     setupRotateWidget();
                     layoutRotate.setVisibility(View.VISIBLE);
+                    tvActionTitle.setText(getString(R.string.rotate));
                     break;
                 case ImageEditActionTypeDef.ACTION_WATERMARK:
                     //currently not supported.
@@ -430,6 +438,7 @@ public class ImageEditorActivity extends BaseSimpleActivity implements ImageEdit
                         setUIBrightnessValue(brightness);
                     }
                     layoutBrightness.setVisibility(View.VISIBLE);
+                    tvActionTitle.setText(getString(R.string.brightness));
                     break;
                 case ImageEditActionTypeDef.ACTION_CONTRAST:
                     hideAllControls();
@@ -439,15 +448,26 @@ public class ImageEditorActivity extends BaseSimpleActivity implements ImageEdit
                         setUIContrastValue(contrast);
                     }
                     layoutContrast.setVisibility(View.VISIBLE);
+                    tvActionTitle.setText(getString(R.string.contrast));
                     break;
             }
+            tvActionTitle.setVisibility(View.VISIBLE);
+
+            if (fragment!= null) {
+                fragment.renderUndoRedo();
+            }
+
         } else {
             editorMainView.setVisibility(View.VISIBLE);
             editorControlView.setVisibility(View.GONE);
             doneButton.setVisibility(View.VISIBLE);
-
+            getSupportActionBar().setHomeButtonEnabled(true);
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setTitle(getTitle());
+            tvActionTitle.setVisibility(View.GONE);
             if (fragment != null) {
                 fragment.setEditMode(false);
+                fragment.renderUndoRedo();
             }
         }
     }

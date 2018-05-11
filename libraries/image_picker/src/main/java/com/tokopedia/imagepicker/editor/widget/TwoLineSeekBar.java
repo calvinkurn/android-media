@@ -5,8 +5,8 @@ import android.content.res.TypedArray;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.Path;
 import android.graphics.Rect;
-import android.graphics.Region;
 import android.util.AttributeSet;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
@@ -66,6 +66,7 @@ public class TwoLineSeekBar extends View {
     private boolean mIsGlobalDrag = true;
     private boolean mIsTouchCircle = false;
     private boolean mSupportSingleTap = true;
+    private Path path;
 
     public TwoLineSeekBar(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -77,10 +78,10 @@ public class TwoLineSeekBar extends View {
         mNailStrokeWidth = a.getDimension(R.styleable.TwoLineSeekBar_nail_stroke_width, DEF_NAIL_STROKE_WIDTH);
         mLineWidth = a.getDimension(R.styleable.TwoLineSeekBar_line_width, DEF_LINE_WIDTH);
 
-        mNailColor=a.getColor(R.styleable.TwoLineSeekBar_nail_color,0xFFFFE325);
-        mThumbColor=a.getColor(R.styleable.TwoLineSeekBar_thumb_color,0xFFFFE325);
-        mLineColor=a.getColor(R.styleable.TwoLineSeekBar_line_color,0xFFFFFFFF);
-        mHighColor=a.getColor(R.styleable.TwoLineSeekBar_high_color,0xFFFFE325);
+        mNailColor = a.getColor(R.styleable.TwoLineSeekBar_nail_color, 0xFFFFE325);
+        mThumbColor = a.getColor(R.styleable.TwoLineSeekBar_thumb_color, 0xFFFFE325);
+        mLineColor = a.getColor(R.styleable.TwoLineSeekBar_line_color, 0xFFFFFFFF);
+        mHighColor = a.getColor(R.styleable.TwoLineSeekBar_high_color, 0xFFFFE325);
 
         mDefaultAreaRadius = ((((mThumbRadius - mNailRadius) - mNailStrokeWidth) + mThumbRadius) / 2.0f);
 
@@ -118,6 +119,8 @@ public class TwoLineSeekBar extends View {
         mHighLightLinePaint.setColor(mHighColor);
 //        mHighLightLinePaint.setAlpha(0xc8);
         mSupportSingleTap = true;
+
+        path = new Path();
     }
 
     public float dpToPixel(float dp) {
@@ -174,7 +177,17 @@ public class TwoLineSeekBar extends View {
 
         float nailX = mSeekLineStart + mNailOffset;
         float nailY = (float) (getMeasuredHeight() / 0x2);
-         canvas.drawCircle(nailX, nailY, mNailRadius, mNailPaint);
+        if (mNailRadius > 0) {
+            canvas.drawCircle(nailX, nailY, mNailRadius, mNailPaint);
+        } else {
+            mNailPaint.setStyle(Paint.Style.FILL);
+            path.reset();
+            path.moveTo(nailX, nailY - mThumbRadius / 8);
+            path.lineTo(nailX + mThumbRadius / 2, nailY - mThumbRadius / 2);
+            path.lineTo(nailX - mThumbRadius / 2, nailY - mThumbRadius / 2);
+            path.lineTo(nailX, nailY - mThumbRadius / 8);
+            canvas.drawPath(path, mNailPaint);
+        }
         float thumbX = mSeekLineStart + mThumbOffset;
         float thumbY = (float) (getMeasuredHeight() / 0x2);
         float highLightLeft = thumbX + mThumbRadius;
