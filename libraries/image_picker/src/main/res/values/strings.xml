@@ -6,7 +6,7 @@
     <string name="instagram">Instagram</string>
     <string name="album_name_all">Semua Media</string>
     <string name="please_grant_external_storage_permission_in_settings">Untuk dapat menggunakan fitur ini, silakan mengaktifkan \"Read external Storage Permission\" di Pengaturan.</string>
-    <string name="OK">Ok</string>
+    <string name="OK">OK</string>
     <string name="error_no_media_storage">Penyimpanan Media Kosong</string>
     <string name="image_under_x_resolution">Gambar di bawah %1$d pixel</string>
     <string name="take_picture">Ambil Gambar</string>
@@ -25,7 +25,7 @@
     <string name="contrast">Contrast</string>
     <string name="default_brightness_value">0</string>
     <string name="default_rotate_value">0°</string>
-    <string name="default_all_album">Semua Gambar</string>
+    <string name="default_all_album">Semua Media</string>
     <string name="album">Album</string>
     <string name="ratio_1_1">1:1</string>
     <string name="reset">Reset</string>
@@ -34,4 +34,5 @@
     <string name="image_not_found">Gambar tidak ditemukan.</string>
     <string name="min_value_rotate">-45°</string>
     <string name="max_value_rotate">45°</string>
+    <string name="x_photos">%1$d foto</string>
 </resources>
