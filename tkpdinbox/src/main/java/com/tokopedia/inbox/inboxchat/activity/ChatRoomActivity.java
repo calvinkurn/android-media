@@ -91,7 +91,10 @@ public class ChatRoomActivity extends BasePresenterActivity
                 @Override
                 public void onReceive(Context context, Intent intent) {
                     String fromPushNotif = intent.getExtras().getString(APPLINKS);
-                    String fromRoom = ApplinkConstant.TOPCHAT.concat(getIntent().getExtras().getString(MESSAGE_ID));
+                    String fromRoom="";
+                    if(!TextUtils.isEmpty(getIntent().getExtras().getString(MESSAGE_ID))) {
+                        fromRoom = ApplinkConstant.TOPCHAT.concat(getIntent().getExtras().getString(MESSAGE_ID));
+                    }
                     if (!fromRoom.equals(fromPushNotif)) {
                         PushNotification.notify(context, intent.getExtras());
                     }
