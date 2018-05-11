@@ -62,7 +62,7 @@ public class ShipmentDataRequestConverter {
                         .spId(courierItemData.getShipperProductId())
                         .build())
                 .fcancelPartial(shipmentDetailData.getUsePartialOrder() ? 1 : 0)
-                .finsurance(shipmentDetailData.getUseInsurance() != null && shipmentDetailData.getUseInsurance() ? 1 : 0)
+                .finsurance((shipmentDetailData.getUseInsurance() != null && shipmentDetailData.getUseInsurance()) ? 1 : 0)
                 .isPreorder(shipmentCartItem.isProductIsPreorder() ? 1 : 0)
                 .shopId(shipmentCartItem.getShopId());
 
@@ -103,8 +103,8 @@ public class ShipmentDataRequestConverter {
                 new CheckPromoCodeCartShipmentRequest.ShopProduct.Builder()
                         .shopId(shipmentCartItem.getShopId())
                         .fcancelPartial(shipmentDetailData.getUsePartialOrder() ? 1 : 0)
-                        .finsurance(shipmentDetailData.getUseInsurance() != null &&
-                                shipmentDetailData.getUseInsurance() ? 1 : 0)
+                        .finsurance((shipmentDetailData.getUseInsurance() != null &&
+                                shipmentDetailData.getUseInsurance()) ? 1 : 0)
                         .isPreorder(shipmentCartItem.isProductIsPreorder() ? 1 : 0)
                         .shippingInfo(new CheckPromoCodeCartShipmentRequest.ShippingInfo.Builder()
                                 .shippingId(courierItemData.getShipperId())
@@ -158,7 +158,7 @@ public class ShipmentDataRequestConverter {
 
         List<DataCheckoutRequest> checkoutRequestData = new ArrayList<>();
         checkoutRequestData.add(new DataCheckoutRequest.Builder()
-                .addressId(Integer.valueOf(recipientAddress.getId()))
+                .addressId(recipientAddress != null ? Integer.valueOf(recipientAddress.getId()) : 0)
                 .shopProducts(shopProducts)
                 .build());
 
@@ -188,7 +188,7 @@ public class ShipmentDataRequestConverter {
 
         List<CheckPromoCodeCartShipmentRequest.Data> promoRequestData = new ArrayList<>();
         promoRequestData.add(new CheckPromoCodeCartShipmentRequest.Data.Builder()
-                .addressId(Integer.valueOf(recipientAddress.getId()))
+                .addressId(recipientAddress != null ? Integer.valueOf(recipientAddress.getId()) : 0)
                 .shopProducts(shopProducts)
                 .build());
 

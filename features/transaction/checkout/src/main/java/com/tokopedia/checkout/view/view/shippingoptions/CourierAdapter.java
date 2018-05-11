@@ -1,4 +1,4 @@
-package com.tokopedia.checkout.view.view.shipment.shippingoptions;
+package com.tokopedia.checkout.view.view.shippingoptions;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -7,10 +7,10 @@ import android.view.ViewGroup;
 
 import com.tokopedia.checkout.R;
 import com.tokopedia.checkout.domain.datamodel.shipmentrates.CourierItemData;
-import com.tokopedia.checkout.view.view.shipment.shippingoptions.viewholder.CourierHeaderViewHolder;
-import com.tokopedia.checkout.view.view.shipment.shippingoptions.viewholder.CourierViewHolder;
-import com.tokopedia.checkout.view.view.shipment.shippingoptions.viewmodel.ShipmentOptionData;
-import com.tokopedia.checkout.view.view.shipment.shippingoptions.viewmodel.ShipmentTypeData;
+import com.tokopedia.checkout.view.view.shippingoptions.viewholder.CourierHeaderViewHolder;
+import com.tokopedia.checkout.view.view.shippingoptions.viewholder.CourierViewHolder;
+import com.tokopedia.checkout.view.view.shippingoptions.viewmodel.ShipmentOptionData;
+import com.tokopedia.checkout.view.view.shippingoptions.viewmodel.ShipmentTypeData;
 
 import java.util.List;
 

@@ -502,7 +502,7 @@ public class CartFragment extends BaseCheckoutFragment implements CartListAdapte
 
     @Override
     public void renderNoRecipientAddressShipmentForm(CartShipmentAddressFormData shipmentAddressFormData) {
-        Intent intent = CartAddressChoiceActivity.createInstance(getActivity(),
+        Intent intent = CartAddressChoiceActivity.createInstance(getActivity(), null,
                 CartAddressChoiceActivity.TYPE_REQUEST_ADD_SHIPMENT_DEFAULT_ADDRESS);
         startActivityForResult(intent, CartAddressChoiceActivity.REQUEST_CODE);
     }

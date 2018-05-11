@@ -1,11 +1,11 @@
-package com.tokopedia.checkout.view.view.shipment.shippingoptions;
+package com.tokopedia.checkout.view.view.shippingoptions;
 
 import android.content.Context;
 
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
 import com.tokopedia.checkout.domain.datamodel.shipmentrates.ShipmentDetailData;
-import com.tokopedia.checkout.view.view.shipment.shippingoptions.viewmodel.ShipmentOptionData;
+import com.tokopedia.checkout.view.view.shippingoptions.viewmodel.ShipmentOptionData;
 
 import java.util.List;
 

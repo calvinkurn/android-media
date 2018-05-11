@@ -78,7 +78,7 @@ public class ShipmentDetailData implements Parcelable {
         return usePartialOrder;
     }
 
-    public void setUsePartialOrder(Boolean usePartialOrder) {
+    public void setUsePartialOrder(boolean usePartialOrder) {
         this.usePartialOrder = usePartialOrder;
     }
 
@@ -86,7 +86,7 @@ public class ShipmentDetailData implements Parcelable {
         return useDropshipper;
     }
 
-    public void setUseDropshipper(Boolean useDropshipper) {
+    public void setUseDropshipper(boolean useDropshipper) {
         this.useDropshipper = useDropshipper;
     }
 

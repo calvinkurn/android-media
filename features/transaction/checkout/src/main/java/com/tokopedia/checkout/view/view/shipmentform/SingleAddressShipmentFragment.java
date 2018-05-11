@@ -54,7 +54,7 @@ import com.tokopedia.checkout.view.holderitemdata.CartItemPromoHolderData;
 import com.tokopedia.checkout.view.holderitemdata.CartItemTickerErrorHolderData;
 import com.tokopedia.checkout.view.view.addressoptions.CartAddressChoiceActivity;
 import com.tokopedia.checkout.view.view.cartlist.CartItemDecoration;
-import com.tokopedia.checkout.view.view.shippingoptions.ShipmentDetailActivity;
+import com.tokopedia.checkout.view.view.shippingoptions_old.ShipmentDetailActivity;
 import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.router.transactionmodule.sharedata.CheckPromoCodeCartListResult;
 import com.tokopedia.core.router.transactionmodule.sharedata.CheckPromoCodeCartShipmentRequest;
@@ -69,8 +69,8 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import static com.tokopedia.checkout.view.view.shippingoptions.ShipmentDetailActivity.EXTRA_POSITION;
-import static com.tokopedia.checkout.view.view.shippingoptions.ShipmentDetailActivity.EXTRA_SHIPMENT_DETAIL_DATA;
+import static com.tokopedia.checkout.view.view.shippingoptions_old.ShipmentDetailActivity.EXTRA_POSITION;
+import static com.tokopedia.checkout.view.view.shippingoptions_old.ShipmentDetailActivity.EXTRA_SHIPMENT_DETAIL_DATA;
 import static com.tokopedia.transaction.common.constant.PickupPointIntentConstant.INTENT_DATA_STORE;
 
 /**
@@ -309,7 +309,7 @@ public class SingleAddressShipmentFragment extends BaseCheckoutFragment
 
     @Override
     public void onAddOrChangeAddress() {
-        Intent intent = CartAddressChoiceActivity.createInstance(getActivity(),
+        Intent intent = CartAddressChoiceActivity.createInstance(getActivity(), null,
                 CartAddressChoiceActivity.TYPE_REQUEST_SELECT_ADDRESS_FROM_SHORT_LIST);
 
         startActivityForResult(intent, CartAddressChoiceActivity.REQUEST_CODE);

@@ -1,4 +1,4 @@
-package com.tokopedia.checkout.view.view.shipment.shippingoptions.di;
+package com.tokopedia.checkout.view.view.shippingoptions.di;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;

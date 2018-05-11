@@ -237,7 +237,7 @@ public class AddShipmentAddressFragment extends BaseCheckoutFragment {
     }
 
     private void openAddressSelectionPage() {
-        Intent intent = CartAddressChoiceActivity.createInstance(getActivity(),
+        Intent intent = CartAddressChoiceActivity.createInstance(getActivity(), null,
                 CartAddressChoiceActivity.TYPE_REQUEST_SELECT_ADDRESS_FROM_COMPLETE_LIST);
         startActivityForResult(
                 intent, CartAddressChoiceActivity.REQUEST_CODE);
@@ -387,7 +387,6 @@ public class AddShipmentAddressFragment extends BaseCheckoutFragment {
         return new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //TODO ALTER DATA HERE, ALSO MAKE SOME VIEWS GLOBAL VARIABLE
                 if (addressLayout.getVisibility() == View.VISIBLE) {
                     addAddressErrorTextView.setVisibility(View.GONE);
                     if (formMode == ADD_MODE) {
@@ -396,7 +395,6 @@ public class AddShipmentAddressFragment extends BaseCheckoutFragment {
                         changeAddressData();
                     }
                 } else {
-                    //TODO Show error here
                     addAddressErrorTextView.setVisibility(View.VISIBLE);
                 }
             }

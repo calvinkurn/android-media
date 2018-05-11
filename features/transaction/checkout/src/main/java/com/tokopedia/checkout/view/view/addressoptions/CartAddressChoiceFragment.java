@@ -34,6 +34,7 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import static com.tokopedia.checkout.view.view.addressoptions.CartAddressChoiceActivity.EXTRA_CURRENT_ADDRESS;
 import static com.tokopedia.checkout.view.view.addressoptions.CartAddressChoiceActivity.EXTRA_DEFAULT_SELECTED_ADDRESS;
 import static com.tokopedia.checkout.view.view.addressoptions.CartAddressChoiceActivity.EXTRA_SELECTED_ADDRESS_DATA;
 import static com.tokopedia.checkout.view.view.addressoptions.CartAddressChoiceActivity.RESULT_CODE_ACTION_SELECT_ADDRESS;
@@ -62,8 +63,12 @@ public class CartAddressChoiceFragment extends BaseCheckoutFragment
     @Inject
     ShipmentAddressListAdapter mShipmentAddressListAdapter;
 
-    public static CartAddressChoiceFragment newInstance() {
-        return new CartAddressChoiceFragment();
+    public static CartAddressChoiceFragment newInstance(RecipientAddressModel currentAddress) {
+        Bundle bundle = new Bundle();
+        bundle.putParcelable(EXTRA_CURRENT_ADDRESS, currentAddress);
+        CartAddressChoiceFragment cartAddressChoiceFragment = new CartAddressChoiceFragment();
+        cartAddressChoiceFragment.setArguments(bundle);
+        return cartAddressChoiceFragment;
     }
 
     @Override
@@ -172,7 +177,8 @@ public class CartAddressChoiceFragment extends BaseCheckoutFragment
         swipeToRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                mCartAddressChoicePresenter.getAddressShortedList(getActivity());
+                mCartAddressChoicePresenter.getAddressShortedList(getActivity(),
+                        (RecipientAddressModel) getArguments().getParcelable(EXTRA_CURRENT_ADDRESS));
             }
         });
     }
@@ -207,7 +213,8 @@ public class CartAddressChoiceFragment extends BaseCheckoutFragment
 
     @Override
     protected void setActionVar() {
-        mCartAddressChoicePresenter.getAddressShortedList(getActivity());
+        mCartAddressChoicePresenter.getAddressShortedList(getActivity(),
+                (RecipientAddressModel) getArguments().getParcelable(EXTRA_CURRENT_ADDRESS));
     }
 
     @Override
@@ -236,7 +243,8 @@ public class CartAddressChoiceFragment extends BaseCheckoutFragment
                 new NetworkErrorHelper.RetryClickedListener() {
                     @Override
                     public void onRetryClicked() {
-                        mCartAddressChoicePresenter.getAddressShortedList(getActivity());
+                        mCartAddressChoicePresenter.getAddressShortedList(getActivity(),
+                                (RecipientAddressModel) getArguments().getParcelable(EXTRA_CURRENT_ADDRESS));
                     }
                 });
     }
@@ -250,7 +258,8 @@ public class CartAddressChoiceFragment extends BaseCheckoutFragment
     }
 
     private void onChooseOtherAddressClick() {
-        ShipmentAddressListFragment fragment = ShipmentAddressListFragment.newInstance();
+        ShipmentAddressListFragment fragment = ShipmentAddressListFragment.newInstance(
+                (RecipientAddressModel) getArguments().getParcelable(EXTRA_CURRENT_ADDRESS));
         getFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
         getFragmentManager().beginTransaction()
                 .add(R.id.parent_view, fragment, fragment.getClass().getSimpleName())
@@ -271,6 +280,8 @@ public class CartAddressChoiceFragment extends BaseCheckoutFragment
             intent.putExtra(EXTRA_SELECTED_ADDRESS_DATA, recipientAddress);
 
             getActivity().setResult(RESULT_CODE_ACTION_SELECT_ADDRESS, intent);
+            getActivity().finish();
+        } else {
             getActivity().finish();
         }
     }
@@ -293,10 +304,12 @@ public class CartAddressChoiceFragment extends BaseCheckoutFragment
         if (resultCode == Activity.RESULT_OK) {
             switch (requestCode) {
                 case ManageAddressConstant.REQUEST_CODE_PARAM_CREATE:
-                    mCartAddressChoicePresenter.getAddressShortedList(getActivity());
+                    mCartAddressChoicePresenter.getAddressShortedList(getActivity(),
+                            (RecipientAddressModel) getArguments().getParcelable(EXTRA_CURRENT_ADDRESS));
                     break;
                 case ManageAddressConstant.REQUEST_CODE_PARAM_EDIT:
-                    mCartAddressChoicePresenter.getAddressShortedList(getActivity());
+                    mCartAddressChoicePresenter.getAddressShortedList(getActivity(),
+                            (RecipientAddressModel) getArguments().getParcelable(EXTRA_CURRENT_ADDRESS));
                     break;
                 default:
                     break;

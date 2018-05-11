@@ -24,11 +24,18 @@ import org.apache.commons.lang3.text.WordUtils;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.inject.Inject;
+
 /**
  * @author Irfan Khoirul on 25/04/18.
  */
 
 public class RatesDataConverter {
+
+    @Inject
+    public RatesDataConverter() {
+
+    }
 
     public ShipmentDetailData getShipmentDetailData(ShipmentCartItem shipmentCartItem,
                                                     RecipientAddressModel recipientAddressModel) {

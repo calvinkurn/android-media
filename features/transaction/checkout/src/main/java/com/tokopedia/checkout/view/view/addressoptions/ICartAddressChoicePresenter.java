@@ -11,7 +11,7 @@ import com.tokopedia.checkout.domain.datamodel.addressoptions.RecipientAddressMo
 
 public interface ICartAddressChoicePresenter extends CustomerPresenter<ICartAddressChoiceView> {
 
-    void getAddressShortedList(Context context);
+    void getAddressShortedList(Context context, RecipientAddressModel currentAddress);
 
     void setSelectedRecipientAddress(RecipientAddressModel model);
 

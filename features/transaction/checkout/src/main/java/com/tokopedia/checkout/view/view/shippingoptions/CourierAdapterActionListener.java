@@ -1,4 +1,4 @@
-package com.tokopedia.checkout.view.view.shipment.shippingoptions;
+package com.tokopedia.checkout.view.view.shippingoptions;
 
 import com.tokopedia.checkout.domain.datamodel.shipmentrates.CourierItemData;
 

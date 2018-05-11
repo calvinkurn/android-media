@@ -1,4 +1,4 @@
-package com.tokopedia.checkout.view.view.shipment.shippingoptions;
+package com.tokopedia.checkout.view.view.shippingoptions;
 
 import android.text.TextUtils;
 
@@ -9,8 +9,8 @@ import com.tokopedia.checkout.domain.datamodel.shipmentrates.ShipmentCartData;
 import com.tokopedia.checkout.domain.datamodel.shipmentrates.ShipmentDetailData;
 import com.tokopedia.checkout.domain.datamodel.shipmentrates.ShipmentItemData;
 import com.tokopedia.checkout.domain.usecase.GetRatesUseCase;
-import com.tokopedia.checkout.view.view.shipment.shippingoptions.viewmodel.ShipmentOptionData;
-import com.tokopedia.checkout.view.view.shipment.shippingoptions.viewmodel.ShipmentTypeData;
+import com.tokopedia.checkout.view.view.shippingoptions.viewmodel.ShipmentOptionData;
+import com.tokopedia.checkout.view.view.shippingoptions.viewmodel.ShipmentTypeData;
 import com.tokopedia.core.network.exception.model.UnProcessableHttpException;
 
 import java.net.ConnectException;

@@ -307,7 +307,8 @@ public abstract class ShipmentItemViewHolder extends RecyclerView.ViewHolder {
 
     private void renderDropshipper(final ShipmentCartItem shipmentCartItem) {
         if (shipmentCartItem.getSelectedShipmentDetailData() != null &&
-                shipmentCartItem.getSelectedShipmentDetailData().getSelectedCourier() != null) {
+                shipmentCartItem.getSelectedShipmentDetailData().getSelectedCourier() != null &&
+                shipmentCartItem.getSelectedShipmentDetailData().getSelectedCourier().isAllowDropshiper()) {
 
             cbDropshipper.setChecked(shipmentCartItem.getSelectedShipmentDetailData().getUseDropshipper());
             if (shipmentCartItem.getSelectedShipmentDetailData().getUseDropshipper()) {
@@ -331,6 +332,7 @@ public abstract class ShipmentItemViewHolder extends RecyclerView.ViewHolder {
                 public void onCheckedChanged(CompoundButton compoundButton, boolean checked) {
                     shipmentCartItem.getSelectedShipmentDetailData().setUseDropshipper(checked);
                     mActionListener.onViewVisibilityStateChanged(getAdapterPosition());
+                    mActionListener.onNeedUpdateRequestData();
                 }
             });
 
@@ -349,6 +351,7 @@ public abstract class ShipmentItemViewHolder extends RecyclerView.ViewHolder {
                     } else {
                         textInputLayoutShipperName.setErrorEnabled(false);
                     }
+                    mActionListener.onNeedUpdateRequestData();
                 }
 
                 @Override
@@ -372,6 +375,7 @@ public abstract class ShipmentItemViewHolder extends RecyclerView.ViewHolder {
                     } else {
                         textInputLayoutShipperPhone.setErrorEnabled(false);
                     }
+                    mActionListener.onNeedUpdateRequestData();
                 }
 
                 @Override
@@ -380,6 +384,11 @@ public abstract class ShipmentItemViewHolder extends RecyclerView.ViewHolder {
                 }
             });
 
+            llDropshipper.setVisibility(View.VISIBLE);
+        } else {
+            etShipperName.setText("");
+            etShipperPhone.setText("");
+            llDropshipper.setVisibility(View.GONE);
         }
     }
 
@@ -392,6 +401,7 @@ public abstract class ShipmentItemViewHolder extends RecyclerView.ViewHolder {
                 public void onCheckedChanged(CompoundButton compoundButton, boolean checked) {
                     shipmentCartItem.getSelectedShipmentDetailData().setUseInsurance(checked);
                     mActionListener.onInsuranceChecked(getAdapterPosition());
+                    mActionListener.onNeedUpdateRequestData();
                 }
             });
 

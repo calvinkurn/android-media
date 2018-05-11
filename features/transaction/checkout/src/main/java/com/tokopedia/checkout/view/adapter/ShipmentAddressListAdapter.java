@@ -102,6 +102,8 @@ public class ShipmentAddressListAdapter
                     }
 
                     notifyDataSetChanged();
+                } else {
+                    mActionListener.onAddressContainerClicked(mAddressModelList.get(position));
                 }
             }
         };

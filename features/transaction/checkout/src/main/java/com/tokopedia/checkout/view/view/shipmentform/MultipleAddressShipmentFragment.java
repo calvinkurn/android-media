@@ -43,7 +43,7 @@ import com.tokopedia.checkout.view.di.module.MultipleAddressShipmentModule;
 import com.tokopedia.checkout.view.holderitemdata.CartItemPromoHolderData;
 import com.tokopedia.checkout.view.holderitemdata.CartItemTickerErrorHolderData;
 import com.tokopedia.checkout.view.view.cartlist.CartItemDecoration;
-import com.tokopedia.checkout.view.view.shippingoptions.ShipmentDetailActivity;
+import com.tokopedia.checkout.view.view.shippingoptions_old.ShipmentDetailActivity;
 import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.router.transactionmodule.sharedata.CheckPromoCodeCartListResult;
 import com.tokopedia.core.router.transactionmodule.sharedata.CheckPromoCodeCartShipmentResult;
@@ -55,8 +55,8 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import static com.tokopedia.checkout.view.view.shippingoptions.ShipmentDetailActivity.EXTRA_POSITION;
-import static com.tokopedia.checkout.view.view.shippingoptions.ShipmentDetailActivity.EXTRA_SHIPMENT_DETAIL_DATA;
+import static com.tokopedia.checkout.view.view.shippingoptions_old.ShipmentDetailActivity.EXTRA_POSITION;
+import static com.tokopedia.checkout.view.view.shippingoptions_old.ShipmentDetailActivity.EXTRA_SHIPMENT_DETAIL_DATA;
 import static com.tokopedia.transaction.common.constant.PickupPointIntentConstant.INTENT_DATA_POSITION;
 import static com.tokopedia.transaction.common.constant.PickupPointIntentConstant.INTENT_DATA_STORE;
 

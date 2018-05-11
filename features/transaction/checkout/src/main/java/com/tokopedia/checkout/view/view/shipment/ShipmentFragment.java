@@ -47,7 +47,7 @@ import com.tokopedia.checkout.view.view.shipment.converter.ShipmentDataConverter
 import com.tokopedia.checkout.view.view.shipment.di.DaggerShipmentComponent;
 import com.tokopedia.checkout.view.view.shipment.di.ShipmentComponent;
 import com.tokopedia.checkout.view.view.shipment.di.ShipmentModule;
-import com.tokopedia.checkout.view.view.shipment.shippingoptions.CourierBottomsheet;
+import com.tokopedia.checkout.view.view.shippingoptions.CourierBottomsheet;
 import com.tokopedia.checkout.view.view.shipment.viewmodel.ShipmentCartItem;
 import com.tokopedia.checkout.view.view.shipment.viewmodel.ShipmentInsuranceTncItem;
 import com.tokopedia.checkout.view.view.shipmentform.CartShipmentActivity;
@@ -510,11 +510,12 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
             case CartAddressChoiceActivity.RESULT_CODE_ACTION_SELECT_ADDRESS:
                 RecipientAddressModel selectedAddress = data.getParcelableExtra(
                         CartAddressChoiceActivity.EXTRA_SELECTED_ADDRESS_DATA);
-
+                shipmentPresenter.setRecipientAddressModel(selectedAddress);
                 shipmentAdapter.updateSelectedAddress(selectedAddress);
+                courierBottomsheet = null;
+                onCartDataDisableToCheckout();
                 break;
             case CartAddressChoiceActivity.RESULT_CODE_ACTION_TO_MULTIPLE_ADDRESS_FORM:
-                // todo : reload fragment with multiple address
                 Intent intent = new Intent();
                 intent.putExtra(CartShipmentActivity.EXTRA_SELECTED_ADDRESS_RECIPIENT_DATA,
                         shipmentAdapter.getAddressShipmentData());
@@ -530,6 +531,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     @Override
     public void onAddOrChangeAddress() {
         Intent intent = CartAddressChoiceActivity.createInstance(getActivity(),
+                shipmentPresenter.getRecipientAddressModel(),
                 CartAddressChoiceActivity.TYPE_REQUEST_SELECT_ADDRESS_FROM_SHORT_LIST);
 
         startActivityForResult(intent, CartAddressChoiceActivity.REQUEST_CODE);
@@ -542,8 +544,9 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
 
     @Override
     public void onChooseShipment(int position, ShipmentCartItem shipmentCartItem, RecipientAddressModel recipientAddressModel) {
-        ShipmentDetailData shipmentDetailData = null;
-        if (shipmentCartItem.getSelectedShipmentDetailData() != null) {
+        ShipmentDetailData shipmentDetailData;
+        if (shipmentCartItem.getSelectedShipmentDetailData() != null &&
+                shipmentCartItem.getSelectedShipmentDetailData().getSelectedCourier() != null) {
             shipmentDetailData = shipmentCartItem.getSelectedShipmentDetailData();
         } else {
             shipmentDetailData = ratesDataConverter.getShipmentDetailData(shipmentCartItem,
@@ -727,7 +730,6 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
 
     @Override
     public void onInsuranceChecked(final int position) {
-        shipmentAdapter.updateShipmentCostModel();
         if (rvShipment.isComputingLayout()) {
             rvShipment.post(new Runnable() {
                 @Override
@@ -740,6 +742,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
             shipmentAdapter.updateItemAndTotalCost(position);
             shipmentAdapter.updateInsuranceTncVisibility();
         }
+        shipmentAdapter.updateShipmentCostModel();
     }
 
     @Override
@@ -759,5 +762,10 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     @Override
     public void onInsuranceTncClicked() {
         startActivity(((ICheckoutModuleRouter) getActivity().getApplication()).checkoutModuleRouterGetInsuranceTncActivityIntent());
+    }
+
+    @Override
+    public void onNeedUpdateRequestData() {
+        shipmentAdapter.checkHasSelectAllCourier();
     }
 }

@@ -1,7 +1,7 @@
-package com.tokopedia.checkout.view.view.shipment.shippingoptions.di;
+package com.tokopedia.checkout.view.view.shippingoptions.di;
 
 import com.tokopedia.checkout.view.di.component.CartComponent;
-import com.tokopedia.checkout.view.view.shipment.shippingoptions.CourierBottomsheet;
+import com.tokopedia.checkout.view.view.shippingoptions.CourierBottomsheet;
 
 import dagger.Component;
 

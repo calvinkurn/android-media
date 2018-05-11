@@ -44,4 +44,6 @@ public interface ShipmentAdapterActionListener extends CartAdapterActionListener
 
     void onInsuranceTncClicked();
 
+    void onNeedUpdateRequestData();
+
 }

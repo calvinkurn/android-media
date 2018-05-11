@@ -1,9 +1,9 @@
-package com.tokopedia.checkout.view.view.shipment.shippingoptions.di;
+package com.tokopedia.checkout.view.view.shippingoptions.di;
 
 import com.tokopedia.checkout.domain.usecase.GetRatesUseCase;
-import com.tokopedia.checkout.view.view.shipment.shippingoptions.CourierAdapter;
-import com.tokopedia.checkout.view.view.shipment.shippingoptions.CourierContract;
-import com.tokopedia.checkout.view.view.shipment.shippingoptions.CourierPresenter;
+import com.tokopedia.checkout.view.view.shippingoptions.CourierAdapter;
+import com.tokopedia.checkout.view.view.shippingoptions.CourierContract;
+import com.tokopedia.checkout.view.view.shippingoptions.CourierPresenter;
 
 import dagger.Module;
 import dagger.Provides;

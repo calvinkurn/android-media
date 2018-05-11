@@ -252,24 +252,35 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     }
 
     public void updateSelectedAddress(RecipientAddressModel recipientAddress) {
+        int addressIndex = 0;
         for (ShipmentData item : shipmentDataList) {
             if (item instanceof RecipientAddressModel) {
                 if (!((RecipientAddressModel) item).getId().equalsIgnoreCase(recipientAddress.getId())) {
-                    int index = shipmentDataList.indexOf(item);
-                    shipmentDataList.set(index, recipientAddress);
-                    this.recipientAddressModel = recipientAddress;
-                    resetCourier();
-                    notifyDataSetChanged();
-                    shipmentAdapterActionListener.resetTotalPrice();
+                    addressIndex = shipmentDataList.indexOf(item);
                 }
             }
+        }
+        if (addressIndex != 0) {
+            shipmentDataList.set(addressIndex, recipientAddress);
+            this.recipientAddressModel = recipientAddress;
+            resetCourier();
+            notifyDataSetChanged();
+            shipmentAdapterActionListener.resetTotalPrice();
         }
     }
 
     private void resetCourier() {
         for (ShipmentData item : shipmentDataList) {
             if (item instanceof ShipmentCartItem) {
-                ((ShipmentCartItem) item).setSelectedShipmentDetailData(null);
+                if (((ShipmentCartItem) item).getSelectedShipmentDetailData() != null) {
+                    ((ShipmentCartItem) item).getSelectedShipmentDetailData().setSelectedShipment(null);
+                    ((ShipmentCartItem) item).getSelectedShipmentDetailData().setSelectedCourier(null);
+                    ((ShipmentCartItem) item).getSelectedShipmentDetailData().setUseDropshipper(false);
+                    ((ShipmentCartItem) item).getSelectedShipmentDetailData().setDropshipperPhone(null);
+                    ((ShipmentCartItem) item).getSelectedShipmentDetailData().setDropshipperName(null);
+                    ((ShipmentCartItem) item).getSelectedShipmentDetailData().setUseInsurance(null);
+                    ((ShipmentCartItem) item).getSelectedShipmentDetailData().setUsePartialOrder(false);
+                }
             } else if (item instanceof ShipmentCostModel) {
                 ((ShipmentCostModel) item).setAdditionalFee(0);
                 ((ShipmentCostModel) item).setInsuranceFee(0);
@@ -278,6 +289,7 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 ((ShipmentCostModel) item).setTotalItemPrice(0);
             }
         }
+        updateInsuranceTncVisibility();
     }
 
     public RecipientAddressModel getAddressShipmentData() {
@@ -340,7 +352,7 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         checkHasSelectAllCourier();
     }
 
-    private void checkHasSelectAllCourier() {
+    public void checkHasSelectAllCourier() {
         int cartItemCounter = 0;
         for (ShipmentCartItem shipmentCartItem : shipmentCartItemList) {
             if (shipmentCartItem.getSelectedShipmentDetailData() != null &&
@@ -489,7 +501,20 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     }
 
     public RequestData getRequestPromoData() {
-        return shipmentDataRequestConverter.generateRequestData(shipmentCartItemList, recipientAddressModel);
+        RecipientAddressModel checkoutAddress = null;
+        if (this.recipientAddressModel != null) {
+            checkoutAddress = this.recipientAddressModel;
+        } else {
+            for (ShipmentCartItem shipmentCartItem : shipmentCartItemList) {
+                if (shipmentCartItem instanceof ShipmentMultipleAddressCartItem) {
+                    checkoutAddress = new RecipientAddressModel();
+                    checkoutAddress.setId(String.valueOf(((ShipmentMultipleAddressCartItem) shipmentCartItem)
+                            .getMultipleAddressItemData().getAddressId()));
+                    break;
+                }
+            }
+        }
+        return shipmentDataRequestConverter.generateRequestData(shipmentCartItemList, checkoutAddress);
     }
 
     public void clearData() {

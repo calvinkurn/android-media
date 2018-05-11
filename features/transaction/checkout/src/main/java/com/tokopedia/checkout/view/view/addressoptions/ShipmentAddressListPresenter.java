@@ -59,8 +59,8 @@ public class ShipmentAddressListPresenter
      * @param context
      * @param order
      */
-    public void resetAddressList(Context context, int order) {
-        getAddressList(context, order, DEFAULT_KEYWORD);
+    public void resetAddressList(Context context, int order, RecipientAddressModel currentAddress) {
+        getAddressList(context, order, DEFAULT_KEYWORD, currentAddress);
     }
 
     /**
@@ -68,7 +68,7 @@ public class ShipmentAddressListPresenter
      * @param order
      * @param query
      */
-    public void getAddressList(Context context, int order, String query) {
+    public void getAddressList(Context context, int order, String query, final RecipientAddressModel currentAddress) {
         getMvpView().showLoading();
         mGetPeopleAddressUseCase.execute(mGetPeopleAddressUseCase
                         .getRequestParams(context, order, query, mPagingHandler.getPage()),
@@ -110,6 +110,14 @@ public class ShipmentAddressListPresenter
                             if (shipmentAddressModels.isEmpty()) {
                                 getMvpView().showListEmpty();
                             } else {
+                                if (currentAddress != null) {
+                                    for (RecipientAddressModel recipientAddressModel : shipmentAddressModels) {
+                                        if (recipientAddressModel.getId().equalsIgnoreCase(currentAddress.getId())) {
+                                            recipientAddressModel.setSelected(true);
+                                            break;
+                                        }
+                                    }
+                                }
                                 getMvpView().showList(shipmentAddressModels);
                             }
                         }

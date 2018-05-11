@@ -6,6 +6,7 @@ import com.google.gson.Gson;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.abstraction.common.utils.TKPDMapParam;
 import com.tokopedia.abstraction.common.utils.network.AuthUtil;
+import com.tokopedia.checkout.R;
 import com.tokopedia.transactiondata.entity.request.CheckoutRequest;
 import com.tokopedia.transactiondata.entity.request.DataCheckoutRequest;
 import com.tokopedia.checkout.domain.datamodel.addressoptions.RecipientAddressModel;
@@ -181,6 +182,8 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                             .unsubscribeOn(Schedulers.newThread())
                             .subscribe(getSubscriberCheckoutCart())
             );
+        } else {
+            getView().showToastError(getView().getActivity().getString(R.string.default_request_error_unknown));
         }
     }
 

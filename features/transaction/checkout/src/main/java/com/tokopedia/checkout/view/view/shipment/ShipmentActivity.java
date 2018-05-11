@@ -8,7 +8,6 @@ import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 
-import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.common.di.component.HasComponent;
 import com.tokopedia.checkout.R;
 import com.tokopedia.checkout.domain.datamodel.cartlist.CartPromoSuggestion;
@@ -17,8 +16,6 @@ import com.tokopedia.checkout.domain.datamodel.voucher.PromoCodeAppliedData;
 import com.tokopedia.checkout.view.base.BaseCheckoutActivity;
 import com.tokopedia.checkout.view.di.component.CartComponent;
 import com.tokopedia.checkout.view.di.component.CartComponentInjector;
-import com.tokopedia.checkout.view.di.component.DaggerCartComponent;
-import com.tokopedia.checkout.view.di.module.DataModule;
 import com.tokopedia.checkout.view.view.shipmentform.MultipleAddressShipmentFragment;
 import com.tokopedia.checkout.view.view.shipmentform.ResetShipmentFormDialog;
 import com.tokopedia.checkout.view.view.shipmentform.SingleAddressShipmentFragment;

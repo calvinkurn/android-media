@@ -1,4 +1,4 @@
-package com.tokopedia.checkout.view.view.shipment.shippingoptions;
+package com.tokopedia.checkout.view.view.shippingoptions;
 
 import android.app.Activity;
 import android.content.Context;
@@ -24,9 +24,9 @@ import com.tokopedia.checkout.domain.datamodel.shipmentrates.CourierItemData;
 import com.tokopedia.checkout.domain.datamodel.shipmentrates.ShipmentDetailData;
 import com.tokopedia.checkout.view.di.component.CartComponent;
 import com.tokopedia.checkout.view.di.component.CartComponentInjector;
-import com.tokopedia.checkout.view.view.shipment.shippingoptions.di.CourierComponent;
-import com.tokopedia.checkout.view.view.shipment.shippingoptions.di.CourierModule;
-import com.tokopedia.checkout.view.view.shipment.shippingoptions.di.DaggerCourierComponent;
+import com.tokopedia.checkout.view.view.shippingoptions.di.CourierComponent;
+import com.tokopedia.checkout.view.view.shippingoptions.di.CourierModule;
+import com.tokopedia.checkout.view.view.shippingoptions.di.DaggerCourierComponent;
 
 import javax.inject.Inject;
 

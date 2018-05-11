@@ -1,4 +1,4 @@
-package com.tokopedia.checkout.view.view.shippingoptions;
+package com.tokopedia.checkout.view.view.shippingoptions_old;
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.checkout.domain.datamodel.shipmentrates.ShipmentDetailData;
