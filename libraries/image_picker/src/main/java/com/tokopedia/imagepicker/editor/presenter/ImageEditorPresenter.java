@@ -23,6 +23,7 @@ import rx.Subscriber;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Func1;
+import rx.functions.Func2;
 import rx.functions.Func3;
 import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
@@ -91,21 +92,14 @@ public class ImageEditorPresenter extends BaseDaggerPresenter<ImageEditorPresent
     }
 
     public void cropBitmapToExpectedRatio(List<String> oriImagePaths,
-                                          List<String> step0ImagePaths,
                                           final List<String> localImagePaths, final int ratioX, final int ratioY) {
         Subscription subscription =
                 Observable.zip(
                         Observable.from(oriImagePaths),
-                        Observable.from(step0ImagePaths),
                         Observable.from(localImagePaths),
-                        new Func3<String, String, String, String>() {
+                        new Func2<String, String, String>() {
                             @Override
-                            public String call(String oriImagePath, String step0, String imagePath) {
-                                // if image paths is not step0, it has been processed by edit, so just return it
-                                if (!imagePath.equals(step0)) {
-                                    return imagePath;
-                                }
-                                //below is the step0 path
+                            public String call(String oriImagePath, String imagePath) {
                                 System.gc();
                                 // if it is step0, need to check the dimension
                                 // if the dimension is not expected dimension, crop it

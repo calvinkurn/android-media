@@ -652,16 +652,14 @@ public class ImageEditorActivity extends BaseSimpleActivity implements ImageEdit
     private void onDoneButtonClicked() {
         blockingView.setVisibility(View.VISIBLE);
 
-        ArrayList<String> step0Paths = new ArrayList<>();
         ArrayList<String> resultList = new ArrayList<>();
         for (int i = 0, sizei = edittedImagePaths.size(); i < sizei; i++) {
-            step0Paths.add(edittedImagePaths.get(i).get(0));
             resultList.add(edittedImagePaths.get(i).get(currentEditStepIndexList.get(i)));
         }
 
         showDoneLoading();
         initImagePickerPresenter();
-        imageEditorPresenter.cropBitmapToExpectedRatio(extraImageUrls, step0Paths, resultList, ratioX, ratioY);
+        imageEditorPresenter.cropBitmapToExpectedRatio(extraImageUrls, resultList, ratioX, ratioY);
     }
 
     @Override
