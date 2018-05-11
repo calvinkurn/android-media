@@ -18,7 +18,6 @@ import com.google.android.gms.common.GoogleApiAvailability;
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.R;
-import com.tokopedia.core.R2;
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.database.model.City;
 import com.tokopedia.core.database.model.District;
@@ -39,55 +38,35 @@ import com.tokopedia.core.util.MethodChecker;
 import java.util.ArrayList;
 import java.util.List;
 
-import butterknife.BindView;
-
 /**
  * Created by nisie on 9/6/16.
  */
 public class AddAddressFragment extends BasePresenterFragment<AddAddressPresenter>
         implements AddAddressFragmentView, ManageAddressConstant {
+
+    private final int DISTRICT_RECOMMENDATION_REQUEST_CODE = 130715;
+
     private final String ARG_STATE_PROVINCE = "provincesData";
     private final String ARG_STATE_CITY = "citiesData";
     private final String ARG_STATE_DISTRICT = "districtsData";
 
-    @BindView(R2.id.receiver_name_layout)
-    TextInputLayout receiverNameLayout;
-
-    @BindView(R2.id.receiver_name)
-    EditText receiverNameEditText;
-
-    @BindView(R2.id.address_type_layout)
-    TextInputLayout addressTypeLayout;
-
-    @BindView(R2.id.address_type)
-    EditText addressTypeEditText;
-
-    @BindView(R2.id.address_layout)
-    TextInputLayout addressLayout;
-
-    @BindView(R2.id.address)
-    EditText addressEditText;
-
-    @BindView(R2.id.receiver_phone_layout)
-    TextInputLayout receiverPhoneLayout;
-
-    @BindView(R2.id.receiver_phone)
-    EditText receiverPhoneEditText;
-
-    @BindView(R2.id.layout_value_location)
-    View chooseLocation;
-
-    @BindView(R2.id.value_location)
-    EditText locationEditText;
-
-    @BindView(R2.id.password_layout)
-    TextInputLayout passwordLayout;
-
-    @BindView(R2.id.password)
-    EditText password;
-
-    @BindView(R2.id.save_button)
-    TextView saveButton;
+    private TextInputLayout receiverNameLayout;
+    private EditText receiverNameEditText;
+    private TextInputLayout addressTypeLayout;
+    private EditText addressTypeEditText;
+    private TextInputLayout addressLayout;
+    private EditText addressEditText;
+    private TextInputLayout districtLayout;
+    private EditText districtEditText;
+    private TextInputLayout postalCodeLayout;
+    private EditText postalCodeEditText;
+    private TextInputLayout receiverPhoneLayout;
+    private EditText receiverPhoneEditText;
+    private View chooseLocation;
+    private EditText locationEditText;
+    private TextInputLayout passwordLayout;
+    private EditText password;
+    private TextView saveButton;
 
     ProvinceAdapter provinceAdapter;
     RegencyAdapter regencyAdapter;
@@ -124,7 +103,6 @@ public class AddAddressFragment extends BasePresenterFragment<AddAddressPresente
         addressEditText.setText(address.getAddressStreet());
         receiverNameEditText.setText(MethodChecker.fromHtml(address.getReceiverName()));
         receiverPhoneEditText.setText(address.getReceiverPhone());
-//        postcodeEditText.setText(address.getPostalCode());
         if (address.getLatitude() != null &&
                 address.getLongitude() != null &&
                 !address.getLatitude().equals("") &&
@@ -195,7 +173,6 @@ public class AddAddressFragment extends BasePresenterFragment<AddAddressPresente
         receiverNameEditText.addTextChangedListener(watcher(receiverNameLayout));
         addressEditText.addTextChangedListener(watcher(addressLayout));
         addressTypeEditText.addTextChangedListener(watcher(addressTypeLayout));
-//        postcodeEditText.addTextChangedListener(watcher(postCodeLayout));
         receiverPhoneEditText.addTextChangedListener(watcher(receiverPhoneLayout));
         password.addTextChangedListener(watcher(passwordLayout));
     }
@@ -223,6 +200,24 @@ public class AddAddressFragment extends BasePresenterFragment<AddAddressPresente
 
     @Override
     protected void initView(View view) {
+        receiverNameLayout = view.findViewById(R.id.receiver_name_layout);
+        receiverNameEditText = view.findViewById(R.id.receiver_name);
+        addressTypeLayout = view.findViewById(R.id.address_type_layout);
+        addressTypeEditText = view.findViewById(R.id.address_type);
+        addressLayout = view.findViewById(R.id.address_layout);
+        addressEditText = view.findViewById(R.id.address);
+        districtLayout = view.findViewById(R.id.district_layout);
+        districtEditText = view.findViewById(R.id.district);
+        postalCodeLayout = view.findViewById(R.id.postal_code_layout);
+        postalCodeEditText = view.findViewById(R.id.postal_code);
+        receiverPhoneLayout = view.findViewById(R.id.receiver_phone_layout);
+        receiverPhoneEditText = view.findViewById(R.id.receiver_phone);
+        chooseLocation = view.findViewById(R.id.layout_value_location);
+        locationEditText = view.findViewById(R.id.value_location);
+        passwordLayout = view.findViewById(R.id.password_layout);
+        password = view.findViewById(R.id.password);
+        saveButton = view.findViewById(R.id.save_button);
+
         getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
         mProgressDialog = new TkpdProgressDialog(getActivity(), TkpdProgressDialog.NORMAL_PROGRESS);
         provinceAdapter = ProvinceAdapter.createInstance(getActivity());
@@ -237,6 +232,17 @@ public class AddAddressFragment extends BasePresenterFragment<AddAddressPresente
 
     @Override
     protected void setViewListener() {
+        districtLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+//                Intent intent = DistrictRecommendationActivity.createInstance(getActivity(),
+//                        editShippingPresenter.getToken());
+//                IDigitalModuleRouter router = ((IDigitalModuleRouter) getActivity().getApplication());
+
+//                Intent intent = ((DistrictRecomm) context.getApplicationContext();)
+//                startActivityForResult(intent, DISTRICT_RECOMMENDATION_REQUEST_CODE);
+            }
+        });
         chooseLocation.setOnClickListener(onChooseLocation());
         locationEditText.setOnClickListener(onChooseLocation());
         saveButton.setOnClickListener(new View.OnClickListener() {
@@ -345,21 +351,6 @@ public class AddAddressFragment extends BasePresenterFragment<AddAddressPresente
         return addressEditText;
     }
 
-//    @Override
-//    public Spinner getSpinnerProvince() {
-//        return spinnerProvince;
-//    }
-//
-//    @Override
-//    public Spinner getSpinnerRegency() {
-//        return spinnerRegency;
-//    }
-//
-//    @Override
-//    public Spinner getSpinnerSubDistrict() {
-//        return spinnerSubDistrict;
-//    }
-
     @Override
     public void setError(TextInputLayout wrapper, String errorMessage) {
         wrapper.setError(errorMessage);
@@ -382,30 +373,10 @@ public class AddAddressFragment extends BasePresenterFragment<AddAddressPresente
         return addressTypeLayout;
     }
 
-//    @Override
-//    public TextInputLayout getPostCodeLayout() {
-//        return postCodeLayout;
-//    }
-
     @Override
     public TextInputLayout getReceiverPhoneLayout() {
         return receiverPhoneLayout;
     }
-
-//    @Override
-//    public TextView getSpinnerProvinceError() {
-//        return provinceError;
-//    }
-//
-//    @Override
-//    public TextView getSpinnerRegencyError() {
-//        return regencyError;
-//    }
-//
-//    @Override
-//    public TextView getSpinnerSubDistrictError() {
-//        return subDistrictError;
-//    }
 
     @Override
     public boolean isEdit() {
@@ -459,10 +430,6 @@ public class AddAddressFragment extends BasePresenterFragment<AddAddressPresente
         addressEditText.setEnabled(isEnabled);
         receiverNameEditText.setEnabled(isEnabled);
         addressTypeEditText.setEnabled(isEnabled);
-//        spinnerProvince.setEnabled(isEnabled);
-//        spinnerRegency.setEnabled(isEnabled);
-//        spinnerSubDistrict.setEnabled(isEnabled);
-//        postcodeEditText.setEnabled(isEnabled);
         receiverPhoneEditText.setEnabled(isEnabled);
         if (isEnabled) {
             chooseLocation.setOnClickListener(onChooseLocation());
