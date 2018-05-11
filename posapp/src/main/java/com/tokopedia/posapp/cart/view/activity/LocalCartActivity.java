@@ -5,9 +5,14 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.TaskStackBuilder;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
+import com.facebook.react.bridge.Arguments;
+import com.facebook.react.bridge.ReactContext;
+import com.facebook.react.bridge.WritableMap;
+import com.facebook.react.modules.core.DeviceEventManagerModule;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.posapp.applink.PosAppLink;
 import com.tokopedia.posapp.product.productlist.view.activity.ProductListActivity;
@@ -20,6 +25,9 @@ import com.tokopedia.tkpdreactnative.react.app.ReactNativeActivity;
  */
 
 public class LocalCartActivity extends ReactNativeActivity {
+
+    public static final String BACK_FROM_CART = "backFromCart";
+
     @DeepLink(PosAppLink.CART)
     public static TaskStackBuilder newInstance(Context context, Bundle extras) {
         Uri uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon().build();
@@ -57,6 +65,22 @@ public class LocalCartActivity extends ReactNativeActivity {
     @Override
     public void onBackPressed() {
         super.onBackPressed();
+        backFromCart();
         finish();
+    }
+
+    private void backFromCart() {
+        WritableMap params = Arguments.createMap();
+        params.putBoolean(BACK_FROM_CART, true);
+        sendEmitter(reactInstanceManager.getCurrentReactContext(), BACK_FROM_CART, params);
+    }
+
+    private void sendEmitter(ReactContext reactContext,
+                             String eventName,
+                             @Nullable WritableMap params) {
+        if(reactContext != null) {
+            reactContext.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
+                    .emit(eventName, params);
+        }
     }
 }
