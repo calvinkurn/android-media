@@ -13,6 +13,7 @@ import android.support.v7.app.AlertDialog;
 import android.view.View;
 import android.webkit.URLUtil;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
@@ -59,6 +60,7 @@ public class ImageEditorActivity extends BaseSimpleActivity implements ImageEdit
     public static final String EDIT_RESULT_PATHS = "result_paths";
 
     public static final int MAX_HISTORY_PER_IMAGE = 5;
+    public static final int BACKPRESS_TIME_LIMIT = 2000; // ms
 
     private ArrayList<String> extraImageUrls;
     private int minResolution;
@@ -103,6 +105,7 @@ public class ImageEditorActivity extends BaseSimpleActivity implements ImageEdit
     private TwoLineSeekBar rotateSeekbar;
     private TextView tvBrightness;
     private TextView tvContrast;
+    private long prevTimeClicked;
 
     public static Intent getIntent(Context context, ArrayList<String> imageUrls, int minResolution,
                                    @ImageEditActionTypeDef int[] imageEditActionType,
@@ -798,21 +801,14 @@ public class ImageEditorActivity extends BaseSimpleActivity implements ImageEdit
         if (isInEditMode) { //backpressed will cancel the edit mode
             onCancelEditClicked();
         } else {
-            AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this, R.style.AppCompatAlertDialogStyle)
-                    .setTitle(getString(R.string.image_edit_backpressed_title))
-                    .setPositiveButton(getString(R.string.exit), new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialogInterface, int i) {
-                            ImageUtils.deleteCacheFolder();
-                            ImageEditorActivity.super.onBackPressed();
-                        }
-                    }).setNegativeButton(getString(R.string.cancel), new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface arg0, int arg1) {
-                            // no op, just dismiss
-                        }
-                    });
-            AlertDialog dialog = alertDialogBuilder.create();
-            dialog.show();
+            long currentTime = System.currentTimeMillis();
+            if (currentTime - prevTimeClicked < BACKPRESS_TIME_LIMIT) {
+                ImageUtils.deleteCacheFolder();
+                ImageEditorActivity.super.onBackPressed();
+            } else {
+                Toast.makeText(this, getString(R.string.pressed_once_more_to_exit), Toast.LENGTH_SHORT).show();
+                prevTimeClicked = System.currentTimeMillis();
+            }
         }
     }
 

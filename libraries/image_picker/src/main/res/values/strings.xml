@@ -30,4 +30,8 @@
     <string name="ratio_1_1">1:1</string>
     <string name="reset">Reset</string>
     <string name="default_contrast">1</string>
+    <string name="pressed_once_more_to_exit">Tekan sekali lagi untuk keluar</string>
+    <string name="image_not_found">Gambar tidak ditemukan.</string>
+    <string name="min_value_rotate">-45°</string>
+    <string name="max_value_rotate">45°</string>
 </resources>

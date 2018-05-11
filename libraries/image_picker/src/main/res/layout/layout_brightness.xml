@@ -14,14 +14,13 @@
         android:id="@+id/tv_brightness"
         style="@style/TextView.Title"
         android:layout_width="wrap_content"
-        android:layout_height="@dimen/dp_24"
+        android:layout_height="@dimen/dp_20"
         android:layout_gravity="center_horizontal"
         android:text="@string/default_brightness_value" />
 
-    <FrameLayout
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="horizontal"
         android:clipChildren="false"
         android:clipToPadding="false">
 
@@ -29,7 +28,6 @@
             android:id="@+id/seekBar_brightness"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
             android:layout_marginLeft="@dimen/dp_48"
             android:layout_marginRight="@dimen/dp_48"
             app:high_color="@color/tkpd_main_green"
@@ -44,6 +42,6 @@
             android:clipToPadding="false"
             android:paddingLeft="@dimen/dp_2"
             android:paddingRight="@dimen/dp_2"/>
-    </FrameLayout>
+    </RelativeLayout>
 
 </LinearLayout>

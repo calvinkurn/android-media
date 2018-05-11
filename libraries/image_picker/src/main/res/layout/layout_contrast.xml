@@ -14,23 +14,21 @@
         android:id="@+id/tv_contrast"
         style="@style/TextView.Title"
         android:layout_width="wrap_content"
-        android:layout_height="@dimen/dp_24"
+        android:layout_height="@dimen/dp_20"
         android:layout_gravity="center_horizontal"
         android:text="@string/default_contrast" />
 
-    <FrameLayout
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="horizontal"
         android:clipChildren="false"
-        android:clipToPadding="false"
-        android:padding="@dimen/dp_4">
+        android:clipToPadding="false">
 
         <com.tokopedia.imagepicker.editor.widget.TwoLineSeekBar
             android:id="@+id/seekBar_contrast"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
             app:high_color="@color/tkpd_main_green"
             app:line_color="@color/grey_700"
             app:line_width="@dimen/dp_2"
@@ -45,6 +43,6 @@
             android:clipToPadding="false"
             android:paddingLeft="@dimen/dp_2"
             android:paddingRight="@dimen/dp_2"/>
-    </FrameLayout>
+    </RelativeLayout>
 
 </LinearLayout>

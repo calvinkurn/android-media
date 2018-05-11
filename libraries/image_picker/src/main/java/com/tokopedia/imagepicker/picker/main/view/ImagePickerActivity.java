@@ -182,38 +182,32 @@ public class ImagePickerActivity extends BaseSimpleActivity
 
     @Override
     public void onAlbumItemClicked(MediaItem item, boolean isChecked) {
-        switch (imagePickerBuilder.getImageSelectionType()) {
-            case ImageSelectionTypeDef.TYPE_SINGLE: {
-                onSingleImagePicked(item.getRealPath());
-            }
-            break;
-            case ImageSelectionTypeDef.TYPE_MULTIPLE_NO_PREVIEW:
-            case ImageSelectionTypeDef.TYPE_MULTIPLE_WITH_PREVIEW: {
-                // TODO change the UI of selection
-                if (imagePickerBuilder.getImageSelectionType() == ImageSelectionTypeDef.TYPE_MULTIPLE_WITH_PREVIEW) {
-                    // TODO show the preview
-                } else {
-                    // TODO hide the preview
-                }
-            }
-            break;
-        }
+        onImageSelected(item.getRealPath());
     }
 
     @Override
     public void onClickImageInstagram(String url, boolean isChecked) {
+        onImageSelected(url);
+    }
+
+    @Override
+    public void onImageTaken(String filePath) {
+        onImageSelected(filePath);
+    }
+
+    private void onImageSelected(String filePathOrUrl){
         switch (imagePickerBuilder.getImageSelectionType()) {
             case ImageSelectionTypeDef.TYPE_SINGLE: {
-                onSingleImagePicked(url);
+                onSingleImagePicked(filePathOrUrl);
             }
             break;
             case ImageSelectionTypeDef.TYPE_MULTIPLE_NO_PREVIEW:
             case ImageSelectionTypeDef.TYPE_MULTIPLE_WITH_PREVIEW: {
                 // TODO change the UI of selection
                 if (imagePickerBuilder.getImageSelectionType() == ImageSelectionTypeDef.TYPE_MULTIPLE_WITH_PREVIEW) {
-                    // TODO show the preview
+                    // TODO show the preview?
                 } else {
-                    // TODO hide the preview
+                    // TODO hide the preview?
                 }
             }
             break;
@@ -259,26 +253,6 @@ public class ImagePickerActivity extends BaseSimpleActivity
             default:
                 super.onActivityResult(requestCode, resultCode, data);
                 break;
-        }
-    }
-
-    @Override
-    public void onImageTaken(String filePath) {
-        switch (imagePickerBuilder.getImageSelectionType()) {
-            case ImageSelectionTypeDef.TYPE_SINGLE: {
-                onSingleImagePicked(filePath);
-            }
-            break;
-            case ImageSelectionTypeDef.TYPE_MULTIPLE_NO_PREVIEW:
-            case ImageSelectionTypeDef.TYPE_MULTIPLE_WITH_PREVIEW: {
-                // TODO change the UI of selection
-                if (imagePickerBuilder.getImageSelectionType() == ImageSelectionTypeDef.TYPE_MULTIPLE_WITH_PREVIEW) {
-                    // TODO show the preview?
-                } else {
-                    // TODO hide the preview?
-                }
-            }
-            break;
         }
     }
 
