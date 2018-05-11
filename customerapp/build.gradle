@@ -22,7 +22,7 @@ def getAbiId(String abi) {
 }
 
 def generateBuildId(String density, String abi) {
-    return (getAbiId(abi) + getDpiId(density)) * 100;
+    return getAbiId(abi) + getDpiId(density);
 }
 
 def getAPKArchiveFolder(variant) {
@@ -46,7 +46,7 @@ def allowProguard() {
 }
 
 def getTkpdVersionCode() {
-    return project.hasProperty('versionCode') ? Integer.parseInt(versionCode) : project.defaultVersionCode;
+    return project.hasProperty('versionCode') ? Integer.parseInt(versionCode) * 10 : project.defaultVersionCode;
 }
 
 def getTkpdVersionName() {
