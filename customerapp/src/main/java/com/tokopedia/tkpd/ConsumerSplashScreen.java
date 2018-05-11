@@ -83,7 +83,6 @@ public class ConsumerSplashScreen extends SplashScreen {
                 .into(new SimpleTarget<Bitmap>() {
                     @Override
                     public void onLoadFailed(Exception e, Drawable errorDrawable) {
-                        e.printStackTrace();
                         super.onLoadFailed(e, errorDrawable);
                     }
 
