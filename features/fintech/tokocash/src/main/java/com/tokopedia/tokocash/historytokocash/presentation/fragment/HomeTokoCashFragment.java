@@ -90,6 +90,7 @@ public class HomeTokoCashFragment extends BaseDaggerFragment implements HomeToko
     @Override
     public void onDestroy() {
         super.onDestroy();
+        presenter.onDestroyView();
     }
 
     @Override

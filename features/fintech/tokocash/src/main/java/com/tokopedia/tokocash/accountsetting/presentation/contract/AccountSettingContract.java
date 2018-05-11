@@ -31,5 +31,7 @@ public interface AccountSettingContract {
                                         String identifier, String identifierType);
 
         void deleteCacheBalanceAndTokenTokoCash();
+
+        void onDestroyView();
     }
 }

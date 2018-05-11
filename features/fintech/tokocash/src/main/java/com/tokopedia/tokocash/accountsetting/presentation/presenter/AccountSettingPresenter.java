@@ -91,4 +91,12 @@ public class AccountSettingPresenter extends BaseDaggerPresenter<AccountSettingC
         cacheManager.delete(CacheUtil.KEY_TOKOCASH_BALANCE_CACHE);
         walletUserSession.setTokenWallet("");
     }
+
+    @Override
+    public void onDestroyView() {
+        if (getOAuthInfoTokoCashUseCase != null)
+            getOAuthInfoTokoCashUseCase.unsubscribe();
+        if (postUnlinkTokoCashUseCase != null)
+            postUnlinkTokoCashUseCase.unsubscribe();
+    }
 }

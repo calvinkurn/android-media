@@ -224,6 +224,12 @@ public class AccountSettingFragment extends BaseDaggerFragment implements Accoun
         presenter.attachView(this);
     }
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        presenter.onDestroyView();
+    }
+
     public interface ActionListener {
         void directPageToHome();
     }

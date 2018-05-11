@@ -57,4 +57,10 @@ public class HomeTokoCashPresenter extends BaseDaggerPresenter<HomeTokoCashContr
             }
         });
     }
+
+    @Override
+    public void onDestroyView() {
+        if (balanceTokoCashUseCase != null)
+            balanceTokoCashUseCase.unsubscribe();
+    }
 }

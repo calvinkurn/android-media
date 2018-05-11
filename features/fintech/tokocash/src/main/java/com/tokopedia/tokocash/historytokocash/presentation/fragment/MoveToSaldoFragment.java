@@ -219,10 +219,6 @@ public class MoveToSaldoFragment extends BaseDaggerFragment implements MoveToSal
         return statePassData.getTitle();
     }
 
-    private String getWalletAmountFormattedFromPassData() {
-        return statePassData.getAmountFormatted();
-    }
-
     @Override
     public void onDestroy() {
         super.onDestroy();

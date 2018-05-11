@@ -35,5 +35,7 @@ public interface HomeTokoCashContract {
         void processGetCategoryTopUp();
 
         void processGetBalanceTokoCash();
+
+        void onDestroyView();
     }
 }

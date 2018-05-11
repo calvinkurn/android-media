@@ -108,38 +108,6 @@ public class TokoCashHistoryPresenter extends BaseDaggerPresenter<TokoCashHistor
                 });
     }
 
-    private void errorNetworkHandler(Throwable e) {
-//        if (e instanceof UnknownHostException || e instanceof ConnectException) {
-//            getView().renderErrorMessage(ErrorNetMessage.MESSAGE_ERROR_NO_CONNECTION_FULL);
-//        } else if (e instanceof SocketTimeoutException) {
-//            getView().renderErrorMessage(ErrorNetMessage.MESSAGE_ERROR_TIMEOUT);
-//        } else if (e instanceof ResponseDataNullException) {
-//            getView().renderErrorMessage(e.getMessage());
-//        } else if (e instanceof HttpErrorException) {
-//            getView().renderErrorMessage(e.getMessage());
-//        } else if (e instanceof ServerErrorException) {
-//            ServerErrorHandlerUtil.handleError(e);
-//        } else {
-//            getView().renderErrorMessage(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
-//        }
-    }
-
-    private void errorFirstTimeNetworkHandler(Throwable e) {
-//        if (e instanceof UnknownHostException || e instanceof ConnectException) {
-//            getView().renderEmptyPage(ErrorNetMessage.MESSAGE_ERROR_NO_CONNECTION_FULL);
-//        } else if (e instanceof SocketTimeoutException) {
-//            getView().renderEmptyPage(ErrorNetMessage.MESSAGE_ERROR_TIMEOUT);
-//        } else if (e instanceof ResponseDataNullException) {
-//            getView().renderEmptyPage(e.getMessage());
-//        } else if (e instanceof HttpErrorException) {
-//            getView().renderEmptyPage(e.getMessage());
-//        } else if (e instanceof ServerErrorException) {
-//            ServerErrorHandlerUtil.handleError(e);
-//        } else {
-//            getView().renderEmptyPage(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
-//        }
-    }
-
     @Override
     public void onDestroyPresenter() {
         if (getHistoryDataUseCase != null) getHistoryDataUseCase.unsubscribe();
