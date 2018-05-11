@@ -9,6 +9,7 @@ import com.tokopedia.abstraction.common.data.model.response.GraphqlResponse;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.database.CacheUtil;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
+import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.digital.R;
 import com.tokopedia.digital.common.constant.DigitalCache;
 import com.tokopedia.digital.common.constant.DigitalCategoryConstant;
@@ -263,13 +264,17 @@ public class CategoryDetailDataSource {
         return Observable.just(result);
     }
 
-    private String getCategoryRequestPayload() {
-        return loadRawString(context.getResources(), R.raw.digital_category_query);
+    private String getCategoryRequestPayload(String categoryId) {
+        String query = loadRawString(context.getResources(), R.raw.digital_category_query);
+        String isSeller = GlobalConfig.isSellerApp() ? "1" : "0";
+        return String.format(query, categoryId, isSeller);
     }
 
     private String getCategoryAndFavRequestPayload(String categoryId, String operatorId, String clientNumber, String productId) {
 
         String query = loadRawString(context.getResources(), R.raw.digital_category_favourites_query);
+
+        String isSeller = GlobalConfig.isSellerApp() ? "1" : "0";
 
         if (operatorId == null) {
             operatorId = "";
@@ -283,7 +288,7 @@ public class CategoryDetailDataSource {
             productId = "";
         }
 
-        return String.format(query, categoryId, categoryId, operatorId, productId, clientNumber);
+        return String.format(query, categoryId, isSeller, categoryId, operatorId, productId, clientNumber);
     }
 
     private String loadRawString(Resources resources, int resId) {
