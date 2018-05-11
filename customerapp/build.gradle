@@ -22,7 +22,7 @@ def getAbiId(String abi) {
 }
 
 def generateBuildId(String density, String abi) {
-    return (getAbiId(abi) + getDpiId(density)) * 10;
+    return (getAbiId(abi) + getDpiId(density)) * 100;
 }
 
 def getAPKArchiveFolder(variant) {
