@@ -325,7 +325,7 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
     }
 
 
-    private void setPinnedMessage(PinnedMessageViewModel pinnedMessage) {
+    private void setPinnedMessage(final PinnedMessageViewModel pinnedMessage) {
         if(getView()!=null) {
             ChannelInfoViewModel channelInfoViewModel = ((GroupChatContract.View) getActivity()).getChannelInfoViewModel();
             View pinnedMessageView = getView().findViewById(R.id.pinned_message);
@@ -337,10 +337,46 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
                         .setText(channelInfoViewModel.getAdminName());
                 ((TextView)pinnedMessageView.findViewById(R.id.message)).setText(pinnedMessage.getMessage());
                 pinnedMessageView.findViewById(R.id.thumbnail);
+                pinnedMessageView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        showPinnedMessageBottomSheet(pinnedMessage);
+                    }
+                });
             } else {
                 pinnedMessageView.setVisibility(View.GONE);
             }
         }
+    }
+
+    private void showPinnedMessageBottomSheet(PinnedMessageViewModel pinnedMessage) {
+        CloseableBottomSheetDialog dialog = CloseableBottomSheetDialog.createInstance(getActivity());
+        dialog.setOnShowListener(new DialogInterface.OnShowListener() {
+            @Override
+            public void onShow(DialogInterface dialog) {
+                BottomSheetDialog d = (BottomSheetDialog) dialog;
+
+                FrameLayout bottomSheet = d.findViewById(android.support.design.R.id.design_bottom_sheet);
+
+                if (bottomSheet != null) {
+                    BottomSheetBehavior.from(bottomSheet)
+                            .setState(BottomSheetBehavior.STATE_EXPANDED);
+                }
+            }
+        });
+        dialog.setContentView(createContentView(pinnedMessage));
+    }
+
+    private View createContentView(PinnedMessageViewModel pinnedMessage) {
+        ChannelInfoViewModel channelInfoViewModel = ((GroupChatContract.View) getActivity()).getChannelInfoViewModel();
+        View view = getLayoutInflater().inflate(R.layout.channel_info_bottom_sheet_dialog, null);
+        ImageHandler.loadImageCircle2(getActivity(), (ImageView)view.findViewById(R.id.pinned_message_avatar)
+                , channelInfoViewModel.getAdminPicture(), R.drawable.ic_loading_toped_new);
+        ((TextView)view.findViewById(R.id.chat_header).findViewById(R.id.nickname))
+                .setText(channelInfoViewModel.getAdminName());
+        ((TextView)view.findViewById(R.id.message)).setText(pinnedMessage.getMessage());
+        view.findViewById(R.id.thumbnail);
+        return view;
     }
 
 
