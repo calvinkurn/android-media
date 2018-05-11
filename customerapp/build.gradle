@@ -166,7 +166,7 @@ android {
                     variant.outputs.each { output ->
                         String density = output.getFilter(com.android.build.OutputFile.DENSITY);
                         String abi = output.getFilter(com.android.build.OutputFile.ABI);
-                        output.versionCodeOverride = (getTkpdVersionCode() * 100) + generateBuildId(density, abi);
+                        output.versionCodeOverride = (getTkpdVersionCode() * 1000) + generateBuildId(density, abi);
                     }
                     variant.assemble.doLast {
                         variant.outputs.each { output ->
@@ -179,7 +179,7 @@ android {
             } else {
                 applicationVariants.all { variant ->
                     variant.outputs.each { output ->
-                        output.versionCodeOverride = (getTkpdVersionCode() * 100);
+                        output.versionCodeOverride = (getTkpdVersionCode() * 1000);
                     }
                 }
             }
