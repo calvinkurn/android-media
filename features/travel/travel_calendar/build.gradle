@@ -1,0 +1,15 @@
+apply plugin: 'com.android.library'
+apply from: "$rootProject.projectDir/buildconfig/module.gradle"
+apply plugin: 'android-apt'
+
+dependencies {
+    compile project(rootProject.ext.libraries.abstraction)
+    compile project(rootProject.ext.libraries.design)
+
+    androidTestCompile(rootProject.ext.testDependencies.espressoCore, {
+        exclude group: 'com.android.support', module: 'support-annotations'
+    })
+    testCompile rootProject.ext.testDependencies.junit
+    testCompile 'org.mockito:mockito-all:1.10.19'
+
+}
