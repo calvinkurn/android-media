@@ -18,6 +18,7 @@
     <string name="error_connection">Masalah Koneksi</string>
     <string name="title_retry">Coba Lagi</string>
     <string name="navigate_back">Kembali</string>
+    <string name="understand">Mengerti</string>
     <string name="navigate_browser">Lanjut ke Aplikasi TopSeller</string>
     <!-- Strings related notification -->
     <string name="title_new_message">Pesan baru</string>
@@ -2005,6 +2006,7 @@ di Tokopedia Sekarang!</string>
     <string name="addproduct_wholesale_priceError">Terjadi kesalahan pada harga grosir</string>
     <string name="addproduct_wholesale_priceShouldBigger100">Harga harus lebih besar dari Rp 100</string>
     <string name="addproduct_wholesale_priceShouldLower100">Harga harus lebih kecil dari Rp 100.000.000</string>
+    <string name="addproduct_wholesale_notice_variant">Semua harga varian otomatis mengikuti harga utama jika produk memiliki harga grosir.</string>
     <string name="error_problem">Terjadi kesalahan</string>
     <string name="addproduct_wholesale_priceShouldBigger1Dollar">Harga harus lebih besar dari $1</string>
     <string name="addproduct_wholesale_priceShouldLowerDollar">Harga harus lebih kecil dari $7500</string>

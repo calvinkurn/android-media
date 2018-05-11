@@ -5,6 +5,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -19,7 +20,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
+import com.tkpd.library.utils.SnackbarManager;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
+import com.tokopedia.core.network.NetworkErrorHelper;
+import com.tokopedia.design.utils.CurrencyFormatUtil;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.product.edit.constant.CurrencyTypeDef;
 import com.tokopedia.seller.product.edit.view.activity.ProductAddWholesaleActivity;
@@ -164,6 +168,7 @@ public class ProductAddWholesaleFragment extends BaseDaggerFragment implements W
                 productWholesaleViewModelList = savedInstanceState.getParcelableArrayList(SAVE_PRODUCT_WHOLESALE);
             }
         }
+
         renderData(productWholesaleViewModelList, productPrice);
 
         return root;
@@ -184,16 +189,29 @@ public class ProductAddWholesaleFragment extends BaseDaggerFragment implements W
     }
 
     public void renderData(ArrayList<ProductWholesaleViewModel> productWholesaleViewModelArrayList, double productPrice){
+        String currencyString = CurrencyFormatUtil.convertPriceValue(productPrice, true);
         setWholesalePrice(productWholesaleViewModelArrayList);
         switch (currencyType) {
             case CurrencyTypeDef.TYPE_USD:
-                textMainPrice.setText(USD_CURRENCY + productPrice);
+                textMainPrice.setText(USD_CURRENCY + currencyString);
                 break;
             default:
             case CurrencyTypeDef.TYPE_IDR:
-                textMainPrice.setText(RUPIAH_CURRENCY + productPrice);
+                textMainPrice.setText(RUPIAH_CURRENCY + currencyString);
                 break;
 
+        }
+        if (hasVariant){
+            final Snackbar snackbar = SnackbarManager.make(getActivity(),
+                    getContext().getString(R.string.addproduct_wholesale_notice_variant),
+                    Snackbar.LENGTH_INDEFINITE);
+            snackbar.setAction(getContext().getString(R.string.understand), new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    snackbar.dismiss();
+                }
+            });
+            snackbar.show();
         }
     }
 

@@ -446,7 +446,7 @@ public abstract class BaseProductAddEditFragment<T extends ProductAddPresenter>
             return;
         }
 
-        boolean hasWholesale = (productVariantByCatModelList == null || currentProductViewModel.getProductWholesale().size() == 0) ?  false :  true;
+        boolean hasWholesale = (currentProductViewModel.getProductWholesale() == null || currentProductViewModel.getProductWholesale().size() == 0) ?  false :  true;
 
         Intent intent = ProductVariantDashboardActivity.getIntent(getActivity(),
                 productVariantByCatModelList,
