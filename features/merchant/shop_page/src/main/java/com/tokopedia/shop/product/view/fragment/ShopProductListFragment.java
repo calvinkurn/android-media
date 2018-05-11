@@ -35,6 +35,7 @@ import com.tokopedia.design.label.LabelView;
 import com.tokopedia.shop.R;
 import com.tokopedia.shop.ShopModuleRouter;
 import com.tokopedia.shop.analytic.ShopPageTracking;
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant;
 import com.tokopedia.shop.common.constant.ShopParamConstant;
 import com.tokopedia.shop.common.data.source.cloud.model.ShopInfo;
 import com.tokopedia.shop.common.di.component.ShopComponent;
@@ -286,8 +287,7 @@ public class ShopProductListFragment extends BaseSearchListFragment<ShopProductV
         if (shopInfo != null) {
             shopPageTracking.eventViewProductImpression(getString(R.string.shop_info_title_tab_product),
                     list, attribution, false, shopProductListPresenter.isMyShop(shopId),
-                    ShopPageTracking.getShopType(shopInfo.getInfo()), (currentLayoutType.second == LAYOUT_GRID_TYPE),
-                    getCurrentPage());
+                    ShopPageTracking.getShopType(shopInfo.getInfo()), (currentLayoutType.second == LAYOUT_GRID_TYPE));
         }
     }
 
@@ -334,14 +334,17 @@ public class ShopProductListFragment extends BaseSearchListFragment<ShopProductV
     }
 
     @Override
-    public void onProductClicked(ShopProductViewModel shopProductViewModel, int adapterPosition) {
+    public void onProductClicked(ShopProductViewModel shopProductViewModel) {
         if (shopInfo != null) {
             shopPageTracking.eventClickProductImpression(getString(R.string.shop_info_title_tab_product),
                     shopProductViewModel.getName(), shopProductViewModel.getId(), shopProductViewModel.getDisplayedPrice(), attribution,
-                    adapterPosition, false, shopProductListPresenter.isMyShop(shopId),
+                    shopProductViewModel.getPositionTracking(), false, shopProductListPresenter.isMyShop(shopId),
                     ShopPageTracking.getShopType(shopInfo.getInfo()), (currentLayoutType.second == LAYOUT_GRID_TYPE));
         }
-        shopModuleRouter.goToProductDetail(getActivity(), shopProductViewModel.getProductUrl());
+        shopModuleRouter.goToProductDetail(getActivity(), shopProductViewModel.getId(),
+                shopProductViewModel.getName(), shopProductViewModel.getDisplayedPrice(), shopProductViewModel.getImageUrl(),
+                attribution, shopPageTracking.getListNameOfProduct(shopProductViewModel.getPositionTracking(), (currentLayoutType.second == LAYOUT_GRID_TYPE),
+                        ShopPageTrackingConstant.PRODUCT_ETALASE));
     }
 
     private void onShareShop() {

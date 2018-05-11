@@ -78,17 +78,22 @@ public interface ApplinkConst {
     String SUB_PROMO_WITH_SLASH = "tokopedia://sale/{slug}/{category_slug}/";
     String BRAND_LIST = "tokopedia://official-store/brand";
     String BRAND_LIST_WITH_SLASH = "tokopedia://official-store/brand/";
+    String REGISTER = "tokopedia://registration";
+    String PROFILE = "tokopedia://people/{user_id}";
+
 
     String EVENTS = "tokopedia://events";
     String EVENTS_ACTIVITIES = "tokopedia://events/activities";
     String EVENTS_DETAILS = "tokopedia://events/{event}";
     String REFERRAL_WELCOME = "tokopedia://referral/{code}/{owner}";
-    String KOLCOMMENT = "tokopedia://kolcomment/{id}";
+    String KOL_COMMENT = "tokopedia://kolcomment/{id}";
     String PROMO_LIST = "tokopedia://promoNative";
     String EXPLORE = "tokopedia://jump/{section}";
 
     String SELLER_INFO_DETAIL = "tokopedia://sellerinfo/detail";
 
+    String TC_LANDING = "tokopedia://tc-landing";
+  
     String CONTENT_EXPLORE = "tokopedia://content/explore/{tab_name}/{category_id}";
     String CONTENT_DETAIL ="tokopedia://content/{post_id}";
 

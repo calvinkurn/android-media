@@ -1,6 +1,7 @@
 package com.tokopedia.shop.product.domain.interactor;
 
 import com.tokopedia.abstraction.common.data.model.response.PagingList;
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant;
 import com.tokopedia.shop.product.domain.model.ShopProductRequestModel;
 import com.tokopedia.shop.product.view.mapper.ShopProductMapper;
 import com.tokopedia.shop.product.view.model.ShopProductBaseViewModel;
@@ -54,6 +55,7 @@ public class GetShopProductLimitedUseCase extends UseCase<PagingList<ShopProduct
         shopProductRequestModel.setShopId(shopId);
         shopProductRequestModel.setOfficialStore(officialStore);
         shopProductRequestModel.setPage(page);
+        shopProductRequestModel.setUseAce(true);
         List<ShopProductLimitedFeaturedViewModel> defaultFeaturedProductList = new ArrayList<>();
         Observable<List<ShopProductLimitedFeaturedViewModel>> featuredProductObservable = Observable.just(defaultFeaturedProductList);
         if ((goldMerchantStore || officialStore) && page == 1) {
@@ -70,7 +72,7 @@ public class GetShopProductLimitedUseCase extends UseCase<PagingList<ShopProduct
                         .flatMap(new Func1<PagingList<ShopProductViewModel>, Observable<PagingList<ShopProductHomeViewModel>>>() {
                             @Override
                             public Observable<PagingList<ShopProductHomeViewModel>> call(PagingList<ShopProductViewModel> shopProductViewModelPagingList) {
-                                return Observable.just(shopProductMapper.convertFromProductViewModel(shopProductViewModelPagingList));
+                                return Observable.just(shopProductMapper.convertFromProductViewModel(shopProductViewModelPagingList, page, ShopPageTrackingConstant.DEFAULT_PER_PAGE));
                             }
                         });
 

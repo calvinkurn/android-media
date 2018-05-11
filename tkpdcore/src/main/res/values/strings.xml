@@ -2221,4 +2221,7 @@ di Tokopedia Sekarang!</string>
     <string name="fb_close">Tutup</string>
     <string name="fb_give_rating">Berikan Penilaian</string>
 
+    <string name="title_activation">Aktivasi TokoCash</string>
+    <string name="label_tokocash">TokoCash</string>
+    <string name="change_cart_invoice">Ubah Pesanan</string>
 </resources>

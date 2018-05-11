@@ -7,10 +7,11 @@ import com.tokopedia.core.database.CacheUtil;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.network.retrofit.response.TkpdDigitalResponse;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
-import com.tokopedia.core.var.TkpdCache;
+import com.tokopedia.digital.common.constant.DigitalCache;
 import com.tokopedia.digital.common.constant.DigitalCategoryConstant;
 import com.tokopedia.digital.common.constant.DigitalUrl;
 import com.tokopedia.digital.common.data.apiservice.DigitalEndpointService;
+import com.tokopedia.digital.common.data.entity.response.DigitalCategoryDetailEntity;
 import com.tokopedia.digital.common.data.entity.response.ResponseCategoryDetailData;
 import com.tokopedia.digital.common.data.entity.response.ResponseCategoryDetailIncluded;
 import com.tokopedia.digital.common.data.mapper.ProductDigitalMapper;
@@ -50,14 +51,20 @@ public class CategoryDetailDataSource {
     }
 
     private Observable<CategoryData> getDataFromLocal(String categoryId) {
-        CategoryData categoryData;
+        DigitalCategoryDetailEntity digitalCategoryDetailEntity;
         try {
-            categoryData = CacheUtil.convertStringToModel(
-                    globalCacheManager.getValueString(TkpdCache.Key.DIGITAL_CATEGORY_DETAIL + "/" + categoryId),
-                    new TypeToken<CategoryData>() {
+            digitalCategoryDetailEntity = CacheUtil.convertStringToModel(
+                    globalCacheManager.getValueString(DigitalCache.NEW_DIGITAL_CATEGORY_DETAIL + "/" + categoryId),
+                    new TypeToken<DigitalCategoryDetailEntity>() {
                     }.getType());
         } catch (RuntimeException e) {
-            categoryData = null;
+            digitalCategoryDetailEntity = null;
+        }
+
+        CategoryData categoryData = null;
+        if (digitalCategoryDetailEntity != null) {
+            categoryData = productDigitalMapper.transformCategoryData(digitalCategoryDetailEntity.getData(),
+                    digitalCategoryDetailEntity.getIncluded());
         }
 
         return Observable.just(categoryData);
@@ -65,17 +72,26 @@ public class CategoryDetailDataSource {
 
     private Observable<CategoryData> getDataFromCloud(String categoryId, TKPDMapParam<String, String> param) {
         return digitalEndpointService.getApi().getCategory(categoryId, param)
-                .map(getFuncTransformCategoryData())
-                .doOnNext(saveToCache(categoryId));
+                .map(new Func1<Response<TkpdDigitalResponse>, DigitalCategoryDetailEntity>() {
+                    @Override
+                    public DigitalCategoryDetailEntity call(Response<TkpdDigitalResponse> response) {
+                        return new DigitalCategoryDetailEntity(
+                                response.body().convertDataObj(ResponseCategoryDetailData.class),
+                                response.body().convertIncludedList(ResponseCategoryDetailIncluded[].class)
+                        );
+                    }
+                })
+                .doOnNext(saveToCache(categoryId))
+                .map(getFuncTransformCategoryData());
     }
 
-    private Action1<CategoryData> saveToCache(final String categoryId) {
-        return new Action1<CategoryData>() {
+    private Action1<DigitalCategoryDetailEntity> saveToCache(final String categoryId) {
+        return new Action1<DigitalCategoryDetailEntity>() {
             @Override
-            public void call(CategoryData categoryData) {
-                globalCacheManager.setKey(TkpdCache.Key.DIGITAL_CATEGORY_DETAIL + "/" + categoryId);
-                globalCacheManager.setValue(CacheUtil.convertModelToString(categoryData,
-                        new TypeToken<CategoryData>() {
+            public void call(DigitalCategoryDetailEntity digitalCategoryDetailEntity) {
+                globalCacheManager.setKey(DigitalCache.NEW_DIGITAL_CATEGORY_DETAIL + "/" + categoryId);
+                globalCacheManager.setValue(CacheUtil.convertModelToString(digitalCategoryDetailEntity,
+                        new TypeToken<DigitalCategoryDetailEntity>() {
                         }.getType()));
                 globalCacheManager.setCacheDuration(600); // 10 minutes
                 globalCacheManager.store();
@@ -84,15 +100,13 @@ public class CategoryDetailDataSource {
     }
 
     @NonNull
-    private Func1<Response<TkpdDigitalResponse>, CategoryData> getFuncTransformCategoryData() {
-        return new Func1<Response<TkpdDigitalResponse>, CategoryData>() {
+    private Func1<DigitalCategoryDetailEntity, CategoryData> getFuncTransformCategoryData() {
+        return new Func1<DigitalCategoryDetailEntity, CategoryData>() {
             @Override
-            public CategoryData call(
-                    Response<TkpdDigitalResponse> response
-            ) {
+            public CategoryData call(DigitalCategoryDetailEntity digitalCategoryDetailEntity) {
                 return productDigitalMapper.transformCategoryData(
-                        response.body().convertDataObj(ResponseCategoryDetailData.class),
-                        response.body().convertIncludedList(ResponseCategoryDetailIncluded[].class)
+                        digitalCategoryDetailEntity.getData(),
+                        digitalCategoryDetailEntity.getIncluded()
                 );
             }
         };

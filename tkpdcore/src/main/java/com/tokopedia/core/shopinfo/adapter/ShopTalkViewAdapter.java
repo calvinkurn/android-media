@@ -14,7 +14,6 @@ import android.widget.TextView;
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.core.R;
 import com.tokopedia.core.app.TkpdCoreRouter;
-import com.tokopedia.core.people.activity.PeopleInfoNoDrawerActivity;
 import com.tokopedia.core.reputationproduct.util.ReputationLevelUtils;
 import com.tokopedia.core.talkview.adapter.TalkViewAdapter;
 import com.tokopedia.core.talkview.fragment.TalkViewFragment;

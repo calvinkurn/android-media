@@ -24,8 +24,16 @@ public interface ShakeDetectContract {
 
         void showErrorNetwork(String message);
 
+        void showMessage(String message);
+
         void setResult(int resultCode,Intent data);
 
+        void updateTimer(Long l);
+
+        boolean isLongShakeTriggered();
+        void setInvisibleCounter();
+
+        public void setCancelButtonVisible();
     }
 
     public interface Presenter extends CustomerPresenter<View>{
@@ -33,5 +41,7 @@ public interface ShakeDetectContract {
         public void onDestroyView();
         public void onRetryClick();
         public void onActivityResult(int requestCode, int resultCode, Intent data);
+
+        void onCancelClick();
     }
 }

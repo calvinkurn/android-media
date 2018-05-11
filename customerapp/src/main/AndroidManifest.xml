@@ -63,6 +63,13 @@
             android:name="NOTIFICATION_LARGE_ICON"
             android:value="@drawable/qc_launcher"
             tools:replace="android:value" />
+        <meta-data
+            android:name="HANSEL_APP_ID"
+            android:value="JM8LWF8S5B951JQOAZAFRNX14"/>
+        <meta-data
+            android:name="HANSEL_APP_KEY"
+            android:value="8CDH74MC9EZLPFIHNNJPT39ERKS5BODETYX2LBFQ83ECSV86WY"/>
+
 
         <activity
             android:name=".ConsumerSplashScreen"
@@ -173,7 +180,7 @@
             android:label="@string/label_gold_merchant"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".tkpdfeed.feedplus.view.activity.FeedPlusDetailActivity"
+            android:name="com.tokopedia.feedplus.view.activity.FeedPlusDetailActivity"
             android:label="@string/title_detail_feed"
             android:screenOrientation="portrait" />
 
@@ -266,7 +273,12 @@
         <activity android:name=".campaign.view.activity.ShakeDetectCampaignActivity"
             android:screenOrientation="portrait"
             android:launchMode="singleTop"
-            android:theme="@style/DialogTheme"/>
+            android:theme="@style/Theme.AppCompat.Translucent"/>
+
+        <activity
+            android:name=".campaign.view.activity.ShakeErrorCampaignActivity"
+            android:theme="@style/Theme.White"
+            android:screenOrientation="portrait" />
 
         <activity
             android:name=".flight.presentation.FlightPhoneVerificationActivity"

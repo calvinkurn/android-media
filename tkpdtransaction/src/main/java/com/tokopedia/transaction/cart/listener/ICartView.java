@@ -62,6 +62,8 @@ public interface ICartView extends IBaseView {
 
     void renderErrorEmptyCart(AutoApply autoApply);
 
+    void renderInvisibleLoading();
+
     void renderVisibleMainCartContainer();
 
     void renderInitialLoadingCartInfo();
@@ -122,7 +124,7 @@ public interface ICartView extends IBaseView {
 
     void renderInstantPromo(CartPromo cartPromo);
 
-    void renderPromoView(boolean isCouponActive);
+    void renderPromoView(boolean isCouponActive, String defaultPromoTab);
 
     void renderAutoApplyPromoView(AutoApply autoApply);
 
