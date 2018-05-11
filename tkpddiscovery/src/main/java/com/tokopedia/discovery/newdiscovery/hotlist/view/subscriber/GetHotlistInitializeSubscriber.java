@@ -74,7 +74,8 @@ public class GetHotlistInitializeSubscriber extends rx.Subscriber<HotlistModel> 
         view.setQueryModel(hotlistModel.getBanner().getHotlistQueryModel());
         view.setDisableTopads(hotlistModel.getBanner().isDisableTopads());
         view.setShareUrl(hotlistModel.getShareURL());
-
+        view.loadImageHeader(hotlistModel.getBanner().getBannerImage());
+        view.setTitleHeader(hotlistModel.getBanner().getHotlistTitle());
         HotlistHeaderViewModel header = mappingHotlistHeader(hotlistModel.getBanner(), hotlistModel.getAttribute().getHastTags());
 
         view.clearLastProductTracker(page == 1);

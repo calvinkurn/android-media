@@ -58,10 +58,8 @@ public class HotlistHeaderViewHolder extends AbstractViewHolder<HotlistHeaderVie
     private final Context context;
     private final ItemClickListener mItemClickListener;
 
-    private final CirclePageIndicator indicator;
-    private final ViewPager viewpager;
     private final LinearLayout containerHashtag;
-    private final ImageView hotlistBackground;
+//    private final ImageView hotlistBackground;
     private final View hashtTagScrollView;
     private final HotlistPromoView hotlistPromoView;
     private final TopAdsBannerView topAdsBannerView;
@@ -73,10 +71,8 @@ public class HotlistHeaderViewHolder extends AbstractViewHolder<HotlistHeaderVie
         context = parent.getContext();
         this.mItemClickListener = mItemClickListener;
         this.searchQuery = searchQuery;
-        this.indicator = (CirclePageIndicator) parent.findViewById(R.id.hot_list_banner_indicator);
-        this.viewpager = (ViewPager) parent.findViewById(R.id.hot_list_banner_view_pager);
         this.containerHashtag = (LinearLayout) parent.findViewById(R.id.hot_list_banner_hashtags);
-        this.hotlistBackground = (ImageView) parent.findViewById(R.id.hotlist_background);
+//        this.hotlistBackground = (ImageView) parent.findViewById(R.id.hotlist_background);
         this.hashtTagScrollView = parent.findViewById(R.id.hashtag_scroll_view);
         this.hotlistPromoView = (HotlistPromoView) parent.findViewById(R.id.view_hotlist_promo);
         this.topAdsBannerView = (TopAdsBannerView) parent.findViewById(R.id.topAdsBannerView);
@@ -108,12 +104,7 @@ public class HotlistHeaderViewHolder extends AbstractViewHolder<HotlistHeaderVie
 
     @Override
     public void bind(HotlistHeaderViewModel element) {
-        HotlistViewPagerAdapter adapter = new HotlistViewPagerAdapter(context, element.getDesc(), mItemClickListener);
-        renderImage(element.getImageUrl());
-        viewpager.setAdapter(adapter);
-        indicator.setViewPager(viewpager);
-        indicator.setFillColor(ContextCompat.getColor(context, R.color.tkpd_dark_green));
-        indicator.setStrokeColor(ContextCompat.getColor(context, R.color.white));
+//        renderImage(element.getImageUrl());
         if (element.getHashTags() != null && !element.getHashTags().isEmpty()) {
             hashtTagScrollView.setVisibility(View.VISIBLE);
             renderHashtag(element.getHashTags());
@@ -162,38 +153,38 @@ public class HotlistHeaderViewHolder extends AbstractViewHolder<HotlistHeaderVie
         }
     }
 
-    private void renderImage(final String imageUrl) {
-        Glide.with(context)
-                .load(imageUrl)
-                .asBitmap()
-                .dontAnimate()
-                .placeholder(com.tokopedia.core.R.drawable.loading_page)
-                .error(com.tokopedia.core.R.drawable.error_drawable)
-                .override(Target.SIZE_ORIGINAL, Target.SIZE_ORIGINAL)
-                .diskCacheStrategy(DiskCacheStrategy.SOURCE)
-                .into(new SimpleTarget<Bitmap>() {
-                    @Override
-                    public void onLoadFailed(Exception e, Drawable errorDrawable) {
-                        super.onLoadFailed(e, errorDrawable);
-                        counterError++;
-                        if (counterError < 5) {
-                            ImageHandler.loadImageBitmap2(itemView.getContext(), imageUrl, this);
-                        }
-                    }
-
-                    @Override
-                    public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
-                        counterError = 0;
-                        hotlistBackground.setImageBitmap(resource);
-                    }
-
-
-                    @Override
-                    public void onLoadStarted(Drawable placeholder) {
-                        super.onLoadStarted(placeholder);
-                        counterError = 0;
-                        hotlistBackground.setImageDrawable(placeholder);
-                    }
-                });
-    }
+//    private void renderImage(final String imageUrl) {
+//        Glide.with(context)
+//                .load(imageUrl)
+//                .asBitmap()
+//                .dontAnimate()
+//                .placeholder(com.tokopedia.core.R.drawable.loading_page)
+//                .error(com.tokopedia.core.R.drawable.error_drawable)
+//                .override(Target.SIZE_ORIGINAL, Target.SIZE_ORIGINAL)
+//                .diskCacheStrategy(DiskCacheStrategy.SOURCE)
+//                .into(new SimpleTarget<Bitmap>() {
+//                    @Override
+//                    public void onLoadFailed(Exception e, Drawable errorDrawable) {
+//                        super.onLoadFailed(e, errorDrawable);
+//                        counterError++;
+//                        if (counterError < 5) {
+//                            ImageHandler.loadImageBitmap2(itemView.getContext(), imageUrl, this);
+//                        }
+//                    }
+//
+//                    @Override
+//                    public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
+//                        counterError = 0;
+//                        hotlistBackground.setImageBitmap(resource);
+//                    }
+//
+//
+//                    @Override
+//                    public void onLoadStarted(Drawable placeholder) {
+//                        super.onLoadStarted(placeholder);
+//                        counterError = 0;
+//                        hotlistBackground.setImageDrawable(placeholder);
+//                    }
+//                });
+//    }
 }

@@ -6,6 +6,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.speech.RecognizerIntent;
+import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
@@ -65,6 +66,7 @@ public class DiscoveryActivity extends BaseDiscoveryActivity implements
     private AHBottomNavigation bottomNavigation;
     protected DiscoverySearchView searchView;
     protected ProgressBar loadingView;
+    private CollapsingToolbarLayout toolbarLayout;
 
     private MenuItem searchItem;
     private boolean isLastRequestForceSearch;
@@ -91,6 +93,7 @@ public class DiscoveryActivity extends BaseDiscoveryActivity implements
         bottomNavigation = (AHBottomNavigation) findViewById(R.id.bottom_navigation);
         searchView = (DiscoverySearchView) findViewById(R.id.search);
         loadingView = findViewById(R.id.progressBar);
+        toolbarLayout = findViewById(R.id.toolbar_layout);
     }
 
     protected void prepareView() {
@@ -137,8 +140,9 @@ public class DiscoveryActivity extends BaseDiscoveryActivity implements
     }
 
     protected void setToolbarTitle(String query) {
-        if (getSupportActionBar() != null) {
+        if (getSupportActionBar() != null && query != null) {
             getSupportActionBar().setTitle(query);
+            toolbarLayout.setTitle(query);
         }
     }
 

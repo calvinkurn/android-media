@@ -13,10 +13,12 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigation;
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigationItem;
 import com.google.android.gms.tagmanager.DataLayer;
+import com.tkpd.library.utils.ImageHandler;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.HotlistPageTracking;
@@ -40,6 +42,7 @@ import com.tokopedia.discovery.newdiscovery.base.BottomNavigationListener;
 import com.tokopedia.discovery.newdiscovery.hotlist.di.component.DaggerHotlistComponent;
 import com.tokopedia.discovery.newdiscovery.hotlist.di.component.HotlistComponent;
 import com.tokopedia.discovery.newdiscovery.hotlist.domain.model.HotlistQueryModel;
+import com.tokopedia.discovery.newdiscovery.hotlist.view.activity.HotlistActivity;
 import com.tokopedia.discovery.newdiscovery.hotlist.view.adapter.HotlistAdapter;
 import com.tokopedia.discovery.newdiscovery.hotlist.view.adapter.ItemClickListener;
 import com.tokopedia.discovery.newdiscovery.hotlist.view.adapter.factory.HotlistAdapterTypeFactory;
@@ -164,6 +167,17 @@ public class HotlistFragment extends SearchSectionFragment
     @Override
     public void setShareUrl(String shareUrl) {
         this.shareUrl = shareUrl;
+    }
+
+    @Override
+    public void loadImageHeader(String bannerImageUrl) {
+        ImageView imageHeader = getActivity().findViewById(R.id.hotlist_background);
+        ImageHandler.LoadImage(imageHeader, bannerImageUrl);
+    }
+
+    @Override
+    public void setTitleHeader(String title) {
+        getActivity().setTitle(title);
     }
 
     @Override

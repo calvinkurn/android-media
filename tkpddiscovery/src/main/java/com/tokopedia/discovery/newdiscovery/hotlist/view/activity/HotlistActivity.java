@@ -86,6 +86,11 @@ public class HotlistActivity extends DiscoveryActivity
         inflateFragment();
     }
 
+    @Override
+    public void setTitle(CharSequence title) {
+        setToolbarTitle(title.toString());
+    }
+
     private void inflateFragment() {
         if (getSupportFragmentManager().findFragmentById(R.id.container) == null) {
             getSupportFragmentManager().beginTransaction()
@@ -117,4 +122,7 @@ public class HotlistActivity extends DiscoveryActivity
         hotlistPresenter.detachView();
         super.onDestroy();
     }
+
+
+
 }
