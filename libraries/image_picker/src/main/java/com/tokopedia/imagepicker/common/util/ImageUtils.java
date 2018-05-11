@@ -35,7 +35,6 @@ import java.nio.channels.FileChannel;
 import java.util.ArrayList;
 import java.util.Random;
 
-import static com.tokopedia.imagepicker.common.util.ImageUtils.DirectoryDef.DIRECTORY_CAMERA;
 import static com.tokopedia.imagepicker.common.util.ImageUtils.DirectoryDef.DIRECTORY_TOKOPEDIA_CACHE;
 import static com.tokopedia.imagepicker.common.util.ImageUtils.DirectoryDef.DIRECTORY_TOKOPEDIA_EDIT_RESULT;
 
@@ -54,11 +53,10 @@ public class ImageUtils {
     public static final String JPG_EXT = ".jpg";
     public static final String PNG = "png";
 
-    @StringDef({DIRECTORY_TOKOPEDIA_CACHE, DIRECTORY_TOKOPEDIA_EDIT_RESULT, DIRECTORY_CAMERA})
+    @StringDef({DIRECTORY_TOKOPEDIA_CACHE, DIRECTORY_TOKOPEDIA_EDIT_RESULT})
     public @interface DirectoryDef {
         String DIRECTORY_TOKOPEDIA_CACHE = "Tokopedia/Tokopedia Cache/";
         String DIRECTORY_TOKOPEDIA_EDIT_RESULT = "Tokopedia/Tokopedia Edit/";
-        String DIRECTORY_CAMERA = "Tokopedia/Tokopedia Camera/";
     }
 
     public static File getTokopediaPublicDirectory(@DirectoryDef String directoryType) {
