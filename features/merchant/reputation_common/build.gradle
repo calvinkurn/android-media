@@ -4,7 +4,7 @@ apply from: "$rootProject.projectDir/buildconfig/module.gradle"
 project.ext {
     artifactId = 'reputation-common'
     groupId = 'com.tokopedia.reputation'
-    versionName = "2.22"
+    versionName = "${tkpdReputationVersion}"
     artifactName ="reputation_common-release"
 }
 

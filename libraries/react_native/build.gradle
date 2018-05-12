@@ -18,7 +18,7 @@ buildscript {
 project.ext {
     artifactId = 'reactnative'
     groupId = 'com.tokopedia.tkpdreactnative'
-    versionName = "2.22"
+    versionName = "${tkpdReactNativeVersion}"
     artifactName ="react_native-release"
 }
 

@@ -4,7 +4,7 @@ apply from: "$rootProject.projectDir/buildconfig/module.gradle"
 project.ext {
     artifactId = 'top_ads_management'
     groupId = 'com.tokopedia.topads'
-    versionName = "2.22"
+    versionName = "${tkpdTopAdsSDKVersion}"
     artifactName ="top_ads_management-release"
 }
 
@@ -50,3 +50,4 @@ dependencies {
 }
 
 apply from: '../../../publish_local.gradle'
+

@@ -28,7 +28,7 @@ android {
 project.ext {
     artifactId = 'home'
     groupId = 'com.tokopedia.home'
-    versionName = "2.22"
+    versionName = "${tkpdHomeVersion}"
     artifactName ="tkpdhome-release"
 }
 
@@ -92,3 +92,4 @@ dependencies {
 }
 
 apply from: '../publish_local.gradle'
+

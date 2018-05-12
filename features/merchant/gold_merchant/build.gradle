@@ -14,7 +14,7 @@ android {
 project.ext {
     artifactId = 'gold_merchant'
     groupId = 'com.tokopedia.gm'
-    versionName = "2.22"
+    versionName = "${tkpdGoldMerchantVersion}"
     artifactName ="gold_merchant-release"
 }
 

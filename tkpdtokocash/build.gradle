@@ -4,7 +4,7 @@ apply from: "$rootProject.projectDir/buildconfig/module.gradle"
 project.ext {
     artifactId = 'tokocash'
     groupId = 'com.tokopedia.tokocash'
-    versionName = "2.22"
+    versionName = "${tkpdTokocashVersion}"
     artifactName ="tkpdtokocash-release"
 }
 

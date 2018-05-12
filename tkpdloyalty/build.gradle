@@ -25,7 +25,7 @@ buildscript {
 project.ext {
     artifactId = 'loyalty'
     groupId = 'com.tokopedia.loyalty'
-    versionName = "2.22"
+    versionName = "${tkpdLoyaltyVersion}"
     artifactName ="tkpdloyalty-release"
 }
 
@@ -65,3 +65,4 @@ dependencies {
 }
 
 apply from: '../publish_local.gradle'
+

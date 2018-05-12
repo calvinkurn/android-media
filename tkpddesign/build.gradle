@@ -4,7 +4,7 @@ apply from: "$rootProject.projectDir/buildconfig/module.gradle"
 project.ext {
     artifactId = 'design'
     groupId = 'com.tokopedia.design'
-    versionName = "2.22"
+    versionName = "${tkpdDesignVersion}"
     artifactName ="tkpddesign-release"
 }
 
@@ -18,3 +18,4 @@ dependencies {
 }
 
 apply from: '../publish_local.gradle'
+

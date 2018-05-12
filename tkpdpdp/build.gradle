@@ -24,7 +24,7 @@ buildscript {
 project.ext {
     artifactId = 'tkpdpdp'
     groupId = 'com.tokopedia.tkpdpdp'
-    versionName = "2.22"
+    versionName = "${tkpdPdpVersion}"
     artifactName ="tkpdpdp-release"
 }
 

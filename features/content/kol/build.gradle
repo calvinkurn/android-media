@@ -18,7 +18,7 @@ buildscript {
 project.ext {
     artifactId = 'kol'
     groupId = 'com.tokopedia.kol'
-    versionName = "2.22"
+    versionName = "${tkpdKolVersion}"
     artifactName ="kol-release"
 }
 
@@ -47,3 +47,4 @@ dependencies {
 }
 
 apply from: '../../../publish_local.gradle'
+

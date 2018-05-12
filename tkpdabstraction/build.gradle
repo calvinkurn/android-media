@@ -19,7 +19,7 @@ buildscript {
 project.ext {
     artifactId = 'abstraction'
     groupId = 'com.tokopedia.abstraction'
-    versionName = "2.22"
+    versionName = "${tkpdAbstractionVersion}"
     artifactName ="tkpdabstraction-release"
 }
 
@@ -40,3 +40,4 @@ dependencies {
 }
 
 apply from: '../publish_local.gradle'
+

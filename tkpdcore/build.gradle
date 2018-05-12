@@ -35,7 +35,7 @@ android {
 project.ext {
     artifactId = 'core'
     groupId = 'com.tokopedia.core'
-    versionName = "2.23"
+    versionName = "${tkpdCoreVersion}"
     artifactName ="tkpdcore-release"
 }
 
@@ -134,4 +134,5 @@ dependencies {
 
 apply plugin: 'com.google.gms.google-services'
 apply from: '../publish_local.gradle'
+
 

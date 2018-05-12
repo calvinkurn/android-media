@@ -4,7 +4,7 @@ apply from: "$rootProject.projectDir/buildconfig/module.gradle"
 project.ext {
     artifactId = 'payment'
     groupId = 'com.tokopedia.payment'
-    versionName = "2.22"
+    versionName = "${tkpdPaymentVersion}"
     artifactName ="payment-release"
 }
 
@@ -27,3 +27,4 @@ dependencies {
 }
 
 apply from: '../../../publish_local.gradle'
+

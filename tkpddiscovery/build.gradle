@@ -24,7 +24,7 @@ buildscript {
 project.ext {
     artifactId = 'discovery'
     groupId = 'com.tokopedia.discovery'
-    versionName = "2.22"
+    versionName = "${tkpdDiscoveryVersion}"
     artifactName ="tkpddiscovery-release"
 }
 
@@ -85,3 +85,4 @@ dependencies {
 }
 
 apply from: '../publish_local.gradle'
+

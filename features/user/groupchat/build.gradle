@@ -28,7 +28,7 @@ android {
 project.ext {
     artifactId = 'groupchat'
     groupId = 'com.tokopedia.groupchat'
-    versionName = "2.22"
+    versionName = "${tkpdGroupchatVersion}"
     artifactName ="groupchat-release"
 }
 
@@ -71,3 +71,4 @@ dependencies {
 }
 
 apply from: '../../../publish_local.gradle'
+

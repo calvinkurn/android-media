@@ -5,6 +5,8 @@ ext {
     targetSdkVersion = 27
     buildToolsVersion = "27.0.3"
 
+    jacocoVersion = "0.7.9"
+
     supportLibraryVersion = '26.0.2'
     playServiceVersion = '11.0.4'
     butterKnifeVersion = '8.4.0'
@@ -53,6 +55,7 @@ ext {
     tkpdGoldMerchantVersion = '2.22'
     tkpdEventsVersion = '2.22'
     tkpdTokocashVersion = '2.22'
+    tkpdEventVersion = '2.22'
     tkpdWishlistVersion = '2.22'
     tkpdHomeVersion = '2.22'
     tkpdMitraToppersVersion = '2.22'
@@ -225,8 +228,8 @@ ext {
             reputation          : "com.tokopedia.reputation:reputation:${tkpdReputationVersion}",
             reputationCommon    : "com.tokopedia.reputation:reputation-common:${tkpdReputationVersion}",
             wishListCommon      : "com.tokopedia.wishlist:wishlist-common:${tkpdWishlistVersion}",
-            tokocash            : "com.tokopedia.tokocash:tokocash:${tkpdReputationVersion}",
-            events              : "com.tokopedia.events:events:${tkpdTokocashVersion}",
+            tokocash            : "com.tokopedia.tokocash:tokocash:${tkpdTokocashVersion}",
+            events              : "com.tokopedia.events:events:${tkpdEventVersion}",
             groupchat           : "com.tokopedia.groupchat:groupchat:${tkpdGroupchatVersion}",
             profile             : "com.tokopedia.profile:profile:${tkpdProfileVersion}",
             shopCommon          : "com.tokopedia.shop:shop-common:${tkpdShopVersion}",

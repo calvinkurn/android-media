@@ -25,7 +25,7 @@ buildscript {
 project.ext {
     artifactId = 'digital'
     groupId = 'com.tokopedia.digital'
-    versionName = "2.22"
+    versionName = "${tkpdDigitalVersion}"
     artifactName ="tkpddigital-release"
 }
 
@@ -80,3 +80,4 @@ dependencies {
 }
 
 apply from: '../publish_local.gradle'
+

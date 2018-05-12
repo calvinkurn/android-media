@@ -17,7 +17,7 @@ buildscript {
 project.ext {
     artifactId = 'ride'
     groupId = 'com.tokopedia.ride'
-    versionName = "2.22"
+    versionName = "${tkpdRideVersion}"
     artifactName ="tkpdride-release"
 }
 

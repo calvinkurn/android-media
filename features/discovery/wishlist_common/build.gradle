@@ -4,7 +4,7 @@ apply from: "$rootProject.projectDir/buildconfig/module.gradle"
 project.ext {
     artifactId = 'wishlist-common'
     groupId = 'com.tokopedia.wishlist'
-    versionName = "2.22"
+    versionName = "${tkpdWishlistVersion}"
     artifactName ="wishlist_common-release"
 }
 

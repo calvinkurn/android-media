@@ -4,7 +4,7 @@ apply from: "$rootProject.projectDir/buildconfig/module.gradle"
 project.ext {
     artifactId = 'mitra_toppers'
     groupId = 'com.tokopedia.mitratoppers'
-    versionName = "2.22"
+    versionName = "${tkpdMitraToppersVersion}"
     artifactName ="mitra_toppers-release"
 }
 

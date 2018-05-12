@@ -14,7 +14,7 @@ android {
 project.ext {
     artifactId = 'push_notification'
     groupId = 'com.tokopedia.pushnotif'
-    versionName = "2.22"
+    versionName = "${tkpdPushNotifVersion}"
     artifactName ="push_notification-release"
 }
 
@@ -38,3 +38,4 @@ dependencies {
 }
 
 apply from: '../../publish_local.gradle'
+

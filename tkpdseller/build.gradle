@@ -26,7 +26,7 @@ android {
 project.ext {
     artifactId = 'seller'
     groupId = 'com.tokopedia.seller'
-    versionName = "2.22"
+    versionName = "${tkpdSellerVersion}"
     artifactName ="tkpdseller-release"
 }
 
@@ -91,3 +91,4 @@ dependencies {
 }
 
 apply from: '../publish_local.gradle'
+

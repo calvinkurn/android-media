@@ -17,7 +17,7 @@ buildscript {
 project.ext {
     artifactId = 'transaction'
     groupId = 'com.tokopedia.transaction'
-    versionName = "2.22"
+    versionName = "${tkpdTransactionVersion}"
     artifactName ="tkpdtransaction-release"
 }
 
@@ -65,4 +65,5 @@ dependencies {
 }
 
 apply from: '../publish_local.gradle'
+
 
