@@ -119,7 +119,7 @@ public class ShipmentDataConverter {
                     addressItemData.setCartPosition(productIndex);
                     addressItemData.setAddressPosition(0);
                     addressItemData.setProductId(String.valueOf(currentProduct.getProductId()));
-                    addressItemData.setProductWeight(currentProduct.getProductWeightFmt());
+                    addressItemData.setProductWeightFmt(currentProduct.getProductWeightFmt());
                     addressItemData.setProductRawWeight(currentProduct.getProductWeight());
                     addressItemData.setProductNotes(currentProduct.getProductNotes());
                     addressItemData.setProductQty(

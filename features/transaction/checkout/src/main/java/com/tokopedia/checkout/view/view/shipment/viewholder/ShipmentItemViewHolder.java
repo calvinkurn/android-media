@@ -32,6 +32,7 @@ import com.tokopedia.design.pickuppoint.PickupPointLayout;
 import com.tokopedia.design.utils.CurrencyFormatUtil;
 import com.tokopedia.showcase.ShowCaseObject;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 
 /**
@@ -45,6 +46,7 @@ public abstract class ShipmentItemViewHolder extends RecyclerView.ViewHolder {
 
     private static final int GRAM = 0;
     private static final int KILOGRAM = 1;
+    private static final int KILOGRAM_TO_GRAM_MULTIPLIER = 1000;
 
     protected ShipmentAdapterActionListener mActionListener;
     private ShipmentAdapter shipmentAdapter;
@@ -265,8 +267,8 @@ public abstract class ShipmentItemViewHolder extends RecyclerView.ViewHolder {
             ivDetailOptionChevron.setImageResource(R.drawable.chevron_thin_down);
         }
 
-        String tvShippingFeeLabel = tvShippingFee.getContext().getString(R.string.label_delivery_price);
-        String tvTotalItemLabel = tvTotalItem.getContext().getString(R.string.label_item_count_without_format);
+        String shippingFeeLabel = tvShippingFee.getContext().getString(R.string.label_delivery_price);
+        String totalItemLabel = tvTotalItem.getContext().getString(R.string.label_item_count_without_format);
 
         if (shipmentCartItem.getSelectedShipmentDetailData() != null &&
                 shipmentCartItem.getSelectedShipmentDetailData().getSelectedCourier() != null) {
@@ -292,13 +294,13 @@ public abstract class ShipmentItemViewHolder extends RecyclerView.ViewHolder {
                 totalItem = productQuantity;
                 totalWeight = ((ShipmentMultipleAddressCartItem) shipmentCartItem).getMultipleAddressItemData().getProductRawWeight();
             }
-            tvShippingFeeLabel = getTotalWeightLabel(totalWeight, shipmentCartItem.getWeightUnit());
-            tvTotalItemLabel = String.format(tvTotalItem.getContext().getString(R.string.label_item_count_with_format), totalItem);
+            shippingFeeLabel = getFormattedWeight(totalWeight);
+            totalItemLabel = String.format(tvTotalItem.getContext().getString(R.string.label_item_count_with_format), totalItem);
             subTotalPrice += (totalItemPrice + shippingPrice + insurancePrice + additionalPrice);
         }
         tvTotalItemPrice.setText(getPriceFormat(totalItemPrice));
-        tvTotalItem.setText(tvTotalItemLabel);
-        tvShippingFee.setText(tvShippingFeeLabel);
+        tvTotalItem.setText(totalItemLabel);
+        tvShippingFee.setText(shippingFeeLabel);
         tvSubTotalPrice.setText(getPriceFormat(subTotalPrice));
         tvShippingFeePrice.setText(getPriceFormat(shippingPrice));
         tvInsuranceFeePrice.setText(getPriceFormat(insurancePrice));
@@ -472,18 +474,21 @@ public abstract class ShipmentItemViewHolder extends RecyclerView.ViewHolder {
         }
     }
 
-    private String getTotalWeightLabel(double weight, int weightUnit) {
-        String unit = weightUnit == GRAM ? context.getString(R.string.weight_unit_gram) :
-                context.getString(R.string.weight_unit_kilogram);
-        return String.format(context.getString(R.string.label_shipping_price_format), String.valueOf(weight), unit);
+    protected String getFormattedWeight(double weightInGrams) {
+        String unit;
+        BigDecimal finalWeight;
+        if (weightInGrams >= KILOGRAM_TO_GRAM_MULTIPLIER) {
+            unit = context.getString(R.string.weight_unit_kilogram);
+            finalWeight = new BigDecimal(String.valueOf(weightInGrams / KILOGRAM_TO_GRAM_MULTIPLIER));
+        } else {
+            unit = context.getString(R.string.weight_unit_gram);
+            finalWeight = new BigDecimal(String.valueOf(weightInGrams));
+        }
+        return String.format(context.getString(R.string.label_weight_format), finalWeight.toString(), unit);
     }
 
     private String getPriceFormat(int price) {
         return price == 0 ? "-" : CurrencyFormatUtil.convertPriceValueToIdrFormat(price, true);
-    }
-
-    protected int getResourceDrawerChevron(boolean isExpanded) {
-        return isExpanded ? R.drawable.chevron_thin_up : R.drawable.chevron_thin_down;
     }
 
     private View.OnClickListener getCostDetailOptionListener(final ShipmentCartItem shipmentCartItem) {

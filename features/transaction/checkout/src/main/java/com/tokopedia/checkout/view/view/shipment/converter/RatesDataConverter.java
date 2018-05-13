@@ -75,7 +75,8 @@ public class RatesDataConverter {
             int productQuantity = Integer.parseInt(((ShipmentMultipleAddressCartItem) shipmentCartItem)
                     .getMultipleAddressItemData().getProductQty());
             orderValue = ((ShipmentMultipleAddressCartItem) shipmentCartItem).getProductPrice() * productQuantity;
-            totalWeight = ((ShipmentMultipleAddressCartItem) shipmentCartItem).getMultipleAddressItemData().getProductRawWeight();
+            totalWeight = ((ShipmentMultipleAddressCartItem) shipmentCartItem).getMultipleAddressItemData().getProductRawWeight()
+                    * Integer.parseInt(((ShipmentMultipleAddressCartItem) shipmentCartItem).getMultipleAddressItemData().getProductQty());
         }
         shipmentCartData.setOrderValue(orderValue);
         shipmentCartData.setWeight(totalWeight);

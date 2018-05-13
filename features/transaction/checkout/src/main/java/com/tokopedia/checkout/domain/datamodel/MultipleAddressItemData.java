@@ -21,7 +21,7 @@ public class MultipleAddressItemData implements Parcelable {
 
     private String productId = "";
 
-    private String productWeight = "";
+    private String productWeightFmt = "";
 
     private int productRawWeight;
 
@@ -122,12 +122,12 @@ public class MultipleAddressItemData implements Parcelable {
         this.productId = productId;
     }
 
-    public String getProductWeight() {
-        return productWeight;
+    public String getProductWeightFmt() {
+        return productWeightFmt;
     }
 
-    public void setProductWeight(String productWeight) {
-        this.productWeight = productWeight;
+    public void setProductWeightFmt(String productWeight) {
+        this.productWeightFmt = productWeight;
     }
 
     public String getProductQty() {
@@ -366,7 +366,7 @@ public class MultipleAddressItemData implements Parcelable {
         dest.writeString(this.cartId);
         dest.writeInt(this.addressStatus);
         dest.writeString(this.productId);
-        dest.writeString(this.productWeight);
+        dest.writeString(this.productWeightFmt);
         dest.writeInt(this.productRawWeight);
         dest.writeString(this.productQty);
         dest.writeString(this.productNotes);
@@ -403,7 +403,7 @@ public class MultipleAddressItemData implements Parcelable {
         this.cartId = in.readString();
         this.addressStatus = in.readInt();
         this.productId = in.readString();
-        this.productWeight = in.readString();
+        this.productWeightFmt = in.readString();
         this.productRawWeight = in.readInt();
         this.productQty = in.readString();
         this.productNotes = in.readString();

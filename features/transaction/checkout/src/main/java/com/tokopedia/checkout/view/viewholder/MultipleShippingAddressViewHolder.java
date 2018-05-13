@@ -187,7 +187,7 @@ public class MultipleShippingAddressViewHolder extends RecyclerView.ViewHolder {
         ImageHandler.LoadImage(productImage, data.getProductImageUrl());
         productName.setText(data.getProductName());
         productPrice.setText(data.getProductPrice());
-        productWeight.setText(itemData.getProductWeight());
+        productWeight.setText(itemData.getProductWeightFmt());
         productQty.setText(itemData.getProductQty());
         if (itemData.getProductNotes().isEmpty()) {
             notesToSellerLayout.setVisibility(View.GONE);
@@ -211,7 +211,7 @@ public class MultipleShippingAddressViewHolder extends RecyclerView.ViewHolder {
                 .setText(totalDeliveryLabel
                         .getText()
                         .toString()
-                        .replace("#", data.getItemData().getProductWeight())
+                        .replace("#", data.getItemData().getProductWeightFmt())
                 );
 
         if (isShipmentDataInitiated(data)) {

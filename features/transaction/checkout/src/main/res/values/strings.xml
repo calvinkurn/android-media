@@ -130,5 +130,6 @@
     <string name="label_pay">Bayar</string>
     <string name="iotem_count_and_weight_format" formatted="false">%s barang (%s)</string>
     <string name="cart_item_count_format" formatted="false">Harga Barang (%s Item) :</string>
+    <string name="label_weight_format" formatted="false">%s %s</string>
 
 </resources>

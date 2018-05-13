@@ -49,7 +49,7 @@ public class AddShipmentAddressPresenter implements IAddShipmentAddressPresenter
                                                   String notes) {
         MultipleAddressItemData newItemData = new MultipleAddressItemData();
         newItemData.setProductQty(quantity);
-        newItemData.setProductWeight(multipleAddressItemData.getProductWeight());
+        newItemData.setProductWeightFmt(multipleAddressItemData.getProductWeightFmt());
         newItemData.setCartPosition(multipleAddressItemData.getCartPosition());
         newItemData.setAddressPosition(multipleAddressAdapterData.getItemListData().size());
         newItemData.setAddressId(editableAddressModel.getId());

@@ -53,8 +53,9 @@ public class ShipmentItemMultipleAddressViewHolder extends ShipmentItemViewHolde
                 shipmentMultipleAddressItem.getProductPriceNumber(), true));
         tvItemCountAndWeight.setText(String.format(tvItemCountAndWeight.getContext()
                         .getString(R.string.iotem_count_and_weight_format),
-                String.valueOf(multipleAddressItemData.getProductQty()), multipleAddressItemData.getProductWeight()));
-
+                String.valueOf(multipleAddressItemData.getProductQty()),
+                getFormattedWeight(multipleAddressItemData.getProductRawWeight() *
+                                Integer.parseInt(multipleAddressItemData.getProductQty()))));
 
         boolean isEmptyNotes = TextUtils.isEmpty(multipleAddressItemData.getProductNotes());
         llOptionalNoteToSellerLayout.setVisibility(isEmptyNotes ? View.GONE : View.VISIBLE);

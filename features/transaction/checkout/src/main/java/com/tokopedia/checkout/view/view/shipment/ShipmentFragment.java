@@ -648,6 +648,8 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         tvPromoMessage.setText("");
         tvPromoMessage.setVisibility(View.GONE);
         shipmentAdapter.updatePromo(null);
+        shipmentPresenter.setPromoCodeAppliedData(null);
+//        shipmentAdapter.checkDropshipperValidation();
     }
 
     @Override

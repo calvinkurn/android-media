@@ -114,7 +114,7 @@ public class MultipleAddressPresenter implements IMultipleAddressPresenter {
         addressData.setCartId(String.valueOf(originData.getCartId()));
         addressData.setProductId(originData.getProductId());
         addressData.setProductQty(String.valueOf(updatedData.getQuantity()));
-        addressData.setProductWeight(String.valueOf(originData.getWeightFormatted()));
+        addressData.setProductWeightFmt(String.valueOf(originData.getWeightFormatted()));
         addressData.setProductNotes(updatedData.getRemark());
         addressData.setAddressId(shipmentRecipientModel.getId());
         addressData.setAddressTitle(shipmentRecipientModel.getAddressName());

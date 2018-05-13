@@ -71,7 +71,8 @@ public class ShipmentItemSingleAddressViewHolder extends ShipmentItemViewHolder 
                 (int) cartItemModel.getPrice(), true));
         tvItemCountAndWeight.setText(String.format(tvItemCountAndWeight.getContext()
                         .getString(R.string.iotem_count_and_weight_format),
-                String.valueOf(cartItemModel.getQuantity()), cartItemModel.getWeightFmt()));
+                String.valueOf(cartItemModel.getQuantity()),
+                getFormattedWeight(cartItemModel.getWeight() * cartItemModel.getQuantity())));
 
         boolean isEmptyNotes = TextUtils.isEmpty(cartItemModel.getNoteToSeller());
         llOptionalNoteToSellerLayout.setVisibility(isEmptyNotes ? View.GONE : View.VISIBLE);
