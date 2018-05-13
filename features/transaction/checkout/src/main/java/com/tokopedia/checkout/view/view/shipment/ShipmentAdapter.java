@@ -17,7 +17,6 @@ import com.tokopedia.checkout.domain.datamodel.cartsingleshipment.CartItemModel;
 import com.tokopedia.checkout.domain.datamodel.cartsingleshipment.ShipmentCostModel;
 import com.tokopedia.checkout.domain.datamodel.shipmentrates.CourierItemData;
 import com.tokopedia.checkout.domain.datamodel.shipmentrates.ShipmentDetailData;
-import com.tokopedia.checkout.domain.datamodel.shipmentrates.ShipmentItemData;
 import com.tokopedia.checkout.view.holderitemdata.CartItemPromoHolderData;
 import com.tokopedia.checkout.view.view.shipment.converter.ShipmentDataRequestConverter;
 import com.tokopedia.checkout.view.view.shipment.viewholder.ShipmentCostViewHolder;
@@ -51,6 +50,8 @@ import javax.inject.Inject;
 public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     public static final int DEFAULT_ERROR_POSITION = -1;
+    private static final int SHIPMENT_COST_POSITION_INDEX_GAP_WITHOUT_INSURANCE = 1;
+    private static final int SHIPMENT_COST_POSITION_INDEX_GAP_WITH_INSURANCE = 2;
 
     private ArrayList<ShowCaseObject> showCaseObjectList;
     private ShipmentAdapterActionListener shipmentAdapterActionListener;
@@ -65,6 +66,7 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     private ShipmentInsuranceTncItem shipmentInsuranceTncItem;
     private ShipmentDataRequestConverter shipmentDataRequestConverter;
 
+    private int shipmentCostItemPosition;
     private boolean hasShownShowCase;
 
     @Inject
@@ -224,6 +226,7 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 shipmentInsuranceTncItem.setVisible(true);
                 shipmentDataList.add(shipmentInsuranceTncItem);
                 notifyItemInserted(shipmentDataList.size() - 1);
+                shipmentCostItemPosition = getItemCount() - SHIPMENT_COST_POSITION_INDEX_GAP_WITH_INSURANCE;
             }
         } else {
             for (int i = 0; i < shipmentDataList.size(); i++) {
@@ -231,6 +234,8 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                     shipmentInsuranceTncItem = null;
                     shipmentDataList.remove(i);
                     notifyItemRemoved(i);
+                    shipmentCostItemPosition = getItemCount() - 1;
+                    break;
                 }
             }
         }
@@ -347,7 +352,7 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             updateShipmentCostModel();
             checkDataForCheckout();
         }
-        notifyItemChanged(getItemCount() - 1);
+        notifyItemChanged(getShipmentCostPosition());
         notifyItemChanged(position);
         checkHasSelectAllCourier();
     }
@@ -431,8 +436,16 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         shipmentAdapterActionListener.onTotalPaymentChange(shipmentCostModel);
     }
 
+    public int getShipmentCostPosition() {
+        if (shipmentCostItemPosition == 0) {
+            return getItemCount() - SHIPMENT_COST_POSITION_INDEX_GAP_WITHOUT_INSURANCE;
+        } else {
+            return shipmentCostItemPosition;
+        }
+    }
+
     public void updateItemAndTotalCost(int position) {
-        notifyItemChanged(getItemCount() - 1);
+        notifyItemChanged(getShipmentCostPosition());
         notifyItemChanged(position);
     }
 
@@ -461,7 +474,7 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 }
             }
         }
-        notifyItemChanged(getItemCount() - 1);
+        notifyItemChanged(getShipmentCostPosition());
     }
 
     public void updateItemPromoVoucher(CartItemPromoHolderData cartPromo) {
@@ -476,7 +489,7 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 notifyItemChanged(i);
             }
         }
-        notifyItemChanged(getItemCount() - 1);
+        notifyItemChanged(getShipmentCostPosition());
     }
 
     public boolean hasSetAllCourier() {

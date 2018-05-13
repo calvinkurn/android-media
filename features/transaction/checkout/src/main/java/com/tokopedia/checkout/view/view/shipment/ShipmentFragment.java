@@ -679,7 +679,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         cartPromo.setPromoNotActive();
         shipmentAdapter.updatePromo(null);
         shipmentAdapter.notifyItemChanged(position);
-        shipmentAdapter.notifyItemChanged(shipmentAdapter.getItemCount() - 1);
+        shipmentAdapter.notifyItemChanged(shipmentAdapter.getShipmentCostPosition());
     }
 
     @Override
