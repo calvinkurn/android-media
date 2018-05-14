@@ -86,6 +86,6 @@
         android:layout_height="match_parent"
         android:background="@color/white"
         app:behavior_hideable="true"
-        app:layout_behavior="android.support.design.widget.BottomSheetBehavior"/>
+        app:layout_behavior="com.tokopedia.discovery.newdiscovery.widget.UserLockBottomSheetBehavior"/>
 
 </android.support.design.widget.CoordinatorLayout>

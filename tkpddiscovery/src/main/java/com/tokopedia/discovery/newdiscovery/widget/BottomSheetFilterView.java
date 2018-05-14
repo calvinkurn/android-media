@@ -67,7 +67,7 @@ public class BottomSheetFilterView extends BaseCustomView implements BottomSheet
     private TextView buttonFinish;
     private View loadingView;
     private View bottomSheetLayout;
-    private BottomSheetBehavior bottomSheetBehavior;
+    private UserLockBottomSheetBehavior bottomSheetBehavior;
     private View rootView;
 
     private Callback callback;
@@ -549,7 +549,7 @@ public class BottomSheetFilterView extends BaseCustomView implements BottomSheet
     }
 
     private void initBottomSheetListener() {
-        bottomSheetBehavior = BottomSheetBehavior.from(bottomSheetLayout);
+        bottomSheetBehavior = (UserLockBottomSheetBehavior) UserLockBottomSheetBehavior.from(bottomSheetLayout);
         bottomSheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
         bottomSheetBehavior.setBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
             @Override
