@@ -6,6 +6,7 @@ import android.os.Bundle;
 
 import com.tokopedia.core.app.DrawerPresenterActivity;
 import com.tokopedia.core.router.transactionmodule.TransactionPurchaseRouter;
+import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.orders.orderlist.view.fragment.OrderListFragment;
 
@@ -38,7 +39,7 @@ public class OrderListActivity extends DrawerPresenterActivity {
     protected void onResume() {
         super.onResume();
         if(drawerHelper != null){
-            drawerHelper.setSelectedPosition(drawerPosition);
+            drawerHelper.setSelectedPosition(TkpdState.DrawerPosition.PEOPLE_DIGITAL_TRANSACTION_LIST);
         }
     }
 

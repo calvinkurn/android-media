@@ -36,7 +36,7 @@
             android:screenOrientation="portrait" />
         <activity
             android:name=".orders.orderlist.view.activity.OrderListActivity"
-            android:label="@string/title_purchase"
+            android:label="@string/title_order_list"
             android:screenOrientation="portrait" />
         <activity
             android:name=".orders.orderdetails.view.activity.OrderListDetailActivity"
