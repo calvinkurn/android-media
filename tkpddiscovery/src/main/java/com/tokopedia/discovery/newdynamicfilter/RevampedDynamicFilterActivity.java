@@ -539,8 +539,8 @@ public class RevampedDynamicFilterActivity extends BaseActivity implements Dynam
     }
 
     @Override
-    public String removeSavedTextInput(String key) {
-        return savedTextInput.remove(key);
+    public void removeSavedTextInput(String key) {
+        savedTextInput.remove(key);
     }
 
     @Override

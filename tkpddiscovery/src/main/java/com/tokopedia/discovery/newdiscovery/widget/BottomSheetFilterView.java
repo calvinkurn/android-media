@@ -175,20 +175,33 @@ public class BottomSheetFilterView extends BaseCustomView implements BottomSheet
     @Override
     public void saveCheckedState(Option option, Boolean isChecked, String filterTitle) {
         SearchTracking.eventSearchResultFilterJourney(filterTitle, option.getName(), false, isChecked);
-        savedCheckedState.put(option.getUniqueId(), isChecked);
+        if (isChecked) {
+            savedCheckedState.put(option.getUniqueId(), true);
+        } else {
+            savedCheckedState.remove(option.getUniqueId());
+        }
+        updateResetButtonVisibility();
         applyFilter();
     }
 
+    private void updateResetButtonVisibility() {
+        if (buttonReset != null) {
+            buttonReset.setVisibility(isFilterActive() ? View.VISIBLE : View.GONE);
+        }
+    }
+
     @Override
-    public String removeSavedTextInput(String key) {
+    public void removeSavedTextInput(String key) {
         SearchTracking.eventSearchResultFilterJourney(key, "", false, false);
-        return savedTextInput.remove(key);
+        savedTextInput.remove(key);
+        updateResetButtonVisibility();
     }
 
     @Override
     public void saveTextInput(String key, String textInput) {
         savedTextInput.put(key, textInput);
         SearchTracking.eventSearchResultFilterJourney(key, textInput, false, true);
+        updateResetButtonVisibility();
     }
 
     @Override
@@ -273,6 +286,7 @@ public class BottomSheetFilterView extends BaseCustomView implements BottomSheet
         if (KEY_CATEGORY.equals(option.getKey())) {
             SearchTracking.eventSearchResultFilterJourney(filterTitle, option.getName(), false, false);
             resetSelectedCategory();
+            updateResetButtonVisibility();
             applyFilter();
         } else {
             saveCheckedState(option, false, filterTitle);
@@ -285,6 +299,7 @@ public class BottomSheetFilterView extends BaseCustomView implements BottomSheet
         savedCheckedState.clear();
         savedTextInput.clear();
         filterMainAdapter.notifyDataSetChanged();
+        updateResetButtonVisibility();
     }
 
     private void clearPriceRangeRecentValue() {
@@ -381,6 +396,7 @@ public class BottomSheetFilterView extends BaseCustomView implements BottomSheet
         selectedCategoryId = model.getCategoryId();
         selectedCategoryName = model.getSelectedCategoryName();
         selectedCategoryRootId = model.getSelectedCategoryRootId();
+        updateResetButtonVisibility();
     }
 
     private void loadFilterData(List<Filter> filterList) {
@@ -620,6 +636,7 @@ public class BottomSheetFilterView extends BaseCustomView implements BottomSheet
         selectedCategoryId = filterFlagSelectedModel.getCategoryId();
         selectedCategoryName = filterFlagSelectedModel.getSelectedCategoryName();
         selectedCategoryRootId = filterFlagSelectedModel.getSelectedCategoryRootId();
+        updateResetButtonVisibility();
         applyFilter();
     }
 
@@ -701,6 +718,7 @@ public class BottomSheetFilterView extends BaseCustomView implements BottomSheet
                     applyFilter();
                     break;
             }
+            updateResetButtonVisibility();
         }
     }
 
