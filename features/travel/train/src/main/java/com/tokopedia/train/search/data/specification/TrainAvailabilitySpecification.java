@@ -3,7 +3,7 @@ package com.tokopedia.train.search.data.specification;
 import com.raizlabs.android.dbflow.sql.language.ConditionGroup;
 import com.tokopedia.train.common.specification.DbFlowSpecification;
 import com.tokopedia.train.search.data.databasetable.TrainScheduleDbTable_Table;
-import com.tokopedia.train.search.data.entity.ScheduleAvailabilityEntity;
+import com.tokopedia.train.search.data.entity.AvailabilityEntity;
 import com.tokopedia.train.search.data.typedef.TrainScheduleTypeDef;
 
 import java.util.List;
@@ -14,20 +14,20 @@ import java.util.List;
 
 public class TrainAvailabilitySpecification implements DbFlowSpecification {
 
-    private List<ScheduleAvailabilityEntity> scheduleAvailabilityEntities;
+    private List<AvailabilityEntity> scheduleAvailabilityEntities;
     private int scheduleVariant;
 
-    public TrainAvailabilitySpecification(List<ScheduleAvailabilityEntity> scheduleAvailabilityEntities,
+    public TrainAvailabilitySpecification(List<AvailabilityEntity> availabilityEntities,
                                           int scheduleVariant) {
-        this.scheduleAvailabilityEntities = scheduleAvailabilityEntities;
+        this.scheduleAvailabilityEntities = availabilityEntities;
         this.scheduleVariant = scheduleVariant;
     }
 
     @Override
     public ConditionGroup getCondition() {
         ConditionGroup conditionGroup = ConditionGroup.clause();
-        for (ScheduleAvailabilityEntity scheduleAvailabilityEntity : scheduleAvailabilityEntities) {
-            conditionGroup.or(TrainScheduleDbTable_Table.schedule_id.eq(scheduleAvailabilityEntity.getIdSchedule()));
+        for (AvailabilityEntity availabilityEntity : scheduleAvailabilityEntities) {
+            conditionGroup.or(TrainScheduleDbTable_Table.schedule_id.eq(availabilityEntity.getId()));
             if (isReturnSchedule()) {
                 conditionGroup.or(TrainScheduleDbTable_Table.is_return_schedule.eq(true));
             }

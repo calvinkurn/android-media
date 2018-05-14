@@ -1,5 +1,6 @@
 package com.tokopedia.train.search.presentation.fragment;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -244,13 +245,11 @@ public abstract class TrainSearchFragment extends BaseListFragment<TrainSchedule
         });
     }
 
-    @Override
-    public void onItemClicked(TrainScheduleViewModel trainScheduleViewModel) {
-        //TODO make tap to go to detail schedule page
-        Toast.makeText(getActivity(), trainScheduleViewModel.getTrainName(), Toast.LENGTH_SHORT).show();
-
-        TrainScheduleDetailActivity.createIntent(getActivity(), trainScheduleViewModel);
-    }
+//    @Override
+//    public void onItemClicked(TrainScheduleViewModel trainScheduleViewModel) {
+//        //TODO make tap to go to detail schedule page
+//        Toast.makeText(getActivity(), trainScheduleViewModel.getTrainName(), Toast.LENGTH_SHORT).show();
+//    }
 
     @Override
     public void loadData(int page) {

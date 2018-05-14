@@ -3,6 +3,8 @@ package com.tokopedia.train.search.data.entity;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+import java.util.List;
+
 /**
  * Created by nabilla on 3/9/18.
  */
@@ -11,74 +13,34 @@ public class TrainScheduleEntity {
 
     @SerializedName("id")
     @Expose
-    private String idSchedule;
-    @SerializedName("adult_fare")
-    @Expose
-    private long adultFare;
-    @SerializedName("display_adult_fare")
-    @Expose
-    private String displayAdultFare;
-    @SerializedName("infant_fare")
-    @Expose
-    private long infantFare;
-    @SerializedName("display_infant_fare")
-    @Expose
-    private String displayInfantFare;
-    @SerializedName("arrival_timestamp")
+    private String id;
+    @SerializedName("arrivalTimestamp")
     @Expose
     private String arrivalTimestamp;
-    @SerializedName("departure_timestamp")
+    @SerializedName("departureTimestamp")
     @Expose
     private String departureTimestamp;
-    @SerializedName("class")
-    @Expose
-    private String classTrain;
-    @SerializedName("display_class")
-    @Expose
-    private String displayClass;
-    @SerializedName("subclass")
-    @Expose
-    private String subclass;
-    @SerializedName("origin")
-    @Expose
-    private String origin;
-    @SerializedName("destination")
-    @Expose
-    private String destination;
-    @SerializedName("display_duration")
+    @SerializedName("displayDuration")
     @Expose
     private String displayDuration;
     @SerializedName("duration")
     @Expose
     private int duration;
-    @SerializedName("train_key")
+    @SerializedName("trainKey")
     @Expose
     private String trainKey;
-    @SerializedName("train_name")
+    @SerializedName("trainName")
     @Expose
     private String trainName;
-    @SerializedName("train_no")
+    @SerializedName("trainNo")
     @Expose
-    private String trainNumber;
+    private String trainNo;
+    @SerializedName("fares")
+    @Expose
+    private List<FareEntity> fares;
 
-    public String getIdSchedule() {
-        return idSchedule;
-    }
-
-    public long getAdultFare() {
-        return adultFare;
-    }
-
-    public String getDisplayAdultFare() {
-        return displayAdultFare;
-    }
-
-    public long getInfantFare() {
-        return infantFare;
-    }
-
-    public String getDisplayInfantFare() {
-        return displayInfantFare;
+    public String getId() {
+        return id;
     }
 
     public String getArrivalTimestamp() {
@@ -87,26 +49,6 @@ public class TrainScheduleEntity {
 
     public String getDepartureTimestamp() {
         return departureTimestamp;
-    }
-
-    public String getClassTrain() {
-        return classTrain;
-    }
-
-    public String getDisplayClass() {
-        return displayClass;
-    }
-
-    public String getSubclass() {
-        return subclass;
-    }
-
-    public String getOrigin() {
-        return origin;
-    }
-
-    public String getDestination() {
-        return destination;
     }
 
     public String getDisplayDuration() {
@@ -125,9 +67,14 @@ public class TrainScheduleEntity {
         return trainName;
     }
 
-    public String getTrainNumber() {
-        return trainNumber;
+    public String getTrainNo() {
+        return trainNo;
     }
+
+    public List<FareEntity> getFares() {
+        return fares;
+    }
+
 }
 
 

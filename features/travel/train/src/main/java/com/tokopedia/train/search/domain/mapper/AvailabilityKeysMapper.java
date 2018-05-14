@@ -1,6 +1,7 @@
 package com.tokopedia.train.search.domain.mapper;
 
-import com.tokopedia.train.search.data.entity.AvailabilityKeysEntity;
+import com.tokopedia.train.search.data.entity.ScheduleEntity;
+import com.tokopedia.train.search.data.entity.TrainScheduleEntity;
 import com.tokopedia.train.search.presentation.model.AvailabilityKeySchedule;
 
 import java.util.ArrayList;
@@ -12,19 +13,21 @@ import rx.functions.Func1;
  * Created by nabillasabbaha on 3/12/18.
  */
 
-public class AvailabilityKeysMapper implements Func1<List<AvailabilityKeysEntity>, List<AvailabilityKeySchedule>> {
+public class AvailabilityKeysMapper implements Func1<List<ScheduleEntity>, List<AvailabilityKeySchedule>> {
 
     public AvailabilityKeysMapper() {
     }
 
     @Override
-    public List<AvailabilityKeySchedule> call(List<AvailabilityKeysEntity> availabilityKeysEntities) {
+    public List<AvailabilityKeySchedule> call(List<ScheduleEntity> scheduleEntities) {
         List<AvailabilityKeySchedule> availabilityKeySchedules = new ArrayList<>();
-        if (availabilityKeysEntities != null) {
-            for (AvailabilityKeysEntity availabilityKeysEntity : availabilityKeysEntities) {
-                AvailabilityKeySchedule availabilityKeySchedule = new AvailabilityKeySchedule();
-                availabilityKeySchedule.setIdTrain(availabilityKeysEntity.getIdTrain());
-                availabilityKeySchedules.add(availabilityKeySchedule);
+        if (scheduleEntities != null) {
+            for (ScheduleEntity scheduleEntity : scheduleEntities) {
+                for (TrainScheduleEntity trainScheduleEntity: scheduleEntity.getTrains()) {
+                    AvailabilityKeySchedule availabilityKeySchedule = new AvailabilityKeySchedule();
+                    availabilityKeySchedule.setIdTrain(trainScheduleEntity.getId());
+                    availabilityKeySchedules.add(availabilityKeySchedule);
+                }
             }
         }
         return availabilityKeySchedules;

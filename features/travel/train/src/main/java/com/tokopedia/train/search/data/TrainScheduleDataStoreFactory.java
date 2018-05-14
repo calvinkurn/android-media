@@ -3,8 +3,8 @@ package com.tokopedia.train.search.data;
 import com.tokopedia.train.common.specification.AndDbFlowSpecification;
 import com.tokopedia.train.common.specification.DbFlowSpecification;
 import com.tokopedia.train.common.specification.Specification;
-import com.tokopedia.train.search.data.entity.ScheduleAvailabilityEntity;
-import com.tokopedia.train.search.data.entity.TrainListSchedulesEntity;
+import com.tokopedia.train.search.data.entity.AvailabilityEntity;
+import com.tokopedia.train.search.data.entity.ScheduleEntity;
 import com.tokopedia.train.search.data.specification.TrainAvailabilitySpecification;
 import com.tokopedia.train.search.data.specification.TrainScheduleClassFilterSpecification;
 import com.tokopedia.train.search.data.specification.TrainScheduleNameFilterSpecification;
@@ -63,17 +63,17 @@ public class TrainScheduleDataStoreFactory {
 
     private Observable<List<AvailabilityKeySchedule>> getDataFromCloud(Specification specification, final int scheduleVariant) {
         return cloudDataStore.getDatasSchedule(specification)
-                .flatMap(new Func1<TrainListSchedulesEntity, Observable<List<AvailabilityKeySchedule>>>() {
+                .flatMap(new Func1<List<ScheduleEntity>, Observable<List<AvailabilityKeySchedule>>>() {
                     @Override
-                    public Observable<List<AvailabilityKeySchedule>> call(final TrainListSchedulesEntity trainListSchedulesEntity) {
-                        return dbDataStore.insertAllData(trainListSchedulesEntity.getTrainSchedules(), scheduleVariant)
+                    public Observable<List<AvailabilityKeySchedule>> call(final List<ScheduleEntity> scheduleEntities) {
+                        return dbDataStore.insertAllData(scheduleEntities, scheduleVariant)
                                 .flatMap(new Func1<Boolean, Observable<List<AvailabilityKeySchedule>>>() {
                                     @Override
                                     public Observable<List<AvailabilityKeySchedule>> call(Boolean isSuccessSaveData) {
                                         if (!isSuccessSaveData) {
                                             return Observable.empty();
                                         } else {
-                                            return Observable.just(trainListSchedulesEntity.getAvailabilityKeys())
+                                            return Observable.just(scheduleEntities)
                                                     .map(new AvailabilityKeysMapper());
                                         }
                                     }
@@ -84,9 +84,9 @@ public class TrainScheduleDataStoreFactory {
 
     public Observable<List<TrainScheduleViewModel>> getAvailabilitySchedule(String idTrain, final int scheduleVariant) {
         return cloudDataStore.getDatasAvailability(idTrain)
-                .flatMap(new Func1<List<ScheduleAvailabilityEntity>, Observable<List<TrainScheduleViewModel>>>() {
+                .flatMap(new Func1<List<AvailabilityEntity>, Observable<List<TrainScheduleViewModel>>>() {
                     @Override
-                    public Observable<List<TrainScheduleViewModel>> call(final List<ScheduleAvailabilityEntity> scheduleAvailabilityEntities) {
+                    public Observable<List<TrainScheduleViewModel>> call(final List<AvailabilityEntity> scheduleAvailabilityEntities) {
                         return dbDataStore.updateDataAvailability(scheduleAvailabilityEntities)
                                 .flatMap(new Func1<Boolean, Observable<List<TrainScheduleViewModel>>>() {
                                     @Override

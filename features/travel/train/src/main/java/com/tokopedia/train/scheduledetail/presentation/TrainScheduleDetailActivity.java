@@ -51,16 +51,16 @@ public class TrainScheduleDetailActivity extends BaseTabActivity {
 
         buttonSubmit = findViewById(R.id.button_submit);
         collapsingToolbarLayout = findViewById(R.id.collapsing_toolbar);
-        collapsingToolbarLayout.setTitle(" ");
+        collapsingToolbarLayout.setTitle("");
         appBarLayout = findViewById(R.id.app_bar_layout);
         departureStationCode = findViewById(R.id.departure_station_code);
         departureStationName = findViewById(R.id.departure_station_name);
         arrivalStationCode = findViewById(R.id.arrival_station_code);
         arrivalStationName = findViewById(R.id.arrival_station_name);
 
-//        departureStationCode.setText(trainScheduleViewModel.getDepartureStation());
+        departureStationCode.setText(trainScheduleViewModel.getOrigin());
 //        departureStationName.setText(trainScheduleViewModel.getDepartureStationCity());
-//        arrivalStationCode.setText(trainScheduleViewModel.getArrivalStation());
+        arrivalStationCode.setText(trainScheduleViewModel.getDestination());
 //        arrivalStationName.setText(trainScheduleViewModel.getArrivalStationCity());
     }
 
