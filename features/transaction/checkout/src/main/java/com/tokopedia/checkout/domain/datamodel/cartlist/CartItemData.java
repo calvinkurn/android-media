@@ -371,6 +371,10 @@ public class CartItemData implements Parcelable {
             this.maxCharRemark = maxCharRemark;
         }
 
+        public void resetQuantity() {
+            quantity = 0;
+        }
+
         public void decreaseQuantity() {
             if (quantity > 0)
                 this.quantity--;

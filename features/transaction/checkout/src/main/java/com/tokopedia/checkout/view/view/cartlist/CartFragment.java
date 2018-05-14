@@ -240,6 +240,12 @@ public class CartFragment extends BaseCheckoutFragment implements CartListAdapte
     }
 
     @Override
+    public void onCartItemQuantityReseted(int position) {
+        cartListAdapter.resetQuantity(position);
+        dPresenter.reCalculateSubTotal(cartListAdapter.getDataList());
+    }
+
+    @Override
     public void onCartItemQuantityMinusButtonClicked(CartItemHolderData cartItemHolderData, int position) {
         cartListAdapter.decreaseQuantity(position);
         dPresenter.reCalculateSubTotal(cartListAdapter.getDataList());
@@ -666,7 +672,6 @@ public class CartFragment extends BaseCheckoutFragment implements CartListAdapte
     public void enableSwipeRefresh() {
         refreshHandler.setPullEnabled(true);
     }
-
 
     @Override
     public List<CartItemData> getCartDataList() {
