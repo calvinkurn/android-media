@@ -626,7 +626,7 @@ public class ImageUtils {
         return rotateBitmap(bitmap, orientation);
     }
 
-    public static Bitmap rotateBitmap(Bitmap bitmap, int orientation) {
+    private static Bitmap rotateBitmap(Bitmap bitmap, int orientation) {
         Matrix matrix = new Matrix();
         switch (orientation) {
             case ExifInterface.ORIENTATION_NORMAL:
