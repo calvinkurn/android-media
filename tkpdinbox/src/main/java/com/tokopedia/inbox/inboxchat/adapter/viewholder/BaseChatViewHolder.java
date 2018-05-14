@@ -8,12 +8,10 @@ import android.widget.TextView;
 import com.tkpd.library.utils.KeyboardHandler;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
-import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.inbox.R;
 import com.tokopedia.inbox.inboxchat.ChatTimeConverter;
 import com.tokopedia.inbox.inboxchat.domain.model.websocket.BaseChatViewModel;
 import com.tokopedia.inbox.inboxchat.presenter.ChatRoomContract;
-import com.tokopedia.inbox.inboxchat.viewholder.movement.ChatLinkHandlerMovementMethod;
 
 import java.util.Date;
 
@@ -23,7 +21,6 @@ import java.util.Date;
 public class BaseChatViewHolder<T extends Visitable> extends AbstractViewHolder<T> {
 
     protected View view;
-    protected TextView message;
     protected TextView hour;
     protected TextView date;
 
@@ -33,7 +30,6 @@ public class BaseChatViewHolder<T extends Visitable> extends AbstractViewHolder<
         super(itemView);
         view = itemView;
         this.viewListener = viewListener;
-        message = (TextView) itemView.findViewById(R.id.message);
         hour = (TextView) itemView.findViewById(R.id.hour);
         date = (TextView) itemView.findViewById(R.id.date);
     }
@@ -51,22 +47,10 @@ public class BaseChatViewHolder<T extends Visitable> extends AbstractViewHolder<
                 }
             });
 
-
-            setMessage(element);
-
-            setClickableUrl();
             setHeaderDate(element);
             setBottomHour(element);
         }
 
-    }
-
-    protected void setMessage(BaseChatViewModel element) {
-        message.setText(MethodChecker.fromHtml(element.getMessage()));
-    }
-
-    protected void setClickableUrl() {
-        message.setMovementMethod(new ChatLinkHandlerMovementMethod(viewListener));
     }
 
     protected void setBottomHour(BaseChatViewModel element) {
@@ -78,9 +62,9 @@ public class BaseChatViewHolder<T extends Visitable> extends AbstractViewHolder<
             hourTime = element.getReplyTime();
         }
 
-        if (TextUtils.isEmpty(hourTime)) {
+        if (hour != null && TextUtils.isEmpty(hourTime)) {
             hour.setVisibility(View.GONE);
-        } else {
+        } else if (hour != null) {
             hour.setText(hourTime);
             hour.setVisibility(View.VISIBLE);
         }
@@ -96,11 +80,13 @@ public class BaseChatViewHolder<T extends Visitable> extends AbstractViewHolder<
         } catch (NumberFormatException e) {
             time = element.getReplyTime();
         }
-        date.setText(time);
 
-        if (element.isShowTime()) {
+        if (date != null
+                && element.isShowTime()
+                && !TextUtils.isEmpty(time)) {
             date.setVisibility(View.VISIBLE);
-        } else {
+            date.setText(time);
+        } else if (date != null) {
             date.setVisibility(View.GONE);
         }
     }
