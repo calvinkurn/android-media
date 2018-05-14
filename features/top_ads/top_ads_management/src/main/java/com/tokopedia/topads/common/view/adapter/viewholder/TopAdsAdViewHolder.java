@@ -59,7 +59,7 @@ public class TopAdsAdViewHolder<T extends Ad & Visitable> extends BaseMultipleCh
     }
 
     @Override
-    public void bind(T ad) {
+    public void bind(final T ad) {
         titleProduct.setText(ad.getName());
         statusActive.setText(ad.getStatusDesc());
         switch (ad.getStatus()) {
@@ -95,6 +95,15 @@ public class TopAdsAdViewHolder<T extends Ad & Visitable> extends BaseMultipleCh
             dailySpentTextView.setText(ad.getPriceDailySpentFmt());
             dailyTotalTextView.setText(ad.getPriceDailyFmt());
         }
+
+        optionImageButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (optionMoreCallback != null){
+                    optionMoreCallback.onClickMore(ad);
+                }
+            }
+        });
     }
 
     @Override

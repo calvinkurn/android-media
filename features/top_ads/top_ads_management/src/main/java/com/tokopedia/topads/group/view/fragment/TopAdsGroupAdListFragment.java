@@ -4,8 +4,10 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.view.MenuItem;
 import android.view.View;
 
+import com.github.rubensousa.bottomsheetbuilder.adapter.BottomSheetItemClickListener;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory;
 import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel;
@@ -18,6 +20,7 @@ import com.tokopedia.topads.common.view.fragment.TopAdsBaseListFragment;
 import com.tokopedia.topads.dashboard.constant.SortTopAdsOption;
 import com.tokopedia.topads.dashboard.constant.TopAdsExtraConstant;
 import com.tokopedia.topads.dashboard.data.model.data.GroupAd;
+import com.tokopedia.topads.dashboard.data.model.data.GroupAdBulkAction;
 import com.tokopedia.topads.dashboard.view.activity.TopAdsDetailGroupActivity;
 import com.tokopedia.topads.dashboard.view.activity.TopAdsFilterGroupActivity;
 import com.tokopedia.topads.dashboard.view.activity.TopAdsGroupNewPromoActivity;
@@ -29,6 +32,7 @@ import com.tokopedia.topads.group.view.presenter.TopAdsGroupAdListPresenter;
 import com.tokopedia.topads.common.view.adapter.TopAdsListAdapterTypeFactory;
 import com.tokopedia.topads.sourcetagging.constant.TopAdsSourceOption;
 
+import java.util.Collections;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -51,8 +55,7 @@ public class TopAdsGroupAdListFragment extends TopAdsBaseListFragment<GroupAd, B
     }
 
     public static Fragment createInstance() {
-        TopAdsGroupAdListFragment fragment = new TopAdsGroupAdListFragment();
-        return fragment;
+        return new TopAdsGroupAdListFragment();
     }
 
     @Override
@@ -101,13 +104,30 @@ public class TopAdsGroupAdListFragment extends TopAdsBaseListFragment<GroupAd, B
     }
 
     @Override
+    public void deleteAd(List<String> ids) {
+        presenter.deleteGroupAd(ids);
+    }
+
+    @Override
     protected TopAdsListAdapterTypeFactory getAdapterTypeFactory() {
-        return new TopAdsListAdapterTypeFactory<GroupAd>();
+        TopAdsListAdapterTypeFactory<GroupAd> factory = new TopAdsListAdapterTypeFactory<>();
+        factory.setOptionMoreCallback(this);
+        return factory;
     }
 
     @Override
     public void onSearchLoaded(List<GroupAd> groupAds, boolean hasNextPage) {
         super.onSuccessLoadedData(groupAds, hasNextPage);
+    }
+
+    @Override
+    public void onBulkActionError(Throwable throwable) {
+
+    }
+
+    @Override
+    public void onBulkActionSuccess(GroupAdBulkAction groupAdBulkAction) {
+        loadInitialData();
     }
 
     @Override
@@ -145,6 +165,19 @@ public class TopAdsGroupAdListFragment extends TopAdsBaseListFragment<GroupAd, B
     }
 
     @Override
+    public void showBulkActionBottomSheet(final List<String> adIds) {
+        showBottomsheetOptionMore(getString(R.string.topads_multi_select_title,adIds.size()),
+                R.menu.menu_top_ads_group_bottomsheet,
+                getOptionMoreBottomSheetItemClickListener(adIds));
+    }
+
+    @Override
+    public void deleteBulkAction(List<String> adIds) {
+        showDeleteConfirmation(getString(R.string.title_delete_group),
+                getString(R.string.top_ads_delete_group_alert), adIds);
+    }
+
+    @Override
     public void trackingDateTopAds(int lastSelection, int selectionType) {
         if(selectionType == DatePickerConstant.SELECTION_TYPE_CUSTOM_DATE){
             UnifyTracking.eventTopAdsProductPageGroupDateCustom();
@@ -179,5 +212,28 @@ public class TopAdsGroupAdListFragment extends TopAdsBaseListFragment<GroupAd, B
         intent.putExtra(TopAdsExtraConstant.EXTRA_AD, ad);
         intent.putExtra(TopAdsNewScheduleNewGroupFragment.EXTRA_IS_ENOUGH_DEPOSIT, true);
         startActivityForResult(intent, REQUEST_CODE_AD_CHANGE);
+    }
+
+    @Override
+    public void onClickMore(final GroupAd ad) {
+        showBottomsheetOptionMore(ad.getName(), R.menu.menu_top_ads_group_bottomsheet,
+                getOptionMoreBottomSheetItemClickListener(Collections.nCopies(1, ad.getId())));
+    }
+
+    @Override
+    public BottomSheetItemClickListener getOptionMoreBottomSheetItemClickListener(final List<String> ids){
+        return new BottomSheetItemClickListener() {
+            @Override
+            public void onBottomSheetItemClick(MenuItem item) {
+                int itemId = item.getItemId();
+                if (itemId == R.id.status_active){
+                    presenter.setGroupActive(ids);
+                } else if (itemId == R.id.status_inactive) {
+                    presenter.setGroupInactive(ids);
+                } else if (itemId == R.id.delete) {
+                    deleteBulkAction(ids);
+                }
+            }
+        };
     }
 }

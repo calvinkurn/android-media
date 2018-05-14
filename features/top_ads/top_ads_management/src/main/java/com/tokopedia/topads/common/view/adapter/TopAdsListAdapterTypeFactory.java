@@ -6,6 +6,7 @@ import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactor
 import com.tokopedia.abstraction.base.view.adapter.model.ErrorNetworkModel;
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingModel;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
+import com.tokopedia.topads.common.view.adapter.viewholder.BaseMultipleCheckViewHolder;
 import com.tokopedia.topads.common.view.adapter.viewholder.LoadingViewHolder;
 import com.tokopedia.topads.dashboard.view.model.Ad;
 import com.tokopedia.topads.common.view.adapter.viewholder.TopAdsAdViewHolder;
@@ -18,6 +19,12 @@ import com.tokopedia.topads.keyword.view.model.KeywordAd;
  */
 
 public class TopAdsListAdapterTypeFactory<T extends Ad> extends BaseAdapterTypeFactory {
+
+    private BaseMultipleCheckViewHolder.OptionMoreCallback<T> optionMoreCallback;
+
+    public void setOptionMoreCallback(BaseMultipleCheckViewHolder.OptionMoreCallback<T> optionMoreCallback) {
+        this.optionMoreCallback = optionMoreCallback;
+    }
 
     @Override
     public int type(LoadingModel viewModel) {
@@ -42,9 +49,13 @@ public class TopAdsListAdapterTypeFactory<T extends Ad> extends BaseAdapterTypeF
         if (type == LoadingViewHolder.LAYOUT) {
             return new LoadingViewHolder(parent);
         } else if (type == TopAdsAdViewHolder.LAYOUT) {
-            return new TopAdsAdViewHolder(parent);
+            TopAdsAdViewHolder viewHolder = new TopAdsAdViewHolder(parent);
+            viewHolder.setOptionMoreCallback(optionMoreCallback);
+            return viewHolder;
         } else if (type == TopAdsKeywordViewHolder.LAYOUT){
-            return new TopAdsKeywordViewHolder(parent);
+            TopAdsKeywordViewHolder topAdsKeywordViewHolder = new TopAdsKeywordViewHolder(parent);
+            topAdsKeywordViewHolder.setOptionMoreCallback((BaseMultipleCheckViewHolder.OptionMoreCallback<KeywordAd>) optionMoreCallback);
+            return topAdsKeywordViewHolder;
         } else if (type == TopAdsErrorNetworkViewHolder.LAYOUT){
             return new TopAdsErrorNetworkViewHolder(parent);
         } else {

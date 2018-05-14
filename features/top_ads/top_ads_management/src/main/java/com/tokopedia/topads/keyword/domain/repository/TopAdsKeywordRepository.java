@@ -1,5 +1,8 @@
 package com.tokopedia.topads.keyword.domain.repository;
 
+import com.tokopedia.abstraction.common.data.model.request.DataRequest;
+import com.tokopedia.topads.dashboard.data.model.response.PageDataResponse;
+import com.tokopedia.topads.keyword.data.model.cloud.bulkkeyword.DataBulkKeyword;
 import com.tokopedia.topads.keyword.view.model.KeywodDashboardViewModel;
 import com.tokopedia.usecase.RequestParams;
 
@@ -11,4 +14,6 @@ import rx.Observable;
 
 public interface TopAdsKeywordRepository {
     Observable<KeywodDashboardViewModel> getDashboardKeyword(RequestParams requestParams);
+
+    Observable<PageDataResponse<DataBulkKeyword>> bulkActionKeyword(DataRequest<DataBulkKeyword> dataBulkKeyword);
 }

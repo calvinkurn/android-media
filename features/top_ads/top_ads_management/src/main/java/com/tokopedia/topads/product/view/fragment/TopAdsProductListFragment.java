@@ -3,14 +3,23 @@ package com.tokopedia.topads.product.view.fragment;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.Fragment;
+import android.text.Editable;
 import android.text.TextUtils;
+import android.text.TextWatcher;
+import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.AdapterView;
 
+import com.github.rubensousa.bottomsheetbuilder.adapter.BottomSheetItemClickListener;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
+import com.tokopedia.design.bottomsheet.BottomSheetCustomContentView;
 import com.tokopedia.seller.common.datepicker.view.constant.DatePickerConstant;
 import com.tokopedia.topads.R;
 import com.tokopedia.topads.TopAdsComponentInstance;
@@ -19,17 +28,22 @@ import com.tokopedia.topads.dashboard.constant.SortTopAdsOption;
 import com.tokopedia.topads.dashboard.constant.TopAdsExtraConstant;
 import com.tokopedia.topads.dashboard.data.model.data.GroupAd;
 import com.tokopedia.topads.dashboard.data.model.data.ProductAd;
+import com.tokopedia.topads.dashboard.data.model.data.ProductAdBulkAction;
 import com.tokopedia.topads.dashboard.view.activity.TopAdsDetailProductActivity;
 import com.tokopedia.topads.dashboard.view.activity.TopAdsFilterProductActivity;
 import com.tokopedia.topads.dashboard.view.activity.TopAdsGroupNewPromoActivity;
 import com.tokopedia.topads.dashboard.view.activity.TopAdsSortByActivity;
+import com.tokopedia.topads.dashboard.view.adapter.TopAdsAutoCompleteAdapter;
 import com.tokopedia.topads.dashboard.view.fragment.TopAdsNewScheduleNewGroupFragment;
+import com.tokopedia.topads.dashboard.view.widget.TopAdsCustomAutoCompleteTextView;
 import com.tokopedia.topads.product.di.component.DaggerTopAdsProductAdListComponent;
 import com.tokopedia.topads.common.view.adapter.TopAdsListAdapterTypeFactory;
 import com.tokopedia.topads.product.view.listener.TopAdsProductAdListView;
 import com.tokopedia.topads.product.view.presenter.TopAdsProductAdListPresenter;
 import com.tokopedia.topads.sourcetagging.constant.TopAdsSourceOption;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -44,6 +58,13 @@ public class TopAdsProductListFragment extends TopAdsBaseListFragment<ProductAd,
 
     private long groupId;
     private GroupAd groupAd;
+    private TopAdsAutoCompleteAdapter adapterChooseGroup;
+    private ArrayList<String> groupNames = new ArrayList<>();
+    private List<GroupAd> groupAds = new ArrayList<>();
+    private String selectedGroupAdId;
+
+    private TextInputLayout textInputLayoutChooseGroup;
+    private TopAdsCustomAutoCompleteTextView inputChooseGroup;
 
     @Inject TopAdsProductAdListPresenter presenter;
 
@@ -63,11 +84,26 @@ public class TopAdsProductListFragment extends TopAdsBaseListFragment<ProductAd,
         return fragment;
     }
 
+    @Nullable
+    @Override
+    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        presenter.attachView(this);
+        return super.onCreateView(inflater, container, savedInstanceState);
+    }
+
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        presenter.attachView(this);
         super.onViewCreated(view, savedInstanceState);
+        adapterChooseGroup = new TopAdsAutoCompleteAdapter(getActivity(), R.layout.item_autocomplete_text);
+        adapterChooseGroup.setListenerGetData(new TopAdsAutoCompleteAdapter.ListenerGetData() {
+            @Override
+            public ArrayList<String> getData() {
+                return groupNames;
+            }
+        });
     }
+
+
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent intent) {
@@ -115,8 +151,15 @@ public class TopAdsProductListFragment extends TopAdsBaseListFragment<ProductAd,
     }
 
     @Override
+    public void deleteAd(List<String> ids) {
+        presenter.deleteAds(ids);
+    }
+
+    @Override
     protected TopAdsListAdapterTypeFactory getAdapterTypeFactory() {
-        return new TopAdsListAdapterTypeFactory<ProductAd>();
+        TopAdsListAdapterTypeFactory<ProductAd> factory = new TopAdsListAdapterTypeFactory<>();
+        factory.setOptionMoreCallback(this);
+        return factory;
     }
 
     @Override
@@ -130,6 +173,39 @@ public class TopAdsProductListFragment extends TopAdsBaseListFragment<ProductAd,
             showDateLabel(false);
         }
         super.showGetListError(throwable);
+    }
+
+    @Override
+    public void onBulkActionError(Throwable throwable) {
+
+    }
+
+    @Override
+    public void onBulkActionSuccess(ProductAdBulkAction productAdBulkAction) {
+        loadInitialData();
+    }
+
+    @Override
+    public void onGetGroupAdListError() {
+        if (textInputLayoutChooseGroup != null) {
+            textInputLayoutChooseGroup.setError(getString(R.string.error_connection_problem));
+        }
+    }
+
+    @Override
+    public void onGetGroupAdList(List<GroupAd> groupAds) {
+        this.groupAds.clear();
+        this.groupAds.addAll(groupAds);
+        groupNames.clear();
+        if (textInputLayoutChooseGroup != null) {
+            textInputLayoutChooseGroup.setError(null);
+        }
+        for (GroupAd groupAd : groupAds) {
+            groupNames.add(groupAd.getName());
+        }
+        if (inputChooseGroup != null) {
+            inputChooseGroup.showDropDownFilter();
+        }
     }
 
     @Override
@@ -162,6 +238,106 @@ public class TopAdsProductListFragment extends TopAdsBaseListFragment<ProductAd,
         if (groupAd != null && !TextUtils.isEmpty(groupAd.getId())) {
             groupId = Integer.valueOf(groupAd.getId());
         }
+    }
+
+    @Override
+    public void showBulkActionBottomSheet(List<String> adIds) {
+        showBottomsheetOptionMore(getString(R.string.topads_multi_select_title, adIds.size()),
+                R.menu.menu_top_ads_product_bottomsheet,
+                getOptionMoreBottomSheetItemClickListener(adIds));
+    }
+
+    @Override
+    public void deleteBulkAction(List<String> adIds) {
+        showDeleteConfirmation(getString(R.string.title_delete_promo),
+                getString(R.string.top_ads_delete_product_alert), adIds);
+    }
+
+    @Override
+    public BottomSheetItemClickListener getOptionMoreBottomSheetItemClickListener(final List<String> ids) {
+        return new BottomSheetItemClickListener() {
+            @Override
+            public void onBottomSheetItemClick(MenuItem item) {
+                int itemId = item.getItemId();
+                if (itemId == R.id.status_active){
+                    presenter.setAdActive(ids);
+                } else if (itemId == R.id.status_inactive) {
+                    presenter.setAdInactive(ids);
+                } else if (itemId == R.id.change_group) {
+                    showBottomSheetMoveGroup(ids);
+                } else if (itemId == R.id.delete) {
+                    deleteBulkAction(ids);
+                }
+            }
+        };
+    }
+
+    private void showBottomSheetMoveGroup(final List<String> ids) {
+        View moveGroupFormView = getLayoutInflater().inflate(R.layout.partial_top_ads_move_group, null);
+
+        inputChooseGroup =
+                (TopAdsCustomAutoCompleteTextView) moveGroupFormView.findViewById(R.id.choose_group_auto_text);
+        textInputLayoutChooseGroup =
+                (TextInputLayout) moveGroupFormView.findViewById(R.id.input_layout_choose_group);
+
+        inputChooseGroup.setAdapter(adapterChooseGroup);
+        inputChooseGroup.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View view, boolean isFocus) {
+                if(isFocus){
+                    presenter.searchGroupName("");
+                }
+            }
+        });
+        inputChooseGroup.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                if(inputChooseGroup.isPerformingCompletion()){
+                    return;
+                }
+                presenter.searchGroupName(editable.toString());
+            }
+        });
+        inputChooseGroup.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                inputChooseGroup.lockView();
+                if (groupAds.get(i) != null) {
+                    selectedGroupAdId = groupAds.get(i).getId();
+                }
+            }
+        });
+
+
+        final BottomSheetCustomContentView bottomSheetView = new BottomSheetCustomContentView(getActivity());
+        bottomSheetView.setCustomContentLayout(moveGroupFormView);
+        bottomSheetView.renderBottomSheet(new BottomSheetCustomContentView.BottomSheetField
+                .BottomSheetFieldBuilder()
+                .setTitle(getString(R.string.label_top_ads_change_group))
+                .setCloseButton(getString(R.string.label_top_ads_save))
+                .build());
+        bottomSheetView.setBtnCloseOnClick(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (!TextUtils.isEmpty(selectedGroupAdId)){
+                    presenter.moveAdsToExistingGroup(ids, selectedGroupAdId);
+                    bottomSheetView.dismiss();
+                } else {
+                    textInputLayoutChooseGroup.setError(getString(R.string.label_top_ads_error_choose_one_group));
+                }
+            }
+        });
+        bottomSheetView.show();
     }
 
     @Override
@@ -200,5 +376,11 @@ public class TopAdsProductListFragment extends TopAdsBaseListFragment<ProductAd,
         intent.putExtra(TopAdsExtraConstant.EXTRA_FORCE_REFRESH, true);
         intent.putExtra(TopAdsNewScheduleNewGroupFragment.EXTRA_IS_ENOUGH_DEPOSIT, true);
         startActivityForResult(intent, REQUEST_CODE_AD_CHANGE);
+    }
+
+    @Override
+    public void onClickMore(ProductAd item) {
+        showBottomsheetOptionMore(item.getName(), R.menu.menu_top_ads_product_bottomsheet,
+                getOptionMoreBottomSheetItemClickListener(Collections.nCopies(1, item.getId())));
     }
 }

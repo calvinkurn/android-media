@@ -60,6 +60,8 @@ public class TopAdsNetworkConstant {
     public static final String ACTION_BULK_OFF_AD = "toggle_off";
     public static final String ACTION_BULK_ON_AD = "toggle_on";
     public static final String ACTION_BULK_MOVE_AD = "move_group";
+    public static final String ACTION_BULK_COPY_KEYWORD = "change_group";
+    public static final String ACTION_BULK_CHANGE_BID_KEYWORD = "change_bid";
 
     public static final String SOURCE_DASHBOARD_USER_MAIN = "dashboard_user_main";
 

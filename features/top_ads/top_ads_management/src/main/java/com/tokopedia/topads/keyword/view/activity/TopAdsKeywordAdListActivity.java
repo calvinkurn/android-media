@@ -1,8 +1,9 @@
 package com.tokopedia.topads.keyword.view.activity;
 
 import android.os.Bundle;
+import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
-import android.support.v4.view.PagerAdapter;
+import android.support.v7.app.AppCompatDelegate;
 import android.view.Menu;
 import android.view.MenuItem;
 
@@ -16,15 +17,14 @@ import com.tokopedia.topads.dashboard.constant.TopAdsExtraConstant;
 import com.tokopedia.topads.dashboard.di.component.TopAdsComponent;
 import com.tokopedia.topads.dashboard.view.fragment.TopAdsAdListFragment;
 import com.tokopedia.topads.keyword.view.adapter.TopAdsPagerAdapter;
-import com.tokopedia.topads.keyword.view.fragment.TopAdsOldKeywordListFragment;
-import com.tokopedia.topads.keyword.view.listener.AdListMenuListener;
+import com.tokopedia.topads.keyword.view.fragment.TopAdsKeywordAdListFragment;
 
 /**
  * Created by hadi.putra on 11/05/18.
  */
 
 public class TopAdsKeywordAdListActivity extends BaseTabActivity implements HasComponent<TopAdsComponent>,
-        TopAdsAdListFragment.OnAdListFragmentListener, TopAdsOldKeywordListFragment.GroupTopAdsListener {
+        TopAdsAdListFragment.OnAdListFragmentListener, TopAdsKeywordAdListFragment.GroupTopAdsListener {
 
     public static final int OFFSCREEN_PAGE_LIMIT = 2;
     private static final String TAG = TopAdsKeywordAdListActivity.class.getName();
@@ -32,6 +32,7 @@ public class TopAdsKeywordAdListActivity extends BaseTabActivity implements HasC
     boolean isShowingShowCase = false;
     private ShowCaseDialog showCaseDialog;
     private int totalGroupAd;
+    private TopAdsPagerAdapter topAdsPagerAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,18 +43,22 @@ public class TopAdsKeywordAdListActivity extends BaseTabActivity implements HasC
     @Override
     protected void setupLayout(Bundle savedInstanceState) {
         super.setupLayout(savedInstanceState);
+        tabLayout.setTabMode(TabLayout.MODE_SCROLLABLE);
         tabLayout.addOnTabSelectedListener(new GlobalMainTabSelectedListener(viewPager));
         tabLayout.addTab(tabLayout.newTab().setText(R.string.top_ads_keyword_title));
         tabLayout.addTab(tabLayout.newTab().setText(R.string.top_ads_keyword_title_negative));
     }
 
     @Override
-    protected PagerAdapter getViewPagerAdapter() {
-        String[] titles = {
-                getString(R.string.top_ads_keyword_title),
-                getString(R.string.top_ads_keyword_title_negative)
-        };
-        return new TopAdsPagerAdapter(getSupportFragmentManager(), titles);
+    protected TopAdsPagerAdapter getViewPagerAdapter() {
+        if (topAdsPagerAdapter == null) {
+            String[] titles = {
+                    getString(R.string.top_ads_keyword_title),
+                    getString(R.string.top_ads_keyword_title_negative)
+            };
+            topAdsPagerAdapter = new TopAdsPagerAdapter(getSupportFragmentManager(), titles);
+        }
+        return topAdsPagerAdapter;
     }
 
     @Override
@@ -83,25 +88,34 @@ public class TopAdsKeywordAdListActivity extends BaseTabActivity implements HasC
                 getTopAdsBaseKeywordListFragment().onCreateAd();
             }
             return true;
+        } else if (item.getItemId() == R.id.menu_multi_select) {
+            final TopAdsKeywordAdListFragment fragment = getTopAdsBaseKeywordListFragment();
+
+            if (fragment == null){
+                return false;
+            }
+
+            startActionMode(fragment.getActionModeCallback());
+            return true;
         }
         return super.onOptionsItemSelected(item);
     }
 
-    private AdListMenuListener getTopAdsBaseKeywordListFragment() {
+    private TopAdsKeywordAdListFragment getTopAdsBaseKeywordListFragment() {
         Fragment registeredFragment = getCurrentFragment();
         if (registeredFragment != null && registeredFragment.isVisible()) {
-            if (registeredFragment instanceof AdListMenuListener) {
-                return ((AdListMenuListener) registeredFragment);
+            if (registeredFragment instanceof TopAdsKeywordAdListFragment) {
+                return ((TopAdsKeywordAdListFragment) registeredFragment);
             }
         }
         return null;
     }
 
     protected Fragment getCurrentFragment() {
-        if (getViewPagerAdapter() == null) {
+        if (topAdsPagerAdapter == null) {
             return null;
         }
-        return (Fragment) getViewPagerAdapter().instantiateItem(viewPager, tabLayout.getSelectedTabPosition());
+        return (Fragment) topAdsPagerAdapter.instantiateItem(viewPager, tabLayout.getSelectedTabPosition());
     }
 
     @Override

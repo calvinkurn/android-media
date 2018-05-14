@@ -2,18 +2,22 @@ package com.tokopedia.topads.common.view.fragment;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.LayoutRes;
+import android.support.annotation.MenuRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.Px;
 import android.support.design.widget.AppBarLayout;
+import android.support.design.widget.BottomSheetDialog;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.ActionMode;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -22,6 +26,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.github.rubensousa.bottomsheetbuilder.BottomSheetBuilder;
+import com.github.rubensousa.bottomsheetbuilder.adapter.BottomSheetItemClickListener;
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter;
@@ -50,6 +56,7 @@ import com.tokopedia.topads.dashboard.view.model.Ad;
 import com.tokopedia.topads.dashboard.view.model.TopAdsSortByModel;
 
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -61,7 +68,8 @@ import java.util.concurrent.TimeUnit;
 public abstract class TopAdsBaseListFragment<V extends Visitable, F extends AdapterTypeFactory, P extends TopAdsBaseListPresenter>
         extends BaseListFragment<V, F>
         implements SearchInputView.Listener, EmptyResultViewHolder.Callback,
-        TopAdsMultipleCheckListAdapter.TopAdsItemClickedListener<V>, BaseMultipleCheckViewHolder.CheckedCallback<V> {
+        TopAdsMultipleCheckListAdapter.TopAdsItemClickedListener<V>, BaseMultipleCheckViewHolder.CheckedCallback<V>,
+        BaseMultipleCheckViewHolder.OptionMoreCallback<V>{
 
     protected static final long DEFAULT_DELAY_TEXT_CHANGED = TimeUnit.MILLISECONDS.toMillis(300);
     protected static final String EXTRA_STATUS = "EXTRA_STATUS";
@@ -255,11 +263,19 @@ public abstract class TopAdsBaseListFragment<V extends Visitable, F extends Adap
 
     public abstract void onCreateAd();
 
+    public abstract void deleteAd(List<String> ids);
+
     public abstract Visitable getDefaultEmptyViewModel();
 
     public abstract void onFirstTimeLaunched();
 
     public abstract void onRestoreState(Bundle savedInstanceState);
+
+    public abstract void showBulkActionBottomSheet(List<String> adIds);
+
+    public abstract void deleteBulkAction(List<String> adIds);
+
+    public abstract BottomSheetItemClickListener getOptionMoreBottomSheetItemClickListener(final List<String> ids);
 
     public void setSearchMode(boolean searchMode) {
         isSearchMode = searchMode;
@@ -374,6 +390,9 @@ public abstract class TopAdsBaseListFragment<V extends Visitable, F extends Adap
         if(menuAdd != null){
             menuAdd.setVisible(show);
         }
+        if (menuCheck != null){
+            menuCheck.setVisible(show);
+        }
     }
 
     protected void showDateLabel(boolean show) {
@@ -477,14 +496,14 @@ public abstract class TopAdsBaseListFragment<V extends Visitable, F extends Adap
         });
     }
 
-    private ActionMode.Callback getActionModeCallback() {
+    public ActionMode.Callback getActionModeCallback() {
         return new ActionMode.Callback() {
             @Override
             public boolean onCreateActionMode(ActionMode actionMode, Menu menu) {
                 actionMode.setTitle(getString(R.string.topads_multi_select_title,
                     ((TopAdsMultipleCheckListAdapter)getAdapter()).getTotalChecked()));
                 TopAdsBaseListFragment.this.actionMode = actionMode;
-                getActivity().getMenuInflater().inflate(R.menu.menu_product_manage_action_mode, menu);
+                getActivity().getMenuInflater().inflate(R.menu.menu_top_ads_action_menu, menu);
                 setAdapterActionMode(true);
                 return true;
             }
@@ -498,15 +517,9 @@ public abstract class TopAdsBaseListFragment<V extends Visitable, F extends Adap
             public boolean onActionItemClicked(ActionMode actionMode, MenuItem menuItem) {
                 final List<String> productIdList = ((TopAdsMultipleCheckListAdapter)getAdapter()).getListChecked();
                 if (menuItem.getItemId() == R.id.delete_product_menu) {
-                    /*showDialogActionDeleteProduct(productIdList, new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialogInterface, int i) {
-                            mode.finish();
-                            productManagePresenter.deleteProduct(productIdList);
-                        }
-                    }, null);*/
+                    deleteBulkAction(productIdList);
                 } else if (menuItem.getItemId() == R.id.menu_more){
-                    showActionBottomSheet(productIdList);
+                    showBulkActionBottomSheet(productIdList);
                 }
                 return false;
             }
@@ -520,11 +533,7 @@ public abstract class TopAdsBaseListFragment<V extends Visitable, F extends Adap
         };
     }
 
-    private void showActionBottomSheet(List<String> productIdList) {
-
-    }
-
-    private void setAdapterActionMode(boolean isActionMode) {
+    protected void setAdapterActionMode(boolean isActionMode) {
         ((TopAdsMultipleCheckListAdapter)getAdapter()).setActionMode(isActionMode);
         getAdapter().notifyDataSetChanged();
     }
@@ -541,15 +550,45 @@ public abstract class TopAdsBaseListFragment<V extends Visitable, F extends Adap
 
     @Override
     public void onItemChecked(V item, boolean isChecked) {
-        Log.e(getClass().getSimpleName(), "item checked called ");
         if (actionMode != null) {
             int totalChecked = ((TopAdsMultipleCheckListAdapter)getAdapter()).getTotalChecked();
             actionMode.setTitle(getString(R.string.topads_multi_select_title,totalChecked));
             MenuItem deleteMenuItem = actionMode.getMenu().findItem(R.id.delete_product_menu);
+            MenuItem moreMenuItem = actionMode.getMenu().findItem(R.id.menu_more);
             deleteMenuItem.setVisible(totalChecked > 0);
+            moreMenuItem.setVisible(totalChecked > 0);
         } else {
             ((TopAdsMultipleCheckListAdapter)getAdapter()).setChecked(((Ad) item).getId(), isChecked);
             getAdapter().notifyDataSetChanged();
         }
+    }
+
+    protected void showDeleteConfirmation(String title, String content, final List<String> ids) {
+        AlertDialog.Builder alertDialog = new AlertDialog.Builder(getActivity(), R.style.AppCompatAlertDialogStyle);
+        alertDialog.setTitle(title);
+        alertDialog.setMessage(content);
+        alertDialog.setPositiveButton(R.string.action_discard, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                deleteAd(ids);
+            }
+        });
+        alertDialog.setNegativeButton(R.string.action_keep, null);
+        alertDialog.show();
+    }
+
+    protected void showBottomsheetOptionMore(String title, @MenuRes int menuId,
+                                             BottomSheetItemClickListener listener){
+        CommonUtils.hideKeyboard(getActivity(), getActivity().getCurrentFocus());
+
+        BottomSheetBuilder bottomSheetBuilder = new BottomSheetBuilder(getActivity())
+                .setMode(BottomSheetBuilder.MODE_LIST)
+                .addTitleItem(title);
+        bottomSheetBuilder.setMenu(menuId);
+
+        BottomSheetDialog bottomSheetDialog = bottomSheetBuilder.expandOnStart(true)
+                .setItemClickListener(listener)
+                .createDialog();
+        bottomSheetDialog.show();
     }
 }

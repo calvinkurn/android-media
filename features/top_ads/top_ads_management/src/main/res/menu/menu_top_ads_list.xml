@@ -11,8 +11,9 @@
 
     <item
         android:id="@+id/menu_multi_select"
-        android:icon="@drawable/checked_thin"
+        android:icon="@drawable/ic_action_checkable"
         android:title="@string/title_multiple_select"
+        app:iconTint="@color/black_70"
         app:showAsAction="always"/>
 
 </menu>

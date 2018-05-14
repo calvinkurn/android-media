@@ -73,7 +73,8 @@
         <activity
             android:name=".keyword.view.activity.TopAdsKeywordAdListActivity"
             android:label="@string/title_top_ads_keyword"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White"/>
         <activity
             android:name=".keyword.view.activity.TopAdsKeywordFilterActivity"
             android:label="@string/title_top_ads_filter_keyword"

@@ -1,6 +1,8 @@
 package com.tokopedia.topads.product.data.repository;
 
+import com.tokopedia.abstraction.common.data.model.request.DataRequest;
 import com.tokopedia.topads.dashboard.data.model.data.ProductAd;
+import com.tokopedia.topads.dashboard.data.model.data.ProductAdBulkAction;
 import com.tokopedia.topads.dashboard.data.model.response.PageDataResponse;
 import com.tokopedia.topads.product.data.source.TopAdsProductAdDataSource;
 import com.tokopedia.topads.product.domain.repository.TopAdsProductAdRepository;
@@ -24,5 +26,10 @@ public class TopAdsProductAdRepositoryImpl implements TopAdsProductAdRepository 
     @Override
     public Observable<PageDataResponse<List<ProductAd>>> getProductAd(RequestParams requestParams) {
         return dataSource.getProductAd(requestParams);
+    }
+
+    @Override
+    public Observable<ProductAdBulkAction> bulkAction(DataRequest<ProductAdBulkAction> dataRequest) {
+        return dataSource.bulkAction(dataRequest);
     }
 }

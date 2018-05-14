@@ -49,7 +49,7 @@ public class TopAdsKeywordViewHolder extends BaseMultipleCheckViewHolder<Keyword
     }
 
     @Override
-    public void bind(KeywordAd keywordAd) {
+    public void bind(final KeywordAd keywordAd) {
         if (keywordAd != null && keywordAd instanceof NegativeKeywordAd) {
             promoPriceUsedContainer.setVisibility(View.GONE);
             pricePromoPerClick.setVisibility(View.GONE);
@@ -69,6 +69,15 @@ public class TopAdsKeywordViewHolder extends BaseMultipleCheckViewHolder<Keyword
                 statusActiveDot.setBackgroundResource(R.drawable.grey_circle);
                 break;
         }
+
+        optionImageButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (optionMoreCallback != null){
+                    optionMoreCallback.onClickMore(keywordAd);
+                }
+            }
+        });
     }
 
     @Override

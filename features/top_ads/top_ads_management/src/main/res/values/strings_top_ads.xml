@@ -255,5 +255,9 @@
     <string name="static_suggestion_bid_recommendation">Sesuaikan biaya dengan anggaran iklan Anda.</string>
     <string name="topads_dashboard_empty_usage_title">Ayo tingkatkan penjualan dengan TopAds</string>
     <string name="topads_multi_select_title">%1$d Terpilih</string>
+    <string name="topads_status_active">Status: Aktif</string>
+    <string name="topads_status_inactive">Status: Tidak Aktif</string>
+    <string name="label_top_ads_change_group">Pindah Grup</string>
+    <string name="label_change_price">Ubah Biaya</string>
 
 </resources>
