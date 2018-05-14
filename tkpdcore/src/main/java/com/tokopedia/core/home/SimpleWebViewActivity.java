@@ -10,6 +10,7 @@ import android.text.TextUtils;
 import com.tokopedia.core.R;
 import com.tokopedia.core.app.TkpdCoreWebViewActivity;
 import com.tokopedia.core.home.fragment.SimpleWebViewFragment;
+import com.tokopedia.core.home.fragment.SimpleWebViewWithFilePickerFragment;
 
 /**
  * Created by okasurya on 1/23/18.
@@ -19,7 +20,7 @@ import com.tokopedia.core.home.fragment.SimpleWebViewFragment;
 
 public class SimpleWebViewActivity extends TkpdCoreWebViewActivity {
     public static final String EXTRA_URL = "url";
-    private SimpleWebViewFragment fragment;
+    private SimpleWebViewWithFilePickerFragment fragment;
 
     public static Intent getIntent(Context context, String url) {
         Intent intent = new Intent(context, SimpleWebViewActivity.class);
@@ -39,7 +40,7 @@ public class SimpleWebViewActivity extends TkpdCoreWebViewActivity {
         super.onCreate(savedInstanceState);
         inflateView(R.layout.activity_webview_container);
         String url = getIntent().getExtras().getString(EXTRA_URL);
-        fragment = SimpleWebViewFragment.createInstance(url);
+        fragment = SimpleWebViewWithFilePickerFragment.createInstance(url);
         if (savedInstanceState == null) {
             FragmentManager fragmentManager = getFragmentManager();
             FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
