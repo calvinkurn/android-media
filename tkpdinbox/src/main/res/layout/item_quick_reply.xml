@@ -16,7 +16,6 @@
     <TextView
         android:id="@+id/text"
         android:layout_width="wrap_content"
-        android:maxWidth="@dimen/max_width_template"
         android:minWidth="@dimen/min_width_template"
         android:layout_height="wrap_content"
         android:minHeight="@dimen/min_height_template"
@@ -27,7 +26,6 @@
         android:paddingLeft="@dimen/dp_10"
         android:paddingRight="@dimen/dp_10"
         android:singleLine="true"
-        android:ellipsize="marquee"
         android:textSize="@dimen/text_size_small"
         android:textColor="@color/tkpd_main_green"
         tools:text="Maafm" />
