@@ -18,6 +18,7 @@
         android:textAllCaps="true"
         android:textColor="@color/grey_500"
         android:textSize="@dimen/fontvs"
+        android:visibility="gone"
         tools:text="13:16 wib"/>
 
     <TextView
@@ -52,6 +53,7 @@
         android:layout_marginTop="@dimen/margin_vvs"
         android:textColor="@color/time_color"
         android:textSize="@dimen/fontvvs"
+        android:visibility="gone"
         tools:text="11:50"/>
 
 </RelativeLayout>

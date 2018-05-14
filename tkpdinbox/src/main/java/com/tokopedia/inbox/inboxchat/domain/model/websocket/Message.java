@@ -32,16 +32,8 @@ public class Message {
         return censoredReply;
     }
 
-    public void setCensoredReply(String censoredReply) {
-        this.censoredReply = censoredReply;
-    }
-
     public String getOriginalReply() {
         return originalReply;
-    }
-
-    public void setOriginalReply(String originalReply) {
-        this.originalReply = originalReply;
     }
 
     public String getTimestamp() {
@@ -56,23 +48,11 @@ public class Message {
         return timestampFmt;
     }
 
-    public void setTimestampFmt(String timestampFmt) {
-        this.timestampFmt = timestampFmt;
-    }
-
     public String getTimeStampUnix() {
         return timeStampUnix;
     }
 
-    public void setTimeStampUnix(String timeStampUnix) {
-        this.timeStampUnix = timeStampUnix;
-    }
-
     public String getTimeStampUnixNano() {
         return timeStampUnixNano;
-    }
-
-    public void setTimeStampUnixNano(String timeStampUnixNano) {
-        this.timeStampUnixNano = timeStampUnixNano;
     }
 }

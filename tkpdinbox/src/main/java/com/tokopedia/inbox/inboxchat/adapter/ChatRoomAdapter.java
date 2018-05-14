@@ -9,12 +9,12 @@ import android.view.ViewGroup;
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel;
-import com.tokopedia.abstraction.base.view.adapter.model.LoadingModel;
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingMoreModel;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.inbox.inboxchat.domain.model.ListReplyViewModel;
 import com.tokopedia.inbox.inboxchat.domain.model.ReplyParcelableModel;
 import com.tokopedia.inbox.inboxchat.domain.model.reply.Attachment;
+import com.tokopedia.inbox.inboxchat.domain.model.websocket.BaseChatViewModel;
 import com.tokopedia.inbox.inboxchat.domain.model.websocket.WebSocketResponse;
 import com.tokopedia.inbox.inboxchat.helper.AttachmentChatHelper;
 import com.tokopedia.inbox.inboxchat.viewholder.AttachedInvoiceSentViewHolder;
@@ -66,6 +66,8 @@ public class ChatRoomAdapter extends RecyclerView.Adapter<AbstractViewHolder> {
         if (list.get(position) instanceof ListReplyViewModel) {
             showTime(holder.itemView.getContext(), holder.getAdapterPosition());
             showHour(holder.itemView.getContext(), holder.getAdapterPosition());
+        } else if (list.get(position) instanceof BaseChatViewModel) {
+            showTimeBaseChat(holder.itemView.getContext(), holder.getAdapterPosition());
         }
         holder.bind(list.get(holder.getAdapterPosition()));
     }
@@ -93,6 +95,18 @@ public class ChatRoomAdapter extends RecyclerView.Adapter<AbstractViewHolder> {
         return null;
     }
 
+
+    private Object getLastPrevBaseChatViewModel(int initialPosition) {
+        if (initialPosition < list.size()) {
+            return (BaseChatViewModel) list.get(initialPosition);
+        } else if (initialPosition < list.size() && list.get(initialPosition) instanceof
+                ListReplyViewModel) {
+            return (ListReplyViewModel) list.get(initialPosition);
+        } else {
+            return null;
+        }
+    }
+
     private void showTime(Context context, int position) {
         if (position != list.size() - 1) {
             try {
@@ -111,11 +125,45 @@ public class ChatRoomAdapter extends RecyclerView.Adapter<AbstractViewHolder> {
                     ((ListReplyViewModel) list.get(position)).setShowTime(true);
                 }
             } catch (NumberFormatException | ClassCastException e) {
-                ((ListReplyViewModel) list.get(position)).setShowTime(true);
+
+                ((ListReplyViewModel) list.get(position)).setShowTime(false);
             }
         } else {
             try {
                 ((ListReplyViewModel) list.get(position)).setShowTime(true);
+            } catch (ClassCastException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    private void showTimeBaseChat(Context context, int position) {
+        if (position != list.size() - 1) {
+            try {
+                BaseChatViewModel now = (BaseChatViewModel) list.get(position);
+                long myTime = Long.parseLong(now.getReplyTime());
+                long prevTime = 0;
+
+                if (list.get(position + 1) != null && list.get(position + 1) instanceof BaseChatViewModel) {
+                    BaseChatViewModel prev = (BaseChatViewModel) list.get(position + 1);
+                    prevTime = Long.parseLong(prev.getReplyTime());
+                } else if (list.get(position + 1) != null && list.get(position + 1) instanceof
+                        ListReplyViewModel) {
+                    ListReplyViewModel prev = (ListReplyViewModel) list.get(position + 1);
+                    prevTime = Long.parseLong(prev.getReplyTime());
+                }
+
+                if (compareTime(context, myTime, prevTime)) {
+                    ((BaseChatViewModel) list.get(position)).setShowTime(false);
+                } else {
+                    ((BaseChatViewModel) list.get(position)).setShowTime(true);
+                }
+            } catch (NumberFormatException | ClassCastException e) {
+                ((BaseChatViewModel) list.get(position)).setShowTime(false);
+            }
+        } else {
+            try {
+                ((BaseChatViewModel) list.get(position)).setShowTime(true);
             } catch (ClassCastException e) {
                 e.printStackTrace();
             }

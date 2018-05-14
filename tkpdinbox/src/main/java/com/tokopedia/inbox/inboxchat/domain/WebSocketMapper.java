@@ -1,6 +1,7 @@
 package com.tokopedia.inbox.inboxchat.domain;
 
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonSyntaxException;
 import com.tokopedia.inbox.inboxchat.domain.model.websocket.BaseChatViewModel;
 import com.tokopedia.inbox.inboxchat.domain.model.websocket.FallbackAttachmentViewModel;
 import com.tokopedia.inbox.inboxchat.domain.model.websocket.MessageViewModel;
@@ -8,6 +9,8 @@ import com.tokopedia.inbox.inboxchat.domain.model.websocket.WebSocketResponse;
 import com.tokopedia.inbox.inboxchat.domain.model.websocket.WebSocketResponseData;
 import com.tokopedia.inbox.inboxchat.viewmodel.chatroom.QuickReplyListViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.chatroom.QuickReplyViewModel;
+
+import org.json.JSONException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,20 +30,26 @@ public class WebSocketMapper {
 
 
     public BaseChatViewModel map(String json) {
-        WebSocketResponse pojo = new GsonBuilder().create().fromJson(json, WebSocketResponse.class);
+        try {
 
-        if (pojo != null
-                && pojo.getData() != null
-                && pojo.getData().getAttachment() != null) {
-            switch (pojo.getData().getAttachment().getType()) {
-                case TYPE_QUICK_REPLY:
-                    return convertToQuickReplyModel(pojo.getData());
-                default:
-                    return convertToFallBackModel(pojo.getData());
+            WebSocketResponse pojo = new GsonBuilder().create().fromJson(json, WebSocketResponse.class);
+
+            if (pojo != null
+                    && pojo.getData() != null
+                    && pojo.getData().getAttachment() != null) {
+                switch (pojo.getData().getAttachment().getType()) {
+                    case TYPE_QUICK_REPLY:
+                        return convertToQuickReplyModel(pojo.getData());
+                    default:
+                        return convertToFallBackModel(pojo.getData());
+                }
+            } else {
+                return null;
             }
-        } else {
+        } catch (JsonSyntaxException e) {
             return null;
         }
+
     }
 
     private BaseChatViewModel convertToFallBackModel(WebSocketResponseData pojo) {
