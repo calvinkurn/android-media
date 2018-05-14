@@ -34,7 +34,6 @@ import com.tokopedia.imagepicker.picker.gallery.widget.MediaGridInset;
 import java.io.File;
 import java.util.ArrayList;
 
-import static com.tokopedia.imagepicker.picker.album.AlbumPickerActivity.EXTRA_ALBUM_ITEM;
 import static com.tokopedia.imagepicker.picker.album.AlbumPickerActivity.EXTRA_ALBUM_POSITION;
 import static com.tokopedia.imagepicker.picker.gallery.model.AlbumItem.ALBUM_ID_ALL;
 
@@ -72,11 +71,12 @@ public class ImagePickerGalleryFragment extends TkpdBaseV4Fragment
     private boolean supportMultipleSelection;
     private int minImageResolution;
 
-    private ArrayList<Long> albumSelectionId;
+    private ArrayList<Long> albumItemSelectionId;
     private LabelView labelViewAlbum;
 
     public interface OnImagePickerGalleryFragmentListener {
         void onAlbumItemClicked(MediaItem item, boolean isChecked);
+        boolean isMaxImageReached();
     }
 
     @SuppressLint("MissingPermission")
@@ -102,10 +102,10 @@ public class ImagePickerGalleryFragment extends TkpdBaseV4Fragment
         supportMultipleSelection = bundle.getBoolean(ARGS_SUPPORT_MULTIPLE);
         minImageResolution = bundle.getInt(ARGS_MIN_RESOLUTION);
         if (savedInstanceState != null) {
-            albumSelectionId = (ArrayList<Long>) savedInstanceState.getSerializable(SAVED_ALBUM_SELECTION);
+            albumItemSelectionId = (ArrayList<Long>) savedInstanceState.getSerializable(SAVED_ALBUM_SELECTION);
             selectedAlbumPosition = savedInstanceState.getInt(SAVED_ALBUM_TITLE_ID);
         }
-        albumMediaAdapter = new AlbumMediaAdapter(supportMultipleSelection, albumSelectionId, this);
+        albumMediaAdapter = new AlbumMediaAdapter(supportMultipleSelection, albumItemSelectionId, this);
     }
 
     @Nullable
@@ -240,9 +240,17 @@ public class ImagePickerGalleryFragment extends TkpdBaseV4Fragment
     }
 
     @Override
-    public boolean isImageValid(MediaItem item) {
-        //TODO check the image number allowed.
+    public boolean canAddMoreImage() {
+        //check the image number allowed.
+        if (onImagePickerGalleryFragmentListener.isMaxImageReached()){
+            NetworkErrorHelper.showRedCloseSnackbar(getView(), getString(R.string.max_no_of_image_reached));
+            return false;
+        }
+        return true;
+    }
 
+    @Override
+    public boolean isImageValid(MediaItem item) {
         // check if file exists
         if (! new File(item.getRealPath()).exists()){
             NetworkErrorHelper.showRedCloseSnackbar(getView(), getString(R.string.image_not_found));
@@ -283,7 +291,7 @@ public class ImagePickerGalleryFragment extends TkpdBaseV4Fragment
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putSerializable(SAVED_ALBUM_SELECTION, albumSelectionId);
+        outState.putSerializable(SAVED_ALBUM_SELECTION, albumMediaAdapter.getSelectionIdList());
         outState.putInt(SAVED_ALBUM_TITLE_ID, selectedAlbumPosition);
     }
 }

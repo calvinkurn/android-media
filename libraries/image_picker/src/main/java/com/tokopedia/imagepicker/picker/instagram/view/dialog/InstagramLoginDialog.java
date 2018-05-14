@@ -4,6 +4,7 @@ import android.app.Dialog;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.net.http.SslError;
+import android.support.design.widget.BottomSheetBehavior;
 import android.view.View;
 import android.view.WindowManager;
 import android.webkit.SslErrorHandler;
@@ -11,6 +12,7 @@ import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import android.widget.ImageButton;
 import android.widget.ProgressBar;
 
 import com.tokopedia.design.component.BottomSheets;
@@ -61,6 +63,14 @@ public class InstagramLoginDialog extends BottomSheets {
         super.setupDialog(dialog, style);
         int screenHeight = getResources().getDisplayMetrics().heightPixels;
         updateHeight(screenHeight/2);
+
+        ImageButton btnClose = getDialog().findViewById(com.tokopedia.design.R.id.btn_close);
+        btnClose.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dismiss();
+            }
+        });
     }
 
     @Override

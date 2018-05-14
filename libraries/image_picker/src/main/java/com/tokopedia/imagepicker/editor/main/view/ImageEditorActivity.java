@@ -67,7 +67,7 @@ public class ImageEditorActivity extends BaseSimpleActivity implements ImageEdit
 
     private ArrayList<ArrayList<String>> edittedImagePaths;
 
-    // used in the future for undo things
+    // for undo
     private ArrayList<Integer> currentEditStepIndexList;
 
     private int currentImageIndex;
@@ -255,8 +255,12 @@ public class ImageEditorActivity extends BaseSimpleActivity implements ImageEdit
             showEditLoading();
             ImageEditPreviewFragment fragment = getCurrentFragment();
             switch (currentEditActionType) {
-                case ImageEditActionTypeDef.ACTION_CROP:
                 case ImageEditActionTypeDef.ACTION_ROTATE:
+                    if (fragment != null) {
+                        fragment.rotateAndSaveImage();
+                    }
+                    break;
+                case ImageEditActionTypeDef.ACTION_CROP:
                 case ImageEditActionTypeDef.ACTION_CROP_ROTATE:
                     if (fragment != null) {
                         fragment.cropAndSaveImage();
@@ -666,7 +670,8 @@ public class ImageEditorActivity extends BaseSimpleActivity implements ImageEdit
         ArrayList<String> resultList;
         try {
             resultList = ImageUtils.copyFiles(cropppedImagePaths, ImageUtils.DirectoryDef.DIRECTORY_TOKOPEDIA_EDIT_RESULT);
-            ImageUtils.deleteCacheFolder();
+            ImageUtils.deleteCacheFolder(ImageUtils.DirectoryDef.DIRECTORY_TOKOPEDIA_CACHE);
+            ImageUtils.deleteCacheFolder(ImageUtils.DirectoryDef.DIRECTORY_TOKOPEDIA_CACHE_CAMERA);
             Intent intent = new Intent();
             intent.putStringArrayListExtra(EDIT_RESULT_PATHS, resultList);
             setResult(Activity.RESULT_OK, intent);
@@ -820,7 +825,7 @@ public class ImageEditorActivity extends BaseSimpleActivity implements ImageEdit
         } else {
             long currentTime = System.currentTimeMillis();
             if (currentTime - prevTimeClicked < BACKPRESS_TIME_LIMIT) {
-                ImageUtils.deleteCacheFolder();
+                ImageUtils.deleteCacheFolder(ImageUtils.DirectoryDef.DIRECTORY_TOKOPEDIA_CACHE);
                 ImageEditorActivity.super.onBackPressed();
             } else {
                 Toast.makeText(this, getString(R.string.pressed_once_more_to_exit), Toast.LENGTH_SHORT).show();

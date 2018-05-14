@@ -305,6 +305,17 @@ public class ImageEditPreviewFragment extends Fragment implements ImageEditPrevi
                 });
     }
 
+    public void rotateAndSaveImage() {
+        // when rotate 90/180/270, we just rotate and do not crop the image.
+        if (gestureCropImageView.getCurrentAngle() %90 == 0) {
+            imageEditPreviewPresenter.rotateImage(gestureCropImageView.getViewBitmap(),
+                    gestureCropImageView.getCurrentAngle(),
+                    ImageUtils.isPng(edittedImagePath));
+            return;
+        }
+        cropAndSaveImage();
+    }
+
     public void saveBrightnessImage() {
         if (brightness == 0) {
             onImageEditPreviewFragmentListener.onEditDoNothing();
