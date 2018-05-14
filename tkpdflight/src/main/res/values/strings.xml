@@ -366,7 +366,7 @@
     <string name="flight_cancellation_reason_label">Alasan Pembatalan Tiket</string>
     <string name="flight_cancellation_support_docs_label">Dokumen Penunjang</string>
     <string name="flight_cancellation_reason_hint_label">Isi alasan pembatalan</string>
-    <string name="flight_cancellation_attachment_description_label">(Dokumen penunjang dapat berupa surat, foto, atau dokumen yang menjadi alasan pembatalan pesanan)</string>
+    <string name="flight_cancellation_attachment_description_label">(Dokumen penunjang dapat berupa surat, foto, atau dokumen yang menjadi alasan pembatalan pesanan). Ukuran Minimum  Lebar 300px dan Tinggi 100px.</string>
     <string name="flight_cancellation_proof_reaseon_submit_button">Selanjutnya</string>
     <string name="flight_cancellation_attachment_required_error_message">Lampiran gambar belum diisi</string>
     <string name="flight_cancellation_attachment_more_than_max_error_message">Maksimal lampiran gambar %1$d</string>
