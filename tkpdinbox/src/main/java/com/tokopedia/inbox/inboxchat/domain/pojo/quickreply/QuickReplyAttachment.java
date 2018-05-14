@@ -1,11 +1,11 @@
 
-package com.tokopedia.inbox.inboxchat.domain.model.reply;
+package com.tokopedia.inbox.inboxchat.domain.pojo.quickreply;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-import com.tokopedia.inbox.inboxchat.domain.pojo.quickreply.QuickReplyListPojo;
+import com.tokopedia.inbox.inboxchat.domain.model.reply.FallbackAttachment;
 
-public class Attachment {
+public class QuickReplyAttachment {
 
     @SerializedName("id")
     @Expose
@@ -15,13 +15,10 @@ public class Attachment {
     private String type;
     @SerializedName("attributes")
     @Expose
-    private AttachmentAttributes attributes;
+    private QuickReplyAttachmentAttributes attributes;
     @SerializedName("fallback_attachment")
     @Expose
     private FallbackAttachment fallbackAttachment;
-    @SerializedName("quick_replies")
-    @Expose
-    private QuickReplyListPojo quickReplies;
 
     public String getId() {
         return id;
@@ -39,11 +36,11 @@ public class Attachment {
         this.type = type;
     }
 
-    public AttachmentAttributes getAttributes() {
+    public QuickReplyAttachmentAttributes getAttributes() {
         return attributes;
     }
 
-    public void setAttributes(AttachmentAttributes attributes) {
+    public void setAttributes(QuickReplyAttachmentAttributes attributes) {
         this.attributes = attributes;
     }
 
@@ -53,13 +50,5 @@ public class Attachment {
 
     public void setFallbackAttachment(FallbackAttachment fallbackAttachment) {
         this.fallbackAttachment = fallbackAttachment;
-    }
-
-    public QuickReplyListPojo getQuickReplies() {
-        return quickReplies;
-    }
-
-    public void setQuickReplies(QuickReplyListPojo quickReplies) {
-        this.quickReplies = quickReplies;
     }
 }

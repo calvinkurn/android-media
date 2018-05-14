@@ -4,7 +4,7 @@ import com.google.gson.GsonBuilder;
 import com.tokopedia.abstraction.common.utils.view.CommonUtils;
 import com.tokopedia.inbox.inboxchat.domain.WebSocketMapper;
 import com.tokopedia.inbox.inboxchat.domain.model.websocket.BaseChatViewModel;
-import com.tokopedia.inbox.inboxchat.domain.model.websocket.WebSocketResponse;
+import com.tokopedia.inbox.inboxchat.domain.pojo.WebSocketResponse;
 
 import okhttp3.Response;
 import okhttp3.WebSocket;
