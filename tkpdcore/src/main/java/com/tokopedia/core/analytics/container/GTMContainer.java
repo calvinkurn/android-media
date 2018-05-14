@@ -749,7 +749,7 @@ public class GTMContainer implements IGTMContainer {
                                         "products", DataLayer.listOf(object)
                                 )
                         ),
-                        "activeFilter", activeFilter
+                        "searchFilter", activeFilter
                 )
         );
     }
