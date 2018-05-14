@@ -18,6 +18,7 @@
     <string name="train_station_popular_label">Populer</string>
     <string name="train_station_toolbar_title">Pencarian Stasiun</string>
     <string name="train_search_toolbar_title">Pencarian</string>
+    <string name="train_schedule_detail_toolbar_title">Detail</string>
 
     <string name="select_passenger_adult_subtitle">(Lebih dari 3 tahun)</string>
     <string name="select_passenger_adult_title">Dewasa</string>

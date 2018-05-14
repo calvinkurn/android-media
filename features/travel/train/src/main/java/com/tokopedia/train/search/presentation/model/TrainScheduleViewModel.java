@@ -4,7 +4,10 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
+import com.tokopedia.train.scheduledetail.presentation.TrainScheduleRouteDetailViewModel;
 import com.tokopedia.train.search.presentation.adapter.TrainSearchAdapterTypeFactory;
+
+import java.util.List;
 
 /**
  * Created by nabilla on 3/9/18.
@@ -32,6 +35,7 @@ public class TrainScheduleViewModel implements Parcelable, Visitable<TrainSearch
     private int availableSeat;
     private boolean cheapestFlag;
     private boolean fastestFlag;
+    private List<TrainScheduleRouteDetailViewModel> scheduleRouteList;
 
     public TrainScheduleViewModel() {
     }
@@ -57,6 +61,7 @@ public class TrainScheduleViewModel implements Parcelable, Visitable<TrainSearch
         availableSeat = in.readInt();
         cheapestFlag = in.readByte() != 0;
         fastestFlag = in.readByte() != 0;
+        scheduleRouteList = in.createTypedArrayList(TrainScheduleRouteDetailViewModel.CREATOR);
     }
 
     public static final Creator<TrainScheduleViewModel> CREATOR = new Creator<TrainScheduleViewModel>() {
@@ -215,7 +220,6 @@ public class TrainScheduleViewModel implements Parcelable, Visitable<TrainSearch
         this.availableSeat = availableSeat;
     }
 
-
     public boolean isCheapestFlag() {
         return cheapestFlag;
     }
@@ -230,6 +234,14 @@ public class TrainScheduleViewModel implements Parcelable, Visitable<TrainSearch
 
     public void setFastestFlag(boolean fastestFlag) {
         this.fastestFlag = fastestFlag;
+    }
+
+    public void setScheduleRouteList(List<TrainScheduleRouteDetailViewModel> scheduleRouteList) {
+        this.scheduleRouteList = scheduleRouteList;
+    }
+
+    public List<TrainScheduleRouteDetailViewModel> getScheduleRouteList() {
+        return scheduleRouteList;
     }
 
     @Override
@@ -264,6 +276,7 @@ public class TrainScheduleViewModel implements Parcelable, Visitable<TrainSearch
         parcel.writeInt(availableSeat);
         parcel.writeByte((byte) (cheapestFlag ? 1 : 0));
         parcel.writeByte((byte) (fastestFlag ? 1 : 0));
+        parcel.writeTypedList(scheduleRouteList);
     }
 
     @Override
@@ -276,4 +289,5 @@ public class TrainScheduleViewModel implements Parcelable, Visitable<TrainSearch
                 "Arrival Timestamp: " + arrivalTimestamp + "\n" +
                 "Availibility: " + availableSeat + "\n";
     }
+
 }

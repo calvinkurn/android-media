@@ -27,6 +27,7 @@ import com.tokopedia.design.button.BottomActionView;
 import com.tokopedia.tkpdtrain.R;
 import com.tokopedia.train.common.di.utils.TrainComponentUtils;
 import com.tokopedia.train.homepage.presentation.model.TrainSearchPassDataViewModel;
+import com.tokopedia.train.scheduledetail.presentation.TrainScheduleDetailActivity;
 import com.tokopedia.train.search.constant.TrainSortOption;
 import com.tokopedia.train.search.di.DaggerTrainSearchComponent;
 import com.tokopedia.train.search.di.TrainSearchComponent;
@@ -247,6 +248,8 @@ public abstract class TrainSearchFragment extends BaseListFragment<TrainSchedule
     public void onItemClicked(TrainScheduleViewModel trainScheduleViewModel) {
         //TODO make tap to go to detail schedule page
         Toast.makeText(getActivity(), trainScheduleViewModel.getTrainName(), Toast.LENGTH_SHORT).show();
+
+        TrainScheduleDetailActivity.createIntent(getActivity(), trainScheduleViewModel);
     }
 
     @Override
