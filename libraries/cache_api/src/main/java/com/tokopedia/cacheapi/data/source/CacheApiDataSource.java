@@ -3,9 +3,12 @@ package com.tokopedia.cacheapi.data.source;
 import com.tokopedia.cacheapi.data.source.db.CacheApiDatabaseSource;
 import com.tokopedia.cacheapi.data.source.db.model.CacheApiWhitelist;
 import com.tokopedia.cacheapi.domain.model.CacheApiWhiteListDomain;
+import com.tokopedia.cacheapi.exception.WhiteListNotFoundException;
 import com.tokopedia.cacheapi.util.CacheApiLoggingUtils;
 
 import java.util.Collection;
+import java.util.List;
+import java.util.regex.Pattern;
 
 import okhttp3.Response;
 import rx.Observable;
@@ -18,13 +21,13 @@ import rx.functions.Func2;
 
 public class CacheApiDataSource {
 
-    private CacheApiDatabaseSource cacheApiDatabaseSource;
+    private final CacheApiDatabaseSource cacheApiDatabaseSource;
 
     public CacheApiDataSource(CacheApiDatabaseSource cacheApiDataManager) {
         this.cacheApiDatabaseSource = cacheApiDataManager;
     }
 
-    public Observable<Boolean> bulkInsert(final Collection<CacheApiWhiteListDomain> domainList, final String versionName) {
+    public Observable<Boolean> bulkInsert(final List<CacheApiWhiteListDomain> domainList, final String versionName) {
         return cacheApiDatabaseSource.isWhiteListVersionUpdated(versionName).flatMap(new Func1<Boolean, Observable<Boolean>>() {
             @Override
             public Observable<Boolean> call(Boolean aBoolean) {
@@ -56,35 +59,72 @@ public class CacheApiDataSource {
         });
     }
 
-    public Observable<CacheApiWhitelist> getWhiteList(String host, String path) {
-        return cacheApiDatabaseSource.getWhiteList(host, path);
+    public Observable<Boolean> saveResponse(String host, String path, final Response response) {
+        return getWhiteList(host, path).flatMap(new Func1<CacheApiWhitelist, Observable<Boolean>>() {
+            @Override
+            public Observable<Boolean> call(CacheApiWhitelist cacheApiWhitelist) {
+                if (cacheApiWhitelist == null) {
+                    return Observable.error(new WhiteListNotFoundException());
+                }
+                return cacheApiDatabaseSource.updateResponse(response, cacheApiWhitelist);
+            }
+        });
     }
 
     public Observable<Boolean> isInWhiteList(String host, String path) {
-        return cacheApiDatabaseSource.isInWhiteList(host, path);
+        return getWhiteList(host, path).flatMap(new Func1<CacheApiWhitelist, Observable<Boolean>>() {
+            @Override
+            public Observable<Boolean> call(CacheApiWhitelist cacheApiWhitelist) {
+                return Observable.just(cacheApiWhitelist != null);
+            }
+        });
     }
 
     public Observable<String> getCachedResponse(String host, String path, String param) {
         return cacheApiDatabaseSource.getCachedResponse(host, path, param);
     }
 
-    public Observable<Boolean> deleteAllCacheData() {
-        return cacheApiDatabaseSource.deleteAllCacheData();
+    private Observable<CacheApiWhitelist> getWhiteList(final String host, final String path) {
+        return cacheApiDatabaseSource.getWhiteList(host, path).flatMap(new Func1<CacheApiWhitelist, Observable<CacheApiWhitelist>>() {
+            @Override
+            public Observable<CacheApiWhitelist> call(CacheApiWhitelist cacheApiWhitelist) {
+                if (cacheApiWhitelist != null) {
+                    return Observable.just(cacheApiWhitelist);
+                }
+                // Find with dynamic link
+                return cacheApiDatabaseSource.getDynamicLinkWhiteList(host).flatMap(new Func1<List<CacheApiWhitelist>, Observable<CacheApiWhitelist>>() {
+                    @Override
+                    public Observable<CacheApiWhitelist> call(List<CacheApiWhitelist> cacheApiWhitelists) {
+                        for (CacheApiWhitelist cacheApiWhitelist: cacheApiWhitelists) {
+                            if (Pattern.matches(cacheApiWhitelist.getPath(), path)) {
+                                CacheApiLoggingUtils.dumper(String.format("Compare : %s : %s", path, cacheApiWhitelist.getPath()));
+                                return Observable.just(cacheApiWhitelist);
+                            }
+                        }
+                        return Observable.just(null);
+                    }
+                });
+            }
+        });
+    }
+
+    public Observable<Boolean> deleteCachedData(String host, String path) {
+        return cacheApiDatabaseSource.getWhiteList(host, path).flatMap(new Func1<CacheApiWhitelist, Observable<Boolean>>() {
+            @Override
+            public Observable<Boolean> call(CacheApiWhitelist cacheApiWhitelist) {
+                if (cacheApiWhitelist == null) {
+                    return Observable.error(new WhiteListNotFoundException());
+                }
+                return cacheApiDatabaseSource.deleteCachedData(cacheApiWhitelist.getId());
+            }
+        });
     }
 
     public Observable<Boolean> deleteExpiredCachedData() {
         return cacheApiDatabaseSource.deleteExpiredCachedData();
     }
 
-    public Observable<Boolean> deleteCachedData(String host, String path) {
-        return cacheApiDatabaseSource.deleteCachedData(host, path);
-    }
-
-    public Observable<Boolean> deleteWhiteList(String host, String path) {
-        return cacheApiDatabaseSource.deleteWhiteList(host, path);
-    }
-
-    public Observable<Boolean> updateResponse(Response response, int expiredTime) {
-        return cacheApiDatabaseSource.updateResponse(response, expiredTime);
+    public Observable<Boolean> deleteAllCacheData() {
+        return cacheApiDatabaseSource.deleteAllCacheData();
     }
 }
