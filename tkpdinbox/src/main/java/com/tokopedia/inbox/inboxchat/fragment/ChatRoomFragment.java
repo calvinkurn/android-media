@@ -405,6 +405,7 @@ public class ChatRoomFragment extends BaseDaggerFragment
             @Override
             public void onClick(View view) {
                 scrollToBottom();
+                rvQuickReply.setVisibility(View.GONE);
                 presenter.sendMessage(networkType);
                 UnifyTracking.sendChat(TopChatAnalytics.Category.CHAT_DETAIL,
                         TopChatAnalytics.Action.CHAT_DETAIL_SEND,
@@ -1429,6 +1430,7 @@ public class ChatRoomFragment extends BaseDaggerFragment
 
     @Override
     public void showQuickReplyView(QuickReplyListViewModel model) {
+        rvQuickReply.setVisibility(View.GONE);
         if (model.getQuickReplies().size() != 0) {
             rvQuickReply.setVisibility(View.VISIBLE);
             quickReplyAdapter = new QuickReplyAdapter(model, this);
