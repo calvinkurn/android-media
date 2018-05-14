@@ -48,6 +48,7 @@ public class AlbumMediaAdapter extends RecyclerViewCursorAdapter<AlbumMediaAdapt
     public interface OnMediaClickListener {
         void onMediaClick(MediaItem item, boolean checked, int adapterPosition);
         boolean isImageValid(MediaItem item);
+        boolean canAddMoreImage();
     }
 
     @Override
@@ -64,7 +65,12 @@ public class AlbumMediaAdapter extends RecyclerViewCursorAdapter<AlbumMediaAdapt
             }
         }
 
-        if (!mOnMediaClickListener.isImageValid(item)) {
+        if (isChecked && !mOnMediaClickListener.canAddMoreImage()) {
+            selectionIdList.remove(item.getId()); //in case support multiple selection
+            return;
+        }
+
+        if (isChecked && !mOnMediaClickListener.isImageValid(item)) {
             selectionIdList.remove(item.getId()); //in case support multiple selection
             return;
         }
@@ -114,6 +120,10 @@ public class AlbumMediaAdapter extends RecyclerViewCursorAdapter<AlbumMediaAdapt
             mImageResize = (int) (mImageResize * 0.85f);
         }
         return mImageResize;
+    }
+
+    public ArrayList<Long> getSelectionIdList() {
+        return selectionIdList;
     }
 
     @Override

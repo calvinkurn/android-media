@@ -204,6 +204,44 @@ public class ImageEditPreviewPresenter extends BaseDaggerPresenter<ImageEditPrev
         addToComposite(subscription);
     }
 
+    public void rotateImage(Bitmap bitmap, final float angle, final boolean isPng) {
+        if (bitmap == null || bitmap.isRecycled()) {
+            return;
+        }
+        Subscription subscription =
+                Observable.just(bitmap).flatMap(new Func1<Bitmap, Observable<String>>() {
+                    @Override
+                    public Observable<String> call(Bitmap bitmap) {
+                        Bitmap resultBitmap = ImageUtils.rotateBitmapByDegree(bitmap, angle);
+                        File file = ImageUtils.writeImageToTkpdPath(ImageUtils.DirectoryDef.DIRECTORY_TOKOPEDIA_CACHE, resultBitmap, isPng);
+                        return Observable.just(file.getAbsolutePath());
+                    }
+                })
+                        .subscribeOn(Schedulers.newThread())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(new Subscriber<String>() {
+                            @Override
+                            public void onCompleted() {
+
+                            }
+
+                            @Override
+                            public void onError(Throwable e) {
+                                if (isViewAttached()) {
+                                    getView().onErrorSaveContrastImage(e);
+                                }
+                            }
+
+                            @Override
+                            public void onNext(String filePath) {
+                                if (isViewAttached()) {
+                                    getView().onSuccessSaveContrastImage(filePath);
+                                }
+                            }
+                        });
+        addToComposite(subscription);
+    }
+
     public void getDebounceBrightnessMatrix(float brightnessValue) {
         brightnessSubject.onNext(brightnessValue);
     }

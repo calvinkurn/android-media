@@ -10,10 +10,10 @@ import com.tokopedia.imagepicker.picker.gallery.type.GalleryType;
 import static com.tokopedia.imagepicker.picker.main.builder.ImageEditActionTypeDef.ACTION_BRIGHTNESS;
 import static com.tokopedia.imagepicker.picker.main.builder.ImageEditActionTypeDef.ACTION_CONTRAST;
 import static com.tokopedia.imagepicker.picker.main.builder.ImageEditActionTypeDef.ACTION_CROP;
-import static com.tokopedia.imagepicker.picker.main.builder.ImageEditActionTypeDef.ACTION_CROP_ROTATE;
 import static com.tokopedia.imagepicker.picker.main.builder.ImageEditActionTypeDef.ACTION_ROTATE;
 import static com.tokopedia.imagepicker.picker.main.builder.ImagePickerTabTypeDef.TYPE_CAMERA;
 import static com.tokopedia.imagepicker.picker.main.builder.ImagePickerTabTypeDef.TYPE_GALLERY;
+import static com.tokopedia.imagepicker.picker.main.builder.ImagePickerTabTypeDef.TYPE_INSTAGRAM;
 
 /**
  * Created by hendry on 19/04/18.
@@ -38,10 +38,13 @@ public class ImagePickerBuilder implements Parcelable{
     private int ratioX;
     private int ratioY;
     private boolean moveImageResultToLocal;
+    private boolean hasPickerPreview;
+    private int maximumNoOfImage;
 
     public static ImagePickerBuilder getDefaultBuilder(Context context){
         return new ImagePickerBuilder(context.getString(R.string.choose_image),
-                new int[]{TYPE_GALLERY, TYPE_CAMERA}, GalleryType.IMAGE_ONLY, ImageSelectionTypeDef.TYPE_SINGLE,
+                new int[]{TYPE_GALLERY, TYPE_CAMERA, TYPE_INSTAGRAM}, GalleryType.IMAGE_ONLY, ImageSelectionTypeDef.TYPE_MULTIPLE,
+                false, 5,
                 DEFAULT_RESOLUTION, 1, 1, true, true,
                 new int[]{ACTION_BRIGHTNESS, ACTION_CONTRAST, ACTION_CROP, ACTION_ROTATE},
                 true);
@@ -51,12 +54,16 @@ public class ImagePickerBuilder implements Parcelable{
                        @ImagePickerTabTypeDef int[] imagePickerTabTypeDef,
                        @GalleryType int galleryType,
                        @ImageSelectionTypeDef int selectionType,
+                       boolean hasPickerPreview,
+                       int maximumNoOfImage,
                        int minResolution,
                        int ratioX, int ratioY, boolean moveImageResultToLocal) {
         this.title = title;
         this.tabTypeDef = imagePickerTabTypeDef;
         this.galleryType = galleryType;
         this.imageSelectionType = selectionType;
+        this.hasPickerPreview = hasPickerPreview;
+        this.maximumNoOfImage = maximumNoOfImage;
         this.minResolution = minResolution;
         this.ratioX = ratioX;
         this.ratioY = ratioY;
@@ -68,13 +75,17 @@ public class ImagePickerBuilder implements Parcelable{
                        @ImagePickerTabTypeDef int[] imagePickerTabTypeDef,
                        @GalleryType int galleryType,
                        @ImageSelectionTypeDef int selectionType,
+                       boolean hasPickerPreview,
+                       int maximumNoOfImage,
                        int minResolution,
                        int ratioX, int ratioY,
                        boolean moveImageResultToLocal,
                        boolean continueToEditAfterPick,
                        @ImageEditActionTypeDef int[] imageEditActionType,
                        boolean circlePreview) {
-        this(title, imagePickerTabTypeDef, galleryType, selectionType, minResolution, ratioX, ratioY, moveImageResultToLocal);
+        this(title, imagePickerTabTypeDef, galleryType, selectionType, hasPickerPreview,
+                maximumNoOfImage,
+                minResolution, ratioX, ratioY, moveImageResultToLocal);
         this.continueToEditAfterPick = continueToEditAfterPick;
         this.imageEditActionType = imageEditActionType;
         this.circlePreview = circlePreview;
@@ -150,6 +161,13 @@ public class ImagePickerBuilder implements Parcelable{
         return moveImageResultToLocal;
     }
 
+    public boolean isHasPickerPreview() {
+        return hasPickerPreview;
+    }
+
+    public int getMaximumNoOfImage() {
+        return maximumNoOfImage;
+    }
 
     @Override
     public int describeContents() {
@@ -169,6 +187,8 @@ public class ImagePickerBuilder implements Parcelable{
         dest.writeInt(this.ratioX);
         dest.writeInt(this.ratioY);
         dest.writeByte(this.moveImageResultToLocal ? (byte) 1 : (byte) 0);
+        dest.writeByte(this.hasPickerPreview ? (byte) 1 : (byte) 0);
+        dest.writeInt(this.maximumNoOfImage);
     }
 
     protected ImagePickerBuilder(Parcel in) {
@@ -183,6 +203,8 @@ public class ImagePickerBuilder implements Parcelable{
         this.ratioX = in.readInt();
         this.ratioY = in.readInt();
         this.moveImageResultToLocal = in.readByte() != 0;
+        this.hasPickerPreview = in.readByte() != 0;
+        this.maximumNoOfImage = in.readInt();
     }
 
     public static final Creator<ImagePickerBuilder> CREATOR = new Creator<ImagePickerBuilder>() {

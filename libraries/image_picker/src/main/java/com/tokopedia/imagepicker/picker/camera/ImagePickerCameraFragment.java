@@ -17,7 +17,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.RelativeLayout;
-import android.widget.Toast;
 
 import com.otaliastudios.cameraview.CameraListener;
 import com.otaliastudios.cameraview.CameraOptions;
@@ -26,6 +25,7 @@ import com.otaliastudios.cameraview.CameraView;
 import com.otaliastudios.cameraview.Flash;
 import com.otaliastudios.cameraview.Size;
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment;
+import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.imagepicker.R;
 import com.tokopedia.imagepicker.common.util.ImageUtils;
 
@@ -58,6 +58,8 @@ public class ImagePickerCameraFragment extends TkpdBaseV4Fragment {
 
     public interface OnImagePickerCameraFragmentListener {
         void onImageTaken(String filePath);
+
+        boolean isMaxImageReached();
     }
 
     @SuppressLint("MissingPermission")
@@ -127,7 +129,7 @@ public class ImagePickerCameraFragment extends TkpdBaseV4Fragment {
             flashImageButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    flashIndex = (flashIndex+1) % supportedFlashList.size();
+                    flashIndex = (flashIndex + 1) % supportedFlashList.size();
                     setCameraFlash();
                 }
             });
@@ -144,6 +146,10 @@ public class ImagePickerCameraFragment extends TkpdBaseV4Fragment {
 
             private void capturePhoto() {
                 if (mCapturingPicture) {
+                    return;
+                }
+                if (onImagePickerCameraFragmentListener.isMaxImageReached()) {
+                    NetworkErrorHelper.showRedCloseSnackbar(getView(), getString(R.string.max_no_of_image_reached));
                     return;
                 }
                 if (isAdded()) {
@@ -166,10 +172,10 @@ public class ImagePickerCameraFragment extends TkpdBaseV4Fragment {
         progressDialog.setMessage(getString(R.string.title_loading));
     }
 
-    private void setCameraFlash(){
+    private void setCameraFlash() {
         Flash flash = supportedFlashList.get(flashIndex);
         if (flash.ordinal() == Flash.TORCH.ordinal()) {
-            flashIndex = (flashIndex+1) % supportedFlashList.size();
+            flashIndex = (flashIndex + 1) % supportedFlashList.size();
             flash = supportedFlashList.get(flashIndex);
         }
         cameraView.set(flash);
@@ -188,7 +194,6 @@ public class ImagePickerCameraFragment extends TkpdBaseV4Fragment {
 
 
     private void generateImage(byte[] imageByte) {
-        mCapturingPicture = false;
         long callbackTime = System.currentTimeMillis();
         // This can happen if picture was taken with a gesture.
         if (mCaptureTime == 0) {
@@ -200,10 +205,15 @@ public class ImagePickerCameraFragment extends TkpdBaseV4Fragment {
         CameraUtils.decodeBitmap(imageByte, mCaptureNativeSize.getWidth(), mCaptureNativeSize.getHeight(), new CameraUtils.BitmapCallback() {
             @Override
             public void onBitmapReady(Bitmap bitmap) {
-                File file = ImageUtils.writeImageToTkpdPath(ImageUtils.DirectoryDef.DIRECTORY_TOKOPEDIA_CACHE, bitmap, false);
+                File file = ImageUtils.writeImageToTkpdPath(ImageUtils.DirectoryDef.DIRECTORY_TOKOPEDIA_CACHE_CAMERA, bitmap, false);
                 onImagePickerCameraFragmentListener.onImageTaken(file.getAbsolutePath());
             }
         });
+        reset();
+    }
+
+    private void reset() {
+        mCapturingPicture = false;
         mCaptureTime = 0;
         mCaptureNativeSize = null;
         if (isAdded()) {

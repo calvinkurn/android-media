@@ -36,6 +36,7 @@ import java.util.ArrayList;
 import java.util.Random;
 
 import static com.tokopedia.imagepicker.common.util.ImageUtils.DirectoryDef.DIRECTORY_TOKOPEDIA_CACHE;
+import static com.tokopedia.imagepicker.common.util.ImageUtils.DirectoryDef.DIRECTORY_TOKOPEDIA_CACHE_CAMERA;
 import static com.tokopedia.imagepicker.common.util.ImageUtils.DirectoryDef.DIRECTORY_TOKOPEDIA_EDIT_RESULT;
 
 /**
@@ -53,9 +54,10 @@ public class ImageUtils {
     public static final String JPG_EXT = ".jpg";
     public static final String PNG = "png";
 
-    @StringDef({DIRECTORY_TOKOPEDIA_CACHE, DIRECTORY_TOKOPEDIA_EDIT_RESULT})
+    @StringDef({DIRECTORY_TOKOPEDIA_CACHE, DIRECTORY_TOKOPEDIA_CACHE_CAMERA, DIRECTORY_TOKOPEDIA_EDIT_RESULT})
     public @interface DirectoryDef {
         String DIRECTORY_TOKOPEDIA_CACHE = "Tokopedia/Tokopedia Cache/";
+        String DIRECTORY_TOKOPEDIA_CACHE_CAMERA = "Tokopedia/Tokopedia Camera/";
         String DIRECTORY_TOKOPEDIA_EDIT_RESULT = "Tokopedia/Tokopedia Edit/";
     }
 
@@ -90,8 +92,8 @@ public class ImageUtils {
         return getTokopediaPhotoPath(directoryDef, isPng(referencePath));
     }
 
-    public static void deleteCacheFolder() {
-        File directory = getTokopediaPublicDirectory(DIRECTORY_TOKOPEDIA_CACHE);
+    public static void deleteCacheFolder(@DirectoryDef String directoryString) {
+        File directory = getTokopediaPublicDirectory(directoryString);
         if (directory.exists()) {
             File[] files = directory.listFiles();
             for (int i = 0; i < files.length; i++) {
@@ -656,6 +658,19 @@ public class ImageUtils {
             default:
                 return bitmap;
         }
+
+        try {
+            Bitmap bmRotated = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
+            bitmap.recycle();
+            return bmRotated;
+        } catch (OutOfMemoryError ignore) {
+            return null;
+        }
+    }
+
+    public static Bitmap rotateBitmapByDegree(Bitmap bitmap, float degree) {
+        Matrix matrix = new Matrix();
+        matrix.setRotate(degree);
 
         try {
             Bitmap bmRotated = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);

@@ -12,16 +12,18 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.view.View;
 import android.webkit.URLUtil;
+import android.widget.TextView;
 
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.imagepicker.R;
+import com.tokopedia.imagepicker.common.util.ImageUtils;
 import com.tokopedia.imagepicker.editor.main.view.ImageEditorActivity;
-import com.tokopedia.imagepicker.editor.presenter.ImageEditorPresenter;
 import com.tokopedia.imagepicker.picker.main.adapter.ImagePickerViewPagerAdapter;
 import com.tokopedia.imagepicker.picker.camera.ImagePickerCameraFragment;
 import com.tokopedia.imagepicker.picker.gallery.ImagePickerGalleryFragment;
@@ -31,6 +33,7 @@ import com.tokopedia.imagepicker.picker.main.builder.ImagePickerBuilder;
 import com.tokopedia.imagepicker.picker.main.builder.ImagePickerTabTypeDef;
 import com.tokopedia.imagepicker.picker.main.builder.ImageSelectionTypeDef;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -44,6 +47,7 @@ public class ImagePickerActivity extends BaseSimpleActivity
     public static final String PICKER_RESULT_PATHS = "result_paths";
 
     public static final String SAVED_SELECTED_TAB = "saved_sel_tab";
+    public static final String SAVED_SELECTED_IMAGES = "saved_sel_img";
     private static final int REQUEST_CAMERA_PERMISSIONS = 932;
     private static final int REQUEST_CODE_EDITOR = 933;
 
@@ -60,6 +64,9 @@ public class ImagePickerActivity extends BaseSimpleActivity
 
     private ImagePickerPresenter imagePickerPresenter;
 
+    private ArrayList<String> selectedImagePaths;
+    private TextView tvDone;
+
     public static Intent getIntent(Context context, ImagePickerBuilder imagePickerBuilder) {
         Intent intent = new Intent(context, ImagePickerActivity.class);
         intent.putExtra(EXTRA_IMAGE_PICKER_BUILDER, imagePickerBuilder);
@@ -74,11 +81,18 @@ public class ImagePickerActivity extends BaseSimpleActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         Intent intent = getIntent();
-        imagePickerBuilder = (ImagePickerBuilder) intent.getExtras().get(EXTRA_IMAGE_PICKER_BUILDER);
+        if (intent != null && intent.getExtras() != null && intent.getExtras().containsKey(EXTRA_IMAGE_PICKER_BUILDER)) {
+            imagePickerBuilder = (ImagePickerBuilder) intent.getExtras().get(EXTRA_IMAGE_PICKER_BUILDER);
+        } else {
+            imagePickerBuilder = ImagePickerBuilder.getDefaultBuilder(getContext());
+        }
         super.onCreate(savedInstanceState);
 
-        if (savedInstanceState != null) {
+        if (savedInstanceState == null) {
+            selectedImagePaths = new ArrayList<>();
+        } else {
             selectedTab = savedInstanceState.getInt(SAVED_SELECTED_TAB, 0);
+            selectedImagePaths = savedInstanceState.getStringArrayList(SAVED_SELECTED_IMAGES);
         }
 
         viewPager = findViewById(R.id.view_pager);
@@ -89,11 +103,35 @@ public class ImagePickerActivity extends BaseSimpleActivity
         setupPreview();
         setupViewPager();
         setupTabLayout();
+
+        tvDone = findViewById(R.id.tv_done);
+        if (imagePickerBuilder.supportMultipleSelection()) {
+            tvDone.setVisibility(View.VISIBLE);
+            tvDone.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    onDoneClicked();
+                }
+            });
+            handleDoneVisibility();
+        } else {
+            tvDone.setVisibility(View.GONE);
+        }
+    }
+
+    private void onDoneClicked(){
+        if (selectedImagePaths.size() > 0) {
+            Intent intent = ImageEditorActivity.getIntent(this, selectedImagePaths,
+                    imagePickerBuilder.getMinResolution(), imagePickerBuilder.getImageEditActionType(),
+                    imagePickerBuilder.getRatioX(), imagePickerBuilder.getRatioY(),
+                    imagePickerBuilder.isCirclePreview());
+            startActivityForResult(intent, REQUEST_CODE_EDITOR);
+        }
     }
 
     private void setupPreview() {
         View vgPreviewContainer = findViewById(R.id.vg_preview_container);
-        if (imagePickerBuilder.getImageSelectionType() == ImageSelectionTypeDef.TYPE_MULTIPLE_WITH_PREVIEW) {
+        if (imagePickerBuilder.isHasPickerPreview()) {
             vgPreviewContainer.setVisibility(View.VISIBLE);
         } else {
             vgPreviewContainer.setVisibility(View.GONE);
@@ -186,36 +224,73 @@ public class ImagePickerActivity extends BaseSimpleActivity
     }
 
     @Override
+    public void onBackPressed() {
+        //remove any cache file captured by camera
+        ImageUtils.deleteCacheFolder(ImageUtils.DirectoryDef.DIRECTORY_TOKOPEDIA_CACHE_CAMERA);
+        super.onBackPressed();
+    }
+
+    private void handleDoneVisibility(){
+        if (selectedImagePaths.size()== 0) {
+            disableDoneView();
+        } else {
+            enableDoneView();
+        }
+    }
+
+    @Override
+    public boolean isMaxImageReached() {
+        return selectedImagePaths.size() >= imagePickerBuilder.getMaximumNoOfImage();
+    }
+
+    @Override
     public void onAlbumItemClicked(MediaItem item, boolean isChecked) {
-        onImageSelected(item.getRealPath());
+        onImageSelected(item.getRealPath(), isChecked);
     }
 
     @Override
     public void onClickImageInstagram(String url, boolean isChecked) {
-        onImageSelected(url);
+        onImageSelected(url, isChecked);
     }
 
     @Override
     public void onImageTaken(String filePath) {
-        onImageSelected(filePath);
+        onImageSelected(filePath, true);
     }
 
-    private void onImageSelected(String filePathOrUrl) {
+    private void onImageSelected(String filePathOrUrl, boolean isChecked) {
         switch (imagePickerBuilder.getImageSelectionType()) {
             case ImageSelectionTypeDef.TYPE_SINGLE: {
                 onSingleImagePicked(filePathOrUrl);
             }
             break;
-            case ImageSelectionTypeDef.TYPE_MULTIPLE_NO_PREVIEW:
-            case ImageSelectionTypeDef.TYPE_MULTIPLE_WITH_PREVIEW: {
-                // TODO change the UI of selection
-                if (imagePickerBuilder.getImageSelectionType() == ImageSelectionTypeDef.TYPE_MULTIPLE_WITH_PREVIEW) {
-                    // TODO show the preview?
+            case ImageSelectionTypeDef.TYPE_MULTIPLE: {
+                if (isChecked) {
+                    selectedImagePaths.add(filePathOrUrl);
+                    enableDoneView();
                 } else {
-                    // TODO hide the preview?
+                    selectedImagePaths.remove(filePathOrUrl);
+                    if (selectedImagePaths.size() == 0) {
+                        disableDoneView();
+                    }
+                }
+                if (imagePickerBuilder.isHasPickerPreview()) {
+                    // TODO update the preview?
                 }
             }
             break;
+        }
+    }
+
+    private void disableDoneView(){
+        tvDone.setTextColor(ContextCompat.getColor(getContext(), R.color.font_black_disabled_38));
+        tvDone.setEnabled(false);
+    }
+
+    private void enableDoneView(){
+        if (!tvDone.isEnabled()) {
+            tvDone.setTextColor(ContextCompat.getColor(getContext(), R.color.tkpd_main_green));
+            tvDone.setEnabled(true);
         }
     }
 
@@ -259,7 +334,7 @@ public class ImagePickerActivity extends BaseSimpleActivity
         }
     }
 
-    private void onFinishWithMultipleLocalImage(ArrayList<String> imageUrlOrPathList){
+    private void onFinishWithMultipleLocalImage(ArrayList<String> imageUrlOrPathList) {
         Intent intent = new Intent();
         intent.putStringArrayListExtra(PICKER_RESULT_PATHS, imageUrlOrPathList);
         setResult(Activity.RESULT_OK, intent);
@@ -321,36 +396,11 @@ public class ImagePickerActivity extends BaseSimpleActivity
         }
     }
 
-    private ImagePickerGalleryFragment getGalleryFragment() {
-        int tabGallery = imagePickerBuilder.indexTypeDef(ImagePickerTabTypeDef.TYPE_GALLERY);
-        if (tabGallery > -1) {
-            Fragment fragment = imagePickerViewPagerAdapter.getRegisteredFragment(tabGallery);
-            if (fragment instanceof ImagePickerGalleryFragment) {
-                return (ImagePickerGalleryFragment) fragment;
-            } else {
-                return null;
-            }
-        }
-        return null;
-    }
-
-    private ImagePickerCameraFragment getCameraFragment() {
-        int tabCamera = imagePickerBuilder.indexTypeDef(ImagePickerTabTypeDef.TYPE_CAMERA);
-        if (tabCamera > -1) {
-            Fragment fragment = imagePickerViewPagerAdapter.getRegisteredFragment(tabCamera);
-            if (fragment instanceof ImagePickerCameraFragment) {
-                return (ImagePickerCameraFragment) fragment;
-            } else {
-                return null;
-            }
-        }
-        return null;
-    }
-
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putInt(SAVED_SELECTED_TAB, tabLayout.getSelectedTabPosition());
+        outState.putStringArrayList(SAVED_SELECTED_IMAGES, selectedImagePaths);
     }
 
 }
