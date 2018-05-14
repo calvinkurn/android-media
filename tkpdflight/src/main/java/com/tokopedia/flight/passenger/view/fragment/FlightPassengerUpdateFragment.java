@@ -44,6 +44,10 @@ public class FlightPassengerUpdateFragment extends BaseDaggerFragment implements
     private AppCompatEditText etPassengerFirstName;
     private AppCompatEditText etPassengerLastName;
     private AppCompatEditText etPassengerBirthdate;
+    private AppCompatEditText etPassportNumber;
+    private AppCompatEditText etPassportExpired;
+    private AppCompatEditText etPassportNationality;
+    private AppCompatEditText etPassportIssuerCountry;
     private AppCompatButton btnSavePassengerInfo;
 
     public FlightPassengerUpdateFragment() {
@@ -69,6 +73,10 @@ public class FlightPassengerUpdateFragment extends BaseDaggerFragment implements
         etPassengerFirstName = view.findViewById(R.id.et_first_name);
         etPassengerLastName = view.findViewById(R.id.et_last_name);
         etPassengerBirthdate = view.findViewById(R.id.et_birth_date);
+        etPassportNumber = view.findViewById(R.id.et_passport_no);
+        etPassportExpired = view.findViewById(R.id.et_passport_expiration_date);
+        etPassportNumber = view.findViewById(R.id.et_nationality);
+        etPassportNumber = view.findViewById(R.id.et_passport_issuer_country);
         btnSavePassengerInfo = view.findViewById(R.id.button_submit);
 
         etPassengerBirthdate.setOnClickListener(new View.OnClickListener() {

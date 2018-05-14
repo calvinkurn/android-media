@@ -63,6 +63,7 @@ public class FlightBookingPassengerFragment extends BaseDaggerFragment implement
     private static final int REQUEST_CODE_PICK_SAVED_PASSENGER = 3;
     @Inject
     FlightBookingPassengerPresenter presenter;
+
     private AppCompatTextView tvHeader;
     private AppCompatTextView tvSubheader;
     private SpinnerTextView spTitle;
@@ -77,6 +78,10 @@ public class FlightBookingPassengerFragment extends BaseDaggerFragment implement
     private LinearLayout mealsContainer;
     private RecyclerView rvMeals;
     private AppCompatEditText etSavedPassenger;
+    private AppCompatEditText etPassportNumber;
+    private AppCompatEditText etPassportExpired;
+    private AppCompatEditText etPassportNationality;
+    private AppCompatEditText etPassportIssuerCountry;
 
     private AppCompatButton buttonSubmit;
     private FlightBookingPassengerViewModel viewModel;
@@ -168,6 +173,10 @@ public class FlightBookingPassengerFragment extends BaseDaggerFragment implement
         mealsContainer = (LinearLayout) view.findViewById(R.id.meals_container);
         rvMeals = (RecyclerView) view.findViewById(R.id.rv_meals);
         etSavedPassenger = view.findViewById(R.id.et_saved_passenger);
+        etPassportNumber = view.findViewById(R.id.et_passport_no);
+        etPassportExpired = view.findViewById(R.id.et_passport_expiration_date);
+        etPassportNumber = view.findViewById(R.id.et_nationality);
+        etPassportNumber = view.findViewById(R.id.et_passport_issuer_country);
         buttonSubmit = (AppCompatButton) view.findViewById(R.id.button_submit);
         buttonSubmit.setOnClickListener(new View.OnClickListener() {
             @Override
