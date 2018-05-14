@@ -230,7 +230,7 @@ public class FeedPlusTypeFactoryImpl extends BaseAdapterTypeFactory
         else if (type == ProductCommunicationViewHolder.LAYOUT)
             viewHolder = new ProductCommunicationViewHolder(view, viewListener);
         else if (type == PollViewHolder.LAYOUT)
-            viewHolder = new PollViewHolder(view);
+            viewHolder = new PollViewHolder(view, kolViewListener);
         else if (type == EmptyFeedBeforeLoginViewHolder.LAYOUT)
             viewHolder = new EmptyFeedBeforeLoginViewHolder(view, viewListener);
         else if (type == KolPostViewHolder.LAYOUT)

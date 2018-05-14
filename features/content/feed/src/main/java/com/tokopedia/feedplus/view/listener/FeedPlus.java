@@ -43,6 +43,18 @@ public interface FeedPlus {
             void onSuccessUnfollowKolFromRecommendation(int rowNumber, int position);
 
             void onGoToKolProfile(int rowNumber, String userId, int postId);
+
+            void onOpenKolTooltip(int rowNumber, String url);
+
+            void onFollowKolClicked(int rowNumber, int id);
+
+            void onUnfollowKolClicked(int rowNumber, int id);
+
+            void onLikeKolClicked(int rowNumber, int id);
+
+            void onUnlikeKolClicked(int adapterPosition, int id);
+
+            void onGoToKolComment(int rowNumber, int id);
         }
 
         void setFirstCursor(String firstCursor);
