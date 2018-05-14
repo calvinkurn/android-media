@@ -1,5 +1,6 @@
 package com.tokopedia.checkout.view.di.component;
 
+import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.transactiondata.repository.ICartRepository;
@@ -54,6 +55,8 @@ public interface CartComponent {
     ITopPayMapper topPayMapper();
 
     UserSession userSession();
+
+    AbstractionRouter abstractionRouter();
 
     void inject(CartComponentInjector cartApiServiceComponentInjector);
 }
