@@ -57,6 +57,8 @@ public interface FlightBookingPassengerContract {
 
         String getPassengerBirthDate();
 
+        String getPassportExpiredDate();
+
         void showPassengerBirthdateEmptyError(int resId);
 
         void showPassengerChildBirthdateShouldMoreThan2Years(int resId);
@@ -78,6 +80,8 @@ public interface FlightBookingPassengerContract {
         void renderPassengerTitle(String passengerTitle);
 
         void renderSelectedList(String passengerName);
+
+        void renderPassportExpiredDate(String expiredDateStr);
 
         void navigateToLuggagePicker(List<FlightBookingAmenityViewModel> luggages, FlightBookingAmenityMetaViewModel selected);
 
@@ -112,6 +116,11 @@ public interface FlightBookingPassengerContract {
         String getString(int resId);
 
         void showPassengerChildBirthdateShouldLessThanEqual12Years(int resId);
+
+        void showPassportExpiredDatePickerDialog(Date selectedDate, Date minDate);
+
+        void showPassportExpiredDateShouldMoreThan6MonthsFromDeparture(@StringRes int resId, String dateAfterSixMonth);
+
     }
 
     interface Presenter extends CustomerPresenter<View> {
@@ -142,5 +151,8 @@ public interface FlightBookingPassengerContract {
 
         void onChangeFromSavedPassenger(FlightBookingPassengerViewModel selectedPassenger);
 
+        void onPassportExpiredClicked();
+
+        void onPassportExpiredDateChanged(int year, int month, int dayOfMonth, Date minDate);
     }
 }

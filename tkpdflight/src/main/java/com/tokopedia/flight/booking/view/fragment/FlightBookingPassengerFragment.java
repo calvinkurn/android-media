@@ -29,6 +29,7 @@ import com.tokopedia.design.text.TkpdHintTextInputLayout;
 import com.tokopedia.flight.R;
 import com.tokopedia.flight.booking.di.FlightBookingComponent;
 import com.tokopedia.flight.booking.view.activity.FlightBookingAmenityActivity;
+import com.tokopedia.flight.booking.view.activity.FlightBookingNationalityActivity;
 import com.tokopedia.flight.passenger.view.activity.FlightPassengerListActivity;
 import com.tokopedia.flight.booking.view.adapter.FlightSimpleAdapter;
 import com.tokopedia.flight.booking.view.presenter.FlightBookingPassengerContract;
@@ -61,6 +62,7 @@ public class FlightBookingPassengerFragment extends BaseDaggerFragment implement
     private static final int REQUEST_CODE_PICK_LUGGAGE = 1;
     private static final int REQUEST_CODE_PICK_MEAL = 2;
     private static final int REQUEST_CODE_PICK_SAVED_PASSENGER = 3;
+    private static final int REQUEST_CODE_PICK_NATIONALITY = 4;
     @Inject
     FlightBookingPassengerPresenter presenter;
 
@@ -175,8 +177,8 @@ public class FlightBookingPassengerFragment extends BaseDaggerFragment implement
         etSavedPassenger = view.findViewById(R.id.et_saved_passenger);
         etPassportNumber = view.findViewById(R.id.et_passport_no);
         etPassportExpired = view.findViewById(R.id.et_passport_expiration_date);
-        etPassportNumber = view.findViewById(R.id.et_nationality);
-        etPassportNumber = view.findViewById(R.id.et_passport_issuer_country);
+        etPassportNationality = view.findViewById(R.id.et_nationality);
+        etPassportIssuerCountry = view.findViewById(R.id.et_passport_issuer_country);
         buttonSubmit = (AppCompatButton) view.findViewById(R.id.button_submit);
         buttonSubmit.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -194,6 +196,24 @@ public class FlightBookingPassengerFragment extends BaseDaggerFragment implement
             @Override
             public void onClick(View v) {
                 presenter.onSavedPassengerClicked();
+            }
+        });
+        etPassportExpired.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                presenter.onPassportExpiredClicked();
+            }
+        });
+        etPassportNationality.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                navigateToChooseNationality();
+            }
+        });
+        etPassportIssuerCountry.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
             }
         });
         return view;
@@ -404,6 +424,11 @@ public class FlightBookingPassengerFragment extends BaseDaggerFragment implement
     }
 
     @Override
+    public String getPassportExpiredDate() {
+        return etPassportExpired.getText().toString().trim();
+    }
+
+    @Override
     public void showPassengerBirthdateEmptyError(int resId) {
         showMessageErrorInSnackBar(resId);
     }
@@ -462,6 +487,12 @@ public class FlightBookingPassengerFragment extends BaseDaggerFragment implement
     @Override
     public void showPassengerChildBirthdateShouldLessThanEqual12Years(int resId) {
         showMessageErrorInSnackBar(resId);
+    }
+
+    @Override
+    public void showPassportExpiredDateShouldMoreThan6MonthsFromDeparture(int resId, String dateAfterSixMonth) {
+        NetworkErrorHelper.showRedCloseSnackbar(getActivity(),
+                String.format(getString(resId), dateAfterSixMonth));
     }
 
     @Override
@@ -558,6 +589,11 @@ public class FlightBookingPassengerFragment extends BaseDaggerFragment implement
     }
 
     @Override
+    public void renderPassportExpiredDate(String expiredDateStr) {
+        etPassportExpired.setText(expiredDateStr);
+    }
+
+    @Override
     public void navigateToLuggagePicker(List<FlightBookingAmenityViewModel> luggages, FlightBookingAmenityMetaViewModel selected) {
         String title = String.format("%s %s", getString(R.string.flight_booking_luggage_toolbar_title), selected.getDescription());
         Intent intent = FlightBookingAmenityActivity.createIntent(getActivity(), title, luggages, selected);
@@ -576,6 +612,21 @@ public class FlightBookingPassengerFragment extends BaseDaggerFragment implement
         Intent intent = FlightPassengerListActivity.createIntent(getActivity(),
                 selected, requestId, departureDate);
         startActivityForResult(intent, REQUEST_CODE_PICK_SAVED_PASSENGER);
+    }
+
+    @Override
+    public void showPassportExpiredDatePickerDialog(Date selectedDate, final Date minDate) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(selectedDate);
+        DatePickerDialog datePicker = new DatePickerDialog(getActivity(), new DatePickerDialog.OnDateSetListener() {
+            @Override
+            public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
+                presenter.onPassportExpiredDateChanged(year, month, dayOfMonth, minDate);
+            }
+        }, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DATE));
+        DatePicker datePicker1 = datePicker.getDatePicker();
+        datePicker1.setMinDate(minDate.getTime());
+        datePicker.show();
     }
 
     @Override
@@ -606,6 +657,10 @@ public class FlightBookingPassengerFragment extends BaseDaggerFragment implement
                     break;
             }
         }
+    }
+
+    private void navigateToChooseNationality() {
+        startActivityForResult(FlightBookingNationalityActivity.createIntent(getContext()), REQUEST_CODE_PICK_NATIONALITY);
     }
 
     public interface OnFragmentInteractionListener {

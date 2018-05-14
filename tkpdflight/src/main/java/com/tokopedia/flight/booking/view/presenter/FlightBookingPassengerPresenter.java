@@ -319,6 +319,46 @@ public class FlightBookingPassengerPresenter extends BaseDaggerPresenter<FlightB
         getView().navigateToMealPicker(viewModel.getAmenities(), existingSelected);
     }
 
+    @Override
+    public void onPassportExpiredClicked() {
+
+        Date minDate, selectedDate;
+        Date departureDate = FlightDateUtil.stringToDate(getView().getDepartureDateString());
+
+        minDate = FlightDateUtil.addTimeToSpesificDate(departureDate, Calendar.MONTH, +6);
+        selectedDate = minDate;
+
+        if (getView().getPassportExpiredDate().length() != 0 &&
+                flightPassengerInfoValidator.validateExpiredDateOfPassport(getView().getPassportExpiredDate(), departureDate)) {
+            selectedDate = FlightDateUtil.stringToDate(FlightDateUtil.DEFAULT_VIEW_FORMAT, getView().getPassportExpiredDate());
+        }
+
+        getView().showPassportExpiredDatePickerDialog(selectedDate, minDate);
+    }
+
+    @Override
+    public void onPassportExpiredDateChanged(int year, int month, int dayOfMonth, Date minDate) {
+        Calendar now = FlightDateUtil.getCurrentCalendar();
+        now.set(Calendar.YEAR, year);
+        now.set(Calendar.MONTH, month);
+        now.set(Calendar.DATE, dayOfMonth);
+        Date expiredDate = now.getTime();
+
+        //max Date + 1 hari, karena pengecekan pakai after
+        minDate = FlightDateUtil.addTimeToSpesificDate(minDate, Calendar.DATE, +1);
+
+        if (!flightPassengerInfoValidator.validateExpiredDateOfPassport(FlightDateUtil
+                .dateToString(expiredDate, FlightDateUtil.DEFAULT_VIEW_FORMAT), minDate)) {
+            getView().showPassportExpiredDateShouldMoreThan6MonthsFromDeparture(
+                    R.string.flight_passenger_passport_expired_date_less_than_6_month_error,
+                    FlightDateUtil.dateToString(minDate, FlightDateUtil.DEFAULT_VIEW_FORMAT));
+        } else {
+            String expiredDateStr = FlightDateUtil.dateToString(expiredDate, FlightDateUtil.DEFAULT_VIEW_FORMAT);
+            getView().renderPassportExpiredDate(expiredDateStr);
+        }
+        getView().hideKeyboard();
+    }
+
     private boolean validateFields(String departureDateString) {
         boolean isValid = true;
         Date twelveYearsAgo = FlightDateUtil.addTimeToSpesificDate(
