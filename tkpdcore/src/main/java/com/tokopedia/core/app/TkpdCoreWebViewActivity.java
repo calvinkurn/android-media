@@ -25,9 +25,10 @@ public class TkpdCoreWebViewActivity extends TActivity {
     protected void setupToolbar() {
         super.setupToolbar();
 
-        getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_webview_back_button);
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_webview_back_button);
+        }
 
-//        toolbar.setBackgroundResource(R.color.white);
         toolbar.setTitleTextAppearance(this, R.style.WebViewToolbarText);
 
         String title = getIntent().getStringExtra(EXTRA_TITLE);

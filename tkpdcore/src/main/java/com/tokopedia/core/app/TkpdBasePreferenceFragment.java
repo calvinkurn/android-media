@@ -2,6 +2,7 @@ package com.tokopedia.core.app;
 
 import android.os.Bundle;
 import android.preference.PreferenceFragment;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
@@ -27,11 +28,17 @@ public abstract class TkpdBasePreferenceFragment extends PreferenceFragment{
         View view = super.onCreateView(inflater, container, savedInstanceState);
 
         if (view != null) {
-            ListView listView = view.findViewById(android.R.id.list);
-            final int padding = (int) TypedValue.applyDimension(
-                    TypedValue.COMPLEX_UNIT_DIP, 20, getResources().getDisplayMetrics());
-            listView.setPadding(padding, 0, padding, 0);
+            configureCustomPadding(view);
         }
+
         return view;
+    }
+
+    // Google Feedback T60724
+    private void configureCustomPadding(@NonNull View view) {
+        ListView listView = view.findViewById(android.R.id.list);
+        final int padding = (int) TypedValue.applyDimension(
+                TypedValue.COMPLEX_UNIT_DIP, 20, getResources().getDisplayMetrics());
+        listView.setPadding(padding, 0, padding, 0);
     }
 }
