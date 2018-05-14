@@ -5,10 +5,12 @@ import android.os.Parcelable;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.topads.dashboard.view.model.Ad;
+import com.tokopedia.topads.common.view.adapter.TopAdsListAdapterTypeFactory;
 
 
-public class ProductAd implements Ad, Parcelable {
+public class ProductAd implements Ad, Parcelable, Visitable<TopAdsListAdapterTypeFactory<ProductAd>> {
 
     public static final int TYPE = 1;
 
@@ -343,5 +345,10 @@ public class ProductAd implements Ad, Parcelable {
     @Override
     public int getType() {
         return TYPE;
+    }
+
+    @Override
+    public int type(TopAdsListAdapterTypeFactory<ProductAd> typeFactory) {
+        return typeFactory.type(this);
     }
 }

@@ -48,7 +48,7 @@ public class TopAdsCheckProductPromoActivity extends BaseSimpleActivity implemen
                                     uri.build().getQueryParameter(PARAM_SOURCE))
                             .putExtras(extras);
                 } else {
-                    return TopAdsOldDashboardActivity.getCallingIntent(context)
+                    return TopAdsDashboardActivity.getCallingIntent(context)
                             .putExtras(extras);
                 }
             } else {
@@ -79,6 +79,12 @@ public class TopAdsCheckProductPromoActivity extends BaseSimpleActivity implemen
         Intent intent = getCallingIntent(context);
         intent.putExtra(TopAdsSourceTaggingConstant.PARAM_EXTRA_SHOP_ID, shopId);
         intent.putExtra(TopAdsSourceTaggingConstant.PARAM_EXTRA_ITEM_ID, itemId);
+        return intent;
+    }
+
+    public static Intent createIntent(Context context, String shopId, String itemId, String source){
+        Intent intent = createIntent(context, shopId, itemId);
+        intent.putExtra(TopAdsSourceTaggingConstant.PARAM_KEY_SOURCE, source);
         return intent;
     }
 

@@ -51,7 +51,7 @@ public class TopAdsDetailProductActivity extends BaseSimpleActivity implements T
                             .putExtra(TopAdsNewScheduleNewGroupFragment.EXTRA_IS_ENOUGH_DEPOSIT, true)
                             .putExtras(extras);
                 } else {
-                    return TopAdsOldDashboardActivity.getCallingIntent(context)
+                    return TopAdsDashboardActivity.getCallingIntent(context)
                             .putExtras(extras);
                 }
             } else {
@@ -123,7 +123,7 @@ public class TopAdsDetailProductActivity extends BaseSimpleActivity implements T
             if(deepLink!= null && deepLink.contains(Constants.Applinks.SellerApp.TOPADS_PRODUCT_DETAIL)) {
                 super.onBackPressed();
             } else {
-                Intent intent = new Intent(this, TopAdsOldDashboardActivity.class);
+                Intent intent = new Intent(this, TopAdsDashboardActivity.class);
                 this.startActivity(intent);
                 this.finish();
             }

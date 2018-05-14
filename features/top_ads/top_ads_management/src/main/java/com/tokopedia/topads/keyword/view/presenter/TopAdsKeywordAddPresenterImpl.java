@@ -77,22 +77,6 @@ public class TopAdsKeywordAddPresenterImpl extends TopAdsKeywordAddPresenter {
             @Override
             public void onNext(AddKeywordDomainModel addKeywordDomainModel) {
                 getView().onSuccessSaveKeyword();
-                topAdsRemoveSourceTaggingUseCase.execute(new Subscriber<Void>() {
-                    @Override
-                    public void onCompleted() {
-
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-
-                    }
-
-                    @Override
-                    public void onNext(Void aVoid) {
-
-                    }
-                });
             }
         };
     }

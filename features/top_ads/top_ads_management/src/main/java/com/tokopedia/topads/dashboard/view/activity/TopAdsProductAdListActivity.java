@@ -18,6 +18,7 @@ import com.tokopedia.showcase.ShowCaseContentPosition;
 import com.tokopedia.showcase.ShowCaseDialog;
 import com.tokopedia.showcase.ShowCaseObject;
 import com.tokopedia.showcase.ShowCasePreference;
+import com.tokopedia.topads.product.view.fragment.TopAdsProductListFragment;
 
 import java.util.ArrayList;
 
@@ -42,15 +43,15 @@ public class TopAdsProductAdListActivity extends BaseSimpleActivity
         if (showCaseDialog != null) {
             return;
         }
-        final TopAdsProductAdListFragment topAdsProductAdListFragment =
-                (TopAdsProductAdListFragment) getSupportFragmentManager().findFragmentByTag(TAG);
+        final TopAdsProductListFragment topAdsProductAdListFragment =
+                (TopAdsProductListFragment) getSupportFragmentManager().findFragmentByTag(TAG);
         if (topAdsProductAdListFragment == null || topAdsProductAdListFragment.getView() == null) {
             return;
         }
 
         final ArrayList<ShowCaseObject> showCaseList = new ArrayList<>();
 
-        showCaseList.add(
+        /*showCaseList.add(
                 new ShowCaseObject(
                         topAdsProductAdListFragment.getSearchView(),
                         getString(R.string.topads_showcase_product_list_title_1),
@@ -96,7 +97,7 @@ public class TopAdsProductAdListActivity extends BaseSimpleActivity
                 showCaseDialog = ShowCaseDialogFactory.createTkpdShowCase();
                 showCaseDialog.show(TopAdsProductAdListActivity.this, showCaseTag, showCaseList);
             }
-        }, 300);
+        }, 300);*/
 
     }
 
@@ -107,7 +108,7 @@ public class TopAdsProductAdListActivity extends BaseSimpleActivity
             return fragment;
         } else {
             GroupAd groupAd = getIntent().getParcelableExtra(TopAdsExtraConstant.EXTRA_GROUP);
-            fragment = TopAdsProductAdListFragment.createInstance(groupAd);
+            fragment = TopAdsProductListFragment.createInstance(groupAd);
             return fragment;
         }
     }

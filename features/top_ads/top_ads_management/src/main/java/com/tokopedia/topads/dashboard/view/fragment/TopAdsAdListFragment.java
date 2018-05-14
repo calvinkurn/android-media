@@ -28,7 +28,6 @@ import com.tokopedia.seller.base.view.adapter.ItemType;
 import com.tokopedia.seller.base.view.listener.BaseListViewListener;
 import com.tokopedia.topads.R;
 import com.tokopedia.topads.TopAdsComponentInstance;
-import com.tokopedia.topads.common.util.TopAdsComponentUtils;
 import com.tokopedia.topads.common.view.presenter.BaseDatePickerPresenter;
 import com.tokopedia.topads.common.view.presenter.BaseDatePickerPresenterImpl;
 import com.tokopedia.topads.dashboard.constant.SortTopAdsOption;
@@ -40,7 +39,7 @@ import com.tokopedia.topads.dashboard.view.adapter.viewholder.TopAdsEmptyAdDataB
 import com.tokopedia.topads.dashboard.view.listener.TopAdsFilterViewListener;
 import com.tokopedia.topads.dashboard.view.model.TopAdsSortByModel;
 import com.tokopedia.topads.dashboard.view.presenter.TopAdsAdListPresenter;
-import com.tokopedia.topads.keyword.view.fragment.TopAdsBaseListFragment;
+import com.tokopedia.topads.keyword.view.fragment.TopAdsOldBaseListFragment;
 import com.tokopedia.topads.keyword.view.listener.AdListMenuListener;
 
 import java.util.List;
@@ -51,7 +50,7 @@ import java.util.concurrent.TimeUnit;
  */
 
 public abstract class TopAdsAdListFragment<P extends
-        TopAdsAdListPresenter, T extends ItemType> extends TopAdsBaseListFragment<P, T> implements
+        TopAdsAdListPresenter, T extends ItemType> extends TopAdsOldBaseListFragment<P, T> implements
         AdListMenuListener, BaseListViewListener<T>, TopAdsFilterViewListener,
         BaseListAdapter.Callback<T>,SearchInputView.Listener {
 

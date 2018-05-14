@@ -16,6 +16,8 @@ import com.tokopedia.topads.dashboard.domain.interactor.TopAdsDatePickerInteract
 import com.tokopedia.topads.dashboard.domain.interactor.TopAdsGetStatisticsUseCase;
 import com.tokopedia.topads.dashboard.domain.interactor.TopAdsPopulateTotalAdsUseCase;
 import com.tokopedia.topads.dashboard.view.listener.TopAdsDashboardView;
+import com.tokopedia.topads.sourcetagging.constant.TopAdsSourceOption;
+import com.tokopedia.topads.sourcetagging.domain.interactor.TopAdsAddSourceTaggingUseCase;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -39,6 +41,7 @@ public class TopAdsDashboardPresenter extends BaseDaggerPresenter<TopAdsDashboar
     private final TopAdsPopulateTotalAdsUseCase topAdsPopulateTotalAdsUseCase;
     private final TopAdsGetStatisticsUseCase topAdsGetStatisticsUseCase;
     private final UserSession userSession;
+    private final TopAdsAddSourceTaggingUseCase topAdsAddSourceTaggingUseCase;
 
     @Inject
     public TopAdsDashboardPresenter(TopAdsGetShopDepositUseCase topAdsGetShopDepositUseCase,
@@ -46,12 +49,14 @@ public class TopAdsDashboardPresenter extends BaseDaggerPresenter<TopAdsDashboar
                                     TopAdsDatePickerInteractor topAdsDatePickerInteractor,
                                     TopAdsPopulateTotalAdsUseCase topAdsPopulateTotalAdsUseCase,
                                     TopAdsGetStatisticsUseCase topAdsGetStatisticsUseCase,
+                                    TopAdsAddSourceTaggingUseCase topAdsAddSourceTaggingUseCase,
                                     UserSession userSession) {
         this.topAdsGetShopDepositUseCase = topAdsGetShopDepositUseCase;
         this.getShopInfoUseCase = getShopInfoUseCase;
         this.topAdsDatePickerInteractor = topAdsDatePickerInteractor;
         this.topAdsPopulateTotalAdsUseCase = topAdsPopulateTotalAdsUseCase;
         this.topAdsGetStatisticsUseCase = topAdsGetStatisticsUseCase;
+        this.topAdsAddSourceTaggingUseCase = topAdsAddSourceTaggingUseCase;
         this.userSession = userSession;
     }
 
@@ -101,12 +106,34 @@ public class TopAdsDashboardPresenter extends BaseDaggerPresenter<TopAdsDashboar
         });
     }
 
+    public void saveSourceTagging(@TopAdsSourceOption String source){
+        topAdsAddSourceTaggingUseCase.execute(TopAdsAddSourceTaggingUseCase.createRequestParams(source),
+                new Subscriber<Void>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+
+            }
+
+            @Override
+            public void onNext(Void aVoid) {
+                //do nothing
+            }
+        });
+    }
+
     @Override
     public void detachView() {
         super.detachView();
         topAdsGetShopDepositUseCase.unsubscribe();
         getShopInfoUseCase.unsubscribe();
         topAdsPopulateTotalAdsUseCase.unsubscribe();
+        topAdsGetStatisticsUseCase.unsubscribe();
+        topAdsAddSourceTaggingUseCase.unsubscribe();
     }
 
     public int getLastSelectionDatePickerIndex() {

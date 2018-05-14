@@ -207,7 +207,7 @@ ext {
 
     tkpdLibDependencies = [
             expandableOption: "com.tokopedia.tkpdlib:expandableoption:0.7.1",
-            showcase        : "com.tokopedia.tkpdlib:showcase-stepper:0.5.12"
+            showcase        : "com.tokopedia.tkpdlib:showcase-stepper:0.5.14"
     ]
 
     alibabaDependencies = [
@@ -259,7 +259,8 @@ ext {
             cacheApi        : ":libraries:cache_api",
             reactNative     : ":libraries:react_native",
             useCase         : ":libraries:use_case",
-            williamchart    : ":libraries:williamchart"
+            williamchart    : ":libraries:williamchart",
+            bottomSheetBuilder: ":libraries:bottom_sheet_builder"
     ]
 
 }

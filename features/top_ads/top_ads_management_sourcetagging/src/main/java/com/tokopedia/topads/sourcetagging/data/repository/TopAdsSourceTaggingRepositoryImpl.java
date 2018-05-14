@@ -70,6 +70,9 @@ public class TopAdsSourceTaggingRepositoryImpl implements TopAdsSourceTaggingRep
             throw new IllegalArgumentException("The value format is wrong");
         }
         String[] tmp = value.split(TopAdsSourceTaggingConstant.SEPARATOR);
+        if (tmp.length <= 1 ) {
+            throw new IllegalArgumentException("The value format is wrong");
+        }
         long timestamp = Long.parseLong(tmp[1]);
 
         return new TopAdsSourceTaggingModel(tmp[0], timestamp);

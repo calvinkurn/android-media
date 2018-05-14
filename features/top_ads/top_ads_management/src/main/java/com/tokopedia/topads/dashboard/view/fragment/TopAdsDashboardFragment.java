@@ -2,11 +2,13 @@ package com.tokopedia.topads.dashboard.view.fragment;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.PorterDuff;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.BottomSheetDialog;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.NestedScrollView;
 import android.text.Html;
@@ -25,10 +27,10 @@ import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.listener.GlobalMainTabSelectedListener;
 import com.tokopedia.design.bottomsheet.BottomSheetBuilder;
-import com.tokopedia.design.bottomsheet.BottomSheetCustomContentView;
 import com.tokopedia.design.bottomsheet.adapter.BottomSheetItemClickListener;
 import com.tokopedia.design.bottomsheet.custom.CheckedBottomSheetBuilder;
 import com.tokopedia.design.component.FloatingButton;
+import com.tokopedia.design.component.Menus;
 import com.tokopedia.design.label.LabelView;
 import com.tokopedia.design.utils.DateLabelUtils;
 import com.tokopedia.seller.common.datepicker.view.activity.DatePickerActivity;
@@ -53,7 +55,8 @@ import com.tokopedia.topads.dashboard.view.activity.TopAdsProductAdListActivity;
 import com.tokopedia.topads.dashboard.view.adapter.TopAdsStatisticPagerAdapter;
 import com.tokopedia.topads.dashboard.view.listener.TopAdsDashboardView;
 import com.tokopedia.topads.dashboard.view.presenter.TopAdsDashboardPresenter;
-import com.tokopedia.topads.keyword.view.activity.TopAdsKeywordListActivity;
+import com.tokopedia.topads.keyword.view.activity.TopAdsKeywordAdListActivity;
+import com.tokopedia.topads.sourcetagging.constant.TopAdsSourceOption;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -322,13 +325,14 @@ public class TopAdsDashboardFragment extends BaseDaggerFragment implements TopAd
     }
 
     private void onStoreClicked() {
+        topAdsDashboardPresenter.saveSourceTagging(TopAdsSourceOption.SA_MANAGE_SHOP);
         Intent intent = new Intent(getActivity(), TopAdsDetailShopActivity.class);
         startActivityForResult(intent, REQUEST_CODE_AD_STATUS);
     }
 
     private void onSummaryKeywordClicked() {
         UnifyTracking.eventTopAdsProductClickKeywordDashboard();
-        Intent intent = new Intent(getActivity(), TopAdsKeywordListActivity.class);
+        Intent intent = new Intent(getActivity(), TopAdsKeywordAdListActivity.class);
         if (totalGroupAd >= 0) {
             intent.putExtra(TopAdsExtraConstant.EXTRA_TOTAL_GROUP_ADS, totalGroupAd);
         }
@@ -478,8 +482,34 @@ public class TopAdsDashboardFragment extends BaseDaggerFragment implements TopAd
             endDate = new Date(eDate);
             topAdsDashboardPresenter.saveDate(startDate, endDate);
             topAdsDashboardPresenter.saveSelectionDatePicker(selectionType, lastSelection);
-
+            trackingDateTopAds(lastSelection, selectionType);
             loadStatisticsData();
+        }
+    }
+
+    private void trackingDateTopAds(int lastSelection, int selectionType) {
+        if(selectionType == DatePickerConstant.SELECTION_TYPE_CUSTOM_DATE){
+            UnifyTracking.eventTopAdsShopChooseDateCustom();
+        }else if(selectionType == DatePickerConstant.SELECTION_TYPE_PERIOD_DATE) {
+            switch (lastSelection){
+                case 0:
+                    UnifyTracking.eventTopAdsShopDatePeriod(AppEventTracking.EventLabel.PERIOD_OPTION_TODAY);
+                    break;
+                case 1:
+                    UnifyTracking.eventTopAdsShopDatePeriod(AppEventTracking.EventLabel.PERIOD_OPTION_YESTERDAY);
+                    break;
+                case 2:
+                    UnifyTracking.eventTopAdsShopDatePeriod(AppEventTracking.EventLabel.PERIOD_OPTION_LAST_7_DAY);
+                    break;
+                case 3:
+                    UnifyTracking.eventTopAdsShopDatePeriod(AppEventTracking.EventLabel.PERIOD_OPTION_LAST_1_MONTH);
+                    break;
+                case 4:
+                    UnifyTracking.eventTopAdsShopDatePeriod(AppEventTracking.EventLabel.PERIOD_OPTION_THIS_MONTH);
+                    break;
+                default:
+                    break;
+            }
         }
     }
 
@@ -577,8 +607,6 @@ public class TopAdsDashboardFragment extends BaseDaggerFragment implements TopAd
                     }
                 }).createDialog();
         bottomSheetDialog.show();
-
-
     }
 
     public void startShowCase(){
@@ -668,6 +696,8 @@ public class TopAdsDashboardFragment extends BaseDaggerFragment implements TopAd
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.menu_top_ads_dashboard, menu);
+        MenuItem item = menu.findItem(R.id.menu_more);
+        item.getIcon().setColorFilter(ContextCompat.getColor(getActivity(), R.color.white), PorterDuff.Mode.SRC_ATOP);
         super.onCreateOptionsMenu(menu, inflater);
     }
 
@@ -681,23 +711,31 @@ public class TopAdsDashboardFragment extends BaseDaggerFragment implements TopAd
     }
 
     private void showMoreBottomSheetDialog() {
-        final BottomSheetCustomContentView bottomSheetView = new BottomSheetCustomContentView(getActivity());
-        View dashboardMenuView = getLayoutInflater().inflate(R.layout.partial_topads_dashboard_menu, null);
-
-        dashboardMenuView.findViewById(R.id.topads_menu_help).setOnClickListener(new View.OnClickListener() {
+        final Menus menus = new Menus(getActivity());
+        menus.setItemMenuList(R.array.top_ads_dashboard_menu_more);
+        menus.setActionText(getString(R.string.close));
+        menus.setOnActionClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                getScrollView().scrollTo(0,0);
-                startShowCase();
-                bottomSheetView.dismiss();
+                menus.dismiss();
             }
         });
 
-        bottomSheetView.setCustomContentLayout(dashboardMenuView);
-        bottomSheetView.renderBottomSheet(new BottomSheetCustomContentView.BottomSheetField
-                .BottomSheetFieldBuilder()
-                .build());
-        bottomSheetView.show();
+        menus.setOnItemMenuClickListener(new Menus.OnItemMenuClickListener() {
+            @Override
+            public void onClick(Menus.ItemMenus itemMenus, int pos) {
+                switch (pos){
+                    case 0: {
+                        getScrollView().scrollTo(0,0);
+                        startShowCase();
+                        menus.dismiss();
+                    }
+                    default: break;
+                }
+            }
+        });
+
+        menus.show();
     }
 
     public interface Callback{

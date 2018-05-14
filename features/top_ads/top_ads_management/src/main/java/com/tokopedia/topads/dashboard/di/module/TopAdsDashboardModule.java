@@ -29,6 +29,10 @@ import com.tokopedia.topads.dashboard.di.scope.TopAdsDashboardScope;
 import com.tokopedia.topads.dashboard.domain.interactor.TopAdsDatePickerInteractor;
 import com.tokopedia.topads.dashboard.domain.interactor.TopAdsDatePickerInteractorImpl;
 import com.tokopedia.topads.dashboard.domain.repository.TopAdsDashboardRepository;
+import com.tokopedia.topads.sourcetagging.data.repository.TopAdsSourceTaggingRepositoryImpl;
+import com.tokopedia.topads.sourcetagging.data.source.TopAdsSourceTaggingDataSource;
+import com.tokopedia.topads.sourcetagging.data.source.TopAdsSourceTaggingLocal;
+import com.tokopedia.topads.sourcetagging.domain.repository.TopAdsSourceTaggingRepository;
 
 import dagger.Module;
 import dagger.Provides;
@@ -131,6 +135,24 @@ public class TopAdsDashboardModule {
     @TopAdsDashboardScope
     public TopAdsDashboardRepository provideTopAdsDashboardRepository(TopAdsDashboardDataSource topAdsDashboardDataSource){
         return new TopAdsDashboardRepositoryImpl(topAdsDashboardDataSource);
+    }
+
+    @TopAdsDashboardScope
+    @Provides
+    TopAdsSourceTaggingLocal provideTopAdsSourceTaggingLocal(@ApplicationContext Context context){
+        return new TopAdsSourceTaggingLocal(context);
+    }
+
+    @TopAdsDashboardScope
+    @Provides
+    public TopAdsSourceTaggingDataSource provideTopAdsSourceTaggingDataSource(TopAdsSourceTaggingLocal topAdsSourceTaggingLocal){
+        return new TopAdsSourceTaggingDataSource(topAdsSourceTaggingLocal);
+    }
+
+    @TopAdsDashboardScope
+    @Provides
+    public TopAdsSourceTaggingRepository provideTopAdsSourceTaggingRepository(TopAdsSourceTaggingDataSource dataSource){
+        return new TopAdsSourceTaggingRepositoryImpl(dataSource);
     }
 
 }
