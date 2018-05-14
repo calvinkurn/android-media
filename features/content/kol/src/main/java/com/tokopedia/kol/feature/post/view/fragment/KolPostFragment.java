@@ -253,7 +253,7 @@ public class KolPostFragment extends BaseDaggerFragment implements
     @Override
     public void onGoToKolComment(int page, int rowNumber, KolPostViewModel kolPostViewModel) {
         Intent intent = KolCommentActivity.getCallingIntent(
-                getContext(), kolPostViewModel.getId(), rowNumber
+                getContext(), kolPostViewModel.getKolId(), rowNumber
         );
         startActivityForResult(intent, KOL_COMMENT_CODE);
     }

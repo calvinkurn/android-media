@@ -61,7 +61,7 @@ public class GetKolPostSubscriber extends Subscriber<KolProfileModel> {
 
             List<KolEnhancedTracking.Promotion> promotionList = new ArrayList<>();
             promotionList.add(new KolEnhancedTracking.Promotion(
-                    kolPostViewModel.getId(),
+                    kolPostViewModel.getKolId(),
                     KolEnhancedTracking.Promotion.createContentNameKolPost(
                             kolPostViewModel.getTagsType()),
                     TextUtils.isEmpty(kolPostViewModel.getName()) ? DASH :

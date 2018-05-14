@@ -37,6 +37,7 @@ public class KolPostViewHolder extends AbstractViewHolder<KolPostViewModel> {
     private final Context context;
     private final KolPostListener.View.ViewHolder viewListener;
     private final AnalyticTracker analyticTracker;
+    private BaseKolView baseKolView;
     private ImageView reviewImage;
     private TextView tooltip;
     private View tooltipClickArea;
@@ -57,7 +58,7 @@ public class KolPostViewHolder extends AbstractViewHolder<KolPostViewModel> {
         analyticTracker = viewListener.getAbstractionRouter().getAnalyticTracker();
         topShadow = itemView.findViewById(R.id.top_shadow);
 
-        BaseKolView baseKolView = itemView.findViewById(R.id.base_kol_view);
+        baseKolView = itemView.findViewById(R.id.base_kol_view);
         View view = baseKolView.inflateContentLayout(R.layout.kol_post_content);
         reviewImage = view.findViewById(R.id.image);
         tooltip = view.findViewById(R.id.tooltip);
@@ -260,7 +261,7 @@ public class KolPostViewHolder extends AbstractViewHolder<KolPostViewModel> {
             );
 
             promotionList.add(new KolEnhancedTracking.Promotion(
-                    element.getId(),
+                    element.getKolId(),
                     KolEnhancedTracking.Promotion.createContentNameFeed(
                             element.getTagsType(),
                             element.getCardType()),
@@ -282,7 +283,7 @@ public class KolPostViewHolder extends AbstractViewHolder<KolPostViewModel> {
 
         } else if (type == Type.PROFILE) {
             promotionList.add(new KolEnhancedTracking.Promotion(
-                    element.getId(),
+                    element.getKolId(),
                     KolEnhancedTracking.Promotion.createContentNameKolPost(
                             element.getTagsType()),
                     TextUtils.isEmpty(element.getName()) ? DASH :
