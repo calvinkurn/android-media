@@ -34,10 +34,10 @@ public class OptionHelper {
     private static void saveCheckboxOptionInputState(Option option,
                                                      HashMap<String, Boolean> checkedState) {
 
-        if (!TextUtils.isEmpty(option.getInputState())) {
-            checkedState.put(option.getUniqueId(), Boolean.parseBoolean(option.getInputState()));
+        if (!TextUtils.isEmpty(option.getInputState()) && Boolean.parseBoolean(option.getInputState())) {
+            checkedState.put(option.getUniqueId(), true);
         } else {
-            checkedState.put(option.getUniqueId(), false);
+            checkedState.remove(option.getUniqueId());
         }
     }
 
