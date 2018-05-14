@@ -64,9 +64,7 @@ public class LocalCartActivity extends ReactNativeActivity {
 
     @Override
     public void onBackPressed() {
-        super.onBackPressed();
         backFromCart();
-        finish();
     }
 
     private void backFromCart() {
