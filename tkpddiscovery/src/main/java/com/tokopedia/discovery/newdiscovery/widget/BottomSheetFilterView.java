@@ -389,9 +389,9 @@ public class BottomSheetFilterView extends BaseCustomView implements BottomSheet
         removeFiltersWithEmptyOption(list);
         mergeSizeFilterOptionsWithSameValue(list);
         removeBrandFilterOptionsWithSameValue(list);
-        changeRatingFilterOptionToFourAndAboveOnly(list);
-        mergeNonExpandableFiltersToOthers(list);
-        removeNonExpandableFilters(list);
+        //changeRatingFilterOptionToFourAndAboveOnly(list);
+        //mergeNonExpandableFiltersToOthers(list);
+        //removeNonExpandableFilters(list);
         filterMainAdapter.setFilterList(list);
     }
 
