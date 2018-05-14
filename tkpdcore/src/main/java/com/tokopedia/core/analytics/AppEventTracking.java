@@ -388,6 +388,7 @@ public interface AppEventTracking {
         String IMPRESSION = "Impression";
         String COPY_CODE = "Copy Code";
         String FILTER = "Filter";
+        String APPLY_FILTER = "apply filter";
         String INSTALL = "Install";
         String REMOVE = "Remove";
         String CLICK_USSD_CEK_SALDO = "Click Cek Saldo from USSD";

@@ -139,6 +139,15 @@ public class SearchTracking extends TrackingUtils {
         ).setUserId().getEvent());
     }
 
+    public static void eventSearchResultCloseBottomSheetFilter(String screenName, Map<String, String> selectedFilter) {
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.SEARCH_RESULT,
+                AppEventTracking.Category.FILTER_PRODUCT,
+                AppEventTracking.Action.APPLY_FILTER.toLowerCase() + " - " + screenName,
+                generateFilterEventLabel(selectedFilter)
+        ).setUserId().getEvent());
+    }
+
     private static String generateFilterEventLabel(Map<String, String> selectedFilter) {
         if (selectedFilter == null) {
             return "";
