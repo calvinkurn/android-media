@@ -9,7 +9,6 @@ public class BaseChatViewModel {
     private String fromUid;
     private String from;
     private String fromRole;
-    private String message;
     private String attachmentId;
     private String attachmentType;
     private String replyTime;
@@ -24,7 +23,6 @@ public class BaseChatViewModel {
      * @param fromUid        userId of sender
      * @param from           name of sender
      * @param fromRole       role of sender
-     * @param message        censored message
      * @param attachmentId   attachment id
      * @param attachmentType attachment type. Please refer to
      *                       {@link com.tokopedia.inbox.inboxchat.domain.WebSocketMapper} types
@@ -34,7 +32,6 @@ public class BaseChatViewModel {
                              String fromUid,
                              String from,
                              String fromRole,
-                             String message,
                              String attachmentId,
                              String attachmentType,
                              String replyTime) {
@@ -42,7 +39,6 @@ public class BaseChatViewModel {
         this.fromUid = fromUid;
         this.from = from;
         this.fromRole = fromRole;
-        this.message = message;
         this.attachmentId = attachmentId;
         this.attachmentType = attachmentType;
         this.replyTime = replyTime;
@@ -62,10 +58,6 @@ public class BaseChatViewModel {
 
     public String getFromRole() {
         return fromRole;
-    }
-
-    public String getMessage() {
-        return message;
     }
 
     public String getAttachmentId() {
