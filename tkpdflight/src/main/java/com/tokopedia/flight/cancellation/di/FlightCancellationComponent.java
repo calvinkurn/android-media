@@ -1,6 +1,7 @@
 package com.tokopedia.flight.cancellation.di;
 
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
+import com.tokopedia.flight.FlightModuleRouter;
 import com.tokopedia.flight.cancellation.view.fragment.FlightCancellationDetailFragment;
 import com.tokopedia.flight.cancellation.view.fragment.FlightCancellationFragment;
 import com.tokopedia.flight.cancellation.view.fragment.FlightCancellationListFragment;
