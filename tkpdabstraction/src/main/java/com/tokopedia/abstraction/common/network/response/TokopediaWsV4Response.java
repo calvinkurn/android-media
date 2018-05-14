@@ -1,4 +1,4 @@
-package com.tokopedia.core.network.retrofit.response;
+package com.tokopedia.abstraction.common.network.response;
 
 import android.support.annotation.NonNull;
 
@@ -15,13 +15,9 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
- * Created by Angga.Prasetiyo on 01/12/2015.
+ * @author anggaprasetiyo on 14/05/18.
  */
-@Deprecated
-/**
- @see com.tokopedia.abstraction.common.network.response.TokopediaWsV4Response
- */
-public class TkpdResponse {
+public class TokopediaWsV4Response {
 
     public static final String TOO_MANY_REQUEST = "TOO_MANY_REQUEST";
 
@@ -39,7 +35,7 @@ public class TkpdResponse {
             .setPrettyPrinting().create();
     private Object objData;
 
-    public static TkpdResponse factory(String strResponse) {
+    public static TokopediaWsV4Response factory(String strResponse) {
         List<String> msgError = new ArrayList<>();
         List<String> msgStatus = new ArrayList<>();
         boolean isNullData = false;
@@ -124,7 +120,7 @@ public class TkpdResponse {
             e.printStackTrace();
         }
 
-        TkpdResponse tkpdResponse = new TkpdResponse();
+        TokopediaWsV4Response tkpdResponse = new TokopediaWsV4Response();
         if (!isNullData & jsonData != null) tkpdResponse.setJsonData(jsonData);
         if (!isNullData & jsonDataArray != null) tkpdResponse.setJsonDataArray(jsonDataArray);
         tkpdResponse.setErrorMessages(msgError);

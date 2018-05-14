@@ -1,4 +1,4 @@
-package com.tokopedia.transaction.common.data.cart.thankstoppaydata;
+package com.tokopedia.transactiondata.entity.response.thankstoppaydata;
 
 import android.os.Parcel;
 import android.os.Parcelable;

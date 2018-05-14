@@ -16,7 +16,7 @@ public class TopPayMapper implements ITopPayMapper {
 
     @Override
     public ThanksTopPayData convertThanksTopPayData(
-            com.tokopedia.transaction.common.data.cart.thankstoppaydata.ThanksTopPayData thanksTopPayDataResponse) {
+            com.tokopedia.transactiondata.entity.response.thankstoppaydata.ThanksTopPayData thanksTopPayDataResponse) {
         return new ThanksTopPayData.Builder()
                 .isSuccess(thanksTopPayDataResponse.getIsSuccess() == 1)
                 .build();

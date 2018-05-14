@@ -11,9 +11,9 @@ import com.tokopedia.transaction.cart.model.cartdata.CartItem;
 import com.tokopedia.transaction.cart.model.cartdata.CartRatesData;
 import com.tokopedia.transaction.cart.model.savelocation.SaveLocationData;
 import com.tokopedia.transaction.cart.model.shipmentcart.EditShipmentCart;
-import com.tokopedia.transaction.common.data.cart.thankstoppaydata.ThanksTopPayData;
 import com.tokopedia.transaction.cart.model.toppaydata.TopPayParameterData;
 import com.tokopedia.transaction.cart.model.voucher.VoucherData;
+import com.tokopedia.transactiondata.entity.response.thankstoppaydata.ThanksTopPayData;
 
 import java.util.List;
 
@@ -22,7 +22,7 @@ import rx.Subscriber;
 
 /**
  * @author anggaprasetiyo on 11/2/16.
- *         collabs with alvarisi
+ * collabs with alvarisi
  */
 
 public interface ICartDataInteractor {

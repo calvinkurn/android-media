@@ -9,16 +9,9 @@ import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.di.scope.ApplicationScope;
 import com.tokopedia.abstraction.common.network.OkHttpRetryPolicy;
+import com.tokopedia.abstraction.common.network.converter.TokopediaWsV4ResponseConverter;
 import com.tokopedia.abstraction.common.network.interceptor.TkpdAuthInterceptor;
 import com.tokopedia.abstraction.common.utils.GlobalConfig;
-import com.tokopedia.transactiondata.apiservice.CartApi;
-import com.tokopedia.transactiondata.apiservice.CartApiInterceptor;
-import com.tokopedia.transactiondata.apiservice.CartResponseConverter;
-import com.tokopedia.transactiondata.apiservice.TxActApi;
-import com.tokopedia.transactiondata.repository.CartRepository;
-import com.tokopedia.transactiondata.repository.ICartRepository;
-import com.tokopedia.transactiondata.repository.ITopPayRepository;
-import com.tokopedia.transactiondata.repository.TopPayRepository;
 import com.tokopedia.checkout.router.ICheckoutModuleRouter;
 import com.tokopedia.checkout.view.di.qualifier.CartApiInterceptorQualifier;
 import com.tokopedia.checkout.view.di.qualifier.CartApiOkHttpClientQualifier;
@@ -32,12 +25,19 @@ import com.tokopedia.checkout.view.di.qualifier.CartQualifier;
 import com.tokopedia.checkout.view.di.qualifier.CartTxActApiInterceptorQualifier;
 import com.tokopedia.checkout.view.di.qualifier.CartTxActApiRetrofitQualifier;
 import com.tokopedia.checkout.view.di.qualifier.CartTxActOkHttpClientQualifier;
-import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.network.retrofit.interceptors.FingerprintInterceptor;
 import com.tokopedia.logisticdata.data.apiservice.RatesApi;
 import com.tokopedia.logisticdata.data.constant.LogisticDataConstantUrl;
 import com.tokopedia.logisticdata.data.repository.RatesRepository;
+import com.tokopedia.transactiondata.apiservice.CartApi;
+import com.tokopedia.transactiondata.apiservice.CartApiInterceptor;
+import com.tokopedia.transactiondata.apiservice.CartResponseConverter;
+import com.tokopedia.transactiondata.apiservice.TxActApi;
 import com.tokopedia.transactiondata.constant.TransactionDataApiUrl;
+import com.tokopedia.transactiondata.repository.CartRepository;
+import com.tokopedia.transactiondata.repository.ICartRepository;
+import com.tokopedia.transactiondata.repository.ITopPayRepository;
+import com.tokopedia.transactiondata.repository.TopPayRepository;
 
 import java.util.concurrent.TimeUnit;
 
@@ -84,7 +84,7 @@ public class DataModule {
     CartApiInterceptor getCartApiInterceptor(@ApplicationContext Context context,
                                              UserSession userSession,
                                              AbstractionRouter abstractionRouter) {
-        return new CartApiInterceptor(context, abstractionRouter, userSession, TkpdBaseURL.Cart.HMAC_KEY);
+        return new CartApiInterceptor(context, abstractionRouter, userSession, TransactionDataApiUrl.Cart.HMAC_KEY);
     }
 
 
@@ -192,7 +192,7 @@ public class DataModule {
     ) {
         return new Retrofit.Builder()
                 .baseUrl(LogisticDataConstantUrl.KeroRates.BASE_URL)
-                .addConverterFactory(cartCheckoutModuleRouter.checkoutModuleRouterGetWS4TkpdResponseConverter())
+                .addConverterFactory(new TokopediaWsV4ResponseConverter())
                 .addConverterFactory(cartCheckoutModuleRouter.checkoutModuleRouterGetStringResponseConverter())
                 .addConverterFactory(GsonConverterFactory.create(new Gson()))
                 .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
@@ -209,7 +209,7 @@ public class DataModule {
     ) {
         return new Retrofit.Builder()
                 .baseUrl(TransactionDataApiUrl.TransactionAction.BASE_URL)
-                .addConverterFactory(cartCheckoutModuleRouter.checkoutModuleRouterGetWS4TkpdResponseConverter())
+                .addConverterFactory(new TokopediaWsV4ResponseConverter())
                 .addConverterFactory(cartCheckoutModuleRouter.checkoutModuleRouterGetStringResponseConverter())
                 .addConverterFactory(GsonConverterFactory.create(new Gson()))
                 .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
