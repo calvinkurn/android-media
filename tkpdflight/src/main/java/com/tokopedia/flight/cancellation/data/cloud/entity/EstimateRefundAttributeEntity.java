@@ -8,10 +8,10 @@ import com.google.gson.annotations.SerializedName;
  */
 
 public class EstimateRefundAttributeEntity {
-    @SerializedName("value")
+    @SerializedName("total_value")
     @Expose
     private String value;
-    @SerializedName("value_numeric")
+    @SerializedName("total_value_numeric")
     @Expose
     private long valueNumeric;
 

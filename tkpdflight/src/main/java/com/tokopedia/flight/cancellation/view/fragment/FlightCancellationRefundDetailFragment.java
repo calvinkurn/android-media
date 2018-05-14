@@ -199,8 +199,7 @@ public class FlightCancellationRefundDetailFragment extends BaseDaggerFragment i
             @Override
             public void onClick(View widget) {
                 FlightCancellationRefundBottomSheet bottomSheet = new FlightCancellationRefundBottomSheet();
-                bottomSheet.show(getChildFragmentManager(), "Refund Detail");
-
+                bottomSheet.show(getChildFragmentManager(), getString(R.string.flight_cancellation_refund_bottom_sheet_tag));
             }
 
             @Override

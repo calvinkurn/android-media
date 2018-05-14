@@ -1,5 +1,6 @@
 package com.tokopedia.flight.cancellation.view.presenter;
 
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 
@@ -54,6 +55,10 @@ public class FlightCancellationReasonAndProofPresenter extends BaseDaggerPresent
     private static final String PARAM_RESOLUTION = "param_resolution";
     private static final String DEFAULT_UPLOAD_PATH = "/upload/attachment";
     private static final String DEFAULT_UPLOAD_TYPE = "fileToUpload\"; filename=\"image.jpg";
+    private static final int MAX_FILE_SIZE = 15360;
+    private static final int MINIMUM_HEIGHT = 100;
+    private static final int MINIMUM_WIDTH = 300;
+    private static final long DEFAULT_ONE_MEGABYTE = 1024;
 
     private FlightAirlineUseCase flightAirlineUseCase;
     private UploadImageUseCase<AttachmentImageModel> uploadImageUseCase;
@@ -78,14 +83,37 @@ public class FlightCancellationReasonAndProofPresenter extends BaseDaggerPresent
         getView().showUploadAttachmentView();
     }
 
+    private boolean validateImageAttachment(String uri) {
+        File file = new File(uri);
+        BitmapFactory.Options options = new BitmapFactory.Options();
+        options.inJustDecodeBounds = true;
+        BitmapFactory.decodeFile(file.getAbsolutePath(), options);
+        int imageHeight = options.outHeight;
+        int imageWidth = options.outWidth;
+
+        int fileSize = Integer.parseInt(String.valueOf(file.length() / DEFAULT_ONE_MEGABYTE));
+
+        if (imageHeight < MINIMUM_HEIGHT || imageWidth < MINIMUM_WIDTH) {
+            getView().showAttachmentMinDimensionErrorMessage(R.string.flight_cancellation_min_dimension_error);
+            return false;
+        } else if (fileSize >= MAX_FILE_SIZE) {
+            getView().showAttachmentMaxSizeErrorMessage(R.string.flight_cancellation_max_error);
+            return false;
+        } else {
+            return true;
+        }
+    }
+
     @Override
     public void onSuccessGetImage(String filepath) {
-        FlightCancellationAttachmentViewModel viewModel = new FlightCancellationAttachmentViewModel();
-        viewModel.setFilepath(filepath);
-        viewModel.setFilename(Uri.parse(filepath).getLastPathSegment());
-        getView().hideUploadAttachmentView();
-        getView().addAttachment(viewModel);
-        getView().showUploadAttachmentView();
+        if (validateImageAttachment(filepath)) {
+            FlightCancellationAttachmentViewModel viewModel = new FlightCancellationAttachmentViewModel();
+            viewModel.setFilepath(filepath);
+            viewModel.setFilename(Uri.parse(filepath).getLastPathSegment());
+            getView().hideUploadAttachmentView();
+            getView().addAttachment(viewModel);
+            getView().showUploadAttachmentView();
+        }
     }
 
     @Override
@@ -291,7 +319,7 @@ public class FlightCancellationReasonAndProofPresenter extends BaseDaggerPresent
     }
 
     private RequestParams createParam(String cameraLoc) {
-        File photo = flightModuleRouter.writeImage(cameraLoc, 80);
+        File photo = flightModuleRouter.writeImage(cameraLoc, 100);
         Map<String, RequestBody> maps = new HashMap<String, RequestBody>();
         RequestBody webService = RequestBody.create(MediaType.parse("text/plain"), "1");
         RequestBody resolution = RequestBody.create(MediaType.parse("text/plain"), RESOLUTION_300);
@@ -299,6 +327,6 @@ public class FlightCancellationReasonAndProofPresenter extends BaseDaggerPresent
         maps.put(PARAM_WEB_SERVICE, webService);
         maps.put(PARAM_ID, id);
         maps.put(PARAM_RESOLUTION, resolution);
-        return uploadImageUseCase.createRequestParam(photo.getAbsolutePath(), DEFAULT_UPLOAD_PATH, DEFAULT_UPLOAD_TYPE, maps);
+        return uploadImageUseCase.createRequestParam(cameraLoc, DEFAULT_UPLOAD_PATH, DEFAULT_UPLOAD_TYPE, maps);
     }
 }
