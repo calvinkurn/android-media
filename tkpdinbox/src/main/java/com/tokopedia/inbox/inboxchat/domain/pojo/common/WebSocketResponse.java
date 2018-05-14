@@ -1,17 +1,17 @@
 
-package com.tokopedia.inbox.inboxchat.domain.pojo.quickreply;
+package com.tokopedia.inbox.inboxchat.domain.pojo.common;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class QuickReplyWebSocketResponse {
+public class WebSocketResponse {
 
     @SerializedName("code")
     @Expose
     private int code;
     @SerializedName("data")
     @Expose
-    private QuickReplyWebSocketResponseData data;
+    private WebSocketResponseData data;
 
     public int getCode() {
         return code;
@@ -21,11 +21,11 @@ public class QuickReplyWebSocketResponse {
         this.code = code;
     }
 
-    public QuickReplyWebSocketResponseData getData() {
+    public WebSocketResponseData getData() {
         return data;
     }
 
-    public void setData(QuickReplyWebSocketResponseData data) {
+    public void setData(WebSocketResponseData data) {
         this.data = data;
     }
 

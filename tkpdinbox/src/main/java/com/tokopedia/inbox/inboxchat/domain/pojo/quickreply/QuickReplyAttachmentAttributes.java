@@ -19,7 +19,4 @@ public class QuickReplyAttachmentAttributes {
         return quickReplies;
     }
 
-    public void setQuickReplies(List<QuickReplyPojo> quickReplies) {
-        this.quickReplies = quickReplies;
-    }
 }

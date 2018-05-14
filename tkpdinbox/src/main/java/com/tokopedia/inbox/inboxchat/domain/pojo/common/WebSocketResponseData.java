@@ -1,11 +1,11 @@
 
-package com.tokopedia.inbox.inboxchat.domain.pojo.quickreply;
+package com.tokopedia.inbox.inboxchat.domain.pojo.common;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import com.tokopedia.inbox.inboxchat.domain.pojo.Message;
 
-public class QuickReplyWebSocketResponseData {
+public class WebSocketResponseData {
 
     @SerializedName("msg_id")
     @Expose
@@ -33,7 +33,7 @@ public class QuickReplyWebSocketResponseData {
     private String imageUri;
     @SerializedName("attachment")
     @Expose
-    private QuickReplyAttachment attachment;
+    private Attachment attachment;
     @SerializedName("show_rating")
     @Expose
     private boolean showRating;
@@ -105,11 +105,11 @@ public class QuickReplyWebSocketResponseData {
         this.fromRole = fromRole;
     }
 
-    public QuickReplyAttachment getAttachment() {
+    public Attachment getAttachment() {
         return attachment;
     }
 
-    public void setAttachment(QuickReplyAttachment attachment) {
+    public void setAttachment(Attachment attachment) {
         this.attachment = attachment;
     }
 
