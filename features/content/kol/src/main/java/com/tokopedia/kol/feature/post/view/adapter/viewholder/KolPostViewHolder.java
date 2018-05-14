@@ -1,8 +1,6 @@
 package com.tokopedia.kol.feature.post.view.adapter.viewholder;
 
-import android.content.Context;
 import android.support.annotation.LayoutRes;
-import android.text.Spanned;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
@@ -11,7 +9,6 @@ import android.widget.TextView;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
-import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.kol.R;
 import com.tokopedia.kol.analytics.KolEnhancedTracking;
 import com.tokopedia.kol.analytics.KolEventTracking;
@@ -36,8 +33,6 @@ public class KolPostViewHolder extends AbstractViewHolder<KolPostViewModel>
 
     private static final String DASH = "-";
 
-    private static final int MAX_CHAR = 175;
-    private final Context context;
     private final KolPostListener.View.ViewHolder viewListener;
     private final AnalyticTracker analyticTracker;
     private BaseKolView baseKolView;
@@ -57,7 +52,6 @@ public class KolPostViewHolder extends AbstractViewHolder<KolPostViewModel>
         super(itemView);
         this.viewListener = viewListener;
         this.type = type;
-        context = itemView.getContext();
         analyticTracker = viewListener.getAbstractionRouter().getAnalyticTracker();
         topShadow = itemView.findViewById(R.id.top_shadow);
 
@@ -88,6 +82,7 @@ public class KolPostViewHolder extends AbstractViewHolder<KolPostViewModel>
         }
 
         setListener(element);
+        baseKolView.setViewListener(this, element);
     }
 
     @Override
@@ -199,21 +194,6 @@ public class KolPostViewHolder extends AbstractViewHolder<KolPostViewModel>
                     tooltipAreaClicked(element);
             }
         });
-    }
-
-    private Spanned getReadMoreText(KolPostViewModel element) {
-        if (!element.isReviewExpanded() && MethodChecker.fromHtml(element.getReview()).length() >
-                MAX_CHAR) {
-            String subDescription = MethodChecker.fromHtml(element.getReview()).toString().substring(0,
-                    MAX_CHAR);
-            return MethodChecker.fromHtml(
-                    subDescription.replaceAll("(\r\n|\n)", "<br />") + "... "
-                            + "<font color='#42b549'><b>"
-                            + context.getString(R.string.read_more_english)
-                            + "</b></font>");
-        } else {
-            return MethodChecker.fromHtml(element.getReview().replaceAll("(\r\n|\n)", "<br />"));
-        }
     }
 
     private void goToProfile (final BaseKolViewModel element) {

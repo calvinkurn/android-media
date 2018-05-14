@@ -375,7 +375,7 @@ public class GetFirstPageFeedsSubscriber extends Subscriber<FeedResult> {
 
                             List<FeedEnhancedTracking.Promotion> list = new ArrayList<>();
                             list.add(new FeedEnhancedTracking.Promotion(
-                                    kolViewModel.getId(),
+                                    kolViewModel.getKolId(),
                                     FeedEnhancedTracking.Promotion.createContentName(
                                             kolViewModel.getTagsType(),
                                             kolViewModel.getCardType())

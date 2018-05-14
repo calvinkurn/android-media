@@ -3,14 +3,19 @@ package com.tokopedia.kol.feature.post.view.widget;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.text.Spanned;
+import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.tokopedia.abstraction.common.utils.image.ImageHandler;
+import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.design.base.BaseCustomView;
 import com.tokopedia.kol.R;
+import com.tokopedia.kol.common.util.TimeConverter;
 import com.tokopedia.kol.feature.post.view.listener.BaseKolListener;
 import com.tokopedia.kol.feature.post.view.viewmodel.BaseKolViewModel;
 
@@ -19,6 +24,9 @@ import com.tokopedia.kol.feature.post.view.viewmodel.BaseKolViewModel;
  */
 
 public class BaseKolView extends BaseCustomView {
+
+    private static final int MAX_CHAR = 175;
+
     private FrameLayout contentLayout;
     private TextView kolText;
     private ImageView likeIcon;
@@ -75,64 +83,85 @@ public class BaseKolView extends BaseCustomView {
     }
 
     public void bind(BaseKolViewModel element) {
-        //TODO set viewmodel
-//        name.setText(MethodChecker.fromHtml(element.getName()));
-//        ImageHandler.loadImageCircle2(avatar.getContext(), avatar, element.getAvatar());
-//
-//        if (element.isFollowed()) {
-//            label.setText(TimeConverter.generateTime(label.getContext(), element.getTime()));
-//        } else {
-//            label.setText(element.getLabel());
-//        }
-//
-//        if (element.isFollowed() && !element.isTemporarilyFollowed()) {
-//            followButton.setVisibility(View.GONE);
-//            topSeparator.setVisibility(View.GONE);
-//        } else if (element.isFollowed() && element.isTemporarilyFollowed()) {
-//            followButton.setVisibility(View.VISIBLE);
-//            followButton.setBackground(MethodChecker.getDrawable(followButton.getContext(),
-//                    R.drawable.bg_button_white_border));
-//            followText.setText(R.string.following);
-//            followText.setTextColor(MethodChecker.getColor(followText.getContext(),
-//                    R.color.black_54));
-//            topSeparator.setVisibility(View.VISIBLE);
-//        } else {
-//            followButton.setVisibility(View.VISIBLE);
-//            followButton.setBackground(MethodChecker.getDrawable(followButton.getContext(),
-//                    R.drawable.bg_button_green));
-//            followText.setTextColor(MethodChecker.getColor(followText.getContext(),
-//                    R.color.white));
-//            followText.setText(R.string.action_follow_english);
-//            topSeparator.setVisibility(View.VISIBLE);
-//        }
+        name.setText(MethodChecker.fromHtml(element.getName()));
+        ImageHandler.loadImageCircle2(avatar.getContext(), avatar, element.getAvatar());
 
-//        kolText.setText(getReadMoreText(element));
-//
-//        if (element.isLiked()) {
-//            ImageHandler.loadImageWithIdWithoutPlaceholder(likeIcon, R.drawable.ic_thumb_green);
-//            likeText.setText(String.valueOf(element.getTotalLike()));
-//            likeText.setTextColor(MethodChecker.getColor(likeText.getContext(), R.color
-//                    .tkpd_main_green));
-//
-//        } else if (element.getTotalLike() > 0) {
-//            ImageHandler.loadImageWithIdWithoutPlaceholder(likeIcon, R.drawable.ic_thumb);
-//            likeText.setText(String.valueOf(element.getTotalLike()));
-//            likeText.setTextColor(MethodChecker.getColor(likeText.getContext(), R.color
-//                    .black_54));
-//        } else {
-//            ImageHandler.loadImageWithIdWithoutPlaceholder(likeIcon, R.drawable.ic_thumb);
-//            likeText.setText(R.string.action_like);
-//            likeText.setTextColor(MethodChecker.getColor(likeIcon.getContext(), R.color
-//                    .black_54));
-//        }
-//
-//        if (element.getTotalComment() == 0) {
-//            commentText.setText(R.string.comment);
-//        } else {
-//            commentText.setText(String.valueOf(element.getTotalComment()));
-//        }
-//
-//        commentButton.setVisibility(element.isShowComment() ? View.VISIBLE : View.GONE);
+        if (TextUtils.isEmpty(element.getTitle())) {
+            title.setVisibility(View.GONE);
+        } else {
+            title.setVisibility(View.VISIBLE);
+            title.setText(MethodChecker.fromHtml(element.getTitle()));
+        }
+
+        if (element.isFollowed()) {
+            label.setText(TimeConverter.generateTime(label.getContext(), element.getTime()));
+        } else {
+            label.setText(element.getLabel());
+        }
+
+        if (element.isFollowed() && !element.isTemporarilyFollowed()) {
+            followButton.setVisibility(View.GONE);
+            topSeparator.setVisibility(View.GONE);
+        } else if (element.isFollowed() && element.isTemporarilyFollowed()) {
+            followButton.setVisibility(View.VISIBLE);
+            followButton.setBackground(MethodChecker.getDrawable(followButton.getContext(),
+                    R.drawable.bg_button_white_border));
+            followText.setText(R.string.following);
+            followText.setTextColor(MethodChecker.getColor(followText.getContext(),
+                    R.color.black_54));
+            topSeparator.setVisibility(View.VISIBLE);
+        } else {
+            followButton.setVisibility(View.VISIBLE);
+            followButton.setBackground(MethodChecker.getDrawable(followButton.getContext(),
+                    R.drawable.bg_button_green));
+            followText.setTextColor(MethodChecker.getColor(followText.getContext(),
+                    R.color.white));
+            followText.setText(R.string.action_follow_english);
+            topSeparator.setVisibility(View.VISIBLE);
+        }
+
+        kolText.setText(getReadMoreText(element));
+
+        if (element.isLiked()) {
+            ImageHandler.loadImageWithIdWithoutPlaceholder(likeIcon, R.drawable.ic_thumb_green);
+            likeText.setText(String.valueOf(element.getTotalLike()));
+            likeText.setTextColor(MethodChecker.getColor(likeText.getContext(), R.color
+                    .tkpd_main_green));
+
+        } else if (element.getTotalLike() > 0) {
+            ImageHandler.loadImageWithIdWithoutPlaceholder(likeIcon, R.drawable.ic_thumb);
+            likeText.setText(String.valueOf(element.getTotalLike()));
+            likeText.setTextColor(MethodChecker.getColor(likeText.getContext(), R.color
+                    .black_54));
+        } else {
+            ImageHandler.loadImageWithIdWithoutPlaceholder(likeIcon, R.drawable.ic_thumb);
+            likeText.setText(R.string.action_like);
+            likeText.setTextColor(MethodChecker.getColor(likeIcon.getContext(), R.color
+                    .black_54));
+        }
+
+        if (element.getTotalComment() == 0) {
+            commentText.setText(R.string.comment);
+        } else {
+            commentText.setText(String.valueOf(element.getTotalComment()));
+        }
+
+        commentButton.setVisibility(element.isShowComment() ? View.VISIBLE : View.GONE);
+    }
+
+    private Spanned getReadMoreText(BaseKolViewModel element) {
+        if (!element.isReviewExpanded() && MethodChecker.fromHtml(element.getReview()).length() >
+                MAX_CHAR) {
+            String subDescription = MethodChecker.fromHtml(element.getReview()).toString().substring(0,
+                    MAX_CHAR);
+            return MethodChecker.fromHtml(
+                    subDescription.replaceAll("(\r\n|\n)", "<br />") + "... "
+                            + "<font color='#42b549'><b>"
+                            + getContext().getString(R.string.read_more_english)
+                            + "</b></font>");
+        } else {
+            return MethodChecker.fromHtml(element.getReview().replaceAll("(\r\n|\n)", "<br />"));
+        }
     }
 
     public void setViewListener(final BaseKolListener viewListener, final BaseKolViewModel element) {
