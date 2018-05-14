@@ -16,6 +16,7 @@ public class ChatRatingViewModel extends BaseChatViewModel implements
 
     private int ratingStatus;
     private long replyTimeNano;
+    private String message;
 
     public ChatRatingViewModel(String msgId,
                                String fromUid,
@@ -27,8 +28,9 @@ public class ChatRatingViewModel extends BaseChatViewModel implements
                                String replyTime,
                                int ratingStatus,
                                long replyTimeNano) {
-        super(msgId, fromUid, from, fromRole, message,
+        super(msgId, fromUid, from, fromRole,
                 attachmentId, attachmentType, replyTime);
+        this.message = message;
         this.ratingStatus = ratingStatus;
         this.replyTimeNano = replyTimeNano;
     }
@@ -43,6 +45,14 @@ public class ChatRatingViewModel extends BaseChatViewModel implements
 
     public long getReplyTimeNano() {
         return replyTimeNano;
+    }
+
+    public String getMessage() {
+        return message;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
     }
 
     @Override

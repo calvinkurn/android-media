@@ -39,25 +39,22 @@ public class WebSocketMapper {
             WebSocketResponse pojo = new GsonBuilder().create().fromJson(json, WebSocketResponse.class);
             if (pojo.getData().isShowRating() || pojo.getData().getRatingStatus() != 0) {
                 return convertToChatRating(pojo.getData());
-            } else {
-                String jsonAttributes = pojo.getData().getAttachment().getAttributes();
-                if (pojo != null
-                        && pojo.getData() != null
-                        && pojo.getData().getAttachment() != null
-                        && !TextUtils.isEmpty(jsonAttributes)) {
-                    switch (pojo.getData().getAttachment().getType()) {
-                        case TYPE_QUICK_REPLY:
-                            return convertToQuickReplyModel(pojo.getData(), jsonAttributes);
-                        default:
-//                        return convertToFallBackModel(pojo.getData());
-                            return null;
-
-                    }
-
-                } else {
-                    return null;
+            } else if (pojo.getData() != null
+                        && pojo.getData().getAttachment() != null) {
+                    String jsonAttributes = pojo.getData().getAttachment().getAttributes();
+                    if (!TextUtils.isEmpty(jsonAttributes)) {
+                        switch (pojo.getData().getAttachment().getType()) {
+                            case TYPE_QUICK_REPLY:
+                                return convertToQuickReplyModel(pojo.getData(), jsonAttributes);
+                            default:
+    //                        return convertToFallBackModel(pojo.getData());
+                                return null;
+                        }
+                    } else
+                        return null;
                 }
-            }
+            else
+                return null;
         } catch (JsonSyntaxException e) {
             return null;
         }
@@ -71,11 +68,11 @@ public class WebSocketMapper {
                 pojo.getFrom(),
                 pojo.getFromRole(),
                 pojo.getMessage().getCensoredReply(),
-                pojo.getAttachment().getId(),
-                TYPE_QUICK_REPLY,
+                "",
+                TYPE_CHAT_RATING,
                 pojo.getMessage().getTimeStampUnix(),
                 pojo.getRatingStatus(),
-                Long.getLong(pojo.getMessage().getTimeStampUnixNano())
+                Long.valueOf(pojo.getMessage().getTimeStampUnixNano())
         );
     }
 
@@ -89,7 +86,6 @@ public class WebSocketMapper {
                 String.valueOf(pojo.getFromUid()),
                 pojo.getFrom(),
                 pojo.getFromRole(),
-                pojo.getAttachment().getFallbackAttachment().getMessage(),
                 pojo.getAttachment().getId(),
                 pojo.getAttachment().getType(),
                 pojo.getMessage().getTimeStampUnix(),

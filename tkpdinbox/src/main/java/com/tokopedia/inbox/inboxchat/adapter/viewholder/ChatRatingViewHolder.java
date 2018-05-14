@@ -8,6 +8,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.tkpd.library.utils.KeyboardHandler;
+import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.inbox.R;
 import com.tokopedia.inbox.inboxchat.ChatTimeConverter;
 import com.tokopedia.inbox.inboxchat.presenter.ChatRoomContract;
@@ -57,6 +58,7 @@ public class ChatRatingViewHolder extends BaseChatViewHolder<ChatRatingViewModel
         });
 
         message.setMovementMethod(new ChatLinkHandlerMovementMethod(viewListener));
+        message.setText(MethodChecker.fromHtml(element.getMessage()));
         date.setVisibility(View.VISIBLE);
         String time;
 
