@@ -5,6 +5,7 @@ import android.content.res.TypedArray;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.Path;
 import android.graphics.Rect;
 import android.util.AttributeSet;
 import android.view.GestureDetector;
@@ -24,6 +25,7 @@ public class TwoLineSeekBar extends View {
     private static final float DEF_NAIL_RADIUS = 3.99375f;
     private static final float DEF_NAIL_STROKE_WIDTH = 7.9875f;
     private static final float DEF_LINE_WIDTH = 5.3250003f;
+    public static final int SHADOW_RADIUS = 6;
 
     private float mDefaultAreaRadius = 0.0f;
     private OnSeekDefaultListener mDefaultListener;
@@ -64,6 +66,7 @@ public class TwoLineSeekBar extends View {
     private boolean mIsGlobalDrag = true;
     private boolean mIsTouchCircle = false;
     private boolean mSupportSingleTap = true;
+    private Path path;
 
     public TwoLineSeekBar(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -75,10 +78,10 @@ public class TwoLineSeekBar extends View {
         mNailStrokeWidth = a.getDimension(R.styleable.TwoLineSeekBar_nail_stroke_width, DEF_NAIL_STROKE_WIDTH);
         mLineWidth = a.getDimension(R.styleable.TwoLineSeekBar_line_width, DEF_LINE_WIDTH);
 
-        mNailColor=a.getColor(R.styleable.TwoLineSeekBar_nail_color,0xFFFFE325);
-        mThumbColor=a.getColor(R.styleable.TwoLineSeekBar_thumb_color,0xFFFFE325);
-        mLineColor=a.getColor(R.styleable.TwoLineSeekBar_line_color,0xFFFFFFFF);
-        mHighColor=a.getColor(R.styleable.TwoLineSeekBar_high_color,0xFFFFE325);
+        mNailColor = a.getColor(R.styleable.TwoLineSeekBar_nail_color, 0xFFFFE325);
+        mThumbColor = a.getColor(R.styleable.TwoLineSeekBar_thumb_color, 0xFFFFE325);
+        mLineColor = a.getColor(R.styleable.TwoLineSeekBar_line_color, 0xFFFFFFFF);
+        mHighColor = a.getColor(R.styleable.TwoLineSeekBar_high_color, 0xFFFFE325);
 
         mDefaultAreaRadius = ((((mThumbRadius - mNailRadius) - mNailStrokeWidth) + mThumbRadius) / 2.0f);
 
@@ -94,10 +97,15 @@ public class TwoLineSeekBar extends View {
         mNailPaint.setColor(mNailColor);
         mNailPaint.setStrokeWidth(mNailStrokeWidth);
         mNailPaint.setStyle(Paint.Style.STROKE);
-        mThumbPaint = new Paint();
+        mThumbPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
         mThumbPaint.setAntiAlias(true);
         mThumbPaint.setColor(mThumbColor);
         mThumbPaint.setStyle(Paint.Style.FILL);
+        mThumbPaint.setShadowLayer(SHADOW_RADIUS, 0, 0, Color.GRAY);
+
+        // Important for certain APIs
+        setLayerType(LAYER_TYPE_SOFTWARE, mThumbPaint);
+
         mLinePaint1 = new Paint();
         mLinePaint1.setAntiAlias(true);
         mLinePaint1.setColor(mLineColor);
@@ -111,6 +119,8 @@ public class TwoLineSeekBar extends View {
         mHighLightLinePaint.setColor(mHighColor);
 //        mHighLightLinePaint.setAlpha(0xc8);
         mSupportSingleTap = true;
+
+        path = new Path();
     }
 
     public float dpToPixel(float dp) {
@@ -164,9 +174,20 @@ public class TwoLineSeekBar extends View {
         if (mSeekLineEnd > left2) {
             canvas.drawRect(left2, top, mSeekLineEnd, bottom, mLinePaint2);
         }
+
         float nailX = mSeekLineStart + mNailOffset;
         float nailY = (float) (getMeasuredHeight() / 0x2);
-        canvas.drawCircle(nailX, nailY, mNailRadius, mNailPaint);
+        if (mNailRadius > 0) {
+            canvas.drawCircle(nailX, nailY, mNailRadius, mNailPaint);
+        } else {
+            mNailPaint.setStyle(Paint.Style.FILL);
+            path.reset();
+            path.moveTo(nailX, nailY - mThumbRadius / 8);
+            path.lineTo(nailX + mThumbRadius / 2, nailY - mThumbRadius / 2);
+            path.lineTo(nailX - mThumbRadius / 2, nailY - mThumbRadius / 2);
+            path.lineTo(nailX, nailY - mThumbRadius / 8);
+            canvas.drawPath(path, mNailPaint);
+        }
         float thumbX = mSeekLineStart + mThumbOffset;
         float thumbY = (float) (getMeasuredHeight() / 0x2);
         float highLightLeft = thumbX + mThumbRadius;
@@ -181,6 +202,7 @@ public class TwoLineSeekBar extends View {
         mCircleRect.left = (int) (thumbX - mThumbRadius);
         mCircleRect.right = (int) (mThumbRadius + thumbX);
         mCircleRect.bottom = (int) (mThumbRadius + thumbY);
+
         if (mScroller.computeScrollOffset()) {
             mThumbOffset = (float) mScroller.getCurrY();
             invalidate();
@@ -211,6 +233,12 @@ public class TwoLineSeekBar extends View {
             }
         }
         return true;
+    }
+
+    private boolean isPointInsideView(float x, float y, View view) {
+        Rect viewArea = new Rect();
+        view.getGlobalVisibleRect(viewArea);
+        return viewArea.contains((int) x, (int) y);
     }
 
     public void setLineColor(String color) {
@@ -291,9 +319,10 @@ public class TwoLineSeekBar extends View {
         if (newValue == mCurrentValue) {
             return;
         }
+        int previousValue = mCurrentValue;
         mCurrentValue = newValue;
         if (mListener != null) {
-            mListener.onSeekChanged((mStep * value), mStep);
+            mListener.onSeekChanged(previousValue * value, (mStep * value), mStep);
         }
         updateThumbOffset();
         postInvalidate();
@@ -319,9 +348,10 @@ public class TwoLineSeekBar extends View {
         if (mCurrentValue == value) {
             return;
         }
+        int previousValue = mCurrentValue;
         mCurrentValue = value;
         if (mListener != null) {
-            mListener.onSeekChanged(((float) (mStartValue + value) * mStep), mStep);
+            mListener.onSeekChanged(((float) (mStartValue + previousValue) * mStep), ((float) (mStartValue + value) * mStep), mStep);
         }
     }
 
@@ -397,11 +427,11 @@ public class TwoLineSeekBar extends View {
 
         public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
             mThumbOffset -= distanceX;
-            if (mThumbOffset < mSeekLineStart - mThumbRadius) {
-                mThumbOffset = mSeekLineStart - mThumbRadius;
+            if (mThumbOffset < mSeekLineStart - mThumbRadius - getPaddingLeft()) {
+                mThumbOffset = mSeekLineStart - mThumbRadius - getPaddingLeft();
             }
-            if (mThumbOffset > mSeekLineEnd - mThumbRadius) {
-                mThumbOffset = mSeekLineEnd - mThumbRadius;
+            if (mThumbOffset > mSeekLineEnd - mThumbRadius - getPaddingLeft()) {
+                mThumbOffset = mSeekLineEnd - mThumbRadius - getPaddingLeft();
             }
             float newValue;
             if (mThumbOffset < mNailOffset - mDefaultAreaRadius) {
@@ -466,7 +496,7 @@ public class TwoLineSeekBar extends View {
 
     public static abstract interface OnSeekChangeListener {
 
-        public abstract void onSeekChanged(float value, float step);
+        public abstract void onSeekChanged(float previousValue, float value, float step);
 
         public abstract void onSeekStopped(float value, float step);
     }

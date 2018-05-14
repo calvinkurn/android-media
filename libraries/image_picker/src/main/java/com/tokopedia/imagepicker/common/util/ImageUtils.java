@@ -35,7 +35,6 @@ import java.nio.channels.FileChannel;
 import java.util.ArrayList;
 import java.util.Random;
 
-import static com.tokopedia.imagepicker.common.util.ImageUtils.DirectoryDef.DIRECTORY_CAMERA;
 import static com.tokopedia.imagepicker.common.util.ImageUtils.DirectoryDef.DIRECTORY_TOKOPEDIA_CACHE;
 import static com.tokopedia.imagepicker.common.util.ImageUtils.DirectoryDef.DIRECTORY_TOKOPEDIA_EDIT_RESULT;
 
@@ -54,11 +53,10 @@ public class ImageUtils {
     public static final String JPG_EXT = ".jpg";
     public static final String PNG = "png";
 
-    @StringDef({DIRECTORY_TOKOPEDIA_CACHE, DIRECTORY_TOKOPEDIA_EDIT_RESULT, DIRECTORY_CAMERA})
+    @StringDef({DIRECTORY_TOKOPEDIA_CACHE, DIRECTORY_TOKOPEDIA_EDIT_RESULT})
     public @interface DirectoryDef {
         String DIRECTORY_TOKOPEDIA_CACHE = "Tokopedia/Tokopedia Cache/";
         String DIRECTORY_TOKOPEDIA_EDIT_RESULT = "Tokopedia/Tokopedia Edit/";
-        String DIRECTORY_CAMERA = "Tokopedia/Tokopedia Camera/";
     }
 
     public static File getTokopediaPublicDirectory(@DirectoryDef String directoryType) {
@@ -92,14 +90,20 @@ public class ImageUtils {
         return getTokopediaPhotoPath(directoryDef, isPng(referencePath));
     }
 
-    public static void deleteCacheFolder(){
+    public static void deleteCacheFolder() {
         File directory = getTokopediaPublicDirectory(DIRECTORY_TOKOPEDIA_CACHE);
         if (directory.exists()) {
+            File[] files = directory.listFiles();
+            for (int i = 0; i < files.length; i++) {
+                if (!files[i].isDirectory()) {
+                    files[i].delete();
+                }
+            }
             directory.delete();
         }
     }
 
-    public static boolean isPng(String referencePath){
+    public static boolean isPng(String referencePath) {
         return referencePath.endsWith(PNG_EXT);
     }
 
@@ -127,7 +131,7 @@ public class ImageUtils {
         File file;
         try {
             file = getTokopediaPhotoPath(directoryDef, galleryOrCameraPath);
-            copyFile(galleryOrCameraPath,file.getAbsolutePath());
+            copyFile(galleryOrCameraPath, file.getAbsolutePath());
         } catch (IOException e) {
             return null;
         }
@@ -159,7 +163,7 @@ public class ImageUtils {
     public static ArrayList<String> copyFiles(ArrayList<String> cropppedImagePaths,
                                               @DirectoryDef String directoryDef) throws IOException {
         ArrayList<String> resultList = new ArrayList<>();
-        for (String imagePathFrom: cropppedImagePaths) {
+        for (String imagePathFrom : cropppedImagePaths) {
             File outputFile = getTokopediaPhotoPath(directoryDef, imagePathFrom);
             String resultPath = outputFile.getAbsolutePath();
             copyFile(imagePathFrom, resultPath);
@@ -168,10 +172,10 @@ public class ImageUtils {
         return resultList;
     }
 
-    public static void deleteFile(String path) throws IOException {
+    public static void deleteFile(String path) {
         if (!TextUtils.isEmpty(path)) {
             File file = new File(path);
-            if (file.exists()){
+            if (file.exists()) {
                 file.delete();
             }
         }
@@ -236,13 +240,6 @@ public class ImageUtils {
         boolean isPNG = isPNGMimeType(mimeType);
         if (uri.getAuthority() != null) {
             try {
-                String path = getPathFromMediaUri(context, uri);
-                if (TextUtils.isEmpty(path)) {
-                    path = getPath(context, uri);
-                }
-                if (TextUtils.isEmpty(path)) {
-                    return null;
-                }
                 Bitmap bmp = null;
                 int inSampleSize = 1;
                 boolean oomError;
@@ -264,13 +261,8 @@ public class ImageUtils {
                         if (bmp == null) {
                             return null;
                         }
-                        bmp = rotate(bmp, path);
                         oomError = false;
                     } catch (OutOfMemoryError outOfMemoryError) {
-                        if (bmp != null) {
-                            bmp.recycle();
-                            bmp = null;
-                        }
                         inSampleSize *= 2;
                         oomError = true;
                         if (inSampleSize > 16) {

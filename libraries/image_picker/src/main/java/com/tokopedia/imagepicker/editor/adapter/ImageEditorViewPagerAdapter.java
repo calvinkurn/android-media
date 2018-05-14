@@ -48,7 +48,7 @@ public class ImageEditorViewPagerAdapter extends FragmentStatePagerAdapter {
     @Override
     public Fragment getItem(int position) {
         String localImagePath = edittedImagePaths.get(position).get(currentEditStepIndexList.get(position));
-        return ImageEditPreviewFragment.newInstance(localImagePath, minResolution, ratioX, ratioY, isCirclePreview);
+        return ImageEditPreviewFragment.newInstance(position, localImagePath, minResolution, ratioX, ratioY, isCirclePreview);
     }
 
     @Override
@@ -64,6 +64,10 @@ public class ImageEditorViewPagerAdapter extends FragmentStatePagerAdapter {
         super.destroyItem(container, position, object);
     }
 
+    public void destroyIndex(int position){
+        registeredFragments.remove(position);
+    }
+
     public Fragment getRegisteredFragment(int position) {
         return registeredFragments.get(position);
     }
@@ -71,5 +75,18 @@ public class ImageEditorViewPagerAdapter extends FragmentStatePagerAdapter {
     @Override
     public int getCount() {
         return edittedImagePaths.size();
+    }
+
+    @Override
+    public int getItemPosition(Object object) {
+        if (object!= null) {
+            int imageIndex = ((ImageEditPreviewFragment)object).getImageIndex();
+            if (registeredFragments.get(imageIndex) == null) {
+                return POSITION_NONE;
+            } else {
+                return super.getItemPosition(object);
+            }
+        }
+        return super.getItemPosition(object);
     }
 }

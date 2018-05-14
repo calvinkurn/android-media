@@ -118,7 +118,7 @@ public class AlbumMediaAdapter extends RecyclerViewCursorAdapter<AlbumMediaAdapt
 
     @Override
     public MediaViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.gallery_media_grid_item, parent, false);
+        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.media_grid_item, parent, false);
         return new MediaViewHolder(v);
     }
 

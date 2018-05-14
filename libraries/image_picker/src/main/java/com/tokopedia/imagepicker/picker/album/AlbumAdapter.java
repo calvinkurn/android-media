@@ -62,7 +62,7 @@ public class AlbumAdapter extends RecyclerViewCursorAdapter<AlbumAdapter.AlbumVi
     protected void onBindViewHolder(AlbumViewHolder holder, Cursor cursor) {
         AlbumItem albumItem = AlbumItem.valueOf(cursor);
         holder.tvAlbumName.setText(albumItem.getDisplayName(context));
-        holder.tvAlbumCount.setText(String.valueOf(albumItem.getCount()));
+        holder.tvAlbumCount.setText(context.getString(R.string.x_photos, albumItem.getCount()));
 
         // do not need to load animated Gif
         ImageHandler.loadImageFromFileFitCenter(

@@ -2,6 +2,7 @@ package com.tokopedia.imagepicker.picker.main.view;
 
 import android.Manifest;
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -13,18 +14,22 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.view.View;
+import android.webkit.URLUtil;
 
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
+import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
+import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.imagepicker.R;
 import com.tokopedia.imagepicker.editor.main.view.ImageEditorActivity;
+import com.tokopedia.imagepicker.editor.presenter.ImageEditorPresenter;
 import com.tokopedia.imagepicker.picker.main.adapter.ImagePickerViewPagerAdapter;
 import com.tokopedia.imagepicker.picker.camera.ImagePickerCameraFragment;
 import com.tokopedia.imagepicker.picker.gallery.ImagePickerGalleryFragment;
 import com.tokopedia.imagepicker.picker.gallery.model.MediaItem;
 import com.tokopedia.imagepicker.picker.instagram.view.fragment.ImagePickerInstagramFragment;
-import com.tokopedia.imagepicker.picker.main.util.ImagePickerBuilder;
-import com.tokopedia.imagepicker.picker.main.util.ImagePickerTabTypeDef;
-import com.tokopedia.imagepicker.picker.main.util.ImageSelectionTypeDef;
+import com.tokopedia.imagepicker.picker.main.builder.ImagePickerBuilder;
+import com.tokopedia.imagepicker.picker.main.builder.ImagePickerTabTypeDef;
+import com.tokopedia.imagepicker.picker.main.builder.ImageSelectionTypeDef;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,7 +37,7 @@ import java.util.List;
 public class ImagePickerActivity extends BaseSimpleActivity
         implements ImagePickerGalleryFragment.OnImagePickerGalleryFragmentListener,
         ImagePickerCameraFragment.OnImagePickerCameraFragmentListener,
-        ImagePickerInstagramFragment.ListenerImagePickerInstagram {
+        ImagePickerInstagramFragment.ListenerImagePickerInstagram, ImagePickerPresenter.ImagePickerView {
 
     public static final String EXTRA_IMAGE_PICKER_BUILDER = "x_img_pick_builder";
 
@@ -51,6 +56,10 @@ public class ImagePickerActivity extends BaseSimpleActivity
     private ImagePickerViewPagerAdapter imagePickerViewPagerAdapter;
     private List<String> permissionsToRequest;
 
+    private ProgressDialog progressDialog;
+
+    private ImagePickerPresenter imagePickerPresenter;
+
     public static Intent getIntent(Context context, ImagePickerBuilder imagePickerBuilder) {
         Intent intent = new Intent(context, ImagePickerActivity.class);
         intent.putExtra(EXTRA_IMAGE_PICKER_BUILDER, imagePickerBuilder);
@@ -65,11 +74,7 @@ public class ImagePickerActivity extends BaseSimpleActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         Intent intent = getIntent();
-        if (intent != null && intent.getExtras() != null && intent.getExtras().containsKey(EXTRA_IMAGE_PICKER_BUILDER)) {
-            imagePickerBuilder = (ImagePickerBuilder) intent.getExtras().get(EXTRA_IMAGE_PICKER_BUILDER);
-        } else {
-            imagePickerBuilder = ImagePickerBuilder.ADD_PRODUCT;
-        }
+        imagePickerBuilder = (ImagePickerBuilder) intent.getExtras().get(EXTRA_IMAGE_PICKER_BUILDER);
         super.onCreate(savedInstanceState);
 
         if (savedInstanceState != null) {
@@ -182,38 +187,32 @@ public class ImagePickerActivity extends BaseSimpleActivity
 
     @Override
     public void onAlbumItemClicked(MediaItem item, boolean isChecked) {
-        switch (imagePickerBuilder.getImageSelectionType()) {
-            case ImageSelectionTypeDef.TYPE_SINGLE: {
-                onSingleImagePicked(item.getRealPath());
-            }
-            break;
-            case ImageSelectionTypeDef.TYPE_MULTIPLE_NO_PREVIEW:
-            case ImageSelectionTypeDef.TYPE_MULTIPLE_WITH_PREVIEW: {
-                // TODO change the UI of selection
-                if (imagePickerBuilder.getImageSelectionType() == ImageSelectionTypeDef.TYPE_MULTIPLE_WITH_PREVIEW) {
-                    // TODO show the preview
-                } else {
-                    // TODO hide the preview
-                }
-            }
-            break;
-        }
+        onImageSelected(item.getRealPath());
     }
 
     @Override
     public void onClickImageInstagram(String url, boolean isChecked) {
+        onImageSelected(url);
+    }
+
+    @Override
+    public void onImageTaken(String filePath) {
+        onImageSelected(filePath);
+    }
+
+    private void onImageSelected(String filePathOrUrl) {
         switch (imagePickerBuilder.getImageSelectionType()) {
             case ImageSelectionTypeDef.TYPE_SINGLE: {
-                onSingleImagePicked(url);
+                onSingleImagePicked(filePathOrUrl);
             }
             break;
             case ImageSelectionTypeDef.TYPE_MULTIPLE_NO_PREVIEW:
             case ImageSelectionTypeDef.TYPE_MULTIPLE_WITH_PREVIEW: {
                 // TODO change the UI of selection
                 if (imagePickerBuilder.getImageSelectionType() == ImageSelectionTypeDef.TYPE_MULTIPLE_WITH_PREVIEW) {
-                    // TODO show the preview
+                    // TODO show the preview?
                 } else {
-                    // TODO hide the preview
+                    // TODO hide the preview?
                 }
             }
             break;
@@ -239,11 +238,71 @@ public class ImagePickerActivity extends BaseSimpleActivity
     }
 
     private void onFinishWithMultipleImage(ArrayList<String> imageUrlOrPathList) {
+        if (imagePickerBuilder.isMoveImageResultToLocal()) {
+            //check if there is http url on the list, if any, convert to local.
+            boolean hasNetworkImage = false;
+            for (int i = 0, sizei = imageUrlOrPathList.size(); i < sizei; i++) {
+                if (URLUtil.isNetworkUrl(imageUrlOrPathList.get(i))) {
+                    hasNetworkImage = true;
+                    break;
+                }
+            }
+            if (hasNetworkImage) {
+                showDownloadProgressDialog();
+                initImagePickerPresenter();
+                imagePickerPresenter.convertHttpPathToLocalPath(imageUrlOrPathList);
+            } else {
+                onFinishWithMultipleLocalImage(imageUrlOrPathList);
+            }
+        } else {
+            onFinishWithMultipleLocalImage(imageUrlOrPathList);
+        }
+    }
+
+    private void onFinishWithMultipleLocalImage(ArrayList<String> imageUrlOrPathList){
         Intent intent = new Intent();
         intent.putStringArrayListExtra(PICKER_RESULT_PATHS, imageUrlOrPathList);
         setResult(Activity.RESULT_OK, intent);
-
         finish();
+    }
+
+    @Override
+    public Context getContext() {
+        return this;
+    }
+
+    @Override
+    public void onErrorDownloadImageToLocal(Throwable e) {
+        hideDownloadProgressDialog();
+        NetworkErrorHelper.showRedCloseSnackbar(this, ErrorHandler.getErrorMessage(getContext(), e));
+    }
+
+    @Override
+    public void onSuccessDownloadImageToLocal(ArrayList<String> localPaths) {
+        hideDownloadProgressDialog();
+        onFinishWithMultipleLocalImage(localPaths);
+    }
+
+    private void initImagePickerPresenter() {
+        if (imagePickerPresenter == null) {
+            imagePickerPresenter = new ImagePickerPresenter();
+            imagePickerPresenter.attachView(this);
+        }
+    }
+
+    private void showDownloadProgressDialog() {
+        if (progressDialog == null) {
+            progressDialog = new ProgressDialog(this);
+            progressDialog.setCancelable(false);
+            progressDialog.setMessage(getString(R.string.title_loading));
+        }
+        progressDialog.show();
+    }
+
+    private void hideDownloadProgressDialog() {
+        if (progressDialog != null) {
+            progressDialog.hide();
+        }
     }
 
     @Override
@@ -259,26 +318,6 @@ public class ImagePickerActivity extends BaseSimpleActivity
             default:
                 super.onActivityResult(requestCode, resultCode, data);
                 break;
-        }
-    }
-
-    @Override
-    public void onImageTaken(String filePath) {
-        switch (imagePickerBuilder.getImageSelectionType()) {
-            case ImageSelectionTypeDef.TYPE_SINGLE: {
-                onSingleImagePicked(filePath);
-            }
-            break;
-            case ImageSelectionTypeDef.TYPE_MULTIPLE_NO_PREVIEW:
-            case ImageSelectionTypeDef.TYPE_MULTIPLE_WITH_PREVIEW: {
-                // TODO change the UI of selection
-                if (imagePickerBuilder.getImageSelectionType() == ImageSelectionTypeDef.TYPE_MULTIPLE_WITH_PREVIEW) {
-                    // TODO show the preview?
-                } else {
-                    // TODO hide the preview?
-                }
-            }
-            break;
         }
     }
 
@@ -313,4 +352,5 @@ public class ImagePickerActivity extends BaseSimpleActivity
         super.onSaveInstanceState(outState);
         outState.putInt(SAVED_SELECTED_TAB, tabLayout.getSelectedTabPosition());
     }
+
 }

@@ -30,7 +30,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="end"
                 style="@style/TextView.Title.Green"
-                android:text="@string/label_done"
+                android:text="@string/label_next"
                 android:paddingTop="@dimen/dp_8"
                 android:paddingBottom="@dimen/dp_8"
                 android:paddingLeft="@dimen/dp_8"
@@ -40,6 +40,14 @@
                 android:background="?attr/selectableItemBackground"
                 android:clickable="true"
                 android:focusable="true"/>
+
+            <TextView
+                android:id="@+id/tv_action_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                style="@style/TextView.TitleBig"
+                tools:text="@string/crop"/>
 
         </android.support.v7.widget.Toolbar>
     </android.support.design.widget.AppBarLayout>
@@ -154,14 +162,24 @@
                         android:layout_weight="1"/>
 
                     <include
-                        android:id="@+id/layout_rotate_wheel"
+                        android:id="@+id/layout_crop"
                         android:layout_height="@dimen/control_height"
                         android:layout_width="match_parent"
                         android:layout_marginLeft="@dimen/dp_16"
                         android:layout_marginRight="@dimen/dp_16"
                         android:visibility="gone"
                         tools:visibility="visible"
-                        layout="@layout/ucrop_layout_rotate"/>
+                        layout="@layout/layout_crop"/>
+
+                    <include
+                        android:id="@+id/layout_rotate"
+                        android:layout_height="@dimen/control_height"
+                        android:layout_width="match_parent"
+                        android:layout_marginLeft="@dimen/dp_16"
+                        android:layout_marginRight="@dimen/dp_16"
+                        android:visibility="gone"
+                        tools:visibility="visible"
+                        layout="@layout/layout_rotate"/>
 
                     <include
                         android:id="@+id/layout_brightness"
@@ -203,6 +221,7 @@
                             android:paddingLeft="@dimen/dp_16"
                             android:paddingTop="@dimen/dp_16"
                             android:paddingBottom="@dimen/dp_16"
+                            android:textSize="@dimen/sp_18"
                             android:text="@string/cancel"
                             android:background="?attr/selectableItemBackground"
                             android:clickable="true"
@@ -218,6 +237,7 @@
                             android:paddingLeft="@dimen/dp_16"
                             android:paddingTop="@dimen/dp_16"
                             android:paddingBottom="@dimen/dp_16"
+                            android:textSize="@dimen/sp_18"
                             android:gravity="center_horizontal"
                             android:text="@string/save"
                             android:background="?attr/selectableItemBackground"

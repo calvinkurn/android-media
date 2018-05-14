@@ -31,10 +31,12 @@ import com.tokopedia.imagepicker.picker.gallery.model.MediaItem;
 import com.tokopedia.imagepicker.picker.gallery.type.GalleryType;
 import com.tokopedia.imagepicker.picker.gallery.widget.MediaGridInset;
 
+import java.io.File;
 import java.util.ArrayList;
 
 import static com.tokopedia.imagepicker.picker.album.AlbumPickerActivity.EXTRA_ALBUM_ITEM;
 import static com.tokopedia.imagepicker.picker.album.AlbumPickerActivity.EXTRA_ALBUM_POSITION;
+import static com.tokopedia.imagepicker.picker.gallery.model.AlbumItem.ALBUM_ID_ALL;
 
 /**
  * Created by hendry on 19/04/18.
@@ -208,6 +210,9 @@ public class ImagePickerGalleryFragment extends TkpdBaseV4Fragment
     }
 
     private void onAlbumLoaded(AlbumItem albumItem) {
+        if (albumItem == null) {
+            albumItem = new AlbumItem(ALBUM_ID_ALL, null,null, 0);
+        }
         if (albumItem.isAll()) {
             albumItem.addCaptureCount();
         }
@@ -238,6 +243,11 @@ public class ImagePickerGalleryFragment extends TkpdBaseV4Fragment
     public boolean isImageValid(MediaItem item) {
         //TODO check the image number allowed.
 
+        // check if file exists
+        if (! new File(item.getRealPath()).exists()){
+            NetworkErrorHelper.showRedCloseSnackbar(getView(), getString(R.string.image_not_found));
+            return false;
+        }
         //check image resolution
         if (item.getWidth() < minImageResolution || item.getHeight() < minImageResolution) {
             NetworkErrorHelper.showRedCloseSnackbar(getView(), getString(R.string.image_under_x_resolution, minImageResolution));

@@ -19,11 +19,9 @@ dependencies {
     compile rootProject.ext.miscDependencies.dagger
     apt rootProject.ext.miscDependencies.daggerCompiler
 
-//    compile project(rootProject.ext.libraries.applink)
+    compile rootProject.ext.miscDependencies.cameraView
 
-    compile 'com.otaliastudios:cameraview:1.5.0'
-
-    compile ('com.github.yalantis:ucrop:2.2.2'){
+    compile (rootProject.ext.miscDependencies.ucrop){
         exclude group: 'com.android.support'
     }
 }

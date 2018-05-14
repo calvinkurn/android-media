@@ -71,7 +71,7 @@ public class ImageEditorFragment extends Fragment implements CropImageView.OnSet
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_image_editor, container, false);
+        View view = inflater.inflate(R.layout.fragment_image_editor_lib, container, false);
         return view;
     }
 
