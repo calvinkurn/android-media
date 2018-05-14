@@ -18,10 +18,10 @@ import com.tokopedia.inbox.attachinvoice.view.resultmodel.SelectedInvoice;
 import com.tokopedia.inbox.attachproduct.view.resultmodel.ResultProduct;
 import com.tokopedia.inbox.inboxchat.ChatWebSocketListenerImpl;
 import com.tokopedia.inbox.inboxchat.InboxChatConstant;
-import com.tokopedia.inbox.inboxchat.domain.pojo.SetChatRatingPojo;
 import com.tokopedia.inbox.inboxchat.domain.WebSocketMapper;
-import com.tokopedia.inbox.inboxchat.domain.model.replyaction.ReplyActionData;
 import com.tokopedia.inbox.inboxchat.domain.model.reply.WebSocketResponse;
+import com.tokopedia.inbox.inboxchat.domain.model.replyaction.ReplyActionData;
+import com.tokopedia.inbox.inboxchat.domain.pojo.SetChatRatingPojo;
 import com.tokopedia.inbox.inboxchat.domain.usecase.AttachImageUseCase;
 import com.tokopedia.inbox.inboxchat.domain.usecase.GetReplyListUseCase;
 import com.tokopedia.inbox.inboxchat.domain.usecase.ReplyMessageUseCase;
@@ -43,6 +43,7 @@ import com.tokopedia.inbox.inboxchat.viewmodel.MyChatViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.OppositeChatViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.SendMessageViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.TemplateChatModel;
+import com.tokopedia.inbox.inboxchat.viewmodel.chatroom.ChatRatingViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.chatroom.QuickReplyListViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.mapper.AttachInvoiceMapper;
 
@@ -392,10 +393,11 @@ public class ChatRoomPresenter extends BaseDaggerPresenter<ChatRoomContract.View
                 });
     }
 
-    public void setChatRating(final OppositeChatViewModel element, int userId, final int rating) {
+    public void setChatRating(final ChatRatingViewModel element, int userId, final int rating) {
         setChatRatingUseCase.execute(
                 SetChatRatingUseCase.
-                        getParams(element.getMsgId(), userId, element.getReplyTimeNano(), rating),
+                        getParams(Integer.parseInt(element.getMessageId()),
+                                userId, element.getReplyTimeNano(), rating),
                 new Subscriber<SetChatRatingPojo>() {
                     @Override
                     public void onCompleted() {

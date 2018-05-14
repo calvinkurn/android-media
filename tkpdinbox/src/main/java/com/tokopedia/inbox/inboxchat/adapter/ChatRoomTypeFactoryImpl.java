@@ -4,6 +4,7 @@ import android.view.View;
 
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
+import com.tokopedia.inbox.inboxchat.adapter.viewholder.ChatRatingViewHolder;
 import com.tokopedia.inbox.inboxchat.adapter.viewholder.FallbackAttachmentViewHolder;
 import com.tokopedia.inbox.inboxchat.adapter.viewholder.QuickReplyViewHolder;
 import com.tokopedia.inbox.inboxchat.domain.model.websocket.FallbackAttachmentViewModel;
@@ -26,6 +27,7 @@ import com.tokopedia.inbox.inboxchat.viewmodel.MyChatViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.OppositeChatViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.ThumbnailChatViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.TypingChatModel;
+import com.tokopedia.inbox.inboxchat.viewmodel.chatroom.ChatRatingViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.chatroom.QuickReplyListViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.chatroom.TimeMachineChatModel;
 
@@ -98,6 +100,11 @@ public class ChatRoomTypeFactoryImpl extends BaseAdapterTypeFactory implements C
     }
 
     @Override
+    public int type(ChatRatingViewModel chatRatingViewModel) {
+        return ChatRatingViewHolder.LAYOUT;
+    }
+
+    @Override
     public AbstractViewHolder createViewHolder(View view, int type) {
 
         AbstractViewHolder viewHolder;
@@ -124,7 +131,8 @@ public class ChatRoomTypeFactoryImpl extends BaseAdapterTypeFactory implements C
             viewHolder = new QuickReplyViewHolder(view, viewListener);
         else if (type == FallbackAttachmentViewHolder.LAYOUT)
             viewHolder = new FallbackAttachmentViewHolder(view, viewListener);
-
+        else if (type == ChatRatingViewHolder.LAYOUT)
+            viewHolder = new ChatRatingViewHolder(view, viewListener);
         else
             return super.createViewHolder(view, type);
 

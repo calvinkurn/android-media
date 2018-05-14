@@ -85,9 +85,9 @@ import com.tokopedia.inbox.inboxchat.domain.model.reply.AttachmentAttributes;
 import com.tokopedia.inbox.inboxchat.domain.model.reply.AttachmentInvoice;
 import com.tokopedia.inbox.inboxchat.domain.model.reply.AttachmentInvoiceAttributes;
 import com.tokopedia.inbox.inboxchat.domain.model.reply.AttachmentProductProfile;
+import com.tokopedia.inbox.inboxchat.domain.model.reply.WebSocketResponse;
 import com.tokopedia.inbox.inboxchat.domain.model.replyaction.ReplyActionData;
 import com.tokopedia.inbox.inboxchat.domain.model.websocket.BaseChatViewModel;
-import com.tokopedia.inbox.inboxchat.domain.model.reply.WebSocketResponse;
 import com.tokopedia.inbox.inboxchat.helper.AttachmentChatHelper;
 import com.tokopedia.inbox.inboxchat.presenter.ChatRoomContract;
 import com.tokopedia.inbox.inboxchat.presenter.ChatRoomPresenter;
@@ -101,7 +101,7 @@ import com.tokopedia.inbox.inboxchat.viewmodel.ChatRoomViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.DummyChatViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.InboxChatViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.MyChatViewModel;
-import com.tokopedia.inbox.inboxchat.viewmodel.OppositeChatViewModel;
+import com.tokopedia.inbox.inboxchat.viewmodel.chatroom.ChatRatingViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.chatroom.QuickReplyListViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.chatroom.QuickReplyViewModel;
 import com.tokopedia.inbox.inboxmessage.InboxMessageConstant;
@@ -1110,7 +1110,7 @@ public class ChatRoomFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void onClickRating(OppositeChatViewModel element, int rating) {
+    public void onClickRating(ChatRatingViewModel element, int rating) {
         UserSession userSession = ((AbstractionRouter) getContext().
                 getApplicationContext()).getSession();
         int userId = 0;
@@ -1486,7 +1486,7 @@ public class ChatRoomFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void onSuccessSetRating(OppositeChatViewModel model) {
+    public void onSuccessSetRating(ChatRatingViewModel model) {
         adapter.changeRating(model);
     }
 

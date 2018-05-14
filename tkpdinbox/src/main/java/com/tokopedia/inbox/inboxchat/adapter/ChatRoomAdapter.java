@@ -14,8 +14,8 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.inbox.inboxchat.domain.model.ListReplyViewModel;
 import com.tokopedia.inbox.inboxchat.domain.model.ReplyParcelableModel;
 import com.tokopedia.inbox.inboxchat.domain.model.reply.Attachment;
-import com.tokopedia.inbox.inboxchat.domain.model.websocket.BaseChatViewModel;
 import com.tokopedia.inbox.inboxchat.domain.model.reply.WebSocketResponse;
+import com.tokopedia.inbox.inboxchat.domain.model.websocket.BaseChatViewModel;
 import com.tokopedia.inbox.inboxchat.helper.AttachmentChatHelper;
 import com.tokopedia.inbox.inboxchat.viewholder.AttachedInvoiceSentViewHolder;
 import com.tokopedia.inbox.inboxchat.viewholder.AttachedProductViewHolder;
@@ -23,8 +23,8 @@ import com.tokopedia.inbox.inboxchat.viewholder.MyChatViewHolder;
 import com.tokopedia.inbox.inboxchat.viewmodel.AttachProductViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.DummyChatViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.MyChatViewModel;
-import com.tokopedia.inbox.inboxchat.viewmodel.OppositeChatViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.TypingChatModel;
+import com.tokopedia.inbox.inboxchat.viewmodel.chatroom.ChatRatingViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.chatroom.TimeMachineChatModel;
 
 import java.util.ArrayList;
@@ -373,9 +373,9 @@ public class ChatRoomAdapter extends RecyclerView.Adapter<AbstractViewHolder> {
         }
     }
 
-    public void changeRating(OppositeChatViewModel model) {
+    public void changeRating(ChatRatingViewModel model) {
         int position = list.indexOf(model);
-        ((OppositeChatViewModel) list.get(position)).setRatingStatus(model.getRatingStatus());
+        ((ChatRatingViewModel) list.get(position)).setRatingStatus(model.getRatingStatus());
         notifyItemChanged(position);
     }
 }

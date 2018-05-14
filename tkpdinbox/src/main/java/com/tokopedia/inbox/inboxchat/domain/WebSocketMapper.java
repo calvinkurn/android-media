@@ -10,6 +10,7 @@ import com.tokopedia.inbox.inboxchat.domain.pojo.common.WebSocketResponse;
 import com.tokopedia.inbox.inboxchat.domain.pojo.common.WebSocketResponseData;
 import com.tokopedia.inbox.inboxchat.domain.pojo.quickreply.QuickReplyAttachmentAttributes;
 import com.tokopedia.inbox.inboxchat.domain.pojo.quickreply.QuickReplyPojo;
+import com.tokopedia.inbox.inboxchat.viewmodel.chatroom.ChatRatingViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.chatroom.QuickReplyListViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.chatroom.QuickReplyViewModel;
 
@@ -23,6 +24,7 @@ import javax.inject.Inject;
  */
 public class WebSocketMapper {
 
+    private static final String TYPE_CHAT_RATING = "-1";
     private static final String TYPE_QUICK_REPLY = "8";
     private static final String TYPE_PRODUCT_ATTACHMENT = "3";
 
@@ -34,29 +36,47 @@ public class WebSocketMapper {
 
     public BaseChatViewModel map(String json) {
         try {
-
             WebSocketResponse pojo = new GsonBuilder().create().fromJson(json, WebSocketResponse.class);
-
-            String jsonAttributes = pojo.getData().getAttachment().getAttributes();
-            if (pojo != null
-                    && pojo.getData() != null
-                    && pojo.getData().getAttachment() != null
-                    && !TextUtils.isEmpty(jsonAttributes)) {
-                switch (pojo.getData().getAttachment().getType()) {
-                    case TYPE_QUICK_REPLY:
-                        return convertToQuickReplyModel(pojo.getData(), jsonAttributes);
-                    default:
-//                        return convertToFallBackModel(pojo.getData());
-                        return null;
-
-                }
+            if (pojo.getData().isShowRating() || pojo.getData().getRatingStatus() != 0) {
+                return convertToChatRating(pojo.getData());
             } else {
-                return null;
+                String jsonAttributes = pojo.getData().getAttachment().getAttributes();
+                if (pojo != null
+                        && pojo.getData() != null
+                        && pojo.getData().getAttachment() != null
+                        && !TextUtils.isEmpty(jsonAttributes)) {
+                    switch (pojo.getData().getAttachment().getType()) {
+                        case TYPE_QUICK_REPLY:
+                            return convertToQuickReplyModel(pojo.getData(), jsonAttributes);
+                        default:
+//                        return convertToFallBackModel(pojo.getData());
+                            return null;
+
+                    }
+
+                } else {
+                    return null;
+                }
             }
         } catch (JsonSyntaxException e) {
             return null;
         }
 
+    }
+
+    private BaseChatViewModel convertToChatRating(WebSocketResponseData pojo) {
+        return new ChatRatingViewModel(
+                String.valueOf(pojo.getMsgId()),
+                String.valueOf(pojo.getFromUid()),
+                pojo.getFrom(),
+                pojo.getFromRole(),
+                pojo.getMessage().getCensoredReply(),
+                pojo.getAttachment().getId(),
+                TYPE_QUICK_REPLY,
+                pojo.getMessage().getTimeStampUnix(),
+                pojo.getRatingStatus(),
+                Long.getLong(pojo.getMessage().getTimeStampUnixNano())
+        );
     }
 
     private BaseChatViewModel convertToProductAttachment(String json) {
