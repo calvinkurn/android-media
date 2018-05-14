@@ -5,6 +5,7 @@ import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.os.Build;
 import android.text.Html;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -206,9 +207,11 @@ public class ShippingViewHolder extends BaseSellingViewHolder<ShippingImpl.Model
 
     private void setDeadLine(OrderShippingList model) {
         Deadline.setText(model.getOrderDeadline().getDeadlineShipping());
-        deadlineColoredBorder.setBackgroundColor(Color.parseColor(model
-                .getOrderDeadline()
-                .getDeadlineColor()));
+        if(!TextUtils.isEmpty(model.getOrderDeadline().getDeadlineColor())){
+            deadlineColoredBorder.setBackgroundColor(Color.parseColor(model
+                    .getOrderDeadline()
+                    .getDeadlineColor()));
+        }
     }
 
 }
