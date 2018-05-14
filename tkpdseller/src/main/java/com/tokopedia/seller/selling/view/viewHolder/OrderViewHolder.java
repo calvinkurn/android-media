@@ -59,8 +59,12 @@ public class OrderViewHolder extends BaseSellingViewHolder<OrderShippingList> {
     private void setDeadLine(OrderShippingList model) {
         deadline.setText(model.getOrderDeadline().getDeadLineProcess());
         if(!TextUtils.isEmpty(model.getOrderDeadline().getDeadlineColor())){
-            deadlineColoredBorder.setBackgroundColor(Color
-                    .parseColor(model.getOrderDeadline().getDeadlineColor()));
+            try {
+                deadlineColoredBorder.setBackgroundColor(Color
+                        .parseColor(model.getOrderDeadline().getDeadlineColor()));
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
     }
 
