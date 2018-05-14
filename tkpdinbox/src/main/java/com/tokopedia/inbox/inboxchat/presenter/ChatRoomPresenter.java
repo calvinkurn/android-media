@@ -21,7 +21,7 @@ import com.tokopedia.inbox.inboxchat.InboxChatConstant;
 import com.tokopedia.inbox.inboxchat.domain.pojo.SetChatRatingPojo;
 import com.tokopedia.inbox.inboxchat.domain.WebSocketMapper;
 import com.tokopedia.inbox.inboxchat.domain.model.replyaction.ReplyActionData;
-import com.tokopedia.inbox.inboxchat.domain.pojo.WebSocketResponse;
+import com.tokopedia.inbox.inboxchat.domain.model.reply.WebSocketResponse;
 import com.tokopedia.inbox.inboxchat.domain.usecase.AttachImageUseCase;
 import com.tokopedia.inbox.inboxchat.domain.usecase.GetReplyListUseCase;
 import com.tokopedia.inbox.inboxchat.domain.usecase.ReplyMessageUseCase;

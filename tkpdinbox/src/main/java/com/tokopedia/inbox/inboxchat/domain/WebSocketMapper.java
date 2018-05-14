@@ -6,12 +6,10 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonSyntaxException;
 import com.tokopedia.inbox.inboxchat.domain.model.websocket.BaseChatViewModel;
 import com.tokopedia.inbox.inboxchat.domain.model.websocket.FallbackAttachmentViewModel;
-import com.tokopedia.inbox.inboxchat.domain.pojo.WebSocketResponse;
-import com.tokopedia.inbox.inboxchat.domain.pojo.WebSocketResponseData;
-import com.tokopedia.inbox.inboxchat.domain.pojo.quickreply.QuickReplyAttachment;
+import com.tokopedia.inbox.inboxchat.domain.pojo.common.WebSocketResponse;
+import com.tokopedia.inbox.inboxchat.domain.pojo.common.WebSocketResponseData;
+import com.tokopedia.inbox.inboxchat.domain.pojo.quickreply.QuickReplyAttachmentAttributes;
 import com.tokopedia.inbox.inboxchat.domain.pojo.quickreply.QuickReplyPojo;
-import com.tokopedia.inbox.inboxchat.domain.pojo.quickreply.QuickReplyWebSocketResponse;
-import com.tokopedia.inbox.inboxchat.domain.pojo.quickreply.QuickReplyWebSocketResponseData;
 import com.tokopedia.inbox.inboxchat.viewmodel.chatroom.QuickReplyListViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.chatroom.QuickReplyViewModel;
 
@@ -39,14 +37,14 @@ public class WebSocketMapper {
 
             WebSocketResponse pojo = new GsonBuilder().create().fromJson(json, WebSocketResponse.class);
 
+            String jsonAttributes = pojo.getData().getAttachment().getAttributes();
             if (pojo != null
                     && pojo.getData() != null
-                    && pojo.getData().getAttachment() != null) {
+                    && pojo.getData().getAttachment() != null
+                    && !TextUtils.isEmpty(jsonAttributes)) {
                 switch (pojo.getData().getAttachment().getType()) {
                     case TYPE_QUICK_REPLY:
-                        return convertToQuickReplyModel(json);
-                    case TYPE_PRODUCT_ATTACHMENT:
-//                        return convertToProductAttachment(json);
+                        return convertToQuickReplyModel(pojo.getData(), jsonAttributes);
                     default:
 //                        return convertToFallBackModel(pojo.getData());
                         return null;
@@ -82,29 +80,28 @@ public class WebSocketMapper {
         );
     }
 
-    private QuickReplyListViewModel convertToQuickReplyModel(String json) {
-        QuickReplyWebSocketResponse pojo = new GsonBuilder().create().fromJson(json, QuickReplyWebSocketResponse.class);
-        QuickReplyWebSocketResponseData data = pojo.getData();
+    private QuickReplyListViewModel convertToQuickReplyModel(WebSocketResponseData pojo, String
+            jsonAttribute) {
+        QuickReplyAttachmentAttributes pojoAttribute = new GsonBuilder().create().fromJson(jsonAttribute,
+                QuickReplyAttachmentAttributes.class);
         return new QuickReplyListViewModel(
-                String.valueOf(data.getMsgId()),
-                String.valueOf(data.getFromUid()),
-                data.getFrom(),
-                data.getFromRole(),
-                data.getMessage().getCensoredReply(),
-                data.getAttachment().getId(),
+                String.valueOf(pojo.getMsgId()),
+                String.valueOf(pojo.getFromUid()),
+                pojo.getFrom(),
+                pojo.getFromRole(),
+                pojo.getMessage().getCensoredReply(),
+                pojo.getAttachment().getId(),
                 TYPE_QUICK_REPLY,
-                data.getMessage().getTimeStampUnix(),
-                convertToQuickReplyList(data.getAttachment())
+                pojo.getMessage().getTimeStampUnix(),
+                convertToQuickReplyList(pojoAttribute)
         );
     }
 
-    private List<QuickReplyViewModel> convertToQuickReplyList(QuickReplyAttachment quickReplyListPojo) {
+    private List<QuickReplyViewModel> convertToQuickReplyList(QuickReplyAttachmentAttributes quickReplyListPojo) {
         List<QuickReplyViewModel> list = new ArrayList<>();
         if (quickReplyListPojo != null
-                && quickReplyListPojo.getAttributes() != null
-                && quickReplyListPojo.getAttributes().getQuickReplies() != null
-                && !quickReplyListPojo.getAttributes().getQuickReplies().isEmpty()) {
-            for (QuickReplyPojo pojo : quickReplyListPojo.getAttributes().getQuickReplies()) {
+                && !quickReplyListPojo.getQuickReplies().isEmpty()) {
+            for (QuickReplyPojo pojo : quickReplyListPojo.getQuickReplies()) {
                 if (pojo.getMessage() != null && !TextUtils.isEmpty(pojo.getMessage())) {
                     list.add(new QuickReplyViewModel(pojo.getMessage()));
                 }

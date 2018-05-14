@@ -1,11 +1,10 @@
 
-package com.tokopedia.inbox.inboxchat.domain.pojo.quickreply;
+package com.tokopedia.inbox.inboxchat.domain.pojo.common;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-import com.tokopedia.inbox.inboxchat.domain.model.reply.FallbackAttachment;
 
-public class QuickReplyAttachment {
+public class Attachment {
 
     @SerializedName("id")
     @Expose
@@ -15,7 +14,7 @@ public class QuickReplyAttachment {
     private String type;
     @SerializedName("attributes")
     @Expose
-    private QuickReplyAttachmentAttributes attributes;
+    private String attributes;
     @SerializedName("fallback_attachment")
     @Expose
     private FallbackAttachment fallbackAttachment;
@@ -36,11 +35,11 @@ public class QuickReplyAttachment {
         this.type = type;
     }
 
-    public QuickReplyAttachmentAttributes getAttributes() {
+    public String getAttributes() {
         return attributes;
     }
 
-    public void setAttributes(QuickReplyAttachmentAttributes attributes) {
+    public void setAttributes(String attributes) {
         this.attributes = attributes;
     }
 
