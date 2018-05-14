@@ -82,12 +82,8 @@ public class FlightPassengerInfoValidator {
     }
 
     public boolean validateExpiredDateOfPassport(String expiredDateString, Date lastFlightDate) {
-        Date sixMonthAfterFlight = FlightDateUtil.addTimeToSpesificDate(
-                lastFlightDate,
-                Calendar.MONTH,
-                6);
         Date expiredDate = FlightDateUtil.stringToDate(FlightDateUtil.DEFAULT_VIEW_FORMAT, expiredDateString);
 
-        return expiredDate.after(sixMonthAfterFlight);
+        return expiredDate.after(lastFlightDate);
     }
 }
