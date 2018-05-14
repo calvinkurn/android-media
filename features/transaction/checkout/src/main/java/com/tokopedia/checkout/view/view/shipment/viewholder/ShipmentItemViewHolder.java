@@ -50,7 +50,6 @@ public abstract class ShipmentItemViewHolder extends RecyclerView.ViewHolder {
 
     protected ShipmentAdapterActionListener mActionListener;
     private ShipmentAdapter shipmentAdapter;
-    protected Context context;
 
     TextView tvError;
     FrameLayout layoutError;
@@ -120,10 +119,13 @@ public abstract class ShipmentItemViewHolder extends RecyclerView.ViewHolder {
     TextInputLayout textInputLayoutShipperPhone;
     View vSeparatorMultipleProductSameStore;
 
-    public ShipmentItemViewHolder(View itemView, Context context, ShipmentAdapterActionListener actionListener,
+    public ShipmentItemViewHolder(View itemView) {
+        super(itemView);
+    }
+
+    public ShipmentItemViewHolder(View itemView, ShipmentAdapterActionListener actionListener,
                                   ShipmentAdapter shipmentAdapter) {
         super(itemView);
-        this.context = context;
         this.mActionListener = actionListener;
         this.shipmentAdapter = shipmentAdapter;
         bindViewIds(itemView);
@@ -294,7 +296,7 @@ public abstract class ShipmentItemViewHolder extends RecyclerView.ViewHolder {
                 totalItem = productQuantity;
                 totalWeight = ((ShipmentMultipleAddressCartItem) shipmentCartItem).getMultipleAddressItemData().getProductRawWeight();
             }
-            shippingFeeLabel = getFormattedWeight(totalWeight);
+            shippingFeeLabel = getFormattedWeight(tvShippingFee.getContext(), totalWeight);
             totalItemLabel = String.format(tvTotalItem.getContext().getString(R.string.label_item_count_with_format), totalItem);
             subTotalPrice += (totalItemPrice + shippingPrice + insurancePrice + additionalPrice);
         }
@@ -338,7 +340,7 @@ public abstract class ShipmentItemViewHolder extends RecyclerView.ViewHolder {
                 }
             });
 
-            textInputLayoutShipperName.setError(context.getString(R.string.message_error_dropshipper_name));
+            textInputLayoutShipperName.setError(textInputLayoutShipperName.getContext().getString(R.string.message_error_dropshipper_name));
             etShipperName.addTextChangedListener(new TextWatcher() {
                 @Override
                 public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
@@ -349,7 +351,7 @@ public abstract class ShipmentItemViewHolder extends RecyclerView.ViewHolder {
                 public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
                     shipmentCartItem.getSelectedShipmentDetailData().setDropshipperName(charSequence.toString());
                     if (charSequence.length() == 0) {
-                        textInputLayoutShipperName.setError(context.getString(R.string.message_error_dropshipper_name));
+                        textInputLayoutShipperName.setError(textInputLayoutShipperName.getContext().getString(R.string.message_error_dropshipper_name));
                     } else {
                         textInputLayoutShipperName.setErrorEnabled(false);
                     }
@@ -362,7 +364,7 @@ public abstract class ShipmentItemViewHolder extends RecyclerView.ViewHolder {
                 }
             });
 
-            textInputLayoutShipperPhone.setError(context.getString(R.string.message_error_dropshipper_phone));
+            textInputLayoutShipperPhone.setError(textInputLayoutShipperName.getContext().getString(R.string.message_error_dropshipper_phone));
             etShipperPhone.addTextChangedListener(new TextWatcher() {
                 @Override
                 public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
@@ -373,7 +375,7 @@ public abstract class ShipmentItemViewHolder extends RecyclerView.ViewHolder {
                 public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
                     shipmentCartItem.getSelectedShipmentDetailData().setDropshipperPhone(charSequence.toString());
                     if (charSequence.length() == 0) {
-                        textInputLayoutShipperPhone.setError(context.getString(R.string.message_error_dropshipper_phone));
+                        textInputLayoutShipperPhone.setError(textInputLayoutShipperName.getContext().getString(R.string.message_error_dropshipper_phone));
                     } else {
                         textInputLayoutShipperPhone.setErrorEnabled(false);
                     }
@@ -474,7 +476,7 @@ public abstract class ShipmentItemViewHolder extends RecyclerView.ViewHolder {
         }
     }
 
-    protected String getFormattedWeight(double weightInGrams) {
+    protected String getFormattedWeight(Context context, double weightInGrams) {
         String unit;
         BigDecimal finalWeight;
         if (weightInGrams >= KILOGRAM_TO_GRAM_MULTIPLIER) {

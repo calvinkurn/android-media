@@ -26,10 +26,9 @@ public class ShipmentItemMultipleAddressViewHolder extends ShipmentItemViewHolde
 
     public static final int ITEM_VIEW_SHIPMENT_MULTIPLE_ADDRESS = R.layout.item_shipment_multiple;
 
-    public ShipmentItemMultipleAddressViewHolder(View itemView, Context context,
-                                                 ShipmentAdapterActionListener actionListener,
+    public ShipmentItemMultipleAddressViewHolder(View itemView, ShipmentAdapterActionListener actionListener,
                                                  ShipmentAdapter shipmentAdapter) {
-        super(itemView, context, actionListener, shipmentAdapter);
+        super(itemView, actionListener, shipmentAdapter);
     }
 
     @Override
@@ -54,7 +53,8 @@ public class ShipmentItemMultipleAddressViewHolder extends ShipmentItemViewHolde
         tvItemCountAndWeight.setText(String.format(tvItemCountAndWeight.getContext()
                         .getString(R.string.iotem_count_and_weight_format),
                 String.valueOf(multipleAddressItemData.getProductQty()),
-                getFormattedWeight(multipleAddressItemData.getProductRawWeight() *
+                getFormattedWeight(tvItemCountAndWeight.getContext(),
+                        multipleAddressItemData.getProductRawWeight() *
                                 Integer.parseInt(multipleAddressItemData.getProductQty()))));
 
         boolean isEmptyNotes = TextUtils.isEmpty(multipleAddressItemData.getProductNotes());

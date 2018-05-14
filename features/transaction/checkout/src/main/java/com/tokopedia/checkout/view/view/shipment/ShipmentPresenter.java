@@ -338,7 +338,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
 
     private CheckoutRequest generateCheckoutRequest(String promoCode, int isDonation) {
         if (dataCheckoutRequestList == null) {
-            // Show error cant checkout
+            getView().showToastError(getView().getActivity().getString(R.string.default_request_error_unknown_short));
             return null;
         }
 

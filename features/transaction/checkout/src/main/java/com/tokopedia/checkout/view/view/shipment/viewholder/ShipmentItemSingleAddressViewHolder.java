@@ -36,10 +36,9 @@ public class ShipmentItemSingleAddressViewHolder extends ShipmentItemViewHolder 
 
     private static final int FIRST_ELEMENT = 0;
 
-    public ShipmentItemSingleAddressViewHolder(View itemView, Context context,
-                                               ShipmentAdapterActionListener actionListener,
+    public ShipmentItemSingleAddressViewHolder(View itemView, ShipmentAdapterActionListener actionListener,
                                                ShipmentAdapter shipmentAdapter) {
-        super(itemView, context, actionListener, shipmentAdapter);
+        super(itemView, actionListener, shipmentAdapter);
     }
 
     @Override
@@ -72,7 +71,8 @@ public class ShipmentItemSingleAddressViewHolder extends ShipmentItemViewHolder 
         tvItemCountAndWeight.setText(String.format(tvItemCountAndWeight.getContext()
                         .getString(R.string.iotem_count_and_weight_format),
                 String.valueOf(cartItemModel.getQuantity()),
-                getFormattedWeight(cartItemModel.getWeight() * cartItemModel.getQuantity())));
+                getFormattedWeight(tvItemCountAndWeight.getContext(),
+                        cartItemModel.getWeight() * cartItemModel.getQuantity())));
 
         boolean isEmptyNotes = TextUtils.isEmpty(cartItemModel.getNoteToSeller());
         llOptionalNoteToSellerLayout.setVisibility(isEmptyNotes ? View.GONE : View.VISIBLE);
@@ -99,14 +99,14 @@ public class ShipmentItemSingleAddressViewHolder extends ShipmentItemViewHolder 
         } else {
             rvCartItem.setVisibility(View.GONE);
             vSeparatorMultipleProductSameStore.setVisibility(View.GONE);
-            tvExpandOtherProduct.setText(String.format(context.getString(R.string.label_other_item_count_format),
+            tvExpandOtherProduct.setText(String.format(tvExpandOtherProduct.getContext().getString(R.string.label_other_item_count_format),
                     String.valueOf(cartItemModels.size())));
         }
     }
 
     private void initInnerRecyclerView(List<CartItemModel> cartItemList) {
         rvCartItem.setHasFixedSize(true);
-        LinearLayoutManager layoutManager = new LinearLayoutManager(context);
+        LinearLayoutManager layoutManager = new LinearLayoutManager(rvCartItem.getContext());
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         rvCartItem.setLayoutManager(layoutManager);
 
@@ -152,13 +152,13 @@ public class ShipmentItemSingleAddressViewHolder extends ShipmentItemViewHolder 
     }
 
     private void disableItemView() {
-        tvProductName.setTextColor(ContextCompat.getColor(context, R.color.grey_nonactive_text));
-        tvProductPrice.setTextColor(ContextCompat.getColor(context, R.color.grey_nonactive_text));
-        tvFreeReturnLabel.setTextColor(ContextCompat.getColor(context, R.color.grey_nonactive_text));
-        tvPreOrder.setTextColor(ContextCompat.getColor(context, R.color.grey_nonactive_text));
-        tvNoteToSellerLabel.setTextColor(ContextCompat.getColor(context, R.color.grey_nonactive_text));
-        tvOptionalNoteToSeller.setTextColor(ContextCompat.getColor(context, R.color.grey_nonactive_text));
-        tvCashback.setBackgroundColor(ContextCompat.getColor(context, R.color.grey_nonactive_text));
+        tvProductName.setTextColor(ContextCompat.getColor(tvProductName.getContext(), R.color.grey_nonactive_text));
+        tvProductPrice.setTextColor(ContextCompat.getColor(tvProductPrice.getContext(), R.color.grey_nonactive_text));
+        tvFreeReturnLabel.setTextColor(ContextCompat.getColor(tvFreeReturnLabel.getContext(), R.color.grey_nonactive_text));
+        tvPreOrder.setTextColor(ContextCompat.getColor(tvPreOrder.getContext(), R.color.grey_nonactive_text));
+        tvNoteToSellerLabel.setTextColor(ContextCompat.getColor(tvNoteToSellerLabel.getContext(), R.color.grey_nonactive_text));
+        tvOptionalNoteToSeller.setTextColor(ContextCompat.getColor(tvOptionalNoteToSeller.getContext(), R.color.grey_nonactive_text));
+        tvCashback.setBackgroundColor(ContextCompat.getColor(tvCashback.getContext(), R.color.grey_nonactive_text));
         setImageFilterGrayScale();
     }
 
@@ -171,13 +171,13 @@ public class ShipmentItemSingleAddressViewHolder extends ShipmentItemViewHolder 
     }
 
     private void enableItemView() {
-        tvProductName.setTextColor(ContextCompat.getColor(context, R.color.black_70));
-        tvProductPrice.setTextColor(ContextCompat.getColor(context, R.color.orange_red));
-        tvFreeReturnLabel.setTextColor(ContextCompat.getColor(context, R.color.font_black_secondary_54));
-        tvPreOrder.setTextColor(ContextCompat.getColor(context, R.color.font_black_secondary_54));
-        tvNoteToSellerLabel.setTextColor(ContextCompat.getColor(context, R.color.black_38));
-        tvOptionalNoteToSeller.setTextColor(ContextCompat.getColor(context, R.color.black_70));
-        tvCashback.setBackground(ContextCompat.getDrawable(context, R.drawable.bg_cashback));
+        tvProductName.setTextColor(ContextCompat.getColor(tvProductName.getContext(), R.color.black_70));
+        tvProductPrice.setTextColor(ContextCompat.getColor(tvProductPrice.getContext(), R.color.orange_red));
+        tvFreeReturnLabel.setTextColor(ContextCompat.getColor(tvFreeReturnLabel.getContext(), R.color.font_black_secondary_54));
+        tvPreOrder.setTextColor(ContextCompat.getColor(tvPreOrder.getContext(), R.color.font_black_secondary_54));
+        tvNoteToSellerLabel.setTextColor(ContextCompat.getColor(tvNoteToSellerLabel.getContext(), R.color.black_38));
+        tvOptionalNoteToSeller.setTextColor(ContextCompat.getColor(tvOptionalNoteToSeller.getContext(), R.color.black_70));
+        tvCashback.setBackground(ContextCompat.getDrawable(tvCashback.getContext(), R.drawable.bg_cashback));
         setImageFilterNormal();
     }
 

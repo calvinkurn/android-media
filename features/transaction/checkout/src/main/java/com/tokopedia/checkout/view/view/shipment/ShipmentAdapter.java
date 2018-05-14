@@ -112,9 +112,9 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         } else if (viewType == ShipmentRecipientAddressViewHolder.ITEM_VIEW_RECIPIENT_ADDRESS) {
             return new ShipmentRecipientAddressViewHolder(view, shipmentAdapterActionListener);
         } else if (viewType == ShipmentItemSingleAddressViewHolder.ITEM_VIEW_SHIPMENT_SINGLE_ADDRESS) {
-            return new ShipmentItemSingleAddressViewHolder(view, parent.getContext(), shipmentAdapterActionListener, this);
+            return new ShipmentItemSingleAddressViewHolder(view, shipmentAdapterActionListener, this);
         } else if (viewType == ShipmentItemMultipleAddressViewHolder.ITEM_VIEW_SHIPMENT_MULTIPLE_ADDRESS) {
-            return new ShipmentItemMultipleAddressViewHolder(view, parent.getContext(), shipmentAdapterActionListener, this);
+            return new ShipmentItemMultipleAddressViewHolder(view, shipmentAdapterActionListener, this);
         } else if (viewType == ShipmentCostViewHolder.ITEM_VIEW_SHIPMENT_COST) {
             return new ShipmentCostViewHolder(view, shipmentAdapterActionListener);
         } else if (viewType == ShipmentInsuranceTncViewHolder.ITEM_VIEW_INSURANCE_TNC) {
