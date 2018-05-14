@@ -406,6 +406,9 @@ public class ChatRoomFragment extends BaseDaggerFragment
             public void onClick(View view) {
                 scrollToBottom();
                 rvQuickReply.setVisibility(View.GONE);
+                if (templateAdapter != null && templateAdapter.getList().size() != 0) {
+                    templateRecyclerView.setVisibility(View.VISIBLE);
+                }
                 presenter.sendMessage(networkType);
                 UnifyTracking.sendChat(TopChatAnalytics.Category.CHAT_DETAIL,
                         TopChatAnalytics.Action.CHAT_DETAIL_SEND,
@@ -1433,8 +1436,12 @@ public class ChatRoomFragment extends BaseDaggerFragment
     @Override
     public void showQuickReplyView(QuickReplyListViewModel model) {
         rvQuickReply.setVisibility(View.GONE);
+        if (templateAdapter != null && templateAdapter.getList().size() != 0) {
+            templateRecyclerView.setVisibility(View.VISIBLE);
+        }
         if (model.getQuickReplies().size() != 0) {
             rvQuickReply.setVisibility(View.VISIBLE);
+            templateRecyclerView.setVisibility(View.GONE);
             quickReplyAdapter = new QuickReplyAdapter(model, this);
             rvQuickReply.setAdapter(quickReplyAdapter);
             rvQuickReply.getAdapter().notifyDataSetChanged();
@@ -1444,6 +1451,9 @@ public class ChatRoomFragment extends BaseDaggerFragment
     @Override
     public void onQuickReplyClicked(QuickReplyViewModel quickReply) {
         rvQuickReply.setVisibility(View.GONE);
+        if (templateAdapter != null && templateAdapter.getList().size() != 0) {
+            templateRecyclerView.setVisibility(View.VISIBLE);
+        }
         presenter.sendMessage(networkType, quickReply.getMessage());
     }
 
@@ -1465,6 +1475,7 @@ public class ChatRoomFragment extends BaseDaggerFragment
                 .string.string_general_error)));
         if (quickReplyAdapter.getItemCount() != 0) {
             rvQuickReply.setVisibility(View.VISIBLE);
+            templateRecyclerView.setVisibility(View.GONE);
         }
     }
 
