@@ -1,0 +1,6 @@
+<resources>
+    <string name="app_name">Tracking</string>
+    <string name="empty_notes_1">Penjual keliru menginput nomor resi atau tanggal pengiriman.</string>
+    <string name="empty_notes_2">Penjual menggunakan kurir yang berbeda dari pilihan pembeli.</string>
+    <string name="empty_notes_3">Pihak logistik tidak memberikan informasi nama penerima ketika pesanan tiba.</string>
+</resources>
