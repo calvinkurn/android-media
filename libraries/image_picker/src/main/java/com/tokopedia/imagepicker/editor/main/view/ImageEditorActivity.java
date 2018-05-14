@@ -3,13 +3,11 @@ package com.tokopedia.imagepicker.editor.main.view;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
-import android.support.v7.app.AlertDialog;
 import android.view.View;
 import android.webkit.URLUtil;
 import android.widget.TextView;
@@ -658,7 +656,7 @@ public class ImageEditorActivity extends BaseSimpleActivity implements ImageEdit
         }
 
         showDoneLoading();
-        initImagePickerPresenter();
+        initImageEditorPresenter();
         imageEditorPresenter.cropBitmapToExpectedRatio(extraImageUrls, resultList, ratioX, ratioY);
     }
 
@@ -707,6 +705,7 @@ public class ImageEditorActivity extends BaseSimpleActivity implements ImageEdit
     @Override
     public void onErrorDownloadImageToLocal(Throwable e) {
         hideProgressDialog();
+        NetworkErrorHelper.showRedCloseSnackbar(this, ErrorHandler.getErrorMessage(getContext(), e));
     }
 
     @Override
@@ -731,7 +730,7 @@ public class ImageEditorActivity extends BaseSimpleActivity implements ImageEdit
             if (hasNetworkImage) {
                 showDownloadProgressDialog();
                 hideContentView();
-                initImagePickerPresenter();
+                initImageEditorPresenter();
                 imageEditorPresenter.convertHttpPathToLocalPath(extraImageUrls);
             } else {
                 copyToLocalUrl(extraImageUrls);
@@ -742,7 +741,7 @@ public class ImageEditorActivity extends BaseSimpleActivity implements ImageEdit
         }
     }
 
-    private void initImagePickerPresenter() {
+    private void initImageEditorPresenter() {
         if (imageEditorPresenter == null) {
             imageEditorPresenter = new ImageEditorPresenter();
             imageEditorPresenter.attachView(this);

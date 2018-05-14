@@ -1,5 +1,10 @@
 package com.tokopedia.imagepicker.picker.main.builder;
 
+import android.content.Context;
+import android.os.Parcel;
+import android.os.Parcelable;
+
+import com.tokopedia.imagepicker.R;
 import com.tokopedia.imagepicker.picker.gallery.type.GalleryType;
 
 import static com.tokopedia.imagepicker.picker.main.builder.ImageEditActionTypeDef.ACTION_BRIGHTNESS;
@@ -14,18 +19,9 @@ import static com.tokopedia.imagepicker.picker.main.builder.ImagePickerTabTypeDe
  * Created by hendry on 19/04/18.
  */
 
-public enum ImagePickerBuilder {
-    ADD_PRODUCT(
-            "Gambar Produk",
-            new int[]{TYPE_GALLERY, TYPE_CAMERA},
-            GalleryType.IMAGE_ONLY,
-            ImageSelectionTypeDef.TYPE_SINGLE,
-            300,
-            1,
-            1,
-            true,
-            new int[]{ACTION_BRIGHTNESS, ACTION_CONTRAST, ACTION_CROP, ACTION_ROTATE},
-            true);
+public class ImagePickerBuilder implements Parcelable{
+
+    public static final int DEFAULT_RESOLUTION = 300;
 
     private String title;
     private @ImagePickerTabTypeDef
@@ -41,13 +37,22 @@ public enum ImagePickerBuilder {
     private boolean circlePreview;
     private int ratioX;
     private int ratioY;
+    private boolean moveImageResultToLocal;
 
-    ImagePickerBuilder(String title,
+    public static ImagePickerBuilder getDefaultBuilder(Context context){
+        return new ImagePickerBuilder(context.getString(R.string.choose_image),
+                new int[]{TYPE_GALLERY, TYPE_CAMERA}, GalleryType.IMAGE_ONLY, ImageSelectionTypeDef.TYPE_SINGLE,
+                DEFAULT_RESOLUTION, 1, 1, true, true,
+                new int[]{ACTION_BRIGHTNESS, ACTION_CONTRAST, ACTION_CROP, ACTION_ROTATE},
+                true);
+    }
+
+    public ImagePickerBuilder(String title,
                        @ImagePickerTabTypeDef int[] imagePickerTabTypeDef,
                        @GalleryType int galleryType,
                        @ImageSelectionTypeDef int selectionType,
                        int minResolution,
-                       int ratioX, int ratioY) {
+                       int ratioX, int ratioY, boolean moveImageResultToLocal) {
         this.title = title;
         this.tabTypeDef = imagePickerTabTypeDef;
         this.galleryType = galleryType;
@@ -55,19 +60,21 @@ public enum ImagePickerBuilder {
         this.minResolution = minResolution;
         this.ratioX = ratioX;
         this.ratioY = ratioY;
+        this.moveImageResultToLocal = moveImageResultToLocal;
         this.continueToEditAfterPick = false;
     }
 
-    ImagePickerBuilder(String title,
+    public ImagePickerBuilder(String title,
                        @ImagePickerTabTypeDef int[] imagePickerTabTypeDef,
                        @GalleryType int galleryType,
                        @ImageSelectionTypeDef int selectionType,
                        int minResolution,
                        int ratioX, int ratioY,
+                       boolean moveImageResultToLocal,
                        boolean continueToEditAfterPick,
                        @ImageEditActionTypeDef int[] imageEditActionType,
                        boolean circlePreview) {
-        this(title, imagePickerTabTypeDef, galleryType, selectionType, minResolution, ratioX, ratioY);
+        this(title, imagePickerTabTypeDef, galleryType, selectionType, minResolution, ratioX, ratioY, moveImageResultToLocal);
         this.continueToEditAfterPick = continueToEditAfterPick;
         this.imageEditActionType = imageEditActionType;
         this.circlePreview = circlePreview;
@@ -138,4 +145,55 @@ public enum ImagePickerBuilder {
     public String getTitle() {
         return title;
     }
+
+    public boolean isMoveImageResultToLocal() {
+        return moveImageResultToLocal;
+    }
+
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(this.title);
+        dest.writeIntArray(this.tabTypeDef);
+        dest.writeInt(this.galleryType);
+        dest.writeInt(this.minResolution);
+        dest.writeInt(this.imageSelectionType);
+        dest.writeByte(this.continueToEditAfterPick ? (byte) 1 : (byte) 0);
+        dest.writeIntArray(this.imageEditActionType);
+        dest.writeByte(this.circlePreview ? (byte) 1 : (byte) 0);
+        dest.writeInt(this.ratioX);
+        dest.writeInt(this.ratioY);
+        dest.writeByte(this.moveImageResultToLocal ? (byte) 1 : (byte) 0);
+    }
+
+    protected ImagePickerBuilder(Parcel in) {
+        this.title = in.readString();
+        this.tabTypeDef = in.createIntArray();
+        this.galleryType = in.readInt();
+        this.minResolution = in.readInt();
+        this.imageSelectionType = in.readInt();
+        this.continueToEditAfterPick = in.readByte() != 0;
+        this.imageEditActionType = in.createIntArray();
+        this.circlePreview = in.readByte() != 0;
+        this.ratioX = in.readInt();
+        this.ratioY = in.readInt();
+        this.moveImageResultToLocal = in.readByte() != 0;
+    }
+
+    public static final Creator<ImagePickerBuilder> CREATOR = new Creator<ImagePickerBuilder>() {
+        @Override
+        public ImagePickerBuilder createFromParcel(Parcel source) {
+            return new ImagePickerBuilder(source);
+        }
+
+        @Override
+        public ImagePickerBuilder[] newArray(int size) {
+            return new ImagePickerBuilder[size];
+        }
+    };
 }
