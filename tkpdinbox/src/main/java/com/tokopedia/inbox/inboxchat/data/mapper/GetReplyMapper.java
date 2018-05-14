@@ -10,8 +10,8 @@ import com.tokopedia.core.network.retrofit.response.TkpdResponse;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.inbox.R;
-import com.tokopedia.inbox.inboxchat.data.pojo.QuickReplyListPojo;
-import com.tokopedia.inbox.inboxchat.data.pojo.QuickReplyPojo;
+import com.tokopedia.inbox.inboxchat.domain.pojo.quickreply.QuickReplyListPojo;
+import com.tokopedia.inbox.inboxchat.domain.pojo.quickreply.QuickReplyPojo;
 import com.tokopedia.inbox.inboxchat.domain.model.reply.Attachment;
 import com.tokopedia.inbox.inboxchat.domain.model.reply.Contact;
 import com.tokopedia.inbox.inboxchat.domain.model.reply.ListReply;
@@ -102,7 +102,7 @@ public class GetReplyMapper implements Func1<Response<TkpdResponse>, ChatRoomVie
                     temp.setSpanned(MethodChecker.fromHtml(item.getMsg()));
                 }
                 temp.setAttachment(item.getAttachment());
-                list.add(checkAndConvertItemModelToAttachmentType(temp,temp.getAttachment()));
+                list.add(checkAndConvertItemModelToAttachmentType(temp, temp.getAttachment()));
             } else {
                 if (item.getAttachment() != null && item.getAttachment().getType().equals(TYPE_QUICK_REPLY)) {
                     QuickReplyListViewModel quickReplyListViewModel = new QuickReplyListViewModel(
@@ -138,7 +138,7 @@ public class GetReplyMapper implements Func1<Response<TkpdResponse>, ChatRoomVie
                     temp.setAttachment(item.getAttachment());
                     temp.setReadStatus(item.isMessageIsRead());
 
-                    list.add(checkAndConvertItemModelToAttachmentType(temp,temp.getAttachment()));
+                    list.add(checkAndConvertItemModelToAttachmentType(temp, temp.getAttachment()));
                 } else {
                     OppositeChatViewModel temp = new OppositeChatViewModel();
                     temp.setReplyId(item.getReplyId());
@@ -161,7 +161,7 @@ public class GetReplyMapper implements Func1<Response<TkpdResponse>, ChatRoomVie
                         temp.setSpanned(MethodChecker.fromHtml(item.getMsg()));
                     }
                     temp.setAttachment(item.getAttachment());
-                    list.add(checkAndConvertItemModelToAttachmentType(temp,temp.getAttachment()));
+                    list.add(checkAndConvertItemModelToAttachmentType(temp, temp.getAttachment()));
                 }
             }
         }
@@ -169,7 +169,7 @@ public class GetReplyMapper implements Func1<Response<TkpdResponse>, ChatRoomVie
         chatRoomViewModel.setChatList(list);
         chatRoomViewModel.setHasNext(data.isHasNext());
         chatRoomViewModel.setTextAreaReply(data.getTextAreaReply());
-        if(data.getContacts().size() > 0) {
+        if (data.getContacts().size() > 0) {
             chatRoomViewModel.setShopId(data.getContacts().get(0).getShopId());
         }
         setOpponentViewModel(chatRoomViewModel, data.getContacts());
@@ -196,22 +196,24 @@ public class GetReplyMapper implements Func1<Response<TkpdResponse>, ChatRoomVie
 
     private List<QuickReplyViewModel> convertQuickItemChatList(QuickReplyListPojo pojoList) {
         List<QuickReplyViewModel> list = new ArrayList<>();
-        for (QuickReplyPojo pojo : pojoList.getQuickReplies()) {
-            QuickReplyViewModel model = new QuickReplyViewModel(pojo.getMessage());
-            list.add(model);
+        if (pojoList != null) {
+            for (QuickReplyPojo pojo : pojoList.getQuickReplies()) {
+                QuickReplyViewModel model = new QuickReplyViewModel(pojo.getMessage());
+                list.add(model);
+            }
         }
         return list;
     }
 
-    private Visitable checkAndConvertItemModelToAttachmentType(Visitable input, Attachment attachment){
-        if(attachment == null) return input;
+    private Visitable checkAndConvertItemModelToAttachmentType(Visitable input, Attachment attachment) {
+        if (attachment == null) return input;
 
-        if(attachment.getType()==null){
+        if (attachment.getType() == null) {
             attachment.setType("");
             return input;
         }
 
-        if(attachment.getType().equals(AttachmentChatHelper.PRODUCT_ATTACHED)) {
+        if (attachment.getType().equals(AttachmentChatHelper.PRODUCT_ATTACHED)) {
             if ((input instanceof MyChatViewModel)) {
                 return new AttachProductViewModel((MyChatViewModel) input);
             } else if (input instanceof OppositeChatViewModel) {
@@ -219,11 +221,9 @@ public class GetReplyMapper implements Func1<Response<TkpdResponse>, ChatRoomVie
             } else if (input instanceof ThumbnailChatViewModel) {
                 return new AttachProductViewModel((ThumbnailChatViewModel) input);
             }
-        }
-        else if(attachment.getType().equals(AttachmentChatHelper.INVOICE_LIST_ATTACHED)){
+        } else if (attachment.getType().equals(AttachmentChatHelper.INVOICE_LIST_ATTACHED)) {
             return AttachInvoiceMapper.attachmentToAttachInvoiceSelectionModel(attachment);
-        }
-        else if(attachment.getType().equals(AttachmentChatHelper.INVOICE_ATTACHED)) {
+        } else if (attachment.getType().equals(AttachmentChatHelper.INVOICE_ATTACHED)) {
             if ((input instanceof MyChatViewModel)) {
                 return new AttachInvoiceSentViewModel((MyChatViewModel) input);
             } else if (input instanceof OppositeChatViewModel) {

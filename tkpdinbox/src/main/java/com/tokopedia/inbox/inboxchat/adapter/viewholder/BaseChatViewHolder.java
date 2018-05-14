@@ -1,5 +1,6 @@
 package com.tokopedia.inbox.inboxchat.adapter.viewholder;
 
+import android.text.TextUtils;
 import android.text.format.DateFormat;
 import android.view.View;
 import android.widget.TextView;
@@ -77,11 +78,16 @@ public class BaseChatViewHolder<T extends Visitable> extends AbstractViewHolder<
             hourTime = element.getReplyTime();
         }
 
-        hour.setText(hourTime);
+        if (TextUtils.isEmpty(hourTime)) {
+            hour.setVisibility(View.GONE);
+        } else {
+            hour.setText(hourTime);
+            hour.setVisibility(View.VISIBLE);
+        }
+
     }
 
     protected void setHeaderDate(BaseChatViewModel element) {
-        date.setVisibility(View.VISIBLE);
         String time;
 
         try {
