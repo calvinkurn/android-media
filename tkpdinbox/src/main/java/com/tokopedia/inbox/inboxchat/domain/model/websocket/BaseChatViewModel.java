@@ -13,7 +13,6 @@ public class BaseChatViewModel {
     private String attachmentId;
     private String attachmentType;
     private String replyTime;
-    private boolean showHour = false;
     private boolean showTime = false;
 
     /**
@@ -29,7 +28,7 @@ public class BaseChatViewModel {
      * @param attachmentId   attachment id
      * @param attachmentType attachment type. Please refer to
      *                       {@link com.tokopedia.inbox.inboxchat.domain.WebSocketMapper} types
-     *                       @param replyTime
+     * @param replyTime replytime in unixtime
      */
     public BaseChatViewModel(String messageId,
                              String fromUid,
@@ -79,19 +78,6 @@ public class BaseChatViewModel {
 
     public String getReplyTime() {
         return replyTime;
-    }
-
-    public boolean isShowHour() {
-        return showHour;
-    }
-
-    /**
-     * Set in {@link com.tokopedia.inbox.inboxchat.adapter.ChatRoomAdapter}
-     *
-     * @param showHour set true to show hour in bottom of chat
-     */
-    public void setShowHour(boolean showHour) {
-        this.showHour = showHour;
     }
 
     public boolean isShowTime() {

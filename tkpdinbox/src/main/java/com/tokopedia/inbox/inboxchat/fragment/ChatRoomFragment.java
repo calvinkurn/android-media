@@ -87,7 +87,7 @@ import com.tokopedia.inbox.inboxchat.domain.model.reply.AttachmentInvoiceAttribu
 import com.tokopedia.inbox.inboxchat.domain.model.reply.AttachmentProductProfile;
 import com.tokopedia.inbox.inboxchat.domain.model.replyaction.ReplyActionData;
 import com.tokopedia.inbox.inboxchat.domain.model.websocket.BaseChatViewModel;
-import com.tokopedia.inbox.inboxchat.domain.model.websocket.WebSocketResponse;
+import com.tokopedia.inbox.inboxchat.domain.pojo.WebSocketResponse;
 import com.tokopedia.inbox.inboxchat.helper.AttachmentChatHelper;
 import com.tokopedia.inbox.inboxchat.presenter.ChatRoomContract;
 import com.tokopedia.inbox.inboxchat.presenter.ChatRoomPresenter;
@@ -475,36 +475,38 @@ public class ChatRoomFragment extends BaseDaggerFragment
 
     @Override
     public void onGoToWebView(String url, String id) {
-        UnifyTracking.eventClickThumbnailMarketing(TopChatAnalytics.Category.INBOX_CHAT,
-                TopChatAnalytics.Action.CLICK_THUMBNAIL,
-                TopChatAnalytics.Name.INBOX_CHAT,
-                id
-        );
+        if (!TextUtils.isEmpty(url)) {
+            UnifyTracking.eventClickThumbnailMarketing(TopChatAnalytics.Category.INBOX_CHAT,
+                    TopChatAnalytics.Action.CLICK_THUMBNAIL,
+                    TopChatAnalytics.Name.INBOX_CHAT,
+                    id
+            );
 
-        Uri uri = Uri.parse(url);
-        KeyboardHandler.DropKeyboard(getActivity(), getView());
-        if (uri != null) {
-            boolean isTargetDomainTokopedia = uri.getHost().endsWith("tokopedia.com");
-            boolean isTargetTkpMeAndNotRedirect = (TextUtils.equals(uri.getHost(), BASE_DOMAIN_SHORTENED) &&
-                    !TextUtils.equals(uri.getEncodedPath(), "/r"));
-            boolean isNeedAuthToken = (isTargetDomainTokopedia || isTargetTkpMeAndNotRedirect);
+            Uri uri = Uri.parse(url);
+            KeyboardHandler.DropKeyboard(getActivity(), getView());
+            if (uri != null) {
+                boolean isTargetDomainTokopedia = uri.getHost().endsWith("tokopedia.com");
+                boolean isTargetTkpMeAndNotRedirect = (TextUtils.equals(uri.getHost(), BASE_DOMAIN_SHORTENED) &&
+                        !TextUtils.equals(uri.getEncodedPath(), "/r"));
+                boolean isNeedAuthToken = (isTargetDomainTokopedia || isTargetTkpMeAndNotRedirect);
 
-            if (uri.getScheme().equals(APPLINK_SCHEME)) {
-                ((TkpdInboxRouter) getActivity().getApplicationContext())
-                        .actionNavigateByApplinksUrl(getActivity(), url, new Bundle());
-            } else if (uri.getPathSegments().contains(CONTACT_US_PATH_SEGMENT)) {
-                Intent intent = ((TkpdInboxRouter) MainApplication
-                        .getAppContext())
-                        .getContactUsIntent(getContext());
-                intent.putExtra(ContactUsConstant.PARAM_URL,
-                        URLGenerator.generateURLContactUs(url, getContext()));
-                intent.putExtra(ContactUsConstant.IS_CHAT_BOT, true);
-                startActivity(intent);
-            } else if (isChatBot && isNeedAuthToken) {
-                startActivity(ChatMarketingThumbnailActivity.getCallingIntent(getActivity(),
-                        URLGenerator.generateURLSessionLoginV4(url, getContext())));
-            } else {
-                startActivity(ChatMarketingThumbnailActivity.getCallingIntent(getActivity(), url));
+                if (uri.getScheme().equals(APPLINK_SCHEME)) {
+                    ((TkpdInboxRouter) getActivity().getApplicationContext())
+                            .actionNavigateByApplinksUrl(getActivity(), url, new Bundle());
+                } else if (uri.getPathSegments().contains(CONTACT_US_PATH_SEGMENT)) {
+                    Intent intent = ((TkpdInboxRouter) MainApplication
+                            .getAppContext())
+                            .getContactUsIntent(getContext());
+                    intent.putExtra(ContactUsConstant.PARAM_URL,
+                            URLGenerator.generateURLContactUs(url, getContext()));
+                    intent.putExtra(ContactUsConstant.IS_CHAT_BOT, true);
+                    startActivity(intent);
+                } else if (isChatBot && isNeedAuthToken) {
+                    startActivity(ChatMarketingThumbnailActivity.getCallingIntent(getActivity(),
+                            URLGenerator.generateURLSessionLoginV4(url, getContext())));
+                } else {
+                    startActivity(ChatMarketingThumbnailActivity.getCallingIntent(getActivity(), url));
+                }
             }
         }
     }
@@ -1288,7 +1290,7 @@ public class ChatRoomFragment extends BaseDaggerFragment
     public void addDummyMessage(String dummyText) {
         DummyChatViewModel item = new DummyChatViewModel();
         item.setMsg(dummyText.length() != 0 ? dummyText : getReplyMessage());
-        if(!TextUtils.isEmpty(getArguments().getString(InboxMessageConstant.PARAM_MESSAGE_ID))) {
+        if (!TextUtils.isEmpty(getArguments().getString(InboxMessageConstant.PARAM_MESSAGE_ID))) {
             item.setMsgId(Integer.parseInt(getArguments().getString(InboxMessageConstant.PARAM_MESSAGE_ID)));
         }
         item.setReplyTime(DummyChatViewModel.SENDING_TEXT);

@@ -1,11 +1,17 @@
 package com.tokopedia.inbox.inboxchat.domain;
 
+import android.text.TextUtils;
+
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonSyntaxException;
 import com.tokopedia.inbox.inboxchat.domain.model.websocket.BaseChatViewModel;
 import com.tokopedia.inbox.inboxchat.domain.model.websocket.FallbackAttachmentViewModel;
-import com.tokopedia.inbox.inboxchat.domain.model.websocket.MessageViewModel;
-import com.tokopedia.inbox.inboxchat.domain.model.websocket.WebSocketResponse;
-import com.tokopedia.inbox.inboxchat.domain.model.websocket.WebSocketResponseData;
+import com.tokopedia.inbox.inboxchat.domain.pojo.WebSocketResponse;
+import com.tokopedia.inbox.inboxchat.domain.pojo.WebSocketResponseData;
+import com.tokopedia.inbox.inboxchat.domain.pojo.quickreply.QuickReplyAttachment;
+import com.tokopedia.inbox.inboxchat.domain.pojo.quickreply.QuickReplyPojo;
+import com.tokopedia.inbox.inboxchat.domain.pojo.quickreply.QuickReplyWebSocketResponse;
+import com.tokopedia.inbox.inboxchat.domain.pojo.quickreply.QuickReplyWebSocketResponseData;
 import com.tokopedia.inbox.inboxchat.viewmodel.chatroom.QuickReplyListViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.chatroom.QuickReplyViewModel;
 
@@ -20,6 +26,8 @@ import javax.inject.Inject;
 public class WebSocketMapper {
 
     private static final String TYPE_QUICK_REPLY = "8";
+    private static final String TYPE_PRODUCT_ATTACHMENT = "3";
+
 
     @Inject
     public WebSocketMapper() {
@@ -27,20 +35,34 @@ public class WebSocketMapper {
 
 
     public BaseChatViewModel map(String json) {
-        WebSocketResponse pojo = new GsonBuilder().create().fromJson(json, WebSocketResponse.class);
+        try {
 
-        if (pojo != null
-                && pojo.getData() != null
-                && pojo.getData().getAttachment() != null) {
-            switch (pojo.getData().getAttachment().getType()) {
-                case TYPE_QUICK_REPLY:
-                    return convertToQuickReplyModel(pojo.getData());
-                default:
-                    return convertToFallBackModel(pojo.getData());
+            WebSocketResponse pojo = new GsonBuilder().create().fromJson(json, WebSocketResponse.class);
+
+            if (pojo != null
+                    && pojo.getData() != null
+                    && pojo.getData().getAttachment() != null) {
+                switch (pojo.getData().getAttachment().getType()) {
+                    case TYPE_QUICK_REPLY:
+                        return convertToQuickReplyModel(json);
+                    case TYPE_PRODUCT_ATTACHMENT:
+//                        return convertToProductAttachment(json);
+                    default:
+//                        return convertToFallBackModel(pojo.getData());
+                        return null;
+
+                }
+            } else {
+                return null;
             }
-        } else {
+        } catch (JsonSyntaxException e) {
             return null;
         }
+
+    }
+
+    private BaseChatViewModel convertToProductAttachment(String json) {
+        return null;
     }
 
     private BaseChatViewModel convertToFallBackModel(WebSocketResponseData pojo) {
@@ -60,32 +82,34 @@ public class WebSocketMapper {
         );
     }
 
-    private QuickReplyListViewModel convertToQuickReplyModel(WebSocketResponseData pojo) {
+    private QuickReplyListViewModel convertToQuickReplyModel(String json) {
+        QuickReplyWebSocketResponse pojo = new GsonBuilder().create().fromJson(json, QuickReplyWebSocketResponse.class);
+        QuickReplyWebSocketResponseData data = pojo.getData();
         return new QuickReplyListViewModel(
-                String.valueOf(pojo.getMsgId()),
-                String.valueOf(pojo.getFromUid()),
-                pojo.getFrom(),
-                pojo.getFromRole(),
-                pojo.getMessage().getCensoredReply(),
-                pojo.getAttachment().getId(),
+                String.valueOf(data.getMsgId()),
+                String.valueOf(data.getFromUid()),
+                data.getFrom(),
+                data.getFromRole(),
+                data.getMessage().getCensoredReply(),
+                data.getAttachment().getId(),
                 TYPE_QUICK_REPLY,
-                pojo.getMessage().getTimeStampUnix(),
-                convertToQuickReplyList()
+                data.getMessage().getTimeStampUnix(),
+                convertToQuickReplyList(data.getAttachment())
         );
     }
 
-    private MessageViewModel getDummyMessage() {
-        MessageViewModel message = new MessageViewModel();
-        message.setCensoredReply("Test reply from Yoas");
-        message.setOriginalReply("Task By Nisie dongzzz");
-        return message;
-    }
-
-    private List<QuickReplyViewModel> convertToQuickReplyList() {
+    private List<QuickReplyViewModel> convertToQuickReplyList(QuickReplyAttachment quickReplyListPojo) {
         List<QuickReplyViewModel> list = new ArrayList<>();
-        list.add(new QuickReplyViewModel("Tes 1"));
-        list.add(new QuickReplyViewModel("Tes 2"));
-        list.add(new QuickReplyViewModel("Tes 3"));
+        if (quickReplyListPojo != null
+                && quickReplyListPojo.getAttributes() != null
+                && quickReplyListPojo.getAttributes().getQuickReplies() != null
+                && !quickReplyListPojo.getAttributes().getQuickReplies().isEmpty()) {
+            for (QuickReplyPojo pojo : quickReplyListPojo.getAttributes().getQuickReplies()) {
+                if (pojo.getMessage() != null && !TextUtils.isEmpty(pojo.getMessage())) {
+                    list.add(new QuickReplyViewModel(pojo.getMessage()));
+                }
+            }
+        }
         return list;
     }
 }
