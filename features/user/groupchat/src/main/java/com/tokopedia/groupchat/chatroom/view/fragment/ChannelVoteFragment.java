@@ -245,7 +245,7 @@ public class ChannelVoteFragment extends BaseDaggerFragment implements ChannelVo
         voteInfoLink.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(!TextUtils.isEmpty(voteInfoViewModel.getVoteInfoUrl())) {
+                if (!TextUtils.isEmpty(voteInfoViewModel.getVoteInfoUrl())) {
                     ((GroupChatModuleRouter) getActivity().getApplicationContext()).openRedirectUrl
                             (getActivity(), voteInfoViewModel.getVoteInfoUrl());
                 }

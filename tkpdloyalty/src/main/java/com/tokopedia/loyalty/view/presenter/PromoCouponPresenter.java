@@ -3,6 +3,7 @@ package com.tokopedia.loyalty.view.presenter;
 import android.support.annotation.NonNull;
 
 import com.tokopedia.abstraction.common.network.exception.MessageErrorException;
+import com.tokopedia.abstraction.constant.IRouterConstant;
 import com.tokopedia.core.network.exception.HttpErrorException;
 import com.tokopedia.core.network.exception.ResponseErrorException;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
@@ -11,7 +12,6 @@ import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.loyalty.domain.usecase.FlightCheckVoucherUseCase;
 import com.tokopedia.loyalty.exception.LoyaltyErrorException;
 import com.tokopedia.loyalty.exception.TokoPointResponseErrorException;
-import com.tokopedia.loyalty.view.activity.LoyaltyActivity;
 import com.tokopedia.loyalty.view.data.CouponData;
 import com.tokopedia.loyalty.view.data.CouponViewModel;
 import com.tokopedia.loyalty.view.data.CouponsDataWrapper;
@@ -22,13 +22,10 @@ import com.tokopedia.loyalty.view.view.IPromoCouponView;
 import java.net.ConnectException;
 import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
-import java.util.List;
 
 import javax.inject.Inject;
 
 import rx.Subscriber;
-
-import static com.tokopedia.loyalty.view.activity.LoyaltyActivity.FLIGHT_STRING;
 
 /**
  * @author anggaprasetiyo on 29/11/17.
@@ -52,10 +49,11 @@ public class PromoCouponPresenter implements IPromoCouponPresenter {
         view.disableSwipeRefresh();
         TKPDMapParam<String, String> param = new TKPDMapParam<>();
         //param.put("user_id", SessionHandler.getLoginID(view.getContext()));
-        if (platform.equalsIgnoreCase(FLIGHT_STRING)){
-            platform = LoyaltyActivity.DIGITAL_STRING;
+        if (platform.equalsIgnoreCase(IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.FLIGHT_STRING)) {
+            platform = IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.DIGITAL_STRING;
             param.put("category_id", view.getCategoryId());
-        };
+        }
+        ;
         param.put("type", platform);
 
         //TODO Revert Later
@@ -92,7 +90,7 @@ public class PromoCouponPresenter implements IPromoCouponPresenter {
                     @Override
                     public void onNext(CouponsDataWrapper wrapper) {
                         if (wrapper.getCoupons().size() < 1) {
-                            if (wrapper.getEmptyMessage() != null){
+                            if (wrapper.getEmptyMessage() != null) {
                                 view.couponDataNoResult(
                                         wrapper.getEmptyMessage().getTitle(),
                                         wrapper.getEmptyMessage().getSubTitle()

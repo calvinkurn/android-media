@@ -36,18 +36,20 @@ import com.tokopedia.core.network.entity.variant.ProductVariant;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.gcm.Constants;
+import com.tokopedia.core.network.entity.variant.Campaign;
+import com.tokopedia.core.network.entity.variant.ProductVariant;
 import com.tokopedia.core.product.facade.NetworkParam;
 import com.tokopedia.core.product.interactor.CacheInteractor;
 import com.tokopedia.core.product.interactor.CacheInteractorImpl;
 import com.tokopedia.core.product.interactor.RetrofitInteractor;
-import com.tokopedia.core.product.interactor.RetrofitInteractor.MostHelpfulListener;
 import com.tokopedia.core.product.interactor.RetrofitInteractor.DiscussionListener;
+import com.tokopedia.core.product.interactor.RetrofitInteractor.MostHelpfulListener;
 import com.tokopedia.core.product.interactor.RetrofitInteractorImpl;
 import com.tokopedia.core.product.model.etalase.Etalase;
 import com.tokopedia.core.product.model.goldmerchant.VideoData;
 import com.tokopedia.core.product.model.productdetail.ProductDetailData;
-import com.tokopedia.core.product.model.productdetail.mosthelpful.Review;
 import com.tokopedia.core.product.model.productdetail.discussion.LatestTalkViewModel;
+import com.tokopedia.core.product.model.productdetail.mosthelpful.Review;
 import com.tokopedia.core.product.model.productdetail.promowidget.DataPromoWidget;
 import com.tokopedia.core.product.model.productdetail.promowidget.PromoAttributes;
 import com.tokopedia.core.product.model.productdink.ProductDinkData;
@@ -57,8 +59,9 @@ import com.tokopedia.core.router.discovery.BrowseProductRouter;
 import com.tokopedia.core.router.discovery.DetailProductRouter;
 import com.tokopedia.core.router.productdetail.PdpRouter;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
-import com.tokopedia.core.router.transactionmodule.TransactionAddToCartRouter;
 import com.tokopedia.core.router.transactionmodule.passdata.ProductCartPass;
+import com.tokopedia.core.router.transactionmodule.sharedata.AddToCartRequest;
+import com.tokopedia.core.router.transactionmodule.sharedata.AddToCartResult;
 import com.tokopedia.core.talk.talkproduct.activity.TalkProductActivity;
 import com.tokopedia.core.util.AppIndexHandler;
 import com.tokopedia.core.util.DeepLinkUtils;
@@ -82,6 +85,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+
+import rx.Subscriber;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 
 import static com.tokopedia.core.network.apiservices.galadriel.GaladrielApi.VALUE_TARGET_GOLD_MERCHANT;
 import static com.tokopedia.core.network.apiservices.galadriel.GaladrielApi.VALUE_TARGET_GUEST;
@@ -153,11 +160,45 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
     }
 
     @Override
-    public void processToCart(@NonNull Context context, @NonNull ProductCartPass data) {
+    public void processToCart(@NonNull Activity context, @NonNull ProductCartPass data) {
         sendAppsFlyerCheckout(context, data);
-        viewListener.navigateToActivity(
-                TransactionAddToCartRouter.createInstanceAddToCartActivity(context, data)
-        );
+
+        if (context.getApplication() instanceof PdpRouter) {
+            ((PdpRouter) context.getApplication()).addToCartProduct(
+                    new AddToCartRequest.Builder()
+                            .productId(Integer.parseInt(data.getProductId()))
+                            .notes("")
+                            .quantity(data.getMinOrder())
+                            .shopId(Integer.parseInt(data.getShopId()))
+                            .build()
+            ).subscribeOn(Schedulers.newThread())
+                    .unsubscribeOn(Schedulers.newThread())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(new Subscriber<AddToCartResult>() {
+                        @Override
+                        public void onCompleted() {
+
+                        }
+
+                        @Override
+                        public void onError(Throwable e) {
+                            e.printStackTrace();
+                            viewListener.showToastMessage(e.getMessage());
+                        }
+
+                        @Override
+                        public void onNext(AddToCartResult addToCartResult) {
+                            if (addToCartResult.isSuccess())
+                                viewListener.renderAddToCartSuccess(addToCartResult.getMessage());
+                            else
+                                viewListener.showToastMessage(addToCartResult.getMessage());
+                        }
+                    });
+        }
+
+//        viewListener.navigateToActivity(
+//                TransactionAddToCartRouter.createInstanceAddToCartActivity(context, data)
+//        );
         UnifyTracking.eventPDPCart();
     }
 
@@ -284,9 +325,9 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
             } else {
                 ScreenTracking.eventOfficialStoreScreenAuth(successResult.getShopInfo().getShopId(), "reguler", "/product", String.valueOf(successResult.getInfo().getProductId()));
             }
-        }catch(Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
-            CommonUtils.dumper("GAv4 error "+e.getMessage());
+            CommonUtils.dumper("GAv4 error " + e.getMessage());
         }
 
     }

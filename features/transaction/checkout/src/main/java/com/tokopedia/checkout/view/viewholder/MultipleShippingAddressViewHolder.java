@@ -1,0 +1,377 @@
+package com.tokopedia.checkout.view.viewholder;
+
+import android.content.Context;
+import android.support.v7.widget.RecyclerView;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.FrameLayout;
+import android.widget.ImageView;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
+
+import com.tkpd.library.utils.ImageHandler;
+import com.tokopedia.checkout.R;
+import com.tokopedia.checkout.domain.datamodel.MultipleAddressItemData;
+import com.tokopedia.checkout.domain.datamodel.MultipleAddressShipmentAdapterData;
+import com.tokopedia.checkout.view.adapter.MultipleAddressShipmentAdapter;
+import com.tokopedia.design.pickuppoint.PickupPointLayout;
+import com.tokopedia.design.utils.CurrencyFormatUtil;
+
+/**
+ * Created by kris on 3/7/18. Tokopedia
+ */
+
+public class MultipleShippingAddressViewHolder extends RecyclerView.ViewHolder {
+
+    private final Context context;
+
+    private TextView senderName;
+
+    private ImageView productImage;
+
+    private TextView productName;
+
+    private TextView productPrice;
+
+    private TextView productWeight;
+
+    private TextView productQty;
+
+    private ViewGroup notesToSellerLayout;
+
+    private TextView notesField;
+
+    private ViewGroup addressLayout;
+
+    private TextView addressTitle;
+
+    private TextView addressReceiverName;
+
+    private TextView address;
+
+    private TextView chooseCourierButton;
+
+    private TextView tvSelectedShipment;
+
+    private ImageView ivChevronShipmentOption;
+
+    private ViewGroup subTotalLayout;
+
+    private TextView subTotalAmount;
+
+    private ImageView subTotalTotalDetailButton;
+
+    private PickupPointLayout pickupPointLayout;
+
+    private TextView phoneNumber;
+
+    private TextView changeAddress;
+
+    private RelativeLayout rlProductPoliciesLayout;
+
+    private ImageView ivFreeReturnIcon;
+
+    private TextView tvFreeReturnText;
+
+    private TextView tvPoSign;
+
+    private TextView tvCashbackText;
+
+    private ViewGroup detailPriceLayout;
+
+    private TextView totalGoodsLabel;
+
+    private TextView itemPrice;
+
+    private TextView totalDeliveryLabel;
+
+    private TextView deliveryPrice;
+
+    private TextView insurancePrice;
+
+    private FrameLayout layoutError;
+
+    private TextView tvError;
+
+    private FrameLayout layoutWarning;
+
+    private TextView tvWarning;
+
+    public MultipleShippingAddressViewHolder(View itemView) {
+        super(itemView);
+        this.context = itemView.getContext();
+
+        senderName = itemView.findViewById(R.id.sender_name);
+
+        productImage = itemView.findViewById(R.id.iv_product_image);
+
+        productName = itemView.findViewById(R.id.tv_product_name);
+
+        productPrice = itemView.findViewById(R.id.tv_product_price);
+
+        productWeight = itemView.findViewById(R.id.tv_product_weight);
+
+        productQty = itemView.findViewById(R.id.tv_product_total_item);
+
+        notesToSellerLayout = itemView.findViewById(R.id.ll_optional_note_to_seller_layout);
+
+        notesField = itemView.findViewById(R.id.tv_optional_note_to_seller);
+
+        addressLayout = itemView.findViewById(R.id.address_layout);
+
+        addressTitle = itemView.findViewById(R.id.tv_address_name);
+
+        addressReceiverName = itemView.findViewById(R.id.tv_recipient_name);
+
+        address = itemView.findViewById(R.id.tv_recipient_address);
+
+        changeAddress = itemView.findViewById(R.id.tv_change_address);
+
+        phoneNumber = itemView.findViewById(R.id.tv_recipient_phone);
+
+        changeAddress.setVisibility(View.GONE);
+
+        chooseCourierButton = itemView.findViewById(R.id.choose_courier_button);
+
+        subTotalLayout = itemView.findViewById(R.id.sub_total_layout);
+
+        subTotalAmount = itemView.findViewById(R.id.sub_total_amount);
+
+        subTotalTotalDetailButton = itemView.findViewById(R.id.sub_total_detail_button);
+
+        pickupPointLayout = itemView.findViewById(R.id.pickup_point_layout);
+
+        rlProductPoliciesLayout = itemView.findViewById(R.id.layout_policy);
+
+        rlProductPoliciesLayout.setVisibility(View.GONE);
+
+        ivFreeReturnIcon = itemView.findViewById(R.id.iv_free_return_icon);
+
+        tvFreeReturnText = itemView.findViewById(R.id.tv_free_return_label);
+
+        tvPoSign = itemView.findViewById(R.id.tv_pre_order);
+
+        tvCashbackText = itemView.findViewById(R.id.tv_cashback);
+
+        tvSelectedShipment = itemView.findViewById(R.id.tv_selected_shipment);
+
+        ivChevronShipmentOption = itemView.findViewById(R.id.iv_chevron_shipment_option);
+
+        layoutError = itemView.findViewById(R.id.layout_error);
+
+        tvError = itemView.findViewById(R.id.tv_error);
+
+        layoutWarning = itemView.findViewById(R.id.layout_warning);
+
+        tvWarning = itemView.findViewById(R.id.tv_warning);
+
+        detailPriceLayout = itemView.findViewById(R.id.detail_price_layout);
+
+        totalGoodsLabel = itemView.findViewById(R.id.total_goods_label);
+
+        itemPrice = itemView.findViewById(R.id.item_price);
+
+        totalDeliveryLabel = itemView.findViewById(R.id.total_delivery_label);
+
+        deliveryPrice = itemView.findViewById(R.id.delivery_price);
+
+        insurancePrice = itemView.findViewById(R.id.total_insurance_price);
+
+    }
+
+    public void bindItems(MultipleAddressShipmentAdapterData data,
+                          MultipleAddressShipmentAdapter.MultipleAddressShipmentAdapterListener listener) {
+        data.setSubTotal(calculateSubTotal(data));
+        MultipleAddressItemData itemData = data.getItemData();
+        senderName.setText(data.getSenderName());
+        ImageHandler.LoadImage(productImage, data.getProductImageUrl());
+        productName.setText(data.getProductName());
+        productPrice.setText(data.getProductPrice());
+        productWeight.setText(itemData.getProductWeight());
+        productQty.setText(itemData.getProductQty());
+        if (itemData.getProductNotes().isEmpty()) {
+            notesToSellerLayout.setVisibility(View.GONE);
+        } else {
+            notesToSellerLayout.setVisibility(View.VISIBLE);
+            notesField.setText(itemData.getProductNotes());
+        }
+        addressTitle.setText(itemData.getAddressTitle());
+        addressReceiverName.setText(itemData.getAddressReceiverName());
+        address.setText(itemData.getAddressStreet()
+                + ", " + itemData.getAddressCityName()
+                + ", " + itemData.getAddressProvinceName());
+        phoneNumber.setText(itemData.getRecipientPhoneNumber());
+
+        totalGoodsLabel
+                .setText(totalGoodsLabel.getText()
+                        .toString()
+                        .replace("#", data.getItemData().getProductQty()));
+
+        totalDeliveryLabel
+                .setText(totalDeliveryLabel
+                        .getText()
+                        .toString()
+                        .replace("#", data.getItemData().getProductWeight())
+                );
+
+        if (isShipmentDataInitiated(data)) {
+            itemPrice.setText(formatPrice(data.getProductPriceNumber() *
+                    Integer.parseInt(data.getItemData().getProductQty())));
+            deliveryPrice.setText(formatPrice(
+                    data.getSelectedShipmentDetailData().getSelectedCourier().getDeliveryPrice() +
+                            data.getSelectedShipmentDetailData().getSelectedCourier().getAdditionalPrice()));
+            if (data.getSelectedShipmentDetailData().getUseInsurance()) {
+                insurancePrice.setText(formatPrice(data.getSelectedShipmentDetailData()
+                        .getSelectedCourier().getInsurancePrice()));
+            } else {
+                insurancePrice.setText("-");
+            }
+        } else {
+            itemPrice.setText("-");
+            deliveryPrice.setText("-");
+            insurancePrice.setText("-");
+        }
+
+        subTotalAmount.setText(formatPrice(data.getSubTotal()));
+        chooseCourierButton.setOnClickListener(onChooseCourierClicked(
+                data, data.getInvoicePosition(), listener)
+        );
+        tvSelectedShipment.setOnClickListener(onChooseCourierClicked(
+                data, data.getInvoicePosition(), listener)
+        );
+        subTotalLayout.setOnClickListener(onChevronClickedListener());
+        chooseCourierButton
+                .setOnClickListener(getChooseCourierClickListener(data, data.getInvoicePosition(), listener));
+        if (data.getSelectedShipmentDetailData() != null &&
+                data.getSelectedShipmentDetailData().getSelectedCourier() != null) {
+            chooseCourierButton.setVisibility(View.GONE);
+            tvSelectedShipment.setText(
+                    data.getSelectedShipmentDetailData().getSelectedCourier().getName());
+            tvSelectedShipment.setVisibility(View.VISIBLE);
+            ivChevronShipmentOption.setVisibility(View.VISIBLE);
+        } else {
+            tvSelectedShipment.setVisibility(View.GONE);
+            ivChevronShipmentOption.setVisibility(View.GONE);
+            chooseCourierButton.setVisibility(View.VISIBLE);
+        }
+
+
+        if (data.isError()) {
+            tvError.setText(data.getErrorMessage());
+            layoutError.setVisibility(View.VISIBLE);
+        } else {
+            layoutError.setVisibility(View.GONE);
+        }
+
+        if (data.isWarning()) {
+            tvWarning.setText(data.getWarningMessage());
+            layoutWarning.setVisibility(View.VISIBLE);
+        } else {
+            layoutWarning.setVisibility(View.GONE);
+        }
+
+        //TODO Release Later
+//        renderPickupPoint(itemViewHolder, data);
+    }
+
+    //TODO Release Later
+    /*private void renderPickupPoint(final MultipleShippingAddressViewHolder itemViewHolder,
+                                   final MultipleAddressShipmentAdapterData data) {
+        pickupPointLayout.setListener(new PickupPointLayout.ViewListener() {
+            @Override
+            public void onChoosePickupPoint() {
+                listener.onChoosePickupPoint(data, getAdapterPosition());
+            }
+
+            @Override
+            public void onClearPickupPoint(Store oldStore) {
+                listener.onClearPickupPoint(data, getAdapterPosition());
+            }
+
+            @Override
+            public void onEditPickupPoint(Store oldStore) {
+                listener.onEditPickupPoint(data, getAdapterPosition());
+            }
+        });
+        if (data.getStore() == null) {
+            pickupPointLayout.unSetData(pickupPointLayout.getContext());
+            pickupPointLayout.enableChooserButton(pickupPointLayout.getContext());
+            chooseCourierButton.setText("Pilih Kurir");
+        } else {
+            pickupPointLayout.setData(pickupPointLayout.getContext(), data.getStore());
+            chooseCourierButton.setText("Alfatrex");
+        }
+        pickupPointLayout.setVisibility(View.VISIBLE);
+    }*/
+
+    private View.OnClickListener onChooseCourierClicked(
+            final MultipleAddressShipmentAdapterData data,
+            final int position,
+            final MultipleAddressShipmentAdapter.MultipleAddressShipmentAdapterListener listener
+    ) {
+        return new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                listener.onChooseShipment(data, position);
+            }
+        };
+    }
+
+    private View.OnClickListener onChevronClickedListener() {
+        return new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (detailPriceLayout.isShown()) {
+                    detailPriceLayout.setVisibility(View.GONE);
+                    subTotalTotalDetailButton.setImageDrawable(context.getResources()
+                            .getDrawable(R.drawable.chevron_down));
+                } else {
+                    detailPriceLayout.setVisibility(View.VISIBLE);
+                    subTotalTotalDetailButton.setImageDrawable(context.getResources()
+                            .getDrawable(R.drawable.chevron_up));
+                }
+            }
+        };
+    }
+
+    private View.OnClickListener getChooseCourierClickListener(
+            final MultipleAddressShipmentAdapterData data,
+            final int position,
+            final MultipleAddressShipmentAdapter.MultipleAddressShipmentAdapterListener listener) {
+        return new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                listener.onChooseShipment(data, position);
+            }
+        };
+    }
+
+
+    private long calculateSubTotal(MultipleAddressShipmentAdapterData data) {
+        int subtotal = 0;
+        if (isShipmentDataInitiated(data)) {
+            subtotal += (data.getProductPriceNumber() * Integer.parseInt(data.getItemData().getProductQty())) +
+                    data.getSelectedShipmentDetailData().getSelectedCourier().getAdditionalPrice() +
+                    data.getSelectedShipmentDetailData().getSelectedCourier().getDeliveryPrice();
+            if (data.getSelectedShipmentDetailData().getUseInsurance()) {
+                subtotal += data.getSelectedShipmentDetailData().getSelectedCourier().getInsurancePrice();
+            }
+
+        }
+        return subtotal;
+    }
+
+    private boolean isShipmentDataInitiated(MultipleAddressShipmentAdapterData data) {
+        return data.getSelectedShipmentDetailData() != null
+                &&
+                data.getSelectedShipmentDetailData().getShipmentCartData() != null;
+    }
+
+    private String formatPrice(long unformattedPrice) {
+        if (unformattedPrice == 0) {
+            return "-";
+        } else {
+            return CurrencyFormatUtil.convertPriceValueToIdrFormat((int) unformattedPrice, true);
+        }
+    }
+}

@@ -358,7 +358,7 @@ public class AddAddressFragment extends BasePresenterFragment<AddAddressPresente
                 locationPass.setLatitude(String.valueOf(presenter.getLatLng().latitude));
                 locationPass.setLongitude(String.valueOf(presenter.getLatLng().longitude));
                 locationPass.setGeneratedAddress(locationEditText.getText().toString());
-            } else if(!spinnerRegency.isShown() ||
+            } else if (!spinnerRegency.isShown() ||
                     !spinnerSubDistrict.isShown() ||
                     spinnerRegency.getSelectedItemPosition() == 0 ||
                     spinnerSubDistrict.getSelectedItemPosition() == 0

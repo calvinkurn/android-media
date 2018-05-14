@@ -13,11 +13,13 @@ buildscript {
 }
 
 dependencies {
+    compile project(':tkpdtransaction-common')
     compile project(rootProject.ext.features.core)
-    compile project(rootProject.ext.features.topAdsSdk)
-    compile project(rootProject.ext.features.payment)
     compile project(rootProject.ext.libraries.design)
     compile project(rootProject.ext.features.loyalty)
+    compile project(rootProject.ext.features.topAdsSdk)
+    compile project(rootProject.ext.features.payment)
+
     compile project(rootProject.ext.libraries.fingerprint)
 
     androidTestCompile(rootProject.ext.testDependencies.espressoCore, {

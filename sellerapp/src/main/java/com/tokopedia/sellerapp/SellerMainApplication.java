@@ -1,5 +1,6 @@
 package com.tokopedia.sellerapp;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
@@ -24,6 +25,9 @@ import com.tokopedia.cacheapi.util.CacheApiLoggingUtils;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
+import com.tokopedia.core.router.transactionmodule.TransactionRouter;
+import com.tokopedia.core.router.transactionmodule.sharedata.AddToCartRequest;
+import com.tokopedia.core.router.transactionmodule.sharedata.AddToCartResult;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.HockeyAppHelper;
 import com.tokopedia.digital.common.constant.DigitalUrl;
@@ -37,6 +41,9 @@ import com.tokopedia.sellerapp.deeplink.DeepLinkHandlerActivity;
 import com.tokopedia.sellerapp.utils.CacheApiWhiteList;
 import com.tokopedia.shop.common.constant.ShopCommonUrl;
 import com.tokopedia.shop.common.constant.ShopUrl;
+
+import rx.Observable;
+import rx.Subscriber;
 
 /**
  * Created by ricoharisin on 11/11/16.
@@ -214,5 +221,28 @@ public class SellerMainApplication extends SellerRouterApplication implements Mo
                 String.valueOf(getCurrentVersion(getApplicationContext()))));
     }
 
+    @Override
+    public Observable<AddToCartResult> addToCartProduct(AddToCartRequest addToCartRequest) {
+        return null;
+    }
 
+    @Override
+    public Intent getCartIntent(Activity activity) {
+        return null;
+    }
+
+    @Override
+    public void updateMarketplaceCartCounter(TransactionRouter.CartNotificationListener listener) {
+
+    }
+
+    @Override
+    public Intent getPromoListIntent(Activity activity) {
+        return null;
+    }
+
+    @Override
+    public Intent getPromoDetailIntent(Context context, String slug) {
+        return null;
+    }
 }

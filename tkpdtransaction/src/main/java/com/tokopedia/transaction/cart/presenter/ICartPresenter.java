@@ -9,7 +9,7 @@ import com.tokopedia.transaction.cart.model.CartItemEditable;
 import com.tokopedia.transaction.cart.model.calculateshipment.ProductEditData;
 import com.tokopedia.transaction.cart.model.cartdata.CartItem;
 import com.tokopedia.transaction.cart.model.cartdata.CartProduct;
-import com.tokopedia.transaction.cart.model.thankstoppaydata.ThanksTopPayData;
+import com.tokopedia.transaction.common.data.cart.thankstoppaydata.ThanksTopPayData;
 
 import java.util.List;
 
@@ -53,4 +53,8 @@ public interface ICartPresenter {
     void cancelPromo();
 
     void clearNotificationCart();
+
+    void processUpdatePickupPoint(String cartId, String oldStoreId, String newStoreId);
+
+    void processRemovePickupPoint(String cartId, String oldStoreId);
 }

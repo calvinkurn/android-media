@@ -172,6 +172,12 @@ public class OrderDetailMapper {
             );
         }
 
+        if (responseData.getDetail().getShipment().getInfo() != null &&
+                responseData.getDetail().getShipment().getInfo().getPickupInfo() != null) {
+            viewData.setPickupPinCode(responseData.getDetail().getShipment().getInfo()
+                    .getPickupInfo().getName());
+        }
+
         return viewData;
     }
 

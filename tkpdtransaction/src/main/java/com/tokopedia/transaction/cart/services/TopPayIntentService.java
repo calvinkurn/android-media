@@ -22,7 +22,7 @@ import com.tokopedia.transaction.cart.interactor.CartDataInteractor;
 import com.tokopedia.transaction.cart.interactor.ICartDataInteractor;
 import com.tokopedia.transaction.cart.model.paramcheckout.CheckoutData;
 import com.tokopedia.transaction.cart.model.paramcheckout.CheckoutDropShipperData;
-import com.tokopedia.transaction.cart.model.thankstoppaydata.ThanksTopPayData;
+import com.tokopedia.transaction.common.data.cart.thankstoppaydata.ThanksTopPayData;
 import com.tokopedia.transaction.cart.model.toppaydata.TopPayParameterData;
 import com.tokopedia.transaction.cart.receivers.TopPayBroadcastReceiver;
 import com.tokopedia.transaction.exception.HttpErrorException;
@@ -270,18 +270,18 @@ public class TopPayIntentService extends IntentService {
 
     private TKPDMapParam<String, Object> createParamFingerprint(TKPDMapParam<String, Object> params) {
         TransactionRouter transactionRouter = null;
-        if(getApplication() instanceof TransactionRouter){
+        if (getApplication() instanceof TransactionRouter) {
             transactionRouter = (TransactionRouter) getApplication();
         }
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && transactionRouter!= null && transactionRouter.getEnableFingerprintPayment()) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && transactionRouter != null && transactionRouter.getEnableFingerprintPayment()) {
             PublicKey publicKey = FingerPrintDialog.generatePublicKey(this);
-            if(publicKey != null){
+            if (publicKey != null) {
                 params.put(FINGERPRINT_PUBLICKEY, FingerPrintDialog.getPublicKey(publicKey));
                 params.put(FINGERPRINT_SUPPORT, true);
-            }else{
+            } else {
                 params.put(FINGERPRINT_SUPPORT, false);
             }
-        }else{
+        } else {
             params.put(FINGERPRINT_SUPPORT, false);
         }
         return params;

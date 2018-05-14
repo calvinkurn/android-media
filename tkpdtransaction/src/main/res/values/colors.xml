@@ -2,4 +2,11 @@
 <resources>
     <color name="light_blue">#3494F9</color>
     <color name="white_shadow">#E0E0E0</color>
+    <color name="yellow_ticker">#ecdb77</color>
+
+    <color name="bg_warning_red">#fce3e4</color>
+    <color name="bg_warning_grey">#fffcd3</color>
+    <color name="text_warning_red">#d30b16</color>
+    <color name="text_warning_grey">#8b000000</color>
+    <color name="text_cart_item_error_red">#d30b16</color>
 </resources>

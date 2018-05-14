@@ -1,7 +1,7 @@
 package com.tokopedia.transaction.cart.presenter;
 
 import com.tkpd.library.utils.LocalCacheHandler;
-import com.tokopedia.transaction.cart.model.thankstoppaydata.ThanksTopPayData;
+import com.tokopedia.transaction.common.data.cart.thankstoppaydata.ThanksTopPayData;
 import com.tokopedia.transaction.cart.model.toppaydata.TopPayParameterData;
 
 /**

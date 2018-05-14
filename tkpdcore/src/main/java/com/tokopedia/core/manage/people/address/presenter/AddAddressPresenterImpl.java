@@ -204,7 +204,7 @@ public class AddAddressPresenterImpl implements AddAddressPresenter, ManageAddre
     @Override
     public void setLatLng(String latitude, String longitude) {
         LatLng latLng;
-        if(!latitude.isEmpty() && !longitude.isEmpty()) {
+        if (!latitude.isEmpty() && !longitude.isEmpty()) {
             latLng = new LatLng(Double.parseDouble(latitude), Double.parseDouble(longitude));
         } else latLng = new LatLng(MONAS_LATITUDE, MONAS_LONGITUDE);
         address.setLatLng(latLng);

@@ -199,7 +199,7 @@ public class MyChatViewHolder extends AbstractViewHolder<MyChatViewModel>{
     }
 
     public void onViewRecycled() {
-        if(attachment != null) {
+        if (attachment != null) {
             Glide.clear(attachment);
         }
     }

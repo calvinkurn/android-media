@@ -159,13 +159,16 @@ public class OkHttpFactory {
     }
 
     public OkHttpClient buildClientDefaultAuth() {
+        return buildClientDefaultAuthBuilder().build();
+    }
+
+    public TkpdOkHttpBuilder buildClientDefaultAuthBuilder() {
         return new TkpdOkHttpBuilder(builder)
                 .addInterceptor(new FingerprintInterceptor())
                 .addInterceptor(new CacheApiInterceptor())
                 .addInterceptor(new TkpdAuthInterceptor())
                 .setOkHttpRetryPolicy(getOkHttpRetryPolicy())
-                .addDebugInterceptor()
-                .build();
+                .addDebugInterceptor();
     }
 
 

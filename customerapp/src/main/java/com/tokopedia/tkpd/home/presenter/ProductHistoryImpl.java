@@ -87,7 +87,7 @@ public class ProductHistoryImpl implements ProductHistory {
             productHistoryView.displayPull(false);
         }
 
-        mPaging.setHasNext(false);// PagingHandler.CheckHasNext(productFeedData.getData().getPagingHandlerModel())
+        mPaging.setHasNext(false);// PagingHandler.CheckHasNext(productFeedData.receiveData().getPagingHandlerModel())
 
         if (mPaging.CheckNextPage()) {
             productHistoryView.displayLoadMore(true);
@@ -193,7 +193,7 @@ public class ProductHistoryImpl implements ProductHistory {
         productHistoryView.displayPull(false);
 
         data.addAll(recentViewData.getData().getRecentView());
-        mPaging.setHasNext(false);// PagingHandler.CheckHasNext(productFeedData.getData().getPagingHandlerModel())
+        mPaging.setHasNext(false);// PagingHandler.CheckHasNext(productFeedData.receiveData().getPagingHandlerModel())
 
         if (mPaging.CheckNextPage()) {
             productHistoryView.displayLoadMore(true);

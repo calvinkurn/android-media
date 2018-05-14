@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:app="http://schemas.android.com/apk/res-auto"
+              xmlns:tools="http://schemas.android.com/tools"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:orientation="vertical">
+
+    <View
+        android:id="@+id/margin_header"
+        android:layout_width="match_parent"
+        android:layout_height="16dp"/>
+
+    <android.support.v7.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/dp_10"
+        android:layout_marginLeft="@dimen/dp_8"
+        android:layout_marginRight="@dimen/dp_8"
+        app:cardCornerRadius="@dimen/dp_0"
+        app:cardElevation="@dimen/dp_3">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/white"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/dp_16">
+
+                <TextView
+                    style="@style/TextSmallMedium"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/label_seller"
+                    android:textColor="@color/label_color"/>
+
+                <TextView
+                    android:id="@+id/sender_name"
+                    style="@style/TextSmallMediumBlack70"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/dp_8"
+                    android:layout_marginRight="@dimen/dp_8"
+                    tools:text="Adidas"/>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingBottom="@dimen/dp_10"
+                android:paddingEnd="@dimen/dp_20"
+                android:paddingLeft="@dimen/dp_20"
+                android:paddingRight="@dimen/dp_20"
+                android:paddingStart="@dimen/dp_20">
+
+                <ImageView
+                    android:id="@+id/product_image"
+                    android:layout_width="52dp"
+                    android:layout_height="52dp"
+                    tools:src="@drawable/empty_photo"/>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/dp_10"
+                    android:layout_marginStart="@dimen/dp_10"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/product_name"
+                        style="@style/TextMidMediumBlack70"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        tools:text="Kaos Adidas Camo Tongue Tee... White and Red, XS"/>
+
+                    <TextView
+                        android:id="@+id/product_price"
+                        style="@style/TextMidMedium"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/orange_red"
+                        tools:text="Rp 20.000"/>
+
+                    <include layout="@layout/layout_cart_item_policy"/>
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="0.5dp"
+                android:background="@color/grey_300"/>
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/shipping_destination_list"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="0.5dp"
+                android:layout_marginTop="@dimen/dp_16"
+                android:background="@color/grey_300"/>
+
+            <LinearLayout
+                android:id="@+id/add_new_shipment_address_button"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:foreground="?selectableItemBackground"
+                android:gravity="center"
+                android:padding="@dimen/dp_16">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="sans-serif-medium"
+                    android:text="@string/label_add_new_shipment"
+                    android:textColor="@color/tkpd_main_green"
+                    android:textSize="@dimen/sp_12"/>
+
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="0.5dp"
+                android:background="@color/grey_300"/>
+
+        </LinearLayout>
+
+    </android.support.v7.widget.CardView>
+
+</LinearLayout>

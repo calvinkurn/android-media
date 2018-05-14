@@ -73,6 +73,7 @@ import com.tokopedia.core.onboarding.NewOnboardingActivity;
 import com.tokopedia.core.referral.ReferralActivity;
 import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.router.transactionmodule.TransactionCartRouter;
+import com.tokopedia.core.router.transactionmodule.TransactionRouter;
 import com.tokopedia.core.rxjava.RxUtils;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.HockeyAppHelper;
@@ -146,7 +147,8 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
     private boolean exit = false;
 
     private BroadcastReceiver hockeyBroadcastReceiver;
-    private NudgeView nudgeView;
+    private BroadcastReceiver cartNotificationBroadcastReceiver;
+    private NudgeView nudgeView ;
 
     @DeepLink(Constants.Applinks.HOME)
     public static TaskStackBuilder getApplinkCallingIntent(Context context, Bundle extras) {
@@ -610,11 +612,14 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
         HockeyAppHelper.checkForUpdate(this);
         RxUtils.getNewCompositeSubIfUnsubscribed(subscription);
         FCMCacheManager.checkAndSyncFcmId(getApplicationContext());
-        if (SessionHandler.isV4Login(this) && isUserFirstTimeLogin) {
-            initStateFragment = INIT_STATE_FRAGMENT_HOME;
-            adapter = new PagerAdapter(getSupportFragmentManager());
-            setupViewPager();
-            adapter.notifyDataSetChanged();
+        if (SessionHandler.isV4Login(this)) {
+            if (isUserFirstTimeLogin) {
+                initStateFragment = INIT_STATE_FRAGMENT_HOME;
+                adapter = new PagerAdapter(getSupportFragmentManager());
+                setupViewPager();
+                adapter.notifyDataSetChanged();
+            }
+            updateCartNotification();
         }
 
         isUserFirstTimeLogin = !SessionHandler.isV4Login(this);
@@ -677,6 +682,16 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
         Cache.applyEditor();
         invalidateOptionsMenu();
         MainApplication.resetCartStatus(false);
+    }
+
+    private void updateCartNotification() {
+        ((TransactionRouter) getApplication()).updateMarketplaceCartCounter(
+                new TransactionRouter.CartNotificationListener() {
+                    @Override
+                    public void onDataReady() {
+                        invalidateOptionsMenu();
+                    }
+                });
     }
 
     @Override

@@ -722,7 +722,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
 
     @Override
     public void onShowRetryGetFeed() {
-        if(adapter != null ) {
+        if (adapter != null) {
             adapter.hideLoading();
             adapter.showRetry();
             adapter.notifyDataSetChanged();

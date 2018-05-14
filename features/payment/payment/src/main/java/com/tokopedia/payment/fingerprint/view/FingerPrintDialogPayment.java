@@ -39,7 +39,7 @@ public class FingerPrintDialogPayment extends FingerPrintDialog implements Finge
     private String transactionId;
     private int counterError = 0;
 
-    public static FingerPrintDialogPayment createInstance(String userId, String urlOtp, String transactionId){
+    public static FingerPrintDialogPayment createInstance(String userId, String urlOtp, String transactionId) {
         FingerPrintDialogPayment fingerPrintDialogPayment = new FingerPrintDialogPayment();
         Bundle bundle = new Bundle();
         bundle.putString(USER_ID, userId);
@@ -96,17 +96,17 @@ public class FingerPrintDialogPayment extends FingerPrintDialog implements Finge
         });
     }
 
-    public void setVisibilityContainer(boolean isVisible){
-        if(isVisible){
+    public void setVisibilityContainer(boolean isVisible) {
+        if (isVisible) {
             containerOtp.setVisibility(View.VISIBLE);
-        }else{
+        } else {
             containerOtp.setVisibility(View.GONE);
         }
         updateHeight();
     }
 
     private boolean updateCounterError() {
-        if(isResumed()) {
+        if (isResumed()) {
             counterError++;
             updateTitle(getString(R.string.fingerprint_label_failed_scan));
             setVisibilityContainer(true);
@@ -117,7 +117,7 @@ public class FingerPrintDialogPayment extends FingerPrintDialog implements Finge
             } else {
                 return true;
             }
-        }else{
+        } else {
             return true;
         }
     }
@@ -148,7 +148,7 @@ public class FingerPrintDialogPayment extends FingerPrintDialog implements Finge
     }
 
     public void onErrorNetworkPaymentFingerPrint() {
-        if(updateCounterError()){
+        if (updateCounterError()) {
             startListening();
         }
     }

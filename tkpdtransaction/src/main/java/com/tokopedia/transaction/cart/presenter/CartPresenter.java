@@ -3,6 +3,7 @@ package com.tokopedia.transaction.cart.presenter;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.util.Log;
 import android.text.TextUtils;
 
 import com.appsflyer.AFInAppEventParameterName;
@@ -20,12 +21,16 @@ import com.tokopedia.core.analytics.nishikino.model.Checkout;
 import com.tokopedia.core.analytics.nishikino.model.GTMCart;
 import com.tokopedia.core.analytics.nishikino.model.Product;
 import com.tokopedia.core.analytics.nishikino.model.Purchase;
+import com.tokopedia.core.base.di.component.AppComponent;
+import com.tokopedia.core.network.retrofit.response.TkpdResponse;
 import com.tokopedia.core.network.retrofit.utils.ErrorNetMessage;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.core.util.BranchSdkUtils;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.transaction.R;
+import com.tokopedia.transaction.addtocart.model.kero.Rates;
+import com.tokopedia.transaction.cart.activity.CartActivity;
 import com.tokopedia.transaction.addtocart.model.kero.Data;
 import com.tokopedia.transaction.cart.interactor.CartDataInteractor;
 import com.tokopedia.transaction.cart.interactor.ICartDataInteractor;
@@ -40,11 +45,15 @@ import com.tokopedia.transaction.cart.model.cartdata.CartProduct;
 import com.tokopedia.transaction.cart.model.cartdata.CartRatesData;
 import com.tokopedia.transaction.cart.model.paramcheckout.CheckoutData;
 import com.tokopedia.transaction.cart.model.paramcheckout.CheckoutDropShipperData;
-import com.tokopedia.transaction.cart.model.thankstoppaydata.ThanksTopPayData;
+import com.tokopedia.transaction.common.data.cart.thankstoppaydata.ThanksTopPayData;
 import com.tokopedia.transaction.cart.model.voucher.VoucherData;
 import com.tokopedia.transaction.cart.services.TopPayIntentService;
 import com.tokopedia.transaction.exception.HttpErrorException;
 import com.tokopedia.transaction.exception.ResponseErrorException;
+import com.tokopedia.transaction.pickuppoint.di.CartPickupPointComponent;
+import com.tokopedia.transaction.pickuppoint.di.DaggerCartPickupPointComponent;
+import com.tokopedia.transaction.pickuppoint.domain.usecase.EditCartPickupPointsUseCase;
+import com.tokopedia.transaction.pickuppoint.domain.usecase.RemoveCartPickupPointsUseCase;
 
 import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
@@ -53,6 +62,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.inject.Inject;
+
+import retrofit2.Response;
 import rx.Subscriber;
 
 /**
@@ -72,11 +84,25 @@ public class CartPresenter implements ICartPresenter {
     private Gson gson;
     private LocalCacheHandler cartCache;
 
+    @Inject
+    EditCartPickupPointsUseCase editCartPickupPointsUseCase;
+
+    @Inject
+    RemoveCartPickupPointsUseCase removeCartPickupPointsUseCase;
+
     public CartPresenter(ICartView iCartView, LocalCacheHandler cartCache) {
         this.view = iCartView;
         this.cartDataInteractor = new CartDataInteractor();
         this.gson = new Gson();
         this.cartCache = cartCache;
+        initializeInjector();
+    }
+
+    void initializeInjector() {
+        AppComponent component = ((CartActivity) view.getContext()).getApplicationComponent();
+        CartPickupPointComponent cartPickupPointComponent = DaggerCartPickupPointComponent.builder()
+                .appComponent(component).build();
+        cartPickupPointComponent.inject(this);
     }
 
     @Override
@@ -496,7 +522,7 @@ public class CartPresenter implements ICartPresenter {
 
     private void switchInsurancePrice(@NonNull CartItemEditable cartItemEditable, boolean useInsurance) {
         cartItemEditable.setUseInsurance(useInsurance);
-        if(cartItemEditable.getCartCourierPrices() != null)
+        if (cartItemEditable.getCartCourierPrices() != null)
             cartItemEditable.getCartCourierPrices().setCartSubtotal(useInsurance);
         view.refreshCartList();
     }
@@ -1023,5 +1049,49 @@ public class CartPresenter implements ICartPresenter {
                 cartCache.getString(Jordan.CACHE_KEY_DATA_CHECKOUT),
                 new TypeToken<Checkout>() {
                 }.getType());
+    }
+
+    @Override
+    public void processUpdatePickupPoint(String cartId, String oldStoreId, String newStoreId) {
+        editCartPickupPointsUseCase.execute(
+                EditCartPickupPointsUseCase.generateParams(view.getContext(), cartId, oldStoreId, newStoreId),
+                new Subscriber<Response<TkpdResponse>>() {
+                    @Override
+                    public void onCompleted() {
+                        Log.e("removeCartPickupPoints", "onCompleted");
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        Log.e("removeCartPickupPoints", "onError");
+                    }
+
+                    @Override
+                    public void onNext(Response<TkpdResponse> tkpdResponseResponse) {
+                        Log.e("removeCartPickupPoints", "onNext");
+                    }
+                });
+    }
+
+    @Override
+    public void processRemovePickupPoint(String cartId, String oldStoreId) {
+        removeCartPickupPointsUseCase.execute(
+                RemoveCartPickupPointsUseCase.generateParams(view.getContext(), cartId, oldStoreId),
+                new Subscriber<Response<TkpdResponse>>() {
+            @Override
+            public void onCompleted() {
+                Log.e("removeCartPickupPoints", "onCompleted");
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                Log.e("removeCartPickupPoints", "onError");
+            }
+
+            @Override
+            public void onNext(Response<TkpdResponse> tkpdResponseResponse) {
+                Log.e("removeCartPickupPoints", "onNext");
+            }
+        });
     }
 }

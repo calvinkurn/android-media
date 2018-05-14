@@ -304,7 +304,7 @@ public class ChatRoomAdapter extends RecyclerView.Adapter<AbstractViewHolder> {
 
     public void showRetryFor(MyChatViewModel model, boolean b) {
         int position = list.indexOf(model);
-        if(position >= 0 && list.get(position) instanceof  MyChatViewModel) {
+        if (position >= 0 && list.get(position) instanceof MyChatViewModel) {
             ((MyChatViewModel) list.get(position)).setRetry(true);
             notifyItemChanged(position);
         }
