@@ -28,7 +28,7 @@ import com.tokopedia.kol.feature.post.view.viewmodel.KolPostViewModel;
  * @author by nisie on 5/15/17.
  */
 
-public interface FeedPlusTypeFactory extends KolPostTypeFactory {
+public interface FeedPlusTypeFactory {
 
     int type(ActivityCardViewModel viewModel);
 

@@ -43,6 +43,7 @@ import com.tokopedia.feedplus.view.viewmodel.promo.PromotedShopViewModel;
 import com.tokopedia.feedplus.view.viewmodel.recentview.RecentViewViewModel;
 import com.tokopedia.feedplus.view.viewmodel.topads.FeedTopAdsViewModel;
 import com.tokopedia.feedplus.view.viewmodel.toppicks.ToppicksViewModel;
+import com.tokopedia.kol.feature.post.view.adapter.typefactory.KolPostTypeFactory;
 import com.tokopedia.kol.feature.post.view.adapter.viewholder.EmptyKolPostViewHolder;
 import com.tokopedia.kol.feature.post.view.adapter.viewholder.KolPostViewHolder;
 import com.tokopedia.kol.feature.post.view.listener.KolPostListener;
@@ -55,7 +56,8 @@ import com.tokopedia.topads.sdk.listener.TopAdsItemClickListener;
  * @author by nisie on 5/15/17.
  */
 
-public class FeedPlusTypeFactoryImpl extends BaseAdapterTypeFactory implements FeedPlusTypeFactory {
+public class FeedPlusTypeFactoryImpl extends BaseAdapterTypeFactory
+        implements FeedPlusTypeFactory, KolPostTypeFactory {
 
     private final FeedPlus.View viewListener;
     private final TopAdsItemClickListener topAdsItemClickListener;
