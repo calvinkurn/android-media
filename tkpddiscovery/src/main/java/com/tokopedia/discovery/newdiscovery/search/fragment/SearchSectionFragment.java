@@ -572,4 +572,8 @@ public abstract class SearchSectionFragment extends BaseDaggerFragment
     public void onBottomSheetHide() {
         SearchTracking.eventSearchResultFilter(getScreenName(), getSelectedFilter());
     }
+
+    protected boolean isUsingBottomSheetFilter() {
+        return isUsingBottomSheetFilter;
+    }
 }

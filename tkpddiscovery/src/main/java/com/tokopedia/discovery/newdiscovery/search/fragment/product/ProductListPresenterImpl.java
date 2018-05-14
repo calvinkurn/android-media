@@ -14,6 +14,7 @@ import com.tokopedia.discovery.newdiscovery.di.component.SearchComponent;
 import com.tokopedia.discovery.newdiscovery.domain.model.SearchResultModel;
 import com.tokopedia.discovery.newdiscovery.domain.usecase.AddWishlistActionUseCase;
 import com.tokopedia.discovery.newdiscovery.domain.usecase.GetDynamicFilterUseCase;
+import com.tokopedia.discovery.newdiscovery.domain.usecase.GetDynamicFilterV4UseCase;
 import com.tokopedia.discovery.newdiscovery.domain.usecase.GetProductUseCase;
 import com.tokopedia.discovery.newdiscovery.domain.usecase.GetSearchGuideUseCase;
 import com.tokopedia.discovery.newdiscovery.domain.usecase.RemoveWishlistActionUseCase;
@@ -55,8 +56,11 @@ public class ProductListPresenterImpl extends SearchSectionFragmentPresenterImpl
     RemoveWishlistActionUseCase removeWishlistActionUseCase;
     @Inject
     GetDynamicFilterUseCase getDynamicFilterUseCase;
+    @Inject
+    GetDynamicFilterV4UseCase getDynamicFilterV4UseCase;
     private WishlistActionListener wishlistActionListener;
     private Context context;
+    private boolean isUsingFilterV4;
 
     public ProductListPresenterImpl(Context context) {
         this.context = context;
@@ -75,7 +79,11 @@ public class ProductListPresenterImpl extends SearchSectionFragmentPresenterImpl
 
     @Override
     protected void getFilterFromNetwork(RequestParams requestParams) {
-        getDynamicFilterUseCase.execute(requestParams, new GetDynamicFilterSubscriber(getView()));
+        if (isUsingFilterV4) {
+            getDynamicFilterV4UseCase.execute(requestParams, new GetDynamicFilterSubscriber(getView()));
+        } else {
+            getDynamicFilterUseCase.execute(requestParams, new GetDynamicFilterSubscriber(getView()));
+        }
     }
 
     @Override
@@ -275,7 +283,16 @@ public class ProductListPresenterImpl extends SearchSectionFragmentPresenterImpl
         RequestParams params = getQuickFilterRequestParams();
         params = enrichWithFilterAndSortParams(params);
         params = enrichWithAdditionalParams(params, additionalParams);
-        getDynamicFilterUseCase.execute(params, new GetQuickFilterSubscriber(getView()));
+        if (isUsingFilterV4) {
+            getDynamicFilterV4UseCase.execute(params, new GetQuickFilterSubscriber(getView()));
+        } else {
+            getDynamicFilterUseCase.execute(params, new GetQuickFilterSubscriber(getView()));
+        }
+    }
+
+    @Override
+    public void setIsUsingFilterV4(boolean isUsingFilterV4) {
+        this.isUsingFilterV4 = isUsingFilterV4;
     }
 
     private RequestParams getQuickFilterRequestParams() {
@@ -305,5 +322,6 @@ public class ProductListPresenterImpl extends SearchSectionFragmentPresenterImpl
         addWishlistActionUseCase.unsubscribe();
         removeWishlistActionUseCase.unsubscribe();
         getDynamicFilterUseCase.unsubscribe();
+        getDynamicFilterV4UseCase.unsubscribe();
     }
 }

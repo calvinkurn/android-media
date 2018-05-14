@@ -159,6 +159,7 @@ public class ProductListFragment extends SearchSectionFragment
     public View onCreateView(LayoutInflater inflater,
                              @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         presenter.attachView(this, this);
+        presenter.setIsUsingFilterV4(isUsingBottomSheetFilter());
         return inflater.inflate(R.layout.fragment_base_discovery, null);
     }
 
