@@ -7,6 +7,7 @@ import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.abstraction.common.utils.TKPDMapParam;
 import com.tokopedia.abstraction.common.utils.network.AuthUtil;
 import com.tokopedia.checkout.R;
+import com.tokopedia.checkout.view.view.shipment.viewmodel.ShipmentCheckoutButtonModel;
 import com.tokopedia.transactiondata.entity.request.CheckoutRequest;
 import com.tokopedia.transactiondata.entity.request.DataCheckoutRequest;
 import com.tokopedia.checkout.domain.datamodel.addressoptions.RecipientAddressModel;
@@ -23,8 +24,8 @@ import com.tokopedia.checkout.domain.usecase.CheckPromoCodeCartShipmentUseCase;
 import com.tokopedia.checkout.domain.usecase.CheckoutUseCase;
 import com.tokopedia.checkout.domain.usecase.GetShipmentAddressFormUseCase;
 import com.tokopedia.checkout.domain.usecase.GetThanksToppayUseCase;
-import com.tokopedia.checkout.view.view.shipment.viewmodel.ShipmentCartItem;
-import com.tokopedia.checkout.view.view.shipment.viewmodel.ShipmentInsuranceTncItem;
+import com.tokopedia.checkout.view.view.shipment.viewmodel.ShipmentCartItemModel;
+import com.tokopedia.checkout.view.view.shipment.viewmodel.ShipmentInsuranceTncModel;
 import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.router.transactionmodule.sharedata.CheckPromoCodeCartListResult;
 import com.tokopedia.core.router.transactionmodule.sharedata.CheckPromoCodeCartShipmentRequest;
@@ -56,12 +57,12 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     private final GetShipmentAddressFormUseCase getShipmentAddressFormUseCase;
     private final CheckPromoCodeCartListUseCase checkPromoCodeCartListUseCase;
 
-    private List<ShipmentCartItem> shipmentCartItemList;
+    private List<ShipmentCartItemModel> shipmentCartItemModelList;
     private RecipientAddressModel recipientAddressModel;
     private PromoCodeAppliedData promoCodeAppliedData;
     private CartPromoSuggestion cartPromoSuggestion;
     private ShipmentCostModel shipmentCostModel;
-    private ShipmentInsuranceTncItem shipmentInsuranceTncItem;
+    private ShipmentCheckoutButtonModel shipmentCheckoutButtonModel;
 
     private List<DataCheckoutRequest> dataCheckoutRequestList;
     private List<CheckPromoCodeCartShipmentRequest.Data> promoCodeCartShipmentRequestDataList;
@@ -360,13 +361,13 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     }
 
     @Override
-    public List<ShipmentCartItem> getShipmentCartItemList() {
-        return shipmentCartItemList;
+    public List<ShipmentCartItemModel> getShipmentCartItemModelList() {
+        return shipmentCartItemModelList;
     }
 
     @Override
-    public void setShipmentCartItemList(List<ShipmentCartItem> recipientCartItemList) {
-        this.shipmentCartItemList = recipientCartItemList;
+    public void setShipmentCartItemModelList(List<ShipmentCartItemModel> recipientCartItemList) {
+        this.shipmentCartItemModelList = recipientCartItemList;
     }
 
     @Override
@@ -432,12 +433,13 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     }
 
     @Override
-    public ShipmentInsuranceTncItem getShipmentInsuranceTncItem() {
-        return shipmentInsuranceTncItem;
+    public ShipmentCheckoutButtonModel getShipmentCheckoutButtonModel() {
+        return shipmentCheckoutButtonModel;
     }
 
     @Override
-    public void setShipmentInsuranceTncItem(ShipmentInsuranceTncItem shipmentInsuranceTncItem) {
-        this.shipmentInsuranceTncItem = shipmentInsuranceTncItem;
+    public void setShipmentCheckoutButtonModel(ShipmentCheckoutButtonModel shipmentCheckoutButtonModel) {
+        this.shipmentCheckoutButtonModel = shipmentCheckoutButtonModel;
     }
+
 }

@@ -15,7 +15,7 @@ import android.widget.TextView;
 
 import com.tokopedia.checkout.R;
 import com.tokopedia.checkout.view.view.shipment.ShipmentAdapterActionListener;
-import com.tokopedia.checkout.view.view.shipment.viewmodel.ShipmentInsuranceTncItem;
+import com.tokopedia.checkout.view.view.shipment.viewmodel.ShipmentInsuranceTncModel;
 
 /**
  * @author Aghny A. Putra on 09/05/18
@@ -38,8 +38,8 @@ public class ShipmentInsuranceTncViewHolder extends RecyclerView.ViewHolder {
         cardViewContainer = itemView.findViewById(R.id.card_view_container);
     }
 
-    public void bindViewHolder(ShipmentInsuranceTncItem shipmentInsuranceTncItem) {
-        if (shipmentInsuranceTncItem.isVisible()) {
+    public void bindViewHolder(ShipmentInsuranceTncModel shipmentInsuranceTncModel) {
+        if (shipmentInsuranceTncModel.isVisible()) {
             String formatText = tvInsuranceTnc.getContext().getString(R.string.text_tos_agreement);
             String messageTosAgreement = tvInsuranceTnc.getContext().getString(R.string.message_tos_agreement);
             int startSpan = messageTosAgreement.indexOf(formatText);

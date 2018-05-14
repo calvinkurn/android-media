@@ -77,10 +77,8 @@ public class ShipmentCostViewHolder extends RecyclerView.ViewHolder {
 
         if (!TextUtils.isEmpty(shipmentCost.getPromoMessage())) {
             formatPromoMessage(mTvPromoMessage, shipmentCost.getPromoMessage());
-            shipmentAdapterActionListener.onShowPromoMessage(shipmentCost.getPromoMessage());
             mTvPromoMessage.setVisibility(View.VISIBLE);
         } else {
-            shipmentAdapterActionListener.onHidePromoMessage();
             mTvPromoMessage.setVisibility(View.GONE);
         }
     }

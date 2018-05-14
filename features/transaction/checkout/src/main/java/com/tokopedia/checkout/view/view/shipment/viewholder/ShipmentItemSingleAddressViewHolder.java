@@ -1,6 +1,5 @@
 package com.tokopedia.checkout.view.view.shipment.viewholder;
 
-import android.content.Context;
 import android.graphics.ColorMatrix;
 import android.graphics.ColorMatrixColorFilter;
 import android.support.v4.content.ContextCompat;
@@ -16,8 +15,8 @@ import com.tokopedia.checkout.domain.datamodel.cartsingleshipment.CartItemModel;
 import com.tokopedia.checkout.view.adapter.InnerProductListAdapter;
 import com.tokopedia.checkout.view.view.shipment.ShipmentAdapter;
 import com.tokopedia.checkout.view.view.shipment.ShipmentAdapterActionListener;
-import com.tokopedia.checkout.view.view.shipment.viewmodel.ShipmentCartItem;
-import com.tokopedia.checkout.view.view.shipment.viewmodel.ShipmentSingleAddressCartItem;
+import com.tokopedia.checkout.view.view.shipment.viewmodel.ShipmentCartItemModel;
+import com.tokopedia.checkout.view.view.shipment.viewmodel.ShipmentSingleAddressCartItemModel;
 import com.tokopedia.design.utils.CurrencyFormatUtil;
 import com.tokopedia.showcase.ShowCaseContentPosition;
 import com.tokopedia.showcase.ShowCaseObject;
@@ -42,14 +41,14 @@ public class ShipmentItemSingleAddressViewHolder extends ShipmentItemViewHolder 
     }
 
     @Override
-    public void bindViewHolder(ShipmentCartItem shipmentCartItem,
+    public void bindViewHolder(ShipmentCartItemModel shipmentCartItemModel,
                                RecipientAddressModel recipientAddressModel,
                                ArrayList<ShowCaseObject> showCaseObjectList) {
-        super.bindViewHolder(shipmentCartItem, recipientAddressModel, showCaseObjectList);
+        super.bindViewHolder(shipmentCartItemModel, recipientAddressModel, showCaseObjectList);
 
         addressLayout.setVisibility(View.GONE);
 
-        ShipmentSingleAddressCartItem shipmentSingleAddressItem = (ShipmentSingleAddressCartItem) shipmentCartItem;
+        ShipmentSingleAddressCartItemModel shipmentSingleAddressItem = (ShipmentSingleAddressCartItemModel) shipmentCartItemModel;
         List<CartItemModel> cartItemModelList = new ArrayList<>(shipmentSingleAddressItem.getCartItemModels());
         renderFirstCartItem(cartItemModelList.remove(FIRST_ELEMENT));
         if (shipmentSingleAddressItem.getCartItemModels() != null && shipmentSingleAddressItem.getCartItemModels().size() > 1) {
@@ -78,8 +77,7 @@ public class ShipmentItemSingleAddressViewHolder extends ShipmentItemViewHolder 
         llOptionalNoteToSellerLayout.setVisibility(isEmptyNotes ? View.GONE : View.VISIBLE);
         tvOptionalNoteToSeller.setText(cartItemModel.getNoteToSeller());
 
-        llProductPoliciesLayout.setVisibility(isPoliciesVisible(cartItemModel) ?
-                View.VISIBLE : View.GONE);
+        llProductPoliciesLayout.setVisibility(View.GONE);
         ivFreeReturnIcon.setVisibility(cartItemModel.isFreeReturn() ? View.VISIBLE : View.GONE);
         tvFreeReturnLabel.setVisibility(cartItemModel.isFreeReturn() ? View.VISIBLE : View.GONE);
         tvPreOrder.setVisibility(cartItemModel.isPreOrder() ? View.VISIBLE : View.GONE);
@@ -88,7 +86,7 @@ public class ShipmentItemSingleAddressViewHolder extends ShipmentItemViewHolder 
         tvCashback.setText(cashback);
     }
 
-    private void renderOtherCartItems(ShipmentSingleAddressCartItem shipmentItem, List<CartItemModel> cartItemModels) {
+    private void renderOtherCartItems(ShipmentSingleAddressCartItemModel shipmentItem, List<CartItemModel> cartItemModels) {
         rlExpandOtherProduct.setOnClickListener(showAllProductListener(shipmentItem));
         tvExpandOtherProduct.setOnClickListener(showAllProductListener(shipmentItem));
         initInnerRecyclerView(cartItemModels);
@@ -115,18 +113,12 @@ public class ShipmentItemSingleAddressViewHolder extends ShipmentItemViewHolder 
         rvCartItem.setAdapter(innerProductListAdapter);
     }
 
-    private boolean isPoliciesVisible(CartItemModel cartItemModel) {
-        return cartItemModel.isCashback()
-                || cartItemModel.isFreeReturn()
-                || cartItemModel.isPreOrder();
-    }
-
-    private View.OnClickListener showAllProductListener(final ShipmentCartItem shipmentCartItem) {
+    private View.OnClickListener showAllProductListener(final ShipmentCartItemModel shipmentCartItemModel) {
         return new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                shipmentCartItem.setStateAllItemViewExpanded(!shipmentCartItem.isStateAllItemViewExpanded());
-                mActionListener.onViewVisibilityStateChanged(getAdapterPosition());
+                shipmentCartItemModel.setStateAllItemViewExpanded(!shipmentCartItemModel.isStateAllItemViewExpanded());
+                mActionListener.onNeedUpdateViewItem(getAdapterPosition());
             }
         };
     }

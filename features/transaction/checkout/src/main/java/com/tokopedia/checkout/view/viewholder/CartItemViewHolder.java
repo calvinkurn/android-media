@@ -66,20 +66,13 @@ public class CartItemViewHolder extends ShipmentItemViewHolder {
         mLlOptionalNoteToSellerLayout.setVisibility(isEmptyNotes ? View.GONE : View.VISIBLE);
         mTvOptionalNoteToSeller.setText(cartItem.getNoteToSeller());
 
-        mllProductPoliciesLayout.setVisibility(isPoliciesVisible(cartItem) ?
-                View.VISIBLE : View.GONE);
+        mllProductPoliciesLayout.setVisibility(View.GONE);
         mIvFreeReturnIcon.setVisibility(cartItem.isFreeReturn() ? View.VISIBLE : View.GONE);
         mTvFreeReturnLabel.setVisibility(cartItem.isFreeReturn() ? View.VISIBLE : View.GONE);
         mTvPreOrder.setVisibility(cartItem.isPreOrder() ? View.VISIBLE : View.GONE);
         mTvCashback.setVisibility(cartItem.isCashback() ? View.VISIBLE : View.GONE);
         String cashback = mTvCashback.getContext().getString(R.string.label_cashback) + " " + cartItem.getCashback();
         mTvCashback.setText(cashback);
-    }
-
-    private boolean isPoliciesVisible(CartItemModel cartItem) {
-        return cartItem.isCashback()
-                || cartItem.isFreeReturn()
-                || cartItem.isPreOrder();
     }
 
 }

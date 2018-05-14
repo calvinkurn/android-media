@@ -4,6 +4,7 @@ import android.app.Activity;
 
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
+import com.tokopedia.checkout.view.view.shipment.viewmodel.ShipmentCheckoutButtonModel;
 import com.tokopedia.transactiondata.entity.request.DataCheckoutRequest;
 import com.tokopedia.checkout.domain.datamodel.addressoptions.RecipientAddressModel;
 import com.tokopedia.checkout.domain.datamodel.cartcheckout.CheckoutData;
@@ -11,8 +12,8 @@ import com.tokopedia.checkout.domain.datamodel.cartlist.CartPromoSuggestion;
 import com.tokopedia.checkout.domain.datamodel.cartshipmentform.CartShipmentAddressFormData;
 import com.tokopedia.checkout.domain.datamodel.cartsingleshipment.ShipmentCostModel;
 import com.tokopedia.checkout.domain.datamodel.voucher.PromoCodeAppliedData;
-import com.tokopedia.checkout.view.view.shipment.viewmodel.ShipmentCartItem;
-import com.tokopedia.checkout.view.view.shipment.viewmodel.ShipmentInsuranceTncItem;
+import com.tokopedia.checkout.view.view.shipment.viewmodel.ShipmentCartItemModel;
+import com.tokopedia.checkout.view.view.shipment.viewmodel.ShipmentInsuranceTncModel;
 import com.tokopedia.core.router.transactionmodule.sharedata.CheckPromoCodeCartListResult;
 import com.tokopedia.core.router.transactionmodule.sharedata.CheckPromoCodeCartShipmentRequest;
 import com.tokopedia.core.router.transactionmodule.sharedata.CheckPromoCodeCartShipmentResult;
@@ -72,9 +73,9 @@ public interface ShipmentContract {
 
         void setRecipientAddressModel(RecipientAddressModel recipientAddressModel);
 
-        List<ShipmentCartItem> getShipmentCartItemList();
+        List<ShipmentCartItemModel> getShipmentCartItemModelList();
 
-        void setShipmentCartItemList(List<ShipmentCartItem> recipientCartItemList);
+        void setShipmentCartItemModelList(List<ShipmentCartItemModel> recipientCartItemList);
 
         PromoCodeAppliedData getPromoCodeAppliedData();
 
@@ -102,9 +103,10 @@ public interface ShipmentContract {
 
         void setShipmentCostModel(ShipmentCostModel shipmentCostModel);
 
-        ShipmentInsuranceTncItem getShipmentInsuranceTncItem();
+        ShipmentCheckoutButtonModel getShipmentCheckoutButtonModel();
 
-        void setShipmentInsuranceTncItem(ShipmentInsuranceTncItem shipmentInsuranceTncItem);
+        void setShipmentCheckoutButtonModel(ShipmentCheckoutButtonModel shipmentCheckoutButtonModel);
+
     }
 
 }

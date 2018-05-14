@@ -2,7 +2,7 @@ package com.tokopedia.checkout.view.view.shipment.viewmodel;
 
 import com.tokopedia.checkout.view.view.shipment.ShipmentData;
 
-public class ShipmentInsuranceTncItem implements ShipmentData {
+public class ShipmentInsuranceTncModel implements ShipmentData {
 
     private boolean visible;
 

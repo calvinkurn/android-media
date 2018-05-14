@@ -9,7 +9,7 @@ import com.tokopedia.transaction.common.data.pickuppoint.Store;
  * @author Irfan Khoirul on 23/04/18.
  */
 
-public abstract class ShipmentCartItem implements ShipmentData {
+public abstract class ShipmentCartItemModel implements ShipmentData {
 
     private boolean isError;
     private String errorMessage;
@@ -34,10 +34,10 @@ public abstract class ShipmentCartItem implements ShipmentData {
     private Store store;
 
     private boolean stateDetailSubtotalViewExpanded;
-    private boolean stateAllItemViewExpanded;
+    private boolean stateAllItemViewExpanded = true;
     private boolean stateDropshipperDetailExpanded;
 
-    public ShipmentCartItem() {
+    public ShipmentCartItemModel() {
     }
 
     public boolean isError() {
