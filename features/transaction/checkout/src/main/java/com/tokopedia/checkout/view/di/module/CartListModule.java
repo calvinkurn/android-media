@@ -2,7 +2,6 @@ package com.tokopedia.checkout.view.di.module;
 
 import android.support.v7.widget.RecyclerView;
 
-import com.tokopedia.transactiondata.repository.ICartRepository;
 import com.tokopedia.checkout.domain.usecase.CheckPromoCodeCartListUseCase;
 import com.tokopedia.checkout.domain.usecase.DeleteCartGetCartListUseCase;
 import com.tokopedia.checkout.domain.usecase.DeleteCartUseCase;
@@ -18,6 +17,7 @@ import com.tokopedia.checkout.view.view.cartlist.CartItemDecoration;
 import com.tokopedia.checkout.view.view.cartlist.CartListPresenter;
 import com.tokopedia.checkout.view.view.cartlist.ICartListPresenter;
 import com.tokopedia.checkout.view.view.cartlist.ICartListView;
+import com.tokopedia.transactiondata.repository.ICartRepository;
 
 import dagger.Module;
 import dagger.Provides;
@@ -27,7 +27,7 @@ import rx.subscriptions.CompositeSubscription;
  * @author anggaprasetiyo on 18/01/18.
  */
 
-@Module(includes = {ConverterDataModule.class})
+@Module(includes = {ConverterDataModule.class, TrackingAnalyticsModule.class})
 public class CartListModule {
 
     private final ICartListView cartListView;

@@ -40,9 +40,11 @@ import com.tokopedia.checkout.view.di.component.CartComponent;
 import com.tokopedia.checkout.view.di.component.CartListComponent;
 import com.tokopedia.checkout.view.di.component.DaggerCartListComponent;
 import com.tokopedia.checkout.view.di.module.CartListModule;
+import com.tokopedia.checkout.view.di.module.TrackingAnalyticsModule;
 import com.tokopedia.checkout.view.holderitemdata.CartItemHolderData;
 import com.tokopedia.checkout.view.holderitemdata.CartItemPromoHolderData;
 import com.tokopedia.checkout.view.holderitemdata.CartItemTickerErrorHolderData;
+import com.tokopedia.checkout.view.utils.CheckoutAnalytics;
 import com.tokopedia.checkout.view.view.addressoptions.CartAddressChoiceActivity;
 import com.tokopedia.checkout.view.view.multipleaddressform.MultipleAddressFormActivity;
 import com.tokopedia.checkout.view.view.shipment.ShipmentActivity;
@@ -90,12 +92,15 @@ public class CartFragment extends BaseCheckoutFragment implements CartListAdapte
     private TextView tvItemCount;
     private TkpdProgressDialog progressDialogNormal;
 
+
     @Inject
     ICartListPresenter dPresenter;
     @Inject
     CartListAdapter cartListAdapter;
     @Inject
     RecyclerView.ItemDecoration cartItemDecoration;
+    @Inject
+    CheckoutAnalytics checkoutAnalytics;
 
     private RefreshHandler refreshHandler;
 
@@ -121,6 +126,7 @@ public class CartFragment extends BaseCheckoutFragment implements CartListAdapte
         CartListComponent cartListComponent = DaggerCartListComponent.builder()
                 .cartComponent(getComponent(CartComponent.class))
                 .cartListModule(new CartListModule(this))
+                .trackingAnalyticsModule(new TrackingAnalyticsModule())
                 .build();
         cartListComponent.inject(this);
     }
@@ -294,6 +300,7 @@ public class CartFragment extends BaseCheckoutFragment implements CartListAdapte
 
     @Override
     public void onCartPromoUseVoucherPromoClicked(CartItemPromoHolderData cartItemPromoHolderData, int position) {
+        checkoutAnalytics.eventClickCartGunakanKodePromoAatauKupon();
         if (getActivity().getApplication() instanceof ICheckoutModuleRouter) {
             startActivityForResult(
                     ((ICheckoutModuleRouter) getActivity().getApplication())

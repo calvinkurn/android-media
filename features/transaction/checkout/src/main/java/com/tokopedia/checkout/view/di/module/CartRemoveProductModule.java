@@ -20,7 +20,7 @@ import rx.subscriptions.CompositeSubscription;
 /**
  * @author Aghny A. Putra on 31/01/18.
  */
-@Module(includes = {ConverterDataModule.class})
+@Module(includes = {ConverterDataModule.class, TrackingAnalyticsModule.class})
 public class CartRemoveProductModule {
 
     private final CartRemoveProductAdapter.CartRemoveProductActionListener actionListener;
