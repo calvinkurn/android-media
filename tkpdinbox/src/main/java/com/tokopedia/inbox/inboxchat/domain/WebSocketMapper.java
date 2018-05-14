@@ -26,6 +26,8 @@ import javax.inject.Inject;
 public class WebSocketMapper {
 
     private static final String TYPE_QUICK_REPLY = "8";
+    private static final String TYPE_PRODUCT_ATTACHMENT = "3";
+
 
     @Inject
     public WebSocketMapper() {
@@ -43,8 +45,12 @@ public class WebSocketMapper {
                 switch (pojo.getData().getAttachment().getType()) {
                     case TYPE_QUICK_REPLY:
                         return convertToQuickReplyModel(json);
+                    case TYPE_PRODUCT_ATTACHMENT:
+//                        return convertToProductAttachment(json);
                     default:
-                        return convertToFallBackModel(pojo.getData());
+//                        return convertToFallBackModel(pojo.getData());
+                        return null;
+
                 }
             } else {
                 return null;
@@ -53,6 +59,10 @@ public class WebSocketMapper {
             return null;
         }
 
+    }
+
+    private BaseChatViewModel convertToProductAttachment(String json) {
+        return null;
     }
 
     private BaseChatViewModel convertToFallBackModel(WebSocketResponseData pojo) {
