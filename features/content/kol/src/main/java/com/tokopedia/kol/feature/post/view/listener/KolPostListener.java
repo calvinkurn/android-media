@@ -8,7 +8,6 @@ import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.kol.KolRouter;
-import com.tokopedia.kol.feature.post.view.viewmodel.KolPostViewModel;
 
 import java.util.List;
 
@@ -47,19 +46,19 @@ public interface KolPostListener {
 
             AbstractionRouter getAbstractionRouter();
 
-            void onGoToKolProfile(int page, int rowNumber, String userId, int postId);
+            void onGoToKolProfile(int rowNumber, String userId, int postId);
 
-            void onOpenKolTooltip(int page, int rowNumber, String url);
+            void onOpenKolTooltip(int rowNumber, String url);
 
-            void onFollowKolClicked(int page, int rowNumber, int id);
+            void onFollowKolClicked(int rowNumber, int id);
 
-            void onUnfollowKolClicked(int page, int rowNumber, int id);
+            void onUnfollowKolClicked(int rowNumber, int id);
 
-            void onLikeKolClicked(int page, int rowNumber, int id);
+            void onLikeKolClicked(int rowNumber, int id);
 
-            void onUnlikeKolClicked(int page, int adapterPosition, int id);
+            void onUnlikeKolClicked(int adapterPosition, int id);
 
-            void onGoToKolComment(int page, int rowNumber, KolPostViewModel kolPostViewModel);
+            void onGoToKolComment(int rowNumber, int id);
         }
     }
 

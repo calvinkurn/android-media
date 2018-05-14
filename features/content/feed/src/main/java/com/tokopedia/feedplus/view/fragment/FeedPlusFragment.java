@@ -970,44 +970,44 @@ public class FeedPlusFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void onGoToKolProfile(int page, int rowNumber, String userId, int postId) {
+    public void onGoToKolProfile(int rowNumber, String userId, int postId) {
         Intent profileIntent = TopProfileActivity.newInstanceFromFeed(getContext(), userId, postId)
                 .putExtra(ARGS_ROW_NUMBER, rowNumber);
         startActivityForResult(profileIntent, OPEN_KOL_PROFILE);
     }
 
     @Override
-    public void onOpenKolTooltip(int page, int rowNumber, String url) {
+    public void onOpenKolTooltip(int rowNumber, String url) {
         ((TkpdCoreRouter) getActivity().getApplication()).actionAppLink(getActivity(), url);
     }
 
     @Override
-    public void onFollowKolClicked(int page, int rowNumber, int id) {
+    public void onFollowKolClicked(int rowNumber, int id) {
         presenter.followKol(id, rowNumber, this);
     }
 
     @Override
-    public void onUnfollowKolClicked(int page, int rowNumber, int id) {
+    public void onUnfollowKolClicked(int rowNumber, int id) {
         presenter.unfollowKol(id, rowNumber, this);
 
     }
 
     @Override
-    public void onLikeKolClicked(int page, int rowNumber, int id) {
+    public void onLikeKolClicked(int rowNumber, int id) {
         presenter.likeKol(id, rowNumber, this);
     }
 
     @Override
-    public void onUnlikeKolClicked(int page, int rowNumber, int id) {
+    public void onUnlikeKolClicked(int rowNumber, int id) {
         presenter.unlikeKol(id, rowNumber, this);
 
     }
 
     @Override
-    public void onGoToKolComment(int page, int rowNumber, KolPostViewModel model) {
+    public void onGoToKolComment(int rowNumber, int id) {
         if (getActivity().getApplication() instanceof FeedModuleRouter) {
             FeedModuleRouter router = ((FeedModuleRouter) getActivity().getApplication());
-            Intent intent = router.getKolCommentActivity(getContext(), model.getId(), rowNumber);
+            Intent intent = router.getKolCommentActivity(getContext(), id, rowNumber);
             startActivityForResult(intent, OPEN_KOL_COMMENT);
         }
     }

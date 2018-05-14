@@ -11,6 +11,8 @@ import android.widget.TextView;
 
 import com.tokopedia.design.base.BaseCustomView;
 import com.tokopedia.kol.R;
+import com.tokopedia.kol.feature.post.view.listener.BaseKolListener;
+import com.tokopedia.kol.feature.post.view.viewmodel.BaseKolViewModel;
 
 /**
  * @author by milhamj on 09/05/18.
@@ -72,7 +74,7 @@ public class BaseKolView extends BaseCustomView {
         return contentView;
     }
 
-    public void bind() {
+    public void bind(BaseKolViewModel element) {
         //TODO set viewmodel
 //        name.setText(MethodChecker.fromHtml(element.getName()));
 //        ImageHandler.loadImageCircle2(avatar.getContext(), avatar, element.getAvatar());
@@ -131,6 +133,55 @@ public class BaseKolView extends BaseCustomView {
 //        }
 //
 //        commentButton.setVisibility(element.isShowComment() ? View.VISIBLE : View.GONE);
-//        setListener(element);
+    }
+
+    public void setViewListener(final BaseKolListener viewListener, final BaseKolViewModel element) {
+        avatar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                viewListener.onAvatarClickListener(element);
+            }
+        });
+
+        name.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                viewListener.onNameClickListener(element);
+            }
+        });
+
+        followButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                viewListener.onFollowButtonClickListener(element);
+            }
+        });
+
+        kolText.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (kolText.getText().toString().endsWith(
+                        kolText.getContext().getString(R.string.read_more_english))) {
+                    kolText.setText(element.getReview());
+                    element.setReviewExpanded(true);
+
+                    viewListener.onDescriptionClickListener(element);
+                }
+            }
+        });
+
+        likeButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                viewListener.onLikeButtonClickListener(element);
+            }
+        });
+
+        commentButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                viewListener.onCommentClickListener(element);
+            }
+        });
     }
 }

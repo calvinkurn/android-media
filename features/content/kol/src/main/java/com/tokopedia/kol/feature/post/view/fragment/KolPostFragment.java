@@ -220,40 +220,40 @@ public class KolPostFragment extends BaseDaggerFragment implements
     }
 
     @Override
-    public void onGoToKolProfile(int page, int rowNumber, String userId, int postId) {
+    public void onGoToKolProfile(int rowNumber, String userId, int postId) {
     }
 
     @Override
-    public void onOpenKolTooltip(int page, int rowNumber, String url) {
+    public void onOpenKolTooltip(int rowNumber, String url) {
         ((KolRouter) getActivity().getApplication()).actionApplinkFromActivity(getActivity(), url);
     }
 
     @Override
-    public void onFollowKolClicked(int page, int rowNumber, int id) {
+    public void onFollowKolClicked(int rowNumber, int id) {
         presenter.followKol(id, rowNumber, this);
     }
 
     @Override
-    public void onUnfollowKolClicked(int page, int rowNumber, int id) {
+    public void onUnfollowKolClicked(int rowNumber, int id) {
         presenter.unfollowKol(id, rowNumber, this);
 
     }
 
     @Override
-    public void onLikeKolClicked(int page, int rowNumber, int id) {
+    public void onLikeKolClicked(int rowNumber, int id) {
         presenter.likeKol(id, rowNumber, this);
     }
 
     @Override
-    public void onUnlikeKolClicked(int page, int rowNumber, int id) {
+    public void onUnlikeKolClicked(int rowNumber, int id) {
         presenter.unlikeKol(id, rowNumber, this);
 
     }
 
     @Override
-    public void onGoToKolComment(int page, int rowNumber, KolPostViewModel kolPostViewModel) {
+    public void onGoToKolComment(int rowNumber, int id) {
         Intent intent = KolCommentActivity.getCallingIntent(
-                getContext(), kolPostViewModel.getKolId(), rowNumber
+                getContext(), id, rowNumber
         );
         startActivityForResult(intent, KOL_COMMENT_CODE);
     }
