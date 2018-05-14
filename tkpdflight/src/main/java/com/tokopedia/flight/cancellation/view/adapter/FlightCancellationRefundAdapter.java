@@ -53,7 +53,7 @@ public class FlightCancellationRefundAdapter extends RecyclerView.Adapter<Flight
         }
 
         public void bind(FlightCancellationRefund description) {
-            final int color = itemView.getResources().getColor(R.color.black);
+            final int color = itemView.getResources().getColor(R.color.font_black_primary_70);
             String fullText = description.getTitle() + ", " + description.getSubtitle();
             int startIndex = fullText.indexOf(description.getSubtitle());
             int stopIndex = fullText.length();

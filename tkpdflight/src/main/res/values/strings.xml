@@ -393,6 +393,7 @@
     <string name="flight_cancellation_upload_attachment_title">Bagaimana Anda ingin mengatur gambar Anda ?</string>
     <string name="flight_cancellation_gallery_label">Galeri</string>
     <string name="flight_cancellation_camera_label">Kamera</string>
+    <string name="flight_cancellation_refund_bottom_sheet_tag">Refund Detail</string>
     <string-array name="flight_cancellation_refund_title">
         <item>Untuk pembayaran selain kartu kredit</item>
         <item>Untuk pembayaran dengan kartu kredit</item>
