@@ -1,5 +1,6 @@
 package com.tokopedia.flight.cancellation.view.presenter;
 
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 
@@ -78,14 +79,38 @@ public class FlightCancellationReasonAndProofPresenter extends BaseDaggerPresent
         getView().showUploadAttachmentView();
     }
 
+    private boolean validateImageAttachment(String uri) {
+        File file = new File(uri);
+        BitmapFactory.Options options = new BitmapFactory.Options();
+        options.inJustDecodeBounds = true;
+        BitmapFactory.decodeFile(file.getAbsolutePath(), options);
+        int imageHeight = options.outHeight;
+        int imageWidth = options.outWidth;
+
+        int fileSize = Integer.parseInt(String.valueOf(file.length() / 1024));
+
+        if (imageHeight < 100 || imageWidth < 300) {
+            getView().showAttachmentMinDimensionErrorMessage(R.string.flight_cancellation_min_dimension_error);
+            return false;
+        } else if (fileSize >= 15360) {
+            getView().showAttachmentMaxSizeErrorMessage(R.string.flight_cancellation_max_error);
+            return false;
+        } else {
+            return true;
+        }
+    }
+
     @Override
     public void onSuccessGetImage(String filepath) {
-        FlightCancellationAttachmentViewModel viewModel = new FlightCancellationAttachmentViewModel();
-        viewModel.setFilepath(filepath);
-        viewModel.setFilename(Uri.parse(filepath).getLastPathSegment());
-        getView().hideUploadAttachmentView();
-        getView().addAttachment(viewModel);
-        getView().showUploadAttachmentView();
+        if (validateImageAttachment(filepath)) {
+            FlightCancellationAttachmentViewModel viewModel = new FlightCancellationAttachmentViewModel();
+            viewModel.setFilepath(filepath);
+            viewModel.setFilename(Uri.parse(filepath).getLastPathSegment());
+            getView().hideUploadAttachmentView();
+            getView().addAttachment(viewModel);
+            getView().showUploadAttachmentView();
+        }
+
     }
 
     @Override
