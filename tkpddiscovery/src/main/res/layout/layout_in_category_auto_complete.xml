@@ -10,7 +10,8 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_48"
+        android:layout_height="wrap_content"
+        android:minHeight="@dimen/dp_48"
         android:background="@color/white"
         android:paddingStart="@dimen/dp_16"
         android:paddingEnd="@dimen/dp_16"
