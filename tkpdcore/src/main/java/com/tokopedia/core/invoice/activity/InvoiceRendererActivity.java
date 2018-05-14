@@ -5,6 +5,7 @@ import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.net.http.SslError;
 import android.os.Build;
@@ -13,6 +14,7 @@ import android.print.PrintAttributes;
 import android.print.PrintDocumentAdapter;
 import android.print.PrintJob;
 import android.print.PrintManager;
+import android.support.v4.content.ContextCompat;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -24,20 +26,22 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.FrameLayout;
 import android.widget.ProgressBar;
-import android.widget.Toast;
 
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
-import com.tokopedia.abstraction.common.utils.GlobalConfig;
 import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.BasePresenterActivity;
+import com.tokopedia.core.app.TkpdCoreRouter;
+import com.tokopedia.core.customView.TextDrawable;
 import com.tokopedia.core.invoice.listener.InvoiceViewListener;
 import com.tokopedia.core.invoice.model.InvoiceRenderParam;
 import com.tokopedia.core.invoice.presenter.InvoiceRenderPresenter;
 import com.tokopedia.core.invoice.presenter.InvoiceRenderPresenterImpl;
 import com.tokopedia.core.network.NetworkErrorHelper;
+import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.TkpdWebView;
+import com.tokopedia.design.component.Dialog;
 
 import butterknife.BindView;
 
@@ -163,11 +167,19 @@ public class InvoiceRendererActivity extends BasePresenterActivity<InvoiceRender
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.menu_transaction_invoice, menu);
-        if (!seller || android.os.Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT) {
+        if (seller && Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             MenuItem menuItem = menu.findItem(R.id.action_print);
-            menuItem.setVisible(false);
+            menuItem.setVisible(true);
+            menuItem.setIcon(getMenuPrintDrawableText());
         }
         return super.onCreateOptionsMenu(menu);
+    }
+
+    private Drawable getMenuPrintDrawableText() {
+        TextDrawable drawable = new TextDrawable(this);
+        drawable.setText(getResources().getString(R.string.action_print));
+        drawable.setTextColor(ContextCompat.getColor(this, R.color.tkpd_main_green));
+        return drawable;
     }
 
     private class MyWebChrome extends WebChromeClient {
@@ -208,9 +220,36 @@ public class InvoiceRendererActivity extends BasePresenterActivity<InvoiceRender
         if (GlobalConfig.isSellerApp()) {
             createWebPagePrint(webViewOauth);
         } else if (seller) {
-            // Show dialog
-            Toast.makeText(this, "I'm Seller", Toast.LENGTH_LONG).show();
+            showDownloadSellerAppDialog();
         }
+    }
+
+    private void showDownloadSellerAppDialog() {
+        final Dialog dialog = new Dialog(this, Dialog.Type.LONG_PROMINANCE);
+        dialog.setTitle(getString(R.string.invoice_print_dialog_title));
+        dialog.setDesc(getString(R.string.invoice_print_dialog_description));
+        dialog.setBtnOk(getString(R.string.invoice_print_dialog_button_ok));
+        dialog.setBtnCancel(getString(R.string.invoice_print_dialog_button_cancel));
+        dialog.setOnOkClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (isFinishing()) {
+                    return;
+                }
+                ((TkpdCoreRouter) getApplication()).goToCreateMerchantRedirect(InvoiceRendererActivity.this);
+                dialog.dismiss();
+            }
+        });
+        dialog.setOnCancelClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (isFinishing()) {
+                    return;
+                }
+                dialog.dismiss();
+            }
+        });
+        dialog.show();
     }
 
     @TargetApi(Build.VERSION_CODES.KITKAT)
@@ -225,11 +264,8 @@ public class InvoiceRendererActivity extends BasePresenterActivity<InvoiceRender
         }
         PrintAttributes.Builder builder = new PrintAttributes.Builder();
         builder.setMediaSize(PrintAttributes.MediaSize.ISO_A5);
-        PrintJob printJob = printManager.print(jobName, printAdapter, builder.build());
-        if (printJob.isCompleted()) {
-            Toast.makeText(getApplicationContext(), "Complete", Toast.LENGTH_LONG).show();
-        } else if (printJob.isFailed()) {
-            Toast.makeText(getApplicationContext(), "Failed", Toast.LENGTH_LONG).show();
+        if (printManager != null) {
+            printManager.print(jobName, printAdapter, builder.build());
         }
     }
 
@@ -238,7 +274,7 @@ public class InvoiceRendererActivity extends BasePresenterActivity<InvoiceRender
         if (item.getItemId() == R.id.action_print) {
             onMenuPrintClcked();
             return true;
-        } else if(item.getItemId() == android.R.id.home){
+        } else if (item.getItemId() == android.R.id.home) {
             onBackPressed();
             return true;
         } else {
