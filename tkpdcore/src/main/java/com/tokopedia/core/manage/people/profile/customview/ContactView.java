@@ -163,11 +163,11 @@ public class ContactView extends BaseView<Profile, ManagePeopleProfileFragmentPr
 
         @Override
         public void onClick(View view) {
-            if (TextUtils.isEmpty(userEmail)) {
-                presenter.setOnChangePhoneNumberEmptyEmailClick(getContext());
-            } else {
+//            if (TextUtils.isEmpty(userEmail)) {
+//                presenter.setOnChangePhoneNumberEmptyEmailClick(getContext());
+//            } else {
                 presenter.setOnChangePhoneButtonClick(getContext(), userPhone);
-            }
+//            }
         }
     }
 

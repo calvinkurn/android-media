@@ -19,6 +19,7 @@ import com.tokopedia.session.register.registerphonenumber.view.fragment.Register
 import com.tokopedia.session.register.view.fragment.CreatePasswordFragment;
 import com.tokopedia.session.register.view.fragment.RegisterEmailFragment;
 import com.tokopedia.session.register.view.fragment.RegisterInitialFragment;
+import com.tokopedia.user.session.UserSession;
 
 import dagger.Component;
 
@@ -66,4 +67,5 @@ public interface SessionComponent {
 
     GetUserInfoUseCase getUserInfoUseCase();
 
+    UserSession userSession();
 }

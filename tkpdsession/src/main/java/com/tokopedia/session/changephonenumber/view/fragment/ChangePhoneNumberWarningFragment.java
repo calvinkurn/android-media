@@ -11,33 +11,31 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
+import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.base.di.component.AppComponent;
-import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.core.deposit.activity.WithdrawActivity;
 import com.tokopedia.core.deposit.presenter.DepositFragmentPresenterImpl;
-import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.di.DaggerSessionComponent;
 import com.tokopedia.di.SessionComponent;
 import com.tokopedia.di.SessionModule;
+import com.tokopedia.otp.cotp.domain.interactor.RequestOtpUseCase;
 import com.tokopedia.otp.cotp.view.activity.VerificationActivity;
 import com.tokopedia.session.R;
-import com.tokopedia.session.changephonenumber.view.activity.ChangePhoneNumberEmailActivity;
 import com.tokopedia.session.changephonenumber.view.activity.ChangePhoneNumberInputActivity;
 import com.tokopedia.session.changephonenumber.view.adapter.WarningListAdapter;
-import com.tokopedia.session.changephonenumber.view.listener
-        .ChangePhoneNumberWarningFragmentListener;
+import com.tokopedia.session.changephonenumber.view.listener.ChangePhoneNumberWarningFragmentListener;
 import com.tokopedia.session.changephonenumber.view.viewmodel.WarningViewModel;
+import com.tokopedia.user.session.UserSession;
 
 import java.util.ArrayList;
 
 import javax.inject.Inject;
 
-import static com.tokopedia.session.changephonenumber.view.viewmodel.WarningViewModel.ACTION_EMAIL;
 import static com.tokopedia.session.changephonenumber.view.viewmodel.WarningViewModel.ACTION_OTP;
-import static com.tokopedia.session.changephonenumber.view.viewmodel.WarningViewModel
-        .BALANCE_THRESHOLD_FOR_WARNING;
+import static com.tokopedia.session.changephonenumber.view.viewmodel.WarningViewModel.BALANCE_THRESHOLD_FOR_WARNING;
 
 /**
  * Created by milhamj on 18/12/17.
@@ -55,6 +53,8 @@ public class ChangePhoneNumberWarningFragment extends BaseDaggerFragment
     WarningListAdapter adapter;
     @Inject
     ChangePhoneNumberWarningFragmentListener.Presenter presenter;
+    @Inject
+    UserSession userSession;
     private View tokopediaBalanceLayout;
     private View tokocashLayout;
     private TextView tokopediaBalanceValue;
@@ -189,6 +189,48 @@ public class ChangePhoneNumberWarningFragment extends BaseDaggerFragment
     @Override
     public void onGetWarningSuccess(WarningViewModel warningViewModel) {
         this.viewModel = warningViewModel;
+        presenter.validateOtpStatus(getUserId());
+//        if (viewModel.getTokocashNumber() <= 0
+//                && viewModel.getTokopediaBalanceNumber() < BALANCE_THRESHOLD_FOR_WARNING) {
+//            goToNextActivity();
+//        } else {
+//            loadDataToView();
+//            showOrHideWithdrawButton();
+//            dismissLoading();
+//        }
+    }
+
+    @Override
+    public void onGetWarningError(String message) {
+        showWarningEmptyState(message);
+        dismissLoading();
+    }
+
+    @Override
+    public void onGetValidateOtpStatusSuccess(Boolean isValid) {
+        if(isValid){
+            startActivityForResult(
+                    ChangePhoneNumberInputActivity.newInstance(
+                            getContext(),
+                            phoneNumber,
+                            email,
+                            viewModel.getWarningList() != null ?
+                                    new ArrayList<>(viewModel.getWarningList()) :
+                                    null
+                    ),
+                    REQUEST_CHANGE_PHONE_NUMBER);
+        }
+        else {
+            loadWarningPage();
+        }
+    }
+
+    @Override
+    public void onGetValidateOtpStatusError() {
+        loadWarningPage();
+    }
+
+    private void loadWarningPage(){
         if (viewModel.getTokocashNumber() <= 0
                 && viewModel.getTokopediaBalanceNumber() < BALANCE_THRESHOLD_FOR_WARNING) {
             goToNextActivity();
@@ -207,12 +249,6 @@ public class ChangePhoneNumberWarningFragment extends BaseDaggerFragment
         } else {
             withdrawButton.setVisibility(View.GONE);
         }
-    }
-
-    @Override
-    public void onGetWarningError(String message) {
-        showEmptyState(message);
-        dismissLoading();
     }
 
     private void loadDataToView() {
@@ -262,7 +298,7 @@ public class ChangePhoneNumberWarningFragment extends BaseDaggerFragment
 
         Intent intent = VerificationActivity.
                 getShowChooseVerificationMethodIntent(getContext(),
-                        200,
+                        RequestOtpUseCase.OTP_TYPE_VERIFY_USER_CHANGE_PHONE_NUMBER,
                         phoneNumber,
                         email);
         startActivityForResult(intent, VERIFY_USER_CHANGE_PHONE_NUMBER);
@@ -292,9 +328,7 @@ public class ChangePhoneNumberWarningFragment extends BaseDaggerFragment
                 break;
             case REQUEST_CHANGE_PHONE_NUMBER:
                 getActivity().setResult(resultCode);
-
-                if (resultCode == Activity.RESULT_OK)
-                    getActivity().finish();
+                getActivity().finish();
                 break;
             case REQUEST_WITHDRAW_TOKOPEDIA_BALANCE:
                 break;
@@ -313,7 +347,7 @@ public class ChangePhoneNumberWarningFragment extends BaseDaggerFragment
         }
     }
 
-    private void showEmptyState(String message) {
+    private void showWarningEmptyState(String message) {
         if (message == null || message.isEmpty()) {
             NetworkErrorHelper.showEmptyState(getActivity(),
                     getView(),
@@ -334,5 +368,32 @@ public class ChangePhoneNumberWarningFragment extends BaseDaggerFragment
                         }
                     });
         }
+    }
+
+    private void showValidateOtpEmptyState(String message) {
+        if (message == null || message.isEmpty()) {
+            NetworkErrorHelper.showEmptyState(getActivity(),
+                    getView(),
+                    new NetworkErrorHelper.RetryClickedListener() {
+                        @Override
+                        public void onRetryClicked() {
+                            presenter.validateOtpStatus(getUserId());
+                        }
+                    });
+        } else {
+            NetworkErrorHelper.showEmptyState(getActivity(),
+                    getView(),
+                    message,
+                    new NetworkErrorHelper.RetryClickedListener() {
+                        @Override
+                        public void onRetryClicked() {
+                            presenter.validateOtpStatus(getUserId());
+                        }
+                    });
+        }
+    }
+
+    public Integer getUserId(){
+        return Integer.parseInt(userSession.getUserId());
     }
 }
