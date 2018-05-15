@@ -4,7 +4,7 @@ import android.view.View;
 
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.inbox.inboxchat.domain.model.websocket.FallbackAttachmentViewModel;
-import com.tokopedia.inbox.inboxchat.viewmodel.AttachImageModel;
+import com.tokopedia.inbox.inboxchat.viewmodel.ImageUploadViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.AttachInvoiceSelectionViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.AttachInvoiceSentViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.MyChatViewModel;
@@ -27,12 +27,6 @@ public interface ChatRoomTypeFactory {
 
     int type(MyChatViewModel myChatViewModel);
 
-    int type(TimeMachineChatModel timeMachineChatModel);
-
-    int type(TypingChatModel typingChatModel);
-
-    int type(AttachImageModel attachImageModel);
-
     int type(AttachInvoiceSentViewModel attachInvoiceSentViewModel);
 
     int type(AttachInvoiceSelectionViewModel attachInvoiceSelectionViewModel);
@@ -46,5 +40,13 @@ public interface ChatRoomTypeFactory {
     int type(ProductAttachmentViewModel productAttachmentViewModel);
 
     int type(ImageAnnouncementViewModel imageAnnouncementViewModel);
+
+    int type(ImageUploadViewModel attachImageModel);
+
+    //OTHER
+    int type(TimeMachineChatModel timeMachineChatModel);
+
+    int type(TypingChatModel typingChatModel);
+
 
 }

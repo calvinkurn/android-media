@@ -7,7 +7,7 @@ import com.tokopedia.inbox.inboxchat.adapter.ChatRoomTypeFactory;
  * Created by stevenfredian on 11/28/17.
  */
 
-public class AttachImageModel implements Visitable<ChatRoomTypeFactory> {
+public class ImageUploadViewModel implements Visitable<ChatRoomTypeFactory> {
 
     String image;
 

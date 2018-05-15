@@ -7,13 +7,13 @@ import android.widget.ImageView;
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.inbox.R;
-import com.tokopedia.inbox.inboxchat.viewmodel.AttachImageModel;
+import com.tokopedia.inbox.inboxchat.viewmodel.ImageUploadViewModel;
 
 /**
  * Created by stevenfredian on 11/28/17.
  */
 
-public class AttachImageViewHolder extends AbstractViewHolder<AttachImageModel> {
+public class ImageUploadViewHolder extends AbstractViewHolder<ImageUploadViewModel> {
 
     @LayoutRes
     public static final int LAYOUT = R.layout.thumbnail_chat;
@@ -23,13 +23,13 @@ public class AttachImageViewHolder extends AbstractViewHolder<AttachImageModel> 
     String imageUri;
     int gravity;
 
-    public AttachImageViewHolder(View itemView) {
+    public ImageUploadViewHolder(View itemView) {
         super(itemView);
         imageView = itemView.findViewById(R.id.image);
     }
 
     @Override
-    public void bind(AttachImageModel element) {
+    public void bind(ImageUploadViewModel element) {
         imageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

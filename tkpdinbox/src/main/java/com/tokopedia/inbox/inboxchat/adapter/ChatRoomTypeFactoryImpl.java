@@ -11,14 +11,14 @@ import com.tokopedia.inbox.inboxchat.adapter.viewholder.QuickReplyViewHolder;
 import com.tokopedia.inbox.inboxchat.domain.model.websocket.FallbackAttachmentViewModel;
 import com.tokopedia.inbox.inboxchat.fragment.ChatRoomFragment;
 import com.tokopedia.inbox.inboxchat.presenter.ChatRoomContract;
-import com.tokopedia.inbox.inboxchat.viewholder.AttachImageViewHolder;
+import com.tokopedia.inbox.inboxchat.viewholder.ImageUploadViewHolder;
 import com.tokopedia.inbox.inboxchat.viewholder.AttachedInvoiceSelectionViewHolder;
 import com.tokopedia.inbox.inboxchat.viewholder.AttachedInvoiceSentViewHolder;
 import com.tokopedia.inbox.inboxchat.viewholder.MyChatViewHolder;
 import com.tokopedia.inbox.inboxchat.viewholder.OppositeChatViewHolder;
 import com.tokopedia.inbox.inboxchat.viewholder.TimeMachineChatViewHolder;
 import com.tokopedia.inbox.inboxchat.viewholder.TypingChatViewHolder;
-import com.tokopedia.inbox.inboxchat.viewmodel.AttachImageModel;
+import com.tokopedia.inbox.inboxchat.viewmodel.ImageUploadViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.AttachInvoiceSelectionViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.AttachInvoiceSentViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.MyChatViewModel;
@@ -62,8 +62,8 @@ public class ChatRoomTypeFactoryImpl extends BaseAdapterTypeFactory implements C
     }
 
     @Override
-    public int type(AttachImageModel attachImageModel) {
-        return AttachImageViewHolder.LAYOUT;
+    public int type(ImageUploadViewModel attachImageModel) {
+        return ImageUploadViewHolder.LAYOUT;
     }
 
     @Override
@@ -110,8 +110,8 @@ public class ChatRoomTypeFactoryImpl extends BaseAdapterTypeFactory implements C
             viewHolder = new TimeMachineChatViewHolder(view, viewListener);
         else if (type == TypingChatViewHolder.LAYOUT)
             viewHolder = new TypingChatViewHolder(view);
-        else if (type == AttachImageViewHolder.LAYOUT)
-            viewHolder = new AttachImageViewHolder(view);
+        else if (type == ImageUploadViewHolder.LAYOUT)
+            viewHolder = new ImageUploadViewHolder(view);
         else if (type == AttachedInvoiceSentViewHolder.LAYOUT)
             viewHolder = new AttachedInvoiceSentViewHolder(view);
         else if (type == AttachedInvoiceSelectionViewHolder.LAYOUT)
