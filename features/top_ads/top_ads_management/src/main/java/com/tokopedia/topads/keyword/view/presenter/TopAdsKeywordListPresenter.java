@@ -248,7 +248,7 @@ public class TopAdsKeywordListPresenter extends TopAdsBaseListPresenter<TopAdsKe
                 keyword.setGroupId(groupId);
             }
             if (!TextUtils.isEmpty(price)) {
-                keyword.setPriceBid(String.valueOf(getPrice(price)));
+                keyword.setPriceBid(getPrice(price));
             }
             keyword.setKeywordId(adId);
             keywords.add(keyword);
