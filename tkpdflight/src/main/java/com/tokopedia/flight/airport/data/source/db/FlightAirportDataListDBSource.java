@@ -142,13 +142,10 @@ public class FlightAirportDataListDBSource extends BaseDataListDBSource<FlightAi
     }
 
     private ConditionGroup buildQuery(HashMap<String, Object> params) {
-        String idCountry = FlightAirportDataListSource.getIdCountryFromMap(params);
         String queryText = FlightAirportDataListSource.getQueryFromMap(params);
 
         ConditionGroup conditions = ConditionGroup.clause();
-        if (!TextUtils.isEmpty(idCountry)) {
-            conditions.and(FlightAirportDB_Table.country_id.eq(idCountry));
-        }
+        conditions.and(FlightAirportDB_Table.city_name.notEq(""));
         if (!TextUtils.isEmpty(queryText)) {
             String queryLike = "%" + queryText + "%";
             ConditionGroup likeConditionsGroup = ConditionGroup.clause();

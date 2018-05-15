@@ -118,25 +118,6 @@ public class FlightRepositoryImpl implements FlightRepository {
     }
 
     @Override
-    public Observable<List<FlightAirportDB>> getAirportList(final String query, final String idCountry) {
-        if (query != null && query.length() > 0 && idCountry != null && idCountry.length() > 0) {
-            return flightAirportDataListSource.getAirportList(query, idCountry);
-        } else {
-            return flightAirportDataListSource.getAirportCount(query, idCountry)
-                    .flatMap(new Func1<Integer, Observable<List<FlightAirportDB>>>() {
-                        @Override
-                        public Observable<List<FlightAirportDB>> call(Integer airportTotal) {
-                            if (airportTotal == 0) {
-                                flightAirportDataListSource.deleteCache();
-                                flightAirlineDataListSource.setCacheExpired();
-                            }
-                            return flightAirportDataListSource.getAirportList(query, idCountry);
-                        }
-                    });
-        }
-    }
-
-    @Override
     public Observable<List<FlightAirportDB>> getPhoneCodeList(String query) {
         return flightAirportDataListSource.getPhoneCodeList(query);
     }

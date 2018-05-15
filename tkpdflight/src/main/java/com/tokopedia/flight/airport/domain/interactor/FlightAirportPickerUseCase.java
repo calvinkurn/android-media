@@ -34,7 +34,8 @@ public class FlightAirportPickerUseCase extends UseCase<List<FlightAirportDB>> {
 
     @Override
     public Observable<List<FlightAirportDB>> createObservable(RequestParams requestParams) {
-        return flightRepository.getAirportList(requestParams.getString(KEYWORD, ""), ID_COUNTRY_INDONESIA);
+        return flightRepository
+                .getAirportList(requestParams.getString(KEYWORD, ""));
     }
 
     public RequestParams createRequestParam(String text) {
