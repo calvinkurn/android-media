@@ -85,9 +85,9 @@ import com.tokopedia.inbox.inboxchat.domain.model.reply.AttachmentAttributes;
 import com.tokopedia.inbox.inboxchat.domain.model.reply.AttachmentInvoice;
 import com.tokopedia.inbox.inboxchat.domain.model.reply.AttachmentInvoiceAttributes;
 import com.tokopedia.inbox.inboxchat.domain.model.reply.AttachmentProductProfile;
+import com.tokopedia.inbox.inboxchat.domain.model.reply.WebSocketResponse;
 import com.tokopedia.inbox.inboxchat.domain.model.replyaction.ReplyActionData;
 import com.tokopedia.inbox.inboxchat.domain.model.websocket.BaseChatViewModel;
-import com.tokopedia.inbox.inboxchat.domain.model.reply.WebSocketResponse;
 import com.tokopedia.inbox.inboxchat.helper.AttachmentChatHelper;
 import com.tokopedia.inbox.inboxchat.presenter.ChatRoomContract;
 import com.tokopedia.inbox.inboxchat.presenter.ChatRoomPresenter;
@@ -1401,7 +1401,7 @@ public class ChatRoomFragment extends BaseDaggerFragment
         if (isCurrentThread(message.getMessageId())) {
             if (message instanceof QuickReplyListViewModel) {
                 showQuickReplyView((QuickReplyListViewModel) message);
-                if (!TextUtils.isEmpty(message.getMessage())) {
+                if (!TextUtils.isEmpty(((QuickReplyListViewModel) message).getMessage())) {
                     addMessageToList(message);
                     scrollToBottomWithCheck();
                 }

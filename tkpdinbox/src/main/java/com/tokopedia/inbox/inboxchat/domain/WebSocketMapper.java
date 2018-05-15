@@ -3,6 +3,7 @@ package com.tokopedia.inbox.inboxchat.domain;
 import android.text.TextUtils;
 
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonObject;
 import com.google.gson.JsonSyntaxException;
 import com.tokopedia.inbox.inboxchat.domain.model.websocket.BaseChatViewModel;
 import com.tokopedia.inbox.inboxchat.domain.model.websocket.FallbackAttachmentViewModel;
@@ -37,11 +38,11 @@ public class WebSocketMapper {
 
             WebSocketResponse pojo = new GsonBuilder().create().fromJson(json, WebSocketResponse.class);
 
-            String jsonAttributes = pojo.getData().getAttachment().getAttributes();
+            JsonObject jsonAttributes = pojo.getData().getAttachment().getAttributes();
             if (pojo != null
                     && pojo.getData() != null
                     && pojo.getData().getAttachment() != null
-                    && !TextUtils.isEmpty(jsonAttributes)) {
+                    && jsonAttributes != null) {
                 switch (pojo.getData().getAttachment().getType()) {
                     case TYPE_QUICK_REPLY:
                         return convertToQuickReplyModel(pojo.getData(), jsonAttributes);
@@ -81,7 +82,7 @@ public class WebSocketMapper {
         );
     }
 
-    private QuickReplyListViewModel convertToQuickReplyModel(WebSocketResponseData pojo, String
+    private QuickReplyListViewModel convertToQuickReplyModel(WebSocketResponseData pojo, JsonObject
             jsonAttribute) {
         QuickReplyAttachmentAttributes pojoAttribute = new GsonBuilder().create().fromJson(jsonAttribute,
                 QuickReplyAttachmentAttributes.class);
