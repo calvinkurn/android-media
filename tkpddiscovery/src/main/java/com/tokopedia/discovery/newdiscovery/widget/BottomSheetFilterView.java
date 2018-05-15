@@ -360,6 +360,8 @@ public class BottomSheetFilterView extends BaseCustomView implements BottomSheet
     private void initFilterMainRecyclerView() {
         DynamicFilterTypeFactory dynamicFilterTypeFactory = new BottomSheetDynamicFilterTypeFactoryImpl(this);
         filterMainAdapter = new DynamicFilterAdapter(dynamicFilterTypeFactory);
+        filterMainRecyclerView.getRecycledViewPool().setMaxRecycledViews(0, 0);
+        filterMainRecyclerView.getRecycledViewPool().setMaxRecycledViews(R.layout.dynamic_filter_expandable_item, 0);
         filterMainRecyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
         DividerItemDecoration dividerItemDecoration
                 = new DividerItemDecoration(filterMainRecyclerView.getContext(), DividerItemDecoration.VERTICAL);

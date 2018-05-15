@@ -35,6 +35,7 @@ public class BottomSheetExpandableItemViewHolder extends DynamicFilterViewHolder
     @Override
     public void bind(final Filter filter) {
         adapter = new BottomSheetExpandableItemSelectedListAdapter(filterView, filter.getTitle());
+        recyclerView.getRecycledViewPool().setMaxRecycledViews(0, 0);
         recyclerView.setLayoutManager(
                 new LinearLayoutManager(itemView.getContext(), LinearLayoutManager.HORIZONTAL, false));
         recyclerView.setAdapter(adapter);
