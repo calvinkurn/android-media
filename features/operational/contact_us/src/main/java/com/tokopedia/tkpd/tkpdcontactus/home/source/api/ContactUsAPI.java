@@ -24,6 +24,9 @@ public interface ContactUsAPI {
     @GET(ContactUsURL.BUYER_LIST)
     Observable<Response<DataResponse<BuyerPurchaseData>>> getBuyerPurchaseList();
 
+    @GET(ContactUsURL.SELLER_LIST)
+    Observable<Response<DataResponse<BuyerPurchaseData>>> getSellerPurchaseList();
+
     @GET(ContactUsURL.TOPBOT_STATUS)
     Observable<Response<DataResponse<TopBotStatus>>> getTopBotStatus();
 }

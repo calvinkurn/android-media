@@ -4,6 +4,7 @@ import android.Manifest;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -88,7 +89,8 @@ public class SubmitTicketFragment extends BaseDaggerFragment implements SubmitTi
     ImageUploadAdapter imageUploadAdapter;
     @BindView(R2.id.tooltiplayout)
     ConstraintLayout toolTipLayout;
-
+    @BindView(R2.id.submit_success)
+    ConstraintLayout submitSuccess;
 
 
     OrderQueryComponent orderQueryComponent;
@@ -210,6 +212,26 @@ public class SubmitTicketFragment extends BaseDaggerFragment implements SubmitTi
     public void showMessage(String message) {
         Toast.makeText(getContext(), message, Toast.LENGTH_LONG).show();
     }
+    ProgressDialog progress;
+    @Override
+    public void showProgress(String message) {
+        if(progress == null) {
+            progress = new ProgressDialog(getContext());
+        }
+        if(!progress.isShowing()) {
+            progress.setMessage(message);
+            progress.setIndeterminate(true);
+            progress.show();
+        }
+    }
+    @Override
+    public void hideProgress() {
+        if(progress != null && progress.isShowing()) {
+            progress.dismiss();
+            progress = null;
+        }
+    }
+
 
     @Override
     public void finish() {
@@ -402,6 +424,16 @@ public class SubmitTicketFragment extends BaseDaggerFragment implements SubmitTi
     @Override
     public void showToolTip() {
         toolTipLayout.setVisibility(View.VISIBLE);
+    }
+
+    @OnClick(R2.id.btn_ok)
+    public void onOkClick(){
+        submitSuccess.setVisibility(View.GONE);
+        getActivity().finish();
+    }
+    @Override
+    public void showSuccessDialog() {
+        submitSuccess.setVisibility(View.VISIBLE);
     }
 
     public boolean onBackPressed() {

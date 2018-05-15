@@ -161,9 +161,12 @@ public class ContactUsHomeFragment extends BaseDaggerFragment implements Contact
     @Override
     public void setPurchaseList(List<BuyerPurchaseList> buyerPurchaseLists) {
         orderList.setVisibility(View.VISIBLE);
-        if (buyerPurchaseLists.size() <= 0)
+        if (buyerPurchaseLists.size() <= 4) {
             btnFullPurchaseList.setVisibility(View.GONE);
-        cardAdapter.addData(buyerPurchaseLists);
+            cardAdapter.addData(buyerPurchaseLists);
+        }else {
+            cardAdapter.addData(buyerPurchaseLists.subList(0, 4));
+        }
         orderListViewpager.setAdapter(cardAdapter);
         if(buyerPurchaseLists.size()>1)
             pagerIndicator.setViewPager(orderListViewpager);

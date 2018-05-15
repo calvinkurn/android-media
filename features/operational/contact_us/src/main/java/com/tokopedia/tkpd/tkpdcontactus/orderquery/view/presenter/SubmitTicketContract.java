@@ -25,7 +25,8 @@ public interface SubmitTicketContract {
 
 
         public void addimage(ImageUpload image);
-
+        public void showProgress(String message);
+        public void hideProgress();
         public void showMessage(String showToast);
         public void finish();
 
@@ -34,6 +35,7 @@ public interface SubmitTicketContract {
         void setSnackBarErrorMessage(String hello);
 
         void showToolTip();
+        void showSuccessDialog();
     }
     public interface Presenter extends CustomerPresenter<View> {
         public void onSendButtonClick();

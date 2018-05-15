@@ -12,6 +12,7 @@ public interface ContactUsURL {
     String TOPBOT_STATUS = "contact-us/ws/topbot/status";
     String POPULAR_ARTICLE = "/bantuan/wp-json/sf/v1/popular/?per_page=5";
     String BUYER_LIST ="/contact-us/ws/order/buyer";
+    String SELLER_LIST ="contact-us/ws/order/seller";
     String TICKET_OPTION_LIST = "contact-us/ws/problem/46/solutions";
     String TICKET_SUBMIT_STEP_1 = "contact-us/ws/create/step/1";
     String TICKET_SUBMIT_STEP_2 = "contact-us/ws/create/step/2";

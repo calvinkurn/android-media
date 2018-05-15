@@ -5,6 +5,8 @@ import com.tokopedia.tkpd.tkpdcontactus.common.di.ContactUsModule;
 import com.tokopedia.tkpd.tkpdcontactus.common.di.scope.ContactUsModuleScope;
 import com.tokopedia.tkpd.tkpdcontactus.home.view.fragment.BuyerPurchaseFragment;
 import com.tokopedia.tkpd.tkpdcontactus.home.view.fragment.ContactUsHomeFragment;
+import com.tokopedia.tkpd.tkpdcontactus.home.view.fragment.SellerPurchaseFragment;
+import com.tokopedia.tkpd.tkpdcontactus.home.view.presenter.SellerPurchasePresenter;
 
 import dagger.Component;
 
@@ -16,4 +18,5 @@ import dagger.Component;
 public interface ContactUsComponent {
     void inject(ContactUsHomeFragment contactUsHomeFragment);
     void inject(BuyerPurchaseFragment buyerPurchaseFragment);
+    void inject(SellerPurchaseFragment buyerPurchaseFragment);
 }

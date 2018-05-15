@@ -32,6 +32,7 @@ public class ContactUsHomeModule {
         return new ContactUsArticleData(factory);
     }
 
+
     @Provides
     ContactUsArticleUseCase provideArticleUseCase(IContactUsDataRepository repository) {
         return new ContactUsArticleUseCase(repository);

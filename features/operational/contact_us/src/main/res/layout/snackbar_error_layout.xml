@@ -23,7 +23,7 @@
         android:layout_marginTop="@dimen/new_margin_sm"
         android:layout_marginBottom="@dimen/new_margin_sm"
         android:maxLines="2"
-        android:text="Upsbttdtbttdtrdtrdt trdvttdbt dtdtdtdtd td tdt dt tdtddtdtddtdtdtdtdtd ! "/>
+        android:text=" "/>
 
     <TextView
         android:id="@+id/snack_ok"

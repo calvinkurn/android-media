@@ -11,18 +11,18 @@ import javax.inject.Inject;
 import rx.Observable;
 
 /**
- * Created by sandeepgoyal on 06/04/18.
+ * Created by sandeepgoyal on 14/05/18.
  */
 
-public class ContactUsPurchaseListUseCase extends UseCase<List<BuyerPurchaseList>> {
-    IPurchaseListRepository repository;
+public class ContactUsSellerPurchaseLIstUseCase extends UseCase<List<BuyerPurchaseList>> {
+    IContactUsDataRepository repository;
 
     @Inject
-    public ContactUsPurchaseListUseCase(IPurchaseListRepository repository) {
+    public ContactUsSellerPurchaseLIstUseCase(IContactUsDataRepository repository) {
         this.repository = repository;
     }
     @Override
     public Observable<List<BuyerPurchaseList>> createObservable(RequestParams requestParams) {
-        return repository.getPurchaseList();
+        return repository.getSellerPurchaseList();
     }
 }

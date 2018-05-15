@@ -346,4 +346,113 @@
         app:layout_constraintVertical_bias="1.0"
         android:text="Tutup" />
     </android.support.constraint.ConstraintLayout>
+    <android.support.constraint.ConstraintLayout
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:visibility="gone"
+        android:id="@+id/submit_success"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" >
+
+        <FrameLayout
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:background="#a5ffffff"
+            android:clickable="true"
+            android:focusable="true"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <ImageView
+            android:layout_width="0dp"
+            android:layout_height="5dp"
+            app:layout_constraintBottom_toTopOf="@+id/iv_whiteholder_1"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:srcCompat="@drawable/divider_grey_gradient" />
+
+        <ImageView
+            android:id="@+id/iv_whiteholder_1"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:background="@color/white"
+            android:paddingBottom="@dimen/margin_default"
+            android:paddingTop="@dimen/margin_default"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/success_title" />
+
+        <TextView
+            android:id="@+id/success_title"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/margin_ms"
+            android:layout_marginLeft="@dimen/margin_default"
+            android:layout_marginRight="@dimen/margin_default"
+            android:gravity="start"
+            android:paddingTop="@dimen/margin_default"
+            android:textColor="@color/black3_text"
+            android:textSize="@dimen/font_smaller"
+            app:layout_constraintBottom_toTopOf="@+id/success_msg"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="1.0"
+            android:text="Terima Kasih" />
+
+
+        <TextView
+            android:id="@+id/success_msg"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/new_margin_sm"
+            android:layout_marginLeft="@dimen/margin_default"
+            android:layout_marginRight="@dimen/margin_default"
+            android:gravity="start"
+            android:layout_gravity="bottom|center_horizontal"
+            android:textColor="@color/black4_text"
+            android:textSize="@dimen/font_smaller"
+            app:layout_constraintBottom_toTopOf="@+id/btn_ok"
+            app:layout_constraintEnd_toStartOf="@+id/iv_success_image"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="1.0"
+            android:text="Laporan telah masuk ke sistem. Tim Customer Care Tokopedia akan menghubungi Anda." />
+
+        <ImageView
+            android:id="@+id/iv_success_image"
+            android:layout_width="75dp"
+            android:layout_height="75dp"
+            android:layout_marginBottom="@dimen/new_margin_sm"
+            android:layout_marginEnd="@dimen/margin_default"
+            android:layout_marginRight="@dimen/margin_default"
+            app:layout_constraintBottom_toTopOf="@+id/btn_ok"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="1.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:srcCompat="@drawable/ic_atur_dan_geser" />
+
+        <TextView
+            android:id="@+id/btn_ok"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/image_width_l"
+            android:layout_marginBottom="@dimen/margin_default"
+            android:layout_marginLeft="@dimen/margin_default"
+            android:layout_marginRight="@dimen/margin_default"
+            android:background="@drawable/rounded_rectangle_green_solid"
+            android:gravity="center"
+            android:textColor="@color/white"
+            android:textSize="@dimen/font_smaller"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="1.0"
+            android:text="Ok" />
+    </android.support.constraint.ConstraintLayout>
 </android.support.constraint.ConstraintLayout>

@@ -58,4 +58,14 @@ public class ContactUsArticleDataStore {
 
     }
 
+    public Observable<List<BuyerPurchaseList>> getSellerPurchaseList() {
+        return this.contactUsAPI.getSellerPurchaseList().map(new Func1<Response<DataResponse<BuyerPurchaseData>>, List<BuyerPurchaseList>>() {
+            @Override
+            public List<BuyerPurchaseList> call(Response<DataResponse<BuyerPurchaseData>> buyerpurchasedata) {
+                List<BuyerPurchaseList> sellerPurchaseList;
+                sellerPurchaseList = buyerpurchasedata.body().getData().getBuyerPurchaseList();
+                return sellerPurchaseList;
+            }
+        });
+    }
 }

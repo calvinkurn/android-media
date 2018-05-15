@@ -61,11 +61,12 @@ public class SubmitTicketPresenter extends BaseDaggerPresenter<SubmitTicketContr
     public void onSendButtonClick() {
         this.networkInteractor = new ContactUsRetrofitInteractorImpl();
         if (isTicketValid() && isUploadImageValid()) {
+            getView().showProgress("Please Wait...");
         networkInteractor.sendTicket( context,getSendTicketParam(), new ContactUsRetrofitInteractor.SendTicketListener() {
             @Override
             public void onSuccess() {
-                getView().showMessage("Success Load");
-                getView().finish();
+                getView().showSuccessDialog();
+                getView().hideProgress();
             }
 
             @Override
@@ -81,7 +82,8 @@ public class SubmitTicketPresenter extends BaseDaggerPresenter<SubmitTicketContr
 
             @Override
             public void onError(String s) {
-
+                getView().hideProgress();
+                getView().showMessage(s);
             }
 
             @Override

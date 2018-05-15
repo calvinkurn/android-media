@@ -31,6 +31,11 @@ public class ContactUsArticleData implements IContactUsDataRepository {
     }
 
     @Override
+    public Observable<List<BuyerPurchaseList>> getSellerPurchaseList() {
+        return articleDataFactory.getCloudArticleRepository().getSellerPurchaseList();
+    }
+
+    @Override
     public Observable<TopBotStatus> getTopBotStatus() {
         return articleDataFactory.getCloudArticleRepository().getTopBotStatus();
     }

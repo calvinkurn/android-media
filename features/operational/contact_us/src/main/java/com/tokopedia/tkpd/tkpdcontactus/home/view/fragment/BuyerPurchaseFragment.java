@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
@@ -12,6 +13,7 @@ import com.tokopedia.abstraction.base.view.recyclerview.VerticalRecyclerView;
 import com.tokopedia.abstraction.common.di.component.HasComponent;
 import com.tokopedia.contactus.R;
 import com.tokopedia.contactus.R2;
+import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.tkpd.tkpdcontactus.common.data.BuyerPurchaseList;
 import com.tokopedia.tkpd.tkpdcontactus.home.di.ContactUsComponent;
 import com.tokopedia.tkpd.tkpdcontactus.home.di.DaggerContactUsComponent;
@@ -58,11 +60,16 @@ public class BuyerPurchaseFragment extends BaseDaggerFragment implements Purchas
                              Bundle savedInstanceState) {
 
         View view = inflater.inflate(R.layout.layout_full_order_list, container, false);
-        presenter.attachView(this);
+        getPresenter().attachView(this);
+
         initInjector();
         ButterKnife.bind(this, view);
         orderListFull.setAdapter(adapter);
         return view;
+    }
+
+    public PurchaseListContract.Presenter getPresenter() {
+        return presenter;
     }
 
     protected void initInjector() {
