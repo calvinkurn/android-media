@@ -29,6 +29,8 @@ import com.tokopedia.abstraction.common.data.model.storage.CacheManager;
 import com.tokopedia.abstraction.common.utils.TKPDMapParam;
 import com.tokopedia.applink.ApplinkRouter;
 import com.tokopedia.cacheapi.domain.interactor.CacheApiClearAllUseCase;
+import com.tokopedia.logisticuploadawb.UploadAwbLogisticActivity;
+import com.tokopedia.transaction.router.ITransactionOrderDetailRouter;
 import com.tokopedia.transactiondata.entity.response.addtocart.AddToCartDataResponse;
 import com.tokopedia.checkout.domain.usecase.AddToCartUseCase;
 import com.tokopedia.checkout.domain.usecase.CheckPromoCodeCartListUseCase;
@@ -331,7 +333,8 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         com.tokopedia.transaction.router.ICartCheckoutModuleRouter,
         GamificationRouter,
         ProfileModuleRouter,
-        ReactNativeRouter {
+        ReactNativeRouter,
+        ITransactionOrderDetailRouter{
 
     @Inject
     ReactNativeHost reactNativeHost;
@@ -2139,4 +2142,8 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         return new CreditCardFingerPrintUseCase();
     }
 
+    @Override
+    public Intent transactionOrderDetailRouterGetIntentUploadAwb(String urlUpload) {
+        return UploadAwbLogisticActivity.newInstance(this, urlUpload);
+    }
 }

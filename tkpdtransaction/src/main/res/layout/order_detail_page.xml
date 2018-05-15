@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/main_view"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
+                xmlns:tools="http://schemas.android.com/tools"
+                android:id="@+id/main_view"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
 
     <android.support.v4.widget.NestedScrollView
         android:layout_width="match_parent"
@@ -14,6 +14,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
+
 
             <LinearLayout
                 android:id="@+id/rejection_notice_layout"
@@ -33,34 +34,76 @@
                     android:layout_marginBottom="@dimen/dp_5"
                     android:text="@string/title_buyer_cancelled_order"
                     android:textColor="@color/red_500"
-                    android:textStyle="bold" />
+                    android:textStyle="bold"/>
 
                 <TextView
                     android:id="@+id/rejection_notice_subtitle"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="@string/sub_title_buyer_cancelled_order"
-                    tools:text="pada 17 Oktober dengan alasan galau" />
+                    tools:text="pada 17 Oktober dengan alasan galau"/>
 
             </LinearLayout>
 
-            <include layout="@layout/order_detail_page_header" />
+            <include layout="@layout/order_detail_page_header"/>
 
             <include
                 android:id="@+id/layout_pickup_point_pin_code"
                 layout="@layout/layout_pickup_point_pin_code"
-                android:visibility="gone" />
+                android:visibility="gone"/>
 
             <include
                 android:id="@+id/layout_driver_info"
-                layout="@layout/order_detail_driver_info" />
+                layout="@layout/order_detail_driver_info"/>
 
-            <include layout="@layout/order_detail_description" />
+            <include layout="@layout/order_detail_description"/>
 
-            <View
+            <RelativeLayout
+                android:id="@+id/upload_awb_layout"
                 android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:background="@color/grey_300" />
+                android:layout_height="wrap_content"
+                android:background="#fefcf5"
+                android:visibility="gone"
+                tools:visibility="visible">
+
+
+                <TextView
+                    android:id="@+id/tv_upload_awb_message"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_toLeftOf="@+id/btn_upload_awb"
+                    android:layout_toStartOf="@+id/btn_upload_awb"
+                    android:padding="@dimen/activity_vertical_margin"
+                    tools:text="Resi tidak terlacak. Unggah resi fisik sebelum dibatalkan otomatis pada
+                    13 Feb, 21:10 WIB
+"/>
+
+
+                <TextView
+                    android:id="@+id/btn_upload_awb"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:gravity="end"
+                    android:paddingRight="@dimen/activity_horizontal_margin"
+                    android:text="Unggah"
+                    android:textColor="@color/green_500"
+                    android:textStyle="bold"/>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_alignParentTop="true"
+                    android:background="#fde18e"/>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_alignParentBottom="true"
+                    android:background="#fde18e"/>
+            </RelativeLayout>
 
             <LinearLayout
                 android:id="@+id/awb_layout"
@@ -79,14 +122,14 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@string/title_reference_number" />
+                        android:text="@string/title_reference_number"/>
 
                     <TextView
                         android:id="@+id/reference_number"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:textStyle="bold"
-                        tools:text="ABCDEFGHIJKLMNOPQ" />
+                        tools:text="ABCDEFGHIJKLMNOPQ"/>
 
                 </LinearLayout>
 
@@ -98,7 +141,7 @@
                     android:gravity="end"
                     android:text="@string/menu_copy"
                     android:textColor="@color/green_500"
-                    android:textStyle="bold" />
+                    android:textStyle="bold"/>
 
 
             </LinearLayout>
@@ -106,7 +149,7 @@
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
-                android:background="@color/grey_300" />
+                android:background="@color/grey_300"/>
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -120,7 +163,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textColor="@color/label_text_color"
-                    tools:text="INV/20161025/XVI/X/55069657" />
+                    tools:text="INV/20161025/XVI/X/55069657"/>
 
                 <LinearLayout
                     android:id="@+id/invoice_layout"
@@ -134,7 +177,7 @@
                         android:layout_height="wrap_content"
                         android:text="@string/title_look"
                         android:textColor="@color/green_500"
-                        android:textStyle="bold" />
+                        android:textStyle="bold"/>
 
                 </LinearLayout>
 
@@ -143,7 +186,7 @@
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
-                android:background="@color/grey_300" />
+                android:background="@color/grey_300"/>
 
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/item_list"
@@ -151,15 +194,15 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="@dimen/dp_5"
                 android:layout_marginTop="@dimen/dp_5"
-                tools:visibility="gone" />
+                tools:visibility="gone"/>
 
-            <include layout="@layout/order_detail_price" />
+            <include layout="@layout/order_detail_price"/>
 
             <com.tokopedia.transaction.purchase.detail.customview.OrderDetailButtonLayout
                 android:id="@+id/button_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/dp_10" />
+                android:layout_marginTop="@dimen/dp_10"/>
 
         </LinearLayout>
 
