@@ -400,7 +400,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="18dp"
-                tools:text="Jumlah Barang (1 Item)" />
+                tools:text="Harga (1 Barang)" />
 
             <TextView
                 android:id="@+id/tv_total_item_price"

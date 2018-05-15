@@ -296,16 +296,28 @@ public abstract class ShipmentItemViewHolder extends RecyclerView.ViewHolder {
                 totalItem = productQuantity;
                 totalWeight = ((ShipmentMultipleAddressCartItemModel) shipmentCartItemModel).getMultipleAddressItemData().getProductRawWeight();
             }
-            shippingFeeLabel = getFormattedWeight(tvShippingFee.getContext(), totalWeight);
             totalItemLabel = String.format(tvTotalItem.getContext().getString(R.string.label_item_count_with_format), totalItem);
             subTotalPrice += (totalItemPrice + shippingPrice + insurancePrice + additionalPrice);
+        } else {
+            if (shipmentCartItemModel instanceof ShipmentSingleAddressCartItemModel) {
+                for (CartItemModel cartItemModel : ((ShipmentSingleAddressCartItemModel) shipmentCartItemModel).getCartItemModels()) {
+                    totalItemPrice += (cartItemModel.getQuantity() * cartItemModel.getPrice());
+                }
+                subTotalPrice = totalItemPrice;
+            } else if (shipmentCartItemModel instanceof ShipmentMultipleAddressCartItemModel) {
+                ShipmentMultipleAddressCartItemModel shipmentMultipleAddressItem = (ShipmentMultipleAddressCartItemModel) shipmentCartItemModel;
+                int productQuantity = Integer.parseInt(shipmentMultipleAddressItem.getMultipleAddressItemData().getProductQty());
+                totalItemPrice = shipmentMultipleAddressItem.getProductPriceNumber() * productQuantity;
+                subTotalPrice = totalItemPrice;
+            }
         }
-        tvTotalItemPrice.setText(getPriceFormat(totalItemPrice));
+
+        tvSubTotalPrice.setText(subTotalPrice == 0 ? "-" : CurrencyFormatUtil.convertPriceValueToIdrFormat(subTotalPrice, true));
+        tvTotalItemPrice.setText(totalItemPrice == 0 ? "-" : getPriceFormat(tvTotalItem, tvTotalItemPrice, totalItemPrice));
         tvTotalItem.setText(totalItemLabel);
         tvShippingFee.setText(shippingFeeLabel);
-        tvSubTotalPrice.setText(getPriceFormat(subTotalPrice));
-        tvShippingFeePrice.setText(getPriceFormat(shippingPrice));
-        tvInsuranceFeePrice.setText(getPriceFormat(insurancePrice));
+        tvShippingFeePrice.setText(getPriceFormat(tvShippingFee, tvShippingFeePrice, shippingPrice));
+        tvInsuranceFeePrice.setText(getPriceFormat(tvInsuranceFee, tvInsuranceFeePrice, insurancePrice));
         rlCartSubTotal.setOnClickListener(getCostDetailOptionListener(shipmentCartItemModel));
     }
 
@@ -340,7 +352,11 @@ public abstract class ShipmentItemViewHolder extends RecyclerView.ViewHolder {
                 }
             });
 
-            textInputLayoutShipperName.setError(textInputLayoutShipperName.getContext().getString(R.string.message_error_dropshipper_name));
+            if (shipmentCartItemModel.isStateDropshipperHasError() && etShipperName.getText().length() == 0) {
+                textInputLayoutShipperName.setError(textInputLayoutShipperName.getContext().getString(R.string.message_error_dropshipper_name));
+            } else {
+                textInputLayoutShipperName.setErrorEnabled(false);
+            }
             etShipperName.addTextChangedListener(new TextWatcher() {
                 @Override
                 public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
@@ -364,7 +380,11 @@ public abstract class ShipmentItemViewHolder extends RecyclerView.ViewHolder {
                 }
             });
 
-            textInputLayoutShipperPhone.setError(textInputLayoutShipperName.getContext().getString(R.string.message_error_dropshipper_phone));
+            if (shipmentCartItemModel.isStateDropshipperHasError() && etShipperPhone.getText().length() == 0) {
+                textInputLayoutShipperPhone.setError(textInputLayoutShipperName.getContext().getString(R.string.message_error_dropshipper_phone));
+            } else {
+                textInputLayoutShipperPhone.setErrorEnabled(false);
+            }
             etShipperPhone.addTextChangedListener(new TextWatcher() {
                 @Override
                 public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
@@ -417,14 +437,15 @@ public abstract class ShipmentItemViewHolder extends RecyclerView.ViewHolder {
             final CourierItemData courierItemData = shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourier();
             if (courierItemData.getInsuranceType() == InsuranceConstant.INSURANCE_TYPE_MUST) {
                 cbInsurance.setChecked(true);
-                cbInsurance.setEnabled(false);
+                cbInsurance.setClickable(false);
                 shipmentCartItemModel.getSelectedShipmentDetailData().setUseInsurance(true);
             } else if (courierItemData.getInsuranceType() == InsuranceConstant.INSURANCE_TYPE_NO) {
                 cbInsurance.setChecked(false);
-                cbInsurance.setEnabled(false);
+                cbInsurance.setClickable(false);
+                llInsurance.setVisibility(View.GONE);
                 shipmentCartItemModel.getSelectedShipmentDetailData().setUseInsurance(false);
             } else if (courierItemData.getInsuranceType() == InsuranceConstant.INSURANCE_TYPE_OPTIONAL) {
-                cbInsurance.setEnabled(true);
+                cbInsurance.setClickable(true);
                 llInsurance.setOnClickListener(getInsuranceClickListener());
                 if (useInsurance == null) {
                     if (courierItemData.getInsuranceUsedDefault() == InsuranceConstant.INSURANCE_USED_DEFAULT_YES) {
@@ -489,8 +510,16 @@ public abstract class ShipmentItemViewHolder extends RecyclerView.ViewHolder {
         return String.format(context.getString(R.string.label_weight_format), finalWeight.toString(), unit);
     }
 
-    private String getPriceFormat(int price) {
-        return price == 0 ? "-" : CurrencyFormatUtil.convertPriceValueToIdrFormat(price, true);
+    private String getPriceFormat(TextView textViewLabel, TextView textViewPrice, int price) {
+        if (price == 0) {
+            textViewLabel.setVisibility(View.GONE);
+            textViewPrice.setVisibility(View.GONE);
+            return "-";
+        } else {
+            textViewLabel.setVisibility(View.VISIBLE);
+            textViewPrice.setVisibility(View.VISIBLE);
+            return CurrencyFormatUtil.convertPriceValueToIdrFormat(price, true);
+        }
     }
 
     private View.OnClickListener getCostDetailOptionListener(final ShipmentCartItemModel shipmentCartItemModel) {

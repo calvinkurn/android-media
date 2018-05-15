@@ -45,20 +45,22 @@ public class ShipmentInsuranceTncViewHolder extends RecyclerView.ViewHolder {
             int startSpan = messageTosAgreement.indexOf(formatText);
             int endSpan = messageTosAgreement.indexOf(formatText) + formatText.length();
             Spannable tosAgreementText = new SpannableString(messageTosAgreement);
-            int color = ContextCompat.getColor(tvInsuranceTnc.getContext(), R.color.tkpd_green_header);
+            int color = ContextCompat.getColor(tvInsuranceTnc.getContext(), R.color.tkpd_main_green);
             tosAgreementText.setSpan(new ForegroundColorSpan(color), startSpan, endSpan,
                     Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
             tosAgreementText.setSpan(new StyleSpan(Typeface.BOLD), startSpan, endSpan,
                     Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-            tosAgreementText.setSpan(new ClickableSpan() {
-                @Override
-                public void onClick(View widget) {
-                    shipmentAdapterActionListener.onInsuranceTncClicked();
-                }
-            }, startSpan, endSpan, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+            tosAgreementText.setSpan(new ForegroundColorSpan(color), startSpan, endSpan,
+                    Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
             tvInsuranceTnc.setMovementMethod(LinkMovementMethod.getInstance());
             tvInsuranceTnc.setText(tosAgreementText);
             cardViewContainer.setVisibility(View.VISIBLE);
+            tvInsuranceTnc.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    shipmentAdapterActionListener.onInsuranceTncClicked();
+                }
+            });
         } else {
             cardViewContainer.setVisibility(View.GONE);
         }

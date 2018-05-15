@@ -41,7 +41,8 @@
     <string name="default_quantity">1</string>
     <string name="label_shipment_counter">Pengiriman #</string>
     <string name="label_item_count">Jumlah</string>
-    <string name="label_item_count_with_format">Jumlah Barang (%d Item)</string>
+    <string name="label_item_count_summary_with_format">Total Harga (%d Barang)</string>
+    <string name="label_item_count_with_format">Harga Barang (%d Barang)</string>
     <string name="label_item_count_without_format">Jumlah Barang</string>
     <string name="label_error_choose_address">Pilih alamat pengiriman</string>
     <string name="label_choose_address">Pilih Alamat</string>
@@ -63,7 +64,7 @@
     <string name="image_desc_button_partial_order_info">Button partial order info</string>
     <string name="label_arrival_probability">*Perkiraan tiba dihitung sejak pesanan dikirim</string>
     <string name="label_show_other_courier">Pilih Kurir Lainnya</string>
-    <string name="title_activity_shipment_choice">Pilih Jenis Pengiriman</string>
+    <string name="title_activity_shipment_choice">Pilih Kurir Pengiriman</string>
     <string name="label_hide_other_couriers">Sembunyikan</string>
     <string name="label_insurance_not_available">Tidak Didukung</string>
     <string name="label_must_insurance">Wajib Asuransi</string>
@@ -92,7 +93,7 @@
     <string name="label_insurance_price">Biaya Asuransi</string>
     <string name="label_hint_cart_item_dropshipper_name">Nama Pengirim</string>
     <string name="label_hint_cart_item_dropshipper_phone">No. Telp pengirim</string>
-    <string name="label_delivery_price">Ongkos Kirim</string>
+    <string name="label_delivery_price">Total Ongkos Kirim</string>
     <string name="label_additional_cost">Biaya Tambahan</string>
     <string name="label_dialog_title_cancel_pickup">Batalkan Pengiriman ke Gerai Pengambilan</string>
     <string name="label_dialog_message_cancel_pickup_booth">Apakah Anda yakin ingin membatalkan pengiriman ke Gerai Pengambilan</string>

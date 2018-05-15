@@ -33,6 +33,7 @@ import com.tokopedia.checkout.domain.datamodel.cartlist.CartPromoSuggestion;
 import com.tokopedia.checkout.domain.datamodel.cartshipmentform.CartShipmentAddressFormData;
 import com.tokopedia.checkout.domain.datamodel.cartsingleshipment.ShipmentCostModel;
 import com.tokopedia.checkout.domain.datamodel.shipmentrates.CourierItemData;
+import com.tokopedia.checkout.domain.datamodel.shipmentrates.ShipmentCartData;
 import com.tokopedia.checkout.domain.datamodel.shipmentrates.ShipmentDetailData;
 import com.tokopedia.checkout.domain.datamodel.voucher.PromoCodeAppliedData;
 import com.tokopedia.checkout.router.ICheckoutModuleRouter;
@@ -635,12 +636,14 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     }
 
     @Override
-    public void onDropshipperValidationResult(boolean result, int errorPosition) {
+    public void onDropshipperValidationResult(boolean result, ShipmentData shipmentData, int errorPosition) {
         if (!result) {
             if (errorPosition != ShipmentAdapter.DEFAULT_ERROR_POSITION) {
                 rvShipment.smoothScrollToPosition(errorPosition);
             }
             showToastError(getActivity().getString(R.string.message_error_dropshipper));
+            ((ShipmentCartItemModel)shipmentData).setStateDropshipperHasError(true);
+            shipmentAdapter.notifyItemChanged(errorPosition);
         } else {
             shipmentPresenter.processCheckShipmentPrepareCheckout();
         }

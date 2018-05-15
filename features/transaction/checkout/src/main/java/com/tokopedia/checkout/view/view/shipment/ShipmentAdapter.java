@@ -15,6 +15,7 @@ import com.tokopedia.checkout.domain.datamodel.cartlist.CartPromoSuggestion;
 import com.tokopedia.checkout.domain.datamodel.cartsingleshipment.CartItemModel;
 import com.tokopedia.checkout.domain.datamodel.cartsingleshipment.ShipmentCostModel;
 import com.tokopedia.checkout.domain.datamodel.shipmentrates.CourierItemData;
+import com.tokopedia.checkout.domain.datamodel.shipmentrates.ShipmentCartData;
 import com.tokopedia.checkout.domain.datamodel.shipmentrates.ShipmentDetailData;
 import com.tokopedia.checkout.view.holderitemdata.CartItemPromoHolderData;
 import com.tokopedia.checkout.view.view.shipment.converter.ShipmentDataRequestConverter;
@@ -363,6 +364,7 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     public void checkDropshipperValidation() {
         boolean availableCheckout = true;
         int errorPosition = DEFAULT_ERROR_POSITION;
+        ShipmentData selectedShipmentData = null;
         for (int i = 0; i < shipmentDataList.size(); i++) {
             ShipmentData shipmentData = shipmentDataList.get(i);
             if (shipmentData instanceof ShipmentCartItemModel) {
@@ -372,11 +374,12 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                             TextUtils.isEmpty(((ShipmentCartItemModel) shipmentData).getSelectedShipmentDetailData().getDropshipperPhone())) {
                         availableCheckout = false;
                         errorPosition = i;
+                        selectedShipmentData = shipmentData;
                     }
                 }
             }
         }
-        shipmentAdapterActionListener.onDropshipperValidationResult(availableCheckout, errorPosition);
+        shipmentAdapterActionListener.onDropshipperValidationResult(availableCheckout, selectedShipmentData, errorPosition);
     }
 
     public void setSelecteCourier(int position, CourierItemData courierItemData) {
@@ -444,7 +447,7 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                         additionalFee += shipmentSingleAddressItem.getSelectedShipmentDetailData()
                                 .getSelectedCourier().getAdditionalPrice();
                         // Additional fee is included in shipping fee
-                        shippingFee += additionalFee;
+//                        shippingFee += additionalFee;
                     } else {
                         ShipmentMultipleAddressCartItemModel shipmentMultipleAddressItem =
                                 (ShipmentMultipleAddressCartItemModel) shipmentData;
@@ -462,7 +465,7 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                         additionalFee += shipmentMultipleAddressItem.getSelectedShipmentDetailData()
                                 .getSelectedCourier().getAdditionalPrice();
                         // Additional fee is included in shipping fee
-                        shippingFee += additionalFee;
+//                        shippingFee += additionalFee;
                     }
                 }
             }

@@ -36,6 +36,7 @@ public abstract class ShipmentCartItemModel implements ShipmentData {
     private boolean stateDetailSubtotalViewExpanded;
     private boolean stateAllItemViewExpanded = true;
     private boolean stateDropshipperDetailExpanded;
+    private boolean stateDropshipperHasError;
 
     public ShipmentCartItemModel() {
     }
@@ -198,5 +199,13 @@ public abstract class ShipmentCartItemModel implements ShipmentData {
 
     public void setProductIsPreorder(boolean productIsPreorder) {
         this.productIsPreorder = productIsPreorder;
+    }
+
+    public boolean isStateDropshipperHasError() {
+        return stateDropshipperHasError;
+    }
+
+    public void setStateDropshipperHasError(boolean stateDropshipperHasError) {
+        this.stateDropshipperHasError = stateDropshipperHasError;
     }
 }

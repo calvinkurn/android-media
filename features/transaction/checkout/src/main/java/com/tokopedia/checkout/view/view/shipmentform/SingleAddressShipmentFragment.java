@@ -31,6 +31,7 @@ import com.tokopedia.abstraction.common.utils.network.AuthUtil;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.constant.IRouterConstant;
 import com.tokopedia.checkout.R;
+import com.tokopedia.checkout.view.view.shipment.ShipmentData;
 import com.tokopedia.transactiondata.entity.request.CheckoutRequest;
 import com.tokopedia.transactiondata.entity.request.DataCheckoutRequest;
 import com.tokopedia.checkout.domain.mapper.ShipmentRatesDataMapper;
@@ -444,7 +445,7 @@ public class SingleAddressShipmentFragment extends BaseCheckoutFragment
     }
 
     @Override
-    public void onDropshipperValidationResult(boolean result, int position) {
+    public void onDropshipperValidationResult(boolean result, ShipmentData shipmentData, int position) {
 
     }
 

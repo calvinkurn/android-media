@@ -43,6 +43,7 @@ import com.tokopedia.checkout.view.di.module.MultipleAddressShipmentModule;
 import com.tokopedia.checkout.view.holderitemdata.CartItemPromoHolderData;
 import com.tokopedia.checkout.view.holderitemdata.CartItemTickerErrorHolderData;
 import com.tokopedia.checkout.view.view.cartlist.CartItemDecoration;
+import com.tokopedia.checkout.view.view.shipment.ShipmentData;
 import com.tokopedia.checkout.view.view.shippingoptions_old.ShipmentDetailActivity;
 import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.router.transactionmodule.sharedata.CheckPromoCodeCartListResult;
@@ -594,7 +595,7 @@ public class MultipleAddressShipmentFragment extends BaseCheckoutFragment implem
     }
 
     @Override
-    public void onDropshipperValidationResult(boolean result, int position) {
+    public void onDropshipperValidationResult(boolean result, ShipmentData shipmentData, int position) {
 
     }
 
