@@ -148,15 +148,6 @@ public class AppNotificationReceiverUIBackground extends BaseAppNotificationRece
                             new SavePushNotificationCallback()
                     );
                     break;
-                /*case Constants.ARG_NOTIFICATION_APPLINK_RIDE:
-                    if (Uri.parse(applinks).getPathSegments().size() == DEFAULT_RIDE_URL_SIZE) {
-                        buildNotifByData(data);
-                    } else {
-                        CommonUtils.dumper("AppNotificationReceiverUIBackground handleApplinkNotification for Ride");
-                        RidePushNotificationBuildAndShow push = new RidePushNotificationBuildAndShow(mContext);
-                        push.processReceivedNotification(data);
-                    }
-                    break;*/
 
                 case Constants.ARG_NOTIFICATION_APPLINK_TOPCHAT:
                     if (mActivitiesLifecycleCallbacks.getLiveActivityOrNull() != null
