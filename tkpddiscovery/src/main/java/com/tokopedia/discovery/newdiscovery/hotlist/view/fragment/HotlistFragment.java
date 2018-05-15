@@ -9,7 +9,6 @@ import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -178,6 +177,11 @@ public class HotlistFragment extends SearchSectionFragment
     @Override
     public void setTitleHeader(String title) {
         getActivity().setTitle(title);
+    }
+
+    @Override
+    public void setDescription(String description) {
+        ((HotlistActivity) getActivity()).renderHotlistDescription(description);
     }
 
     @Override

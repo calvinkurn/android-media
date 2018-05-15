@@ -14,6 +14,7 @@ public class HotlistModel {
     private HotlistBannerModel banner;
     private HotlistAttributeModel attribute;
     private int totalData;
+    private String totalDataText;
     private String shareURL;
 
     public void setProductList(List<ProductModel> productList) {
@@ -38,6 +39,14 @@ public class HotlistModel {
 
     public HotlistAttributeModel getAttribute() {
         return attribute;
+    }
+
+    public String getTotalDataText() {
+        return totalDataText;
+    }
+
+    public void setTotalDataText(String totalDataText) {
+        this.totalDataText = totalDataText;
     }
 
     public void setTotalData(int totalData) {

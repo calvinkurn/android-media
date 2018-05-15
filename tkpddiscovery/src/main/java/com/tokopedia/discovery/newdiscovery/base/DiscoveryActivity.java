@@ -68,7 +68,7 @@ public class DiscoveryActivity extends BaseDiscoveryActivity implements
     protected ProgressBar loadingView;
     private CollapsingToolbarLayout toolbarLayout;
 
-    private MenuItem searchItem;
+    public MenuItem searchItem;
     private boolean isLastRequestForceSearch;
 
     private UploadImageDialog uploadDialog;
@@ -140,9 +140,10 @@ public class DiscoveryActivity extends BaseDiscoveryActivity implements
     }
 
     protected void setToolbarTitle(String query) {
-        if (getSupportActionBar() != null && query != null) {
+        if (getSupportActionBar() != null) {
             getSupportActionBar().setTitle(query);
-            toolbarLayout.setTitle(query);
+            if (toolbarLayout != null && query != null)
+                toolbarLayout.setTitle(query);
         }
     }
 

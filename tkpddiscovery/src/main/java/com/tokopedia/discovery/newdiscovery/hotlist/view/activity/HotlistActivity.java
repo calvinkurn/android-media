@@ -3,17 +3,27 @@ package com.tokopedia.discovery.newdiscovery.hotlist.view.activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.AppBarLayout;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AppCompatActivity;
+import android.view.Menu;
+import android.view.View;
+import android.widget.TextView;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tokopedia.core.gcm.Constants;
+import com.tokopedia.design.bottomsheet.BottomSheetBuilder;
+import com.tokopedia.design.bottomsheet.custom.CheckedBottomSheetBuilder;
 import com.tokopedia.discovery.R;
 import com.tokopedia.discovery.newdiscovery.base.DiscoveryActivity;
 import com.tokopedia.discovery.newdiscovery.hotlist.di.component.DaggerHotlistComponent;
 import com.tokopedia.discovery.newdiscovery.hotlist.di.component.HotlistComponent;
+import com.tokopedia.discovery.newdiscovery.hotlist.view.customview.DescriptionView;
 import com.tokopedia.discovery.newdiscovery.hotlist.view.fragment.HotlistFragment;
 import com.tokopedia.discovery.newdiscovery.hotlist.view.presenter.HotlistContract;
 import com.tokopedia.discovery.newdiscovery.hotlist.view.presenter.HotlistPresenter;
+import com.tokopedia.tkpdpdp.listener.AppBarStateChangeListener;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
@@ -31,6 +41,10 @@ public class HotlistActivity extends DiscoveryActivity
     private static final String EXTRA_HOTLIST_PARAM_QUERY = "EXTRA_HOTLIST_PARAM_QUERY";
     private static final String EXTRA_HOTLIST_PARAM_ALIAS = "HOTLIST_ALIAS";
     private static final String EXTRA_HOTLIST_PARAM_TRACKER = "EXTRA_HOTLIST_PARAM_TRACKER";
+
+    private AppBarLayout appBarLayout;
+    private TextView descriptionTxt;
+    private DescriptionView descriptionView;
 
     @Inject
     HotlistPresenter hotlistPresenter;
@@ -84,6 +98,45 @@ public class HotlistActivity extends DiscoveryActivity
         hotlistPresenter.attachView(this);
         hotlistPresenter.setDiscoveryView(this);
         inflateFragment();
+        descriptionTxt = findViewById(R.id.description);
+        appBarLayout = findViewById(R.id.appbar);
+        appBarLayout.addOnOffsetChangedListener(new AppBarStateChangeListener() {
+            @Override
+            public void onStateChanged(AppBarLayout appBarLayout, State state) {
+                switch (state) {
+                    case COLLAPSED:
+                        getSupportActionBar().setHomeAsUpIndicator(R.drawable.icon_back);
+                        if(searchItem!=null)
+                            searchItem.setIcon(ContextCompat.getDrawable(HotlistActivity.this,
+                                    R.drawable.search_icon));
+                        break;
+                    case EXPANDED:
+                        getSupportActionBar().setHomeAsUpIndicator(R.drawable.icon_back_white);
+                        if(searchItem!=null)
+                            searchItem.setIcon(ContextCompat.getDrawable(HotlistActivity.this,
+                                    R.drawable.search));
+                        break;
+                }
+            }
+        });
+
+    }
+
+    public void renderHotlistDescription(String txt){
+        descriptionView = new DescriptionView();
+        descriptionView.setDescTxt(txt);
+        descriptionTxt.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                descriptionView.show(getSupportFragmentManager(), "Deskripsi");
+            }
+        });
+    }
+
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        menu.findItem(R.id.action_search).setIcon(R.drawable.search);
+        return super.onPrepareOptionsMenu(menu);
     }
 
     @Override

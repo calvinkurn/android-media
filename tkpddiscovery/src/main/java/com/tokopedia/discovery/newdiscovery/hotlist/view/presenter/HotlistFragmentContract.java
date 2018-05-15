@@ -48,6 +48,8 @@ public interface HotlistFragmentContract {
 
         void setTitleHeader(String title);
 
+        void setDescription(String description);
+
         void storeTotalData(int totalData);
 
         void setQueryModel(HotlistQueryModel queryModel);

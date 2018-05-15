@@ -19,8 +19,22 @@ public class HotlistHeaderViewModel implements Visitable<HotlistAdapterTypeFacto
     private List<HotlistHashTagViewModel> hashTags;
     private HotlistPromo hotlistPromo;
     private String hotlistTitle;
+    private String productCounter;
+    private String totalData;
 
     public HotlistHeaderViewModel() {
+    }
+
+    public String getProductCounter() {
+        return productCounter;
+    }
+
+    public String getTotalData() {
+        return totalData;
+    }
+
+    public void setProductCounter(String productCounter) {
+        this.productCounter = productCounter;
     }
 
     public void setImageUrl(String imageUrl) {
@@ -80,6 +94,7 @@ public class HotlistHeaderViewModel implements Visitable<HotlistAdapterTypeFacto
         dest.writeTypedList(this.hashTags);
         dest.writeParcelable(this.hotlistPromo, flags);
         dest.writeString(this.hotlistTitle);
+        dest.writeString(this.totalData);
     }
 
     protected HotlistHeaderViewModel(Parcel in) {
@@ -88,6 +103,7 @@ public class HotlistHeaderViewModel implements Visitable<HotlistAdapterTypeFacto
         this.hashTags = in.createTypedArrayList(HotlistHashTagViewModel.CREATOR);
         this.hotlistPromo = in.readParcelable(HotlistPromo.class.getClassLoader());
         this.hotlistTitle = in.readString();
+        this.totalData = in.readString();
     }
 
     public static final Creator<HotlistHeaderViewModel> CREATOR = new Creator<HotlistHeaderViewModel>() {
@@ -101,4 +117,8 @@ public class HotlistHeaderViewModel implements Visitable<HotlistAdapterTypeFacto
             return new HotlistHeaderViewModel[size];
         }
     };
+
+    public void setTotalData(String totalData) {
+        this.totalData = totalData;
+    }
 }
