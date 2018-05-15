@@ -9,6 +9,7 @@ import android.support.v4.view.ViewPager;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.tkpd.library.viewpagerindicator.CirclePageIndicator;
@@ -74,12 +75,11 @@ public class PictureView extends BaseView<ProductDetailData, ProductDetailView> 
     @Override
     protected void initView(Context context) {
         super.initView(context);
-        vpImage = (ViewPager) findViewById(com.tokopedia.tkpdpdp.R.id.view_pager);
-        indicator = (CirclePageIndicator) findViewById(com.tokopedia.tkpdpdp.R.id.indicator_picture);
-        errorProductContainer = (LinearLayout) findViewById(com.tokopedia.tkpdpdp.R.id.error_product_container);
-        errorProductTitle = (TextView) findViewById(com.tokopedia.tkpdpdp.R.id.error_product_title);
-        errorProductSubitle = (TextView) findViewById(com.tokopedia.tkpdpdp.R.id.error_product_subtitle);
-
+        vpImage = findViewById(R.id.view_pager);
+        indicator = findViewById(R.id.indicator_picture);
+        errorProductContainer = findViewById(R.id.error_product_container);
+        errorProductTitle = findViewById(R.id.error_product_title);
+        errorProductSubitle = findViewById(R.id.error_product_subtitle);
     }
 
     @Override
