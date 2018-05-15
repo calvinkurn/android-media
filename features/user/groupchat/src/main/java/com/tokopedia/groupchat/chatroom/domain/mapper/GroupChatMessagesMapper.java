@@ -15,6 +15,7 @@ import com.tokopedia.groupchat.chatroom.domain.pojo.poll.StatisticOption;
 import com.tokopedia.groupchat.chatroom.domain.pojo.sprintsale.FlashSalePojo;
 import com.tokopedia.groupchat.chatroom.domain.pojo.sprintsale.Product;
 import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.AdminAnnouncementViewModel;
+import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.AdsViewModel;
 import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.ChatViewModel;
 import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.GeneratedMessageViewModel;
 import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.ImageAnnouncementViewModel;
@@ -78,7 +79,9 @@ public class GroupChatMessagesMapper {
                 && ((SprintSaleAnnouncementViewModel) mappedMessage).getSprintSaleType().equals
                 (SprintSaleAnnouncementViewModel.SPRINT_SALE_UPCOMING)) {
             return true;
-        } else if (mappedMessage instanceof PinnedMessageViewModel){
+        } else if (mappedMessage instanceof PinnedMessageViewModel) {
+            return true;
+        } else if (mappedMessage instanceof AdsViewModel) {
             return true;
         } else {
             return false;
@@ -128,9 +131,17 @@ public class GroupChatMessagesMapper {
                 return mapToGeneratedMessage(message, message.getData());
             case PinnedMessageViewModel.TYPE:
                 return mapToPinnedMessage(message, message.getData());
+            case AdsViewModel.TYPE:
+                return mapToAds(message, message.getData());
             default:
                 return mapToUserChat(message);
         }
+    }
+
+    private Visitable mapToAds(UserMessage message, String json) {
+        Gson gson = new Gson();
+        AdsViewModel adsViewModel = gson.fromJson(json, AdsViewModel.class);
+        return adsViewModel;
     }
 
     private Visitable mapToPinnedMessage(UserMessage message, String json) {

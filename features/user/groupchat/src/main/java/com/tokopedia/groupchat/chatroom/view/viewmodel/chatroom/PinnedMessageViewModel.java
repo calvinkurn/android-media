@@ -10,7 +10,7 @@ import com.tokopedia.groupchat.chatroom.view.adapter.chatroom.typefactory.GroupC
  * @author by steven on 5/3/18.
  */
 
-public class PinnedMessageViewModel implements Visitable<GroupChatTypeFactory>,Parcelable {
+public class PinnedMessageViewModel implements Visitable<GroupChatTypeFactory>, Parcelable {
 
     public static final String TYPE = "pinned_message";
 

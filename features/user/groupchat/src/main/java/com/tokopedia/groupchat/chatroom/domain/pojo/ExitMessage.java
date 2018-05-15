@@ -36,6 +36,9 @@ public class ExitMessage implements Parcelable{
     }
 
 
+    public ExitMessage() {
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -45,9 +48,6 @@ public class ExitMessage implements Parcelable{
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(this.title);
         dest.writeString(this.body);
-    }
-
-    public ExitMessage() {
     }
 
     protected ExitMessage(Parcel in) {

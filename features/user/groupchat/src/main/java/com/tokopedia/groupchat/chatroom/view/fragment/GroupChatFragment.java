@@ -44,6 +44,7 @@ import com.tokopedia.groupchat.chatroom.view.listener.ChatroomContract;
 import com.tokopedia.groupchat.chatroom.view.listener.GroupChatContract;
 import com.tokopedia.groupchat.chatroom.view.presenter.ChatroomPresenter;
 import com.tokopedia.groupchat.chatroom.view.viewmodel.ChannelInfoViewModel;
+import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.AdsViewModel;
 import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.ChatViewModel;
 import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.GroupChatPointsViewModel;
 import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.PendingChatViewModel;
@@ -324,14 +325,13 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
         }
     }
 
-
     private void setPinnedMessage(final PinnedMessageViewModel pinnedMessage) {
-        if(getView()!=null) {
+        if (getView() != null) {
             ChannelInfoViewModel channelInfoViewModel = ((GroupChatContract.View) getActivity()).getChannelInfoViewModel();
             View pinnedMessageView = getView().findViewById(R.id.pinned_message);
             if (pinnedMessage != null) {
                 pinnedMessageView.setVisibility(View.VISIBLE);
-                ((TextView)pinnedMessageView.findViewById(R.id.message)).setText(pinnedMessage.getMessage());
+                ((TextView) pinnedMessageView.findViewById(R.id.message)).setText(pinnedMessage.getMessage());
                 pinnedMessageView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
@@ -368,11 +368,11 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
     private View createContentView(PinnedMessageViewModel pinnedMessage) {
         ChannelInfoViewModel channelInfoViewModel = ((GroupChatContract.View) getActivity()).getChannelInfoViewModel();
         View view = getLayoutInflater().inflate(R.layout.layout_pinned_message_expanded, null);
-        ImageHandler.loadImageCircle2(getActivity(), (ImageView)view.findViewById(R.id.pinned_message_avatar)
+        ImageHandler.loadImageCircle2(getActivity(), (ImageView) view.findViewById(R.id.pinned_message_avatar)
                 , channelInfoViewModel.getAdminPicture(), R.drawable.ic_loading_toped_new);
-        ((TextView)view.findViewById(R.id.chat_header).findViewById(R.id.nickname))
+        ((TextView) view.findViewById(R.id.chat_header).findViewById(R.id.nickname))
                 .setText(channelInfoViewModel.getAdminName());
-        ((TextView)view.findViewById(R.id.message)).setText(pinnedMessage.getMessage());
+        ((TextView) view.findViewById(R.id.message)).setText(pinnedMessage.getMessage());
         view.findViewById(R.id.thumbnail);
         return view;
     }

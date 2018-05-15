@@ -74,6 +74,7 @@ import com.tokopedia.groupchat.chatroom.view.preference.NotificationPreference;
 import com.tokopedia.groupchat.chatroom.view.presenter.GroupChatPresenter;
 import com.tokopedia.groupchat.chatroom.view.viewmodel.ChannelInfoViewModel;
 import com.tokopedia.groupchat.chatroom.view.viewmodel.GroupChatViewModel;
+import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.AdsViewModel;
 import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.GroupChatPointsViewModel;
 import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.PinnedMessageViewModel;
 import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.SprintSaleAnnouncementViewModel;
@@ -1285,12 +1286,21 @@ public class GroupChatActivity extends BaseSimpleActivity
             updateSprintSaleData((SprintSaleAnnouncementViewModel) map);
         } else if (map instanceof VibrateViewModel) {
             vibratePhone();
+        } else if (map instanceof AdsViewModel) {
+            updateAds((AdsViewModel) map);
         }
 
         if (currentFragmentIsChat()) {
             ((GroupChatFragment) getSupportFragmentManager().findFragmentByTag
                     (GroupChatFragment.class.getSimpleName())).onMessageReceived(map);
         }
+    }
+
+    private void updateAds(AdsViewModel adsViewModel) {
+        viewModel.getChannelInfoViewModel().setAdsImageUrl(adsViewModel.getAdsUrl());
+        viewModel.getChannelInfoViewModel().setAdsId(adsViewModel.getAdsId());
+        viewModel.getChannelInfoViewModel().setAdsLink(adsViewModel.getAdsLink());
+        setSponsorData();
     }
 
     @Override

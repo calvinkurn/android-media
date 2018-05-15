@@ -181,8 +181,16 @@ public class ChannelInfoViewModel implements Parcelable {
         return adsImageUrl;
     }
 
+    public void setAdsImageUrl(String adsImageUrl) {
+        this.adsImageUrl = adsImageUrl;
+    }
+
     public String getAdsLink() {
         return adsLink;
+    }
+
+    public void setAdsLink(String adsLink) {
+        this.adsLink = adsLink;
     }
 
     public String getBannerName() {
