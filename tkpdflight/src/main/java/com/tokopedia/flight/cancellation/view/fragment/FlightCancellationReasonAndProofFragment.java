@@ -223,16 +223,26 @@ public class FlightCancellationReasonAndProofFragment extends BaseDaggerFragment
     }
 
     @Override
+    public void showAttachmentMinDimensionErrorMessage(int resId) {
+        NetworkErrorHelper.showRedCloseSnackbar(getView(), getString(resId));
+    }
+
+    @Override
+    public void showAttachmentMaxSizeErrorMessage(int resId) {
+        NetworkErrorHelper.showRedCloseSnackbar(getView(), getString(resId));
+    }
+
+    @Override
     public void onUploadAttachmentButtonClicked() {
         AlertDialog.Builder myAlertDialog = new AlertDialog.Builder(getActivity());
-        myAlertDialog.setMessage("Bagaimana Anda ingin mengatur gambar Anda ?");
-        myAlertDialog.setPositiveButton("Galeri", new DialogInterface.OnClickListener() {
+        myAlertDialog.setMessage(R.string.flight_cancellation_upload_attachment_title);
+        myAlertDialog.setPositiveButton(R.string.flight_cancellation_gallery_label, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
                 FlightCancellationReasonAndProofFragmentPermissionsDispatcher.actionOpenGalleryWithCheck(FlightCancellationReasonAndProofFragment.this);
             }
         });
-        myAlertDialog.setNegativeButton("Kamera", new DialogInterface.OnClickListener() {
+        myAlertDialog.setNegativeButton(R.string.flight_cancellation_camera_label, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
                 FlightCancellationReasonAndProofFragmentPermissionsDispatcher.actionOpenCameraWithCheck(FlightCancellationReasonAndProofFragment.this);

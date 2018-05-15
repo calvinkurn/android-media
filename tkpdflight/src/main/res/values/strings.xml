@@ -19,7 +19,7 @@
     <string name="search_flight">Search Flight</string>
     <string name="flight_label_city">%1$s, %2$s</string>
     <string name="flight_label_airport">%1$s - %2$s</string>
-    <string name="flight_label_search_hint_airport">Ketik kota atau bandara asal</string>
+    <string name="flight_label_search_hint_airport">Ketik kota atau bandara %s</string>
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
@@ -366,7 +366,7 @@
     <string name="flight_cancellation_reason_label">Alasan Pembatalan Tiket</string>
     <string name="flight_cancellation_support_docs_label">Dokumen Penunjang</string>
     <string name="flight_cancellation_reason_hint_label">Isi alasan pembatalan</string>
-    <string name="flight_cancellation_attachment_description_label">(Dokumen penunjang dapat berupa surat, foto, atau dokumen yang menjadi alasan pembatalan pesanan)</string>
+    <string name="flight_cancellation_attachment_description_label">(Dokumen penunjang dapat berupa surat, foto, atau dokumen yang menjadi alasan pembatalan pesanan). Ukuran Minimum  Lebar 300px dan Tinggi 100px.</string>
     <string name="flight_cancellation_proof_reaseon_submit_button">Selanjutnya</string>
     <string name="flight_cancellation_attachment_required_error_message">Lampiran gambar belum diisi</string>
     <string name="flight_cancellation_attachment_more_than_max_error_message">Maksimal lampiran gambar %1$d</string>
@@ -388,6 +388,12 @@
     <string name="flight_cancellation_terms_and_condition_title">Syarat dan Ketentuan</string>
     <string name="flight_cancellation_terms_and_cancellation_text"><![CDATA[<p align=\'justify\'>Refund, pembatalan, penggantian jadwal, ketentuan boarding, bagasi yang diperbolehkan, pengembalian dana serta hal-hal lain yang berhubungan dengan penggunaan layanan transportasi pesawat merupakan kebijakan dan tanggung jawab dari maskapai dengan merujuk kepada Syarat dan Ketentuan yang ditetapkan oleh maskapai. Setelah kami menerima pembatalan tiket pesawat Anda dari mitra kami, jika metode pembayaran yang Anda pilih adalah metode kartu kredit maka pengembalian dana akan dilakukan ke limit kartu kredit Anda. Jika Anda menggunakan TokoCash untuk melakukan pembayaran tiket penerbangan Anda, dana tersebut akan dikembalikan ke saldo TokoCash. Jika Anda menggunakan metode pembayaran lain, dana akan dikembalikan ke saldo Tokopedia ataupun saldo TokoCash Anda berdasarkan ketersediaan Limit di akun TokoCash.</p>]]></string>
     <string name="flight_cancellation_refund_description">Pengembalian dana dapat melalui TokoCash atau kartu kredit. Pelajari lebih lanjut.</string>
+    <string name="flight_cancellation_min_dimension_error">Ukuran Dimensi Gambar Minimal Lebar 300px dan Tinggi 100px</string>
+    <string name="flight_cancellation_max_error">Ukuran gambar maksimal 15Mb</string>
+    <string name="flight_cancellation_upload_attachment_title">Bagaimana Anda ingin mengatur gambar Anda ?</string>
+    <string name="flight_cancellation_gallery_label">Galeri</string>
+    <string name="flight_cancellation_camera_label">Kamera</string>
+    <string name="flight_cancellation_refund_bottom_sheet_tag">Refund Detail</string>
     <string-array name="flight_cancellation_refund_title">
         <item>Untuk pembayaran selain kartu kredit</item>
         <item>Untuk pembayaran dengan kartu kredit</item>

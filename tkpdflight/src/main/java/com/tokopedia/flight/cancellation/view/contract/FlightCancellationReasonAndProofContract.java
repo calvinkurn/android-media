@@ -47,6 +47,10 @@ public interface FlightCancellationReasonAndProofContract {
         void showFullPageContainer();
 
         void hideLoading();
+
+        void showAttachmentMinDimensionErrorMessage(int resId);
+
+        void showAttachmentMaxSizeErrorMessage(int resId);
     }
 
     interface Presenter extends CustomerPresenter<View>{
