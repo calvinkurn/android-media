@@ -38,22 +38,24 @@ public class WebSocketMapper {
     public BaseChatViewModel map(String json) {
         try {
             WebSocketResponse pojo = new GsonBuilder().create().fromJson(json, WebSocketResponse.class);
-
-            JsonObject jsonAttributes = pojo.getData().getAttachment().getAttributes();
-            if (pojo != null
-                    && pojo.getData() != null
-                    && pojo.getData().getAttachment() != null
-                    && jsonAttributes != null) {
-                switch (pojo.getData().getAttachment().getType()) {
-                    case TYPE_QUICK_REPLY:
-                        return convertToQuickReplyModel(pojo.getData(), jsonAttributes);
-                    default:
+            if (pojo.getData().isShowRating() || pojo.getData().getRatingStatus() != 0) {
+                return convertToChatRating(pojo.getData());
+            }else {
+                JsonObject jsonAttributes = pojo.getData().getAttachment().getAttributes();
+                if (pojo.getData() != null
+                        && pojo.getData().getAttachment() != null
+                        && jsonAttributes != null) {
+                    switch (pojo.getData().getAttachment().getType()) {
+                        case TYPE_QUICK_REPLY:
+                            return convertToQuickReplyModel(pojo.getData(), jsonAttributes);
+                        default:
 //                        return convertToFallBackModel(pojo.getData());
-                        return null;
+                            return null;
 
+                    }
+                } else {
+                    return null;
                 }
-            } else {
-                return null;
             }
         } catch (JsonSyntaxException e) {
             return null;
