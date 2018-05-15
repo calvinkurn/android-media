@@ -43,20 +43,24 @@ public class PagingHandler implements PaginHandlerRotation {
         // use this for api based
         int startIndex;
 
-        @SerializedName("uri_next")
+        @SerializedName("next")
         @Expose
         public String uriNext;
-        @SerializedName("uri_previous")
+        @SerializedName("previous")
         @Expose
 		String uriPrevious;
+        @SerializedName("current")
+        @Expose
+        public String uriCurrent;
 
 		public PagingHandlerModel() {
 		}
 
-		protected PagingHandlerModel(android.os.Parcel in) {
+        protected PagingHandlerModel(android.os.Parcel in) {
 			startIndex = in.readInt();
 			uriNext = in.readString();
 			uriPrevious = in.readString();
+			uriCurrent = in.readString();
 		}
 
 		public static final Creator<PagingHandlerModel> CREATOR = new Creator<PagingHandlerModel>() {
@@ -95,6 +99,14 @@ public class PagingHandler implements PaginHandlerRotation {
 			this.startIndex = startIndex;
 		}
 
+        public String getUriCurrent() {
+            return uriCurrent;
+        }
+
+        public void setUriCurrent(String uriCurrent) {
+            this.uriCurrent = uriCurrent;
+        }
+
 		@Override
 		public int describeContents() {
 			return 0;
@@ -105,14 +117,16 @@ public class PagingHandler implements PaginHandlerRotation {
 			dest.writeInt(startIndex);
 			dest.writeString(uriNext);
 			dest.writeString(uriPrevious);
+			dest.writeString(uriCurrent);
 		}
 	}
 
-	public static PagingHandlerModel createPagingHandlerModel(int startIndex, String uriNext, String uriPrevious){
+	public static PagingHandlerModel createPagingHandlerModel(int startIndex, String uriNext, String uriPrevious, String uriCurrent){
 		PagingHandlerModel result = new PagingHandlerModel();
 		result.setStartIndex(startIndex);
 		result.setUriNext(uriNext);
 		result.setUriPrevious(uriPrevious);
+		result.setUriCurrent(uriCurrent);
 		return result;
 	}
 
@@ -263,8 +277,8 @@ public class PagingHandler implements PaginHandlerRotation {
                 return;
             }
             Paging = new JSONObject(result.getString("paging"));
-            if (Paging.has("uri_next")) {
-                hasNext = !Paging.getString("uri_next").equals("");
+            if (Paging.has("next")) {
+                hasNext = !Paging.getString("next").equals("");
             }
 
             if (Paging.has("has_next")) {
