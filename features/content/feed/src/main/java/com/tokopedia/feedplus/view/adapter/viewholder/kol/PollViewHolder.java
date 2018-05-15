@@ -21,7 +21,6 @@ public class PollViewHolder extends AbstractViewHolder<PollViewModel> implements
 
     private FeedPlus.View.Kol viewListener;
     private PollAdapter pollAdapter;
-    private BaseKolView baseKolView;
     private RecyclerView pollList;
     private TextView totalVoter;
 
@@ -33,7 +32,7 @@ public class PollViewHolder extends AbstractViewHolder<PollViewModel> implements
         pollAdapter = new PollAdapter();
 
         this.viewListener = viewListener;
-        baseKolView = itemView.findViewById(com.tokopedia.kol.R.id.base_kol_view);
+        BaseKolView baseKolView = itemView.findViewById(com.tokopedia.kol.R.id.base_kol_view);
         View view = baseKolView.inflateContentLayout(R.layout.poll_content);
         pollList = view.findViewById(R.id.poll_list);
         totalVoter = view.findViewById(R.id.total_voter);
@@ -47,6 +46,8 @@ public class PollViewHolder extends AbstractViewHolder<PollViewModel> implements
         );
 
         totalVoter.setText(totalVoterText);
+        pollList.setAdapter(pollAdapter);
+        pollAdapter.setList(element.getOptionViewModels());
     }
 
     @Override

@@ -4,6 +4,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
+    android:clickable="true"
+    android:focusable="true"
+    android:foreground="?android:attr/selectableItemBackground"
     app:cardBackgroundColor="@color/cardview_light_background"
     app:cardCornerRadius="3dp"
     app:cardElevation="0dp"
@@ -50,7 +53,7 @@
                 android:paddingLeft="@dimen/space_small"
                 android:paddingStart="@dimen/space_small"
                 android:textColor="@color/white"
-                android:textSize="@dimen/sp_34"
+                android:textSize="@dimen/sp_24"
                 android:textStyle="bold"
                 tools:text="90" />
 

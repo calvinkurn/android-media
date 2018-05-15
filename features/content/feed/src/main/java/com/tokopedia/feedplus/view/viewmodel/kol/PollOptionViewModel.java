@@ -10,13 +10,14 @@ public class PollOptionViewModel {
     public static final int UNSELECTED = 1;
     public static final int SELECTED = 2;
 
-    private String optionId, option, weblink, applink, percentage;
+    private String optionId, option, imageUrl, weblink, applink, percentage;
     private int selected;
 
-    public PollOptionViewModel(String optionId, String option, String weblink, String applink,
-                               String percentage, int selected) {
+    public PollOptionViewModel(String optionId, String option, String imageUrl, String weblink,
+                               String applink, String percentage, int selected) {
         this.optionId = optionId;
         this.option = option;
+        this.imageUrl = imageUrl;
         this.weblink = weblink;
         this.applink = applink;
         this.percentage = percentage;
@@ -29,6 +30,10 @@ public class PollOptionViewModel {
 
     public String getOption() {
         return option;
+    }
+
+    public String getImageUrl() {
+        return imageUrl;
     }
 
     public String getWeblink() {
@@ -45,5 +50,14 @@ public class PollOptionViewModel {
 
     public int getSelected() {
         return selected;
+    }
+
+    public int getPercentageInteger() {
+        try {
+            return (int) Double.parseDouble(percentage);
+        } catch (NumberFormatException e) {
+            e.printStackTrace();
+            return 0;
+        }
     }
 }
