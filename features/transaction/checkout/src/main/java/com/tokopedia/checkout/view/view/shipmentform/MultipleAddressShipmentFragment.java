@@ -183,8 +183,7 @@ public class MultipleAddressShipmentFragment extends BaseCheckoutFragment implem
         orderAddressList.setAdapter(shipmentAdapter);
         orderAddressList.addOnScrollListener(onRecyclerViewScrolledListener(totalPaymentLayout));
         orderAddressList.addItemDecoration(
-                new CartItemDecoration((int) getResources().getDimension(R.dimen.new_margin_med),
-                        false, 0));
+                new CartItemDecoration((int) getResources().getDimension(R.dimen.new_margin_med), false, 0));
         totalPayment.setText(shipmentAdapter.getTotalPayment());
         confirmButton.setOnClickListener(onConfirmedButtonClicked());
     }
