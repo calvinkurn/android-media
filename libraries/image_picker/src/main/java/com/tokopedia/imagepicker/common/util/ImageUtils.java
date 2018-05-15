@@ -12,6 +12,7 @@ import android.graphics.ColorMatrix;
 import android.graphics.ColorMatrixColorFilter;
 import android.graphics.Matrix;
 import android.graphics.Paint;
+import android.graphics.Rect;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
@@ -369,6 +370,40 @@ public class ImageUtils {
         return res;
     }
 
+    public static String trimBitmap(String imagePath, float expectedRatio, float currentRatio, boolean needCheckRotate) {
+        Bitmap bitmapToEdit = ImageUtils.getBitmapFromPath(imagePath, ImageUtils.DEF_WIDTH,
+                ImageUtils.DEF_HEIGHT, needCheckRotate);
+        int width = bitmapToEdit.getWidth();
+        int height = bitmapToEdit.getHeight();
+        int left = 0, right = width, top = 0, bottom = height;
+        int expectedWidth = width, expectedHeight = height;
+        if (expectedRatio < currentRatio) { // trim left and right
+            expectedWidth = (int) (expectedRatio * height);
+            left = ((width - expectedWidth) / 2);
+            right = (left + expectedWidth);
+        } else { // trim top and bottom
+            expectedHeight = (int) (width / expectedRatio);
+            top = ((height - expectedHeight) / 2);
+            bottom = (top + expectedHeight);
+        }
+
+        boolean isPng = ImageUtils.isPng(imagePath);
+
+        Bitmap outputBitmap;
+        outputBitmap = Bitmap.createBitmap(expectedWidth, expectedHeight, Bitmap.Config.ARGB_8888);
+        Canvas canvas = new Canvas(outputBitmap);
+        canvas.drawBitmap(bitmapToEdit, new Rect(left, top, right, bottom),
+                new Rect(0, 0, expectedWidth, expectedHeight), null);
+        File file = ImageUtils.writeImageToTkpdPath(ImageUtils.DirectoryDef.DIRECTORY_TOKOPEDIA_CACHE,
+                outputBitmap, isPng);
+        bitmapToEdit.recycle();
+        outputBitmap.recycle();
+
+        System.gc();
+
+        return file.getAbsolutePath();
+    }
+
     /**
      * Get a file path from a Uri. This will get the the path for Storage Access
      * Framework Documents, as well as the _data field for the MediaStore and
@@ -618,12 +653,16 @@ public class ImageUtils {
     }
 
     public static Bitmap rotate(Bitmap bitmap, String path) throws IOException {
-        ExifInterface exif = new ExifInterface(path);
-        int orientation = exif.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL);
+        int orientation = getOrientation(path);
         if (orientation == ExifInterface.ORIENTATION_NORMAL) {
             return bitmap;
         }
         return rotateBitmap(bitmap, orientation);
+    }
+
+    public static int getOrientation(String path) throws IOException {
+        ExifInterface exif = new ExifInterface(path);
+        return exif.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL);
     }
 
     private static Bitmap rotateBitmap(Bitmap bitmap, int orientation) {

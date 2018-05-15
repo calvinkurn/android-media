@@ -1,14 +1,19 @@
 package com.tokopedia.imagepicker.picker.gallery;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.RequiresPermission;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
 import android.support.v7.widget.GridLayoutManager;
@@ -58,6 +63,7 @@ public class ImagePickerGalleryFragment extends TkpdBaseV4Fragment
     private static final int MEDIA_LOADER_ID = 2;
 
     public static final int SPAN_COUNT = 3;
+    public static final int REQUEST_CODE_CAMERA_PERMISSION = 125;
 
     private OnImagePickerGalleryFragmentListener onImagePickerGalleryFragmentListener;
     private View loadingView;
@@ -76,6 +82,7 @@ public class ImagePickerGalleryFragment extends TkpdBaseV4Fragment
 
     public interface OnImagePickerGalleryFragmentListener {
         void onAlbumItemClicked(MediaItem item, boolean isChecked);
+
         boolean isMaxImageReached();
     }
 
@@ -145,11 +152,48 @@ public class ImagePickerGalleryFragment extends TkpdBaseV4Fragment
         }
     }
 
+    @RequiresPermission("android.permission.WRITE_EXTERNAL_STORAGE")
     @Override
     public void onResume() {
         super.onResume();
-        showLoading();
-        getLoaderManager().initLoader(ALBUM_LOADER_ID, null, ImagePickerGalleryFragment.this);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+            String[] permissions = null;
+            permissions = new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE};
+            ArrayList<String> permissionsToRequest = new ArrayList<>();
+            for (String permission : permissions) {
+                if (ActivityCompat.checkSelfPermission(getContext(), permission) != PackageManager.PERMISSION_GRANTED) {
+                    permissionsToRequest.add(permission);
+                }
+            }
+            if (!permissionsToRequest.isEmpty()) {
+                requestPermissions(permissionsToRequest.toArray(new String[permissionsToRequest.size()]), REQUEST_CODE_CAMERA_PERMISSION);
+            } else {
+                showLoading();
+                getLoaderManager().initLoader(ALBUM_LOADER_ID, null, ImagePickerGalleryFragment.this);
+            }
+        } else {
+            showLoading();
+            getLoaderManager().initLoader(ALBUM_LOADER_ID, null, ImagePickerGalleryFragment.this);
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == REQUEST_CODE_CAMERA_PERMISSION) {
+            if (grantResults.length > 0) {
+                boolean allIsAllowed = true;
+                for (int result : grantResults) {
+                    if (result == -1) {
+                        allIsAllowed = false;
+                    }
+                }
+                if (allIsAllowed) {
+                    showLoading();
+                    getLoaderManager().initLoader(ALBUM_LOADER_ID, null, ImagePickerGalleryFragment.this);
+                }
+            }
+        }
     }
 
     private void showLoading() {
@@ -211,7 +255,7 @@ public class ImagePickerGalleryFragment extends TkpdBaseV4Fragment
 
     private void onAlbumLoaded(AlbumItem albumItem) {
         if (albumItem == null) {
-            albumItem = new AlbumItem(ALBUM_ID_ALL, null,null, 0);
+            albumItem = new AlbumItem(ALBUM_ID_ALL, null, null, 0);
         }
         if (albumItem.isAll()) {
             albumItem.addCaptureCount();
@@ -242,7 +286,7 @@ public class ImagePickerGalleryFragment extends TkpdBaseV4Fragment
     @Override
     public boolean canAddMoreImage() {
         //check the image number allowed.
-        if (onImagePickerGalleryFragmentListener.isMaxImageReached()){
+        if (onImagePickerGalleryFragmentListener.isMaxImageReached()) {
             NetworkErrorHelper.showRedCloseSnackbar(getView(), getString(R.string.max_no_of_image_reached));
             return false;
         }
@@ -252,7 +296,7 @@ public class ImagePickerGalleryFragment extends TkpdBaseV4Fragment
     @Override
     public boolean isImageValid(MediaItem item) {
         // check if file exists
-        if (! new File(item.getRealPath()).exists()){
+        if (!new File(item.getRealPath()).exists()) {
             NetworkErrorHelper.showRedCloseSnackbar(getView(), getString(R.string.image_not_found));
             return false;
         }

@@ -3,8 +3,6 @@ package com.tokopedia.imagepicker.picker.instagram.di;
 import android.content.Context;
 
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
-import com.tokopedia.abstraction.common.di.scope.ApplicationScope;
-import com.tokopedia.abstraction.common.network.interceptor.TkpdBaseInterceptor;
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
 import com.tokopedia.imagepicker.picker.instagram.InstagramConstant;
 import com.tokopedia.imagepicker.picker.instagram.data.InstagramRepositoryImpl;
@@ -57,8 +55,6 @@ public class InstagramModule {
                 .writeTimeout(TIMEOUT, TimeUnit.SECONDS)
                 .readTimeout(TIMEOUT, TimeUnit.SECONDS)
                 .connectTimeout(TIMEOUT, TimeUnit.SECONDS)
-                .addInterceptor(new TkpdBaseInterceptor())
-                .addInterceptor(new HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY))
                 .build())
                 .baseUrl(InstagramConstant.URL_API_INSTAGRAM)
                 .build()
