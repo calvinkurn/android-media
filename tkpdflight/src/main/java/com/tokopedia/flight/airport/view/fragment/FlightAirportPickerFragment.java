@@ -9,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.fragment.BaseSearchListFragment;
 import com.tokopedia.flight.R;
 import com.tokopedia.flight.airport.di.DaggerFlightAirportComponent;
@@ -32,7 +33,7 @@ import javax.inject.Inject;
  * Created by nathan on 10/19/17.
  */
 
-public class FlightAirportPickerFragment extends BaseSearchListFragment<FlightCountryAirportViewModel, FlightAirportAdapterTypeFactory>
+public class FlightAirportPickerFragment extends BaseSearchListFragment<Visitable, FlightAirportAdapterTypeFactory>
         implements FlightAirportPickerView, FlightAirportClickListener {
 
     public static final String EXTRA_SELECTED_AIRPORT = "extra_selected_aiport";
@@ -76,7 +77,7 @@ public class FlightAirportPickerFragment extends BaseSearchListFragment<FlightCo
     }
 
     @Override
-    public void onItemClicked(FlightCountryAirportViewModel flightAirportDB) {
+    public void onItemClicked(Visitable flightAirportDB) {
     }
 
     @Override
@@ -101,7 +102,7 @@ public class FlightAirportPickerFragment extends BaseSearchListFragment<FlightCo
     }
 
     @Override
-    public void renderList(@NonNull List<FlightCountryAirportViewModel> list) {
+    public void renderList(@NonNull List<Visitable> list) {
         if (isFirstTime) {
             searchInputView.setVisibility(View.VISIBLE);
             isFirstTime = false;
@@ -117,6 +118,11 @@ public class FlightAirportPickerFragment extends BaseSearchListFragment<FlightCo
     @Override
     public void hideGetAirportListLoading() {
         hideLoading();
+    }
+
+    @Override
+    public void showLoading() {
+        getAdapter().setElement(getLoadingModel());
     }
 
     @Override
