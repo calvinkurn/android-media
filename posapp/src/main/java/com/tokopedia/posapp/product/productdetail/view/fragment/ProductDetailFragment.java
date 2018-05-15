@@ -13,6 +13,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
@@ -70,7 +71,8 @@ public class ProductDetailFragment extends BaseDaggerFragment
     private Button buttonBuy;
     private Button buttonAddToCart;
     private LinearLayout buttonContainer;
-
+    private ProgressBar progressBar;
+    
     private ProductPass productPass;
     private ProductDetailData productData;
 
@@ -146,6 +148,11 @@ public class ProductDetailFragment extends BaseDaggerFragment
         headerInfoView.renderData(data);
         priceSimulationView.renderData(data);
         descriptionView.renderData(data);
+        progressBar.setVisibility(View.GONE);
+        pictureView.setVisibility(View.VISIBLE);
+        headerInfoView.setVisibility(View.VISIBLE);
+        priceSimulationView.setVisibility(View.VISIBLE);
+        descriptionView.setVisibility(View.VISIBLE);
         buttonContainer.setVisibility(View.VISIBLE);
     }
 
@@ -587,6 +594,7 @@ public class ProductDetailFragment extends BaseDaggerFragment
         headerInfoView = view.findViewById(R.id.view_header);
         priceSimulationView = view.findViewById(R.id.view_price_simulation);
         descriptionView = view.findViewById(R.id.view_description);
+        progressBar = view.findViewById(R.id.progress_bar);
         buttonBuy = view.findViewById(R.id.button_buy);
         buttonAddToCart = view.findViewById(R.id.button_add_to_cart);
         buttonContainer = view.findViewById(R.id.linear_button_container);

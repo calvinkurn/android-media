@@ -18,23 +18,27 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:fitsSystemWindows="true"
-                android:orientation="vertical" />
+                android:orientation="vertical"
+                android:visibility="gone"/>
 
             <com.tokopedia.posapp.product.productdetail.view.widget.HeaderInfoView
                 android:id="@+id/view_header"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical" />
+                android:orientation="vertical"
+                android:visibility="gone"/>
 
             <com.tokopedia.posapp.product.productdetail.view.widget.InstallmentSimulationView
                 android:id="@+id/view_price_simulation"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent" />
+                android:layout_height="match_parent"
+                android:visibility="gone"/>
 
             <com.tokopedia.posapp.product.productdetail.view.widget.DescriptionView
                 android:id="@+id/view_description"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:visibility="gone"/>
         </LinearLayout>
     </ScrollView>
 
@@ -75,4 +79,11 @@
             android:text="@string/pdp_buy_label"
             android:textSize="@dimen/text_size_xlarge"/>
     </LinearLayout>
+
+    <ProgressBar
+        android:id="@+id/progress_bar"
+        style="?android:attr/progressBarStyleLarge"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"/>
 </RelativeLayout>
