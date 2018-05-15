@@ -5,14 +5,17 @@ import android.text.TextUtils;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonSyntaxException;
+import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.inbox.inboxchat.domain.model.websocket.BaseChatViewModel;
 import com.tokopedia.inbox.inboxchat.domain.model.websocket.FallbackAttachmentViewModel;
 import com.tokopedia.inbox.inboxchat.domain.pojo.common.WebSocketResponse;
 import com.tokopedia.inbox.inboxchat.domain.pojo.common.WebSocketResponseData;
+import com.tokopedia.inbox.inboxchat.domain.pojo.productattachment.ProductAttachmentAttributes;
 import com.tokopedia.inbox.inboxchat.domain.pojo.quickreply.QuickReplyAttachmentAttributes;
 import com.tokopedia.inbox.inboxchat.domain.pojo.quickreply.QuickReplyPojo;
 import com.tokopedia.inbox.inboxchat.viewmodel.chatroom.QuickReplyListViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.chatroom.QuickReplyViewModel;
+import com.tokopedia.inbox.inboxchat.viewmodel.chatroom.productattachment.ProductAttachmentViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,12 +27,14 @@ import javax.inject.Inject;
  */
 public class WebSocketMapper {
 
-    private static final String TYPE_QUICK_REPLY = "8";
-    private static final String TYPE_PRODUCT_ATTACHMENT = "3";
-
+    public static final String TYPE_IMAGE_ATTACHMENT = "1";
+    public static final String TYPE_PRODUCT_ATTACHMENT = "3";
+    public static final String TYPE_QUICK_REPLY = "8";
+    private SessionHandler sessionHandler;
 
     @Inject
-    public WebSocketMapper() {
+    public WebSocketMapper(SessionHandler sessionHandler) {
+        this.sessionHandler = sessionHandler;
     }
 
 
@@ -39,13 +44,14 @@ public class WebSocketMapper {
             WebSocketResponse pojo = new GsonBuilder().create().fromJson(json, WebSocketResponse.class);
 
             JsonObject jsonAttributes = pojo.getData().getAttachment().getAttributes();
-            if (pojo != null
-                    && pojo.getData() != null
+            if (pojo.getData() != null
                     && pojo.getData().getAttachment() != null
                     && jsonAttributes != null) {
                 switch (pojo.getData().getAttachment().getType()) {
                     case TYPE_QUICK_REPLY:
                         return convertToQuickReplyModel(pojo.getData(), jsonAttributes);
+                    case TYPE_PRODUCT_ATTACHMENT:
+                        return convertToProductAttachment(pojo.getData(), jsonAttributes);
                     default:
 //                        return convertToFallBackModel(pojo.getData());
                         return null;
@@ -62,8 +68,33 @@ public class WebSocketMapper {
 
     }
 
-    private BaseChatViewModel convertToProductAttachment(String json) {
-        return null;
+    private BaseChatViewModel convertToProductAttachment(WebSocketResponseData pojo, JsonObject jsonAttribute) {
+        ProductAttachmentAttributes pojoAttribute = new GsonBuilder().create().fromJson(jsonAttribute,
+                ProductAttachmentAttributes.class);
+
+        return new ProductAttachmentViewModel(
+                String.valueOf(pojo.getMsgId()),
+                String.valueOf(pojo.getFromUid()),
+                pojo.getFrom(),
+                pojo.getFromRole(),
+                pojo.getAttachment().getType(),
+                pojo.getMessage().getTimeStampUnix(),
+                pojo.getMessage().getTimeStampUnix(),
+                pojoAttribute.getProductId(),
+                pojoAttribute.getProductProfile().getName(),
+                pojoAttribute.getProductProfile().getPrice(),
+                pojoAttribute.getProductProfile().getUrl(),
+                pojoAttribute.getProductProfile().getImageUrl(),
+                isSender(String.valueOf(pojo.getFromUid()))
+        );
+    }
+
+    private boolean isSender(String fromUid) {
+        if (sessionHandler != null) {
+            return sessionHandler.getLoginID().equals(fromUid);
+        } else {
+            return false;
+        }
     }
 
     private BaseChatViewModel convertToFallBackModel(WebSocketResponseData pojo) {

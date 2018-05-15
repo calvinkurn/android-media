@@ -12,13 +12,11 @@ import com.bumptech.glide.Glide;
 import com.tkpd.library.utils.KeyboardHandler;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
-
 import com.tokopedia.inbox.R;
 import com.tokopedia.inbox.inboxchat.ChatTimeConverter;
 import com.tokopedia.inbox.inboxchat.domain.model.reply.AttachmentInvoice;
 import com.tokopedia.inbox.inboxchat.presenter.ChatRoomContract;
 import com.tokopedia.inbox.inboxchat.viewmodel.AttachInvoiceSentViewModel;
-import com.tokopedia.inbox.inboxchat.viewmodel.AttachProductViewModel;
 
 import java.util.Date;
 

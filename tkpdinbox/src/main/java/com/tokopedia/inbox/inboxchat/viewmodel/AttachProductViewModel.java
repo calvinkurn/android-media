@@ -104,11 +104,6 @@ public class AttachProductViewModel extends ListReplyViewModel {
         this.isSender = true;
     }
 
-    @Override
-    public int type(ChatRoomTypeFactory typeFactory) {
-        return typeFactory.type(this);
-    }
-
     public boolean isSender() {
         return isSender;
     }
@@ -139,5 +134,10 @@ public class AttachProductViewModel extends ListReplyViewModel {
 
     public void setRetry(boolean retry) {
         isRetry = retry;
+    }
+
+    @Override
+    public int type(ChatRoomTypeFactory typeFactory) {
+        return 0;
     }
 }

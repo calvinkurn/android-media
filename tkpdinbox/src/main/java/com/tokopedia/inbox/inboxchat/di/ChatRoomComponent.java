@@ -1,7 +1,10 @@
 package com.tokopedia.inbox.inboxchat.di;
 
+import android.content.Context;
+
 import com.tokopedia.core.base.di.component.AppComponent;
-import com.tokopedia.inbox.inboxchat.domain.WebSocketMapper;
+import com.tokopedia.core.base.di.qualifier.ApplicationContext;
+import com.tokopedia.core.util.SessionHandler;
 
 import dagger.Component;
 
@@ -13,5 +16,6 @@ import dagger.Component;
 @Component(modules = ChatRoomModule.class, dependencies = AppComponent.class)
 public interface ChatRoomComponent {
 
+    SessionHandler sessionHandler();
 
 }

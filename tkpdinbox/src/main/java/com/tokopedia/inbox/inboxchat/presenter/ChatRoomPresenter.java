@@ -35,7 +35,6 @@ import com.tokopedia.inbox.inboxchat.uploadimage.domain.model.UploadImageDomain;
 import com.tokopedia.inbox.inboxchat.util.ImageUploadHandlerChat;
 import com.tokopedia.inbox.inboxchat.viewmodel.AttachInvoiceSelectionViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.AttachInvoiceSentViewModel;
-import com.tokopedia.inbox.inboxchat.viewmodel.AttachProductViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.ChatRoomViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.DummyChatViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.GetTemplateViewModel;
@@ -142,7 +141,7 @@ public class ChatRoomPresenter extends BaseDaggerPresenter<ChatRoomContract.View
     @Override
     public void detachView() {
         super.detachView();
-        if(webSocketUseCase != null)
+        if (webSocketUseCase != null)
             webSocketUseCase.unsubscribe();
         getReplyListUseCase.unsubscribe();
         getTemplateUseCase.unsubscribe();
@@ -213,9 +212,9 @@ public class ChatRoomPresenter extends BaseDaggerPresenter<ChatRoomContract.View
             getView().setViewEnabled(false);
             String messageId = (getView().getArguments().getString(PARAM_MESSAGE_ID));
 
-            if(networkType == InboxChatConstant.MODE_WEBSOCKET) {
+            if (networkType == InboxChatConstant.MODE_WEBSOCKET) {
                 sendReply(messageId, reply);
-            }else if(networkType == InboxChatConstant.MODE_API) {
+            } else if (networkType == InboxChatConstant.MODE_API) {
                 RequestParams params = ReplyMessageUseCase.generateParam(messageId, reply);
                 replyMessageUseCase.execute(params, new Subscriber<ReplyActionData>() {
                     @Override
@@ -251,15 +250,16 @@ public class ChatRoomPresenter extends BaseDaggerPresenter<ChatRoomContract.View
                 item.setMsg(response.getData().getMessage().getCensoredReply());
                 item.setReplyTime(response.getData().getMessage().getTimeStampUnix());
                 item.setAttachment(response.getData().getAttachment());
+//                if (response.getData().getAttachment() != null &&
+//                        response.getData().getAttachment().getType().equals(AttachmentChatHelper
+//                                .PRODUCT_ATTACHED)) {
+//                    AttachProductViewModel productItem = new AttachProductViewModel(item);
+//                    Integer productId = response.getData().getAttachment().getAttributes()
+//                            .getProductId();
+//                    getView().getAdapter().removeLastProductWithId(productId);
+//                    getView().getAdapter().addReply(productItem);
+//                } else
                 if (response.getData().getAttachment() != null &&
-                        response.getData().getAttachment().getType().equals(AttachmentChatHelper
-                                .PRODUCT_ATTACHED)) {
-                    AttachProductViewModel productItem = new AttachProductViewModel(item);
-                    Integer productId = response.getData().getAttachment().getAttributes()
-                            .getProductId();
-                    getView().getAdapter().removeLastProductWithId(productId);
-                    getView().getAdapter().addReply(productItem);
-                } else if (response.getData().getAttachment() != null &&
                         response.getData().getAttachment().getType().equals(AttachmentChatHelper
                                 .INVOICE_ATTACHED)) {
                     AttachInvoiceSentViewModel invoiceSentViewModel = new
@@ -296,12 +296,13 @@ public class ChatRoomPresenter extends BaseDaggerPresenter<ChatRoomContract.View
                 if (getView().getAdapter().isTyping()) {
                     getView().getAdapter().removeTyping();
                 }
-                if (response.getData().getAttachment() != null &&
-                        response.getData().getAttachment().getType().equals(AttachmentChatHelper
-                                .PRODUCT_ATTACHED)) {
-                    AttachProductViewModel productItem = new AttachProductViewModel(item);
-                    getView().getAdapter().addReply(productItem);
-                } else if (response.getData().getAttachment() != null &&
+//                if (response.getData().getAttachment() != null &&
+//                        response.getData().getAttachment().getType().equals(AttachmentChatHelper
+//                                .PRODUCT_ATTACHED)) {
+//                    AttachProductViewModel productItem = new AttachProductViewModel(item);
+//                    getView().getAdapter().addReply(productItem);
+//                } else
+                    if (response.getData().getAttachment() != null &&
                         response.getData().getAttachment().getType().equals(AttachmentChatHelper
                                 .INVOICE_LIST_ATTACHED)) {
                     AttachInvoiceSelectionViewModel invoices = AttachInvoiceMapper
@@ -436,7 +437,7 @@ public class ChatRoomPresenter extends BaseDaggerPresenter<ChatRoomContract.View
     @Override
     public void getReply(int mode) {
         RequestParams requestParam;
-        if(TextUtils.isEmpty(getView().getArguments().getString(PARAM_MESSAGE_ID))){
+        if (TextUtils.isEmpty(getView().getArguments().getString(PARAM_MESSAGE_ID))) {
             return;
         }
         if (mode == GET_CHAT_MODE) {
@@ -464,7 +465,7 @@ public class ChatRoomPresenter extends BaseDaggerPresenter<ChatRoomContract.View
             if (replyData.getChatList().get(0)
                     instanceof QuickReplyListViewModel) {
                 QuickReplyListViewModel model =
-                        (QuickReplyListViewModel)replyData.getChatList().get(0);
+                        (QuickReplyListViewModel) replyData.getChatList().get(0);
                 getView().showQuickReplyView(model);
             }
         } else {
@@ -534,7 +535,7 @@ public class ChatRoomPresenter extends BaseDaggerPresenter<ChatRoomContract.View
         }
     }
 
-    public void stopTyping(String messageId){
+    public void stopTyping(String messageId) {
         if (messageId != null) {
             webSocketUseCase.execute(webSocketUseCase.getParamStopTyping(messageId));
             flagTyping = false;
@@ -548,12 +549,10 @@ public class ChatRoomPresenter extends BaseDaggerPresenter<ChatRoomContract.View
         if (senderRole.equals(ROLE_SHOP) && !TextUtils.isEmpty(shopId)) {
             id = String.valueOf(shopId);
             shopNameLocal = shopName;
-        }
-        else if(TextUtils.isEmpty(shopId) && this.shopIdFromAPI != 0){
+        } else if (TextUtils.isEmpty(shopId) && this.shopIdFromAPI != 0) {
             id = String.valueOf(this.shopIdFromAPI);
             shopNameLocal = shopName;
-        }
-        else if (!TextUtils.isEmpty(sessionHandler.getShopID())
+        } else if (!TextUtils.isEmpty(sessionHandler.getShopID())
                 && !sessionHandler.getShopID().equals("0")) {
             id = sessionHandler.getShopID();
             shopNameLocal = sessionHandler.getShopName();
@@ -573,7 +572,7 @@ public class ChatRoomPresenter extends BaseDaggerPresenter<ChatRoomContract.View
 
     @Override
     public void closeWebSocket() {
-        if(webSocketUseCase!=null) {
+        if (webSocketUseCase != null) {
             webSocketUseCase.closeConnection();
         }
     }

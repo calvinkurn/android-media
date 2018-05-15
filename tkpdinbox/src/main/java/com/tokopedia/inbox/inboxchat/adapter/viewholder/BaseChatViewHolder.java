@@ -90,4 +90,8 @@ public class BaseChatViewHolder<T extends Visitable> extends AbstractViewHolder<
             date.setVisibility(View.GONE);
         }
     }
+
+    public void onViewRecycled() {
+
+    }
 }

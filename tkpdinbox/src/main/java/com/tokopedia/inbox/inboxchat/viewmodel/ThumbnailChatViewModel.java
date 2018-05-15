@@ -6,11 +6,11 @@ import com.tokopedia.inbox.inboxchat.domain.model.ListReplyViewModel;
 /**
  * Created by stevenfredian on 9/27/17.
  */
-
+@Deprecated
 public class ThumbnailChatViewModel extends ListReplyViewModel {
 
     @Override
     public int type(ChatRoomTypeFactory typeFactory) {
-        return typeFactory.type(this);
+        return 0;
     }
 }

@@ -86,6 +86,7 @@ import com.tokopedia.inbox.inboxchat.domain.model.reply.AttachmentInvoice;
 import com.tokopedia.inbox.inboxchat.domain.model.reply.AttachmentInvoiceAttributes;
 import com.tokopedia.inbox.inboxchat.domain.model.reply.AttachmentProductProfile;
 import com.tokopedia.inbox.inboxchat.domain.model.reply.WebSocketResponse;
+import com.tokopedia.inbox.inboxchat.domain.model.reply.WebSocketResponse;
 import com.tokopedia.inbox.inboxchat.domain.model.replyaction.ReplyActionData;
 import com.tokopedia.inbox.inboxchat.domain.model.websocket.BaseChatViewModel;
 import com.tokopedia.inbox.inboxchat.helper.AttachmentChatHelper;
@@ -96,7 +97,6 @@ import com.tokopedia.inbox.inboxchat.util.Events;
 import com.tokopedia.inbox.inboxchat.util.ImageUploadHandlerChat;
 import com.tokopedia.inbox.inboxchat.viewholder.ListChatViewHolder;
 import com.tokopedia.inbox.inboxchat.viewmodel.AttachInvoiceSentViewModel;
-import com.tokopedia.inbox.inboxchat.viewmodel.AttachProductViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.ChatRoomViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.DummyChatViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.InboxChatViewModel;
@@ -104,6 +104,7 @@ import com.tokopedia.inbox.inboxchat.viewmodel.MyChatViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.OppositeChatViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.chatroom.QuickReplyListViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.chatroom.QuickReplyViewModel;
+import com.tokopedia.inbox.inboxchat.viewmodel.chatroom.productattachment.ProductAttachmentViewModel;
 import com.tokopedia.inbox.inboxmessage.InboxMessageConstant;
 
 import java.util.ArrayList;
@@ -1139,6 +1140,12 @@ public class ChatRoomFragment extends BaseDaggerFragment
                 .getAppContext()));
     }
 
+    @Override
+    public boolean isMyMessage(String fromUid) {
+        return fromUid.equals(SessionHandler.getLoginID(MainApplication
+                .getAppContext()));
+    }
+
     @Deprecated
     @Override
     public boolean isCurrentThread(int msgId) {
@@ -1211,26 +1218,14 @@ public class ChatRoomFragment extends BaseDaggerFragment
         return item;
     }
 
-    private AttachProductViewModel generateProductChatViewModel(ResultProduct product) {
-        AttachProductViewModel item = new AttachProductViewModel(true);
-        Attachment attachment = new Attachment();
-        attachment.setType(AttachmentChatHelper.PRODUCT_ATTACHED);
-        AttachmentAttributes attachmentAttributes = new AttachmentAttributes();
-        attachmentAttributes.setProductId(product.getProductId());
-        AttachmentProductProfile productProfile = new AttachmentProductProfile();
-        productProfile.setImageUrl(product.getProductImageThumbnail());
-        productProfile.setName(product.getName());
-        productProfile.setPrice(product.getPrice());
-        productProfile.setUrl(product.getProductUrl());
-        attachmentAttributes.setProductProfile(productProfile);
-        attachment.setAttributes(attachmentAttributes);
-        attachment.setId(product.getProductId().toString());
-        item.setAttachment(attachment);
-        item.setReplyTime(DummyChatViewModel.SENDING_TEXT);
-        item.setDummy(true);
-        item.setMsg("");
-        item.setSenderId(getArguments().getString(InboxMessageConstant.PARAM_SENDER_ID));
-        return item;
+    private ProductAttachmentViewModel generateProductChatViewModel(ResultProduct product) {
+        return new ProductAttachmentViewModel(
+                sessionHandler.getLoginID(),
+                product.getProductId(),
+                product.getName(),
+                product.getPrice(),
+                product.getProductUrl(),
+                product.getProductImageThumbnail());
     }
 
     public void addIncomingMessage(final WebSocketResponse response) {
@@ -1261,7 +1256,7 @@ public class ChatRoomFragment extends BaseDaggerFragment
 
         String msgId = getArguments().getString(PARAM_MESSAGE_ID);
         for (ResultProduct result : resultProducts) {
-            AttachProductViewModel item = generateProductChatViewModel(result);
+            ProductAttachmentViewModel item = generateProductChatViewModel(result);
             presenter.sendProductAttachment(msgId, result);
             adapter.addReply(item);
             scrollToBottom();
@@ -1403,6 +1398,9 @@ public class ChatRoomFragment extends BaseDaggerFragment
             templateRecyclerView.setVisibility(View.VISIBLE);
         }
         if (isCurrentThread(message.getMessageId())) {
+
+            removeDummyReplyIfExist(message);
+
             if (message instanceof QuickReplyListViewModel) {
                 showQuickReplyView((QuickReplyListViewModel) message);
                 if (!TextUtils.isEmpty(((QuickReplyListViewModel) message).getMessage())) {
@@ -1415,6 +1413,14 @@ public class ChatRoomFragment extends BaseDaggerFragment
             }
 
             readMessage(message.getMessageId());
+        }
+    }
+
+    private void removeDummyReplyIfExist(BaseChatViewModel message) {
+        if (isMyMessage(message.getFromUid())) {
+            if (message instanceof ProductAttachmentViewModel) {
+                getAdapter().removeLastProductWithId(((ProductAttachmentViewModel) message).getProductId());
+            }
         }
     }
 
