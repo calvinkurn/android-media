@@ -1301,6 +1301,7 @@ public abstract class SellerRouterApplication extends MainApplication
     public Intent getProfileCompletionIntent(Context context) {
         Intent intent = new Intent(context, ProfileCompletionActivity.class);
         return intent;
+    }
 
     public void goToApplinkActivity(Context context, String applink) {
         DeepLinkDelegate deepLinkDelegate = DeepLinkHandlerActivity.getDelegateInstance();
