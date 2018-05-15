@@ -80,8 +80,7 @@ public class ImageEditorViewPagerAdapter extends FragmentStatePagerAdapter {
     @Override
     public int getItemPosition(Object object) {
         if (object!= null) {
-            int imageIndex = ((ImageEditPreviewFragment)object).getImageIndex();
-            if (registeredFragments.get(imageIndex) == null) {
+            if (registeredFragments.indexOfValue((Fragment)object) < 0) {
                 return POSITION_NONE;
             } else {
                 return super.getItemPosition(object);
