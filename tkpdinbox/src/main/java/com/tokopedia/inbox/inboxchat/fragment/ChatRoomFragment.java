@@ -84,6 +84,8 @@ import com.tokopedia.inbox.inboxchat.domain.model.reply.Attachment;
 import com.tokopedia.inbox.inboxchat.domain.model.reply.AttachmentAttributes;
 import com.tokopedia.inbox.inboxchat.domain.model.reply.AttachmentInvoice;
 import com.tokopedia.inbox.inboxchat.domain.model.reply.AttachmentInvoiceAttributes;
+import com.tokopedia.inbox.inboxchat.domain.model.reply.AttachmentProductProfile;
+import com.tokopedia.inbox.inboxchat.domain.model.reply.WebSocketResponse;
 import com.tokopedia.inbox.inboxchat.domain.model.reply.WebSocketResponse;
 import com.tokopedia.inbox.inboxchat.domain.model.replyaction.ReplyActionData;
 import com.tokopedia.inbox.inboxchat.domain.model.websocket.BaseChatViewModel;
@@ -1391,6 +1393,10 @@ public class ChatRoomFragment extends BaseDaggerFragment
     }
 
     private void processReceiveMessage(BaseChatViewModel message) {
+        rvQuickReply.setVisibility(View.GONE);
+        if (templateAdapter != null && templateAdapter.getList().size() != 0) {
+            templateRecyclerView.setVisibility(View.VISIBLE);
+        }
         if (isCurrentThread(message.getMessageId())) {
 
             removeDummyReplyIfExist(message);
@@ -1439,10 +1445,6 @@ public class ChatRoomFragment extends BaseDaggerFragment
 
     @Override
     public void showQuickReplyView(QuickReplyListViewModel model) {
-        rvQuickReply.setVisibility(View.GONE);
-        if (templateAdapter != null && templateAdapter.getList().size() != 0) {
-            templateRecyclerView.setVisibility(View.VISIBLE);
-        }
         if (model.getQuickReplies().size() != 0) {
             rvQuickReply.setVisibility(View.VISIBLE);
             templateRecyclerView.setVisibility(View.GONE);
