@@ -226,6 +226,7 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     public void addShipmentCostData(ShipmentCostModel shipmentCostModel) {
         this.shipmentCostModel = shipmentCostModel;
         shipmentDataList.add(shipmentCostModel);
+        updateShipmentCostModel();
         notifyDataSetChanged();
     }
 
@@ -427,17 +428,18 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         double insuranceFee = 0;
         for (ShipmentData shipmentData : shipmentDataList) {
             if (shipmentData instanceof ShipmentCartItemModel) {
-                if (((ShipmentCartItemModel) shipmentData).getSelectedShipmentDetailData() != null) {
-                    Boolean useInsurance = ((ShipmentCartItemModel) shipmentData).getSelectedShipmentDetailData().getUseInsurance();
-                    if (shipmentData instanceof ShipmentSingleAddressCartItemModel) {
-                        ShipmentSingleAddressCartItemModel shipmentSingleAddressItem =
-                                (ShipmentSingleAddressCartItemModel) shipmentData;
-                        List<CartItemModel> cartItemModels = shipmentSingleAddressItem.getCartItemModels();
-                        for (CartItemModel cartItemModel : cartItemModels) {
-                            totalWeight += (cartItemModel.getWeight() * cartItemModel.getQuantity());
-                            totalItem += cartItemModel.getQuantity();
-                            totalItemPrice += (cartItemModel.getPrice() * cartItemModel.getQuantity());
-                        }
+                if (shipmentData instanceof ShipmentSingleAddressCartItemModel) {
+                    ShipmentSingleAddressCartItemModel shipmentSingleAddressItem =
+                            (ShipmentSingleAddressCartItemModel) shipmentData;
+                    List<CartItemModel> cartItemModels = shipmentSingleAddressItem.getCartItemModels();
+                    for (CartItemModel cartItemModel : cartItemModels) {
+                        totalWeight += (cartItemModel.getWeight() * cartItemModel.getQuantity());
+                        totalItem += cartItemModel.getQuantity();
+                        totalItemPrice += (cartItemModel.getPrice() * cartItemModel.getQuantity());
+                    }
+
+                    if (((ShipmentCartItemModel) shipmentData).getSelectedShipmentDetailData() != null) {
+                        Boolean useInsurance = ((ShipmentCartItemModel) shipmentData).getSelectedShipmentDetailData().getUseInsurance();
                         shippingFee += shipmentSingleAddressItem.getSelectedShipmentDetailData()
                                 .getSelectedCourier().getDeliveryPrice();
                         if (useInsurance != null && useInsurance) {
@@ -446,27 +448,28 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                         }
                         additionalFee += shipmentSingleAddressItem.getSelectedShipmentDetailData()
                                 .getSelectedCourier().getAdditionalPrice();
-                        // Additional fee is included in shipping fee
-//                        shippingFee += additionalFee;
-                    } else {
-                        ShipmentMultipleAddressCartItemModel shipmentMultipleAddressItem =
-                                (ShipmentMultipleAddressCartItemModel) shipmentData;
-                        totalWeight += (shipmentMultipleAddressItem.getMultipleAddressItemData().getProductRawWeight() *
-                                Integer.parseInt(shipmentMultipleAddressItem.getMultipleAddressItemData().getProductQty()));
-                        totalItem += Integer.parseInt(shipmentMultipleAddressItem.getMultipleAddressItemData().getProductQty());
+                    }
+
+                } else {
+                    ShipmentMultipleAddressCartItemModel shipmentMultipleAddressItem =
+                            (ShipmentMultipleAddressCartItemModel) shipmentData;
+                    totalWeight += (shipmentMultipleAddressItem.getMultipleAddressItemData().getProductRawWeight() *
+                            Integer.parseInt(shipmentMultipleAddressItem.getMultipleAddressItemData().getProductQty()));
+                    totalItem += Integer.parseInt(shipmentMultipleAddressItem.getMultipleAddressItemData().getProductQty());
+
+                    if (((ShipmentCartItemModel) shipmentData).getSelectedShipmentDetailData() != null) {
+                        Boolean useInsurance = ((ShipmentCartItemModel) shipmentData).getSelectedShipmentDetailData().getUseInsurance();
                         shippingFee += shipmentMultipleAddressItem.getSelectedShipmentDetailData()
                                 .getSelectedCourier().getDeliveryPrice();
+                        additionalFee += shipmentMultipleAddressItem.getSelectedShipmentDetailData()
+                                .getSelectedCourier().getAdditionalPrice();
                         if (useInsurance != null && useInsurance) {
                             insuranceFee += shipmentMultipleAddressItem.getSelectedShipmentDetailData()
                                     .getSelectedCourier().getInsurancePrice();
                         }
-                        totalItemPrice += (shipmentMultipleAddressItem.getProductPriceNumber() *
-                                Integer.parseInt(shipmentMultipleAddressItem.getMultipleAddressItemData().getProductQty()));
-                        additionalFee += shipmentMultipleAddressItem.getSelectedShipmentDetailData()
-                                .getSelectedCourier().getAdditionalPrice();
-                        // Additional fee is included in shipping fee
-//                        shippingFee += additionalFee;
                     }
+                    totalItemPrice += (shipmentMultipleAddressItem.getProductPriceNumber() *
+                            Integer.parseInt(shipmentMultipleAddressItem.getMultipleAddressItemData().getProductQty()));
                 }
             }
         }

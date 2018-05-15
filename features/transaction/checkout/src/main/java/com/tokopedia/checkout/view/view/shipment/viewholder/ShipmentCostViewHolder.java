@@ -18,7 +18,6 @@ import android.widget.TextView;
 
 import com.tokopedia.checkout.R;
 import com.tokopedia.checkout.domain.datamodel.cartsingleshipment.ShipmentCostModel;
-import com.tokopedia.checkout.view.adapter.SingleAddressShipmentAdapter;
 import com.tokopedia.checkout.view.view.shipment.ShipmentAdapterActionListener;
 import com.tokopedia.design.utils.CurrencyFormatUtil;
 
@@ -41,8 +40,10 @@ public class ShipmentCostViewHolder extends RecyclerView.ViewHolder {
     private TextView mTvShippingFee;
     private TextView mTvInsuranceFee;
     private TextView mTvPromoDiscount;
-    private TextView mTvSellerCostAddition;
+    private TextView mTvSellerCostAdditionLabel;
     private TextView mTvSellerCostAdditionFee;
+    private TextView mTvInsuranceFeeLabel;
+    private TextView mTvPromoLabel;
 
     private TextView mTvPromoMessage;
 
@@ -60,8 +61,10 @@ public class ShipmentCostViewHolder extends RecyclerView.ViewHolder {
         mTvInsuranceFee = itemView.findViewById(R.id.tv_insurance_fee);
         mTvPromoDiscount = itemView.findViewById(R.id.tv_promo);
         mTvPromoMessage = itemView.findViewById(R.id.tv_promo_message);
-        mTvSellerCostAddition = itemView.findViewById(R.id.tv_seller_cost_addition);
+        mTvSellerCostAdditionLabel = itemView.findViewById(R.id.tv_seller_cost_addition);
         mTvSellerCostAdditionFee = itemView.findViewById(R.id.tv_seller_cost_addition_fee);
+        mTvInsuranceFeeLabel = itemView.findViewById(R.id.tv_insurance_fee_label);
+        mTvPromoLabel = itemView.findViewById(R.id.tv_promo_label);
 
         this.shipmentAdapterActionListener = shipmentAdapterActionListener;
     }
@@ -70,12 +73,13 @@ public class ShipmentCostViewHolder extends RecyclerView.ViewHolder {
         mRlShipmentCostLayout.setVisibility(View.VISIBLE);
 
         mTvTotalItemLabel.setText(getTotalItemLabel(mTvTotalItemLabel.getContext(), shipmentCost.getTotalItem()));
-        mTvTotalItemPrice.setText(getPriceFormat(shipmentCost.getTotalItemPrice()));
+        mTvTotalItemPrice.setText(shipmentCost.getTotalItemPrice() == 0 ? "-" :
+                CurrencyFormatUtil.convertPriceValueToIdrFormat((int) shipmentCost.getTotalItemPrice(), true));
         mTvShippingFeeLabel.setText(mTvShippingFeeLabel.getContext().getString(R.string.label_shipment_fee));
-        mTvShippingFee.setText(getPriceFormat(shipmentCost.getShippingFee()));
-        mTvInsuranceFee.setText(getPriceFormat(shipmentCost.getInsuranceFee()));
-        mTvPromoDiscount.setText(getPriceFormat(shipmentCost.getPromoPrice()));
-        mTvSellerCostAdditionFee.setText(getPriceFormat(shipmentCost.getAdditionalFee()));
+        mTvShippingFee.setText(getPriceFormat(mTvShippingFeeLabel, mTvShippingFee, shipmentCost.getShippingFee()));
+        mTvInsuranceFee.setText(getPriceFormat(mTvInsuranceFeeLabel, mTvInsuranceFee, shipmentCost.getInsuranceFee()));
+        mTvPromoDiscount.setText(getPriceFormat(mTvPromoLabel, mTvPromoDiscount, shipmentCost.getPromoPrice()));
+        mTvSellerCostAdditionFee.setText(getPriceFormat(mTvSellerCostAdditionLabel, mTvSellerCostAdditionFee, shipmentCost.getAdditionalFee()));
 
         if (!TextUtils.isEmpty(shipmentCost.getPromoMessage())) {
             formatPromoMessage(mTvPromoMessage, shipmentCost.getPromoMessage());
@@ -122,8 +126,16 @@ public class ShipmentCostViewHolder extends RecyclerView.ViewHolder {
         return String.format(context.getString(R.string.label_shipping_price_format), String.valueOf((int) weight), unit);
     }
 
-    private String getPriceFormat(double price) {
-        return price == 0 ? "-" : CurrencyFormatUtil.convertPriceValueToIdrFormat((int) price, true);
+    private String getPriceFormat(TextView textViewLabel, TextView textViewPrice, double price) {
+        if (price == 0) {
+            textViewLabel.setVisibility(View.GONE);
+            textViewPrice.setVisibility(View.GONE);
+            return "-";
+        } else {
+            textViewLabel.setVisibility(View.VISIBLE);
+            textViewPrice.setVisibility(View.VISIBLE);
+            return CurrencyFormatUtil.convertPriceValueToIdrFormat((int) price, true);
+        }
     }
 
     private void togglePromoText() {

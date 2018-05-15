@@ -125,8 +125,8 @@
         android:background="@color/white"
         android:gravity="center_vertical"
         android:orientation="horizontal"
-        android:paddingLeft="16dp"
-        android:paddingStart="16dp"
+        android:paddingLeft="@dimen/dp_16"
+        android:paddingStart="@dimen/dp_16"
         android:visibility="visible">
 
         <TextView
@@ -248,7 +248,8 @@
             android:paddingBottom="@dimen/dp_8"
             android:paddingLeft="@dimen/dp_16"
             android:paddingRight="@dimen/dp_16"
-            android:paddingTop="@dimen/dp_8">
+            android:paddingTop="@dimen/dp_8"
+            tools:visibility="gone">
 
             <CheckBox
                 android:id="@+id/cb_dropshipper"
@@ -389,7 +390,6 @@
             android:id="@+id/rl_shipment_cost"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingBottom="@dimen/dp_16"
             android:paddingLeft="@dimen/dp_16"
             android:paddingRight="@dimen/dp_16"
             android:visibility="visible">
@@ -399,7 +399,7 @@
                 style="@style/TextSmallNormalBlack70"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="18dp"
+                android:layout_marginBottom="@dimen/dp_16"
                 tools:text="Harga (1 Barang)" />
 
             <TextView
@@ -420,7 +420,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/tv_total_item"
-                android:layout_marginBottom="18dp"
+                android:layout_marginBottom="@dimen/dp_16"
                 tools:text="Ongkos Kirim (1kg)" />
 
             <TextView
@@ -440,6 +440,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/tv_shipping_fee"
+                android:layout_marginBottom="@dimen/dp_16"
                 android:text="Biaya Asuransi" />
 
             <TextView
@@ -459,8 +460,10 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/tv_insurance_fee"
+                android:layout_marginBottom="@dimen/dp_16"
                 android:text="@string/label_promo"
-                android:visibility="gone" />
+                android:visibility="gone"
+                tools:text="Promo bla bla bla" />
 
             <TextView
                 android:id="@+id/tv_promo_price"
