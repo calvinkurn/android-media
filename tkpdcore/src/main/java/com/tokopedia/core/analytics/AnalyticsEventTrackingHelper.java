@@ -14,10 +14,27 @@ import java.util.Map;
 
 public class AnalyticsEventTrackingHelper {
 
-    public static void hamburgerIconClickCategory(String landingScreen) {
+    public static void hamburgerIconClickCategory(String landingScreen, String optionName) {
         Map<String, Object> bundle = new HashMap<>();
         bundle.put(FirebaseParams.Home.LANDING_SCREEN_NAME, landingScreen);
-        sendEventToAnalytics(FirebaseEvent.Home.HAMBURGER_ICON_CLICK_CATEGORY, bundle);
+        bundle.put(FirebaseParams.Home.OPTION_NAME, landingScreen);
+
+        sendEventToAnalytics(FirebaseEvent.Home.HAMBURGER_OPTION_CLICK, bundle);
+    }
+    public static void hamburgerOptionClicked(String landingScreen, String optionName) {
+        Map<String, Object> bundle = new HashMap<>();
+        bundle.put(FirebaseParams.Home.LANDING_SCREEN_NAME, landingScreen);
+        bundle.put(FirebaseParams.Home.OPTION_NAME, landingScreen);
+
+        sendEventToAnalytics(FirebaseEvent.Home.HAMBURGER_OPTION_CLICK, bundle);
+    }
+    public static void hamburgerOptionClicked(String landingScreen, String optionName, String subCategory) {
+        Map<String, Object> bundle = new HashMap<>();
+        bundle.put(FirebaseParams.Home.LANDING_SCREEN_NAME, landingScreen);
+        bundle.put(FirebaseParams.Home.OPTION_NAME, landingScreen);
+        bundle.put(FirebaseParams.Home.SUBCATEGORY_NAME, subCategory);
+
+        sendEventToAnalytics(FirebaseEvent.Home.HAMBURGER_OPTION_CLICK, bundle);
     }
 
     public static void hamburgerIconClickLogin(String landingScreen) {
@@ -30,6 +47,25 @@ public class AnalyticsEventTrackingHelper {
         Map<String, Object> bundle = new HashMap<>();
         bundle.put(FirebaseParams.Home.LANDING_SCREEN_NAME, landingScreen);
         sendEventToAnalytics(FirebaseEvent.Home.HAMBURGER_ICON_CLICK_SIGNUP, bundle);
+    }
+    public static void homepageTokocashActivateClick() {
+        Map<String, Object> bundle = new HashMap<>();
+        sendEventToAnalytics(FirebaseEvent.Home.HOMEPAGE_TOKOCASH_ACTIVATE, bundle);
+    }
+
+    public static void homepageTokocashClick() {
+        Map<String, Object> bundle = new HashMap<>();
+        sendEventToAnalytics(FirebaseEvent.Home.HAMBURGER_TOKOCASH, bundle);
+    }
+
+    public static void homepageTokopointsClick() {
+        Map<String, Object> bundle = new HashMap<>();
+        sendEventToAnalytics(FirebaseEvent.Home.HAMBURGER_TOKOPOINTS, bundle);
+    }
+
+    public static void hambugerProfileClick() {
+        Map<String, Object> bundle = new HashMap<>();
+        sendEventToAnalytics(FirebaseEvent.Home.HAMBURGER_PROFILE, bundle);
     }
 
 

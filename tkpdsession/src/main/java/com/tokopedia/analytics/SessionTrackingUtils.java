@@ -11,7 +11,7 @@ import java.util.Map;
  * Created by ashwanityagi on 26/03/18.
  */
 
-public class SessionAnalyticsEventsHelper {
+public class SessionTrackingUtils {
 
     public static void loginPageEnterEmail(String emailId) {
         Map<String, Object> map = new HashMap<>();

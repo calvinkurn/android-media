@@ -39,7 +39,7 @@ import com.tkpd.library.utils.KeyboardHandler;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.analytics.LoginAnalytics;
-import com.tokopedia.analytics.SessionAnalyticsEventsHelper;
+import com.tokopedia.analytics.SessionTrackingUtils;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.ScreenTracking;
@@ -288,7 +288,7 @@ public class LoginFragment extends BaseDaggerFragment
                 presenter.login(emailEditText.getText().toString().trim(),
                         passwordEditText.getText().toString());
                 UnifyTracking.eventCTAAction();
-                SessionAnalyticsEventsHelper.loginPageClickLogin();
+                SessionTrackingUtils.loginPageClickLogin();
             }
         });
 
@@ -301,7 +301,7 @@ public class LoginFragment extends BaseDaggerFragment
                         .toString());
                 intent.setFlags(Intent.FLAG_ACTIVITY_FORWARD_RESULT);
                 startActivity(intent);
-                SessionAnalyticsEventsHelper.loginPageClickForgotPassword("ForgotPasswordActivity");
+                SessionTrackingUtils.loginPageClickForgotPassword("ForgotPasswordActivity");
 
             }
         });
@@ -706,7 +706,7 @@ public class LoginFragment extends BaseDaggerFragment
                 @Override
                 public void onClick(View v) {
                     onLoginFacebookClick();
-                    SessionAnalyticsEventsHelper.loginPageClickLoginFacebook();
+                    SessionTrackingUtils.loginPageClickLoginFacebook();
                 }
             });
         } else if (discoverItemViewModel.getId().equalsIgnoreCase(GPLUS)) {
@@ -714,7 +714,7 @@ public class LoginFragment extends BaseDaggerFragment
                 @Override
                 public void onClick(View v) {
                     onLoginGoogleClick();
-                    SessionAnalyticsEventsHelper.loginPageClickLoginGoogle();
+                    SessionTrackingUtils.loginPageClickLoginGoogle();
                 }
             });
         } else if (discoverItemViewModel.getId().equalsIgnoreCase(PHONE_NUMBER)) {
@@ -722,7 +722,7 @@ public class LoginFragment extends BaseDaggerFragment
                 @Override
                 public void onClick(View v) {
                     onLoginPhoneNumberClick();
-                    SessionAnalyticsEventsHelper.loginPageClickLoginPhone();
+                    SessionTrackingUtils.loginPageClickLoginPhone();
                 }
             });
         } else {

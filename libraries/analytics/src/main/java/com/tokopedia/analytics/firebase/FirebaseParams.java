@@ -18,5 +18,7 @@ public class FirebaseParams {
           String PRODUCT_LIST_NAME="product_list_name";
           String PRODUCT_CATEGORY="product_category";
           String EMAIL_ID="email_id";
+          String SUBCATEGORY_NAME="subcategory_name";
+          String OPTION_NAME="option_name";
      }
 }

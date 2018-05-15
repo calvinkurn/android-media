@@ -8,7 +8,6 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.crashlytics.android.Crashlytics;
@@ -19,10 +18,10 @@ import com.tokopedia.design.image.SquareImageView;
 import com.tokopedia.home.R;
 import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel;
 import com.tokopedia.home.beranda.helper.DynamicLinkHelper;
-import com.tokopedia.home.beranda.helper.TextViewHelper;
 import com.tokopedia.home.beranda.listener.HomeCategoryListener;
 import com.tokopedia.home.beranda.presentation.view.adapter.itemdecoration.GridSpacingItemDecoration;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.DynamicChannelViewModel;
+import com.tokopedia.home.beranda.presentation.view.analytics.HomeTrackingUtils;
 
 /**
  * Created by henrypriyono on 22/03/18.
@@ -135,6 +134,7 @@ public class SixGridChannelViewHolder extends AbstractViewHolder<DynamicChannelV
                             );
                             listener.onSixGridItemClicked(getAvailableLink(grid.getApplink(), grid.getUrl()),
                                     channel.getHomeAttribution(position + 1, grid.getAttribution()));
+                            HomeTrackingUtils.homeDiscoveryWidgetClick(position + 1, channel, getAvailableLink(grid.getApplink(), grid.getUrl()), grid.getAttribution());
                         }
                     });
                 }
