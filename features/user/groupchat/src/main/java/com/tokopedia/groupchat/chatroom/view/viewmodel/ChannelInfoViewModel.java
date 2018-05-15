@@ -4,6 +4,7 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import android.support.annotation.Nullable;
 
+import com.tokopedia.groupchat.chatroom.domain.pojo.ExitMessage;
 import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.ChannelPartnerViewModel;
 import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.GroupChatPointsViewModel;
 import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.PinnedMessageViewModel;
@@ -49,6 +50,9 @@ public class ChannelInfoViewModel implements Parcelable {
     @Nullable
     private PinnedMessageViewModel pinnedMessageViewModel;
 
+    @Nullable
+    private ExitMessage exitMessage;
+
     public ChannelInfoViewModel(String title, String channelUrl, String bannerUrl,
                                 String blurredBannerUrl,
                                 String adsImageUrl, String adsLink, String adsName, String adsId,
@@ -58,7 +62,8 @@ public class ChannelInfoViewModel implements Parcelable {
                                 @Nullable VoteInfoViewModel voteInfoViewModel,
                                 @Nullable SprintSaleViewModel sprintSaleViewModel,
                                 String bannedMessage, String kickedMessage, boolean isFreeze,
-                                @Nullable PinnedMessageViewModel pinnedMessageViewModel) {
+                                @Nullable PinnedMessageViewModel pinnedMessageViewModel,
+                                @Nullable ExitMessage exitMessage) {
         this.title = title;
         this.channelUrl = channelUrl;
         this.bannerUrl = bannerUrl;
@@ -81,6 +86,7 @@ public class ChannelInfoViewModel implements Parcelable {
         this.kickedMessage = kickedMessage;
         this.isFreeze = isFreeze;
         this.pinnedMessageViewModel = pinnedMessageViewModel;
+        this.exitMessage = exitMessage;
     }
 
     protected ChannelInfoViewModel(Parcel in) {
@@ -107,6 +113,7 @@ public class ChannelInfoViewModel implements Parcelable {
         sprintSaleViewModel = in.readParcelable(SprintSaleViewModel.class.getClassLoader());
         groupChatPointsViewModel = in.readParcelable(GroupChatPointsViewModel.class.getClassLoader());
         pinnedMessageViewModel = in.readParcelable(PinnedMessageViewModel.class.getClassLoader());
+        exitMessage = in.readParcelable(ExitMessage.class.getClassLoader());
     }
 
     @Override
@@ -134,6 +141,7 @@ public class ChannelInfoViewModel implements Parcelable {
         dest.writeParcelable(sprintSaleViewModel, flags);
         dest.writeParcelable(groupChatPointsViewModel, flags);
         dest.writeParcelable(pinnedMessageViewModel, flags);
+        dest.writeParcelable(exitMessage, flags);
     }
 
     @Override
@@ -271,5 +279,10 @@ public class ChannelInfoViewModel implements Parcelable {
     @Nullable
     public PinnedMessageViewModel getPinnedMessageViewModel() {
         return pinnedMessageViewModel;
+    }
+
+    @Nullable
+    public ExitMessage getExitMessage() {
+        return exitMessage;
     }
 }

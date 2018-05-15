@@ -14,7 +14,6 @@ import android.os.Handler;
 import android.os.VibrationEffect;
 import android.os.Vibrator;
 import android.preference.PreferenceManager;
-import android.support.annotation.Nullable;
 import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.BottomSheetBehavior;
 import android.support.design.widget.BottomSheetDialog;
@@ -59,6 +58,7 @@ import com.tokopedia.groupchat.channel.view.activity.ChannelActivity;
 import com.tokopedia.groupchat.channel.view.model.ChannelViewModel;
 import com.tokopedia.groupchat.chatroom.di.DaggerChatroomComponent;
 import com.tokopedia.groupchat.chatroom.domain.ConnectionManager;
+import com.tokopedia.groupchat.chatroom.domain.pojo.ExitMessage;
 import com.tokopedia.groupchat.chatroom.domain.usecase.ChannelHandlerUseCase;
 import com.tokopedia.groupchat.chatroom.domain.usecase.LoginGroupChatUseCase;
 import com.tokopedia.groupchat.chatroom.view.ShareData;
@@ -610,8 +610,9 @@ public class GroupChatActivity extends BaseSimpleActivity
 
     private void showDialogConfirmToExit() {
         final android.app.AlertDialog.Builder myAlertDialog = new android.app.AlertDialog.Builder(this);
-        myAlertDialog.setTitle(getString(R.string.exit_group_chat_title));
-        myAlertDialog.setMessage(getString(R.string.exit_group_chat_body));
+        if(getExitMessage() == null) return;
+        myAlertDialog.setTitle(getExitMessage().getTitle());
+        myAlertDialog.setMessage(getExitMessage().getBody());
         final Context context = this;
         myAlertDialog.setPositiveButton(getString(R.string.exit_group_chat_yes), new
                 DialogInterface.OnClickListener() {
@@ -1440,6 +1441,15 @@ public class GroupChatActivity extends BaseSimpleActivity
         if (viewModel != null && viewModel.getChannelInfoViewModel() != null && viewModel
                 .getChannelInfoViewModel().getSprintSaleViewModel() != null) {
             return viewModel.getChannelInfoViewModel().getSprintSaleViewModel();
+        } else {
+            return null;
+        }
+    }
+
+    public ExitMessage getExitMessage() {
+        if (viewModel != null && viewModel.getChannelInfoViewModel() != null && viewModel
+                .getChannelInfoViewModel().getExitMessage() != null) {
+            return viewModel.getChannelInfoViewModel().getExitMessage();
         } else {
             return null;
         }

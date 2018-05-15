@@ -135,8 +135,8 @@ public class GroupChatMessagesMapper {
 
     private Visitable mapToPinnedMessage(UserMessage message, String json) {
         Gson gson = new Gson();
-        PinnedMessagePojo pojo = gson.fromJson(json, PinnedMessagePojo.class);
-        return new PinnedMessageViewModel("Ayo jawab kuisnya dan menangkan beberapa hadiah menarik persembahan dari Tokopedia.","","","");
+        PinnedMessagePojo pinnedMessage = gson.fromJson(json, PinnedMessagePojo.class);
+        return new PinnedMessageViewModel("Ayo jawab kuisnya dan menangkan beberapa hadiah menarik persembahan dari Tokopedia.", pinnedMessage.getModerator(), pinnedMessage.getRedirectUrl(), pinnedMessage.getImageUrl());
     }
 
     private Visitable mapToGeneratedMessage(UserMessage message, String json) {

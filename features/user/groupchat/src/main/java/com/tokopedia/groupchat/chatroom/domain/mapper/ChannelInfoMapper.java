@@ -2,7 +2,8 @@ package com.tokopedia.groupchat.chatroom.domain.mapper;
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.common.data.model.response.DataResponse;
-import com.tokopedia.groupchat.chatroom.domain.pojo.PinnedMessage;
+import com.tokopedia.groupchat.chatroom.domain.pojo.ExitMessage;
+import com.tokopedia.groupchat.chatroom.domain.pojo.PinnedMessagePojo;
 import com.tokopedia.groupchat.chatroom.domain.pojo.channelinfo.Channel;
 import com.tokopedia.groupchat.chatroom.domain.pojo.channelinfo.ChannelInfoPojo;
 import com.tokopedia.groupchat.chatroom.domain.pojo.channelinfo.Flashsale;
@@ -72,12 +73,13 @@ public class ChannelInfoMapper implements Func1<Response<DataResponse<ChannelInf
                 pojo.getChannel().getKickedMessage() != null ? pojo.getChannel().getKickedMessage
                         () : "",
                 pojo.getChannel().isIsFreeze(),
-                mapToPinnedMessageViewModel(pojo.getChannel().getPinnedMessage)
+                mapToPinnedMessageViewModel(pojo.getChannel().getPinnedMessage()),
+                pojo.getChannel().getExitMessage()
         );
     }
 
-    private PinnedMessageViewModel mapToPinnedMessageViewModel(PinnedMessage pinnedMessage) {
-        return new PinnedMessageViewModel("Ayo jawab kuisnya dan menangkan beberapa hadiah menarik persembahan dari Tokopedia.","","","");
+    private PinnedMessageViewModel mapToPinnedMessageViewModel(PinnedMessagePojo pinnedMessage) {
+        return new PinnedMessageViewModel("Ayo jawab kuisnya dan menangkan beberapa hadiah menarik persembahan dari Tokopedia.", pinnedMessage.getModerator(), pinnedMessage.getRedirectUrl(), pinnedMessage.getImageUrl());
     }
 
     private SprintSaleViewModel mapToSprintSaleViewModel(Flashsale flashsale) {
