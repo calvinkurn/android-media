@@ -1,4 +1,4 @@
-package com.tokopedia.inbox.inboxchat.viewholder;
+package com.tokopedia.inbox.inboxchat.adapter.viewholder;
 
 import android.content.Context;
 import android.support.annotation.LayoutRes;
@@ -10,7 +10,6 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.tkpd.library.utils.KeyboardHandler;
-import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.inbox.R;
 import com.tokopedia.inbox.inboxchat.ChatTimeConverter;
@@ -24,7 +23,7 @@ import java.util.Date;
  * Created by Hendri on 27/03/18.
  */
 
-public class AttachedInvoiceSentViewHolder extends AbstractViewHolder<AttachInvoiceSentViewModel> {
+public class AttachedInvoiceSentViewHolder extends BaseChatViewHolder<AttachInvoiceSentViewModel> {
     @LayoutRes
     public static final int LAYOUT = R.layout.attached_invoice_sent_chat_item;
 
@@ -43,8 +42,8 @@ public class AttachedInvoiceSentViewHolder extends AbstractViewHolder<AttachInvo
     private Context context;
     private long dateTimeInMilis;
 
-    public AttachedInvoiceSentViewHolder(View itemView) {
-        super(itemView);
+    public AttachedInvoiceSentViewHolder(View itemView, ChatRoomContract.View viewListener) {
+        super(itemView, viewListener);
         productName = itemView.findViewById(R.id.attach_invoice_sent_item_product_name);
         productDesc = itemView.findViewById(R.id.attach_invoice_sent_item_product_desc);
         totalAmount = itemView.findViewById(R.id.attach_invoice_sent_item_invoice_total);
@@ -55,6 +54,8 @@ public class AttachedInvoiceSentViewHolder extends AbstractViewHolder<AttachInvo
         chatStatus = itemView.findViewById(R.id.chat_status);
         action = itemView.findViewById(R.id.left_action);
     }
+
+
 
     @Override
     public void bind(AttachInvoiceSentViewModel element) {

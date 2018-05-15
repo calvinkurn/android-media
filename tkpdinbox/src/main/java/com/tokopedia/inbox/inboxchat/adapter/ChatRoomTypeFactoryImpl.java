@@ -4,6 +4,7 @@ import android.view.View;
 
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
+import com.tokopedia.inbox.inboxchat.adapter.viewholder.AttachedInvoiceSentViewHolder;
 import com.tokopedia.inbox.inboxchat.adapter.viewholder.FallbackAttachmentViewHolder;
 import com.tokopedia.inbox.inboxchat.adapter.viewholder.ImageAnnouncementViewHolder;
 import com.tokopedia.inbox.inboxchat.adapter.viewholder.ProductAttachmentViewHolder;
@@ -11,16 +12,15 @@ import com.tokopedia.inbox.inboxchat.adapter.viewholder.QuickReplyViewHolder;
 import com.tokopedia.inbox.inboxchat.domain.model.websocket.FallbackAttachmentViewModel;
 import com.tokopedia.inbox.inboxchat.fragment.ChatRoomFragment;
 import com.tokopedia.inbox.inboxchat.presenter.ChatRoomContract;
-import com.tokopedia.inbox.inboxchat.viewholder.ImageUploadViewHolder;
 import com.tokopedia.inbox.inboxchat.viewholder.AttachedInvoiceSelectionViewHolder;
-import com.tokopedia.inbox.inboxchat.viewholder.AttachedInvoiceSentViewHolder;
+import com.tokopedia.inbox.inboxchat.viewholder.ImageUploadViewHolder;
 import com.tokopedia.inbox.inboxchat.viewholder.MyChatViewHolder;
 import com.tokopedia.inbox.inboxchat.viewholder.OppositeChatViewHolder;
 import com.tokopedia.inbox.inboxchat.viewholder.TimeMachineChatViewHolder;
 import com.tokopedia.inbox.inboxchat.viewholder.TypingChatViewHolder;
-import com.tokopedia.inbox.inboxchat.viewmodel.ImageUploadViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.AttachInvoiceSelectionViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.AttachInvoiceSentViewModel;
+import com.tokopedia.inbox.inboxchat.viewmodel.ImageUploadViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.MyChatViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.OppositeChatViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.TypingChatModel;
@@ -113,7 +113,7 @@ public class ChatRoomTypeFactoryImpl extends BaseAdapterTypeFactory implements C
         else if (type == ImageUploadViewHolder.LAYOUT)
             viewHolder = new ImageUploadViewHolder(view);
         else if (type == AttachedInvoiceSentViewHolder.LAYOUT)
-            viewHolder = new AttachedInvoiceSentViewHolder(view);
+            viewHolder = new AttachedInvoiceSentViewHolder(view, viewListener);
         else if (type == AttachedInvoiceSelectionViewHolder.LAYOUT)
             viewHolder = new AttachedInvoiceSelectionViewHolder(view, viewListener);
         else if (type == QuickReplyViewHolder.LAYOUT)

@@ -126,6 +126,9 @@ public class GetReplyMapper implements Func1<Response<TkpdResponse>, ChatRoomVie
                         convertQuickItemChatList(item.getAttachment().getQuickReplies())
                 );
                 list.add(quickReplyListViewModel);
+            } else if (item.getAttachment() != null && item.getAttachment().getType().equals
+                    (WebSocketMapper.TYPE_INVOICE_SEND)) {
+
             } else if (!item.isOpposite()) {
                 MyChatViewModel temp = new MyChatViewModel();
                 temp.setReplyId(item.getReplyId());
@@ -201,6 +204,20 @@ public class GetReplyMapper implements Func1<Response<TkpdResponse>, ChatRoomVie
         list.add(imageAnnouncement);
     }
 
+    private void mapToInvoiceSend(ArrayList<Visitable> list, ListReply item) {
+        AttachInvoiceSentViewModel model = new AttachInvoiceSentViewModel(
+                String.valueOf(item.getMsgId()),
+                item.getSenderId(),
+                item.getSenderName(),
+                item.getRole(),
+                item.getAttachment().getId(),
+                item.getAttachment().getType(),
+                item.getReplyTime()
+        );
+
+        list.add(model);
+    }
+
     private void mapToProductAttachment(ArrayList<Visitable> list, ListReply item) {
 
         ProductAttachmentViewModel productAttachment = new ProductAttachmentViewModel(
@@ -242,6 +259,7 @@ public class GetReplyMapper implements Func1<Response<TkpdResponse>, ChatRoomVie
     }
 
     private List<QuickReplyViewModel> convertQuickItemChatList(QuickReplyListPojo pojoList) {
+
         List<QuickReplyViewModel> list = new ArrayList<>();
         if (pojoList != null) {
             for (QuickReplyPojo pojo : pojoList.getQuickReplies()) {

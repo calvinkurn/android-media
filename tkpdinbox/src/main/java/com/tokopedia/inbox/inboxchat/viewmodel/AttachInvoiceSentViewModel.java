@@ -1,106 +1,44 @@
 package com.tokopedia.inbox.inboxchat.viewmodel;
 
+import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.inbox.inboxchat.adapter.ChatRoomTypeFactory;
-import com.tokopedia.inbox.inboxchat.domain.model.ListReplyViewModel;
+import com.tokopedia.inbox.inboxchat.domain.model.websocket.BaseChatViewModel;
 
 /**
  * Created by Hendri on 27/03/18.
  */
 
-public class AttachInvoiceSentViewModel extends ListReplyViewModel {
+public class AttachInvoiceSentViewModel extends BaseChatViewModel implements
+        Visitable<ChatRoomTypeFactory> {
+
+    private String imageUrl;
+    private String description;
     boolean isSender;
     boolean isDummy;
     boolean readStatus;
     boolean isRetry;
 
-    public AttachInvoiceSentViewModel() {
-        super();
-        this.isSender = true;
-        this.isDummy = false;
-        this.isRetry = false;
-    }
-
-    public AttachInvoiceSentViewModel(OppositeChatViewModel source){
-        super(source.getMsgId(),
-                source.getUserId(),
-                source.getReplyId(),
-                source.getSenderId(),
-                source.getSenderName(),
-                source.getRole(),
-                source.getMsg(),
-                source.getSpanned(),
-                source.getReplyTime(),
-                source.getFraudStatus(),
-                source.getReadTime(),
-                source.getAttachment(),
-                source.getAttachmentId(),
-                source.getOldMsgId(),
-                source.isShowTime(),
-                source.isShowHour(),
-                source.isOpposite(),
-                source.isHighlight(),
-                source.getOldMessageTitle(),
-                source.isShowRating(),
-                source.getRatingStatus());
-        this.isDummy = false;
-        this.isRetry = false;
-        this.isSender = false;
-    }
-
-    public AttachInvoiceSentViewModel(ThumbnailChatViewModel source){
-        super(source.getMsgId(),
-                source.getUserId(),
-                source.getReplyId(),
-                source.getSenderId(),
-                source.getSenderName(),
-                source.getRole(),
-                source.getMsg(),
-                source.getSpanned(),
-                source.getReplyTime(),
-                source.getFraudStatus(),
-                source.getReadTime(),
-                source.getAttachment(),
-                source.getAttachmentId(),
-                source.getOldMsgId(),
-                source.isShowTime(),
-                source.isShowHour(),
-                source.isOpposite(),
-                source.isHighlight(),
-                source.getOldMessageTitle(),
-                source.isShowRating(),
-                source.getRatingStatus());
-        this.isDummy = false;
-        this.isRetry = false;
-        this.isSender = false;
-    }
-
-
-    public AttachInvoiceSentViewModel(MyChatViewModel source){
-        super(source.getMsgId(),
-                source.getUserId(),
-                source.getReplyId(),
-                source.getSenderId(),
-                source.getSenderName(),
-                source.getRole(),
-                source.getMsg(),
-                source.getSpanned(),
-                source.getReplyTime(),
-                source.getFraudStatus(),
-                source.getReadTime(),
-                source.getAttachment(),
-                source.getAttachmentId(),
-                source.getOldMsgId(),
-                source.isShowTime(),
-                source.isShowHour(),
-                source.isOpposite(),
-                source.isHighlight(),
-                source.getOldMessageTitle(),
-                source.isShowRating(),
-                source.getRatingStatus());
-        this.isDummy = source.isDummy();
-        this.readStatus = source.isReadStatus();
-        this.isRetry = source.isRetry();
-        this.isSender = true;
+    public AttachInvoiceSentViewModel(String msgId,
+                                      String fromUid,
+                                      String from,
+                                      String fromRole,
+                                      String attachmentId,
+                                      String attachmentType,
+                                      String replyTime,
+                                      String description,
+                                      String imageUrl,
+                                      boolean isSender,
+                                      boolean isDummy,
+                                      boolean readStatus,
+                                      boolean isRetry){
+        super(msgId, fromUid, from, fromRole,
+                attachmentId, attachmentType, replyTime);
+        this.isDummy = isDummy;
+        this.isRetry = isRetry;
+        this.isSender = isSender;
+        this.readStatus = readStatus;
+        this.description = description;
+        this.imageUrl = imageUrl;
     }
 
     @Override
@@ -139,5 +77,21 @@ public class AttachInvoiceSentViewModel extends ListReplyViewModel {
 
     public void setRetry(boolean retry) {
         isRetry = retry;
+    }
+
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 }

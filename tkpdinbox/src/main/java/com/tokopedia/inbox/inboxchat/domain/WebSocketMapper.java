@@ -29,6 +29,7 @@ public class WebSocketMapper {
 
     public static final String TYPE_IMAGE_ATTACHMENT = "1";
     public static final String TYPE_PRODUCT_ATTACHMENT = "3";
+    public static final String TYPE_INVOICE_SEND = "7";
     public static final String TYPE_QUICK_REPLY = "8";
     private SessionHandler sessionHandler;
 
@@ -52,6 +53,8 @@ public class WebSocketMapper {
                         return convertToQuickReplyModel(pojo.getData(), jsonAttributes);
                     case TYPE_PRODUCT_ATTACHMENT:
                         return convertToProductAttachment(pojo.getData(), jsonAttributes);
+                    case TYPE_INVOICE_SEND:
+                        return
                     default:
 //                        return convertToFallBackModel(pojo.getData());
                         return null;
@@ -65,6 +68,11 @@ public class WebSocketMapper {
         } catch (NullPointerException e) {
             return null;
         }
+
+    }
+
+    private BaseChatViewModel convertToInvoiceSent(WebSocketResponseData pojo, JsonObject jsonAttribute) {
+
 
     }
 
