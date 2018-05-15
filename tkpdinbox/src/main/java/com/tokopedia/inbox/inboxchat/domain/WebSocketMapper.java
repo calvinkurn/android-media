@@ -55,6 +55,8 @@ public class WebSocketMapper {
             }
         } catch (JsonSyntaxException e) {
             return null;
+        } catch (NullPointerException e) {
+            return null;
         }
 
     }
@@ -69,7 +71,6 @@ public class WebSocketMapper {
                 String.valueOf(pojo.getFromUid()),
                 pojo.getFrom(),
                 pojo.getFromRole(),
-                pojo.getAttachment().getFallbackAttachment().getMessage(),
                 pojo.getAttachment().getId(),
                 pojo.getAttachment().getType(),
                 pojo.getMessage().getTimeStampUnix(),
