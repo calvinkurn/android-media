@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.tokopedia.tracking_debugger">
+
+    <application>
+        <activity
+            android:name=".ui.TrackingDebuggerActivity"
+            android:label="Tracking Debugger"
+            android:launchMode="singleTask"
+            android:taskAffinity="com.tokopedia.tracking_debugger.task"/>
+    </application>
+
+</manifest>
