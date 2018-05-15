@@ -16,6 +16,7 @@ import com.tokopedia.inbox.inboxchat.viewmodel.ThumbnailChatViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.TypingChatModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.chatroom.QuickReplyListViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.chatroom.TimeMachineChatModel;
+import com.tokopedia.inbox.inboxchat.viewmodel.chatroom.productattachment.ProductAttachmentViewModel;
 
 /**
  * Created by stevenfredian on 9/27/17.
@@ -46,5 +47,7 @@ public interface ChatRoomTypeFactory {
     int type(QuickReplyListViewModel quickReplyListViewModel);
 
     int type(FallbackAttachmentViewModel fallbackAttachmentViewModel);
+
+    int type(ProductAttachmentViewModel productAttachmentViewModel);
 
 }

@@ -8,10 +8,12 @@ import com.tokopedia.inbox.inboxchat.domain.model.websocket.BaseChatViewModel;
 import com.tokopedia.inbox.inboxchat.domain.model.websocket.FallbackAttachmentViewModel;
 import com.tokopedia.inbox.inboxchat.domain.pojo.common.WebSocketResponse;
 import com.tokopedia.inbox.inboxchat.domain.pojo.common.WebSocketResponseData;
+import com.tokopedia.inbox.inboxchat.domain.pojo.productattachment.ProductAttachmentAttributes;
 import com.tokopedia.inbox.inboxchat.domain.pojo.quickreply.QuickReplyAttachmentAttributes;
 import com.tokopedia.inbox.inboxchat.domain.pojo.quickreply.QuickReplyPojo;
 import com.tokopedia.inbox.inboxchat.viewmodel.chatroom.QuickReplyListViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.chatroom.QuickReplyViewModel;
+import com.tokopedia.inbox.inboxchat.viewmodel.chatroom.productattachment.ProductAttachmentViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -38,13 +40,14 @@ public class WebSocketMapper {
             WebSocketResponse pojo = new GsonBuilder().create().fromJson(json, WebSocketResponse.class);
 
             String jsonAttributes = pojo.getData().getAttachment().getAttributes();
-            if (pojo != null
-                    && pojo.getData() != null
+            if (pojo.getData() != null
                     && pojo.getData().getAttachment() != null
                     && !TextUtils.isEmpty(jsonAttributes)) {
                 switch (pojo.getData().getAttachment().getType()) {
                     case TYPE_QUICK_REPLY:
                         return convertToQuickReplyModel(pojo.getData(), jsonAttributes);
+                    case TYPE_PRODUCT_ATTACHMENT:
+                        return convertToProductAttachment(pojo.getData(), jsonAttributes);
                     default:
 //                        return convertToFallBackModel(pojo.getData());
                         return null;
@@ -59,8 +62,29 @@ public class WebSocketMapper {
 
     }
 
-    private BaseChatViewModel convertToProductAttachment(String json) {
-        return null;
+    private BaseChatViewModel convertToProductAttachment(WebSocketResponseData pojo, String jsonAttribute) {
+        ProductAttachmentAttributes pojoAttribute = new GsonBuilder().create().fromJson(jsonAttribute,
+                ProductAttachmentAttributes.class);
+
+        return new ProductAttachmentViewModel(
+                String.valueOf(pojo.getMsgId()),
+                String.valueOf(pojo.getFromUid()),
+                pojo.getFrom(),
+                pojo.getFromRole(),
+                pojo.getAttachment().getType(),
+                pojo.getMessage().getTimeStampUnix(),
+                pojo.getMessage().getTimeStampUnix(),
+                pojoAttribute.getProductId(),
+                pojoAttribute.getProductProfile().getName(),
+                pojoAttribute.getProductProfile().getPrice(),
+                pojoAttribute.getProductProfile().getUrl(),
+                pojoAttribute.getProductProfile().getImageUrl(),
+                isSender(String.valueOf(pojo.getFromUid()))
+        );
+    }
+
+    private boolean isSender(String fromUid) {
+        return true;
     }
 
     private BaseChatViewModel convertToFallBackModel(WebSocketResponseData pojo) {
@@ -69,7 +93,6 @@ public class WebSocketMapper {
                 String.valueOf(pojo.getFromUid()),
                 pojo.getFrom(),
                 pojo.getFromRole(),
-                pojo.getAttachment().getFallbackAttachment().getMessage(),
                 pojo.getAttachment().getId(),
                 pojo.getAttachment().getType(),
                 pojo.getMessage().getTimeStampUnix(),
