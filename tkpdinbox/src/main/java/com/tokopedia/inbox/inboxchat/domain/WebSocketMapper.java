@@ -1,9 +1,14 @@
 package com.tokopedia.inbox.inboxchat.domain;
 
+import android.content.Context;
 import android.text.TextUtils;
 
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonSyntaxException;
+import com.tokopedia.abstraction.AbstractionRouter;
+import com.tokopedia.abstraction.common.data.model.session.UserSession;
+import com.tokopedia.core.router.TkpdInboxRouter;
+import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.inbox.inboxchat.domain.model.websocket.BaseChatViewModel;
 import com.tokopedia.inbox.inboxchat.domain.model.websocket.FallbackAttachmentViewModel;
 import com.tokopedia.inbox.inboxchat.domain.pojo.common.WebSocketResponse;
@@ -27,10 +32,11 @@ public class WebSocketMapper {
 
     private static final String TYPE_QUICK_REPLY = "8";
     private static final String TYPE_PRODUCT_ATTACHMENT = "3";
-
+    private SessionHandler sessionHandler;
 
     @Inject
-    public WebSocketMapper() {
+    public WebSocketMapper(SessionHandler context) {
+        this.sessionHandler = sessionHandler;
     }
 
 
@@ -84,7 +90,11 @@ public class WebSocketMapper {
     }
 
     private boolean isSender(String fromUid) {
-        return true;
+        if (sessionHandler != null) {
+            return sessionHandler.getLoginID().equals(fromUid);
+        } else {
+            return false;
+        }
     }
 
     private BaseChatViewModel convertToFallBackModel(WebSocketResponseData pojo) {

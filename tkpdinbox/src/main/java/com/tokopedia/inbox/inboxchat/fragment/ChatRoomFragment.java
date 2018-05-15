@@ -1401,7 +1401,7 @@ public class ChatRoomFragment extends BaseDaggerFragment
         if (isCurrentThread(message.getMessageId())) {
             if (message instanceof QuickReplyListViewModel) {
                 showQuickReplyView((QuickReplyListViewModel) message);
-                if (!TextUtils.isEmpty(message.getMessage())) {
+                if (!TextUtils.isEmpty(((QuickReplyListViewModel) message).getMessage())) {
                     addMessageToList(message);
                     scrollToBottomWithCheck();
                 }

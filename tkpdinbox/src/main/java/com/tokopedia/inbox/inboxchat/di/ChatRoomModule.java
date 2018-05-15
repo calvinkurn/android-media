@@ -1,5 +1,9 @@
 package com.tokopedia.inbox.inboxchat.di;
 
+import android.content.Context;
+
+import com.tokopedia.abstraction.common.data.model.session.UserSession;
+import com.tokopedia.core.base.di.qualifier.ApplicationContext;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.core.network.apiservices.accounts.UploadImageService;
@@ -266,7 +270,7 @@ public class ChatRoomModule {
 
     @InboxChatScope
     @Provides
-    WebSocketMapper provideWebSocketMapper() {
-        return new WebSocketMapper();
+    WebSocketMapper provideWebSocketMapper(SessionHandler sessionHandler) {
+        return new WebSocketMapper(sessionHandler);
     }
 }
