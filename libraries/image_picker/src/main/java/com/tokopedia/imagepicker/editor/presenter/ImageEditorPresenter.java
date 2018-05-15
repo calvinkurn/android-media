@@ -1,9 +1,7 @@
 package com.tokopedia.imagepicker.editor.presenter;
 
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.Canvas;
-import android.graphics.Rect;
+import android.media.ExifInterface;
 import android.support.annotation.NonNull;
 import android.webkit.URLUtil;
 
@@ -14,6 +12,7 @@ import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.imagepicker.common.util.ImageUtils;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
@@ -24,7 +23,6 @@ import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Func1;
 import rx.functions.Func2;
-import rx.functions.Func3;
 import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 
@@ -106,14 +104,28 @@ public class ImageEditorPresenter extends BaseDaggerPresenter<ImageEditorPresent
                                 // then delete the step0 file
                                 float expectedRatio = (float) ratioX / ratioY;
                                 int[] widthHeight = ImageUtils.getWidthAndHeight(imagePath);
-                                int width = widthHeight[0];
-                                int height = widthHeight[1];
+                                int defaultOrientation;
+                                try {
+                                    defaultOrientation = ImageUtils.getOrientation(imagePath);
+                                } catch (IOException e) {
+                                    defaultOrientation = ExifInterface.ORIENTATION_NORMAL;
+                                }
+                                int width;
+                                int height;
+                                if (defaultOrientation == ExifInterface.ORIENTATION_ROTATE_90 ||
+                                        defaultOrientation == ExifInterface.ORIENTATION_ROTATE_270) {
+                                    width = widthHeight[1];
+                                    height = widthHeight[0];
+                                } else {
+                                    width = widthHeight[0];
+                                    height = widthHeight[1];
+                                }
                                 float currentRatio = (float) width / height;
                                 if (expectedRatio == currentRatio) {
                                     return imagePath;
                                 } else {
                                     String outputPath;
-                                    outputPath = trimBitmap(imagePath, expectedRatio, currentRatio);
+                                    outputPath = ImageUtils.trimBitmap(imagePath, expectedRatio, currentRatio, true);
                                     return outputPath;
                                 }
                             }
@@ -151,40 +163,6 @@ public class ImageEditorPresenter extends BaseDaggerPresenter<ImageEditorPresent
             compositeSubscription = new CompositeSubscription();
         }
         compositeSubscription.add(subscription);
-    }
-
-    private String trimBitmap(String imagePath, float expectedRatio, float currentRatio) {
-        Bitmap bitmapToEdit = ImageUtils.getBitmapFromPath(imagePath, ImageUtils.DEF_WIDTH,
-                ImageUtils.DEF_HEIGHT, false);
-        int width = bitmapToEdit.getWidth();
-        int height = bitmapToEdit.getHeight();
-        int left = 0, right = width, top = 0, bottom = height;
-        int expectedWidth = width, expectedHeight = height;
-        if (expectedRatio < currentRatio) { // trim left and right
-            expectedWidth = (int) (expectedRatio * height);
-            left = ((width - expectedWidth) / 2);
-            right = (left + expectedWidth);
-        } else { // trim top and bottom
-            expectedHeight = (int) (width / expectedRatio);
-            top = ((height - expectedHeight) / 2);
-            bottom = (top + expectedHeight);
-        }
-
-        boolean isPng = ImageUtils.isPng(imagePath);
-
-        Bitmap outputBitmap;
-        outputBitmap = Bitmap.createBitmap(expectedWidth, expectedHeight, Bitmap.Config.ARGB_8888);
-        Canvas canvas = new Canvas(outputBitmap);
-        canvas.drawBitmap(bitmapToEdit, new Rect(left, top, right, bottom),
-                new Rect(0, 0, expectedWidth, expectedHeight), null);
-        File file = ImageUtils.writeImageToTkpdPath(ImageUtils.DirectoryDef.DIRECTORY_TOKOPEDIA_CACHE,
-                outputBitmap, isPng);
-        bitmapToEdit.recycle();
-        outputBitmap.recycle();
-
-        System.gc();
-
-        return file.getAbsolutePath();
     }
 
     private Observable<List<File>> downloadImages(final List<String> urls) {
