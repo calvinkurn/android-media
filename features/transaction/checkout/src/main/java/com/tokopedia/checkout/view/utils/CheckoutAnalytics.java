@@ -29,6 +29,7 @@ public class CheckoutAnalytics {
         String CLICK_TRASH_BIN = "click trash bin";
         String CLICK_ARROW_BACK = "click arrow back";
         String CLICK_X_ON_BANNER_PROMO_CODE = "click x on banner promo code";
+        String CLICK_BELANJA_SEKARANG_ON_EMPTY_CART = "click belanja sekarang on empty cart";
 
         String VIEW_IMPRESSION_CART_EMPTY = "impression cart empty";
     }
@@ -116,11 +117,20 @@ public class CheckoutAnalytics {
         );
     }
 
+    public void eventClickCartClickBelanjaSekarangOnEmptyCart() {
+        analyticTracker.sendEventTracking(EventName.CLICK_ATC,
+                EventCategory.CART,
+                EventAction.CLICK_BELANJA_SEKARANG_ON_EMPTY_CART,
+                ""
+        );
+    }
+
     public void eventViewCartViewImpressionCartEmpty() {
         analyticTracker.sendEventTracking(EventName.VIEW_ATC,
                 EventCategory.CART,
                 EventAction.VIEW_IMPRESSION_CART_EMPTY,
                 "");
     }
+
 
 }

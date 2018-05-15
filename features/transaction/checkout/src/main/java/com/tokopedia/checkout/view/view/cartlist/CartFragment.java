@@ -643,6 +643,7 @@ public class CartFragment extends BaseCheckoutFragment implements CartListAdapte
             shop.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
+                    checkoutAnalytics.eventClickCartClickBelanjaSekarangOnEmptyCart();
                     navigateToActivity(
                             BrowseProductRouter.getSearchProductIntent(getActivity())
                     );
