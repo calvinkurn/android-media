@@ -267,7 +267,7 @@ public class DiscoverySearchView extends FrameLayout implements Filter.FilterLis
 
         remoteConfig = new FirebaseRemoteConfigImpl(getContext());
         setImageSearch(remoteConfig.getBoolean(TkpdCache.RemoteConfigKey.SHOW_IMAGE_SEARCH,
-                false));
+                true));
 
         showVoice(true);
         showImageSearch(true);

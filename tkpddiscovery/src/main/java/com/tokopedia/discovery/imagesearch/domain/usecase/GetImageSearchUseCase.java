@@ -84,12 +84,11 @@ public class GetImageSearchUseCase<T> extends UseCase<SearchResultModel> {
                     public Observable<SearchResultModel> call(String imagePath) {
                         File imgFile = new File(imagePath);
                         Bitmap myBitmap = BitmapFactory.decodeFile(imgFile.getAbsolutePath());
-
-                        if (myBitmap == null) {
-                            myBitmap = ImageHandler.getBitmapFromUri(context, Uri.parse(imagePath), MAX_WIDTH, MAX_HEIGHT);
-                        }
-
                         try {
+                            if (myBitmap == null) {
+                                myBitmap = ImageHandler.getBitmapFromUri(context, Uri.parse(imagePath), MAX_WIDTH, MAX_HEIGHT);
+                            }
+
                             myBitmap = ImageHandler.resizeImage(myBitmap, MAX_WIDTH, MAX_HEIGHT);
                             myBitmap = ImageHandler.RotatedBitmap(myBitmap, imagePath);
                         } catch (IOException exception) {

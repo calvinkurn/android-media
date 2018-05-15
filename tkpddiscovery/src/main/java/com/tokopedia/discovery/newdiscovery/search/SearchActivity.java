@@ -67,6 +67,7 @@ public class SearchActivity extends DiscoveryActivity
     private String productTabTitle;
     private String catalogTabTitle;
     private String shopTabTitle;
+    private boolean forceSwipeToShop;
 
     @Inject
     SearchPresenter searchPresenter;
@@ -114,22 +115,28 @@ public class SearchActivity extends DiscoveryActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         initInjector();
-        setPresenter(searchPresenter);
-        searchPresenter.attachView(this);
-        searchPresenter.setDiscoveryView(this);
-        initResources();
-        handleImageUri(getIntent());
-        ProductViewModel productViewModel =
-                getIntent().getParcelableExtra(EXTRA_PRODUCT_VIEW_MODEL);
-
-        boolean forceSwipeToShop;
-        String searchQuery = getIntent().getStringExtra(BrowseProductRouter.EXTRAS_SEARCH_TERM);
 
         if (savedInstanceState != null) {
             forceSwipeToShop = isForceSwipeToShop();
         } else {
             forceSwipeToShop = getIntent().getBooleanExtra(EXTRA_FORCE_SWIPE_TO_SHOP, false);
         }
+
+
+        handleIntent(getIntent());
+
+    }
+
+    private void handleIntent(Intent intent) {
+        setPresenter(searchPresenter);
+        searchPresenter.attachView(this);
+        searchPresenter.setDiscoveryView(this);
+        initResources();
+        ProductViewModel productViewModel =
+                intent.getParcelableExtra(EXTRA_PRODUCT_VIEW_MODEL);
+
+        String searchQuery = intent.getStringExtra(BrowseProductRouter.EXTRAS_SEARCH_TERM);
+
         if (productViewModel != null) {
             setLastQuerySearchView(productViewModel.getQuery());
             loadSection(productViewModel, forceSwipeToShop);
@@ -146,33 +153,41 @@ public class SearchActivity extends DiscoveryActivity
             }, 200);
         }
 
-        if (getIntent() != null &&
-                getIntent().getBooleanExtra(FROM_APP_SHORTCUTS, false)) {
+        if (intent != null &&
+                intent.getBooleanExtra(FROM_APP_SHORTCUTS, false)) {
             UnifyTracking.eventBeliLongClick();
         }
+
+        handleImageUri(intent);
     }
 
     @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
-        handleImageUri(intent);
+        handleIntent(intent);
     }
 
     private void handleImageUri(Intent intent) {
 
         RemoteConfig remoteConfig = new FirebaseRemoteConfigImpl(this);
 
-        if (intent != null &&
-                intent.getClipData() != null &&
-                intent.getClipData().getItemCount() > 0 &&
-                remoteConfig.getBoolean(TkpdCache.RemoteConfigKey.SHOW_IMAGE_SEARCH,
-                        false)) {
+        if (remoteConfig.getBoolean(TkpdCache.RemoteConfigKey.SHOW_IMAGE_SEARCH, true) &&
+                intent != null) {
 
-            searchView.hideShowCaseDialog(true);
-            sendImageSearchFromGalleryGTM("");
-            ClipData clipData = intent.getClipData();
-            Uri uri = clipData.getItemAt(0).getUri();
-            onImagePickedSuccess(uri.toString());
+            if (intent.getClipData() != null &&
+                    intent.getClipData().getItemCount() > 0) {
+
+                searchView.hideShowCaseDialog(true);
+                sendImageSearchFromGalleryGTM("");
+                ClipData clipData = intent.getClipData();
+                Uri uri = clipData.getItemAt(0).getUri();
+                onImagePickedSuccess(uri.toString());
+            } else if (intent.getData() != null &&
+                    !TextUtils.isEmpty(intent.getData().toString())) {
+                searchView.hideShowCaseDialog(true);
+                sendImageSearchFromGalleryGTM("");
+                onImagePickedSuccess(intent.getData().toString());
+            }
         }
     }
 

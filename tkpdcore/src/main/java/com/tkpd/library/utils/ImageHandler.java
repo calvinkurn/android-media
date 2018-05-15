@@ -3,6 +3,7 @@ package com.tkpd.library.utils;
 import android.app.Activity;
 import android.app.Application;
 import android.content.Context;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
@@ -15,8 +16,10 @@ import android.graphics.RectF;
 import android.graphics.drawable.Drawable;
 import android.media.ExifInterface;
 import android.net.Uri;
+import android.provider.MediaStore;
 import android.support.v7.content.res.AppCompatResources;
 import android.text.TextUtils;
+import android.util.Log;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
@@ -29,7 +32,9 @@ import com.tokopedia.core.R;
 import com.tokopedia.core.gcm.BuildAndShowNotification;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
 
 
 public class ImageHandler extends com.tokopedia.abstraction.common.utils.image.ImageHandler {
@@ -104,7 +109,57 @@ public class ImageHandler extends com.tokopedia.abstraction.common.utils.image.I
         return image;
     }
 
-    public static Bitmap getBitmapFromUri(Context context, Uri uri, int width, int height) {
+    public static Bitmap getBitmapFromUri(Context activity, Uri uri, int width, int height) {
+        Bitmap bitmap = null;
+
+        try {
+            BitmapFactory.Options options = new BitmapFactory.Options();
+
+            InputStream stream = activity.getContentResolver()
+                    .openInputStream(uri);
+            if (stream != null) {
+                options.inJustDecodeBounds = true;
+                bitmap = BitmapFactory.decodeStream(stream, null, options);
+                stream.close();
+            }
+
+            stream = activity.getContentResolver().openInputStream(uri);
+            if (stream != null) {
+                options.inSampleSize = getScale(options.outWidth,
+                        options.outHeight, width, height);
+                options.inJustDecodeBounds = false;
+                bitmap = BitmapFactory.decodeStream(stream, null, options);
+
+                stream.close();
+            }
+        } catch (FileNotFoundException e) {
+            Log.d("FileNotFound: ", "Could not open bitmap URI for input stream");
+        } catch (IOException e) {
+            Log.d("IOException: ", "Problem while reading bitmap");
+        } catch (Exception e){
+            Log.d("Exception: ", "Exception while reading bitmap");
+        }
+
+        return bitmap;
+    }
+
+    private static int getScale(int originalWidth, int originalHeight,
+                                final int requiredWidth, final int requiredHeight) {
+        int scale = 1;
+
+        if ((originalWidth > requiredWidth)
+                || (originalHeight > requiredHeight)) {
+            if (originalWidth < originalHeight) {
+                scale = Math.round((float) originalWidth / requiredWidth);
+            } else {
+                scale = Math.round((float) originalHeight / requiredHeight);
+            }
+        }
+
+        return scale;
+    }
+
+    /*public static Bitmap getBitmapFromUri(Context context, Uri uri, int width, int height) {
         Bitmap bitmap = null;
         try {
             bitmap = Glide.with(context).load(uri).asBitmap().into(width, height).get();
@@ -112,7 +167,7 @@ public class ImageHandler extends com.tokopedia.abstraction.common.utils.image.I
             e.printStackTrace();
         }
         return bitmap;
-    }
+    }*/
 
     public static void loadImageWithId(ImageView imageview, int resId) {
         if (imageview.getContext() != null) {

@@ -84,14 +84,25 @@
             android:launchMode="singleTask"
             android:screenOrientation="portrait">
             <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data android:mimeType="image/jpeg" />
+                <data android:mimeType="image/png" />
+                <data android:mimeType="image/jpg" />
+            </intent-filter>
+            <intent-filter>
                 <action android:name="android.intent.action.SEND" />
                 <category android:name="android.intent.category.DEFAULT" />
-                <data android:mimeType="image/*" />
+                <data android:mimeType="image/jpeg" />
+                <data android:mimeType="image/png" />
+                <data android:mimeType="image/jpg" />
             </intent-filter>
             <intent-filter>
                 <action android:name="android.intent.action.SEND_MULTIPLE" />
                 <category android:name="android.intent.category.DEFAULT" />
-                <data android:mimeType="image/*" />
+                <data android:mimeType="image/jpeg" />
+                <data android:mimeType="image/png" />
+                <data android:mimeType="image/jpg" />
             </intent-filter>
 
         </activity>
@@ -99,7 +110,7 @@
             android:name=".imagesearch.search.ImageSearchActivity"
             android:label=""
             android:screenOrientation="portrait" />
-        <activity android:name=".newdiscovery.category.presentation.CategoryActivity"></activity>
+        <activity android:name=".newdiscovery.category.presentation.CategoryActivity" />
     </application>
 
 </manifest>
