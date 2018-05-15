@@ -15,7 +15,6 @@ import com.tokopedia.checkout.domain.datamodel.cartlist.CartPromoSuggestion;
 import com.tokopedia.checkout.domain.datamodel.cartsingleshipment.CartItemModel;
 import com.tokopedia.checkout.domain.datamodel.cartsingleshipment.ShipmentCostModel;
 import com.tokopedia.checkout.domain.datamodel.shipmentrates.CourierItemData;
-import com.tokopedia.checkout.domain.datamodel.shipmentrates.ShipmentCartData;
 import com.tokopedia.checkout.domain.datamodel.shipmentrates.ShipmentDetailData;
 import com.tokopedia.checkout.view.holderitemdata.CartItemPromoHolderData;
 import com.tokopedia.checkout.view.view.shipment.converter.ShipmentDataRequestConverter;
@@ -74,6 +73,7 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
     private int shipmentCostItemPosition;
     private boolean hasShownShowCase;
+    private int lastChooseCourierItemPosition;
 
     @Inject
     public ShipmentAdapter(ShipmentAdapterActionListener shipmentAdapterActionListener,
@@ -537,6 +537,21 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         notifyItemChanged(getShipmentCostPosition());
     }
 
+    public void updateShipmentDestinationPinpoint(Double latitude, Double longitude) {
+        if (latitude != null && longitude != null) {
+            if (recipientAddressModel != null) {
+                recipientAddressModel.setLatitude(latitude);
+                recipientAddressModel.setLongitude(longitude);
+            }
+            for (ShipmentCartItemModel shipmentCartItemModel : shipmentCartItemModelList) {
+                if (shipmentCartItemModel.getShipmentCartData() != null) {
+                    shipmentCartItemModel.getShipmentCartData().setDestinationLatitude(latitude);
+                    shipmentCartItemModel.getShipmentCartData().setDestinationLongitude(longitude);
+                }
+            }
+        }
+    }
+
     public boolean hasSetAllCourier() {
         for (ShipmentData itemData : shipmentDataList) {
             if (itemData instanceof ShipmentCartItemModel) {
@@ -578,6 +593,22 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     public void clearData() {
         shipmentDataList.clear();
         notifyDataSetChanged();
+    }
+
+    public ShipmentCartItemModel getShipmentCartItemModelByIndex(int index) {
+        if (shipmentDataList.get(index) instanceof ShipmentCartItemModel) {
+            return (ShipmentCartItemModel) shipmentDataList.get(index);
+        } else {
+            return null;
+        }
+    }
+
+    public int getLastChooseCourierItemPosition() {
+        return lastChooseCourierItemPosition;
+    }
+
+    public void setLastChooseCourierItemPosition(int lastChooseCourierItemPosition) {
+        this.lastChooseCourierItemPosition = lastChooseCourierItemPosition;
     }
 
     public static class RequestData {

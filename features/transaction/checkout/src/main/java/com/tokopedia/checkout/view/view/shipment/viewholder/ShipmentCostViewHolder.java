@@ -91,7 +91,7 @@ public class ShipmentCostViewHolder extends RecyclerView.ViewHolder {
         int startSpan = promoMessage.indexOf(formatText);
         int endSpan = promoMessage.indexOf(formatText) + formatText.length();
         Spannable formattedPromoMessage = new SpannableString(promoMessage);
-        final int color = ContextCompat.getColor(textView.getContext(), R.color.black_54);
+        final int color = ContextCompat.getColor(textView.getContext(), R.color.tkpd_main_green);
         formattedPromoMessage.setSpan(new ForegroundColorSpan(color), startSpan, endSpan,
                 Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
         formattedPromoMessage.setSpan(new StyleSpan(Typeface.BOLD), startSpan, endSpan,
