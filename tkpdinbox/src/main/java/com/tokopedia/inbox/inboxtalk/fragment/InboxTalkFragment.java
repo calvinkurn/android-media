@@ -357,16 +357,8 @@ public class InboxTalkFragment extends BasePresenterFragment<InboxTalkPresenter>
 
     @Override
     public void onStateResponse(List<RecyclerViewItem> list, int position, int page, boolean hasNext, String filterString) {
-        floatingActionButton.show();
-        isRequest = false;
-//        if (pagingHandler.getPage() == 1) {
-//            refresh.finishRefresh();
-//            items.clear();
-//        }
-        items.addAll(list);
-        adapter.notifyDataSetChanged();
         dialog.setSelection(filterString);
-        displayLoading(false);
+        if(items == null || items.size() == 0) presenter.refreshInboxTalk(getActivity(),getParam());
     }
 
     @Override
