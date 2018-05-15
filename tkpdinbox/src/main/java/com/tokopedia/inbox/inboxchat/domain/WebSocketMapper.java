@@ -64,6 +64,8 @@ public class WebSocketMapper {
             }
         } catch (JsonSyntaxException e) {
             return null;
+        } catch (NullPointerException e) {
+            return null;
         }
 
     }
