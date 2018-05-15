@@ -79,7 +79,7 @@ public class ShopEditorFragment extends BaseFragment<ShopEditorPresenter> implem
     }
 
     public void uploadImage(View view) {
-        ImagePickerBuilder builder = new ImagePickerBuilder(getString(com.tokopedia.imagepicker.R.string.choose_shop_picture),
+        ImagePickerBuilder builder = new ImagePickerBuilder(getString(R.string.choose_shop_picture),
                 new int[]{TYPE_GALLERY, TYPE_CAMERA}, GalleryType.IMAGE_ONLY, ImageSelectionTypeDef.TYPE_SINGLE,
                 false, 1,
                 DEFAULT_RESOLUTION, 1, 1, true, true,
