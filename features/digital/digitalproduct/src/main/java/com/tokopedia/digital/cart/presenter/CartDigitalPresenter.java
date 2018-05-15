@@ -223,11 +223,9 @@ public class CartDigitalPresenter implements ICartDigitalPresenter {
     @Override
     public void onPaymentSuccess(String categoryId) {
         //Delete Category and Favorit List Cache
-        CommonUtils.dumper("Vishal in onPaymentSuccess :: " + categoryId);
         if (!TextUtils.isEmpty(categoryId)) {
             GlobalCacheManager globalCacheManager = new GlobalCacheManager();
             globalCacheManager.delete(DigitalCache.NEW_DIGITAL_CATEGORY_AND_FAV + "/" + categoryId);
-            CommonUtils.dumper("Vishal in onPaymentSuccess cache deleted :: " + categoryId);
         }
     }
 

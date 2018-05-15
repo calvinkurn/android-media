@@ -29,9 +29,6 @@ public class GetCategoryByIdUseCase extends UseCase<ProductDigitalData> {
     private final String PARAM_SORT = "sort";
     private final String DEFAULT_EMPTY_FIELD = "";
 
-    private final String PARAM_IS_RESELLER = "is_reseller";
-    private final String PARAM_VALUE_IS_RESELLER = "1";
-
     private final String PARAM_NEED_FAVORITE_LIST = "need_favorite_list";
 
     private Context context;
@@ -50,11 +47,6 @@ public class GetCategoryByIdUseCase extends UseCase<ProductDigitalData> {
         final String clientNumber = requestParams.getString(PARAM_CLIENT_NUMBER, "");
         String sort = requestParams.getString(PARAM_SORT, "");
         boolean needFavoriteList = requestParams.getBoolean(PARAM_NEED_FAVORITE_LIST, false);
-
-//        TKPDMapParam<String, String> paramQueryCategory = new TKPDMapParam<>();
-//        if (GlobalConfig.isSellerApp()) {
-//            paramQueryCategory.put(PARAM_IS_RESELLER, PARAM_VALUE_IS_RESELLER);
-//        }
 
         if (needFavoriteList) {
             //fetch category detail and favorit both if user is not logged in
@@ -90,34 +82,6 @@ public class GetCategoryByIdUseCase extends UseCase<ProductDigitalData> {
             return digitalCategoryRepository.getCategory(categoryId);
         }
     }
-
-//    private Observable<DigitalNumberList> getFavoriteList
-//            (TKPDMapParam<String, String> paramQueryLastNumber) {
-//        if (SessionHandler.isV4Login(MainApplication.getAppContext())) {
-//            return digitalCategoryRepository.getFavoriteList(paramQueryLastNumber);
-//        } else {
-//            List<OrderClientNumber> orderClientNumbers = new ArrayList<>();
-//            DigitalNumberList digitalNumberList = new DigitalNumberList(orderClientNumbers, null);
-//            if (paramQueryLastNumber.get(PARAM_CATEGORY_ID) != null
-//                    && paramQueryLastNumber.get(PARAM_OPERATOR_ID) != null) {
-//                String productId =
-//                        paramQueryLastNumber.get(PARAM_OPERATOR_ID) == null ? DEFAULT_EMPTY_FIELD :
-//                                paramQueryLastNumber.get(PARAM_OPERATOR_ID);
-//                String clientNumber =
-//                        paramQueryLastNumber.get(PARAM_CLIENT_NUMBER) == null ? DEFAULT_EMPTY_FIELD :
-//                                paramQueryLastNumber.get(PARAM_CLIENT_NUMBER);
-//                OrderClientNumber orderClientNumber = new OrderClientNumber.Builder()
-//                        .categoryId(paramQueryLastNumber.get(PARAM_CATEGORY_ID))
-//                        .operatorId(paramQueryLastNumber.get(PARAM_OPERATOR_ID))
-//                        .clientNumber(clientNumber)
-//                        .name(DEFAULT_EMPTY_FIELD)
-//                        .productId(productId)
-//                        .build();
-//                digitalNumberList = new DigitalNumberList(orderClientNumbers, orderClientNumber);
-//            }
-//            return Observable.just(digitalNumberList);
-//        }
-//    }
 
     public RequestParams createRequestParam(String categoryId) {
         RequestParams requestParams = RequestParams.create();
