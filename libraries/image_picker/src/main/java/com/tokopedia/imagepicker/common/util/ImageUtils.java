@@ -47,8 +47,8 @@ import static com.tokopedia.imagepicker.common.util.ImageUtils.DirectoryDef.DIRE
 public class ImageUtils {
     private static final int IMAGE_WIDTH_MIN_HD = 1280;
 
-    public static final int DEF_WIDTH = 2048;
-    public static final int DEF_HEIGHT = 2048;
+    public static final int DEF_WIDTH = 2560;
+    public static final int DEF_HEIGHT = 2560;
 
     private static final String TEMP_FILE_NAME = "temp.tmp";
     public static final String PNG_EXT = ".png";
@@ -309,6 +309,14 @@ public class ImageUtils {
         return new int[]{options.outWidth, options.outHeight};
     }
 
+    public static long getFileSizeInKb(String filePath) {
+        return getFileSizeInKb(new File(filePath));
+    }
+
+    public static long getFileSizeInKb(File file) {
+        return file.length() / 1024;
+    }
+
     public static int getMinResolution(String filePath) {
         return getMinResolution(new File(filePath));
     }
@@ -341,6 +349,10 @@ public class ImageUtils {
 
     private static boolean isImageMimeType(String mimeType) {
         return !TextUtils.isEmpty(mimeType) && mimeType.startsWith("image");
+    }
+
+    public static boolean isImageType(Context context, String filePath) {
+        return isImageMimeType(context, Uri.fromFile(new File(filePath)));
     }
 
     private static boolean isPNGMimeType(String mimeType) {
@@ -395,6 +407,26 @@ public class ImageUtils {
         canvas.drawBitmap(bitmapToEdit, new Rect(left, top, right, bottom),
                 new Rect(0, 0, expectedWidth, expectedHeight), null);
         File file = ImageUtils.writeImageToTkpdPath(ImageUtils.DirectoryDef.DIRECTORY_TOKOPEDIA_CACHE,
+                outputBitmap, isPng);
+        bitmapToEdit.recycle();
+        outputBitmap.recycle();
+
+        System.gc();
+
+        return file.getAbsolutePath();
+    }
+
+    public static String resizeBitmap(String imagePath, int maxWidth, int maxHeight, boolean needCheckRotate,
+                                      @DirectoryDef String resultDirectory) {
+        Bitmap bitmapToEdit = ImageUtils.getBitmapFromPath(imagePath, maxWidth, maxHeight, needCheckRotate);
+
+        boolean isPng = ImageUtils.isPng(imagePath);
+
+        Bitmap outputBitmap;
+        outputBitmap = Bitmap.createBitmap(bitmapToEdit.getWidth(), bitmapToEdit.getHeight(), Bitmap.Config.ARGB_8888);
+        Canvas canvas = new Canvas(outputBitmap);
+        canvas.drawBitmap(bitmapToEdit, 0, 0, null);
+        File file = ImageUtils.writeImageToTkpdPath(resultDirectory,
                 outputBitmap, isPng);
         bitmapToEdit.recycle();
         outputBitmap.recycle();

@@ -15,7 +15,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.view.View;
-import android.webkit.URLUtil;
 import android.widget.TextView;
 
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
@@ -120,11 +119,15 @@ public class ImagePickerActivity extends BaseSimpleActivity
 
     private void onDoneClicked() {
         if (selectedImagePaths.size() > 0) {
-            Intent intent = ImageEditorActivity.getIntent(this, selectedImagePaths,
-                    imagePickerBuilder.getMinResolution(), imagePickerBuilder.getImageEditActionType(),
-                    imagePickerBuilder.getRatioX(), imagePickerBuilder.getRatioY(),
-                    imagePickerBuilder.isCirclePreview());
-            startActivityForResult(intent, REQUEST_CODE_EDITOR);
+            if (imagePickerBuilder.isContinueToEditAfterPick()) {
+                Intent intent = ImageEditorActivity.getIntent(this, selectedImagePaths,
+                        imagePickerBuilder.getMinResolution(), imagePickerBuilder.getImageEditActionType(),
+                        imagePickerBuilder.getRatioX(), imagePickerBuilder.getRatioY(),
+                        imagePickerBuilder.isCirclePreview());
+                startActivityForResult(intent, REQUEST_CODE_EDITOR);
+            } else {
+                onFinishWithMultipleImageValidateNetworkPath(selectedImagePaths);
+            }
         }
     }
 
@@ -252,7 +255,7 @@ public class ImagePickerActivity extends BaseSimpleActivity
 
     @Override
     public boolean isMaxImageReached() {
-        return selectedImagePaths.size() >= imagePickerBuilder.getMaximumNoOfImage();
+        return selectedImagePaths.size() >= imagePickerBuilder.getMaximumNoPick();
     }
 
     @Override
@@ -327,23 +330,19 @@ public class ImagePickerActivity extends BaseSimpleActivity
     private void onFinishWithMultipleImageValidateNetworkPath(ArrayList<String> imageUrlOrPathList) {
         if (imagePickerBuilder.isMoveImageResultToLocal()) {
             //check if there is http url on the list, if any, convert to local.
-            boolean hasNetworkImage = false;
-            for (int i = 0, sizei = imageUrlOrPathList.size(); i < sizei; i++) {
-                if (URLUtil.isNetworkUrl(imageUrlOrPathList.get(i))) {
-                    hasNetworkImage = true;
-                    break;
-                }
-            }
-            if (hasNetworkImage) {
-                showDownloadProgressDialog();
-                initImagePickerPresenter();
-                imagePickerPresenter.convertHttpPathToLocalPath(imageUrlOrPathList);
-            } else {
-                onFinishWithMultipleFinalImage(imageUrlOrPathList);
-            }
+            showFinishProgressDialog();
+            initImagePickerPresenter();
+            imagePickerPresenter.convertHttpPathToLocalPath(imageUrlOrPathList);
         } else {
-            onFinishWithMultipleFinalImage(imageUrlOrPathList);
+            onFinishWithMultipleImageValidateFileSize(imageUrlOrPathList);
         }
+    }
+
+    private void onFinishWithMultipleImageValidateFileSize(ArrayList<String> imagePathList) {
+        long maxFileSizeInKB = imagePickerBuilder.getMaxFileSizeInKB();
+        showFinishProgressDialog();
+        initImagePickerPresenter();
+        imagePickerPresenter.resizeImage(imagePathList, maxFileSizeInKB);
     }
 
     private void onFinishWithMultipleFinalImage(ArrayList<String> imageUrlOrPathList) {
@@ -367,7 +366,23 @@ public class ImagePickerActivity extends BaseSimpleActivity
     @Override
     public void onSuccessDownloadImageToLocal(ArrayList<String> localPaths) {
         hideDownloadProgressDialog();
-        onFinishWithMultipleFinalImage(localPaths);
+        onFinishWithMultipleImageValidateFileSize(localPaths);
+    }
+
+    @Override
+    public void onErrorResizeImage(Throwable e) {
+        hideDownloadProgressDialog();
+        if (e instanceof ImagePickerPresenter.FileSizeAboveMaximumException) {
+            NetworkErrorHelper.showRedCloseSnackbar(this, getString(R.string.max_file_size_reached));
+        } else {
+            NetworkErrorHelper.showRedCloseSnackbar(this, ErrorHandler.getErrorMessage(getContext(), e));
+        }
+    }
+
+    @Override
+    public void onSuccessResizeImage(ArrayList<String> resultPaths) {
+        hideDownloadProgressDialog();
+        onFinishWithMultipleFinalImage(resultPaths);
     }
 
     private void initImagePickerPresenter() {
@@ -377,7 +392,7 @@ public class ImagePickerActivity extends BaseSimpleActivity
         }
     }
 
-    private void showDownloadProgressDialog() {
+    private void showFinishProgressDialog() {
         if (progressDialog == null) {
             progressDialog = new ProgressDialog(this);
             progressDialog.setCancelable(false);
