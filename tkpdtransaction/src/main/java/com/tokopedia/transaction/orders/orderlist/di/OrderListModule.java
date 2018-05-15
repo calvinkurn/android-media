@@ -55,8 +55,8 @@ public class OrderListModule {
     }
 
     @Provides
-    OrderListFactory provideOrderListFactory(OrderListDataApi orderListDataApi,Gson gson){
-        return new OrderListFactory(orderListDataApi,gson);
+    OrderListFactory provideOrderListFactory(OrderListDataApi orderListDataApi,@ApplicationContext Context context){
+        return new OrderListFactory(orderListDataApi,context);
     }
 
     @Provides

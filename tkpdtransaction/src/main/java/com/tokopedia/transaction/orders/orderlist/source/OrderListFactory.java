@@ -1,6 +1,8 @@
 package com.tokopedia.transaction.orders.orderlist.source;
 
 
+import android.content.Context;
+
 import com.google.gson.Gson;
 import com.tokopedia.transaction.orders.orderlist.source.api.OrderListDataApi;
 
@@ -11,17 +13,17 @@ import javax.inject.Inject;
  */
 
 public class OrderListFactory {
-    private final Gson gson;
+    private final Context context;
     private OrderListDataApi orderListApi;
 
     @Inject
-    public OrderListFactory(OrderListDataApi service, Gson gson){
+    public OrderListFactory(OrderListDataApi service, Context context){
         this.orderListApi = service;
-        this.gson = gson;
+        this.context = context;
     }
 
     public CloudOrderListDataSource createCloudAttrDataSource(){
-        return new CloudOrderListDataSource(orderListApi,gson);
+        return new CloudOrderListDataSource(orderListApi,context);
     }
 
 }

@@ -14,7 +14,7 @@ import javax.inject.Inject;
 import rx.Observable;
 
 public class OrderDetailsUseCase extends UseCase<DetailsData> {
-    public static final String ORDER_CATEGORY = "order_category";
+    public static final String ORDER_CATEGORY = "orderCategory";
     public static final String ORDER_ID = "orderId";
     protected OrderDetailsRepository orderDetailsRepository;
 

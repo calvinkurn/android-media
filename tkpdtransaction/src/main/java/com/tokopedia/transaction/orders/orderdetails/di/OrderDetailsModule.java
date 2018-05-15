@@ -6,6 +6,7 @@ import com.google.gson.Gson;
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
+import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.transaction.orders.common.OrderListAuthInterceptor;
 import com.tokopedia.transaction.orders.common.url.OrderURL;
 import com.tokopedia.transaction.orders.orderdetails.domain.OrderDetailsRepository;
@@ -39,13 +40,18 @@ public class OrderDetailsModule {
     }
 
     @Provides
+    GlobalCacheManager globalCacheManager() {
+        return new GlobalCacheManager();
+    }
+
+    @Provides
     OrderDetailsUseCase provideOrderDetailsUseCase(OrderDetailsRepository orderDetailsRepository){
         return new OrderDetailsUseCase(orderDetailsRepository);
     }
 
     @Provides
-    OrderDetailsFactory provideOrderDetailsFactory(OrderDetailsDataApi orderDetailsDataApi,Gson gson){
-        return new OrderDetailsFactory(orderDetailsDataApi,gson);
+    OrderDetailsFactory provideOrderDetailsFactory(OrderDetailsDataApi orderDetailsDataApi, @ApplicationContext Context context){
+        return new OrderDetailsFactory(orderDetailsDataApi, context);
     }
     @Provides
     OrderDetailsDataApi provideapi(Retrofit retrofit){ return retrofit.create(OrderDetailsDataApi.class);}

@@ -22,7 +22,7 @@ import rx.Subscriber;
  * Created by baghira on 09/05/18.
  */
 
-public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetailContract.View> implements OrderListDetailContract.Presenter{
+public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetailContract.View> implements OrderListDetailContract.Presenter {
     OrderDetailsUseCase orderDetailsUseCase;
 
     @Inject
@@ -40,39 +40,39 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
 
             @Override
             public void onError(Throwable e) {
-                Log.e("sandeep","error = "+e);
+                Log.e("sandeep", "error = " + e);
             }
 
             @Override
             public void onNext(DetailsData data) {
-                Log.e("sandeep","data is non empty : "+data);
-                setDetailsData(data.details());
+                setDetailsData(data.orderDetails());
             }
         });
     }
 
     private void setDetailsData(OrderDetails details) {
         getView().setStatus(details.status());
-        if(details.conditionalInfo().text()!= null && !details.conditionalInfo().text().equals("")){
+        if (details.conditionalInfo().text() != null && !details.conditionalInfo().text().equals("")) {
             getView().setConditionalInfo(details.conditionalInfo());
         }
-        for(Title title : details.title()){
+        for (Title title : details.title()) {
             getView().setTitle(title);
         }
         getView().setInvoice(details.invoice());
         getView().setOrderToken(details.orderToken());
-        for(Detail detail : details.detail()){
-            getView ().setDetail(detail);
+        for (Detail detail : details.detail()) {
+            getView().setDetail(detail);
         }
-        if(details.additionalInfo().size() > 0){
+        if (details.additionalInfo().size() > 0) {
             getView().setAdditionInfoVisibility(View.VISIBLE);
         }
-        for(AdditionalInfo additionalInfo : details.additionalInfo()){
+        for (AdditionalInfo additionalInfo : details.additionalInfo()) {
 
             getView().setAdditionalInfo(additionalInfo);
         }
-        for(Pricing pricing : details.pricing()){
-            getView().setPricing(pricing);
+        for (Pricing pricing : details.pricing()) {
+            if (pricing.value() != null && !pricing.value().equals(""))
+                getView().setPricing(pricing);
         }
         getView().setPaymentData(details.paymentData());
         getView().setContactUs(details.contactUs());
@@ -86,13 +86,13 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
             ActionButton actionButton = details.actionButtons().get(0);
             if (actionButton.buttonType().equals("buy")) {
                 getView().setBottomActionButton(actionButton);
-                getView().setActionButtonsVisibility(View.GONE,View.VISIBLE);
+                getView().setActionButtonsVisibility(View.GONE, View.VISIBLE);
             } else {
                 getView().setTopActionButton(actionButton);
                 getView().setActionButtonsVisibility(View.VISIBLE, View.GONE);
 
             }
-        } else{
+        } else {
             getView().setActionButtonsVisibility(View.GONE, View.GONE);
         }
 

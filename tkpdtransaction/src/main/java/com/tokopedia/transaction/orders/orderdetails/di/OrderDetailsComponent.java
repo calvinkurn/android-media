@@ -5,9 +5,7 @@ package com.tokopedia.transaction.orders.orderdetails.di;
  */
 
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
-import com.tokopedia.transaction.orders.orderdetails.view.OrderListDetailFragment;
-import com.tokopedia.transaction.orders.orderlist.di.OrderListComponent;
-import com.tokopedia.transaction.orders.orderlist.di.OrderListModule;
+import com.tokopedia.transaction.orders.orderdetails.view.fragment.OrderListDetailFragment;
 import com.tokopedia.transaction.orders.orderlist.di.OrderListModuleScope;
 
 import dagger.Component;

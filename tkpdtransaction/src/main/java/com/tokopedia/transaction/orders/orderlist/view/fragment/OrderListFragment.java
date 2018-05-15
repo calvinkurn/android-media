@@ -39,7 +39,6 @@ public class OrderListFragment extends BasePresenterFragment<OrderListContract.P
     @BindView(R2.id.order_list_rv)
     RecyclerView recyclerView;
     OrderListAdapter orderListAdapter;
-    OrderListUseCase getOrderListUseCase;
     private RefreshHandler refreshHandler;
     private boolean isLoading = false;
     private int page_num = 1;
@@ -84,8 +83,6 @@ public class OrderListFragment extends BasePresenterFragment<OrderListContract.P
     @Override
     protected void initialPresenter() {
         initInjector();
-        //SessionHandler sessionHandler = new SessionHandler(context);
-        //presenter = new OrderListPresenterImpl(this, getActivity(), sessionHandler, getOrderListUseCase);
         presenter.attachView(this);
     }
 
@@ -103,7 +100,6 @@ public class OrderListFragment extends BasePresenterFragment<OrderListContract.P
     @Override
     protected void setupArguments(Bundle arguments) {
         int category = arguments.getInt("ordercategory");
-        Log.e("sandeep", "category passed = " + category);
         switch (category) {
             case 0:
                 mOrderCategory = OrderCategory.ALL;
@@ -170,21 +166,17 @@ public class OrderListFragment extends BasePresenterFragment<OrderListContract.P
         isLoading = true;
         if (orderListAdapter.getItemCount() != 0) {
             mOrderDataList.clear();
-            orderListAdapter.clearItems();
 
         }
         presenter.getAllOrderData(getActivity(), mOrderCategory,
                 (orderListAdapter.getItemCount() == 0 ? TxOrderNetInteractor.TypeRequest.INITIAL
-                        : TxOrderNetInteractor.TypeRequest.PULL_REFRESH), page_num); // add switch here to distinguish between different OrderCategory.
-        // }
+                        : TxOrderNetInteractor.TypeRequest.PULL_REFRESH), page_num);
     }
 
     void onLoadMore() {
         page_num++;
-        Log.e("sandeep", "loading with page = " + page_num);
         mOrderDataList.add(null);
         orderListAdapter.addItemAtLast(null);
-        Log.e("sandeep", "second request");
         if (!isLoading) {
             isLoading = true;
             presenter.getAllOrderData(getActivity(), mOrderCategory, TxOrderNetInteractor.TypeRequest.LOAD_MORE, page_num);
@@ -204,9 +196,7 @@ public class OrderListFragment extends BasePresenterFragment<OrderListContract.P
 
     @Override
     public void unregisterScrollListener() {
-        //recyclerView.addOnScrollListener(null);
         hasRecyclerListener = false;
-        Log.e("sandeep", "listener false");
     }
 
     @Override
@@ -223,7 +213,6 @@ public class OrderListFragment extends BasePresenterFragment<OrderListContract.P
         if (!isLoading && getActivity() != null
                 && (orderListAdapter == null || orderListAdapter.getItemCount() == 0)) {
             refreshHandler.startRefresh();
-            Log.e("sandeep", "initialData");
         }
 
     }
@@ -250,7 +239,6 @@ public class OrderListFragment extends BasePresenterFragment<OrderListContract.P
 
     @Override
     public void renderDataList(List<Order> orderDataList) {
-        //isLoading = false;
         refreshHandler.finishRefresh();
         refreshHandler.setPullEnabled(true);
         if (mOrderDataList == null) {
@@ -266,9 +254,6 @@ public class OrderListFragment extends BasePresenterFragment<OrderListContract.P
             mOrderDataList.addAll(orderDataList);
             orderListAdapter.addAll(mOrderDataList);
             orderListAdapter.notifyItemRangeInserted(prevSize, mOrderDataList.size());
-        }
-        if (mOrderDataList != null && orderDataList != null) {
-            Log.e("sandeep", "order list size = " + mOrderDataList.size() + " & n/w order list size is :" + orderDataList.size());
         }
         if (!hasRecyclerListener) {
             addRecyclerListener();

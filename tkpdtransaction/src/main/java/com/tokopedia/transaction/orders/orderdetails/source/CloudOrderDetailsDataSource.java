@@ -1,23 +1,29 @@
 package com.tokopedia.transaction.orders.orderdetails.source;
 
+import android.content.Context;
+import android.content.res.Resources;
 import android.util.Log;
 
 import com.google.gson.Gson;
 import com.tokopedia.abstraction.common.data.model.response.GraphqlResponse;
+import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
+import com.tokopedia.abstraction.common.utils.GraphqlHelper;
+import com.tokopedia.core.database.manager.GlobalCacheManager;
+import com.tokopedia.core.var.TkpdCache;
+import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.orders.orderdetails.data.DetailsData;
-import com.tokopedia.transaction.orders.orderdetails.data.DetailsQueryModle;
-import com.tokopedia.transaction.orders.orderdetails.data.Variable;
 import com.tokopedia.transaction.orders.orderdetails.domain.OrderDetailsUseCase;
-import com.tokopedia.transaction.orders.orderlist.data.Data;
-import com.tokopedia.transaction.orders.orderlist.data.OrderCategory;
-import com.tokopedia.transaction.orders.orderlist.data.QueryModle;
-import com.tokopedia.transaction.orders.orderlist.domain.OrderListUseCase;
-import com.tokopedia.transaction.orders.orderlist.source.api.OrderListDataApi;
 import com.tokopedia.usecase.RequestParams;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.util.HashMap;
+import java.util.Map;
 
 import retrofit2.Response;
 import rx.Observable;
-import rx.functions.Action1;
 import rx.functions.Func1;
 
 /**
@@ -25,109 +31,19 @@ import rx.functions.Func1;
  */
 
 public class CloudOrderDetailsDataSource {
-    private final Gson gson;
+    private Context context;
     private OrderDetailsDataApi orderDetailsDataApi;
-    // private AnalyticsCacheHandler analyticsCacheHandler;
 
-    public static String QUERY_START = "query ($orderCategory: OrderCategory, $orderId: String) {" +
-            "  orderDetails(orderCategory: $orderCategory, orderId: $orderId) { status {\n" +
-            "      statusText\n" +
-            "      status\n" +
-            "      statusLabel\n" +
-            "      iconUrl\n" +
-            "      textColor\n" +
-            "      backgroundColor\n" +
-            "      fontSize\n" +
-            "      __typename\n" +
-            "    }\n" +
-            "    conditionalInfo {\n" +
-            "      text\n" +
-            "      color {\n" +
-            "        border\n" +
-            "        background\n" +
-            "        __typename\n" +
-            "      }\n" +
-            "      __typename\n" +
-            "    }\n" +
-            "    title {\n" +
-            "      label\n" +
-            "      value\n" +
-            "      textColor\n" +
-            "      backgroundColor\n" +
-            "      imageUrl\n" +
-            "      __typename\n" +
-            "    }\n" +
-            "    invoice {\n" +
-            "      invoiceRefNum\n" +
-            "      invoiceUrl\n" +
-            "      __typename\n" +
-            "    }\n" +
-            "    orderToken {\n" +
-            "      label\n" +
-            "      value\n" +
-            "      QRCodeUrl\n" +
-            "      __typename\n" +
-            "    }\n" +
-            "    detail {\n" +
-            "      label\n" +
-            "      value\n" +
-            "      textColor\n" +
-            "      backgroundColor\n" +
-            "      imageUrl\n" +
-            "      __typename\n" +
-            "    }\n" +
-            "    additionalInfo {\n" +
-            "      label\n" +
-            "      value\n" +
-            "      textColor\n" +
-            "      backgroundColor\n" +
-            "      imageUrl\n" +
-            "      __typename\n" +
-            "    }\n" +
-            "    pricing {\n" +
-            "      label\n" +
-            "      value\n" +
-            "      textColor\n" +
-            "      backgroundColor\n" +
-            "      imageUrl\n" +
-            "      __typename\n" +
-            "    }\n" +
-            "    paymentData {\n" +
-            "      label\n" +
-            "      value\n" +
-            "      textColor\n" +
-            "      backgroundColor\n" +
-            "      imageUrl\n" +
-            "      __typename\n" +
-            "    }\n" +
-            "    contactUs {\n" +
-            "      helpText\n" +
-            "      helpUrl\n" +
-            "      __typename\n" +
-            "    }\n" +
-            "    actionButtons {\n" +
-            "      label\n" +
-            "      buttonType\n" +
-            "      uri\n" +
-            "      mappingUri\n" +
-            "      weight\n" +
-            "      __typename\n" +
-            "    }\n" +
-            "    __typename }   }";
-    public CloudOrderDetailsDataSource(OrderDetailsDataApi orderDetailsDataApi, Gson gson){
+    public CloudOrderDetailsDataSource(OrderDetailsDataApi orderDetailsDataApi, @ApplicationContext Context context) {
         this.orderDetailsDataApi = orderDetailsDataApi;
-        this.gson = gson;
+        this.context = context;
     }
 
-    public Observable<DetailsData> getOrderDetails(RequestParams requestParams){
-        DetailsQueryModle queryModle = new DetailsQueryModle();
-        queryModle.setVariables(new Variable((OrderCategory)requestParams.getObject(OrderDetailsUseCase.ORDER_CATEGORY), requestParams.getString(OrderDetailsUseCase.ORDER_ID, "")));
-        queryModle.setQuery(QUERY_START);
-
-        return orderDetailsDataApi.getOrderListData(queryModle).map(new Func1<Response<GraphqlResponse<DetailsData>>, DetailsData>() {
+    public Observable<DetailsData> getOrderDetails(RequestParams requestParams) {
+        return orderDetailsDataApi.getOrderListData(getPayload(requestParams).getParameters()).map(new Func1<Response<GraphqlResponse<DetailsData>>, DetailsData>() {
             @Override
             public DetailsData call(Response<GraphqlResponse<DetailsData>> graphqlResponseResponse) {
-                if(graphqlResponseResponse != null && graphqlResponseResponse.isSuccessful()){
+                if (graphqlResponseResponse != null && graphqlResponseResponse.isSuccessful()) {
                     return graphqlResponseResponse.body().getData();
                 }
                 return null;
@@ -135,14 +51,14 @@ public class CloudOrderDetailsDataSource {
         });
     }
 
-    private Action1<DetailsData> setToCache(){
-        return new Action1<DetailsData>() {
-            @Override
-            public void call(DetailsData data) {
-                //Log.e("sandeep",data.toString());
-                // if(data != null);
-                //analyticsCacheHandler.setUserDataGraphQLCache(data);
-            }
-        };
+    private RequestParams getPayload(RequestParams params) {
+        Map<String, Object> variables = new HashMap<>();
+        variables.put(OrderDetailsUseCase.ORDER_CATEGORY, params.getObject(OrderDetailsUseCase.ORDER_CATEGORY));
+        variables.put(OrderDetailsUseCase.ORDER_ID, params.getString(OrderDetailsUseCase.ORDER_ID, "1"));
+        RequestParams requestParams = RequestParams.create();
+        requestParams.putObject("query", GraphqlHelper.loadRawString(context.getResources(),
+                R.raw.orderdetails));
+        requestParams.putObject("variables", variables);
+        return requestParams;
     }
 }

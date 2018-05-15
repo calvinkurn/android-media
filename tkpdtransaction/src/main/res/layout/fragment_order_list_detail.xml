@@ -83,7 +83,7 @@
                     android:id="@+id/lihat"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Lihat"
+                    android:text="LIHAT"
                     android:textColor="@color/green_250" />
 
             </LinearLayout>
@@ -105,7 +105,7 @@
                 android:layout_marginRight="@dimen/dp_16"
                 android:layout_marginBottom="@dimen/dp_8"
                 android:text="Detail Pembelian"
-                android:textSize="@dimen/font_medium"
+                android:textSize="@dimen/sp_16"
                 android:textStyle="bold" />
 
             <LinearLayout

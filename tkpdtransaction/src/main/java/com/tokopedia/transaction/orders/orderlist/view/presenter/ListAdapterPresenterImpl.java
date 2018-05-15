@@ -4,6 +4,7 @@ import android.graphics.Color;
 import android.util.Log;
 import android.view.View;
 
+import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.transaction.orders.orderlist.data.ActionButton;
 import com.tokopedia.transaction.orders.orderlist.data.ConditionalInfo;
 import com.tokopedia.transaction.orders.orderlist.data.DotMenuList;
@@ -19,28 +20,23 @@ import java.util.List;
  * Created by baghira on 22/03/18.
  */
 
-public class ListAdapterPresenterImpl implements ListAdapterPresenter {
-    ListAdapterListenter adapterListenter;
-
-    public ListAdapterPresenterImpl(ListAdapterListenter listAdapterListenter) {
-        adapterListenter = listAdapterListenter;
-    }
-
+public class ListAdapterPresenterImpl extends BaseDaggerPresenter<ListAdapterContract.View> implements ListAdapterContract.Presenter {
+    ListAdapterContract.View view;
     @Override
     public void setActionButtonData(List<ActionButton> actionButtons) {
         if (actionButtons.size() == 2) {
             ActionButton leftActionButton = actionButtons.get(0);
             ActionButton rightActionButton = actionButtons.get(1);
-            adapterListenter.setButtonData(View.VISIBLE, View.VISIBLE, leftActionButton.label(), rightActionButton.label(), leftActionButton.uri(), rightActionButton.uri(), null, null, leftActionButton.color(), rightActionButton.color());
+            view.setButtonData(View.VISIBLE, View.VISIBLE, leftActionButton.label(), rightActionButton.label(), leftActionButton.uri(), rightActionButton.uri(), null, null, leftActionButton.color(), rightActionButton.color());
         } else if (actionButtons.size() == 1) {
             ActionButton actionButton = actionButtons.get(0);
             if (actionButton.buttonType().equals("primary")) {
-                adapterListenter.setButtonData(View.VISIBLE, View.GONE, actionButton.label(), null, actionButton.uri(), null, null, null, actionButton.color(), null);
+                view.setButtonData(View.VISIBLE, View.GONE, actionButton.label(), null, actionButton.uri(), null, null, null, actionButton.color(), null);
             } else {
-                adapterListenter.setButtonData(View.GONE, View.VISIBLE, null, actionButton.label(), null, actionButton.uri(), null, null, null, actionButton.color());
+                view.setButtonData(View.GONE, View.VISIBLE, null, actionButton.label(), null, actionButton.uri(), null, null, null, actionButton.color());
             }
         } else {
-            adapterListenter.setButtonData(View.GONE, View.GONE, null, null, null, null, null, null, null, null);
+            view.setButtonData(View.GONE, View.GONE, null, null, null, null, null, null, null, null);
         }
     }
 
@@ -52,43 +48,43 @@ public class ListAdapterPresenterImpl implements ListAdapterPresenter {
     @Override
     public void setDotMenuVisibility(List<DotMenuList> dotMenuLists) {
         if (dotMenuLists != null) {
-            adapterListenter.setDotMenuVisibility(dotMenuLists.size() > 0 ? View.VISIBLE : View.GONE);
+            view.setDotMenuVisibility(dotMenuLists.size() > 0 ? View.VISIBLE : View.GONE);
         }
     }
 
     @Override
     public void setViewData(Order order) {
-        adapterListenter.setStatus(order.statusStr());
+        view.setStatus(order.statusStr());
         if (!order.statusColor().equals("")) {
-            adapterListenter.setStatusBgColor(Color.parseColor(order.statusColor()));
+            view.setStatusBgColor(Color.parseColor(order.statusColor()));
         }
         if (!order.conditionalInfo().text().equals("")) {
             ConditionalInfo conditionalInfo = order.conditionalInfo();
             if (!order.status().equals("")) {
                 int status = Integer.parseInt(order.status());
-                adapterListenter.setConditionalInfo(View.VISIBLE, conditionalInfo.text(), conditionalInfo.color());
+                view.setConditionalInfo(View.VISIBLE, conditionalInfo.text(), conditionalInfo.color());
             }
         } else {
-            adapterListenter.setConditionalInfo(View.GONE, null, null);
+            view.setConditionalInfo(View.GONE, null, null);
         }
-        adapterListenter.setInvoice(order.invoiceRefNum());
+        view.setInvoice(order.invoiceRefNum());
         String date = order.createdAt();
         if (date != null && date.contains("T")) {
             date = lastUpdatedDate(order.createdAt());
         }
-        adapterListenter.setDate(date);
+        view.setDate(date);
 
-        adapterListenter.setCategoryAndTitle(order.categoryName(), order.title());
+        view.setCategoryAndTitle(order.categoryName(), order.title());
         List<MetaData> metaDataList = order.metaData();
         for (MetaData metaData : metaDataList) {
             if ((order.status().equals("103") || order.status().equals("107")) &&
                     (metaData.label().equalsIgnoreCase("Metode Pembayaran")
                             || metaData.label().equalsIgnoreCase("Kode Pembayaran")))
                 continue;
-            adapterListenter.setMetaDataToCustomView(metaData);
+            view.setMetaDataToCustomView(metaData);
         }
-        adapterListenter.setPaymentAvatar(order.paymentData().imageUrl());
-        adapterListenter.setTotal(order.paymentData().label(), order.paymentData().value(), order.paymentData().textColor());
+        view.setPaymentAvatar(order.paymentData().imageUrl());
+        view.setTotal(order.paymentData().label(), order.paymentData().value(), order.paymentData().textColor());
     }
 
 
@@ -103,5 +99,15 @@ public class ListAdapterPresenterImpl implements ListAdapterPresenter {
             e.printStackTrace();
         }
         return formattedTime;
+    }
+
+    @Override
+    public void attachView(ListAdapterContract.View view) {
+        this.view = view;
+    }
+
+    @Override
+    public void detachView() {
+
     }
 }

@@ -95,5 +95,8 @@ public class DoubleTextView extends LinearLayout {
         this.bottomTextView.setTextColor(bottomTextColor);
     }
 
-
+    @SuppressWarnings("unused")
+    public void setBottomGravity(int gravity) {
+        this.bottomTextView.setGravity(gravity);
+    }
 }

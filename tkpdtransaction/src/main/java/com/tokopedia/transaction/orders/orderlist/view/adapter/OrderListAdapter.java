@@ -31,8 +31,7 @@ import com.tokopedia.transaction.orders.orderlist.data.MetaData;
 import com.tokopedia.transaction.orders.orderlist.data.Order;
 import com.tokopedia.transaction.orders.orderlist.data.Popup;
 import com.tokopedia.transaction.orders.common.view.DoubleTextView;
-import com.tokopedia.transaction.orders.orderlist.view.presenter.ListAdapterListenter;
-import com.tokopedia.transaction.orders.orderlist.view.presenter.ListAdapterPresenter;
+import com.tokopedia.transaction.orders.orderlist.view.presenter.ListAdapterContract;
 import com.tokopedia.transaction.orders.orderlist.view.presenter.ListAdapterPresenterImpl;
 
 import java.util.ArrayList;
@@ -41,14 +40,14 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class OrderListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> implements ListAdapterListenter {
+public class OrderListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> implements ListAdapterContract.View {
     private static final String HAS_BUTTON = "1";
     private final int VIEW_ITEM = 1;
     private final int VIEW_PROG = 0;
 
     private final LayoutInflater inflater;
     private final Context context;
-    private ListAdapterPresenter orderListPresenter;
+    private ListAdapterContract.Presenter orderListPresenter;
     OrderListViewHolder currentHolder;
     ArrayList<Order> mOrderList;
 
@@ -60,7 +59,7 @@ public class OrderListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
         this.context = context;
         inflater = LayoutInflater.from(context);
         menuListener = listener;
-        orderListPresenter = new ListAdapterPresenterImpl(this);
+        orderListPresenter = new ListAdapterPresenterImpl();
 
     }
 
@@ -76,6 +75,7 @@ public class OrderListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
 
             vh = new ProgressViewHolder(v);
         }
+        orderListPresenter.attachView(this);
         return vh;
     }
 
@@ -106,9 +106,7 @@ public class OrderListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
     }
 
     public void addAll(List<Order> orderDataList) {
-        Log.e("sandeep", (orderDataList != null ? orderDataList.toString() : null));
         mOrderList = new ArrayList<>(orderDataList);
-        Log.e("sandeep", "adding listener");
     }
 
     @Override
@@ -123,28 +121,16 @@ public class OrderListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
     private void setButtonData(TextView button, String text, int visibility, final String buttonUri, Popup popup, Color bgColor) {
         button.setVisibility(visibility);
         button.setText(text);
-        GradientDrawable shape = new GradientDrawable();
-        shape.setShape(GradientDrawable.RECTANGLE);
-        shape.setCornerRadius(1);
-        if(bgColor != null){
-            if(!bgColor.background().equals("")){
-                shape.setColor(android.graphics.Color.parseColor(bgColor.background()));
-            }
-            if(!bgColor.border().equals("")){
-                shape.setStroke(2, android.graphics.Color.parseColor(bgColor.border()));
-            }
-            if(!(bgColor.background().equals("") && bgColor.border().equals(""))) {
-                button.setBackground(shape);
-            }
+
+        if(bgColor!= null && !bgColor.background().equals("")){
+            button.setBackgroundColor(android.graphics.Color.parseColor(bgColor.background()));
         }
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(buttonUri.startsWith("tokopedia")){
-                    Log.e("sandeep","deeplink "+buttonUri);
-                    RouteManager.route(context,buttonUri);
-                }else{
-                    Log.e("sandeep","webview = "+buttonUri);
+                if (buttonUri.startsWith("tokopedia")) {
+                    RouteManager.route(context, buttonUri);
+                } else {
                     context.startActivity(SimpleWebViewWithFilePickerActivity.getIntent(context, buttonUri));
                 }
             }
@@ -199,7 +185,7 @@ public class OrderListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
     public void setTotal(String totalLabel, String totalValue, String textColor) {
         currentHolder.totalLabel.setText(totalLabel);
         currentHolder.total.setText(totalValue);
-        if(textColor.length() > 0){
+        if (textColor.length() > 0) {
             currentHolder.total.setTextColor(android.graphics.Color.parseColor(textColor));
         }
     }
@@ -217,7 +203,7 @@ public class OrderListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
     @Override
     public void setConditionalInfo(int condInfoVisiblity, String conditionalInfoText, Color conditionalInfoBg) {
         currentHolder.conditionalInfoLayout.setVisibility(condInfoVisiblity);
-        if(conditionalInfoText != null) {
+        if (conditionalInfoText != null) {
             GradientDrawable shape = new GradientDrawable();
             shape.setShape(GradientDrawable.RECTANGLE);
             shape.setCornerRadius(9);
@@ -245,6 +231,7 @@ public class OrderListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
     public void setMetaDataToCustomView(MetaData metaData) {
         DoubleTextView childLayout = new DoubleTextView(context, LinearLayout.VERTICAL);
         childLayout.setTopText(metaData.label());
+        childLayout.setTopTextSize(11);
         childLayout.setBottomText(metaData.value());
         currentHolder.parentMetadataLayout.addView(childLayout);
 
@@ -330,7 +317,7 @@ public class OrderListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
         }
     }
 
-    class OrderListViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
+    class OrderListViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         @BindView(R2.id.list_element_status)
         TextView status;
         @BindView(R2.id.date)
@@ -367,7 +354,7 @@ public class OrderListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
 
         public OrderListViewHolder(View itemView) {
             super(itemView);
-            this.itemView=itemView;
+            this.itemView = itemView;
             ButterKnife.bind(this, itemView);
         }
 

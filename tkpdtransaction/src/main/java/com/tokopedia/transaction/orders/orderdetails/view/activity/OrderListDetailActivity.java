@@ -5,18 +5,13 @@ import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.content.ContextCompat;
 import android.util.Log;
-import android.view.View;
-import android.view.WindowManager;
 
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.transaction.R;
-import com.tokopedia.transaction.orders.orderdetails.view.OrderListDetailFragment;
+import com.tokopedia.transaction.orders.orderdetails.view.fragment.OrderListDetailFragment;
 
-import butterknife.BindView;
-
-import static com.tokopedia.transaction.orders.orderdetails.view.OrderListDetailFragment.KEY_ORDER_ID;
+import static com.tokopedia.transaction.orders.orderdetails.view.fragment.OrderListDetailFragment.KEY_ORDER_ID;
 
 /**
  * Created by baghira on 09/05/18.
@@ -27,7 +22,6 @@ public class OrderListDetailActivity extends BaseSimpleActivity{
     public static Intent createInstance(Context context, String orderId) {
          Intent intent = new Intent(context, OrderListDetailActivity.class);
          intent.putExtra(KEY_ORDER_ID, orderId);
-         Log.e("sandeep","order id at activity ="+orderId);
         return intent;
     }
     @Override
@@ -40,10 +34,9 @@ public class OrderListDetailActivity extends BaseSimpleActivity{
         toolbar.setBackgroundColor(getResources().getColor(R.color.white));
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             toolbar.getNavigationIcon().setTint(getResources().getColor(R.color.black));
-            toolbar.setElevation(0);
         }
         toolbar.setTitleTextAppearance(this, R.style.ToolbarText_SansSerifMedium);
-       /* if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+        /* if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
             getWindow().setStatusBarColor(ContextCompat.getColor(this, com.tokopedia.abstraction.R.color.white));
             final int lFlags = getWindow().getDecorView().getSystemUiVisibility();

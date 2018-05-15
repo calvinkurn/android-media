@@ -1,4 +1,4 @@
-package com.tokopedia.transaction.orders.orderdetails.view;
+package com.tokopedia.transaction.orders.orderdetails.view.fragment;
 
 import android.graphics.Color;
 import android.graphics.Typeface;
@@ -12,6 +12,8 @@ import android.text.Spanned;
 import android.text.TextPaint;
 import android.text.method.LinkMovementMethod;
 import android.text.style.ClickableSpan;
+import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -179,7 +181,7 @@ public class OrderListDetailFragment extends BaseDaggerFragment implements Order
 
     @Override
     public void setDetail(Detail detail) {
-        detailLabel.setText(detail.label());
+        //detailLabel.setText(detail.label());
         DoubleTextView doubleTextView = new DoubleTextView(getActivity(), LinearLayout.HORIZONTAL);
         doubleTextView.setTopText(detail.label());
         doubleTextView.setBottomText(detail.value());
@@ -225,6 +227,7 @@ public class OrderListDetailFragment extends BaseDaggerFragment implements Order
         doubleTextView.setBottomText(paymentData.value());
         doubleTextView.setBottomTextColor(Color.parseColor(paymentData.textColor()));
         doubleTextView.setBottomTextSize(16);
+        doubleTextView.setBottomGravity(Gravity.RIGHT);
         totalPrice.addView(doubleTextView);
     }
 
@@ -255,12 +258,24 @@ public class OrderListDetailFragment extends BaseDaggerFragment implements Order
     @Override
     public void setTopActionButton(ActionButton actionButton) {
         langannan.setText(actionButton.label());
+        GradientDrawable shape = new GradientDrawable();
+        shape.setShape(GradientDrawable.RECTANGLE);
+        shape.setCornerRadius(4);
+        shape.setColor(getResources().getColor(R.color.white));
+        shape.setStroke(2, getResources().getColor(R.color.grey_300));
+        langannan.setBackground(shape);
         langannan.setOnClickListener(getActionButtonClickListener(actionButton.uri()));
     }
 
     @Override
     public void setBottomActionButton(ActionButton actionButton) {
         beliLagi.setText(actionButton.label());
+        GradientDrawable shape = new GradientDrawable();
+        shape.setShape(GradientDrawable.RECTANGLE);
+        shape.setCornerRadius(4);
+        shape.setColor(getResources().getColor(R.color.deep_orange_500));
+        beliLagi.setBackground(shape);
+        beliLagi.setTextColor(getResources().getColor(R.color.white));
         beliLagi.setOnClickListener(getActionButtonClickListener(actionButton.uri()));
     }
 
