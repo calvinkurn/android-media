@@ -150,9 +150,6 @@ public class ProductDetailFragment extends BaseDaggerFragment
         descriptionView.renderData(data);
         progressBar.setVisibility(View.GONE);
         pictureView.setVisibility(View.VISIBLE);
-        headerInfoView.setVisibility(View.VISIBLE);
-        priceSimulationView.setVisibility(View.VISIBLE);
-        descriptionView.setVisibility(View.VISIBLE);
         buttonContainer.setVisibility(View.VISIBLE);
     }
 
