@@ -47,15 +47,6 @@ public class CartItemDecoration extends RecyclerView.ItemDecoration {
                 } else {
                     outRect.bottom = 0;
                 }
-            } else if (viewHolder instanceof CartVoucherPromoViewHolder) {
-                CartItemPromoHolderData cartItemPromoHolderData =
-                        ((CartVoucherPromoViewHolder) viewHolder).getCartItemPromoHolderData();
-                if (cartItemPromoHolderData.getTypePromo() == CartItemPromoHolderData.TYPE_PROMO_VOUCHER ||
-                        cartItemPromoHolderData.getTypePromo() == CartItemPromoHolderData.TYPE_PROMO_COUPON) {
-                    outRect.bottom = 0;
-                } else {
-                    outRect.bottom = verticalSpaceHeight;
-                }
             } else if (viewHolder instanceof ShipmentCostViewHolder) {
                 outRect.top = verticalSpaceHeight / 2;
                 outRect.bottom = (int) ((float) verticalSpaceHeight * 1.5f);

@@ -11,6 +11,7 @@ import android.text.style.ClickableSpan;
 import android.text.style.ForegroundColorSpan;
 import android.text.style.StyleSpan;
 import android.view.View;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.tokopedia.checkout.R;
@@ -18,7 +19,7 @@ import com.tokopedia.checkout.view.view.shipment.ShipmentAdapterActionListener;
 import com.tokopedia.checkout.view.view.shipment.viewmodel.ShipmentInsuranceTncModel;
 
 /**
- * @author Aghny A. Putra on 09/05/18
+ * @author Irfan Khoirul on 09/05/18
  */
 
 public class ShipmentInsuranceTncViewHolder extends RecyclerView.ViewHolder {
@@ -28,14 +29,14 @@ public class ShipmentInsuranceTncViewHolder extends RecyclerView.ViewHolder {
     private ShipmentAdapterActionListener shipmentAdapterActionListener;
 
     private TextView tvInsuranceTnc;
-    private CardView cardViewContainer;
+    private LinearLayout llContainer;
 
     public ShipmentInsuranceTncViewHolder(View itemView, ShipmentAdapterActionListener actionListener) {
         super(itemView);
         this.shipmentAdapterActionListener = actionListener;
 
         tvInsuranceTnc = itemView.findViewById(R.id.tv_insurance_tnc);
-        cardViewContainer = itemView.findViewById(R.id.card_view_container);
+        llContainer = itemView.findViewById(R.id.ll_container);
     }
 
     public void bindViewHolder(ShipmentInsuranceTncModel shipmentInsuranceTncModel) {
@@ -54,7 +55,7 @@ public class ShipmentInsuranceTncViewHolder extends RecyclerView.ViewHolder {
                     Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
             tvInsuranceTnc.setMovementMethod(LinkMovementMethod.getInstance());
             tvInsuranceTnc.setText(tosAgreementText);
-            cardViewContainer.setVisibility(View.VISIBLE);
+            llContainer.setVisibility(View.VISIBLE);
             tvInsuranceTnc.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -62,7 +63,7 @@ public class ShipmentInsuranceTncViewHolder extends RecyclerView.ViewHolder {
                 }
             });
         } else {
-            cardViewContainer.setVisibility(View.GONE);
+            llContainer.setVisibility(View.GONE);
         }
     }
 
