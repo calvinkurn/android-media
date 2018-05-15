@@ -463,6 +463,10 @@ public class InboxTalkFragment extends BasePresenterFragment<InboxTalkPresenter>
                     return;
                 }
 
+                if(items == null || items.size() == 0){
+                    return;
+                }
+
                 if (resultCode == RESULT_DELETE) {
                     int position = data.getExtras().getInt("position");
                     items.remove(position);
