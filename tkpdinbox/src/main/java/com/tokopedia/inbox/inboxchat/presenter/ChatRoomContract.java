@@ -89,6 +89,8 @@ public class ChatRoomContract {
 
         boolean isMyMessage(int fromUid);
 
+        boolean isMyMessage(String fromUid);
+
         void setTemplate(List<Visitable> listTemplate);
 
         void addTemplateString(String message);

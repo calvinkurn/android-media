@@ -3,7 +3,6 @@ package com.tokopedia.inbox.inboxchat.data.source;
 import com.tokopedia.core.network.apiservices.chat.ChatService;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.inbox.inboxchat.data.mapper.GetReplyMapper;
-import com.tokopedia.inbox.inboxchat.domain.model.reply.ReplyData;
 import com.tokopedia.inbox.inboxchat.viewmodel.ChatRoomViewModel;
 
 import rx.Observable;

@@ -1,6 +1,7 @@
 
 package com.tokopedia.inbox.inboxchat.domain.pojo.common;
 
+import com.google.gson.JsonObject;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
@@ -14,7 +15,7 @@ public class Attachment {
     private String type;
     @SerializedName("attributes")
     @Expose
-    private String attributes;
+    private JsonObject attributes;
     @SerializedName("fallback_attachment")
     @Expose
     private FallbackAttachment fallbackAttachment;
@@ -35,11 +36,11 @@ public class Attachment {
         this.type = type;
     }
 
-    public String getAttributes() {
+    public JsonObject getAttributes() {
         return attributes;
     }
 
-    public void setAttributes(String attributes) {
+    public void setAttributes(JsonObject attributes) {
         this.attributes = attributes;
     }
 

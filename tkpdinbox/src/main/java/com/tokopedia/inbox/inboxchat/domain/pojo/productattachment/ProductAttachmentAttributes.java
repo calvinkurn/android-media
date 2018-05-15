@@ -17,16 +17,8 @@ public class ProductAttachmentAttributes {
         return productId;
     }
 
-    public void setProductId(int productId) {
-        this.productId = productId;
-    }
-
     public ProductProfile getProductProfile() {
         return productProfile;
-    }
-
-    public void setProductProfile(ProductProfile productProfile) {
-        this.productProfile = productProfile;
     }
 
 }

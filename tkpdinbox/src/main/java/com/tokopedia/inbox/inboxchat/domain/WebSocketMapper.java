@@ -1,13 +1,10 @@
 package com.tokopedia.inbox.inboxchat.domain;
 
-import android.content.Context;
 import android.text.TextUtils;
 
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonObject;
 import com.google.gson.JsonSyntaxException;
-import com.tokopedia.abstraction.AbstractionRouter;
-import com.tokopedia.abstraction.common.data.model.session.UserSession;
-import com.tokopedia.core.router.TkpdInboxRouter;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.inbox.inboxchat.domain.model.websocket.BaseChatViewModel;
 import com.tokopedia.inbox.inboxchat.domain.model.websocket.FallbackAttachmentViewModel;
@@ -30,12 +27,12 @@ import javax.inject.Inject;
  */
 public class WebSocketMapper {
 
-    private static final String TYPE_QUICK_REPLY = "8";
-    private static final String TYPE_PRODUCT_ATTACHMENT = "3";
+    public static final String TYPE_QUICK_REPLY = "8";
+    public static final String TYPE_PRODUCT_ATTACHMENT = "3";
     private SessionHandler sessionHandler;
 
     @Inject
-    public WebSocketMapper(SessionHandler context) {
+    public WebSocketMapper(SessionHandler sessionHandler) {
         this.sessionHandler = sessionHandler;
     }
 
@@ -45,10 +42,10 @@ public class WebSocketMapper {
 
             WebSocketResponse pojo = new GsonBuilder().create().fromJson(json, WebSocketResponse.class);
 
-            String jsonAttributes = pojo.getData().getAttachment().getAttributes();
+            JsonObject jsonAttributes = pojo.getData().getAttachment().getAttributes();
             if (pojo.getData() != null
                     && pojo.getData().getAttachment() != null
-                    && !TextUtils.isEmpty(jsonAttributes)) {
+                    && jsonAttributes != null) {
                 switch (pojo.getData().getAttachment().getType()) {
                     case TYPE_QUICK_REPLY:
                         return convertToQuickReplyModel(pojo.getData(), jsonAttributes);
@@ -70,7 +67,7 @@ public class WebSocketMapper {
 
     }
 
-    private BaseChatViewModel convertToProductAttachment(WebSocketResponseData pojo, String jsonAttribute) {
+    private BaseChatViewModel convertToProductAttachment(WebSocketResponseData pojo, JsonObject jsonAttribute) {
         ProductAttachmentAttributes pojoAttribute = new GsonBuilder().create().fromJson(jsonAttribute,
                 ProductAttachmentAttributes.class);
 
@@ -115,7 +112,7 @@ public class WebSocketMapper {
         );
     }
 
-    private QuickReplyListViewModel convertToQuickReplyModel(WebSocketResponseData pojo, String
+    private QuickReplyListViewModel convertToQuickReplyModel(WebSocketResponseData pojo, JsonObject
             jsonAttribute) {
         QuickReplyAttachmentAttributes pojoAttribute = new GsonBuilder().create().fromJson(jsonAttribute,
                 QuickReplyAttachmentAttributes.class);

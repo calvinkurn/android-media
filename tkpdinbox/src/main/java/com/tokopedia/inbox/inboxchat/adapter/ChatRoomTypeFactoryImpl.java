@@ -13,7 +13,6 @@ import com.tokopedia.inbox.inboxchat.presenter.ChatRoomContract;
 import com.tokopedia.inbox.inboxchat.viewholder.AttachImageViewHolder;
 import com.tokopedia.inbox.inboxchat.viewholder.AttachedInvoiceSelectionViewHolder;
 import com.tokopedia.inbox.inboxchat.viewholder.AttachedInvoiceSentViewHolder;
-import com.tokopedia.inbox.inboxchat.viewholder.AttachedProductViewHolder;
 import com.tokopedia.inbox.inboxchat.viewholder.MyChatViewHolder;
 import com.tokopedia.inbox.inboxchat.viewholder.OppositeChatViewHolder;
 import com.tokopedia.inbox.inboxchat.viewholder.ThumbnailChatViewHolder;
@@ -22,7 +21,6 @@ import com.tokopedia.inbox.inboxchat.viewholder.TypingChatViewHolder;
 import com.tokopedia.inbox.inboxchat.viewmodel.AttachImageModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.AttachInvoiceSelectionViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.AttachInvoiceSentViewModel;
-import com.tokopedia.inbox.inboxchat.viewmodel.AttachProductViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.MyChatViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.OppositeChatViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.ThumbnailChatViewModel;
@@ -74,11 +72,6 @@ public class ChatRoomTypeFactoryImpl extends BaseAdapterTypeFactory implements C
     }
 
     @Override
-    public int type(AttachProductViewModel attachProductViewModel) {
-        return AttachedProductViewHolder.LAYOUT;
-    }
-
-    @Override
     public int type(AttachInvoiceSentViewModel attachInvoiceSentViewModel) {
         return AttachedInvoiceSentViewHolder.LAYOUT;
     }
@@ -121,8 +114,6 @@ public class ChatRoomTypeFactoryImpl extends BaseAdapterTypeFactory implements C
             viewHolder = new AttachImageViewHolder(view);
         else if (type == ThumbnailChatViewHolder.LAYOUT)
             viewHolder = new ThumbnailChatViewHolder(view, viewListener);
-        else if (type == AttachedProductViewHolder.LAYOUT)
-            viewHolder = new AttachedProductViewHolder(view, viewListener);
         else if (type == AttachedInvoiceSentViewHolder.LAYOUT)
             viewHolder = new AttachedInvoiceSentViewHolder(view);
         else if (type == AttachedInvoiceSelectionViewHolder.LAYOUT)

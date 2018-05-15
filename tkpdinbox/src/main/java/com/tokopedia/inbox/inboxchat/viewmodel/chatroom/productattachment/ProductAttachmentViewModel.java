@@ -2,7 +2,13 @@ package com.tokopedia.inbox.inboxchat.viewmodel.chatroom.productattachment;
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.inbox.inboxchat.adapter.ChatRoomTypeFactory;
+import com.tokopedia.inbox.inboxchat.data.mapper.GetReplyMapper;
+import com.tokopedia.inbox.inboxchat.domain.WebSocketMapper;
 import com.tokopedia.inbox.inboxchat.domain.model.websocket.BaseChatViewModel;
+import com.tokopedia.inbox.inboxchat.domain.usecase.GetReplyListUseCase;
+import com.tokopedia.inbox.inboxchat.viewmodel.DummyChatViewModel;
+
+import java.util.Date;
 
 /**
  * @author by nisie on 5/14/18.
@@ -20,22 +26,60 @@ public class ProductAttachmentViewModel extends BaseChatViewModel implements Vis
     private boolean isSender;
 
     /**
-     * Constructor for WebSocket. Only for product attachment coming from opposite user (not self
-     * send).
+     * Constructor for API response.
+     * {@link GetReplyMapper}
+     * {@link GetReplyListUseCase}
      *
-     * @param messageId       message Id
-     * @param fromUid         user id of sender
-     * @param from            username of sender
-     * @param fromRole        role of sender
-     * @param attachmentId    attachment id
-     * @param attachmentType  attachment type. Please refer to
-     *                        {@link com.tokopedia.inbox.inboxchat.domain.WebSocketMapper} types
-     * @param replyTime       replytime in unixtime
-     * @param productId       product id
-     * @param productName     product name
-     * @param productPrice    product price
-     * @param productUrl      product url
-     * @param productImage    product image url
+     * @param messageId      message Id
+     * @param fromUid        user id of sender
+     * @param from           username of sender
+     * @param fromRole       role of sender
+     * @param attachmentId   attachment id
+     * @param attachmentType attachment type. Please refer to
+     *                       {@link WebSocketMapper} types
+     * @param replyTime      replytime in unixtime
+     * @param isRead         is message already read by opponent
+     * @param productId      product id
+     * @param productName    product name
+     * @param productPrice   product price
+     * @param productUrl     product url
+     * @param productImage   product image url
+     */
+    public ProductAttachmentViewModel(String messageId, String fromUid,
+                                      String from, String fromRole,
+                                      String attachmentId, String attachmentType,
+                                      String replyTime, boolean isRead,
+                                      Integer productId, String productName,
+                                      String productPrice, String productUrl,
+                                      String productImage, boolean isSender) {
+        super(messageId, fromUid, from, fromRole, attachmentId, attachmentType, replyTime);
+        this.isRead = isRead;
+        this.isDummy = false;
+        this.productId = productId;
+        this.productName = productName;
+        this.productPrice = productPrice;
+        this.dateTimeInMilis = Long.parseLong(replyTime);
+        this.productUrl = productUrl;
+        this.productImage = productImage;
+        this.isSender = isSender;
+    }
+
+    /**
+     * Constructor for WebSocket. {@link WebSocketMapper}
+     *
+     * @param messageId      message Id
+     * @param fromUid        user id of sender
+     * @param from           username of sender
+     * @param fromRole       role of sender
+     * @param attachmentId   attachment id
+     * @param attachmentType attachment type. Please refer to
+     *                       {@link WebSocketMapper} types
+     * @param replyTime      replytime in unixtime
+     * @param productId      product id
+     * @param productName    product name
+     * @param productPrice   product price
+     * @param productUrl     product url
+     * @param productImage   product image url
      */
     public ProductAttachmentViewModel(String messageId, String fromUid,
                                       String from, String fromRole,
@@ -54,6 +98,32 @@ public class ProductAttachmentViewModel extends BaseChatViewModel implements Vis
         this.productUrl = productUrl;
         this.productImage = productImage;
         this.isSender = isSender;
+    }
+
+    /**
+     * Constructor for sending product attachment.
+     *
+     * @param loginID      current user id.
+     * @param productId    product id
+     * @param productName  product name
+     * @param productPrice product price
+     * @param productUrl   product url
+     * @param productImage product image url
+     */
+    public ProductAttachmentViewModel(String loginID, Integer productId, String productName,
+                                      String productPrice, String productUrl,
+                                      String productImage) {
+        super("", loginID, "", "", "",
+                WebSocketMapper.TYPE_PRODUCT_ATTACHMENT, DummyChatViewModel.SENDING_TEXT);
+        this.isRead = false;
+        this.isDummy = true;
+        this.productId = productId;
+        this.productName = productName;
+        this.productPrice = productPrice;
+        this.dateTimeInMilis = new Date().getTime();
+        this.productUrl = productUrl;
+        this.productImage = productImage;
+        this.isSender = true;
     }
 
     @Override
