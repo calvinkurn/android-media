@@ -374,7 +374,6 @@ public class BottomSheetFilterView extends BaseCustomView implements BottomSheet
                 }
             }
         });
-        filterMainRecyclerView.getRecycledViewPool().setMaxRecycledViews(R.layout.dynamic_filter_expandable_item, 0);
     }
 
     public void launchFilterBottomSheet() {
