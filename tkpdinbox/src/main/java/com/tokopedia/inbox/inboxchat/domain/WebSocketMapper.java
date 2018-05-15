@@ -27,8 +27,9 @@ import javax.inject.Inject;
  */
 public class WebSocketMapper {
 
-    public static final String TYPE_QUICK_REPLY = "8";
+    public static final String TYPE_IMAGE_ATTACHMENT = "1";
     public static final String TYPE_PRODUCT_ATTACHMENT = "3";
+    public static final String TYPE_QUICK_REPLY = "8";
     private SessionHandler sessionHandler;
 
     @Inject

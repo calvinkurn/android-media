@@ -9,10 +9,10 @@ import com.tokopedia.inbox.inboxchat.viewmodel.AttachInvoiceSelectionViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.AttachInvoiceSentViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.MyChatViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.OppositeChatViewModel;
-import com.tokopedia.inbox.inboxchat.viewmodel.ThumbnailChatViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.TypingChatModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.chatroom.QuickReplyListViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.chatroom.TimeMachineChatModel;
+import com.tokopedia.inbox.inboxchat.viewmodel.chatroom.imageannouncement.ImageAnnouncementViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.chatroom.productattachment.ProductAttachmentViewModel;
 
 /**
@@ -22,8 +22,6 @@ import com.tokopedia.inbox.inboxchat.viewmodel.chatroom.productattachment.Produc
 public interface ChatRoomTypeFactory {
 
     AbstractViewHolder createViewHolder(View view, int viewType);
-
-    int type(ThumbnailChatViewModel thumbnailChatViewModel);
 
     int type(OppositeChatViewModel oppositeChatViewModel);
 
@@ -39,10 +37,14 @@ public interface ChatRoomTypeFactory {
 
     int type(AttachInvoiceSelectionViewModel attachInvoiceSelectionViewModel);
 
+    // NEW VERSION
+
     int type(QuickReplyListViewModel quickReplyListViewModel);
 
     int type(FallbackAttachmentViewModel fallbackAttachmentViewModel);
 
     int type(ProductAttachmentViewModel productAttachmentViewModel);
+
+    int type(ImageAnnouncementViewModel imageAnnouncementViewModel);
 
 }
