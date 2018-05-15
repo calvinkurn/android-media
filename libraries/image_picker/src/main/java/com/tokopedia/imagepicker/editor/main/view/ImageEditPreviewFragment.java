@@ -392,7 +392,8 @@ public class ImageEditPreviewFragment extends Fragment implements ImageEditPrevi
         gestureCropImageView.setRotateEnabled(false);
 
         // set preview max bitmap, so it will fit the screen can also be zoomed.
-        int maxPreviewWidth = BitmapLoadUtils.calculateMaxBitmapSize(getContext());
+        // default: BitmapLoadUtils.calculateMaxBitmapSize(getContext());
+        int maxPreviewWidth = ImageUtils.DEF_WIDTH;
         gestureCropImageView.setMaxBitmapSize(maxPreviewWidth);
 
         // set max scale so it cannnot be zoomed under min resolution

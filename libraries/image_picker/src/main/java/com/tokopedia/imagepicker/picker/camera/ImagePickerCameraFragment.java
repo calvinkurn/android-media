@@ -1,16 +1,19 @@
 package com.tokopedia.imagepicker.picker.camera;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.Point;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.annotation.RequiresPermission;
+import android.support.v4.app.ActivityCompat;
 import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -240,7 +243,14 @@ public class ImagePickerCameraFragment extends TkpdBaseV4Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        cameraView.start();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+            String permission = Manifest.permission.CAMERA;
+            if (ActivityCompat.checkSelfPermission(getContext(), permission) == PackageManager.PERMISSION_GRANTED) {
+                cameraView.start();
+            }
+        } else {
+            cameraView.start();
+        }
     }
 
     @Override

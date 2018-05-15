@@ -21,7 +21,8 @@ import static com.tokopedia.imagepicker.picker.main.builder.ImagePickerTabTypeDe
 
 public class ImagePickerBuilder implements Parcelable{
 
-    public static final int DEFAULT_RESOLUTION = 300;
+    public static final int DEFAULT_MIN_RESOLUTION = 300;
+    public static final int DEFAULT_MAX_IMAGE_SIZE_IN_KB = 15360; // 15 * 1024KB
 
     private String title;
     private @ImagePickerTabTypeDef
@@ -39,13 +40,14 @@ public class ImagePickerBuilder implements Parcelable{
     private int ratioY;
     private boolean moveImageResultToLocal;
     private boolean hasPickerPreview;
-    private int maximumNoOfImage;
+    private int maximumNoPick;
+    private long maxFileSizeInKB;
 
     public static ImagePickerBuilder getDefaultBuilder(Context context){
         return new ImagePickerBuilder(context.getString(R.string.choose_image),
                 new int[]{TYPE_GALLERY, TYPE_CAMERA, TYPE_INSTAGRAM}, GalleryType.IMAGE_ONLY, ImageSelectionTypeDef.TYPE_MULTIPLE,
-                false, 5,
-                DEFAULT_RESOLUTION, 1, 1, true, true,
+                false, 5, DEFAULT_MAX_IMAGE_SIZE_IN_KB,
+                DEFAULT_MIN_RESOLUTION, 1, 1, true, true,
                 new int[]{ACTION_BRIGHTNESS, ACTION_CONTRAST, ACTION_CROP, ACTION_ROTATE},
                 true);
     }
@@ -55,7 +57,7 @@ public class ImagePickerBuilder implements Parcelable{
                        @GalleryType int galleryType,
                        @ImageSelectionTypeDef int selectionType,
                        boolean hasPickerPreview,
-                       int maximumNoOfImage,
+                       int maximumNoPick, int maxFileSizeInKB,
                        int minResolution,
                        int ratioX, int ratioY, boolean moveImageResultToLocal) {
         this.title = title;
@@ -63,7 +65,8 @@ public class ImagePickerBuilder implements Parcelable{
         this.galleryType = galleryType;
         this.imageSelectionType = selectionType;
         this.hasPickerPreview = hasPickerPreview;
-        this.maximumNoOfImage = maximumNoOfImage;
+        this.maximumNoPick = maximumNoPick;
+        this.maxFileSizeInKB = maxFileSizeInKB;
         this.minResolution = minResolution;
         this.ratioX = ratioX;
         this.ratioY = ratioY;
@@ -76,7 +79,8 @@ public class ImagePickerBuilder implements Parcelable{
                        @GalleryType int galleryType,
                        @ImageSelectionTypeDef int selectionType,
                        boolean hasPickerPreview,
-                       int maximumNoOfImage,
+                       int maximumNoPick,
+                       int maxFileSizeInKB,
                        int minResolution,
                        int ratioX, int ratioY,
                        boolean moveImageResultToLocal,
@@ -84,7 +88,7 @@ public class ImagePickerBuilder implements Parcelable{
                        @ImageEditActionTypeDef int[] imageEditActionType,
                        boolean circlePreview) {
         this(title, imagePickerTabTypeDef, galleryType, selectionType, hasPickerPreview,
-                maximumNoOfImage,
+                maximumNoPick, maxFileSizeInKB,
                 minResolution, ratioX, ratioY, moveImageResultToLocal);
         this.continueToEditAfterPick = continueToEditAfterPick;
         this.imageEditActionType = imageEditActionType;
@@ -165,8 +169,12 @@ public class ImagePickerBuilder implements Parcelable{
         return hasPickerPreview;
     }
 
-    public int getMaximumNoOfImage() {
-        return maximumNoOfImage;
+    public int getMaximumNoPick() {
+        return maximumNoPick;
+    }
+
+    public long getMaxFileSizeInKB() {
+        return maxFileSizeInKB;
     }
 
     @Override
@@ -188,7 +196,8 @@ public class ImagePickerBuilder implements Parcelable{
         dest.writeInt(this.ratioY);
         dest.writeByte(this.moveImageResultToLocal ? (byte) 1 : (byte) 0);
         dest.writeByte(this.hasPickerPreview ? (byte) 1 : (byte) 0);
-        dest.writeInt(this.maximumNoOfImage);
+        dest.writeInt(this.maximumNoPick);
+        dest.writeLong(this.maxFileSizeInKB);
     }
 
     protected ImagePickerBuilder(Parcel in) {
@@ -204,7 +213,8 @@ public class ImagePickerBuilder implements Parcelable{
         this.ratioY = in.readInt();
         this.moveImageResultToLocal = in.readByte() != 0;
         this.hasPickerPreview = in.readByte() != 0;
-        this.maximumNoOfImage = in.readInt();
+        this.maximumNoPick = in.readInt();
+        this.maxFileSizeInKB = in.readLong();
     }
 
     public static final Creator<ImagePickerBuilder> CREATOR = new Creator<ImagePickerBuilder>() {

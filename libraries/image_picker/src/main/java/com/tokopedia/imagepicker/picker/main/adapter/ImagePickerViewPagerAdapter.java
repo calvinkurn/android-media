@@ -85,4 +85,20 @@ public class ImagePickerViewPagerAdapter extends FragmentStatePagerAdapter {
     public int getCount() {
         return imagePickerBuilder.getTabTypeDef().length;
     }
+
+    public void destroyAllIndex(){
+        registeredFragments.clear();
+    }
+
+    @Override
+    public int getItemPosition(Object object) {
+        if (object!= null) {
+            if (registeredFragments.indexOfValue((Fragment)object) < 0) {
+                return POSITION_NONE;
+            } else {
+                return super.getItemPosition(object);
+            }
+        }
+        return super.getItemPosition(object);
+    }
 }

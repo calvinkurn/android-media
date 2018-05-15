@@ -63,7 +63,6 @@ public class ImagePickerGalleryFragment extends TkpdBaseV4Fragment
     private static final int MEDIA_LOADER_ID = 2;
 
     public static final int SPAN_COUNT = 3;
-    public static final int REQUEST_CODE_CAMERA_PERMISSION = 125;
 
     private OnImagePickerGalleryFragmentListener onImagePickerGalleryFragmentListener;
     private View loadingView;
@@ -157,42 +156,14 @@ public class ImagePickerGalleryFragment extends TkpdBaseV4Fragment
     public void onResume() {
         super.onResume();
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-            String[] permissions = null;
-            permissions = new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE};
-            ArrayList<String> permissionsToRequest = new ArrayList<>();
-            for (String permission : permissions) {
-                if (ActivityCompat.checkSelfPermission(getContext(), permission) != PackageManager.PERMISSION_GRANTED) {
-                    permissionsToRequest.add(permission);
-                }
-            }
-            if (!permissionsToRequest.isEmpty()) {
-                requestPermissions(permissionsToRequest.toArray(new String[permissionsToRequest.size()]), REQUEST_CODE_CAMERA_PERMISSION);
-            } else {
+            String permission = Manifest.permission.WRITE_EXTERNAL_STORAGE;
+            if (ActivityCompat.checkSelfPermission(getContext(), permission) == PackageManager.PERMISSION_GRANTED) {
                 showLoading();
                 getLoaderManager().initLoader(ALBUM_LOADER_ID, null, ImagePickerGalleryFragment.this);
             }
         } else {
             showLoading();
             getLoaderManager().initLoader(ALBUM_LOADER_ID, null, ImagePickerGalleryFragment.this);
-        }
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (requestCode == REQUEST_CODE_CAMERA_PERMISSION) {
-            if (grantResults.length > 0) {
-                boolean allIsAllowed = true;
-                for (int result : grantResults) {
-                    if (result == -1) {
-                        allIsAllowed = false;
-                    }
-                }
-                if (allIsAllowed) {
-                    showLoading();
-                    getLoaderManager().initLoader(ALBUM_LOADER_ID, null, ImagePickerGalleryFragment.this);
-                }
-            }
         }
     }
 

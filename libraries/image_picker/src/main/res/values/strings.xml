@@ -37,4 +37,5 @@
     <string name="x_photos">%1$d foto</string>
     <string name="gif">gif</string>
     <string name="max_no_of_image_reached">Jumlah maksimum gambar sudah terpenuhi.</string>
+    <string name="max_file_size_reached">Maksimum ukuran gambar adalah %1$dMB</string>
 </resources>

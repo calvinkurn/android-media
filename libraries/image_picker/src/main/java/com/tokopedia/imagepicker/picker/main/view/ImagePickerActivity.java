@@ -15,7 +15,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.view.View;
-import android.webkit.URLUtil;
 import android.widget.TextView;
 
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
@@ -33,7 +32,6 @@ import com.tokopedia.imagepicker.picker.main.builder.ImagePickerBuilder;
 import com.tokopedia.imagepicker.picker.main.builder.ImagePickerTabTypeDef;
 import com.tokopedia.imagepicker.picker.main.builder.ImageSelectionTypeDef;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -119,13 +117,17 @@ public class ImagePickerActivity extends BaseSimpleActivity
         }
     }
 
-    private void onDoneClicked(){
+    private void onDoneClicked() {
         if (selectedImagePaths.size() > 0) {
-            Intent intent = ImageEditorActivity.getIntent(this, selectedImagePaths,
-                    imagePickerBuilder.getMinResolution(), imagePickerBuilder.getImageEditActionType(),
-                    imagePickerBuilder.getRatioX(), imagePickerBuilder.getRatioY(),
-                    imagePickerBuilder.isCirclePreview());
-            startActivityForResult(intent, REQUEST_CODE_EDITOR);
+            if (imagePickerBuilder.isContinueToEditAfterPick()) {
+                Intent intent = ImageEditorActivity.getIntent(this, selectedImagePaths,
+                        imagePickerBuilder.getMinResolution(), imagePickerBuilder.getImageEditActionType(),
+                        imagePickerBuilder.getRatioX(), imagePickerBuilder.getRatioY(),
+                        imagePickerBuilder.isCirclePreview());
+                startActivityForResult(intent, REQUEST_CODE_EDITOR);
+            } else {
+                onFinishWithMultipleImageValidateNetworkPath(selectedImagePaths);
+            }
         }
     }
 
@@ -140,37 +142,7 @@ public class ImagePickerActivity extends BaseSimpleActivity
 
     private void setupViewPager() {
         imagePickerViewPagerAdapter = new ImagePickerViewPagerAdapter(this, getSupportFragmentManager(), imagePickerBuilder);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-            int cameraIndex = imagePickerBuilder.indexTypeDef(ImagePickerTabTypeDef.TYPE_CAMERA);
-            int galleryIndex = imagePickerBuilder.indexTypeDef(ImagePickerTabTypeDef.TYPE_GALLERY);
-            String[] permissions = null;
-            if (cameraIndex > -1) {
-                permissions = new String[]{
-                        Manifest.permission.CAMERA,
-                        Manifest.permission.WRITE_EXTERNAL_STORAGE};
-            } else if (galleryIndex > -1) {
-                permissions = new String[]{
-                        Manifest.permission.WRITE_EXTERNAL_STORAGE};
-            }
-            if (permissions == null) { // it is not camera or gallery; no permission is needed;
-                viewPager.setAdapter(imagePickerViewPagerAdapter);
-            } else { // check each permission
-                permissionsToRequest = new ArrayList<>();
-                for (String permission : permissions) {
-                    if (ActivityCompat.checkSelfPermission(this, permission) != PackageManager.PERMISSION_GRANTED) {
-                        permissionsToRequest.add(permission);
-                    }
-                }
-                if (!permissionsToRequest.isEmpty()) {
-                    ActivityCompat.requestPermissions(this, permissionsToRequest.toArray(new String[permissionsToRequest.size()]), REQUEST_CAMERA_PERMISSIONS);
-                } else {
-                    viewPager.setAdapter(imagePickerViewPagerAdapter);
-                }
-            }
-        } else { // under jellybean, no need to check runtime permission
-            viewPager.setAdapter(imagePickerViewPagerAdapter);
-        }
-
+        viewPager.setAdapter(imagePickerViewPagerAdapter);
         viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
@@ -185,12 +157,6 @@ public class ImagePickerActivity extends BaseSimpleActivity
             @Override
             public void onPageScrollStateChanged(int state) {
 
-            }
-        });
-        viewPager.post(new Runnable() {
-            @Override
-            public void run() {
-                viewPager.setCurrentItem(selectedTab, false);
             }
         });
     }
@@ -220,10 +186,56 @@ public class ImagePickerActivity extends BaseSimpleActivity
                 }
             }
             if (allIsAllowed) {
-                viewPager.setAdapter(imagePickerViewPagerAdapter);
-                setupTabLayout();
+                refreshViewPager();
             }
         }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+            int cameraIndex = imagePickerBuilder.indexTypeDef(ImagePickerTabTypeDef.TYPE_CAMERA);
+            int galleryIndex = imagePickerBuilder.indexTypeDef(ImagePickerTabTypeDef.TYPE_GALLERY);
+            String[] permissions = null;
+            if (cameraIndex > -1) {
+                permissions = new String[]{
+                        Manifest.permission.CAMERA,
+                        Manifest.permission.WRITE_EXTERNAL_STORAGE};
+            } else if (galleryIndex > -1) {
+                permissions = new String[]{
+                        Manifest.permission.WRITE_EXTERNAL_STORAGE};
+            }
+            if (permissions == null) { // it is not camera or gallery; no permission is needed;
+                refreshViewPager();
+            } else { // check each permission
+                permissionsToRequest = new ArrayList<>();
+                for (String permission : permissions) {
+                    if (ActivityCompat.checkSelfPermission(this, permission) != PackageManager.PERMISSION_GRANTED) {
+                        permissionsToRequest.add(permission);
+                    }
+                }
+                if (!permissionsToRequest.isEmpty()) {
+                    ActivityCompat.requestPermissions(this, permissionsToRequest.toArray(new String[permissionsToRequest.size()]), REQUEST_CAMERA_PERMISSIONS);
+                } else {
+                    refreshViewPager();
+                }
+            }
+        } else { // under jellybean, no need to check runtime permission
+            refreshViewPager();
+        }
+    }
+
+    private void refreshViewPager() {
+        imagePickerViewPagerAdapter.destroyAllIndex();
+        imagePickerViewPagerAdapter.notifyDataSetChanged();
+        setupTabLayout();
+        viewPager.post(new Runnable() {
+            @Override
+            public void run() {
+                viewPager.setCurrentItem(selectedTab, false);
+            }
+        });
     }
 
     @Override
@@ -233,8 +245,8 @@ public class ImagePickerActivity extends BaseSimpleActivity
         super.onBackPressed();
     }
 
-    private void handleDoneVisibility(){
-        if (selectedImagePaths.size()== 0) {
+    private void handleDoneVisibility() {
+        if (selectedImagePaths.size() == 0) {
             disableDoneView();
         } else {
             enableDoneView();
@@ -243,7 +255,7 @@ public class ImagePickerActivity extends BaseSimpleActivity
 
     @Override
     public boolean isMaxImageReached() {
-        return selectedImagePaths.size() >= imagePickerBuilder.getMaximumNoOfImage();
+        return selectedImagePaths.size() >= imagePickerBuilder.getMaximumNoPick();
     }
 
     @Override
@@ -285,12 +297,12 @@ public class ImagePickerActivity extends BaseSimpleActivity
         }
     }
 
-    private void disableDoneView(){
+    private void disableDoneView() {
         tvDone.setTextColor(ContextCompat.getColor(getContext(), R.color.font_black_disabled_38));
         tvDone.setEnabled(false);
     }
 
-    private void enableDoneView(){
+    private void enableDoneView() {
         if (!tvDone.isEnabled()) {
             tvDone.setTextColor(ContextCompat.getColor(getContext(), R.color.tkpd_main_green));
             tvDone.setEnabled(true);
@@ -312,32 +324,28 @@ public class ImagePickerActivity extends BaseSimpleActivity
     private void onFinishWithSingleImage(String imageUrlOrPath) {
         ArrayList<String> finalPathList = new ArrayList<>();
         finalPathList.add(imageUrlOrPath);
-        onFinishWithMultipleImage(finalPathList);
+        onFinishWithMultipleImageValidateNetworkPath(finalPathList);
     }
 
-    private void onFinishWithMultipleImage(ArrayList<String> imageUrlOrPathList) {
+    private void onFinishWithMultipleImageValidateNetworkPath(ArrayList<String> imageUrlOrPathList) {
         if (imagePickerBuilder.isMoveImageResultToLocal()) {
             //check if there is http url on the list, if any, convert to local.
-            boolean hasNetworkImage = false;
-            for (int i = 0, sizei = imageUrlOrPathList.size(); i < sizei; i++) {
-                if (URLUtil.isNetworkUrl(imageUrlOrPathList.get(i))) {
-                    hasNetworkImage = true;
-                    break;
-                }
-            }
-            if (hasNetworkImage) {
-                showDownloadProgressDialog();
-                initImagePickerPresenter();
-                imagePickerPresenter.convertHttpPathToLocalPath(imageUrlOrPathList);
-            } else {
-                onFinishWithMultipleLocalImage(imageUrlOrPathList);
-            }
+            showFinishProgressDialog();
+            initImagePickerPresenter();
+            imagePickerPresenter.convertHttpPathToLocalPath(imageUrlOrPathList);
         } else {
-            onFinishWithMultipleLocalImage(imageUrlOrPathList);
+            onFinishWithMultipleImageValidateFileSize(imageUrlOrPathList);
         }
     }
 
-    private void onFinishWithMultipleLocalImage(ArrayList<String> imageUrlOrPathList) {
+    private void onFinishWithMultipleImageValidateFileSize(ArrayList<String> imagePathList) {
+        long maxFileSizeInKB = imagePickerBuilder.getMaxFileSizeInKB();
+        showFinishProgressDialog();
+        initImagePickerPresenter();
+        imagePickerPresenter.resizeImage(imagePathList, maxFileSizeInKB);
+    }
+
+    private void onFinishWithMultipleFinalImage(ArrayList<String> imageUrlOrPathList) {
         Intent intent = new Intent();
         intent.putStringArrayListExtra(PICKER_RESULT_PATHS, imageUrlOrPathList);
         setResult(Activity.RESULT_OK, intent);
@@ -358,7 +366,23 @@ public class ImagePickerActivity extends BaseSimpleActivity
     @Override
     public void onSuccessDownloadImageToLocal(ArrayList<String> localPaths) {
         hideDownloadProgressDialog();
-        onFinishWithMultipleLocalImage(localPaths);
+        onFinishWithMultipleImageValidateFileSize(localPaths);
+    }
+
+    @Override
+    public void onErrorResizeImage(Throwable e) {
+        hideDownloadProgressDialog();
+        if (e instanceof ImagePickerPresenter.FileSizeAboveMaximumException) {
+            NetworkErrorHelper.showRedCloseSnackbar(this, getString(R.string.max_file_size_reached));
+        } else {
+            NetworkErrorHelper.showRedCloseSnackbar(this, ErrorHandler.getErrorMessage(getContext(), e));
+        }
+    }
+
+    @Override
+    public void onSuccessResizeImage(ArrayList<String> resultPaths) {
+        hideDownloadProgressDialog();
+        onFinishWithMultipleFinalImage(resultPaths);
     }
 
     private void initImagePickerPresenter() {
@@ -368,7 +392,7 @@ public class ImagePickerActivity extends BaseSimpleActivity
         }
     }
 
-    private void showDownloadProgressDialog() {
+    private void showFinishProgressDialog() {
         if (progressDialog == null) {
             progressDialog = new ProgressDialog(this);
             progressDialog.setCancelable(false);
@@ -390,7 +414,7 @@ public class ImagePickerActivity extends BaseSimpleActivity
             case REQUEST_CODE_EDITOR:
                 if (resultCode == Activity.RESULT_OK && data != null && data.hasExtra(ImageEditorActivity.EDIT_RESULT_PATHS)) {
                     ArrayList<String> finalPathList = data.getStringArrayListExtra(ImageEditorActivity.EDIT_RESULT_PATHS);
-                    onFinishWithMultipleImage(finalPathList);
+                    onFinishWithMultipleImageValidateNetworkPath(finalPathList);
                 }
                 break;
             default:
