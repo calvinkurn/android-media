@@ -20,6 +20,16 @@ import java.util.List;
 
 public class OptionHelper {
 
+    public static void saveOptionShownInMainState(Option option,
+                                                     HashMap<String, Boolean> shownInMainState) {
+
+        if (!TextUtils.isEmpty(option.getInputState()) && Boolean.parseBoolean(option.getInputState())) {
+            shownInMainState.put(option.getUniqueId(), true);
+        } else {
+            shownInMainState.remove(option.getUniqueId());
+        }
+    }
+
     public static void saveOptionInputState(Option option,
                                             HashMap<String, Boolean> checkedState,
                                             HashMap<String, String> savedTextInput) {

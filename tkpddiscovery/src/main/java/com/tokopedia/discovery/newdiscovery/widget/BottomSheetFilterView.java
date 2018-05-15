@@ -73,6 +73,7 @@ public class BottomSheetFilterView extends BaseCustomView implements BottomSheet
     private Callback callback;
     private HashMap<String, Boolean> savedCheckedState = new HashMap<>();
     private HashMap<String, String> savedTextInput = new HashMap<>();
+    private HashMap<String, Boolean> shownInMainState = new HashMap<>();
 
     private int selectedExpandableItemPosition;
     private String selectedCategoryId;
@@ -258,7 +259,7 @@ public class BottomSheetFilterView extends BaseCustomView implements BottomSheet
         List<Option> checkedOptions = new ArrayList<>();
 
         for (Option option : filter.getOptions()) {
-            if (Boolean.TRUE.equals(loadLastCheckedState(option)) && !option.isPopular()) {
+            if (Boolean.TRUE.equals(shownInMainState.get(option.getUniqueId())) && !option.isPopular()) {
                 checkedOptions.add(option);
             }
         }
@@ -727,6 +728,7 @@ public class BottomSheetFilterView extends BaseCustomView implements BottomSheet
                 = data.getParcelableArrayListExtra(AbstractDynamicFilterDetailActivity.EXTRA_RESULT);
         for (Option option : optionList) {
             OptionHelper.saveOptionInputState(option, savedCheckedState, savedTextInput);
+            OptionHelper.saveOptionShownInMainState(option, shownInMainState);
         }
     }
 
@@ -753,6 +755,7 @@ public class BottomSheetFilterView extends BaseCustomView implements BottomSheet
                     public void onNext(List<Option> optionList) {
                         for (Option option : optionList) {
                             OptionHelper.saveOptionInputState(option, savedCheckedState, savedTextInput);
+                            OptionHelper.saveOptionShownInMainState(option, shownInMainState);
                         }
                         filterMainAdapter.notifyItemChanged(selectedExpandableItemPosition);
                         applyFilter();
