@@ -257,6 +257,12 @@ public class ChatRoomAdapter extends RecyclerView.Adapter<AbstractViewHolder> {
         notifyItemRemoved(position);
     }
 
+    public void remove(Visitable model) {
+        int position = list.indexOf(model);
+        list.remove(model);
+        notifyItemRemoved(position);
+    }
+
     public void addReply(Visitable item) {
         this.list.add(0, item);
         notifyItemInserted(0);

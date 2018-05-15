@@ -8,8 +8,11 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v4.app.FragmentActivity;
 
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
+
+import java.util.ArrayList;
 
 /**
  * @author by nisie on 9/14/17.
@@ -67,4 +70,7 @@ public interface TkpdInboxRouter {
     void startAddProduct(Activity activity, String shopId);
 
     boolean isEnabledGroupChat();
+
+    void openImagePreviewFromChat(Context context, ArrayList<String> listImage, ArrayList<String>
+            imageDesc, String title, String date);
 }

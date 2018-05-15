@@ -11,7 +11,7 @@ import com.tokopedia.inbox.inboxchat.adapter.viewholder.QuickReplyViewHolder;
 import com.tokopedia.inbox.inboxchat.domain.model.websocket.FallbackAttachmentViewModel;
 import com.tokopedia.inbox.inboxchat.fragment.ChatRoomFragment;
 import com.tokopedia.inbox.inboxchat.presenter.ChatRoomContract;
-import com.tokopedia.inbox.inboxchat.viewholder.ImageUploadViewHolder;
+import com.tokopedia.inbox.inboxchat.adapter.viewholder.ImageUploadViewHolder;
 import com.tokopedia.inbox.inboxchat.viewholder.AttachedInvoiceSelectionViewHolder;
 import com.tokopedia.inbox.inboxchat.viewholder.AttachedInvoiceSentViewHolder;
 import com.tokopedia.inbox.inboxchat.viewholder.MyChatViewHolder;
@@ -111,7 +111,7 @@ public class ChatRoomTypeFactoryImpl extends BaseAdapterTypeFactory implements C
         else if (type == TypingChatViewHolder.LAYOUT)
             viewHolder = new TypingChatViewHolder(view);
         else if (type == ImageUploadViewHolder.LAYOUT)
-            viewHolder = new ImageUploadViewHolder(view);
+            viewHolder = new ImageUploadViewHolder(view, viewListener);
         else if (type == AttachedInvoiceSentViewHolder.LAYOUT)
             viewHolder = new AttachedInvoiceSentViewHolder(view);
         else if (type == AttachedInvoiceSelectionViewHolder.LAYOUT)

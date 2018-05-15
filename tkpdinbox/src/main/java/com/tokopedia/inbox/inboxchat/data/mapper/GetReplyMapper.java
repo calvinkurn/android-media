@@ -106,7 +106,7 @@ public class GetReplyMapper implements Func1<Response<TkpdResponse>, ChatRoomVie
 //                list.add(checkAndConvertItemModelToAttachmentType(temp, temp.getAttachment()));
 //            } else
             if (item.getAttachment() != null
-                    && item.getAttachment().getType().equals(WebSocketMapper.TYPE_IMAGE_ATTACHMENT)
+                    && item.getAttachment().getType().equals(WebSocketMapper.TYPE_IMAGE_ANNOUNCEMENT)
                     && item.getRole().contains(TOKOPEDIA)) {
                 mapToImageAnnouncement(list, item);
             } else if (item.getAttachment() != null

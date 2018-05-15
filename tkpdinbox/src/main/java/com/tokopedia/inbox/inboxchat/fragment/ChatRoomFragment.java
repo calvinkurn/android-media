@@ -84,8 +84,6 @@ import com.tokopedia.inbox.inboxchat.domain.model.reply.Attachment;
 import com.tokopedia.inbox.inboxchat.domain.model.reply.AttachmentAttributes;
 import com.tokopedia.inbox.inboxchat.domain.model.reply.AttachmentInvoice;
 import com.tokopedia.inbox.inboxchat.domain.model.reply.AttachmentInvoiceAttributes;
-import com.tokopedia.inbox.inboxchat.domain.model.reply.AttachmentProductProfile;
-import com.tokopedia.inbox.inboxchat.domain.model.reply.WebSocketResponse;
 import com.tokopedia.inbox.inboxchat.domain.model.reply.WebSocketResponse;
 import com.tokopedia.inbox.inboxchat.domain.model.replyaction.ReplyActionData;
 import com.tokopedia.inbox.inboxchat.domain.model.websocket.BaseChatViewModel;
@@ -99,6 +97,7 @@ import com.tokopedia.inbox.inboxchat.viewholder.ListChatViewHolder;
 import com.tokopedia.inbox.inboxchat.viewmodel.AttachInvoiceSentViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.ChatRoomViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.DummyChatViewModel;
+import com.tokopedia.inbox.inboxchat.viewmodel.ImageUploadViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.InboxChatViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.MyChatViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.OppositeChatViewModel;
@@ -299,6 +298,37 @@ public class ChatRoomFragment extends BaseDaggerFragment
         bottomSheetDialog.show();
     }
 
+    @Override
+    public void onRetrySendImage(final ImageUploadViewModel element) {
+        BottomSheetBuilder bottomSheetBuilder = new CheckedBottomSheetBuilder(getActivity())
+                .setMode(BottomSheetBuilder.MODE_LIST);
+
+        bottomSheetBuilder.addItem(RESEND, R.string.resend, null);
+        bottomSheetBuilder.addItem(DELETE, R.string.delete, null);
+
+        BottomSheetDialog bottomSheetDialog = bottomSheetBuilder.expandOnStart(true)
+                .setItemClickListener(new BottomSheetItemClickListener() {
+                    @Override
+                    public void onBottomSheetItemClick(MenuItem item) {
+                        switch (item.getItemId()) {
+                            case RESEND:
+                                adapter.remove(element);
+                                String fileLoc = element.getImageUrl();
+                                DummyChatViewModel temp = generateChatViewModelWithImage(fileLoc);
+                                presenter.startUpload(Collections.singletonList(temp), networkType);
+                                adapter.addReply(temp);
+                                break;
+                            case DELETE:
+                                adapter.remove(element);
+                                break;
+                        }
+                    }
+                })
+                .createDialog();
+
+        bottomSheetDialog.show();
+    }
+
     private void initListener() {
 
         replyIsTyping = replyWatcher.map(new Func1<String, Boolean>() {
@@ -475,6 +505,15 @@ public class ChatRoomFragment extends BaseDaggerFragment
 
         ((PdpRouter) getActivity().getApplication()).openImagePreviewFromChat(getActivity(),
                 strings, new ArrayList<String>(), title, fullTime);
+    }
+
+    @Override
+    public void onGoToImagePreview(String imageUrl, String replyTime) {
+        ArrayList<String> strings = new ArrayList<>();
+        strings.add(imageUrl);
+
+        ((TkpdInboxRouter) getActivity().getApplication()).openImagePreviewFromChat(getActivity(),
+                strings, new ArrayList<String>(), title, replyTime);
     }
 
     @Override

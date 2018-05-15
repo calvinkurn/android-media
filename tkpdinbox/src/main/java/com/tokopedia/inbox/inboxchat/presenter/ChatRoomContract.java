@@ -17,6 +17,7 @@ import com.tokopedia.inbox.inboxchat.domain.model.replyaction.ReplyActionData;
 import com.tokopedia.inbox.inboxchat.domain.model.reply.WebSocketResponse;
 import com.tokopedia.inbox.inboxchat.viewmodel.ChatRoomViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.DummyChatViewModel;
+import com.tokopedia.inbox.inboxchat.viewmodel.ImageUploadViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.MyChatViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.OppositeChatViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.chatroom.QuickReplyListViewModel;
@@ -99,6 +100,8 @@ public class ChatRoomContract {
 
         void onGoToGallery(Attachment attachment, String fullTime);
 
+        void onGoToImagePreview(String imageUrl, String replyTime);
+
         void onGoToWebView(String attachment, String id);
 
         boolean needCreateWebSocket();
@@ -118,6 +121,8 @@ public class ChatRoomContract {
         void onErrorUploadImages(String throwable, MyChatViewModel model);
 
         void onRetrySend(MyChatViewModel attachment);
+
+        void onRetrySendImage(ImageUploadViewModel element);
 
         void onSuccessSendAttach(ReplyActionData data, MyChatViewModel model);
 
@@ -152,6 +157,7 @@ public class ChatRoomContract {
         void showSnackbarError(String string);
 
         UserSession getUserSession();
+
     }
 
     interface Presenter extends CustomerPresenter<View>{
