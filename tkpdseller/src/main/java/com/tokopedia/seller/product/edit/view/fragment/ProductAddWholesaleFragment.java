@@ -3,7 +3,9 @@ package com.tokopedia.seller.product.edit.view.fragment;
 import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AlertDialog;
@@ -211,7 +213,17 @@ public class ProductAddWholesaleFragment extends BaseDaggerFragment implements W
                     snackbar.dismiss();
                 }
             });
-            snackbar.show();
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+                Handler handler = new Handler();
+                handler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        snackbar.show();
+                    }
+                }, 500);
+            } else  {
+                snackbar.show();
+            }
         }
     }
 
