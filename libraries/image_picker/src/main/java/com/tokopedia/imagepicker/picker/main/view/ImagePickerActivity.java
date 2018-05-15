@@ -199,6 +199,8 @@ public class ImagePickerActivity extends BaseSimpleActivity
         tabLayout.setupWithViewPager(viewPager);
         if (tabLayout.getTabCount() <= 1) {
             tabLayout.setVisibility(View.GONE);
+        } else {
+            tabLayout.setVisibility(View.VISIBLE);
         }
     }
 
@@ -219,6 +221,7 @@ public class ImagePickerActivity extends BaseSimpleActivity
             }
             if (allIsAllowed) {
                 viewPager.setAdapter(imagePickerViewPagerAdapter);
+                setupTabLayout();
             }
         }
     }

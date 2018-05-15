@@ -45,7 +45,8 @@ public class InstagramDataSourceCloud implements InstagramDataSource {
                             } catch (IOException e) {
                                 return null;
                             }
-                            if(responseListMediaInstagram.getMeta().getErrorType().equalsIgnoreCase("OAuthAccessTokenException")){
+                            String errorType = responseListMediaInstagram.getMeta().getErrorType();
+                            if("OAuthAccessTokenException".equalsIgnoreCase(errorType) || "OAuthParameterException".equalsIgnoreCase(errorType)){
                                 throw new ShouldLoginInstagramException();
                             }else{
                                 return null;
