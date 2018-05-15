@@ -11,12 +11,12 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel;
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingMoreModel;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
+import com.tokopedia.inbox.inboxchat.adapter.viewholder.ProductAttachmentViewHolder;
 import com.tokopedia.inbox.inboxchat.domain.model.ListReplyViewModel;
 import com.tokopedia.inbox.inboxchat.domain.model.ReplyParcelableModel;
 import com.tokopedia.inbox.inboxchat.domain.model.reply.WebSocketResponse;
 import com.tokopedia.inbox.inboxchat.domain.model.websocket.BaseChatViewModel;
 import com.tokopedia.inbox.inboxchat.viewholder.AttachedInvoiceSentViewHolder;
-import com.tokopedia.inbox.inboxchat.viewholder.AttachedProductViewHolder;
 import com.tokopedia.inbox.inboxchat.viewholder.MyChatViewHolder;
 import com.tokopedia.inbox.inboxchat.viewmodel.DummyChatViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.MyChatViewModel;
@@ -75,8 +75,8 @@ public class ChatRoomAdapter extends RecyclerView.Adapter<AbstractViewHolder> {
         super.onViewRecycled(holder);
         if (holder instanceof MyChatViewHolder) {
             ((MyChatViewHolder) holder).onViewRecycled();
-        } else if (holder instanceof AttachedProductViewHolder) {
-            ((AttachedProductViewHolder) holder).onViewRecycled();
+        } else if (holder instanceof ProductAttachmentViewHolder) {
+            ((ProductAttachmentViewHolder) holder).onViewRecycled();
         } else if (holder instanceof AttachedInvoiceSentViewHolder) {
             ((AttachedInvoiceSentViewHolder) holder).onViewRecycled();
         }
@@ -91,18 +91,6 @@ public class ChatRoomAdapter extends RecyclerView.Adapter<AbstractViewHolder> {
             position++;
         }
         return null;
-    }
-
-
-    private Object getLastPrevBaseChatViewModel(int initialPosition) {
-        if (initialPosition < list.size()) {
-            return (BaseChatViewModel) list.get(initialPosition);
-        } else if (initialPosition < list.size() && list.get(initialPosition) instanceof
-                ListReplyViewModel) {
-            return (ListReplyViewModel) list.get(initialPosition);
-        } else {
-            return null;
-        }
     }
 
     private void showTime(Context context, int position) {

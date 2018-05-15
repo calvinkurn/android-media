@@ -7,6 +7,7 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.inbox.R;
 import com.tokopedia.inbox.inboxchat.presenter.ChatRoomContract;
@@ -29,6 +30,7 @@ public class ProductAttachmentViewHolder extends BaseChatViewHolder<ProductAttac
     private TextView label;
     private TextView dot;
     private ImageView action;
+    private ImageView thumbnailsImage;
 
     private Context context;
     private ChatRoomContract.View viewListener;
@@ -158,6 +160,16 @@ public class ProductAttachmentViewHolder extends BaseChatViewHolder<ProductAttac
         else if (destination instanceof ImageView) {
             ImageHandler.loadImageRounded2(destination.getContext(), (ImageView) destination,
                     value);
+            this.thumbnailsImage = (ImageView) destination;
+
+        }
+    }
+
+    @Override
+    public void onViewRecycled() {
+        super.onViewRecycled();
+        if (thumbnailsImage != null) {
+            Glide.clear(thumbnailsImage);
         }
     }
 }
