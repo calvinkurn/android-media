@@ -25,7 +25,7 @@ import com.tokopedia.core.app.TkpdBaseV4Fragment;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.customadapter.BaseRecyclerViewAdapter;
 import com.tokopedia.core.customwidget.SwipeToRefresh;
-import com.tokopedia.core.home.SimpleWebViewActivity;
+import com.tokopedia.core.home.SimpleWebViewWithFilePickerActivity;
 import com.tokopedia.core.home.helper.ProductFeedHelper;
 import com.tokopedia.core.home.model.HotListViewModel;
 import com.tokopedia.core.home.presenter.HotList;
@@ -425,7 +425,7 @@ public class FragmentHotListV2 extends TkpdBaseV4Fragment implements HotListView
 
     @Override
     public void openWebView(String url) {
-        Intent intent = SimpleWebViewActivity.getIntent(getActivity(), url);
+        Intent intent = SimpleWebViewWithFilePickerActivity.getIntent(getActivity(), url);
         startActivity(intent);
     }
 }
