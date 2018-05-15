@@ -43,10 +43,10 @@ public class PagingHandler implements PaginHandlerRotation {
         // use this for api based
         int startIndex;
 
-        @SerializedName("next")
+        @SerializedName("uri_next")
         @Expose
         public String uriNext;
-        @SerializedName("previous")
+        @SerializedName("uri_previous")
         @Expose
 		String uriPrevious;
         @SerializedName("current")
@@ -277,8 +277,8 @@ public class PagingHandler implements PaginHandlerRotation {
                 return;
             }
             Paging = new JSONObject(result.getString("paging"));
-            if (Paging.has("next")) {
-                hasNext = !Paging.getString("next").equals("");
+            if (Paging.has("uri_next")) {
+                hasNext = !Paging.getString("uri_next").equals("");
             }
 
             if (Paging.has("has_next")) {
