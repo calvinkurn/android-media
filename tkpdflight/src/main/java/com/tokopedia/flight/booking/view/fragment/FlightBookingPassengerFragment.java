@@ -30,6 +30,7 @@ import com.tokopedia.flight.R;
 import com.tokopedia.flight.booking.di.FlightBookingComponent;
 import com.tokopedia.flight.booking.view.activity.FlightBookingAmenityActivity;
 import com.tokopedia.flight.booking.view.activity.FlightBookingNationalityActivity;
+import com.tokopedia.flight.booking.view.viewmodel.FlightBookingPhoneCodeViewModel;
 import com.tokopedia.flight.passenger.view.activity.FlightPassengerListActivity;
 import com.tokopedia.flight.booking.view.adapter.FlightSimpleAdapter;
 import com.tokopedia.flight.booking.view.presenter.FlightBookingPassengerContract;
@@ -63,6 +64,7 @@ public class FlightBookingPassengerFragment extends BaseDaggerFragment implement
     private static final int REQUEST_CODE_PICK_MEAL = 2;
     private static final int REQUEST_CODE_PICK_SAVED_PASSENGER = 3;
     private static final int REQUEST_CODE_PICK_NATIONALITY = 4;
+    private static final int REQUEST_CODE_PICK_ISSUER_COUNTRY = 5;
     @Inject
     FlightBookingPassengerPresenter presenter;
 
@@ -84,8 +86,8 @@ public class FlightBookingPassengerFragment extends BaseDaggerFragment implement
     private AppCompatEditText etPassportExpired;
     private AppCompatEditText etPassportNationality;
     private AppCompatEditText etPassportIssuerCountry;
-
     private AppCompatButton buttonSubmit;
+
     private FlightBookingPassengerViewModel viewModel;
     private List<FlightBookingAmenityMetaViewModel> luggageViewModels;
     private List<FlightBookingAmenityMetaViewModel> mealViewModels;
@@ -213,7 +215,7 @@ public class FlightBookingPassengerFragment extends BaseDaggerFragment implement
         etPassportIssuerCountry.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                navigateToChooseIssuerCountry();
             }
         });
         return view;
@@ -429,6 +431,31 @@ public class FlightBookingPassengerFragment extends BaseDaggerFragment implement
     }
 
     @Override
+    public String getPassportNumber() {
+        return etPassportNumber.getText().toString().trim();
+    }
+
+    @Override
+    public void showPassengerPassportNumberEmptyError(int resId) {
+        showMessageErrorInSnackBar(resId);
+    }
+
+    @Override
+    public void showPassportNationalityEmptyError(int resId) {
+        showMessageErrorInSnackBar(resId);
+    }
+
+    @Override
+    public void showPassportIssuerCountryEmptyError(int resId) {
+        showMessageErrorInSnackBar(resId);
+    }
+
+    @Override
+    public void showPassengerPassportExpiredDateEmptyError(int resId) {
+        showMessageErrorInSnackBar(resId);
+    }
+
+    @Override
     public void showPassengerBirthdateEmptyError(int resId) {
         showMessageErrorInSnackBar(resId);
     }
@@ -493,6 +520,16 @@ public class FlightBookingPassengerFragment extends BaseDaggerFragment implement
     public void showPassportExpiredDateShouldMoreThan6MonthsFromDeparture(int resId, String dateAfterSixMonth) {
         NetworkErrorHelper.showRedCloseSnackbar(getActivity(),
                 String.format(getString(resId), dateAfterSixMonth));
+    }
+
+    @Override
+    public void renderPassportNationality(String countryName) {
+        etPassportNationality.setText(countryName);
+    }
+
+    @Override
+    public void renderPassportIssuerCountry(String countryName) {
+        etPassportIssuerCountry.setText(countryName);
     }
 
     @Override
@@ -655,12 +692,27 @@ public class FlightBookingPassengerFragment extends BaseDaggerFragment implement
                         presenter.onNewPassengerChoosed();
                     }
                     break;
+                case REQUEST_CODE_PICK_NATIONALITY:
+                    if (data != null) {
+                        FlightBookingPhoneCodeViewModel flightPassportNationalityViewModel = data.getParcelableExtra(FlightBookingNationalityFragment.EXTRA_SELECTED_COUNTRY);
+                        presenter.onNationalityChanged(flightPassportNationalityViewModel);
+                    }
+                    break;
+                case REQUEST_CODE_PICK_ISSUER_COUNTRY:
+                    if (data != null) {
+                        FlightBookingPhoneCodeViewModel flightPassportIssuerCountry = data.getParcelableExtra(FlightBookingNationalityFragment.EXTRA_SELECTED_COUNTRY);
+                        presenter.onIssuerCountryChanged(flightPassportIssuerCountry);
+                    }
             }
         }
     }
 
     private void navigateToChooseNationality() {
         startActivityForResult(FlightBookingNationalityActivity.createIntent(getContext()), REQUEST_CODE_PICK_NATIONALITY);
+    }
+
+    private void navigateToChooseIssuerCountry() {
+        startActivityForResult(FlightBookingNationalityActivity.createIntent(getContext()), REQUEST_CODE_PICK_ISSUER_COUNTRY);
     }
 
     public interface OnFragmentInteractionListener {
