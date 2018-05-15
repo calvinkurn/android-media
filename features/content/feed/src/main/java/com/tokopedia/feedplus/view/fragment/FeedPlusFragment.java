@@ -1000,7 +1000,6 @@ public class FeedPlusFragment extends BaseDaggerFragment
     @Override
     public void onUnlikeKolClicked(int rowNumber, int id) {
         presenter.unlikeKol(id, rowNumber, this);
-
     }
 
     @Override
