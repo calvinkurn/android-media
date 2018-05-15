@@ -1,4 +1,4 @@
-package com.tokopedia.core.base.utils;
+package com.tokopedia.tkpd.home.favorite.data;
 
 import com.tokopedia.abstraction.common.data.model.response.GraphqlResponse;
 import com.tokopedia.core.network.entity.home.FavoritShopResponseData;
