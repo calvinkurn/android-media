@@ -11,7 +11,6 @@ import android.widget.TextView;
 
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
-import com.tokopedia.core.home.SimpleWebViewActivity;
 import com.tokopedia.session.R;
 import com.tokopedia.session.login.loginemail.view.activity.ServiceActivity;
 
