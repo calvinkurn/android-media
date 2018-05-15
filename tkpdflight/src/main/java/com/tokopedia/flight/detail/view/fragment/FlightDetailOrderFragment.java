@@ -63,6 +63,8 @@ import javax.inject.Inject;
 
 import rx.Observable;
 
+import static android.app.Activity.RESULT_OK;
+
 /**
  * Created by zulfikarrahman on 12/12/17.
  */
@@ -75,6 +77,7 @@ public class FlightDetailOrderFragment extends BaseDaggerFragment implements Fli
     public static final String EXTRA_ORDER_DETAIL_PASS = "EXTRA_ORDER_DETAIL_PASS";
     private static final String CANCEL_SOLUTION_ID = "1378";
     private static final float JOURNEY_TITLE_FONT_SIZE = 18;
+    public static final String EXTRA_IS_AFTER_CANCELLATION = "EXTRA_IS_AFTER_CANCELLATION";
 
     @Inject
     FlightDetailOrderPresenter flightDetailOrderPresenter;
@@ -534,8 +537,16 @@ public class FlightDetailOrderFragment extends BaseDaggerFragment implements Fli
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         switch (requestCode) {
             case REQUEST_CODE_RESEND_ETICKET_DIALOG:
-                if (resultCode == Activity.RESULT_OK) {
+                if (resultCode == RESULT_OK) {
                     showGreenSnackbar(R.string.resend_eticket_success);
+                }
+                break;
+            case REQUEST_CODE_CANCELLATION:
+                if (resultCode == RESULT_OK) {
+                    Intent intent = new Intent();
+                    intent.putExtra(EXTRA_IS_AFTER_CANCELLATION, true);
+                    getActivity().setResult(RESULT_OK, intent);
+                    getActivity().finish();
                 }
                 break;
         }

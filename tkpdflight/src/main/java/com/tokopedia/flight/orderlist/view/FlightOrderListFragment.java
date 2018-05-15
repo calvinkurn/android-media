@@ -49,6 +49,9 @@ import javax.inject.Inject;
 
 import rx.Observable;
 
+import static android.app.Activity.RESULT_OK;
+import static com.tokopedia.flight.detail.view.fragment.FlightDetailOrderFragment.EXTRA_IS_AFTER_CANCELLATION;
+
 
 /**
  * @author by zulfikarrahman on 11/28/17.
@@ -59,8 +62,9 @@ public class FlightOrderListFragment extends BaseListFragment<Visitable, FlightO
         QuickSingleFilterView.ActionListener,
         FlightOrderAdapter.OnAdapterInteractionListener {
 
-    private static final int REQUEST_CODE_CANCELLATION = 2;
     private static final int REQUEST_CODE_RESEND_ETICKET_DIALOG = 1;
+    private static final int REQUEST_CODE_CANCELLATION = 2;
+    private static final int REQUEST_CODE_ORDER_DETAIL = 3;
     private static final String RESEND_ETICKET_DIALOG_TAG = "resend_eticket_dialog_tag";
     public static final int PER_PAGE = 10;
     @Inject
@@ -162,14 +166,16 @@ public class FlightOrderListFragment extends BaseListFragment<Visitable, FlightO
 
     @Override
     public void onDetailOrderClicked(FlightOrderDetailPassData viewModel) {
-        startActivity(FlightDetailOrderActivity.createIntent(getActivity(), viewModel));
+        startActivityForResult(FlightDetailOrderActivity.createIntent(getActivity(), viewModel),
+                REQUEST_CODE_ORDER_DETAIL);
     }
 
     @Override
     public void onDetailOrderClicked(String orderId) {
         FlightOrderDetailPassData passData = new FlightOrderDetailPassData();
         passData.setOrderId(orderId);
-        startActivity(FlightDetailOrderActivity.createIntent(getActivity(), passData));
+        startActivityForResult(FlightDetailOrderActivity.createIntent(getActivity(), passData),
+                REQUEST_CODE_ORDER_DETAIL);
     }
 
     @Override
@@ -232,10 +238,20 @@ public class FlightOrderListFragment extends BaseListFragment<Visitable, FlightO
 
         switch (requestCode) {
             case REQUEST_CODE_RESEND_ETICKET_DIALOG:
-                if (resultCode == Activity.RESULT_OK) {
+                if (resultCode == RESULT_OK) {
                     showGreenSnackbar(R.string.resend_eticket_success);
                 }
                 break;
+            case REQUEST_CODE_CANCELLATION:
+                if (resultCode == RESULT_OK) {
+                    loadData(getDefaultInitialPage());
+                }
+                break;
+            case REQUEST_CODE_ORDER_DETAIL:
+                if (resultCode == RESULT_OK && data != null &&
+                        data.getBooleanExtra(EXTRA_IS_AFTER_CANCELLATION, false)) {
+                    loadData(getDefaultInitialPage());
+                }
         }
     }
 
@@ -316,7 +332,6 @@ public class FlightOrderListFragment extends BaseListFragment<Visitable, FlightO
         startActivityForResult(FlightCancellationActivity.createIntent(getContext(),
                 invoiceId,
                 item
-                ),
-                REQUEST_CODE_CANCELLATION);
+        ), REQUEST_CODE_CANCELLATION);
     }
 }
