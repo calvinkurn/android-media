@@ -32,6 +32,8 @@ public interface FlightBookingPassengerContract {
 
         String getDepartureId();
 
+        boolean isDomestic();
+
         List<FlightBookingAmenityMetaViewModel> getLuggageViewModels();
 
         List<FlightBookingAmenityMetaViewModel> getMealViewModels();
@@ -110,6 +112,10 @@ public interface FlightBookingPassengerContract {
 
         void hideKeyboard();
 
+        void hidePassportContainer();
+
+        void showPassportContainer();
+
         boolean isMandatoryDoB();
 
         String getDepartureDateString();
@@ -127,6 +133,8 @@ public interface FlightBookingPassengerContract {
         void renderPassportNationality(String countryName);
 
         void renderPassportIssuerCountry(String countryName);
+
+        void renderPassportNumber(String passportNumber);
 
         void showPassengerPassportNumberEmptyError(@StringRes int resId);
 

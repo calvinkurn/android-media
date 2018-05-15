@@ -178,7 +178,8 @@
             android:orientation="vertical"
             android:paddingBottom="@dimen/dp_10"
             android:paddingTop="@dimen/dp_10"
-            android:visibility="visible">
+            android:id="@+id/container_passport_data"
+            android:visibility="gone">
 
             <android.support.v7.widget.AppCompatTextView
                 style="@style/TextView.Micro.Bold"
