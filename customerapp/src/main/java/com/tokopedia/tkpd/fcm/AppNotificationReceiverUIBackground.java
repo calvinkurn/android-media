@@ -30,7 +30,6 @@ import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.inbox.inboxchat.ChatNotifInterface;
 import com.tokopedia.pushnotif.ApplinkNotificationHelper;
 import com.tokopedia.pushnotif.PushNotification;
-import com.tokopedia.ride.deeplink.RidePushNotificationBuildAndShow;
 import com.tokopedia.tkpd.deeplink.DeeplinkHandlerActivity;
 import com.tokopedia.tkpd.fcm.applink.ApplinkBuildAndShowNotification;
 import com.tokopedia.tkpd.fcm.notification.PurchaseAcceptedNotification;
@@ -149,7 +148,7 @@ public class AppNotificationReceiverUIBackground extends BaseAppNotificationRece
                             new SavePushNotificationCallback()
                     );
                     break;
-                case Constants.ARG_NOTIFICATION_APPLINK_RIDE:
+                /*case Constants.ARG_NOTIFICATION_APPLINK_RIDE:
                     if (Uri.parse(applinks).getPathSegments().size() == DEFAULT_RIDE_URL_SIZE) {
                         buildNotifByData(data);
                     } else {
@@ -157,7 +156,7 @@ public class AppNotificationReceiverUIBackground extends BaseAppNotificationRece
                         RidePushNotificationBuildAndShow push = new RidePushNotificationBuildAndShow(mContext);
                         push.processReceivedNotification(data);
                     }
-                    break;
+                    break;*/
 
                 case Constants.ARG_NOTIFICATION_APPLINK_TOPCHAT:
                     if (mActivitiesLifecycleCallbacks.getLiveActivityOrNull() != null
