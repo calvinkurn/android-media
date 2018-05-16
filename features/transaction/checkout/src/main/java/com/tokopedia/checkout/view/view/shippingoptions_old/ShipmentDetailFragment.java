@@ -549,19 +549,19 @@ public class ShipmentDetailFragment extends BaseCheckoutFragment
         renderDropshipperView(courierItemData);
         renderPartialOrderView();
         updateFeesGroupLayout();
-        if (presenter.getShipmentDetailData().getUseDropshipper() != null) {
+//        if (presenter.getShipmentDetailData().getUseDropshipper() != null) {
             switchDropshipper.setChecked(presenter.getShipmentDetailData().getUseDropshipper());
             if (presenter.getShipmentDetailData().getUseDropshipper()) {
                 etShipperName.setText(presenter.getShipmentDetailData().getDropshipperName());
                 etShipperPhone.setText(presenter.getShipmentDetailData().getDropshipperPhone());
             }
-        }
+//        }
         if (presenter.getShipmentDetailData().getUseInsurance() != null) {
             switchInsurance.setChecked(presenter.getShipmentDetailData().getUseInsurance());
         }
-        if (presenter.getShipmentDetailData().getUsePartialOrder() != null) {
+//        if (presenter.getShipmentDetailData().getUsePartialOrder() != null) {
             switchPartlyAccept.setChecked(presenter.getShipmentDetailData().getUsePartialOrder());
-        }
+//        }
         renderButtonSaveEnabled();
     }
 
@@ -736,11 +736,11 @@ public class ShipmentDetailFragment extends BaseCheckoutFragment
     }
 
     private void renderDropshipperView(CourierItemData courierItemData) {
-        if (presenter.getShipmentDetailData().getUseDropshipper() != null) {
+//        if (presenter.getShipmentDetailData().getUseDropshipper() != null) {
             renderDropshipperInput(presenter.getShipmentDetailData().getUseDropshipper());
-        } else {
-            renderDropshipperInput(courierItemData.isAllowDropshiper());
-        }
+//        } else {
+//            renderDropshipperInput(courierItemData.isAllowDropshiper());
+//        }
     }
 
     private void renderDropshipperInput(boolean visible) {

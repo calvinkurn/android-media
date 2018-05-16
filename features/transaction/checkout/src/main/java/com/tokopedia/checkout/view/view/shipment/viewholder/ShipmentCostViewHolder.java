@@ -1,5 +1,6 @@
 package com.tokopedia.checkout.view.view.shipment.viewholder;
 
+import android.content.Context;
 import android.graphics.Typeface;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
@@ -17,7 +18,6 @@ import android.widget.TextView;
 
 import com.tokopedia.checkout.R;
 import com.tokopedia.checkout.domain.datamodel.cartsingleshipment.ShipmentCostModel;
-import com.tokopedia.checkout.view.adapter.SingleAddressShipmentAdapter;
 import com.tokopedia.checkout.view.view.shipment.ShipmentAdapterActionListener;
 import com.tokopedia.design.utils.CurrencyFormatUtil;
 
@@ -40,7 +40,10 @@ public class ShipmentCostViewHolder extends RecyclerView.ViewHolder {
     private TextView mTvShippingFee;
     private TextView mTvInsuranceFee;
     private TextView mTvPromoDiscount;
-    private TextView mTvGrandTotal;
+    private TextView mTvSellerCostAdditionLabel;
+    private TextView mTvSellerCostAdditionFee;
+    private TextView mTvInsuranceFeeLabel;
+    private TextView mTvPromoLabel;
 
     private TextView mTvPromoMessage;
 
@@ -57,8 +60,11 @@ public class ShipmentCostViewHolder extends RecyclerView.ViewHolder {
         mTvShippingFee = itemView.findViewById(R.id.tv_shipping_fee);
         mTvInsuranceFee = itemView.findViewById(R.id.tv_insurance_fee);
         mTvPromoDiscount = itemView.findViewById(R.id.tv_promo);
-        mTvGrandTotal = itemView.findViewById(R.id.tv_payable);
         mTvPromoMessage = itemView.findViewById(R.id.tv_promo_message);
+        mTvSellerCostAdditionLabel = itemView.findViewById(R.id.tv_seller_cost_addition);
+        mTvSellerCostAdditionFee = itemView.findViewById(R.id.tv_seller_cost_addition_fee);
+        mTvInsuranceFeeLabel = itemView.findViewById(R.id.tv_insurance_fee_label);
+        mTvPromoLabel = itemView.findViewById(R.id.tv_promo_label);
 
         this.shipmentAdapterActionListener = shipmentAdapterActionListener;
     }
@@ -66,21 +72,19 @@ public class ShipmentCostViewHolder extends RecyclerView.ViewHolder {
     public void bindViewHolder(ShipmentCostModel shipmentCost) {
         mRlShipmentCostLayout.setVisibility(View.VISIBLE);
 
-        mTvTotalItemLabel.setText(getTotalItemLabel(shipmentCost.getTotalItem()));
-        mTvTotalItemPrice.setText(getPriceFormat(shipmentCost.getTotalItemPrice()));
-        mTvShippingFeeLabel.setText(getTotalWeightLabel(shipmentCost.getTotalWeight(), GRAM));
-        mTvShippingFee.setText(getPriceFormat(shipmentCost.getShippingFee()));
-        mTvInsuranceFee.setText(getPriceFormat(shipmentCost.getInsuranceFee()));
-        mTvPromoDiscount.setText(getPriceFormat(shipmentCost.getPromoPrice()));
-
-        mTvGrandTotal.setText(getPriceFormat(shipmentCost.getTotalPrice()));
+        mTvTotalItemLabel.setText(getTotalItemLabel(mTvTotalItemLabel.getContext(), shipmentCost.getTotalItem()));
+        mTvTotalItemPrice.setText(shipmentCost.getTotalItemPrice() == 0 ? "-" :
+                CurrencyFormatUtil.convertPriceValueToIdrFormat((int) shipmentCost.getTotalItemPrice(), true));
+        mTvShippingFeeLabel.setText(mTvShippingFeeLabel.getContext().getString(R.string.label_shipment_fee));
+        mTvShippingFee.setText(getPriceFormat(mTvShippingFeeLabel, mTvShippingFee, shipmentCost.getShippingFee()));
+        mTvInsuranceFee.setText(getPriceFormat(mTvInsuranceFeeLabel, mTvInsuranceFee, shipmentCost.getInsuranceFee()));
+        mTvPromoDiscount.setText(getPriceFormat(mTvPromoLabel, mTvPromoDiscount, shipmentCost.getPromoPrice()));
+        mTvSellerCostAdditionFee.setText(getPriceFormat(mTvSellerCostAdditionLabel, mTvSellerCostAdditionFee, shipmentCost.getAdditionalFee()));
 
         if (!TextUtils.isEmpty(shipmentCost.getPromoMessage())) {
             formatPromoMessage(mTvPromoMessage, shipmentCost.getPromoMessage());
-            shipmentAdapterActionListener.onShowPromoMessage(shipmentCost.getPromoMessage());
             mTvPromoMessage.setVisibility(View.VISIBLE);
         } else {
-            shipmentAdapterActionListener.onHidePromoMessage();
             mTvPromoMessage.setVisibility(View.GONE);
         }
     }
@@ -91,7 +95,7 @@ public class ShipmentCostViewHolder extends RecyclerView.ViewHolder {
         int startSpan = promoMessage.indexOf(formatText);
         int endSpan = promoMessage.indexOf(formatText) + formatText.length();
         Spannable formattedPromoMessage = new SpannableString(promoMessage);
-        final int color = ContextCompat.getColor(textView.getContext(), R.color.black_54);
+        final int color = ContextCompat.getColor(textView.getContext(), R.color.tkpd_main_green);
         formattedPromoMessage.setSpan(new ForegroundColorSpan(color), startSpan, endSpan,
                 Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
         formattedPromoMessage.setSpan(new StyleSpan(Typeface.BOLD), startSpan, endSpan,
@@ -113,28 +117,29 @@ public class ShipmentCostViewHolder extends RecyclerView.ViewHolder {
         textView.setText(formattedPromoMessage);
     }
 
-    private String getTotalItemLabel(int totalItem) {
-        return String.format("Jumlah Barang (%s Item)", totalItem);
+    private String getTotalItemLabel(Context context, int totalItem) {
+        return String.format(context.getString(R.string.label_item_count_summary_with_format), totalItem);
     }
 
-    private String getTotalWeightLabel(double weight, int weightUnit) {
-        String unit = weightUnit == GRAM ? "gr" : "Kg";
-        return String.format("Ongkos Kirim (%s %s)", (int) weight, unit);
+    private String getTotalWeightLabel(Context context, double weight, int weightUnit) {
+        String unit = weightUnit == GRAM ? context.getString(R.string.weight_unit_gram) : context.getString(R.string.weight_unit_kilogram);
+        return String.format(context.getString(R.string.label_shipping_price_format), String.valueOf((int) weight), unit);
     }
 
-    private String getPriceFormat(double price) {
-        return price == 0 ? "-" : CurrencyFormatUtil.convertPriceValueToIdrFormat((int) price, true);
+    private String getPriceFormat(TextView textViewLabel, TextView textViewPrice, double price) {
+        if (price == 0) {
+            textViewLabel.setVisibility(View.GONE);
+            textViewPrice.setVisibility(View.GONE);
+            return "-";
+        } else {
+            textViewLabel.setVisibility(View.VISIBLE);
+            textViewPrice.setVisibility(View.VISIBLE);
+            return CurrencyFormatUtil.convertPriceValueToIdrFormat((int) price, true);
+        }
     }
 
     private void togglePromoText() {
         mTvPromoMessage.setVisibility(View.GONE);
     }
-
-    private View.OnClickListener togglePromoTextListener = new View.OnClickListener() {
-        @Override
-        public void onClick(View view) {
-            togglePromoText();
-        }
-    };
 
 }

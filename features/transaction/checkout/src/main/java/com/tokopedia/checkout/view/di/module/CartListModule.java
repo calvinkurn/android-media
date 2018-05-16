@@ -1,7 +1,9 @@
 package com.tokopedia.checkout.view.di.module;
 
+import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 
+import com.tokopedia.checkout.R;
 import com.tokopedia.checkout.domain.usecase.CheckPromoCodeCartListUseCase;
 import com.tokopedia.checkout.domain.usecase.DeleteCartGetCartListUseCase;
 import com.tokopedia.checkout.domain.usecase.DeleteCartUseCase;
@@ -32,10 +34,12 @@ public class CartListModule {
 
     private final ICartListView cartListView;
     private final CartListAdapter.ActionListener cartListActionListener;
+    private final Context context;
 
     public CartListModule(CartFragment cartFragment) {
         this.cartListView = cartFragment;
         this.cartListActionListener = cartFragment;
+        this.context = cartFragment.getContext();
     }
 
     @Provides
@@ -67,7 +71,7 @@ public class CartListModule {
     @Provides
     @CartListScope
     RecyclerView.ItemDecoration provideCartItemDecoration() {
-        return new CartItemDecoration(40, false, 0);
+        return new CartItemDecoration((int) context.getResources().getDimension(R.dimen.new_margin_med), false, 0);
     }
 
     @Provides

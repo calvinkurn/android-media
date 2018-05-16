@@ -9,7 +9,7 @@ import com.tokopedia.transaction.common.data.pickuppoint.Store;
  * @author Irfan Khoirul on 23/04/18.
  */
 
-public abstract class ShipmentCartItem implements ShipmentData {
+public abstract class ShipmentCartItemModel implements ShipmentData {
 
     private boolean isError;
     private String errorMessage;
@@ -34,10 +34,11 @@ public abstract class ShipmentCartItem implements ShipmentData {
     private Store store;
 
     private boolean stateDetailSubtotalViewExpanded;
-    private boolean stateAllItemViewExpanded;
+    private boolean stateAllItemViewExpanded = true;
     private boolean stateDropshipperDetailExpanded;
+    private boolean stateDropshipperHasError;
 
-    public ShipmentCartItem() {
+    public ShipmentCartItemModel() {
     }
 
     public boolean isError() {
@@ -198,5 +199,13 @@ public abstract class ShipmentCartItem implements ShipmentData {
 
     public void setProductIsPreorder(boolean productIsPreorder) {
         this.productIsPreorder = productIsPreorder;
+    }
+
+    public boolean isStateDropshipperHasError() {
+        return stateDropshipperHasError;
+    }
+
+    public void setStateDropshipperHasError(boolean stateDropshipperHasError) {
+        this.stateDropshipperHasError = stateDropshipperHasError;
     }
 }
