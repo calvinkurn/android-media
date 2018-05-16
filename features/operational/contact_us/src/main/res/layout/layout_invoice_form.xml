@@ -426,8 +426,8 @@
 
         <ImageView
             android:id="@+id/iv_success_image"
-            android:layout_width="75dp"
-            android:layout_height="75dp"
+            android:layout_width="90dp"
+            android:layout_height="60dp"
             android:layout_marginBottom="@dimen/new_margin_sm"
             android:layout_marginEnd="@dimen/margin_default"
             android:layout_marginRight="@dimen/margin_default"
@@ -435,7 +435,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="1.0"
             app:layout_constraintStart_toStartOf="parent"
-            app:srcCompat="@drawable/ic_atur_dan_geser" />
+            app:srcCompat="@drawable/ic_submit_ticket" />
 
         <TextView
             android:id="@+id/btn_ok"
