@@ -269,7 +269,6 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
                                         userSession.getName(),
                                         userSession.getProfilePicture(),
                                         false);
-//                        adapter.addDummyReply(pendingChatViewModel);
                         presenter.sendReply(pendingChatViewModel, mChannel);
                         setSendButtonEnabled(false);
                     }
@@ -520,12 +519,11 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
     @Override
     public void onErrorSendMessage(PendingChatViewModel pendingChatViewModel, String errorMessage) {
         NetworkErrorHelper.showSnackbar(getActivity(), errorMessage);
-//        adapter.setRetry(pendingChatViewModel);
+        setSendButtonEnabled(true);
     }
 
     @Override
     public void onSuccessSendMessage(PendingChatViewModel pendingChatViewModel, ChatViewModel viewModel) {
-//        adapter.removeDummy(pendingChatViewModel);
         adapter.addReply(viewModel);
         adapter.notifyDataSetChanged();
         replyEditText.setText("");
@@ -560,13 +558,11 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
 
     @Override
     public void showReconnectingMessage() {
-//        NetworkErrorHelper.showSnackbar(getActivity(), "Reconnecting...");
         showLoading();
     }
 
     @Override
     public void dismissReconnectingMessage() {
-//        NetworkErrorHelper.showSnackbar(getActivity(), "Connected!");
         hideLoading();
     }
 
@@ -632,8 +628,6 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
 
     public void onUserEntered(UserActionViewModel userActionViewModel) {
         if (canShowUserEnter(userActionViewModel)) {
-//            adapter.addAction(userActionViewModel);
-//            adapter.notifyItemInserted(0);
             scrollToBottomWhenPossible();
         }
     }
@@ -849,12 +843,6 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
             String channelName = ((GroupChatActivity) getActivity())
                     .getChannelInfoViewModel().getTitle();
             analytics.eventClickLoyaltyWidget(channelName);
-        }
-    }
-
-    private void scrollToLastVisible() {
-        if (layoutManager.findFirstCompletelyVisibleItemPosition() == 0) {
-            chatRecyclerView.scrollToPosition(0);
         }
     }
 }

@@ -15,4 +15,4 @@ include "features:user:groupchat"
 include "features:promo:gamification"
 include "features:user:profile"
 include "features:user:vote"
-
+include "features:digital:event"

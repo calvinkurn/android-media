@@ -15,6 +15,7 @@ import com.tokopedia.feedplus.view.util.EndlessScrollRecycleListener;
 import com.tokopedia.feedplus.view.viewmodel.EmptyFeedBeforeLoginModel;
 import com.tokopedia.feedplus.view.viewmodel.RetryModel;
 import com.tokopedia.feedplus.view.viewmodel.product.AddFeedModel;
+import com.tokopedia.kol.feature.post.view.adapter.viewholder.KolPostViewHolder;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -159,6 +160,15 @@ public class FeedPlusAdapter extends RecyclerView.Adapter<AbstractViewHolder> {
         this.recyclerView = recyclerView;
         this.recyclerView.setItemAnimator(null);
         setEndlessScrollListener();
+    }
+
+    @Override
+    public void onViewRecycled(AbstractViewHolder holder) {
+        super.onViewRecycled(holder);
+
+        if (holder instanceof KolPostViewHolder) {
+            ((KolPostViewHolder) holder).onViewRecycled();
+        }
     }
 
     public void setOnLoadListener(OnLoadListener loadListener) {

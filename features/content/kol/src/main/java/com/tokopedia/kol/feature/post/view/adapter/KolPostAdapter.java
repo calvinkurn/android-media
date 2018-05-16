@@ -11,6 +11,7 @@ import com.tokopedia.abstraction.base.view.adapter.model.ErrorNetworkModel;
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingModel;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.kol.feature.post.view.adapter.typefactory.KolPostTypeFactory;
+import com.tokopedia.kol.feature.post.view.adapter.viewholder.KolPostViewHolder;
 import com.tokopedia.kol.feature.post.view.viewmodel.EmptyKolPostViewModel;
 
 import java.util.ArrayList;
@@ -60,6 +61,14 @@ public class KolPostAdapter extends RecyclerView.Adapter<AbstractViewHolder> {
     @Override
     public int getItemViewType(int position) {
         return list.get(position).type(typeFactory);
+    }
+
+    @Override
+    public void onViewRecycled(AbstractViewHolder holder) {
+        super.onViewRecycled(holder);
+        if (holder instanceof KolPostViewHolder) {
+            ((KolPostViewHolder) holder).onViewRecycled();
+        }
     }
 
     public List<Visitable> getList() {

@@ -3,7 +3,6 @@ package com.tokopedia.kol.feature.post.view.widget;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.text.Spanned;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.View;
@@ -16,6 +15,7 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.design.base.BaseCustomView;
 import com.tokopedia.kol.R;
 import com.tokopedia.kol.common.util.TimeConverter;
+import com.tokopedia.kol.common.util.UrlUtil;
 import com.tokopedia.kol.feature.post.view.listener.BaseKolListener;
 import com.tokopedia.kol.feature.post.view.viewmodel.BaseKolViewModel;
 
@@ -120,7 +120,7 @@ public class BaseKolView extends BaseCustomView {
             topSeparator.setVisibility(View.VISIBLE);
         }
 
-        kolText.setText(getReadMoreText(element));
+        UrlUtil.setTextWithClickableTokopediaUrl(kolText, getKolText(element));
 
         if (element.isLiked()) {
             ImageHandler.loadImageWithIdWithoutPlaceholder(likeIcon, R.drawable.ic_thumb_green);
@@ -147,21 +147,6 @@ public class BaseKolView extends BaseCustomView {
         }
 
         commentButton.setVisibility(element.isShowComment() ? View.VISIBLE : View.GONE);
-    }
-
-    private Spanned getReadMoreText(BaseKolViewModel element) {
-        if (!element.isReviewExpanded() && MethodChecker.fromHtml(element.getReview()).length() >
-                MAX_CHAR) {
-            String subDescription = MethodChecker.fromHtml(element.getReview()).toString().substring(0,
-                    MAX_CHAR);
-            return MethodChecker.fromHtml(
-                    subDescription.replaceAll("(\r\n|\n)", "<br />") + "... "
-                            + "<font color='#42b549'><b>"
-                            + getContext().getString(R.string.read_more_english)
-                            + "</b></font>");
-        } else {
-            return MethodChecker.fromHtml(element.getReview().replaceAll("(\r\n|\n)", "<br />"));
-        }
     }
 
     public void setViewListener(final BaseKolListener viewListener, final BaseKolViewModel element) {
@@ -191,7 +176,7 @@ public class BaseKolView extends BaseCustomView {
             public void onClick(View v) {
                 if (kolText.getText().toString().endsWith(
                         kolText.getContext().getString(R.string.read_more_english))) {
-                    kolText.setText(element.getReview());
+                    UrlUtil.setTextWithClickableTokopediaUrl(kolText, element.getReview());
                     element.setReviewExpanded(true);
 
                     viewListener.onDescriptionClickListener(element);
@@ -212,5 +197,23 @@ public class BaseKolView extends BaseCustomView {
                 viewListener.onCommentClickListener(element);
             }
         });
+    }
+
+    public void onViewRecycled() {
+        ImageHandler.clearImage(avatar);
+    }
+
+    private String getKolText(BaseKolViewModel element) {
+        if (!element.isReviewExpanded() && MethodChecker.fromHtml(element.getReview()).length() >
+                MAX_CHAR) {
+            String subDescription = MethodChecker.fromHtml(element.getReview()).toString().substring(0,
+                    MAX_CHAR);
+            return subDescription.replaceAll("(\r\n|\n)", "<br />") + "... "
+                    + "<font color='#42b549'><b>"
+                    + kolText.getContext().getString(R.string.read_more_english)
+                    + "</b></font>";
+        } else {
+            return element.getReview().replaceAll("(\r\n|\n)", "<br />");
+        }
     }
 }

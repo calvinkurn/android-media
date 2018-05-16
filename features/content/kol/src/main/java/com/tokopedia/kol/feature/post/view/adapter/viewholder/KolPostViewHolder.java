@@ -1,20 +1,24 @@
 package com.tokopedia.kol.feature.post.view.adapter.viewholder;
 
+import android.graphics.Bitmap;
 import android.support.annotation.LayoutRes;
 import android.text.TextUtils;
 import android.view.View;
+import android.view.ViewTreeObserver;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.request.animation.GlideAnimation;
+import com.bumptech.glide.request.target.SimpleTarget;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
+import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.kol.R;
 import com.tokopedia.kol.analytics.KolEnhancedTracking;
 import com.tokopedia.kol.analytics.KolEventTracking;
 import com.tokopedia.kol.feature.post.view.listener.BaseKolListener;
 import com.tokopedia.kol.feature.post.view.listener.KolPostListener;
-import com.tokopedia.kol.feature.post.view.util.KolGlideRequestListener;
 import com.tokopedia.kol.feature.post.view.viewmodel.BaseKolViewModel;
 import com.tokopedia.kol.feature.post.view.viewmodel.KolPostViewModel;
 import com.tokopedia.kol.feature.post.view.widget.BaseKolView;
@@ -68,11 +72,34 @@ public class KolPostViewHolder extends AbstractViewHolder<KolPostViewModel>
 
         if (type == Type.PROFILE && getAdapterPosition() == 0) {
             topShadow.setVisibility(View.VISIBLE);
+        } else {
+            topShadow.setVisibility(View.GONE);
         }
 
-        ImageHandler.loadImageWithRequestListener(reviewImage,
+        reviewImage.getViewTreeObserver().addOnGlobalLayoutListener(
+                new ViewTreeObserver.OnGlobalLayoutListener() {
+                    @Override
+                    public void onGlobalLayout() {
+                        ViewTreeObserver viewTreeObserver = reviewImage.getViewTreeObserver();
+                        viewTreeObserver.removeOnGlobalLayoutListener(this);
+
+                        reviewImage.setMaxHeight(reviewImage.getWidth());
+                        reviewImage.requestLayout();
+                    }
+                }
+        );
+
+        ImageHandler.loadImageWithTarget(
+                reviewImage.getContext(),
                 element.getKolImage(),
-                new KolGlideRequestListener());
+                new SimpleTarget<Bitmap>() {
+                    @Override
+                    public void onResourceReady(Bitmap resource,
+                                                GlideAnimation<? super Bitmap> glideAnimation) {
+                        reviewImage.setImageBitmap(resource);
+                    }
+                }
+        );
 
         if (TextUtils.isEmpty(element.getTagsCaption())) {
             tooltipClickArea.setVisibility(View.GONE);
@@ -83,6 +110,17 @@ public class KolPostViewHolder extends AbstractViewHolder<KolPostViewModel>
 
         setListener(element);
         baseKolView.setViewListener(this, element);
+    }
+
+    public void onViewRecycled() {
+        ImageHandler.clearImage(reviewImage);
+        baseKolView.onViewRecycled();
+
+        reviewImage.setImageDrawable(
+                MethodChecker.getDrawable(
+                        reviewImage.getContext(),
+                        R.drawable.ic_loading_image)
+        );
     }
 
     @Override
@@ -196,7 +234,7 @@ public class KolPostViewHolder extends AbstractViewHolder<KolPostViewModel>
         });
     }
 
-    private void goToProfile (final BaseKolViewModel element) {
+    private void goToProfile(final BaseKolViewModel element) {
         analyticTracker.sendEventTracking(
                 KolEventTracking.Event.USER_INTERACTION_HOMEPAGE,
                 KolEventTracking.Category.HOMEPAGE,

@@ -69,7 +69,7 @@ public class ImageHandler {
      * @return
      * @throws IOException
      */
-    public static Bitmap RotatedBitmap (Bitmap bitmap, String file) throws IOException {
+    public static Bitmap RotatedBitmap(Bitmap bitmap, String file) throws IOException {
         ExifInterface exif = new ExifInterface(file);
         String orientString = exif.getAttribute(ExifInterface.TAG_ORIENTATION);
         int orientation = orientString != null ? Integer.parseInt(orientString) : ExifInterface.ORIENTATION_NORMAL;
@@ -586,7 +586,7 @@ public class ImageHandler {
         if (context != null && Build.VERSION.SDK_INT <= Build.VERSION_CODES.JELLY_BEAN) {
             Glide.with(context)
                     .load(imageUrl)
-                    .override(80,80)
+                    .override(80, 80)
                     .centerCrop()
                     .into(imageView);
         }
@@ -628,6 +628,7 @@ public class ImageHandler {
 
         return outputBitmap;
     }
+
     public static void loadCircleImageWithPlaceHolder(Context context, final ImageView imageView, int placeHolder, String url) {
         Glide.with(context)
                 .load(url)
@@ -637,17 +638,9 @@ public class ImageHandler {
                 .into(getCircleImageViewTarget(imageView));
     }
 
-    public static void loadImageWithRequestListener(ImageView imageview,
-                                                    String url,
-                                                    RequestListener<String, GlideDrawable>
-                                                            requestListener) {
-        if (url != null) {
-            Glide.with(imageview.getContext())
-                    .load(url)
-                    .dontAnimate()
-                    .listener(requestListener)
-                    .placeholder(R.drawable.loading_page)
-                    .into(imageview);
+    public static void clearImage(ImageView imageView) {
+        if (imageView != null) {
+            Glide.clear(imageView);
         }
     }
 }

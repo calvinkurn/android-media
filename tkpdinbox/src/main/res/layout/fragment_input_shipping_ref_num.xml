@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:background="@color/white">
+                xmlns:app="http://schemas.android.com/apk/res-auto"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/white">
 
     <ProgressBar
+        android:id="@+id/loading"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/loading"
-        android:layout_centerInParent="true" />
+        android:layout_centerInParent="true"/>
 
     <TextView
         android:id="@+id/confirm_button"
@@ -17,12 +17,12 @@
         android:layout_height="@dimen/btn_height"
         android:layout_alignParentBottom="true"
         android:background="@drawable/bg_button_save_disable"
+        android:clickable="false"
+        android:enabled="false"
         android:gravity="center"
         android:text="@string/title_save_button"
         android:textColor="@color/black_38"
-        android:textStyle="bold"
-        android:clickable="false"
-        android:enabled="false"/>
+        android:textStyle="bold"/>
 
     <ScrollView
         android:layout_width="match_parent"
@@ -38,15 +38,15 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:padding="@dimen/dp_10"
-                android:orientation="vertical">
+                android:orientation="vertical"
+                android:padding="@dimen/dp_10">
 
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="@string/string_input_awb_title"
-                    android:textSize="@dimen/font_medium"
-                    android:textColor="@color/black_54"/>
+                    android:textColor="@color/black_54"
+                    android:textSize="@dimen/font_medium"/>
 
                 <ImageView
                     android:id="@+id/img_awb"
@@ -58,21 +58,21 @@
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_weight="3"
-                android:padding="@dimen/dp_10"
-                android:orientation="vertical">
+                android:orientation="vertical"
+                android:padding="@dimen/dp_10">
 
 
                 <com.tokopedia.design.text.TkpdHintTextInputLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
+                    android:layout_height="wrap_content"
+                    android:hint="@string/title_reference_number">
 
                     <com.tokopedia.design.component.EditTextCompat
                         android:id="@+id/ref_number"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:hint="@string/title_reference_number"
-                        app:editTextDrawableRightCompat="@drawable/ic_select_awb"
-                        android:maxLength="17"/>
+                        android:maxLength="17"
+                        app:editTextDrawableRightCompat="@drawable/ic_select_awb"/>
 
                 </com.tokopedia.design.text.TkpdHintTextInputLayout>
 
@@ -91,17 +91,17 @@
                     android:layout_marginTop="@dimen/dp_10"
                     android:text="@string/title_select_agency_error"
                     android:textColor="@color/tkpd_dark_red"
-                    android:visibility="gone" />
+                    android:visibility="gone"/>
 
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/dp_10"
-                    android:paddingTop="@dimen/dp_5"
                     android:paddingBottom="@dimen/dp_5"
-                    android:textColor="@color/black_54"
+                    android:paddingTop="@dimen/dp_5"
                     android:text="@string/string_awb_attachment_title"
-                    android:textSize="@dimen/font_medium" />
+                    android:textColor="@color/black_54"
+                    android:textSize="@dimen/font_medium"/>
 
                 <android.support.v7.widget.RecyclerView
                     android:id="@+id/list_upload_proof"
