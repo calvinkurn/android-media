@@ -19,7 +19,6 @@ import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.TActivity;
-import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.customadapter.LazyListView;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.apiservices.shop.MyShopAddressActService;
@@ -29,8 +28,9 @@ import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.prototype.ShopCache;
 import com.tokopedia.core.prototype.ShopSettingCache;
 import com.tokopedia.core.rxjava.RxUtils;
-import com.tokopedia.core.shoplocation.model.deletelocation.DeleteLocationResponse;
-import com.tokopedia.core.shoplocation.model.getshopaddress.ShopAddress;
+import com.tokopedia.district_recommendation.domain.model.Token;
+import com.tokopedia.seller.shopsettings.address.model.deletelocation.DeleteLocationResponse;
+import com.tokopedia.seller.shopsettings.address.model.getshopaddress.ShopAddress;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.seller.R;
@@ -80,6 +80,8 @@ public class ManageShopAddress extends TActivity {
     private SessionHandler session = new SessionHandler(this);
     private CompositeSubscription compositeSubscription = new CompositeSubscription();
 
+    private Token token;
+
     @Inject
     DeleteShopInfoUseCase deleteShopInfoUseCase;
 
@@ -92,7 +94,6 @@ public class ManageShopAddress extends TActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-
         compositeSubscription = RxUtils.getNewCompositeSubIfUnsubscribed(compositeSubscription);
         this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
         inflateView(R.layout.activity_manage_shop_address);
@@ -102,7 +103,7 @@ public class ManageShopAddress extends TActivity {
         noResult = new NoResultHandler(mainView);
         LocationListView = (LazyListView) findViewById(R.id.listview_shop_location);
         LocationListView.AddLoadingView();
-        LocationAdapter = new ListViewManageShopLocation(ManageShopAddress.this, LocationNameList, LocationAddressList, LocationPhoneList, LocationFaxList, LocationEmailList, IsAllowShop);
+        LocationAdapter = new ListViewManageShopLocation(ManageShopAddress.this, LocationNameList, LocationAddress, LocationAddressList, LocationPhoneList, LocationFaxList, LocationEmailList, IsAllowShop);
         LocationListView.setAdapter(LocationAdapter);
         LocationListView.RemoveLoadingView();
         MainProgress.showDialog();
@@ -236,6 +237,8 @@ public class ManageShopAddress extends TActivity {
         bundle.putString("province", LocationProvinceId.get(position));
         bundle.putString("city", LocationCityId.get(position));
         bundle.putString("district", LocationDistrictId.get(position));
+        bundle.putString("address_detail", LocationAddressList.get(position));
+        bundle.putParcelable("token", token);
         intent.putExtras(bundle);
         startActivityForResult(intent, 1);
     }
@@ -290,10 +293,9 @@ public class ManageShopAddress extends TActivity {
                     LocationFaxList.add(Location.getString("fax"));
                     LocationEmailList.add(Location.getString("email"));
                     LocationAddressList.add(
-                            MethodChecker.fromHtml(Location.getString("address")).toString()
-                                    + "\n" + Location.getString("district_name")
+                                    Location.getString("province_name")
                                     + ", " + Location.getString("city_name")
-                                    + ", " + Location.getString("postal_code")
+                                    + ", " + Location.getString("district_name")
                     );
                     LocationAddress.add(MethodChecker.fromHtml(Location.getString("address")).toString());
                     LocationProvinceId.add(Location.getString("province_id"));
@@ -316,6 +318,9 @@ public class ManageShopAddress extends TActivity {
 
     private void SetToUIV4(ShopAddress data) {
         noResult.removeMessage();
+
+        if (data.getToken() != null) this.token = data.getToken();
+
         if (data.getList() != null && data.getList().size() > 0) {
             LocationListView.setVisibility(View.VISIBLE);
             IsAllowShop = data.getIsAllow() + "";
@@ -331,7 +336,7 @@ public class ManageShopAddress extends TActivity {
             LocationCityId.clear();
             LocationDistrictId.clear();
             for (int i = 0; i < data.getList().size(); i++) {
-                com.tokopedia.core.shoplocation.model.getshopaddress.List Location = data.getList().get(i);
+                com.tokopedia.seller.shopsettings.address.model.getshopaddress.List Location = data.getList().get(i);
                 LocationId.add(Location.getLocationAddressId());
                 LocationNameList.add(MethodChecker.fromHtml(Location.getLocationAddressName()).toString());
                 if (!CommonUtils.checkNullForZeroJson(Location.getLocationPhone())) {
@@ -346,11 +351,10 @@ public class ManageShopAddress extends TActivity {
                 LocationPhoneList.add(Location.getLocationPhone());
                 LocationFaxList.add(Location.getLocationFax());
                 LocationEmailList.add(Location.getLocationEmail());
-                LocationAddressList.add(
-                        MethodChecker.fromHtml(Location.getLocationAddress()).toString()
-                                + "\n" + Location.getLocationDistrictName()
+                LocationAddressList.add(Location.getLocationProvinceName()
                                 + ", " + Location.getLocationCityName()
-                                + ", " + Location.getLocationPostalCode()
+                                + "," + Location.getLocationDistrictName()
+
                 );
                 LocationAddress.add(MethodChecker.fromHtml(Location.getLocationAddress()).toString());
                 LocationProvinceId.add(Location.getLocationProvinceId());

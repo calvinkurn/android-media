@@ -1,5 +1,5 @@
 
-package com.tokopedia.core.shoplocation.model.deletelocation;
+package com.tokopedia.seller.shopsettings.address.model.deletelocation;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;

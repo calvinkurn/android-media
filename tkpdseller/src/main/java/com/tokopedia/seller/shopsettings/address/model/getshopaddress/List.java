@@ -1,5 +1,5 @@
 
-package com.tokopedia.core.shoplocation.model.getshopaddress;
+package com.tokopedia.seller.shopsettings.address.model.getshopaddress;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
