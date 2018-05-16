@@ -29,7 +29,6 @@ public class ProductAttachmentViewHolder extends BaseChatViewHolder<ProductAttac
     private TextView name;
     private TextView label;
     private TextView dot;
-    private ImageView action;
     private ImageView thumbnailsImage;
 
     private Context context;
@@ -42,7 +41,6 @@ public class ProductAttachmentViewHolder extends BaseChatViewHolder<ProductAttac
         name = itemView.findViewById(R.id.name);
         label = itemView.findViewById(R.id.label);
         dot = itemView.findViewById(R.id.dot);
-        action = itemView.findViewById(R.id.left_action);
         progressBarSendImage = itemView.findViewById(R.id.progress_bar);
         chatBalloon = itemView.findViewById(R.id.attach_product_chat_container);
         this.viewListener = viewListener;
@@ -53,10 +51,8 @@ public class ProductAttachmentViewHolder extends BaseChatViewHolder<ProductAttac
         super.bind(element);
         prerequisiteUISetup(element);
 
-        View productContainerView = itemView.findViewById(R.id.attach_product_chat_container);
-        setupChatBubbleAlignment(productContainerView, element);
-
-        setupProductUI(element, productContainerView);
+        setupChatBubbleAlignment(chatBalloon, element);
+        setupProductUI(element, chatBalloon);
 
     }
 
@@ -86,7 +82,6 @@ public class ProductAttachmentViewHolder extends BaseChatViewHolder<ProductAttac
     }
 
     protected void prerequisiteUISetup(final ProductAttachmentViewModel element) {
-        action.setVisibility(View.GONE);
         progressBarSendImage.setVisibility(View.GONE);
 
         chatBalloon.setOnClickListener(new View.OnClickListener() {

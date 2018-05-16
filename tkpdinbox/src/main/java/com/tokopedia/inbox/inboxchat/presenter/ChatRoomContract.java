@@ -16,7 +16,7 @@ import com.tokopedia.inbox.inboxchat.domain.model.reply.Attachment;
 import com.tokopedia.inbox.inboxchat.domain.model.replyaction.ReplyActionData;
 import com.tokopedia.inbox.inboxchat.domain.model.reply.WebSocketResponse;
 import com.tokopedia.inbox.inboxchat.viewmodel.ChatRoomViewModel;
-import com.tokopedia.inbox.inboxchat.viewmodel.DummyChatViewModel;
+import com.tokopedia.inbox.inboxchat.viewmodel.chatroom.imageupload.ImageUploadViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.MyChatViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.OppositeChatViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.chatroom.QuickReplyListViewModel;
@@ -99,6 +99,8 @@ public class ChatRoomContract {
 
         void onGoToGallery(Attachment attachment, String fullTime);
 
+        void onGoToImagePreview(String imageUrl, String replyTime);
+
         void onGoToWebView(String attachment, String id);
 
         boolean needCreateWebSocket();
@@ -115,11 +117,13 @@ public class ChatRoomContract {
 
         Fragment getFragment();
 
-        void onErrorUploadImages(String throwable, MyChatViewModel model);
+        void onErrorUploadImages(String throwable, ImageUploadViewModel model);
 
         void onRetrySend(MyChatViewModel attachment);
 
-        void onSuccessSendAttach(ReplyActionData data, MyChatViewModel model);
+        void onRetrySendImage(ImageUploadViewModel element);
+
+        void onSuccessSendAttach(ReplyActionData data, ImageUploadViewModel model);
 
         void setUploadingMode(boolean b);
 
@@ -152,6 +156,7 @@ public class ChatRoomContract {
         void showSnackbarError(String string);
 
         UserSession getUserSession();
+
     }
 
     interface Presenter extends CustomerPresenter<View>{
@@ -175,7 +180,8 @@ public class ChatRoomContract {
 
         void openCamera();
 
-        void startUpload(List<DummyChatViewModel> list, int network);
+        void startUpload(List<ImageUploadViewModel> list, int network);
+
 
         String getFileLocFromCamera();
 

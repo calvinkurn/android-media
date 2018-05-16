@@ -18,7 +18,8 @@ import com.tokopedia.inbox.inboxchat.domain.model.ReplyParcelableModel;
 import com.tokopedia.inbox.inboxchat.domain.model.reply.WebSocketResponse;
 import com.tokopedia.inbox.inboxchat.domain.model.websocket.BaseChatViewModel;
 import com.tokopedia.inbox.inboxchat.viewholder.MyChatViewHolder;
-import com.tokopedia.inbox.inboxchat.viewmodel.DummyChatViewModel;
+import com.tokopedia.inbox.inboxchat.viewmodel.chatroom.SendableViewModel;
+import com.tokopedia.inbox.inboxchat.viewmodel.chatroom.imageupload.ImageUploadViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.MyChatViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.OppositeChatViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.TypingChatModel;
@@ -227,6 +228,21 @@ public class ChatRoomAdapter extends RecyclerView.Adapter<AbstractViewHolder> {
         }
     }
 
+    public void removeLastMessageWithStartTime(String startTime) {
+        if ((list != null && !list.isEmpty())) {
+            ListIterator<Visitable> iterator = list.listIterator(list.size());
+            while (iterator.hasPrevious()) {
+                int position = iterator.previousIndex();
+                Visitable visitable = iterator.previous();
+                if (visitable instanceof SendableViewModel
+                        && ((SendableViewModel) visitable).getStartTime().equals(startTime)) {
+                    iterator.remove();
+                    notifyItemRemoved(position);
+                }
+            }
+        }
+    }
+
     private boolean isAttachmentMatched(ProductAttachmentViewModel attachment, Integer productId) {
         if (attachment != null) {
             if (attachment.getProductId().toString().equals(productId.toString())) {
@@ -257,13 +273,19 @@ public class ChatRoomAdapter extends RecyclerView.Adapter<AbstractViewHolder> {
         notifyItemRemoved(position);
     }
 
+    public void remove(Visitable model) {
+        int position = list.indexOf(model);
+        list.remove(model);
+        notifyItemRemoved(position);
+    }
+
     public void addReply(Visitable item) {
         this.list.add(0, item);
         notifyItemInserted(0);
         notifyItemRangeChanged(0, 2);
     }
 
-    public void addReply(List<DummyChatViewModel> list) {
+    public void addReply(List<ImageUploadViewModel> list) {
         for (int i = 0; i < list.size(); i++) {
             this.list.add(0, list.get(i));
             notifyItemInserted(0);
@@ -364,9 +386,19 @@ public class ChatRoomAdapter extends RecyclerView.Adapter<AbstractViewHolder> {
         }
     }
 
+    public void showRetryFor(ImageUploadViewModel model, boolean b) {
+        int position = list.indexOf(model);
+        if (position >= 0 && list.get(position) instanceof ImageUploadViewModel) {
+            ((ImageUploadViewModel) list.get(position)).setRetry(true);
+            notifyItemChanged(position);
+        }
+    }
+
     public void changeRating(OppositeChatViewModel model) {
         int position = list.indexOf(model);
         ((OppositeChatViewModel) list.get(position)).setRatingStatus(model.getRatingStatus());
         notifyItemChanged(position);
     }
+
+
 }

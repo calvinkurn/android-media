@@ -9,15 +9,18 @@ import com.tokopedia.inbox.inboxchat.adapter.viewholder.FallbackAttachmentViewHo
 import com.tokopedia.inbox.inboxchat.adapter.viewholder.ImageAnnouncementViewHolder;
 import com.tokopedia.inbox.inboxchat.adapter.viewholder.ProductAttachmentViewHolder;
 import com.tokopedia.inbox.inboxchat.adapter.viewholder.QuickReplyViewHolder;
-import com.tokopedia.inbox.inboxchat.domain.model.websocket.FallbackAttachmentViewModel;
+import com.tokopedia.inbox.inboxchat.adapter.viewholder.MessageViewHolder;
+import com.tokopedia.inbox.inboxchat.viewmodel.chatroom.fallback.FallbackAttachmentViewModel;
 import com.tokopedia.inbox.inboxchat.fragment.ChatRoomFragment;
 import com.tokopedia.inbox.inboxchat.presenter.ChatRoomContract;
+import com.tokopedia.inbox.inboxchat.adapter.viewholder.ImageUploadViewHolder;
 import com.tokopedia.inbox.inboxchat.viewholder.AttachedInvoiceSelectionViewHolder;
 import com.tokopedia.inbox.inboxchat.viewholder.ImageUploadViewHolder;
 import com.tokopedia.inbox.inboxchat.viewholder.MyChatViewHolder;
 import com.tokopedia.inbox.inboxchat.viewholder.OppositeChatViewHolder;
 import com.tokopedia.inbox.inboxchat.viewholder.TimeMachineChatViewHolder;
 import com.tokopedia.inbox.inboxchat.viewholder.TypingChatViewHolder;
+import com.tokopedia.inbox.inboxchat.viewmodel.chatroom.imageupload.ImageUploadViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.AttachInvoiceSelectionViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.AttachInvoiceSentViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.ImageUploadViewModel;
@@ -27,6 +30,7 @@ import com.tokopedia.inbox.inboxchat.viewmodel.TypingChatModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.chatroom.QuickReplyListViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.chatroom.TimeMachineChatModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.chatroom.imageannouncement.ImageAnnouncementViewModel;
+import com.tokopedia.inbox.inboxchat.viewmodel.chatroom.message.MessageViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.chatroom.productattachment.ProductAttachmentViewModel;
 
 /**
@@ -64,6 +68,11 @@ public class ChatRoomTypeFactoryImpl extends BaseAdapterTypeFactory implements C
     @Override
     public int type(ImageUploadViewModel attachImageModel) {
         return ImageUploadViewHolder.LAYOUT;
+    }
+
+    @Override
+    public int type(MessageViewModel messageViewModel) {
+        return MessageViewHolder.LAYOUT;
     }
 
     @Override
@@ -111,7 +120,7 @@ public class ChatRoomTypeFactoryImpl extends BaseAdapterTypeFactory implements C
         else if (type == TypingChatViewHolder.LAYOUT)
             viewHolder = new TypingChatViewHolder(view);
         else if (type == ImageUploadViewHolder.LAYOUT)
-            viewHolder = new ImageUploadViewHolder(view);
+            viewHolder = new ImageUploadViewHolder(view, viewListener);
         else if (type == AttachedInvoiceSentViewHolder.LAYOUT)
             viewHolder = new AttachedInvoiceSentViewHolder(view, viewListener);
         else if (type == AttachedInvoiceSelectionViewHolder.LAYOUT)
