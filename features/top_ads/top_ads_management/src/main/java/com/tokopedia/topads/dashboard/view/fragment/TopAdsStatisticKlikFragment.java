@@ -24,13 +24,8 @@ public class TopAdsStatisticKlikFragment extends TopAdsDashboardStatisticFragmen
     }
 
     @Override
-    protected String getTotalSummary(Summary summary) {
-        return summary.getClickSumFmt();
-    }
-
-    @Override
     protected String getTitleGraph() {
-        return getString(R.string.label_top_ads_click);
+        return getString(R.string.title_top_ads_statistic_graph_click);
     }
 
     @Override

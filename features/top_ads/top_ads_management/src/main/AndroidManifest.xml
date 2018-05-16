@@ -170,6 +170,11 @@
             android:label="@string/label_add_promo"
             android:theme="@style/Theme.White"
             android:screenOrientation="portrait"/>
+        <activity
+            android:name=".dashboard.view.activity.SellerCenterActivity"
+            android:label="@string/topads_menu_seller_centre"
+            android:theme="@style/Theme.White"
+            android:screenOrientation="portrait" />
     </application>
 
 </manifest>
