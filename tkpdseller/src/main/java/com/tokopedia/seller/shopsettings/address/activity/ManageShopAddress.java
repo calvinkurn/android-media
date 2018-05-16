@@ -436,6 +436,7 @@ public class ManageShopAddress extends TActivity {
                 Intent intent = new Intent(ManageShopAddress.this, ShopAddressForm.class);
                 Bundle bundle = new Bundle();
                 bundle.putBoolean("is_new", true);
+                bundle.putParcelable("token", token);
                 intent.putExtras(bundle);
                 startActivityForResult(intent, 0);
             } else {
