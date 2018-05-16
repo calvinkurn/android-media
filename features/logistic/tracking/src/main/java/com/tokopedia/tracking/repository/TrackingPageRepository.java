@@ -35,13 +35,9 @@ public class TrackingPageRepository implements ITrackingPageRepository {
                 new Func1<Response<TkpdResponse>, TrackingViewModel>() {
                     @Override
                     public TrackingViewModel call(Response<TkpdResponse> tkpdResponseResponse) {
-                        if(tkpdResponseResponse.body() == null) {
+                        if(tkpdResponseResponse.body() == null)
                             throw new RuntimeException(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
-                        } else if (tkpdResponseResponse.body().isError()) {
-                            throw new RuntimeException(
-                                    tkpdResponseResponse.body().getErrorMessageJoined()
-                            );
-                        }
+
                         return mapper.trackingViewModel(
                                 tkpdResponseResponse.body()
                                         .convertDataObj(TrackingResponse.class)

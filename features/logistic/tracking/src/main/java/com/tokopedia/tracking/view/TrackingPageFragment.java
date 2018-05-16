@@ -122,11 +122,14 @@ public class TrackingPageFragment extends BaseDaggerFragment implements ITrackin
     @Override
     public void showMainLoadingPage() {
         loadingScreen.showDialog();
+        rootView.setVisibility(View.GONE);
     }
 
     @Override
     public void closeMainLoadingPage() {
         loadingScreen.dismiss();
+        rootView.setVisibility(View.VISIBLE);
+
     }
 
     @Override
