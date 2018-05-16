@@ -40,11 +40,7 @@ public class GMCommonDataSource {
                 .map(new Func1<String, Boolean>() {
                     @Override
                     public Boolean call(String s) {
-                        if(s != null){
-                            return true;
-                        }else{
-                            return false;
-                        }
+                        return s != null;
                     }
                 });
     }
