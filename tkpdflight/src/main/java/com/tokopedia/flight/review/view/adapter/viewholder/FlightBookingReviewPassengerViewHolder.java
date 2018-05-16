@@ -1,5 +1,6 @@
 package com.tokopedia.flight.review.view.adapter.viewholder;
 
+import android.content.Context;
 import android.support.annotation.LayoutRes;
 import android.support.v7.widget.AppCompatTextView;
 import android.support.v7.widget.LinearLayoutManager;
@@ -26,6 +27,7 @@ import java.util.List;
 public class FlightBookingReviewPassengerViewHolder extends AbstractViewHolder<FlightDetailPassenger> {
     @LayoutRes
     public static int LAYOUT = R.layout.item_flight_review_passenger;
+    private Context context;
     private View containerView;
     private ReviewPassengerDetailAdapter reviewPassengerDetailAdapter;
     private TextView passengerNumber;
@@ -37,9 +39,7 @@ public class FlightBookingReviewPassengerViewHolder extends AbstractViewHolder<F
     @Override
     public void bind(FlightDetailPassenger flightDetailPassenger) {
 
-        if (shouldChangeBackground(flightDetailPassenger.getPassengerStatus())) {
-            containerView.setBackgroundColor(containerView.getContext()
-                    .getResources().getColor(R.color.background_apps));
+        if (shouldShowCancellationStatus(flightDetailPassenger.getPassengerStatus())) {
             passengerCancellationStatus.setVisibility(View.VISIBLE);
         }
 
@@ -70,6 +70,8 @@ public class FlightBookingReviewPassengerViewHolder extends AbstractViewHolder<F
     public FlightBookingReviewPassengerViewHolder(View layoutView) {
         super(layoutView);
 
+        context = layoutView.getContext();
+
         containerView = layoutView;
         passengerNumber = (TextView) layoutView.findViewById(R.id.passenger_number);
         passengerName = (TextView) layoutView.findViewById(R.id.passenger_name);
@@ -82,19 +84,25 @@ public class FlightBookingReviewPassengerViewHolder extends AbstractViewHolder<F
         recyclerViewPassengerDetail.setAdapter(reviewPassengerDetailAdapter);
     }
 
-    private boolean shouldChangeBackground(int status) {
+    private boolean shouldShowCancellationStatus(int status) {
         switch (status) {
             case FlightCancellationStatus.REQUESTED:
                 passengerCancellationStatus.setText(String.format(getString(
                         R.string.flight_cancellation_passenger_status), "sedang dalam pengajuan."));
+                passengerCancellationStatus.setTextAppearance(context, R.style.CardProcessStatusStyle);
+                passengerCancellationStatus.setBackground(context.getResources().getDrawable(R.drawable.bg_card_process));
                 return true;
             case FlightCancellationStatus.PENDING:
                 passengerCancellationStatus.setText(String.format(getString(
                         R.string.flight_cancellation_passenger_status), "sedang menunggu persetujuan."));
+                passengerCancellationStatus.setTextAppearance(context, R.style.CardProcessStatusStyle);
+                passengerCancellationStatus.setBackground(context.getResources().getDrawable(R.drawable.bg_card_process));
                 return true;
             case FlightCancellationStatus.REFUNDED:
                 passengerCancellationStatus.setText(String.format(getString(
                         R.string.flight_cancellation_passenger_status), "telah dibatalkan."));
+                passengerCancellationStatus.setTextAppearance(context, R.style.CardSuccessStatusStyle);
+                passengerCancellationStatus.setBackground(context.getResources().getDrawable(R.drawable.bg_card_process));
                 return true;
             case FlightCancellationStatus.ABORTED:
                 return false;
