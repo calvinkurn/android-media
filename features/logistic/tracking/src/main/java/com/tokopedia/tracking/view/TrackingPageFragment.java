@@ -56,6 +56,7 @@ public class TrackingPageFragment extends BaseDaggerFragment implements ITrackin
     private TextView currentStatus;
     private RecyclerView trackingHistory;
     private LinearLayout emptyUpdateNotification;
+    private TextView notificationText;
     private RecyclerView notificationHelpStep;
     private ViewGroup liveTrackingButton;
     private ViewGroup rootView;
@@ -96,6 +97,7 @@ public class TrackingPageFragment extends BaseDaggerFragment implements ITrackin
         trackingHistory = view.findViewById(R.id.tracking_history);
         trackingHistory.setNestedScrollingEnabled(false);
         emptyUpdateNotification = view.findViewById(R.id.empty_update_notification);
+        notificationText = view.findViewById(R.id.notification_text);
         notificationHelpStep = view.findViewById(R.id.notification_help_step);
         TextView furtherInformationText = view.findViewById(R.id.further_information_text);
         furtherInformationText.setText(Html
@@ -160,13 +162,14 @@ public class TrackingPageFragment extends BaseDaggerFragment implements ITrackin
     }
 
     private void setEmptyHistoryView(TrackingViewModel model) {
-        if (model.getHistoryList().size() == 0) {
+        if (model.isInvalid()) {
             emptyUpdateNotification.setVisibility(View.VISIBLE);
-            if (model.isInvalid()) {
-                notificationHelpStep.setVisibility(View.VISIBLE);
-                notificationHelpStep.setLayoutManager(new LinearLayoutManager(getActivity()));
-                notificationHelpStep.setAdapter(new EmptyTrackingNotesAdapter());
-            }
+            notificationText.setText(getString(R.string.warning_courier_invalid));
+            notificationHelpStep.setVisibility(View.VISIBLE);
+            notificationHelpStep.setLayoutManager(new LinearLayoutManager(getActivity()));
+            notificationHelpStep.setAdapter(new EmptyTrackingNotesAdapter());
+        } else if (model.getChange() == 0 || model.getHistoryList().size() == 0) {
+            emptyUpdateNotification.setVisibility(View.VISIBLE);
         } else {
             trackingHistory.setVisibility(View.VISIBLE);
         }

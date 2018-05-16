@@ -38,6 +38,14 @@ public class TrackingViewModel {
 
     private List<TrackingHistoryViewModel> historyList;
 
+    public int getChange() {
+        return change;
+    }
+
+    public void setChange(int change) {
+        this.change = change;
+    }
+
     public String getReferenceNumber() {
         return referenceNumber;
     }

@@ -26,6 +26,7 @@ public class TrackingPageMapper implements ITrackingPageMapper{
         model.setSellerStore(order.getDetail().getShipperName());
         model.setSellerAddress(order.getDetail().getShipperCity());
         model.setServiceCode(order.getDetail().getServiceCode());
+        model.setChange(order.getChange());
         model.setStatus(order.getStatus());
 
         List<TrackingHistoryViewModel> trackingHistoryViewModels = new ArrayList<>();
@@ -34,6 +35,7 @@ public class TrackingPageMapper implements ITrackingPageMapper{
             historyViewModel.setCity(order.getTrackHistory().get(i).getCity());
             historyViewModel.setStatus(order.getTrackHistory().get(i).getStatus());
             historyViewModel.setTime(order.getTrackHistory().get(i).getDate());
+            splitDate(historyViewModel, order, i);
             historyViewModel.setTitle(order.getTrackHistory().get(i).getStatus());
             trackingHistoryViewModels.add(historyViewModel);
             if(i == 0) historyViewModel.setColor("#42b549");
@@ -41,6 +43,13 @@ public class TrackingPageMapper implements ITrackingPageMapper{
         }
         model.setHistoryList(trackingHistoryViewModels);
         return model;
+    }
+
+    private void splitDate(TrackingHistoryViewModel historyViewModel, TrackOrder order, int i) {
+        String[] splitDate = order.getTrackHistory().get(i).getDate().split("-");
+        historyViewModel.setYear(splitDate[0]);
+        historyViewModel.setMonth(splitDate[1]);
+        historyViewModel.setYear(splitDate[2]);
     }
 
     private boolean switchInteger(int value) {

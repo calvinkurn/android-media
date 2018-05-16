@@ -11,4 +11,7 @@
     <string name="label_seller">Penjual</string>
     <string name="label_live_tracking">Live Tracking</string>
     <string name="label_reference_number">Nomor Resi</string>
+    <string name="warning_no_courier_change">Belum ada update pengiriman dari kurir. Silakan lacak kembali secara berkala maksimal 3 x 24 jam.</string>
+    <string name="warning_courier_invalid">Apabila masih tidak ada update status pengiriman
+setelah 3 x 24 jam, ada beberapa kemungkinan:</string>
 </resources>

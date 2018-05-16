@@ -13,13 +13,17 @@ import android.widget.TextView;
 import com.tokopedia.tracking.R;
 import com.tokopedia.tracking.viewmodel.TrackingHistoryViewModel;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * Created by kris on 5/11/18. Tokopedia
  */
 
-public class TrackingHistoryAdapter extends  RecyclerView.Adapter<TrackingHistoryAdapter.TrackingHistoryViewHolder>{
+public class TrackingHistoryAdapter extends RecyclerView.Adapter<TrackingHistoryAdapter.TrackingHistoryViewHolder> {
 
     private List<TrackingHistoryViewModel> trackingHistoryData;
 
@@ -36,14 +40,14 @@ public class TrackingHistoryAdapter extends  RecyclerView.Adapter<TrackingHistor
 
     @Override
     public void onBindViewHolder(TrackingHistoryViewHolder holder, int position) {
-        holder.title.setText(trackingHistoryData.get(position).getTime());
+
+        holder.title.setText(formattedDate(trackingHistoryData.get(position)));
         setTitleColor(holder, position);
 
         holder.comment.setVisibility(View.GONE);
         holder.description.setText(Html.fromHtml(trackingHistoryData.get(position).getStatus()));
-        holder.time.setText(trackingHistoryData.get(position).getTime());
         holder.dot.setColorFilter(Color.parseColor(trackingHistoryData.get(position).getColor()));
-        if(position == trackingHistoryData.size() - 1) {
+        if (position == trackingHistoryData.size() - 1) {
             holder.dotTrail.setVisibility(View.GONE);
         } else {
             holder.dotTrail.setVisibility(View.VISIBLE);
@@ -53,8 +57,26 @@ public class TrackingHistoryAdapter extends  RecyclerView.Adapter<TrackingHistor
         }
     }
 
+    private String formattedDate(TrackingHistoryViewModel viewModel) {
+        String inputPattern = "yyyy-MM-dd";
+        String outputPattern = "EEEE, dd MMM YYY";
+
+        SimpleDateFormat inputFormat = new SimpleDateFormat(inputPattern,
+                new Locale("in", "ID"));
+
+        SimpleDateFormat outputFormat = new SimpleDateFormat(outputPattern,
+                new Locale("in","ID"));
+
+        try {
+            Date date = inputFormat.parse(viewModel.getTime());
+            return outputFormat.format(date);
+        } catch(ParseException e) {
+            return viewModel.getTime();
+        }
+    }
+
     private void setTitleColor(TrackingHistoryViewHolder holder, int position) {
-        if(position == 0) {
+        if (position == 0) {
             holder.title.setTextColor((Color.parseColor(
                     trackingHistoryData.get(position).getColor()
             )));
