@@ -280,7 +280,7 @@ public class FlightCancellationReviewFragment extends BaseListFragment<FlightCan
                 dialog.dismiss();
             }
         });
-        dialog.setBtnCancel("Batalkan");
+        dialog.setBtnCancel("Lanjut");
         dialog.setOnCancelClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
