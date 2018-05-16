@@ -79,7 +79,7 @@ public class ChannelInfoMapper implements Func1<Response<DataResponse<ChannelInf
     }
 
     private PinnedMessageViewModel mapToPinnedMessageViewModel(PinnedMessagePojo pinnedMessage) {
-        return new PinnedMessageViewModel("Ayo jawab kuisnya dan menangkan beberapa hadiah menarik persembahan dari Tokopedia.", pinnedMessage.getModerator(), pinnedMessage.getRedirectUrl(), pinnedMessage.getImageUrl());
+        return new PinnedMessageViewModel(pinnedMessage.getMessage(), pinnedMessage.getModerator(), pinnedMessage.getRedirectUrl(), pinnedMessage.getImageUrl());
     }
 
     private SprintSaleViewModel mapToSprintSaleViewModel(Flashsale flashsale) {

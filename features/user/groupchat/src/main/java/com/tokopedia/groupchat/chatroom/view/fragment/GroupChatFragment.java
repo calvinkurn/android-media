@@ -332,6 +332,7 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
             if (pinnedMessage != null) {
                 pinnedMessageView.setVisibility(View.VISIBLE);
                 ((TextView) pinnedMessageView.findViewById(R.id.message)).setText(pinnedMessage.getMessage());
+                ((TextView) pinnedMessageView.findViewById(R.id.nickname)).setText(pinnedMessage.getAdminName());
                 pinnedMessageView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
@@ -373,7 +374,8 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
         ((TextView) view.findViewById(R.id.chat_header).findViewById(R.id.nickname))
                 .setText(channelInfoViewModel.getAdminName());
         ((TextView) view.findViewById(R.id.message)).setText(pinnedMessage.getMessage());
-        view.findViewById(R.id.thumbnail);
+        ImageHandler.loadImageCircle2(getActivity(), (ImageView) view.findViewById(R.id.thumbnail)
+                , pinnedMessage.getThumbnail(), R.drawable.loading_page);
         return view;
     }
 
