@@ -12,6 +12,8 @@ import android.widget.TextView;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.product.customview.BaseView;
 import com.tokopedia.core.product.model.productdetail.ProductDetailData;
+import com.tokopedia.core.router.productdetail.passdata.ProductPass;
+import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.tkpdpdp.CourierActivity;
 import com.tokopedia.tkpdpdp.R;
 import com.tokopedia.tkpdpdp.listener.ProductDetailView;
@@ -101,6 +103,22 @@ public class RatingTalkCourierView extends BaseView<ProductDetailData, ProductDe
             }
         });
 
+        setVisibility(VISIBLE);
+    }
+
+    public void renderTempdata(ProductPass productPass) {
+        ivQualityRate
+                .setImageResource(getRatingDrawable(productPass.getStarRating()));
+
+        String ulasan = getContext().getString(R.string.ulasan);
+        String review = productPass.getCountReview() + " " + ulasan;
+        String diskusi = getContext().getString(R.string.diskusi);
+        String talk =  "0 " + diskusi;
+        String kurir = getContext().getString(R.string.kurir);
+        tvReview.setText(review);
+        tvTalk.setText(talk);
+        String courierText = productPass.getCountCourrier() + " " + kurir;
+        tvCourier.setText(courierText);
         setVisibility(VISIBLE);
     }
 

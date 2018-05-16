@@ -659,6 +659,7 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
     public void renderTempProductData(ProductPass productPass) {
         this.headerInfoView.renderTempData(productPass);
         this.pictureView.renderTempData(productPass);
+        this.ratingTalkCourierView.renderTempdata(productPass);
     }
 
     @Override
@@ -991,7 +992,7 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
         } else {
             Log.d(TAG, "productData == null");
             presenter.processDataPass(productPass);
-            presenter.requestProductDetail(context, productPass, INIT_REQUEST, false, useVariant);
+            //presenter.requestProductDetail(context, productPass, INIT_REQUEST, false, useVariant);
         }
     }
 

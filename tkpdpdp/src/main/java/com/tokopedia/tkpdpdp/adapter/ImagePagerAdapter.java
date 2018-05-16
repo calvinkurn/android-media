@@ -50,7 +50,7 @@ public class ImagePagerAdapter extends PagerAdapter {
         imageView.setAdjustViewBounds(true);
         final String urlImage = productImages.get(position).getImageSrc();
         
-        if (!TextUtils.isEmpty(urlTemporary) && position==0) {
+        if (!TextUtils.isEmpty(urlTemporary) && position==0 && !urlImage.equals(urlTemporary)) {
             Glide.with(context.getApplicationContext())
                     .load(urlImage)
                     .dontAnimate()
@@ -66,6 +66,11 @@ public class ImagePagerAdapter extends PagerAdapter {
                                     .diskCacheStrategy(DiskCacheStrategy.RESULT))
                     .into(imageView);
 
+        } else if (urlImage.equals(urlTemporary)) {
+            Glide.with(context.getApplicationContext())
+                    .load(urlTemporary)
+                    .diskCacheStrategy(DiskCacheStrategy.SOURCE)
+                    .into(imageView);
         } else {
             ImageHandler.loadImageFit2(context, imageView, urlImage);
         }

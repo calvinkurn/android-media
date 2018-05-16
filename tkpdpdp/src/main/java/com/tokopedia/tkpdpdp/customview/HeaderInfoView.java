@@ -138,6 +138,22 @@ public class HeaderInfoView extends BaseView<ProductDetailData, ProductDetailVie
     public void renderTempData(ProductPass productPass) {
         tvName.setText(MethodChecker.fromHtml(productPass.getProductName()));
         tvPriceFinal.setText(productPass.getProductPrice());
+        if (!TextUtils.isEmpty(productPass.getDiscountedPrice()) && productPass.getDiscountPercentage()>0) {
+            tvPriceFinal.setText(productPass.getDiscountPercentage());
+            textOriginalPrice.setText(productPass.getDiscountedPrice());
+            textOriginalPrice.setPaintFlags(
+                    textOriginalPrice.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG
+            );
+
+            textDiscount.setText(String.format(
+                    getContext().getString(R.string.label_discount_percentage),
+                    productPass.getDiscountPercentage()
+            ));
+
+            tvPriceFinal.setVisibility(VISIBLE);
+            textDiscount.setVisibility(VISIBLE);
+            textOriginalPrice.setVisibility(VISIBLE);
+        }
         setVisibility(VISIBLE);
     }
 

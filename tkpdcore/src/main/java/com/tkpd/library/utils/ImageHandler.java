@@ -220,6 +220,18 @@ public class ImageHandler extends com.tokopedia.abstraction.common.utils.image.I
         }
     }
 
+    public static void loadImageSourceSize(Context context, ImageView imageview, String url) {
+        if (isContextValid(context)) {
+            Glide.with(context)
+                    .load(url)
+                    .dontAnimate()
+                    .placeholder(R.drawable.loading_page)
+                    .error(R.drawable.error_drawable)
+                    .diskCacheStrategy(DiskCacheStrategy.SOURCE)
+                    .into(imageview);
+        }
+    }
+
     public static void loadImage(Context context, ImageView imageview, String url, int placeholder) {
         if (isContextValid(context)) {
             Glide.with(context)
