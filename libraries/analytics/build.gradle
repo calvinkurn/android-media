@@ -1,0 +1,25 @@
+apply plugin: 'com.android.library'
+apply from: "$rootProject.projectDir/buildconfig/module.gradle"
+apply plugin: 'android-apt'
+
+apt {
+    arguments {
+        targetModuleName 'Analytics'
+    }
+}
+
+
+dependencies {
+    compile project(rootProject.ext.libraries.useCase)
+    compile project(rootProject.ext.libraries.abstraction)
+
+    compile rootProject.ext.supportLibDependencies.supportV4
+    compile rootProject.ext.supportLibDependencies.appCompactV7
+    compile rootProject.ext.supportLibDependencies.constraintLayout
+    apt rootProject.ext.dbDependencies.dbFlowProcessor
+    compile rootProject.ext.dbDependencies.dbFlowCore
+    compile rootProject.ext.dbDependencies.dbFlow
+
+    testCompile rootProject.ext.testDependencies.junit
+
+}

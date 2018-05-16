@@ -253,7 +253,8 @@ ext {
             cacheApi        : ":libraries:cache_api",
             reactNative     : ":libraries:react_native",
             useCase         : ":libraries:use_case",
-            fingerprint     : ":libraries:fingerprint"
+            fingerprint     : ":libraries:fingerprint",
+            analytics       : ":libraries:analytics"
     ]
 
 }

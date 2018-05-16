@@ -1,0 +1,10 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.tokopedia.analytics">
+    <application>
+        <activity
+            android:name="com.tokopedia.analytics.debugger.ui.AnalyticsDebuggerActivity"
+            android:label="Tracking Debugger"
+            android:launchMode="singleTask"
+            android:taskAffinity="com.tokopedia.analytics.task"/>
+    </application>
+</manifest>
