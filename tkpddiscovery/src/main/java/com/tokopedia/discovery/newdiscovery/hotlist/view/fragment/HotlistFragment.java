@@ -231,7 +231,6 @@ public class HotlistFragment extends SearchSectionFragment
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-//        setRetainInstance(true);
         trackerProductCache = new LocalCacheHandler(getActivity(), HOTLIST_DETAIL_ENHANCE_ANALYTIC);
         if (getArguments() != null) {
             setTrackerAttribution(getArguments().getString(EXTRA_TRACKER_ATTRIBUTION, ""));

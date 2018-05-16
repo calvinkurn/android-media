@@ -6,15 +6,12 @@ import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.View;
 import android.widget.TextView;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tokopedia.core.gcm.Constants;
-import com.tokopedia.design.bottomsheet.BottomSheetBuilder;
-import com.tokopedia.design.bottomsheet.custom.CheckedBottomSheetBuilder;
 import com.tokopedia.discovery.R;
 import com.tokopedia.discovery.newdiscovery.base.DiscoveryActivity;
 import com.tokopedia.discovery.newdiscovery.hotlist.di.component.DaggerHotlistComponent;
@@ -105,16 +102,16 @@ public class HotlistActivity extends DiscoveryActivity
             public void onStateChanged(AppBarLayout appBarLayout, State state) {
                 switch (state) {
                     case COLLAPSED:
-                        getSupportActionBar().setHomeAsUpIndicator(R.drawable.icon_back);
+                        getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_back_black_thin);
                         if(searchItem!=null)
                             searchItem.setIcon(ContextCompat.getDrawable(HotlistActivity.this,
                                     R.drawable.search_icon));
                         break;
                     case EXPANDED:
-                        getSupportActionBar().setHomeAsUpIndicator(R.drawable.icon_back_white);
+                        getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_back_white);
                         if(searchItem!=null)
                             searchItem.setIcon(ContextCompat.getDrawable(HotlistActivity.this,
-                                    R.drawable.search));
+                                    R.drawable.ic_search_thin));
                         break;
                 }
             }
@@ -135,12 +132,13 @@ public class HotlistActivity extends DiscoveryActivity
 
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
-        menu.findItem(R.id.action_search).setIcon(R.drawable.search);
+        menu.findItem(R.id.action_search).setIcon(R.drawable.search_icon);
         return super.onPrepareOptionsMenu(menu);
     }
 
     @Override
     public void setTitle(CharSequence title) {
+        appBarLayout.setExpanded(true);
         setToolbarTitle(title.toString());
     }
 
