@@ -283,11 +283,7 @@ public class ProductListPresenterImpl extends SearchSectionFragmentPresenterImpl
         RequestParams params = getQuickFilterRequestParams();
         params = enrichWithFilterAndSortParams(params);
         params = enrichWithAdditionalParams(params, additionalParams);
-        if (isUsingFilterV4) {
-            getDynamicFilterV4UseCase.execute(params, new GetQuickFilterSubscriber(getView()));
-        } else {
-            getDynamicFilterUseCase.execute(params, new GetQuickFilterSubscriber(getView()));
-        }
+        getDynamicFilterUseCase.execute(params, new GetQuickFilterSubscriber(getView()));
     }
 
     @Override
