@@ -18,7 +18,8 @@ import com.tokopedia.inbox.inboxchat.domain.model.reply.WebSocketResponse;
 import com.tokopedia.inbox.inboxchat.domain.model.websocket.BaseChatViewModel;
 import com.tokopedia.inbox.inboxchat.viewholder.AttachedInvoiceSentViewHolder;
 import com.tokopedia.inbox.inboxchat.viewholder.MyChatViewHolder;
-import com.tokopedia.inbox.inboxchat.viewmodel.ImageUploadViewModel;
+import com.tokopedia.inbox.inboxchat.viewmodel.chatroom.SendableViewModel;
+import com.tokopedia.inbox.inboxchat.viewmodel.chatroom.imageupload.ImageUploadViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.MyChatViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.OppositeChatViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.TypingChatModel;
@@ -233,8 +234,8 @@ public class ChatRoomAdapter extends RecyclerView.Adapter<AbstractViewHolder> {
             while (iterator.hasPrevious()) {
                 int position = iterator.previousIndex();
                 Visitable visitable = iterator.previous();
-                if (visitable instanceof ImageUploadViewModel
-                        && ((ImageUploadViewModel) visitable).getStartTime().equals(startTime)) {
+                if (visitable instanceof SendableViewModel
+                        && ((SendableViewModel) visitable).getStartTime().equals(startTime)) {
                     iterator.remove();
                     notifyItemRemoved(position);
                 }

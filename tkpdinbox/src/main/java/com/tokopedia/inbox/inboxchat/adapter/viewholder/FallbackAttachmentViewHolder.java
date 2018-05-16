@@ -5,7 +5,7 @@ import android.widget.TextView;
 
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.inbox.R;
-import com.tokopedia.inbox.inboxchat.domain.model.websocket.FallbackAttachmentViewModel;
+import com.tokopedia.inbox.inboxchat.viewmodel.chatroom.fallback.FallbackAttachmentViewModel;
 import com.tokopedia.inbox.inboxchat.presenter.ChatRoomContract;
 import com.tokopedia.inbox.inboxchat.viewholder.movement.ChatLinkHandlerMovementMethod;
 

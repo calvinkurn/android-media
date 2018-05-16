@@ -3,8 +3,8 @@ package com.tokopedia.inbox.inboxchat.adapter;
 import android.view.View;
 
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
-import com.tokopedia.inbox.inboxchat.domain.model.websocket.FallbackAttachmentViewModel;
-import com.tokopedia.inbox.inboxchat.viewmodel.ImageUploadViewModel;
+import com.tokopedia.inbox.inboxchat.viewmodel.chatroom.fallback.FallbackAttachmentViewModel;
+import com.tokopedia.inbox.inboxchat.viewmodel.chatroom.imageupload.ImageUploadViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.AttachInvoiceSelectionViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.AttachInvoiceSentViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.MyChatViewModel;

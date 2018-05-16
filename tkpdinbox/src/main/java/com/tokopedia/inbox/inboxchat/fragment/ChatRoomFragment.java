@@ -97,7 +97,8 @@ import com.tokopedia.inbox.inboxchat.viewholder.ListChatViewHolder;
 import com.tokopedia.inbox.inboxchat.viewmodel.AttachInvoiceSentViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.ChatRoomViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.DummyChatViewModel;
-import com.tokopedia.inbox.inboxchat.viewmodel.ImageUploadViewModel;
+import com.tokopedia.inbox.inboxchat.viewmodel.chatroom.SendableViewModel;
+import com.tokopedia.inbox.inboxchat.viewmodel.chatroom.imageupload.ImageUploadViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.InboxChatViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.MyChatViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.OppositeChatViewModel;
@@ -106,10 +107,14 @@ import com.tokopedia.inbox.inboxchat.viewmodel.chatroom.QuickReplyViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.chatroom.productattachment.ProductAttachmentViewModel;
 import com.tokopedia.inbox.inboxmessage.InboxMessageConstant;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.List;
+import java.util.Locale;
+import java.util.TimeZone;
 import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
@@ -1241,11 +1246,15 @@ public class ChatRoomFragment extends BaseDaggerFragment
 
     public ImageUploadViewModel generateChatViewModelWithImage(String imageUrl) {
         scrollToBottom();
+        SimpleDateFormat date = new SimpleDateFormat(
+                SendableViewModel.START_TIME_FORMAT, Locale.US);
+        date.setTimeZone(TimeZone.getTimeZone("UTC"));
         ImageUploadViewModel model = new ImageUploadViewModel(
                 getArguments().getString(InboxMessageConstant.PARAM_SENDER_ID),
                 String.valueOf(System.currentTimeMillis() / MILIS_TO_SECOND),
-                imageUrl
-        );
+                imageUrl,
+                date.format(Calendar.getInstance().getTime())
+                );
         return model;
     }
 
@@ -1469,8 +1478,8 @@ public class ChatRoomFragment extends BaseDaggerFragment
         if (isMyMessage(message.getFromUid())) {
             if (message instanceof ProductAttachmentViewModel) {
                 getAdapter().removeLastProductWithId(((ProductAttachmentViewModel) message).getProductId());
-            } else if (message instanceof ImageUploadViewModel) {
-                getAdapter().removeLastMessageWithStartTime(((ImageUploadViewModel) message).getStartTime());
+            } else if (message instanceof SendableViewModel) {
+                getAdapter().removeLastMessageWithStartTime(((SendableViewModel) message).getStartTime());
             } else {
                 getAdapter().removeLast();
             }

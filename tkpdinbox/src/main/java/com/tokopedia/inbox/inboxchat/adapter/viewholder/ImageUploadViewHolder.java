@@ -10,7 +10,7 @@ import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.inbox.R;
 import com.tokopedia.inbox.inboxchat.helper.ChatGlideImageRequestListener;
 import com.tokopedia.inbox.inboxchat.presenter.ChatRoomContract;
-import com.tokopedia.inbox.inboxchat.viewmodel.ImageUploadViewModel;
+import com.tokopedia.inbox.inboxchat.viewmodel.chatroom.imageupload.ImageUploadViewModel;
 
 /**
  * Created by stevenfredian on 11/28/17.

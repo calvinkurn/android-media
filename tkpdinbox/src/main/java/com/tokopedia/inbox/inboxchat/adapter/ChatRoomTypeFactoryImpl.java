@@ -8,7 +8,7 @@ import com.tokopedia.inbox.inboxchat.adapter.viewholder.FallbackAttachmentViewHo
 import com.tokopedia.inbox.inboxchat.adapter.viewholder.ImageAnnouncementViewHolder;
 import com.tokopedia.inbox.inboxchat.adapter.viewholder.ProductAttachmentViewHolder;
 import com.tokopedia.inbox.inboxchat.adapter.viewholder.QuickReplyViewHolder;
-import com.tokopedia.inbox.inboxchat.domain.model.websocket.FallbackAttachmentViewModel;
+import com.tokopedia.inbox.inboxchat.viewmodel.chatroom.fallback.FallbackAttachmentViewModel;
 import com.tokopedia.inbox.inboxchat.fragment.ChatRoomFragment;
 import com.tokopedia.inbox.inboxchat.presenter.ChatRoomContract;
 import com.tokopedia.inbox.inboxchat.adapter.viewholder.ImageUploadViewHolder;
@@ -18,7 +18,7 @@ import com.tokopedia.inbox.inboxchat.viewholder.MyChatViewHolder;
 import com.tokopedia.inbox.inboxchat.viewholder.OppositeChatViewHolder;
 import com.tokopedia.inbox.inboxchat.viewholder.TimeMachineChatViewHolder;
 import com.tokopedia.inbox.inboxchat.viewholder.TypingChatViewHolder;
-import com.tokopedia.inbox.inboxchat.viewmodel.ImageUploadViewModel;
+import com.tokopedia.inbox.inboxchat.viewmodel.chatroom.imageupload.ImageUploadViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.AttachInvoiceSelectionViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.AttachInvoiceSentViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.MyChatViewModel;

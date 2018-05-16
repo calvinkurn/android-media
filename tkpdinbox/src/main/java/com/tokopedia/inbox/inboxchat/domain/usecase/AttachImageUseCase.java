@@ -9,8 +9,7 @@ import com.tokopedia.inbox.inboxchat.uploadimage.domain.interactor.GenerateHostU
 import com.tokopedia.inbox.inboxchat.uploadimage.domain.interactor.UploadImageUseCase;
 import com.tokopedia.inbox.inboxchat.uploadimage.domain.model.GenerateHostDomain;
 import com.tokopedia.inbox.inboxchat.uploadimage.domain.model.UploadImageDomain;
-import com.tokopedia.inbox.inboxchat.viewmodel.ImageUploadViewModel;
-import com.tokopedia.inbox.inboxchat.viewmodel.MyChatViewModel;
+import com.tokopedia.inbox.inboxchat.viewmodel.chatroom.imageupload.ImageUploadViewModel;
 
 import java.util.List;
 
