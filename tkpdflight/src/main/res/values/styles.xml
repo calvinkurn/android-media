@@ -67,24 +67,33 @@
     </style>
 
     <style name="CardSuccessStatusStyle">
-        <item name="android:padding">@dimen/dp_8</item>
+        <item name="android:paddingLeft">@dimen/dp_8</item>
+        <item name="android:paddingRight">@dimen/dp_8</item>
+        <item name="android:paddingTop">@dimen/dp_5</item>
+        <item name="android:paddingBottom">@dimen/dp_5</item>
         <item name="android:background">@drawable/bg_card_success</item>
-        <item name="android:textSize">@dimen/sp_12</item>
+        <item name="android:textSize">@dimen/sp_10</item>
         <item name="android:textColor">@color/tkpd_main_green</item>
     </style>
 
     <style name="CardFailedStatusStyle">
-        <item name="android:padding">@dimen/dp_8</item>
+        <item name="android:paddingLeft">@dimen/dp_8</item>
+        <item name="android:paddingRight">@dimen/dp_8</item>
+        <item name="android:paddingTop">@dimen/dp_5</item>
+        <item name="android:paddingBottom">@dimen/dp_5</item>
         <item name="android:background">@drawable/bg_card_failed</item>
-        <item name="android:textSize">@dimen/sp_12</item>
+        <item name="android:textSize">@dimen/sp_10</item>
         <item name="android:textColor">@color/colorRed</item>
     </style>
 
     <style name="CardProcessStatusStyle">
-        <item name="android:padding">@dimen/dp_8</item>
+        <item name="android:paddingLeft">@dimen/dp_8</item>
+        <item name="android:paddingRight">@dimen/dp_8</item>
+        <item name="android:paddingTop">@dimen/dp_5</item>
+        <item name="android:paddingBottom">@dimen/dp_5</item>
         <item name="android:background">@drawable/bg_card_process</item>
-        <item name="android:textSize">@dimen/sp_12</item>
-        <item name="android:textColor">#F5A623</item>
+        <item name="android:textSize">@dimen/sp_10</item>
+        <item name="android:textColor">#CA8600</item>
     </style>
 
     <style name="FlightProgressBar" parent="ThemeOverlay.AppCompat.Light">

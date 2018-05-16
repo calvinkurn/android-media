@@ -52,15 +52,23 @@ public class FlightCancellationListViewHolder extends AbstractViewHolder<FlightC
         switch (status) {
             case FlightCancellationStatus.REQUESTED:
                 txtCancellationStatus.setText(R.string.flight_cancellation_list_status_requested);
+                txtCancellationStatus.setTextAppearance(context, R.style.CardProcessStatusStyle);
+                txtCancellationStatus.setBackground(context.getResources().getDrawable(R.drawable.bg_card_process));
                 break;
             case FlightCancellationStatus.PENDING:
                 txtCancellationStatus.setText(R.string.flight_cancellation_list_status_pending);
+                txtCancellationStatus.setTextAppearance(context, R.style.CardProcessStatusStyle);
+                txtCancellationStatus.setBackground(context.getResources().getDrawable(R.drawable.bg_card_process));
                 break;
             case FlightCancellationStatus.REFUNDED:
                 txtCancellationStatus.setText(R.string.flight_cancellation_list_status_refunded);
+                txtCancellationStatus.setTextAppearance(context, R.style.CardSuccessStatusStyle);
+                txtCancellationStatus.setBackground(context.getResources().getDrawable(R.drawable.bg_card_success));
                 break;
             case FlightCancellationStatus.ABORTED:
                 txtCancellationStatus.setText(R.string.flight_cancellation_list_status_aborted);
+                txtCancellationStatus.setTextAppearance(context, R.style.CardFailedStatusStyle);
+                txtCancellationStatus.setBackground(context.getResources().getDrawable(R.drawable.bg_card_failed));
                 break;
         }
     }
