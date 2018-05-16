@@ -240,6 +240,9 @@ android {
         live {
 
         }
+        staging {
+
+        }
     }
 }
 
@@ -252,7 +255,6 @@ dependencies {
     compile project(rootProject.ext.features.seller)
     compile project(rootProject.ext.features.session)
     compile project(rootProject.ext.features.inbox)
-    compile project(rootProject.ext.features.ride)
     compile project(rootProject.ext.features.digital)
     compile project(rootProject.ext.features.productDetail)
     compile project(rootProject.ext.features.feed)
