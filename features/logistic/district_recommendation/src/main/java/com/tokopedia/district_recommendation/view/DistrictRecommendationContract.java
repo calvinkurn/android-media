@@ -51,6 +51,7 @@ public interface DistrictRecommendationContract {
     }
 
     interface Constant {
+        String INTENT_DISTRICT_RECOMMENDATION_ADDRESS = "district_recommendation_address";
         String INTENT_DATA_ADDRESS = "address";
         String ARGUMENT_DATA_TOKEN = "token";
     }

@@ -51,9 +51,6 @@ import com.tokopedia.tkpd.deeplink.DeeplinkHandlerActivity;
 import com.tokopedia.tkpd.deeplink.activity.DeepLinkActivity;
 import com.tokopedia.tkpd.fcm.ApplinkResetReceiver;
 import com.tokopedia.tkpd.utils.CacheApiWhiteList;
-import com.tokopedia.shop.common.constant.ShopCommonUrl;
-import com.tokopedia.shop.common.constant.ShopUrl;
-import com.tokopedia.kol.common.network.KolUrl;
 import com.tokopedia.tkpdreactnative.react.fingerprint.utils.FingerprintConstantRegister;
 import com.tokopedia.tokocash.network.api.WalletUrl;
 import com.tokopedia.transaction.network.TransactionUrl;
@@ -281,4 +278,5 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
                 CacheApiWhiteList.getWhiteList(),
                 String.valueOf(getCurrentVersion(getApplicationContext()))));
     }
+
 }

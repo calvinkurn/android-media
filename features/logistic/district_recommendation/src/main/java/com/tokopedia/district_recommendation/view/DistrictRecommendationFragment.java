@@ -21,6 +21,7 @@ import com.tokopedia.core.base.presentation.UIThread;
 import com.tokopedia.district_recommendation.R;
 import com.tokopedia.district_recommendation.di.DaggerDistrictRecommendationComponent;
 import com.tokopedia.district_recommendation.di.DistrictRecommendationComponent;
+import com.tokopedia.district_recommendation.domain.mapper.AddressMapper;
 import com.tokopedia.district_recommendation.domain.model.Address;
 import com.tokopedia.district_recommendation.domain.model.Token;
 import com.tokopedia.core.network.NetworkErrorHelper;
@@ -36,6 +37,7 @@ import rx.subscriptions.CompositeSubscription;
 
 import static com.tokopedia.district_recommendation.view.DistrictRecommendationContract.Constant.ARGUMENT_DATA_TOKEN;
 import static com.tokopedia.district_recommendation.view.DistrictRecommendationContract.Constant.INTENT_DATA_ADDRESS;
+import static com.tokopedia.district_recommendation.view.DistrictRecommendationContract.Constant.INTENT_DISTRICT_RECOMMENDATION_ADDRESS;
 
 public class DistrictRecommendationFragment
         extends BasePresenterFragment<DistrictRecommendationContract.Presenter>
@@ -56,6 +58,9 @@ public class DistrictRecommendationFragment
 
     @Inject
     DistrictRecommendationContract.Presenter presenter;
+
+    @Inject
+    AddressMapper addressMapper;
 
     public DistrictRecommendationFragment() {
         // Required empty public constructor
@@ -326,6 +331,7 @@ public class DistrictRecommendationFragment
     public void onItemClick(Address address) {
         Intent resultIntent = new Intent();
         resultIntent.putExtra(INTENT_DATA_ADDRESS, address);
+        resultIntent.putExtra(INTENT_DISTRICT_RECOMMENDATION_ADDRESS, addressMapper.convertAddress(address));
         getActivity().setResult(Activity.RESULT_OK, resultIntent);
         getActivity().finish();
     }

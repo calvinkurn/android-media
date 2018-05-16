@@ -18,4 +18,6 @@ public interface ManageAddressConstant {
     int GET_LIST_CITY = 3;
 
     String EXTRA_ADDRESS = "EXTRA_ADDRESS";
+
+    String KERO_TOKEN = "token";
 }

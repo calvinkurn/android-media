@@ -7,9 +7,14 @@ import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.design.widget.TextInputLayout;
 import android.text.Editable;
+import android.text.TextUtils;
 import android.text.TextWatcher;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
 import android.widget.TextView;
 
@@ -19,6 +24,7 @@ import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.R;
 import com.tokopedia.core.app.BasePresenterFragment;
+import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.database.model.City;
 import com.tokopedia.core.database.model.District;
 import com.tokopedia.core.database.model.Province;
@@ -30,12 +36,15 @@ import com.tokopedia.core.manage.people.address.fragment.adapter.RegencyAdapter;
 import com.tokopedia.core.manage.people.address.fragment.adapter.SubDistrictAdapter;
 import com.tokopedia.core.manage.people.address.listener.AddAddressFragmentView;
 import com.tokopedia.core.manage.people.address.model.Destination;
+import com.tokopedia.core.manage.people.address.model.DistrictRecommendationAddress;
+import com.tokopedia.core.manage.people.address.model.Token;
 import com.tokopedia.core.manage.people.address.presenter.AddAddressPresenter;
 import com.tokopedia.core.manage.people.address.presenter.AddAddressPresenterImpl;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.util.MethodChecker;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -44,7 +53,8 @@ import java.util.List;
 public class AddAddressFragment extends BasePresenterFragment<AddAddressPresenter>
         implements AddAddressFragmentView, ManageAddressConstant {
 
-    private final int DISTRICT_RECOMMENDATION_REQUEST_CODE = 130715;
+    private static final int DISTRICT_RECOMMENDATION_REQUEST_CODE = 130715;
+    private static final String ADDRESS = "district_recommendation_address";
 
     private final String ARG_STATE_PROVINCE = "provincesData";
     private final String ARG_STATE_CITY = "citiesData";
@@ -58,8 +68,8 @@ public class AddAddressFragment extends BasePresenterFragment<AddAddressPresente
     private EditText addressEditText;
     private TextInputLayout districtLayout;
     private EditText districtEditText;
-    private TextInputLayout postalCodeLayout;
-    private EditText postalCodeEditText;
+    private TextInputLayout zipCodeLayout;
+    private AutoCompleteTextView zipCodeTextView;
     private TextInputLayout receiverPhoneLayout;
     private EditText receiverPhoneEditText;
     private View chooseLocation;
@@ -67,6 +77,11 @@ public class AddAddressFragment extends BasePresenterFragment<AddAddressPresente
     private TextInputLayout passwordLayout;
     private EditText password;
     private TextView saveButton;
+
+    private List<String> zipCodes;
+    private Token token;
+
+    private Destination destination;
 
     ProvinceAdapter provinceAdapter;
     RegencyAdapter regencyAdapter;
@@ -155,7 +170,8 @@ public class AddAddressFragment extends BasePresenterFragment<AddAddressPresente
 
     @Override
     protected void setupArguments(Bundle arguments) {
-
+        this.token = arguments.getParcelable(KERO_TOKEN);
+        this.destination = arguments.getParcelable(EDIT_PARAM);
     }
 
     @Override
@@ -198,6 +214,27 @@ public class AddAddressFragment extends BasePresenterFragment<AddAddressPresente
         };
     }
 
+    private TextWatcher zipPostTextWatcher() {
+        return new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                if (zipCodeTextView.getText().length() < 1)
+                    zipCodeLayout.setError(context.getString(R.string.error_field_required));
+                else zipCodeLayout.setError(null);
+            }
+        };
+    }
+
     @Override
     protected void initView(View view) {
         receiverNameLayout = view.findViewById(R.id.receiver_name_layout);
@@ -208,8 +245,8 @@ public class AddAddressFragment extends BasePresenterFragment<AddAddressPresente
         addressEditText = view.findViewById(R.id.address);
         districtLayout = view.findViewById(R.id.district_layout);
         districtEditText = view.findViewById(R.id.district);
-        postalCodeLayout = view.findViewById(R.id.postal_code_layout);
-        postalCodeEditText = view.findViewById(R.id.postal_code);
+        zipCodeLayout = view.findViewById(R.id.postal_code_layout);
+        zipCodeTextView = view.findViewById(R.id.postal_code);
         receiverPhoneLayout = view.findViewById(R.id.receiver_phone_layout);
         receiverPhoneEditText = view.findViewById(R.id.receiver_phone);
         chooseLocation = view.findViewById(R.id.layout_value_location);
@@ -232,17 +269,12 @@ public class AddAddressFragment extends BasePresenterFragment<AddAddressPresente
 
     @Override
     protected void setViewListener() {
-        districtLayout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-//                Intent intent = DistrictRecommendationActivity.createInstance(getActivity(),
-//                        editShippingPresenter.getToken());
-//                IDigitalModuleRouter router = ((IDigitalModuleRouter) getActivity().getApplication());
-
-//                Intent intent = ((DistrictRecomm) context.getApplicationContext();)
-//                startActivityForResult(intent, DISTRICT_RECOMMENDATION_REQUEST_CODE);
-            }
-        });
+        zipCodeLayout.setOnTouchListener(onZipCodeTouch());
+        zipCodeTextView.setOnTouchListener(onZipCodeTouch());
+        zipCodeTextView.setOnItemClickListener(onZipCodeItemClick());
+        zipCodeTextView.addTextChangedListener(zipPostTextWatcher());
+        districtLayout.setOnClickListener(onCityDistrictClick());
+        districtEditText.setOnClickListener(onCityDistrictClick());
         chooseLocation.setOnClickListener(onChooseLocation());
         locationEditText.setOnClickListener(onChooseLocation());
         saveButton.setOnClickListener(new View.OnClickListener() {
@@ -251,6 +283,52 @@ public class AddAddressFragment extends BasePresenterFragment<AddAddressPresente
                 presenter.saveAddress();
             }
         });
+    }
+
+    private View.OnClickListener onCityDistrictClick() {
+        return new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = ((TkpdCoreRouter) getActivity().getApplication())
+                        .getDistrictRecommendationIntent(getActivity(), token);
+                startActivityForResult(intent, DISTRICT_RECOMMENDATION_REQUEST_CODE);
+            }
+        };
+    }
+
+    private View.OnTouchListener onZipCodeTouch() {
+        return new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+                if (!zipCodeTextView.isPopupShowing()) zipCodeTextView.showDropDown();
+                return false;
+            }
+        };
+    }
+
+    private AdapterView.OnItemClickListener onZipCodeItemClick() {
+        return new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                if (i == 0 && !Character.isDigit(zipCodeTextView.getText().toString().charAt(0))) {
+                    zipCodeTextView.setText("");
+                }
+            }
+        };
+    }
+
+    public void initializeZipCodes() {
+        zipCodeTextView.setText("");
+        String header = getResources().getString(R.string.hint_type_postal_code);
+        if (!zipCodes.contains(header)) {
+            zipCodes.add(0, header);
+        }
+        ArrayAdapter<String> zipCodeAdapter = new ArrayAdapter<>(
+                        context,
+                        R.layout.item_autocomplete_text_double_row,
+                        R.id.item,
+                        zipCodes);
+        zipCodeTextView.setAdapter(zipCodeAdapter);
     }
 
     private View.OnClickListener onChooseLocation() {
@@ -298,26 +376,63 @@ public class AddAddressFragment extends BasePresenterFragment<AddAddressPresente
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (resultCode == Activity.RESULT_OK && requestCode == REQUEST_CODE) {
-            removeError();
-            Bundle bundle = data.getExtras();
-            LocationPass locationPass = bundle.getParcelable(GeolocationActivity.EXTRA_EXISTING_LOCATION);
-            String generatedAddress = locationEditText.getText().toString();
-            if (locationPass != null) {
-                presenter.setLatLng(locationPass.getLatitude(), locationPass.getLongitude());
-                if (locationPass.getGeneratedAddress().equals(getString(R.string.choose_this_location))) {
-                    generatedAddress = presenter.getLatLng().latitude + ", " + presenter.getLatLng().longitude;
-                } else {
-                    generatedAddress = locationPass.getGeneratedAddress();
+        if (resultCode == Activity.RESULT_OK) {
+            if (requestCode == REQUEST_CODE) {
+                removeError();
+
+                String generatedAddress = locationEditText.getText().toString();
+
+                Bundle bundle = data.getExtras();
+                if (bundle != null) {
+                    LocationPass locationPass = bundle.getParcelable(GeolocationActivity.EXTRA_EXISTING_LOCATION);
+
+                    if (locationPass != null) {
+                        presenter.setLatLng(locationPass.getLatitude(), locationPass.getLongitude());
+                        if (locationPass.getGeneratedAddress().equals(getString(R.string.choose_this_location))) {
+                            generatedAddress = presenter.getLatLng().latitude + ", " + presenter.getLatLng().longitude;
+                        } else {
+                            generatedAddress = locationPass.getGeneratedAddress();
+                        }
+                    }
+                }
+
+                locationEditText.setText(generatedAddress);
+
+            } else if (requestCode == DISTRICT_RECOMMENDATION_REQUEST_CODE) {
+                Bundle bundle = data.getExtras();
+                if (bundle != null) {
+                    DistrictRecommendationAddress address = bundle.getParcelable(ADDRESS);
+                    if (address != null) {
+                        List<String> addr = new ArrayList<>(Arrays.asList(
+                           address.getDistrictName(),
+                           address.getCityName(),
+                           address.getProvinceName()
+                        ));
+                        String fullAddress = TextUtils.join(", ", addr);
+                        districtEditText.setText(fullAddress);
+
+                        zipCodes = new ArrayList<>(address.getZipCodes());
+                        initializeZipCodes();
+                    }
                 }
             }
-            locationEditText.setText(generatedAddress);
         }
     }
 
     @Override
     protected void initialVar() {
-
+        if (destination != null) {
+            receiverNameEditText.setText(destination.getReceiverName());
+            addressTypeEditText.setText(destination.getAddressName());
+            addressEditText.setText(destination.getAddressStreet());
+            districtEditText.setText(TextUtils.join(", ", Arrays.asList(
+                    destination.getProvinceName(),
+                    destination.getCityName(),
+                    destination.getDistrictName()
+            )));
+            zipCodeTextView.setText(destination.getPostalCode());
+            receiverPhoneEditText.setText(destination.getReceiverPhone());
+        }
     }
 
     @Override

@@ -93,7 +93,8 @@
                     android:id="@+id/district"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:imeOptions="actionNext"
+                    android:clickable="true"
+                    android:focusable="false"
                     android:textSize="@dimen/sp_14" />
             </android.support.design.widget.TextInputLayout>
 
@@ -103,11 +104,14 @@
                 android:layout_height="wrap_content"
                 android:hint="Kode Pos">
 
-                <EditText
+                <AutoCompleteTextView
                     android:id="@+id/postal_code"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:imeOptions="actionNext"
+                    android:completionThreshold="1"
+                    android:digits="1234567890"
+                    android:inputType="phone"
+                    android:maxLength="5"
                     android:textSize="@dimen/sp_14" />
             </android.support.design.widget.TextInputLayout>
         </LinearLayout>
