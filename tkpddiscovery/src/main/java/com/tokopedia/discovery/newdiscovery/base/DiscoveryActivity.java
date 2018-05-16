@@ -435,7 +435,9 @@ public class DiscoveryActivity extends BaseDiscoveryActivity implements
 
             if (uploadDialog == null) {
                 uploadDialog = new UploadImageDialog(DiscoveryActivity.this);
-                searchView.clearFocus();
+                if (searchView != null) {
+                    searchView.clearFocus();
+                }
             }
 
             uploadDialog.onResult(
