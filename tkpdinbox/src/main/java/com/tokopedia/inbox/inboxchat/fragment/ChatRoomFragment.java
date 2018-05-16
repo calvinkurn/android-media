@@ -82,8 +82,6 @@ import com.tokopedia.inbox.inboxchat.analytics.TopChatAnalytics;
 import com.tokopedia.inbox.inboxchat.di.DaggerInboxChatComponent;
 import com.tokopedia.inbox.inboxchat.domain.model.reply.Attachment;
 import com.tokopedia.inbox.inboxchat.domain.model.reply.AttachmentAttributes;
-import com.tokopedia.inbox.inboxchat.domain.model.reply.AttachmentInvoice;
-import com.tokopedia.inbox.inboxchat.domain.model.reply.AttachmentInvoiceAttributes;
 import com.tokopedia.inbox.inboxchat.domain.model.reply.WebSocketResponse;
 import com.tokopedia.inbox.inboxchat.domain.model.replyaction.ReplyActionData;
 import com.tokopedia.inbox.inboxchat.domain.model.websocket.BaseChatViewModel;
@@ -97,13 +95,13 @@ import com.tokopedia.inbox.inboxchat.viewholder.ListChatViewHolder;
 import com.tokopedia.inbox.inboxchat.viewmodel.AttachInvoiceSentViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.ChatRoomViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.DummyChatViewModel;
-import com.tokopedia.inbox.inboxchat.viewmodel.chatroom.SendableViewModel;
-import com.tokopedia.inbox.inboxchat.viewmodel.chatroom.imageupload.ImageUploadViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.InboxChatViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.MyChatViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.OppositeChatViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.chatroom.QuickReplyListViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.chatroom.QuickReplyViewModel;
+import com.tokopedia.inbox.inboxchat.viewmodel.chatroom.SendableViewModel;
+import com.tokopedia.inbox.inboxchat.viewmodel.chatroom.imageupload.ImageUploadViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.chatroom.productattachment.ProductAttachmentViewModel;
 import com.tokopedia.inbox.inboxmessage.InboxMessageConstant;
 
@@ -1213,33 +1211,14 @@ public class ChatRoomFragment extends BaseDaggerFragment
 
     private AttachInvoiceSentViewModel generateInvoice(SelectedInvoice selectedInvoice) {
         AttachInvoiceSentViewModel invoiceToSend = new AttachInvoiceSentViewModel();
-        Attachment attachment = new Attachment();
-        attachment.setType(AttachmentChatHelper.INVOICE_ATTACHED);
-        AttachmentAttributes attachmentAttributes = new AttachmentAttributes();
-        AttachmentInvoiceAttributes attachmentInvoiceAttributes = new AttachmentInvoiceAttributes(
-                selectedInvoice.getInvoiceNo(),
-                selectedInvoice.getDate(),
-                selectedInvoice.getDescription(),
-                selectedInvoice.getInvoiceUrl(),
-                selectedInvoice.getInvoiceId(),
-                selectedInvoice.getTopProductImage(),
-                selectedInvoice.getStatus(),
-                selectedInvoice.getStatusId(),
-                selectedInvoice.getTopProductName(),
-                selectedInvoice.getAmount()
-        );
-        AttachmentInvoice attachmentInvoice = new AttachmentInvoice();
-        attachmentInvoice.setType(selectedInvoice.getInvoiceType());
-        attachmentInvoice.setTypeString(selectedInvoice.getInvoiceTypeStr());
-        attachmentInvoice.setAttributes(attachmentInvoiceAttributes);
-        attachmentAttributes.setInvoiceLink(attachmentInvoice);
-        attachment.setAttributes(attachmentAttributes);
 
-        invoiceToSend.setAttachment(attachment);
+        invoiceToSend.setTotalAmount(selectedInvoice.getAmount());
+        invoiceToSend.setMessage(selectedInvoice.getInvoiceNo());
+        invoiceToSend.setDescription(selectedInvoice.getDescription());
+        invoiceToSend.setImageUrl(selectedInvoice.getInvoiceUrl());
         invoiceToSend.setReplyTime(DummyChatViewModel.SENDING_TEXT);
         invoiceToSend.setDummy(true);
-        invoiceToSend.setMsg("");
-        invoiceToSend.setSenderId(getArguments().getString(InboxMessageConstant.PARAM_SENDER_ID));
+        invoiceToSend.setFromUid(getArguments().getString(InboxMessageConstant.PARAM_SENDER_ID));
 
         return invoiceToSend;
     }
@@ -1460,6 +1439,9 @@ public class ChatRoomFragment extends BaseDaggerFragment
                 if (!TextUtils.isEmpty(((QuickReplyListViewModel) message).getMessage())) {
                     addMessageToList(message);
                 }
+            } else if (message instanceof AttachInvoiceSentViewModel) {
+                adapter.removeLast();
+                addMessageToList(message);
             } else {
                 addMessageToList(message);
             }

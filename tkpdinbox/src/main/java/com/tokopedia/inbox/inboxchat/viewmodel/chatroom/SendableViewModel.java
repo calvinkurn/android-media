@@ -66,4 +66,5 @@ public class SendableViewModel extends BaseChatViewModel {
     public void setDummy(boolean dummy) {
         isDummy = dummy;
     }
+
 }

@@ -7,16 +7,18 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonSyntaxException;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.inbox.inboxchat.domain.model.websocket.BaseChatViewModel;
-import com.tokopedia.inbox.inboxchat.viewmodel.chatroom.fallback.FallbackAttachmentViewModel;
 import com.tokopedia.inbox.inboxchat.domain.pojo.common.WebSocketResponse;
 import com.tokopedia.inbox.inboxchat.domain.pojo.common.WebSocketResponseData;
 import com.tokopedia.inbox.inboxchat.domain.pojo.imageupload.ImageUploadAttributes;
+import com.tokopedia.inbox.inboxchat.domain.pojo.invoicesent.InvoiceSentPojo;
 import com.tokopedia.inbox.inboxchat.domain.pojo.productattachment.ProductAttachmentAttributes;
 import com.tokopedia.inbox.inboxchat.domain.pojo.quickreply.QuickReplyAttachmentAttributes;
 import com.tokopedia.inbox.inboxchat.domain.pojo.quickreply.QuickReplyPojo;
-import com.tokopedia.inbox.inboxchat.viewmodel.chatroom.imageupload.ImageUploadViewModel;
+import com.tokopedia.inbox.inboxchat.viewmodel.AttachInvoiceSentViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.chatroom.QuickReplyListViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.chatroom.QuickReplyViewModel;
+import com.tokopedia.inbox.inboxchat.viewmodel.chatroom.fallback.FallbackAttachmentViewModel;
+import com.tokopedia.inbox.inboxchat.viewmodel.chatroom.imageupload.ImageUploadViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.chatroom.productattachment.ProductAttachmentViewModel;
 
 import java.util.ArrayList;
@@ -32,6 +34,7 @@ public class WebSocketMapper {
     public static final String TYPE_IMAGE_ANNOUNCEMENT = "1";
     public static final String TYPE_IMAGE_UPLOAD = "2";
     public static final String TYPE_PRODUCT_ATTACHMENT = "3";
+    public static final String TYPE_INVOICE_SEND = "7";
     public static final String TYPE_QUICK_REPLY = "8";
     private SessionHandler sessionHandler;
 
@@ -43,33 +46,48 @@ public class WebSocketMapper {
 
     public BaseChatViewModel map(String json) {
         try {
-
             WebSocketResponse pojo = new GsonBuilder().create().fromJson(json, WebSocketResponse.class);
-
             JsonObject jsonAttributes = pojo.getData().getAttachment().getAttributes();
-            if (pojo.getData() != null
-                    && pojo.getData().getAttachment() != null
-                    && jsonAttributes != null) {
-                switch (pojo.getData().getAttachment().getType()) {
-                    case TYPE_QUICK_REPLY:
-                        return convertToQuickReplyModel(pojo.getData(), jsonAttributes);
-                    case TYPE_PRODUCT_ATTACHMENT:
-                        return convertToProductAttachment(pojo.getData(), jsonAttributes);
-                    case TYPE_IMAGE_UPLOAD:
-                        return convertToImageUpload(pojo.getData(), jsonAttributes);
-                    default:
+            switch (pojo.getData().getAttachment().getType()) {
+                case TYPE_QUICK_REPLY:
+                    return convertToQuickReplyModel(pojo.getData(), jsonAttributes);
+                case TYPE_PRODUCT_ATTACHMENT:
+                    return convertToProductAttachment(pojo.getData(), jsonAttributes);
+                case TYPE_IMAGE_UPLOAD:
+                    return convertToImageUpload(pojo.getData(), jsonAttributes);
+                case TYPE_INVOICE_SEND:
+                    return convertToInvoiceSent(pojo.getData(), jsonAttributes);
+                default:
 //                        return convertToFallBackModel(pojo.getData());
-                        return null;
-
-                }
-            } else {
-                return null;
+                    return null;
             }
         } catch (JsonSyntaxException e) {
             return null;
         } catch (NullPointerException e) {
             return null;
         }
+
+    }
+
+    private BaseChatViewModel convertToInvoiceSent(WebSocketResponseData pojo, JsonObject
+            jsonAttribute) {
+        InvoiceSentPojo invoiceSentPojo = new GsonBuilder().create().fromJson(jsonAttribute,
+                InvoiceSentPojo.class);
+        return new AttachInvoiceSentViewModel(
+                String.valueOf(pojo.getMsgId()),
+                String.valueOf(pojo.getFromUid()),
+                pojo.getFrom(),
+                pojo.getFromRole(),
+                pojo.getAttachment().getId(),
+                pojo.getAttachment().getType(),
+                pojo.getMessage().getTimeStampUnix(),
+                pojo.getStartTime(),
+                pojo.getMessage().getCensoredReply(),
+                invoiceSentPojo.getInvoiceLink().getAttributes().getDescription(),
+                invoiceSentPojo.getInvoiceLink().getAttributes().getImageUrl(),
+                invoiceSentPojo.getInvoiceLink().getAttributes().getTotalAmount(),
+                isSender(String.valueOf(pojo.getFromUid()))
+        );
 
     }
 
