@@ -5,10 +5,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 
+import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.constants.DrawerActivityBroadcastReceiverConstant;
 import com.tokopedia.core.constants.HomeFragmentBroadcastReceiverConstant;
 import com.tokopedia.core.drawer2.data.viewmodel.TokoPointDrawerData;
-import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.loyalty.di.component.DaggerTokoPointBroadcastComponent;
 import com.tokopedia.loyalty.di.component.TokoPointBroadcastComponent;
 import com.tokopedia.loyalty.di.module.ServiceApiModule;
@@ -42,7 +42,7 @@ public class TokoPointDrawerBroadcastReceiver extends BroadcastReceiver {
 
         if (compositeSubscription == null) compositeSubscription = new CompositeSubscription();
         compositeSubscription.add(
-                tokoplusRepository.getPointDrawer(AuthUtil.generateParamsNetwork(context))
+                tokoplusRepository.getPointDrawer(CommonUtils.loadRawString(context.getResources(), R.raw.tokopoints_query))
                         .subscribeOn(Schedulers.newThread())
                         .observeOn(AndroidSchedulers.mainThread())
                         .unsubscribeOn(Schedulers.newThread())

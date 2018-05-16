@@ -12,8 +12,6 @@ import rx.Observable;
  */
 
 public interface TokoPointGqlApi {
-
-
     @POST("./")
     Observable<Response<String>> getPointDrawer(@Body String params);
 }

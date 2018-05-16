@@ -43,7 +43,6 @@ public class TokoPointRepository implements ITokoPointRepository {
     private final TokoPointResponseMapper tokoPointResponseMapper;
     private final ITokoPointDBService tokoPointDBService;
     private final DigitalEndpointService digitalService;
-    private String logistics_get_courier_query = "{\"query\":\"{\\n  tokopoints {\\n    offFlag\\n    url {\\n        mainPageURL\\n    }\\n    status {\\n      tier {\\n        id\\n        name\\n        nameDesc\\n        imageURL\\n      }\\n      points {\\n        reward\\n        rewardStr\\n      }\\n    }\\n    popupNotif(type:\\\"drawer\\\") {\\n      title\\n      text\\n      imageURL\\n      buttonText\\n      buttonURL\\n      appLink\\n      }\\n  }\\n}\",\"variables\":null,\"operationName\":null}";
 
     @Inject
     public TokoPointRepository(TokoPointService tokoPointService,
@@ -117,7 +116,7 @@ public class TokoPointRepository implements ITokoPointRepository {
     }
 
     @Override
-    public Observable<TokoPointDrawerData> getPointDrawer(final TKPDMapParam<String, String> param) {
+    public Observable<TokoPointDrawerData> getPointDrawer(final String query) {
         return tokoPointDBService.getPointDrawer().map(new Func1<GqlTokoPointDrawerDataResponse, TokoPointDrawerData>() {
             @Override
             public TokoPointDrawerData call(GqlTokoPointDrawerDataResponse tokoPointDrawerDataResponse) {
@@ -129,16 +128,11 @@ public class TokoPointRepository implements ITokoPointRepository {
             @Override
             public Observable<? extends TokoPointDrawerData> call(Throwable throwable) {
                 throwable.printStackTrace();
-                return tokoPointGqlService.getApi().getPointDrawer(logistics_get_courier_query)
+                return tokoPointGqlService.getApi().getPointDrawer(query)
                         .flatMap(new Func1<Response<String>, Observable<GqlTokoPointDrawerDataResponse>>() {
                             @Override
                             public Observable<GqlTokoPointDrawerDataResponse> call(Response<String> tokoPointResponseResponse) {
                                 GqlTokoPointResponse gqlTokoPointResponse = new Gson().fromJson(tokoPointResponseResponse.body(), GqlTokoPointResponse.class);
-
-                                /*TokoPointDrawerDataResponse tokoPointDrawerDataResponse =
-                                        tokoPointResponseResponse.body().convertDataObj(
-                                                TokoPointDrawerDataResponse.class
-                                        );*/
 
                                 return tokoPointDBService.storePointDrawer(gqlTokoPointResponse.getHachikoDrawerDataResponse().getGqlTokoPointDrawerDataResponse());
                             }
