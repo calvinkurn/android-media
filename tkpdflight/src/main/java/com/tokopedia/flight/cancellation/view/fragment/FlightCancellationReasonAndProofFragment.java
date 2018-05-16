@@ -8,6 +8,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.AppCompatButton;
@@ -37,6 +38,7 @@ import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationCamera
 import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationWrapperViewModel;
 import com.tokopedia.flight.common.util.FlightAnalytics;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -47,6 +49,8 @@ import permissions.dispatcher.RuntimePermissions;
 @RuntimePermissions
 public class FlightCancellationReasonAndProofFragment extends BaseDaggerFragment implements FlightCancellationReasonAndProofContract.View, FlightCancellationAttachementAdapterTypeFactory.OnAdapterInteractionListener {
     private static final String EXTRA_CANCELLATION_VIEW_MODEL = "EXTRA_CANCELLATION_VIEW_MODEL";
+    private static final String EXTRA_ATTACHMENT_VIEW_MODEL = "EXTRA_ATTACHMENT_VIEW_MODEL";
+    private static final String EXTRA_IMAGE_LOCAL = "EXTRA_IMAGE_LOCAL";
     private static final int REQUEST_CODE_GALLERY = 1001;
     private static int REQUEST_CODE_CAMERA = 1002;
     private ProgressBar progressBar;
@@ -56,6 +60,7 @@ public class FlightCancellationReasonAndProofFragment extends BaseDaggerFragment
     private RecyclerView rvAttachments;
     private AppCompatButton btnNext;
 
+    private List<FlightCancellationAttachmentViewModel> attachments;
     private FlightCancellationAttachmentAdapter adapter;
     private FlightCancellationWrapperViewModel flightCancellationViewModel;
     private OnFragmentInteractionListener interactionListener;
@@ -79,19 +84,29 @@ public class FlightCancellationReasonAndProofFragment extends BaseDaggerFragment
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            flightCancellationViewModel = getArguments().getParcelable(EXTRA_CANCELLATION_VIEW_MODEL);
+        if (savedInstanceState == null)
+            attachments = new ArrayList<>();
+        Bundle arguments = (savedInstanceState != null) ? savedInstanceState : getArguments();
+        flightCancellationViewModel = arguments.getParcelable(EXTRA_CANCELLATION_VIEW_MODEL);
+        fileFromCameraLocTemp = arguments.getString(EXTRA_IMAGE_LOCAL);
+        if (arguments.getParcelableArrayList(EXTRA_ATTACHMENT_VIEW_MODEL) != null) {
+            attachments = arguments.getParcelableArrayList(EXTRA_ATTACHMENT_VIEW_MODEL);
         }
     }
 
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putParcelable(EXTRA_CANCELLATION_VIEW_MODEL, flightCancellationViewModel);
+        outState.putString(EXTRA_IMAGE_LOCAL, fileFromCameraLocTemp);
+        outState.putParcelableArrayList(EXTRA_ATTACHMENT_VIEW_MODEL, (ArrayList<? extends Parcelable>) getAttachments());
+    }
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         presenter.attachView(this);
-        if (savedInstanceState == null) {
-            presenter.initialize();
-        }
+        presenter.initialize(attachments);
     }
 
     @Override
@@ -165,6 +180,11 @@ public class FlightCancellationReasonAndProofFragment extends BaseDaggerFragment
     @Override
     public void addAttachment(FlightCancellationAttachmentViewModel viewModel) {
         adapter.addElement(viewModel);
+    }
+
+    @Override
+    public void addAttachments(List<FlightCancellationAttachmentViewModel> attachments) {
+        adapter.addElement(attachments);
     }
 
     @Override
