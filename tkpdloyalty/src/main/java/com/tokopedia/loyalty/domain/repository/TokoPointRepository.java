@@ -11,22 +11,19 @@ import com.tokopedia.core.network.retrofit.response.TkpdResponse;
 import com.tokopedia.core.network.retrofit.utils.ErrorNetMessage;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.loyalty.domain.apiservice.DigitalEndpointService;
+import com.tokopedia.loyalty.domain.apiservice.TokoPointGqlService;
 import com.tokopedia.loyalty.domain.apiservice.TokoPointService;
 import com.tokopedia.loyalty.domain.entity.request.RequestBodyCouponRedeem;
 import com.tokopedia.loyalty.domain.entity.request.RequestBodyValidateRedeem;
 import com.tokopedia.loyalty.domain.entity.response.CouponListDataResponse;
 import com.tokopedia.loyalty.domain.entity.response.DigitalVoucherData;
-import com.tokopedia.loyalty.domain.entity.response.TokoPointDrawerDataResponse;
 import com.tokopedia.loyalty.domain.entity.response.TokoPointResponse;
 import com.tokopedia.loyalty.domain.entity.response.ValidateRedeemCouponResponse;
 import com.tokopedia.loyalty.domain.entity.response.VoucherResponse;
 import com.tokopedia.loyalty.exception.LoyaltyErrorException;
-import com.tokopedia.loyalty.view.data.CouponData;
 import com.tokopedia.loyalty.view.data.CouponViewModel;
 import com.tokopedia.loyalty.view.data.CouponsDataWrapper;
 import com.tokopedia.loyalty.view.data.VoucherViewModel;
-
-import java.util.List;
 
 import javax.inject.Inject;
 
@@ -41,13 +38,16 @@ import rx.functions.Func1;
 public class TokoPointRepository implements ITokoPointRepository {
 
     private final TokoPointService tokoPointService;
+    private final TokoPointGqlService tokoPointGqlService;
     private final TXVoucherService txVoucherService;
     private final TokoPointResponseMapper tokoPointResponseMapper;
     private final ITokoPointDBService tokoPointDBService;
     private final DigitalEndpointService digitalService;
+    private String logistics_get_courier_query = "{\"query\":\"{\\n  hachikoDrawer {\\n    off_flag\\n    has_notif\\n    mainpage_url\\n    user_tier {\\n      tier_id\\n      tier_name\\n      tier_name_desc\\n      reward_points\\n      reward_points_str\\n    }\\n    pop_up_notif {\\n      title\\n      text\\n      image_url\\n      button_url\\n      button_text\\n      app_link\\n    }\\n  }\\n}\\n\",\"variables\":null,\"operationName\":null}";
 
     @Inject
     public TokoPointRepository(TokoPointService tokoPointService,
+                               TokoPointGqlService tokoPointGqlService,
                                ITokoPointDBService tokoPointDBService,
                                TokoPointResponseMapper tokoPointResponseMapper,
                                TXVoucherService txVoucherService,
@@ -59,6 +59,7 @@ public class TokoPointRepository implements ITokoPointRepository {
         this.tokoPointDBService = tokoPointDBService;
         this.txVoucherService = txVoucherService;
         this.digitalService = digitalService;
+        this.tokoPointGqlService = tokoPointGqlService;
     }
 
     @Override
@@ -117,9 +118,9 @@ public class TokoPointRepository implements ITokoPointRepository {
 
     @Override
     public Observable<TokoPointDrawerData> getPointDrawer(final TKPDMapParam<String, String> param) {
-        return tokoPointDBService.getPointDrawer().map(new Func1<TokoPointDrawerDataResponse, TokoPointDrawerData>() {
+        return tokoPointDBService.getPointDrawer().map(new Func1<GqlTokoPointDrawerDataResponse, TokoPointDrawerData>() {
             @Override
-            public TokoPointDrawerData call(TokoPointDrawerDataResponse tokoPointDrawerDataResponse) {
+            public TokoPointDrawerData call(GqlTokoPointDrawerDataResponse tokoPointDrawerDataResponse) {
                 return tokoPointResponseMapper.convertTokoplusPointDrawer(
                         tokoPointDrawerDataResponse
                 );
@@ -128,21 +129,24 @@ public class TokoPointRepository implements ITokoPointRepository {
             @Override
             public Observable<? extends TokoPointDrawerData> call(Throwable throwable) {
                 throwable.printStackTrace();
-                return tokoPointService.getApi().getPointDrawer(param)
-                        .flatMap(new Func1<Response<TokoPointResponse>, Observable<TokoPointDrawerDataResponse>>() {
+                return tokoPointGqlService.getApi().getPointDrawer(logistics_get_courier_query)
+                        .flatMap(new Func1<Response<String>, Observable<GqlTokoPointDrawerDataResponse>>() {
                             @Override
-                            public Observable<TokoPointDrawerDataResponse> call(Response<TokoPointResponse> tokoPointResponseResponse) {
-                                TokoPointDrawerDataResponse tokoPointDrawerDataResponse =
+                            public Observable<GqlTokoPointDrawerDataResponse> call(Response<String> tokoPointResponseResponse) {
+                                GqlTokoPointResponse gqlTokoPointResponse = new Gson().fromJson(tokoPointResponseResponse.body(), GqlTokoPointResponse.class);
+
+                                /*TokoPointDrawerDataResponse tokoPointDrawerDataResponse =
                                         tokoPointResponseResponse.body().convertDataObj(
                                                 TokoPointDrawerDataResponse.class
-                                        );
-                                return tokoPointDBService.storePointDrawer(tokoPointDrawerDataResponse);
+                                        );*/
+
+                                return tokoPointDBService.storePointDrawer(gqlTokoPointResponse.getHachikoDrawerDataResponse().getGqlTokoPointDrawerDataResponse());
                             }
-                        }).map(new Func1<TokoPointDrawerDataResponse, TokoPointDrawerData>() {
+                        }).map(new Func1<GqlTokoPointDrawerDataResponse, TokoPointDrawerData>() {
                             @Override
-                            public TokoPointDrawerData call(TokoPointDrawerDataResponse tokoPointDrawerDataResponse) {
+                            public TokoPointDrawerData call(GqlTokoPointDrawerDataResponse gqlTokoPointDrawerDataResponse) {
                                 return tokoPointResponseMapper.convertTokoplusPointDrawer(
-                                        tokoPointDrawerDataResponse
+                                        gqlTokoPointDrawerDataResponse
                                 );
                             }
                         });

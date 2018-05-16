@@ -28,6 +28,8 @@ public interface ITokoPointResponseMapper {
 
     TokoPointDrawerData convertTokoplusPointDrawer(TokoPointDrawerDataResponse tokoplusPointDrawerData);
 
+    TokoPointDrawerData convertTokoplusPointDrawer(GqlTokoPointDrawerDataResponse tokoplusPointDrawerData);
+
     VoucherViewModel voucherViewModel(VoucherResponse voucherResponse, String voucherCode);
 
     CouponViewModel couponViewModel(VoucherResponse voucherResponse,

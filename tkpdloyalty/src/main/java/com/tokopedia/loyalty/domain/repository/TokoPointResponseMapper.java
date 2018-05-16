@@ -37,29 +37,89 @@ public class TokoPointResponseMapper implements ITokoPointResponseMapper {
     @Override
     public List<CouponData> convertCouponListData(CouponListDataResponse couponListDataResponse) {
         List<CouponData> couponDataList = new ArrayList<>();
-        if(couponListDataResponse != null && couponListDataResponse.getCoupons() != null)
-        for (Coupon coupon : couponListDataResponse.getCoupons()) {
-            couponDataList.add(
-                    new CouponData.Builder()
-                            .id(coupon.getId())
-                            .promoId(coupon.getPromoId())
-                            .code(coupon.getCode())
-                            .title(coupon.getTitle())
-                            .subTitle(coupon.getSubTitle())
-                            .description(coupon.getDescription())
-                            .expired(coupon.getExpired())
-                            .imageUrl(coupon.getImageUrl())
-                            .imageUrlMobile(coupon.getImageUrlMobile())
-                            .icon(coupon.getIcon())
-                            .build()
-            );
-        }
+        if (couponListDataResponse != null && couponListDataResponse.getCoupons() != null)
+            for (Coupon coupon : couponListDataResponse.getCoupons()) {
+                couponDataList.add(
+                        new CouponData.Builder()
+                                .id(coupon.getId())
+                                .promoId(coupon.getPromoId())
+                                .code(coupon.getCode())
+                                .title(coupon.getTitle())
+                                .subTitle(coupon.getSubTitle())
+                                .description(coupon.getDescription())
+                                .expired(coupon.getExpired())
+                                .imageUrl(coupon.getImageUrl())
+                                .imageUrlMobile(coupon.getImageUrlMobile())
+                                .icon(coupon.getIcon())
+                                .build()
+                );
+            }
         return couponDataList;
+    }
+
+
+    @Override
+    public TokoPointDrawerData convertTokoplusPointDrawer(GqlTokoPointDrawerDataResponse tokoplusPointDrawerData) {
+        TokoPointDrawerData.PopUpNotif popUpNotif = new TokoPointDrawerData.PopUpNotif();
+        TokoPointDrawerData.UserTier userTier = new TokoPointDrawerData.UserTier();
+        TokoPointDrawerData tokoPointDrawerData = new TokoPointDrawerData();
+
+        // TODO: 5/16/18 check has notif
+//        tokoPointDrawerData.setHasNotif(tokoplusPointDrawerData.getHasNotif());
+
+
+        tokoPointDrawerData.setOffFlag(tokoplusPointDrawerData.getOffFlag());
+        tokoPointDrawerData.setMainPageUrl(tokoplusPointDrawerData.getGqlTokoPointUrl().getMainPageUrl());
+
+        // TODO: 5/16/18
+//        tokoPointDrawerData.setMainPageTitle(tokoplusPointDrawerData.getMainPageTitle());
+
+
+        if (tokoplusPointDrawerData.getGqlTokoPointStatus() != null &&
+                tokoplusPointDrawerData.getGqlTokoPointStatus().getGqlTokoPointTier() != null) {
+            userTier.setTierNameDesc(tokoplusPointDrawerData.getGqlTokoPointStatus().getGqlTokoPointTier().getNameDesc());//getUserTier().getTierNameDesc());
+            userTier.setTierImageUrl(tokoplusPointDrawerData.getGqlTokoPointStatus().getGqlTokoPointTier().getImageUrl());//getUserTier().getTierImageUrl());
+            tokoPointDrawerData.setUserTier(userTier);
+        } else {
+            tokoPointDrawerData.setUserTier(null);
+        }
+
+        if (tokoplusPointDrawerData.getGqlTokoPointStatus() != null &&
+                tokoplusPointDrawerData.getGqlTokoPointStatus().getGqlTokoPointPoints() != null) {
+            userTier.setRewardPointsStr(tokoplusPointDrawerData.getGqlTokoPointStatus().getGqlTokoPointPoints().getRewardString());//getUserTier().getRewardPointsStr());
+
+        } else {
+            userTier.setRewardPointsStr("");
+        }
+
+        if (tokoplusPointDrawerData.getGqlTokoPointPopupNotif() != null) {
+            popUpNotif.setAppLink(tokoplusPointDrawerData.getGqlTokoPointPopupNotif().getAppLink());
+            popUpNotif.setButtonText(tokoplusPointDrawerData.getGqlTokoPointPopupNotif().getButtonText());
+            popUpNotif.setButtonUrl(tokoplusPointDrawerData.getGqlTokoPointPopupNotif().getButtonURL());
+            popUpNotif.setImageUrl(tokoplusPointDrawerData.getGqlTokoPointPopupNotif().getImageURL());
+//            popUpNotif.setNotes(tokoplusPointDrawerData.getGqlTokoPointPopupNotif().get.getNotes());
+            popUpNotif.setText(tokoplusPointDrawerData.getGqlTokoPointPopupNotif().getText());
+            popUpNotif.setTitle(tokoplusPointDrawerData.getGqlTokoPointPopupNotif().getTitle());
+            /*if (tokoplusPointDrawerData.getPopUpNotif().getCatalog() != null) {
+                catalog.setPoints(tokoplusPointDrawerData.getPopUpNotif().getCatalog().getPoints());
+                catalog.setSubTitle(tokoplusPointDrawerData.getPopUpNotif().getCatalog().getSubTitle());
+                catalog.setThumbnailUrl(tokoplusPointDrawerData.getPopUpNotif().getCatalog().getThumbnailUrl());
+                catalog.setThumbnailUrlMobile(tokoplusPointDrawerData.getPopUpNotif().getCatalog().getThumbnailUrlMobile());
+                catalog.setTitle(tokoplusPointDrawerData.getPopUpNotif().getCatalog().getTitle());
+                popUpNotif.setCatalog(catalog);
+            } else {
+                popUpNotif.setCatalog(null);
+            }*/
+            tokoPointDrawerData.setPopUpNotif(popUpNotif);
+        } else {
+            tokoPointDrawerData.setPopUpNotif(null);
+        }
+        return tokoPointDrawerData;
     }
 
     @Override
     public TokoPointDrawerData convertTokoplusPointDrawer(TokoPointDrawerDataResponse tokoplusPointDrawerData) {
-        TokoPointDrawerData.Catalog catalog = new TokoPointDrawerData.Catalog();
+//        TokoPointDrawerData.Catalog catalog = new TokoPointDrawerData.Catalog();
         TokoPointDrawerData.PopUpNotif popUpNotif = new TokoPointDrawerData.PopUpNotif();
         TokoPointDrawerData.UserTier userTier = new TokoPointDrawerData.UserTier();
         TokoPointDrawerData tokoPointDrawerData = new TokoPointDrawerData();
@@ -68,13 +128,13 @@ public class TokoPointResponseMapper implements ITokoPointResponseMapper {
         tokoPointDrawerData.setMainPageUrl(tokoplusPointDrawerData.getMainPageUrl());
         tokoPointDrawerData.setMainPageTitle(tokoplusPointDrawerData.getMainPageTitle());
         if (tokoplusPointDrawerData.getUserTier() != null) {
-            userTier.setRewardPoints(tokoplusPointDrawerData.getUserTier().getRewardPoints());
+//            userTier.setRewardPoints(tokoplusPointDrawerData.getUserTier().getRewardPoints());
             userTier.setRewardPointsStr(tokoplusPointDrawerData.getUserTier().getRewardPointsStr());
-            userTier.setTierId(tokoplusPointDrawerData.getUserTier().getTierId());
-            userTier.setTierName(tokoplusPointDrawerData.getUserTier().getTierName());
+//            userTier.setTierId(tokoplusPointDrawerData.getUserTier().getTierId());
+//            userTier.setTierName(tokoplusPointDrawerData.getUserTier().getTierName());
             userTier.setTierNameDesc(tokoplusPointDrawerData.getUserTier().getTierNameDesc());
             userTier.setTierImageUrl(tokoplusPointDrawerData.getUserTier().getTierImageUrl());
-            userTier.setMainPageUrl(tokoplusPointDrawerData.getMainPageUrl());
+//            userTier.setMainPageUrl(tokoplusPointDrawerData.getMainPageUrl());
             tokoPointDrawerData.setUserTier(userTier);
         } else {
             tokoPointDrawerData.setUserTier(null);
@@ -85,10 +145,10 @@ public class TokoPointResponseMapper implements ITokoPointResponseMapper {
             popUpNotif.setButtonText(tokoplusPointDrawerData.getPopUpNotif().getButtonText());
             popUpNotif.setButtonUrl(tokoplusPointDrawerData.getPopUpNotif().getButtonUrl());
             popUpNotif.setImageUrl(tokoplusPointDrawerData.getPopUpNotif().getImageUrl());
-            popUpNotif.setNotes(tokoplusPointDrawerData.getPopUpNotif().getNotes());
+//            popUpNotif.setNotes(tokoplusPointDrawerData.getPopUpNotif().getNotes());
             popUpNotif.setText(tokoplusPointDrawerData.getPopUpNotif().getText());
             popUpNotif.setTitle(tokoplusPointDrawerData.getPopUpNotif().getTitle());
-            if (tokoplusPointDrawerData.getPopUpNotif().getCatalog() != null) {
+            /*if (tokoplusPointDrawerData.getPopUpNotif().getCatalog() != null) {
                 catalog.setPoints(tokoplusPointDrawerData.getPopUpNotif().getCatalog().getPoints());
                 catalog.setSubTitle(tokoplusPointDrawerData.getPopUpNotif().getCatalog().getSubTitle());
                 catalog.setThumbnailUrl(tokoplusPointDrawerData.getPopUpNotif().getCatalog().getThumbnailUrl());
@@ -97,7 +157,7 @@ public class TokoPointResponseMapper implements ITokoPointResponseMapper {
                 popUpNotif.setCatalog(catalog);
             } else {
                 popUpNotif.setCatalog(null);
-            }
+            }*/
             tokoPointDrawerData.setPopUpNotif(popUpNotif);
         } else {
             tokoPointDrawerData.setPopUpNotif(null);
@@ -159,7 +219,7 @@ public class TokoPointResponseMapper implements ITokoPointResponseMapper {
 
     private EmptyMessage convertEmptyMessageData(CouponListDataResponse couponListDataResponse) {
         EmptyMessage emptyMessage = null;
-        if (couponListDataResponse != null && couponListDataResponse.getEmptyMessage() != null){
+        if (couponListDataResponse != null && couponListDataResponse.getEmptyMessage() != null) {
             emptyMessage = new EmptyMessage();
             emptyMessage.setTitle(couponListDataResponse.getEmptyMessage().getTitle());
             emptyMessage.setSubTitle(couponListDataResponse.getEmptyMessage().getSubTitle());

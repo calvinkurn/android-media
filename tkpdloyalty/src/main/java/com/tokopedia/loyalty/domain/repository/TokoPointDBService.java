@@ -28,20 +28,22 @@ public class TokoPointDBService implements ITokoPointDBService {
     }
 
     @Override
-    public Observable<TokoPointDrawerDataResponse> getPointDrawer() {
+    public Observable<GqlTokoPointDrawerDataResponse> getPointDrawer() {
         return Observable.just(TkpdCache.Key.KEY_TOKOPOINT_DRAWER_DATA)
-                .map(new Func1<String, TokoPointDrawerDataResponse>() {
+                .map(new Func1<String, GqlTokoPointDrawerDataResponse>() {
                     @Override
-                    public TokoPointDrawerDataResponse call(String s) {
+                    public GqlTokoPointDrawerDataResponse call(String s) {
                         try {
                             String cacheStr = globalCacheManager.getValueString(s);
                             if (cacheStr != null && !cacheStr.isEmpty()) {
-                                TokoPointDrawerDataResponse tokoPointDrawerDataResponse =
-                                        gson.fromJson(cacheStr, TokoPointDrawerDataResponse.class);
-                                if (tokoPointDrawerDataResponse.getHasNotif() == 1) {
+                                GqlTokoPointDrawerDataResponse tokoPointDrawerDataResponse =
+                                        gson.fromJson(cacheStr, GqlTokoPointDrawerDataResponse.class);
+
+                                // TODO: 5/16/18 check has notif
+                                /*if (tokoPointDrawerDataResponse.getHasNotif() == 1) {
                                     globalCacheManager.delete(TkpdCache.Key.KEY_TOKOPOINT_DRAWER_DATA);
                                     throw new TokoPointDBServiceException("cant pull from db, cause data has notif flag active");
-                                }
+                                }*/
 
                                 return tokoPointDrawerDataResponse;
                             } else {
@@ -57,18 +59,20 @@ public class TokoPointDBService implements ITokoPointDBService {
     }
 
     @Override
-    public Observable<TokoPointDrawerDataResponse> storePointDrawer(
-            TokoPointDrawerDataResponse tokoPointDrawerDataResponse
+    public Observable<GqlTokoPointDrawerDataResponse> storePointDrawer(
+            GqlTokoPointDrawerDataResponse tokoPointDrawerDataResponse
     ) {
-        return Observable.just(tokoPointDrawerDataResponse).doOnNext(new Action1<TokoPointDrawerDataResponse>() {
+        return Observable.just(tokoPointDrawerDataResponse).doOnNext(new Action1<GqlTokoPointDrawerDataResponse>() {
             @Override
-            public void call(TokoPointDrawerDataResponse tokoPointDrawerDataResponse) {
-                if (tokoPointDrawerDataResponse.getHasNotif() != 1) {
+            public void call(GqlTokoPointDrawerDataResponse tokoPointDrawerDataResponse) {
+
+                // TODO: 5/16/18 check has notif
+                /*if (tokoPointDrawerDataResponse.getHasNotif() != 1) {
                     globalCacheManager.setCacheDuration(60);
                     globalCacheManager.setKey(TkpdCache.Key.KEY_TOKOPOINT_DRAWER_DATA);
                     globalCacheManager.setValue(gson.toJson(tokoPointDrawerDataResponse));
                     globalCacheManager.store();
-                }
+                }*/
             }
         });
 //                .map(new Func1<TokoPointDrawerDataResponse, TokoPointDrawerDataResponse>() {
