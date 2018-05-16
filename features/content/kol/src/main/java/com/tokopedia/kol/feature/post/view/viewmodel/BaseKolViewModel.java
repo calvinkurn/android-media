@@ -5,38 +5,30 @@ package com.tokopedia.kol.feature.post.view.viewmodel;
  */
 
 public class BaseKolViewModel {
-    protected final String tagsType;
-    protected final String contentLink;
-    protected final int userId;
-    protected final String cardType;
-    protected String title;
-    protected String name;
-    protected String avatar;
-    protected String label;
-    protected String kolProfileUrl;
-    protected boolean followed;
-    protected String review;
-    protected boolean liked;
-    protected int totalLike;
-    protected int totalComment;
-    protected int page;
-    protected boolean temporarilyFollowed;
-    protected int contentId;
-    protected int kolId;
-    protected boolean reviewExpanded;
-    protected String time;
-    protected String contentName;
-    protected boolean wishlisted;
-    protected boolean isShowComment;
+    private final int userId;
+    private final String cardType;
+    private String title;
+    private String name;
+    private String avatar;
+    private String label;
+    private String kolProfileUrl;
+    private boolean followed;
+    private String review;
+    private boolean liked;
+    private int totalLike;
+    private int totalComment;
+    private int page;
+    private boolean temporarilyFollowed;
+    private int kolId;
+    private boolean reviewExpanded;
+    private String time;
+    private boolean wishlisted;
+    private boolean isShowComment;
 
-    public BaseKolViewModel(String tagsType, String contentLink, int userId, String cardType,
-                            String title, String name, String avatar, String label,
-                            String kolProfileUrl, boolean followed, String review,
-                            boolean liked, int totalLike, int totalComment, int page, int contentId,
-                            int kolId, String time, String contentName, boolean wishlisted,
-                            boolean isShowComment) {
-        this.tagsType = tagsType;
-        this.contentLink = contentLink;
+    public BaseKolViewModel(int userId, String cardType, String title, String name, String
+            avatar, String label, String kolProfileUrl, boolean followed, String review, boolean
+            liked, int totalLike, int totalComment, int page, int kolId, String time, boolean
+            wishlisted, boolean isShowComment) {
         this.userId = userId;
         this.cardType = cardType;
         this.title = title;
@@ -50,22 +42,10 @@ public class BaseKolViewModel {
         this.totalLike = totalLike;
         this.totalComment = totalComment;
         this.page = page;
-        this.temporarilyFollowed = temporarilyFollowed;
-        this.contentId = contentId;
         this.kolId = kolId;
-        this.reviewExpanded = reviewExpanded;
         this.time = time;
-        this.contentName = contentName;
         this.wishlisted = wishlisted;
         this.isShowComment = isShowComment;
-    }
-
-    public String getTagsType() {
-        return tagsType;
-    }
-
-    public String getContentLink() {
-        return contentLink;
     }
 
     public int getUserId() {
@@ -172,14 +152,6 @@ public class BaseKolViewModel {
         this.temporarilyFollowed = temporarilyFollowed;
     }
 
-    public int getContentId() {
-        return contentId;
-    }
-
-    public void setContentId(int contentId) {
-        this.contentId = contentId;
-    }
-
     public int getKolId() {
         return kolId;
     }
@@ -202,14 +174,6 @@ public class BaseKolViewModel {
 
     public void setTime(String time) {
         this.time = time;
-    }
-
-    public String getContentName() {
-        return contentName;
-    }
-
-    public void setContentName(String contentName) {
-        this.contentName = contentName;
     }
 
     public boolean isWishlisted() {

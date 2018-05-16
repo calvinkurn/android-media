@@ -74,11 +74,11 @@ public class KolPostViewHolder extends AbstractViewHolder<KolPostViewModel>
                 element.getKolImage(),
                 new KolGlideRequestListener());
 
-        if (TextUtils.isEmpty(element.getProductTooltip())) {
+        if (TextUtils.isEmpty(element.getTagsCaption())) {
             tooltipClickArea.setVisibility(View.GONE);
         } else {
             tooltipClickArea.setVisibility(View.VISIBLE);
-            tooltip.setText(element.getProductTooltip());
+            tooltip.setText(element.getTagsCaption());
         }
 
         setListener(element);
@@ -206,7 +206,7 @@ public class KolPostViewHolder extends AbstractViewHolder<KolPostViewModel>
 
         viewListener.onGoToKolProfile(getAdapterPosition(),
                 String.valueOf(element.getUserId()),
-                element.getContentId()
+                element.getKolId()
         );
     }
 
@@ -230,9 +230,9 @@ public class KolPostViewHolder extends AbstractViewHolder<KolPostViewModel>
                     getAdapterPosition(),
                     TextUtils.isEmpty(element.getLabel()) ? DASH :
                             element.getLabel(),
-                    element.getContentId(),
-                    TextUtils.isEmpty(element.getContentLink()) ? DASH :
-                            element.getContentLink(),
+                    element.getTagsId(),
+                    TextUtils.isEmpty(element.getTagsLink()) ? DASH :
+                            element.getTagsLink(),
                     Integer.valueOf(!TextUtils.isEmpty(viewListener.getUserSession().getUserId()) ?
                             viewListener.getUserSession().getUserId() : "0")
             ));
@@ -251,9 +251,9 @@ public class KolPostViewHolder extends AbstractViewHolder<KolPostViewModel>
                     getAdapterPosition(),
                     TextUtils.isEmpty(element.getLabel()) ? DASH :
                             element.getLabel(),
-                    element.getContentId(),
-                    TextUtils.isEmpty(element.getContentLink()) ? DASH :
-                            element.getContentLink(),
+                    element.getTagsId(),
+                    TextUtils.isEmpty(element.getTagsLink()) ? DASH :
+                            element.getTagsLink(),
                     Integer.valueOf(!TextUtils.isEmpty(viewListener.getUserSession().getUserId()) ?
                             viewListener.getUserSession().getUserId() : "0")
             ));
@@ -264,7 +264,7 @@ public class KolPostViewHolder extends AbstractViewHolder<KolPostViewModel>
         }
 
         viewListener.onOpenKolTooltip(getAdapterPosition(),
-                element.getContentLink()
+                element.getTagsLink()
         );
     }
 

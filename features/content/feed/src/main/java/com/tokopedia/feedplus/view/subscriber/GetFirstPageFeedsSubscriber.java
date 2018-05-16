@@ -35,6 +35,7 @@ import com.tokopedia.feedplus.view.viewmodel.inspiration.InspirationProductViewM
 import com.tokopedia.feedplus.view.viewmodel.inspiration.InspirationViewModel;
 import com.tokopedia.feedplus.view.viewmodel.kol.KolRecommendItemViewModel;
 import com.tokopedia.feedplus.view.viewmodel.kol.KolRecommendationViewModel;
+import com.tokopedia.feedplus.view.viewmodel.kol.PollViewModel;
 import com.tokopedia.feedplus.view.viewmodel.kol.ProductCommunicationItemViewModel;
 import com.tokopedia.feedplus.view.viewmodel.kol.ProductCommunicationViewModel;
 import com.tokopedia.feedplus.view.viewmodel.officialstore.OfficialStoreBrandsViewModel;
@@ -387,10 +388,10 @@ public class GetFirstPageFeedsSubscriber extends Subscriber<FeedResult> {
                                     kolViewModel.getLabel().equals("") ?
                                             FeedEnhancedTracking.Promotion.TRACKING_EMPTY :
                                             kolViewModel.getLabel(),
-                                    kolViewModel.getContentId(),
-                                    kolViewModel.getContentLink().equals("") ?
+                                    kolViewModel.getTagsId(),
+                                    kolViewModel.getTagsLink().equals("") ?
                                             FeedEnhancedTracking.Promotion.TRACKING_EMPTY :
-                                            kolViewModel.getContentLink()
+                                            kolViewModel.getTagsLink()
                             ));
                             TrackingUtils.eventTrackingEnhancedEcommerce(
                                     FeedEnhancedTracking.getImpressionTracking(list, loginIdInt));
@@ -449,6 +450,9 @@ public class GetFirstPageFeedsSubscriber extends Subscriber<FeedResult> {
                             if (productCommunicationViewModel != null) {
                                 listFeedView.add(productCommunicationViewModel);
                             }
+
+                            //TODO milhamj remove or move this
+                            PollViewModel pollViewModel;
                         }
                         break;
                     default:
@@ -512,30 +516,29 @@ public class GetFirstPageFeedsSubscriber extends Subscriber<FeedResult> {
     private KolPostViewModel convertToKolViewModel(DataFeedDomain domain) {
         KolPostDomain kolPostDomain = domain.getContent().getKolPostDomain();
         return new KolPostViewModel(
+                kolPostDomain.getUserId(),
+                kolPostDomain.getCardType(),
                 kolPostDomain.getHeaderTitle(),
                 kolPostDomain.getUserName(),
                 kolPostDomain.getUserPhoto(),
                 kolPostDomain.getLabel(),
+                kolPostDomain.getUserUrl(),
                 kolPostDomain.isFollowed(),
-                kolPostDomain.getImageUrl(),
-                kolPostDomain.getCaption(),
                 kolPostDomain.getDescription(),
                 kolPostDomain.isLiked(),
                 kolPostDomain.getLikeCount(),
                 kolPostDomain.getCommentCount(),
                 page,
-                kolPostDomain.getUserUrl(),
-                kolPostDomain.getItemId(),
                 kolPostDomain.getId(),
                 TimeConverter.generateTime(kolPostDomain.getCreateTime()),
-                "",
-                kolPostDomain.getProductPrice(),
                 false,
-                kolPostDomain.getTagsType(),
-                kolPostDomain.getContentLink(),
-                kolPostDomain.getUserId(),
                 kolPostDomain.isShowComment(),
-                kolPostDomain.getCardType()
+                kolPostDomain.getImageUrl(),
+                kolPostDomain.getItemId(),
+                "",
+                kolPostDomain.getTagsType(),
+                kolPostDomain.getCaption(),
+                kolPostDomain.getContentLink()
         );
     }
 
@@ -751,6 +754,10 @@ public class GetFirstPageFeedsSubscriber extends Subscriber<FeedResult> {
 
     private ProductCommunicationViewModel convertToProductCommunicationViewModel(
             KolCtaDomain domain) {
+        if (domain == null) {
+            return null;
+        }
+
         //TODO milhamj map the data from API
         List<ProductCommunicationItemViewModel> viewModelList = new ArrayList<>();
         ProductCommunicationItemViewModel itemViewModel1 =
@@ -772,6 +779,12 @@ public class GetFirstPageFeedsSubscriber extends Subscriber<FeedResult> {
         viewModelList.add(itemViewModel3);
 
         return new ProductCommunicationViewModel(viewModelList);
+    }
+
+    private PollViewModel convertToPollViewModel() {
+        //TODO map data from API
+//        return new PollViewModel(null);
+        return null;
     }
 
     private void addSeeMorePromo(DataFeedDomain dataFeedDomain, ArrayList<PromoViewModel> listPromo) {

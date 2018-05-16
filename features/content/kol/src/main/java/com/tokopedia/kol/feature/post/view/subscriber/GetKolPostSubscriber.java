@@ -69,9 +69,9 @@ public class GetKolPostSubscriber extends Subscriber<KolProfileModel> {
                     index,
                     TextUtils.isEmpty(kolPostViewModel.getLabel()) ? DASH :
                             kolPostViewModel.getLabel(),
-                    kolPostViewModel.getContentId(),
-                    TextUtils.isEmpty(kolPostViewModel.getContentLink()) ? DASH :
-                            kolPostViewModel.getContentLink(),
+                    kolPostViewModel.getTagsId(),
+                    TextUtils.isEmpty(kolPostViewModel.getTagsLink()) ? DASH :
+                            kolPostViewModel.getTagsLink(),
                     Integer.valueOf(!TextUtils.isEmpty(view.getUserSession().getUserId()) ?
                             view.getUserSession().getUserId() : "0")
             ));

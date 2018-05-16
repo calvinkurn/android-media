@@ -11,22 +11,26 @@ public class KolPostViewModel extends BaseKolViewModel implements Visitable<KolP
     public final static int DEFAULT_ID = -1;
 
     private String kolImage;
-    private String productTooltip;
-    private String productPrice;
+    private int tagsId;
+    private String contentName;
+    private String tagsType;
+    private String tagsCaption;
+    private String tagsLink;
 
-    public KolPostViewModel(String title, String name, String avatar, String label,
-                            boolean followed, String kolImage, String productTooltip,
-                            String review, boolean liked, int totalLike, int totalComment,
-                            int page, String kolProfileUrl, int contentId, int kolId, String time,
-                            String contentName, String productPrice, boolean wishlisted,
-                            String tagsType, String contentLink, int userId, boolean isShowComment,
-                            String cardType) {
-        super(tagsType, contentLink, userId, cardType, title, name, avatar, label, kolProfileUrl,
-                followed, review, liked, totalLike, totalComment, page, contentId, kolId, time,
-                contentName, wishlisted, isShowComment);
+    public KolPostViewModel(int userId, String cardType, String title, String name,
+                            String avatar, String label, String kolProfileUrl, boolean followed,
+                            String review, boolean liked, int totalLike, int totalComment, int page,
+                            int kolId, String time, boolean wishlisted, boolean isShowComment,
+                            String kolImage, int tagsId, String contentName, String tagsType,
+                            String tagsCaption, String tagsLink) {
+        super(userId, cardType, title, name, avatar, label, kolProfileUrl, followed, review,
+                liked, totalLike, totalComment, page, kolId, time, wishlisted, isShowComment);
         this.kolImage = kolImage;
-        this.productTooltip = productTooltip;
-        this.productPrice = productPrice;
+        this.tagsId = tagsId;
+        this.contentName = contentName;
+        this.tagsType = tagsType;
+        this.tagsCaption = tagsCaption;
+        this.tagsLink = tagsLink;
     }
 
     public String getKolImage() {
@@ -37,20 +41,44 @@ public class KolPostViewModel extends BaseKolViewModel implements Visitable<KolP
         this.kolImage = kolImage;
     }
 
-    public String getProductTooltip() {
-        return productTooltip;
+    public int getTagsId() {
+        return tagsId;
     }
 
-    public void setProductTooltip(String productTooltip) {
-        this.productTooltip = productTooltip;
+    public void setTagsId(int tagsId) {
+        this.tagsId = tagsId;
     }
 
-    public String getProductPrice() {
-        return productPrice;
+    public String getContentName() {
+        return contentName;
     }
 
-    public void setProductPrice(String productPrice) {
-        this.productPrice = productPrice;
+    public void setContentName(String contentName) {
+        this.contentName = contentName;
+    }
+
+    public String getTagsType() {
+        return tagsType;
+    }
+
+    public void setTagsType(String tagsType) {
+        this.tagsType = tagsType;
+    }
+
+    public String getTagsCaption() {
+        return tagsCaption;
+    }
+
+    public void setTagsCaption(String tagsCaption) {
+        this.tagsCaption = tagsCaption;
+    }
+
+    public String getTagsLink() {
+        return tagsLink;
+    }
+
+    public void setTagsLink(String tagsLink) {
+        this.tagsLink = tagsLink;
     }
 
     @Override

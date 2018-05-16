@@ -43,30 +43,29 @@ public class GetProfileKolDataMapper
             TagsFeedKol tag = getKolTag(content);
 
             KolPostViewModel kolPostViewModel = new KolPostViewModel(
+                    postKolData.id != null ? postKolData.id : 0,
+                    "",
                     "",
                     postKolData.userName != null ? postKolData.userName : "",
                     postKolData.userPhoto != null ? postKolData.userPhoto : "",
                     postKolData.userInfo != null ? postKolData.userInfo : "",
+                    "",
                     true,
-                    getImageUrl(content),
-                    getTagCaption(tag),
                     postKolData.description != null ? postKolData.description : "",
                     postKolData.isLiked != null ? postKolData.isLiked : false,
                     postKolData.likeCount != null ? postKolData.likeCount : 0,
                     postKolData.commentCount != null ? postKolData.commentCount : 0,
                     0,
-                    "",
-                    getTagId(tag),
                     postKolData.id != null ? postKolData.id : 0,
                     postKolData.createTime != null ? postKolData.createTime : "",
-                    "",
-                    getTagPrice(tag),
                     false,
-                    getTagType(tag),
-                    getTagLink(tag),
-                    postKolData.userId != null ? postKolData.userId : 0,
                     postKolData.showComment != null ? postKolData.showComment : true,
-                    ""
+                    getImageUrl(content),
+                    getTagId(tag),
+                    "",
+                    getTagType(tag),
+                    getTagCaption(tag),
+                    getTagLink(tag)
             );
             kolPostViewModels.add(kolPostViewModel);
         }
