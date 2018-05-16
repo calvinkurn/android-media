@@ -202,6 +202,27 @@ public class FlightPassengerUpdatePresenter extends BaseDaggerPresenter<FlightPa
             );
         }
 
+        if (flightBookingPassengerViewModel.getPassportNumber() != null &&
+                flightBookingPassengerViewModel.getPassportNumber().length() > 0) {
+            getView().renderPassportNumber(flightBookingPassengerViewModel.getPassportNumber());
+        }
+
+        if (flightBookingPassengerViewModel.getPassportExpiredDate() != null &&
+                flightBookingPassengerViewModel.getPassportExpiredDate().length() > 0) {
+            getView().renderPassportExpiredDate(FlightDateUtil.formatDate(FlightDateUtil.DEFAULT_FORMAT,
+                    FlightDateUtil.DEFAULT_VIEW_FORMAT, flightBookingPassengerViewModel.getPassportExpiredDate()));
+        }
+
+        if (flightBookingPassengerViewModel.getPassportNationality() != null) {
+            getView().renderPassportNationality(flightBookingPassengerViewModel
+                    .getPassportNationality().getCountryName());
+        }
+
+        if (flightBookingPassengerViewModel.getPassportIssuerCountry() != null) {
+            getView().renderPassportIssuerCountry(flightBookingPassengerViewModel
+                    .getPassportIssuerCountry().getCountryName());
+        }
+
         getView().renderSelectedTitle(flightBookingPassengerViewModel.getPassengerTitle());
         getView().renderPassengerName(flightBookingPassengerViewModel.getPassengerFirstName(),
                 flightBookingPassengerViewModel.getPassengerLastName());

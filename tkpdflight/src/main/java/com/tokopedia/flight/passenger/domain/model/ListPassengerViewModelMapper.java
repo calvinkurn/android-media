@@ -31,6 +31,14 @@ public class ListPassengerViewModelMapper {
             );
         }
 
+        if (savedPassengerEntity.getPassportNo() != null) {
+            flightBookingPassengerViewModel.setPassportNumber(savedPassengerEntity.getPassportNo());
+        }
+
+        if (savedPassengerEntity.getPassportExpiry() != null) {
+            flightBookingPassengerViewModel.setPassportExpiredDate(savedPassengerEntity.getPassportExpiry());
+        }
+
         flightBookingPassengerViewModel.setPassengerFirstName(savedPassengerEntity.getFirstName());
         flightBookingPassengerViewModel.setPassengerLastName(savedPassengerEntity.getLastName());
         flightBookingPassengerViewModel.setPassengerTitleId(savedPassengerEntity.getTitleId());

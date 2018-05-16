@@ -10,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.DatePicker;
+import android.widget.LinearLayout;
 
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
@@ -49,6 +50,7 @@ public class FlightPassengerUpdateFragment extends BaseDaggerFragment implements
     private AppCompatEditText etPassportNationality;
     private AppCompatEditText etPassportIssuerCountry;
     private AppCompatButton btnSavePassengerInfo;
+    private LinearLayout passportContainer;
 
     public FlightPassengerUpdateFragment() {
     }
@@ -77,6 +79,7 @@ public class FlightPassengerUpdateFragment extends BaseDaggerFragment implements
         etPassportExpired = view.findViewById(R.id.et_passport_expiration_date);
         etPassportNationality = view.findViewById(R.id.et_nationality);
         etPassportIssuerCountry = view.findViewById(R.id.et_passport_issuer_country);
+        passportContainer = view.findViewById(R.id.container_passport_data);
         btnSavePassengerInfo = view.findViewById(R.id.button_submit);
 
         etPassengerBirthdate.setOnClickListener(new View.OnClickListener() {
@@ -303,6 +306,36 @@ public class FlightPassengerUpdateFragment extends BaseDaggerFragment implements
     @Override
     public String getRequestId() {
         return getArguments().getString(EXTRA_REQUEST_ID);
+    }
+
+    @Override
+    public void hidePassportContainer() {
+        passportContainer.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void showPassportContainer() {
+        passportContainer.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void renderPassportNumber(String passportNumber) {
+        etPassportNumber.setText(passportNumber);
+    }
+
+    @Override
+    public void renderPassportExpiredDate(String passportExpiredDate) {
+        etPassportExpired.setText(passportExpiredDate);
+    }
+
+    @Override
+    public void renderPassportNationality(String passportNationality) {
+        etPassportNationality.setText(passportNationality);
+    }
+
+    @Override
+    public void renderPassportIssuerCountry(String passportIssuerCountry) {
+        etPassportIssuerCountry.setText(passportIssuerCountry);
     }
 
     private void showMessageErrorInSnackbar(int resId) {

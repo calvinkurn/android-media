@@ -45,6 +45,10 @@ public interface FlightPassengerUpdateContract {
 
         void renderPassengerBirthdate(String birthdate);
 
+        void hidePassportContainer();
+
+        void showPassportContainer();
+
         void showBirthdatePickerDialog(Date selectedDate, Date minDate, Date maxDate);
 
         void showBirthdatePickerDialog(Date selectedDate, Date maxDate);
@@ -77,6 +81,13 @@ public interface FlightPassengerUpdateContract {
 
         void onErrorUpdatePassengerData();
 
+        void renderPassportNumber(String passportNumber);
+
+        void renderPassportExpiredDate(String passportExpiredDate);
+
+        void renderPassportNationality(String passportNationality);
+
+        void renderPassportIssuerCountry(String passportIssuerCountry);
     }
 
     interface Presenter {
