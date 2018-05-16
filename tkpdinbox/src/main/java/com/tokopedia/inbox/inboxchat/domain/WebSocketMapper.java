@@ -88,7 +88,8 @@ public class WebSocketMapper {
                 pojo.getMessage().getTimeStampUnix(),
                 isSender(String.valueOf(pojo.getFromUid())),
                 pojoAttribute.getImageUrl(),
-                pojoAttribute.getThumbnail()
+                pojoAttribute.getThumbnail(),
+                pojo.getStartTime()
         );
     }
 

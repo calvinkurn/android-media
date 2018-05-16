@@ -266,6 +266,10 @@ public class ChatRoomFragment extends BaseDaggerFragment
         adapter.showRetryFor(model, true);
     }
 
+    private void showRetryFor(ImageUploadViewModel model) {
+        adapter.showRetryFor(model, true);
+    }
+
     @Override
     public void onRetrySend(final MyChatViewModel attachment) {
 
@@ -283,7 +287,7 @@ public class ChatRoomFragment extends BaseDaggerFragment
                             case RESEND:
                                 adapter.remove(attachment);
                                 String fileLoc = attachment.getAttachment().getAttributes().getImageUrl();
-                                DummyChatViewModel temp = generateChatViewModelWithImage(fileLoc);
+                                ImageUploadViewModel temp = generateChatViewModelWithImage(fileLoc);
                                 presenter.startUpload(Collections.singletonList(temp), networkType);
                                 adapter.addReply(temp);
                                 break;
@@ -314,7 +318,7 @@ public class ChatRoomFragment extends BaseDaggerFragment
                             case RESEND:
                                 adapter.remove(element);
                                 String fileLoc = element.getImageUrl();
-                                DummyChatViewModel temp = generateChatViewModelWithImage(fileLoc);
+                                ImageUploadViewModel temp = generateChatViewModelWithImage(fileLoc);
                                 presenter.startUpload(Collections.singletonList(temp), networkType);
                                 adapter.addReply(temp);
                                 break;
@@ -908,7 +912,7 @@ public class ChatRoomFragment extends BaseDaggerFragment
             case ImageUploadHandlerChat.REQUEST_CODE:
                 if (resultCode == Activity.RESULT_OK) {
                     String fileLoc = presenter.getFileLocFromCamera();
-                    DummyChatViewModel temp = generateChatViewModelWithImage(fileLoc);
+                    ImageUploadViewModel temp = generateChatViewModelWithImage(fileLoc);
                     presenter.startUpload(Collections.singletonList(temp), networkType);
                     adapter.addReply(temp);
                 }
@@ -919,17 +923,17 @@ public class ChatRoomFragment extends BaseDaggerFragment
                     break;
                 }
                 String imageUrl = data.getStringExtra(GalleryActivity.IMAGE_URL);
-                List<DummyChatViewModel> list = new ArrayList<>();
+                List<ImageUploadViewModel> list = new ArrayList<>();
 
                 if (!TextUtils.isEmpty(imageUrl)) {
-                    DummyChatViewModel temp = generateChatViewModelWithImage(imageUrl);
+                    ImageUploadViewModel temp = generateChatViewModelWithImage(imageUrl);
                     list.add(temp);
                 } else {
                     ArrayList<String> imageUrls = data.getStringArrayListExtra(GalleryActivity
                             .IMAGE_URLS);
                     if (imageUrls != null) {
                         for (int i = 0; i < imageUrls.size(); i++) {
-                            DummyChatViewModel temp = generateChatViewModelWithImage(imageUrls.get(i));
+                            ImageUploadViewModel temp = generateChatViewModelWithImage(imageUrls.get(i));
                             list.add(temp);
                         }
                     }
@@ -1235,12 +1239,14 @@ public class ChatRoomFragment extends BaseDaggerFragment
         return invoiceToSend;
     }
 
-    public DummyChatViewModel generateChatViewModelWithImage(String imageUrl) {
+    public ImageUploadViewModel generateChatViewModelWithImage(String imageUrl) {
         scrollToBottom();
-        ImageUpload model = new ImageUpload();
-        model.setImageId(String.valueOf(System.currentTimeMillis() / MILIS_TO_SECOND));
-        model.setFileLoc(imageUrl);
-        return generateChatViewModelWithImage(model);
+        ImageUploadViewModel model = new ImageUploadViewModel(
+                getArguments().getString(InboxMessageConstant.PARAM_SENDER_ID),
+                String.valueOf(System.currentTimeMillis() / MILIS_TO_SECOND),
+                imageUrl
+        );
+        return model;
     }
 
     private DummyChatViewModel generateChatViewModelWithImage(ImageUpload imageUpload) {
@@ -1444,14 +1450,18 @@ public class ChatRoomFragment extends BaseDaggerFragment
                 showQuickReplyView((QuickReplyListViewModel) message);
                 if (!TextUtils.isEmpty(((QuickReplyListViewModel) message).getMessage())) {
                     addMessageToList(message);
-                    scrollToBottomWithCheck();
                 }
             } else {
                 addMessageToList(message);
-                scrollToBottomWithCheck();
             }
 
-            readMessage(message.getMessageId());
+            if (isMyMessage(message.getFromUid())) {
+                scrollToBottom();
+                resetReplyColumn();
+            } else {
+                scrollToBottomWithCheck();
+                readMessage(message.getMessageId());
+            }
         }
     }
 
@@ -1459,6 +1469,10 @@ public class ChatRoomFragment extends BaseDaggerFragment
         if (isMyMessage(message.getFromUid())) {
             if (message instanceof ProductAttachmentViewModel) {
                 getAdapter().removeLastProductWithId(((ProductAttachmentViewModel) message).getProductId());
+            } else if (message instanceof ImageUploadViewModel) {
+                getAdapter().removeLastMessageWithStartTime(((ImageUploadViewModel) message).getStartTime());
+            } else {
+                getAdapter().removeLast();
             }
         }
     }
@@ -1525,7 +1539,7 @@ public class ChatRoomFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void onSuccessSendAttach(ReplyActionData data, MyChatViewModel model) {
+    public void onSuccessSendAttach(ReplyActionData data, ImageUploadViewModel model) {
         adapter.remove(model);
         addView(data, UPLOADING);
     }
@@ -1542,7 +1556,7 @@ public class ChatRoomFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void onErrorUploadImages(String errorMessage, MyChatViewModel model) {
+    public void onErrorUploadImages(String errorMessage, ImageUploadViewModel model) {
         showError(errorMessage);
         showRetryFor(model);
     }

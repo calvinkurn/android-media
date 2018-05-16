@@ -9,10 +9,9 @@ import com.tokopedia.inbox.inboxchat.uploadimage.domain.interactor.GenerateHostU
 import com.tokopedia.inbox.inboxchat.uploadimage.domain.interactor.UploadImageUseCase;
 import com.tokopedia.inbox.inboxchat.uploadimage.domain.model.GenerateHostDomain;
 import com.tokopedia.inbox.inboxchat.uploadimage.domain.model.UploadImageDomain;
-import com.tokopedia.inbox.inboxchat.viewmodel.DummyChatViewModel;
+import com.tokopedia.inbox.inboxchat.viewmodel.ImageUploadViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.MyChatViewModel;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import rx.Observable;
@@ -22,7 +21,7 @@ import rx.functions.Func1;
  * Created by StevenFredian on 25/01/18.
  */
 
-public class AttachImageUseCase extends UseCase<UploadImageDomain>{
+public class AttachImageUseCase extends UseCase<UploadImageDomain> {
 
     public static final String PARAM_USER_ID = "user_id";
     public static final String PARAM_DEVICE_ID = "device_id";
@@ -110,16 +109,16 @@ public class AttachImageUseCase extends UseCase<UploadImageDomain>{
 
     private Observable<UploadImageDomain> uploadFiles(final RequestParams uploadFileParam, final RequestParams requestParams) {
         return Observable.from(getListImage(uploadFileParam))
-                .flatMap(new Func1<MyChatViewModel, Observable<UploadImageDomain>>() {
+                .flatMap(new Func1<ImageUploadViewModel, Observable<UploadImageDomain>>() {
                     @Override
-                    public Observable<UploadImageDomain> call(MyChatViewModel imageUpload) {
+                    public Observable<UploadImageDomain> call(ImageUploadViewModel imageUpload) {
                         return uploadImageUseCase.createObservable(
                                 UploadImageUseCase.getParam(
                                         requestParams,
-                                        requestParams.getString(PARAM_UPLOAD_HOST,""),
-                                        imageUpload.getAttachment().getId(),
-                                        imageUpload.getAttachment().getAttributes().getImageUrl(),
-                                        requestParams.getString(PARAM_SERVER_ID,"")
+                                        requestParams.getString(PARAM_UPLOAD_HOST, ""),
+                                        imageUpload.getAttachmentId(),
+                                        imageUpload.getImageUrl(),
+                                        requestParams.getString(PARAM_SERVER_ID, "")
                                 ));
                     }
                 });
@@ -129,18 +128,19 @@ public class AttachImageUseCase extends UseCase<UploadImageDomain>{
     private Observable<ReplyActionData> reply(RequestParams requestParams, UploadImageDomain uploadImageDomain) {
         return replyMessageUseCase.createObservable(
                 ReplyMessageUseCase.generateParamAttachImage(
-                        requestParams.getString(PARAM_MESSAGE_ID,"")
+                        requestParams.getString(PARAM_MESSAGE_ID, "")
                         , uploadImageDomain.getPicSrc()));
 
     }
 
 
-    private List<MyChatViewModel> getListImage(RequestParams uploadFileParam) {
-        return (List<MyChatViewModel>) uploadFileParam.getObject(PARAM_ATTACHMENT);
+    private List<ImageUploadViewModel> getListImage(RequestParams uploadFileParam) {
+        return (List<ImageUploadViewModel>) uploadFileParam.getObject(PARAM_ATTACHMENT);
     }
 
 
-    public static RequestParams getParam(List<DummyChatViewModel> attachmentList, String messageId, String userId, String deviceId) {
+    public static RequestParams getParam(List<ImageUploadViewModel> attachmentList, String messageId, String
+            userId, String deviceId) {
         RequestParams params = RequestParams.create();
         params.putObject(PARAM_ATTACHMENT, attachmentList);
         params.putString(PARAM_MESSAGE_ID, messageId);

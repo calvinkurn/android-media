@@ -118,13 +118,13 @@ public class ChatRoomContract {
 
         Fragment getFragment();
 
-        void onErrorUploadImages(String throwable, MyChatViewModel model);
+        void onErrorUploadImages(String throwable, ImageUploadViewModel model);
 
         void onRetrySend(MyChatViewModel attachment);
 
         void onRetrySendImage(ImageUploadViewModel element);
 
-        void onSuccessSendAttach(ReplyActionData data, MyChatViewModel model);
+        void onSuccessSendAttach(ReplyActionData data, ImageUploadViewModel model);
 
         void setUploadingMode(boolean b);
 
@@ -181,7 +181,8 @@ public class ChatRoomContract {
 
         void openCamera();
 
-        void startUpload(List<DummyChatViewModel> list, int network);
+        void startUpload(List<ImageUploadViewModel> list, int network);
+
 
         String getFileLocFromCamera();
 

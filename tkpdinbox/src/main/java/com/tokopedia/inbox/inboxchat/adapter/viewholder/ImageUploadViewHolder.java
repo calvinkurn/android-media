@@ -1,6 +1,5 @@
 package com.tokopedia.inbox.inboxchat.adapter.viewholder;
 
-import android.content.Context;
 import android.support.annotation.LayoutRes;
 import android.view.View;
 import android.widget.ImageView;
@@ -24,7 +23,6 @@ public class ImageUploadViewHolder extends BaseChatViewHolder<ImageUploadViewMod
 
     private static final String ROLE_USER = "User";
 
-    private Context context;
     private View progressBarSendImage;
     private ImageView chatStatus;
     private View chatBalloon;
@@ -36,7 +34,6 @@ public class ImageUploadViewHolder extends BaseChatViewHolder<ImageUploadViewMod
 
     public ImageUploadViewHolder(View itemView, ChatRoomContract.View viewListener) {
         super(itemView, viewListener);
-        this.context = itemView.getContext();
         chatStatus = itemView.findViewById(R.id.chat_status);
         name = itemView.findViewById(R.id.name);
         label = itemView.findViewById(R.id.label);
@@ -82,13 +79,13 @@ public class ImageUploadViewHolder extends BaseChatViewHolder<ImageUploadViewMod
 
     private void setupChatBubbleAlignment(View chatBalloon, ImageUploadViewModel element) {
         if (element.isSender()) {
-            setChatRight(chatBalloon, element);
+            setChatRight(chatBalloon);
         } else {
-            setChatLeft(chatBalloon, element);
+            setChatLeft(chatBalloon);
         }
     }
 
-    private void setChatLeft(View chatBalloon, ImageUploadViewModel element) {
+    private void setChatLeft(View chatBalloon) {
         setAlignParent(RelativeLayout.ALIGN_PARENT_LEFT, chatBalloon);
         setAlignParent(RelativeLayout.ALIGN_PARENT_LEFT, hour);
         chatStatus.setVisibility(View.GONE);
@@ -97,7 +94,7 @@ public class ImageUploadViewHolder extends BaseChatViewHolder<ImageUploadViewMod
         dot.setVisibility(View.GONE);
     }
 
-    private void setChatRight(View chatBalloon, ImageUploadViewModel element) {
+    private void setChatRight(View chatBalloon) {
         setAlignParent(RelativeLayout.ALIGN_PARENT_RIGHT, chatBalloon);
         setAlignParent(RelativeLayout.ALIGN_PARENT_RIGHT, hour);
         chatStatus.setVisibility(View.VISIBLE);
