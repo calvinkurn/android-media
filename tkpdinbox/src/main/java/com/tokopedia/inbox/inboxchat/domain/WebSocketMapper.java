@@ -7,16 +7,17 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonSyntaxException;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.inbox.inboxchat.domain.model.websocket.BaseChatViewModel;
-import com.tokopedia.inbox.inboxchat.viewmodel.chatroom.fallback.FallbackAttachmentViewModel;
 import com.tokopedia.inbox.inboxchat.domain.pojo.common.WebSocketResponse;
 import com.tokopedia.inbox.inboxchat.domain.pojo.common.WebSocketResponseData;
 import com.tokopedia.inbox.inboxchat.domain.pojo.imageupload.ImageUploadAttributes;
 import com.tokopedia.inbox.inboxchat.domain.pojo.productattachment.ProductAttachmentAttributes;
 import com.tokopedia.inbox.inboxchat.domain.pojo.quickreply.QuickReplyAttachmentAttributes;
 import com.tokopedia.inbox.inboxchat.domain.pojo.quickreply.QuickReplyPojo;
-import com.tokopedia.inbox.inboxchat.viewmodel.chatroom.imageupload.ImageUploadViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.chatroom.QuickReplyListViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.chatroom.QuickReplyViewModel;
+import com.tokopedia.inbox.inboxchat.viewmodel.chatroom.fallback.FallbackAttachmentViewModel;
+import com.tokopedia.inbox.inboxchat.viewmodel.chatroom.imageupload.ImageUploadViewModel;
+import com.tokopedia.inbox.inboxchat.viewmodel.chatroom.message.MessageViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.chatroom.productattachment.ProductAttachmentViewModel;
 
 import java.util.ArrayList;
@@ -60,10 +61,9 @@ public class WebSocketMapper {
                     default:
 //                        return convertToFallBackModel(pojo.getData());
                         return null;
-
                 }
             } else {
-                return null;
+                return convertToMessageViewModel(pojo.getData());
             }
         } catch (JsonSyntaxException e) {
             return null;
@@ -71,6 +71,23 @@ public class WebSocketMapper {
             return null;
         }
 
+    }
+
+    private BaseChatViewModel convertToMessageViewModel(WebSocketResponseData pojo) {
+        return new MessageViewModel(
+                String.valueOf(pojo.getMsgId()),
+                String.valueOf(pojo.getFromUid()),
+                pojo.getFrom(),
+                pojo.getFromRole(),
+                pojo.getAttachment().getId(),
+                pojo.getAttachment().getType(),
+                pojo.getMessage().getTimeStampUnix(),
+                pojo.getStartTime(),
+                pojo.getMessage().getCensoredReply(),
+                false,
+                false,
+                isSender(String.valueOf(pojo.getFromUid()))
+        );
     }
 
     private BaseChatViewModel convertToImageUpload(WebSocketResponseData pojo, JsonObject

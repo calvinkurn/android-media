@@ -25,6 +25,9 @@ public class MessageViewModel extends SendableViewModel implements Visitable<Cha
      *                       {@link com.tokopedia.inbox.inboxchat.domain.WebSocketMapper} types
      * @param replyTime      replytime in unixtime
      * @param startTime      date time when sending / uploading data. Used to validate temporary
+     * @param message        censored reply
+     * @param isRead         is message already read by opponent
+     * @param isSender       is own sender
      */
     public MessageViewModel(String messageId, String fromUid, String from, String fromRole,
                             String attachmentId, String attachmentType, String replyTime,

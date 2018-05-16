@@ -117,6 +117,8 @@ public class ChatRoomTypeFactoryImpl extends BaseAdapterTypeFactory implements C
             viewHolder = new TimeMachineChatViewHolder(view, viewListener);
         else if (type == TypingChatViewHolder.LAYOUT)
             viewHolder = new TypingChatViewHolder(view);
+        else if (type == MessageViewHolder.LAYOUT)
+            viewHolder = new MessageViewHolder(view, viewListener);
         else if (type == ImageUploadViewHolder.LAYOUT)
             viewHolder = new ImageUploadViewHolder(view, viewListener);
         else if (type == AttachedInvoiceSentViewHolder.LAYOUT)
