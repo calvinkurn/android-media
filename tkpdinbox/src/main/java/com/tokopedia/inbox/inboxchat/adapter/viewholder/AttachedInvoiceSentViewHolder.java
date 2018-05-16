@@ -59,9 +59,9 @@ public class AttachedInvoiceSentViewHolder extends BaseChatViewHolder<AttachInvo
     @Override
     public void bind(AttachInvoiceSentViewModel element) {
         prerequisiteUISetup(element);
-        productName.setText(element.get);
+        productName.setText(element.getMessage());
         productDesc.setText(element.getDescription());
-        totalAmount.setText(element.get);
+        totalAmount.setText(element.getTotalAmount());
         if(!TextUtils.isEmpty(element.getImageUrl())){
             productImage.setVisibility(View.VISIBLE);
             ImageHandler.LoadImage(productImage, element.getImageUrl());
@@ -111,17 +111,11 @@ public class AttachedInvoiceSentViewHolder extends BaseChatViewHolder<AttachInvo
         chatStatus.setVisibility(View.VISIBLE);
 
         hour.setText(hourTime);
-        int imageResource;
-
-        if(element.isReadStatus()){
-            imageResource = R.drawable.ic_chat_read;
-        }else {
-            imageResource = R.drawable.ic_chat_unread;
-        }
-        if(element.isDummy()){
-            imageResource = R.drawable.ic_chat_pending;
-        }
-        chatStatus.setImageResource(imageResource);
+        chatStatus.setImageResource(element.isDummy() ?
+                R.drawable.ic_chat_pending :
+                (element.isRead() ?
+                        R.drawable.ic_chat_read :
+                        R.drawable.ic_chat_unread));
     }
 
     public void onViewRecycled() {

@@ -34,7 +34,6 @@ import com.tokopedia.inbox.inboxchat.presenter.subscriber.GetReplySubscriber;
 import com.tokopedia.inbox.inboxchat.uploadimage.domain.model.UploadImageDomain;
 import com.tokopedia.inbox.inboxchat.util.ImageUploadHandlerChat;
 import com.tokopedia.inbox.inboxchat.viewmodel.AttachInvoiceSelectionViewModel;
-import com.tokopedia.inbox.inboxchat.viewmodel.AttachInvoiceSentViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.ChatRoomViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.GetTemplateViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.MyChatViewModel;
@@ -259,14 +258,15 @@ public class ChatRoomPresenter extends BaseDaggerPresenter<ChatRoomContract.View
 //                    getView().getAdapter().removeLastProductWithId(productId);
 //                    getView().getAdapter().addReply(productItem);
 //                } else
+//                if (response.getData().getAttachment() != null &&
+//                        response.getData().getAttachment().getType().equals(AttachmentChatHelper
+//                                .INVOICE_ATTACHED)) {
+//                    AttachInvoiceSentViewModel invoiceSentViewModel = new
+//                            AttachInvoiceSentViewModel(item);
+//                    getView().getAdapter().removeLast();
+//                    getView().getAdapter().addReply(invoiceSentViewModel);
+//                } else
                 if (response.getData().getAttachment() != null &&
-                        response.getData().getAttachment().getType().equals(AttachmentChatHelper
-                                .INVOICE_ATTACHED)) {
-                    AttachInvoiceSentViewModel invoiceSentViewModel = new
-                            AttachInvoiceSentViewModel(item);
-                    getView().getAdapter().removeLast();
-                    getView().getAdapter().addReply(invoiceSentViewModel);
-                } else if (response.getData().getAttachment() != null &&
                         response.getData().getAttachment().getType().equals(AttachmentChatHelper
                                 .INVOICE_LIST_ATTACHED)) {
                     AttachInvoiceSelectionViewModel invoiceSelectionViewModel =

@@ -4,7 +4,6 @@ package com.tokopedia.inbox.inboxchat.domain.pojo.common;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import com.tokopedia.inbox.inboxchat.domain.pojo.Message;
-import com.tokopedia.inbox.inboxchat.domain.pojo.invoicesent.InvoiceSentPayloadPojo;
 
 public class WebSocketResponseData {
 
@@ -41,21 +40,6 @@ public class WebSocketResponseData {
     @SerializedName("rating_status")
     @Expose
     private int ratingStatus;
-
-    //for invoice sent data
-    @SerializedName("message_id")
-    @Expose
-    private int message_id;
-
-    @SerializedName("attachment_type")
-    @Expose
-    private int attachmentType;
-
-    @SerializedName("payload")
-    @Expose
-    private InvoiceSentPayloadPojo payload;
-
-
 
     public int getMsgId() {
         return msgId;
@@ -143,29 +127,5 @@ public class WebSocketResponseData {
 
     public void setRatingStatus(int ratingStatus) {
         this.ratingStatus = ratingStatus;
-    }
-
-    public int getMessage_id() {
-        return message_id;
-    }
-
-    public void setMessage_id(int message_id) {
-        this.message_id = message_id;
-    }
-
-    public int getAttachmentType() {
-        return attachmentType;
-    }
-
-    public void setAttachmentType(int attachmentType) {
-        this.attachmentType = attachmentType;
-    }
-
-    public InvoiceSentPayloadPojo getPayload() {
-        return payload;
-    }
-
-    public void setPayload(InvoiceSentPayloadPojo payload) {
-        this.payload = payload;
     }
 }

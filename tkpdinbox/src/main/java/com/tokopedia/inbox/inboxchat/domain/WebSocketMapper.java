@@ -10,10 +10,11 @@ import com.tokopedia.inbox.inboxchat.domain.model.websocket.BaseChatViewModel;
 import com.tokopedia.inbox.inboxchat.domain.pojo.common.WebSocketResponse;
 import com.tokopedia.inbox.inboxchat.domain.pojo.common.WebSocketResponseData;
 import com.tokopedia.inbox.inboxchat.domain.pojo.imageupload.ImageUploadAttributes;
-import com.tokopedia.inbox.inboxchat.domain.pojo.invoicesent.InvoiceSentPayloadPojo;
+import com.tokopedia.inbox.inboxchat.domain.pojo.invoicesent.InvoiceSentPojo;
 import com.tokopedia.inbox.inboxchat.domain.pojo.productattachment.ProductAttachmentAttributes;
 import com.tokopedia.inbox.inboxchat.domain.pojo.quickreply.QuickReplyAttachmentAttributes;
 import com.tokopedia.inbox.inboxchat.domain.pojo.quickreply.QuickReplyPojo;
+import com.tokopedia.inbox.inboxchat.viewmodel.AttachInvoiceSentViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.chatroom.QuickReplyListViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.chatroom.QuickReplyViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.chatroom.fallback.FallbackAttachmentViewModel;
@@ -46,24 +47,20 @@ public class WebSocketMapper {
     public BaseChatViewModel map(String json) {
         try {
             WebSocketResponse pojo = new GsonBuilder().create().fromJson(json, WebSocketResponse.class);
-            JsonObject jsonAttributes = pojo.getData().getAttachment() .getAttributes();
-            if (jsonAttributes != null) {
-                switch (pojo.getData().getAttachment().getType()) {
-                    case TYPE_QUICK_REPLY:
-                        return convertToQuickReplyModel(pojo.getData(), jsonAttributes);
-                    case TYPE_PRODUCT_ATTACHMENT:
-                        return convertToProductAttachment(pojo.getData(), jsonAttributes);
-                    case TYPE_IMAGE_UPLOAD:
-                        return convertToImageUpload(pojo.getData(), jsonAttributes);
-                    default:
+            JsonObject jsonAttributes = pojo.getData().getAttachment().getAttributes();
+            switch (pojo.getData().getAttachment().getType()) {
+                case TYPE_QUICK_REPLY:
+                    return convertToQuickReplyModel(pojo.getData(), jsonAttributes);
+                case TYPE_PRODUCT_ATTACHMENT:
+                    return convertToProductAttachment(pojo.getData(), jsonAttributes);
+                case TYPE_IMAGE_UPLOAD:
+                    return convertToImageUpload(pojo.getData(), jsonAttributes);
+                case TYPE_INVOICE_SEND:
+                    return convertToInvoiceSent(pojo.getData(), jsonAttributes);
+                default:
 //                        return convertToFallBackModel(pojo.getData());
-                        return null;
-                }
-            } else if (String.valueOf(pojo.getData().getAttachmentType()).equals(TYPE_INVOICE_SEND)
-                    && pojo.getData().getPayload() != null){
-                return convertToInvoiceSent(pojo.getData().getPayload());
-            } else
-                return null;
+                    return null;
+            }
         } catch (JsonSyntaxException e) {
             return null;
         } catch (NullPointerException e) {
@@ -72,8 +69,25 @@ public class WebSocketMapper {
 
     }
 
-    private BaseChatViewModel convertToInvoiceSent(InvoiceSentPayloadPojo payload) {
-        return null;
+    private BaseChatViewModel convertToInvoiceSent(WebSocketResponseData pojo, JsonObject
+            jsonAttribute) {
+        InvoiceSentPojo invoiceSentPojo = new GsonBuilder().create().fromJson(jsonAttribute,
+                InvoiceSentPojo.class);
+        return new AttachInvoiceSentViewModel(
+                String.valueOf(pojo.getMsgId()),
+                String.valueOf(pojo.getFromUid()),
+                pojo.getFrom(),
+                pojo.getFromRole(),
+                pojo.getAttachment().getId(),
+                pojo.getAttachment().getType(),
+                pojo.getMessage().getTimeStampUnix(),
+                pojo.getStartTime(),
+                pojo.getMessage().getCensoredReply(),
+                invoiceSentPojo.getInvoiceLink().getAttributes().getDescription(),
+                invoiceSentPojo.getInvoiceLink().getAttributes().getImageUrl(),
+                invoiceSentPojo.getInvoiceLink().getAttributes().getTotalAmount(),
+                isSender(String.valueOf(pojo.getFromUid()))
+        );
 
     }
 
