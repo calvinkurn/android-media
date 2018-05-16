@@ -224,21 +224,6 @@ public class WalletAccountSettingFragment extends BasePresenterFragment<IWalletA
     }
 
     @Override
-    public void showDialog(Dialog dialog) {
-        if (!dialog.isShowing()) dialog.show();
-    }
-
-    @Override
-    public void dismissDialog(Dialog dialog) {
-        if (dialog.isShowing()) dialog.dismiss();
-    }
-
-    @Override
-    public void executeIntentService(Bundle bundle, Class<? extends IntentService> clazz) {
-
-    }
-
-    @Override
     public String getStringFromResource(@StringRes int resId) {
         return null;
     }

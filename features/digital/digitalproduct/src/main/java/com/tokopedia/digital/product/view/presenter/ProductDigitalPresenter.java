@@ -185,11 +185,13 @@ public class ProductDigitalPresenter extends BaseDigitalPresenter
                 List<BannerData> otherBannerDataList = productDigitalData.getOtherBannerDataList();
                 HistoryClientNumber historyClientNumber =
                         productDigitalData.getHistoryClientNumber();
+
                 if (historyClientNumber.getLastOrderClientNumber() == null) {
                     String lastSelectedOperatorId = getLastOperatorSelected(categoryData.getCategoryId());
                     String lastSelectedProductId = getLastProductSelected(categoryData.getCategoryId());
                     String lastTypedClientNumber = getLastClientNumberTyped(categoryData.getCategoryId());
                     String verifiedNumber = SessionHandler.getPhoneNumber();
+
                     if (!TextUtils.isEmpty(lastTypedClientNumber)) {
                         historyClientNumber.setLastOrderClientNumber(
                                 new OrderClientNumber.Builder()
@@ -223,6 +225,8 @@ public class ProductDigitalPresenter extends BaseDigitalPresenter
                                                    List<BannerData> otherBannerDataList,
                                                    HistoryClientNumber historyClientNumber) {
         this.categoryData = categoryData;
+
+        renderCheckEMoneyBalance();
 
         if (categoryData.isSupportedStyle()) {
             BaseDigitalProductView digitalProductView = ViewFactory
@@ -563,6 +567,17 @@ public class ProductDigitalPresenter extends BaseDigitalPresenter
                     view.renderCheckPulsaBalanceData(0, "", "", null, true, null);
                 }
             }
+        }
+    }
+
+    private void renderCheckEMoneyBalance() {
+        if (!GlobalConfig.isSellerApp()
+                && categoryData != null
+                && categoryData.getSlug().equalsIgnoreCase(CategoryData.SLUG_PRODUCT_CATEGORY_EMONEY)
+                && android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT
+                && view.isUserLoggedIn()
+                && view.getActivity() != null) {
+            view.renderCheckEMoneyBalance();
         }
     }
 

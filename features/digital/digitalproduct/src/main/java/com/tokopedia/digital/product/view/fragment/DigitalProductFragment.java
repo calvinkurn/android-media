@@ -73,11 +73,13 @@ import com.tokopedia.digital.product.domain.interactor.IProductDigitalInteractor
 import com.tokopedia.digital.product.domain.interactor.ProductDigitalInteractor;
 import com.tokopedia.digital.product.receiver.USSDBroadcastReceiver;
 import com.tokopedia.digital.product.service.USSDAccessibilityService;
+import com.tokopedia.digital.product.view.activity.DigitalCheckEMoneyBalanceNFCActivity;
 import com.tokopedia.digital.product.view.activity.DigitalChooserActivity;
 import com.tokopedia.digital.product.view.activity.DigitalSearchNumberActivity;
 import com.tokopedia.digital.product.view.activity.DigitalUssdActivity;
 import com.tokopedia.digital.product.view.activity.DigitalWebActivity;
 import com.tokopedia.digital.product.view.adapter.BannerAdapter;
+import com.tokopedia.digital.product.view.compoundview.CheckEMoneyBalanceView;
 import com.tokopedia.digital.product.view.compoundview.CheckPulsaBalanceView;
 import com.tokopedia.digital.product.view.listener.IProductDigitalView;
 import com.tokopedia.digital.product.view.listener.IUssdUpdateListener;
@@ -155,6 +157,8 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
     LinearLayout holderProductDetail;
     @BindView(R2.id.holder_check_balance)
     LinearLayout holderCheckBalance;
+    @BindView(R2.id.holder_check_emoney_balance)
+    CheckEMoneyBalanceView checkEMoneyBalanceView;
 
     private ProductDigitalPresenter presenter;
 
@@ -333,12 +337,18 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
         });
 
         selectedCheckPulsaBalanceView = null;
-
     }
 
     @Override
     protected void setViewListener() {
         rvBanner.setAdapter(bannerAdapter);
+        checkEMoneyBalanceView.setListener(new CheckEMoneyBalanceView.OnCheckBalanceClickListener() {
+            @Override
+            public void onClick() {
+                Intent intent = DigitalCheckEMoneyBalanceNFCActivity.newInstance(getActivity());
+                startActivity(intent);
+            }
+        });
     }
 
     @Override
@@ -400,11 +410,15 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
     public void renderCheckPulsaBalanceData(int selectedSim, String ussdCode, String phoneNumber, String operatorErrorMsg, Boolean isSimActive, String carrierName) {
         CheckPulsaBalanceView checkPulsaBalanceView = new CheckPulsaBalanceView(getActivity());
         checkPulsaBalanceView.setActionListener(this);
-
         checkPulsaBalanceView.renderData(selectedSim, ussdCode, phoneNumber, operatorErrorMsg, isSimActive, carrierName);
         holderCheckBalance.addView(checkPulsaBalanceView);
-
         startShowCaseUSSD();
+    }
+
+    @Override
+    public void renderCheckEMoneyBalance() {
+        String note = getResources().getString(R.string.emoney_label_check_balance);
+        checkEMoneyBalanceView.showCheckBalance(note);
     }
 
     @Override
@@ -526,21 +540,6 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
         View view = getView();
         if (view != null) NetworkErrorHelper.showSnackbar(getActivity(), message);
         else Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
-    }
-
-    @Override
-    public void showDialog(Dialog dialog) {
-        if (!dialog.isShowing()) dialog.show();
-    }
-
-    @Override
-    public void dismissDialog(Dialog dialog) {
-        if (dialog.isShowing()) dialog.dismiss();
-    }
-
-    @Override
-    public void executeIntentService(Bundle bundle, Class<? extends IntentService> clazz) {
-
     }
 
     @Override

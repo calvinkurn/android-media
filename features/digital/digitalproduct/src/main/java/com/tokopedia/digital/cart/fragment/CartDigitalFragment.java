@@ -286,21 +286,6 @@ public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPrese
     }
 
     @Override
-    public void showDialog(Dialog dialog) {
-
-    }
-
-    @Override
-    public void dismissDialog(Dialog dialog) {
-        if (dialog.isShowing()) dialog.dismiss();
-    }
-
-    @Override
-    public void executeIntentService(Bundle bundle, Class<? extends IntentService> clazz) {
-
-    }
-
-    @Override
     public String getStringFromResource(@StringRes int resId) {
         return getString(resId);
     }

@@ -172,4 +172,11 @@
     <string name="status_success_label">Success</string>
     <string name="status_failed_label">Failed</string>
 
+    <string name="emoney_card_info_label_card_number">Nomor Kartu:</string>
+    <string name="emoney_card_info_label_your_balance">Saldo Anda:</string>
+    <string name="emoney_button_check_balance">CEK SALDO</string>
+    <string name="emoney_tap_card_instruction">Tempelkan Kartu pada bagian belakang Smartphone Anda.</string>
+    <string name="emoney_button_topup">Top-up E-Money</string>
+    <string name="emoney_label_check_balance">Silahkan cek sisa saldo Anda</string>
+
 </resources>

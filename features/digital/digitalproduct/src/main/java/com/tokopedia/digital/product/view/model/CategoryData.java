@@ -23,7 +23,9 @@ public class CategoryData implements Parcelable {
     public static final String STYLE_PRODUCT_CATEGORY_4 = "style_4";
     public static final String STYLE_PRODUCT_CATEGORY_5 = "style_5";
     public static final String STYLE_PRODUCT_CATEGORY_99 = "style_99";
+
     public static final String SLUG_PRODUCT_CATEGORY_PULSA = "pulsa";
+    public static final String SLUG_PRODUCT_CATEGORY_EMONEY = "emoney";
 
     private static final String[] STYLE_COLLECTION_SUPPORTED = new String[]{
             STYLE_PRODUCT_CATEGORY_1, STYLE_PRODUCT_CATEGORY_2, STYLE_PRODUCT_CATEGORY_2,

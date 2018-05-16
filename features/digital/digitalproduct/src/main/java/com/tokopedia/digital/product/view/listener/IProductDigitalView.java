@@ -26,6 +26,8 @@ public interface IProductDigitalView extends IBaseView {
     void renderCheckPulsaBalanceData(int selectedSim, String ussdCode, String phoneNumber,
                                      String operatorErrorMsg, Boolean isSimActive, String carrierName);
 
+    void renderCheckEMoneyBalance();
+
     void renderErrorStyleNotSupportedProductDigitalData(String message);
 
     void renderErrorProductDigitalData(String message);
@@ -71,4 +73,5 @@ public interface IProductDigitalView extends IBaseView {
     void navigateToWebview(String helpUrl);
 
     Activity getActivity();
+
 }
