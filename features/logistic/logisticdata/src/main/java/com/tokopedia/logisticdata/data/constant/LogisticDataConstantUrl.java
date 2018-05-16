@@ -8,6 +8,10 @@ public class LogisticDataConstantUrl {
     public static class KeroRates {
         static public String BASE_URL = "https://gw.tokopedia.com/";
 
+        public static final String LIVE_BASE_URL = "https://gw.tokopedia.com/";
+        public static final String STAGING_BASE_URL = "https://gw-staging.tokopedia.com//";
+        public static final String ALPHA_BASE_URL = "https://gw-alpha.tokopedia.com/";
+
         public static final String HMAC_KEY = "web_service_v4";
         public static final String VERSION = "v2/";
         static final String BASE_PATH = "";
