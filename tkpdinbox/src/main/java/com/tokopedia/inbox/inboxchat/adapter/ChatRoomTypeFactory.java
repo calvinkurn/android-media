@@ -13,6 +13,7 @@ import com.tokopedia.inbox.inboxchat.viewmodel.TypingChatModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.chatroom.QuickReplyListViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.chatroom.TimeMachineChatModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.chatroom.imageannouncement.ImageAnnouncementViewModel;
+import com.tokopedia.inbox.inboxchat.viewmodel.chatroom.message.MessageViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.chatroom.productattachment.ProductAttachmentViewModel;
 
 /**
@@ -42,6 +43,8 @@ public interface ChatRoomTypeFactory {
     int type(ImageAnnouncementViewModel imageAnnouncementViewModel);
 
     int type(ImageUploadViewModel attachImageModel);
+
+    int type(MessageViewModel messageViewModel);
 
     //OTHER
     int type(TimeMachineChatModel timeMachineChatModel);

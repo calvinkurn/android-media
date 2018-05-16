@@ -4,15 +4,9 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.inbox.inboxchat.ChatWebSocketListenerImpl;
 import com.tokopedia.inbox.inboxchat.adapter.ChatRoomTypeFactory;
 import com.tokopedia.inbox.inboxchat.domain.WebSocketMapper;
-import com.tokopedia.inbox.inboxchat.domain.model.websocket.BaseChatViewModel;
 import com.tokopedia.inbox.inboxchat.domain.usecase.GetReplyListUseCase;
 import com.tokopedia.inbox.inboxchat.viewmodel.DummyChatViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.chatroom.SendableViewModel;
-
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Locale;
-import java.util.TimeZone;
 
 /**
  * Created by stevenfredian on 11/28/17.
@@ -21,12 +15,38 @@ import java.util.TimeZone;
 public class ImageUploadViewModel extends SendableViewModel implements
         Visitable<ChatRoomTypeFactory> {
 
-    private boolean isRead;
-    private boolean isDummy;
     private String imageUrl;
     private String imageUrlThumbnail;
     private boolean isRetry;
-    private boolean isSender;
+
+    /**
+     * Constructor for API.
+     * {@link ChatWebSocketListenerImpl}
+     * {@link GetReplyListUseCase}
+     *
+     * @param messageId         messageId
+     * @param fromUid           userId of sender
+     * @param from              name of sender
+     * @param fromRole          role of sender
+     * @param attachmentId      attachment id
+     * @param attachmentType    attachment type. Please refer to
+     *                          {@link WebSocketMapper} types
+     * @param replyTime         replytime in unixtime
+     * @param imageUrl          image url
+     * @param imageUrlThumbnail thumbnail image url
+     * !! startTime is not returned from API
+     */
+    public ImageUploadViewModel(String messageId, String fromUid, String from,
+                                String fromRole, String attachmentId,
+                                String attachmentType, String replyTime,
+                                boolean isSender, String imageUrl,
+                                String imageUrlThumbnail, boolean isRead) {
+        super(messageId, fromUid, from, fromRole, attachmentId, attachmentType, replyTime,
+                "", isRead, false, isSender);
+        this.isRetry = false;
+        this.imageUrl = imageUrl;
+        this.imageUrlThumbnail = imageUrlThumbnail;
+    }
 
     /**
      * Constructor for WebSocket.
@@ -50,11 +70,9 @@ public class ImageUploadViewModel extends SendableViewModel implements
                                 String attachmentType, String replyTime,
                                 boolean isSender, String imageUrl,
                                 String imageUrlThumbnail, String startTime) {
-        super(messageId, fromUid, from, fromRole, attachmentId, attachmentType, replyTime, startTime);
-        this.isRead = false;
-        this.isSender = isSender;
+        super(messageId, fromUid, from, fromRole, attachmentId, attachmentType, replyTime,
+                startTime, false, false, isSender);
         this.isRetry = false;
-        this.isDummy = false;
         this.imageUrl = imageUrl;
         this.imageUrlThumbnail = imageUrlThumbnail;
     }
@@ -70,11 +88,9 @@ public class ImageUploadViewModel extends SendableViewModel implements
     public ImageUploadViewModel(String fromUid, String attachmentId, String fileLoc, String
             startTime) {
         super("", fromUid, "", "", attachmentId,
-                WebSocketMapper.TYPE_IMAGE_UPLOAD, DummyChatViewModel.SENDING_TEXT, startTime);
-        this.isRead = false;
-        this.isSender = true;
+                WebSocketMapper.TYPE_IMAGE_UPLOAD, DummyChatViewModel.SENDING_TEXT, startTime,
+                false, true, true);
         this.isRetry = false;
-        this.isDummy = true;
         this.imageUrl = fileLoc;
         this.imageUrlThumbnail = imageUrl;
     }
@@ -85,14 +101,6 @@ public class ImageUploadViewModel extends SendableViewModel implements
 
     public String getImageUrlThumbnail() {
         return imageUrlThumbnail;
-    }
-
-    public boolean isRead() {
-        return isRead;
-    }
-
-    public boolean isDummy() {
-        return isDummy;
     }
 
     @Override
@@ -106,14 +114,6 @@ public class ImageUploadViewModel extends SendableViewModel implements
 
     public void setRetry(boolean isRetry) {
         this.isRetry = isRetry;
-    }
-
-    public boolean isSender() {
-        return isSender;
-    }
-
-    public void setSender(boolean isSender) {
-        this.isSender = isSender;
     }
 
     public String getStartTime() {

@@ -13,6 +13,9 @@ public class SendableViewModel extends BaseChatViewModel {
     public static final String START_TIME_FORMAT = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
 
     protected String startTime;
+    private boolean isRead;
+    private boolean isDummy;
+    private boolean isSender;
 
     /**
      * Constructor for WebSocketResponse / API Response
@@ -32,13 +35,35 @@ public class SendableViewModel extends BaseChatViewModel {
      */
     public SendableViewModel(String messageId, String fromUid, String from, String fromRole,
                              String attachmentId, String attachmentType, String replyTime,
-                             String startTime) {
+                             String startTime, boolean isRead, boolean isDummy, boolean isSender) {
         super(messageId, fromUid, from, fromRole, attachmentId, attachmentType, replyTime);
         this.startTime = startTime;
+        this.isRead = isRead;
+        this.isDummy = isDummy;
+        this.isSender = isSender;
     }
 
     public String getStartTime() {
         return startTime;
     }
 
+    public boolean isRead() {
+        return isRead;
+    }
+
+    public boolean isDummy() {
+        return isDummy;
+    }
+
+    public boolean isSender() {
+        return isSender;
+    }
+
+    public void setRead(boolean read) {
+        isRead = read;
+    }
+
+    public void setDummy(boolean dummy) {
+        isDummy = dummy;
+    }
 }
