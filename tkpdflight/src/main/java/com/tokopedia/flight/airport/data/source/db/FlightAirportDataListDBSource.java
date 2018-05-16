@@ -1,6 +1,7 @@
 package com.tokopedia.flight.airport.data.source.db;
 
 import android.text.TextUtils;
+import android.util.Log;
 
 import com.raizlabs.android.dbflow.sql.language.Condition;
 import com.raizlabs.android.dbflow.sql.language.ConditionGroup;
@@ -77,9 +78,11 @@ public class FlightAirportDataListDBSource extends BaseDataListDBSource<FlightAi
 
                     private void insertFlight(FlightAirportDB flightAirportDB) {
                         flightAirportDB.insert();
+                        Log.v("FlowLog", flightAirportDB.toString());
                     }
 
                     private void insertFlight(FlightAirportCountry flightAirportCountry, FlightAirportCity flightAirportCity, FlightAirportDetail flightAirportDetail, String airportIds) {
+
                         FlightAirportDB flightAirportDB = new FlightAirportDB();
                         flightAirportDB.setCountryId(flightAirportCountry.getId());
                         flightAirportDB.setCountryName(flightAirportCountry.getAttributes().getName());
@@ -96,6 +99,7 @@ public class FlightAirportDataListDBSource extends BaseDataListDBSource<FlightAi
                         }
                         flightAirportDB.setAliases(aliases);
                         flightAirportDB.insert();
+                        Log.v("FlowLog", flightAirportDB.toString());
                     }
                 })
                 .toList()
@@ -142,13 +146,10 @@ public class FlightAirportDataListDBSource extends BaseDataListDBSource<FlightAi
     }
 
     private ConditionGroup buildQuery(HashMap<String, Object> params) {
-        String idCountry = FlightAirportDataListSource.getIdCountryFromMap(params);
         String queryText = FlightAirportDataListSource.getQueryFromMap(params);
 
         ConditionGroup conditions = ConditionGroup.clause();
-        if (!TextUtils.isEmpty(idCountry)) {
-            conditions.and(FlightAirportDB_Table.country_id.eq(idCountry));
-        }
+        conditions.and(FlightAirportDB_Table.city_name.notEq(""));
         if (!TextUtils.isEmpty(queryText)) {
             String queryLike = "%" + queryText + "%";
             ConditionGroup likeConditionsGroup = ConditionGroup.clause();
@@ -224,6 +225,7 @@ public class FlightAirportDataListDBSource extends BaseDataListDBSource<FlightAi
                         } else {
                             flightAirportDB.insert();
                         }
+                        Log.v("FlowLog", flightAirportDB.toString());
                     }
 
                     private void insertFlight(FlightAirportCountry flightAirportCountry, FlightAirportCity flightAirportCity, FlightAirportDetail flightAirportDetail, String airportIds) {
@@ -250,6 +252,7 @@ public class FlightAirportDataListDBSource extends BaseDataListDBSource<FlightAi
                             }
                             result.setAliases(aliases);
                             result.save();
+                            Log.v("FlowLog", result.toString());
                         } else {
                             FlightAirportDB flightAirportDB = new FlightAirportDB();
                             flightAirportDB.setCountryId(flightAirportCountry.getId());
@@ -267,8 +270,8 @@ public class FlightAirportDataListDBSource extends BaseDataListDBSource<FlightAi
                             }
                             flightAirportDB.setAliases(aliases);
                             flightAirportDB.insert();
+                            Log.v("FlowLog", flightAirportDB.toString());
                         }
-
                     }
                 })
                 .toList()

@@ -17,7 +17,7 @@ import com.tokopedia.flight.common.database.TkpdFlightDatabase;
  * @author sebastianuskh on 4/13/17.
  */
 @Table(database = TkpdFlightDatabase.class, insertConflict = ConflictAction.REPLACE, updateConflict = ConflictAction.REPLACE)
-public class FlightAirportDB extends BaseModel implements Parcelable, Visitable<FlightAirportAdapterTypeFactory> {
+public class FlightAirportDB extends BaseModel implements Parcelable{
 
     public static final Creator<FlightAirportDB> CREATOR = new Creator<FlightAirportDB>() {
         @Override
@@ -33,6 +33,7 @@ public class FlightAirportDB extends BaseModel implements Parcelable, Visitable<
     @PrimaryKey
     @Column(name = "country_id")
     String countryId;
+    @PrimaryKey
     @Column(name = "city_id")
     String cityId;
     @PrimaryKey
@@ -169,7 +170,18 @@ public class FlightAirportDB extends BaseModel implements Parcelable, Visitable<
     }
 
     @Override
-    public int type(FlightAirportAdapterTypeFactory typeFactory) {
-        return typeFactory.type(this);
+    public String toString() {
+        return "FlightAirportDB{" +
+                "countryId='" + countryId + '\'' +
+                ", cityId='" + cityId + '\'' +
+                ", airportId='" + airportId + '\'' +
+                ", countryName='" + countryName + '\'' +
+                ", phoneCode=" + phoneCode +
+                ", cityName='" + cityName + '\'' +
+                ", cityCode='" + cityCode + '\'' +
+                ", airportName='" + airportName + '\'' +
+                ", aliases='" + aliases + '\'' +
+                ", airportIds='" + airportIds + '\'' +
+                '}';
     }
 }

@@ -9,17 +9,19 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.fragment.BaseSearchListFragment;
-import com.tokopedia.flight.FlightModuleRouter;
 import com.tokopedia.flight.R;
-import com.tokopedia.flight.airport.data.source.db.model.FlightAirportDB;
 import com.tokopedia.flight.airport.di.DaggerFlightAirportComponent;
 import com.tokopedia.flight.airport.di.FlightAirportModule;
-import com.tokopedia.flight.airport.service.GetAirportListService;
 import com.tokopedia.flight.airport.view.adapter.FlightAirportAdapterTypeFactory;
+import com.tokopedia.flight.airport.view.adapter.FlightAirportClickListener;
 import com.tokopedia.flight.airport.view.adapter.FlightAirportViewHolder;
 import com.tokopedia.flight.airport.view.presenter.FlightAirportPickerPresenter;
+import com.tokopedia.flight.airport.view.presenter.FlightAirportPickerPresenterImpl;
 import com.tokopedia.flight.airport.view.presenter.FlightAirportPickerView;
+import com.tokopedia.flight.airport.view.viewmodel.FlightAirportViewModel;
+import com.tokopedia.flight.airport.view.viewmodel.FlightCountryAirportViewModel;
 import com.tokopedia.flight.common.di.component.FlightComponent;
 
 import java.util.List;
@@ -31,14 +33,14 @@ import javax.inject.Inject;
  * Created by nathan on 10/19/17.
  */
 
-public class FlightAirportPickerFragment extends BaseSearchListFragment<FlightAirportDB, FlightAirportAdapterTypeFactory>
-        implements FlightAirportPickerView, FlightAirportViewHolder.FilterTextListener {
+public class FlightAirportPickerFragment extends BaseSearchListFragment<Visitable, FlightAirportAdapterTypeFactory>
+        implements FlightAirportPickerView, FlightAirportClickListener {
 
     public static final String EXTRA_SELECTED_AIRPORT = "extra_selected_aiport";
 
     private static final long DELAY_TEXT_CHANGED = TimeUnit.MILLISECONDS.toMillis(0);
     @Inject
-    FlightAirportPickerPresenter flightAirportPickerPresenter;
+    FlightAirportPickerPresenterImpl flightAirportPickerPresenter;
     private boolean isFirstTime = true;
 
     public static FlightAirportPickerFragment getInstance() {
@@ -51,6 +53,12 @@ public class FlightAirportPickerFragment extends BaseSearchListFragment<FlightAi
         View view = inflater.inflate(R.layout.fragment_flight_airport_picker, container, false);
         view.requestFocus();
         return view;
+    }
+
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
     }
 
     @Override
@@ -75,11 +83,7 @@ public class FlightAirportPickerFragment extends BaseSearchListFragment<FlightAi
     }
 
     @Override
-    public void onItemClicked(FlightAirportDB flightAirportDB) {
-        Intent intent = new Intent();
-        intent.putExtra(EXTRA_SELECTED_AIRPORT, flightAirportDB);
-        getActivity().setResult(Activity.RESULT_OK, intent);
-        getActivity().finish();
+    public void onItemClicked(Visitable flightAirportDB) {
     }
 
     @Override
@@ -104,7 +108,7 @@ public class FlightAirportPickerFragment extends BaseSearchListFragment<FlightAi
     }
 
     @Override
-    public void renderList(@NonNull List<FlightAirportDB> list) {
+    public void renderList(@NonNull List<Visitable> list) {
         if (isFirstTime) {
             searchInputView.setVisibility(View.VISIBLE);
             isFirstTime = false;
@@ -123,8 +127,21 @@ public class FlightAirportPickerFragment extends BaseSearchListFragment<FlightAi
     }
 
     @Override
+    public void showLoading() {
+        getAdapter().setElement(getLoadingModel());
+    }
+
+    @Override
     protected String getScreenName() {
         return null;
+    }
+
+    @Override
+    public void airportClicked(FlightAirportViewModel airportViewModel) {
+        Intent intent = new Intent();
+        intent.putExtra(EXTRA_SELECTED_AIRPORT, airportViewModel);
+        getActivity().setResult(Activity.RESULT_OK, intent);
+        getActivity().finish();
     }
 
     @Override
