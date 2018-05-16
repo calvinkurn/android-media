@@ -33,7 +33,7 @@ public class ShopCheckIsReservePresenterImpl extends BaseDaggerPresenter<ShopOpe
 
             @Override
             public void onError(Throwable e) {
-                if (isViewAttached()) {
+                if (isViewAttached() && getView() != null && getView().getActivity() != null) {
                     getView().onErrorCheckReserveDomain(e);
                 }
             }
