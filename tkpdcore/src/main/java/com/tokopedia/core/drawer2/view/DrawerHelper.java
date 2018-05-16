@@ -74,12 +74,12 @@ public abstract class DrawerHelper implements DrawerItemDataBinder.DrawerItemLis
             case TkpdState.DrawerPosition.LOGIN:
                 intent = ((TkpdCoreRouter) context.getApplication()).getLoginIntent(context);
                 context.startActivityForResult(intent, REQUEST_LOGIN);
-                AnalyticsEventTrackingHelper.hamburgerIconClickLogin("Login");
+                AnalyticsEventTrackingHelper.hamburgerOptionClicked("Login", "Login");
                 break;
             case TkpdState.DrawerPosition.REGISTER:
                 intent = ((TkpdCoreRouter) context.getApplication()).getRegisterIntent(context);
                 context.startActivityForResult(intent, REQUEST_LOGIN);
-                AnalyticsEventTrackingHelper.hamburgerIconClickSignup("Login");
+                AnalyticsEventTrackingHelper.hamburgerOptionClicked("Register",AppEventTracking.EventLabel.REGISTER);
                 break;
             case TkpdState.DrawerPosition.INBOX_MESSAGE:
                 if (context.getApplication() instanceof TkpdCoreRouter) {
