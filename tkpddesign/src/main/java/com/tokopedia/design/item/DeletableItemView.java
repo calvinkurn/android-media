@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Color;
 import android.support.annotation.AttrRes;
+import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
@@ -28,6 +29,9 @@ public class DeletableItemView extends BaseCustomView {
     private OnDeleteListener onDeleteListener;
     private OnTextClickListener onTextClickListener;
 
+    @LayoutRes
+    private int layoutRef = R.layout.widget_deletable_item_view;
+
     public DeletableItemView(@NonNull Context context) {
         super(context);
         init(context);
@@ -35,16 +39,26 @@ public class DeletableItemView extends BaseCustomView {
 
     public DeletableItemView(@NonNull Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
-        init(context);
+        init(context, attrs);
     }
 
     public DeletableItemView(@NonNull Context context, @Nullable AttributeSet attrs, @AttrRes int defStyleAttr) {
         super(context, attrs, defStyleAttr);
+        init(context, attrs);
+    }
+
+    private void init(Context context, AttributeSet attrs) {
+        TypedArray styledAttributes = getContext().obtainStyledAttributes(attrs, R.styleable.DeleteAbleItemView);
+        try {
+            layoutRef = styledAttributes.getResourceId(R.styleable.DeleteAbleItemView_layout, R.layout.widget_deletable_item_view);
+        } finally {
+            styledAttributes.recycle();
+        }
         init(context);
     }
 
     private void init(Context context) {
-        rootView = inflate(context, R.layout.widget_deletable_item_view, this);
+        rootView = inflate(context, layoutRef, this);
         textView = (TextView) rootView.findViewById(R.id.item_name);
         textView.setOnClickListener(new OnClickListener() {
             @Override
