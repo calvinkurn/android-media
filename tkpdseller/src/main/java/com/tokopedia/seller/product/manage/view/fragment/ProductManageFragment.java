@@ -11,6 +11,8 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -25,6 +27,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 
+import com.bumptech.glide.Glide;
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
@@ -41,6 +44,7 @@ import com.tokopedia.core.product.model.share.ShareData;
 import com.tokopedia.core.router.productdetail.PdpRouter;
 import com.tokopedia.core.share.ShareActivity;
 import com.tokopedia.core.util.GlobalConfig;
+import com.tokopedia.core.util.ShareSocmedHandler;
 import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.design.button.BottomActionView;
 import com.tokopedia.seller.R;
@@ -73,6 +77,7 @@ import com.tokopedia.seller.product.manage.constant.SortProductOption;
 import com.tokopedia.seller.product.manage.constant.StatusProductOption;
 import com.tokopedia.seller.product.manage.di.DaggerProductManageComponent;
 import com.tokopedia.seller.product.manage.di.ProductManageModule;
+import com.tokopedia.seller.product.manage.utils.AddSticker;
 import com.tokopedia.seller.product.manage.view.activity.ProductManageFilterActivity;
 import com.tokopedia.seller.product.manage.view.activity.ProductManageSortActivity;
 import com.tokopedia.seller.product.manage.view.adapter.ProductManageListAdapter;
@@ -86,10 +91,16 @@ import com.tokopedia.topads.sourcetagging.util.TopAdsAppLinkUtil;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 import javax.inject.Inject;
 
 import permissions.dispatcher.NeedsPermission;
+import rx.Observable;
+import rx.Subscriber;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Func1;
+import rx.schedulers.Schedulers;
 
 import static com.tokopedia.core.newgallery.GalleryActivity.INSTAGRAM_SELECT_REQUEST_CODE;
 
@@ -773,14 +784,68 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
                 .setName(productManageViewModel.getProductName())
                 .setTextContent(productManageViewModel.getProductName())
                 .setDescription(productManageViewModel.getProductName())
-                .setImgUri(productManageViewModel.getImageUrl())
+                .setImgUri(productManageViewModel.getImageFullUrl())
                 .setPrice(productManageViewModel.getProductPrice())
                 .setUri(productManageViewModel.getProductUrl())
                 .setType(ShareData.PRODUCT_TYPE)
                 .setId(productManageViewModel.getProductId())
                 .build();
-        Intent intent = ShareActivity.createIntent(getActivity(), shareData);
-        startActivity(intent);
+//        Intent intent = ShareActivity.createIntent(getActivity(), shareData);
+//        startActivity(intent);
+        shareWithSticker(shareData);
+    }
+
+    public void shareWithSticker(final ShareData data){
+        Observable.just(data.getImgUri())
+                .map(new Func1<String, Bitmap>() {
+                    @Override
+                    public Bitmap call(String image) {
+                        Bitmap bitmap = null;
+                        if (image != null) {
+                            try {
+                                bitmap = Glide.with(getActivity())
+                                        .load(image)
+                                        .asBitmap()
+                                        .centerCrop()
+                                        .into(2048, 2048)
+                                        .get();
+                            } catch (InterruptedException e) {
+                                e.printStackTrace();
+                            } catch (ExecutionException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                        return bitmap;
+                    }
+                }).subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .unsubscribeOn(Schedulers.io())
+                .subscribe(
+                        new Subscriber<Bitmap>() {
+                            @Override
+                            public void onCompleted() {
+
+                            }
+
+                            @Override
+                            public void onError(Throwable e) {
+
+                            }
+
+                            @Override
+                            public void onNext(final Bitmap bitmap) {
+                                AddSticker addSticker = new AddSticker.Builder()
+                                        .setName(data.getName())
+                                        .setPrice(data.getPrice())
+                                        .setLogo(BitmapFactory.decodeResource(getResources(), R.drawable.ic_new_logo))
+                                        .build();
+
+                                Bitmap newImage = addSticker.addStickerToBitmap(bitmap, getActivity());
+                                ShareSocmedHandler.ShareSpecific(data, getActivity(), TkpdState.PackageName.Instagram,
+                                        TkpdState.PackageName.TYPE_IMAGE, newImage, null);
+                            }
+                        }
+                );
     }
 
     private void showDialogChangeProductPrice(final String productId, String productPrice, @CurrencyTypeDef int productCurrencyId) {
