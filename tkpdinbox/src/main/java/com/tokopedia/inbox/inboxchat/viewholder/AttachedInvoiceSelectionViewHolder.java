@@ -14,9 +14,9 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.inbox.R;
 import com.tokopedia.inbox.inboxchat.presenter.ChatRoomContract;
-import com.tokopedia.inbox.inboxchat.viewmodel.AttachInvoiceSelectionViewModel;
-import com.tokopedia.inbox.inboxchat.viewmodel.AttachInvoiceSingleViewModel;
-import com.tokopedia.inbox.inboxchat.viewmodel.mapper.AttachInvoiceMapper;
+import com.tokopedia.inbox.inboxchat.viewmodel.chatroom.invoiceattachment.AttachInvoiceSelectionViewModel;
+import com.tokopedia.inbox.inboxchat.viewmodel.chatroom.invoiceattachment.AttachInvoiceSingleViewModel;
+import com.tokopedia.inbox.inboxchat.viewmodel.chatroom.invoiceattachment.mapper.AttachInvoiceMapper;
 
 import java.util.List;
 
