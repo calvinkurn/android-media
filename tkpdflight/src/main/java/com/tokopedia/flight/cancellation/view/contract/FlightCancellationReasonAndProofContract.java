@@ -51,11 +51,13 @@ public interface FlightCancellationReasonAndProofContract {
         void showAttachmentMinDimensionErrorMessage(int resId);
 
         void showAttachmentMaxSizeErrorMessage(int resId);
+
+        void addAttachments(List<FlightCancellationAttachmentViewModel> attachments);
     }
 
     interface Presenter extends CustomerPresenter<View>{
 
-        void initialize();
+        void initialize(List<FlightCancellationAttachmentViewModel> attachments);
 
         void onSuccessGetImage(String filepath);
 
