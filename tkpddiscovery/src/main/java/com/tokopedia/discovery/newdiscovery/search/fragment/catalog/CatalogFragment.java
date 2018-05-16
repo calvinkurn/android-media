@@ -268,8 +268,8 @@ public class CatalogFragment extends SearchSectionFragment implements
 
         topAdsRecyclerAdapter = new TopAdsRecyclerAdapter(getActivity(), catalogAdapter);
         topAdsRecyclerAdapter.setConfig(topAdsConfig);
-        topAdsRecyclerAdapter.setSpanSizeLookup(onSpanSizeLookup());
         topAdsRecyclerAdapter.setAdsItemClickListener(this);
+        topAdsRecyclerAdapter.setSpanSizeLookup(onSpanSizeLookup());
         topAdsRecyclerAdapter.setTopAdsListener(this);
         topAdsRecyclerAdapter.setHasHeader(true);
         recyclerView.setAdapter(topAdsRecyclerAdapter);

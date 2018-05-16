@@ -57,9 +57,11 @@ public interface FlightApi {
     @POST(FlightUrl.FLIGHT_SEARCH_SINGLE)
     Observable<Response<FlightDataResponse<List<FlightSearchData>>>> searchFlightSingle(@Body DataRequest<FlightSearchSingleRequestData> flightSearchRequest);
 
+    @Headers({"Accept-Encoding: gzip"})
     @GET(FlightUrl.FLIGHT_AIRPORT_PATH)
     Observable<Response<DataResponse<List<FlightAirportCountry>>>> getFlightAirportList(@QueryMap Map<String, String> keyword);
 
+    @Headers({"Accept-Encoding: gzip"})
     @GET(FlightUrl.FLIGHT_AIRLINE_PATH)
     Observable<Response<DataResponse<List<AirlineData>>>> getFlightAirlineList();
 
