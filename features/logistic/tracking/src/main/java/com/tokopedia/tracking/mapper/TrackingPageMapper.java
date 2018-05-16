@@ -37,7 +37,7 @@ public class TrackingPageMapper implements ITrackingPageMapper{
             historyViewModel.setTitle(order.getTrackHistory().get(i).getStatus());
             trackingHistoryViewModels.add(historyViewModel);
             if(i == 0) historyViewModel.setColor("#42b549");
-            else historyViewModel.setColor("#000000");
+            else historyViewModel.setColor("#9B9B9B");
         }
         model.setHistoryList(trackingHistoryViewModels);
         return model;

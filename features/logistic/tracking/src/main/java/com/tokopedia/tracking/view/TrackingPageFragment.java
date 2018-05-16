@@ -2,6 +2,8 @@ package com.tokopedia.tracking.view;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.widget.NestedScrollView;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Html;
 import android.text.TextUtils;
@@ -37,6 +39,8 @@ import static com.tokopedia.tracking.view.TrackingPageActivity.URL_LIVE_TRACKING
  */
 
 public class TrackingPageFragment extends BaseDaggerFragment implements ITrackingPageFragment {
+
+    private static final String ADDITIONAL_INFO_URL = "https://m.tokopedia.com/bantuan/217217126-agen-logistik-di-tokopedia";
 
     private TkpdProgressDialog loadingScreen;
     private TkpdProgressDialog progressDialog;
@@ -90,6 +94,7 @@ public class TrackingPageFragment extends BaseDaggerFragment implements ITrackin
         buyerLocation = view.findViewById(R.id.buyer_location);
         currentStatus = view.findViewById(R.id.currenct_status);
         trackingHistory = view.findViewById(R.id.tracking_history);
+        trackingHistory.setNestedScrollingEnabled(false);
         emptyUpdateNotification = view.findViewById(R.id.empty_update_notification);
         notificationHelpStep = view.findViewById(R.id.notification_help_step);
         TextView furtherInformationText = view.findViewById(R.id.further_information_text);
@@ -113,6 +118,7 @@ public class TrackingPageFragment extends BaseDaggerFragment implements ITrackin
         buyerName.setText(model.getBuyerName());
         buyerLocation.setText(model.getBuyerAddress());
         currentStatus.setText(model.getStatus());
+        trackingHistory.setLayoutManager(new LinearLayoutManager(getActivity()));
         trackingHistory.setAdapter(new TrackingHistoryAdapter(model.getHistoryList()));
         setEmptyHistoryView(model);
         setLiveTrackingButton();
@@ -158,6 +164,7 @@ public class TrackingPageFragment extends BaseDaggerFragment implements ITrackin
             emptyUpdateNotification.setVisibility(View.VISIBLE);
             if (model.isInvalid()) {
                 notificationHelpStep.setVisibility(View.VISIBLE);
+                notificationHelpStep.setLayoutManager(new LinearLayoutManager(getActivity()));
                 notificationHelpStep.setAdapter(new EmptyTrackingNotesAdapter());
             }
         } else {
@@ -197,7 +204,8 @@ public class TrackingPageFragment extends BaseDaggerFragment implements ITrackin
         return new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                startActivity(
+                        SimpleWebViewActivity.getIntent(getActivity(), ADDITIONAL_INFO_URL));
             }
         };
     }
