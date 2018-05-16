@@ -178,17 +178,7 @@ public class ImagePickerActivity extends BaseSimpleActivity
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (grantResults.length == permissionsToRequest.size()) {
-            boolean allIsAllowed = true;
-            for (int result : grantResults) {
-                if (result == -1) {
-                    allIsAllowed = false;
-                }
-            }
-            if (allIsAllowed) {
-                refreshViewPager();
-            }
-        }
+        // already handled in onResume();
     }
 
     @Override
