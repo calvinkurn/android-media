@@ -41,6 +41,8 @@ public class ShipmentDataConverter {
         recipientAddress.setDestinationDistrictId(String.valueOf(userAddress.getDistrictId()));
         recipientAddress.setAddressStreet(userAddress.getAddress());
         recipientAddress.setAddressPostalCode(userAddress.getPostalCode());
+        recipientAddress.setCityId(String.valueOf(userAddress.getCityId()));
+        recipientAddress.setProvinceId(String.valueOf(userAddress.getProvinceId()));
 
         recipientAddress.setRecipientName(userAddress.getReceiverName());
         recipientAddress.setRecipientPhoneNumber(userAddress.getPhone());
@@ -53,18 +55,6 @@ public class ShipmentDataConverter {
 
         return recipientAddress;
     }
-
-/*
-    public ShipmentCostModel getShipmentCostModel() {
-        ShipmentCostModel shipmentCostModel = new ShipmentCostModel();
-        shipmentCostModel.setInsuranceFee();
-        shipmentCostModel.setShippingFee();
-        shipmentCostModel.setTotalItem();
-        shipmentCostModel.setTotalItemPrice();
-        shipmentCostModel.setTotalPrice();
-        shipmentCostModel.setTotalWeight();
-    }
-*/
 
     public List<ShipmentCartItemModel> getShipmentItems(CartShipmentAddressFormData cartShipmentAddressFormData) {
         List<ShipmentCartItemModel> shipmentCartItemModels = new ArrayList<>();
@@ -142,6 +132,8 @@ public class ShipmentDataConverter {
                     );
                     addressItemData.setAddressCountryName(currentAddress.getUserAddress()
                             .getCountry());
+                    addressItemData.setCityId(String.valueOf(currentAddress.getUserAddress().getCityId()));
+                    addressItemData.setProvinceId(String.valueOf(currentAddress.getUserAddress().getProvinceId()));
                     shipmentMultipleAddressItem.setMultipleAddressItemData(addressItemData);
 
                     shipmentMultipleAddressItem.setProductIsFreeReturns(currentProduct.isProductIsFreeReturns());

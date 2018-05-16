@@ -27,6 +27,8 @@ public class AddressModelMapper {
         recipientAddress.setAddressStreet(addressModel.getAddressStreet());
         recipientAddress.setDestinationDistrictId(addressModel.getDistrictId());
         recipientAddress.setDestinationDistrictName(addressModel.getDistrictName());
+        recipientAddress.setCityId(addressModel.getCityId());
+        recipientAddress.setProvinceId(addressModel.getProvinceId());
         recipientAddress.setAddressCityName(addressModel.getCityName());
         recipientAddress.setAddressProvinceName(addressModel.getProvinceName());
         recipientAddress.setAddressCountryName(addressModel.getCountryName());

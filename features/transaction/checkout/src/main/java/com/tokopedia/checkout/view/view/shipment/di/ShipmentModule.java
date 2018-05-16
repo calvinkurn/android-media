@@ -1,5 +1,7 @@
 package com.tokopedia.checkout.view.view.shipment.di;
 
+import com.tokopedia.checkout.data.repository.AddressRepository;
+import com.tokopedia.checkout.domain.usecase.EditAddressUseCase;
 import com.tokopedia.transactiondata.repository.ICartRepository;
 import com.tokopedia.transactiondata.repository.ITopPayRepository;
 import com.tokopedia.checkout.domain.mapper.CartMapper;
@@ -76,6 +78,12 @@ public class ShipmentModule {
 
     @Provides
     @ShipmentScope
+    EditAddressUseCase provideEditAddressUseCase(AddressRepository addressRepository) {
+        return new EditAddressUseCase(addressRepository);
+    }
+
+    @Provides
+    @ShipmentScope
     CheckPromoCodeCartShipmentUseCase provideCheckPromoCodeCartShipmentUseCase(ICartRepository cartRepository,
                                                                                IVoucherCouponMapper voucherCouponMapper) {
         return new CheckPromoCodeCartShipmentUseCase(cartRepository, voucherCouponMapper);
@@ -114,9 +122,11 @@ public class ShipmentModule {
                                                         GetThanksToppayUseCase getThanksToppayUseCase,
                                                         CheckPromoCodeCartShipmentUseCase checkPromoCodeCartShipmentUseCase,
                                                         GetShipmentAddressFormUseCase getShipmentAddressFormUseCase,
-                                                        CheckPromoCodeCartListUseCase checkPromoCodeCartListUseCase) {
+                                                        CheckPromoCodeCartListUseCase checkPromoCodeCartListUseCase,
+                                                        EditAddressUseCase editAddressUseCase) {
         return new ShipmentPresenter(compositeSubscription, checkoutUseCase, getThanksToppayUseCase,
-                checkPromoCodeCartShipmentUseCase, getShipmentAddressFormUseCase, checkPromoCodeCartListUseCase);
+                checkPromoCodeCartShipmentUseCase, getShipmentAddressFormUseCase,
+                checkPromoCodeCartListUseCase, editAddressUseCase);
     }
 
     @Provides

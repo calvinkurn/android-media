@@ -14,4 +14,14 @@ public class LogisticDataConstantUrl {
 
         public static final String PATH_RATES_V2 = VERSION + BASE_PATH + "rates";
     }
+
+    public static class PeopleAction {
+        static public String BASE_URL = "https://ws.tokopedia.com/";
+
+        public static final String HMAC_KEY = "web_service_v4";
+        public static final String VERSION = "v4/";
+        static final String BASE_PATH = "action/people/";
+
+        public static final String PATH_EDIT_ADDRESS = VERSION + BASE_PATH + "edit_address.pl";
+    }
 }

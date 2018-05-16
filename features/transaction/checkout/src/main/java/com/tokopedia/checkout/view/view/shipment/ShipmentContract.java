@@ -5,6 +5,7 @@ import android.app.Activity;
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
 import com.tokopedia.checkout.view.view.shipment.viewmodel.ShipmentCheckoutButtonModel;
+import com.tokopedia.checkout.view.view.shipment.viewmodel.ShipmentMultipleAddressCartItemModel;
 import com.tokopedia.transactiondata.entity.request.DataCheckoutRequest;
 import com.tokopedia.checkout.domain.datamodel.addressoptions.RecipientAddressModel;
 import com.tokopedia.checkout.domain.datamodel.cartcheckout.CheckoutData;
@@ -54,6 +55,8 @@ public interface ShipmentContract {
         void renderErrorCheckPromoShipmentData(String message);
 
         void renderCheckPromoShipmentDataSuccess(CheckPromoCodeCartShipmentResult checkPromoCodeCartShipmentResult);
+
+        void renderEditAddressSuccess(String latitude, String longitude);
 
         Activity getActivity();
     }
@@ -106,6 +109,8 @@ public interface ShipmentContract {
         ShipmentCheckoutButtonModel getShipmentCheckoutButtonModel();
 
         void setShipmentCheckoutButtonModel(ShipmentCheckoutButtonModel shipmentCheckoutButtonModel);
+
+        void editAddressPinpoint(String latitude, String longitude, ShipmentCartItemModel shipmentCartItemModel);
 
     }
 

@@ -24,7 +24,7 @@ import javax.inject.Inject;
 
 /**
  * @author anggaprasetiyo on 08/02/18,
- *         Aghny A. Putra on 08/02/18.
+ * Aghny A. Putra on 08/02/18.
  */
 
 public class CartShipmentAddressFormDataConverter
@@ -165,6 +165,8 @@ public class CartShipmentAddressFormDataConverter
         recipientAddress.setDestinationDistrictId(String.valueOf(userAddress.getDistrictId()));
         recipientAddress.setAddressStreet(userAddress.getAddress());
         recipientAddress.setAddressPostalCode(userAddress.getPostalCode());
+        recipientAddress.setCityId(String.valueOf(userAddress.getCityId()));
+        recipientAddress.setProvinceId(String.valueOf(userAddress.getProvinceId()));
 
         recipientAddress.setRecipientName(userAddress.getReceiverName());
         recipientAddress.setRecipientPhoneNumber(userAddress.getPhone());

@@ -37,8 +37,6 @@ import com.tokopedia.checkout.view.view.shipment.di.ShipmentComponent;
 import com.tokopedia.checkout.view.view.shipment.di.ShipmentModule;
 import com.tokopedia.checkout.view.view.shipment.viewmodel.ShipmentCartItemModel;
 import com.tokopedia.checkout.view.view.shipment.viewmodel.ShipmentCheckoutButtonModel;
-import com.tokopedia.checkout.view.view.shipment.viewmodel.ShipmentMultipleAddressCartItemModel;
-import com.tokopedia.checkout.view.view.shipment.viewmodel.ShipmentSingleAddressCartItemModel;
 import com.tokopedia.checkout.view.view.shipmentform.CartShipmentActivity;
 import com.tokopedia.checkout.view.view.shippingoptions.CourierBottomsheet;
 import com.tokopedia.core.geolocation.activity.GeolocationActivity;
@@ -234,7 +232,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
 
     @Override
     public void hideLoading() {
-        if (!progressDialogNormal.isProgress()) progressDialogNormal.dismiss();
+        if (progressDialogNormal.isProgress()) progressDialogNormal.dismiss();
     }
 
     @Override
@@ -365,6 +363,18 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         shipmentAdapter.updatePromo(checkPromoCodeCartShipmentResult.getDataVoucher());
     }
 
+    @Override
+    public void renderEditAddressSuccess(String latitude, String longitude) {
+        shipmentAdapter.updateShipmentDestinationPinpoint(Double.parseDouble(latitude),
+                Double.parseDouble(longitude));
+        courierBottomsheet = null;
+        int position = shipmentAdapter.getLastChooseCourierItemPosition();
+        ShipmentCartItemModel shipmentCartItemModel = shipmentAdapter.getShipmentCartItemModelByIndex(position);
+        if (shipmentCartItemModel != null) {
+            onChooseShipment(position, shipmentCartItemModel, shipmentPresenter.getRecipientAddressModel());
+        }
+    }
+
     private void updateAppliedPromo(CartItemPromoHolderData cartPromo) {
         shipmentAdapter.updateItemPromoVoucher(cartPromo);
         if (shipmentAdapter.hasSetAllCourier()) {
@@ -397,14 +407,8 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         if (resultCode == Activity.RESULT_OK && data.getExtras() != null) {
             LocationPass locationPass = data.getExtras().getParcelable(GeolocationActivity.EXTRA_EXISTING_LOCATION);
             if (locationPass != null) {
-                shipmentAdapter.updateShipmentDestinationPinpoint(Double.parseDouble(locationPass.getLatitude()),
-                        Double.parseDouble(locationPass.getLongitude()));
-                courierBottomsheet = null;
-                int position = shipmentAdapter.getLastChooseCourierItemPosition();
-                ShipmentCartItemModel shipmentCartItemModel = shipmentAdapter.getShipmentCartItemModelByIndex(position);
-                if (shipmentCartItemModel != null) {
-                    onChooseShipment(position, shipmentCartItemModel, shipmentPresenter.getRecipientAddressModel());
-                }
+                shipmentPresenter.editAddressPinpoint(locationPass.getLatitude(), locationPass.getLongitude(),
+                        shipmentAdapter.getShipmentCartItemModelByIndex(shipmentAdapter.getLastChooseCourierItemPosition()));
             }
         }
     }

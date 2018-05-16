@@ -11,6 +11,9 @@ import com.tokopedia.abstraction.common.di.scope.ApplicationScope;
 import com.tokopedia.abstraction.common.network.OkHttpRetryPolicy;
 import com.tokopedia.abstraction.common.network.interceptor.TkpdAuthInterceptor;
 import com.tokopedia.abstraction.common.utils.GlobalConfig;
+import com.tokopedia.checkout.data.repository.AddressRepository;
+import com.tokopedia.checkout.data.repository.AddressRepositoryImpl;
+import com.tokopedia.logisticdata.data.apiservice.PeopleActApi;
 import com.tokopedia.transactiondata.apiservice.CartApi;
 import com.tokopedia.transactiondata.apiservice.CartApiInterceptor;
 import com.tokopedia.transactiondata.apiservice.CartResponseConverter;
@@ -236,6 +239,12 @@ public class DataModule {
     }
 
     @Provides
+    @CartQualifier
+    PeopleActApi providePeopleActApi(@CartTxActApiRetrofitQualifier Retrofit retrofit) {
+        return retrofit.create(PeopleActApi.class);
+    }
+
+    @Provides
     ICartRepository provideICartRepository(@CartQualifier CartApi cartApi) {
         return new CartRepository(cartApi);
     }
@@ -248,6 +257,11 @@ public class DataModule {
     @Provides
     RatesRepository provideRatesRepository(@CartQualifier RatesApi ratesApi) {
         return new RatesRepository(ratesApi);
+    }
+
+    @Provides
+    AddressRepository provideAddressRepository(@CartQualifier PeopleActApi peopleActApi) {
+        return new AddressRepositoryImpl(peopleActApi);
     }
 
 }

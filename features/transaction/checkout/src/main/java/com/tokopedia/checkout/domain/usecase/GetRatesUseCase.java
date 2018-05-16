@@ -3,11 +3,10 @@ package com.tokopedia.checkout.domain.usecase;
 import android.text.TextUtils;
 
 import com.tokopedia.abstraction.common.utils.TKPDMapParam;
-import com.tokopedia.checkout.domain.mapper.ShipmentRatesDataMapper;
-import com.tokopedia.checkout.view.view.shipment.converter.RatesDataConverter;
-import com.tokopedia.logisticdata.data.repository.RatesRepository;
 import com.tokopedia.checkout.domain.datamodel.shipmentrates.ShipmentDetailData;
+import com.tokopedia.checkout.view.view.shipment.converter.RatesDataConverter;
 import com.tokopedia.logisticdata.data.entity.rates.RatesResponse;
+import com.tokopedia.logisticdata.data.repository.RatesRepository;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.usecase.UseCase;
 
@@ -44,8 +43,7 @@ public class GetRatesUseCase extends UseCase<ShipmentDetailData> {
         return repository.getRates(mapParam).map(new Func1<RatesResponse, ShipmentDetailData>() {
             @Override
             public ShipmentDetailData call(RatesResponse ratesResponse) {
-                ShipmentDetailData shipmentDetailData1 = ratesDataConverter.getShipmentDetailData(shipmentDetailData, ratesResponse);
-                return shipmentDetailData1;
+                return ratesDataConverter.getShipmentDetailData(shipmentDetailData, ratesResponse);
             }
         });
     }

@@ -2,6 +2,7 @@ package com.tokopedia.checkout.view.di.component;
 
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
+import com.tokopedia.checkout.data.repository.AddressRepository;
 import com.tokopedia.transactiondata.repository.ICartRepository;
 import com.tokopedia.transactiondata.repository.ITopPayRepository;
 import com.tokopedia.logisticdata.data.repository.RatesRepository;
@@ -42,6 +43,8 @@ public interface CartComponent {
     ITopPayRepository topPayRepository();
 
     RatesRepository ratesRepository();
+
+    AddressRepository addressRepository();
 
     ICartMapper cartMapper();
 
