@@ -2,6 +2,7 @@ package com.tokopedia.digital.product.view.model;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.text.TextUtils;
 
 /**
  * @author anggaprasetiyo on 5/10/17.
@@ -143,4 +144,11 @@ public class OrderClientNumber implements Parcelable {
             return new OrderClientNumber[size];
         }
     };
+
+    public boolean isEmpty() {
+        return (TextUtils.isEmpty(clientNumber)
+                || TextUtils.isEmpty(productId) || productId.equalsIgnoreCase("0")
+                || TextUtils.isEmpty(categoryId) || categoryId.equalsIgnoreCase("0")
+                || TextUtils.isEmpty(operatorId) || operatorId.equalsIgnoreCase("0"));
+    }
 }

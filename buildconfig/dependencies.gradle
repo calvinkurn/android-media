@@ -23,7 +23,6 @@ ext {
     tkpdPdpVersion = '1.+'
     tkpdDesignVersion = '1.+'
     tkpdFeedVersion = '1.+'
-    tkpdRideVersion = '1.+'
     tkpdLoyaltyVersion = '1.+'
     tkpdReactNativeVersion = '1.+'
     tkpdFlightVersion = '1.+'
@@ -196,7 +195,6 @@ ext {
             tkpdpdp    : "com.tokopedia.tkpdpdp:tkpdpdp:${tkpdPdpVersion}",
             design     : "com.tokopedia.design:design:${tkpdDesignVersion}",
             feed       : "com.tokopedia.feed:feed:${tkpdFeedVersion}",
-            ride       : "com.tokopedia.ride:ride:${tkpdRideVersion}",
             reactNative: "com.tokopedia.tkpdreactnative:reactnative:${tkpdReactNativeVersion}",
             loyalty    : "com.tokopedia.loyalty:loyalty:${tkpdLoyaltyVersion}",
             flight     : "com.tokopedia.flight:flight:${tkpdFlightVersion}",
@@ -212,7 +210,6 @@ ext {
 
     features = [
             loyalty         : ":tkpdloyalty",
-            ride            : ":tkpdride",
             feed            : ":features:content:feed",
             digitalproduct  : ":features:digital:digitalproduct",
             core            : ":tkpdcore",

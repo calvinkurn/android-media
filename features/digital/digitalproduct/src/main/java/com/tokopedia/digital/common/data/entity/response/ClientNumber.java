@@ -1,6 +1,7 @@
 
 package com.tokopedia.digital.common.data.entity.response;
 
+import java.util.ArrayList;
 import java.util.List;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
@@ -27,7 +28,7 @@ public class ClientNumber {
     private String _default;
     @SerializedName("validation")
     @Expose
-    private List<Validation> validation = null;
+    private List<Validation> validation = new ArrayList<>();
 
     public String getName() {
         return name;
