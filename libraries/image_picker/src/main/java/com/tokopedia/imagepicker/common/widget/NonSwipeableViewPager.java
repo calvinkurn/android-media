@@ -23,8 +23,13 @@ public class NonSwipeableViewPager extends ViewPager {
 
     @Override
     public boolean onInterceptTouchEvent(MotionEvent arg0) {
-        // Never allow swiping to switch between pages
-        return canSwipe && super.onInterceptTouchEvent(arg0);
+        //reference for try catch: https://stackoverflow.com/questions/6919292/pointerindex-out-of-range-android-multitouch
+        try {
+            // Never allow swiping to switch between pages
+            return canSwipe && super.onInterceptTouchEvent(arg0);
+        }catch (Exception e) {
+            return false;
+        }
     }
 
     public void setCanSwipe(boolean canSwipe) {
@@ -33,7 +38,12 @@ public class NonSwipeableViewPager extends ViewPager {
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
+        // reference for try catch: https://stackoverflow.com/questions/6919292/pointerindex-out-of-range-android-multitouch
         // Never allow swiping to switch between pages
-        return canSwipe && super.onTouchEvent(event);
+        try {
+            return canSwipe && super.onTouchEvent(event);
+        } catch (Exception e) {
+            return false;
+        }
     }
 }

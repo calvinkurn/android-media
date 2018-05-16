@@ -46,7 +46,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                style="@style/TextView.TitleBig"
+                android:textSize="@dimen/sp_20"
+                android:textColor="@android:color/black"
                 tools:text="@string/crop"/>
 
         </android.support.v7.widget.Toolbar>
