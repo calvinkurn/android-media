@@ -650,7 +650,12 @@ public class DiscoverySearchView extends FrameLayout implements Filter.FilterLis
                 if (finishOnClose) {
                     setFinishOnClose(false);
                 }
-                startShowCase();
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        startShowCase();
+                    }
+                }, 600);
                 return true;
             }
         });
@@ -692,7 +697,13 @@ public class DiscoverySearchView extends FrameLayout implements Filter.FilterLis
             }, 500);
         }
         showSearch(animate);
-        startShowCase();
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                startShowCase();
+            }
+        }, 600);
+
     }
 
     public boolean isFinishOnClose() {

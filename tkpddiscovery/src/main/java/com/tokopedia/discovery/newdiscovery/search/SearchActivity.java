@@ -1,5 +1,6 @@
 package com.tokopedia.discovery.newdiscovery.search;
 
+import android.Manifest;
 import android.content.ClipData;
 import android.content.Context;
 import android.content.Intent;
@@ -21,6 +22,7 @@ import com.tokopedia.core.network.apiservices.ace.apis.BrowseApi;
 import com.tokopedia.core.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.core.remoteconfig.RemoteConfig;
 import com.tokopedia.core.router.discovery.BrowseProductRouter;
+import com.tokopedia.core.util.RequestPermissionUtil;
 import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.discovery.R;
 import com.tokopedia.discovery.newdiscovery.base.DiscoveryActivity;
@@ -40,6 +42,13 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import permissions.dispatcher.NeedsPermission;
+import permissions.dispatcher.OnNeverAskAgain;
+import permissions.dispatcher.OnPermissionDenied;
+import permissions.dispatcher.OnShowRationale;
+import permissions.dispatcher.PermissionRequest;
+import permissions.dispatcher.RuntimePermissions;
+
 import static com.tokopedia.core.gcm.Constants.FROM_APP_SHORTCUTS;
 import static com.tokopedia.core.router.discovery.BrowseProductRouter.EXTRAS_SEARCH_TERM;
 
@@ -47,6 +56,7 @@ import static com.tokopedia.core.router.discovery.BrowseProductRouter.EXTRAS_SEA
  * Created by henrypriyono on 10/6/17.
  */
 
+@RuntimePermissions
 public class SearchActivity extends DiscoveryActivity
         implements SearchContract.View, RedirectionListener {
 
@@ -181,16 +191,45 @@ public class SearchActivity extends DiscoveryActivity
                 sendImageSearchFromGalleryGTM("");
                 ClipData clipData = intent.getClipData();
                 Uri uri = clipData.getItemAt(0).getUri();
-                onImagePickedSuccess(uri.toString());
+                SearchActivityPermissionsDispatcher.onImageSuccessWithCheck(SearchActivity.this, uri.toString());
             } else if (intent.getData() != null &&
                     !TextUtils.isEmpty(intent.getData().toString())) {
                 searchView.hideShowCaseDialog(true);
                 sendImageSearchFromGalleryGTM("");
-                onImagePickedSuccess(intent.getData().toString());
+                SearchActivityPermissionsDispatcher.onImageSuccessWithCheck(SearchActivity.this, intent.getData().toString());
             }
         }
     }
 
+
+    @NeedsPermission(Manifest.permission.READ_EXTERNAL_STORAGE)
+    public void onImageSuccess(String uri) {
+        onImagePickedSuccess(uri);
+    }
+
+
+    @OnShowRationale(Manifest.permission.READ_EXTERNAL_STORAGE)
+    void showRationaleForStorage(final PermissionRequest request) {
+        RequestPermissionUtil.onShowRationale(this, request, Manifest.permission.READ_EXTERNAL_STORAGE);
+    }
+
+    @OnPermissionDenied(Manifest.permission.READ_EXTERNAL_STORAGE)
+    void showDeniedForStorage() {
+        RequestPermissionUtil.onPermissionDenied(this, Manifest.permission.READ_EXTERNAL_STORAGE);
+    }
+
+    @OnNeverAskAgain(Manifest.permission.READ_EXTERNAL_STORAGE)
+    void showNeverAskForStorage() {
+        RequestPermissionUtil.onNeverAskAgain(this, Manifest.permission.READ_EXTERNAL_STORAGE);
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        SearchActivityPermissionsDispatcher.onRequestPermissionsResult(
+                SearchActivity.this, requestCode, grantResults);
+
+    }
 
     private void sendImageSearchFromGalleryGTM(String label) {
         UnifyTracking.eventDiscoveryExternalImageSearch(label);
