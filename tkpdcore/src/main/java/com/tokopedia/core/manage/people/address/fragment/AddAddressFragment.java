@@ -20,6 +20,7 @@ import android.widget.TextView;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
+import com.google.android.gms.maps.model.LatLng;
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.R;
@@ -53,6 +54,9 @@ public class AddAddressFragment extends BasePresenterFragment<AddAddressPresente
 
     private static final int DISTRICT_RECOMMENDATION_REQUEST_CODE = 130715;
     private static final String ADDRESS = "district_recommendation_address";
+
+    private static final double MONAS_LATITUDE = -6.175794;
+    private static final double MONAS_LONGITUDE = 106.826457;
 
     private TextInputLayout receiverNameLayout;
     private EditText receiverNameEditText;
@@ -244,13 +248,14 @@ public class AddAddressFragment extends BasePresenterFragment<AddAddressPresente
     private void updateAddress() {
         if (address == null) address = new Destination();
 
-        address.setAddressName(addressTypeEditText.getText().toString());
-        address.setReceiverName(receiverNameEditText.getText().toString());
-        address.setAddressStreet(addressEditText.getText().toString());
         String[] splitAddress = districtEditText.getText().toString().split(", ");
         address.setProvinceName(splitAddress[0]);
         address.setCityName(splitAddress[1]);
         address.setDistrictName(splitAddress[2]);
+
+        address.setAddressName(addressTypeEditText.getText().toString());
+        address.setReceiverName(receiverNameEditText.getText().toString());
+        address.setAddressStreet(addressEditText.getText().toString());
         address.setPostalCode(zipCodeTextView.getText().toString());
         address.setReceiverPhone(receiverPhoneEditText.getText().toString());
     }
@@ -292,14 +297,14 @@ public class AddAddressFragment extends BasePresenterFragment<AddAddressPresente
     public void initializeZipCodes() {
         zipCodeTextView.setText("");
         String header = getResources().getString(R.string.hint_type_postal_code);
-        if (!zipCodes.contains(header)) {
-            zipCodes.add(0, header);
-        }
+        if (!zipCodes.contains(header)) zipCodes.add(0, header);
+
         ArrayAdapter<String> zipCodeAdapter = new ArrayAdapter<>(
                         context,
                         R.layout.item_autocomplete_text_double_row,
                         R.id.item,
                         zipCodes);
+
         zipCodeTextView.setAdapter(zipCodeAdapter);
     }
 
@@ -318,20 +323,19 @@ public class AddAddressFragment extends BasePresenterFragment<AddAddressPresente
         int resultCode = availability.isGooglePlayServicesAvailable(getActivity());
         if (ConnectionResult.SUCCESS == resultCode) {
             CommonUtils.dumper("Google play services available");
-            LocationPass locationPass;
 
-//            if (presenter.getLatLng() != null) {
-//                locationPass = new LocationPass();
-//                locationPass.setLatitude(String.valueOf(presenter.getLatLng().latitude));
-//                locationPass.setLongitude(String.valueOf(presenter.getLatLng().longitude));
-//                locationPass.setGeneratedAddress(locationEditText.getText().toString());
-//            } else {
-//                locationPass = new LocationPass();
-//
-//            }
+            LocationPass locationPass = new LocationPass();
 
-//            Intent intent = GeolocationActivity.createInstance(getActivity(), locationPass);
-//            startActivityForResult(intent, REQUEST_CODE);
+            if (address.getLatLng() != null) {
+                locationPass = new LocationPass();
+                locationPass.setLatitude(String.valueOf(address.getLatLng().latitude));
+                locationPass.setLongitude(String.valueOf(address.getLatLng().longitude));
+                locationPass.setGeneratedAddress(locationEditText.getText().toString());
+            }
+
+            Intent intent = GeolocationActivity.createInstance(getActivity(), locationPass);
+            startActivityForResult(intent, REQUEST_CODE);
+
         } else {
             CommonUtils.dumper("Google play services unavailable");
             Dialog dialog = availability.getErrorDialog(getActivity(), resultCode, 0);
@@ -349,14 +353,21 @@ public class AddAddressFragment extends BasePresenterFragment<AddAddressPresente
                 Bundle bundle = data.getExtras();
                 if (bundle != null) {
                     LocationPass locationPass = bundle.getParcelable(GeolocationActivity.EXTRA_EXISTING_LOCATION);
-
                     if (locationPass != null) {
-//                        presenter.setLatLng(locationPass.getLatitude(), locationPass.getLongitude());
-//                        if (locationPass.getGeneratedAddress().equals(getString(R.string.choose_this_location))) {
-//                            generatedAddress = presenter.getLatLng().latitude + ", " + presenter.getLatLng().longitude;
-//                        } else {
-//                            generatedAddress = locationPass.getGeneratedAddress();
-//                        }
+                        String latitude = locationPass.getLatitude();
+                        String longitude = locationPass.getLongitude();
+
+                        if (!latitude.isEmpty() && !longitude.isEmpty()) {
+                            address.setLatLng(new LatLng(Double.parseDouble(latitude), Double.parseDouble(longitude)));
+                        } else {
+                            address.setLatLng(new LatLng(MONAS_LATITUDE, MONAS_LONGITUDE));
+                        }
+
+                        if (locationPass.getGeneratedAddress().equals(getString(R.string.choose_this_location))) {
+                            generatedAddress = address.getLatLng().latitude + ", " + address.getLatLng().longitude;
+                        } else {
+                            generatedAddress = locationPass.getGeneratedAddress();
+                        }
                     }
                 }
 
@@ -367,12 +378,12 @@ public class AddAddressFragment extends BasePresenterFragment<AddAddressPresente
                 if (bundle != null) {
                     DistrictRecommendationAddress address = bundle.getParcelable(ADDRESS);
                     if (address != null) {
-                        List<String> addr = new ArrayList<>(Arrays.asList(
+                        List<String> compositeAddress = new ArrayList<>(Arrays.asList(
                            address.getDistrictName(),
                            address.getCityName(),
                            address.getProvinceName()
                         ));
-                        String fullAddress = TextUtils.join(", ", addr);
+                        String fullAddress = TextUtils.join(", ", compositeAddress);
                         districtEditText.setText(fullAddress);
 
                         this.address.setCityId(String.valueOf(address.getCityId()));
@@ -389,20 +400,18 @@ public class AddAddressFragment extends BasePresenterFragment<AddAddressPresente
 
     @Override
     protected void initialVar() {
-        if (address != null) {
-            receiverNameEditText.setText(address.getReceiverName());
-            addressTypeEditText.setText(address.getAddressName());
-            addressEditText.setText(address.getAddressStreet());
-            districtEditText.setText(TextUtils.join(", ", Arrays.asList(
-                    address.getProvinceName(),
-                    address.getCityName(),
-                    address.getDistrictName()
-            )));
-            zipCodeTextView.setText(address.getPostalCode());
-            receiverPhoneEditText.setText(address.getReceiverPhone());
-        } else {
-            address = new Destination();
-        }
+        if (address == null) address = new Destination();
+
+        receiverNameEditText.setText(address.getReceiverName());
+        addressTypeEditText.setText(address.getAddressName());
+        addressEditText.setText(address.getAddressStreet());
+        districtEditText.setText(TextUtils.join(", ", Arrays.asList(
+                address.getProvinceName(),
+                address.getCityName(),
+                address.getDistrictName()
+        )));
+        zipCodeTextView.setText(address.getPostalCode());
+        receiverPhoneEditText.setText(address.getReceiverPhone());
     }
 
     @Override

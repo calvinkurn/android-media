@@ -349,10 +349,12 @@ public class Destination implements Parcelable {
     }
 
     public LatLng getLatLng() {
+        LatLng latLng = null;
         if (getLatitude() != null && getLongitude() != null) {
-            return new LatLng(Double.parseDouble(getLatitude()), Double.parseDouble(getLongitude()));
-        } else
-            return null;
+            latLng =  new LatLng(Double.parseDouble(getLatitude()), Double.parseDouble(getLongitude()));
+        }
+
+        return latLng;
     }
 
     public void setLatLng(LatLng latLng) {

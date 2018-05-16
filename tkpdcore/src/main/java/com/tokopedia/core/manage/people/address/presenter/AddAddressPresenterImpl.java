@@ -28,9 +28,6 @@ public class AddAddressPresenterImpl implements AddAddressPresenter {
     private static final String PARAM_LONGITUDE = "longitude";
     private static final String PARAM_PASSWORD = "user_password";
 
-    private static final double MONAS_LATITUDE = -6.175794;
-    private static final double MONAS_LONGITUDE = 106.826457;
-
     private final AddAddressFragmentView viewListener;
     private final AddAddressRetrofitInteractor networkInteractor;
 
@@ -52,21 +49,14 @@ public class AddAddressPresenterImpl implements AddAddressPresenter {
     @Override
     public void saveAddress() {
         viewListener.showLoading();
-
         if (viewListener.isEdit()) {
-            networkInteractor.editAddress(viewListener.context(),
-                    getParam(),
-                    getAddAddressListener()
-            );
+            networkInteractor.editAddress(viewListener.context(), getParam(), getListener());
         } else {
-            networkInteractor.addAddress(viewListener.context(),
-                    getParam(),
-                    getAddAddressListener()
-            );
+            networkInteractor.addAddress(viewListener.context(), getParam(), getListener());
         }
     }
 
-    private AddAddressRetrofitInteractor.AddAddressListener getAddAddressListener() {
+    private AddAddressRetrofitInteractor.AddAddressListener getListener() {
         return new AddAddressRetrofitInteractor.AddAddressListener() {
             @Override
             public void onSuccess(String address_id) {
@@ -107,13 +97,17 @@ public class AddAddressPresenterImpl implements AddAddressPresenter {
     }
 
     private Map<String, String> getParam() {
+        Map<String, String> params;
         Destination address = viewListener.getAddress();
+
         if (viewListener.isEdit()) {
             String password = viewListener.getPassword();
-            return getParamEditAddress(address, password);
+            params = getParamEditAddress(address, password);
         } else {
-            return getParamAddAddress(address);
+            params = getParamAddAddress(address);
         }
+
+        return params;
     }
 
     private HashMap<String, String> getParamAddAddress(Destination address) {
