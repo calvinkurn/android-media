@@ -35,7 +35,7 @@ public class DistrictRecommendationEntityMapper {
             address = new Address();
             address.setDistrictId(entity.getDistrictId());
             address.setDistrictName(entity.getDistrictName());
-            address.setCityId(entity.getDistrictId());
+            address.setCityId(entity.getCityId());
             address.setCityName(entity.getCityName());
             address.setProvinceId(entity.getProvinceId());
             address.setProvinceName(entity.getProvinceName());
