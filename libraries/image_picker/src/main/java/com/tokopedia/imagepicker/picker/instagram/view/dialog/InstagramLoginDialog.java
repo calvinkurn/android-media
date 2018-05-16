@@ -1,12 +1,16 @@
 package com.tokopedia.imagepicker.picker.instagram.view.dialog;
 
 import android.app.Dialog;
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.net.http.SslError;
 import android.support.design.widget.BottomSheetBehavior;
+import android.text.TextUtils;
 import android.view.View;
 import android.view.WindowManager;
+import android.webkit.CookieManager;
 import android.webkit.SslErrorHandler;
 import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
@@ -18,6 +22,10 @@ import android.widget.ProgressBar;
 import com.tokopedia.design.component.BottomSheets;
 import com.tokopedia.imagepicker.R;
 import com.tokopedia.imagepicker.picker.instagram.InstagramConstant;
+
+import javax.inject.Inject;
+
+import static com.tokopedia.imagepicker.picker.instagram.InstagramConstant.SESSIONID;
 
 /**
  * Created by zulfikarrahman on 5/4/18.
@@ -85,6 +93,7 @@ public class InstagramLoginDialog extends BottomSheets {
 
     public interface ListenerLoginInstagram {
         void onSuccessLogin(String code);
+        void saveCookies(String cookies);
     }
 
     private class MyWebChromeClient extends WebChromeClient {
@@ -123,6 +132,18 @@ public class InstagramLoginDialog extends BottomSheets {
                 view.loadUrl(url);
             }
             return false;
+        }
+
+        @Override
+        public void onPageFinished(WebView view, String url) {
+            super.onPageFinished(view, url);
+            String cookies = CookieManager.getInstance().getCookie(url);
+            if (!TextUtils.isEmpty(cookies) && cookies.contains(SESSIONID)) {
+                if (listenerLoginInstagram != null) {
+                    listenerLoginInstagram.saveCookies(cookies);
+                }
+            }
+
         }
 
         @Override

@@ -14,6 +14,8 @@ public class InstagramConstant {
     public static final String REDIRECT_URI_KEY = "redirect_uri";
     public static final String GRANT_TYPE_KEY = "grant_type";
     public static final String CODE_KEY = "code";
+    public static final String COOKIES_KEY = "cookies";
+    public static final String SESSIONID = "sessionid";
     public static final String AUTHORIZATION_CODE = "authorization_code";
     public static final String NEXT_MAX_ID_KEY = "next_max_id";
     public static final String PER_PAGE_MEDIA = "21";

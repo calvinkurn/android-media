@@ -10,6 +10,7 @@ import com.tokopedia.imagepicker.picker.instagram.data.source.InstagramDataSourc
 import com.tokopedia.imagepicker.picker.instagram.data.source.cloud.InstagramApi;
 import com.tokopedia.imagepicker.picker.instagram.domain.InstagramRepository;
 import com.tokopedia.imagepicker.picker.instagram.domain.interactor.GetListMediaInstagramUseCase;
+import com.tokopedia.imagepicker.picker.instagram.domain.interactor.SaveCookiesInstagramUseCase;
 import com.tokopedia.imagepicker.picker.instagram.view.presenter.ImagePickerInstagramPresenter;
 
 import java.util.concurrent.TimeUnit;
@@ -32,8 +33,9 @@ public class InstagramModule {
 
     @InstagramScope
     @Provides
-    ImagePickerInstagramPresenter provideImagePickerInstagramPresenter(GetListMediaInstagramUseCase getListMediaInstagramUseCase) {
-        return new ImagePickerInstagramPresenter(getListMediaInstagramUseCase);
+    ImagePickerInstagramPresenter provideImagePickerInstagramPresenter(GetListMediaInstagramUseCase getListMediaInstagramUseCase,
+                                                                       SaveCookiesInstagramUseCase saveCookiesInstagramUseCase) {
+        return new ImagePickerInstagramPresenter(getListMediaInstagramUseCase, saveCookiesInstagramUseCase);
     }
 
     @InstagramScope
