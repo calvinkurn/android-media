@@ -67,6 +67,8 @@ public class Destination implements Parcelable {
 
     private String geoLocation;
 
+    private String password;
+
     public Destination() {
     }
 
@@ -87,6 +89,7 @@ public class Destination implements Parcelable {
         cityName = in.readString();
         districtName = in.readString();
         geoLocation = in.readString();
+        password = in.readString();
     }
 
     public static final Creator<Destination> CREATOR = new Creator<Destination>() {
@@ -348,14 +351,21 @@ public class Destination implements Parcelable {
     public LatLng getLatLng() {
         if (getLatitude() != null && getLongitude() != null) {
             return new LatLng(Double.parseDouble(getLatitude()), Double.parseDouble(getLongitude()));
-        }
-
-        return null;
+        } else
+            return null;
     }
 
     public void setLatLng(LatLng latLng) {
         this.latitude = String.valueOf(latLng.latitude);
         this.longitude = String.valueOf(latLng.longitude);
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public String getPassword() {
+        return password;
     }
 
     @Override
@@ -381,5 +391,6 @@ public class Destination implements Parcelable {
         parcel.writeString(cityName);
         parcel.writeString(districtName);
         parcel.writeString(geoLocation);
+        parcel.writeString(password);
     }
 }

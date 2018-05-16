@@ -51,19 +51,18 @@ public class AddAddressPresenterImpl implements AddAddressPresenter {
 
     @Override
     public void saveAddress() {
-        if (viewListener.isValidAddress()) {
-            viewListener.showLoading();
-            if (viewListener.isEdit()) {
-                networkInteractor.editAddress(viewListener.context(),
-                        getParam(),
-                        getAddAddressListener()
-                );
-            } else {
-                networkInteractor.addAddress(viewListener.context(),
-                        getParam(),
-                        getAddAddressListener()
-                );
-            }
+        viewListener.showLoading();
+
+        if (viewListener.isEdit()) {
+            networkInteractor.editAddress(viewListener.context(),
+                    getParam(),
+                    getAddAddressListener()
+            );
+        } else {
+            networkInteractor.addAddress(viewListener.context(),
+                    getParam(),
+                    getAddAddressListener()
+            );
         }
     }
 
@@ -75,7 +74,7 @@ public class AddAddressPresenterImpl implements AddAddressPresenter {
                 if (!TextUtils.isEmpty(address_id)) {
                     Destination address = viewListener.getAddress();
                     address.setAddressId(address_id);
-                    viewListener.updateAddress(address);
+                    viewListener.setAddress(address);
                 }
 
                 viewListener.finishActivity();

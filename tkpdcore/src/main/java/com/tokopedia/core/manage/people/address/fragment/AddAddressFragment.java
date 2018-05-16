@@ -75,6 +75,7 @@ public class AddAddressFragment extends BasePresenterFragment<AddAddressPresente
 
     private List<String> zipCodes;
     private Token token;
+
     private Destination address;
 
     TkpdProgressDialog mProgressDialog;
@@ -216,11 +217,7 @@ public class AddAddressFragment extends BasePresenterFragment<AddAddressPresente
         getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
         mProgressDialog = new TkpdProgressDialog(getActivity(), TkpdProgressDialog.NORMAL_PROGRESS);
 
-        if (isEdit()) {
-            passwordLayout.setVisibility(View.VISIBLE);
-        } else {
-            passwordLayout.setVisibility(View.GONE);
-        }
+        passwordLayout.setVisibility(isEdit() ? View.VISIBLE : View.GONE);
     }
 
     @Override
@@ -236,9 +233,26 @@ public class AddAddressFragment extends BasePresenterFragment<AddAddressPresente
         saveButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                presenter.saveAddress();
+                if (isValidAddress()) {
+                    updateAddress();
+                    presenter.saveAddress();
+                }
             }
         });
+    }
+
+    private void updateAddress() {
+        if (address == null) address = new Destination();
+
+        address.setAddressName(addressTypeEditText.getText().toString());
+        address.setReceiverName(receiverNameEditText.getText().toString());
+        address.setAddressStreet(addressEditText.getText().toString());
+        String[] splitAddress = districtEditText.getText().toString().split(", ");
+        address.setProvinceName(splitAddress[0]);
+        address.setCityName(splitAddress[1]);
+        address.setDistrictName(splitAddress[2]);
+        address.setPostalCode(zipCodeTextView.getText().toString());
+        address.setReceiverPhone(receiverPhoneEditText.getText().toString());
     }
 
     private View.OnClickListener onCityDistrictClick() {
@@ -361,6 +375,10 @@ public class AddAddressFragment extends BasePresenterFragment<AddAddressPresente
                         String fullAddress = TextUtils.join(", ", addr);
                         districtEditText.setText(fullAddress);
 
+                        this.address.setCityId(String.valueOf(address.getCityId()));
+                        this.address.setDistrictId(String.valueOf(address.getDistrictId()));
+                        this.address.setProvinceId(String.valueOf(address.getProvinceId()));
+
                         zipCodes = new ArrayList<>(address.getZipCodes());
                         initializeZipCodes();
                     }
@@ -382,6 +400,8 @@ public class AddAddressFragment extends BasePresenterFragment<AddAddressPresente
             )));
             zipCodeTextView.setText(address.getPostalCode());
             receiverPhoneEditText.setText(address.getReceiverPhone());
+        } else {
+            address = new Destination();
         }
     }
 
@@ -528,7 +548,7 @@ public class AddAddressFragment extends BasePresenterFragment<AddAddressPresente
     }
 
     @Override
-    public void updateAddress(Destination address) {
+    public void setAddress(Destination address) {
         this.address = address;
     }
 }

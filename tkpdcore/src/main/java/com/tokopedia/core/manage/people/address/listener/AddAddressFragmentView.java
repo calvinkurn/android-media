@@ -29,6 +29,6 @@ public interface AddAddressFragmentView {
 
     Destination getAddress();
 
-    void updateAddress(Destination address);
+    void setAddress(Destination address);
 
 }
