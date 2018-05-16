@@ -36,13 +36,14 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Nomor Resi"
+                        android:text="@string/label_reference_number"
                         android:textColor="@color/label_color" />
 
                     <TextView
                         android:id="@+id/reference_number"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:textColor="@color/black_70"
                         android:textSize="@dimen/text_size_large"
                         android:textStyle="bold"
                         tools:text="486118" />

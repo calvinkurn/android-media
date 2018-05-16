@@ -1,4 +1,3 @@
-/*
 package com.tokopedia.tokocash;
 
 import com.tokopedia.tokocash.autosweepmf.data.repository.AutoSweepRepositoryImpl;
@@ -35,4 +34,3 @@ public class AutoSweepApiUnitTest {
         Mockito.verify()
     }
 }
-*/
