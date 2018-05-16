@@ -16,7 +16,6 @@ import com.tokopedia.flight.common.view.BaseFlightActivity;
 import com.tokopedia.flight.dashboard.di.DaggerFlightDashboardComponent;
 import com.tokopedia.flight.dashboard.di.FlightDashboardComponent;
 import com.tokopedia.flight.dashboard.view.fragment.FlightDashboardFragment;
-import com.tokopedia.flight.dashboard.view.fragment.viewmodel.FlightDashboardViewModel;
 
 /**
  * Created by nathan on 10/19/17.
@@ -24,7 +23,6 @@ import com.tokopedia.flight.dashboard.view.fragment.viewmodel.FlightDashboardVie
 
 public class FlightDashboardActivity extends BaseFlightActivity implements HasComponent<FlightDashboardComponent> {
 
-    private static final String EXTRA_DASHBOARD = "EXTRA_DASHBOARD";
     private static final String EXTRA_TRIP = "EXTRA_TRIP";
     private static final String EXTRA_ADULT = "EXTRA_ADULT";
     private static final String EXTRA_CHILD = "EXTRA_CHILD";
@@ -33,12 +31,6 @@ public class FlightDashboardActivity extends BaseFlightActivity implements HasCo
 
     public static Intent getCallingIntent(Context context) {
         return new Intent(context, FlightDashboardActivity.class);
-    }
-
-    public static Intent getCallingIntent(Context context, FlightDashboardViewModel viewModel) {
-        Intent intent = new Intent(context, FlightDashboardActivity.class);
-        intent.putExtra(EXTRA_DASHBOARD, viewModel);
-        return intent;
     }
 
     @DeepLink(ApplinkConstant.FLIGHT)
