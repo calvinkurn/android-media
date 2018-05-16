@@ -34,15 +34,15 @@ public class ImageUploadViewModel extends SendableViewModel implements
      * @param replyTime         replytime in unixtime
      * @param imageUrl          image url
      * @param imageUrlThumbnail thumbnail image url
-     * !! startTime is not returned from API
+     *                          !! startTime is not returned from API
      */
     public ImageUploadViewModel(String messageId, String fromUid, String from,
                                 String fromRole, String attachmentId,
                                 String attachmentType, String replyTime,
                                 boolean isSender, String imageUrl,
-                                String imageUrlThumbnail, boolean isRead) {
+                                String imageUrlThumbnail, boolean isRead, String message) {
         super(messageId, fromUid, from, fromRole, attachmentId, attachmentType, replyTime,
-                "", isRead, false, isSender);
+                "", isRead, false, isSender, message);
         this.isRetry = false;
         this.imageUrl = imageUrl;
         this.imageUrlThumbnail = imageUrlThumbnail;
@@ -69,9 +69,9 @@ public class ImageUploadViewModel extends SendableViewModel implements
                                 String fromRole, String attachmentId,
                                 String attachmentType, String replyTime,
                                 boolean isSender, String imageUrl,
-                                String imageUrlThumbnail, String startTime) {
+                                String imageUrlThumbnail, String startTime, String message) {
         super(messageId, fromUid, from, fromRole, attachmentId, attachmentType, replyTime,
-                startTime, false, false, isSender);
+                startTime, false, false, isSender, message);
         this.isRetry = false;
         this.imageUrl = imageUrl;
         this.imageUrlThumbnail = imageUrlThumbnail;
@@ -89,7 +89,7 @@ public class ImageUploadViewModel extends SendableViewModel implements
             startTime) {
         super("", fromUid, "", "", attachmentId,
                 WebSocketMapper.TYPE_IMAGE_UPLOAD, DummyChatViewModel.SENDING_TEXT, startTime,
-                false, true, true);
+                false, true, true, "");
         this.isRetry = false;
         this.imageUrl = fileLoc;
         this.imageUrlThumbnail = imageUrl;

@@ -35,8 +35,9 @@ public class SendableViewModel extends BaseChatViewModel {
      */
     public SendableViewModel(String messageId, String fromUid, String from, String fromRole,
                              String attachmentId, String attachmentType, String replyTime,
-                             String startTime, boolean isRead, boolean isDummy, boolean isSender) {
-        super(messageId, fromUid, from, fromRole, attachmentId, attachmentType, replyTime);
+                             String startTime, boolean isRead, boolean isDummy, boolean isSender,
+                             String message) {
+        super(messageId, fromUid, from, fromRole, attachmentId, attachmentType, replyTime, message);
         this.startTime = startTime;
         this.isRead = isRead;
         this.isDummy = isDummy;

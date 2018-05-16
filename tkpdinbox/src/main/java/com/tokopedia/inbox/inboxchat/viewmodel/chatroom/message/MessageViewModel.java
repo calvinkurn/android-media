@@ -10,8 +10,6 @@ import com.tokopedia.inbox.inboxchat.viewmodel.chatroom.SendableViewModel;
  */
 public class MessageViewModel extends SendableViewModel implements Visitable<ChatRoomTypeFactory> {
 
-    private String message;
-
     /**
      * Constructor for WebSocketResponse / API Response
      * {@link com.tokopedia.inbox.inboxchat.ChatWebSocketListenerImpl}
@@ -35,8 +33,7 @@ public class MessageViewModel extends SendableViewModel implements Visitable<Cha
                             String startTime, String message, boolean isRead, boolean isDummy,
                             boolean isSender) {
         super(messageId, fromUid, from, fromRole, attachmentId, attachmentType, replyTime,
-                startTime, isRead, isDummy, isSender);
-        this.message = message;
+                startTime, isRead, isDummy, isSender, message);
     }
 
     /**
@@ -53,12 +50,7 @@ public class MessageViewModel extends SendableViewModel implements Visitable<Cha
                             String message) {
         super(messageId, fromUid, from, "", "", "",
                 DummyChatViewModel.SENDING_TEXT, startTime,
-                false, true, true);
-        this.message = message;
-    }
-
-    public String getMessage() {
-        return message;
+                false, true, true, message);
     }
 
     @Override

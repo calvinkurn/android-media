@@ -1442,7 +1442,9 @@ public class ChatRoomFragment extends BaseDaggerFragment
             getActivity().runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
+                    setViewEnabled(true);
                     processReceiveMessage(message);
+                    setResult();
                 }
             });
         }

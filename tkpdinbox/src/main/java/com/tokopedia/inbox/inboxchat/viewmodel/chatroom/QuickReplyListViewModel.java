@@ -14,7 +14,6 @@ import java.util.List;
 public class QuickReplyListViewModel extends BaseChatViewModel implements
         Visitable<ChatRoomTypeFactory> {
 
-    private String message;
     public List<QuickReplyViewModel> quickReplies;
 
 
@@ -28,9 +27,8 @@ public class QuickReplyListViewModel extends BaseChatViewModel implements
                                    String replyTime,
                                    List<QuickReplyViewModel> quickReplies) {
         super(msgId, fromUid, from, fromRole,
-                attachmentId, attachmentType, replyTime);
+                attachmentId, attachmentType, replyTime, message);
         this.quickReplies = quickReplies;
-        this.message = message;
     }
 
     public List<QuickReplyViewModel> getQuickReplies() {
@@ -55,7 +53,4 @@ public class QuickReplyListViewModel extends BaseChatViewModel implements
                 new ArrayList<QuickReplyViewModel>());
     }
 
-    public String getMessage() {
-        return message;
-    }
 }

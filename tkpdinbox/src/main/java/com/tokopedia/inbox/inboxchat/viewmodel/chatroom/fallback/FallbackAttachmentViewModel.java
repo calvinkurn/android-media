@@ -23,22 +23,15 @@ public class FallbackAttachmentViewModel extends BaseChatViewModel implements
                                        String url,
                                        String span,
                                        String html) {
-        super(msgId, fromUid, from, fromRole, attachmentId, attachmentType, replyTime);
-        this.message = fallbackMessage;
+        super(msgId, fromUid, from, fromRole, attachmentId, attachmentType, replyTime, fallbackMessage);
         this.url = url;
         this.span = span;
         this.html = html;
     }
 
-    private String message;
     private String url;
     private String span;
     private String html;
-
-    public String getMessage() {
-        return message;
-    }
-
 
     public String getUrl() {
         return url;

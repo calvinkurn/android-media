@@ -51,8 +51,8 @@ public class ProductAttachmentViewModel extends BaseChatViewModel implements Vis
                                       String replyTime, boolean isRead,
                                       Integer productId, String productName,
                                       String productPrice, String productUrl,
-                                      String productImage, boolean isSender) {
-        super(messageId, fromUid, from, fromRole, attachmentId, attachmentType, replyTime);
+                                      String productImage, boolean isSender, String message) {
+        super(messageId, fromUid, from, fromRole, attachmentId, attachmentType, replyTime, message);
         this.isRead = isRead;
         this.isDummy = false;
         this.productId = productId;
@@ -87,8 +87,8 @@ public class ProductAttachmentViewModel extends BaseChatViewModel implements Vis
                                       String replyTime, Integer productId,
                                       String productName, String productPrice,
                                       String productUrl, String productImage,
-                                      boolean isSender) {
-        super(messageId, fromUid, from, fromRole, attachmentId, attachmentType, replyTime);
+                                      boolean isSender, String message) {
+        super(messageId, fromUid, from, fromRole, attachmentId, attachmentType, replyTime, message);
         this.isRead = false;
         this.isDummy = false;
         this.productId = productId;
@@ -114,7 +114,7 @@ public class ProductAttachmentViewModel extends BaseChatViewModel implements Vis
                                       String productPrice, String productUrl,
                                       String productImage) {
         super("", loginID, "", "", "",
-                WebSocketMapper.TYPE_PRODUCT_ATTACHMENT, DummyChatViewModel.SENDING_TEXT);
+                WebSocketMapper.TYPE_PRODUCT_ATTACHMENT, DummyChatViewModel.SENDING_TEXT, "");
         this.isRead = false;
         this.isDummy = true;
         this.productId = productId;

@@ -202,7 +202,8 @@ public class GetReplyMapper implements Func1<Response<TkpdResponse>, ChatRoomVie
                 isSender(item.getSenderId()),
                 item.getAttachment().getAttributes().getImageUrl(),
                 item.getAttachment().getAttributes().getThumbnail(),
-                item.isMessageIsRead()
+                item.isMessageIsRead(),
+                item.getMsg()
         );
 
         list.add(imageUpload);
@@ -218,7 +219,8 @@ public class GetReplyMapper implements Func1<Response<TkpdResponse>, ChatRoomVie
                 item.getAttachment().getType(),
                 item.getReplyTime(),
                 item.getAttachment().getAttributes().getImageUrl(),
-                item.getAttachment().getAttributes().getUrl()
+                item.getAttachment().getAttributes().getUrl(),
+                item.getMsg()
         );
 
         list.add(imageAnnouncement);
@@ -240,7 +242,8 @@ public class GetReplyMapper implements Func1<Response<TkpdResponse>, ChatRoomVie
                 item.getAttachment().getAttributes().getProductProfile().getPrice(),
                 item.getAttachment().getAttributes().getProductProfile().getUrl(),
                 item.getAttachment().getAttributes().getProductProfile().getImageUrl(),
-                isSender(item.getSenderId())
+                isSender(item.getSenderId()),
+                item.getMsg()
         );
 
         list.add(productAttachment);

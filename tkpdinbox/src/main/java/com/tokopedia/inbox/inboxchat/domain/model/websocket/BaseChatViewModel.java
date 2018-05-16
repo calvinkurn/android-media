@@ -13,6 +13,7 @@ public class BaseChatViewModel {
     private String attachmentType;
     private String replyTime;
     private boolean showTime = false;
+    private String message;
 
     /**
      * Constructor for WebSocketResponse / API Response
@@ -34,7 +35,8 @@ public class BaseChatViewModel {
                              String fromRole,
                              String attachmentId,
                              String attachmentType,
-                             String replyTime) {
+                             String replyTime,
+                             String message) {
         this.messageId = messageId;
         this.fromUid = fromUid;
         this.from = from;
@@ -42,6 +44,7 @@ public class BaseChatViewModel {
         this.attachmentId = attachmentId;
         this.attachmentType = attachmentType;
         this.replyTime = replyTime;
+        this.message = message;
     }
 
     public String getMessageId() {
@@ -72,6 +75,10 @@ public class BaseChatViewModel {
         return replyTime;
     }
 
+    public String getMessage() {
+        return message;
+    }
+
     public boolean isShowTime() {
         return showTime;
     }
@@ -84,4 +91,6 @@ public class BaseChatViewModel {
     public void setShowTime(boolean showTime) {
         this.showTime = showTime;
     }
+
+
 }

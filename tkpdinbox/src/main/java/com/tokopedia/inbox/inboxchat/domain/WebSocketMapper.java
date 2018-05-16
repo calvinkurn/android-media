@@ -123,7 +123,8 @@ public class WebSocketMapper {
                 isSender(String.valueOf(pojo.getFromUid())),
                 pojoAttribute.getImageUrl(),
                 pojoAttribute.getThumbnail(),
-                pojo.getStartTime()
+                pojo.getStartTime(),
+                pojo.getMessage().getCensoredReply()
         );
     }
 
@@ -144,7 +145,8 @@ public class WebSocketMapper {
                 pojoAttribute.getProductProfile().getPrice(),
                 pojoAttribute.getProductProfile().getUrl(),
                 pojoAttribute.getProductProfile().getImageUrl(),
-                isSender(String.valueOf(pojo.getFromUid()))
+                isSender(String.valueOf(pojo.getFromUid())),
+                pojo.getMessage().getCensoredReply()
         );
     }
 

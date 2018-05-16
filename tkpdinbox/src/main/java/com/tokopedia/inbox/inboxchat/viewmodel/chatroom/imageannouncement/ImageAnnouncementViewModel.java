@@ -33,8 +33,9 @@ public class ImageAnnouncementViewModel extends BaseChatViewModel implements Vis
      */
     public ImageAnnouncementViewModel(String messageId, String fromUid, String from,
                                       String fromRole, String attachmentId, String attachmentType,
-                                      String replyTime, String imageUrl, String redirectUrl) {
-        super(messageId, fromUid, from, fromRole, attachmentId, attachmentType, replyTime);
+                                      String replyTime, String imageUrl, String redirectUrl,
+                                      String message) {
+        super(messageId, fromUid, from, fromRole, attachmentId, attachmentType, replyTime, message);
         this.imageUrl = imageUrl;
         this.redirectUrl = redirectUrl;
     }

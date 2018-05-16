@@ -18,12 +18,12 @@ import com.tokopedia.inbox.inboxchat.domain.model.reply.WebSocketResponse;
 import com.tokopedia.inbox.inboxchat.domain.model.websocket.BaseChatViewModel;
 import com.tokopedia.inbox.inboxchat.viewholder.AttachedInvoiceSentViewHolder;
 import com.tokopedia.inbox.inboxchat.viewholder.MyChatViewHolder;
-import com.tokopedia.inbox.inboxchat.viewmodel.chatroom.SendableViewModel;
-import com.tokopedia.inbox.inboxchat.viewmodel.chatroom.imageupload.ImageUploadViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.MyChatViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.OppositeChatViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.TypingChatModel;
+import com.tokopedia.inbox.inboxchat.viewmodel.chatroom.SendableViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.chatroom.TimeMachineChatModel;
+import com.tokopedia.inbox.inboxchat.viewmodel.chatroom.imageupload.ImageUploadViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.chatroom.productattachment.ProductAttachmentViewModel;
 
 import java.util.ArrayList;
@@ -333,6 +333,14 @@ public class ChatRoomAdapter extends RecyclerView.Adapter<AbstractViewHolder> {
             item = (ListReplyViewModel) list.get(1);
             return new ReplyParcelableModel(String.valueOf(item.getMsgId()), item.getMsg(), item
                     .getReplyTime());
+        } else if (list.size() > 0 && list.get(0) instanceof BaseChatViewModel) {
+            BaseChatViewModel viewModel = (BaseChatViewModel) list.get(0);
+            return new ReplyParcelableModel(String.valueOf(viewModel.getMessageId()), viewModel
+                    .getMessage(), viewModel.getReplyTime());
+        } else if (list.size() > 1 && list.get(1) instanceof BaseChatViewModel) {
+            BaseChatViewModel viewModel = (BaseChatViewModel) list.get(1);
+            return new ReplyParcelableModel(String.valueOf(viewModel.getMessageId()), viewModel
+                    .getMessage(), viewModel.getReplyTime());
         } else {
             return null;
         }
@@ -352,13 +360,6 @@ public class ChatRoomAdapter extends RecyclerView.Adapter<AbstractViewHolder> {
                         break;
                     } else {
                         ((MyChatViewModel) list.get(i)).setReadStatus(true);
-                        notifyItemRangeChanged(i, 1);
-                    }
-                } else if (currentItem instanceof ProductAttachmentViewModel) {
-                    if (((ProductAttachmentViewModel) list.get(i)).isReadStatus()) {
-                        break;
-                    } else {
-                        ((ProductAttachmentViewModel) list.get(i)).setReadStatus(true);
                         notifyItemRangeChanged(i, 1);
                     }
                 }

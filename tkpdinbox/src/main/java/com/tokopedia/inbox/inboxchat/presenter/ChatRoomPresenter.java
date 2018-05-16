@@ -369,41 +369,6 @@ public class ChatRoomPresenter extends BaseDaggerPresenter<ChatRoomContract.View
     public void openCamera() {
         cameraFileLoc = imageUploadHandler.actionCamera2();
     }
-//
-//    @Override
-//    public void startUpload(final List<DummyChatViewModel> list, final int network) {
-//        getView().setUploadingMode(true);
-//        String userId = SessionHandler.getTempLoginSession(getView().getActivity());
-//        String deviceId = GCMHandler.getRegistrationId(getView().getActivity());
-//        final String messageId = (getView().getArguments().getString(PARAM_MESSAGE_ID));
-//        attachImageUseCase.execute(AttachImageUseCase.getParam(list, messageId, userId, deviceId),
-//                new Subscriber<UploadImageDomain>() {
-//                    @Override
-//                    public void onCompleted() {
-//
-//                    }
-//
-//                    @Override
-//                    public void onError(Throwable throwable) {
-//                        getView().setUploadingMode(false);
-//                        String error = ErrorHandler.getErrorMessage(throwable, getView()
-//                                .getActivity());
-//                        if (throwable instanceof MessageErrorException) {
-//                            error = throwable.getLocalizedMessage();
-//                        }
-//                        getView().onErrorUploadImages(error, list.get(0));
-//                    }
-//
-//                    @Override
-//                    public void onNext(UploadImageDomain uploadImageDomain) {
-//                        if (network == InboxChatConstant.MODE_WEBSOCKET) {
-//                            sendImage(messageId, uploadImageDomain.getPicSrc());
-//                        } else if (network == InboxChatConstant.MODE_API) {
-//                            uploadWithApi(uploadImageDomain.getPicSrc(), list.get(0));
-//                        }
-//                    }
-//                });
-//    }
 
     @Override
     public void startUpload(final List<ImageUploadViewModel> list, final int network) {
