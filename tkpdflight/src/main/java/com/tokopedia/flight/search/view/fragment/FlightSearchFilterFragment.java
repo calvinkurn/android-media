@@ -88,6 +88,7 @@ public class FlightSearchFilterFragment extends BaseDaggerFragment implements On
         populateAirlineLabel(view, filterModel, statModel);
         populateDepartureLabel(view, filterModel);
         populateRefundLabel(view, filterModel);
+        populateSpecialLabel(view, filterModel, statModel);
     }
 
     public void resetFilter() {
@@ -302,6 +303,12 @@ public class FlightSearchFilterFragment extends BaseDaggerFragment implements On
                 onDeleteRefund(selectionItem.getKey());
             }
         });
+    }
+
+
+
+    private void populateSpecialLabel(View view, FlightFilterModel filterModel, FlightSearchStatisticModel statModel) {
+
     }
 
     private void onDeleteTransit(String transitKey) {
