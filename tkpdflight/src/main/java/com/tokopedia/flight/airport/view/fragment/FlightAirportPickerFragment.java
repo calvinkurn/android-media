@@ -56,6 +56,12 @@ public class FlightAirportPickerFragment extends BaseSearchListFragment<Visitabl
     }
 
     @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+    }
+
+    @Override
     public void loadData(int page) {
         if (isFirstTime) searchInputView.setVisibility(View.GONE);
         flightAirportPickerPresenter.getAirportList(searchInputView.getSearchText(), isFirstTime);

@@ -23,29 +23,14 @@ public class FlightCountryViewHolder extends AbstractViewHolder<FlightCountryAir
     public static int LAYOUT = R.layout.item_flight_country;
 
     private TextView countryTextView;
-    private RecyclerView airportRecyclerView;
 
-    private FlightAirportClickListener flightAirportClickListener;
-
-    public FlightCountryViewHolder(View itemView, FlightAirportClickListener flightAirportClickListener) {
+    public FlightCountryViewHolder(View itemView) {
         super(itemView);
         countryTextView = (TextView) itemView.findViewById(R.id.country);
-        airportRecyclerView = (RecyclerView) itemView.findViewById(R.id.rv_airports);
-        this.flightAirportClickListener = flightAirportClickListener;
     }
 
     @Override
     public void bind(FlightCountryAirportViewModel country) {
         countryTextView.setText(country.getCountryName());
-        List<Visitable> visitables = new ArrayList<>();
-        visitables.addAll(country.getAirports());
-        FlightAirportAdapter airportAdapter = new FlightAirportAdapter(new FlightAirportAdapterTypeFactory(flightAirportClickListener), visitables);
-        LinearLayoutManager flightSimpleAdapterLayoutManager
-                = new LinearLayoutManager(itemView.getContext(), LinearLayoutManager.VERTICAL, false);
-        airportRecyclerView.setLayoutManager(flightSimpleAdapterLayoutManager);
-        airportRecyclerView.setHasFixedSize(true);
-        airportRecyclerView.setNestedScrollingEnabled(false);
-        airportRecyclerView.setAdapter(airportAdapter);
-        airportAdapter.notifyDataSetChanged();
     }
 }

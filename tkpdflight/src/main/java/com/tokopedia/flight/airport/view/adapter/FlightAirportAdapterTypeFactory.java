@@ -25,7 +25,7 @@ public class FlightAirportAdapterTypeFactory extends BaseAdapterTypeFactory {
     @Override
     public AbstractViewHolder createViewHolder(View parent, int type) {
         if (type == FlightCountryViewHolder.LAYOUT) {
-            return new FlightCountryViewHolder(parent, flightAirportClickListener);
+            return new FlightCountryViewHolder(parent);
         } else if (type == FlightAirportViewHolder.LAYOUT) {
             return new FlightAirportViewHolder(parent, flightAirportClickListener);
         } else {
