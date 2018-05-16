@@ -33,7 +33,7 @@ import com.tokopedia.inbox.inboxchat.helper.AttachmentChatHelper;
 import com.tokopedia.inbox.inboxchat.presenter.subscriber.GetReplySubscriber;
 import com.tokopedia.inbox.inboxchat.uploadimage.domain.model.UploadImageDomain;
 import com.tokopedia.inbox.inboxchat.util.ImageUploadHandlerChat;
-import com.tokopedia.inbox.inboxchat.viewmodel.AttachInvoiceSelectionViewModel;
+import com.tokopedia.inbox.inboxchat.viewmodel.chatroom.invoiceattachment.AttachInvoiceSelectionViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.ChatRoomViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.GetTemplateViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.MyChatViewModel;
@@ -42,7 +42,7 @@ import com.tokopedia.inbox.inboxchat.viewmodel.SendMessageViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.TemplateChatModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.chatroom.QuickReplyListViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.chatroom.imageupload.ImageUploadViewModel;
-import com.tokopedia.inbox.inboxchat.viewmodel.mapper.AttachInvoiceMapper;
+import com.tokopedia.inbox.inboxchat.viewmodel.chatroom.invoiceattachment.mapper.AttachInvoiceMapper;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -266,18 +266,18 @@ public class ChatRoomPresenter extends BaseDaggerPresenter<ChatRoomContract.View
 //                    getView().getAdapter().removeLast();
 //                    getView().getAdapter().addReply(invoiceSentViewModel);
 //                } else
-                if (response.getData().getAttachment() != null &&
-                        response.getData().getAttachment().getType().equals(AttachmentChatHelper
-                                .INVOICE_LIST_ATTACHED)) {
-                    AttachInvoiceSelectionViewModel invoiceSelectionViewModel =
-                            AttachInvoiceMapper.attachmentToAttachInvoiceSelectionModel(item
-                                    .getAttachment());
-                    getView().getAdapter().removeLast();
-                    getView().getAdapter().addReply(invoiceSelectionViewModel);
-                } else {
+//                if (response.getData().getAttachment() != null &&
+//                        response.getData().getAttachment().getType().equals(AttachmentChatHelper
+//                                .INVOICE_LIST_ATTACHED)) {
+//                    AttachInvoiceSelectionViewModel invoiceSelectionViewModel =
+//                            AttachInvoiceMapper.attachmentToAttachInvoiceSelectionModel(item
+//                                    .getAttachment(),item);
+//                    getView().getAdapter().removeLast();
+//                    getView().getAdapter().addReply(invoiceSelectionViewModel);
+//                } else {
                     getView().getAdapter().removeLast();
                     getView().getAdapter().addReply(item);
-                }
+//                }
                 getView().resetReplyColumn();
                 getView().scrollToBottom();
             } else if (getView() != null && getView().isCurrentThread(response.getData().getMsgId
@@ -301,15 +301,15 @@ public class ChatRoomPresenter extends BaseDaggerPresenter<ChatRoomContract.View
 //                                .PRODUCT_ATTACHED)) {
 //                    AttachProductViewModel productItem = new AttachProductViewModel(item);
 //                    getView().getAdapter().addReply(productItem);
-//                } else
-                if (response.getData().getAttachment() != null &&
-                        response.getData().getAttachment().getType().equals(AttachmentChatHelper
-                                .INVOICE_LIST_ATTACHED)) {
-                    AttachInvoiceSelectionViewModel invoices = AttachInvoiceMapper
-                            .attachmentToAttachInvoiceSelectionModel(response.getData()
-                                    .getAttachment());
-                    getView().getAdapter().addReply(invoices);
-                } else {
+//                } else if (response.getData().getAttachment() != null &&
+//                        response.getData().getAttachment().getType().equals(AttachmentChatHelper
+//                                .INVOICE_LIST_ATTACHED)) {
+//                    AttachInvoiceSelectionViewModel invoices = AttachInvoiceMapper
+//                            .attachmentToAttachInvoiceSelectionModel(response.getData()
+//                                    .getAttachment(),item);
+//                    getView().getAdapter().addReply(invoices);
+//                }
+                else {
                     getView().getAdapter().addReply(item);
                 }
                 getView().scrollToBottomWithCheck();
