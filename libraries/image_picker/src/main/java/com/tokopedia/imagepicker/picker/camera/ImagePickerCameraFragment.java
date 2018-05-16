@@ -113,6 +113,10 @@ public class ImagePickerCameraFragment extends TkpdBaseV4Fragment {
                         supportedFlashList.add(flash);
                     }
                 }
+                if (supportedFlashList != null && supportedFlashList.size() > 0) {
+                    flashImageButton.setVisibility(View.VISIBLE);
+                    setCameraFlash();
+                }
             }
 
             private void setPreviewCameraLayoutOneByOne() {
@@ -128,18 +132,13 @@ public class ImagePickerCameraFragment extends TkpdBaseV4Fragment {
                 generateImage(imageByte);
             }
         });
-        if (supportedFlashList != null && supportedFlashList.size() > 0) {
-            flashImageButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    flashIndex = (flashIndex + 1) % supportedFlashList.size();
-                    setCameraFlash();
-                }
-            });
-            setCameraFlash();
-        } else {
-            flashImageButton.setVisibility(View.INVISIBLE);
-        }
+        flashImageButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                flashIndex = (flashIndex + 1) % supportedFlashList.size();
+                setCameraFlash();
+            }
+        });
 
         shutterImageButton.setOnClickListener(new View.OnClickListener() {
             @Override
