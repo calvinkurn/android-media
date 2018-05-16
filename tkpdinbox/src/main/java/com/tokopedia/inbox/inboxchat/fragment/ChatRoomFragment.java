@@ -97,13 +97,14 @@ import com.tokopedia.inbox.inboxchat.viewholder.ListChatViewHolder;
 import com.tokopedia.inbox.inboxchat.viewmodel.AttachInvoiceSentViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.ChatRoomViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.DummyChatViewModel;
-import com.tokopedia.inbox.inboxchat.viewmodel.chatroom.SendableViewModel;
-import com.tokopedia.inbox.inboxchat.viewmodel.chatroom.imageupload.ImageUploadViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.InboxChatViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.MyChatViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.OppositeChatViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.chatroom.QuickReplyListViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.chatroom.QuickReplyViewModel;
+import com.tokopedia.inbox.inboxchat.viewmodel.chatroom.SendableViewModel;
+import com.tokopedia.inbox.inboxchat.viewmodel.chatroom.imageupload.ImageUploadViewModel;
+import com.tokopedia.inbox.inboxchat.viewmodel.chatroom.message.MessageViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.chatroom.productattachment.ProductAttachmentViewModel;
 import com.tokopedia.inbox.inboxmessage.InboxMessageConstant;
 
@@ -1254,7 +1255,7 @@ public class ChatRoomFragment extends BaseDaggerFragment
                 String.valueOf(System.currentTimeMillis() / MILIS_TO_SECOND),
                 imageUrl,
                 date.format(Calendar.getInstance().getTime())
-                );
+        );
         return model;
     }
 
@@ -1339,15 +1340,16 @@ public class ChatRoomFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void addDummyMessage(String dummyText) {
-        DummyChatViewModel item = new DummyChatViewModel();
-        item.setMsg(dummyText.length() != 0 ? dummyText : getReplyMessage());
-        if (!TextUtils.isEmpty(getArguments().getString(InboxMessageConstant.PARAM_MESSAGE_ID))) {
-            item.setMsgId(Integer.parseInt(getArguments().getString(InboxMessageConstant.PARAM_MESSAGE_ID)));
-        }
-        item.setReplyTime(DummyChatViewModel.SENDING_TEXT);
-        item.setSenderId(getArguments().getString(InboxMessageConstant.PARAM_SENDER_ID));
-        adapter.addReply(item);
+    public void addDummyMessage(String dummyText, String startTime) {
+
+        MessageViewModel dummyChat = new MessageViewModel(
+                getArguments().getString(InboxMessageConstant.PARAM_MESSAGE_ID),
+                sessionHandler.getLoginID(),
+                sessionHandler.getLoginName(),
+                startTime,
+                dummyText.length() != 0 ? dummyText : getReplyMessage()
+        );
+        adapter.addReply(dummyChat);
         scrollToBottom();
     }
 

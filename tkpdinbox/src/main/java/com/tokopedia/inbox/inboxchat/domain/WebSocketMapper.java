@@ -6,6 +6,7 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonSyntaxException;
 import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.inbox.inboxchat.ChatWebSocketConstant;
 import com.tokopedia.inbox.inboxchat.domain.model.websocket.BaseChatViewModel;
 import com.tokopedia.inbox.inboxchat.domain.pojo.common.WebSocketResponse;
 import com.tokopedia.inbox.inboxchat.domain.pojo.common.WebSocketResponseData;
@@ -47,30 +48,46 @@ public class WebSocketMapper {
 
             WebSocketResponse pojo = new GsonBuilder().create().fromJson(json, WebSocketResponse.class);
 
-            JsonObject jsonAttributes = pojo.getData().getAttachment().getAttributes();
-            if (pojo.getData() != null
-                    && pojo.getData().getAttachment() != null
-                    && jsonAttributes != null) {
-                switch (pojo.getData().getAttachment().getType()) {
-                    case TYPE_QUICK_REPLY:
-                        return convertToQuickReplyModel(pojo.getData(), jsonAttributes);
-                    case TYPE_PRODUCT_ATTACHMENT:
-                        return convertToProductAttachment(pojo.getData(), jsonAttributes);
-                    case TYPE_IMAGE_UPLOAD:
-                        return convertToImageUpload(pojo.getData(), jsonAttributes);
-                    default:
-//                        return convertToFallBackModel(pojo.getData());
-                        return null;
-                }
+            if (pojo.getCode() == ChatWebSocketConstant.EVENT_TOPCHAT_REPLY_MESSAGE) {
+                return mapReplyMessage(pojo);
             } else {
-                return convertToMessageViewModel(pojo.getData());
+                return null;
             }
+
         } catch (JsonSyntaxException e) {
             return null;
         } catch (NullPointerException e) {
             return null;
         }
+    }
 
+    private boolean hasAttachment(WebSocketResponse pojo) {
+        return pojo.getData() != null
+                && pojo.getData().getAttachment() != null
+                && pojo.getData().getAttachment().getAttributes() != null;
+    }
+
+    private BaseChatViewModel mapReplyMessage(WebSocketResponse pojo) {
+        if (hasAttachment(pojo)) {
+            JsonObject jsonAttributes = pojo.getData().getAttachment().getAttributes();
+            return mapAttachmentMessage(pojo, jsonAttributes);
+        } else {
+            return convertToMessageViewModel(pojo.getData());
+        }
+    }
+
+    private BaseChatViewModel mapAttachmentMessage(WebSocketResponse pojo, JsonObject jsonAttributes) {
+        switch (pojo.getData().getAttachment().getType()) {
+            case TYPE_QUICK_REPLY:
+                return convertToQuickReplyModel(pojo.getData(), jsonAttributes);
+            case TYPE_PRODUCT_ATTACHMENT:
+                return convertToProductAttachment(pojo.getData(), jsonAttributes);
+            case TYPE_IMAGE_UPLOAD:
+                return convertToImageUpload(pojo.getData(), jsonAttributes);
+            default:
+//                        return convertToFallBackModel(pojo.getData());
+                return null;
+        }
     }
 
     private BaseChatViewModel convertToMessageViewModel(WebSocketResponseData pojo) {
@@ -79,8 +96,8 @@ public class WebSocketMapper {
                 String.valueOf(pojo.getFromUid()),
                 pojo.getFrom(),
                 pojo.getFromRole(),
-                pojo.getAttachment().getId(),
-                pojo.getAttachment().getType(),
+                "",
+                "",
                 pojo.getMessage().getTimeStampUnix(),
                 pojo.getStartTime(),
                 pojo.getMessage().getCensoredReply(),

@@ -7,7 +7,6 @@ import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.network.ErrorMessageException;
 import com.tokopedia.core.network.retrofit.response.ErrorHandler;
 import com.tokopedia.core.network.retrofit.response.TkpdResponse;
-import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.inbox.R;
 import com.tokopedia.inbox.inboxchat.domain.WebSocketMapper;
@@ -26,6 +25,7 @@ import com.tokopedia.inbox.inboxchat.viewmodel.chatroom.QuickReplyListViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.chatroom.QuickReplyViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.chatroom.imageannouncement.ImageAnnouncementViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.chatroom.imageupload.ImageUploadViewModel;
+import com.tokopedia.inbox.inboxchat.viewmodel.chatroom.message.MessageViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.chatroom.productattachment.ProductAttachmentViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.mapper.AttachInvoiceMapper;
 
@@ -109,52 +109,56 @@ public class GetReplyMapper implements Func1<Response<TkpdResponse>, ChatRoomVie
                         convertQuickItemChatList(item.getAttachment().getQuickReplies())
                 );
                 list.add(quickReplyListViewModel);
-            } else if (!item.isOpposite()) {
-                MyChatViewModel temp = new MyChatViewModel();
-                temp.setReplyId(item.getReplyId());
-                temp.setSenderId(item.getSenderId());
-                temp.setMsg(item.getMsg());
-                temp.setReplyTime(item.getReplyTime());
-                temp.setFraudStatus(item.getFraudStatus());
-                temp.setReadTime(item.getReadTime());
-                temp.setAttachmentId(item.getAttachmentId());
-                temp.setOldMsgId(item.getOldMsgId());
-                temp.setMsgId(item.getMsgId());
-                temp.setRole(item.getRole());
-                temp.setSenderName(item.getSenderName());
-                temp.setHighlight(item.isHighlight());
-                temp.setOldMessageTitle(item.getOldMessageTitle());
-                if (item.isHighlight()) {
-                    temp.setSpanned(MethodChecker.fromHtml(item.getMsg()));
-                }
-                temp.setAttachment(item.getAttachment());
-                temp.setReadStatus(item.isMessageIsRead());
-
-                list.add(checkAndConvertItemModelToAttachmentType(temp, temp.getAttachment()));
             } else {
-                OppositeChatViewModel temp = new OppositeChatViewModel();
-                temp.setReplyId(item.getReplyId());
-                temp.setSenderId(item.getSenderId());
-                temp.setMsg(item.getMsg());
-                temp.setReplyTime(item.getReplyTime());
-                temp.setFraudStatus(item.getFraudStatus());
-                temp.setReadTime(item.getReadTime());
-                temp.setAttachmentId(item.getAttachmentId());
-                temp.setOldMsgId(item.getOldMsgId());
-                temp.setMsgId(item.getMsgId());
-                temp.setRole(item.getRole());
-                temp.setSenderName(item.getSenderName());
-                temp.setHighlight(item.isHighlight());
-                temp.setOldMessageTitle(item.getOldMessageTitle());
-                temp.setShowRating(item.isShowRating());
-                temp.setRatingStatus(item.getRatingStatus());
-                temp.setReplyTimeNano(Long.parseLong(item.getReplyTimeNano()));
-                if (item.isHighlight()) {
-                    temp.setSpanned(MethodChecker.fromHtml(item.getMsg()));
-                }
-                temp.setAttachment(item.getAttachment());
-                list.add(checkAndConvertItemModelToAttachmentType(temp, temp.getAttachment()));
+                mapToMessageViewModel(list, item);
             }
+
+//                if (!item.isOpposite()) {
+//                MyChatViewModel temp = new MyChatViewModel();
+//                temp.setReplyId(item.getReplyId());
+//                temp.setSenderId(item.getSenderId());
+//                temp.setMsg(item.getMsg());
+//                temp.setReplyTime(item.getReplyTime());
+//                temp.setFraudStatus(item.getFraudStatus());
+//                temp.setReadTime(item.getReadTime());
+//                temp.setAttachmentId(item.getAttachmentId());
+//                temp.setOldMsgId(item.getOldMsgId());
+//                temp.setMsgId(item.getMsgId());
+//                temp.setRole(item.getRole());
+//                temp.setSenderName(item.getSenderName());
+//                temp.setHighlight(item.isHighlight());
+//                temp.setOldMessageTitle(item.getOldMessageTitle());
+//                if (item.isHighlight()) {
+//                    temp.setSpanned(MethodChecker.fromHtml(item.getMsg()));
+//                }
+//                temp.setAttachment(item.getAttachment());
+//                temp.setReadStatus(item.isMessageIsRead());
+//
+//                list.add(checkAndConvertItemModelToAttachmentType(temp, temp.getAttachment()));
+//            } else {
+//                OppositeChatViewModel temp = new OppositeChatViewModel();
+//                temp.setReplyId(item.getReplyId());
+//                temp.setSenderId(item.getSenderId());
+//                temp.setMsg(item.getMsg());
+//                temp.setReplyTime(item.getReplyTime());
+//                temp.setFraudStatus(item.getFraudStatus());
+//                temp.setReadTime(item.getReadTime());
+//                temp.setAttachmentId(item.getAttachmentId());
+//                temp.setOldMsgId(item.getOldMsgId());
+//                temp.setMsgId(item.getMsgId());
+//                temp.setRole(item.getRole());
+//                temp.setSenderName(item.getSenderName());
+//                temp.setHighlight(item.isHighlight());
+//                temp.setOldMessageTitle(item.getOldMessageTitle());
+//                temp.setShowRating(item.isShowRating());
+//                temp.setRatingStatus(item.getRatingStatus());
+//                temp.setReplyTimeNano(Long.parseLong(item.getReplyTimeNano()));
+//                if (item.isHighlight()) {
+//                    temp.setSpanned(MethodChecker.fromHtml(item.getMsg()));
+//                }
+//                temp.setAttachment(item.getAttachment());
+//                list.add(checkAndConvertItemModelToAttachmentType(temp, temp.getAttachment()));
+//            }
 
         }
         Collections.reverse(list);
@@ -166,6 +170,24 @@ public class GetReplyMapper implements Func1<Response<TkpdResponse>, ChatRoomVie
         }
         setOpponentViewModel(chatRoomViewModel, data.getContacts());
         return chatRoomViewModel;
+    }
+
+    private void mapToMessageViewModel(ArrayList<Visitable> list, ListReply item) {
+        MessageViewModel messageViewModel = new MessageViewModel(
+                String.valueOf(item.getMsgId()),
+                String.valueOf(item.getSenderId()),
+                item.getSenderName(),
+                item.getRole(),
+                "",
+                "",
+                item.getReplyTime(),
+                "",
+                item.getMsg(),
+                item.isMessageIsRead(),
+                false,
+                isSender(item.getSenderId())
+        );
+        list.add(messageViewModel);
     }
 
     private void mapToImageUpload(ArrayList<Visitable> list, ListReply item) {

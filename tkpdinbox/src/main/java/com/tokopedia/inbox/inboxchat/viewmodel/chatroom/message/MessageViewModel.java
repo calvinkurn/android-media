@@ -2,6 +2,7 @@ package com.tokopedia.inbox.inboxchat.viewmodel.chatroom.message;
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.inbox.inboxchat.adapter.ChatRoomTypeFactory;
+import com.tokopedia.inbox.inboxchat.viewmodel.DummyChatViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.chatroom.SendableViewModel;
 
 /**
@@ -35,6 +36,24 @@ public class MessageViewModel extends SendableViewModel implements Visitable<Cha
                             boolean isSender) {
         super(messageId, fromUid, from, fromRole, attachmentId, attachmentType, replyTime,
                 startTime, isRead, isDummy, isSender);
+        this.message = message;
+    }
+
+    /**
+     * Constructor for send message
+     *
+     * @param messageId messageId
+     * @param fromUid   userId of sender
+     * @param from      name of sender
+     * @param startTime date time when sending / uploading data. Used to validate temporary
+     *                  message
+     * @param message   censored reply
+     */
+    public MessageViewModel(String messageId, String fromUid, String from, String startTime,
+                            String message) {
+        super(messageId, fromUid, from, "", "", "",
+                DummyChatViewModel.SENDING_TEXT, startTime,
+                false, true, true);
         this.message = message;
     }
 

@@ -37,6 +37,7 @@ import com.tokopedia.inbox.inboxchat.viewmodel.AttachInvoiceSelectionViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.AttachInvoiceSentViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.ChatRoomViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.GetTemplateViewModel;
+import com.tokopedia.inbox.inboxchat.viewmodel.chatroom.SendableViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.chatroom.imageupload.ImageUploadViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.MyChatViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.OppositeChatViewModel;
@@ -45,8 +46,12 @@ import com.tokopedia.inbox.inboxchat.viewmodel.TemplateChatModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.chatroom.QuickReplyListViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.mapper.AttachInvoiceMapper;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
+import java.util.Locale;
+import java.util.TimeZone;
 
 import javax.inject.Inject;
 
@@ -208,12 +213,16 @@ public class ChatRoomPresenter extends BaseDaggerPresenter<ChatRoomContract.View
 
     public void sendMessage(int networkType, final String reply) {
         if (isValidReply(reply)) {
-            getView().addDummyMessage(reply);
+            SimpleDateFormat date = new SimpleDateFormat(
+                    SendableViewModel.START_TIME_FORMAT, Locale.US);
+            date.setTimeZone(TimeZone.getTimeZone("UTC"));
+            String startTime = date.format(Calendar.getInstance().getTime());
+            getView().addDummyMessage(reply, startTime);
             getView().setViewEnabled(false);
             String messageId = (getView().getArguments().getString(PARAM_MESSAGE_ID));
 
             if (networkType == InboxChatConstant.MODE_WEBSOCKET) {
-                sendReply(messageId, reply);
+                sendReply(messageId, reply, startTime);
             } else if (networkType == InboxChatConstant.MODE_API) {
                 RequestParams params = ReplyMessageUseCase.generateParam(messageId, reply);
                 replyMessageUseCase.execute(params, new Subscriber<ReplyActionData>() {
@@ -323,7 +332,10 @@ public class ChatRoomPresenter extends BaseDaggerPresenter<ChatRoomContract.View
     @Override
     public void initMessage(String message, String source, String toShopId, String toUserId) {
         if (isValidReply()) {
-            getView().addDummyMessage(message);
+            SimpleDateFormat date = new SimpleDateFormat(
+                    SendableViewModel.START_TIME_FORMAT, Locale.US);
+            date.setTimeZone(TimeZone.getTimeZone("UTC"));
+            getView().addDummyMessage(message, date.format(Calendar.getInstance().getTime()));
             getView().disableAction();
             sendMessageUseCase.execute(SendMessageUseCase.getParam(
                     message,
@@ -548,8 +560,8 @@ public class ChatRoomPresenter extends BaseDaggerPresenter<ChatRoomContract.View
         webSocketUseCase.execute(webSocketUseCase.getParamSendProductAttachment(messageId, product));
     }
 
-    public void sendReply(String messageId, String reply) {
-        webSocketUseCase.execute(webSocketUseCase.getParamSendReply(messageId, reply));
+    public void sendReply(String messageId, String reply, String startTime) {
+        webSocketUseCase.execute(webSocketUseCase.getParamSendReply(messageId, reply,startTime));
         flagTyping = false;
     }
 

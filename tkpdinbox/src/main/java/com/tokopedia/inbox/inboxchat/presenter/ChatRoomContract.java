@@ -50,7 +50,7 @@ public class ChatRoomContract {
 
         void setViewEnabled(boolean b);
 
-        void addDummyMessage(String dummyText);
+        void addDummyMessage(String dummyText, String startTime);
 
         void setCanLoadMore(boolean hasNext);
 

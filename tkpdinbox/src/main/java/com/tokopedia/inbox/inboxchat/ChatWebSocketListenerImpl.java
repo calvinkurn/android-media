@@ -34,7 +34,7 @@ public class ChatWebSocketListenerImpl extends WebSocketListener {
     public void onMessage(WebSocket webSocket, String text) {
 
         BaseChatViewModel message = webSocketMapper.map(text);
-        if (message != null) {
+        if (message != null ) {
             listener.onReceiveMessage(message);
         } else {
             WebSocketResponse response = process(text);

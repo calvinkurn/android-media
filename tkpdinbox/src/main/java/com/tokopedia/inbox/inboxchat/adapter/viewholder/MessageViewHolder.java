@@ -21,7 +21,6 @@ public class MessageViewHolder extends BaseChatViewHolder<MessageViewModel> {
     private static final String ROLE_USER = "User";
 
     Context context;
-    View view;
     TextView message;
     ImageView chatStatus;
     private View chatBalloon;
@@ -58,16 +57,17 @@ public class MessageViewHolder extends BaseChatViewHolder<MessageViewModel> {
 
     private void setupChatBubbleAlignment(View chatBalloon, MessageViewModel element) {
         if (element.isSender()) {
-            setChatRight(chatBalloon, element);
+            setChatRight(chatBalloon);
         } else {
-            setChatLeft(chatBalloon, element);
+            setChatLeft(chatBalloon);
         }
     }
 
-    private void setChatLeft(View chatBalloon, MessageViewModel element) {
+    private void setChatLeft(View chatBalloon) {
         chatBalloon.setBackground(context.getResources().getDrawable(R.drawable
                 .left_bubble));
         setAlignParent(RelativeLayout.ALIGN_PARENT_LEFT, chatBalloon);
+        setAlignParent(RelativeLayout.ALIGN_PARENT_LEFT, hour);
         message.setTextColor(MethodChecker.getColor(context, R.color.black_70));
         message.setLinkTextColor(MethodChecker.getColor(context, R.color.black_70));
         chatStatus.setVisibility(View.GONE);
@@ -81,10 +81,11 @@ public class MessageViewHolder extends BaseChatViewHolder<MessageViewModel> {
         view.setLayoutParams(params);
     }
 
-    private void setChatRight(View chatBalloon, MessageViewModel element) {
+    private void setChatRight(View chatBalloon) {
         chatBalloon.setBackground(context.getResources().getDrawable(R.drawable
-                .attach_product_right_bubble));
+                .right_bubble));
         setAlignParent(RelativeLayout.ALIGN_PARENT_RIGHT, chatBalloon);
+        setAlignParent(RelativeLayout.ALIGN_PARENT_RIGHT, hour);
         message.setTextColor(MethodChecker.getColor(context, R.color.white));
         message.setLinkTextColor(MethodChecker.getColor(context, R.color.white));
         chatStatus.setVisibility(View.VISIBLE);

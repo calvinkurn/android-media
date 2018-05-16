@@ -142,16 +142,13 @@ public class WebSocketUseCase {
         return json;
     }
 
-    public JsonObject getParamSendReply(String messageId, String reply) {
+    public JsonObject getParamSendReply(String messageId, String reply, String startTime) {
         JsonObject json = new JsonObject();
         json.addProperty("code", ChatWebSocketConstant.EVENT_TOPCHAT_REPLY_MESSAGE);
         JsonObject data = new JsonObject();
         data.addProperty("message_id", Integer.valueOf(messageId));
         data.addProperty("message", reply);
-        SimpleDateFormat date = new SimpleDateFormat(
-                "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.US);
-        date.setTimeZone(TimeZone.getTimeZone("UTC"));
-        data.addProperty("start_time", date.format(Calendar.getInstance().getTime()));
+        data.addProperty("start_time", startTime);
         json.add("data", data);
         return json;
     }
