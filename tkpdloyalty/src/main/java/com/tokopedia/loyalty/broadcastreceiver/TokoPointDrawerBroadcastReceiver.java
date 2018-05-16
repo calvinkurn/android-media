@@ -9,6 +9,7 @@ import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.constants.DrawerActivityBroadcastReceiverConstant;
 import com.tokopedia.core.constants.HomeFragmentBroadcastReceiverConstant;
 import com.tokopedia.core.drawer2.data.viewmodel.TokoPointDrawerData;
+import com.tokopedia.loyalty.R;
 import com.tokopedia.loyalty.di.component.DaggerTokoPointBroadcastComponent;
 import com.tokopedia.loyalty.di.component.TokoPointBroadcastComponent;
 import com.tokopedia.loyalty.di.module.ServiceApiModule;
