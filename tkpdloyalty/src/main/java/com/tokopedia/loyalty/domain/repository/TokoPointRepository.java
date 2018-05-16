@@ -43,7 +43,7 @@ public class TokoPointRepository implements ITokoPointRepository {
     private final TokoPointResponseMapper tokoPointResponseMapper;
     private final ITokoPointDBService tokoPointDBService;
     private final DigitalEndpointService digitalService;
-    private String logistics_get_courier_query = "{\"query\":\"{\\n  hachikoDrawer {\\n    off_flag\\n    has_notif\\n    mainpage_url\\n    user_tier {\\n      tier_id\\n      tier_name\\n      tier_name_desc\\n      reward_points\\n      reward_points_str\\n    }\\n    pop_up_notif {\\n      title\\n      text\\n      image_url\\n      button_url\\n      button_text\\n      app_link\\n    }\\n  }\\n}\\n\",\"variables\":null,\"operationName\":null}";
+    private String logistics_get_courier_query = "{\"query\":\"{\\n  tokopoints {\\n    offFlag\\n    url {\\n        mainPageURL\\n    }\\n    status {\\n      tier {\\n        id\\n        name\\n        nameDesc\\n        imageURL\\n      }\\n      points {\\n        reward\\n        rewardStr\\n      }\\n    }\\n    popupNotif(type:\\\"drawer\\\") {\\n      title\\n      text\\n      imageURL\\n      buttonText\\n      buttonURL\\n      appLink\\n      }\\n  }\\n}\",\"variables\":null,\"operationName\":null}";
 
     @Inject
     public TokoPointRepository(TokoPointService tokoPointService,

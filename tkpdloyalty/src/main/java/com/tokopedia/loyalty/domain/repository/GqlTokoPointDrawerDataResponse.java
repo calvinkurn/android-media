@@ -11,7 +11,7 @@ public class GqlTokoPointDrawerDataResponse {
 
     @SerializedName("offFlag")
     @Expose
-    private int offFlag;
+    private boolean offFlag;
 
     @SerializedName("url")
     @Expose
@@ -25,11 +25,11 @@ public class GqlTokoPointDrawerDataResponse {
     @Expose
     private GqlTokoPointPopupNotif gqlTokoPointPopupNotif;
 
-    public int getOffFlag() {
+    public boolean getOffFlag() {
         return offFlag;
     }
 
-    public void setOffFlag(int offFlag) {
+    public void setOffFlag(boolean offFlag) {
         this.offFlag = offFlag;
     }
 

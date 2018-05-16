@@ -1,5 +1,7 @@
 package com.tokopedia.loyalty.domain.repository;
 
+import android.text.TextUtils;
+
 import com.tokopedia.core.drawer2.data.viewmodel.TokoPointDrawerData;
 import com.tokopedia.loyalty.domain.entity.response.Coupon;
 import com.tokopedia.loyalty.domain.entity.response.CouponListDataResponse;
@@ -64,21 +66,22 @@ public class TokoPointResponseMapper implements ITokoPointResponseMapper {
         TokoPointDrawerData.UserTier userTier = new TokoPointDrawerData.UserTier();
         TokoPointDrawerData tokoPointDrawerData = new TokoPointDrawerData();
 
-        // TODO: 5/16/18 check has notif
-//        tokoPointDrawerData.setHasNotif(tokoplusPointDrawerData.getHasNotif());
+        if(tokoplusPointDrawerData.getGqlTokoPointPopupNotif() != null &&
+                !TextUtils.isEmpty(tokoplusPointDrawerData.getGqlTokoPointPopupNotif().getTitle())){
+            tokoPointDrawerData.setHasNotif(1);
+        } else {
+            tokoPointDrawerData.setHasNotif(0);
+        }
 
-
-        tokoPointDrawerData.setOffFlag(tokoplusPointDrawerData.getOffFlag());
+        tokoPointDrawerData.setOffFlag(tokoplusPointDrawerData.getOffFlag() ? 1 : 0);
         tokoPointDrawerData.setMainPageUrl(tokoplusPointDrawerData.getGqlTokoPointUrl().getMainPageUrl());
 
-        // TODO: 5/16/18
-//        tokoPointDrawerData.setMainPageTitle(tokoplusPointDrawerData.getMainPageTitle());
-
+        tokoPointDrawerData.setMainPageTitle("");
 
         if (tokoplusPointDrawerData.getGqlTokoPointStatus() != null &&
                 tokoplusPointDrawerData.getGqlTokoPointStatus().getGqlTokoPointTier() != null) {
-            userTier.setTierNameDesc(tokoplusPointDrawerData.getGqlTokoPointStatus().getGqlTokoPointTier().getNameDesc());//getUserTier().getTierNameDesc());
-            userTier.setTierImageUrl(tokoplusPointDrawerData.getGqlTokoPointStatus().getGqlTokoPointTier().getImageUrl());//getUserTier().getTierImageUrl());
+            userTier.setTierNameDesc(tokoplusPointDrawerData.getGqlTokoPointStatus().getGqlTokoPointTier().getNameDesc());
+            userTier.setTierImageUrl(tokoplusPointDrawerData.getGqlTokoPointStatus().getGqlTokoPointTier().getImageUrl());
             tokoPointDrawerData.setUserTier(userTier);
         } else {
             tokoPointDrawerData.setUserTier(null);
@@ -97,67 +100,8 @@ public class TokoPointResponseMapper implements ITokoPointResponseMapper {
             popUpNotif.setButtonText(tokoplusPointDrawerData.getGqlTokoPointPopupNotif().getButtonText());
             popUpNotif.setButtonUrl(tokoplusPointDrawerData.getGqlTokoPointPopupNotif().getButtonURL());
             popUpNotif.setImageUrl(tokoplusPointDrawerData.getGqlTokoPointPopupNotif().getImageURL());
-//            popUpNotif.setNotes(tokoplusPointDrawerData.getGqlTokoPointPopupNotif().get.getNotes());
             popUpNotif.setText(tokoplusPointDrawerData.getGqlTokoPointPopupNotif().getText());
             popUpNotif.setTitle(tokoplusPointDrawerData.getGqlTokoPointPopupNotif().getTitle());
-            /*if (tokoplusPointDrawerData.getPopUpNotif().getCatalog() != null) {
-                catalog.setPoints(tokoplusPointDrawerData.getPopUpNotif().getCatalog().getPoints());
-                catalog.setSubTitle(tokoplusPointDrawerData.getPopUpNotif().getCatalog().getSubTitle());
-                catalog.setThumbnailUrl(tokoplusPointDrawerData.getPopUpNotif().getCatalog().getThumbnailUrl());
-                catalog.setThumbnailUrlMobile(tokoplusPointDrawerData.getPopUpNotif().getCatalog().getThumbnailUrlMobile());
-                catalog.setTitle(tokoplusPointDrawerData.getPopUpNotif().getCatalog().getTitle());
-                popUpNotif.setCatalog(catalog);
-            } else {
-                popUpNotif.setCatalog(null);
-            }*/
-            tokoPointDrawerData.setPopUpNotif(popUpNotif);
-        } else {
-            tokoPointDrawerData.setPopUpNotif(null);
-        }
-        return tokoPointDrawerData;
-    }
-
-    @Override
-    public TokoPointDrawerData convertTokoplusPointDrawer(TokoPointDrawerDataResponse tokoplusPointDrawerData) {
-//        TokoPointDrawerData.Catalog catalog = new TokoPointDrawerData.Catalog();
-        TokoPointDrawerData.PopUpNotif popUpNotif = new TokoPointDrawerData.PopUpNotif();
-        TokoPointDrawerData.UserTier userTier = new TokoPointDrawerData.UserTier();
-        TokoPointDrawerData tokoPointDrawerData = new TokoPointDrawerData();
-        tokoPointDrawerData.setHasNotif(tokoplusPointDrawerData.getHasNotif());
-        tokoPointDrawerData.setOffFlag(tokoplusPointDrawerData.getOffFlag());
-        tokoPointDrawerData.setMainPageUrl(tokoplusPointDrawerData.getMainPageUrl());
-        tokoPointDrawerData.setMainPageTitle(tokoplusPointDrawerData.getMainPageTitle());
-        if (tokoplusPointDrawerData.getUserTier() != null) {
-//            userTier.setRewardPoints(tokoplusPointDrawerData.getUserTier().getRewardPoints());
-            userTier.setRewardPointsStr(tokoplusPointDrawerData.getUserTier().getRewardPointsStr());
-//            userTier.setTierId(tokoplusPointDrawerData.getUserTier().getTierId());
-//            userTier.setTierName(tokoplusPointDrawerData.getUserTier().getTierName());
-            userTier.setTierNameDesc(tokoplusPointDrawerData.getUserTier().getTierNameDesc());
-            userTier.setTierImageUrl(tokoplusPointDrawerData.getUserTier().getTierImageUrl());
-//            userTier.setMainPageUrl(tokoplusPointDrawerData.getMainPageUrl());
-            tokoPointDrawerData.setUserTier(userTier);
-        } else {
-            tokoPointDrawerData.setUserTier(null);
-        }
-
-        if (tokoplusPointDrawerData.getPopUpNotif() != null) {
-            popUpNotif.setAppLink(tokoplusPointDrawerData.getPopUpNotif().getAppLink());
-            popUpNotif.setButtonText(tokoplusPointDrawerData.getPopUpNotif().getButtonText());
-            popUpNotif.setButtonUrl(tokoplusPointDrawerData.getPopUpNotif().getButtonUrl());
-            popUpNotif.setImageUrl(tokoplusPointDrawerData.getPopUpNotif().getImageUrl());
-//            popUpNotif.setNotes(tokoplusPointDrawerData.getPopUpNotif().getNotes());
-            popUpNotif.setText(tokoplusPointDrawerData.getPopUpNotif().getText());
-            popUpNotif.setTitle(tokoplusPointDrawerData.getPopUpNotif().getTitle());
-            /*if (tokoplusPointDrawerData.getPopUpNotif().getCatalog() != null) {
-                catalog.setPoints(tokoplusPointDrawerData.getPopUpNotif().getCatalog().getPoints());
-                catalog.setSubTitle(tokoplusPointDrawerData.getPopUpNotif().getCatalog().getSubTitle());
-                catalog.setThumbnailUrl(tokoplusPointDrawerData.getPopUpNotif().getCatalog().getThumbnailUrl());
-                catalog.setThumbnailUrlMobile(tokoplusPointDrawerData.getPopUpNotif().getCatalog().getThumbnailUrlMobile());
-                catalog.setTitle(tokoplusPointDrawerData.getPopUpNotif().getCatalog().getTitle());
-                popUpNotif.setCatalog(catalog);
-            } else {
-                popUpNotif.setCatalog(null);
-            }*/
             tokoPointDrawerData.setPopUpNotif(popUpNotif);
         } else {
             tokoPointDrawerData.setPopUpNotif(null);

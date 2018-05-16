@@ -26,8 +26,6 @@ public interface ITokoPointResponseMapper {
 
     String getSuccessValidateRedeemMessage(ValidateRedeemCouponResponse response);
 
-    TokoPointDrawerData convertTokoplusPointDrawer(TokoPointDrawerDataResponse tokoplusPointDrawerData);
-
     TokoPointDrawerData convertTokoplusPointDrawer(GqlTokoPointDrawerDataResponse tokoplusPointDrawerData);
 
     VoucherViewModel voucherViewModel(VoucherResponse voucherResponse, String voucherCode);
