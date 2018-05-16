@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.BottomSheetDialog;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.NestedScrollView;
 import android.support.v7.widget.LinearLayoutManager;
@@ -83,7 +84,7 @@ public class TopAdsDashboardFragment extends BaseDaggerFragment implements TopAd
     private LabelView groupSummaryLabelView;
     private LabelView itemSummaryLabelView;
     private LabelView keywordLabelView;
-    private LabelView storeLabelView;
+    LabelView storeLabelView;
     private ViewPager viewPager;
     private TopAdsStatisticPagerAdapter pagerAdapter;
     private View contentStatisticsView;
@@ -149,6 +150,8 @@ public class TopAdsDashboardFragment extends BaseDaggerFragment implements TopAd
     }
 
     private void initEmptyStateView(View view) {
+        ImageView imageView = (ImageView) view.findViewById(R.id.no_result_image);
+        imageView.setImageDrawable(ContextCompat.getDrawable(getActivity(), R.drawable.ic_top_ads_dashboard_empty));
         TextView textView = (TextView) view.findViewById(R.id.text_view_empty_title_text);
         textView.setText(R.string.topads_dashboard_empty_usage_title);
         textView = (TextView) view.findViewById(R.id.text_view_empty_content_text);
