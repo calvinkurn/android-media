@@ -23,7 +23,6 @@ public class FlightRadioLabelView extends BaseCustomView {
         void onCheckedChanged(Boolean checked);
     }
 
-
     public FlightRadioLabelView(@NonNull Context context) {
         super(context);
         init();
