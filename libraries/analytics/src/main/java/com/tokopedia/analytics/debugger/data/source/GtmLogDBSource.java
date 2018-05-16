@@ -1,11 +1,13 @@
 package com.tokopedia.analytics.debugger.data.source;
 
+import com.raizlabs.android.dbflow.sql.language.ConditionGroup;
 import com.raizlabs.android.dbflow.sql.language.Delete;
 import com.raizlabs.android.dbflow.sql.language.Method;
 import com.raizlabs.android.dbflow.sql.language.Select;
 import com.tokopedia.abstraction.base.data.source.database.DataDBSource;
-import com.tokopedia.analytics.debugger.AnalyticsDebuggerConst;
 import com.tokopedia.analytics.database.GtmLogDB;
+import com.tokopedia.analytics.database.GtmLogDB_Table;
+import com.tokopedia.analytics.debugger.AnalyticsDebuggerConst;
 import com.tokopedia.analytics.debugger.domain.model.AnalyticsLogData;
 
 import java.util.Date;
@@ -19,7 +21,7 @@ import rx.functions.Func1;
 /**
  * @author okasurya on 5/16/18.
  */
-public class GtmLogDBSource implements DataDBSource<AnalyticsLogData,List<GtmLogDB>> {
+public class GtmLogDBSource implements DataDBSource<AnalyticsLogData, List<GtmLogDB>> {
     public GtmLogDBSource() {
 
     }
@@ -69,10 +71,19 @@ public class GtmLogDBSource implements DataDBSource<AnalyticsLogData,List<GtmLog
             public List<GtmLogDB> call(HashMap<String, Object> params) {
                 int page;
 
-                if(params.containsKey(AnalyticsDebuggerConst.PAGE)) page = (int) params.get(AnalyticsDebuggerConst.PAGE);
+                if (params.containsKey(AnalyticsDebuggerConst.PAGE))
+                    page = (int) params.get(AnalyticsDebuggerConst.PAGE);
                 else page = 0;
 
-                return new Select().from(GtmLogDB.class).offset(20 * page).limit(20).queryList();
+                ConditionGroup conditions = ConditionGroup.clause();
+                if (params.containsKey(AnalyticsDebuggerConst.KEYWORD)) {
+                    String keyword = (String) params.get(AnalyticsDebuggerConst.KEYWORD);
+                    conditions.or(GtmLogDB_Table.name.like("%" + keyword + "%"))
+                            .or(GtmLogDB_Table.data.like("%" + keyword + "%"))
+                            .or(GtmLogDB_Table.category.like("%" + keyword + "%"));
+                }
+
+                return new Select().from(GtmLogDB.class).where(conditions).offset(20 * page).limit(20).queryList();
             }
         });
     }

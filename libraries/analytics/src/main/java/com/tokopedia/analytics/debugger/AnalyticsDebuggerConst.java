@@ -5,4 +5,5 @@ package com.tokopedia.analytics.debugger;
  */
 public class AnalyticsDebuggerConst {
     public static final String PAGE = "PAGE";
+    public static final String KEYWORD = "KEYWORD";
 }
