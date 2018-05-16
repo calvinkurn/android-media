@@ -107,6 +107,8 @@ public class OrderDetailData implements Parcelable {
 
     private String pickupPinCode;
 
+    private String liveTrackingUrl;
+
     public OrderDetailData() {
     }
 
@@ -495,6 +497,14 @@ public class OrderDetailData implements Parcelable {
     }
 
 
+    public String getLiveTrackingUrl() {
+        return liveTrackingUrl;
+    }
+
+    public void setLiveTrackingUrl(String liveTrackingUrl) {
+        this.liveTrackingUrl = liveTrackingUrl;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -550,6 +560,7 @@ public class OrderDetailData implements Parcelable {
         dest.writeByte(this.showInsuranceNotification ? (byte) 1 : (byte) 0);
         dest.writeString(this.insuranceNotification);
         dest.writeString(this.pickupPinCode);
+        dest.writeString(this.liveTrackingUrl);
     }
 
     protected OrderDetailData(Parcel in) {
@@ -601,6 +612,7 @@ public class OrderDetailData implements Parcelable {
         this.showInsuranceNotification = in.readByte() != 0;
         this.insuranceNotification = in.readString();
         this.pickupPinCode = in.readString();
+        this.liveTrackingUrl = in.readString();
     }
 
     public static final Creator<OrderDetailData> CREATOR = new Creator<OrderDetailData>() {

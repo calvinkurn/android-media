@@ -3,6 +3,8 @@ package com.tokopedia.tracking.view;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
+import android.text.Html;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,20 +12,34 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.ImageHandler;
+import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
+import com.tokopedia.core.home.SimpleWebViewActivity;
+import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.tracking.R;
 import com.tokopedia.tracking.adapter.EmptyTrackingNotesAdapter;
 import com.tokopedia.tracking.adapter.TrackingHistoryAdapter;
+import com.tokopedia.tracking.di.DaggerTrackingPageComponent;
+import com.tokopedia.tracking.di.TrackingPageComponent;
+import com.tokopedia.tracking.di.TrackingPageModule;
+import com.tokopedia.tracking.presenter.ITrackingPagePresenter;
 import com.tokopedia.tracking.viewmodel.TrackingViewModel;
+
+import javax.inject.Inject;
+
+import static com.tokopedia.tracking.view.TrackingPageActivity.ORDER_ID_KEY;
+import static com.tokopedia.tracking.view.TrackingPageActivity.URL_LIVE_TRACKING;
 
 /**
  * Created by kris on 5/9/18. Tokopedia
  */
 
-public class TrackingPageFragment extends BaseDaggerFragment{
+public class TrackingPageFragment extends BaseDaggerFragment implements ITrackingPageFragment {
 
-    private static final int ERROR_STATUS_NUMBER = 400;
+    private TkpdProgressDialog loadingScreen;
+    private TkpdProgressDialog progressDialog;
 
     private TextView referenceNumber;
     private ImageView courierLogo;
@@ -37,9 +53,20 @@ public class TrackingPageFragment extends BaseDaggerFragment{
     private RecyclerView trackingHistory;
     private LinearLayout emptyUpdateNotification;
     private RecyclerView notificationHelpStep;
-    private TextView furtherInformationText;
     private ViewGroup liveTrackingButton;
+    private ViewGroup rootView;
 
+    @Inject
+    ITrackingPagePresenter presenter;
+
+    public static TrackingPageFragment createFragment(String orderId, String liveTrackingUrl) {
+        TrackingPageFragment fragment = new TrackingPageFragment();
+        Bundle bundle = new Bundle();
+        bundle.putString(ORDER_ID_KEY, orderId);
+        bundle.putString(URL_LIVE_TRACKING, liveTrackingUrl);
+        fragment.setArguments(bundle);
+        return fragment;
+    }
 
     @Nullable
     @Override
@@ -50,6 +77,9 @@ public class TrackingPageFragment extends BaseDaggerFragment{
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        loadingScreen = new TkpdProgressDialog(getActivity(), TkpdProgressDialog.MAIN_PROGRESS);
+        progressDialog = new TkpdProgressDialog(getActivity(), TkpdProgressDialog.NORMAL_PROGRESS);
+        rootView = view.findViewById(R.id.root_view);
         referenceNumber = view.findViewById(R.id.reference_number);
         courierLogo = view.findViewById(R.id.courier_logo);
         deliveryDate = view.findViewById(R.id.delivery_date);
@@ -62,11 +92,18 @@ public class TrackingPageFragment extends BaseDaggerFragment{
         trackingHistory = view.findViewById(R.id.tracking_history);
         emptyUpdateNotification = view.findViewById(R.id.empty_update_notification);
         notificationHelpStep = view.findViewById(R.id.notification_help_step);
-        furtherInformationText = view.findViewById(R.id.further_information_text);
+        TextView furtherInformationText = view.findViewById(R.id.further_information_text);
+        furtherInformationText.setText(Html
+                        .fromHtml(getString(R.string.further_information_text_html)),
+                TextView.BufferType.SPANNABLE);
+        furtherInformationText.setOnClickListener(onFurtherInformationClicked());
         liveTrackingButton = view.findViewById(R.id.live_tracking_button);
+        presenter.onGetTrackingData(getArguments().getString(ORDER_ID_KEY));
     }
 
-    private void populateView(TrackingViewModel model) {
+
+    @Override
+    public void populateView(TrackingViewModel model) {
         referenceNumber.setText(model.getReferenceNumber());
         ImageHandler.LoadImage(courierLogo, model.getCourierLogoUrl());
         deliveryDate.setText(model.getDeliveryDate());
@@ -77,17 +114,61 @@ public class TrackingPageFragment extends BaseDaggerFragment{
         buyerLocation.setText(model.getBuyerAddress());
         currentStatus.setText(model.getStatus());
         trackingHistory.setAdapter(new TrackingHistoryAdapter(model.getHistoryList()));
+        setEmptyHistoryView(model);
+        setLiveTrackingButton();
+
+    }
+
+    @Override
+    public void showMainLoadingPage() {
+        loadingScreen.showDialog();
+    }
+
+    @Override
+    public void closeMainLoadingPage() {
+        loadingScreen.dismiss();
+    }
+
+    @Override
+    public void showLoading() {
+        progressDialog.showDialog();
+    }
+
+    @Override
+    public void hideLoading() {
+        progressDialog.dismiss();
+    }
+
+    @Override
+    public void showError(String message) {
+        NetworkErrorHelper.showEmptyState(getActivity(), rootView,
+                new NetworkErrorHelper.RetryClickedListener() {
+                    @Override
+                    public void onRetryClicked() {
+                        presenter.onGetTrackingData(getArguments().getString(ORDER_ID_KEY));
+                    }
+                });
+    }
+
+    private void setEmptyHistoryView(TrackingViewModel model) {
         if (model.getHistoryList().size() == 0) {
             emptyUpdateNotification.setVisibility(View.VISIBLE);
-            if(model.getStatusNumber() > ERROR_STATUS_NUMBER) {
+            if (model.isInvalid()) {
                 notificationHelpStep.setVisibility(View.VISIBLE);
                 notificationHelpStep.setAdapter(new EmptyTrackingNotesAdapter());
             }
         } else {
             trackingHistory.setVisibility(View.VISIBLE);
         }
-        furtherInformationText.setOnClickListener(onFurtherInformationClicked());
-        liveTrackingButton.setOnClickListener(onLiveTrackingClickedListener());
+    }
+
+    private void setLiveTrackingButton() {
+        if (TextUtils.isEmpty(getArguments().getString(URL_LIVE_TRACKING)))
+            liveTrackingButton.setVisibility(View.GONE);
+        else {
+            liveTrackingButton.setVisibility(View.VISIBLE);
+            liveTrackingButton.setOnClickListener(onLiveTrackingClickedListener());
+        }
     }
 
     @Override
@@ -98,6 +179,15 @@ public class TrackingPageFragment extends BaseDaggerFragment{
     @Override
     protected void initInjector() {
 
+        TrackingPageComponent component = DaggerTrackingPageComponent
+                .builder()
+                .baseAppComponent(
+                        ((BaseMainApplication) getActivity().getApplication())
+                                .getBaseAppComponent()
+                )
+                .trackingPageModule(new TrackingPageModule(this))
+                .build();
+        component.inject(this);
     }
 
     private View.OnClickListener onFurtherInformationClicked() {
@@ -113,9 +203,16 @@ public class TrackingPageFragment extends BaseDaggerFragment{
         return new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                startActivity(
+                        SimpleWebViewActivity.getIntent(getActivity(),
+                                getArguments().getString(URL_LIVE_TRACKING)));
             }
         };
     }
 
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        presenter.onDetach();
+    }
 }

@@ -23,6 +23,8 @@ import android.widget.Toast;
 
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.ImageHandler;
+import com.tokopedia.applink.ApplinkConst;
+import com.tokopedia.applink.RouteManager;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TActivity;
 import com.tokopedia.core.network.NetworkErrorHelper;
@@ -460,9 +462,14 @@ public class OrderDetailActivity extends TActivity
 
     @Override
     public void trackShipment(String orderId) {
-        Intent intent = new Intent(OrderDetailActivity.this, TrackingActivity.class);
-        intent.putExtra("OrderID", orderId);
-        startActivity(intent);
+        String routingAppLink;
+        routingAppLink = ApplinkConst.ORDER_TRACKING + "?order_id="+orderId+"&live_tracking_url=";
+        /*Uri.Builder uriBuilder = new Uri.Builder();
+        uriBuilder.scheme(ApplinkConst.ORDER_TRACKING)
+                .appendQueryParameter("order_id", orderId)
+                .appendQueryParameter("live_tracking_url", "");
+        routingAppLink = uriBuilder.toString();*/
+        RouteManager.route(this, routingAppLink);
     }
 
     @Override

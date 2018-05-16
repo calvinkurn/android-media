@@ -3,4 +3,6 @@
     <string name="empty_notes_1">Penjual keliru menginput nomor resi atau tanggal pengiriman.</string>
     <string name="empty_notes_2">Penjual menggunakan kurir yang berbeda dari pilihan pembeli.</string>
     <string name="empty_notes_3">Pihak logistik tidak memberikan informasi nama penerima ketika pesanan tiba.</string>
+    <string name="further_information_text">Untuk informasi lengkap mengenai jasa pengiriman yang disediakan Tokopedia. Silakan lihat disini.</string>
+    <string name="further_information_text_html"><![CDATA[Untuk informasi lengkap mengenai jasa pengiriman yang disediakan Tokopedia. <font color=\'#42b549\'>Silakan lihat disini</font>.]]></string>
 </resources>

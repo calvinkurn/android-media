@@ -8,6 +8,12 @@ import java.util.List;
 
 public class TrackingViewModel {
 
+    private int change;
+
+    private int noHistory;
+
+    private String senderDate;
+
     private String referenceNumber;
 
     private String courierLogoUrl;
@@ -25,6 +31,8 @@ public class TrackingViewModel {
     private String buyerAddress;
 
     private int statusNumber;
+
+    private boolean isInvalid;
 
     private String status;
 
@@ -92,6 +100,14 @@ public class TrackingViewModel {
 
     public void setBuyerAddress(String buyerAddress) {
         this.buyerAddress = buyerAddress;
+    }
+
+    public boolean isInvalid() {
+        return isInvalid;
+    }
+
+    public void setInvalid(boolean invalid) {
+        isInvalid = invalid;
     }
 
     public int getStatusNumber() {

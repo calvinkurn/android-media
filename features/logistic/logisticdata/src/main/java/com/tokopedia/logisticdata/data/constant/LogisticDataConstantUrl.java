@@ -14,4 +14,9 @@ public class LogisticDataConstantUrl {
 
         public static final String PATH_RATES_V2 = VERSION + BASE_PATH + "rates";
     }
+
+    public static class CourierTracking {
+        public static String BASE_URL = "https://ws.tokopedia.com/v4/tracking-order/";
+        public static final String PATH_TRACK_ORDER = "track_order.pl";
+    }
 }
