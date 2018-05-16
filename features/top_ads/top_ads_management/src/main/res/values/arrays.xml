@@ -125,4 +125,13 @@
         <item>@string/topads_menu_help</item>
         <item>@string/topads_menu_seller_centre</item>
     </string-array>
+
+    <string-array name="top_ads_tab_statistics_labels">
+        <item>@string/label_top_ads_impression</item>
+        <item>@string/label_top_ads_click</item>
+        <item>@string/label_top_ads_ctr</item>
+        <item>@string/label_top_ads_conversion</item>
+        <item>@string/label_top_ads_average</item>
+        <item>@string/label_top_ads_cost</item>
+    </string-array>
 </resources>
