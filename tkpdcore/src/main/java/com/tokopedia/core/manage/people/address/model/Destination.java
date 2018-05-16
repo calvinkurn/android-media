@@ -3,7 +3,6 @@ package com.tokopedia.core.manage.people.address.model;
 import android.content.Context;
 import android.os.Parcel;
 import android.os.Parcelable;
-import android.text.Html;
 
 import com.google.android.gms.maps.model.LatLng;
 import com.google.gson.annotations.Expose;
@@ -11,26 +10,11 @@ import com.google.gson.annotations.SerializedName;
 import com.tokopedia.core.geolocation.utils.GeoLocationUtils;
 import com.tokopedia.core.util.MethodChecker;
 
-import java.util.HashMap;
-import java.util.Map;
-
 /**
  * @author anggaprasetiyo on 11/18/16.
  */
 
 public class Destination implements Parcelable {
-    private static final String PARAM_ADDRESS_ID = "address_id";
-    private static final String PARAM_ADDRESS_TYPE = "address_name";
-    private static final String PARAM_ADDRESS = "address_street";
-    private static final String PARAM_CITY = "city";
-    private static final String PARAM_DISTRICT = "district";
-    private static final String PARAM_PROVINCE = "province";
-    private static final String PARAM_POSTAL_CODE = "postal_code";
-    private static final String PARAM_RECEIVER_NAME = "receiver_name";
-    private static final String PARAM_RECEIVER_PHONE = "receiver_phone";
-    private static final String PARAM_LATITUDE = "latitude";
-    private static final String PARAM_LONGITUDE = "longitude";
-    private static final String PARAM_PASSWORD = "user_password";
 
     @SerializedName("longitude")
     @Expose
@@ -82,7 +66,6 @@ public class Destination implements Parcelable {
     private String districtName;
 
     private String geoLocation;
-    private String password;
 
     public Destination() {
     }
@@ -104,7 +87,6 @@ public class Destination implements Parcelable {
         cityName = in.readString();
         districtName = in.readString();
         geoLocation = in.readString();
-        password = in.readString();
     }
 
     public static final Creator<Destination> CREATOR = new Creator<Destination>() {
@@ -358,66 +340,22 @@ public class Destination implements Parcelable {
         return this.geoLocation;
     }
 
-
     public boolean isCompleted() {
         return (addressId != null && !addressId.equals("0") && !cityId.equals("0") && !districtId.equals("0")
                 && !provinceId.equals("0"));
     }
 
-    public HashMap<String, String> getParamAddAddress() {
-        HashMap<String, String> param = new HashMap<>();
-        param.put(PARAM_ADDRESS, getAddressStreet());
-        param.put(PARAM_ADDRESS_TYPE, getAddressName());
-        param.put(PARAM_CITY, getCityId());
-        param.put(PARAM_DISTRICT, getDistrictId());
-        param.put(PARAM_PROVINCE, getProvinceId());
-        param.put(PARAM_POSTAL_CODE, getPostalCode());
-        param.put(PARAM_RECEIVER_NAME, getReceiverName());
-        param.put(PARAM_RECEIVER_PHONE, getReceiverPhone());
-        if (getLatitude() != null && getLongitude() != null) {
-            param.put(PARAM_LATITUDE, String.valueOf(getLatitude()));
-            param.put(PARAM_LONGITUDE, String.valueOf(getLongitude()));
-        }
-        return param;
-    }
-
     public LatLng getLatLng() {
-        if (getLatitude() != null && getLongitude() != null)
+        if (getLatitude() != null && getLongitude() != null) {
             return new LatLng(Double.parseDouble(getLatitude()), Double.parseDouble(getLongitude()));
-        else
-            return null;
+        }
+
+        return null;
     }
 
     public void setLatLng(LatLng latLng) {
         this.latitude = String.valueOf(latLng.latitude);
         this.longitude = String.valueOf(latLng.longitude);
-    }
-
-    public Map<String, String> getParamEditAddress() {
-        HashMap<String, String> param = new HashMap<>();
-        param.put(PARAM_ADDRESS_ID, getAddressId());
-        param.put(PARAM_ADDRESS, getAddressStreet());
-        param.put(PARAM_ADDRESS_TYPE, getAddressName());
-        param.put(PARAM_CITY, getCityId());
-        param.put(PARAM_DISTRICT, getDistrictId());
-        param.put(PARAM_PROVINCE, getProvinceId());
-        param.put(PARAM_POSTAL_CODE, getPostalCode());
-        param.put(PARAM_RECEIVER_NAME, getReceiverName());
-        param.put(PARAM_RECEIVER_PHONE, getReceiverPhone());
-        if (getLatitude() != null && getLongitude() != null) {
-            param.put(PARAM_LATITUDE, String.valueOf(getLatitude()));
-            param.put(PARAM_LONGITUDE, String.valueOf(getLongitude()));
-        }
-        param.put(PARAM_PASSWORD, getPassword());
-        return param;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public String getPassword() {
-        return password;
     }
 
     @Override
@@ -443,6 +381,5 @@ public class Destination implements Parcelable {
         parcel.writeString(cityName);
         parcel.writeString(districtName);
         parcel.writeString(geoLocation);
-        parcel.writeString(password);
     }
 }
