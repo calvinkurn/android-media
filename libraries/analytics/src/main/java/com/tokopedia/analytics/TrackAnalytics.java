@@ -3,7 +3,7 @@ package com.tokopedia.analytics;
 import android.content.Context;
 import android.os.Bundle;
 
-import com.tokopedia.analytics.firebase.FirebaseAnalytics;
+import com.tokopedia.analytics.firebase.TkpdFirebaseAnalytics;
 
 import java.util.Map;
 
@@ -19,7 +19,7 @@ public class TrackAnalytics {
     }
 
     private static void sendEventToFirebase(String eventName, Map<String, Object> data,Context context){
-        FirebaseAnalytics.logEvent(eventName,convertMapToBundle(data),context);
+        TkpdFirebaseAnalytics.logEvent(eventName,convertMapToBundle(data),context);
     }
 
     private static Bundle convertMapToBundle(Map<String, Object>  data){
