@@ -225,6 +225,12 @@ public class HotlistFragment extends SearchSectionFragment
         }
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        screenTrack();
+    }
+
     public void setTrackerAttribution(String trackerAttribution) {
         this.trackerAttribution = trackerAttribution;
     }

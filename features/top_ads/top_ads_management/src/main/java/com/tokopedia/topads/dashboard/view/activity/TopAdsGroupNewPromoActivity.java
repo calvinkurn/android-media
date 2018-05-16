@@ -28,7 +28,6 @@ public class TopAdsGroupNewPromoActivity extends BaseSimpleActivity {
     public static final String PARAM_ITEM_ID = "item_id";
     public static final String PARAM_USER_ID = "user_id";
 
-    //@DeepLink(Constants.Applinks.SellerApp.TOPADS_PRODUCT_CREATE)
     public static Intent getCallingApplinkIntent(Context context, Bundle extras) {
         if (GlobalConfig.isSellerApp()) {
             String userId = extras.getString(PARAM_USER_ID, "");
@@ -40,7 +39,7 @@ public class TopAdsGroupNewPromoActivity extends BaseSimpleActivity {
                             .putExtra(TopAdsExtraConstant.EXTRA_ITEM_ID, uri.build().getQueryParameter(PARAM_ITEM_ID))
                             .putExtras(extras);
                 } else {
-                    return TopAdsOldDashboardActivity.getCallingIntent(context)
+                    return TopAdsDashboardActivity.getCallingIntent(context)
                             .putExtras(extras);
                 }
             } else {
@@ -112,7 +111,7 @@ public class TopAdsGroupNewPromoActivity extends BaseSimpleActivity {
             if(!TextUtils.isEmpty(deepLink) && deepLink.contains(Constants.Applinks.SellerApp.TOPADS_PRODUCT_CREATE)) {
                 super.onBackPressed();
             } else {
-                Intent intent = new Intent(this, TopAdsOldDashboardActivity.class);
+                Intent intent = new Intent(this, TopAdsDashboardActivity.class);
                 this.startActivity(intent);
                 this.finish();
             }

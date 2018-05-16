@@ -11,10 +11,8 @@ import com.tokopedia.core.base.data.executor.JobExecutor;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.core.base.presentation.UIThread;
-import com.tokopedia.core.network.di.qualifier.WsV4QualifierWithErrorHander;
-import com.tokopedia.core.util.GlobalConfig;
-import com.tokopedia.seller.shop.common.domain.repository.ShopInfoRepositoryImpl;
-import com.tokopedia.seller.shop.common.data.source.ShopInfoDataSource;
+import com.tokopedia.core.shopinfo.models.shopmodel.ShopModel;
+import com.tokopedia.seller.common.data.mapper.SimpleDataResponseMapper;
 import com.tokopedia.seller.shop.common.data.source.cloud.api.ShopApi;
 import com.tokopedia.seller.shop.common.domain.repository.ShopInfoRepository;
 import com.tokopedia.topads.common.constant.TopAdsCommonConstant;
@@ -23,8 +21,12 @@ import com.tokopedia.topads.common.data.interceptor.TopAdsAuthInterceptor;
 import com.tokopedia.topads.common.data.interceptor.TopAdsResponseError;
 import com.tokopedia.topads.common.data.util.CacheApiTKPDResponseValidator;
 import com.tokopedia.topads.dashboard.data.repository.GetDepositTopAdsRepositoryImpl;
+import com.tokopedia.topads.dashboard.data.repository.ShopInfoRepositoryImpl;
 import com.tokopedia.topads.dashboard.data.source.GetDepositTopadsDataSource;
+import com.tokopedia.topads.dashboard.data.source.ShopInfoDataSource;
+import com.tokopedia.topads.dashboard.data.source.cloud.ShopInfoCloud;
 import com.tokopedia.topads.dashboard.data.source.cloud.apiservice.api.TopAdsOldManagementApi;
+import com.tokopedia.topads.dashboard.di.qualifier.ShopWsQualifier;
 import com.tokopedia.topads.dashboard.di.qualifier.TopAdsManagementQualifier;
 import com.tokopedia.topads.dashboard.di.scope.TopAdsScope;
 import com.tokopedia.topads.dashboard.domain.GetDepositTopAdsRepository;
@@ -70,6 +72,7 @@ public class TopAdsModule {
         return new CacheApiInterceptor(new CacheApiTKPDResponseValidator<>(TopAdsResponseError.class));
     }
 
+    @TopAdsManagementQualifier
     @TopAdsScope
     @Provides
     public ErrorResponseInterceptor provideErrorInterceptor(){
@@ -80,7 +83,7 @@ public class TopAdsModule {
     @Provides
     public OkHttpClient provideOkHttpClient(TopAdsAuthInterceptor topAdsAuthInterceptor,
                                             HttpLoggingInterceptor httpLoggingInterceptor,
-                                            ErrorResponseInterceptor errorResponseInterceptor,
+                                            @TopAdsManagementQualifier ErrorResponseInterceptor errorResponseInterceptor,
                                             CacheApiInterceptor cacheApiInterceptor) {
         return new OkHttpClient.Builder()
                 .addInterceptor(cacheApiInterceptor)
@@ -124,15 +127,27 @@ public class TopAdsModule {
         return retrofit.create(TopAdsManagementApi.class);
     }
 
-    /*@TopAdsScope
+    @TopAdsScope
     @Provides
-    public ShopInfoRepository provideShopInfoRepository(@ApplicationContext Context context, ShopInfoDataSource shopInfoDataSource){
-        return new ShopInfoRepositoryImpl(context, shopInfoDataSource);
-    }*/
+    public ShopInfoCloud provideShopInfoCloud(@ApplicationContext Context context, ShopApi shopApi){
+        return new ShopInfoCloud(context, shopApi);
+    }
 
     @TopAdsScope
     @Provides
-    public ShopApi provideShopApi(@WsV4QualifierWithErrorHander Retrofit retrofit){
+    public ShopInfoDataSource provideShopInfoDataSource(ShopInfoCloud shopInfoCloud, SimpleDataResponseMapper<ShopModel> mapper){
+        return new ShopInfoDataSource(shopInfoCloud, mapper);
+    }
+
+    @TopAdsScope
+    @Provides
+    public ShopInfoRepository provideShopInfoRepository(@ApplicationContext Context context, ShopInfoDataSource shopInfoDataSource){
+        return new ShopInfoRepositoryImpl(context, shopInfoDataSource);
+    }
+
+    @TopAdsScope
+    @Provides
+    public ShopApi provideShopApi(@ShopWsQualifier Retrofit retrofit){
         return retrofit.create(ShopApi.class);
     }
 }

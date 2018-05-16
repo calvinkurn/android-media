@@ -28,6 +28,7 @@ import android.view.View;
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
+import com.tokopedia.applink.ApplinkRouter;
 import com.tokopedia.core.ImageGallery;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
@@ -50,9 +51,9 @@ import com.tokopedia.seller.base.view.adapter.BaseMultipleCheckListAdapter;
 import com.tokopedia.seller.base.view.adapter.BaseRetryDataBinder;
 import com.tokopedia.seller.base.view.emptydatabinder.EmptyDataBinder;
 import com.tokopedia.seller.base.view.fragment.BaseSearchListFragment;
-import com.tokopedia.seller.common.bottomsheet.BottomSheetBuilder;
-import com.tokopedia.seller.common.bottomsheet.adapter.BottomSheetItemClickListener;
-import com.tokopedia.seller.common.bottomsheet.custom.CheckedBottomSheetBuilder;
+import com.github.rubensousa.bottomsheetbuilder.BottomSheetBuilder;
+import com.github.rubensousa.bottomsheetbuilder.adapter.BottomSheetItemClickListener;
+import com.github.rubensousa.bottomsheetbuilder.custom.CheckedBottomSheetBuilder;
 import com.tokopedia.seller.common.imageeditor.GalleryCropActivity;
 import com.tokopedia.seller.common.imageeditor.GalleryCropWatermarkActivity;
 import com.tokopedia.seller.common.utils.KMNumbers;
@@ -684,30 +685,10 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
     }
 
     private void onPromoTopAdsClicked(ProductManageViewModel productManageViewModel) {
-        openPromoteAds(getActivity(),
-                TopAdsAppLinkUtil.createAppLink(userSession.getUserId(), productManageViewModel.getItemId(),
-                        productManageViewModel.getProductShopId(),
-                        GlobalConfig.isSellerApp()? TopAdsSourceOption.SA_MANAGE_SHOP : TopAdsSourceOption.MA_MANAGE_SHOP));
-    }
-
-    private void openPromoteAds(Context context, String url) {
-        Intent topadsIntent = context.getPackageManager()
-                .getLaunchIntentForPackage(GlobalConfig.PACKAGE_SELLER_APP);
-        if (topadsIntent != null) {
-            Intent intentActionView = new Intent(Intent.ACTION_VIEW);
-            intentActionView.setData(Uri.parse(url));
-            intentActionView.putExtra(Constants.EXTRA_APPLINK, url);
-            PackageManager manager = context.getPackageManager();
-            List<ResolveInfo> infos = manager.queryIntentActivities(intentActionView, 0);
-            if (infos.size() > 0) {
-                topadsIntent = intentActionView;
-            }
-            context.startActivity(topadsIntent);
-        } else if (context.getApplicationContext() instanceof TkpdCoreRouter) {
-            ((TkpdCoreRouter) context.getApplicationContext()).goToCreateMerchantRedirect(context);
-            UnifyTracking.eventTopAdsSwitcher(AppEventTracking.Category.SWITCHER);
-        }
-        //getActivity().finish();
+        ((PdpRouter) getActivity().getApplication()).goToCreateTopadsPromo(getActivity(),
+                productManageViewModel.getItemId(), productManageViewModel.getProductShopId(),
+                GlobalConfig.isSellerApp()? TopAdsSourceOption.SA_MANAGE_LIST_PRODUCT :
+                        TopAdsSourceOption.MA_MANAGE_LIST_PRODUCT);
     }
 
     private void onSetCashbackClicked(ProductManageViewModel productManageViewModel) {

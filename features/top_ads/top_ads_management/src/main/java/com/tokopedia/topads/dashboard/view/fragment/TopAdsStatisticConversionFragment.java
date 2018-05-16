@@ -24,13 +24,8 @@ public class TopAdsStatisticConversionFragment extends TopAdsDashboardStatisticF
     }
 
     @Override
-    protected String getTotalSummary(Summary summary) {
-        return summary.getConversionSumFmt();
-    }
-
-    @Override
     protected String getTitleGraph() {
-        return getString(R.string.label_top_ads_conversion);
+        return getString(R.string.title_top_ads_statistic_graph_convertion);
     }
 
     @Override

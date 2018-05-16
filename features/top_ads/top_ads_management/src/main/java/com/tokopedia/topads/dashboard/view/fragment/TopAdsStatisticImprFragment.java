@@ -24,13 +24,8 @@ public class TopAdsStatisticImprFragment extends TopAdsDashboardStatisticFragmen
     }
 
     @Override
-    protected String getTotalSummary(Summary summary) {
-        return summary.getImpressionSumFmt();
-    }
-
-    @Override
     protected String getTitleGraph() {
-        return getString(R.string.label_top_ads_impression);
+        return getString(R.string.title_top_ads_statistic_graph_impression);
     }
 
     @Override

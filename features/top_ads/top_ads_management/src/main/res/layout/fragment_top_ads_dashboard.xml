@@ -31,42 +31,40 @@
                     android:layout_height="wrap_content"
                     android:orientation="vertical">
 
-                    <com.tokopedia.design.label.LabelView
-                        android:id="@+id/label_view_statistics"
-                        style="@style/LabelLayout.BorderBottom"
-                        android:layout_height="@dimen/size_labelview"
-                        app:content_text_size="@dimen/sp_14"
-                        app:lv_content="@string/topads_dashboard_default_statistics_value"
-                        app:lv_content_color="@color/tkpd_main_green"
-                        app:lv_image="@drawable/statistik_icon"
-                        app:lv_image_width="24dp"
-                        app:lv_title="@string/topads_dashboard_label_statistics"
-                        app:title_text_size="@dimen/sp_14" />
-
-                    <com.tokopedia.design.label.LabelView
-                        android:id="@+id/date_label_view"
-                        style="@style/LabelLayout"
-                        android:layout_height="@dimen/size_labelview"
-                        app:content_text_size="@dimen/sp_14"
-                        app:lv_content_color="@color/tkpd_main_green"
-                        app:lv_image="@drawable/ic_calendar_grey"
-                        app:lv_image_width="@dimen/dp_24"
-                        app:lv_title="@string/label_date_period"
-                        app:title_text_size="@dimen/sp_14" />
-
                     <LinearLayout
                         android:id="@+id/topads_content_statistics"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="vertical">
 
-                        <android.support.design.widget.TabLayout
-                            android:id="@+id/tab_layout"
-                            style="@style/TabBar.WhiteSeller"
+                        <com.tokopedia.design.label.LabelView
+                            android:id="@+id/label_view_statistics"
+                            style="@style/LabelLayout.BorderBottom"
+                            android:layout_height="@dimen/size_labelview"
+                            app:content_text_size="@dimen/sp_14"
+                            app:lv_content="@string/topads_dashboard_default_statistics_value"
+                            app:lv_content_color="@color/tkpd_main_green"
+                            app:lv_image="@drawable/statistik_icon"
+                            app:lv_image_width="24dp"
+                            app:lv_title="@string/topads_dashboard_label_statistics"
+                            app:title_text_size="@dimen/sp_14" />
+
+                        <com.tokopedia.design.label.LabelView
+                            android:id="@+id/date_label_view"
+                            style="@style/LabelLayout"
+                            android:layout_height="@dimen/size_labelview"
+                            app:content_text_size="@dimen/sp_14"
+                            app:lv_content_color="@color/tkpd_main_green"
+                            app:lv_image="@drawable/ic_calendar_grey"
+                            app:lv_image_width="@dimen/dp_24"
+                            app:lv_title="@string/label_date_period"
+                            app:title_text_size="@dimen/sp_14" />
+
+                        <android.support.v7.widget.RecyclerView
+                            android:id="@+id/recyclerview_tabLayout"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:background="@android:color/white"
-                            app:tabMode="scrollable" />
+                            android:background="@color/white"/>
 
                         <com.tkpd.library.ui.widget.TouchViewPager
                             android:id="@+id/pager"
@@ -99,38 +97,47 @@
                             app:lv_title="@string/label_top_ads_groups"
                             app:title_text_size="@dimen/sp_14" />
 
-                        <com.tokopedia.design.label.LabelView
-                            android:id="@+id/label_view_item_summary"
-                            style="@style/LabelLayout"
-                            android:layout_height="@dimen/size_labelview"
-                            app:content_text_size="@dimen/sp_14"
-                            app:lv_content="@string/top_ads_statistic_info_default_value"
-                            app:lv_content_color="@color/tkpd_main_green"
-                            app:lv_image="@drawable/ic_manage_produk"
-                            app:lv_image_width="24dp"
-                            app:lv_title="@string/label_top_ads_items"
-                            app:title_text_size="@dimen/sp_14" />
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:showDividers="middle"
+                            android:orientation="vertical"
+                            android:id="@+id/view_group_promo">
 
-                        <com.tokopedia.design.label.LabelView
-                            android:id="@+id/label_view_keyword"
-                            style="@style/LabelLayout"
-                            android:layout_height="@dimen/size_labelview"
-                            app:content_text_size="@dimen/sp_14"
-                            app:lv_content="@string/top_ads_statistic_info_default_value"
-                            app:lv_content_color="@color/tkpd_main_green"
-                            app:lv_image="@drawable/ic_top_ads_keyword"
-                            app:lv_image_width="24dp"
-                            app:lv_title="@string/label_top_ads_keyword"
-                            app:title_text_size="@dimen/sp_14" />
+                            <com.tokopedia.design.label.LabelView
+                                android:id="@+id/label_view_item_summary"
+                                style="@style/LabelLayout"
+                                android:layout_height="@dimen/size_labelview"
+                                app:content_text_size="@dimen/sp_14"
+                                app:lv_content="@string/top_ads_statistic_info_default_value"
+                                app:lv_content_color="@color/tkpd_main_green"
+                                app:lv_image="@drawable/ic_manage_produk"
+                                app:lv_image_width="24dp"
+                                app:lv_title="@string/label_top_ads_items"
+                                app:title_text_size="@dimen/sp_14" />
 
-                        <com.tokopedia.design.label.LabelView
-                            android:id="@+id/label_view_shop"
-                            style="@style/LabelLayout"
-                            android:layout_height="@dimen/size_labelview"
-                            app:lv_image="@drawable/icon_penjualan"
-                            app:lv_image_width="24dp"
-                            app:lv_title="@string/title_top_ads_store"
-                            app:title_text_size="@dimen/sp_14" />
+                            <com.tokopedia.design.label.LabelView
+                                android:id="@+id/label_view_keyword"
+                                style="@style/LabelLayout"
+                                android:layout_height="@dimen/size_labelview"
+                                app:content_text_size="@dimen/sp_14"
+                                app:lv_content="@string/top_ads_statistic_info_default_value"
+                                app:lv_content_color="@color/tkpd_main_green"
+                                app:lv_image="@drawable/ic_top_ads_keyword"
+                                app:lv_image_width="24dp"
+                                app:lv_title="@string/label_top_ads_keyword"
+                                app:title_text_size="@dimen/sp_14" />
+
+                            <com.tokopedia.design.label.LabelView
+                                android:id="@+id/label_view_shop"
+                                style="@style/LabelLayout"
+                                android:layout_height="@dimen/size_labelview"
+                                app:lv_image="@drawable/icon_penjualan"
+                                app:lv_image_width="24dp"
+                                app:lv_title="@string/title_top_ads_store"
+                                app:title_text_size="@dimen/sp_14" />
+
+                        </LinearLayout>
                     </LinearLayout>
 
                 </LinearLayout>

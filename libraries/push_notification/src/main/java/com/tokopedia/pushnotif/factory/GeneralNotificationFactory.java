@@ -28,6 +28,7 @@ public class GeneralNotificationFactory extends BaseNotificationFactory {
         builder.setLargeIcon(getBitmapLargeIcon());
         if (ApplinkNotificationHelper.allowGroup()) builder.setGroup(generateGroupKey(applinkNotificationModel.getApplinks()));
         builder.setContentIntent(createPendingIntent(applinkNotificationModel.getApplinks(), Constant.NotificationId.GENERAL, notificationId));
+        builder.setAutoCancel(true);
 
         if (isAllowBell()) {
             builder.setSound(getRingtoneUri());

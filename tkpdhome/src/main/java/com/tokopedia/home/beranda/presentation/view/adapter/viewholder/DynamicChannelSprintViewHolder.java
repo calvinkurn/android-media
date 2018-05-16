@@ -23,6 +23,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.crashlytics.android.Crashlytics;
+import com.google.android.gms.tagmanager.DataLayer;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.core.analytics.HomePageTracking;
 import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
@@ -43,6 +44,7 @@ import com.tokopedia.home.beranda.presentation.view.compoundview.CountDownView;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Map;
 
 /**
  * Created by henrypriyono on 31/01/18.
@@ -171,12 +173,13 @@ public class DynamicChannelSprintViewHolder extends AbstractViewHolder<DynamicCh
                         public void onClick(View view) {
                             if (isSprintSale(channel)) {
                                 HomePageTracking.eventEnhancedClickSprintSaleProduct(channel.getEnhanceClickSprintSaleHomePage(position, countDownView.getCurrentCountDown()));
+                                String attr = channel.getHomeAttribution(position + 1, channel.getGrids()[position].getId());
+                                listener.onDynamicChannelClicked(DynamicLinkHelper.getActionLink(grid), attr);
                             } else {
                                 HomePageTracking.eventEnhancedClickDynamicChannelHomePage(channel.getEnhanceClickDynamicChannelHomePage(grid, position + 1));
+                                String attr = channel.getHomeAttribution(position + 1, grid.getAttribution());
+                                listener.onDynamicChannelClicked(DynamicLinkHelper.getActionLink(grid), attr);
                             }
-                            listener.onDynamicChannelClicked(DynamicLinkHelper.getActionLink(grid),
-                                    channel.getHomeAttribution(position + 1, grid.getAttribution())
-                            );
                         }
                     });
                 }

@@ -24,13 +24,8 @@ public class TopAdsStatisticAvgFragment extends TopAdsDashboardStatisticFragment
     }
 
     @Override
-    protected String getTotalSummary(Summary summary) {
-        return summary.getCostAvgFmt();
-    }
-
-    @Override
     protected String getTitleGraph() {
-        return getString(R.string.label_top_ads_avg_cost);
+        return getString(R.string.title_top_ads_statistic_graph_avg);
     }
 
     @Override

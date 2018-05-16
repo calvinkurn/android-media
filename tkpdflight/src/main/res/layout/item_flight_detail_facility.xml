@@ -24,6 +24,7 @@
             android:paddingRight="@dimen/dp_20" />
 
         <View
+            android:id="@+id/separator_info"
             android:layout_width="match_parent"
             android:layout_height="1dp"
             android:background="@color/black_twenty_percent"

@@ -24,13 +24,8 @@ public class TopAdsStatisticSpentFragment extends TopAdsDashboardStatisticFragme
     }
 
     @Override
-    protected String getTotalSummary(Summary summary) {
-        return summary.getCostSumFmt();
-    }
-
-    @Override
     protected String getTitleGraph() {
-        return getString(R.string.label_top_ads_cost);
+        return getString(R.string.title_top_ads_statistic_graph_spent);
     }
 
     @Override

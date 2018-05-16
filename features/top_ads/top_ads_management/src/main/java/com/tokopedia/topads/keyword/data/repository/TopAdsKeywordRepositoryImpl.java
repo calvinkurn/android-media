@@ -22,29 +22,28 @@ import rx.functions.Func1;
 public class TopAdsKeywordRepositoryImpl implements TopAdsKeywordRepository {
 
     private KeywordDashboardDataSouce keywordDashboardDataSouce;
-    //private ShopInfoRepository shopInfoRepository;
+    private ShopInfoRepository shopInfoRepository;
 
     @Inject
-    public TopAdsKeywordRepositoryImpl(KeywordDashboardDataSouce keywordDashboardDataSouce/*, ShopInfoRepository shopInfoRepository*/) {
+    public TopAdsKeywordRepositoryImpl(KeywordDashboardDataSouce keywordDashboardDataSouce, ShopInfoRepository shopInfoRepository) {
         this.keywordDashboardDataSouce = keywordDashboardDataSouce;
-        //this.shopInfoRepository = shopInfoRepository;
+        this.shopInfoRepository = shopInfoRepository;
     }
 
     @Override
     public Observable<KeywordDashboardDomain> getDashboardKeyword(final RequestParams requestParams) {
-        /*return shopInfoRepository.getAddProductShopInfo().flatMap(new Func1<AddProductShopInfoDomainModel, Observable<KeywordDashboardDomain>>() {
+        return shopInfoRepository.getAddProductShopInfo().flatMap(new Func1<AddProductShopInfoDomainModel, Observable<KeywordDashboardDomain>>() {
             @Override
             public Observable<KeywordDashboardDomain> call(AddProductShopInfoDomainModel addProductShopInfoDomainModel) {
                 requestParams.putString("shop_id", addProductShopInfoDomainModel.getShopId());
                 return keywordDashboardDataSouce.getKeywordDashboard(requestParams);
             }
-        });*/
-        return null;
+        });
     }
 
     @Override
     public Observable<EditTopAdsKeywordDetailDomainModel> editTopAdsKeywordDetail(TopAdsKeywordEditDetailInputDomainModel modelInput) {
-        //modelInput.setShopId(shopInfoRepository.getShopId());
+        modelInput.setShopId(shopInfoRepository.getShopId());
         return keywordDashboardDataSouce.editTopAdsKeywordDetail(modelInput);
     }
 

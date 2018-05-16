@@ -73,7 +73,7 @@ public class TopAdsShopAdsDataSource {
         dataModel.setAdEndTime(domainModel.getAdEndTime());
         dataModel.setAdImage(domainModel.getAdImage());
         dataModel.setAdTitle(domainModel.getAdTitle());
-        dataModel.setSource(TopAdsNetworkConstant.VALUE_SOURCE_ANDROID);
+        dataModel.setSource(domainModel.getSource());
         switch (Integer.parseInt(domainModel.getStatus())) {
             case TopAdsConstant.STATUS_AD_ACTIVE:
             case TopAdsConstant.STATUS_AD_NOT_SENT:
