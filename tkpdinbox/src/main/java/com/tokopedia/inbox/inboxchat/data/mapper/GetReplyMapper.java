@@ -25,6 +25,7 @@ import com.tokopedia.inbox.inboxchat.viewmodel.OppositeChatViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.chatroom.QuickReplyListViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.chatroom.QuickReplyViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.chatroom.imageannouncement.ImageAnnouncementViewModel;
+import com.tokopedia.inbox.inboxchat.viewmodel.chatroom.imageupload.ImageUploadViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.chatroom.productattachment.ProductAttachmentViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.mapper.AttachInvoiceMapper;
 
@@ -84,31 +85,13 @@ public class GetReplyMapper implements Func1<Response<TkpdResponse>, ChatRoomVie
 
         for (ListReply item : data.getList()) {
 
-//            if (item.getRole().contains(TOKOPEDIA)) {
-//                ThumbnailChatViewModel temp = new ThumbnailChatViewModel();
-//                temp.setReplyId(item.getReplyId());
-//                temp.setSenderId(item.getSenderId());
-//                temp.setMsg(item.getMsg());
-//                temp.setReplyTime(item.getReplyTime());
-//                temp.setFraudStatus(item.getFraudStatus());
-//                temp.setReadTime(item.getReadTime());
-//                temp.setAttachmentId(item.getAttachmentId());
-//                temp.setOldMsgId(item.getOldMsgId());
-//                temp.setMsgId(item.getMsgId());
-//                temp.setRole(item.getRole());
-//                temp.setSenderName(item.getSenderName());
-//                temp.setHighlight(item.isHighlight());
-//                temp.setOldMessageTitle(item.getOldMessageTitle());
-//                if (item.isHighlight()) {
-//                    temp.setSpanned(MethodChecker.fromHtml(item.getMsg()));
-//                }
-//                temp.setAttachment(item.getAttachment());
-//                list.add(checkAndConvertItemModelToAttachmentType(temp, temp.getAttachment()));
-//            } else
             if (item.getAttachment() != null
-                    && item.getAttachment().getType().equals(WebSocketMapper.TYPE_IMAGE_ATTACHMENT)
+                    && item.getAttachment().getType().equals(WebSocketMapper.TYPE_IMAGE_ANNOUNCEMENT)
                     && item.getRole().contains(TOKOPEDIA)) {
                 mapToImageAnnouncement(list, item);
+            } else if (item.getAttachment() != null
+                    && item.getAttachment().getType().equals(WebSocketMapper.TYPE_IMAGE_UPLOAD)) {
+                mapToImageUpload(list, item);
             } else if (item.getAttachment() != null
                     && item.getAttachment().getType().equals(WebSocketMapper.TYPE_PRODUCT_ATTACHMENT)) {
                 mapToProductAttachment(list, item);
@@ -185,6 +168,24 @@ public class GetReplyMapper implements Func1<Response<TkpdResponse>, ChatRoomVie
         return chatRoomViewModel;
     }
 
+    private void mapToImageUpload(ArrayList<Visitable> list, ListReply item) {
+        ImageUploadViewModel imageUpload = new ImageUploadViewModel(
+                String.valueOf(item.getMsgId()),
+                item.getSenderId(),
+                item.getSenderName(),
+                item.getRole(),
+                item.getAttachment().getId(),
+                item.getAttachment().getType(),
+                item.getReplyTime(),
+                isSender(item.getSenderId()),
+                item.getAttachment().getAttributes().getImageUrl(),
+                item.getAttachment().getAttributes().getThumbnail(),
+                item.isMessageIsRead()
+        );
+
+        list.add(imageUpload);
+    }
+
     private void mapToImageAnnouncement(ArrayList<Visitable> list, ListReply item) {
         ImageAnnouncementViewModel imageAnnouncement = new ImageAnnouncementViewModel(
                 String.valueOf(item.getMsgId()),
@@ -217,7 +218,7 @@ public class GetReplyMapper implements Func1<Response<TkpdResponse>, ChatRoomVie
                 item.getAttachment().getAttributes().getProductProfile().getPrice(),
                 item.getAttachment().getAttributes().getProductProfile().getUrl(),
                 item.getAttachment().getAttributes().getProductProfile().getImageUrl(),
-                item.getSenderId().equals(sessionHandler.getLoginID())
+                isSender(item.getSenderId())
         );
 
         list.add(productAttachment);
@@ -260,15 +261,6 @@ public class GetReplyMapper implements Func1<Response<TkpdResponse>, ChatRoomVie
             return input;
         }
 
-//        if (attachment.getType().equals(AttachmentChatHelper.PRODUCT_ATTACHED)) {
-//            if ((input instanceof MyChatViewModel)) {
-//                return new AttachProductViewModel((MyChatViewModel) input);
-//            } else if (input instanceof OppositeChatViewModel) {
-//                return new AttachProductViewModel((OppositeChatViewModel) input);
-//            } else if (input instanceof ThumbnailChatViewModel) {
-//                return new AttachProductViewModel((ThumbnailChatViewModel) input);
-//            }
-//        } else
         if (attachment.getType().equals(AttachmentChatHelper.INVOICE_LIST_ATTACHED)) {
             return AttachInvoiceMapper.attachmentToAttachInvoiceSelectionModel(attachment);
         } else if (attachment.getType().equals(AttachmentChatHelper.INVOICE_ATTACHED)) {
@@ -277,10 +269,11 @@ public class GetReplyMapper implements Func1<Response<TkpdResponse>, ChatRoomVie
             } else if (input instanceof OppositeChatViewModel) {
                 return new AttachInvoiceSentViewModel((OppositeChatViewModel) input);
             }
-//            else if (input instanceof ThumbnailChatViewModel) {
-//                return new AttachInvoiceSentViewModel((ThumbnailChatViewModel) input);
-//            }
         }
         return input;
+    }
+
+    private boolean isSender(String senderId) {
+        return senderId.equals(sessionHandler.getLoginID());
     }
 }
