@@ -3,10 +3,8 @@ apply from: "$rootProject.projectDir/buildconfig/module.gradle"
 apply plugin: 'android-apt'
 
 dependencies {
-    compile project(rootProject.ext.features.core)
-    compile project(rootProject.ext.libraries.design)
-    compile project(rootProject.ext.features.topAdsSdk)
-    compile project(rootProject.ext.features.payment)
+    compile rootProject.ext.miscDependencies.gson
+    compile project(rootProject.ext.libraries.abstraction)
 
     compile(rootProject.ext.tkpdLibDependencies.showcase) {
         exclude group: "com.android.support"

@@ -329,7 +329,6 @@ dependencies {
     // Cloud testing
     androidTestCompile (name:'cloudtestingscreenshotter_lib', ext:'aar')
     //[END] test and androidTest dependencies
-    compile project(path: ':features:logistic:logisticuploadawb')
 }
 
 
