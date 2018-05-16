@@ -18,12 +18,12 @@ import com.tokopedia.inbox.inboxchat.domain.model.ReplyParcelableModel;
 import com.tokopedia.inbox.inboxchat.domain.model.reply.WebSocketResponse;
 import com.tokopedia.inbox.inboxchat.domain.model.websocket.BaseChatViewModel;
 import com.tokopedia.inbox.inboxchat.viewholder.MyChatViewHolder;
-import com.tokopedia.inbox.inboxchat.viewmodel.chatroom.SendableViewModel;
-import com.tokopedia.inbox.inboxchat.viewmodel.chatroom.imageupload.ImageUploadViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.MyChatViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.OppositeChatViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.TypingChatModel;
+import com.tokopedia.inbox.inboxchat.viewmodel.chatroom.SendableViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.chatroom.TimeMachineChatModel;
+import com.tokopedia.inbox.inboxchat.viewmodel.chatroom.imageupload.ImageUploadViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.chatroom.productattachment.ProductAttachmentViewModel;
 
 import java.util.ArrayList;

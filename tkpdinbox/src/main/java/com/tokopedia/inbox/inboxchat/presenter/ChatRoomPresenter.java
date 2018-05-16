@@ -37,12 +37,12 @@ import com.tokopedia.inbox.inboxchat.viewmodel.AttachInvoiceSelectionViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.AttachInvoiceSentViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.ChatRoomViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.GetTemplateViewModel;
-import com.tokopedia.inbox.inboxchat.viewmodel.chatroom.imageupload.ImageUploadViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.MyChatViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.OppositeChatViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.SendMessageViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.TemplateChatModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.chatroom.QuickReplyListViewModel;
+import com.tokopedia.inbox.inboxchat.viewmodel.chatroom.imageupload.ImageUploadViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.mapper.AttachInvoiceMapper;
 
 import java.util.ArrayList;

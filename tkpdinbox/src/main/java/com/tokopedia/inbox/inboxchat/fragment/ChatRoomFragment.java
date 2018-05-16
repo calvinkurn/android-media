@@ -97,13 +97,13 @@ import com.tokopedia.inbox.inboxchat.viewholder.ListChatViewHolder;
 import com.tokopedia.inbox.inboxchat.viewmodel.AttachInvoiceSentViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.ChatRoomViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.DummyChatViewModel;
-import com.tokopedia.inbox.inboxchat.viewmodel.chatroom.SendableViewModel;
-import com.tokopedia.inbox.inboxchat.viewmodel.chatroom.imageupload.ImageUploadViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.InboxChatViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.MyChatViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.OppositeChatViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.chatroom.QuickReplyListViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.chatroom.QuickReplyViewModel;
+import com.tokopedia.inbox.inboxchat.viewmodel.chatroom.SendableViewModel;
+import com.tokopedia.inbox.inboxchat.viewmodel.chatroom.imageupload.ImageUploadViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.chatroom.productattachment.ProductAttachmentViewModel;
 import com.tokopedia.inbox.inboxmessage.InboxMessageConstant;
 
