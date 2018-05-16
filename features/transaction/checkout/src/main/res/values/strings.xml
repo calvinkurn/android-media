@@ -81,8 +81,8 @@
     <string name="label_not_yet_pinpoint">Belum Pinpoint</string>
     <string name="message_error_no_courier_selected">Pastikan Anda telah memilih kurir pengiriman</string>
     <string name="message_error_dropshipper_data">Lengkapi informasi dropshipper Anda</string>
-    <string name="message_error_dropshipper_name">Nama tidak boleh kosong</string>
-    <string name="message_error_dropshipper_phone">Nomor telepon tidak boleh kosong</string>
+    <string name="message_error_dropshipper_name">Nama dropshipper minimal 3 karakter</string>
+    <string name="message_error_dropshipper_phone">Nomor telepon dropshipper minimal 6 karakter</string>
     <string name="message_error_no_pinpoint">Anda belum menandai lokasi tujuan dalam peta</string>
     <string name="message_error_dropshipper">Data dropshipper belum lengkap</string>
     <string name="label_main_address">Utama</string>
