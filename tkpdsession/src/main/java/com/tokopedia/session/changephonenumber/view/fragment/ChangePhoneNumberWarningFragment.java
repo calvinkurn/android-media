@@ -316,7 +316,7 @@ public class ChangePhoneNumberWarningFragment extends BaseDaggerFragment
                                     getContext(),
                                     phoneNumber,
                                     email,
-                                    viewModel.getWarningList() != null ?
+                                    viewModel != null && viewModel.getWarningList() != null ?
                                             new ArrayList<>(viewModel.getWarningList()) : null
                             ),
                             REQUEST_CHANGE_PHONE_NUMBER);
