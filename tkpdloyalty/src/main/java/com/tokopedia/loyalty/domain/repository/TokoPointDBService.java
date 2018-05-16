@@ -1,9 +1,10 @@
 package com.tokopedia.loyalty.domain.repository;
 
+import android.text.TextUtils;
+
 import com.google.gson.Gson;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.var.TkpdCache;
-import com.tokopedia.loyalty.domain.entity.response.TokoPointDrawerDataResponse;
 import com.tokopedia.loyalty.domain.exception.TokoPointDBServiceException;
 
 import javax.inject.Inject;
@@ -39,11 +40,11 @@ public class TokoPointDBService implements ITokoPointDBService {
                                 GqlTokoPointDrawerDataResponse tokoPointDrawerDataResponse =
                                         gson.fromJson(cacheStr, GqlTokoPointDrawerDataResponse.class);
 
-                                // TODO: 5/16/18 check has notif
-                                /*if (tokoPointDrawerDataResponse.getHasNotif() == 1) {
+                                if (tokoPointDrawerDataResponse.getGqlTokoPointPopupNotif() != null &&
+                                        !TextUtils.isEmpty(tokoPointDrawerDataResponse.getGqlTokoPointPopupNotif().getTitle())) {
                                     globalCacheManager.delete(TkpdCache.Key.KEY_TOKOPOINT_DRAWER_DATA);
                                     throw new TokoPointDBServiceException("cant pull from db, cause data has notif flag active");
-                                }*/
+                                }
 
                                 return tokoPointDrawerDataResponse;
                             } else {
@@ -66,13 +67,14 @@ public class TokoPointDBService implements ITokoPointDBService {
             @Override
             public void call(GqlTokoPointDrawerDataResponse tokoPointDrawerDataResponse) {
 
-                // TODO: 5/16/18 check has notif
-                /*if (tokoPointDrawerDataResponse.getHasNotif() != 1) {
+                if (tokoPointDrawerDataResponse.getGqlTokoPointPopupNotif() == null ||
+                        (tokoPointDrawerDataResponse.getGqlTokoPointPopupNotif() != null &&
+                                TextUtils.isEmpty(tokoPointDrawerDataResponse.getGqlTokoPointPopupNotif().getTitle()))) {
                     globalCacheManager.setCacheDuration(60);
                     globalCacheManager.setKey(TkpdCache.Key.KEY_TOKOPOINT_DRAWER_DATA);
                     globalCacheManager.setValue(gson.toJson(tokoPointDrawerDataResponse));
                     globalCacheManager.store();
-                }*/
+                }
             }
         });
 //                .map(new Func1<TokoPointDrawerDataResponse, TokoPointDrawerDataResponse>() {
