@@ -17,7 +17,7 @@ import rx.subscriptions.CompositeSubscription;
  * @author anggaprasetiyo on 05/03/18.
  */
 
-@Module(includes = {ConverterDataModule.class})
+@Module(includes = {ConverterDataModule.class, TrackingAnalyticsModule.class})
 public class CartShipmentModule {
 
     private final ICartShipmentActivity viewListener;

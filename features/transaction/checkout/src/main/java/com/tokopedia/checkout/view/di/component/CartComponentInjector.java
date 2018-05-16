@@ -13,6 +13,7 @@ import com.tokopedia.checkout.view.di.module.CheckoutRouterModule;
 import com.tokopedia.checkout.view.di.module.CheckoutUseCaseModule;
 import com.tokopedia.checkout.view.di.module.DataMapperModule;
 import com.tokopedia.checkout.view.di.module.DataModule;
+import com.tokopedia.checkout.view.di.module.DataUtilModule;
 import com.tokopedia.checkout.view.di.module.ShipmentUseCaseModule;
 
 import javax.inject.Inject;
@@ -51,6 +52,7 @@ public class CartComponentInjector {
                             .baseAppComponent(((BaseMainApplication) application).getBaseAppComponent())
                             .checkoutRouterModule(new CheckoutRouterModule())
                             .dataMapperModule(new DataMapperModule())
+                            .dataUtilModule(new DataUtilModule())
                             .dataModule(new DataModule())
                             .cartUseCaseModule(new CartUseCaseModule())
                             .checkoutUseCaseModule(new CheckoutUseCaseModule())

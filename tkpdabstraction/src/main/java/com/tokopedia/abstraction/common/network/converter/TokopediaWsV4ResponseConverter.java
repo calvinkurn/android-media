@@ -1,7 +1,6 @@
-package com.tokopedia.core.network.retrofit.coverters;
+package com.tokopedia.abstraction.common.network.converter;
 
-
-import com.tokopedia.core.network.retrofit.response.TkpdResponse;
+import com.tokopedia.abstraction.common.network.response.TokopediaWsV4Response;
 
 import java.io.IOException;
 import java.lang.annotation.Annotation;
@@ -14,24 +13,20 @@ import retrofit2.Converter;
 import retrofit2.Retrofit;
 
 /**
- * @author Angga.Prasetiyo on 01/12/2015.
+ * @author anggaprasetiyo on 14/05/18.
  */
-@Deprecated
-/**
- * @see com.tokopedia.abstraction.common.network.converter.TokopediaWsV4ResponseConverter
- */
-public class TkpdResponseConverter extends Converter.Factory {
+public class TokopediaWsV4ResponseConverter extends Converter.Factory {
     private static final MediaType MEDIA_TYPE = MediaType.parse("text/plain");
 
     @Override
     public Converter<ResponseBody, ?> responseBodyConverter(Type type,
                                                             Annotation[] annotations,
                                                             Retrofit retrofit) {
-        if (TkpdResponse.class == type) {
-            return new Converter<ResponseBody, TkpdResponse>() {
+        if (TokopediaWsV4Response.class == type) {
+            return new Converter<ResponseBody, TokopediaWsV4Response>() {
                 @Override
-                public TkpdResponse convert(ResponseBody value) throws IOException {
-                    return TkpdResponse.factory(value.string());
+                public TokopediaWsV4Response convert(ResponseBody value) throws IOException {
+                    return TokopediaWsV4Response.factory(value.string());
                 }
             };
         }
@@ -43,16 +38,15 @@ public class TkpdResponseConverter extends Converter.Factory {
                                                           Annotation[] parameterAnnotations,
                                                           Annotation[] methodAnnotations,
                                                           Retrofit retrofit) {
-        if (TkpdResponse.class == type) {
-            return new Converter<TkpdResponse, RequestBody>() {
+        if (TokopediaWsV4Response.class == type) {
+            return new Converter<TokopediaWsV4Response, RequestBody>() {
                 @Override
-                public RequestBody convert(TkpdResponse value) throws IOException {
+                public RequestBody convert(TokopediaWsV4Response value) throws IOException {
                     return RequestBody.create(MEDIA_TYPE, value.getStrResponse());
                 }
             };
         }
         return null;
     }
-
 
 }

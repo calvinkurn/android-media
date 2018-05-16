@@ -4,6 +4,8 @@ import android.support.annotation.NonNull;
 
 import com.google.gson.Gson;
 import com.tokopedia.abstraction.common.network.exception.HttpErrorException;
+import com.tokopedia.abstraction.common.network.exception.ResponseDataNullException;
+import com.tokopedia.abstraction.common.network.exception.ResponseErrorException;
 import com.tokopedia.abstraction.common.utils.TKPDMapParam;
 import com.tokopedia.transactiondata.entity.request.RemoveCartRequest;
 import com.tokopedia.transactiondata.entity.request.UpdateCartRequest;
@@ -26,11 +28,10 @@ import com.tokopedia.checkout.domain.usecase.ResetCartGetCartListUseCase;
 import com.tokopedia.checkout.domain.usecase.ResetCartGetShipmentFormUseCase;
 import com.tokopedia.checkout.domain.usecase.UpdateCartGetShipmentAddressFormUseCase;
 import com.tokopedia.checkout.view.holderitemdata.CartItemHolderData;
-import com.tokopedia.core.network.exception.ResponseDataNullException;
-import com.tokopedia.core.network.exception.ResponseErrorException;
 import com.tokopedia.core.network.retrofit.utils.ErrorNetMessage;
 import com.tokopedia.core.router.transactionmodule.sharedata.CheckPromoCodeCartListResult;
 import com.tokopedia.design.utils.CurrencyFormatUtil;
+import com.tokopedia.transactiondata.utils.CartApiRequestParamGenerator;
 import com.tokopedia.usecase.RequestParams;
 
 import java.net.ConnectException;
@@ -61,6 +62,7 @@ public class CartListPresenter implements ICartListPresenter {
     private final ResetCartGetCartListUseCase resetCartGetCartListUseCase;
     private final ResetCartGetShipmentFormUseCase resetCartGetShipmentFormUseCase;
     private final CheckPromoCodeCartListUseCase checkPromoCodeCartListUseCase;
+    private final CartApiRequestParamGenerator cartApiRequestParamGenerator;
 
     @Inject
     public CartListPresenter(ICartListView cartListView,
@@ -72,7 +74,8 @@ public class CartListPresenter implements ICartListPresenter {
                              ResetCartGetCartListUseCase resetCartGetCartListUseCase,
                              ResetCartGetShipmentFormUseCase resetCartGetShipmentFormUseCase,
                              CheckPromoCodeCartListUseCase checkPromoCodeCartListUseCase,
-                             CompositeSubscription compositeSubscription) {
+                             CompositeSubscription compositeSubscription,
+                             CartApiRequestParamGenerator cartApiRequestParamGenerator) {
         this.view = cartListView;
         this.getCartListUseCase = getCartListUseCase;
         this.compositeSubscription = compositeSubscription;
@@ -83,19 +86,19 @@ public class CartListPresenter implements ICartListPresenter {
         this.resetCartGetCartListUseCase = resetCartGetCartListUseCase;
         this.resetCartGetShipmentFormUseCase = resetCartGetShipmentFormUseCase;
         this.checkPromoCodeCartListUseCase = checkPromoCodeCartListUseCase;
+        this.cartApiRequestParamGenerator = cartApiRequestParamGenerator;
     }
 
     @Override
     public void processInitialGetCartData() {
         view.renderLoadGetCartData();
         view.disableSwipeRefresh();
-        TKPDMapParam<String, String> param = new TKPDMapParam<>();
-        param.put("lang", "id");
+
 
         RequestParams requestParams = RequestParams.create();
         requestParams.putObject(
                 GetCartListUseCase.PARAM_REQUEST_AUTH_MAP_STRING,
-                view.getGeneratedAuthParamNetwork(param)
+                view.getGeneratedAuthParamNetwork(cartApiRequestParamGenerator.generateParamMapGetCartList())
         );
         compositeSubscription.add(getCartListUseCase.createObservable(requestParams)
                 .subscribeOn(Schedulers.newThread())

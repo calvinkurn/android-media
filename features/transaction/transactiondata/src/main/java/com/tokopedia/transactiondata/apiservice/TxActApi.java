@@ -1,6 +1,6 @@
 package com.tokopedia.transactiondata.apiservice;
 
-import com.tokopedia.core.network.retrofit.response.TkpdResponse;
+import com.tokopedia.abstraction.common.network.response.TokopediaWsV4Response;
 import com.tokopedia.transactiondata.constant.TransactionDataApiUrl;
 
 import java.util.Map;
@@ -19,9 +19,9 @@ import rx.Observable;
 public interface TxActApi {
 
     @GET(TransactionDataApiUrl.TransactionAction.PATH_GET_PARAMETER_DYNAMIC_PAYMENT)
-    Observable<Response<TkpdResponse>> getParameterDynamicPayment(@QueryMap Map<String, Object> params);
+    Observable<Response<TokopediaWsV4Response>> getParameterDynamicPayment(@QueryMap Map<String, Object> params);
 
     @FormUrlEncoded
     @POST(TransactionDataApiUrl.TransactionAction.PATH_THANKS_DYNAMIC_PAYMENT)
-    Observable<Response<TkpdResponse>> getThanksDynamicPayment(@FieldMap Map<String, String> params);
+    Observable<Response<TokopediaWsV4Response>> getThanksDynamicPayment(@FieldMap Map<String, String> params);
 }

@@ -34,11 +34,11 @@ public class GetThanksToppayUseCase extends UseCase<ThanksTopPayData> {
         TKPDMapParam<String, String> param =
                 (TKPDMapParam<String, String>) requestParams.getObject(PARAM_REQUEST_AUTH_MAP_STRING);
         return topPayRepository.getThanksTopPay(param)
-                .map(new Func1<com.tokopedia.transaction.common.data.cart.thankstoppaydata.ThanksTopPayData,
+                .map(new Func1<com.tokopedia.transactiondata.entity.response.thankstoppaydata.ThanksTopPayData,
                         ThanksTopPayData>() {
                     @Override
                     public ThanksTopPayData call(
-                            com.tokopedia.transaction.common.data.cart.thankstoppaydata.ThanksTopPayData
+                            com.tokopedia.transactiondata.entity.response.thankstoppaydata.ThanksTopPayData
                                     thanksTopPayData) {
                         return topPayMapper.convertThanksTopPayData(thanksTopPayData);
                     }

@@ -9,6 +9,6 @@ import com.tokopedia.checkout.domain.datamodel.toppay.ThanksTopPayData;
 public interface ITopPayMapper {
 
     ThanksTopPayData convertThanksTopPayData(
-            com.tokopedia.transaction.common.data.cart.thankstoppaydata.ThanksTopPayData thanksTopPayDataResponse
+            com.tokopedia.transactiondata.entity.response.thankstoppaydata.ThanksTopPayData thanksTopPayDataResponse
     );
 }

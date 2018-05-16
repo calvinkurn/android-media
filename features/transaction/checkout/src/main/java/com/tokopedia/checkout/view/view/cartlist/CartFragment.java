@@ -40,9 +40,11 @@ import com.tokopedia.checkout.view.di.component.CartComponent;
 import com.tokopedia.checkout.view.di.component.CartListComponent;
 import com.tokopedia.checkout.view.di.component.DaggerCartListComponent;
 import com.tokopedia.checkout.view.di.module.CartListModule;
+import com.tokopedia.checkout.view.di.module.TrackingAnalyticsModule;
 import com.tokopedia.checkout.view.holderitemdata.CartItemHolderData;
 import com.tokopedia.checkout.view.holderitemdata.CartItemPromoHolderData;
 import com.tokopedia.checkout.view.holderitemdata.CartItemTickerErrorHolderData;
+import com.tokopedia.checkout.view.utils.CheckoutAnalytics;
 import com.tokopedia.checkout.view.view.addressoptions.CartAddressChoiceActivity;
 import com.tokopedia.checkout.view.view.multipleaddressform.MultipleAddressFormActivity;
 import com.tokopedia.checkout.view.view.shipment.ShipmentActivity;
@@ -91,12 +93,15 @@ public class CartFragment extends BaseCheckoutFragment implements CartListAdapte
     private TextView tvItemCount;
     private TkpdProgressDialog progressDialogNormal;
 
+
     @Inject
     ICartListPresenter dPresenter;
     @Inject
     CartListAdapter cartListAdapter;
     @Inject
     RecyclerView.ItemDecoration cartItemDecoration;
+    @Inject
+    CheckoutAnalytics checkoutAnalytics;
 
     private RefreshHandler refreshHandler;
 
@@ -122,6 +127,7 @@ public class CartFragment extends BaseCheckoutFragment implements CartListAdapte
         CartListComponent cartListComponent = DaggerCartListComponent.builder()
                 .cartComponent(getComponent(CartComponent.class))
                 .cartListModule(new CartListModule(this))
+                .trackingAnalyticsModule(new TrackingAnalyticsModule())
                 .build();
         cartListComponent.inject(this);
     }
@@ -160,6 +166,7 @@ public class CartFragment extends BaseCheckoutFragment implements CartListAdapte
         deleteTextView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                checkoutAnalytics.eventClickCartClickHapusOnTopRightCorner();
                 mDataPasserListener.onRemoveAllCartMenuClicked(cartListAdapter.getCartItemDataList());
             }
         });
@@ -228,6 +235,7 @@ public class CartFragment extends BaseCheckoutFragment implements CartListAdapte
 
     @Override
     public void onCartItemDeleteButtonClicked(CartItemHolderData cartItemHolderData, int position) {
+        checkoutAnalytics.eventClickCartClickTrashBin();
         ArrayList<CartItemData> cartItemData =
                 new ArrayList<>(Collections.singletonList(cartItemHolderData.getCartItemData()));
         ArrayList<CartItemData> emptyList = new ArrayList<>(Collections.<CartItemData>emptyList());
@@ -236,6 +244,7 @@ public class CartFragment extends BaseCheckoutFragment implements CartListAdapte
 
     @Override
     public void onCartItemQuantityPlusButtonClicked(CartItemHolderData cartItemHolderData, int position) {
+        checkoutAnalytics.eventClickCartClickButtonPlus();
         cartListAdapter.increaseQuantity(position);
         dPresenter.reCalculateSubTotal(cartListAdapter.getDataList());
     }
@@ -248,6 +257,7 @@ public class CartFragment extends BaseCheckoutFragment implements CartListAdapte
 
     @Override
     public void onCartItemQuantityMinusButtonClicked(CartItemHolderData cartItemHolderData, int position) {
+        checkoutAnalytics.eventClickCartClickButtonMinus();
         cartListAdapter.decreaseQuantity(position);
         dPresenter.reCalculateSubTotal(cartListAdapter.getDataList());
     }
@@ -301,6 +311,7 @@ public class CartFragment extends BaseCheckoutFragment implements CartListAdapte
 
     @Override
     public void onCartPromoUseVoucherPromoClicked(CartItemPromoHolderData cartItemPromoHolderData, int position) {
+        checkoutAnalytics.eventClickCartClickGunakanKodePromoAatauKupon();
         if (getActivity().getApplication() instanceof ICheckoutModuleRouter) {
             startActivityForResult(
                     ((ICheckoutModuleRouter) getActivity().getApplication())
@@ -313,6 +324,7 @@ public class CartFragment extends BaseCheckoutFragment implements CartListAdapte
 
     @Override
     public void onCartPromoCancelVoucherPromoClicked(CartItemPromoHolderData cartItemPromoHolderData, int position) {
+        checkoutAnalytics.eventClickCartClickXOnBannerPromoCode();
         cartItemPromoHolderData.setPromoNotActive();
         cartListAdapter.notifyItemChanged(position);
         cartListAdapter.updateSuggestionPromo();
@@ -620,6 +632,7 @@ public class CartFragment extends BaseCheckoutFragment implements CartListAdapte
 
     @Override
     public void renderEmptyCartData() {
+        checkoutAnalytics.eventViewCartViewImpressionCartEmpty();
         refreshHandler.finishRefresh();
         bottomLayout.setVisibility(View.GONE);
         mIsMenuVisible = false;
@@ -637,6 +650,7 @@ public class CartFragment extends BaseCheckoutFragment implements CartListAdapte
             shop.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
+                    checkoutAnalytics.eventClickCartClickBelanjaSekarangOnEmptyCart();
                     navigateToActivity(
                             BrowseProductRouter.getSearchProductIntent(getActivity())
                     );
@@ -766,6 +780,7 @@ public class CartFragment extends BaseCheckoutFragment implements CartListAdapte
 
     @Override
     public void onProductItemClicked(int position, Product product) {
+        checkoutAnalytics.eventClickCartClickProductName(product.getName());
         ProductItem data = new ProductItem();
         data.setId(product.getId());
         data.setName(product.getName());
@@ -780,6 +795,7 @@ public class CartFragment extends BaseCheckoutFragment implements CartListAdapte
 
     @Override
     public void onShopItemClicked(int position, Shop shop) {
+        checkoutAnalytics.eventClickCartClickShopName(shop.getName());
         Intent intent = ((TransactionRouter) getActivity().getApplication()).getShopPageIntent(
                 getActivity(), shop.getId());
         startActivity(intent);

@@ -1,6 +1,7 @@
 package com.tokopedia.transactiondata.repository;
 
-import com.tokopedia.transaction.common.data.cart.thankstoppaydata.ThanksTopPayData;
+
+import com.tokopedia.transactiondata.entity.response.thankstoppaydata.ThanksTopPayData;
 
 import java.util.Map;
 
