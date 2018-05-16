@@ -13,7 +13,6 @@ import com.tkpd.library.utils.KeyboardHandler;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.inbox.R;
 import com.tokopedia.inbox.inboxchat.ChatTimeConverter;
-import com.tokopedia.inbox.inboxchat.domain.model.reply.AttachmentInvoice;
 import com.tokopedia.inbox.inboxchat.presenter.ChatRoomContract;
 import com.tokopedia.inbox.inboxchat.viewmodel.AttachInvoiceSentViewModel;
 
@@ -60,21 +59,15 @@ public class AttachedInvoiceSentViewHolder extends BaseChatViewHolder<AttachInvo
     @Override
     public void bind(AttachInvoiceSentViewModel element) {
         prerequisiteUISetup(element);
-        if(element.getAttachment() != null && element.getAttachment().getAttributes() != null) {
-            AttachmentInvoice invoice = element.getAttachment().getAttributes().getInvoiceLink();
-            if(invoice != null && invoice.getAttributes() != null) {
-
-                productName.setText(invoice.getAttributes().getTitle());
-                productDesc.setText(invoice.getAttributes().getDescription());
-                totalAmount.setText(invoice.getAttributes().getAmount());
-                if(!TextUtils.isEmpty(invoice.getAttributes().getImageUrl())){
-                    productImage.setVisibility(View.VISIBLE);
-                    ImageHandler.LoadImage(productImage,invoice.getAttributes().getImageUrl());
-                }
-                else {
-                    productImage.setVisibility(View.GONE);
-                }
-            }
+        productName.setText(element.get);
+        productDesc.setText(element.getDescription());
+        totalAmount.setText(element.get);
+        if(!TextUtils.isEmpty(element.getImageUrl())){
+            productImage.setVisibility(View.VISIBLE);
+            ImageHandler.LoadImage(productImage, element.getImageUrl());
+        }
+        else {
+            productImage.setVisibility(View.GONE);
         }
     }
 
@@ -114,14 +107,8 @@ public class AttachedInvoiceSentViewHolder extends BaseChatViewHolder<AttachInvo
         }catch (NumberFormatException e){
             hourTime = element.getReplyTime();
         }
-
-        if (element.isShowHour()) {
-            hour.setVisibility(View.VISIBLE);
-            chatStatus.setVisibility(View.VISIBLE);
-        }else {
-            hour.setVisibility(View.GONE);
-            chatStatus.setVisibility(View.GONE);
-        }
+        hour.setVisibility(View.VISIBLE);
+        chatStatus.setVisibility(View.VISIBLE);
 
         hour.setText(hourTime);
         int imageResource;
