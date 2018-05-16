@@ -15,11 +15,13 @@ import com.tokopedia.checkout.view.di.module.CheckoutRouterModule;
 import com.tokopedia.checkout.view.di.module.CheckoutUseCaseModule;
 import com.tokopedia.checkout.view.di.module.DataMapperModule;
 import com.tokopedia.checkout.view.di.module.DataModule;
+import com.tokopedia.checkout.view.di.module.DataUtilModule;
 import com.tokopedia.checkout.view.di.module.ShipmentUseCaseModule;
 import com.tokopedia.checkout.view.di.scope.CartScope;
 import com.tokopedia.logisticdata.data.repository.RatesRepository;
 import com.tokopedia.transactiondata.repository.ICartRepository;
 import com.tokopedia.transactiondata.repository.ITopPayRepository;
+import com.tokopedia.transactiondata.utils.CartApiRequestParamGenerator;
 
 import dagger.Component;
 
@@ -32,6 +34,7 @@ import dagger.Component;
                 {
                         CheckoutRouterModule.class,
                         DataMapperModule.class,
+                        DataUtilModule.class,
                         DataModule.class,
                         CartUseCaseModule.class,
                         CheckoutUseCaseModule.class,
@@ -61,6 +64,8 @@ public interface CartComponent {
     AbstractionRouter abstractionRouter();
 
     Context context();
+
+    CartApiRequestParamGenerator cartApiRequestParamGenerator();
 
     void inject(CartComponentInjector cartApiServiceComponentInjector);
 }

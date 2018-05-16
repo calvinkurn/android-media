@@ -19,6 +19,7 @@ import com.tokopedia.checkout.view.view.cartlist.CartItemDecoration;
 import com.tokopedia.checkout.view.view.cartlist.CartListPresenter;
 import com.tokopedia.checkout.view.view.cartlist.ICartListPresenter;
 import com.tokopedia.checkout.view.view.cartlist.ICartListView;
+import com.tokopedia.transactiondata.utils.CartApiRequestParamGenerator;
 
 import dagger.Module;
 import dagger.Provides;
@@ -55,12 +56,14 @@ public class CartListModule {
                                                  ResetCartGetCartListUseCase resetCartGetCartListUseCase,
                                                  ResetCartGetShipmentFormUseCase resetCartGetShipmentFormUseCase,
                                                  CheckPromoCodeCartListUseCase checkPromoCodeCartListUseCase,
-                                                 CompositeSubscription compositeSubscription) {
+                                                 CompositeSubscription compositeSubscription,
+                                                 CartApiRequestParamGenerator cartApiRequestParamGenerator) {
         return new CartListPresenter(
                 cartListView, getCartListUseCase, deleteCartUseCase,
                 deleteCartGetCartListUseCase, updateCartGetShipmentAddressFormUseCase,
                 getShipmentAddressFormUseCase, resetCartGetCartListUseCase,
-                resetCartGetShipmentFormUseCase, checkPromoCodeCartListUseCase, compositeSubscription
+                resetCartGetShipmentFormUseCase, checkPromoCodeCartListUseCase, compositeSubscription,
+                cartApiRequestParamGenerator
         );
     }
 
