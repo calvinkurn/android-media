@@ -1,11 +1,10 @@
 package com.tokopedia.checkout.view.di.component;
 
+import android.content.Context;
+
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
-import com.tokopedia.transactiondata.repository.ICartRepository;
-import com.tokopedia.transactiondata.repository.ITopPayRepository;
-import com.tokopedia.logisticdata.data.repository.RatesRepository;
 import com.tokopedia.checkout.domain.mapper.ICartMapper;
 import com.tokopedia.checkout.domain.mapper.ICheckoutMapper;
 import com.tokopedia.checkout.domain.mapper.IShipmentMapper;
@@ -18,6 +17,9 @@ import com.tokopedia.checkout.view.di.module.DataMapperModule;
 import com.tokopedia.checkout.view.di.module.DataModule;
 import com.tokopedia.checkout.view.di.module.ShipmentUseCaseModule;
 import com.tokopedia.checkout.view.di.scope.CartScope;
+import com.tokopedia.logisticdata.data.repository.RatesRepository;
+import com.tokopedia.transactiondata.repository.ICartRepository;
+import com.tokopedia.transactiondata.repository.ITopPayRepository;
 
 import dagger.Component;
 
@@ -57,6 +59,8 @@ public interface CartComponent {
     UserSession userSession();
 
     AbstractionRouter abstractionRouter();
+
+    Context context();
 
     void inject(CartComponentInjector cartApiServiceComponentInjector);
 }

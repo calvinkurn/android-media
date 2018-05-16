@@ -15,7 +15,12 @@ import dagger.Provides;
 public class CheckoutRouterModule {
 
     @Provides
-    ICheckoutModuleRouter iCartCheckoutModuleRouter(@ApplicationContext Context context) {
+    Context provideContext(@ApplicationContext Context context) {
+        return context;
+    }
+
+    @Provides
+    ICheckoutModuleRouter iCartCheckoutModuleRouter(Context context) {
         if (context instanceof ICheckoutModuleRouter) {
             return (ICheckoutModuleRouter) context;
         }

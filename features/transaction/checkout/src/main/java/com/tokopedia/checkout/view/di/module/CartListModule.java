@@ -19,7 +19,6 @@ import com.tokopedia.checkout.view.view.cartlist.CartItemDecoration;
 import com.tokopedia.checkout.view.view.cartlist.CartListPresenter;
 import com.tokopedia.checkout.view.view.cartlist.ICartListPresenter;
 import com.tokopedia.checkout.view.view.cartlist.ICartListView;
-import com.tokopedia.transactiondata.repository.ICartRepository;
 
 import dagger.Module;
 import dagger.Provides;
@@ -34,12 +33,10 @@ public class CartListModule {
 
     private final ICartListView cartListView;
     private final CartListAdapter.ActionListener cartListActionListener;
-    private final Context context;
 
     public CartListModule(CartFragment cartFragment) {
         this.cartListView = cartFragment;
         this.cartListActionListener = cartFragment;
-        this.context = cartFragment.getContext();
     }
 
     @Provides
@@ -50,8 +47,7 @@ public class CartListModule {
 
     @Provides
     @CartListScope
-    ICartListPresenter provideICartListPresenter(ICartRepository cartRepository,
-                                                 GetCartListUseCase getCartListUseCase,
+    ICartListPresenter provideICartListPresenter(GetCartListUseCase getCartListUseCase,
                                                  DeleteCartUseCase deleteCartUseCase,
                                                  DeleteCartGetCartListUseCase deleteCartGetCartListUseCase,
                                                  UpdateCartGetShipmentAddressFormUseCase updateCartGetShipmentAddressFormUseCase,
@@ -70,8 +66,10 @@ public class CartListModule {
 
     @Provides
     @CartListScope
-    RecyclerView.ItemDecoration provideCartItemDecoration() {
-        return new CartItemDecoration((int) context.getResources().getDimension(R.dimen.new_margin_med), false, 0);
+    RecyclerView.ItemDecoration provideCartItemDecoration(Context context) {
+        return new CartItemDecoration(
+                (int) context.getResources().getDimension(R.dimen.new_margin_med),
+                false, 0);
     }
 
     @Provides
