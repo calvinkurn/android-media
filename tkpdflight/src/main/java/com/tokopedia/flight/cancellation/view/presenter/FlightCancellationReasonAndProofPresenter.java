@@ -79,11 +79,16 @@ public class FlightCancellationReasonAndProofPresenter extends BaseDaggerPresent
     }
 
     @Override
-    public void initialize() {
+    public void initialize(List<FlightCancellationAttachmentViewModel> attachments) {
+        getView().hideUploadAttachmentView();
+        if (attachments != null && attachments.size() > 0) {
+            getView().addAttachments(attachments);
+        }
         getView().showUploadAttachmentView();
     }
 
     private boolean validateImageAttachment(String uri) {
+        if (uri == null) return false;
         File file = new File(uri);
         BitmapFactory.Options options = new BitmapFactory.Options();
         options.inJustDecodeBounds = true;
