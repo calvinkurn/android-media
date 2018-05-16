@@ -438,7 +438,8 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                         totalItemPrice += (cartItemModel.getPrice() * cartItemModel.getQuantity());
                     }
 
-                    if (((ShipmentCartItemModel) shipmentData).getSelectedShipmentDetailData() != null) {
+                    if (((ShipmentCartItemModel) shipmentData).getSelectedShipmentDetailData() != null &&
+                            ((ShipmentSingleAddressCartItemModel) shipmentData).getSelectedShipmentDetailData().getSelectedCourier() != null) {
                         Boolean useInsurance = ((ShipmentCartItemModel) shipmentData).getSelectedShipmentDetailData().getUseInsurance();
                         shippingFee += shipmentSingleAddressItem.getSelectedShipmentDetailData()
                                 .getSelectedCourier().getDeliveryPrice();
@@ -457,7 +458,8 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                             Integer.parseInt(shipmentMultipleAddressItem.getMultipleAddressItemData().getProductQty()));
                     totalItem += Integer.parseInt(shipmentMultipleAddressItem.getMultipleAddressItemData().getProductQty());
 
-                    if (((ShipmentCartItemModel) shipmentData).getSelectedShipmentDetailData() != null) {
+                    if (((ShipmentCartItemModel) shipmentData).getSelectedShipmentDetailData() != null &&
+                            ((ShipmentMultipleAddressCartItemModel) shipmentData).getSelectedShipmentDetailData().getSelectedCourier() != null) {
                         Boolean useInsurance = ((ShipmentCartItemModel) shipmentData).getSelectedShipmentDetailData().getUseInsurance();
                         shippingFee += shipmentMultipleAddressItem.getSelectedShipmentDetailData()
                                 .getSelectedCourier().getDeliveryPrice();
