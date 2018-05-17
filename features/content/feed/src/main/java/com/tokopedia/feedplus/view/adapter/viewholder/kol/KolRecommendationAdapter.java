@@ -162,14 +162,16 @@ public class KolRecommendationAdapter extends RecyclerView.Adapter<KolRecommenda
     }
 
     private void setMargin(ViewHolder holder, int position) {
-        ViewGroup.MarginLayoutParams marginLayoutParams =
-                (ViewGroup.MarginLayoutParams) holder.mainView.getLayoutParams();
-        Resources resources = holder.mainView.getContext().getResources();
+        if (holder.mainView.getLayoutParams() instanceof ViewGroup.MarginLayoutParams) {
+            ViewGroup.MarginLayoutParams marginLayoutParams =
+                    (ViewGroup.MarginLayoutParams) holder.mainView.getLayoutParams();
+            Resources resources = holder.mainView.getContext().getResources();
 
-        if (position == 0) {
-            marginLayoutParams.leftMargin = (int) resources.getDimension(R.dimen.dp_16);
-        } else if (position == getItemCount() - 1) {
-            marginLayoutParams.rightMargin = (int) resources.getDimension(R.dimen.dp_16);
+            if (position == 0) {
+                marginLayoutParams.leftMargin = (int) resources.getDimension(R.dimen.dp_16);
+            } else if (position == getItemCount() - 1) {
+                marginLayoutParams.rightMargin = (int) resources.getDimension(R.dimen.dp_16);
+            }
         }
     }
 
