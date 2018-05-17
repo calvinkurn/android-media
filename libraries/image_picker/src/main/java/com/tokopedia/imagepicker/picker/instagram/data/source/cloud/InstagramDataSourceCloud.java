@@ -30,8 +30,8 @@ public class InstagramDataSourceCloud implements InstagramDataSource {
         this.instagramApi = instagramApi;
     }
 
-    public Observable<ResponseListMediaInstagram> getListMedia(String accessToken, String nextMaxId, String count) {
-        return instagramApi.getSelfMedia(accessToken, nextMaxId, count)
+    public Observable<ResponseListMediaInstagram> getListMedia(String cookie,String accessToken, String nextMaxId, String count) {
+        return instagramApi.getSelfMedia(cookie, accessToken, nextMaxId, count)
                 .map(new Func1<Response<ResponseListMediaInstagram>, ResponseListMediaInstagram>() {
                     @Override
                     public ResponseListMediaInstagram call(Response<ResponseListMediaInstagram> responseListMediaInstagramResponse) {

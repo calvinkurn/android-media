@@ -55,7 +55,7 @@ public class ImagePickerInstagramFragment extends BaseListFragment<InstagramMedi
         DaggerInstagramComponent
                 .builder()
                 .instagramModule(new InstagramModule())
-                .baseAppComponent(((BaseMainApplication)getActivity().getApplication()).getBaseAppComponent())
+                .baseAppComponent(((BaseMainApplication) getActivity().getApplication()).getBaseAppComponent())
                 .build()
                 .inject(this);
         imagePickerInstagramPresenter.attachView(this);
@@ -63,8 +63,8 @@ public class ImagePickerInstagramFragment extends BaseListFragment<InstagramMedi
 
     @Override
     public void onDestroy() {
-        imagePickerInstagramPresenter.detachView();
         super.onDestroy();
+        imagePickerInstagramPresenter.detachView();
     }
 
     @Nullable
@@ -130,16 +130,16 @@ public class ImagePickerInstagramFragment extends BaseListFragment<InstagramMedi
     @Override
     protected void onAttachActivity(Context context) {
         super.onAttachActivity(context);
-        listenerImagePickerInstagram = (ListenerImagePickerInstagram)context;
+        listenerImagePickerInstagram = (ListenerImagePickerInstagram) context;
     }
 
     @Override
     public void showGetListError(Throwable throwable) {
-        if(throwable instanceof ShouldLoginInstagramException){
+        if (throwable instanceof ShouldLoginInstagramException) {
             InstagramErrorLoginModel instagramErrorLoginModel = new InstagramErrorLoginModel();
             instagramErrorLoginModel.setListenerLoginInstagram(this);
             getAdapter().setErrorNetworkModel(instagramErrorLoginModel);
-        }else{
+        } else {
             getAdapter().setErrorNetworkModel(new ErrorNetworkModel());
         }
         super.showGetListError(throwable);
@@ -159,13 +159,19 @@ public class ImagePickerInstagramFragment extends BaseListFragment<InstagramMedi
     }
 
     @Override
+    public void saveCookies(String cookies) {
+        imagePickerInstagramPresenter.saveCookies(cookies);
+    }
+
+    @Override
     public void onClickLoginInstagram() {
         InstagramLoginDialog instagramLoginDialog = new InstagramLoginDialog();
         instagramLoginDialog.setListenerLoginInstagram(this);
         instagramLoginDialog.show(getActivity().getSupportFragmentManager(), "instagram_dialog");
     }
 
-    public interface ListenerImagePickerInstagram{
+    public interface ListenerImagePickerInstagram {
         void onClickImageInstagram(String url, boolean isChecked);
     }
+
 }

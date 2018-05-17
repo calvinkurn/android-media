@@ -22,14 +22,14 @@
             app:contentInsetStart="0dp"
             app:contentInsetStartWithNavigation="0dp"
             app:subtitleTextAppearance="?subtitleTextAppearance"
-            app:titleTextAppearance="?titleTextAppearance">
+            app:titleTextAppearance="@style/ImagePickerTitleTextAppearance">
 
             <TextView
                 android:id="@+id/tv_done"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="end"
-                style="@style/TextView.Title.Green"
+                style="@style/TextView.Small.Green"
                 android:text="@string/label_next"
                 android:paddingTop="@dimen/dp_8"
                 android:paddingBottom="@dimen/dp_8"
@@ -46,7 +46,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                style="@style/TextView.TitleBig"
+                android:textSize="@dimen/sp_20"
+                android:textColor="@android:color/black"
                 tools:text="@string/crop"/>
 
         </android.support.v7.widget.Toolbar>

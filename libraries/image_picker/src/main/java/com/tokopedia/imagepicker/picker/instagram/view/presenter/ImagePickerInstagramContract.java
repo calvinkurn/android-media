@@ -14,6 +14,8 @@ public interface ImagePickerInstagramContract {
     interface Presenter extends CustomerPresenter<View> {
 
         void getListMediaInstagram(String code, String nextMediaId);
+
+        void saveCookies(String cookies);
     }
 
     interface View extends BaseListViewListener<InstagramMediaModel> {

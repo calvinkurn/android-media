@@ -14,4 +14,6 @@ public interface InstagramRepository {
     Observable<ResponseListMediaInstagram> getListMedia(String token, String nextMaxId, String countPerPage);
 
     Observable<String> saveAccessToken(String saveAccessToken);
+
+    Observable<String> saveCookies(String cookies);
 }
