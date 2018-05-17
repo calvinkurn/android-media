@@ -58,7 +58,8 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:clipToPadding="false"
-        android:clipChildren="false">
+        android:clipChildren="false"
+        android:background="@color/white">
 
         <LinearLayout
             android:id="@+id/vg_content_container"
@@ -104,7 +105,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:clipToPadding="false"
-                android:clipChildren="false">
+                android:clipChildren="false"
+                android:background="@color/white">
 
                 <LinearLayout
                     android:id="@+id/vg_editor_main"

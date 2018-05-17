@@ -30,7 +30,8 @@
         android:clipToPadding="false"
         android:paddingTop="@dimen/dp_8"
         android:paddingBottom="@dimen/dp_8"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        android:background="@color/white"/>
 
     <ProgressBar
         android:id="@+id/loading"
