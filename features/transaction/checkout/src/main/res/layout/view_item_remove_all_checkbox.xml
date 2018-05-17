@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@color/white"
-                android:paddingBottom="@dimen/dp_8"
-                android:paddingTop="@dimen/dp_8">
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/bg_shadow"
+    android:paddingBottom="@dimen/dp_8"
+    android:paddingTop="@dimen/dp_8">
 
     <FrameLayout
         android:id="@+id/fl_select_to_remove"
@@ -19,7 +19,7 @@
             android:id="@+id/checkBox"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:theme="@style/TransactionCheckbox"/>
+            android:theme="@style/TransactionCheckbox" />
     </FrameLayout>
 
     <LinearLayout
@@ -38,7 +38,7 @@
             android:layout_marginEnd="@dimen/dp_16"
             android:layout_marginRight="@dimen/dp_16"
             android:lineSpacingExtra="5sp"
-            android:text="@string/label_select_all"/>
+            android:text="@string/label_select_all" />
 
     </LinearLayout>
 

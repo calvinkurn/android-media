@@ -48,6 +48,7 @@ import com.tokopedia.checkout.view.utils.CheckoutAnalytics;
 import com.tokopedia.checkout.view.view.addressoptions.CartAddressChoiceActivity;
 import com.tokopedia.checkout.view.view.multipleaddressform.MultipleAddressFormActivity;
 import com.tokopedia.checkout.view.view.shipment.ShipmentActivity;
+import com.tokopedia.checkout.view.view.shipment.ShipmentData;
 import com.tokopedia.checkout.view.view.shipmentform.CartShipmentActivity;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.gcm.GCMHandler;
@@ -249,6 +250,12 @@ public class CartFragment extends BaseCheckoutFragment implements CartListAdapte
     }
 
     @Override
+    public void onCartItemQuantityReseted(int position) {
+        cartListAdapter.resetQuantity(position);
+        dPresenter.reCalculateSubTotal(cartListAdapter.getDataList());
+    }
+
+    @Override
     public void onCartItemQuantityMinusButtonClicked(CartItemHolderData cartItemHolderData, int position) {
         checkoutAnalytics.eventClickCartClickButtonMinus();
         cartListAdapter.decreaseQuantity(position);
@@ -345,7 +352,7 @@ public class CartFragment extends BaseCheckoutFragment implements CartListAdapte
     }
 
     @Override
-    public void onDropshipperValidationResult(boolean result, int position) {
+    public void onDropshipperValidationResult(boolean result, ShipmentData shipmentData, int position) {
 
     }
 
@@ -680,7 +687,6 @@ public class CartFragment extends BaseCheckoutFragment implements CartListAdapte
     public void enableSwipeRefresh() {
         refreshHandler.setPullEnabled(true);
     }
-
 
     @Override
     public List<CartItemData> getCartDataList() {

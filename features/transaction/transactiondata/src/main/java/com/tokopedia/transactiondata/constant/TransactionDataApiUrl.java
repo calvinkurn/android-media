@@ -7,6 +7,10 @@ public class TransactionDataApiUrl {
     public static class Cart {
         static public String BASE_URL = "https://api.tokopedia.com/";
 
+        public static final String LIVE_BASE_URL = "https://api.tokopedia.com/";
+        public static final String STAGING_BASE_URL = "https://api-staging.tokopedia.com/";
+        public static final String ALPHA_BASE_URL = "https://api-alpha.tokopedia.com/";
+
         public static final String HMAC_KEY = "web_service_v4";
         public static final String VERSION = "v1";
         static final String BASE_PATH = "cart/";
@@ -29,6 +33,10 @@ public class TransactionDataApiUrl {
 
     public static class TransactionAction {
         static public String BASE_URL = "https://ws.tokopedia.com/";
+
+        public static final String LIVE_BASE_URL = "https://ws.tokopedia.com/";
+        public static final String STAGING_BASE_URL = "https://ws-staging.tokopedia.com/";
+        public static final String ALPHA_BASE_URL = "https://ws-alpha.tokopedia.com/";
 
         public static final String HMAC_KEY = "web_service_v4";
         public static final String VERSION = "v4/";

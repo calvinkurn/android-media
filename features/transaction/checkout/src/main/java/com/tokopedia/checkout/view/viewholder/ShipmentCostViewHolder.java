@@ -38,7 +38,7 @@ public class ShipmentCostViewHolder extends RecyclerView.ViewHolder {
     private TextView mTvShippingFee;
     private TextView mTvInsuranceFee;
     private TextView mTvPromoDiscount;
-    private TextView mTvGrandTotal;
+//    private TextView mTvGrandTotal;
 
     private TextView mTvPromoMessage;
 
@@ -55,7 +55,7 @@ public class ShipmentCostViewHolder extends RecyclerView.ViewHolder {
         mTvShippingFee = itemView.findViewById(R.id.tv_shipping_fee);
         mTvInsuranceFee = itemView.findViewById(R.id.tv_insurance_fee);
         mTvPromoDiscount = itemView.findViewById(R.id.tv_promo);
-        mTvGrandTotal = itemView.findViewById(R.id.tv_payable);
+//        mTvGrandTotal = itemView.findViewById(R.id.tv_payable);
         mTvPromoMessage = itemView.findViewById(R.id.tv_promo_message);
 
         mActionListener = actionListener;
@@ -71,7 +71,7 @@ public class ShipmentCostViewHolder extends RecyclerView.ViewHolder {
         mTvInsuranceFee.setText(getPriceFormat(shipmentCost.getInsuranceFee()));
         mTvPromoDiscount.setText(getPriceFormat(shipmentCost.getPromoPrice()));
 
-        mTvGrandTotal.setText(getPriceFormat(shipmentCost.getTotalPrice()));
+//        mTvGrandTotal.setText(getPriceFormat(shipmentCost.getTotalPrice()));
 
         if (!TextUtils.isEmpty(shipmentCost.getPromoMessage())) {
             formatPromoMessage(mTvPromoMessage, shipmentCost.getPromoMessage());

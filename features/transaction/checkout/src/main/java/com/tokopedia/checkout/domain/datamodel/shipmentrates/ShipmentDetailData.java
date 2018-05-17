@@ -74,7 +74,7 @@ public class ShipmentDetailData implements Parcelable {
         this.useInsurance = useInsurance;
     }
 
-    public Boolean getUsePartialOrder() {
+    public boolean getUsePartialOrder() {
         return usePartialOrder;
     }
 
@@ -82,7 +82,7 @@ public class ShipmentDetailData implements Parcelable {
         this.usePartialOrder = usePartialOrder;
     }
 
-    public Boolean getUseDropshipper() {
+    public boolean getUseDropshipper() {
         return useDropshipper;
     }
 

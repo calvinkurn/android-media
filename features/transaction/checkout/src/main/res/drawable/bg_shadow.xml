@@ -46,6 +46,13 @@
         </shape>
     </item>
 
+    <item android:bottom="10dp">
+        <shape>
+            <solid android:color="#40AAAAAA" />
+            <padding android:top="0.5dp" />
+        </shape>
+    </item>
+
     <!-- content background -->
     <item>
         <shape xmlns:android="http://schemas.android.com/apk/res/android"

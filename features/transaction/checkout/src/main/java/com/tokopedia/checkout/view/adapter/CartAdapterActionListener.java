@@ -1,8 +1,10 @@
 package com.tokopedia.checkout.view.adapter;
 
 import com.tokopedia.checkout.domain.datamodel.cartlist.CartPromoSuggestion;
+import com.tokopedia.checkout.domain.datamodel.shipmentrates.ShipmentCartData;
 import com.tokopedia.checkout.view.holderitemdata.CartItemPromoHolderData;
 import com.tokopedia.checkout.view.holderitemdata.CartItemTickerErrorHolderData;
+import com.tokopedia.checkout.view.view.shipment.ShipmentData;
 
 /**
  * @author anggaprasetiyo on 13/03/18.
@@ -28,6 +30,6 @@ public interface CartAdapterActionListener {
 
     void onCartItemTickerErrorActionClicked(CartItemTickerErrorHolderData data, int position);
 
-    void onDropshipperValidationResult(boolean result, int position);
+    void onDropshipperValidationResult(boolean result, ShipmentData shipmentData, int position);
 
 }

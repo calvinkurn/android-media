@@ -6,7 +6,7 @@ import com.tokopedia.checkout.domain.datamodel.MultipleAddressItemData;
  * @author Irfan Khoirul on 23/04/18.
  */
 
-public class ShipmentMultipleAddressCartItem extends ShipmentCartItem {
+public class ShipmentMultipleAddressCartItemModel extends ShipmentCartItemModel {
 
     private MultipleAddressItemData multipleAddressItemData;
     private int invoicePosition;
@@ -20,7 +20,7 @@ public class ShipmentMultipleAddressCartItem extends ShipmentCartItem {
     private boolean produstHasCasback;
     private String cashback;
 
-    public ShipmentMultipleAddressCartItem() {
+    public ShipmentMultipleAddressCartItemModel() {
     }
 
     public MultipleAddressItemData getMultipleAddressItemData() {

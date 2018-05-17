@@ -1,7 +1,9 @@
 package com.tokopedia.checkout.view.di.module;
 
+import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 
+import com.tokopedia.checkout.R;
 import com.tokopedia.checkout.domain.mapper.IMapperUtil;
 import com.tokopedia.checkout.domain.mapper.IShipmentMapper;
 import com.tokopedia.checkout.domain.mapper.ShipmentMapper;
@@ -24,9 +26,11 @@ import rx.subscriptions.CompositeSubscription;
 public class CartRemoveProductModule {
 
     private final CartRemoveProductAdapter.CartRemoveProductActionListener actionListener;
+    private final Context context;
 
     public CartRemoveProductModule(CartRemoveProductFragment cartRemoveProductFragment) {
         actionListener = cartRemoveProductFragment;
+        context = cartRemoveProductFragment.getContext();
     }
 
     @Provides
@@ -44,7 +48,7 @@ public class CartRemoveProductModule {
     @Provides
     @CartRemoveProductScope
     RecyclerView.ItemDecoration provideCartItemDecoration() {
-        return new CartItemDecoration(40, false, 0);
+        return new CartItemDecoration((int) context.getResources().getDimension(R.dimen.new_margin_med), false, 0);
     }
 
     @Provides

@@ -57,8 +57,7 @@ public class ShipmentRecipientAddressViewHolder extends RecyclerView.ViewHolder 
     public void bindViewHolder(RecipientAddressModel recipientAddress,
                                ArrayList<ShowCaseObject> showCaseObjectList) {
 
-        tvAddressStatus.setVisibility(recipientAddress.getAddressStatus() == PRIME_ADDRESS ?
-                View.VISIBLE : View.GONE);
+        tvAddressStatus.setVisibility(View.GONE);
         tvAddressName.setText(recipientAddress.getAddressName());
         tvRecipientName.setText(recipientAddress.getRecipientName());
         tvRecipientAddress.setText(getFullAddress(recipientAddress));
