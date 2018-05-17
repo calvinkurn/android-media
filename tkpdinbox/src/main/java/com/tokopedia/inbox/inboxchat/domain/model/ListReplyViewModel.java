@@ -3,14 +3,10 @@ package com.tokopedia.inbox.inboxchat.domain.model;
 
 import android.text.Spanned;
 
-
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.inbox.inboxchat.ChatTimeConverter;
 import com.tokopedia.inbox.inboxchat.adapter.ChatRoomTypeFactory;
 import com.tokopedia.inbox.inboxchat.domain.model.reply.Attachment;
-import com.tokopedia.inbox.inboxchat.domain.model.websocket.BaseChatViewModel;
-import com.tokopedia.inbox.inboxchat.domain.model.websocket.FallbackAttachmentViewModel;
-import com.tokopedia.inbox.inboxchat.domain.model.websocket.MessageViewModel;
 
 import java.util.Calendar;
 

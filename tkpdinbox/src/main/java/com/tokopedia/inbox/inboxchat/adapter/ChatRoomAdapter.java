@@ -11,21 +11,22 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel;
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingMoreModel;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
+import com.tokopedia.inbox.inboxchat.adapter.viewholder.AttachedInvoiceSentViewHolder;
+import com.tokopedia.inbox.inboxchat.adapter.viewholder.ProductAttachmentViewHolder;
 import com.tokopedia.inbox.inboxchat.domain.model.ListReplyViewModel;
 import com.tokopedia.inbox.inboxchat.domain.model.ReplyParcelableModel;
 import com.tokopedia.inbox.inboxchat.domain.model.reply.Attachment;
 import com.tokopedia.inbox.inboxchat.domain.model.reply.WebSocketResponse;
 import com.tokopedia.inbox.inboxchat.domain.model.websocket.BaseChatViewModel;
-import com.tokopedia.inbox.inboxchat.helper.AttachmentChatHelper;
-import com.tokopedia.inbox.inboxchat.viewholder.AttachedInvoiceSentViewHolder;
-import com.tokopedia.inbox.inboxchat.viewholder.AttachedProductViewHolder;
+import com.tokopedia.inbox.inboxchat.domain.model.websocket.BaseChatViewModel;
 import com.tokopedia.inbox.inboxchat.viewholder.MyChatViewHolder;
-import com.tokopedia.inbox.inboxchat.viewmodel.AttachProductViewModel;
-import com.tokopedia.inbox.inboxchat.viewmodel.DummyChatViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.MyChatViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.TypingChatModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.chatroom.ChatRatingViewModel;
+import com.tokopedia.inbox.inboxchat.viewmodel.chatroom.SendableViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.chatroom.TimeMachineChatModel;
+import com.tokopedia.inbox.inboxchat.viewmodel.chatroom.imageupload.ImageUploadViewModel;
+import com.tokopedia.inbox.inboxchat.viewmodel.chatroom.productattachment.ProductAttachmentViewModel;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -77,8 +78,8 @@ public class ChatRoomAdapter extends RecyclerView.Adapter<AbstractViewHolder> {
         super.onViewRecycled(holder);
         if (holder instanceof MyChatViewHolder) {
             ((MyChatViewHolder) holder).onViewRecycled();
-        } else if (holder instanceof AttachedProductViewHolder) {
-            ((AttachedProductViewHolder) holder).onViewRecycled();
+        } else if (holder instanceof ProductAttachmentViewHolder) {
+            ((ProductAttachmentViewHolder) holder).onViewRecycled();
         } else if (holder instanceof AttachedInvoiceSentViewHolder) {
             ((AttachedInvoiceSentViewHolder) holder).onViewRecycled();
         }
@@ -93,18 +94,6 @@ public class ChatRoomAdapter extends RecyclerView.Adapter<AbstractViewHolder> {
             position++;
         }
         return null;
-    }
-
-
-    private Object getLastPrevBaseChatViewModel(int initialPosition) {
-        if (initialPosition < list.size()) {
-            return (BaseChatViewModel) list.get(initialPosition);
-        } else if (initialPosition < list.size() && list.get(initialPosition) instanceof
-                ListReplyViewModel) {
-            return (ListReplyViewModel) list.get(initialPosition);
-        } else {
-            return null;
-        }
     }
 
     private void showTime(Context context, int position) {
@@ -232,7 +221,7 @@ public class ChatRoomAdapter extends RecyclerView.Adapter<AbstractViewHolder> {
             while (iterator.hasPrevious()) {
                 int position = iterator.previousIndex();
                 Visitable visitable = iterator.previous();
-                Attachment attachment = getProductAttachmentFromVisitable(visitable);
+                ProductAttachmentViewModel attachment = getProductAttachmentFromVisitable(visitable);
                 if (isAttachmentMatched(attachment, productId)) {
                     iterator.remove();
                     notifyItemRemoved(position);
@@ -241,21 +230,34 @@ public class ChatRoomAdapter extends RecyclerView.Adapter<AbstractViewHolder> {
         }
     }
 
-    private boolean isAttachmentMatched(Attachment attachment, Integer productId) {
+    public void removeLastMessageWithStartTime(String startTime) {
+        if ((list != null && !list.isEmpty())) {
+            ListIterator<Visitable> iterator = list.listIterator(list.size());
+            while (iterator.hasPrevious()) {
+                int position = iterator.previousIndex();
+                Visitable visitable = iterator.previous();
+                if (visitable instanceof SendableViewModel
+                        && ((SendableViewModel) visitable).getStartTime().equals(startTime)) {
+                    iterator.remove();
+                    notifyItemRemoved(position);
+                }
+            }
+        }
+    }
+
+    private boolean isAttachmentMatched(ProductAttachmentViewModel attachment, Integer productId) {
         if (attachment != null) {
-            if (attachment.getId().equals(productId.toString())) {
+            if (attachment.getProductId().toString().equals(productId.toString())) {
                 return true;
             }
         }
         return false;
     }
 
-    private Attachment getProductAttachmentFromVisitable(Visitable visitable) {
-        if ((visitable instanceof AttachProductViewModel)) {
-            AttachProductViewModel viewModel = (AttachProductViewModel) visitable;
-            if (viewModel.getAttachment() != null && viewModel.getAttachment().getType().equals(AttachmentChatHelper.PRODUCT_ATTACHED)) {
-                return viewModel.getAttachment();
-            }
+    private ProductAttachmentViewModel getProductAttachmentFromVisitable(Visitable visitable) {
+        if ((visitable instanceof ProductAttachmentViewModel)) {
+            ProductAttachmentViewModel viewModel = (ProductAttachmentViewModel) visitable;
+            return viewModel;
         }
         return null;
     }
@@ -273,13 +275,19 @@ public class ChatRoomAdapter extends RecyclerView.Adapter<AbstractViewHolder> {
         notifyItemRemoved(position);
     }
 
+    public void remove(Visitable model) {
+        int position = list.indexOf(model);
+        list.remove(model);
+        notifyItemRemoved(position);
+    }
+
     public void addReply(Visitable item) {
         this.list.add(0, item);
         notifyItemInserted(0);
         notifyItemRangeChanged(0, 2);
     }
 
-    public void addReply(List<DummyChatViewModel> list) {
+    public void addReply(List<ImageUploadViewModel> list) {
         for (int i = 0; i < list.size(); i++) {
             this.list.add(0, list.get(i));
             notifyItemInserted(0);
@@ -348,13 +356,20 @@ public class ChatRoomAdapter extends RecyclerView.Adapter<AbstractViewHolder> {
                         ((MyChatViewModel) list.get(i)).setReadStatus(true);
                         notifyItemRangeChanged(i, 1);
                     }
-                } else if (currentItem instanceof AttachProductViewModel) {
-                    if (((AttachProductViewModel) list.get(i)).isReadStatus()) {
+                } else if (currentItem instanceof ProductAttachmentViewModel) {
+                    if (((ProductAttachmentViewModel) list.get(i)).isReadStatus()) {
                         break;
                     } else {
-                        ((AttachProductViewModel) list.get(i)).setReadStatus(true);
+                        ((ProductAttachmentViewModel) list.get(i)).setReadStatus(true);
                         notifyItemRangeChanged(i, 1);
                     }
+                }
+            } else if (currentItem instanceof ProductAttachmentViewModel) {
+                if (((ProductAttachmentViewModel) list.get(i)).isReadStatus()) {
+                    break;
+                } else {
+                    ((ProductAttachmentViewModel) list.get(i)).setReadStatus(true);
+                    notifyItemRangeChanged(i, 1);
                 }
             }
         }
@@ -373,9 +388,19 @@ public class ChatRoomAdapter extends RecyclerView.Adapter<AbstractViewHolder> {
         }
     }
 
+    public void showRetryFor(ImageUploadViewModel model, boolean b) {
+        int position = list.indexOf(model);
+        if (position >= 0 && list.get(position) instanceof ImageUploadViewModel) {
+            ((ImageUploadViewModel) list.get(position)).setRetry(true);
+            notifyItemChanged(position);
+        }
+    }
+
     public void changeRating(ChatRatingViewModel model) {
         int position = list.indexOf(model);
         ((ChatRatingViewModel) list.get(position)).setRatingStatus(model.getRatingStatus());
         notifyItemChanged(position);
     }
+
+
 }

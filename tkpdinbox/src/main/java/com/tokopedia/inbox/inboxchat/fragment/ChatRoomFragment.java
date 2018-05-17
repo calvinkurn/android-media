@@ -82,9 +82,6 @@ import com.tokopedia.inbox.inboxchat.analytics.TopChatAnalytics;
 import com.tokopedia.inbox.inboxchat.di.DaggerInboxChatComponent;
 import com.tokopedia.inbox.inboxchat.domain.model.reply.Attachment;
 import com.tokopedia.inbox.inboxchat.domain.model.reply.AttachmentAttributes;
-import com.tokopedia.inbox.inboxchat.domain.model.reply.AttachmentInvoice;
-import com.tokopedia.inbox.inboxchat.domain.model.reply.AttachmentInvoiceAttributes;
-import com.tokopedia.inbox.inboxchat.domain.model.reply.AttachmentProductProfile;
 import com.tokopedia.inbox.inboxchat.domain.model.reply.WebSocketResponse;
 import com.tokopedia.inbox.inboxchat.domain.model.replyaction.ReplyActionData;
 import com.tokopedia.inbox.inboxchat.domain.model.websocket.BaseChatViewModel;
@@ -96,7 +93,6 @@ import com.tokopedia.inbox.inboxchat.util.Events;
 import com.tokopedia.inbox.inboxchat.util.ImageUploadHandlerChat;
 import com.tokopedia.inbox.inboxchat.viewholder.ListChatViewHolder;
 import com.tokopedia.inbox.inboxchat.viewmodel.AttachInvoiceSentViewModel;
-import com.tokopedia.inbox.inboxchat.viewmodel.AttachProductViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.ChatRoomViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.DummyChatViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.InboxChatViewModel;
@@ -104,12 +100,19 @@ import com.tokopedia.inbox.inboxchat.viewmodel.MyChatViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.chatroom.ChatRatingViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.chatroom.QuickReplyListViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.chatroom.QuickReplyViewModel;
+import com.tokopedia.inbox.inboxchat.viewmodel.chatroom.SendableViewModel;
+import com.tokopedia.inbox.inboxchat.viewmodel.chatroom.imageupload.ImageUploadViewModel;
+import com.tokopedia.inbox.inboxchat.viewmodel.chatroom.productattachment.ProductAttachmentViewModel;
 import com.tokopedia.inbox.inboxmessage.InboxMessageConstant;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.List;
+import java.util.Locale;
+import java.util.TimeZone;
 import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
@@ -266,6 +269,10 @@ public class ChatRoomFragment extends BaseDaggerFragment
         adapter.showRetryFor(model, true);
     }
 
+    private void showRetryFor(ImageUploadViewModel model) {
+        adapter.showRetryFor(model, true);
+    }
+
     @Override
     public void onRetrySend(final MyChatViewModel attachment) {
 
@@ -283,12 +290,43 @@ public class ChatRoomFragment extends BaseDaggerFragment
                             case RESEND:
                                 adapter.remove(attachment);
                                 String fileLoc = attachment.getAttachment().getAttributes().getImageUrl();
-                                DummyChatViewModel temp = generateChatViewModelWithImage(fileLoc);
+                                ImageUploadViewModel temp = generateChatViewModelWithImage(fileLoc);
                                 presenter.startUpload(Collections.singletonList(temp), networkType);
                                 adapter.addReply(temp);
                                 break;
                             case DELETE:
                                 adapter.remove(attachment);
+                                break;
+                        }
+                    }
+                })
+                .createDialog();
+
+        bottomSheetDialog.show();
+    }
+
+    @Override
+    public void onRetrySendImage(final ImageUploadViewModel element) {
+        BottomSheetBuilder bottomSheetBuilder = new CheckedBottomSheetBuilder(getActivity())
+                .setMode(BottomSheetBuilder.MODE_LIST);
+
+        bottomSheetBuilder.addItem(RESEND, R.string.resend, null);
+        bottomSheetBuilder.addItem(DELETE, R.string.delete, null);
+
+        BottomSheetDialog bottomSheetDialog = bottomSheetBuilder.expandOnStart(true)
+                .setItemClickListener(new BottomSheetItemClickListener() {
+                    @Override
+                    public void onBottomSheetItemClick(MenuItem item) {
+                        switch (item.getItemId()) {
+                            case RESEND:
+                                adapter.remove(element);
+                                String fileLoc = element.getImageUrl();
+                                ImageUploadViewModel temp = generateChatViewModelWithImage(fileLoc);
+                                presenter.startUpload(Collections.singletonList(temp), networkType);
+                                adapter.addReply(temp);
+                                break;
+                            case DELETE:
+                                adapter.remove(element);
                                 break;
                         }
                     }
@@ -474,6 +512,15 @@ public class ChatRoomFragment extends BaseDaggerFragment
 
         ((PdpRouter) getActivity().getApplication()).openImagePreviewFromChat(getActivity(),
                 strings, new ArrayList<String>(), title, fullTime);
+    }
+
+    @Override
+    public void onGoToImagePreview(String imageUrl, String replyTime) {
+        ArrayList<String> strings = new ArrayList<>();
+        strings.add(imageUrl);
+
+        ((TkpdInboxRouter) getActivity().getApplication()).openImagePreviewFromChat(getActivity(),
+                strings, new ArrayList<String>(), title, replyTime);
     }
 
     @Override
@@ -868,7 +915,7 @@ public class ChatRoomFragment extends BaseDaggerFragment
             case ImageUploadHandlerChat.REQUEST_CODE:
                 if (resultCode == Activity.RESULT_OK) {
                     String fileLoc = presenter.getFileLocFromCamera();
-                    DummyChatViewModel temp = generateChatViewModelWithImage(fileLoc);
+                    ImageUploadViewModel temp = generateChatViewModelWithImage(fileLoc);
                     presenter.startUpload(Collections.singletonList(temp), networkType);
                     adapter.addReply(temp);
                 }
@@ -879,17 +926,17 @@ public class ChatRoomFragment extends BaseDaggerFragment
                     break;
                 }
                 String imageUrl = data.getStringExtra(GalleryActivity.IMAGE_URL);
-                List<DummyChatViewModel> list = new ArrayList<>();
+                List<ImageUploadViewModel> list = new ArrayList<>();
 
                 if (!TextUtils.isEmpty(imageUrl)) {
-                    DummyChatViewModel temp = generateChatViewModelWithImage(imageUrl);
+                    ImageUploadViewModel temp = generateChatViewModelWithImage(imageUrl);
                     list.add(temp);
                 } else {
                     ArrayList<String> imageUrls = data.getStringArrayListExtra(GalleryActivity
                             .IMAGE_URLS);
                     if (imageUrls != null) {
                         for (int i = 0; i < imageUrls.size(); i++) {
-                            DummyChatViewModel temp = generateChatViewModelWithImage(imageUrls.get(i));
+                            ImageUploadViewModel temp = generateChatViewModelWithImage(imageUrls.get(i));
                             list.add(temp);
                         }
                     }
@@ -1139,6 +1186,12 @@ public class ChatRoomFragment extends BaseDaggerFragment
                 .getAppContext()));
     }
 
+    @Override
+    public boolean isMyMessage(String fromUid) {
+        return fromUid.equals(SessionHandler.getLoginID(MainApplication
+                .getAppContext()));
+    }
+
     @Deprecated
     @Override
     public boolean isCurrentThread(int msgId) {
@@ -1158,43 +1211,30 @@ public class ChatRoomFragment extends BaseDaggerFragment
 
     private AttachInvoiceSentViewModel generateInvoice(SelectedInvoice selectedInvoice) {
         AttachInvoiceSentViewModel invoiceToSend = new AttachInvoiceSentViewModel();
-        Attachment attachment = new Attachment();
-        attachment.setType(AttachmentChatHelper.INVOICE_ATTACHED);
-        AttachmentAttributes attachmentAttributes = new AttachmentAttributes();
-        AttachmentInvoiceAttributes attachmentInvoiceAttributes = new AttachmentInvoiceAttributes(
-                selectedInvoice.getInvoiceNo(),
-                selectedInvoice.getDate(),
-                selectedInvoice.getDescription(),
-                selectedInvoice.getInvoiceUrl(),
-                selectedInvoice.getInvoiceId(),
-                selectedInvoice.getTopProductImage(),
-                selectedInvoice.getStatus(),
-                selectedInvoice.getStatusId(),
-                selectedInvoice.getTopProductName(),
-                selectedInvoice.getAmount()
-        );
-        AttachmentInvoice attachmentInvoice = new AttachmentInvoice();
-        attachmentInvoice.setType(selectedInvoice.getInvoiceType());
-        attachmentInvoice.setTypeString(selectedInvoice.getInvoiceTypeStr());
-        attachmentInvoice.setAttributes(attachmentInvoiceAttributes);
-        attachmentAttributes.setInvoiceLink(attachmentInvoice);
-        attachment.setAttributes(attachmentAttributes);
 
-        invoiceToSend.setAttachment(attachment);
+        invoiceToSend.setTotalAmount(selectedInvoice.getAmount());
+        invoiceToSend.setMessage(selectedInvoice.getInvoiceNo());
+        invoiceToSend.setDescription(selectedInvoice.getDescription());
+        invoiceToSend.setImageUrl(selectedInvoice.getInvoiceUrl());
         invoiceToSend.setReplyTime(DummyChatViewModel.SENDING_TEXT);
         invoiceToSend.setDummy(true);
-        invoiceToSend.setMsg("");
-        invoiceToSend.setSenderId(getArguments().getString(InboxMessageConstant.PARAM_SENDER_ID));
+        invoiceToSend.setFromUid(getArguments().getString(InboxMessageConstant.PARAM_SENDER_ID));
 
         return invoiceToSend;
     }
 
-    public DummyChatViewModel generateChatViewModelWithImage(String imageUrl) {
+    public ImageUploadViewModel generateChatViewModelWithImage(String imageUrl) {
         scrollToBottom();
-        ImageUpload model = new ImageUpload();
-        model.setImageId(String.valueOf(System.currentTimeMillis() / MILIS_TO_SECOND));
-        model.setFileLoc(imageUrl);
-        return generateChatViewModelWithImage(model);
+        SimpleDateFormat date = new SimpleDateFormat(
+                SendableViewModel.START_TIME_FORMAT, Locale.US);
+        date.setTimeZone(TimeZone.getTimeZone("UTC"));
+        ImageUploadViewModel model = new ImageUploadViewModel(
+                getArguments().getString(InboxMessageConstant.PARAM_SENDER_ID),
+                String.valueOf(System.currentTimeMillis() / MILIS_TO_SECOND),
+                imageUrl,
+                date.format(Calendar.getInstance().getTime())
+                );
+        return model;
     }
 
     private DummyChatViewModel generateChatViewModelWithImage(ImageUpload imageUpload) {
@@ -1211,26 +1251,14 @@ public class ChatRoomFragment extends BaseDaggerFragment
         return item;
     }
 
-    private AttachProductViewModel generateProductChatViewModel(ResultProduct product) {
-        AttachProductViewModel item = new AttachProductViewModel(true);
-        Attachment attachment = new Attachment();
-        attachment.setType(AttachmentChatHelper.PRODUCT_ATTACHED);
-        AttachmentAttributes attachmentAttributes = new AttachmentAttributes();
-        attachmentAttributes.setProductId(product.getProductId());
-        AttachmentProductProfile productProfile = new AttachmentProductProfile();
-        productProfile.setImageUrl(product.getProductImageThumbnail());
-        productProfile.setName(product.getName());
-        productProfile.setPrice(product.getPrice());
-        productProfile.setUrl(product.getProductUrl());
-        attachmentAttributes.setProductProfile(productProfile);
-        attachment.setAttributes(attachmentAttributes);
-        attachment.setId(product.getProductId().toString());
-        item.setAttachment(attachment);
-        item.setReplyTime(DummyChatViewModel.SENDING_TEXT);
-        item.setDummy(true);
-        item.setMsg("");
-        item.setSenderId(getArguments().getString(InboxMessageConstant.PARAM_SENDER_ID));
-        return item;
+    private ProductAttachmentViewModel generateProductChatViewModel(ResultProduct product) {
+        return new ProductAttachmentViewModel(
+                sessionHandler.getLoginID(),
+                product.getProductId(),
+                product.getName(),
+                product.getPrice(),
+                product.getProductUrl(),
+                product.getProductImageThumbnail());
     }
 
     public void addIncomingMessage(final WebSocketResponse response) {
@@ -1261,7 +1289,7 @@ public class ChatRoomFragment extends BaseDaggerFragment
 
         String msgId = getArguments().getString(PARAM_MESSAGE_ID);
         for (ResultProduct result : resultProducts) {
-            AttachProductViewModel item = generateProductChatViewModel(result);
+            ProductAttachmentViewModel item = generateProductChatViewModel(result);
             presenter.sendProductAttachment(msgId, result);
             adapter.addReply(item);
             scrollToBottom();
@@ -1398,19 +1426,45 @@ public class ChatRoomFragment extends BaseDaggerFragment
     }
 
     private void processReceiveMessage(BaseChatViewModel message) {
+        rvQuickReply.setVisibility(View.GONE);
+        if (templateAdapter != null && templateAdapter.getList().size() != 0) {
+            templateRecyclerView.setVisibility(View.VISIBLE);
+        }
         if (isCurrentThread(message.getMessageId())) {
+
+            removeDummyReplyIfExist(message);
+
             if (message instanceof QuickReplyListViewModel) {
                 showQuickReplyView((QuickReplyListViewModel) message);
                 if (!TextUtils.isEmpty(((QuickReplyListViewModel) message).getMessage())) {
                     addMessageToList(message);
-                    scrollToBottomWithCheck();
                 }
+            } else if (message instanceof AttachInvoiceSentViewModel) {
+                adapter.removeLast();
+                addMessageToList(message);
             } else {
                 addMessageToList(message);
-                scrollToBottomWithCheck();
             }
 
-            readMessage(message.getMessageId());
+            if (isMyMessage(message.getFromUid())) {
+                scrollToBottom();
+                resetReplyColumn();
+            } else {
+                scrollToBottomWithCheck();
+                readMessage(message.getMessageId());
+            }
+        }
+    }
+
+    private void removeDummyReplyIfExist(BaseChatViewModel message) {
+        if (isMyMessage(message.getFromUid())) {
+            if (message instanceof ProductAttachmentViewModel) {
+                getAdapter().removeLastProductWithId(((ProductAttachmentViewModel) message).getProductId());
+            } else if (message instanceof SendableViewModel) {
+                getAdapter().removeLastMessageWithStartTime(((SendableViewModel) message).getStartTime());
+            } else {
+                getAdapter().removeLast();
+            }
         }
     }
 
@@ -1435,10 +1489,6 @@ public class ChatRoomFragment extends BaseDaggerFragment
 
     @Override
     public void showQuickReplyView(QuickReplyListViewModel model) {
-        rvQuickReply.setVisibility(View.GONE);
-        if (templateAdapter != null && templateAdapter.getList().size() != 0) {
-            templateRecyclerView.setVisibility(View.VISIBLE);
-        }
         if (model.getQuickReplies().size() != 0) {
             rvQuickReply.setVisibility(View.VISIBLE);
             templateRecyclerView.setVisibility(View.GONE);
@@ -1480,7 +1530,7 @@ public class ChatRoomFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void onSuccessSendAttach(ReplyActionData data, MyChatViewModel model) {
+    public void onSuccessSendAttach(ReplyActionData data, ImageUploadViewModel model) {
         adapter.remove(model);
         addView(data, UPLOADING);
     }
@@ -1497,7 +1547,7 @@ public class ChatRoomFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void onErrorUploadImages(String errorMessage, MyChatViewModel model) {
+    public void onErrorUploadImages(String errorMessage, ImageUploadViewModel model) {
         showError(errorMessage);
         showRetryFor(model);
     }

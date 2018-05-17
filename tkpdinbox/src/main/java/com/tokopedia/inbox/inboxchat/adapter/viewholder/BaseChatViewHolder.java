@@ -24,7 +24,7 @@ public class BaseChatViewHolder<T extends Visitable> extends AbstractViewHolder<
     protected TextView hour;
     protected TextView date;
 
-    ChatRoomContract.View viewListener;
+    protected ChatRoomContract.View viewListener;
 
     BaseChatViewHolder(View itemView, ChatRoomContract.View viewListener) {
         super(itemView);
@@ -89,5 +89,9 @@ public class BaseChatViewHolder<T extends Visitable> extends AbstractViewHolder<
         } else if (date != null) {
             date.setVisibility(View.GONE);
         }
+    }
+
+    public void onViewRecycled() {
+
     }
 }

@@ -7,10 +7,7 @@ import com.tokopedia.core.network.ErrorMessageException;
 import com.tokopedia.core.network.retrofit.response.ErrorHandler;
 import com.tokopedia.core.network.retrofit.response.TkpdResponse;
 import com.tokopedia.inbox.R;
-import com.tokopedia.inbox.inboxchat.domain.model.reply.ReplyData;
 import com.tokopedia.inbox.inboxchat.domain.model.replyaction.ReplyActionData;
-
-import org.json.JSONException;
 
 import retrofit2.Response;
 import rx.functions.Func1;

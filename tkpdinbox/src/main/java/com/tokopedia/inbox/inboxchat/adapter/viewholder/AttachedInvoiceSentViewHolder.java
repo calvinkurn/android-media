@@ -1,4 +1,4 @@
-package com.tokopedia.inbox.inboxchat.viewholder;
+package com.tokopedia.inbox.inboxchat.adapter.viewholder;
 
 import android.content.Context;
 import android.support.annotation.LayoutRes;
@@ -10,15 +10,11 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.tkpd.library.utils.KeyboardHandler;
-import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
-
 import com.tokopedia.inbox.R;
 import com.tokopedia.inbox.inboxchat.ChatTimeConverter;
-import com.tokopedia.inbox.inboxchat.domain.model.reply.AttachmentInvoice;
 import com.tokopedia.inbox.inboxchat.presenter.ChatRoomContract;
 import com.tokopedia.inbox.inboxchat.viewmodel.AttachInvoiceSentViewModel;
-import com.tokopedia.inbox.inboxchat.viewmodel.AttachProductViewModel;
 
 import java.util.Date;
 
@@ -26,7 +22,7 @@ import java.util.Date;
  * Created by Hendri on 27/03/18.
  */
 
-public class AttachedInvoiceSentViewHolder extends AbstractViewHolder<AttachInvoiceSentViewModel> {
+public class AttachedInvoiceSentViewHolder extends BaseChatViewHolder<AttachInvoiceSentViewModel> {
     @LayoutRes
     public static final int LAYOUT = R.layout.attached_invoice_sent_chat_item;
 
@@ -45,8 +41,8 @@ public class AttachedInvoiceSentViewHolder extends AbstractViewHolder<AttachInvo
     private Context context;
     private long dateTimeInMilis;
 
-    public AttachedInvoiceSentViewHolder(View itemView) {
-        super(itemView);
+    public AttachedInvoiceSentViewHolder(View itemView, ChatRoomContract.View viewListener) {
+        super(itemView, viewListener);
         productName = itemView.findViewById(R.id.attach_invoice_sent_item_product_name);
         productDesc = itemView.findViewById(R.id.attach_invoice_sent_item_product_desc);
         totalAmount = itemView.findViewById(R.id.attach_invoice_sent_item_invoice_total);
@@ -58,24 +54,20 @@ public class AttachedInvoiceSentViewHolder extends AbstractViewHolder<AttachInvo
         action = itemView.findViewById(R.id.left_action);
     }
 
+
+
     @Override
     public void bind(AttachInvoiceSentViewModel element) {
         prerequisiteUISetup(element);
-        if(element.getAttachment() != null && element.getAttachment().getAttributes() != null) {
-            AttachmentInvoice invoice = element.getAttachment().getAttributes().getInvoiceLink();
-            if(invoice != null && invoice.getAttributes() != null) {
-
-                productName.setText(invoice.getAttributes().getTitle());
-                productDesc.setText(invoice.getAttributes().getDescription());
-                totalAmount.setText(invoice.getAttributes().getAmount());
-                if(!TextUtils.isEmpty(invoice.getAttributes().getImageUrl())){
-                    productImage.setVisibility(View.VISIBLE);
-                    ImageHandler.LoadImage(productImage,invoice.getAttributes().getImageUrl());
-                }
-                else {
-                    productImage.setVisibility(View.GONE);
-                }
-            }
+        productName.setText(element.getMessage());
+        productDesc.setText(element.getDescription());
+        totalAmount.setText(element.getTotalAmount());
+        if(!TextUtils.isEmpty(element.getImageUrl())){
+            productImage.setVisibility(View.VISIBLE);
+            ImageHandler.LoadImage(productImage, element.getImageUrl());
+        }
+        else {
+            productImage.setVisibility(View.GONE);
         }
     }
 
@@ -115,27 +107,15 @@ public class AttachedInvoiceSentViewHolder extends AbstractViewHolder<AttachInvo
         }catch (NumberFormatException e){
             hourTime = element.getReplyTime();
         }
-
-        if (element.isShowHour()) {
-            hour.setVisibility(View.VISIBLE);
-            chatStatus.setVisibility(View.VISIBLE);
-        }else {
-            hour.setVisibility(View.GONE);
-            chatStatus.setVisibility(View.GONE);
-        }
+        hour.setVisibility(View.VISIBLE);
+        chatStatus.setVisibility(View.VISIBLE);
 
         hour.setText(hourTime);
-        int imageResource;
-
-        if(element.isReadStatus()){
-            imageResource = R.drawable.ic_chat_read;
-        }else {
-            imageResource = R.drawable.ic_chat_unread;
-        }
-        if(element.isDummy()){
-            imageResource = R.drawable.ic_chat_pending;
-        }
-        chatStatus.setImageResource(imageResource);
+        chatStatus.setImageResource(element.isDummy() ?
+                R.drawable.ic_chat_pending :
+                (element.isRead() ?
+                        R.drawable.ic_chat_read :
+                        R.drawable.ic_chat_unread));
     }
 
     public void onViewRecycled() {

@@ -25,7 +25,7 @@ import java.util.Date;
 /**
  * Created by stevenfredian on 9/27/17.
  */
-
+@Deprecated
 public class ThumbnailChatViewHolder extends AbstractViewHolder<ThumbnailChatViewModel> {
 
     private int position;

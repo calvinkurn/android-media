@@ -6,6 +6,10 @@ import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
 
+/**
+ * use {@link com.tokopedia.inbox.inboxchat.domain.pojo.common.ListReplyResponse instead}
+ */
+@Deprecated
 public class ReplyData {
 
     @SerializedName("contacts")

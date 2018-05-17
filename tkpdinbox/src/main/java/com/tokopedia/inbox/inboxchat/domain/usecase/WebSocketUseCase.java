@@ -11,8 +11,6 @@ import com.tokopedia.inbox.inboxchat.ChatWebSocketConstant;
 import com.tokopedia.inbox.inboxchat.ChatWebSocketListenerImpl;
 import com.tokopedia.inbox.inboxchat.InboxChatConstant;
 
-import org.json.JSONException;
-
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Locale;
@@ -86,7 +84,7 @@ public class WebSocketUseCase {
         ws.send(json.toString());
     }
 
-    public JsonObject getParamSendInvoiceAttachment(String messageId, SelectedInvoice invoice){
+    public JsonObject getParamSendInvoiceAttachment(String messageId, SelectedInvoice invoice) {
         JsonObject json = new JsonObject();
         json.addProperty("code", ChatWebSocketConstant.EVENT_TOPCHAT_REPLY_MESSAGE);
 
@@ -117,11 +115,11 @@ public class WebSocketUseCase {
         payload.add("attributes", payloadAttributes);
         data.add("payload", payload);
         json.add("data", data);
-        
+
         return json;
     }
 
-    public JsonObject getParamSendProductAttachment(String messageId, ResultProduct product){
+    public JsonObject getParamSendProductAttachment(String messageId, ResultProduct product) {
         JsonObject json = new JsonObject();
         json.addProperty("code", ChatWebSocketConstant.EVENT_TOPCHAT_REPLY_MESSAGE);
         JsonObject data = new JsonObject();
@@ -144,7 +142,7 @@ public class WebSocketUseCase {
         return json;
     }
 
-    public JsonObject getParamSendReply(String messageId, String reply){
+    public JsonObject getParamSendReply(String messageId, String reply) {
         JsonObject json = new JsonObject();
         json.addProperty("code", ChatWebSocketConstant.EVENT_TOPCHAT_REPLY_MESSAGE);
         JsonObject data = new JsonObject();
@@ -158,23 +156,20 @@ public class WebSocketUseCase {
         return json;
     }
 
-    public JsonObject getParamSendImage(String messageId, String path){
+    public JsonObject getParamSendImage(String messageId, String path, String startTime) {
         JsonObject json = new JsonObject();
         json.addProperty("code", ChatWebSocketConstant.EVENT_TOPCHAT_REPLY_MESSAGE);
         JsonObject data = new JsonObject();
         data.addProperty("message_id", Integer.valueOf(messageId));
         data.addProperty("message", InboxChatConstant.UPLOADING);
-        SimpleDateFormat date = new SimpleDateFormat(
-                "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.US);
-        date.setTimeZone(TimeZone.getTimeZone("UTC"));
-        data.addProperty("start_time", date.format(Calendar.getInstance().getTime()));
+        data.addProperty("start_time", startTime);
         data.addProperty("file_path", path);
         data.addProperty("attachment_type", 2);
         json.add("data", data);
         return json;
     }
 
-    public JsonObject getReadMessage(String messageId){
+    public JsonObject getReadMessage(String messageId) {
 
         JsonObject json = new JsonObject();
         json.addProperty("code", ChatWebSocketConstant.EVENT_TOPCHAT_READ_MESSAGE);
@@ -184,7 +179,7 @@ public class WebSocketUseCase {
         return json;
     }
 
-    public JsonObject getParamStartTyping(String messageId){
+    public JsonObject getParamStartTyping(String messageId) {
         JsonObject json = new JsonObject();
         json.addProperty("code", ChatWebSocketConstant.EVENT_TOPCHAT_TYPING);
         JsonObject data = new JsonObject();
@@ -193,7 +188,7 @@ public class WebSocketUseCase {
         return json;
     }
 
-    public JsonObject getParamStopTyping(String messageId){
+    public JsonObject getParamStopTyping(String messageId) {
         JsonObject json = new JsonObject();
         json.addProperty("code", ChatWebSocketConstant.EVENT_TOPCHAT_END_TYPING);
         JsonObject data = new JsonObject();

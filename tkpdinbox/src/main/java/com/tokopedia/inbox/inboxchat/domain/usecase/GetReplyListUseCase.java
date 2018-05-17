@@ -5,7 +5,6 @@ import com.tokopedia.core.base.domain.UseCase;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.inbox.inboxchat.data.repository.ReplyRepository;
-import com.tokopedia.inbox.inboxchat.domain.model.reply.ReplyData;
 import com.tokopedia.inbox.inboxchat.viewmodel.ChatRoomViewModel;
 
 import rx.Observable;
