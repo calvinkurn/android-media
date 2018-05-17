@@ -1,4 +1,4 @@
-package com.tokopedia.topads.common.data.source.deposit;
+package com.tokopedia.topads.common.data.source.cloud;
 
 import com.tokopedia.abstraction.common.data.model.response.DataResponse;
 import com.tokopedia.topads.common.data.api.TopAdsManagementApi;

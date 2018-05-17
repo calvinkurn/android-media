@@ -1,7 +1,7 @@
 package com.tokopedia.topads.common.constant;
 
 /**
- * Created by nakama on 23/04/18.
+ * Created by hadi.putra on 23/04/18.
  */
 
 public class TopAdsCommonConstant {
@@ -10,6 +10,7 @@ public class TopAdsCommonConstant {
 
     public static final String PATH_TOPADS_SHOP_DEPOSIT = "/v1.1/dashboard/deposit";
     public static final String PATH_TOPADS_TOTAL_ADS = "/v1.1/dashboard/total_ad";
+    public static final String PATH_CHECK_PROMO = "v1/promo/check";
 
     public static final String PARAM_SHOP_ID = "shop_id";
 }

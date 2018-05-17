@@ -1,8 +1,9 @@
-package com.tokopedia.topads.dashboard.data.repository;
+package com.tokopedia.topads.common.data.repository;
 
-import com.tokopedia.core.base.domain.RequestParams;
-import com.tokopedia.topads.dashboard.data.source.TopAdsCheckProductPromoDataSource;
-import com.tokopedia.topads.dashboard.domain.TopAdsCheckProductPromoRepository;
+import com.tokopedia.topads.common.data.model.DataCheckPromo;
+import com.tokopedia.topads.common.data.source.TopAdsCheckProductPromoDataSource;
+import com.tokopedia.topads.common.domain.repository.TopAdsCheckProductPromoRepository;
+import com.tokopedia.usecase.RequestParams;
 
 import rx.Observable;
 
@@ -19,7 +20,7 @@ public class TopAdsCheckProductPromoRepositoryImpl implements TopAdsCheckProduct
     }
 
     @Override
-    public Observable<String> getProductPromoTopAds(RequestParams requestParams) {
+    public Observable<DataCheckPromo> getProductPromoTopAds(RequestParams requestParams) {
         return dataSource.checkPromoAds(requestParams);
     }
 }
