@@ -37,6 +37,7 @@ public class ProductItem implements Parcelable, Visitable<CategoryProductListTyp
     private String homeAttribution;
     private String originalPrice;
     private int discountPercentage;
+    private boolean isOfficial;
 
     public void setProductID(String productID) {
         this.productID = productID;
@@ -215,6 +216,14 @@ public class ProductItem implements Parcelable, Visitable<CategoryProductListTyp
         else return homeAttribution;
     }
 
+    public boolean isOfficial() {
+        return isOfficial;
+    }
+
+    public void setOfficial(boolean official) {
+        isOfficial = official;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -241,8 +250,9 @@ public class ProductItem implements Parcelable, Visitable<CategoryProductListTyp
         dest.writeString(this.trackerName);
         dest.writeString(this.trackerPosition);
         dest.writeString(this.homeAttribution);
-        dest.writeString(originalPrice);
-        dest.writeInt(discountPercentage);
+        dest.writeString(this.originalPrice);
+        dest.writeInt(this.discountPercentage);
+        dest.writeByte(this.isOfficial ? (byte) 1 : (byte) 0);
     }
 
     protected ProductItem(Parcel in) {
@@ -267,6 +277,7 @@ public class ProductItem implements Parcelable, Visitable<CategoryProductListTyp
         this.homeAttribution = in.readString();
         this.originalPrice = in.readString();
         this.discountPercentage = in.readInt();
+        this.isOfficial = in.readByte() != 0;
     }
 
     public static final Creator<ProductItem> CREATOR = new Creator<ProductItem>() {

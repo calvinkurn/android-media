@@ -37,6 +37,7 @@ public class ProductItem implements Parcelable, Visitable<ProductListTypeFactory
     private int position;
     private String originalPrice;
     private int discountPercentage;
+    private boolean isOfficial;
 
     public void setProductID(String productID) {
         this.productID = productID;
@@ -194,6 +195,14 @@ public class ProductItem implements Parcelable, Visitable<ProductListTypeFactory
         this.discountPercentage = discountPercentage;
     }
 
+    public boolean isOfficial() {
+        return isOfficial;
+    }
+
+    public void setOfficial(boolean official) {
+        isOfficial = official;
+    }
+
     public ProductItem() {
     }
 
@@ -264,6 +273,7 @@ public class ProductItem implements Parcelable, Visitable<ProductListTypeFactory
         dest.writeInt(position);
         dest.writeString(originalPrice);
         dest.writeInt(discountPercentage);
+        dest.writeByte((byte) (isOfficial ? 0x01 : 0x00));
     }
 
     protected ProductItem(Parcel in) {
@@ -296,6 +306,8 @@ public class ProductItem implements Parcelable, Visitable<ProductListTypeFactory
         position = in.readInt();
         originalPrice = in.readString();
         discountPercentage = in.readInt();
+        isOfficial = in.readByte() != 0x00;
+
     }
 
     public static final Creator<ProductItem> CREATOR = new Creator<ProductItem>() {

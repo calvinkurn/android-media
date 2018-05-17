@@ -461,6 +461,8 @@ public class SearchProductResponse {
                 private String url;
                 @SerializedName("is_gold")
                 private boolean isGold;
+                @SerializedName("is_official")
+                private boolean isOfficial;
                 @SerializedName("location")
                 private String location;
                 @SerializedName("city")
@@ -532,6 +534,14 @@ public class SearchProductResponse {
 
                 public void setClover(String clover) {
                     this.clover = clover;
+                }
+
+                public boolean isOfficial() {
+                    return isOfficial;
+                }
+
+                public void setOfficial(boolean official) {
+                    isOfficial = official;
                 }
             }
 

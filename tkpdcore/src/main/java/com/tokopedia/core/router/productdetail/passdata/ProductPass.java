@@ -34,6 +34,7 @@ public class ProductPass implements Parcelable {
     private int countDiscussion;
     private int countCourrier;
     private String cashback;
+    private boolean isOfficial;
 
     public ProductPass() {
         dateTimeInMilis = 0;
@@ -203,6 +204,14 @@ public class ProductPass implements Parcelable {
         this.starRating = starRating;
     }
 
+    public boolean isOfficial() {
+        return isOfficial;
+    }
+
+    public void setOfficial(boolean official) {
+        isOfficial = official;
+    }
+
     protected ProductPass(Parcel in) {
         productId = in.readString();
         productName = in.readString();
@@ -227,6 +236,7 @@ public class ProductPass implements Parcelable {
         countDiscussion = in.readInt();
         countCourrier = in.readInt();
         cashback = in.readString();
+        isOfficial = in.readByte() != 0x00;
 
     }
 
@@ -260,6 +270,7 @@ public class ProductPass implements Parcelable {
         dest.writeInt(countDiscussion);
         dest.writeInt(countCourrier);
         dest.writeString(cashback);
+        dest.writeByte((byte) (isOfficial ? 0x01 : 0x00));
     }
 
     @SuppressWarnings("unused")
@@ -330,6 +341,7 @@ public class ProductPass implements Parcelable {
         private int countDiscussion;
         private int countCourrier;
         private String cashback;
+        private boolean isOfficial;
 
         private Builder() {
         }
@@ -460,6 +472,11 @@ public class ProductPass implements Parcelable {
             return this;
         }
 
+        public Builder setOfficial(boolean isOfficial){
+            this.isOfficial = isOfficial;
+            return this;
+        }
+
         public Builder but() {
             return aProductPass().setProductId(productId).setProductName(productName).setProductPrice(productPrice).setProductImage(productImage).setShopName(shopName).setProductUri(productUri).setProductKey(productKey).setShopDomain(shopDomain).setAdKey(adKey).setAdR(adR).setProductDesc(productDesc).setPicToShare(picToShare).setDateTimeInMilis(dateTimeInMilis);
         }
@@ -483,6 +500,7 @@ public class ProductPass implements Parcelable {
             productPass.setTrackerListName(trackerListName);
             productPass.setWishlist(isWishlist);
             productPass.setOriginalPrice(discountedPrice);
+            productPass.setOfficial(isOfficial);
             productPass.setDiscountPercentage(discountPercentage);
             productPass.setStarRating(starRating);
             productPass.setCountReview(countReview);

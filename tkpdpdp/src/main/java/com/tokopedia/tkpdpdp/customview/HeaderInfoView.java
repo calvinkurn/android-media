@@ -167,6 +167,9 @@ public class HeaderInfoView extends BaseView<ProductDetailData, ProductDetailVie
             }
             cashbackTextView.setVisibility(VISIBLE);
         }
+        if(productPass.isOfficial()) {
+            textOfficialStore.setVisibility(VISIBLE);
+        }
         setVisibility(VISIBLE);
     }
 

@@ -92,6 +92,7 @@ public class ProductMapper implements Func1<Response<String>, SearchResultModel>
             model.setShopName(data.getShop().getName());
             model.setShopCity(data.getShop().getCity());
             model.setGoldMerchant(data.getShop().isIsGold());
+            model.setOfficial(data.getShop().isOfficial());
             model.setLabelList(mappingLabels(data.getLabels()));
             model.setBadgesList(mappingBadges(data.getBadges()));
             model.setFeatured(data.getIsFeatured() == 1);

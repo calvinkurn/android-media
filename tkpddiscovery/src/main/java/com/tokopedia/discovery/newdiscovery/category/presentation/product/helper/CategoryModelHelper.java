@@ -62,6 +62,7 @@ public class CategoryModelHelper {
         productItem.setShopName(productModel.getShopName());
         productItem.setShopCity(productModel.getShopCity());
         productItem.setGoldMerchant(productModel.isGoldMerchant());
+        productItem.setOfficial(productModel.isOfficial());
         productItem.setWishlisted(productModel.isWishlisted());
         productItem.setBadgesList(convertToBadgesItemList(productModel.getBadgesList()));
         productItem.setLabelList(convertToLabelsItemList(productModel.getLabelList()));

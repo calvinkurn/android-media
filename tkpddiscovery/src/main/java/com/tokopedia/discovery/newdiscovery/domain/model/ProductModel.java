@@ -28,6 +28,7 @@ public class ProductModel {
     private boolean featured;
     private String originalPrice;
     private int discountPercentage;
+    private boolean isOfficial;
 
     public void setProductID(String productID) {
         this.productID = productID;
@@ -171,5 +172,13 @@ public class ProductModel {
 
     public void setDiscountPercentage(int discountPercentage) {
         this.discountPercentage = discountPercentage;
+    }
+
+    public boolean isOfficial() {
+        return isOfficial;
+    }
+
+    public void setOfficial(boolean official) {
+        isOfficial = official;
     }
 }
