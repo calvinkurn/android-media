@@ -35,7 +35,7 @@ public class GtmLogger implements AnalyticsLogger {
 
     @Override
     public void save(AnalyticsLogData log) {
-        if(!TextUtils.isEmpty(log.getName())) {
+        if(!TextUtils.isEmpty(log.getName()) && !log.getName().equals("null")) {
             dbSource.insertAll(log).subscribeOn(Schedulers.io()).unsubscribeOn(Schedulers.io()).subscribe(defaultSubscriber());
         }
     }

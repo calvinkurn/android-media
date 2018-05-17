@@ -14,6 +14,8 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
+import javax.inject.Inject;
+
 import rx.Observable;
 import rx.Subscriber;
 import rx.functions.Func1;
@@ -22,6 +24,7 @@ import rx.functions.Func1;
  * @author okasurya on 5/16/18.
  */
 public class GtmLogDBSource implements DataDBSource<AnalyticsLogData, List<GtmLogDB>> {
+    @Inject
     public GtmLogDBSource() {
 
     }

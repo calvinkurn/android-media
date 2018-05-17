@@ -20,6 +20,9 @@ dependencies {
     compile rootProject.ext.dbDependencies.dbFlowCore
     compile rootProject.ext.dbDependencies.dbFlow
 
+    compile rootProject.ext.miscDependencies.dagger
+    apt rootProject.ext.miscDependencies.daggerCompiler
+
     testCompile rootProject.ext.testDependencies.junit
 
 }

@@ -1,13 +1,12 @@
-package com.tokopedia.analytics.debugger.ui;
+package com.tokopedia.analytics.debugger.ui.activity;
 
 import android.content.Context;
 import android.content.Intent;
 import android.support.v4.app.Fragment;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
-import com.tokopedia.analytics.R;
+import com.tokopedia.analytics.debugger.ui.fragment.AnalyticsDebuggerFragment;
 
 public class AnalyticsDebuggerActivity extends BaseSimpleActivity {
 
@@ -18,11 +17,22 @@ public class AnalyticsDebuggerActivity extends BaseSimpleActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_tracking_debugger);
+        setContentView(getLayoutRes());
+        updateTitle("Analytics Debugger");
     }
 
     @Override
     protected Fragment getNewFragment() {
         return AnalyticsDebuggerFragment.newInstance();
+    }
+
+    @Override
+    protected String getTagFragment() {
+        return AnalyticsDebuggerFragment.TAG;
+    }
+
+    @Override
+    public void onBackPressed() {
+        finish();
     }
 }

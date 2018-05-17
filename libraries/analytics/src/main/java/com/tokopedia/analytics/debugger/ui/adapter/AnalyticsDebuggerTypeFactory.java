@@ -14,7 +14,7 @@ public class AnalyticsDebuggerTypeFactory extends BaseAdapterTypeFactory {
 
     @Override
     public AbstractViewHolder createViewHolder(View parent, int type) {
-        if(type == AnalyticsDebuggerViewModel.LAYOUT) {
+        if(type == AnalyticsDebuggerViewHolder.LAYOUT) {
             return new AnalyticsDebuggerViewHolder(parent);
         }
 
@@ -22,6 +22,6 @@ public class AnalyticsDebuggerTypeFactory extends BaseAdapterTypeFactory {
     }
 
     public int type(AnalyticsDebuggerViewModel analyticsDebuggerViewModel) {
-        return AnalyticsDebuggerViewModel.LAYOUT;
+        return AnalyticsDebuggerViewHolder.LAYOUT;
     }
 }

@@ -2,9 +2,10 @@
     package="com.tokopedia.analytics">
     <application>
         <activity
-            android:name="com.tokopedia.analytics.debugger.ui.AnalyticsDebuggerActivity"
+            android:name=".debugger.ui.activity.AnalyticsDebuggerActivity"
             android:label="Tracking Debugger"
             android:launchMode="singleTask"
+            android:theme="@style/Toolbar.White"
             android:taskAffinity="com.tokopedia.analytics.task"/>
     </application>
 </manifest>

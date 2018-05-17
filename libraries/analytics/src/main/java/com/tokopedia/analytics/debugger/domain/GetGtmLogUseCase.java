@@ -1,6 +1,7 @@
 package com.tokopedia.analytics.debugger.domain;
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
+import com.tokopedia.analytics.debugger.data.repository.GtmLogLocalRepository;
 import com.tokopedia.analytics.debugger.data.repository.GtmLogRepository;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.usecase.UseCase;
@@ -18,7 +19,7 @@ public class GetGtmLogUseCase extends UseCase<List<Visitable>> {
     private GtmLogRepository gtmLogRepository;
 
     @Inject
-    GetGtmLogUseCase(GtmLogRepository gtmLogRepository) {
+    GetGtmLogUseCase(GtmLogLocalRepository gtmLogRepository) {
         this.gtmLogRepository = gtmLogRepository;
     }
 
