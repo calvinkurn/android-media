@@ -114,13 +114,6 @@ public class ImagePickerCameraFragment extends TkpdBaseV4Fragment {
                     }
                 }
                 if (supportedFlashList != null && supportedFlashList.size() > 0) {
-                    flashImageButton.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
-                            flashIndex = (flashIndex + 1) % supportedFlashList.size();
-                            setCameraFlash();
-                        }
-                    });
                     flashImageButton.setVisibility(View.VISIBLE);
                     setCameraFlash();
                 } else {
@@ -139,6 +132,14 @@ public class ImagePickerCameraFragment extends TkpdBaseV4Fragment {
             @Override
             public void onPictureTaken(byte[] imageByte) {
                 generateImage(imageByte);
+            }
+        });
+
+        flashImageButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                flashIndex = (flashIndex + 1) % supportedFlashList.size();
+                setCameraFlash();
             }
         });
 

@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_centerInParent="true">
 
     <RelativeLayout
@@ -47,7 +47,7 @@
                 android:background="@android:color/transparent"
                 app:srcCompat="@drawable/ic_flash_auto"
                 android:visibility="gone"
-                tools:visibility="visible"/>
+                tools:visibility="invisible"/>
 
             <FrameLayout
                 android:layout_width="@dimen/dp_56"
