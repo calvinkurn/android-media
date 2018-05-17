@@ -3,9 +3,11 @@
     <application>
         <activity
             android:name=".debugger.ui.activity.AnalyticsDebuggerActivity"
-            android:label="Tracking Debugger"
             android:launchMode="singleTask"
-            android:theme="@style/Toolbar.White"
+            android:theme="@style/Theme.Green"
             android:taskAffinity="com.tokopedia.analytics.task"/>
+        <activity
+            android:name=".debugger.ui.activity.AnalyticsDebuggerDetailActivity"
+            android:theme="@style/Theme.Green"/>
     </application>
 </manifest>

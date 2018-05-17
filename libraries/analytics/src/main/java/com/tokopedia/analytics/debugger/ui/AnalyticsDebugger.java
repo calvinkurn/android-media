@@ -11,7 +11,11 @@ import java.util.List;
  */
 public interface AnalyticsDebugger {
     interface View extends CustomerView {
-        void onFetchCompleted(List<Visitable> visitables);
+        void onLoadMoreCompleted(List<Visitable> visitables);
+
+        void onReloadCompleted(List<Visitable> visitables);
+
+        void onDeleteCompleted();
     }
 
     interface Presenter extends CustomerPresenter<View> {
@@ -20,5 +24,7 @@ public interface AnalyticsDebugger {
         void search(String text);
 
         void reloadData();
+
+        void deleteAll();
     }
 }

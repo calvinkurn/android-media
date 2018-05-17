@@ -1,5 +1,6 @@
 package com.tokopedia.analytics.debugger.di;
 
+import com.tokopedia.analytics.debugger.domain.DeleteGtmLogUseCase;
 import com.tokopedia.analytics.debugger.domain.GetGtmLogUseCase;
 import com.tokopedia.analytics.debugger.ui.AnalyticsDebugger;
 import com.tokopedia.analytics.debugger.ui.presenter.AnalyticsDebuggerPresenter;
@@ -15,7 +16,8 @@ import dagger.Provides;
 @AnalyticsDebuggerScope
 public class AnalyticsDebuggerModule {
     @Provides
-    AnalyticsDebugger.Presenter providePresenter(GetGtmLogUseCase getGtmLogUseCase) {
-        return new AnalyticsDebuggerPresenter(getGtmLogUseCase);
+    AnalyticsDebugger.Presenter providePresenter(GetGtmLogUseCase getGtmLogUseCase,
+                                                 DeleteGtmLogUseCase deleteGtmLogUseCase) {
+        return new AnalyticsDebuggerPresenter(getGtmLogUseCase, deleteGtmLogUseCase);
     }
 }

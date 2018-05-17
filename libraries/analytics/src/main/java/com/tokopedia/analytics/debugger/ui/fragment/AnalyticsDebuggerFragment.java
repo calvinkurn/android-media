@@ -4,14 +4,19 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.fragment.BaseSearchListFragment;
+import com.tokopedia.analytics.R;
 import com.tokopedia.analytics.debugger.di.AnalyticsDebuggerComponent;
 import com.tokopedia.analytics.debugger.di.DaggerAnalyticsDebuggerComponent;
 import com.tokopedia.analytics.debugger.ui.AnalyticsDebugger;
+import com.tokopedia.analytics.debugger.ui.activity.AnalyticsDebuggerDetailActivity;
 import com.tokopedia.analytics.debugger.ui.adapter.AnalyticsDebuggerTypeFactory;
 import com.tokopedia.analytics.debugger.ui.model.AnalyticsDebuggerViewModel;
 
@@ -53,7 +58,6 @@ public class AnalyticsDebuggerFragment
 
     @Override
     protected void loadInitialData() {
-        isLoadingInitialData = true;
         showLoading();
         presenter.reloadData();
     }
@@ -109,11 +113,43 @@ public class AnalyticsDebuggerFragment
     }
 
     @Override
-    public void onFetchCompleted(List<Visitable> visitables) {
+    public void onLoadMoreCompleted(List<Visitable> visitables) {
         renderList(visitables, true);
     }
 
-    private void openDetail(AnalyticsDebuggerViewModel visitable) {
+    @Override
+    public void onReloadCompleted(List<Visitable> visitables) {
+        isLoadingInitialData = true;
+        renderList(visitables, true);
+    }
 
+    @Override
+    public void onSwipeRefresh() {
+        searchInputView.getSearchTextView().setText("");
+        super.onSwipeRefresh();
+    }
+
+    @Override
+    public void onDeleteCompleted() {
+        presenter.reloadData();
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.menu_analytics_debugger, menu);
+        super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if(item.getItemId() == R.id.action_menu_delete) {
+            presenter.deleteAll();
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    private void openDetail(AnalyticsDebuggerViewModel viewModel) {
+        startActivity(AnalyticsDebuggerDetailActivity.newInstance(getContext(), viewModel));
     }
 }

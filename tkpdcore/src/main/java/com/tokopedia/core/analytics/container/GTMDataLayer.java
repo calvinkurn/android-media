@@ -96,15 +96,8 @@ public class GTMDataLayer {
     }
 
     private static void log(GTMBody gtmBody) {
-        try {
-            AnalyticsLogData data = new AnalyticsLogData();
-            data.setCategory((String) gtmBody.values.get("eventCategory"));
-            data.setName(gtmBody.eventName == null ? (String) gtmBody.values.get("event") : gtmBody.eventName);
-            data.setData(gtmBody.values.toString());
-            GtmLogger.getInstance().save(data);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        String name = gtmBody.eventName == null ? (String) gtmBody.values.get("event") : gtmBody.eventName;
+        GtmLogger.getInstance().save(name, gtmBody.values);
     }
 
     private static class GTMBody {

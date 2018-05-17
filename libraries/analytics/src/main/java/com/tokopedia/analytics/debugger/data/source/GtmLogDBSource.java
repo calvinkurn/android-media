@@ -3,6 +3,7 @@ package com.tokopedia.analytics.debugger.data.source;
 import com.raizlabs.android.dbflow.sql.language.ConditionGroup;
 import com.raizlabs.android.dbflow.sql.language.Delete;
 import com.raizlabs.android.dbflow.sql.language.Method;
+import com.raizlabs.android.dbflow.sql.language.OrderBy;
 import com.raizlabs.android.dbflow.sql.language.Select;
 import com.tokopedia.abstraction.base.data.source.database.DataDBSource;
 import com.tokopedia.analytics.database.GtmLogDB;
@@ -86,7 +87,13 @@ public class GtmLogDBSource implements DataDBSource<AnalyticsLogData, List<GtmLo
                             .or(GtmLogDB_Table.category.like("%" + keyword + "%"));
                 }
 
-                return new Select().from(GtmLogDB.class).where(conditions).offset(20 * page).limit(20).queryList();
+                return new Select()
+                        .from(GtmLogDB.class)
+                        .where(conditions)
+                        .offset(20 * page)
+                        .limit(20)
+                        .orderBy(OrderBy.fromProperty(GtmLogDB_Table.timestamp).descending())
+                        .queryList();
             }
         });
     }

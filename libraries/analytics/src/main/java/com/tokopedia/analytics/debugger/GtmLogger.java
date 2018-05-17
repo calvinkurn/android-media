@@ -2,9 +2,16 @@ package com.tokopedia.analytics.debugger;
 
 import android.text.TextUtils;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonParseException;
+import com.google.gson.JsonParser;
 import com.tokopedia.abstraction.common.utils.GlobalConfig;
 import com.tokopedia.analytics.debugger.data.source.GtmLogDBSource;
 import com.tokopedia.analytics.debugger.domain.model.AnalyticsLogData;
+
+import java.util.Map;
 
 import rx.Subscriber;
 import rx.schedulers.Schedulers;
@@ -34,9 +41,20 @@ public class GtmLogger implements AnalyticsLogger {
     }
 
     @Override
-    public void save(AnalyticsLogData log) {
-        if(!TextUtils.isEmpty(log.getName()) && !log.getName().equals("null")) {
-            dbSource.insertAll(log).subscribeOn(Schedulers.io()).unsubscribeOn(Schedulers.io()).subscribe(defaultSubscriber());
+    public void save(String name, Map<String, Object> mapData) {
+        try {
+            Gson gson = new GsonBuilder().setPrettyPrinting().create();
+
+            AnalyticsLogData data = new AnalyticsLogData();
+            data.setCategory((String) mapData.get("eventCategory"));
+            data.setName(name);
+            data.setData(gson.toJson(mapData));
+
+            if(!TextUtils.isEmpty(data.getName()) && !data.getName().equals("null")) {
+                dbSource.insertAll(data).subscribeOn(Schedulers.io()).unsubscribeOn(Schedulers.io()).subscribe(defaultSubscriber());
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
