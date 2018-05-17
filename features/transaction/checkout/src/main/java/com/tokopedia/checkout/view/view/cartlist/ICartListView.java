@@ -73,7 +73,7 @@ public interface ICartListView extends IBaseView {
 
     void renderErrorTimeoutConnectionCheckPromoCodeFromSuggestedPromo(String message);
 
-    void renderEmptyCartData();
+    void renderEmptyCartData(CartListData cartListData);
 
     void disableSwipeRefresh();
 

@@ -11,12 +11,15 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SimpleItemAnimator;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -92,7 +95,7 @@ public class CartFragment extends BaseCheckoutFragment implements CartListAdapte
     private View bottomLayout;
     private TextView tvItemCount;
     private TkpdProgressDialog progressDialogNormal;
-
+    private RelativeLayout layoutUsedPromo;
 
     @Inject
     ICartListPresenter dPresenter;
@@ -306,7 +309,7 @@ public class CartFragment extends BaseCheckoutFragment implements CartListAdapte
 
     @Override
     public void onCartItemListIsEmpty() {
-        renderEmptyCartData();
+        renderEmptyCartData(null);
     }
 
     @Override
@@ -651,7 +654,7 @@ public class CartFragment extends BaseCheckoutFragment implements CartListAdapte
     }
 
     @Override
-    public void renderEmptyCartData() {
+    public void renderEmptyCartData(CartListData cartListData) {
         checkoutAnalytics.eventViewCartViewImpressionCartEmpty();
         refreshHandler.finishRefresh();
         bottomLayout.setVisibility(View.GONE);
@@ -666,6 +669,33 @@ public class CartFragment extends BaseCheckoutFragment implements CartListAdapte
         } catch (NullPointerException e) {
             View emptyState = LayoutInflater.from(getActivity()).
                     inflate(R.layout.layout_empty_shopping_cart_new, (ViewGroup) rootview);
+            layoutUsedPromo = emptyState.findViewById(R.id.layout_used_promo);
+            TextView labelPromoCode = emptyState.findViewById(R.id.label_promo_code);
+            TextView textviewPromoCode = emptyState.findViewById(R.id.textview_promo_code);
+            TextView textviewVoucherDetail = emptyState.findViewById(R.id.textview_voucher_detail);
+            ImageView buttonCancel = emptyState.findViewById(R.id.button_cancel);
+
+            if (cartListData != null && cartListData.getAutoApplyData() != null &&
+                    cartListData.getAutoApplyData().isSuccess()) {
+                layoutUsedPromo.setVisibility(View.VISIBLE);
+                labelPromoCode.setText(getContext().getString(com.tokopedia.design.R.string.my_coupon));
+                textviewPromoCode.setText(cartListData.getAutoApplyData().getTitleDescription());
+                if (TextUtils.isEmpty(cartListData.getAutoApplyData().getMessageSuccess())) {
+                    textviewVoucherDetail.setVisibility(View.GONE);
+                } else {
+                    textviewVoucherDetail.setText(cartListData.getAutoApplyData().getMessageSuccess());
+                    textviewVoucherDetail.setVisibility(View.VISIBLE);
+                }
+                buttonCancel.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        dPresenter.processCancelAutoApply();
+                    }
+                });
+            } else {
+                layoutUsedPromo.setVisibility(View.GONE);
+            }
+
             TextView shop = emptyState.findViewById(R.id.btn_shopping_now);
             shop.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -753,8 +783,13 @@ public class CartFragment extends BaseCheckoutFragment implements CartListAdapte
 
     @Override
     public void renderCancelAutoApplyCouponSuccess() {
-        cartListAdapter.cancelAutoApplyCoupon();
-        cartListAdapter.checkForShipmentForm();
+        promoCodeAppliedData = null;
+        if (layoutUsedPromo != null) {
+            layoutUsedPromo.setVisibility(View.GONE);
+        } else {
+            cartListAdapter.cancelAutoApplyCoupon();
+            cartListAdapter.checkForShipmentForm();
+        }
     }
 
     @Override
