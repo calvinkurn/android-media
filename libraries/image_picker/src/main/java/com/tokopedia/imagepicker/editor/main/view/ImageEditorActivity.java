@@ -161,12 +161,14 @@ public class ImageEditorActivity extends BaseSimpleActivity implements ImageEdit
             edittedImagePaths = new ArrayList<>();
             isInEditMode = false;
             currentEditActionType = ImageEditActionTypeDef.ACTION_CROP_ROTATE;
+            currentEditStepIndexList = new ArrayList<>();
         } else {
             currentImageIndex = savedInstanceState.getInt(SAVED_IMAGE_INDEX, 0);
             //noinspection unchecked
             edittedImagePaths = (ArrayList<ArrayList<String>>) savedInstanceState.getSerializable(SAVED_EDITTED_PATHS);
             isInEditMode = savedInstanceState.getBoolean(SAVED_IN_EDIT_MODE);
             currentEditActionType = savedInstanceState.getInt(SAVED_EDIT_TYPE);
+            currentEditStepIndexList = savedInstanceState.getIntegerArrayList(SAVED_CURRENT_STEP_INDEX);
         }
 
         vgDownloadProgressBar = findViewById(R.id.vg_download_progress_bar);
@@ -438,6 +440,8 @@ public class ImageEditorActivity extends BaseSimpleActivity implements ImageEdit
                     if (fragment != null) {
                         float brightness = fragment.getBrightness();
                         setUIBrightnessValue(brightness);
+                    } else {
+                        setUIBrightnessValue(0);
                     }
                     layoutBrightness.setVisibility(View.VISIBLE);
                     tvActionTitle.setText(getString(R.string.brightness));
@@ -448,6 +452,8 @@ public class ImageEditorActivity extends BaseSimpleActivity implements ImageEdit
                     if (fragment != null) {
                         float contrast = fragment.getContrast();
                         setUIContrastValue(contrast);
+                    } else {
+                        setUIContrastValue(INITIAL_CONTRAST_VALUE);
                     }
                     layoutContrast.setVisibility(View.VISIBLE);
                     tvActionTitle.setText(getString(R.string.contrast));

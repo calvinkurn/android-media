@@ -52,9 +52,6 @@ public class ImageEditPreviewFragment extends Fragment implements ImageEditPrevi
     public static final String ARG_CIRCLE_PREVIEW = "arg_circle_preview";
     public static final int ROTATE_WIDGET_SENSITIVITY = 1;
 
-    public static final String SAVED_BRIGHTNESS = "svd_brightness";
-    public static final String SAVED_CONTRAST = "svd_contrast";
-
     private String edittedImagePath;
     private int minResolution = 0;
     private int expectedRatioX, expectedRatioY;
@@ -117,6 +114,9 @@ public class ImageEditPreviewFragment extends Fragment implements ImageEditPrevi
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
+        brightness = 0;
+        contrast = INITIAL_CONTRAST_VALUE;
+
         super.onCreate(savedInstanceState);
         imageEditPreviewPresenter = new ImageEditPreviewPresenter();
         imageEditPreviewPresenter.attachView(this);
@@ -134,14 +134,6 @@ public class ImageEditPreviewFragment extends Fragment implements ImageEditPrevi
         expectedRatioX = bundle.getInt(ARG_EXPECTED_RATIO_X);
         expectedRatioY = bundle.getInt(ARG_EXPECTED_RATIO_Y);
         isCirclePreview = bundle.getBoolean(ARG_CIRCLE_PREVIEW);
-
-        if (savedInstanceState == null) {
-            brightness = 0;
-            contrast = INITIAL_CONTRAST_VALUE;
-        } else {
-            brightness = savedInstanceState.getFloat(SAVED_BRIGHTNESS);
-            contrast = savedInstanceState.getFloat(SAVED_CONTRAST);
-        }
 
         initUCrop(view);
         initProgressBar(view);
@@ -306,12 +298,12 @@ public class ImageEditPreviewFragment extends Fragment implements ImageEditPrevi
     }
 
     public void rotateAndSaveImage() {
-        if (gestureCropImageView.getCurrentAngle() == 0 ) {
+        if (gestureCropImageView.getCurrentAngle() == 0) {
             onImageEditPreviewFragmentListener.onEditDoNothing();
             return;
         }
         // when rotate 90/180/270, we just rotate and do not crop the image.
-        if (gestureCropImageView.getCurrentAngle() %90 == 0) {
+        if (gestureCropImageView.getCurrentAngle() % 90 == 0) {
             imageEditPreviewPresenter.rotateImage(gestureCropImageView.getViewBitmap(),
                     gestureCropImageView.getCurrentAngle(),
                     ImageUtils.isPng(edittedImagePath));
@@ -527,13 +519,6 @@ public class ImageEditPreviewFragment extends Fragment implements ImageEditPrevi
 
     protected void onAttachActivity(Context context) {
         onImageEditPreviewFragmentListener = (OnImageEditPreviewFragmentListener) context;
-    }
-
-    @Override
-    public void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-        outState.putFloat(SAVED_BRIGHTNESS, brightness);
-        outState.putFloat(SAVED_CONTRAST, contrast);
     }
 
 }
