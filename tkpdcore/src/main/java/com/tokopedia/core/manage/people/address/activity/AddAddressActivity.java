@@ -10,15 +10,18 @@ import android.os.Bundle;
 import com.tokopedia.core.R;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.BasePresenterActivity;
-import com.tokopedia.core.manage.people.address.ManageAddressConstant;
 import com.tokopedia.core.manage.people.address.fragment.AddAddressFragment;
 import com.tokopedia.core.manage.people.address.model.AddressModel;
 import com.tokopedia.core.manage.people.address.model.Token;
 
+import static com.tokopedia.core.manage.people.address.ManageAddressConstant.EDIT_PARAM;
+import static com.tokopedia.core.manage.people.address.ManageAddressConstant.IS_EDIT;
+import static com.tokopedia.core.manage.people.address.ManageAddressConstant.KERO_TOKEN;
+
 /**
  * Created by nisie on 9/6/16.
  */
-public class AddAddressActivity extends BasePresenterActivity implements ManageAddressConstant {
+public class AddAddressActivity extends BasePresenterActivity {
 
     @Override
     public String getScreenName() {
@@ -82,6 +85,7 @@ public class AddAddressActivity extends BasePresenterActivity implements ManageA
     public static Intent createInstance(Activity activity, Token token) {
         Intent intent = new Intent(activity, AddAddressActivity.class);
         Bundle bundle = new Bundle();
+        bundle.putBoolean(IS_EDIT, false);
         bundle.putParcelable(KERO_TOKEN, token);
         intent.putExtras(bundle);
         return intent;
@@ -90,8 +94,8 @@ public class AddAddressActivity extends BasePresenterActivity implements ManageA
     public static Intent createInstance(Activity activity, AddressModel data, Token token) {
         Intent intent = new Intent(activity, AddAddressActivity.class);
         Bundle bundle = new Bundle();
-        bundle.putParcelable(ManageAddressConstant.EDIT_PARAM, data.convertToDestination());
-        bundle.putBoolean(ManageAddressConstant.IS_EDIT, true);
+        bundle.putParcelable(EDIT_PARAM, data.convertToDestination());
+        bundle.putBoolean(IS_EDIT, true);
         bundle.putParcelable(KERO_TOKEN, token);
         intent.putExtras(bundle);
         return intent;

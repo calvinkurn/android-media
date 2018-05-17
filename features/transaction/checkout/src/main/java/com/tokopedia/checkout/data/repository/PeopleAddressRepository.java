@@ -1,5 +1,6 @@
 package com.tokopedia.checkout.data.repository;
 
+import com.tokopedia.checkout.domain.datamodel.addressoptions.PeopleAddressModel;
 import com.tokopedia.checkout.domain.datamodel.addressoptions.RecipientAddressModel;
 
 import java.util.List;
@@ -19,6 +20,6 @@ public interface PeopleAddressRepository {
      * @param params Parameters used to retrieve address data
      * @return List of all address
      */
-    Observable<List<RecipientAddressModel>> getAllAddress(final Map<String, String> params);
+    Observable<PeopleAddressModel> getAllAddress(final Map<String, String> params);
 
 }

@@ -400,18 +400,21 @@ public class AddAddressFragment extends BasePresenterFragment<AddAddressPresente
 
     @Override
     protected void initialVar() {
-        if (address == null) address = new Destination();
+        if (isEdit() && address != null) {
+            receiverNameEditText.setText(address.getReceiverName());
+            addressTypeEditText.setText(address.getAddressName());
+            addressEditText.setText(address.getAddressStreet());
+            districtEditText.setText(TextUtils.join(", ", Arrays.asList(
+                    address.getProvinceName(),
+                    address.getCityName(),
+                    address.getDistrictName()
+            )));
 
-        receiverNameEditText.setText(address.getReceiverName());
-        addressTypeEditText.setText(address.getAddressName());
-        addressEditText.setText(address.getAddressStreet());
-        districtEditText.setText(TextUtils.join(", ", Arrays.asList(
-                address.getProvinceName(),
-                address.getCityName(),
-                address.getDistrictName()
-        )));
-        zipCodeTextView.setText(address.getPostalCode());
-        receiverPhoneEditText.setText(address.getReceiverPhone());
+            zipCodeTextView.setText(address.getPostalCode());
+            receiverPhoneEditText.setText(address.getReceiverPhone());
+        } else if (address == null) {
+            address = new Destination();
+        }
     }
 
     @Override

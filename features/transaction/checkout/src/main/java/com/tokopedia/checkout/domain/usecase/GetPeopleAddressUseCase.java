@@ -3,7 +3,7 @@ package com.tokopedia.checkout.domain.usecase;
 import android.content.Context;
 
 import com.tokopedia.checkout.data.repository.PeopleAddressRepository;
-import com.tokopedia.checkout.domain.datamodel.addressoptions.RecipientAddressModel;
+import com.tokopedia.checkout.domain.datamodel.addressoptions.PeopleAddressModel;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.usecase.UseCase;
@@ -17,7 +17,7 @@ import rx.Observable;
  * @author Aghny A. Putra on 21/02/18
  */
 
-public class GetPeopleAddressUseCase extends UseCase<List<RecipientAddressModel>> {
+public class GetPeopleAddressUseCase extends UseCase<PeopleAddressModel> {
 
     private static final String PARAM_ORDER_BY = "order_by";
     private static final String PARAM_PAGE = "page";
@@ -30,7 +30,7 @@ public class GetPeopleAddressUseCase extends UseCase<List<RecipientAddressModel>
     }
 
     @Override
-    public Observable<List<RecipientAddressModel>> createObservable(RequestParams requestParams) {
+    public Observable<PeopleAddressModel> createObservable(RequestParams requestParams) {
         return mPeopleAddressRepository.getAllAddress(requestParams.getParamsAllValueInString());
     }
 
