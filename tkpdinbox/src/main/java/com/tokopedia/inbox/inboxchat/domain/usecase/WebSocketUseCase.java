@@ -11,11 +11,6 @@ import com.tokopedia.inbox.inboxchat.ChatWebSocketConstant;
 import com.tokopedia.inbox.inboxchat.ChatWebSocketListenerImpl;
 import com.tokopedia.inbox.inboxchat.InboxChatConstant;
 
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Locale;
-import java.util.TimeZone;
-
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.WebSocket;
@@ -117,16 +112,14 @@ public class WebSocketUseCase {
         return json;
     }
 
-    public JsonObject getParamSendProductAttachment(String messageId, ResultProduct product) {
+    public JsonObject getParamSendProductAttachment(String messageId, ResultProduct product, String startTime) {
         JsonObject json = new JsonObject();
         json.addProperty("code", ChatWebSocketConstant.EVENT_TOPCHAT_REPLY_MESSAGE);
         JsonObject data = new JsonObject();
         data.addProperty("message_id", Integer.valueOf(messageId));
         data.addProperty("message", product.getProductUrl());
-        SimpleDateFormat date = new SimpleDateFormat(
-                "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.US);
-        date.setTimeZone(TimeZone.getTimeZone("UTC"));
-        data.addProperty("start_time", date.format(Calendar.getInstance().getTime()));
+
+        data.addProperty("start_time", startTime);
         data.addProperty("attachment_type", 3);
         data.addProperty("product_id", product.getProductId());
 

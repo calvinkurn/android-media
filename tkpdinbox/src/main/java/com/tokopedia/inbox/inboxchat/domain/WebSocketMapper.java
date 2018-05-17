@@ -7,7 +7,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonSyntaxException;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.inbox.inboxchat.ChatWebSocketConstant;
-import com.tokopedia.inbox.inboxchat.domain.model.websocket.BaseChatViewModel;
+import com.tokopedia.inbox.inboxchat.viewmodel.chatroom.BaseChatViewModel;
 import com.tokopedia.inbox.inboxchat.domain.pojo.common.WebSocketResponse;
 import com.tokopedia.inbox.inboxchat.domain.pojo.common.WebSocketResponseData;
 import com.tokopedia.inbox.inboxchat.domain.pojo.imageupload.ImageUploadAttributes;
@@ -19,8 +19,8 @@ import com.tokopedia.inbox.inboxchat.domain.pojo.productattachment.ProductAttach
 import com.tokopedia.inbox.inboxchat.domain.pojo.quickreply.QuickReplyAttachmentAttributes;
 import com.tokopedia.inbox.inboxchat.domain.pojo.quickreply.QuickReplyPojo;
 import com.tokopedia.inbox.inboxchat.viewmodel.AttachInvoiceSentViewModel;
-import com.tokopedia.inbox.inboxchat.viewmodel.chatroom.QuickReplyListViewModel;
-import com.tokopedia.inbox.inboxchat.viewmodel.chatroom.QuickReplyViewModel;
+import com.tokopedia.inbox.inboxchat.viewmodel.chatroom.quickreply.QuickReplyListViewModel;
+import com.tokopedia.inbox.inboxchat.viewmodel.chatroom.quickreply.QuickReplyViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.chatroom.fallback.FallbackAttachmentViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.chatroom.imageupload.ImageUploadViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.chatroom.invoiceattachment.AttachInvoiceSelectionViewModel;
@@ -95,10 +95,9 @@ public class WebSocketMapper {
             case TYPE_INVOICE_SEND:
                 return convertToInvoiceSent(pojo.getData(), jsonAttributes);
             case TYPE_INVOICES_SELECTION:
-                return convertToInvoiceSelection(pojo.getData(),jsonAttributes);
+                return convertToInvoiceSelection(pojo.getData(), jsonAttributes);
             default:
-//                        return convertToFallBackModel(pojo.getData());
-                return null;
+                return convertToFallBackModel(pojo.getData());
         }
     }
 
@@ -122,16 +121,16 @@ public class WebSocketMapper {
     private AttachInvoiceSelectionViewModel convertToInvoiceSelection(WebSocketResponseData pojo,
                                                                       JsonObject jsonAttribute) {
         JsonObject jsonObject = jsonAttribute.getAsJsonObject("invoice_list");
-        if(jsonObject == null)
+        if (jsonObject == null)
             return null;
 
         InvoicesSelectionPojo invoicesSelectionPojo = new GsonBuilder().create().fromJson
-                (jsonObject,InvoicesSelectionPojo.class);
+                (jsonObject, InvoicesSelectionPojo.class);
         List<InvoicesSelectionSingleItemPojo> invoiceList = invoicesSelectionPojo.getInvoices();
 
         ArrayList<AttachInvoiceSingleViewModel> list = new ArrayList<>();
 
-        for(InvoicesSelectionSingleItemPojo invoice: invoiceList){
+        for (InvoicesSelectionSingleItemPojo invoice : invoiceList) {
             InvoiceSingleItemAttributes attributes = invoice.getAttributes();
             AttachInvoiceSingleViewModel attachInvoice = new AttachInvoiceSingleViewModel(
                     invoice.getType(),
@@ -224,7 +223,8 @@ public class WebSocketMapper {
                 pojoAttribute.getProductProfile().getUrl(),
                 pojoAttribute.getProductProfile().getImageUrl(),
                 isSender(String.valueOf(pojo.getFromUid())),
-                pojo.getMessage().getCensoredReply()
+                pojo.getMessage().getCensoredReply(),
+                pojo.getStartTime()
         );
     }
 

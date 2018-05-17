@@ -2,7 +2,6 @@ package com.tokopedia.inbox.inboxchat.viewmodel.chatroom;
 
 import com.tokopedia.inbox.inboxchat.ChatWebSocketListenerImpl;
 import com.tokopedia.inbox.inboxchat.domain.WebSocketMapper;
-import com.tokopedia.inbox.inboxchat.domain.model.websocket.BaseChatViewModel;
 import com.tokopedia.inbox.inboxchat.domain.usecase.GetReplyListUseCase;
 
 import java.text.SimpleDateFormat;
@@ -65,7 +64,7 @@ public class SendableViewModel extends BaseChatViewModel {
         return isSender;
     }
 
-    public void setRead(boolean read) {
+    public void setIsRead(boolean read) {
         isRead = read;
     }
 

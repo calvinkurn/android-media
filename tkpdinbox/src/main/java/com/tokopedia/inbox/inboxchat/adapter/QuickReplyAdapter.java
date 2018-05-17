@@ -8,8 +8,8 @@ import android.widget.TextView;
 
 import com.tokopedia.inbox.R;
 import com.tokopedia.inbox.inboxchat.presenter.ChatRoomContract;
-import com.tokopedia.inbox.inboxchat.viewmodel.chatroom.QuickReplyListViewModel;
-import com.tokopedia.inbox.inboxchat.viewmodel.chatroom.QuickReplyViewModel;
+import com.tokopedia.inbox.inboxchat.viewmodel.chatroom.quickreply.QuickReplyListViewModel;
+import com.tokopedia.inbox.inboxchat.viewmodel.chatroom.quickreply.QuickReplyViewModel;
 
 /**
  * @author by yfsx on 08/05/18.

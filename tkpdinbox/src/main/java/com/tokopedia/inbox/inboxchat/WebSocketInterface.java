@@ -1,6 +1,6 @@
 package com.tokopedia.inbox.inboxchat;
 
-import com.tokopedia.inbox.inboxchat.domain.model.websocket.BaseChatViewModel;
+import com.tokopedia.inbox.inboxchat.viewmodel.chatroom.BaseChatViewModel;
 import com.tokopedia.inbox.inboxchat.domain.model.reply.WebSocketResponse;
 
 /**

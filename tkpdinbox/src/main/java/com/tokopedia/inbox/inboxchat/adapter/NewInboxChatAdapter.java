@@ -7,10 +7,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.tokopedia.core.base.adapter.Visitable;
-import com.tokopedia.core.base.adapter.model.EmptyModel;
-import com.tokopedia.core.base.adapter.model.LoadingModel;
-import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
+import com.tokopedia.abstraction.base.view.adapter.Visitable;
+import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel;
+import com.tokopedia.abstraction.base.view.adapter.model.LoadingModel;
+import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.inbox.inboxchat.domain.model.reply.WebSocketResponse;
 import com.tokopedia.inbox.inboxchat.presenter.InboxChatPresenter;

@@ -1,9 +1,8 @@
 package com.tokopedia.inbox.inboxchat.viewmodel;
 
 import android.text.Spanned;
-import android.text.SpannedString;
 
-import com.tokopedia.core.base.adapter.Visitable;
+import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.inbox.inboxchat.adapter.InboxChatTypeFactory;
 import com.tokopedia.inbox.inboxchat.domain.model.message.Contact;
 

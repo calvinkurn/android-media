@@ -4,8 +4,8 @@ import android.content.Intent;
 import android.os.CountDownTimer;
 import android.util.Pair;
 
+import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.core.analytics.UnifyTracking;
-import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
 import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.network.constants.TkpdBaseURL;

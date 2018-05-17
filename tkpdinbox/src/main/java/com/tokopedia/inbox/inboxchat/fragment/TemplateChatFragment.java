@@ -20,7 +20,6 @@ import com.tkpd.library.utils.SnackbarManager;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
-import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.design.bottomsheet.BottomSheetView;
 import com.tokopedia.inbox.R;
 import com.tokopedia.inbox.inboxchat.activity.EditTemplateChatActivity;
@@ -30,7 +29,7 @@ import com.tokopedia.inbox.inboxchat.di.DaggerTemplateChatComponent;
 import com.tokopedia.inbox.inboxchat.helper.SimpleItemTouchHelperCallback;
 import com.tokopedia.inbox.inboxchat.presenter.TemplateChatContract;
 import com.tokopedia.inbox.inboxchat.presenter.TemplateChatSettingPresenter;
-import com.tokopedia.inbox.inboxchat.viewholder.ItemTemplateChatViewHolder;
+import com.tokopedia.inbox.inboxchat.adapter.viewholder.chattemplate.ItemTemplateChatViewHolder;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -2,16 +2,15 @@ package com.tokopedia.inbox.inboxchat.adapter;
 
 import android.view.View;
 
-import com.tokopedia.core.base.adapter.BaseAdapterTypeFactory;
-import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
-import com.tokopedia.inbox.inboxchat.viewholder.TypingChatViewHolder;
+import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory;
+import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.inbox.inboxchat.viewmodel.EmptyChatModel;
 import com.tokopedia.inbox.inboxchat.fragment.InboxChatFragment;
 import com.tokopedia.inbox.inboxchat.presenter.InboxChatContract;
 import com.tokopedia.inbox.inboxchat.presenter.InboxChatPresenter;
-import com.tokopedia.inbox.inboxchat.viewholder.EmptyChatListViewHolder;
-import com.tokopedia.inbox.inboxchat.viewholder.ListChatViewHolder;
-import com.tokopedia.inbox.inboxchat.viewholder.TimeMachineListViewHolder;
+import com.tokopedia.inbox.inboxchat.adapter.viewholder.chatlist.EmptyChatListViewHolder;
+import com.tokopedia.inbox.inboxchat.adapter.viewholder.chatlist.ListChatViewHolder;
+import com.tokopedia.inbox.inboxchat.adapter.viewholder.chatlist.TimeMachineListViewHolder;
 import com.tokopedia.inbox.inboxchat.viewmodel.ChatListViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.TimeMachineListViewModel;
 

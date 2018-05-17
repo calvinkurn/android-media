@@ -4,7 +4,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.core.base.presentation.CustomerPresenter;
 import com.tokopedia.core.base.presentation.CustomerView;
 import com.tokopedia.inbox.inboxchat.adapter.TemplateChatSettingAdapter;
-import com.tokopedia.inbox.inboxchat.viewholder.ItemTemplateChatViewHolder;
+import com.tokopedia.inbox.inboxchat.adapter.viewholder.chattemplate.ItemTemplateChatViewHolder;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -11,16 +11,13 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel;
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingMoreModel;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
-import com.tokopedia.inbox.inboxchat.adapter.viewholder.AttachedInvoiceSentViewHolder;
-import com.tokopedia.inbox.inboxchat.adapter.viewholder.ProductAttachmentViewHolder;
-import com.tokopedia.inbox.inboxchat.domain.model.ListReplyViewModel;
+import com.tokopedia.inbox.inboxchat.adapter.viewholder.chatbot.AttachedInvoiceSentViewHolder;
+import com.tokopedia.inbox.inboxchat.adapter.viewholder.chatroom.ImageAnnouncementViewHolder;
+import com.tokopedia.inbox.inboxchat.adapter.viewholder.chatroom.ProductAttachmentViewHolder;
+import com.tokopedia.inbox.inboxchat.adapter.viewholder.common.ImageUploadViewHolder;
 import com.tokopedia.inbox.inboxchat.domain.model.ReplyParcelableModel;
-import com.tokopedia.inbox.inboxchat.domain.model.reply.WebSocketResponse;
-import com.tokopedia.inbox.inboxchat.domain.model.websocket.BaseChatViewModel;
-import com.tokopedia.inbox.inboxchat.viewholder.MyChatViewHolder;
-import com.tokopedia.inbox.inboxchat.viewmodel.MyChatViewModel;
-import com.tokopedia.inbox.inboxchat.viewmodel.OppositeChatViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.TypingChatModel;
+import com.tokopedia.inbox.inboxchat.viewmodel.chatroom.BaseChatViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.chatroom.SendableViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.chatroom.TimeMachineChatModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.chatroom.imageupload.ImageUploadViewModel;
@@ -62,10 +59,7 @@ public class ChatRoomAdapter extends RecyclerView.Adapter<AbstractViewHolder> {
 
     @Override
     public void onBindViewHolder(AbstractViewHolder holder, int position) {
-        if (list.get(position) instanceof ListReplyViewModel) {
-            showTime(holder.itemView.getContext(), holder.getAdapterPosition());
-            showHour(holder.itemView.getContext(), holder.getAdapterPosition());
-        } else if (list.get(position) instanceof BaseChatViewModel) {
+        if (list.get(position) instanceof BaseChatViewModel) {
             showTimeBaseChat(holder.itemView.getContext(), holder.getAdapterPosition());
         }
         holder.bind(list.get(holder.getAdapterPosition()));
@@ -74,53 +68,14 @@ public class ChatRoomAdapter extends RecyclerView.Adapter<AbstractViewHolder> {
     @Override
     public void onViewRecycled(AbstractViewHolder holder) {
         super.onViewRecycled(holder);
-        if (holder instanceof MyChatViewHolder) {
-            ((MyChatViewHolder) holder).onViewRecycled();
+        if (holder instanceof ImageUploadViewHolder) {
+            ((ImageUploadViewHolder) holder).onViewRecycled();
+        } else if (holder instanceof ImageAnnouncementViewHolder) {
+            ((ImageAnnouncementViewHolder) holder).onViewRecycled();
         } else if (holder instanceof ProductAttachmentViewHolder) {
             ((ProductAttachmentViewHolder) holder).onViewRecycled();
         } else if (holder instanceof AttachedInvoiceSentViewHolder) {
             ((AttachedInvoiceSentViewHolder) holder).onViewRecycled();
-        }
-    }
-
-    private ListReplyViewModel getLastPrevListReplyViewModel(int initialPosition) {
-        int position = initialPosition;
-        while (position < list.size()) {
-            if (list.get(position) instanceof ListReplyViewModel) {
-                return (ListReplyViewModel) list.get(position);
-            }
-            position++;
-        }
-        return null;
-    }
-
-    private void showTime(Context context, int position) {
-        if (position != list.size() - 1) {
-            try {
-                ListReplyViewModel now = (ListReplyViewModel) list.get(position);
-                ListReplyViewModel prev = getLastPrevListReplyViewModel(position + 1);
-
-                long myTime = Long.parseLong(now.getReplyTime());
-                long prevTime = 0;
-                if (prev != null) {
-                    prevTime = Long.parseLong(prev.getReplyTime());
-                }
-
-                if (compareTime(context, myTime, prevTime)) {
-                    ((ListReplyViewModel) list.get(position)).setShowTime(false);
-                } else {
-                    ((ListReplyViewModel) list.get(position)).setShowTime(true);
-                }
-            } catch (NumberFormatException | ClassCastException e) {
-
-                ((ListReplyViewModel) list.get(position)).setShowTime(false);
-            }
-        } else {
-            try {
-                ((ListReplyViewModel) list.get(position)).setShowTime(true);
-            } catch (ClassCastException e) {
-                e.printStackTrace();
-            }
         }
     }
 
@@ -133,10 +88,6 @@ public class ChatRoomAdapter extends RecyclerView.Adapter<AbstractViewHolder> {
 
                 if (list.get(position + 1) != null && list.get(position + 1) instanceof BaseChatViewModel) {
                     BaseChatViewModel prev = (BaseChatViewModel) list.get(position + 1);
-                    prevTime = Long.parseLong(prev.getReplyTime());
-                } else if (list.get(position + 1) != null && list.get(position + 1) instanceof
-                        ListReplyViewModel) {
-                    ListReplyViewModel prev = (ListReplyViewModel) list.get(position + 1);
                     prevTime = Long.parseLong(prev.getReplyTime());
                 }
 
@@ -155,10 +106,6 @@ public class ChatRoomAdapter extends RecyclerView.Adapter<AbstractViewHolder> {
                 e.printStackTrace();
             }
         }
-    }
-
-    private void showHour(Context context, int position) {
-        ((ListReplyViewModel) list.get(position)).setShowHour(true);
     }
 
     private boolean compareTime(Context context, long calCurrent, long calBefore) {
@@ -267,12 +214,6 @@ public class ChatRoomAdapter extends RecyclerView.Adapter<AbstractViewHolder> {
         }
     }
 
-    public void remove(MyChatViewModel model) {
-        int position = list.indexOf(model);
-        list.remove(model);
-        notifyItemRemoved(position);
-    }
-
     public void remove(Visitable model) {
         int position = list.indexOf(model);
         list.remove(model);
@@ -323,17 +264,7 @@ public class ChatRoomAdapter extends RecyclerView.Adapter<AbstractViewHolder> {
     }
 
     public ReplyParcelableModel getLastItem() {
-        ListReplyViewModel item;
-        if (list.size() > 0 && list.get(0) instanceof ListReplyViewModel) {
-            item = (ListReplyViewModel) list.get(0);
-            return new ReplyParcelableModel(String.valueOf(item.getMsgId()), item.getMsg(), item
-                    .getReplyTime
-                            ());
-        } else if (list.size() > 1 && list.get(1) instanceof ListReplyViewModel) {
-            item = (ListReplyViewModel) list.get(1);
-            return new ReplyParcelableModel(String.valueOf(item.getMsgId()), item.getMsg(), item
-                    .getReplyTime());
-        } else if (list.size() > 0 && list.get(0) instanceof BaseChatViewModel) {
+        if (list.size() > 0 && list.get(0) instanceof BaseChatViewModel) {
             BaseChatViewModel viewModel = (BaseChatViewModel) list.get(0);
             return new ReplyParcelableModel(String.valueOf(viewModel.getMessageId()), viewModel
                     .getMessage(), viewModel.getReplyTime());
@@ -351,40 +282,23 @@ public class ChatRoomAdapter extends RecyclerView.Adapter<AbstractViewHolder> {
         notifyItemInserted(list.size());
     }
 
-    public void setReadStatus(WebSocketResponse response) {
+    public void setReadStatus() {
         for (int i = 0; i < list.size(); i++) {
             Visitable currentItem = list.get(i);
-            if (currentItem instanceof ListReplyViewModel) {
-                if (currentItem instanceof MyChatViewModel) {
-                    if (((MyChatViewModel) list.get(i)).isReadStatus()) {
-                        break;
-                    } else {
-                        ((MyChatViewModel) list.get(i)).setReadStatus(true);
-                        notifyItemRangeChanged(i, 1);
-                    }
-                }
-            } else if (currentItem instanceof ProductAttachmentViewModel) {
-                if (((ProductAttachmentViewModel) list.get(i)).isReadStatus()) {
+            if (currentItem instanceof SendableViewModel) {
+                if (((SendableViewModel) list.get(i)).isRead()) {
                     break;
                 } else {
-                    ((ProductAttachmentViewModel) list.get(i)).setReadStatus(true);
+                    ((SendableViewModel) list.get(i)).setIsRead(true);
                     notifyItemRangeChanged(i, 1);
                 }
             }
         }
+
     }
 
     public boolean isTyping() {
         return list.contains(typingModel);
-    }
-
-
-    public void showRetryFor(MyChatViewModel model, boolean b) {
-        int position = list.indexOf(model);
-        if (position >= 0 && list.get(position) instanceof MyChatViewModel) {
-            ((MyChatViewModel) list.get(position)).setRetry(true);
-            notifyItemChanged(position);
-        }
     }
 
     public void showRetryFor(ImageUploadViewModel model, boolean b) {
@@ -395,11 +309,11 @@ public class ChatRoomAdapter extends RecyclerView.Adapter<AbstractViewHolder> {
         }
     }
 
-    public void changeRating(OppositeChatViewModel model) {
-        int position = list.indexOf(model);
-        ((OppositeChatViewModel) list.get(position)).setRatingStatus(model.getRatingStatus());
-        notifyItemChanged(position);
-    }
+//    public void changeRating(OppositeChatViewModel model) {
+//        int position = list.indexOf(model);
+//        ((OppositeChatViewModel) list.get(position)).setRatingStatus(model.getRatingStatus());
+//        notifyItemChanged(position);
+//    }
 
 
 }

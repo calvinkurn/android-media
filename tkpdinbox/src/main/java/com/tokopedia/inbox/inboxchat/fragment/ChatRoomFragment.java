@@ -78,42 +78,32 @@ import com.tokopedia.inbox.inboxchat.adapter.QuickReplyAdapter;
 import com.tokopedia.inbox.inboxchat.adapter.TemplateChatAdapter;
 import com.tokopedia.inbox.inboxchat.adapter.TemplateChatTypeFactory;
 import com.tokopedia.inbox.inboxchat.adapter.TemplateChatTypeFactoryImpl;
+import com.tokopedia.inbox.inboxchat.adapter.viewholder.chatlist.ListChatViewHolder;
 import com.tokopedia.inbox.inboxchat.analytics.TopChatAnalytics;
 import com.tokopedia.inbox.inboxchat.di.DaggerInboxChatComponent;
 import com.tokopedia.inbox.inboxchat.domain.model.reply.Attachment;
-import com.tokopedia.inbox.inboxchat.domain.model.reply.AttachmentAttributes;
 import com.tokopedia.inbox.inboxchat.domain.model.reply.WebSocketResponse;
 import com.tokopedia.inbox.inboxchat.domain.model.replyaction.ReplyActionData;
-import com.tokopedia.inbox.inboxchat.domain.model.websocket.BaseChatViewModel;
-import com.tokopedia.inbox.inboxchat.helper.AttachmentChatHelper;
 import com.tokopedia.inbox.inboxchat.presenter.ChatRoomContract;
 import com.tokopedia.inbox.inboxchat.presenter.ChatRoomPresenter;
-import com.tokopedia.inbox.inboxchat.uploadimage.ImageUpload;
 import com.tokopedia.inbox.inboxchat.util.Events;
 import com.tokopedia.inbox.inboxchat.util.ImageUploadHandlerChat;
-import com.tokopedia.inbox.inboxchat.viewholder.ListChatViewHolder;
 import com.tokopedia.inbox.inboxchat.viewmodel.AttachInvoiceSentViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.ChatRoomViewModel;
-import com.tokopedia.inbox.inboxchat.viewmodel.DummyChatViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.InboxChatViewModel;
-import com.tokopedia.inbox.inboxchat.viewmodel.MyChatViewModel;
-import com.tokopedia.inbox.inboxchat.viewmodel.OppositeChatViewModel;
-import com.tokopedia.inbox.inboxchat.viewmodel.chatroom.QuickReplyListViewModel;
-import com.tokopedia.inbox.inboxchat.viewmodel.chatroom.QuickReplyViewModel;
+import com.tokopedia.inbox.inboxchat.viewmodel.chatroom.BaseChatViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.chatroom.SendableViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.chatroom.imageupload.ImageUploadViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.chatroom.message.MessageViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.chatroom.productattachment.ProductAttachmentViewModel;
+import com.tokopedia.inbox.inboxchat.viewmodel.chatroom.quickreply.QuickReplyListViewModel;
+import com.tokopedia.inbox.inboxchat.viewmodel.chatroom.quickreply.QuickReplyViewModel;
 import com.tokopedia.inbox.inboxmessage.InboxMessageConstant;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Calendar;
 import java.util.Collections;
 import java.util.List;
-import java.util.Locale;
-import java.util.TimeZone;
 import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
@@ -266,44 +256,8 @@ public class ChatRoomFragment extends BaseDaggerFragment
         return this;
     }
 
-    private void showRetryFor(MyChatViewModel model) {
-        adapter.showRetryFor(model, true);
-    }
-
     private void showRetryFor(ImageUploadViewModel model) {
         adapter.showRetryFor(model, true);
-    }
-
-    @Override
-    public void onRetrySend(final MyChatViewModel attachment) {
-
-        BottomSheetBuilder bottomSheetBuilder = new CheckedBottomSheetBuilder(getActivity())
-                .setMode(BottomSheetBuilder.MODE_LIST);
-
-        bottomSheetBuilder.addItem(RESEND, R.string.resend, null);
-        bottomSheetBuilder.addItem(DELETE, R.string.delete, null);
-
-        BottomSheetDialog bottomSheetDialog = bottomSheetBuilder.expandOnStart(true)
-                .setItemClickListener(new BottomSheetItemClickListener() {
-                    @Override
-                    public void onBottomSheetItemClick(MenuItem item) {
-                        switch (item.getItemId()) {
-                            case RESEND:
-                                adapter.remove(attachment);
-                                String fileLoc = attachment.getAttachment().getAttributes().getImageUrl();
-                                ImageUploadViewModel temp = generateChatViewModelWithImage(fileLoc);
-                                presenter.startUpload(Collections.singletonList(temp), networkType);
-                                adapter.addReply(temp);
-                                break;
-                            case DELETE:
-                                adapter.remove(attachment);
-                                break;
-                        }
-                    }
-                })
-                .createDialog();
-
-        bottomSheetDialog.show();
     }
 
     @Override
@@ -1156,17 +1110,17 @@ public class ChatRoomFragment extends BaseDaggerFragment
                 , Integer.parseInt(msgId));
         startActivityForResult(intent, AttachInvoiceActivity.TOKOPEDIA_ATTACH_INVOICE_REQ_CODE);
     }
-
-    @Override
-    public void onClickRating(OppositeChatViewModel element, int rating) {
-        UserSession userSession = ((AbstractionRouter) getContext().
-                getApplicationContext()).getSession();
-        int userId = 0;
-        if (userSession != null && !TextUtils.isEmpty(userSession.getUserId())) {
-            userId = Integer.valueOf(userSession.getUserId());
-        }
-        presenter.setChatRating(element, userId, rating);
-    }
+//
+//    @Override
+//    public void onClickRating(OppositeChatViewModel element, int rating) {
+//        UserSession userSession = ((AbstractionRouter) getContext().
+//                getApplicationContext()).getSession();
+//        int userId = 0;
+//        if (userSession != null && !TextUtils.isEmpty(userSession.getUserId())) {
+//            userId = Integer.valueOf(userSession.getUserId());
+//        }
+//        presenter.setChatRating(element, userId, rating);
+//    }
 
     @Override
     public void onGoToTimeMachine(String url) {
@@ -1242,20 +1196,8 @@ public class ChatRoomFragment extends BaseDaggerFragment
                 product.getName(),
                 product.getPrice(),
                 product.getProductUrl(),
-                product.getProductImageThumbnail());
-    }
-
-    public void addIncomingMessage(final WebSocketResponse response) {
-        if (getActivity() != null) {
-            getActivity().runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    setViewEnabled(true);
-                    presenter.addMessageChatBalloon(response);
-                    setResult();
-                }
-            });
-        }
+                product.getProductImageThumbnail(),
+                SendableViewModel.generateStartTime());
     }
 
     private void attachInvoiceRetrieved(SelectedInvoice selectedInvoice) {
@@ -1274,7 +1216,7 @@ public class ChatRoomFragment extends BaseDaggerFragment
         String msgId = getArguments().getString(PARAM_MESSAGE_ID);
         for (ResultProduct result : resultProducts) {
             ProductAttachmentViewModel item = generateProductChatViewModel(result);
-            presenter.sendProductAttachment(msgId, result);
+            presenter.sendProductAttachment(msgId, result, item.getStartTime());
             adapter.addReply(item);
             scrollToBottom();
         }
@@ -1282,17 +1224,32 @@ public class ChatRoomFragment extends BaseDaggerFragment
 
     private void addView(ReplyActionData replyData, String reply) {
         setViewEnabled(true);
-        MyChatViewModel item = new MyChatViewModel();
-        item.setReplyId(replyData.getChat().getMsgId());
-        item.setMsgId(replyData.getChat().getMsgId());
-        item.setSenderId(replyData.getChat().getSenderId());
-        item.setSenderName(replyData.getChat().getFrom());
-        item.setMsg(reply);
-        item.setReplyTime(replyData.getChat().getReplyTime());
-        item.setAttachment(replyData.getChat().getAttachment());
-        item.setAttachmentId(Integer.parseInt(replyData.getChat().getAttachment().getId()));
-        adapter.addReply(item);
-        replyColumn.setText("");
+        MessageViewModel messageViewModel = new MessageViewModel(
+                String.valueOf(replyData.getChat().getMsgId()),
+                replyData.getChat().getSenderId(),
+                replyData.getChat().getFrom(),
+                "",
+                "",
+                "",
+                replyData.getChat().getReplyTime(),
+                "",
+                reply,
+                false,
+                false,
+                true
+        );
+
+//        MyChatViewModel item = new MyChatViewModel();
+//        item.setReplyId(replyData.getChat().getMsgId());
+//        item.setMsgId(replyData.getChat().getMsgId());
+//        item.setSenderId(replyData.getChat().getSenderId());
+//        item.setSenderName(replyData.getChat().getFrom());
+//        item.setMsg(reply);
+//        item.setReplyTime(replyData.getChat().getReplyTime());
+//        item.setAttachment(replyData.getChat().getAttachment());
+//        item.setAttachmentId(Integer.parseInt(replyData.getChat().getAttachment().getId()));
+        adapter.addReply(messageViewModel);
+        resetReplyColumn();
         setResult();
     }
 
@@ -1388,10 +1345,7 @@ public class ChatRoomFragment extends BaseDaggerFragment
                 }
                 break;
             case ChatWebSocketConstant.EVENT_TOPCHAT_READ_MESSAGE:
-                adapter.setReadStatus(response);
-                break;
-            case ChatWebSocketConstant.EVENT_TOPCHAT_REPLY_MESSAGE:
-                addIncomingMessage(response);
+                adapter.setReadStatus();
                 break;
             default:
                 break;
@@ -1404,9 +1358,9 @@ public class ChatRoomFragment extends BaseDaggerFragment
             getActivity().runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    setViewEnabled(true);
-                    processReceiveMessage(message);
-                    setResult();
+                    if (isCurrentThread(message.getMessageId())) {
+                        processReceiveMessage(message);
+                    }
                 }
             });
         }
@@ -1417,30 +1371,29 @@ public class ChatRoomFragment extends BaseDaggerFragment
         if (templateAdapter != null && templateAdapter.getList().size() != 0) {
             templateRecyclerView.setVisibility(View.VISIBLE);
         }
-        if (isCurrentThread(message.getMessageId())) {
 
-            removeDummyReplyIfExist(message);
+        setViewEnabled(true);
+        removeDummyReplyIfExist(message);
+        removeIsTyping();
 
-            if (message instanceof QuickReplyListViewModel) {
-                showQuickReplyView((QuickReplyListViewModel) message);
-                if (!TextUtils.isEmpty(((QuickReplyListViewModel) message).getMessage())) {
-                    addMessageToList(message);
-                }
-            } else if (message instanceof AttachInvoiceSentViewModel) {
-                adapter.removeLast();
-                addMessageToList(message);
-            } else {
+        if (message instanceof QuickReplyListViewModel) {
+            showQuickReplyView((QuickReplyListViewModel) message);
+            if (!TextUtils.isEmpty(message.getMessage())) {
                 addMessageToList(message);
             }
-
-            if (isMyMessage(message.getFromUid())) {
-                scrollToBottom();
-                resetReplyColumn();
-            } else {
-                scrollToBottomWithCheck();
-                readMessage(message.getMessageId());
-            }
+        } else {
+            addMessageToList(message);
         }
+
+        if (isMyMessage(message.getFromUid())) {
+            scrollToBottom();
+            resetReplyColumn();
+        } else {
+            scrollToBottomWithCheck();
+            readMessage(message.getMessageId());
+        }
+
+        setResult();
     }
 
     private void removeDummyReplyIfExist(BaseChatViewModel message) {
@@ -1462,8 +1415,6 @@ public class ChatRoomFragment extends BaseDaggerFragment
     }
 
     private void addMessageToList(BaseChatViewModel message) {
-        removeIsTyping();
-        setViewEnabled(true);
         adapter.addReply((Visitable) message);
         setResult();
     }
@@ -1521,17 +1472,17 @@ public class ChatRoomFragment extends BaseDaggerFragment
         adapter.remove(model);
         addView(data, UPLOADING);
     }
-
-    @Override
-    public void onSuccessSetRating(OppositeChatViewModel model) {
-        adapter.changeRating(model);
-    }
-
-    @Override
-    public void onErrorSetRating() {
-        showError(getActivity().getString(R.string.delete_error).concat("\n").concat(getString(R
-                .string.string_general_error)));
-    }
+//
+//    @Override
+//    public void onSuccessSetRating(OppositeChatViewModel model) {
+//        adapter.changeRating(model);
+//    }
+//
+//    @Override
+//    public void onErrorSetRating() {
+//        showError(getActivity().getString(R.string.delete_error).concat("\n").concat(getString(R
+//                .string.string_general_error)));
+//    }
 
     @Override
     public void onErrorUploadImages(String errorMessage, ImageUploadViewModel model) {

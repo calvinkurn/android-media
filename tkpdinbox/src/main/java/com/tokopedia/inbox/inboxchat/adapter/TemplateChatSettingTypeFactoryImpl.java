@@ -6,8 +6,8 @@ import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactor
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.inbox.inboxchat.fragment.TemplateChatFragment;
 import com.tokopedia.inbox.inboxchat.presenter.TemplateChatContract;
-import com.tokopedia.inbox.inboxchat.viewholder.ItemAddTemplateChatViewHolder;
-import com.tokopedia.inbox.inboxchat.viewholder.ItemTemplateChatViewHolder;
+import com.tokopedia.inbox.inboxchat.adapter.viewholder.chattemplate.ItemAddTemplateChatViewHolder;
+import com.tokopedia.inbox.inboxchat.adapter.viewholder.chattemplate.ItemTemplateChatViewHolder;
 import com.tokopedia.inbox.inboxchat.viewmodel.TemplateChatModel;
 
 /**

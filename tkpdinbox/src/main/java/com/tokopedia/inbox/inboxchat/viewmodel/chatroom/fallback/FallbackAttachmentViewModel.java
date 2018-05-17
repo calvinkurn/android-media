@@ -3,7 +3,7 @@ package com.tokopedia.inbox.inboxchat.viewmodel.chatroom.fallback;
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.inbox.inboxchat.adapter.ChatRoomTypeFactory;
-import com.tokopedia.inbox.inboxchat.domain.model.websocket.BaseChatViewModel;
+import com.tokopedia.inbox.inboxchat.viewmodel.chatroom.BaseChatViewModel;
 
 /**
  * @author by yfsx on 08/05/18.

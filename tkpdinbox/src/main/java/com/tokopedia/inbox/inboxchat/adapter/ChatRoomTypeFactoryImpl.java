@@ -4,32 +4,28 @@ import android.view.View;
 
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
-import com.tokopedia.inbox.inboxchat.adapter.viewholder.AttachedInvoiceSentViewHolder;
-import com.tokopedia.inbox.inboxchat.adapter.viewholder.FallbackAttachmentViewHolder;
-import com.tokopedia.inbox.inboxchat.adapter.viewholder.ImageAnnouncementViewHolder;
-import com.tokopedia.inbox.inboxchat.adapter.viewholder.ImageUploadViewHolder;
-import com.tokopedia.inbox.inboxchat.adapter.viewholder.MessageViewHolder;
-import com.tokopedia.inbox.inboxchat.adapter.viewholder.ProductAttachmentViewHolder;
-import com.tokopedia.inbox.inboxchat.adapter.viewholder.QuickReplyViewHolder;
+import com.tokopedia.inbox.inboxchat.adapter.viewholder.chatbot.AttachedInvoiceSelectionViewHolder;
+import com.tokopedia.inbox.inboxchat.adapter.viewholder.chatbot.AttachedInvoiceSentViewHolder;
+import com.tokopedia.inbox.inboxchat.adapter.viewholder.chatbot.QuickReplyViewHolder;
+import com.tokopedia.inbox.inboxchat.adapter.viewholder.chatroom.ImageAnnouncementViewHolder;
+import com.tokopedia.inbox.inboxchat.adapter.viewholder.chatroom.ProductAttachmentViewHolder;
+import com.tokopedia.inbox.inboxchat.adapter.viewholder.chatroom.TimeMachineChatViewHolder;
+import com.tokopedia.inbox.inboxchat.adapter.viewholder.common.FallbackAttachmentViewHolder;
+import com.tokopedia.inbox.inboxchat.adapter.viewholder.common.ImageUploadViewHolder;
+import com.tokopedia.inbox.inboxchat.adapter.viewholder.common.MessageViewHolder;
+import com.tokopedia.inbox.inboxchat.adapter.viewholder.chatroom.TypingChatViewHolder;
 import com.tokopedia.inbox.inboxchat.fragment.ChatRoomFragment;
 import com.tokopedia.inbox.inboxchat.presenter.ChatRoomContract;
-import com.tokopedia.inbox.inboxchat.viewholder.AttachedInvoiceSelectionViewHolder;
-import com.tokopedia.inbox.inboxchat.viewholder.MyChatViewHolder;
-import com.tokopedia.inbox.inboxchat.viewholder.OppositeChatViewHolder;
-import com.tokopedia.inbox.inboxchat.viewholder.TimeMachineChatViewHolder;
-import com.tokopedia.inbox.inboxchat.viewholder.TypingChatViewHolder;
-import com.tokopedia.inbox.inboxchat.viewmodel.chatroom.invoiceattachment.AttachInvoiceSelectionViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.AttachInvoiceSentViewModel;
-import com.tokopedia.inbox.inboxchat.viewmodel.MyChatViewModel;
-import com.tokopedia.inbox.inboxchat.viewmodel.OppositeChatViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.TypingChatModel;
-import com.tokopedia.inbox.inboxchat.viewmodel.chatroom.QuickReplyListViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.chatroom.TimeMachineChatModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.chatroom.fallback.FallbackAttachmentViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.chatroom.imageannouncement.ImageAnnouncementViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.chatroom.imageupload.ImageUploadViewModel;
+import com.tokopedia.inbox.inboxchat.viewmodel.chatroom.invoiceattachment.AttachInvoiceSelectionViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.chatroom.message.MessageViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.chatroom.productattachment.ProductAttachmentViewModel;
+import com.tokopedia.inbox.inboxchat.viewmodel.chatroom.quickreply.QuickReplyListViewModel;
 
 /**
  * Created by stevenfredian on 9/27/17.
@@ -41,16 +37,6 @@ public class ChatRoomTypeFactoryImpl extends BaseAdapterTypeFactory implements C
 
     public ChatRoomTypeFactoryImpl(ChatRoomFragment context) {
         this.viewListener = context;
-    }
-
-    @Override
-    public int type(OppositeChatViewModel oppositeChatViewModel) {
-        return OppositeChatViewHolder.LAYOUT;
-    }
-
-    @Override
-    public int type(MyChatViewModel myChatViewModel) {
-        return MyChatViewHolder.LAYOUT;
     }
 
     @Override
@@ -109,11 +95,7 @@ public class ChatRoomTypeFactoryImpl extends BaseAdapterTypeFactory implements C
 
         AbstractViewHolder viewHolder;
 
-        if (type == OppositeChatViewHolder.LAYOUT)
-            viewHolder = new OppositeChatViewHolder(view, viewListener);
-        else if (type == MyChatViewHolder.LAYOUT)
-            viewHolder = new MyChatViewHolder(view, viewListener);
-        else if (type == TimeMachineChatViewHolder.LAYOUT)
+        if (type == TimeMachineChatViewHolder.LAYOUT)
             viewHolder = new TimeMachineChatViewHolder(view, viewListener);
         else if (type == TypingChatViewHolder.LAYOUT)
             viewHolder = new TypingChatViewHolder(view);

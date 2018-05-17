@@ -13,14 +13,11 @@ import com.tokopedia.inbox.attachinvoice.view.resultmodel.SelectedInvoice;
 import com.tokopedia.inbox.inboxchat.WebSocketInterface;
 import com.tokopedia.inbox.inboxchat.adapter.ChatRoomAdapter;
 import com.tokopedia.inbox.inboxchat.domain.model.reply.Attachment;
-import com.tokopedia.inbox.inboxchat.domain.model.reply.WebSocketResponse;
 import com.tokopedia.inbox.inboxchat.domain.model.replyaction.ReplyActionData;
 import com.tokopedia.inbox.inboxchat.viewmodel.ChatRoomViewModel;
-import com.tokopedia.inbox.inboxchat.viewmodel.MyChatViewModel;
-import com.tokopedia.inbox.inboxchat.viewmodel.OppositeChatViewModel;
-import com.tokopedia.inbox.inboxchat.viewmodel.chatroom.QuickReplyListViewModel;
-import com.tokopedia.inbox.inboxchat.viewmodel.chatroom.QuickReplyViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.chatroom.imageupload.ImageUploadViewModel;
+import com.tokopedia.inbox.inboxchat.viewmodel.chatroom.quickreply.QuickReplyListViewModel;
+import com.tokopedia.inbox.inboxchat.viewmodel.chatroom.quickreply.QuickReplyViewModel;
 
 import java.util.List;
 
@@ -30,7 +27,7 @@ import java.util.List;
 
 public class ChatRoomContract {
 
-    public interface View extends CustomerView{
+    public interface View extends CustomerView {
 
         Bundle getArguments();
 
@@ -44,7 +41,7 @@ public class ChatRoomContract {
 
         String getReplyMessage();
 
-        String  getString(int error_empty_report);
+        String getString(int error_empty_report);
 
         void showError(String string);
 
@@ -119,8 +116,6 @@ public class ChatRoomContract {
 
         void onErrorUploadImages(String throwable, ImageUploadViewModel model);
 
-        void onRetrySend(MyChatViewModel attachment);
-
         void onRetrySendImage(ImageUploadViewModel element);
 
         void onSuccessSendAttach(ReplyActionData data, ImageUploadViewModel model);
@@ -143,11 +138,11 @@ public class ChatRoomContract {
 
         void onInvoiceSelected(SelectedInvoice selectedInvoice);
 
-        void onClickRating(OppositeChatViewModel element, int rating);
+//        void onClickRating(OppositeChatViewModel element, int rating);
 
-        void onSuccessSetRating(OppositeChatViewModel element);
+//        void onSuccessSetRating(OppositeChatViewModel element);
 
-        void onErrorSetRating();
+//        void onErrorSetRating();
 
         void showSearchInvoiceScreen();
 
@@ -159,10 +154,10 @@ public class ChatRoomContract {
 
     }
 
-    interface Presenter extends CustomerPresenter<View>{
+    interface Presenter extends CustomerPresenter<View> {
         void getReply(int mode);
 
-        void getAttachProductDialog(String shopId,String shopName, String senderRole);
+        void getAttachProductDialog(String shopId, String shopName, String senderRole);
 
         void onOpenWebSocket();
 
@@ -174,8 +169,6 @@ public class ChatRoomContract {
 
         void sendMessage(int networkType, String reply);
 
-        void addMessageChatBalloon(WebSocketResponse response);
-
         void initMessage(String s, String string, String string1, String string2);
 
         void openCamera();
@@ -185,6 +178,6 @@ public class ChatRoomContract {
 
         String getFileLocFromCamera();
 
-        void setChatRating(OppositeChatViewModel model, int userId, int rating);
+//        void setChatRating(OppositeChatViewModel model, int userId, int rating);
     }
 }
