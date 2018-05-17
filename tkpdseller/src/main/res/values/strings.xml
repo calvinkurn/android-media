@@ -13,6 +13,8 @@
     <string name="label_subscribe">Berlangganan</string>
 
     <string name="price_format_text">%1$s %2$s</string>
+    <string name="rupiah_format">Rp %s</string>
+    <string name="usd_format">US$ %s</string>
 
     <string name="title_date_setting">Atur Tanggal</string>
     <string name="next">Selanjutnya</string>
