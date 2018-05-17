@@ -12,7 +12,6 @@ public class CheckoutAnalytics {
     public interface EventName {
         String CLICK_ATC = "clickATC";
         String VIEW_ATC = "viewATC";
-
     }
 
     public interface EventCategory {
