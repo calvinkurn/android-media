@@ -27,7 +27,7 @@ public class ProductPass implements Parcelable {
     private String trackerListName;
 
     private boolean isWishlist = false;
-    private String discountedPrice;
+    private String originalPrice;
     private int discountPercentage;
     private int starRating;
     private int countReview;
@@ -154,12 +154,12 @@ public class ProductPass implements Parcelable {
         isWishlist = wishlist;
     }
 
-    public String getDiscountedPrice() {
-        return discountedPrice;
+    public String getOriginalPrice() {
+        return originalPrice;
     }
 
-    public void setDiscountedPrice(String discountedPrice) {
-        this.discountedPrice = discountedPrice;
+    public void setOriginalPrice(String originalPrice) {
+        this.originalPrice = originalPrice;
     }
 
     public int getDiscountPercentage() {
@@ -219,7 +219,7 @@ public class ProductPass implements Parcelable {
         trackerAttribution = in.readString();
         trackerListName = in.readString();
         isWishlist = in.readByte() != 0x00;
-        discountedPrice = in.readString();
+        originalPrice = in.readString();
         discountPercentage = in.readInt();
         starRating = in.readInt();
         countReview = in.readInt();
@@ -251,7 +251,7 @@ public class ProductPass implements Parcelable {
         dest.writeString(trackerAttribution);
         dest.writeString(trackerListName);
         dest.writeByte((byte) (isWishlist ? 0x01 : 0x00));
-        dest.writeString(discountedPrice);
+        dest.writeString(originalPrice);
         dest.writeInt(discountPercentage);
         dest.writeInt(starRating);
         dest.writeInt(countReview);
@@ -466,7 +466,7 @@ public class ProductPass implements Parcelable {
             productPass.setTrackerAttribution(trackerAttribution);
             productPass.setTrackerListName(trackerListName);
             productPass.setWishlist(isWishlist);
-            productPass.setDiscountedPrice(discountedPrice);
+            productPass.setOriginalPrice(discountedPrice);
             productPass.setDiscountPercentage(discountPercentage);
             productPass.setStarRating(starRating);
             productPass.setCountReview(countReview);

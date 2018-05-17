@@ -98,6 +98,9 @@ public class ProductViewModelHelper {
         productItem.setImageUrl700(productModel.getImageUrl700());
         productItem.setRating(productModel.getRating());
         productItem.setCountReview(productModel.getCountReview());
+        productItem.setCountCourier(productModel.getCountCourier());
+        productItem.setDiscountPercentage(productModel.getDiscountPercentage());
+        productItem.setOriginalPrice(productModel.getOriginalPrice());
         productItem.setPrice(productModel.getPrice());
         productItem.setShopID(productModel.getShopID());
         productItem.setShopName(productModel.getShopName());

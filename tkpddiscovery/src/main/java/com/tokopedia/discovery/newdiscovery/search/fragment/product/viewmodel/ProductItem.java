@@ -10,6 +10,7 @@ import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.core.network.apiservices.ace.apis.BrowseApi;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.adapter.typefactory.ProductListTypeFactory;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -21,8 +22,9 @@ public class ProductItem implements Parcelable, Visitable<ProductListTypeFactory
     private String productName;
     private String imageUrl;
     private String imageUrl700;
-    private String rating;
-    private String countReview;
+    private int rating;
+    private int countReview;
+    private int countCourier;
     private String price;
     private String shopID;
     private String shopName;
@@ -33,6 +35,8 @@ public class ProductItem implements Parcelable, Visitable<ProductListTypeFactory
     private List<BadgeItem> badgesList;
     private List<LabelItem> labelList;
     private int position;
+    private String originalPrice;
+    private int discountPercentage;
 
     public void setProductID(String productID) {
         this.productID = productID;
@@ -64,22 +68,6 @@ public class ProductItem implements Parcelable, Visitable<ProductListTypeFactory
 
     public String getImageUrl700() {
         return imageUrl700;
-    }
-
-    public void setRating(String rating) {
-        this.rating = rating;
-    }
-
-    public String getRating() {
-        return rating;
-    }
-
-    public void setCountReview(String countReview) {
-        this.countReview = countReview;
-    }
-
-    public String getCountReview() {
-        return countReview;
     }
 
     public void setPrice(String price) {
@@ -166,6 +154,46 @@ public class ProductItem implements Parcelable, Visitable<ProductListTypeFactory
         this.position = position;
     }
 
+    public int getRating() {
+        return rating;
+    }
+
+    public void setRating(int rating) {
+        this.rating = rating;
+    }
+
+    public int getCountReview() {
+        return countReview;
+    }
+
+    public void setCountReview(int countReview) {
+        this.countReview = countReview;
+    }
+
+    public int getCountCourier() {
+        return countCourier;
+    }
+
+    public void setCountCourier(int countCourier) {
+        this.countCourier = countCourier;
+    }
+
+    public String getOriginalPrice() {
+        return originalPrice;
+    }
+
+    public void setOriginalPrice(String originalPrice) {
+        this.originalPrice = originalPrice;
+    }
+
+    public int getDiscountPercentage() {
+        return discountPercentage;
+    }
+
+    public void setDiscountPercentage(int discountPercentage) {
+        this.discountPercentage = discountPercentage;
+    }
+
     public ProductItem() {
     }
 
@@ -207,41 +235,67 @@ public class ProductItem implements Parcelable, Visitable<ProductListTypeFactory
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(this.productID);
-        dest.writeString(this.productName);
-        dest.writeString(this.imageUrl);
-        dest.writeString(this.imageUrl700);
-        dest.writeString(this.rating);
-        dest.writeString(this.countReview);
-        dest.writeString(this.price);
-        dest.writeString(this.shopID);
-        dest.writeString(this.shopName);
-        dest.writeString(this.shopCity);
-        dest.writeByte(this.isGoldMerchant ? (byte) 1 : (byte) 0);
-        dest.writeByte(this.isWishlisted ? (byte) 1 : (byte) 0);
-        dest.writeByte(this.isWishlistButtonEnabled ? (byte) 1 : (byte) 0);
-        dest.writeTypedList(this.badgesList);
-        dest.writeTypedList(this.labelList);
-        dest.writeInt(this.position);
+        dest.writeString(productID);
+        dest.writeString(productName);
+        dest.writeString(imageUrl);
+        dest.writeString(imageUrl700);
+        dest.writeInt(rating);
+        dest.writeInt(countReview);
+        dest.writeInt(countCourier);
+        dest.writeString(price);
+        dest.writeString(shopID);
+        dest.writeString(shopName);
+        dest.writeString(shopCity);
+        dest.writeByte((byte) (isGoldMerchant ? 0x01 : 0x00));
+        dest.writeByte((byte) (isWishlisted ? 0x01 : 0x00));
+        dest.writeByte((byte) (isWishlistButtonEnabled ? 0x01 : 0x00));
+        if (badgesList == null) {
+            dest.writeByte((byte) (0x00));
+        } else {
+            dest.writeByte((byte) (0x01));
+            dest.writeList(badgesList);
+        }
+        if (labelList == null) {
+            dest.writeByte((byte) (0x00));
+        } else {
+            dest.writeByte((byte) (0x01));
+            dest.writeList(labelList);
+        }
+        dest.writeInt(position);
+        dest.writeString(originalPrice);
+        dest.writeInt(discountPercentage);
     }
 
     protected ProductItem(Parcel in) {
-        this.productID = in.readString();
-        this.productName = in.readString();
-        this.imageUrl = in.readString();
-        this.imageUrl700 = in.readString();
-        this.rating = in.readString();
-        this.countReview = in.readString();
-        this.price = in.readString();
-        this.shopID = in.readString();
-        this.shopName = in.readString();
-        this.shopCity = in.readString();
-        this.isGoldMerchant = in.readByte() != 0;
-        this.isWishlisted = in.readByte() != 0;
-        this.isWishlistButtonEnabled = in.readByte() != 0;
-        this.badgesList = in.createTypedArrayList(BadgeItem.CREATOR);
-        this.labelList = in.createTypedArrayList(LabelItem.CREATOR);
-        this.position = in.readInt();
+        productID = in.readString();
+        productName = in.readString();
+        imageUrl = in.readString();
+        imageUrl700 = in.readString();
+        rating = in.readInt();
+        countReview = in.readInt();
+        countCourier = in.readInt();
+        price = in.readString();
+        shopID = in.readString();
+        shopName = in.readString();
+        shopCity = in.readString();
+        isGoldMerchant = in.readByte() != 0x00;
+        isWishlisted = in.readByte() != 0x00;
+        isWishlistButtonEnabled = in.readByte() != 0x00;
+        if (in.readByte() == 0x01) {
+            badgesList = new ArrayList<BadgeItem>();
+            in.readList(badgesList, BadgeItem.class.getClassLoader());
+        } else {
+            badgesList = null;
+        }
+        if (in.readByte() == 0x01) {
+            labelList = new ArrayList<LabelItem>();
+            in.readList(labelList, LabelItem.class.getClassLoader());
+        } else {
+            labelList = null;
+        }
+        position = in.readInt();
+        originalPrice = in.readString();
+        discountPercentage = in.readInt();
     }
 
     public static final Creator<ProductItem> CREATOR = new Creator<ProductItem>() {

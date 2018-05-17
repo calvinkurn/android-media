@@ -106,11 +106,10 @@ public class GridProductItemViewHolder extends AbstractViewHolder<ProductItem> {
             }
         });
 
-        if (productItem.getRating() != null && !productItem.getRating().equals("0")) {
+        if (productItem.getRating() != 0) {
             ratingReviewContainer.setVisibility(View.VISIBLE);
-            float rateAmount = Float.parseFloat(productItem.getRating());
             rating.setImageResource(
-                    RatingView.getRatingDrawable(Math.round(rateAmount))
+                    RatingView.getRatingDrawable(productItem.getRating())
             );
             reviewCount.setText("(" + productItem.getCountReview() + ")");
         } else {

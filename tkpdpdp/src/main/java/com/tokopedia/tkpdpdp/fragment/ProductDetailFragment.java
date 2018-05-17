@@ -660,6 +660,12 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
         this.headerInfoView.renderTempData(productPass);
         this.pictureView.renderTempData(productPass);
         this.ratingTalkCourierView.renderTempdata(productPass);
+         if (productPass.isWishlist()) {
+            fabWishlist.setImageDrawable(getResources().getDrawable(R.drawable.ic_wishlist_red));
+        } else {
+            fabWishlist.setImageDrawable(getResources().getDrawable(R.drawable.ic_wishlist));
+        }
+        fabWishlist.setVisibility(View.VISIBLE);
     }
 
     @Override
@@ -992,7 +998,7 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
         } else {
             Log.d(TAG, "productData == null");
             presenter.processDataPass(productPass);
-            //presenter.requestProductDetail(context, productPass, INIT_REQUEST, false, useVariant);
+            presenter.requestProductDetail(context, productPass, INIT_REQUEST, false, useVariant);
         }
     }
 

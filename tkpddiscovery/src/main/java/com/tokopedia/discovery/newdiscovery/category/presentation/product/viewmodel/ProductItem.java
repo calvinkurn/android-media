@@ -20,8 +20,9 @@ public class ProductItem implements Parcelable, Visitable<CategoryProductListTyp
     private String productName;
     private String imageUrl;
     private String imageUrl700;
-    private String rating;
-    private String countReview;
+    private int rating;
+    private int countReview;
+    private int countCourier;
     private String price;
     private String shopID;
     private String shopName;
@@ -34,6 +35,8 @@ public class ProductItem implements Parcelable, Visitable<CategoryProductListTyp
     private String trackerName;
     private String trackerPosition;
     private String homeAttribution;
+    private String originalPrice;
+    private int discountPercentage;
 
     public void setProductID(String productID) {
         this.productID = productID;
@@ -65,22 +68,6 @@ public class ProductItem implements Parcelable, Visitable<CategoryProductListTyp
 
     public String getImageUrl700() {
         return imageUrl700;
-    }
-
-    public void setRating(String rating) {
-        this.rating = rating;
-    }
-
-    public String getRating() {
-        return rating;
-    }
-
-    public void setCountReview(String countReview) {
-        this.countReview = countReview;
-    }
-
-    public String getCountReview() {
-        return countReview;
     }
 
     public void setPrice(String price) {
@@ -155,6 +142,46 @@ public class ProductItem implements Parcelable, Visitable<CategoryProductListTyp
         return labelList;
     }
 
+    public int getRating() {
+        return rating;
+    }
+
+    public void setRating(int rating) {
+        this.rating = rating;
+    }
+
+    public int getCountReview() {
+        return countReview;
+    }
+
+    public void setCountReview(int countReview) {
+        this.countReview = countReview;
+    }
+
+    public int getCountCourier() {
+        return countCourier;
+    }
+
+    public void setCountCourier(int countCourier) {
+        this.countCourier = countCourier;
+    }
+
+    public String getOriginalPrice() {
+        return originalPrice;
+    }
+
+    public void setOriginalPrice(String originalPrice) {
+        this.originalPrice = originalPrice;
+    }
+
+    public int getDiscountPercentage() {
+        return discountPercentage;
+    }
+
+    public void setDiscountPercentage(int discountPercentage) {
+        this.discountPercentage = discountPercentage;
+    }
+
     public ProductItem() {
     }
 
@@ -199,8 +226,9 @@ public class ProductItem implements Parcelable, Visitable<CategoryProductListTyp
         dest.writeString(this.productName);
         dest.writeString(this.imageUrl);
         dest.writeString(this.imageUrl700);
-        dest.writeString(this.rating);
-        dest.writeString(this.countReview);
+        dest.writeInt(rating);
+        dest.writeInt(countReview);
+        dest.writeInt(countCourier);
         dest.writeString(this.price);
         dest.writeString(this.shopID);
         dest.writeString(this.shopName);
@@ -213,6 +241,8 @@ public class ProductItem implements Parcelable, Visitable<CategoryProductListTyp
         dest.writeString(this.trackerName);
         dest.writeString(this.trackerPosition);
         dest.writeString(this.homeAttribution);
+        dest.writeString(originalPrice);
+        dest.writeInt(discountPercentage);
     }
 
     protected ProductItem(Parcel in) {
@@ -220,8 +250,9 @@ public class ProductItem implements Parcelable, Visitable<CategoryProductListTyp
         this.productName = in.readString();
         this.imageUrl = in.readString();
         this.imageUrl700 = in.readString();
-        this.rating = in.readString();
-        this.countReview = in.readString();
+        rating = in.readInt();
+        countReview = in.readInt();
+        countCourier = in.readInt();
         this.price = in.readString();
         this.shopID = in.readString();
         this.shopName = in.readString();
@@ -234,6 +265,8 @@ public class ProductItem implements Parcelable, Visitable<CategoryProductListTyp
         this.trackerName = in.readString();
         this.trackerPosition = in.readString();
         this.homeAttribution = in.readString();
+        this.originalPrice = in.readString();
+        this.discountPercentage = in.readInt();
     }
 
     public static final Creator<ProductItem> CREATOR = new Creator<ProductItem>() {
