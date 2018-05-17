@@ -139,7 +139,6 @@ public class HeaderInfoView extends BaseView<ProductDetailData, ProductDetailVie
         tvName.setText(MethodChecker.fromHtml(productPass.getProductName()));
         tvPriceFinal.setText(productPass.getProductPrice());
         if (!TextUtils.isEmpty(productPass.getDiscountedPrice()) && productPass.getDiscountPercentage()>0) {
-            tvPriceFinal.setText(productPass.getDiscountPercentage());
             textOriginalPrice.setText(productPass.getDiscountedPrice());
             textOriginalPrice.setPaintFlags(
                     textOriginalPrice.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG

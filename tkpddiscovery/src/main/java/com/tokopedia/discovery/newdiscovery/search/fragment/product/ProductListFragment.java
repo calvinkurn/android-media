@@ -493,6 +493,9 @@ public class ProductListFragment extends SearchSectionFragment
         data.setName(item.getProductName());
         data.setPrice(item.getPrice());
         data.setImgUri(item.getImageUrl());
+        data.setIsWishlist(item.isWishlisted());
+        data.setRating(item.getRating());
+        data.setReviewCount(item.getCountReview());
         Bundle bundle = new Bundle();
         Intent intent = ProductDetailRouter.createInstanceProductDetailInfoActivity(getActivity());
         bundle.putParcelable(ProductDetailRouter.EXTRA_PRODUCT_ITEM, data);

@@ -105,6 +105,13 @@ public class ProductInfoPresenterImpl implements ProductInfoPresenter {
                         .setProductImage(productItem.getImgUri())
                         .setTrackerAttribution(productItem.getTrackerAttribution())
                         .setTrackerListName(productItem.getTrackerListName())
+                        .setWishlist(productItem.getIsWishlist())
+                        .setDiscountedPrice("Rp 012345")
+                        .setDiscountPercentage(20)
+                        .setCountReview(2)
+                        .setCountDiscussion(3)
+                        .setCountCourrier(4)
+                        .setRating(Integer.parseInt(productItem.getRating()))
                         .build();
             }
         } else {

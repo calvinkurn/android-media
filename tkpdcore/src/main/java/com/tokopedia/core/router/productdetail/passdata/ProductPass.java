@@ -408,6 +408,41 @@ public class ProductPass implements Parcelable {
             return this;
         }
 
+        public Builder setWishlist(boolean isWishlist){
+            this.isWishlist = isWishlist;
+            return this;
+        }
+
+        public Builder setDiscountedPrice(String discountedPrice){
+            this.discountedPrice = discountedPrice;
+            return this;
+        }
+
+
+        public Builder setDiscountPercentage(int discountPercentage){
+            this.discountPercentage = discountPercentage;
+            return this;
+        }
+
+        public Builder setRating(int starRating){
+            this.starRating = starRating;
+            return this;
+        }
+
+        public Builder setCountReview(int countReview){
+            this.countReview = countReview;
+            return this;
+        }
+
+        public Builder setCountDiscussion(int countDiscussion){
+            this.countDiscussion = countDiscussion;
+            return this;
+        }
+
+        public Builder setCountCourrier(int countCourrier){
+            this.countCourrier = countCourrier;
+            return this;
+        }
 
         public Builder but() {
             return aProductPass().setProductId(productId).setProductName(productName).setProductPrice(productPrice).setProductImage(productImage).setShopName(shopName).setProductUri(productUri).setProductKey(productKey).setShopDomain(shopDomain).setAdKey(adKey).setAdR(adR).setProductDesc(productDesc).setPicToShare(picToShare).setDateTimeInMilis(dateTimeInMilis);
