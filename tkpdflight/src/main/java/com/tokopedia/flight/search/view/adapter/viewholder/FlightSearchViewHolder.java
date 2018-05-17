@@ -141,7 +141,6 @@ public class FlightSearchViewHolder extends AbstractViewHolder<FlightSearchViewM
         } else {
             discountTag.setVisibility(View.VISIBLE);
             savingPrice.setVisibility(View.VISIBLE);
-            savingPrice.setPaintFlags(Paint.STRIKE_THRU_TEXT_FLAG);
             savingPrice.setText(flightSearchViewModel.getBeforeTotal());
         }
     }
