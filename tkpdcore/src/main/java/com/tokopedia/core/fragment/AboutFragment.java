@@ -67,7 +67,7 @@ public class AboutFragment extends TkpdBasePreferenceFragment {
             @Override
             public boolean onPreferenceClick(Preference preference) {
                 Intent intent;
-                String termUrl = "https://www.tokopedia.com/terms.pl";
+                String termUrl = "https://m.tokopedia.com/terms.pl";
                 if (android.os.Build.VERSION.SDK_INT > Build.VERSION_CODES.JELLY_BEAN_MR2) {
                     intent = ManageWebViewActivity.getCallingIntent(getActivity(), termUrl,
                             getString(R.string.manage_terms_and_conditions));
@@ -83,7 +83,7 @@ public class AboutFragment extends TkpdBasePreferenceFragment {
             @Override
             public boolean onPreferenceClick(Preference preference) {
                 Intent intent;
-                String privacyUrl = "https://www.tokopedia.com/privacy.pl";
+                String privacyUrl = "https://m.tokopedia.com/privacy.pl";
                 if (android.os.Build.VERSION.SDK_INT > Build.VERSION_CODES.JELLY_BEAN_MR2) {
                     intent = ManageWebViewActivity.getCallingIntent(getActivity(), privacyUrl,
                             getString(R.string.manage_privacy));
