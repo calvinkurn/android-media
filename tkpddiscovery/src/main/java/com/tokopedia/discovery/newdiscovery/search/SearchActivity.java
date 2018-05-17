@@ -181,7 +181,7 @@ public class SearchActivity extends DiscoveryActivity
 
         RemoteConfig remoteConfig = new FirebaseRemoteConfigImpl(this);
 
-        if (remoteConfig.getBoolean(TkpdCache.RemoteConfigKey.SHOW_IMAGE_SEARCH, true) &&
+        if (remoteConfig.getBoolean(TkpdCache.RemoteConfigKey.SHOW_IMAGE_SEARCH, false) &&
                 intent != null) {
 
             if (intent.getClipData() != null &&

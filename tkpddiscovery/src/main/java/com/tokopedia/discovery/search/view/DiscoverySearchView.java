@@ -70,6 +70,7 @@ public class DiscoverySearchView extends FrameLayout implements Filter.FilterLis
     public static final int TAB_SHOP_SUGGESTION = 1;
     public static final int TAB_PRODUCT_SUGGESTION = 0;
     public static final int TAB_DEFAULT_SUGGESTION = TAB_PRODUCT_SUGGESTION;
+    private static final long IMAGE_SEARCH_SHOW_CASE_DIALOG_DELAY = 600;
     private MenuItem mMenuItem;
     private boolean mIsSearchOpen = false;
     private int mAnimationDuration;
@@ -267,7 +268,7 @@ public class DiscoverySearchView extends FrameLayout implements Filter.FilterLis
 
         remoteConfig = new FirebaseRemoteConfigImpl(getContext());
         setImageSearch(remoteConfig.getBoolean(TkpdCache.RemoteConfigKey.SHOW_IMAGE_SEARCH,
-                true));
+                false));
 
         showVoice(true);
         showImageSearch(true);
@@ -655,7 +656,7 @@ public class DiscoverySearchView extends FrameLayout implements Filter.FilterLis
                     public void run() {
                         startShowCase();
                     }
-                }, 600);
+                }, IMAGE_SEARCH_SHOW_CASE_DIALOG_DELAY);
                 return true;
             }
         });
@@ -702,7 +703,7 @@ public class DiscoverySearchView extends FrameLayout implements Filter.FilterLis
             public void run() {
                 startShowCase();
             }
-        }, 600);
+        }, IMAGE_SEARCH_SHOW_CASE_DIALOG_DELAY);
 
     }
 
