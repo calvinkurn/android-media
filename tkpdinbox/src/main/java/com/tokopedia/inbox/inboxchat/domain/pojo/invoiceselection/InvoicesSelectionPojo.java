@@ -1,6 +1,7 @@
 package com.tokopedia.inbox.inboxchat.domain.pojo.invoiceselection;
 
 import com.google.gson.annotations.SerializedName;
+
 import java.util.List;
 
 /**

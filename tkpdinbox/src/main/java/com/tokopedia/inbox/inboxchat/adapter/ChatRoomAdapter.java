@@ -15,9 +15,7 @@ import com.tokopedia.inbox.inboxchat.adapter.viewholder.AttachedInvoiceSentViewH
 import com.tokopedia.inbox.inboxchat.adapter.viewholder.ProductAttachmentViewHolder;
 import com.tokopedia.inbox.inboxchat.domain.model.ListReplyViewModel;
 import com.tokopedia.inbox.inboxchat.domain.model.ReplyParcelableModel;
-import com.tokopedia.inbox.inboxchat.domain.model.reply.Attachment;
 import com.tokopedia.inbox.inboxchat.domain.model.reply.WebSocketResponse;
-import com.tokopedia.inbox.inboxchat.domain.model.websocket.BaseChatViewModel;
 import com.tokopedia.inbox.inboxchat.domain.model.websocket.BaseChatViewModel;
 import com.tokopedia.inbox.inboxchat.viewholder.MyChatViewHolder;
 import com.tokopedia.inbox.inboxchat.viewmodel.MyChatViewModel;
