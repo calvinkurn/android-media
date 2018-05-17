@@ -11,7 +11,6 @@
     app:cardCornerRadius="@dimen/dp_4">
 
     <LinearLayout
-        android:id="@+id/main_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
@@ -24,7 +23,7 @@
             android:layout_width="@dimen/kol_avatar"
             android:layout_height="@dimen/kol_avatar"
             android:layout_gravity="center"
-            android:layout_marginBottom="@dimen/dp_10"
+            android:layout_marginBottom="@dimen/dp_8"
             android:background="@drawable/feed_container_circle_corners_border"
             tools:src="@drawable/ic_top_ads" />
 
@@ -54,7 +53,7 @@
             android:lineSpacingExtra="6sp"
             android:maxLines="1"
             android:textColor="@color/black_38"
-            android:textSize="@dimen/text_size_xsmall"
+            android:textSize="@dimen/sp_10"
             android:textStyle="normal"
             tools:text="Artist" />
 
