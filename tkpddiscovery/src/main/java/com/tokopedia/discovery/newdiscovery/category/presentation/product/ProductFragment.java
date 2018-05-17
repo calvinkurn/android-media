@@ -502,6 +502,7 @@ public class ProductFragment extends SearchSectionFragment
         com.tokopedia.core.var.ProductItem data = new com.tokopedia.core.var.ProductItem();
         data.setId(item.getProductID());
         data.setName(item.getProductName());
+
         data.setPrice(item.getPrice());
         data.setImgUri(item.getImageUrl());
         data.setTrackerAttribution(item.getHomeAttribution());
@@ -512,6 +513,18 @@ public class ProductFragment extends SearchSectionFragment
         data.setCountCourier(item.getCountCourier());
         data.setDiscountPercentage(item.getDiscountPercentage());
         data.setOriginalPrice(item.getOriginalPrice());
+        data.setShop(item.getShopName());
+        data.setShopLocation(item.getShopCity());
+
+        if (item.getLabelList() != null) {
+            for (int i = 0; i < item.getLabelList().size(); i++) {
+                if (item.getLabelList().get(i).getTitle().toLowerCase()
+                        .contains(getContext().getString(R.string.cashback))) {
+                    data.setCashback(item.getLabelList().get(i).getTitle());
+                    break;
+                }
+            }
+        }
 
         Bundle bundle = new Bundle();
         Intent intent = ProductDetailRouter.createInstanceProductDetailInfoActivity(getActivity());

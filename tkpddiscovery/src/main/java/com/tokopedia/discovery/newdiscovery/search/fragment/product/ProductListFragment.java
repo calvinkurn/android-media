@@ -499,6 +499,8 @@ public class ProductListFragment extends SearchSectionFragment
         data.setCountCourier(item.getCountCourier());
         data.setDiscountPercentage(item.getDiscountPercentage());
         data.setOriginalPrice(item.getOriginalPrice());
+        data.setShop(item.getShopName());
+        data.setShopLocation(item.getShopCity());
 
         if (item.getLabelList() != null) {
             for (int i = 0; i < item.getLabelList().size(); i++) {

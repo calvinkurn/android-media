@@ -116,6 +116,7 @@ public class ProductInfoPresenterImpl implements ProductInfoPresenter {
                         .setRating(!TextUtils.isEmpty(productItem.getRating()) && productItem.getRating().matches("\\d+")
                                 ? Integer.parseInt(productItem.getRating()) : 0)
                         .setCashback(productItem.getCashback())
+                        .setShopName(productItem.getShop())
                         .build();
             }
         } else {
