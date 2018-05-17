@@ -16,6 +16,7 @@ import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
@@ -64,6 +65,7 @@ public class ImagePickerActivity extends BaseSimpleActivity
 
     private ArrayList<String> selectedImagePaths;
     private TextView tvDone;
+    private boolean isPermissionGotDenied;
 
     public static Intent getIntent(Context context, ImagePickerBuilder imagePickerBuilder) {
         Intent intent = new Intent(context, ImagePickerActivity.class);
@@ -178,12 +180,32 @@ public class ImagePickerActivity extends BaseSimpleActivity
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        // already handled in onResume();
+        if (grantResults.length == permissionsToRequest.size()) {
+            int grantCount = 0;
+            for (int result : grantResults) {
+                if (result == PackageManager.PERMISSION_DENIED) {
+                    isPermissionGotDenied = true;
+                    if (!ActivityCompat.shouldShowRequestPermissionRationale(this, permissionsToRequest.get(grantCount))) {
+                        //Never ask again selected, or device policy prohibits the app from having that permission.
+                        Toast.makeText(getContext(), getString(R.string.permission_enabled_needed), Toast.LENGTH_LONG).show();
+                    }
+                    break;
+                }
+                grantCount++;
+            }
+            if (grantCount == grantResults.length) {
+                isPermissionGotDenied = false;
+            }
+        }
     }
 
     @Override
     protected void onResume() {
         super.onResume();
+        if (isPermissionGotDenied) {
+            finish();
+            return;
+        }
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
             int cameraIndex = imagePickerBuilder.indexTypeDef(ImagePickerTabTypeDef.TYPE_CAMERA);
             int galleryIndex = imagePickerBuilder.indexTypeDef(ImagePickerTabTypeDef.TYPE_GALLERY);
@@ -206,7 +228,8 @@ public class ImagePickerActivity extends BaseSimpleActivity
                     }
                 }
                 if (!permissionsToRequest.isEmpty()) {
-                    ActivityCompat.requestPermissions(this, permissionsToRequest.toArray(new String[permissionsToRequest.size()]), REQUEST_CAMERA_PERMISSIONS);
+                    ActivityCompat.requestPermissions(this,
+                            permissionsToRequest.toArray(new String[permissionsToRequest.size()]), REQUEST_CAMERA_PERMISSIONS);
                 } else {
                     refreshViewPager();
                 }
