@@ -262,10 +262,7 @@ public class ProductAddWholesaleFragment extends BaseDaggerFragment implements W
 
     @Override
     public void setButtonSubmit(boolean state) {
-        if(state)
-            buttonSave.setEnabled(true);
-        else
-            buttonSave.setEnabled(false);
+        buttonSave.setEnabled(state);
     }
 
     @Override
