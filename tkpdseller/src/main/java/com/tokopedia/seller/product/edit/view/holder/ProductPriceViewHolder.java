@@ -195,9 +195,7 @@ public class ProductPriceViewHolder extends ProductViewHolder{
     }
 
     private void showEditPriceDialog() {
-        if (listener.hasVariant()) {
-            listener.showDialogEditPriceVariant();
-        } else {
+        if (listener.hasWholesale()) {
             AlertDialog.Builder builder = new AlertDialog.Builder(editPriceImageButton.getContext(),
                     R.style.AppCompatAlertDialogStyle);
             builder.setTitle(R.string.product_title_confirmation_change_wholesale_price);
@@ -210,6 +208,9 @@ public class ProductPriceViewHolder extends ProductViewHolder{
                     productWholesaleViewModels.clear();
                     setLabelWHolesale(productWholesaleViewModels);
                     dialog.cancel();
+                    if (listener.hasVariant()){
+                        listener.showDialogEditPriceVariant();
+                    }
                 }
             });
             builder.setNegativeButton(R.string.close, new DialogInterface.OnClickListener() {
@@ -220,6 +221,8 @@ public class ProductPriceViewHolder extends ProductViewHolder{
 
             AlertDialog alert = builder.create();
             alert.show();
+        } else if (listener.hasVariant()){
+            listener.showDialogEditPriceVariant();
         }
     }
 
@@ -378,6 +381,8 @@ public class ProductPriceViewHolder extends ProductViewHolder{
         void showDialogMoveToGM(@StringRes int message);
 
         boolean hasVariant();
+
+        boolean hasWholesale();
 
         void showDialogEditPriceVariant();
 
