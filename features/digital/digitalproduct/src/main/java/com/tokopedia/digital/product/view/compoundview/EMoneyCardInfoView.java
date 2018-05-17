@@ -21,6 +21,8 @@ public class EMoneyCardInfoView extends FrameLayout {
 
     private Context context;
 
+    private String formattedCardNumberWithoutSpaces;
+
     private TextView textRemainingBalance;
     private TextView textCardNumber;
     private ProgressBar progressBar;
@@ -56,6 +58,7 @@ public class EMoneyCardInfoView extends FrameLayout {
     public void showCardInfo(CardInfo cardInfo) {
         setVisibility(VISIBLE);
         String formattedCardNumber = formatCardNumber(cardInfo.getCardInfo());
+        formattedCardNumberWithoutSpaces = formatCardNumberWithoutStrips(cardInfo.getCardInfo());
         String lastBalanceInHex = flipLastBalance(cardInfo.getLastBalance());
         int lastBalanceInDecimal = Integer.parseInt(lastBalanceInHex,16);
         viewRemainingBalance.setVisibility(VISIBLE);
@@ -76,6 +79,11 @@ public class EMoneyCardInfoView extends FrameLayout {
                 cardNumber.substring(8, 12) + " - " + cardNumber.substring(12, 16);
     }
 
+    private String formatCardNumberWithoutStrips(String cardNumber) {
+        return cardNumber.substring(0, 4) + cardNumber.substring(4, 8) +
+                cardNumber.substring(8, 12) + cardNumber.substring(12, 16);
+    }
+
     public void showLoading() {
         viewRemainingBalance.setVisibility(GONE);
         progressBar.setVisibility(VISIBLE);
@@ -85,4 +93,9 @@ public class EMoneyCardInfoView extends FrameLayout {
         viewRemainingBalance.setVisibility(VISIBLE);
         progressBar.setVisibility(GONE);
     }
+
+    public String getCardNumber() {
+        return formattedCardNumberWithoutSpaces;
+    }
+
 }

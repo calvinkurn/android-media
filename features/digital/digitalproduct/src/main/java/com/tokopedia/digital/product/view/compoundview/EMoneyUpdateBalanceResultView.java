@@ -51,6 +51,13 @@ public class EMoneyUpdateBalanceResultView extends LinearLayout {
         eMoneyCardInfoView = view.findViewById(R.id.view_emoney_card_info);
         buttonTopup = view.findViewById(R.id.button_topup);
         textLabelProgress = view.findViewById(R.id.text_label_progress);
+
+        buttonTopup.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                listener.onClick();
+            }
+        });
     }
 
     public void showCardInfo(CardInfo cardInfo) {
@@ -79,8 +86,13 @@ public class EMoneyUpdateBalanceResultView extends LinearLayout {
 
     public void showCardIsNotSupported() {
         eMoneyCardInfoView.stopLoading();
-        textLabelProgress.setText(getResources().getString(R.id.card_is_not_supported));
+        textLabelProgress.setText(getResources().getString(R.string.card_is_not_supported));
         textLabelProgress.setTextColor(getResources().getColor(R.color.red_error));
         buttonTopup.setVisibility(GONE);
     }
+
+    public String getCardNumber() {
+        return eMoneyCardInfoView.getCardNumber();
+    }
+
 }

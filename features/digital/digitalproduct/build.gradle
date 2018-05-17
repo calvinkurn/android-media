@@ -28,6 +28,7 @@ dependencies {
     compile project(rootProject.ext.features.payment)
     compile project(rootProject.ext.features.loyalty)
     compile project(rootProject.ext.libraries.useCase)
+    compile project(rootProject.ext.libraries.applink)
     compile project(rootProject.ext.features.session)
 
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {

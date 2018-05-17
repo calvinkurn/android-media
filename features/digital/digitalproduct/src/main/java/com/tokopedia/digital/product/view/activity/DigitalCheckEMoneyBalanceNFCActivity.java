@@ -20,6 +20,9 @@ import android.widget.Toast;
 
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
+import com.tokopedia.applink.ApplinkConst;
+import com.tokopedia.applink.RouteManager;
+import com.tokopedia.core.router.digitalmodule.passdata.DigitalCategoryDetailPassData;
 import com.tokopedia.digital.R;
 import com.tokopedia.digital.product.view.compoundview.EMoneyUpdateBalanceResultView;
 import com.tokopedia.digital.product.view.compoundview.NFCDisabledView;
@@ -87,13 +90,21 @@ public class DigitalCheckEMoneyBalanceNFCActivity extends BaseSimpleActivity {
         eMoneyUpdateBalanceResultView.setListener(new EMoneyUpdateBalanceResultView.OnTopupEMoneyClickListener() {
             @Override
             public void onClick() {
+                // navigate to category emoney page
+//                RouteManager.route(DigitalCheckEMoneyBalanceNFCActivity.this,
+//                        ApplinkConst.DIGITAL_PRODUCT+"?category_id=34");
 
-            }
-        });
+                DigitalCategoryDetailPassData passData = new DigitalCategoryDetailPassData.Builder()
+                        .categoryId("34")
+                        .clientNumber(eMoneyUpdateBalanceResultView.getCardNumber())
+                        .build();
 
-//        buttonTopup.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
+                Intent intent = DigitalProductActivity.newInstance(DigitalCheckEMoneyBalanceNFCActivity.this,
+                        passData);
+
+                startActivity(intent);
+                finish();
+
 //                if (isoDep != null) {
 //                    if (isoDep.isConnected()) {
 //                        String command = "0";
@@ -114,8 +125,8 @@ public class DigitalCheckEMoneyBalanceNFCActivity extends BaseSimpleActivity {
 //                        }
 //                    }
 //                }
-//            }
-//        });
+            }
+        });
 
         nfcDisabledView.setListener(new NFCDisabledView.OnActivateNFCClickListener() {
             @Override
