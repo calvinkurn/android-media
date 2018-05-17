@@ -6,7 +6,7 @@ import com.tokopedia.core.drawer2.data.viewmodel.TokoPointDrawerData;
 import com.tokopedia.loyalty.domain.entity.response.Coupon;
 import com.tokopedia.loyalty.domain.entity.response.CouponListDataResponse;
 import com.tokopedia.loyalty.domain.entity.response.DigitalVoucherData;
-import com.tokopedia.loyalty.domain.entity.response.TokoPointDrawerDataResponse;
+import com.tokopedia.loyalty.domain.entity.response.GqlTokoPointDrawerDataResponse;
 import com.tokopedia.loyalty.domain.entity.response.TokoPointResponse;
 import com.tokopedia.loyalty.domain.entity.response.ValidateRedeemCouponResponse;
 import com.tokopedia.loyalty.domain.entity.response.VoucherResponse;
@@ -66,8 +66,8 @@ public class TokoPointResponseMapper implements ITokoPointResponseMapper {
         TokoPointDrawerData.UserTier userTier = new TokoPointDrawerData.UserTier();
         TokoPointDrawerData tokoPointDrawerData = new TokoPointDrawerData();
 
-        if(tokoplusPointDrawerData.getGqlTokoPointPopupNotif() != null &&
-                !TextUtils.isEmpty(tokoplusPointDrawerData.getGqlTokoPointPopupNotif().getTitle())){
+        if (tokoplusPointDrawerData.getGqlTokoPointPopupNotif() != null &&
+                !TextUtils.isEmpty(tokoplusPointDrawerData.getGqlTokoPointPopupNotif().getTitle())) {
             tokoPointDrawerData.setHasNotif(1);
         } else {
             tokoPointDrawerData.setHasNotif(0);

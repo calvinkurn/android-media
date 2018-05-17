@@ -1,4 +1,4 @@
-package com.tokopedia.loyalty.domain.repository;
+package com.tokopedia.loyalty.domain.entity.response;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;

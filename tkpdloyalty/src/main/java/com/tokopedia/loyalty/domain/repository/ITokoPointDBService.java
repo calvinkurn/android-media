@@ -1,5 +1,7 @@
 package com.tokopedia.loyalty.domain.repository;
 
+import com.tokopedia.loyalty.domain.entity.response.GqlTokoPointDrawerDataResponse;
+
 import rx.Observable;
 
 /**

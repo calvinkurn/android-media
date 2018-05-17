@@ -1,8 +1,7 @@
-package com.tokopedia.loyalty.domain.repository;
+package com.tokopedia.loyalty.domain.entity.response;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-import com.tokopedia.loyalty.domain.entity.response.TokoPointDrawerDataResponse;
 
 /**
  * Created by sachinbansal on 5/15/18.
