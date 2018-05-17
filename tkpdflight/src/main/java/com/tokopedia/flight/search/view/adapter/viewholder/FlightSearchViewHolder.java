@@ -1,5 +1,6 @@
 package com.tokopedia.flight.search.view.adapter.viewholder;
 
+import android.graphics.Paint;
 import android.support.annotation.LayoutRes;
 import android.text.TextUtils;
 import android.view.View;
@@ -140,7 +141,8 @@ public class FlightSearchViewHolder extends AbstractViewHolder<FlightSearchViewM
         } else {
             discountTag.setVisibility(View.VISIBLE);
             savingPrice.setVisibility(View.VISIBLE);
-            savingPrice.setText(MethodChecker.fromHtml(getString(R.string.flight_label_saving_price_html, flightSearchViewModel.getBeforeTotal())));
+            savingPrice.setPaintFlags(Paint.STRIKE_THRU_TEXT_FLAG);
+            savingPrice.setText(flightSearchViewModel.getBeforeTotal());
         }
     }
 
