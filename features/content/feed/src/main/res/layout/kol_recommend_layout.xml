@@ -19,7 +19,10 @@
             android:layout_gravity="center_vertical"
             android:layout_weight="1"
             android:gravity="center|start"
-            android:padding="@dimen/dp_10"
+            android:paddingTop="@dimen/dp_10"
+            android:paddingLeft="@dimen/dp_16"
+            android:paddingRight="@dimen/dp_16"
+            android:paddingBottom="@dimen/dp_10"
             android:textSize="@dimen/sp_12"
             android:fontFamily="sans-serif-medium"
             android:textStyle="normal"
@@ -36,8 +39,8 @@
             android:layout_height="wrap_content"
             android:layout_gravity="end"
             android:layout_marginBottom="@dimen/dp_10"
-            android:layout_marginEnd="@dimen/dp_10"
-            android:layout_marginRight="@dimen/dp_10"
+            android:layout_marginEnd="@dimen/dp_16"
+            android:layout_marginRight="@dimen/dp_16"
             android:layout_marginTop="@dimen/dp_10"
             android:layout_weight="1"
             android:fontFamily="sans-serif-medium"
@@ -56,6 +59,10 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:paddingLeft="@dimen/dp_10" />
+        android:paddingTop="@dimen/dp_10"
+        android:paddingBottom="@dimen/dp_10"
+        app:layoutManager="android.support.v7.widget.LinearLayoutManager"
+        app:reverseLayout="false"
+        tools:listitem="@layout/kol_recommendation_item"/>
 
 </LinearLayout>
