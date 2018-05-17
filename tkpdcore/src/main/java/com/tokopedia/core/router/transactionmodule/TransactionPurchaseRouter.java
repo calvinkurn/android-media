@@ -6,7 +6,11 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 
+import com.tokopedia.core.home.SimpleWebViewWithFilePickerActivity;
 import com.tokopedia.core.util.RouterUtils;
+
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 
 /**
  * Created by Nathaniel on 11/9/2016.
@@ -121,5 +125,14 @@ public class TransactionPurchaseRouter {
         bundle.putBoolean(ARG_PARAM_EXTRA_INSTANCE_FROM_NOTIFICATION, true);
         fragment.setArguments(bundle);
         return fragment;
+    }
+
+    public static void startWebViewActivity(Context context, String url) {
+        try {
+            context.startActivity(SimpleWebViewWithFilePickerActivity.getIntent(context,
+                    URLEncoder.encode(url, "UTF-8")));
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
     }
 }

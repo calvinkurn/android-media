@@ -4,20 +4,20 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.View;
+import android.widget.LinearLayout;
 
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.core.app.BasePresenterFragment;
+import com.tokopedia.core.customwidget.SwipeToRefresh;
 import com.tokopedia.core.home.SimpleWebViewWithFilePickerActivity;
+import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.util.RefreshHandler;
-import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.R2;
 import com.tokopedia.transaction.orders.orderlist.data.Order;
 import com.tokopedia.transaction.orders.orderlist.data.OrderCategory;
 import com.tokopedia.transaction.orders.orderlist.di.OrderListComponent;
-import com.tokopedia.transaction.orders.orderlist.domain.OrderListUseCase;
 import com.tokopedia.transaction.orders.orderlist.view.adapter.OrderListAdapter;
 import com.tokopedia.transaction.orders.orderlist.view.presenter.OrderListContract;
 import com.tokopedia.transaction.orders.orderlist.view.presenter.OrderListPresenterImpl;
@@ -35,9 +35,14 @@ import butterknife.BindView;
 public class OrderListFragment extends BasePresenterFragment<OrderListContract.Presenter> implements
         RefreshHandler.OnRefreshHandlerListener, OrderListContract.View, OrderListAdapter.OnMenuItemListener {
 
+    private static final java.lang.String ORDER_CATEGORY = "orderCategory";
     OrderListComponent orderListComponent;
     @BindView(R2.id.order_list_rv)
     RecyclerView recyclerView;
+    @BindView(R2.id.swipe_refresh_layout)
+    SwipeToRefresh swipeToRefresh;
+    @BindView(R2.id.empty_view)
+    LinearLayout emptyLayout;
     OrderListAdapter orderListAdapter;
     private RefreshHandler refreshHandler;
     private boolean isLoading = false;
@@ -99,7 +104,7 @@ public class OrderListFragment extends BasePresenterFragment<OrderListContract.P
 
     @Override
     protected void setupArguments(Bundle arguments) {
-        int category = arguments.getInt("ordercategory");
+        int category = arguments.getInt(ORDER_CATEGORY);
         switch (category) {
             case 0:
                 mOrderCategory = OrderCategory.ALL;
@@ -161,16 +166,13 @@ public class OrderListFragment extends BasePresenterFragment<OrderListContract.P
 
     @Override
     public void onRefresh(View view) {
-        //if (!isLoading) {
         page_num = 1;
         isLoading = true;
         if (orderListAdapter.getItemCount() != 0) {
             mOrderDataList.clear();
 
         }
-        presenter.getAllOrderData(getActivity(), mOrderCategory,
-                (orderListAdapter.getItemCount() == 0 ? TxOrderNetInteractor.TypeRequest.INITIAL
-                        : TxOrderNetInteractor.TypeRequest.PULL_REFRESH), page_num);
+        presenter.getAllOrderData(getActivity(), mOrderCategory, TxOrderNetInteractor.TypeRequest.PULL_REFRESH, page_num);
     }
 
     void onLoadMore() {
@@ -200,6 +202,34 @@ public class OrderListFragment extends BasePresenterFragment<OrderListContract.P
     }
 
     @Override
+    public void showErrorNetwork(String errorMessage) {
+        NetworkErrorHelper.showEmptyState(
+                getActivity(), getView(),
+                getString(R.string.label_title_error_no_connection_initial_cart_data),
+                getString(R.string.label_transaction_error_message_try_again),
+                getString(R.string.label_title_button_retry), 0,
+                getEditShipmentRetryListener()
+        );
+    }
+
+    @Override
+    public void renderEmptyList(int typeRequest) {
+        if(typeRequest == TxOrderNetInteractor.TypeRequest.INITIAL) {
+            swipeToRefresh.setVisibility(View.GONE);
+            emptyLayout.setVisibility(View.VISIBLE);
+        }
+    }
+
+    private NetworkErrorHelper.RetryClickedListener getEditShipmentRetryListener() {
+        return new NetworkErrorHelper.RetryClickedListener() {
+            @Override
+            public void onRetryClicked() {
+                presenter.getAllOrderData(getActivity(), mOrderCategory, TxOrderNetInteractor.TypeRequest.INITIAL, page_num);
+            }
+        };
+    }
+
+    @Override
     protected void initialVar() {
         orderListAdapter = new OrderListAdapter(getActivity(), this);
     }
@@ -218,7 +248,7 @@ public class OrderListFragment extends BasePresenterFragment<OrderListContract.P
     }
 
     @Override
-    public void showProcessGetData(OrderCategory orderCategory, int typeRequest) {
+    public void showProcessGetData(OrderCategory orderCategory) {
         switch (orderCategory) {
             case DIGITAL:
                 if (!refreshHandler.isRefreshing()) {
@@ -258,6 +288,9 @@ public class OrderListFragment extends BasePresenterFragment<OrderListContract.P
         if (!hasRecyclerListener) {
             addRecyclerListener();
         }
+
+        swipeToRefresh.setVisibility(View.VISIBLE);
+        emptyLayout.setVisibility(View.GONE);
     }
 
     @Override

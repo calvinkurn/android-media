@@ -13,6 +13,7 @@ import com.tokopedia.transaction.orders.orderlist.view.fragment.OrderListFragmen
 import static com.tokopedia.core.router.transactionmodule.TransactionPurchaseRouter.EXTRA_STATE_TAB_POSITION;
 
 public class OrderListActivity extends DrawerPresenterActivity {
+    private static final String ORDER_CATEGORY = "orderCategory";
     private int drawerPosition;
     @Override
     protected void setupURIPass(Uri data) {
@@ -56,10 +57,8 @@ public class OrderListActivity extends DrawerPresenterActivity {
         } else {
             fragment = getFragmentManager().findFragmentByTag(OrderListFragment.class.getSimpleName());
         }
-
-
         Bundle arg = new Bundle();
-        arg.putInt("ordercategory", 2);
+        arg.putInt(ORDER_CATEGORY, 2);
         fragment.setArguments(arg);
         getFragmentManager()
                 .beginTransaction()

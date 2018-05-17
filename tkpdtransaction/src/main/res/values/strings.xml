@@ -240,4 +240,6 @@
     <string name="search_filter_label">Filter</string>
     <string name="title_order_detail">Order Detail</string>
     <string name="additional_text">Masa Perlindungan JKK JKM</string>
+    <string name="oops_message">Ooops</string>
+    <string name="empty_list_message">Transaksi Anda masih kosong</string>
 </resources>

@@ -1,8 +1,8 @@
 package com.tokopedia.transaction.orders.orderlist.view.adapter;
 
-import android.app.Activity;
 import android.content.Context;
 
+import android.graphics.Typeface;
 import android.graphics.drawable.GradientDrawable;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
@@ -20,11 +20,10 @@ import android.widget.TextView;
 
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.applink.RouteManager;
-import com.tokopedia.core.home.SimpleWebViewWithFilePickerActivity;
+import com.tokopedia.core.router.transactionmodule.TransactionPurchaseRouter;
 import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.R2;
 import com.tokopedia.transaction.orders.orderdetails.view.activity.OrderListDetailActivity;
-import com.tokopedia.transaction.orders.orderlist.data.ActionButton;
 import com.tokopedia.transaction.orders.orderlist.data.Color;
 import com.tokopedia.transaction.orders.orderlist.data.DotMenuList;
 import com.tokopedia.transaction.orders.orderlist.data.MetaData;
@@ -95,7 +94,7 @@ public class OrderListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
         holder.orderListBtnOverflow.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                showPopup(view, order.dotMenuList());
+                showPopup(view, order);
             }
         });
     }
@@ -131,43 +130,12 @@ public class OrderListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                 if (buttonUri.startsWith("tokopedia")) {
                     RouteManager.route(context, buttonUri);
                 } else {
-                    context.startActivity(SimpleWebViewWithFilePickerActivity.getIntent(context, buttonUri));
+                    TransactionPurchaseRouter.startWebViewActivity(context, buttonUri);
                 }
             }
         });
         if (popup != null) {
         }
-    }
-
-    private void createPopupWindow(String title, String popuptext, List<ActionButton> button) {
-        AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(context);
-        LayoutInflater inflater = ((Activity) context).getLayoutInflater();
-        final View dialogView = inflater.inflate(R.layout.order_list_popup_item, null);
-        dialogBuilder.setView(dialogView);
-
-        TextView popup_title = dialogView.findViewById(R.id.title);
-        TextView popup_text = dialogView.findViewById(R.id.popup_text);
-        TextView primary_button = dialogView.findViewById(R.id.primary_button);
-        TextView secondary_button = dialogView.findViewById(R.id.secondary_button);
-        popup_title.setText(title);
-        popup_text.setText(popuptext);
-        primary_button.setText(button.get(0).label());
-        secondary_button.setText(button.get(1).label());
-
-        final AlertDialog alertDialog = dialogBuilder.create();
-        primary_button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                alertDialog.dismiss();
-            }
-        });
-        secondary_button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                alertDialog.dismiss();
-            }
-        });
-        alertDialog.show();
     }
 
     @Override
@@ -219,7 +187,11 @@ public class OrderListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
 
     @Override
     public void setStatusBgColor(int statusColor) {
-        currentHolder.status.setBackgroundColor(statusColor);
+        if(statusColor == 0){
+            currentHolder.status.setBackgroundColor(context.getResources().getColor(R.color.background_error));
+        } else {
+            currentHolder.status.setBackgroundColor(statusColor);
+        }
     }
 
     @Override
@@ -232,8 +204,23 @@ public class OrderListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
         DoubleTextView childLayout = new DoubleTextView(context, LinearLayout.VERTICAL);
         childLayout.setTopText(metaData.label());
         childLayout.setTopTextSize(11);
-        childLayout.setBottomText(metaData.value());
-        currentHolder.parentMetadataLayout.addView(childLayout);
+        String value  = metaData.value();
+        TextView tv=new TextView(context);
+        if(value.contains("a/n")){
+            String[] values= value.split("a/n");
+            tv.setLayoutParams(new ViewGroup.LayoutParams(
+                    ViewGroup.LayoutParams.MATCH_PARENT,
+                    ViewGroup.LayoutParams.WRAP_CONTENT));
+            tv.setTextSize(10);
+            tv.setTypeface(Typeface.DEFAULT_BOLD);
+            tv.setText("a/n "+values[1]);
+            childLayout.setBottomText(values[0]);
+            currentHolder.parentMetadataLayout.addView(childLayout);
+            currentHolder.parentMetadataLayout.addView(tv);
+        } else {
+            childLayout.setBottomText(value);
+            currentHolder.parentMetadataLayout.addView(childLayout);
+        }
 
     }
 
@@ -268,10 +255,10 @@ public class OrderListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
         return mOrderList.get(position) != null ? VIEW_ITEM : VIEW_PROG;
     }
 
-    private void showPopup(View v, final List<DotMenuList> item) {
+    private void showPopup(View v, final Order order) {
         PopupMenu popup = new PopupMenu(context, v);
-        addCancelReplacementMenu(item, popup);
-        popup.setOnMenuItemClickListener(new OnMenuPopupClicked(item));
+        addCancelReplacementMenu(order.dotMenuList(), popup);
+        popup.setOnMenuItemClickListener(new OnMenuPopupClicked(order.dotMenuList(), order.id()));
         popup.show();
     }
 
@@ -289,9 +276,11 @@ public class OrderListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
 
     private class OnMenuPopupClicked implements PopupMenu.OnMenuItemClickListener {
         private final List<DotMenuList> orderData;
+        private String orderId;
 
-        OnMenuPopupClicked(List<DotMenuList> item) {
+        OnMenuPopupClicked(List<DotMenuList> item, String id) {
             this.orderData = item;
+            this.orderId = id;
         }
 
         @Override
@@ -300,7 +289,11 @@ public class OrderListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                 menuListener.startUri(orderData.get(0).uri());
                 return true;
             } else if (item.getItemId() == R.id.action_next_replacement) {
-                menuListener.startUri(orderData.get(1).uri());
+                if(!orderData.get(1).uri().equals("")){
+                    menuListener.startUri(orderData.get(1).uri());
+                } else{
+                    context.startActivity(OrderListDetailActivity.createInstance(context, orderId));
+                }
                 return true;
             } else {
                 return false;

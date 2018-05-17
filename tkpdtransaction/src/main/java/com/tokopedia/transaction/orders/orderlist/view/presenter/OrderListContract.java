@@ -15,7 +15,7 @@ import java.util.List;
 
 public class OrderListContract {
     public interface View extends CustomerView {
-        void showProcessGetData(OrderCategory orderCategory, int typeRequest);
+        void showProcessGetData(OrderCategory orderCategory);
 
         void renderDataList(List<Order> orderDataList);
 
@@ -28,6 +28,10 @@ public class OrderListContract {
         void removeProgressBarView();
 
         void unregisterScrollListener();
+
+        void showErrorNetwork(String errorMessage);
+
+        void renderEmptyList(int typeRequest);
     }
 
     public interface Presenter extends CustomerPresenter<View> {

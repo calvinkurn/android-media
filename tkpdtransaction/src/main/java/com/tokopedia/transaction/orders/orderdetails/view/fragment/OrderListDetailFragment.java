@@ -22,7 +22,7 @@ import android.widget.TextView;
 
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
-import com.tokopedia.core.home.SimpleWebViewWithFilePickerActivity;
+import com.tokopedia.core.router.transactionmodule.TransactionPurchaseRouter;
 import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.R2;
 import com.tokopedia.transaction.orders.orderdetails.data.ActionButton;
@@ -169,7 +169,7 @@ public class OrderListDetailFragment extends BaseDaggerFragment implements Order
         lihat.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivity(SimpleWebViewWithFilePickerActivity.getIntent(getActivity(), invoice.invoiceUrl()));
+                TransactionPurchaseRouter.startWebViewActivity(getContext(), invoice.invoiceUrl());
             }
         });
     }
@@ -239,7 +239,7 @@ public class OrderListDetailFragment extends BaseDaggerFragment implements Order
         spannableString.setSpan(new ClickableSpan() {
             @Override
             public void onClick(View view) {
-                startActivity(SimpleWebViewWithFilePickerActivity.getIntent(getActivity(), contactUs.helpUrl()));
+                TransactionPurchaseRouter.startWebViewActivity(getContext(), contactUs.helpUrl());
             }
 
             @Override
@@ -283,7 +283,7 @@ public class OrderListDetailFragment extends BaseDaggerFragment implements Order
         return new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivity(SimpleWebViewWithFilePickerActivity.getIntent(getActivity(),uri));
+                TransactionPurchaseRouter.startWebViewActivity(getContext(), uri);
             }
         };
     }
