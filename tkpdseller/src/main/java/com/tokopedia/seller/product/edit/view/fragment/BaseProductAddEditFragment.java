@@ -502,6 +502,12 @@ public abstract class BaseProductAddEditFragment<T extends ProductAddPresenter>
     }
 
     @Override
+    public boolean hasWholesale() {
+        productPriceViewHolder.updateModel(currentProductViewModel);
+        return currentProductViewModel.getProductWholesale()!=null && currentProductViewModel.getProductWholesale().size() > 0;
+    }
+
+    @Override
     public void showDialogEditPriceVariant() {
         ProductChangeVariantPriceDialogFragment dialogFragment =
                 ProductChangeVariantPriceDialogFragment.newInstance(productPriceViewHolder.getCurrencyType(),
