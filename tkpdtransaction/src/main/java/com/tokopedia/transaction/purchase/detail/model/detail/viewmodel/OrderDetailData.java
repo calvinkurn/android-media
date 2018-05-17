@@ -2,6 +2,7 @@ package com.tokopedia.transaction.purchase.detail.model.detail.viewmodel;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.text.TextUtils;
 
 import java.util.List;
 
@@ -498,6 +499,8 @@ public class OrderDetailData implements Parcelable {
 
 
     public String getLiveTrackingUrl() {
+        if(TextUtils.isEmpty(liveTrackingUrl))
+            return "";
         return liveTrackingUrl;
     }
 

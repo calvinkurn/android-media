@@ -1,4 +1,4 @@
-package com.tokopedia.transaction.purchase.model.response.txlist;
+package com.tokopedia.seller.selling.model.orderShipping;
 
 import android.os.Parcel;
 import android.os.Parcelable;

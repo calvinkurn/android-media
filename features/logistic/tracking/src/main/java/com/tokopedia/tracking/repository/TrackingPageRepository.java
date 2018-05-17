@@ -34,12 +34,12 @@ public class TrackingPageRepository implements ITrackingPageRepository {
         return trackingOrderApi.trackOrder(trackParameters).map(
                 new Func1<Response<TkpdResponse>, TrackingViewModel>() {
                     @Override
-                    public TrackingViewModel call(Response<TkpdResponse> tkpdResponseResponse) {
-                        if(tkpdResponseResponse.body() == null)
+                    public TrackingViewModel call(Response<TkpdResponse> tkpdResponse) {
+                        if(tkpdResponse.body() == null)
                             throw new RuntimeException(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
 
                         return mapper.trackingViewModel(
-                                tkpdResponseResponse.body()
+                                tkpdResponse.body()
                                         .convertDataObj(TrackingResponse.class)
                         );
                     }

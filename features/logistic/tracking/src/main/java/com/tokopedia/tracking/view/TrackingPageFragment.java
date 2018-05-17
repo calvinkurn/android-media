@@ -41,6 +41,7 @@ import static com.tokopedia.tracking.view.TrackingPageActivity.URL_LIVE_TRACKING
 public class TrackingPageFragment extends BaseDaggerFragment implements ITrackingPageFragment {
 
     private static final String ADDITIONAL_INFO_URL = "https://m.tokopedia.com/bantuan/217217126-agen-logistik-di-tokopedia";
+    private static final String INVALID_REFERENCE_STATUS = "resi tidak valid";
 
     private TkpdProgressDialog loadingScreen;
     private TkpdProgressDialog progressDialog;
@@ -162,7 +163,7 @@ public class TrackingPageFragment extends BaseDaggerFragment implements ITrackin
     }
 
     private void setEmptyHistoryView(TrackingViewModel model) {
-        if (model.isInvalid()) {
+        if (model.isInvalid() || model.getStatus().toLowerCase().contains(INVALID_REFERENCE_STATUS)) {
             emptyUpdateNotification.setVisibility(View.VISIBLE);
             notificationText.setText(getString(R.string.warning_courier_invalid));
             notificationHelpStep.setVisibility(View.VISIBLE);
