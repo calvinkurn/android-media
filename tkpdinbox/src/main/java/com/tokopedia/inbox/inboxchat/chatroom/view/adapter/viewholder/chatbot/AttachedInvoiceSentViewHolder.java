@@ -32,9 +32,6 @@ public class AttachedInvoiceSentViewHolder extends BaseChatViewHolder<AttachInvo
     private TextView totalAmount;
     private ImageView productImage;
 
-    TextView hour;
-    TextView date;
-    View view;
     ImageView chatStatus;
     private ImageView action;
     ChatRoomContract.View viewListener;
@@ -48,9 +45,6 @@ public class AttachedInvoiceSentViewHolder extends BaseChatViewHolder<AttachInvo
         productDesc = itemView.findViewById(R.id.attach_invoice_sent_item_product_desc);
         totalAmount = itemView.findViewById(R.id.attach_invoice_sent_item_invoice_total);
         productImage = itemView.findViewById(R.id.attach_invoice_sent_item_product_image);
-        view = itemView;
-        hour = itemView.findViewById(R.id.hour);
-        date = itemView.findViewById(R.id.date);
         chatStatus = itemView.findViewById(R.id.chat_status);
         action = itemView.findViewById(R.id.left_action);
     }
@@ -75,43 +69,6 @@ public class AttachedInvoiceSentViewHolder extends BaseChatViewHolder<AttachInvo
     protected void prerequisiteUISetup(final AttachInvoiceSentViewModel element){
         action.setVisibility(View.GONE);
 
-        view.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                KeyboardHandler.DropKeyboard(itemView.getContext(), view);
-            }
-        });
-
-        String time;
-
-        try {
-            long myTime = Long.parseLong(element.getReplyTime());
-            time = DateFormat.getLongDateFormat(itemView.getContext()).format(new Date(myTime));
-            if (element.isShowTime()) {
-                date.setText(time);
-                date.setVisibility(View.VISIBLE);
-            }
-            else {
-                date.setText("");
-                date.setVisibility(View.GONE);
-            }
-        }catch (NumberFormatException e){
-            time = element.getReplyTime();
-            date.setText("");
-            date.setVisibility(View.GONE);
-        }
-
-        String hourTime;
-
-        try {
-            hourTime = ChatTimeConverter.formatTime(Long.parseLong(element.getReplyTime()));
-        }catch (NumberFormatException e){
-            hourTime = element.getReplyTime();
-        }
-        hour.setVisibility(View.VISIBLE);
-        chatStatus.setVisibility(View.VISIBLE);
-
-        hour.setText(hourTime);
         chatStatus.setImageResource(element.isDummy() ?
                 R.drawable.ic_chat_pending :
                 (element.isRead() ?

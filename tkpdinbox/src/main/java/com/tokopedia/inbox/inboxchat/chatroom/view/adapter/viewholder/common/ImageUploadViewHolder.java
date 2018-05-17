@@ -1,6 +1,7 @@
 package com.tokopedia.inbox.inboxchat.chatroom.view.adapter.viewholder.common;
 
 import android.support.annotation.LayoutRes;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
@@ -128,18 +129,17 @@ public class ImageUploadViewHolder extends BaseChatViewHolder<ImageUploadViewMod
 
         setReadStatus(element);
 
-        if (element.getFromRole() != null) {
-            if (element.getFromRole().toLowerCase().equals(ROLE_USER.toLowerCase())) {
-                name.setVisibility(View.GONE);
-                label.setVisibility(View.GONE);
-                dot.setVisibility(View.GONE);
-            } else {
-                name.setText(element.getFrom());
-                label.setText(element.getFromRole());
-                name.setVisibility(View.VISIBLE);
-                dot.setVisibility(View.VISIBLE);
-                label.setVisibility(View.VISIBLE);
-            }
+        if (element.getFromRole() != null
+                && !TextUtils.isEmpty(element.getFromRole())
+                && !element.getFromRole().toLowerCase().equals(ROLE_USER.toLowerCase())
+                && element.isSender()
+                && !element.isDummy()) {
+            name.setText(element.getFrom());
+            label.setText(element.getFromRole());
+            name.setVisibility(View.VISIBLE);
+            dot.setVisibility(View.VISIBLE);
+            label.setVisibility(View.VISIBLE);
+
         } else {
             name.setVisibility(View.GONE);
             label.setVisibility(View.GONE);

@@ -119,8 +119,8 @@ import rx.Observable;
 import rx.functions.Action1;
 import rx.functions.Func1;
 
-import static com.tokopedia.inbox.inboxchat.chatroom.view.activity.ChatRoomActivity.PARAM_WEBSOCKET;
 import static com.tokopedia.inbox.inboxchat.chatroom.view.activity.ChatRoomActivity.PARAM_SENDER_ROLE;
+import static com.tokopedia.inbox.inboxchat.chatroom.view.activity.ChatRoomActivity.PARAM_WEBSOCKET;
 
 /**
  * Created by stevenfredian on 9/19/17.
@@ -1223,7 +1223,7 @@ public class ChatRoomFragment extends BaseDaggerFragment
         }
     }
 
-    private void addView(ReplyActionData replyData, String reply) {
+    private void addViewMessage(ReplyActionData replyData, String reply) {
         setViewEnabled(true);
         MessageViewModel messageViewModel = new MessageViewModel(
                 String.valueOf(replyData.getChat().getMsgId()),
@@ -1240,15 +1240,6 @@ public class ChatRoomFragment extends BaseDaggerFragment
                 true
         );
 
-//        MyChatViewModel item = new MyChatViewModel();
-//        item.setReplyId(replyData.getChat().getMsgId());
-//        item.setMsgId(replyData.getChat().getMsgId());
-//        item.setSenderId(replyData.getChat().getSenderId());
-//        item.setSenderName(replyData.getChat().getFrom());
-//        item.setMsg(reply);
-//        item.setReplyTime(replyData.getChat().getReplyTime());
-//        item.setAttachment(replyData.getChat().getAttachment());
-//        item.setAttachmentId(Integer.parseInt(replyData.getChat().getAttachment().getId()));
         adapter.addReply(messageViewModel);
         resetReplyColumn();
         setResult();
@@ -1449,7 +1440,7 @@ public class ChatRoomFragment extends BaseDaggerFragment
     @Override
     public void onSuccessSendReply(ReplyActionData replyData, String reply) {
         adapter.removeLast();
-        addView(replyData, reply);
+        addViewMessage(replyData, reply);
         if (quickReplyAdapter.getItemCount() != 0) {
             quickReplyAdapter.clearData();
         }
@@ -1471,7 +1462,29 @@ public class ChatRoomFragment extends BaseDaggerFragment
     @Override
     public void onSuccessSendAttach(ReplyActionData data, ImageUploadViewModel model) {
         adapter.remove(model);
-        addView(data, UPLOADING);
+        addViewImage(data, UPLOADING);
+    }
+
+    private void addViewImage(ReplyActionData replyData, String message) {
+        setViewEnabled(true);
+        ImageUploadViewModel messageViewModel = new ImageUploadViewModel(
+                String.valueOf(replyData.getChat().getMsgId()),
+                replyData.getChat().getSenderId(),
+                replyData.getChat().getFrom(),
+                "",
+                replyData.getChat().getAttachment().getId(),
+                replyData.getChat().getAttachment().getType(),
+                replyData.getChat().getReplyTime(),
+                true,
+                replyData.getChat().getAttachment().getAttributes().getImageUrl(),
+                replyData.getChat().getAttachment().getAttributes().getThumbnail(),
+                "",
+                message
+        );
+
+        adapter.addReply(messageViewModel);
+        resetReplyColumn();
+        setResult();
     }
 
     @Override
