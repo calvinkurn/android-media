@@ -256,7 +256,8 @@ ext {
             pushNotif       : ":libraries:push_notification",
             applink         : ":libraries:applink",
             cacheApi        : ":libraries:cache_api",
-            useCase         : ":libraries:use_case"
+            useCase         : ":libraries:use_case",
+            travelCalendar  : ":libraries:travel_calendar"
     ]
 
 }
