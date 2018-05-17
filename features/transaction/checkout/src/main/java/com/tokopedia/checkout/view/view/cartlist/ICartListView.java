@@ -73,7 +73,6 @@ public interface ICartListView extends IBaseView {
 
     void renderErrorTimeoutConnectionCheckPromoCodeFromSuggestedPromo(String message);
 
-
     void renderEmptyCartData();
 
     void disableSwipeRefresh();
@@ -93,4 +92,8 @@ public interface ICartListView extends IBaseView {
     void renderLoadGetCartDataFinish();
 
     void renderCartTickerError(CartTickerErrorData cartTickerErrorData);
+
+    void renderCancelAutoApplyCouponSuccess();
+
+    void renderCancelAutoApplyCouponError();
 }

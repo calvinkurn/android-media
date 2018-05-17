@@ -4,6 +4,7 @@ import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 
 import com.tokopedia.checkout.R;
+import com.tokopedia.checkout.domain.usecase.CancelAutoApplyCouponUseCase;
 import com.tokopedia.checkout.domain.usecase.CheckPromoCodeCartListUseCase;
 import com.tokopedia.checkout.domain.usecase.DeleteCartGetCartListUseCase;
 import com.tokopedia.checkout.domain.usecase.DeleteCartUseCase;
@@ -57,13 +58,14 @@ public class CartListModule {
                                                  ResetCartGetShipmentFormUseCase resetCartGetShipmentFormUseCase,
                                                  CheckPromoCodeCartListUseCase checkPromoCodeCartListUseCase,
                                                  CompositeSubscription compositeSubscription,
-                                                 CartApiRequestParamGenerator cartApiRequestParamGenerator) {
+                                                 CartApiRequestParamGenerator cartApiRequestParamGenerator,
+                                                 CancelAutoApplyCouponUseCase cancelAutoApplyCouponUseCase) {
         return new CartListPresenter(
                 cartListView, getCartListUseCase, deleteCartUseCase,
                 deleteCartGetCartListUseCase, updateCartGetShipmentAddressFormUseCase,
                 getShipmentAddressFormUseCase, resetCartGetCartListUseCase,
                 resetCartGetShipmentFormUseCase, checkPromoCodeCartListUseCase, compositeSubscription,
-                cartApiRequestParamGenerator
+                cartApiRequestParamGenerator, cancelAutoApplyCouponUseCase
         );
     }
 

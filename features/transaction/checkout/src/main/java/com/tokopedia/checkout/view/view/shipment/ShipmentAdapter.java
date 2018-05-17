@@ -545,6 +545,19 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         notifyItemChanged(getShipmentCostPosition());
     }
 
+    public void cancelAutoApplyCoupon() {
+        for (int i = 0; i < shipmentDataList.size(); i++) {
+            ShipmentData shipmentData = shipmentDataList.get(i);
+            if (shipmentData instanceof CartItemPromoHolderData) {
+                ((CartItemPromoHolderData) shipmentData).setPromoNotActive();
+                notifyItemChanged(i);
+            } else if (shipmentData instanceof CartPromoSuggestion) {
+                ((CartPromoSuggestion) shipmentData).setVisible(true);
+                notifyItemChanged(i);
+            }
+        }
+    }
+
     public void updateShipmentDestinationPinpoint(Double latitude, Double longitude) {
         if (latitude != null && longitude != null) {
             if (recipientAddressModel != null) {

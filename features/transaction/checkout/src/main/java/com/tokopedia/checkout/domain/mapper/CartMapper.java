@@ -1,5 +1,6 @@
 package com.tokopedia.checkout.domain.mapper;
 
+import com.tokopedia.checkout.domain.datamodel.cartlist.AutoApplyData;
 import com.tokopedia.transactiondata.entity.response.cartlist.CartDataListResponse;
 import com.tokopedia.transactiondata.entity.response.cartlist.CartList;
 import com.tokopedia.transactiondata.entity.response.deletecart.DeleteCartDataResponse;
@@ -122,6 +123,16 @@ public class CartMapper implements ICartMapper {
         cartListData.setCartItemDataList(cartItemDataList);
         cartListData.setPromoCouponActive(cartDataListResponse.getIsCouponActive() == 1);
         cartListData.setCartPromoSuggestion(cartPromoSuggestion);
+
+        AutoApplyData autoApplyData = new AutoApplyData();
+        autoApplyData.setCode(cartDataListResponse.getAutoApply().getCode());
+        autoApplyData.setDiscountAmount(cartDataListResponse.getAutoApply().getDiscountAmount());
+        autoApplyData.setIsCoupon(cartDataListResponse.getAutoApply().getIsCoupon());
+        autoApplyData.setMessageSuccess(cartDataListResponse.getAutoApply().getMessageSuccess());
+        autoApplyData.setPromoId(cartDataListResponse.getAutoApply().getPromoId());
+        autoApplyData.setSuccess(cartDataListResponse.getAutoApply().isSuccess());
+        autoApplyData.setTitleDescription(cartDataListResponse.getAutoApply().getTitleDescription());
+        cartListData.setAutoApplyData(autoApplyData);
 
         return cartListData;
     }

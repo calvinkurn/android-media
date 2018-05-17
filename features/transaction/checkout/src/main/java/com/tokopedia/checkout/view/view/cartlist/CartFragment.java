@@ -49,7 +49,7 @@ import com.tokopedia.checkout.view.view.addressoptions.CartAddressChoiceActivity
 import com.tokopedia.checkout.view.view.multipleaddressform.MultipleAddressFormActivity;
 import com.tokopedia.checkout.view.view.shipment.ShipmentActivity;
 import com.tokopedia.checkout.view.view.shipment.ShipmentData;
-import com.tokopedia.checkout.view.view.shipmentform.CartShipmentActivity;
+import com.tokopedia.checkout.view.view.shipment.ShipmentFragment;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.receiver.CartBadgeNotificationReceiver;
@@ -325,10 +325,14 @@ public class CartFragment extends BaseCheckoutFragment implements CartListAdapte
     @Override
     public void onCartPromoCancelVoucherPromoClicked(CartItemPromoHolderData cartItemPromoHolderData, int position) {
         checkoutAnalytics.eventClickCartClickXOnBannerPromoCode();
-        cartItemPromoHolderData.setPromoNotActive();
-        cartListAdapter.notifyItemChanged(position);
-        cartListAdapter.updateSuggestionPromo();
-        cartListAdapter.checkForShipmentForm();
+        if (cartItemPromoHolderData.isFromAutoApply()) {
+            dPresenter.processCancelAutoApply();
+        } else {
+            cartItemPromoHolderData.setPromoNotActive();
+            cartListAdapter.notifyItemChanged(position);
+            cartListAdapter.updateSuggestionPromo();
+            cartListAdapter.checkForShipmentForm();
+        }
     }
 
     @Override
@@ -450,9 +454,25 @@ public class CartFragment extends BaseCheckoutFragment implements CartListAdapte
         refreshHandler.finishRefresh();
         this.cartListData = cartListData;
         cartListAdapter.resetData();
-        CartItemPromoHolderData cartItemPromoHolderData = new CartItemPromoHolderData();
-        cartItemPromoHolderData.setPromoNotActive();
+
+        CartItemPromoHolderData cartItemPromoHolderData;
+        if (cartListData.getAutoApplyData() != null && cartListData.getAutoApplyData().isSuccess()) {
+            cartItemPromoHolderData = CartItemPromoHolderData.createInstanceFromAutoApply(
+                    cartListData.getAutoApplyData());
+            promoCodeAppliedData = new PromoCodeAppliedData.Builder()
+                    .typeVoucher(PromoCodeAppliedData.TYPE_COUPON)
+                    .promoCode(cartItemPromoHolderData.getCouponCode())
+                    .couponTitle(cartItemPromoHolderData.getCouponTitle())
+                    .description(cartItemPromoHolderData.getCouponMessage())
+                    .amount((int) cartItemPromoHolderData.getCouponDiscountAmount())
+                    .fromAutoApply(true)
+                    .build();
+        } else {
+            cartItemPromoHolderData = new CartItemPromoHolderData();
+            cartItemPromoHolderData.setPromoNotActive();
+        }
         cartListAdapter.addPromoVoucherData(cartItemPromoHolderData);
+
         if (cartListData.isError()) {
             cartListAdapter.addCartTickerError(
                     new CartItemTickerErrorHolderData.Builder()
@@ -531,7 +551,7 @@ public class CartFragment extends BaseCheckoutFragment implements CartListAdapte
         Intent intent = ShipmentActivity.createInstance(getActivity(), shipmentAddressFormData,
                 promoCodeAppliedData, cartListData.getCartPromoSuggestion()
         );
-        startActivityForResult(intent, CartShipmentActivity.REQUEST_CODE);
+        startActivityForResult(intent, ShipmentActivity.REQUEST_CODE);
 /*
         if (shipmentAddressFormData.isMultiple()) {
             Intent intent = CartShipmentActivity.createInstanceMultipleAddress(
@@ -731,6 +751,17 @@ public class CartFragment extends BaseCheckoutFragment implements CartListAdapte
                 .build());
     }
 
+    @Override
+    public void renderCancelAutoApplyCouponSuccess() {
+        cartListAdapter.cancelAutoApplyCoupon();
+        cartListAdapter.checkForShipmentForm();
+    }
+
+    @Override
+    public void renderCancelAutoApplyCouponError() {
+        NetworkErrorHelper.showSnackbar(getActivity(), getActivity().getString(R.string.default_request_error_unknown));
+    }
+
     void showDeleteCartItemDialog(List<CartItemData> cartItemDataList, List<CartItemData> emptyData) {
         DialogFragment dialog = CartRemoveItemDialog.newInstance(
                 cartItemDataList,
@@ -818,7 +849,7 @@ public class CartFragment extends BaseCheckoutFragment implements CartListAdapte
 
         if (requestCode == IRouterConstant.LoyaltyModule.LOYALTY_ACTIVITY_REQUEST_CODE) {
             onResultFromRequestCodeLoyalty(resultCode, data);
-        } else if (requestCode == CartShipmentActivity.REQUEST_CODE) {
+        } else if (requestCode == ShipmentActivity.REQUEST_CODE) {
             onResultFromRequestCodeCartShipment(resultCode, data);
         } else if (requestCode == MultipleAddressFormActivity.REQUEST_CODE) {
             onResultFromRequestCodeMultipleAddressForm(resultCode);
@@ -835,14 +866,14 @@ public class CartFragment extends BaseCheckoutFragment implements CartListAdapte
     }
 
     private void onResultFromRequestCodeCartShipment(int resultCode, Intent data) {
-        if (resultCode == CartShipmentActivity.RESULT_CODE_ACTION_TO_MULTIPLE_ADDRESS_FORM) {
+        if (resultCode == ShipmentActivity.RESULT_CODE_ACTION_TO_MULTIPLE_ADDRESS_FORM) {
             RecipientAddressModel selectedAddress = data.getParcelableExtra(
-                    CartShipmentActivity.EXTRA_SELECTED_ADDRESS_RECIPIENT_DATA
+                    ShipmentActivity.EXTRA_SELECTED_ADDRESS_RECIPIENT_DATA
             );
             dPresenter.processToShipmentMultipleAddress(selectedAddress);
-        } else if (resultCode == CartShipmentActivity.RESULT_CODE_FORCE_RESET_CART_FROM_SINGLE_SHIPMENT ||
-                resultCode == CartShipmentActivity.RESULT_CODE_FORCE_RESET_CART_FROM_MULTIPLE_SHIPMENT ||
-                resultCode == CartShipmentActivity.RESULT_CODE_CANCEL_SHIPMENT_PAYMENT) {
+        } else if (resultCode == ShipmentActivity.RESULT_CODE_FORCE_RESET_CART_FROM_SINGLE_SHIPMENT ||
+                resultCode == ShipmentActivity.RESULT_CODE_FORCE_RESET_CART_FROM_MULTIPLE_SHIPMENT ||
+                resultCode == ShipmentFragment.RESULT_CODE_CANCEL_SHIPMENT_PAYMENT) {
             dPresenter.processResetAndRefreshCartData();
         }
     }

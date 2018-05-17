@@ -1,5 +1,6 @@
 package com.tokopedia.checkout.view.holderitemdata;
 
+import com.tokopedia.checkout.domain.datamodel.cartlist.AutoApplyData;
 import com.tokopedia.checkout.domain.datamodel.voucher.PromoCodeAppliedData;
 import com.tokopedia.checkout.view.view.shipment.ShipmentData;
 
@@ -23,6 +24,8 @@ public class CartItemPromoHolderData implements ShipmentData {
     private String couponMessage;
     private String couponCode;
     private long couponDiscountAmount;
+
+    private boolean fromAutoApply;
 
     public int getTypePromo() {
         return typePromo;
@@ -57,6 +60,10 @@ public class CartItemPromoHolderData implements ShipmentData {
         return couponDiscountAmount;
     }
 
+    public boolean isFromAutoApply() {
+        return fromAutoApply;
+    }
+
     public void setPromoVoucherType(
             String voucherCode, String voucherMessage, long voucherDiscountAmount
     ) {
@@ -76,6 +83,17 @@ public class CartItemPromoHolderData implements ShipmentData {
         this.couponTitle = couponTitle;
     }
 
+    public void setPromoCouponTypeFromAutoApply(
+            String couponTitle, String couponCode, String couponMessage, long couponDiscountAmount
+    ) {
+        this.typePromo = TYPE_PROMO_COUPON;
+        this.couponMessage = couponMessage;
+        this.couponCode = couponCode;
+        this.couponDiscountAmount = couponDiscountAmount;
+        this.couponTitle = couponTitle;
+        this.fromAutoApply = true;
+    }
+
     public void setPromoNotActive() {
         this.typePromo = TYPE_PROMO_NOT_ACTIVE;
         this.voucherMessage = "";
@@ -93,6 +111,13 @@ public class CartItemPromoHolderData implements ShipmentData {
         CartItemPromoHolderData data = new CartItemPromoHolderData();
         if (promoCodeAppliedData == null) {
             data.setPromoNotActive();
+        } else if (promoCodeAppliedData.isFromAutoApply()) {
+            data.setPromoCouponTypeFromAutoApply(
+                    promoCodeAppliedData.getCouponTitle(),
+                    promoCodeAppliedData.getPromoCode(),
+                    promoCodeAppliedData.getDescription(),
+                    promoCodeAppliedData.getAmount()
+            );
         } else {
             switch (promoCodeAppliedData.getTypeVoucher()) {
                 case PromoCodeAppliedData.TYPE_COUPON:
@@ -111,6 +136,22 @@ public class CartItemPromoHolderData implements ShipmentData {
                     break;
             }
         }
+        return data;
+    }
+
+    public static CartItemPromoHolderData createInstanceFromAutoApply(AutoApplyData autoApplyData) {
+        CartItemPromoHolderData data = new CartItemPromoHolderData();
+        if (autoApplyData.getIsCoupon() == 1) {
+            data.setPromoCouponTypeFromAutoApply(
+                    autoApplyData.getTitleDescription(),
+                    autoApplyData.getCode(),
+                    autoApplyData.getMessageSuccess(),
+                    autoApplyData.getDiscountAmount()
+            );
+        } else {
+            data.setPromoNotActive();
+        }
+
         return data;
     }
 }

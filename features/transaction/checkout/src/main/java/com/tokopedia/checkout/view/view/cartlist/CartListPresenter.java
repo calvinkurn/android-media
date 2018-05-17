@@ -7,6 +7,7 @@ import com.tokopedia.abstraction.common.network.exception.HttpErrorException;
 import com.tokopedia.abstraction.common.network.exception.ResponseDataNullException;
 import com.tokopedia.abstraction.common.network.exception.ResponseErrorException;
 import com.tokopedia.abstraction.common.utils.TKPDMapParam;
+import com.tokopedia.checkout.domain.usecase.CancelAutoApplyCouponUseCase;
 import com.tokopedia.transactiondata.entity.request.RemoveCartRequest;
 import com.tokopedia.transactiondata.entity.request.UpdateCartRequest;
 import com.tokopedia.transactiondata.exception.ResponseCartApiErrorException;
@@ -33,6 +34,9 @@ import com.tokopedia.core.router.transactionmodule.sharedata.CheckPromoCodeCartL
 import com.tokopedia.design.utils.CurrencyFormatUtil;
 import com.tokopedia.transactiondata.utils.CartApiRequestParamGenerator;
 import com.tokopedia.usecase.RequestParams;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.net.ConnectException;
 import java.net.SocketTimeoutException;
@@ -63,6 +67,7 @@ public class CartListPresenter implements ICartListPresenter {
     private final ResetCartGetShipmentFormUseCase resetCartGetShipmentFormUseCase;
     private final CheckPromoCodeCartListUseCase checkPromoCodeCartListUseCase;
     private final CartApiRequestParamGenerator cartApiRequestParamGenerator;
+    private final CancelAutoApplyCouponUseCase cancelAutoApplyCouponUseCase;
 
     @Inject
     public CartListPresenter(ICartListView cartListView,
@@ -75,7 +80,8 @@ public class CartListPresenter implements ICartListPresenter {
                              ResetCartGetShipmentFormUseCase resetCartGetShipmentFormUseCase,
                              CheckPromoCodeCartListUseCase checkPromoCodeCartListUseCase,
                              CompositeSubscription compositeSubscription,
-                             CartApiRequestParamGenerator cartApiRequestParamGenerator) {
+                             CartApiRequestParamGenerator cartApiRequestParamGenerator,
+                             CancelAutoApplyCouponUseCase cancelAutoApplyCouponUseCase) {
         this.view = cartListView;
         this.getCartListUseCase = getCartListUseCase;
         this.compositeSubscription = compositeSubscription;
@@ -87,6 +93,7 @@ public class CartListPresenter implements ICartListPresenter {
         this.resetCartGetShipmentFormUseCase = resetCartGetShipmentFormUseCase;
         this.checkPromoCodeCartListUseCase = checkPromoCodeCartListUseCase;
         this.cartApiRequestParamGenerator = cartApiRequestParamGenerator;
+        this.cancelAutoApplyCouponUseCase = cancelAutoApplyCouponUseCase;
     }
 
     @Override
@@ -802,4 +809,42 @@ public class CartListPresenter implements ICartListPresenter {
         };
     }
 
+    @Override
+    public void processCancelAutoApply() {
+        compositeSubscription.add(cancelAutoApplyCouponUseCase.createObservable(RequestParams.create())
+                .subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .unsubscribeOn(Schedulers.newThread())
+                .subscribe(new Subscriber<String>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        e.printStackTrace();
+                        view.renderCancelAutoApplyCouponError();
+                    }
+
+                    @Override
+                    public void onNext(String stringResponse) {
+                        boolean resultSuccess = false;
+                        try {
+                            JSONObject jsonObject = new JSONObject(stringResponse);
+                            resultSuccess = jsonObject.getJSONObject(CancelAutoApplyCouponUseCase.RESPONSE_DATA)
+                                    .getBoolean(CancelAutoApplyCouponUseCase.RESPONSE_SUCCESS);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+
+                        if (resultSuccess) {
+                            view.renderCancelAutoApplyCouponSuccess();
+                        } else {
+                            view.renderCancelAutoApplyCouponError();
+                        }
+                    }
+                })
+        );
+    }
 }

@@ -31,4 +31,6 @@ public interface ICartListPresenter {
     void processResetAndRefreshCartData();
 
     void processResetThenToShipmentForm();
+
+    void processCancelAutoApply();
 }

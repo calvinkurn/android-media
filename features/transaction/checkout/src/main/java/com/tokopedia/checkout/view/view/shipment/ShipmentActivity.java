@@ -9,16 +9,13 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 
 import com.tokopedia.abstraction.common.di.component.HasComponent;
-import com.tokopedia.checkout.R;
 import com.tokopedia.checkout.domain.datamodel.cartlist.CartPromoSuggestion;
 import com.tokopedia.checkout.domain.datamodel.cartshipmentform.CartShipmentAddressFormData;
 import com.tokopedia.checkout.domain.datamodel.voucher.PromoCodeAppliedData;
 import com.tokopedia.checkout.view.base.BaseCheckoutActivity;
 import com.tokopedia.checkout.view.di.component.CartComponent;
 import com.tokopedia.checkout.view.di.component.CartComponentInjector;
-import com.tokopedia.checkout.view.view.shipmentform.MultipleAddressShipmentFragment;
 import com.tokopedia.checkout.view.view.shipmentform.ResetShipmentFormDialog;
-import com.tokopedia.checkout.view.view.shipmentform.SingleAddressShipmentFragment;
 
 /**
  * @author Irfan Khoirul on 23/04/18.
@@ -26,12 +23,20 @@ import com.tokopedia.checkout.view.view.shipmentform.SingleAddressShipmentFragme
 
 public class ShipmentActivity extends BaseCheckoutActivity implements HasComponent<CartComponent> {
 
+    public static final int REQUEST_CODE = 983;
+    public static final int RESULT_CODE_ACTION_TO_MULTIPLE_ADDRESS_FORM = 1;
     public static final int RESULT_CODE_FORCE_RESET_CART_FROM_SINGLE_SHIPMENT = 2;
     public static final int RESULT_CODE_FORCE_RESET_CART_FROM_MULTIPLE_SHIPMENT = 3;
+    public static final int RESULT_CODE_CANCEL_SHIPMENT_PAYMENT = 4;
 
     public static final String EXTRA_SHIPMENT_FORM_DATA = "EXTRA_SHIPMENT_FORM_DATA";
+    public static final String EXTRA_SELECTED_ADDRESS_RECIPIENT_DATA = "EXTRA_DEFAULT_ADDRESS_RECIPIENT_DATA";
     public static final String EXTRA_CART_PROMO_SUGGESTION = "EXTRA_CART_PROMO_SUGGESTION";
+    public static final String EXTRA_ADDRESS_SHIPMENT_TYPE = "EXTRA_ADDRESS_SHIPMENT_TYPE";
     public static final String EXTRA_PROMO_CODE_APPLIED_DATA = "EXTRA_PROMO_CODE_APPLIED_DATA";
+    public static final int TYPE_ADDRESS_SHIPMENT_SINGLE = 1;
+    public static final int TYPE_ADDRESS_SHIPMENT_MULTIPLE = 2;
+
 
     public static Intent createInstance(Context context,
                                         CartShipmentAddressFormData cartShipmentAddressFormData,
@@ -109,13 +114,7 @@ public class ShipmentActivity extends BaseCheckoutActivity implements HasCompone
 
                     @Override
                     public void onResetCartShipmentForm() {
-                        if (getSupportFragmentManager().findFragmentById(R.id.parent_view)
-                                instanceof SingleAddressShipmentFragment) {
-                            setResult(RESULT_CODE_FORCE_RESET_CART_FROM_SINGLE_SHIPMENT);
-                        } else if (getSupportFragmentManager().findFragmentById(R.id.parent_view)
-                                instanceof MultipleAddressShipmentFragment) {
-                            setResult(RESULT_CODE_FORCE_RESET_CART_FROM_MULTIPLE_SHIPMENT);
-                        }
+                        setResult(RESULT_CODE_FORCE_RESET_CART_FROM_SINGLE_SHIPMENT);
                         finish();
                     }
 
