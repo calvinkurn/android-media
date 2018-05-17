@@ -1,6 +1,5 @@
 package com.tokopedia.tracking.mapper;
 
-import com.tokopedia.core.network.retrofit.response.TkpdResponse;
 import com.tokopedia.tracking.entity.TrackingResponse;
 import com.tokopedia.tracking.viewmodel.TrackingViewModel;
 
