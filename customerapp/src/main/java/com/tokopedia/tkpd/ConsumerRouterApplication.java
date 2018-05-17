@@ -300,15 +300,6 @@ import static com.tokopedia.core.router.productdetail.ProductDetailRouter.SHARE_
 /**
  * @author normansyahputa on 12/15/16.
  */
-//
-//  TkpdCoreRouter, SellerModuleRouter, IDigitalModuleRouter, PdpRouter,
-//          OtpRouter, IPaymentModuleRouter, TransactionRouter, IReactNativeRouter, ReactApplication,
-//          TkpdInboxRouter, TokoCashRouter, IWalletRouter, LoyaltyRouter, ReputationRouter, SessionRouter,
-//          AbstractionRouter, FlightModuleRouter, LogisticRouter, FeedModuleRouter, IHomeRouter,
-//          DiscoveryRouter, DigitalModuleRouter, com.tokopedia.tokocash.TokoCashRouter,
-//          DigitalRouter, KolRouter, GroupChatModuleRouter, ApplinkRouter, ShopModuleRouter,
-//          LoyaltyModuleRouter, GamificationRouter, ProfileModuleRouter, ReactNativeRouter
-
 public abstract class ConsumerRouterApplication extends MainApplication implements
         TkpdCoreRouter,
         SellerModuleRouter,
