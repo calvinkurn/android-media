@@ -1,4 +1,4 @@
-package com.tokopedia.inbox.inboxchat.chatroom.fragment;
+package com.tokopedia.inbox.inboxchat.chattemplate.view.fragment;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -24,10 +24,10 @@ import com.tokopedia.core.base.presentation.BaseDaggerFragment;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.inbox.R;
 import com.tokopedia.inbox.inboxchat.common.di.DaggerTemplateChatComponent;
-import com.tokopedia.inbox.inboxchat.chatroom.listener.EditTemplateChatContract;
-import com.tokopedia.inbox.inboxchat.chatroom.presenter.EditTemplateChatPresenter;
+import com.tokopedia.inbox.inboxchat.chattemplate.view.listener.EditTemplateChatContract;
+import com.tokopedia.inbox.inboxchat.chattemplate.view.presenter.EditTemplateChatPresenter;
 import com.tokopedia.inbox.inboxchat.common.util.Events;
-import com.tokopedia.inbox.inboxchat.chatroom.viewmodel.templatechat.EditTemplateViewModel;
+import com.tokopedia.inbox.inboxchat.chattemplate.view.viewmodel.EditTemplateViewModel;
 
 import java.util.List;
 
@@ -37,11 +37,11 @@ import rx.Observable;
 import rx.functions.Action1;
 import rx.functions.Func1;
 
-import static com.tokopedia.inbox.inboxchat.chatroom.fragment.TemplateChatFragment.CREATE;
-import static com.tokopedia.inbox.inboxchat.chatroom.fragment.TemplateChatFragment.DELETE;
-import static com.tokopedia.inbox.inboxchat.chatroom.fragment.TemplateChatFragment.INDEX_RESULT;
-import static com.tokopedia.inbox.inboxchat.chatroom.fragment.TemplateChatFragment.LIST_RESULT;
-import static com.tokopedia.inbox.inboxchat.chatroom.fragment.TemplateChatFragment.MODE_RESULT;
+import static com.tokopedia.inbox.inboxchat.chattemplate.view.fragment.TemplateChatFragment.CREATE;
+import static com.tokopedia.inbox.inboxchat.chattemplate.view.fragment.TemplateChatFragment.DELETE;
+import static com.tokopedia.inbox.inboxchat.chattemplate.view.fragment.TemplateChatFragment.INDEX_RESULT;
+import static com.tokopedia.inbox.inboxchat.chattemplate.view.fragment.TemplateChatFragment.LIST_RESULT;
+import static com.tokopedia.inbox.inboxchat.chattemplate.view.fragment.TemplateChatFragment.MODE_RESULT;
 import static com.tokopedia.inbox.inboxmessage.InboxMessageConstant.PARAM_ALL;
 import static com.tokopedia.inbox.inboxmessage.InboxMessageConstant.PARAM_MESSAGE;
 import static com.tokopedia.inbox.inboxmessage.InboxMessageConstant.PARAM_MODE;

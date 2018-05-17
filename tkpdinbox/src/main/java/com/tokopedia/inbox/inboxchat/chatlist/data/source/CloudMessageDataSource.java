@@ -1,10 +1,10 @@
-package com.tokopedia.inbox.inboxchat.data.source;
+package com.tokopedia.inbox.inboxchat.chatlist.data.source;
 
 import com.google.gson.JsonObject;
 import com.tokopedia.core.network.apiservices.chat.ChatService;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
-import com.tokopedia.inbox.inboxchat.data.mapper.DeleteMessageMapper;
-import com.tokopedia.inbox.inboxchat.data.mapper.GetMessageMapper;
+import com.tokopedia.inbox.inboxchat.chatlist.data.mapper.DeleteMessageMapper;
+import com.tokopedia.inbox.inboxchat.chatlist.data.mapper.GetMessageMapper;
 import com.tokopedia.inbox.inboxchat.chatlist.viewmodel.DeleteChatListViewModel;
 import com.tokopedia.inbox.inboxchat.chatlist.viewmodel.InboxChatViewModel;
 

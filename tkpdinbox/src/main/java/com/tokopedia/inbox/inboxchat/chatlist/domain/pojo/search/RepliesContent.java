@@ -1,9 +1,9 @@
 
-package com.tokopedia.inbox.inboxchat.domain.pojo.search;
+package com.tokopedia.inbox.inboxchat.chatlist.domain.pojo.search;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-import com.tokopedia.inbox.inboxchat.domain.pojo.message.Contact;
+import com.tokopedia.inbox.inboxchat.chatlist.domain.pojo.message.Contact;
 
 public class RepliesContent {
 

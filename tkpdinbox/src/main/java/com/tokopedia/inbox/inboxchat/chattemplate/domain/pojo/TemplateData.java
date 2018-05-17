@@ -1,4 +1,4 @@
-package com.tokopedia.inbox.inboxchat.domain.model.template;
+package com.tokopedia.inbox.inboxchat.chattemplate.domain.pojo;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;

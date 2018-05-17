@@ -1,4 +1,4 @@
-package com.tokopedia.inbox.inboxchat.chatroom.adapter.viewholder.chattemplate;
+package com.tokopedia.inbox.inboxchat.chattemplate.view.adapter.viewholder;
 
 import android.support.annotation.LayoutRes;
 import android.view.View;
@@ -8,8 +8,8 @@ import android.widget.TextView;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.inbox.R;
-import com.tokopedia.inbox.inboxchat.chatroom.listener.TemplateChatContract;
-import com.tokopedia.inbox.inboxchat.chatroom.viewmodel.templatechat.TemplateChatModel;
+import com.tokopedia.inbox.inboxchat.chattemplate.view.listener.TemplateChatContract;
+import com.tokopedia.inbox.inboxchat.chattemplate.view.viewmodel.TemplateChatModel;
 
 /**
  * Created by stevenfredian on 11/29/17.

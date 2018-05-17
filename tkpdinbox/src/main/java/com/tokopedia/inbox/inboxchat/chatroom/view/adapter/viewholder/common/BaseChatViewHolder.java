@@ -9,7 +9,7 @@ import com.tkpd.library.utils.KeyboardHandler;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.inbox.R;
-import com.tokopedia.inbox.inboxchat.ChatTimeConverter;
+import com.tokopedia.inbox.inboxchat.common.util.ChatTimeConverter;
 import com.tokopedia.inbox.inboxchat.chatroom.viewmodel.BaseChatViewModel;
 import com.tokopedia.inbox.inboxchat.chatroom.listener.ChatRoomContract;
 

@@ -1,13 +1,10 @@
-package com.tokopedia.inbox.inboxchat.data.factory;
+package com.tokopedia.inbox.inboxchat.chatroom.data.factory;
 
 import com.tokopedia.core.network.apiservices.chat.ChatService;
-import com.tokopedia.inbox.inboxchat.data.mapper.GetMessageMapper;
-import com.tokopedia.inbox.inboxchat.data.mapper.GetReplyMapper;
-import com.tokopedia.inbox.inboxchat.data.mapper.ReplyMessageMapper;
-import com.tokopedia.inbox.inboxchat.data.repository.ReplyRepository;
-import com.tokopedia.inbox.inboxchat.data.source.CloudMessageDataSource;
-import com.tokopedia.inbox.inboxchat.data.source.CloudReplyActionDataSource;
-import com.tokopedia.inbox.inboxchat.data.source.CloudReplyDataSource;
+import com.tokopedia.inbox.inboxchat.chatroom.data.mapper.GetReplyMapper;
+import com.tokopedia.inbox.inboxchat.chatroom.data.mapper.ReplyMessageMapper;
+import com.tokopedia.inbox.inboxchat.chatroom.data.source.CloudReplyActionDataSource;
+import com.tokopedia.inbox.inboxchat.chatroom.data.source.CloudReplyDataSource;
 
 /**
  * Created by stevenfredian on 8/31/17.

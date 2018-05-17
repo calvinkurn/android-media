@@ -1,4 +1,4 @@
-package com.tokopedia.inbox.inboxchat.chatroom.data.mapper.template;
+package com.tokopedia.inbox.inboxchat.chattemplate.data.mapper;
 
 import android.text.TextUtils;
 
@@ -8,7 +8,7 @@ import com.tokopedia.core.network.ErrorMessageException;
 import com.tokopedia.core.network.retrofit.response.ErrorHandler;
 import com.tokopedia.core.network.retrofit.response.TkpdResponse;
 import com.tokopedia.inbox.R;
-import com.tokopedia.inbox.inboxchat.domain.model.template.TemplateData;
+import com.tokopedia.inbox.inboxchat.chattemplate.domain.pojo.TemplateData;
 import com.tokopedia.inbox.inboxchat.chattemplate.view.viewmodel.GetTemplateViewModel;
 import com.tokopedia.inbox.inboxchat.chattemplate.view.viewmodel.TemplateChatModel;
 

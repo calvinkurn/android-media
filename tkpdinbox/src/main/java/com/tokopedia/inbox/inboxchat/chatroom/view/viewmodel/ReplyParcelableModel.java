@@ -1,5 +1,5 @@
 
-package com.tokopedia.inbox.inboxchat.domain.model;
+package com.tokopedia.inbox.inboxchat.chatroom.view.viewmodel;
 
 import android.os.Parcel;
 import android.os.Parcelable;

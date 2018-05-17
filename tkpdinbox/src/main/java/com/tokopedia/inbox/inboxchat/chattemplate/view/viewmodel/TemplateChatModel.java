@@ -1,8 +1,8 @@
-package com.tokopedia.inbox.inboxchat.chatroom.viewmodel.templatechat;
+package com.tokopedia.inbox.inboxchat.chattemplate.view.viewmodel;
 
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
-import com.tokopedia.inbox.inboxchat.chatroom.adapter.TemplateChatTypeFactory;
+import com.tokopedia.inbox.inboxchat.chattemplate.view.adapter.TemplateChatTypeFactory;
 
 /**
  * Created by stevenfredian on 11/29/17.

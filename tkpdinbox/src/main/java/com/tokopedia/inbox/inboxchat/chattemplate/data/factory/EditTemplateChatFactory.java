@@ -1,8 +1,8 @@
-package com.tokopedia.inbox.inboxchat.chatroom.data.factory.template;
+package com.tokopedia.inbox.inboxchat.chattemplate.data.factory;
 
 import com.tokopedia.core.network.apiservices.chat.ChatService;
-import com.tokopedia.inbox.inboxchat.chatroom.data.mapper.template.EditTemplateChatMapper;
-import com.tokopedia.inbox.inboxchat.data.source.template.CloudEditTemplateChatDataSource;
+import com.tokopedia.inbox.inboxchat.chattemplate.data.mapper.EditTemplateChatMapper;
+import com.tokopedia.inbox.inboxchat.chattemplate.data.source.CloudEditTemplateChatDataSource;
 
 /**
  * Created by stevenfredian on 11/27/17.

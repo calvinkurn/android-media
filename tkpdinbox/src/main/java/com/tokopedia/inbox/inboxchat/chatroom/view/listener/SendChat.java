@@ -1,4 +1,4 @@
-package com.tokopedia.inbox.inboxchat.listener;
+package com.tokopedia.inbox.inboxchat.chatroom.view.listener;
 
 import android.content.Context;
 

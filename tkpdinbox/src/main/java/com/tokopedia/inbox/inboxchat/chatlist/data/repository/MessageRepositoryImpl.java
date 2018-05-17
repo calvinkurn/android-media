@@ -1,9 +1,9 @@
-package com.tokopedia.inbox.inboxchat.data.repository;
+package com.tokopedia.inbox.inboxchat.chatlist.data.repository;
 
 
 import com.google.gson.JsonObject;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
-import com.tokopedia.inbox.inboxchat.data.factory.MessageFactory;
+import com.tokopedia.inbox.inboxchat.chatlist.data.factory.MessageFactory;
 import com.tokopedia.inbox.inboxchat.chatlist.viewmodel.DeleteChatListViewModel;
 import com.tokopedia.inbox.inboxchat.chatlist.viewmodel.InboxChatViewModel;
 import com.tokopedia.inbox.inboxchat.chatroom.viewmodel.SendMessageViewModel;

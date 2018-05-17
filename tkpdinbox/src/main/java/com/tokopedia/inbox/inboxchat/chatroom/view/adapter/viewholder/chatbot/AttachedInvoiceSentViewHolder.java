@@ -12,7 +12,7 @@ import com.bumptech.glide.Glide;
 import com.tkpd.library.utils.KeyboardHandler;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.inbox.R;
-import com.tokopedia.inbox.inboxchat.ChatTimeConverter;
+import com.tokopedia.inbox.inboxchat.common.util.ChatTimeConverter;
 import com.tokopedia.inbox.inboxchat.chatroom.adapter.viewholder.common.BaseChatViewHolder;
 import com.tokopedia.inbox.inboxchat.chatroom.listener.ChatRoomContract;
 import com.tokopedia.inbox.inboxchat.chatroom.viewmodel.invoiceattachment.AttachInvoiceSentViewModel;

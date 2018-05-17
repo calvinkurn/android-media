@@ -1,8 +1,9 @@
 
-package com.tokopedia.inbox.inboxchat.domain.pojo.message;
+package com.tokopedia.inbox.inboxchat.chatlist.domain.pojo.message;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import com.tokopedia.inbox.inboxchat.chatlist.domain.pojo.message.ListMessage;
 
 import java.util.List;
 

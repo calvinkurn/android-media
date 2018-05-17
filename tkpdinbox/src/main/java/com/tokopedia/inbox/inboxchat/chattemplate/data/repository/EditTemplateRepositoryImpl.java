@@ -1,7 +1,7 @@
-package com.tokopedia.inbox.inboxchat.chatroom.data.repository.template;
+package com.tokopedia.inbox.inboxchat.chattemplate.data.repository;
 
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
-import com.tokopedia.inbox.inboxchat.chatroom.data.factory.template.EditTemplateChatFactory;
+import com.tokopedia.inbox.inboxchat.chattemplate.data.factory.EditTemplateChatFactory;
 import com.tokopedia.inbox.inboxchat.chattemplate.view.viewmodel.EditTemplateViewModel;
 
 import rx.Observable;

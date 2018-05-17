@@ -1,13 +1,12 @@
-package com.tokopedia.inbox.inboxchat.presenter.subscriber;
+package com.tokopedia.inbox.inboxchat.chatlist.subscriber;
 
 import android.util.Pair;
 
 import com.tokopedia.core.network.retrofit.response.ErrorHandler;
-import com.tokopedia.inbox.inboxchat.presenter.InboxChatContract;
-import com.tokopedia.inbox.inboxchat.presenter.InboxChatPresenter;
-import com.tokopedia.inbox.inboxchat.viewmodel.DeleteChatListViewModel;
-import com.tokopedia.inbox.inboxchat.viewmodel.DeleteChatViewModel;
-import com.tokopedia.inbox.inboxchat.viewmodel.InboxChatViewModel;
+import com.tokopedia.inbox.inboxchat.chatlist.listener.InboxChatContract;
+import com.tokopedia.inbox.inboxchat.chatlist.presenter.InboxChatPresenter;
+import com.tokopedia.inbox.inboxchat.chatlist.viewmodel.DeleteChatListViewModel;
+import com.tokopedia.inbox.inboxchat.chatlist.viewmodel.DeleteChatViewModel;
 
 import java.util.List;
 

@@ -1,8 +1,8 @@
-package com.tokopedia.inbox.inboxchat.data.network;
+package com.tokopedia.inbox.inboxchat.chatroom.data.network;
 
 import com.tokopedia.inbox.attachinvoice.data.model.GetInvoicePostRequest;
 import com.tokopedia.inbox.attachinvoice.data.model.GetInvoicesResponseWrapper;
-import com.tokopedia.inbox.inboxchat.domain.pojo.SetChatRatingPojo;
+import com.tokopedia.inbox.inboxchat.chatroom.domain.pojo.rating.SetChatRatingPojo;
 
 import java.util.HashMap;
 import java.util.Map;

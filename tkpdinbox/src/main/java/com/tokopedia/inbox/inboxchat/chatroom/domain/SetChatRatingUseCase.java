@@ -1,8 +1,8 @@
-package com.tokopedia.inbox.inboxchat.domain.usecase;
+package com.tokopedia.inbox.inboxchat.chatroom.domain;
 
 import com.tokopedia.inbox.inboxchat.chatroom.data.mapper.SetChatRatingMapper;
 import com.tokopedia.inbox.inboxchat.chatroom.data.network.ChatBotApi;
-import com.tokopedia.inbox.inboxchat.domain.pojo.SetChatRatingPojo;
+import com.tokopedia.inbox.inboxchat.chatroom.domain.pojo.rating.SetChatRatingPojo;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.usecase.UseCase;
 

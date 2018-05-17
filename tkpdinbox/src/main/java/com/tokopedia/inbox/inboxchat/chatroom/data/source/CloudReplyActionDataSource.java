@@ -1,9 +1,9 @@
-package com.tokopedia.inbox.inboxchat.data.source;
+package com.tokopedia.inbox.inboxchat.chatroom.data.source;
 
 import com.tokopedia.core.network.apiservices.chat.ChatService;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.inbox.inboxchat.chatroom.data.mapper.ReplyMessageMapper;
-import com.tokopedia.inbox.inboxchat.domain.model.replyaction.ReplyActionData;
+import com.tokopedia.inbox.inboxchat.chatroom.domain.pojo.replyaction.ReplyActionData;
 
 import rx.Observable;
 

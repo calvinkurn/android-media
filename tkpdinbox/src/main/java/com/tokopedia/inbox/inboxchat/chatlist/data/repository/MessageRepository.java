@@ -1,4 +1,4 @@
-package com.tokopedia.inbox.inboxchat.data.repository;
+package com.tokopedia.inbox.inboxchat.chatlist.data.repository;
 
 
 import com.google.gson.JsonObject;

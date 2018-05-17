@@ -1,4 +1,4 @@
-package com.tokopedia.inbox.inboxchat.data.mapper;
+package com.tokopedia.inbox.inboxchat.chatroom.data.mapper;
 
 import android.text.TextUtils;
 
@@ -9,15 +9,14 @@ import com.tokopedia.core.network.retrofit.response.ErrorHandler;
 import com.tokopedia.core.network.retrofit.response.TkpdResponse;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.inbox.R;
-import com.tokopedia.inbox.inboxchat.domain.WebSocketMapper;
-import com.tokopedia.inbox.inboxchat.domain.model.reply.Attachment;
-import com.tokopedia.inbox.inboxchat.domain.model.reply.AttachmentInvoice;
-import com.tokopedia.inbox.inboxchat.domain.model.reply.AttachmentInvoiceAttributes;
-import com.tokopedia.inbox.inboxchat.domain.model.reply.Contact;
-import com.tokopedia.inbox.inboxchat.domain.model.reply.ListReply;
-import com.tokopedia.inbox.inboxchat.domain.model.reply.ReplyData;
-import com.tokopedia.inbox.inboxchat.domain.pojo.quickreply.QuickReplyListPojo;
-import com.tokopedia.inbox.inboxchat.domain.pojo.quickreply.QuickReplyPojo;
+import com.tokopedia.inbox.inboxchat.chatroom.domain.pojo.reply.Attachment;
+import com.tokopedia.inbox.inboxchat.chatroom.domain.pojo.reply.AttachmentInvoice;
+import com.tokopedia.inbox.inboxchat.chatroom.domain.pojo.reply.AttachmentInvoiceAttributes;
+import com.tokopedia.inbox.inboxchat.chatroom.domain.pojo.reply.Contact;
+import com.tokopedia.inbox.inboxchat.chatroom.domain.pojo.reply.ListReply;
+import com.tokopedia.inbox.inboxchat.chatroom.domain.pojo.reply.ReplyData;
+import com.tokopedia.inbox.inboxchat.chatroom.domain.pojo.quickreply.QuickReplyListPojo;
+import com.tokopedia.inbox.inboxchat.chatroom.domain.pojo.quickreply.QuickReplyPojo;
 import com.tokopedia.inbox.inboxchat.chatroom.viewmodel.invoiceattachment.AttachInvoiceSentViewModel;
 import com.tokopedia.inbox.inboxchat.chatroom.viewmodel.ChatRoomViewModel;
 import com.tokopedia.inbox.inboxchat.chatroom.viewmodel.imageannouncement.ImageAnnouncementViewModel;

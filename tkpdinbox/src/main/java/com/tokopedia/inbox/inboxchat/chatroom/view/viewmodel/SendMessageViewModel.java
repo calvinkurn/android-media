@@ -1,4 +1,4 @@
-package com.tokopedia.inbox.inboxchat.viewmodel;
+package com.tokopedia.inbox.inboxchat.chatroom.viewmodel;
 
 /**
  * @author by nisie on 10/25/17.

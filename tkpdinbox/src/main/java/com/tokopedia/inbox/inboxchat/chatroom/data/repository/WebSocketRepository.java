@@ -1,8 +1,8 @@
-package com.tokopedia.inbox.inboxchat.data.repository;
+package com.tokopedia.inbox.inboxchat.chatroom.data.repository;
 
 
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
-import com.tokopedia.inbox.inboxchat.domain.model.websocket.ChatSocketData;
+import com.tokopedia.inbox.inboxchat.chatroom.domain.pojo.websocket.ChatSocketData;
 
 import rx.Observable;
 

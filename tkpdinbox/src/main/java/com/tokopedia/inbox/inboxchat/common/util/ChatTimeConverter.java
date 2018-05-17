@@ -1,4 +1,4 @@
-package com.tokopedia.inbox.inboxchat;
+package com.tokopedia.inbox.inboxchat.common.util;
 
 import android.text.format.DateFormat;
 import android.text.format.DateUtils;

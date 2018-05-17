@@ -1,12 +1,12 @@
-package com.tokopedia.inbox.inboxchat.presenter;
+package com.tokopedia.inbox.inboxchat.chatlist.listener;
 
 import com.tokopedia.core.base.presentation.CustomerPresenter;
 import com.tokopedia.core.base.presentation.CustomerView;
 import com.tokopedia.core.util.RefreshHandler;
-import com.tokopedia.inbox.inboxchat.WebSocketInterface;
+import com.tokopedia.inbox.inboxchat.chatroom.presenter.WebSocketInterface;
 import com.tokopedia.inbox.inboxchat.chatlist.adapter.InboxChatAdapter;
-import com.tokopedia.inbox.inboxchat.viewmodel.DeleteChatViewModel;
-import com.tokopedia.inbox.inboxchat.viewmodel.InboxChatViewModel;
+import com.tokopedia.inbox.inboxchat.chatlist.viewmodel.DeleteChatViewModel;
+import com.tokopedia.inbox.inboxchat.chatlist.viewmodel.InboxChatViewModel;
 
 import android.content.Context;
 import android.content.Intent;
@@ -96,7 +96,7 @@ public class InboxChatContract {
         void saveResult();
     }
 
-    interface Presenter extends CustomerPresenter<View>{
+    public interface Presenter extends CustomerPresenter<View>{
         void createWebSocket();
 
         void resetAttempt();

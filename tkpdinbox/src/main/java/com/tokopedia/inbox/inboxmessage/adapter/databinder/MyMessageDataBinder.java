@@ -14,8 +14,8 @@ import android.widget.TextView;
 
 import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
-import com.tokopedia.inbox.inboxchat.ChatTimeConverter;
-import com.tokopedia.inbox.inboxchat.domain.model.reply.ListReply;
+import com.tokopedia.inbox.inboxchat.common.util.ChatTimeConverter;
+import com.tokopedia.inbox.inboxchat.chatroom.domain.pojo.reply.ListReply;
 import com.tokopedia.inbox.inboxmessage.model.inboxmessagedetail.InboxMessageDetailItem;
 import com.tokopedia.core.util.DataBindAdapter;
 import com.tokopedia.core.util.DataBinder;

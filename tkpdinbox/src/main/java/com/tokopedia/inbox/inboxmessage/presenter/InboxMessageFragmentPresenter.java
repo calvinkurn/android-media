@@ -2,7 +2,7 @@ package com.tokopedia.inbox.inboxmessage.presenter;
 
 import android.content.Intent;
 
-import com.tokopedia.inbox.inboxchat.domain.model.message.ListMessage;
+import com.tokopedia.inbox.inboxchat.chatlist.domain.pojo.message.ListMessage;
 import com.tokopedia.inbox.inboxmessage.model.ActInboxMessagePass;
 import com.tokopedia.inbox.inboxmessage.model.InboxMessagePass;
 import com.tokopedia.inbox.inboxmessage.model.inboxmessage.InboxMessageItem;

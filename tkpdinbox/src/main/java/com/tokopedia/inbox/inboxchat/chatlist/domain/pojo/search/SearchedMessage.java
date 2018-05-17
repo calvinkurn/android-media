@@ -1,5 +1,5 @@
 
-package com.tokopedia.inbox.inboxchat.domain.pojo.search;
+package com.tokopedia.inbox.inboxchat.chatlist.domain.pojo.search;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;

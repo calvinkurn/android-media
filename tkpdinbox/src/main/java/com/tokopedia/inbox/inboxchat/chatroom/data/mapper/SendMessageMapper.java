@@ -1,4 +1,4 @@
-package com.tokopedia.inbox.inboxchat.data.mapper;
+package com.tokopedia.inbox.inboxchat.chatroom.data.mapper;
 
 import android.text.TextUtils;
 
@@ -7,7 +7,7 @@ import com.tokopedia.core.network.ErrorMessageException;
 import com.tokopedia.core.network.retrofit.response.ErrorHandler;
 import com.tokopedia.core.network.retrofit.response.TkpdResponse;
 import com.tokopedia.inbox.R;
-import com.tokopedia.inbox.inboxchat.domain.pojo.SendMessagePojo;
+import com.tokopedia.inbox.inboxchat.chatroom.domain.pojo.SendMessagePojo;
 import com.tokopedia.inbox.inboxchat.chatroom.viewmodel.SendMessageViewModel;
 
 import retrofit2.Response;

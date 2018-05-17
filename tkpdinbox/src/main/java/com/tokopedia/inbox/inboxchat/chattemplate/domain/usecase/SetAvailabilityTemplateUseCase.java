@@ -1,4 +1,4 @@
-package com.tokopedia.inbox.inboxchat.chattemplate.domain;
+package com.tokopedia.inbox.inboxchat.chattemplate.domain.usecase;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;

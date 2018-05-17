@@ -1,4 +1,4 @@
-package com.tokopedia.inbox.inboxchat.data.mapper;
+package com.tokopedia.inbox.inboxchat.chatlist.data.mapper;
 
 import android.text.TextUtils;
 
@@ -8,8 +8,8 @@ import com.tokopedia.core.network.ErrorMessageException;
 import com.tokopedia.core.network.retrofit.response.ErrorHandler;
 import com.tokopedia.core.network.retrofit.response.TkpdResponse;
 import com.tokopedia.inbox.R;
-import com.tokopedia.inbox.inboxchat.domain.model.message.ListMessage;
-import com.tokopedia.inbox.inboxchat.domain.model.message.MessageData;
+import com.tokopedia.inbox.inboxchat.chatlist.domain.pojo.message.ListMessage;
+import com.tokopedia.inbox.inboxchat.chatlist.domain.pojo.message.MessageData;
 import com.tokopedia.inbox.inboxchat.chatlist.viewmodel.ChatListViewModel;
 import com.tokopedia.inbox.inboxchat.chatlist.viewmodel.InboxChatViewModel;
 

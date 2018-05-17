@@ -1,8 +1,8 @@
-package com.tokopedia.inbox.inboxchat.data.source.template;
+package com.tokopedia.inbox.inboxchat.chattemplate.data.source;
 
 import com.tokopedia.core.network.apiservices.chat.ChatService;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
-import com.tokopedia.inbox.inboxchat.chatroom.data.mapper.template.TemplateChatMapper;
+import com.tokopedia.inbox.inboxchat.chattemplate.data.mapper.TemplateChatMapper;
 import com.tokopedia.inbox.inboxchat.chattemplate.view.viewmodel.GetTemplateViewModel;
 
 import rx.Observable;

@@ -1,7 +1,7 @@
-package com.tokopedia.inbox.inboxchat.data.mapper;
+package com.tokopedia.inbox.inboxchat.chatroom.data.mapper;
 
 import com.tokopedia.core.network.ErrorMessageException;
-import com.tokopedia.inbox.inboxchat.domain.pojo.SetChatRatingPojo;
+import com.tokopedia.inbox.inboxchat.chatroom.domain.pojo.rating.SetChatRatingPojo;
 
 import java.io.IOException;
 

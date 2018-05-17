@@ -1,4 +1,4 @@
-package com.tokopedia.inbox.inboxchat.data.source;
+package com.tokopedia.inbox.inboxchat.chatroom.data.source;
 
 import com.tokopedia.core.network.apiservices.chat.ChatService;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;

@@ -1,10 +1,10 @@
-package com.tokopedia.inbox.inboxchat.domain.usecase;
+package com.tokopedia.inbox.inboxchat.chatroom.domain;
 
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.domain.UseCase;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
-import com.tokopedia.inbox.inboxchat.domain.model.replyaction.ReplyActionData;
+import com.tokopedia.inbox.inboxchat.chatroom.domain.pojo.replyaction.ReplyActionData;
 import com.tokopedia.inbox.inboxchat.uploadimage.domain.interactor.GenerateHostUseCase;
 import com.tokopedia.inbox.inboxchat.uploadimage.domain.interactor.UploadImageUseCase;
 import com.tokopedia.inbox.inboxchat.uploadimage.domain.model.GenerateHostDomain;

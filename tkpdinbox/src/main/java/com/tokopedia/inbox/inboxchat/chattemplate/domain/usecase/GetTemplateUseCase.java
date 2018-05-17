@@ -1,4 +1,4 @@
-package com.tokopedia.inbox.inboxchat.chattemplate.domain;
+package com.tokopedia.inbox.inboxchat.chattemplate.domain.usecase;
 
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.domain.UseCase;

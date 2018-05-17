@@ -1,4 +1,4 @@
-package com.tokopedia.inbox.inboxchat.data.network;
+package com.tokopedia.inbox.inboxchat.chatroom.data.network;
 
 /**
  * @author by alvinatin on 29/03/18.

@@ -1,4 +1,4 @@
-package com.tokopedia.inbox.inboxchat.data.mapper;
+package com.tokopedia.inbox.inboxchat.chatlist.data.mapper;
 
 import android.text.TextUtils;
 
@@ -9,8 +9,8 @@ import com.tokopedia.core.network.retrofit.response.ErrorHandler;
 import com.tokopedia.core.network.retrofit.response.TkpdResponse;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.inbox.R;
-import com.tokopedia.inbox.inboxchat.domain.model.search.RepliesContent;
-import com.tokopedia.inbox.inboxchat.domain.model.search.SearchedMessage;
+import com.tokopedia.inbox.inboxchat.chatlist.domain.pojo.search.RepliesContent;
+import com.tokopedia.inbox.inboxchat.chatlist.domain.pojo.search.SearchedMessage;
 import com.tokopedia.inbox.inboxchat.chatlist.viewmodel.ChatListViewModel;
 import com.tokopedia.inbox.inboxchat.chatlist.viewmodel.InboxChatViewModel;
 

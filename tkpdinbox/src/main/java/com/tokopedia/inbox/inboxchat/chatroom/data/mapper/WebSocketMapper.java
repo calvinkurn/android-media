@@ -1,4 +1,4 @@
-package com.tokopedia.inbox.inboxchat.domain;
+package com.tokopedia.inbox.inboxchat.chatroom.data.mapper;
 
 import android.text.TextUtils;
 
@@ -8,16 +8,16 @@ import com.google.gson.JsonSyntaxException;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.inbox.inboxchat.chatroom.data.ChatWebSocketConstant;
 import com.tokopedia.inbox.inboxchat.chatroom.viewmodel.BaseChatViewModel;
-import com.tokopedia.inbox.inboxchat.domain.pojo.common.WebSocketResponse;
-import com.tokopedia.inbox.inboxchat.domain.pojo.common.WebSocketResponseData;
-import com.tokopedia.inbox.inboxchat.domain.pojo.imageupload.ImageUploadAttributes;
-import com.tokopedia.inbox.inboxchat.domain.pojo.invoiceselection.InvoiceSingleItemAttributes;
-import com.tokopedia.inbox.inboxchat.domain.pojo.invoiceselection.InvoicesSelectionPojo;
-import com.tokopedia.inbox.inboxchat.domain.pojo.invoiceselection.InvoicesSelectionSingleItemPojo;
-import com.tokopedia.inbox.inboxchat.domain.pojo.invoicesent.InvoiceSentPojo;
-import com.tokopedia.inbox.inboxchat.domain.pojo.productattachment.ProductAttachmentAttributes;
-import com.tokopedia.inbox.inboxchat.domain.pojo.quickreply.QuickReplyAttachmentAttributes;
-import com.tokopedia.inbox.inboxchat.domain.pojo.quickreply.QuickReplyPojo;
+import com.tokopedia.inbox.inboxchat.chatroom.domain.pojo.common.WebSocketResponse;
+import com.tokopedia.inbox.inboxchat.chatroom.domain.pojo.common.WebSocketResponseData;
+import com.tokopedia.inbox.inboxchat.chatroom.domain.pojo.imageupload.ImageUploadAttributes;
+import com.tokopedia.inbox.inboxchat.chatroom.domain.pojo.invoiceselection.InvoiceSingleItemAttributes;
+import com.tokopedia.inbox.inboxchat.chatroom.domain.pojo.invoiceselection.InvoicesSelectionPojo;
+import com.tokopedia.inbox.inboxchat.chatroom.domain.pojo.invoiceselection.InvoicesSelectionSingleItemPojo;
+import com.tokopedia.inbox.inboxchat.chatroom.domain.pojo.invoicesent.InvoiceSentPojo;
+import com.tokopedia.inbox.inboxchat.chatroom.domain.pojo.productattachment.ProductAttachmentAttributes;
+import com.tokopedia.inbox.inboxchat.chatroom.domain.pojo.quickreply.QuickReplyAttachmentAttributes;
+import com.tokopedia.inbox.inboxchat.chatroom.domain.pojo.quickreply.QuickReplyPojo;
 import com.tokopedia.inbox.inboxchat.chatroom.viewmodel.invoiceattachment.AttachInvoiceSentViewModel;
 import com.tokopedia.inbox.inboxchat.chatroom.viewmodel.quickreply.QuickReplyListViewModel;
 import com.tokopedia.inbox.inboxchat.chatroom.viewmodel.quickreply.QuickReplyViewModel;

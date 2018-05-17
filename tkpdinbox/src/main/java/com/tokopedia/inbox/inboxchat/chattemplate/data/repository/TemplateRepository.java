@@ -1,4 +1,4 @@
-package com.tokopedia.inbox.inboxchat.chatroom.data.repository.template;
+package com.tokopedia.inbox.inboxchat.chattemplate.data.repository;
 
 import com.google.gson.JsonObject;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;

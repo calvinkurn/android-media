@@ -1,9 +1,9 @@
 
-package com.tokopedia.inbox.inboxchat.domain.pojo.common;
+package com.tokopedia.inbox.inboxchat.chatroom.domain.pojo.common;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-import com.tokopedia.inbox.inboxchat.domain.pojo.Message;
+import com.tokopedia.inbox.inboxchat.chatroom.domain.pojo.reply.Message;
 
 public class WebSocketResponseData {
 

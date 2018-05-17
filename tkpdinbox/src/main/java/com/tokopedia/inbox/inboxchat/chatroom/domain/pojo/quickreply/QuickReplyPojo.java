@@ -1,4 +1,4 @@
-package com.tokopedia.inbox.inboxchat.domain.pojo.quickreply;
+package com.tokopedia.inbox.inboxchat.chatroom.domain.pojo.quickreply;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;

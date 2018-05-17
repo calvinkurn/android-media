@@ -1,11 +1,11 @@
-package com.tokopedia.inbox.inboxchat.data.source;
+package com.tokopedia.inbox.inboxchat.chatroom.data.source;
 
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.network.apiservices.chat.ChatService;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.inbox.inboxchat.chatroom.data.mapper.ChatEventMapper;
-import com.tokopedia.inbox.inboxchat.domain.model.websocket.ChatSocketData;
+import com.tokopedia.inbox.inboxchat.chatroom.domain.pojo.websocket.ChatSocketData;
 
 import rx.Observable;
 

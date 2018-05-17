@@ -1,4 +1,4 @@
-package com.tokopedia.inbox.inboxchat.domain.pojo.imageupload;
+package com.tokopedia.inbox.inboxchat.chatroom.domain.pojo.imageupload;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;

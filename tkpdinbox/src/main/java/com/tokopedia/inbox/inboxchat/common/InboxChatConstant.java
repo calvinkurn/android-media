@@ -1,4 +1,4 @@
-package com.tokopedia.inbox.inboxchat;
+package com.tokopedia.inbox.inboxchat.common;
 
 /**
  * Created by stevenfredian on 11/15/17.

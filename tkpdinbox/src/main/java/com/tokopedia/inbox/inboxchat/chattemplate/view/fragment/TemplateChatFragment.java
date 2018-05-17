@@ -1,4 +1,4 @@
-package com.tokopedia.inbox.inboxchat.chatroom.fragment;
+package com.tokopedia.inbox.inboxchat.chattemplate.view.fragment;
 
 
 import android.app.Activity;
@@ -22,14 +22,14 @@ import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
 import com.tokopedia.design.bottomsheet.BottomSheetView;
 import com.tokopedia.inbox.R;
-import com.tokopedia.inbox.inboxchat.chatroom.activity.EditTemplateChatActivity;
-import com.tokopedia.inbox.inboxchat.chatroom.adapter.TemplateChatSettingAdapter;
-import com.tokopedia.inbox.inboxchat.chatroom.adapter.TemplateChatSettingTypeFactoryImpl;
+import com.tokopedia.inbox.inboxchat.chattemplate.view.activity.EditTemplateChatActivity;
+import com.tokopedia.inbox.inboxchat.chattemplate.view.adapter.TemplateChatSettingAdapter;
+import com.tokopedia.inbox.inboxchat.chattemplate.view.adapter.TemplateChatSettingTypeFactoryImpl;
 import com.tokopedia.inbox.inboxchat.common.di.DaggerTemplateChatComponent;
 import com.tokopedia.inbox.inboxchat.common.util.SimpleItemTouchHelperCallback;
-import com.tokopedia.inbox.inboxchat.chatroom.listener.TemplateChatContract;
-import com.tokopedia.inbox.inboxchat.chatroom.presenter.TemplateChatSettingPresenter;
-import com.tokopedia.inbox.inboxchat.chatroom.adapter.viewholder.chattemplate.ItemTemplateChatViewHolder;
+import com.tokopedia.inbox.inboxchat.chattemplate.view.listener.TemplateChatContract;
+import com.tokopedia.inbox.inboxchat.chattemplate.view.presenter.TemplateChatSettingPresenter;
+import com.tokopedia.inbox.inboxchat.chattemplate.view.adapter.viewholder.ItemTemplateChatViewHolder;
 
 import java.util.ArrayList;
 import java.util.List;

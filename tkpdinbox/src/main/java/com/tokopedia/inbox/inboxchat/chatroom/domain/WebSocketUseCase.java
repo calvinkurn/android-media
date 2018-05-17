@@ -1,4 +1,4 @@
-package com.tokopedia.inbox.inboxchat.domain.usecase;
+package com.tokopedia.inbox.inboxchat.chatroom.domain;
 
 import android.os.CountDownTimer;
 

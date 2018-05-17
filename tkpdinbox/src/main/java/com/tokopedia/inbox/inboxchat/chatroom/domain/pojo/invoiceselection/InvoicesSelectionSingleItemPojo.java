@@ -1,4 +1,4 @@
-package com.tokopedia.inbox.inboxchat.domain.pojo.invoiceselection;
+package com.tokopedia.inbox.inboxchat.chatroom.domain.pojo.invoiceselection;
 
 import com.google.gson.annotations.SerializedName;
 

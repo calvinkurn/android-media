@@ -1,4 +1,4 @@
-package com.tokopedia.inbox.inboxchat;
+package com.tokopedia.inbox.inboxchat.chatroom.listener;
 
 import android.os.Bundle;
 

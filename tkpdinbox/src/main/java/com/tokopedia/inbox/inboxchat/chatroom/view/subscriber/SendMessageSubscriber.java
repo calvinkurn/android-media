@@ -3,8 +3,8 @@ package com.tokopedia.inbox.inboxchat.chatroom.subscriber;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.network.retrofit.response.ErrorHandler;
 import com.tokopedia.inbox.R;
-import com.tokopedia.inbox.inboxchat.listener.SendChat;
-import com.tokopedia.inbox.inboxchat.viewmodel.SendMessageViewModel;
+import com.tokopedia.inbox.inboxchat.chatroom.view.listener.SendChat;
+import com.tokopedia.inbox.inboxchat.chatroom.viewmodel.SendMessageViewModel;
 
 import rx.Subscriber;
 
