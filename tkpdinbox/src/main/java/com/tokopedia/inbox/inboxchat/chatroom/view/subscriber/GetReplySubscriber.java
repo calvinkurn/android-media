@@ -1,9 +1,9 @@
-package com.tokopedia.inbox.inboxchat.chatroom.subscriber;
+package com.tokopedia.inbox.inboxchat.chatroom.view.subscriber;
 
 import com.tokopedia.core.network.retrofit.response.ErrorHandler;
-import com.tokopedia.inbox.inboxchat.chatroom.listener.ChatRoomContract;
-import com.tokopedia.inbox.inboxchat.chatroom.presenter.ChatRoomPresenter;
-import com.tokopedia.inbox.inboxchat.chatroom.viewmodel.ChatRoomViewModel;
+import com.tokopedia.inbox.inboxchat.chatroom.view.listener.ChatRoomContract;
+import com.tokopedia.inbox.inboxchat.chatroom.view.presenter.ChatRoomPresenter;
+import com.tokopedia.inbox.inboxchat.chatroom.view.viewmodel.ChatRoomViewModel;
 
 import rx.Subscriber;
 

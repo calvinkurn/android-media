@@ -1,9 +1,9 @@
-package com.tokopedia.inbox.inboxchat.chatroom.viewmodel;
+package com.tokopedia.inbox.inboxchat.chatroom.view.viewmodel;
 
-import com.tokopedia.inbox.inboxchat.chatroom.adapter.ChatRoomAdapter;
 import com.tokopedia.inbox.inboxchat.chatroom.data.mapper.WebSocketMapper;
 import com.tokopedia.inbox.inboxchat.chatroom.domain.GetReplyListUseCase;
-import com.tokopedia.inbox.inboxchat.chatroom.presenter.ChatWebSocketListenerImpl;
+import com.tokopedia.inbox.inboxchat.chatroom.view.adapter.ChatRoomAdapter;
+import com.tokopedia.inbox.inboxchat.chatroom.view.presenter.ChatWebSocketListenerImpl;
 
 /**
  * @author by yfsx on 08/05/18.

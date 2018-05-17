@@ -4,7 +4,7 @@ package com.tokopedia.inbox.inboxchat.chatroom.data.repository;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.inbox.inboxchat.chatroom.data.factory.ReplyFactory;
 import com.tokopedia.inbox.inboxchat.chatroom.domain.pojo.replyaction.ReplyActionData;
-import com.tokopedia.inbox.inboxchat.chatroom.viewmodel.ChatRoomViewModel;
+import com.tokopedia.inbox.inboxchat.chatroom.view.viewmodel.ChatRoomViewModel;
 
 import rx.Observable;
 

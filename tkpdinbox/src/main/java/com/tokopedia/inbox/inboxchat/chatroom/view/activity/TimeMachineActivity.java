@@ -1,4 +1,4 @@
-package com.tokopedia.inbox.inboxchat.chatroom.activity;
+package com.tokopedia.inbox.inboxchat.chatroom.view.activity;
 
 import android.app.FragmentTransaction;
 import android.content.Context;

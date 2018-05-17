@@ -1,4 +1,4 @@
-package com.tokopedia.inbox.inboxchat.chatroom.adapter;
+package com.tokopedia.inbox.inboxchat.chatroom.view.adapter;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -7,9 +7,9 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.tokopedia.inbox.R;
-import com.tokopedia.inbox.inboxchat.chatroom.listener.ChatRoomContract;
-import com.tokopedia.inbox.inboxchat.chatroom.viewmodel.quickreply.QuickReplyListViewModel;
-import com.tokopedia.inbox.inboxchat.chatroom.viewmodel.quickreply.QuickReplyViewModel;
+import com.tokopedia.inbox.inboxchat.chatroom.view.listener.ChatRoomContract;
+import com.tokopedia.inbox.inboxchat.chatroom.view.viewmodel.quickreply.QuickReplyListViewModel;
+import com.tokopedia.inbox.inboxchat.chatroom.view.viewmodel.quickreply.QuickReplyViewModel;
 
 /**
  * @author by yfsx on 08/05/18.

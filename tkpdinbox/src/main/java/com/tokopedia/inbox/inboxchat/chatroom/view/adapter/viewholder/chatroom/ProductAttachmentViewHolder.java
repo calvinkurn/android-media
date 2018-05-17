@@ -1,4 +1,4 @@
-package com.tokopedia.inbox.inboxchat.chatroom.adapter.viewholder.chatroom;
+package com.tokopedia.inbox.inboxchat.chatroom.view.adapter.viewholder.chatroom;
 
 import android.content.Context;
 import android.support.annotation.LayoutRes;
@@ -10,9 +10,9 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.inbox.R;
-import com.tokopedia.inbox.inboxchat.chatroom.adapter.viewholder.common.BaseChatViewHolder;
-import com.tokopedia.inbox.inboxchat.chatroom.listener.ChatRoomContract;
-import com.tokopedia.inbox.inboxchat.chatroom.viewmodel.productattachment.ProductAttachmentViewModel;
+import com.tokopedia.inbox.inboxchat.chatroom.view.adapter.viewholder.common.BaseChatViewHolder;
+import com.tokopedia.inbox.inboxchat.chatroom.view.listener.ChatRoomContract;
+import com.tokopedia.inbox.inboxchat.chatroom.view.viewmodel.productattachment.ProductAttachmentViewModel;
 
 /**
  * @author by nisie on 5/14/18.

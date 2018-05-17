@@ -1,4 +1,4 @@
-package com.tokopedia.inbox.inboxchat.chatroom.activity;
+package com.tokopedia.inbox.inboxchat.chatroom.view.activity;
 
 import android.content.Context;
 import android.content.Intent;
@@ -35,7 +35,7 @@ import com.tokopedia.inbox.contactus.ContactUsConstant;
 import com.tokopedia.inbox.contactus.activity.ContactUsActivity;
 import com.tokopedia.inbox.inboxchat.chatroom.listener.ChatNotifInterface;
 import com.tokopedia.inbox.inboxchat.chatlist.activity.InboxChatActivity;
-import com.tokopedia.inbox.inboxchat.chatroom.fragment.ChatRoomFragment;
+import com.tokopedia.inbox.inboxchat.chatroom.view.fragment.ChatRoomFragment;
 import com.tokopedia.inbox.inboxmessage.InboxMessageConstant;
 
 /**

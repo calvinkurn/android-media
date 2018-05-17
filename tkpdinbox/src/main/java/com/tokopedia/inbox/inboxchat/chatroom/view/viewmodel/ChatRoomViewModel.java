@@ -1,4 +1,4 @@
-package com.tokopedia.inbox.inboxchat.chatroom.viewmodel;
+package com.tokopedia.inbox.inboxchat.chatroom.view.viewmodel;
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 

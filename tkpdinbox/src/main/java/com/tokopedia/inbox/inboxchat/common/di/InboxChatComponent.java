@@ -2,9 +2,9 @@ package com.tokopedia.inbox.inboxchat.common.di;
 
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.inbox.inboxchat.chatroom.data.network.ChatBotApi;
-import com.tokopedia.inbox.inboxchat.chatroom.fragment.ChatRoomFragment;
 import com.tokopedia.inbox.inboxchat.chatlist.fragment.InboxChatFragment;
 import com.tokopedia.inbox.inboxchat.chatlist.fragment.SendChatFragment;
+import com.tokopedia.inbox.inboxchat.chatroom.view.fragment.ChatRoomFragment;
 
 import dagger.Component;
 

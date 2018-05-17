@@ -1,14 +1,14 @@
-package com.tokopedia.inbox.inboxchat.chatroom.adapter.viewholder.chatbot;
+package com.tokopedia.inbox.inboxchat.chatroom.view.adapter.viewholder.chatbot;
 
 import android.view.View;
 import android.widget.TextView;
 
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.inbox.R;
-import com.tokopedia.inbox.inboxchat.chatroom.adapter.viewholder.common.BaseChatViewHolder;
-import com.tokopedia.inbox.inboxchat.chatroom.listener.ChatRoomContract;
+import com.tokopedia.inbox.inboxchat.chatroom.view.adapter.viewholder.common.BaseChatViewHolder;
+import com.tokopedia.inbox.inboxchat.chatroom.view.listener.ChatRoomContract;
+import com.tokopedia.inbox.inboxchat.chatroom.view.viewmodel.quickreply.QuickReplyListViewModel;
 import com.tokopedia.inbox.inboxchat.common.util.ChatLinkHandlerMovementMethod;
-import com.tokopedia.inbox.inboxchat.chatroom.viewmodel.quickreply.QuickReplyListViewModel;
 
 /**
  * @author by nisie on 5/8/18.

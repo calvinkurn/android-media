@@ -57,7 +57,7 @@
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateAlwaysHidden"/>
         <activity
-            android:name=".inboxchat.chatroom.activity.ChatRoomActivity"
+            android:name=".inboxchat.chatroom.view.activity.ChatRoomActivity"
             android:label="@string/title_inbox_message"
             android:windowSoftInputMode="adjustResize|stateHidden"/>
         <activity
@@ -125,7 +125,7 @@
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateAlwaysHidden"/>
         <activity
-            android:name=".inboxchat.chatroom.activity.TimeMachineActivity"
+            android:name=".inboxchat.chatroom.view.activity.TimeMachineActivity"
             android:label="@string/title_time_machine_message"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateAlwaysHidden"/>
@@ -153,7 +153,7 @@
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateAlwaysHidden"/>
         <activity
-            android:name=".inboxchat.chatroom.activity.ChatMarketingThumbnailActivity"
+            android:name=".inboxchat.chatroom.view.activity.ChatMarketingThumbnailActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateAlwaysHidden"/>
         <activity

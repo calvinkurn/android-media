@@ -1,4 +1,4 @@
-package com.tokopedia.inbox.inboxchat.chatroom.adapter.viewholder.common;
+package com.tokopedia.inbox.inboxchat.chatroom.view.adapter.viewholder.common;
 
 import android.text.TextUtils;
 import android.text.format.DateFormat;
@@ -9,9 +9,9 @@ import com.tkpd.library.utils.KeyboardHandler;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.inbox.R;
+import com.tokopedia.inbox.inboxchat.chatroom.view.listener.ChatRoomContract;
+import com.tokopedia.inbox.inboxchat.chatroom.view.viewmodel.BaseChatViewModel;
 import com.tokopedia.inbox.inboxchat.common.util.ChatTimeConverter;
-import com.tokopedia.inbox.inboxchat.chatroom.viewmodel.BaseChatViewModel;
-import com.tokopedia.inbox.inboxchat.chatroom.listener.ChatRoomContract;
 
 import java.util.Date;
 

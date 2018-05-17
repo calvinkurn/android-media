@@ -1,4 +1,4 @@
-package com.tokopedia.inbox.inboxchat.chatroom.listener;
+package com.tokopedia.inbox.inboxchat.chatroom.view.listener;
 
 import android.content.Context;
 import android.content.Intent;
@@ -10,14 +10,15 @@ import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.core.base.presentation.CustomerPresenter;
 import com.tokopedia.core.base.presentation.CustomerView;
 import com.tokopedia.inbox.attachinvoice.view.resultmodel.SelectedInvoice;
-import com.tokopedia.inbox.inboxchat.chatroom.presenter.WebSocketInterface;
-import com.tokopedia.inbox.inboxchat.chatroom.adapter.ChatRoomAdapter;
 import com.tokopedia.inbox.inboxchat.chatroom.domain.pojo.reply.Attachment;
 import com.tokopedia.inbox.inboxchat.chatroom.domain.pojo.replyaction.ReplyActionData;
-import com.tokopedia.inbox.inboxchat.chatroom.viewmodel.ChatRoomViewModel;
-import com.tokopedia.inbox.inboxchat.chatroom.viewmodel.imageupload.ImageUploadViewModel;
-import com.tokopedia.inbox.inboxchat.chatroom.viewmodel.quickreply.QuickReplyListViewModel;
-import com.tokopedia.inbox.inboxchat.chatroom.viewmodel.quickreply.QuickReplyViewModel;
+import com.tokopedia.inbox.inboxchat.chatroom.view.adapter.ChatRoomAdapter;
+import com.tokopedia.inbox.inboxchat.chatroom.view.presenter.WebSocketInterface;
+import com.tokopedia.inbox.inboxchat.chatroom.view.viewmodel.ChatRoomViewModel;
+import com.tokopedia.inbox.inboxchat.chatroom.view.viewmodel.imageupload.ImageUploadViewModel;
+import com.tokopedia.inbox.inboxchat.chatroom.view.viewmodel.quickreply.QuickReplyListViewModel;
+import com.tokopedia.inbox.inboxchat.chatroom.view.viewmodel.quickreply.QuickReplyViewModel;
+import com.tokopedia.inbox.inboxchat.viewmodel.chatroom.ChatRatingViewModel;
 
 import java.util.List;
 

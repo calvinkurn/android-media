@@ -1,4 +1,4 @@
-package com.tokopedia.inbox.inboxchat.chatroom.adapter.viewholder.chatroom;
+package com.tokopedia.inbox.inboxchat.chatroom.view.adapter.viewholder.chatroom;
 
 import android.support.annotation.LayoutRes;
 import android.text.Spannable;
@@ -12,8 +12,8 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.inbox.R;
-import com.tokopedia.inbox.inboxchat.chatroom.listener.ChatRoomContract;
-import com.tokopedia.inbox.inboxchat.chatroom.viewmodel.TimeMachineChatModel;
+import com.tokopedia.inbox.inboxchat.chatroom.view.listener.ChatRoomContract;
+import com.tokopedia.inbox.inboxchat.chatroom.view.viewmodel.TimeMachineChatModel;
 
 /**
  * @author by nisie on 10/24/17.

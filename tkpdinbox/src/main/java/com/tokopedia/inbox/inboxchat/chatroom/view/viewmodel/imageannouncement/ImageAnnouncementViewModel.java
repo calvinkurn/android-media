@@ -1,11 +1,11 @@
-package com.tokopedia.inbox.inboxchat.chatroom.viewmodel.imageannouncement;
+package com.tokopedia.inbox.inboxchat.chatroom.view.viewmodel.imageannouncement;
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
-import com.tokopedia.inbox.inboxchat.chatroom.presenter.ChatWebSocketListenerImpl;
-import com.tokopedia.inbox.inboxchat.chatroom.adapter.ChatRoomTypeFactory;
 import com.tokopedia.inbox.inboxchat.chatroom.data.mapper.WebSocketMapper;
-import com.tokopedia.inbox.inboxchat.chatroom.viewmodel.BaseChatViewModel;
+import com.tokopedia.inbox.inboxchat.chatroom.view.adapter.ChatRoomTypeFactory;
 import com.tokopedia.inbox.inboxchat.chatroom.domain.GetReplyListUseCase;
+import com.tokopedia.inbox.inboxchat.chatroom.view.presenter.ChatWebSocketListenerImpl;
+import com.tokopedia.inbox.inboxchat.chatroom.view.viewmodel.BaseChatViewModel;
 
 /**
  * @author by nisie on 5/15/18.

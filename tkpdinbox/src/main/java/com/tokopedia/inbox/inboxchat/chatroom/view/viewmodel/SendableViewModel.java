@@ -1,8 +1,8 @@
-package com.tokopedia.inbox.inboxchat.chatroom.viewmodel;
+package com.tokopedia.inbox.inboxchat.chatroom.view.viewmodel;
 
-import com.tokopedia.inbox.inboxchat.chatroom.presenter.ChatWebSocketListenerImpl;
 import com.tokopedia.inbox.inboxchat.chatroom.data.mapper.WebSocketMapper;
 import com.tokopedia.inbox.inboxchat.chatroom.domain.GetReplyListUseCase;
+import com.tokopedia.inbox.inboxchat.chatroom.view.presenter.ChatWebSocketListenerImpl;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;

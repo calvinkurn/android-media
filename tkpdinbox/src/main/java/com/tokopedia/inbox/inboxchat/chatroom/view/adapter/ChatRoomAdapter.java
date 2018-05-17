@@ -1,4 +1,4 @@
-package com.tokopedia.inbox.inboxchat.chatroom.adapter;
+package com.tokopedia.inbox.inboxchat.chatroom.view.adapter;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
@@ -11,17 +11,18 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel;
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingMoreModel;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
-import com.tokopedia.inbox.inboxchat.chatroom.adapter.viewholder.chatbot.AttachedInvoiceSentViewHolder;
-import com.tokopedia.inbox.inboxchat.chatroom.adapter.viewholder.chatroom.ImageAnnouncementViewHolder;
-import com.tokopedia.inbox.inboxchat.chatroom.adapter.viewholder.chatroom.ProductAttachmentViewHolder;
-import com.tokopedia.inbox.inboxchat.chatroom.adapter.viewholder.common.ImageUploadViewHolder;
+import com.tokopedia.inbox.inboxchat.chatroom.view.adapter.viewholder.chatbot.AttachedInvoiceSentViewHolder;
+import com.tokopedia.inbox.inboxchat.chatroom.view.adapter.viewholder.chatroom.ImageAnnouncementViewHolder;
+import com.tokopedia.inbox.inboxchat.chatroom.view.adapter.viewholder.chatroom.ProductAttachmentViewHolder;
+import com.tokopedia.inbox.inboxchat.chatroom.view.adapter.viewholder.common.ImageUploadViewHolder;
+import com.tokopedia.inbox.inboxchat.chatroom.view.viewmodel.BaseChatViewModel;
 import com.tokopedia.inbox.inboxchat.chatroom.view.viewmodel.ReplyParcelableModel;
-import com.tokopedia.inbox.inboxchat.chatroom.viewmodel.TypingChatModel;
-import com.tokopedia.inbox.inboxchat.chatroom.viewmodel.BaseChatViewModel;
-import com.tokopedia.inbox.inboxchat.chatroom.viewmodel.SendableViewModel;
-import com.tokopedia.inbox.inboxchat.chatroom.viewmodel.TimeMachineChatModel;
-import com.tokopedia.inbox.inboxchat.chatroom.viewmodel.imageupload.ImageUploadViewModel;
-import com.tokopedia.inbox.inboxchat.chatroom.viewmodel.productattachment.ProductAttachmentViewModel;
+import com.tokopedia.inbox.inboxchat.chatroom.view.viewmodel.SendableViewModel;
+import com.tokopedia.inbox.inboxchat.chatroom.view.viewmodel.TimeMachineChatModel;
+import com.tokopedia.inbox.inboxchat.chatroom.view.viewmodel.TypingChatModel;
+import com.tokopedia.inbox.inboxchat.chatroom.view.viewmodel.imageupload.ImageUploadViewModel;
+import com.tokopedia.inbox.inboxchat.chatroom.view.viewmodel.productattachment.ProductAttachmentViewModel;
+import com.tokopedia.inbox.inboxchat.viewmodel.chatroom.ChatRatingViewModel;
 
 import java.util.ArrayList;
 import java.util.Date;

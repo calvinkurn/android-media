@@ -1,9 +1,9 @@
 
-package com.tokopedia.inbox.inboxchat.chatroom.viewmodel.fallback;
+package com.tokopedia.inbox.inboxchat.chatroom.view.viewmodel.fallback;
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
-import com.tokopedia.inbox.inboxchat.chatroom.adapter.ChatRoomTypeFactory;
-import com.tokopedia.inbox.inboxchat.chatroom.viewmodel.BaseChatViewModel;
+import com.tokopedia.inbox.inboxchat.chatroom.view.adapter.ChatRoomTypeFactory;
+import com.tokopedia.inbox.inboxchat.chatroom.view.viewmodel.BaseChatViewModel;
 
 /**
  * @author by yfsx on 08/05/18.

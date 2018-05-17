@@ -1,4 +1,4 @@
-package com.tokopedia.inbox.inboxchat.chatroom.viewmodel.quickreply;
+package com.tokopedia.inbox.inboxchat.chatroom.view.viewmodel.quickreply;
 
 /**
  * @author by yfsx on 08/05/18.

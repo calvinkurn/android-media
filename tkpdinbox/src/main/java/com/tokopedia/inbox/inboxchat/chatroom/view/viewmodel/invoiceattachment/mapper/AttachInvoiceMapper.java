@@ -1,7 +1,7 @@
-package com.tokopedia.inbox.inboxchat.chatroom.viewmodel.invoiceattachment.mapper;
+package com.tokopedia.inbox.inboxchat.chatroom.view.viewmodel.invoiceattachment.mapper;
 
 import com.tokopedia.inbox.attachinvoice.view.resultmodel.SelectedInvoice;
-import com.tokopedia.inbox.inboxchat.chatroom.viewmodel.invoiceattachment.AttachInvoiceSingleViewModel;
+import com.tokopedia.inbox.inboxchat.chatroom.view.viewmodel.invoiceattachment.AttachInvoiceSingleViewModel;
 
 /**
  * Created by Hendri on 28/03/18.

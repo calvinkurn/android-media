@@ -1,7 +1,7 @@
-package com.tokopedia.inbox.inboxchat.chatroom.presenter;
+package com.tokopedia.inbox.inboxchat.chatroom.view.presenter;
 
-import com.tokopedia.inbox.inboxchat.chatroom.viewmodel.BaseChatViewModel;
 import com.tokopedia.inbox.inboxchat.chatroom.domain.pojo.reply.WebSocketResponse;
+import com.tokopedia.inbox.inboxchat.chatroom.view.viewmodel.BaseChatViewModel;
 
 /**
  * Created by stevenfredian on 9/22/17.

@@ -7,7 +7,7 @@ import android.widget.TextView;
 
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.inbox.R;
-import com.tokopedia.inbox.inboxchat.chatroom.listener.ChatRoomContract;
+import com.tokopedia.inbox.inboxchat.chatroom.view.listener.ChatRoomContract;
 import com.tokopedia.inbox.inboxchat.chattemplate.view.viewmodel.TemplateChatModel;
 
 /**

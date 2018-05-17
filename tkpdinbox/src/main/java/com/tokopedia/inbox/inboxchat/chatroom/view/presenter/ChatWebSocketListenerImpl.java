@@ -1,10 +1,10 @@
-package com.tokopedia.inbox.inboxchat.chatroom.presenter;
+package com.tokopedia.inbox.inboxchat.chatroom.view.presenter;
 
 import com.google.gson.GsonBuilder;
 import com.tokopedia.abstraction.common.utils.view.CommonUtils;
 import com.tokopedia.inbox.inboxchat.chatroom.data.mapper.WebSocketMapper;
-import com.tokopedia.inbox.inboxchat.chatroom.viewmodel.BaseChatViewModel;
 import com.tokopedia.inbox.inboxchat.chatroom.domain.pojo.reply.WebSocketResponse;
+import com.tokopedia.inbox.inboxchat.chatroom.view.viewmodel.BaseChatViewModel;
 
 import okhttp3.Response;
 import okhttp3.WebSocket;

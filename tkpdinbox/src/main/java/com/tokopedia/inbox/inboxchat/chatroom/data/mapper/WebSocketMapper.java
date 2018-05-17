@@ -7,7 +7,6 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonSyntaxException;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.inbox.inboxchat.chatroom.data.ChatWebSocketConstant;
-import com.tokopedia.inbox.inboxchat.chatroom.viewmodel.BaseChatViewModel;
 import com.tokopedia.inbox.inboxchat.chatroom.domain.pojo.common.WebSocketResponse;
 import com.tokopedia.inbox.inboxchat.chatroom.domain.pojo.common.WebSocketResponseData;
 import com.tokopedia.inbox.inboxchat.chatroom.domain.pojo.imageupload.ImageUploadAttributes;
@@ -18,15 +17,17 @@ import com.tokopedia.inbox.inboxchat.chatroom.domain.pojo.invoicesent.InvoiceSen
 import com.tokopedia.inbox.inboxchat.chatroom.domain.pojo.productattachment.ProductAttachmentAttributes;
 import com.tokopedia.inbox.inboxchat.chatroom.domain.pojo.quickreply.QuickReplyAttachmentAttributes;
 import com.tokopedia.inbox.inboxchat.chatroom.domain.pojo.quickreply.QuickReplyPojo;
-import com.tokopedia.inbox.inboxchat.chatroom.viewmodel.invoiceattachment.AttachInvoiceSentViewModel;
-import com.tokopedia.inbox.inboxchat.chatroom.viewmodel.quickreply.QuickReplyListViewModel;
-import com.tokopedia.inbox.inboxchat.chatroom.viewmodel.quickreply.QuickReplyViewModel;
-import com.tokopedia.inbox.inboxchat.chatroom.viewmodel.fallback.FallbackAttachmentViewModel;
-import com.tokopedia.inbox.inboxchat.chatroom.viewmodel.imageupload.ImageUploadViewModel;
-import com.tokopedia.inbox.inboxchat.chatroom.viewmodel.invoiceattachment.AttachInvoiceSelectionViewModel;
-import com.tokopedia.inbox.inboxchat.chatroom.viewmodel.invoiceattachment.AttachInvoiceSingleViewModel;
-import com.tokopedia.inbox.inboxchat.chatroom.viewmodel.message.MessageViewModel;
-import com.tokopedia.inbox.inboxchat.chatroom.viewmodel.productattachment.ProductAttachmentViewModel;
+import com.tokopedia.inbox.inboxchat.chatroom.view.viewmodel.BaseChatViewModel;
+import com.tokopedia.inbox.inboxchat.chatroom.view.viewmodel.fallback.FallbackAttachmentViewModel;
+import com.tokopedia.inbox.inboxchat.chatroom.view.viewmodel.imageupload.ImageUploadViewModel;
+import com.tokopedia.inbox.inboxchat.chatroom.view.viewmodel.invoiceattachment.AttachInvoiceSelectionViewModel;
+import com.tokopedia.inbox.inboxchat.chatroom.view.viewmodel.invoiceattachment.AttachInvoiceSentViewModel;
+import com.tokopedia.inbox.inboxchat.chatroom.view.viewmodel.invoiceattachment.AttachInvoiceSingleViewModel;
+import com.tokopedia.inbox.inboxchat.chatroom.view.viewmodel.message.MessageViewModel;
+import com.tokopedia.inbox.inboxchat.chatroom.view.viewmodel.productattachment.ProductAttachmentViewModel;
+import com.tokopedia.inbox.inboxchat.chatroom.view.viewmodel.quickreply.QuickReplyListViewModel;
+import com.tokopedia.inbox.inboxchat.chatroom.view.viewmodel.quickreply.QuickReplyViewModel;
+import com.tokopedia.inbox.inboxchat.viewmodel.chatroom.ChatRatingViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -79,7 +80,7 @@ public class WebSocketMapper {
     private BaseChatViewModel mapReplyMessage(WebSocketResponse pojo) {
         if (pojo.getData().isShowRating() || pojo.getData().getRatingStatus() != 0) {
             return convertToChatRating(pojo.getData());
-        }else if (hasAttachment(pojo)) {
+        } else if (hasAttachment(pojo)) {
             JsonObject jsonAttributes = pojo.getData().getAttachment().getAttributes();
             return mapAttachmentMessage(pojo, jsonAttributes);
         } else {
@@ -238,6 +239,7 @@ public class WebSocketMapper {
             return false;
         }
     }
+
     private BaseChatViewModel convertToChatRating(WebSocketResponseData pojo) {
         return new ChatRatingViewModel(
                 String.valueOf(pojo.getMsgId()),
@@ -252,6 +254,7 @@ public class WebSocketMapper {
                 Long.valueOf(pojo.getMessage().getTimeStampUnixNano())
         );
     }
+
     private BaseChatViewModel convertToFallBackModel(WebSocketResponseData pojo) {
         return new FallbackAttachmentViewModel(
                 String.valueOf(pojo.getMsgId()),

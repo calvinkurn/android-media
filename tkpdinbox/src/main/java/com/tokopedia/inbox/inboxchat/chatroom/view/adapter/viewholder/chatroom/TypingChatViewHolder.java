@@ -1,4 +1,4 @@
-package com.tokopedia.inbox.inboxchat.chatroom.adapter.viewholder.chatroom;
+package com.tokopedia.inbox.inboxchat.chatroom.view.adapter.viewholder.chatroom;
 
 import android.support.annotation.LayoutRes;
 import android.view.View;
@@ -7,7 +7,7 @@ import android.widget.ImageView;
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.inbox.R;
-import com.tokopedia.inbox.inboxchat.chatroom.viewmodel.TypingChatModel;
+import com.tokopedia.inbox.inboxchat.chatroom.view.viewmodel.TypingChatModel;
 
 /**
  * Created by stevenfredian on 10/26/17.

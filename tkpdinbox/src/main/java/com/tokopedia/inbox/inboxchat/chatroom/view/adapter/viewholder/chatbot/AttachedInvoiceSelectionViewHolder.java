@@ -1,4 +1,4 @@
-package com.tokopedia.inbox.inboxchat.chatroom.adapter.viewholder.chatbot;
+package com.tokopedia.inbox.inboxchat.chatroom.view.adapter.viewholder.chatbot;
 
 import android.support.annotation.LayoutRes;
 import android.support.v7.widget.LinearLayoutManager;
@@ -13,10 +13,10 @@ import android.widget.TextView;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.inbox.R;
-import com.tokopedia.inbox.inboxchat.chatroom.listener.ChatRoomContract;
-import com.tokopedia.inbox.inboxchat.chatroom.viewmodel.invoiceattachment.AttachInvoiceSelectionViewModel;
-import com.tokopedia.inbox.inboxchat.chatroom.viewmodel.invoiceattachment.AttachInvoiceSingleViewModel;
-import com.tokopedia.inbox.inboxchat.chatroom.viewmodel.invoiceattachment.mapper.AttachInvoiceMapper;
+import com.tokopedia.inbox.inboxchat.chatroom.view.listener.ChatRoomContract;
+import com.tokopedia.inbox.inboxchat.chatroom.view.viewmodel.invoiceattachment.AttachInvoiceSelectionViewModel;
+import com.tokopedia.inbox.inboxchat.chatroom.view.viewmodel.invoiceattachment.AttachInvoiceSingleViewModel;
+import com.tokopedia.inbox.inboxchat.chatroom.view.viewmodel.invoiceattachment.mapper.AttachInvoiceMapper;
 
 import java.util.List;
 

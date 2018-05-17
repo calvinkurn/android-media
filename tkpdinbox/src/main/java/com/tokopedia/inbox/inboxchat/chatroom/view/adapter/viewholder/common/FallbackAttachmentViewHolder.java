@@ -1,13 +1,13 @@
-package com.tokopedia.inbox.inboxchat.chatroom.adapter.viewholder.common;
+package com.tokopedia.inbox.inboxchat.chatroom.view.adapter.viewholder.common;
 
 import android.view.View;
 import android.widget.TextView;
 
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.inbox.R;
-import com.tokopedia.inbox.inboxchat.chatroom.listener.ChatRoomContract;
+import com.tokopedia.inbox.inboxchat.chatroom.view.listener.ChatRoomContract;
+import com.tokopedia.inbox.inboxchat.chatroom.view.viewmodel.fallback.FallbackAttachmentViewModel;
 import com.tokopedia.inbox.inboxchat.common.util.ChatLinkHandlerMovementMethod;
-import com.tokopedia.inbox.inboxchat.chatroom.viewmodel.fallback.FallbackAttachmentViewModel;
 
 /**
  * @author by nisie on 5/9/18.

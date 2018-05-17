@@ -1,4 +1,4 @@
-package com.tokopedia.inbox.inboxchat.chatroom.viewmodel.invoiceattachment;
+package com.tokopedia.inbox.inboxchat.chatroom.view.viewmodel.invoiceattachment;
 
 /**
  * Created by Hendri on 28/03/18.

@@ -1,9 +1,9 @@
-package com.tokopedia.inbox.inboxchat.chatroom.viewmodel.invoiceattachment;
+package com.tokopedia.inbox.inboxchat.chatroom.view.viewmodel.invoiceattachment;
 
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
-import com.tokopedia.inbox.inboxchat.chatroom.adapter.ChatRoomTypeFactory;
-import com.tokopedia.inbox.inboxchat.chatroom.viewmodel.BaseChatViewModel;
+import com.tokopedia.inbox.inboxchat.chatroom.view.adapter.ChatRoomTypeFactory;
+import com.tokopedia.inbox.inboxchat.chatroom.view.viewmodel.BaseChatViewModel;
 
 import java.util.List;
 

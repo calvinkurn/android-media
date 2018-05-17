@@ -7,7 +7,7 @@ import android.text.style.URLSpan;
 import android.view.MotionEvent;
 import android.widget.TextView;
 import com.tokopedia.design.component.ticker.SelectableSpannedMovementMethod;
-import com.tokopedia.inbox.inboxchat.chatroom.listener.ChatRoomContract;
+import com.tokopedia.inbox.inboxchat.chatroom.view.listener.ChatRoomContract;
 
 import java.lang.ref.WeakReference;
 

@@ -4,8 +4,8 @@ import android.view.View;
 
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
-import com.tokopedia.inbox.inboxchat.chatroom.fragment.ChatRoomFragment;
-import com.tokopedia.inbox.inboxchat.chatroom.listener.ChatRoomContract;
+import com.tokopedia.inbox.inboxchat.chatroom.view.fragment.ChatRoomFragment;
+import com.tokopedia.inbox.inboxchat.chatroom.view.listener.ChatRoomContract;
 import com.tokopedia.inbox.inboxchat.chattemplate.view.adapter.viewholder.TemplateChatViewHolder;
 import com.tokopedia.inbox.inboxchat.chattemplate.view.viewmodel.TemplateChatModel;
 

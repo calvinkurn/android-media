@@ -1,31 +1,33 @@
-package com.tokopedia.inbox.inboxchat.chatroom.adapter;
+package com.tokopedia.inbox.inboxchat.chatroom.view.adapter;
 
 import android.view.View;
 
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
-import com.tokopedia.inbox.inboxchat.chatroom.adapter.viewholder.chatbot.AttachedInvoiceSelectionViewHolder;
-import com.tokopedia.inbox.inboxchat.chatroom.adapter.viewholder.chatbot.AttachedInvoiceSentViewHolder;
-import com.tokopedia.inbox.inboxchat.chatroom.adapter.viewholder.chatbot.QuickReplyViewHolder;
-import com.tokopedia.inbox.inboxchat.chatroom.adapter.viewholder.chatroom.ImageAnnouncementViewHolder;
-import com.tokopedia.inbox.inboxchat.chatroom.adapter.viewholder.chatroom.ProductAttachmentViewHolder;
-import com.tokopedia.inbox.inboxchat.chatroom.adapter.viewholder.chatroom.TimeMachineChatViewHolder;
-import com.tokopedia.inbox.inboxchat.chatroom.adapter.viewholder.common.FallbackAttachmentViewHolder;
-import com.tokopedia.inbox.inboxchat.chatroom.adapter.viewholder.common.ImageUploadViewHolder;
-import com.tokopedia.inbox.inboxchat.chatroom.adapter.viewholder.common.MessageViewHolder;
-import com.tokopedia.inbox.inboxchat.chatroom.adapter.viewholder.chatroom.TypingChatViewHolder;
-import com.tokopedia.inbox.inboxchat.chatroom.fragment.ChatRoomFragment;
-import com.tokopedia.inbox.inboxchat.chatroom.listener.ChatRoomContract;
-import com.tokopedia.inbox.inboxchat.chatroom.viewmodel.invoiceattachment.AttachInvoiceSentViewModel;
-import com.tokopedia.inbox.inboxchat.chatroom.viewmodel.TypingChatModel;
-import com.tokopedia.inbox.inboxchat.chatroom.viewmodel.TimeMachineChatModel;
-import com.tokopedia.inbox.inboxchat.chatroom.viewmodel.fallback.FallbackAttachmentViewModel;
-import com.tokopedia.inbox.inboxchat.chatroom.viewmodel.imageannouncement.ImageAnnouncementViewModel;
-import com.tokopedia.inbox.inboxchat.chatroom.viewmodel.imageupload.ImageUploadViewModel;
-import com.tokopedia.inbox.inboxchat.chatroom.viewmodel.invoiceattachment.AttachInvoiceSelectionViewModel;
-import com.tokopedia.inbox.inboxchat.chatroom.viewmodel.message.MessageViewModel;
-import com.tokopedia.inbox.inboxchat.chatroom.viewmodel.productattachment.ProductAttachmentViewModel;
-import com.tokopedia.inbox.inboxchat.chatroom.viewmodel.quickreply.QuickReplyListViewModel;
+import com.tokopedia.inbox.inboxchat.adapter.viewholder.ChatRatingViewHolder;
+import com.tokopedia.inbox.inboxchat.chatroom.view.adapter.viewholder.chatbot.AttachedInvoiceSelectionViewHolder;
+import com.tokopedia.inbox.inboxchat.chatroom.view.adapter.viewholder.chatbot.AttachedInvoiceSentViewHolder;
+import com.tokopedia.inbox.inboxchat.chatroom.view.adapter.viewholder.chatbot.QuickReplyViewHolder;
+import com.tokopedia.inbox.inboxchat.chatroom.view.adapter.viewholder.chatroom.ImageAnnouncementViewHolder;
+import com.tokopedia.inbox.inboxchat.chatroom.view.adapter.viewholder.chatroom.ProductAttachmentViewHolder;
+import com.tokopedia.inbox.inboxchat.chatroom.view.adapter.viewholder.chatroom.TimeMachineChatViewHolder;
+import com.tokopedia.inbox.inboxchat.chatroom.view.adapter.viewholder.chatroom.TypingChatViewHolder;
+import com.tokopedia.inbox.inboxchat.chatroom.view.adapter.viewholder.common.FallbackAttachmentViewHolder;
+import com.tokopedia.inbox.inboxchat.chatroom.view.adapter.viewholder.common.ImageUploadViewHolder;
+import com.tokopedia.inbox.inboxchat.chatroom.view.adapter.viewholder.common.MessageViewHolder;
+import com.tokopedia.inbox.inboxchat.chatroom.view.fragment.ChatRoomFragment;
+import com.tokopedia.inbox.inboxchat.chatroom.view.listener.ChatRoomContract;
+import com.tokopedia.inbox.inboxchat.chatroom.view.viewmodel.TimeMachineChatModel;
+import com.tokopedia.inbox.inboxchat.chatroom.view.viewmodel.TypingChatModel;
+import com.tokopedia.inbox.inboxchat.chatroom.view.viewmodel.fallback.FallbackAttachmentViewModel;
+import com.tokopedia.inbox.inboxchat.chatroom.view.viewmodel.imageannouncement.ImageAnnouncementViewModel;
+import com.tokopedia.inbox.inboxchat.chatroom.view.viewmodel.imageupload.ImageUploadViewModel;
+import com.tokopedia.inbox.inboxchat.chatroom.view.viewmodel.invoiceattachment.AttachInvoiceSelectionViewModel;
+import com.tokopedia.inbox.inboxchat.chatroom.view.viewmodel.invoiceattachment.AttachInvoiceSentViewModel;
+import com.tokopedia.inbox.inboxchat.chatroom.view.viewmodel.message.MessageViewModel;
+import com.tokopedia.inbox.inboxchat.chatroom.view.viewmodel.productattachment.ProductAttachmentViewModel;
+import com.tokopedia.inbox.inboxchat.chatroom.view.viewmodel.quickreply.QuickReplyListViewModel;
+import com.tokopedia.inbox.inboxchat.viewmodel.chatroom.ChatRatingViewModel;
 
 /**
  * Created by stevenfredian on 9/27/17.

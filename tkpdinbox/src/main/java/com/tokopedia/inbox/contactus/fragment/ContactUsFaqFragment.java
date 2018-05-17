@@ -24,7 +24,7 @@ import com.tokopedia.core.util.TkpdWebView;
 import com.tokopedia.core.util.TkpdWebViewClient;
 import com.tokopedia.inbox.contactus.activity.ContactUsActivity;
 import com.tokopedia.inbox.contactus.activity.ContactUsActivity.BackButtonListener;
-import com.tokopedia.inbox.inboxchat.chatroom.activity.ChatRoomActivity;
+import com.tokopedia.inbox.inboxchat.chatroom.view.activity.ChatRoomActivity;
 
 import butterknife.BindView;
 

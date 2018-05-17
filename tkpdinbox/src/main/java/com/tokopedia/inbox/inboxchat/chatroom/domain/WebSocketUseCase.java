@@ -8,7 +8,7 @@ import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.inbox.attachinvoice.view.resultmodel.SelectedInvoice;
 import com.tokopedia.inbox.attachproduct.view.resultmodel.ResultProduct;
 import com.tokopedia.inbox.inboxchat.chatroom.data.ChatWebSocketConstant;
-import com.tokopedia.inbox.inboxchat.chatroom.presenter.ChatWebSocketListenerImpl;
+import com.tokopedia.inbox.inboxchat.chatroom.view.presenter.ChatWebSocketListenerImpl;
 import com.tokopedia.inbox.inboxchat.common.InboxChatConstant;
 
 import okhttp3.OkHttpClient;

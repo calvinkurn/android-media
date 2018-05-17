@@ -3,10 +3,10 @@ package com.tokopedia.inbox.inboxchat.chatlist.listener;
 import com.tokopedia.core.base.presentation.CustomerPresenter;
 import com.tokopedia.core.base.presentation.CustomerView;
 import com.tokopedia.core.util.RefreshHandler;
-import com.tokopedia.inbox.inboxchat.chatroom.presenter.WebSocketInterface;
 import com.tokopedia.inbox.inboxchat.chatlist.adapter.InboxChatAdapter;
 import com.tokopedia.inbox.inboxchat.chatlist.viewmodel.DeleteChatViewModel;
 import com.tokopedia.inbox.inboxchat.chatlist.viewmodel.InboxChatViewModel;
+import com.tokopedia.inbox.inboxchat.chatroom.view.presenter.WebSocketInterface;
 
 import android.content.Context;
 import android.content.Intent;
