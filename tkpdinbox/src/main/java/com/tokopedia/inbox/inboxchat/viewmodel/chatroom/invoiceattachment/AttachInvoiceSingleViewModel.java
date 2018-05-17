@@ -1,4 +1,4 @@
-package com.tokopedia.inbox.inboxchat.viewmodel;
+package com.tokopedia.inbox.inboxchat.viewmodel.chatroom.invoiceattachment;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
@@ -24,7 +24,9 @@ public class AttachInvoiceSingleViewModel {
     String amount;
     boolean isSearchAllButton;
 
-    public AttachInvoiceSingleViewModel(String typeString, int type, String code, String createdTime, String description, String url, Long id, String imageUrl, String status, int statusId, String title, String amount) {
+    public AttachInvoiceSingleViewModel(String typeString, int type, String code, String createdTime,
+                                        String description, String url, Long id, String imageUrl,
+                                        String status, int statusId, String title, String amount) {
         this.typeString = typeString;
         this.type = type;
         this.code = code;

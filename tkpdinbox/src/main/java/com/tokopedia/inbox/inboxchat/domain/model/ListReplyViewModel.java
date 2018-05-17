@@ -3,7 +3,6 @@ package com.tokopedia.inbox.inboxchat.domain.model;
 
 import android.text.Spanned;
 
-
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.inbox.inboxchat.ChatTimeConverter;
 import com.tokopedia.inbox.inboxchat.adapter.ChatRoomTypeFactory;

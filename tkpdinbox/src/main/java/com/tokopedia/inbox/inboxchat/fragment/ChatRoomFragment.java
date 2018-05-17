@@ -82,8 +82,6 @@ import com.tokopedia.inbox.inboxchat.analytics.TopChatAnalytics;
 import com.tokopedia.inbox.inboxchat.di.DaggerInboxChatComponent;
 import com.tokopedia.inbox.inboxchat.domain.model.reply.Attachment;
 import com.tokopedia.inbox.inboxchat.domain.model.reply.AttachmentAttributes;
-import com.tokopedia.inbox.inboxchat.domain.model.reply.AttachmentInvoice;
-import com.tokopedia.inbox.inboxchat.domain.model.reply.AttachmentInvoiceAttributes;
 import com.tokopedia.inbox.inboxchat.domain.model.reply.WebSocketResponse;
 import com.tokopedia.inbox.inboxchat.domain.model.replyaction.ReplyActionData;
 import com.tokopedia.inbox.inboxchat.domain.model.websocket.BaseChatViewModel;
@@ -1213,64 +1211,28 @@ public class ChatRoomFragment extends BaseDaggerFragment
     //ADD INCOMING MESSAGE
 
     private AttachInvoiceSentViewModel generateInvoice(SelectedInvoice selectedInvoice) {
-        AttachInvoiceSentViewModel invoiceToSend = new AttachInvoiceSentViewModel();
-        Attachment attachment = new Attachment();
-        attachment.setType(AttachmentChatHelper.INVOICE_ATTACHED);
-        AttachmentAttributes attachmentAttributes = new AttachmentAttributes();
-        AttachmentInvoiceAttributes attachmentInvoiceAttributes = new AttachmentInvoiceAttributes(
+
+        return new AttachInvoiceSentViewModel(
+                getArguments().getString(InboxMessageConstant.PARAM_SENDER_ID),
+                sessionHandler.getLoginName(),
                 selectedInvoice.getInvoiceNo(),
-                selectedInvoice.getDate(),
                 selectedInvoice.getDescription(),
-                selectedInvoice.getInvoiceUrl(),
-                selectedInvoice.getInvoiceId(),
                 selectedInvoice.getTopProductImage(),
-                selectedInvoice.getStatus(),
-                selectedInvoice.getStatusId(),
-                selectedInvoice.getTopProductName(),
-                selectedInvoice.getAmount()
+                selectedInvoice.getAmount(),
+                SendableViewModel.generateStartTime()
         );
-        AttachmentInvoice attachmentInvoice = new AttachmentInvoice();
-        attachmentInvoice.setType(selectedInvoice.getInvoiceType());
-        attachmentInvoice.setTypeString(selectedInvoice.getInvoiceTypeStr());
-        attachmentInvoice.setAttributes(attachmentInvoiceAttributes);
-        attachmentAttributes.setInvoiceLink(attachmentInvoice);
-        attachment.setAttributes(attachmentAttributes);
-
-        invoiceToSend.setAttachment(attachment);
-        invoiceToSend.setReplyTime(DummyChatViewModel.SENDING_TEXT);
-        invoiceToSend.setDummy(true);
-        invoiceToSend.setMsg("");
-        invoiceToSend.setSenderId(getArguments().getString(InboxMessageConstant.PARAM_SENDER_ID));
-
-        return invoiceToSend;
     }
 
     public ImageUploadViewModel generateChatViewModelWithImage(String imageUrl) {
         scrollToBottom();
-        SimpleDateFormat date = new SimpleDateFormat(
-                SendableViewModel.START_TIME_FORMAT, Locale.US);
-        date.setTimeZone(TimeZone.getTimeZone("UTC"));
+
         ImageUploadViewModel model = new ImageUploadViewModel(
                 getArguments().getString(InboxMessageConstant.PARAM_SENDER_ID),
                 String.valueOf(System.currentTimeMillis() / MILIS_TO_SECOND),
                 imageUrl,
-                date.format(Calendar.getInstance().getTime())
+                SendableViewModel.generateStartTime()
         );
         return model;
-    }
-
-    private DummyChatViewModel generateChatViewModelWithImage(ImageUpload imageUpload) {
-        DummyChatViewModel item = new DummyChatViewModel();
-        Attachment attachment = new Attachment();
-        attachment.setType(AttachmentChatHelper.IMAGE_ATTACHED);
-        AttachmentAttributes attachmentAttributes = new AttachmentAttributes();
-        attachmentAttributes.setImageUrl(imageUpload.getFileLoc());
-        attachment.setId(imageUpload.getImageId());
-        attachment.setAttributes(attachmentAttributes);
-        item.setAttachment(attachment);
-        item.setReplyTime(DummyChatViewModel.SENDING_TEXT);
-        item.setSenderId(getArguments().getString(InboxMessageConstant.PARAM_SENDER_ID));
-        return item;
     }
 
     private ProductAttachmentViewModel generateProductChatViewModel(ResultProduct product) {
@@ -1299,7 +1261,7 @@ public class ChatRoomFragment extends BaseDaggerFragment
     private void attachInvoiceRetrieved(SelectedInvoice selectedInvoice) {
         String msgId = getArguments().getString(PARAM_MESSAGE_ID);
         AttachInvoiceSentViewModel generatedInvoice = generateInvoice(selectedInvoice);
-        presenter.sendInvoiceAttachment(msgId, selectedInvoice);
+        presenter.sendInvoiceAttachment(msgId, selectedInvoice, generatedInvoice.getStartTime());
         adapter.addReply(generatedInvoice);
         scrollToBottom();
     }
@@ -1464,6 +1426,9 @@ public class ChatRoomFragment extends BaseDaggerFragment
                 if (!TextUtils.isEmpty(((QuickReplyListViewModel) message).getMessage())) {
                     addMessageToList(message);
                 }
+            } else if (message instanceof AttachInvoiceSentViewModel) {
+                adapter.removeLast();
+                addMessageToList(message);
             } else {
                 addMessageToList(message);
             }

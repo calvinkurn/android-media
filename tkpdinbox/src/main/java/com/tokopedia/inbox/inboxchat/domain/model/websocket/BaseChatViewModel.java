@@ -83,6 +83,14 @@ public class BaseChatViewModel {
         return showTime;
     }
 
+    public void setReplyTime(String replyTime) {
+        this.replyTime = replyTime;
+    }
+
+    public void setFromUid(String fromUid) {
+        this.fromUid = fromUid;
+    }
+
     /**
      * Set in {@link com.tokopedia.inbox.inboxchat.adapter.ChatRoomAdapter}
      *

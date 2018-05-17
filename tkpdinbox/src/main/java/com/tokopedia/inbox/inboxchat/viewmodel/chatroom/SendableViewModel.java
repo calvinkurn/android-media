@@ -5,6 +5,11 @@ import com.tokopedia.inbox.inboxchat.domain.WebSocketMapper;
 import com.tokopedia.inbox.inboxchat.domain.model.websocket.BaseChatViewModel;
 import com.tokopedia.inbox.inboxchat.domain.usecase.GetReplyListUseCase;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Locale;
+import java.util.TimeZone;
+
 /**
  * @author by nisie on 5/16/18.
  */
@@ -66,5 +71,12 @@ public class SendableViewModel extends BaseChatViewModel {
 
     public void setDummy(boolean dummy) {
         isDummy = dummy;
+    }
+
+    public static String generateStartTime() {
+        SimpleDateFormat date = new SimpleDateFormat(
+                SendableViewModel.START_TIME_FORMAT, Locale.US);
+        date.setTimeZone(TimeZone.getTimeZone("UTC"));
+        return date.format(Calendar.getInstance().getTime());
     }
 }

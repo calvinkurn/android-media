@@ -10,7 +10,10 @@ import com.tokopedia.core.network.retrofit.response.TkpdResponse;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.inbox.R;
 import com.tokopedia.inbox.inboxchat.domain.WebSocketMapper;
+import com.tokopedia.inbox.inboxchat.domain.model.ListReplyViewModel;
 import com.tokopedia.inbox.inboxchat.domain.model.reply.Attachment;
+import com.tokopedia.inbox.inboxchat.domain.model.reply.AttachmentInvoice;
+import com.tokopedia.inbox.inboxchat.domain.model.reply.AttachmentInvoiceAttributes;
 import com.tokopedia.inbox.inboxchat.domain.model.reply.Contact;
 import com.tokopedia.inbox.inboxchat.domain.model.reply.ListReply;
 import com.tokopedia.inbox.inboxchat.domain.model.reply.ReplyData;
@@ -25,9 +28,12 @@ import com.tokopedia.inbox.inboxchat.viewmodel.chatroom.QuickReplyListViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.chatroom.QuickReplyViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.chatroom.imageannouncement.ImageAnnouncementViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.chatroom.imageupload.ImageUploadViewModel;
+import com.tokopedia.inbox.inboxchat.viewmodel.chatroom.invoiceattachment
+        .AttachInvoiceSelectionViewModel;
+import com.tokopedia.inbox.inboxchat.viewmodel.chatroom.invoiceattachment.AttachInvoiceSingleViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.chatroom.message.MessageViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.chatroom.productattachment.ProductAttachmentViewModel;
-import com.tokopedia.inbox.inboxchat.viewmodel.mapper.AttachInvoiceMapper;
+import com.tokopedia.inbox.inboxchat.viewmodel.chatroom.invoiceattachment.mapper.AttachInvoiceMapper;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -109,11 +115,16 @@ public class GetReplyMapper implements Func1<Response<TkpdResponse>, ChatRoomVie
                         convertQuickItemChatList(item.getAttachment().getQuickReplies())
                 );
                 list.add(quickReplyListViewModel);
-            } else {
+            } else if (item.getAttachment() != null && item.getAttachment().getType().equals
+                    (WebSocketMapper.TYPE_INVOICE_SEND)) {
+                mapToInvoiceSend(list, item);
+            }else if(item.getAttachment() != null && item.getAttachment().getType().equals
+                    (WebSocketMapper.TYPE_INVOICES_SELECTION)){
+                mapToInvoiceSelectionAttachment(list,item);
+            }else {
                 mapToMessageViewModel(list, item);
             }
-
-//                if (!item.isOpposite()) {
+//           else     if (!item.isOpposite()) {
 //                MyChatViewModel temp = new MyChatViewModel();
 //                temp.setReplyId(item.getReplyId());
 //                temp.setSenderId(item.getSenderId());
@@ -226,6 +237,28 @@ public class GetReplyMapper implements Func1<Response<TkpdResponse>, ChatRoomVie
         list.add(imageAnnouncement);
     }
 
+    private void mapToInvoiceSend(ArrayList<Visitable> list, ListReply item) {
+        AttachmentInvoiceAttributes invoiceAttributes =
+                item.getAttachment().getAttributes().getInvoiceLink().getAttributes();
+        AttachInvoiceSentViewModel model = new AttachInvoiceSentViewModel(
+                String.valueOf(item.getMsgId()),
+                item.getSenderId(),
+                item.getSenderName(),
+                item.getRole(),
+                item.getAttachment().getId(),
+                item.getAttachment().getType(),
+                item.getReplyTime(),
+                item.getMsg(),
+                invoiceAttributes.getDescription(),
+                invoiceAttributes.getImageUrl(),
+                invoiceAttributes.getAmount(),
+                isSender(item.getSenderId()),
+                item.isMessageIsRead()
+        );
+
+        list.add(model);
+    }
+
     private void mapToProductAttachment(ArrayList<Visitable> list, ListReply item) {
 
         ProductAttachmentViewModel productAttachment = new ProductAttachmentViewModel(
@@ -249,6 +282,41 @@ public class GetReplyMapper implements Func1<Response<TkpdResponse>, ChatRoomVie
         list.add(productAttachment);
     }
 
+    private void mapToInvoiceSelectionAttachment(ArrayList<Visitable> list, ListReply item) {
+        Attachment attachment = item.getAttachment();
+        if (attachment.getType().equals(AttachmentChatHelper.INVOICE_LIST_ATTACHED)) {
+            ArrayList<AttachInvoiceSingleViewModel> listSingleInvoice = new ArrayList<>();
+            for (AttachmentInvoice invoice : attachment.getAttributes().getInvoices()) {
+                listSingleInvoice.add(new AttachInvoiceSingleViewModel(
+                        invoice.getTypeString(),
+                        invoice.getType(),
+                        invoice.getAttributes().getCode(),
+                        invoice.getAttributes().getCreatedTime(),
+                        invoice.getAttributes().getDescription(),
+                        invoice.getAttributes().getUrl(),
+                        invoice.getAttributes().getId(),
+                        invoice.getAttributes().getImageUrl(),
+                        invoice.getAttributes().getStatus(),
+                        invoice.getAttributes().getStatusId(),
+                        invoice.getAttributes().getTitle(),
+                        invoice.getAttributes().getAmount()
+                ));
+            }
+            AttachInvoiceSelectionViewModel invoiceSelectionViewModel = new
+                    AttachInvoiceSelectionViewModel(String.valueOf(item.getMsgId()),
+                    item.getSenderId(),
+                    item.getSenderName(),
+                    item.getRole(),
+                    String.valueOf(item.getAttachmentId()),
+                    attachment.getType(),
+                    item.getReplyTime(),
+                    listSingleInvoice,
+                    item.getMsg());
+            list.add(invoiceSelectionViewModel);
+        }
+    }
+
+
     private void setOpponentViewModel(ChatRoomViewModel chatRoomViewModel, List<Contact>
             contacts) {
         for (Contact contact : contacts) {
@@ -268,6 +336,7 @@ public class GetReplyMapper implements Func1<Response<TkpdResponse>, ChatRoomVie
     }
 
     private List<QuickReplyViewModel> convertQuickItemChatList(QuickReplyListPojo pojoList) {
+
         List<QuickReplyViewModel> list = new ArrayList<>();
         if (pojoList != null) {
             for (QuickReplyPojo pojo : pojoList.getQuickReplies()) {
@@ -276,26 +345,6 @@ public class GetReplyMapper implements Func1<Response<TkpdResponse>, ChatRoomVie
             }
         }
         return list;
-    }
-
-    private Visitable checkAndConvertItemModelToAttachmentType(Visitable input, Attachment attachment) {
-        if (attachment == null) return input;
-
-        if (attachment.getType() == null) {
-            attachment.setType("");
-            return input;
-        }
-
-        if (attachment.getType().equals(AttachmentChatHelper.INVOICE_LIST_ATTACHED)) {
-            return AttachInvoiceMapper.attachmentToAttachInvoiceSelectionModel(attachment);
-        } else if (attachment.getType().equals(AttachmentChatHelper.INVOICE_ATTACHED)) {
-            if ((input instanceof MyChatViewModel)) {
-                return new AttachInvoiceSentViewModel((MyChatViewModel) input);
-            } else if (input instanceof OppositeChatViewModel) {
-                return new AttachInvoiceSentViewModel((OppositeChatViewModel) input);
-            }
-        }
-        return input;
     }
 
     private boolean isSender(String senderId) {

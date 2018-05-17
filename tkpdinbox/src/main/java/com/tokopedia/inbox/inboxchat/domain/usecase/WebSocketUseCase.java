@@ -84,16 +84,14 @@ public class WebSocketUseCase {
         ws.send(json.toString());
     }
 
-    public JsonObject getParamSendInvoiceAttachment(String messageId, SelectedInvoice invoice) {
+    public JsonObject getParamSendInvoiceAttachment(String messageId, SelectedInvoice invoice, String startTime) {
         JsonObject json = new JsonObject();
         json.addProperty("code", ChatWebSocketConstant.EVENT_TOPCHAT_REPLY_MESSAGE);
 
         JsonObject data = new JsonObject();
         data.addProperty("message_id", Integer.parseInt(messageId));
         data.addProperty("message", invoice.getInvoiceNo());
-        SimpleDateFormat date = new SimpleDateFormat(
-                "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.US);
-        data.addProperty("start_time", date.format(Calendar.getInstance().getTime()));
+        data.addProperty("start_time", startTime);
         data.addProperty("attachment_type", 7);
 
         JsonObject payload = new JsonObject();

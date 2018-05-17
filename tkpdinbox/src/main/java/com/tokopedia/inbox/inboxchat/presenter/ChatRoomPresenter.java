@@ -29,29 +29,21 @@ import com.tokopedia.inbox.inboxchat.domain.usecase.SendMessageUseCase;
 import com.tokopedia.inbox.inboxchat.domain.usecase.SetChatRatingUseCase;
 import com.tokopedia.inbox.inboxchat.domain.usecase.WebSocketUseCase;
 import com.tokopedia.inbox.inboxchat.domain.usecase.template.GetTemplateUseCase;
-import com.tokopedia.inbox.inboxchat.helper.AttachmentChatHelper;
 import com.tokopedia.inbox.inboxchat.presenter.subscriber.GetReplySubscriber;
 import com.tokopedia.inbox.inboxchat.uploadimage.domain.model.UploadImageDomain;
 import com.tokopedia.inbox.inboxchat.util.ImageUploadHandlerChat;
-import com.tokopedia.inbox.inboxchat.viewmodel.AttachInvoiceSelectionViewModel;
-import com.tokopedia.inbox.inboxchat.viewmodel.AttachInvoiceSentViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.ChatRoomViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.GetTemplateViewModel;
-import com.tokopedia.inbox.inboxchat.viewmodel.chatroom.SendableViewModel;
-import com.tokopedia.inbox.inboxchat.viewmodel.chatroom.imageupload.ImageUploadViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.MyChatViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.OppositeChatViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.SendMessageViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.TemplateChatModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.chatroom.QuickReplyListViewModel;
-import com.tokopedia.inbox.inboxchat.viewmodel.mapper.AttachInvoiceMapper;
+import com.tokopedia.inbox.inboxchat.viewmodel.chatroom.SendableViewModel;
+import com.tokopedia.inbox.inboxchat.viewmodel.chatroom.imageupload.ImageUploadViewModel;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
-import java.util.Locale;
-import java.util.TimeZone;
 
 import javax.inject.Inject;
 
@@ -213,10 +205,7 @@ public class ChatRoomPresenter extends BaseDaggerPresenter<ChatRoomContract.View
 
     public void sendMessage(int networkType, final String reply) {
         if (isValidReply(reply)) {
-            SimpleDateFormat date = new SimpleDateFormat(
-                    SendableViewModel.START_TIME_FORMAT, Locale.US);
-            date.setTimeZone(TimeZone.getTimeZone("UTC"));
-            String startTime = date.format(Calendar.getInstance().getTime());
+            String startTime = SendableViewModel.generateStartTime();
             getView().addDummyMessage(reply, startTime);
             getView().setViewEnabled(false);
             String messageId = (getView().getArguments().getString(PARAM_MESSAGE_ID));
@@ -268,25 +257,26 @@ public class ChatRoomPresenter extends BaseDaggerPresenter<ChatRoomContract.View
 //                    getView().getAdapter().removeLastProductWithId(productId);
 //                    getView().getAdapter().addReply(productItem);
 //                } else
-                if (response.getData().getAttachment() != null &&
-                        response.getData().getAttachment().getType().equals(AttachmentChatHelper
-                                .INVOICE_ATTACHED)) {
-                    AttachInvoiceSentViewModel invoiceSentViewModel = new
-                            AttachInvoiceSentViewModel(item);
-                    getView().getAdapter().removeLast();
-                    getView().getAdapter().addReply(invoiceSentViewModel);
-                } else if (response.getData().getAttachment() != null &&
-                        response.getData().getAttachment().getType().equals(AttachmentChatHelper
-                                .INVOICE_LIST_ATTACHED)) {
-                    AttachInvoiceSelectionViewModel invoiceSelectionViewModel =
-                            AttachInvoiceMapper.attachmentToAttachInvoiceSelectionModel(item
-                                    .getAttachment());
-                    getView().getAdapter().removeLast();
-                    getView().getAdapter().addReply(invoiceSelectionViewModel);
-                } else {
-                    getView().getAdapter().removeLast();
-                    getView().getAdapter().addReply(item);
-                }
+//                if (response.getData().getAttachment() != null &&
+//                        response.getData().getAttachment().getType().equals(AttachmentChatHelper
+//                                .INVOICE_ATTACHED)) {
+//                    AttachInvoiceSentViewModel invoiceSentViewModel = new
+//                            AttachInvoiceSentViewModel(item);
+//                    getView().getAdapter().removeLast();
+//                    getView().getAdapter().addReply(invoiceSentViewModel);
+//                } else
+//                if (response.getData().getAttachment() != null &&
+//                        response.getData().getAttachment().getType().equals(AttachmentChatHelper
+//                                .INVOICE_LIST_ATTACHED)) {
+//                    AttachInvoiceSelectionViewModel invoiceSelectionViewModel =
+//                            AttachInvoiceMapper.attachmentToAttachInvoiceSelectionModel(item
+//                                    .getAttachment(),item);
+//                    getView().getAdapter().removeLast();
+//                    getView().getAdapter().addReply(invoiceSelectionViewModel);
+//                } else {
+                getView().getAdapter().removeLast();
+                getView().getAdapter().addReply(item);
+//                }
                 getView().resetReplyColumn();
                 getView().scrollToBottom();
             } else if (getView() != null && getView().isCurrentThread(response.getData().getMsgId
@@ -310,15 +300,15 @@ public class ChatRoomPresenter extends BaseDaggerPresenter<ChatRoomContract.View
 //                                .PRODUCT_ATTACHED)) {
 //                    AttachProductViewModel productItem = new AttachProductViewModel(item);
 //                    getView().getAdapter().addReply(productItem);
-//                } else
-                if (response.getData().getAttachment() != null &&
-                        response.getData().getAttachment().getType().equals(AttachmentChatHelper
-                                .INVOICE_LIST_ATTACHED)) {
-                    AttachInvoiceSelectionViewModel invoices = AttachInvoiceMapper
-                            .attachmentToAttachInvoiceSelectionModel(response.getData()
-                                    .getAttachment());
-                    getView().getAdapter().addReply(invoices);
-                } else {
+//                } else if (response.getData().getAttachment() != null &&
+//                        response.getData().getAttachment().getType().equals(AttachmentChatHelper
+//                                .INVOICE_LIST_ATTACHED)) {
+//                    AttachInvoiceSelectionViewModel invoices = AttachInvoiceMapper
+//                            .attachmentToAttachInvoiceSelectionModel(response.getData()
+//                                    .getAttachment(),item);
+//                    getView().getAdapter().addReply(invoices);
+//                }
+                else {
                     getView().getAdapter().addReply(item);
                 }
                 getView().scrollToBottomWithCheck();
@@ -332,10 +322,7 @@ public class ChatRoomPresenter extends BaseDaggerPresenter<ChatRoomContract.View
     @Override
     public void initMessage(String message, String source, String toShopId, String toUserId) {
         if (isValidReply()) {
-            SimpleDateFormat date = new SimpleDateFormat(
-                    SendableViewModel.START_TIME_FORMAT, Locale.US);
-            date.setTimeZone(TimeZone.getTimeZone("UTC"));
-            getView().addDummyMessage(message, date.format(Calendar.getInstance().getTime()));
+            getView().addDummyMessage(message, SendableViewModel.generateStartTime());
             getView().disableAction();
             sendMessageUseCase.execute(SendMessageUseCase.getParam(
                     message,
@@ -517,8 +504,9 @@ public class ChatRoomPresenter extends BaseDaggerPresenter<ChatRoomContract.View
         }
     }
 
-    public void sendInvoiceAttachment(String messageId, SelectedInvoice invoice) {
-        webSocketUseCase.execute(webSocketUseCase.getParamSendInvoiceAttachment(messageId, invoice));
+    public void sendInvoiceAttachment(String messageId, SelectedInvoice invoice, String startTime) {
+        webSocketUseCase.execute(webSocketUseCase.getParamSendInvoiceAttachment(messageId,
+                invoice, startTime));
     }
 
     public void sendProductAttachment(String messageId, ResultProduct product) {
@@ -526,7 +514,7 @@ public class ChatRoomPresenter extends BaseDaggerPresenter<ChatRoomContract.View
     }
 
     public void sendReply(String messageId, String reply, String startTime) {
-        webSocketUseCase.execute(webSocketUseCase.getParamSendReply(messageId, reply,startTime));
+        webSocketUseCase.execute(webSocketUseCase.getParamSendReply(messageId, reply, startTime));
         flagTyping = false;
     }
 
