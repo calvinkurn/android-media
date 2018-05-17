@@ -13,7 +13,9 @@ import com.tokopedia.train.common.specification.DbFlowWithOrderSpecification;
 import com.tokopedia.train.common.specification.Specification;
 import com.tokopedia.train.search.data.databasetable.TrainScheduleDbTable;
 import com.tokopedia.train.search.data.databasetable.TrainScheduleDbTable_Table;
-import com.tokopedia.train.search.data.entity.ScheduleAvailabilityEntity;
+import com.tokopedia.train.search.data.entity.FareEntity;
+import com.tokopedia.train.search.data.entity.AvailabilityEntity;
+import com.tokopedia.train.search.data.entity.ScheduleEntity;
 import com.tokopedia.train.search.data.entity.TrainScheduleEntity;
 import com.tokopedia.train.search.data.typedef.TrainAvailabilityTypeDef;
 import com.tokopedia.train.search.data.typedef.TrainScheduleTypeDef;
@@ -67,13 +69,17 @@ public class TrainScheduleDbDataStore implements TrainDataDBSource<TrainSchedule
         return null;
     }
 
-    public Observable<Boolean> insertAllData(final List<TrainScheduleEntity> datas, final int scheduleVariant) {
+    public Observable<Boolean> insertAllData(final List<ScheduleEntity> datas, final int scheduleVariant) {
         return Observable.just(datas)
-                .map(new Func1<List<TrainScheduleEntity>, Boolean>() {
+                .map(new Func1<List<ScheduleEntity>, Boolean>() {
                     @Override
-                    public Boolean call(List<TrainScheduleEntity> trainScheduleEntities) {
-                        for (TrainScheduleEntity trainListSchedulesEntity : datas) {
-                            insertSchedule(trainListSchedulesEntity, scheduleVariant);
+                    public Boolean call(List<ScheduleEntity> trainScheduleEntities) {
+                        for (ScheduleEntity scheduleEntity : datas) {
+                            for (TrainScheduleEntity trainScheduleEntity : scheduleEntity.getTrains()) {
+                                for (FareEntity fareEntity : trainScheduleEntity.getFares()) {
+                                    insertSchedule(fareEntity, trainScheduleEntity, scheduleEntity, scheduleVariant);
+                                }
+                            }
                         }
                         updateFilterCheapest();
                         updateFilterFastest();
@@ -82,26 +88,26 @@ public class TrainScheduleDbDataStore implements TrainDataDBSource<TrainSchedule
                 });
     }
 
-    private void insertSchedule(TrainScheduleEntity trainScheduleEntity, int scheduleVariant) {
+    private void insertSchedule(FareEntity fareEntity, TrainScheduleEntity trainScheduleEntity, ScheduleEntity scheduleEntity, int scheduleVariant) {
         ModelAdapter<TrainScheduleDbTable> adapter = FlowManager.getModelAdapter(TrainScheduleDbTable.class);
         TrainScheduleDbTable trainScheduleDbTable = new TrainScheduleDbTable();
-        trainScheduleDbTable.setIdSchedule(trainScheduleEntity.getIdSchedule());
-        trainScheduleDbTable.setAdultFare(trainScheduleEntity.getAdultFare());
-        trainScheduleDbTable.setDisplayAdultFare(trainScheduleEntity.getDisplayAdultFare());
-        trainScheduleDbTable.setInfantFare(trainScheduleEntity.getInfantFare());
-        trainScheduleDbTable.setDisplayInfantFare(trainScheduleEntity.getDisplayInfantFare());
+        trainScheduleDbTable.setIdSchedule(fareEntity.getId());
+        trainScheduleDbTable.setAdultFare(fareEntity.getAdultFare());
+        trainScheduleDbTable.setDisplayAdultFare(fareEntity.getDisplayAdultFare());
+        trainScheduleDbTable.setInfantFare(fareEntity.getInfantFare());
+        trainScheduleDbTable.setDisplayInfantFare(fareEntity.getDisplayInfantFare());
         trainScheduleDbTable.setArrivalTimestamp(trainScheduleEntity.getArrivalTimestamp());
         trainScheduleDbTable.setDepartureTimestamp(trainScheduleEntity.getDepartureTimestamp());
-        trainScheduleDbTable.setClassTrain(trainScheduleEntity.getClassTrain());
-        trainScheduleDbTable.setDisplayClass(trainScheduleEntity.getDisplayClass());
-        trainScheduleDbTable.setSubclass(trainScheduleEntity.getSubclass());
-        trainScheduleDbTable.setOrigin(trainScheduleEntity.getOrigin());
-        trainScheduleDbTable.setDestination(trainScheduleEntity.getDestination());
+        trainScheduleDbTable.setClassTrain(fareEntity.getScheduleClass());
+        trainScheduleDbTable.setDisplayClass(fareEntity.getDisplayClass());
+        trainScheduleDbTable.setSubclass(fareEntity.getSubclass());
+        trainScheduleDbTable.setOrigin(scheduleEntity.getOrigin());
+        trainScheduleDbTable.setDestination(scheduleEntity.getDestination());
         trainScheduleDbTable.setDisplayDuration(trainScheduleEntity.getDisplayDuration());
         trainScheduleDbTable.setDuration(trainScheduleEntity.getDuration());
         trainScheduleDbTable.setTrainKey(trainScheduleEntity.getTrainKey());
         trainScheduleDbTable.setTrainName(trainScheduleEntity.getTrainName());
-        trainScheduleDbTable.setTrainNumber(trainScheduleEntity.getTrainNumber());
+        trainScheduleDbTable.setTrainNumber(trainScheduleEntity.getTrainNo());
         trainScheduleDbTable.setAvailableSeat(TrainAvailabilityTypeDef.DEFAULT_VALUE);
         trainScheduleDbTable.setCheapestFlag(false);
         trainScheduleDbTable.setFastestFlag(false);
@@ -151,25 +157,25 @@ public class TrainScheduleDbDataStore implements TrainDataDBSource<TrainSchedule
         });
     }
 
-    public Observable<Boolean> updateDataAvailability(final List<ScheduleAvailabilityEntity> scheduleAvailabilityEntities) {
+    public Observable<Boolean> updateDataAvailability(final List<AvailabilityEntity> scheduleAvailabilityEntities) {
         return Observable.unsafeCreate(new Observable.OnSubscribe<Boolean>() {
             @Override
             public void call(Subscriber<? super Boolean> subscriber) {
-                for (ScheduleAvailabilityEntity scheduleAvailability : scheduleAvailabilityEntities) {
+                for (AvailabilityEntity scheduleAvailability : scheduleAvailabilityEntities) {
                     updateAvailability(scheduleAvailability);
                 }
                 subscriber.onNext(true);
             }
 
-            private void updateAvailability(ScheduleAvailabilityEntity scheduleAvailabilityEntity) {
+            private void updateAvailability(AvailabilityEntity availabilityEntity) {
                 ConditionGroup conditions = ConditionGroup.clause();
-                conditions.and(TrainScheduleDbTable_Table.schedule_id.eq(scheduleAvailabilityEntity.getIdSchedule()));
+                conditions.and(TrainScheduleDbTable_Table.schedule_id.eq(availabilityEntity.getId()));
                 TrainScheduleDbTable result = new Select()
                         .from(TrainScheduleDbTable.class)
                         .where(conditions)
                         .querySingle();
                 if (result != null) {
-                    result.setAvailableSeat(scheduleAvailabilityEntity.getAvailableSeat());
+                    result.setAvailableSeat(availabilityEntity.getAvailable());
                     result.save();
                 }
             }

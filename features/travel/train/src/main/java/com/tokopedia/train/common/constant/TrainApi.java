@@ -1,11 +1,10 @@
 package com.tokopedia.train.common.constant;
 
 import com.tokopedia.abstraction.common.data.model.response.DataResponse;
-import com.tokopedia.train.search.data.entity.ScheduleAvailabilityEntity;
-import com.tokopedia.train.search.data.entity.TrainListSchedulesEntity;
-import com.tokopedia.train.station.data.entity.TrainStationIslandEntity;
+import com.tokopedia.train.search.data.entity.ScheduleAvailibilityDataEntity;
+import com.tokopedia.train.search.data.entity.SearchDataEntity;
+import com.tokopedia.train.station.data.entity.StationDataEntity;
 
-import java.util.List;
 import java.util.Map;
 
 import retrofit2.http.Body;
@@ -21,13 +20,13 @@ import rx.Observable;
 
 public interface TrainApi {
 
-    @GET("kereta-api/stations")
-    Observable<DataResponse<List<TrainStationIslandEntity>>> stationsInIsland(@QueryMap Map<String, Object> params);
+    @GET("stations")
+    Observable<DataResponse<StationDataEntity>> stationsInIsland(@QueryMap Map<String, Object> params);
 
-    @POST("kereta-api/schedules")
-    Observable<DataResponse<TrainListSchedulesEntity>> schedulesTrain(@Body Map<String, Object> params);
+    @GET("schedules")
+    Observable<DataResponse<SearchDataEntity>> schedulesTrain(@QueryMap Map<String, Object> params);
 
-    @GET("kereta-api/schedules/availabilities/{idTrain}")
-    Observable<DataResponse<List<ScheduleAvailabilityEntity>>> availabilityTrain(@Path("idTrain") String idTrain);
+    @GET("schedules/availabilities/{idTrain}")
+    Observable<DataResponse<ScheduleAvailibilityDataEntity>> availabilityTrain(@Path("idTrain") String idTrain);
 
 }

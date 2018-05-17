@@ -76,7 +76,7 @@ public class TrainReturnSearchFragment extends TrainSearchFragment
 
     @Override
     public void onItemClicked(TrainScheduleViewModel trainScheduleViewModel) {
-        super.onItemClicked(trainScheduleViewModel);
+
     }
 
     @Override

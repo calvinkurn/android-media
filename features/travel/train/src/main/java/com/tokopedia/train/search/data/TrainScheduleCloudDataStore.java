@@ -4,8 +4,10 @@ import com.tokopedia.abstraction.common.data.model.response.DataResponse;
 import com.tokopedia.train.common.constant.TrainApi;
 import com.tokopedia.train.common.specification.CloudNetworkSpecification;
 import com.tokopedia.train.common.specification.Specification;
-import com.tokopedia.train.search.data.entity.ScheduleAvailabilityEntity;
-import com.tokopedia.train.search.data.entity.TrainListSchedulesEntity;
+import com.tokopedia.train.search.data.entity.AvailabilityEntity;
+import com.tokopedia.train.search.data.entity.ScheduleAvailibilityDataEntity;
+import com.tokopedia.train.search.data.entity.ScheduleEntity;
+import com.tokopedia.train.search.data.entity.SearchDataEntity;
 
 import java.util.List;
 
@@ -24,22 +26,22 @@ public class TrainScheduleCloudDataStore {
         this.trainApi = trainApi;
     }
 
-    public Observable<TrainListSchedulesEntity> getDatasSchedule(Specification specification) {
+    public Observable<List<ScheduleEntity>> getDatasSchedule(Specification specification) {
         return trainApi.schedulesTrain(((CloudNetworkSpecification) specification).networkParam())
-                .map(new Func1<DataResponse<TrainListSchedulesEntity>, TrainListSchedulesEntity>() {
+                .map(new Func1<DataResponse<SearchDataEntity>, List<ScheduleEntity>>() {
                     @Override
-                    public TrainListSchedulesEntity call(DataResponse<TrainListSchedulesEntity> trainListSchedulesEntityDataResponse) {
-                        return trainListSchedulesEntityDataResponse.getData();
+                    public List<ScheduleEntity> call(DataResponse<SearchDataEntity> response) {
+                        return response.getData().getSchedules();
                     }
                 });
     }
 
-    public Observable<List<ScheduleAvailabilityEntity>> getDatasAvailability(String idTrain) {
+    public Observable<List<AvailabilityEntity>> getDatasAvailability(String idTrain) {
         return trainApi.availabilityTrain(idTrain)
-                .map(new Func1<DataResponse<List<ScheduleAvailabilityEntity>>, List<ScheduleAvailabilityEntity>>() {
+                .map(new Func1<DataResponse<ScheduleAvailibilityDataEntity>, List<AvailabilityEntity>>() {
                     @Override
-                    public List<ScheduleAvailabilityEntity> call(DataResponse<List<ScheduleAvailabilityEntity>> listDataResponse) {
-                        return listDataResponse.getData();
+                    public List<AvailabilityEntity> call(DataResponse<ScheduleAvailibilityDataEntity> listDataResponse) {
+                        return listDataResponse.getData().getAvailabilities();
                     }
                 });
     }
