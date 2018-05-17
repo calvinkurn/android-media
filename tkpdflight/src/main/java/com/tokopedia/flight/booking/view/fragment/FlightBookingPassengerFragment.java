@@ -30,15 +30,15 @@ import com.tokopedia.flight.R;
 import com.tokopedia.flight.booking.di.FlightBookingComponent;
 import com.tokopedia.flight.booking.view.activity.FlightBookingAmenityActivity;
 import com.tokopedia.flight.booking.view.activity.FlightBookingNationalityActivity;
-import com.tokopedia.flight.booking.view.viewmodel.FlightBookingPhoneCodeViewModel;
-import com.tokopedia.flight.passenger.view.activity.FlightPassengerListActivity;
 import com.tokopedia.flight.booking.view.adapter.FlightSimpleAdapter;
 import com.tokopedia.flight.booking.view.presenter.FlightBookingPassengerContract;
 import com.tokopedia.flight.booking.view.presenter.FlightBookingPassengerPresenter;
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingAmenityMetaViewModel;
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingAmenityViewModel;
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingPassengerViewModel;
+import com.tokopedia.flight.booking.view.viewmodel.FlightBookingPhoneCodeViewModel;
 import com.tokopedia.flight.booking.view.viewmodel.SimpleViewModel;
+import com.tokopedia.flight.passenger.view.activity.FlightPassengerListActivity;
 import com.tokopedia.flight.passenger.view.fragment.FlightPassengerListFragment;
 
 import java.util.ArrayList;
@@ -676,7 +676,7 @@ public class FlightBookingPassengerFragment extends BaseDaggerFragment implement
     @Override
     public void navigateToSavedPassengerPicker(FlightBookingPassengerViewModel selected) {
         Intent intent = FlightPassengerListActivity.createIntent(getActivity(),
-                selected, requestId, departureDate);
+                selected, requestId, departureDate, isDomestic);
         startActivityForResult(intent, REQUEST_CODE_PICK_SAVED_PASSENGER);
     }
 

@@ -4,6 +4,7 @@ import android.support.annotation.StringRes;
 
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingPassengerViewModel;
+import com.tokopedia.flight.booking.view.viewmodel.FlightBookingPhoneCodeViewModel;
 
 import java.util.Date;
 
@@ -85,6 +86,20 @@ public interface FlightPassengerUpdateContract {
 
         void showPassengerBirthdateEmptyError(int resId);
 
+        void showPassengerPassportNumberEmptyError(@StringRes int resId);
+
+        void showPassengerPassportExpiredDateEmptyError(@StringRes int resId);
+
+        void showPassportNationalityEmptyError(@StringRes int resId);
+
+        void showPassportIssuerCountryEmptyError(@StringRes int resId);
+
+        void showPassportExpiredDateShouldMoreThan6MonthsFromDeparture(@StringRes int resId, String dateAfterSixMonth);
+
+        void showPassportExpiredDatePickerDialog(Date selectedDate, Date minDate);
+
+        void hideKeyboard();
+
         void onSuccessUpdatePassengerData();
 
         void onErrorUpdatePassengerData();
@@ -96,16 +111,6 @@ public interface FlightPassengerUpdateContract {
         void renderPassportNationality(String passportNationality);
 
         void renderPassportIssuerCountry(String passportIssuerCountry);
-
-        void showPassengerPassportNumberEmptyError(@StringRes int resId);
-
-        void showPassengerPassportExpiredDateEmptyError(@StringRes int resId);
-
-        void showPassportNationalityEmptyError(@StringRes int resId);
-
-        void showPassportIssuerCountryEmptyError(@StringRes int resId);
-
-        void showPassportExpiredDateShouldMoreThan6MonthsFromDeparture(@StringRes int resId, String dateAfterSixMonth);
     }
 
     interface Presenter {
@@ -120,6 +125,13 @@ public interface FlightPassengerUpdateContract {
 
         void onBirthdateChanged(int year, int month, int date, Date maxDate);
 
+        void onNationalityChanged(FlightBookingPhoneCodeViewModel flightPassportNationalityViewModel);
+
+        void onIssuerCountryChanged(FlightBookingPhoneCodeViewModel flightPassportIssuerCountry);
+
+        void onPassportExpiredClicked();
+
+        void onPassportExpiredDateChanged(int year, int month, int dayOfMonth, Date minDate);
     }
 
 }

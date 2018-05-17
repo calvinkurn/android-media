@@ -289,6 +289,10 @@ public class FlightBookingPassengerPresenter extends BaseDaggerPresenter<FlightB
 
     @Override
     public void onChangeFromSavedPassenger(FlightBookingPassengerViewModel selectedPassenger) {
+        Date sixMonthFromDeparture = FlightDateUtil.addTimeToSpesificDate(
+                FlightDateUtil.stringToDate(getView().getDepartureDateString()),
+                Calendar.MONTH, PLUS_SIX);
+
         getView().renderSelectedList(String.format("%s %s",
                 selectedPassenger.getPassengerFirstName(),
                 selectedPassenger.getPassengerLastName()));
@@ -299,9 +303,20 @@ public class FlightBookingPassengerPresenter extends BaseDaggerPresenter<FlightB
         currentPassengerViewModel.setPassengerLastName(selectedPassenger.getPassengerLastName());
         currentPassengerViewModel.setPassengerTitle(selectedPassenger.getPassengerTitle());
         currentPassengerViewModel.setPassengerTitleId(selectedPassenger.getPassengerTitleId());
+        currentPassengerViewModel.setPassportNumber(selectedPassenger.getPassportNumber());
+        currentPassengerViewModel.setPassportNationality(selectedPassenger.getPassportNationality());
+        currentPassengerViewModel.setPassportIssuerCountry(selectedPassenger.getPassportIssuerCountry());
+
         if (flightPassengerInfoValidator.validateBirthdateNotEmpty(selectedPassenger.getPassengerBirthdate()) &&
                 (isChildPassenger() || isInfantPassenger() || getView().isMandatoryDoB())) {
             currentPassengerViewModel.setPassengerBirthdate(selectedPassenger.getPassengerBirthdate());
+        }
+
+        if (selectedPassenger.getPassportExpiredDate() != null && flightPassengerInfoValidator
+                .validateExpiredDateOfPassport(FlightDateUtil.formatDate(FlightDateUtil.DEFAULT_FORMAT,
+                        FlightDateUtil.DEFAULT_VIEW_FORMAT, selectedPassenger.getPassportExpiredDate()),
+                        sixMonthFromDeparture)) {
+            currentPassengerViewModel.setPassportExpiredDate(selectedPassenger.getPassportExpiredDate());
         }
 
         getView().setCurrentPassengerViewModel(currentPassengerViewModel);
