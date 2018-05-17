@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="gm_home_title">Gold Merchant</string>
-    <string name="gm_home_subtitle">Dapatkan Gold Badge dengan performa toko min. 75 poin, toko Anda akan terlihat semakin terpercaya.</string>
+    <string name="gm_home_subtitle">Nikmati beragam keistimewaan untuk toko Anda</string>
     <string name="gmsubscribe_home_button_finish">Pilih Paket Berlangganan</string>
 
     <string name="gmsubscribe_feature_gold_badge">Gold Badge</string>
-    <string name="gmsubscribe_feature_gold_badge_desc">Tampilan produk dan toko akan terlihat beda serta lebih terpercaya</string>
+    <string name="gmsubscribe_feature_gold_badge_desc">Dapatkan Gold Badge dengan performa toko min. 75 poin, toko Anda akan terlihat semakin terpercaya.</string>
     <string name="gmsubscribe_feature_topads">TopAds</string>
     <string name="gmsubscribe_feature_topads_desc">Promosi produk dan toko jadi lebih efektif dan efisien</string>
     <string name="gmsubscribe_feature_statistic">Statistik Toko</string>
