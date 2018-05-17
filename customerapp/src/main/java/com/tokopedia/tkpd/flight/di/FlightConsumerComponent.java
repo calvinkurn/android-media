@@ -16,7 +16,6 @@ import dagger.Component;
 @FlightConsumerScope
 @Component(modules = FlightConsumerModule.class, dependencies = AppComponent.class)
 public interface FlightConsumerComponent {
-    UploadImageUseCase<AttachmentImageModel> uploadImageUseCase();
 
     void inject(FlightGetProfileInfoData flightGetProfileInfoData);
 }

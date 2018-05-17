@@ -58,8 +58,6 @@ public interface FlightModuleRouter {
 
     FlightCancellationCameraPassData startCaptureWithCamera(FragmentActivity activity);
 
-    Observable<String> uploadImage(String localFilePath);
-
     Intent getLoyaltyWithCoupon(Activity activity, String platform, String categoryId, String cartId);
 
     FlightVoucherCodeWrapper getFlightVoucherCodeWrapper();

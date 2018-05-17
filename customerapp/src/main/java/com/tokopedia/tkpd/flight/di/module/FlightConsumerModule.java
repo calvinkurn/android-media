@@ -49,33 +49,6 @@ public class FlightConsumerModule {
     }
 
     @Provides
-    GenerateHostRepository provideGenerateHostRepository(GenerateHostDataSource generateHostDataSource) {
-        return new GenerateHostRepositoryImpl(generateHostDataSource);
-    }
-
-    @Provides
-    UploadImageUseCase<AttachmentImageModel> provideUploadImageUseCase(ThreadExecutor threadExecutor,
-                                                                       PostExecutionThread postExecutionThread,
-                                                                       UploadImageRepository uploadImageRepository,
-                                                                       GenerateHostRepository generateHostRepository,
-                                                                       Gson gson,
-                                                                       NetworkCalculator networkCalculator) {
-        return new UploadImageUseCase<AttachmentImageModel>(threadExecutor, postExecutionThread, uploadImageRepository,
-                generateHostRepository, gson, networkCalculator, AttachmentImageModel.class);
-    }
-
-    @Provides
-    NetworkCalculator provideNetworkCalculator(@ApplicationContext Context context) {
-        return new NetworkCalculator(NetworkConfig.POST, context, TkpdBaseURL.DEFAULT_TOKOPEDIA_WEBSITE_URL).setIdentity().compileAllParam().finish();
-    }
-
-    @Provides
-    UploadImageRepository provideUploadImageRepository(UploadImageDataSource uploadImageDataSource) {
-        return new UploadImageRepositoryImpl(uploadImageDataSource);
-    }
-
-
-    @Provides
     GetUserInfoUseCase provideGetUserInfoUseCase(ProfileRepository profileRepository) {
         return new GetUserInfoUseCase(profileRepository);
     }
@@ -118,11 +91,6 @@ public class FlightConsumerModule {
     @Provides
     EditUserInfoMapper provideEditUserInfoMapper() {
         return new EditUserInfoMapper();
-    }
-
-    @Provides
-    GenerateHostApi provideGenerateHostApi(@WsV4QualifierWithErrorHander Retrofit retrofit) {
-        return retrofit.create(GenerateHostApi.class);
     }
 
 }

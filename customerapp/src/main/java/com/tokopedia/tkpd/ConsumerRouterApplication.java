@@ -769,19 +769,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    public Observable<String> uploadImage(String localFilePath) {
-        UploadImageUseCase<AttachmentImageModel> uploadImageUseCase = getFlightConsumerComponent().uploadImageUseCase();
-        return uploadImageUseCase.createObservable(uploadImageUseCase.createAttachmentsRequestParams(
-                localFilePath))
-                .map(new Func1<ImageUploadDomainModel<AttachmentImageModel>, String>() {
-            @Override
-            public String call(ImageUploadDomainModel<AttachmentImageModel> attachmentModel) {
-                return attachmentModel.getDataResultImageUpload().getData().getPicSrc();
-            }
-        });
-    }
-
-    @Override
     public Intent getLoyaltyWithCoupon(Activity activity, String platform, String categoryId, String cartId) {
         return LoyaltyActivity.newInstanceCouponActive(activity, platform, categoryId, cartId);
     }
