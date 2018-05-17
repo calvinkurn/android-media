@@ -194,6 +194,8 @@ public class WebSocketMapper {
         } else {
             return false;
         }
+    }
+
     private BaseChatViewModel convertToChatRating(WebSocketResponseData pojo) {
         return new ChatRatingViewModel(
                 String.valueOf(pojo.getMsgId()),
