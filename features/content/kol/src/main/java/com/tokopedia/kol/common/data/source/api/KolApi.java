@@ -7,6 +7,7 @@ import com.tokopedia.kol.feature.comment.data.pojo.delete.DeleteCommentKolGraphq
 import com.tokopedia.kol.feature.comment.data.pojo.send.SendCommentKolGraphql;
 import com.tokopedia.kol.feature.following_list.data.pojo.GetKolFollowingData;
 import com.tokopedia.kol.feature.post.data.pojo.GetUserKolPostResponse;
+import com.tokopedia.kol.feature.post.data.pojo.LikeKolPostResponse;
 
 import retrofit2.Response;
 import retrofit2.http.Body;
@@ -23,6 +24,11 @@ public interface KolApi {
     @Headers({"Content-Type: application/json"})
     Observable<Response<GraphqlResponse<GetUserKolPostResponse>>>
     getProfileKolData(@Body GraphqlRequest requestBody);
+
+    @POST("./")
+    @Headers({"Content-Type: application/json"})
+    Observable<Response<GraphqlResponse<LikeKolPostResponse>>>
+    likeKolPost(@Body GraphqlRequest requestBody);
 
     @POST("./")
     @Headers({"Content-Type: application/json"})
