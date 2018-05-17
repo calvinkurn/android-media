@@ -226,7 +226,6 @@
                             android:paddingBottom="@dimen/dp_20"
                             android:textSize="@dimen/sp_18"
                             android:text="@string/cancel"
-                            android:background="?attr/selectableItemBackground"
                             android:clickable="true"
                             android:focusable="true"/>
 
