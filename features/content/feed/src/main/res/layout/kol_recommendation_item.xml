@@ -27,7 +27,7 @@
             android:background="@drawable/feed_container_circle_corners_border"
             tools:src="@drawable/ic_top_ads" />
 
-        <TextView
+        <com.tokopedia.design.component.TextViewCompat
             android:id="@+id/name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -40,7 +40,10 @@
             android:textColor="@color/black_70"
             android:textSize="@dimen/sp_12"
             android:textStyle="normal"
-            tools:text="Young Lex" />
+            tools:text="Young Lex"
+            app:drawableLeftCompat="@drawable/ic_kol_badge"
+            android:drawablePadding="@dimen/dp_4"
+            tools:drawableLeft="@drawable/ic_kol_badge"/>
 
         <TextView
             android:id="@+id/label"
@@ -65,7 +68,10 @@
             android:layout_marginLeft="@dimen/dp_25"
             android:layout_marginRight="@dimen/dp_25"
             android:background="@drawable/green_button_rounded_unify"
+            android:clickable="true"
+            android:focusable="true"
             android:fontFamily="sans-serif-medium"
+            android:foreground="?attr/selectableItemBackground"
             android:gravity="center"
             android:text="@string/action_follow_english"
             android:textColor="@color/white"
