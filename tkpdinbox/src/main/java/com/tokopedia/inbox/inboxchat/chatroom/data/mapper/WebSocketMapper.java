@@ -38,6 +38,7 @@ import javax.inject.Inject;
  */
 public class WebSocketMapper {
 
+    private static final String TYPE_CHAT_RATING = "-1";
     public static final String TYPE_IMAGE_ANNOUNCEMENT = "1";
     public static final String TYPE_IMAGE_UPLOAD = "2";
     public static final String TYPE_PRODUCT_ATTACHMENT = "3";
@@ -76,7 +77,9 @@ public class WebSocketMapper {
     }
 
     private BaseChatViewModel mapReplyMessage(WebSocketResponse pojo) {
-        if (hasAttachment(pojo)) {
+        if (pojo.getData().isShowRating() || pojo.getData().getRatingStatus() != 0) {
+            return convertToChatRating(pojo.getData());
+        }else if (hasAttachment(pojo)) {
             JsonObject jsonAttributes = pojo.getData().getAttachment().getAttributes();
             return mapAttachmentMessage(pojo, jsonAttributes);
         } else {
@@ -235,7 +238,20 @@ public class WebSocketMapper {
             return false;
         }
     }
-
+    private BaseChatViewModel convertToChatRating(WebSocketResponseData pojo) {
+        return new ChatRatingViewModel(
+                String.valueOf(pojo.getMsgId()),
+                String.valueOf(pojo.getFromUid()),
+                pojo.getFrom(),
+                pojo.getFromRole(),
+                pojo.getMessage().getCensoredReply(),
+                "",
+                TYPE_CHAT_RATING,
+                pojo.getMessage().getTimeStampUnix(),
+                pojo.getRatingStatus(),
+                Long.valueOf(pojo.getMessage().getTimeStampUnixNano())
+        );
+    }
     private BaseChatViewModel convertToFallBackModel(WebSocketResponseData pojo) {
         return new FallbackAttachmentViewModel(
                 String.valueOf(pojo.getMsgId()),
@@ -281,5 +297,4 @@ public class WebSocketMapper {
         }
         return list;
     }
-
 }

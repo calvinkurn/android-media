@@ -32,6 +32,8 @@ public interface ChatRoomTypeFactory {
 
     int type(FallbackAttachmentViewModel fallbackAttachmentViewModel);
 
+    int type(ChatRatingViewModel chatRatingViewModel);
+
     int type(ProductAttachmentViewModel productAttachmentViewModel);
 
     int type(ImageAnnouncementViewModel imageAnnouncementViewModel);

@@ -309,11 +309,11 @@ public class ChatRoomAdapter extends RecyclerView.Adapter<AbstractViewHolder> {
         }
     }
 
-//    public void changeRating(OppositeChatViewModel model) {
-//        int position = list.indexOf(model);
-//        ((OppositeChatViewModel) list.get(position)).setRatingStatus(model.getRatingStatus());
-//        notifyItemChanged(position);
-//    }
+    public void changeRating(ChatRatingViewModel model) {
+        int position = list.indexOf(model);
+        ((ChatRatingViewModel) list.get(position)).setRatingStatus(model.getRatingStatus());
+        notifyItemChanged(position);
+    }
 
 
 }

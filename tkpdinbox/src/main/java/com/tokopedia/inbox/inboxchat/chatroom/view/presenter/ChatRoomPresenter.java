@@ -303,31 +303,32 @@ public class ChatRoomPresenter extends BaseDaggerPresenter<ChatRoomContract.View
                     }
                 });
     }
-//
-//    public void setChatRating(final OppositeChatViewModel element, int userId, final int rating) {
-//        setChatRatingUseCase.execute(
-//                SetChatRatingUseCase.
-//                        getParams(element.getMsgId(), userId, element.getReplyTimeNano(), rating),
-//                new Subscriber<SetChatRatingPojo>() {
-//                    @Override
-//                    public void onCompleted() {
-//
-//                    }
-//
-//                    @Override
-//                    public void onError(Throwable throwable) {
-//                        throwable.printStackTrace();
-//                        getView().onErrorSetRating();
-//                    }
-//
-//                    @Override
-//                    public void onNext(SetChatRatingPojo setChatRatingPojo) {
-//                        element.setRatingStatus(rating);
-//                        getView().onSuccessSetRating(element);
-//                    }
-//                }
-//        );
-//    }
+
+    public void setChatRating(final ChatRatingViewModel element, int userId, final int rating) {
+        setChatRatingUseCase.execute(
+                SetChatRatingUseCase.
+                        getParams(Integer.parseInt(element.getMessageId()),
+                                userId, element.getReplyTimeNano(), rating),
+                new Subscriber<SetChatRatingPojo>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable throwable) {
+                        throwable.printStackTrace();
+                        getView().onErrorSetRating();
+                    }
+
+                    @Override
+                    public void onNext(SetChatRatingPojo setChatRatingPojo) {
+                        element.setRatingStatus(rating);
+                        getView().onSuccessSetRating(element);
+                    }
+                }
+        );
+    }
 
     @Override
     public String getFileLocFromCamera() {

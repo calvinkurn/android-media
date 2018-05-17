@@ -81,6 +81,11 @@ public class ChatRoomTypeFactoryImpl extends BaseAdapterTypeFactory implements C
     }
 
     @Override
+    public int type(ChatRatingViewModel chatRatingViewModel) {
+        return ChatRatingViewHolder.LAYOUT;
+    }
+
+    @Override
     public int type(ProductAttachmentViewModel productAttachmentViewModel) {
         return ProductAttachmentViewHolder.LAYOUT;
     }
@@ -111,6 +116,8 @@ public class ChatRoomTypeFactoryImpl extends BaseAdapterTypeFactory implements C
             viewHolder = new QuickReplyViewHolder(view, viewListener);
         else if (type == FallbackAttachmentViewHolder.LAYOUT)
             viewHolder = new FallbackAttachmentViewHolder(view, viewListener);
+        else if (type == ChatRatingViewHolder.LAYOUT)
+            viewHolder = new ChatRatingViewHolder(view, viewListener);
         else if (type == ProductAttachmentViewHolder.LAYOUT)
             viewHolder = new ProductAttachmentViewHolder(view, viewListener);
         else if (type == ImageAnnouncementViewHolder.LAYOUT)

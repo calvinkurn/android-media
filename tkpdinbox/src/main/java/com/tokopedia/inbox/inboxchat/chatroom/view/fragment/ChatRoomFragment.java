@@ -1110,17 +1110,17 @@ public class ChatRoomFragment extends BaseDaggerFragment
                 , Integer.parseInt(msgId));
         startActivityForResult(intent, AttachInvoiceActivity.TOKOPEDIA_ATTACH_INVOICE_REQ_CODE);
     }
-//
-//    @Override
-//    public void onClickRating(OppositeChatViewModel element, int rating) {
-//        UserSession userSession = ((AbstractionRouter) getContext().
-//                getApplicationContext()).getSession();
-//        int userId = 0;
-//        if (userSession != null && !TextUtils.isEmpty(userSession.getUserId())) {
-//            userId = Integer.valueOf(userSession.getUserId());
-//        }
-//        presenter.setChatRating(element, userId, rating);
-//    }
+
+    @Override
+    public void onClickRating(ChatRatingViewModel element, int rating) {
+        UserSession userSession = ((AbstractionRouter) getContext().
+                getApplicationContext()).getSession();
+        int userId = 0;
+        if (userSession != null && !TextUtils.isEmpty(userSession.getUserId())) {
+            userId = Integer.valueOf(userSession.getUserId());
+        }
+        presenter.setChatRating(element, userId, rating);
+    }
 
     @Override
     public void onGoToTimeMachine(String url) {
@@ -1472,17 +1472,17 @@ public class ChatRoomFragment extends BaseDaggerFragment
         adapter.remove(model);
         addView(data, UPLOADING);
     }
-//
-//    @Override
-//    public void onSuccessSetRating(OppositeChatViewModel model) {
-//        adapter.changeRating(model);
-//    }
-//
-//    @Override
-//    public void onErrorSetRating() {
-//        showError(getActivity().getString(R.string.delete_error).concat("\n").concat(getString(R
-//                .string.string_general_error)));
-//    }
+
+    @Override
+    public void onSuccessSetRating(ChatRatingViewModel model) {
+        adapter.changeRating(model);
+    }
+
+    @Override
+    public void onErrorSetRating() {
+        showError(getActivity().getString(R.string.delete_error).concat("\n").concat(getString(R
+                .string.string_general_error)));
+    }
 
     @Override
     public void onErrorUploadImages(String errorMessage, ImageUploadViewModel model) {

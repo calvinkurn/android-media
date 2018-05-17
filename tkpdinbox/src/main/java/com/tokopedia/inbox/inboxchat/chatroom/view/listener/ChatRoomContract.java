@@ -138,11 +138,11 @@ public class ChatRoomContract {
 
         void onInvoiceSelected(SelectedInvoice selectedInvoice);
 
-//        void onClickRating(OppositeChatViewModel element, int rating);
+        void onClickRating(ChatRatingViewModel element, int rating);
 
-//        void onSuccessSetRating(OppositeChatViewModel element);
+        void onSuccessSetRating(ChatRatingViewModel element);
 
-//        void onErrorSetRating();
+        void onErrorSetRating();
 
         void showSearchInvoiceScreen();
 
@@ -178,6 +178,6 @@ public class ChatRoomContract {
 
         String getFileLocFromCamera();
 
-//        void setChatRating(OppositeChatViewModel model, int userId, int rating);
+        void setChatRating(ChatRatingViewModel model, int userId, int rating);
     }
 }
