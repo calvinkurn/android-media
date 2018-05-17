@@ -9,17 +9,17 @@
 
 
     <TextView
-        android:id="@+id/textView21"
+        android:id="@+id/transaction_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="@dimen/margin_default"
         android:layout_marginStart="@dimen/margin_default"
         android:layout_marginTop="@dimen/new_margin_sm"
-        android:textColor="@color/black3_text"
+        android:textColor="@color/black"
         android:textSize="@dimen/font_title"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        android:text="Transaksi Bermasalah" />
+        android:text="@string/transaksi_bermasalah" />
 
     <ImageView
         android:id="@+id/img_product"
@@ -49,7 +49,7 @@
         app:cardElevation="4dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/textView21">
+        app:layout_constraintTop_toBottomOf="@id/transaction_title">
 
         <ImageView
             android:layout_width="match_parent"
@@ -78,6 +78,7 @@
         android:layout_marginStart="@dimen/margin_ms"
         android:layout_marginTop="@dimen/margin_ms"
         android:includeFontPadding="false"
+        android:textColor="@color/black_55"
         android:textSize="@dimen/font_micro"
         app:layout_constraintStart_toEndOf="@+id/img_product"
         app:layout_constraintTop_toBottomOf="@+id/txt_invoice_no"
@@ -85,12 +86,12 @@
         android:layout_marginLeft="@dimen/margin_ms" />
 
     <TextView
-        android:id="@+id/textView34"
+        android:id="@+id/txt_subject"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/margin_default"
         android:layout_marginTop="@dimen/new_margin_sm"
-        android:text="Subjek"
+        android:text="@string/subjek"
         android:textColor="@color/black4_text"
         android:textSize="@dimen/font_micro"
         app:layout_constraintStart_toStartOf="parent"
@@ -104,15 +105,15 @@
         android:layout_marginLeft="@dimen/margin_default"
         android:layout_marginTop="@dimen/margin_vvs"
         android:fontFamily="sans-serif"
-        android:text="Barang yang diterima tidak sesuai"
+        android:text="@string/barang_yang"
         android:textColor="@color/black"
         android:textSize="@dimen/font_title"
         android:textStyle="normal"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView34" />
+        app:layout_constraintTop_toBottomOf="@+id/txt_subject" />
 
     <TextView
-        android:id="@+id/textView36"
+        android:id="@+id/txt_query"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="@dimen/margin_default"
@@ -123,7 +124,7 @@
         android:textStyle="normal"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/txt_query_title"
-        android:text="Kendala" />
+        android:text="@string/kendala" />
 
     <android.support.v7.widget.AppCompatEditText
         android:id="@+id/edt_query"
@@ -139,8 +140,8 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         android:textSize="13sp"
-        app:layout_constraintTop_toBottomOf="@+id/textView36"
-        android:hint="Beritahukan kendala Anda (Minimum 30)" />
+        app:layout_constraintTop_toBottomOf="@+id/txt_query"
+        android:hint="@string/beritahukan_kendala_anda_minimum_30" />
 
     <View
         android:id="@+id/view2"
@@ -155,7 +156,7 @@
         app:layout_constraintTop_toBottomOf="@+id/edt_query" />
 
     <TextView
-        android:id="@+id/textView37"
+        android:id="@+id/txt_msg"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="@dimen/margin_default"
@@ -165,22 +166,22 @@
         android:textStyle="normal"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/edt_query"
-        android:text="Semakin detail, semakin mudah kami membantu Anda" />
+        android:text="@string/semakin_detail_" />
 
     <ImageView
-        android:id="@+id/imageView8"
+        android:id="@+id/img_tooltip"
         android:layout_width="@dimen/image_width_xxs"
         android:layout_height="@dimen/image_width_xxs"
         android:layout_marginLeft="@dimen/margin_padding_small"
         android:layout_marginStart="@dimen/margin_padding_small"
         android:layout_marginTop="@dimen/new_margin_sm"
-        app:layout_constraintStart_toEndOf="@+id/textView38"
-        app:layout_constraintTop_toBottomOf="@+id/textView37"
+        app:layout_constraintStart_toEndOf="@+id/txt_tooltip"
+        app:layout_constraintTop_toBottomOf="@+id/txt_msg"
         app:srcCompat="@drawable/ic_info"
         tools:layout_editor_absoluteX="72dp" />
 
     <TextView
-        android:id="@+id/textView38"
+        android:id="@+id/txt_tooltip"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/margin_ms"
@@ -188,9 +189,10 @@
         android:layout_marginStart="@dimen/margin_default"
         android:layout_marginTop="@dimen/new_margin_sm"
         android:textSize="@dimen/font_micro"
+        android:textColor="@color/black4_text"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView37"
-        android:text="Lampiran" />
+        app:layout_constraintTop_toBottomOf="@+id/txt_msg"
+        android:text="@string/lampiran" />
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/rv_selected_images"
@@ -201,7 +203,7 @@
         android:layout_marginTop="@dimen/margin_default"
         android:visibility="gone"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView38"
+        app:layout_constraintTop_toBottomOf="@+id/txt_tooltip"
         app:layout_constraintBottom_toTopOf="@+id/btn_send"/>
 
     <ImageView
@@ -214,7 +216,7 @@
         android:background="@drawable/rounded_rectangle_grey_border"
         android:scaleType="centerInside"
         app:layout_constraintStart_toEndOf="@+id/rv_selected_images"
-        app:layout_constraintTop_toBottomOf="@+id/textView38"
+        app:layout_constraintTop_toBottomOf="@+id/txt_tooltip"
         app:srcCompat="@drawable/ic_upload" />
 
     <TextView
@@ -276,10 +278,10 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/textview40" />
+        app:layout_constraintTop_toTopOf="@+id/txt_atttachment" />
 
     <TextView
-        android:id="@+id/textview40"
+        android:id="@+id/txt_atttachment"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/margin_ms"
@@ -289,16 +291,16 @@
         android:paddingTop="@dimen/margin_default"
         android:textColor="@color/black3_text"
         android:textSize="@dimen/font_smaller"
-        app:layout_constraintBottom_toTopOf="@+id/textview39"
+        app:layout_constraintBottom_toTopOf="@+id/txt_img_limit"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="1.0"
-        android:text="Lampiran" />
+        android:text="@string/lampiran" />
 
 
     <TextView
-        android:id="@+id/textview39"
+        android:id="@+id/txt_img_limit"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/new_margin_sm"
@@ -313,7 +315,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="1.0"
-        android:text="Upload hingga 5 gambar dalam format .JPG, .JPEG, .PNG. dengan ukuran maksimum10 MB." />
+        android:text="@string/warning_minimu_5mb" />
 
     <ImageView
         android:id="@+id/iv_upload_image"
@@ -344,7 +346,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="1.0"
-        android:text="Tutup" />
+        android:text="@string/tutup" />
     </android.support.constraint.ConstraintLayout>
     <android.support.constraint.ConstraintLayout
         android:layout_width="0dp"
@@ -403,7 +405,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_bias="1.0"
-            android:text="Terima Kasih" />
+            android:text="@string/terima_kasih" />
 
 
         <TextView
@@ -422,7 +424,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_bias="1.0"
-            android:text="Laporan telah masuk ke sistem. Tim Customer Care Tokopedia akan menghubungi Anda." />
+            android:text="@string/success_msg" />
 
         <ImageView
             android:id="@+id/iv_success_image"
@@ -453,6 +455,6 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_bias="1.0"
-            android:text="Ok" />
+            android:text="@string/ok" />
     </android.support.constraint.ConstraintLayout>
 </android.support.constraint.ConstraintLayout>

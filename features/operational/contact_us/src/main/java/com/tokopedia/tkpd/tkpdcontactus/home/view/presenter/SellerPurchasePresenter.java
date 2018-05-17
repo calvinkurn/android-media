@@ -2,7 +2,6 @@ package com.tokopedia.tkpd.tkpdcontactus.home.view.presenter;
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.tkpd.tkpdcontactus.common.data.BuyerPurchaseList;
-import com.tokopedia.tkpd.tkpdcontactus.home.domain.ContactUsPurchaseListUseCase;
 import com.tokopedia.tkpd.tkpdcontactus.home.domain.ContactUsSellerPurchaseLIstUseCase;
 
 import java.util.List;
@@ -35,6 +34,7 @@ public class SellerPurchasePresenter extends  BaseDaggerPresenter<PurchaseListCo
 
             @Override
             public void onError(Throwable e) {
+                getView().setEmptyLayout();
 
             }
 

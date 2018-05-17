@@ -35,7 +35,7 @@ public abstract class CustomTextView extends AppCompatTextView {
         setPadding(0,margin_default,margin_default,margin_default);
         setLayoutParams(params);
         setTextSize(14);
-        setTextColor(R.color.black3_text);
+        setTextColor(getResources().getColor(R.color.black3_text));
         setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {

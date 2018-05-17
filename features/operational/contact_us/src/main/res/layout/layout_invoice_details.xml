@@ -7,13 +7,13 @@
     android:background="@color/white">
 
     <TextView
-        android:id="@+id/textView21"
+        android:id="@+id/txt_transaction_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="@dimen/margin_default"
         android:layout_marginStart="@dimen/margin_default"
         android:layout_marginTop="@dimen/new_margin_sm"
-        android:textColor="@color/black3_text"
+        android:textColor="@color/black"
         android:textSize="@dimen/font_title"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -47,7 +47,7 @@
         app:cardElevation="4dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/textView21">
+        app:layout_constraintTop_toBottomOf="@id/txt_transaction_title">
 
         <ImageView
             android:layout_width="match_parent"
@@ -64,7 +64,7 @@
         android:layout_marginStart="@dimen/margin_ms"
         android:layout_marginTop="@dimen/margin_default"
         android:includeFontPadding="false"
-        android:textColor="@color/green_text"
+        android:textColor="@color/green_nob"
         app:layout_constraintStart_toEndOf="@+id/img_order"
         app:layout_constraintTop_toTopOf="@+id/cardview_invoice"
         tools:text="INV/20171010/XVII/X/24225245" />
@@ -77,6 +77,7 @@
         android:layout_marginStart="@dimen/margin_ms"
         android:layout_marginTop="@dimen/margin_ms"
         android:includeFontPadding="false"
+        android:textColor="@color/black_55"
         android:text="TextView"
         android:textSize="@dimen/font_micro"
         app:layout_constraintStart_toEndOf="@+id/img_order"
@@ -84,17 +85,17 @@
         tools:text="Helm Cargloss MXC Supertrack Ice Brown" />
 
     <TextView
-        android:id="@+id/textView24"
+        android:id="@+id/txt_query_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/margin_default"
         android:layout_marginStart="@dimen/margin_default"
         android:layout_marginTop="@dimen/new_margin_sm"
-        android:textColor="@color/black3_text"
+        android:text="@string/apa_kendala_anda"
+        android:textColor="@color/black"
         android:textSize="@dimen/font_title"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/cardview_invoice"
-        android:text="Apa Kendala Anda?" />
+        android:layout_marginLeft="@dimen/margin_default" />
 
     <LinearLayout
         android:id="@+id/ticket_list"
@@ -104,7 +105,7 @@
         android:layout_marginTop="@dimen/dp_16"
         android:orientation="vertical"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/textView24"
+        app:layout_constraintTop_toBottomOf="@id/txt_query_title"
         android:layout_marginLeft="16dp"></LinearLayout>
 
 </android.support.constraint.ConstraintLayout>

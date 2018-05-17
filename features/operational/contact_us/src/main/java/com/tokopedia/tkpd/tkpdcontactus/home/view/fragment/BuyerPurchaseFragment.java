@@ -5,7 +5,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
+import android.widget.LinearLayout;
 
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
@@ -13,7 +13,6 @@ import com.tokopedia.abstraction.base.view.recyclerview.VerticalRecyclerView;
 import com.tokopedia.abstraction.common.di.component.HasComponent;
 import com.tokopedia.contactus.R;
 import com.tokopedia.contactus.R2;
-import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.tkpd.tkpdcontactus.common.data.BuyerPurchaseList;
 import com.tokopedia.tkpd.tkpdcontactus.home.di.ContactUsComponent;
 import com.tokopedia.tkpd.tkpdcontactus.home.di.DaggerContactUsComponent;
@@ -35,6 +34,8 @@ public class BuyerPurchaseFragment extends BaseDaggerFragment implements Purchas
     PurchaseListPresenter presenter;
     @BindView(R2.id.order_list_full)
     VerticalRecyclerView orderListFull;
+    @BindView(R2.id.empty_layout)
+    LinearLayout emptyLayout;
     private ContactUsComponent contactUsComponent;
     PurchaseListAdpater adapter;
 
@@ -92,7 +93,16 @@ public class BuyerPurchaseFragment extends BaseDaggerFragment implements Purchas
 
     @Override
     public void setPurchaseList(List<BuyerPurchaseList> buyerPurchaseLists) {
+        if(buyerPurchaseLists.size()<=0) {
+            emptyLayout.setVisibility(View.VISIBLE);
+        }else {
             adapter.setBuyerPurchaseLists(buyerPurchaseLists);
+        }
+    }
+
+    @Override
+    public void setEmptyLayout() {
+        emptyLayout.setVisibility(View.VISIBLE);
     }
 
 

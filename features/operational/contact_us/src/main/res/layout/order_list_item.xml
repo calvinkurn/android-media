@@ -19,7 +19,7 @@
             android:layout_marginLeft="@dimen/margin_default"
             android:layout_marginStart="@dimen/margin_default"
             android:layout_marginTop="@dimen/med_dp"
-            android:textColor="@color/green_text"
+            android:textColor="@color/green_nob"
             android:textSize="@dimen/font_micro"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
@@ -67,10 +67,9 @@
             android:id="@+id/txt_more_item"
             android:layout_width="98dp"
             android:layout_height="19dp"
-            android:layout_marginLeft="16dp"
             android:layout_marginStart="16dp"
             android:layout_marginTop="4dp"
-            android:textColor="@color/black"
+            android:textColor="@color/black_55"
             android:textSize="@dimen/font_micro"
             app:layout_constraintStart_toEndOf="@+id/img_product"
             app:layout_constraintTop_toBottomOf="@+id/txt_product_name"
@@ -95,7 +94,7 @@
             tools:text="Kode resi pengiriman tidak valid" />
 
         <ImageView
-            android:id="@+id/imageView3"
+            android:id="@+id/img_divider"
             android:layout_width="match_parent"
             android:layout_height="@dimen/divider_height_thin"
             android:layout_marginTop="@dimen/margin_default"
@@ -106,16 +105,17 @@
 <LinearLayout
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"></LinearLayout>
+
         <TextView
-            android:id="@+id/textView9"
+            android:id="@+id/txt_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/new_margin_medsmall"
             android:text="Total:"
-            android:textColor="@color/black"
+            android:textColor="@color/black_55"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintStart_toStartOf="@+id/txt_invalid_msg"
-            app:layout_constraintTop_toBottomOf="@+id/imageView3" />
+            app:layout_constraintTop_toBottomOf="@+id/img_divider" />
 
         <TextView
             android:id="@+id/txt_total_price"
@@ -128,8 +128,8 @@
             android:textColor="@color/red_text"
             android:textSize="@dimen/font_small"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/textView9"
-            app:layout_constraintTop_toBottomOf="@+id/imageView3"
+            app:layout_constraintStart_toEndOf="@+id/txt_title"
+            app:layout_constraintTop_toBottomOf="@+id/img_divider"
             app:layout_constraintVertical_bias="0.0"
             tools:text="Rp 10.000.000" />
 

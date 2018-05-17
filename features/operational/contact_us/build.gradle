@@ -18,7 +18,6 @@ dependencies {
     compile rootProject.ext.supportLibDependencies.constraintLayout
 
 
-    compile project(rootProject.ext.features.core)
     compile project(rootProject.ext.libraries.design)
     compile project(rootProject.ext.libraries.abstraction)
     compile project(rootProject.ext.features.inbox)

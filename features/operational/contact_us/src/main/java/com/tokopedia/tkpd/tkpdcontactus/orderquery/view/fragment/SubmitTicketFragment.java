@@ -407,7 +407,7 @@ public class SubmitTicketFragment extends BaseDaggerFragment implements SubmitTi
         SubmitTicketFragmentPermissionsDispatcher.onRequestPermissionsResult(this, requestCode, grantResults);
     }
 
-    @OnClick(R2.id.imageView8)
+    @OnClick(R2.id.img_tooltip)
     public void onToolTipImgClicked() {
         presenter.onToolTipClick();
     }

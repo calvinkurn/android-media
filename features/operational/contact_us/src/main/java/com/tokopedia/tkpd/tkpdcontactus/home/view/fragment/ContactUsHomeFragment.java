@@ -22,6 +22,7 @@ import com.tokopedia.abstraction.common.di.component.HasComponent;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.contactus.R;
 import com.tokopedia.contactus.R2;
+import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.inbox.inboxticket.activity.InboxTicketActivity;
 import com.tokopedia.tkpd.tkpdcontactus.common.api.ContactUsURL;
 import com.tokopedia.tkpd.tkpdcontactus.common.customview.ShadowTransformer;
@@ -161,7 +162,7 @@ public class ContactUsHomeFragment extends BaseDaggerFragment implements Contact
     @Override
     public void setPurchaseList(List<BuyerPurchaseList> buyerPurchaseLists) {
         orderList.setVisibility(View.VISIBLE);
-        if (buyerPurchaseLists.size() <= 4) {
+        if (!!SessionHandler.isUserHasShop(getContext()) && buyerPurchaseLists.size() <= 4) {
             btnFullPurchaseList.setVisibility(View.GONE);
             cardAdapter.addData(buyerPurchaseLists);
         }else {

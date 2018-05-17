@@ -13,6 +13,7 @@ import java.util.List;
 public interface PurchaseListContract {
     public interface View extends CustomerView {
         public void setPurchaseList(List<BuyerPurchaseList> buyerPurchaseLists);
+        public void setEmptyLayout();
 
     }
 

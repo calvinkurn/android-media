@@ -1,9 +1,6 @@
 package com.tokopedia.tkpd.tkpdcontactus.home.view.presenter;
 
-import android.content.Context;
-
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
-import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.tkpd.tkpdcontactus.common.data.BuyerPurchaseList;
 import com.tokopedia.tkpd.tkpdcontactus.home.domain.ContactUsPurchaseListUseCase;
 
@@ -38,6 +35,7 @@ public class PurchaseListPresenter extends BaseDaggerPresenter<PurchaseListContr
 
             @Override
             public void onError(Throwable e) {
+                getView().setEmptyLayout();
             }
 
             @Override

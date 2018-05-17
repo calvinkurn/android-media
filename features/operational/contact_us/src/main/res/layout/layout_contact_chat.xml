@@ -18,33 +18,33 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/textView14"
+        android:id="@+id/txt_help_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/margin_default"
         android:layout_marginStart="@dimen/margin_default"
         android:layout_marginTop="@dimen/new_margin_sm"
-        android:text="Butuh Bantuan Lain?"
-        android:textColor="@color/black3_text"
-        android:textSize="@dimen/font_title"
+        android:text="@string/butuh_bantuan_lain"
+        android:textColor="@color/black"
+        android:textSize="17sp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/divider" />
+        app:layout_constraintTop_toTopOf="@+id/divider"
+        android:layout_marginLeft="@dimen/margin_default" />
 
     <TextView
-        android:id="@+id/textView15"
+        android:id="@+id/txt_help_detail"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginEnd="@dimen/margin_default"
-        android:layout_marginRight="@dimen/margin_default"
         android:layout_marginTop="@dimen/margin_ms"
-        android:text="Tim Customer Service kami selalu siap untuk melayani Anda selama 24/7"
-        android:textColor="@color/grey2_text"
+        android:text="@string/tim_customer_service"
+        android:textColor="@color/black_55"
         android:textSize="@dimen/font_small"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintStart_toStartOf="@+id/textView14"
-        app:layout_constraintTop_toBottomOf="@+id/textView14" />
+        app:layout_constraintStart_toStartOf="@+id/txt_help_title"
+        app:layout_constraintTop_toBottomOf="@+id/txt_help_title"
+        android:layout_marginRight="@dimen/margin_default" />
 
     <TextView
         android:id="@+id/btn_contact_us"
@@ -56,7 +56,7 @@
         android:layout_marginTop="22dp"
         android:background="@drawable/rounded_rectangle_green_solid"
         android:gravity="center"
-        android:text="Hubungi Kami"
+        android:text="@string/hubungi_kami"
         android:textColor="@color/white"
         android:textSize="@dimen/font_smaller"
         android:textStyle="bold"
@@ -64,7 +64,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toLeftOf="@+id/btn_chat"
-        app:layout_constraintTop_toBottomOf="@+id/textView15" />
+        app:layout_constraintTop_toBottomOf="@+id/txt_help_detail" />
 
     <TextView
         android:id="@+id/btn_chat"
@@ -77,13 +77,13 @@
         android:gravity="center"
         android:paddingLeft="22dp"
         android:paddingRight="22dp"
-        android:text="Chat dengan Toped"
+        android:text="@string/chat_dengan_toped"
         android:textColor="@color/black"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView15"
+        app:layout_constraintTop_toBottomOf="@+id/txt_help_detail"
         app:layout_constraintVertical_bias="0.0" />
 </android.support.constraint.ConstraintLayout>

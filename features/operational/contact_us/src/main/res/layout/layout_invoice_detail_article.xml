@@ -32,7 +32,7 @@
             android:layout_marginLeft="@dimen/margin_padding_small"
             android:layout_marginTop="31dp"
             android:text="Hubungi Kami"
-            android:textColor="@color/green_text"
+            android:textColor="@color/green_nob"
             android:textSize="14sp" />
     </LinearLayout>
 
