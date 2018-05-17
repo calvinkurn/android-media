@@ -1,4 +1,4 @@
-package com.tokopedia.district_recommendation.data;
+package com.tokopedia.district_recommendation.data.mapper;
 
 import com.tokopedia.district_recommendation.data.entity.AddressEntity;
 import com.tokopedia.district_recommendation.data.entity.AddressResponseEntity;
