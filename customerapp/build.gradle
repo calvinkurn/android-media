@@ -258,6 +258,7 @@ dependencies {
     compile project(rootProject.ext.features.feed)
     compile project(rootProject.ext.features.event)
     compile project(rootProject.ext.features.loyalty)
+    compile project(rootProject.ext.features.districtRecommendation)
     compile project(rootProject.ext.features.reputation)
     compile project(rootProject.ext.features.tokoCash)
     compile project(rootProject.ext.features.flight)
