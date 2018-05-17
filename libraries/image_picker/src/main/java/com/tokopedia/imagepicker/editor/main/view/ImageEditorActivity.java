@@ -3,15 +3,16 @@ package com.tokopedia.imagepicker.editor.main.view;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
+import android.support.v7.app.AlertDialog;
 import android.view.View;
 import android.webkit.URLUtil;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
@@ -103,7 +104,6 @@ public class ImageEditorActivity extends BaseSimpleActivity implements ImageEdit
     private TwoLineSeekBar rotateSeekbar;
     private TextView tvBrightness;
     private TextView tvContrast;
-    private long prevTimeClicked;
     private TextView tvActionTitle;
 
     public static Intent getIntent(Context context, ArrayList<String> imageUrls, int minResolution,
@@ -136,10 +136,8 @@ public class ImageEditorActivity extends BaseSimpleActivity implements ImageEdit
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
 
         Intent intent = getIntent();
-
         // For test:
         // extraImageUrls = new ArrayList<>();
         // extraImageUrls.add("https://scontent-sit4-1.cdninstagram.com/vp/4d462c7e62452e54862602872a4f2f55/5B772ADA/t51.2885-15/e35/30603662_2044572549200360_6725615414816014336_n.jpg");
@@ -149,7 +147,6 @@ public class ImageEditorActivity extends BaseSimpleActivity implements ImageEdit
             finish();
             return;
         }
-
         minResolution = intent.getIntExtra(EXTRA_MIN_RESOLUTION, 0);
         imageEditActionType = intent.getIntArrayExtra(EXTRA_EDIT_ACTION_TYPE);
         ratioX = intent.getIntExtra(EXTRA_RATIO_X, 1);
@@ -170,6 +167,8 @@ public class ImageEditorActivity extends BaseSimpleActivity implements ImageEdit
             currentEditActionType = savedInstanceState.getInt(SAVED_EDIT_TYPE);
             currentEditStepIndexList = savedInstanceState.getIntegerArrayList(SAVED_CURRENT_STEP_INDEX);
         }
+
+        super.onCreate(savedInstanceState);
 
         vgDownloadProgressBar = findViewById(R.id.vg_download_progress_bar);
         vgContentContainer = findViewById(R.id.vg_content_container);
@@ -416,7 +415,7 @@ public class ImageEditorActivity extends BaseSimpleActivity implements ImageEdit
             switch (editActionType) {
                 case ImageEditActionTypeDef.ACTION_CROP:
                     if (fragment != null) {
-                        fragment.setEditMode(true);
+                        fragment.setEditCropMode(true);
                     }
                     hideAllControls();
                     layoutCrop.setVisibility(View.VISIBLE);
@@ -437,31 +436,21 @@ public class ImageEditorActivity extends BaseSimpleActivity implements ImageEdit
                 case ImageEditActionTypeDef.ACTION_BRIGHTNESS:
                     hideAllControls();
                     setupBrightnessWidget();
-                    if (fragment != null) {
-                        float brightness = fragment.getBrightness();
-                        setUIBrightnessValue(brightness);
-                    } else {
-                        setUIBrightnessValue(0);
-                    }
+                    setUIBrightnessValue(0);
                     layoutBrightness.setVisibility(View.VISIBLE);
                     tvActionTitle.setText(getString(R.string.brightness));
                     break;
                 case ImageEditActionTypeDef.ACTION_CONTRAST:
                     hideAllControls();
                     setupContrastWidget();
-                    if (fragment != null) {
-                        float contrast = fragment.getContrast();
-                        setUIContrastValue(contrast);
-                    } else {
-                        setUIContrastValue(INITIAL_CONTRAST_VALUE);
-                    }
+                    setUIContrastValue(INITIAL_CONTRAST_VALUE);
                     layoutContrast.setVisibility(View.VISIBLE);
                     tvActionTitle.setText(getString(R.string.contrast));
                     break;
             }
             tvActionTitle.setVisibility(View.VISIBLE);
 
-            if (fragment!= null) {
+            if (fragment != null) {
                 fragment.renderUndoRedo();
             }
 
@@ -474,7 +463,7 @@ public class ImageEditorActivity extends BaseSimpleActivity implements ImageEdit
             getSupportActionBar().setTitle(getTitle());
             tvActionTitle.setVisibility(View.GONE);
             if (fragment != null) {
-                fragment.setEditMode(false);
+                fragment.setEditCropMode(false);
                 fragment.renderUndoRedo();
             }
         }
@@ -829,15 +818,37 @@ public class ImageEditorActivity extends BaseSimpleActivity implements ImageEdit
         if (isInEditMode) { //backpressed will cancel the edit mode
             onCancelEditClicked();
         } else {
-            long currentTime = System.currentTimeMillis();
-            if (currentTime - prevTimeClicked < BACKPRESS_TIME_LIMIT) {
-                ImageUtils.deleteCacheFolder(ImageUtils.DirectoryDef.DIRECTORY_TOKOPEDIA_CACHE);
-                ImageEditorActivity.super.onBackPressed();
+            if (anyEditChanges()) {
+                AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this, R.style.AppCompatAlertDialogStyle)
+                        .setTitle(getString(R.string.image_edit_backpressed_title))
+                        .setPositiveButton(getString(R.string.exit), new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                ImageUtils.deleteCacheFolder(ImageUtils.DirectoryDef.DIRECTORY_TOKOPEDIA_CACHE);
+                                ImageEditorActivity.super.onBackPressed();
+                            }
+                        }).setNegativeButton(getString(R.string.cancel), new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface arg0, int arg1) {
+                                // no op, just dismiss
+                            }
+                        });
+                AlertDialog dialog = alertDialogBuilder.create();
+                dialog.show();
             } else {
-                Toast.makeText(this, getString(R.string.pressed_once_more_to_exit), Toast.LENGTH_SHORT).show();
-                prevTimeClicked = System.currentTimeMillis();
+                ImageEditorActivity.super.onBackPressed();
             }
         }
+    }
+
+    private boolean anyEditChanges() {
+        if (edittedImagePaths!= null) {
+            for (int i = 0, sizei = edittedImagePaths.size(); i < sizei; i++) {
+                if (edittedImagePaths.get(i)!= null && edittedImagePaths.get(i).size() > 1) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     @Override
@@ -855,10 +866,10 @@ public class ImageEditorActivity extends BaseSimpleActivity implements ImageEdit
         return null;
     }
 
-
     @Override
-    public boolean isInEditMode() {
-        return isInEditMode;
+    public boolean isInEditCropMode() {
+        return isInEditMode && (currentEditActionType == ImageEditActionTypeDef.ACTION_CROP
+                || currentEditActionType == ImageEditActionTypeDef.ACTION_CROP_ROTATE);
     }
 
 

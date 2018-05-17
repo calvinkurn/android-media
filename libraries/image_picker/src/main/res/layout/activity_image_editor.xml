@@ -148,74 +148,80 @@
                         android:layout_weight="1"/>
                 </LinearLayout>
 
-                <LinearLayout
+
+                <FrameLayout
                     android:id="@+id/vg_editor_control"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:orientation="vertical"
-                    android:gravity="bottom"
                     android:visibility="gone"
-                    tools:visibility="visible"
-                    android:clipToPadding="false"
-                    android:clipChildren="false">
-
-                    <View
+                    tools:visibility="visible">
+                    <LinearLayout
                         android:layout_width="match_parent"
-                        android:layout_height="0dp"
-                        android:layout_weight="1"/>
+                        android:layout_height="match_parent"
+                        android:orientation="vertical"
+                        android:clipToPadding="false"
+                        android:clipChildren="false">
 
-                    <include
-                        android:id="@+id/layout_crop"
-                        android:layout_height="@dimen/control_height"
-                        android:layout_width="match_parent"
-                        android:layout_marginLeft="@dimen/dp_16"
-                        android:layout_marginRight="@dimen/dp_16"
-                        android:visibility="gone"
-                        tools:visibility="visible"
-                        layout="@layout/layout_crop"/>
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="0dp"
+                            android:layout_weight="1"/>
 
-                    <include
-                        android:id="@+id/layout_rotate"
-                        android:layout_height="@dimen/control_height"
-                        android:layout_width="match_parent"
-                        android:layout_marginLeft="@dimen/dp_16"
-                        android:layout_marginRight="@dimen/dp_16"
-                        android:visibility="gone"
-                        tools:visibility="visible"
-                        layout="@layout/layout_rotate"/>
+                        <include
+                            android:id="@+id/layout_crop"
+                            android:layout_height="@dimen/control_height"
+                            android:layout_width="match_parent"
+                            android:layout_marginLeft="@dimen/dp_16"
+                            android:layout_marginRight="@dimen/dp_16"
+                            android:visibility="gone"
+                            tools:visibility="visible"
+                            layout="@layout/layout_crop"/>
 
-                    <include
-                        android:id="@+id/layout_brightness"
-                        android:layout_height="@dimen/control_height"
-                        android:layout_width="match_parent"
-                        android:layout_marginLeft="@dimen/dp_16"
-                        android:layout_marginRight="@dimen/dp_16"
-                        android:visibility="gone"
-                        tools:visibility="visible"
-                        layout="@layout/layout_brightness"/>
+                        <include
+                            android:id="@+id/layout_rotate"
+                            android:layout_height="@dimen/control_height"
+                            android:layout_width="match_parent"
+                            android:layout_marginLeft="@dimen/dp_16"
+                            android:layout_marginRight="@dimen/dp_16"
+                            android:visibility="gone"
+                            tools:visibility="visible"
+                            layout="@layout/layout_rotate"/>
 
-                    <include
-                        android:id="@+id/layout_contrast"
-                        android:layout_height="@dimen/control_height"
-                        android:layout_width="match_parent"
-                        android:layout_marginLeft="@dimen/dp_16"
-                        android:layout_marginRight="@dimen/dp_16"
-                        android:visibility="gone"
-                        tools:visibility="visible"
-                        layout="@layout/layout_contrast"/>
+                        <include
+                            android:id="@+id/layout_brightness"
+                            android:layout_height="@dimen/control_height"
+                            android:layout_width="match_parent"
+                            android:layout_marginLeft="@dimen/dp_16"
+                            android:layout_marginRight="@dimen/dp_16"
+                            android:visibility="gone"
+                            tools:visibility="visible"
+                            layout="@layout/layout_brightness"/>
 
-                    <View
-                        android:layout_width="match_parent"
-                        android:layout_height="0dp"
-                        android:layout_weight="1"/>
+                        <include
+                            android:id="@+id/layout_contrast"
+                            android:layout_height="@dimen/control_height"
+                            android:layout_width="match_parent"
+                            android:layout_marginLeft="@dimen/dp_16"
+                            android:layout_marginRight="@dimen/dp_16"
+                            android:visibility="gone"
+                            tools:visibility="visible"
+                            layout="@layout/layout_contrast"/>
+
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="0dp"
+                            android:layout_weight="2"/>
+
+                    </LinearLayout>
 
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:orientation="horizontal">
+                        android:orientation="horizontal"
+                        android:layout_gravity="bottom">
                         <TextView
                             android:id="@+id/tv_edit_cancel"
-                            style="@style/TextView.Title.Bold"
+                            style="@style/TextView.Title"
                             android:layout_width="0dp"
                             android:layout_weight="1"
                             android:layout_height="wrap_content"
@@ -246,8 +252,8 @@
                             android:clickable="true"
                             android:focusable="true"/>
                     </LinearLayout>
+                </FrameLayout>
 
-                </LinearLayout>
             </FrameLayout>
 
         </LinearLayout>

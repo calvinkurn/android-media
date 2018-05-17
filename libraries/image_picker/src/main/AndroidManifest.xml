@@ -12,19 +12,19 @@
             android:theme="@style/Theme.White"
             android:label="@string/choose_image"
             android:screenOrientation="portrait"
-            android:launchMode="singleTask"/>
+            android:launchMode="singleTop"/>
 
         <activity android:name=".picker.album.AlbumPickerActivity"
             android:theme="@style/Theme.White"
             android:label="@string/album"
             android:screenOrientation="portrait"
-            android:launchMode="singleTask"/>
+            android:launchMode="singleTop"/>
 
         <activity android:name=".editor.main.view.ImageEditorActivity"
             android:theme="@style/Theme.White"
             android:label="@string/edit_image"
             android:screenOrientation="portrait"
-            android:launchMode="singleTask"/>
+            android:launchMode="singleTop"/>
 
     </application>
 
