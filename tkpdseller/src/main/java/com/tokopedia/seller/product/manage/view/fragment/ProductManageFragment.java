@@ -780,23 +780,11 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
     }
 
     private void goToShareProduct(ProductManageViewModel productManageViewModel) {
-        ShareData shareData = ShareData.Builder.aShareData()
-                .setName(productManageViewModel.getProductName())
-                .setTextContent(productManageViewModel.getProductName())
-                .setDescription(productManageViewModel.getProductName())
-                .setImgUri(productManageViewModel.getImageFullUrl())
-                .setPrice(productManageViewModel.getProductPrice())
-                .setUri(productManageViewModel.getProductUrl())
-                .setType(ShareData.PRODUCT_TYPE)
-                .setId(productManageViewModel.getProductId())
-                .build();
-//        Intent intent = ShareActivity.createIntent(getActivity(), shareData);
-//        startActivity(intent);
-        shareWithSticker(shareData);
+        downloadBitmap(productManageViewModel);
     }
 
-    public void shareWithSticker(final ShareData data){
-        Observable.just(data.getImgUri())
+    public void downloadBitmap(final ProductManageViewModel productManageViewModel){
+        Observable.just(productManageViewModel.getImageFullUrl())
                 .map(new Func1<String, Bitmap>() {
                     @Override
                     public Bitmap call(String image) {
@@ -835,14 +823,25 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
                             @Override
                             public void onNext(final Bitmap bitmap) {
                                 AddSticker addSticker = new AddSticker.Builder()
-                                        .setName(data.getName())
-                                        .setPrice(data.getPrice())
+                                        .setName(productManageViewModel.getProductName())
+                                        .setPrice(productManageViewModel.getProductPrice())
                                         .setLogo(BitmapFactory.decodeResource(getResources(), R.drawable.ic_new_logo))
                                         .build();
 
                                 Bitmap newImage = addSticker.addStickerToBitmap(bitmap, getActivity());
-                                ShareSocmedHandler.ShareSpecific(data, getActivity(), TkpdState.PackageName.Instagram,
-                                        TkpdState.PackageName.TYPE_IMAGE, newImage, null);
+
+                                ShareData shareData = ShareData.Builder.aShareData()
+                                        .setName(productManageViewModel.getProductName())
+                                        .setTextContent(productManageViewModel.getProductName())
+                                        .setDescription(productManageViewModel.getProductName())
+                                        .setImgUri(productManageViewModel.getImageFullUrl())
+                                        .setPrice(productManageViewModel.getProductPrice())
+                                        .setUri(productManageViewModel.getProductUrl())
+                                        .setType(ShareData.PRODUCT_TYPE)
+                                        .setId(productManageViewModel.getProductId())
+                                        .build();
+                                Intent intent = ShareActivity.createIntent(getActivity(), shareData);
+                                startActivity(intent);
                             }
                         }
                 );
