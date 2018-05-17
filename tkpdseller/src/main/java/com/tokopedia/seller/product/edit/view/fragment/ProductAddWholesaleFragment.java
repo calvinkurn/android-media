@@ -195,11 +195,11 @@ public class ProductAddWholesaleFragment extends BaseDaggerFragment implements W
         setWholesalePrice(productWholesaleViewModelArrayList);
         switch (currencyType) {
             case CurrencyTypeDef.TYPE_USD:
-                textMainPrice.setText(USD_CURRENCY + currencyString);
+                textMainPrice.setText(getString(R.string.usd_format, currencyString));
                 break;
             default:
             case CurrencyTypeDef.TYPE_IDR:
-                textMainPrice.setText(RUPIAH_CURRENCY + currencyString);
+                textMainPrice.setText(getString(R.string.rupiah_format, currencyString));
                 break;
 
         }
