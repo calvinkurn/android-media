@@ -97,7 +97,7 @@ import com.tokopedia.inbox.inboxchat.viewmodel.ChatRoomViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.DummyChatViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.InboxChatViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.MyChatViewModel;
-import com.tokopedia.inbox.inboxchat.viewmodel.OppositeChatViewModel;
+import com.tokopedia.inbox.inboxchat.viewmodel.chatroom.ChatRatingViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.chatroom.QuickReplyListViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.chatroom.QuickReplyViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.chatroom.SendableViewModel;
@@ -1157,7 +1157,7 @@ public class ChatRoomFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void onClickRating(OppositeChatViewModel element, int rating) {
+    public void onClickRating(ChatRatingViewModel element, int rating) {
         UserSession userSession = ((AbstractionRouter) getContext().
                 getApplicationContext()).getSession();
         int userId = 0;
@@ -1536,7 +1536,7 @@ public class ChatRoomFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void onSuccessSetRating(OppositeChatViewModel model) {
+    public void onSuccessSetRating(ChatRatingViewModel model) {
         adapter.changeRating(model);
     }
 

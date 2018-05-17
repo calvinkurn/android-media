@@ -5,6 +5,7 @@ import android.view.View;
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.inbox.inboxchat.adapter.viewholder.AttachedInvoiceSentViewHolder;
+import com.tokopedia.inbox.inboxchat.adapter.viewholder.ChatRatingViewHolder;
 import com.tokopedia.inbox.inboxchat.adapter.viewholder.FallbackAttachmentViewHolder;
 import com.tokopedia.inbox.inboxchat.adapter.viewholder.ImageAnnouncementViewHolder;
 import com.tokopedia.inbox.inboxchat.adapter.viewholder.ImageUploadViewHolder;
@@ -18,16 +19,17 @@ import com.tokopedia.inbox.inboxchat.viewholder.MyChatViewHolder;
 import com.tokopedia.inbox.inboxchat.viewholder.OppositeChatViewHolder;
 import com.tokopedia.inbox.inboxchat.viewholder.TimeMachineChatViewHolder;
 import com.tokopedia.inbox.inboxchat.viewholder.TypingChatViewHolder;
-import com.tokopedia.inbox.inboxchat.viewmodel.chatroom.invoiceattachment.AttachInvoiceSelectionViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.AttachInvoiceSentViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.MyChatViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.OppositeChatViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.TypingChatModel;
+import com.tokopedia.inbox.inboxchat.viewmodel.chatroom.ChatRatingViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.chatroom.QuickReplyListViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.chatroom.TimeMachineChatModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.chatroom.fallback.FallbackAttachmentViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.chatroom.imageannouncement.ImageAnnouncementViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.chatroom.imageupload.ImageUploadViewModel;
+import com.tokopedia.inbox.inboxchat.viewmodel.chatroom.invoiceattachment.AttachInvoiceSelectionViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.chatroom.message.MessageViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.chatroom.productattachment.ProductAttachmentViewModel;
 
@@ -95,6 +97,11 @@ public class ChatRoomTypeFactoryImpl extends BaseAdapterTypeFactory implements C
     }
 
     @Override
+    public int type(ChatRatingViewModel chatRatingViewModel) {
+        return ChatRatingViewHolder.LAYOUT;
+    }
+
+    @Override
     public int type(ProductAttachmentViewModel productAttachmentViewModel) {
         return ProductAttachmentViewHolder.LAYOUT;
     }
@@ -127,6 +134,8 @@ public class ChatRoomTypeFactoryImpl extends BaseAdapterTypeFactory implements C
             viewHolder = new QuickReplyViewHolder(view, viewListener);
         else if (type == FallbackAttachmentViewHolder.LAYOUT)
             viewHolder = new FallbackAttachmentViewHolder(view, viewListener);
+        else if (type == ChatRatingViewHolder.LAYOUT)
+            viewHolder = new ChatRatingViewHolder(view, viewListener);
         else if (type == ProductAttachmentViewHolder.LAYOUT)
             viewHolder = new ProductAttachmentViewHolder(view, viewListener);
         else if (type == ImageAnnouncementViewHolder.LAYOUT)

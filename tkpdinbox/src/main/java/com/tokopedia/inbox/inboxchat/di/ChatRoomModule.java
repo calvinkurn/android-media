@@ -1,9 +1,5 @@
 package com.tokopedia.inbox.inboxchat.di;
 
-import android.content.Context;
-
-import com.tokopedia.abstraction.common.data.model.session.UserSession;
-import com.tokopedia.core.base.di.qualifier.ApplicationContext;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.core.network.apiservices.accounts.UploadImageService;
@@ -31,9 +27,9 @@ import com.tokopedia.inbox.inboxchat.domain.WebSocketMapper;
 import com.tokopedia.inbox.inboxchat.domain.usecase.AttachImageUseCase;
 import com.tokopedia.inbox.inboxchat.domain.usecase.GetMessageListUseCase;
 import com.tokopedia.inbox.inboxchat.domain.usecase.GetReplyListUseCase;
+import com.tokopedia.inbox.inboxchat.domain.usecase.ReplyMessageUseCase;
 import com.tokopedia.inbox.inboxchat.domain.usecase.SendMessageUseCase;
 import com.tokopedia.inbox.inboxchat.domain.usecase.template.GetTemplateUseCase;
-import com.tokopedia.inbox.inboxchat.domain.usecase.ReplyMessageUseCase;
 import com.tokopedia.inbox.inboxchat.uploadimage.data.factory.ImageUploadFactory;
 import com.tokopedia.inbox.inboxchat.uploadimage.data.mapper.GenerateHostMapper;
 import com.tokopedia.inbox.inboxchat.uploadimage.data.mapper.UploadImageMapper;

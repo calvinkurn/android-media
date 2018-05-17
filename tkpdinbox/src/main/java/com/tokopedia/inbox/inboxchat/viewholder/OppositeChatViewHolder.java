@@ -163,14 +163,14 @@ public class OppositeChatViewHolder extends AbstractViewHolder<OppositeChatViewM
                     ratingYes.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            viewListener.onClickRating(element, RATING_GOOD);
+//                            viewListener.onClickRating(element, RATING_GOOD);
                         }
                     });
 
                     ratingNo.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            viewListener.onClickRating(element, RATING_BAD);
+//                            viewListener.onClickRating(element, RATING_BAD);
                         }
                     });
                     break;

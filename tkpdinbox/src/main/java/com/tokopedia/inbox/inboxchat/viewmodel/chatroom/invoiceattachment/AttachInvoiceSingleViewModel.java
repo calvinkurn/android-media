@@ -1,10 +1,5 @@
 package com.tokopedia.inbox.inboxchat.viewmodel.chatroom.invoiceattachment;
 
-import com.google.gson.annotations.Expose;
-import com.google.gson.annotations.SerializedName;
-
-import java.util.Date;
-
 /**
  * Created by Hendri on 28/03/18.
  */

@@ -11,7 +11,6 @@ import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.inbox.R;
 import com.tokopedia.inbox.inboxchat.domain.WebSocketMapper;
-import com.tokopedia.inbox.inboxchat.domain.model.ListReplyViewModel;
 import com.tokopedia.inbox.inboxchat.domain.model.reply.Attachment;
 import com.tokopedia.inbox.inboxchat.domain.model.reply.AttachmentInvoice;
 import com.tokopedia.inbox.inboxchat.domain.model.reply.AttachmentInvoiceAttributes;
@@ -29,11 +28,9 @@ import com.tokopedia.inbox.inboxchat.viewmodel.chatroom.QuickReplyListViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.chatroom.QuickReplyViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.chatroom.imageannouncement.ImageAnnouncementViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.chatroom.imageupload.ImageUploadViewModel;
-import com.tokopedia.inbox.inboxchat.viewmodel.chatroom.invoiceattachment
-        .AttachInvoiceSelectionViewModel;
+import com.tokopedia.inbox.inboxchat.viewmodel.chatroom.invoiceattachment.AttachInvoiceSelectionViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.chatroom.invoiceattachment.AttachInvoiceSingleViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.chatroom.productattachment.ProductAttachmentViewModel;
-import com.tokopedia.inbox.inboxchat.viewmodel.chatroom.invoiceattachment.mapper.AttachInvoiceMapper;
 
 import java.util.ArrayList;
 import java.util.Collections;

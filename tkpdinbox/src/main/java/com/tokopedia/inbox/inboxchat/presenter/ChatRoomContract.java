@@ -17,7 +17,7 @@ import com.tokopedia.inbox.inboxchat.domain.model.reply.WebSocketResponse;
 import com.tokopedia.inbox.inboxchat.domain.model.replyaction.ReplyActionData;
 import com.tokopedia.inbox.inboxchat.viewmodel.ChatRoomViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.MyChatViewModel;
-import com.tokopedia.inbox.inboxchat.viewmodel.OppositeChatViewModel;
+import com.tokopedia.inbox.inboxchat.viewmodel.chatroom.ChatRatingViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.chatroom.QuickReplyListViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.chatroom.QuickReplyViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.chatroom.imageupload.ImageUploadViewModel;
@@ -143,9 +143,9 @@ public class ChatRoomContract {
 
         void onInvoiceSelected(SelectedInvoice selectedInvoice);
 
-        void onClickRating(OppositeChatViewModel element, int rating);
+        void onClickRating(ChatRatingViewModel element, int rating);
 
-        void onSuccessSetRating(OppositeChatViewModel element);
+        void onSuccessSetRating(ChatRatingViewModel element);
 
         void onErrorSetRating();
 
@@ -185,6 +185,6 @@ public class ChatRoomContract {
 
         String getFileLocFromCamera();
 
-        void setChatRating(OppositeChatViewModel model, int userId, int rating);
+        void setChatRating(ChatRatingViewModel model, int userId, int rating);
     }
 }

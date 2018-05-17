@@ -1,9 +1,6 @@
 package com.tokopedia.inbox.inboxchat.di;
 
-import android.content.Context;
-
 import com.tokopedia.core.base.di.component.AppComponent;
-import com.tokopedia.core.base.di.qualifier.ApplicationContext;
 import com.tokopedia.core.util.SessionHandler;
 
 import dagger.Component;
