@@ -10,23 +10,19 @@ import android.nfc.NfcAdapter;
 import android.nfc.Tag;
 import android.nfc.tech.IsoDep;
 import android.os.Bundle;
+import android.os.Handler;
 import android.provider.Settings;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.View;
-import android.widget.Button;
-import android.widget.LinearLayout;
-import android.widget.ProgressBar;
-import android.widget.RelativeLayout;
-import android.widget.TextView;
 import android.widget.Toast;
 
-import com.airbnb.lottie.LottieAnimationView;
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
+import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.digital.R;
-import com.tokopedia.digital.product.view.compoundview.CheckEMoneyBalanceView;
-import com.tokopedia.digital.product.view.compoundview.EMoneyCardInfoView;
+import com.tokopedia.digital.product.view.compoundview.EMoneyUpdateBalanceResultView;
+import com.tokopedia.digital.product.view.compoundview.NFCDisabledView;
 import com.tokopedia.digital.product.view.compoundview.TapEMoneyCardView;
 import com.tokopedia.digital.product.view.model.CardInfo;
 import com.tokopedia.digital.utils.NFCUtils;
@@ -47,10 +43,9 @@ public class DigitalCheckEMoneyBalanceNFCActivity extends BaseSimpleActivity {
 
     private static final String TAG = DigitalCheckEMoneyBalanceNFCActivity.class.getSimpleName();
 
-    private EMoneyCardInfoView eMoneyCardInfoView;
     private TapEMoneyCardView tapEMoneyCardView;
-    private Button buttonTopup;
-    private LinearLayout viewCardInfo;
+    private NFCDisabledView nfcDisabledView;
+    private EMoneyUpdateBalanceResultView eMoneyUpdateBalanceResultView;
 
     private NfcAdapter nfcAdapter;
 
@@ -65,42 +60,6 @@ public class DigitalCheckEMoneyBalanceNFCActivity extends BaseSimpleActivity {
     }
 
     @Override
-    protected void setupLayout(Bundle savedInstanceState) {
-        super.setupLayout(savedInstanceState);
-
-        eMoneyCardInfoView = findViewById(R.id.view_emoney_card_info);
-        tapEMoneyCardView = findViewById(R.id.view_tap_emoney_card);
-        buttonTopup = findViewById(R.id.button_topup);
-        viewCardInfo = findViewById(R.id.view_card_info);
-
-        buttonTopup.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (isoDep != null) {
-                    if (isoDep.isConnected()) {
-                        String command = "0";
-                        try {
-                            final byte [] responseInByte = isoDep.transceive(NFCUtils.hexStringToByteArray(command));
-
-                            runOnUiThread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    if (responseInByte != null) {
-                                        String response = NFCUtils.toHex(responseInByte);
-                                        Log.d(TAG, response);
-                                    }
-                                }
-                            });
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                }
-            }
-        });
-    }
-
-    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
@@ -109,18 +68,61 @@ public class DigitalCheckEMoneyBalanceNFCActivity extends BaseSimpleActivity {
         nfcAdapter = NfcAdapter.getDefaultAdapter(this);
 
         pendingIntent = PendingIntent.getActivity(
-                this, 0, new Intent(this, getClass()).addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP), 0);
+                this, 0, new Intent(this, getClass())
+                        .addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP), 0);
 
         intentFiltersArray = new IntentFilter [] {};
 
         techListsArray = new String[][] { new String[] { IsoDep.class.getName() } };
+    }
 
-        if (nfcAdapter != null) {
-            DigitalCheckEMoneyBalanceNFCActivityPermissionsDispatcher.detectNFCWithCheck(this);
-        } else {
-            // direct to
-            Toast.makeText(this, "Beli hp yang ada NFC ya.. :)", Toast.LENGTH_SHORT).show();
-        }
+    @Override
+    protected void setupLayout(Bundle savedInstanceState) {
+        super.setupLayout(savedInstanceState);
+
+        eMoneyUpdateBalanceResultView = findViewById(R.id.view_update_balance_result);
+        nfcDisabledView = findViewById(R.id.view_nfc_disabled);
+        tapEMoneyCardView = findViewById(R.id.view_tap_emoney_card);
+
+        eMoneyUpdateBalanceResultView.setListener(new EMoneyUpdateBalanceResultView.OnTopupEMoneyClickListener() {
+            @Override
+            public void onClick() {
+
+            }
+        });
+
+//        buttonTopup.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                if (isoDep != null) {
+//                    if (isoDep.isConnected()) {
+//                        String command = "0";
+//                        try {
+//                            final byte [] responseInByte = isoDep.transceive(NFCUtils.hexStringToByteArray(command));
+//
+//                            runOnUiThread(new Runnable() {
+//                                @Override
+//                                public void run() {
+//                                    if (responseInByte != null) {
+//                                        String response = NFCUtils.toHex(responseInByte);
+//                                        Log.d(TAG, response);
+//                                    }
+//                                }
+//                            });
+//                        } catch (IOException e) {
+//                            e.printStackTrace();
+//                        }
+//                    }
+//                }
+//            }
+//        });
+
+        nfcDisabledView.setListener(new NFCDisabledView.OnActivateNFCClickListener() {
+            @Override
+            public void onClick() {
+                directToNFCSettingsPage();
+            }
+        });
     }
 
     @Override
@@ -136,37 +138,46 @@ public class DigitalCheckEMoneyBalanceNFCActivity extends BaseSimpleActivity {
     @Override
     public void onPause() {
         super.onPause();
-        nfcAdapter.disableForegroundDispatch(this);
+        if (nfcAdapter != null) {
+            nfcAdapter.disableForegroundDispatch(this);
+        } else {
+            // show webview help page
+        }
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        nfcAdapter.enableForegroundDispatch(this, pendingIntent, intentFiltersArray, techListsArray);
+        if (nfcAdapter != null) {
+            DigitalCheckEMoneyBalanceNFCActivityPermissionsDispatcher.detectNFCWithCheck(this);
+        }
     }
 
     @Override
     public void onNewIntent(Intent intent) {
-        tapEMoneyCardView.showLoading("Sedang membaca kartu... Jangan mengubah posisi kartu hingga selesai");
-
-        Toast.makeText(this, "NFC Card Detected", Toast.LENGTH_SHORT).show();
+        if (eMoneyUpdateBalanceResultView.getVisibility() == View.VISIBLE) {
+            eMoneyUpdateBalanceResultView.showLoading();
+        } else {
+            tapEMoneyCardView.showLoading(getResources().getString(R.string.reading_card_label));
+        }
 
         final Tag tag = intent.getParcelableExtra(NfcAdapter.EXTRA_TAG);
         //do something with tagFromIntent
         isoDep = IsoDep.get(tag);
+
         try {
             isoDep.connect();
             isoDep.setTimeout(5000); // 5 sec time out
 
-            final byte [] commandSelectEMoney = isoDep.transceive(NFCUtils.hexStringToByteArray("00A40400080000000000000001"));
-            final byte [] commandCardAttribute = isoDep.transceive(NFCUtils.hexStringToByteArray("00F210000B"));
-            final byte [] commandCardInfo = isoDep.transceive(NFCUtils.hexStringToByteArray("00B300003F"));
-            final byte [] commandLastBalance = isoDep.transceive(NFCUtils.hexStringToByteArray("00B500000A"));
+            final byte[] commandSelectEMoney = isoDep.transceive(NFCUtils.hexStringToByteArray("00A40400080000000000000001"));
+            final byte[] commandCardAttribute = isoDep.transceive(NFCUtils.hexStringToByteArray("00F210000B"));
+            final byte[] commandCardInfo = isoDep.transceive(NFCUtils.hexStringToByteArray("00B300003F"));
+            final byte[] commandLastBalance = isoDep.transceive(NFCUtils.hexStringToByteArray("00B500000A"));
 
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    byte [] cardUID = isoDep.getTag().getId();
+                    byte[] cardUID = isoDep.getTag().getId();
 
                     String responseSelectEMoney = NFCUtils.toHex(commandSelectEMoney);
                     String responseCardAttribute = NFCUtils.toHex(commandCardAttribute);
@@ -180,15 +191,28 @@ public class DigitalCheckEMoneyBalanceNFCActivity extends BaseSimpleActivity {
                             "\nCard Info: " + responseCardInfo +
                             "\nLast Balance: " + responseLastBalance);
 
-                    tapEMoneyCardView.setVisibility(View.GONE);
-
-                    viewCardInfo.setVisibility(View.VISIBLE);
-
-                    CardInfo cardInfo = new CardInfo(responseSelectEMoney, responseCardUID, responseCardAttribute,
+                    final CardInfo cardInfo = new CardInfo(responseSelectEMoney, responseCardUID, responseCardAttribute,
                             responseCardInfo, responseLastBalance);
 
                     if (cardInfo.isValid()) {
-                        eMoneyCardInfoView.showCardInfo(cardInfo);
+                        final Handler handler = new Handler();
+                        handler.postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                // Do something after 5s = 5000ms
+                                tapEMoneyCardView.setVisibility(View.GONE);
+                                eMoneyUpdateBalanceResultView.showCardInfo(cardInfo);
+                            }
+                        }, 5000);
+                    } else {
+                        // show error reading card
+                        if (eMoneyUpdateBalanceResultView.getVisibility() == View.VISIBLE) {
+                            eMoneyUpdateBalanceResultView.showCardIsNotSupported();
+                        } else {
+                            tapEMoneyCardView.stopLoading();
+                            NetworkErrorHelper.showRedCloseSnackbar(DigitalCheckEMoneyBalanceNFCActivity.this,
+                                    getResources().getString(R.string.card_is_not_supported));
+                        }
                     }
                 }
             });
@@ -199,31 +223,38 @@ public class DigitalCheckEMoneyBalanceNFCActivity extends BaseSimpleActivity {
 
     @NeedsPermission(Manifest.permission.NFC)
     void detectNFC() {
-        if (nfcAdapter.isEnabled()) {
-            Toast.makeText(this, "NFC detected", Toast.LENGTH_SHORT).show();
-        } else {
-            Toast.makeText(this, "Please enable NFC from Settings", Toast.LENGTH_SHORT).show();
+        if (!nfcAdapter.isEnabled()) {
+            eMoneyUpdateBalanceResultView.setVisibility(View.GONE);
+            tapEMoneyCardView.setVisibility(View.GONE);
 
             new AlertDialog.Builder(this)
                     .setMessage("Silahkan aktifkan pengaturan NFC pada handphone Anda, untuk melanjutkan")
                     .setPositiveButton("Aktifkan", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
-                            Intent intent = new Intent(Settings.ACTION_NFC_SETTINGS);
-                            startActivity(intent);
+                            directToNFCSettingsPage();
                         }
                     })
                     .setNegativeButton("Batalkan", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
-                            showNFCDisabledView();
+                            nfcDisabledView.setVisibility(View.VISIBLE);
                         }
                     }).show();
+        } else {
+            nfcAdapter.enableForegroundDispatch(this, pendingIntent, intentFiltersArray, techListsArray);
+            nfcDisabledView.setVisibility(View.GONE);
+
+            // prevent tapEMoneyCardView to show up if eMoneyUpdateBalanceResultView presents (visible)
+            if (eMoneyUpdateBalanceResultView.getVisibility() == View.GONE) {
+                tapEMoneyCardView.setVisibility(View.VISIBLE);
+            }
         }
     }
 
-    private void showNFCDisabledView() {
-
+    private void directToNFCSettingsPage() {
+        Intent intent = new Intent(Settings.ACTION_NFC_SETTINGS);
+        startActivity(intent);
     }
 
     @OnShowRationale(Manifest.permission.NFC)
@@ -253,4 +284,5 @@ public class DigitalCheckEMoneyBalanceNFCActivity extends BaseSimpleActivity {
     protected boolean isShowCloseButton() {
         return true;
     }
+
 }

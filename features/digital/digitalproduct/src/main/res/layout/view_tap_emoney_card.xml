@@ -1,19 +1,33 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:padding="@dimen/dp_16"
+    android:layout_height="wrap_content"
+    android:padding="@dimen/dp_30"
     android:id="@+id/view_tap_card"
     android:orientation="vertical"
     android:gravity="center">
 
-    <com.airbnb.lottie.LottieAnimationView
+    <FrameLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/lottie_animation_view"
-        app:lottie_fileName="emoney_animation.json"
-        app:lottie_loop="true"
-        app:lottie_autoPlay="true"/>
+        android:layout_marginBottom="@dimen/dp_16">
+
+        <com.airbnb.lottie.LottieAnimationView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/lottie_animation_view"
+            app:lottie_fileName="emoney_animation.json"
+            app:lottie_loop="true"
+            app:lottie_autoPlay="true"/>
+
+        <ImageView
+            android:id="@+id/image_dont_move_the_card"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            app:srcCompat="@drawable/ic_nfc_need_activation"/>
+
+    </FrameLayout>
 
     <ProgressBar
         android:id="@+id/progress_bar"

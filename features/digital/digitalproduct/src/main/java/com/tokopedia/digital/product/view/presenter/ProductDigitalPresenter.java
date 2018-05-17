@@ -225,8 +225,6 @@ public class ProductDigitalPresenter extends BaseDigitalPresenter
                                                    HistoryClientNumber historyClientNumber) {
         this.categoryData = categoryData;
 
-        renderCheckEMoneyBalance();
-
         if (categoryData.isSupportedStyle()) {
             BaseDigitalProductView digitalProductView = ViewFactory
                     .renderCategoryDataAndBannerToView(activity,
@@ -252,6 +250,7 @@ public class ProductDigitalPresenter extends BaseDigitalPresenter
             );
         }
 
+        renderCheckEMoneyBalance();
         renderCheckPulsa();
     }
 
@@ -573,8 +572,6 @@ public class ProductDigitalPresenter extends BaseDigitalPresenter
         if (!GlobalConfig.isSellerApp()
                 && categoryData != null
                 && categoryData.getSlug().equalsIgnoreCase(CategoryData.SLUG_PRODUCT_CATEGORY_EMONEY)
-                && android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT
-                && view.isUserLoggedIn()
                 && view.getActivity() != null) {
             view.renderCheckEMoneyBalance();
         }

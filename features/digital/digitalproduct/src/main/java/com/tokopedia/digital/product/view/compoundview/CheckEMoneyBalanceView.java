@@ -31,10 +31,6 @@ public class CheckEMoneyBalanceView extends LinearLayout {
         void onClick();
     }
 
-    public void setListener(OnCheckBalanceClickListener listener) {
-        this.listener = listener;
-    }
-
     public CheckEMoneyBalanceView(Context context) {
         super(context);
         this.context = context;
@@ -58,6 +54,10 @@ public class CheckEMoneyBalanceView extends LinearLayout {
         super(context, attrs, defStyleAttr, defStyleRes);
         this.context = context;
         init();
+    }
+
+    public void setListener(OnCheckBalanceClickListener listener) {
+        this.listener = listener;
     }
 
     private void init() {

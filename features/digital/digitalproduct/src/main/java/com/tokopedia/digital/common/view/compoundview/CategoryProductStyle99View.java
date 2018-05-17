@@ -118,7 +118,7 @@ public class CategoryProductStyle99View extends
     @Override
     protected void onUpdateSelectedProductData() {
         if (operatorSelected.getRule().getProductViewStyle() != SINGLE_PRODUCT) {
-                this.digitalProductChooserView.renderUpdateDataSelected(productSelected);
+            this.digitalProductChooserView.renderUpdateDataSelected(productSelected);
         }
     }
 

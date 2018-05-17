@@ -1,15 +1,13 @@
 package com.tokopedia.digital.product.view.compoundview;
 
-import android.annotation.TargetApi;
 import android.content.Context;
-import android.os.Build;
 import android.support.annotation.Nullable;
-import android.support.v7.widget.CardView;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.tokopedia.design.utils.CurrencyFormatUtil;
@@ -25,6 +23,8 @@ public class EMoneyCardInfoView extends FrameLayout {
 
     private TextView textRemainingBalance;
     private TextView textCardNumber;
+    private ProgressBar progressBar;
+    private LinearLayout viewRemainingBalance;
 
     public EMoneyCardInfoView(Context context) {
         super(context);
@@ -49,6 +49,8 @@ public class EMoneyCardInfoView extends FrameLayout {
 
         textRemainingBalance = view.findViewById(R.id.text_remaining_balance);
         textCardNumber = view.findViewById(R.id.text_card_number);
+        progressBar = view.findViewById(R.id.progress_bar);
+        viewRemainingBalance = view.findViewById(R.id.view_remaining_balance);
     }
 
     public void showCardInfo(CardInfo cardInfo) {
@@ -56,6 +58,8 @@ public class EMoneyCardInfoView extends FrameLayout {
         String formattedCardNumber = formatCardNumber(cardInfo.getCardInfo());
         String lastBalanceInHex = flipLastBalance(cardInfo.getLastBalance());
         int lastBalanceInDecimal = Integer.parseInt(lastBalanceInHex,16);
+        viewRemainingBalance.setVisibility(VISIBLE);
+        progressBar.setVisibility(GONE);
         textRemainingBalance.setText(CurrencyFormatUtil.convertPriceValueToIdrFormat(lastBalanceInDecimal, true));
         textCardNumber.setText(formattedCardNumber);
     }
@@ -70,7 +74,15 @@ public class EMoneyCardInfoView extends FrameLayout {
     private String formatCardNumber(String cardNumber) {
         return cardNumber.substring(0, 4) + " - " + cardNumber.substring(4, 8) + " - " +
                 cardNumber.substring(8, 12) + " - " + cardNumber.substring(12, 16);
-
     }
 
+    public void showLoading() {
+        viewRemainingBalance.setVisibility(GONE);
+        progressBar.setVisibility(VISIBLE);
+    }
+
+    public void stopLoading() {
+        viewRemainingBalance.setVisibility(VISIBLE);
+        progressBar.setVisibility(GONE);
+    }
 }

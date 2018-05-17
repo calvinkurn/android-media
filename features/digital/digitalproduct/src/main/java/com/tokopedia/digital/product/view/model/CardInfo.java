@@ -41,7 +41,7 @@ public class CardInfo {
 
     public boolean isValid() {
         return (selectEMoney.substring(selectEMoney.length()-4, selectEMoney.length()).equals("9000") &
-                (cardAttribute.substring(cardAttribute.length()-4, cardAttribute.length()).equals("9000")) &
+//                (cardAttribute.substring(cardAttribute.length()-4, cardAttribute.length()).equals("9000")) &
                 (cardInfo.substring(cardInfo.length()-4, cardInfo.length()).equals("9000")) &
                 (lastBalance.substring(lastBalance.length()-4, lastBalance.length()).equals("9000")));
     }
