@@ -1,10 +1,10 @@
-package com.tokopedia.inbox.inboxchat.viewmodel;
+package com.tokopedia.inbox.inboxchat.chatroom.viewmodel;
 
 import android.text.TextUtils;
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
-import com.tokopedia.inbox.inboxchat.adapter.InboxChatTypeFactory;
+import com.tokopedia.inbox.inboxchat.chatlist.adapter.InboxChatTypeFactory;
 
 /**
  * @author by nisie on 10/26/17.
