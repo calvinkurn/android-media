@@ -24,10 +24,6 @@ import retrofit2.Retrofit;
 @Module
 public class ContactUsModule {
 
-
-
-
-
     @Provides
     Retrofit provideRetrofit(OkHttpClient okHttpClient,
                              Retrofit.Builder retrofitBuilder) {

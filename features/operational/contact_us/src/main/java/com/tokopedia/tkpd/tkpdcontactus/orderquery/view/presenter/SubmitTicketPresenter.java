@@ -2,31 +2,29 @@ package com.tokopedia.tkpd.tkpdcontactus.orderquery.view.presenter;
 
 import android.content.Context;
 import android.graphics.BitmapFactory;
-import android.util.Log;
-import android.view.View;
 
-import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.contactus.R;
-import com.tokopedia.core.network.NetworkErrorHelper;
+import com.tokopedia.core.network.retrofit.response.TkpdResponse;
 import com.tokopedia.core.util.SessionHandler;
-import com.tokopedia.inbox.contactus.activity.ContactUsActivity;
 import com.tokopedia.inbox.contactus.interactor.ContactUsRetrofitInteractor;
 import com.tokopedia.inbox.contactus.interactor.ContactUsRetrofitInteractorImpl;
 import com.tokopedia.inbox.contactus.model.ContactUsPass;
 import com.tokopedia.inbox.contactus.model.ImageUpload;
-import com.tokopedia.inbox.contactus.model.solution.SolutionResult;
 import com.tokopedia.tkpd.tkpdcontactus.common.data.BuyerPurchaseList;
 import com.tokopedia.tkpd.tkpdcontactus.orderquery.data.QueryTicket;
 import com.tokopedia.tkpd.tkpdcontactus.orderquery.data.SubmitTicketInvoiceData;
+import com.tokopedia.tkpd.tkpdcontactus.orderquery.domain.SubmitTicketUseCase;
 import com.tokopedia.usecase.RequestParams;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.List;
 
 import javax.inject.Inject;
+
+import retrofit2.Response;
+import rx.Subscriber;
 
 /**
  * Created by sandeepgoyal on 17/04/18.
@@ -38,7 +36,7 @@ public class SubmitTicketPresenter extends BaseDaggerPresenter<SubmitTicketContr
     Context context;
     private String cameraFileLoc;
     private ContactUsRetrofitInteractorImpl networkInteractor;
-
+    SubmitTicketUseCase submitTicketUseCase;
 
     @Inject
     public SubmitTicketPresenter(@ApplicationContext Context contexte) {
@@ -61,7 +59,26 @@ public class SubmitTicketPresenter extends BaseDaggerPresenter<SubmitTicketContr
     public void onSendButtonClick() {
         this.networkInteractor = new ContactUsRetrofitInteractorImpl();
         if (isTicketValid() && isUploadImageValid()) {
+            RequestParams requestParams = RequestParams.create();
+            requestParams.putAll(getSendTicketParam().getCreateTicketValidationParam());
             getView().showProgress("Please Wait...");
+            submitTicketUseCase.execute(requestParams, new Subscriber<Response<TkpdResponse>>() {
+                @Override
+                public void onCompleted() {
+
+                }
+
+                @Override
+                public void onError(Throwable e) {
+
+                }
+
+                @Override
+                public void onNext(Response<TkpdResponse> tkpdResponseResponse) {
+
+
+                }
+            });
         networkInteractor.sendTicket( context,getSendTicketParam(), new ContactUsRetrofitInteractor.SendTicketListener() {
             @Override
             public void onSuccess() {
@@ -82,8 +99,7 @@ public class SubmitTicketPresenter extends BaseDaggerPresenter<SubmitTicketContr
 
             @Override
             public void onError(String s) {
-                getView().hideProgress();
-                getView().showMessage(s);
+                showMessage(s);
             }
 
             @Override
@@ -106,6 +122,11 @@ public class SubmitTicketPresenter extends BaseDaggerPresenter<SubmitTicketContr
             }
         }
 }
+
+    private void showMessage(String s) {
+        getView().hideProgress();
+        getView().showMessage(s);
+    }
 
     @Override
     public void onImageSelect(ImageUpload image) {
@@ -176,6 +197,20 @@ public class SubmitTicketPresenter extends BaseDaggerPresenter<SubmitTicketContr
         if (!SessionHandler.isV4Login(context)) {
         }
         return pass;
+    }
+
+    private RequestParams getRequestParam(RequestParams requestParams) {
+        SubmitTicketInvoiceData submitTicketInvoiceData = getView().getSubmitTicketInvoiceData();
+        requestParams.putString("solutionId",submitTicketInvoiceData.getQueryTicket().getId()+"");
+        requestParams.putString("messageBody",getView().getDescription());
+        requestParams.putObject("attachment", getView().getImageList());
+        requestParams.putString("name", SessionHandler.getLoginName(context));
+        if (submitTicketInvoiceData.getBuyerPurchaseList().getDetail().getId() > 0)
+            requestParams.putString("orderId",submitTicketInvoiceData.getBuyerPurchaseList().getDetail().getId()+"");
+        if (submitTicketInvoiceData.getBuyerPurchaseList().getDetail().getId() > 0)
+            requestParams.putString("invoiceNumber",submitTicketInvoiceData.getBuyerPurchaseList().getDetail().getId()+"");
+
+        return requestParams;
     }
 
     private boolean isTicketValid() {
