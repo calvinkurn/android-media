@@ -131,8 +131,8 @@ public class PromoCodeFragment extends BasePresenterFragment implements IPromoCo
                     voucherCodeField,
                     voucherCodeFieldHolder)
             );
-        }
-        else if (getArguments().getString(PLATFORM_KEY).equals(EVENT_STRING)) {
+        } else if (getArguments().getString(PLATFORM_KEY).equalsIgnoreCase(
+                IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.EVENT_STRING)) {
             submitVoucherButton.setOnClickListener(onSubmitEventVoucher(voucherCodeField,
                     voucherCodeFieldHolder));
 

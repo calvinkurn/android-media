@@ -14,7 +14,8 @@ public interface IRouterConstant {
             String EXTRA_PLATFORM = "EXTRA_PLATFORM";
             String EXTRA_ADDITIONAL_DATA = "EXTRA_ADDITIONAL_DATA";
             String EXTRA_CATEGORY = "EXTRA_CATEGORY";
-
+            String EXTRA_PRODUCTID = "EXTRA_PRODUCTID";
+            String EXTRA_CATEGORYID = "EXTRA_CATEGORYID";
 
             String MARKETPLACE_STRING = "marketplace";
             String MARKETPLACE_CART_LIST_STRING = "marketplace_cart_list";
@@ -37,6 +38,8 @@ public interface IRouterConstant {
             String EXTRA_SELECTED_TAB = "EXTRA_SELECTED_TAB";
             String EXTRA_CART_ID = "EXTRA_CART_ID";
             String FLIGHT_STRING = "flight";
+            String EVENT_STRING = "events";
+
             String COUPON_STATE = "coupon";
             int VOUCHER_TAB = 0;
             int COUPON_TAB = 1;
