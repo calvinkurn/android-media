@@ -34,6 +34,7 @@ public class FlightPassengerUpdatePresenter extends BaseDaggerPresenter<FlightPa
     private static final int MINUS_TWO = -2;
     private static final int MINUS_ONE = -1;
     private static final int PLUS_ONE = 1;
+    private static final int PLUS_SIX = 6;
 
     private FlightPassengerInfoValidator flightPassengerInfoValidator;
     private FlightPassengerUpdateDataUseCase flightPassengerUpdateDataUseCase;
@@ -260,6 +261,7 @@ public class FlightPassengerUpdatePresenter extends BaseDaggerPresenter<FlightPa
 
     private boolean validateFields() {
         boolean isValid = true;
+        boolean isNeedPassport = !getView().getIsDomestic();
 
         Date twelveYearsAgo = FlightDateUtil.addTimeToSpesificDate(
                 FlightDateUtil.stringToDate(getView().getDepartureDate()),
@@ -269,6 +271,9 @@ public class FlightPassengerUpdatePresenter extends BaseDaggerPresenter<FlightPa
                 FlightDateUtil.stringToDate(getView().getDepartureDate()),
                 Calendar.YEAR, MINUS_TWO
         );
+        Date sixMonthFromDeparture = FlightDateUtil.addTimeToSpesificDate(
+                FlightDateUtil.stringToDate(getView().getDepartureDate()),
+                Calendar.MONTH, PLUS_SIX);
 
         if (flightPassengerInfoValidator.validateNameIsEmpty(getView().getPassengerFirstName())) {
             isValid = false;
@@ -316,6 +321,24 @@ public class FlightPassengerUpdatePresenter extends BaseDaggerPresenter<FlightPa
                 getView().getPassengerBirthdate(), twoYearsAgo)) {
             isValid = false;
             getView().showPassengerInfantBirthdateShouldNoMoreThan2Years(R.string.flight_booking_passenger_birthdate_infant_should_no_more_than_two_years);
+        } else if (isNeedPassport && !flightPassengerInfoValidator.validatePassportNumberNotEmpty(getView().getPassportNumber())) {
+            isValid = false;
+            getView().showPassengerPassportNumberEmptyError(R.string.flight_booking_passport_number_empty_error);
+        } else if (isNeedPassport && getView().getCurrentPassengerViewModel().getPassportExpiredDate() == null) {
+            isValid = false;
+            getView().showPassengerPassportExpiredDateEmptyError(R.string.flight_booking_passport_expired_date_empty_error);
+        } else if (isNeedPassport && !flightPassengerInfoValidator.validateExpiredDateOfPassport(
+                getView().getPassportExpiredDate(), sixMonthFromDeparture)) {
+            isValid = false;
+            getView().showPassportExpiredDateShouldMoreThan6MonthsFromDeparture(
+                    R.string.flight_passenger_passport_expired_date_less_than_6_month_error,
+                    FlightDateUtil.dateToString(sixMonthFromDeparture, FlightDateUtil.DEFAULT_VIEW_FORMAT));
+        } else if (isNeedPassport && getView().getCurrentPassengerViewModel().getPassportNationality() == null) {
+            isValid = false;
+            getView().showPassportNationalityEmptyError(R.string.flight_booking_passport_nationality_empty_error);
+        } else if (isNeedPassport && getView().getCurrentPassengerViewModel().getPassportIssuerCountry() == null) {
+            isValid = false;
+            getView().showPassportIssuerCountryEmptyError(R.string.flight_booking_passport_issuer_country_empty_error);
         }
 
         return isValid;

@@ -1,5 +1,7 @@
 package com.tokopedia.flight.passenger.view.presenter;
 
+import android.support.annotation.StringRes;
+
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingPassengerViewModel;
 
@@ -30,6 +32,12 @@ public interface FlightPassengerUpdateContract {
         int getPassengerTitlePosition();
 
         String getRequestId();
+
+        boolean getIsDomestic();
+
+        String getPassportNumber();
+
+        String getPassportExpiredDate();
 
         void setPassengerViewModel(FlightBookingPassengerViewModel flightBookingPassengerViewModel);
 
@@ -88,6 +96,16 @@ public interface FlightPassengerUpdateContract {
         void renderPassportNationality(String passportNationality);
 
         void renderPassportIssuerCountry(String passportIssuerCountry);
+
+        void showPassengerPassportNumberEmptyError(@StringRes int resId);
+
+        void showPassengerPassportExpiredDateEmptyError(@StringRes int resId);
+
+        void showPassportNationalityEmptyError(@StringRes int resId);
+
+        void showPassportIssuerCountryEmptyError(@StringRes int resId);
+
+        void showPassportExpiredDateShouldMoreThan6MonthsFromDeparture(@StringRes int resId, String dateAfterSixMonth);
     }
 
     interface Presenter {

@@ -1,5 +1,6 @@
 package com.tokopedia.flight.passenger.domain.model;
 
+import com.tokopedia.flight.booking.view.viewmodel.FlightBookingPhoneCodeViewModel;
 import com.tokopedia.flight.passenger.data.db.model.FlightPassengerDb;
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingPassengerViewModel;
 import com.tokopedia.flight.common.util.FlightDateUtil;
@@ -37,6 +38,18 @@ public class ListPassengerViewModelMapper {
 
         if (savedPassengerEntity.getPassportExpiry() != null) {
             flightBookingPassengerViewModel.setPassportExpiredDate(savedPassengerEntity.getPassportExpiry());
+        }
+
+        if (savedPassengerEntity.getPassportNationality() != null) {
+            FlightBookingPhoneCodeViewModel passportNationality = new FlightBookingPhoneCodeViewModel();
+            passportNationality.setCountryId(savedPassengerEntity.getPassportNationality());
+            flightBookingPassengerViewModel.setPassportNationality(passportNationality);
+        }
+
+        if (savedPassengerEntity.getPassportCountry() != null) {
+            FlightBookingPhoneCodeViewModel passportIssuerCountry = new FlightBookingPhoneCodeViewModel();
+            passportIssuerCountry.setCountryId(savedPassengerEntity.getPassportCountry());
+            flightBookingPassengerViewModel.setPassportIssuerCountry(passportIssuerCountry);
         }
 
         flightBookingPassengerViewModel.setPassengerFirstName(savedPassengerEntity.getFirstName());

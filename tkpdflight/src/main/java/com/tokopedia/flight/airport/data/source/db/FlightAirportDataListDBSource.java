@@ -297,6 +297,19 @@ public class FlightAirportDataListDBSource extends BaseDataListDBSource<FlightAi
         });
     }
 
+    public Observable<FlightAirportDB> getPhoneCodeById(final String id) {
+        return Observable.unsafeCreate(new Observable.OnSubscribe<FlightAirportDB>() {
+            @Override
+            public void call(Subscriber<? super FlightAirportDB> subscriber) {
+                FlightAirportDB flightAirportDB = new Select()
+                        .from(FlightAirportDB.class)
+                        .where(FlightAirportDB_Table.country_id.eq(id))
+                        .querySingle();
+                subscriber.onNext(flightAirportDB);
+            }
+        });
+    }
+
     public Observable<FlightAirportDB> getAirport(String airportCode) {
         final String queryLike = "%" + airportCode + "%";
         return Observable.unsafeCreate(new Observable.OnSubscribe<FlightAirportDB>() {

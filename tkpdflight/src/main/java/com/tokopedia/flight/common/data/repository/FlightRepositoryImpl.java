@@ -123,6 +123,11 @@ public class FlightRepositoryImpl implements FlightRepository {
     }
 
     @Override
+    public Observable<FlightAirportDB> getPhoneCodeById(String id) {
+        return flightAirportDataListSource.getPhoneCodeById(id);
+    }
+
+    @Override
     public Observable<FlightAirlineDB> getAirlineById(final String airlineId) {
         return flightAirlineDataListSource.getAirline(airlineId);
     }

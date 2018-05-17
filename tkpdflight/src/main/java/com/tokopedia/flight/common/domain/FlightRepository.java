@@ -81,6 +81,8 @@ public interface FlightRepository {
 
     Observable<List<FlightAirportDB>> getPhoneCodeList(String string);
 
+    Observable<FlightAirportDB> getPhoneCodeById(String id);
+
     Observable<FlightAirlineDB> getAirlineById(String airlineId);
 
     Observable<SendEmailEntity> sendEmail(Map<String, Object> params);
