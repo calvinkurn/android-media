@@ -10,9 +10,10 @@ import android.widget.TextView;
 import com.tkpd.library.utils.KeyboardHandler;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.inbox.R;
-import com.tokopedia.inbox.inboxchat.ChatTimeConverter;
-import com.tokopedia.inbox.inboxchat.presenter.ChatRoomContract;
-import com.tokopedia.inbox.inboxchat.viewholder.movement.ChatLinkHandlerMovementMethod;
+import com.tokopedia.inbox.inboxchat.chatroom.view.adapter.viewholder.common.BaseChatViewHolder;
+import com.tokopedia.inbox.inboxchat.chatroom.view.listener.ChatRoomContract;
+import com.tokopedia.inbox.inboxchat.common.util.ChatLinkHandlerMovementMethod;
+import com.tokopedia.inbox.inboxchat.common.util.ChatTimeConverter;
 import com.tokopedia.inbox.inboxchat.viewmodel.chatroom.ChatRatingViewModel;
 
 import java.util.Date;

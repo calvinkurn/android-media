@@ -5,22 +5,19 @@ import android.content.Context;
 import com.readystatesoftware.chuck.ChuckInterceptor;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.network.OkHttpRetryPolicy;
-import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
 import com.tokopedia.cacheapi.interceptor.CacheApiInterceptor;
-import com.tokopedia.core.DeveloperOptions;
 import com.tokopedia.core.network.di.qualifier.InboxQualifier;
 import com.tokopedia.core.network.retrofit.interceptors.DigitalHmacAuthInterceptor;
 import com.tokopedia.core.network.retrofit.interceptors.FingerprintInterceptor;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.util.GlobalConfig;
-import com.tokopedia.inbox.inboxchat.data.network.ChatBotApi;
-import com.tokopedia.inbox.inboxchat.data.network.ChatBotUrl;
+import com.tokopedia.inbox.inboxchat.chatroom.data.network.ChatBotApi;
+import com.tokopedia.inbox.inboxchat.chatroom.data.network.ChatBotUrl;
 
 import java.util.concurrent.TimeUnit;
 
 import dagger.Module;
 import dagger.Provides;
-import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;

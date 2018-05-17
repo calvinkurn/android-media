@@ -4,7 +4,7 @@ import com.tokopedia.inbox.attachinvoice.data.mapper.TkpdResponseToInvoicesDataM
 import com.tokopedia.inbox.attachinvoice.data.model.GetInvoicePostRequest;
 import com.tokopedia.inbox.attachinvoice.domain.model.Invoice;
 import com.tokopedia.inbox.attachinvoice.domain.usecase.AttachInvoicesUseCase;
-import com.tokopedia.inbox.inboxchat.data.network.ChatBotApi;
+import com.tokopedia.inbox.inboxchat.chatroom.data.network.ChatBotApi;
 
 import java.util.List;
 import java.util.Map;

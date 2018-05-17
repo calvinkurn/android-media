@@ -9,9 +9,9 @@ import android.widget.ProgressBar;
 
 import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
-import com.tokopedia.inbox.inboxchat.presenter.ChatRoomPresenter;
 import com.tokopedia.core.util.DataBindAdapter;
 import com.tokopedia.core.util.DataBinder;
+import com.tokopedia.inbox.inboxchat.chatroom.view.presenter.ChatRoomPresenter;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;

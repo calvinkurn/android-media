@@ -9,6 +9,18 @@
                 android:paddingTop="3dp">
 
     <TextView
+        android:id="@+id/date"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="@dimen/dp_16"
+        android:textAllCaps="true"
+        android:textColor="@color/grey_500"
+        android:textSize="@dimen/fontvs"
+        tools:text="13:16 wib"/>
+
+    <TextView
         android:id="@+id/label"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -54,25 +66,11 @@
         android:textStyle="normal"
         tools:text="AHAJA"/>
 
-    <TextView
-        android:id="@+id/date"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="@dimen/dp_16"
-        android:textAllCaps="true"
-        android:textColor="@color/grey_500"
-        android:textSize="@dimen/fontvs"
-        tools:text="13:16 wib"/>
-
     <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
                     android:id="@+id/main"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_alignParentEnd="true"
-                    android:layout_alignParentRight="true"
-                    android:layout_below="@id/date"
+                    android:layout_below="@id/name"
                     android:background="@drawable/right_bubble">
 
         <TextView
@@ -86,7 +84,6 @@
             android:textColorLink="@color/white"
             android:textIsSelectable="true"
             android:textSize="@dimen/fonts"
-            android:visibility="gone"
             tools:text="Gukguk meong meongaksjdkajshdkajhsdkajhsdkajhsdaksdjhaksjhkahsdk"/>
 
     </RelativeLayout>
@@ -100,7 +97,7 @@
         android:layout_toLeftOf="@+id/main"
         android:layout_toStartOf="@+id/main"
         android:indeterminateDrawable="@drawable/progress"
-        android:visibility="visible"
+        android:visibility="gone"
         tools:visibility="gone"/>
 
     <ImageView

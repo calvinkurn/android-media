@@ -16,20 +16,13 @@ import com.tokopedia.core.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.core.remoteconfig.RemoteConfig;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdState;
-import com.tokopedia.inbox.inboxchat.ChatNotifInterface;
+import com.tokopedia.inbox.inboxchat.chatroom.listener.ChatNotifInterface;
 import com.tokopedia.sellerapp.deeplink.DeepLinkDelegate;
 import com.tokopedia.sellerapp.deeplink.DeepLinkHandlerActivity;
 import com.tokopedia.sellerapp.fcm.notification.TopAdsBelow20kNotification;
 import com.tokopedia.sellerapp.fcm.notification.TopAdsTopupSuccessNotification;
 
 import java.util.Map;
-
-import rx.Observable;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action1;
-import rx.functions.Actions;
-import rx.functions.Func1;
-import rx.schedulers.Schedulers;
 
 import static com.tokopedia.core.gcm.Constants.ARG_NOTIFICATION_CODE;
 

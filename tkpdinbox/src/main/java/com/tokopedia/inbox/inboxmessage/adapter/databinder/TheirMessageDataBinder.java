@@ -14,9 +14,9 @@ import com.tokopedia.core.util.DataBindAdapter;
 import com.tokopedia.core.util.DataBinder;
 import com.tokopedia.core.util.SelectableSpannedMovementMethod;
 import com.tokopedia.inbox.R;
-import com.tokopedia.inbox.inboxchat.ChatTimeConverter;
-import com.tokopedia.inbox.inboxchat.domain.model.reply.ListReply;
-import com.tokopedia.inbox.inboxchat.presenter.ChatRoomPresenter;
+import com.tokopedia.inbox.inboxchat.chatroom.view.presenter.ChatRoomPresenter;
+import com.tokopedia.inbox.inboxchat.common.util.ChatTimeConverter;
+import com.tokopedia.inbox.inboxchat.chatroom.domain.pojo.reply.ListReply;
 import com.tokopedia.inbox.inboxmessage.InboxMessageConstant;
 import com.tokopedia.inbox.inboxmessage.model.inboxmessagedetail.InboxMessageDetailItem;
 

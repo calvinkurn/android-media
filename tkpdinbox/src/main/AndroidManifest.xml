@@ -47,17 +47,17 @@
             android:label="@string/title_activity_input_shipping"
             android:screenOrientation="portrait"/>
         <activity
-            android:name=".inboxchat.activity.SendMessageActivity"
+            android:name=".inboxchat.chatlist.activity.SendMessageActivity"
             android:label="@string/title_activity_send_message"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustResize|stateVisible"/>
         <activity
-            android:name=".inboxchat.activity.InboxChatActivity"
+            android:name=".inboxchat.chatlist.activity.InboxChatActivity"
             android:label="@string/title_inbox_chat"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateAlwaysHidden"/>
         <activity
-            android:name=".inboxchat.activity.ChatRoomActivity"
+            android:name=".inboxchat.chatroom.view.activity.ChatRoomActivity"
             android:label="@string/title_inbox_message"
             android:windowSoftInputMode="adjustResize|stateHidden"/>
         <activity
@@ -125,7 +125,7 @@
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateAlwaysHidden"/>
         <activity
-            android:name=".inboxchat.activity.TimeMachineActivity"
+            android:name=".inboxchat.chatroom.view.activity.TimeMachineActivity"
             android:label="@string/title_time_machine_message"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateAlwaysHidden"/>
@@ -153,14 +153,14 @@
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateAlwaysHidden"/>
         <activity
-            android:name=".inboxchat.activity.ChatMarketingThumbnailActivity"
+            android:name=".inboxchat.chatroom.view.activity.ChatMarketingThumbnailActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateAlwaysHidden"/>
         <activity
-            android:name=".inboxchat.activity.TemplateChatActivity"
+            android:name=".inboxchat.chattemplate.view.activity.TemplateChatActivity"
             android:screenOrientation="portrait"/>
         <activity
-            android:name=".inboxchat.activity.EditTemplateChatActivity"
+            android:name=".inboxchat.chattemplate.view.activity.EditTemplateChatActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustResize"/>
         <activity android:name=".attachproduct.view.activity.AttachProductActivity"

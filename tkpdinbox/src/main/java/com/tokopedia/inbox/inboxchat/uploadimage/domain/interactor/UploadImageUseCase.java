@@ -12,7 +12,7 @@ import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.inbox.R;
 import com.tokopedia.inbox.inboxchat.uploadimage.data.repository.ImageUploadRepository;
 import com.tokopedia.inbox.inboxchat.uploadimage.domain.model.UploadImageDomain;
-import com.tokopedia.inbox.inboxchat.util.ImageUploadHandlerChat;
+import com.tokopedia.inbox.inboxchat.common.util.ImageUploadHandlerChat;
 
 import java.io.File;
 import java.io.IOException;

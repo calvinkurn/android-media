@@ -1,8 +1,8 @@
 package com.tokopedia.inbox.inboxchat.viewmodel.chatroom;
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
-import com.tokopedia.inbox.inboxchat.adapter.ChatRoomTypeFactory;
-import com.tokopedia.inbox.inboxchat.domain.model.websocket.BaseChatViewModel;
+import com.tokopedia.inbox.inboxchat.chatroom.view.adapter.ChatRoomTypeFactory;
+import com.tokopedia.inbox.inboxchat.chatroom.view.viewmodel.BaseChatViewModel;
 
 /**
  * @author by yfsx on 14/05/18.
@@ -29,7 +29,7 @@ public class ChatRatingViewModel extends BaseChatViewModel implements
                                int ratingStatus,
                                long replyTimeNano) {
         super(msgId, fromUid, from, fromRole,
-                attachmentId, attachmentType, replyTime);
+                attachmentId, attachmentType, replyTime, message);
         this.message = message;
         this.ratingStatus = ratingStatus;
         this.replyTimeNano = replyTimeNano;
