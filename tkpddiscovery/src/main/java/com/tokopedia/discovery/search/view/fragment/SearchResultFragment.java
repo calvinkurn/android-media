@@ -92,6 +92,7 @@ public class SearchResultFragment extends TkpdBaseV4Fragment
         adapter = new SearchAdapter(typeFactory);
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(layoutManager);
+        recyclerView.setNestedScrollingEnabled(false);
         recyclerView.setHasFixedSize(true);
     }
 

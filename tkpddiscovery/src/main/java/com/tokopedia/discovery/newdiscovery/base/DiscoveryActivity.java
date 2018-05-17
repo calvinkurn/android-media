@@ -147,6 +147,10 @@ public class DiscoveryActivity extends BaseDiscoveryActivity implements
         }
     }
 
+    public CharSequence getToolbarTitle(){
+        return toolbarLayout.getTitle();
+    }
+
     private void initSearchView() {
         searchView.setActivity(this);
         searchView.setOnQueryTextListener(this);
