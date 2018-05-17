@@ -614,6 +614,7 @@ public class GroupChatActivity extends BaseSimpleActivity
         if(getExitMessage() == null){
             finish();
             GroupChatActivity.super.onBackPressed();
+            return;
         }
         myAlertDialog.setTitle(getExitMessage().getTitle());
         myAlertDialog.setMessage(getExitMessage().getBody());
