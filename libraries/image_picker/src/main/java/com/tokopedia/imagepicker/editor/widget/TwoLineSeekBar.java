@@ -183,8 +183,8 @@ public class TwoLineSeekBar extends View {
             mNailPaint.setStyle(Paint.Style.FILL);
             path.reset();
             path.moveTo(nailX, nailY - mThumbRadius / 8);
-            path.lineTo(nailX + mThumbRadius / 2, nailY - mThumbRadius / 2);
-            path.lineTo(nailX - mThumbRadius / 2, nailY - mThumbRadius / 2);
+            path.lineTo(nailX + mThumbRadius / 3, nailY - mThumbRadius / 2);
+            path.lineTo(nailX - mThumbRadius / 3, nailY - mThumbRadius / 2);
             path.lineTo(nailX, nailY - mThumbRadius / 8);
             canvas.drawPath(path, mNailPaint);
         }
