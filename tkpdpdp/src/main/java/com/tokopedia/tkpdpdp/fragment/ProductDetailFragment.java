@@ -1501,6 +1501,9 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
 
     @Override
     public void trackingEnhanceProductDetail() {
+        if (TextUtils.isEmpty(productPass.getTrackerListName())) {
+            return;
+        }
         ProductPageTracking.eventEnhanceProductDetail(
                 DataLayer.mapOf(
                         "event", "viewProduct",
