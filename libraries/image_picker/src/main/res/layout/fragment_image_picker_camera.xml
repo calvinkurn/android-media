@@ -45,16 +45,28 @@
                 android:layout_height="@dimen/dp_24"
                 android:layout_gravity="start|bottom"
                 android:background="@android:color/transparent"
-                android:visibility="invisible"
-                app:srcCompat="@drawable/ic_flash_auto" />
+                app:srcCompat="@drawable/ic_flash_auto"
+                android:visibility="gone"
+                tools:visibility="invisible"/>
 
-            <ImageButton
-                android:id="@+id/image_button_shutter"
+            <FrameLayout
                 android:layout_width="@dimen/dp_56"
                 android:layout_height="@dimen/dp_56"
+                android:id="@+id/image_button_shutter"
                 android:layout_gravity="center"
-                android:background="@android:color/transparent"
-                app:srcCompat="@drawable/take_photo_button" />
+                android:clickable="true"
+                android:focusable="true">
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@drawable/selector_photo_button"
+                    android:padding="@dimen/dp_4" />
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@android:color/transparent"
+                    app:srcCompat="@drawable/take_photo_button" />
+            </FrameLayout>
 
             <ImageButton
                 android:id="@+id/image_button_flip"

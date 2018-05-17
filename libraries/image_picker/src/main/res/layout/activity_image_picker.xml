@@ -17,7 +17,7 @@
         app:contentInsetStart="0dp"
         app:contentInsetStartWithNavigation="0dp"
         app:subtitleTextAppearance="?subtitleTextAppearance"
-        app:titleTextAppearance="@style/ImagePickerTitleTextAppearance" >
+        app:titleTextAppearance="?titleTextAppearance" >
         <TextView
             android:id="@+id/tv_done"
             android:layout_width="wrap_content"
@@ -70,6 +70,7 @@
             android:layout_height="wrap_content"
             android:clipChildren="false"
             android:clipToPadding="false"
+            android:background="@color/white"
             app:tabGravity="fill"
             app:tabIndicatorColor="@null"
             app:tabMinWidth="@dimen/tab_min_width"
