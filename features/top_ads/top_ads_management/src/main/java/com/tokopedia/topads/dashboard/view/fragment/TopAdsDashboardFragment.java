@@ -26,6 +26,8 @@ import com.github.rubensousa.bottomsheetbuilder.adapter.BottomSheetItemClickList
 import com.github.rubensousa.bottomsheetbuilder.custom.CheckedBottomSheetBuilder;
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
+import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh;
+import com.tokopedia.abstraction.common.utils.view.RefreshHandler;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.design.component.FloatingButton;
@@ -51,12 +53,14 @@ import com.tokopedia.topads.dashboard.view.activity.TopAdsAddCreditActivity;
 import com.tokopedia.topads.dashboard.view.activity.TopAdsAddingPromoOptionActivity;
 import com.tokopedia.topads.dashboard.view.activity.TopAdsDetailShopActivity;
 import com.tokopedia.topads.dashboard.view.activity.TopAdsGroupAdListActivity;
+import com.tokopedia.topads.dashboard.view.activity.TopAdsGroupNewPromoActivity;
 import com.tokopedia.topads.dashboard.view.activity.TopAdsProductAdListActivity;
 import com.tokopedia.topads.dashboard.view.adapter.TopAdsStatisticPagerAdapter;
 import com.tokopedia.topads.dashboard.view.adapter.TopAdsTabAdapter;
 import com.tokopedia.topads.dashboard.view.listener.TopAdsDashboardView;
 import com.tokopedia.topads.dashboard.view.presenter.TopAdsDashboardPresenter;
 import com.tokopedia.topads.keyword.view.activity.TopAdsKeywordListActivity;
+import com.tokopedia.topads.keyword.view.activity.TopAdsKeywordNewChooseGroupActivity;
 import com.tokopedia.topads.sourcetagging.constant.TopAdsSourceOption;
 
 import java.util.ArrayList;
@@ -91,6 +95,7 @@ public class TopAdsDashboardFragment extends BaseDaggerFragment implements TopAd
     private RecyclerView recyclerTabLayout;
     private TopAdsTabAdapter topAdsTabAdapter;
     private View viewGroupPromo;
+    private SwipeToRefresh swipeToRefresh;
 
     private LabelView dateLabelView;
     Date startDate, endDate;
@@ -134,7 +139,13 @@ public class TopAdsDashboardFragment extends BaseDaggerFragment implements TopAd
         topAdsDashboardPresenter.attachView(this);
         selectedStatisticType = TopAdsStatisticsType.ALL_ADS;
         totalProductAd = Integer.MIN_VALUE;
-
+        swipeToRefresh = (SwipeToRefresh) view.findViewById(R.id.swipe_refresh_layout);
+        RefreshHandler refresh = new RefreshHandler(getActivity(), swipeToRefresh, new RefreshHandler.OnRefreshHandlerListener() {
+            @Override
+            public void onRefresh(View view) {
+                loadData();
+            }
+        });
         initShopInfoComponent(view);
         initSummaryComponent(view);
         initStatisticComponent(view);
@@ -236,6 +247,10 @@ public class TopAdsDashboardFragment extends BaseDaggerFragment implements TopAd
         }
     }
 
+    public boolean isContentVisible(){
+        return getView().findViewById(R.id.topads_dashboard_content).getVisibility() == View.VISIBLE;
+    }
+
     public View getButtonAddPromo(){
         if (getView() != null) {
             return getView().findViewById(R.id.button_topads_add_promo);
@@ -326,6 +341,7 @@ public class TopAdsDashboardFragment extends BaseDaggerFragment implements TopAd
     private void onStoreClicked() {
         topAdsDashboardPresenter.saveSourceTagging(TopAdsSourceOption.SA_MANAGE_SHOP);
         Intent intent = new Intent(getActivity(), TopAdsDetailShopActivity.class);
+        intent.putExtra(TopAdsNewScheduleNewGroupFragment.EXTRA_IS_ENOUGH_DEPOSIT, true);
         startActivityForResult(intent, REQUEST_CODE_AD_STATUS);
     }
 
@@ -364,6 +380,7 @@ public class TopAdsDashboardFragment extends BaseDaggerFragment implements TopAd
     }
 
     private void loadData() {
+        swipeToRefresh.setRefreshing(true);
         topAdsDashboardPresenter.getShopDeposit();
         topAdsDashboardPresenter.getShopInfo();
     }
@@ -452,8 +469,16 @@ public class TopAdsDashboardFragment extends BaseDaggerFragment implements TopAd
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
 
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == REQUEST_CODE_ADD_CREDIT) {
-
+        if (requestCode == REQUEST_CODE_AD_STATUS) {
+            if (startDate == null || endDate == null) {
+                return;
+            }
+            boolean adStatusChanged = data.getBooleanExtra(TopAdsExtraConstant.EXTRA_AD_CHANGED, false);
+            if (adStatusChanged) {
+                loadData();
+            }
+        } else if (requestCode == REQUEST_CODE_ADD_CREDIT) {
+            loadData();
         } else if (requestCode == DatePickerConstant.REQUEST_CODE_DATE) {
             if (data != null) {
                 handlingResultDateSelection(data);
@@ -464,12 +489,23 @@ public class TopAdsDashboardFragment extends BaseDaggerFragment implements TopAd
                 switch (option){
                     case TopAdsAddingOption.SHOP_OPT: onStoreClicked(); break;
                     case TopAdsAddingOption.GROUP_OPT: onSummaryGroupClicked(); break;
-                    case TopAdsAddingOption.PRODUCT_OPT: onSummaryProductClicked(); break;
-                    case TopAdsAddingOption.KEYWORDS_OPT: onSummaryKeywordClicked(); break;
+                    case TopAdsAddingOption.PRODUCT_OPT: gotoCreateProductAd(); break;
+                    case TopAdsAddingOption.KEYWORDS_OPT: gotoCreateKeyword(); break;
                     default: break;
                 }
             }
         }
+    }
+
+    private void gotoCreateProductAd() {
+        topAdsDashboardPresenter.saveSourceTagging(TopAdsSourceOption.SA_MANAGE_DASHBOARD_PRODUCT);
+        Intent intent = new Intent(getActivity(), TopAdsGroupNewPromoActivity.class);
+        this.startActivityForResult(intent, REQUEST_CODE_AD_STATUS);
+    }
+
+    private void gotoCreateKeyword() {
+        topAdsDashboardPresenter.saveSourceTagging(TopAdsSourceOption.SA_MANAGE_KEYWORD_POSITIVE);
+        TopAdsKeywordNewChooseGroupActivity.start(this, getActivity(), REQUEST_CODE_AD_STATUS, true);
     }
 
     private void handlingResultDateSelection(Intent data){
@@ -515,7 +551,7 @@ public class TopAdsDashboardFragment extends BaseDaggerFragment implements TopAd
 
     @Override
     public void onLoadTopAdsShopDepositError(Throwable throwable) {
-
+        swipeToRefresh.setRefreshing(false);
     }
 
     @Override
@@ -527,6 +563,7 @@ public class TopAdsDashboardFragment extends BaseDaggerFragment implements TopAd
             getView().findViewById(R.id.topads_dashboard_empty).setVisibility(View.GONE);
             getView().findViewById(R.id.topads_dashboard_content).setVisibility(View.VISIBLE);
         } else {
+            swipeToRefresh.setRefreshing(false);
             getView().findViewById(R.id.topads_dashboard_empty).setVisibility(View.VISIBLE);
             getView().findViewById(R.id.topads_dashboard_content).setVisibility(View.GONE);
         }
@@ -534,7 +571,7 @@ public class TopAdsDashboardFragment extends BaseDaggerFragment implements TopAd
 
     @Override
     public void onErrorGetShopInfo(Throwable throwable) {
-
+        swipeToRefresh.setRefreshing(false);
     }
 
     @Override
@@ -550,11 +587,12 @@ public class TopAdsDashboardFragment extends BaseDaggerFragment implements TopAd
 
     @Override
     public void onErrorPopulateTotalAds(Throwable throwable) {
-
+        swipeToRefresh.setRefreshing(false);
     }
 
     @Override
     public void onSuccessPopulateTotalAds(TotalAd totalAd) {
+        swipeToRefresh.setRefreshing(false);
         totalProductAd = totalAd.getTotalProductAd();
         totalGroupAd = totalAd.getTotalProductGroupAd();
         groupSummaryLabelView.setContent(String.valueOf(totalAd.getTotalProductGroupAd()));

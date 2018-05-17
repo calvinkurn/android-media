@@ -1,10 +1,11 @@
 package com.tokopedia.topads.dashboard.view.presenter;
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
+import com.tokopedia.topads.common.data.model.DataCheckPromo;
 import com.tokopedia.topads.sourcetagging.constant.TopAdsSourceOption;
 import com.tokopedia.topads.sourcetagging.domain.interactor.TopAdsAddSourceTaggingUseCase;
 import com.tokopedia.topads.sourcetagging.domain.interactor.TopAdsCheckTimeAndSaveSourceTaggingUseCase;
-import com.tokopedia.topads.dashboard.domain.interactor.TopAdsCheckProductPromoUseCase;
+import com.tokopedia.topads.common.domain.interactor.TopAdsCheckProductPromoUseCase;
 import com.tokopedia.topads.dashboard.view.listener.TopAdsCheckProductPromoView;
 
 import javax.inject.Inject;
@@ -72,7 +73,8 @@ public class TopAdsCheckProductPromoPresenter extends BaseDaggerPresenter<TopAds
     }
 
     public void checkPromoAds(String shopId, String itemId, String userId){
-        useCase.execute(TopAdsCheckProductPromoUseCase.createRequestParams(shopId, itemId, userId), new Subscriber<String>() {
+        useCase.execute(TopAdsCheckProductPromoUseCase.createRequestParams(shopId, itemId, userId),
+                new Subscriber<DataCheckPromo>() {
             @Override
             public void onCompleted() {
 
@@ -80,6 +82,7 @@ public class TopAdsCheckProductPromoPresenter extends BaseDaggerPresenter<TopAds
 
             @Override
             public void onError(Throwable e) {
+                e.printStackTrace();
                 if (isViewAttached()) {
                     getView().finishLoadingProgress();
                     getView().renderErrorView(e);
@@ -87,12 +90,12 @@ public class TopAdsCheckProductPromoPresenter extends BaseDaggerPresenter<TopAds
             }
 
             @Override
-            public void onNext(String s) {
+            public void onNext(DataCheckPromo dataCheckPromo) {
                 if (isViewAttached()) {
-                    if (s.equalsIgnoreCase(IS_UNPROMOTED_PRODUCT)) {
+                    if (dataCheckPromo.getId().equalsIgnoreCase(IS_UNPROMOTED_PRODUCT)) {
                         getView().moveToCreateAds();
                     } else {
-                        getView().moveToAdsDetail(s);
+                        getView().moveToAdsDetail(dataCheckPromo.getId());
                     }
                 }
             }
