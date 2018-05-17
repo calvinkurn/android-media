@@ -611,7 +611,10 @@ public class GroupChatActivity extends BaseSimpleActivity
 
     private void showDialogConfirmToExit() {
         final android.app.AlertDialog.Builder myAlertDialog = new android.app.AlertDialog.Builder(this);
-        if(getExitMessage() == null) return;
+        if(getExitMessage() == null){
+            finish();
+            GroupChatActivity.super.onBackPressed();
+        }
         myAlertDialog.setTitle(getExitMessage().getTitle());
         myAlertDialog.setMessage(getExitMessage().getBody());
         final Context context = this;
