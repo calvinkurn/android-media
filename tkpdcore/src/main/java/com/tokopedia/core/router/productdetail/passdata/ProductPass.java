@@ -33,6 +33,7 @@ public class ProductPass implements Parcelable {
     private int countReview;
     private int countDiscussion;
     private int countCourrier;
+    private String cashback;
 
     public ProductPass() {
         dateTimeInMilis = 0;
@@ -225,6 +226,7 @@ public class ProductPass implements Parcelable {
         countReview = in.readInt();
         countDiscussion = in.readInt();
         countCourrier = in.readInt();
+        cashback = in.readString();
 
     }
 
@@ -257,6 +259,7 @@ public class ProductPass implements Parcelable {
         dest.writeInt(countReview);
         dest.writeInt(countDiscussion);
         dest.writeInt(countCourrier);
+        dest.writeString(cashback);
     }
 
     @SuppressWarnings("unused")
@@ -294,6 +297,13 @@ public class ProductPass implements Parcelable {
         else return trackerListName;
     }
 
+    public String getCashback() {
+        return cashback;
+    }
+
+    public void setCashback(String cashback) {
+        this.cashback = cashback;
+    }
 
     public static class Builder {
         private String productId = "";
@@ -319,6 +329,7 @@ public class ProductPass implements Parcelable {
         private int countReview;
         private int countDiscussion;
         private int countCourrier;
+        private String cashback;
 
         private Builder() {
         }
@@ -444,6 +455,11 @@ public class ProductPass implements Parcelable {
             return this;
         }
 
+        public Builder setCashback(String cashback){
+            this.cashback = cashback;
+            return this;
+        }
+
         public Builder but() {
             return aProductPass().setProductId(productId).setProductName(productName).setProductPrice(productPrice).setProductImage(productImage).setShopName(shopName).setProductUri(productUri).setProductKey(productKey).setShopDomain(shopDomain).setAdKey(adKey).setAdR(adR).setProductDesc(productDesc).setPicToShare(picToShare).setDateTimeInMilis(dateTimeInMilis);
         }
@@ -472,6 +488,7 @@ public class ProductPass implements Parcelable {
             productPass.setCountReview(countReview);
             productPass.setCountDiscussion(countDiscussion);
             productPass.setCountCourrier(countCourrier);
+            productPass.setCashback(cashback);
             return productPass;
         }
     }

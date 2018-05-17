@@ -109,6 +109,7 @@ public class ProductItem extends RecyclerViewItem implements Serializable, Parce
     private String originalPrice;
     private int discountPercentage;
     private int countCourier;
+    private String cashback;
 
     /**
      *
@@ -340,6 +341,14 @@ public class ProductItem extends RecyclerViewItem implements Serializable, Parce
         this.countCourier = countCourier;
     }
 
+    public String getCashback() {
+        return cashback;
+    }
+
+    public void setCashback(String cashback) {
+        this.cashback = cashback;
+    }
+
     public ProductItem(String name, String price, String shop, String isGold, String imgUri) {
         this();
         this.name = name;
@@ -441,6 +450,7 @@ public class ProductItem extends RecyclerViewItem implements Serializable, Parce
         dest.writeInt(countCourier);
         dest.writeString(originalPrice);
         dest.writeInt(discountPercentage);
+        dest.writeString(cashback);
     }
 
     protected ProductItem(android.os.Parcel in) {
@@ -476,6 +486,7 @@ public class ProductItem extends RecyclerViewItem implements Serializable, Parce
         this.countCourier = in.readInt();
         this.originalPrice = in.readString();
         this.discountPercentage = in.readInt();
+        this.cashback = in.readString();
     }
 
     public static final Creator<ProductItem> CREATOR = new Creator<ProductItem>() {

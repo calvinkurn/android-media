@@ -499,6 +499,17 @@ public class ProductListFragment extends SearchSectionFragment
         data.setCountCourier(item.getCountCourier());
         data.setDiscountPercentage(item.getDiscountPercentage());
         data.setOriginalPrice(item.getOriginalPrice());
+
+        if (item.getLabelList() != null) {
+            for (int i = 0; i < item.getLabelList().size(); i++) {
+                if (item.getLabelList().get(i).getTitle().toLowerCase()
+                        .contains(getContext().getString(R.string.cashback))) {
+                    data.setCashback(item.getLabelList().get(i).getTitle());
+                    break;
+                }
+            }
+        }
+
         Bundle bundle = new Bundle();
         Intent intent = ProductDetailRouter.createInstanceProductDetailInfoActivity(getActivity());
         bundle.putParcelable(ProductDetailRouter.EXTRA_PRODUCT_ITEM, data);
