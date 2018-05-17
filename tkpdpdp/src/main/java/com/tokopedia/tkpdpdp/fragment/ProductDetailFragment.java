@@ -1309,22 +1309,23 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
 
     @Override
     public void addProductVariant(ProductVariant productVariant) {
-        this.productVariant = productVariant;
-        this.priceSimulationView.addProductVariant(productVariant, productData);
-        if (variantLevel1 != null && variantLevel1 instanceof Option) {
-            priceSimulationView.updateVariant(generateVariantString());
-        }
-        int defaultChild =  productVariant.getParentId() == productData.getInfo().getProductId()
-                ?  productVariant.getDefaultChild() : productData.getInfo().getProductId();
-        if(productVariant.getChildFromProductId(defaultChild).isEnabled()){
-            productData.getInfo().setProductStockWording(productVariant.getChildFromProductId(defaultChild).getStockWording());
-            productData.getInfo().setLimitedStock(productVariant.getChildFromProductId(defaultChild).isLimitedStock());
-            headerInfoView.renderStockAvailability(productData.getInfo());
-        }
+        if (productData != null) {
+            this.productVariant = productVariant;
+            this.priceSimulationView.addProductVariant(productVariant, productData);
+            if (variantLevel1 != null && variantLevel1 instanceof Option) {
+                priceSimulationView.updateVariant(generateVariantString());
+            }
+            int defaultChild =  productVariant.getParentId() == productData.getInfo().getProductId()
+                    ?  productVariant.getDefaultChild() : productData.getInfo().getProductId();
+            if(productVariant.getChildFromProductId(defaultChild).isEnabled()){
+                productData.getInfo().setProductStockWording(productVariant.getChildFromProductId(defaultChild).getStockWording());
+                productData.getInfo().setLimitedStock(productVariant.getChildFromProductId(defaultChild).isLimitedStock());
+                headerInfoView.renderStockAvailability(productData.getInfo());
+            }
 
-        buttonBuyView.updateButtonForVariantProduct(productVariant.getChildFromProductId(
-                defaultChild).isIsBuyable(), productData);
-
+            buttonBuyView.updateButtonForVariantProduct(productVariant.getChildFromProductId(
+                    defaultChild).isIsBuyable(), productData);
+        }
     }
 
     @Override

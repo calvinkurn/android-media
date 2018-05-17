@@ -72,7 +72,7 @@
                 android:id="@+id/text_crack_result_label"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textSize="@dimen/text_size_reward_label"
+                android:textSize="@dimen/sp_16"
                 tools:text="Selamat anda mendapatkan"
                 android:textColor="@android:color/white" />
 
@@ -91,7 +91,7 @@
                 android:layout_marginRight="@dimen/dp_16"
                 android:layout_marginEnd="@dimen/dp_16"
                 android:layout_marginTop="@dimen/dp_32"
-                android:textSize="@dimen/text_size_cta_button"
+                android:textSize="@dimen/sp_16"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 tools:text="Cek dan Gunakan Hadiah Anda" />
@@ -105,7 +105,7 @@
                 android:layout_marginEnd="@dimen/dp_16"
                 android:layout_marginTop="@dimen/dp_32"
                 android:textColor="@color/white"
-                android:textSize="@dimen/text_size_cta_button"
+                android:textSize="@dimen/sp_16"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 tools:text="Cek dan Gunakan Hadiah Anda" />

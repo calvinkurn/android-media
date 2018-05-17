@@ -1,5 +1,6 @@
 package com.tokopedia.tkpdreactnative.react.fingerprint.view;
 
+import android.app.Dialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -126,9 +127,10 @@ public class FingerprintDialogRegister extends FingerPrintDialog implements Fing
     }
 
     @Override
-    public void onResume() {
-        super.onResume();
-        getDialog().setCanceledOnTouchOutside(false);
+    public Dialog onCreateDialog(Bundle savedInstanceState) {
+        Dialog dialog = super.onCreateDialog(savedInstanceState);
+        dialog.setCanceledOnTouchOutside(false);
+        return dialog;
     }
 
     public interface ListenerRegister {
