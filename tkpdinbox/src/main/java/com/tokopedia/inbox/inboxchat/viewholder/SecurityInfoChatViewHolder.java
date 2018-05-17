@@ -36,7 +36,7 @@ public class SecurityInfoChatViewHolder extends AbstractViewHolder<TimeMachineCh
         String securityInfo = MainApplication.getAppContext().getString(R.string.security_info_chat);
         String securityInfoLink = MainApplication.getAppContext().getString(R.string.security_info_chat_link);
 
-        Spannable spannable = new SpannableString(String.format("%s\n%s", securityInfo, securityInfoLink));
+        Spannable spannable = new SpannableString(String.format("%s %s", securityInfo, securityInfoLink));
 
         spannable.setSpan(new ClickableSpan() {
                               @Override
