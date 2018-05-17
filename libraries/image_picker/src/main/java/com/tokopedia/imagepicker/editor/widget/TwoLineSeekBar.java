@@ -51,6 +51,7 @@ public class TwoLineSeekBar extends View {
     private float mThumbRadius = DEF_THUMB_RADIUS;
     private float mNailRadius = DEF_NAIL_RADIUS;
     private float mNailStrokeWidth = DEF_NAIL_STROKE_WIDTH;
+    private float mHighStrokeWidth = DEF_NAIL_STROKE_WIDTH;
     private float mLineWidth = DEF_LINE_WIDTH;
 
     private int mNailColor;
@@ -76,6 +77,7 @@ public class TwoLineSeekBar extends View {
         mThumbRadius = a.getDimension(R.styleable.TwoLineSeekBar_thumb_radius, DEF_THUMB_RADIUS);
         mNailRadius = a.getDimension(R.styleable.TwoLineSeekBar_nail_radius, DEF_NAIL_RADIUS);
         mNailStrokeWidth = a.getDimension(R.styleable.TwoLineSeekBar_nail_stroke_width, DEF_NAIL_STROKE_WIDTH);
+        mHighStrokeWidth = a.getDimension(R.styleable.TwoLineSeekBar_high_stroke_width, DEF_NAIL_STROKE_WIDTH);
         mLineWidth = a.getDimension(R.styleable.TwoLineSeekBar_line_width, DEF_LINE_WIDTH);
 
         mNailColor = a.getColor(R.styleable.TwoLineSeekBar_nail_color, 0xFFFFE325);
@@ -117,6 +119,8 @@ public class TwoLineSeekBar extends View {
         mHighLightLinePaint = new Paint();
         mHighLightLinePaint.setAntiAlias(true);
         mHighLightLinePaint.setColor(mHighColor);
+        mHighLightLinePaint.setStrokeWidth(mHighStrokeWidth);
+        mHighLightLinePaint.setStrokeCap(Paint.Cap.ROUND);
 //        mHighLightLinePaint.setAlpha(0xc8);
         mSupportSingleTap = true;
 
@@ -182,10 +186,10 @@ public class TwoLineSeekBar extends View {
         } else {
             mNailPaint.setStyle(Paint.Style.FILL);
             path.reset();
-            path.moveTo(nailX, nailY - mThumbRadius / 8);
-            path.lineTo(nailX + mThumbRadius / 3, nailY - mThumbRadius / 2);
-            path.lineTo(nailX - mThumbRadius / 3, nailY - mThumbRadius / 2);
-            path.lineTo(nailX, nailY - mThumbRadius / 8);
+            path.moveTo(nailX, nailY - mThumbRadius / 4);
+            path.lineTo(nailX + mThumbRadius / 3, nailY - mThumbRadius * 5 / 8);
+            path.lineTo(nailX - mThumbRadius / 3, nailY - mThumbRadius * 5 / 8);
+            path.lineTo(nailX, nailY - mThumbRadius / 4);
             canvas.drawPath(path, mNailPaint);
         }
         float thumbX = mSeekLineStart + mThumbOffset;
@@ -196,7 +200,7 @@ public class TwoLineSeekBar extends View {
             highLightLeft = nailX + mNailRadius;
             highLightRight = thumbX - mThumbRadius;
         }
-        canvas.drawRect(highLightLeft, top, highLightRight, bottom, mHighLightLinePaint);
+        canvas.drawLine(highLightLeft, top, highLightRight, bottom, mHighLightLinePaint);
         canvas.drawCircle(thumbX, thumbY, mThumbRadius, mThumbPaint);
         mCircleRect.top = (int) (thumbY - mThumbRadius);
         mCircleRect.left = (int) (thumbX - mThumbRadius);

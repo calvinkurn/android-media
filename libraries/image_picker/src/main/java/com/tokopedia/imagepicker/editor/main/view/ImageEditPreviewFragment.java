@@ -16,7 +16,6 @@ import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.AccelerateInterpolator;
 import android.widget.ImageView;
 
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
@@ -25,7 +24,6 @@ import com.tokopedia.imagepicker.R;
 import com.tokopedia.imagepicker.common.util.ImageUtils;
 import com.tokopedia.imagepicker.editor.presenter.ImageEditPreviewPresenter;
 import com.yalantis.ucrop.callback.BitmapCropCallback;
-import com.yalantis.ucrop.util.BitmapLoadUtils;
 import com.yalantis.ucrop.view.CropImageView;
 import com.yalantis.ucrop.view.GestureCropImageView;
 import com.yalantis.ucrop.view.OverlayView;
@@ -75,7 +73,7 @@ public class ImageEditPreviewFragment extends Fragment implements ImageEditPrevi
     private int imageIndex;
 
     public interface OnImageEditPreviewFragmentListener {
-        boolean isInEditMode();
+        boolean isInEditCropMode();
 
         void onEditDoNothing();
 
@@ -164,7 +162,7 @@ public class ImageEditPreviewFragment extends Fragment implements ImageEditPrevi
     }
 
     public void renderUndoRedo() {
-        if (onImageEditPreviewFragmentListener.hasHistory(imageIndex) && !onImageEditPreviewFragmentListener.isInEditMode()) {
+        if (onImageEditPreviewFragmentListener.hasHistory(imageIndex) && !onImageEditPreviewFragmentListener.isInEditCropMode()) {
 
             if (onImageEditPreviewFragmentListener.canUndo(imageIndex)) {
                 ivUndo.getDrawable().clearColorFilter();
@@ -445,7 +443,8 @@ public class ImageEditPreviewFragment extends Fragment implements ImageEditPrevi
     }
 
     public void onEndEditScrolled() {
-        gestureCropImageView.setImageToWrapCropBounds();
+        gestureCropImageView.zoomOutImage(gestureCropImageView.getMinScale() + 0.01f);
+        gestureCropImageView.setImageToWrapCropBounds(false);
     }
 
     public void editRotateScrolled(float delta) {
@@ -461,10 +460,10 @@ public class ImageEditPreviewFragment extends Fragment implements ImageEditPrevi
     private void hideLoadingAndShowPreview() {
         progressBar.setVisibility(View.GONE);
         uCropView.setVisibility(View.VISIBLE);
-        setEditMode(onImageEditPreviewFragmentListener.isInEditMode());
+        setEditCropMode(onImageEditPreviewFragmentListener.isInEditCropMode());
     }
 
-    public void setEditMode(boolean isEditMode) {
+    public void setEditCropMode(boolean isEditMode) {
         if (loadCompleted) {
             if (isEditMode) {
                 blockingView.setVisibility(View.GONE);
@@ -479,7 +478,7 @@ public class ImageEditPreviewFragment extends Fragment implements ImageEditPrevi
 
     public void cancelCropRotateImage() {
         gestureCropImageView.postRotate(-gestureCropImageView.getCurrentAngle());
-        gestureCropImageView.zoomOutImage(gestureCropImageView.getMinScale() + 0.1f);
+        gestureCropImageView.zoomOutImage(gestureCropImageView.getMinScale() + 0.01f);
         gestureCropImageView.setImageToWrapCropBounds(false);
     }
 
