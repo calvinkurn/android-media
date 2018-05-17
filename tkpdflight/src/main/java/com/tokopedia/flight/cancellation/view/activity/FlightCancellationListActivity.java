@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.view.Menu;
 
 import com.tokopedia.abstraction.common.di.component.HasComponent;
 import com.tokopedia.flight.FlightModuleRouter;
@@ -42,5 +43,10 @@ public class FlightCancellationListActivity extends BaseFlightActivity implement
         return FlightCancellationListFragment.createInstance(
                 getIntent().getExtras().getString(EXTRA_INVOICE_ID)
         );
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        return true;
     }
 }

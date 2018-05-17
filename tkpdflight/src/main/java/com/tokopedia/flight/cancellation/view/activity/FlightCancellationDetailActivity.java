@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
+import android.view.Menu;
 
 import com.tokopedia.abstraction.common.di.component.HasComponent;
 import com.tokopedia.flight.FlightModuleRouter;
@@ -65,5 +66,10 @@ public class FlightCancellationDetailActivity extends BaseFlightActivity impleme
                 Long.toString(flightCancellationListViewModel.getCancellations().getRefundId())
         );
         updateTitle(title, subtitle);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        return true;
     }
 }
