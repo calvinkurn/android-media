@@ -53,6 +53,8 @@ public class InvoiceRendererActivity extends BasePresenterActivity<InvoiceRender
         implements InvoiceViewListener {
     private static final String TAG = InvoiceRendererActivity.class.getSimpleName();
 
+    private static final String TOP_SELLER_APPLICATION_PACKAGE = "com.tokopedia.sellerapp";
+
     private static final String EXTRA_INVOICE_RENDER_PARAM = "EXTRA_INVOICE_RENDER_PARAM";
     private static final String EXTRA_INVOICE_SELLER = "EXTRA_INVOICE_SELLER";
 
@@ -236,8 +238,17 @@ public class InvoiceRendererActivity extends BasePresenterActivity<InvoiceRender
                 if (isFinishing()) {
                     return;
                 }
-                ((TkpdCoreRouter) getApplication()).goToCreateMerchantRedirect(InvoiceRendererActivity.this);
+                goToSellerApp();
                 dialog.dismiss();
+            }
+
+            private void goToSellerApp() {
+                Intent launchIntent = getPackageManager().getLaunchIntentForPackage(TOP_SELLER_APPLICATION_PACKAGE);
+                if (launchIntent != null) {
+                    startActivity(launchIntent);
+                } else if (getApplication() instanceof TkpdCoreRouter) {
+                    ((TkpdCoreRouter) getApplication()).goToCreateMerchantRedirect(InvoiceRendererActivity.this);
+                }
             }
         });
         dialog.setOnCancelClickListener(new View.OnClickListener() {
