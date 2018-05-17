@@ -27,6 +27,8 @@ import com.github.rubensousa.bottomsheetbuilder.custom.CheckedBottomSheetBuilder
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh;
+import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
+import com.tokopedia.abstraction.common.utils.snackbar.SnackbarRetry;
 import com.tokopedia.abstraction.common.utils.view.RefreshHandler;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
@@ -96,6 +98,7 @@ public class TopAdsDashboardFragment extends BaseDaggerFragment implements TopAd
     private TopAdsTabAdapter topAdsTabAdapter;
     private View viewGroupPromo;
     private SwipeToRefresh swipeToRefresh;
+    private SnackbarRetry snackbarRetry;
 
     private LabelView dateLabelView;
     Date startDate, endDate;
@@ -157,6 +160,13 @@ public class TopAdsDashboardFragment extends BaseDaggerFragment implements TopAd
                 startActivityForResult(new Intent(getActivity(), TopAdsAddingPromoOptionActivity.class), REQUEST_CODE_AD_OPTION);
             }
         });
+        snackbarRetry = NetworkErrorHelper.createSnackbarWithAction(getActivity(), new NetworkErrorHelper.RetryClickedListener() {
+            @Override
+            public void onRetryClicked() {
+                loadData();
+            }
+        });
+        snackbarRetry.setColorActionRetry(ContextCompat.getColor(getActivity(), R.color.green_400));
         setHasOptionsMenu(true);
     }
 
@@ -469,7 +479,7 @@ public class TopAdsDashboardFragment extends BaseDaggerFragment implements TopAd
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
 
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == REQUEST_CODE_AD_STATUS) {
+        if (requestCode == REQUEST_CODE_AD_STATUS && data != null) {
             if (startDate == null || endDate == null) {
                 return;
             }
@@ -552,10 +562,12 @@ public class TopAdsDashboardFragment extends BaseDaggerFragment implements TopAd
     @Override
     public void onLoadTopAdsShopDepositError(Throwable throwable) {
         swipeToRefresh.setRefreshing(false);
+        snackbarRetry.showRetrySnackbar();
     }
 
     @Override
     public void onLoadTopAdsShopDepositSuccess(DataDeposit dataDeposit) {
+        snackbarRetry.hideRetrySnackbar();
         depositValueTextView.setText(dataDeposit.getAmountFmt());
         if (dataDeposit.isAdUsage()){
             topAdsDashboardPresenter.populateTotalAds();
@@ -572,6 +584,7 @@ public class TopAdsDashboardFragment extends BaseDaggerFragment implements TopAd
     @Override
     public void onErrorGetShopInfo(Throwable throwable) {
         swipeToRefresh.setRefreshing(false);
+        snackbarRetry.showRetrySnackbar();
     }
 
     @Override
@@ -588,10 +601,12 @@ public class TopAdsDashboardFragment extends BaseDaggerFragment implements TopAd
     @Override
     public void onErrorPopulateTotalAds(Throwable throwable) {
         swipeToRefresh.setRefreshing(false);
+        snackbarRetry.showRetrySnackbar();
     }
 
     @Override
     public void onSuccessPopulateTotalAds(TotalAd totalAd) {
+        snackbarRetry.hideRetrySnackbar();
         swipeToRefresh.setRefreshing(false);
         totalProductAd = totalAd.getTotalProductAd();
         totalGroupAd = totalAd.getTotalProductGroupAd();
@@ -602,11 +617,13 @@ public class TopAdsDashboardFragment extends BaseDaggerFragment implements TopAd
 
     @Override
     public void onErrorGetStatisticsInfo(Throwable throwable) {
-        throwable.printStackTrace();
+        swipeToRefresh.setRefreshing(false);
+        snackbarRetry.showRetrySnackbar();
     }
 
     @Override
     public void onSuccesGetStatisticsInfo(DataStatistic dataStatistic) {
+        snackbarRetry.hideRetrySnackbar();
         this.dataStatistic = dataStatistic;
         if (dataStatistic != null) {
             topAdsTabAdapter.setSummary(dataStatistic.getSummary(), getResources().getStringArray(R.array.top_ads_tab_statistics_labels));
