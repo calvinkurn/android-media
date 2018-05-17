@@ -15,6 +15,7 @@ import com.tokopedia.seller.R;
 import com.tokopedia.seller.common.widget.PrefixEditText;
 import com.tokopedia.seller.product.edit.constant.CurrencyTypeDef;
 import com.tokopedia.seller.product.edit.utils.ProductPriceRangeUtils;
+import com.tokopedia.seller.product.edit.view.fragment.ProductAddWholesaleFragment;
 import com.tokopedia.seller.product.edit.view.model.edit.ProductWholesaleViewModel;
 import com.tokopedia.seller.product.edit.view.model.wholesale.WholesaleModel;
 import com.tokopedia.seller.util.CurrencyIdrTextWatcher;
@@ -94,23 +95,28 @@ public class WholesaleAddAdapter extends RecyclerView.Adapter<WholesaleAddAdapte
             tilWholeSalePrice = itemView.findViewById(R.id.til_whole_sale_price);
 
             etRangeWholesale.setPrefix(MethodChecker.fromHtml("&#8805; &emsp;").toString());
-            etWholeSalePrice.setPrefix(MethodChecker.fromHtml("Rp ").toString());
 
             TextWatcher textWatcher = new CurrencyIdrTextWatcher(etWholeSalePrice);
             switch (listener.getCurrencyType()) {
                 case CurrencyTypeDef.TYPE_USD:
+                    etWholeSalePrice.setPrefix(MethodChecker.fromHtml(ProductAddWholesaleFragment.USD_CURRENCY).toString());
                     textWatcher = new CurrencyUsdTextWatcher(etWholeSalePrice) {
                         @Override
                         public void onNumberChanged(double number) {
-                            setValueAndRefresh(number);
+                            if (wholesaleModels.get(getAdapterPosition()).isFocusPrice()) {
+                                setValueAndRefresh(number);
+                            }
                         }
                     };
                     break;
                 case CurrencyTypeDef.TYPE_IDR:
+                    etWholeSalePrice.setPrefix(MethodChecker.fromHtml(ProductAddWholesaleFragment.RUPIAH_CURRENCY).toString());
                     textWatcher = new CurrencyIdrTextWatcher(etWholeSalePrice) {
                         @Override
                         public void onNumberChanged(double number) {
-                            setValueAndRefresh(number);
+                            if (wholesaleModels.get(getAdapterPosition()).isFocusPrice()) {
+                                setValueAndRefresh(number);
+                            }
                         }
                     };
                     break;
@@ -168,18 +174,16 @@ public class WholesaleAddAdapter extends RecyclerView.Adapter<WholesaleAddAdapte
         }
 
         private void setValueAndRefresh(double number){
-            if (wholesaleModels.get(getAdapterPosition()).isFocusPrice()) {
-                wholesaleModels.get(getAdapterPosition()).setQtyPrice(number);
-                wholesaleModels.get(getAdapterPosition()).setFocusPrice(false);
-                currentPositionFocusPrice = getAdapterPosition();
-                currentPositionFocusQty = -1;
-                etWholeSalePrice.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        notifyDataSetChanged();
-                    }
-                });
-            }
+            wholesaleModels.get(getAdapterPosition()).setQtyPrice(number);
+            wholesaleModels.get(getAdapterPosition()).setFocusPrice(false);
+            currentPositionFocusPrice = getAdapterPosition();
+            currentPositionFocusQty = -1;
+            etWholeSalePrice.post(new Runnable() {
+                @Override
+                public void run() {
+                    notifyDataSetChanged();
+                }
+            });
         }
 
         private void initFocus(int position){

@@ -170,24 +170,27 @@ public class ProductPriceViewHolder extends ProductViewHolder{
                 priceSpinnerCounterInputView.setEnabled(false);
                 editPriceImageButton.setVisibility(View.VISIBLE);
             }
-
-            Context context = wholesaleLabelView.getContext();
-            if (model.getProductWholesale() != null){
-                if(model.getProductWholesale().isEmpty()){
-                    wholesaleLabelView.setContent(context.getString(R.string.product_label_add));
-                    priceSpinnerCounterInputView.setEnabled(true);
-                    editPriceImageButton.setVisibility(View.GONE);
-                }
-                else {
-                    wholesaleLabelView.setContent(String.valueOf(model.getProductWholesale().size()) + " " + context.getString(R.string.product_label_price));
-                    priceSpinnerCounterInputView.setEnabled(false);
-                    editPriceImageButton.setVisibility(View.VISIBLE);
-                }
-            }
+            setLabelWHolesale(productWholesaleViewModels);
         }
 
         if (model.getProductMinOrder() > 0) {
             setMinimumOrder((int) model.getProductMinOrder());
+        }
+    }
+
+    private void setLabelWHolesale(List<ProductWholesaleViewModel> productWholesaleViewModels){
+        Context context = wholesaleLabelView.getContext();
+        if (productWholesaleViewModels != null){
+            if(productWholesaleViewModels.isEmpty()){
+                wholesaleLabelView.setContent(context.getString(R.string.product_label_add));
+                priceSpinnerCounterInputView.setEnabled(true);
+                editPriceImageButton.setVisibility(View.GONE);
+            }
+            else {
+                wholesaleLabelView.setContent(String.valueOf(productWholesaleViewModels.size()) + " " + context.getString(R.string.product_label_price));
+                priceSpinnerCounterInputView.setEnabled(false);
+                editPriceImageButton.setVisibility(View.VISIBLE);
+            }
         }
     }
 
@@ -205,6 +208,7 @@ public class ProductPriceViewHolder extends ProductViewHolder{
                     priceSpinnerCounterInputView.setEnabled(true);
                     editPriceImageButton.setVisibility(View.GONE);
                     productWholesaleViewModels.clear();
+                    setLabelWHolesale(productWholesaleViewModels);
                     dialog.cancel();
                 }
             });
@@ -358,18 +362,8 @@ public class ProductPriceViewHolder extends ProductViewHolder{
         switch (requestCode) {
             case REQUEST_CODE_GET_PRODUCT_WHOLESALE:
                 if (resultCode == Activity.RESULT_OK) {
-                    ArrayList<ProductWholesaleViewModel> productWholesaleViewModelArrayList = data.getParcelableArrayListExtra(ProductAddWholesaleFragment.EXTRA_PRODUCT_WHOLESALE);
-                    if(productWholesaleViewModelArrayList.size()>0){
-                        wholesaleLabelView.setContent(String.valueOf(productWholesaleViewModelArrayList.size()) + " " + editPriceImageButton.getContext().getString(R.string.product_label_price));
-                        priceSpinnerCounterInputView.setEnabled(false);
-                        editPriceImageButton.setVisibility(View.VISIBLE);
-                    } else {
-                        wholesaleLabelView.setContent(editPriceImageButton.getContext().getString(R.string.product_label_add));
-                        priceSpinnerCounterInputView.setEnabled(true);
-                        editPriceImageButton.setVisibility(View.GONE);
-                    }
-
-                    productWholesaleViewModels = productWholesaleViewModelArrayList;
+                    productWholesaleViewModels = data.getParcelableArrayListExtra(ProductAddWholesaleFragment.EXTRA_PRODUCT_WHOLESALE);
+                    setLabelWHolesale(productWholesaleViewModels);
                 }
                 break;
         }
@@ -380,12 +374,6 @@ public class ProductPriceViewHolder extends ProductViewHolder{
     }
 
     public interface Listener {
-
-        /**
-         * @param currencyType           {@link CurrencyTypeDef}
-         * @param previousWholesalePrice previousWholesalePrice
-         * @param officialStore
-         */
 
         void showDialogMoveToGM(@StringRes int message);
 

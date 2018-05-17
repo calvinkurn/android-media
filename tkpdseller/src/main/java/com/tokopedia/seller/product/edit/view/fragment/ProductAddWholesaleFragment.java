@@ -3,8 +3,11 @@ package com.tokopedia.seller.product.edit.view.fragment;
 import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.Nullable;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -18,7 +21,11 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
+import com.tkpd.library.utils.SnackbarManager;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
+import com.tokopedia.core.network.NetworkErrorHelper;
+import com.tokopedia.design.utils.CurrencyFormatUtil;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.product.edit.constant.CurrencyTypeDef;
 import com.tokopedia.seller.product.edit.view.activity.ProductAddWholesaleActivity;
@@ -28,6 +35,8 @@ import com.tokopedia.seller.product.edit.view.model.wholesale.WholesaleModel;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * Created by yoshua on 02/05/18.
@@ -37,6 +46,8 @@ public class ProductAddWholesaleFragment extends BaseDaggerFragment implements W
 
     public static final String EXTRA_PRODUCT_WHOLESALE = "EXTRA_PRODUCT_WHOLESALE";
     public static final String SAVE_PRODUCT_WHOLESALE = "SAVE_PRODUCT_WHOLESALE";
+    public static final String RUPIAH_CURRENCY = "Rp ";
+    public static final String USD_CURRENCY = "US$ ";
 
     private static final int MAX_WHOLESALE = 5;
     private static final int DEFAULT_QTY_WHOLESALE = 2;
@@ -48,6 +59,7 @@ public class ProductAddWholesaleFragment extends BaseDaggerFragment implements W
     private TextView textViewAddWholesale, textMainPrice;
     private Button buttonSave;
     private ArrayList<ProductWholesaleViewModel> productWholesaleViewModelList;
+    private ArrayList<ProductWholesaleViewModel> productWholesaleViewModelListTemp;
     private double productPrice;
     private boolean officialStore;
     private boolean hasVariant;
@@ -79,6 +91,7 @@ public class ProductAddWholesaleFragment extends BaseDaggerFragment implements W
         Intent activityIntent = getActivity().getIntent();
 
         productWholesaleViewModelList = activityIntent.getParcelableArrayListExtra(ProductAddWholesaleActivity.EXTRA_PRODUCT_WHOLESALE_LIST);
+        productWholesaleViewModelListTemp = activityIntent.getParcelableArrayListExtra(ProductAddWholesaleActivity.EXTRA_PRODUCT_WHOLESALE_LIST);
         productPrice = activityIntent.getDoubleExtra(ProductAddWholesaleActivity.EXTRA_PRODUCT_MAIN_PRICE, 0);
         officialStore = activityIntent.getBooleanExtra(ProductAddWholesaleActivity.EXTRA_OFFICIAL_STORE, false);
         hasVariant = activityIntent.getBooleanExtra(ProductAddWholesaleActivity.EXTRA_HAS_VARIANT, false);
@@ -157,6 +170,7 @@ public class ProductAddWholesaleFragment extends BaseDaggerFragment implements W
                 productWholesaleViewModelList = savedInstanceState.getParcelableArrayList(SAVE_PRODUCT_WHOLESALE);
             }
         }
+
         renderData(productWholesaleViewModelList, productPrice);
 
         return root;
@@ -177,8 +191,40 @@ public class ProductAddWholesaleFragment extends BaseDaggerFragment implements W
     }
 
     public void renderData(ArrayList<ProductWholesaleViewModel> productWholesaleViewModelArrayList, double productPrice){
+        String currencyString = CurrencyFormatUtil.convertPriceValue(productPrice, true);
         setWholesalePrice(productWholesaleViewModelArrayList);
-        textMainPrice.setText("Rp " + productPrice);
+        switch (currencyType) {
+            case CurrencyTypeDef.TYPE_USD:
+                textMainPrice.setText(USD_CURRENCY + currencyString);
+                break;
+            default:
+            case CurrencyTypeDef.TYPE_IDR:
+                textMainPrice.setText(RUPIAH_CURRENCY + currencyString);
+                break;
+
+        }
+        if (hasVariant){
+            final Snackbar snackbar = SnackbarManager.make(getActivity(),
+                    getContext().getString(R.string.addproduct_wholesale_notice_variant),
+                    Snackbar.LENGTH_INDEFINITE);
+            snackbar.setAction(getContext().getString(R.string.understand), new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    snackbar.dismiss();
+                }
+            });
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+                Handler handler = new Handler();
+                handler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        snackbar.show();
+                    }
+                }, 500);
+            } else  {
+                snackbar.show();
+            }
+        }
     }
 
     @Override
@@ -216,10 +262,7 @@ public class ProductAddWholesaleFragment extends BaseDaggerFragment implements W
 
     @Override
     public void setButtonSubmit(boolean state) {
-        if(state)
-            buttonSave.setEnabled(true);
-        else
-            buttonSave.setEnabled(false);
+        buttonSave.setEnabled(state);
     }
 
     @Override
@@ -259,5 +302,16 @@ public class ProductAddWholesaleFragment extends BaseDaggerFragment implements W
             }
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    public boolean isAnyWholesaleChange() {
+        productWholesaleViewModelList = wholesaleAdapter.getProductWholesaleViewModels();
+        if (productWholesaleViewModelListTemp == null) {
+            productWholesaleViewModelListTemp = new ArrayList<>();
+        }
+
+        boolean state = new Gson().toJson(productWholesaleViewModelList).equalsIgnoreCase(new Gson().toJson(productWholesaleViewModelListTemp));
+
+        return state;
     }
 }

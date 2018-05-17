@@ -18,6 +18,7 @@
     <string name="error_connection">Masalah Koneksi</string>
     <string name="title_retry">Coba Lagi</string>
     <string name="navigate_back">Kembali</string>
+    <string name="understand">Mengerti</string>
     <string name="navigate_browser">Lanjut ke Aplikasi TopSeller</string>
     <!-- Strings related notification -->
     <string name="title_new_message">Pesan baru</string>
@@ -186,9 +187,9 @@ Ingatlah untuk mengkonfirmasi bahwa email di atas adalah benar dan periksa junk 
     <string name="dialog_delete_product">Apakah Anda ingin menghapus produk ini?</string>
     <string name="dialog_cancel_add_product">Perubahan yang anda lakukan tidak akan tersimpan. Lanjutkan?</string>
     <string name="dialog_delete_wholesale_title">Hapus Grosir?</string>
-    <string name="dialog_add_wholesale_title">Tambah Grosir?</string>
-    <string name="dialog_delete_wholesale_message">Anda bisa kembali mengubah harga per varian setelah menghapus harga grosir?</string>
-    <string name="dialog_add_wholesale_message">Anda tidak dapat mengubah harga per varian setelah menambah harga grosir?</string>
+    <string name="dialog_add_wholesale_title">Tambah Harga Grosir?</string>
+    <string name="dialog_delete_wholesale_message">Anda bisa kembali mengubah harga per varian setelah menghapus harga grosir.</string>
+    <string name="dialog_add_wholesale_message">Anda tidak bisa mengubah harga per varian setelah menambah harga grosir.</string>
     <string name="dialog_no_memory_card">No memory card!</string>
     <string name="dialog_upload_option">Bagaimana Anda ingin mengatur gambar Anda ?</string>
     <string name="title_gallery">Gallery</string>
@@ -2005,6 +2006,7 @@ di Tokopedia Sekarang!</string>
     <string name="addproduct_wholesale_priceError">Terjadi kesalahan pada harga grosir</string>
     <string name="addproduct_wholesale_priceShouldBigger100">Harga harus lebih besar dari Rp 100</string>
     <string name="addproduct_wholesale_priceShouldLower100">Harga harus lebih kecil dari Rp 100.000.000</string>
+    <string name="addproduct_wholesale_notice_variant">Semua harga varian otomatis mengikuti harga utama jika produk memiliki harga grosir.</string>
     <string name="error_problem">Terjadi kesalahan</string>
     <string name="addproduct_wholesale_priceShouldBigger1Dollar">Harga harus lebih besar dari $1</string>
     <string name="addproduct_wholesale_priceShouldLowerDollar">Harga harus lebih kecil dari $7500</string>
