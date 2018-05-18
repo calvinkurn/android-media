@@ -22,9 +22,6 @@ public class FlightBookingCartData implements Parcelable {
     private List<FlightBookingAmenityMetaViewModel> mealViewModels;
     private List<NewFarePrice> newFarePrices;
 
-    public FlightBookingCartData() {
-    }
-
     protected FlightBookingCartData(Parcel in) {
         id = in.readString();
         refreshTime = in.readInt();
@@ -34,6 +31,7 @@ public class FlightBookingCartData implements Parcelable {
         luggageViewModels = in.createTypedArrayList(FlightBookingAmenityMetaViewModel.CREATOR);
         mealViewModels = in.createTypedArrayList(FlightBookingAmenityMetaViewModel.CREATOR);
         newFarePrices = in.createTypedArrayList(NewFarePrice.CREATOR);
+        insurances = in.createTypedArrayList(FlightInsuranceViewModel.CREATOR);
     }
 
     public static final Creator<FlightBookingCartData> CREATOR = new Creator<FlightBookingCartData>() {
@@ -47,6 +45,19 @@ public class FlightBookingCartData implements Parcelable {
             return new FlightBookingCartData[size];
         }
     };
+
+    public List<FlightInsuranceViewModel> getInsurances() {
+        return insurances;
+    }
+
+    public void setInsurances(List<FlightInsuranceViewModel> insurances) {
+        this.insurances = insurances;
+    }
+
+    private List<FlightInsuranceViewModel> insurances;
+
+    public FlightBookingCartData() {
+    }
 
     public int getRefreshTime() {
         return refreshTime;
@@ -119,14 +130,15 @@ public class FlightBookingCartData implements Parcelable {
     }
 
     @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(id);
-        dest.writeInt(refreshTime);
-        dest.writeParcelable(defaultPhoneCode, flags);
-        dest.writeParcelable(departureTrip, flags);
-        dest.writeParcelable(returnTrip, flags);
-        dest.writeTypedList(luggageViewModels);
-        dest.writeTypedList(mealViewModels);
-        dest.writeTypedList(newFarePrices);
+    public void writeToParcel(Parcel parcel, int i) {
+        parcel.writeString(id);
+        parcel.writeInt(refreshTime);
+        parcel.writeParcelable(defaultPhoneCode, i);
+        parcel.writeParcelable(departureTrip, i);
+        parcel.writeParcelable(returnTrip, i);
+        parcel.writeTypedList(luggageViewModels);
+        parcel.writeTypedList(mealViewModels);
+        parcel.writeTypedList(newFarePrices);
+        parcel.writeTypedList(insurances);
     }
 }
