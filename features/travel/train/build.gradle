@@ -3,6 +3,7 @@ apply from: "$rootProject.projectDir/buildconfig/module.gradle"
 apply plugin: 'android-apt'
 
 dependencies {
+    compile project(rootProject.ext.libraries.travelCalendar)
     compile project(rootProject.ext.libraries.useCase)
     compile project(rootProject.ext.libraries.abstraction)
     compile project(rootProject.ext.libraries.design)
