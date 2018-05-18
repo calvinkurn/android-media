@@ -82,7 +82,8 @@ public class FlightReviewCancellationViewHolder extends AbstractViewHolder<Fligh
                 FlightDateUtil.FORMAT_TIME_DETAIL,
                 element.getFlightCancellationJourney().getArrivalTime());
 
-        txtDepartureNumber.setText(String.format("Penerbangan %d", getAdapterPosition() + 1));
+        txtDepartureNumber.setText(String.format(context.getString(R.string
+                .flight_cancellation_review_journey_number), getAdapterPosition() + 1));
         txtDepartureDetail.setText(departureDate);
         txtJourneyDetail.setText(
                 String.format("%s (%s) - %s (%s)",
