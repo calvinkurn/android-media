@@ -204,6 +204,19 @@ public class CartListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         }
     }
 
+    public void cancelAutoApplyCoupon() {
+        for (int i = 0; i < cartItemHolderDataList.size(); i++) {
+            Object object = cartItemHolderDataList.get(i);
+            if (object instanceof CartItemPromoHolderData) {
+                ((CartItemPromoHolderData) object).setPromoNotActive();
+                notifyItemChanged(i);
+            } else if (object instanceof CartPromoSuggestion) {
+                ((CartPromoSuggestion) object).setVisible(true);
+                notifyItemChanged(i);
+            }
+        }
+    }
+
     public void updateSuggestionPromo() {
         for (int i = 0; i < cartItemHolderDataList.size(); i++) {
             Object object = cartItemHolderDataList.get(i);

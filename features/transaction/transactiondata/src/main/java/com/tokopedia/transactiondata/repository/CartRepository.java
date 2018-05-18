@@ -166,4 +166,8 @@ public class CartRepository implements ICartRepository {
         );
     }
 
+    @Override
+    public Observable<String> cancelAutoApplyCoupon(String os, Map<String, String> params) {
+        return cartApi.cancelAutoApplyCoupon(os, params);
+    }
 }

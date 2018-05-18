@@ -64,7 +64,6 @@ import javax.inject.Inject;
 public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentContract.View,
         ShipmentAdapterActionListener, CourierBottomsheet.ActionListener {
 
-    private static final int REQUEST_CODE_SHIPMENT_DETAIL = 11;
     private static final int REQUEST_CHOOSE_PICKUP_POINT = 12;
     private static final int REQUEST_CODE_COURIER_PINPOINT = 13;
     public static final int RESULT_CODE_CANCEL_SHIPMENT_PAYMENT = 4;
@@ -375,6 +374,13 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         }
     }
 
+    @Override
+    public void renderCancelAutoApplyCouponSuccess() {
+        onRemovePromoCode();
+        shipmentAdapter.cancelAutoApplyCoupon();
+        shipmentAdapter.notifyItemChanged(shipmentAdapter.getShipmentCostPosition());
+    }
+
     private void updateAppliedPromo(CartItemPromoHolderData cartPromo) {
         shipmentAdapter.updateItemPromoVoucher(cartPromo);
         if (shipmentAdapter.hasSetAllCourier()) {
@@ -508,7 +514,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                 Intent intent = new Intent();
                 intent.putExtra(CartShipmentActivity.EXTRA_SELECTED_ADDRESS_RECIPIENT_DATA,
                         shipmentAdapter.getAddressShipmentData());
-                getActivity().setResult(CartShipmentActivity.RESULT_CODE_ACTION_TO_MULTIPLE_ADDRESS_FORM, intent);
+                getActivity().setResult(ShipmentActivity.RESULT_CODE_ACTION_TO_MULTIPLE_ADDRESS_FORM, intent);
                 getActivity().finish();
                 break;
 
@@ -622,11 +628,15 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
 
     @Override
     public void onCartPromoCancelVoucherPromoClicked(CartItemPromoHolderData cartPromo, int position) {
-        onRemovePromoCode();
-        cartPromo.setPromoNotActive();
-        shipmentAdapter.updatePromo(null);
-        shipmentAdapter.notifyItemChanged(position);
-        shipmentAdapter.notifyItemChanged(shipmentAdapter.getShipmentCostPosition());
+        if (cartPromo.isFromAutoApply()) {
+            shipmentPresenter.cancelAutoApplyCoupon();
+        } else {
+            onRemovePromoCode();
+            cartPromo.setPromoNotActive();
+            shipmentAdapter.updatePromo(null);
+            shipmentAdapter.notifyItemChanged(position);
+            shipmentAdapter.notifyItemChanged(shipmentAdapter.getShipmentCostPosition());
+        }
     }
 
     @Override

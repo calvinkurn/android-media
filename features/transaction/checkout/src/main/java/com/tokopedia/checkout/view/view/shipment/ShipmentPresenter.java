@@ -17,6 +17,7 @@ import com.tokopedia.checkout.domain.datamodel.cartshipmentform.GroupShop;
 import com.tokopedia.checkout.domain.datamodel.cartsingleshipment.ShipmentCostModel;
 import com.tokopedia.checkout.domain.datamodel.toppay.ThanksTopPayData;
 import com.tokopedia.checkout.domain.datamodel.voucher.PromoCodeAppliedData;
+import com.tokopedia.checkout.domain.usecase.CancelAutoApplyCouponUseCase;
 import com.tokopedia.checkout.domain.usecase.CheckPromoCodeCartListUseCase;
 import com.tokopedia.checkout.domain.usecase.CheckPromoCodeCartShipmentUseCase;
 import com.tokopedia.checkout.domain.usecase.CheckoutUseCase;
@@ -62,6 +63,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     private final GetShipmentAddressFormUseCase getShipmentAddressFormUseCase;
     private final CheckPromoCodeCartListUseCase checkPromoCodeCartListUseCase;
     private final EditAddressUseCase editAddressUseCase;
+    private final CancelAutoApplyCouponUseCase cancelAutoApplyCouponUseCase;
 
     private List<ShipmentCartItemModel> shipmentCartItemModelList;
     private RecipientAddressModel recipientAddressModel;
@@ -81,7 +83,8 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                              CheckPromoCodeCartShipmentUseCase checkPromoCodeCartShipmentUseCase,
                              GetShipmentAddressFormUseCase getShipmentAddressFormUseCase,
                              CheckPromoCodeCartListUseCase checkPromoCodeCartListUseCase,
-                             EditAddressUseCase editAddressUseCase) {
+                             EditAddressUseCase editAddressUseCase,
+                             CancelAutoApplyCouponUseCase cancelAutoApplyCouponUseCase) {
         this.compositeSubscription = compositeSubscription;
         this.checkoutUseCase = checkoutUseCase;
         this.getThanksToppayUseCase = getThanksToppayUseCase;
@@ -89,6 +92,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         this.getShipmentAddressFormUseCase = getShipmentAddressFormUseCase;
         this.checkPromoCodeCartListUseCase = checkPromoCodeCartListUseCase;
         this.editAddressUseCase = editAddressUseCase;
+        this.cancelAutoApplyCouponUseCase = cancelAutoApplyCouponUseCase;
     }
 
     @Override
@@ -558,5 +562,46 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         requestParams.putAllString(params);
 
         return requestParams;
+    }
+
+    @Override
+    public void cancelAutoApplyCoupon() {
+        compositeSubscription.add(
+                cancelAutoApplyCouponUseCase.createObservable(RequestParams.create())
+                        .subscribeOn(Schedulers.newThread())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .unsubscribeOn(Schedulers.newThread())
+                        .subscribe(new Subscriber<String>() {
+                            @Override
+                            public void onCompleted() {
+
+                            }
+
+                            @Override
+                            public void onError(Throwable e) {
+                                e.printStackTrace();
+                                getView().showToastError(getView().getActivity().getString(R.string.default_request_error_unknown));
+                            }
+
+                            @Override
+                            public void onNext(String stringResponse) {
+                                boolean resultSuccess = false;
+                                try {
+                                    JSONObject jsonObject = new JSONObject(stringResponse);
+                                    resultSuccess = jsonObject.getJSONObject(CancelAutoApplyCouponUseCase.RESPONSE_DATA)
+                                            .getBoolean(CancelAutoApplyCouponUseCase.RESPONSE_SUCCESS);
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                }
+
+                                if (resultSuccess) {
+                                    getView().renderCancelAutoApplyCouponSuccess();
+                                } else {
+                                    getView().showToastError(getView().getActivity().getString(R.string.default_request_error_unknown));
+                                }
+
+                            }
+                        })
+        );
     }
 }

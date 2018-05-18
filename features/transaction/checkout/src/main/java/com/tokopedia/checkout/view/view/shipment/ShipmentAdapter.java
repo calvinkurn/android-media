@@ -204,10 +204,12 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     }
 
     public void addPromoSuggestionData(CartPromoSuggestion cartPromoSuggestion) {
-        this.cartPromoSuggestion = cartPromoSuggestion;
-        shipmentDataList.add(cartPromoSuggestion);
-        notifyDataSetChanged();
-        checkDataForCheckout();
+        if (!TextUtils.isEmpty(cartPromoSuggestion.getPromoCode())) {
+            this.cartPromoSuggestion = cartPromoSuggestion;
+            shipmentDataList.add(cartPromoSuggestion);
+            notifyDataSetChanged();
+            checkDataForCheckout();
+        }
     }
 
     public void addAddressShipmentData(RecipientAddressModel recipientAddressModel) {
@@ -475,7 +477,7 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 }
             }
         }
-        totalPrice = totalItemPrice + shippingFee + insuranceFee;
+        totalPrice = totalItemPrice + shippingFee + insuranceFee - shipmentCostModel.getPromoPrice();
         shipmentCostModel.setTotalWeight(totalWeight);
         shipmentCostModel.setAdditionalFee(additionalFee);
         shipmentCostModel.setTotalItemPrice(totalItemPrice);
@@ -524,6 +526,7 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 }
             }
         }
+        updateShipmentCostModel();
         notifyItemChanged(getShipmentCostPosition());
     }
 
@@ -540,6 +543,19 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             }
         }
         notifyItemChanged(getShipmentCostPosition());
+    }
+
+    public void cancelAutoApplyCoupon() {
+        for (int i = 0; i < shipmentDataList.size(); i++) {
+            ShipmentData shipmentData = shipmentDataList.get(i);
+            if (shipmentData instanceof CartItemPromoHolderData) {
+                ((CartItemPromoHolderData) shipmentData).setPromoNotActive();
+                notifyItemChanged(i);
+            } else if (shipmentData instanceof CartPromoSuggestion) {
+                ((CartPromoSuggestion) shipmentData).setVisible(true);
+                notifyItemChanged(i);
+            }
+        }
     }
 
     public void updateShipmentDestinationPinpoint(Double latitude, Double longitude) {

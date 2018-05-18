@@ -16,6 +16,7 @@ public class PromoCodeAppliedData implements Parcelable {
     private String description;
     private String couponTitle;
     private int amount;
+    private boolean fromAutoApply;
 
     private PromoCodeAppliedData(Builder builder) {
         setTypeVoucher(builder.typeVoucher);
@@ -23,6 +24,7 @@ public class PromoCodeAppliedData implements Parcelable {
         setDescription(builder.description);
         setCouponTitle(builder.couponTitle);
         setAmount(builder.amount);
+        setFromAutoApply(builder.fromAutoApply);
     }
 
     public int getTypeVoucher() {
@@ -65,6 +67,13 @@ public class PromoCodeAppliedData implements Parcelable {
         this.amount = amount;
     }
 
+    public boolean isFromAutoApply() {
+        return fromAutoApply;
+    }
+
+    public void setFromAutoApply(boolean fromAutoApply) {
+        this.fromAutoApply = fromAutoApply;
+    }
 
     @Override
     public int describeContents() {
@@ -78,6 +87,7 @@ public class PromoCodeAppliedData implements Parcelable {
         dest.writeString(this.description);
         dest.writeString(this.couponTitle);
         dest.writeInt(this.amount);
+        dest.writeByte(this.fromAutoApply ? (byte) 1 : (byte) 0);
     }
 
     public PromoCodeAppliedData() {
@@ -89,6 +99,7 @@ public class PromoCodeAppliedData implements Parcelable {
         this.description = in.readString();
         this.couponTitle = in.readString();
         this.amount = in.readInt();
+        this.fromAutoApply = in.readByte() == 1;
     }
 
     public static final Creator<PromoCodeAppliedData> CREATOR =
@@ -111,6 +122,7 @@ public class PromoCodeAppliedData implements Parcelable {
         private String description;
         private String couponTitle;
         private int amount;
+        private boolean fromAutoApply;
 
         public Builder() {
         }
@@ -137,6 +149,11 @@ public class PromoCodeAppliedData implements Parcelable {
 
         public Builder amount(int val) {
             amount = val;
+            return this;
+        }
+
+        public Builder fromAutoApply(boolean val) {
+            fromAutoApply = val;
             return this;
         }
 

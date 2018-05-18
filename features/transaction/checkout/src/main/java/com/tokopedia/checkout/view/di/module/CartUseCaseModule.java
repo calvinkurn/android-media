@@ -1,6 +1,9 @@
 package com.tokopedia.checkout.view.di.module;
 
+import android.content.Context;
+
 import com.google.gson.Gson;
+import com.tokopedia.checkout.domain.usecase.CancelAutoApplyCouponUseCase;
 import com.tokopedia.transactiondata.repository.ICartRepository;
 import com.tokopedia.checkout.domain.mapper.ICartMapper;
 import com.tokopedia.checkout.domain.mapper.IShipmentMapper;
@@ -102,5 +105,10 @@ public class CartUseCaseModule {
             ICartRepository cartRepository, ICartMapper cartMapper, IShipmentMapper shipmentMapper
     ) {
         return new ResetCartGetShipmentFormUseCase(cartRepository, cartMapper, shipmentMapper);
+    }
+
+    @Provides
+    CancelAutoApplyCouponUseCase cancelAutoApplyCouponUseCase(ICartRepository iCartRepository, Context context){
+        return new CancelAutoApplyCouponUseCase(iCartRepository, context);
     }
 }

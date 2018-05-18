@@ -47,4 +47,5 @@ public interface ICartRepository {
 
     Observable<NotifCounterCartDataResponse> getNotificationCounter();
 
+    Observable<String> cancelAutoApplyCoupon(String os, Map<String, String> params);
 }

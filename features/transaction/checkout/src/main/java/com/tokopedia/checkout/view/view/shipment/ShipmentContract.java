@@ -58,6 +58,8 @@ public interface ShipmentContract {
 
         void renderEditAddressSuccess(String latitude, String longitude);
 
+        void renderCancelAutoApplyCouponSuccess();
+
         Activity getActivity();
     }
 
@@ -111,6 +113,8 @@ public interface ShipmentContract {
         void setShipmentCheckoutButtonModel(ShipmentCheckoutButtonModel shipmentCheckoutButtonModel);
 
         void editAddressPinpoint(String latitude, String longitude, ShipmentCartItemModel shipmentCartItemModel);
+
+        void cancelAutoApplyCoupon();
 
     }
 
