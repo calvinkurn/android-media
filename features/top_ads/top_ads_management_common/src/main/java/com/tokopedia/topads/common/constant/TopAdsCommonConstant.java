@@ -5,8 +5,8 @@ package com.tokopedia.topads.common.constant;
  */
 
 public class TopAdsCommonConstant {
-    public static final String BASE_DOMAIN_URL = "https://ta.tokopedia.com/";
-    public static final String BASE_STAGING_DOMAIN_URL = "http://ta-staging.tokopedia.com/";
+    public static String BASE_DOMAIN_URL = "https://ta.tokopedia.com/";
+    public static String BASE_STAGING_DOMAIN_URL = "http://ta-staging.tokopedia.com/";
 
     public static final String PATH_TOPADS_SHOP_DEPOSIT = "/v1.1/dashboard/deposit";
     public static final String PATH_TOPADS_TOTAL_ADS = "/v1.1/dashboard/total_ad";

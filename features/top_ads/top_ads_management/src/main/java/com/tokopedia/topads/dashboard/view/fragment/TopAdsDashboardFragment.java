@@ -8,7 +8,6 @@ import android.support.design.widget.BottomSheetDialog;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
-import android.support.v4.widget.NestedScrollView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Html;
@@ -19,6 +18,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.github.rubensousa.bottomsheetbuilder.BottomSheetBuilder;
@@ -146,6 +146,8 @@ public class TopAdsDashboardFragment extends BaseDaggerFragment implements TopAd
         RefreshHandler refresh = new RefreshHandler(getActivity(), swipeToRefresh, new RefreshHandler.OnRefreshHandlerListener() {
             @Override
             public void onRefresh(View view) {
+                topAdsDashboardPresenter.clearStatisticsCache();
+                topAdsDashboardPresenter.clearTotalAdCache();
                 loadData();
             }
         });
@@ -249,9 +251,9 @@ public class TopAdsDashboardFragment extends BaseDaggerFragment implements TopAd
         return viewGroupPromo;
     }
 
-    public NestedScrollView getScrollView(){
+    public ScrollView getScrollView(){
         if (getView() != null) {
-            return (NestedScrollView) getView().findViewById(R.id.scroll_view);
+            return (ScrollView) getView().findViewById(R.id.scroll_view);
         } else {
             return null;
         }
@@ -309,10 +311,12 @@ public class TopAdsDashboardFragment extends BaseDaggerFragment implements TopAd
         List<Fragment> fragmentList = new ArrayList<>();
         fragmentList.add(TopAdsStatisticImprFragment.createInstance());
         fragmentList.add(TopAdsStatisticKlikFragment.createInstance());
+        fragmentList.add(TopAdsStatisticSpentFragment.createInstance());
+        fragmentList.add(TopAdsStatisticIncomeFragment.createInstance());
         fragmentList.add(TopAdsStatisticCtrFragment.createInstance());
         fragmentList.add(TopAdsStatisticConversionFragment.createInstance());
         fragmentList.add(TopAdsStatisticAvgFragment.createInstance());
-        fragmentList.add(TopAdsStatisticSpentFragment.createInstance());
+        fragmentList.add(TopAdsStatisticSoldFragment.createInstance());
         pagerAdapter = new TopAdsStatisticPagerAdapter(getChildFragmentManager(), fragmentList);
     }
 
@@ -485,6 +489,7 @@ public class TopAdsDashboardFragment extends BaseDaggerFragment implements TopAd
             }
             boolean adStatusChanged = data.getBooleanExtra(TopAdsExtraConstant.EXTRA_AD_CHANGED, false);
             if (adStatusChanged) {
+                topAdsDashboardPresenter.clearTotalAdCache();
                 loadData();
             }
         } else if (requestCode == REQUEST_CODE_ADD_CREDIT) {

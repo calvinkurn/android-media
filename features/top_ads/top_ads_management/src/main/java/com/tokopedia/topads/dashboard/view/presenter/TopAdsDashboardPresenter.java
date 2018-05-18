@@ -12,6 +12,8 @@ import com.tokopedia.topads.dashboard.constant.TopAdsStatisticsType;
 import com.tokopedia.topads.dashboard.data.model.data.Cell;
 import com.tokopedia.topads.dashboard.data.model.data.DataStatistic;
 import com.tokopedia.topads.dashboard.data.model.data.TotalAd;
+import com.tokopedia.topads.dashboard.domain.interactor.DeleteTopAdsStatisticsUseCase;
+import com.tokopedia.topads.dashboard.domain.interactor.DeleteTopAdsTotalAdUseCase;
 import com.tokopedia.topads.dashboard.domain.interactor.TopAdsDatePickerInteractor;
 import com.tokopedia.topads.dashboard.domain.interactor.TopAdsGetStatisticsUseCase;
 import com.tokopedia.topads.dashboard.domain.interactor.TopAdsPopulateTotalAdsUseCase;
@@ -42,6 +44,8 @@ public class TopAdsDashboardPresenter extends BaseDaggerPresenter<TopAdsDashboar
     private final TopAdsGetStatisticsUseCase topAdsGetStatisticsUseCase;
     private final UserSession userSession;
     private final TopAdsAddSourceTaggingUseCase topAdsAddSourceTaggingUseCase;
+    private final DeleteTopAdsStatisticsUseCase deleteTopAdsStatisticsUseCase;
+    private final DeleteTopAdsTotalAdUseCase deleteTopAdsTotalAdUseCase;
 
     @Inject
     public TopAdsDashboardPresenter(TopAdsGetShopDepositUseCase topAdsGetShopDepositUseCase,
@@ -50,6 +54,8 @@ public class TopAdsDashboardPresenter extends BaseDaggerPresenter<TopAdsDashboar
                                     TopAdsPopulateTotalAdsUseCase topAdsPopulateTotalAdsUseCase,
                                     TopAdsGetStatisticsUseCase topAdsGetStatisticsUseCase,
                                     TopAdsAddSourceTaggingUseCase topAdsAddSourceTaggingUseCase,
+                                    DeleteTopAdsStatisticsUseCase deleteTopAdsStatisticsUseCase,
+                                    DeleteTopAdsTotalAdUseCase deleteTopAdsTotalAdUseCase,
                                     UserSession userSession) {
         this.topAdsGetShopDepositUseCase = topAdsGetShopDepositUseCase;
         this.getShopInfoUseCase = getShopInfoUseCase;
@@ -57,6 +63,8 @@ public class TopAdsDashboardPresenter extends BaseDaggerPresenter<TopAdsDashboar
         this.topAdsPopulateTotalAdsUseCase = topAdsPopulateTotalAdsUseCase;
         this.topAdsGetStatisticsUseCase = topAdsGetStatisticsUseCase;
         this.topAdsAddSourceTaggingUseCase = topAdsAddSourceTaggingUseCase;
+        this.deleteTopAdsStatisticsUseCase = deleteTopAdsStatisticsUseCase;
+        this.deleteTopAdsTotalAdUseCase = deleteTopAdsTotalAdUseCase;
         this.userSession = userSession;
     }
 
@@ -134,6 +142,8 @@ public class TopAdsDashboardPresenter extends BaseDaggerPresenter<TopAdsDashboar
         topAdsPopulateTotalAdsUseCase.unsubscribe();
         topAdsGetStatisticsUseCase.unsubscribe();
         topAdsAddSourceTaggingUseCase.unsubscribe();
+        deleteTopAdsStatisticsUseCase.unsubscribe();
+        deleteTopAdsTotalAdUseCase.unsubscribe();
     }
 
     public int getLastSelectionDatePickerIndex() {
@@ -226,5 +236,13 @@ public class TopAdsDashboardPresenter extends BaseDaggerPresenter<TopAdsDashboar
                 }
             }
         });
+    }
+
+    public void clearStatisticsCache() {
+        deleteTopAdsStatisticsUseCase.executeSync();
+    }
+
+    public void clearTotalAdCache() {
+        deleteTopAdsTotalAdUseCase.executeSync();
     }
 }

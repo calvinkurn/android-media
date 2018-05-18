@@ -34,10 +34,12 @@ public class TopAdsTabAdapter extends RecyclerView.Adapter<TabLayoutViewHolder>{
             tabMenus.clear();
             tabMenus.add(new TabMenu(summary.getImpressionSumFmt(), subtitles[0]));
             tabMenus.add(new TabMenu(summary.getClickSumFmt(), subtitles[1]));
-            tabMenus.add(new TabMenu(summary.getCtrPercentageFmt(), subtitles[2]));
-            tabMenus.add(new TabMenu(summary.getConversionSumFmt(), subtitles[3]));
-            tabMenus.add(new TabMenu(summary.getCostAvgFmt(), subtitles[4]));
-            tabMenus.add(new TabMenu(summary.getCostSumFmt(), subtitles[5]));
+            tabMenus.add(new TabMenu(summary.getCostSumFmt(), subtitles[2]));
+            tabMenus.add(new TabMenu(summary.getGrossProfitFmt(), subtitles[3]));
+            tabMenus.add(new TabMenu(summary.getCtrPercentageFmt(), subtitles[4]));
+            tabMenus.add(new TabMenu(summary.getConversionSumFmt(), subtitles[5]));
+            tabMenus.add(new TabMenu(summary.getCostAvgFmt(), subtitles[6]));
+            tabMenus.add(new TabMenu(summary.getSoldSumFmt(), subtitles[7]));
         }
         notifyDataSetChanged();
     }

@@ -5,6 +5,7 @@
     style="@style/LabelLayout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:minHeight="@dimen/dp_64"
     android:orientation="horizontal"
     android:gravity="center_vertical">
 
@@ -12,8 +13,8 @@
         android:id="@+id/image_view"
         android:layout_width="@dimen/dp_24"
         android:layout_height="@dimen/dp_24"
-        android:layout_marginEnd="@dimen/dp_8"
-        android:layout_marginRight="@dimen/dp_8"
+        android:layout_marginEnd="@dimen/dp_16"
+        android:layout_marginRight="@dimen/dp_16"
         tools:src="@drawable/icon_penjualan"
         tools:visibility="visible" />
 

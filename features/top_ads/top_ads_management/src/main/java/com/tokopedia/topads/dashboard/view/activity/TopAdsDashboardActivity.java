@@ -175,7 +175,7 @@ public class TopAdsDashboardActivity extends DrawerPresenterActivity implements 
                         getString(R.string.topads_showcase_home_title_3),
                         getString(R.string.topads_showcase_home_desc_3),
                         ShowCaseContentPosition.UNDEFINED,
-                        R.color.white));
+                        R.color.white, fragment.getScrollView()));
             }
             if (fragment.isContentVisible()) {
                 if (fragment.getContentStatisticsView() != null) {
@@ -183,7 +183,7 @@ public class TopAdsDashboardActivity extends DrawerPresenterActivity implements 
                             getString(R.string.topads_showcase_home_title_7),
                             getString(R.string.topads_showcase_home_desc_5),
                             ShowCaseContentPosition.UNDEFINED,
-                            R.color.white));
+                            R.color.white, fragment.getScrollView()));
                 }
 
                 if (fragment.getGroupSummaryLabelView() != null) {

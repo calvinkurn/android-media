@@ -15,4 +15,5 @@
     <string name="action_more">More</string>
     <string name="topads_menu_help">Step Bantuan</string>
     <string name="topads_menu_seller_centre">Seller Center</string>
+    <string name="label_top_ads_sold">Total Terjual</string>
 </resources>
