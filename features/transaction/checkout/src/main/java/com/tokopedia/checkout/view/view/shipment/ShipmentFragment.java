@@ -385,7 +385,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         shipmentAdapter.updateItemPromoVoucher(cartPromo);
         if (shipmentAdapter.hasSetAllCourier()) {
             ShipmentAdapter.RequestData requestData =
-                    shipmentAdapter.getRequestPromoData();
+                    shipmentAdapter.getRequestData();
             shipmentPresenter.setPromoCodeCartShipmentRequestData(requestData.getPromoRequestData());
             shipmentPresenter.checkPromoShipment();
 
@@ -509,6 +509,8 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                 shipmentAdapter.updateSelectedAddress(selectedAddress);
                 courierBottomsheet = null;
                 onCartDataDisableToCheckout();
+                shipmentPresenter.setDataChangeAddressRequestList(shipmentAdapter.getRequestData().getChangeAddressRequestData());
+                shipmentPresenter.changeShippingAddress();
                 break;
             case CartAddressChoiceActivity.RESULT_CODE_ACTION_TO_MULTIPLE_ADDRESS_FORM:
                 Intent intent = new Intent();

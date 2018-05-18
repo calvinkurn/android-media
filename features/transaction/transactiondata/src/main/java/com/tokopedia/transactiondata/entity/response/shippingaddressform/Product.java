@@ -18,6 +18,9 @@ public class Product {
     @SerializedName("product_id")
     @Expose
     private int productId;
+    @SerializedName("cart_id")
+    @Expose
+    private int cartId;
     @SerializedName("product_name")
     @Expose
     private String productName;
@@ -221,5 +224,9 @@ public class Product {
 
     public int getProductCatalogId() {
         return productCatalogId;
+    }
+
+    public int getCartId() {
+        return cartId;
     }
 }

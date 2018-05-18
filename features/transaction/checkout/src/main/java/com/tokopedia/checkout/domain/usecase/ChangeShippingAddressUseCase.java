@@ -16,23 +16,23 @@ import rx.functions.Func1;
  * Created by kris on 2/28/18. Tokopedia
  */
 
-public class SubmitMultipleAddressUseCase extends UseCase<SetShippingAddressData> {
+public class ChangeShippingAddressUseCase extends UseCase<SetShippingAddressData> {
     public static final String PARAM_REQUEST_AUTH_MAP_STRING = "PARAM_REQUEST_AUTH_MAP_STRING";
 
     private ICartRepository repository;
 
     @Inject
-    public SubmitMultipleAddressUseCase(ICartRepository repository) {
+    public ChangeShippingAddressUseCase(ICartRepository repository) {
         this.repository = repository;
     }
 
     @Override
     @SuppressWarnings("unchecked")
     public Observable<SetShippingAddressData> createObservable(RequestParams requestParams) {
-        TKPDMapParam<String, String> mapParam =
-                (TKPDMapParam<String, String>) requestParams.getObject(PARAM_REQUEST_AUTH_MAP_STRING);
-        mapParam.putAll(requestParams.getParamsAllValueInString());
-        return repository.shippingAddress(mapParam)
+//        TKPDMapParam<String, String> mapParam =
+//                (TKPDMapParam<String, String>) requestParams.getObject(PARAM_REQUEST_AUTH_MAP_STRING);
+//        mapParam.putAll(requestParams.getParamsAllValueInString());
+        return repository.setShippingAddress(requestParams.getParamsAllValueInString())
                 .map(new Func1<ShippingAddressDataResponse, SetShippingAddressData>() {
                     @Override
                     public SetShippingAddressData call(ShippingAddressDataResponse shippingAddressDataResponse) {

@@ -1,7 +1,7 @@
 package com.tokopedia.checkout.view.di.module;
 
+import com.tokopedia.checkout.domain.usecase.ChangeShippingAddressUseCase;
 import com.tokopedia.transactiondata.repository.ICartRepository;
-import com.tokopedia.checkout.domain.usecase.SubmitMultipleAddressUseCase;
 import com.tokopedia.checkout.view.di.scope.MultipleAddressScope;
 import com.tokopedia.checkout.view.view.multipleaddressform.IMultipleAddressPresenter;
 import com.tokopedia.checkout.view.view.multipleaddressform.IMultipleAddressView;
@@ -32,13 +32,13 @@ public class MultipleAddressModule {
 
     @MultipleAddressScope
     @Provides
-    SubmitMultipleAddressUseCase provideMultipleAddressUseCase(ICartRepository repository) {
-        return new SubmitMultipleAddressUseCase(repository);
+    ChangeShippingAddressUseCase provideMultipleAddressUseCase(ICartRepository repository) {
+        return new ChangeShippingAddressUseCase(repository);
     }
 
     @MultipleAddressScope
     @Provides
-    IMultipleAddressPresenter providePresenter(SubmitMultipleAddressUseCase useCase) {
+    IMultipleAddressPresenter providePresenter(ChangeShippingAddressUseCase useCase) {
         return new MultipleAddressPresenter(view, useCase);
     }
 

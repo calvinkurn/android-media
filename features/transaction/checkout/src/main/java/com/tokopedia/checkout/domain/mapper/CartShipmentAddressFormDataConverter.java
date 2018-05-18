@@ -122,7 +122,7 @@ public class CartShipmentAddressFormDataConverter
     private CartItemModel convertFromProduct(Product product) {
         CartItemModel cartItemModel = new CartItemModel();
 
-        cartItemModel.setId(product.getProductId());
+        cartItemModel.setProcuctId(product.getProductId());
         cartItemModel.setName(product.getProductName());
         cartItemModel.setImageUrl(product.getProductImageSrc200Square());
         cartItemModel.setCurrency(product.getProductPriceCurrency());
@@ -256,7 +256,7 @@ public class CartShipmentAddressFormDataConverter
 
         cartItemModel.setShopName(cartItemData.getOriginData().getShopName());
         cartItemModel.setShopId(cartItemData.getOriginData().getShopId());
-        cartItemModel.setId(Integer.parseInt(cartItemData.getOriginData().getProductId()));
+        cartItemModel.setProcuctId(Integer.parseInt(cartItemData.getOriginData().getProductId()));
         cartItemModel.setName(cartItemData.getOriginData().getProductName());
 
         cartItemModel.setCurrency(cartItemData.getOriginData().getPriceCurrency());

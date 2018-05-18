@@ -39,6 +39,7 @@ import com.tokopedia.showcase.ShowCaseBuilder;
 import com.tokopedia.showcase.ShowCaseDialog;
 import com.tokopedia.showcase.ShowCaseObject;
 import com.tokopedia.showcase.ShowCasePreference;
+import com.tokopedia.transactiondata.entity.request.DataChangeAddressRequest;
 import com.tokopedia.transactiondata.entity.request.DataCheckoutRequest;
 
 import java.util.ArrayList;
@@ -414,7 +415,7 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             }
         }
         if (cartItemCounter == shipmentCartItemModelList.size()) {
-            RequestData requestData = getRequestPromoData();
+            RequestData requestData = getRequestData();
             shipmentAdapterActionListener.onFinishChoosingShipment(requestData.getPromoRequestData(),
                     requestData.getCheckoutRequestData());
         }
@@ -594,7 +595,7 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         return false;
     }
 
-    public RequestData getRequestPromoData() {
+    public RequestData getRequestData() {
         RecipientAddressModel checkoutAddress = null;
         if (this.recipientAddressModel != null) {
             checkoutAddress = this.recipientAddressModel;
@@ -636,11 +637,13 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
         private List<CheckPromoCodeCartShipmentRequest.Data> promoRequestData;
         private List<DataCheckoutRequest> checkoutRequestData;
+        private List<DataChangeAddressRequest> changeAddressRequestData;
 
         @Inject
         public RequestData() {
             promoRequestData = new ArrayList<>();
             checkoutRequestData = new ArrayList<>();
+            changeAddressRequestData = new ArrayList<>();
         }
 
         public List<CheckPromoCodeCartShipmentRequest.Data> getPromoRequestData() {
@@ -659,6 +662,13 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             this.checkoutRequestData = checkoutRequestData;
         }
 
+        public List<DataChangeAddressRequest> getChangeAddressRequestData() {
+            return changeAddressRequestData;
+        }
+
+        public void setChangeAddressRequestData(List<DataChangeAddressRequest> changeAddressRequestData) {
+            this.changeAddressRequestData = changeAddressRequestData;
+        }
     }
 
 }
