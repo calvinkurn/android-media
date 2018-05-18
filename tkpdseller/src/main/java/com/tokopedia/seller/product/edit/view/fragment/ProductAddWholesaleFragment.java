@@ -113,6 +113,7 @@ public class ProductAddWholesaleFragment extends BaseDaggerFragment implements W
         recyclerViewWholesale.setNestedScrollingEnabled(false);
 
         buttonSave =  root.findViewById(R.id.button_save);
+        buttonSave.setEnabled(false);
         textMainPrice = root.findViewById(R.id.text_main_price);
 
         textViewAddWholesale = root.findViewById(R.id.text_view_add_wholesale);
@@ -255,6 +256,9 @@ public class ProductAddWholesaleFragment extends BaseDaggerFragment implements W
 
     private void updateWholesaleButton() {
         textViewAddWholesale.setVisibility(wholesaleAdapter.getItemCount() < MAX_WHOLESALE ? View.VISIBLE : View.GONE);
+        if(wholesaleAdapter.getItemCount()==0){
+            setButtonSubmit(false);
+        }
     }
 
     @Override
