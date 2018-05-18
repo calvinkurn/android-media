@@ -69,7 +69,10 @@ public class ImagePickerActivity extends BaseSimpleActivity
 
     public static Intent getIntent(Context context, ImagePickerBuilder imagePickerBuilder) {
         Intent intent = new Intent(context, ImagePickerActivity.class);
-        intent.putExtra(EXTRA_IMAGE_PICKER_BUILDER, imagePickerBuilder);
+        // https://stackoverflow.com/questions/28589509/android-e-parcel-class-not-found-when-unmarshalling-only-on-samsung-tab3
+        Bundle bundle = new Bundle();
+        bundle.putParcelable(EXTRA_IMAGE_PICKER_BUILDER, imagePickerBuilder);
+        intent.putExtra(EXTRA_IMAGE_PICKER_BUILDER, bundle);
         return intent;
     }
 
@@ -82,7 +85,10 @@ public class ImagePickerActivity extends BaseSimpleActivity
     protected void onCreate(Bundle savedInstanceState) {
         Intent intent = getIntent();
         if (intent != null && intent.getExtras() != null && intent.getExtras().containsKey(EXTRA_IMAGE_PICKER_BUILDER)) {
-            imagePickerBuilder = (ImagePickerBuilder) intent.getExtras().get(EXTRA_IMAGE_PICKER_BUILDER);
+            // regarding bug on samsung
+            // https://stackoverflow.com/questions/28589509/android-e-parcel-class-not-found-when-unmarshalling-only-on-samsung-tab3
+            Bundle bundle = intent.getBundleExtra(EXTRA_IMAGE_PICKER_BUILDER);
+            imagePickerBuilder = bundle.getParcelable(EXTRA_IMAGE_PICKER_BUILDER);
         } else {
             imagePickerBuilder = ImagePickerBuilder.getDefaultBuilder(getContext());
         }
