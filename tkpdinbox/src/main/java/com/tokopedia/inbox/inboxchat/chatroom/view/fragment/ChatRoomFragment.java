@@ -1398,8 +1398,6 @@ public class ChatRoomFragment extends BaseDaggerFragment
         if (isMyMessage(message.getFromUid())) {
             if (message instanceof ProductAttachmentViewModel) {
                 getAdapter().removeLastProductWithId(((ProductAttachmentViewModel) message).getProductId());
-            } else if (message instanceof AttachInvoiceSentViewModel){
-                getAdapter().removeLastItemWithSendingStatus();
             } else if (message instanceof SendableViewModel) {
                 getAdapter().removeLastMessageWithStartTime(((SendableViewModel) message).getStartTime());
             }

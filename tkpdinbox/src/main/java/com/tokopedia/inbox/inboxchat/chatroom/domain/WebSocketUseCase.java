@@ -95,9 +95,7 @@ public class WebSocketUseCase {
         InvoiceLinkAttributePojo invoiceAttribute = invoice.getAttributes();
         data.addProperty("message_id", Integer.parseInt(messageId));
         data.addProperty("message", invoiceAttribute.getCode());
-        SimpleDateFormat date = new SimpleDateFormat(
-                "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.US);
-        data.addProperty("start_time", date.format(Calendar.getInstance().getTime()));
+        data.addProperty("start_time", startTime);
         data.addProperty("attachment_type", 7);
 
         JsonElement payload = new GsonBuilder().create().toJsonTree(invoice,InvoiceLinkPojo.class);

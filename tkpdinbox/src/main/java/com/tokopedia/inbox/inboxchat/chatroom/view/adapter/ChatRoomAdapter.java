@@ -176,22 +176,6 @@ public class ChatRoomAdapter extends RecyclerView.Adapter<AbstractViewHolder> {
         }
     }
 
-    public void removeLastItemWithSendingStatus(){
-        if ((list != null && !list.isEmpty())) {
-            ListIterator<Visitable> iterator = list.listIterator(list.size());
-            while (iterator.hasPrevious()) {
-                int position = iterator.previousIndex();
-                Visitable visitable = iterator.previous();
-                if (visitable instanceof SendableViewModel
-                        && ((SendableViewModel) visitable).isDummy()) {
-                    iterator.remove();
-                    notifyItemRemoved(position);
-                    return;
-                }
-            }
-        }
-    }
-
     public void removeLastMessageWithStartTime(String startTime) {
         if ((list != null && !list.isEmpty())) {
             ListIterator<Visitable> iterator = list.listIterator(list.size());
