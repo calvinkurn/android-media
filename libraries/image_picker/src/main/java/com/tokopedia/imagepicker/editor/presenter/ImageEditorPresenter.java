@@ -89,15 +89,12 @@ public class ImageEditorPresenter extends BaseDaggerPresenter<ImageEditorPresent
         compositeSubscription.add(subscription);
     }
 
-    public void cropBitmapToExpectedRatio(List<String> oriImagePaths,
-                                          final List<String> localImagePaths, final int ratioX, final int ratioY) {
+    public void cropBitmapToExpectedRatio(final List<String> localImagePaths, final int ratioX, final int ratioY) {
         Subscription subscription =
-                Observable.zip(
-                        Observable.from(oriImagePaths),
-                        Observable.from(localImagePaths),
-                        new Func2<String, String, String>() {
+                Observable.from(localImagePaths)
+                        .concatMap(new Func1<String, Observable<String>>() {
                             @Override
-                            public String call(String oriImagePath, String imagePath) {
+                            public Observable<String> call(String imagePath) {
                                 System.gc();
                                 // if it is step0, need to check the dimension
                                 // if the dimension is not expected dimension, crop it
@@ -122,43 +119,43 @@ public class ImageEditorPresenter extends BaseDaggerPresenter<ImageEditorPresent
                                 }
                                 float currentRatio = (float) width / height;
                                 if (expectedRatio == currentRatio) {
-                                    return imagePath;
+                                    return Observable.just(imagePath);
                                 } else {
                                     String outputPath;
                                     outputPath = ImageUtils.trimBitmap(imagePath, expectedRatio, currentRatio, true);
-                                    return outputPath;
+                                    return Observable.just(outputPath);
                                 }
                             }
-                        }
-                ).toList()
+                        })
+                        .toList()
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
                         .unsubscribeOn(Schedulers.io())
-                        .subscribe(
-                                new Subscriber<List<String>>() {
-                                    @Override
-                                    public void onCompleted() {
-                                    }
+                        .subscribe(new Subscriber<List<String>>() {
+                            @Override
+                            public void onCompleted() {
 
-                                    @Override
-                                    public void onError(Throwable e) {
-                                        if (isViewAttached()) {
-                                            getView().onErrorCropImageToRatio(e);
-                                        }
-                                    }
+                            }
 
-                                    @Override
-                                    public void onNext(List<String> croppedImagedPath) {
-                                        if (isViewAttached()) {
-                                            ArrayList<String> resultLocalPaths = new ArrayList<>();
-                                            for (int i = 0, sizei = croppedImagedPath.size(); i < sizei; i++) {
-                                                resultLocalPaths.add(croppedImagedPath.get(i));
-                                            }
-                                            getView().onSuccessCropImageToRatio(resultLocalPaths);
-                                        }
-                                    }
+                            @Override
+                            public void onError(Throwable e) {
+                                if (isViewAttached()) {
+                                    getView().onErrorCropImageToRatio(e);
                                 }
-                        );
+                            }
+
+                            @Override
+                            public void onNext(List<String> croppedImagedPath) {
+                                if (isViewAttached()) {
+                                    ArrayList<String> resultLocalPaths = new ArrayList<>();
+                                    for (int i = 0, sizei = croppedImagedPath.size(); i < sizei; i++) {
+                                        resultLocalPaths.add(croppedImagedPath.get(i));
+                                    }
+                                    getView().onSuccessCropImageToRatio(resultLocalPaths);
+                                }
+                            }
+                        });
+
         if (compositeSubscription == null || compositeSubscription.isUnsubscribed()) {
             compositeSubscription = new CompositeSubscription();
         }

@@ -97,7 +97,6 @@ public class ImagePickerCameraFragment extends TkpdBaseV4Fragment {
 
             @Override
             public void onCameraOpened(CameraOptions options) {
-                cameraView.setCropOutput(true);
                 initialFlash();
                 setPreviewCameraLayoutOneByOne();
             }

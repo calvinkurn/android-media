@@ -32,52 +32,54 @@
             app:cameraPlaySounds="true"
             app:cameraSessionType="picture" />
 
-        <FrameLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+        <ImageButton
+            android:id="@+id/image_button_flash"
+            android:layout_width="@dimen/dp_48"
+            android:layout_height="@dimen/dp_48"
             android:layout_alignParentBottom="true"
-            android:layout_marginBottom="@dimen/dp_20"
-            android:layout_marginLeft="@dimen/dp_20"
-            android:layout_marginRight="@dimen/dp_20">
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:padding="@dimen/dp_8"
+            android:layout_margin="@dimen/dp_8"
+            android:visibility="gone"
+            app:srcCompat="@drawable/ic_flash_auto"
+            tools:visibility="visible" />
 
-            <ImageButton
-                android:id="@+id/image_button_flash"
-                android:layout_width="@dimen/dp_24"
-                android:layout_height="@dimen/dp_24"
-                android:layout_gravity="start|bottom"
+        <FrameLayout
+            android:id="@+id/image_button_shutter"
+            android:layout_width="@dimen/dp_56"
+            android:layout_height="@dimen/dp_56"
+            android:layout_centerHorizontal="true"
+            android:layout_alignParentBottom="true"
+            android:layout_marginBottom="@dimen/dp_16"
+            android:clickable="true"
+            android:focusable="true">
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@drawable/selector_photo_button"
+                android:padding="@dimen/dp_4" />
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
                 android:background="@android:color/transparent"
-                app:srcCompat="@drawable/ic_flash_auto"
-                android:visibility="gone"
-                tools:visibility="invisible"/>
-
-            <FrameLayout
-                android:layout_width="@dimen/dp_56"
-                android:layout_height="@dimen/dp_56"
-                android:id="@+id/image_button_shutter"
-                android:layout_gravity="center"
-                android:clickable="true"
-                android:focusable="true">
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:background="@drawable/selector_photo_button"
-                    android:padding="@dimen/dp_4" />
-                <ImageView
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:background="@android:color/transparent"
-                    app:srcCompat="@drawable/take_photo_button" />
-            </FrameLayout>
-
-            <ImageButton
-                android:id="@+id/image_button_flip"
-                android:layout_width="@dimen/dp_24"
-                android:layout_height="@dimen/dp_24"
-                android:layout_gravity="end|bottom"
-                android:background="@android:color/transparent"
-                app:srcCompat="@drawable/ic_flip_camera" />
-
+                app:srcCompat="@drawable/take_photo_button" />
         </FrameLayout>
+
+        <ImageButton
+            android:id="@+id/image_button_flip"
+            android:layout_width="@dimen/dp_48"
+            android:layout_height="@dimen/dp_48"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:padding="@dimen/dp_8"
+            android:layout_margin="@dimen/dp_8"
+            app:srcCompat="@drawable/ic_flip_camera" />
 
     </RelativeLayout>
 </FrameLayout>
