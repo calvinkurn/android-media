@@ -56,6 +56,7 @@
     <Button
         android:id="@+id/text_view_add_deposit"
         style="@style/Button.Submit.White.Border"
+        android:minHeight="@dimen/dp_32"
         android:textSize="@dimen/sp_12"
         android:textColor="@color/font_black_disabled_38"
         android:layout_marginLeft="@dimen/dp_0"

@@ -16,7 +16,7 @@
 
         <TextView
             android:id="@+id/content_title_graph"
-            style="@style/TextView.Title.BlackDisabled"
+            style="@style/TextView.Small.BlackDisabled"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="30dp"

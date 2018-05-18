@@ -105,6 +105,8 @@ public class LabelView extends BaseCustomView {
         if (imageDrawable != null) {
             imageView.setImageDrawable(imageDrawable);
             imageView.setVisibility(View.VISIBLE);
+            titleTextView.setPadding(imageMarginRight, 0, 0, 0);
+            subTitleTextView.setPadding(imageMarginRight, 0, 0, 0);
         }
         ViewGroup.LayoutParams layoutParams = imageView.getLayoutParams();
         layoutParams.width = imageWidth;
@@ -113,9 +115,7 @@ public class LabelView extends BaseCustomView {
         titleTextView.setText(titleText);
         titleTextView.setTypeface(null, titleTextStyleValue);
         titleTextView.setTextSize(TypedValue.COMPLEX_UNIT_PX, titleTextSize);
-        titleTextView.setPadding(imageMarginRight, 0, 0, 0);
         titleTextView.setMinWidth(minTitleWidth);
-        subTitleTextView.setPadding(imageMarginRight, 0, 0, 0);
         if (!TextUtils.isEmpty(subTitleText)) {
             subTitleTextView.setText(subTitleText);
             subTitleTextView.setVisibility(View.VISIBLE);

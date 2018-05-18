@@ -114,8 +114,8 @@
     </string-array>
 
     <integer-array name="top_ads_adding_option_icon">
-        <item>@drawable/icon_penjualan</item>
-        <item>@drawable/ic_manage_produk</item>
+        <item>@drawable/ic_top_ads_toko</item>
+        <item>@drawable/ic_top_ads_produk</item>
         <!--<item>@drawable/ic_top_ads_headline</item>-->
         <item>@drawable/ic_top_ads_keyword</item>
     </integer-array>

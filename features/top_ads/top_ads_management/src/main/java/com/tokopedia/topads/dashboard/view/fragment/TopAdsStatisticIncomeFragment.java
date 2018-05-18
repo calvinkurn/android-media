@@ -27,6 +27,6 @@ public class TopAdsStatisticIncomeFragment extends TopAdsDashboardStatisticFragm
 
     @Override
     protected String getValueDisplay(Cell cell) {
-        return cell.getGrossProfitFmt();
+        return getString(R.string.top_ads_tooltip_statistic_use, cell.getGrossProfitFmt());
     }
 }

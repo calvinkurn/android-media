@@ -45,6 +45,7 @@ import com.tokopedia.topads.dashboard.constant.TopAdsAddingOption;
 import com.tokopedia.topads.dashboard.constant.TopAdsConstant;
 import com.tokopedia.topads.dashboard.constant.TopAdsExtraConstant;
 import com.tokopedia.topads.dashboard.constant.TopAdsStatisticsType;
+import com.tokopedia.topads.dashboard.data.model.data.DashboardPopulateResponse;
 import com.tokopedia.topads.dashboard.data.model.data.DataStatistic;
 import com.tokopedia.topads.dashboard.data.model.data.TotalAd;
 import com.tokopedia.topads.dashboard.di.component.DaggerTopAdsDashboardComponent;
@@ -201,7 +202,7 @@ public class TopAdsDashboardFragment extends BaseDaggerFragment implements TopAd
         });
         recyclerTabLayout = view.findViewById(R.id.recyclerview_tabLayout);
         recyclerTabLayout.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false));
-        topAdsTabAdapter = new TopAdsTabAdapter();
+        topAdsTabAdapter = new TopAdsTabAdapter(getActivity());
         topAdsTabAdapter.setListener(new TopAdsTabAdapter.OnRecyclerTabItemClick() {
             @Override
             public void onTabItemClick(int position) {
@@ -395,7 +396,7 @@ public class TopAdsDashboardFragment extends BaseDaggerFragment implements TopAd
 
     private void loadData() {
         swipeToRefresh.setRefreshing(true);
-        topAdsDashboardPresenter.getShopDeposit();
+        topAdsDashboardPresenter.getPopulateDashboardData();
         topAdsDashboardPresenter.getShopInfo();
     }
 
@@ -574,16 +575,6 @@ public class TopAdsDashboardFragment extends BaseDaggerFragment implements TopAd
     public void onLoadTopAdsShopDepositSuccess(DataDeposit dataDeposit) {
         snackbarRetry.hideRetrySnackbar();
         depositValueTextView.setText(dataDeposit.getAmountFmt());
-        if (dataDeposit.isAdUsage()){
-            topAdsDashboardPresenter.populateTotalAds();
-            loadStatisticsData();
-            getView().findViewById(R.id.topads_dashboard_empty).setVisibility(View.GONE);
-            getView().findViewById(R.id.topads_dashboard_content).setVisibility(View.VISIBLE);
-        } else {
-            swipeToRefresh.setRefreshing(false);
-            getView().findViewById(R.id.topads_dashboard_empty).setVisibility(View.VISIBLE);
-            getView().findViewById(R.id.topads_dashboard_content).setVisibility(View.GONE);
-        }
     }
 
     @Override
@@ -637,6 +628,34 @@ public class TopAdsDashboardFragment extends BaseDaggerFragment implements TopAd
         if (fragment != null && fragment instanceof TopAdsDashboardStatisticFragment) {
             ((TopAdsDashboardStatisticFragment) fragment).updateDataStatistic(this.dataStatistic);
         }
+    }
+
+    @Override
+    public void onErrorPopulateData(Throwable throwable) {
+        swipeToRefresh.setRefreshing(false);
+        snackbarRetry.showRetrySnackbar();
+    }
+
+    @Override
+    public void onSuccessPopulateData(DashboardPopulateResponse dashboardPopulateResponse) {
+        boolean isUsageExists = dashboardPopulateResponse.getDataDeposit() != null && dashboardPopulateResponse.getDataDeposit().isAdUsage();
+        boolean isAdExists = dashboardPopulateResponse.getTotalAd() != null && getTotalAd(dashboardPopulateResponse.getTotalAd()) > 0;
+        snackbarRetry.hideRetrySnackbar();
+        swipeToRefresh.setRefreshing(false);
+        if (isUsageExists || isAdExists){
+            onLoadTopAdsShopDepositSuccess(dashboardPopulateResponse.getDataDeposit());
+            onSuccessPopulateTotalAds(dashboardPopulateResponse.getTotalAd());
+            loadStatisticsData();
+            getView().findViewById(R.id.topads_dashboard_empty).setVisibility(View.GONE);
+            getView().findViewById(R.id.topads_dashboard_content).setVisibility(View.VISIBLE);
+        } else {
+            getView().findViewById(R.id.topads_dashboard_empty).setVisibility(View.VISIBLE);
+            getView().findViewById(R.id.topads_dashboard_content).setVisibility(View.GONE);
+        }
+    }
+
+    private int getTotalAd(TotalAd totalAd) {
+        return totalAd.getTotalShopAd() + totalAd.getTotalKeyword()+ totalAd.getTotalProductAd() + totalAd.getTotalProductGroupAd();
     }
 
     public void updateLabelDateView(Date startDate, Date endDate) {

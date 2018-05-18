@@ -10,11 +10,13 @@ import com.tokopedia.topads.common.domain.interactor.TopAdsGetShopDepositUseCase
 import com.tokopedia.topads.dashboard.constant.TopAdsConstant;
 import com.tokopedia.topads.dashboard.constant.TopAdsStatisticsType;
 import com.tokopedia.topads.dashboard.data.model.data.Cell;
+import com.tokopedia.topads.dashboard.data.model.data.DashboardPopulateResponse;
 import com.tokopedia.topads.dashboard.data.model.data.DataStatistic;
 import com.tokopedia.topads.dashboard.data.model.data.TotalAd;
 import com.tokopedia.topads.dashboard.domain.interactor.DeleteTopAdsStatisticsUseCase;
 import com.tokopedia.topads.dashboard.domain.interactor.DeleteTopAdsTotalAdUseCase;
 import com.tokopedia.topads.dashboard.domain.interactor.TopAdsDatePickerInteractor;
+import com.tokopedia.topads.dashboard.domain.interactor.TopAdsGetPopulateDataAdUseCase;
 import com.tokopedia.topads.dashboard.domain.interactor.TopAdsGetStatisticsUseCase;
 import com.tokopedia.topads.dashboard.domain.interactor.TopAdsPopulateTotalAdsUseCase;
 import com.tokopedia.topads.dashboard.view.listener.TopAdsDashboardView;
@@ -46,6 +48,7 @@ public class TopAdsDashboardPresenter extends BaseDaggerPresenter<TopAdsDashboar
     private final TopAdsAddSourceTaggingUseCase topAdsAddSourceTaggingUseCase;
     private final DeleteTopAdsStatisticsUseCase deleteTopAdsStatisticsUseCase;
     private final DeleteTopAdsTotalAdUseCase deleteTopAdsTotalAdUseCase;
+    private final TopAdsGetPopulateDataAdUseCase topAdsGetPopulateDataAdUseCase;
 
     @Inject
     public TopAdsDashboardPresenter(TopAdsGetShopDepositUseCase topAdsGetShopDepositUseCase,
@@ -54,6 +57,7 @@ public class TopAdsDashboardPresenter extends BaseDaggerPresenter<TopAdsDashboar
                                     TopAdsPopulateTotalAdsUseCase topAdsPopulateTotalAdsUseCase,
                                     TopAdsGetStatisticsUseCase topAdsGetStatisticsUseCase,
                                     TopAdsAddSourceTaggingUseCase topAdsAddSourceTaggingUseCase,
+                                    TopAdsGetPopulateDataAdUseCase topAdsGetPopulateDataAdUseCase,
                                     DeleteTopAdsStatisticsUseCase deleteTopAdsStatisticsUseCase,
                                     DeleteTopAdsTotalAdUseCase deleteTopAdsTotalAdUseCase,
                                     UserSession userSession) {
@@ -63,9 +67,34 @@ public class TopAdsDashboardPresenter extends BaseDaggerPresenter<TopAdsDashboar
         this.topAdsPopulateTotalAdsUseCase = topAdsPopulateTotalAdsUseCase;
         this.topAdsGetStatisticsUseCase = topAdsGetStatisticsUseCase;
         this.topAdsAddSourceTaggingUseCase = topAdsAddSourceTaggingUseCase;
+        this.topAdsGetPopulateDataAdUseCase = topAdsGetPopulateDataAdUseCase;
         this.deleteTopAdsStatisticsUseCase = deleteTopAdsStatisticsUseCase;
         this.deleteTopAdsTotalAdUseCase = deleteTopAdsTotalAdUseCase;
         this.userSession = userSession;
+    }
+
+    public void getPopulateDashboardData(){
+        topAdsGetPopulateDataAdUseCase.execute(TopAdsGetPopulateDataAdUseCase.createRequestParams(userSession.getShopId()),
+                new Subscriber<DashboardPopulateResponse>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        if (isViewAttached()){
+                            getView().onErrorPopulateData(e);
+                        }
+                    }
+
+                    @Override
+                    public void onNext(DashboardPopulateResponse dashboardPopulateResponse) {
+                        if (isViewAttached()){
+                            getView().onSuccessPopulateData(dashboardPopulateResponse);
+                        }
+                    }
+                });
     }
 
     public void getShopDeposit(){
@@ -144,6 +173,7 @@ public class TopAdsDashboardPresenter extends BaseDaggerPresenter<TopAdsDashboar
         topAdsAddSourceTaggingUseCase.unsubscribe();
         deleteTopAdsStatisticsUseCase.unsubscribe();
         deleteTopAdsTotalAdUseCase.unsubscribe();
+        topAdsGetPopulateDataAdUseCase.unsubscribe();
     }
 
     public int getLastSelectionDatePickerIndex() {
