@@ -508,6 +508,11 @@ public abstract class BaseProductAddEditFragment<T extends ProductAddPresenter>
     }
 
     @Override
+    public void changeAllPriceVariant(int currencyType, double currencyValue) {
+        currentProductViewModel.changePriceTo(currencyType, currencyValue);
+    }
+
+    @Override
     public void showDialogEditPriceVariant() {
         ProductChangeVariantPriceDialogFragment dialogFragment =
                 ProductChangeVariantPriceDialogFragment.newInstance(productPriceViewHolder.getCurrencyType(),
@@ -538,28 +543,6 @@ public abstract class BaseProductAddEditFragment<T extends ProductAddPresenter>
 
     @Override
     public void startProductAddWholesaleActivity() {
-        if(hasVariant()){
-            double defaultPricaVar = currentProductViewModel.getProductVariant().getProductVariant().get(0).getPriceVar();
-            for(ProductVariantCombinationViewModel productVariantCombinationViewModel : currentProductViewModel.getProductVariant().getProductVariant()){
-                if(defaultPricaVar != productVariantCombinationViewModel.getPriceVar()){
-                    AlertDialog.Builder builder = new AlertDialog.Builder(getActivity(),
-                            R.style.AppCompatAlertDialogStyle);
-                    builder.setTitle(R.string.product_wholesale_price_locked);
-                    builder.setMessage(R.string.product_wholesale_locked_description);
-                    builder.setCancelable(true);
-                    builder.setNegativeButton(R.string.close, new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int id) {
-                            dialog.cancel();
-                        }
-                    });
-
-                    AlertDialog alert = builder.create();
-                    alert.show();
-                    return;
-                }
-            }
-        }
-
         productPriceViewHolder.updateModel(currentProductViewModel);
         ArrayList<ProductWholesaleViewModel> productWholesaleViewModelList = (ArrayList<ProductWholesaleViewModel>) currentProductViewModel.getProductWholesale();
         Intent intent = ProductAddWholesaleActivity.getIntent(getActivity(),

@@ -367,6 +367,7 @@ public class ProductPriceViewHolder extends ProductViewHolder{
                 if (resultCode == Activity.RESULT_OK) {
                     productWholesaleViewModels = data.getParcelableArrayListExtra(ProductAddWholesaleFragment.EXTRA_PRODUCT_WHOLESALE);
                     setLabelWHolesale(productWholesaleViewModels);
+                    listener.changeAllPriceVariant(getCurrencyType(), data.getDoubleExtra(ProductAddWholesaleFragment.EXTRA_PRODUCT_MAIN_PRICE, 0));
                 }
                 break;
         }
@@ -383,6 +384,8 @@ public class ProductPriceViewHolder extends ProductViewHolder{
         boolean hasVariant();
 
         boolean hasWholesale();
+
+        void changeAllPriceVariant(int currencyType, double currencyValue);
 
         void showDialogEditPriceVariant();
 
