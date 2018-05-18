@@ -1,40 +1,46 @@
-package com.tokopedia.checkout.view.utils;
+package com.tokopedia.transactionanalytics;
 
 import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
 
 import javax.inject.Inject;
 
+import static com.tokopedia.transactionanalytics.ConstantTransactionAnalytics.EventAction;
+import static com.tokopedia.transactionanalytics.ConstantTransactionAnalytics.EventCategory;
+import static com.tokopedia.transactionanalytics.ConstantTransactionAnalytics.EventName;
+
+
 /**
- * @author anggaprasetiyo on 14/05/18.
+ * @author anggaprasetiyo on 18/05/18.
  */
-public class CheckoutAnalytics {
+public class CheckoutAnalyticsCartPage extends CheckoutAnalytics {
 
-    public interface EventName {
-        String CLICK_ATC = "clickATC";
-        String VIEW_ATC = "viewATC";
+    @Inject
+    public CheckoutAnalyticsCartPage(AnalyticTracker analyticTracker) {
+        super(analyticTracker);
     }
 
-    public interface EventCategory {
-        String CART = "Cart";
+    public void eventClickCartClickKuponFromGunakanPromoAtauKupon() {
+        analyticTracker.sendEventTracking(EventName.CLICK_ATC,
+                EventCategory.CART,
+                EventAction.CLICK_KUPON_FROM_GUNAKAN_KODE_PROMO_ATAU_KUPON,
+                ""
+        );
     }
 
-    public interface EventAction {
-        String CLICK_GUNAKAN_KODE_PROMO_ATAU_KUPON = "click gunakan kode promo atau kupon";
-        String CLICK_HAPUS_ON_TOP_RIGHT_CORNER = "click hapus on top right corner";
-        String CLICK_SHOP_NAME = "click shop name";
-        String CLICK_PRODUCT_NAME = "click product name";
-        String CLICK_BUTTON_PLUS = "click button +";
-        String CLICK_BUTTON_MIN = "click button -";
-        String CLICK_TRASH_BIN = "click trash bin";
-        String CLICK_ARROW_BACK = "click arrow back";
-        String CLICK_X_ON_BANNER_PROMO_CODE = "click x on banner promo code";
-        String CLICK_BELANJA_SEKARANG_ON_EMPTY_CART = "click belanja sekarang on empty cart";
-        String CLICK_PILIH_SEMUA_FORM_HAPUS = "click pilih semua from hapus";
-        String CLICK_CHECKLIST_BOX_FORM_HAPUS = "click checklist box from hapus";
-        String CLICK_HAPUS_FORM_HAPUS = "click hapus from hapus";
-        String CLICK_GUNAKAN_KODE_FROM_GUNAKAN_KODE_PROMO_ATAU_KUPON ="click gunakan kode from gunakan kode promo atau kupon";
+    public void eventClickCartClickKodePromoFromGunakanPromoAtauKupon() {
+        analyticTracker.sendEventTracking(EventName.CLICK_ATC,
+                EventCategory.CART,
+                EventAction.CLICK_KODE_PROMO_FROM_GUNAKAN_KODE_PROMO_ATAU_KUPON,
+                ""
+        );
+    }
 
-        String VIEW_IMPRESSION_CART_EMPTY = "impression cart empty";
+    public void eventClickCartClickKuponSayaFromGunakanPromoAtauKupon() {
+        analyticTracker.sendEventTracking(EventName.CLICK_ATC,
+                EventCategory.CART,
+                EventAction.CLICK_KUPON_SAYA_FROM_GUNAKAN_KODE_PROMO_ATAU_KUPON,
+                ""
+        );
     }
 
     public void eventClickCartClickGunakanKodeFormGunakanKodePromoAtauKupon() {
@@ -61,24 +67,12 @@ public class CheckoutAnalytics {
         );
     }
 
-
     public void eventClickCartClickHapusFormHapus() {
         analyticTracker.sendEventTracking(EventName.CLICK_ATC,
                 EventCategory.CART,
                 EventAction.CLICK_HAPUS_FORM_HAPUS,
                 ""
         );
-    }
-
-    public interface EventLabel {
-
-    }
-
-    private final AnalyticTracker analyticTracker;
-
-    @Inject
-    public CheckoutAnalytics(AnalyticTracker analyticTracker) {
-        this.analyticTracker = analyticTracker;
     }
 
     public void eventClickCartClickGunakanKodePromoAatauKupon() {
@@ -167,6 +161,5 @@ public class CheckoutAnalytics {
                 EventAction.VIEW_IMPRESSION_CART_EMPTY,
                 "");
     }
-
 
 }

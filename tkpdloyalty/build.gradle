@@ -25,6 +25,7 @@ dependencies {
 
     compile project(rootProject.ext.features.core)
     compile project(rootProject.ext.libraries.design)
+    compile project(rootProject.ext.features.transactionanalytics)
 
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'

@@ -3,12 +3,15 @@ package com.tokopedia.loyalty.di.module;
 import android.app.Activity;
 import android.app.FragmentManager;
 
+import com.tokopedia.abstraction.AbstractionRouter;
+import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
 import com.tokopedia.abstraction.constant.IRouterConstant;
 import com.tokopedia.loyalty.di.LoyaltyScope;
 import com.tokopedia.loyalty.view.adapter.LoyaltyPagerAdapter;
 import com.tokopedia.loyalty.view.data.LoyaltyPagerItem;
 import com.tokopedia.loyalty.view.fragment.PromoCodeFragment;
 import com.tokopedia.loyalty.view.fragment.PromoCouponFragment;
+import com.tokopedia.transactionanalytics.CheckoutAnalyticsCartPage;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -102,6 +105,16 @@ public class LoyaltyViewModule {
                         .build()
         );
         return loyaltyPagerItemList;
+    }
+
+    @Provides
+    CheckoutAnalyticsCartPage provideCheckoutAnalyticsCartPage() {
+        AnalyticTracker analyticTracker = null;
+        if (activity.getApplication() instanceof AbstractionRouter) {
+            analyticTracker = ((AbstractionRouter) activity.getApplication()).getAnalyticTracker();
+        }
+        return new CheckoutAnalyticsCartPage(analyticTracker);
+
     }
 
 }

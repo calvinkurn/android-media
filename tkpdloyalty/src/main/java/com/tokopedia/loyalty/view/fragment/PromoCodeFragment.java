@@ -25,6 +25,7 @@ import com.tokopedia.loyalty.di.module.PromoCodeViewModule;
 import com.tokopedia.loyalty.view.data.VoucherViewModel;
 import com.tokopedia.loyalty.view.presenter.IPromoCodePresenter;
 import com.tokopedia.loyalty.view.view.IPromoCodeView;
+import com.tokopedia.transactionanalytics.CheckoutAnalyticsCartPage;
 
 import javax.inject.Inject;
 
@@ -395,6 +396,8 @@ public class PromoCodeFragment extends BasePresenterFragment implements IPromoCo
         void onCodeSuccess(String voucherCode, String voucherMessage, String voucherAmount);
 
         void onDigitalCodeSuccess(String voucherCode, String voucherMessage, long discountAmount, long cashBackAmount);
+
+        void onUsePromoCodeClicked();
 
     }
 }

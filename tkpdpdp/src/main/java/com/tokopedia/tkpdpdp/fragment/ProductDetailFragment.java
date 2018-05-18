@@ -91,7 +91,6 @@ import com.tokopedia.tkpdpdp.DescriptionActivity;
 import com.tokopedia.tkpdpdp.DinkFailedActivity;
 import com.tokopedia.tkpdpdp.DinkSuccessActivity;
 import com.tokopedia.tkpdpdp.InstallmentActivity;
-import com.tokopedia.tkpdpdp.PdpCheckoutAtcAnalytics;
 import com.tokopedia.tkpdpdp.PreviewProductImageDetail;
 import com.tokopedia.tkpdpdp.ProductInfoActivity;
 import com.tokopedia.tkpdpdp.R;
@@ -119,6 +118,7 @@ import com.tokopedia.tkpdpdp.listener.AppBarStateChangeListener;
 import com.tokopedia.tkpdpdp.listener.ProductDetailView;
 import com.tokopedia.tkpdpdp.presenter.ProductDetailPresenter;
 import com.tokopedia.tkpdpdp.presenter.ProductDetailPresenterImpl;
+import com.tokopedia.transactionanalytics.CheckoutAnalyticProductDetailPage;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -234,7 +234,7 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
 
     private RemoteConfig remoteConfig;
     private ShowCaseDialog showCaseDialog;
-    private PdpCheckoutAtcAnalytics checkoutAtcAnalytics;
+    private CheckoutAnalyticProductDetailPage checkoutAnalyticProductDetailPage;
 
     public static ProductDetailFragment newInstance(@NonNull ProductPass productPass) {
         ProductDetailFragment fragment = new ProductDetailFragment();
@@ -398,7 +398,7 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
 
     @Override
     protected void initialVar() {
-        checkoutAtcAnalytics = new PdpCheckoutAtcAnalytics(getAnalyticTracker());
+        checkoutAnalyticProductDetailPage = new CheckoutAnalyticProductDetailPage(getAnalyticTracker());
         appIndexHandler = new AppIndexHandler(getActivity());
         loading = new ProgressDialog(context);
         loading.setCancelable(false);
@@ -1570,7 +1570,7 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
 
     @Override
     public void renderAddToCartSuccess(String message) {
-        checkoutAtcAnalytics.eventClickAddToCartImpressionAtcSuccess();
+        checkoutAnalyticProductDetailPage.eventClickAddToCartImpressionAtcSuccess();
         updateCartNotification();
         FragmentTransaction ft = getFragmentManager().beginTransaction();
         ft.add(
@@ -1579,7 +1579,7 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
                         new AddToCartConfirmationDialog.ActionListener() {
                             @Override
                             public void onButtonAddToCartPayClicked() {
-                                checkoutAtcAnalytics.eventClickAddToCartClickBayarOnAtcSuccess();
+                                checkoutAnalyticProductDetailPage.eventClickAddToCartClickBayarOnAtcSuccess();
                                 if (getActivity().getApplication() instanceof PdpRouter) {
                                     Intent intent = ((PdpRouter) getActivity().getApplication())
                                             .getCartIntent(getActivity());
@@ -1589,7 +1589,7 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
 
                             @Override
                             public void onButtonAddToCartContinueShopingClicked() {
-                                checkoutAtcAnalytics.eventClickAddToCartClickLanjutkanBelanjaOnAtcSuccess();
+                                checkoutAnalyticProductDetailPage.eventClickAddToCartClickLanjutkanBelanjaOnAtcSuccess();
                             }
                         }),
                 AddToCartConfirmationDialog.ADD_TO_CART_DIALOG_FRAGMENT_TAG
@@ -1630,7 +1630,7 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
         gtmCart.setCurrencyCode("IDR");
         gtmCart.setAddAction(GTMCart.ADD_ACTION);
 
-        checkoutAtcAnalytics.enhancedECommerceAddToCart(gtmCart.getCartMap());
+        checkoutAnalyticProductDetailPage.enhancedECommerceAddToCart(gtmCart.getCartMap());
     }
 
     private String generateCategoryStringLevel(List<ProductBreadcrumb> breadcrumb) {

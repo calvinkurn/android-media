@@ -245,7 +245,8 @@ ext {
             gamification    : ":features:promo:gamification",
             profile         : ":features:user:profile",
             logisticdata    : ":features:logistic:logisticdata",
-            transactiondata : ":features:transaction:transactiondata"
+            transactiondata : ":features:transaction:transactiondata",
+            transactionanalytics : ":features:transaction:transactionanalytics"
     ]
 
     libraries = [
