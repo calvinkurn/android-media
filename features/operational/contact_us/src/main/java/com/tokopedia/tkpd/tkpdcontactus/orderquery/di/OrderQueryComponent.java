@@ -7,6 +7,7 @@ import com.tokopedia.tkpd.tkpdcontactus.home.di.ContactUsHomeModule;
 import com.tokopedia.tkpd.tkpdcontactus.orderquery.view.fragment.OrderQueryTicketFragment;
 import com.tokopedia.tkpd.tkpdcontactus.orderquery.view.fragment.QueryTicketDetailFragment;
 import com.tokopedia.tkpd.tkpdcontactus.orderquery.view.fragment.SubmitTicketFragment;
+import com.tokopedia.tkpd.tkpdcontactus.orderquery.view.presenter.SubmitTicketPresenter;
 
 import dagger.Component;
 
@@ -20,4 +21,5 @@ public interface OrderQueryComponent {
     void inject(OrderQueryTicketFragment orderQueryTicketFragment);
     void inject(QueryTicketDetailFragment queryTicketDetailFragment);
     void inject(SubmitTicketFragment fragment);
+    void inject(SubmitTicketPresenter presenter);
 }

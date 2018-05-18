@@ -118,7 +118,7 @@ public class ContactUsPass {
         return reviewPhotos.toString();
     }
 
-    public HashMap<String, Object> getCreateTicketValidationParam() {
+    public HashMap<String, String> getCreateTicketValidationParam() {
         HashMap<String, String> param = new HashMap<>();
         param.put(PARAM_SOLUTION_ID, getSolutionId());
         param.put(PARAM_MESSAGE, getMessageBody());
