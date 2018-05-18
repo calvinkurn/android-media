@@ -25,11 +25,13 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.GlobalConfig;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.applink.ApplinkConst;
+import com.tokopedia.applink.RouteManager;
 import com.tokopedia.core.ManagePeople;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.peoplefave.activity.PeopleFavoritedShop;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.design.component.Tabs;
+import com.tokopedia.design.component.ToasterNormal;
 import com.tokopedia.profile.ProfileComponentInstance;
 import com.tokopedia.profile.ProfileModuleRouter;
 import com.tokopedia.profile.R;
@@ -70,6 +72,8 @@ public class TopProfileActivity extends BaseSimpleActivity
     private static final String ZERO = "0";
     private static final int MANAGE_PEOPLE_CODE = 13;
     private static final int LOGIN_REQUEST_CODE = 23;
+    private static final int TOAST_LENGTH = 3000;
+
     @Inject
     TopProfileActivityListener.Presenter presenter;
     private AppBarLayout appBarLayout;
@@ -348,8 +352,18 @@ public class TopProfileActivity extends BaseSimpleActivity
     public void onSuccessFollowKol() {
         topProfileViewModel.setFollowed(!topProfileViewModel.isFollowed());
 
-        if (!topProfileViewModel.isFollowed()) enableFollowButton();
-        else disableFollowButton();
+        if (topProfileViewModel.isFollowed()) {
+            disableFollowButton();
+            ToasterNormal
+                    .make(findViewById(R.id.main_view),
+                            getString(R.string.follow_success_toast),
+                            TOAST_LENGTH)
+                    .setAction(getString(R.string.follow_success_check_now),
+                            followSuccessOnClickListener())
+                    .show();
+        } else {
+            enableFollowButton();
+        }
 
         if (getIntent() != null && getIntent().getExtras() != null) {
             resultIntent.putExtra(
@@ -611,6 +625,15 @@ public class TopProfileActivity extends BaseSimpleActivity
             @Override
             public void onClick(View v) {
                 presenter.getTopProfileData(userId);
+            }
+        };
+    }
+
+    private View.OnClickListener followSuccessOnClickListener() {
+        return new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                RouteManager.route(getContext(), ApplinkConst.FEED);
             }
         };
     }
