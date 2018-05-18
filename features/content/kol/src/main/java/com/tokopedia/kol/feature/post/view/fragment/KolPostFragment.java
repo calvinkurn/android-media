@@ -216,8 +216,8 @@ public class KolPostFragment extends BaseDaggerFragment implements KolPostListen
         canLoadMore = !TextUtils.isEmpty(lastCursor);
         presenter.updateCursor(lastCursor);
 
-        if (!canLoadMore) {
-
+        if (!canLoadMore && !adapter.isEmpty()) {
+            adapter.showExplore();
         }
     }
 

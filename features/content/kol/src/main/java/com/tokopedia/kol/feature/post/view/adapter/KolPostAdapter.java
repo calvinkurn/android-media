@@ -12,6 +12,7 @@ import com.tokopedia.abstraction.base.view.adapter.model.LoadingModel;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.kol.feature.post.view.adapter.typefactory.KolPostTypeFactory;
 import com.tokopedia.kol.feature.post.view.viewmodel.EmptyKolPostViewModel;
+import com.tokopedia.kol.feature.post.view.viewmodel.ExploreViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,6 +29,7 @@ public class KolPostAdapter extends RecyclerView.Adapter<AbstractViewHolder> {
     private EmptyKolPostViewModel emptyModel;
     private LoadingModel loadingModel;
     private ErrorNetworkModel errorNetworkModel;
+    private ExploreViewModel exploreViewModel;
 
     @Inject
     public KolPostAdapter(KolPostTypeFactory typeFactory) {
@@ -36,6 +38,7 @@ public class KolPostAdapter extends RecyclerView.Adapter<AbstractViewHolder> {
         this.emptyModel = new EmptyKolPostViewModel();
         this.loadingModel = new LoadingModel();
         this.errorNetworkModel = new ErrorNetworkModel();
+        this.exploreViewModel = new ExploreViewModel();
     }
 
     @Override
@@ -103,6 +106,20 @@ public class KolPostAdapter extends RecyclerView.Adapter<AbstractViewHolder> {
     public void removeLoading() {
         this.list.remove(loadingModel);
         notifyDataSetChanged();
+    }
+
+    public void showExplore() {
+        this.list.add(exploreViewModel);
+        notifyDataSetChanged();
+    }
+
+    public void removeExplore() {
+        this.list.remove(exploreViewModel);
+        notifyDataSetChanged();
+    }
+
+    public boolean isEmpty() {
+        return this.list.contains(emptyModel) || getItemCount() == 0;
     }
 
     public boolean isLoading() {

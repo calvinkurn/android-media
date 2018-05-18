@@ -14,6 +14,6 @@ public class ExploreViewModel implements Visitable<KolPostTypeFactory> {
 
     @Override
     public int type(KolPostTypeFactory typeFactory) {
-        return 0;
+        return typeFactory.type(this);
     }
 }
