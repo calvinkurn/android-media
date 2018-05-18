@@ -2,7 +2,6 @@ package com.tokopedia.tracking.view;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.widget.NestedScrollView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Html;
@@ -27,7 +26,6 @@ import com.tokopedia.tracking.di.DaggerTrackingPageComponent;
 import com.tokopedia.tracking.di.TrackingPageComponent;
 import com.tokopedia.tracking.di.TrackingPageModule;
 import com.tokopedia.tracking.presenter.ITrackingPagePresenter;
-import com.tokopedia.tracking.viewmodel.TrackingHistoryViewModel;
 import com.tokopedia.tracking.viewmodel.TrackingViewModel;
 
 import java.text.ParseException;
@@ -235,7 +233,7 @@ public class TrackingPageFragment extends BaseDaggerFragment implements ITrackin
 
     private String formattedDate(String unformattedTime) {
         String inputPattern = "yyyy-MM-dd";
-        String outputPattern = "dd MMM YYY";
+        String outputPattern = "dd MMM yyyy";
 
         SimpleDateFormat inputFormat = new SimpleDateFormat(inputPattern,
                 new Locale("in", "ID"));

@@ -59,7 +59,7 @@ public class TrackingHistoryAdapter extends RecyclerView.Adapter<TrackingHistory
 
     private String formattedDate(TrackingHistoryViewModel viewModel) {
         String inputPattern = "yyyy-MM-dd";
-        String outputPattern = "EEEE, dd MMM YYY";
+        String outputPattern = "EEEE, dd MMM yyyy";
 
         SimpleDateFormat inputFormat = new SimpleDateFormat(inputPattern,
                 new Locale("in", "ID"));
