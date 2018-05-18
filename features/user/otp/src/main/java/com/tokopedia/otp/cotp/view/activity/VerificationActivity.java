@@ -41,7 +41,7 @@ public class VerificationActivity extends BaseSimpleActivity {
     private static final String CHOOSE_FRAGMENT_TAG = "choose";
     private static final String IS_SHOW_CHOOSE_METHOD = "is_show_choose_method";
     private static final String REGEX_MASK_PHONE_NUMBER =
-            "(0...|62...|\\+62...)(\\d{3,4})(\\d{3,4})(\\d{0,2})";
+            "(0...|62...|\\+62...)(\\d{3,4})(\\d{3,4})(\\d{0,4})";
 
     private VerificationPassModel passModel;
 
