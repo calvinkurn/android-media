@@ -656,7 +656,7 @@ public class ImageEditorActivity extends BaseSimpleActivity implements ImageEdit
 
         showDoneLoading();
         initImageEditorPresenter();
-        imageEditorPresenter.cropBitmapToExpectedRatio(extraImageUrls, resultList, ratioX, ratioY);
+        imageEditorPresenter.cropBitmapToExpectedRatio(resultList, ratioX, ratioY);
     }
 
     @Override
