@@ -116,7 +116,7 @@ public class ImagePickerCameraFragment extends TkpdBaseV4Fragment {
                     flashImageButton.setVisibility(View.VISIBLE);
                     setCameraFlash();
                 } else {
-                    flashImageButton.setVisibility(View.INVISIBLE);
+                    flashImageButton.setVisibility(View.GONE);
                 }
             }
 
@@ -137,8 +137,10 @@ public class ImagePickerCameraFragment extends TkpdBaseV4Fragment {
         flashImageButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                flashIndex = (flashIndex + 1) % supportedFlashList.size();
-                setCameraFlash();
+                if (supportedFlashList!= null && supportedFlashList.size() > 0) {
+                    flashIndex = (flashIndex + 1) % supportedFlashList.size();
+                    setCameraFlash();
+                }
             }
         });
 
