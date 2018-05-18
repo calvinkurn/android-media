@@ -9,13 +9,9 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.pm.PackageManager;
-import android.content.pm.ResolveInfo;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.net.Uri;
 import android.os.Bundle;
-import android.os.Environment;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomSheetDialog;
 import android.support.design.widget.CoordinatorLayout;
@@ -28,26 +24,24 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 
-import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.animation.GlideAnimation;
+import com.bumptech.glide.request.target.SimpleTarget;
 import com.tkpd.library.utils.CommonUtils;
+import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.applink.ApplinkRouter;
 import com.tokopedia.core.ImageGallery;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
-import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.customadapter.NoResultDataBinder;
 import com.tokopedia.core.customadapter.RetryDataBinder;
-import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.myproduct.utils.FileUtils;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.product.model.share.ShareData;
 import com.tokopedia.core.router.productdetail.PdpRouter;
 import com.tokopedia.core.share.ShareActivity;
 import com.tokopedia.core.util.GlobalConfig;
-import com.tokopedia.core.util.MethodChecker;
-import com.tokopedia.core.util.ShareSocmedHandler;
 import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.design.button.BottomActionView;
 import com.tokopedia.design.utils.CurrencyFormatUtil;
@@ -91,24 +85,14 @@ import com.tokopedia.seller.product.manage.view.model.ProductManageSortModel;
 import com.tokopedia.seller.product.manage.view.model.ProductManageViewModel;
 import com.tokopedia.seller.product.manage.view.presenter.ProductManagePresenter;
 import com.tokopedia.topads.sourcetagging.constant.TopAdsSourceOption;
-import com.tokopedia.topads.sourcetagging.util.TopAdsAppLinkUtil;
 
-import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.ExecutionException;
 
 import javax.inject.Inject;
 
 import permissions.dispatcher.NeedsPermission;
-import rx.Observable;
-import rx.Subscriber;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Func1;
-import rx.schedulers.Schedulers;
 
 import static com.tokopedia.core.newgallery.GalleryActivity.INSTAGRAM_SELECT_REQUEST_CODE;
 
@@ -679,7 +663,7 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
                         showDialogChangeProductPrice(productManageViewModel.getProductId(), productManageViewModel.getProductPricePlain(), productManageViewModel.getProductCurrencyId());
                     }
                 } else if (itemId == R.id.share_product_menu) {
-                    goToShareProduct(productManageViewModel);
+                    downloadBitmap(productManageViewModel);
                 } else if (itemId == R.id.set_cashback_product_menu) {
                     onSetCashbackClicked(productManageViewModel);
                 } else if (itemId == R.id.set_promo_ads_product_menu) {
@@ -787,79 +771,41 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
         };
     }
 
-    private void goToShareProduct(ProductManageViewModel productManageViewModel) {
-        downloadBitmap(productManageViewModel);
+    private void goToShareProduct(ShareData shareData) {
+        Intent intent = ShareActivity.createIntent(getActivity(), shareData);
+        startActivity(intent);
     }
 
     public void downloadBitmap(final ProductManageViewModel productManageViewModel){
-        Observable.just(productManageViewModel.getImageFullUrl())
-                .map(new Func1<String, Bitmap>() {
-                    @Override
-                    public Bitmap call(String image) {
-                        Bitmap bitmap = null;
-                        if (image != null) {
-                            try {
-                                bitmap = Glide.with(getActivity())
-                                        .load(image)
-                                        .asBitmap()
-                                        .centerCrop()
-                                        .into(2048, 2048)
-                                        .get();
-                            } catch (InterruptedException e) {
-                                e.printStackTrace();
-                            } catch (ExecutionException e) {
-                                e.printStackTrace();
-                            }
-                        }
-                        return bitmap;
-                    }
-                }).subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .unsubscribeOn(Schedulers.io())
-                .subscribe(
-                        new Subscriber<Bitmap>() {
-                            @Override
-                            public void onCompleted() {
+        ImageHandler.loadImageWithTarget(getActivity(), productManageViewModel.getImageFullUrl(), new SimpleTarget<Bitmap>(2048,2048) {
+            @Override
+            public void onResourceReady(Bitmap bitmap, GlideAnimation<? super Bitmap> glideAnimation) {
+                AddSticker addSticker = new AddSticker.Builder()
+                        .setName(productManageViewModel.getProductName())
+                        .setPrice(productManageViewModel.getProductPrice())
+                        .setLogo(BitmapFactory.decodeResource(getResources(), R.drawable.ic_new_logo))
+                        .build();
 
-                            }
+                Bitmap newImage = addSticker.addStickerToBitmap(bitmap, getActivity());
+                File file = FileUtils.writeImageToTkpdPath(newImage);
 
-                            @Override
-                            public void onError(Throwable e) {
+                ShareData shareData = ShareData.Builder.aShareData()
+                        .setName(productManageViewModel.getProductName())
+                        .setTextContent(productManageViewModel.getProductName())
+                        .setDescription(productManageViewModel.getProductName())
+                        .setImgUri(productManageViewModel.getImageFullUrl())
+                        .setPrice(CurrencyFormatUtil.convertPriceValue(Double.valueOf(productManageViewModel.getProductPrice()), true))
+                        .setUri(productManageViewModel.getProductUrl())
+                        .setType(ShareData.PRODUCT_TYPE)
+                        .setId(productManageViewModel.getProductId())
+                        .setPathSticker(file.getAbsolutePath())
+                        .build();
 
-                            }
+                newImage.recycle();
 
-                            @Override
-                            public void onNext(final Bitmap bitmap) {
-                                AddSticker addSticker = new AddSticker.Builder()
-                                        .setName(productManageViewModel.getProductName())
-                                        .setPrice(productManageViewModel.getProductPrice())
-                                        .setLogo(BitmapFactory.decodeResource(getResources(), R.drawable.ic_new_logo))
-                                        .build();
-
-                                Bitmap newImage = addSticker.addStickerToBitmap(bitmap, getActivity());
-
-                                File file = FileUtils.writeImageToTkpdPath(newImage);
-                                newImage.recycle();
-
-                                String currencyString = CurrencyFormatUtil.convertPriceValue(Double.valueOf(productManageViewModel.getProductPrice()), true);
-
-                                ShareData shareData = ShareData.Builder.aShareData()
-                                        .setName(productManageViewModel.getProductName())
-                                        .setTextContent(productManageViewModel.getProductName())
-                                        .setDescription(productManageViewModel.getProductName())
-                                        .setImgUri(productManageViewModel.getImageFullUrl())
-                                        .setPrice(currencyString)
-                                        .setUri(productManageViewModel.getProductUrl())
-                                        .setType(ShareData.PRODUCT_TYPE)
-                                        .setId(productManageViewModel.getProductId())
-                                        .setPathSticker(file.getAbsolutePath())
-                                        .build();
-
-                                Intent intent = ShareActivity.createIntent(getActivity(), shareData);
-                                startActivity(intent);
-                            }
-                        }
-                );
+                goToShareProduct(shareData);
+            }
+        });
     }
 
     private void showDialogChangeProductPrice(final String productId, String productPrice, @CurrencyTypeDef int productCurrencyId) {

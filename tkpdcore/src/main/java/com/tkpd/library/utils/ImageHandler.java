@@ -289,6 +289,7 @@ public class ImageHandler extends com.tokopedia.abstraction.common.utils.image.I
                     .load(url)
                     .asBitmap()
                     .fitCenter()
+                    .centerCrop()
                     .dontAnimate()
                     .placeholder(R.drawable.loading_page)
                     .error(R.drawable.error_drawable)
