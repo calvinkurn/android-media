@@ -215,6 +215,10 @@ public class KolPostFragment extends BaseDaggerFragment implements KolPostListen
     public void updateCursor(String lastCursor) {
         canLoadMore = !TextUtils.isEmpty(lastCursor);
         presenter.updateCursor(lastCursor);
+
+        if (!canLoadMore) {
+
+        }
     }
 
     @Override
