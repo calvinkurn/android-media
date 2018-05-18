@@ -57,6 +57,8 @@ public interface ShipmentContract {
 
         void renderEditAddressSuccess(String latitude, String longitude);
 
+        void renderChangeAddressSuccess(RecipientAddressModel recipientAddressModel);
+
         void renderCancelAutoApplyCouponSuccess();
 
         Activity getActivity();
@@ -113,7 +115,7 @@ public interface ShipmentContract {
 
         void cancelAutoApplyCoupon();
 
-        void changeShippingAddress();
+        void changeShippingAddress(RecipientAddressModel recipientAddressModel);
 
     }
 

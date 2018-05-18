@@ -244,6 +244,7 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         for (ShipmentData shipmentData : shipmentDataList) {
             if (shipmentData instanceof ShipmentCartItemModel) {
                 if (((ShipmentCartItemModel) shipmentData).getSelectedShipmentDetailData() == null ||
+                        ((ShipmentCartItemModel) shipmentData).getSelectedShipmentDetailData().getSelectedCourier() == null ||
                         ((ShipmentCartItemModel) shipmentData).isError()) {
                     availableCheckout = false;
                 }

@@ -608,7 +608,8 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     }
 
     @Override
-    public void changeShippingAddress() {
+    public void changeShippingAddress(final RecipientAddressModel recipientAddressModel) {
+        getView().showLoading();
         String changeAddressRequestJsonString = new Gson().toJson(changeAddressRequestList);
 
         TKPDMapParam<String, String> param = new TKPDMapParam<>();
@@ -635,12 +636,20 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
 
                             @Override
                             public void onError(Throwable e) {
-
+                                getView().hideLoading();
+                                e.printStackTrace();
+                                getView().showToastError(getView().getActivity().getString(R.string.default_request_error_unknown));
                             }
 
                             @Override
                             public void onNext(SetShippingAddressData setShippingAddressData) {
-
+                                getView().hideLoading();
+                                if (setShippingAddressData.isSuccess()) {
+                                    getView().showToastNormal(getView().getActivity().getString(R.string.label_change_address_success));
+                                    getView().renderChangeAddressSuccess(recipientAddressModel);
+                                } else {
+                                    getView().showToastError(getView().getActivity().getString(R.string.label_change_address_failed));
+                                }
                             }
                         })
         );

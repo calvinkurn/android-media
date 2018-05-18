@@ -61,7 +61,7 @@ public class ShipmentDataRequestConverter {
 
     private ShopProductCheckoutRequest getProductCheckoutRequest(ShipmentCartItemModel shipmentCartItemModel) {
         ShipmentDetailData shipmentDetailData = shipmentCartItemModel.getSelectedShipmentDetailData();
-        if (shipmentDetailData != null) {
+        if (shipmentDetailData != null && shipmentDetailData.getSelectedCourier() != null) {
             CourierItemData courierItemData = shipmentDetailData.getSelectedCourier();
 
             // Create shop product model for shipment
@@ -94,7 +94,7 @@ public class ShipmentDataRequestConverter {
 
     private CheckPromoCodeCartShipmentRequest.ShopProduct getShopProductPromoRequest(ShipmentCartItemModel shipmentCartItemModel) {
         ShipmentDetailData shipmentDetailData = shipmentCartItemModel.getSelectedShipmentDetailData();
-        if (shipmentDetailData != null) {
+        if (shipmentDetailData != null && shipmentDetailData.getSelectedCourier() != null) {
             CourierItemData courierItemData = shipmentDetailData.getSelectedCourier();
 
             // Create shop product model for promo request

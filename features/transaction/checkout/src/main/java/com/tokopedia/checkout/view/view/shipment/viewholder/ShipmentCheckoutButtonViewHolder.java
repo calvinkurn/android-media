@@ -30,22 +30,31 @@ public class ShipmentCheckoutButtonViewHolder extends RecyclerView.ViewHolder {
         if (shipmentCheckoutButtonModel.isAbleToCheckout()) {
             tvSelectPaymentMethod.setBackgroundResource(R.drawable.bg_button_orange_enabled);
             tvSelectPaymentMethod.setTextColor(tvSelectPaymentMethod.getContext().getResources().getColor(R.color.white));
-            tvSelectPaymentMethod.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    shipmentAdapter.checkDropshipperValidation();
-                }
-            });
+            getSelectPaymentClickListener();
         } else {
-            tvSelectPaymentMethod.setBackgroundResource(R.drawable.bg_button_disabled);
-            tvSelectPaymentMethod.setTextColor(tvSelectPaymentMethod.getContext().getResources().getColor(R.color.grey_500));
-            tvSelectPaymentMethod.setOnClickListener(null);
+            disableSelectShipmentButton();
         }
+
         if (!TextUtils.isEmpty(shipmentCheckoutButtonModel.getTotalPayment())) {
             tvTotalPayment.setText(shipmentCheckoutButtonModel.getTotalPayment());
         } else {
             tvTotalPayment.setText("-");
         }
+    }
+
+    private void disableSelectShipmentButton() {
+        tvSelectPaymentMethod.setBackgroundResource(R.drawable.bg_button_disabled);
+        tvSelectPaymentMethod.setTextColor(tvSelectPaymentMethod.getContext().getResources().getColor(R.color.grey_500));
+        tvSelectPaymentMethod.setOnClickListener(null);
+    }
+
+    private void getSelectPaymentClickListener() {
+        tvSelectPaymentMethod.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                shipmentAdapter.checkDropshipperValidation();
+            }
+        });
     }
 
 
