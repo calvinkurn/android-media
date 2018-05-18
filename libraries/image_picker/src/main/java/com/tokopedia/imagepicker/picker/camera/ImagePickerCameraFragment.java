@@ -97,9 +97,6 @@ public class ImagePickerCameraFragment extends TkpdBaseV4Fragment {
 
             @Override
             public void onCameraOpened(CameraOptions options) {
-                // to not crop the image to aspect ratio.
-                // make this to false also prevent OOM caused by library.
-                cameraView.setCropOutput(false);
                 initialFlash();
                 setPreviewCameraLayoutOneByOne();
             }
