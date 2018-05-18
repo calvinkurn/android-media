@@ -1,5 +1,7 @@
 package com.tokopedia.flight.booking.view.activity;
 
+import android.content.Context;
+import android.content.Intent;
 import android.support.v4.app.Fragment;
 
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
@@ -14,6 +16,11 @@ import com.tokopedia.flight.booking.view.fragment.FlightBookingNationalityFragme
  */
 
 public class FlightBookingNationalityActivity extends BaseSimpleActivity implements HasComponent<FlightBookingComponent> {
+
+    public static Intent createIntent(Context context) {
+        Intent intent = new Intent(context, FlightBookingNationalityActivity.class);
+        return intent;
+    }
 
     @Override
     protected Fragment getNewFragment() {

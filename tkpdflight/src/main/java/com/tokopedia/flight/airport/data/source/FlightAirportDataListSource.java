@@ -72,6 +72,10 @@ public class FlightAirportDataListSource extends DataListSource<FlightAirportCou
         return flightAirportDataListDBSource.getPhoneCodeList(query);
     }
 
+    public Observable<FlightAirportDB> getPhoneCodeById(String id) {
+        return flightAirportDataListDBSource.getPhoneCodeById(id);
+    }
+
     public Observable<FlightAirportDB> getAirport(final String airportCode) {
 
         return flightAirportDataListDBSource.isDataAvailable().flatMap(new Func1<Boolean, Observable<FlightAirportDB>>() {

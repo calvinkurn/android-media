@@ -143,6 +143,7 @@
         </LinearLayout>
 
         <LinearLayout
+            android:id="@+id/container_passport_data"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/dp_20"
@@ -150,7 +151,7 @@
             android:orientation="vertical"
             android:paddingBottom="@dimen/dp_10"
             android:paddingTop="@dimen/dp_10"
-            android:visibility="gone">
+            android:visibility="visible">
 
             <android.support.v7.widget.AppCompatTextView
                 style="@style/TextView.Micro.Bold"
@@ -193,7 +194,7 @@
                     android:id="@+id/et_passport_no"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="@string/flight_booking_passenger_firstname_secondary_hint"
+                    android:hint="@string/flight_passenger_passport_number_secondary_hint"
                     android:singleLine="true"
                     android:textColor="@color/font_black_primary_70" />
             </com.tokopedia.design.text.TkpdHintTextInputLayout>
@@ -218,7 +219,7 @@
                     android:layout_height="wrap_content"
                     android:clickable="true"
                     android:focusable="false"
-                    android:hint="@string/flight_booking_passenger_birthdate_secondary_hint"
+                    android:hint="@string/flight_passenger_passport_expiration_secondary_hint"
                     android:paddingEnd="10dp"
                     android:paddingRight="10dp"
                     android:singleLine="true"
@@ -246,7 +247,7 @@
                     android:layout_height="wrap_content"
                     android:clickable="true"
                     android:focusable="false"
-                    android:hint="@string/flight_booking_passenger_birthdate_secondary_hint"
+                    android:hint="@string/flight_passenger_nationality_secondary_hint"
                     android:paddingEnd="10dp"
                     android:paddingRight="10dp"
                     android:singleLine="true"
@@ -274,7 +275,7 @@
                     android:layout_height="wrap_content"
                     android:clickable="true"
                     android:focusable="false"
-                    android:hint="@string/flight_booking_passenger_birthdate_secondary_hint"
+                    android:hint="@string/flight_passenger_passport_issuer_country_secondary_hint"
                     android:paddingEnd="10dp"
                     android:paddingRight="10dp"
                     android:singleLine="true"

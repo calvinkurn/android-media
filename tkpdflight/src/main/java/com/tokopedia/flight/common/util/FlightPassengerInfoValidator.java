@@ -1,5 +1,6 @@
 package com.tokopedia.flight.common.util;
 
+import java.util.Calendar;
 import java.util.Date;
 
 import javax.inject.Inject;
@@ -78,5 +79,16 @@ public class FlightPassengerInfoValidator {
         Date inputDate = FlightDateUtil.removeTime(FlightDateUtil.stringToDate(
                 FlightDateUtil.DEFAULT_VIEW_FORMAT, selectedDate));
         return inputDate.before(indicator);
+    }
+
+    public boolean validateExpiredDateOfPassport(String expiredDateString, Date lastFlightDate) {
+        Date expiredDate = FlightDateUtil.stringToDate(FlightDateUtil.DEFAULT_VIEW_FORMAT, expiredDateString);
+        Date lastFlightDateUsed = FlightDateUtil.addTimeToSpesificDate(lastFlightDate, Calendar.DATE, -2);
+
+        return expiredDate.after(lastFlightDateUsed);
+    }
+
+    public boolean validatePassportNumberNotEmpty(String passportNumber) {
+        return passportNumber.length() > 0 && !passportNumber.isEmpty();
     }
 }

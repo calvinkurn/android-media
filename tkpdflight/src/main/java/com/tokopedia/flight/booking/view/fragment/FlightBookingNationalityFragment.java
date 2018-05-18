@@ -29,6 +29,12 @@ public class FlightBookingNationalityFragment extends BaseSearchListFragment<Fli
     FlightBookingPhoneCodePresenterImpl flightBookingPhoneCodePresenter;
 
     @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        flightBookingPhoneCodePresenter.attachView(this);
+        super.onViewCreated(view, savedInstanceState);
+    }
+
+    @Override
     protected String getScreenName() {
         return null;
     }

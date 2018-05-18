@@ -16,20 +16,22 @@ import com.tokopedia.flight.passenger.di.DaggerFlightPassengerComponent;
 import com.tokopedia.flight.passenger.di.FlightPassengerComponent;
 import com.tokopedia.flight.passenger.view.fragment.FlightPassengerUpdateFragment;
 
+import static com.tokopedia.flight.passenger.view.fragment.FlightPassengerUpdateFragment.EXTRA_DEPARTURE_DATE;
+import static com.tokopedia.flight.passenger.view.fragment.FlightPassengerUpdateFragment.EXTRA_IS_DOMESTIC;
+import static com.tokopedia.flight.passenger.view.fragment.FlightPassengerUpdateFragment.EXTRA_PASSENGER_VIEW_MODEL;
+import static com.tokopedia.flight.passenger.view.fragment.FlightPassengerUpdateFragment.EXTRA_REQUEST_ID;
+
 public class FlightPassengerUpdateActivity extends BaseSimpleActivity
         implements HasComponent<FlightPassengerComponent> {
 
-    public static final String EXTRA_PASSENGER_VIEW_MODEL = "EXTRA_PASSENGER_VIEW_MODEL";
-    public static final String EXTRA_DEPARTURE_DATE = "EXTRA_DEPARTURE_DATE";
-    public static final String EXTRA_REQUEST_ID = "EXTRA_REQUEST_ID";
-
     public static Intent getCallingIntent(Activity activity,
                                           FlightBookingPassengerViewModel passengerViewModel,
-                                          String departureDate, String requestId) {
+                                          String departureDate, String requestId, boolean isDomestic) {
         Intent intent = new Intent(activity, FlightPassengerUpdateActivity.class);
         intent.putExtra(EXTRA_PASSENGER_VIEW_MODEL, passengerViewModel);
         intent.putExtra(EXTRA_DEPARTURE_DATE, departureDate);
         intent.putExtra(EXTRA_REQUEST_ID, requestId);
+        intent.putExtra(EXTRA_IS_DOMESTIC, isDomestic);
         return intent;
     }
 
@@ -45,7 +47,8 @@ public class FlightPassengerUpdateActivity extends BaseSimpleActivity
         return FlightPassengerUpdateFragment.newInstance(
                 flightBookingPassengerViewModel,
                 getIntent().getExtras().getString(EXTRA_DEPARTURE_DATE),
-                getIntent().getExtras().getString(EXTRA_REQUEST_ID)
+                getIntent().getExtras().getString(EXTRA_REQUEST_ID),
+                getIntent().getExtras().getBoolean(EXTRA_IS_DOMESTIC)
         );
     }
 

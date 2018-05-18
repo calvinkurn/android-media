@@ -6,6 +6,7 @@ import com.tokopedia.flight.booking.constant.FlightBookingPassenger;
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingAmenityMetaViewModel;
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingAmenityViewModel;
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingPassengerViewModel;
+import com.tokopedia.flight.booking.view.viewmodel.FlightBookingPhoneCodeViewModel;
 import com.tokopedia.flight.common.util.FlightDateUtil;
 import com.tokopedia.flight.common.util.FlightPassengerInfoValidator;
 import com.tokopedia.flight.common.util.FlightPassengerTitleType;
@@ -23,8 +24,10 @@ import javax.inject.Inject;
 
 public class FlightBookingPassengerPresenter extends BaseDaggerPresenter<FlightBookingPassengerContract.View> implements FlightBookingPassengerContract.Presenter {
 
-    private final int MINUS_TWO_YEARS = -2;
-    private final int MINUS_TWELVE_YEARS = -12;
+    private final int PLUS_ONE = 1;
+    private final int MINUS_TWO = -2;
+    private final int MINUS_TWELVE = -12;
+    private final int PLUS_SIX = 6;
 
     private FlightPassengerInfoValidator flightPassengerInfoValidator;
 
@@ -32,7 +35,6 @@ public class FlightBookingPassengerPresenter extends BaseDaggerPresenter<FlightB
     public FlightBookingPassengerPresenter(FlightPassengerInfoValidator flightPassengerInfoValidator) {
         this.flightPassengerInfoValidator = flightPassengerInfoValidator;
     }
-
 
     @Override
     public void onViewCreated() {
@@ -83,6 +85,27 @@ public class FlightBookingPassengerPresenter extends BaseDaggerPresenter<FlightB
                     getView().getCurrentPassengerViewModel().getPassengerLastName()
             ));
         }
+
+        if (!getView().isDomestic()) {
+            getView().showPassportContainer();
+            if (getView().getCurrentPassengerViewModel().getPassportNumber() != null) {
+                getView().renderPassportNumber(getView().getCurrentPassengerViewModel().getPassportNumber());
+            }
+            if (getView().getCurrentPassengerViewModel().getPassportExpiredDate() != null) {
+                getView().renderPassportExpiredDate(FlightDateUtil.formatDate(FlightDateUtil.DEFAULT_FORMAT,
+                        FlightDateUtil.DEFAULT_VIEW_FORMAT, getView().getCurrentPassengerViewModel().getPassportExpiredDate()));
+            }
+            if (getView().getCurrentPassengerViewModel().getPassportNationality() != null) {
+                getView().renderPassportNationality(getView().getCurrentPassengerViewModel()
+                        .getPassportNationality().getCountryName());
+            }
+            if (getView().getCurrentPassengerViewModel().getPassportIssuerCountry() != null) {
+                getView().renderPassportIssuerCountry(getView().getCurrentPassengerViewModel()
+                        .getPassportIssuerCountry().getCountryName());
+            }
+        } else {
+            getView().hidePassportContainer();
+        }
     }
 
     @Override
@@ -96,6 +119,7 @@ public class FlightBookingPassengerPresenter extends BaseDaggerPresenter<FlightB
                     FlightDateUtil.formatDate(FlightDateUtil.DEFAULT_VIEW_FORMAT, FlightDateUtil.DEFAULT_FORMAT, getView().getPassengerBirthDate())
             );
             getView().getCurrentPassengerViewModel().setPassengerLastName(getView().getPassengerLastName());
+            getView().getCurrentPassengerViewModel().setPassportNumber(getView().getPassportNumber());
             getView().navigateResultUpdatePassengerData(getView().getCurrentPassengerViewModel());
         }
     }
@@ -167,7 +191,7 @@ public class FlightBookingPassengerPresenter extends BaseDaggerPresenter<FlightB
         Date newReturnDate = now.getTime();
 
         //max Date + 1 hari, karena pengecekan pakai before
-        maxDate = FlightDateUtil.addTimeToSpesificDate(maxDate, Calendar.DATE, +1);
+        maxDate = FlightDateUtil.addTimeToSpesificDate(maxDate, Calendar.DATE, PLUS_ONE);
 
         if (flightPassengerInfoValidator.validateDateExceedMaxDate(maxDate, newReturnDate)) {
             getView().showPassengerAdultBirthdateShouldMoreThan12Years(R.string.flight_booking_passenger_birthdate_adult_shoud_more_than_twelve_years);
@@ -265,6 +289,10 @@ public class FlightBookingPassengerPresenter extends BaseDaggerPresenter<FlightB
 
     @Override
     public void onChangeFromSavedPassenger(FlightBookingPassengerViewModel selectedPassenger) {
+        Date sixMonthFromDeparture = FlightDateUtil.addTimeToSpesificDate(
+                FlightDateUtil.stringToDate(getView().getDepartureDateString()),
+                Calendar.MONTH, PLUS_SIX);
+
         getView().renderSelectedList(String.format("%s %s",
                 selectedPassenger.getPassengerFirstName(),
                 selectedPassenger.getPassengerLastName()));
@@ -275,9 +303,20 @@ public class FlightBookingPassengerPresenter extends BaseDaggerPresenter<FlightB
         currentPassengerViewModel.setPassengerLastName(selectedPassenger.getPassengerLastName());
         currentPassengerViewModel.setPassengerTitle(selectedPassenger.getPassengerTitle());
         currentPassengerViewModel.setPassengerTitleId(selectedPassenger.getPassengerTitleId());
+        currentPassengerViewModel.setPassportNumber(selectedPassenger.getPassportNumber());
+        currentPassengerViewModel.setPassportNationality(selectedPassenger.getPassportNationality());
+        currentPassengerViewModel.setPassportIssuerCountry(selectedPassenger.getPassportIssuerCountry());
+
         if (flightPassengerInfoValidator.validateBirthdateNotEmpty(selectedPassenger.getPassengerBirthdate()) &&
                 (isChildPassenger() || isInfantPassenger() || getView().isMandatoryDoB())) {
             currentPassengerViewModel.setPassengerBirthdate(selectedPassenger.getPassengerBirthdate());
+        }
+
+        if (selectedPassenger.getPassportExpiredDate() != null && flightPassengerInfoValidator
+                .validateExpiredDateOfPassport(FlightDateUtil.formatDate(FlightDateUtil.DEFAULT_FORMAT,
+                        FlightDateUtil.DEFAULT_VIEW_FORMAT, selectedPassenger.getPassportExpiredDate()),
+                        sixMonthFromDeparture)) {
+            currentPassengerViewModel.setPassportExpiredDate(selectedPassenger.getPassportExpiredDate());
         }
 
         getView().setCurrentPassengerViewModel(currentPassengerViewModel);
@@ -319,12 +358,69 @@ public class FlightBookingPassengerPresenter extends BaseDaggerPresenter<FlightB
         getView().navigateToMealPicker(viewModel.getAmenities(), existingSelected);
     }
 
+    @Override
+    public void onPassportExpiredClicked() {
+
+        Date minDate, selectedDate;
+        Date departureDate = FlightDateUtil.stringToDate(getView().getDepartureDateString());
+
+        minDate = FlightDateUtil.addTimeToSpesificDate(departureDate, Calendar.MONTH, PLUS_SIX);
+        selectedDate = minDate;
+
+        if (getView().getPassportExpiredDate().length() != 0 &&
+                flightPassengerInfoValidator.validateExpiredDateOfPassport(getView().getPassportExpiredDate(), departureDate)) {
+            selectedDate = FlightDateUtil.stringToDate(FlightDateUtil.DEFAULT_VIEW_FORMAT, getView().getPassportExpiredDate());
+        }
+
+        getView().showPassportExpiredDatePickerDialog(selectedDate, minDate);
+    }
+
+    @Override
+    public void onPassportExpiredDateChanged(int year, int month, int dayOfMonth, Date minDate) {
+        Calendar now = FlightDateUtil.getCurrentCalendar();
+        now.set(Calendar.YEAR, year);
+        now.set(Calendar.MONTH, month);
+        now.set(Calendar.DATE, dayOfMonth);
+        Date expiredDate = now.getTime();
+
+        if (!flightPassengerInfoValidator.validateExpiredDateOfPassport(FlightDateUtil
+                .dateToString(expiredDate, FlightDateUtil.DEFAULT_VIEW_FORMAT), minDate)) {
+            getView().showPassportExpiredDateShouldMoreThan6MonthsFromDeparture(
+                    R.string.flight_passenger_passport_expired_date_less_than_6_month_error,
+                    FlightDateUtil.dateToString(minDate, FlightDateUtil.DEFAULT_VIEW_FORMAT));
+        } else {
+            String expiredDateStr = FlightDateUtil.dateToString(expiredDate, FlightDateUtil.DEFAULT_VIEW_FORMAT);
+            getView().getCurrentPassengerViewModel().setPassportExpiredDate(
+                    FlightDateUtil.formatDate(FlightDateUtil.DEFAULT_VIEW_FORMAT,
+                            FlightDateUtil.DEFAULT_FORMAT, expiredDateStr));
+            getView().renderPassportExpiredDate(expiredDateStr);
+        }
+        getView().hideKeyboard();
+    }
+
+    @Override
+    public void onNationalityChanged(FlightBookingPhoneCodeViewModel flightPassportNationalityViewModel) {
+        getView().getCurrentPassengerViewModel().setPassportNationality(flightPassportNationalityViewModel);
+        getView().renderPassportNationality(flightPassportNationalityViewModel.getCountryName());
+    }
+
+    @Override
+    public void onIssuerCountryChanged(FlightBookingPhoneCodeViewModel flightPassportIssuerCountry) {
+        getView().getCurrentPassengerViewModel().setPassportIssuerCountry(flightPassportIssuerCountry);
+        getView().renderPassportIssuerCountry(flightPassportIssuerCountry.getCountryName());
+    }
+
     private boolean validateFields(String departureDateString) {
         boolean isValid = true;
+        boolean isNeedPassport = !getView().isDomestic();
         Date twelveYearsAgo = FlightDateUtil.addTimeToSpesificDate(
-                FlightDateUtil.stringToDate(departureDateString), Calendar.YEAR, MINUS_TWELVE_YEARS);
+                FlightDateUtil.stringToDate(departureDateString), Calendar.YEAR, MINUS_TWELVE);
         Date twoYearsAgo = FlightDateUtil.addTimeToSpesificDate(
-                FlightDateUtil.stringToDate(departureDateString), Calendar.YEAR, MINUS_TWO_YEARS);
+                FlightDateUtil.stringToDate(departureDateString), Calendar.YEAR, MINUS_TWO);
+        Date sixMonthFromDeparture = FlightDateUtil.addTimeToSpesificDate(
+                FlightDateUtil.stringToDate(departureDateString),
+                Calendar.MONTH, PLUS_SIX);
+
         if (flightPassengerInfoValidator.validateNameIsEmpty(getView().getPassengerFirstName())) {
             isValid = false;
             getView().showPassengerNameEmptyError(R.string.flight_booking_passenger_first_name_empty_error);
@@ -376,7 +472,26 @@ public class FlightBookingPassengerPresenter extends BaseDaggerPresenter<FlightB
                 getView().getPassengerBirthDate(), twoYearsAgo)) {
             isValid = false;
             getView().showPassengerInfantBirthdateShouldNoMoreThan2Years(R.string.flight_booking_passenger_birthdate_infant_should_no_more_than_two_years);
+        } else if (isNeedPassport && !flightPassengerInfoValidator.validatePassportNumberNotEmpty(getView().getPassportNumber())) {
+            isValid = false;
+            getView().showPassengerPassportNumberEmptyError(R.string.flight_booking_passport_number_empty_error);
+        } else if (isNeedPassport && getView().getCurrentPassengerViewModel().getPassportExpiredDate() == null) {
+            isValid = false;
+            getView().showPassengerPassportExpiredDateEmptyError(R.string.flight_booking_passport_expired_date_empty_error);
+        } else if (isNeedPassport && !flightPassengerInfoValidator.validateExpiredDateOfPassport(
+                getView().getPassportExpiredDate(), sixMonthFromDeparture)) {
+            isValid = false;
+            getView().showPassportExpiredDateShouldMoreThan6MonthsFromDeparture(
+                    R.string.flight_passenger_passport_expired_date_less_than_6_month_error,
+                    FlightDateUtil.dateToString(sixMonthFromDeparture, FlightDateUtil.DEFAULT_VIEW_FORMAT));
+        } else if (isNeedPassport && getView().getCurrentPassengerViewModel().getPassportNationality() == null) {
+            isValid = false;
+            getView().showPassportNationalityEmptyError(R.string.flight_booking_passport_nationality_empty_error);
+        } else if (isNeedPassport && getView().getCurrentPassengerViewModel().getPassportIssuerCountry() == null) {
+            isValid = false;
+            getView().showPassportIssuerCountryEmptyError(R.string.flight_booking_passport_issuer_country_empty_error);
         }
+
         return isValid;
     }
 

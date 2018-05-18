@@ -126,7 +126,8 @@ public class FlightBookingPresenter extends FlightBaseBookingPresenter<FlightBoo
                             getView().getReturnTripId(),
                             getView().getString(R.string.flight_luggage_prefix),
                             getView().getString(R.string.flight_meal_prefix),
-                            getView().getString(R.string.flight_birthdate_prefix)
+                            getView().getString(R.string.flight_birthdate_prefix),
+                            getView().getString(R.string.flight_passenger_passport_number_hint)
                     );
             getView().navigateToReview(flightBookingReviewModel);
         }
