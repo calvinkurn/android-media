@@ -1385,9 +1385,7 @@ public class ChatRoomFragment extends BaseDaggerFragment
 
     private void removeDummyReplyIfExist(BaseChatViewModel message) {
         if (isMyMessage(message.getFromUid())) {
-            if (message instanceof ProductAttachmentViewModel) {
-                getAdapter().removeLastProductWithId(((ProductAttachmentViewModel) message).getProductId());
-            } else if (message instanceof SendableViewModel) {
+            if (message instanceof SendableViewModel) {
                 getAdapter().removeLastMessageWithStartTime(((SendableViewModel) message).getStartTime());
             } else {
                 getAdapter().removeLast();

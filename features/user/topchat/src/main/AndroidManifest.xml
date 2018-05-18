@@ -37,5 +37,9 @@
         <activity
             android:name=".attachinvoice.view.activity.AttachInvoiceActivity"
             android:screenOrientation="portrait"/>
+
+        <activity
+            android:name=".attachproduct.view.activity.AttachProductActivity"
+            android:screenOrientation="portrait"/>
     </application>
 </manifest>
