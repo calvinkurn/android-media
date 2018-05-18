@@ -1,5 +1,12 @@
 package com.tokopedia.discovery.imagesearch.data.subscriber;
 
+import com.tokopedia.core.network.exception.HttpErrorException;
+import com.tokopedia.core.network.exception.ResponseDataNullException;
+import com.tokopedia.core.network.exception.ServerErrorRequestDeniedException;
+import com.tokopedia.core.network.retrofit.exception.ServerErrorMaintenanceException;
+import com.tokopedia.core.network.retrofit.exception.ServerErrorTimeZoneException;
+import com.tokopedia.core.network.retrofit.utils.ErrorNetMessage;
+import com.tokopedia.core.network.retrofit.utils.ServerErrorHandler;
 import com.tokopedia.discovery.newdiscovery.base.BaseDiscoveryContract;
 import com.tokopedia.discovery.newdiscovery.base.DefaultSearchSubscriber;
 import com.tokopedia.discovery.newdiscovery.domain.model.SearchResultModel;
@@ -7,6 +14,9 @@ import com.tokopedia.discovery.newdiscovery.search.fragment.product.helper.Produ
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.ProductViewModel;
 import com.tokopedia.discovery.newdiscovery.util.SearchParameter;
 
+import java.net.ConnectException;
+import java.net.SocketTimeoutException;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -29,9 +39,30 @@ public class DefaultImageSearchSubscriber<D2 extends BaseDiscoveryContract.View>
     }
 
     @Override
-    public void onError(Throwable throwable) {
-        discoveryView.onHandleInvalidImageSearchResponse();
-        throwable.printStackTrace();
+    public void onError(Throwable e) {
+
+        if (e instanceof UnknownHostException || e instanceof ConnectException) {
+            discoveryView.showErrorNetwork(ErrorNetMessage.MESSAGE_ERROR_NO_CONNECTION_FULL);
+        } else if (e instanceof SocketTimeoutException) {
+            discoveryView.showErrorNetwork(ErrorNetMessage.MESSAGE_ERROR_TIMEOUT);
+        } else if (e instanceof ResponseDataNullException) {
+            discoveryView.onHandleInvalidImageSearchResponse();
+        } else if (e instanceof HttpErrorException) {
+            discoveryView.showErrorNetwork(e.getMessage());
+        } else if (e instanceof ServerErrorRequestDeniedException) {
+            ServerErrorHandler.sendForceLogoutAnalytics(
+                    ((ServerErrorRequestDeniedException) e).getUrl()
+            );
+            ServerErrorHandler.showForceLogoutDialog();
+        } else if (e instanceof ServerErrorMaintenanceException) {
+            ServerErrorHandler.showMaintenancePage();
+        } else if (e instanceof ServerErrorTimeZoneException) {
+            ServerErrorHandler.showTimezoneErrorSnackbar();
+        } else {
+            discoveryView.onHandleInvalidImageSearchResponse();
+        }
+
+        e.printStackTrace();
     }
 
     @Override
