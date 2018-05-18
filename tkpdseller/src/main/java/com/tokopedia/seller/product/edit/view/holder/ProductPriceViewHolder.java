@@ -367,6 +367,10 @@ public class ProductPriceViewHolder extends ProductViewHolder{
                 if (resultCode == Activity.RESULT_OK) {
                     productWholesaleViewModels = data.getParcelableArrayListExtra(ProductAddWholesaleFragment.EXTRA_PRODUCT_WHOLESALE);
                     setLabelWHolesale(productWholesaleViewModels);
+                    if(listener.hasVariant()){
+                        priceSpinnerCounterInputView.setEnabled(false);
+                        editPriceImageButton.setVisibility(View.VISIBLE);
+                    }
                     listener.changeAllPriceVariant(getCurrencyType(), data.getDoubleExtra(ProductAddWholesaleFragment.EXTRA_PRODUCT_MAIN_PRICE, 0));
                 }
                 break;
