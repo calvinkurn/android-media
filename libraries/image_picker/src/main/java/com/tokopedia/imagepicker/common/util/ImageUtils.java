@@ -24,6 +24,7 @@ import android.support.media.ExifInterface;
 import android.text.TextUtils;
 import android.webkit.MimeTypeMap;
 
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -579,7 +580,6 @@ public class ImageUtils {
     private static boolean writeBufferToFile(byte[] buffer, String path) {
         try {
             FileOutputStream fos = new FileOutputStream(path);
-
             fos.write(buffer);
             fos.close();
             return true;
@@ -607,7 +607,6 @@ public class ImageUtils {
         } catch (java.io.IOException e) {
             return false;
         }
-
     }
 
 
@@ -694,6 +693,10 @@ public class ImageUtils {
 
     public static int getOrientation(String path) throws IOException {
         ExifInterface exif = new ExifInterface(path);
+        return exif.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL);
+    }
+
+    public static int getOrientation(ExifInterface exif)  {
         return exif.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL);
     }
 

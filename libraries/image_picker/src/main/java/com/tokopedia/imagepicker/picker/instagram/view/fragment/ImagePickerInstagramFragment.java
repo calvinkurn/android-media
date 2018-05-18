@@ -2,6 +2,7 @@ package com.tokopedia.imagepicker.picker.instagram.view.fragment;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
@@ -11,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
+import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter;
 import com.tokopedia.abstraction.base.view.adapter.model.ErrorNetworkModel;
 import com.tokopedia.imagepicker.R;
 import com.tokopedia.imagepicker.picker.gallery.widget.MediaGridInset;
@@ -20,6 +22,7 @@ import com.tokopedia.imagepicker.picker.instagram.di.DaggerInstagramComponent;
 
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment;
 import com.tokopedia.imagepicker.picker.instagram.di.InstagramModule;
+import com.tokopedia.imagepicker.picker.instagram.view.adapter.ImageInstagramAdapter;
 import com.tokopedia.imagepicker.picker.instagram.view.adapter.ImageInstagramAdapterTypeFactory;
 import com.tokopedia.imagepicker.picker.instagram.view.adapter.ImagePickerInstagramViewHolder;
 import com.tokopedia.imagepicker.picker.instagram.view.dialog.InstagramLoginDialog;
@@ -46,8 +49,18 @@ public class ImagePickerInstagramFragment extends BaseListFragment<InstagramMedi
     private String code = "";
     private String nextMediaId = "";
 
+    private ImageInstagramAdapter imageInstagramAdapter;
+
     public static ImagePickerInstagramFragment newInstance() {
         return new ImagePickerInstagramFragment();
+    }
+
+    @NonNull
+    @Override
+    protected BaseListAdapter<InstagramMediaModel, ImageInstagramAdapterTypeFactory> createAdapterInstance() {
+        imageInstagramAdapter = new ImageInstagramAdapter(getAdapterTypeFactory());
+        imageInstagramAdapter.setOnAdapterInteractionListener(this);
+        return imageInstagramAdapter;
     }
 
     @Override

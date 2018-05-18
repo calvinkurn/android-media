@@ -209,14 +209,20 @@ public class ImagePickerCameraFragment extends TkpdBaseV4Fragment {
         if (mCaptureNativeSize == null) {
             mCaptureNativeSize = cameraView.getPictureSize();
         }
-        CameraUtils.decodeBitmap(imageByte, mCaptureNativeSize.getWidth(), mCaptureNativeSize.getHeight(), new CameraUtils.BitmapCallback() {
-            @Override
-            public void onBitmapReady(Bitmap bitmap) {
-                File file = ImageUtils.writeImageToTkpdPath(ImageUtils.DirectoryDef.DIRECTORY_TOKOPEDIA_CACHE_CAMERA, bitmap, false);
-                onImagePickerCameraFragmentListener.onImageTaken(file.getAbsolutePath());
-            }
-        });
-        reset();
+        try {
+            CameraUtils.decodeBitmap(imageByte, mCaptureNativeSize.getWidth(), mCaptureNativeSize.getHeight(), new CameraUtils.BitmapCallback() {
+                @Override
+                public void onBitmapReady(Bitmap bitmap) {
+                    File file = ImageUtils.writeImageToTkpdPath(ImageUtils.DirectoryDef.DIRECTORY_TOKOPEDIA_CACHE_CAMERA, bitmap, false);
+                    onImagePickerCameraFragmentListener.onImageTaken(file.getAbsolutePath());
+                }
+            });
+        }catch (OutOfMemoryError error) {
+            File file = ImageUtils.writeImageToTkpdPath(ImageUtils.DirectoryDef.DIRECTORY_TOKOPEDIA_CACHE_CAMERA, imageByte, false);
+            onImagePickerCameraFragmentListener.onImageTaken(file.getAbsolutePath());
+        } finally {
+            reset();
+        }
     }
 
     private void reset() {
