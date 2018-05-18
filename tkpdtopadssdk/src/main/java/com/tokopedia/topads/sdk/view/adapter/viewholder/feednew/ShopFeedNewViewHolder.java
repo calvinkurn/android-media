@@ -45,7 +45,6 @@ public class ShopFeedNewViewHolder extends AbstractViewHolder<ShopFeedNewViewMod
     private TextView shopTitle;
     private TextView shopSubtitle;
     private TextView favoriteText;
-    private View favoriteButton;
     private FeedShopAdapter adapter;
     private View.OnClickListener shopItemClickListener;
 
@@ -61,7 +60,6 @@ public class ShopFeedNewViewHolder extends AbstractViewHolder<ShopFeedNewViewMod
         shopImage = itemView.findViewById(R.id.shop_image);
         shopTitle = itemView.findViewById(R.id.shop_title);
         shopSubtitle = itemView.findViewById(R.id.shop_subtitle);
-        favoriteButton = itemView.findViewById(R.id.favorite_button);
         favoriteText = itemView.findViewById(R.id.favorite_text);
 
         GridLayoutManager gridLayoutManager = new GridLayoutManager(
@@ -77,7 +75,7 @@ public class ShopFeedNewViewHolder extends AbstractViewHolder<ShopFeedNewViewMod
 
         itemView.setOnClickListener(onShopItemClicked());
         header.setOnClickListener(onShopItemClicked());
-        favoriteButton.setOnClickListener(onAddFavorite());
+        favoriteText.setOnClickListener(onAddFavorite());
     }
 
     public View.OnClickListener onShopItemClicked() {
@@ -152,12 +150,12 @@ public class ShopFeedNewViewHolder extends AbstractViewHolder<ShopFeedNewViewMod
         String text;
         Drawable drawable;
         if (isFavorite) {
-            favoriteButton.setSelected(true);
+            favoriteText.setSelected(true);
             text = context.getString(R.string.favorit);
             drawable = AppCompatResources.getDrawable(context, R.drawable.ic_check_favorite);
             favoriteText.setTextColor(ContextCompat.getColor(context, R.color.label_color));
         } else {
-            favoriteButton.setSelected(false);
+            favoriteText.setSelected(false);
             text = context.getString(R.string.favoritkan);
             drawable = AppCompatResources.getDrawable(context, R.drawable.ic_add_white_24px);
             favoriteText.setTextColor(ContextCompat.getColor(context, R.color.white));
