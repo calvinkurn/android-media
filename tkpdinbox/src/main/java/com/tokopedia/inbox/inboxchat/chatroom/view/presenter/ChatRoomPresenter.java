@@ -38,7 +38,7 @@ import com.tokopedia.inbox.inboxchat.chattemplate.view.viewmodel.TemplateChatMod
 import com.tokopedia.inbox.inboxchat.common.InboxChatConstant;
 import com.tokopedia.inbox.inboxchat.common.util.ImageUploadHandlerChat;
 import com.tokopedia.inbox.inboxchat.uploadimage.domain.model.UploadImageDomain;
-import com.tokopedia.inbox.inboxchat.viewmodel.chatroom.ChatRatingViewModel;
+import com.tokopedia.inbox.inboxchat.chatroom.view.viewmodel.rating.ChatRatingViewModel;
 
 import java.util.ArrayList;
 import java.util.List;

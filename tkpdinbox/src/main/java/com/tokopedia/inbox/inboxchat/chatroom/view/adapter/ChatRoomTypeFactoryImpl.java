@@ -4,7 +4,7 @@ import android.view.View;
 
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
-import com.tokopedia.inbox.inboxchat.adapter.viewholder.ChatRatingViewHolder;
+import com.tokopedia.inbox.inboxchat.chatroom.view.adapter.viewholder.chatroom.ChatRatingViewHolder;
 import com.tokopedia.inbox.inboxchat.chatroom.view.adapter.viewholder.chatbot.AttachedInvoiceSelectionViewHolder;
 import com.tokopedia.inbox.inboxchat.chatroom.view.adapter.viewholder.chatbot.AttachedInvoiceSentViewHolder;
 import com.tokopedia.inbox.inboxchat.chatroom.view.adapter.viewholder.chatbot.QuickReplyViewHolder;
@@ -27,7 +27,7 @@ import com.tokopedia.inbox.inboxchat.chatroom.view.viewmodel.invoiceattachment.A
 import com.tokopedia.inbox.inboxchat.chatroom.view.viewmodel.message.MessageViewModel;
 import com.tokopedia.inbox.inboxchat.chatroom.view.viewmodel.productattachment.ProductAttachmentViewModel;
 import com.tokopedia.inbox.inboxchat.chatroom.view.viewmodel.quickreply.QuickReplyListViewModel;
-import com.tokopedia.inbox.inboxchat.viewmodel.chatroom.ChatRatingViewModel;
+import com.tokopedia.inbox.inboxchat.chatroom.view.viewmodel.rating.ChatRatingViewModel;
 
 /**
  * Created by stevenfredian on 9/27/17.

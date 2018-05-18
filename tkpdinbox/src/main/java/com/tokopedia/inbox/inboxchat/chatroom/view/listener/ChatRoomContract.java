@@ -18,7 +18,7 @@ import com.tokopedia.inbox.inboxchat.chatroom.view.viewmodel.ChatRoomViewModel;
 import com.tokopedia.inbox.inboxchat.chatroom.view.viewmodel.imageupload.ImageUploadViewModel;
 import com.tokopedia.inbox.inboxchat.chatroom.view.viewmodel.quickreply.QuickReplyListViewModel;
 import com.tokopedia.inbox.inboxchat.chatroom.view.viewmodel.quickreply.QuickReplyViewModel;
-import com.tokopedia.inbox.inboxchat.viewmodel.chatroom.ChatRatingViewModel;
+import com.tokopedia.inbox.inboxchat.chatroom.view.viewmodel.rating.ChatRatingViewModel;
 
 import java.util.List;
 

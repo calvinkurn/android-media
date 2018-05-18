@@ -13,7 +13,7 @@ import com.tokopedia.inbox.inboxchat.chatroom.view.viewmodel.invoiceattachment.A
 import com.tokopedia.inbox.inboxchat.chatroom.view.viewmodel.message.MessageViewModel;
 import com.tokopedia.inbox.inboxchat.chatroom.view.viewmodel.productattachment.ProductAttachmentViewModel;
 import com.tokopedia.inbox.inboxchat.chatroom.view.viewmodel.quickreply.QuickReplyListViewModel;
-import com.tokopedia.inbox.inboxchat.viewmodel.chatroom.ChatRatingViewModel;
+import com.tokopedia.inbox.inboxchat.chatroom.view.viewmodel.rating.ChatRatingViewModel;
 
 /**
  * Created by stevenfredian on 9/27/17.

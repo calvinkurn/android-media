@@ -98,7 +98,7 @@ import com.tokopedia.inbox.inboxchat.common.analytics.TopChatAnalytics;
 import com.tokopedia.inbox.inboxchat.common.di.DaggerInboxChatComponent;
 import com.tokopedia.inbox.inboxchat.common.util.Events;
 import com.tokopedia.inbox.inboxchat.common.util.ImageUploadHandlerChat;
-import com.tokopedia.inbox.inboxchat.viewmodel.chatroom.ChatRatingViewModel;
+import com.tokopedia.inbox.inboxchat.chatroom.view.viewmodel.rating.ChatRatingViewModel;
 import com.tokopedia.inbox.inboxmessage.InboxMessageConstant;
 
 import java.util.ArrayList;

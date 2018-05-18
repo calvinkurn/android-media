@@ -22,7 +22,7 @@ import com.tokopedia.inbox.inboxchat.chatroom.view.viewmodel.TimeMachineChatMode
 import com.tokopedia.inbox.inboxchat.chatroom.view.viewmodel.TypingChatModel;
 import com.tokopedia.inbox.inboxchat.chatroom.view.viewmodel.imageupload.ImageUploadViewModel;
 import com.tokopedia.inbox.inboxchat.chatroom.view.viewmodel.productattachment.ProductAttachmentViewModel;
-import com.tokopedia.inbox.inboxchat.viewmodel.chatroom.ChatRatingViewModel;
+import com.tokopedia.inbox.inboxchat.chatroom.view.viewmodel.rating.ChatRatingViewModel;
 
 import java.util.ArrayList;
 import java.util.Date;

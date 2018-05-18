@@ -1,4 +1,4 @@
-package com.tokopedia.inbox.inboxchat.adapter.viewholder;
+package com.tokopedia.inbox.inboxchat.chatroom.view.adapter.viewholder.chatroom;
 
 import android.support.annotation.LayoutRes;
 import android.text.format.DateFormat;
@@ -14,13 +14,13 @@ import com.tokopedia.inbox.inboxchat.chatroom.view.adapter.viewholder.common.Bas
 import com.tokopedia.inbox.inboxchat.chatroom.view.listener.ChatRoomContract;
 import com.tokopedia.inbox.inboxchat.common.util.ChatLinkHandlerMovementMethod;
 import com.tokopedia.inbox.inboxchat.common.util.ChatTimeConverter;
-import com.tokopedia.inbox.inboxchat.viewmodel.chatroom.ChatRatingViewModel;
+import com.tokopedia.inbox.inboxchat.chatroom.view.viewmodel.rating.ChatRatingViewModel;
 
 import java.util.Date;
 
-import static com.tokopedia.inbox.inboxchat.viewmodel.chatroom.ChatRatingViewModel.RATING_BAD;
-import static com.tokopedia.inbox.inboxchat.viewmodel.chatroom.ChatRatingViewModel.RATING_GOOD;
-import static com.tokopedia.inbox.inboxchat.viewmodel.chatroom.ChatRatingViewModel.RATING_NONE;
+import static com.tokopedia.inbox.inboxchat.chatroom.view.viewmodel.rating.ChatRatingViewModel.RATING_BAD;
+import static com.tokopedia.inbox.inboxchat.chatroom.view.viewmodel.rating.ChatRatingViewModel.RATING_GOOD;
+import static com.tokopedia.inbox.inboxchat.chatroom.view.viewmodel.rating.ChatRatingViewModel.RATING_NONE;
 
 /**
  * @author by yfsx on 14/05/18.
