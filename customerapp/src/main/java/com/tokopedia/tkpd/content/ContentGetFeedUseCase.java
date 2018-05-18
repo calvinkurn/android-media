@@ -2,7 +2,6 @@ package com.tokopedia.tkpd.content;
 
 import com.tokopedia.tkpd.content.di.ContentConsumerComponent;
 import com.tokopedia.feedplus.domain.usecase.FollowKolPostUseCase;
-import com.tokopedia.feedplus.domain.usecase.LikeKolPostUseCase;
 
 import javax.inject.Inject;
 

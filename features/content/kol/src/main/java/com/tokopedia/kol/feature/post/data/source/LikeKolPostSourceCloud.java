@@ -3,7 +3,6 @@ package com.tokopedia.kol.feature.post.data.source;
 import android.content.Context;
 
 import com.tokopedia.abstraction.common.data.model.request.GraphqlRequest;
-import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.utils.GraphqlHelper;
 import com.tokopedia.kol.R;
 import com.tokopedia.kol.common.data.source.api.KolApi;
@@ -24,7 +23,7 @@ public class LikeKolPostSourceCloud {
     private final LikeKolPostMapper likeKolPostMapper;
 
     @Inject
-    public LikeKolPostSourceCloud(@ApplicationContext Context context, KolApi kolApi,
+    public LikeKolPostSourceCloud(Context context, KolApi kolApi,
                                   LikeKolPostMapper likeKolPostMapper) {
         this.context = context;
         this.kolApi = kolApi;

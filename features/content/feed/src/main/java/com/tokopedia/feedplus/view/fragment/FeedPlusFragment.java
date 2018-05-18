@@ -68,6 +68,7 @@ import com.tokopedia.feedplus.view.adapter.viewholder.productcard.AddFeedViewHol
 import com.tokopedia.feedplus.view.analytics.FeedEnhancedTracking;
 import com.tokopedia.feedplus.view.analytics.FeedTrackingEventLabel;
 import com.tokopedia.feedplus.view.di.DaggerFeedPlusComponent;
+import com.tokopedia.feedplus.view.di.FeedPlusModule;
 import com.tokopedia.feedplus.view.listener.FeedPlus;
 import com.tokopedia.feedplus.view.presenter.FeedPlusPresenter;
 import com.tokopedia.feedplus.view.util.NpaLinearLayoutManager;
@@ -158,6 +159,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
         DaggerFeedPlusComponent daggerFeedPlusComponent =
                 (DaggerFeedPlusComponent) DaggerFeedPlusComponent.builder()
                         .appComponent(appComponent)
+                        .feedPlusModule(new FeedPlusModule())
                         .build();
 
         daggerFeedPlusComponent.inject(this);

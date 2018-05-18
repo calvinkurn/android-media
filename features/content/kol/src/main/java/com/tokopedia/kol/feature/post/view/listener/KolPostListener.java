@@ -42,6 +42,8 @@ public interface KolPostListener {
         void onLikeKolError(String message);
 
         interface ViewHolder {
+            Context getContext();
+
             UserSession getUserSession();
 
             AbstractionRouter getAbstractionRouter();

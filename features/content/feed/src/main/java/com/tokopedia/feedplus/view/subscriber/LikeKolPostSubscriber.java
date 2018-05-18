@@ -3,7 +3,6 @@ package com.tokopedia.feedplus.view.subscriber;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.network.retrofit.response.ErrorHandler;
 import com.tokopedia.feedplus.R;
-import com.tokopedia.feedplus.domain.model.LikeKolDomain;
 import com.tokopedia.feedplus.view.listener.FeedPlus;
 
 import rx.Subscriber;
@@ -12,7 +11,7 @@ import rx.Subscriber;
  * @author by nisie on 11/3/17.
  */
 
-public class LikeKolPostSubscriber extends Subscriber<LikeKolDomain> {
+public class LikeKolPostSubscriber extends Subscriber<Boolean> {
     private final FeedPlus.View view;
     private final FeedPlus.View.Kol kolListener;
     private final int rowNumber;
@@ -36,9 +35,9 @@ public class LikeKolPostSubscriber extends Subscriber<LikeKolDomain> {
     }
 
     @Override
-    public void onNext(LikeKolDomain likeKolDomain) {
+    public void onNext(Boolean likeSuccess) {
         view.finishLoadingProgress();
-        if (likeKolDomain.isSuccess()) {
+        if (likeSuccess) {
             kolListener.onSuccessLikeDislikeKolPost(rowNumber);
         } else {
             kolListener.onErrorLikeDislikeKolPost(MainApplication.getAppContext().getString(R

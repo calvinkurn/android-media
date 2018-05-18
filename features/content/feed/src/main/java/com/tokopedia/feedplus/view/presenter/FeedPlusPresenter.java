@@ -13,13 +13,13 @@ import com.tokopedia.feedplus.domain.usecase.FollowKolPostUseCase;
 import com.tokopedia.feedplus.domain.usecase.GetFeedsUseCase;
 import com.tokopedia.feedplus.domain.usecase.GetFirstPageFeedsCloudUseCase;
 import com.tokopedia.feedplus.domain.usecase.GetFirstPageFeedsUseCase;
-import com.tokopedia.feedplus.domain.usecase.LikeKolPostUseCase;
 import com.tokopedia.feedplus.view.listener.FeedPlus;
 import com.tokopedia.feedplus.view.subscriber.FollowUnfollowKolRecommendationSubscriber;
 import com.tokopedia.feedplus.view.subscriber.FollowUnfollowKolSubscriber;
 import com.tokopedia.feedplus.view.subscriber.GetFeedsSubscriber;
 import com.tokopedia.feedplus.view.subscriber.GetFirstPageFeedsSubscriber;
 import com.tokopedia.feedplus.view.subscriber.LikeKolPostSubscriber;
+import com.tokopedia.kol.feature.post.domain.interactor.LikeKolPostUseCase;
 import com.tokopedia.topads.sdk.domain.model.Data;
 
 import javax.inject.Inject;
@@ -211,9 +211,9 @@ public class FeedPlusPresenter
 
     @Override
     public void unlikeKol(int id, int rowNumber, FeedPlus.View.Kol kolListener) {
-        likeKolPostUseCase.execute(LikeKolPostUseCase.getParam(id, LikeKolPostUseCase
-                .ACTION_UNLIKE), new LikeKolPostSubscriber
-                (rowNumber, getView(), kolListener));
+        likeKolPostUseCase.execute(
+                LikeKolPostUseCase.getParam(id, LikeKolPostUseCase.ACTION_UNLIKE),
+                new LikeKolPostSubscriber(rowNumber, getView(), kolListener));
     }
 
     @Override

@@ -4,14 +4,10 @@ import com.apollographql.android.rx.RxApollo;
 import com.apollographql.apollo.ApolloClient;
 import com.apollographql.apollo.ApolloWatcher;
 import com.tkpdfeed.feeds.FollowKol;
-import com.tkpdfeed.feeds.LikeKolPost;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.feedplus.data.mapper.FollowKolMapper;
-import com.tokopedia.feedplus.data.mapper.LikeKolMapper;
 import com.tokopedia.feedplus.domain.model.FollowKolDomain;
-import com.tokopedia.feedplus.domain.model.LikeKolDomain;
 import com.tokopedia.feedplus.domain.usecase.FollowKolPostUseCase;
-import com.tokopedia.feedplus.domain.usecase.LikeKolPostUseCase;
 
 import rx.Observable;
 
@@ -23,24 +19,11 @@ public class KolSource {
 
     private final FollowKolMapper followKolMapper;
     private ApolloClient apolloClient;
-    private LikeKolMapper likeKolMapper;
 
     public KolSource(ApolloClient apolloClient,
-                     LikeKolMapper likeKolMapper,
                      FollowKolMapper followKolMapper) {
         this.apolloClient = apolloClient;
-        this.likeKolMapper = likeKolMapper;
         this.followKolMapper = followKolMapper;
-    }
-
-    public Observable<LikeKolDomain> likeKolPost(RequestParams requestParams) {
-        ApolloWatcher<LikeKolPost.Data> apolloWatcher = apolloClient.newCall(
-                LikeKolPost.builder()
-                        .idPost(requestParams.getInt(LikeKolPostUseCase.PARAM_ID, 0))
-                        .action(requestParams.getInt(LikeKolPostUseCase.PARAM_ACTION, -1))
-                        .build()).watcher();
-
-        return RxApollo.from(apolloWatcher).map(likeKolMapper);
     }
 
     public Observable<FollowKolDomain> followKolPost(RequestParams requestParams) {

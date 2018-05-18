@@ -32,7 +32,6 @@ public class LikeKolPostUseCase extends UseCase<Boolean> {
         return likeKolPostSourceCloud.likeKolPost(requestParams);
     }
 
-
     public static RequestParams getParam(int postId, int action) {
         RequestParams params = RequestParams.create();
         params.putInt(PARAM_ID, postId);

@@ -210,9 +210,7 @@ import com.tokopedia.tkpd.react.ReactNativeComponent;
 import com.tokopedia.tkpd.redirect.RedirectCreateShopActivity;
 import com.tokopedia.feedplus.FeedModuleRouter;
 import com.tokopedia.feedplus.domain.model.FollowKolDomain;
-import com.tokopedia.feedplus.domain.model.LikeKolDomain;
 import com.tokopedia.feedplus.domain.usecase.FollowKolPostUseCase;
-import com.tokopedia.feedplus.domain.usecase.LikeKolPostUseCase;
 import com.tokopedia.kol.feature.comment.view.activity.KolCommentActivity;
 import com.tokopedia.kol.feature.following_list.view.activity.KolFollowingListActivity;
 import com.tokopedia.feedplus.view.di.DaggerFeedPlusComponent;
@@ -226,7 +224,6 @@ import com.tokopedia.tkpd.tokocash.TokoCashPendingCashbackMapper;
 import com.tokopedia.tkpd.tokocash.datepicker.DatePickerUtil;
 import com.tokopedia.kol.KolRouter;
 import com.tokopedia.kol.feature.post.view.fragment.KolPostFragment;
-import com.tokopedia.kol.feature.post.view.subscriber.LikeKolPostSubscriber;
 import com.tokopedia.tkpdpdp.PreviewProductImageDetail;
 import com.tokopedia.tkpdpdp.ProductInfoActivity;
 import com.tokopedia.tkpdreactnative.react.ReactConst;
@@ -259,7 +256,6 @@ import javax.inject.Inject;
 import okhttp3.Interceptor;
 import okhttp3.Response;
 import rx.Observable;
-import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
@@ -1645,34 +1641,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @Override
     public String getKolCommentArgsTotalComment() {
         return KolCommentFragment.ARGS_TOTAL_COMMENT;
-    }
-
-    @Override
-    public void doLikeKolPost(int id, LikeKolPostSubscriber likeKolPostSubscriber) {
-        likeUnlikeKolPost(id, LikeKolPostUseCase.ACTION_LIKE, likeKolPostSubscriber);
-    }
-
-    @Override
-    public void doUnlikeKolPost(int id, LikeKolPostSubscriber likeKolPostSubscriber) {
-        likeUnlikeKolPost(id, LikeKolPostUseCase.ACTION_UNLIKE, likeKolPostSubscriber);
-    }
-
-    private void likeUnlikeKolPost(int id, int action,
-                                   LikeKolPostSubscriber likeKolPostSubscriber) {
-        LikeKolPostUseCase likeKolPostUseCase = ContentGetFeedUseCase
-                .newInstance(getContentConsumerComponent())
-                .inject()
-                .getLikeKolPostUseCase();
-        likeKolPostUseCase.createObservable(LikeKolPostUseCase.getParam(id, action))
-                .map(new Func1<LikeKolDomain, Boolean>() {
-                    @Override
-                    public Boolean call(LikeKolDomain likeKolDomain) {
-                        return likeKolDomain.isSuccess();
-                    }
-                })
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(likeKolPostSubscriber);
     }
 
     @Override

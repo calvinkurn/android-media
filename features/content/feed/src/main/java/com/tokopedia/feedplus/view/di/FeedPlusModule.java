@@ -24,7 +24,6 @@ import com.tokopedia.feedplus.data.mapper.FeedDetailListMapper;
 import com.tokopedia.feedplus.data.mapper.FeedListMapper;
 import com.tokopedia.feedplus.data.mapper.FeedResultMapper;
 import com.tokopedia.feedplus.data.mapper.FollowKolMapper;
-import com.tokopedia.feedplus.data.mapper.LikeKolMapper;
 import com.tokopedia.feedplus.data.mapper.RecentProductMapper;
 import com.tokopedia.feedplus.data.mapper.RemoveWishlistMapper;
 import com.tokopedia.feedplus.data.repository.FavoriteShopRepository;
@@ -44,9 +43,12 @@ import com.tokopedia.feedplus.domain.usecase.GetFeedsUseCase;
 import com.tokopedia.feedplus.domain.usecase.GetFirstPageFeedsCloudUseCase;
 import com.tokopedia.feedplus.domain.usecase.GetFirstPageFeedsUseCase;
 import com.tokopedia.feedplus.domain.usecase.GetRecentViewUseCase;
-import com.tokopedia.feedplus.domain.usecase.LikeKolPostUseCase;
 import com.tokopedia.feedplus.domain.usecase.RefreshFeedUseCase;
 import com.tokopedia.feedplus.domain.usecase.RemoveWishlistUseCase;
+import com.tokopedia.feedplus.view.listener.FeedPlus;
+import com.tokopedia.kol.common.data.source.api.KolApi;
+import com.tokopedia.kol.feature.post.data.mapper.LikeKolPostMapper;
+import com.tokopedia.kol.feature.post.data.source.LikeKolPostSourceCloud;
 
 import javax.inject.Named;
 
@@ -64,6 +66,12 @@ public class FeedPlusModule {
 
     private static final String NAME_CLOUD = "CLOUD";
     private static final String NAME_LOCAL = "LOCAL";
+
+    private final FeedPlus.View view;
+
+    public FeedPlusModule(FeedPlus.View view) {
+        this.view = view;
+    }
 
     @FeedPlusScope
     @Provides
@@ -321,26 +329,10 @@ public class FeedPlusModule {
 
     @FeedPlusScope
     @Provides
-    KolSource provideKolSource(ApolloClient apolloClient, LikeKolMapper likeKolMapper,
-                               FollowKolMapper followKolMapper) {
-        return new KolSource(apolloClient, likeKolMapper, followKolMapper);
+    KolSource provideKolSource(ApolloClient apolloClient, FollowKolMapper followKolMapper) {
+        return new KolSource(apolloClient, followKolMapper);
     }
 
-    @FeedPlusScope
-    @Provides
-    LikeKolPostUseCase provideLikeKolPostUseCase(ThreadExecutor threadExecutor,
-                                                 PostExecutionThread postExecutionThread,
-                                                 FeedRepository feedRepository) {
-        return new LikeKolPostUseCase(threadExecutor,
-                postExecutionThread,
-                feedRepository);
-    }
-
-    @FeedPlusScope
-    @Provides
-    LikeKolMapper provideLikeKolMapper() {
-        return new LikeKolMapper();
-    }
 
     @FeedPlusScope
     @Provides
@@ -356,5 +348,17 @@ public class FeedPlusModule {
         return new FollowKolPostUseCase(threadExecutor,
                 postExecutionThread,
                 feedRepository);
+    }
+
+    @FeedPlusScope
+    @Provides
+    LikeKolPostSourceCloud provideLikeKolPostSourceCloud(KolApi kolApi, LikeKolPostMapper likeKolPostMapper) {
+        return new LikeKolPostSourceCloud(view.getContext(), kolApi, likeKolPostMapper);
+    }
+
+    @FeedPlusScope
+    @Provides
+    KolApi provideKolApi(KolApi kolApi, LikeKolPostMapper likeKolPostMapper) {
+        return new KolApi(view.getContext(), kolApi, likeKolPostMapper);
     }
 }

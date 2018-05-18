@@ -3,7 +3,6 @@ package com.tokopedia.feedplus.data.repository;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.feedplus.domain.model.CheckFeedDomain;
 import com.tokopedia.feedplus.domain.model.FollowKolDomain;
-import com.tokopedia.feedplus.domain.model.LikeKolDomain;
 import com.tokopedia.feedplus.domain.model.feed.FeedResult;
 import com.tokopedia.feedplus.domain.model.feeddetail.DataFeedDetailDomain;
 import com.tokopedia.feedplus.domain.model.recentview.RecentViewProductDomain;
@@ -29,8 +28,6 @@ public interface FeedRepository {
     Observable<List<RecentViewProductDomain>> getRecentViewProduct(RequestParams requestParams);
 
     Observable<CheckFeedDomain> checkNewFeed(RequestParams parameters);
-
-    Observable<LikeKolDomain> likeUnlikeKolPost(RequestParams requestParams);
 
     Observable<FollowKolDomain> followUnfollowKol(RequestParams requestParams);
 

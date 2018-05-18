@@ -19,6 +19,8 @@ public interface FeedPlus {
 
     interface View extends CustomerView {
 
+        Context getContext();
+
         void showLoadingProgress();
 
         void finishLoadingProgress();
