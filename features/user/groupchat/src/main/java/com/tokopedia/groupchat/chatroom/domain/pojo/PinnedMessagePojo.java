@@ -18,9 +18,9 @@ public class PinnedMessagePojo {
     @SerializedName("redirect_url")
     @Expose
     private String redirectUrl;
-    @SerializedName("moderator")
+    @SerializedName("title")
     @Expose
-    private String moderator;
+    private String title;
 
     public String getMessage() {
         return message;
@@ -46,11 +46,11 @@ public class PinnedMessagePojo {
         this.redirectUrl = redirectUrl;
     }
 
-    public String getModerator() {
-        return moderator;
+    public String getTitle() {
+        return title;
     }
 
-    public void setModerator(String moderator) {
-        this.moderator = moderator;
+    public void setTitle(String title) {
+        this.title = title;
     }
 }

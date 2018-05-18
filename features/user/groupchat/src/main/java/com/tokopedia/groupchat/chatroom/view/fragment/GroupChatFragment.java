@@ -331,8 +331,7 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
             View pinnedMessageView = getView().findViewById(R.id.pinned_message);
             if (pinnedMessage != null) {
                 pinnedMessageView.setVisibility(View.VISIBLE);
-                ((TextView) pinnedMessageView.findViewById(R.id.message)).setText(pinnedMessage.getMessage());
-                ((TextView) pinnedMessageView.findViewById(R.id.nickname)).setText(pinnedMessage.getAdminName());
+                ((TextView) pinnedMessageView.findViewById(R.id.message)).setText(pinnedMessage.getTitle());
                 pinnedMessageView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {

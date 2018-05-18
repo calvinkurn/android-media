@@ -15,13 +15,13 @@ public class PinnedMessageViewModel implements Visitable<GroupChatTypeFactory>, 
     public static final String TYPE = "pinned_message";
 
     String message;
-    String adminName;
+    String title;
     String imageUrl;
     String thumbnail;
 
-    public PinnedMessageViewModel(String message, String adminName, String imageUrl, String thumbnail) {
+    public PinnedMessageViewModel(String message, String title, String imageUrl, String thumbnail) {
         this.message = message;
-        this.adminName = adminName;
+        this.title = title;
         this.imageUrl = imageUrl;
         this.thumbnail = thumbnail;
     }
@@ -34,12 +34,12 @@ public class PinnedMessageViewModel implements Visitable<GroupChatTypeFactory>, 
         this.message = message;
     }
 
-    public String getAdminName() {
-        return adminName;
+    public String getTitle() {
+        return title;
     }
 
-    public void setAdminName(String adminName) {
-        this.adminName = adminName;
+    public void setTitle(String title) {
+        this.title = title;
     }
 
     public String getImageUrl() {
@@ -71,14 +71,14 @@ public class PinnedMessageViewModel implements Visitable<GroupChatTypeFactory>, 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(this.message);
-        dest.writeString(this.adminName);
+        dest.writeString(this.title);
         dest.writeString(this.imageUrl);
         dest.writeString(this.thumbnail);
     }
 
     protected PinnedMessageViewModel(Parcel in) {
         this.message = in.readString();
-        this.adminName = in.readString();
+        this.title = in.readString();
         this.imageUrl = in.readString();
         this.thumbnail = in.readString();
     }
