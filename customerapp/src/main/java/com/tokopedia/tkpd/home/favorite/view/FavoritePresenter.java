@@ -126,7 +126,12 @@ public class FavoritePresenter
     }
 
     private void setNextPaging(PagingHandler.PagingHandlerModel pagingModel) {
-        pagingHandler.setHasNext(PagingHandler.CheckHasNext(pagingModel));
+        if (pagingModel != null) {
+            pagingHandler.setHasNext(PagingHandler.CheckHasNext(pagingModel));
+        } else {
+            pagingHandler.setHasNext(false);
+            getView().stopLoadingFavoriteShop();
+        }
     }
 
     private void validateFavoriteShopErrorNetwork(DataFavorite dataFavorite) {
@@ -311,6 +316,8 @@ public class FavoritePresenter
                 setNextPaging(favoriteShop.getPagingModel());
                 List<Visitable> elementList = favoriteMapper.prepareListFavoriteShop(favoriteShop);
                 getView().showMoreDataFavoriteShop(elementList);
+            } else {
+                setNextPaging(favoriteShop.getPagingModel());
             }
         }
 

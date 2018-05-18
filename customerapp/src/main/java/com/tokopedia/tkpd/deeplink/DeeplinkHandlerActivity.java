@@ -46,10 +46,6 @@ import com.tokopedia.profile.applink.ProfileApplinkModule;
 import com.tokopedia.profile.applink.ProfileApplinkModuleLoader;
 import com.tokopedia.pushnotif.Constant;
 import com.tokopedia.pushnotif.HistoryNotification;
-import com.tokopedia.pushnotif.SummaryNotification;
-import com.tokopedia.pushnotif.factory.SummaryNotificationFactory;
-import com.tokopedia.ride.deeplink.RideDeeplinkModule;
-import com.tokopedia.ride.deeplink.RideDeeplinkModuleLoader;
 import com.tokopedia.seller.applink.SellerApplinkModule;
 import com.tokopedia.seller.applink.SellerApplinkModuleLoader;
 import com.tokopedia.shop.applink.ShopAppLinkModule;
@@ -79,7 +75,6 @@ import io.branch.referral.BranchError;
         DigitalApplinkModule.class,
         PdpApplinkModule.class,
         HomeApplinkModule.class,
-        RideDeeplinkModule.class,
         DiscoveryApplinkModule.class,
         SessionApplinkModule.class,
         FeedDeeplinkModule.class,
@@ -107,7 +102,6 @@ public class DeeplinkHandlerActivity extends AppCompatActivity {
                 new DigitalApplinkModuleLoader(),
                 new PdpApplinkModuleLoader(),
                 new HomeApplinkModuleLoader(),
-                new RideDeeplinkModuleLoader(),
                 new DiscoveryApplinkModuleLoader(),
                 new SessionApplinkModuleLoader(),
                 new FeedDeeplinkModuleLoader(),
@@ -219,7 +213,7 @@ public class DeeplinkHandlerActivity extends AppCompatActivity {
                 @Override
                 public void onInitFinished(JSONObject referringParams, BranchError error) {
                     if (error == null) {
-                        BranchSdkUtils.storeWebToAppPromoCodeIfExist(referringParams,DeeplinkHandlerActivity.this);
+                        BranchSdkUtils.storeWebToAppPromoCodeIfExist(referringParams, DeeplinkHandlerActivity.this);
                     }
                 }
             }, this.getIntent().getData(), this);
