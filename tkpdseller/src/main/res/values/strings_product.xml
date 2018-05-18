@@ -163,7 +163,7 @@
     <string name="product_error_product_name_copy_duplicate">Nama produk harus diganti</string>
     <string name="product_etalase_picker_add_etalase_name_too_short">Nama etalase minimal 3 karakter</string>
     <string name="product_draft_error_cannot_load_draft">Tidak bisa membuka draft product</string>
-
+    <string name="product_add_wholesale_notice_variant"><b>Semua harga varian</b> otomatis mengikuti harga utama jika produk memiliki harga grosir.</string>
     <!-- Draft -->
     <string name="product_draft_delete_all_draft">Hapus Semua Draft</string>
     <string name="product_draft_delete_all_draft_dialog_message">Yakin hapus semua Draft?</string>
