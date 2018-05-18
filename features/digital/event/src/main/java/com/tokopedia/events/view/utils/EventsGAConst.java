@@ -11,6 +11,7 @@ public class EventsGAConst {
     public static String EVENTS_PRODUCT_PAGE = "Events Product Detail Page";
     public static String EVENTS_TICKET_PAGE = "Events Tiket Detail Page";
     public static String EVENTS_CHECKOUT_PAGE = "Events Checkout Page";
+    public static String EVENTS_FAV_PAGE = "Events Favourite Page";
 
     public static String EVENT_CLICK_BACK = "click back";
     public static String EVENT_CLICK_SEARCH = "click search icon";

@@ -5,6 +5,7 @@ import com.tokopedia.events.di.scope.EventScope;
 import com.tokopedia.events.domain.postusecase.PostVerifyCartUseCase;
 import com.tokopedia.events.view.activity.EventBookTicketActivity;
 import com.tokopedia.events.view.activity.EventDetailsActivity;
+import com.tokopedia.events.view.activity.EventFavouriteActivity;
 import com.tokopedia.events.view.activity.EventLocationActivity;
 import com.tokopedia.events.view.activity.EventSearchActivity;
 import com.tokopedia.events.view.activity.EventsHomeActivity;
@@ -39,4 +40,6 @@ public interface EventComponent {
     void inject(EventSearchActivity activity);
 
     void inject(SeatSelectionActivity activity);
+
+    void inject(EventFavouriteActivity activity);
 }

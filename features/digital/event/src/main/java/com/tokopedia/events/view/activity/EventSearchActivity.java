@@ -142,7 +142,7 @@ public class EventSearchActivity extends TActivity implements
     }
 
     @Override
-    public void setTopEvents(List<SearchViewModel> searchViewModels) {
+    public void setTopEvents(List<CategoryItemsViewModel> searchViewModels) {
         if (searchViewModels != null && !searchViewModels.isEmpty()) {
             TopEventsSuggestionsAdapter adapter = new TopEventsSuggestionsAdapter(this, searchViewModels, mPresenter);
             rvTopEventSuggestions.setLayoutManager(layoutManager);
@@ -160,7 +160,7 @@ public class EventSearchActivity extends TActivity implements
     }
 
     @Override
-    public void setSuggestions(List<SearchViewModel> suggestions, String highlight) {
+    public void setSuggestions(List<CategoryItemsViewModel> suggestions, String highlight) {
         if (suggestions != null && !suggestions.isEmpty()) {
             TopEventsSuggestionsAdapter adapter = new TopEventsSuggestionsAdapter(this, suggestions, mPresenter);
             adapter.setHighLightText(highlight);
@@ -190,7 +190,7 @@ public class EventSearchActivity extends TActivity implements
     }
 
     @Override
-    public void addEvents(List<SearchViewModel> searchViewModels) {
+    public void addEvents(List<CategoryItemsViewModel> searchViewModels) {
         ((TopEventsSuggestionsAdapter) rvTopEventSuggestions.getAdapter()).addAll(searchViewModels);
 
     }

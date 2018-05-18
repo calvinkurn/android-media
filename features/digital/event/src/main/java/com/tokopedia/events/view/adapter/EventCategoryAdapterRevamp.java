@@ -15,6 +15,7 @@ import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.events.R;
 import com.tokopedia.events.R2;
 import com.tokopedia.events.view.activity.EventDetailsActivity;
+import com.tokopedia.events.view.activity.EventFavouriteActivity;
 import com.tokopedia.events.view.activity.EventsHomeActivity;
 import com.tokopedia.events.view.contractor.EventsContract;
 import com.tokopedia.events.view.utils.CurrencyUtil;
@@ -37,12 +38,15 @@ public class EventCategoryAdapterRevamp extends RecyclerView.Adapter<EventCatego
     private List<CategoryItemsViewModel> categoryItems;
     private Context context;
     private int redColor;
+    private boolean isFavActivity;
     private boolean isTrackingEnabled;
 
-    public EventCategoryAdapterRevamp(Context context, List<CategoryItemsViewModel> categoryItems) {
+    public EventCategoryAdapterRevamp(Context context, List<CategoryItemsViewModel> categoryItems, boolean isFav) {
         this.context = context;
         this.categoryItems = categoryItems;
-        ((EventsHomeActivity) context).mPresenter.setupCallback(this);
+        isFavActivity = isFav;
+        if (!isFav)
+            ((EventsHomeActivity) context).mPresenter.setupCallback(this);
         redColor = context.getResources().getColor(R.color.red_1);
     }
 
@@ -73,6 +77,8 @@ public class EventCategoryAdapterRevamp extends RecyclerView.Adapter<EventCatego
         public TextView eventTime;
         @BindView(R2.id.tv3_tag)
         public TextView tvDisplayTag;
+        @BindView(R2.id.tv_calendar)
+        public TextView tvCalendar;
         private int index;
         private boolean isShown = false;
 
@@ -92,6 +98,7 @@ public class EventCategoryAdapterRevamp extends RecyclerView.Adapter<EventCatego
             eventTime.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_event_calendar_white, 0, 0, 0);
             if (data.getMinStartDate() == 0) {
                 eventTime.setVisibility(View.GONE);
+                tvCalendar.setVisibility(View.GONE);
             } else {
                 if (data.getMinStartDate() == data.getMaxEndDate())
                     eventTime.setText(Utils.convertEpochToString(data.getMinStartDate()));
@@ -99,7 +106,10 @@ public class EventCategoryAdapterRevamp extends RecyclerView.Adapter<EventCatego
                     eventTime.setText(Utils.convertEpochToString(data.getMinStartDate())
                             + " - " + Utils.convertEpochToString(data.getMaxEndDate()));
                 eventTime.setVisibility(View.VISIBLE);
+                Utils.getSingletonInstance().setCalendar(tvCalendar,
+                        Utils.getDateArray(Utils.convertEpochToString(data.getMinStartDate())));
             }
+
 
             if (data.getDisplayTags() != null && data.getDisplayTags().length() > 3) {
                 tvDisplayTag.setText(data.getDisplayTags());
@@ -144,12 +154,21 @@ public class EventCategoryAdapterRevamp extends RecyclerView.Adapter<EventCatego
 
         @OnClick(R2.id.tv_add_to_wishlist)
         public void toggleLike() {
-            ((EventsHomeActivity) context).mPresenter.setEventLike(categoryItems.get(index), index);
+            if (!isFavActivity)
+                ((EventsHomeActivity) context).mPresenter.setEventLike(categoryItems.get(getAdapterPosition()), getAdapterPosition());
+            else {
+                ((EventFavouriteActivity) context).mPresenter.setEventLike(categoryItems.get(getAdapterPosition()), getAdapterPosition());
+                categoryItems.remove(getAdapterPosition());
+                itemRemoved(getAdapterPosition());
+            }
         }
 
         @OnClick(R2.id.tv_event_share)
         public void shareEvent() {
-            ((EventsHomeActivity) context).mPresenter.shareEvent(categoryItems.get(index));
+            if (!isFavActivity)
+                ((EventsHomeActivity) context).mPresenter.shareEvent(categoryItems.get(getAdapterPosition()));
+            else
+                ((EventFavouriteActivity) context).mPresenter.shareEvent(categoryItems.get(getAdapterPosition()));
         }
 
         public int getIndex() {
@@ -197,6 +216,17 @@ public class EventCategoryAdapterRevamp extends RecyclerView.Adapter<EventCatego
             UnifyTracking.eventDigitalEventTracking(EventsGAConst.EVENT_PRODUCT_IMPRESSION, categoryItems.get(holder.getIndex()).getTitle()
                     + " - " + holder.getIndex());
         }
+    }
+
+    private void itemRemoved(int position) {
+        notifyItemRemoved(position);
+        if (categoryItems.size() == 0)
+            ((EventFavouriteActivity) context).toggleEmptyLayout(View.VISIBLE);
+    }
+
+    @Override
+    public void onViewRecycled(ViewHolder holder) {
+        super.onViewRecycled(holder);
     }
 
     public void enableTracking() {

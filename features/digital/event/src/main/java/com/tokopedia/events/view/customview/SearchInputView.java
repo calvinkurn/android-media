@@ -42,6 +42,7 @@ public class SearchInputView extends BaseCustomView {
     private ImageView searchImageView;
     private EditText searchTextView;
     private ImageButton closeImageButton;
+    private boolean isEditable = true;
 
     private Drawable searchDrawable;
     private String searchText;
@@ -80,6 +81,7 @@ public class SearchInputView extends BaseCustomView {
             searchDrawable = styledAttributes.getDrawable(R.styleable.SearchInputView_siv_search_icon);
             searchText = styledAttributes.getString(R.styleable.SearchInputView_siv_search_text);
             searchHint = styledAttributes.getString(R.styleable.SearchInputView_siv_search_hint);
+            isEditable = styledAttributes.getBoolean(R.styleable.SearchInputView_isEditable, true);
         } finally {
             styledAttributes.recycle();
         }
@@ -89,6 +91,12 @@ public class SearchInputView extends BaseCustomView {
         View view = inflate(getContext(), R.layout.widget_event_search_input_view, this);
         searchImageView = view.findViewById(R.id.image_view_search);
         searchTextView = view.findViewById(R.id.edit_text_search);
+        if (!isEditable) {
+            searchTextView.setFocusable(false);
+            searchTextView.setFocusableInTouchMode(false);
+            searchTextView.setEnabled(false);
+            searchTextView.clearFocus();
+        }
         closeImageButton = view.findViewById(R.id.image_button_close);
         delayTextChanged = DEFAULT_DELAY_TEXT_CHANGED;
     }

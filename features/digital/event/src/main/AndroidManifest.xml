@@ -13,6 +13,7 @@
         <activity android:name=".view.activity.ReviewTicketActivity" />
         <activity android:name=".view.activity.EventSearchActivity" />
         <activity android:name=".view.activity.SeatSelectionActivity"></activity>
+        <activity android:name=".view.activity.EventFavouriteActivity" />
     </application>
 
 </manifest>

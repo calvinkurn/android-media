@@ -11,7 +11,6 @@
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
         android:layout_gravity="top"
-        android:background="@color/tkpd_main_green"
         android:minHeight="?attr/actionBarSize"
         app:contentInsetLeft="0dp"
         app:contentInsetStart="0dp"
@@ -26,145 +25,125 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginTop="?attr/actionBarSize"
-        android:visibility="invisible"
+        android:visibility="gone"
         tools:context="com.tokopedia.events.view.activity.EventsHomeActivity">
 
         <android.support.design.widget.AppBarLayout
+            android:id="@+id/event_app_bar_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@color/white">
 
-            <android.support.design.widget.CollapsingToolbarLayout
-                android:id="@+id/collapse_toolbar"
+            <android.support.constraint.ConstraintLayout
+                android:id="@+id/carousel"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:expandedTitleTextAppearance="@style/TextAppearance.AppCompat.Title"
-                app:layout_scrollFlags="scroll|exitUntilCollapsed"
-                app:titleEnabled="false">
+                android:background="@color/white"
+                android:focusable="true"
+                android:minHeight="?attr/actionBarSize"
+                app:layout_scrollFlags="scroll">
 
-                <LinearLayout
+                <TextView
+                    android:id="@+id/search_input_view"
                     android:layout_width="match_parent"
+                    android:layout_height="@dimen/dp_40"
+                    android:layout_marginLeft="@dimen/dp_16"
+                    android:layout_marginRight="@dimen/dp_16"
+                    android:layout_marginTop="@dimen/dp_16"
+                    android:background="@drawable/rounded_rectange_transparent"
+                    android:drawableLeft="@drawable/ic_search_icon"
+                    android:drawablePadding="@dimen/dp_8"
+                    android:drawableStart="@drawable/ic_search_icon"
+                    android:gravity="center_vertical"
+                    android:paddingLeft="@dimen/dp_4"
+                    android:paddingStart="@dimen/dp_4"
+                    android:text="@string/cari_event_lokasi"
+                    android:textColor="@color/black_54"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_scrollFlags="scroll" />
+
+                <com.tkpd.library.ui.widget.TouchViewPager
+                    android:id="@+id/event_bannerpager"
+                    android:layout_width="0dp"
+                    android:layout_height="@dimen/dp_180"
+                    android:layout_marginTop="@dimen/dp_16"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/search_input_view" />
+
+
+                <com.tokopedia.events.view.utils.CirclePageIndicator
+                    android:id="@+id/pager_indicator"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical">
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginEnd="@dimen/new_margin_small"
+                    android:layout_marginLeft="@dimen/dp_16"
+                    android:layout_marginRight="@dimen/new_margin_small"
+                    android:layout_marginStart="@dimen/dp_16"
+                    android:layout_marginTop="@dimen/dp_16"
+                    android:padding="@dimen/dp_2"
+                    app:centered="false"
+                    app:fillColor="@color/green_nob"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/event_bannerpager"
+                    app:pageColor="@color/grey_400"
+                    app:radius="@dimen/dp_4"
+                    app:strokeColor="@color/grey_400" />
 
-                    <android.support.constraint.ConstraintLayout
-                        android:id="@+id/carousel"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:background="@color/white"
-                        app:layout_collapseMode="parallax">
+                <TextView
+                    android:id="@+id/tv12_topevents"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/dp_16"
+                    android:layout_marginStart="@dimen/dp_16"
+                    android:layout_marginTop="@dimen/dp_16"
+                    android:text="Top Events"
+                    android:textColor="@color/black_70"
+                    android:textSize="@dimen/sp_13"
+                    android:textStyle="bold"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/pager_indicator" />
 
-                        <com.tkpd.library.ui.widget.TouchViewPager
-                            android:id="@+id/event_bannerpager"
-                            android:layout_width="0dp"
-                            android:layout_height="@dimen/dp_180"
-                            app:layout_constraintEnd_toEndOf="parent"
-                            app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toTopOf="parent" />
+                <android.support.v4.view.ViewPager
+                    android:id="@+id/viewpager_top_events"
+                    android:layout_width="0dp"
+                    android:layout_height="220dp"
+                    android:layout_marginTop="@dimen/dp_16"
+                    android:background="@color/white"
+                    android:clipToPadding="false"
+                    android:overScrollMode="never"
+                    android:paddingBottom="@dimen/dp_16"
+                    android:paddingEnd="@dimen/new_margin_sm"
+                    android:paddingLeft="@dimen/dp_16"
+                    android:paddingRight="@dimen/new_margin_sm"
+                    android:paddingStart="@dimen/dp_16"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/tv12_topevents" />
+
+                <TextView
+                    android:id="@+id/tv_addtocalendar"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/dp_16"
+                    android:layout_marginStart="@dimen/dp_16"
+                    android:layout_marginTop="@dimen/dp_16"
+                    android:drawablePadding="@dimen/dp_12"
+                    android:paddingBottom="@dimen/dp_16"
+                    android:text="@string/lihat_kalendar_event"
+                    android:textColor="@color/green_nob"
+                    android:textSize="@dimen/sp_13"
+                    android:textStyle="bold"
+                    android:visibility="visible"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/viewpager_top_events"
+                    tools:text="Lihat Kalendar Event" />
 
 
-                        <com.tokopedia.events.view.utils.CirclePageIndicator
-                            android:id="@+id/pager_indicator"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="center_vertical"
-                            android:layout_marginEnd="@dimen/new_margin_small"
-                            android:layout_marginLeft="@dimen/dp_16"
-                            android:layout_marginRight="@dimen/new_margin_small"
-                            android:layout_marginStart="@dimen/dp_16"
-                            android:padding="@dimen/dp_2"
-                            app:centered="false"
-                            app:fillColor="@color/green_nob"
-                            app:layout_constraintBottom_toBottomOf="@+id/tv_promo_codes"
-                            app:layout_constraintEnd_toStartOf="@+id/tv_promo_codes"
-                            app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toTopOf="@+id/tv_promo_codes"
-                            app:layout_constraintVertical_bias="0.5"
-                            app:pageColor="@color/grey_400"
-                            app:radius="@dimen/dp_4"
-                            app:strokeColor="@color/grey_400" />
-
-                        <TextView
-                            android:id="@+id/tv_promo_codes"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="center_vertical|right"
-                            android:layout_marginEnd="@dimen/dp_16"
-                            android:layout_marginRight="@dimen/dp_16"
-                            android:layout_marginTop="@dimen/new_margin_sm"
-                            android:clickable="false"
-                            android:drawableEnd="@drawable/ic_arrow_right"
-                            android:drawableRight="@drawable/ic_arrow_right"
-                            android:drawableTint="@color/green_nob"
-                            android:focusable="false"
-                            android:gravity="center_vertical"
-                            android:includeFontPadding="false"
-                            android:text="@string/promo_button_text"
-                            android:textColor="@color/green_nob"
-                            android:textStyle="normal"
-                            android:visibility="invisible"
-                            app:layout_constraintEnd_toEndOf="parent"
-                            app:layout_constraintTop_toBottomOf="@id/event_bannerpager" />
-                    </android.support.constraint.ConstraintLayout>
-
-                    <android.support.constraint.ConstraintLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginBottom="@dimen/new_margin_sm"
-                        android:layout_marginTop="@dimen/dp_16"
-                        android:background="@color/white"
-                        app:layout_scrollFlags="scroll|exitUntilCollapsed">
-
-                        <TextView
-                            android:id="@+id/tv12_topevents"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginLeft="@dimen/dp_16"
-                            android:layout_marginStart="@dimen/dp_16"
-                            android:text="Top Events"
-                            android:textColor="@color/black_70"
-                            android:textSize="@dimen/sp_13"
-                            android:textStyle="bold"
-                            app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toTopOf="parent" />
-
-                        <android.support.v4.view.ViewPager
-                            android:id="@+id/viewpager_top_events"
-                            android:layout_width="0dp"
-                            android:layout_height="216dp"
-                            android:layout_marginTop="@dimen/dp_16"
-                            android:background="@color/white"
-                            android:clipToPadding="false"
-                            android:overScrollMode="never"
-                            android:paddingBottom="@dimen/dp_16"
-                            android:paddingEnd="@dimen/new_margin_sm"
-                            android:paddingLeft="@dimen/dp_16"
-                            android:paddingRight="@dimen/new_margin_sm"
-                            android:paddingStart="@dimen/dp_16"
-                            app:layout_constraintEnd_toEndOf="parent"
-                            app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toBottomOf="@+id/tv12_topevents" />
-
-                        <TextView
-                            android:visibility="gone"
-                            android:id="@+id/tv_addtocalendar"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginLeft="@dimen/dp_16"
-                            android:layout_marginStart="@dimen/dp_16"
-                            android:drawablePadding="@dimen/dp_12"
-                            android:text="@string/lihat_kalendar_event"
-                            android:textColor="@color/green_nob"
-                            android:textSize="@dimen/sp_13"
-                            android:textStyle="bold"
-                            app:layout_constraintEnd_toEndOf="parent"
-                            app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toBottomOf="@+id/viewpager_top_events"
-                            tools:text="Lihat Kalendar Event" />
-                    </android.support.constraint.ConstraintLayout>
-                </LinearLayout>
-            </android.support.design.widget.CollapsingToolbarLayout>
-
+            </android.support.constraint.ConstraintLayout>
 
             <View
                 android:layout_width="match_parent"
@@ -174,16 +153,15 @@
             <android.support.design.widget.TabLayout
                 android:id="@+id/tabs"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="96dp"
                 android:layout_gravity="center_vertical"
                 android:background="@color/white"
                 app:layout_scrollFlags="scroll|snap"
                 app:tabGravity="fill"
                 app:tabIndicatorColor="@color/green_nob"
+                app:tabIndicatorHeight="0dp"
                 app:tabMode="scrollable"
-                app:tabSelectedTextColor="@color/green_nob"
-                app:tabTextAppearance="@style/EventTabLayoutTextStyle"
-                app:tabTextColor="@color/black_38" />
+                app:tabSelectedTextColor="@color/green_nob" />
 
         </android.support.design.widget.AppBarLayout>
 
@@ -194,8 +172,6 @@
             app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
         </android.support.v4.view.ViewPager>
-
-
     </android.support.design.widget.CoordinatorLayout>
 
     <FrameLayout

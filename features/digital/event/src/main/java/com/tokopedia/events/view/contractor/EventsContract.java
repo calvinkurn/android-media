@@ -36,6 +36,8 @@ public class EventsContract {
 
         void hideSearchButton();
 
+        void toggleFavButton(boolean visibile);
+
         void showSearchButton();
 
         void showLoginSnackbar(String message);
