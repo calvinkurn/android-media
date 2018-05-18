@@ -15,6 +15,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomSheetDialog;
 import android.support.design.widget.CoordinatorLayout;
@@ -44,6 +45,7 @@ import com.tokopedia.core.product.model.share.ShareData;
 import com.tokopedia.core.router.productdetail.PdpRouter;
 import com.tokopedia.core.share.ShareActivity;
 import com.tokopedia.core.util.GlobalConfig;
+import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.ShareSocmedHandler;
 import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.design.button.BottomActionView;
@@ -89,6 +91,10 @@ import com.tokopedia.seller.product.manage.view.presenter.ProductManagePresenter
 import com.tokopedia.topads.sourcetagging.constant.TopAdsSourceOption;
 import com.tokopedia.topads.sourcetagging.util.TopAdsAppLinkUtil;
 
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
@@ -830,6 +836,20 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
 
                                 Bitmap newImage = addSticker.addStickerToBitmap(bitmap, getActivity());
 
+                                String pathFile = Environment.getExternalStorageDirectory() + File.separator + "tkpdtemp" + File.separator + ShareSocmedHandler.uniqueCode() + ".jpg";
+                                File f;
+                                try {
+                                    ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+                                    ShareSocmedHandler.CheckTempDirectory();
+                                    f = new File(pathFile);
+                                    newImage.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
+                                    f.createNewFile();
+                                    FileOutputStream fo = new FileOutputStream(f);
+                                    fo.write(bytes.toByteArray());
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                }
+
                                 ShareData shareData = ShareData.Builder.aShareData()
                                         .setName(productManageViewModel.getProductName())
                                         .setTextContent(productManageViewModel.getProductName())
@@ -839,7 +859,9 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
                                         .setUri(productManageViewModel.getProductUrl())
                                         .setType(ShareData.PRODUCT_TYPE)
                                         .setId(productManageViewModel.getProductId())
+                                        .setPathSticker(pathFile)
                                         .build();
+
                                 Intent intent = ShareActivity.createIntent(getActivity(), shareData);
                                 startActivity(intent);
                             }
