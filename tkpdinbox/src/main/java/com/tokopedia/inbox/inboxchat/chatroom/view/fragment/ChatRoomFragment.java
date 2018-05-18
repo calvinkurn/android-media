@@ -67,6 +67,8 @@ import com.tokopedia.inbox.inboxchat.chatlist.activity.SendMessageActivity;
 import com.tokopedia.inbox.inboxchat.chatlist.adapter.viewholder.chatlist.ListChatViewHolder;
 import com.tokopedia.inbox.inboxchat.chatlist.viewmodel.InboxChatViewModel;
 import com.tokopedia.inbox.inboxchat.chatroom.data.ChatWebSocketConstant;
+import com.tokopedia.inbox.inboxchat.chatroom.domain.pojo.invoicesent.InvoiceLinkAttributePojo;
+import com.tokopedia.inbox.inboxchat.chatroom.domain.pojo.invoicesent.InvoiceLinkPojo;
 import com.tokopedia.inbox.inboxchat.chatroom.domain.pojo.reply.Attachment;
 import com.tokopedia.inbox.inboxchat.chatroom.domain.pojo.reply.WebSocketResponse;
 import com.tokopedia.inbox.inboxchat.chatroom.domain.pojo.replyaction.ReplyActionData;
@@ -85,6 +87,9 @@ import com.tokopedia.inbox.inboxchat.chatroom.view.viewmodel.ChatRoomViewModel;
 import com.tokopedia.inbox.inboxchat.chatroom.view.viewmodel.SendableViewModel;
 import com.tokopedia.inbox.inboxchat.chatroom.view.viewmodel.imageupload.ImageUploadViewModel;
 import com.tokopedia.inbox.inboxchat.chatroom.view.viewmodel.invoiceattachment.AttachInvoiceSentViewModel;
+
+import com.tokopedia.inbox.inboxchat.chatroom.view.viewmodel.invoiceattachment.mapper
+        .AttachInvoiceMapper;
 import com.tokopedia.inbox.inboxchat.chatroom.view.viewmodel.message.MessageViewModel;
 import com.tokopedia.inbox.inboxchat.chatroom.view.viewmodel.productattachment.ProductAttachmentViewModel;
 import com.tokopedia.inbox.inboxchat.chatroom.view.viewmodel.quickreply.QuickReplyListViewModel;
@@ -917,7 +922,7 @@ public class ChatRoomFragment extends BaseDaggerFragment
                     break;
                 SelectedInvoice selectedInvoice = data.getParcelableExtra(AttachInvoiceActivity
                         .TOKOPEDIA_ATTACH_INVOICE_SELECTED_INVOICE_KEY);
-                attachInvoiceRetrieved(selectedInvoice);
+                attachInvoiceRetrieved(AttachInvoiceMapper.convertInvoiceToDomainInvoiceModel(selectedInvoice));
                 break;
             default:
                 break;
@@ -1099,7 +1104,7 @@ public class ChatRoomFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void onInvoiceSelected(SelectedInvoice selectedInvoice) {
+    public void onInvoiceSelected(InvoiceLinkPojo selectedInvoice) {
         attachInvoiceRetrieved(selectedInvoice);
     }
 
@@ -1165,15 +1170,15 @@ public class ChatRoomFragment extends BaseDaggerFragment
 
     //ADD INCOMING MESSAGE
 
-    private AttachInvoiceSentViewModel generateInvoice(SelectedInvoice selectedInvoice) {
-
+    private AttachInvoiceSentViewModel generateInvoice(InvoiceLinkPojo selectedInvoice) {
+        InvoiceLinkAttributePojo invoiceLinkAttributePojo = selectedInvoice.getAttributes();
         return new AttachInvoiceSentViewModel(
                 getArguments().getString(InboxMessageConstant.PARAM_SENDER_ID),
                 sessionHandler.getLoginName(),
-                selectedInvoice.getInvoiceNo(),
-                selectedInvoice.getDescription(),
-                selectedInvoice.getTopProductImage(),
-                selectedInvoice.getAmount(),
+                invoiceLinkAttributePojo.getTitle(),
+                invoiceLinkAttributePojo.getDescription(),
+                invoiceLinkAttributePojo.getImageUrl(),
+                invoiceLinkAttributePojo.getTotalAmount(),
                 SendableViewModel.generateStartTime()
         );
     }
@@ -1201,11 +1206,12 @@ public class ChatRoomFragment extends BaseDaggerFragment
                 SendableViewModel.generateStartTime());
     }
 
-    private void attachInvoiceRetrieved(SelectedInvoice selectedInvoice) {
+    private void attachInvoiceRetrieved(InvoiceLinkPojo selectedInvoice) {
         String msgId = getArguments().getString(PARAM_MESSAGE_ID);
         AttachInvoiceSentViewModel generatedInvoice = generateInvoice(selectedInvoice);
-        presenter.sendInvoiceAttachment(msgId, selectedInvoice, generatedInvoice.getStartTime());
+        generatedInvoice.setDummy(true);
         adapter.addReply(generatedInvoice);
+        presenter.sendInvoiceAttachment(msgId, selectedInvoice, generatedInvoice.getStartTime());
         scrollToBottom();
     }
 
@@ -1392,9 +1398,12 @@ public class ChatRoomFragment extends BaseDaggerFragment
         if (isMyMessage(message.getFromUid())) {
             if (message instanceof ProductAttachmentViewModel) {
                 getAdapter().removeLastProductWithId(((ProductAttachmentViewModel) message).getProductId());
+            } else if (message instanceof AttachInvoiceSentViewModel){
+                getAdapter().removeLastItemWithSendingStatus();
             } else if (message instanceof SendableViewModel) {
                 getAdapter().removeLastMessageWithStartTime(((SendableViewModel) message).getStartTime());
-            } else {
+            }
+            else {
                 getAdapter().removeLast();
             }
         }

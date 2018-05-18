@@ -70,8 +70,8 @@ public class AttachedInvoiceSelectionViewHolder extends
                     @Override
                     public void onClick(View v) {
                         selectedListener.onInvoiceSelected(
-                                AttachInvoiceMapper.selectedInvoiceViewModelToSelectedInvoice
-                                        (list.get(position))
+                                AttachInvoiceMapper.
+                                        invoiceViewModelToDomainInvoicePojo(list.get(position))
                         );
                     }
                 });

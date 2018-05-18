@@ -2,14 +2,21 @@ package com.tokopedia.inbox.inboxchat.chatroom.domain;
 
 import android.os.CountDownTimer;
 
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
-import com.tokopedia.inbox.attachinvoice.view.resultmodel.SelectedInvoice;
 import com.tokopedia.inbox.attachproduct.view.resultmodel.ResultProduct;
+import com.tokopedia.inbox.inboxchat.chatroom.domain.pojo.invoicesent.InvoiceLinkAttributePojo;
+import com.tokopedia.inbox.inboxchat.chatroom.domain.pojo.invoicesent.InvoiceLinkPojo;
 import com.tokopedia.inbox.inboxchat.chatroom.data.ChatWebSocketConstant;
 import com.tokopedia.inbox.inboxchat.chatroom.view.presenter.ChatWebSocketListenerImpl;
 import com.tokopedia.inbox.inboxchat.common.InboxChatConstant;
+
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Locale;
 
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -79,36 +86,23 @@ public class WebSocketUseCase {
         ws.send(json.toString());
     }
 
-    public JsonObject getParamSendInvoiceAttachment(String messageId, SelectedInvoice invoice, String startTime) {
+    public JsonObject getParamSendInvoiceAttachment(String messageId, InvoiceLinkPojo invoice, String
+            startTime) {
         JsonObject json = new JsonObject();
         json.addProperty("code", ChatWebSocketConstant.EVENT_TOPCHAT_REPLY_MESSAGE);
 
         JsonObject data = new JsonObject();
+        InvoiceLinkAttributePojo invoiceAttribute = invoice.getAttributes();
         data.addProperty("message_id", Integer.parseInt(messageId));
-        data.addProperty("message", invoice.getInvoiceNo());
-        data.addProperty("start_time", startTime);
+        data.addProperty("message", invoiceAttribute.getCode());
+        SimpleDateFormat date = new SimpleDateFormat(
+                "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.US);
+        data.addProperty("start_time", date.format(Calendar.getInstance().getTime()));
         data.addProperty("attachment_type", 7);
 
-        JsonObject payload = new JsonObject();
-        payload.addProperty("type_id", invoice.getInvoiceType());
-        payload.addProperty("type", invoice.getInvoiceTypeStr());
-
-        JsonObject payloadAttributes = new JsonObject();
-        payloadAttributes.addProperty("id", invoice.getInvoiceId());
-        payloadAttributes.addProperty("code", invoice.getInvoiceNo());
-        payloadAttributes.addProperty("title", invoice.getTopProductName());
-        payloadAttributes.addProperty("description", invoice.getDescription());
-        payloadAttributes.addProperty("create_time", invoice.getDate());
-        payloadAttributes.addProperty("image_url", invoice.getTopProductImage());
-        payloadAttributes.addProperty("href_url", invoice.getInvoiceUrl());
-        payloadAttributes.addProperty("status_id", invoice.getStatusId());
-        payloadAttributes.addProperty("status", invoice.getStatus());
-        payloadAttributes.addProperty("total_amount", invoice.getAmount());
-
-        payload.add("attributes", payloadAttributes);
+        JsonElement payload = new GsonBuilder().create().toJsonTree(invoice,InvoiceLinkPojo.class);
         data.add("payload", payload);
         json.add("data", data);
-
         return json;
     }
 

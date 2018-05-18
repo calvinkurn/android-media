@@ -10,6 +10,7 @@ import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.core.base.presentation.CustomerPresenter;
 import com.tokopedia.core.base.presentation.CustomerView;
 import com.tokopedia.inbox.attachinvoice.view.resultmodel.SelectedInvoice;
+import com.tokopedia.inbox.inboxchat.chatroom.domain.pojo.invoicesent.InvoiceLinkPojo;
 import com.tokopedia.inbox.inboxchat.chatroom.domain.pojo.reply.Attachment;
 import com.tokopedia.inbox.inboxchat.chatroom.domain.pojo.replyaction.ReplyActionData;
 import com.tokopedia.inbox.inboxchat.chatroom.view.adapter.ChatRoomAdapter;
@@ -137,7 +138,7 @@ public class ChatRoomContract {
 
         void showQuickReplyView(QuickReplyListViewModel model);
 
-        void onInvoiceSelected(SelectedInvoice selectedInvoice);
+        void onInvoiceSelected(InvoiceLinkPojo selectedInvoice);
 
         void onClickRating(ChatRatingViewModel element, int rating);
 
