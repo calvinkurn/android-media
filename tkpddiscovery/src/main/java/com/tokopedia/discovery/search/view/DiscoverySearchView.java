@@ -670,14 +670,6 @@ public class DiscoverySearchView extends FrameLayout implements Filter.FilterLis
 
     public void showSearch(boolean finishOnClose, boolean animate) {
         this.finishOnClose = finishOnClose;
-        if (finishOnClose) {
-            new Handler().postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    showKeyboard(mSearchSrcTextView);
-                }
-            }, 500);
-        }
         showSearch(animate);
     }
 

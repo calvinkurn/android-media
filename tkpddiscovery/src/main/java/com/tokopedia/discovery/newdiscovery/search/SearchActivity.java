@@ -132,12 +132,6 @@ public class SearchActivity extends DiscoveryActivity
             onProductQuerySubmit(searchQuery);
         } else {
             searchView.showSearch(true, false);
-            new Handler().postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    KeyboardHandler.showSoftKeyboard(SearchActivity.this);
-                }
-            }, 200);
         }
 
         if (getIntent() != null &&
