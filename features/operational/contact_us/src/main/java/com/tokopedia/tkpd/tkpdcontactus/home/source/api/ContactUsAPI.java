@@ -47,7 +47,7 @@ public interface ContactUsAPI {
 
     @FormUrlEncoded
     @POST(TkpdBaseURL.ContactUs.PATH_CREATE_STEP_1)
-    Observable<Response<TkpdResponse>> createTicketValidation(@FieldMap Map<String, Object> params);
+    Observable<Response<TkpdResponse>> createTicketValidation(@FieldMap Map<String, String> params);
 
     @FormUrlEncoded
     @POST(TkpdBaseURL.ContactUs.PATH_COMMENT_RATING)

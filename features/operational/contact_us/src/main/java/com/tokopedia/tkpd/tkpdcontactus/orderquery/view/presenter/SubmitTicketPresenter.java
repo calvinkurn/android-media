@@ -39,8 +39,9 @@ public class SubmitTicketPresenter extends BaseDaggerPresenter<SubmitTicketContr
     SubmitTicketUseCase submitTicketUseCase;
 
     @Inject
-    public SubmitTicketPresenter(@ApplicationContext Context contexte) {
-        this.context = contexte;
+    public SubmitTicketPresenter(@ApplicationContext Context context,SubmitTicketUseCase submitTicketUseCase) {
+        this.context = context;
+        this.submitTicketUseCase = submitTicketUseCase;
     }
 
     @Override
@@ -60,7 +61,7 @@ public class SubmitTicketPresenter extends BaseDaggerPresenter<SubmitTicketContr
         this.networkInteractor = new ContactUsRetrofitInteractorImpl();
         if (isTicketValid() && isUploadImageValid()) {
             RequestParams requestParams = RequestParams.create();
-            requestParams.putAll(getSendTicketParam().getCreateTicketValidationParam());
+            requestParams.putObject("submitTicket",getSendTicketParam());
             getView().showProgress("Please Wait...");
             submitTicketUseCase.execute(requestParams, new Subscriber<Response<TkpdResponse>>() {
                 @Override

@@ -1,6 +1,7 @@
 package com.tokopedia.tkpd.tkpdcontactus.orderquery.domain;
 
 import com.tokopedia.core.network.retrofit.response.TkpdResponse;
+import com.tokopedia.tkpd.tkpdcontactus.orderquery.data.ContactUsPass;
 import com.tokopedia.tkpd.tkpdcontactus.orderquery.data.SubmitTicketInvoiceData;
 
 import java.util.HashMap;
@@ -14,5 +15,5 @@ import rx.Observable;
  */
 
 public interface ISubmitTicketRepository {
-    Observable<Response<TkpdResponse>> getQueryTickets(HashMap<String, Object> id);
+    public Observable<Response<TkpdResponse>> getQueryTickets(ContactUsPass ticket);
 }

@@ -5,9 +5,15 @@ import android.os.Bundle;
 import android.util.Log;
 
 import com.tokopedia.contactus.R;
+import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.core.network.apiservices.accounts.AccountsService;
 import com.tokopedia.core.network.apiservices.accounts.apis.AccountsApi;
+import com.tokopedia.core.network.retrofit.response.GeneratedHost;
 import com.tokopedia.core.network.retrofit.response.TkpdResponse;
+import com.tokopedia.core.network.retrofit.utils.AuthUtil;
+import com.tokopedia.core.network.retrofit.utils.NetworkCalculator;
+import com.tokopedia.core.network.retrofit.utils.RetrofitUtils;
+import com.tokopedia.core.network.v4.NetworkConfig;
 import com.tokopedia.core.util.ImageUploadHandler;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.tkpd.tkpdcontactus.home.source.api.ContactUsAPI;
@@ -16,24 +22,14 @@ import com.tokopedia.tkpd.tkpdcontactus.orderquery.data.CreateTicketResult;
 import com.tokopedia.tkpd.tkpdcontactus.orderquery.data.GenerateHostPass;
 import com.tokopedia.tkpd.tkpdcontactus.orderquery.data.ImageUpload;
 import com.tokopedia.tkpd.tkpdcontactus.orderquery.data.ImageUploadResult;
-import com.tokopedia.tkpd.tkpdcontactus.orderquery.data.SubmitTicketInvoiceData;
-
-import com.tokopedia.core.network.retrofit.response.ErrorHandler;
-import com.tokopedia.core.network.retrofit.response.ErrorListener;
-import com.tokopedia.core.network.retrofit.response.GeneratedHost;
-import com.tokopedia.core.network.retrofit.response.TkpdResponse;
-import com.tokopedia.core.network.retrofit.utils.AuthUtil;
-import com.tokopedia.core.network.retrofit.utils.NetworkCalculator;
-import com.tokopedia.core.network.retrofit.utils.RetrofitUtils;
-import com.tokopedia.core.network.v4.NetworkConfig;
-import com.tokopedia.core.rxjava.RxUtils;
 import com.tokopedia.tkpd.tkpdcontactus.orderquery.data.UploadImageContactUsParam;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
+
+import javax.inject.Inject;
 
 import okhttp3.MediaType;
 import okhttp3.RequestBody;
@@ -46,79 +42,40 @@ import rx.functions.Func2;
  * Created by baghira on 16/05/18.
  */
 
-class SubmitTicketDataStore {
+public class SubmitTicketDataStore {
     ContactUsAPI contactUsAPI;
     AccountsApi accountsApi;
+    Context context;
 
     private static final String TAG = SubmitTicketDataStore.class.getSimpleName();
     private static final String TOO_MANY_REQUEST = "TOO_MANY_REQUEST";
     private static final String PARAM_IMAGE_ID = "id";
     private static final String PARAM_TOKEN = "token";
     private static final String PARAM_WEB_SERVICE = "web_service";
-    public SubmitTicketDataStore(ContactUsAPI contactUsAPI, AccountsApi accountsApi) {
+
+    public SubmitTicketDataStore(ContactUsAPI contactUsAPI, AccountsApi accountsApi, @ApplicationContext Context context) {
         this.contactUsAPI = contactUsAPI;
         this.accountsApi = accountsApi;
+        this.context = context;
     }
 
-    public Observable<Response<TkpdResponse>> getSubmitTicket(final HashMap<String, Object> ticket) {
-        Observable<Response<TkpdResponse>> observable = Observable.just(ticket)
+    public Observable<Response<TkpdResponse>> getSubmitTicket(final ContactUsPass contactUsPass) {
+        Observable<Response<TkpdResponse>> observable = Observable.just(contactUsPass)
                 .flatMap(new Func1<ContactUsPass, Observable<ContactUsPass>>() {
                     @Override
                     public Observable<ContactUsPass> call(final ContactUsPass contactUsPass) {
 
                         if (isHasPictures(contactUsPass)) {
                             return contactUsAPI
-                                    .createTicketValidation(ticket)
+                                    .createTicketValidation(AuthUtil.generateParams(context, contactUsPass.getCreateTicketValidationParam()))
                                     .map(new Func1<Response<TkpdResponse>, ContactUsPass>() {
                                         @Override
                                         public ContactUsPass call(Response<TkpdResponse> tkpdResponse) {
-                                            if (tkpdResponse.isSuccessful() && tkpdResponse.body() != null && !tkpdResponse.body().isError()) {
-                                                CreateTicketResult result = tkpdResponse.body().convertDataObj(CreateTicketResult.class);
-                                                if (result.getIsSuccess() == 1) {
-                                                    contactUsPass.setPostKey(result.getPostKey());
-                                                    return contactUsPass;
-                                                } else {
-                                                    String errorMessage = "";
-                                                    for (int i = 0; i < tkpdResponse.body().getErrorMessages().size(); i++) {
-                                                        errorMessage += tkpdResponse.body().getErrorMessages().get(i);
-                                                    }
-                                                    throw new RuntimeException(errorMessage);
-                                                }
-                                            } else if (tkpdResponse.body() != null && tkpdResponse.body().getErrorMessages() != null) {
-                                                throw new RuntimeException(tkpdResponse.body().getErrorMessages().toString().replace("[", "").replace("]", ""));
-                                            } else {
-                                                new ErrorHandler(new ErrorListener() {
-                                                    @Override
-                                                    public void onUnknown() {
-                                                        throw new RuntimeException(context.getString(R.string.default_request_error_unknown));
-                                                    }
 
-                                                    @Override
-                                                    public void onTimeout() {
-                                                        throw new RuntimeException(context.getString(R.string.default_request_error_timeout));
+                                            CreateTicketResult result = tkpdResponse.body().convertDataObj(CreateTicketResult.class);
+                                            contactUsPass.setPostKey(result.getPostKey());
+                                            return contactUsPass;
 
-                                                    }
-
-                                                    @Override
-                                                    public void onServerError() {
-                                                        throw new RuntimeException(context.getString(R.string.default_request_error_internal_server));
-
-                                                    }
-
-                                                    @Override
-                                                    public void onBadRequest() {
-                                                        throw new RuntimeException(context.getString(R.string.default_request_error_bad_request));
-
-                                                    }
-
-                                                    @Override
-                                                    public void onForbidden() {
-                                                        throw new RuntimeException(context.getString(R.string.default_request_error_forbidden_auth));
-
-                                                    }
-                                                }, tkpdResponse.code());
-                                                throw new RuntimeException(context.getString(R.string.failed_create_ticket));
-                                            }
                                         }
                                     });
                         } else {
@@ -128,7 +85,8 @@ class SubmitTicketDataStore {
                 })
                 .flatMap(new Func1<ContactUsPass, Observable<ContactUsPass>>() {
                     @Override
-                    public Observable<ContactUsPass> call(ContactUsPass contactUsPass) {
+                    public Observable<ContactUsPass> call(ContactUsPass
+                                                                  contactUsPass) {
                         if (isHasPictures(contactUsPass)) {
                             return getObservableGenerateHost(context, contactUsPass);
                         } else {
@@ -138,7 +96,8 @@ class SubmitTicketDataStore {
                 })
                 .flatMap(new Func1<ContactUsPass, Observable<ContactUsPass>>() {
                     @Override
-                    public Observable<ContactUsPass> call(ContactUsPass contactUsPass) {
+                    public Observable<ContactUsPass> call(ContactUsPass
+                                                                  contactUsPass) {
                         if (isHasPictures(contactUsPass)) {
                             return getObservableUploadingFile(context, contactUsPass);
                         } else {
@@ -148,10 +107,11 @@ class SubmitTicketDataStore {
                 })
                 .flatMap(new Func1<ContactUsPass, Observable<Response<TkpdResponse>>>() {
                     @Override
-                    public Observable<Response<TkpdResponse>> call(ContactUsPass contactUsPass) {
+                    public Observable<Response<TkpdResponse>> call(ContactUsPass
+                                                                           contactUsPass) {
                         if (isHasPictures(contactUsPass)) {
-                            return contactUsAPI
-                                    .createTicket(AuthUtil.generateParams(context, contactUsPass.getSubmitParam()));
+                            return contactUsAPI.
+                                    createTicket(AuthUtil.generateParams(context, contactUsPass.getSubmitParam()));
                         } else {
                             return contactUsAPI
                                     .createTicketValidation(AuthUtil.generateParams(context, contactUsPass.getCreateTicketValidationParam()));
@@ -160,6 +120,7 @@ class SubmitTicketDataStore {
                 });
 
         return observable;
+
     }
 
     private boolean isHasPictures(ContactUsPass pass) {
@@ -175,7 +136,6 @@ class SubmitTicketDataStore {
         bundle.putBoolean(AccountsService.USING_HMAC, true);
         bundle.putString(AccountsService.AUTH_KEY, AuthUtil.KEY.KEY_WSV4);
 
-        //AccountsService accountsService = new AccountsService(bundle);
         return accountsApi
                 .generateHost(AuthUtil.generateParams(context, paramGenerateHost.getGenerateHostParam()))
                 .map(new Func1<GeneratedHost, ContactUsPass>() {
