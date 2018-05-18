@@ -65,7 +65,7 @@ public class TopAdsNewScheduleNewGroupFragment extends TopAdsNewScheduleFragment
         }
         trackingNewScheduleTopads();
         stepperModel.setDetailGroupScheduleViewModel(detailAd);
-        daggerPresenter.saveAdNew(stepperModel.getGroupName(), stepperModel.getDetailAd(), stepperModel.getTopAdsProductViewModels());
+        daggerPresenter.saveAdNew(stepperModel.getGroupName(), stepperModel.getDetailAd(), stepperModel.getTopAdsProductViewModels(), stepperModel.getSource());
     }
 
     @Override

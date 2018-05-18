@@ -53,9 +53,9 @@ import com.tokopedia.core.router.productdetail.passdata.ProductPass;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.RequestPermissionUtil;
 import com.tokopedia.core.util.SessionHandler;
-import com.tokopedia.design.bottomsheet.BottomSheetBuilder;
-import com.tokopedia.design.bottomsheet.adapter.BottomSheetItemClickListener;
-import com.tokopedia.design.bottomsheet.custom.CheckedBottomSheetBuilder;
+import com.github.rubensousa.bottomsheetbuilder.BottomSheetBuilder;
+import com.github.rubensousa.bottomsheetbuilder.adapter.BottomSheetItemClickListener;
+import com.github.rubensousa.bottomsheetbuilder.custom.CheckedBottomSheetBuilder;
 import com.tokopedia.inbox.R;
 import com.tokopedia.inbox.attachinvoice.view.activity.AttachInvoiceActivity;
 import com.tokopedia.inbox.attachinvoice.view.resultmodel.SelectedInvoice;
@@ -1450,5 +1450,10 @@ public class ChatRoomFragment extends BaseDaggerFragment
     public boolean shouldHandleUrlManually(String url) {
         String urlManualHandlingList[] = {CONTACT_US_URL_BASE_DOMAIN};
         return (Arrays.asList(urlManualHandlingList).contains(url) || isChatBot);
+    }
+
+    @Override
+    public void showSnackbarError(String string) {
+        NetworkErrorHelper.showSnackbar(getActivity(), string);
     }
 }

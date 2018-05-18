@@ -13,10 +13,14 @@ import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.di.component.HasComponent;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.util.MethodChecker;
+import com.tokopedia.core.util.TimeConverter;
 import com.tokopedia.tkpd.tkpdfeed.R;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.fragment.KolCommentFragment;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.kol.KolCommentHeaderViewModel;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.kol.KolCommentProductViewModel;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import static com.tokopedia.core.talkview.intentservice.TalkDetailIntentService.POSITION;
 
@@ -77,9 +81,41 @@ public class KolCommentActivity extends TActivity implements HasComponent {
     @DeepLink(Constants.Applinks.KOLCOMMENT)
     public static Intent getCallingIntent(Context context, Bundle bundle) {
         Intent intent = new Intent(context, KolCommentActivity.class);
+        KolCommentHeaderViewModel kolCommentHeaderViewModel = new KolCommentHeaderViewModel();
+        KolCommentProductViewModel kolCommentProductViewModel = new KolCommentProductViewModel();
         Bundle args = new Bundle();
-        args.putInt(ARGS_ID, Integer.valueOf(bundle.getString(ARGS_KOL_ID)));
         args.putBoolean(ARGS_FROM_APPLINK, true);
+        args.putInt(ARGS_ID, Integer.valueOf(bundle.getString(ARGS_KOL_ID)));
+
+        String dataExtras = bundle.getString("extra");
+        try {
+            JSONObject jsonObject = new JSONObject(dataExtras);
+            String avtar = jsonObject.getString("imageURL");
+            String userName = jsonObject.getString("userName");
+            String commentTime = jsonObject.getString("createTime");
+            int id = jsonObject.getInt("cardID");
+            String userId = String.valueOf(jsonObject.getInt("userID"));
+            String userImage = jsonObject.getString("userPhoto");
+            String review = jsonObject.getString("description");
+            String userInfo = jsonObject.getString("userInfo");
+            String price = jsonObject.getString("price");
+
+            String time = TimeConverter.generateTime(commentTime);
+            kolCommentHeaderViewModel =
+                    new KolCommentHeaderViewModel(avtar, userName, review, time, userId);
+            kolCommentProductViewModel =
+                    new KolCommentProductViewModel(userImage, userInfo,
+                            price, false);
+            args.putInt(ARGS_ID, id);
+            args.putBoolean(ARGS_FROM_APPLINK, false);
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        bundle.putParcelable(ARGS_HEADER, kolCommentHeaderViewModel);
+        bundle.putParcelable(ARGS_FOOTER, kolCommentProductViewModel);
+
+        bundle.putInt(ARGS_POSITION, 0);
         intent.putExtras(args);
         return intent;
     }

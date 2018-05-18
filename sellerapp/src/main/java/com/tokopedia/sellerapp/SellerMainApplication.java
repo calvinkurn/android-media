@@ -15,7 +15,6 @@ import com.moengage.pushbase.push.MoEPushCallBacks;
 import com.raizlabs.android.dbflow.config.FlowConfig;
 import com.raizlabs.android.dbflow.config.FlowManager;
 import com.raizlabs.android.dbflow.config.TkpdCacheApiGeneratedDatabaseHolder;
-import com.raizlabs.android.dbflow.config.TkpdGMGeneratedDatabaseHolder;
 import com.raizlabs.android.dbflow.config.TkpdSellerGeneratedDatabaseHolder;
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.abstraction.constant.AbstractionBaseURL;
@@ -29,6 +28,7 @@ import com.tokopedia.core.util.HockeyAppHelper;
 import com.tokopedia.digital.common.constant.DigitalUrl;
 import com.tokopedia.mitratoppers.common.constant.MitraToppersBaseURL;
 import com.tokopedia.network.SessionUrl;
+import com.tokopedia.pushnotif.PushNotification;
 import com.tokopedia.reputation.common.constant.ReputationCommonUrl;
 import com.tokopedia.sellerapp.deeplink.DeepLinkActivity;
 import com.tokopedia.sellerapp.deeplink.DeepLinkHandlerActivity;
@@ -198,8 +198,8 @@ public class SellerMainApplication extends SellerRouterApplication implements Mo
             FlowManager.init(new FlowConfig.Builder(getApplicationContext()).build());
         }
         FlowManager.initModule(TkpdSellerGeneratedDatabaseHolder.class);
-        FlowManager.initModule(TkpdGMGeneratedDatabaseHolder.class);
         FlowManager.initModule(TkpdCacheApiGeneratedDatabaseHolder.class);
+        PushNotification.initDatabase(getApplicationContext());
     }
 
     private void initCacheApi() {

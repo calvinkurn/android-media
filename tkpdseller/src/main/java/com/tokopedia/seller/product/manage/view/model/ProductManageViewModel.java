@@ -30,6 +30,7 @@ public class ProductManageViewModel implements ItemIdType, Parcelable {
     private int productUsingStock;
     private int productStock;
     private int productVariant;
+    private String productShopId;
 
     @Override
     public int getType() {
@@ -129,6 +130,14 @@ public class ProductManageViewModel implements ItemIdType, Parcelable {
         this.productId = productId;
     }
 
+    public String getProductShopId() {
+        return productShopId;
+    }
+
+    public void setProductShopId(String productShopId) {
+        this.productShopId = productShopId;
+    }
+
     public boolean isStockOrImageEmpty(){
         return productStatus != null && !productStatus.equals(STOCK_READY_VALUE);
     }
@@ -224,6 +233,7 @@ public class ProductManageViewModel implements ItemIdType, Parcelable {
         dest.writeInt(this.productUsingStock);
         dest.writeInt(this.productStock);
         dest.writeInt(this.productVariant);
+        dest.writeString(this.productShopId);
     }
 
     protected ProductManageViewModel(Parcel in) {
@@ -244,6 +254,7 @@ public class ProductManageViewModel implements ItemIdType, Parcelable {
         this.productUsingStock = in.readInt();
         this.productStock = in.readInt();
         this.productVariant = in.readInt();
+        this.productShopId = in.readString();
     }
 
     public static final Creator<ProductManageViewModel> CREATOR = new Creator<ProductManageViewModel>() {
