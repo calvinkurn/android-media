@@ -24,6 +24,7 @@ import com.tokopedia.topchat.chatroom.domain.ReplyMessageUseCase;
 import com.tokopedia.topchat.chatroom.domain.SendMessageUseCase;
 import com.tokopedia.topchat.chatroom.domain.SetChatRatingUseCase;
 import com.tokopedia.topchat.chatroom.domain.WebSocketUseCase;
+import com.tokopedia.topchat.chatroom.domain.pojo.invoicesent.InvoiceLinkPojo;
 import com.tokopedia.topchat.chatroom.domain.pojo.rating.SetChatRatingPojo;
 import com.tokopedia.topchat.chatroom.domain.pojo.replyaction.ReplyActionData;
 import com.tokopedia.topchat.chatroom.view.listener.ChatRoomContract;
@@ -417,7 +418,7 @@ public class ChatRoomPresenter extends BaseDaggerPresenter<ChatRoomContract.View
         }
     }
 
-    public void sendInvoiceAttachment(String messageId, SelectedInvoice invoice, String startTime) {
+    public void sendInvoiceAttachment(String messageId, InvoiceLinkPojo invoice, String startTime) {
         webSocketUseCase.execute(webSocketUseCase.getParamSendInvoiceAttachment(messageId,
                 invoice, startTime));
     }

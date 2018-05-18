@@ -65,6 +65,8 @@ import com.tokopedia.topchat.attachproduct.view.resultmodel.ResultProduct;
 import com.tokopedia.topchat.chatlist.adapter.viewholder.chatlist.ListChatViewHolder;
 import com.tokopedia.topchat.chatlist.viewmodel.InboxChatViewModel;
 import com.tokopedia.topchat.chatroom.data.ChatWebSocketConstant;
+import com.tokopedia.topchat.chatroom.domain.pojo.invoicesent.InvoiceLinkAttributePojo;
+import com.tokopedia.topchat.chatroom.domain.pojo.invoicesent.InvoiceLinkPojo;
 import com.tokopedia.topchat.chatroom.domain.pojo.reply.Attachment;
 import com.tokopedia.topchat.chatroom.domain.pojo.reply.WebSocketResponse;
 import com.tokopedia.topchat.chatroom.domain.pojo.replyaction.ReplyActionData;
@@ -83,6 +85,7 @@ import com.tokopedia.topchat.chatroom.view.viewmodel.ChatRoomViewModel;
 import com.tokopedia.topchat.chatroom.view.viewmodel.SendableViewModel;
 import com.tokopedia.topchat.chatroom.view.viewmodel.imageupload.ImageUploadViewModel;
 import com.tokopedia.topchat.chatroom.view.viewmodel.invoiceattachment.AttachInvoiceSentViewModel;
+import com.tokopedia.topchat.chatroom.view.viewmodel.invoiceattachment.mapper.AttachInvoiceMapper;
 import com.tokopedia.topchat.chatroom.view.viewmodel.message.MessageViewModel;
 import com.tokopedia.topchat.chatroom.view.viewmodel.productattachment.ProductAttachmentViewModel;
 import com.tokopedia.topchat.chatroom.view.viewmodel.quickreply.QuickReplyListViewModel;
@@ -912,7 +915,7 @@ public class ChatRoomFragment extends BaseDaggerFragment
                     break;
                 SelectedInvoice selectedInvoice = data.getParcelableExtra(AttachInvoiceActivity
                         .TOKOPEDIA_ATTACH_INVOICE_SELECTED_INVOICE_KEY);
-                attachInvoiceRetrieved(selectedInvoice);
+                attachInvoiceRetrieved(AttachInvoiceMapper.convertInvoiceToDomainInvoiceModel(selectedInvoice));
                 break;
             default:
                 break;
@@ -1094,7 +1097,7 @@ public class ChatRoomFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void onInvoiceSelected(SelectedInvoice selectedInvoice) {
+    public void onInvoiceSelected(InvoiceLinkPojo selectedInvoice) {
         attachInvoiceRetrieved(selectedInvoice);
     }
 
@@ -1160,15 +1163,15 @@ public class ChatRoomFragment extends BaseDaggerFragment
 
     //ADD INCOMING MESSAGE
 
-    private AttachInvoiceSentViewModel generateInvoice(SelectedInvoice selectedInvoice) {
-
+    private AttachInvoiceSentViewModel generateInvoice(InvoiceLinkPojo selectedInvoice) {
+        InvoiceLinkAttributePojo invoiceLinkAttributePojo = selectedInvoice.getAttributes();
         return new AttachInvoiceSentViewModel(
                 getArguments().getString(InboxMessageConstant.PARAM_SENDER_ID),
                 sessionHandler.getLoginName(),
-                selectedInvoice.getInvoiceNo(),
-                selectedInvoice.getDescription(),
-                selectedInvoice.getTopProductImage(),
-                selectedInvoice.getAmount(),
+                invoiceLinkAttributePojo.getTitle(),
+                invoiceLinkAttributePojo.getDescription(),
+                invoiceLinkAttributePojo.getImageUrl(),
+                invoiceLinkAttributePojo.getTotalAmount(),
                 SendableViewModel.generateStartTime()
         );
     }
@@ -1196,11 +1199,11 @@ public class ChatRoomFragment extends BaseDaggerFragment
                 SendableViewModel.generateStartTime());
     }
 
-    private void attachInvoiceRetrieved(SelectedInvoice selectedInvoice) {
-        String msgId = getArguments().getString(InboxMessageConstant.PARAM_MESSAGE_ID);
+    private void attachInvoiceRetrieved(InvoiceLinkPojo selectedInvoice) {
+        String msgId = getArguments().getString(PARAM_MESSAGE_ID);
         AttachInvoiceSentViewModel generatedInvoice = generateInvoice(selectedInvoice);
-        presenter.sendInvoiceAttachment(msgId, selectedInvoice, generatedInvoice.getStartTime());
         adapter.addReply(generatedInvoice);
+        presenter.sendInvoiceAttachment(msgId, selectedInvoice, generatedInvoice.getStartTime());
         scrollToBottom();
     }
 

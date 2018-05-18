@@ -180,7 +180,7 @@ public class WebSocketMapper {
                 pojo.getAttachment().getType(),
                 pojo.getMessage().getTimeStampUnix(),
                 pojo.getStartTime(),
-                pojo.getMessage().getCensoredReply(),
+                invoiceSentPojo.getInvoiceLink().getAttributes().getTitle(),
                 invoiceSentPojo.getInvoiceLink().getAttributes().getDescription(),
                 invoiceSentPojo.getInvoiceLink().getAttributes().getImageUrl(),
                 invoiceSentPojo.getInvoiceLink().getAttributes().getTotalAmount(),
