@@ -19,7 +19,7 @@
             android:layout_gravity="center"
             android:keepScreenOn="true"
             app:cameraAudio="on"
-            app:cameraCropOutput="true"
+            app:cameraCropOutput="false"
             app:cameraFacing="back"
             app:cameraFlash="off"
             app:cameraGestureLongTap="none"
