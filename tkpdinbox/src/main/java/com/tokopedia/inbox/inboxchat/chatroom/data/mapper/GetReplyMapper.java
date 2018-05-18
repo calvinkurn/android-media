@@ -199,7 +199,7 @@ public class GetReplyMapper implements Func1<Response<TkpdResponse>, ChatRoomVie
                 item.getAttachment().getId(),
                 item.getAttachment().getType(),
                 item.getReplyTime(),
-                item.getMsg(),
+                invoiceAttributes.getTitle(),
                 invoiceAttributes.getDescription(),
                 invoiceAttributes.getImageUrl(),
                 invoiceAttributes.getAmount(),

@@ -16,7 +16,7 @@ public class InvoiceLinkAttributePojo {
     @SerializedName("href_url")
     private String hrefUrl;
     @SerializedName("id")
-    private int id;
+    private long id;
     @SerializedName("image_url")
     private String imageUrl;
     @SerializedName("status")
@@ -60,11 +60,11 @@ public class InvoiceLinkAttributePojo {
         this.hrefUrl = hrefUrl;
     }
 
-    public int getId() {
+    public long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(long id) {
         this.id = id;
     }
 

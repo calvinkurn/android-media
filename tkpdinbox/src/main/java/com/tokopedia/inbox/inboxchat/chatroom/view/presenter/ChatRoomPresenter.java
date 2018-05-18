@@ -14,7 +14,6 @@ import com.tokopedia.core.router.TkpdInboxRouter;
 import com.tokopedia.core.util.PagingHandler;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.inbox.R;
-import com.tokopedia.inbox.attachinvoice.view.resultmodel.SelectedInvoice;
 import com.tokopedia.inbox.attachproduct.view.resultmodel.ResultProduct;
 import com.tokopedia.inbox.inboxchat.chatroom.data.mapper.WebSocketMapper;
 import com.tokopedia.inbox.inboxchat.chatroom.domain.AttachImageUseCase;
@@ -23,6 +22,7 @@ import com.tokopedia.inbox.inboxchat.chatroom.domain.ReplyMessageUseCase;
 import com.tokopedia.inbox.inboxchat.chatroom.domain.SendMessageUseCase;
 import com.tokopedia.inbox.inboxchat.chatroom.domain.SetChatRatingUseCase;
 import com.tokopedia.inbox.inboxchat.chatroom.domain.WebSocketUseCase;
+import com.tokopedia.inbox.inboxchat.chatroom.domain.pojo.invoicesent.InvoiceLinkPojo;
 import com.tokopedia.inbox.inboxchat.chatroom.domain.pojo.rating.SetChatRatingPojo;
 import com.tokopedia.inbox.inboxchat.chatroom.domain.pojo.replyaction.ReplyActionData;
 import com.tokopedia.inbox.inboxchat.chatroom.view.listener.ChatRoomContract;
@@ -418,7 +418,7 @@ public class ChatRoomPresenter extends BaseDaggerPresenter<ChatRoomContract.View
         }
     }
 
-    public void sendInvoiceAttachment(String messageId, SelectedInvoice invoice, String startTime) {
+    public void sendInvoiceAttachment(String messageId, InvoiceLinkPojo invoice, String startTime) {
         webSocketUseCase.execute(webSocketUseCase.getParamSendInvoiceAttachment(messageId,
                 invoice, startTime));
     }
