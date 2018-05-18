@@ -181,17 +181,9 @@ public class ProductSharePresenterImpl implements ProductSharePresenter {
                         TkpdState.PackageName.TYPE_TEXT, null, null);
             }
         } else {
-            Bitmap bmp = null;
-            String filename = data.getPathSticker();
-            try {
-                FileInputStream is = new FileInputStream(filename);
-                bmp = BitmapFactory.decodeStream(is);
-                is.close();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            ShareSocmedHandler.ShareSpecific(data, activity, TkpdState.PackageName.Instagram,
-                    TkpdState.PackageName.TYPE_IMAGE, bmp, null);
+            ShareSocmedHandler.ShareSpecificUri(data, activity, TkpdState.PackageName.Instagram,
+                    TkpdState.PackageName.TYPE_IMAGE,
+                    data.getPathSticker(), null);
         }
     }
 

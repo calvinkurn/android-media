@@ -40,6 +40,7 @@ import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.customadapter.NoResultDataBinder;
 import com.tokopedia.core.customadapter.RetryDataBinder;
 import com.tokopedia.core.gcm.Constants;
+import com.tokopedia.core.myproduct.utils.FileUtils;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.product.model.share.ShareData;
 import com.tokopedia.core.router.productdetail.PdpRouter;
@@ -49,6 +50,7 @@ import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.ShareSocmedHandler;
 import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.design.button.BottomActionView;
+import com.tokopedia.design.utils.CurrencyFormatUtil;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.SellerModuleRouter;
 import com.tokopedia.seller.base.view.adapter.BaseEmptyDataBinder;
@@ -836,30 +838,21 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
 
                                 Bitmap newImage = addSticker.addStickerToBitmap(bitmap, getActivity());
 
-                                String pathFile = Environment.getExternalStorageDirectory() + File.separator + "tkpdtemp" + File.separator + ShareSocmedHandler.uniqueCode() + ".jpg";
-                                File f;
-                                try {
-                                    ByteArrayOutputStream bytes = new ByteArrayOutputStream();
-                                    ShareSocmedHandler.CheckTempDirectory();
-                                    f = new File(pathFile);
-                                    newImage.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
-                                    f.createNewFile();
-                                    FileOutputStream fo = new FileOutputStream(f);
-                                    fo.write(bytes.toByteArray());
-                                } catch (IOException e) {
-                                    e.printStackTrace();
-                                }
+                                File file = FileUtils.writeImageToTkpdPath(newImage);
+                                newImage.recycle();
+
+                                String currencyString = CurrencyFormatUtil.convertPriceValue(Double.valueOf(productManageViewModel.getProductPrice()), true);
 
                                 ShareData shareData = ShareData.Builder.aShareData()
                                         .setName(productManageViewModel.getProductName())
                                         .setTextContent(productManageViewModel.getProductName())
                                         .setDescription(productManageViewModel.getProductName())
                                         .setImgUri(productManageViewModel.getImageFullUrl())
-                                        .setPrice(productManageViewModel.getProductPrice())
+                                        .setPrice(currencyString)
                                         .setUri(productManageViewModel.getProductUrl())
                                         .setType(ShareData.PRODUCT_TYPE)
                                         .setId(productManageViewModel.getProductId())
-                                        .setPathSticker(pathFile)
+                                        .setPathSticker(file.getAbsolutePath())
                                         .build();
 
                                 Intent intent = ShareActivity.createIntent(getActivity(), shareData);
