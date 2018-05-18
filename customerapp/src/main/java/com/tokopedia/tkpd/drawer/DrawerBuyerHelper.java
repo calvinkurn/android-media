@@ -56,6 +56,7 @@ import com.tokopedia.seller.seller.info.view.activity.SellerInfoActivity;
 import com.tokopedia.seller.shopsettings.etalase.activity.EtalaseShopEditor;
 import com.tokopedia.tkpd.R;
 import com.tokopedia.tkpd.home.ParentIndexHome;
+import com.tokopedia.train.homepage.presentation.activity.TrainHomepageActivity;
 
 import java.util.ArrayList;
 
@@ -317,6 +318,14 @@ public class DrawerBuyerHelper extends DrawerHelper
                     )
             );
         }
+
+        //TODO delete this after finish implement KAI
+        buyerMenu.add(new DrawerItem(
+                        "KERETA KENCANA",
+                        TkpdState.DrawerPosition.PEOPLE_KAI_HOMEPAGE,
+                        drawerCache.getBoolean(IS_PEOPLE_OPENED, false)
+                )
+        );
         return buyerMenu;
     }
 
@@ -508,6 +517,11 @@ public class DrawerBuyerHelper extends DrawerHelper
                     break;
                 case TkpdState.DrawerPosition.PEOPLE_FLIGHT_TRANSACTION_LIST:
                     context.startActivity(FlightOrderListActivity.getCallingIntent(context));
+                    sendGTMNavigationEvent(AppEventTracking.EventLabel.FLIGHT_TRANSACTION_LIST);
+                    break;
+                //TODO delete this after finish implement KAI
+                case TkpdState.DrawerPosition.PEOPLE_KAI_HOMEPAGE:
+                    context.startActivity(TrainHomepageActivity.getCallingIntent(context));
                     sendGTMNavigationEvent(AppEventTracking.EventLabel.FLIGHT_TRANSACTION_LIST);
                     break;
                 case TkpdState.DrawerPosition.SHOP_NEW_ORDER:
