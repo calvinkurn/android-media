@@ -6,7 +6,6 @@ import android.support.v7.widget.AppCompatButton;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
@@ -14,13 +13,13 @@ import com.tokopedia.design.component.TextViewCompat;
 import com.tokopedia.flight.FlightModuleRouter;
 import com.tokopedia.flight.R;
 
+import static com.tokopedia.flight.common.constant.FlightUrl.TNC_LINK;
+
 /**
  * @author by furqan on 16/04/18.
  */
 
 public class FlightCancellationTermsAndConditionsFragment extends BaseDaggerFragment {
-
-    private static final String TNC_LINK = "https://www.tokopedia.com/bantuan/pengembalian-dana-dan-penggantian-jadwal";
 
     TextViewCompat txtTerms;
     AppCompatButton btnSelengkapnya;
