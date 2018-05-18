@@ -76,10 +76,9 @@ public class MediaGrid extends SquareFrameLayout implements View.OnClickListener
     }
 
     private void setImage() {
-        // TODO change glide to ImageHandler
         if (mMedia.isGif()) {
             Glide.with(getContext())
-                    .load(mMedia.getContentUri())
+                    .loadFromMediaStore(mMedia.getContentUri())
                     .asBitmap()
                     .placeholder(mPreBindInfo.mPlaceholder)
                     .override(mPreBindInfo.mResize, mPreBindInfo.mResize)
@@ -87,7 +86,7 @@ public class MediaGrid extends SquareFrameLayout implements View.OnClickListener
                     .into(mThumbnail);
         } else {
             Glide.with(getContext())
-                    .load(mMedia.getContentUri())
+                    .loadFromMediaStore(mMedia.getContentUri())
                     .asBitmap()  // some .jpeg files are actually gif
                     .placeholder(mPreBindInfo.mPlaceholder)
                     .override(mPreBindInfo.mResize, mPreBindInfo.mResize)
