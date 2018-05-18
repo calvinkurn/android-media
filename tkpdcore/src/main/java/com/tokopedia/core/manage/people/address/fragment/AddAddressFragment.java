@@ -73,7 +73,7 @@ public class AddAddressFragment extends BasePresenterFragment<AddAddressPresente
     private View chooseLocation;
     private EditText locationEditText;
     private TextInputLayout passwordLayout;
-    private EditText password;
+    private EditText passwordEditText;
 
     private TextView saveButton;
 
@@ -151,7 +151,7 @@ public class AddAddressFragment extends BasePresenterFragment<AddAddressPresente
         districtEditText.addTextChangedListener(watcher(districtLayout));
         zipCodeTextView.addTextChangedListener(watcher(zipCodeLayout));
         receiverPhoneEditText.addTextChangedListener(watcher(receiverPhoneLayout));
-        password.addTextChangedListener(watcher(passwordLayout));
+        passwordEditText.addTextChangedListener(watcher(passwordLayout));
     }
 
     private TextWatcher watcher(final TextInputLayout wrapper) {
@@ -215,7 +215,7 @@ public class AddAddressFragment extends BasePresenterFragment<AddAddressPresente
         chooseLocation = view.findViewById(R.id.layout_value_location);
         locationEditText = view.findViewById(R.id.value_location);
         passwordLayout = view.findViewById(R.id.password_layout);
-        password = view.findViewById(R.id.password);
+        passwordEditText = view.findViewById(R.id.password);
         saveButton = view.findViewById(R.id.save_button);
 
         getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
@@ -326,11 +326,13 @@ public class AddAddressFragment extends BasePresenterFragment<AddAddressPresente
 
             LocationPass locationPass = new LocationPass();
 
-            if (address.getLatLng() != null) {
-                locationPass = new LocationPass();
-                locationPass.setLatitude(String.valueOf(address.getLatLng().latitude));
-                locationPass.setLongitude(String.valueOf(address.getLatLng().longitude));
+            if (!TextUtils.isEmpty(address.getLatitude()) && !TextUtils.isEmpty(address.getLongitude())) {
+                locationPass.setLatitude(address.getLatitude());
+                locationPass.setLongitude(address.getLongitude());
                 locationPass.setGeneratedAddress(locationEditText.getText().toString());
+            } else {
+                locationPass.setLatitude(String.valueOf(MONAS_LATITUDE));
+                locationPass.setLongitude(String.valueOf(MONAS_LONGITUDE));
             }
 
             Intent intent = GeolocationActivity.createInstance(getActivity(), locationPass);
@@ -478,7 +480,7 @@ public class AddAddressFragment extends BasePresenterFragment<AddAddressPresente
 
     @Override
     public String getPassword() {
-        return password.getText().toString();
+        return passwordEditText.getText().toString();
     }
 
     @Override
@@ -545,9 +547,21 @@ public class AddAddressFragment extends BasePresenterFragment<AddAddressPresente
             isValid = false;
         }
 
-        if (addressTypeEditText.getText().length() == 0) {
+        if (TextUtils.isEmpty(addressTypeEditText.getText())) {
             addressTypeLayout.setError(getString(R.string.error_field_required));
             addressTypeLayout.requestFocus();
+            isValid = false;
+        }
+
+        if (TextUtils.isEmpty(districtEditText.getText())) {
+            districtLayout.setError(getString(R.string.error_field_required));
+            districtLayout.requestFocus();
+            isValid = false;
+        }
+
+        if (TextUtils.isEmpty(zipCodeTextView.getText())) {
+            zipCodeLayout.setError(getString(R.string.error_field_required));
+            zipCodeLayout.requestFocus();
             isValid = false;
         }
 
