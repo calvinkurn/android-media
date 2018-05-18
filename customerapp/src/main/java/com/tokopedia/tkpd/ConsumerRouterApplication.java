@@ -131,6 +131,9 @@ import com.tokopedia.loyalty.view.activity.PromoListActivity;
 import com.tokopedia.loyalty.view.activity.TokoPointWebviewActivity;
 import com.tokopedia.loyalty.view.data.VoucherViewModel;
 import com.tokopedia.loyalty.view.fragment.LoyaltyNotifFragmentDialog;
+import com.tokopedia.network.FingerprintNetworkRouter;
+import com.tokopedia.network.NetworkRouter;
+import com.tokopedia.network.data.model.FingerprintModel;
 import com.tokopedia.network.service.AccountsService;
 import com.tokopedia.otp.phoneverification.view.activity.PhoneVerificationActivationActivity;
 import com.tokopedia.otp.phoneverification.view.activity.PhoneVerificationProfileActivity;
@@ -225,6 +228,7 @@ import com.tokopedia.tkpd.tokocash.datepicker.DatePickerUtil;
 import com.tokopedia.kol.KolRouter;
 import com.tokopedia.kol.feature.post.view.fragment.KolPostFragment;
 import com.tokopedia.kol.feature.post.view.subscriber.LikeKolPostSubscriber;
+import com.tokopedia.tkpd.utils.FingerprintModelGenerator;
 import com.tokopedia.tkpdpdp.PreviewProductImageDetail;
 import com.tokopedia.tkpdpdp.ProductInfoActivity;
 import com.tokopedia.tkpdreactnative.react.ReactConst;
@@ -274,7 +278,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         AbstractionRouter, FlightModuleRouter, LogisticRouter, FeedModuleRouter, IHomeRouter,
         DiscoveryRouter, RideModuleRouter, DigitalModuleRouter, com.tokopedia.tokocash.TokoCashRouter,
         DigitalRouter, KolRouter, GroupChatModuleRouter, ApplinkRouter, ShopModuleRouter, LoyaltyModuleRouter,
-        GamificationRouter {
+        GamificationRouter, NetworkRouter {
 
     @Inject
     ReactNativeHost reactNativeHost;
@@ -1858,4 +1862,10 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     public String getDesktopLinkGroupChat() {
         return ChatroomUrl.DESKTOP_URL;
     }
+
+    @Override
+    public FingerprintModel getFingerprintModel() {
+        return FingerprintModelGenerator.generateFingerprintModel(this);
+    }
+
 }

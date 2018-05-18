@@ -2,6 +2,8 @@ package com.tokopedia.network;
 
 import android.app.Activity;
 
+import com.tokopedia.network.data.model.FingerprintModel;
+
 import okhttp3.Response;
 
 /**
@@ -23,5 +25,7 @@ public interface NetworkRouter {
     void showForceHockeyAppDialog();
 
     void logInvalidGrant(Response response);
+
+    FingerprintModel getFingerprintModel();
 
 }

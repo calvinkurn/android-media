@@ -10,6 +10,7 @@ import java.util.concurrent.TimeUnit;
 
 import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
+import okhttp3.logging.HttpLoggingInterceptor;
 
 /**
  * Created by ricoharisin on 2/28/17.
@@ -34,9 +35,10 @@ public class TkpdOkHttpBuilder {
         return this;
     }
 
-    public TkpdOkHttpBuilder addDebugInterceptor() {
+    private TkpdOkHttpBuilder addDebugInterceptor() {
         if (GlobalConfig.isAllowDebuggingTools()) {
             this.addInterceptor(new ChuckInterceptor(context));
+            this.addInterceptor(getHttpLoggingInterceptor());
         }
 
         return this;
@@ -53,6 +55,14 @@ public class TkpdOkHttpBuilder {
         }
 
         return this;
+    }
+
+    private HttpLoggingInterceptor getHttpLoggingInterceptor() {
+        HttpLoggingInterceptor.Level loggingLevel = HttpLoggingInterceptor.Level.NONE;
+        if (GlobalConfig.isAllowDebuggingTools()) {
+            loggingLevel = HttpLoggingInterceptor.Level.BODY;
+        }
+        return new HttpLoggingInterceptor().setLevel(loggingLevel);
     }
 
     public OkHttpClient build() {
