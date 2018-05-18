@@ -38,7 +38,7 @@ public class HotlistActivity extends DiscoveryActivity
     private static final String EXTRA_HOTLIST_PARAM_QUERY = "EXTRA_HOTLIST_PARAM_QUERY";
     private static final String EXTRA_HOTLIST_PARAM_ALIAS = "HOTLIST_ALIAS";
     private static final String EXTRA_HOTLIST_PARAM_TRACKER = "EXTRA_HOTLIST_PARAM_TRACKER";
-
+    private static final String TAG = HotlistActivity.class.getSimpleName();
     private AppBarLayout appBarLayout;
     private TextView descriptionTxt;
     private DescriptionView descriptionView;
@@ -139,7 +139,7 @@ public class HotlistActivity extends DiscoveryActivity
         descriptionTxt.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                descriptionView.show(getSupportFragmentManager(), "Deskripsi");
+                descriptionView.show(getSupportFragmentManager(), TAG);
             }
         });
     }
@@ -187,7 +187,5 @@ public class HotlistActivity extends DiscoveryActivity
         hotlistPresenter.detachView();
         super.onDestroy();
     }
-
-
 
 }
