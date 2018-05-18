@@ -45,6 +45,7 @@ import java.util.stream.Collectors;
 public class ProductAddWholesaleFragment extends BaseDaggerFragment implements WholesaleAddAdapter.Listener {
 
     public static final String EXTRA_PRODUCT_WHOLESALE = "EXTRA_PRODUCT_WHOLESALE";
+    public static final String EXTRA_PRODUCT_MAIN_PRICE = "EXTRA_PRODUCT_MAIN_PRICE";
     public static final String SAVE_PRODUCT_WHOLESALE = "SAVE_PRODUCT_WHOLESALE";
     public static final String RUPIAH_CURRENCY = "Rp ";
     public static final String USD_CURRENCY = "US$ ";
@@ -186,6 +187,7 @@ public class ProductAddWholesaleFragment extends BaseDaggerFragment implements W
     public void exitWholesaleActivity(){
         Intent intent = new Intent();
         intent.putParcelableArrayListExtra(EXTRA_PRODUCT_WHOLESALE, wholesaleAdapter.getProductWholesaleViewModels());
+        intent.putExtra(EXTRA_PRODUCT_MAIN_PRICE, productPrice);
         getActivity().setResult(Activity.RESULT_OK, intent);
         getActivity().finish();
     }
