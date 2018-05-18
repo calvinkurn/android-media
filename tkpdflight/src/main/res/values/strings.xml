@@ -334,7 +334,7 @@
     <string name="flight_booking_passenger_saved_hint">Pilih Nama dari Daftar Penumpang</string>
     <string name="flight_booking_list_passenger_title">Daftar Penumpang</string>
     <string name="flight_passenger_update_title">Ubah Data Penumpang</string>
-    <string name="flight_list_passenger_add_passenger_label">Tambah Penumpang</string>
+    <string name="flight_list_passenger_add_passenger_label">+ Tambah Penumpang</string>
     <string name="flight_booking_list_passenger_selected_error" formatted="false">Harap pilih penumpang %s</string>
     <string name="flight_passenger_data_diri_label">DATA DIRI</string>
     <string name="flight_passenger_tipe_penumpang_hint">Tipe Penumpang</string>
