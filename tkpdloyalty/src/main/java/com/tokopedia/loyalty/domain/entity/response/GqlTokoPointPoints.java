@@ -7,7 +7,7 @@ import com.google.gson.annotations.SerializedName;
  * Created by sachinbansal on 5/16/18.
  */
 
-class GqlTokoPointPoints {
+public class GqlTokoPointPoints {
 
     @SerializedName("reward")
     @Expose
