@@ -40,11 +40,14 @@ public class FlightCancellationListViewHolder extends AbstractViewHolder<FlightC
                 element.getCancellations().getRefundId()));
         txtCreatedTime.setText(String.format(getString(R.string.flight_cancellation_list_created_time),
                 element.getCancellations().getCreateTime()));
-        txtJourney.setText(String.format(getString(R.string.flight_label_detail_format),
-                element.getCancellations().getJourneys().get(0).getDepartureCity(),
-                element.getCancellations().getJourneys().get(0).getDepartureAiportId(),
-                element.getCancellations().getJourneys().get(0).getArrivalCity(),
-                element.getCancellations().getJourneys().get(0).getArrivalAirportId()));
+        if (element.getCancellations().getJourneys().size() > 0 &&
+                element.getCancellations().getJourneys().get(0) != null) {
+            txtJourney.setText(String.format(getString(R.string.flight_label_detail_format),
+                    element.getCancellations().getJourneys().get(0).getDepartureCity(),
+                    element.getCancellations().getJourneys().get(0).getDepartureAiportId(),
+                    element.getCancellations().getJourneys().get(0).getArrivalCity(),
+                    element.getCancellations().getJourneys().get(0).getArrivalAirportId()));
+        }
         checkCancellationStatus(element.getCancellations().getStatus());
     }
 

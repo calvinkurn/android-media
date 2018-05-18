@@ -21,8 +21,8 @@ import static com.tokopedia.flight.common.constant.FlightUrl.TNC_LINK;
 
 public class FlightCancellationTermsAndConditionsFragment extends BaseDaggerFragment {
 
-    TextViewCompat txtTerms;
-    AppCompatButton btnSelengkapnya;
+    private TextViewCompat txtTerms;
+    private AppCompatButton btnSelengkapnya;
 
     public static FlightCancellationTermsAndConditionsFragment createInstance() {
         FlightCancellationTermsAndConditionsFragment fragment = new FlightCancellationTermsAndConditionsFragment();

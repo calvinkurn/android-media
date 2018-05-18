@@ -104,7 +104,7 @@ public class FlightCancellationViewHolder extends AbstractViewHolder<FlightCance
 
 
         txtDepartureDetail.setText(
-                String.format("Penerbangan %d - %s",
+                String.format(context.getString(R.string.flight_cancellation_journey_title),
                         getAdapterPosition() + 1,
                         departureDate)
         );

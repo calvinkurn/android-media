@@ -272,15 +272,15 @@ public class FlightCancellationReviewFragment extends BaseListFragment<FlightCan
     private void showConfirmationDialog() {
         final Dialog dialog = new Dialog(getActivity(), Dialog.Type.PROMINANCE);
         dialog.setTitle(getString(R.string.flight_cancellation_dialog_title));
-        dialog.setDesc("Apakah anda yakin ingin membatalkan pesanan?");
-        dialog.setBtnOk("Kembali");
+        dialog.setDesc(getString(R.string.flight_cancellation_review_dialog_description));
+        dialog.setBtnOk(getString(R.string.flight_cancellation_dialog_back_button_text));
         dialog.setOnOkClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 dialog.dismiss();
             }
         });
-        dialog.setBtnCancel("Lanjut");
+        dialog.setBtnCancel(getString(R.string.flight_booking_submit_button_label));
         dialog.setOnCancelClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

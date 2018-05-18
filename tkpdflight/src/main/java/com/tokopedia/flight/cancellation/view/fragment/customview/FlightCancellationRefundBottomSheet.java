@@ -42,7 +42,7 @@ public class FlightCancellationRefundBottomSheet extends BottomSheets {
 
     @Override
     protected String title() {
-        return "Pengembalian Dana";
+        return getString(R.string.flight_order_status_refund_label);
     }
 
     @Override

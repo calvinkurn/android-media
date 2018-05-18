@@ -281,9 +281,6 @@ public class FlightCancellationReasonAndProofFragment extends BaseDaggerFragment
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        /*if (getActivity() != null && getActivity().getApplication() instanceof FlightModuleRouter) {
-            REQUEST_CODE_CAMERA = ((FlightModuleRouter) getActivity().getApplication()).getCameraRequestCode();
-        }*/
 
         if (requestCode == REQUEST_CODE_GALLERY) {
             if (resultCode == Activity.RESULT_OK && data != null) {
