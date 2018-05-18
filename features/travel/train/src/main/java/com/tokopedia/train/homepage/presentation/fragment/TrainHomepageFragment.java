@@ -2,7 +2,6 @@ package com.tokopedia.train.homepage.presentation.fragment;
 
 
 import android.app.Activity;
-import android.app.DatePickerDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -15,7 +14,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
-import android.widget.DatePicker;
 import android.widget.LinearLayout;
 
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
@@ -33,6 +31,7 @@ import com.tokopedia.train.homepage.presentation.presenter.TrainHomepagePresente
 import com.tokopedia.train.search.presentation.activity.TrainDepartureSearchActivity;
 import com.tokopedia.train.station.presentation.TrainStationsActivity;
 import com.tokopedia.train.station.presentation.adapter.viewmodel.TrainStationViewModel;
+import com.tokopedia.travelcalendar.view.TravelCalendarActivity;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -47,6 +46,8 @@ public class TrainHomepageFragment extends BaseDaggerFragment implements TrainHo
     private static final int ORIGIN_STATION_REQUEST_CODE = 1001;
     private static final int DESTINATION_STATION_REQUEST_CODE = 1002;
     private static final int PASSENGER_REQUEST_CODE = 1004;
+    private static final int DATE_PICKER_DEPARTURE_REQUEST_CODE = 1005;
+    private static final int DATE_PICKER_RETURN_REQUEST_CODE = 1006;
 
     private final int DEFAULT_RANGE_OF_DEPARTURE_AND_ARRIVAL = 2;
 
@@ -233,34 +234,18 @@ public class TrainHomepageFragment extends BaseDaggerFragment implements TrainHo
 
     @Override
     public void showDepartureDatePickerDialog(Date selectedDate, Date minDate, Date maxDate) {
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTime(selectedDate);
-        DatePickerDialog datePicker = new DatePickerDialog(getActivity(), new DatePickerDialog.OnDateSetListener() {
-            @Override
-            public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
-                trainHomepagePresenterImpl.onDepartureDateChange(year, month, dayOfMonth);
-            }
-        }, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DATE));
-        DatePicker datePicker1 = datePicker.getDatePicker();
-        datePicker1.setMinDate(minDate.getTime());
-        datePicker1.setMaxDate(maxDate.getTime());
-        datePicker.show();
+        startActivityForResult(TravelCalendarActivity
+                        .newInstance(getActivity(), selectedDate, minDate, maxDate,
+                                TravelCalendarActivity.DEPARTURE_TYPE),
+                DATE_PICKER_DEPARTURE_REQUEST_CODE);
     }
 
     @Override
     public void showReturnDatePickerDialog(Date selectedDate, Date minDate, Date maxDate) {
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTime(selectedDate);
-        DatePickerDialog datePicker = new DatePickerDialog(getActivity(), new DatePickerDialog.OnDateSetListener() {
-            @Override
-            public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
-                trainHomepagePresenterImpl.onReturnDateChange(year, month, dayOfMonth);
-            }
-        }, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DATE));
-        DatePicker datePicker1 = datePicker.getDatePicker();
-        datePicker1.setMinDate(minDate.getTime());
-        datePicker1.setMaxDate(maxDate.getTime());
-        datePicker.show();
+        startActivityForResult(TravelCalendarActivity
+                        .newInstance(getActivity(), selectedDate, minDate, maxDate,
+                                TravelCalendarActivity.RETURN_TYPE),
+                DATE_PICKER_RETURN_REQUEST_CODE);
     }
 
     @Override
@@ -330,6 +315,25 @@ public class TrainHomepageFragment extends BaseDaggerFragment implements TrainHo
                     TrainPassengerViewModel passengerViewModel = data.getParcelableExtra(TrainPassengerPickerActivity.EXTRA_PASS_DATA);
                     trainHomepagePresenterImpl.onTrainPassengerChange(passengerViewModel);
                 }
+                break;
+            case DATE_PICKER_DEPARTURE_REQUEST_CODE:
+                if (resultCode == Activity.RESULT_OK) {
+                    Date dateString = (Date) data.getSerializableExtra(TravelCalendarActivity.DATE_SELECTED);
+                    Calendar calendarSelected = Calendar.getInstance();
+                    calendarSelected.setTime(dateString);
+                    trainHomepagePresenterImpl.onDepartureDateChange(calendarSelected.get(Calendar.YEAR),
+                            calendarSelected.get(Calendar.MONTH),calendarSelected.get(Calendar.DATE));
+                }
+                break;
+            case DATE_PICKER_RETURN_REQUEST_CODE:
+                if (resultCode == Activity.RESULT_OK) {
+                    Date dateString = (Date) data.getSerializableExtra(TravelCalendarActivity.DATE_SELECTED);
+                    Calendar calendarSelected = Calendar.getInstance();
+                    calendarSelected.setTime(dateString);
+                    trainHomepagePresenterImpl.onReturnDateChange(calendarSelected.get(Calendar.YEAR),
+                            calendarSelected.get(Calendar.MONTH),calendarSelected.get(Calendar.DATE));
+                }
+                break;
         }
     }
 
