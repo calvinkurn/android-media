@@ -12,7 +12,7 @@ import com.tokopedia.tracking.R;
  * Created by kris on 5/11/18. Tokopedia
  */
 
-public class EmptyTrackingNotesAdapter extends RecyclerView.Adapter<EmptyTrackingNotesAdapter.EmptyTrackingNotesViewHolder>{
+public class EmptyTrackingNotesAdapter extends RecyclerView.Adapter<EmptyTrackingNotesAdapter.EmptyTrackingNotesViewHolder> {
 
     @Override
     public EmptyTrackingNotesViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -24,9 +24,15 @@ public class EmptyTrackingNotesAdapter extends RecyclerView.Adapter<EmptyTrackin
     @Override
     public void onBindViewHolder(EmptyTrackingNotesViewHolder holder, int position) {
         switch (position) {
-            case 0: holder.notesText.setText(R.string.empty_notes_1);
-            case 1: holder.notesText.setText(R.string.empty_notes_2);
-            case 2: holder.notesText.setText(R.string.empty_notes_3);
+            case 0:
+                holder.notesText.setText(R.string.empty_notes_1);
+                break;
+            case 1:
+                holder.notesText.setText(R.string.empty_notes_2);
+                break;
+            case 2:
+                holder.notesText.setText(R.string.empty_notes_3);
+                break;
         }
     }
 
