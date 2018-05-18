@@ -26,7 +26,7 @@ public class ChangePhoneNumberInputPresenter
     private static final int MINIMUM_NUMBER_LENGTH = 8;
     private static final int MAXIMUM_NUMBER_LENGTH = 15;
     /*This regex is for removing plus (+) symbol after first index */
-    private static final String regex = "(?!^)\\+|[^+0-9\\n]+";
+    private static final String REGEX_CLEAN_PHONE_NUMBER = "(?!^)\\+|[^+0-9\\n]+";
 
     private final ValidateNumberUseCase validateNumberUseCase;
     private ChangePhoneNumberInputFragmentListener.View view;
@@ -49,7 +49,7 @@ public class ChangePhoneNumberInputPresenter
 
     @Override
     public void onNewNumberTextChanged(Editable editable, int selection) {
-        final Pattern pattern = Pattern.compile(regex);
+        final Pattern pattern = Pattern.compile(REGEX_CLEAN_PHONE_NUMBER);
         String newNumber = editable.toString();
         final Matcher matcher = pattern.matcher(newNumber);
         newNumber = matcher.replaceAll("");

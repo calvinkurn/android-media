@@ -23,6 +23,9 @@ import com.tokopedia.otp.cotp.view.viewmodel.MethodItem;
 import com.tokopedia.otp.cotp.view.viewmodel.VerificationPassModel;
 import com.tokopedia.otp.cotp.view.viewmodel.VerificationViewModel;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 
 /**
  * @author by nisie on 11/29/17.
@@ -37,6 +40,8 @@ public class VerificationActivity extends BaseSimpleActivity {
     private static final String FIRST_FRAGMENT_TAG = "first";
     private static final String CHOOSE_FRAGMENT_TAG = "choose";
     private static final String IS_SHOW_CHOOSE_METHOD = "is_show_choose_method";
+    private static final String REGEX_MASK_PHONE_NUMBER =
+            "(0...|62...|\\+62...)(\\d{3,4})(\\d{3,4})(\\d{0,2})";
 
     private VerificationPassModel passModel;
 
@@ -211,10 +216,14 @@ public class VerificationActivity extends BaseSimpleActivity {
         if (otpType == RequestOtpUseCase.OTP_TYPE_SECURITY_QUESTION) {
             return MethodItem.getMaskedPhoneNumber(phoneNumber);
         } else {
-            String masked = String.valueOf(phoneNumber).replaceFirst("(\\d{4})(\\d{4})(\\d+)",
-                    "$1-$2-$3");
-            return String.format(
-                    ("<b>%s</b>"), masked);
+            final Pattern pattern = Pattern.compile(REGEX_MASK_PHONE_NUMBER);
+            final Matcher matcher = pattern.matcher(phoneNumber);
+            String masked = matcher.replaceAll("$1-$2-$3-$4");
+
+            if(masked.endsWith("-")){
+                masked = masked.substring(0, masked.length() - 1);
+            }
+            return masked;
         }
     }
 
