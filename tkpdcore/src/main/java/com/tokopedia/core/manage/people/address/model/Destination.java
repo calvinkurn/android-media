@@ -3,6 +3,7 @@ package com.tokopedia.core.manage.people.address.model;
 import android.content.Context;
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.text.TextUtils;
 
 import com.google.android.gms.maps.model.LatLng;
 import com.google.gson.annotations.Expose;
@@ -350,8 +351,8 @@ public class Destination implements Parcelable {
 
     public LatLng getLatLng() {
         LatLng latLng = null;
-        if (getLatitude() != null && getLongitude() != null) {
-            latLng =  new LatLng(Double.parseDouble(getLatitude()), Double.parseDouble(getLongitude()));
+        if (!TextUtils.isEmpty(latitude) && !TextUtils.isEmpty(longitude)) {
+            latLng =  new LatLng(Double.parseDouble(latitude), Double.parseDouble(longitude));
         }
 
         return latLng;

@@ -324,12 +324,12 @@ public class AddAddressFragment extends BasePresenterFragment<AddAddressPresente
         if (ConnectionResult.SUCCESS == resultCode) {
             CommonUtils.dumper("Google play services available");
 
-            LocationPass locationPass = new LocationPass();
+            LocationPass locationPass = null;
 
-            if (address.getLatLng() != null) {
+            if (!TextUtils.isEmpty(address.getLatitude()) && !TextUtils.isEmpty(address.getLongitude())) {
                 locationPass = new LocationPass();
-                locationPass.setLatitude(String.valueOf(address.getLatLng().latitude));
-                locationPass.setLongitude(String.valueOf(address.getLatLng().longitude));
+                locationPass.setLatitude(address.getLatitude());
+                locationPass.setLongitude(address.getLongitude());
                 locationPass.setGeneratedAddress(locationEditText.getText().toString());
             }
 
