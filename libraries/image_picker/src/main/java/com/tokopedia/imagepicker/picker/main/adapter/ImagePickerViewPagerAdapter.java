@@ -44,7 +44,11 @@ public class ImagePickerViewPagerAdapter extends FragmentStatePagerAdapter {
             case ImagePickerTabTypeDef.TYPE_CAMERA:
                 return ImagePickerCameraFragment.newInstance();
             case ImagePickerTabTypeDef.TYPE_INSTAGRAM:
-                return ImagePickerInstagramFragment.newInstance();
+                return ImagePickerInstagramFragment.newInstance(
+                        imagePickerBuilder.getGalleryType(),
+                        imagePickerBuilder.supportMultipleSelection() ,
+                        imagePickerBuilder.getMinResolution()
+                );
             default:
                 return new Fragment();
         }
