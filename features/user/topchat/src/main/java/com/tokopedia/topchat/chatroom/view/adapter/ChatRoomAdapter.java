@@ -8,7 +8,6 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
-import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel;
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingMoreModel;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.chatbot.AttachedInvoiceSentViewHolder;
@@ -21,9 +20,7 @@ import com.tokopedia.topchat.chatroom.view.viewmodel.SendableViewModel;
 import com.tokopedia.topchat.chatroom.view.viewmodel.TimeMachineChatModel;
 import com.tokopedia.topchat.chatroom.view.viewmodel.TypingChatModel;
 import com.tokopedia.topchat.chatroom.view.viewmodel.imageupload.ImageUploadViewModel;
-import com.tokopedia.topchat.chatroom.view.viewmodel.productattachment.ProductAttachmentViewModel;
 import com.tokopedia.topchat.chatroom.view.viewmodel.rating.ChatRatingViewModel;
-import com.tokopedia.topchat.chatroom.view.adapter.viewholder.chatbot.AttachedInvoiceSentViewHolder;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -38,7 +35,6 @@ public class ChatRoomAdapter extends RecyclerView.Adapter<AbstractViewHolder> {
 
     private final ChatRoomTypeFactory typeFactory;
     private List<Visitable> list;
-    private EmptyModel emptyModel;
     private LoadingMoreModel loadingModel;
     private TimeMachineChatModel timeMachineChatModel;
     private TypingChatModel typingModel;
@@ -46,7 +42,6 @@ public class ChatRoomAdapter extends RecyclerView.Adapter<AbstractViewHolder> {
     public ChatRoomAdapter(ChatRoomTypeFactory typeFactory) {
         this.list = new ArrayList<>();
         this.typeFactory = typeFactory;
-        this.emptyModel = new EmptyModel();
         this.loadingModel = new LoadingMoreModel();
         this.timeMachineChatModel = new TimeMachineChatModel("");
         this.typingModel = new TypingChatModel();
@@ -142,39 +137,12 @@ public class ChatRoomAdapter extends RecyclerView.Adapter<AbstractViewHolder> {
         notifyItemRangeChanged(positionStart - 10, 10);
     }
 
-    public void showEmpty() {
-        this.list.add(emptyModel);
-    }
-
-    public void removeEmpty() {
-        this.list.remove(emptyModel);
-    }
-
-    public void clearData() {
-        this.list.clear();
-    }
-
     public List<Visitable> getList() {
         return list;
     }
 
     public void setNav(String string) {
 
-    }
-
-    public void removeLastProductWithId(Integer productId) {
-        if ((list != null && !list.isEmpty())) {
-            ListIterator<Visitable> iterator = list.listIterator(list.size());
-            while (iterator.hasPrevious()) {
-                int position = iterator.previousIndex();
-                Visitable visitable = iterator.previous();
-                ProductAttachmentViewModel attachment = getProductAttachmentFromVisitable(visitable);
-                if (isAttachmentMatched(attachment, productId)) {
-                    iterator.remove();
-                    notifyItemRemoved(position);
-                }
-            }
-        }
     }
 
     public void removeLastMessageWithStartTime(String startTime) {
@@ -190,23 +158,6 @@ public class ChatRoomAdapter extends RecyclerView.Adapter<AbstractViewHolder> {
                 }
             }
         }
-    }
-
-    private boolean isAttachmentMatched(ProductAttachmentViewModel attachment, Integer productId) {
-        if (attachment != null) {
-            if (attachment.getProductId().toString().equals(productId.toString())) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    private ProductAttachmentViewModel getProductAttachmentFromVisitable(Visitable visitable) {
-        if ((visitable instanceof ProductAttachmentViewModel)) {
-            ProductAttachmentViewModel viewModel = (ProductAttachmentViewModel) visitable;
-            return viewModel;
-        }
-        return null;
     }
 
     public void removeLast() {
@@ -225,14 +176,12 @@ public class ChatRoomAdapter extends RecyclerView.Adapter<AbstractViewHolder> {
     public void addReply(Visitable item) {
         this.list.add(0, item);
         notifyItemInserted(0);
-//        notifyItemRangeChanged(0, 2);
     }
 
     public void addReply(List<ImageUploadViewModel> list) {
         for (int i = 0; i < list.size(); i++) {
             this.list.add(0, list.get(i));
             notifyItemInserted(0);
-//            notifyItemRangeChanged(0, 2);
         }
     }
 
