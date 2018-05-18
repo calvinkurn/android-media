@@ -40,7 +40,7 @@ public class OrderListPresenterImpl extends BaseDaggerPresenter<OrderListContrac
 
             @Override
             public void onError(Throwable e) {
-                Log.e("sandeep", "error is :"+e);
+                Log.e("sandeep", "error is :" + e);
                 getView().removeProgressBarView();
                 getView().unregisterScrollListener();
                 if (e instanceof UnknownHostException || e instanceof ConnectException) {
@@ -51,14 +51,20 @@ public class OrderListPresenterImpl extends BaseDaggerPresenter<OrderListContrac
             }
 
             @Override
-            public void onNext(Data s) {
+            public void onNext(Data data) {
                 getView().removeProgressBarView();
-                if (s != null && !s.orders().isEmpty()) {
-                    getView().renderDataList(s.orders());
-                } else if(s.orders().isEmpty()){
+                if (data != null) {
+                    if (!data.orders().isEmpty()) {
+                        getView().renderDataList(data.orders());
+                    } else {
+                        getView().unregisterScrollListener();
+                        getView().renderEmptyList(typeRequest);
+                    }
+                } else {
                     getView().unregisterScrollListener();
                     getView().renderEmptyList(typeRequest);
                 }
+
             }
         });
     }

@@ -22,6 +22,7 @@ import android.widget.TextView;
 
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
+import com.tokopedia.applink.RouteManager;
 import com.tokopedia.core.router.transactionmodule.TransactionPurchaseRouter;
 import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.R2;
@@ -283,7 +284,11 @@ public class OrderListDetailFragment extends BaseDaggerFragment implements Order
         return new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                TransactionPurchaseRouter.startWebViewActivity(getContext(), uri);
+                if(uri.startsWith("tokopedia")){
+                    RouteManager.route(getActivity(), uri);
+                } else{
+                    TransactionPurchaseRouter.startWebViewActivity(getActivity(), uri);
+                }
             }
         };
     }

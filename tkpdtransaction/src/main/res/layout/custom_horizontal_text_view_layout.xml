@@ -10,14 +10,11 @@
         android:id="@+id/top_text"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:maxLines="1"
-        android:layout_weight="1"
-        />
+        android:layout_weight="1"/>
     <TextView
         android:id="@+id/bottom_text"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:maxLines="1"
         android:textStyle="bold"
         android:layout_weight="1"/>
 </LinearLayout>

@@ -172,7 +172,7 @@ public class OrderListFragment extends BasePresenterFragment<OrderListContract.P
             mOrderDataList.clear();
 
         }
-        presenter.getAllOrderData(getActivity(), mOrderCategory, TxOrderNetInteractor.TypeRequest.PULL_REFRESH, page_num);
+        presenter.getAllOrderData(getActivity(), mOrderCategory, TxOrderNetInteractor.TypeRequest.INITIAL, page_num);
     }
 
     void onLoadMore() {
