@@ -178,6 +178,9 @@ public class ImagePickerCameraFragment extends TkpdBaseV4Fragment {
     }
 
     private void setCameraFlash() {
+        if (supportedFlashList == null || flashIndex < 0 || supportedFlashList.size() <= flashIndex) {
+            return;
+        }
         Flash flash = supportedFlashList.get(flashIndex);
         if (flash.ordinal() == Flash.TORCH.ordinal()) {
             flashIndex = (flashIndex + 1) % supportedFlashList.size();
