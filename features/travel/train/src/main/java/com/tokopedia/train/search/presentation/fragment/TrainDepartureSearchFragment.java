@@ -44,7 +44,6 @@ public class TrainDepartureSearchFragment extends TrainSearchFragment {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
     }
 
     @Override

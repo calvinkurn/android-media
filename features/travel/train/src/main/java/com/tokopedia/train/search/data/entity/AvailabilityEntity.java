@@ -7,20 +7,20 @@ import com.google.gson.annotations.SerializedName;
  * Created by nabilla on 3/9/18.
  */
 
-public class ScheduleAvailabilityEntity {
+public class AvailabilityEntity {
 
     @SerializedName("id")
     @Expose
-    private String idSchedule;
+    private String id;
     @SerializedName("available")
     @Expose
-    private int availableSeat;
+    private int available;
 
-    public String getIdSchedule() {
-        return idSchedule;
+    public String getId() {
+        return id;
     }
 
-    public int getAvailableSeat() {
-        return availableSeat;
+    public int getAvailable() {
+        return available;
     }
 }
