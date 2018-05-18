@@ -188,7 +188,7 @@ public class OrderListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
     @Override
     public void setStatusBgColor(int statusColor) {
         if(statusColor == 0){
-            currentHolder.status.setBackgroundColor(context.getResources().getColor(R.color.background_error));
+            currentHolder.status.setBackgroundColor(context.getResources().getColor(R.color.colorPink));
         } else {
             currentHolder.status.setBackgroundColor(statusColor);
         }

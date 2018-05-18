@@ -22,6 +22,7 @@ import java.util.List;
 
 public class ListAdapterPresenterImpl extends BaseDaggerPresenter<ListAdapterContract.View> implements ListAdapterContract.Presenter {
     ListAdapterContract.View view;
+
     @Override
     public void setActionButtonData(List<ActionButton> actionButtons) {
         if (actionButtons.size() == 2) {
@@ -55,19 +56,14 @@ public class ListAdapterPresenterImpl extends BaseDaggerPresenter<ListAdapterCon
     @Override
     public void setViewData(Order order) {
         view.setStatus(order.statusStr());
-        if (!order.statusColor().equals("")) {
-            if(order.status().equals("0") || order.status().equals("800") || order.status().equals("901")){
-                view.setStatusBgColor(0);
-            } else {
-                view.setStatusBgColor(Color.parseColor(order.statusColor()));
-            }
+        if (order.status() == 0 || order.status() == 800 || order.status() == 901) {
+            view.setStatusBgColor(0);
+        } else if (!order.statusColor().equals("")) {
+            view.setStatusBgColor(Color.parseColor(order.statusColor()));
         }
         if (!order.conditionalInfo().text().equals("")) {
             ConditionalInfo conditionalInfo = order.conditionalInfo();
-            if (!order.status().equals("")) {
-                int status = Integer.parseInt(order.status());
-                view.setConditionalInfo(View.VISIBLE, conditionalInfo.text(), conditionalInfo.color());
-            }
+            view.setConditionalInfo(View.VISIBLE, conditionalInfo.text(), conditionalInfo.color());
         } else {
             view.setConditionalInfo(View.GONE, null, null);
         }
@@ -81,7 +77,7 @@ public class ListAdapterPresenterImpl extends BaseDaggerPresenter<ListAdapterCon
         view.setCategoryAndTitle(order.categoryName(), order.title());
         List<MetaData> metaDataList = order.metaData();
         for (MetaData metaData : metaDataList) {
-            if ((order.status().equals("103") || order.status().equals("107")) &&
+            if ((order.status() == 103) || (order.status() == 107) &&
                     (metaData.label().equalsIgnoreCase("Metode Pembayaran")
                             || metaData.label().equalsIgnoreCase("Kode Pembayaran")))
                 continue;

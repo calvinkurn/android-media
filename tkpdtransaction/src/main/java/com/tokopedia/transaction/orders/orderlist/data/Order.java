@@ -10,7 +10,7 @@ public class Order {
         private String category;
         private String id;
         private String createdAt;
-        private String status;
+        private int status;
         private String statusStr;
         private String statusColor;
         private String invoiceRefNum;
@@ -25,7 +25,7 @@ public class Order {
 
         public Order(ConditionalInfo conditionalInfo, PaymentData paymentData, String paymentID,
                      String categoryName, String category, String id,
-                     String createdAt, String status, String statusStr, String statusColor, String invoiceRefNum,
+                     String createdAt, int status, String statusStr, String statusColor, String invoiceRefNum,
                      String title, List<MetaData> metaData, List<DotMenuList> dotMenuList,
                      List<ActionButton> actionButtons, String totalInvoices, String itemCount, List<Item> items) {
             this.conditionalInfo = conditionalInfo;
@@ -76,7 +76,7 @@ public class Order {
             return createdAt;
         }
 
-        public String status() {
+        public int status() {
             return status;
         }
 
