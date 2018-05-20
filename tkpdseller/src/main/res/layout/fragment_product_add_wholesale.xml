@@ -64,6 +64,7 @@
             android:background="@color/white">
             <Button
                 android:id="@+id/button_save"
+                android:enabled="false"
                 style="@style/Button.Submit.Green"
                 android:layout_marginLeft="@dimen/new_margin_med"
                 android:layout_marginRight="@dimen/new_margin_med"

@@ -105,7 +105,6 @@ public class ProductAddWholesaleFragment extends BaseDaggerFragment implements W
         recyclerViewWholesale.setNestedScrollingEnabled(false);
 
         buttonSave = root.findViewById(R.id.button_save);
-        buttonSave.setEnabled(false);
         mainPriceTextView = root.findViewById(R.id.text_main_price);
         wholesaleVariantInfoTextView = root.findViewById(R.id.text_view_wholesale_variant_info);
         if (hasVariant) {
