@@ -137,10 +137,10 @@ public class DynamicChannelHeroViewHolder extends AbstractViewHolder<DynamicChan
                         @Override
                         public void onClick(View view) {
                             HomePageTracking.eventEnhancedClickDynamicChannelHomePage(
-                                    channel.getEnhanceClickDynamicChannelHomePage(grid, position + 1)
+                                    channel.getEnhanceClickDynamicChannelHomePage(grid, position + 2)
                             );
                             listener.onDynamicChannelClicked(DynamicLinkHelper.getActionLink(grid),
-                                    channel.getHomeAttribution(position + 1, grid.getAttribution()));
+                                    channel.getHomeAttribution(position + 2, grid.getAttribution()));
                         }
                     });
                 }
@@ -151,7 +151,7 @@ public class DynamicChannelHeroViewHolder extends AbstractViewHolder<DynamicChan
 
         @Override
         public int getItemCount() {
-            return list.length;
+            return list != null ? list.length : 0;
         }
     }
 

@@ -113,8 +113,13 @@ public class DrawerSellerHelper extends DrawerHelper
         data.add(getInboxMenu());
         data.add(getProductMenu());
 
-        data.add(getGoldMerchantMenu(false));
         data.add(getPaymentAndTopupMenu());
+        data.add(getGoldMerchantMenu(false));
+
+        data.add(new DrawerItem(context.getString(R.string.drawer_title_top_ads),
+                R.drawable.ic_top_ads,
+                TkpdState.DrawerPosition.SELLER_TOP_ADS,
+                true));
         data.add(new DrawerItem(context.getString(R.string.drawer_title_new_reso_seller),
                 R.drawable.ic_reso,
                 TkpdState.DrawerPosition.RESOLUTION_CENTER,
@@ -127,10 +132,6 @@ public class DrawerSellerHelper extends DrawerHelper
         data.add(new DrawerItem(context.getString(R.string.drawer_title_statistic),
                 R.drawable.statistik_icon,
                 TkpdState.DrawerPosition.SELLER_GM_STAT,
-                true));
-        data.add(new DrawerItem(context.getString(R.string.drawer_title_top_ads),
-                R.drawable.ic_top_ads,
-                TkpdState.DrawerPosition.SELLER_TOP_ADS,
                 true));
         data.add(new DrawerItem(context.getString(R.string.drawer_title_setting),
                 R.drawable.icon_setting,

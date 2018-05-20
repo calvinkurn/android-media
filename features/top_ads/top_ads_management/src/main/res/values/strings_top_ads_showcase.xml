@@ -3,17 +3,17 @@
 
     <!-- TOP ADS HOME -->
     <string name="topads_showcase_home_title_1">TopAds Produk</string>
-    <string name="topads_showcase_home_desc_1">Kumpulan promo produk di toko Anda. Anda dapat melihat performa dari promo produk Anda di bawah ini.</string>
+    <string name="topads_showcase_home_desc_1">Kumpulan iklan produk di toko Anda. Anda dapat melihat performa dari iklan produk Anda di bawah ini.</string>
     <string name="topads_showcase_home_title_2">TopAds Toko</string>
-    <string name="topads_showcase_home_desc_2">Promosikan toko Anda agar semakin banyak yang memfavoritkan toko Anda.</string>
+    <string name="topads_showcase_home_desc_2">Iklankan toko Anda agar semakin banyak yang memfavoritkan toko Anda.</string>
     <string name="topads_showcase_home_title_3">Tambah Kredit</string>
-    <string name="topads_showcase_home_desc_3">Tambah Kredit TopAds Anda untuk dapat melakukan promo.</string>
+    <string name="topads_showcase_home_desc_3">Tambah Kredit TopAds Anda untuk dapat melakukan iklan.</string>
     <string name="topads_showcase_home_title_4">Tanggal Statistik</string>
-    <string name="topads_showcase_home_desc_4">Pilih tanggal untuk atur tampilan statistik promo Anda.</string>
-    <string name="topads_showcase_home_title_5">Statistik Promo</string>
-    <string name="topads_showcase_home_desc_5">Pantau performa promo Anda pada tampilan statistik ini.</string>
-    <string name="topads_showcase_home_title_6">Tambah Promo</string>
-    <string name="topads_showcase_home_desc_6">Klik di sini untuk menambahkan promo Anda.</string>
+    <string name="topads_showcase_home_desc_4">Pilih tanggal untuk atur tampilan statistik iklan Anda.</string>
+    <string name="topads_showcase_home_title_5">Statistik Iklan</string>
+    <string name="topads_showcase_home_desc_5">Pantau performa iklan Anda pada tampilan statistik ini.</string>
+    <string name="topads_showcase_home_title_6">Tambah Iklan</string>
+    <string name="topads_showcase_home_desc_6">Klik di sini untuk menambahkan iklan Anda.</string>
 
     <!-- TOP ADS STATISTIK -->
     <string name="topads_showcase_statistics_title_1">Atur Periode</string>
@@ -24,36 +24,36 @@
     <!-- TOP ADS GROUP LIST -->
     <string name="topads_showcase_group_list_title_1">Pencarian</string>
     <string name="topads_showcase_group_list_desc_1">Memudahkan Anda dalam mencari nama grup.</string>
-    <string name="topads_showcase_group_list_title_2">Filter</string>
-    <string name="topads_showcase_group_list_desc_2">Atur daftar tampilan berdasarkan filter.</string>
+    <string name="topads_showcase_group_list_title_2">Filter dan Urutkan</string>
+    <string name="topads_showcase_group_list_desc_2">Atur daftar tampilan berdasarkan filter dan urutan.</string>
     <string name="topads_showcase_group_list_title_3">Atur periode</string>
     <string name="topads_showcase_group_list_desc_3">Atur daftar tampilan berdasarkan periode yang dipilih.</string>
-    <string name="topads_showcase_group_list_title_4">Daftar Grup Promo</string>
-    <string name="topads_showcase_group_list_desc_4">Informasi singkat promo yang telah Anda buat.</string>
+    <string name="topads_showcase_group_list_title_4">Daftar Grup Iklan</string>
+    <string name="topads_showcase_group_list_desc_4">Informasi singkat iklan yang telah Anda buat.</string>
 
     <!-- TOP ADS GROUP DETAIL -->
     <string name="topads_showcase_detail_group_title_1">Pengaturan</string>
-    <string name="topads_showcase_detail_group_desc_1">Untuk mengubah atau menghapus promo.</string>
+    <string name="topads_showcase_detail_group_desc_1">Untuk mengubah atau menghapus iklan.</string>
     <string name="topads_showcase_detail_group_title_2">Pengaturan Status</string>
-    <string name="topads_showcase_detail_group_desc_2">Mengubah status aktif dan tidak aktif promo.</string>
+    <string name="topads_showcase_detail_group_desc_2">Mengubah status aktif dan tidak aktif iklan.</string>
     <string name="topads_showcase_detail_group_title_3">Info Produk</string>
-    <string name="topads_showcase_detail_group_desc_3">Untuk melihat daftar produk yang ada pada grup promo.</string>
+    <string name="topads_showcase_detail_group_desc_3">Untuk melihat daftar produk yang ada pada grup iklan.</string>
 
     <!-- TOP ADS PRODUCT LIST -->
     <string name="topads_showcase_product_list_title_1">Pencarian</string>
     <string name="topads_showcase_product_list_desc_1">Memudahkan Anda dalam mencari nama produk.</string>
-    <string name="topads_showcase_product_list_title_2">Filter</string>
-    <string name="topads_showcase_product_list_desc_2">Atur daftar tampilan berdasarkan filter.</string>
+    <string name="topads_showcase_product_list_title_2">Filter dan Urutkan</string>
+    <string name="topads_showcase_product_list_desc_2">Atur daftar tampilan berdasarkan filter dan urutan.</string>
     <string name="topads_showcase_product_list_title_3">Atur Periode</string>
     <string name="topads_showcase_product_list_desc_3">Atur daftar tampilan berdasarkan periode yang dipilih.</string>
-    <string name="topads_showcase_product_list_title_4">Daftar Promo</string>
-    <string name="topads_showcase_product_list_desc_4">Informasi singkat promo yang telah Anda buat.</string>
+    <string name="topads_showcase_product_list_title_4">Daftar Iklan</string>
+    <string name="topads_showcase_product_list_desc_4">Informasi singkat iklan yang telah Anda buat.</string>
 
     <!-- TOP ADS PRODUCT DETAIL -->
     <string name="topads_showcase_detail_promo_title_1">Pengaturan</string>
-    <string name="topads_showcase_detail_promo_desc_1">Untuk mengubah atau menghapus promo.</string>
+    <string name="topads_showcase_detail_promo_desc_1">Untuk mengubah atau menghapus iklan.</string>
     <string name="topads_showcase_detail_promo_title_2">Pengaturan Status</string>
-    <string name="topads_showcase_detail_promo_desc_2">Mengubah status aktif dan tidak aktif promo.</string>
+    <string name="topads_showcase_detail_promo_desc_2">Mengubah status aktif dan tidak aktif iklan.</string>
 
     <!-- TOP ADS KEYWORD DETAIL -->
     <string name="topads_showcase_detail_keyword_title_1">Pengaturan</string>
@@ -63,12 +63,12 @@
 
     <string name="topads_showcase_keyword_list_title_1">Pencarian</string>
     <string name="topads_showcase_keyword_list_desc_1">Memudahkan Anda dalam mencari kata kunci.</string>
-    <string name="topads_showcase_keyword_list_title_2">Filter</string>
-    <string name="topads_showcase_keyword_list_desc_2">Atur daftar tampilan berdasarkan filter.</string>
+    <string name="topads_showcase_keyword_list_title_2">Filter dan Urutkan</string>
+    <string name="topads_showcase_keyword_list_desc_2">Atur daftar tampilan berdasarkan filter dan urutan.</string>
     <string name="topads_showcase_keyword_list_title_3">Atur Periode</string>
     <string name="topads_showcase_keyword_list_desc_3">Atur daftar tampilan berdasarkan periode yang dipilih.</string>
     <string name="topads_showcase_keyword_list_title_4">Daftar Kata Kunci</string>
     <string name="topads_showcase_keyword_list_desc_4">Informasi singkat kata kunci yang telah Anda buat.</string>
     <string name="topads_showcase_keyword_list_title_5">Tambah Kata Kunci</string>
-    <string name="topads_showcase_keyword_list_desc_5">Klik di sini untuk menambahkan promo kata kunci Anda.</string>
+    <string name="topads_showcase_keyword_list_desc_5">Klik di sini untuk menambahkan iklan kata kunci Anda.</string>
 </resources>

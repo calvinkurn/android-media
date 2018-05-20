@@ -142,7 +142,7 @@
                             android:theme="@style/checkBoxStyle" />
                     </LinearLayout>
 
-                    <com.tokopedia.abstraction.base.view.recyclerview.VerticalRecyclerView
+                    <android.support.v7.widget.RecyclerView
                         android:id="@+id/rv_passengers"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content" />

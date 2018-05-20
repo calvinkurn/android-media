@@ -34,6 +34,9 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 public class WholesaleAddAdapter extends RecyclerView.Adapter<WholesaleAddAdapter.ViewHolder> {
 
+    private static final String RUPIAH_CURRENCY = "Rp";
+    private static final String USD_CURRENCY = "US$";
+
     private List<WholesaleModel> wholesaleModels;
     private Listener listener;
     private int currentPositionFocusPrice = 0;
@@ -99,7 +102,7 @@ public class WholesaleAddAdapter extends RecyclerView.Adapter<WholesaleAddAdapte
             TextWatcher textWatcher = new CurrencyIdrTextWatcher(etWholeSalePrice);
             switch (listener.getCurrencyType()) {
                 case CurrencyTypeDef.TYPE_USD:
-                    etWholeSalePrice.setPrefix(MethodChecker.fromHtml(ProductAddWholesaleFragment.USD_CURRENCY).toString());
+                    etWholeSalePrice.setPrefix(MethodChecker.fromHtml(USD_CURRENCY).toString());
                     textWatcher = new CurrencyUsdTextWatcher(etWholeSalePrice) {
                         @Override
                         public void onNumberChanged(double number) {
@@ -110,7 +113,7 @@ public class WholesaleAddAdapter extends RecyclerView.Adapter<WholesaleAddAdapte
                     };
                     break;
                 case CurrencyTypeDef.TYPE_IDR:
-                    etWholeSalePrice.setPrefix(MethodChecker.fromHtml(ProductAddWholesaleFragment.RUPIAH_CURRENCY).toString());
+                    etWholeSalePrice.setPrefix(MethodChecker.fromHtml(RUPIAH_CURRENCY).toString());
                     textWatcher = new CurrencyIdrTextWatcher(etWholeSalePrice) {
                         @Override
                         public void onNumberChanged(double number) {
