@@ -33,7 +33,7 @@ dependencies {
 
     implementation project(rootProject.ext.features.shopCommon)
 
-    implementation rootProject.ext.tkpdDependencies.goldMerchantCommon
+    implementation project(rootProject.ext.features.goldMerchantCommon)
 
     implementation project(rootProject.ext.features.reputationCommon)
     implementation project(rootProject.ext.features.wishlistCommon)

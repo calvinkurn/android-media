@@ -29,7 +29,7 @@ dependencies {
     implementation project(rootProject.ext.features.seller)
     implementation project(rootProject.ext.features.payment)
 
-    implementation rootProject.ext.tkpdDependencies.goldMerchantCommon
+    implementation project(rootProject.ext.features.goldMerchantCommon)
 
     implementation rootProject.ext.supportLibDependencies.constraintLayout
 

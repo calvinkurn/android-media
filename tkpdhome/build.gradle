@@ -42,7 +42,7 @@ dependencies {
     implementation project(rootProject.ext.features.core)
     implementation project(rootProject.ext.features.feed)
     implementation project(rootProject.ext.features.gamification)
-    implementation project(rootProject.ext.features.digital)
+    implementation project(rootProject.ext.features.digitalproduct)
     implementation project(rootProject.ext.features.loyalty)
     implementation project(rootProject.ext.features.topAdsSdk)
 
@@ -54,7 +54,7 @@ dependencies {
     implementation rootProject.ext.playServicesDependencies.analytics
     implementation rootProject.ext.playServicesDependencies.perfMon
     implementation rootProject.ext.playServicesDependencies.maps
-    compile project(rootProject.ext.features.digitalproduct)
+    implementation project(rootProject.ext.features.digitalproduct)
 
     implementation (rootProject.ext.debugToolsDependencies.chuck) {
         exclude group: 'com.squareup.okhttp3'

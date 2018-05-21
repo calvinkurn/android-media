@@ -25,7 +25,9 @@ project.ext {
 dependencies {
     implementation project(rootProject.ext.features.core)
     implementation project(rootProject.ext.libraries.abstraction)
-    compile project(rootProject.ext.libraries.fingerprint)
+    implementation project(rootProject.ext.libraries.fingerprint)
+    implementation project(rootProject.ext.libraries.useCase)
+    implementation project(rootProject.ext.libraries.design)
 
     implementation rootProject.ext.miscDependencies.multiDex
     implementation rootProject.ext.miscDependencies.reactNative

@@ -79,4 +79,4 @@ dependencies {
     }
 }
 
-apply from: '../publish_local.gradle'
+apply from: '../../../publish_local.gradle'

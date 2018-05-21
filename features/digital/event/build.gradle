@@ -37,10 +37,11 @@ dependencies {
     implementation project(rootProject.ext.libraries.design)
     implementation project(rootProject.ext.features.payment)
     implementation project(rootProject.ext.libraries.cacheApi)
-    compile project(path: ':tkpdloyalty')
-    compile rootProject.ext.supportLibDependencies.constraintLayout
-    compile 'at.blogc:expandabletextview:1.0.5'
-    compile project(rootProject.ext.features.payment)
+    implementation project(path: ':tkpdloyalty')
+    implementation rootProject.ext.supportLibDependencies.constraintLayout
+    implementation 'at.blogc:expandabletextview:1.0.5'
+    implementation project(rootProject.ext.features.payment)
+    implementation project(rootProject.ext.libraries.useCase)
 
     implementation (rootProject.ext.debugToolsDependencies.chuck) {
         exclude group: 'com.squareup.okhttp3'
@@ -68,4 +69,4 @@ dependencies {
     implementation 'at.blogc:expandabletextview:1.0.5'
 }
 
-apply from: '../publish_local.gradle'
+apply from: '../../../publish_local.gradle'
