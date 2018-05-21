@@ -13,6 +13,8 @@
     <string name="label_subscribe">Berlangganan</string>
 
     <string name="price_format_text">%1$s %2$s</string>
+    <string name="rupiah_format">Rp %s</string>
+    <string name="usd_format">US$ %s</string>
 
     <string name="title_date_setting">Atur Tanggal</string>
     <string name="next">Selanjutnya</string>
@@ -207,7 +209,7 @@
     <string name="test_strike"><strike>TextView</strike></string>
     <string name="item_price_label">Harga Barang</string>
     <string name="shipping_fee_label">Ongkos Kirim</string>
-	<string name="shipping_location_pinpoint_label">Pinpoint Lokasi Pengiriman</string>
+    <string name="shipping_location_pinpoint_label">Pinpoint Lokasi Pengiriman</string>
     <string name="shipping_location_pinpoint_detail">Isi pinpoint lokasi toko Anda untuk mengaktifkan Layanan Pengiriman Ekspress.</string>
 
     <!-- Opportunity -->
@@ -240,6 +242,8 @@
     <string name="product_category_locked">Kategori Terkunci</string>
     <string name="product_category_locked_description">Tidak dapat mengubah kategori dari produk yang sudah memiliki varian.</string>
     <string name="product_add_sku_title">SKU (Stock Keeping Unit)</string>
+    <string name="product_manage_cashback_limited_title">Pemakaian Cashback Terbatas</string>
+    <string name="product_manage_cashback_limited_desc">Anda telah memakai cashback sebanyak 5 kali. Dapatkan cashback tanpa minimum pemakaian dengan berlangganan Gold Merchant.</string>
     <string name="choose_shop_picture">Pilih Gambar Toko</string>
 
 </resources>

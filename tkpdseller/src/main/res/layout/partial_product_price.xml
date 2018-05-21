@@ -85,7 +85,18 @@
                 style="@style/TextView.Micro.BlackDisabled" />
         </FrameLayout>
 
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/divider"/>
 
+        <com.tokopedia.seller.common.widget.LabelView
+            android:id="@+id/label_view_wholesale"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:focusable="true"
+            app:content="@string/product_label_add"
+            app:content_color="@color/tkpd_main_green"
+            app:title="@string/product_label_wholesale" />
     </LinearLayout>
-
 </merge>
