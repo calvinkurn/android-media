@@ -3,8 +3,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/filter_item_container"
     android:orientation="horizontal"
-    android:paddingTop="@dimen/quick_filter_padding_vertical"
-    android:paddingBottom="@dimen/quick_filter_padding_vertical"
     android:paddingLeft="@dimen/quick_filter_padding_horizontal"
     android:paddingRight="@dimen/quick_filter_padding_horizontal"
     android:layout_marginTop="17dp"
@@ -34,6 +32,8 @@
     <TextView
         android:id="@+id/filter_item_text"
         style="@style/TextView.Small.BlackSecondary"
+        android:paddingTop="@dimen/quick_filter_padding_vertical"
+        android:paddingBottom="@dimen/quick_filter_padding_vertical"
         tools:text="superstar"/>
 
 </LinearLayout>
