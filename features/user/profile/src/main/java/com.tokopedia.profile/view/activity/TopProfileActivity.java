@@ -57,7 +57,7 @@ import static com.tokopedia.profile.analytics.TopProfileAnalytics.Action.CLICK_P
 import static com.tokopedia.profile.analytics.TopProfileAnalytics.Category.KOL_TOP_PROFILE;
 import static com.tokopedia.profile.analytics.TopProfileAnalytics.Category.TOP_PROFILE;
 import static com.tokopedia.profile.analytics.TopProfileAnalytics.Event.EVENT_CLICK_TOP_PROFILE;
-import static com.tokopedia.profile.analytics.TopProfileAnalytics.Label.GO_TO_PROFILE_FORMAT;
+import static com.tokopedia.profile.analytics.TopProfileAnalytics.Label.GO_TO_FEED_FORMAT;
 
 /**
  * @author by milhamj on 08/02/18.
@@ -667,7 +667,7 @@ public class TopProfileActivity extends BaseSimpleActivity
                             .sendEventTracking(EVENT_CLICK_TOP_PROFILE,
                                     KOL_TOP_PROFILE,
                                     CLICK_PROMPT,
-                                    String.format(GO_TO_PROFILE_FORMAT, kolName));
+                                    String.format(GO_TO_FEED_FORMAT, kolName));
                 }
             }
         };

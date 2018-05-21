@@ -23,6 +23,6 @@ public class TopProfileAnalytics {
     }
 
     public static class Label {
-        public static final String GO_TO_PROFILE_FORMAT = "go to feed - %s";
+        public static final String GO_TO_FEED_FORMAT = "go to feed - %s";
     }
 }

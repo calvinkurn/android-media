@@ -9,7 +9,17 @@ import com.tokopedia.kol.feature.post.view.adapter.typefactory.KolPostTypeFactor
 
 public class ExploreViewModel implements Visitable<KolPostTypeFactory> {
 
+    private String kolName;
+
     public ExploreViewModel() {
+    }
+
+    public String getKolName() {
+        return kolName;
+    }
+
+    public void setKolName(String kolName) {
+        this.kolName = kolName;
     }
 
     @Override

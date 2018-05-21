@@ -108,7 +108,8 @@ public class KolPostAdapter extends RecyclerView.Adapter<AbstractViewHolder> {
         notifyDataSetChanged();
     }
 
-    public void showExplore() {
+    public void showExplore(String kolName) {
+        exploreViewModel.setKolName(kolName);
         this.list.add(exploreViewModel);
         notifyDataSetChanged();
     }
