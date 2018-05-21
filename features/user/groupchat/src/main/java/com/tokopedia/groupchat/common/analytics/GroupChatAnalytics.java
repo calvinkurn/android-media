@@ -55,7 +55,7 @@ public class GroupChatAnalytics {
     private static final String EVENT_NAME_PROMO_VIEW = "promoView";
     private static final String EVENT_NAME_CLICK_BACK = "clickBack";
 
-    public static final String COMPONENT_FLASH_SALE = "flash sale";
+    public static final String COMPONENT_FLASH_SALE = "flashsale";
     public static final String COMPONENT_BANNER = "banner";
     public static final String COMPONENT_VOTE = "vote";
     public static final String COMPONENT_PARTNER = "partner";
