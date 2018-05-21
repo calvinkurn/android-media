@@ -1,6 +1,7 @@
 apply plugin: 'com.android.library'
 apply from: "$rootProject.projectDir/buildconfig/module.gradle"
 apply plugin: 'io.hansel.preprocessor.module'
+apply plugin: 'kotlin-android'
 
 repositories {
     maven { url 'https://hansel.io/maven' }
@@ -18,12 +19,17 @@ buildscript {
 project.ext {
     artifactId = 'reactnative'
     groupId = 'com.tokopedia.tkpdreactnative'
-    versionName = "2.22"
+    versionName = "${tkpdReactNativeVersion}"
     artifactName ="react_native-release"
 }
 
 dependencies {
+    implementation rootProject.ext.miscDependencies.reactNative
+    implementation rootProject.ext.miscDependencies.codePushReactNative
+
     implementation project(rootProject.ext.features.core)
+    implementation project(rootProject.ext.libraries.useCase)
+    implementation project(rootProject.ext.libraries.design)
     implementation project(rootProject.ext.libraries.abstraction)
     implementation project(rootProject.ext.libraries.fingerprint)
     implementation project(rootProject.ext.libraries.useCase)

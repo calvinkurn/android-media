@@ -1,10 +1,11 @@
 apply plugin: 'com.android.library'
 apply from: "$rootProject.projectDir/buildconfig/module.gradle"
+apply plugin: 'kotlin-android'
 
 project.ext {
     artifactId = 'payment'
     groupId = 'com.tokopedia.payment'
-    versionName = "2.22"
+    versionName = "${tkpdPaymentVersion}"
     artifactName ="payment-release"
 }
 
@@ -14,6 +15,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.useCase)
     implementation project(rootProject.ext.libraries.abstraction)
     implementation project(rootProject.ext.libraries.design)
+    implementation project(rootProject.ext.libraries.fingerprint)
     implementation project(rootProject.ext.features.core)
 
     implementation rootProject.ext.miscDependencies.multiDex

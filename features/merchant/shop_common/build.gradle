@@ -1,10 +1,11 @@
 apply plugin: 'com.android.library'
 apply from: "$rootProject.projectDir/buildconfig/module.gradle"
+apply plugin: 'kotlin-android'
 
 project.ext {
     artifactId = 'shop-common'
     groupId = 'com.tokopedia.shop'
-    versionName = "2.22"
+    versionName = "${tkpdShopVersion}"
     artifactName ="shop_common-release"
 }
 

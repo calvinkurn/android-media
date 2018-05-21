@@ -1,10 +1,11 @@
 apply plugin: 'com.android.library'
 apply from: "$rootProject.projectDir/buildconfig/module.gradle"
+apply plugin: 'kotlin-android'
 
 project.ext {
     artifactId = 'wishlist-common'
     groupId = 'com.tokopedia.wishlist'
-    versionName = "2.22"
+    versionName = "${tkpdWishlistVersion}"
     artifactName ="wishlist_common-release"
 }
 
@@ -12,6 +13,7 @@ dependencies {
 
     implementation project(rootProject.ext.libraries.abstraction)
     implementation project(rootProject.ext.libraries.useCase)
+
 }
 
 apply from: '../../../publish_local.gradle'

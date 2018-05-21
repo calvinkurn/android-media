@@ -5,12 +5,12 @@ buildCache {
         enabled = !isCiServer
     }
     remote(HttpBuildCache) {
-        url = 'http://10.164.8.12:8885/cache/'
+        url = "${ci_url}"
         push = isCiServer
 
         credentials {
-            username = 'dev'
-            password = 'tokopedia789'
+            username = "${ci_username}"
+            password = "${ci_password}"
         }
     }
 }

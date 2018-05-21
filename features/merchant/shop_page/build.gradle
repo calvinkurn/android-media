@@ -1,6 +1,7 @@
 apply plugin: 'com.android.library'
 apply from: "$rootProject.projectDir/buildconfig/module.gradle"
 apply plugin: 'io.hansel.preprocessor.module'
+apply plugin: 'kotlin-android'
 
 
 repositories {
@@ -20,7 +21,7 @@ buildscript {
 project.ext {
     artifactId = 'shop-page'
     groupId = 'com.tokopedia.shop'
-    versionName = "2.22"
+    versionName = "${tkpdShopVersion}"
     artifactName ="shop_page-release"
 }
 

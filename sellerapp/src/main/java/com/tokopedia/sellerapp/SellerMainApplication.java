@@ -215,7 +215,6 @@ public class SellerMainApplication extends SellerRouterApplication implements Mo
                 String.valueOf(getCurrentVersion(getApplicationContext()))));
     }
 
-
     @Override
     public Intent getPromoListIntent(Activity activity) {
         return null;

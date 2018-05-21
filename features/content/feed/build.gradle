@@ -3,6 +3,7 @@ apply from: "$rootProject.projectDir/buildconfig/module.gradle"
 apply plugin: 'com.jakewharton.butterknife'
 apply plugin: 'com.apollographql.android'
 apply plugin: 'io.hansel.preprocessor.module'
+apply plugin: 'kotlin-android'
 
 repositories {
     maven { url 'https://hansel.io/maven' }
@@ -26,9 +27,9 @@ buildscript {
 
 project.ext {
     artifactId = 'feed'
-    groupId = 'com.tokopedia.feed'
-    versionName = "2.22"
-    artifactName ="tkpdfeed-release"
+    groupId = 'com.tokopedia.feedplus'
+    versionName = "${tkpdFeedVersion}"
+    artifactName = "feed-release"
 }
 
 dependencies {
@@ -90,3 +91,4 @@ dependencies {
 }
 
 apply from: '../../../publish_local.gradle'
+

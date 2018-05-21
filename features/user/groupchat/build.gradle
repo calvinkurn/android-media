@@ -1,6 +1,7 @@
 apply plugin: 'com.android.library'
 apply from: "$rootProject.projectDir/buildconfig/module.gradle"
 apply plugin: 'io.hansel.preprocessor.module'
+apply plugin: 'kotlin-android'
 
 repositories {
     maven { url 'https://hansel.io/maven' }
@@ -28,7 +29,7 @@ android {
 project.ext {
     artifactId = 'groupchat'
     groupId = 'com.tokopedia.groupchat'
-    versionName = "2.22"
+    versionName = "${tkpdGroupchatVersion}"
     artifactName ="groupchat-release"
 }
 
@@ -71,3 +72,4 @@ dependencies {
 }
 
 apply from: '../../../publish_local.gradle'
+

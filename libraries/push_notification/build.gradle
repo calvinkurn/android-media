@@ -1,5 +1,6 @@
 apply plugin: 'com.android.library'
 apply from: "$rootProject.projectDir/buildconfig/module.gradle"
+apply plugin: 'kotlin-android'
 
 android {
     defaultConfig {
@@ -14,7 +15,7 @@ android {
 project.ext {
     artifactId = 'push_notification'
     groupId = 'com.tokopedia.pushnotif'
-    versionName = "2.22"
+    versionName = "${tkpdPushNotifVersion}"
     artifactName ="push_notification-release"
 }
 
@@ -38,3 +39,4 @@ dependencies {
 }
 
 apply from: '../../publish_local.gradle'
+
