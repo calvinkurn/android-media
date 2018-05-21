@@ -87,7 +87,8 @@
                 android:id="@+id/district_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Kota atau Kecamatan">
+                android:hint="Kota atau Kecamatan"
+                android:visibility="gone">
 
                 <EditText
                     android:id="@+id/district"
@@ -102,7 +103,8 @@
                 android:id="@+id/postal_code_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Kode Pos">
+                android:hint="Kode Pos"
+                android:visibility="gone">
 
                 <AutoCompleteTextView
                     android:id="@+id/postal_code"
@@ -117,12 +119,125 @@
         </LinearLayout>
 
         <LinearLayout
+            android:id="@+id/address_spinner_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/margin_small"
             android:background="@drawable/cards_ui_2"
             android:orientation="vertical"
             android:padding="@dimen/padding_small">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/title_province"
+                android:textColor="@color/label_color"
+                android:textSize="@dimen/fonts" />
+
+            <Spinner
+                android:id="@+id/provinsi"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/margin_small"
+                android:inputType="text" />
+
+            <TextView
+                android:id="@+id/province_error"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/error_province"
+                android:textColor="#ff0000"
+                android:textSize="@dimen/fontvs"
+                android:visibility="gone" />
+
+            <TextView
+                android:id="@+id/regency_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/title_regency"
+                android:textColor="@color/label_color"
+                android:textSize="@dimen/fonts"
+                android:visibility="gone"/>
+
+            <ProgressBar
+                android:id="@+id/regency_progress"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:visibility="gone"/>
+
+            <Spinner
+                android:id="@+id/regency"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/margin_small"
+                android:inputType="text"
+                android:visibility="gone"/>
+
+            <TextView
+                android:id="@+id/regency_error"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/error_regency"
+                android:textColor="#ff0000"
+                android:textSize="@dimen/fontvs"
+                android:visibility="gone" />
+
+            <TextView
+                android:id="@+id/district_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/title_sub_district"
+                android:textColor="@color/label_color"
+                android:textSize="@dimen/fonts"
+                android:visibility="gone"/>
+
+            <ProgressBar
+                android:id="@+id/district_progress"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:visibility="gone"/>
+
+            <Spinner
+                android:id="@+id/sub_district"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/margin_small"
+                android:inputType="text"
+                android:visibility="gone"/>
+
+            <TextView
+                android:id="@+id/sub_district_error"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/error_sub_district"
+                android:textColor="#ff0000"
+                android:textSize="@dimen/fontvs"
+                android:visibility="gone" />
+        </LinearLayout>
+        <!-- End of detail alamat -->
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/margin_small"
+            android:background="@drawable/cards_ui_2"
+            android:orientation="vertical"
+            android:padding="@dimen/padding_small">
+
+            <android.support.design.widget.TextInputLayout
+                android:id="@+id/post_code_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/title_post_code">
+
+                <EditText
+                    android:id="@+id/post_code"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:imeOptions="actionNext"
+                    android:inputType="number"
+                    android:textSize="@dimen/sp_14" />
+            </android.support.design.widget.TextInputLayout>
 
             <android.support.design.widget.TextInputLayout
                 android:id="@+id/receiver_phone_layout"
