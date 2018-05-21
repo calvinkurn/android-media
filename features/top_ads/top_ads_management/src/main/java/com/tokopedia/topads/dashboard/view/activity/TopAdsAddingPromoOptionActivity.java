@@ -19,6 +19,11 @@ public class TopAdsAddingPromoOptionActivity extends BaseSimpleActivity{
     }
 
     @Override
+    protected int getLayoutRes() {
+        return R.layout.activity_top_ads_promo_option;
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         getSupportActionBar().setHomeAsUpIndicator(ContextCompat.getDrawable(this, R.drawable.ic_close_default));

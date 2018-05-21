@@ -2,6 +2,7 @@ package com.tokopedia.topads.dashboard.view.fragment;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.support.v7.widget.RecyclerView;
 
 import com.tokopedia.seller.base.view.adapter.BaseListAdapter;
 import com.tokopedia.seller.base.view.fragment.BaseListFragment;
@@ -56,6 +57,11 @@ public class TopAdsAddingPromoOptionFragment extends BaseListFragment<TopAdsAddi
                 getResources().getStringArray(R.array.top_ads_adding_option_subtitle),
                 getResources().getStringArray(R.array.top_ads_adding_option_value),
                 getResources().obtainTypedArray(R.array.top_ads_adding_option_icon));
+    }
+
+    @Override
+    protected RecyclerView.ItemDecoration getItemDecoration() {
+        return null;
     }
 
     @Override

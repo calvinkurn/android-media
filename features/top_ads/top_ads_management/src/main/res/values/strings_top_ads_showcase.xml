@@ -78,4 +78,6 @@
     <string name="topads_showcase_keyword_list_desc_4">Informasi singkat kata kunci yang telah Anda buat.</string>
     <string name="topads_showcase_keyword_list_title_5">Tambah Kata Kunci</string>
     <string name="topads_showcase_keyword_list_desc_5">Klik di sini untuk menambahkan iklan kata kunci Anda.</string>
+    <string name="topads_showcase_help">Bantuan</string>
+    <string name="topads_showcase_detail_help">Anda dapat menampilkan kembali step panduan ini di sini.</string>
 </resources>
