@@ -91,6 +91,7 @@ public abstract class TopAdsBaseListFragment<V extends Visitable, F extends Adap
     protected int status;
     protected String keyword;
     private boolean isSearchMode;
+    private OnAdListFragmentListener listener;
 
     protected SearchInputView searchInputView;
     private AppBarLayout appBarLayout;
@@ -101,6 +102,7 @@ public abstract class TopAdsBaseListFragment<V extends Visitable, F extends Adap
     private MenuItem menuAdd;
     private MenuItem menuCheck;
     private ActionMode actionMode;
+    private LinearLayoutManager layoutManager;
 
     @Override
     protected String getScreenName() {
@@ -128,6 +130,14 @@ public abstract class TopAdsBaseListFragment<V extends Visitable, F extends Adap
         }
     }
 
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        if (context instanceof OnAdListFragmentListener){
+            listener = (OnAdListFragmentListener) context;
+        }
+    }
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -138,7 +148,8 @@ public abstract class TopAdsBaseListFragment<V extends Visitable, F extends Adap
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         recyclerView = view.findViewById(R.id.recycler_view);
-        recyclerView.setLayoutManager(new LinearLayoutManager(recyclerView.getContext(), LinearLayoutManager.VERTICAL, false));
+        layoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
+        recyclerView.setLayoutManager(layoutManager);
         recyclerView.addItemDecoration(new DividerItemDecoration(getActivity()));
         tempTopPaddingRecycleView = recyclerView.getPaddingTop();
         tempBottomPaddingRecycleView = recyclerView.getPaddingBottom();
@@ -380,6 +391,9 @@ public abstract class TopAdsBaseListFragment<V extends Visitable, F extends Adap
             showOption(true);
         }
         super.renderList(data, hasNextPage);
+        if (listener != null){
+            listener.startShowCase();
+        }
     }
 
     private void showOption(boolean show) {
@@ -590,5 +604,37 @@ public abstract class TopAdsBaseListFragment<V extends Visitable, F extends Adap
                 .setItemClickListener(listener)
                 .createDialog();
         bottomSheetDialog.show();
+    }
+
+    @Nullable
+    public View getSearchView() {
+        return searchInputView;
+    }
+
+    public View getFilterView() {
+        return buttonActionView;
+    }
+
+    public RecyclerView getRecyclerView() {
+        return recyclerView;
+    }
+
+    public View getDateView() {
+        return dateLabelView;
+    }
+
+    public View getItemRecyclerView() {
+        int position = layoutManager.findFirstCompletelyVisibleItemPosition();
+        return layoutManager.findViewByPosition(position);
+    }
+
+    public View getFab() {
+        if(menuAdd != null)
+            menuAdd.getActionView();
+        return null;
+    }
+
+    public interface OnAdListFragmentListener {
+        void startShowCase();
     }
 }

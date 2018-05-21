@@ -6,7 +6,7 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 
-import com.tokopedia.seller.base.view.activity.BaseSimpleActivity;
+import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.topads.R;
 import com.tokopedia.topads.dashboard.view.fragment.TopAdsAdListFragment;
 import com.tokopedia.topads.dashboard.view.listener.OneUseGlobalLayoutListener;
@@ -53,7 +53,7 @@ public class TopAdsGroupAdListActivity extends BaseSimpleActivity
             int height = toolbar.getHeight();
             int width = toolbar.getWidth();
 
-            /*showCaseList.add(
+            showCaseList.add(
                     new ShowCaseObject(
                             topAdsGroupAdListFragment.getSearchView(),
                             getString(R.string.topads_showcase_group_list_title_1),
@@ -99,7 +99,7 @@ public class TopAdsGroupAdListActivity extends BaseSimpleActivity
                     showCaseDialog = ShowCaseDialogFactory.createTkpdShowCase();
                     showCaseDialog.show(TopAdsGroupAdListActivity.this, showCaseTag, showCaseList);
                 }
-            }, 300);*/
+            }, 300);
 
         } else {
             toolbar.getViewTreeObserver().addOnGlobalLayoutListener(new OneUseGlobalLayoutListener(toolbar,
@@ -127,10 +127,5 @@ public class TopAdsGroupAdListActivity extends BaseSimpleActivity
     @Override
     protected String getTagFragment() {
         return TopAdsGroupAdListFragment.class.getSimpleName();
-    }
-
-    @Override
-    protected boolean isToolbarWhite() {
-        return true;
     }
 }

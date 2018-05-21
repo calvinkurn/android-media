@@ -1,23 +1,32 @@
 package com.tokopedia.topads.keyword.view.activity;
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatDelegate;
+import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 
 import com.tokopedia.abstraction.base.view.activity.BaseTabActivity;
 import com.tokopedia.abstraction.common.di.component.HasComponent;
 import com.tokopedia.core.listener.GlobalMainTabSelectedListener;
+import com.tokopedia.showcase.ShowCaseContentPosition;
 import com.tokopedia.showcase.ShowCaseDialog;
+import com.tokopedia.showcase.ShowCaseObject;
+import com.tokopedia.showcase.ShowCasePreference;
 import com.tokopedia.topads.R;
 import com.tokopedia.topads.TopAdsComponentInstance;
+import com.tokopedia.topads.common.view.utils.ShowCaseDialogFactory;
 import com.tokopedia.topads.dashboard.constant.TopAdsExtraConstant;
 import com.tokopedia.topads.dashboard.di.component.TopAdsComponent;
 import com.tokopedia.topads.dashboard.view.fragment.TopAdsAdListFragment;
 import com.tokopedia.topads.keyword.view.adapter.TopAdsPagerAdapter;
 import com.tokopedia.topads.keyword.view.fragment.TopAdsKeywordAdListFragment;
+
+import java.util.ArrayList;
 
 /**
  * Created by hadi.putra on 11/05/18.
@@ -130,6 +139,94 @@ public class TopAdsKeywordAdListActivity extends BaseTabActivity implements HasC
 
     @Override
     public void startShowCase() {
+        if (ShowCasePreference.hasShown(this, TAG)) {
+            return;
+        }
+        if (showCaseDialog != null || isShowingShowCase) {
+            return;
+        }
+        isShowingShowCase = true;
 
+        viewPager.setCurrentItem(0);
+        viewPager.post(new Runnable() {
+            @Override
+            public void run() {
+                if (isFinishing()) {
+                    return;
+                }
+                displayShowCase();
+            }
+        });
     }
+
+    private void displayShowCase() {
+        final TopAdsKeywordAdListFragment topAdsKeywordListFragment = (TopAdsKeywordAdListFragment) getCurrentFragment();
+        if (topAdsKeywordListFragment == null || topAdsKeywordListFragment.getView() == null) {
+            return;
+        }
+        final ArrayList<ShowCaseObject> showCaseList = new ArrayList<>();
+
+        View searchView = topAdsKeywordListFragment.getSearchView();
+        if (searchView == null) {
+            return;
+        }
+        // Pencarian
+        showCaseList.add(
+                new ShowCaseObject(
+                        searchView,
+                        getString(R.string.topads_showcase_keyword_list_title_1),
+                        getString(R.string.topads_showcase_keyword_list_desc_1),
+                        ShowCaseContentPosition.UNDEFINED,
+                        Color.WHITE));
+
+        // Filter
+        showCaseList.add(
+                new ShowCaseObject(
+                        topAdsKeywordListFragment.getFilterView(),
+                        getString(R.string.topads_showcase_keyword_list_title_2),
+                        getString(R.string.topads_showcase_keyword_list_desc_2),
+                        ShowCaseContentPosition.UNDEFINED));
+
+        RecyclerView recyclerView = topAdsKeywordListFragment.getRecyclerView();
+        recyclerView.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                if (topAdsKeywordListFragment.getView() == null) {
+                    return;
+                }
+                View dateView = topAdsKeywordListFragment.getDateView();
+                if (dateView != null) {
+                    dateView.setVisibility(View.VISIBLE);
+                    showCaseList.add(
+                            new ShowCaseObject(
+                                    dateView,
+                                    getString(R.string.topads_showcase_keyword_list_title_3),
+                                    getString(R.string.topads_showcase_keyword_list_desc_3)));
+                }
+
+                View itemView = topAdsKeywordListFragment.getItemRecyclerView();
+                if (itemView != null) {
+                    showCaseList.add(
+                            new ShowCaseObject(
+                                    itemView,
+                                    getString(R.string.topads_showcase_keyword_list_title_4),
+                                    getString(R.string.topads_showcase_keyword_list_desc_4),
+                                    ShowCaseContentPosition.UNDEFINED,
+                                    Color.WHITE));
+                }
+
+                View fabView = topAdsKeywordListFragment.getFab();
+                if (fabView != null) {
+                    showCaseList.add(
+                            new ShowCaseObject(
+                                    fabView,
+                                    getString(R.string.topads_showcase_keyword_list_title_5),
+                                    getString(R.string.topads_showcase_keyword_list_desc_5)));
+                }
+                showCaseDialog = ShowCaseDialogFactory.createTkpdShowCase();
+                showCaseDialog.show(TopAdsKeywordAdListActivity.this, TAG, showCaseList);
+            }
+        }, DELAY_SHOW_CASE_THREAD);
+    }
+
 }
