@@ -32,7 +32,7 @@ public class InnerProductListAdapter extends RecyclerView.Adapter<CartItemViewHo
     }
 
     @Override
-    public void onBindViewHolder(final CartItemViewHolder holder, int position) {
+    public void onBindViewHolder(CartItemViewHolder holder, int position) {
         CartItemModel cartItemModel = mCartItemList.get(position);
         holder.bindViewHolder(cartItemModel);
     }

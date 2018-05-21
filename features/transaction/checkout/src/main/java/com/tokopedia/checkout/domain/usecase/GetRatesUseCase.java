@@ -3,10 +3,10 @@ package com.tokopedia.checkout.domain.usecase;
 import android.text.TextUtils;
 
 import com.tokopedia.abstraction.common.utils.TKPDMapParam;
-import com.tokopedia.checkout.domain.mapper.ShipmentRatesDataMapper;
-import com.tokopedia.logisticdata.data.repository.RatesRepository;
 import com.tokopedia.checkout.domain.datamodel.shipmentrates.ShipmentDetailData;
+import com.tokopedia.checkout.view.view.shipment.converter.RatesDataConverter;
 import com.tokopedia.logisticdata.data.entity.rates.RatesResponse;
+import com.tokopedia.logisticdata.data.repository.RatesRepository;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.usecase.UseCase;
 
@@ -24,12 +24,12 @@ public class GetRatesUseCase extends UseCase<ShipmentDetailData> {
     private static final int KILOGRAM_DIVIDER = 1000;
     private RatesRepository repository;
     private ShipmentDetailData shipmentDetailData;
-    private ShipmentRatesDataMapper shipmentRatesDataMapper;
+    private RatesDataConverter ratesDataConverter;
 
     @Inject
-    public GetRatesUseCase(RatesRepository repository, ShipmentRatesDataMapper shipmentRatesDataMapper) {
+    public GetRatesUseCase(RatesRepository repository, RatesDataConverter ratesDataConverter) {
         this.repository = repository;
-        this.shipmentRatesDataMapper = shipmentRatesDataMapper;
+        this.ratesDataConverter = ratesDataConverter;
     }
 
     public void setShipmentDetailData(ShipmentDetailData shipmentDetailData) {
@@ -43,7 +43,7 @@ public class GetRatesUseCase extends UseCase<ShipmentDetailData> {
         return repository.getRates(mapParam).map(new Func1<RatesResponse, ShipmentDetailData>() {
             @Override
             public ShipmentDetailData call(RatesResponse ratesResponse) {
-                return shipmentRatesDataMapper.getShipmentDetailData(shipmentDetailData, ratesResponse);
+                return ratesDataConverter.getShipmentDetailData(shipmentDetailData, ratesResponse);
             }
         });
     }

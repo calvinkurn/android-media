@@ -21,7 +21,7 @@
     <string name="label_courier">Kurir Pengiriman</string>
     <string name="label_subtotal">Subtotal</string>
     <string name="label_promo">Promo</string>
-    <string name="label_payment_total">Total Pembayaran</string>
+    <string name="label_payment_total">Total Tagihan</string>
     <string name="label_button_choose_payment_method">Pilih Metode Pembayaran</string>
     <string name="label_menu_cart_remove">Hapus</string>
     <string name="dialog_title_back_to_cart">Kembali Ke Keranjang</string>
@@ -41,7 +41,8 @@
     <string name="default_quantity">1</string>
     <string name="label_shipment_counter">Pengiriman #</string>
     <string name="label_item_count">Jumlah</string>
-    <string name="label_item_count_with_format">Jumlah Barang (%d Item)</string>
+    <string name="label_item_count_summary_with_format">Total Harga (%d Barang)</string>
+    <string name="label_item_count_with_format">Harga Barang (%d Barang)</string>
     <string name="label_item_count_without_format">Jumlah Barang</string>
     <string name="label_error_choose_address">Pilih alamat pengiriman</string>
     <string name="label_choose_address">Pilih Alamat</string>
@@ -63,7 +64,7 @@
     <string name="image_desc_button_partial_order_info">Button partial order info</string>
     <string name="label_arrival_probability">*Perkiraan tiba dihitung sejak pesanan dikirim</string>
     <string name="label_show_other_courier">Pilih Kurir Lainnya</string>
-    <string name="title_activity_shipment_choice">Pilih Jenis Pengiriman</string>
+    <string name="title_activity_shipment_choice">Pilih Kurir Pengiriman</string>
     <string name="label_hide_other_couriers">Sembunyikan</string>
     <string name="label_insurance_not_available">Tidak Didukung</string>
     <string name="label_must_insurance">Wajib Asuransi</string>
@@ -80,8 +81,8 @@
     <string name="label_not_yet_pinpoint">Belum Pinpoint</string>
     <string name="message_error_no_courier_selected">Pastikan Anda telah memilih kurir pengiriman</string>
     <string name="message_error_dropshipper_data">Lengkapi informasi dropshipper Anda</string>
-    <string name="message_error_dropshipper_name">Nama tidak boleh kosong</string>
-    <string name="message_error_dropshipper_phone">Nomor telepon tidak boleh kosong</string>
+    <string name="message_error_dropshipper_name">Nama dropshipper minimal 3 karakter</string>
+    <string name="message_error_dropshipper_phone">Nomor telepon dropshipper minimal 6 karakter</string>
     <string name="message_error_no_pinpoint">Anda belum menandai lokasi tujuan dalam peta</string>
     <string name="message_error_dropshipper">Data dropshipper belum lengkap</string>
     <string name="label_main_address">Utama</string>
@@ -92,7 +93,7 @@
     <string name="label_insurance_price">Biaya Asuransi</string>
     <string name="label_hint_cart_item_dropshipper_name">Nama Pengirim</string>
     <string name="label_hint_cart_item_dropshipper_phone">No. Telp pengirim</string>
-    <string name="label_delivery_price">Ongkos Kirim</string>
+    <string name="label_delivery_price">Total Ongkos Kirim</string>
     <string name="label_additional_cost">Biaya Tambahan</string>
     <string name="label_dialog_title_cancel_pickup">Batalkan Pengiriman ke Gerai Pengambilan</string>
     <string name="label_dialog_message_cancel_pickup_booth">Apakah Anda yakin ingin membatalkan pengiriman ke Gerai Pengambilan</string>
@@ -127,5 +128,11 @@
     <string name="label_shipping_price_format" formatted="false">Ongkos Kirim (%s %s)</string>
     <string name="label_hide_other_item">Tutup</string>
     <string name="label_other_item_count_format" formatted="false">+%s Produk Lainnya</string>
+    <string name="label_pay">Bayar</string>
+    <string name="iotem_count_and_weight_format" formatted="false">%s barang (%s)</string>
+    <string name="cart_item_count_format" formatted="false">Total Harga (%s Barang)</string>
+    <string name="label_weight_format" formatted="false">%s %s</string>
+    <string name="label_change_address_failed">Gagal mengubah alamat</string>
+    <string name="label_change_address_success">Berhasil mengubah alamat</string>
 
 </resources>

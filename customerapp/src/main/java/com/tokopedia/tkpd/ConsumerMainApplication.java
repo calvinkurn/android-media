@@ -52,12 +52,10 @@ import com.tokopedia.tkpd.deeplink.DeeplinkHandlerActivity;
 import com.tokopedia.tkpd.deeplink.activity.DeepLinkActivity;
 import com.tokopedia.tkpd.fcm.ApplinkResetReceiver;
 import com.tokopedia.tkpd.utils.CacheApiWhiteList;
-import com.tokopedia.shop.common.constant.ShopCommonUrl;
-import com.tokopedia.shop.common.constant.ShopUrl;
-import com.tokopedia.kol.common.network.KolUrl;
 import com.tokopedia.tkpdreactnative.react.fingerprint.utils.FingerprintConstantRegister;
 import com.tokopedia.tokocash.network.api.WalletUrl;
 import com.tokopedia.transaction.network.TransactionUrl;
+import com.tokopedia.transactiondata.constant.TransactionDataApiUrl;
 
 import io.hansel.hanselsdk.Hansel;
 
@@ -72,6 +70,10 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
     private final String NOTIFICATION_CHANNEL_NAME = "Promo";
     private final String NOTIFICATION_CHANNEL_ID = "custom_sound";
     private final String NOTIFICATION_CHANNEL_DESC = "notification channel for custom sound.";
+
+    private final String FLAVOR_LIVE = "live";
+    private final String FLAVOR_STAGING = "staging";
+    private final String FLAVOR_ALPHA = "alpha";
 
     @Override
     public void onCreate() {
@@ -195,6 +197,49 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         FingerprintConstantRegister.ACCOUNTS_DOMAIN = ConsumerAppBaseUrl.ACCOUNTS_DOMAIN;
         FingerprintConstantRegister.TOP_PAY_DOMAIN = ConsumerAppBaseUrl.TOP_PAY_DOMAIN;
         LogisticDataConstantUrl.BASE_DOMAIN = ConsumerAppBaseUrl.BASE_DOMAIN;
+
+        generateTransactionDataModuleBaseUrl();
+        generateLogisticDataModuleBaseUrl();
+    }
+
+    private void generateLogisticDataModuleBaseUrl() {
+        switch (BuildConfig.FLAVOR) {
+            case FLAVOR_STAGING:
+                LogisticDataConstantUrl.KeroRates.BASE_URL =
+                        LogisticDataConstantUrl.KeroRates.STAGING_BASE_URL;
+                break;
+            case FLAVOR_ALPHA:
+                LogisticDataConstantUrl.KeroRates.BASE_URL =
+                        LogisticDataConstantUrl.KeroRates.ALPHA_BASE_URL;
+                break;
+            default:
+                LogisticDataConstantUrl.KeroRates.BASE_URL =
+                        LogisticDataConstantUrl.KeroRates.LIVE_BASE_URL;
+                break;
+        }
+    }
+
+    private void generateTransactionDataModuleBaseUrl() {
+        switch (BuildConfig.FLAVOR) {
+            case FLAVOR_STAGING:
+                TransactionDataApiUrl.Cart.BASE_URL =
+                        TransactionDataApiUrl.Cart.STAGING_BASE_URL;
+                TransactionDataApiUrl.TransactionAction.BASE_URL =
+                        TransactionDataApiUrl.TransactionAction.STAGING_BASE_URL;
+                break;
+            case FLAVOR_ALPHA:
+                TransactionDataApiUrl.Cart.BASE_URL =
+                        TransactionDataApiUrl.Cart.ALPHA_BASE_URL;
+                TransactionDataApiUrl.TransactionAction.BASE_URL =
+                        TransactionDataApiUrl.TransactionAction.ALPHA_BASE_URL;
+                break;
+            default:
+                TransactionDataApiUrl.Cart.BASE_URL =
+                        TransactionDataApiUrl.Cart.LIVE_BASE_URL;
+                TransactionDataApiUrl.TransactionAction.BASE_URL =
+                        TransactionDataApiUrl.TransactionAction.LIVE_BASE_URL;
+                break;
+        }
     }
 
     private void generateConsumerAppNetworkKeys() {

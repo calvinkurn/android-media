@@ -11,6 +11,8 @@ import com.airbnb.deeplinkdispatch.DeepLink;
 import com.airbnb.deeplinkdispatch.DeepLinkHandler;
 import com.tokopedia.applink.SessionApplinkModule;
 import com.tokopedia.applink.SessionApplinkModuleLoader;
+import com.tokopedia.checkout.applink.CheckoutAppLinkModule;
+import com.tokopedia.checkout.applink.CheckoutAppLinkModuleLoader;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.deeplink.CoreDeeplinkModule;
@@ -46,8 +48,6 @@ import com.tokopedia.profile.applink.ProfileApplinkModule;
 import com.tokopedia.profile.applink.ProfileApplinkModuleLoader;
 import com.tokopedia.pushnotif.Constant;
 import com.tokopedia.pushnotif.HistoryNotification;
-import com.tokopedia.pushnotif.SummaryNotification;
-import com.tokopedia.pushnotif.factory.SummaryNotificationFactory;
 import com.tokopedia.ride.deeplink.RideDeeplinkModule;
 import com.tokopedia.ride.deeplink.RideDeeplinkModuleLoader;
 import com.tokopedia.seller.applink.SellerApplinkModule;
@@ -95,7 +95,8 @@ import io.branch.referral.BranchError;
         GamificationApplinkModule.class,
         ProfileApplinkModule.class,
         KolApplinkModule.class,
-        TrackingAppLinkModule.class
+        TrackingAppLinkModule.class,
+        CheckoutAppLinkModule.class
 })
 
 public class DeeplinkHandlerActivity extends AppCompatActivity {
@@ -124,6 +125,7 @@ public class DeeplinkHandlerActivity extends AppCompatActivity {
                 new GamificationApplinkModuleLoader(),
                 new ProfileApplinkModuleLoader(),
                 new KolApplinkModuleLoader(),
+                new CheckoutAppLinkModuleLoader(),
                 new TrackingAppLinkModuleLoader()
         );
     }
@@ -223,7 +225,7 @@ public class DeeplinkHandlerActivity extends AppCompatActivity {
                 @Override
                 public void onInitFinished(JSONObject referringParams, BranchError error) {
                     if (error == null) {
-                        BranchSdkUtils.storeWebToAppPromoCodeIfExist(referringParams,DeeplinkHandlerActivity.this);
+                        BranchSdkUtils.storeWebToAppPromoCodeIfExist(referringParams, DeeplinkHandlerActivity.this);
                     }
                 }
             }, this.getIntent().getData(), this);

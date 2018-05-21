@@ -9,7 +9,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Rect;
-import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -39,8 +38,11 @@ import com.appsflyer.AFInAppEventType;
 import com.google.android.gms.tagmanager.DataLayer;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tkpd.library.utils.SnackbarManager;
+import com.tokopedia.abstraction.AbstractionRouter;
+import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
 import com.tokopedia.core.analytics.ProductPageTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
+import com.tokopedia.core.analytics.nishikino.model.GTMCart;
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TkpdCoreRouter;
@@ -53,6 +55,7 @@ import com.tokopedia.core.network.entity.variant.ProductVariant;
 import com.tokopedia.core.product.intentservice.ProductInfoIntentService;
 import com.tokopedia.core.product.listener.DetailFragmentInteractionListener;
 import com.tokopedia.core.product.model.goldmerchant.VideoData;
+import com.tokopedia.core.product.model.productdetail.ProductBreadcrumb;
 import com.tokopedia.core.product.model.productdetail.ProductDetailData;
 import com.tokopedia.core.product.model.productdetail.ProductImage;
 import com.tokopedia.core.product.model.productdetail.ProductShopInfo;
@@ -115,8 +118,11 @@ import com.tokopedia.tkpdpdp.listener.AppBarStateChangeListener;
 import com.tokopedia.tkpdpdp.listener.ProductDetailView;
 import com.tokopedia.tkpdpdp.presenter.ProductDetailPresenter;
 import com.tokopedia.tkpdpdp.presenter.ProductDetailPresenterImpl;
+import com.tokopedia.transactionanalytics.CheckoutAnalyticProductDetailPage;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Locale;
@@ -228,6 +234,7 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
 
     private RemoteConfig remoteConfig;
     private ShowCaseDialog showCaseDialog;
+    private CheckoutAnalyticProductDetailPage checkoutAnalyticProductDetailPage;
 
     public static ProductDetailFragment newInstance(@NonNull ProductPass productPass) {
         ProductDetailFragment fragment = new ProductDetailFragment();
@@ -248,7 +255,7 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
 
     public ProductDetailFragment() {
         remoteConfig = new FirebaseRemoteConfigImpl(getActivity());
-        if (remoteConfig.getBoolean(ENABLE_VARIANT)==false) {
+        if (remoteConfig.getBoolean(ENABLE_VARIANT) == false) {
             useVariant = false;
         }
     }
@@ -315,8 +322,8 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
         ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         float heightScreen = getResources().getDisplayMetrics().widthPixels;
-        CoordinatorLayout.LayoutParams layoutParams = (CoordinatorLayout.LayoutParams)appBarLayout.getLayoutParams();
-        layoutParams.height = (int)heightScreen;
+        CoordinatorLayout.LayoutParams layoutParams = (CoordinatorLayout.LayoutParams) appBarLayout.getLayoutParams();
+        layoutParams.height = (int) heightScreen;
         appBarLayout.setVisibility(View.VISIBLE);
 
         appBarLayout.addOnOffsetChangedListener(new AppBarStateChangeListener() {
@@ -391,6 +398,7 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
 
     @Override
     protected void initialVar() {
+        checkoutAnalyticProductDetailPage = new CheckoutAnalyticProductDetailPage(getAnalyticTracker());
         appIndexHandler = new AppIndexHandler(getActivity());
         loading = new ProgressDialog(context);
         loading.setCancelable(false);
@@ -399,6 +407,13 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
             presenter.initRetrofitInteractor();
         else
             initialPresenter();
+    }
+
+    private AnalyticTracker getAnalyticTracker() {
+        if (getActivity().getApplication() instanceof AbstractionRouter) {
+            return ((AbstractionRouter) getActivity().getApplication()).getAnalyticTracker();
+        }
+        return null;
     }
 
     @Override
@@ -509,7 +524,7 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
     private String generateShopType(ProductShopInfo productShopInfo) {
         if (productShopInfo.getShopIsOfficial() == 1)
             return "official_store";
-        else if(productShopInfo.getShopIsGold() == 1)
+        else if (productShopInfo.getShopIsGold() == 1)
             return "gold_merchant";
         else return "reguler";
     }
@@ -528,10 +543,10 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
             arrayList.add(productImage.getImageSrc());
         }
         if (productData.getInfo() != null && productData.getInfo().getHasVariant()
-                && productVariant!=null && productVariant.getChildren()!=null) {
-            for (Child child: productVariant.getChildren()) {
-                if (!TextUtils.isEmpty(child.getPicture().getOriginal()) && child.getProductId()!=productData.getInfo().getProductId()) {
-                   arrayList.add(child.getPicture().getOriginal());
+                && productVariant != null && productVariant.getChildren() != null) {
+            for (Child child : productVariant.getChildren()) {
+                if (!TextUtils.isEmpty(child.getPicture().getOriginal()) && child.getProductId() != productData.getInfo().getProductId()) {
+                    arrayList.add(child.getPicture().getOriginal());
                 }
             }
             Set<String> imagesSet = new LinkedHashSet<>(arrayList);
@@ -1223,11 +1238,11 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
     @Override
     public void moveToEditFragment(boolean isEdit) {
         if (getActivity().getApplication() instanceof TkpdCoreRouter) {
-                        Integer productId = productData.getInfo().getProductId();
-                        if (productData != null && productData.getInfo().getHasVariant() && productVariant != null) {
-                                productId = productVariant.getParentId();
-                            }
-                        Intent intent = ((TkpdCoreRouter) getActivity().getApplication()).goToEditProduct(context, isEdit, Integer.toString(productId));
+            Integer productId = productData.getInfo().getProductId();
+            if (productData != null && productData.getInfo().getHasVariant() && productVariant != null) {
+                productId = productVariant.getParentId();
+            }
+            Intent intent = ((TkpdCoreRouter) getActivity().getApplication()).goToEditProduct(context, isEdit, Integer.toString(productId));
             navigateToActivityRequest(intent, ProductDetailFragment.REQUEST_CODE_EDIT_PRODUCT);
         }
     }
@@ -1314,9 +1329,9 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
         if (variantLevel1 != null && variantLevel1 instanceof Option) {
             priceSimulationView.updateVariant(generateVariantString());
         }
-        int defaultChild =  productVariant.getParentId() == productData.getInfo().getProductId()
-                ?  productVariant.getDefaultChild() : productData.getInfo().getProductId();
-        if(productVariant.getChildFromProductId(defaultChild).isEnabled()){
+        int defaultChild = productVariant.getParentId() == productData.getInfo().getProductId()
+                ? productVariant.getDefaultChild() : productData.getInfo().getProductId();
+        if (productVariant.getChildFromProductId(defaultChild).isEnabled()) {
             productData.getInfo().setProductStockWording(productVariant.getChildFromProductId(defaultChild).getStockWording());
             productData.getInfo().setLimitedStock(productVariant.getChildFromProductId(defaultChild).isLimitedStock());
             headerInfoView.renderStockAvailability(productData.getInfo());
@@ -1555,6 +1570,7 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
 
     @Override
     public void renderAddToCartSuccess(String message) {
+        checkoutAnalyticProductDetailPage.eventClickAddToCartImpressionAtcSuccess();
         updateCartNotification();
         FragmentTransaction ft = getFragmentManager().beginTransaction();
         ft.add(
@@ -1563,6 +1579,7 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
                         new AddToCartConfirmationDialog.ActionListener() {
                             @Override
                             public void onButtonAddToCartPayClicked() {
+                                checkoutAnalyticProductDetailPage.eventClickAddToCartClickBayarOnAtcSuccess();
                                 if (getActivity().getApplication() instanceof PdpRouter) {
                                     Intent intent = ((PdpRouter) getActivity().getApplication())
                                             .getCartIntent(getActivity());
@@ -1572,12 +1589,79 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
 
                             @Override
                             public void onButtonAddToCartContinueShopingClicked() {
-
+                                checkoutAnalyticProductDetailPage.eventClickAddToCartClickLanjutkanBelanjaOnAtcSuccess();
                             }
                         }),
                 AddToCartConfirmationDialog.ADD_TO_CART_DIALOG_FRAGMENT_TAG
         );
         ft.commitAllowingStateLoss();
+
+
+        com.tokopedia.core.analytics.nishikino.model.Product product =
+                new com.tokopedia.core.analytics.nishikino.model.Product();
+        product.setProductName(productData.getInfo().getProductName());
+        product.setProductID(String.valueOf(productData.getInfo().getProductId()));
+        product.setPrice(productData.getInfo().getProductPrice());
+        product.setBrand(com.tokopedia.core.analytics.nishikino.model.Product.DEFAULT_VALUE_NONE_OTHER);
+        String categoryLevelStr = generateCategoryStringLevel(productData.getBreadcrumb());
+
+        product.setCategory(TextUtils.isEmpty(categoryLevelStr)
+                ? com.tokopedia.core.analytics.nishikino.model.Product.DEFAULT_VALUE_NONE_OTHER
+                : categoryLevelStr);
+        product.setVariant(com.tokopedia.core.analytics.nishikino.model.Product.DEFAULT_VALUE_NONE_OTHER);
+        product.setQty(productData.getInfo().getProductMinOrder());
+        product.setShopId(productData.getShopInfo().getShopId());
+        product.setShopType(generateShopType(productData.getShopInfo()));
+        product.setShopName(productData.getShopInfo().getShopName());
+        product.setCategoryId(generateCategoryId(productData.getBreadcrumb()));
+        product.setDimension38(
+                TextUtils.isEmpty(productPass.getTrackerAttribution())
+                        ? com.tokopedia.core.analytics.nishikino.model.Product.DEFAULT_VALUE_NONE_OTHER
+                        : productPass.getTrackerAttribution()
+        );
+        product.setDimension40(
+                TextUtils.isEmpty(productPass.getTrackerListName())
+                        ? com.tokopedia.core.analytics.nishikino.model.Product.DEFAULT_VALUE_NONE_OTHER
+                        : productPass.getTrackerListName()
+        );
+
+        GTMCart gtmCart = new GTMCart();
+        gtmCart.addProduct(product.getProduct());
+        gtmCart.setCurrencyCode("IDR");
+        gtmCart.setAddAction(GTMCart.ADD_ACTION);
+
+        checkoutAnalyticProductDetailPage.enhancedECommerceAddToCart(gtmCart.getCartMap());
+    }
+
+    private String generateCategoryStringLevel(List<ProductBreadcrumb> breadcrumb) {
+        Collections.sort(breadcrumb, new Comparator<ProductBreadcrumb>() {
+            @Override
+            public int compare(ProductBreadcrumb productBreadcrumb, ProductBreadcrumb t1) {
+                return productBreadcrumb.getDepartmentTree().compareTo(t1.getDepartmentTree());
+            }
+        });
+        StringBuilder stringBuilder = new StringBuilder();
+        int size = breadcrumb.size();
+        for (int i = 0; i < size; i++) {
+            ProductBreadcrumb productBreadcrumb = breadcrumb.get(i);
+            stringBuilder.append(productBreadcrumb.getDepartmentName());
+            if (i != (size - 1)) {
+                stringBuilder.append("/");
+            }
+        }
+        return stringBuilder.toString();
+    }
+
+
+    private String generateCategoryId(List<ProductBreadcrumb> breadcrumb) {
+        Collections.sort(breadcrumb, new Comparator<ProductBreadcrumb>() {
+            @Override
+            public int compare(ProductBreadcrumb productBreadcrumb, ProductBreadcrumb t1) {
+                return productBreadcrumb.getDepartmentTree().compareTo(t1.getDepartmentTree());
+            }
+        });
+
+        return breadcrumb.get(breadcrumb.size() - 1).getDepartmentId();
     }
 
     private void startShowCase() {

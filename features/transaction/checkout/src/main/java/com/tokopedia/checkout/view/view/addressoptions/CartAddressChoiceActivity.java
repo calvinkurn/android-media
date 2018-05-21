@@ -31,6 +31,7 @@ public class CartAddressChoiceActivity extends BaseCheckoutActivity
     private static final String EXTRA_TYPE_REQUEST = "EXTRA_TYPE_REQUEST";
     public static final String EXTRA_DEFAULT_SELECTED_ADDRESS = "EXTRA_DEFAULT_SELECTED_ADDRESS";
     public static final String EXTRA_SELECTED_ADDRESS_DATA = "EXTRA_SELECTED_ADDRESS_DATA";
+    public static final String EXTRA_CURRENT_ADDRESS = "CURRENT_ADDRESS";
 
     public static final int TYPE_REQUEST_SELECT_ADDRESS_FROM_COMPLETE_LIST = 0;
     public static final int TYPE_REQUEST_SELECT_ADDRESS_FROM_SHORT_LIST = 1;
@@ -38,9 +39,12 @@ public class CartAddressChoiceActivity extends BaseCheckoutActivity
 
     private int typeRequest;
 
-    public static Intent createInstance(Activity activity, int typeRequest) {
+    public static Intent createInstance(Activity activity, RecipientAddressModel currentAddress, int typeRequest) {
         Intent intent = new Intent(activity, CartAddressChoiceActivity.class);
         intent.putExtra(EXTRA_TYPE_REQUEST, typeRequest);
+        if (currentAddress != null) {
+            intent.putExtra(EXTRA_CURRENT_ADDRESS, currentAddress);
+        }
 
         return intent;
     }
@@ -109,7 +113,7 @@ public class CartAddressChoiceActivity extends BaseCheckoutActivity
                 Bundle bundle = new Bundle();
                 bundle.putParcelable(EXTRA_DEFAULT_SELECTED_ADDRESS, selectedAddressResult);
 
-                Fragment fragment = CartAddressChoiceFragment.newInstance();
+                Fragment fragment = CartAddressChoiceFragment.newInstance(selectedAddressResult);
                 fragment.setArguments(bundle);
 
                 getSupportFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
@@ -139,9 +143,11 @@ public class CartAddressChoiceActivity extends BaseCheckoutActivity
     protected android.support.v4.app.Fragment getNewFragment() {
         switch (typeRequest) {
             default:
-                return CartAddressChoiceFragment.newInstance();
+                return CartAddressChoiceFragment.newInstance(
+                        (RecipientAddressModel) getIntent().getParcelableExtra(EXTRA_CURRENT_ADDRESS));
             case TYPE_REQUEST_SELECT_ADDRESS_FROM_COMPLETE_LIST:
-                return ShipmentAddressListFragment.newInstance();
+                return ShipmentAddressListFragment.newInstance(
+                        (RecipientAddressModel) getIntent().getParcelableExtra(EXTRA_CURRENT_ADDRESS));
 
         }
     }

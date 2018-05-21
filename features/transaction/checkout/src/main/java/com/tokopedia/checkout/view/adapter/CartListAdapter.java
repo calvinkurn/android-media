@@ -130,6 +130,15 @@ public class CartListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         checkForShipmentForm();
     }
 
+    public void resetQuantity(int position) {
+        if (getItemViewType(position) == CartListItemViewHolder.TYPE_VIEW_ITEM_CART) {
+            ((CartItemHolderData) cartItemHolderDataList.get(position))
+                    .getCartItemData().getUpdatedData().resetQuantity();
+        }
+        notifyItemChanged(position);
+        checkForShipmentForm();
+    }
+
     public void decreaseQuantity(int position) {
         if (getItemViewType(position) == CartListItemViewHolder.TYPE_VIEW_ITEM_CART) {
             ((CartItemHolderData) cartItemHolderDataList.get(position))
@@ -195,6 +204,19 @@ public class CartListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         }
     }
 
+    public void cancelAutoApplyCoupon() {
+        for (int i = 0; i < cartItemHolderDataList.size(); i++) {
+            Object object = cartItemHolderDataList.get(i);
+            if (object instanceof CartItemPromoHolderData) {
+                ((CartItemPromoHolderData) object).setPromoNotActive();
+                notifyItemChanged(i);
+            } else if (object instanceof CartPromoSuggestion) {
+                ((CartPromoSuggestion) object).setVisible(true);
+                notifyItemChanged(i);
+            }
+        }
+    }
+
     public void updateSuggestionPromo() {
         for (int i = 0; i < cartItemHolderDataList.size(); i++) {
             Object object = cartItemHolderDataList.get(i);
@@ -240,6 +262,8 @@ public class CartListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         void onCartItemDeleteButtonClicked(CartItemHolderData cartItemHolderData, int position);
 
         void onCartItemQuantityPlusButtonClicked(CartItemHolderData cartItemHolderData, int position);
+
+        void onCartItemQuantityReseted(int position);
 
         void onCartItemQuantityMinusButtonClicked(CartItemHolderData cartItemHolderData, int position);
 

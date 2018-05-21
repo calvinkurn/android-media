@@ -17,7 +17,7 @@ public class ShipmentDetailData implements Parcelable {
     private ShipmentCartData shipmentCartData;
     private ShipmentItemData selectedShipment;
     private CourierItemData selectedCourier;
-    private boolean useInsurance;
+    private Boolean useInsurance;
     private boolean usePartialOrder;
     private boolean useDropshipper;
     private String dropshipperName;
@@ -74,19 +74,19 @@ public class ShipmentDetailData implements Parcelable {
         this.useInsurance = useInsurance;
     }
 
-    public Boolean getUsePartialOrder() {
+    public boolean getUsePartialOrder() {
         return usePartialOrder;
     }
 
-    public void setUsePartialOrder(Boolean usePartialOrder) {
+    public void setUsePartialOrder(boolean usePartialOrder) {
         this.usePartialOrder = usePartialOrder;
     }
 
-    public Boolean getUseDropshipper() {
+    public boolean getUseDropshipper() {
         return useDropshipper;
     }
 
-    public void setUseDropshipper(Boolean useDropshipper) {
+    public void setUseDropshipper(boolean useDropshipper) {
         this.useDropshipper = useDropshipper;
     }
 

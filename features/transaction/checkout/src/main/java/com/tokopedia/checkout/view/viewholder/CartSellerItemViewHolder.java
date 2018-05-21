@@ -145,7 +145,6 @@ public class CartSellerItemViewHolder extends RecyclerView.ViewHolder {
         mIvShippingWarning = itemView.findViewById(R.id.img_shipping_warning);
         mTvShippingWarning = itemView.findViewById(R.id.tv_shipping_warning);
         mTvTextProductWeight = itemView.findViewById(R.id.tv_text_product_weight);
-        mTvLabelItemCount = itemView.findViewById(R.id.tv_label_item_count);
 
         layoutError = itemView.findViewById(R.id.layout_error);
         tvError = itemView.findViewById(R.id.tv_error);
@@ -400,7 +399,7 @@ public class CartSellerItemViewHolder extends RecyclerView.ViewHolder {
         mTvProductTotalItem.setTextColor(ContextCompat.getColor(mContext, R.color.font_black_secondary_54));
         mTvNoteToSellerLabel.setTextColor(ContextCompat.getColor(mContext, R.color.black_38));
         mTvOptionalNoteToSeller.setTextColor(ContextCompat.getColor(mContext, R.color.black_70));
-        mTvCashBack.setBackground(ContextCompat.getDrawable(mContext, R.drawable.layout_bg_cashback));
+        mTvCashBack.setBackground(ContextCompat.getDrawable(mContext, R.drawable.bg_cashback));
         setImageFilterNormal();
     }
 

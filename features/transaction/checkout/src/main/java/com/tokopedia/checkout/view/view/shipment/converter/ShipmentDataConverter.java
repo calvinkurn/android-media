@@ -11,9 +11,9 @@ import com.tokopedia.checkout.domain.datamodel.cartshipmentform.Product;
 import com.tokopedia.checkout.domain.datamodel.cartshipmentform.Shop;
 import com.tokopedia.checkout.domain.datamodel.cartshipmentform.UserAddress;
 import com.tokopedia.checkout.domain.datamodel.cartsingleshipment.CartItemModel;
-import com.tokopedia.checkout.view.view.shipment.viewmodel.ShipmentCartItem;
-import com.tokopedia.checkout.view.view.shipment.viewmodel.ShipmentMultipleAddressCartItem;
-import com.tokopedia.checkout.view.view.shipment.viewmodel.ShipmentSingleAddressCartItem;
+import com.tokopedia.checkout.view.view.shipment.viewmodel.ShipmentCartItemModel;
+import com.tokopedia.checkout.view.view.shipment.viewmodel.ShipmentMultipleAddressCartItemModel;
+import com.tokopedia.checkout.view.view.shipment.viewmodel.ShipmentSingleAddressCartItemModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -41,6 +41,8 @@ public class ShipmentDataConverter {
         recipientAddress.setDestinationDistrictId(String.valueOf(userAddress.getDistrictId()));
         recipientAddress.setAddressStreet(userAddress.getAddress());
         recipientAddress.setAddressPostalCode(userAddress.getPostalCode());
+        recipientAddress.setCityId(String.valueOf(userAddress.getCityId()));
+        recipientAddress.setProvinceId(String.valueOf(userAddress.getProvinceId()));
 
         recipientAddress.setRecipientName(userAddress.getReceiverName());
         recipientAddress.setRecipientPhoneNumber(userAddress.getPhone());
@@ -54,39 +56,27 @@ public class ShipmentDataConverter {
         return recipientAddress;
     }
 
-/*
-    public ShipmentCostModel getShipmentCostModel() {
-        ShipmentCostModel shipmentCostModel = new ShipmentCostModel();
-        shipmentCostModel.setInsuranceFee();
-        shipmentCostModel.setShippingFee();
-        shipmentCostModel.setTotalItem();
-        shipmentCostModel.setTotalItemPrice();
-        shipmentCostModel.setTotalPrice();
-        shipmentCostModel.setTotalWeight();
-    }
-*/
+    public List<ShipmentCartItemModel> getShipmentItems(CartShipmentAddressFormData cartShipmentAddressFormData) {
+        List<ShipmentCartItemModel> shipmentCartItemModels = new ArrayList<>();
 
-    public List<ShipmentCartItem> getShipmentItems(CartShipmentAddressFormData cartShipmentAddressFormData) {
-        List<ShipmentCartItem> shipmentCartItems = new ArrayList<>();
-
-        ShipmentCartItem shipmentCartItem;
+        ShipmentCartItemModel shipmentCartItemModel;
         if (cartShipmentAddressFormData.isMultiple()) {
-            shipmentCartItems.addAll(getShipmentMultipleAddressItem(cartShipmentAddressFormData));
+            shipmentCartItemModels.addAll(getShipmentMultipleAddressItem(cartShipmentAddressFormData));
         } else {
             UserAddress userAddress = cartShipmentAddressFormData.getGroupAddress().get(0).getUserAddress();
             for (GroupShop groupShop : cartShipmentAddressFormData.getGroupAddress().get(0).getGroupShop()) {
-                shipmentCartItem = new ShipmentSingleAddressCartItem();
-                getShipmentSingleAddressItem((ShipmentSingleAddressCartItem) shipmentCartItem, userAddress, groupShop, cartShipmentAddressFormData.getKeroToken(),
+                shipmentCartItemModel = new ShipmentSingleAddressCartItemModel();
+                getShipmentSingleAddressItem((ShipmentSingleAddressCartItemModel) shipmentCartItemModel, userAddress, groupShop, cartShipmentAddressFormData.getKeroToken(),
                         String.valueOf(cartShipmentAddressFormData.getKeroUnixTime()));
-                shipmentCartItems.add(shipmentCartItem);
+                shipmentCartItemModels.add(shipmentCartItemModel);
             }
         }
 
-        return shipmentCartItems;
+        return shipmentCartItemModels;
     }
 
-    private List<ShipmentCartItem> getShipmentMultipleAddressItem(CartShipmentAddressFormData cartShipmentAddressFormData) {
-        List<ShipmentCartItem> shipmentCartItems = new ArrayList<>();
+    private List<ShipmentCartItemModel> getShipmentMultipleAddressItem(CartShipmentAddressFormData cartShipmentAddressFormData) {
+        List<ShipmentCartItemModel> shipmentCartItemModels = new ArrayList<>();
         for (int addressIndex = 0; addressIndex < cartShipmentAddressFormData.getGroupAddress().size(); addressIndex++) {
             GroupAddress currentAddress = cartShipmentAddressFormData.getGroupAddress().get(addressIndex);
             List<GroupShop> groupShopList = cartShipmentAddressFormData.getGroupAddress().get(addressIndex).getGroupShop();
@@ -100,7 +90,7 @@ public class ShipmentDataConverter {
                 String warningMessageGroupShop = currentGroupShop.getWarningMessage();
 
                 for (int productIndex = 0; productIndex < productList.size(); productIndex++) {
-                    ShipmentMultipleAddressCartItem shipmentMultipleAddressItem = new ShipmentMultipleAddressCartItem();
+                    ShipmentMultipleAddressCartItemModel shipmentMultipleAddressItem = new ShipmentMultipleAddressCartItemModel();
                     Product currentProduct = productList.get(productIndex);
 
                     shipmentMultipleAddressItem.setError(isErrorGroupShop);
@@ -108,8 +98,9 @@ public class ShipmentDataConverter {
                     shipmentMultipleAddressItem.setWarning(isWarningGroupShop);
                     shipmentMultipleAddressItem.setWarningMessage(warningMessageGroupShop);
 
-                    shipmentMultipleAddressItem.setInvoicePosition(shipmentCartItems.size());
+                    shipmentMultipleAddressItem.setInvoicePosition(shipmentCartItemModels.size());
                     shipmentMultipleAddressItem.setShopId(currentGroupShop.getShop().getShopId());
+                    shipmentMultipleAddressItem.setCartId(currentProduct.getCartId());
                     shipmentMultipleAddressItem.setProductName(currentProduct.getProductName());
                     shipmentMultipleAddressItem.setProductPriceNumber(currentProduct.getProductPrice());
                     shipmentMultipleAddressItem.setProductPrice(currentProduct.getProductPrice());
@@ -119,7 +110,7 @@ public class ShipmentDataConverter {
                     addressItemData.setCartPosition(productIndex);
                     addressItemData.setAddressPosition(0);
                     addressItemData.setProductId(String.valueOf(currentProduct.getProductId()));
-                    addressItemData.setProductWeight(currentProduct.getProductWeightFmt());
+                    addressItemData.setProductWeightFmt(currentProduct.getProductWeightFmt());
                     addressItemData.setProductRawWeight(currentProduct.getProductWeight());
                     addressItemData.setProductNotes(currentProduct.getProductNotes());
                     addressItemData.setProductQty(
@@ -142,6 +133,8 @@ public class ShipmentDataConverter {
                     );
                     addressItemData.setAddressCountryName(currentAddress.getUserAddress()
                             .getCountry());
+                    addressItemData.setCityId(String.valueOf(currentAddress.getUserAddress().getCityId()));
+                    addressItemData.setProvinceId(String.valueOf(currentAddress.getUserAddress().getProvinceId()));
                     shipmentMultipleAddressItem.setMultipleAddressItemData(addressItemData);
 
                     shipmentMultipleAddressItem.setProductIsFreeReturns(currentProduct.isProductIsFreeReturns());
@@ -156,14 +149,14 @@ public class ShipmentDataConverter {
                                     shipmentMultipleAddressItem, cartShipmentAddressFormData.getKeroToken(),
                                     String.valueOf(cartShipmentAddressFormData.getKeroUnixTime())));
 
-                    shipmentCartItems.add(shipmentMultipleAddressItem);
+                    shipmentCartItemModels.add(shipmentMultipleAddressItem);
                 }
             }
         }
-        return shipmentCartItems;
+        return shipmentCartItemModels;
     }
 
-    private void getShipmentSingleAddressItem(ShipmentSingleAddressCartItem shipmentSingleAddressItem,
+    private void getShipmentSingleAddressItem(ShipmentSingleAddressCartItemModel shipmentSingleAddressItem,
                                               UserAddress userAddress, GroupShop groupShop,
                                               String keroToken, String keroUnixTime) {
 
@@ -183,6 +176,7 @@ public class ShipmentDataConverter {
         shipmentSingleAddressItem.setProductFcancelPartial(fobject.isFcancelPartial() == 1);
         shipmentSingleAddressItem.setCartItemModels(cartItemModels);
         shipmentSingleAddressItem.setProductIsPreorder(fobject.isPreOrder() == 1);
+        shipmentSingleAddressItem.setCartId(products.size() > 0 ? products.get(0).getCartId() : 0);
 
         shipmentSingleAddressItem.setShipmentCartData(new RatesDataConverter()
                 .getShipmentCartData(userAddress, groupShop, shipmentSingleAddressItem, keroToken, keroUnixTime));
@@ -201,7 +195,7 @@ public class ShipmentDataConverter {
     private CartItemModel convertFromProduct(Product product) {
         CartItemModel cartItemModel = new CartItemModel();
 
-        cartItemModel.setId(product.getProductId());
+        cartItemModel.setProcuctId(product.getProductId());
         cartItemModel.setName(product.getProductName());
         cartItemModel.setImageUrl(product.getProductImageSrc200Square());
         cartItemModel.setCurrency(product.getProductPriceCurrency());

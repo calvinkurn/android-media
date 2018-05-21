@@ -2,7 +2,6 @@ package com.tokopedia.checkout.view.view.addressoptions;
 
 import android.content.Context;
 import android.text.TextUtils;
-import android.util.Log;
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.checkout.R;
@@ -59,7 +58,7 @@ public class CartAddressChoicePresenter extends BaseDaggerPresenter<ICartAddress
     }
 
     @Override
-    public void getAddressShortedList(Context context) {
+    public void getAddressShortedList(Context context, final RecipientAddressModel currentAddress) {
         getView().showLoading();
         mGetPeopleAddressUseCase.execute(mGetPeopleAddressUseCase
                         .getRequestParams(context, DEFAULT_ORDER, DEFAULT_QUERY, DEFAULT_PAGE),
@@ -98,11 +97,9 @@ public class CartAddressChoicePresenter extends BaseDaggerPresenter<ICartAddress
                         if (!shipmentAddressModels.isEmpty()) {
                             if (isViewAttached()) {
                                 getView().hideLoading();
-                                getView().renderRecipientData(shortList(shipmentAddressModels));
+                                getView().renderRecipientData(shortList(shipmentAddressModels, currentAddress));
                             }
                         }
-
-                        Log.d(TAG, "Size: " + shipmentAddressModels.size());
                     }
                 });
     }
@@ -118,7 +115,18 @@ public class CartAddressChoicePresenter extends BaseDaggerPresenter<ICartAddress
         return mSelectedRecipientAddress;
     }
 
-    private List<RecipientAddressModel> shortList(final List<RecipientAddressModel> addressList) {
+    private List<RecipientAddressModel> shortList(final List<RecipientAddressModel> addressList,
+                                                  RecipientAddressModel currentAddress) {
+
+        if (currentAddress != null) {
+            for (RecipientAddressModel recipientAddressModel : addressList) {
+                if (recipientAddressModel.getId().equalsIgnoreCase(currentAddress.getId())) {
+                    recipientAddressModel.setSelected(true);
+                    break;
+                }
+            }
+        }
+
         final int shortListSize = min(addressList.size(), SHORT_LIST_SIZE);
 
         List<RecipientAddressModel> shortList = new ArrayList<RecipientAddressModel>() {{

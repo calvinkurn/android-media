@@ -7,7 +7,7 @@
     <corners android:radius="10dp" />
 
     <stroke
-        android:color="@color/tkpd_main_green"
+        android:color="#e0e0e0"
         android:width="0.8dp" />
 
 </shape>

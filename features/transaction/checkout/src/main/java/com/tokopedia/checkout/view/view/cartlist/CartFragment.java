@@ -10,12 +10,16 @@ import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SimpleItemAnimator;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -39,12 +43,15 @@ import com.tokopedia.checkout.view.di.component.CartComponent;
 import com.tokopedia.checkout.view.di.component.CartListComponent;
 import com.tokopedia.checkout.view.di.component.DaggerCartListComponent;
 import com.tokopedia.checkout.view.di.module.CartListModule;
+import com.tokopedia.checkout.view.di.module.TrackingAnalyticsModule;
 import com.tokopedia.checkout.view.holderitemdata.CartItemHolderData;
 import com.tokopedia.checkout.view.holderitemdata.CartItemPromoHolderData;
 import com.tokopedia.checkout.view.holderitemdata.CartItemTickerErrorHolderData;
 import com.tokopedia.checkout.view.view.addressoptions.CartAddressChoiceActivity;
 import com.tokopedia.checkout.view.view.multipleaddressform.MultipleAddressFormActivity;
-import com.tokopedia.checkout.view.view.shipmentform.CartShipmentActivity;
+import com.tokopedia.checkout.view.view.shipment.ShipmentActivity;
+import com.tokopedia.checkout.view.view.shipment.ShipmentData;
+import com.tokopedia.checkout.view.view.shipment.ShipmentFragment;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.receiver.CartBadgeNotificationReceiver;
@@ -65,6 +72,7 @@ import com.tokopedia.topads.sdk.domain.model.Shop;
 import com.tokopedia.topads.sdk.listener.TopAdsItemClickListener;
 import com.tokopedia.topads.sdk.view.DisplayMode;
 import com.tokopedia.topads.sdk.view.TopAdsView;
+import com.tokopedia.transactionanalytics.CheckoutAnalyticsCartPage;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -85,7 +93,9 @@ public class CartFragment extends BaseCheckoutFragment implements CartListAdapte
     private TextView btnToShipment;
     private TextView tvTotalPrice;
     private View bottomLayout;
+    private TextView tvItemCount;
     private TkpdProgressDialog progressDialogNormal;
+    private RelativeLayout layoutUsedPromo;
 
     @Inject
     ICartListPresenter dPresenter;
@@ -93,6 +103,8 @@ public class CartFragment extends BaseCheckoutFragment implements CartListAdapte
     CartListAdapter cartListAdapter;
     @Inject
     RecyclerView.ItemDecoration cartItemDecoration;
+    @Inject
+    CheckoutAnalyticsCartPage cartPageAnalytics;
 
     private RefreshHandler refreshHandler;
 
@@ -118,6 +130,7 @@ public class CartFragment extends BaseCheckoutFragment implements CartListAdapte
         CartListComponent cartListComponent = DaggerCartListComponent.builder()
                 .cartComponent(getComponent(CartComponent.class))
                 .cartListModule(new CartListModule(this))
+                .trackingAnalyticsModule(new TrackingAnalyticsModule())
                 .build();
         cartListComponent.inject(this);
     }
@@ -156,6 +169,7 @@ public class CartFragment extends BaseCheckoutFragment implements CartListAdapte
         deleteTextView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                cartPageAnalytics.eventClickCartClickHapusOnTopRightCorner();
                 mDataPasserListener.onRemoveAllCartMenuClicked(cartListAdapter.getCartItemDataList());
             }
         });
@@ -183,12 +197,14 @@ public class CartFragment extends BaseCheckoutFragment implements CartListAdapte
         btnToShipment = view.findViewById(R.id.go_to_courier_page_button);
         tvTotalPrice = view.findViewById(R.id.tv_total_prices);
         bottomLayout = view.findViewById(R.id.bottom_layout);
+        tvItemCount = view.findViewById(R.id.tv_item_count);
 
         progressDialogNormal = new TkpdProgressDialog(getActivity(), TkpdProgressDialog.NORMAL_PROGRESS);
         refreshHandler = new RefreshHandler(getActivity(), view, this);
         cartRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         cartRecyclerView.setAdapter(cartListAdapter);
         cartRecyclerView.addItemDecoration(cartItemDecoration);
+        ((SimpleItemAnimator) cartRecyclerView.getItemAnimator()).setSupportsChangeAnimations(false);
     }
 
     @Override
@@ -222,6 +238,7 @@ public class CartFragment extends BaseCheckoutFragment implements CartListAdapte
 
     @Override
     public void onCartItemDeleteButtonClicked(CartItemHolderData cartItemHolderData, int position) {
+        cartPageAnalytics.eventClickCartClickTrashBin();
         ArrayList<CartItemData> cartItemData =
                 new ArrayList<>(Collections.singletonList(cartItemHolderData.getCartItemData()));
         ArrayList<CartItemData> emptyList = new ArrayList<>(Collections.<CartItemData>emptyList());
@@ -230,12 +247,20 @@ public class CartFragment extends BaseCheckoutFragment implements CartListAdapte
 
     @Override
     public void onCartItemQuantityPlusButtonClicked(CartItemHolderData cartItemHolderData, int position) {
+        cartPageAnalytics.eventClickCartClickButtonPlus();
         cartListAdapter.increaseQuantity(position);
         dPresenter.reCalculateSubTotal(cartListAdapter.getDataList());
     }
 
     @Override
+    public void onCartItemQuantityReseted(int position) {
+        cartListAdapter.resetQuantity(position);
+        dPresenter.reCalculateSubTotal(cartListAdapter.getDataList());
+    }
+
+    @Override
     public void onCartItemQuantityMinusButtonClicked(CartItemHolderData cartItemHolderData, int position) {
+        cartPageAnalytics.eventClickCartClickButtonMinus();
         cartListAdapter.decreaseQuantity(position);
         dPresenter.reCalculateSubTotal(cartListAdapter.getDataList());
     }
@@ -284,11 +309,12 @@ public class CartFragment extends BaseCheckoutFragment implements CartListAdapte
 
     @Override
     public void onCartItemListIsEmpty() {
-        renderEmptyCartData();
+        renderEmptyCartData(null);
     }
 
     @Override
     public void onCartPromoUseVoucherPromoClicked(CartItemPromoHolderData cartItemPromoHolderData, int position) {
+        cartPageAnalytics.eventClickCartClickGunakanKodePromoAatauKupon();
         if (getActivity().getApplication() instanceof ICheckoutModuleRouter) {
             startActivityForResult(
                     ((ICheckoutModuleRouter) getActivity().getApplication())
@@ -301,10 +327,15 @@ public class CartFragment extends BaseCheckoutFragment implements CartListAdapte
 
     @Override
     public void onCartPromoCancelVoucherPromoClicked(CartItemPromoHolderData cartItemPromoHolderData, int position) {
-        cartItemPromoHolderData.setPromoNotActive();
-        cartListAdapter.notifyItemChanged(position);
-        cartListAdapter.updateSuggestionPromo();
-        cartListAdapter.checkForShipmentForm();
+        cartPageAnalytics.eventClickCartClickXOnBannerPromoCode();
+        if (cartItemPromoHolderData.isFromAutoApply()) {
+            dPresenter.processCancelAutoApply();
+        } else {
+            cartItemPromoHolderData.setPromoNotActive();
+            cartListAdapter.notifyItemChanged(position);
+            cartListAdapter.updateSuggestionPromo();
+            cartListAdapter.checkForShipmentForm();
+        }
     }
 
     @Override
@@ -324,11 +355,14 @@ public class CartFragment extends BaseCheckoutFragment implements CartListAdapte
 
     @Override
     public void onCartItemTickerErrorActionClicked(CartItemTickerErrorHolderData data, int position) {
+        cartPageAnalytics.enhancedECommerceCartHapusProdukBerkendala(
+                dPresenter.generateCartDataAnalytics(getCartDataList())
+        );
         showDeleteCartItemDialog(getCartDataList(), new ArrayList<CartItemData>());
     }
 
     @Override
-    public void onDropshipperValidationResult(boolean result, int position) {
+    public void onDropshipperValidationResult(boolean result, ShipmentData shipmentData, int position) {
 
     }
 
@@ -426,9 +460,25 @@ public class CartFragment extends BaseCheckoutFragment implements CartListAdapte
         refreshHandler.finishRefresh();
         this.cartListData = cartListData;
         cartListAdapter.resetData();
-        CartItemPromoHolderData cartItemPromoHolderData = new CartItemPromoHolderData();
-        cartItemPromoHolderData.setPromoNotActive();
+
+        CartItemPromoHolderData cartItemPromoHolderData;
+        if (cartListData.getAutoApplyData() != null && cartListData.getAutoApplyData().isSuccess()) {
+            cartItemPromoHolderData = CartItemPromoHolderData.createInstanceFromAutoApply(
+                    cartListData.getAutoApplyData());
+            promoCodeAppliedData = new PromoCodeAppliedData.Builder()
+                    .typeVoucher(PromoCodeAppliedData.TYPE_COUPON)
+                    .promoCode(cartItemPromoHolderData.getCouponCode())
+                    .couponTitle(cartItemPromoHolderData.getCouponTitle())
+                    .description(cartItemPromoHolderData.getCouponMessage())
+                    .amount((int) cartItemPromoHolderData.getCouponDiscountAmount())
+                    .fromAutoApply(true)
+                    .build();
+        } else {
+            cartItemPromoHolderData = new CartItemPromoHolderData();
+            cartItemPromoHolderData.setPromoNotActive();
+        }
         cartListAdapter.addPromoVoucherData(cartItemPromoHolderData);
+
         if (cartListData.isError()) {
             cartListAdapter.addCartTickerError(
                     new CartItemTickerErrorHolderData.Builder()
@@ -497,18 +547,18 @@ public class CartFragment extends BaseCheckoutFragment implements CartListAdapte
 
     @Override
     public void renderNoRecipientAddressShipmentForm(CartShipmentAddressFormData shipmentAddressFormData) {
-        Intent intent = CartAddressChoiceActivity.createInstance(getActivity(),
+        Intent intent = CartAddressChoiceActivity.createInstance(getActivity(), null,
                 CartAddressChoiceActivity.TYPE_REQUEST_ADD_SHIPMENT_DEFAULT_ADDRESS);
         startActivityForResult(intent, CartAddressChoiceActivity.REQUEST_CODE);
     }
 
     @Override
     public void renderToShipmentFormSuccess(CartShipmentAddressFormData shipmentAddressFormData) {
-//        Intent intent = ShipmentActivity.createInstance(getActivity(), shipmentAddressFormData,
-//                promoCodeAppliedData, cartListData.getCartPromoSuggestion()
-//        );
-//        startActivityForResult(intent, CartShipmentActivity.REQUEST_CODE);
-
+        Intent intent = ShipmentActivity.createInstance(getActivity(), shipmentAddressFormData,
+                promoCodeAppliedData, cartListData.getCartPromoSuggestion()
+        );
+        startActivityForResult(intent, ShipmentActivity.REQUEST_CODE);
+/*
         if (shipmentAddressFormData.isMultiple()) {
             Intent intent = CartShipmentActivity.createInstanceMultipleAddress(
                     getActivity(), shipmentAddressFormData, this.promoCodeAppliedData,
@@ -522,7 +572,7 @@ public class CartFragment extends BaseCheckoutFragment implements CartListAdapte
             );
             startActivityForResult(intent, CartShipmentActivity.REQUEST_CODE);
         }
-
+*/
     }
 
     @Override
@@ -607,7 +657,8 @@ public class CartFragment extends BaseCheckoutFragment implements CartListAdapte
     }
 
     @Override
-    public void renderEmptyCartData() {
+    public void renderEmptyCartData(CartListData cartListData) {
+        cartPageAnalytics.eventViewCartViewImpressionCartEmpty();
         refreshHandler.finishRefresh();
         bottomLayout.setVisibility(View.GONE);
         mIsMenuVisible = false;
@@ -621,10 +672,38 @@ public class CartFragment extends BaseCheckoutFragment implements CartListAdapte
         } catch (NullPointerException e) {
             View emptyState = LayoutInflater.from(getActivity()).
                     inflate(R.layout.layout_empty_shopping_cart_new, (ViewGroup) rootview);
+            layoutUsedPromo = emptyState.findViewById(R.id.layout_used_promo);
+            TextView labelPromoCode = emptyState.findViewById(R.id.label_promo_code);
+            TextView textviewPromoCode = emptyState.findViewById(R.id.textview_promo_code);
+            TextView textviewVoucherDetail = emptyState.findViewById(R.id.textview_voucher_detail);
+            ImageView buttonCancel = emptyState.findViewById(R.id.button_cancel);
+
+            if (cartListData != null && cartListData.getAutoApplyData() != null &&
+                    cartListData.getAutoApplyData().isSuccess()) {
+                layoutUsedPromo.setVisibility(View.VISIBLE);
+                labelPromoCode.setText(getContext().getString(com.tokopedia.design.R.string.my_coupon));
+                textviewPromoCode.setText(cartListData.getAutoApplyData().getTitleDescription());
+                if (TextUtils.isEmpty(cartListData.getAutoApplyData().getMessageSuccess())) {
+                    textviewVoucherDetail.setVisibility(View.GONE);
+                } else {
+                    textviewVoucherDetail.setText(cartListData.getAutoApplyData().getMessageSuccess());
+                    textviewVoucherDetail.setVisibility(View.VISIBLE);
+                }
+                buttonCancel.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        dPresenter.processCancelAutoApply();
+                    }
+                });
+            } else {
+                layoutUsedPromo.setVisibility(View.GONE);
+            }
+
             TextView shop = emptyState.findViewById(R.id.btn_shopping_now);
             shop.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
+                    cartPageAnalytics.eventClickCartClickBelanjaSekarangOnEmptyCart();
                     navigateToActivity(
                             BrowseProductRouter.getSearchProductIntent(getActivity())
                     );
@@ -662,7 +741,6 @@ public class CartFragment extends BaseCheckoutFragment implements CartListAdapte
         refreshHandler.setPullEnabled(true);
     }
 
-
     @Override
     public List<CartItemData> getCartDataList() {
         return cartListAdapter.getCartItemDataList();
@@ -671,8 +749,8 @@ public class CartFragment extends BaseCheckoutFragment implements CartListAdapte
     @Override
     public void renderDetailInfoSubTotal(String qty, String subtotalPrice) {
         tvTotalPrice.setText(subtotalPrice);
+        tvItemCount.setText(String.format(getActivity().getString(R.string.cart_item_count_format), qty));
     }
-
 
     @Override
     public void renderPromoVoucher() {
@@ -706,6 +784,22 @@ public class CartFragment extends BaseCheckoutFragment implements CartListAdapte
                 .build());
     }
 
+    @Override
+    public void renderCancelAutoApplyCouponSuccess() {
+        promoCodeAppliedData = null;
+        if (layoutUsedPromo != null) {
+            layoutUsedPromo.setVisibility(View.GONE);
+        } else {
+            cartListAdapter.cancelAutoApplyCoupon();
+            cartListAdapter.checkForShipmentForm();
+        }
+    }
+
+    @Override
+    public void renderCancelAutoApplyCouponError() {
+        NetworkErrorHelper.showSnackbar(getActivity(), getActivity().getString(R.string.default_request_error_unknown));
+    }
+
     void showDeleteCartItemDialog(List<CartItemData> cartItemDataList, List<CartItemData> emptyData) {
         DialogFragment dialog = CartRemoveItemDialog.newInstance(
                 cartItemDataList,
@@ -724,6 +818,9 @@ public class CartFragment extends BaseCheckoutFragment implements CartListAdapte
                     CartItemData removedCartItem, List<CartItemData> updatedCartItems
             ) {
                 dPresenter.processDeleteCart(removedCartItem, false);
+                cartPageAnalytics.enhancedECommerceRemoveCartNotWishList(
+                        dPresenter.generateCartDataAnalytics(removedCartItem)
+                );
             }
 
             @Override
@@ -731,6 +828,9 @@ public class CartFragment extends BaseCheckoutFragment implements CartListAdapte
                     CartItemData removedCartItem, List<CartItemData> updatedCartItems
             ) {
                 dPresenter.processDeleteCart(removedCartItem, true);
+                cartPageAnalytics.enhancedECommerceRemoveCartAddWishList(
+                        dPresenter.generateCartDataAnalytics(removedCartItem)
+                );
             }
 
             @Override
@@ -738,6 +838,9 @@ public class CartFragment extends BaseCheckoutFragment implements CartListAdapte
                     List<CartItemData> removedCartItems, List<CartItemData> updatedCartItems
             ) {
                 dPresenter.processDeleteAndRefreshCart(removedCartItems, false);
+                cartPageAnalytics.enhancedECommerceRemoveCartNotWishList(
+                        dPresenter.generateCartDataAnalytics(removedCartItems)
+                );
             }
 
             @Override
@@ -745,6 +848,9 @@ public class CartFragment extends BaseCheckoutFragment implements CartListAdapte
                     List<CartItemData> removedCartItems, List<CartItemData> updatedCartItems
             ) {
                 dPresenter.processDeleteAndRefreshCart(removedCartItems, true);
+                cartPageAnalytics.enhancedECommerceRemoveCartAddWishList(
+                        dPresenter.generateCartDataAnalytics(removedCartItems)
+                );
             }
         };
     }
@@ -755,6 +861,7 @@ public class CartFragment extends BaseCheckoutFragment implements CartListAdapte
 
     @Override
     public void onProductItemClicked(int position, Product product) {
+        cartPageAnalytics.eventClickCartClickProductName(product.getName());
         ProductItem data = new ProductItem();
         data.setId(product.getId());
         data.setName(product.getName());
@@ -769,6 +876,7 @@ public class CartFragment extends BaseCheckoutFragment implements CartListAdapte
 
     @Override
     public void onShopItemClicked(int position, Shop shop) {
+        cartPageAnalytics.eventClickCartClickShopName(shop.getName());
         Intent intent = ((TransactionRouter) getActivity().getApplication()).getShopPageIntent(
                 getActivity(), shop.getId());
         startActivity(intent);
@@ -791,13 +899,23 @@ public class CartFragment extends BaseCheckoutFragment implements CartListAdapte
 
         if (requestCode == IRouterConstant.LoyaltyModule.LOYALTY_ACTIVITY_REQUEST_CODE) {
             onResultFromRequestCodeLoyalty(resultCode, data);
-        } else if (requestCode == CartShipmentActivity.REQUEST_CODE) {
+        } else if (requestCode == ShipmentActivity.REQUEST_CODE) {
             onResultFromRequestCodeCartShipment(resultCode, data);
         } else if (requestCode == MultipleAddressFormActivity.REQUEST_CODE) {
             onResultFromRequestCodeMultipleAddressForm(resultCode);
         } else if (requestCode == CartAddressChoiceActivity.REQUEST_CODE) {
             onResultFromRequestCodeAddressChoiceActivity(resultCode);
         }
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                cartPageAnalytics.eventClickCartClickArrowBack();
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     private void onResultFromRequestCodeMultipleAddressForm(int resultCode) {
@@ -808,14 +926,14 @@ public class CartFragment extends BaseCheckoutFragment implements CartListAdapte
     }
 
     private void onResultFromRequestCodeCartShipment(int resultCode, Intent data) {
-        if (resultCode == CartShipmentActivity.RESULT_CODE_ACTION_TO_MULTIPLE_ADDRESS_FORM) {
+        if (resultCode == ShipmentActivity.RESULT_CODE_ACTION_TO_MULTIPLE_ADDRESS_FORM) {
             RecipientAddressModel selectedAddress = data.getParcelableExtra(
-                    CartShipmentActivity.EXTRA_SELECTED_ADDRESS_RECIPIENT_DATA
+                    ShipmentActivity.EXTRA_SELECTED_ADDRESS_RECIPIENT_DATA
             );
             dPresenter.processToShipmentMultipleAddress(selectedAddress);
-        } else if (resultCode == CartShipmentActivity.RESULT_CODE_FORCE_RESET_CART_FROM_SINGLE_SHIPMENT ||
-                resultCode == CartShipmentActivity.RESULT_CODE_FORCE_RESET_CART_FROM_MULTIPLE_SHIPMENT ||
-                resultCode == CartShipmentActivity.RESULT_CODE_CANCEL_SHIPMENT_PAYMENT) {
+        } else if (resultCode == ShipmentActivity.RESULT_CODE_FORCE_RESET_CART_FROM_SINGLE_SHIPMENT ||
+                resultCode == ShipmentActivity.RESULT_CODE_FORCE_RESET_CART_FROM_MULTIPLE_SHIPMENT ||
+                resultCode == ShipmentFragment.RESULT_CODE_CANCEL_SHIPMENT_PAYMENT) {
             dPresenter.processResetAndRefreshCartData();
         }
     }

@@ -18,6 +18,7 @@ public class CartListData implements Parcelable {
     private CartPromoSuggestion cartPromoSuggestion;
     private boolean promoCouponActive;
     private CartTickerErrorData cartTickerErrorData;
+    private AutoApplyData autoApplyData;
 
     public CartTickerErrorData getCartTickerErrorData() {
         return cartTickerErrorData;
@@ -67,6 +68,14 @@ public class CartListData implements Parcelable {
         this.errorMessage = errorMessage;
     }
 
+    public AutoApplyData getAutoApplyData() {
+        return autoApplyData;
+    }
+
+    public void setAutoApplyData(AutoApplyData autoApplyData) {
+        this.autoApplyData = autoApplyData;
+    }
+
     public CartListData() {
     }
 
@@ -83,6 +92,7 @@ public class CartListData implements Parcelable {
         dest.writeParcelable(this.cartPromoSuggestion, flags);
         dest.writeByte(this.promoCouponActive ? (byte) 1 : (byte) 0);
         dest.writeParcelable(this.cartTickerErrorData, flags);
+        dest.writeParcelable(this.autoApplyData, flags);
     }
 
     protected CartListData(Parcel in) {
@@ -92,6 +102,7 @@ public class CartListData implements Parcelable {
         this.cartPromoSuggestion = in.readParcelable(CartPromoSuggestion.class.getClassLoader());
         this.promoCouponActive = in.readByte() != 0;
         this.cartTickerErrorData = in.readParcelable(CartTickerErrorData.class.getClassLoader());
+        this.autoApplyData = in.readParcelable(AutoApplyData.class.getClassLoader());
     }
 
     public static final Creator<CartListData> CREATOR = new Creator<CartListData>() {

@@ -1,13 +1,13 @@
 package com.tokopedia.checkout.view.view.cartlist;
 
 import android.support.annotation.NonNull;
+import android.text.TextUtils;
 
 import com.google.gson.Gson;
 import com.tokopedia.abstraction.common.network.exception.HttpErrorException;
+import com.tokopedia.abstraction.common.network.exception.ResponseDataNullException;
+import com.tokopedia.abstraction.common.network.exception.ResponseErrorException;
 import com.tokopedia.abstraction.common.utils.TKPDMapParam;
-import com.tokopedia.transactiondata.entity.request.RemoveCartRequest;
-import com.tokopedia.transactiondata.entity.request.UpdateCartRequest;
-import com.tokopedia.transactiondata.exception.ResponseCartApiErrorException;
 import com.tokopedia.checkout.domain.datamodel.DeleteAndRefreshCartListData;
 import com.tokopedia.checkout.domain.datamodel.ResetAndRefreshCartListData;
 import com.tokopedia.checkout.domain.datamodel.ResetAndShipmentFormCartData;
@@ -17,6 +17,7 @@ import com.tokopedia.checkout.domain.datamodel.cartlist.CartListData;
 import com.tokopedia.checkout.domain.datamodel.cartlist.DeleteCartData;
 import com.tokopedia.checkout.domain.datamodel.cartlist.UpdateToSingleAddressShipmentData;
 import com.tokopedia.checkout.domain.datamodel.cartshipmentform.CartShipmentAddressFormData;
+import com.tokopedia.checkout.domain.usecase.CancelAutoApplyCouponUseCase;
 import com.tokopedia.checkout.domain.usecase.CheckPromoCodeCartListUseCase;
 import com.tokopedia.checkout.domain.usecase.DeleteCartGetCartListUseCase;
 import com.tokopedia.checkout.domain.usecase.DeleteCartUseCase;
@@ -26,18 +27,25 @@ import com.tokopedia.checkout.domain.usecase.ResetCartGetCartListUseCase;
 import com.tokopedia.checkout.domain.usecase.ResetCartGetShipmentFormUseCase;
 import com.tokopedia.checkout.domain.usecase.UpdateCartGetShipmentAddressFormUseCase;
 import com.tokopedia.checkout.view.holderitemdata.CartItemHolderData;
-import com.tokopedia.core.network.exception.ResponseDataNullException;
-import com.tokopedia.core.network.exception.ResponseErrorException;
+import com.tokopedia.core.analytics.nishikino.model.GTMCart;
 import com.tokopedia.core.network.retrofit.utils.ErrorNetMessage;
 import com.tokopedia.core.router.transactionmodule.sharedata.CheckPromoCodeCartListResult;
 import com.tokopedia.design.utils.CurrencyFormatUtil;
+import com.tokopedia.transactiondata.entity.request.RemoveCartRequest;
+import com.tokopedia.transactiondata.entity.request.UpdateCartRequest;
+import com.tokopedia.transactiondata.exception.ResponseCartApiErrorException;
+import com.tokopedia.transactiondata.utils.CartApiRequestParamGenerator;
 import com.tokopedia.usecase.RequestParams;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.net.ConnectException;
 import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import javax.inject.Inject;
 
@@ -61,6 +69,8 @@ public class CartListPresenter implements ICartListPresenter {
     private final ResetCartGetCartListUseCase resetCartGetCartListUseCase;
     private final ResetCartGetShipmentFormUseCase resetCartGetShipmentFormUseCase;
     private final CheckPromoCodeCartListUseCase checkPromoCodeCartListUseCase;
+    private final CartApiRequestParamGenerator cartApiRequestParamGenerator;
+    private final CancelAutoApplyCouponUseCase cancelAutoApplyCouponUseCase;
 
     @Inject
     public CartListPresenter(ICartListView cartListView,
@@ -72,7 +82,9 @@ public class CartListPresenter implements ICartListPresenter {
                              ResetCartGetCartListUseCase resetCartGetCartListUseCase,
                              ResetCartGetShipmentFormUseCase resetCartGetShipmentFormUseCase,
                              CheckPromoCodeCartListUseCase checkPromoCodeCartListUseCase,
-                             CompositeSubscription compositeSubscription) {
+                             CompositeSubscription compositeSubscription,
+                             CartApiRequestParamGenerator cartApiRequestParamGenerator,
+                             CancelAutoApplyCouponUseCase cancelAutoApplyCouponUseCase) {
         this.view = cartListView;
         this.getCartListUseCase = getCartListUseCase;
         this.compositeSubscription = compositeSubscription;
@@ -83,19 +95,20 @@ public class CartListPresenter implements ICartListPresenter {
         this.resetCartGetCartListUseCase = resetCartGetCartListUseCase;
         this.resetCartGetShipmentFormUseCase = resetCartGetShipmentFormUseCase;
         this.checkPromoCodeCartListUseCase = checkPromoCodeCartListUseCase;
+        this.cartApiRequestParamGenerator = cartApiRequestParamGenerator;
+        this.cancelAutoApplyCouponUseCase = cancelAutoApplyCouponUseCase;
     }
 
     @Override
     public void processInitialGetCartData() {
         view.renderLoadGetCartData();
         view.disableSwipeRefresh();
-        TKPDMapParam<String, String> param = new TKPDMapParam<>();
-        param.put("lang", "id");
+
 
         RequestParams requestParams = RequestParams.create();
         requestParams.putObject(
                 GetCartListUseCase.PARAM_REQUEST_AUTH_MAP_STRING,
-                view.getGeneratedAuthParamNetwork(param)
+                view.getGeneratedAuthParamNetwork(cartApiRequestParamGenerator.generateParamMapGetCartList())
         );
         compositeSubscription.add(getCartListUseCase.createObservable(requestParams)
                 .subscribeOn(Schedulers.newThread())
@@ -477,7 +490,7 @@ public class CartListPresenter implements ICartListPresenter {
             public void onNext(CartListData cartListData) {
                 view.renderLoadGetCartDataFinish();
                 if (cartListData.getCartItemDataList().isEmpty()) {
-                    view.renderEmptyCartData();
+                    view.renderEmptyCartData(cartListData);
                 } else {
                     view.renderInitialGetCartListDataSuccess(cartListData);
                 }
@@ -587,7 +600,7 @@ public class CartListPresenter implements ICartListPresenter {
                 if (deleteAndRefreshCartListData.getDeleteCartData().isSuccess()
                         && deleteAndRefreshCartListData.getCartListData() != null) {
                     if (deleteAndRefreshCartListData.getCartListData().getCartItemDataList().isEmpty()) {
-                        view.renderEmptyCartData();
+                        view.renderEmptyCartData(null);
                     } else {
                         view.renderInitialGetCartListDataSuccess(deleteAndRefreshCartListData.getCartListData());
                     }
@@ -763,7 +776,7 @@ public class CartListPresenter implements ICartListPresenter {
                     view.renderErrorInitialGetCartListData(resetAndRefreshCartListData.getResetCartData().getMessage());
                 } else {
                     if (resetAndRefreshCartListData.getCartListData().getCartItemDataList().isEmpty()) {
-                        view.renderEmptyCartData();
+                        view.renderEmptyCartData(null);
                     } else {
                         view.renderInitialGetCartListDataSuccess(resetAndRefreshCartListData.getCartListData());
                     }
@@ -799,4 +812,88 @@ public class CartListPresenter implements ICartListPresenter {
         };
     }
 
+    @Override
+    public void processCancelAutoApply() {
+        compositeSubscription.add(cancelAutoApplyCouponUseCase.createObservable(RequestParams.create())
+                .subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .unsubscribeOn(Schedulers.newThread())
+                .subscribe(new Subscriber<String>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        e.printStackTrace();
+                        view.renderCancelAutoApplyCouponError();
+                    }
+
+                    @Override
+                    public void onNext(String stringResponse) {
+                        boolean resultSuccess = false;
+                        try {
+                            JSONObject jsonObject = new JSONObject(stringResponse);
+                            resultSuccess = jsonObject.getJSONObject(CancelAutoApplyCouponUseCase.RESPONSE_DATA)
+                                    .getBoolean(CancelAutoApplyCouponUseCase.RESPONSE_SUCCESS);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+
+                        if (resultSuccess) {
+                            view.renderCancelAutoApplyCouponSuccess();
+                        } else {
+                            view.renderCancelAutoApplyCouponError();
+                        }
+                    }
+                })
+        );
+    }
+
+    @Override
+    public Map<String, Object> generateCartDataAnalytics(CartItemData removedCartItem) {
+        List<CartItemData> cartItemDataList = new ArrayList<>();
+        return generateCartDataAnalytics(cartItemDataList);
+    }
+
+    public Map<String, Object> generateCartDataAnalytics(List<CartItemData> cartItemDataList) {
+
+        GTMCart gtmCart = new GTMCart();
+
+        gtmCart.setCurrencyCode("IDR");
+        gtmCart.setAddAction(GTMCart.ADD_ACTION);
+
+        for (CartItemData cartItemData : cartItemDataList) {
+            com.tokopedia.core.analytics.nishikino.model.Product product =
+                    new com.tokopedia.core.analytics.nishikino.model.Product();
+            product.setProductName(cartItemData.getOriginData().getProductName());
+            product.setProductID(String.valueOf(cartItemData.getOriginData().getProductId()));
+            product.setPrice(cartItemData.getOriginData().getPriceFormatted());
+            product.setBrand(com.tokopedia.core.analytics.nishikino.model.Product.DEFAULT_VALUE_NONE_OTHER);
+
+            product.setCategory(TextUtils.isEmpty(cartItemData.getOriginData().getCategoryForAnalytics())
+                    ? com.tokopedia.core.analytics.nishikino.model.Product.DEFAULT_VALUE_NONE_OTHER
+                    : cartItemData.getOriginData().getCategoryForAnalytics());
+            product.setVariant(com.tokopedia.core.analytics.nishikino.model.Product.DEFAULT_VALUE_NONE_OTHER);
+            product.setQty(cartItemData.getUpdatedData().getQuantity());
+            product.setShopId(cartItemData.getOriginData().getShopId());
+         //   product.setShopType(generateShopType(productData.getShopInfo()));
+            product.setShopName(cartItemData.getOriginData().getShopName());
+            product.setCategoryId(cartItemData.getOriginData().getCategoryId());
+//            product.setDimension38(
+//                    TextUtils.isEmpty(productPass.getTrackerAttribution())
+//                            ? com.tokopedia.core.analytics.nishikino.model.Product.DEFAULT_VALUE_NONE_OTHER
+//                            : productPass.getTrackerAttribution()
+//            );
+//            product.setDimension40(
+//                    TextUtils.isEmpty(productPass.getTrackerListName())
+//                            ? com.tokopedia.core.analytics.nishikino.model.Product.DEFAULT_VALUE_NONE_OTHER
+//                            : productPass.getTrackerListName()
+//            );
+            gtmCart.addProduct(product.getProduct());
+        }
+        return gtmCart.getCartMap();
+
+    }
 }

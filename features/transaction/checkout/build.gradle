@@ -3,13 +3,15 @@ apply from: "$rootProject.projectDir/buildconfig/module.gradle"
 apply plugin: 'android-apt'
 
 dependencies {
-
+    compile project(':tkpdtransaction-common')
+    compile project(rootProject.ext.features.core)
     compile rootProject.ext.playServicesDependencies.maps
     compile project(rootProject.ext.libraries.design)
     compile project(rootProject.ext.features.topAdsSdk)
     compile project(rootProject.ext.features.payment)
     compile project(rootProject.ext.features.logisticdata)
     compile project(rootProject.ext.features.transactiondata)
+    compile project(rootProject.ext.features.transactionanalytics)
 
     compile(rootProject.ext.tkpdLibDependencies.showcase) {
         exclude group: "com.android.support"
@@ -25,4 +27,8 @@ dependencies {
 
     compile rootProject.ext.miscDependencies.dagger
     apt rootProject.ext.miscDependencies.daggerCompiler
+
+    compile rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
+    apt rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
+
 }

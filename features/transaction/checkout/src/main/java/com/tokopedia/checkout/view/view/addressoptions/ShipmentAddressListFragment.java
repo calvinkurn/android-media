@@ -35,6 +35,8 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import static com.tokopedia.checkout.view.view.addressoptions.CartAddressChoiceActivity.EXTRA_CURRENT_ADDRESS;
+
 /**
  * @author Aghny A. Putra on 25/01/18
  */
@@ -67,8 +69,12 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
     @Inject
     ShipmentAddressListPresenter mShipmentAddressListPresenter;
 
-    public static ShipmentAddressListFragment newInstance() {
-        return new ShipmentAddressListFragment();
+    public static ShipmentAddressListFragment newInstance(RecipientAddressModel currentAddress) {
+        Bundle bundle = new Bundle();
+        bundle.putParcelable(EXTRA_CURRENT_ADDRESS, currentAddress);
+        ShipmentAddressListFragment shipmentAddressListFragment = new ShipmentAddressListFragment();
+        shipmentAddressListFragment.setArguments(bundle);
+        return shipmentAddressListFragment;
     }
 
     public static ShipmentAddressListFragment newInstance(HashMap<String, String> params) {
@@ -295,13 +301,15 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
 
     @Override
     public void onSearchReset() {
-        mShipmentAddressListPresenter.resetAddressList(getActivity(), ORDER_ASC);
+        mShipmentAddressListPresenter.resetAddressList(getActivity(), ORDER_ASC,
+                (RecipientAddressModel) getArguments().getParcelable(EXTRA_CURRENT_ADDRESS));
         closeSoftKeyboard();
     }
 
     private void performSearch(String query) {
         if (!query.isEmpty()) {
-            mShipmentAddressListPresenter.getAddressList(getActivity(), ORDER_ASC, query);
+            mShipmentAddressListPresenter.getAddressList(getActivity(), ORDER_ASC, query,
+                    (RecipientAddressModel) getArguments().getParcelable(EXTRA_CURRENT_ADDRESS));
         } else {
             onSearchReset();
         }

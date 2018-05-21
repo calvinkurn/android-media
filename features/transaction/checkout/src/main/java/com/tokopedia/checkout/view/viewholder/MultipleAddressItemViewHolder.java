@@ -91,7 +91,7 @@ public class MultipleAddressItemViewHolder extends RecyclerView.ViewHolder{
                         "#", String.valueOf(itemData.getAddressPosition() + 1)
                 )
         );
-        productWeight.setText(itemData.getProductWeight());
+        productWeight.setText(itemData.getProductWeightFmt());
         productQty.setText(itemData.getProductQty());
         notesForSeller.setText(itemData.getProductNotes());
         addressTitle.setText(itemData.getAddressTitle());

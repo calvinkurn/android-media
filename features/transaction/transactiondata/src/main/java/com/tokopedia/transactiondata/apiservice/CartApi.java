@@ -1,5 +1,6 @@
 package com.tokopedia.transactiondata.apiservice;
 
+import com.tokopedia.abstraction.common.utils.network.AuthUtil;
 import com.tokopedia.transactiondata.constant.TransactionDataApiUrl;
 
 import java.util.Map;
@@ -8,6 +9,7 @@ import retrofit2.Response;
 import retrofit2.http.FieldMap;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
+import retrofit2.http.Header;
 import retrofit2.http.POST;
 import retrofit2.http.QueryMap;
 import rx.Observable;
@@ -61,6 +63,11 @@ public interface CartApi {
 
     @GET(TransactionDataApiUrl.Cart.PATH_NOTIFICATION_COUNTER)
     Observable<Response<CartResponse>> getNotificationCounter();
+
+    @FormUrlEncoded
+    @POST(TransactionDataApiUrl.Cart.PATH_CANCEL_AUTO_APPLY_COUPON)
+    Observable<String> cancelAutoApplyCoupon(@Header(AuthUtil.HEADER_DEVICE) String os,
+                                             @FieldMap Map<String, String> params);
 
 //    public static final String PATH_UPDATE_STATE_BY_PAYMENT = "api/" + VERSION + "/update_state_by_payment";
 //    public static final String PATH_NOTIFICATION_COUNTER = "api/" + VERSION + "/counter";

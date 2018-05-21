@@ -4,17 +4,19 @@ import android.app.Activity;
 
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
-import com.tokopedia.transactiondata.entity.request.DataCheckoutRequest;
 import com.tokopedia.checkout.domain.datamodel.addressoptions.RecipientAddressModel;
 import com.tokopedia.checkout.domain.datamodel.cartcheckout.CheckoutData;
 import com.tokopedia.checkout.domain.datamodel.cartlist.CartPromoSuggestion;
 import com.tokopedia.checkout.domain.datamodel.cartshipmentform.CartShipmentAddressFormData;
 import com.tokopedia.checkout.domain.datamodel.cartsingleshipment.ShipmentCostModel;
 import com.tokopedia.checkout.domain.datamodel.voucher.PromoCodeAppliedData;
-import com.tokopedia.checkout.view.view.shipment.viewmodel.ShipmentCartItem;
+import com.tokopedia.checkout.view.view.shipment.viewmodel.ShipmentCartItemModel;
+import com.tokopedia.checkout.view.view.shipment.viewmodel.ShipmentCheckoutButtonModel;
 import com.tokopedia.core.router.transactionmodule.sharedata.CheckPromoCodeCartListResult;
 import com.tokopedia.core.router.transactionmodule.sharedata.CheckPromoCodeCartShipmentRequest;
 import com.tokopedia.core.router.transactionmodule.sharedata.CheckPromoCodeCartShipmentResult;
+import com.tokopedia.transactiondata.entity.request.DataChangeAddressRequest;
+import com.tokopedia.transactiondata.entity.request.DataCheckoutRequest;
 
 import java.util.List;
 
@@ -53,6 +55,12 @@ public interface ShipmentContract {
 
         void renderCheckPromoShipmentDataSuccess(CheckPromoCodeCartShipmentResult checkPromoCodeCartShipmentResult);
 
+        void renderEditAddressSuccess(String latitude, String longitude);
+
+        void renderChangeAddressSuccess(RecipientAddressModel recipientAddressModel);
+
+        void renderCancelAutoApplyCouponSuccess();
+
         Activity getActivity();
     }
 
@@ -71,9 +79,9 @@ public interface ShipmentContract {
 
         void setRecipientAddressModel(RecipientAddressModel recipientAddressModel);
 
-        List<ShipmentCartItem> getShipmentCartItemList();
+        List<ShipmentCartItemModel> getShipmentCartItemModelList();
 
-        void setShipmentCartItemList(List<ShipmentCartItem> recipientCartItemList);
+        void setShipmentCartItemModelList(List<ShipmentCartItemModel> recipientCartItemList);
 
         PromoCodeAppliedData getPromoCodeAppliedData();
 
@@ -87,19 +95,28 @@ public interface ShipmentContract {
 
         void setCheckoutData(CheckoutData checkoutData);
 
-        List<DataCheckoutRequest> getDataCheckoutRequestList();
-
         void setDataCheckoutRequestList(List<DataCheckoutRequest> dataCheckoutRequestList);
-
-        List<CheckPromoCodeCartShipmentRequest.Data> getPromoCodeCartShipmentRequestData();
 
         void setPromoCodeCartShipmentRequestData(
                 List<CheckPromoCodeCartShipmentRequest.Data> promoCodeCartShipmentRequestData
         );
 
+        void setDataChangeAddressRequestList(List<DataChangeAddressRequest> dataChangeAddressRequestList);
+
         ShipmentCostModel getShipmentCostModel();
 
         void setShipmentCostModel(ShipmentCostModel shipmentCostModel);
+
+        ShipmentCheckoutButtonModel getShipmentCheckoutButtonModel();
+
+        void setShipmentCheckoutButtonModel(ShipmentCheckoutButtonModel shipmentCheckoutButtonModel);
+
+        void editAddressPinpoint(String latitude, String longitude, ShipmentCartItemModel shipmentCartItemModel);
+
+        void cancelAutoApplyCoupon();
+
+        void changeShippingAddress(RecipientAddressModel recipientAddressModel);
+
     }
 
 }

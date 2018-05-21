@@ -13,6 +13,7 @@ import com.tokopedia.checkout.domain.mapper.MapperUtil;
 import com.tokopedia.checkout.domain.mapper.ShipmentMapper;
 import com.tokopedia.checkout.domain.mapper.TopPayMapper;
 import com.tokopedia.checkout.domain.mapper.VoucherCouponMapper;
+import com.tokopedia.checkout.view.view.shipment.converter.RatesDataConverter;
 
 import dagger.Module;
 import dagger.Provides;
@@ -55,5 +56,10 @@ public class DataMapperModule {
     @Provides
     ShipmentRatesDataMapper provideShipmentRatesDatamapper() {
         return new ShipmentRatesDataMapper();
+    }
+
+    @Provides
+    RatesDataConverter provideRatesDataConverter() {
+        return new RatesDataConverter();
     }
 }

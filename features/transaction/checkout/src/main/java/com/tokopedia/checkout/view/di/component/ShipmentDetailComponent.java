@@ -2,7 +2,7 @@ package com.tokopedia.checkout.view.di.component;
 
 import com.tokopedia.checkout.view.di.module.ShipmentDetailModule;
 import com.tokopedia.checkout.view.di.scope.ShipmentDetailScope;
-import com.tokopedia.checkout.view.view.shippingoptions.ShipmentDetailFragment;
+import com.tokopedia.checkout.view.view.shippingoptions_old.ShipmentDetailFragment;
 
 import dagger.Component;
 

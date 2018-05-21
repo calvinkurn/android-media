@@ -81,7 +81,7 @@ public class CartRepository implements ICartRepository {
     }
 
     @Override
-    public Observable<ShippingAddressDataResponse> shippingAddress(Map<String, String> param) {
+    public Observable<ShippingAddressDataResponse> setShippingAddress(Map<String, String> param) {
         return cartApi.postSetShippingAddress(param).map(new Func1<Response<CartResponse>, ShippingAddressDataResponse>() {
             @Override
             public ShippingAddressDataResponse call(Response<CartResponse> cartResponseResponse) {
@@ -166,4 +166,8 @@ public class CartRepository implements ICartRepository {
         );
     }
 
+    @Override
+    public Observable<String> cancelAutoApplyCoupon(String os, Map<String, String> params) {
+        return cartApi.cancelAutoApplyCoupon(os, params);
+    }
 }

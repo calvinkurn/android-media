@@ -34,6 +34,8 @@ public class AddShipmentAddressPresenter implements IAddShipmentAddressPresenter
         editableModel.setRecipientPhoneNumber(multipleAddressItemData.getRecipientPhoneNumber());
         editableModel.setDestinationDistrictId(multipleAddressItemData.getDestinationDistrictId());
         editableModel.setDestinationDistrictName(multipleAddressItemData.getDestinationDistrictName());
+        editableModel.setCityId(multipleAddressItemData.getCityId());
+        editableModel.setProvinceId(multipleAddressItemData.getProvinceId());
         editableAddressModel = editableModel;
     }
 
@@ -49,7 +51,7 @@ public class AddShipmentAddressPresenter implements IAddShipmentAddressPresenter
                                                   String notes) {
         MultipleAddressItemData newItemData = new MultipleAddressItemData();
         newItemData.setProductQty(quantity);
-        newItemData.setProductWeight(multipleAddressItemData.getProductWeight());
+        newItemData.setProductWeightFmt(multipleAddressItemData.getProductWeightFmt());
         newItemData.setCartPosition(multipleAddressItemData.getCartPosition());
         newItemData.setAddressPosition(multipleAddressAdapterData.getItemListData().size());
         newItemData.setAddressId(editableAddressModel.getId());
@@ -62,6 +64,8 @@ public class AddShipmentAddressPresenter implements IAddShipmentAddressPresenter
         newItemData.setAddressCountryName(editableAddressModel.getAddressCountryName());
         newItemData.setAddressPostalCode(editableAddressModel.getAddressPostalCode());
         newItemData.setRecipientPhoneNumber(editableAddressModel.getRecipientPhoneNumber());
+        newItemData.setCityId(editableAddressModel.getCityId());
+        newItemData.setProvinceId(editableAddressModel.getProvinceId());
         newItemData.setProductNotes(notes);
         newItemData.setCartId("0");
         return newItemData;
@@ -79,6 +83,8 @@ public class AddShipmentAddressPresenter implements IAddShipmentAddressPresenter
         multipleAddressItemData.setAddressCountryName(editableAddressModel.getAddressCountryName());
         multipleAddressItemData.setAddressPostalCode(editableAddressModel.getAddressPostalCode());
         multipleAddressItemData.setRecipientPhoneNumber(editableAddressModel.getRecipientPhoneNumber());
+        multipleAddressItemData.setCityId(editableAddressModel.getCityId());
+        multipleAddressItemData.setProvinceId(editableAddressModel.getProvinceId());
         multipleAddressItemData.setProductNotes(notes);
         return multipleAddressItemData;
     }

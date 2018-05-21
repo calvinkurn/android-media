@@ -24,7 +24,6 @@ import com.tokopedia.loyalty.R2;
 import com.tokopedia.loyalty.di.component.DaggerLoyaltyViewComponent;
 import com.tokopedia.loyalty.di.component.LoyaltyViewComponent;
 import com.tokopedia.loyalty.di.module.LoyaltyViewModule;
-import com.tokopedia.loyalty.listener.LoyaltyActivityTabSelectedListener;
 import com.tokopedia.loyalty.view.adapter.LoyaltyPagerAdapter;
 import com.tokopedia.loyalty.view.data.LoyaltyPagerItem;
 import com.tokopedia.loyalty.view.fragment.PromoCodeFragment;
@@ -34,6 +33,7 @@ import com.tokopedia.showcase.ShowCaseContentPosition;
 import com.tokopedia.showcase.ShowCaseDialog;
 import com.tokopedia.showcase.ShowCaseObject;
 import com.tokopedia.showcase.ShowCasePreference;
+import com.tokopedia.transactionanalytics.CheckoutAnalyticsCartPage;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -66,9 +66,13 @@ public class LoyaltyActivity extends BasePresenterActivity
     @Inject
     @Named("coupon_not_active")
     List<LoyaltyPagerItem> loyaltyPagerItemListCouponNotActive;
+    @Inject
+    CheckoutAnalyticsCartPage checkoutAnalyticsCartPage;
 
 
     private boolean isCouponActive;
+    private String platformString;
+    private OnTabSelectedForTrackingCheckoutMarketPlace onTabSelectedForTrackingCheckoutMarketPlace;
 
     @Override
     protected void setupURIPass(Uri data) {
@@ -79,6 +83,9 @@ public class LoyaltyActivity extends BasePresenterActivity
     protected void setupBundlePass(Bundle extras) {
         this.isCouponActive = extras.getBoolean(
                 IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.EXTRA_COUPON_ACTIVE
+        );
+        this.platformString = extras.getString(
+                IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.EXTRA_PLATFORM
         );
     }
 
@@ -102,8 +109,16 @@ public class LoyaltyActivity extends BasePresenterActivity
 
     @Override
     protected void setViewListener() {
-        if (isCouponActive) renderViewWithCouponTab();
-        else renderViewSingleTabPromoCode();
+
+        if (isCouponActive) {
+            renderViewWithCouponTab();
+            onTabSelectedForTrackingCheckoutMarketPlace =
+                    new OnTabSelectedForTrackingCheckoutMarketPlace(true);
+        } else {
+            renderViewSingleTabPromoCode();
+            onTabSelectedForTrackingCheckoutMarketPlace =
+                    new OnTabSelectedForTrackingCheckoutMarketPlace(false);
+        }
     }
 
     private void renderViewSingleTabPromoCode() {
@@ -113,6 +128,8 @@ public class LoyaltyActivity extends BasePresenterActivity
         viewPager.setAdapter(loyaltyPagerAdapter);
         viewPager.addOnPageChangeListener(new OnTabPageChangeListener(indicator));
         indicator.setOnTabSelectedListener(new GlobalMainTabSelectedListener(viewPager));
+        if (IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.MARKETPLACE_STRING.equalsIgnoreCase(platformString))
+            indicator.addOnTabSelectedListener(onTabSelectedForTrackingCheckoutMarketPlace);
     }
 
     private void renderViewWithCouponTab() {
@@ -124,7 +141,8 @@ public class LoyaltyActivity extends BasePresenterActivity
         loyaltyPagerAdapter.addAllItem(loyaltyPagerItemListCouponActive);
         viewPager.setAdapter(loyaltyPagerAdapter);
         viewPager.addOnPageChangeListener(new OnTabPageChangeListener(indicator));
-        indicator.setOnTabSelectedListener(new LoyaltyActivityTabSelectedListener(viewPager));
+        if (IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.MARKETPLACE_STRING.equalsIgnoreCase(platformString))
+            indicator.addOnTabSelectedListener(onTabSelectedForTrackingCheckoutMarketPlace);
         setShowCase();
         if (getIntent().hasExtra(IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.EXTRA_SELECTED_TAB)) {
             viewPager.setCurrentItem(getIntent().getIntExtra(
@@ -217,6 +235,12 @@ public class LoyaltyActivity extends BasePresenterActivity
     }
 
     @Override
+    public void onUsePromoCodeClicked() {
+        checkoutAnalyticsCartPage.eventClickCartClickGunakanKodeFormGunakanKodePromoAtauKupon();
+    }
+
+
+    @Override
     public void onCouponSuccess(
             String promoCode,
             String promoMessage,
@@ -250,6 +274,11 @@ public class LoyaltyActivity extends BasePresenterActivity
         intent.putExtras(bundle);
         setResult(IRouterConstant.LoyaltyModule.ResultLoyaltyActivity.COUPON_RESULT_CODE, intent);
         finish();
+    }
+
+    @Override
+    public void onCouponItemClicked() {
+        checkoutAnalyticsCartPage.eventClickCartClickKuponFromGunakanPromoAtauKupon();
     }
 
     public static Intent newInstanceCouponActive(Activity activity, String platform, String categoryId, String cartId) {
@@ -404,5 +433,39 @@ public class LoyaltyActivity extends BasePresenterActivity
     public void onBackPressed() {
         super.onBackPressed();
         UnifyTracking.eventCouponPageClosed();
+    }
+
+    private class OnTabSelectedForTrackingCheckoutMarketPlace implements
+            TabLayout.OnTabSelectedListener {
+        private final boolean doubleTab;
+
+        public OnTabSelectedForTrackingCheckoutMarketPlace(boolean doubleTab) {
+            this.doubleTab = doubleTab;
+        }
+
+        @Override
+        public void onTabSelected(TabLayout.Tab tab) {
+            if (doubleTab) {
+                if (tab.getPosition() == 1) {
+                    checkoutAnalyticsCartPage.eventClickCartClickKuponSayaFromGunakanPromoAtauKupon();
+                } else {
+                    checkoutAnalyticsCartPage.eventClickCartClickKodePromoFromGunakanPromoAtauKupon();
+                }
+            } else {
+                if (tab.getPosition() == 0) {
+                    checkoutAnalyticsCartPage.eventClickCartClickKodePromoFromGunakanPromoAtauKupon();
+                }
+            }
+        }
+
+        @Override
+        public void onTabUnselected(TabLayout.Tab tab) {
+
+        }
+
+        @Override
+        public void onTabReselected(TabLayout.Tab tab) {
+
+        }
     }
 }

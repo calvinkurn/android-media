@@ -33,6 +33,12 @@ public class CartDataListResponse {
     @SerializedName("cart_list")
     @Expose
     private List<CartList> cartList = new ArrayList<>();
+    @SerializedName("default_promo_dialog_tab")
+    @Expose
+    private String defaultPromoDialogTab;
+    @SerializedName("autoapply")
+    @Expose
+    private AutoApply autoApply;
 
     public int getIsCouponActive() {
         return isCouponActive;
@@ -60,5 +66,13 @@ public class CartDataListResponse {
 
     public List<CartList> getCartList() {
         return cartList;
+    }
+
+    public String getDefaultPromoDialogTab() {
+        return defaultPromoDialogTab;
+    }
+
+    public AutoApply getAutoApply() {
+        return autoApply;
     }
 }

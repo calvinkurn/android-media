@@ -29,6 +29,7 @@ import com.tokopedia.loyalty.view.data.CouponData;
 import com.tokopedia.loyalty.view.data.CouponViewModel;
 import com.tokopedia.loyalty.view.presenter.IPromoCouponPresenter;
 import com.tokopedia.loyalty.view.view.IPromoCouponView;
+import com.tokopedia.transactionanalytics.CheckoutAnalyticsCartPage;
 
 import java.util.List;
 
@@ -428,6 +429,8 @@ public class PromoCouponFragment extends BasePresenterFragment
                 String CouponTitle,
                 long discountAmount,
                 long cashbackAmount);
+
+        void onCouponItemClicked();
 
     }
 

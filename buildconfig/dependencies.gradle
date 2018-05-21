@@ -246,6 +246,7 @@ ext {
             profile         : ":features:user:profile",
             logisticdata    : ":features:logistic:logisticdata",
             transactiondata : ":features:transaction:transactiondata",
+            transactionanalytics : ":features:transaction:transactionanalytics",
             tracking        : ":features:logistic:tracking"
     ]
 
