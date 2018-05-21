@@ -74,25 +74,14 @@ public class RatingTalkCourierView extends BaseView<ProductDetailData, ProductDe
 
     @Override
     public void renderData(@NonNull final ProductDetailData data) {
-        ivQualityRate
-                .setImageResource(getRatingDrawable(data.getRating().getProductRatingStarPoint()));
-
-        String ulasan = getContext().getString(R.string.ulasan);
-        String review = data.getStatistic().getProductReviewCount() + " " + ulasan;
-        String diskusi = getContext().getString(R.string.diskusi);
-        String talk = data.getStatistic().getProductTalkCount() + " " + diskusi;
-        String kurir = getContext().getString(R.string.kurir);
-        tvReview.setText(review);
-        tvTalk.setText(talk);
-        talkContainer.setOnClickListener(new ClickTalk(data));
-        reviewContainer.setOnClickListener(new ClickReview(data));
+        ivQualityRate.setImageResource(getRatingDrawable(data.getRating().getProductRatingStarPoint()));
         int courierCount = 0;
         if (data.getShopInfo().getShopShipments() != null) {
             courierCount = data.getShopInfo().getShopShipments().size();
         }
-
-        String courierText = String.valueOf(courierCount) + " " + kurir;
-        tvCourier.setText(courierText);
+        tvReview.setText(String.format("%1$s %2$s", data.getStatistic().getProductReviewCount(), getContext().getString(R.string.ulasan)));
+        tvTalk.setText(String.format("%1$s %2$s",data.getStatistic().getProductTalkCount(), getContext().getString(R.string.diskusi)));
+        tvCourier.setText(String.format("%1$s %2$s", courierCount, getContext().getString(R.string.kurir) ));
         courierContainer.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -102,23 +91,17 @@ public class RatingTalkCourierView extends BaseView<ProductDetailData, ProductDe
                 listener.onCourierClicked(bundle);
             }
         });
-
+        talkContainer.setOnClickListener(new ClickTalk(data));
+        reviewContainer.setOnClickListener(new ClickReview(data));
         setVisibility(VISIBLE);
     }
 
     public void renderTempdata(ProductPass productPass) {
         ivQualityRate
                 .setImageResource(getRatingDrawable(productPass.getStarRating()));
-
-        String ulasan = getContext().getString(R.string.ulasan);
-        String review = productPass.getCountReview() + " " + ulasan;
-        String diskusi = getContext().getString(R.string.diskusi);
-        String talk =  "0 " + diskusi;
-        String kurir = getContext().getString(R.string.kurir);
-        tvReview.setText(review);
-        tvTalk.setText(talk);
-        String courierText = productPass.getCountCourrier() + " " + kurir;
-        tvCourier.setText(courierText);
+        tvReview.setText(String.format("%1$s %2$s", productPass.getCountReview(), getContext().getString(R.string.ulasan)));
+        tvTalk.setText(String.format("%1$s %2$s", productPass.getCountDiscussion(), getContext().getString(R.string.diskusi)));
+        tvCourier.setText(String.format("%1$s %2$s", productPass.getCountCourrier(), getContext().getString(R.string.kurir) ));
         setVisibility(VISIBLE);
     }
 
