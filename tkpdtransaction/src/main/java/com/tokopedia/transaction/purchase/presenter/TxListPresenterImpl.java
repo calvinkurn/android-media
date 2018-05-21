@@ -21,12 +21,11 @@ import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.core.R;
-import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.analytics.TrackingUtils;
+import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.onboarding.ConstantOnBoarding;
 import com.tokopedia.core.router.InboxRouter;
 import com.tokopedia.core.router.transactionmodule.TransactionRouter;
-import com.tokopedia.core.tracking.activity.TrackingActivity;
 import com.tokopedia.core.util.AppUtils;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.PagingHandler;
@@ -371,14 +370,17 @@ public class TxListPresenterImpl implements TxListPresenter {
         String routingAppLink;
         routingAppLink = ApplinkConst.ORDER_TRACKING;
         Uri.Builder uriBuilder = new Uri.Builder();
-        uriBuilder.appendQueryParameter("order_id", data.getOrderDetail().getDetailOrderId())
-                .appendQueryParameter("url_live_tracking", processLiveTrackingUrl(data));
+        uriBuilder.appendQueryParameter(ApplinkConst.Query.ORDER_TRACKING_ORDER_ID,
+                data.getOrderDetail().getDetailOrderId())
+                .appendQueryParameter(
+                        ApplinkConst.Query.ORDER_TRACKING_URL_LIVE_TRACKING,
+                        processLiveTrackingUrl(data));
         routingAppLink += uriBuilder.toString();
         RouteManager.route(context, routingAppLink);
     }
 
     private String processLiveTrackingUrl(OrderData orderData) {
-        if(orderData.getDriverInfo() != null) {
+        if (orderData.getDriverInfo() != null) {
             return orderData.getDriverInfo().getTrackingUrl();
         } else return "";
     }

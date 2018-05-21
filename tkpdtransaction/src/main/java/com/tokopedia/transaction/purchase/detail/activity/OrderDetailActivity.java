@@ -464,8 +464,8 @@ public class OrderDetailActivity extends TActivity
         String routingAppLink;
         routingAppLink = ApplinkConst.ORDER_TRACKING;
         Uri.Builder uriBuilder = new Uri.Builder();
-        uriBuilder.appendQueryParameter("order_id", orderId)
-                .appendQueryParameter("url_live_tracking", trackingUrl);
+        uriBuilder.appendQueryParameter(ApplinkConst.Query.ORDER_TRACKING_ORDER_ID, orderId)
+                .appendQueryParameter(ApplinkConst.Query.ORDER_TRACKING_URL_LIVE_TRACKING, trackingUrl);
         routingAppLink += uriBuilder.toString();
         RouteManager.route(this, routingAppLink);
     }

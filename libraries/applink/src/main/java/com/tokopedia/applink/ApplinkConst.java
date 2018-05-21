@@ -2,7 +2,7 @@ package com.tokopedia.applink;
 
 /**
  * @author ricoharisin .
- *
+ * <p>
  * Central interface for AppLink in apps, do not use any new applink module
  */
 
@@ -93,9 +93,9 @@ public interface ApplinkConst {
     String SELLER_INFO_DETAIL = "tokopedia://sellerinfo/detail";
 
     String TC_LANDING = "tokopedia://tc-landing";
-  
+
     String CONTENT_EXPLORE = "tokopedia://content/explore/{tab_name}/{category_id}";
-    String CONTENT_DETAIL ="tokopedia://content/{post_id}";
+    String CONTENT_DETAIL = "tokopedia://content/{post_id}";
 
     String ORDER_TRACKING = "tokopedia://order/tracking";
 
@@ -110,5 +110,10 @@ public interface ApplinkConst {
         String TOPADS_PRODUCT_DETAIL = "sellerapp://topads/product/{ad_id}";
         String TOPADS_PRODUCT_DETAIL_CONSTS = "sellerapp://topads/product";
         String BROWSER = "sellerapp://browser";
+    }
+
+    interface Query {
+        String ORDER_TRACKING_ORDER_ID = "order_id";
+        String ORDER_TRACKING_URL_LIVE_TRACKING = "url_live_tracking";
     }
 }

@@ -13,17 +13,17 @@ import com.tokopedia.applink.ApplinkConst;
  * Created by kris on 5/9/18. Tokopedia
  */
 
-public class TrackingPageActivity extends BaseSimpleActivity{
+public class TrackingPageActivity extends BaseSimpleActivity {
 
     public static final String ORDER_ID_KEY = "order_id";
     public static final String URL_LIVE_TRACKING = "url_live_tracking";
 
     @DeepLink(ApplinkConst.ORDER_TRACKING)
     public static Intent getCallingIntent(Context context, Bundle extras) {
-         return createIntent(context,
-                 extras.getString(ORDER_ID_KEY),
-                 extras.getString(URL_LIVE_TRACKING)
-         );
+        return createIntent(context,
+                extras.getString(ApplinkConst.Query.ORDER_TRACKING_ORDER_ID),
+                extras.getString(ApplinkConst.Query.ORDER_TRACKING_URL_LIVE_TRACKING)
+        );
     }
 
     public static Intent createIntent(Context context, String orderId, String liveTrackingUrl) {
