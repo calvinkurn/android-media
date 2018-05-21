@@ -7,6 +7,7 @@ import android.content.Intent;
 import com.tokopedia.topads.R;
 import com.tokopedia.seller.common.datepicker.view.constant.DatePickerConstant;
 import com.tokopedia.topads.dashboard.constant.TopAdsConstant;
+import com.tokopedia.topads.dashboard.data.source.local.TopAdsCacheDataSourceImpl;
 import com.tokopedia.topads.dashboard.domain.interactor.TopAdsDatePickerInteractor;
 import com.tokopedia.topads.dashboard.domain.interactor.TopAdsDatePickerInteractorImpl;
 import com.tokopedia.seller.common.datepicker.view.activity.DatePickerActivity;
@@ -33,7 +34,7 @@ public class BaseDatePickerPresenterImpl implements BaseDatePickerPresenter {
 
     public BaseDatePickerPresenterImpl(Context context) {
         this.context = context;
-        this.topAdsDatePickerInteractor = new TopAdsDatePickerInteractorImpl(context);
+        this.topAdsDatePickerInteractor = new TopAdsDatePickerInteractorImpl(new TopAdsCacheDataSourceImpl(context));
     }
 
     @Override

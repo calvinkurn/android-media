@@ -61,7 +61,7 @@ public class TopAdsKeywordNewChooseGroupActivity extends BaseStepperActivity
         fragment.startActivityForResult(intent, requestCode);
     }
 
-    private static Intent createIntent(Context context, boolean isPositive, String groupId) {
+    public static Intent createIntent(Context context, boolean isPositive, String groupId) {
         Intent intent = new Intent(context, TopAdsKeywordNewChooseGroupActivity.class);
         Bundle bundle = new Bundle();
         bundle.putBoolean(EXTRA_IS_POSITIVE, isPositive);
