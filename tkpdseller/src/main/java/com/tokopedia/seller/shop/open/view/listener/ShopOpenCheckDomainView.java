@@ -1,5 +1,7 @@
 package com.tokopedia.seller.shop.open.view.listener;
 
+import android.app.Activity;
+
 import com.tokopedia.core.base.presentation.CustomerView;
 import com.tokopedia.seller.shop.open.data.model.response.isreservedomain.ResponseIsReserveDomain;
 
@@ -13,4 +15,5 @@ public interface ShopOpenCheckDomainView extends CustomerView {
 
     void onErrorCheckReserveDomain(Throwable t);
 
+    Activity getActivity();
 }
