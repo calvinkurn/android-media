@@ -14,7 +14,7 @@ public class Product implements Parcelable {
     private boolean isError;
     private String errorMessage;
 
-    private int cartId;
+    private long cartId;
     private int productId;
     private String productName;
     private String productPriceFmt;
@@ -293,11 +293,11 @@ public class Product implements Parcelable {
         return productCatalogId;
     }
 
-    public int getCartId() {
+    public long getCartId() {
         return cartId;
     }
 
-    public void setCartId(int cartId) {
+    public void setCartId(long cartId) {
         this.cartId = cartId;
     }
 
@@ -314,7 +314,7 @@ public class Product implements Parcelable {
         dest.writeByte(this.isError ? (byte) 1 : (byte) 0);
         dest.writeString(this.errorMessage);
         dest.writeInt(this.productId);
-        dest.writeInt(this.cartId);
+        dest.writeLong(this.cartId);
         dest.writeString(this.productName);
         dest.writeString(this.productPriceFmt);
         dest.writeInt(this.productPrice);
@@ -349,7 +349,7 @@ public class Product implements Parcelable {
         this.isError = in.readByte() != 0;
         this.errorMessage = in.readString();
         this.productId = in.readInt();
-        this.cartId = in.readInt();
+        this.cartId = in.readLong();
         this.productName = in.readString();
         this.productPriceFmt = in.readString();
         this.productPrice = in.readInt();

@@ -20,7 +20,7 @@ public abstract class ShipmentCartItemModel implements ShipmentData {
     private ShipmentCartData shipmentCartData;
     private ShipmentDetailData selectedShipmentDetailData;
     private String shopName;
-    private int cartId;
+    private long cartId;
 
     private int weightUnit;
     private boolean productFinsurance;
@@ -210,11 +210,11 @@ public abstract class ShipmentCartItemModel implements ShipmentData {
         this.stateDropshipperHasError = stateDropshipperHasError;
     }
 
-    public int getCartId() {
+    public long getCartId() {
         return cartId;
     }
 
-    public void setCartId(int cartId) {
+    public void setCartId(long cartId) {
         this.cartId = cartId;
     }
 }
