@@ -10,9 +10,9 @@ import com.tokopedia.core.network.retrofit.response.TkpdResponse;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.inbox.contactus.interactor.ContactUsRetrofitInteractor;
 import com.tokopedia.inbox.contactus.interactor.ContactUsRetrofitInteractorImpl;
-import com.tokopedia.inbox.contactus.model.ContactUsPass;
-import com.tokopedia.inbox.contactus.model.ImageUpload;
 import com.tokopedia.tkpd.tkpdcontactus.common.data.BuyerPurchaseList;
+import com.tokopedia.tkpd.tkpdcontactus.orderquery.data.ContactUsPass;
+import com.tokopedia.tkpd.tkpdcontactus.orderquery.data.ImageUpload;
 import com.tokopedia.tkpd.tkpdcontactus.orderquery.data.QueryTicket;
 import com.tokopedia.tkpd.tkpdcontactus.orderquery.data.SubmitTicketInvoiceData;
 import com.tokopedia.tkpd.tkpdcontactus.orderquery.domain.SubmitTicketUseCase;
@@ -61,17 +61,18 @@ public class SubmitTicketPresenter extends BaseDaggerPresenter<SubmitTicketContr
         this.networkInteractor = new ContactUsRetrofitInteractorImpl();
         if (isTicketValid() && isUploadImageValid()) {
             RequestParams requestParams = RequestParams.create();
-            requestParams.putObject("submitTicket",getSendTicketParam());
+            requestParams.putObject("submitTicket", getSendTicketParam());
             getView().showProgress("Please Wait...");
             submitTicketUseCase.execute(requestParams, new Subscriber<Response<TkpdResponse>>() {
                 @Override
                 public void onCompleted() {
-
+                    getView().hideProgress();
                 }
 
                 @Override
                 public void onError(Throwable e) {
-
+                    getView().showMessage(e.getMessage());
+                    getView().hideProgress();
                 }
 
                 @Override
@@ -80,47 +81,6 @@ public class SubmitTicketPresenter extends BaseDaggerPresenter<SubmitTicketContr
 
                 }
             });
-        networkInteractor.sendTicket( context,getSendTicketParam(), new ContactUsRetrofitInteractor.SendTicketListener() {
-            @Override
-            public void onSuccess() {
-                getView().showSuccessDialog();
-                getView().hideProgress();
-            }
-
-            @Override
-            public void onNoNetworkConnection() {
-
-
-            }
-
-            @Override
-            public void onTimeout(String error) {
-
-            }
-
-            @Override
-            public void onError(String s) {
-                showMessage(s);
-            }
-
-            @Override
-            public void onNullData() {
-
-            }
-        });
-    } else {
-            ArrayList<ImageUpload> uploadImageList = getView().getImageList();
-            int numOfImages = uploadImageList.size();
-            if(numOfImages > 0) {
-                for (int item = 0; item < numOfImages; item++) {
-                    ImageUpload image = uploadImageList.get(item);
-                    if(!fileSizeValid(image.getFileLoc())){
-                        showErrorMessage(MESSAGE_WRONG_FILE_SIZE);
-                    } else if(!getBitmapDimens(image.getFileLoc())){
-                        showErrorMessage(MESSAGE_WRONG_DIMENSION);
-                    }
-                }
-            }
         }
 }
 

@@ -19,4 +19,8 @@ public interface ContactUsURL {
     String ARTICLE_POPULAR_URL = "tokopedia://webview?url=https://www.tokopedia.com/bantuan/";
     String NAVIGATE_NEXT_URL = "tokopedia://webview?url=https://www.tokopedia.com/contact-us?utm_source=android&flag_app=1#step1";
     String TOP_BOT_BASE_URL = "tokopedia://topchat/";
+    String PATH_GET_SOLUTION = "contact-us/ajax/solution/{id}";
+    String PATH_CREATE_STEP_2 = "contact-us/ajax/create/step/2";
+    String PATH_CREATE_STEP_1 = "contact-us/ajax/create/step/1";
+    String PATH_COMMENT_RATING = "contact-us/ws/contact-us/rating";
 }

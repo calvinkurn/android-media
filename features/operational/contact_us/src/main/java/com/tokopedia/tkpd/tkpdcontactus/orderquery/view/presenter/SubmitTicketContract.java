@@ -2,11 +2,10 @@ package com.tokopedia.tkpd.tkpdcontactus.orderquery.view.presenter;
 
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
-import com.tokopedia.inbox.contactus.model.ImageUpload;
+import com.tokopedia.tkpd.tkpdcontactus.orderquery.data.ImageUpload;
 import com.tokopedia.tkpd.tkpdcontactus.orderquery.data.SubmitTicketInvoiceData;
 
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by sandeepgoyal on 17/04/18.

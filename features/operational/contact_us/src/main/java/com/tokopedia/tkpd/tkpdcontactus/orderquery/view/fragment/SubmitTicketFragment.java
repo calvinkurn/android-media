@@ -39,7 +39,7 @@ import com.tokopedia.core.GalleryBrowser;
 import com.tokopedia.core.ImageGallery;
 import com.tokopedia.core.util.ImageUploadHandler;
 import com.tokopedia.core.util.RequestPermissionUtil;
-import com.tokopedia.inbox.contactus.model.ImageUpload;
+import com.tokopedia.tkpd.tkpdcontactus.orderquery.data.ImageUpload;
 import com.tokopedia.tkpd.tkpdcontactus.orderquery.data.SubmitTicketInvoiceData;
 import com.tokopedia.tkpd.tkpdcontactus.orderquery.di.DaggerOrderQueryComponent;
 import com.tokopedia.tkpd.tkpdcontactus.orderquery.di.OrderQueryComponent;

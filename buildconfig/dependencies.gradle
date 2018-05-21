@@ -1,4 +1,4 @@
-ext {
+ ext {
     supportLibraryVersion = '26.0.2'
     playServiceVersion = '11.0.4'
     butterKnifeVersion = '8.4.0'

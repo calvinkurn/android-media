@@ -38,18 +38,18 @@ public interface ContactUsAPI {
     Observable<Response<DataResponse<TopBotStatus>>> getTopBotStatus();
 
 
-    @GET(TkpdBaseURL.ContactUs.PATH_GET_SOLUTION)
+    @GET(ContactUsURL.PATH_GET_SOLUTION)
     Observable<Response<TkpdResponse>> getSolution(@Path("id") String id);
 
     @FormUrlEncoded
-    @POST(TkpdBaseURL.ContactUs.PATH_CREATE_STEP_2)
+    @POST(ContactUsURL.PATH_CREATE_STEP_2)
     Observable<Response<TkpdResponse>> createTicket(@FieldMap Map<String, String> params);
 
     @FormUrlEncoded
-    @POST(TkpdBaseURL.ContactUs.PATH_CREATE_STEP_1)
+    @POST(ContactUsURL.PATH_CREATE_STEP_1)
     Observable<Response<TkpdResponse>> createTicketValidation(@FieldMap Map<String, String> params);
 
     @FormUrlEncoded
-    @POST(TkpdBaseURL.ContactUs.PATH_COMMENT_RATING)
+    @POST(ContactUsURL.PATH_COMMENT_RATING)
     Observable<Response<TkpdResponse>> commentRating(@FieldMap Map<String, String> params);
 }
