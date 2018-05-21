@@ -9,9 +9,8 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.pm.PackageManager;
-import android.content.pm.ResolveInfo;
-import android.net.Uri;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomSheetDialog;
@@ -25,17 +24,19 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 
+import com.bumptech.glide.request.animation.GlideAnimation;
+import com.bumptech.glide.request.target.SimpleTarget;
 import com.tkpd.library.utils.CommonUtils;
+import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.applink.ApplinkRouter;
 import com.tokopedia.core.ImageGallery;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
-import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.customadapter.NoResultDataBinder;
 import com.tokopedia.core.customadapter.RetryDataBinder;
-import com.tokopedia.core.gcm.Constants;
+import com.tokopedia.core.myproduct.utils.FileUtils;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.product.model.share.ShareData;
 import com.tokopedia.core.router.productdetail.PdpRouter;
@@ -43,6 +44,7 @@ import com.tokopedia.core.share.ShareActivity;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.design.button.BottomActionView;
+import com.tokopedia.design.utils.CurrencyFormatUtil;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.SellerModuleRouter;
 import com.tokopedia.seller.base.view.adapter.BaseEmptyDataBinder;
@@ -73,6 +75,7 @@ import com.tokopedia.seller.product.manage.constant.SortProductOption;
 import com.tokopedia.seller.product.manage.constant.StatusProductOption;
 import com.tokopedia.seller.product.manage.di.DaggerProductManageComponent;
 import com.tokopedia.seller.product.manage.di.ProductManageModule;
+import com.tokopedia.seller.product.manage.utils.AddSticker;
 import com.tokopedia.seller.product.manage.view.activity.ProductManageFilterActivity;
 import com.tokopedia.seller.product.manage.view.activity.ProductManageSortActivity;
 import com.tokopedia.seller.product.manage.view.adapter.ProductManageListAdapter;
@@ -82,8 +85,8 @@ import com.tokopedia.seller.product.manage.view.model.ProductManageSortModel;
 import com.tokopedia.seller.product.manage.view.model.ProductManageViewModel;
 import com.tokopedia.seller.product.manage.view.presenter.ProductManagePresenter;
 import com.tokopedia.topads.sourcetagging.constant.TopAdsSourceOption;
-import com.tokopedia.topads.sourcetagging.util.TopAdsAppLinkUtil;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -660,7 +663,7 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
                         showDialogChangeProductPrice(productManageViewModel.getProductId(), productManageViewModel.getProductPricePlain(), productManageViewModel.getProductCurrencyId());
                     }
                 } else if (itemId == R.id.share_product_menu) {
-                    goToShareProduct(productManageViewModel);
+                    downloadBitmap(productManageViewModel);
                 } else if (itemId == R.id.set_cashback_product_menu) {
                     onSetCashbackClicked(productManageViewModel);
                 } else if (itemId == R.id.set_promo_ads_product_menu) {
@@ -768,19 +771,41 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
         };
     }
 
-    private void goToShareProduct(ProductManageViewModel productManageViewModel) {
-        ShareData shareData = ShareData.Builder.aShareData()
-                .setName(productManageViewModel.getProductName())
-                .setTextContent(productManageViewModel.getProductName())
-                .setDescription(productManageViewModel.getProductName())
-                .setImgUri(productManageViewModel.getImageUrl())
-                .setPrice(productManageViewModel.getProductPrice())
-                .setUri(productManageViewModel.getProductUrl())
-                .setType(ShareData.PRODUCT_TYPE)
-                .setId(productManageViewModel.getProductId())
-                .build();
+    private void goToShareProduct(ShareData shareData) {
         Intent intent = ShareActivity.createIntent(getActivity(), shareData);
         startActivity(intent);
+    }
+
+    public void downloadBitmap(final ProductManageViewModel productManageViewModel){
+        ImageHandler.loadImageWithTarget(getActivity(), productManageViewModel.getImageFullUrl(), new SimpleTarget<Bitmap>(2048,2048) {
+            @Override
+            public void onResourceReady(Bitmap bitmap, GlideAnimation<? super Bitmap> glideAnimation) {
+                AddSticker addSticker = new AddSticker.Builder()
+                        .setName(productManageViewModel.getProductName())
+                        .setPrice(productManageViewModel.getProductPrice())
+                        .setLogo(BitmapFactory.decodeResource(getResources(), R.drawable.ic_new_logo))
+                        .build();
+
+                Bitmap newImage = addSticker.addStickerToBitmap(bitmap, getActivity());
+                File file = FileUtils.writeImageToTkpdPath(newImage);
+
+                ShareData shareData = ShareData.Builder.aShareData()
+                        .setName(productManageViewModel.getProductName())
+                        .setTextContent(productManageViewModel.getProductName())
+                        .setDescription(productManageViewModel.getProductName())
+                        .setImgUri(productManageViewModel.getImageFullUrl())
+                        .setPrice(CurrencyFormatUtil.convertPriceValue(Double.valueOf(productManageViewModel.getProductPrice()), true))
+                        .setUri(productManageViewModel.getProductUrl())
+                        .setType(ShareData.PRODUCT_TYPE)
+                        .setId(productManageViewModel.getProductId())
+                        .setPathSticker(file.getAbsolutePath())
+                        .build();
+
+                newImage.recycle();
+
+                goToShareProduct(shareData);
+            }
+        });
     }
 
     private void showDialogChangeProductPrice(final String productId, String productPrice, @CurrencyTypeDef int productCurrencyId) {
