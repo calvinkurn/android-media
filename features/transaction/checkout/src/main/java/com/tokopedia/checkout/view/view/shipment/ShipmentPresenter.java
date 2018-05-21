@@ -1,6 +1,7 @@
 package com.tokopedia.checkout.view.view.shipment;
 
 import android.support.annotation.NonNull;
+import android.text.TextUtils;
 
 import com.google.gson.Gson;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
@@ -477,21 +478,29 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                             @Override
                             public void onNext(String stringResponse) {
                                 JSONObject response = null;
-                                boolean status;
+                                String messageError = null;
+                                boolean statusSuccess;
                                 try {
                                     response = new JSONObject(stringResponse);
                                     int statusCode = response.getJSONObject(EditAddressUseCase.RESPONSE_DATA)
                                             .getInt(EditAddressUseCase.RESPONSE_IS_SUCCESS);
-                                    status = statusCode == 1;
+                                    statusSuccess = statusCode == 1;
+                                    if (!statusSuccess) {
+                                        messageError = response.getJSONArray("message_error").getString(0);
+                                    }
                                 } catch (JSONException e) {
                                     e.printStackTrace();
-                                    status = false;
+                                    statusSuccess = false;
                                 }
 
-                                if (response != null && status) {
+                                if (response != null && statusSuccess) {
                                     getView().renderEditAddressSuccess(latitude, longitude);
                                 } else {
-                                    getView().showToastError(getView().getActivity().getString(R.string.default_request_error_unknown));
+                                    if (!TextUtils.isEmpty(messageError)) {
+                                        getView().showToastError(messageError);
+                                    } else {
+                                        getView().showToastError(getView().getActivity().getString(R.string.default_request_error_unknown));
+                                    }
                                 }
                             }
                         })
@@ -516,7 +525,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         String receiverName = null;
         String receiverPhone = null;
 
-        if (shipmentCartItemModel != null) {
+        if (recipientAddressModel == null && shipmentCartItemModel != null) {
             addressId = shipmentCartItemModel.getRecipientAddressModel().getId();
             addressName = shipmentCartItemModel.getRecipientAddressModel().getAddressName();
             addressStreet = shipmentCartItemModel.getRecipientAddressModel().getAddressStreet();
