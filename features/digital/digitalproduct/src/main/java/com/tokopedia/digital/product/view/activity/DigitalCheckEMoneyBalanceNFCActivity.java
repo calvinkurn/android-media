@@ -10,7 +10,6 @@ import android.nfc.NfcAdapter;
 import android.nfc.Tag;
 import android.nfc.tech.IsoDep;
 import android.os.Bundle;
-import android.os.Handler;
 import android.provider.Settings;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
@@ -20,14 +19,21 @@ import android.widget.Toast;
 
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
-import com.tokopedia.applink.ApplinkConst;
-import com.tokopedia.applink.RouteManager;
 import com.tokopedia.core.router.digitalmodule.passdata.DigitalCategoryDetailPassData;
 import com.tokopedia.digital.R;
+import com.tokopedia.digital.product.data.mapper.InquiryBalanceMapper;
+import com.tokopedia.digital.product.data.repository.EMoneyRepository;
+import com.tokopedia.digital.product.data.source.InquiryBalanceDataSource;
+import com.tokopedia.digital.product.data.source.SendCommandDataSource;
+import com.tokopedia.digital.product.domain.interactor.InquiryBalanceUseCase;
+import com.tokopedia.digital.product.domain.interactor.SendCommandUseCase;
 import com.tokopedia.digital.product.view.compoundview.EMoneyUpdateBalanceResultView;
 import com.tokopedia.digital.product.view.compoundview.NFCDisabledView;
 import com.tokopedia.digital.product.view.compoundview.TapEMoneyCardView;
+import com.tokopedia.digital.product.view.listener.IEMoneyView;
 import com.tokopedia.digital.product.view.model.CardInfo;
+import com.tokopedia.digital.product.view.model.InquiryBalanceModel;
+import com.tokopedia.digital.product.view.presenter.EMoneyPresenter;
 import com.tokopedia.digital.utils.NFCUtils;
 
 import java.io.IOException;
@@ -42,9 +48,14 @@ import permissions.dispatcher.RuntimePermissions;
  * Created by Rizky on 15/05/18.
  */
 @RuntimePermissions
-public class DigitalCheckEMoneyBalanceNFCActivity extends BaseSimpleActivity {
+public class DigitalCheckEMoneyBalanceNFCActivity extends BaseSimpleActivity
+        implements IEMoneyView {
 
     private static final String TAG = DigitalCheckEMoneyBalanceNFCActivity.class.getSimpleName();
+
+    private EMoneyPresenter presenter;
+
+    private CardInfo fetchedCardInfo;
 
     private TapEMoneyCardView tapEMoneyCardView;
     private NFCDisabledView nfcDisabledView;
@@ -77,6 +88,15 @@ public class DigitalCheckEMoneyBalanceNFCActivity extends BaseSimpleActivity {
         intentFiltersArray = new IntentFilter [] {};
 
         techListsArray = new String[][] { new String[] { IsoDep.class.getName() } };
+
+        InquiryBalanceMapper mapper = new InquiryBalanceMapper();
+        InquiryBalanceDataSource inquiryBalanceDataSource = new InquiryBalanceDataSource(this, mapper);
+        SendCommandDataSource sendCommandDataSource = new SendCommandDataSource(this, mapper);
+        EMoneyRepository eMoneyRepository = new EMoneyRepository(inquiryBalanceDataSource, sendCommandDataSource);
+        InquiryBalanceUseCase inquiryBalanceUseCase = new InquiryBalanceUseCase(eMoneyRepository);
+        SendCommandUseCase sendCommandUseCase = new SendCommandUseCase(eMoneyRepository);
+
+        presenter = new EMoneyPresenter(this, inquiryBalanceUseCase, sendCommandUseCase);
     }
 
     @Override
@@ -91,11 +111,9 @@ public class DigitalCheckEMoneyBalanceNFCActivity extends BaseSimpleActivity {
             @Override
             public void onClick() {
                 // navigate to category emoney page
-//                RouteManager.route(DigitalCheckEMoneyBalanceNFCActivity.this,
-//                        ApplinkConst.DIGITAL_PRODUCT+"?category_id=34");
-
                 DigitalCategoryDetailPassData passData = new DigitalCategoryDetailPassData.Builder()
                         .categoryId("34")
+                        .operatorId("419")
                         .clientNumber(eMoneyUpdateBalanceResultView.getCardNumber())
                         .build();
 
@@ -104,27 +122,6 @@ public class DigitalCheckEMoneyBalanceNFCActivity extends BaseSimpleActivity {
 
                 startActivity(intent);
                 finish();
-
-//                if (isoDep != null) {
-//                    if (isoDep.isConnected()) {
-//                        String command = "0";
-//                        try {
-//                            final byte [] responseInByte = isoDep.transceive(NFCUtils.hexStringToByteArray(command));
-//
-//                            runOnUiThread(new Runnable() {
-//                                @Override
-//                                public void run() {
-//                                    if (responseInByte != null) {
-//                                        String response = NFCUtils.toHex(responseInByte);
-//                                        Log.d(TAG, response);
-//                                    }
-//                                }
-//                            });
-//                        } catch (IOException e) {
-//                            e.printStackTrace();
-//                        }
-//                    }
-//                }
             }
         });
 
@@ -194,31 +191,24 @@ public class DigitalCheckEMoneyBalanceNFCActivity extends BaseSimpleActivity {
                     String responseCardAttribute = NFCUtils.toHex(commandCardAttribute);
                     String responseCardUID = NFCUtils.toHex(cardUID);
                     String responseCardInfo = NFCUtils.toHex(commandCardInfo);
-                    String responseLastBalance = NFCUtils.toHex(commandLastBalance);
+                    String responseCardLastBalance = NFCUtils.toHex(commandLastBalance);
 
-                    Log.d(TAG, "\nSelect eMoney: " + responseSelectEMoney +
-                            "\nCard Attribute: " + responseCardAttribute +
-                            "\nCard UID: " + responseCardUID +
-                            "\nCard Info: " + responseCardInfo +
-                            "\nLast Balance: " + responseLastBalance);
+//                    Log.d(TAG, "\nSelect eMoney: " + responseSelectEMoney +
+//                            "\nCard Attribute: " + responseCardAttribute +
+//                            "\nCard UID: " + responseCardUID +
+//                            "\nCard Info: " + responseCardInfo +
+//                            "\nLast Balance: " + responseCardLastBalance);
 
-                    final CardInfo cardInfo = new CardInfo(responseSelectEMoney, responseCardUID, responseCardAttribute,
-                            responseCardInfo, responseLastBalance);
+                    fetchedCardInfo = new CardInfo(NFCUtils.convertCardUID(responseCardInfo),
+                            NFCUtils.convertCardLastBalance(responseCardLastBalance), null);
 
-                    if (cardInfo.isValid()) {
-                        final Handler handler = new Handler();
-                        handler.postDelayed(new Runnable() {
-                            @Override
-                            public void run() {
-                                // Do something after 5s = 5000ms
-                                tapEMoneyCardView.setVisibility(View.GONE);
-                                eMoneyUpdateBalanceResultView.showCardInfo(cardInfo);
-                            }
-                        }, 5000);
+                    if (responseSelectEMoney.equals("9000")) {
+                        presenter.inquiryBalance(1, responseCardAttribute, responseCardInfo,
+                                responseCardUID, responseCardLastBalance);
                     } else {
                         // show error reading card
                         if (eMoneyUpdateBalanceResultView.getVisibility() == View.VISIBLE) {
-                            eMoneyUpdateBalanceResultView.showCardIsNotSupported();
+                            eMoneyUpdateBalanceResultView.showError(getResources().getString(R.string.card_is_not_supported));
                         } else {
                             tapEMoneyCardView.stopLoading();
                             NetworkErrorHelper.showRedCloseSnackbar(DigitalCheckEMoneyBalanceNFCActivity.this,
@@ -229,6 +219,13 @@ public class DigitalCheckEMoneyBalanceNFCActivity extends BaseSimpleActivity {
             });
         } catch (IOException e) {
             e.printStackTrace();
+            if (eMoneyUpdateBalanceResultView.getVisibility() == View.VISIBLE) {
+                eMoneyUpdateBalanceResultView.showError("Gagal membaca kartu");
+            } else {
+                tapEMoneyCardView.stopLoading();
+                NetworkErrorHelper.showRedCloseSnackbar(DigitalCheckEMoneyBalanceNFCActivity.this,
+                        "Gagal membaca kartu");
+            }
         }
     }
 
@@ -294,6 +291,49 @@ public class DigitalCheckEMoneyBalanceNFCActivity extends BaseSimpleActivity {
     @Override
     protected boolean isShowCloseButton() {
         return true;
+    }
+
+    @Override
+    public void sendCommand(final InquiryBalanceModel inquiryBalanceModel) {
+        if (isoDep != null && isoDep.isConnected()) {
+            try {
+                final byte [] responseInByte = isoDep.transceive(NFCUtils.hexStringToByteArray(inquiryBalanceModel.getCommand()));
+
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (responseInByte != null) {
+                            String response = NFCUtils.toHex(responseInByte);
+                            Log.d(TAG, response);
+                            presenter.sendCommand();
+                        }
+                    }
+                });
+            } catch (IOException e) {
+                e.printStackTrace();
+                showCardLastBalance(inquiryBalanceModel);
+            }
+        } else {
+            showCardLastBalanceWithError(inquiryBalanceModel, inquiryBalanceModel.getErrorMessage());
+        }
+    }
+
+    @Override
+    public void showCardLastBalance(InquiryBalanceModel inquiryBalanceModel) {
+        tapEMoneyCardView.setVisibility(View.GONE);
+        eMoneyUpdateBalanceResultView.showCardInfoFromApi(inquiryBalanceModel);
+    }
+
+    @Override
+    public void showCardLastBalanceWithError(InquiryBalanceModel inquiryBalanceModel, String errorMessage) {
+        tapEMoneyCardView.setVisibility(View.GONE);
+        eMoneyUpdateBalanceResultView.showCardInfoWithError(inquiryBalanceModel, errorMessage);
+    }
+
+    @Override
+    public void renderLocalCardInfo() {
+        tapEMoneyCardView.setVisibility(View.GONE);
+        eMoneyUpdateBalanceResultView.showLocalCardInfo(fetchedCardInfo);
     }
 
 }

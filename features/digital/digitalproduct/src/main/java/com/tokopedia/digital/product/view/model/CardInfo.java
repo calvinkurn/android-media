@@ -5,44 +5,29 @@ package com.tokopedia.digital.product.view.model;
  */
 public class CardInfo {
 
-    private String selectEMoney;
-    private String cardUID;
-    private String cardAttribute;
-    private String cardInfo;
-    private String lastBalance;
+    private String cardNumber;
+    private int lastBalance;
+    private String issuerImage;
 
-    public CardInfo(String selectEMoney, String cardUID, String cardAttribute, String cardInfo, String lastBalance) {
-        this.selectEMoney = selectEMoney;
-        this.cardUID = cardUID;
-        this.cardAttribute = cardAttribute;
-        this.cardInfo = cardInfo;
+    public CardInfo(
+            String cardNumber,
+            int lastBalance,
+            String issuerImage) {
+        this.cardNumber = cardNumber;
         this.lastBalance = lastBalance;
+        this.issuerImage = issuerImage;
     }
 
-    public String getSelectEMoney() {
-        return selectEMoney;
+    public String getCardNumber() {
+        return cardNumber;
     }
 
-    public String getCardUID() {
-        return cardUID;
-    }
-
-    public String getCardAttribute() {
-        return cardAttribute;
-    }
-
-    public String getCardInfo() {
-        return cardInfo;
-    }
-
-    public String getLastBalance() {
+    public int getLastBalance() {
         return lastBalance;
     }
 
-    public boolean isValid() {
-        return (selectEMoney.substring(selectEMoney.length()-4, selectEMoney.length()).equals("9000") &
-//                (cardAttribute.substring(cardAttribute.length()-4, cardAttribute.length()).equals("9000")) &
-                (cardInfo.substring(cardInfo.length()-4, cardInfo.length()).equals("9000")) &
-                (lastBalance.substring(lastBalance.length()-4, lastBalance.length()).equals("9000")));
+    public String getIssuerImage() {
+        return issuerImage;
     }
+
 }

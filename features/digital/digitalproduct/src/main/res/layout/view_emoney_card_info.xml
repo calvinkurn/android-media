@@ -25,10 +25,11 @@
                 android:orientation="horizontal">
 
                 <ImageView
+                    android:id="@+id/image_issuer"
                     android:layout_width="0dp"
                     android:layout_height="50dp"
                     android:layout_weight="1"
-                    app:srcCompat="@drawable/emoney"/>
+                    tools:srcCompat="@drawable/emoney"/>
 
                 <View
                     android:layout_width="1dp"

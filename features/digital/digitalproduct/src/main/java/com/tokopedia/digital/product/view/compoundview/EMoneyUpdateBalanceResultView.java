@@ -10,6 +10,7 @@ import android.widget.TextView;
 
 import com.tokopedia.digital.R;
 import com.tokopedia.digital.product.view.model.CardInfo;
+import com.tokopedia.digital.product.view.model.InquiryBalanceModel;
 
 /**
  * Created by Rizky on 16/05/18.
@@ -60,11 +61,27 @@ public class EMoneyUpdateBalanceResultView extends LinearLayout {
         });
     }
 
-    public void showCardInfo(CardInfo cardInfo) {
+    public void showLocalCardInfo(CardInfo cardInfo) {
         setVisibility(VISIBLE);
         textLabelProgress.setVisibility(GONE);
         buttonTopup.setVisibility(VISIBLE);
         eMoneyCardInfoView.showCardInfo(cardInfo);
+    }
+
+    public void showCardInfoFromApi(InquiryBalanceModel inquiryBalanceModel) {
+        setVisibility(VISIBLE);
+        textLabelProgress.setVisibility(GONE);
+        buttonTopup.setVisibility(VISIBLE);
+        buttonTopup.setText(inquiryBalanceModel.getButtonText());
+        eMoneyCardInfoView.showCardInfo(inquiryBalanceModel.getCardInfo());
+    }
+
+    public void showCardInfoWithError(InquiryBalanceModel inquiryBalanceModel, String errorMessage) {
+        setVisibility(VISIBLE);
+        textLabelProgress.setVisibility(VISIBLE);
+        textLabelProgress.setText(errorMessage);
+        buttonTopup.setVisibility(GONE);
+        eMoneyCardInfoView.showCardInfo(inquiryBalanceModel.getCardInfo());
     }
 
     public void showLoading() {
@@ -84,9 +101,10 @@ public class EMoneyUpdateBalanceResultView extends LinearLayout {
         super.setVisibility(visibility);
     }
 
-    public void showCardIsNotSupported() {
+    public void showError(String erroMessage) {
         eMoneyCardInfoView.stopLoading();
-        textLabelProgress.setText(getResources().getString(R.string.card_is_not_supported));
+        eMoneyCardInfoView.removeCardInfo();
+        textLabelProgress.setText(erroMessage);
         textLabelProgress.setTextColor(getResources().getColor(R.color.red_error));
         buttonTopup.setVisibility(GONE);
     }

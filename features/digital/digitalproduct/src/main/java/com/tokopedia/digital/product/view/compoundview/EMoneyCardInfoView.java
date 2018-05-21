@@ -6,10 +6,12 @@ import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.tokopedia.design.utils.CurrencyFormatUtil;
 import com.tokopedia.digital.R;
 import com.tokopedia.digital.product.view.model.CardInfo;
@@ -21,12 +23,13 @@ public class EMoneyCardInfoView extends FrameLayout {
 
     private Context context;
 
-    private String formattedCardNumberWithoutSpaces;
+    private CardInfo cardInfo;
 
     private TextView textRemainingBalance;
     private TextView textCardNumber;
     private ProgressBar progressBar;
     private LinearLayout viewRemainingBalance;
+    private ImageView imageIssuer;
 
     public EMoneyCardInfoView(Context context) {
         super(context);
@@ -53,35 +56,26 @@ public class EMoneyCardInfoView extends FrameLayout {
         textCardNumber = view.findViewById(R.id.text_card_number);
         progressBar = view.findViewById(R.id.progress_bar);
         viewRemainingBalance = view.findViewById(R.id.view_remaining_balance);
+        imageIssuer = view.findViewById(R.id.image_issuer);
     }
 
     public void showCardInfo(CardInfo cardInfo) {
+        this.cardInfo = cardInfo;
         setVisibility(VISIBLE);
-        String formattedCardNumber = formatCardNumber(cardInfo.getCardInfo());
-        formattedCardNumberWithoutSpaces = formatCardNumberWithoutStrips(cardInfo.getCardInfo());
-        String lastBalanceInHex = flipLastBalance(cardInfo.getLastBalance());
-        int lastBalanceInDecimal = Integer.parseInt(lastBalanceInHex,16);
         viewRemainingBalance.setVisibility(VISIBLE);
         progressBar.setVisibility(GONE);
-        textRemainingBalance.setText(CurrencyFormatUtil.convertPriceValueToIdrFormat(lastBalanceInDecimal, true));
-        textCardNumber.setText(formattedCardNumber);
-    }
-
-    private String flipLastBalance(String lastBalance) {
-        return lastBalance.substring(6,8) +
-                lastBalance.substring(4,6) +
-                lastBalance.substring(2,4) +
-                lastBalance.substring(0,2);
+        imageIssuer.setVisibility(VISIBLE);
+        Glide.with(context)
+                .load(cardInfo.getIssuerImage())
+                .into(imageIssuer);
+        textRemainingBalance.setText(CurrencyFormatUtil.convertPriceValueToIdrFormat(cardInfo.getLastBalance(), true));
+        String formattedCardNumber = formatCardNumber(cardInfo.getCardNumber());
+        textCardNumber.setText(cardInfo.getCardNumber());
     }
 
     private String formatCardNumber(String cardNumber) {
         return cardNumber.substring(0, 4) + " - " + cardNumber.substring(4, 8) + " - " +
                 cardNumber.substring(8, 12) + " - " + cardNumber.substring(12, 16);
-    }
-
-    private String formatCardNumberWithoutStrips(String cardNumber) {
-        return cardNumber.substring(0, 4) + cardNumber.substring(4, 8) +
-                cardNumber.substring(8, 12) + cardNumber.substring(12, 16);
     }
 
     public void showLoading() {
@@ -95,7 +89,13 @@ public class EMoneyCardInfoView extends FrameLayout {
     }
 
     public String getCardNumber() {
-        return formattedCardNumberWithoutSpaces;
+        return cardInfo.getCardNumber();
+    }
+
+    public void removeCardInfo() {
+        textCardNumber.setText("");
+        textRemainingBalance.setText("");
+        imageIssuer.setImageDrawable(null);
     }
 
 }

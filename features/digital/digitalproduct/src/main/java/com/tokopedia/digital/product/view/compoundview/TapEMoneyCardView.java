@@ -18,9 +18,9 @@ import com.tokopedia.digital.R;
  */
 public class TapEMoneyCardView extends RelativeLayout {
 
-    private ProgressBar progressBar;
+//    private ProgressBar progressBar;
     private TextView textLabel;
-    private ImageView imageDontMoveTheCard;
+//    private ImageView imageDontMoveTheCard;
     private LottieAnimationView lottieAnimationView;
 
     public TapEMoneyCardView(Context context) {
@@ -47,34 +47,36 @@ public class TapEMoneyCardView extends RelativeLayout {
     private void init() {
         View view = inflate(getContext(), R.layout.view_tap_emoney_card, this);
 
-        progressBar = view.findViewById(R.id.progress_bar);
+//        progressBar = view.findViewById(R.id.progress_bar);
         textLabel = view.findViewById(R.id.text_label);
         lottieAnimationView = view.findViewById(R.id.lottie_animation_view);
-        imageDontMoveTheCard = view.findViewById(R.id.image_dont_move_the_card);
+//        imageDontMoveTheCard = view.findViewById(R.id.image_dont_move_the_card);
     }
 
     public void showLoading(String textLoading) {
         setVisibility(VISIBLE);
-        progressBar.setVisibility(VISIBLE);
+//        progressBar.setVisibility(VISIBLE);
         textLabel.setText(textLoading);
         lottieAnimationView.clearAnimation();
-        lottieAnimationView.setVisibility(GONE);
-        imageDontMoveTheCard.setVisibility(VISIBLE);
+        lottieAnimationView.setAnimation("emoney_loading.json");
+        lottieAnimationView.playAnimation();
+//        lottieAnimationView.setVisibility(GONE);
+//        imageDontMoveTheCard.setVisibility(VISIBLE);
     }
 
-    @Override
-    public void setVisibility(int visibility) {
-        if (visibility == GONE) {
-            progressBar.setVisibility(GONE);
-        }
-        super.setVisibility(visibility);
-    }
+//    @Override
+//    public void setVisibility(int visibility) {
+//        if (visibility == GONE) {
+//            progressBar.setVisibility(GONE);
+//        }
+//        super.setVisibility(visibility);
+//    }
 
     public void stopLoading() {
-        progressBar.setVisibility(GONE);
+//        progressBar.setVisibility(GONE);
         lottieAnimationView.setVisibility(VISIBLE);
         lottieAnimationView.playAnimation();
-        imageDontMoveTheCard.setVisibility(GONE);
+//        imageDontMoveTheCard.setVisibility(GONE);
         textLabel.setText(getResources().getString(R.string.emoney_tap_card_instruction));
     }
 }

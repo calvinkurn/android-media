@@ -1,0 +1,16 @@
+{
+  "data": {
+    "type": "smartcard_command",
+    "id": "123",
+    "attributes": {
+      "status": 1,
+      "card_response": {
+        "payload": "",
+        "card_number": "6032984002487811",
+        "last_balance": 101000,
+        "issuer_image": "https://ecs7.tokopedia.com/issuer/mandiri.png",
+        "button_text": "Topup Sekarang"
+      }
+    }
+  }
+}

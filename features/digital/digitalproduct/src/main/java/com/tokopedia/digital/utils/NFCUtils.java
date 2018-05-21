@@ -22,4 +22,18 @@ public class NFCUtils {
         }
         return new String(hexChars);
     }
+
+    public static String convertCardUID(String cardNumber) {
+        return cardNumber.substring(0, 4) + " - " + cardNumber.substring(4, 8) + " - " +
+                cardNumber.substring(8, 12) + " - " + cardNumber.substring(12, 16);
+    }
+
+    public static int convertCardLastBalance(String lastBalance) {
+        String lastBalanceInHex = lastBalance.substring(6,8) +
+                lastBalance.substring(4,6) +
+                lastBalance.substring(2,4) +
+                lastBalance.substring(0,2);
+        return Integer.parseInt(lastBalanceInHex,16);
+    }
+
 }

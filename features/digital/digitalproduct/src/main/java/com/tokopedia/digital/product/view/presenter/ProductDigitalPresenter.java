@@ -185,8 +185,7 @@ public class ProductDigitalPresenter extends BaseDigitalPresenter
                 List<BannerData> otherBannerDataList = productDigitalData.getOtherBannerDataList();
                 HistoryClientNumber historyClientNumber =
                         productDigitalData.getHistoryClientNumber();
-                if (historyClientNumber.getLastOrderClientNumber() == null
-                        || historyClientNumber.getLastOrderClientNumber().isEmpty()) {
+                if (historyClientNumber.getLastOrderClientNumber() == null) {
                     String lastSelectedOperatorId = getLastOperatorSelected(categoryData.getCategoryId());
                     String lastSelectedProductId = getLastProductSelected(categoryData.getCategoryId());
                     String lastTypedClientNumber = getLastClientNumberTyped(categoryData.getCategoryId());
