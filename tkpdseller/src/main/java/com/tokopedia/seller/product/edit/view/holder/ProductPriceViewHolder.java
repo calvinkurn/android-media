@@ -370,8 +370,8 @@ public class ProductPriceViewHolder extends ProductViewHolder{
                     if(listener.hasVariant()){
                         priceSpinnerCounterInputView.setEnabled(false);
                         editPriceImageButton.setVisibility(View.VISIBLE);
+                        listener.changeAllPriceVariant(getCurrencyType(), data.getDoubleExtra(ProductAddWholesaleFragment.EXTRA_PRODUCT_MAIN_PRICE, 0));
                     }
-                    listener.changeAllPriceVariant(getCurrencyType(), data.getDoubleExtra(ProductAddWholesaleFragment.EXTRA_PRODUCT_MAIN_PRICE, 0));
                 }
                 break;
         }
