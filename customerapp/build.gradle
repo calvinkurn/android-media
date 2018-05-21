@@ -240,9 +240,6 @@ android {
         live {
 
         }
-        staging {
-
-        }
     }
 }
 
