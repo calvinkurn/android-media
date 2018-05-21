@@ -389,6 +389,8 @@ public class BottomSheetFilterView extends BaseCustomView implements BottomSheet
     }
 
     private void updateFilterInputData(FilterFlagSelectedModel model) {
+        shownInMainState.clear();
+
         if (model == null) {
             return;
         }
@@ -406,9 +408,6 @@ public class BottomSheetFilterView extends BaseCustomView implements BottomSheet
         removeFiltersWithEmptyOption(list);
         mergeSizeFilterOptionsWithSameValue(list);
         removeBrandFilterOptionsWithSameValue(list);
-        //changeRatingFilterOptionToFourAndAboveOnly(list);
-        //mergeNonExpandableFiltersToOthers(list);
-        //removeNonExpandableFilters(list);
         filterMainAdapter.setFilterList(list);
     }
 
@@ -417,16 +416,6 @@ public class BottomSheetFilterView extends BaseCustomView implements BottomSheet
         while (iterator.hasNext()) {
             Filter filter = iterator.next();
             if (filter.getOptions().isEmpty() && !filter.isSeparator()) {
-                iterator.remove();
-            }
-        }
-    }
-
-    private void removeNonExpandableFilters(List<Filter> filterList) {
-        Iterator<Filter> iterator = filterList.iterator();
-        while (iterator.hasNext()) {
-            Filter filter = iterator.next();
-            if (!filter.isExpandableFilter()) {
                 iterator.remove();
             }
         }
@@ -499,18 +488,6 @@ public class BottomSheetFilterView extends BaseCustomView implements BottomSheet
         }
     }
 
-    private void changeRatingFilterOptionToFourAndAboveOnly(List<Filter> filterList) {
-        Filter ratingFilter = getRatingFilter(filterList);
-        if (ratingFilter == null) {
-            return;
-        }
-
-        List<Option> ratingOptionList = new ArrayList<>();
-        ratingOptionList.add(createFourAndAboveRatingOption());
-
-        ratingFilter.setOptions(ratingOptionList);
-    }
-
     private Filter getRatingFilter(List<Filter> filterList) {
         for (Filter filter : filterList) {
             if (filter.isRatingFilter()) return filter;
@@ -528,20 +505,6 @@ public class BottomSheetFilterView extends BaseCustomView implements BottomSheet
         option.setName(Option.RATING_ABOVE_FOUR_NAME);
         option.setValue(Option.RATING_ABOVE_FOUR_VALUE);
         return option;
-    }
-
-    private void mergeNonExpandableFiltersToOthers(List<Filter> list) {
-        List<Option> othersOptionList = new ArrayList<>();
-
-        for (Filter filter : list) {
-            if (!filter.isExpandableFilter()) {
-                othersOptionList.addAll(filter.getOptions());
-            }
-        }
-
-        if (!othersOptionList.isEmpty()) {
-            list.add(generateOthersFilter(othersOptionList));
-        }
     }
 
     private Filter generateOthersFilter(List<Option> othersOptionList) {
