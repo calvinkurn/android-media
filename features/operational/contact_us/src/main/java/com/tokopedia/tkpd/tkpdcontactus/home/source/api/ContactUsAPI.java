@@ -7,6 +7,7 @@ import com.tokopedia.tkpd.tkpdcontactus.common.api.ContactUsURL;
 import com.tokopedia.tkpd.tkpdcontactus.home.data.BuyerPurchaseData;
 import com.tokopedia.tkpd.tkpdcontactus.home.data.ContactUsArticleResponse;
 import com.tokopedia.tkpd.tkpdcontactus.home.data.TopBotStatus;
+import com.tokopedia.tkpd.tkpdcontactus.orderquery.data.CreateTicketResult;
 
 import java.util.List;
 import java.util.Map;
@@ -47,7 +48,7 @@ public interface ContactUsAPI {
 
     @FormUrlEncoded
     @POST(ContactUsURL.PATH_CREATE_STEP_1)
-    Observable<Response<TkpdResponse>> createTicketValidation(@FieldMap Map<String, String> params);
+    Observable<Response<DataResponse<CreateTicketResult>>> createTicketValidation(@FieldMap Map<String, String> params);
 
     @FormUrlEncoded
     @POST(ContactUsURL.PATH_COMMENT_RATING)

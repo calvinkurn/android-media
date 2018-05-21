@@ -4,6 +4,7 @@ import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
 
+import com.tokopedia.abstraction.common.data.model.response.DataResponse;
 import com.tokopedia.contactus.R;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.core.network.apiservices.accounts.AccountsService;
@@ -68,11 +69,11 @@ public class SubmitTicketDataStore {
                         if (isHasPictures(contactUsPass)) {
                             return contactUsAPI
                                     .createTicketValidation(AuthUtil.generateParams(context, contactUsPass.getCreateTicketValidationParam()))
-                                    .map(new Func1<Response<TkpdResponse>, ContactUsPass>() {
+                                    .map(new Func1<Response<DataResponse<CreateTicketResult>>, ContactUsPass>() {
                                         @Override
-                                        public ContactUsPass call(Response<TkpdResponse> tkpdResponse) {
+                                        public ContactUsPass call(Response<DataResponse<CreateTicketResult>> tkpdResponse) {
 
-                                            CreateTicketResult result = tkpdResponse.body().convertDataObj(CreateTicketResult.class);
+                                            CreateTicketResult result = tkpdResponse.body().getData();
                                             contactUsPass.setPostKey(result.getPostKey());
                                             return contactUsPass;
 
@@ -109,13 +110,10 @@ public class SubmitTicketDataStore {
                     @Override
                     public Observable<Response<TkpdResponse>> call(ContactUsPass
                                                                            contactUsPass) {
-                        if (isHasPictures(contactUsPass)) {
+
                             return contactUsAPI.
                                     createTicket(AuthUtil.generateParams(context, contactUsPass.getSubmitParam()));
-                        } else {
-                            return contactUsAPI
-                                    .createTicketValidation(AuthUtil.generateParams(context, contactUsPass.getCreateTicketValidationParam()));
-                        }
+
                     }
                 });
 
