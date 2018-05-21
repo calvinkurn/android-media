@@ -67,13 +67,9 @@ public class ImagePagerAdapter extends PagerAdapter {
                     .into(imageView);
 
         } else if (urlImage.equals(urlTemporary)) {
-            Glide.with(context.getApplicationContext())
-                    .load(urlTemporary)
-                    .diskCacheStrategy(DiskCacheStrategy.SOURCE)
-                    .centerCrop()
-                    .into(imageView);
+            ImageHandler.loadImageSourceSizeCenterCrop(context.getApplicationContext(),imageView, urlTemporary);
         } else {
-            ImageHandler.loadImageFit2(context, imageView, urlImage);
+            ImageHandler.loadImageSourceSizeCenterCrop(context.getApplicationContext(),imageView, urlImage);
         }
         imageView.setOnClickListener(new OnClickImage(position));
         container.addView(imageView, 0);
