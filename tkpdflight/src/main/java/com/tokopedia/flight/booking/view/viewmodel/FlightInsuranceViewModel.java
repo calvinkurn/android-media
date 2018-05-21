@@ -121,4 +121,9 @@ public class FlightInsuranceViewModel implements Parcelable{
         parcel.writeString(tncUrl);
         parcel.writeTypedList(benefits);
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        return obj instanceof FlightInsuranceViewModel && ((FlightInsuranceViewModel) obj).getId().equals(getId());
+    }
 }

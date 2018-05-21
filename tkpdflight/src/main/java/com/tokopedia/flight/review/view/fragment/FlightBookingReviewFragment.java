@@ -195,9 +195,18 @@ public class FlightBookingReviewFragment extends BaseDaggerFragment implements F
     }
 
     private void actionVerifyAndCheckoutBooking() {
-        flightBookingReviewPresenter.verifyBooking(voucherCartView.getVoucherCode(), flightBookingReviewModel.getTotalPriceNumeric(),
-                flightBookingReviewModel.getAdult(), flightBookingReviewModel.getId(), flightBookingReviewModel.getDetailPassengersData(), flightBookingReviewModel.getContactName(),
-                flightBookingReviewModel.getPhoneCodeViewModel().getCountryId(), flightBookingReviewModel.getContactEmail(), flightBookingReviewModel.getContactPhone());
+        flightBookingReviewPresenter.verifyBooking(
+                voucherCartView.getVoucherCode(),
+                flightBookingReviewModel.getTotalPriceNumeric(),
+                flightBookingReviewModel.getAdult(),
+                flightBookingReviewModel.getId(),
+                flightBookingReviewModel.getDetailPassengersData(),
+                flightBookingReviewModel.getContactName(),
+                flightBookingReviewModel.getPhoneCodeViewModel().getCountryId(),
+                flightBookingReviewModel.getContactEmail(),
+                flightBookingReviewModel.getContactPhone(),
+                flightBookingReviewModel.getInsuranceIds()
+        );
     }
 
     void initView() {

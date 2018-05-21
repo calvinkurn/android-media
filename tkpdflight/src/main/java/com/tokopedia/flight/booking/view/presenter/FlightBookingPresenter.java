@@ -21,6 +21,7 @@ import com.tokopedia.flight.booking.view.viewmodel.FlightBookingCartData;
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingParamViewModel;
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingPassengerViewModel;
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingPhoneCodeViewModel;
+import com.tokopedia.flight.booking.view.viewmodel.FlightInsuranceViewModel;
 import com.tokopedia.flight.booking.view.viewmodel.mapper.FlightBookingCartDataMapper;
 import com.tokopedia.flight.common.constant.FlightErrorConstant;
 import com.tokopedia.flight.common.data.model.FlightError;
@@ -191,9 +192,16 @@ public class FlightBookingPresenter extends FlightBaseBookingPresenter<FlightBoo
         actionCalculatePriceAndRender(flightBookingCartData.getNewFarePrices(),
                 flightBookingCartData.getDepartureTrip(),
                 flightBookingCartData.getReturnTrip(),
-                getView().getCurrentBookingParamViewModel().getPassengerViewModels()
+                getView().getCurrentBookingParamViewModel().getPassengerViewModels(),
+                getView().getCurrentBookingParamViewModel().getInsurances()
         );
 
+        if (flightBookingCartData.getInsurances() != null && flightBookingCartData.getInsurances().size() > 0) {
+            getView().showInsuranceLayout();
+            getView().renderInsurance(flightBookingCartData.getInsurances());
+        } else {
+            getView().hideInsuranceLayout();
+        }
 
 //        if (validatePassengerData()) {
 //            toggleSameAsContactCheckbox();
@@ -256,8 +264,8 @@ public class FlightBookingPresenter extends FlightBaseBookingPresenter<FlightBoo
                 getView().getCurrentCartPassData().getNewFarePrices(),
                 getView().getCurrentCartPassData().getDepartureTrip(),
                 getView().getCurrentCartPassData().getReturnTrip(),
-                getView().getCurrentBookingParamViewModel().getPassengerViewModels()
-        );
+                getView().getCurrentBookingParamViewModel().getPassengerViewModels(),
+                getView().getCurrentBookingParamViewModel().getInsurances());
 
         int newTotalPrice = actionCalculateCurrentTotalPrice(
                 getView().getDepartureFlightDetailViewModel(),
@@ -754,6 +762,11 @@ public class FlightBookingPresenter extends FlightBaseBookingPresenter<FlightBoo
     }
 
     @Override
+    public List<FlightInsuranceViewModel> getInsurances() {
+        return getView().getCurrentBookingParamViewModel().getInsurances();
+    }
+
+    @Override
     public void toggleSameAsContactCheckbox() {
         if (isChecked) {
             isChecked = false;
@@ -894,5 +907,20 @@ public class FlightBookingPresenter extends FlightBaseBookingPresenter<FlightBoo
         );
 
         onPassengerResultReceived(flightBookingPassengerViewModel);
+    }
+
+    @Override
+    public void onInsuranceChanges() {
+        actionCalculatePriceAndRender(getView().getCurrentCartPassData().getNewFarePrices(),
+                getView().getCurrentCartPassData().getDepartureTrip(),
+                getView().getCurrentCartPassData().getReturnTrip(),
+                getView().getCurrentBookingParamViewModel().getPassengerViewModels(),
+                getView().getCurrentBookingParamViewModel().getInsurances()
+        );
+        int newTotalPrice = actionCalculateCurrentTotalPrice(
+                getView().getDepartureFlightDetailViewModel(),
+                getView().getReturnFlightDetailViewModel()
+        );
+        updateTotalPrice(newTotalPrice);
     }
 }

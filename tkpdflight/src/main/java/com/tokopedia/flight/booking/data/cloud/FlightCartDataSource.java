@@ -47,7 +47,7 @@ public class FlightCartDataSource {
                 JsonObject rootJsonObject = json.getAsJsonObject();
                 if (rootJsonObject.has("data")) {
                     JsonObject dataObject = rootJsonObject.getAsJsonObject("data");
-                    cartEntity = FlightCartDataSource.this.gson.fromJson(rootJsonObject.get("data").getAsString(), CartEntity.class);
+                    cartEntity = FlightCartDataSource.this.gson.fromJson(rootJsonObject.get("data").toString(), CartEntity.class);
                     if (dataObject.has("relationships")) {
                         List<InsuranceEntity> insuranceEntities = new ArrayList<>();
                         if (rootJsonObject.has("included")) {
@@ -56,8 +56,8 @@ public class FlightCartDataSource {
                                 JsonObject jsonObject = include.getAsJsonObject();
                                 if (jsonObject.get("type").getAsString().equalsIgnoreCase("insurance")) {
                                     // insurance
-                                    InsuranceEntity insuranceEntity = FlightCartDataSource.this.gson.fromJson(jsonObject.get("attributes").getAsString(), InsuranceEntity.class);
-                                    insuranceEntity.setId(jsonObject.get("id").getAsString());
+                                    InsuranceEntity insuranceEntity = FlightCartDataSource.this.gson.fromJson(jsonObject.get("attributes").toString(), InsuranceEntity.class);
+                                    insuranceEntity.setId(jsonObject.get("id").toString());
                                     insuranceEntities.add(insuranceEntity);
                                 }
                             }

@@ -25,6 +25,10 @@ public class MetaData {
     @SerializedName("passengers")
     @Expose
     private List<Passenger> passengers = null;
+    @SerializedName("insurances")
+    @Expose
+    private List<String> insurances = null;
+
 
     public String getCartId() {
         return cartId;
@@ -74,4 +78,11 @@ public class MetaData {
         this.passengers = passengers;
     }
 
+    public List<String> getInsurances() {
+        return insurances;
+    }
+
+    public void setInsurances(List<String> insurances) {
+        this.insurances = insurances;
+    }
 }
