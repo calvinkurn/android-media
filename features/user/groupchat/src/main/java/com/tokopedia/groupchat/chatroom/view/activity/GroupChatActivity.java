@@ -1,6 +1,7 @@
 package com.tokopedia.groupchat.chatroom.view.activity;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -21,7 +22,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.app.TaskStackBuilder;
 import android.support.v4.content.LocalBroadcastManager;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatDelegate;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -111,6 +111,7 @@ public class GroupChatActivity extends BaseSimpleActivity
         , ToolTipUtils.ToolTipListener {
 
     private static final String TOKOPEDIA_APPLINK = "tokopedia://";
+    Dialog exitDialog;
 
     @DeepLink(ApplinkConstant.GROUPCHAT_ROOM)
     public static TaskStackBuilder getCallingTaskStack(Context context, Bundle extras) {
@@ -602,20 +603,29 @@ public class GroupChatActivity extends BaseSimpleActivity
 
     @Override
     public void onBackPressed() {
-        if(currentFragmentIsVote() || currentFragmentIsInfo()){
-            showFragment(CHATROOM_FRAGMENT);
+        if(currentlyLoadingFragment()){
+            finish();
+            super.onBackPressed();
         }else {
-            showDialogConfirmToExit();
+            if (!currentFragmentIsChat()) {
+                showFragment(CHATROOM_FRAGMENT);
+            } else {
+                showDialogConfirmToExit();
+            }
         }
     }
 
     private void showDialogConfirmToExit() {
-        final android.app.AlertDialog.Builder myAlertDialog = new android.app.AlertDialog.Builder(this);
         if(getExitMessage() == null){
             finish();
             GroupChatActivity.super.onBackPressed();
             return;
         }
+        exitDialog.show();
+    }
+
+    private android.app.AlertDialog.Builder createAlertDialog() {
+        AlertDialog.Builder myAlertDialog = new android.app.AlertDialog.Builder(this);
         myAlertDialog.setTitle(getExitMessage().getTitle());
         myAlertDialog.setMessage(getExitMessage().getBody());
         final Context context = this;
@@ -637,10 +647,10 @@ public class GroupChatActivity extends BaseSimpleActivity
                         dialogInterface.cancel();
                     }
                 });
-        Dialog dialog = myAlertDialog.create();
-        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        dialog.show();
+
+        return myAlertDialog;
     }
+
 
     @Override
     protected void setupLayout(Bundle savedInstanceState) {
@@ -733,6 +743,10 @@ public class GroupChatActivity extends BaseSimpleActivity
             intent.putExtra(TOTAL_VIEW, channelInfoViewModel.getTotalView());
             intent.putExtra(EXTRA_POSITION, viewModel.getChannelPosition());
             setResult(Activity.RESULT_OK, intent);
+            if(exitDialog==null) {
+                exitDialog = createAlertDialog().create();
+                exitDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -1265,6 +1279,10 @@ public class GroupChatActivity extends BaseSimpleActivity
         dialog.show();
     }
 
+
+    private boolean currentlyLoadingFragment() {
+        return getSupportFragmentManager().findFragmentById(R.id.container) == null;
+    }
 
     private boolean currentFragmentIsChat() {
         return getSupportFragmentManager().findFragmentById(R.id.container) != null &&

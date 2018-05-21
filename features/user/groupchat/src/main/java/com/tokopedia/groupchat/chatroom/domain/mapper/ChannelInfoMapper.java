@@ -1,5 +1,7 @@
 package com.tokopedia.groupchat.chatroom.domain.mapper;
 
+import android.text.TextUtils;
+
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.common.data.model.response.DataResponse;
 import com.tokopedia.groupchat.chatroom.domain.pojo.ExitMessage;
@@ -79,7 +81,15 @@ public class ChannelInfoMapper implements Func1<Response<DataResponse<ChannelInf
     }
 
     private PinnedMessageViewModel mapToPinnedMessageViewModel(PinnedMessagePojo pinnedMessage) {
-        return new PinnedMessageViewModel(pinnedMessage.getMessage(), pinnedMessage.getTitle(), pinnedMessage.getRedirectUrl(), pinnedMessage.getImageUrl());
+        if(hasPinnedMessage(pinnedMessage)) {
+            return new PinnedMessageViewModel(pinnedMessage.getMessage(), pinnedMessage.getTitle(), pinnedMessage.getRedirectUrl(), pinnedMessage.getImageUrl());
+        }else {
+            return null;
+        }
+    }
+
+    private boolean hasPinnedMessage(PinnedMessagePojo pinnedMessage) {
+        return pinnedMessage != null && !TextUtils.isEmpty(pinnedMessage.getTitle());
     }
 
     private SprintSaleViewModel mapToSprintSaleViewModel(Flashsale flashsale) {

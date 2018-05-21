@@ -62,7 +62,7 @@
             android:textSize="@dimen/sp_13"
             android:fontFamily="sans-serif-medium"
             android:textStyle="normal"
-            android:textColor="#b3000000"
+            android:textColor="@color/black_70"
             android:ellipsize="end"
             android:maxLines="1"
             tools:text="Tantangan Kuis Emoji Berhadiah Per…" />

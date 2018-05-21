@@ -3,14 +3,11 @@ package com.tokopedia.groupchat.chatroom.view.adapter.chatroom.typefactory;
 import android.view.View;
 
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory;
-import com.tokopedia.abstraction.base.view.adapter.model.LoadingModel;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
-import com.tokopedia.abstraction.base.view.adapter.viewholders.LoadingViewholder;
-import com.tokopedia.groupchat.chatroom.domain.pojo.PinnedMessage;
 import com.tokopedia.groupchat.chatroom.view.adapter.chatroom.viewholder.AdminAnnouncementViewHolder;
 import com.tokopedia.groupchat.chatroom.view.adapter.chatroom.viewholder.ChatViewHolder;
-import com.tokopedia.groupchat.chatroom.view.adapter.chatroom.viewholder.GroupChatPointsViewHolder;
 import com.tokopedia.groupchat.chatroom.view.adapter.chatroom.viewholder.GeneratedMessageViewHolder;
+import com.tokopedia.groupchat.chatroom.view.adapter.chatroom.viewholder.GroupChatPointsViewHolder;
 import com.tokopedia.groupchat.chatroom.view.adapter.chatroom.viewholder.ImageAnnouncementViewHolder;
 import com.tokopedia.groupchat.chatroom.view.adapter.chatroom.viewholder.PendingChatViewHolder;
 import com.tokopedia.groupchat.chatroom.view.adapter.chatroom.viewholder.SprintSaleViewHolder;
@@ -24,7 +21,6 @@ import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.GeneratedMessage
 import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.GroupChatPointsViewModel;
 import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.ImageAnnouncementViewModel;
 import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.PendingChatViewModel;
-import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.PinnedMessageViewModel;
 import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.SprintSaleAnnouncementViewModel;
 import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.UserActionViewModel;
 import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.VibrateViewModel;
