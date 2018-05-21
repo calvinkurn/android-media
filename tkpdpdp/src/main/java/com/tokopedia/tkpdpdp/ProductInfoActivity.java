@@ -1,9 +1,6 @@
 package com.tokopedia.tkpdpdp;
 
 import android.app.Dialog;
-import android.app.Fragment;
-import android.app.FragmentManager;
-import android.app.FragmentTransaction;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
@@ -11,6 +8,9 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.google.firebase.perf.metrics.AddTrace;
@@ -175,7 +175,7 @@ public class ProductInfoActivity extends BasePresenterNoLayoutActivity<ProductIn
     @Override
     public void inflateFragment(Fragment fragment, String tag) {
         if (getFragmentManager().findFragmentByTag(tag) == null) {
-            FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
+            FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
             getFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
             fragmentTransaction.add(R.id.container, fragment, tag);
             fragmentTransaction.commit();
@@ -194,7 +194,7 @@ public class ProductInfoActivity extends BasePresenterNoLayoutActivity<ProductIn
     }
 
     private void inflateNewFragment(Fragment fragment, String tag) {
-        FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
+        FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
         fragmentTransaction.replace(R.id.container, fragment, tag);
         fragmentTransaction.addToBackStack(null);
         fragmentTransaction.commit();
@@ -267,7 +267,7 @@ public class ProductInfoActivity extends BasePresenterNoLayoutActivity<ProductIn
 
     @Override
     public void onReceiveResult(int resultCode, Bundle resultData) {
-        Fragment fragment = getFragmentManager().findFragmentById(R.id.container);
+        Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.container);
         if (fragment != null) {
             switch (resultCode) {
                 case ProductInfoIntentService.STATUS_SUCCESS_REPORT_PRODUCT:
@@ -322,6 +322,5 @@ public class ProductInfoActivity extends BasePresenterNoLayoutActivity<ProductIn
             onBackPressed();
         }
     }
-
     // Work Around IF your press back and youtube thumbnail doesn't intalized yet }
 }
