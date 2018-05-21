@@ -230,5 +230,4 @@ public class ListReply {
     public void setReplyTimeNano(String replyTimeNano) {
         this.replyTimeNano = replyTimeNano;
     }
-
 }
