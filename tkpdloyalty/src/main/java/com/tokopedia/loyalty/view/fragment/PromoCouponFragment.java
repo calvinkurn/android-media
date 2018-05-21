@@ -34,6 +34,7 @@ import java.util.List;
 import javax.inject.Inject;
 
 import static com.tokopedia.loyalty.view.activity.LoyaltyActivity.DIGITAL_STRING;
+import static com.tokopedia.loyalty.view.activity.LoyaltyActivity.EVENT_STRING;
 import static com.tokopedia.loyalty.view.activity.LoyaltyActivity.EXTRA_CART_ID;
 import static com.tokopedia.loyalty.view.activity.LoyaltyActivity.FLIGHT_STRING;
 
@@ -62,6 +63,12 @@ public class PromoCouponFragment extends BasePresenterFragment
     private static final String PLATFORM_KEY = "PLATFORM_KEY";
 
     private static final String CATEGORY_KEY = "CATEGORY_KEY";
+
+    private static final String DIGITAL_CATEGORY_ID = "DIGI_CATEGORY_ID";
+
+    private static final String DIGITAL_PRODUCT_ID = "DIGI_PRODUCT_ID";
+
+    private static final String CHECKOUT = "checkoutdata";
 
     @Override
     protected boolean isRetainInstance() {
@@ -364,15 +371,29 @@ public class PromoCouponFragment extends BasePresenterFragment
         return fragment;
     }
 
+    public static PromoCouponFragment newInstance(String platform, String categoryKey, int categoryId, int productId) {
+        PromoCouponFragment fragment = new PromoCouponFragment();
+        Bundle bundle = new Bundle();
+        bundle.putString(PLATFORM_KEY, platform);
+        bundle.putString(CATEGORY_KEY, categoryKey);
+        bundle.putInt(DIGITAL_CATEGORY_ID, categoryId);
+        bundle.putInt(DIGITAL_PRODUCT_ID, productId);
+        fragment.setArguments(bundle);
+        return fragment;
+    }
+
     @Override
     public void onVoucherChosen(CouponData data) {
         adapter.clearError();
         UnifyTracking.eventCouponChosen(data.getTitle());
         if (getArguments().getString(PLATFORM_KEY).equals(DIGITAL_STRING)) {
             dPresenter.submitDigitalVoucher(data, getArguments().getString(CATEGORY_KEY));
-        }  else if (getArguments().getString(PLATFORM_KEY).equalsIgnoreCase(FLIGHT_STRING)){
+        } else if (getArguments().getString(PLATFORM_KEY).equals(EVENT_STRING)) {
+            String jsonbody = getActivity().getIntent().getStringExtra(CHECKOUT);
+            dPresenter.parseAndSubmitEventVoucher(jsonbody, data);
+        } else if (getArguments().getString(PLATFORM_KEY).equalsIgnoreCase(FLIGHT_STRING)) {
             dPresenter.submitFlightVoucher(data, getArguments().getString(EXTRA_CART_ID));
-        }else {
+        } else {
             dPresenter.submitVoucher(data);
         }
     }
@@ -401,9 +422,12 @@ public class PromoCouponFragment extends BasePresenterFragment
 
     @Override
     public void onRefresh(View view) {
-        if (refreshHandler.isRefreshing()) {
-            dPresenter.processGetCouponList(getArguments().getString(PLATFORM_KEY));
-        }
+        if (refreshHandler.isRefreshing())
+            if (getArguments().getString(PLATFORM_KEY).equals(EVENT_STRING)) {
+                dPresenter.processGetEventCouponList(getArguments().getInt(DIGITAL_CATEGORY_ID), getArguments().getInt(DIGITAL_PRODUCT_ID));
+            } else {
+                dPresenter.processGetCouponList(getArguments().getString(PLATFORM_KEY));
+            }
     }
 
     @Override
@@ -431,3 +455,4 @@ public class PromoCouponFragment extends BasePresenterFragment
 
 
 }
+

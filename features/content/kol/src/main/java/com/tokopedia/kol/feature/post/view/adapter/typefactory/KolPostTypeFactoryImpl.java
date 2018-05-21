@@ -17,9 +17,9 @@ import com.tokopedia.kol.feature.post.view.viewmodel.KolPostViewModel;
  */
 
 public class KolPostTypeFactoryImpl extends BaseAdapterTypeFactory implements KolPostTypeFactory {
-    private final KolPostListener.View viewListener;
+    private final KolPostListener.View.ViewHolder viewListener;
 
-    public KolPostTypeFactoryImpl(KolPostListener.View viewListener) {
+    public KolPostTypeFactoryImpl(KolPostListener.View.ViewHolder viewListener) {
         this.viewListener = viewListener;
     }
 
@@ -41,8 +41,11 @@ public class KolPostTypeFactoryImpl extends BaseAdapterTypeFactory implements Ko
     @Override
     public AbstractViewHolder createViewHolder(View view, int viewType) {
         AbstractViewHolder abstractViewHolder;
-        if (viewType == KolPostViewHolder.LAYOUT)
-            abstractViewHolder = new KolPostViewHolder(view, viewListener);
+        if (viewType == KolPostViewHolder.LAYOUT) {
+            abstractViewHolder = new KolPostViewHolder(view,
+                    viewListener,
+                    KolPostViewHolder.Type.PROFILE);
+        }
         else if (viewType == EmptyKolPostViewHolder.LAYOUT)
             abstractViewHolder = new EmptyKolPostViewHolder(view);
         else if (viewType == ExploreViewHolder.LAYOUT)
