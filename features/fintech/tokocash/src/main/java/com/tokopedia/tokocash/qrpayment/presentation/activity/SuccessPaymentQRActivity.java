@@ -17,7 +17,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
-import com.tokopedia.abstraction.common.di.component.HasComponent;
 import com.tokopedia.design.utils.CurrencyFormatHelper;
 import com.tokopedia.tokocash.R;
 import com.tokopedia.tokocash.TokoCashComponentInstance;
@@ -32,8 +31,7 @@ import javax.inject.Inject;
  * Created by nabillasabbaha on 12/18/17.
  */
 
-public class SuccessPaymentQRActivity extends BaseSimpleActivity implements SuccessQrPaymentContract.View,
-        HasComponent<TokoCashComponent> {
+public class SuccessPaymentQRActivity extends BaseSimpleActivity implements SuccessQrPaymentContract.View {
 
     public static final int RESULT_CODE_HOME = 1;
     public static final int RESULT_CODE_SCANNER = 2;
@@ -72,22 +70,23 @@ public class SuccessPaymentQRActivity extends BaseSimpleActivity implements Succ
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        initInjector();
         initView();
         initVar();
         setActionVar();
     }
 
     private void initView() {
-        merchantName = (TextView) findViewById(R.id.merchant_name);
-        amountTransaction = (TextView) findViewById(R.id.amount_transaction);
-        timeTransaction = (TextView) findViewById(R.id.time_transaction);
-        idTransaction = (TextView) findViewById(R.id.transaction_id);
-        tokoCashBalance = (TextView) findViewById(R.id.balance_tokocash);
-        backToHomeBtn = (Button) findViewById(R.id.button_back_to_home);
-        helpText = (TextView) findViewById(R.id.help_text);
-        successTransactionLayout = (LinearLayout) findViewById(R.id.layout_success_transaction);
-        failedTransactionLayout = (LinearLayout) findViewById(R.id.layout_failed_transaction);
-        btnRetryScan = (Button) findViewById(R.id.button_back_scanner);
+        merchantName = findViewById(R.id.merchant_name);
+        amountTransaction = findViewById(R.id.amount_transaction);
+        timeTransaction = findViewById(R.id.time_transaction);
+        idTransaction = findViewById(R.id.transaction_id);
+        tokoCashBalance = findViewById(R.id.balance_tokocash);
+        backToHomeBtn = findViewById(R.id.button_back_to_home);
+        helpText = findViewById(R.id.help_text);
+        successTransactionLayout = findViewById(R.id.layout_success_transaction);
+        failedTransactionLayout = findViewById(R.id.layout_failed_transaction);
+        btnRetryScan = findViewById(R.id.button_back_scanner);
     }
 
     private void initVar() {
@@ -163,12 +162,6 @@ public class SuccessPaymentQRActivity extends BaseSimpleActivity implements Succ
     @Override
     protected int getLayoutRes() {
         return R.layout.activity_success_payment_qr;
-    }
-
-    @Override
-    public TokoCashComponent getComponent() {
-        if (tokoCashComponent == null) initInjector();
-        return tokoCashComponent;
     }
 
     private void initInjector() {

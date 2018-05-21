@@ -13,17 +13,16 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
-import com.tokopedia.abstraction.common.di.component.HasComponent;
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.design.text.watcher.NumberTextWatcher;
 import com.tokopedia.design.utils.CurrencyFormatHelper;
 import com.tokopedia.tokocash.R;
 import com.tokopedia.tokocash.TokoCashComponentInstance;
+import com.tokopedia.tokocash.balance.view.BalanceTokoCash;
 import com.tokopedia.tokocash.di.TokoCashComponent;
 import com.tokopedia.tokocash.qrpayment.domain.PostQrPaymentUseCase;
 import com.tokopedia.tokocash.qrpayment.presentation.contract.QrPaymentContract;
-import com.tokopedia.tokocash.balance.view.BalanceTokoCash;
 import com.tokopedia.tokocash.qrpayment.presentation.model.InfoQrTokoCash;
 import com.tokopedia.tokocash.qrpayment.presentation.model.QrPaymentTokoCash;
 import com.tokopedia.tokocash.qrpayment.presentation.presenter.QrPaymentPresenter;
@@ -35,8 +34,7 @@ import javax.inject.Inject;
  * Created by nabillasabbaha on 1/3/18.
  */
 
-public class NominalQrPaymentActivity extends BaseSimpleActivity implements QrPaymentContract.View,
-        HasComponent<TokoCashComponent> {
+public class NominalQrPaymentActivity extends BaseSimpleActivity implements QrPaymentContract.View {
 
     private static final int MAX_DIGIT_NOMINAL = 10;
     private static final String INFO_QR = "info_qr";
@@ -66,6 +64,7 @@ public class NominalQrPaymentActivity extends BaseSimpleActivity implements QrPa
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        initInjector();
         updateTitle(getString(R.string.title_input_nominal));
         Bundle bundle = getIntent().getExtras();
         infoQrTokoCash = bundle.getParcelable(INFO_QR);
@@ -104,20 +103,14 @@ public class NominalQrPaymentActivity extends BaseSimpleActivity implements QrPa
     }
 
     private void initView() {
-        merchantName = (TextView) findViewById(R.id.merchant_name);
-        merchantPhone = (TextView) findViewById(R.id.merchant_phone);
-        nominalValue = (EditText) findViewById(R.id.value_nominal);
-        notesValue = (EditText) findViewById(R.id.notes_value);
-        separatorNominal = (View) findViewById(R.id.separator);
-        tokocashValue = (TextView) findViewById(R.id.tokocash_value);
-        payButton = (Button) findViewById(R.id.pay_button);
-        progressBar = (ProgressBar) findViewById(R.id.progress_bar);
-    }
-
-    @Override
-    public TokoCashComponent getComponent() {
-        if (tokoCashComponent == null) initInjector();
-        return tokoCashComponent;
+        merchantName = findViewById(R.id.merchant_name);
+        merchantPhone = findViewById(R.id.merchant_phone);
+        nominalValue = findViewById(R.id.value_nominal);
+        notesValue = findViewById(R.id.notes_value);
+        separatorNominal = findViewById(R.id.separator);
+        tokocashValue = findViewById(R.id.tokocash_value);
+        payButton = findViewById(R.id.pay_button);
+        progressBar = findViewById(R.id.progress_bar);
     }
 
     private void initInjector() {
