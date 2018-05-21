@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/topads_content_statistics"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical">
@@ -30,17 +29,25 @@
 
     </LinearLayout>
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/recyclerview_tabLayout"
-        android:paddingStart="@dimen/dp_12"
-        android:paddingLeft="@dimen/dp_12"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/white"/>
+        android:id="@+id/topads_content_statistics"
+        android:orientation="vertical">
 
-    <com.tkpd.library.ui.widget.TouchViewPager
-        android:id="@+id/pager"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/viewpager_statistics_height" />
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/recyclerview_tabLayout"
+            android:paddingStart="@dimen/dp_12"
+            android:paddingLeft="@dimen/dp_12"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/white"/>
+
+        <com.tkpd.library.ui.widget.TouchViewPager
+            android:id="@+id/pager"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/viewpager_statistics_height" />
+
+    </LinearLayout>
 
 </LinearLayout>
