@@ -10,7 +10,7 @@ ext {
 
     supportLibraryVersion = '26.0.2'
     playServiceVersion = '11.0.4'
-    butterKnifeVersion = '8.4.0'
+    butterKnifeVersion = '9.0.0-SNAPSHOT'
     dbFlowVersion = '3.0.1'
     retrofitVersion = '2.1.0'
     okHttpVersion = '3.8.0'
