@@ -240,5 +240,7 @@
     <string name="product_category_locked">Kategori Terkunci</string>
     <string name="product_category_locked_description">Tidak dapat mengubah kategori dari produk yang sudah memiliki varian.</string>
     <string name="product_add_sku_title">SKU (Stock Keeping Unit)</string>
+    <string name="product_manage_cashback_limited_title">Pemakaian Cashback Terbatas</string>
+    <string name="product_manage_cashback_limited_desc">Anda telah memakai cashback sebanyak 5 kali. Dapatkan cashback tanpa minimum pemakaian dengan berlangganan Gold Merchant.</string>
 
 </resources>
