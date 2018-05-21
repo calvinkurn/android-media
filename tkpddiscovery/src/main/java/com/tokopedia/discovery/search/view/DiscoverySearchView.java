@@ -651,12 +651,7 @@ public class DiscoverySearchView extends FrameLayout implements Filter.FilterLis
                 if (finishOnClose) {
                     setFinishOnClose(false);
                 }
-                new Handler().postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        startShowCase();
-                    }
-                }, IMAGE_SEARCH_SHOW_CASE_DIALOG_DELAY);
+                initShowCase();
                 return true;
             }
         });
@@ -698,13 +693,16 @@ public class DiscoverySearchView extends FrameLayout implements Filter.FilterLis
             }, 500);
         }
         showSearch(animate);
+        initShowCase();
+    }
+
+    private void initShowCase() {
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
                 startShowCase();
             }
         }, IMAGE_SEARCH_SHOW_CASE_DIALOG_DELAY);
-
     }
 
     public boolean isFinishOnClose() {
