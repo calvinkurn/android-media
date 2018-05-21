@@ -11,6 +11,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.tokopedia.core.app.MainApplication;
+import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.router.productdetail.ProductDetailRouter;
@@ -25,8 +26,11 @@ import com.tokopedia.topads.sdk.domain.TopAdsParams;
 import com.tokopedia.topads.sdk.domain.model.Data;
 import com.tokopedia.topads.sdk.domain.model.Product;
 import com.tokopedia.topads.sdk.domain.model.Shop;
+import com.tokopedia.topads.sdk.listener.TopAdsBannerClickListener;
 import com.tokopedia.topads.sdk.listener.TopAdsItemClickListener;
+import com.tokopedia.topads.sdk.listener.TopAdsListener;
 import com.tokopedia.topads.sdk.view.DisplayMode;
+import com.tokopedia.topads.sdk.view.TopAdsBannerView;
 import com.tokopedia.topads.sdk.view.TopAdsView;
 
 /**
@@ -35,9 +39,9 @@ import com.tokopedia.topads.sdk.view.TopAdsView;
 
 public class EmptySearchViewHolder extends AbstractViewHolder<EmptySearchModel> implements TopAdsItemClickListener {
 
+    public static final String SEARCH_NF_VALUE = "1";
     private final int MAX_TOPADS = 4;
     private TopAdsView topAdsView;
-    private Config config;
     private TopAdsParams params = new TopAdsParams();
     private Context context;
     private ImageView noResultImage;
@@ -45,7 +49,7 @@ public class EmptySearchViewHolder extends AbstractViewHolder<EmptySearchModel> 
     private TextView emptyContentTextView;
     private Button emptyButtonItemButton;
     private final ItemClickListener clickListener;
-
+    private TopAdsBannerView topAdsBannerView;
     @LayoutRes
     public static final int LAYOUT = R.layout.list_empty_search_product;
 
@@ -58,22 +62,54 @@ public class EmptySearchViewHolder extends AbstractViewHolder<EmptySearchModel> 
         this.clickListener = clickListener;
         context = itemView.getContext();
         topAdsView = (TopAdsView) itemView.findViewById(R.id.topads);
-        config = new Config.Builder()
+        topAdsBannerView = (TopAdsBannerView) itemView.findViewById(R.id.banner_ads);
+
+        params = topAdsConfig.getTopAdsParams();
+        params.getParam().put(TopAdsParams.KEY_SEARCH_NF, SEARCH_NF_VALUE);
+    }
+
+    private void loadProductAds() {
+        Config productAdsConfig = new Config.Builder()
                 .setSessionId(GCMHandler.getRegistrationId(MainApplication.getAppContext()))
                 .setUserId(SessionHandler.getLoginID(context))
                 .withMerlinCategory()
+                .topAdsParams(params)
                 .setEndpoint(Endpoint.PRODUCT)
                 .build();
-        params.getParam().put(TopAdsParams.KEY_QUERY, topAdsConfig.getTopAdsParams()
-                .getParam().get(TopAdsParams.KEY_QUERY));
-        params.getParam().put(TopAdsParams.KEY_SRC, topAdsConfig.getTopAdsParams()
-                .getParam().get(TopAdsParams.KEY_SRC));
-        params.getParam().put(TopAdsParams.KEY_SEARCH_NF, "1");
-        config.setTopAdsParams(params);
-        topAdsView.setConfig(config);
+        topAdsView.setConfig(productAdsConfig);
         topAdsView.setDisplayMode(DisplayMode.FEED);
         topAdsView.setMaxItems(MAX_TOPADS);
         topAdsView.setAdsItemClickListener(this);
+        topAdsView.loadTopAds();
+    }
+
+    private void loadBannerAds() {
+        Config bannerAdsConfig = new Config.Builder()
+                .setSessionId(GCMHandler.getRegistrationId(MainApplication.getAppContext()))
+                .setUserId(SessionHandler.getLoginID(context))
+                .withMerlinCategory()
+                .topAdsParams(params)
+                .setEndpoint(Endpoint.CPM)
+                .build();
+        topAdsBannerView.setConfig(bannerAdsConfig);
+        topAdsBannerView.setTopAdsBannerClickListener(new TopAdsBannerClickListener() {
+            @Override
+            public void onBannerAdsClicked(String appLink) {
+                clickListener.onBannerAdsClicked(appLink);
+            }
+        });
+        topAdsBannerView.setAdsListener(new TopAdsListener() {
+            @Override
+            public void onTopAdsLoaded() {
+                loadProductAds();
+            }
+
+            @Override
+            public void onTopAdsFailToLoad(int errorCode, String message) {
+                loadProductAds();
+            }
+        });
+        topAdsBannerView.loadTopAds();
     }
 
     @Override
@@ -127,6 +163,6 @@ public class EmptySearchViewHolder extends AbstractViewHolder<EmptySearchModel> 
             });
             emptyButtonItemButton.setVisibility(View.VISIBLE);
         }
-        topAdsView.loadTopAds();
+        loadBannerAds();
     }
 }

@@ -55,4 +55,5 @@
     <color name="snackbar_border_normal">#87d58b</color>
 
     <color name="bg_button_border_outline">#E0E0E0</color>
+    <color name="white_two">#e0e0e0</color>
 </resources>
