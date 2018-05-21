@@ -30,6 +30,8 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Tokopedia3"
         tools:replace="name, label">
+        <meta-data android:name="android.support.VERSION" android:value="26.1.0"
+            tools:replace="android:value" />
         <meta-data
             android:name="net.hockeyapp.android.appIdentifier"
             android:value="528b17702bf941a581f15e188677306b " />

@@ -1,12 +1,16 @@
 apply plugin: 'com.android.library'
 apply from: "$rootProject.projectDir/buildconfig/module.gradle"
 
-dependencies {
-    compile project(rootProject.ext.libraries.useCase)
-    compile project(rootProject.ext.libraries.abstraction)
-
-    testCompile rootProject.ext.testDependencies.junit
-    androidTestCompile(rootProject.ext.testDependencies.espressoCore, {
-        exclude group: 'com.android.support', module: 'support-annotations'
-    })
+project.ext {
+    artifactId = 'shop-common'
+    groupId = 'com.tokopedia.shop'
+    versionName = "2.22"
+    artifactName ="shop_common-release"
 }
+
+dependencies {
+    implementation project(rootProject.ext.libraries.useCase)
+    implementation project(rootProject.ext.libraries.abstraction)
+}
+
+apply from: '../../../publish_local.gradle'
