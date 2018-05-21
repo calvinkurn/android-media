@@ -7,6 +7,7 @@ import android.provider.MediaStore;
 import android.support.v4.content.CursorLoader;
 
 import com.tokopedia.imagepicker.picker.gallery.model.AlbumItem;
+import com.tokopedia.imagepicker.picker.gallery.model.MimeType;
 import com.tokopedia.imagepicker.picker.gallery.type.GalleryType;
 
 /**
@@ -24,22 +25,35 @@ public class AlbumMediaLoader extends CursorLoader {
             MediaStore.MediaColumns.MIME_TYPE,
             MediaStore.MediaColumns.SIZE,
             "duration"};
+
+    // media type [image] or media type [video] AND size > 0 and mime type not [gif]
     private static final String SELECTION_ALL =
-            String.format("(%s=? OR %s=?) AND %s>0",
+            String.format("(%s=? OR %s=?) AND %s>0 AND %s!=?",
                     MediaStore.Files.FileColumns.MEDIA_TYPE,
                     MediaStore.Files.FileColumns.MEDIA_TYPE,
-                    MediaStore.MediaColumns.SIZE
-            );
-    private static final String SELECTION_ALL_IMAGE_ONLY =
-            String.format("(%s=?) AND %s>0",
-                    MediaStore.Files.FileColumns.MEDIA_TYPE,
-                    MediaStore.MediaColumns.SIZE
+                    MediaStore.MediaColumns.SIZE,
+                    MediaStore.MediaColumns.MIME_TYPE
             );
 
     private static final String[] SELECTION_ALL_ARGS = {
             String.valueOf(MediaStore.Files.FileColumns.MEDIA_TYPE_IMAGE),
             String.valueOf(MediaStore.Files.FileColumns.MEDIA_TYPE_VIDEO),
+            MimeType.GIF.toString()
     };
+
+    // media type [image] AND size > 0 and mime type not [gif]
+    private static final String SELECTION_ALL_IMAGE_ONLY =
+            String.format("(%s=?) AND %s>0 AND %s!=?" ,
+                    MediaStore.Files.FileColumns.MEDIA_TYPE,
+                    MediaStore.MediaColumns.SIZE,
+                    MediaStore.MediaColumns.MIME_TYPE
+            );
+
+    private static final String[] SELECTION_IMAGE_ONLY_ARGS = {
+            String.valueOf(MediaStore.Files.FileColumns.MEDIA_TYPE_IMAGE),
+            MimeType.GIF.toString()
+    };
+
     private static final String SELECTION_ALBUM =
             String.format("(%s=? OR %s=?) AND %s=? AND %s>0",
                     MediaStore.Files.FileColumns.MEDIA_TYPE,
@@ -48,8 +62,9 @@ public class AlbumMediaLoader extends CursorLoader {
                     MediaStore.MediaColumns.SIZE
             );
 
+    // MediaType = [IMAGE] AND id = [ALBUM_ID]; no need to check gif type
     private static final String SELECTION_ALBUM_IMAGE_ONLY =
-            String.format("(%s=?) AND %s=? AND %s>0",
+            String.format("%s=? AND %s>0 AND %s!=?",
                     MediaStore.Files.FileColumns.MEDIA_TYPE,
                     BUCKET_ID,
                     MediaStore.MediaColumns.SIZE
@@ -71,33 +86,31 @@ public class AlbumMediaLoader extends CursorLoader {
 
     public static CursorLoader newInstance(Context context, AlbumItem albumItem, int galeryType) {
         String[] selectionArgs;
-        String selectionAlbum;
+        String selectionString;
         if(galeryType == GalleryType.IMAGE_ONLY){
             if (albumItem.isAll()) {
-                selectionArgs = new String[] {
-                        String.valueOf(MediaStore.Files.FileColumns.MEDIA_TYPE_IMAGE)
-                };
-                selectionAlbum = SELECTION_ALL_IMAGE_ONLY;
+                selectionArgs = SELECTION_IMAGE_ONLY_ARGS;
+                selectionString = SELECTION_ALL_IMAGE_ONLY;
             }else{
                 selectionArgs = new String[] {
                         String.valueOf(MediaStore.Files.FileColumns.MEDIA_TYPE_IMAGE),
                         albumItem.getmId()
                 };
-                selectionAlbum = SELECTION_ALBUM_IMAGE_ONLY;
+                selectionString = SELECTION_ALBUM_IMAGE_ONLY;
             }
         }else {
             if (albumItem.isAll()) {
                 selectionArgs = SELECTION_ALL_ARGS;
-                selectionAlbum = SELECTION_ALL;
+                selectionString = SELECTION_ALL;
             } else {
                 selectionArgs = getSelectionAlbumArgs(albumItem.getmId());
-                selectionAlbum = SELECTION_ALBUM;
+                selectionString = SELECTION_ALBUM;
             }
         }
         return new AlbumMediaLoader(context,
                 QUERY_URI,
                 PROJECTION,
-                selectionAlbum,
+                selectionString,
                 selectionArgs,
                 ORDER_BY);
     }

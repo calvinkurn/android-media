@@ -23,7 +23,6 @@ import java.util.ArrayList;
 public class MediaGrid extends SquareFrameLayout implements View.OnClickListener {
 
     private ImageView mThumbnail;
-    private TextView mGifTag;
     private TextView mVideoDuration;
 
     private MediaItem mMedia;
@@ -45,7 +44,6 @@ public class MediaGrid extends SquareFrameLayout implements View.OnClickListener
         LayoutInflater.from(context).inflate(R.layout.media_grid_picker, this, true);
 
         mThumbnail = (ImageView) findViewById(R.id.media_thumbnail);
-        mGifTag = (TextView) findViewById(R.id.gif);
         mVideoDuration = (TextView) findViewById(R.id.video_duration);
         ivCheck = findViewById(R.id.iv_check);
 
@@ -65,34 +63,19 @@ public class MediaGrid extends SquareFrameLayout implements View.OnClickListener
 
     public void bindMedia(MediaItem item, ArrayList<Long> selectionIdList) {
         mMedia = item;
-        setGifTag();
         setImage();
         setVideoDuration();
         setSelection(selectionIdList);
     }
 
-    private void setGifTag() {
-        mGifTag.setVisibility(mMedia.isGif() ? View.VISIBLE : View.GONE);
-    }
-
     private void setImage() {
-        if (mMedia.isGif()) {
-            Glide.with(getContext())
-                    .loadFromMediaStore(mMedia.getContentUri())
-                    .asBitmap()
-                    .placeholder(mPreBindInfo.mPlaceholder)
-                    .override(mPreBindInfo.mResize, mPreBindInfo.mResize)
-                    .centerCrop()
-                    .into(mThumbnail);
-        } else {
-            Glide.with(getContext())
-                    .loadFromMediaStore(mMedia.getContentUri())
-                    .asBitmap()  // some .jpeg files are actually gif
-                    .placeholder(mPreBindInfo.mPlaceholder)
-                    .override(mPreBindInfo.mResize, mPreBindInfo.mResize)
-                    .centerCrop()
-                    .into(mThumbnail);
-        }
+        Glide.with(getContext())
+                .loadFromMediaStore(mMedia.getContentUri())
+                .placeholder(mPreBindInfo.mPlaceholder)
+                .error(mPreBindInfo.error)
+                .override(mPreBindInfo.mResize, mPreBindInfo.mResize)
+                .centerCrop()
+                .into(mThumbnail);
     }
 
     private void setVideoDuration() {
@@ -104,8 +87,8 @@ public class MediaGrid extends SquareFrameLayout implements View.OnClickListener
         }
     }
 
-    private void setSelection(ArrayList<Long> selectionIdList){
-        if ( selectionIdList.contains(mMedia.getId())){
+    private void setSelection(ArrayList<Long> selectionIdList) {
+        if (selectionIdList.contains(mMedia.getId())) {
             ivCheck.setVisibility(View.VISIBLE);
         } else {
             ivCheck.setVisibility(View.GONE);
@@ -124,13 +107,15 @@ public class MediaGrid extends SquareFrameLayout implements View.OnClickListener
 
     public static class PreBindInfo {
         int mResize;
-        Drawable mPlaceholder;
+        int mPlaceholder;
+        int error;
         RecyclerView.ViewHolder mViewHolder;
 
-        public PreBindInfo(int resize, Drawable placeholder,
+        public PreBindInfo(int resize, int placeholder, int error,
                            RecyclerView.ViewHolder viewHolder) {
             mResize = resize;
             mPlaceholder = placeholder;
+            this.error = error;
             mViewHolder = viewHolder;
         }
     }

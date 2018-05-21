@@ -8,21 +8,6 @@
         android:layout_height="match_parent" />
 
     <TextView
-        android:id="@+id/gif"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="end|bottom"
-        android:layout_marginBottom="8dp"
-        android:layout_marginRight="8dp"
-        android:layout_marginEnd="8dp"
-        android:background="@color/white"
-        android:gravity="center"
-        android:padding="4dp"
-        android:text="@string/gif"
-        style="@style/TextView.Micro"
-        android:visibility="gone" />
-
-    <TextView
         android:id="@+id/video_duration"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

@@ -102,7 +102,7 @@ public class AlbumMediaAdapter extends RecyclerViewCursorAdapter<AlbumMediaAdapt
         final MediaItem item = MediaItem.valueOf(cursor);
         holder.mMediaGrid.preBindMedia(
                 new MediaGrid.PreBindInfo(getImageResize(holder.mMediaGrid.getContext()),
-                        null,
+                        0, R.drawable.error_drawable,
                         holder
                 ));
         holder.mMediaGrid.bindMedia(item, selectionIdList);

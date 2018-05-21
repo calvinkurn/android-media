@@ -9,6 +9,7 @@ import android.provider.MediaStore;
 import android.support.v4.content.CursorLoader;
 
 import com.tokopedia.imagepicker.picker.gallery.model.AlbumItem;
+import com.tokopedia.imagepicker.picker.gallery.model.MimeType;
 import com.tokopedia.imagepicker.picker.gallery.type.GalleryType;
 
 /**
@@ -39,30 +40,45 @@ public class AlbumLoader extends CursorLoader {
     // Return only video and image metadata.
     private static final String SELECTION =
             "(" + MediaStore.Files.FileColumns.MEDIA_TYPE + "=?"
-            + " OR "
-            + MediaStore.Files.FileColumns.MEDIA_TYPE + "=?)"
-            + " AND " + MediaStore.MediaColumns.SIZE + ">0"
-            + ") GROUP BY (bucket_id";
+                    + " OR "
+                    + MediaStore.Files.FileColumns.MEDIA_TYPE + "=?)"
+                    + " AND " + MediaStore.MediaColumns.SIZE + ">0"
+                    + " AND " + MediaStore.MediaColumns.MIME_TYPE + " != '" + MimeType.GIF.toString()+"' "
+                    + ") GROUP BY (bucket_id";
+
+    // Return only video and image metadata.
+    private static final String SELECTION_IMAGE_ONLY =
+            MediaStore.Files.FileColumns.MEDIA_TYPE + "=?"
+                    + " AND " + MediaStore.MediaColumns.SIZE + ">0"
+                    + " AND " + MediaStore.MediaColumns.MIME_TYPE + " != '" + MimeType.GIF.toString()+"' "
+                    + ") GROUP BY (bucket_id";
 
     private static final String[] SELECTION_ARGS = {
             String.valueOf(MediaStore.Files.FileColumns.MEDIA_TYPE_IMAGE),
-            String.valueOf(MediaStore.Files.FileColumns.MEDIA_TYPE_VIDEO),
+            String.valueOf(MediaStore.Files.FileColumns.MEDIA_TYPE_VIDEO)
+    };
+
+    private static final String[] SELECTION_ARGS_IMAGE_ONLY = {
+            String.valueOf(MediaStore.Files.FileColumns.MEDIA_TYPE_IMAGE)
     };
 
     private static final String BUCKET_ORDER_BY = "datetaken DESC";
 
-    public AlbumLoader(Context context, String[] selectionArgs) {
+    public AlbumLoader(Context context, String selection, String[] selectionArgs) {
         super(context, QUERY_URI, PROJECTION, SELECTION, selectionArgs, BUCKET_ORDER_BY);
     }
 
-    public static CursorLoader createInstance(Context context, int galleryType){
+    public static CursorLoader createInstance(Context context, int galleryType) {
         String[] selectionArgs;
-        if(galleryType == GalleryType.IMAGE_ONLY){
-            selectionArgs = new String[]{String.valueOf(MediaStore.Files.FileColumns.MEDIA_TYPE_IMAGE)};
-        }else{
+        String selection;
+        if (galleryType == GalleryType.IMAGE_ONLY) {
+            selection = SELECTION_IMAGE_ONLY;
+            selectionArgs = SELECTION_ARGS_IMAGE_ONLY;
+        } else {
+            selection = SELECTION;
             selectionArgs = SELECTION_ARGS;
         }
-        return new AlbumLoader(context, selectionArgs);
+        return new AlbumLoader(context, selection, selectionArgs);
     }
 
     @Override
@@ -79,7 +95,8 @@ public class AlbumLoader extends CursorLoader {
                 allAlbumCoverPath = albums.getString(albums.getColumnIndex(MediaStore.MediaColumns.DATA));
             }
         }
-        allAlbum.addRow(new String[]{AlbumItem.ALBUM_ID_ALL, AlbumItem.ALBUM_ID_ALL, AlbumItem.ALBUM_NAME_ALL, allAlbumCoverPath,
+        allAlbum.addRow(new String[]{AlbumItem.ALBUM_ID_ALL, AlbumItem.ALBUM_ID_ALL, AlbumItem.ALBUM_NAME_ALL,
+                allAlbumCoverPath,
                 String.valueOf(totalCount)});
 
         return new MergeCursor(new Cursor[]{allAlbum, albums});
