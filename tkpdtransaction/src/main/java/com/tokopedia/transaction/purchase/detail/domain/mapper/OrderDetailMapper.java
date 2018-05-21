@@ -172,7 +172,7 @@ public class OrderDetailMapper {
             viewData.setDriverVehicle(
                     responseData.getDetail().getShipment().getInfo().getDriver().getLicenseNumber()
             );
-            if (TextUtils.isEmpty(responseData
+            if (!TextUtils.isEmpty(responseData
                     .getDetail()
                     .getShipment()
                     .getInfo().getDriver().getTrackingUrl())) {
