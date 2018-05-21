@@ -9,6 +9,7 @@ import android.support.v4.app.Fragment;
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tokopedia.abstraction.common.di.component.HasComponent;
 import com.tokopedia.checkout.R;
+import com.tokopedia.checkout.applink.CheckoutAppLink;
 import com.tokopedia.checkout.domain.datamodel.cartlist.CartItemData;
 import com.tokopedia.checkout.view.base.BaseCheckoutActivity;
 import com.tokopedia.checkout.view.di.component.CartComponent;
@@ -24,7 +25,7 @@ import java.util.List;
 public class CartActivity extends BaseCheckoutActivity implements CartFragment.ActionListener,
         HasComponent<CartComponent> {
 
-    @DeepLink(Constants.Applinks.CART)
+    @DeepLink(CheckoutAppLink.CART)
     public static Intent getCallingIntent(Context context, Bundle extras) {
         Intent intent = new Intent(context, CartActivity.class).putExtras(extras);
         intent.putExtras(extras);

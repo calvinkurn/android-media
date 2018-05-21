@@ -2,6 +2,7 @@ package com.tokopedia.checkout.view.view.shipment.di;
 
 import com.tokopedia.checkout.data.repository.AddressRepository;
 import com.tokopedia.checkout.domain.usecase.CancelAutoApplyCouponUseCase;
+import com.tokopedia.checkout.domain.usecase.ChangeShippingAddressUseCase;
 import com.tokopedia.checkout.domain.usecase.EditAddressUseCase;
 import com.tokopedia.transactiondata.repository.ICartRepository;
 import com.tokopedia.transactiondata.repository.ITopPayRepository;
@@ -125,10 +126,12 @@ public class ShipmentModule {
                                                         GetShipmentAddressFormUseCase getShipmentAddressFormUseCase,
                                                         CheckPromoCodeCartListUseCase checkPromoCodeCartListUseCase,
                                                         EditAddressUseCase editAddressUseCase,
-                                                        CancelAutoApplyCouponUseCase cancelAutoApplyCouponUseCase) {
+                                                        CancelAutoApplyCouponUseCase cancelAutoApplyCouponUseCase,
+                                                        ChangeShippingAddressUseCase changeShippingAddressUseCase) {
         return new ShipmentPresenter(compositeSubscription, checkoutUseCase, getThanksToppayUseCase,
                 checkPromoCodeCartShipmentUseCase, getShipmentAddressFormUseCase,
-                checkPromoCodeCartListUseCase, editAddressUseCase, cancelAutoApplyCouponUseCase);
+                checkPromoCodeCartListUseCase, editAddressUseCase, cancelAutoApplyCouponUseCase,
+                changeShippingAddressUseCase);
     }
 
     @Provides

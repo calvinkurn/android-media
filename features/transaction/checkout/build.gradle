@@ -27,4 +27,8 @@ dependencies {
 
     compile rootProject.ext.miscDependencies.dagger
     apt rootProject.ext.miscDependencies.daggerCompiler
+
+    compile rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
+    apt rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
+
 }

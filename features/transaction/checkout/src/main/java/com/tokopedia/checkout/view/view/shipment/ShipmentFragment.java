@@ -381,11 +381,19 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         shipmentAdapter.notifyItemChanged(shipmentAdapter.getShipmentCostPosition());
     }
 
+    @Override
+    public void renderChangeAddressSuccess(RecipientAddressModel selectedAddress) {
+        shipmentPresenter.setRecipientAddressModel(selectedAddress);
+        shipmentAdapter.updateSelectedAddress(selectedAddress);
+        courierBottomsheet = null;
+        onCartDataDisableToCheckout();
+    }
+
     private void updateAppliedPromo(CartItemPromoHolderData cartPromo) {
         shipmentAdapter.updateItemPromoVoucher(cartPromo);
         if (shipmentAdapter.hasSetAllCourier()) {
             ShipmentAdapter.RequestData requestData =
-                    shipmentAdapter.getRequestPromoData();
+                    shipmentAdapter.getRequestData();
             shipmentPresenter.setPromoCodeCartShipmentRequestData(requestData.getPromoRequestData());
             shipmentPresenter.checkPromoShipment();
 
@@ -505,10 +513,8 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
             case CartAddressChoiceActivity.RESULT_CODE_ACTION_SELECT_ADDRESS:
                 RecipientAddressModel selectedAddress = data.getParcelableExtra(
                         CartAddressChoiceActivity.EXTRA_SELECTED_ADDRESS_DATA);
-                shipmentPresenter.setRecipientAddressModel(selectedAddress);
-                shipmentAdapter.updateSelectedAddress(selectedAddress);
-                courierBottomsheet = null;
-                onCartDataDisableToCheckout();
+                shipmentPresenter.setDataChangeAddressRequestList(shipmentAdapter.getRequestData().getChangeAddressRequestData());
+                shipmentPresenter.changeShippingAddress(selectedAddress);
                 break;
             case CartAddressChoiceActivity.RESULT_CODE_ACTION_TO_MULTIPLE_ADDRESS_FORM:
                 Intent intent = new Intent();

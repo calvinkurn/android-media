@@ -7,7 +7,7 @@ import com.google.gson.annotations.SerializedName;
  * Created by kris on 2/5/18. Tokopedia
  */
 
-public class MultipleAddressRequest {
+public class DataChangeAddressRequest {
 
     @SerializedName("cart_id")
     @Expose

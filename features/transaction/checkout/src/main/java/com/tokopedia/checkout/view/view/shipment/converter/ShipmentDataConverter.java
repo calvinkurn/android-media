@@ -100,6 +100,7 @@ public class ShipmentDataConverter {
 
                     shipmentMultipleAddressItem.setInvoicePosition(shipmentCartItemModels.size());
                     shipmentMultipleAddressItem.setShopId(currentGroupShop.getShop().getShopId());
+                    shipmentMultipleAddressItem.setCartId(currentProduct.getCartId());
                     shipmentMultipleAddressItem.setProductName(currentProduct.getProductName());
                     shipmentMultipleAddressItem.setProductPriceNumber(currentProduct.getProductPrice());
                     shipmentMultipleAddressItem.setProductPrice(currentProduct.getProductPrice());
@@ -175,6 +176,7 @@ public class ShipmentDataConverter {
         shipmentSingleAddressItem.setProductFcancelPartial(fobject.isFcancelPartial() == 1);
         shipmentSingleAddressItem.setCartItemModels(cartItemModels);
         shipmentSingleAddressItem.setProductIsPreorder(fobject.isPreOrder() == 1);
+        shipmentSingleAddressItem.setCartId(products.size() > 0 ? products.get(0).getCartId() : 0);
 
         shipmentSingleAddressItem.setShipmentCartData(new RatesDataConverter()
                 .getShipmentCartData(userAddress, groupShop, shipmentSingleAddressItem, keroToken, keroUnixTime));
@@ -193,7 +195,7 @@ public class ShipmentDataConverter {
     private CartItemModel convertFromProduct(Product product) {
         CartItemModel cartItemModel = new CartItemModel();
 
-        cartItemModel.setId(product.getProductId());
+        cartItemModel.setProcuctId(product.getProductId());
         cartItemModel.setName(product.getProductName());
         cartItemModel.setImageUrl(product.getProductImageSrc200Square());
         cartItemModel.setCurrency(product.getProductPriceCurrency());

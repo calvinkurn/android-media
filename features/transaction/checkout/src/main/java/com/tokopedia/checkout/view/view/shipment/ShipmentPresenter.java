@@ -11,6 +11,7 @@ import com.tokopedia.checkout.domain.datamodel.MultipleAddressItemData;
 import com.tokopedia.checkout.domain.datamodel.addressoptions.RecipientAddressModel;
 import com.tokopedia.checkout.domain.datamodel.cartcheckout.CheckoutData;
 import com.tokopedia.checkout.domain.datamodel.cartlist.CartPromoSuggestion;
+import com.tokopedia.checkout.domain.datamodel.cartmultipleshipment.SetShippingAddressData;
 import com.tokopedia.checkout.domain.datamodel.cartshipmentform.CartShipmentAddressFormData;
 import com.tokopedia.checkout.domain.datamodel.cartshipmentform.GroupAddress;
 import com.tokopedia.checkout.domain.datamodel.cartshipmentform.GroupShop;
@@ -18,6 +19,7 @@ import com.tokopedia.checkout.domain.datamodel.cartsingleshipment.ShipmentCostMo
 import com.tokopedia.checkout.domain.datamodel.toppay.ThanksTopPayData;
 import com.tokopedia.checkout.domain.datamodel.voucher.PromoCodeAppliedData;
 import com.tokopedia.checkout.domain.usecase.CancelAutoApplyCouponUseCase;
+import com.tokopedia.checkout.domain.usecase.ChangeShippingAddressUseCase;
 import com.tokopedia.checkout.domain.usecase.CheckPromoCodeCartListUseCase;
 import com.tokopedia.checkout.domain.usecase.CheckPromoCodeCartShipmentUseCase;
 import com.tokopedia.checkout.domain.usecase.CheckoutUseCase;
@@ -34,6 +36,7 @@ import com.tokopedia.core.router.transactionmodule.sharedata.CheckPromoCodeCartS
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.payment.utils.ErrorNetMessage;
 import com.tokopedia.transactiondata.entity.request.CheckoutRequest;
+import com.tokopedia.transactiondata.entity.request.DataChangeAddressRequest;
 import com.tokopedia.transactiondata.entity.request.DataCheckoutRequest;
 import com.tokopedia.usecase.RequestParams;
 
@@ -64,6 +67,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     private final CheckPromoCodeCartListUseCase checkPromoCodeCartListUseCase;
     private final EditAddressUseCase editAddressUseCase;
     private final CancelAutoApplyCouponUseCase cancelAutoApplyCouponUseCase;
+    private final ChangeShippingAddressUseCase changeShippingAddressUseCase;
 
     private List<ShipmentCartItemModel> shipmentCartItemModelList;
     private RecipientAddressModel recipientAddressModel;
@@ -74,6 +78,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
 
     private List<DataCheckoutRequest> dataCheckoutRequestList;
     private List<CheckPromoCodeCartShipmentRequest.Data> promoCodeCartShipmentRequestDataList;
+    private List<DataChangeAddressRequest> changeAddressRequestList;
     private CheckoutData checkoutData;
 
     @Inject
@@ -84,7 +89,8 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                              GetShipmentAddressFormUseCase getShipmentAddressFormUseCase,
                              CheckPromoCodeCartListUseCase checkPromoCodeCartListUseCase,
                              EditAddressUseCase editAddressUseCase,
-                             CancelAutoApplyCouponUseCase cancelAutoApplyCouponUseCase) {
+                             CancelAutoApplyCouponUseCase cancelAutoApplyCouponUseCase,
+                             ChangeShippingAddressUseCase changeShippingAddressUseCase) {
         this.compositeSubscription = compositeSubscription;
         this.checkoutUseCase = checkoutUseCase;
         this.getThanksToppayUseCase = getThanksToppayUseCase;
@@ -93,6 +99,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         this.checkPromoCodeCartListUseCase = checkPromoCodeCartListUseCase;
         this.editAddressUseCase = editAddressUseCase;
         this.cancelAutoApplyCouponUseCase = cancelAutoApplyCouponUseCase;
+        this.changeShippingAddressUseCase = changeShippingAddressUseCase;
     }
 
     @Override
@@ -413,18 +420,8 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     }
 
     @Override
-    public List<DataCheckoutRequest> getDataCheckoutRequestList() {
-        return dataCheckoutRequestList;
-    }
-
-    @Override
     public void setDataCheckoutRequestList(List<DataCheckoutRequest> dataCheckoutRequestList) {
         this.dataCheckoutRequestList = dataCheckoutRequestList;
-    }
-
-    @Override
-    public List<CheckPromoCodeCartShipmentRequest.Data> getPromoCodeCartShipmentRequestData() {
-        return promoCodeCartShipmentRequestDataList;
     }
 
     @Override
@@ -432,6 +429,11 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
             List<CheckPromoCodeCartShipmentRequest.Data> promoCodeCartShipmentRequestData
     ) {
         this.promoCodeCartShipmentRequestDataList = promoCodeCartShipmentRequestData;
+    }
+
+    @Override
+    public void setDataChangeAddressRequestList(List<DataChangeAddressRequest> dataChangeAddressRequestList) {
+        this.changeAddressRequestList = dataChangeAddressRequestList;
     }
 
     @Override
@@ -600,6 +602,54 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                                     getView().showToastError(getView().getActivity().getString(R.string.default_request_error_unknown));
                                 }
 
+                            }
+                        })
+        );
+    }
+
+    @Override
+    public void changeShippingAddress(final RecipientAddressModel recipientAddressModel) {
+        getView().showLoading();
+        String changeAddressRequestJsonString = new Gson().toJson(changeAddressRequestList);
+
+        TKPDMapParam<String, String> param = new TKPDMapParam<>();
+        param.put("carts", changeAddressRequestJsonString);
+        RequestParams requestParam = RequestParams.create();
+
+        TKPDMapParam<String, String> authParam = AuthUtil.generateParamsNetwork(
+                getView().getActivity(), param,
+                SessionHandler.getLoginID(getView().getActivity()),
+                GCMHandler.getRegistrationId(getView().getActivity()));
+
+        requestParam.putAllString(authParam);
+
+        compositeSubscription.add(
+                changeShippingAddressUseCase.createObservable(requestParam)
+                        .subscribeOn(Schedulers.newThread())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .unsubscribeOn(Schedulers.newThread())
+                        .subscribe(new Subscriber<SetShippingAddressData>() {
+                            @Override
+                            public void onCompleted() {
+
+                            }
+
+                            @Override
+                            public void onError(Throwable e) {
+                                getView().hideLoading();
+                                e.printStackTrace();
+                                getView().showToastError(getView().getActivity().getString(R.string.default_request_error_unknown));
+                            }
+
+                            @Override
+                            public void onNext(SetShippingAddressData setShippingAddressData) {
+                                getView().hideLoading();
+                                if (setShippingAddressData.isSuccess()) {
+                                    getView().showToastNormal(getView().getActivity().getString(R.string.label_change_address_success));
+                                    getView().renderChangeAddressSuccess(recipientAddressModel);
+                                } else {
+                                    getView().showToastError(getView().getActivity().getString(R.string.label_change_address_failed));
+                                }
                             }
                         })
         );
