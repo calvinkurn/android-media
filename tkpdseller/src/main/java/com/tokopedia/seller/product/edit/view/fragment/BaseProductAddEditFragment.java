@@ -498,6 +498,7 @@ public abstract class BaseProductAddEditFragment<T extends ProductAddPresenter>
 
     @Override
     public boolean hasVariant() {
+        productPriceViewHolder.updateModel(currentProductViewModel);
         return currentProductViewModel.hasVariant();
     }
 

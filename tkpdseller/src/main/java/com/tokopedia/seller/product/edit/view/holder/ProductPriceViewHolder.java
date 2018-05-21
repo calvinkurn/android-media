@@ -144,8 +144,6 @@ public class ProductPriceViewHolder extends ProductViewHolder{
 
         if (getPriceValue() == 0) {
             wholesaleLabelView.setVisibility(View.GONE);
-        } else {
-            wholesaleLabelView.setVisibility(View.VISIBLE);
         }
 
         minimumOrderCounterInputView.addTextChangedListener(new AfterTextWatcher() {
@@ -176,6 +174,10 @@ public class ProductPriceViewHolder extends ProductViewHolder{
             if(listener.hasVariant()){
                 priceSpinnerCounterInputView.setEnabled(false);
                 editPriceImageButton.setVisibility(View.VISIBLE);
+                priceSpinnerCounterInputView.setCounterError(null);
+            } else {
+                priceSpinnerCounterInputView.setEnabled(true);
+                editPriceImageButton.setVisibility(View.GONE);
             }
         }
 
@@ -282,6 +284,11 @@ public class ProductPriceViewHolder extends ProductViewHolder{
 
     private boolean isPriceValid() {
         if (listener.hasVariant()) {
+            if (getPriceValue() == 0) {
+                wholesaleLabelView.setVisibility(View.GONE);
+            } else {
+                wholesaleLabelView.setVisibility(View.VISIBLE);
+            }
             return true;
         } else {
             double priceValue = getPriceValue();
