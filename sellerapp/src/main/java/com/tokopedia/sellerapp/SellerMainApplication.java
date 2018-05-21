@@ -15,10 +15,10 @@ import com.moengage.pushbase.push.MoEPushCallBacks;
 import com.raizlabs.android.dbflow.config.FlowConfig;
 import com.raizlabs.android.dbflow.config.FlowManager;
 import com.raizlabs.android.dbflow.config.TkpdCacheApiGeneratedDatabaseHolder;
-import com.raizlabs.android.dbflow.config.TkpdGMGeneratedDatabaseHolder;
 import com.raizlabs.android.dbflow.config.TkpdSellerGeneratedDatabaseHolder;
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.abstraction.constant.AbstractionBaseURL;
+import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.cacheapi.domain.interactor.CacheApiWhiteListUseCase;
 import com.tokopedia.cacheapi.util.CacheApiLoggingUtils;
 import com.tokopedia.core.gcm.Constants;
@@ -27,6 +27,7 @@ import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.HockeyAppHelper;
 import com.tokopedia.digital.common.constant.DigitalUrl;
+import com.tokopedia.gm.common.constant.GMCommonUrl;
 import com.tokopedia.mitratoppers.common.constant.MitraToppersBaseURL;
 import com.tokopedia.network.SessionUrl;
 import com.tokopedia.pushnotif.PushNotification;
@@ -186,6 +187,7 @@ public class SellerMainApplication extends SellerRouterApplication implements Mo
         MitraToppersBaseURL.PATH_MITRA_TOPPERS = SellerAppBaseUrl.PATH_MITRA_TOPPERS;
         DigitalUrl.WEB_DOMAIN = SellerAppBaseUrl.BASE_WEB_DOMAIN;
         TkpdBaseURL.HOME_DATA_BASE_URL = SellerAppBaseUrl.HOME_DATA_BASE_URL;
+        GMCommonUrl.BASE_URL = SellerAppBaseUrl.BASE_GOLD_MERCHANT_DOMAIN;
     }
 
     private void generateSellerAppNetworkKeys() {
@@ -201,7 +203,6 @@ public class SellerMainApplication extends SellerRouterApplication implements Mo
             FlowManager.init(new FlowConfig.Builder(getApplicationContext()).build());
         }
         FlowManager.initModule(TkpdSellerGeneratedDatabaseHolder.class);
-        FlowManager.initModule(TkpdGMGeneratedDatabaseHolder.class);
         FlowManager.initModule(TkpdCacheApiGeneratedDatabaseHolder.class);
         PushNotification.initDatabase(getApplicationContext());
     }

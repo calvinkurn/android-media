@@ -18,6 +18,8 @@ import com.tokopedia.cacheapi.util.EncryptionUtils;
 import com.tokopedia.cacheapi.util.CacheApiLoggingUtils;
 
 import java.util.Collection;
+import java.util.List;
+import java.util.UUID;
 
 import okhttp3.Response;
 import rx.Observable;
@@ -43,9 +45,7 @@ public class CacheApiDatabaseSource {
                     return;
                 }
                 String storedVersionName = "";
-                CacheApiVersion cacheApiVersion = new Select()
-                        .from(CacheApiVersion.class)
-                        .querySingle();
+                CacheApiVersion cacheApiVersion = new Select().from(CacheApiVersion.class).querySingle();
                 if (cacheApiVersion != null) {
                     storedVersionName = cacheApiVersion.getVersion();
                 }
@@ -79,49 +79,57 @@ public class CacheApiDatabaseSource {
         });
     }
 
-    public Observable<CacheApiWhitelist> getWhiteList(final String host, final String path) {
-        return Observable.unsafeCreate(new Observable.OnSubscribe<CacheApiWhitelist>() {
-            @Override
-            public void call(Subscriber<? super CacheApiWhitelist> subscriber) {
-                subscriber.onNext(new Select()
-                        .from(CacheApiWhitelist.class)
-                        .where(CacheApiWhitelist_Table.host.eq(host))
-                        .and(CacheApiWhitelist_Table.path.eq(path))
-                        .querySingle());
-            }
-        });
-    }
-
-    public Observable<Boolean> isInWhiteList(final String host, final String path) {
-        return getWhiteList(host, path).flatMap(new Func1<CacheApiWhitelist, Observable<Boolean>>() {
-            @Override
-            public Observable<Boolean> call(CacheApiWhitelist cacheApiWhitelist) {
-                return Observable.just(cacheApiWhitelist != null);
-            }
-        });
-    }
-
-    public Observable<Boolean> insertWhiteList(final Collection<CacheApiWhiteListDomain> cacheApiDatas) {
+    public Observable<Boolean> insertWhiteList(final List<CacheApiWhiteListDomain> cacheApiDataList) {
         return Observable.unsafeCreate(new Observable.OnSubscribe<Boolean>() {
             @Override
             public void call(Subscriber<? super Boolean> subscriber) {
                 CacheApiLoggingUtils.dumper(String.format("Inserting White List"));
-                for (CacheApiWhiteListDomain cacheApiWhiteListDomain : cacheApiDatas) {
-                    CacheApiWhitelist whiteList = CacheApiWhiteListMapper.from(cacheApiWhiteListDomain);
-                    CacheApiLoggingUtils.dumper(String.format("Insert white list: %s - %s", whiteList.getHost(), whiteList.getPath()));
-                    whiteList.save();
+                int i = 0;
+                for (CacheApiWhiteListDomain cacheApiWhiteListDomain : cacheApiDataList) {
+                    CacheApiWhitelist cacheApiWhitelist = CacheApiWhiteListMapper.from(cacheApiWhiteListDomain);
+                    cacheApiWhitelist.setHost(getEncrypted(cacheApiWhitelist.getHost()));
+                    cacheApiWhitelist.setPath(getEncrypted(cacheApiWhitelist.getPath()));
+                    cacheApiWhitelist.setId(i++);
+                    CacheApiLoggingUtils.dumper(String.format("Insert white list: %s - %s (id:%s)", cacheApiWhitelist.getHost(), cacheApiWhitelist.getPath(), cacheApiWhitelist.getId()));
+                    cacheApiWhitelist.save();
                 }
                 subscriber.onNext(true);
             }
         });
     }
-
-    public Observable<Boolean> deleteAllWhiteListData() {
-        return Observable.unsafeCreate(new Observable.OnSubscribe<Boolean>() {
+    
+    public Observable<CacheApiWhitelist> getWhiteList(final String host, final String path) {
+        return Observable.unsafeCreate(new Observable.OnSubscribe<CacheApiWhitelist>() {
             @Override
-            public void call(Subscriber<? super Boolean> subscriber) {
-                new Delete().from(CacheApiWhitelist.class).execute();
-                subscriber.onNext(true);
+            public void call(Subscriber<? super CacheApiWhitelist> subscriber) {
+                CacheApiWhitelist cacheApiWhitelist = new Select()
+                        .from(CacheApiWhitelist.class)
+                        .where(CacheApiWhitelist_Table.host.eq(getEncrypted(host)))
+                        .and(CacheApiWhitelist_Table.path.eq(getEncrypted(path)))
+                        .querySingle();
+                if (cacheApiWhitelist != null) {
+                    cacheApiWhitelist.setHost(getDecrypted(cacheApiWhitelist.getHost()));
+                    cacheApiWhitelist.setPath(getDecrypted(cacheApiWhitelist.getPath()));
+                }
+                subscriber.onNext(cacheApiWhitelist);
+            }
+        });
+    }
+
+    public Observable<List<CacheApiWhitelist>> getDynamicLinkWhiteList(final String host) {
+        return Observable.unsafeCreate(new Observable.OnSubscribe<List<CacheApiWhitelist>>() {
+            @Override
+            public void call(Subscriber<? super List<CacheApiWhitelist>> subscriber) {
+                List<CacheApiWhitelist> cacheApiWhitelistList = new Select()
+                        .from(CacheApiWhitelist.class)
+                        .where(CacheApiWhitelist_Table.dynamic_link.eq(true))
+                        .and(CacheApiWhitelist_Table.host.eq(getEncrypted(host)))
+                        .queryList();
+                for (CacheApiWhitelist cacheApiWhitelist : cacheApiWhitelistList) {
+                    cacheApiWhitelist.setHost(getDecrypted(cacheApiWhitelist.getHost()));
+                    cacheApiWhitelist.setPath(getDecrypted(cacheApiWhitelist.getPath()));
+                }
+                subscriber.onNext(cacheApiWhitelistList);
             }
         });
     }
@@ -133,8 +141,8 @@ public class CacheApiDatabaseSource {
                 CacheApiLoggingUtils.dumper(String.format("Query cache: %s - %s - %s", host, path, param));
                 Where<CacheApiData> selection = new Select()
                         .from(CacheApiData.class)
-                        .where(CacheApiData_Table.host.eq(host))
-                        .and(CacheApiData_Table.path.eq(path))
+                        .where(CacheApiData_Table.host.eq(getEncrypted(host)))
+                        .and(CacheApiData_Table.path.eq(getEncrypted(path)))
                         .and(CacheApiData_Table.request_param.eq(getEncrypted(param)));
                 CacheApiData cacheApiData = selection.querySingle();
                 String cachedResponseBody = null;
@@ -144,6 +152,42 @@ public class CacheApiDatabaseSource {
                 }
                 CacheApiLoggingUtils.dumper("CachedData : " + cachedResponseBody);
                 subscriber.onNext(cachedResponseBody);
+            }
+        });
+    }
+
+    public Observable<Boolean> updateResponse(final Response response, final CacheApiWhitelist cacheApiWhitelist) {
+        return Observable.unsafeCreate(new Observable.OnSubscribe<Boolean>() {
+            @Override
+            public void call(Subscriber<? super Boolean> subscriber) {
+                String responseBody = CacheApiUtils.getResponseBody(response);
+                if (TextUtils.isEmpty(responseBody)) {
+                    subscriber.onNext(false);
+                    return;
+                }
+                long responseTime = System.currentTimeMillis() / DIVIDE_FOR_SECONDS;
+
+                CacheApiData cacheApiData = new CacheApiData();
+                cacheApiData.setMethod(response.request().method());
+                cacheApiData.setHost(getEncrypted(response.request().url().host()));
+                cacheApiData.setPath(getEncrypted(CacheApiUtils.getPath(response.request().url().toString())));
+                cacheApiData.setRequestParam(getEncrypted(CacheApiUtils.getRequestParam(response.request())));
+                cacheApiData.setResponseBody(getEncrypted(responseBody));
+                cacheApiData.setResponseTime(responseTime);
+                cacheApiData.setExpiredTime(responseTime + cacheApiWhitelist.getExpiredTime());
+                cacheApiData.setWhiteListId(cacheApiWhitelist.getId());
+                cacheApiData.save();
+                subscriber.onNext(true);
+            }
+        });
+    }
+
+    public Observable<Boolean> deleteAllWhiteListData() {
+        return Observable.unsafeCreate(new Observable.OnSubscribe<Boolean>() {
+            @Override
+            public void call(Subscriber<? super Boolean> subscriber) {
+                new Delete().from(CacheApiWhitelist.class).execute();
+                subscriber.onNext(true);
             }
         });
     }
@@ -172,51 +216,15 @@ public class CacheApiDatabaseSource {
         });
     }
 
-    public Observable<Boolean> deleteCachedData(final String host, final String path) {
+    public Observable<Boolean> deleteCachedData(final long whiteListId) {
         return Observable.unsafeCreate(new Observable.OnSubscribe<Boolean>() {
             @Override
             public void call(Subscriber<? super Boolean> subscriber) {
                 new Delete()
                         .from(CacheApiData.class)
-                        .where(CacheApiData_Table.host.eq(host))
-                        .and(CacheApiData_Table.path.eq(path))
+                        .where(CacheApiData_Table.white_list_id.eq(whiteListId))
                         .execute();
-                CacheApiLoggingUtils.dumper(String.format("Cache deleted: %s - %s", host, path));
-                subscriber.onNext(true);
-            }
-        });
-    }
-
-    public Observable<Boolean> deleteWhiteList(final String host, final String path) {
-        return getWhiteList(host, path).flatMap(new Func1<CacheApiWhitelist, Observable<Boolean>>() {
-            @Override
-            public Observable<Boolean> call(CacheApiWhitelist cacheApiWhitelist) {
-                cacheApiWhitelist.delete();
-                return Observable.just(true);
-            }
-        });
-    }
-
-    public Observable<Boolean> updateResponse(final Response response, final int expiredTime) {
-        return Observable.unsafeCreate(new Observable.OnSubscribe<Boolean>() {
-            @Override
-            public void call(Subscriber<? super Boolean> subscriber) {
-                String responseBody = CacheApiUtils.getResponseBody(response);
-                if (TextUtils.isEmpty(responseBody)) {
-                    subscriber.onNext(false);
-                    return;
-                }
-                long responseTime = System.currentTimeMillis() / DIVIDE_FOR_SECONDS;
-
-                CacheApiData cacheApiData = new CacheApiData();
-                cacheApiData.setMethod(response.request().method());
-                cacheApiData.setHost(response.request().url().host());
-                cacheApiData.setPath(CacheApiUtils.getPath(response.request().url().toString()));
-                cacheApiData.setRequestParam(getEncrypted(CacheApiUtils.getRequestParam(response.request())));
-                cacheApiData.setResponseBody(getEncrypted(responseBody));
-                cacheApiData.setResponseTime(responseTime);
-                cacheApiData.setExpiredTime(responseTime + expiredTime);
-                cacheApiData.save();
+                CacheApiLoggingUtils.dumper(String.format("Cache whiteListId deleted: %s", whiteListId));
                 subscriber.onNext(true);
             }
         });

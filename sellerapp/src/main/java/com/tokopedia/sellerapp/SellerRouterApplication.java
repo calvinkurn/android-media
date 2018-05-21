@@ -86,11 +86,9 @@ import com.tokopedia.digital.product.view.activity.DigitalWebActivity;
 import com.tokopedia.digital.receiver.TokocashPendingDataBroadcastReceiver;
 import com.tokopedia.gm.GMModuleRouter;
 import com.tokopedia.gm.cashback.domain.GetCashbackUseCase;
-import com.tokopedia.gm.cashback.domain.SetCashbackUseCase;
 import com.tokopedia.gm.common.di.component.DaggerGMComponent;
 import com.tokopedia.gm.common.di.component.GMComponent;
 import com.tokopedia.gm.common.di.module.GMModule;
-import com.tokopedia.gm.common.logout.GMLogout;
 import com.tokopedia.gm.featured.domain.interactor.GMFeaturedProductGetListUseCase;
 import com.tokopedia.gm.subscribe.view.activity.GmSubscribeHomeActivity;
 import com.tokopedia.inbox.contactus.activity.ContactUsActivity;
@@ -480,7 +478,6 @@ public abstract class SellerRouterApplication extends MainApplication
         new CacheApiClearAllUseCase().executeSync();
 
         TkpdSellerLogout.onLogOut(appComponent);
-        GMLogout.onLogOut(appComponent);
     }
 
     @Override
@@ -864,12 +861,6 @@ public abstract class SellerRouterApplication extends MainApplication
             actionApplink(activity, appLinkScheme);
         }
 
-    }
-
-    @Override
-    public Observable<Boolean> setCashBack(String productId, int cashback) {
-        SetCashbackUseCase setCashbackUseCase = getGMComponent().getSetCashbackUseCase();
-        return setCashbackUseCase.getExecuteObservableAsync(SetCashbackUseCase.createRequestParams(productId, cashback));
     }
 
     @Override

@@ -12,6 +12,7 @@
     <string name="action_settings">Pengaturan</string>
     <string name="action_logout">Keluar</string>
     <string name="action_refresh">Refresh</string>
+    <string name="action_print">Cetak</string>
     <string name="btn_send">Kirim</string>
     <string name="title_activity_main">Memulai</string>
     <string name="title_warning">Peringatan</string>
@@ -933,6 +934,10 @@ Ingatlah untuk mengkonfirmasi bahwa email di atas adalah benar dan periksa junk 
     <string name="title_response_deadline">Batas respon</string>
     <string name="title_response_shipping">Batas kirim</string>
     <string name="dialog_ask_download_inv">Unduh invoice</string>
+    <string name="invoice_print_dialog_title">Unduh Aplikasi Tokopedia Seller</string>
+    <string name="invoice_print_dialog_description">Unduh aplikasi Tokopedia Seller untuk menggunakan fitur ini dan fitur menarik lainnya!</string>
+    <string name="invoice_print_dialog_button_ok">Unduh Sekarang</string>
+    <string name="invoice_print_dialog_button_cancel">Tidak, Terima Kasih</string>
     <!-- <string name="msg_confirm_order">Apakah Anda ingin menerima pesanan ini ?</string> -->
     <string name="error_520_tracking">
 <![CDATA[Status pengiriman tidak ditemukan.<br /><br />
