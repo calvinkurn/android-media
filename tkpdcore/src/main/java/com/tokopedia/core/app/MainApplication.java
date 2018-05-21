@@ -351,9 +351,11 @@ public abstract class MainApplication extends BaseMainApplication{
     }
 
     private void initFirebase() {
-        FirebaseOptions.Builder builder = new FirebaseOptions.Builder();
-        builder.setApplicationId("1:692092518182:android:9bb64c665e7c68ee");
-        builder.setApiKey("AIzaSyDan4qOIiANywQFOk-AG-WhRxsEMVqfcbg");
-        FirebaseApp.initializeApp(this, builder.build());
+        if (GlobalConfig.DEBUG) {
+            FirebaseOptions.Builder builder = new FirebaseOptions.Builder();
+            builder.setApplicationId("1:692092518182:android:9bb64c665e7c68ee");
+            builder.setApiKey("AIzaSyDan4qOIiANywQFOk-AG-WhRxsEMVqfcbg");
+            FirebaseApp.initializeApp(this, builder.build());
+        }
     }
 }

@@ -56,11 +56,14 @@ public class ShakeDetectManager implements ShakeDetector.Listener {
     }
 
     public void registerShake(String screenName) {
-        mOpenedActivity = screenName;
-        if(isShakeShakeEnable()) {
+        if (!screenName.equals(ShakeDetectCampaignActivity.SCREEN_NAME)) {
+            mOpenedActivity = screenName;
+        }
+        if (isShakeShakeEnable()) {
             sd.registerListener(this);
             sd.start(sensorManager);
         }
+
     }
 
     public void unregisterShake() {
