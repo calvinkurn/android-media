@@ -372,7 +372,7 @@ public class TxListPresenterImpl implements TxListPresenter {
         routingAppLink = ApplinkConst.ORDER_TRACKING;
         Uri.Builder uriBuilder = new Uri.Builder();
         uriBuilder.appendQueryParameter("order_id", data.getOrderDetail().getDetailOrderId())
-                .appendQueryParameter("live_tracking_url", processLiveTrackingUrl(data));
+                .appendQueryParameter("url_live_tracking", processLiveTrackingUrl(data));
         routingAppLink += uriBuilder.toString();
         RouteManager.route(context, routingAppLink);
     }

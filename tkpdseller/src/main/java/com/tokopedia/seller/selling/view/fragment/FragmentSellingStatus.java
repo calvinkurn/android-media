@@ -484,7 +484,7 @@ public class FragmentSellingStatus extends BaseFragment<SellingStatusTransaction
                 routingAppLink = ApplinkConst.ORDER_TRACKING;
                 Uri.Builder uriBuilder = new Uri.Builder();
                 uriBuilder.appendQueryParameter("order_id", model.OrderId)
-                        .appendQueryParameter("live_tracking_url", model.liveTracking);
+                        .appendQueryParameter("url_live_tracking", model.liveTracking);
                 routingAppLink += uriBuilder.toString();
                 RouteManager.route(getActivity(), routingAppLink);
             }
