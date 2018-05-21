@@ -261,7 +261,6 @@ public abstract class BaseListFragment<T extends Visitable, F extends AdapterTyp
         showSnackBarRetry(throwable, new NetworkErrorHelper.RetryClickedListener() {
             @Override
             public void onRetryClicked() {
-                showLoading();
                 if (endlessRecyclerViewScrollListener != null) {
                     endlessRecyclerViewScrollListener.loadMoreNextPage();
                 } else {
