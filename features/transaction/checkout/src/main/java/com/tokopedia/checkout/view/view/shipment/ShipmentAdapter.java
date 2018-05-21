@@ -330,6 +330,8 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 ((ShipmentCostModel) item).setShippingFee(0);
                 ((ShipmentCostModel) item).setTotalPrice(0);
                 ((ShipmentCostModel) item).setTotalItemPrice(0);
+                ((ShipmentCostModel) item).setPromoPrice(0);
+                ((ShipmentCostModel) item).setPromoMessage(null);
             }
         }
         updateInsuranceTncVisibility();

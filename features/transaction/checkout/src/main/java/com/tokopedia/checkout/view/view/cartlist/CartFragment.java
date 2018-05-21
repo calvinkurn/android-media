@@ -464,14 +464,24 @@ public class CartFragment extends BaseCheckoutFragment implements CartListAdapte
         if (cartListData.getAutoApplyData() != null && cartListData.getAutoApplyData().isSuccess()) {
             cartItemPromoHolderData = CartItemPromoHolderData.createInstanceFromAutoApply(
                     cartListData.getAutoApplyData());
-            promoCodeAppliedData = new PromoCodeAppliedData.Builder()
-                    .typeVoucher(PromoCodeAppliedData.TYPE_COUPON)
-                    .promoCode(cartItemPromoHolderData.getCouponCode())
-                    .couponTitle(cartItemPromoHolderData.getCouponTitle())
-                    .description(cartItemPromoHolderData.getCouponMessage())
-                    .amount((int) cartItemPromoHolderData.getCouponDiscountAmount())
-                    .fromAutoApply(true)
-                    .build();
+            if (cartItemPromoHolderData.getTypePromo() == PromoCodeAppliedData.TYPE_COUPON) {
+                promoCodeAppliedData = new PromoCodeAppliedData.Builder()
+                        .typeVoucher(PromoCodeAppliedData.TYPE_COUPON)
+                        .promoCode(cartItemPromoHolderData.getCouponCode())
+                        .couponTitle(cartItemPromoHolderData.getCouponTitle())
+                        .description(cartItemPromoHolderData.getCouponMessage())
+                        .amount((int) cartItemPromoHolderData.getCouponDiscountAmount())
+                        .fromAutoApply(true)
+                        .build();
+            } else {
+                promoCodeAppliedData = new PromoCodeAppliedData.Builder()
+                        .typeVoucher(PromoCodeAppliedData.TYPE_VOUCHER)
+                        .promoCode(cartItemPromoHolderData.getVoucherCode())
+                        .description(cartItemPromoHolderData.getVoucherMessage())
+                        .amount((int) cartItemPromoHolderData.getVoucherDiscountAmount())
+                        .fromAutoApply(true)
+                        .build();
+            }
         } else {
             cartItemPromoHolderData = new CartItemPromoHolderData();
             cartItemPromoHolderData.setPromoNotActive();
