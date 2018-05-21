@@ -331,9 +331,11 @@ public class ManagePeopleAddressFragment extends BasePresenterFragment<ManagePeo
     @Override
     public void openFormAddressView(AddressModel data) {
         if (data == null) {
-            startActivityForResult(AddAddressActivity.createInstance(getActivity(), this.token), ManageAddressConstant.REQUEST_CODE_PARAM_CREATE);
+            startActivityForResult(AddAddressActivity.createInstance(getActivity(), this.token),
+                    ManageAddressConstant.REQUEST_CODE_PARAM_CREATE);
         } else {
-            startActivityForResult(AddAddressActivity.createInstance(getActivity(), data, this.token), ManageAddressConstant.REQUEST_CODE_PARAM_EDIT);
+            startActivityForResult(AddAddressActivity.createInstance(getActivity(), data, this.token),
+                    ManageAddressConstant.REQUEST_CODE_PARAM_EDIT);
         }
     }
 

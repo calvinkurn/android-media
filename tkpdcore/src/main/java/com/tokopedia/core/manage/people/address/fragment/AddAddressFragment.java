@@ -330,6 +330,9 @@ public class AddAddressFragment extends BasePresenterFragment<AddAddressPresente
                 locationPass.setLatitude(address.getLatitude());
                 locationPass.setLongitude(address.getLongitude());
                 locationPass.setGeneratedAddress(locationEditText.getText().toString());
+            } else if (!TextUtils.isEmpty(address.getCityName()) && !TextUtils.isEmpty(address.getDistrictName())) {
+                locationPass.setDistrictName(address.getDistrictName());
+                locationPass.setCityName(address.getCityName());
             } else {
                 locationPass.setLatitude(String.valueOf(MONAS_LATITUDE));
                 locationPass.setLongitude(String.valueOf(MONAS_LONGITUDE));
@@ -388,9 +391,12 @@ public class AddAddressFragment extends BasePresenterFragment<AddAddressPresente
                         String fullAddress = TextUtils.join(", ", compositeAddress);
                         districtEditText.setText(fullAddress);
 
+                        this.address.setProvinceId(String.valueOf(address.getProvinceId()));
                         this.address.setCityId(String.valueOf(address.getCityId()));
                         this.address.setDistrictId(String.valueOf(address.getDistrictId()));
-                        this.address.setProvinceId(String.valueOf(address.getProvinceId()));
+                        this.address.setProvinceName(address.getProvinceName());
+                        this.address.setCityName(address.getCityName());
+                        this.address.setDistrictName(address.getDistrictName());
 
                         zipCodes = new ArrayList<>(address.getZipCodes());
                         initializeZipCodes();
