@@ -220,6 +220,7 @@ public class ImageHandler extends com.tokopedia.abstraction.common.utils.image.I
         }
     }
 
+    /* This method specifically designed to display cached image from different size when offline */
     public static void loadImageSourceSize(Context context, ImageView imageview, String url) {
         if (isContextValid(context)) {
             Glide.with(context)
@@ -232,12 +233,22 @@ public class ImageHandler extends com.tokopedia.abstraction.common.utils.image.I
         }
     }
 
+    /* This method specifically designed to display cached image from different size when offline */
+    public static void loadImageSourceSizeFitCenter(Context context, ImageView imageview, String url) {
+        if (isContextValid(context)) {
+            Glide.with(context.getApplicationContext())
+                    .load(url)
+                    .diskCacheStrategy(DiskCacheStrategy.SOURCE)
+                    .fitCenter()
+                    .into(imageview);
+        }
+    }
+
+    /* This method specifically designed to display cached image from different size when offline */
     public static void loadImageSourceSizeCenterCrop(Context context, ImageView imageview, String url) {
         if (isContextValid(context)) {
             Glide.with(context.getApplicationContext())
                     .load(url)
-                    .dontAnimate()
-                    .dontTransform()
                     .diskCacheStrategy(DiskCacheStrategy.SOURCE)
                     .centerCrop()
                     .into(imageview);
