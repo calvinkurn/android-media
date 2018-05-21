@@ -375,7 +375,7 @@ public class TopProfileActivity extends BaseSimpleActivity
         if (topProfileViewModel.isFollowed()) {
             disableFollowButton();
             ToasterNormal
-                    .make(findViewById(R.id.main_view),
+                    .make(swipeToRefresh,
                             getString(R.string.follow_success_toast),
                             TOAST_LENGTH)
                     .setAction(getString(R.string.follow_success_check_now),
