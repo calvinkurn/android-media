@@ -1,16 +1,13 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--https://www.androidhive.info/2013/07/android-expandable-list-view-tutorial/-->
-<!--https://stackoverflow.com/questions/31653607/how-to-animate-an-icon-for-expand-collapse-view-->
+<?xml version="1.0" encoding="utf-8"?><!--https://www.androidhive.info/2013/07/android-expandable-list-view-tutorial/--><!--https://stackoverflow.com/questions/31653607/how-to-animate-an-icon-for-expand-collapse-view-->
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main_content"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/bottomnav_bg">
 
-
-    <android.support.design.widget.CoordinatorLayout xmlns:app="http://schemas.android.com/apk/res-auto"
-        xmlns:tools="http://schemas.android.com/tools"
+    <android.support.design.widget.CoordinatorLayout
         android:id="@+id/base_main_content"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -37,6 +34,7 @@
             <com.tokopedia.digital_deals.view.customview.SearchInputView
                 android:id="@+id/search_input_view"
                 android:layout_width="match_parent"
+                android:visibility="gone"
                 android:layout_height="@dimen/dp_40"
                 android:layout_marginLeft="@dimen/dp_16"
                 android:layout_marginRight="@dimen/dp_16"
@@ -46,11 +44,13 @@
         </android.support.design.widget.AppBarLayout>
 
 
-        <ExpandableListView
-            android:id="@+id/lvExp"
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/recyclerView"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+            android:layout_height="match_parent"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior"
+            app:layoutManager="android.support.v7.widget.LinearLayoutManager"
+            tools:listitem="@layout/redeem_locations_expandable_list_item" />
 
 
         <LinearLayout

@@ -49,7 +49,7 @@
                         android:id="@+id/iv_brand_logo"
                         android:layout_width="@dimen/image_width_brand"
                         android:layout_height="@dimen/image_width_brand"
-                        android:background="@color/card_loading_color"
+                        android:background="@color/grey_1100"
                         app:layout_scrollFlags="scroll|enterAlways|enterAlwaysCollapsed" />
 
                 </android.support.v7.widget.CardView>
@@ -151,7 +151,7 @@
                 android:layout_height="@dimen/dp_24"
                 android:layout_marginLeft="@dimen/dp_16"
                 android:layout_marginTop="@dimen/dp_16"
-                android:background="@color/card_loading_color"
+                android:background="@color/grey_1100"
                 android:visibility="gone"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/divider1" />
@@ -240,6 +240,7 @@
                 android:id="@+id/recyclerView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:nestedScrollingEnabled="false"
                 android:layout_marginTop="@dimen/dp_16"
                 app:layoutManager="android.support.v7.widget.LinearLayoutManager"
                 app:layout_behavior="@string/appbar_scrolling_view_behavior"

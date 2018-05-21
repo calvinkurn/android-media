@@ -118,6 +118,9 @@ public class DealsCategoryItemDomain {
     @SerializedName("saving_percentage")
     @Expose
     private String savingPercentage;
+    @SerializedName("display_tags")
+    @Expose
+    private String displayTags;
     @SerializedName("brand")
     @Expose
     private BrandDomain brand;
@@ -419,6 +422,16 @@ public class DealsCategoryItemDomain {
     public void setSavingPercentage(String savingPercentage) {
         this.savingPercentage = savingPercentage;
     }
+
+
+    public String getDisplayTags() {
+        return displayTags;
+    }
+
+    public void setDisplayTags(String displayTags) {
+        this.displayTags = displayTags;
+    }
+
 
     public BrandDomain getBrand() {
         return brand;

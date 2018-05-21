@@ -10,12 +10,14 @@ import java.util.List;
 public class CategoryViewModel implements Parcelable {
     private String title;
     private String name;
+    private String url;
     private List<CategoryItemsViewModel> items = null;
 
-    public CategoryViewModel(String title, String name, List<CategoryItemsViewModel> items) {
-        this.title=title;
-        this.name=name;
+    public CategoryViewModel(String title, String name, String url, List<CategoryItemsViewModel> items) {
+        this.title = title;
+        this.name = name;
         this.items = items;
+        this.url = url;
     }
 
     public String getTitle() {
@@ -34,6 +36,15 @@ public class CategoryViewModel implements Parcelable {
         this.name = name;
     }
 
+    public String getUrl() {
+        return url;
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
+    }
+
+
     public List<CategoryItemsViewModel> getItems() {
         return items;
     }
@@ -51,12 +62,14 @@ public class CategoryViewModel implements Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(this.title);
         dest.writeString(this.name);
+        dest.writeString(this.url);
         dest.writeList(this.items);
     }
 
     protected CategoryViewModel(Parcel in) {
         this.title = in.readString();
         this.name = in.readString();
+        this.url=in.readString();
         this.items = new ArrayList<CategoryItemsViewModel>();
         in.readList(this.items, CategoryItemsViewModel.class.getClassLoader());
     }

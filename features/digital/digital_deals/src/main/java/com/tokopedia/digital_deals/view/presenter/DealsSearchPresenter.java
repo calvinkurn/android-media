@@ -1,21 +1,32 @@
 package com.tokopedia.digital_deals.view.presenter;
 
 
+import android.content.Intent;
 import android.support.v7.widget.LinearLayoutManager;
 import android.util.Log;
+import android.widget.Toast;
 
+import com.google.gson.Gson;
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 
 
+import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
+import com.tokopedia.core.var.TkpdCache;
+import com.tokopedia.digital_deals.R;
 import com.tokopedia.digital_deals.domain.GetSearchDealsListRequestUseCase;
 import com.tokopedia.digital_deals.domain.GetSearchNextUseCase;
 import com.tokopedia.digital_deals.domain.model.searchdomainmodel.SearchDomainModel;
 import com.tokopedia.digital_deals.domain.model.searchdomainmodel.ValuesItemDomain;
+import com.tokopedia.digital_deals.view.activity.DealDetailsActivity;
+import com.tokopedia.digital_deals.view.activity.DealsHomeActivity;
+import com.tokopedia.digital_deals.view.activity.DealsLocationActivity;
 import com.tokopedia.digital_deals.view.adapter.FiltersAdapter;
 import com.tokopedia.digital_deals.view.contractor.DealsSearchContract;
 import com.tokopedia.digital_deals.view.utils.Utils;
 import com.tokopedia.digital_deals.view.viewmodel.CategoryItemsViewModel;
+import com.tokopedia.digital_deals.view.viewmodel.CategoryViewModel;
+import com.tokopedia.digital_deals.view.viewmodel.LocationViewModel;
 import com.tokopedia.digital_deals.view.viewmodel.SearchViewModel;
 import com.tokopedia.usecase.RequestParams;
 
@@ -29,13 +40,13 @@ import rx.Subscriber;
 
 
 public class DealsSearchPresenter
-        extends BaseDaggerPresenter<DealsSearchContract.IDealsSearchView>
-        implements DealsSearchContract.IDealsSearchPresenter {
+        extends BaseDaggerPresenter<DealsSearchContract.View>
+        implements DealsSearchContract.Presenter {
 
     private GetSearchDealsListRequestUseCase getSearchDealsListRequestUseCase;
     private GetSearchNextUseCase getSearchNextUseCase;
     private String FRAGMENT_TAG = "FILTERFRAGMENT";
-    private ArrayList<SearchViewModel> mTopDeals;
+    private List<CategoryItemsViewModel> mTopDeals;
     private SearchDomainModel mSearchData;
     private ValuesItemDomain selectedTime;
     private String catgoryFilters;
@@ -48,14 +59,14 @@ public class DealsSearchPresenter
     RequestParams searchNextParams = RequestParams.create();
 
     @Inject
-    public DealsSearchPresenter(GetSearchDealsListRequestUseCase getSearchEventsListRequestUseCase,
+    public DealsSearchPresenter(GetSearchDealsListRequestUseCase getSearchDealsListRequestUseCase,
                                 GetSearchNextUseCase searchNextUseCase) {
-        this.getSearchDealsListRequestUseCase = getSearchEventsListRequestUseCase;
+        this.getSearchDealsListRequestUseCase = getSearchDealsListRequestUseCase;
         this.getSearchNextUseCase = searchNextUseCase;
     }
 
     @Override
-    public void getDealsListBySearch(String searchText) {
+    public void getDealsListBySearch(final String searchText) {
         highlight = searchText;
         RequestParams requestParams = RequestParams.create();
         requestParams.putString(getSearchDealsListRequestUseCase.TAG, searchText);
@@ -74,10 +85,9 @@ public class DealsSearchPresenter
 
             @Override
             public void onNext(SearchDomainModel searchDomainModel) {
-                Log.d("MySearchDataaa", " " + searchDomainModel.toString()+" "+SEARCH_SUBMITTED);
+                Log.d("MySearchDataaa", " " + searchDomainModel.toString() + " " + SEARCH_SUBMITTED);
                 if (SEARCH_SUBMITTED)
-                    getView().renderFromSearchResults(Utils.getSingletonInstance()
-                            .convertIntoCategoryListItemsViewModel(searchDomainModel.getDeals()));
+                    getView().renderFromSearchResults(processSearchResponse(searchDomainModel), searchText);
                 else
                     getView().setSuggestions(processSearchResponse(searchDomainModel), highlight);
                 checkIfToLoad(getView().getLayoutManager());
@@ -89,12 +99,14 @@ public class DealsSearchPresenter
     @Override
     public void initialize() {
         mTopDeals = getView().getActivity().getIntent().getParcelableArrayListExtra("TOPDEALS");
-        getView().setTrendingDeals(mTopDeals);
+        LocationViewModel location=Utils.getSingletonInstance().getLocation(getView().getActivity());
+        getView().setTrendingDeals(mTopDeals, location);
     }
 
     @Override
     public void onDestroy() {
-
+        getSearchDealsListRequestUseCase.unsubscribe();
+        getSearchNextUseCase.unsubscribe();
     }
 
     @Override
@@ -105,36 +117,30 @@ public class DealsSearchPresenter
                 getDealsListBySearch(searchText);
             }
             if (searchText.length() == 0) {
-                getView().setTrendingDeals(mTopDeals);
+                getView().setTrendingDeals(mTopDeals, Utils.getSingletonInstance().getLocation(getView().getActivity()));
             }
         } else {
-            getView().setTrendingDeals(mTopDeals);
+            getView().setTrendingDeals(mTopDeals, Utils.getSingletonInstance().getLocation(getView().getActivity()));
         }
     }
 
     @Override
     public void searchSubmitted(String searchText) {
         SEARCH_SUBMITTED = true;
-        Log.d("InsideSearchSubmitted", " "+SEARCH_SUBMITTED);
+        Log.d("InsideSearchSubmitted", " " + SEARCH_SUBMITTED);
         getDealsListBySearch(searchText);
 
     }
 
     @Override
-    public boolean onOptionMenuClick(int id) {
-//        if (id == R.id.action_filter) {
-//            FragmentManager fragmentManager = getView().getFragmentManagerInstance();
-//            FragmentTransaction transaction = fragmentManager.beginTransaction();
-//            FilterFragment fragment = FilterFragment.newInstance(100);
-//            fragment.setData(mSearchData.getFilters(), this);
-//            transaction.add(R.id.main_content, fragment, FRAGMENT_TAG);
-//            transaction.addToBackStack(FRAGMENT_TAG);
-//            transaction.commit();
-//        } else {
-        getView().getActivity().onBackPressed();
+    public boolean onItemClick(int id) {
+        if (id == R.id.tv_change_city) {
+            getView().navigateToActivityRequest(new Intent(getView().getActivity(), DealsLocationActivity.class), DealsHomeActivity.REQUEST_CODE_DEALSLOCATIONACTIVITY);
+
+        }else if (id == R.id.imageViewBack) {
+            getView().goBack();
+        }
         return true;
-//        }
-//        return true;
     }
 
     @Override
@@ -169,23 +175,10 @@ public class DealsSearchPresenter
 
 
     @Override
-    public void onSearchResultClick(SearchViewModel searchViewModel) {
-        CategoryItemsViewModel detailsViewModel = new CategoryItemsViewModel();
-//        detailsViewModel.setTitle(searchViewModel.getTitle());
-        detailsViewModel.setDisplayName(searchViewModel.getDisplayName());
-        detailsViewModel.setUrl(searchViewModel.getUrl());
-//        detailsViewModel.setImageApp(searchViewModel.getImageApp());
-        detailsViewModel.setMinStartDate(searchViewModel.getMinStartDate());
-        detailsViewModel.setMaxEndDate(searchViewModel.getMaxEndDate());
-        detailsViewModel.setCityName(searchViewModel.getCityName());
-        detailsViewModel.setSalesPrice(searchViewModel.getSalesPrice());
-//        detailsViewModel.setIsTop(searchViewModel.getIsTop());
-        detailsViewModel.setLongRichDesc("Fetching Description");
-//        detailsViewModel.setTnc("Fetching TnC");
-//        Intent detailsIntent = new Intent(getView().getActivity(), EventDetailsActivity.class);
-//        detailsIntent.putExtra(EventDetailsActivity.FROM, EventDetailsActivity.FROM_HOME_OR_SEARCH);
-//        detailsIntent.putExtra("homedata", detailsViewModel);
-//        getView().getActivity().startActivity(detailsIntent);
+    public void onSearchResultClick(CategoryItemsViewModel searchViewModel) {
+        Intent detailsIntent = new Intent(getView().getActivity(), DealDetailsActivity.class);
+        detailsIntent.putExtra(DealDetailsPresenter.HOME_DATA, searchViewModel);
+        getView().navigateToActivity(detailsIntent);
     }
 
     @Override
@@ -212,8 +205,7 @@ public class DealsSearchPresenter
                 isLoading = false;
                 getView().removeFooter(SEARCH_SUBMITTED);
                 if (SEARCH_SUBMITTED)
-                    getView().addDealsToCards(Utils.getSingletonInstance()
-                            .convertIntoCategoryListItemsViewModel(searchDomainModel.getDeals()));
+                    getView().addDealsToCards(processSearchResponse(searchDomainModel));
                 else
                     getView().addDeals(processSearchResponse(searchDomainModel));
                 checkIfToLoad(getView().getLayoutManager());
@@ -237,7 +229,7 @@ public class DealsSearchPresenter
         }
     }
 
-    List<SearchViewModel> processSearchResponse(SearchDomainModel searchDomainModel) {
+    List<CategoryItemsViewModel> processSearchResponse(SearchDomainModel searchDomainModel) {
         mSearchData = searchDomainModel;
         String nexturl = mSearchData.getPage().getUriNext();
         if (nexturl != null && !nexturl.isEmpty() && nexturl.length() > 0) {
@@ -248,8 +240,7 @@ public class DealsSearchPresenter
         }
         List<CategoryItemsViewModel> categoryItemsViewModels = Utils.getSingletonInstance()
                 .convertIntoCategoryListItemsViewModel(searchDomainModel.getDeals());
-        return Utils.getSingletonInstance()
-                .convertSearchResultsToModel(categoryItemsViewModels);
+        return categoryItemsViewModels;
     }
 
 }

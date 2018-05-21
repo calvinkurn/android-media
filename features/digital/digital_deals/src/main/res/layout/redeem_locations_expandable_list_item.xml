@@ -30,6 +30,7 @@
         android:lineSpacingExtra="2sp"
         android:layout_marginLeft="@dimen/dp_16"
         android:maxLines="1"
+        android:ellipsize="end"
         android:text="PACIFIC PLACE MALL, 4th Floor…"
         android:textColor="@color/black_38"
         android:textSize="@dimen/sp_14"
@@ -44,7 +45,7 @@
         android:layout_width="@dimen/dp_24"
         android:layout_height="@dimen/dp_24"
         android:layout_marginRight="@dimen/dp_16"
-        android:background="@color/card_loading_color"
+        app:srcCompat="@drawable/ic_see_location"
         app:layout_constraintBottom_toBottomOf="@id/tv_location_address"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="@+id/tv_location_name" />

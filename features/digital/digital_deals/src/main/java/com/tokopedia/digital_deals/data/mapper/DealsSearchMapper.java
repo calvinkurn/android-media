@@ -7,8 +7,9 @@ import com.tokopedia.digital_deals.data.entity.response.searchresponse.GridLayou
 import com.tokopedia.digital_deals.data.entity.response.searchresponse.SearchResponse;
 import com.tokopedia.digital_deals.data.entity.response.searchresponse.ValuesItem;
 import com.tokopedia.digital_deals.domain.model.DealsCategoryItemDomain;
+import com.tokopedia.digital_deals.domain.model.branddetailsmodel.BrandDomain;
 import com.tokopedia.digital_deals.domain.model.searchdomainmodel.FilterDomainModel;
-import com.tokopedia.digital_deals.domain.model.searchdomainmodel.PageDomain;
+import com.tokopedia.digital_deals.domain.model.PageDomain;
 import com.tokopedia.digital_deals.domain.model.searchdomainmodel.SearchDomainModel;
 import com.tokopedia.digital_deals.domain.model.searchdomainmodel.ValuesItemDomain;
 
@@ -71,6 +72,12 @@ public class DealsSearchMapper {
                     itemDomain.setThumbsDown(dealItem.getThumbsDown());
                     itemDomain.setThumbsUp(dealItem.getThumbsUp());
                     itemDomain.setSoldQuantity(dealItem.getSoldQuantity());
+                    itemDomain.setDisplayTags(dealItem.getDisplayTags());
+                    BrandDomain brandDomain=new BrandDomain();
+                    brandDomain.setTitle(dealItem.getBrand().getTitle());
+                    brandDomain.setFeaturedImage(dealItem.getBrand().getFeaturedImage());
+                    brandDomain.setFeaturedThumbnailImage(dealItem.getBrand().getFeaturedThumbnailImage());
+                    itemDomain.setBrand(brandDomain);
 
                     dealsItemDomains.add(itemDomain);
                 }

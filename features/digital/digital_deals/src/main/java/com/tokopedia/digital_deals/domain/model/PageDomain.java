@@ -1,4 +1,4 @@
-package com.tokopedia.digital_deals.domain.model.searchdomainmodel;
+package com.tokopedia.digital_deals.domain.model;
 
 import com.google.gson.annotations.SerializedName;
 

@@ -14,16 +14,17 @@ import android.widget.TextView;
 import com.tokopedia.digital_deals.R;
 import com.tokopedia.digital_deals.view.presenter.DealsSearchPresenter;
 import com.tokopedia.digital_deals.view.utils.Utils;
+import com.tokopedia.digital_deals.view.viewmodel.CategoryItemsViewModel;
 import com.tokopedia.digital_deals.view.viewmodel.SearchViewModel;
 
 import java.util.List;
 
 
 
-public class TopEventsSuggestionsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+public class TopDealsSuggestionsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     private Context mContext;
-    private List<SearchViewModel> categoryItems;
+    private List<CategoryItemsViewModel> categoryItems;
     private DealsSearchPresenter mPresenter;
     private String highLightText;
     private String lowerhighlight;
@@ -33,7 +34,7 @@ public class TopEventsSuggestionsAdapter extends RecyclerView.Adapter<RecyclerVi
     private static final int ITEM = 1;
     private static final int FOOTER = 2;
 
-    public TopEventsSuggestionsAdapter(Context context, List<SearchViewModel> categoryItems, DealsSearchPresenter presenter) {
+    public TopDealsSuggestionsAdapter(Context context, List<CategoryItemsViewModel> categoryItems, DealsSearchPresenter presenter) {
         this.mContext = context;
         this.mPresenter = presenter;
         this.categoryItems = categoryItems;
@@ -64,7 +65,7 @@ public class TopEventsSuggestionsAdapter extends RecyclerView.Adapter<RecyclerVi
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         switch (getItemViewType(position)) {
             case ITEM:
-                ((DealsTitleHolder) holder).setEventTitle(position, categoryItems.get(position));
+                ((DealsTitleHolder) holder).setDealTitle(position, categoryItems.get(position));
                 break;
             case FOOTER:
                 break;
@@ -90,26 +91,26 @@ public class TopEventsSuggestionsAdapter extends RecyclerView.Adapter<RecyclerVi
     public void addFooter() {
         if (!isFooterAdded) {
             isFooterAdded = true;
-            add(new SearchViewModel());
+            add(new CategoryItemsViewModel());
         }
     }
 
-    private SearchViewModel getItem(int position) {
+    private CategoryItemsViewModel getItem(int position) {
         return categoryItems.get(position);
     }
 
-    public void add(SearchViewModel item) {
+    public void add(CategoryItemsViewModel item) {
         categoryItems.add(item);
         notifyItemInserted(categoryItems.size() - 1);
     }
 
-    public void addAll(List<SearchViewModel> items) {
-        for (SearchViewModel item : items) {
+    public void addAll(List<CategoryItemsViewModel> items) {
+        for (CategoryItemsViewModel item : items) {
             add(item);
         }
     }
 
-    private void remove(SearchViewModel item) {
+    private void remove(CategoryItemsViewModel item) {
         int position = categoryItems.indexOf(item);
         if (position > -1) {
             categoryItems.remove(position);
@@ -137,7 +138,7 @@ public class TopEventsSuggestionsAdapter extends RecyclerView.Adapter<RecyclerVi
             isFooterAdded = false;
 
             int position = categoryItems.size() - 1;
-            SearchViewModel item = getItem(position);
+            CategoryItemsViewModel item = getItem(position);
 
             if (item != null) {
                 categoryItems.remove(position);
@@ -157,7 +158,7 @@ public class TopEventsSuggestionsAdapter extends RecyclerView.Adapter<RecyclerVi
         TextView tvDealTitle;
 
         View itemView;
-        SearchViewModel valueItem;
+        CategoryItemsViewModel valueItem;
         int mPosition;
 
         private DealsTitleHolder(View itemView) {
@@ -167,18 +168,18 @@ public class TopEventsSuggestionsAdapter extends RecyclerView.Adapter<RecyclerVi
             tvDealTitle =itemView.findViewById(R.id.tv_simple_item);
         }
 
-        private void setEventTitle(int position, SearchViewModel value) {
+        private void setDealTitle(int position, CategoryItemsViewModel value) {
             this.valueItem = value;
             this.mPosition = position;
-            SpannableString spannableString = new SpannableString(valueItem.getTitle());
-            if (highLightText != null && !highLightText.isEmpty() && Utils.containsIgnoreCase(valueItem.getTitle(), highLightText)) {
+            SpannableString spannableString = new SpannableString(valueItem.getDisplayName());
+            if (highLightText != null && !highLightText.isEmpty() && Utils.containsIgnoreCase(valueItem.getDisplayName(), highLightText)) {
                 StyleSpan styleSpan = new StyleSpan(Typeface.BOLD);
-                int fromindex = valueItem.getTitle().indexOf(highLightText);
+                int fromindex = valueItem.getDisplayName().indexOf(highLightText);
                 if (fromindex == -1) {
-                    fromindex = valueItem.getTitle().indexOf(lowerhighlight);
+                    fromindex = valueItem.getDisplayName().indexOf(lowerhighlight);
                 }
                 if (fromindex == -1) {
-                    fromindex = valueItem.getTitle().indexOf(upperhighlight);
+                    fromindex = valueItem.getDisplayName().indexOf(upperhighlight);
                 }
                 int toIndex = fromindex + highLightText.length();
                 spannableString.setSpan(styleSpan, fromindex, toIndex, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);

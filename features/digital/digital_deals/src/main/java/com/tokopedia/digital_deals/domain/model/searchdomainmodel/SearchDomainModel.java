@@ -1,6 +1,7 @@
 package com.tokopedia.digital_deals.domain.model.searchdomainmodel;
 
 import com.tokopedia.digital_deals.domain.model.DealsCategoryItemDomain;
+import com.tokopedia.digital_deals.domain.model.PageDomain;
 
 import java.util.List;
 

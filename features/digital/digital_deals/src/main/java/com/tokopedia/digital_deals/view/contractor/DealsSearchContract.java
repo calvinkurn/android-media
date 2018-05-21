@@ -9,6 +9,7 @@ import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
 import com.tokopedia.digital_deals.domain.model.searchdomainmodel.ValuesItemDomain;
 import com.tokopedia.digital_deals.view.adapter.FiltersAdapter;
 import com.tokopedia.digital_deals.view.viewmodel.CategoryItemsViewModel;
+import com.tokopedia.digital_deals.view.viewmodel.LocationViewModel;
 import com.tokopedia.digital_deals.view.viewmodel.SearchViewModel;
 import com.tokopedia.usecase.RequestParams;
 
@@ -17,14 +18,14 @@ import java.util.List;
 
 
 public class DealsSearchContract {
-    public interface IDealsSearchView extends CustomerView {
+    public interface View extends CustomerView {
         void showMessage(String message);
 
         Activity getActivity();
 
         void navigateToActivityRequest(Intent intent, int requestCode);
 
-        void renderFromSearchResults(List<CategoryItemsViewModel> categoryItemsViewModels);
+        void renderFromSearchResults(List<CategoryItemsViewModel> categoryItemsViewModels, String searchText);
 
         void showProgressBar();
 
@@ -36,9 +37,9 @@ public class DealsSearchContract {
 
         FragmentManager getFragmentManagerInstance();
 
-        void setTrendingDeals(List<SearchViewModel> searchViewModels);
+        void setTrendingDeals(List<CategoryItemsViewModel> searchViewModels, LocationViewModel location);
 
-        void setSuggestions(List<SearchViewModel> suggestions, String highlight);
+        void setSuggestions(List<CategoryItemsViewModel> suggestions, String highlight);
 
         void removeFooter(boolean searchSubmitted);
 
@@ -46,12 +47,16 @@ public class DealsSearchContract {
 
         void addDealsToCards(List<CategoryItemsViewModel> categoryItemsViewModels);
 
-        void addDeals(List<SearchViewModel> searchViewModels);
+        void addDeals(List<CategoryItemsViewModel> searchViewModels);
 
         LinearLayoutManager getLayoutManager();
+
+        void goBack();
+
+        void navigateToActivity(Intent intent);
     }
 
-    public interface IDealsSearchPresenter extends CustomerPresenter<IDealsSearchView> {
+    public interface Presenter extends CustomerPresenter<View> {
 
         void getDealsListBySearch(String searchText);
 
@@ -63,11 +68,11 @@ public class DealsSearchContract {
 
         void searchSubmitted(String searchText);
 
-        boolean onOptionMenuClick(int id);
+        boolean onItemClick(int id);
 
         void onClickFilterItem(ValuesItemDomain filterItem, FiltersAdapter.FilterViewHolder viewHolder);
 
-        void onSearchResultClick(SearchViewModel searchViewModel);
+        void onSearchResultClick(CategoryItemsViewModel searchViewModel);
 
         void onRecyclerViewScrolled(LinearLayoutManager layoutManager);
     }

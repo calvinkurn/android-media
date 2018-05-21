@@ -190,7 +190,7 @@
             android:id="@+id/imageViewBrand"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@color/card_loading_color"
+            android:background="@color/grey_1100"
             android:scaleType="centerCrop"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tv_popular" />

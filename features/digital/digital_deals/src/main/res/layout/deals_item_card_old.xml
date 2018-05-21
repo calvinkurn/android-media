@@ -23,7 +23,7 @@
             android:layout_height="@dimen/image_width_deal"
             android:scaleType="fitXY"
 
-            android:src="@color/card_loading_color"
+            android:src="@color/grey_1100"
             app:layout_constraintTop_toTopOf="parent" />
 
 
@@ -79,7 +79,7 @@
                 android:id="@+id/iv_brand"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:background="@color/card_loading_color"
+                android:background="@color/grey_1100"
                 android:scaleType="centerCrop" />
 
         </android.support.v7.widget.CardView>

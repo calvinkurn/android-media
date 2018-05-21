@@ -84,6 +84,7 @@ public class DealDetailsFragment extends BaseDaggerFragment implements DealDetai
     private TextView tvBrandVenue;
     private TextView brandAddress;
     private TextView tvViewMap;
+    private ImageView dealImage;
     private TextView tvOff;
     private ImageView brandLogo;
     private BrandViewModel brandViewModel;
@@ -107,7 +108,6 @@ public class DealDetailsFragment extends BaseDaggerFragment implements DealDetai
         setHasOptionsMenu(true);
 
 
-        mPresenter.attachView(this);
         mPresenter.getDealDetails();
         return view;
     }
@@ -129,10 +129,12 @@ public class DealDetailsFragment extends BaseDaggerFragment implements DealDetai
         tvViewMap = view.findViewById(R.id.tv_view_map);
         clHeader = view.findViewById(R.id.cl_header);
         toolbar = view.findViewById(R.id.toolbar);
+
         ((BaseSimpleActivity) getActivity()).setSupportActionBar(toolbar);
 
         toolbar.setNavigationIcon(ContextCompat.getDrawable(getActivity(), R.drawable.ic_action_back));
 
+        dealImage=view.findViewById(R.id.deal_image);
         tvExpandableDesc = view.findViewById(R.id.tv_expandable_description);
         seemorebuttonTextDesc = view.findViewById(R.id.seemorebutton_description);
         seeMoreButtonDesc = view.findViewById(R.id.expand_view_description);
@@ -159,6 +161,7 @@ public class DealDetailsFragment extends BaseDaggerFragment implements DealDetai
         collapsingToolbarLayout.setTitle(" ");
         seeMoreButtonDesc.setOnClickListener(this);
         seeMoreButtonTC.setOnClickListener(this);
+        tvAllLocations.setOnClickListener(this);
         tvExpandableDesc.setInterpolator(new OvershootInterpolator());
         tvExpandableTC.setInterpolator(new OvershootInterpolator());
 
@@ -189,13 +192,13 @@ public class DealDetailsFragment extends BaseDaggerFragment implements DealDetai
     public void renderBrandDetails(DealsDetailsViewModel detailsViewModel) {
         collapsingToolbarLayout.setTitle(detailsViewModel.getDisplayName());
 
+        ImageHandler.loadImage(getContext(), dealImage, detailsViewModel.getImageWeb(), R.color.grey_1100, R.color.grey_1100);
 
         tvMrp.setText(Utils.convertToCurrencyString(detailsViewModel.getMrp()));
 
         tvSalesPrice.setText(Utils.convertToCurrencyString(detailsViewModel.getSalesPrice()));
         tvOff.setText(detailsViewModel.getSavingPercentage());
 
-//        Log.d("Likes", detailsViewModel.getLikes()+" ");
         tvLikes.setText(String.valueOf(detailsViewModel.getLikes()));
         tvExpiryDate.setText(String.format(getString(R.string.valid_through), Utils.convertEpochToString(detailsViewModel.getSaleEndDate())));
 
@@ -205,7 +208,7 @@ public class DealDetailsFragment extends BaseDaggerFragment implements DealDetai
             brandAddress.setText(outletViewModel.getDistrict());
             tvNumberOfLocations.setText(String.format(getString(R.string.number_of_items), detailsViewModel.getOutlets().size()));
             tvBrandName.setText(brandViewModel.getTitle());
-            ImageHandler.loadImageCover2(brandLogo, brandViewModel.getFeaturedThumbnailImage());
+            ImageHandler.loadImage(getContext(), brandLogo, brandViewModel.getFeaturedThumbnailImage(), R.color.grey_1100, R.color.grey_1100);
 
         }
 
@@ -351,8 +354,8 @@ public class DealDetailsFragment extends BaseDaggerFragment implements DealDetai
             }
             tvExpandableTC.toggle();
         } else if (v.getId() == R.id.tv_findalllocations) {
-
-            fragmentCallbacks.replaceFragment(1);
+            Log.d("insidebutton click", "true");
+            fragmentCallbacks.replaceFragment(mPresenter.getAllOutlets(), 0);
         }
     }
 

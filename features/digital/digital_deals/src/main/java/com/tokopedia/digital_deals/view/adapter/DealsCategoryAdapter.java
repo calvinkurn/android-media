@@ -95,7 +95,8 @@ public class DealsCategoryAdapter extends RecyclerView.Adapter<RecyclerView.View
     @Override
     public int getItemViewType(int position) {
 
-        return isShortLayout ? ITEM2 : (isLastPosition(position) && isFooterAdded) ? FOOTER : ITEM;
+        return isShortLayout ? (isLastPosition(position) && isFooterAdded) ? FOOTER : ITEM2
+                : (isLastPosition(position) && isFooterAdded) ? FOOTER : ITEM;
     }
 
     private boolean isLastPosition(int position) {
@@ -171,13 +172,18 @@ public class DealsCategoryAdapter extends RecyclerView.Adapter<RecyclerView.View
 
         public void bindData(final CategoryItemsViewModel categoryItemsViewModel, int position) {
             dealsDetails.setText(categoryItemsViewModel.getDisplayName());
-            ImageHandler.loadImageCover2(dealImage, categoryItemsViewModel.getImageWeb());
+            ImageHandler.loadImage(context, dealImage, categoryItemsViewModel.getImageWeb(), R.color.grey_1100, R.color.grey_1100);
+            ImageHandler.loadImage(context, brandImage, categoryItemsViewModel.getBrand().getFeaturedThumbnailImage(), R.color.grey_1100, R.color.grey_1100);
             likes.setText(String.valueOf(categoryItemsViewModel.getLikes()));
             dealListPrice.setText(Utils.convertToCurrencyString(categoryItemsViewModel.getMrp()));
             dealListPrice.setPaintFlags(dealListPrice.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
             discount.setText(categoryItemsViewModel.getSavingPercentage());
             dealSellingPrice.setText(Utils.convertToCurrencyString(categoryItemsViewModel.getSalesPrice()));
-            ImageHandler.loadImageCover2(brandImage, categoryItemsViewModel.getBrand().getFeaturedThumbnailImage());
+            if (categoryItemsViewModel.getDisplayTags() != null) {
+                hotDeal.setVisibility(View.VISIBLE);
+            } else {
+                hotDeal.setVisibility(View.GONE);
+            }
             brandName.setText(categoryItemsViewModel.getBrand().getTitle());
             itemView.setOnClickListener(this);
             ivShareVia.setOnClickListener(this);
@@ -231,15 +237,18 @@ public class DealsCategoryAdapter extends RecyclerView.Adapter<RecyclerView.View
             brandImage = itemView.findViewById(R.id.iv_brand);
             dealSellingPrice = itemView.findViewById(R.id.tv_salesPrice);
             hotDeal = itemView.findViewById(R.id.tv_hot_deal);
-
         }
 
         public void bindData(final CategoryItemsViewModel categoryItemsViewModel, int position) {
             dealsDetails.setText(categoryItemsViewModel.getDisplayName());
-            ImageHandler.loadImageCover2(dealImage, categoryItemsViewModel.getImageWeb());
-            ImageHandler.loadImageCover2(brandImage, categoryItemsViewModel.getBrand().getFeaturedThumbnailImage());
+            ImageHandler.loadImage(context, dealImage, categoryItemsViewModel.getImageWeb(), R.color.grey_1100, R.color.grey_1100);
+            ImageHandler.loadImage(context, brandImage, categoryItemsViewModel.getBrand().getFeaturedThumbnailImage(), R.color.grey_1100, R.color.grey_1100);
             brandName.setText(categoryItemsViewModel.getBrand().getTitle());
-
+            if (categoryItemsViewModel.getDisplayTags() != null) {
+                hotDeal.setVisibility(View.VISIBLE);
+            } else {
+                hotDeal.setVisibility(View.GONE);
+            }
             dealListPrice.setText(Utils.convertToCurrencyString(categoryItemsViewModel.getMrp()));
             dealListPrice.setPaintFlags(dealListPrice.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
             discount.setText(categoryItemsViewModel.getSavingPercentage());
@@ -261,7 +270,6 @@ public class DealsCategoryAdapter extends RecyclerView.Adapter<RecyclerView.View
 
             Toast.makeText(context, "iv_card", Toast.LENGTH_SHORT).show();
             Intent detailsIntent = new Intent(context, DealDetailsActivity.class);
-//            detailsIntent.putExtra(EventDetailsActivity.FROM, EventDetailsActivity.FROM_HOME_OR_SEARCH);
             detailsIntent.putExtra(DealDetailsPresenter.HOME_DATA, categoryItems.get(getIndex()));
             context.startActivity(detailsIntent);
         }

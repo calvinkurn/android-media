@@ -3,17 +3,23 @@ package com.tokopedia.digital_deals.view.activity;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
+import android.util.Log;
 import android.view.View;
 
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.digital_deals.R;
+import com.tokopedia.digital_deals.view.fragment.DealDetailsAllRedeemLocationsFragment;
 import com.tokopedia.digital_deals.view.fragment.DealDetailsFragment;
 import com.tokopedia.digital_deals.view.presenter.DealDetailsPresenter;
 import com.tokopedia.digital_deals.view.utils.DealFragmentCallbacks;
 import com.tokopedia.digital_deals.view.viewmodel.CategoryItemsViewModel;
+import com.tokopedia.digital_deals.view.viewmodel.OutletViewModel;
 
-public class DealDetailsActivity extends BaseSimpleActivity implements DealFragmentCallbacks{
+import java.util.List;
 
+public class DealDetailsActivity extends BaseSimpleActivity implements DealFragmentCallbacks {
+
+    List<OutletViewModel> outlets;
 
     @Override
     protected Fragment getNewFragment() {
@@ -31,13 +37,17 @@ public class DealDetailsActivity extends BaseSimpleActivity implements DealFragm
     }
 
     @Override
-    public void replaceFragment(int flag) {
-        if(flag == 1){
-//            FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-////            transaction.replace(R.id.parent_view, vewerve);
-//            transaction.addToBack
-// Stack("rgrgere");
-//            transaction.commit();
-        }
+    public void replaceFragment(List<OutletViewModel> outlets, int flag) {
+        this.outlets=outlets;
+        Log.d("insidebutton click22", "true");
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        transaction.replace(R.id.parent_view, DealDetailsAllRedeemLocationsFragment.createInstance());
+        transaction.addToBackStack(null);
+        transaction.commit();
+    }
+
+    @Override
+    public List<OutletViewModel> getOutlets() {
+        return this.outlets;
     }
 }

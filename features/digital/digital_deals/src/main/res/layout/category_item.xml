@@ -7,13 +7,28 @@
     android:layout_gravity="center_horizontal"
     android:layout_marginBottom="@dimen/new_margin_sm">
 
-    <ImageView
-        android:id="@+id/imageViewCatItem"
-        android:layout_width="@dimen/image_width_ll"
-        android:layout_height="@dimen/image_width_ll"
-        android:background="@drawable/background_green_oval"
+
+    <android.support.v7.widget.CardView
+        android:id="@+id/ic_card"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        app:cardCornerRadius="@dimen/dp_8"
+        app:cardElevation="@dimen/dp_0"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent" />
+        app:layout_constraintRight_toRightOf="parent">
+
+        <ImageView
+            android:id="@+id/imageViewCatItem"
+            android:layout_width="@dimen/image_width_ll"
+            android:layout_height="@dimen/image_width_ll"
+            android:background="@color/grey_1100"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent" />
+
+
+    </android.support.v7.widget.CardView>
+
 
     <TextView
         android:id="@+id/textViewCatItem"
@@ -27,5 +42,5 @@
         android:textSize="@dimen/sp_12"
         app:layout_constraintLeft_toRightOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/imageViewCatItem" />
+        app:layout_constraintTop_toBottomOf="@+id/ic_card" />
 </android.support.constraint.ConstraintLayout><!--android:layout_marginRight="@dimen/new_margin_med"-->

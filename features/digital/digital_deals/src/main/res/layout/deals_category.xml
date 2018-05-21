@@ -57,7 +57,7 @@
         app:layout_constraintTop_toBottomOf="@+id/pager_indicator" />
 
     <android.support.v7.widget.RecyclerView
-        android:id="@+id/recyclerViewCatItems"
+        android:id="@+id/recyclerViewBrandItems"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="@dimen/dp_16"
@@ -82,7 +82,7 @@
         android:textSize="@dimen/sp_17"
         android:textStyle="normal"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/recyclerViewCatItems" />
+        app:layout_constraintTop_toBottomOf="@+id/recyclerViewBrandItems" />
 
 
     <android.support.v7.widget.RecyclerView

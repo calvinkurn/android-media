@@ -119,6 +119,11 @@ public class GridLayoutItem {
     @SerializedName("media")
     @Expose
     private Object media;
+    @SerializedName("brand")
+    private BrandItem brand;
+    @SerializedName("display_tags")
+    @Expose
+    private String displayTags;
 
     public Integer getId() {
         return id;
@@ -424,48 +429,65 @@ public class GridLayoutItem {
         this.media = media;
     }
 
+    public BrandItem getBrand() {
+        return brand;
+    }
+
+    public void setBrand(BrandItem brand) {
+        this.brand = brand;
+    }
+
+    public String getDisplayTags() {
+        return displayTags;
+    }
+
+    public void setDisplayTags(String displayTags) {
+        this.displayTags = displayTags;
+    }
+
+
     @Override
     public String toString() {
         StringBuilder builder = new StringBuilder();
-        builder.append("id : "+id);
-        builder.append("categoryId : "+categoryId);
-        builder.append("providerId : "+providerId);
-        builder.append("providerProductId : "+providerProductId);
-        builder.append("providerProductName : "+providerProductName);
-        builder.append("displayName : "+displayName);
-        builder.append("url : "+url);
-        builder.append("seoUrl : "+seoUrl);
-        builder.append("imageWeb : "+imageWeb);
-        builder.append("thumbnailWeb : "+thumbnailWeb);
-        builder.append("longRichDesc : "+longRichDesc);
-        builder.append("mrp : "+mrp);
-        builder.append("salesPrice : "+salesPrice);
-        builder.append("quantity : "+quantity);
-        builder.append("soldQuantity : "+soldQuantity);
-        builder.append("sellRate : "+sellRate);
-        builder.append("thumbsUp : "+thumbsUp);
-        builder.append("thumbsDown : "+thumbsDown);
-        builder.append("isFeatured : "+isFeatured);
-        builder.append("isSearchable : "+isSearchable);
-        builder.append("status : "+status);
-        builder.append("minStartDate : "+minStartDate);
-        builder.append("maxEndDate : "+maxEndDate);
-        builder.append("saleStartDate : "+saleStartDate);
-        builder.append("saleEndDate : "+saleEndDate);
-        builder.append("createdAt : "+createdAt);
-        builder.append("updatedAt : "+updatedAt);
-        builder.append("minStartTime : "+minStartTime);
-        builder.append("maxEndTime : "+maxEndTime);
-        builder.append("saleStartTime : "+saleStartTime);
-        builder.append("saleEndTime : "+saleEndTime);
-        builder.append("dateRange : "+dateRange);
-        builder.append("cityName : "+cityName);
-        builder.append("rating : "+rating);
-        builder.append("likes : "+likes);
-        builder.append("schedules : "+schedules);
-        builder.append("forms : "+forms);
-        builder.append("media : "+media);
-        return  builder.toString();
+        builder.append("id : " + id);
+        builder.append("categoryId : " + categoryId);
+        builder.append("providerId : " + providerId);
+        builder.append("providerProductId : " + providerProductId);
+        builder.append("providerProductName : " + providerProductName);
+        builder.append("displayName : " + displayName);
+        builder.append("url : " + url);
+        builder.append("seoUrl : " + seoUrl);
+        builder.append("imageWeb : " + imageWeb);
+        builder.append("thumbnailWeb : " + thumbnailWeb);
+        builder.append("longRichDesc : " + longRichDesc);
+        builder.append("mrp : " + mrp);
+        builder.append("salesPrice : " + salesPrice);
+        builder.append("quantity : " + quantity);
+        builder.append("soldQuantity : " + soldQuantity);
+        builder.append("sellRate : " + sellRate);
+        builder.append("thumbsUp : " + thumbsUp);
+        builder.append("thumbsDown : " + thumbsDown);
+        builder.append("isFeatured : " + isFeatured);
+        builder.append("isSearchable : " + isSearchable);
+        builder.append("status : " + status);
+        builder.append("minStartDate : " + minStartDate);
+        builder.append("maxEndDate : " + maxEndDate);
+        builder.append("saleStartDate : " + saleStartDate);
+        builder.append("saleEndDate : " + saleEndDate);
+        builder.append("createdAt : " + createdAt);
+        builder.append("updatedAt : " + updatedAt);
+        builder.append("minStartTime : " + minStartTime);
+        builder.append("maxEndTime : " + maxEndTime);
+        builder.append("saleStartTime : " + saleStartTime);
+        builder.append("saleEndTime : " + saleEndTime);
+        builder.append("dateRange : " + dateRange);
+        builder.append("cityName : " + cityName);
+        builder.append("rating : " + rating);
+        builder.append("likes : " + likes);
+        builder.append("schedules : " + schedules);
+        builder.append("forms : " + forms);
+        builder.append("media : " + media);
+        return builder.toString();
     }
 
 }

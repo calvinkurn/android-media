@@ -8,12 +8,14 @@ import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.AttributeSet;
+import android.util.TypedValue;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.tokopedia.design.base.BaseCustomView;
@@ -178,6 +180,20 @@ public class SearchInputView extends BaseCustomView {
 
     public void setDelayTextChanged(long delayTextChanged) {
         this.delayTextChanged = delayTextChanged;
+    }
+
+    public void setSearchImageView(Drawable drawable){
+        searchImageView.setImageDrawable(drawable);
+    }
+
+    public void setSearchImageViewDimens(int width, int height){
+        LinearLayout.LayoutParams layoutParams= (LinearLayout.LayoutParams) searchImageView.getLayoutParams();
+        layoutParams.width=width;
+        layoutParams.height=height;
+    }
+
+    public void setSearchTextSize(float size){
+        searchTextView.setTextSize(TypedValue.COMPLEX_UNIT_PX, size);
     }
 
     @Override

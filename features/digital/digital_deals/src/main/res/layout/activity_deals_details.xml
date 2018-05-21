@@ -30,30 +30,36 @@
                 android:layout_height="match_parent">
 
 
-                <com.tokopedia.abstraction.base.view.widget.TouchViewPager
-                    android:id="@+id/deals_bannerpager"
+
+                <ImageView
+                    android:id="@+id/deal_image"
                     android:layout_width="match_parent"
-                    android:layout_height="@dimen/image_width_deals_details_header" />
+                    android:scaleType="fitXY"
+                    android:layout_height="@dimen/dp_240" />
+                <!--<com.tokopedia.abstraction.base.view.widget.TouchViewPager-->
+                    <!--android:id="@+id/deals_bannerpager"-->
+                    <!--android:layout_width="match_parent"-->
+                    <!--android:layout_height="@dimen/image_width_deals_details_header" />-->
 
 
-                <com.tokopedia.design.viewpagerindicator.CirclePageIndicator
-                    android:id="@+id/pager_indicator"
-                    android:layout_width="wrap_content"
-                    android:layout_height="@dimen/dp_12"
-                    android:layout_marginBottom="@dimen/dp_16"
-                    app:centered="false"
-                    app:fillColor="@color/green_nob"
-                    app:layout_constraintBottom_toBottomOf="@+id/deals_bannerpager"
-                    app:layout_constraintLeft_toLeftOf="@+id/deals_bannerpager"
-                    app:layout_constraintRight_toRightOf="@id/deals_bannerpager"
-                    app:pageColor="@color/grey_400"
-                    app:radius="@dimen/dp_4"
-                    app:strokeColor="@color/grey_400" />
+                <!--<com.tokopedia.design.viewpagerindicator.CirclePageIndicator-->
+                    <!--android:id="@+id/pager_indicator"-->
+                    <!--android:layout_width="wrap_content"-->
+                    <!--android:layout_height="@dimen/dp_12"-->
+                    <!--android:layout_marginBottom="@dimen/dp_16"-->
+                    <!--app:centered="false"-->
+                    <!--app:fillColor="@color/green_nob"-->
+                    <!--app:layout_constraintBottom_toBottomOf="@+id/deals_bannerpager"-->
+                    <!--app:layout_constraintLeft_toLeftOf="@+id/deals_bannerpager"-->
+                    <!--app:layout_constraintRight_toRightOf="@id/deals_bannerpager"-->
+                    <!--app:pageColor="@color/grey_400"-->
+                    <!--app:radius="@dimen/dp_4"-->
+                    <!--app:strokeColor="@color/grey_400" />-->
 
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="50dp"
-                    android:layout_marginTop="250dp"
+                    android:layout_height="@dimen/dp_50"
+                    android:layout_marginTop="@dimen/dp_250"
                     app:layout_constraintTop_toTopOf="parent" />
 
             </android.support.constraint.ConstraintLayout>

@@ -9,7 +9,17 @@ public class DealsDomain {
 
     private List<DealsCategoryDomain> dealsCategory;
 
-    private  List<BrandDomain> dealsBrands;
+    private List<BrandDomain> dealsBrands;
+
+    private PageDomain page;
+
+    public PageDomain getPage() {
+        return page;
+    }
+
+    public void setPage(PageDomain page) {
+        this.page = page;
+    }
 
     public List<DealsCategoryDomain> getDealsCategory() {
         return dealsCategory;

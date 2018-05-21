@@ -1,7 +1,5 @@
 package com.tokopedia.digital_deals.data.mapper;
 
-import android.util.Log;
-
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.tokopedia.digital_deals.data.entity.response.dealdetailsresponse.DealDetailsResponse;

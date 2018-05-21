@@ -1,13 +1,19 @@
 package com.tokopedia.digital_deals.data;
 
+import com.tokopedia.digital_deals.data.mapper.AllBrandsMapper;
 import com.tokopedia.digital_deals.data.mapper.BrandDetailsTransformMapper;
 import com.tokopedia.digital_deals.data.mapper.DealDetailsTransformMapper;
+import com.tokopedia.digital_deals.data.mapper.DealsCategoryDetailMapper;
+import com.tokopedia.digital_deals.data.mapper.DealsLocationTransformMapper;
 import com.tokopedia.digital_deals.data.mapper.DealsTransformMapper;
 import com.tokopedia.digital_deals.data.mapper.SearchResponseMapper;
 import com.tokopedia.digital_deals.domain.DealsRepository;
+import com.tokopedia.digital_deals.domain.model.allbrandsdomainmodel.AllBrandsDomain;
 import com.tokopedia.digital_deals.domain.model.branddetailsmodel.BrandDetailsDomain;
 import com.tokopedia.digital_deals.domain.model.DealsDomain;
+import com.tokopedia.digital_deals.domain.model.categorydomainmodel.CategoryDetailsDomain;
 import com.tokopedia.digital_deals.domain.model.dealdetailsdomailmodel.DealsDetailsDomain;
+import com.tokopedia.digital_deals.domain.model.locationdomainmodel.LocationDomainModel;
 import com.tokopedia.digital_deals.domain.model.searchdomainmodel.SearchDomainModel;
 
 import java.util.HashMap;
@@ -31,6 +37,13 @@ public class DealsRepositoryData implements DealsRepository {
     }
 
     @Override
+    public Observable<DealsDomain> getDeals(String nextUrl) {
+        return dealsDataStoreFactory
+                .createCloudDataStore()
+                .getDeals(nextUrl).map(new DealsTransformMapper());
+    }
+
+    @Override
     public Observable<SearchDomainModel> getSearchDeals(HashMap<String, Object> params) {
         return dealsDataStoreFactory.createCloudDataStore().getSearchDeals(params).map(new SearchResponseMapper());
     }
@@ -48,5 +61,30 @@ public class DealsRepositoryData implements DealsRepository {
     @Override
     public Observable<DealsDetailsDomain> getDealDetails(String url) {
         return dealsDataStoreFactory.createCloudDataStore().getDealDetails(url).map(new DealDetailsTransformMapper());
+    }
+
+    @Override
+    public Observable<LocationDomainModel> getLocations() {
+        return dealsDataStoreFactory.createCloudDataStore().getLocations().map(new DealsLocationTransformMapper());
+    }
+
+    @Override
+    public Observable<CategoryDetailsDomain> getCategoryDetails(HashMap<String, Object> parameters) {
+        return dealsDataStoreFactory.createCloudDataStore().getCategoryDetails(parameters).map(new DealsCategoryDetailMapper());
+    }
+
+    @Override
+    public Observable<CategoryDetailsDomain> getCategoryDetails(String nexturl) {
+        return dealsDataStoreFactory.createCloudDataStore().getCategoryDetails(nexturl).map(new DealsCategoryDetailMapper());
+    }
+
+    @Override
+    public Observable<AllBrandsDomain> getAllBrands(String categoryUrl) {
+        return dealsDataStoreFactory.createCloudDataStore().getAllBrands(categoryUrl).map(new AllBrandsMapper());
+    }
+
+    @Override
+    public Observable<AllBrandsDomain> getAllBrandsNext(String nextUrl) {
+        return dealsDataStoreFactory.createCloudDataStore().getAllBrandsNext(nextUrl).map(new AllBrandsMapper());
     }
 }

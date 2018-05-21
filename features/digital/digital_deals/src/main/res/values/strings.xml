@@ -7,6 +7,7 @@
     <string name="promo">Promo</string>
     <string name="trending_deals">TRENDING DEALS</string>
     <string name="search_input_hint_deals">Cari Voucher/Outlet</string>
+    <string name="search_input_hint_location">Cari Kota</string>
     <string name="empty_search_text_upper">Hasil pencarian Anda tidak dapat ditemukan.</string>
     <string name="empty_search_text_lower">Silakan lakukan pencarian dengan kata kunci / filter lain</string>
     <string name="search_sort_label">Urutkan</string>
@@ -22,7 +23,7 @@
     <string name="empty_deal_list_text_lower">Silakan temukan deals di tempat lain.</string>
     <string name="empty_location_list_text_upper">Hasil pencarian Anda tidak dapat ditemukan.</string>
     <string name="empty_location_list_text_lower">Silakan lakukan pencarian dengan kata  kunci lain</string>
-    <string name="title_activity_all_brands">AllBrandsActivity</string>
+    <string name="title_activity_all_brands">Brands</string>
     <string name="tab_text_1">Tab 1</string>
     <string name="tab_text_2">Tab 2</string>
     <string name="tab_text_3">Tab 3</string>
@@ -40,5 +41,15 @@
     <string name="valid_through">Berlaku hingga tanggal %s</string>
     <string name="number_of_items">(%d)</string>
     <string name="see_all_locations">Lihat Semua Lokasi</string>
+
+    <string name="select_location_first">Please select a location first.</string>
+    <string name="title_activity_select_locations">Pilih Lokasi</string>
+    <string name="deals_search_location_result">Deals ‘%1$s’ di %2$s</string>
+    <string name="change_location">Ubah Lokasi</string>
+    <string name="featured_brand">Brand Unggulan</string>
+    <string name="popular_deals_in_location">Populer di %1$s</string>
+    <string name="popular_brand">Brand Populer</string>
+    <string name="all_brands">Semua Brand</string>
+    <string name="search_input_hint_brand">Cari Brand</string>
 
 </resources>

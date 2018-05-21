@@ -9,17 +9,24 @@ import android.util.Log;
 import android.view.View;
 import android.widget.LinearLayout;
 
+import com.google.gson.Gson;
+import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
+import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.digital_deals.R;
+import com.tokopedia.digital_deals.domain.model.PageDomain;
 import com.tokopedia.digital_deals.domain.model.branddetailsmodel.BrandDomain;
 import com.tokopedia.digital_deals.domain.model.DealsCategoryDomain;
 import com.tokopedia.digital_deals.domain.model.DealsCategoryItemDomain;
 import com.tokopedia.digital_deals.domain.model.dealdetailsdomailmodel.DealsDetailsDomain;
 import com.tokopedia.digital_deals.domain.model.dealdetailsdomailmodel.Outlet;
+import com.tokopedia.digital_deals.domain.model.locationdomainmodel.LocationItemDomain;
 import com.tokopedia.digital_deals.view.viewmodel.BrandViewModel;
 import com.tokopedia.digital_deals.view.viewmodel.CategoryItemsViewModel;
 import com.tokopedia.digital_deals.view.viewmodel.CategoryViewModel;
 import com.tokopedia.digital_deals.view.viewmodel.DealsDetailsViewModel;
+import com.tokopedia.digital_deals.view.viewmodel.LocationViewModel;
 import com.tokopedia.digital_deals.view.viewmodel.OutletViewModel;
+import com.tokopedia.digital_deals.view.viewmodel.PageViewModel;
 import com.tokopedia.digital_deals.view.viewmodel.SearchViewModel;
 
 
@@ -38,6 +45,7 @@ import java.util.TimeZone;
 
 public class Utils {
     private static Utils singleInstance;
+    private static LocationViewModel location;
 
     synchronized public static Utils getSingletonInstance() {
         if (singleInstance == null)
@@ -49,26 +57,26 @@ public class Utils {
         Log.d("UTILS", "Utils Instance created");
     }
 
-    public List<CategoryViewModel> convertIntoCategoryListViewModel(List<DealsCategoryDomain> categoryList) {
+    public ArrayList<CategoryViewModel> convertIntoCategoryListViewModel(List<DealsCategoryDomain> categoryList) {
 
-        List<CategoryViewModel> categoryViewModels = new ArrayList<>();
+        ArrayList<CategoryViewModel> categoryViewModels = new ArrayList<>();
         if (categoryList != null) {
             for (DealsCategoryDomain dealsCategoryDomain : categoryList) {
 
                 switch (dealsCategoryDomain.getName().toLowerCase()) {
                     case "top":
                         categoryViewModels.add(0, new CategoryViewModel(dealsCategoryDomain.getTitle(),
-                                dealsCategoryDomain.getName(),
+                                dealsCategoryDomain.getName(), dealsCategoryDomain.getUrl(),
                                 convertIntoCategoryListItemsViewModel(dealsCategoryDomain.getItems())));
                         break;
                     case "carousel":
                         categoryViewModels.add(0, new CategoryViewModel(dealsCategoryDomain.getTitle(),
-                                dealsCategoryDomain.getName(),
+                                dealsCategoryDomain.getName(), dealsCategoryDomain.getUrl(),
                                 convertIntoCategoryListItemsViewModel(dealsCategoryDomain.getItems())));
                         break;
                     default:
                         categoryViewModels.add(new CategoryViewModel(dealsCategoryDomain.getTitle(),
-                                dealsCategoryDomain.getName(),
+                                dealsCategoryDomain.getName(), dealsCategoryDomain.getUrl(),
                                 convertIntoCategoryListItemsViewModel(dealsCategoryDomain.getItems())));
                         break;
 
@@ -79,8 +87,8 @@ public class Utils {
         return categoryViewModels;
     }
 
-    public List<CategoryItemsViewModel> convertIntoCategoryListItemsViewModel(List<DealsCategoryItemDomain> categoryResponseItemsList) {
-        List<CategoryItemsViewModel> categoryItemsViewModelList = new ArrayList<>();
+    public ArrayList<CategoryItemsViewModel> convertIntoCategoryListItemsViewModel(List<DealsCategoryItemDomain> categoryResponseItemsList) {
+        ArrayList<CategoryItemsViewModel> categoryItemsViewModelList = new ArrayList<>();
         if (categoryResponseItemsList != null) {
             CategoryItemsViewModel categoryItemsViewModel;
             for (DealsCategoryItemDomain categoryEntity : categoryResponseItemsList) {
@@ -96,17 +104,23 @@ public class Utils {
                 categoryItemsViewModel.setLikes(categoryEntity.getLikes());
                 categoryItemsViewModel.setSavingPercentage(categoryEntity.getSavingPercentage());
 
-                BrandViewModel brandViewModel=new BrandViewModel();
-                brandViewModel.setTitle(categoryEntity.getBrand().getTitle());
-                brandViewModel.setFeaturedImage(categoryEntity.getBrand().getFeaturedImage());
-                brandViewModel.setFeaturedThumbnailImage(categoryEntity.getBrand().getFeaturedThumbnailImage());
-                categoryItemsViewModel.setBrand(brandViewModel);
+                try {
+                    BrandViewModel brandViewModel = new BrandViewModel();
+                    brandViewModel.setTitle(categoryEntity.getBrand().getTitle());
+                    brandViewModel.setFeaturedImage(categoryEntity.getBrand().getFeaturedImage());
+                    brandViewModel.setFeaturedThumbnailImage(categoryEntity.getBrand().getFeaturedThumbnailImage());
+
+                    categoryItemsViewModel.setBrand(brandViewModel);
+                } catch (Exception e) {
+
+                }
 //                categoryItemsViewModel.setThumbnailApp(categoryEntity.getThumbnailApp());
 //                categoryItemsViewModel.setMinStartTime(categoryEntity.getMinStartTime());
                 categoryItemsViewModel.setCityName(categoryEntity.getCityName());
                 categoryItemsViewModel.setMinStartDate(categoryEntity.getMinStartDate());
                 categoryItemsViewModel.setMaxEndDate(categoryEntity.getMaxEndDate());
                 categoryItemsViewModel.setLongRichDesc(categoryEntity.getLongRichDesc());
+                categoryItemsViewModel.setDisplayTags(categoryEntity.getDisplayTags());
 //                categoryItemsViewModel.setDisplayTags(categoryEntity.getDisplayTags());
 //                categoryItemsViewModel.setTnc(categoryEntity.getTnc());
 //                categoryItemsViewModel.setIsTop(categoryEntity.getIsTop());
@@ -116,6 +130,24 @@ public class Utils {
             }
         }
         return categoryItemsViewModelList;
+    }
+
+    public List<LocationViewModel> convertIntoLocationListItemsViewModel(List<LocationItemDomain> locationItemsDomain) {
+        List<LocationViewModel> locationItemsViewModelList = new ArrayList<>();
+        if (locationItemsDomain != null) {
+            LocationViewModel locationViewModel;
+            for (LocationItemDomain locationItemDomain : locationItemsDomain) {
+                locationViewModel = new LocationViewModel();
+                locationViewModel.setCountry(locationItemDomain.getCountry());
+                locationViewModel.setDistrict(locationItemDomain.getDistrict());
+                locationViewModel.setName(locationItemDomain.getName());
+                locationViewModel.setSearchName(locationItemDomain.getSearchName());
+                locationViewModel.setCategoryId(locationItemDomain.getCategoryId());
+                locationViewModel.setUrl(locationItemDomain.getUrl());
+                locationItemsViewModelList.add(locationViewModel);
+            }
+        }
+        return locationItemsViewModelList;
     }
 
 
@@ -208,6 +240,16 @@ public class Utils {
             }
         }
         return searchViewModels;
+    }
+
+    public PageViewModel convertIntoPageViewModel(PageDomain pageDomain) {
+
+        PageViewModel pageViewModel = new PageViewModel();
+        if (pageDomain != null) {
+            pageViewModel.setUriNext(pageDomain.getUriNext());
+            pageViewModel.setUriPrev(pageDomain.getUriPrev());
+        }
+        return pageViewModel;
     }
 
     private boolean isPresent(ArrayList<SearchViewModel> searchViewModels, String title) {
@@ -345,7 +387,32 @@ public class Utils {
 
     public static Locale locale = new Locale("in", "ID");
     public static final String RUPIAH_FORMAT = "Rp %s";
-    public static String convertToCurrencyString(Integer value){
+
+    public static String convertToCurrencyString(Integer value) {
         return String.format(RUPIAH_FORMAT, NumberFormat.getNumberInstance(locale).format(value.longValue()));
     }
+
+    public LocationViewModel getLocation(Context context) {
+
+        if (location == null) {
+            final LocalCacheHandler localCacheHandler = new LocalCacheHandler(context, TkpdCache.DEALS_LOCATION);
+            String locationjson = localCacheHandler.getString(TkpdCache.Key.KEY_DEALS_LOCATION, null);
+            if (locationjson != null) {
+                Gson gson = new Gson();
+                location = gson.fromJson(locationjson, LocationViewModel.class);
+            }
+        }
+        return location;
+    }
+
+    public void updateLocation(Context context, LocationViewModel locatn) {
+
+        location=locatn;
+        final LocalCacheHandler localCacheHandler = new LocalCacheHandler(context, TkpdCache.DEALS_LOCATION);
+        Gson gson = new Gson();
+        String json = gson.toJson(location);
+        localCacheHandler.putString(TkpdCache.Key.KEY_DEALS_LOCATION, json);
+        localCacheHandler.applyEditor();
+    }
+
 }

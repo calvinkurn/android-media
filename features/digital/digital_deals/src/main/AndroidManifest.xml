@@ -23,18 +23,23 @@
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White" />
         <activity
-            android:name=".view.activity.DealCategoryBrandActivity"
+            android:name=".view.activity.DealsCategoryDetailActivity"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White" />
         <activity
             android:name=".view.activity.AllBrandsActivity"
             android:label="@string/title_activity_all_brands"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme" />
+            android:theme="@style/Theme.White" />
         <activity
             android:name=".view.activity.BrandDetailsActivity"
             android:screenOrientation="portrait" />
 
+        <activity
+            android:name=".view.activity.DealsLocationActivity"
+            android:screenOrientation="portrait"
+            android:label="@string/title_activity_select_locations"
+            android:theme="@style/Theme.White" />
     </application>
 
 </manifest>

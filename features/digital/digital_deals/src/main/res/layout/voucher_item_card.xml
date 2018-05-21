@@ -61,7 +61,7 @@
         android:layout_height="@dimen/image_width_brand"
         android:layout_marginBottom="@dimen/dp_8"
         android:layout_marginLeft="@dimen/dp_8"
-        android:background="@color/card_loading_color"
+        android:background="@color/grey_1100"
         android:layout_marginTop="@dimen/dp_16"
         android:scaleType="centerCrop"
         app:layout_constraintLeft_toLeftOf="parent"

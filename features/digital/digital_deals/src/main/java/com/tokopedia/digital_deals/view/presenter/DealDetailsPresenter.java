@@ -10,6 +10,9 @@ import com.tokopedia.digital_deals.domain.model.dealdetailsdomailmodel.DealsDeta
 import com.tokopedia.digital_deals.view.contractor.DealDetailsContract;
 import com.tokopedia.digital_deals.view.utils.Utils;
 import com.tokopedia.digital_deals.view.viewmodel.DealsDetailsViewModel;
+import com.tokopedia.digital_deals.view.viewmodel.OutletViewModel;
+
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -90,6 +93,14 @@ public class DealDetailsPresenter extends BaseDaggerPresenter<DealDetailsContrac
             getView().getActivity().onBackPressed();
         }
         return true;
+    }
+
+    @Override
+    public List<OutletViewModel> getAllOutlets() {
+        if (dealsDetailsViewModel != null)
+            return dealsDetailsViewModel.getOutlets();
+        else
+            return null;
     }
 
 

@@ -34,6 +34,7 @@ public class CategoryItemsViewModel implements Parcelable {
     private Object forms;
     private Object media;
     private String savingPercentage;
+    private String displayTags;
     private BrandViewModel brand;
 
     public final static Parcelable.Creator<CategoryItemsViewModel> CREATOR = new Creator<CategoryItemsViewModel>() {
@@ -81,9 +82,9 @@ public class CategoryItemsViewModel implements Parcelable {
         this.schedules = ((Object) in.readValue((Object.class.getClassLoader())));
         this.forms = ((Object) in.readValue((Object.class.getClassLoader())));
         this.media = ((Object) in.readValue((Object.class.getClassLoader())));
-        this.savingPercentage = ((String) in.readValue((Integer.class.getClassLoader())));
+        this.savingPercentage = ((String) in.readValue((String.class.getClassLoader())));
         this.brand = ((BrandViewModel) in.readValue((BrandViewModel.class.getClassLoader())));
-
+        this.displayTags = ((String) in.readValue((String.class.getClassLoader())));
     }
 
     public CategoryItemsViewModel() {
@@ -317,6 +318,14 @@ public class CategoryItemsViewModel implements Parcelable {
         this.brand = brand;
     }
 
+    public String getDisplayTags() {
+        return displayTags;
+    }
+
+    public void setDisplayTags(String displayTags) {
+        this.displayTags = displayTags;
+    }
+
 
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeValue(displayName);
@@ -348,6 +357,7 @@ public class CategoryItemsViewModel implements Parcelable {
         dest.writeValue(media);
         dest.writeValue(savingPercentage);
         dest.writeValue(brand);
+        dest.writeValue(displayTags);
     }
 
     public int describeContents() {

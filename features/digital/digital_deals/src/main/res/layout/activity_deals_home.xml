@@ -18,12 +18,18 @@
             android:layout_height="?attr/actionBarSize"
             android:minHeight="?attr/actionBarSize" />
 
+        <View
+            android:id="@+id/divider1"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/divider_height_thinv"
+            android:background="@color/divider_color" />
+
         <android.support.constraint.ConstraintLayout
             android:id="@+id/cl_search_view"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            android:visibility="gone"
             android:background="@color/bottomnav_bg"
+            android:visibility="gone"
             app:layout_behavior="com.tokopedia.digital_deals.view.behaviour.QuickHideBehavior">
 
             <LinearLayout
@@ -31,10 +37,9 @@
                 android:layout_width="0dp"
                 android:layout_height="@dimen/dp_40"
                 android:layout_marginBottom="@dimen/dp_8"
-
                 android:layout_marginLeft="@dimen/dp_16"
                 android:layout_marginTop="@dimen/dp_8"
-                android:background="@drawable/rect_white_rounded_stroke_gray"
+                android:background="@drawable/rect_grey_search_background"
                 android:gravity="center_vertical"
                 android:orientation="horizontal"
                 android:padding="@dimen/dp_10"
@@ -45,8 +50,8 @@
 
                 <ImageView
                     android:id="@+id/image_view_search"
-                    android:layout_width="@dimen/dp_16"
-                    android:layout_height="@dimen/dp_16"
+                    android:layout_width="@dimen/dp_18"
+                    android:layout_height="@dimen/dp_18"
                     app:srcCompat="@drawable/ic_search_grey" />
 
                 <TextView
@@ -76,6 +81,7 @@
 
 
             <android.support.constraint.ConstraintLayout
+                android:id="@+id/cl_location"
                 android:layout_width="0dp"
                 android:layout_height="@dimen/dp_40"
                 android:orientation="horizontal"
@@ -93,8 +99,8 @@
                     android:layout_width="@dimen/dp_24"
                     android:layout_height="@dimen/dp_24"
                     android:layout_marginRight="@dimen/dp_8"
-                    android:background="@color/card_loading_color"
-                    app:layout_constraintRight_toLeftOf="@+id/tv_location_name" />
+                    app:layout_constraintRight_toLeftOf="@+id/tv_location_name"
+                    app:srcCompat="@drawable/ic_location_2" />
 
 
                 <TextView
@@ -120,21 +126,23 @@
         android:id="@+id/base_main_content"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:visibility="gone"
         android:background="@color/bottomnav_bg"
+        android:visibility="gone"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-        <android.support.design.widget.AppBarLayout
-            android:id="@+id/app_bar_layout"
+        <!--<android.support.design.widget.AppBarLayout-->
+        <!--android:id="@+id/app_bar_layout"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:background="@color/bottomnav_bg">-->
+        <android.support.v4.widget.NestedScrollView
+            android:id="@+id/nested_scroll_view"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@color/bottomnav_bg">
-
+            android:layout_height="match_parent">
 
             <android.support.constraint.ConstraintLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                app:layout_scrollFlags="scroll|exitUntilCollapsed">
+                android:layout_height="match_parent">
 
                 <com.tokopedia.abstraction.base.view.widget.TouchViewPager
                     android:id="@+id/deals_bannerpager"
@@ -192,6 +200,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="@dimen/dp_16"
+                    android:nestedScrollingEnabled="false"
                     android:layout_marginRight="@dimen/dp_16"
                     android:layout_marginTop="@dimen/dp_16"
                     app:layoutManager="android.support.v7.widget.GridLayoutManager"
@@ -219,6 +228,7 @@
                     android:id="@+id/recyclerViewTrendingDeals"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:nestedScrollingEnabled="false"
                     app:layout_constraintTop_toBottomOf="@id/tv_popular" />
 
 
@@ -229,7 +239,7 @@
                     android:layout_marginLeft="@dimen/dp_16"
                     android:layout_marginTop="@dimen/dp_32"
                     android:fontFamily="sans-serif-medium"
-                    android:text="Brand Populer"
+                    android:text="@string/popular_brand"
                     android:textColor="@color/black_39"
                     android:textSize="@dimen/sp_17"
                     android:textStyle="normal"
@@ -241,7 +251,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginRight="@dimen/dp_16"
-                    android:text="Lihat Semua"
+                    android:text="@string/see_all"
                     android:textColor="@color/green_nob"
                     android:textSize="@dimen/sp_12"
                     android:textStyle="normal"
@@ -256,6 +266,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="@dimen/dp_16"
                     android:layout_marginRight="@dimen/dp_16"
+                    android:nestedScrollingEnabled="false"
                     android:layout_marginTop="@dimen/dp_16"
                     app:layoutManager="android.support.v7.widget.GridLayoutManager"
                     app:layout_constraintTop_toBottomOf="@+id/tv_popular_brand"
@@ -274,18 +285,19 @@
                     android:textColor="@color/black_39"
                     android:textSize="@dimen/sp_17"
                     android:textStyle="normal"
+                    android:visibility="gone"
                     app:layout_constraintLeft_toLeftOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/recyclerViewBrandItems" />
             </android.support.constraint.ConstraintLayout>
 
 
-        </android.support.design.widget.AppBarLayout>
-
+        </android.support.v4.widget.NestedScrollView>
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/recyclerViewAllDeals"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:visibility="gone"
             app:layoutManager="android.support.v7.widget.LinearLayoutManager"
             app:layout_behavior="@string/appbar_scrolling_view_behavior"
             app:layout_constraintTop_toBottomOf="@id/tv_all_deals"
@@ -300,8 +312,7 @@
         android:layout_height="match_parent"
         android:background="@color/black_12"
         android:clickable="true"
-        android:focusable="true"
-        >
+        android:focusable="true">
 
         <ProgressBar
             android:id="@+id/prog_bar"

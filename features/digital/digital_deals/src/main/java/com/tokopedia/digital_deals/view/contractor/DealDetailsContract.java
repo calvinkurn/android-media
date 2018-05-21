@@ -8,6 +8,7 @@ import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
 import com.tokopedia.digital_deals.view.viewmodel.BrandViewModel;
 import com.tokopedia.digital_deals.view.viewmodel.CategoryItemsViewModel;
 import com.tokopedia.digital_deals.view.viewmodel.DealsDetailsViewModel;
+import com.tokopedia.digital_deals.view.viewmodel.OutletViewModel;
 import com.tokopedia.usecase.RequestParams;
 
 import java.util.List;
@@ -46,6 +47,8 @@ public class DealDetailsContract {
         void onDestroy();
 
         boolean onOptionMenuClick(int id);
+
+        List<OutletViewModel> getAllOutlets();
 
 
     }

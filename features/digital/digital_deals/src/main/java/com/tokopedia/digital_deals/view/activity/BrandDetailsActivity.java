@@ -65,7 +65,7 @@ public class BrandDetailsActivity extends BaseSimpleActivity implements HasCompo
     private FrameLayout flHeader;
     private CollapsingToolbarLayout cTOllBar;
 
-    private final boolean IS_SHORT_LAYOUT = false;
+    private final boolean IS_SHORT_LAYOUT = true;
 
     @Override
     protected Fragment getNewFragment() {
@@ -174,12 +174,13 @@ public class BrandDetailsActivity extends BaseSimpleActivity implements HasCompo
     public void renderBrandDetails(List<CategoryItemsViewModel> categoryItemsViewModels, BrandViewModel brandViewModel) {
         collapsingToolbarLayout.setTitle(brandViewModel.getTitle());
         tvExpandableDesc.setText(brandViewModel.getDescription());
-        ImageHandler.loadImageCover2(imageHeader, brandViewModel.getFeaturedImage());
-        ImageHandler.loadImageCover2(brandLogo, brandViewModel.getFeaturedThumbnailImage());
+        ImageHandler.loadImage(getActivity(), imageHeader, brandViewModel.getFeaturedImage(), R.color.grey_1100, R.color.grey_1100);
+        ImageHandler.loadImage(getActivity(), brandLogo, brandViewModel.getFeaturedThumbnailImage(), R.color.grey_1100, R.color.grey_1100);
+
         for (CategoryItemsViewModel categoryItemsViewModel : categoryItemsViewModels) {
             categoryItemsViewModel.setBrand(brandViewModel);
         }
-        categoryAdapter = new DealsCategoryAdapter(getActivity(), categoryItemsViewModels, IS_SHORT_LAYOUT);
+        categoryAdapter = new DealsCategoryAdapter(getActivity(), categoryItemsViewModels, !IS_SHORT_LAYOUT);
 
         Log.d("ListSizeee", " " + categoryItemsViewModels.size());
         numberofDeals.setText(String.format(getString(R.string.number_of_items), categoryItemsViewModels.size()));

@@ -11,6 +11,7 @@ import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Layout;
@@ -23,12 +24,15 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.abstraction.base.view.widget.TouchViewPager;
 import com.tokopedia.abstraction.common.di.component.HasComponent;
+import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.design.viewpagerindicator.CirclePageIndicator;
 import com.tokopedia.digital_deals.R;
 import com.tokopedia.digital_deals.di.DaggerDealsComponent;
@@ -39,35 +43,32 @@ import com.tokopedia.digital_deals.view.adapter.DealsCategoryAdapter;
 import com.tokopedia.digital_deals.view.adapter.DealsCategoryItemAdapter;
 import com.tokopedia.digital_deals.view.adapter.SlidingImageAdapter;
 import com.tokopedia.digital_deals.view.contractor.DealsContract;
-import com.tokopedia.digital_deals.view.customview.SearchInputView;
 import com.tokopedia.digital_deals.view.presenter.DealsHomePresenter;
+import com.tokopedia.digital_deals.view.utils.Utils;
 import com.tokopedia.digital_deals.view.viewmodel.BrandViewModel;
 import com.tokopedia.digital_deals.view.viewmodel.CategoryViewModel;
+import com.tokopedia.digital_deals.view.viewmodel.LocationViewModel;
 import com.tokopedia.usecase.RequestParams;
 
 import java.util.List;
 
 import javax.inject.Inject;
 
+import static com.raizlabs.android.dbflow.config.FlowManager.getContext;
 import static com.tokopedia.abstraction.constant.TkpdAppLink.DIGITAL_DEALS;
 
 public class DealsHomeActivity extends BaseSimpleActivity implements HasComponent<DealsComponent>, DealsContract.View, View.OnClickListener {
 
+    private final int SPAN_COUNT_4 = 4;
     private Menu mMenu;
-    DealsComponent mdealsComponent;
-    private Context context;
-
+    private DealsComponent mdealsComponent;
     @Inject
     public DealsHomePresenter mPresenter;
-
     private TouchViewPager viewPager;
     private CirclePageIndicator circlePageIndicator;
-
     private CoordinatorLayout mainContent;
-
     private View progressBarLayout;
     private ProgressBar progBar;
-
     private RecyclerView recyclerViewCatItems;
     private RecyclerView recyclerViewAllDeals;
     private RecyclerView recyclerViewTrendingDeals;
@@ -77,16 +78,15 @@ public class DealsHomeActivity extends BaseSimpleActivity implements HasComponen
     private final static String THEMEPARK = "themepark";
     private final static String TOP = "top";
     private LinearLayout searchInputView;
-    private final boolean IS_SHORT_LAYOUT=false;
-
-
-    public static final int REQUEST_CODE_EVENTLOCATIONACTIVITY = 101;
-    public static final int REQUEST_CODE_EVENTSEARCHACTIVITY = 901;
-
-    public final static String EXTRA_SECTION = "extra_section";
+    private final boolean IS_SHORT_LAYOUT = false;
+    public static final int REQUEST_CODE_DEALSLOCATIONACTIVITY = 101;
+    public static final int REQUEST_CODE_DEALSSEARCHACTIVITY = 102;
     private ConstraintLayout clSearch;
-
-    private SlidingImageAdapter adapter;
+    private ConstraintLayout clLocation;
+    private TextView locationName;
+    private LinearLayoutManager layoutManager;
+    private String category = null;
+    private TextView seeAllBrands;
 
     @DeepLink({DIGITAL_DEALS})
     public static Intent getCallingApplinksTaskStask(Context context, Bundle extras) {
@@ -113,17 +113,28 @@ public class DealsHomeActivity extends BaseSimpleActivity implements HasComponen
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        context = this;
-
-        toolbar.setBackgroundResource(R.color.white);
-
         setUpVariables();
+        toolbar.setBackgroundResource(R.color.white);
         initInjector();
         executeInjector();
         mPresenter.attachView(this);
-        mPresenter.getDealsList();
-//        Intent detailsIntent = new Intent(context, BrandOutletDetailsActivity.class);
-//        startActivity(detailsIntent);
+        checkLocationStatus();
+
+    }
+
+    private void checkLocationStatus() {
+
+        LocationViewModel location = Utils.getSingletonInstance().getLocation(getActivity());
+
+        if (location != null) {
+            locationName.setText(location.getName());
+            mPresenter.getDealsList();
+            mPresenter.getBrandsList();
+
+        } else {
+            navigateToActivityRequest(new Intent(getActivity(), DealsLocationActivity.class), REQUEST_CODE_DEALSLOCATIONACTIVITY);
+        }
+
     }
 
     private void setUpVariables() {
@@ -138,9 +149,20 @@ public class DealsHomeActivity extends BaseSimpleActivity implements HasComponen
         progBar = findViewById(R.id.prog_bar);
         baseMainContent = findViewById(R.id.base_main_content);
         searchInputView = findViewById(R.id.search_input_view);
+        locationName = findViewById(R.id.tv_location_name);
+        clLocation = findViewById(R.id.cl_location);
         clSearch = findViewById(R.id.cl_search_view);
+        seeAllBrands=findViewById(R.id.tv_see_all_brands);
+        seeAllBrands.setOnClickListener(this);
         searchInputView.setOnClickListener(this);
-        recyclerViewTrendingDeals.setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false));
+        clLocation.setOnClickListener(this);
+        layoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
+
+        recyclerViewTrendingDeals.setLayoutManager(layoutManager);
+        recyclerViewCatItems.setLayoutManager(new GridLayoutManager(getContext(), SPAN_COUNT_4,
+                GridLayoutManager.VERTICAL, false));
+        recyclerViewBrandItems.setLayoutManager(new GridLayoutManager(getContext(), SPAN_COUNT_4,
+                GridLayoutManager.VERTICAL, false));
     }
 
     private void initInjector() {
@@ -182,52 +204,109 @@ public class DealsHomeActivity extends BaseSimpleActivity implements HasComponen
     }
 
     @Override
-    public void renderCategoryList(List<CategoryViewModel> categoryList, List<BrandViewModel> brandList) {
-        DealsCategoryAdapter categoryAdapter;
-        DealsCategoryItemAdapter categoryItemAdapter;
-        DealsBrandAdapter brandAdapter;
+    public void navigateToActivity(Intent intent) {
+        startActivity(intent);
+    }
 
-        if (categoryList.get(0).getName().equalsIgnoreCase("top")) {
-            if (categoryList.get(0).getItems() != null && categoryList.get(0).getItems().size() != 0) {
-                categoryAdapter = new DealsCategoryAdapter(context, categoryList.get(0).getItems(), IS_SHORT_LAYOUT);
-                recyclerViewAllDeals.setAdapter(categoryAdapter);
-                recyclerViewTrendingDeals.setAdapter(categoryAdapter);
-            }
-        } else {
-            if (categoryList.get(0).getItems() != null && categoryList.get(0).getItems().size() != 0) {
-                adapter = new SlidingImageAdapter(context, mPresenter.getCarouselImages(categoryList.get(0).getItems()), mPresenter);
-                setViewPagerListener();
-                circlePageIndicator.setViewPager(viewPager);
-                mPresenter.startBannerSlide(viewPager);
-            }
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+
+        switch (requestCode) {
+            case REQUEST_CODE_DEALSLOCATIONACTIVITY:
+                LocationViewModel location = Utils.getSingletonInstance().getLocation(getActivity());
+                if (location == null) {
+                    Toast.makeText(getActivity(), getResources().getString(R.string.select_location_first), Toast.LENGTH_SHORT).show();
+                    finish();
+                } else {
+                    locationName.setText(location.getName());
+                    mPresenter.getDealsList();
+                    mPresenter.getBrandsList();
+                }
+                break;
+
+            case REQUEST_CODE_DEALSSEARCHACTIVITY:
+                if (resultCode == RESULT_OK) {
+                    LocationViewModel location1 = Utils.getSingletonInstance().getLocation(getActivity());
+                    locationName.setText(location1.getName());
+                }
+                break;
         }
 
-        if (categoryList.get(1).getName().equalsIgnoreCase("top")) {
-            if (categoryList.get(1).getItems() != null && categoryList.get(1).getItems().size() != 0) {
-                categoryAdapter = new DealsCategoryAdapter(context, categoryList.get(1).getItems(), IS_SHORT_LAYOUT);
-                recyclerViewAllDeals.setAdapter(categoryAdapter);
-                recyclerViewTrendingDeals.setAdapter(categoryAdapter);
-            }
-        } else {
-            if (categoryList.get(1).getItems() != null && categoryList.get(1).getItems().size() != 0) {
+        super.onActivityResult(requestCode, resultCode, data);
+    }
 
-                adapter = new SlidingImageAdapter(context, mPresenter.getCarouselImages(categoryList.get(1).getItems()), mPresenter);
-                setViewPagerListener();
-                circlePageIndicator.setViewPager(viewPager);
-                mPresenter.startBannerSlide(viewPager);
-            }
+    @Override
+    public void renderCategoryList(List<CategoryViewModel> categoryList, CategoryViewModel carousel, CategoryViewModel top) {
+
+        if (top.getItems() != null) {
+            DealsCategoryAdapter categoryAdapter = new DealsCategoryAdapter(getActivity(), top.getItems(), IS_SHORT_LAYOUT);
+//            recyclerViewAllDeals.setAdapter(categoryAdapter);
+            recyclerViewTrendingDeals.setAdapter(categoryAdapter);
+        }
+        if (carousel.getItems() != null) {
+            setViewPagerListener(new SlidingImageAdapter(getActivity(), mPresenter.getCarouselImages(carousel.getItems()), mPresenter));
+            circlePageIndicator.setViewPager(viewPager);
+            mPresenter.startBannerSlide(viewPager);
+        }
+        if (categoryList != null) {
+            recyclerViewCatItems.setAdapter(new DealsCategoryItemAdapter(getActivity(), categoryList));
         }
 
-        categoryItemAdapter = new DealsCategoryItemAdapter(context, categoryList);
-        brandAdapter = new DealsBrandAdapter(context, brandList);
-        recyclerViewCatItems.setAdapter(categoryItemAdapter);
-        recyclerViewBrandItems.setAdapter(brandAdapter);
+    }
+
+    @Override
+    public void renderBrandList(List<BrandViewModel> brandList) {
+        if (brandList != null) {
+            recyclerViewBrandItems.setAdapter(new DealsBrandAdapter(getActivity(), brandList, true));
+        }
+    }
+
+    @Override
+    public void addDealsToCards(CategoryViewModel top) {
+        if (top.getItems() != null) {
+
+            ((DealsCategoryAdapter) recyclerViewTrendingDeals.getAdapter()).addAll(top.getItems());
+        }
+    }
+
+    @Override
+    public LinearLayoutManager getLayoutManager() {
+        return layoutManager;
+    }
+
+    @Override
+    public void removeFooter() {
+        ((DealsCategoryAdapter) recyclerViewTrendingDeals.getAdapter()).removeFooter();
+//        ((DealsCategoryAdapter) recyclerViewAllDeals.getAdapter()).removeFooter();
+    }
+
+    @Override
+    public void addFooter() {
+        ((DealsCategoryAdapter) recyclerViewTrendingDeals.getAdapter()).addFooter();
+//        ((DealsCategoryAdapter) recyclerViewAllDeals.getAdapter()).addFooter();
+    }
+
+    @Override
+    public void showViews() {
         baseMainContent.setVisibility(View.VISIBLE);
         clSearch.setVisibility(View.VISIBLE);
     }
 
 
-    private void setViewPagerListener() {
+    private RecyclerView.OnScrollListener rvOnScrollListener = new RecyclerView.OnScrollListener() {
+        @Override
+        public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+            super.onScrollStateChanged(recyclerView, newState);
+        }
+
+        @Override
+        public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+            super.onScrolled(recyclerView, dx, dy);
+            mPresenter.onRecyclerViewScrolled(layoutManager);
+        }
+    };
+
+    private void setViewPagerListener(SlidingImageAdapter adapter) {
 
         viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
@@ -252,7 +331,10 @@ public class DealsHomeActivity extends BaseSimpleActivity implements HasComponen
 
     @Override
     public RequestParams getParams() {
-        return RequestParams.EMPTY;
+        LocationViewModel location = Utils.getSingletonInstance().getLocation(getActivity());
+        RequestParams requestParams = RequestParams.create();
+        requestParams.putString(mPresenter.TAG, location.getSearchName());
+        return requestParams;
     }
 
     @Override
@@ -286,6 +368,14 @@ public class DealsHomeActivity extends BaseSimpleActivity implements HasComponen
         item.setEnabled(true);
     }
 
+    @Override
+    public void startGeneralWebView(String url) {
+        if (getApplication() instanceof TkpdCoreRouter) {
+            ((TkpdCoreRouter) getApplication())
+                    .actionOpenGeneralWebView(getActivity(), url);
+        }
+    }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -312,4 +402,5 @@ public class DealsHomeActivity extends BaseSimpleActivity implements HasComponen
         mPresenter.onOptionMenuClick(v.getId());
 
     }
+
 }

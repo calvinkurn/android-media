@@ -13,6 +13,9 @@ public class DealsCategoryDomain {
     @SerializedName("name")
     @Expose
     private String name;
+    @SerializedName("url")
+    @Expose
+    private String url;
     @SerializedName("items")
     @Expose
     private List<DealsCategoryItemDomain> items = null;
@@ -32,6 +35,16 @@ public class DealsCategoryDomain {
     public void setName(String name) {
         this.name = name;
     }
+
+
+    public String getUrl() {
+        return url;
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
+    }
+
 
     public List<DealsCategoryItemDomain> getItems() {
         return items;

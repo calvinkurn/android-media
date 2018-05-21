@@ -1,6 +1,7 @@
 package com.tokopedia.digital_deals.view.adapter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,6 +10,9 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.tokopedia.digital_deals.R;
+import com.tokopedia.digital_deals.view.activity.DealsCategoryDetailActivity;
+import com.tokopedia.digital_deals.view.presenter.DealDetailsPresenter;
+import com.tokopedia.digital_deals.view.viewmodel.CategoriesModel;
 import com.tokopedia.digital_deals.view.viewmodel.CategoryItemsViewModel;
 import com.tokopedia.digital_deals.view.viewmodel.CategoryViewModel;
 
@@ -22,12 +26,8 @@ public class DealsCategoryItemAdapter extends RecyclerView.Adapter<DealsCategory
 
     public DealsCategoryItemAdapter(Context context, List<CategoryViewModel> categoryItems) {
         this.context = context;
-        this.categoryItems=new ArrayList<>();
-        if(categoryItems!=null && categoryItems.size()>2){
-            for(int i=2; i<categoryItems.size(); i++){
-                this.categoryItems.add(categoryItems.get(i));
-            }
-        }
+        this.categoryItems = new ArrayList<>();
+        this.categoryItems = categoryItems;
 
     }
 
@@ -61,10 +61,13 @@ public class DealsCategoryItemAdapter extends RecyclerView.Adapter<DealsCategory
 
         @Override
         public void onClick(View v) {
-//            Intent detailsIntent = new Intent(context, EventDetailsActivity.class);
-//            detailsIntent.putExtra(EventDetailsActivity.FROM, EventDetailsActivity.FROM_HOME_OR_SEARCH);
-//            detailsIntent.putExtra("homedata", categoryItems.get(mViewHolder.getIndex()));
-//            context.startActivity(detailsIntent);
+            CategoriesModel categoriesModel=new CategoriesModel();
+            categoriesModel.setName(categoryItems.get(getIndex()).getName());
+            categoriesModel.setTitle(categoryItems.get(getIndex()).getTitle());
+            categoriesModel.setUrl(categoryItems.get(getIndex()).getUrl());
+            Intent detailsIntent = new Intent(context, DealsCategoryDetailActivity.class);
+            detailsIntent.putExtra(DealDetailsPresenter.HOME_DATA, categoriesModel);
+            context.startActivity(detailsIntent);
         }
     }
 

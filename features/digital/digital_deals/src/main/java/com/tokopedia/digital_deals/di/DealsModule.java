@@ -11,9 +11,15 @@ import com.tokopedia.digital_deals.data.DealsRepositoryData;
 import com.tokopedia.digital_deals.data.source.DealsApi;
 import com.tokopedia.digital_deals.di.scope.DealsScope;
 import com.tokopedia.digital_deals.domain.DealsRepository;
+import com.tokopedia.digital_deals.domain.GetAllBrandsUseCase;
 import com.tokopedia.digital_deals.domain.GetBrandDetailsUseCase;
+import com.tokopedia.digital_deals.domain.GetCategoryDetailRequestUseCase;
 import com.tokopedia.digital_deals.domain.GetDealDetailsUseCase;
 import com.tokopedia.digital_deals.domain.GetDealsListRequestUseCase;
+import com.tokopedia.digital_deals.domain.GetLocationListRequestUseCase;
+import com.tokopedia.digital_deals.domain.GetNextBrandPageUseCase;
+import com.tokopedia.digital_deals.domain.GetNextCategoryPageUseCase;
+import com.tokopedia.digital_deals.domain.GetNextDealPageUseCase;
 import com.tokopedia.digital_deals.domain.GetSearchDealsListRequestUseCase;
 import com.tokopedia.digital_deals.domain.GetSearchNextUseCase;
 
@@ -78,6 +84,42 @@ public class DealsModule {
     @DealsScope
     GetDealDetailsUseCase provideGetDealDetailsUseCase(DealsRepository dealsRepository) {
         return new GetDealDetailsUseCase(dealsRepository);
+    }
+
+    @Provides
+    @DealsScope
+    GetLocationListRequestUseCase provideGetLocationListRequestUseCase(DealsRepository dealsRepository) {
+        return new GetLocationListRequestUseCase(dealsRepository);
+    }
+
+    @Provides
+    @DealsScope
+    GetCategoryDetailRequestUseCase provideGetCategoryDetailRequestUseCase(DealsRepository dealsRepository) {
+        return new GetCategoryDetailRequestUseCase(dealsRepository);
+    }
+
+    @Provides
+    @DealsScope
+    GetNextCategoryPageUseCase provideGetNextCategoryPageUseCase(DealsRepository dealsRepository) {
+        return new GetNextCategoryPageUseCase(dealsRepository);
+    }
+
+    @Provides
+    @DealsScope
+    GetAllBrandsUseCase provideGetAllBrandsUseCase(DealsRepository dealsRepository) {
+        return new GetAllBrandsUseCase(dealsRepository);
+    }
+
+    @Provides
+    @DealsScope
+    GetNextBrandPageUseCase provideGetNextBrandPageUseCase(DealsRepository dealsRepository) {
+        return new GetNextBrandPageUseCase(dealsRepository);
+    }
+
+    @Provides
+    @DealsScope
+    GetNextDealPageUseCase provideGetNextDealPageUseCase(DealsRepository dealsRepository) {
+        return new GetNextDealPageUseCase(dealsRepository);
     }
 
     @Provides
