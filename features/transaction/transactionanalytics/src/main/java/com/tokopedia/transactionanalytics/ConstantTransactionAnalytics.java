@@ -9,10 +9,12 @@ public interface ConstantTransactionAnalytics {
     interface EventName {
         String CLICK_ATC = "clickATC";
         String VIEW_ATC = "viewATC";
+        String REMOVE_FORM_CART = "removeFromCart";
     }
 
     interface EventCategory {
         String CART = "Cart";
+        String COURIER_SELECTION = "Courier Selection";
         String ADD_TO_CART = "add to cart";
     }
 
@@ -38,11 +40,16 @@ public interface ConstantTransactionAnalytics {
         String CLICK_BAYAR_ON_ATC_SUCCESS = "click bayar on atc success";
         String CLICK_LANJUTKAN_BELANJA_ON_ATC_SUCCESS = "click lanjutkan belanja on atc success";
 
+        String CLICK_BACK_ARROW = "click back arrow";
+
         String VIEW_IMPRESSION_CART_EMPTY = "impression cart empty";
         String IMPRESSION_ATC_SUCCESS = "impression atc success";
     }
 
     interface EventLabel {
         String CLICK_BELI = "click beli";
+        String CLICK_HAPUS_FROM_TRASH_BIN = "click hapus from trash bin";
+        String CLICK_HAPUS_DAN_TAMBAH_WISHLIST_FROM_TRASH_BIN = "click hapus dan tambah wishlist from trash bin";
+        String CLICK_HAPUS_PRODUK_BERKENDALA = "click hapus produk berkendala";
     }
 }

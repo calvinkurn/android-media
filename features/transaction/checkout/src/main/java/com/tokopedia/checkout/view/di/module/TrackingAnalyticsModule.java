@@ -1,8 +1,8 @@
 package com.tokopedia.checkout.view.di.module;
 
 import com.tokopedia.abstraction.AbstractionRouter;
-import com.tokopedia.checkout.view.utils.CheckoutAnalytics;
 import com.tokopedia.transactionanalytics.CheckoutAnalyticsCartPage;
+import com.tokopedia.transactionanalytics.CheckoutAnalyticsCartShipmentPage;
 
 import dagger.Module;
 import dagger.Provides;
@@ -12,13 +12,14 @@ import dagger.Provides;
  */
 @Module
 public class TrackingAnalyticsModule {
-    @Provides
-    CheckoutAnalytics checkoutAnalytics(AbstractionRouter abstractionRouter) {
-        return new CheckoutAnalytics(abstractionRouter.getAnalyticTracker());
-    }
 
     @Provides
     CheckoutAnalyticsCartPage checkoutAnalyticsCartPage(AbstractionRouter abstractionRouter) {
         return new CheckoutAnalyticsCartPage(abstractionRouter.getAnalyticTracker());
+    }
+
+    @Provides
+    CheckoutAnalyticsCartShipmentPage checkoutAnalyticsCartShipmentPage(AbstractionRouter abstractionRouter) {
+        return new CheckoutAnalyticsCartShipmentPage(abstractionRouter.getAnalyticTracker());
     }
 }

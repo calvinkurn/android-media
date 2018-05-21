@@ -1,6 +1,9 @@
 package com.tokopedia.transactionanalytics;
 
+import com.google.android.gms.tagmanager.DataLayer;
 import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
+
+import java.util.Map;
 
 import javax.inject.Inject;
 
@@ -162,4 +165,33 @@ public class CheckoutAnalyticsCartPage extends CheckoutAnalytics {
                 "");
     }
 
+    public void enhancedECommerceRemoveCartAddWishList(Map<String, Object> cartMap) {
+        analyticTracker.sendEnhancedEcommerce(
+                DataLayer.mapOf("event", EventName.REMOVE_FORM_CART,
+                        "eventCategory", "",
+                        "eventAction", EventCategory.CART,
+                        "eventLabel", ConstantTransactionAnalytics.EventLabel.CLICK_HAPUS_DAN_TAMBAH_WISHLIST_FROM_TRASH_BIN,
+                        "ecommerce", cartMap)
+        );
+    }
+
+    public void enhancedECommerceRemoveCartNotWishList(Map<String, Object> cartMap) {
+        analyticTracker.sendEnhancedEcommerce(
+                DataLayer.mapOf("event", EventName.REMOVE_FORM_CART,
+                        "eventCategory", "",
+                        "eventAction", EventCategory.CART,
+                        "eventLabel", ConstantTransactionAnalytics.EventLabel.CLICK_HAPUS_FROM_TRASH_BIN,
+                        "ecommerce", cartMap)
+        );
+    }
+
+    public void enhancedECommerceCartHapusProdukBerkendala(Map<String, Object> cartMap) {
+        analyticTracker.sendEnhancedEcommerce(
+                DataLayer.mapOf("event", EventName.REMOVE_FORM_CART,
+                        "eventCategory", "",
+                        "eventAction", EventCategory.CART,
+                        "eventLabel", ConstantTransactionAnalytics.EventLabel.CLICK_HAPUS_PRODUK_BERKENDALA,
+                        "ecommerce", cartMap)
+        );
+    }
 }

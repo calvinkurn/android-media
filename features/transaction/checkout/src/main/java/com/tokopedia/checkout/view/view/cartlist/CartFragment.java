@@ -355,6 +355,9 @@ public class CartFragment extends BaseCheckoutFragment implements CartListAdapte
 
     @Override
     public void onCartItemTickerErrorActionClicked(CartItemTickerErrorHolderData data, int position) {
+        cartPageAnalytics.enhancedECommerceCartHapusProdukBerkendala(
+                dPresenter.generateCartDataAnalytics(getCartDataList())
+        );
         showDeleteCartItemDialog(getCartDataList(), new ArrayList<CartItemData>());
     }
 
@@ -815,6 +818,9 @@ public class CartFragment extends BaseCheckoutFragment implements CartListAdapte
                     CartItemData removedCartItem, List<CartItemData> updatedCartItems
             ) {
                 dPresenter.processDeleteCart(removedCartItem, false);
+                cartPageAnalytics.enhancedECommerceRemoveCartNotWishList(
+                        dPresenter.generateCartDataAnalytics(removedCartItem)
+                );
             }
 
             @Override
@@ -822,6 +828,9 @@ public class CartFragment extends BaseCheckoutFragment implements CartListAdapte
                     CartItemData removedCartItem, List<CartItemData> updatedCartItems
             ) {
                 dPresenter.processDeleteCart(removedCartItem, true);
+                cartPageAnalytics.enhancedECommerceRemoveCartAddWishList(
+                        dPresenter.generateCartDataAnalytics(removedCartItem)
+                );
             }
 
             @Override
@@ -829,6 +838,9 @@ public class CartFragment extends BaseCheckoutFragment implements CartListAdapte
                     List<CartItemData> removedCartItems, List<CartItemData> updatedCartItems
             ) {
                 dPresenter.processDeleteAndRefreshCart(removedCartItems, false);
+                cartPageAnalytics.enhancedECommerceRemoveCartNotWishList(
+                        dPresenter.generateCartDataAnalytics(removedCartItems)
+                );
             }
 
             @Override
@@ -836,6 +848,9 @@ public class CartFragment extends BaseCheckoutFragment implements CartListAdapte
                     List<CartItemData> removedCartItems, List<CartItemData> updatedCartItems
             ) {
                 dPresenter.processDeleteAndRefreshCart(removedCartItems, true);
+                cartPageAnalytics.enhancedECommerceRemoveCartAddWishList(
+                        dPresenter.generateCartDataAnalytics(removedCartItems)
+                );
             }
         };
     }
