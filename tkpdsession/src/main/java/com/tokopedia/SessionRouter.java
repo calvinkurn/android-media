@@ -2,7 +2,6 @@ package com.tokopedia;
 
 import android.content.Context;
 import android.content.Intent;
-import android.support.v4.app.FragmentActivity;
 
 import okhttp3.Interceptor;
 
