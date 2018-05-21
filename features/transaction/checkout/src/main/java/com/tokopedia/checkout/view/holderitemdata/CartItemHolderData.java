@@ -5,6 +5,8 @@ import android.os.Parcelable;
 
 import com.tokopedia.checkout.domain.datamodel.cartlist.CartItemData;
 
+import java.util.Locale;
+
 /**
  * @author anggaprasetiyo on 18/01/18.
  */
@@ -38,8 +40,9 @@ public class CartItemHolderData implements Parcelable {
                     .replace("{{value}}", String.valueOf(cartItemData.getUpdatedData().getMaxCharRemark()));
             return ERROR_FIELD_MAX_CHAR;
         } else if (cartItemData.getUpdatedData().getQuantity() > cartItemData.getUpdatedData().getMaxQuantity()) {
+            String formattedMaxCharRemark = String.format(Locale.US, "%,d", cartItemData.getUpdatedData().getMaxQuantity()).replace(',', '.');
             this.errorFormItemValidationMessage = cartItemData.getErrorData().getErrorProductMaxQuantity()
-                    .replace("{{value}}", String.valueOf(cartItemData.getUpdatedData().getMaxQuantity()));
+                    .replace("{{value}}", formattedMaxCharRemark);
             return ERROR_PRODUCT_MAX_QUANTITY;
         } else if (cartItemData.getUpdatedData().getQuantity() < cartItemData.getOriginData().getMinimalQtyOrder()) {
             this.errorFormItemValidationMessage = cartItemData.getErrorData().getErrorProductMinQuantity()
