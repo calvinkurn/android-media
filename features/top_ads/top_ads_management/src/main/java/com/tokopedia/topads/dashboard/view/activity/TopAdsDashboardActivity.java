@@ -213,8 +213,8 @@ public class TopAdsDashboardActivity extends DrawerPresenterActivity implements 
             showCaseList.add(
                     new ShowCaseObject(
                             findViewById(android.R.id.content),
-                            getString(R.string.topads_showcase_detail_promo_title_1),
-                            getString(R.string.topads_showcase_detail_promo_desc_1),
+                            getString(R.string.topads_showcase_help),
+                            getString(R.string.topads_showcase_detail_help),
                             ShowCaseContentPosition.UNDEFINED,
                             Color.WHITE)
                             .withCustomTarget(new int[]{width - (int) (height * 0.8), 0, width, height}));

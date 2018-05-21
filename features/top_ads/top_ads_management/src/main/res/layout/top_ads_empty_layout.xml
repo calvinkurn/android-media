@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main_retry"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/white"
+    android:gravity="center"
+    android:padding="@dimen/dp_10">
+
+    <ImageView
+        android:id="@+id/no_result_image"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:gravity="center_horizontal"
+        app:srcCompat="@drawable/ic_empty_state" />
+
+    <TextView
+        android:id="@+id/text_view_empty_title_text"
+        style="@style/TextView.Title"
+        android:layout_margin="@dimen/dp_5"
+        android:gravity="center"
+        android:maxWidth="@dimen/dp_250"
+        tools:text="@string/app_name" />
+
+    <TextView
+        android:id="@+id/text_view_empty_content_text"
+        style="@style/TextView.Small.BlackSecondary"
+        android:layout_margin="@dimen/dp_5"
+        android:gravity="center"
+        android:maxLines="4"
+        tools:text="@string/app_name" />
+
+    <TextView
+        android:id="@+id/text_view_empty_content_item_text"
+        style="@style/TextView.Small.Green"
+        android:layout_margin="@dimen/dp_20"
+        android:visibility="gone"
+        tools:text="@string/app_name" />
+
+    <!-- text will be override programmatically -->
+    <Button
+        android:id="@+id/button_add_promo"
+        style="@style/Button.Submit.Green"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/dp_8"
+        android:layout_marginRight="@dimen/dp_8"
+        android:layout_marginTop="@dimen/dp_15"
+        android:maxWidth="@dimen/dp_250"
+        android:minWidth="@dimen/dp_250"
+        android:visibility="gone"
+        tools:text="@string/app_name" />
+
+</LinearLayout>
