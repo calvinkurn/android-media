@@ -3,6 +3,7 @@ package com.tokopedia.shop;
 import android.content.Context;
 import android.content.Intent;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 
 import java.util.Map;
 
@@ -24,7 +25,7 @@ public interface ShopModuleRouter {
 
     void goToChatSeller(Context context, String shopId, String shopName, String avatar);
 
-    void goToShareShop(Context context, String shopId, String shopUrl, String shareLabel);
+    void goToShareShop(FragmentManager fragmentManager, String shopId, String shopUrl, String shareLabel);
 
     void goToProductDetail(Context context, String productId, String name, String displayedPrice, String imageUrl, String attribution, String listNameOfProduct);
 
