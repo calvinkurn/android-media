@@ -44,9 +44,11 @@ import com.tokopedia.feedplus.view.viewmodel.recentview.RecentViewViewModel;
 import com.tokopedia.feedplus.view.viewmodel.topads.FeedTopAdsViewModel;
 import com.tokopedia.feedplus.view.viewmodel.toppicks.ToppicksViewModel;
 import com.tokopedia.kol.feature.post.view.adapter.viewholder.EmptyKolPostViewHolder;
+import com.tokopedia.kol.feature.post.view.adapter.viewholder.ExploreViewHolder;
 import com.tokopedia.kol.feature.post.view.adapter.viewholder.KolPostViewHolder;
 import com.tokopedia.kol.feature.post.view.listener.KolPostListener;
 import com.tokopedia.kol.feature.post.view.viewmodel.EmptyKolPostViewModel;
+import com.tokopedia.kol.feature.post.view.viewmodel.ExploreViewModel;
 import com.tokopedia.kol.feature.post.view.viewmodel.KolPostViewModel;
 import com.tokopedia.topads.sdk.listener.TopAdsInfoClickListener;
 import com.tokopedia.topads.sdk.listener.TopAdsItemClickListener;
@@ -148,6 +150,11 @@ public class FeedPlusTypeFactoryImpl extends BaseAdapterTypeFactory implements F
     }
 
     @Override
+    public int type(ExploreViewModel exploreViewModel) {
+        return ExploreViewHolder.LAYOUT;
+    }
+
+    @Override
     public int type(KolRecommendationViewModel kolRecommendationViewModel) {
         return KolRecommendationViewHolder.LAYOUT;
     }
@@ -226,6 +233,8 @@ public class FeedPlusTypeFactoryImpl extends BaseAdapterTypeFactory implements F
             viewHolder = new KolPostViewHolder(view, kolPostListener, KolPostViewHolder.Type.FEED);
         else if (type == EmptyKolPostViewHolder.LAYOUT)
             viewHolder = new EmptyKolPostViewHolder(view);
+        else if (type == ExploreViewHolder.LAYOUT)
+            viewHolder = new ExploreViewHolder(view, kolPostListener);
         else
             viewHolder = super.createViewHolder(view, type);
         return viewHolder;
