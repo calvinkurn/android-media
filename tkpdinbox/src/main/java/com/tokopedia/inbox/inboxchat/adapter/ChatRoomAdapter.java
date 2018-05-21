@@ -14,8 +14,8 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.inbox.inboxchat.domain.model.ListReplyViewModel;
 import com.tokopedia.inbox.inboxchat.domain.model.ReplyParcelableModel;
 import com.tokopedia.inbox.inboxchat.domain.model.reply.Attachment;
-import com.tokopedia.inbox.inboxchat.domain.model.websocket.BaseChatViewModel;
 import com.tokopedia.inbox.inboxchat.domain.model.reply.WebSocketResponse;
+import com.tokopedia.inbox.inboxchat.domain.model.websocket.BaseChatViewModel;
 import com.tokopedia.inbox.inboxchat.helper.AttachmentChatHelper;
 import com.tokopedia.inbox.inboxchat.viewholder.AttachedInvoiceSentViewHolder;
 import com.tokopedia.inbox.inboxchat.viewholder.AttachedProductViewHolder;
@@ -37,6 +37,8 @@ import java.util.ListIterator;
  */
 
 public class ChatRoomAdapter extends RecyclerView.Adapter<AbstractViewHolder> {
+
+    private static final int COUNT_ITEM = 10;
 
     private final ChatRoomTypeFactory typeFactory;
     private List<Visitable> list;
@@ -203,7 +205,7 @@ public class ChatRoomAdapter extends RecyclerView.Adapter<AbstractViewHolder> {
         int positionStart = this.list.size();
         this.list.addAll(newItems);
         notifyItemRangeInserted(positionStart, newItems.size());
-        notifyItemRangeChanged(positionStart - 10, 10);
+        notifyItemRangeChanged(positionStart - COUNT_ITEM, COUNT_ITEM);
     }
 
     public void showEmpty() {

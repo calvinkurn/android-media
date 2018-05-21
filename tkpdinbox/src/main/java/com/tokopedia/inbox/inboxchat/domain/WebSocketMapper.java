@@ -47,7 +47,6 @@ public class WebSocketMapper {
                     case TYPE_QUICK_REPLY:
                         return convertToQuickReplyModel(pojo.getData(), jsonAttributes);
                     default:
-//                        return convertToFallBackModel(pojo.getData());
                         return null;
 
                 }
