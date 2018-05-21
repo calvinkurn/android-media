@@ -25,7 +25,6 @@ public class ChangePhoneNumberInputPresenter
         implements ChangePhoneNumberInputFragmentListener.Presenter {
     private static final int MINIMUM_NUMBER_LENGTH = 8;
     private static final int MAXIMUM_NUMBER_LENGTH = 15;
-    /*This regex is for removing plus (+) symbol after first index */
     private static final String REGEX_CLEAN_PHONE_NUMBER = "(?!^)\\+|[^+0-9\\n]+";
 
     private final ValidateNumberUseCase validateNumberUseCase;

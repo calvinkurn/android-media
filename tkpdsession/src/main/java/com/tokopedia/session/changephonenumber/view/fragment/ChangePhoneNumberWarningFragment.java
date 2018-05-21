@@ -190,14 +190,6 @@ public class ChangePhoneNumberWarningFragment extends BaseDaggerFragment
     public void onGetWarningSuccess(WarningViewModel warningViewModel) {
         this.viewModel = warningViewModel;
         presenter.validateOtpStatus(getUserId());
-//        if (viewModel.getTokocashNumber() <= 0
-//                && viewModel.getTokopediaBalanceNumber() < BALANCE_THRESHOLD_FOR_WARNING) {
-//            goToNextActivity();
-//        } else {
-//            loadDataToView();
-//            showOrHideWithdrawButton();
-//            dismissLoading();
-//        }
     }
 
     @Override
@@ -272,30 +264,6 @@ public class ChangePhoneNumberWarningFragment extends BaseDaggerFragment
     }
 
     private void goToNextActivity() {
-//        if (viewModel.getAction().equalsIgnoreCase(ACTION_EMAIL)) {
-//            Intent intent = ChangePhoneNumberEmailActivity.newInstance(
-//                    getContext(),
-//                    phoneNumber,
-//                    email,
-//                    viewModel.getWarningList() != null ?
-//                            new ArrayList<>(viewModel.getWarningList()) : null);
-//            intent.setFlags(Intent.FLAG_ACTIVITY_FORWARD_RESULT);
-//            startActivity(intent);
-//            getActivity().finish();
-//        } else if (viewModel.getAction().equalsIgnoreCase(ACTION_OTP)) {
-//            startActivityForResult(
-//                    ChangePhoneNumberInputActivity.newInstance(
-//                            getContext(),
-//                            phoneNumber,
-//                            email,
-//                            viewModel.getWarningList() != null ?
-//                                    new ArrayList<>(viewModel.getWarningList()) : null
-//                    ),
-//                    REQUEST_CHANGE_PHONE_NUMBER
-//            );
-//
-//        }
-
         Intent intent = VerificationActivity.
                 getShowChooseVerificationMethodIntent(getContext(),
                         RequestOtpUseCase.OTP_TYPE_VERIFY_USER_CHANGE_PHONE_NUMBER,
@@ -365,29 +333,6 @@ public class ChangePhoneNumberWarningFragment extends BaseDaggerFragment
                         @Override
                         public void onRetryClicked() {
                             presenter.getWarning();
-                        }
-                    });
-        }
-    }
-
-    private void showValidateOtpEmptyState(String message) {
-        if (message == null || message.isEmpty()) {
-            NetworkErrorHelper.showEmptyState(getActivity(),
-                    getView(),
-                    new NetworkErrorHelper.RetryClickedListener() {
-                        @Override
-                        public void onRetryClicked() {
-                            presenter.validateOtpStatus(getUserId());
-                        }
-                    });
-        } else {
-            NetworkErrorHelper.showEmptyState(getActivity(),
-                    getView(),
-                    message,
-                    new NetworkErrorHelper.RetryClickedListener() {
-                        @Override
-                        public void onRetryClicked() {
-                            presenter.validateOtpStatus(getUserId());
                         }
                     });
         }
