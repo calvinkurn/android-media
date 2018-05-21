@@ -12,7 +12,6 @@ import android.text.TextUtils;
 import android.view.View;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
-import com.tokopedia.core.app.TActivity;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.gcm.utils.ApplinkUtils;
 import com.tokopedia.core.util.GlobalConfig;

@@ -27,6 +27,7 @@ import com.tokopedia.seller.base.view.adapter.BaseListAdapter;
 import com.tokopedia.seller.base.view.adapter.ItemType;
 import com.tokopedia.seller.base.view.listener.BaseListViewListener;
 import com.tokopedia.topads.R;
+import com.tokopedia.topads.TopAdsComponentInstance;
 import com.tokopedia.topads.common.util.TopAdsComponentUtils;
 import com.tokopedia.topads.common.view.presenter.BaseDatePickerPresenter;
 import com.tokopedia.topads.common.view.presenter.BaseDatePickerPresenterImpl;
@@ -94,7 +95,7 @@ public abstract class TopAdsAdListFragment<P extends
     }
 
     protected TopAdsComponent getTopAdsComponent(){
-        return TopAdsComponentUtils.getTopAdsComponent(getActivity());
+        return TopAdsComponentInstance.getComponent(getActivity().getApplication());
     }
 
     @Override
