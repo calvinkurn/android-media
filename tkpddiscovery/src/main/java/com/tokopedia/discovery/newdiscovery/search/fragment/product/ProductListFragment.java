@@ -587,7 +587,12 @@ public class ProductListFragment extends SearchSectionFragment
             getFlagFilterHelper().setSavedCheckedState(new HashMap<String, Boolean>());
             getFlagFilterHelper().setSavedTextInput(new HashMap<String, String>());
         }
-        getFlagFilterHelper().getSavedCheckedState().put(option.getUniqueId(), isQuickFilterSelected);
+
+        if (isQuickFilterSelected) {
+            getFlagFilterHelper().getSavedCheckedState().put(option.getUniqueId(), true);
+        } else {
+            getFlagFilterHelper().getSavedCheckedState().remove(option.getUniqueId());
+        }
 
         if (getSelectedFilter() == null) {
             setSelectedFilter(new HashMap<String, String>());
