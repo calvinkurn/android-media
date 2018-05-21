@@ -575,8 +575,7 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
 
     @Override
     public void onProductShareClicked(@NonNull ShareData data) {
-        ShareBottomSheet shareBottomSheet = ShareBottomSheet.newInstance(data);
-        shareBottomSheet.show(getFragmentManager(), "");
+        ShareBottomSheet.show(getFragmentManager(), data);
 //        startActivity(ShareActivity.createIntent(getActivity(), data));
     }
 

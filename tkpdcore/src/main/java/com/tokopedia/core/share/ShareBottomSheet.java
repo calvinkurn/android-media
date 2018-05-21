@@ -3,6 +3,8 @@ package com.tokopedia.core.share;
 import android.content.Intent;
 import android.content.pm.ResolveInfo;
 import android.os.Bundle;
+import android.support.v4.app.FragmentManager;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
@@ -34,6 +36,10 @@ public class ShareBottomSheet extends BottomSheets implements ShareAdapter.OnIte
         bundle.putParcelable(ShareBottomSheet.class.getName(), data);
         fragment.setArguments(bundle);
         return fragment;
+    }
+
+    public static void show(FragmentManager fragmentManager, ShareData data) {
+        newInstance(data).show(fragmentManager, "Share");
     }
 
     private String[] PackageNameApplications = new String[] {"com.whatsapp", "com.facebook.katana",
@@ -177,7 +183,7 @@ public class ShareBottomSheet extends BottomSheets implements ShareAdapter.OnIte
             case ShareData.PROMO_TYPE:
                 return getString(R.string.promo_share_detail);
         }
-        return "";
+        return "Bagikan";
     }
 
     /**

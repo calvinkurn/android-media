@@ -28,6 +28,7 @@ import com.tokopedia.core.router.productdetail.ProductDetailRouter;
 import com.tokopedia.core.router.transactionmodule.TransactionAddToCartRouter;
 import com.tokopedia.core.router.transactionmodule.passdata.ProductCartPass;
 import com.tokopedia.core.share.ShareActivity;
+import com.tokopedia.core.share.ShareBottomSheet;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.feedplus.FeedModuleRouter;
 import com.tokopedia.feedplus.R;
@@ -440,6 +441,6 @@ public class FeedPlusDetailFragment extends BaseDaggerFragment
     }
 
     private void onProductShareClicked(@NonNull ShareData data) {
-        startActivity(ShareActivity.createIntent(getActivity(), data));
+        ShareBottomSheet.show(getFragmentManager(), data);
     }
 }
