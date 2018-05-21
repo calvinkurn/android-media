@@ -99,10 +99,8 @@ public class ChooseVerificationMethodFragment extends BaseDaggerFragment impleme
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        VerificationPassModel tempPassModel = getArguments().getParcelable(PASS_MODEL);
-
-        if (tempPassModel != null) {
-            passModel = tempPassModel;
+        if (getArguments() != null && getArguments().getParcelable(PASS_MODEL) != null) {
+            passModel = getArguments().getParcelable(PASS_MODEL);
         } else {
             getActivity().finish();
         }
@@ -136,11 +134,10 @@ public class ChooseVerificationMethodFragment extends BaseDaggerFragment impleme
             @Override
             public void onClick(View v) {
                 if (getActivity().getApplicationContext() instanceof OtpModuleRouter) {
-
+                    Intent intent = ((OtpModuleRouter) getActivity().getApplicationContext())
+                            .getChangePhoneNumberRequestIntent(getActivity());
+                    startActivity(intent);
                 }
-                Intent intent = ((OtpModuleRouter) getActivity().getApplicationContext())
-                        .getChangePhoneNumberRequestIntent(getActivity());
-                startActivity(intent);
             }
         });
     }
