@@ -11,6 +11,8 @@ import android.support.v7.widget.RecyclerView;
 import android.text.Html;
 import android.text.Spanned;
 import android.view.View;
+import android.view.ViewTreeObserver;
+import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import com.tokopedia.topads.sdk.R;
@@ -44,6 +46,7 @@ public class ShopFeedNewViewHolder extends AbstractViewHolder<ShopFeedNewViewMod
     private RoundedCornerImageView shopImage;
     private TextView shopTitle;
     private TextView shopSubtitle;
+    private FrameLayout favoriteButton;
     private TextView favoriteText;
     private FeedShopAdapter adapter;
     private View.OnClickListener shopItemClickListener;
@@ -60,6 +63,7 @@ public class ShopFeedNewViewHolder extends AbstractViewHolder<ShopFeedNewViewMod
         shopImage = itemView.findViewById(R.id.shop_image);
         shopTitle = itemView.findViewById(R.id.shop_title);
         shopSubtitle = itemView.findViewById(R.id.shop_subtitle);
+        favoriteButton = itemView.findViewById(R.id.favorite_button);
         favoriteText = itemView.findViewById(R.id.favorite_text);
 
         GridLayoutManager gridLayoutManager = new GridLayoutManager(
@@ -150,12 +154,12 @@ public class ShopFeedNewViewHolder extends AbstractViewHolder<ShopFeedNewViewMod
         String text;
         Drawable drawable;
         if (isFavorite) {
-            favoriteText.setSelected(true);
+            favoriteButton.setSelected(true);
             text = context.getString(R.string.favorit);
             drawable = AppCompatResources.getDrawable(context, R.drawable.ic_check_favorite);
             favoriteText.setTextColor(ContextCompat.getColor(context, R.color.label_color));
         } else {
-            favoriteText.setSelected(false);
+            favoriteButton.setSelected(false);
             text = context.getString(R.string.favoritkan);
             drawable = AppCompatResources.getDrawable(context, R.drawable.ic_add_white_24px);
             favoriteText.setTextColor(ContextCompat.getColor(context, R.color.white));
@@ -168,6 +172,16 @@ public class ShopFeedNewViewHolder extends AbstractViewHolder<ShopFeedNewViewMod
         }
         favoriteText.setCompoundDrawables(drawable, null, null, null);
         favoriteText.setText(text);
+
+        favoriteButton.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+                ViewTreeObserver viewTreeObserver = favoriteButton.getViewTreeObserver();
+                viewTreeObserver.removeOnGlobalLayoutListener(this);
+
+                favoriteButton.setMinimumWidth(favoriteButton.getWidth());
+            }
+        });
     }
 
     private void generateThumbnailImages(List<ImageProduct> imageProducts) {
