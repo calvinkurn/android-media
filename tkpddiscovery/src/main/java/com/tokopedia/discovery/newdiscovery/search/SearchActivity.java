@@ -116,7 +116,6 @@ public class SearchActivity extends DiscoveryActivity
             Intent intent = new Intent(activity, SearchActivity.class);
             intent.putExtra(EXTRA_PRODUCT_VIEW_MODEL, productViewModel);
             intent.putExtra(EXTRA_FORCE_SWIPE_TO_SHOP, forceSwipeToShop);
-//            intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
             activity.startActivity(intent);
         }
     }
@@ -131,10 +130,7 @@ public class SearchActivity extends DiscoveryActivity
         } else {
             forceSwipeToShop = getIntent().getBooleanExtra(EXTRA_FORCE_SWIPE_TO_SHOP, false);
         }
-
-
         handleIntent(getIntent());
-
     }
 
     private void handleIntent(Intent intent) {
