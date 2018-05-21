@@ -217,12 +217,12 @@ public class ImagePickerCameraFragment extends TkpdBaseV4Fragment {
                 public void onBitmapReady(Bitmap bitmap) {
                     File file = ImageUtils.writeImageToTkpdPath(ImageUtils.DirectoryDef.DIRECTORY_TOKOPEDIA_CACHE_CAMERA, bitmap, false);
                     onImagePickerCameraFragmentListener.onImageTaken(file.getAbsolutePath());
+                    reset();
                 }
             });
         }catch (OutOfMemoryError error) {
             File file = ImageUtils.writeImageToTkpdPath(ImageUtils.DirectoryDef.DIRECTORY_TOKOPEDIA_CACHE_CAMERA, imageByte, false);
             onImagePickerCameraFragmentListener.onImageTaken(file.getAbsolutePath());
-        } finally {
             reset();
         }
     }

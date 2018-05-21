@@ -13,6 +13,7 @@ import android.support.v7.app.AlertDialog;
 import android.view.View;
 import android.webkit.URLUtil;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
@@ -711,8 +712,25 @@ public class ImageEditorActivity extends BaseSimpleActivity implements ImageEdit
     @Override
     public void onSuccessDownloadImageToLocal(ArrayList<String> localPaths) {
         hideProgressDialog();
-        copyToLocalUrl(localPaths);
-        startEditLocalImages();
+        if (isResolutionValid(localPaths)) {
+            copyToLocalUrl(localPaths);
+            startEditLocalImages();
+        } else {
+            Toast.makeText(getContext(), getString(R.string.image_under_x_resolution, minResolution), Toast.LENGTH_LONG).show();
+            this.finish();
+        }
+    }
+
+    /**
+     * to cater instagram bugs: resolution in api is not correct.
+     */
+    private boolean isResolutionValid(ArrayList<String> localPaths){
+        for (String localPath: localPaths) {
+            if (ImageUtils.getMinResolution(localPath) < minResolution) {
+                return false;
+            }
+        }
+        return true;
     }
 
     @Override

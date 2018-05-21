@@ -17,17 +17,29 @@ public class ImagePickerInstagramViewHolder extends AbstractViewHolder<Instagram
     public static final int LAYOUT = R.layout.item_media_instagram;
 
     private ImageView imageInstagram;
+    private View ivCheck;
     private int imageResize;
+    private boolean isChecked;
 
     public ImagePickerInstagramViewHolder(View itemView, int imageResize) {
         super(itemView);
         imageInstagram = itemView.findViewById(R.id.image_instagram);
+        ivCheck = itemView.findViewById(R.id.iv_check);
         this.imageResize = imageResize;
+    }
+
+    public void setIsCheck(boolean isChecked){
+        this.isChecked = isChecked;
     }
 
     @Override
     public void bind(InstagramMediaModel element) {
         ImageHandler.LoadImageResize(imageInstagram.getContext(), imageInstagram, element.getThumbnail(),
                 imageResize, imageResize);
+        if (isChecked){
+            ivCheck.setVisibility(View.VISIBLE);
+        } else {
+            ivCheck.setVisibility(View.GONE);
+        }
     }
 }

@@ -10,23 +10,36 @@ import com.tokopedia.imagepicker.picker.instagram.view.adapter.ImageInstagramAda
 public class InstagramMediaModel implements Visitable<ImageInstagramAdapterTypeFactory> {
     private String thumbnail;
 
-    private String imageStandardResolution;
+    private String imageStandardResolutionUrl;
+    private String id;
+
+    private int standardWidth;
+    private int standardHeight;
+
+    public InstagramMediaModel(String id, String thumbnail, String imageStandardResolutionUrl,
+                               int standardWidth, int standardHeight) {
+        this.id = id;
+        this.thumbnail = thumbnail;
+        this.imageStandardResolutionUrl = imageStandardResolutionUrl;
+        this.standardWidth = standardWidth;
+        this.standardHeight = standardHeight;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public int getMinResolution() {
+        return Math.min(standardHeight, standardWidth);
+    }
 
     @Override
     public int type(ImageInstagramAdapterTypeFactory typeFactory) {
         return typeFactory.type(this);
     }
 
-    public void setThumbnail(String thumbnail) {
-        this.thumbnail = thumbnail;
-    }
-
-    public void setImageStandardResolution(String imageStandardResolution) {
-        this.imageStandardResolution = imageStandardResolution;
-    }
-
-    public String getImageStandardResolution() {
-        return imageStandardResolution;
+    public String getImageStandardResolutionUrl() {
+        return imageStandardResolutionUrl;
     }
 
     public String getThumbnail() {

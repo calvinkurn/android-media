@@ -84,7 +84,7 @@ public class ShopEditorFragment extends BaseFragment<ShopEditorPresenter> implem
                 false, 1, DEFAULT_MAX_IMAGE_SIZE_IN_KB,
                 DEFAULT_MIN_RESOLUTION, 1, 1, true, true,
                 new int[]{ACTION_BRIGHTNESS, ACTION_CONTRAST, ACTION_CROP, ACTION_ROTATE},
-                true);
+                false);
         Intent intent = ImagePickerActivity.getIntent(getContext(), builder);
         startActivityForResult(intent, REQUEST_CODE_SHOP_IMAGE);
     }
