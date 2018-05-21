@@ -3,6 +3,7 @@ package com.tokopedia.transaction.orders.orderdetails.view.fragment;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.graphics.drawable.GradientDrawable;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -284,9 +285,13 @@ public class OrderListDetailFragment extends BaseDaggerFragment implements Order
         return new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(uri.startsWith("tokopedia")){
-                    RouteManager.route(getActivity(), uri);
-                } else{
+                String newUri = uri;
+                if (uri.startsWith("tokopedia")) {
+                    Uri url = Uri.parse(newUri);
+                    newUri = newUri.replace(url.getQueryParameter("idem_potency_key"), "");
+                    newUri = newUri.replace("idem_potency_key=", "");
+                    RouteManager.route(getActivity(), newUri);
+                } else {
                     TransactionPurchaseRouter.startWebViewActivity(getActivity(), uri);
                 }
             }

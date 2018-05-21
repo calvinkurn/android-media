@@ -4,6 +4,7 @@ import android.content.Context;
 
 import android.graphics.Typeface;
 import android.graphics.drawable.GradientDrawable;
+import android.net.Uri;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -127,8 +128,12 @@ public class OrderListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                String newUri = buttonUri;
                 if (buttonUri.startsWith("tokopedia")) {
-                    RouteManager.route(context, buttonUri);
+                    Uri url = Uri.parse(newUri);
+                    newUri = newUri.replace(url.getQueryParameter("idem_potency_key"), "");
+                    newUri = newUri.replace("idem_potency_key=", "");
+                    RouteManager.route(context, newUri);
                 } else {
                     TransactionPurchaseRouter.startWebViewActivity(context, buttonUri);
                 }
