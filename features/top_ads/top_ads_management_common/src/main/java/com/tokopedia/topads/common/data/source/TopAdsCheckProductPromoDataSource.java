@@ -1,7 +1,8 @@
-package com.tokopedia.topads.dashboard.data.source;
-
-import com.tokopedia.core.base.domain.RequestParams;
-import com.tokopedia.topads.dashboard.data.source.cloud.TopAdsCheckProductPromoDataSourceCloud;
+package com.tokopedia.topads.common.data.source;
+;
+import com.tokopedia.topads.common.data.model.DataCheckPromo;
+import com.tokopedia.topads.common.data.source.cloud.TopAdsCheckProductPromoDataSourceCloud;
+import com.tokopedia.usecase.RequestParams;
 
 import rx.Observable;
 
@@ -16,7 +17,7 @@ public class TopAdsCheckProductPromoDataSource {
         this.dataSourceCloud = dataSourceCloud;
     }
 
-    public Observable<String> checkPromoAds(RequestParams requestParams) {
+    public Observable<DataCheckPromo> checkPromoAds(RequestParams requestParams) {
         return dataSourceCloud.checkPromoAds(requestParams);
     }
 }

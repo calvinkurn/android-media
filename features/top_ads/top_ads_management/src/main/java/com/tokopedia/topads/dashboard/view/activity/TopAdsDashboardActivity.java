@@ -175,32 +175,34 @@ public class TopAdsDashboardActivity extends DrawerPresenterActivity implements 
                         getString(R.string.topads_showcase_home_title_3),
                         getString(R.string.topads_showcase_home_desc_3),
                         ShowCaseContentPosition.UNDEFINED,
-                        R.color.white));
-            }
-            if (fragment.getContentStatisticsView() != null) {
-                showCaseList.add(new ShowCaseObject(fragment.getContentStatisticsView(),
-                        getString(R.string.topads_showcase_home_title_7),
-                        getString(R.string.topads_showcase_home_desc_5),
-                        ShowCaseContentPosition.UNDEFINED,
-                        R.color.white));
-            }
-
-            if (fragment.getGroupSummaryLabelView() != null){
-                showCaseList.add(new ShowCaseObject(fragment.getGroupSummaryLabelView(),
-                        getString(R.string.topads_showcase_home_title_8),
-                        getString(R.string.topads_showcase_home_desc_8),
-                        ShowCaseContentPosition.UNDEFINED,
                         R.color.white, fragment.getScrollView()));
             }
-            if (fragment.getViewGroupPromo() != null){
-                showCaseList.add(new ShowCaseObject(fragment.getViewGroupPromo(),
-                        getString(R.string.topads_showcase_home_title_1),
-                        getString(R.string.topads_showcase_home_desc_1),
-                        ShowCaseContentPosition.UNDEFINED,
-                        R.color.white, fragment.getScrollView()));
+            if (fragment.isContentVisible()) {
+                if (fragment.getContentStatisticsView() != null) {
+                    showCaseList.add(new ShowCaseObject(fragment.getContentStatisticsView(),
+                            getString(R.string.topads_showcase_home_title_7),
+                            getString(R.string.topads_showcase_home_desc_5),
+                            ShowCaseContentPosition.UNDEFINED,
+                            R.color.white, fragment.getScrollView()));
+                }
+
+                if (fragment.getGroupSummaryLabelView() != null) {
+                    showCaseList.add(new ShowCaseObject(fragment.getGroupSummaryLabelView(),
+                            getString(R.string.topads_showcase_home_title_8),
+                            getString(R.string.topads_showcase_home_desc_8),
+                            ShowCaseContentPosition.UNDEFINED,
+                            R.color.white, fragment.getScrollView()));
+                }
+                if (fragment.getViewGroupPromo() != null) {
+                    showCaseList.add(new ShowCaseObject(fragment.getViewGroupPromo(),
+                            getString(R.string.topads_showcase_home_title_1),
+                            getString(R.string.topads_showcase_home_desc_1),
+                            ShowCaseContentPosition.UNDEFINED,
+                            R.color.white, fragment.getScrollView()));
+                }
             }
 
-            if (fragment.getButtonAddPromo() != null){
+            if (fragment.getButtonAddPromo() != null) {
                 showCaseList.add(new ShowCaseObject(fragment.getButtonAddPromo(),
                         getString(R.string.topads_showcase_home_title_6),
                         getString(R.string.topads_showcase_home_desc_6),

@@ -101,10 +101,9 @@
 
     <string-array name="top_ads_adding_option_subtitle">
         <item>Menambah jumlah pengunjung dan Favorit toko.</item>
-        <item>Menambah jumlah pengunjung dan Favorit toko.</item>
         <item>Menjadikan produk tampil terdepan.</item>
        <!-- <item>Membuat toko dan produk lebih dikenal.</item>-->
-        <item>Promo dapat tampil sesuai pencarian.</item>
+        <item>Memperluas jangkauan Iklan sesuai pencarian.</item>
     </string-array>
 
     <string-array name="top_ads_adding_option_value">
@@ -115,8 +114,8 @@
     </string-array>
 
     <integer-array name="top_ads_adding_option_icon">
-        <item>@drawable/icon_penjualan</item>
-        <item>@drawable/ic_manage_produk</item>
+        <item>@drawable/ic_top_ads_toko</item>
+        <item>@drawable/ic_top_ads_produk</item>
         <!--<item>@drawable/ic_top_ads_headline</item>-->
         <item>@drawable/ic_top_ads_keyword</item>
     </integer-array>
@@ -129,9 +128,11 @@
     <string-array name="top_ads_tab_statistics_labels">
         <item>@string/label_top_ads_impression</item>
         <item>@string/label_top_ads_click</item>
+        <item>@string/label_top_ads_cost</item>
+        <item>@string/label_top_ads_income</item>
         <item>@string/label_top_ads_ctr</item>
         <item>@string/label_top_ads_conversion</item>
         <item>@string/label_top_ads_average</item>
-        <item>@string/label_top_ads_cost</item>
+        <item>@string/label_top_ads_sold</item>
     </string-array>
 </resources>

@@ -14,8 +14,8 @@ import com.tokopedia.shop.common.domain.interactor.GetShopInfoUseCase;
 import com.tokopedia.shop.common.domain.repository.ShopCommonRepository;
 import com.tokopedia.topads.common.data.api.TopAdsManagementApi;
 import com.tokopedia.topads.common.data.repository.TopAdsShopDepositRepositoryImpl;
-import com.tokopedia.topads.common.data.source.deposit.ShopDepositDataSource;
-import com.tokopedia.topads.common.data.source.deposit.ShopDepositDataSourceCloud;
+import com.tokopedia.topads.common.data.source.ShopDepositDataSource;
+import com.tokopedia.topads.common.data.source.cloud.ShopDepositDataSourceCloud;
 import com.tokopedia.topads.common.domain.repository.TopAdsShopDepositRepository;
 import com.tokopedia.topads.dashboard.data.repository.TopAdsDashboardRepositoryImpl;
 import com.tokopedia.topads.dashboard.data.source.TopAdsDashboardDataSource;
@@ -26,6 +26,8 @@ import com.tokopedia.topads.dashboard.data.source.local.TopAdsCacheDataSourceImp
 import com.tokopedia.topads.dashboard.di.qualifier.ShopWsQualifier;
 import com.tokopedia.topads.dashboard.di.qualifier.TopAdsManagementQualifier;
 import com.tokopedia.topads.dashboard.di.scope.TopAdsDashboardScope;
+import com.tokopedia.topads.dashboard.domain.interactor.DeleteTopAdsStatisticsUseCase;
+import com.tokopedia.topads.dashboard.domain.interactor.DeleteTopAdsTotalAdUseCase;
 import com.tokopedia.topads.dashboard.domain.interactor.TopAdsDatePickerInteractor;
 import com.tokopedia.topads.dashboard.domain.interactor.TopAdsDatePickerInteractorImpl;
 import com.tokopedia.topads.dashboard.domain.repository.TopAdsDashboardRepository;
@@ -153,6 +155,18 @@ public class TopAdsDashboardModule {
     @Provides
     public TopAdsSourceTaggingRepository provideTopAdsSourceTaggingRepository(TopAdsSourceTaggingDataSource dataSource){
         return new TopAdsSourceTaggingRepositoryImpl(dataSource);
+    }
+
+    @TopAdsDashboardScope
+    @Provides
+    public DeleteTopAdsStatisticsUseCase provideDeleteTopAdsStatisticsUseCase(){
+        return new DeleteTopAdsStatisticsUseCase();
+    }
+
+    @TopAdsDashboardScope
+    @Provides
+    public DeleteTopAdsTotalAdUseCase provideDeleteTopAdsTotalAdUseCase(){
+        return new DeleteTopAdsTotalAdUseCase();
     }
 
 }

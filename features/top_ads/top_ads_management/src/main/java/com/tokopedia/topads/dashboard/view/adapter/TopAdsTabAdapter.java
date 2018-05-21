@@ -1,5 +1,6 @@
 package com.tokopedia.topads.dashboard.view.adapter;
 
+import android.content.Context;
 import android.support.annotation.LayoutRes;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -22,7 +23,13 @@ public class TopAdsTabAdapter extends RecyclerView.Adapter<TabLayoutViewHolder>{
     private int selectedPos = 0;
     private OnRecyclerTabItemClick listener;
 
-    private List<TabMenu> tabMenus = new ArrayList<>();
+    private List<TabMenu> tabMenus;
+    private Context context;
+
+    public TopAdsTabAdapter(Context context) {
+        this.context = context;
+        tabMenus = new ArrayList<>();
+    }
 
     public void setSummary(Summary summary, String[] subtitles) {
         if (summary == null){
@@ -34,10 +41,12 @@ public class TopAdsTabAdapter extends RecyclerView.Adapter<TabLayoutViewHolder>{
             tabMenus.clear();
             tabMenus.add(new TabMenu(summary.getImpressionSumFmt(), subtitles[0]));
             tabMenus.add(new TabMenu(summary.getClickSumFmt(), subtitles[1]));
-            tabMenus.add(new TabMenu(summary.getCtrPercentageFmt(), subtitles[2]));
-            tabMenus.add(new TabMenu(summary.getConversionSumFmt(), subtitles[3]));
-            tabMenus.add(new TabMenu(summary.getCostAvgFmt(), subtitles[4]));
-            tabMenus.add(new TabMenu(summary.getCostSumFmt(), subtitles[5]));
+            tabMenus.add(new TabMenu(context.getString(R.string.top_ads_tooltip_statistic_use, summary.getCostSumFmt()), subtitles[2]));
+            tabMenus.add(new TabMenu(context.getString(R.string.top_ads_tooltip_statistic_use, summary.getGrossProfitFmt()), subtitles[3]));
+            tabMenus.add(new TabMenu(summary.getCtrPercentageFmt(), subtitles[4]));
+            tabMenus.add(new TabMenu(summary.getConversionSumFmt(), subtitles[5]));
+            tabMenus.add(new TabMenu(summary.getCostAvgFmt(), subtitles[6]));
+            tabMenus.add(new TabMenu(summary.getSoldSumFmt(), subtitles[7]));
         }
         notifyDataSetChanged();
     }

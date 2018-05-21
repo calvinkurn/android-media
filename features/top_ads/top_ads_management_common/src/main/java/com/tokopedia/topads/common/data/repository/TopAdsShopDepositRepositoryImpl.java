@@ -1,7 +1,7 @@
 package com.tokopedia.topads.common.data.repository;
 
 import com.tokopedia.topads.common.data.model.DataDeposit;
-import com.tokopedia.topads.common.data.source.deposit.ShopDepositDataSource;
+import com.tokopedia.topads.common.data.source.ShopDepositDataSource;
 import com.tokopedia.topads.common.domain.repository.TopAdsShopDepositRepository;
 import com.tokopedia.usecase.RequestParams;
 

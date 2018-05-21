@@ -1,6 +1,7 @@
-package com.tokopedia.topads.common.data.source.deposit;
+package com.tokopedia.topads.common.data.source;
 
 import com.tokopedia.topads.common.data.model.DataDeposit;
+import com.tokopedia.topads.common.data.source.cloud.ShopDepositDataSourceCloud;
 import com.tokopedia.usecase.RequestParams;
 
 import rx.Observable;

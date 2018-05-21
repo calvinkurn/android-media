@@ -30,7 +30,8 @@ public class TabLayoutViewHolder extends RecyclerView.ViewHolder {
 
     public void toggleActivate(boolean isActive){
         int white = ContextCompat.getColor(itemView.getContext(), R.color.white);
-        int black = ContextCompat.getColor(itemView.getContext(), R.color.black_70);
+        int black = ContextCompat.getColor(itemView.getContext(), R.color.font_voucher);
+        int blackDisabled = ContextCompat.getColor(itemView.getContext(), R.color.font_black_disabled_38);
         if (isActive){
             baseView.setBackground(ContextCompat.getDrawable(itemView.getContext(), R.drawable.gradient_background));
             mainTextView.setTextColor(white);
@@ -38,7 +39,7 @@ public class TabLayoutViewHolder extends RecyclerView.ViewHolder {
         } else {
             baseView.setBackgroundColor(white);
             mainTextView.setTextColor(black);
-            subTextView.setTextColor(black);
+            subTextView.setTextColor(blackDisabled);
         }
     }
 }

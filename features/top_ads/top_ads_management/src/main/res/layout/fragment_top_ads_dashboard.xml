@@ -1,157 +1,105 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <android.support.v4.widget.NestedScrollView
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
+    <com.tokopedia.abstraction.base.view.widget.SwipeToRefresh
+        android:id="@+id/swipe_refresh_layout"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:fillViewport="true"
-        android:id="@+id/scroll_view">
+        android:layout_height="0dp"
+        android:layout_weight="1">
 
-        <LinearLayout
+        <ScrollView
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="@color/background_apps"
-            android:orientation="vertical">
+            android:layout_height="wrap_content"
+            android:fillViewport="true"
+            android:id="@+id/scroll_view">
 
-            <include layout="@layout/partial_top_ads_shop_info" />
-
-            <FrameLayout
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:background="@color/white"
+                android:orientation="vertical">
 
-                <LinearLayout
-                    android:id="@+id/topads_dashboard_content"
+                <include layout="@layout/partial_top_ads_shop_info" />
+
+                <FrameLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical">
+                    android:layout_height="wrap_content">
 
                     <LinearLayout
-                        android:id="@+id/topads_content_statistics"
+                        android:id="@+id/topads_dashboard_content"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="vertical">
 
-                        <com.tokopedia.design.label.LabelView
-                            android:id="@+id/label_view_statistics"
-                            style="@style/LabelLayout.BorderBottom"
-                            android:layout_height="@dimen/size_labelview"
-                            app:content_text_size="@dimen/sp_14"
-                            app:lv_content="@string/topads_dashboard_default_statistics_value"
-                            app:lv_content_color="@color/tkpd_main_green"
-                            app:lv_image="@drawable/statistik_icon"
-                            app:lv_image_width="24dp"
-                            app:lv_title="@string/topads_dashboard_label_statistics"
-                            app:title_text_size="@dimen/sp_14" />
-
-                        <com.tokopedia.design.label.LabelView
-                            android:id="@+id/date_label_view"
-                            style="@style/LabelLayout"
-                            android:layout_height="@dimen/size_labelview"
-                            app:content_text_size="@dimen/sp_14"
-                            app:lv_content_color="@color/tkpd_main_green"
-                            app:lv_image="@drawable/ic_calendar_grey"
-                            app:lv_image_width="@dimen/dp_24"
-                            app:lv_title="@string/label_date_period"
-                            app:title_text_size="@dimen/sp_14" />
-
-                        <android.support.v7.widget.RecyclerView
-                            android:id="@+id/recyclerview_tabLayout"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:background="@color/white"/>
-
-                        <com.tkpd.library.ui.widget.TouchViewPager
-                            android:id="@+id/pager"
-                            android:layout_width="match_parent"
-                            android:layout_height="@dimen/viewpager_statistics_height" />
-
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginBottom="@dimen/top_ads_dashboard_margin_bottom_space"
-                        android:layout_marginTop="@dimen/top_ads_dashboard_margin_cards"
-                        android:background="@drawable/border_background_view_topads"
-                        android:divider="@drawable/bg_line_separator"
-                        android:orientation="vertical"
-                        android:paddingBottom="0.5dp"
-                        android:paddingTop="0.5dp"
-                        android:showDividers="middle">
-
-                        <com.tokopedia.design.label.LabelView
-                            android:id="@+id/label_view_group_summary"
-                            style="@style/LabelLayout"
-                            android:layout_height="@dimen/size_labelview"
-                            app:content_text_size="@dimen/sp_14"
-                            app:lv_content="@string/top_ads_statistic_info_default_value"
-                            app:lv_content_color="@color/tkpd_main_green"
-                            app:lv_image="@drawable/ic_top_ads_group_promo"
-                            app:lv_image_width="24dp"
-                            app:lv_title="@string/label_top_ads_groups"
-                            app:title_text_size="@dimen/sp_14" />
+                        <include layout="@layout/partial_top_ads_dashboard_statistics"/>
 
                         <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:showDividers="middle"
+                            android:background="@drawable/border_background_view_topads"
+                            android:divider="@drawable/bg_list_separator"
                             android:orientation="vertical"
-                            android:id="@+id/view_group_promo">
+                            android:showDividers="middle">
 
                             <com.tokopedia.design.label.LabelView
-                                android:id="@+id/label_view_item_summary"
-                                style="@style/LabelLayout"
-                                android:layout_height="@dimen/size_labelview"
-                                app:content_text_size="@dimen/sp_14"
+                                android:id="@+id/label_view_group_summary"
+                                style="@style/LabelLayout.TopAdsLabelView"
                                 app:lv_content="@string/top_ads_statistic_info_default_value"
                                 app:lv_content_color="@color/tkpd_main_green"
-                                app:lv_image="@drawable/ic_manage_produk"
-                                app:lv_image_width="24dp"
-                                app:lv_title="@string/label_top_ads_items"
-                                app:title_text_size="@dimen/sp_14" />
+                                app:lv_image="@drawable/ic_top_ads_grup_promo"
+                                app:lv_title="@string/label_top_ads_groups" />
 
-                            <com.tokopedia.design.label.LabelView
-                                android:id="@+id/label_view_keyword"
-                                style="@style/LabelLayout"
-                                android:layout_height="@dimen/size_labelview"
-                                app:content_text_size="@dimen/sp_14"
-                                app:lv_content="@string/top_ads_statistic_info_default_value"
-                                app:lv_content_color="@color/tkpd_main_green"
-                                app:lv_image="@drawable/ic_top_ads_keyword"
-                                app:lv_image_width="24dp"
-                                app:lv_title="@string/label_top_ads_keyword"
-                                app:title_text_size="@dimen/sp_14" />
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:divider="@drawable/bg_list_separator"
+                                android:showDividers="middle"
+                                android:orientation="vertical"
+                                android:id="@+id/view_group_promo">
 
-                            <com.tokopedia.design.label.LabelView
-                                android:id="@+id/label_view_shop"
-                                style="@style/LabelLayout"
-                                android:layout_height="@dimen/size_labelview"
-                                app:lv_image="@drawable/icon_penjualan"
-                                app:lv_image_width="24dp"
-                                app:lv_title="@string/title_top_ads_store"
-                                app:title_text_size="@dimen/sp_14" />
+                                <com.tokopedia.design.label.LabelView
+                                    android:id="@+id/label_view_item_summary"
+                                    style="@style/LabelLayout.TopAdsLabelView"
+                                    app:lv_content="@string/top_ads_statistic_info_default_value"
+                                    app:lv_content_color="@color/tkpd_main_green"
+                                    app:lv_image="@drawable/ic_top_ads_produk"
+                                    app:lv_title="@string/label_top_ads_items"/>
 
+                                <com.tokopedia.design.label.LabelView
+                                    android:id="@+id/label_view_keyword"
+                                    style="@style/LabelLayout.TopAdsLabelView"
+                                    app:lv_content="@string/top_ads_statistic_info_default_value"
+                                    app:lv_content_color="@color/tkpd_main_green"
+                                    app:lv_image="@drawable/ic_top_ads_keyword"
+                                    app:lv_title="@string/label_top_ads_keyword"/>
+
+                                <com.tokopedia.design.label.LabelView
+                                    android:id="@+id/label_view_shop"
+                                    style="@style/LabelLayout.TopAdsLabelView"
+                                    app:lv_image="@drawable/ic_top_ads_toko"
+                                    app:lv_title="@string/title_top_ads_store"/>
+
+                            </LinearLayout>
                         </LinearLayout>
+
                     </LinearLayout>
 
-                </LinearLayout>
+                    <include
+                        android:id="@+id/topads_dashboard_empty"
+                        layout="@layout/item_empty_list"
+                        android:visibility="gone" />
 
-                <include
-                    android:id="@+id/topads_dashboard_empty"
-                    layout="@layout/item_empty_list"
-                    android:visibility="gone" />
+                </FrameLayout>
 
-            </FrameLayout>
+            </LinearLayout>
 
-        </LinearLayout>
+        </ScrollView>
 
-    </android.support.v4.widget.NestedScrollView>
+    </com.tokopedia.abstraction.base.view.widget.SwipeToRefresh>
 
     <com.tokopedia.design.component.FloatingButton
         android:id="@+id/button_topads_add_promo"
@@ -163,4 +111,4 @@
         app:text="@string/label_add_promo"
         app:shadowTop="true"
         app:buttonTextAllCaps="false"/>
-</FrameLayout>
+</LinearLayout>
