@@ -196,7 +196,7 @@ public abstract class SearchSectionFragment extends BaseDaggerFragment
                 .setupBottomNavigation(getBottomNavigationItems(), getBottomNavClickListener());
     }
 
-    protected void showBottomBarNavigation(boolean show) {
+    public void showBottomBarNavigation(boolean show) {
         boolean isBottomSheetShown = bottomSheetListener != null
                 && bottomSheetListener.isBottomSheetShown();
 

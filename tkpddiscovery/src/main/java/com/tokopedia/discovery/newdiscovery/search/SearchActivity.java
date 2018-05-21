@@ -379,6 +379,7 @@ public class SearchActivity extends DiscoveryActivity
             @Override
             public void onHide() {
                 enableAutoShowBottomNav();
+                forceShowBottomNav();
                 sendBottomSheetHideEventForProductList();
             }
 
@@ -405,6 +406,15 @@ public class SearchActivity extends DiscoveryActivity
                 FilterDetailActivityRouter.launchDetailActivity(SearchActivity.this, filter, true);
             }
         });
+    }
+
+    private void forceShowBottomNav() {
+        SearchSectionFragment selectedFragment
+                = (SearchSectionFragment) searchSectionPagerAdapter.getItem(viewPager.getCurrentItem());
+
+        if (selectedFragment != null) {
+            selectedFragment.showBottomBarNavigation(true);
+        }
     }
 
     private void sendBottomSheetHideEventForProductList() {
