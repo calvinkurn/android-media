@@ -20,6 +20,7 @@ dependencies {
     compile project(rootProject.ext.features.loyalty)
     compile project(rootProject.ext.features.topAdsSdk)
     compile project(rootProject.ext.features.payment)
+    compile project(rootProject.ext.libraries.applink)
 
     compile project(rootProject.ext.libraries.fingerprint)
     compile project(rootProject.ext.features.districtRecommendation)

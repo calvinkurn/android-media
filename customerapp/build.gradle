@@ -240,6 +240,9 @@ android {
         live {
 
         }
+        staging {
+
+        }
     }
 }
 
@@ -252,8 +255,7 @@ dependencies {
     compile project(rootProject.ext.features.seller)
     compile project(rootProject.ext.features.session)
     compile project(rootProject.ext.features.inbox)
-    compile project(rootProject.ext.features.ride)
-    compile project(rootProject.ext.features.digital)
+    compile project(rootProject.ext.features.digitalproduct)
     compile project(rootProject.ext.features.productDetail)
     compile project(rootProject.ext.features.feed)
     compile project(rootProject.ext.features.event)
@@ -272,6 +274,7 @@ dependencies {
     compile project(rootProject.ext.libraries.applink)
     compile project(rootProject.ext.features.gamification)
     compile project(rootProject.ext.features.checkout)
+    compile project(rootProject.ext.features.tracking)
 
     androidTestCompile(rootProject.ext.testDependencies.espressoCore, {
         exclude group: 'com.android.support', module: 'support-annotations'

@@ -48,6 +48,9 @@ public abstract class ShipmentItemViewHolder extends RecyclerView.ViewHolder {
     private static final int KILOGRAM = 1;
     private static final int KILOGRAM_TO_GRAM_MULTIPLIER = 1000;
 
+    private static final int DROPSHIPPER_MIN_NAME_LENGTH = 3;
+    private static final int DROPSHIPPER_MIN_PHONE_LENGTH = 6;
+
     protected ShipmentAdapterActionListener mActionListener;
     private ShipmentAdapter shipmentAdapter;
 
@@ -352,7 +355,7 @@ public abstract class ShipmentItemViewHolder extends RecyclerView.ViewHolder {
                 }
             });
 
-            if (shipmentCartItemModel.isStateDropshipperHasError() && etShipperName.getText().length() == 0) {
+            if (shipmentCartItemModel.isStateDropshipperHasError() && etShipperName.getText().length() < DROPSHIPPER_MIN_NAME_LENGTH) {
                 textInputLayoutShipperName.setError(textInputLayoutShipperName.getContext().getString(R.string.message_error_dropshipper_name));
             } else {
                 textInputLayoutShipperName.setErrorEnabled(false);
@@ -366,7 +369,7 @@ public abstract class ShipmentItemViewHolder extends RecyclerView.ViewHolder {
                 @Override
                 public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
                     shipmentCartItemModel.getSelectedShipmentDetailData().setDropshipperName(charSequence.toString());
-                    if (charSequence.length() == 0) {
+                    if (charSequence.length() < DROPSHIPPER_MIN_NAME_LENGTH) {
                         textInputLayoutShipperName.setError(textInputLayoutShipperName.getContext().getString(R.string.message_error_dropshipper_name));
                     } else {
                         textInputLayoutShipperName.setErrorEnabled(false);
@@ -380,7 +383,7 @@ public abstract class ShipmentItemViewHolder extends RecyclerView.ViewHolder {
                 }
             });
 
-            if (shipmentCartItemModel.isStateDropshipperHasError() && etShipperPhone.getText().length() == 0) {
+            if (shipmentCartItemModel.isStateDropshipperHasError() && etShipperPhone.getText().length() < DROPSHIPPER_MIN_PHONE_LENGTH) {
                 textInputLayoutShipperPhone.setError(textInputLayoutShipperName.getContext().getString(R.string.message_error_dropshipper_phone));
             } else {
                 textInputLayoutShipperPhone.setErrorEnabled(false);
@@ -394,7 +397,7 @@ public abstract class ShipmentItemViewHolder extends RecyclerView.ViewHolder {
                 @Override
                 public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
                     shipmentCartItemModel.getSelectedShipmentDetailData().setDropshipperPhone(charSequence.toString());
-                    if (charSequence.length() == 0) {
+                    if (charSequence.length() < DROPSHIPPER_MIN_PHONE_LENGTH) {
                         textInputLayoutShipperPhone.setError(textInputLayoutShipperName.getContext().getString(R.string.message_error_dropshipper_phone));
                     } else {
                         textInputLayoutShipperPhone.setErrorEnabled(false);

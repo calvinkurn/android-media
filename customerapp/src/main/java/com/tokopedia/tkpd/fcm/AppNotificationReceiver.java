@@ -8,9 +8,16 @@ import android.support.v4.content.LocalBroadcastManager;
 
 import com.google.firebase.messaging.RemoteMessage;
 import com.moengage.push.PushManager;
+import com.tokopedia.abstraction.common.data.model.session.UserSession;
+import com.tokopedia.abstraction.constant.TkpdState;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.gcm.NotificationAnalyticsReceiver;
+import com.tokopedia.core.gcm.utils.ActivitiesLifecycleCallbacks;
+import com.tokopedia.inbox.inboxchat.ChatNotifInterface;
+import com.tokopedia.pushnotif.ApplinkNotificationHelper;
+import com.tokopedia.pushnotif.Constant;
 import com.tokopedia.pushnotif.PushNotification;
+import com.tokopedia.pushnotif.model.ApplinkNotificationModel;
 import com.tokopedia.tkpd.ConsumerMainApplication;
 
 import com.tokopedia.core.gcm.base.IAppNotificationReceiver;
@@ -24,6 +31,7 @@ import rx.Observable;
 public class AppNotificationReceiver implements IAppNotificationReceiver {
     private AppNotificationReceiverUIBackground mAppNotificationReceiverUIBackground;
     private Context mContext;
+    private ActivitiesLifecycleCallbacks mActivitiesLifecycleCallbacks;
 
     public AppNotificationReceiver() {
 
@@ -34,6 +42,7 @@ public class AppNotificationReceiver implements IAppNotificationReceiver {
             mAppNotificationReceiverUIBackground = new AppNotificationReceiverUIBackground(application);
 
         mContext = application.getApplicationContext();
+        mActivitiesLifecycleCallbacks = new ActivitiesLifecycleCallbacks(application);
     }
 
     @Override
@@ -47,17 +56,38 @@ public class AppNotificationReceiver implements IAppNotificationReceiver {
         }
 
         if (isApplinkNotification(bundle)) {
-            PushNotification.notify(mContext, bundle);
+            if (!isInExcludedActivity(bundle)) {
+                PushNotification.notify(mContext, bundle);
+            }
             extraAction(bundle);
         } else {
             mAppNotificationReceiverUIBackground.notifyReceiverBackgroundMessage(bundle);
         }
     }
 
+    private boolean isInExcludedActivity(Bundle data) {
+        ApplinkNotificationModel applinkNotificationModel = ApplinkNotificationHelper.convertToApplinkModel(data);
+        int notificationId = ApplinkNotificationHelper.generateNotifictionId(applinkNotificationModel.getApplinks());
+        return notificationId == getCurrentNotifIdByActivity();
+    }
+
+    private int getCurrentNotifIdByActivity(){
+        if(mActivitiesLifecycleCallbacks.getLiveActivityOrNull() == null){
+            return 0;
+        }
+        if(mActivitiesLifecycleCallbacks.getLiveActivityOrNull() instanceof ChatNotifInterface) {
+            return Constant.NotificationId.CHAT;
+        }
+        return 0;
+    }
+
     private void extraAction(Bundle data) {
-        if (canBroadcastPointReceived(
-                data.getString(Constants.ARG_NOTIFICATION_CODE, "0"))) {
+        String code = data.getString(Constants.ARG_NOTIFICATION_CODE, "0");
+        if (canBroadcastPointReceived(code)) {
             broadcastPointReceived(data);
+        }
+        if(canBroadcastChat(code)){
+            broadcastNotifTopChat(data);
         }
     }
 
@@ -68,12 +98,25 @@ public class AppNotificationReceiver implements IAppNotificationReceiver {
         LocalBroadcastManager.getInstance(mContext).sendBroadcast(loyaltyGroupChat);
     }
 
+
+    private void broadcastNotifTopChat(Bundle data) {
+        Intent loyaltyGroupChat = new Intent(TkpdState.TOPCHAT);
+        loyaltyGroupChat.putExtras(data);
+        LocalBroadcastManager.getInstance(mContext).sendBroadcast(loyaltyGroupChat);
+    }
+
     private boolean canBroadcastPointReceived(String tkpCode) {
         final String GROUP_CHAT_BROADCAST_TKP_CODE = "140";
         final String GROUP_CHAT_BROADCAST_TKP_CODE_GENERAL = "1400";
 
         return tkpCode.startsWith(GROUP_CHAT_BROADCAST_TKP_CODE)
                 && !tkpCode.equals(GROUP_CHAT_BROADCAST_TKP_CODE_GENERAL);
+    }
+
+
+    private boolean canBroadcastChat(String tkpCode){
+        final String CHAT_BROADCAST_TKP_CODE = "111";
+        return tkpCode.startsWith(CHAT_BROADCAST_TKP_CODE);
     }
 
     private boolean isApplinkNotification(Bundle data) {

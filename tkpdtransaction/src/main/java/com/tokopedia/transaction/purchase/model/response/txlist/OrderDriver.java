@@ -2,6 +2,7 @@ package com.tokopedia.transaction.purchase.model.response.txlist;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.text.TextUtils;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
@@ -28,7 +29,12 @@ public class OrderDriver implements Parcelable{
     @Expose
     private String licenseNumber;
 
+    @SerializedName("tracking_url")
+    @Expose
+    private String trackingUrl;
+
     public OrderDriver() {
+
     }
 
     protected OrderDriver(Parcel in) {
@@ -36,6 +42,7 @@ public class OrderDriver implements Parcelable{
         driverPhone = in.readString();
         driverPhoto = in.readString();
         licenseNumber = in.readString();
+        trackingUrl = in.readString();
     }
 
     public static final Creator<OrderDriver> CREATOR = new Creator<OrderDriver>() {
@@ -82,6 +89,16 @@ public class OrderDriver implements Parcelable{
         this.licenseNumber = licenseNumber;
     }
 
+    public String getTrackingUrl() {
+        if(TextUtils.isEmpty(trackingUrl))
+            return "";
+        return trackingUrl;
+    }
+
+    public void setTrackingUrl(String trackingUrl) {
+        this.trackingUrl = trackingUrl;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -93,5 +110,6 @@ public class OrderDriver implements Parcelable{
         dest.writeString(driverPhone);
         dest.writeString(driverPhoto);
         dest.writeString(licenseNumber);
+        dest.writeString(trackingUrl);
     }
 }

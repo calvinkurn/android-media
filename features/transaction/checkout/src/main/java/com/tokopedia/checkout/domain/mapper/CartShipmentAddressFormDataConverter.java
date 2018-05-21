@@ -24,7 +24,7 @@ import javax.inject.Inject;
 
 /**
  * @author anggaprasetiyo on 08/02/18,
- *         Aghny A. Putra on 08/02/18.
+ * Aghny A. Putra on 08/02/18.
  */
 
 public class CartShipmentAddressFormDataConverter
@@ -122,7 +122,7 @@ public class CartShipmentAddressFormDataConverter
     private CartItemModel convertFromProduct(Product product) {
         CartItemModel cartItemModel = new CartItemModel();
 
-        cartItemModel.setId(product.getProductId());
+        cartItemModel.setProcuctId(product.getProductId());
         cartItemModel.setName(product.getProductName());
         cartItemModel.setImageUrl(product.getProductImageSrc200Square());
         cartItemModel.setCurrency(product.getProductPriceCurrency());
@@ -165,6 +165,8 @@ public class CartShipmentAddressFormDataConverter
         recipientAddress.setDestinationDistrictId(String.valueOf(userAddress.getDistrictId()));
         recipientAddress.setAddressStreet(userAddress.getAddress());
         recipientAddress.setAddressPostalCode(userAddress.getPostalCode());
+        recipientAddress.setCityId(String.valueOf(userAddress.getCityId()));
+        recipientAddress.setProvinceId(String.valueOf(userAddress.getProvinceId()));
 
         recipientAddress.setRecipientName(userAddress.getReceiverName());
         recipientAddress.setRecipientPhoneNumber(userAddress.getPhone());
@@ -254,7 +256,7 @@ public class CartShipmentAddressFormDataConverter
 
         cartItemModel.setShopName(cartItemData.getOriginData().getShopName());
         cartItemModel.setShopId(cartItemData.getOriginData().getShopId());
-        cartItemModel.setId(Integer.parseInt(cartItemData.getOriginData().getProductId()));
+        cartItemModel.setProcuctId(Integer.parseInt(cartItemData.getOriginData().getProductId()));
         cartItemModel.setName(cartItemData.getOriginData().getProductName());
 
         cartItemModel.setCurrency(cartItemData.getOriginData().getPriceCurrency());

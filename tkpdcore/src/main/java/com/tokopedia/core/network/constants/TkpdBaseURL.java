@@ -877,7 +877,8 @@ public class TkpdBaseURL {
         public static final String PATH_ZEUS_CHECK_WHITELIST = "zeus/whitelist/status";
         public static final String PATH_ZEUS_UPDATE_WHITELIST = "zeus/whitelist";
 
-        public static final String CDN_IMG_ANDROID_DOMAIN = "https://ecs7.tokopedia.net/img/android/";
+        public static final String DEFAULT_HOST = "http://ecs7.tokopedia.net";
+        public static final String CDN_IMG_ANDROID_DOMAIN = "/img/android/";
 
     }
 

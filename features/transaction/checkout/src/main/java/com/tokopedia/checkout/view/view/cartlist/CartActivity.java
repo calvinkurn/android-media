@@ -1,15 +1,20 @@
 package com.tokopedia.checkout.view.view.cartlist;
 
+import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 
+import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tokopedia.abstraction.common.di.component.HasComponent;
 import com.tokopedia.checkout.R;
+import com.tokopedia.checkout.applink.CheckoutAppLink;
 import com.tokopedia.checkout.domain.datamodel.cartlist.CartItemData;
 import com.tokopedia.checkout.view.base.BaseCheckoutActivity;
 import com.tokopedia.checkout.view.di.component.CartComponent;
 import com.tokopedia.checkout.view.di.component.CartComponentInjector;
+import com.tokopedia.core.gcm.Constants;
 
 import java.util.List;
 
@@ -19,6 +24,17 @@ import java.util.List;
 
 public class CartActivity extends BaseCheckoutActivity implements CartFragment.ActionListener,
         HasComponent<CartComponent> {
+
+    @DeepLink(CheckoutAppLink.CART)
+    public static Intent getCallingIntent(Context context, Bundle extras) {
+        Intent intent = new Intent(context, CartActivity.class).putExtras(extras);
+        intent.putExtras(extras);
+        if (extras.getString(DeepLink.URI) != null) {
+            Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
+            intent.setData(uri.build());
+        }
+        return intent;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
