@@ -17,7 +17,6 @@ import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
-import com.tokopedia.core.home.SimpleWebViewActivity;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.tracking.R;
 import com.tokopedia.tracking.adapter.EmptyTrackingNotesAdapter;
@@ -214,8 +213,8 @@ public class TrackingPageFragment extends BaseDaggerFragment implements ITrackin
         return new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivity(
-                        SimpleWebViewActivity.getIntent(getActivity(), ADDITIONAL_INFO_URL));
+//                startActivity(
+//                        SimpleWebViewActivity.getIntent(getActivity(), ADDITIONAL_INFO_URL));
             }
         };
     }
@@ -224,9 +223,9 @@ public class TrackingPageFragment extends BaseDaggerFragment implements ITrackin
         return new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivity(
-                        SimpleWebViewActivity.getIntent(getActivity(),
-                                getArguments().getString(URL_LIVE_TRACKING)));
+//                startActivity(
+//                        SimpleWebViewActivity.getIntent(getActivity(),
+//                                getArguments().getString(URL_LIVE_TRACKING)));
             }
         };
     }
@@ -239,12 +238,12 @@ public class TrackingPageFragment extends BaseDaggerFragment implements ITrackin
                 new Locale("in", "ID"));
 
         SimpleDateFormat outputFormat = new SimpleDateFormat(outputPattern,
-                new Locale("in","ID"));
+                new Locale("in", "ID"));
 
         try {
             Date date = inputFormat.parse(unformattedTime);
             return outputFormat.format(date);
-        } catch(ParseException e) {
+        } catch (ParseException e) {
             return unformattedTime;
         }
     }

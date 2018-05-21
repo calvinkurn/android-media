@@ -387,7 +387,8 @@ public class PromoCouponFragment extends BasePresenterFragment
         if (getArguments().getString(PLATFORM_KEY).equals(
                 IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.DIGITAL_STRING)) {
             dPresenter.submitDigitalVoucher(data, getArguments().getString(CATEGORY_KEY));
-        } else if (getArguments().getString(PLATFORM_KEY).equals(EVENT_STRING)) {
+        } else if (getArguments().getString(PLATFORM_KEY).equals(
+                IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.EVENT_STRING)) {
             String jsonbody = getActivity().getIntent().getStringExtra(CHECKOUT);
             dPresenter.parseAndSubmitEventVoucher(jsonbody, data);
         } else if (getArguments().getString(PLATFORM_KEY).equalsIgnoreCase(
@@ -424,7 +425,8 @@ public class PromoCouponFragment extends BasePresenterFragment
     @Override
     public void onRefresh(View view) {
         if (refreshHandler.isRefreshing())
-            if (getArguments().getString(PLATFORM_KEY).equals(EVENT_STRING)) {
+            if (getArguments().getString(PLATFORM_KEY).equals(
+                    IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.EVENT_STRING)) {
                 dPresenter.processGetEventCouponList(getArguments().getInt(DIGITAL_CATEGORY_ID), getArguments().getInt(DIGITAL_PRODUCT_ID));
             } else {
                 dPresenter.processGetCouponList(getArguments().getString(PLATFORM_KEY));

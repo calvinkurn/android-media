@@ -67,22 +67,22 @@ public class LoyaltyViewModule {
                         .tabTitle("Kode Promo")
                         .build()
         );
-        if (activity.getIntent().getExtras().getString(EXTRA_PLATFORM, "").equals(events)) {
+        if (activity.getIntent().getExtras().getString(IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.EXTRA_PLATFORM, "").equals(events)) {
             loyaltyPagerItemList.add(
                     new LoyaltyPagerItem.Builder()
                             .fragment(PromoCouponFragment.newInstance(
                                     activity.getIntent()
                                             .getExtras()
-                                            .getString(EXTRA_PLATFORM, ""),
+                                            .getString(IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.EXTRA_PLATFORM, ""),
                                     activity.getIntent()
                                             .getExtras()
-                                            .getString(EXTRA_CATEGORY, ""),
+                                            .getString(IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.EXTRA_CATEGORY, ""),
                                     activity.getIntent()
                                             .getExtras()
-                                            .getInt(EXTRA_CATEGORYID, 0),
+                                            .getInt(IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.EXTRA_CATEGORYID, 0),
                                     activity.getIntent()
                                             .getExtras()
-                                            .getInt(EXTRA_PRODUCTID, 0)))
+                                            .getInt(IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.EXTRA_PRODUCTID, 0)))
                             .position(0)
                             .tabTitle("Kupon Saya")
                             .build()
@@ -93,13 +93,13 @@ public class LoyaltyViewModule {
                             .fragment(PromoCouponFragment.newInstance(
                                     activity.getIntent()
                                             .getExtras()
-                                            .getString(EXTRA_PLATFORM, ""),
+                                            .getString(IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.EXTRA_PLATFORM, ""),
                                     activity.getIntent()
                                             .getExtras()
-                                            .getString(EXTRA_CATEGORY, ""),
+                                            .getString(IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.EXTRA_CATEGORY, ""),
                                     activity.getIntent()
                                             .getExtras()
-                                            .getString(EXTRA_CART_ID, "")))
+                                            .getString(IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.EXTRA_CART_ID, "")))
                             .position(0)
                             .tabTitle("Kupon Saya")
                             .build()

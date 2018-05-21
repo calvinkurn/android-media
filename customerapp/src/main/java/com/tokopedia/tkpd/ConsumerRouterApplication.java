@@ -118,7 +118,10 @@ import com.tokopedia.digital.tokocash.model.CashBackData;
 import com.tokopedia.digital.tokocash.topup.TopupTokoCashFragment;
 import com.tokopedia.discovery.DiscoveryRouter;
 import com.tokopedia.discovery.intermediary.view.IntermediaryActivity;
+import com.tokopedia.events.data.entity.response.verifyresponse.VerifyCartResponse;
+import com.tokopedia.events.di.DaggerEventComponent;
 import com.tokopedia.events.di.EventComponent;
+import com.tokopedia.events.di.EventModule;
 import com.tokopedia.feedplus.FeedModuleRouter;
 import com.tokopedia.feedplus.domain.model.FollowKolDomain;
 import com.tokopedia.feedplus.domain.model.LikeKolDomain;
@@ -187,7 +190,6 @@ import com.tokopedia.profilecompletion.data.mapper.GetUserInfoMapper;
 import com.tokopedia.profilecompletion.data.repository.ProfileRepositoryImpl;
 import com.tokopedia.profilecompletion.domain.GetUserInfoUseCase;
 import com.tokopedia.profilecompletion.view.activity.ProfileCompletionActivity;
-import com.tokopedia.ride.RideModuleRouter;
 import com.tokopedia.seller.LogisticRouter;
 import com.tokopedia.seller.SellerModuleRouter;
 import com.tokopedia.seller.TkpdSeller;
@@ -319,7 +321,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         FeedModuleRouter,
         IHomeRouter,
         DiscoveryRouter,
-        RideModuleRouter,
         DigitalModuleRouter,
         com.tokopedia.tokocash.TokoCashRouter,
         DigitalRouter,
