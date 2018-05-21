@@ -323,7 +323,7 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
             } else if (successResult.getShopInfo().getShopIsGold() == 1) {
                 ScreenTracking.eventOfficialStoreScreenAuth(successResult.getShopInfo().getShopId(), "gold_merchant", "/product", String.valueOf(successResult.getInfo().getProductId()));
             } else {
-                ScreenTracking.eventOfficialStoreScreenAuth(successResult.getShopInfo().getShopId(), "reguler", "/product", String.valueOf(successResult.getInfo().getProductId()));
+                ScreenTracking.eventOfficialStoreScreenAuth(successResult.getShopInfo().getShopId(), "regular", "/product", String.valueOf(successResult.getInfo().getProductId()));
             }
         } catch (Exception e) {
             e.printStackTrace();

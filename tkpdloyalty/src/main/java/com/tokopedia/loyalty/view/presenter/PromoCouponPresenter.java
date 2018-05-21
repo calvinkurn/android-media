@@ -2,8 +2,14 @@ package com.tokopedia.loyalty.view.presenter;
 
 import android.support.annotation.NonNull;
 
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import com.tokopedia.abstraction.common.network.exception.MessageErrorException;
 import com.tokopedia.abstraction.constant.IRouterConstant;
+import com.tokopedia.core.analytics.UnifyTracking;
+import com.tokopedia.core.app.TkpdCoreRouter;
+import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.network.exception.HttpErrorException;
 import com.tokopedia.core.network.exception.ResponseErrorException;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
@@ -60,6 +66,63 @@ public class PromoCouponPresenter implements IPromoCouponPresenter {
         promoCouponInteractor.getCouponList(
                 AuthUtil.generateParamsNetwork(view.getContext(), param),
                 //AuthUtil.generateDummyParamsNetwork(view.getContext(), param),
+                new Subscriber<CouponsDataWrapper>() {
+                    @Override
+                    public void onCompleted() {
+                        view.enableSwipeRefresh();
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        if (e instanceof TokoPointResponseErrorException) {
+                            view.renderErrorGetCouponList(e.getMessage());
+                        } else if (e instanceof UnknownHostException || e instanceof ConnectException) {
+                            view.renderErrorNoConnectionGetCouponList(
+                                    ErrorNetMessage.MESSAGE_ERROR_NO_CONNECTION_SHORT
+                            );
+                        } else if (e instanceof SocketTimeoutException) {
+                            view.renderErrorTimeoutConnectionGetCouponList(
+                                    ErrorNetMessage.MESSAGE_ERROR_TIMEOUT_SHORT
+                            );
+                        } else if (e instanceof HttpErrorException) {
+                            view.renderErrorHttpGetCouponList(
+                                    e.getMessage()
+                            );
+                        } else {
+                            view.renderErrorGetCouponList(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
+                        }
+                    }
+
+                    @Override
+                    public void onNext(CouponsDataWrapper wrapper) {
+                        if (wrapper.getCoupons().size() < 1) {
+                            if (wrapper.getEmptyMessage() != null) {
+                                view.couponDataNoResult(
+                                        wrapper.getEmptyMessage().getTitle(),
+                                        wrapper.getEmptyMessage().getSubTitle()
+                                );
+                            } else {
+                                view.couponDataNoResult();
+                            }
+                        } else {
+                            view.renderCouponListDataResult(wrapper.getCoupons());
+                        }
+                    }
+                });
+    }
+
+    @Override
+    public void processGetEventCouponList(int categoryId, int productId) {
+        TKPDMapParam<String, String> param = new TKPDMapParam<>();
+        view.disableSwipeRefresh();
+        param.put("category_id", String.valueOf(categoryId));
+        param.put("product_id", String.valueOf(productId));
+        param.put("page", String.valueOf(1));
+        param.put("page_size", String.valueOf(20));
+
+        //TODO Revert Later
+        promoCouponInteractor.getCouponList(
+                AuthUtil.generateParamsNetwork(view.getContext(), param),
                 new Subscriber<CouponsDataWrapper>() {
                     @Override
                     public void onCompleted() {
@@ -204,6 +267,70 @@ public class PromoCouponPresenter implements IPromoCouponPresenter {
                 view.hideProgressLoading();
             }
         };
+    }
+
+    @Override
+    public void submitEventVoucher(final CouponData couponData, JsonObject requestBody, boolean flag) {
+        view.showProgressLoading();
+        requestBody.addProperty("promocode", couponData.getCode());
+        RequestParams requestParams = RequestParams.create();
+        requestParams.putObject("checkoutdata", requestBody);
+        requestParams.putBoolean("ispromocodecase", flag);
+        ((TkpdCoreRouter) view.getContext().getApplicationContext()).verifyEventPromo(requestParams).subscribe(new Subscriber<com.tokopedia.abstraction.common.utils.TKPDMapParam<String, Object>>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                view.hideProgressLoading();
+                if (e instanceof LoyaltyErrorException || e instanceof ResponseErrorException) {
+                    couponData.setErrorMessage(e.getMessage());
+                    view.couponError();
+                } else {
+                    view.showSnackbarError(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
+                }
+            }
+
+            @Override
+            public void onNext(com.tokopedia.abstraction.common.utils.TKPDMapParam<String, Object> resultMap) {
+                view.hideProgressLoading();
+                String promocode = (String) resultMap.get("promocode");
+                int discount = (int) resultMap.get("promocode_discount");
+                int cashback = (int) resultMap.get("promocode_cashback");
+                String failmsg = (String) resultMap.get("promocode_failure_message");
+                String successMsg = (String) resultMap.get("promocode_success_message");
+                String status = (String) resultMap.get("promocode_status");
+                if ((failmsg != null && failmsg.length() > 0) || status.length() == 0) {
+                    couponData.setErrorMessage(failmsg);
+                    view.couponError();
+                    UnifyTracking.eventDigitalEventTracking("voucher failed - " + promocode, failmsg);
+                } else {
+                    CouponViewModel couponViewModel = new CouponViewModel();
+                    couponViewModel.setCode(promocode);
+                    couponViewModel.setMessage(successMsg);
+                    couponViewModel.setSuccess(true);
+                    couponViewModel.setAmount("");
+                    couponViewModel.setRawCashback(cashback);
+                    couponViewModel.setRawDiscount(discount);
+                    couponViewModel.setTitle("");
+                    UnifyTracking.eventDigitalEventTracking("voucher success - " + promocode, successMsg);
+                    view.receiveDigitalResult(couponViewModel);
+                }
+            }
+        });
+
+    }
+
+    @Override
+    public void parseAndSubmitEventVoucher(String jsonbody,CouponData data) {
+        JsonObject requestBody;
+        if (jsonbody != null || jsonbody.length() > 0) {
+            JsonElement jsonElement = new JsonParser().parse(jsonbody);
+            requestBody = jsonElement.getAsJsonObject();
+            submitEventVoucher(data, requestBody, false);
+        }
     }
 
     private Subscriber<CouponViewModel> makeCouponSubscriber(final CouponData couponData) {
