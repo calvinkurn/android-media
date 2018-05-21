@@ -13,7 +13,7 @@
         android:layout_marginTop="@dimen/dp_16"
         android:layout_marginBottom="@dimen/dp_16"
         android:textAllCaps="false"
-        app:buttonCompatType="secondary"
+        app:buttonCompatType="primary"
         app:buttonCompatSize="big"
         android:text="@string/explore_more_button"/>
 
