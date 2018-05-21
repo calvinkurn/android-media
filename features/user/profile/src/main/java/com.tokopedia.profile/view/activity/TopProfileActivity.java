@@ -51,8 +51,11 @@ import java.util.List;
 import javax.inject.Inject;
 
 import static com.tokopedia.profile.analytics.TopProfileAnalytics.Action.CLICK_ON_MANAGE_ACCOUNT;
+import static com.tokopedia.profile.analytics.TopProfileAnalytics.Action.CLICK_PROMPT;
+import static com.tokopedia.profile.analytics.TopProfileAnalytics.Category.KOL_TOP_PROFILE;
 import static com.tokopedia.profile.analytics.TopProfileAnalytics.Category.TOP_PROFILE;
 import static com.tokopedia.profile.analytics.TopProfileAnalytics.Event.EVENT_CLICK_TOP_PROFILE;
+import static com.tokopedia.profile.analytics.TopProfileAnalytics.Label.GO_TO_PROFILE_FORMAT;
 
 /**
  * @author by milhamj on 08/02/18.
@@ -634,6 +637,15 @@ public class TopProfileActivity extends BaseSimpleActivity
             @Override
             public void onClick(View v) {
                 RouteManager.route(getContext(), ApplinkConst.FEED);
+
+                if (getContext().getApplicationContext() instanceof AbstractionRouter) {
+                    String kolName = topProfileViewModel.getName();
+                    ((AbstractionRouter) getContext().getApplicationContext()).getAnalyticTracker()
+                            .sendEventTracking(EVENT_CLICK_TOP_PROFILE,
+                                    KOL_TOP_PROFILE,
+                                    CLICK_PROMPT,
+                                    String.format(GO_TO_PROFILE_FORMAT, kolName));
+                }
             }
         };
     }
