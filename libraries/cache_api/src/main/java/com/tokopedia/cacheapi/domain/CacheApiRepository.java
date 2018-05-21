@@ -6,6 +6,7 @@ import com.tokopedia.cacheapi.data.source.db.model.CacheApiWhitelist;
 import com.tokopedia.cacheapi.domain.model.CacheApiWhiteListDomain;
 
 import java.util.Collection;
+import java.util.List;
 
 import okhttp3.Response;
 import rx.Observable;
@@ -16,8 +17,6 @@ import rx.Observable;
 
 public interface CacheApiRepository {
 
-    Observable<CacheApiWhitelist> getWhiteList(String host, String path);
-
     Observable<Boolean> isInWhiteList(String host, String path);
 
     /**
@@ -27,17 +26,9 @@ public interface CacheApiRepository {
      * @param domainList
      * @return
      */
-    Observable<Boolean> insertWhiteList(@Nullable Collection<CacheApiWhiteListDomain> domainList, String versionName);
+    Observable<Boolean> insertWhiteList(@Nullable List<CacheApiWhiteListDomain> domainList, String versionName);
 
-    /**
-     * bulk delete
-     * {"ws.tokopedia.com","/konyol/coba.pl", 10},{"lucu.female.com","towel/doeng.pl", 100}
-     *
-     * @return
-     */
-    Observable<Boolean> deleteWhiteList(String host, String path);
-
-    Observable<Boolean> updateResponse(Response response, int expiredTime);
+    Observable<Boolean> saveResponse(String host, String path, Response response);
 
     /**
      * Delete cached data
