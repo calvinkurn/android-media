@@ -37,5 +37,5 @@ public interface ICartListPresenter {
 
     Map<String, Object> generateCartDataAnalytics(CartItemData removedCartItem);
 
-    Map<String, Object> generateCartDataAnalytics(List<CartItemData> cartItemDataList)
+    Map<String, Object> generateCartDataAnalytics(List<CartItemData> cartItemDataList);
 }

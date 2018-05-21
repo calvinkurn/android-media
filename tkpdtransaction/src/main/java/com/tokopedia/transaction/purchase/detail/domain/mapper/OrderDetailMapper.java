@@ -173,14 +173,14 @@ public class OrderDetailMapper {
                     responseData.getDetail().getShipment().getInfo().getDriver().getLicenseNumber()
             );
             if (TextUtils.isEmpty(responseData
-                                    .getDetail()
-                                    .getShipment()
-                                    .getInfo().getDriver().getTrackingUrl())) {
-                    viewData.setLiveTrackingUrl(responseData.getDetail()
-                            .getShipment()
-                            .getInfo()
-                            .getDriver()
-                            .getTrackingUrl());
+                    .getDetail()
+                    .getShipment()
+                    .getInfo().getDriver().getTrackingUrl())) {
+                viewData.setLiveTrackingUrl(responseData.getDetail()
+                        .getShipment()
+                        .getInfo()
+                        .getDriver()
+                        .getTrackingUrl());
             } else viewData.setLiveTrackingUrl("");
         }
 

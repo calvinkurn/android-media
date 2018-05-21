@@ -125,8 +125,8 @@ public class DeeplinkHandlerActivity extends AppCompatActivity {
                 new GamificationApplinkModuleLoader(),
                 new ProfileApplinkModuleLoader(),
                 new KolApplinkModuleLoader(),
-                new CheckoutAppLinkModuleLoader(),
-                new TrackingAppLinkModuleLoader()
+                new TrackingAppLinkModuleLoader(),
+                new CheckoutAppLinkModuleLoader()
         );
     }
 
