@@ -56,20 +56,21 @@ public class ImagePagerAdapter extends PagerAdapter {
                     .dontAnimate()
                     .dontTransform()
                     .centerCrop()
-                    .diskCacheStrategy(DiskCacheStrategy.RESULT)
+                    .diskCacheStrategy(DiskCacheStrategy.SOURCE)
                     .thumbnail(
                             Glide.with(context.getApplicationContext())
                                     .load(urlTemporary)
                                     .dontAnimate()
                                     .dontTransform()
-                                    .fitCenter()
-                                    .diskCacheStrategy(DiskCacheStrategy.RESULT))
+                                    .centerCrop()
+                                    .diskCacheStrategy(DiskCacheStrategy.SOURCE))
                     .into(imageView);
 
         } else if (urlImage.equals(urlTemporary)) {
             Glide.with(context.getApplicationContext())
                     .load(urlTemporary)
                     .diskCacheStrategy(DiskCacheStrategy.SOURCE)
+                    .centerCrop()
                     .into(imageView);
         } else {
             ImageHandler.loadImageFit2(context, imageView, urlImage);

@@ -77,7 +77,7 @@ public class GridProductItemViewHolder extends AbstractViewHolder<ProductItem> {
             location.setVisibility(View.INVISIBLE);
 
         shopName.setText(MethodChecker.fromHtml(productItem.getShopName()));
-        ImageHandler.loadImageThumbs(context, productImage, productItem.getImageUrl());
+        ImageHandler.loadImageSourceSize(context, productImage, productItem.getImageUrl());
 
         wishlistButtonContainer.setVisibility(View.VISIBLE);
         wishlistButton.setBackgroundResource(R.drawable.ic_wishlist);

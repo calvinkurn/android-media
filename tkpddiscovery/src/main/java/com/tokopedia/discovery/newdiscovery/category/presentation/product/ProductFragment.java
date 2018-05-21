@@ -515,6 +515,7 @@ public class ProductFragment extends SearchSectionFragment
         data.setOriginalPrice(item.getOriginalPrice());
         data.setShop(item.getShopName());
         data.setShopLocation(item.getShopCity());
+        data.setOfficial(item.isOfficial());
 
         if (item.getLabelList() != null) {
             for (int i = 0; i < item.getLabelList().size(); i++) {
