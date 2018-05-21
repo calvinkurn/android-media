@@ -8,11 +8,6 @@
         android:layout_height="match_parent"
         android:clickable="true">
 
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="2dp"
-            android:background="@drawable/top_bar_shadow" />
-
         <LinearLayout
             android:orientation="horizontal"
             android:background="@color/white"
@@ -59,8 +54,14 @@
 
             <View
                 android:layout_width="match_parent"
-                android:layout_height="2dp"
-                android:background="@drawable/top_bar_shadow" />
+                android:layout_height="7dp"
+                android:background="@drawable/bottom_sheet_filter_top_bar_shadow" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="7dp"
+                android:background="@drawable/bottom_sheet_filter_bottom_bar_shadow"
+                android:layout_alignParentBottom="true"/>
 
         </RelativeLayout>
 
