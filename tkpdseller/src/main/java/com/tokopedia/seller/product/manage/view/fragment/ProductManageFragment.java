@@ -31,7 +31,7 @@ import com.tokopedia.core.customadapter.RetryDataBinder;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.product.model.share.ShareData;
 import com.tokopedia.core.router.productdetail.PdpRouter;
-import com.tokopedia.core.share.ShareActivity;
+import com.tokopedia.core.share.ShareBottomSheet;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.design.button.BottomActionView;
@@ -753,8 +753,7 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
                 .setType(ShareData.PRODUCT_TYPE)
                 .setId(productManageViewModel.getProductId())
                 .build();
-        Intent intent = ShareActivity.createIntent(getActivity(), shareData);
-        startActivity(intent);
+        ShareBottomSheet.show(getFragmentManager(), shareData);
     }
 
     private void showDialogChangeProductPrice(final String productId, String productPrice, @CurrencyTypeDef int productCurrencyId) {

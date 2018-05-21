@@ -29,6 +29,7 @@ import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.router.productdetail.ProductDetailRouter;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
 import com.tokopedia.core.share.ShareActivity;
+import com.tokopedia.core.share.ShareBottomSheet;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.webview.listener.DeepLinkWebViewHandleListener;
 import com.tokopedia.tkpdpdp.customview.YoutubeThumbnailViewHolder;
@@ -142,7 +143,29 @@ public class ProductInfoActivity extends BasePresenterNoLayoutActivity<ProductIn
 
     @Override
     protected void setViewListener() {
-        presenter.initialFragment(this, uriData, bundleData);
+        if (!share()) {
+            presenter.initialFragment(this, uriData, bundleData);
+        }
+    }
+
+    private boolean share() {
+
+        Bundle bundle = this.bundleData;
+        boolean isAddingProduct = bundle.getBoolean(ProductInfoActivity.IS_ADDING_PRODUCT);
+        ShareData shareData = bundle.getParcelable(ProductInfoActivity.SHARE_DATA);
+
+
+        if (shareData != null) {
+            if (isAddingProduct) {
+                navigateToActivity(ShareActivity.createIntent(this, shareData, isAddingProduct));
+            }
+            ShareBottomSheet.show(getSupportFragmentManager(), shareData);
+        } else {
+            return false;
+        }
+
+        closeView();
+        return true;
     }
 
     @Override
@@ -159,7 +182,7 @@ public class ProductInfoActivity extends BasePresenterNoLayoutActivity<ProductIn
     @Override
     public void shareProductInfo(@NonNull ShareData shareData) {
         presenter.processToShareProduct(this, shareData);
-        startActivity(ShareActivity.createIntent(ProductInfoActivity.this, shareData));
+        ShareBottomSheet.show(getSupportFragmentManager(), shareData);
     }
 
     @Override
