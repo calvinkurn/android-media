@@ -122,7 +122,8 @@ public class CartShipmentAddressFormDataConverter
     private CartItemModel convertFromProduct(Product product) {
         CartItemModel cartItemModel = new CartItemModel();
 
-        cartItemModel.setProcuctId(product.getProductId());
+        cartItemModel.setCartId(product.getCartId());
+        cartItemModel.setProductId(product.getProductId());
         cartItemModel.setName(product.getProductName());
         cartItemModel.setImageUrl(product.getProductImageSrc200Square());
         cartItemModel.setCurrency(product.getProductPriceCurrency());
@@ -242,33 +243,6 @@ public class CartShipmentAddressFormDataConverter
         }
 
         return cartSellerItemModels;
-    }
-
-    private CartItemModel convertCartItem(CartItemData cartItemData) {
-        CartItemModel cartItemModel = new CartItemModel();
-
-        cartItemModel.setFreeReturn(cartItemData.getOriginData().isFreeReturn());
-        cartItemModel.setPreOrder(cartItemData.getOriginData().isPreOrder());
-        cartItemModel.setCashback(cartItemData.getOriginData().isCashBack());
-        cartItemModel.setCashback(cartItemData.getOriginData().getCashBackInfo());
-
-        cartItemModel.setImageUrl(cartItemData.getOriginData().getProductImage());
-
-        cartItemModel.setShopName(cartItemData.getOriginData().getShopName());
-        cartItemModel.setShopId(cartItemData.getOriginData().getShopId());
-        cartItemModel.setProcuctId(Integer.parseInt(cartItemData.getOriginData().getProductId()));
-        cartItemModel.setName(cartItemData.getOriginData().getProductName());
-
-        cartItemModel.setCurrency(cartItemData.getOriginData().getPriceCurrency());
-        cartItemModel.setPrice(cartItemData.getOriginData().getPricePlan());
-
-        cartItemModel.setWeight(cartItemData.getOriginData().getWeightPlan());
-        cartItemModel.setWeightUnit(cartItemData.getOriginData().getWeightUnit());
-
-        cartItemModel.setNoteToSeller(cartItemData.getUpdatedData().getRemark());
-        cartItemModel.setQuantity(cartItemData.getUpdatedData().getQuantity());
-
-        return cartItemModel;
     }
 
     private Fobject levelUpParametersFromProductToCartSeller(List<CartItemModel> cartItemList) {

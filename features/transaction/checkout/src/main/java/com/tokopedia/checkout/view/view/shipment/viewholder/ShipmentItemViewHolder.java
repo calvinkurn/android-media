@@ -1,12 +1,17 @@
 package com.tokopedia.checkout.view.view.shipment.viewholder;
 
 import android.content.Context;
+import android.graphics.ColorMatrix;
+import android.graphics.ColorMatrixColorFilter;
 import android.support.design.widget.TextInputLayout;
+import android.support.v4.content.ContextCompat;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
@@ -16,33 +21,39 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.checkout.R;
 import com.tokopedia.checkout.domain.datamodel.addressoptions.RecipientAddressModel;
 import com.tokopedia.checkout.domain.datamodel.cartsingleshipment.CartItemModel;
 import com.tokopedia.checkout.domain.datamodel.shipmentrates.CourierItemData;
 import com.tokopedia.checkout.domain.datamodel.shipmentrates.ShipmentDetailData;
+import com.tokopedia.checkout.view.adapter.InnerProductListAdapter;
 import com.tokopedia.checkout.view.constants.InsuranceConstant;
 import com.tokopedia.checkout.view.view.shipment.ShipmentAdapter;
 import com.tokopedia.checkout.view.view.shipment.ShipmentAdapterActionListener;
 import com.tokopedia.checkout.view.view.shipment.viewmodel.ShipmentCartItemModel;
-import com.tokopedia.checkout.view.view.shipment.viewmodel.ShipmentMultipleAddressCartItemModel;
-import com.tokopedia.checkout.view.view.shipment.viewmodel.ShipmentSingleAddressCartItemModel;
 import com.tokopedia.design.bottomsheet.BottomSheetView;
 import com.tokopedia.design.pickuppoint.PickupPointLayout;
 import com.tokopedia.design.utils.CurrencyFormatUtil;
+import com.tokopedia.showcase.ShowCaseContentPosition;
 import com.tokopedia.showcase.ShowCaseObject;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author Irfan Khoirul on 23/04/18.
  */
 
-public abstract class ShipmentItemViewHolder extends RecyclerView.ViewHolder {
+public class ShipmentItemViewHolder extends RecyclerView.ViewHolder {
 
-    protected static final int IMAGE_ALPHA_DISABLED = 128;
-    protected static final int IMAGE_ALPHA_ENABLED = 255;
+    public static final int ITEM_VIEW_SHIPMENT_SINGLE_ADDRESS = R.layout.item_shipment;
+
+    private static final int FIRST_ELEMENT = 0;
+
+    private  static final int IMAGE_ALPHA_DISABLED = 128;
+    private  static final int IMAGE_ALPHA_ENABLED = 255;
 
     private static final int GRAM = 0;
     private static final int KILOGRAM = 1;
@@ -51,76 +62,76 @@ public abstract class ShipmentItemViewHolder extends RecyclerView.ViewHolder {
     private static final int DROPSHIPPER_MIN_NAME_LENGTH = 3;
     private static final int DROPSHIPPER_MIN_PHONE_LENGTH = 6;
 
-    protected ShipmentAdapterActionListener mActionListener;
+    private  ShipmentAdapterActionListener mActionListener;
     private ShipmentAdapter shipmentAdapter;
 
-    TextView tvError;
-    FrameLayout layoutError;
-    TextView tvWarning;
-    FrameLayout layoutWarning;
-    TextView tvTextSentBy;
-    TextView tvShopName;
-    ImageView imgShippingWarning;
-    TextView tvShippingWarning;
-    LinearLayout llShippingWarningContainer;
-    ImageView ivProductImage;
-    TextView tvProductName;
-    TextView tvProductPrice;
-    ImageView ivFreeReturnIcon;
-    TextView tvFreeReturnLabel;
-    TextView tvPreOrder;
-    TextView tvCashback;
-    LinearLayout llProductPoliciesLayout;
-    TextView tvItemCountAndWeight;
-    TextView tvNoteToSellerLabel;
-    TextView tvOptionalNoteToSeller;
-    LinearLayout llOptionalNoteToSellerLayout;
-    LinearLayout llItemProductContainer;
-    TextView tvAddressName;
-    TextView tvAddressStatus;
-    LinearLayout llAddressName;
-    TextView tvRecipientName;
-    TextView tvRecipientAddress;
-    TextView tvRecipientPhone;
-    TextView tvChangeAddress;
-    LinearLayout addressLayout;
-    PickupPointLayout pickupPointLayout;
-    RecyclerView rvCartItem;
-    TextView tvExpandOtherProduct;
-    RelativeLayout rlExpandOtherProduct;
-    TextView tvTextShipment;
-    TextView chooseCourierButton;
-    LinearLayout llShipmentOptionViewLayout;
-    TextView tvCartSubTotal;
-    ImageView ivDetailOptionChevron;
-    TextView tvSubTotalPrice;
-    TextView tvShipmentOption;
-    RelativeLayout rlCartSubTotal;
-    TextView tvTotalItem;
-    TextView tvTotalItemPrice;
-    TextView tvShippingFee;
-    TextView tvShippingFeePrice;
-    TextView tvInsuranceFee;
-    TextView tvInsuranceFeePrice;
-    TextView tvPromoText;
-    TextView tvPromoPrice;
-    RelativeLayout rlShipmentCost;
-    LinearLayout llSelectedCourier;
-    TextView tvCourierName;
-    TextView tvCourierPrice;
-    TextView tvChangeCourier;
-    LinearLayout llInsurance;
-    CheckBox cbInsurance;
-    ImageView imgInsuranceInfo;
-    LinearLayout llDropshipper;
-    CheckBox cbDropshipper;
-    ImageView imgDropshipperInfo;
-    LinearLayout llDropshipperInfo;
-    EditText etShipperName;
-    EditText etShipperPhone;
-    TextInputLayout textInputLayoutShipperName;
-    TextInputLayout textInputLayoutShipperPhone;
-    View vSeparatorMultipleProductSameStore;
+    private TextView tvError;
+    private FrameLayout layoutError;
+    private TextView tvWarning;
+    private FrameLayout layoutWarning;
+    private TextView tvTextSentBy;
+    private TextView tvShopName;
+    private ImageView imgShippingWarning;
+    private TextView tvShippingWarning;
+    private LinearLayout llShippingWarningContainer;
+    private ImageView ivProductImage;
+    private TextView tvProductName;
+    private TextView tvProductPrice;
+    private ImageView ivFreeReturnIcon;
+    private TextView tvFreeReturnLabel;
+    private TextView tvPreOrder;
+    private TextView tvCashback;
+    private LinearLayout llProductPoliciesLayout;
+    private TextView tvItemCountAndWeight;
+    private TextView tvNoteToSellerLabel;
+    private TextView tvOptionalNoteToSeller;
+    private LinearLayout llOptionalNoteToSellerLayout;
+    private LinearLayout llItemProductContainer;
+    private TextView tvAddressName;
+    private TextView tvAddressStatus;
+    private LinearLayout llAddressName;
+    private TextView tvRecipientName;
+    private TextView tvRecipientAddress;
+    private TextView tvRecipientPhone;
+    private TextView tvChangeAddress;
+    private LinearLayout addressLayout;
+    private PickupPointLayout pickupPointLayout;
+    private RecyclerView rvCartItem;
+    private TextView tvExpandOtherProduct;
+    private RelativeLayout rlExpandOtherProduct;
+    private TextView tvTextShipment;
+    private TextView chooseCourierButton;
+    private LinearLayout llShipmentOptionViewLayout;
+    private TextView tvCartSubTotal;
+    private ImageView ivDetailOptionChevron;
+    private TextView tvSubTotalPrice;
+    private TextView tvShipmentOption;
+    private RelativeLayout rlCartSubTotal;
+    private TextView tvTotalItem;
+    private TextView tvTotalItemPrice;
+    private TextView tvShippingFee;
+    private TextView tvShippingFeePrice;
+    private TextView tvInsuranceFee;
+    private TextView tvInsuranceFeePrice;
+    private TextView tvPromoText;
+    private TextView tvPromoPrice;
+    private RelativeLayout rlShipmentCost;
+    private LinearLayout llSelectedCourier;
+    private TextView tvCourierName;
+    private TextView tvCourierPrice;
+    private TextView tvChangeCourier;
+    private LinearLayout llInsurance;
+    private CheckBox cbInsurance;
+    private ImageView imgInsuranceInfo;
+    private LinearLayout llDropshipper;
+    private CheckBox cbDropshipper;
+    private ImageView imgDropshipperInfo;
+    private LinearLayout llDropshipperInfo;
+    private EditText etShipperName;
+    private EditText etShipperPhone;
+    private TextInputLayout textInputLayoutShipperName;
+    private TextInputLayout textInputLayoutShipperPhone;
+    private View vSeparatorMultipleProductSameStore;
 
     public ShipmentItemViewHolder(View itemView) {
         super(itemView);
@@ -216,16 +227,71 @@ public abstract class ShipmentItemViewHolder extends RecyclerView.ViewHolder {
         bottomSheetView.show();
     }
 
-    protected void bindViewHolder(ShipmentCartItemModel shipmentCartItemModel,
-                                  RecipientAddressModel recipientAddressModel,
-                                  ArrayList<ShowCaseObject> showCaseObjectList) {
+    public void bindViewHolder(ShipmentCartItemModel shipmentCartItemModel,
+                               RecipientAddressModel recipientAddressModel,
+                               ArrayList<ShowCaseObject> showCaseObjectList) {
         tvShopName.setText(shipmentCartItemModel.getShopName());
+        renderAddress(shipmentCartItemModel.getRecipientAddressModel());
         renderCourier(shipmentCartItemModel, shipmentCartItemModel.getSelectedShipmentDetailData(), recipientAddressModel);
         renderError(shipmentCartItemModel);
         renderWarnings(shipmentCartItemModel);
         renderInsurance(shipmentCartItemModel);
         renderDropshipper(shipmentCartItemModel);
         renderCostDetail(shipmentCartItemModel);
+
+        ShipmentCartItemModel shipmentSingleAddressItem = (ShipmentCartItemModel) shipmentCartItemModel;
+        List<CartItemModel> cartItemModelList = new ArrayList<>(shipmentSingleAddressItem.getCartItemModels());
+        renderFirstCartItem(cartItemModelList.remove(FIRST_ELEMENT));
+        if (shipmentSingleAddressItem.getCartItemModels() != null && shipmentSingleAddressItem.getCartItemModels().size() > 1) {
+            rlExpandOtherProduct.setVisibility(View.VISIBLE);
+            renderOtherCartItems(shipmentSingleAddressItem, cartItemModelList);
+        } else {
+            rlExpandOtherProduct.setVisibility(View.GONE);
+            vSeparatorMultipleProductSameStore.setVisibility(View.GONE);
+        }
+
+        setShowCase(llShipmentOptionViewLayout, showCaseObjectList);
+
+    }
+
+    private void renderFirstCartItem(CartItemModel cartItemModel) {
+        ImageHandler.LoadImage(ivProductImage, cartItemModel.getImageUrl());
+        tvProductName.setText(cartItemModel.getName());
+        tvProductPrice.setText(CurrencyFormatUtil.convertPriceValueToIdrFormat(
+                (int) cartItemModel.getPrice(), true));
+        tvItemCountAndWeight.setText(String.format(tvItemCountAndWeight.getContext()
+                        .getString(R.string.iotem_count_and_weight_format),
+                String.valueOf(cartItemModel.getQuantity()),
+                getFormattedWeight(tvItemCountAndWeight.getContext(),
+                        cartItemModel.getWeight() * cartItemModel.getQuantity())));
+
+        boolean isEmptyNotes = TextUtils.isEmpty(cartItemModel.getNoteToSeller());
+        llOptionalNoteToSellerLayout.setVisibility(isEmptyNotes ? View.GONE : View.VISIBLE);
+        tvOptionalNoteToSeller.setText(cartItemModel.getNoteToSeller());
+
+        llProductPoliciesLayout.setVisibility(View.GONE);
+        ivFreeReturnIcon.setVisibility(cartItemModel.isFreeReturn() ? View.VISIBLE : View.GONE);
+        tvFreeReturnLabel.setVisibility(cartItemModel.isFreeReturn() ? View.VISIBLE : View.GONE);
+        tvPreOrder.setVisibility(cartItemModel.isPreOrder() ? View.VISIBLE : View.GONE);
+        tvCashback.setVisibility(cartItemModel.isCashback() ? View.VISIBLE : View.GONE);
+        String cashback = tvCashback.getContext().getString(R.string.label_cashback) + " " + cartItemModel.getCashback();
+        tvCashback.setText(cashback);
+    }
+
+    private void renderOtherCartItems(ShipmentCartItemModel shipmentItem, List<CartItemModel> cartItemModels) {
+        rlExpandOtherProduct.setOnClickListener(showAllProductListener(shipmentItem));
+        tvExpandOtherProduct.setOnClickListener(showAllProductListener(shipmentItem));
+        initInnerRecyclerView(cartItemModels);
+        if (shipmentItem.isStateAllItemViewExpanded()) {
+            rvCartItem.setVisibility(View.VISIBLE);
+            vSeparatorMultipleProductSameStore.setVisibility(View.GONE);
+            tvExpandOtherProduct.setText(R.string.label_hide_other_item);
+        } else {
+            rvCartItem.setVisibility(View.GONE);
+            vSeparatorMultipleProductSameStore.setVisibility(View.GONE);
+            tvExpandOtherProduct.setText(String.format(tvExpandOtherProduct.getContext().getString(R.string.label_other_item_count_format),
+                    String.valueOf(cartItemModels.size())));
+        }
     }
 
     protected void renderCourier(ShipmentCartItemModel shipmentCartItemModel, final ShipmentDetailData shipmentDetailData,
@@ -286,31 +352,20 @@ public abstract class ShipmentItemViewHolder extends RecyclerView.ViewHolder {
             }
             additionalPrice = shipmentCartItemModel.getSelectedShipmentDetailData()
                     .getSelectedCourier().getAdditionalPrice();
-            if (shipmentCartItemModel instanceof ShipmentSingleAddressCartItemModel) {
-                for (CartItemModel cartItemModel : ((ShipmentSingleAddressCartItemModel) shipmentCartItemModel).getCartItemModels()) {
+            if (shipmentCartItemModel instanceof ShipmentCartItemModel) {
+                for (CartItemModel cartItemModel : ((ShipmentCartItemModel) shipmentCartItemModel).getCartItemModels()) {
                     totalItemPrice += (cartItemModel.getQuantity() * cartItemModel.getPrice());
                     totalItem += cartItemModel.getQuantity();
                     totalWeight += cartItemModel.getWeight();
                 }
-            } else if (shipmentCartItemModel instanceof ShipmentMultipleAddressCartItemModel) {
-                ShipmentMultipleAddressCartItemModel shipmentMultipleAddressItem = (ShipmentMultipleAddressCartItemModel) shipmentCartItemModel;
-                int productQuantity = Integer.parseInt(shipmentMultipleAddressItem.getMultipleAddressItemData().getProductQty());
-                totalItemPrice = shipmentMultipleAddressItem.getProductPriceNumber() * productQuantity;
-                totalItem = productQuantity;
-                totalWeight = ((ShipmentMultipleAddressCartItemModel) shipmentCartItemModel).getMultipleAddressItemData().getProductRawWeight();
             }
             totalItemLabel = String.format(tvTotalItem.getContext().getString(R.string.label_item_count_with_format), totalItem);
             subTotalPrice += (totalItemPrice + shippingPrice + insurancePrice + additionalPrice);
         } else {
-            if (shipmentCartItemModel instanceof ShipmentSingleAddressCartItemModel) {
-                for (CartItemModel cartItemModel : ((ShipmentSingleAddressCartItemModel) shipmentCartItemModel).getCartItemModels()) {
+            if (shipmentCartItemModel instanceof ShipmentCartItemModel) {
+                for (CartItemModel cartItemModel : ((ShipmentCartItemModel) shipmentCartItemModel).getCartItemModels()) {
                     totalItemPrice += (cartItemModel.getQuantity() * cartItemModel.getPrice());
                 }
-                subTotalPrice = totalItemPrice;
-            } else if (shipmentCartItemModel instanceof ShipmentMultipleAddressCartItemModel) {
-                ShipmentMultipleAddressCartItemModel shipmentMultipleAddressItem = (ShipmentMultipleAddressCartItemModel) shipmentCartItemModel;
-                int productQuantity = Integer.parseInt(shipmentMultipleAddressItem.getMultipleAddressItemData().getProductQty());
-                totalItemPrice = shipmentMultipleAddressItem.getProductPriceNumber() * productQuantity;
                 subTotalPrice = totalItemPrice;
             }
         }
@@ -483,6 +538,23 @@ public abstract class ShipmentItemViewHolder extends RecyclerView.ViewHolder {
         }
     }
 
+    private void renderAddress(RecipientAddressModel recipientAddressModel) {
+        if (recipientAddressModel != null) {
+            String fullAddress = recipientAddressModel.getAddressStreet()
+                    + ", " + recipientAddressModel.getAddressCityName()
+                    + ", " + recipientAddressModel.getAddressProvinceName()
+                    + ", " + recipientAddressModel.getRecipientPhoneNumber();
+            tvAddressName.setText(recipientAddressModel.getAddressName());
+            tvRecipientName.setText(recipientAddressModel.getRecipientName());
+            tvRecipientAddress.setText(fullAddress);
+            tvRecipientPhone.setText(recipientAddressModel.getRecipientPhoneNumber());
+            tvChangeAddress.setVisibility(View.GONE);
+            addressLayout.setVisibility(View.VISIBLE);
+        } else {
+            addressLayout.setVisibility(View.GONE);
+        }
+    }
+
     private void renderError(ShipmentCartItemModel shipmentCartItemModel) {
         if (shipmentCartItemModel.isError()) {
             tvError.setText(shipmentCartItemModel.getErrorMessage());
@@ -565,6 +637,82 @@ public abstract class ShipmentItemViewHolder extends RecyclerView.ViewHolder {
                 mActionListener.onChooseShipment(position, shipmentCartItemModel, recipientAddressModel);
             }
         };
+    }
+
+    private void initInnerRecyclerView(List<CartItemModel> cartItemList) {
+        rvCartItem.setHasFixedSize(true);
+        LinearLayoutManager layoutManager = new LinearLayoutManager(rvCartItem.getContext());
+        layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
+        rvCartItem.setLayoutManager(layoutManager);
+
+        InnerProductListAdapter innerProductListAdapter =
+                new InnerProductListAdapter(cartItemList);
+        rvCartItem.setAdapter(innerProductListAdapter);
+    }
+
+    private View.OnClickListener showAllProductListener(final ShipmentCartItemModel shipmentCartItemModel) {
+        return new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                shipmentCartItemModel.setStateAllItemViewExpanded(!shipmentCartItemModel.isStateAllItemViewExpanded());
+                mActionListener.onNeedUpdateViewItem(getAdapterPosition());
+            }
+        };
+    }
+
+    private void setShowCase(ViewGroup viewGroup, ArrayList<ShowCaseObject> showCaseObjectList) {
+        showCaseObjectList.add(new ShowCaseObject(viewGroup,
+                viewGroup.getContext().getString(R.string.label_title_showcase_shipment),
+                viewGroup.getContext().getString(R.string.label_message_showcase_shipment),
+                ShowCaseContentPosition.UNDEFINED)
+        );
+    }
+
+    private void showShipmentWarning(String message) {
+        imgShippingWarning.setImageResource(R.drawable.ic_warning_red);
+        tvShippingWarning.setText(message);
+        llShippingWarningContainer.setVisibility(View.VISIBLE);
+        disableItemView();
+    }
+
+    private void hideShipmentWarning() {
+        llShippingWarningContainer.setVisibility(View.GONE);
+        enableItemView();
+    }
+
+    private void disableItemView() {
+        tvProductName.setTextColor(ContextCompat.getColor(tvProductName.getContext(), R.color.grey_nonactive_text));
+        tvProductPrice.setTextColor(ContextCompat.getColor(tvProductPrice.getContext(), R.color.grey_nonactive_text));
+        tvFreeReturnLabel.setTextColor(ContextCompat.getColor(tvFreeReturnLabel.getContext(), R.color.grey_nonactive_text));
+        tvPreOrder.setTextColor(ContextCompat.getColor(tvPreOrder.getContext(), R.color.grey_nonactive_text));
+        tvNoteToSellerLabel.setTextColor(ContextCompat.getColor(tvNoteToSellerLabel.getContext(), R.color.grey_nonactive_text));
+        tvOptionalNoteToSeller.setTextColor(ContextCompat.getColor(tvOptionalNoteToSeller.getContext(), R.color.grey_nonactive_text));
+        tvCashback.setBackgroundColor(ContextCompat.getColor(tvCashback.getContext(), R.color.grey_nonactive_text));
+        setImageFilterGrayScale();
+    }
+
+    private void setImageFilterGrayScale() {
+        ColorMatrix matrix = new ColorMatrix();
+        matrix.setSaturation(0);
+        ColorMatrixColorFilter cf = new ColorMatrixColorFilter(matrix);
+        ivProductImage.setColorFilter(cf);
+        ivProductImage.setImageAlpha(IMAGE_ALPHA_DISABLED);
+    }
+
+    private void enableItemView() {
+        tvProductName.setTextColor(ContextCompat.getColor(tvProductName.getContext(), R.color.black_70));
+        tvProductPrice.setTextColor(ContextCompat.getColor(tvProductPrice.getContext(), R.color.orange_red));
+        tvFreeReturnLabel.setTextColor(ContextCompat.getColor(tvFreeReturnLabel.getContext(), R.color.font_black_secondary_54));
+        tvPreOrder.setTextColor(ContextCompat.getColor(tvPreOrder.getContext(), R.color.font_black_secondary_54));
+        tvNoteToSellerLabel.setTextColor(ContextCompat.getColor(tvNoteToSellerLabel.getContext(), R.color.black_38));
+        tvOptionalNoteToSeller.setTextColor(ContextCompat.getColor(tvOptionalNoteToSeller.getContext(), R.color.black_70));
+        tvCashback.setBackground(ContextCompat.getDrawable(tvCashback.getContext(), R.drawable.bg_cashback));
+        setImageFilterNormal();
+    }
+
+    private void setImageFilterNormal() {
+        ivProductImage.setColorFilter(null);
+        ivProductImage.setImageAlpha(IMAGE_ALPHA_ENABLED);
     }
 
 }

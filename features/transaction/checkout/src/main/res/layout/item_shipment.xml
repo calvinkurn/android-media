@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:background="@drawable/bg_shadow"
     android:orientation="vertical">
 
     <include layout="@layout/layout_item_warning_and_error" />
@@ -46,6 +47,12 @@
 
     <include layout="@layout/item_cart_product" />
 
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/rv_cart_item"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="gone" />
+
     <LinearLayout
         android:id="@+id/address_layout"
         android:layout_width="match_parent"
@@ -77,12 +84,6 @@
         android:paddingBottom="@dimen/padding_med"
         android:paddingLeft="@dimen/padding_med"
         android:paddingRight="@dimen/padding_med"
-        android:visibility="gone" />
-
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/rv_cart_item"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
         android:visibility="gone" />
 
     <View

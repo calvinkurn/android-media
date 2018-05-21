@@ -550,6 +550,9 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                 shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourier() != null) {
             shipmentDetailData = shipmentCartItemModel.getSelectedShipmentDetailData();
         } else {
+            if (recipientAddressModel == null) {
+                recipientAddressModel = shipmentCartItemModel.getRecipientAddressModel();
+            }
             shipmentDetailData = ratesDataConverter.getShipmentDetailData(shipmentCartItemModel,
                     recipientAddressModel);
         }

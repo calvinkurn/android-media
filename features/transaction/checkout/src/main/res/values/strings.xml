@@ -134,5 +134,7 @@
     <string name="label_weight_format" formatted="false">%s %s</string>
     <string name="label_change_address_failed">Gagal mengubah alamat</string>
     <string name="label_change_address_success">Berhasil mengubah alamat</string>
+    <string name="label_title_showcase_shipment">Pilih Kurir Pengiriman</string>
+    <string name="label_message_showcase_shipment">Gunakan layanan jasa pengiriman yang didukung oleh toko ini.</string>
 
 </resources>

@@ -7,7 +7,6 @@ import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.abstraction.common.utils.TKPDMapParam;
 import com.tokopedia.abstraction.common.utils.network.AuthUtil;
 import com.tokopedia.checkout.R;
-import com.tokopedia.checkout.domain.datamodel.MultipleAddressItemData;
 import com.tokopedia.checkout.domain.datamodel.addressoptions.RecipientAddressModel;
 import com.tokopedia.checkout.domain.datamodel.cartcheckout.CheckoutData;
 import com.tokopedia.checkout.domain.datamodel.cartlist.CartPromoSuggestion;
@@ -28,7 +27,6 @@ import com.tokopedia.checkout.domain.usecase.GetShipmentAddressFormUseCase;
 import com.tokopedia.checkout.domain.usecase.GetThanksToppayUseCase;
 import com.tokopedia.checkout.view.view.shipment.viewmodel.ShipmentCartItemModel;
 import com.tokopedia.checkout.view.view.shipment.viewmodel.ShipmentCheckoutButtonModel;
-import com.tokopedia.checkout.view.view.shipment.viewmodel.ShipmentMultipleAddressCartItemModel;
 import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.router.transactionmodule.sharedata.CheckPromoCodeCartListResult;
 import com.tokopedia.core.router.transactionmodule.sharedata.CheckPromoCodeCartShipmentRequest;
@@ -518,22 +516,16 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         String receiverName = null;
         String receiverPhone = null;
 
-        if (shipmentCartItemModel != null && shipmentCartItemModel instanceof ShipmentMultipleAddressCartItemModel) {
-            MultipleAddressItemData multipleAddressItemData =
-                    ((ShipmentMultipleAddressCartItemModel) shipmentCartItemModel).getMultipleAddressItemData();
-            if (multipleAddressItemData != null) {
-                addressId = multipleAddressItemData.getAddressId();
-                addressName = multipleAddressItemData.getAddressTitle();
-                addressStreet = multipleAddressItemData.getAddressStreet();
-                postalCode = multipleAddressItemData.getAddressPostalCode();
-                districtId = multipleAddressItemData.getDestinationDistrictId();
-                cityId = multipleAddressItemData.getCityId();
-                provinceId = multipleAddressItemData.getProvinceId();
-                latitude = addressLatitude;
-                longitude = addressLongitude;
-                receiverName = multipleAddressItemData.getAddressReceiverName();
-                receiverPhone = multipleAddressItemData.getRecipientPhoneNumber();
-            }
+        if (shipmentCartItemModel != null) {
+            addressId = shipmentCartItemModel.getRecipientAddressModel().getId();
+            addressName = shipmentCartItemModel.getRecipientAddressModel().getAddressName();
+            addressStreet = shipmentCartItemModel.getRecipientAddressModel().getAddressStreet();
+            postalCode = shipmentCartItemModel.getRecipientAddressModel().getAddressPostalCode();
+            districtId = shipmentCartItemModel.getRecipientAddressModel().getDestinationDistrictId();
+            cityId = shipmentCartItemModel.getRecipientAddressModel().getCityId();
+            provinceId = shipmentCartItemModel.getRecipientAddressModel().getProvinceId();
+            receiverName = shipmentCartItemModel.getRecipientAddressModel().getRecipientName();
+            receiverPhone = shipmentCartItemModel.getRecipientAddressModel().getRecipientPhoneNumber();
         } else {
             addressId = recipientAddressModel.getId();
             addressName = recipientAddressModel.getAddressName();
@@ -542,11 +534,11 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
             districtId = recipientAddressModel.getDestinationDistrictId();
             cityId = recipientAddressModel.getCityId();
             provinceId = recipientAddressModel.getProvinceId();
-            latitude = addressLatitude;
-            longitude = addressLongitude;
             receiverName = recipientAddressModel.getRecipientName();
             receiverPhone = recipientAddressModel.getRecipientPhoneNumber();
         }
+        latitude = addressLatitude;
+        longitude = addressLongitude;
 
         params.put(EditAddressUseCase.Params.ADDRESS_ID, addressId);
         params.put(EditAddressUseCase.Params.ADDRESS_NAME, addressName);
