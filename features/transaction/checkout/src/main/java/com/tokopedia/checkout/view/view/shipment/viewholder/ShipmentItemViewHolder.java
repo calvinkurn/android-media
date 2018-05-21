@@ -416,6 +416,7 @@ public abstract class ShipmentItemViewHolder extends RecyclerView.ViewHolder {
             etShipperName.setText("");
             etShipperPhone.setText("");
             llDropshipper.setVisibility(View.GONE);
+            llDropshipperInfo.setVisibility(View.GONE);
         }
     }
 
