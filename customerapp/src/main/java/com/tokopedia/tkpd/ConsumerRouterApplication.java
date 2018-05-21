@@ -1145,12 +1145,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         } else {
             actionApplink(activity, appLinkScheme);
         }
-
-    }
-
-    @Override
-    public Observable<Boolean> setCashBack(String productId, int cashback) {
-        return Observable.just(false);
     }
 
     @Override

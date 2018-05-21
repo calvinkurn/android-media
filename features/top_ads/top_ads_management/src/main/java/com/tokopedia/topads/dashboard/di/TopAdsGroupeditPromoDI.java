@@ -20,7 +20,7 @@ import com.tokopedia.topads.dashboard.data.repository.TopAdsGroupAdsRepositoryIm
 import com.tokopedia.topads.dashboard.data.repository.TopAdsProductAdsRepositoryImpl;
 import com.tokopedia.topads.dashboard.data.repository.TopAdsShopAdsRepositoryImpl;
 import com.tokopedia.topads.dashboard.data.source.cloud.apiservice.TopAdsManagementService;
-import com.tokopedia.topads.dashboard.data.source.cloud.apiservice.api.TopAdsManagementApi;
+import com.tokopedia.topads.dashboard.data.source.cloud.apiservice.api.TopAdsOldManagementApi;
 import com.tokopedia.topads.dashboard.domain.TopAdsGroupAdsRepository;
 import com.tokopedia.topads.dashboard.domain.TopAdsProductAdsRepository;
 import com.tokopedia.topads.dashboard.domain.TopAdsShopAdsRepository;
@@ -45,7 +45,7 @@ public class TopAdsGroupeditPromoDI {
         UIThread postExecutionThread = new UIThread();
 
         TopAdsManagementService topAdsManagementService = new TopAdsManagementService(new SessionHandler(context));
-        TopAdsManagementApi topAdsManagementApi = topAdsManagementService.getApi();
+        TopAdsOldManagementApi topAdsManagementApi = topAdsManagementService.getApi();
 
         TopAdsSearchGroupMapper topAdsSearchGroupMapper = new TopAdsSearchGroupMapper();
         TopAdsDetailGroupMapper topAdsDetailGroupMapper = new TopAdsDetailGroupMapper();

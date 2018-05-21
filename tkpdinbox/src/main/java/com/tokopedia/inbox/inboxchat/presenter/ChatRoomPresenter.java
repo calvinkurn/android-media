@@ -171,6 +171,8 @@ public class ChatRoomPresenter extends BaseDaggerPresenter<ChatRoomContract.View
     }
 
     public void createWebSocket() {
+        if(!isViewAttached())
+            return;
         Request request = new Request.Builder().url(magicString)
                 .header("Origin", TkpdBaseURL.WEB_DOMAIN)
                 .header("Accounts-Authorization",
