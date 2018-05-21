@@ -142,6 +142,12 @@ public class ProductPriceViewHolder extends ProductViewHolder{
             }
         });
 
+        if (getPriceValue() == 0) {
+            wholesaleLabelView.setVisibility(View.GONE);
+        } else {
+            wholesaleLabelView.setVisibility(View.VISIBLE);
+        }
+
         minimumOrderCounterInputView.addTextChangedListener(new AfterTextWatcher() {
             @Override
             public void afterTextChanged(Editable editable) {
