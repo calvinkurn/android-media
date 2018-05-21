@@ -360,7 +360,7 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
             }
         });
         View view = createContentView(pinnedMessage);
-        dialog.setContentView(view);
+        dialog.setContentView(view, "Pinned Chat");
         view.setOnClickListener(null);
         dialog.show();
     }
