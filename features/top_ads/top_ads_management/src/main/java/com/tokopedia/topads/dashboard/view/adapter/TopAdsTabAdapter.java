@@ -45,7 +45,7 @@ public class TopAdsTabAdapter extends RecyclerView.Adapter<TabLayoutViewHolder>{
             tabMenus.add(new TabMenu(context.getString(R.string.top_ads_tooltip_statistic_use, summary.getGrossProfitFmt()), subtitles[3]));
             tabMenus.add(new TabMenu(summary.getCtrPercentageFmt(), subtitles[4]));
             tabMenus.add(new TabMenu(summary.getConversionSumFmt(), subtitles[5]));
-            tabMenus.add(new TabMenu(summary.getCostAvgFmt(), subtitles[6]));
+            tabMenus.add(new TabMenu(context.getString(R.string.top_ads_tooltip_statistic_use, summary.getCostAvgFmt()), subtitles[6]));
             tabMenus.add(new TabMenu(summary.getSoldSumFmt(), subtitles[7]));
         }
         notifyDataSetChanged();
