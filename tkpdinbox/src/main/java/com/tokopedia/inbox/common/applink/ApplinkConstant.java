@@ -6,6 +6,7 @@ package com.tokopedia.inbox.common.applink;
 
 public class ApplinkConstant {
 
+    public static final String TOPCHAT = "tokopedia://topchat/";
     public static final String GROUPCHAT_LIST = "tokopedia://groupchat";
 
 }
