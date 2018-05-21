@@ -275,7 +275,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         OtpRouter, IPaymentModuleRouter, TransactionRouter, IReactNativeRouter, ReactApplication,
         TkpdInboxRouter, IWalletRouter, LoyaltyRouter, ReputationRouter, SessionRouter,
         AbstractionRouter, FlightModuleRouter, LogisticRouter, FeedModuleRouter, IHomeRouter,
-        DiscoveryRouter, RideModuleRouter, DigitalModuleRouter, TokoCashRouter,
+        DiscoveryRouter, DigitalModuleRouter, TokoCashRouter,
         KolRouter, GroupChatModuleRouter, ApplinkRouter, ShopModuleRouter,
         LoyaltyModuleRouter, GamificationRouter, ProfileModuleRouter, ReactNativeRouter {
 
