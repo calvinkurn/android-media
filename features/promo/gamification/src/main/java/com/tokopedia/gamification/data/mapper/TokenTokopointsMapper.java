@@ -78,6 +78,9 @@ public class TokenTokopointsMapper implements Func1<TokenDataEntity, TokenData> 
                     tokenEmptyState.setButtonText(tokenDataEntity.getHome().getEmptyState().getButtonText());
                     tokenEmptyState.setButtonApplink(tokenDataEntity.getHome().getEmptyState().getButtonApplink());
                     tokenEmptyState.setButtonURL(tokenDataEntity.getHome().getEmptyState().getButtonURL());
+                    tokenEmptyState.setImageUrl(tokenDataEntity.getHome().getEmptyState().getImageUrl());
+                    tokenEmptyState.setBackgroundImgUrl(tokenDataEntity.getHome().getEmptyState().getBackgroundImgUrl());
+                    tokenEmptyState.setVersion(tokenDataEntity.getHome().getEmptyState().getVersion());
                     tokenHome.setTokenEmptyState(tokenEmptyState);
                 }
 

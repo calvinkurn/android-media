@@ -38,4 +38,11 @@ public class AttachInvoicePresenter implements AttachInvoiceContract.Presenter {
     public void attachActivityContract(AttachInvoiceContract.Activity activityContract) {
         this.activity = activityContract;
     }
+
+    @Override
+    public void detachView() {
+        if(useCase != null) useCase.unsubscribe();
+        if(view != null) view = null;
+        if(activity != null) activity = null;
+    }
 }

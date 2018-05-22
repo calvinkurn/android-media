@@ -47,6 +47,7 @@ public class TkpdBaseURL {
     public static String BASE_ACTION = BASE_DOMAIN + "v4/action/";
     public static String DIGITAL_API_DOMAIN = "https://pulsa-api.tokopedia.com/";
     public static String DIGITAL_WEBSITE_DOMAIN = "https://pulsa.tokopedia.com/";
+    public static String TRAIN_WEBSITE_DOMAIN = "https://tiket.tokopedia.com/kereta-api/";
     public static String RIDE_DOMAIN = "https://ride.tokopedia.com/";
     public static String BASE_ORDER_APP = "https://orderapp.tokopedia.local/";
     public static String TOKO_CASH_DOMAIN = "https://www.tokocash.com";
@@ -592,6 +593,7 @@ public class TkpdBaseURL {
         public static final String PATH_DELETE_SEARCH = "/universe/v1?device=android&source=searchbar";
 
         public static final String PATH_SEARCH_PRODUCT = "search/product/v3";
+        public static final String PATH_IMAGE_SEARCH = "search/imagesearch/";
         public static final String PATH_GET_ATTRIBUTE = "search/product/attributes/v3";
         public static final String PATH_GET_DYNAMIC_ATTRIBUTE = "v2/dynamic_attributes";
         public static final String PATH_BROWSE_CATALOG = "search/v2.1/catalog";
@@ -775,6 +777,11 @@ public class TkpdBaseURL {
         public static final String PATH_PRODUCT_LIST = "products/";
         public static final String PATH_SUBSCRIPTIONS = "subscribe/";
         public static final String PATH_FAVORITE_NUMBER = "favorite-list/";
+        public static final String PARAM_DIGITAL_ISPULSA = "?ispulsa=1";
+    }
+
+    public static class TrainWebsite {
+        public static final String PATH_USER_BOOKING_LIST = "user/bookings/";
     }
 
     public static class HadesCategory {
@@ -863,7 +870,8 @@ public class TkpdBaseURL {
         public static final String PATH_ZEUS_CHECK_WHITELIST = "zeus/whitelist/status";
         public static final String PATH_ZEUS_UPDATE_WHITELIST = "zeus/whitelist";
 
-        public static final String CDN_IMG_ANDROID_DOMAIN = "https://ecs7.tokopedia.net/img/android/";
+        public static final String DEFAULT_HOST = "http://ecs7.tokopedia.net";
+        public static final String CDN_IMG_ANDROID_DOMAIN = "/img/android/";
 
     }
 
@@ -966,7 +974,6 @@ public class TkpdBaseURL {
         public static final String PATH_ORDER_HISTORY = "/v4/order/history";
         public static final String PATH_CHANGE_COURIER = "/v4/order/change_courier";
     }
-
 
     public class Referral {
         public static final String PATH_GET_REFERRAL_VOUCHER_CODE = "galadriel/promos/referral/code";

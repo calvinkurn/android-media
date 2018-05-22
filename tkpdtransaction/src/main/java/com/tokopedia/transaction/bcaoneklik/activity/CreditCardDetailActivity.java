@@ -5,6 +5,8 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
+import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -12,8 +14,10 @@ import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.abstraction.common.utils.DisplayMetricUtils;
 import com.tokopedia.core.app.TActivity;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
+import com.tokopedia.core.remoteconfig.FirebaseRemoteConfigImpl;
+import com.tokopedia.core.remoteconfig.RemoteConfig;
+import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.transaction.R;
-import com.tokopedia.transaction.R2;
 import com.tokopedia.transaction.bcaoneklik.di.DaggerPaymentOptionComponent;
 import com.tokopedia.transaction.bcaoneklik.di.PaymentOptionComponent;
 import com.tokopedia.transaction.bcaoneklik.dialog.DeleteCreditCardDialog;
@@ -22,10 +26,6 @@ import com.tokopedia.transaction.bcaoneklik.model.creditcard.CreditCardModelItem
 import com.tokopedia.transaction.bcaoneklik.presenter.ListPaymentTypePresenterImpl;
 
 import javax.inject.Inject;
-
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.OnClick;
 
 /**
  * @author Aghny A. Putra on 09/01/18
@@ -44,11 +44,6 @@ public class CreditCardDetailActivity extends TActivity
     private static final String JCB_LARGE = "bg_jcb_large";
     private static final String EXPIRED_LARGE = "bg_expired_large";
 
-    @BindView(R2.id.iv_credit_card_large) ImageView mViewImageCc;
-    @BindView(R2.id.tv_credit_card_number) TextView mCreditCardNumber;
-    @BindView(R2.id.tv_credit_card_expiry) TextView mCardExpiry;
-    @BindView(R2.id.iv_credit_card_logo) ImageView mCreditCardLogo;
-
     @Inject ListPaymentTypePresenterImpl mListPaymentTypePresenter;
 
     private CreditCardModelItem mCreditCardModelItem;
@@ -59,14 +54,25 @@ public class CreditCardDetailActivity extends TActivity
 
         super.onCreate(savedInstanceState);
         inflateView(R.layout.credit_card_detail_layout);
-        ButterKnife.bind(this);
 
         initInjector();
+
+        ImageView mViewImageCc = findViewById(R.id.iv_credit_card_large);
+        TextView mCreditCardNumber = findViewById(R.id.tv_credit_card_number);
+        TextView mCardExpiry = findViewById(R.id.tv_credit_card_expiry);
+        ImageView mCreditCardLogo = findViewById(R.id.iv_credit_card_logo);
+        Button mButtonDeleteCc = findViewById(R.id.btn_delete_cc);
 
         ImageHandler.LoadImage(mViewImageCc, getBackgroundAssets(mCreditCardModelItem));
         mCreditCardNumber.setText(getSpacedText(mCreditCardModelItem.getMaskedNumber()));
         mCardExpiry.setText(getExpiredDate(mCreditCardModelItem));
         ImageHandler.LoadImage(mCreditCardLogo, mCreditCardModelItem.getCardTypeImage());
+        mButtonDeleteCc.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                showDeleteCcDialog();
+            }
+        });
     }
 
     private void initInjector() {
@@ -78,11 +84,15 @@ public class CreditCardDetailActivity extends TActivity
     }
 
     private String getBackgroundAssets(CreditCardModelItem item) {
-        final String resourceUrl = TkpdBaseURL.Payment.CDN_IMG_ANDROID_DOMAIN + "%s/%s/%s.png";
+        RemoteConfig remoteConfig = new FirebaseRemoteConfigImpl(this);
+        String baseUrl = remoteConfig.getString(TkpdCache.RemoteConfigKey.IMAGE_HOST,
+                TkpdBaseURL.Payment.DEFAULT_HOST);
+
+        final String resourceUrl = baseUrl + TkpdBaseURL.Payment.CDN_IMG_ANDROID_DOMAIN;
         String assetName = getBackgroundResource(item);
         String density = DisplayMetricUtils.getScreenDensity(this);
 
-        return String.format(resourceUrl, assetName, density, assetName);
+        return String.format(resourceUrl + "%s/%s/%s.png", assetName, density, assetName);
     }
 
     private String getBackgroundResource(CreditCardModelItem item) {
@@ -127,7 +137,6 @@ public class CreditCardDetailActivity extends TActivity
         return getTitle() + " " + mCreditCardModelItem.getCardType();
     }
 
-    @OnClick(R2.id.btn_delete_cc)
     public void showDeleteCcDialog() {
         DeleteCreditCardDialog creditCardDialog = DeleteCreditCardDialog.newInstance(
                 mCreditCardModelItem.getTokenId(),
