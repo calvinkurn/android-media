@@ -98,12 +98,23 @@
                     android:textColor="@color/black"
                     tools:text="Kaos Adidas Camo Tongue Tee... White &amp; Red, XS" />
 
+                <include
+                    android:id="@+id/product_properties"
+                    layout="@layout/layout_cart_item_policy"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/tv_product_name"
+                    android:layout_marginTop="4dp"
+                    android:layout_toEndOf="@id/iv_product_image"
+                    android:layout_toRightOf="@id/iv_product_image" />
+
                 <TextView
                     android:id="@+id/tv_product_price"
                     style="@style/TextMidMedium"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_below="@id/tv_product_name"
+                    android:layout_below="@id/product_properties"
+                    android:layout_marginTop="@dimen/dp_4"
                     android:layout_toEndOf="@id/iv_product_image"
                     android:layout_toRightOf="@id/iv_product_image"
                     android:textColor="@color/orange_red"

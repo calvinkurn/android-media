@@ -164,6 +164,9 @@ public class CartRemoveProductAdapter extends RecyclerView.Adapter<RecyclerView.
         private TextView mTvProductPrice;
         private TextView mTvProductWeight;
         private TextView mTvTotalProductItem;
+        private TextView mTvCashback;
+        private TextView mTvPreOrder;
+        private ImageView mIvFreeReturnIcon;
 
         private boolean isChecked = false;
 
@@ -177,6 +180,9 @@ public class CartRemoveProductAdapter extends RecyclerView.Adapter<RecyclerView.
             mTvProductPrice = itemView.findViewById(R.id.tv_product_price);
             mTvProductWeight = itemView.findViewById(R.id.tv_product_weight);
             mTvTotalProductItem = itemView.findViewById(R.id.tv_product_total_item);
+            mTvCashback = itemView.findViewById(R.id.tv_cashback);
+            mTvPreOrder = itemView.findViewById(R.id.tv_pre_order);
+            mIvFreeReturnIcon = itemView.findViewById(R.id.iv_free_return_icon);
         }
 
         void bindViewHolder(CartItemData cartItemModel, int position) {
@@ -196,6 +202,25 @@ public class CartRemoveProductAdapter extends RecyclerView.Adapter<RecyclerView.
             mTvProductWeight.setText(originData.getWeightFormatted());
             mTvTotalProductItem.setText(String.valueOf(updatedData.getQuantity()));
             ImageHandler.LoadImage(mIvProductImage, originData.getProductImage());
+
+            if (cartItemModel.getOriginData().isFreeReturn()) {
+                mIvFreeReturnIcon.setVisibility(View.VISIBLE);
+            } else {
+                mIvFreeReturnIcon.setVisibility(View.GONE);
+            }
+
+            if (cartItemModel.getOriginData().isPreOrder()) {
+                mTvPreOrder.setVisibility(View.VISIBLE);
+            } else {
+                mTvPreOrder.setVisibility(View.GONE);
+            }
+
+            if (cartItemModel.getOriginData().isCashBack()) {
+                mTvCashback.setText(cartItemModel.getOriginData().getCashBackInfo());
+                mTvCashback.setVisibility(View.VISIBLE);
+            } else {
+                mTvCashback.setVisibility(View.GONE);
+            }
         }
 
         private CompoundButton.OnCheckedChangeListener onChangeStateListener(final int position) {
