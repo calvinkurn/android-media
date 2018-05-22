@@ -56,6 +56,7 @@ import com.tokopedia.shop.common.constant.ShopUrl;
 import com.tokopedia.kol.common.network.KolUrl;
 import com.tokopedia.tkpdreactnative.react.fingerprint.utils.FingerprintConstantRegister;
 import com.tokopedia.tokocash.network.api.WalletUrl;
+import com.tokopedia.train.common.constant.TrainUrl;
 import com.tokopedia.transaction.network.TransactionUrl;
 import com.tokopedia.travelcalendar.network.TravelCalendarUrl;
 
@@ -194,6 +195,7 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         FingerprintConstantRegister.ACCOUNTS_DOMAIN = ConsumerAppBaseUrl.ACCOUNTS_DOMAIN;
         FingerprintConstantRegister.TOP_PAY_DOMAIN = ConsumerAppBaseUrl.TOP_PAY_DOMAIN;
         TravelCalendarUrl.GQL_BASE_URL = ConsumerAppBaseUrl.TRAVEL_CALENDAR_BASE_URL;
+        TrainUrl.BASE_URL = ConsumerAppBaseUrl.GRAPHQL_DOMAIN;
     }
 
     private void generateConsumerAppNetworkKeys() {

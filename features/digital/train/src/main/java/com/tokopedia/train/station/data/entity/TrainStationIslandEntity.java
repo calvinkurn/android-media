@@ -10,19 +10,12 @@ import java.util.List;
  */
 
 public class TrainStationIslandEntity {
-    @SerializedName("id")
-    @Expose
-    private int id;
     @SerializedName("cities")
     @Expose
     private List<TrainCityEntity> cities;
     @SerializedName("name")
     @Expose
     private String name;
-
-    public int getId() {
-        return id;
-    }
 
     public List<TrainCityEntity> getCities() {
         return cities;

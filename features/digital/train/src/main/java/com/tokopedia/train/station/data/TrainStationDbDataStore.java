@@ -68,7 +68,6 @@ public class TrainStationDbDataStore implements TrainDataDBSource<TrainStationIs
                 for (TrainCityEntity trainCityEntity : data.getCities()) {
                     for (TrainStationEntity trainStationEntity : trainCityEntity.getStations()) {
                         TrainStationDb trainStationDb = new TrainStationDb();
-                        trainStationDb.setIslandId(data.getId());
                         trainStationDb.setIslandName(data.getName());
                         trainStationDb.setCityId(trainCityEntity.getId());
                         trainStationDb.setCityName(trainCityEntity.getName());
@@ -77,7 +76,6 @@ public class TrainStationDbDataStore implements TrainDataDBSource<TrainStationIs
                         trainStationDb.setStationName(trainStationEntity.getName());
                         trainStationDb.setStationCode(trainStationEntity.getCode());
                         trainStationDb.setStationDisplayName(trainStationEntity.getDisplayName());
-                        trainStationDb.setStationStatus(trainStationEntity.getStatus());
                         adapter.insert(trainStationDb);
                     }
                 }
@@ -102,7 +100,6 @@ public class TrainStationDbDataStore implements TrainDataDBSource<TrainStationIs
                 for (TrainCityEntity trainCityEntity : entity.getCities()) {
                     for (TrainStationEntity trainStationEntity : trainCityEntity.getStations()) {
                         TrainStationDb trainStationDb = new TrainStationDb();
-                        trainStationDb.setIslandId(entity.getId());
                         trainStationDb.setIslandName(entity.getName());
                         trainStationDb.setCityId(trainCityEntity.getId());
                         trainStationDb.setCityName(trainCityEntity.getName());
@@ -111,7 +108,6 @@ public class TrainStationDbDataStore implements TrainDataDBSource<TrainStationIs
                         trainStationDb.setStationName(trainStationEntity.getName());
                         trainStationDb.setStationCode(trainStationEntity.getCode());
                         trainStationDb.setStationDisplayName(trainStationEntity.getDisplayName());
-                        trainStationDb.setStationStatus(trainStationEntity.getStatus());
                         adapter.insert(trainStationDb);
                     }
                 }

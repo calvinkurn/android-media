@@ -10,7 +10,6 @@ public class TrainStation {
     private String stationCode;
     private int cityId;
     private String cityName;
-    private int islandId;
     private String islandName;
 
     public TrainStation() {
@@ -54,14 +53,6 @@ public class TrainStation {
 
     public void setCityName(String cityName) {
         this.cityName = cityName;
-    }
-
-    public int getIslandId() {
-        return islandId;
-    }
-
-    public void setIslandId(int islandId) {
-        this.islandId = islandId;
     }
 
     public String getIslandName() {

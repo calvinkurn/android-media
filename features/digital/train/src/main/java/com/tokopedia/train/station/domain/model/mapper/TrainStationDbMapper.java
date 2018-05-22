@@ -41,7 +41,6 @@ public class TrainStationDbMapper implements Func1<List<TrainStationDb>, List<Tr
             station = new TrainStation();
             station.setCityId(entity.getCityId());
             station.setCityName(entity.getCityName());
-            station.setIslandId(entity.getIslandId());
             station.setIslandName(entity.getIslandName());
             station.setStationCode(entity.getStationCode());
             station.setStationId(entity.getStationId());
