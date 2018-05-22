@@ -59,8 +59,8 @@ public class ShareBottomSheet extends BottomSheets implements ShareAdapter.OnIte
 
     @Override
     protected String title() {
-        if (data != null)
-            return getTitle(data.getType());
+//        if (data != null)
+//            return getTitle(data.getType());
         return "Bagikan";
     }
 
@@ -105,12 +105,19 @@ public class ShareBottomSheet extends BottomSheets implements ShareAdapter.OnIte
 //        }
 
         List<ResolveInfo> showApplications = new ArrayList<>();
-        for (ResolveInfo resolveInfo : resolvedActivities) {
-            if (Arrays.asList(PackageNameApplications)
-                    .equals(resolveInfo.activityInfo.packageName)) {
-                showApplications.add(resolveInfo);
-            }
-        }
+//        for (int i = 0; i < PackageNameApplications.length; i++) {
+//            if (resolvedActivities.equals(PackageNameApplications[i])) {
+//                showApplications.add(resolveInfo);
+//            }
+//        }
+
+//        for (ResolveInfo resolveInfo : resolvedActivities) {
+
+//            if (Arrays.asList(PackageNameApplications)
+//                    .equals(resolveInfo.activityInfo.packageName)) {
+//                showApplications.add(resolveInfo);
+//            }
+//        }
         return showApplications;
     }
 
@@ -162,7 +169,7 @@ public class ShareBottomSheet extends BottomSheets implements ShareAdapter.OnIte
 
     private Intent getIntent(String contains) {
         final Intent mIntent = new Intent(Intent.ACTION_SEND);
-        mIntent.setType("text/image");
+        mIntent.setType("text/plain");
 
         String title = "";
         if (data != null) {
@@ -173,30 +180,6 @@ public class ShareBottomSheet extends BottomSheets implements ShareAdapter.OnIte
         mIntent.putExtra(Intent.EXTRA_SUBJECT, title);
         mIntent.putExtra(Intent.EXTRA_TEXT, contains);
         return mIntent;
-    }
-
-    private String getTitle(String type) {
-        switch (type) {
-            case ShareData.CATALOG_TYPE:
-                return getString(R.string.product_share_catalog);
-            case ShareData.SHOP_TYPE:
-                return getString(R.string.product_share_shop);
-            case ShareData.HOTLIST_TYPE:
-                return getString(R.string.product_share_hotlist);
-            case ShareData.DISCOVERY_TYPE:
-                return getString(R.string.product_share_search);
-            case ShareData.PRODUCT_TYPE:
-                return getString(R.string.product_share_product);
-            case ShareData.RIDE_TYPE:
-                return getString(R.string.product_share_ride_trip);
-            case ShareData.APP_SHARE_TYPE:
-                return getString(R.string.product_share_app);
-            case ShareData.REFERRAL_TYPE:
-                return getString(R.string.product_share_app);
-            case ShareData.PROMO_TYPE:
-                return getString(R.string.promo_share_detail);
-        }
-        return "Bagikan";
     }
 
     /**
