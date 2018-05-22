@@ -413,22 +413,17 @@ public class GroupChatActivity extends BaseSimpleActivity
             return true;
         } else if (item.getItemId() == R.id.action_share) {
             analytics.eventClickShare();
-            ShareData shareData = ShareData.Builder.aShareData()
-                    .setId(viewModel.getChannelUuid())
-                    .setName(viewModel.getChannelName())
-                    .setDescription(String.format(getString(R.string.lets_join_channel),
-                            viewModel.getChannelName()))
-                    .setImgUri(viewModel.getChannelInfoViewModel().getBannerUrl())
-                    .setUri(viewModel.getChannelUrl())
-                    .setType(ShareData.FEED_TYPE)
-                    .build();
 
-            ShareLayout shareLayout = new ShareLayout(
-                    this,
-                    callbackManager, viewModel.getChannelUrl(),
-                    toolbar.getTitle().toString(), analytics);
-            shareLayout.setShareModel(shareData);
-            shareLayout.show();
+            String link = "https://tokopedia.com/groupchat/{channel_url}";
+            link = link.replace("{channel_url}", viewModel.getChannelUrl());
+
+            String description = String.format("%s %s", String.format(getString(R.string.lets_join_channel),
+                    viewModel.getChannelName()), link);
+
+            ((GroupChatModuleRouter) getApplication()).shareGroupChat(getSupportFragmentManager(),
+                    viewModel.getChannelUuid(), viewModel.getChannelName(), description,
+                    viewModel.getChannelInfoViewModel().getBannerUrl(), viewModel.getChannelUrl());
+
             return true;
 
         } else {
