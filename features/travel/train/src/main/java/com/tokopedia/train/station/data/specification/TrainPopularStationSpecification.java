@@ -2,9 +2,11 @@ package com.tokopedia.train.station.data.specification;
 
 import com.raizlabs.android.dbflow.sql.language.ConditionGroup;
 import com.raizlabs.android.dbflow.sql.language.OrderBy;
+import com.tokopedia.tkpdtrain.R;
 import com.tokopedia.train.common.specification.CloudNetworkSpecification;
 import com.tokopedia.train.common.specification.DbFlowSpecification;
 import com.tokopedia.train.common.specification.DbFlowWithOrderSpecification;
+import com.tokopedia.train.common.specification.GqlNetworkSpecification;
 import com.tokopedia.train.station.data.databasetable.TrainStationDb_Table;
 
 import java.util.ArrayList;
@@ -16,7 +18,8 @@ import java.util.Map;
  * @author by alvarisi on 3/7/18.
  */
 
-public class TrainPopularStationSpecification implements DbFlowSpecification, DbFlowWithOrderSpecification, CloudNetworkSpecification {
+public class TrainPopularStationSpecification implements DbFlowSpecification, DbFlowWithOrderSpecification,
+        GqlNetworkSpecification {
 
     public TrainPopularStationSpecification() {
     }
@@ -36,7 +39,12 @@ public class TrainPopularStationSpecification implements DbFlowSpecification, Db
     }
 
     @Override
-    public Map<String, Object> networkParam() {
-        return new HashMap<>();
+    public int rawFileNameQuery() {
+        return R.raw.kai_station_query;
+    }
+
+    @Override
+    public Map<String, Object> mapVariable() {
+        return null;
     }
 }

@@ -9,6 +9,7 @@ import java.util.Map;
 
 import retrofit2.http.Body;
 import retrofit2.http.GET;
+import retrofit2.http.Headers;
 import retrofit2.http.POST;
 import retrofit2.http.Path;
 import retrofit2.http.QueryMap;
@@ -20,8 +21,9 @@ import rx.Observable;
 
 public interface TrainApi {
 
-    @GET("stations")
-    Observable<DataResponse<StationDataEntity>> stationsInIsland(@QueryMap Map<String, Object> params);
+    @POST("./")
+    @Headers({"Content-Type: application/json"})
+    Observable<DataResponse<StationDataEntity>> stationsInIsland(@Body Map<String, Object> params);
 
     @GET("schedules")
     Observable<DataResponse<SearchDataEntity>> schedulesTrain(@QueryMap Map<String, Object> params);

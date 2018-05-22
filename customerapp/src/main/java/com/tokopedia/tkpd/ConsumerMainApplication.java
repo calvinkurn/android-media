@@ -55,6 +55,7 @@ import com.tokopedia.shop.common.constant.ShopCommonUrl;
 import com.tokopedia.shop.common.constant.ShopUrl;
 import com.tokopedia.kol.common.network.KolUrl;
 import com.tokopedia.tokocash.network.api.WalletUrl;
+import com.tokopedia.train.common.constant.TrainUrl;
 import com.tokopedia.transaction.network.TransactionUrl;
 import com.tokopedia.travelcalendar.network.TravelCalendarUrl;
 
@@ -184,6 +185,7 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         GamificationUrl.GQL_BASE_URL = ConsumerAppBaseUrl.GAMIFICATION_BASE_URL;
         ChatBotUrl.BASE_URL = ConsumerAppBaseUrl.CHATBOT_DOMAIN;
         TravelCalendarUrl.GQL_BASE_URL = ConsumerAppBaseUrl.TRAVEL_CALENDAR_BASE_URL;
+        TrainUrl.BASE_URL = ConsumerAppBaseUrl.GRAPHQL_DOMAIN;
     }
 
     private void generateConsumerAppNetworkKeys() {

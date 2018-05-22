@@ -23,7 +23,6 @@ public class TrainStationViewModelMapper {
             viewModel = new TrainStationViewModel();
             viewModel.setCityCode(String.valueOf(station.getCityId()));
             viewModel.setCityName(station.getCityName());
-            viewModel.setIslandId(String.valueOf(station.getIslandId()));
             viewModel.setStationId(station.getStationId());
             viewModel.setStationCode(station.getStationCode());
             viewModel.setStationName(station.getStationName());

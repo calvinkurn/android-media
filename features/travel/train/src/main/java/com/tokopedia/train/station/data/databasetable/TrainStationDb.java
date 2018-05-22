@@ -30,18 +30,12 @@ public class TrainStationDb extends BaseModel {
     @Column(name = "popularity_order")
     private
     int popularityOrder;
-    @Column(name = "station_status")
-    private
-    String stationStatus;
     @Column(name = "city_id")
     private
     int cityId;
     @Column(name = "city_name")
     private
     String cityName;
-    @Column(name = "island_id")
-    private
-    int islandId;
     @Column(name = "island_name")
     private
     String islandName;
@@ -81,14 +75,6 @@ public class TrainStationDb extends BaseModel {
         this.popularityOrder = popularityOrder;
     }
 
-    public String getStationStatus() {
-        return stationStatus;
-    }
-
-    public void setStationStatus(String stationStatus) {
-        this.stationStatus = stationStatus;
-    }
-
     public int getCityId() {
         return cityId;
     }
@@ -103,14 +89,6 @@ public class TrainStationDb extends BaseModel {
 
     public void setCityName(String cityName) {
         this.cityName = cityName;
-    }
-
-    public int getIslandId() {
-        return islandId;
-    }
-
-    public void setIslandId(int islandId) {
-        this.islandId = islandId;
     }
 
     public String getIslandName() {
