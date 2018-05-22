@@ -13,6 +13,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -88,7 +89,7 @@ public class ShareBottomSheet extends BottomSheets implements ShareAdapter.OnIte
 
     private RecyclerView mRecyclerView;
     private ProgressBar mProgressBar;
-    private ProgressBar mLayoutError;
+    private LinearLayout mLayoutError;
     private TextView mTextViewError;
 
     @Override
@@ -196,6 +197,7 @@ public class ShareBottomSheet extends BottomSheets implements ShareAdapter.OnIte
     private BroadcastReceiver addProductReceiver;
 
     private void stateProgress(boolean progress) {
+        mLayoutError.setVisibility(View.GONE);
         if (progress) {
             mProgressBar.setVisibility(View.VISIBLE);
             mRecyclerView.setVisibility(View.GONE);
@@ -233,6 +235,7 @@ public class ShareBottomSheet extends BottomSheets implements ShareAdapter.OnIte
         String messageError = resultData.getString(TkpdState.ProductService.MESSAGE_ERROR_FLAG);
         mProgressBar.setVisibility(View.GONE);
         mLayoutError.setVisibility(View.VISIBLE);
+        mRecyclerView.setVisibility(View.GONE);
         mTextViewError.setText(messageError + "\n" + getString(R.string.error_failed_add_product));
     }
 

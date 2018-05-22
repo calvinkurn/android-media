@@ -161,8 +161,6 @@ public class ProductInfoActivity extends BasePresenterNoLayoutActivity<ProductIn
         } else {
             return false;
         }
-
-        closeView();
         return true;
     }
 
