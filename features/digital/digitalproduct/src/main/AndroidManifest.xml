@@ -72,7 +72,7 @@
         <activity
             android:name=".tokocash.activity.WaitingTransactionActivity"
             android:screenOrientation="portrait"/>
-        <activity android:name=".product.view.activity.DigitalCheckEMoneyBalanceNFCActivity"
+        <activity android:name=".product.additionalfeature.etoll.view.activity.DigitalCheckETollBalanceNFCActivity"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White">
             <intent-filter>

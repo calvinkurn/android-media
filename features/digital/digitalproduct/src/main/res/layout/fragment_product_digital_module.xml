@@ -17,7 +17,7 @@
             android:animateLayoutChanges="true"
             android:orientation="vertical">
 
-            <com.tokopedia.digital.product.view.compoundview.CheckEMoneyBalanceView
+            <com.tokopedia.digital.product.additionalfeature.etoll.view.compoundview.CheckETollBalanceView
                 android:id="@+id/holder_check_emoney_balance"
                 android:visibility="gone"
                 android:layout_marginBottom="@dimen/dp_8"

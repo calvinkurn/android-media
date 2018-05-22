@@ -5,7 +5,6 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.Fragment;
-import android.app.IntentService;
 import android.content.ActivityNotFoundException;
 import android.content.ClipData;
 import android.content.ClipboardManager;
@@ -73,13 +72,13 @@ import com.tokopedia.digital.product.domain.interactor.IProductDigitalInteractor
 import com.tokopedia.digital.product.domain.interactor.ProductDigitalInteractor;
 import com.tokopedia.digital.product.receiver.USSDBroadcastReceiver;
 import com.tokopedia.digital.product.service.USSDAccessibilityService;
-import com.tokopedia.digital.product.view.activity.DigitalCheckEMoneyBalanceNFCActivity;
+import com.tokopedia.digital.product.additionalfeature.etoll.view.activity.DigitalCheckETollBalanceNFCActivity;
 import com.tokopedia.digital.product.view.activity.DigitalChooserActivity;
 import com.tokopedia.digital.product.view.activity.DigitalSearchNumberActivity;
 import com.tokopedia.digital.product.view.activity.DigitalUssdActivity;
 import com.tokopedia.digital.product.view.activity.DigitalWebActivity;
 import com.tokopedia.digital.product.view.adapter.BannerAdapter;
-import com.tokopedia.digital.product.view.compoundview.CheckEMoneyBalanceView;
+import com.tokopedia.digital.product.additionalfeature.etoll.view.compoundview.CheckETollBalanceView;
 import com.tokopedia.digital.product.view.compoundview.CheckPulsaBalanceView;
 import com.tokopedia.digital.product.view.listener.IProductDigitalView;
 import com.tokopedia.digital.product.view.listener.IUssdUpdateListener;
@@ -158,7 +157,7 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
     @BindView(R2.id.holder_check_balance)
     LinearLayout holderCheckBalance;
     @BindView(R2.id.holder_check_emoney_balance)
-    CheckEMoneyBalanceView checkEMoneyBalanceView;
+    CheckETollBalanceView checkETollBalanceView;
 
     private ProductDigitalPresenter presenter;
 
@@ -342,10 +341,10 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
     @Override
     protected void setViewListener() {
         rvBanner.setAdapter(bannerAdapter);
-        checkEMoneyBalanceView.setListener(new CheckEMoneyBalanceView.OnCheckBalanceClickListener() {
+        checkETollBalanceView.setListener(new CheckETollBalanceView.OnCheckBalanceClickListener() {
             @Override
             public void onClick() {
-                Intent intent = DigitalCheckEMoneyBalanceNFCActivity.newInstance(getActivity());
+                Intent intent = DigitalCheckETollBalanceNFCActivity.newInstance(getActivity());
                 startActivity(intent);
             }
         });
@@ -418,7 +417,8 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
     @Override
     public void renderCheckEMoneyBalance() {
         String note = getResources().getString(R.string.emoney_label_check_balance);
-        checkEMoneyBalanceView.showCheckBalance(note);
+        checkETollBalanceView.setVisibility(View.VISIBLE);
+        checkETollBalanceView.showCheckBalance(note);
     }
 
     @Override
