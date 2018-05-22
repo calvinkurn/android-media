@@ -1,5 +1,6 @@
 package com.tokopedia.payment.fingerprint.view;
 
+import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
@@ -117,6 +118,13 @@ public class FingerprintDialogRegister extends FingerPrintDialog implements Fing
         if (updateCounterError()) {
             startListening();
         }
+    }
+
+    @Override
+    public Dialog onCreateDialog(Bundle savedInstanceState) {
+        Dialog dialog = super.onCreateDialog(savedInstanceState);
+        dialog.setCanceledOnTouchOutside(false);
+        return dialog;
     }
 
     public interface ListenerRegister {

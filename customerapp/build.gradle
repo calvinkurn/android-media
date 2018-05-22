@@ -2,6 +2,7 @@ apply plugin: 'com.android.application'
 apply plugin: 'com.google.firebase.firebase-perf'
 apply plugin: 'android-apt'
 apply plugin: 'io.fabric'
+apply plugin: 'io.hansel.preprocessor'
 
 
 def getDpiId(String density) {
@@ -79,9 +80,11 @@ buildscript {
         maven { url 'https://maven.fabric.io/public' }
         mavenCentral()
         jcenter()
+        maven { url 'https://hansel.io/maven' }
     }
     dependencies {
         classpath 'io.fabric.tools:gradle:1.+'
+        classpath rootProject.ext.miscDependencies.hansel
     }
 }
 
@@ -237,6 +240,9 @@ android {
         live {
 
         }
+        staging {
+
+        }
     }
 }
 
@@ -249,8 +255,7 @@ dependencies {
     compile project(rootProject.ext.features.seller)
     compile project(rootProject.ext.features.session)
     compile project(rootProject.ext.features.inbox)
-    compile project(rootProject.ext.features.ride)
-    compile project(rootProject.ext.features.digital)
+    compile project(rootProject.ext.features.digitalproduct)
     compile project(rootProject.ext.features.productDetail)
     compile project(rootProject.ext.features.feed)
     compile project(rootProject.ext.features.event)
@@ -260,8 +265,8 @@ dependencies {
     compile project(rootProject.ext.features.flight)
     compile project(rootProject.ext.features.home)
     compile project(rootProject.ext.features.digitalDeals)
-    compile project(':tkpdstream')
     compile project(rootProject.ext.features.groupchat)
+    compile project(rootProject.ext.features.profile)
     compile project(rootProject.ext.features.shopPage)
     compile project(rootProject.ext.libraries.reactNative)
     compile project(rootProject.ext.features.kol)

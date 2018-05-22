@@ -1,5 +1,6 @@
 package com.tokopedia.payment.fingerprint.view;
 
+import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
@@ -123,6 +124,11 @@ public class FingerPrintDialogPayment extends FingerPrintDialog implements Finge
     }
 
     @Override
+    protected void onCloseButtonClick() {
+        listenerPayment.onGoToOtpPage(transactionId, urlOtp);
+    }
+
+    @Override
     public void onAuthenticationError(int errMsgId, CharSequence errString) {
         updateCounterError();
     }
@@ -146,6 +152,13 @@ public class FingerPrintDialogPayment extends FingerPrintDialog implements Finge
         if(updateCounterError()){
             startListening();
         }
+    }
+
+    @Override
+    public Dialog onCreateDialog(Bundle savedInstanceState) {
+        Dialog dialog = super.onCreateDialog(savedInstanceState);
+        dialog.setCanceledOnTouchOutside(false);
+        return dialog;
     }
 
     public interface ListenerPayment {

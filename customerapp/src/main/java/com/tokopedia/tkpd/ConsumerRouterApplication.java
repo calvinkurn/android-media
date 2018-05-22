@@ -24,6 +24,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.data.model.storage.CacheManager;
+import com.tokopedia.abstraction.common.utils.TKPDMapParam;
 import com.tokopedia.applink.ApplinkRouter;
 import com.tokopedia.cacheapi.domain.interactor.CacheApiClearAllUseCase;
 import com.tokopedia.core.analytics.ScreenTracking;
@@ -46,7 +47,7 @@ import com.tokopedia.core.gcm.utils.NotificationUtils;
 import com.tokopedia.core.geolocation.activity.GeolocationActivity;
 import com.tokopedia.core.geolocation.model.autocomplete.LocationPass;
 import com.tokopedia.core.home.BannerWebView;
-import com.tokopedia.core.home.SimpleWebViewActivity;
+import com.tokopedia.core.home.SimpleWebViewWithFilePickerActivity;
 import com.tokopedia.core.instoped.model.InstagramMediaModel;
 import com.tokopedia.core.loyaltysystem.util.URLGenerator;
 import com.tokopedia.core.manage.general.districtrecommendation.domain.model.Token;
@@ -90,6 +91,7 @@ import com.tokopedia.di.SessionModule;
 import com.tokopedia.digital.DigitalRouter;
 import com.tokopedia.digital.cart.activity.CartDigitalActivity;
 import com.tokopedia.digital.categorylist.view.activity.DigitalCategoryListActivity;
+import com.tokopedia.digital.common.constant.DigitalCache;
 import com.tokopedia.digital.common.router.DigitalModuleRouter;
 import com.tokopedia.digital.product.view.activity.DigitalProductActivity;
 import com.tokopedia.digital.product.view.activity.DigitalWebActivity;
@@ -98,6 +100,17 @@ import com.tokopedia.digital.tokocash.model.CashBackData;
 import com.tokopedia.digital.tokocash.topup.TopupTokoCashFragment;
 import com.tokopedia.discovery.DiscoveryRouter;
 import com.tokopedia.discovery.intermediary.view.IntermediaryActivity;
+import com.tokopedia.events.data.entity.response.verifyresponse.VerifyCartResponse;
+import com.tokopedia.events.di.DaggerEventComponent;
+import com.tokopedia.events.di.EventComponent;
+import com.tokopedia.events.di.EventModule;
+import com.tokopedia.feedplus.FeedModuleRouter;
+import com.tokopedia.feedplus.domain.model.FollowKolDomain;
+import com.tokopedia.feedplus.domain.model.LikeKolDomain;
+import com.tokopedia.feedplus.domain.usecase.FollowKolPostUseCase;
+import com.tokopedia.feedplus.domain.usecase.LikeKolPostUseCase;
+import com.tokopedia.feedplus.view.di.DaggerFeedPlusComponent;
+import com.tokopedia.feedplus.view.di.FeedPlusComponent;
 import com.tokopedia.fingerprint.util.FingerprintConstant;
 import com.tokopedia.flight.FlightComponentInstance;
 import com.tokopedia.flight.FlightModuleRouter;
@@ -111,6 +124,11 @@ import com.tokopedia.flight.review.domain.FlightCheckVoucherCodeUseCase;
 import com.tokopedia.flight.review.domain.FlightVoucherCodeWrapper;
 import com.tokopedia.flight.review.view.model.FlightCheckoutViewModel;
 import com.tokopedia.gamification.GamificationRouter;
+import com.tokopedia.groupchat.GroupChatModuleRouter;
+import com.tokopedia.groupchat.channel.view.fragment.ChannelFragment;
+import com.tokopedia.groupchat.chatroom.data.ChatroomUrl;
+import com.tokopedia.groupchat.chatroom.view.activity.GroupChatActivity;
+import com.tokopedia.groupchat.common.analytics.GroupChatAnalytics;
 import com.tokopedia.home.IHomeRouter;
 import com.tokopedia.inbox.contactus.ContactUsConstant;
 import com.tokopedia.inbox.contactus.activity.ContactUsActivity;
@@ -120,11 +138,17 @@ import com.tokopedia.inbox.inboxchat.activity.InboxChatActivity;
 import com.tokopedia.inbox.rescenter.detailv2.view.activity.DetailResChatActivity;
 import com.tokopedia.inbox.rescenter.inbox.activity.InboxResCenterActivity;
 import com.tokopedia.inbox.rescenter.inboxv2.view.activity.ResoInboxActivity;
+import com.tokopedia.kol.KolRouter;
+import com.tokopedia.kol.feature.comment.view.activity.KolCommentActivity;
+import com.tokopedia.kol.feature.comment.view.fragment.KolCommentFragment;
+import com.tokopedia.kol.feature.following_list.view.activity.KolFollowingListActivity;
+import com.tokopedia.kol.feature.post.view.fragment.KolPostFragment;
+import com.tokopedia.kol.feature.post.view.subscriber.LikeKolPostSubscriber;
 import com.tokopedia.loyalty.LoyaltyRouter;
 import com.tokopedia.loyalty.broadcastreceiver.TokoPointDrawerBroadcastReceiver;
-import com.tokopedia.loyalty.view.activity.PromoDetailActivity;
 import com.tokopedia.loyalty.router.LoyaltyModuleRouter;
 import com.tokopedia.loyalty.view.activity.LoyaltyActivity;
+import com.tokopedia.loyalty.view.activity.PromoDetailActivity;
 import com.tokopedia.loyalty.view.activity.PromoListActivity;
 import com.tokopedia.loyalty.view.activity.TokoPointWebviewActivity;
 import com.tokopedia.loyalty.view.data.VoucherViewModel;
@@ -137,13 +161,14 @@ import com.tokopedia.otp.phoneverification.view.activity.RidePhoneNumberVerifica
 import com.tokopedia.payment.activity.TopPayActivity;
 import com.tokopedia.payment.model.PaymentPassData;
 import com.tokopedia.payment.router.IPaymentModuleRouter;
+import com.tokopedia.profile.ProfileModuleRouter;
 import com.tokopedia.profile.view.activity.TopProfileActivity;
 import com.tokopedia.profile.view.subscriber.FollowKolSubscriber;
 import com.tokopedia.profilecompletion.data.factory.ProfileSourceFactory;
 import com.tokopedia.profilecompletion.data.mapper.GetUserInfoMapper;
 import com.tokopedia.profilecompletion.data.repository.ProfileRepositoryImpl;
 import com.tokopedia.profilecompletion.domain.GetUserInfoUseCase;
-import com.tokopedia.ride.RideModuleRouter;
+import com.tokopedia.profilecompletion.view.activity.ProfileCompletionActivity;
 import com.tokopedia.seller.LogisticRouter;
 import com.tokopedia.seller.SellerModuleRouter;
 import com.tokopedia.seller.TkpdSeller;
@@ -167,10 +192,10 @@ import com.tokopedia.seller.shop.common.di.component.DaggerShopComponent;
 import com.tokopedia.seller.shop.common.di.component.ShopComponent;
 import com.tokopedia.seller.shop.common.di.module.ShopModule;
 import com.tokopedia.seller.shop.common.domain.interactor.GetShopInfoUseCase;
+import com.tokopedia.seller.shopsettings.notes.activity.ManageShopNotesActivity;
 import com.tokopedia.session.addchangeemail.view.activity.AddEmailActivity;
 import com.tokopedia.session.addchangepassword.view.activity.AddPasswordActivity;
 import com.tokopedia.session.changename.view.activity.ChangeNameActivity;
-import com.tokopedia.seller.shopsettings.notes.activity.ManageShopNotesActivity;
 import com.tokopedia.session.changephonenumber.view.activity.ChangePhoneNumberWarningActivity;
 import com.tokopedia.session.forgotpassword.activity.ForgotPasswordActivity;
 import com.tokopedia.session.login.loginemail.view.activity.LoginActivity;
@@ -202,44 +227,27 @@ import com.tokopedia.tkpd.home.ReactNativeOfficialStoreActivity;
 import com.tokopedia.tkpd.react.DaggerReactNativeComponent;
 import com.tokopedia.tkpd.react.ReactNativeComponent;
 import com.tokopedia.tkpd.redirect.RedirectCreateShopActivity;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.FeedModuleRouter;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.FollowKolDomain;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.LikeKolDomain;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.usecase.FollowKolPostUseCase;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.usecase.LikeKolPostUseCase;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.view.activity.KolCommentActivity;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.view.activity.KolFollowingListActivity;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.view.di.DaggerFeedPlusComponent;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.view.di.FeedPlusComponent;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.view.fragment.KolCommentFragment;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.kol.KolCommentHeaderViewModel;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.kol.KolCommentProductViewModel;
 import com.tokopedia.tkpd.tkpdreputation.ReputationRouter;
 import com.tokopedia.tkpd.tkpdreputation.TkpdReputationInternalRouter;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.activity.InboxReputationActivity;
 import com.tokopedia.tkpd.tokocash.GetBalanceTokoCashWrapper;
 import com.tokopedia.tkpd.tokocash.TokoCashPendingCashbackMapper;
 import com.tokopedia.tkpd.tokocash.datepicker.DatePickerUtil;
-import com.tokopedia.kol.KolRouter;
-import com.tokopedia.kol.feature.post.view.fragment.KolPostFragment;
-import com.tokopedia.kol.feature.post.view.subscriber.LikeKolPostSubscriber;
 import com.tokopedia.tkpdpdp.PreviewProductImageDetail;
 import com.tokopedia.tkpdpdp.ProductInfoActivity;
 import com.tokopedia.tkpdreactnative.react.ReactConst;
 import com.tokopedia.tkpdreactnative.react.ReactUtils;
 import com.tokopedia.tkpdreactnative.react.di.ReactNativeModule;
-import com.tokopedia.groupchat.GroupChatModuleRouter;
-import com.tokopedia.groupchat.channel.view.fragment.ChannelFragment;
-import com.tokopedia.groupchat.chatroom.data.ChatroomUrl;
-import com.tokopedia.groupchat.chatroom.view.activity.GroupChatActivity;
-import com.tokopedia.groupchat.common.analytics.GroupChatAnalytics;
+import com.tokopedia.tkpdreactnative.router.ReactNativeRouter;
 import com.tokopedia.tokocash.WalletUserSession;
 import com.tokopedia.tokocash.di.DaggerTokoCashComponent;
 import com.tokopedia.tokocash.di.TokoCashComponent;
 import com.tokopedia.transaction.bcaoneklik.activity.ListPaymentTypeActivity;
+import com.tokopedia.transaction.bcaoneklik.usecase.CreditCardFingerPrintUseCase;
 import com.tokopedia.transaction.purchase.detail.activity.OrderDetailActivity;
 import com.tokopedia.transaction.purchase.detail.activity.OrderHistoryActivity;
 import com.tokopedia.transaction.wallet.WalletActivity;
+import com.tokopedia.usecase.UseCase;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -266,12 +274,12 @@ import static com.tokopedia.core.router.productdetail.ProductDetailRouter.SHARE_
 
 public abstract class ConsumerRouterApplication extends MainApplication implements
         TkpdCoreRouter, SellerModuleRouter, IDigitalModuleRouter, PdpRouter,
-        OtpRouter, IPaymentModuleRouter, TransactionRouter, IReactNativeRouter, ReactApplication, TkpdInboxRouter,
-        TokoCashRouter, IWalletRouter, LoyaltyRouter, ReputationRouter, SessionRouter,
+        OtpRouter, IPaymentModuleRouter, TransactionRouter, IReactNativeRouter, ReactApplication,
+        TkpdInboxRouter, TokoCashRouter, IWalletRouter, LoyaltyRouter, ReputationRouter, SessionRouter,
         AbstractionRouter, FlightModuleRouter, LogisticRouter, FeedModuleRouter, IHomeRouter,
-        DiscoveryRouter, RideModuleRouter, DigitalModuleRouter, com.tokopedia.tokocash.TokoCashRouter,
-        DigitalRouter, KolRouter, GroupChatModuleRouter, ApplinkRouter, ShopModuleRouter, LoyaltyModuleRouter,
-        GamificationRouter {
+        DiscoveryRouter, DigitalModuleRouter, com.tokopedia.tokocash.TokoCashRouter,
+        DigitalRouter, KolRouter, GroupChatModuleRouter, ApplinkRouter, ShopModuleRouter,
+        LoyaltyModuleRouter, GamificationRouter, ProfileModuleRouter, ReactNativeRouter {
 
     @Inject
     ReactNativeHost reactNativeHost;
@@ -282,6 +290,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     private DaggerReactNativeComponent.Builder daggerReactNativeBuilder;
     private DaggerFlightConsumerComponent.Builder daggerFlightBuilder;
     private DaggerContentConsumerComponent.Builder daggerContentBuilder;
+    private EventComponent eventComponent;
     private FlightConsumerComponent flightConsumerComponent;
     private ContentConsumerComponent contentConsumerComponent;
     private ProductComponent productComponent;
@@ -365,6 +374,11 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
         daggerContentBuilder = DaggerContentConsumerComponent.builder()
                 .feedPlusComponent(feedPlusComponent);
+
+        eventComponent = DaggerEventComponent.builder()
+                .appComponent(getApplicationComponent())
+                .eventModule(new EventModule(this))
+                .build();
     }
 
     private void initRemoteConfig() {
@@ -817,6 +831,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public void onLogout(AppComponent appComponent) {
+        new GlobalCacheManager().delete(DigitalCache.NEW_DIGITAL_CATEGORY_AND_FAV);
         new CacheApiClearAllUseCase().executeSync();
         TkpdSellerLogout.onLogOut(appComponent);
         new FlightDeleteDashboardCacheUseCase(appComponent.context()).executeSync();
@@ -825,6 +840,12 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @Override
     public Intent getLoginIntent(Context context) {
         Intent intent = LoginActivity.getCallingIntent(context);
+        return intent;
+    }
+
+    @Override
+    public Intent getProfileCompletionIntent(Context context) {
+        Intent intent = new Intent(context, ProfileCompletionActivity.class);
         return intent;
     }
 
@@ -871,8 +892,11 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    public BaseDaggerFragment getKolPostFragment(String userId) {
-        return KolPostFragment.newInstance(userId);
+    public BaseDaggerFragment getKolPostFragment(String userId,
+                                                 int postId,
+                                                 Intent resultIntent,
+                                                 Bundle bundle) {
+        return KolPostFragment.newInstanceFromFeed(userId, postId, resultIntent, bundle);
     }
 
     @Override
@@ -1214,7 +1238,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public Intent getWebviewActivityWithIntent(Context context, String url, String title) {
-        return SimpleWebViewActivity.getIntentWithTitle(context, url, title);
+        return SimpleWebViewWithFilePickerActivity.getIntentWithTitle(context, url, title);
     }
 
     @Override
@@ -1609,17 +1633,8 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    public Intent getKolCommentActivity(Context context, String avatarUrl, String name,
-                                        String review, String time, String userId,
-                                        String productImageUrl, String contentName,
-                                        String price, boolean isWishlishted, int postId,
-                                        int rowNumber) {
-        return KolCommentActivity.getCallingIntent(context,
-                new KolCommentHeaderViewModel(avatarUrl, name, review, time, userId),
-                new KolCommentProductViewModel(productImageUrl, contentName, price, isWishlishted),
-                postId,
-                rowNumber
-        );
+    public Intent getKolCommentActivity(Context context, int postId, int rowNumber) {
+        return KolCommentActivity.getCallingIntent(context, postId, rowNumber);
     }
 
     @Override
@@ -1813,6 +1828,23 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
+    public Observable<TKPDMapParam<String, Object>> verifyEventPromo(RequestParams requestParams) {
+        return eventComponent.getPostVerifyCartUseCase().getExecuteObservableAsync(requestParams).map(new Func1<VerifyCartResponse, TKPDMapParam<String, Object>>() {
+            @Override
+            public TKPDMapParam<String, Object> call(VerifyCartResponse verifyCartResponse) {
+                TKPDMapParam<String, Object> resultMap = new TKPDMapParam<>();
+                resultMap.put("promocode", verifyCartResponse.getCart().getPromocode());
+                resultMap.put("promocode_discount", verifyCartResponse.getCart().getPromocodeDiscount());
+                resultMap.put("promocode_cashback", verifyCartResponse.getCart().getPromocodeCashback());
+                resultMap.put("promocode_failure_message", verifyCartResponse.getCart().getPromocodeFailureMessage());
+                resultMap.put("promocode_success_message", verifyCartResponse.getCart().getPromocodeSuccessMessage());
+                resultMap.put("promocode_status", verifyCartResponse.getCart().getPromocodeStatus());
+                return resultMap;
+            }
+        });
+    }
+
+    @Override
     public void goToApplinkActivity(Context context, String applink) {
         DeepLinkDelegate deepLinkDelegate = DeeplinkHandlerActivity.getDelegateInstance();
         Intent intent = new Intent(context, DeeplinkHandlerActivity.class);
@@ -1882,4 +1914,10 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     public String getDesktopLinkGroupChat() {
         return ChatroomUrl.DESKTOP_URL;
     }
+
+    @Override
+    public UseCase<String> setCreditCardSingleAuthentication() {
+        return new CreditCardFingerPrintUseCase();
+    }
+
 }

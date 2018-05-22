@@ -39,7 +39,7 @@ public class Cell {
     private float costAvg;
     @SerializedName("cost_sum")
     @Expose
-    private int costSum;
+    private float costSum;
     @SerializedName("impression_sum_fmt")
     @Expose
     private String impressionSumFmt;
@@ -123,11 +123,11 @@ public class Cell {
         this.costAvg = costAvg;
     }
 
-    public int getCostSum() {
+    public float getCostSum() {
         return costSum;
     }
 
-    public void setCostSum(int costSum) {
+    public void setCostSum(float costSum) {
         this.costSum = costSum;
     }
 

@@ -895,11 +895,19 @@ public class CartPresenter implements ICartPresenter {
         }
         view.renderButtonCheckVoucherListener();
         view.renderInstantPromo(data.getCartPromo());
-        view.renderPromoView(data.getIsCouponActive() == 1);
+        view.renderPromoView(
+                data.getIsCouponActive() == 1,
+                checkCouponDefaultNull(data.getDefaultPromoDialogTab())
+        );
         view.renderPartialOrder(data.isEnableCancelPartial());
         if (promoAutoApplied(data)) {
             view.renderAutoApplyPromoView(data.getAutoApply());
         }
+    }
+
+    private String checkCouponDefaultNull(String defaultPromoTab) {
+        if(TextUtils.isEmpty(defaultPromoTab)) return "";
+        else return defaultPromoTab;
     }
 
     private boolean promoAutoApplied(CartData data) {
