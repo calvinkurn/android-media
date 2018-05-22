@@ -75,8 +75,8 @@ public class TrainModule {
 
     @TrainScope
     @Provides
-    public TrainStationCloudDataStore provideTrainStationCloudDataStore(TrainApi trainApi) {
-        return new TrainStationCloudDataStore(trainApi);
+    public TrainStationCloudDataStore provideTrainStationCloudDataStore(TrainApi trainApi, @ApplicationContext Context context) {
+        return new TrainStationCloudDataStore(trainApi, context);
     }
 
     @TrainScope
