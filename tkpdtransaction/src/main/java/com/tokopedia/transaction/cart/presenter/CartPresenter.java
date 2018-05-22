@@ -98,7 +98,7 @@ public class CartPresenter implements ICartPresenter {
     }
 
     void initializeInjector() {
-        AppComponent component = ((CartActivity) view.getContext()).getApplicationComponent();
+        AppComponent component = ((CartActivity) view.getActivityContext()).getApplicationComponent();
         CartPickupPointComponent cartPickupPointComponent = DaggerCartPickupPointComponent.builder()
                 .appComponent(component).build();
         cartPickupPointComponent.inject(this);
@@ -1053,7 +1053,7 @@ public class CartPresenter implements ICartPresenter {
     @Override
     public void processUpdatePickupPoint(String cartId, String oldStoreId, String newStoreId) {
         editCartPickupPointsUseCase.execute(
-                EditCartPickupPointsUseCase.generateParams(view.getContext(), cartId, oldStoreId, newStoreId),
+                EditCartPickupPointsUseCase.generateParams(view.getActivityContext(), cartId, oldStoreId, newStoreId),
                 new Subscriber<Response<TkpdResponse>>() {
                     @Override
                     public void onCompleted() {
@@ -1075,7 +1075,7 @@ public class CartPresenter implements ICartPresenter {
     @Override
     public void processRemovePickupPoint(String cartId, String oldStoreId) {
         removeCartPickupPointsUseCase.execute(
-                RemoveCartPickupPointsUseCase.generateParams(view.getContext(), cartId, oldStoreId),
+                RemoveCartPickupPointsUseCase.generateParams(view.getActivityContext(), cartId, oldStoreId),
                 new Subscriber<Response<TkpdResponse>>() {
             @Override
             public void onCompleted() {
