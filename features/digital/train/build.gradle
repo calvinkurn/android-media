@@ -1,0 +1,26 @@
+apply plugin: 'com.android.library'
+apply from: "$rootProject.projectDir/buildconfig/module.gradle"
+apply plugin: 'android-apt'
+
+dependencies {
+    compile project(rootProject.ext.libraries.travelCalendar)
+    compile project(rootProject.ext.libraries.useCase)
+    compile project(rootProject.ext.libraries.abstraction)
+    compile project(rootProject.ext.libraries.design)
+
+    compile rootProject.ext.supportLibDependencies.supportV4
+    apt rootProject.ext.dbDependencies.dbFlowProcessor
+    compile rootProject.ext.dbDependencies.dbFlowCore
+    compile rootProject.ext.dbDependencies.dbFlow
+
+    compile rootProject.ext.miscDependencies.dagger
+    apt rootProject.ext.miscDependencies.daggerCompiler
+    provided rootProject.ext.miscDependencies.javaxAnnotation
+
+    testCompile rootProject.ext.testDependencies.junit
+    testCompile rootProject.ext.testDependencies.mockitorCore
+    testCompile 'org.powermock:powermock-module-junit4:1.7.3'
+    testCompile 'org.powermock:powermock-api-mockito2:1.7.0'
+
+    compile rootProject.ext.debugToolsDependencies.stetho
+}

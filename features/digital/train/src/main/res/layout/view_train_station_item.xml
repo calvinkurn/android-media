@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:padding="@dimen/dp_16"
+    android:background="@drawable/selectable_background_tokopedia"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <android.support.v7.widget.AppCompatTextView
+        android:id="@+id/tv_station_name"
+        style="@style/TextView.Small.Bold"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        tools:text="Gambir (GMR)" />
+
+    <android.support.v7.widget.AppCompatTextView
+        android:id="@+id/tv_station_city"
+        style="@style/TextView.Small"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        tools:text="Jakarta" />
+
+</LinearLayout>

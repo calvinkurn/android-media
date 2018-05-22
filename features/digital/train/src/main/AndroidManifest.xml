@@ -1,0 +1,53 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.tokopedia.tkpdtrain">
+
+    <application
+        android:allowBackup="true"
+        android:label="@string/app_name"
+        android:supportsRtl="true">
+
+        <activity
+            android:name="com.tokopedia.train.homepage.presentation.activity.TrainHomepageActivity"
+            android:label="@string/train_homepage_toolbar_title"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White"
+            android:windowSoftInputMode="adjustResize" />
+        <activity
+            android:name="com.tokopedia.train.homepage.presentation.activity.TrainPassengerPickerActivity"
+            android:label="@string/select_passenger_toolbar_title"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White"
+            android:windowSoftInputMode="adjustResize" />
+        <activity
+            android:name="com.tokopedia.train.station.presentation.TrainStationsActivity"
+            android:label="@string/train_station_toolbar_title"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White"
+            android:windowSoftInputMode="adjustResize" />
+        <activity
+            android:name="com.tokopedia.train.search.presentation.activity.TrainDepartureSearchActivity"
+            android:label="@string/train_search_toolbar_title"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White"
+            android:windowSoftInputMode="adjustResize" />
+        <activity
+            android:name="com.tokopedia.train.search.presentation.activity.TrainReturnSearchActivity"
+            android:label="@string/train_search_toolbar_title"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White"
+            android:windowSoftInputMode="adjustResize" />
+        <activity
+            android:name="com.tokopedia.train.search.presentation.activity.TrainFilterSearchActivity"
+            android:label="@string/train_search_toolbar_title"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White"
+            android:windowSoftInputMode="adjustResize" />
+        <activity
+            android:name="com.tokopedia.train.scheduledetail.presentation.TrainScheduleDetailActivity"
+            android:label="@string/train_schedule_detail_toolbar_title"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White"
+            android:windowSoftInputMode="adjustResize" />
+    </application>
+
+</manifest>
