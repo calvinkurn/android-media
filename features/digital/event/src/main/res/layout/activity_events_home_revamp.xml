@@ -25,7 +25,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginTop="?attr/actionBarSize"
-        android:visibility="gone"
+        android:visibility="visible"
         tools:context="com.tokopedia.events.view.activity.EventsHomeActivity">
 
         <android.support.design.widget.AppBarLayout
@@ -109,7 +109,7 @@
                 <android.support.v4.view.ViewPager
                     android:id="@+id/viewpager_top_events"
                     android:layout_width="0dp"
-                    android:layout_height="220dp"
+                    android:layout_height="230dp"
                     android:layout_marginTop="@dimen/dp_16"
                     android:background="@color/white"
                     android:clipToPadding="false"
@@ -125,23 +125,26 @@
 
                 <TextView
                     android:id="@+id/tv_addtocalendar"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_width="0dp"
+                    android:layout_height="@dimen/dp_80"
+                    android:layout_marginBottom="@dimen/dp_16"
+                    android:layout_marginEnd="@dimen/dp_16"
                     android:layout_marginLeft="@dimen/dp_16"
                     android:layout_marginStart="@dimen/dp_16"
                     android:layout_marginTop="@dimen/dp_16"
-                    android:drawablePadding="@dimen/dp_12"
-                    android:paddingBottom="@dimen/dp_16"
+                    android:background="@drawable/event_blue_gradient"
+                    android:drawableLeft="@drawable/ic_event_calendar_green"
+                    android:gravity="center"
                     android:text="@string/lihat_kalendar_event"
-                    android:textColor="@color/green_nob"
+                    android:textColor="@color/white"
                     android:textSize="@dimen/sp_13"
                     android:textStyle="bold"
                     android:visibility="visible"
+                    app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/viewpager_top_events"
-                    tools:text="Lihat Kalendar Event" />
-
+                    app:layout_constraintWidth_default="spread" />
 
             </android.support.constraint.ConstraintLayout>
 
@@ -153,13 +156,13 @@
             <android.support.design.widget.TabLayout
                 android:id="@+id/tabs"
                 android:layout_width="match_parent"
-                android:layout_height="96dp"
+                android:layout_height="54dp"
                 android:layout_gravity="center_vertical"
                 android:background="@color/white"
                 app:layout_scrollFlags="scroll|snap"
                 app:tabGravity="fill"
                 app:tabIndicatorColor="@color/green_nob"
-                app:tabIndicatorHeight="0dp"
+                app:tabIndicatorHeight="@dimen/dp_2"
                 app:tabMode="scrollable"
                 app:tabSelectedTextColor="@color/green_nob" />
 

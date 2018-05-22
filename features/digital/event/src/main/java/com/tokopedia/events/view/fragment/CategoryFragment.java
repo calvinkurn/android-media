@@ -64,7 +64,7 @@ public class CategoryFragment extends TkpdBaseV4Fragment implements IFragmentLif
         View view = inflater.inflate(R.layout.event_category_view, container, false);
         ButterKnife.bind(this, view);
         linearLayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
-        eventCategoryAdapter = new EventCategoryAdapterRevamp(getActivity(), categoryViewModel.getItems(),false);
+        eventCategoryAdapter = new EventCategoryAdapterRevamp(getActivity(), categoryViewModel.getItems(), false);
         recyclerview.setLayoutManager(linearLayoutManager);
         recyclerview.setAdapter(eventCategoryAdapter);
         isCreated = true;
@@ -86,7 +86,11 @@ public class CategoryFragment extends TkpdBaseV4Fragment implements IFragmentLif
     @Override
     public void fragmentPause() {
         isSelected = false;
-        eventCategoryAdapter.disableTracking();
+        try {
+            eventCategoryAdapter.disableTracking();
+        } catch (NullPointerException e) {
+            e.printStackTrace();
+        }
     }
 
     private void sendGAProductImpression() {

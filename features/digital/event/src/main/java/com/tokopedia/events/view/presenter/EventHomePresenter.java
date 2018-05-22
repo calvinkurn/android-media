@@ -64,6 +64,7 @@ public class EventHomePresenter extends BaseDaggerPresenter<EventsContract.View>
     private TouchViewPager mTouchViewPager;
     private int currentPage, totalPages;
     private List<AdapterCallbacks> adapterCallbacks;
+    private boolean showFavAfterLogin = false;
     Subscription subscription;
 
 
@@ -141,8 +142,8 @@ public class EventHomePresenter extends BaseDaggerPresenter<EventsContract.View>
     @Override
     public boolean onOptionMenuClick(int id) {
         if (id == R.id.action_menu_search) {
-            ArrayList<CategoryItemsViewModel> searchViewModelList = Utils.getSingletonInstance()
-                    .convertIntoSearchViewModel(categoryViewModels);
+            ArrayList<CategoryItemsViewModel> searchViewModelList = (ArrayList<CategoryItemsViewModel>) Utils.getSingletonInstance()
+                    .getTopEvents();
             Intent searchIntent = EventSearchActivity.getCallingIntent(getView().getActivity());
             searchIntent.putParcelableArrayListExtra("TOPEVENTS", searchViewModelList);
             getView().navigateToActivityRequest(searchIntent,
@@ -245,10 +246,12 @@ public class EventHomePresenter extends BaseDaggerPresenter<EventsContract.View>
                 getView().hideProgressBar();
                 getView().showMessage(getView().getActivity().getResources()
                         .getString(R.string.like_share_events));
-                getView().toggleFavButton(true);
+                if (showFavAfterLogin) {
+                    showFavAfterLogin = false;
+                    getFavouriteItemsAndShow();
+                }
             } else {
                 getView().hideProgressBar();
-                getView().toggleFavButton(false);
             }
         }
     }
@@ -323,10 +326,6 @@ public class EventHomePresenter extends BaseDaggerPresenter<EventsContract.View>
                 getCarousel(categoryViewModels);
                 getView().renderCategoryList(categoryViewModels);
                 getView().showSearchButton();
-                if (SessionHandler.isV4Login(getView().getActivity()))
-                    getView().toggleFavButton(true);
-                else
-                    getView().toggleFavButton(false);
                 CommonUtils.dumper("enter onNext");
             }
         });
@@ -392,6 +391,7 @@ public class EventHomePresenter extends BaseDaggerPresenter<EventsContract.View>
                                 for (CategoryViewModel category : categoryViewModels) {
                                     for (CategoryItemsViewModel itemsViewModel : category.getItems()) {
                                         if (itemsViewModel.getId() == id) {
+                                            itemsViewModel.setLiked(true);
                                             favouritesItems.add(itemsViewModel);
                                         }
                                     }
@@ -426,6 +426,9 @@ public class EventHomePresenter extends BaseDaggerPresenter<EventsContract.View>
                     getView().navigateToActivityRequest(openFavIntent, 0);
                 }
             });
+        } else {
+            getView().showLoginSnackbar("Please Login to see your liked events");
+            showFavAfterLogin = true;
         }
     }
 }

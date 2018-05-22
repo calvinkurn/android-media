@@ -155,8 +155,8 @@ public class EventsHomeActivity extends TActivity
         mPresenter.getEventsList();
         setupToolbar();
         toolbar.setTitle("Events");
-        addToCalendar.setCompoundDrawablesWithIntrinsicBounds(null, null,
-                getResources().getDrawable(R.drawable.ic_event_calendar_green), null);
+        addToCalendar.setCompoundDrawablesWithIntrinsicBounds(getResources().getDrawable(R.drawable.ic_event_calendar_green), null,
+                null, null);
         searchView.setCompoundDrawablesWithIntrinsicBounds(getResources().getDrawable(R.drawable.ic_search_icon),
                 null, null, null);
         appBarLayout.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
@@ -229,15 +229,6 @@ public class EventsHomeActivity extends TActivity
     }
 
     @Override
-    public void toggleFavButton(boolean visibile) {
-        if (mMenu != null) {
-            MenuItem item = mMenu.findItem(R.id.action_menu_fav);
-            item.setVisible(visibile);
-            item.setEnabled(visibile);
-        }
-    }
-
-    @Override
     public void showSearchButton() {
         if (mMenu != null) {
             MenuItem item = mMenu.findItem(R.id.action_menu_search);
@@ -306,6 +297,7 @@ public class EventsHomeActivity extends TActivity
                 } else if ("top".equalsIgnoreCase(categoryViewModel.getName())) {
                     CardPagerAdapter cardPagerAdapter = new CardPagerAdapter(mPresenter);
                     cardPagerAdapter.addData(categoryViewModel.getItems());
+                    Utils.getSingletonInstance().setTopEvents(categoryViewModel.getItems());
                     ShadowTransformer cardShadowTransformer = new ShadowTransformer(topEventsViewPager, cardPagerAdapter);
                     cardShadowTransformer.enableScaling(true);
                     topEventsViewPager.setAdapter(cardPagerAdapter);
@@ -361,7 +353,6 @@ public class EventsHomeActivity extends TActivity
                 }
             }
         }
-        categoryViewPager.setCurrentItem(defaultViewPagerPos);
         categoryViewPager.setSaveFromParentEnabled(false);
         if (defaultViewPagerPos == 0) {
             IFragmentLifecycleCallback fragmentToShow = (CategoryFragment) categoryTabsPagerAdapter.getItem(defaultViewPagerPos);
@@ -400,6 +391,7 @@ public class EventsHomeActivity extends TActivity
             }
         });
         hTabMainContent.setVisibility(View.VISIBLE);
+        categoryViewPager.setCurrentItem(defaultViewPagerPos);
     }
 
 
@@ -481,6 +473,7 @@ public class EventsHomeActivity extends TActivity
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+        mPresenter.onActivityResult(requestCode);
     }
 
     @OnClick(R2.id.tv_addtocalendar)

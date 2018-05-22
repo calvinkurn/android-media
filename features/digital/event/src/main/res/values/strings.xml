@@ -49,6 +49,7 @@
     <string name="cari">Cari</string>
     <string name="filter">Filters</string>
     <string name="search">Search</string>
+    <string name="fav">Favorit</string>
     <string name="daftar_transaksi">Daftar Transaksi</string>
     <string name="bantuan">Bantuan</string>
     <string name="promo">Promo</string>
@@ -77,6 +78,7 @@
     <string name="cari_event_lokasi">Cari Event/Lokasi</string>
     <string name="find_event_here">Cari Event Seru Di Sini</string>
     <string name="belum_ada_event_favorit">Belum Ada Event Favorit</string>
+    <string name="top_event">TOP EVENT</string>
 
     <!-- need to changed -->
 

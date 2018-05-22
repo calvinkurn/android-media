@@ -74,24 +74,6 @@
             app:layout_constraintVertical_bias="1.0" />
 
         <TextView
-            android:id="@+id/tv3_sold_cnt"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="@dimen/margin_ms"
-            android:layout_marginRight="@dimen/margin_ms"
-            android:layout_marginTop="@dimen/margin_ms"
-            android:background="@drawable/rounded_rectangle_orange_solid"
-            android:paddingLeft="@dimen/dp_8"
-            android:paddingRight="@dimen/dp_8"
-            android:textColor="@color/white"
-            android:textSize="@dimen/sp_10"
-            android:textStyle="bold"
-            android:visibility="gone"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            tools:text="TERJUAL_298" />
-
-        <TextView
             android:id="@+id/tv3_tag"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -101,13 +83,14 @@
             android:background="@drawable/rounded_rectangle_orange_solid"
             android:paddingLeft="@dimen/dp_8"
             android:paddingRight="@dimen/dp_8"
-            android:text="Exklusif"
+            android:paddingTop="@dimen/dp_4"
+            android:paddingBottom="@dimen/dp_4"
+            android:text="@string/top_event"
             android:textColor="@color/white"
             android:textSize="@dimen/sp_10"
             android:textStyle="bold"
-            app:layout_constraintEnd_toStartOf="@+id/tv3_sold_cnt"
-            app:layout_constraintTop_toTopOf="parent"
-            tools:text="EXCLUSIF" />
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <android.support.constraint.Guideline
             android:id="@+id/horizontal_guideline"

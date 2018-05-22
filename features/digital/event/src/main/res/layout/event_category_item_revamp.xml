@@ -140,13 +140,6 @@
             app:layout_constraintTop_toTopOf="parent"
             tools:text="EXCLUSIF" />
 
-        <android.support.constraint.Guideline
-            android:id="@+id/horizontal_guideline"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:orientation="vertical"
-            android:visibility="visible"
-            app:layout_constraintGuide_percent="0.80" />
 
         <TextView
             android:id="@+id/tv4_date_time"
@@ -188,12 +181,12 @@
             android:paddingStart="@dimen/margin_vvvs"
             android:textColor="@color/black_54"
             android:textSize="@dimen/sp_12"
-            app:layout_constraintEnd_toStartOf="@+id/horizontal_guideline"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tv4_date_time"
             app:layout_constraintWidth_default="wrap"
-            tools:text="Jakartaaaaaaaaaaaaaaaaaaaaaaegegergegregrege" />
+            tools:text="Jakartaaaaaaaaaaaaaaaaaaaaaaegggergegregrege" />
 
         <TextView
             android:layout_width="wrap_content"
@@ -208,13 +201,13 @@
             android:paddingLeft="@dimen/dp_8"
             android:paddingRight="@dimen/dp_8"
             android:paddingTop="@dimen/dp_4"
+            android:layout_marginEnd="@dimen/dp_8"
             android:textColor="#ea212d"
             android:textSize="11sp"
             android:textStyle="normal"
             android:visibility="invisible"
-            app:layout_constraintBottom_toTopOf="@+id/divider1"
+            app:layout_constraintBaseline_toBaselineOf="@id/tv4_location"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/horizontal_guideline"
             tools:text="20% OFF" />
 
         <TextView

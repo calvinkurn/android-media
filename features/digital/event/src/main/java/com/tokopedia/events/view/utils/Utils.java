@@ -49,6 +49,7 @@ import rx.schedulers.Schedulers;
 
 public class Utils {
     private static Utils singleInstance;
+    private List<CategoryItemsViewModel> topEvents;
 
     synchronized public static Utils getSingletonInstance() {
         if (singleInstance == null)
@@ -234,6 +235,14 @@ public class Utils {
         Date date = new Date(epochTime);
         String dateString = sdf.format(date);
         return dateString;
+    }
+
+    public void setTopEvents(List<CategoryItemsViewModel> topEvents) {
+        this.topEvents = topEvents;
+    }
+
+    public List<CategoryItemsViewModel> getTopEvents() {
+        return this.topEvents;
     }
 
     public static String[] getDateArray(String dateRange) {
