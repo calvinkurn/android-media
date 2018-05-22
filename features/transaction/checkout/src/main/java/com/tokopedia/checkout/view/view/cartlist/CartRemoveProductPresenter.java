@@ -2,14 +2,15 @@ package com.tokopedia.checkout.view.view.cartlist;
 
 import com.google.gson.Gson;
 import com.tokopedia.abstraction.common.utils.TKPDMapParam;
-import com.tokopedia.transactiondata.entity.request.RemoveCartRequest;
-import com.tokopedia.transactiondata.entity.request.UpdateCartRequest;
+import com.tokopedia.checkout.R;
 import com.tokopedia.checkout.domain.datamodel.DeleteUpdateCartData;
 import com.tokopedia.checkout.domain.datamodel.cartlist.CartItemData;
 import com.tokopedia.checkout.domain.datamodel.cartlist.DeleteCartData;
 import com.tokopedia.checkout.domain.usecase.DeleteCartUpdateCartUseCase;
 import com.tokopedia.checkout.domain.usecase.DeleteCartUseCase;
 import com.tokopedia.checkout.view.base.CartMvpPresenter;
+import com.tokopedia.transactiondata.entity.request.RemoveCartRequest;
+import com.tokopedia.transactiondata.entity.request.UpdateCartRequest;
 import com.tokopedia.usecase.RequestParams;
 
 import java.util.ArrayList;
@@ -107,15 +108,20 @@ public class CartRemoveProductPresenter
 
                                 @Override
                                 public void onError(Throwable throwable) {
-
+                                    throwable.printStackTrace();
+                                    getMvpView().showError(getMvpView().getActivity().getString(R.string.default_request_error_unknown));
                                 }
 
                                 @Override
                                 public void onNext(DeleteUpdateCartData deleteUpdateCartData) {
                                     if (deleteUpdateCartData.isSuccess()) {
-                                        getMvpView().renderSuccessDeletePartialCart(deleteUpdateCartData.getMessage());
+                                        String messageSuccess = getMvpView().getActivity()
+                                                .getString(R.string.label_delete_cart_item_success);
+                                        getMvpView().renderSuccessDeletePartialCart(messageSuccess);
                                     } else {
-                                        getMvpView().renderOnFailureDeleteCart(deleteUpdateCartData.getMessage());
+                                        String messageFailed = getMvpView().getActivity().
+                                                getString(R.string.label_delete_cart_item_failed);
+                                        getMvpView().renderOnFailureDeleteCart(messageFailed);
                                     }
                                 }
                             })
@@ -137,15 +143,20 @@ public class CartRemoveProductPresenter
 
                                 @Override
                                 public void onError(Throwable throwable) {
-
+                                    throwable.printStackTrace();
+                                    getMvpView().showError(getMvpView().getActivity().getString(R.string.default_request_error_unknown));
                                 }
 
                                 @Override
                                 public void onNext(DeleteCartData deleteCartData) {
                                     if (deleteCartData.isSuccess()) {
-                                        getMvpView().renderSuccessDeleteAllCart(deleteCartData.getMessage());
+                                        String messageSuccess = getMvpView().getActivity()
+                                                .getString(R.string.label_delete_cart_item_success);
+                                        getMvpView().renderSuccessDeleteAllCart(messageSuccess);
                                     } else {
-                                        getMvpView().renderOnFailureDeleteCart(deleteCartData.getMessage());
+                                        String messageFailed = getMvpView().getActivity().
+                                                getString(R.string.label_delete_cart_item_failed);
+                                        getMvpView().renderOnFailureDeleteCart(messageFailed);
                                     }
                                 }
                             })

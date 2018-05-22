@@ -188,8 +188,8 @@ public class CartRemoveProductFragment extends BaseCheckoutFragment
     }
 
     @Override
-    public void showError() {
-
+    public void showError(String message) {
+        NetworkErrorHelper.showSnackbar(getActivity(), message);
     }
 
     public void removeCheckedProducts() {
