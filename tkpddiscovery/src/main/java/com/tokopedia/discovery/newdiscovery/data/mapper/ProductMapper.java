@@ -84,11 +84,15 @@ public class ProductMapper implements Func1<Response<String>, SearchResultModel>
             model.setImageUrl700(data.getImageUrl700());
             model.setRating(data.getRating());
             model.setCountReview(data.getCountReview());
+            model.setCountCourier(data.getCountCourier());
+            model.setDiscountPercentage(data.getDiscountPercentage());
+            model.setOriginalPrice(data.getOriginalPrice());
             model.setPrice(data.getPrice());
             model.setShopID(data.getShop().getId());
             model.setShopName(data.getShop().getName());
             model.setShopCity(data.getShop().getCity());
             model.setGoldMerchant(data.getShop().isIsGold());
+            model.setOfficial(data.getShop().isOfficial());
             model.setLabelList(mappingLabels(data.getLabels()));
             model.setBadgesList(mappingBadges(data.getBadges()));
             model.setFeatured(data.getIsFeatured() == 1);
