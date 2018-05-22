@@ -707,7 +707,8 @@ public class CartFragment extends BaseCheckoutFragment implements CartListAdapte
                 public void onClick(View view) {
                     checkoutAnalytics.eventClickCartClickBelanjaSekarangOnEmptyCart();
                     navigateToActivity(
-                            BrowseProductRouter.getSearchProductIntent(getActivity())
+                            ((ICheckoutModuleRouter) getActivity().getApplication())
+                                    .getHomeFeedIntent(getActivity())
                     );
                     getActivity().finish();
                 }

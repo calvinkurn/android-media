@@ -809,6 +809,11 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
+    public Intent getHomeFeedIntent(Context context) {
+        return ParentIndexHome.getHomeFeedIntent(context);
+    }
+
+    @Override
     public Intent getInboxReputationIntent(Context context) {
         return InboxReputationActivity.getCallingIntent(context);
     }
