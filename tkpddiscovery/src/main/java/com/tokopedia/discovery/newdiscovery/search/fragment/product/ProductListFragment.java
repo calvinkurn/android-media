@@ -552,7 +552,8 @@ public class ProductListFragment extends SearchSectionFragment
                     item.getProductAsObjectDataLayer(userId),
                     item.getPageNumber(),
                     productViewModel.getQuery(),
-                    getSelectedFilter()
+                    getSelectedFilter(),
+                    getSelectedSort()
             );
         }
     }

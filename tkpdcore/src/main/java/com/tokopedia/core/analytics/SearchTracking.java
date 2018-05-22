@@ -24,9 +24,14 @@ public class SearchTracking extends TrackingUtils {
     public static void trackEventClickSearchResultProduct(Object item,
                                                           int pageNumber,
                                                           String eventLabel,
-                                                          Map<String, String> selectedFilter) {
+                                                          Map<String, String> selectedFilter,
+                                                          Map<String, String> selectedSort) {
         getGTMEngine().enhanceClickSearchResultProduct(item,
-                eventLabel, getActionFieldString(pageNumber), generateFilterEventLabel(selectedFilter));
+                eventLabel, getActionFieldString(pageNumber),
+                concatFilterAndSortEventLabel(
+                        generateFilterEventLabel(selectedFilter),
+                        generateSortEventLabel(selectedSort)
+                ));
     }
 
     public static void trackEventClickImageSearchResultProduct(Object item, int position) {
@@ -157,6 +162,25 @@ public class SearchTracking extends TrackingUtils {
             filterList.add(entry.getKey() + "=" + entry.getValue());
         }
         return TextUtils.join("&", filterList);
+    }
+
+    private static String generateSortEventLabel(Map<String, String> selectedSort) {
+        if (selectedSort == null) {
+            return "";
+        }
+        List<String> sortList = new ArrayList<>();
+        for (Map.Entry<String, String> entry : selectedSort.entrySet()) {
+            sortList.add(entry.getKey() + "=" + entry.getValue());
+        }
+        return TextUtils.join("&", sortList);
+    }
+
+    private static String concatFilterAndSortEventLabel(String filterEventLabel, String sortEventLabel) {
+        if (TextUtils.isEmpty(filterEventLabel)) {
+            return sortEventLabel;
+        } else {
+            return filterEventLabel + "&" + sortEventLabel;
+        }
     }
 
     public static void eventSearchResultFilterJourney(String filterName,
