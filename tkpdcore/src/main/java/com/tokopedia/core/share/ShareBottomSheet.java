@@ -91,10 +91,23 @@ public class ShareBottomSheet extends BottomSheets implements ShareAdapter.OnIte
     }
 
     private List<ResolveInfo> validate(List<ResolveInfo> resolvedActivities) {
+
+//        List<String> packageNames = new ArrayList<>();
+//        packageNames.add("com.whatsapp");
+//        packageNames.add("com.facebook.katana");
+//        packageNames.add("jp.naver.line.android");
+//        packageNames.add("com.twitter.android");
+//        packageNames.add("com.google.android.apps.plus");
+//        for (String packageName : packageNames) {
+//            if (resolvedActivities.contains(packageName)) {
+//
+//            }
+//        }
+
         List<ResolveInfo> showApplications = new ArrayList<>();
         for (ResolveInfo resolveInfo : resolvedActivities) {
             if (Arrays.asList(PackageNameApplications)
-                    .contains(resolveInfo.activityInfo.packageName)) {
+                    .equals(resolveInfo.activityInfo.packageName)) {
                 showApplications.add(resolveInfo);
             }
         }
@@ -149,7 +162,7 @@ public class ShareBottomSheet extends BottomSheets implements ShareAdapter.OnIte
 
     private Intent getIntent(String contains) {
         final Intent mIntent = new Intent(Intent.ACTION_SEND);
-        mIntent.setType("text/plain");
+        mIntent.setType("text/image");
 
         String title = "";
         if (data != null) {
