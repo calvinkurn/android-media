@@ -58,7 +58,8 @@ public class ListAdapterPresenterImpl extends BaseDaggerPresenter<ListAdapterCon
         view.setStatus(order.statusStr());
         if (order.status() == 0 || order.status() == 800 || order.status() == 901) {
             view.setStatusBgColor(0);
-        } else if (!order.statusColor().equals("")) {
+        }
+        if (!order.statusColor().equals("")) {
             view.setStatusBgColor(Color.parseColor(order.statusColor()));
         }
         if (!order.conditionalInfo().text().equals("")) {
