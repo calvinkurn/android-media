@@ -171,7 +171,7 @@ public class ProductPriceViewHolder extends ProductViewHolder{
 
         if (price > 0) {
             setLabelWHolesale(productWholesaleViewModels);
-            if(listener.hasVariant()){
+            if(listener.hasVariant() || listener.hasWholesale()){
                 priceSpinnerCounterInputView.setEnabled(false);
                 editPriceImageButton.setVisibility(View.VISIBLE);
                 priceSpinnerCounterInputView.setCounterError(null);
