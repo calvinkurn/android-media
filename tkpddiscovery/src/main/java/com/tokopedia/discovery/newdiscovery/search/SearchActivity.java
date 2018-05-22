@@ -8,7 +8,6 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
-import android.view.View;
 import android.view.ViewTreeObserver;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
@@ -78,7 +77,6 @@ public class SearchActivity extends DiscoveryActivity
     SearchPresenter searchPresenter;
 
     private SearchComponent searchComponent;
-    private boolean forImageSearch = false;
 
     public SearchComponent getSearchComponent() {
         return searchComponent;
@@ -139,14 +137,7 @@ public class SearchActivity extends DiscoveryActivity
         if (productViewModel != null) {
             setLastQuerySearchView(productViewModel.getQuery());
             loadSection(productViewModel, forceSwipeToShop);
-
-            forImageSearch = productViewModel.isImageSearch();
-
-            if (!forImageSearch)
-                setToolbarTitle(productViewModel.getQuery());
-            else
-                setToolbarTitle("Image Search");
-
+            setToolbarTitle(productViewModel.getQuery());
             bottomSheetFilterView.setFilterResultCount(productViewModel.getSuggestionModel().getFormattedResultCount());
         } else if (!TextUtils.isEmpty(searchQuery)) {
             onProductQuerySubmit(searchQuery);
@@ -188,22 +179,14 @@ public class SearchActivity extends DiscoveryActivity
 
         if (productViewModel.isHasCatalog()) {
             populateThreeTabItem(searchSectionItemList, productViewModel);
-        } else if (!productViewModel.isImageSearch()) {
-            populateTwoTabItem(searchSectionItemList, productViewModel);
         } else {
-            populateOneTabItem(searchSectionItemList, productViewModel);
+            populateTwoTabItem(searchSectionItemList, productViewModel);
         }
         searchSectionPagerAdapter = new SearchSectionPagerAdapter(getSupportFragmentManager());
         searchSectionPagerAdapter.setData(searchSectionItemList);
         viewPager.setAdapter(searchSectionPagerAdapter);
         tabLayout.setupWithViewPager(viewPager);
         setActiveTab(forceSwipeToShop);
-    }
-
-    private void populateOneTabItem(List<SearchSectionItem> searchSectionItemList, ProductViewModel productViewModel) {
-        productListFragment = getProductFragment(productViewModel);
-        searchSectionItemList.add(new SearchSectionItem(productTabTitle, productListFragment));
-        tabLayout.setVisibility(View.GONE);
     }
 
     private void setActiveTab(final boolean swipeToShop) {

@@ -17,7 +17,6 @@ import android.view.View;
 import android.view.Window;
 import android.widget.FrameLayout;
 import android.widget.ProgressBar;
-import android.widget.Toast;
 
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigation;
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigationItem;
@@ -448,6 +447,13 @@ public class DiscoveryActivity extends BaseDiscoveryActivity implements
 
             fromCamera = requestCode == UploadImageDialog.REQUEST_CAMERA;
 
+            if (uploadDialog == null) {
+                uploadDialog = new UploadImageDialog(DiscoveryActivity.this);
+                if (searchView != null) {
+                    searchView.clearFocus();
+                }
+            }
+
             uploadDialog.onResult(
                     requestCode,
                     resultCode,
@@ -523,6 +529,10 @@ public class DiscoveryActivity extends BaseDiscoveryActivity implements
 
     @Override
     public void onHandleImageSearchResponseSuccess() {
+
+        if (tkpdProgressDialog != null) {
+            tkpdProgressDialog.dismiss();
+        }
         if (fromCamera) {
             sendCameraImageSearchResultGTM(SUCCESS);
         } else {

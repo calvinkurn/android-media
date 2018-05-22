@@ -1,6 +1,7 @@
 package com.tokopedia.tokocash.network;
 
 import com.tokopedia.tokocash.WalletUserSession;
+import com.tokopedia.tokocash.di.RetrofitWalletQualifier;
 import com.tokopedia.tokocash.network.api.TokoCashApi;
 import com.tokopedia.tokocash.network.model.RefreshTokenEntity;
 import com.tokopedia.tokocash.network.model.WalletTokenEntity;
@@ -19,7 +20,7 @@ public class WalletTokenRefresh {
     private WalletUserSession walletUserSession;
     private Retrofit retrofit;
 
-    public WalletTokenRefresh(WalletUserSession walletUserSession, Retrofit retrofit) {
+    public WalletTokenRefresh(WalletUserSession walletUserSession, @RetrofitWalletQualifier Retrofit retrofit) {
         this.walletUserSession = walletUserSession;
         this.retrofit = retrofit;
     }

@@ -83,7 +83,6 @@ public class ProductListFragment extends SearchSectionFragment
     private static final String EXTRA_SEARCH_PARAMETER = "EXTRA_SEARCH_PARAMETER";
     private static final String EXTRA_FORCE_SEARCH = "EXTRA_FORCE_SEARCH";
     private static final String EXTRA_QUICK_FILTER_LIST = "EXTRA_QUICK_FILTER_LIST";
-    private static final int MAXIMUM_PRODUCT_COUNT_FOR_ONE_EVENT = 12;
 
     protected RecyclerView recyclerView;
     @Inject
@@ -142,7 +141,7 @@ public class ProductListFragment extends SearchSectionFragment
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
         if (savedInstanceState != null) {
-            switchLayoutType(productViewModel.isImageSearch());
+            switchLayoutType();
         }
     }
 
@@ -171,8 +170,6 @@ public class ProductListFragment extends SearchSectionFragment
         initTopAdsParams();
         setupAdapter();
         setupListener();
-        if (productViewModel.isImageSearch())
-            disableSwipeRefresh();
     }
 
 
@@ -221,13 +218,12 @@ public class ProductListFragment extends SearchSectionFragment
             }
         });
 
+        setHeaderTopAds(true);
         if (productViewModel.getProductList().isEmpty()) {
             setEmptyProduct();
-            setHeaderTopAds(false);
             showBottomBarNavigation(false);
         } else {
             setProductList(initMappingProduct());
-            setHeaderTopAds(true);
             showBottomBarNavigation(true);
         }
 
@@ -257,6 +253,7 @@ public class ProductListFragment extends SearchSectionFragment
         TopAdsParams adsParams = new TopAdsParams();
         adsParams.getParam().put(TopAdsParams.KEY_SRC, BrowseApi.DEFAULT_VALUE_SOURCE_SEARCH); //[TODO replace source with source from parameters
         adsParams.getParam().put(TopAdsParams.KEY_QUERY, getQueryKey());
+        adsParams.getParam().putAll(getAdditionalParams());
 
         if (getFlagFilterHelper() != null &&
                 !TextUtils.isEmpty(getFlagFilterHelper().getCategoryId())) {
@@ -267,8 +264,7 @@ public class ProductListFragment extends SearchSectionFragment
             adsParams.getParam().put(TopAdsParams.KEY_DEPARTEMENT_ID, getSearchParameter().getDepartmentId());
         }
         enrichWithFilterAndSortParams(adsParams);
-        if (!productViewModel.isImageSearch())
-            topAdsConfig.setTopAdsParams(adsParams);
+        topAdsConfig.setTopAdsParams(adsParams);
     }
 
     @Override
@@ -298,32 +294,9 @@ public class ProductListFragment extends SearchSectionFragment
 
     @Override
     public void setProductList(List<Visitable> list) {
-        if (productViewModel.isImageSearch()) {
-            sendImageTrackingDataInChunks(list);
-        } else {
-            sendProductImpressionTrackingEvent(list);
-        }
+        sendProductImpressionTrackingEvent(list);
 
         adapter.appendItems(list);
-    }
-
-    private void sendImageTrackingDataInChunks(List<Visitable> list) {
-        if (list != null && list.size() > 0) {
-            String userId = SessionHandler.isV4Login(getContext()) ? SessionHandler.getLoginID(getContext()) : "";
-            List<Object> dataLayerList = new ArrayList<>();
-            for (int j = 0; j < list.size(); ) {
-                int count = 0;
-                dataLayerList.clear();
-                while (count < MAXIMUM_PRODUCT_COUNT_FOR_ONE_EVENT && j < list.size()) {
-                    count++;
-                    if (list.get(j) instanceof ProductItem) {
-                        dataLayerList.add(((ProductItem) list.get(j)).getProductAsObjectDataLayer(userId));
-                    }
-                    j++;
-                }
-                SearchTracking.eventImpressionImageSearchResultProduct(dataLayerList);
-            }
-        }
     }
 
     private void sendProductImpressionTrackingEvent(List<Visitable> list) {
@@ -409,10 +382,8 @@ public class ProductListFragment extends SearchSectionFragment
     @Override
     protected List<AHBottomNavigationItem> getBottomNavigationItems() {
         List<AHBottomNavigationItem> items = new ArrayList<>();
-        if (!productViewModel.isImageSearch()) {
-            items.add(new AHBottomNavigationItem(getString(R.string.sort), R.drawable.ic_sort_black));
-            items.add(new AHBottomNavigationItem(getString(R.string.filter), R.drawable.ic_filter_list_black));
-        }
+        items.add(new AHBottomNavigationItem(getString(R.string.sort), R.drawable.ic_sort_black));
+        items.add(new AHBottomNavigationItem(getString(R.string.filter), R.drawable.ic_filter_list_black));
         items.add(new AHBottomNavigationItem(getString(adapter.getTitleTypeRecyclerView()), adapter.getIconTypeRecyclerView()));
         items.add(new AHBottomNavigationItem(getString(R.string.share), R.drawable.ic_share_black));
         return items;
@@ -425,18 +396,11 @@ public class ProductListFragment extends SearchSectionFragment
             public boolean onTabSelected(final int position, boolean wasSelected) {
                 switch (position) {
                     case 0:
-                        if (productViewModel.isImageSearch())
-                            switchLayoutType(true);
-                        else
-                            openSortActivity();
+                        openSortActivity();
                         return true;
                     case 1:
-                        if (productViewModel.isImageSearch())
-                            startShareActivity(productViewModel.getShareUrl());
-                        else {
-                            SearchTracking.eventSearchResultOpenFilterPageProduct();
-                            openFilterActivity();
-                        }
+                        SearchTracking.eventSearchResultOpenFilterPageProduct();
+                        openFilterActivity();
                         return true;
                     case 2:
                         switchLayoutType();
@@ -531,6 +495,26 @@ public class ProductListFragment extends SearchSectionFragment
         data.setName(item.getProductName());
         data.setPrice(item.getPrice());
         data.setImgUri(item.getImageUrl());
+        data.setIsWishlist(item.isWishlisted());
+        data.setRating(Integer.toString(item.getRating()));
+        data.setReviewCount(Integer.toString(item.getCountReview()));
+        data.setCountCourier(item.getCountCourier());
+        data.setDiscountPercentage(item.getDiscountPercentage());
+        data.setOriginalPrice(item.getOriginalPrice());
+        data.setShop(item.getShopName());
+        data.setShopLocation(item.getShopCity());
+        data.setOfficial(item.isOfficial());
+
+        if (item.getLabelList() != null) {
+            for (int i = 0; i < item.getLabelList().size(); i++) {
+                if (item.getLabelList().get(i).getTitle().toLowerCase()
+                        .contains(getContext().getString(R.string.cashback))) {
+                    data.setCashback(item.getLabelList().get(i).getTitle());
+                    break;
+                }
+            }
+        }
+
         Bundle bundle = new Bundle();
         Intent intent = ProductDetailRouter.createInstanceProductDetailInfoActivity(getActivity());
         bundle.putParcelable(ProductDetailRouter.EXTRA_PRODUCT_ITEM, data);
@@ -544,18 +528,13 @@ public class ProductListFragment extends SearchSectionFragment
         String userId = SessionHandler.isV4Login(getContext()) ?
                 SessionHandler.getLoginID(getContext()) : "";
 
-        if (productViewModel.isImageSearch()) {
-            SearchTracking.trackEventClickImageSearchResultProduct(
-                    item.getProductAsObjectDataLayerForImageSearch(userId), (item.getPosition() + 1) / 2);
-        } else {
-            SearchTracking.trackEventClickSearchResultProduct(
-                    item.getProductAsObjectDataLayer(userId),
-                    item.getPageNumber(),
-                    productViewModel.getQuery(),
-                    getSelectedFilter(),
-                    getSelectedSort()
-            );
-        }
+        SearchTracking.trackEventClickSearchResultProduct(
+                item.getProductAsObjectDataLayer(userId),
+                item.getPageNumber(),
+                productViewModel.getQuery(),
+                getSelectedFilter(),
+                getSelectedSort()
+        );
     }
 
     @Override
@@ -840,9 +819,6 @@ public class ProductListFragment extends SearchSectionFragment
 
     @Override
     public void getQuickFilter() {
-        if (productViewModel.isImageSearch()) {
-            return;
-        }
         presenter.requestQuickFilter(NetworkParamHelper.getParamMap(productViewModel.getAdditionalParams()));
     }
 

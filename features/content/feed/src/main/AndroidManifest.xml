@@ -1,0 +1,37 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+
+          package="com.tokopedia.feedplus">
+
+    <application
+        android:allowBackup="true"
+        android:label="@string/app_name"
+        android:supportsRtl="true">
+
+        <activity
+            android:name="view.activity.BlogWebViewActivity"
+            android:label="@string/app_name"
+            />
+
+        <activity
+            android:name=".view.activity.RecentViewActivity"
+            android:label="@string/recent_view"
+            />
+
+        <activity
+            android:name=".view.activity.TransparentVideoActivity"
+            android:configChanges="orientation"
+            android:label="@string/app_name"
+            android:theme="@style/Theme.Transparent.Black"/>
+
+        <activity
+            android:name=".view.activity.KolProfileWebViewActivity"
+            />
+
+        <activity android:name=".ReactNativeExplorePageActivity"
+             />
+        <activity android:name=".ReactNativeContentDetailsActivity"
+             />
+
+    </application>
+
+</manifest>

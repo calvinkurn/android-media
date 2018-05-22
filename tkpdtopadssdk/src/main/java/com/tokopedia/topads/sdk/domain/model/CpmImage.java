@@ -11,9 +11,11 @@ public class CpmImage {
 
     private static final String KEY_FULL_URL = "full_url";
     private static final String KEY_FULL_ECS = "full_ecs";
+    private static final String KEY_ILUSTRATION_URL = "illustration_url";
 
     private String fullUrl;
     private String fullEcs;
+    private String ilustrationUrl;
 
     public CpmImage(JSONObject object) throws JSONException {
         if(!object.isNull(KEY_FULL_URL)){
@@ -22,6 +24,17 @@ public class CpmImage {
         if(!object.isNull(KEY_FULL_ECS)){
             setFullEcs(object.getString(KEY_FULL_ECS));
         }
+        if(!object.isNull(KEY_ILUSTRATION_URL)){
+            setIlustrationUrl(object.getString(KEY_ILUSTRATION_URL));
+        }
+    }
+
+    public void setIlustrationUrl(String ilustrationUrl) {
+        this.ilustrationUrl = ilustrationUrl;
+    }
+
+    public String getIlustrationUrl() {
+        return ilustrationUrl;
     }
 
     public String getFullUrl() {

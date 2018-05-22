@@ -12,7 +12,7 @@ import com.google.gson.annotations.SerializedName;
 
 public class SaveLocationData implements Parcelable {
     private String message;
-    @SerializedName("status")
+    @SerializedName("is_success")
     @Expose
     private String status;
 
