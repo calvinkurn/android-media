@@ -36,6 +36,7 @@ import java.util.List;
 import javax.inject.Inject;
 
 import static com.tokopedia.core.gcm.Constants.FROM_APP_SHORTCUTS;
+import static com.tokopedia.core.router.discovery.BrowseProductRouter.DEPARTMENT_ID;
 import static com.tokopedia.core.router.discovery.BrowseProductRouter.EXTRAS_SEARCH_TERM;
 
 /**
@@ -78,8 +79,7 @@ public class SearchActivity extends DiscoveryActivity
         Intent intent = new Intent(context, SearchActivity.class);
 
         if (!TextUtils.isEmpty(departmentId)) {
-            intent = BrowseProductRouter.getDefaultBrowseIntent(context);
-            throw new RuntimeException("this should go to category activity");
+            intent.putExtra(DEPARTMENT_ID, departmentId);
         }
 
         intent.putExtra(EXTRAS_SEARCH_TERM, bundle.getString(BrowseApi.Q, bundle.getString("keyword", "")));
@@ -117,7 +117,8 @@ public class SearchActivity extends DiscoveryActivity
                 getIntent().getParcelableExtra(EXTRA_PRODUCT_VIEW_MODEL);
 
         boolean forceSwipeToShop;
-        String searchQuery = getIntent().getStringExtra(BrowseProductRouter.EXTRAS_SEARCH_TERM);
+        String searchQuery = getIntent().getStringExtra(EXTRAS_SEARCH_TERM);
+        String categoryId = getIntent().getStringExtra(DEPARTMENT_ID);
 
         if (savedInstanceState != null) {
             forceSwipeToShop = isForceSwipeToShop();
@@ -129,7 +130,11 @@ public class SearchActivity extends DiscoveryActivity
             loadSection(productViewModel, forceSwipeToShop);
             setToolbarTitle(productViewModel.getQuery());
         } else if (!TextUtils.isEmpty(searchQuery)) {
-            onProductQuerySubmit(searchQuery);
+            if (!TextUtils.isEmpty(categoryId)) {
+                onSuggestionProductClick(searchQuery, categoryId);
+            } else {
+                onSuggestionProductClick(searchQuery);
+            }
         } else {
             searchView.showSearch(true, false);
             new Handler().postDelayed(new Runnable() {

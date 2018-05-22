@@ -45,4 +45,5 @@
     <string name="on_board_title" >Pencarian Gambar</string>
     <string name="on_board_desc" >Kini lebih mudah. Cukup ambil gambar dan temukan produk yang diinginkan.</string>
     <string name="image_search_title" >Pencarian Gambar</string>
+    <string name="title_all">Semua</string>
 </resources>
