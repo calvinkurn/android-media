@@ -152,11 +152,14 @@ public class OrderDetailActivity extends TActivity
         RelativeLayout uploadAwbHolder = findViewById(R.id.upload_awb_layout);
         TextView tvUploadAwbMessage = findViewById(R.id.tv_upload_awb_message);
         TextView btnUploadAwb = findViewById(R.id.btn_upload_awb);
+        View separatorAwb = findViewById(R.id.separator_awb);
 
         if (TextUtils.isEmpty(data.getAwbUploadProofText())) {
             uploadAwbHolder.setVisibility(View.GONE);
+            separatorAwb.setVisibility(View.VISIBLE);
         } else {
             uploadAwbHolder.setVisibility(View.VISIBLE);
+            separatorAwb.setVisibility(View.GONE);
             tvUploadAwbMessage.setText(Html.fromHtml(data.getAwbUploadProofText()));
             if (data.isShowUploadAwb()) {
                 btnUploadAwb.setVisibility(View.VISIBLE);

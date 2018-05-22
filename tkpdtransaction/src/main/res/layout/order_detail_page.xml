@@ -105,6 +105,12 @@
                     android:background="#fde18e"/>
             </RelativeLayout>
 
+            <View
+                android:id="@+id/separator_awb"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/grey_300"/>
+
             <LinearLayout
                 android:id="@+id/awb_layout"
                 android:layout_width="match_parent"

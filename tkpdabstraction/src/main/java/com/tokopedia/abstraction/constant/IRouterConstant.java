@@ -44,10 +44,6 @@ public interface IRouterConstant {
             int VOUCHER_TAB = 0;
             int COUPON_TAB = 1;
 
-
-            String EVENT_STRING = "event";
-            String EXTRA_PRODUCTID = "EXTRA_PRODUCTID";
-            String EXTRA_CATEGORYID = "EXTRA_CATEGORYID";
         }
 
         interface ResultLoyaltyActivity {
