@@ -1,6 +1,8 @@
 package com.tokopedia.topads.group.data.source;
 
+import com.tokopedia.abstraction.common.data.model.request.DataRequest;
 import com.tokopedia.topads.dashboard.data.model.data.GroupAd;
+import com.tokopedia.topads.dashboard.data.model.data.GroupAdBulkAction;
 import com.tokopedia.topads.dashboard.data.model.response.PageDataResponse;
 import com.tokopedia.topads.group.data.source.cloud.TopAdsGroupAdDataSourceCloud;
 import com.tokopedia.usecase.RequestParams;
@@ -22,5 +24,13 @@ public class TopAdsGroupAdDataSource {
 
     public Observable<PageDataResponse<List<GroupAd>>> getGroupAd(RequestParams requestParams){
         return dataSourceCloud.getGroupAd(requestParams);
+    }
+
+    public Observable<GroupAdBulkAction> bulkAction(DataRequest<GroupAdBulkAction> dataRequest) {
+        return dataSourceCloud.bulkAction(dataRequest);
+    }
+
+    public Observable<List<GroupAd>> searchGroupAd(RequestParams requestParams){
+        return dataSourceCloud.searchGroupAd(requestParams);
     }
 }

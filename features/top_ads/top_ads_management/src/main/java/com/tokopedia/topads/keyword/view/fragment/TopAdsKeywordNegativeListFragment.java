@@ -3,7 +3,10 @@ package com.tokopedia.topads.keyword.view.fragment;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel;
 import com.tokopedia.topads.R;
+import com.tokopedia.topads.dashboard.data.model.data.GroupAd;
 import com.tokopedia.topads.sourcetagging.constant.TopAdsSourceOption;
+
+import java.util.List;
 
 /**
  * Created by hadi.putra on 11/05/18.

@@ -11,9 +11,14 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 
 public abstract class BaseMultipleCheckViewHolder<T extends Visitable> extends AbstractViewHolder<T> {
     protected CheckedCallback<T> checkedCallback;
+    protected OptionMoreCallback<T> optionMoreCallback;
 
     public void setCheckedCallback(CheckedCallback<T> checkedCallback) {
         this.checkedCallback = checkedCallback;
+    }
+
+    public void setOptionMoreCallback(OptionMoreCallback<T> optionMoreCallback) {
+        this.optionMoreCallback = optionMoreCallback;
     }
 
     public BaseMultipleCheckViewHolder(View itemView) {
@@ -30,5 +35,9 @@ public abstract class BaseMultipleCheckViewHolder<T extends Visitable> extends A
 
     public interface CheckedCallback<T>{
         void onItemChecked(T item, boolean isChecked);
+    }
+
+    public interface OptionMoreCallback<T>{
+        void onClickMore(T item);
     }
 }

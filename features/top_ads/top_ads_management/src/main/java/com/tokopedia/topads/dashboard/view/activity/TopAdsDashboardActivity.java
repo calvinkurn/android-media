@@ -2,8 +2,11 @@ package com.tokopedia.topads.dashboard.view.activity;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
+import android.view.View;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tokopedia.abstraction.common.di.component.HasComponent;
@@ -25,6 +28,7 @@ import com.tokopedia.topads.TopAdsModuleRouter;
 import com.tokopedia.topads.common.view.utils.ShowCaseDialogFactory;
 import com.tokopedia.topads.dashboard.di.component.TopAdsComponent;
 import com.tokopedia.topads.dashboard.view.fragment.TopAdsDashboardFragment;
+import com.tokopedia.topads.dashboard.view.listener.OneUseGlobalLayoutListener;
 
 import java.util.ArrayList;
 
@@ -161,65 +165,73 @@ public class TopAdsDashboardActivity extends DrawerPresenterActivity implements 
         });
 
         final ArrayList<ShowCaseObject> showCaseList = new ArrayList<>();
-        if (fragment.getStatisticsOptionLabelView() != null) {
-            showCaseList.add(new ShowCaseObject(fragment.getStatisticsOptionLabelView(),
-                    getString(R.string.topads_showcase_home_title_7),
-                    getString(R.string.topads_showcase_home_desc_7),
-                    ShowCaseContentPosition.UNDEFINED,
-                    R.color.white));
+        final Toolbar toolbar = (Toolbar) findViewById(R.id.app_bar);
+        if (toolbar.getHeight() > 0) {
+            int height = toolbar.getHeight();
+            int width = toolbar.getWidth();
+
+            if (fragment.getShopInfoLayout() != null) {
+                showCaseList.add(new ShowCaseObject(fragment.getShopInfoLayout(),
+                        getString(R.string.topads_showcase_home_title_3),
+                        getString(R.string.topads_showcase_home_desc_3),
+                        ShowCaseContentPosition.UNDEFINED,
+                        R.color.white, fragment.getScrollView()));
+            }
+            if (fragment.isContentVisible()) {
+                if (fragment.getContentStatisticsView() != null) {
+                    showCaseList.add(new ShowCaseObject(fragment.getContentStatisticsView(),
+                            getString(R.string.topads_showcase_home_title_7),
+                            getString(R.string.topads_showcase_home_desc_5),
+                            ShowCaseContentPosition.UNDEFINED,
+                            R.color.white, fragment.getScrollView()));
+                }
+
+                if (fragment.getGroupSummaryLabelView() != null) {
+                    showCaseList.add(new ShowCaseObject(fragment.getGroupSummaryLabelView(),
+                            getString(R.string.topads_showcase_home_title_8),
+                            getString(R.string.topads_showcase_home_desc_8),
+                            ShowCaseContentPosition.UNDEFINED,
+                            R.color.white, fragment.getScrollView()));
+                }
+                if (fragment.getViewGroupPromo() != null) {
+                    showCaseList.add(new ShowCaseObject(fragment.getViewGroupPromo(),
+                            getString(R.string.topads_showcase_home_title_1),
+                            getString(R.string.topads_showcase_home_desc_1),
+                            ShowCaseContentPosition.UNDEFINED,
+                            R.color.white, fragment.getScrollView()));
+                }
+            }
+
+            if (fragment.getButtonAddPromo() != null) {
+                showCaseList.add(new ShowCaseObject(fragment.getButtonAddPromo(),
+                        getString(R.string.topads_showcase_home_title_6),
+                        getString(R.string.topads_showcase_home_desc_6),
+                        ShowCaseContentPosition.UNDEFINED,
+                        R.color.white));
+            }
+
+            showCaseList.add(
+                    new ShowCaseObject(
+                            findViewById(android.R.id.content),
+                            getString(R.string.topads_showcase_help),
+                            getString(R.string.topads_showcase_detail_help),
+                            ShowCaseContentPosition.UNDEFINED,
+                            Color.WHITE)
+                            .withCustomTarget(new int[]{width - (int) (height * 0.8), 0, width, height}));
+
+            showCaseDialog.show(this, showCaseTag, showCaseList);
+        } else {
+            toolbar.getViewTreeObserver().addOnGlobalLayoutListener(new OneUseGlobalLayoutListener(
+                    toolbar,
+                    new OneUseGlobalLayoutListener.OnGlobalLayoutListener() {
+                        @Override
+                        public void onGlobalLayout() {
+                            startShowCase();
+                        }
+                    }
+            ));
         }
 
-        if (fragment.getDateLabelView() != null){
-            showCaseList.add(new ShowCaseObject(fragment.getDateLabelView(),
-                    getString(R.string.topads_showcase_home_title_4),
-                    getString(R.string.topads_showcase_home_desc_4),
-                    ShowCaseContentPosition.UNDEFINED,
-                    R.color.white));
-        }
-        if (fragment.getContentStatisticsView() != null){
-            showCaseList.add(new ShowCaseObject(fragment.getContentStatisticsView(),
-                    getString(R.string.topads_showcase_home_title_5),
-                    getString(R.string.topads_showcase_home_desc_5),
-                    ShowCaseContentPosition.UNDEFINED,
-                    R.color.white));
-        }
-        if (fragment.getGroupSummaryLabelView() != null){
-            showCaseList.add(new ShowCaseObject(fragment.getGroupSummaryLabelView(),
-                    getString(R.string.topads_showcase_home_title_8),
-                    getString(R.string.topads_showcase_home_desc_8),
-                    ShowCaseContentPosition.UNDEFINED,
-                    R.color.white, fragment.getScrollView()));
-        }
-        if (fragment.getItemSummaryLabelView() != null){
-            showCaseList.add(new ShowCaseObject(fragment.getItemSummaryLabelView(),
-                    getString(R.string.topads_showcase_home_title_1),
-                    getString(R.string.topads_showcase_home_desc_1),
-                    ShowCaseContentPosition.UNDEFINED,
-                    R.color.white, fragment.getScrollView()));
-        }
-        if (fragment.getKeywordLabelView() != null){
-            showCaseList.add(new ShowCaseObject(fragment.getKeywordLabelView(),
-                    getString(R.string.topads_showcase_home_title_9),
-                    getString(R.string.topads_showcase_home_desc_9),
-                    ShowCaseContentPosition.UNDEFINED,
-                    R.color.white, fragment.getScrollView()));
-        }
-        if (fragment.getStoreLabelView() != null){
-            showCaseList.add(new ShowCaseObject(fragment.getStoreLabelView(),
-                    getString(R.string.topads_showcase_home_title_2),
-                    getString(R.string.topads_showcase_home_desc_2),
-                    ShowCaseContentPosition.UNDEFINED,
-                    R.color.white, fragment.getScrollView()));
-        }
 
-        if (fragment.getButtonAddPromo() != null){
-            showCaseList.add(new ShowCaseObject(fragment.getButtonAddPromo(),
-                    getString(R.string.topads_showcase_home_title_6),
-                    getString(R.string.topads_showcase_home_desc_6),
-                    ShowCaseContentPosition.UNDEFINED,
-                    R.color.white));
-        }
-
-        showCaseDialog.show(this, showCaseTag, showCaseList);
     }
 }

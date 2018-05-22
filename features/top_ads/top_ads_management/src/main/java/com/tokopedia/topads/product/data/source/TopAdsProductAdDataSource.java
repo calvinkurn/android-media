@@ -1,6 +1,8 @@
 package com.tokopedia.topads.product.data.source;
 
+import com.tokopedia.abstraction.common.data.model.request.DataRequest;
 import com.tokopedia.topads.dashboard.data.model.data.ProductAd;
+import com.tokopedia.topads.dashboard.data.model.data.ProductAdBulkAction;
 import com.tokopedia.topads.dashboard.data.model.response.PageDataResponse;
 import com.tokopedia.topads.product.data.source.cloud.TopAdsProductAdDataSourceCloud;
 import com.tokopedia.usecase.RequestParams;
@@ -22,5 +24,9 @@ public class TopAdsProductAdDataSource {
 
     public Observable<PageDataResponse<List<ProductAd>>> getProductAd(RequestParams requestParams){
         return dataSourceCloud.getProductAd(requestParams);
+    }
+
+    public Observable<ProductAdBulkAction> bulkAction(DataRequest<ProductAdBulkAction> dataRequest) {
+        return dataSourceCloud.bulkAction(dataRequest);
     }
 }

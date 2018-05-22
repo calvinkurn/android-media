@@ -1,9 +1,11 @@
 package com.tokopedia.topads.keyword.data.repository;
 
+import com.tokopedia.abstraction.common.data.model.request.DataRequest;
 import com.tokopedia.topads.dashboard.data.model.data.Page;
 import com.tokopedia.topads.dashboard.data.model.response.PageDataResponse;
 import com.tokopedia.topads.keyword.constant.KeywordTypeDef;
 import com.tokopedia.topads.keyword.data.model.cloud.Datum;
+import com.tokopedia.topads.keyword.data.model.cloud.bulkkeyword.DataBulkKeyword;
 import com.tokopedia.topads.keyword.data.source.TopAdsKeywordDataSource;
 import com.tokopedia.topads.keyword.domain.repository.TopAdsKeywordRepository;
 import com.tokopedia.topads.keyword.view.model.KeywodDashboardViewModel;
@@ -45,6 +47,11 @@ public class TopAdsKeywordRepositoryImpl implements TopAdsKeywordRepository {
                         return keywodDashboardViewModel;
                     }
                 });
+    }
+
+    @Override
+    public Observable<PageDataResponse<DataBulkKeyword>> bulkActionKeyword(DataRequest<DataBulkKeyword> dataBulkKeyword){
+        return dataSource.bulkActionKeyword(dataBulkKeyword);
     }
 
     private KeywordAd convertToKeywordAd(Datum datum, int isPositive) {

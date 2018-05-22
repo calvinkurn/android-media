@@ -16,23 +16,13 @@
 
         <TextView
             android:id="@+id/content_title_graph"
-            style="@style/TextView.Title.BlackDisabled"
+            style="@style/TextView.Small.BlackDisabled"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="30dp"
             android:layout_marginRight="@dimen/dp_8"
             android:layout_marginEnd="@dimen/dp_8"
             tools:text="@string/label_top_ads_impression"/>
-
-        <TextView
-            android:id="@+id/content_count_summary_graph"
-            style="@style/TextView.Title.BlackPrimary"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="30dp"
-            android:layout_toRightOf="@+id/content_title_graph"
-            android:layout_toEndOf="@+id/content_title_graph"
-            tools:text="@string/value_price"/>
 
         <com.db.williamchart.view.LineChartView
             android:id="@+id/content_graph"

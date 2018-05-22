@@ -1,7 +1,9 @@
 package com.tokopedia.topads.keyword.data.source;
 
+import com.tokopedia.abstraction.common.data.model.request.DataRequest;
 import com.tokopedia.topads.dashboard.data.model.response.PageDataResponse;
 import com.tokopedia.topads.keyword.data.model.cloud.Datum;
+import com.tokopedia.topads.keyword.data.model.cloud.bulkkeyword.DataBulkKeyword;
 import com.tokopedia.topads.keyword.data.source.cloud.TopAdsKeywordDataSourceCloud;
 import com.tokopedia.usecase.RequestParams;
 
@@ -22,5 +24,9 @@ public class TopAdsKeywordDataSource {
 
     public Observable<PageDataResponse<List<Datum>>> searchKeyword(RequestParams requestParams){
         return dataSourceCloud.searchKeyword(requestParams);
+    }
+
+    public Observable<PageDataResponse<DataBulkKeyword>> bulkActionKeyword(DataRequest<DataBulkKeyword> dataBulkKeyword){
+        return dataSourceCloud.actionBulkKeyword(dataBulkKeyword);
     }
 }

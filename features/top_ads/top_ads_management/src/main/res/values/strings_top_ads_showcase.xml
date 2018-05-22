@@ -2,8 +2,8 @@
 <resources>
 
     <!-- TOP ADS HOME -->
-    <string name="topads_showcase_home_title_1">TopAds Produk</string>
-    <string name="topads_showcase_home_desc_1">Kumpulan iklan produk di toko Anda. Anda dapat melihat performa dari iklan produk Anda di bawah ini.</string>
+    <string name="topads_showcase_home_title_1">Iklan TopAds</string>
+    <string name="topads_showcase_home_desc_1">Anda dapat melihat detail iklan dan melakukan pengaturan di sini.</string>
     <string name="topads_showcase_home_title_2">TopAds Toko</string>
     <string name="topads_showcase_home_desc_2">Iklankan toko Anda agar semakin banyak yang memfavoritkan toko Anda.</string>
     <string name="topads_showcase_home_title_3">Tambah Kredit</string>
@@ -11,15 +11,16 @@
     <string name="topads_showcase_home_title_4">Tanggal Statistik</string>
     <string name="topads_showcase_home_desc_4">Pilih tanggal untuk atur tampilan statistik iklan Anda.</string>
     <string name="topads_showcase_home_title_5">Statistik Iklan</string>
-    <string name="topads_showcase_home_desc_5">Pantau performa iklan Anda pada tampilan statistik ini.</string>
+    <string name="topads_showcase_home_desc_5">Pantau performa iklan Anda pada tampilan statistik ini. Filter data iklan yang ingin ditampilkan
+        dan pilih periode untuk melihat data pada waktu tertentu.</string>
     <string name="topads_showcase_home_title_6">Tambah Iklan</string>
     <string name="topads_showcase_home_desc_6">Klik di sini untuk menambahkan iklan Anda.</string>
     <string name="topads_showcase_home_title_7">Rangkuman Data</string>
-    <string name="topads_showcase_home_desc_7">Filter data promo yang ingin ditampilkan.</string>
-    <string name="topads_showcase_home_title_8">Grup Promo</string>
-    <string name="topads_showcase_home_desc_8">Gunakan Grup Promo dan nikmati kemudahan mengatur Promo Anda dalam sekali pengaturan.</string>
+    <string name="topads_showcase_home_desc_7">Filter data iklan yang ingin ditampilkan.</string>
+    <string name="topads_showcase_home_title_8">Grup Iklan</string>
+    <string name="topads_showcase_home_desc_8">Kelompokan iklan Anda dalam grup dan nikmati kemudahan mengatur iklan dalam sekali pengaturan.</string>
     <string name="topads_showcase_home_title_9">TopAds Kata Kunci</string>
-    <string name="topads_showcase_home_desc_9">Gunakan kata kunci agar promo Anda dapat tampil pada pencarian yang sesuai.</string>
+    <string name="topads_showcase_home_desc_9">Gunakan kata kunci agar iklan Anda dapat tampil pada pencarian yang sesuai.</string>
 
     <!-- TOP ADS STATISTIK -->
     <string name="topads_showcase_statistics_title_1">Atur Periode</string>
@@ -77,4 +78,6 @@
     <string name="topads_showcase_keyword_list_desc_4">Informasi singkat kata kunci yang telah Anda buat.</string>
     <string name="topads_showcase_keyword_list_title_5">Tambah Kata Kunci</string>
     <string name="topads_showcase_keyword_list_desc_5">Klik di sini untuk menambahkan iklan kata kunci Anda.</string>
+    <string name="topads_showcase_help">Bantuan</string>
+    <string name="topads_showcase_detail_help">Anda dapat menampilkan kembali step panduan ini di sini.</string>
 </resources>

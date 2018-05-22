@@ -3,6 +3,7 @@ package com.tokopedia.topads.common.view.adapter.viewholder;
 import android.graphics.drawable.Drawable;
 import android.support.annotation.LayoutRes;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.widget.CardView;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.CheckBox;
@@ -59,7 +60,7 @@ public class TopAdsAdViewHolder<T extends Ad & Visitable> extends BaseMultipleCh
     }
 
     @Override
-    public void bind(T ad) {
+    public void bind(final T ad) {
         titleProduct.setText(ad.getName());
         statusActive.setText(ad.getStatusDesc());
         switch (ad.getStatus()) {
@@ -95,6 +96,15 @@ public class TopAdsAdViewHolder<T extends Ad & Visitable> extends BaseMultipleCh
             dailySpentTextView.setText(ad.getPriceDailySpentFmt());
             dailyTotalTextView.setText(ad.getPriceDailyFmt());
         }
+
+        optionImageButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (optionMoreCallback != null){
+                    optionMoreCallback.onClickMore(ad);
+                }
+            }
+        });
     }
 
     @Override
@@ -121,9 +131,17 @@ public class TopAdsAdViewHolder<T extends Ad & Visitable> extends BaseMultipleCh
 
     public void setBackground(boolean isChecked) {
         if (isChecked) {
-            itemView.setBackgroundColor(ContextCompat.getColor(itemView.getContext(), R.color.light_green));
+            if (itemView instanceof CardView){
+                ((CardView)itemView).setCardBackgroundColor(ContextCompat.getColor(itemView.getContext(), R.color.light_green));
+            } else {
+                itemView.setBackgroundColor(ContextCompat.getColor(itemView.getContext(), R.color.light_green));
+            }
         } else {
-            itemView.setBackgroundColor(ContextCompat.getColor(itemView.getContext(), R.color.white));
+            if (itemView instanceof CardView) {
+                ((CardView) itemView).setCardBackgroundColor(ContextCompat.getColor(itemView.getContext(), R.color.white));
+            } else {
+                itemView.setBackgroundColor(ContextCompat.getColor(itemView.getContext(), R.color.white));
+            }
         }
     }
 

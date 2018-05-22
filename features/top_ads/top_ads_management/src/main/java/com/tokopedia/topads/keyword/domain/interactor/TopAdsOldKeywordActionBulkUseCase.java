@@ -14,14 +14,14 @@ import rx.Observable;
  * Created by zulfikarrahman on 5/29/17.
  */
 
-public class TopAdsKeywordActionBulkUseCase extends UseCase<Boolean> {
+public class TopAdsOldKeywordActionBulkUseCase extends UseCase<Boolean> {
 
     private final TopAdsKeywordActionBulkRepository topAdsKeywordActionBulkRepository;
     private final TopAdsKeywordActionBulkMapperToDomain topAdsKeywordActionBulkMapperToDomain;
 
     @Inject
-    public TopAdsKeywordActionBulkUseCase(TopAdsKeywordActionBulkRepository topAdsKeywordActionBulkRepository,
-                                          TopAdsKeywordActionBulkMapperToDomain topAdsKeywordActionBulkMapperToDomain) {
+    public TopAdsOldKeywordActionBulkUseCase(TopAdsKeywordActionBulkRepository topAdsKeywordActionBulkRepository,
+                                             TopAdsKeywordActionBulkMapperToDomain topAdsKeywordActionBulkMapperToDomain) {
         this.topAdsKeywordActionBulkRepository = topAdsKeywordActionBulkRepository;
         this.topAdsKeywordActionBulkMapperToDomain = topAdsKeywordActionBulkMapperToDomain;
     }

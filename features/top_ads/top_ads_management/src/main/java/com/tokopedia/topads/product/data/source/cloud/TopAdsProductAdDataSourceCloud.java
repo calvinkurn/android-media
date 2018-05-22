@@ -1,6 +1,9 @@
 package com.tokopedia.topads.product.data.source.cloud;
 
+import com.tokopedia.abstraction.common.data.model.request.DataRequest;
+import com.tokopedia.abstraction.common.data.model.response.DataResponse;
 import com.tokopedia.topads.dashboard.data.model.data.ProductAd;
+import com.tokopedia.topads.dashboard.data.model.data.ProductAdBulkAction;
 import com.tokopedia.topads.dashboard.data.model.response.PageDataResponse;
 import com.tokopedia.topads.product.data.apiservice.TopAdsProductAdApi;
 import com.tokopedia.usecase.RequestParams;
@@ -30,5 +33,15 @@ public class TopAdsProductAdDataSourceCloud {
                         return pageDataResponse.body();
                     }
                 });
+    }
+
+    public Observable<ProductAdBulkAction> bulkAction(DataRequest<ProductAdBulkAction> dataRequest) {
+        return topAdsProductAdApi.bulkActionProductAd(dataRequest)
+                .map(new Func1<Response<DataResponse<ProductAdBulkAction>>, ProductAdBulkAction>() {
+            @Override
+            public ProductAdBulkAction call(Response<DataResponse<ProductAdBulkAction>> dataResponse) {
+                return dataResponse.body().getData();
+            }
+        });
     }
 }

@@ -2,15 +2,15 @@ package com.tokopedia.topads.dashboard.view.fragment;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.PorterDuff;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.BottomSheetDialog;
-import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
-import android.support.v4.widget.NestedScrollView;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -19,16 +19,20 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
+import com.github.rubensousa.bottomsheetbuilder.BottomSheetBuilder;
+import com.github.rubensousa.bottomsheetbuilder.adapter.BottomSheetItemClickListener;
+import com.github.rubensousa.bottomsheetbuilder.custom.CheckedBottomSheetBuilder;
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
+import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh;
+import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
+import com.tokopedia.abstraction.common.utils.snackbar.SnackbarRetry;
+import com.tokopedia.abstraction.common.utils.view.RefreshHandler;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
-import com.tokopedia.core.listener.GlobalMainTabSelectedListener;
-import com.tokopedia.design.bottomsheet.BottomSheetBuilder;
-import com.tokopedia.design.bottomsheet.adapter.BottomSheetItemClickListener;
-import com.tokopedia.design.bottomsheet.custom.CheckedBottomSheetBuilder;
 import com.tokopedia.design.component.FloatingButton;
 import com.tokopedia.design.component.Menus;
 import com.tokopedia.design.label.LabelView;
@@ -42,19 +46,24 @@ import com.tokopedia.topads.dashboard.constant.TopAdsAddingOption;
 import com.tokopedia.topads.dashboard.constant.TopAdsConstant;
 import com.tokopedia.topads.dashboard.constant.TopAdsExtraConstant;
 import com.tokopedia.topads.dashboard.constant.TopAdsStatisticsType;
+import com.tokopedia.topads.dashboard.data.model.data.DashboardPopulateResponse;
 import com.tokopedia.topads.dashboard.data.model.data.DataStatistic;
 import com.tokopedia.topads.dashboard.data.model.data.TotalAd;
 import com.tokopedia.topads.dashboard.di.component.DaggerTopAdsDashboardComponent;
 import com.tokopedia.topads.dashboard.di.component.TopAdsComponent;
 import com.tokopedia.topads.dashboard.utils.TopAdsDatePeriodUtil;
+import com.tokopedia.topads.dashboard.view.activity.SellerCenterActivity;
 import com.tokopedia.topads.dashboard.view.activity.TopAdsAddCreditActivity;
 import com.tokopedia.topads.dashboard.view.activity.TopAdsAddingPromoOptionActivity;
 import com.tokopedia.topads.dashboard.view.activity.TopAdsDetailShopActivity;
 import com.tokopedia.topads.dashboard.view.activity.TopAdsGroupAdListActivity;
+import com.tokopedia.topads.dashboard.view.activity.TopAdsGroupNewPromoActivity;
 import com.tokopedia.topads.dashboard.view.activity.TopAdsProductAdListActivity;
 import com.tokopedia.topads.dashboard.view.adapter.TopAdsStatisticPagerAdapter;
+import com.tokopedia.topads.dashboard.view.adapter.TopAdsTabAdapter;
 import com.tokopedia.topads.dashboard.view.listener.TopAdsDashboardView;
 import com.tokopedia.topads.dashboard.view.presenter.TopAdsDashboardPresenter;
+import com.tokopedia.topads.keyword.view.activity.TopAdsKeywordNewChooseGroupActivity;
 import com.tokopedia.topads.keyword.view.activity.TopAdsKeywordAdListActivity;
 import com.tokopedia.topads.sourcetagging.constant.TopAdsSourceOption;
 
@@ -74,6 +83,7 @@ public class TopAdsDashboardFragment extends BaseDaggerFragment implements TopAd
     public static final int REQUEST_CODE_AD_STATUS = 2;
     public static final int REQUEST_CODE_AD_OPTION = 3;
 
+    private View shopLayoutView;
     private ImageView shopIconImageView;
     private TextView shopTitleTextView;
     private TextView depositValueTextView;
@@ -82,11 +92,15 @@ public class TopAdsDashboardFragment extends BaseDaggerFragment implements TopAd
     private LabelView groupSummaryLabelView;
     private LabelView itemSummaryLabelView;
     private LabelView keywordLabelView;
-    private LabelView storeLabelView;
+    LabelView storeLabelView;
     private ViewPager viewPager;
-    private TabLayout tabLayout;
     private TopAdsStatisticPagerAdapter pagerAdapter;
     private View contentStatisticsView;
+    private RecyclerView recyclerTabLayout;
+    private TopAdsTabAdapter topAdsTabAdapter;
+    private View viewGroupPromo;
+    private SwipeToRefresh swipeToRefresh;
+    private SnackbarRetry snackbarRetry;
 
     private LabelView dateLabelView;
     Date startDate, endDate;
@@ -128,9 +142,18 @@ public class TopAdsDashboardFragment extends BaseDaggerFragment implements TopAd
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         topAdsDashboardPresenter.attachView(this);
+        topAdsDashboardPresenter.resetDate();
         selectedStatisticType = TopAdsStatisticsType.ALL_ADS;
         totalProductAd = Integer.MIN_VALUE;
-
+        swipeToRefresh = (SwipeToRefresh) view.findViewById(R.id.swipe_refresh_layout);
+        RefreshHandler refresh = new RefreshHandler(getActivity(), swipeToRefresh, new RefreshHandler.OnRefreshHandlerListener() {
+            @Override
+            public void onRefresh(View view) {
+                topAdsDashboardPresenter.clearStatisticsCache();
+                topAdsDashboardPresenter.clearTotalAdCache();
+                loadData();
+            }
+        });
         initShopInfoComponent(view);
         initSummaryComponent(view);
         initStatisticComponent(view);
@@ -142,10 +165,19 @@ public class TopAdsDashboardFragment extends BaseDaggerFragment implements TopAd
                 startActivityForResult(new Intent(getActivity(), TopAdsAddingPromoOptionActivity.class), REQUEST_CODE_AD_OPTION);
             }
         });
+        snackbarRetry = NetworkErrorHelper.createSnackbarWithAction(getActivity(), new NetworkErrorHelper.RetryClickedListener() {
+            @Override
+            public void onRetryClicked() {
+                loadData();
+            }
+        });
+        snackbarRetry.setColorActionRetry(ContextCompat.getColor(getActivity(), R.color.green_400));
         setHasOptionsMenu(true);
     }
 
     private void initEmptyStateView(View view) {
+        ImageView imageView = (ImageView) view.findViewById(R.id.no_result_image);
+        imageView.setImageDrawable(ContextCompat.getDrawable(getActivity(), R.drawable.ic_top_ads_dashboard_empty));
         TextView textView = (TextView) view.findViewById(R.id.text_view_empty_title_text);
         textView.setText(R.string.topads_dashboard_empty_usage_title);
         textView = (TextView) view.findViewById(R.id.text_view_empty_content_text);
@@ -170,14 +202,21 @@ public class TopAdsDashboardFragment extends BaseDaggerFragment implements TopAd
                 showBottomSheetStatisticTypeOptions();
             }
         });
+        recyclerTabLayout = view.findViewById(R.id.recyclerview_tabLayout);
+        recyclerTabLayout.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false));
+        topAdsTabAdapter = new TopAdsTabAdapter(getActivity());
+        topAdsTabAdapter.setListener(new TopAdsTabAdapter.OnRecyclerTabItemClick() {
+            @Override
+            public void onTabItemClick(int position) {
+                viewPager.setCurrentItem(position);
+            }
+        });
+        recyclerTabLayout.setAdapter(topAdsTabAdapter);
         viewPager = view.findViewById(R.id.pager);
-        tabLayout = view.findViewById(R.id.tab_layout);
         viewPager.setOffscreenPageLimit(TopAdsConstant.OFFSCREEN_PAGE_LIMIT);
-        viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
         initTabLayouTitles();
         initTopAdsStatisticPagerAdapter();
         viewPager.setAdapter(pagerAdapter);
-        tabLayout.addOnTabSelectedListener(new GlobalMainTabSelectedListener(viewPager));
         viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
@@ -186,6 +225,8 @@ public class TopAdsDashboardFragment extends BaseDaggerFragment implements TopAd
 
             @Override
             public void onPageSelected(int position) {
+                recyclerTabLayout.scrollToPosition(position);
+                topAdsTabAdapter.selected(position);
                 trackingStatisticBar(position);
                 getCurrentStatisticsFragment().updateDataStatistic(dataStatistic);
             }
@@ -197,12 +238,8 @@ public class TopAdsDashboardFragment extends BaseDaggerFragment implements TopAd
         });
     }
 
-    public View getStatisticsOptionLabelView() {
-        return statisticsOptionLabelView;
-    }
-
-    public View getDateLabelView() {
-        return dateLabelView;
+    public View getShopInfoLayout() {
+        return shopLayoutView;
     }
 
     public View getContentStatisticsView() {
@@ -213,24 +250,20 @@ public class TopAdsDashboardFragment extends BaseDaggerFragment implements TopAd
         return groupSummaryLabelView;
     }
 
-    public View getItemSummaryLabelView() {
-        return itemSummaryLabelView;
+    public View getViewGroupPromo(){
+        return viewGroupPromo;
     }
 
-    public View getKeywordLabelView() {
-        return keywordLabelView;
-    }
-
-    public View getStoreLabelView() {
-        return storeLabelView;
-    }
-
-    public NestedScrollView getScrollView(){
+    public ScrollView getScrollView(){
         if (getView() != null) {
-            return (NestedScrollView) getView().findViewById(R.id.scroll_view);
+            return (ScrollView) getView().findViewById(R.id.scroll_view);
         } else {
             return null;
         }
+    }
+
+    public boolean isContentVisible(){
+        return getView().findViewById(R.id.topads_dashboard_content).getVisibility() == View.VISIBLE;
     }
 
     public View getButtonAddPromo(){
@@ -270,30 +303,28 @@ public class TopAdsDashboardFragment extends BaseDaggerFragment implements TopAd
         if (pagerAdapter == null) {
             return null;
         }
-        return (TopAdsDashboardStatisticFragment) pagerAdapter.instantiateItem(viewPager, tabLayout.getSelectedTabPosition());
+        return (TopAdsDashboardStatisticFragment) pagerAdapter.instantiateItem(viewPager, topAdsTabAdapter.getSelectedTabPosition());
     }
 
     private void initTabLayouTitles() {
-        tabLayout.addTab(tabLayout.newTab().setText(R.string.label_top_ads_impression));
-        tabLayout.addTab(tabLayout.newTab().setText(R.string.label_top_ads_click));
-        tabLayout.addTab(tabLayout.newTab().setText(R.string.label_top_ads_ctr));
-        tabLayout.addTab(tabLayout.newTab().setText(R.string.label_top_ads_conversion));
-        tabLayout.addTab(tabLayout.newTab().setText(R.string.label_top_ads_average));
-        tabLayout.addTab(tabLayout.newTab().setText(R.string.label_top_ads_cost));
+        topAdsTabAdapter.setSummary(null, getResources().getStringArray(R.array.top_ads_tab_statistics_labels));
     }
 
     private void initTopAdsStatisticPagerAdapter() {
         List<Fragment> fragmentList = new ArrayList<>();
         fragmentList.add(TopAdsStatisticImprFragment.createInstance());
         fragmentList.add(TopAdsStatisticKlikFragment.createInstance());
+        fragmentList.add(TopAdsStatisticSpentFragment.createInstance());
+        fragmentList.add(TopAdsStatisticIncomeFragment.createInstance());
         fragmentList.add(TopAdsStatisticCtrFragment.createInstance());
         fragmentList.add(TopAdsStatisticConversionFragment.createInstance());
         fragmentList.add(TopAdsStatisticAvgFragment.createInstance());
-        fragmentList.add(TopAdsStatisticSpentFragment.createInstance());
+        fragmentList.add(TopAdsStatisticSoldFragment.createInstance());
         pagerAdapter = new TopAdsStatisticPagerAdapter(getChildFragmentManager(), fragmentList);
     }
 
     private void initSummaryComponent(View view) {
+        viewGroupPromo = view.findViewById(R.id.view_group_promo);
         groupSummaryLabelView = view.findViewById(R.id.label_view_group_summary);
         itemSummaryLabelView = view.findViewById(R.id.label_view_item_summary);
         keywordLabelView = view.findViewById(R.id.label_view_keyword);
@@ -327,6 +358,7 @@ public class TopAdsDashboardFragment extends BaseDaggerFragment implements TopAd
     private void onStoreClicked() {
         topAdsDashboardPresenter.saveSourceTagging(TopAdsSourceOption.SA_MANAGE_SHOP);
         Intent intent = new Intent(getActivity(), TopAdsDetailShopActivity.class);
+        intent.putExtra(TopAdsNewScheduleNewGroupFragment.EXTRA_IS_ENOUGH_DEPOSIT, true);
         startActivityForResult(intent, REQUEST_CODE_AD_STATUS);
     }
 
@@ -365,7 +397,8 @@ public class TopAdsDashboardFragment extends BaseDaggerFragment implements TopAd
     }
 
     private void loadData() {
-        topAdsDashboardPresenter.getShopDeposit();
+        swipeToRefresh.setRefreshing(true);
+        topAdsDashboardPresenter.getPopulateDashboardData();
         topAdsDashboardPresenter.getShopInfo();
     }
 
@@ -389,6 +422,7 @@ public class TopAdsDashboardFragment extends BaseDaggerFragment implements TopAd
     }
 
     private void initShopInfoComponent(View view) {
+        shopLayoutView = view.findViewById(R.id.view_group_deposit);
         shopIconImageView = view.findViewById(R.id.image_view_shop_icon);
         shopTitleTextView = view.findViewById(R.id.text_view_shop_title);
         depositValueTextView = view.findViewById(R.id.text_view_deposit_value);
@@ -452,8 +486,17 @@ public class TopAdsDashboardFragment extends BaseDaggerFragment implements TopAd
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
 
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == REQUEST_CODE_ADD_CREDIT) {
-
+        if (requestCode == REQUEST_CODE_AD_STATUS && data != null) {
+            if (startDate == null || endDate == null) {
+                return;
+            }
+            boolean adStatusChanged = data.getBooleanExtra(TopAdsExtraConstant.EXTRA_AD_CHANGED, false);
+            if (adStatusChanged) {
+                topAdsDashboardPresenter.clearTotalAdCache();
+                loadData();
+            }
+        } else if (requestCode == REQUEST_CODE_ADD_CREDIT) {
+            loadData();
         } else if (requestCode == DatePickerConstant.REQUEST_CODE_DATE) {
             if (data != null) {
                 handlingResultDateSelection(data);
@@ -464,12 +507,23 @@ public class TopAdsDashboardFragment extends BaseDaggerFragment implements TopAd
                 switch (option){
                     case TopAdsAddingOption.SHOP_OPT: onStoreClicked(); break;
                     case TopAdsAddingOption.GROUP_OPT: onSummaryGroupClicked(); break;
-                    case TopAdsAddingOption.PRODUCT_OPT: onSummaryProductClicked(); break;
-                    case TopAdsAddingOption.KEYWORDS_OPT: onSummaryKeywordClicked(); break;
+                    case TopAdsAddingOption.PRODUCT_OPT: gotoCreateProductAd(); break;
+                    case TopAdsAddingOption.KEYWORDS_OPT: gotoCreateKeyword(); break;
                     default: break;
                 }
             }
         }
+    }
+
+    private void gotoCreateProductAd() {
+        topAdsDashboardPresenter.saveSourceTagging(TopAdsSourceOption.SA_MANAGE_DASHBOARD_PRODUCT);
+        Intent intent = new Intent(getActivity(), TopAdsGroupNewPromoActivity.class);
+        this.startActivityForResult(intent, REQUEST_CODE_AD_STATUS);
+    }
+
+    private void gotoCreateKeyword() {
+        topAdsDashboardPresenter.saveSourceTagging(TopAdsSourceOption.SA_MANAGE_KEYWORD_POSITIVE);
+        TopAdsKeywordNewChooseGroupActivity.start(this, getActivity(), REQUEST_CODE_AD_STATUS, true);
     }
 
     private void handlingResultDateSelection(Intent data){
@@ -515,26 +569,20 @@ public class TopAdsDashboardFragment extends BaseDaggerFragment implements TopAd
 
     @Override
     public void onLoadTopAdsShopDepositError(Throwable throwable) {
-
+        swipeToRefresh.setRefreshing(false);
+        snackbarRetry.showRetrySnackbar();
     }
 
     @Override
     public void onLoadTopAdsShopDepositSuccess(DataDeposit dataDeposit) {
+        snackbarRetry.hideRetrySnackbar();
         depositValueTextView.setText(dataDeposit.getAmountFmt());
-        if (dataDeposit.isAdUsage()){
-            topAdsDashboardPresenter.populateTotalAds();
-            loadStatisticsData();
-            getView().findViewById(R.id.topads_dashboard_empty).setVisibility(View.GONE);
-            getView().findViewById(R.id.topads_dashboard_content).setVisibility(View.VISIBLE);
-        } else {
-            getView().findViewById(R.id.topads_dashboard_empty).setVisibility(View.VISIBLE);
-            getView().findViewById(R.id.topads_dashboard_content).setVisibility(View.GONE);
-        }
     }
 
     @Override
     public void onErrorGetShopInfo(Throwable throwable) {
-
+        swipeToRefresh.setRefreshing(false);
+        snackbarRetry.showRetrySnackbar();
     }
 
     @Override
@@ -550,11 +598,14 @@ public class TopAdsDashboardFragment extends BaseDaggerFragment implements TopAd
 
     @Override
     public void onErrorPopulateTotalAds(Throwable throwable) {
-
+        swipeToRefresh.setRefreshing(false);
+        snackbarRetry.showRetrySnackbar();
     }
 
     @Override
     public void onSuccessPopulateTotalAds(TotalAd totalAd) {
+        snackbarRetry.hideRetrySnackbar();
+        swipeToRefresh.setRefreshing(false);
         totalProductAd = totalAd.getTotalProductAd();
         totalGroupAd = totalAd.getTotalProductGroupAd();
         groupSummaryLabelView.setContent(String.valueOf(totalAd.getTotalProductGroupAd()));
@@ -564,16 +615,49 @@ public class TopAdsDashboardFragment extends BaseDaggerFragment implements TopAd
 
     @Override
     public void onErrorGetStatisticsInfo(Throwable throwable) {
-        throwable.printStackTrace();
+        swipeToRefresh.setRefreshing(false);
+        snackbarRetry.showRetrySnackbar();
     }
 
     @Override
     public void onSuccesGetStatisticsInfo(DataStatistic dataStatistic) {
+        snackbarRetry.hideRetrySnackbar();
         this.dataStatistic = dataStatistic;
+        if (dataStatistic != null) {
+            topAdsTabAdapter.setSummary(dataStatistic.getSummary(), getResources().getStringArray(R.array.top_ads_tab_statistics_labels));
+        }
         Fragment fragment = (Fragment) viewPager.getAdapter().instantiateItem(viewPager, viewPager.getCurrentItem());
         if (fragment != null && fragment instanceof TopAdsDashboardStatisticFragment) {
             ((TopAdsDashboardStatisticFragment) fragment).updateDataStatistic(this.dataStatistic);
         }
+    }
+
+    @Override
+    public void onErrorPopulateData(Throwable throwable) {
+        swipeToRefresh.setRefreshing(false);
+        snackbarRetry.showRetrySnackbar();
+    }
+
+    @Override
+    public void onSuccessPopulateData(DashboardPopulateResponse dashboardPopulateResponse) {
+        boolean isUsageExists = dashboardPopulateResponse.getDataDeposit() != null && dashboardPopulateResponse.getDataDeposit().isAdUsage();
+        boolean isAdExists = dashboardPopulateResponse.getTotalAd() != null && getTotalAd(dashboardPopulateResponse.getTotalAd()) > 0;
+        snackbarRetry.hideRetrySnackbar();
+        swipeToRefresh.setRefreshing(false);
+        if (isUsageExists || isAdExists){
+            onLoadTopAdsShopDepositSuccess(dashboardPopulateResponse.getDataDeposit());
+            onSuccessPopulateTotalAds(dashboardPopulateResponse.getTotalAd());
+            loadStatisticsData();
+            getView().findViewById(R.id.topads_dashboard_empty).setVisibility(View.GONE);
+            getView().findViewById(R.id.topads_dashboard_content).setVisibility(View.VISIBLE);
+        } else {
+            getView().findViewById(R.id.topads_dashboard_empty).setVisibility(View.VISIBLE);
+            getView().findViewById(R.id.topads_dashboard_content).setVisibility(View.GONE);
+        }
+    }
+
+    private int getTotalAd(TotalAd totalAd) {
+        return totalAd.getTotalShopAd() + totalAd.getTotalKeyword()+ totalAd.getTotalProductAd() + totalAd.getTotalProductGroupAd();
     }
 
     public void updateLabelDateView(Date startDate, Date endDate) {
@@ -696,8 +780,6 @@ public class TopAdsDashboardFragment extends BaseDaggerFragment implements TopAd
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.menu_top_ads_dashboard, menu);
-        MenuItem item = menu.findItem(R.id.menu_more);
-        item.getIcon().setColorFilter(ContextCompat.getColor(getActivity(), R.color.white), PorterDuff.Mode.SRC_ATOP);
         super.onCreateOptionsMenu(menu, inflater);
     }
 
@@ -729,6 +811,12 @@ public class TopAdsDashboardFragment extends BaseDaggerFragment implements TopAd
                         getScrollView().scrollTo(0,0);
                         startShowCase();
                         menus.dismiss();
+                        break;
+                    }
+                    case 1: {
+                        menus.dismiss();
+                        startActivity(new Intent(getActivity(), SellerCenterActivity.class));
+                        break;
                     }
                     default: break;
                 }

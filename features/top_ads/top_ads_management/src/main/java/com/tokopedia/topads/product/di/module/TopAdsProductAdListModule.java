@@ -8,6 +8,12 @@ import com.tokopedia.topads.dashboard.data.source.local.TopAdsCacheDataSourceImp
 import com.tokopedia.topads.dashboard.di.qualifier.TopAdsManagementQualifier;
 import com.tokopedia.topads.dashboard.domain.interactor.TopAdsDatePickerInteractor;
 import com.tokopedia.topads.dashboard.domain.interactor.TopAdsDatePickerInteractorImpl;
+import com.tokopedia.topads.group.data.apiservice.TopAdsGroupAdApi;
+import com.tokopedia.topads.group.data.repository.TopAdsGroupAdRepositoryImpl;
+import com.tokopedia.topads.group.data.source.TopAdsGroupAdDataSource;
+import com.tokopedia.topads.group.data.source.cloud.TopAdsGroupAdDataSourceCloud;
+import com.tokopedia.topads.group.domain.repository.TopAdsGroupAdRepository;
+import com.tokopedia.topads.keyword.di.scope.TopAdsKeywordScope;
 import com.tokopedia.topads.product.data.apiservice.TopAdsProductAdApi;
 import com.tokopedia.topads.product.data.repository.TopAdsProductAdRepositoryImpl;
 import com.tokopedia.topads.product.data.source.TopAdsProductAdDataSource;
@@ -83,5 +89,29 @@ public class TopAdsProductAdListModule {
     @TopAdsProductAdScope
     public TopAdsSourceTaggingRepository provideTopAdsSourceTaggingRepository(TopAdsSourceTaggingDataSource dataSource){
         return new TopAdsSourceTaggingRepositoryImpl(dataSource);
+    }
+
+    @Provides
+    @TopAdsProductAdScope
+    public TopAdsGroupAdRepository provideTopAdsGroupAdRepository(TopAdsGroupAdDataSource dataSource){
+        return new TopAdsGroupAdRepositoryImpl(dataSource);
+    }
+
+    @Provides
+    @TopAdsProductAdScope
+    public TopAdsGroupAdDataSource provideTopAdsGroupAdDataSource(TopAdsGroupAdDataSourceCloud dataSourceCloud){
+        return new TopAdsGroupAdDataSource(dataSourceCloud);
+    }
+
+    @Provides
+    @TopAdsProductAdScope
+    public TopAdsGroupAdDataSourceCloud provideTopAdsGroupAdDataSourceCloud(TopAdsGroupAdApi TopAdsGroupAdApi){
+        return new TopAdsGroupAdDataSourceCloud(TopAdsGroupAdApi);
+    }
+
+    @Provides
+    @TopAdsProductAdScope
+    public TopAdsGroupAdApi provideTopAdsGroupAdApi(@TopAdsManagementQualifier Retrofit retrofit){
+        return retrofit.create(TopAdsGroupAdApi.class);
     }
 }
