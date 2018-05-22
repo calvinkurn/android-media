@@ -24,7 +24,6 @@ import com.tokopedia.core.rxjava.RxUtils;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.ProductItem;
 import com.tokopedia.core.var.RecyclerViewItem;
-import com.tokopedia.tkpd.R;
 import com.tokopedia.tkpd.home.interactor.CacheHomeInteractor;
 import com.tokopedia.tkpd.home.interactor.CacheHomeInteractorImpl;
 import com.tokopedia.tkpd.home.service.FavoritePart1Service;
@@ -281,22 +280,39 @@ public class WishListImpl implements WishList {
         for (int i = 0; i < dataWishlist.size(); i++) {
             if (productId.equals(dataWishlist.get(i).getId())) {
                 Wishlist dataDetail = dataWishlist.get(i);
-
-                ((TransactionRouter) activity.getApplication()).addToCartProduct(
-                        new AddToCartRequest.Builder()
-                                .productId(Integer.parseInt(dataDetail.getId()))
-                                .notes("")
-                                .quantity(dataDetail.getMinimumOrder())
-                                .shopId(Integer.parseInt(dataDetail.getShop().getId()))
-                                .build()
-                ).subscribeOn(Schedulers.newThread())
-                        .unsubscribeOn(Schedulers.newThread())
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe(addToCartSubscriber());
-
+                routeToOldCheckout(activity, dataDetail);
+                /*  routeToNewCheckout(activity, dataDetail);*/
                 return;
             }
         }
+    }
+
+    private void routeToNewCheckout(Activity activity, Wishlist dataDetail) {
+        ((TransactionRouter) activity.getApplication()).addToCartProduct(
+                new AddToCartRequest.Builder()
+                        .productId(Integer.parseInt(dataDetail.getId()))
+                        .notes("")
+                        .quantity(dataDetail.getMinimumOrder())
+                        .shopId(Integer.parseInt(dataDetail.getShop().getId()))
+                        .build()
+        ).subscribeOn(Schedulers.newThread())
+                .unsubscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(addToCartSubscriber());
+    }
+
+    private void routeToOldCheckout(Activity activity, Wishlist dataDetail) {
+        ProductCartPass pass = ProductCartPass.Builder.aProductCartPass()
+                .setImageUri(dataDetail.getImageUrl())
+                .setMinOrder(dataDetail.getMinimumOrder())
+                .setProductId(dataDetail.getId())
+                .setProductName(dataDetail.getName())
+                .setShopId(dataDetail.getShop().getId())
+                .setPrice(dataDetail.getPriceFmt()).build();
+
+        activity.startActivity(
+                TransactionAddToCartRouter.createInstanceAddToCartActivity(activity, pass)
+        );
     }
 
     @Override
@@ -365,7 +381,7 @@ public class WishListImpl implements WishList {
                     wishListView.displayLoadMore(false);
                 }
                 wishListView.setPullEnabled(true);
-                if(response.body().getWishlist().size() == 0){
+                if (response.body().getWishlist().size() == 0) {
                     wishListView.setEmptyState();
                 }
             }
@@ -423,7 +439,7 @@ public class WishListImpl implements WishList {
     }
 
     private void sendMoEngageTracker(String productId) {
-        if(productId != null) {
+        if (productId != null) {
             for (int i = 0; i < dataWishlist.size(); i++) {
                 if (dataWishlist.get(i) != null) {
                     if (productId.equals(dataWishlist.get(i).getId())) {

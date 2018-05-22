@@ -29,6 +29,7 @@ import dagger.Provides;
 public class LoyaltyViewModule {
 
     private final Activity activity;
+    private String events = "events";
 
     public LoyaltyViewModule(Activity activity) {
         this.activity = activity;
@@ -66,23 +67,44 @@ public class LoyaltyViewModule {
                         .tabTitle("Kode Promo")
                         .build()
         );
-        loyaltyPagerItemList.add(
-                new LoyaltyPagerItem.Builder()
-                        .fragment(PromoCouponFragment.newInstance(
-                                activity.getIntent()
-                                        .getExtras()
-                                        .getString(IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.EXTRA_PLATFORM, ""),
-                                activity.getIntent()
-                                        .getExtras()
-                                        .getString(IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.EXTRA_CATEGORY, ""),
-                                activity.getIntent()
-                                        .getExtras()
-                                        .getString(IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.EXTRA_CART_ID, "")))
-
-                        .position(0)
-                        .tabTitle("Kupon Saya")
-                        .build()
-        );
+        if (activity.getIntent().getExtras().getString(IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.EXTRA_PLATFORM, "").equals(events)) {
+            loyaltyPagerItemList.add(
+                    new LoyaltyPagerItem.Builder()
+                            .fragment(PromoCouponFragment.newInstance(
+                                    activity.getIntent()
+                                            .getExtras()
+                                            .getString(IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.EXTRA_PLATFORM, ""),
+                                    activity.getIntent()
+                                            .getExtras()
+                                            .getString(IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.EXTRA_CATEGORY, ""),
+                                    activity.getIntent()
+                                            .getExtras()
+                                            .getInt(IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.EXTRA_CATEGORYID, 0),
+                                    activity.getIntent()
+                                            .getExtras()
+                                            .getInt(IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.EXTRA_PRODUCTID, 0)))
+                            .position(0)
+                            .tabTitle("Kupon Saya")
+                            .build()
+            );
+        } else {
+            loyaltyPagerItemList.add(
+                    new LoyaltyPagerItem.Builder()
+                            .fragment(PromoCouponFragment.newInstance(
+                                    activity.getIntent()
+                                            .getExtras()
+                                            .getString(IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.EXTRA_PLATFORM, ""),
+                                    activity.getIntent()
+                                            .getExtras()
+                                            .getString(IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.EXTRA_CATEGORY, ""),
+                                    activity.getIntent()
+                                            .getExtras()
+                                            .getString(IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.EXTRA_CART_ID, "")))
+                            .position(0)
+                            .tabTitle("Kupon Saya")
+                            .build()
+            );
+        }
         return loyaltyPagerItemList;
     }
 
