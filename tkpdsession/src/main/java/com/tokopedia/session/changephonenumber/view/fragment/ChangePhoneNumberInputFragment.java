@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.Snackbar;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
@@ -18,6 +19,7 @@ import android.widget.TextView;
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
+import com.tokopedia.abstraction.common.utils.snackbar.SnackbarManager;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.base.di.component.AppComponent;
@@ -245,9 +247,13 @@ public class ChangePhoneNumberInputFragment extends BaseDaggerFragment implement
         showErrorSnackbar(message);
     }
 
+    @SuppressWarnings("Range")
     private void showErrorSnackbar(String message) {
         if (message != null) {
-            NetworkErrorHelper.showLongSnackbar(getActivity(), message);
+            SnackbarManager.make(getActivity(),
+                    message,
+                    Snackbar.LENGTH_LONG)
+                    .show();
         } else {
             NetworkErrorHelper.showSnackbar(getActivity());
         }

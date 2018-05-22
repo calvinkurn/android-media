@@ -144,14 +144,6 @@ public class NetworkErrorHelper {
                 .show();
     }
 
-    @SuppressWarnings("Range")
-    public static void showLongSnackbar(Activity activity, String error) {
-        SnackbarManager.make(activity,
-                error,
-                Snackbar.LENGTH_LONG)
-                .show();
-    }
-
     public static void showEmptyState(Context context, final View rootview, final RetryClickedListener listener) {
         try {
             rootview.findViewById(R.id.main_retry).setVisibility(View.VISIBLE);
