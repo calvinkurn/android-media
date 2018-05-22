@@ -6,19 +6,16 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.Preference;
-import android.preference.PreferenceFragment;
 
-import com.tokopedia.core.BuildConfig;
 import com.tokopedia.core.DeveloperOptions;
 import com.tokopedia.core.R;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.app.TkpdBasePreferenceFragment;
 import com.tokopedia.core.manage.general.ManageWebViewActivity;
+import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.router.InboxRouter;
 import com.tokopedia.core.util.GlobalConfig;
-import com.tokopedia.core.util.HockeyAppHelper;
-import com.tokopedia.core.util.RouterUtils;
 
 /**
  * Created by Angga.Prasetiyo on 13/01/2016.
@@ -67,7 +64,7 @@ public class AboutFragment extends TkpdBasePreferenceFragment {
             @Override
             public boolean onPreferenceClick(Preference preference) {
                 Intent intent;
-                String termUrl = "https://m.tokopedia.com/terms.pl";
+                String termUrl = String.format("%s%s", TkpdBaseURL.MOBILE_DOMAIN, TkpdBaseURL.Etc.PATH_TERM_CONDITION);
                 if (android.os.Build.VERSION.SDK_INT > Build.VERSION_CODES.JELLY_BEAN_MR2) {
                     intent = ManageWebViewActivity.getCallingIntent(getActivity(), termUrl,
                             getString(R.string.manage_terms_and_conditions));
@@ -83,7 +80,7 @@ public class AboutFragment extends TkpdBasePreferenceFragment {
             @Override
             public boolean onPreferenceClick(Preference preference) {
                 Intent intent;
-                String privacyUrl = "https://m.tokopedia.com/privacy.pl";
+                String privacyUrl = String.format("%s%s", TkpdBaseURL.MOBILE_DOMAIN, TkpdBaseURL.Etc.PATH_PRIVACY_POLICY);
                 if (android.os.Build.VERSION.SDK_INT > Build.VERSION_CODES.JELLY_BEAN_MR2) {
                     intent = ManageWebViewActivity.getCallingIntent(getActivity(), privacyUrl,
                             getString(R.string.manage_privacy));

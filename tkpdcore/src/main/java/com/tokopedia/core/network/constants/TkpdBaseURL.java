@@ -399,6 +399,9 @@ public class TkpdBaseURL {
         public static final String PATH_GET_RECENT_VIEW_PRODUCT = "get_recent_view_product.pl";
         public static final String PATH_GET_WISHLIST = "get_wishlist.pl";
 
+        public static final String PATH_TERM_CONDITION = "terms.pl";
+        public static final String PATH_PRIVACY_POLICY = "privacy.pl";
+
         public static final String PATH_GET_DATA_SOURCE_TICKER = "get_data_source_ticker.pl";
         public static final String PATH_GET_LIST_FAVE_SHOP_ID = "/v4/home/get_list_fave_shop_id.pl";
     }
