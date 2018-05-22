@@ -660,6 +660,13 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
     public void renderTempProductData(ProductPass productPass) {
         this.headerInfoView.renderTempData(productPass);
         this.pictureView.renderTempData(productPass);
+        this.ratingTalkCourierView.renderTempdata(productPass);
+         if (productPass.isWishlist()) {
+            fabWishlist.setImageDrawable(getResources().getDrawable(R.drawable.ic_wishlist_red));
+        } else {
+            fabWishlist.setImageDrawable(getResources().getDrawable(R.drawable.ic_wishlist));
+        }
+        fabWishlist.setVisibility(View.VISIBLE);
     }
 
     @Override

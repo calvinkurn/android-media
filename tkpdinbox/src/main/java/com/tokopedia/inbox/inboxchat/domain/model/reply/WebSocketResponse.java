@@ -1,5 +1,5 @@
 
-package com.tokopedia.inbox.inboxchat.domain.model.websocket;
+package com.tokopedia.inbox.inboxchat.domain.model.reply;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
