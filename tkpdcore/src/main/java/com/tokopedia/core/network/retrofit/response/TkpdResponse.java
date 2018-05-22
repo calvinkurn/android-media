@@ -172,8 +172,12 @@ public class TkpdResponse {
     }
 
     private void setJsonData(@NonNull JSONObject jsonData) {
-        this.stringData = jsonData.toString();
-        this.jsonData = jsonData;
+        try {
+            this.stringData = jsonData.toString();
+            this.jsonData = jsonData;
+        } catch (Throwable throwable) {
+
+        }
     }
 
     private void setJsonDataArray(@NonNull JSONArray jsonDataArray) {
