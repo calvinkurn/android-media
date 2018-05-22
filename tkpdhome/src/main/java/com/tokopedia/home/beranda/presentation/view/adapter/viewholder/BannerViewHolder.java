@@ -58,7 +58,7 @@ public class BannerViewHolder extends AbstractViewHolder<BannerViewModel> implem
             }
             bannerView.setPromoList(promoUrls);
             bannerView.buildView();
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -77,8 +77,9 @@ public class BannerViewHolder extends AbstractViewHolder<BannerViewModel> implem
 
     @Override
     public void onPromoClick(int position) {
-        Promotion promotion =getPromotion(position);
-        HomePageTracking.eventPromoClick(promotion);listener.onPromoClick(position, slidesList.get(position),
+        Promotion promotion = getPromotion(position);
+        HomePageTracking.eventPromoClick(promotion);
+        listener.onPromoClick(position, slidesList.get(position),
                 String.valueOf(promotion.getImpressionDataLayer().get(ATTRIBUTION)));
         HomeTrackingUtils.homeSlidingBannerClick(slidesList.get(position), position);
     }
@@ -87,6 +88,7 @@ public class BannerViewHolder extends AbstractViewHolder<BannerViewModel> implem
     public void onPromoScrolled(int position) {
         if (listener.isMainViewVisible()) {
             HomePageTracking.eventPromoImpression(getPromotion(position));
+            HomeTrackingUtils.homeSlidingBannerImpression(slidesList.get(position), position);
         }
     }
 

@@ -19,6 +19,16 @@ import java.util.Map;
 
 public class HomeTrackingUtils {
 
+    public static void homeSlidingBannerImpression(BannerSlidesModel bannerSlidesModel, int position) {
+        Map<String, Object> bundle = new HashMap<>();
+
+        bundle.put(FirebaseParams.Home.BANNER_CREATIVE, bannerSlidesModel.getCreativeName());
+        bundle.put(FirebaseParams.Home.BANNER_NAME, bannerSlidesModel.getTitle());
+        bundle.put(FirebaseParams.Home.BANNER_LIST_NAME, "sliding baaner");
+        bundle.put(FirebaseParams.Home.BANNER_POSITION, position);
+        sendEventToAnalytics(FirebaseEvent.Home.HOMEPAGE_SLIDING_BANNER_IMPRESSION, bundle);
+    }
+
     public static void homeSlidingBannerClick(BannerSlidesModel bannerSlidesModel, int position) {
         Map<String, Object> bundle = new HashMap<>();
 
@@ -157,16 +167,6 @@ public class HomeTrackingUtils {
         bundle.put(FirebaseParams.Home.LANDING_SCREEN_NAME, landingScreen);
         sendEventToAnalytics(FirebaseEvent.Home.HOMEPAGE_SEARCH_ICON_CLICKED, bundle);
     }
-
-//    public static void homeRecommedationImpression(String landingScreen) {
-//        Map<String,Object> bundle=new HashMap<>();
-//        bundle.put(FirebaseParams.Home.PRODUCT_ID, channel.getId());
-//        bundle.put(FirebaseParams.Home.PRODUCT_NAME, channel.getName());
-//        bundle.put(FirebaseParams.Home.PRODUCT_LIST_NAME, channel.getPromoName());
-//        bundle.put(FirebaseParams.Home.PRODUCT_CATEGORY, channel.getType());
-//        bundle.put(FirebaseParams.Home.LANDING_SCREEN_NAME, landingScreen);
-//        sendEventToAnalytics(FirebaseEvent.Home.HOMEPAGE_SEARCH_ICON_CLICKED ,bundle);
-//    }
 
     public static void homepageRecommedationClicked(LayoutRows rowModel) {
         Map<String, Object> bundle = new HashMap<>();
