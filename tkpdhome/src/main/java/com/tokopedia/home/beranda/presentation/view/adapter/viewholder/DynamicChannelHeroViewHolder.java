@@ -88,7 +88,6 @@ public class DynamicChannelHeroViewHolder extends AbstractViewHolder<DynamicChan
                         );
                         listener.onDynamicChannelClicked(DynamicLinkHelper.getActionLink(element.getChannel().getHero()[0]),
                                 element.getChannel().getHomeAttribution(1, element.getChannel().getHero()[0].getAttribution()));
-
                     }
                 });
             }
@@ -96,7 +95,6 @@ public class DynamicChannelHeroViewHolder extends AbstractViewHolder<DynamicChan
                 @Override
                 public void onClick(View view) {
                     listener.onDynamicChannelClicked(DynamicLinkHelper.getActionLink(channel.getHeader()), channel.getHomeAttribution());
-
                 }
             });
         }catch (Exception e){
