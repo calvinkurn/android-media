@@ -1,7 +1,8 @@
-package com.tokopedia.flight.orderlist.domain.model;
+package com.tokopedia.flight.orderlist.domain.model.mapper;
 
 import com.tokopedia.flight.detail.view.model.FlightDetailRouteViewModelMapper;
 import com.tokopedia.flight.orderlist.data.cloud.entity.JourneyEntity;
+import com.tokopedia.flight.orderlist.domain.model.FlightOrderJourney;
 
 import java.util.ArrayList;
 import java.util.List;

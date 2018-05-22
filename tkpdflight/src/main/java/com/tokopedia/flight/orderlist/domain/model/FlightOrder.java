@@ -26,6 +26,7 @@ public class FlightOrder {
     private List<FlightOrderJourney> journeys;
     private List<FlightOrderPassengerViewModel> passengerViewModels;
     private PaymentInfoEntity payment;
+    private List<FlightInsurance> insurances;
 
     public FlightOrder() {
     }
@@ -164,5 +165,13 @@ public class FlightOrder {
 
     public void setPdf(String pdf) {
         this.pdf = pdf;
+    }
+
+    public List<FlightInsurance> getInsurances() {
+        return insurances;
+    }
+
+    public void setInsurances(List<FlightInsurance> insurances) {
+        this.insurances = insurances;
     }
 }
