@@ -15,6 +15,7 @@ import android.support.design.widget.Snackbar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -482,9 +483,12 @@ public class FragmentSellingStatus extends BaseFragment<SellingStatusTransaction
                 Uri.Builder uriBuilder = new Uri.Builder();
                 uriBuilder.appendQueryParameter(
                         ApplinkConst.Query.ORDER_TRACKING_ORDER_ID,
-                        model.OrderId).appendQueryParameter(
-                        ApplinkConst.Query.ORDER_TRACKING_URL_LIVE_TRACKING,
-                        model.liveTracking);
+                        model.OrderId);
+                if (!TextUtils.isEmpty(model.liveTracking)) {
+                    uriBuilder.appendQueryParameter(
+                            ApplinkConst.Query.ORDER_TRACKING_URL_LIVE_TRACKING,
+                            model.liveTracking);
+                }
                 routingAppLink += uriBuilder.toString();
                 RouteManager.route(getActivity(), routingAppLink);
             }

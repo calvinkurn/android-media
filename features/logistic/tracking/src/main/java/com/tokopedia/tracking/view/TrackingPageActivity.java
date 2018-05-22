@@ -38,7 +38,7 @@ public class TrackingPageActivity extends BaseSimpleActivity {
     @Override
     protected Fragment getNewFragment() {
         return TrackingPageFragment.createFragment(
-                getIntent().getExtras().getString(ORDER_ID_KEY),
-                getIntent().getExtras().getString(URL_LIVE_TRACKING));
+                getIntent().getExtras().getString(ORDER_ID_KEY, ""),
+                getIntent().getExtras().getString(URL_LIVE_TRACKING, ""));
     }
 }
