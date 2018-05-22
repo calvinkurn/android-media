@@ -21,7 +21,7 @@ public class Voucher {
     @Expose
     private String defaultPromoTab;
 
-    public boolean isEnableVoucher() {
+    public boolean getEnableVoucher() {
         return enableVoucher;
     }
 

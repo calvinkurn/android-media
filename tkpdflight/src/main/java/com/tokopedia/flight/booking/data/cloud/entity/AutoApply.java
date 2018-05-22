@@ -39,7 +39,7 @@ public class AutoApply {
     @Expose
     private int promoId;
 
-    public boolean isSuccess() {
+    public boolean getIsSuccess() {
         return success;
     }
 
@@ -109,5 +109,13 @@ public class AutoApply {
 
     public void setPromoId(int promoId) {
         this.promoId = promoId;
+    }
+
+    public String getMessageSuccess() {
+        return messageSuccess;
+    }
+
+    public void setMessageSuccess(String messageSuccess) {
+        this.messageSuccess = messageSuccess;
     }
 }
