@@ -27,13 +27,13 @@ import com.tokopedia.digital.product.additionalfeature.etoll.data.mapper.Smartca
 import com.tokopedia.digital.product.additionalfeature.etoll.data.repository.ETollRepository;
 import com.tokopedia.digital.product.additionalfeature.etoll.data.source.SmartcardCommandDataSource;
 import com.tokopedia.digital.product.additionalfeature.etoll.data.source.SmartcardInquiryDataSource;
-import com.tokopedia.digital.product.additionalfeature.etoll.domain.interactor.InquiryBalanceUseCase;
+import com.tokopedia.digital.product.additionalfeature.etoll.domain.interactor.SmartcardInquiryUseCase;
 import com.tokopedia.digital.product.additionalfeature.etoll.domain.interactor.SendCommandUseCase;
 import com.tokopedia.digital.product.additionalfeature.etoll.view.compoundview.ETollUpdateBalanceResultView;
 import com.tokopedia.digital.product.additionalfeature.etoll.view.compoundview.NFCDisabledView;
 import com.tokopedia.digital.product.additionalfeature.etoll.view.compoundview.TapETollCardView;
 import com.tokopedia.digital.product.additionalfeature.etoll.view.model.InquiryBalanceModel;
-import com.tokopedia.digital.product.additionalfeature.etoll.view.presenter.EMoneyPresenter;
+import com.tokopedia.digital.product.additionalfeature.etoll.view.presenter.ETollPresenter;
 import com.tokopedia.digital.product.view.activity.DigitalProductActivity;
 import com.tokopedia.digital.product.view.listener.IEMoneyView;
 import com.tokopedia.digital.product.view.model.CardInfo;
@@ -56,7 +56,7 @@ public class DigitalCheckETollBalanceNFCActivity extends BaseSimpleActivity
 
     private static final String TAG = DigitalCheckETollBalanceNFCActivity.class.getSimpleName();
 
-    private EMoneyPresenter presenter;
+    private ETollPresenter presenter;
 
     private CardInfo fetchedCardInfo;
 
@@ -100,10 +100,10 @@ public class DigitalCheckETollBalanceNFCActivity extends BaseSimpleActivity
                 digitalEndpointService, mapper);
         SmartcardCommandDataSource smartcardCommandDataSource = new SmartcardCommandDataSource(this, mapper);
         ETollRepository eTollRepository = new ETollRepository(smartcardInquiryDataSource, smartcardCommandDataSource);
-        InquiryBalanceUseCase inquiryBalanceUseCase = new InquiryBalanceUseCase(eTollRepository);
+        SmartcardInquiryUseCase smartcardInquiryUseCase = new SmartcardInquiryUseCase(eTollRepository);
         SendCommandUseCase sendCommandUseCase = new SendCommandUseCase(eTollRepository);
 
-        presenter = new EMoneyPresenter(this, inquiryBalanceUseCase, sendCommandUseCase);
+        presenter = new ETollPresenter(this, smartcardInquiryUseCase, sendCommandUseCase);
     }
 
     @Override
@@ -114,7 +114,7 @@ public class DigitalCheckETollBalanceNFCActivity extends BaseSimpleActivity
         nfcDisabledView = findViewById(R.id.view_nfc_disabled);
         tapETollCardView = findViewById(R.id.view_tap_emoney_card);
 
-        eTollUpdateBalanceResultView.setListener(new ETollUpdateBalanceResultView.OnTopupEMoneyClickListener() {
+        eTollUpdateBalanceResultView.setListener(new ETollUpdateBalanceResultView.OnTopupETollClickListener() {
             @Override
             public void onClick() {
                 // navigate to category emoney page

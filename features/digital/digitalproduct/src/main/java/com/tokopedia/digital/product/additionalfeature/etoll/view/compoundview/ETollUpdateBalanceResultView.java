@@ -21,9 +21,9 @@ public class ETollUpdateBalanceResultView extends LinearLayout {
     private Button buttonTopup;
     private TextView textLabelProgress;
 
-    private OnTopupEMoneyClickListener listener;
+    private OnTopupETollClickListener listener;
 
-    public interface OnTopupEMoneyClickListener {
+    public interface OnTopupETollClickListener {
         void onClick();
     }
 
@@ -42,7 +42,7 @@ public class ETollUpdateBalanceResultView extends LinearLayout {
         init();
     }
 
-    public void setListener(OnTopupEMoneyClickListener listener) {
+    public void setListener(OnTopupETollClickListener listener) {
         this.listener = listener;
     }
 

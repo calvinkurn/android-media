@@ -2,7 +2,7 @@ package com.tokopedia.digital.product.additionalfeature.etoll.view.presenter;
 
 import android.util.Log;
 
-import com.tokopedia.digital.product.additionalfeature.etoll.domain.interactor.InquiryBalanceUseCase;
+import com.tokopedia.digital.product.additionalfeature.etoll.domain.interactor.SmartcardInquiryUseCase;
 import com.tokopedia.digital.product.additionalfeature.etoll.domain.interactor.SendCommandUseCase;
 import com.tokopedia.digital.product.view.listener.IEMoneyView;
 import com.tokopedia.digital.product.additionalfeature.etoll.view.model.InquiryBalanceModel;
@@ -12,26 +12,26 @@ import rx.Subscriber;
 /**
  * Created by Rizky on 18/05/18.
  */
-public class EMoneyPresenter implements IEMoneyPresenter {
+public class ETollPresenter implements IETollPresenter {
 
-    private final String TAG = EMoneyPresenter.class.getSimpleName();
+    private final String TAG = ETollPresenter.class.getSimpleName();
 
     private IEMoneyView view;
-    private InquiryBalanceUseCase inquiryBalanceUseCase;
+    private SmartcardInquiryUseCase smartcardInquiryUseCase;
     private SendCommandUseCase sendCommandUseCase;
 
-    public EMoneyPresenter(IEMoneyView view, InquiryBalanceUseCase InquiryBalanceUseCase,
-                           SendCommandUseCase sendCommandUseCase) {
+    public ETollPresenter(IEMoneyView view, SmartcardInquiryUseCase SmartcardInquiryUseCase,
+                          SendCommandUseCase sendCommandUseCase) {
         this.view = view;
-        this.inquiryBalanceUseCase = InquiryBalanceUseCase;
+        this.smartcardInquiryUseCase = SmartcardInquiryUseCase;
         this.sendCommandUseCase = sendCommandUseCase;
     }
 
     @Override
     public void inquiryBalance(int issuerId, String cardAttribute, String cardInfo, String cardUID,
                                String cardLastBalance) {
-        inquiryBalanceUseCase.execute(
-                inquiryBalanceUseCase.createRequestParam(issuerId, cardAttribute, cardInfo, cardUID,
+        smartcardInquiryUseCase.execute(
+                smartcardInquiryUseCase.createRequestParam(issuerId, cardAttribute, cardInfo, cardUID,
                         cardLastBalance),
                 new Subscriber<InquiryBalanceModel>() {
                     @Override

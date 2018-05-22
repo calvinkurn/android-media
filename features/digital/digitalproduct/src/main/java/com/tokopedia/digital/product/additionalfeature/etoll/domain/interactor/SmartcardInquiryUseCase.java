@@ -13,7 +13,7 @@ import rx.Observable;
 /**
  * Created by Rizky on 18/05/18.
  */
-public class InquiryBalanceUseCase extends UseCase<InquiryBalanceModel> {
+public class SmartcardInquiryUseCase extends UseCase<InquiryBalanceModel> {
 
     private final String PARAM_ISSUER_ID = "PARAM_ISSUER_ID";
     private final String PARAM_CARD_ATTRIBUTE = "PARAM_CARD_ATTRIBUTE";
@@ -23,7 +23,7 @@ public class InquiryBalanceUseCase extends UseCase<InquiryBalanceModel> {
 
     private ETollRepository eTollRepository;
 
-    public InquiryBalanceUseCase(ETollRepository eTollRepository) {
+    public SmartcardInquiryUseCase(ETollRepository eTollRepository) {
         this.eTollRepository = eTollRepository;
     }
 
