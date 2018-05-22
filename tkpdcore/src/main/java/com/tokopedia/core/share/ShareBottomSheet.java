@@ -13,12 +13,14 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.tokopedia.core.R;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.UnifyTracking;
+import com.tokopedia.core.base.utils.StringUtils;
 import com.tokopedia.core.product.model.share.ShareData;
 import com.tokopedia.core.share.adapter.ShareAdapter;
 import com.tokopedia.core.util.BranchSdkUtils;
@@ -38,22 +40,28 @@ import static android.content.pm.PackageManager.MATCH_DEFAULT_ONLY;
  */
 public class ShareBottomSheet extends BottomSheets implements ShareAdapter.OnItemClickListener {
 
-    public static ShareBottomSheet newInstance(ShareData data) {
+    public static ShareBottomSheet newInstance(ShareData data, boolean isAddingProduct) {
         ShareBottomSheet fragment = new ShareBottomSheet();
         Bundle bundle = new Bundle();
         bundle.putParcelable(ShareBottomSheet.class.getName(), data);
+        bundle.putBoolean(ShareBottomSheet.class.getName()+".isAddingProduct", isAddingProduct);
         fragment.setArguments(bundle);
         return fragment;
     }
 
+    public static void show(FragmentManager fragmentManager, ShareData data, boolean isAddingProduct) {
+        newInstance(data, isAddingProduct).show(fragmentManager, "Share");
+    }
+
     public static void show(FragmentManager fragmentManager, ShareData data) {
-        newInstance(data).show(fragmentManager, "Share");
+        newInstance(data, false).show(fragmentManager, "Share");
     }
 
     private String[] ClassNameApplications = new String[] {"com.whatsapp.ContactPicker", "com.facebook.composer.shareintent.ImplicitShareIntentHandlerDefaultAlias",
             "jp.naver.line.android.activity.selectchat.SelectChatActivityLaunchActivity", "com.twitter.composer.ComposerShareActivity", "com.google.android.apps.plus.GatewayActivityAlias"};
 
     private ShareData data;
+    private boolean isAdding;
 
     @Override
     public int getLayoutResourceId() {
@@ -73,17 +81,26 @@ public class ShareBottomSheet extends BottomSheets implements ShareAdapter.OnIte
     @Override
     protected void configView(View parentView) {
         data = getArguments().getParcelable(ShareBottomSheet.class.getName()); // getting data from parcelable
+        isAdding = getArguments().getBoolean(ShareBottomSheet.class.getName()+".isAddingProduct", false);
         super.configView(parentView);
     }
+
+    private RecyclerView mRecyclerView;
+    private ProgressBar mProgressBar;
 
     @Override
     public void initView(View view) {
 
-        RecyclerView mRecyclerView = view.findViewById(R.id.recyclerview);
+        mRecyclerView = view.findViewById(R.id.recyclerview);
+        mProgressBar = view.findViewById(R.id.progressbar);
 
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getActivity());
         mRecyclerView.setLayoutManager(mLayoutManager);
 
+        broadcastAddProduct();
+    }
+
+    private void init() {
         Intent intent = getIntent("");
 
         List<ResolveInfo> resolvedActivities = getActivity().getPackageManager()
@@ -173,25 +190,74 @@ public class ShareBottomSheet extends BottomSheets implements ShareAdapter.OnIte
 
     private BroadcastReceiver addProductReceiver;
 
+    private void stateProgress(boolean progress) {
+        if (progress) {
+            mProgressBar.setVisibility(View.VISIBLE);
+            mRecyclerView.setVisibility(View.GONE);
+        } else {
+            mProgressBar.setVisibility(View.GONE);
+            mRecyclerView.setVisibility(View.VISIBLE);
+            init();
+        }
+    }
+
     private void broadcastAddProduct() {
-        addingProduct(isAdding);
+        stateProgress(isAdding);
         addProductReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
                 Bundle bundle = intent.getExtras();
-                int status = bundle.getInt(TkpdState.ProductService.STATUS_FLAG, TkpdState.ProductService.STATUS_ERROR);
-                switch (status) {
-                    case TkpdState.ProductService.STATUS_DONE:
-                        setData(bundle);
-                        addingProduct(false);
-                        break;
-                    case TkpdState.ProductService.STATUS_ERROR:
-                    default:
-                        addingProduct(false);
-                        onError(bundle);
+                if (bundle != null) {
+                    int status = bundle.getInt(TkpdState.ProductService.STATUS_FLAG, TkpdState.ProductService.STATUS_ERROR);
+                    switch (status) {
+                        case TkpdState.ProductService.STATUS_DONE:
+                            setData(bundle);
+                            stateProgress(false);
+                            break;
+                        case TkpdState.ProductService.STATUS_ERROR:
+                        default:
+                            stateProgress(false);
+                            onError(bundle);
+                    }
                 }
             }
         };
+    }
+
+    public void onError(Bundle resultData) {
+        String messageError = resultData.getString(TkpdState.ProductService.MESSAGE_ERROR_FLAG);
+        mProgressBar.setVisibility(View.GONE);
+        errorImage.setVisibility(View.VISIBLE);
+        loadingAddProduct.setText(messageError +
+                "\n" + getString(R.string.error_failed_add_product));
+        loadingAddProduct.setVisibility(View.VISIBLE);
+        setIconShareVisibility(View.GONE);
+        setVisibilityTitle(View.GONE);
+    }
+
+    public void setData(Bundle data) {
+        this.data = new ShareData();
+        this.data.setType(ShareData.PRODUCT_TYPE);
+        String productName = data.getString(TkpdState.ProductService.PRODUCT_NAME);
+        if (StringUtils.isNotBlank(productName)) {
+            this.data.setName(productName);
+        }
+        String imageUri = data.getString(TkpdState.ProductService.IMAGE_URI);
+        if (StringUtils.isNotBlank(imageUri)) {
+            this.data.setImgUri(imageUri);
+        }
+        String productDescription = data.getString(TkpdState.ProductService.PRODUCT_DESCRIPTION);
+        if (StringUtils.isNotBlank(productDescription)) {
+            this.data.setDescription(productDescription);
+        }
+        String productUri = data.getString(TkpdState.ProductService.PRODUCT_URI);
+        if (StringUtils.isNotBlank(productUri)) {
+            this.data.setUri(productUri);
+        }
+        String productId = data.getString(TkpdState.ProductService.PRODUCT_ID);
+        if (StringUtils.isNotBlank(productId)) {
+            this.data.setId(productId);
+        }
     }
 
     @Override

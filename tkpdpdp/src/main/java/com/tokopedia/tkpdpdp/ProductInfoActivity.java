@@ -155,7 +155,7 @@ public class ProductInfoActivity extends BasePresenterNoLayoutActivity<ProductIn
         ShareData shareData = bundle.getParcelable(ProductInfoActivity.SHARE_DATA);
 
         if (isAddingProduct) {
-            navigateToActivity(ShareActivity.createIntent(this, shareData, true));
+            ShareBottomSheet.show(getSupportFragmentManager(), shareData, true);
         } else if (shareData != null) {
             ShareBottomSheet.show(getSupportFragmentManager(), shareData);
         } else {
