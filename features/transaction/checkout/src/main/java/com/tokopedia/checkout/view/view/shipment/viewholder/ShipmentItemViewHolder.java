@@ -132,6 +132,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder {
     private TextInputLayout textInputLayoutShipperName;
     private TextInputLayout textInputLayoutShipperPhone;
     private View vSeparatorMultipleProductSameStore;
+    private View vSeparatorAboveCourier;
 
     public ShipmentItemViewHolder(View itemView) {
         super(itemView);
@@ -213,6 +214,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder {
         textInputLayoutShipperName = itemView.findViewById(R.id.text_input_layout_shipper_name);
         textInputLayoutShipperPhone = itemView.findViewById(R.id.text_input_layout_shipper_phone);
         vSeparatorMultipleProductSameStore = itemView.findViewById(R.id.v_separator_multiple_product_same_store);
+        vSeparatorAboveCourier = itemView.findViewById(R.id.v_separator_above_courier);
     }
 
     protected void showBottomSheet(Context context, String title, String message, int image) {
@@ -245,9 +247,11 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder {
         if (shipmentSingleAddressItem.getCartItemModels() != null && shipmentSingleAddressItem.getCartItemModels().size() > 1) {
             rlExpandOtherProduct.setVisibility(View.VISIBLE);
             renderOtherCartItems(shipmentSingleAddressItem, cartItemModelList);
+            vSeparatorAboveCourier.setVisibility(View.VISIBLE);
         } else {
             rlExpandOtherProduct.setVisibility(View.GONE);
             vSeparatorMultipleProductSameStore.setVisibility(View.GONE);
+            vSeparatorAboveCourier.setVisibility(View.GONE);
         }
 
         setShowCase(llShipmentOptionViewLayout, showCaseObjectList);
