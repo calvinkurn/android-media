@@ -4,9 +4,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
-import android.support.v7.app.ActionBar;
 
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
+import com.tokopedia.analytics.R;
 import com.tokopedia.analytics.debugger.ui.fragment.AnalyticsDebuggerFragment;
 
 public class AnalyticsDebuggerActivity extends BaseSimpleActivity {
@@ -20,8 +20,8 @@ public class AnalyticsDebuggerActivity extends BaseSimpleActivity {
         super.onCreate(savedInstanceState);
         setContentView(getLayoutRes());
         if(getSupportActionBar() != null) {
-            getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_TITLE);
             getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+            getSupportActionBar().setDisplayShowTitleEnabled(true);
             getSupportActionBar().setTitle("Analytics Debugger");
         }
     }
@@ -39,5 +39,15 @@ public class AnalyticsDebuggerActivity extends BaseSimpleActivity {
     @Override
     public void onBackPressed() {
         finish();
+    }
+
+    @Override
+    protected boolean isShowCloseButton() {
+        return true;
+    }
+
+    @Override
+    protected int getLayoutRes() {
+        return R.layout.activity_analytics_debugger;
     }
 }
