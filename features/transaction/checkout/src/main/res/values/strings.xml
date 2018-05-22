@@ -141,5 +141,7 @@
     <string name="label_dialog_message_remove_cart_item">Barang ini akan dihapus dari keranjang belanja anda</string>
     <string name="label_delete_cart_item_success">Produk berhasil dihapus dari keranjang</string>
     <string name="label_delete_cart_item_failed">Gagal menghapus produk dari keranjang</string>
+    <string name="label_delete_cart_tem">Hapus</string>
+    <string name="label_delete_cart_item_formatted" formatted="false">Hapus (%d)</string>
 
 </resources>

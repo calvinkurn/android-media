@@ -106,6 +106,7 @@ public class CartRemoveProductAdapter extends RecyclerView.Adapter<RecyclerView.
                 public void onClick(View view) {
                     isRemoveAll = !isRemoveAll;
                     notifyDataSetChanged();
+                    mActionListener.onAllItemCheckChanged(isRemoveAll);
                 }
             };
         }
@@ -125,6 +126,11 @@ public class CartRemoveProductAdapter extends RecyclerView.Adapter<RecyclerView.
         }
     }
 
+    public void checkAllItem(boolean checked) {
+        isRemoveAll = checked;
+        notifyItemChanged(0);
+    }
+
     /**
      * Implemented by container fragment which will receive events and data from adapter
      */
@@ -136,8 +142,9 @@ public class CartRemoveProductAdapter extends RecyclerView.Adapter<RecyclerView.
          * @param checked  state of checkbox
          * @param position index of list where the checkbox state is changed
          */
-        void onCheckBoxStateChangedListener(boolean checked, int position);
+        void onCheckBoxStateChanged(boolean checked, int position);
 
+        void onAllItemCheckChanged(boolean checked);
     }
 
     /**
@@ -224,7 +231,7 @@ public class CartRemoveProductAdapter extends RecyclerView.Adapter<RecyclerView.
             return new CompoundButton.OnCheckedChangeListener() {
                 @Override
                 public void onCheckedChanged(CompoundButton compoundButton, boolean checked) {
-                    mActionListener.onCheckBoxStateChangedListener(checked, position);
+                    mActionListener.onCheckBoxStateChanged(checked, position);
                 }
             };
         }
