@@ -1,20 +1,17 @@
 apply plugin: 'com.android.library'
-apply plugin: 'com.neenbedankt.android-apt'
 apply from: "$rootProject.projectDir/buildconfig/module.gradle"
-apply plugin: 'io.hansel.preprocessor.module'
+apply plugin: 'kotlin-android'
 
-
-buildscript {
-    repositories {
-        mavenCentral()
-        maven { url 'https://hansel.io/maven' }
-    }
-    dependencies {
-        classpath rootProject.ext.miscDependencies.hansel
-    }
+project.ext {
+    artifactId = 'applink'
+    groupId = 'com.tokopedia.applink'
+    versionName = "${tkpdApplinkVersion}"
+    artifactName ="applink-release"
 }
 
 dependencies {
-    compile rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
-    apt rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
+    implementation rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
+    annotationProcessor rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
 }
+
+apply from: '../../publish_local.gradle'

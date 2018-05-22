@@ -32,10 +32,9 @@ import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 
-import static com.appsflyer.AppsFlyerLib.LOG_TAG;
-
 public class GoogleSignInActivity extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener {
 
+    private static final String LOG_TAG = "GoogleSignInActivity";
     public static final int RC_SIGN_IN_GOOGLE = 7777;
     public static final String KEY_GOOGLE_ACCOUNT = "GoogleSignInAccount";
     public static final String KEY_GOOGLE_ACCOUNT_TOKEN = "GoogleSignInAccAccount";

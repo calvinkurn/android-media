@@ -16,25 +16,27 @@ import com.tokopedia.inbox.inboxchat.presenter.ChatRoomContract;
 import com.tokopedia.inbox.inboxchat.viewmodel.chatroom.TimeMachineChatModel;
 
 /**
- * @author by nisie on 10/24/17.
+ * @author by steven on 05/09/18.
  */
 
-public class TimeMachineChatViewHolder extends AbstractViewHolder<TimeMachineChatModel> {
+public class SecurityInfoChatViewHolder extends AbstractViewHolder<TimeMachineChatModel> {
 
     @LayoutRes
-    public static final int LAYOUT = R.layout.time_machine_chatroom_layout;
+    public static final int LAYOUT = R.layout.security_info_chatroom_layout;
 
     private final ChatRoomContract.View viewListener;
     private TextView timeMachineText;
 
 
-    public TimeMachineChatViewHolder(View itemView, ChatRoomContract.View viewListener) {
+    public SecurityInfoChatViewHolder(View itemView, ChatRoomContract.View viewListener) {
         super(itemView);
         this.viewListener = viewListener;
         timeMachineText = (TextView) itemView.findViewById(R.id.time_machine_text);
 
-        Spannable spannable = new SpannableString(MainApplication.getAppContext().getString(R.string
-                .time_machine_chat));
+        String securityInfo = MainApplication.getAppContext().getString(R.string.security_info_chat);
+        String securityInfoLink = MainApplication.getAppContext().getString(R.string.security_info_chat_link);
+
+        Spannable spannable = new SpannableString(String.format("%s %s", securityInfo, securityInfoLink));
 
         spannable.setSpan(new ClickableSpan() {
                               @Override
@@ -49,9 +51,8 @@ public class TimeMachineChatViewHolder extends AbstractViewHolder<TimeMachineCha
                                           .getAppContext(), R.color.medium_green));
                               }
                           }
-                , MainApplication.getAppContext().getString(R.string.time_machine_chat).indexOf
-                        ("Riwayat")
-                , MainApplication.getAppContext().getString(R.string.time_machine_chat).length()
+                , securityInfo.length()
+                , spannable.length()
                 , 0);
 
         timeMachineText.setText(spannable, TextView.BufferType.SPANNABLE);

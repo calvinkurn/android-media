@@ -11,7 +11,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.tkpd.library.ui.view.LinearLayoutManager;
-import com.tokopedia.core.R2;
+import com.tokopedia.discovery.R2;
 import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.discovery.R;
 import com.tokopedia.discovery.search.view.adapter.DefaultSearchResultAdapter;

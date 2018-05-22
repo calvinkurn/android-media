@@ -1,28 +1,27 @@
 apply plugin: 'com.android.library'
-apply plugin: 'android-apt'
 apply from: "$rootProject.projectDir/buildconfig/module.gradle"
-apply plugin: 'io.hansel.preprocessor.module'
+apply plugin: 'kotlin-android'
 
-buildscript {
-    repositories {
-        mavenCentral()
-        maven { url 'https://hansel.io/maven' }
-    }
-    dependencies {
-        classpath rootProject.ext.miscDependencies.hansel
-    }
+project.ext {
+    artifactId = 'mitra_toppers'
+    groupId = 'com.tokopedia.mitratoppers'
+    versionName = "${tkpdMitraToppersVersion}"
+    artifactName ="mitra_toppers-release"
 }
 
 dependencies {
 
-    compile project(rootProject.ext.libraries.useCase)
-    compile project(rootProject.ext.libraries.abstraction)
+    implementation project(rootProject.ext.libraries.useCase)
+    implementation project(rootProject.ext.libraries.abstraction)
+    implementation project(rootProject.ext.libraries.design)
 
-    compile rootProject.ext.supportLibDependencies.supportV4
+    implementation rootProject.ext.miscDependencies.multiDex
+    implementation rootProject.ext.miscDependencies.roundCornerProgressBar
+    implementation (rootProject.ext.miscDependencies.loaderviewlibrary){
+        exclude group: 'com.android.support'
+    }
 
-    provided rootProject.ext.miscDependencies.javaxAnnotation
-    compile rootProject.ext.miscDependencies.dagger
-    apt rootProject.ext.miscDependencies.daggerCompiler
-
-    compile rootProject.ext.debugToolsDependencies.stetho
+    implementation rootProject.ext.debugToolsDependencies.stetho
 }
+
+apply from: '../../../publish_local.gradle'
