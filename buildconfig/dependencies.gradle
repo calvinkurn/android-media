@@ -232,7 +232,7 @@ ext {
             tokoCash        : ":tkpdtokocash",
             flight          : ":tkpdflight",
             flightNoOp      : ":features:digital:flight_no_op",
-            train           : ":features:travel:train",
+            train           : ":features:digital:train",
             mitraToppers    : ":features:fintech:mitra_toppers",
             event           : ":features:digital:event",
             home            : ":tkpdhome",
