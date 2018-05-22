@@ -213,8 +213,7 @@ public class TrackingPageFragment extends BaseDaggerFragment implements ITrackin
         return new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-//                startActivity(
-//                        SimpleWebViewActivity.getIntent(getActivity(), ADDITIONAL_INFO_URL));
+                startActivity(SimpleWebViewActivity.createIntent(getActivity(), ADDITIONAL_INFO_URL));
             }
         };
     }
@@ -223,9 +222,9 @@ public class TrackingPageFragment extends BaseDaggerFragment implements ITrackin
         return new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-//                startActivity(
-//                        SimpleWebViewActivity.getIntent(getActivity(),
-//                                getArguments().getString(URL_LIVE_TRACKING)));
+                startActivity(
+                        SimpleWebViewActivity.createIntent(getActivity(),
+                                getArguments().getString(URL_LIVE_TRACKING)));
             }
         };
     }
