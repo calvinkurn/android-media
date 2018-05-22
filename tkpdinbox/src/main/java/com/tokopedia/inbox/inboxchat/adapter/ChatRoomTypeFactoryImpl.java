@@ -2,8 +2,11 @@ package com.tokopedia.inbox.inboxchat.adapter;
 
 import android.view.View;
 
-import com.tokopedia.core.base.adapter.BaseAdapterTypeFactory;
-import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
+import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory;
+import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
+import com.tokopedia.inbox.inboxchat.adapter.viewholder.FallbackAttachmentViewHolder;
+import com.tokopedia.inbox.inboxchat.adapter.viewholder.QuickReplyViewHolder;
+import com.tokopedia.inbox.inboxchat.domain.model.websocket.FallbackAttachmentViewModel;
 import com.tokopedia.inbox.inboxchat.fragment.ChatRoomFragment;
 import com.tokopedia.inbox.inboxchat.presenter.ChatRoomContract;
 import com.tokopedia.inbox.inboxchat.viewholder.AttachImageViewHolder;
@@ -23,13 +26,14 @@ import com.tokopedia.inbox.inboxchat.viewmodel.MyChatViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.OppositeChatViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.ThumbnailChatViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.TypingChatModel;
+import com.tokopedia.inbox.inboxchat.viewmodel.chatroom.QuickReplyListViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.chatroom.TimeMachineChatModel;
 
 /**
  * Created by stevenfredian on 9/27/17.
  */
 
-public class ChatRoomTypeFactoryImpl extends BaseAdapterTypeFactory implements ChatRoomTypeFactory{
+public class ChatRoomTypeFactoryImpl extends BaseAdapterTypeFactory implements ChatRoomTypeFactory {
 
     ChatRoomContract.View viewListener;
 
@@ -82,6 +86,17 @@ public class ChatRoomTypeFactoryImpl extends BaseAdapterTypeFactory implements C
     public int type(AttachInvoiceSelectionViewModel attachInvoiceSelectionViewModel) {
         return AttachedInvoiceSelectionViewHolder.LAYOUT;
     }
+
+    @Override
+    public int type(QuickReplyListViewModel quickReplyListViewModel) {
+        return QuickReplyViewHolder.LAYOUT;
+    }
+
+    @Override
+    public int type(FallbackAttachmentViewModel fallbackAttachmentViewModel) {
+        return FallbackAttachmentViewHolder.LAYOUT;
+    }
+
     @Override
     public AbstractViewHolder createViewHolder(View view, int type) {
 
@@ -100,11 +115,16 @@ public class ChatRoomTypeFactoryImpl extends BaseAdapterTypeFactory implements C
         else if (type == ThumbnailChatViewHolder.LAYOUT)
             viewHolder = new ThumbnailChatViewHolder(view, viewListener);
         else if (type == AttachedProductViewHolder.LAYOUT)
-            viewHolder = new AttachedProductViewHolder(view,viewListener);
-        else if(type == AttachedInvoiceSentViewHolder.LAYOUT)
+            viewHolder = new AttachedProductViewHolder(view, viewListener);
+        else if (type == AttachedInvoiceSentViewHolder.LAYOUT)
             viewHolder = new AttachedInvoiceSentViewHolder(view);
-        else if(type == AttachedInvoiceSelectionViewHolder.LAYOUT)
+        else if (type == AttachedInvoiceSelectionViewHolder.LAYOUT)
             viewHolder = new AttachedInvoiceSelectionViewHolder(view, viewListener);
+        else if (type == QuickReplyViewHolder.LAYOUT)
+            viewHolder = new QuickReplyViewHolder(view, viewListener);
+        else if (type == FallbackAttachmentViewHolder.LAYOUT)
+            viewHolder = new FallbackAttachmentViewHolder(view, viewListener);
+
         else
             return super.createViewHolder(view, type);
 
