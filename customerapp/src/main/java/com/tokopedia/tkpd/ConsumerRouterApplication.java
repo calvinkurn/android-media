@@ -164,6 +164,7 @@ import com.tokopedia.kol.feature.comment.view.fragment.KolCommentFragment;
 import com.tokopedia.kol.feature.following_list.view.activity.KolFollowingListActivity;
 import com.tokopedia.kol.feature.post.view.fragment.KolPostFragment;
 import com.tokopedia.kol.feature.post.view.subscriber.LikeKolPostSubscriber;
+import com.tokopedia.logisticuploadawb.ILogisticUploadAwbRouter;
 import com.tokopedia.logisticuploadawb.UploadAwbLogisticActivity;
 import com.tokopedia.loyalty.LoyaltyRouter;
 import com.tokopedia.loyalty.broadcastreceiver.TokoPointDrawerBroadcastReceiver;
@@ -336,7 +337,8 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         GamificationRouter,
         ProfileModuleRouter,
         ReactNativeRouter,
-        ITransactionOrderDetailRouter {
+        ITransactionOrderDetailRouter,
+        ILogisticUploadAwbRouter {
 
     @Inject
     ReactNativeHost reactNativeHost;
@@ -2170,5 +2172,10 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @Override
     public Intent transactionOrderDetailRouterGetIntentUploadAwb(String urlUpload) {
         return UploadAwbLogisticActivity.newInstance(this, urlUpload);
+    }
+
+    @Override
+    public String logisticUploadRouterGetApplicationBuildFlavor() {
+        return BuildConfig.FLAVOR;
     }
 }
