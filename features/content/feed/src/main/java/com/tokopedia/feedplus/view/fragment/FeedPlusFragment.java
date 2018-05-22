@@ -159,7 +159,6 @@ public class FeedPlusFragment extends BaseDaggerFragment
         DaggerFeedPlusComponent daggerFeedPlusComponent =
                 (DaggerFeedPlusComponent) DaggerFeedPlusComponent.builder()
                         .appComponent(appComponent)
-                        .feedPlusModule(new FeedPlusModule())
                         .build();
 
         daggerFeedPlusComponent.inject(this);

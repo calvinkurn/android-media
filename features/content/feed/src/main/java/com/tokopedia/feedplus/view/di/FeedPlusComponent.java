@@ -1,6 +1,10 @@
 package com.tokopedia.feedplus.view.di;
 
+import android.content.Context;
+
+import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
+import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.feedplus.domain.usecase.FollowKolPostUseCase;
 import com.tokopedia.feedplus.view.fragment.FeedPlusDetailFragment;
 import com.tokopedia.feedplus.view.fragment.FeedPlusFragment;
@@ -15,6 +19,11 @@ import dagger.Component;
 @FeedPlusScope
 @Component(modules = FeedPlusModule.class, dependencies = BaseAppComponent.class)
 public interface FeedPlusComponent {
+
+    @ApplicationContext
+    Context context();
+
+    UserSession userSession();
 
     void inject(FeedPlusFragment feedPlusFragment);
 
