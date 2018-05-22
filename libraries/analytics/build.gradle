@@ -9,4 +9,5 @@ dependencies {
     })
 
     compile rootProject.ext.playServicesDependencies.firebase_analytics
+    compile rootProject.ext.playServicesDependencies.tagmanager_analytics
 }

@@ -45,6 +45,7 @@ import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
 import com.tokopedia.core.analytics.AppEventTracking;
+import com.tokopedia.core.analytics.HomePageTracking;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.analytics.handler.AnalyticsCacheHandler;
@@ -558,15 +559,17 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.action_cart) {
+            Intent intent;
             if (!SessionHandler.isV4Login(getBaseContext())) {
                 UnifyTracking.eventClickCart();
-                Intent intent = ((TkpdCoreRouter) MainApplication.getAppContext())
+                 intent = ((TkpdCoreRouter) MainApplication.getAppContext())
                         .getLoginIntent(this);
                 startActivity(intent);
-                HomeTrackingUtils.cartIconClicked("Login");
             } else {
-                startActivity(TransactionCartRouter.createInstanceCartActivity(this));
+                intent = TransactionCartRouter.createInstanceCartActivity(this);
+                startActivity(intent);
             }
+            HomeTrackingUtils.cartIconClicked(intent.getComponent().getClassName());
             return true;
         } else if (item.getItemId() == R.id.action_barcode_scan) {
             startActivity(QrScannerActivity.newInstance(this));

@@ -6,9 +6,11 @@ import com.tokopedia.analytics.firebase.FirebaseParams;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel;
 import com.tokopedia.home.beranda.domain.model.banner.BannerSlidesModel;
+import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.LayoutSections;
 import com.tokopedia.home.explore.domain.model.LayoutRows;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -17,12 +19,13 @@ import java.util.Map;
 
 public class HomeTrackingUtils {
 
-    public static void homeSlidingBannerClick(BannerSlidesModel bannerSlidesModel) {
+    public static void homeSlidingBannerClick(BannerSlidesModel bannerSlidesModel, int position) {
         Map<String, Object> bundle = new HashMap<>();
 
         bundle.put(FirebaseParams.Home.BANNER_CREATIVE, bannerSlidesModel.getCreativeName());
         bundle.put(FirebaseParams.Home.BANNER_NAME, bannerSlidesModel.getTitle());
-        bundle.put(FirebaseParams.Home.BANNER_POSITION, bannerSlidesModel.getSlideIndex());
+        bundle.put(FirebaseParams.Home.BANNER_LIST_NAME, "sliding baaner");
+        bundle.put(FirebaseParams.Home.BANNER_POSITION, position);
         bundle.put(FirebaseParams.Home.LANDING_SCREEN_NAME, bannerSlidesModel.getApplink());
         sendEventToAnalytics(FirebaseEvent.Home.HOMEPAGE_SLIDING_BANNER_CLICK, bundle);
     }
@@ -35,11 +38,13 @@ public class HomeTrackingUtils {
     }
 
 
-    public static void homeUsedCaseImpression(String iconName, int iconPosition) {
+    public static void homeUsedCaseImpression(List<LayoutSections> sectionList) {
         Map<String, Object> bundle = new HashMap<>();
+        for (int i = 0; i < sectionList.size(); i++) {
+            bundle.put(FirebaseParams.Home.ICON_NAME + "_" + i + 1, sectionList.get(i).getTitle());
+            bundle.put(FirebaseParams.Home.ICON_POSITION + "_" + i + 1, i + 1);
+        }
 
-        bundle.put(FirebaseParams.Home.ICON_NAME, iconName);
-        bundle.put(FirebaseParams.Home.ICON_POSITION, iconPosition);
         sendEventToAnalytics(FirebaseEvent.Home.HOMEPAGE_USED_CASE_IMPRESSION, bundle);
     }
 
@@ -53,13 +58,14 @@ public class HomeTrackingUtils {
     }
 
 
-    public static void homeSprintSaleImpression( DynamicHomeChannel.Channels channel) {
+    public static void homeSprintSaleImpression(DynamicHomeChannel.Grid[] grids , String category) {
         Map<String, Object> bundle = new HashMap<>();
-        bundle.put(FirebaseParams.Home.PRODUCT_ID, channel.getId());
-        bundle.put(FirebaseParams.Home.PRODUCT_NAME, channel.getName());
-        bundle.put(FirebaseParams.Home.PRODUCT_LIST_NAME, channel.getPromoName());
-        bundle.put(FirebaseParams.Home.PRODUCT_CATEGORY, channel.getType());
-        sendEventToAnalytics(FirebaseEvent.Home.HOMEPAGE_SPRINT_SALE_IMPRESSION , bundle);
+        for (int i = 0; i < grids.length; i++) {
+            bundle.put(FirebaseParams.Home.PRODUCT_ID,grids[i].getId());
+            bundle.put(FirebaseParams.Home.PRODUCT_NAME, grids[i].getLabel());
+            bundle.put(FirebaseParams.Home.PRODUCT_CATEGORY, category);
+        }
+        sendEventToAnalytics(FirebaseEvent.Home.HOMEPAGE_SPRINT_SALE_IMPRESSION, bundle);
     }
 
 
@@ -70,11 +76,10 @@ public class HomeTrackingUtils {
     }
 
 
-    public static void homeSprintSaleClick(int position, DynamicHomeChannel.Channels channel, String landingScreen) {
+    public static void homeSprintSaleClick(int position, DynamicHomeChannel.Channels channel, DynamicHomeChannel.Grid grid, String landingScreen) {
         Map<String, Object> bundle = new HashMap<>();
-        bundle.put(FirebaseParams.Home.PRODUCT_ID, channel.getId());
-        bundle.put(FirebaseParams.Home.PRODUCT_NAME, channel.getName());
-        bundle.put(FirebaseParams.Home.PRODUCT_LIST_NAME, channel.getPromoName());
+        bundle.put(FirebaseParams.Home.PRODUCT_ID, grid.getId());
+        bundle.put(FirebaseParams.Home.PRODUCT_NAME, grid.getLabel());
         bundle.put(FirebaseParams.Home.PRODUCT_CATEGORY, channel.getType());
         bundle.put(FirebaseParams.Home.LANDING_SCREEN_NAME, landingScreen);
         sendEventToAnalytics(FirebaseEvent.Home.HOMEPAGE_SPRINT_SALE_CLICK + "_" + position, bundle);
@@ -83,20 +88,24 @@ public class HomeTrackingUtils {
 
     public static void homeDiscoveryWidgetImpression(int position, DynamicHomeChannel.Channels channel) {
         Map<String, Object> bundle = new HashMap<>();
-        bundle.put(FirebaseParams.Home.PRODUCT_ID, channel.getId());
-        bundle.put(FirebaseParams.Home.PRODUCT_NAME, channel.getName());
+        DynamicHomeChannel.Grid[] grids = channel.getGrids();
+        for (int i = 0; i < grids.length; i++) {
+            bundle.put(FirebaseParams.Home.PRODUCT_ID + "_" + position, grids[i].getId());
+            bundle.put(FirebaseParams.Home.PRODUCT_NAME+ "_" + position, grids[i].getName());
+        }
+
         bundle.put(FirebaseParams.Home.PRODUCT_LIST_NAME, channel.getPromoName());
         bundle.put(FirebaseParams.Home.PRODUCT_CATEGORY, channel.getType());
         sendEventToAnalytics(FirebaseEvent.Home.HOMEPAGE_DISCOVERY_WIDGET_IMPRESSION + "_" + position, bundle);
     }
 
 
-    public static void homeDiscoveryWidgetClick(int position, DynamicHomeChannel.Channels channel, String landingScreen,String creativeName) {
+    public static void homeDiscoveryWidgetClick(int position, DynamicHomeChannel.Grid grid, String landingScreen, String creativeName , String category) {
         Map<String, Object> bundle = new HashMap<>();
-        bundle.put(FirebaseParams.Home.PRODUCT_ID, channel.getId());
-        bundle.put(FirebaseParams.Home.PRODUCT_NAME, channel.getName());
+        bundle.put(FirebaseParams.Home.PRODUCT_ID, grid.getId());
+        bundle.put(FirebaseParams.Home.PRODUCT_NAME, grid.getLabel());
         bundle.put(FirebaseParams.Home.BANNER_CREATIVE, creativeName);
-        bundle.put(FirebaseParams.Home.PRODUCT_CATEGORY, channel.getType());
+        bundle.put(FirebaseParams.Home.PRODUCT_CATEGORY, category);
         bundle.put(FirebaseParams.Home.PRODUCT_LIST_NAME, "Discovery Widget");
         bundle.put(FirebaseParams.Home.LANDING_SCREEN_NAME, landingScreen);
         sendEventToAnalytics(FirebaseEvent.Home.HOMEPAGE_DISCOVERY_WIDGET_CLICK + "_" + position, bundle);

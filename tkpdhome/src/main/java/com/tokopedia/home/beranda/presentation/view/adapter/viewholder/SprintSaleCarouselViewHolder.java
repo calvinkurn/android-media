@@ -102,7 +102,7 @@ public class SprintSaleCarouselViewHolder extends AbstractViewHolder<DynamicChan
 
         listener.onDynamicChannelClicked(DynamicLinkHelper.getActionLink(grid),
                 String.valueOf(evenMap.get(ATTRIBUTION)));
-        HomeTrackingUtils.homeSprintSaleClick(pos+1,channels,DynamicLinkHelper.getActionLink(grid));
+        HomeTrackingUtils.homeSprintSaleClick(pos+1,channels,grid,DynamicLinkHelper.getActionLink(grid));
     }
 
     @Override
@@ -115,7 +115,7 @@ public class SprintSaleCarouselViewHolder extends AbstractViewHolder<DynamicChan
             }
             itemAdapter.setList(channels.getGrids());
             itemAdapter.setGridItemClickListener(this);
-            HomeTrackingUtils.homeSprintSaleImpression(channels);
+            HomeTrackingUtils.homeSprintSaleImpression(channels.getGrids(),channels.getType());
             Date expiredTime = DateHelper.getExpiredTime(channels.getHeader().getExpiredTime());
             countDownView.setup(expiredTime, countDownListener);
             if (!TextUtils.isEmpty(DynamicLinkHelper.getActionLink(channels.getHeader()))) {

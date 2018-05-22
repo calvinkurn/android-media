@@ -22,7 +22,6 @@ import com.tokopedia.home.beranda.helper.TextViewHelper;
 import com.tokopedia.home.beranda.listener.HomeCategoryListener;
 import com.tokopedia.home.beranda.presentation.view.adapter.itemdecoration.GridSpacingItemDecoration;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.DynamicChannelViewModel;
-import com.tokopedia.home.beranda.presentation.view.analytics.HomeTrackingUtils;
 
 /**
  * Created by henrypriyono on 31/01/18.
@@ -89,7 +88,6 @@ public class DynamicChannelHeroViewHolder extends AbstractViewHolder<DynamicChan
                         );
                         listener.onDynamicChannelClicked(DynamicLinkHelper.getActionLink(element.getChannel().getHero()[0]),
                                 element.getChannel().getHomeAttribution(1, element.getChannel().getHero()[0].getAttribution()));
-                      //  HomeTrackingUtils.homeDiscoveryWidgetClick(1,channel,DynamicLinkHelper.getActionLink(element.getChannel().getGrids()[3]));
 
                     }
                 });
@@ -98,7 +96,6 @@ public class DynamicChannelHeroViewHolder extends AbstractViewHolder<DynamicChan
                 @Override
                 public void onClick(View view) {
                     listener.onDynamicChannelClicked(DynamicLinkHelper.getActionLink(channel.getHeader()), channel.getHomeAttribution());
-                    HomeTrackingUtils.homeDiscoveryWidgetViewAll(DynamicLinkHelper.getActionLink(channel.getHeader()));
 
                 }
             });

@@ -81,7 +81,8 @@ ext {
             remoteConfig: "com.google.firebase:firebase-config:${playServiceVersion}",
             perfMon     : "com.google.firebase:firebase-perf:${playServiceVersion}",
             ads         : "com.google.android.gms:play-services-ads:${playServiceVersion}",
-            firebase_analytics        :  "com.google.firebase:firebase-core:${playServiceVersion}"
+            firebase_analytics        :  "com.google.firebase:firebase-core:${playServiceVersion}",
+            tagmanager_analytics        :  "com.google.android.gms:play-services-tagmanager:${playServiceVersion}"
     ]
 
     butterKnifeDependencies = [

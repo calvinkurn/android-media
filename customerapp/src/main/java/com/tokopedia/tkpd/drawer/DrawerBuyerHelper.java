@@ -472,7 +472,9 @@ public class DrawerBuyerHelper extends DrawerHelper
                     break;
                 case TkpdState.DrawerPosition.CATEGORY_NAVIGATION:
                     UnifyTracking.eventCategoryDrawer();
+                    intent = BrowseProductRouter.getCategoryNavigationIntent(context);
                     context.startActivity(BrowseProductRouter.getCategoryNavigationIntent(context));
+                    AnalyticsEventTrackingHelper.hamburgerOptionClicked(intent.getComponent().getClassName(),AppEventTracking.EventLabel.CATEGORY);
                     break;
                 case TkpdState.DrawerPosition.WISHLIST:
                     Intent wishList = SimpleHomeRouter
@@ -674,7 +676,7 @@ public class DrawerBuyerHelper extends DrawerHelper
                 TopProfileActivity.newInstance(context, sessionHandler.getLoginID())
         );
         sendGTMNavigationEvent(AppEventTracking.EventLabel.PROFILE);
-        AnalyticsEventTrackingHelper.hambugerProfileClick();
+        AnalyticsEventTrackingHelper.hambugerProfileClick(TopProfileActivity.class.getName());
     }
 
     @Override
@@ -687,7 +689,6 @@ public class DrawerBuyerHelper extends DrawerHelper
             context.startActivity(intent);
             sendGTMNavigationEvent(AppEventTracking.EventLabel.TOPPOINTS);
         }
-        AnalyticsEventTrackingHelper.homepageTokopointsClick();
 
     }
 
@@ -719,7 +720,6 @@ public class DrawerBuyerHelper extends DrawerHelper
                 redirectUrlActionButton,
                 new Bundle()
         );
-        AnalyticsEventTrackingHelper.homepageTokocashClick();
 
     }
 

@@ -80,7 +80,7 @@ public class BannerViewHolder extends AbstractViewHolder<BannerViewModel> implem
         Promotion promotion =getPromotion(position);
         HomePageTracking.eventPromoClick(promotion);listener.onPromoClick(position, slidesList.get(position),
                 String.valueOf(promotion.getImpressionDataLayer().get(ATTRIBUTION)));
-        HomeTrackingUtils.homeSlidingBannerClick(slidesList.get(position) );
+        HomeTrackingUtils.homeSlidingBannerClick(slidesList.get(position), position);
     }
 
     @Override

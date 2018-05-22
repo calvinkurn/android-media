@@ -17,6 +17,7 @@ import com.tkpd.library.utils.ImageHandler;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
+import com.tokopedia.core.analytics.AnalyticsEventTrackingHelper;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.drawer2.data.viewmodel.DrawerData;
 import com.tokopedia.core.drawer2.data.viewmodel.DrawerDeposit;
@@ -275,6 +276,8 @@ public class DrawerHeaderDataBinder extends DataBinder<DrawerHeaderDataBinder.Vi
             @Override
             public void onClick(View v) {
                 listener.onGoToDeposit();
+                AnalyticsEventTrackingHelper.homepageSaldoClick();
+
             }
         });
         holder.topPointsLayout.setOnClickListener(new View.OnClickListener() {
@@ -283,6 +286,8 @@ public class DrawerHeaderDataBinder extends DataBinder<DrawerHeaderDataBinder.Vi
                 if (data.getDrawerTopPoints() != null
                         && data.getDrawerTopPoints().getTopPointsUrl() != null)
                     listener.onGoToTopPoints(data.getDrawerTopPoints().getTopPointsUrl());
+                AnalyticsEventTrackingHelper.homepageTokopointsClick();
+
             }
         });
         holder.tokoCashLayout.setOnClickListener(new View.OnClickListener() {
@@ -294,15 +299,20 @@ public class DrawerHeaderDataBinder extends DataBinder<DrawerHeaderDataBinder.Vi
                                 data.getDrawerTokoCash().getDrawerWalletAction().getRedirectUrlBalance(),
                                 data.getDrawerTokoCash().getDrawerWalletAction().getAppLinkBalance()
                         );
+                        AnalyticsEventTrackingHelper.homepageTokocashClick();
+
                     } else {
                         listener.onWalletActionButtonClicked(
                                 data.getDrawerTokoCash().getDrawerWalletAction().getRedirectUrlActionButton(),
                                 data.getDrawerTokoCash().getDrawerWalletAction().getAppLinkActionButton()
                         );
+                        AnalyticsEventTrackingHelper.homepageTokocashActivateClick();
+
                     }
                 } else {
                     tokoCashListener.onRetryTokoCash();
                 }
+
             }
         });
         holder.name.setOnClickListener(new View.OnClickListener() {

@@ -102,8 +102,8 @@ public class HomeMapper implements Func1<Response<GraphqlResponse<HomeData>>, Li
                             list.add(new DigitalsViewModel(MainApplication.getAppContext().getString(R.string.digital_widget_title), 0));
                         } else {
                             list.add(mappingDynamicChannel(channel));
+                            HomeTrackingUtils.homeDiscoveryWidgetImpression(position,channel);
                         }
-                        HomeTrackingUtils.homeDiscoveryWidgetImpression(position - 1, channel);
                     }
                 }
             }

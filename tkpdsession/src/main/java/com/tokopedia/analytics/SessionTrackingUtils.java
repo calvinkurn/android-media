@@ -26,23 +26,23 @@ public class SessionTrackingUtils {
 
     public static void loginPageClickLogin() {
         Map<String, Object> map = new HashMap<>();
-        // map.put(FirebaseParams.Home.LANDING_SCREEN_NAME, landingScreen);
+         //map.put(FirebaseParams.Home.LANDING_SCREEN_NAME, landingScreen);
         sendEventToAnalytics(FirebaseEvent.Home.LOGIN_PAGE_CLICK_LOGIN, map);
     }
 
-    public static void loginPageClickLoginFacebook( ) {
+    public static void loginPageClickLoginFacebook(String landingScreen ) {
         Map<String, Object> map = new HashMap<>();
-        //map.put(FirebaseParams.Home.LANDING_SCREEN_NAME, landingScreen);
+        map.put(FirebaseParams.Home.LANDING_SCREEN_NAME, landingScreen);
         sendEventToAnalytics(FirebaseEvent.Home.LOGIN_PAGE_CLICK_LOGIN_FACEBOOK, map);
     }
-    public static void loginPageClickLoginGoogle() {
+    public static void loginPageClickLoginGoogle(String landingScreen) {
         Map<String, Object> map = new HashMap<>();
-        //  map.put(FirebaseParams.Home.LANDING_SCREEN_NAME, landingScreen);
+          map.put(FirebaseParams.Home.LANDING_SCREEN_NAME, landingScreen);
         sendEventToAnalytics(FirebaseEvent.Home.LOGIN_PAGE_CLICK_LOGIN_GOOGLE, map);
     }
-    public static void loginPageClickLoginPhone() {
+    public static void loginPageClickLoginPhone(String landingScreen) {
         Map<String, Object> map = new HashMap<>();
-        // map.put(FirebaseParams.Home.LANDING_SCREEN_NAME, landingScreen);
+         map.put(FirebaseParams.Home.LANDING_SCREEN_NAME, landingScreen);
         sendEventToAnalytics(FirebaseEvent.Home.LOGIN_PAGE_CLICK_LOGIN_PHONE, map);
     }
     public static void loginPageClickLoginYahoo(String landingScreen) {
@@ -59,6 +59,23 @@ public class SessionTrackingUtils {
         Map<String, Object> map = new HashMap<>();
         map.put(FirebaseParams.Home.LANDING_SCREEN_NAME, landingScreen);
         sendEventToAnalytics(FirebaseEvent.Home.LOGIN_PAGE_CLICK_SIGNUP, map);
+    }
+
+    public static void registerPageClick(String landingScreen) {
+        Map<String, Object> map = new HashMap<>();
+        map.put(FirebaseParams.Home.LANDING_SCREEN_NAME, landingScreen);
+        sendEventToAnalytics(FirebaseEvent.Home.SIGNUP_PAGE_CLICK_EMAIL, map);
+    }
+
+    public static void registerPageClickFacebook(String landingScreen ) {
+        Map<String, Object> map = new HashMap<>();
+        map.put(FirebaseParams.Home.LANDING_SCREEN_NAME, landingScreen);
+        sendEventToAnalytics(FirebaseEvent.Home.SIGNUP_PAGE_CLICK_FACEBOOK, map);
+    }
+    public static void registerPageClickGoogle(String landingScreen) {
+        Map<String, Object> map = new HashMap<>();
+        map.put(FirebaseParams.Home.LANDING_SCREEN_NAME, landingScreen);
+        sendEventToAnalytics(FirebaseEvent.Home.SIGNUP_PAGE_CLICK_GOOGLE, map);
     }
 
     public static void sendEventToAnalytics(String eventName, Map<String, Object> data){

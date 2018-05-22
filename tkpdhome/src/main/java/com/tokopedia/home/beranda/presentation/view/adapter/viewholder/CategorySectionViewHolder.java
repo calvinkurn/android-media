@@ -20,6 +20,7 @@ import com.tokopedia.home.beranda.listener.HomeCategoryListener;
 import com.tokopedia.home.beranda.presentation.view.adapter.itemdecoration.GridSpacingItemDecoration;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.CategorySectionViewModel;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.LayoutSections;
+import com.tokopedia.home.beranda.presentation.view.analytics.HomeTrackingUtils;
 
 import butterknife.ButterKnife;
 
@@ -66,6 +67,7 @@ public class CategorySectionViewHolder extends AbstractViewHolder<CategorySectio
         public void setSectionViewModel(CategorySectionViewModel sectionViewModel) {
             this.sectionViewModel = sectionViewModel;
             notifyDataSetChanged();
+            HomeTrackingUtils.homeUsedCaseImpression(sectionViewModel.getSectionList());
         }
 
         @Override
@@ -80,20 +82,22 @@ public class CategorySectionViewHolder extends AbstractViewHolder<CategorySectio
             holder.container.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    eventClickUseCase(sectionViewModel.getSectionList().get(position));
+                    eventClickUseCase(sectionViewModel.getSectionList().get(position), position);
                     listener.onSectionItemClicked(DynamicLinkHelper.getActionLink(sectionViewModel.getSectionList().get(position)));
+
                 }
             });
         }
 
-        private void eventClickUseCase(LayoutSections layoutSections) {
+        private void eventClickUseCase(LayoutSections layoutSections, int position) {
             if (layoutSections.getTypeCase() == LayoutSections.ICON_USE_CASE) {
                 HomePageTracking.eventClickHomeUseCase(layoutSections.getTitle());
-               // HomeTrackingUtils.homeUsedCaseClick(layoutSections.getIcon(),getLayoutPosition(),layoutSections.getApplink());
             } else {
                 HomePageTracking.eventClickDynamicIcons(layoutSections.getTitle());
 
             }
+            HomeTrackingUtils.homeUsedCaseClick(layoutSections.getIcon(), position, layoutSections.getApplink());
+
         }
 
         @Override

@@ -706,7 +706,6 @@ public class LoginFragment extends BaseDaggerFragment
                 @Override
                 public void onClick(View v) {
                     onLoginFacebookClick();
-                    SessionTrackingUtils.loginPageClickLoginFacebook();
                 }
             });
         } else if (discoverItemViewModel.getId().equalsIgnoreCase(GPLUS)) {
@@ -714,7 +713,6 @@ public class LoginFragment extends BaseDaggerFragment
                 @Override
                 public void onClick(View v) {
                     onLoginGoogleClick();
-                    SessionTrackingUtils.loginPageClickLoginGoogle();
                 }
             });
         } else if (discoverItemViewModel.getId().equalsIgnoreCase(PHONE_NUMBER)) {
@@ -722,7 +720,6 @@ public class LoginFragment extends BaseDaggerFragment
                 @Override
                 public void onClick(View v) {
                     onLoginPhoneNumberClick();
-                    SessionTrackingUtils.loginPageClickLoginPhone();
                 }
             });
         } else {
@@ -750,17 +747,22 @@ public class LoginFragment extends BaseDaggerFragment
         UnifyTracking.eventTracking(LoginAnalytics.getEventClickLoginPhoneNumber());
         Intent intent = LoginPhoneNumberActivity.getCallingIntent(getActivity());
         startActivityForResult(intent, REQUEST_LOGIN_PHONE_NUMBER);
+        SessionTrackingUtils.loginPageClickLoginPhone("LoginPhoneNumberActivity");
+
     }
 
     private void onLoginGoogleClick() {
         UnifyTracking.eventTracking(LoginAnalytics.getEventClickLoginGoogle());
         Intent intent = new Intent(getActivity(), GoogleSignInActivity.class);
         startActivityForResult(intent, RC_SIGN_IN_GOOGLE);
+        SessionTrackingUtils.loginPageClickLoginGoogle("GoogleSignInActivity");
+
     }
 
     private void onLoginFacebookClick() {
         UnifyTracking.eventTracking(LoginAnalytics.getEventClickLoginFacebook());
         presenter.getFacebookCredential(this, callbackManager);
+        SessionTrackingUtils.loginPageClickLoginFacebook("Facebook");
     }
 
     private DiscoverItemViewModel getLoginPhoneNumberBean() {

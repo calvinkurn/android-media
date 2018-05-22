@@ -80,6 +80,8 @@ public class SixGridChannelViewHolder extends AbstractViewHolder<DynamicChannelV
                 @Override
                 public void onClick(View view) {
                     listener.onDynamicChannelClicked(DynamicLinkHelper.getActionLink(channel.getHeader()), channel.getHomeAttribution());
+                    HomeTrackingUtils.homeDiscoveryWidgetViewAll(DynamicLinkHelper.getActionLink(channel.getHeader()));
+
                 }
             });
 
@@ -134,7 +136,7 @@ public class SixGridChannelViewHolder extends AbstractViewHolder<DynamicChannelV
                             );
                             listener.onSixGridItemClicked(getAvailableLink(grid.getApplink(), grid.getUrl()),
                                     channel.getHomeAttribution(position + 1, grid.getAttribution()));
-                            HomeTrackingUtils.homeDiscoveryWidgetClick(position + 1, channel, getAvailableLink(grid.getApplink(), grid.getUrl()), grid.getAttribution());
+                            HomeTrackingUtils.homeDiscoveryWidgetClick(position + 1, grid, getAvailableLink(grid.getApplink(), grid.getUrl()), grid.getAttribution(),channel.getType());
                         }
                     });
                 }
