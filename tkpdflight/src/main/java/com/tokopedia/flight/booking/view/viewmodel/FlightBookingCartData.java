@@ -21,6 +21,7 @@ public class FlightBookingCartData implements Parcelable {
     private List<FlightBookingAmenityMetaViewModel> luggageViewModels;
     private List<FlightBookingAmenityMetaViewModel> mealViewModels;
     private List<NewFarePrice> newFarePrices;
+    private FlightBookingVoucherViewModel voucherViewModel;
 
     public FlightBookingCartData() {
     }
@@ -34,6 +35,25 @@ public class FlightBookingCartData implements Parcelable {
         luggageViewModels = in.createTypedArrayList(FlightBookingAmenityMetaViewModel.CREATOR);
         mealViewModels = in.createTypedArrayList(FlightBookingAmenityMetaViewModel.CREATOR);
         newFarePrices = in.createTypedArrayList(NewFarePrice.CREATOR);
+        voucherViewModel = in.readParcelable(FlightBookingVoucherViewModel.class.getClassLoader());
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(id);
+        dest.writeInt(refreshTime);
+        dest.writeParcelable(defaultPhoneCode, flags);
+        dest.writeParcelable(departureTrip, flags);
+        dest.writeParcelable(returnTrip, flags);
+        dest.writeTypedList(luggageViewModels);
+        dest.writeTypedList(mealViewModels);
+        dest.writeTypedList(newFarePrices);
+        dest.writeParcelable(voucherViewModel, flags);
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
     }
 
     public static final Creator<FlightBookingCartData> CREATOR = new Creator<FlightBookingCartData>() {
@@ -113,20 +133,11 @@ public class FlightBookingCartData implements Parcelable {
         this.defaultPhoneCode = defaultPhoneCode;
     }
 
-    @Override
-    public int describeContents() {
-        return 0;
+    public FlightBookingVoucherViewModel getVoucherViewModel() {
+        return voucherViewModel;
     }
 
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(id);
-        dest.writeInt(refreshTime);
-        dest.writeParcelable(defaultPhoneCode, flags);
-        dest.writeParcelable(departureTrip, flags);
-        dest.writeParcelable(returnTrip, flags);
-        dest.writeTypedList(luggageViewModels);
-        dest.writeTypedList(mealViewModels);
-        dest.writeTypedList(newFarePrices);
+    public void setVoucherViewModel(FlightBookingVoucherViewModel voucherViewModel) {
+        this.voucherViewModel = voucherViewModel;
     }
 }
