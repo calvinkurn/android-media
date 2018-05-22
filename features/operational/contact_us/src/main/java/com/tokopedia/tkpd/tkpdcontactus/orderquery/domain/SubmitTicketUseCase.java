@@ -2,6 +2,7 @@ package com.tokopedia.tkpd.tkpdcontactus.orderquery.domain;
 
 import com.tokopedia.core.network.retrofit.response.TkpdResponse;
 import com.tokopedia.tkpd.tkpdcontactus.orderquery.data.ContactUsPass;
+import com.tokopedia.tkpd.tkpdcontactus.orderquery.data.CreateTicketResult;
 import com.tokopedia.tkpd.tkpdcontactus.orderquery.data.SubmitTicketInvoiceData;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.usecase.UseCase;
@@ -13,14 +14,14 @@ import rx.Observable;
  * Created by baghira on 16/05/18.
  */
 
-public class SubmitTicketUseCase extends UseCase<Response<TkpdResponse>> {
+public class SubmitTicketUseCase extends UseCase<CreateTicketResult> {
     ISubmitTicketRepository submitTicketRepository;
     public SubmitTicketUseCase(ISubmitTicketRepository submitTicketRepository) {
         this.submitTicketRepository = submitTicketRepository;
     }
 
     @Override
-    public Observable<Response<TkpdResponse>> createObservable(RequestParams requestParams) {
+    public Observable<CreateTicketResult> createObservable(RequestParams requestParams) {
 
         return submitTicketRepository.getQueryTickets((ContactUsPass)requestParams.getObject("submitTicket"));
     }

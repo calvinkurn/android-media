@@ -44,7 +44,7 @@ public interface ContactUsAPI {
 
     @FormUrlEncoded
     @POST(ContactUsURL.PATH_CREATE_STEP_2)
-    Observable<Response<TkpdResponse>> createTicket(@FieldMap Map<String, String> params);
+    Observable<Response<DataResponse<CreateTicketResult>>> createTicket(@FieldMap Map<String, String> params);
 
     @FormUrlEncoded
     @POST(ContactUsURL.PATH_CREATE_STEP_1)

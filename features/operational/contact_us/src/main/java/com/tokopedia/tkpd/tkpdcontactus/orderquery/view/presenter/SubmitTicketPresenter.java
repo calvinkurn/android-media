@@ -12,6 +12,7 @@ import com.tokopedia.inbox.contactus.interactor.ContactUsRetrofitInteractor;
 import com.tokopedia.inbox.contactus.interactor.ContactUsRetrofitInteractorImpl;
 import com.tokopedia.tkpd.tkpdcontactus.common.data.BuyerPurchaseList;
 import com.tokopedia.tkpd.tkpdcontactus.orderquery.data.ContactUsPass;
+import com.tokopedia.tkpd.tkpdcontactus.orderquery.data.CreateTicketResult;
 import com.tokopedia.tkpd.tkpdcontactus.orderquery.data.ImageUpload;
 import com.tokopedia.tkpd.tkpdcontactus.orderquery.data.QueryTicket;
 import com.tokopedia.tkpd.tkpdcontactus.orderquery.data.SubmitTicketInvoiceData;
@@ -63,7 +64,7 @@ public class SubmitTicketPresenter extends BaseDaggerPresenter<SubmitTicketContr
             RequestParams requestParams = RequestParams.create();
             requestParams.putObject("submitTicket", getSendTicketParam());
             getView().showProgress("Please Wait...");
-            submitTicketUseCase.execute(requestParams, new Subscriber<Response<TkpdResponse>>() {
+            submitTicketUseCase.execute(requestParams, new Subscriber<CreateTicketResult>() {
                 @Override
                 public void onCompleted() {
                     getView().hideProgress();
@@ -76,8 +77,9 @@ public class SubmitTicketPresenter extends BaseDaggerPresenter<SubmitTicketContr
                 }
 
                 @Override
-                public void onNext(Response<TkpdResponse> tkpdResponseResponse) {
-
+                public void onNext(CreateTicketResult tkpdResponseResponse) {
+                    getView().showSuccessDialog();
+                    getView().hideProgress();
 
                 }
             });

@@ -45,20 +45,18 @@ public class OrderQueryModule {
     OrderQueryApi provide(Retrofit retrofit) {
         return retrofit.create(OrderQueryApi.class);
     }
+
     @Provides
     ContactUsAPI provideContactUs(Retrofit retrofit) {
         return retrofit.create(ContactUsAPI.class);
     }
-    @Provides
-    AccountsApi provideAccountsApi(Retrofit retrofit) {
-        return retrofit.create(AccountsApi.class);
-    }
+
     @Provides
     QueryTicketDataFactory provideQueryTicketFactory(OrderQueryApi api) {
         return new QueryTicketDataFactory(api);
     }
     @Provides
-    SubmitTicketFactory provideSubmitTicketFactory(ContactUsAPI contactUsAPI, AccountsApi accountsApi, @ApplicationContext Context context) {
-        return new SubmitTicketFactory(contactUsAPI, accountsApi, context);
+    SubmitTicketFactory provideSubmitTicketFactory(ContactUsAPI contactUsAPI, @ApplicationContext Context context) {
+        return new SubmitTicketFactory(contactUsAPI, context);
     }
 }

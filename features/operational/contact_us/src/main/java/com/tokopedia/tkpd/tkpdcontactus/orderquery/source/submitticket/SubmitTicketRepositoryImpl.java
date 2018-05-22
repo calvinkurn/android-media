@@ -2,6 +2,7 @@ package com.tokopedia.tkpd.tkpdcontactus.orderquery.source.submitticket;
 
 import com.tokopedia.core.network.retrofit.response.TkpdResponse;
 import com.tokopedia.tkpd.tkpdcontactus.orderquery.data.ContactUsPass;
+import com.tokopedia.tkpd.tkpdcontactus.orderquery.data.CreateTicketResult;
 import com.tokopedia.tkpd.tkpdcontactus.orderquery.data.SubmitTicketInvoiceData;
 import com.tokopedia.tkpd.tkpdcontactus.orderquery.domain.ISubmitTicketRepository;
 
@@ -21,7 +22,7 @@ public class SubmitTicketRepositoryImpl implements ISubmitTicketRepository {
     }
 
     @Override
-    public Observable<Response<TkpdResponse>> getQueryTickets(ContactUsPass ticket) {
+    public Observable<CreateTicketResult> getQueryTickets(ContactUsPass ticket) {
         return submitTicketFactory.submitTicket(ticket);
     }
 }

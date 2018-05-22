@@ -6,6 +6,7 @@ import com.tokopedia.core.network.apiservices.accounts.apis.AccountsApi;
 import com.tokopedia.core.network.retrofit.response.TkpdResponse;
 import com.tokopedia.tkpd.tkpdcontactus.home.source.api.ContactUsAPI;
 import com.tokopedia.tkpd.tkpdcontactus.orderquery.data.ContactUsPass;
+import com.tokopedia.tkpd.tkpdcontactus.orderquery.data.CreateTicketResult;
 
 import retrofit2.Response;
 import rx.Observable;
@@ -16,14 +17,12 @@ import rx.Observable;
 
 public class SubmitTicketFactory {
     ContactUsAPI contactUsAPI;
-    AccountsApi accountsApi;
     Context context;
-    public SubmitTicketFactory(ContactUsAPI contactUsAPI, AccountsApi accountsApi, Context context) {
+    public SubmitTicketFactory(ContactUsAPI contactUsAPI, Context context) {
         this.contactUsAPI = contactUsAPI;
-        this.accountsApi = accountsApi;
         this.context = context;
     }
-    Observable<Response<TkpdResponse>> submitTicket(ContactUsPass contactUsPass){
-        return (new SubmitTicketDataStore(contactUsAPI, accountsApi, context)).getSubmitTicket(contactUsPass);
+    Observable<CreateTicketResult> submitTicket(ContactUsPass contactUsPass){
+        return (new SubmitTicketDataStore(contactUsAPI, context)).getSubmitTicket(contactUsPass);
     };
 }

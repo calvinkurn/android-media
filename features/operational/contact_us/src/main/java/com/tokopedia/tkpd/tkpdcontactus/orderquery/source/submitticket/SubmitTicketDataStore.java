@@ -45,7 +45,6 @@ import rx.functions.Func2;
 
 public class SubmitTicketDataStore {
     ContactUsAPI contactUsAPI;
-    AccountsApi accountsApi;
     Context context;
 
     private static final String TAG = SubmitTicketDataStore.class.getSimpleName();
@@ -54,14 +53,13 @@ public class SubmitTicketDataStore {
     private static final String PARAM_TOKEN = "token";
     private static final String PARAM_WEB_SERVICE = "web_service";
 
-    public SubmitTicketDataStore(ContactUsAPI contactUsAPI, AccountsApi accountsApi, @ApplicationContext Context context) {
+    public SubmitTicketDataStore(ContactUsAPI contactUsAPI, @ApplicationContext Context context) {
         this.contactUsAPI = contactUsAPI;
-        this.accountsApi = accountsApi;
         this.context = context;
     }
 
-    public Observable<Response<TkpdResponse>> getSubmitTicket(final ContactUsPass contactUsPass) {
-        Observable<Response<TkpdResponse>> observable = Observable.just(contactUsPass)
+    public Observable<CreateTicketResult> getSubmitTicket(final ContactUsPass contactUsPass) {
+        Observable<CreateTicketResult> observable = Observable.just(contactUsPass)
                 .flatMap(new Func1<ContactUsPass, Observable<ContactUsPass>>() {
                     @Override
                     public Observable<ContactUsPass> call(final ContactUsPass contactUsPass) {
@@ -106,13 +104,27 @@ public class SubmitTicketDataStore {
                         }
                     }
                 })
-                .flatMap(new Func1<ContactUsPass, Observable<Response<TkpdResponse>>>() {
+                .flatMap(new Func1<ContactUsPass, Observable<CreateTicketResult>>() {
                     @Override
-                    public Observable<Response<TkpdResponse>> call(ContactUsPass
+                    public Observable<CreateTicketResult> call(ContactUsPass
                                                                            contactUsPass) {
+                    if(isHasPictures(contactUsPass)) {
+                        return contactUsAPI.
+                                createTicket(AuthUtil.generateParams(context, contactUsPass.getSubmitParam())).map(new Func1<Response<DataResponse<CreateTicketResult>>, CreateTicketResult>() {
 
-                            return contactUsAPI.
-                                    createTicket(AuthUtil.generateParams(context, contactUsPass.getSubmitParam()));
+                            @Override
+                            public CreateTicketResult call(Response<DataResponse<CreateTicketResult>> dataResponseResponse) {
+                                return dataResponseResponse.body().getData();
+                            }
+                        });
+                    }else {
+                        return contactUsAPI.createTicketValidation(AuthUtil.generateParams(context, contactUsPass.getCreateTicketValidationParam())).map(new Func1<Response<DataResponse<CreateTicketResult>>, CreateTicketResult>() {
+                            @Override
+                            public CreateTicketResult call(Response<DataResponse<CreateTicketResult>> dataResponseResponse) {
+                                return dataResponseResponse.body().getData();
+                            }
+                        });
+                    }
 
                     }
                 });
@@ -134,7 +146,8 @@ public class SubmitTicketDataStore {
         bundle.putBoolean(AccountsService.USING_HMAC, true);
         bundle.putString(AccountsService.AUTH_KEY, AuthUtil.KEY.KEY_WSV4);
 
-        return accountsApi
+        AccountsService accountsService = new AccountsService(bundle);
+        return accountsService.getApi()
                 .generateHost(AuthUtil.generateParams(context, paramGenerateHost.getGenerateHostParam()))
                 .map(new Func1<GeneratedHost, ContactUsPass>() {
                     @Override
