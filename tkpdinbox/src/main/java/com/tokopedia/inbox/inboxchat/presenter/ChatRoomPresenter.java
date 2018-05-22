@@ -248,7 +248,7 @@ public class ChatRoomPresenter extends BaseDaggerPresenter<ChatRoomContract.View
                 item.setReplyId(response.getData().getMsgId());
                 item.setMsgId(response.getData().getMsgId());
                 item.setSenderId(String.valueOf(response.getData().getFromUid()));
-                item.setMsg(response.getData().getMessage().getCensoredReply());
+                item.setMsg(response.getData().getMessage().getOriginalReply());
                 item.setReplyTime(response.getData().getMessage().getTimeStampUnix());
                 item.setAttachment(response.getData().getAttachment());
                 if (response.getData().getAttachment() != null &&
@@ -473,7 +473,7 @@ public class ChatRoomPresenter extends BaseDaggerPresenter<ChatRoomContract.View
         getView().displayReplyField(replyData.getTextAreaReply() == 1);
         getView().setCanLoadMore(replyData.isHasNext());
 
-        if (!replyData.isHasNext() && replyData.isHasTimeMachine()) {
+        if (!replyData.isHasNext()) {
             getView().addTimeMachine();
         }
 

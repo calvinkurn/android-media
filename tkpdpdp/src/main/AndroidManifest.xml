@@ -11,34 +11,34 @@
         <activity
             android:name=".ProductInfoActivity"
             android:label="@string/title_activity_product_info"
-            android:screenOrientation="portrait" />
+             />
         <activity
             android:name=".ProductYoutubeActivity"
             android:screenOrientation="landscape" />
         <activity
             android:name=".CourierActivity"
-            android:screenOrientation="portrait" />
+             />
         <activity
             android:name=".WholesaleActivity"
-            android:screenOrientation="portrait" />
+             />
         <activity
             android:name=".PreviewProductImageDetail"
-            android:screenOrientation="portrait"
+
             android:theme="@style/Theme.AppCompat.NoTitleBar.Fullscreen" />
         <activity
             android:name=".InstallmentActivity"
-            android:screenOrientation="portrait" />
+             />
         <activity
             android:name=".DescriptionActivity"
-            android:screenOrientation="portrait" />
+             />
         <activity android:name=".VariantActivity"></activity>
         <activity
             android:name=".DinkFailedActivity"
-            android:screenOrientation="portrait" />
+             />
 
         <activity
             android:name=".DinkSuccessActivity"
-            android:screenOrientation="portrait" />
+             />
 
     </application>
 

@@ -1,9 +1,9 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:padding="@dimen/dp_10">
+                xmlns:app="http://schemas.android.com/apk/res-auto"
+                xmlns:tools="http://schemas.android.com/tools"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:padding="@dimen/dp_10">
 
     <include
         android:id="@+id/include_loading"
@@ -59,13 +59,14 @@
                     <android.support.design.widget.TextInputLayout
                         android:id="@+id/input_layout_payment_date"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content">
+                        android:layout_height="wrap_content"
+                        android:hint="@string/title_payment_date"
+                        >
 
                         <EditText
                             android:id="@+id/payment_date"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:hint="@string/title_payment_date"
                             android:lines="1"
                             android:textSize="@dimen/fonts"
                             android:textStyle="bold"
@@ -138,35 +139,37 @@
                         <android.support.design.widget.TextInputLayout
                             android:id="@+id/input_layout_account_owner"
                             android:layout_width="match_parent"
-                            android:layout_height="wrap_content">
+                            android:layout_height="wrap_content"
+                            android:hint="@string/title_account_owner">
 
                             <EditText
                                 android:id="@+id/account_owner"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:layout_marginBottom="@dimen/dp_10"
-                                android:hint="@string/title_account_owner"/>
+                                />
                         </android.support.design.widget.TextInputLayout>
 
 
                         <android.support.design.widget.TextInputLayout
                             android:id="@+id/input_layout_account_number"
                             android:layout_width="match_parent"
-                            android:layout_height="wrap_content">
+                            android:layout_height="wrap_content"
+                            android:hint="@string/title_account_number">
 
                             <EditText
                                 android:id="@+id/account_number"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:layout_marginBottom="@dimen/dp_10"
-                                android:hint="@string/title_account_number"
                                 android:inputType="number"/>
                         </android.support.design.widget.TextInputLayout>
 
                         <android.support.design.widget.TextInputLayout
                             android:id="@+id/input_layout_choose_bank"
                             android:layout_width="match_parent"
-                            android:layout_height="wrap_content">
+                            android:layout_height="wrap_content"
+                            android:hint="@string/title_choose_bank">
 
                             <EditText
                                 android:id="@+id/et_choose_bank"
@@ -175,7 +178,6 @@
                                 android:layout_marginBottom="@dimen/dp_10"
                                 android:editable="false"
                                 android:focusableInTouchMode="false"
-                                android:hint="@string/title_choose_bank"
                                 android:inputType="none"
                                 android:singleLine="true"/>
                         </android.support.design.widget.TextInputLayout>
@@ -183,14 +185,14 @@
                         <android.support.design.widget.TextInputLayout
                             android:id="@+id/input_layout_branch"
                             android:layout_width="match_parent"
-                            android:layout_height="wrap_content">
+                            android:layout_height="wrap_content"
+                            android:hint="@string/title_branch">
 
                             <EditText
                                 android:id="@+id/branch"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:layout_marginBottom="@dimen/dp_10"
-                                android:hint="@string/title_branch"
                                 android:singleLine="true"/>
                         </android.support.design.widget.TextInputLayout>
                     </LinearLayout>
@@ -206,13 +208,14 @@
                         <android.support.design.widget.TextInputLayout
                             android:id="@+id/input_layout_depositor"
                             android:layout_width="match_parent"
-                            android:layout_height="wrap_content">
+                            android:layout_height="wrap_content"
+                            android:hint="@string/title_penyetor">
 
                             <EditText
                                 android:id="@+id/nama_penyetor"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:hint="@string/title_penyetor"/>
+                                />
                         </android.support.design.widget.TextInputLayout>
                     </LinearLayout>
 
@@ -258,13 +261,13 @@
                         <android.support.design.widget.TextInputLayout
                             android:id="@+id/input_layout_total_payment"
                             android:layout_width="match_parent"
-                            android:layout_height="wrap_content">
+                            android:layout_height="wrap_content"
+                            android:hint="@string/title_total_payment">
 
                             <EditText
                                 android:id="@+id/input_total_payment"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:hint="@string/title_total_payment"
                                 android:inputType="number"
                                 android:maxLength="10"/>
                         </android.support.design.widget.TextInputLayout>
@@ -279,14 +282,15 @@
                     <android.support.design.widget.TextInputLayout
                         android:id="@+id/input_layout_remark"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content">
+                        android:layout_height="wrap_content"
+                        android:hint="@string/title_remark">
 
                         <EditText
                             android:id="@+id/remark"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginBottom="@dimen/dp_10"
-                            android:hint="@string/title_remark"/>
+                            />
                     </android.support.design.widget.TextInputLayout>
 
                     <LinearLayout
@@ -298,13 +302,13 @@
                         <android.support.design.widget.TextInputLayout
                             android:id="@+id/input_layout_password"
                             android:layout_width="match_parent"
-                            android:layout_height="wrap_content">
+                            android:layout_height="wrap_content"
+                            android:hint="@string/title_password">
 
                             <EditText
                                 android:id="@+id/password"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:hint="@string/title_password"
                                 android:inputType="textPassword"/>
                         </android.support.design.widget.TextInputLayout>
                     </LinearLayout>
@@ -315,12 +319,12 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="@dimen/dp_5"
                         android:background="@drawable/cards_ui_2"
-                        app:drawableRightCompat="@drawable/info_icon"
                         android:gravity="center_vertical"
                         android:padding="@dimen/dp_10"
                         android:text="Nomor Rekening"
                         android:textColor="@color/tkpd_dark_green"
                         android:textStyle="bold"
+                        app:drawableRightCompat="@drawable/info_icon"
                         tools:ignore="HardcodedText"/>
 
                 </LinearLayout>

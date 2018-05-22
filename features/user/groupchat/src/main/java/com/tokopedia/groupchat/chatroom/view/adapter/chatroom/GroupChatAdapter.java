@@ -14,6 +14,7 @@ import com.tokopedia.abstraction.base.view.adapter.model.LoadingModel;
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingMoreModel;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.groupchat.chatroom.view.adapter.chatroom.typefactory.GroupChatTypeFactory;
+import com.tokopedia.groupchat.chatroom.view.adapter.chatroom.viewholder.BaseChatViewHolder;
 import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.BaseChatViewModel;
 import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.ChatViewModel;
 import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.PendingChatViewModel;
@@ -243,6 +244,15 @@ public class GroupChatAdapter extends RecyclerView.Adapter<AbstractViewHolder> {
             return list.get(position);
         } else {
             return null;
+        }
+    }
+
+    @Override
+    public void onViewRecycled(AbstractViewHolder holder) {
+        super.onViewRecycled(holder);
+
+        if(holder instanceof BaseChatViewHolder){
+            ((BaseChatViewHolder)holder).onViewRecycled();
         }
     }
 }

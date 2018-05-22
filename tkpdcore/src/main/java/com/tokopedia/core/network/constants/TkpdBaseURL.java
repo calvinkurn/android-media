@@ -273,6 +273,7 @@ public class TkpdBaseURL {
         public static final String PATH_IS_ALREADY_WISHLIST_PRODUCT = "is_already_wishlist_product.pl";
         public static final String URL_INBOX_MESSAGE_TIME_MACHINE = MOBILE_DOMAIN +
                 "inbox-message-old.pl?flag_app=1";
+        public static final String URL_SECURITY_INFO = "https://www.tokopedia.com/panduan-keamanan/";
     }
 
     public static class Shop {
@@ -870,7 +871,8 @@ public class TkpdBaseURL {
         public static final String PATH_ZEUS_CHECK_WHITELIST = "zeus/whitelist/status";
         public static final String PATH_ZEUS_UPDATE_WHITELIST = "zeus/whitelist";
 
-        public static final String CDN_IMG_ANDROID_DOMAIN = "https://ecs7.tokopedia.net/img/android/";
+        public static final String DEFAULT_HOST = "http://ecs7.tokopedia.net";
+        public static final String CDN_IMG_ANDROID_DOMAIN = "/img/android/";
 
     }
 
