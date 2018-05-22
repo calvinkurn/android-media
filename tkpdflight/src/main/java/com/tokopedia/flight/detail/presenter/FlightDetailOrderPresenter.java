@@ -135,8 +135,15 @@ public class FlightDetailOrderPresenter extends BaseDaggerPresenter<FlightDetail
                 );
                 generateStatus(flightOrder.getStatus(), flightOrder.getStatusString());
                 renderPaymentInfo(flightOrder);
+                renderInsurances(flightOrder);
             }
         };
+    }
+
+    private void renderInsurances(FlightOrder flightOrder) {
+        if (flightOrder.getInsurances() != null && flightOrder.getInsurances().size() > 0) {
+
+        }
     }
 
     @Override
