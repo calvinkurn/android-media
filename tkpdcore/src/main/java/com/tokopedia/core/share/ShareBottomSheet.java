@@ -1,6 +1,8 @@
 package com.tokopedia.core.share;
 
+import android.content.ComponentName;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
@@ -25,6 +27,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import static android.content.pm.PackageManager.MATCH_DEFAULT_ONLY;
+
 /**
  * Created by meta on 18/05/18.
  */
@@ -42,8 +46,8 @@ public class ShareBottomSheet extends BottomSheets implements ShareAdapter.OnIte
         newInstance(data).show(fragmentManager, "Share");
     }
 
-    private String[] PackageNameApplications = new String[] {"com.whatsapp", "com.facebook.katana",
-            "jp.naver.line.android", "com.twitter.android", "com.google.android.apps.plus"};
+    private String[] ClassNameApplications = new String[] {"com.whatsapp.ContactPicker", "com.facebook.composer.shareintent.ImplicitShareIntentHandlerDefaultAlias",
+            "jp.naver.line.android.activity.selectchat.SelectChatActivityLaunchActivity", "com.twitter.composer.ComposerShareActivity", "com.google.android.apps.plus.GatewayActivityAlias"};
 
     private ShareData data;
 
@@ -59,8 +63,6 @@ public class ShareBottomSheet extends BottomSheets implements ShareAdapter.OnIte
 
     @Override
     protected String title() {
-//        if (data != null)
-//            return getTitle(data.getType());
         return "Bagikan";
     }
 
@@ -77,8 +79,11 @@ public class ShareBottomSheet extends BottomSheets implements ShareAdapter.OnIte
 
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getActivity());
         mRecyclerView.setLayoutManager(mLayoutManager);
+
+        Intent intent = getIntent("");
+
         List<ResolveInfo> resolvedActivities = getActivity().getPackageManager()
-                .queryIntentActivities(getIntent(""), 0);
+                .queryIntentActivities(intent, 0);
         if (!resolvedActivities.isEmpty()) {
             List<ResolveInfo> showApplications = validate(resolvedActivities);
 
@@ -91,33 +96,13 @@ public class ShareBottomSheet extends BottomSheets implements ShareAdapter.OnIte
     }
 
     private List<ResolveInfo> validate(List<ResolveInfo> resolvedActivities) {
-
-//        List<String> packageNames = new ArrayList<>();
-//        packageNames.add("com.whatsapp");
-//        packageNames.add("com.facebook.katana");
-//        packageNames.add("jp.naver.line.android");
-//        packageNames.add("com.twitter.android");
-//        packageNames.add("com.google.android.apps.plus");
-//        for (String packageName : packageNames) {
-//            if (resolvedActivities.contains(packageName)) {
-//
-//            }
-//        }
-
         List<ResolveInfo> showApplications = new ArrayList<>();
-//        for (int i = 0; i < PackageNameApplications.length; i++) {
-//            if (resolvedActivities.equals(PackageNameApplications[i])) {
-//                showApplications.add(resolveInfo);
-//            }
-//        }
-
-//        for (ResolveInfo resolveInfo : resolvedActivities) {
-
-//            if (Arrays.asList(PackageNameApplications)
-//                    .equals(resolveInfo.activityInfo.packageName)) {
-//                showApplications.add(resolveInfo);
-//            }
-//        }
+        for (ResolveInfo resolveInfo : resolvedActivities) {
+            if (Arrays.asList(ClassNameApplications)
+                    .contains(resolveInfo.activityInfo.name)) {
+                showApplications.add(resolveInfo);
+            }
+        }
         return showApplications;
     }
 

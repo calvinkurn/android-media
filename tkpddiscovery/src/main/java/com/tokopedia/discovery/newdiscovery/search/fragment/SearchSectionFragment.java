@@ -23,7 +23,7 @@ import com.tokopedia.core.discovery.model.Filter;
 import com.tokopedia.core.discovery.model.Sort;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.product.model.share.ShareData;
-import com.tokopedia.core.share.ShareActivity;
+import com.tokopedia.core.share.ShareBottomSheet;
 import com.tokopedia.discovery.R;
 import com.tokopedia.discovery.activity.SortProductActivity;
 import com.tokopedia.discovery.newdiscovery.base.BottomNavigationListener;
@@ -255,9 +255,10 @@ public abstract class SearchSectionFragment extends BaseDaggerFragment
                 .setUri(shareUrl)
                 .build();
 
-        Intent intent = new Intent(getActivity(), ShareActivity.class);
-        intent.putExtra(ShareData.TAG, shareData);
-        startActivity(intent);
+        ShareBottomSheet.show(getChildFragmentManager(), shareData);
+//        Intent intent = new Intent(getActivity(), ShareActivity.class);
+//        intent.putExtra(ShareData.TAG, shareData);
+//        startActivity(intent);
     }
 
     @Override
