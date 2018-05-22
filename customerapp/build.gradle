@@ -158,7 +158,6 @@ android {
         }
         release {
             signingConfig signingConfigs.debug
-            debuggable true
             minifyEnabled true
             zipAlignEnabled true
             shrinkResources true
