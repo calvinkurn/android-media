@@ -109,15 +109,14 @@ public class LoyaltyActivity extends BasePresenterActivity
 
     @Override
     protected void setViewListener() {
-
         if (isCouponActive) {
-            renderViewWithCouponTab();
             onTabSelectedForTrackingCheckoutMarketPlace =
                     new OnTabSelectedForTrackingCheckoutMarketPlace(true);
+            renderViewWithCouponTab();
         } else {
-            renderViewSingleTabPromoCode();
             onTabSelectedForTrackingCheckoutMarketPlace =
                     new OnTabSelectedForTrackingCheckoutMarketPlace(false);
+            renderViewSingleTabPromoCode();
         }
     }
 

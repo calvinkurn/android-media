@@ -31,6 +31,7 @@ import com.tkpd.library.utils.KeyboardHandler;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.design.bottomsheet.BottomSheetView;
+import com.tokopedia.design.pickuppoint.PickupPointLayout;
 import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.R2;
 import com.tokopedia.transaction.addtocart.utils.KeroppiConstants;
@@ -42,11 +43,10 @@ import com.tokopedia.transaction.cart.model.cartdata.CartCourierPrices;
 import com.tokopedia.transaction.cart.model.cartdata.CartItem;
 import com.tokopedia.transaction.cart.model.cartdata.CartProduct;
 import com.tokopedia.transaction.cart.model.cartdata.CartShop;
+import com.tokopedia.transaction.common.data.pickuppoint.Store;
 import com.tokopedia.transaction.customview.expandablelayout.ExpandableLayoutListenerAdapter;
 import com.tokopedia.transaction.customview.expandablelayout.ExpandableLinearLayout;
 import com.tokopedia.transaction.customview.expandablelayout.Utils;
-import com.tokopedia.transaction.common.data.pickuppoint.Store;
-import com.tokopedia.design.pickuppoint.PickupPointLayout;
 
 import java.text.MessageFormat;
 import java.util.ArrayList;
@@ -108,7 +108,7 @@ public class CartItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             renderHolderViewListener(holderItemCart, cartData, adapterProduct, position);
             renderInsuranceOption(holderItemCart, cartItemEditable);
             renderAcceptPartial(holderItemCart);
-            renderPickupPoint(holderItemCart, cartData);
+            /* renderPickupPoint(holderItemCart, cartData); */
         }
     }
 
