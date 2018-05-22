@@ -10,6 +10,7 @@ import com.tokopedia.flight.booking.view.viewmodel.FlightBookingCartData;
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingParamViewModel;
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingPassengerViewModel;
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingPhoneCodeViewModel;
+import com.tokopedia.flight.booking.view.viewmodel.FlightBookingVoucherViewModel;
 import com.tokopedia.flight.booking.view.viewmodel.SimpleViewModel;
 import com.tokopedia.flight.common.util.FlightDateUtil;
 import com.tokopedia.flight.dashboard.view.fragment.viewmodel.FlightClassViewModel;
@@ -58,6 +59,7 @@ public class FlightBookingReviewModel implements Parcelable {
     private String departureDate;
     private String returnDate;
     private String departureTripId;
+    private FlightBookingVoucherViewModel voucherViewModel;
 
     public FlightBookingReviewModel(FlightBookingParamViewModel flightBookingParamViewModel,
                                     FlightBookingCartData flightBookingCartData,
@@ -95,6 +97,7 @@ public class FlightBookingReviewModel implements Parcelable {
         setFlightClass(flightBookingParamViewModel.getSearchParam().getFlightClass());
         setDepartureDate(flightBookingParamViewModel.getSearchParam().getDepartureDate());
         setReturnDate(flightBookingParamViewModel.getSearchParam().getReturnDate());
+        setVoucherViewModel(flightBookingCartData.getVoucherViewModel());
     }
 
     protected FlightBookingReviewModel(Parcel in) {
@@ -120,6 +123,7 @@ public class FlightBookingReviewModel implements Parcelable {
         departureDate = in.readString();
         returnDate = in.readString();
         departureTripId = in.readString();
+        voucherViewModel = in.readParcelable(FlightBookingVoucherViewModel.class.getClassLoader());
     }
 
     public FlightBookingPhoneCodeViewModel getPhoneCodeViewModel() {
@@ -298,6 +302,14 @@ public class FlightBookingReviewModel implements Parcelable {
         this.departureTripId = departureTripId;
     }
 
+    public FlightBookingVoucherViewModel getVoucherViewModel() {
+        return voucherViewModel;
+    }
+
+    public void setVoucherViewModel(FlightBookingVoucherViewModel voucherViewModel) {
+        this.voucherViewModel = voucherViewModel;
+    }
+
     private List<FlightDetailPassenger> generateFlightDetailPassenger(List<FlightBookingPassengerViewModel> passengerViewModels,
                                                                       String luggagePrefix,
                                                                       String mealPrefix,
@@ -395,5 +407,6 @@ public class FlightBookingReviewModel implements Parcelable {
         dest.writeString(departureDate);
         dest.writeString(returnDate);
         dest.writeString(departureTripId);
+        dest.writeParcelable(voucherViewModel, flags);
     }
 }
