@@ -247,7 +247,7 @@ public class ChangePhoneNumberInputFragment extends BaseDaggerFragment implement
 
     private void showErrorSnackbar(String message) {
         if (message != null) {
-            NetworkErrorHelper.showSnackbar(getActivity(), message);
+            NetworkErrorHelper.showLongSnackbar(getActivity(), message);
         } else {
             NetworkErrorHelper.showSnackbar(getActivity());
         }
