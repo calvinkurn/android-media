@@ -69,15 +69,14 @@ public class CartActivity extends BaseCheckoutActivity implements CartFragment.A
 
     @Override
     public void onBackPressed() {
-        if (getFragmentManager().getBackStackEntryCount() > 0) {
-            getFragmentManager().popBackStack();
+        if (getSupportFragmentManager().getBackStackEntryCount() > 0) {
+            getSupportFragmentManager().popBackStack();
         } else {
             startActivity(
                     ((ICheckoutModuleRouter) getApplication())
                             .getHomeIntent(this)
             );
             finish();
-            super.onBackPressed();
         }
     }
 
