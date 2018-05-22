@@ -226,8 +226,6 @@ public class TkpdCache extends com.tokopedia.abstraction.constant.TkpdCache {
         public static final String KEY_RATING = "RATING";
         public static final String KEY_ADVERTISINGID = "KEY_ADVERTISINGID";
         public static final String KEY_ANDROID_ID = "KEY_ANDROID_ID";
-
-
     }
 
     public class RemoteConfigKey {
@@ -256,10 +254,14 @@ public class TkpdCache extends com.tokopedia.abstraction.constant.TkpdCache {
         public static final String SELLERAPP_SHOW_ADVANCED_APP_RATING = "sellerapp_show_advanced_app_rating";
 
         public static final String NOTIFICATION_LOGGER = "notification_logger";
-        public static final String MAINAPP_NATIVE_PROMO_LIST ="mainapp_native_promo_list";
+        public static final String MAINAPP_NATIVE_PROMO_LIST = "mainapp_native_promo_list";
         public static final String SHOW_NEARBY_CABS = "app_uber_show_nearby_cabs";
         public static final String MAINAPP_FLIGHT_TRANSACTION_MENU = "mainapp_flight_transaction_menu";
         public static final String SHOW_IMAGE_SEARCH = "enable_image_search";
+        public static final String IMAGE_SEARCH_ONBOARD_DESC = "app_image_search_showcase_message";
+
+        public static final String IMAGE_HOST = "image_host";
+
     }
 
 }

@@ -42,5 +42,8 @@
     <string name="template_widget_promo_period">Periode : %1$s</string>
     <string name="template_widget_promo_min_transaction">Min Transaksi : %1$s</string>
     <string name="no_result_found">No Results Found</string>
+    <string name="on_board_title" >Pencarian Gambar</string>
+    <string name="on_board_desc" >Kini lebih mudah. Cukup ambil gambar dan temukan produk yang diinginkan.</string>
+    <string name="image_search_title" >Pencarian Gambar</string>
     <string name="title_all">Semua</string>
 </resources>

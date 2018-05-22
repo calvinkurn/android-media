@@ -1,5 +1,8 @@
 package com.tokopedia.payment.fingerprint.domain;
 
+import com.tokopedia.abstraction.common.data.model.session.UserSession;
+import com.tokopedia.core.network.retrofit.utils.AuthUtil;
+import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.payment.fingerprint.data.model.ResponsePaymentFingerprint;
 import com.tokopedia.payment.fingerprint.domain.FingerprintRepository;
 import com.tokopedia.usecase.RequestParams;
@@ -26,14 +29,18 @@ public class PaymentFingerprintUseCase extends UseCase<ResponsePaymentFingerprin
     public static final String OS = "os";
     public static final String OS_ANDROID_VALUE = "1";
     private FingerprintRepository fingerprintRepository;
+    private UserSession userSession;
 
     @Inject
-    public PaymentFingerprintUseCase(FingerprintRepository fingerprintRepository) {
+    public PaymentFingerprintUseCase(FingerprintRepository fingerprintRepository, UserSession userSession) {
         this.fingerprintRepository = fingerprintRepository;
+        this.userSession = userSession;
     }
 
     @Override
     public Observable<ResponsePaymentFingerprint> createObservable(final RequestParams requestParams) {
+        TKPDMapParam<String, String> params = AuthUtil.generateParamsNetwork(userSession.getUserId(), userSession.getDeviceId(), new TKPDMapParam<String, String>());
+        requestParams.putAllString(params);
         return fingerprintRepository.getPostDataOtp(requestParams.getString(TRANSACTION_ID, ""))
                 .flatMap(new Func1<HashMap<String, String>, Observable<ResponsePaymentFingerprint>>() {
                     @Override

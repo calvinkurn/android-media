@@ -5,6 +5,8 @@ import android.content.Context;
 import com.tokopedia.core.base.di.qualifier.ApplicationContext;
 import com.tokopedia.discovery.imagesearch.di.module.ImageSearchModule;
 import com.tokopedia.discovery.imagesearch.domain.usecase.GetImageSearchUseCase;
+import com.tokopedia.discovery.imagesearch.search.fragment.product.ImageProductListPresenter;
+import com.tokopedia.discovery.imagesearch.search.fragment.product.ImageProductListPresenterImpl;
 import com.tokopedia.discovery.newdiscovery.di.scope.SearchScope;
 import com.tokopedia.discovery.newdiscovery.domain.usecase.GetProductUseCase;
 import com.tokopedia.discovery.newdiscovery.search.SearchPresenter;
@@ -37,6 +39,12 @@ public class SearchModule {
     @Provides
     ProductListPresenter provideProductListPresenter(@ApplicationContext Context context) {
         return new ProductListPresenterImpl(context);
+    }
+
+    @SearchScope
+    @Provides
+    ImageProductListPresenter provideImageProductListPresenter(@ApplicationContext Context context) {
+        return new ImageProductListPresenterImpl(context);
     }
 
     @SearchScope

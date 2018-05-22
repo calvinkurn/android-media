@@ -28,7 +28,6 @@ dependencies {
     compile project(rootProject.ext.features.productDetail)
     compile project(rootProject.ext.libraries.design)
 
-    compile rootProject.ext.alibabaDependencies.coreLib
     compile rootProject.ext.butterKnifeDependencies.butterKnife
     apt rootProject.ext.butterKnifeDependencies.butterKnifeCompiler
 

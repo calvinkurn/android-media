@@ -8,7 +8,6 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
-import android.view.View;
 import android.view.ViewTreeObserver;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
@@ -37,6 +36,7 @@ import java.util.List;
 import javax.inject.Inject;
 
 import static com.tokopedia.core.gcm.Constants.FROM_APP_SHORTCUTS;
+import static com.tokopedia.core.router.discovery.BrowseProductRouter.DEPARTMENT_ID;
 import static com.tokopedia.core.router.discovery.BrowseProductRouter.EXTRAS_SEARCH_TERM;
 
 /**
@@ -68,7 +68,6 @@ public class SearchActivity extends DiscoveryActivity
     SearchPresenter searchPresenter;
 
     private SearchComponent searchComponent;
-    private boolean forImageSearch = false;
 
     public SearchComponent getSearchComponent() {
         return searchComponent;
@@ -80,8 +79,7 @@ public class SearchActivity extends DiscoveryActivity
         Intent intent = new Intent(context, SearchActivity.class);
 
         if (!TextUtils.isEmpty(departmentId)) {
-            intent = BrowseProductRouter.getDefaultBrowseIntent(context);
-            throw new RuntimeException("this should go to category activity");
+            intent.putExtra(DEPARTMENT_ID, departmentId);
         }
 
         intent.putExtra(EXTRAS_SEARCH_TERM, bundle.getString(BrowseApi.Q, bundle.getString("keyword", "")));
@@ -119,7 +117,8 @@ public class SearchActivity extends DiscoveryActivity
                 getIntent().getParcelableExtra(EXTRA_PRODUCT_VIEW_MODEL);
 
         boolean forceSwipeToShop;
-        String searchQuery = getIntent().getStringExtra(BrowseProductRouter.EXTRAS_SEARCH_TERM);
+        String searchQuery = getIntent().getStringExtra(EXTRAS_SEARCH_TERM);
+        String categoryId = getIntent().getStringExtra(DEPARTMENT_ID);
 
         if (savedInstanceState != null) {
             forceSwipeToShop = isForceSwipeToShop();
@@ -129,15 +128,13 @@ public class SearchActivity extends DiscoveryActivity
         if (productViewModel != null) {
             setLastQuerySearchView(productViewModel.getQuery());
             loadSection(productViewModel, forceSwipeToShop);
-
-            forImageSearch = productViewModel.isImageSearch();
-
-            if (!forImageSearch)
-                setToolbarTitle(productViewModel.getQuery());
-            else
-                setToolbarTitle("Image Search");
+            setToolbarTitle(productViewModel.getQuery());
         } else if (!TextUtils.isEmpty(searchQuery)) {
-            onProductQuerySubmit(searchQuery);
+            if (!TextUtils.isEmpty(categoryId)) {
+                onSuggestionProductClick(searchQuery, categoryId);
+            } else {
+                onSuggestionProductClick(searchQuery);
+            }
         } else {
             searchView.showSearch(true, false);
             new Handler().postDelayed(new Runnable() {
@@ -175,22 +172,14 @@ public class SearchActivity extends DiscoveryActivity
 
         if (productViewModel.isHasCatalog()) {
             populateThreeTabItem(searchSectionItemList, productViewModel);
-        } else if (!productViewModel.isImageSearch()) {
-            populateTwoTabItem(searchSectionItemList, productViewModel);
         } else {
-            populateOneTabItem(searchSectionItemList, productViewModel);
+            populateTwoTabItem(searchSectionItemList, productViewModel);
         }
         SearchSectionPagerAdapter searchSectionPagerAdapter = new SearchSectionPagerAdapter(getSupportFragmentManager());
         searchSectionPagerAdapter.setData(searchSectionItemList);
         viewPager.setAdapter(searchSectionPagerAdapter);
         tabLayout.setupWithViewPager(viewPager);
         setActiveTab(forceSwipeToShop);
-    }
-
-    private void populateOneTabItem(List<SearchSectionItem> searchSectionItemList, ProductViewModel productViewModel) {
-        productListFragment = getProductFragment(productViewModel);
-        searchSectionItemList.add(new SearchSectionItem(productTabTitle, productListFragment));
-        tabLayout.setVisibility(View.GONE);
     }
 
     private void setActiveTab(final boolean swipeToShop) {

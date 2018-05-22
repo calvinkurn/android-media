@@ -594,6 +594,7 @@ public class TkpdBaseURL {
         public static final String PATH_DELETE_SEARCH = "/universe/v1?device=android&source=searchbar";
 
         public static final String PATH_SEARCH_PRODUCT = "search/product/v3";
+        public static final String PATH_IMAGE_SEARCH = "search/imagesearch/";
         public static final String PATH_GET_ATTRIBUTE = "search/product/attributes/v3";
         public static final String PATH_GET_DYNAMIC_ATTRIBUTE = "v2/dynamic_attributes";
         public static final String PATH_BROWSE_CATALOG = "search/v2.1/catalog";
@@ -870,7 +871,8 @@ public class TkpdBaseURL {
         public static final String PATH_ZEUS_CHECK_WHITELIST = "zeus/whitelist/status";
         public static final String PATH_ZEUS_UPDATE_WHITELIST = "zeus/whitelist";
 
-        public static final String CDN_IMG_ANDROID_DOMAIN = "https://ecs7.tokopedia.net/img/android/";
+        public static final String DEFAULT_HOST = "http://ecs7.tokopedia.net";
+        public static final String CDN_IMG_ANDROID_DOMAIN = "/img/android/";
 
     }
 
