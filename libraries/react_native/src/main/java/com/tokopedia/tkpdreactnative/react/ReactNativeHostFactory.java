@@ -26,7 +26,7 @@ public class ReactNativeHostFactory {
     public static ReactNativeHost init(Application application) {
         if(instance == null) instance = new ReactNativeHostFactory();
 
-        return instance.createReactNativeHostDev(application);
+        return instance.createReactNativeHost(application);
     }
 
     private ReactNativeHost createReactNativeHost(final Application application) {
