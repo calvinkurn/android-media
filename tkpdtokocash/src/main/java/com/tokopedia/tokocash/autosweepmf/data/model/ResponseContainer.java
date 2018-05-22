@@ -1,12 +1,22 @@
 package com.tokopedia.tokocash.autosweepmf.data.model;
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
 
 /**
  * Base model class for all server response
  */
 public class ResponseContainer {
+    @SerializedName("message")
+    @Expose
     protected String message;
+    @SerializedName("error")
+    @Expose
     protected String error;
+    @SerializedName("code")
+    @Expose
     protected int code;
+    @SerializedName("latency")
+    @Expose
     protected String latency;
 
     public String getMessage() {
