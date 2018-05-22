@@ -1,7 +1,10 @@
 package com.tokopedia.core.share;
 
+import android.content.BroadcastReceiver;
 import android.content.ComponentName;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.os.Bundle;
@@ -21,6 +24,7 @@ import com.tokopedia.core.share.adapter.ShareAdapter;
 import com.tokopedia.core.util.BranchSdkUtils;
 import com.tokopedia.core.util.ClipboardHandler;
 import com.tokopedia.core.util.ShareSocmedHandler;
+import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.design.component.BottomSheets;
 
 import java.util.ArrayList;
@@ -165,6 +169,41 @@ public class ShareBottomSheet extends BottomSheets implements ShareAdapter.OnIte
         mIntent.putExtra(Intent.EXTRA_SUBJECT, title);
         mIntent.putExtra(Intent.EXTRA_TEXT, contains);
         return mIntent;
+    }
+
+    private BroadcastReceiver addProductReceiver;
+
+    private void broadcastAddProduct() {
+        addingProduct(isAdding);
+        addProductReceiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                Bundle bundle = intent.getExtras();
+                int status = bundle.getInt(TkpdState.ProductService.STATUS_FLAG, TkpdState.ProductService.STATUS_ERROR);
+                switch (status) {
+                    case TkpdState.ProductService.STATUS_DONE:
+                        setData(bundle);
+                        addingProduct(false);
+                        break;
+                    case TkpdState.ProductService.STATUS_ERROR:
+                    default:
+                        addingProduct(false);
+                        onError(bundle);
+                }
+            }
+        };
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        getActivity().registerReceiver(addProductReceiver, new IntentFilter(TkpdState.ProductService.BROADCAST_ADD_PRODUCT));
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        getActivity().unregisterReceiver(addProductReceiver);
     }
 
     /**
