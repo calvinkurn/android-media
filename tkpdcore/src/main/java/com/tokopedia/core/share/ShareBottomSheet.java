@@ -14,6 +14,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.tokopedia.core.R;
@@ -87,12 +88,16 @@ public class ShareBottomSheet extends BottomSheets implements ShareAdapter.OnIte
 
     private RecyclerView mRecyclerView;
     private ProgressBar mProgressBar;
+    private ProgressBar mLayoutError;
+    private TextView mTextViewError;
 
     @Override
     public void initView(View view) {
 
         mRecyclerView = view.findViewById(R.id.recyclerview);
         mProgressBar = view.findViewById(R.id.progressbar);
+        mLayoutError = view.findViewById(R.id.layout_error);
+        mTextViewError = view.findViewById(R.id.message_error);
 
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getActivity());
         mRecyclerView.setLayoutManager(mLayoutManager);
@@ -227,12 +232,8 @@ public class ShareBottomSheet extends BottomSheets implements ShareAdapter.OnIte
     public void onError(Bundle resultData) {
         String messageError = resultData.getString(TkpdState.ProductService.MESSAGE_ERROR_FLAG);
         mProgressBar.setVisibility(View.GONE);
-        errorImage.setVisibility(View.VISIBLE);
-        loadingAddProduct.setText(messageError +
-                "\n" + getString(R.string.error_failed_add_product));
-        loadingAddProduct.setVisibility(View.VISIBLE);
-        setIconShareVisibility(View.GONE);
-        setVisibilityTitle(View.GONE);
+        mLayoutError.setVisibility(View.VISIBLE);
+        mTextViewError.setText(messageError + "\n" + getString(R.string.error_failed_add_product));
     }
 
     public void setData(Bundle data) {
