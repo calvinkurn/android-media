@@ -2,21 +2,22 @@ package com.tokopedia.flight.review.view.presenter;
 
 import com.tokopedia.flight.R;
 import com.tokopedia.flight.booking.domain.FlightAddToCartUseCase;
-import com.tokopedia.flight.passenger.domain.FlightPassengerDeleteAllListUseCase;
 import com.tokopedia.flight.booking.view.presenter.FlightBaseBookingPresenter;
 import com.tokopedia.flight.booking.view.viewmodel.BaseCartData;
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingPassengerViewModel;
+import com.tokopedia.flight.booking.view.viewmodel.FlightBookingVoucherViewModel;
 import com.tokopedia.flight.booking.view.viewmodel.mapper.FlightBookingCartDataMapper;
 import com.tokopedia.flight.common.data.model.FlightException;
 import com.tokopedia.flight.common.util.FlightAnalytics;
 import com.tokopedia.flight.common.util.FlightErrorUtil;
+import com.tokopedia.flight.passenger.domain.FlightPassengerDeleteAllListUseCase;
 import com.tokopedia.flight.review.data.model.AttributesVoucher;
 import com.tokopedia.flight.review.data.model.FlightCheckoutEntity;
 import com.tokopedia.flight.review.domain.FlightBookingCheckoutUseCase;
 import com.tokopedia.flight.review.domain.FlightBookingVerifyUseCase;
-import com.tokopedia.flight.review.domain.FlightCheckVoucherCodeUseCase;
 import com.tokopedia.flight.review.domain.verifybooking.model.response.CartItem;
 import com.tokopedia.flight.review.domain.verifybooking.model.response.DataResponseVerify;
+import com.tokopedia.flight.review.view.model.FlightBookingReviewModel;
 import com.tokopedia.flight.review.view.model.FlightCheckoutViewModel;
 import com.tokopedia.usecase.RequestParams;
 
@@ -53,6 +54,24 @@ public class FlightBookingReviewPresenter extends FlightBaseBookingPresenter<Fli
         this.flightBookingVerifyUseCase = flightBookingVerifyUseCase;
         this.flightPassengerDeleteAllListUseCase = flightPassengerDeleteAllListUseCase;
         this.flightAnalytics = flightAnalytics;
+    }
+
+    @Override
+    public void onViewCreated() {
+        FlightBookingReviewModel reviewModel = getView().getCurrentBookingReviewModel();
+
+        if (reviewModel.getVoucherViewModel().isEnableVoucher()) {
+            getView().showVoucherContainer();
+
+            if (reviewModel.getVoucherViewModel().isAutoapplySuccess()) {
+                if (!(reviewModel.getVoucherViewModel().getIsCouponActive() == 0 &&
+                        reviewModel.getVoucherViewModel().getIsCoupon() == 1)) {
+                    renderCouponAndVoucher();
+                }
+            }
+        } else {
+            getView().hideVoucherContainer();
+        }
     }
 
     @Override
@@ -238,5 +257,20 @@ public class FlightBookingReviewPresenter extends FlightBaseBookingPresenter<Fli
                     }
                 }
         );
+    }
+
+    private void renderCouponAndVoucher() {
+        FlightBookingVoucherViewModel voucherViewModel = getView().getCurrentBookingReviewModel().getVoucherViewModel();
+        if (voucherViewModel.getIsCoupon() == 1) {
+            getView().renderCouponInfoData();
+        } else {
+            getView().renderVoucherInfoData();
+        }
+
+        AttributesVoucher attributesVoucher = new AttributesVoucher();
+        attributesVoucher.setVoucherCode(voucherViewModel.getCode());
+        attributesVoucher.setMessage(voucherViewModel.getMessageSuccess());
+        attributesVoucher.setDiscountAmountPlain(voucherViewModel.getDiscountAmount());
+        getView().updateFinalTotal(attributesVoucher, getView().getCurrentBookingReviewModel());
     }
 }

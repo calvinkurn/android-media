@@ -75,17 +75,19 @@ public class FlightBookingCartDataMapper {
 
         data.setEnableVoucher(voucher.getEnableVoucher());
         data.setIsCouponActive(voucher.getIsCouponActive());
-        data.setAutoapplySuccess(voucher.getAutoApply().getIsSuccess());
-        data.setCode(voucher.getAutoApply().getCode());
-        data.setIsCoupon(voucher.getAutoApply().getIsCoupon());
-        data.setDiscountAmount(voucher.getAutoApply().getDiscountAmount());
-        data.setDiscountPrice(voucher.getAutoApply().getDiscountPrice());
-        data.setDiscountedAmount(voucher.getAutoApply().getDiscountedAmount());
-        data.setDiscountedPrice(voucher.getAutoApply().getDiscountedPrice());
-        data.setTitleDescription(voucher.getAutoApply().getTitleDescription());
-        data.setMessageSuccess(voucher.getAutoApply().getMessageSuccess());
-        data.setPromoId(voucher.getAutoApply().getPromoId());
         data.setDefaultPromoTab(voucher.getDefaultPromoTab());
+        if (voucher.getAutoApply() != null) {
+            data.setAutoapplySuccess(voucher.getAutoApply().getIsSuccess());
+            data.setCode(voucher.getAutoApply().getCode());
+            data.setIsCoupon(voucher.getAutoApply().getIsCoupon());
+            data.setDiscountAmount(voucher.getAutoApply().getDiscountAmount());
+            data.setDiscountPrice(voucher.getAutoApply().getDiscountPrice());
+            data.setDiscountedAmount(voucher.getAutoApply().getDiscountedAmount());
+            data.setDiscountedPrice(voucher.getAutoApply().getDiscountedPrice());
+            data.setTitleDescription(voucher.getAutoApply().getTitleDescription());
+            data.setMessageSuccess(voucher.getAutoApply().getMessageSuccess());
+            data.setPromoId(voucher.getAutoApply().getPromoId());
+        }
 
         return data;
     }

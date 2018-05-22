@@ -37,6 +37,7 @@ import com.tokopedia.flight.booking.view.viewmodel.BaseCartData;
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingAmenityMetaViewModel;
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingAmenityViewModel;
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingPassengerViewModel;
+import com.tokopedia.flight.booking.view.viewmodel.FlightBookingVoucherViewModel;
 import com.tokopedia.flight.booking.view.viewmodel.SimpleViewModel;
 import com.tokopedia.flight.booking.widget.CountdownTimeView;
 import com.tokopedia.flight.common.constant.FlightFlowConstant;
@@ -255,6 +256,7 @@ public class FlightBookingReviewFragment extends BaseDaggerFragment implements F
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         initView();
+        flightBookingReviewPresenter.onViewCreated();
     }
 
     @Override
@@ -337,6 +339,18 @@ public class FlightBookingReviewFragment extends BaseDaggerFragment implements F
             totalFinal = currentBookingReviewModel.getTotalPriceNumeric();
         }
         reviewFinalTotalPrice.setText(CurrencyFormatUtil.convertPriceValueToIdrFormatNoSpace(totalFinal));
+    }
+
+    @Override
+    public void renderCouponInfoData() {
+        FlightBookingVoucherViewModel voucherViewModel = flightBookingReviewModel.getVoucherViewModel();
+        voucherCartView.setCoupon(voucherViewModel.getTitleDescription(), voucherViewModel.getMessageSuccess(), voucherViewModel.getCode());
+    }
+
+    @Override
+    public void renderVoucherInfoData() {
+        FlightBookingVoucherViewModel voucherViewModel = flightBookingReviewModel.getVoucherViewModel();
+        voucherCartView.setVoucher(voucherViewModel.getCode(), voucherViewModel.getMessageSuccess());
     }
 
     @Override
@@ -639,6 +653,15 @@ public class FlightBookingReviewFragment extends BaseDaggerFragment implements F
         );
     }
 
+    @Override
+    public void showVoucherContainer() {
+        voucherCartView.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void hideVoucherContainer() {
+        voucherCartView.setVisibility(View.GONE);
+    }
 
     @Override
     public void onDestroy() {
