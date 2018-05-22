@@ -1575,7 +1575,10 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
                         StringBuilder stringBuilder = new StringBuilder();
                         for (int i = 0; i < messageList.size(); i++) {
                             String string = messageList.get(i);
-                            stringBuilder.append(string).append(",");
+                            stringBuilder.append(string);
+                            if (messageList.size() > 1 && i < messageList.size() - 1) {
+                                stringBuilder.append(",");
+                            }
                         }
                         return new AddToCartResult.Builder()
                                 .message(stringBuilder.toString())

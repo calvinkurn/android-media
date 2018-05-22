@@ -39,7 +39,7 @@ public class CartItemHolderData implements Parcelable {
             this.errorFormItemValidationMessage = cartItemData.getErrorData().getErrorFieldMaxChar()
                     .replace("{{value}}", String.valueOf(cartItemData.getUpdatedData().getMaxCharRemark()));
             return ERROR_FIELD_MAX_CHAR;
-        } else if (cartItemData.getUpdatedData().getQuantity() > cartItemData.getOriginData().getInvenageValue()) {
+        } else if (cartItemData.getOriginData().getInvenageValue() != 0 && cartItemData.getUpdatedData().getQuantity() > cartItemData.getOriginData().getInvenageValue()) {
             String formattedMaxCharRemark = String.format(Locale.US, "%,d", cartItemData.getOriginData().getInvenageValue()).replace(',', '.');
             this.errorFormItemValidationMessage = cartItemData.getErrorData().getErrorProductMaxQuantity()
                     .replace("{{value}}", formattedMaxCharRemark);

@@ -29,6 +29,7 @@ public class CartListItemViewHolder extends RecyclerView.ViewHolder {
     public static final int TYPE_VIEW_ITEM_CART = R.layout.holder_item_cart_new;
     private static final int QTY_MIN = 1;
     private static final int QTY_MAX = 10000;
+    private static final String QTY_MAX_STRING = "10.000";
 
     private final CartListAdapter.ActionListener actionListener;
     private final Context context;
@@ -85,6 +86,9 @@ public class CartListItemViewHolder extends RecyclerView.ViewHolder {
 
     public void bindData(final CartItemHolderData data, final int position) {
         cartItemHolderData = data;
+        if (cartItemHolderData.getCartItemData().getOriginData().getInvenageValue() == 0) {
+            cartItemHolderData.getCartItemData().getOriginData().setInvenageValue(QTY_MAX);
+        }
         this.tvShopName.setText(
                 Html.fromHtml(data.getCartItemData().getOriginData().getShopName())
         );
@@ -274,7 +278,8 @@ public class CartListItemViewHolder extends RecyclerView.ViewHolder {
             btnQtyPlus.setEnabled(true);
             btnQtyMinus.setBackground(ContextCompat.getDrawable(context, R.drawable.bg_button_disabled));
             btnQtyPlus.setBackground(ContextCompat.getDrawable(context, R.drawable.button_curvy_green));
-        } else if (qty >= QTY_MAX || qty >= cartItemHolderData.getCartItemData().getOriginData().getInvenageValue()) {
+        } else if (qty >= QTY_MAX || (cartItemHolderData.getCartItemData().getOriginData().getInvenageValue() != 0 &&
+                qty >= cartItemHolderData.getCartItemData().getOriginData().getInvenageValue())) {
             btnQtyPlus.setEnabled(false);
             btnQtyMinus.setEnabled(true);
             btnQtyPlus.setBackground(ContextCompat.getDrawable(context, R.drawable.bg_button_disabled));
@@ -288,15 +293,25 @@ public class CartListItemViewHolder extends RecyclerView.ViewHolder {
     }
 
     private void validateWithAvailableQuantity(CartItemHolderData data, int qty) {
-        if (qty > data.getCartItemData().getOriginData().getInvenageValue()) {
+        if (data.getCartItemData().getOriginData().getInvenageValue() != 0 &&
+                qty > data.getCartItemData().getOriginData().getInvenageValue()) {
+            String maxValue;
+            if (data.getCartItemData().getOriginData().getInvenageValue() == QTY_MAX) {
+                maxValue = QTY_MAX_STRING;
+            } else {
+                maxValue = String.valueOf(data.getCartItemData().getOriginData().getInvenageValue());
+            }
             String errorMessage = data.getCartItemData().getErrorData().getErrorProductMaxQuantity();
-            tvErrorFormValidation.setText(errorMessage.replace("{{value}}",
-                    String.valueOf(data.getCartItemData().getOriginData().getInvenageValue())));
+            tvErrorFormValidation.setText(errorMessage.replace("{{value}}", maxValue));
             tvErrorFormValidation.setVisibility(View.VISIBLE);
         } else if (qty < data.getCartItemData().getOriginData().getMinimalQtyOrder()) {
             String errorMessage = data.getCartItemData().getErrorData().getErrorProductMinQuantity();
             tvErrorFormValidation.setText(errorMessage.replace("{{value}}",
                     String.valueOf(data.getCartItemData().getOriginData().getMinimalQtyOrder())));
+            tvErrorFormValidation.setVisibility(View.VISIBLE);
+        } else if (qty > QTY_MAX) {
+            String errorMessage = data.getCartItemData().getErrorData().getErrorProductMaxQuantity();
+            tvErrorFormValidation.setText(errorMessage.replace("{{value}}", String.valueOf(QTY_MAX_STRING)));
             tvErrorFormValidation.setVisibility(View.VISIBLE);
         } else {
             tvErrorFormValidation.setVisibility(View.GONE);
