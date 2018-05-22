@@ -16,7 +16,6 @@ public class TrainStationViewModel implements Parcelable, Visitable<TrainStation
     private String stationName;
     private String cityCode;
     private String cityName;
-    private String islandId;
 
     public TrainStationViewModel() {
     }
@@ -27,7 +26,6 @@ public class TrainStationViewModel implements Parcelable, Visitable<TrainStation
         stationName = in.readString();
         cityCode = in.readString();
         cityName = in.readString();
-        islandId = in.readString();
     }
 
     public static final Creator<TrainStationViewModel> CREATOR = new Creator<TrainStationViewModel>() {
@@ -88,14 +86,6 @@ public class TrainStationViewModel implements Parcelable, Visitable<TrainStation
         this.stationName = stationName;
     }
 
-    public String getIslandId() {
-        return islandId;
-    }
-
-    public void setIslandId(String islandId) {
-        this.islandId = islandId;
-    }
-
     @Override
     public int describeContents() {
         return 0;
@@ -108,6 +98,5 @@ public class TrainStationViewModel implements Parcelable, Visitable<TrainStation
         parcel.writeString(stationName);
         parcel.writeString(cityCode);
         parcel.writeString(cityName);
-        parcel.writeString(islandId);
     }
 }

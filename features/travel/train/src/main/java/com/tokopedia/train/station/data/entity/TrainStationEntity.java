@@ -11,21 +11,18 @@ public class TrainStationEntity {
     @SerializedName("id")
     @Expose
     private int id;
-    @SerializedName("popularity_order")
-    @Expose
-    private int popularityOrder;
-    @SerializedName("display_name")
-    @Expose
-    private String displayName;
-    @SerializedName("status")
-    @Expose
-    private String status;
     @SerializedName("name")
     @Expose
     private String name;
     @SerializedName("code")
     @Expose
     private String code;
+    @SerializedName("displayName")
+    @Expose
+    private String displayName;
+    @SerializedName("popularityRank")
+    @Expose
+    private int popularityOrder;
 
     public int getId() {
         return id;
@@ -37,10 +34,6 @@ public class TrainStationEntity {
 
     public String getDisplayName() {
         return displayName;
-    }
-
-    public String getStatus() {
-        return status;
     }
 
     public String getName() {

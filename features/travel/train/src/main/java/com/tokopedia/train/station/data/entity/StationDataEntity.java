@@ -10,7 +10,7 @@ import java.util.List;
  */
 public class StationDataEntity {
 
-    @SerializedName("stations")
+    @SerializedName("kaiStations")
     @Expose
     private List<TrainStationIslandEntity> stations;
 
