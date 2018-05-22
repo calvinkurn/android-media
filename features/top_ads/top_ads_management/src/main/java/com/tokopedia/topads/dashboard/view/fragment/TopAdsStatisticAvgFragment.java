@@ -5,12 +5,13 @@ import android.support.v4.app.Fragment;
 
 import com.tokopedia.topads.R;
 import com.tokopedia.topads.dashboard.data.model.data.Cell;
+import com.tokopedia.topads.dashboard.data.model.data.Summary;
 
 /**
  * Created by zulfikarrahman on 1/6/17.
  */
 
-public class TopAdsStatisticAvgFragment extends TopAdsStatisticFragment {
+public class TopAdsStatisticAvgFragment extends TopAdsDashboardStatisticFragment {
 
     public static Fragment createInstance() {
         Fragment fragment = new TopAdsStatisticAvgFragment();

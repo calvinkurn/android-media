@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="TwoLineSeekBar">
+        <attr name="nail_color" format="color" />
+        <attr name="thumb_color" format="color" />
+        <attr name="line_color" format="color" />
+        <attr name="high_color" format="color" />
+        <attr name="thumb_radius" format="dimension" />
+        <attr name="nail_radius" format="dimension" />
+        <attr name="nail_stroke_width" format="dimension" />
+        <attr name="high_stroke_width" format="dimension" />
+        <attr name="line_width" format="dimension" />
+    </declare-styleable>
+
+    <style name="ImagePickerTab" parent="TextAppearance.Design.Tab">
+        <item name="android:textSize">@dimen/sp_16</item>
+        <item name="textAllCaps">false</item>
+        <item name="android:textStyle">normal</item>
+    </style>
+</resources>
