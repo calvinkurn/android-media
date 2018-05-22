@@ -162,7 +162,6 @@ public class CartRemoveProductAdapter extends RecyclerView.Adapter<RecyclerView.
         private ImageView mIvProductImage;
         private TextView mTvProductName;
         private TextView mTvProductPrice;
-        private TextView mTvProductWeight;
         private TextView mTvTotalProductItem;
         private TextView mTvCashback;
         private TextView mTvPreOrder;
@@ -178,7 +177,6 @@ public class CartRemoveProductAdapter extends RecyclerView.Adapter<RecyclerView.
             mIvProductImage = itemView.findViewById(R.id.iv_product_image);
             mTvProductName = itemView.findViewById(R.id.tv_product_name);
             mTvProductPrice = itemView.findViewById(R.id.tv_product_price);
-            mTvProductWeight = itemView.findViewById(R.id.tv_product_weight);
             mTvTotalProductItem = itemView.findViewById(R.id.tv_product_total_item);
             mTvCashback = itemView.findViewById(R.id.tv_cashback);
             mTvPreOrder = itemView.findViewById(R.id.tv_pre_order);
@@ -199,7 +197,6 @@ public class CartRemoveProductAdapter extends RecyclerView.Adapter<RecyclerView.
             mTvSenderName.setText(originData.getShopName());
             mTvProductName.setText(originData.getProductName());
             mTvProductPrice.setText(originData.getPriceFormatted());
-            mTvProductWeight.setText(originData.getWeightFormatted());
             mTvTotalProductItem.setText(String.valueOf(updatedData.getQuantity()));
             ImageHandler.LoadImage(mIvProductImage, originData.getProductImage());
 
