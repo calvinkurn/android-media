@@ -7,6 +7,7 @@ import android.text.SpannableString;
 import android.text.TextUtils;
 import android.text.style.TextAppearanceSpan;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.tokopedia.core.analytics.UnifyTracking;
@@ -24,6 +25,7 @@ public class AutoCompleteViewHolder extends AbstractViewHolder<AutoCompleteSearc
     private final Context context;
 
     private TextView titleTextView;
+    private ImageView iconCopyTextView;
 
     private final ItemClickListener listener;
 
@@ -32,6 +34,7 @@ public class AutoCompleteViewHolder extends AbstractViewHolder<AutoCompleteSearc
         this.context = itemView.getContext();
         this.listener = clickListener;
         titleTextView = itemView.findViewById(R.id.titleTextView);
+        iconCopyTextView = itemView.findViewById(R.id.icon);
     }
 
     @Override
@@ -57,6 +60,13 @@ public class AutoCompleteViewHolder extends AbstractViewHolder<AutoCompleteSearc
                         element.getKeyword(),
                         element.getCategoryId()
                 );
+            }
+        });
+
+        iconCopyTextView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                listener.copyTextToSearchView(element.getKeyword());
             }
         });
     }

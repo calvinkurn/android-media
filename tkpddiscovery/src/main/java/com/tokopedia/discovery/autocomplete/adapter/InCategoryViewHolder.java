@@ -6,6 +6,7 @@ import android.text.SpannableString;
 import android.text.TextUtils;
 import android.text.style.TextAppearanceSpan;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.tokopedia.core.analytics.UnifyTracking;
@@ -24,12 +25,14 @@ public class InCategoryViewHolder extends AbstractViewHolder<InCategorySearch> {
     private final TextView titleTextView;
     private final TextView subTitleTextView;
     private final ItemClickListener listener;
+    private final ImageView iconCopyTextView;
 
     public InCategoryViewHolder(View itemView, ItemClickListener clickListener) {
         super(itemView);
         this.listener = clickListener;
         titleTextView = itemView.findViewById(R.id.titleTextView);
         subTitleTextView = itemView.findViewById(R.id.subTitleTextView);
+        iconCopyTextView = itemView.findViewById(R.id.icon);
     }
 
     @Override
@@ -66,6 +69,12 @@ public class InCategoryViewHolder extends AbstractViewHolder<InCategorySearch> {
             }
         });
 
+        iconCopyTextView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                listener.copyTextToSearchView(element.getKeyword());
+            }
+        });
     }
 
     private int indexOfSearchQuery(String displayName, String searchTerm) {

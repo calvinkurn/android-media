@@ -28,6 +28,7 @@ public class ShopViewHolder extends AbstractViewHolder<ShopSearch> {
     private TextView location;
     private ImageView badgesOfficialStore;
     private ImageView shopAvatar;
+    private ImageView iconCopyTextView;
 
     private final ItemClickListener listener;
 
@@ -39,6 +40,7 @@ public class ShopViewHolder extends AbstractViewHolder<ShopSearch> {
         location = itemView.findViewById(R.id.subTitleTextView);
         badgesOfficialStore = itemView.findViewById(R.id.badgesOfficialStore);
         shopAvatar = itemView.findViewById(R.id.shop_avatar);
+        iconCopyTextView = itemView.findViewById(R.id.icon);
     }
 
     @Override
@@ -69,6 +71,13 @@ public class ShopViewHolder extends AbstractViewHolder<ShopSearch> {
             @Override
             public void onClick(View v) {
                 listener.onItemClicked(element.getApplink(), element.getUrl());
+            }
+        });
+
+        iconCopyTextView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                listener.copyTextToSearchView(element.getKeyword());
             }
         });
     }
