@@ -89,7 +89,7 @@ public class ChannelInfoMapper implements Func1<Response<DataResponse<ChannelInf
     }
 
     private boolean hasPinnedMessage(PinnedMessagePojo pinnedMessage) {
-        return pinnedMessage != null && !TextUtils.isEmpty(pinnedMessage.getTitle());
+        return pinnedMessage != null;
     }
 
     private SprintSaleViewModel mapToSprintSaleViewModel(Flashsale flashsale) {
