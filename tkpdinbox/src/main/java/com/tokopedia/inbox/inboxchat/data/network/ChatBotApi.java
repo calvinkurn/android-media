@@ -2,7 +2,7 @@ package com.tokopedia.inbox.inboxchat.data.network;
 
 import com.tokopedia.inbox.attachinvoice.data.model.GetInvoicePostRequest;
 import com.tokopedia.inbox.attachinvoice.data.model.GetInvoicesResponseWrapper;
-import com.tokopedia.inbox.inboxchat.data.pojo.SetChatRatingPojo;
+import com.tokopedia.inbox.inboxchat.domain.pojo.SetChatRatingPojo;
 
 import java.util.HashMap;
 import java.util.Map;
