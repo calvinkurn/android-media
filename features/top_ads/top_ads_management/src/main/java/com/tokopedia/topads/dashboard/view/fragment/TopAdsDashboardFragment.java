@@ -141,6 +141,7 @@ public class TopAdsDashboardFragment extends BaseDaggerFragment implements TopAd
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         topAdsDashboardPresenter.attachView(this);
+        topAdsDashboardPresenter.resetDate();
         selectedStatisticType = TopAdsStatisticsType.ALL_ADS;
         totalProductAd = Integer.MIN_VALUE;
         swipeToRefresh = (SwipeToRefresh) view.findViewById(R.id.swipe_refresh_layout);
