@@ -1,7 +1,5 @@
 package com.tokopedia.transaction.orders.orderlist.view.presenter;
 
-import android.graphics.Color;
-import android.util.Log;
 import android.view.View;
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
@@ -57,9 +55,9 @@ public class ListAdapterPresenterImpl extends BaseDaggerPresenter<ListAdapterCon
     public void setViewData(Order order) {
         view.setStatus(order.statusStr());
         if (order.status() == 0 || order.status() == 800 || order.status() == 901) {
-            view.setStatusBgColor(0);
-        } else if (!order.statusColor().equals("")) {
-            view.setStatusBgColor(Color.parseColor(order.statusColor()));
+            view.setFailStatusBgColor(true);
+        } else {
+            view.setFailStatusBgColor(false);
         }
         if (!order.conditionalInfo().text().equals("")) {
             ConditionalInfo conditionalInfo = order.conditionalInfo();

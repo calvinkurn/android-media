@@ -183,10 +183,10 @@ public class OrderListDetailFragment extends BaseDaggerFragment implements Order
 
     @Override
     public void setDetail(Detail detail) {
-        //detailLabel.setText(detail.label());
         DoubleTextView doubleTextView = new DoubleTextView(getActivity(), LinearLayout.HORIZONTAL);
         doubleTextView.setTopText(detail.label());
         doubleTextView.setBottomText(detail.value());
+        doubleTextView.setBottomGravity(Gravity.RIGHT);
         detailContent.addView(doubleTextView);
     }
 
@@ -210,6 +210,7 @@ public class OrderListDetailFragment extends BaseDaggerFragment implements Order
         DoubleTextView doubleTextView = new DoubleTextView(getActivity(), LinearLayout.HORIZONTAL);
         doubleTextView.setTopText(additionalInfo.label());
         doubleTextView.setBottomText(additionalInfo.value());
+        doubleTextView.setBottomGravity(Gravity.RIGHT);
         additionalInfoLayout.addView(doubleTextView);
     }
 
@@ -218,6 +219,7 @@ public class OrderListDetailFragment extends BaseDaggerFragment implements Order
         DoubleTextView doubleTextView = new DoubleTextView(getActivity(), LinearLayout.HORIZONTAL);
         doubleTextView.setTopText(pricing.label());
         doubleTextView.setBottomText(pricing.value());
+        doubleTextView.setBottomGravity(Gravity.RIGHT);
         infoValue.addView(doubleTextView);
 
     }

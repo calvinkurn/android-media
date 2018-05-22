@@ -5,7 +5,6 @@ import android.content.Context;
 import android.graphics.Typeface;
 import android.graphics.drawable.GradientDrawable;
 import android.net.Uri;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -191,12 +190,12 @@ public class OrderListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
     }
 
     @Override
-    public void setStatusBgColor(int statusColor) {
-        if(statusColor == 0){
-            currentHolder.status.setBackgroundColor(context.getResources().getColor(R.color.colorPink));
-        } else {
-            currentHolder.status.setBackgroundColor(statusColor);
-        }
+    public void setFailStatusBgColor(boolean statusFail) {
+            if(statusFail){
+                currentHolder.status.setBackgroundColor(context.getResources().getColor(R.color.colorPink));
+            } else {
+                currentHolder.status.setBackgroundColor(context.getResources().getColor(R.color.green_template));
+            }
     }
 
     @Override

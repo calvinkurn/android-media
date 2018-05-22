@@ -92,6 +92,7 @@
                 android:layout_height="wrap_content"
                 android:background="@drawable/card_condition_info"
                 android:padding="2dp"
+                android:gravity="center"
                 android:textSize="@dimen/sp_12" />
         </LinearLayout>
 

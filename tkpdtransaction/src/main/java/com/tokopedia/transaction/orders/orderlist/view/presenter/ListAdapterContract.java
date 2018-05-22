@@ -31,7 +31,7 @@ public class ListAdapterContract {
 
         void setConditionalInfo(int successCondInfoVisiblity, String successConditionalText, Color color);
 
-        void setStatusBgColor(int statusColor);
+        void setFailStatusBgColor(boolean statusFail);
 
         void setStatus(String statusText);
 
