@@ -11,10 +11,10 @@ import com.tokopedia.abstraction.common.di.component.HasComponent;
 import com.tokopedia.checkout.R;
 import com.tokopedia.checkout.applink.CheckoutAppLink;
 import com.tokopedia.checkout.domain.datamodel.cartlist.CartItemData;
+import com.tokopedia.checkout.router.ICheckoutModuleRouter;
 import com.tokopedia.checkout.view.base.BaseCheckoutActivity;
 import com.tokopedia.checkout.view.di.component.CartComponent;
 import com.tokopedia.checkout.view.di.component.CartComponentInjector;
-import com.tokopedia.core.gcm.Constants;
 
 import java.util.List;
 
@@ -72,6 +72,11 @@ public class CartActivity extends BaseCheckoutActivity implements CartFragment.A
         if (getFragmentManager().getBackStackEntryCount() > 0) {
             getFragmentManager().popBackStack();
         } else {
+            startActivity(
+                    ((ICheckoutModuleRouter) getApplication())
+                            .getHomeIntent(this)
+            );
+            finish();
             super.onBackPressed();
         }
     }

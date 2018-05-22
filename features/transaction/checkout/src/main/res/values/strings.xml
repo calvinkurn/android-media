@@ -117,8 +117,6 @@
     <string name="checkout_module_label_free_returns">Free Returns</string>
     <string name="checkout_module_label_po">PO</string>
     <string name="checkout_module_label_ubah">Ubah</string>
-
-
     <string name="checkout_module_title_activity_cart">Keranjang</string>
     <string name="checkout_module_title_shipping_dest">Tujuan Pengiriman</string>
     <string name="checkout_module_title_activity_people_tx_details">Detil Transaksi</string>
@@ -140,5 +138,6 @@
     <string name="label_dialog_title_delete_item">Hapus Barang</string>
     <string name="label_dialog_action_delete">Hapus</string>
     <string name="label_dialog_action_delete_all">Hapus Semua</string>
+    <string name="label_dialog_message_remove_cart_item">Barang ini akan dihapus dari keranjang belanja anda</string>
 
 </resources>

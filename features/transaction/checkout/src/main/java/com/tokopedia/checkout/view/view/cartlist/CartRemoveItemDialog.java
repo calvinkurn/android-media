@@ -56,7 +56,7 @@ public class CartRemoveItemDialog extends DialogFragment {
 
         final AlertDialog dialog = new AlertDialog.Builder(getActivity())
                 .setTitle(R.string.label_dialog_title_delete_item)
-                .setMessage(getMessage(hasSingleElement, dataRemoved))
+                .setMessage(R.string.label_dialog_message_remove_cart_item)
                 .setPositiveButton(R.string.label_dialog_action_delete_and_add_to_wishlist,
                         new DialogInterface.OnClickListener() {
                             @Override
