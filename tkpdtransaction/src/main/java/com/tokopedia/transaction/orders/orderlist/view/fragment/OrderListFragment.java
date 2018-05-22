@@ -12,6 +12,7 @@ import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.customwidget.SwipeToRefresh;
 import com.tokopedia.core.home.SimpleWebViewWithFilePickerActivity;
 import com.tokopedia.core.network.NetworkErrorHelper;
+import com.tokopedia.core.router.transactionmodule.TransactionPurchaseRouter;
 import com.tokopedia.core.util.RefreshHandler;
 import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.R2;
@@ -312,7 +313,7 @@ public class OrderListFragment extends BasePresenterFragment<OrderListContract.P
     @Override
     public void startUri(String uri) {
         if (!uri.equals(""))
-            startActivity(SimpleWebViewWithFilePickerActivity.getIntent(context, uri));
+            TransactionPurchaseRouter.startWebViewActivity(getActivity(), uri);
     }
 }
 
