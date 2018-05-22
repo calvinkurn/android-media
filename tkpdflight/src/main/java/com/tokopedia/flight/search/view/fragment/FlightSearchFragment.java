@@ -85,6 +85,10 @@ public class FlightSearchFragment extends BaseListFragment<FlightSearchViewModel
     private static final String SAVED_PROGRESS = "svd_progress";
     private static final float DEFAULT_DIMENS_MULTIPLIER = 0.5f;
     private static final int PADDING_SEARCH_LIST = 60;
+    private static final int DEFAULT_LAST_HOUR_IN_DAY = 23;
+    private static final int DEFAULT_LAST_MIN_IN_DAY = 59;
+    private static final int DEFAULT_LAST_SEC_IN_DAY = 59;
+
     @Inject
     public FlightSearchPresenter flightSearchPresenter;
     protected FlightSearchPassDataViewModel flightSearchPassDataViewModel;
@@ -714,28 +718,39 @@ public class FlightSearchFragment extends BaseListFragment<FlightSearchViewModel
     }
 
     public void onChangeDateClicked() {
-        final String dateInput = flightSearchPassDataViewModel.getDate(isReturning());
-        Date date = FlightDateUtil.stringToDate(dateInput);
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTime(date);
-        DatePickerDialog datePickerDialog = new DatePickerDialog(getActivity(), new DatePickerDialog.OnDateSetListener() {
-            @Override
-            public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
-                flightSearchPresenter.onSuccessDateChanged(year, month, dayOfMonth);
-            }
-        }, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DATE));
-        DatePicker datePicker = datePickerDialog.getDatePicker();
-        setMinMaxDatePicker(datePicker);
+        if (!getActivity().isFinishing()) {
+            final String dateInput = flightSearchPassDataViewModel.getDate(isReturning());
+            Date date = FlightDateUtil.stringToDate(dateInput);
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTime(date);
+            DatePickerDialog datePickerDialog = new DatePickerDialog(getActivity(), new DatePickerDialog.OnDateSetListener() {
+                @Override
+                public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
+                    flightSearchPresenter.onSuccessDateChanged(year, month, dayOfMonth);
+                }
+            }, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DATE));
+            DatePicker datePicker = datePickerDialog.getDatePicker();
+            setMinMaxDatePicker(datePicker);
 
-        datePickerDialog.show();
+            datePickerDialog.show();
+        }
     }
 
     private void setMinMaxDatePicker(DatePicker datePicker) {
+        Date maxDate = FlightDateUtil.addTimeToCurrentDate(Calendar.YEAR, 2);
+        maxDate = FlightDateUtil.addTimeToSpesificDate(maxDate, Calendar.DATE, -1);
+        Calendar maxDateCalendar = FlightDateUtil.getCurrentCalendar();
+        maxDateCalendar.setTime(maxDate);
+        maxDateCalendar.set(Calendar.HOUR_OF_DAY, DEFAULT_LAST_HOUR_IN_DAY);
+        maxDateCalendar.set(Calendar.MINUTE, DEFAULT_LAST_MIN_IN_DAY);
+        maxDateCalendar.set(Calendar.SECOND, DEFAULT_LAST_SEC_IN_DAY);
+
         if (isReturning()) {
             String dateDepStr = flightSearchPassDataViewModel.getDate(false);
             Date dateDep = FlightDateUtil.stringToDate(dateDepStr);
+
             datePicker.setMinDate(dateDep.getTime());
-            datePicker.setMaxDate(FlightDateUtil.addTimeToCurrentDate(Calendar.YEAR, 2).getTime());
+            datePicker.setMaxDate(maxDateCalendar.getTime().getTime());
         } else {
             Date dateNow = FlightDateUtil.getCurrentDate();
             datePicker.setMinDate(dateNow.getTime());
@@ -746,7 +761,7 @@ public class FlightSearchFragment extends BaseListFragment<FlightSearchViewModel
                 Date dateReturn = FlightDateUtil.stringToDate(dateReturnStr);
                 datePicker.setMaxDate(dateReturn.getTime());
             } else {
-                datePicker.setMaxDate(FlightDateUtil.addTimeToCurrentDate(Calendar.YEAR, 2).getTime());
+                datePicker.setMaxDate(maxDateCalendar.getTime().getTime());
             }
         }
     }
