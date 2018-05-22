@@ -1701,7 +1701,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public Intent checkoutModuleRouterGetShopInfoIntent(Context context, String shopId) {
-        return ShopInfoActivity.createIntent(context, shopId);
+        return ShopPageActivity.createIntent(context, shopId);
     }
 
     @Override
