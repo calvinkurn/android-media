@@ -2,6 +2,7 @@ package com.tokopedia.topads.keyword.view.adapter.viewholder;
 
 import android.support.annotation.LayoutRes;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.widget.CardView;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.LinearLayout;
@@ -119,9 +120,17 @@ public class TopAdsKeywordViewHolder extends BaseMultipleCheckViewHolder<Keyword
 
     public void setBackground(boolean isChecked) {
         if (isChecked) {
-            itemView.setBackgroundColor(ContextCompat.getColor(itemView.getContext(), R.color.light_green));
+            if (itemView instanceof CardView){
+                ((CardView)itemView).setCardBackgroundColor(ContextCompat.getColor(itemView.getContext(), R.color.light_green));
+            } else {
+                itemView.setBackgroundColor(ContextCompat.getColor(itemView.getContext(), R.color.light_green));
+            }
         } else {
-            itemView.setBackgroundColor(ContextCompat.getColor(itemView.getContext(), R.color.white));
+            if (itemView instanceof CardView) {
+                ((CardView) itemView).setCardBackgroundColor(ContextCompat.getColor(itemView.getContext(), R.color.white));
+            } else {
+                itemView.setBackgroundColor(ContextCompat.getColor(itemView.getContext(), R.color.white));
+            }
         }
     }
 }

@@ -4,21 +4,24 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    app:cardBackgroundColor="@color/cardview_light_background"
-    app:cardCornerRadius="3dp"
-    app:cardElevation="3dp"
-    app:cardPreventCornerOverlap="false">
+    app:cardCornerRadius="@dimen/dp_8"
+    app:cardElevation="@dimen/dp_3"
+    app:cardPreventCornerOverlap="false"
+    android:layout_marginLeft="@dimen/dp_15"
+    android:layout_marginStart="@dimen/dp_15"
+    android:layout_marginRight="@dimen/dp_15"
+    android:layout_marginEnd="@dimen/dp_15"
+    android:layout_marginTop="@dimen/dp_8"
+    android:layout_marginBottom="@dimen/dp_8"
+    app:cardBackgroundColor="@color/cardview_light_background">
 
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
         xmlns:tools="http://schemas.android.com/tools"
-        style="@style/LabelLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="center_vertical"
         android:orientation="horizontal"
-        android:paddingLeft="@dimen/top_ads_item_padding_left"
-        android:paddingRight="@dimen/top_ads_item_padding_left">
+        android:padding="@dimen/margin_sm">
 
         <include
             layout="@layout/partial_top_ads_keyword_main"
@@ -39,7 +42,6 @@
                 android:layout_width="@dimen/dp_24"
                 android:layout_height="@dimen/dp_48"
                 android:layout_gravity="center_horizontal"
-                android:layout_marginTop="@dimen/dp_2"
                 app:srcCompat="@drawable/ic_more_vert_grey"
                 tools:src="@drawable/ic_more_vert_grey" />
         </FrameLayout>
@@ -49,7 +51,6 @@
             android:id="@+id/check_box_product"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dp_2"
             android:theme="@style/checkBoxStyleSeller"
             android:visibility="gone"
             tools:visibility="gone"/>

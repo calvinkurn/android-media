@@ -20,11 +20,15 @@
             android:layout_height="wrap_content"
             app:layout_scrollFlags="scroll|snap|enterAlways" />
 
-        <com.tokopedia.design.label.DateLabelView
+        <com.tokopedia.design.label.LabelView
             android:id="@+id/date_label_view"
-            style="@style/LabelLayout.BorderBottom"
+            style="@style/LabelLayout.TopAdsLabelView.BorderBottom"
+            app:lv_content_color="@color/tkpd_main_green"
+            app:lv_image="@drawable/ic_top_ads_kalender"
+            app:lv_title="@string/label_date_period"
             android:visibility="gone"
-            app:layout_scrollFlags="scroll|snap|enterAlways" />
+            app:layout_scrollFlags="scroll|snap|enterAlways"/>
+
     </android.support.design.widget.AppBarLayout>
 
     <com.tokopedia.core.customwidget.SwipeToRefresh

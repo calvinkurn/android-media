@@ -19,10 +19,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:paddingTop="@dimen/margin_sm"
-        android:paddingBottom="@dimen/margin_sm"
-        android:paddingLeft="@dimen/top_ads_item_padding_left"
-        android:paddingRight="@dimen/top_ads_item_padding_left">
+        android:padding="@dimen/margin_sm">
 
         <include
             layout="@layout/partial_top_ads_ad"
@@ -43,7 +40,6 @@
                 android:layout_width="@dimen/dp_24"
                 android:layout_height="@dimen/dp_48"
                 android:layout_gravity="center_horizontal"
-                android:layout_marginTop="@dimen/dp_2"
                 app:srcCompat="@drawable/ic_more_vert_grey"
                 tools:src="@drawable/ic_more_vert_grey" />
         </FrameLayout>
@@ -53,7 +49,6 @@
             android:id="@+id/check_box_product"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dp_2"
             android:theme="@style/checkBoxStyleSeller"
             android:visibility="gone"
             tools:visibility="gone"/>

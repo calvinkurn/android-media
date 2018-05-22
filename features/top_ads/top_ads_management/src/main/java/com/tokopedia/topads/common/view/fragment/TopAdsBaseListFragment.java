@@ -5,7 +5,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.LayoutRes;
 import android.support.annotation.MenuRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -38,11 +37,11 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.EmptyResultViewHo
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment;
 import com.tokopedia.abstraction.base.view.listener.EndlessLayoutManagerListener;
 import com.tokopedia.design.button.BottomActionView;
-import com.tokopedia.design.label.DateLabelView;
+import com.tokopedia.design.label.LabelView;
 import com.tokopedia.design.text.SearchInputView;
+import com.tokopedia.design.utils.DateLabelUtils;
 import com.tokopedia.seller.common.datepicker.view.activity.DatePickerActivity;
 import com.tokopedia.seller.common.datepicker.view.constant.DatePickerConstant;
-import com.tokopedia.seller.common.widget.DividerItemDecoration;
 import com.tokopedia.topads.R;
 import com.tokopedia.topads.common.view.adapter.TopAdsMultipleCheckListAdapter;
 import com.tokopedia.topads.common.view.adapter.viewholder.BaseMultipleCheckViewHolder;
@@ -56,7 +55,6 @@ import com.tokopedia.topads.dashboard.view.model.Ad;
 import com.tokopedia.topads.dashboard.view.model.TopAdsSortByModel;
 
 import java.util.Calendar;
-import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -95,7 +93,7 @@ public abstract class TopAdsBaseListFragment<V extends Visitable, F extends Adap
 
     protected SearchInputView searchInputView;
     private AppBarLayout appBarLayout;
-    private DateLabelView dateLabelView;
+    private LabelView dateLabelView;
     private BottomActionView buttonActionView;
     private CoordinatorLayout.Behavior appBarBehaviour;
     private RecyclerView recyclerView;
@@ -150,7 +148,6 @@ public abstract class TopAdsBaseListFragment<V extends Visitable, F extends Adap
         recyclerView = view.findViewById(R.id.recycler_view);
         layoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
         recyclerView.setLayoutManager(layoutManager);
-        recyclerView.addItemDecoration(new DividerItemDecoration(getActivity()));
         tempTopPaddingRecycleView = recyclerView.getPaddingTop();
         tempBottomPaddingRecycleView = recyclerView.getPaddingBottom();
         initComponentView(view);
@@ -172,7 +169,7 @@ public abstract class TopAdsBaseListFragment<V extends Visitable, F extends Adap
 
     private void initComponentView(View view) {
         appBarLayout = (AppBarLayout) view.findViewById(R.id.app_bar_layout);
-        dateLabelView = (DateLabelView) view.findViewById(R.id.date_label_view);
+        dateLabelView = (LabelView) view.findViewById(R.id.date_label_view);
         dateLabelView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -330,7 +327,7 @@ public abstract class TopAdsBaseListFragment<V extends Visitable, F extends Adap
     }
 
     public void updateLabelDateView(Date startDate, Date endDate) {
-        dateLabelView.setDate(startDate.getTime(), endDate.getTime());
+        dateLabelView.setContent(DateLabelUtils.getRangeDateFormatted(getActivity(), startDate.getTime(), endDate.getTime()));
     }
 
     @Override
