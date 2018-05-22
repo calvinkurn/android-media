@@ -12,6 +12,7 @@ import com.tokopedia.discovery.imagesearch.data.repository.ImageSearchRepository
 import com.tokopedia.discovery.imagesearch.data.repository.ImageSearchRepositoryImpl;
 import com.tokopedia.discovery.imagesearch.data.source.ImageSearchDataSource;
 import com.tokopedia.discovery.imagesearch.domain.usecase.GetImageSearchUseCase;
+import com.tokopedia.discovery.imagesearch.network.apiservice.ImageSearchService;
 import com.tokopedia.discovery.imagesearch.search.ImageSearchPresenter;
 import com.tokopedia.discovery.newdiscovery.data.mapper.ProductMapper;
 import com.tokopedia.discovery.newdiscovery.di.scope.SearchScope;
@@ -34,14 +35,20 @@ public class ImageSearchModule {
     }
 
     @Provides
+    ImageSearchService imageSearchService() {
+        return new ImageSearchService();
+    }
+
+    @Provides
     GetImageSearchUseCase getImageSearchUseCase(
             @ApplicationContext Context context,
             ThreadExecutor threadExecutor,
             PostExecutionThread postExecutionThread,
             ImageSearchRepository imageSearchRepository,
+            ImageSearchService imageSearchService,
             @MojitoGetWishlistQualifier MojitoApi service) {
         return new GetImageSearchUseCase(context, threadExecutor,
-                postExecutionThread, imageSearchRepository, service);
+                postExecutionThread, imageSearchRepository, imageSearchService, service);
     }
 
     @Provides

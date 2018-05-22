@@ -1,6 +1,7 @@
 package com.tokopedia.discovery.imagesearch.domain.usecase;
 
 import android.content.Context;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.text.TextUtils;
@@ -16,14 +17,20 @@ import com.tokopedia.core.network.apiservices.ace.apis.BrowseApi;
 import com.tokopedia.core.network.apiservices.mojito.apis.MojitoApi;
 import com.tokopedia.core.network.entity.wishlist.WishlistCheckResult;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
+import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.discovery.R;
 import com.tokopedia.discovery.imagesearch.data.repository.ImageSearchRepository;
+import com.tokopedia.discovery.imagesearch.network.apiservice.ImageSearchService;
 import com.tokopedia.discovery.newdiscovery.domain.model.ProductModel;
 import com.tokopedia.discovery.newdiscovery.domain.model.SearchResultModel;
 
+import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -41,6 +48,7 @@ public class GetImageSearchUseCase<T> extends UseCase<SearchResultModel> {
 
     private final MojitoApi service;
     private ImageSearchRepository imageSearchRepository;
+    private ImageSearchService imageSearchService;
     private Context context;
 
     private final int MAX_WIDTH = 600;
@@ -53,11 +61,13 @@ public class GetImageSearchUseCase<T> extends UseCase<SearchResultModel> {
     public GetImageSearchUseCase(Context context, ThreadExecutor threadExecutor,
                                  PostExecutionThread postExecutionThread,
                                  ImageSearchRepository imageSearchRepository,
+                                 ImageSearchService imageSearchService,
                                  MojitoApi service) {
         super(threadExecutor, postExecutionThread);
         this.context = context;
         this.imageSearchRepository = imageSearchRepository;
         this.service = service;
+        this.imageSearchService = imageSearchService;
     }
 
     private static RequestParams initializeSearchRequestParam() {
@@ -66,6 +76,10 @@ public class GetImageSearchUseCase<T> extends UseCase<SearchResultModel> {
         requestParams.putString(BrowseApi.PAGE_SIZE, pageSize);
         requestParams.putString(BrowseApi.PAGE, pageOffset);
         return requestParams;
+    }
+
+    private static String initializeSearchRequestParamForGql() {
+        return "page=" + String.valueOf(pageOffset) + "&page_size=" + pageSize + "&device=" + BrowseApi.DEFAULT_VALUE_OF_PARAMETER_DEVICE;
     }
 
     private static RequestParams initializeFormDataSearchRequestParam(String uniqueId, String imageByteArray) {
@@ -97,6 +111,11 @@ public class GetImageSearchUseCase<T> extends UseCase<SearchResultModel> {
                         String encodePicContent = Base64.encodeToString(byteArray,
                                 Base64.NO_WRAP | Base64.NO_CLOSE);
 
+
+                        return imageSearchService.getApi().getImageSearchResults(getRequestPayload(context, encodePicContent,
+                                initializeSearchRequestParamForGql())).flatMap(wishlistDataEnricher(getUserId()));
+
+
                         return imageSearchRepository.getImageSearchResults(GetImageSearchUseCase.initializeSearchRequestParam().getParameters(),
                                 GetImageSearchUseCase.initializeFormDataSearchRequestParam(generateUniqueId(),
                                         encodePicContent).getParameters()).flatMap(wishlistDataEnricher(getUserId()));
@@ -104,11 +123,55 @@ public class GetImageSearchUseCase<T> extends UseCase<SearchResultModel> {
                 });
     }
 
-    private Func1<SearchResultModel, Observable<SearchResultModel>> wishlistDataEnricher(final String userId) {
-        return new Func1<SearchResultModel, Observable<SearchResultModel>>() {
+    private String getRequestPayload(Context context, String encodedImage, String params) {
+
+        return String.format(
+                loadRawString(context.getResources(), R.raw.logistics_get_courier_query),
+                params.get(KeroppiParam.CAT_ID),
+                params.get(KeroppiParam.DESTINATION),
+                params.get(KeroppiParam.FROM),
+                params.get(KeroppiParam.INSURANCE),
+                params.get(KeroppiParam.NAMES),
+                params.get(KeroppiParam.ORDER_VALUE),
+                params.get(KeroppiParam.ORIGIN),
+                params.get(KeroppiParam.PRODUCT_INSURANCE),
+                params.get(KeroppiParam.TOKEN),
+                params.get(KeroppiParam.UT),
+                params.get(KeroppiParam.WEIGHT),
+                params.get(KeroppiParam.PARAM_OS_TYPE));
+    }
+
+    private String loadRawString(Resources resources, int resId) {
+        InputStream rawResource = resources.openRawResource(resId);
+        String content = streamToString(rawResource);
+        try {
+            rawResource.close();
+        } catch (IOException e) {
+        }
+        return content;
+    }
+
+    private String streamToString(InputStream in) {
+        String temp;
+        BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(in));
+        StringBuilder stringBuilder = new StringBuilder();
+        try {
+            while ((temp = bufferedReader.readLine()) != null) {
+                stringBuilder.append(temp + "\n");
+            }
+        } catch (IOException e) {
+        }
+        return stringBuilder.toString();
+    }
+
+    private Func1<Response<String>, Observable<SearchResultModel>> wishlistDataEnricher(final String userId) {
+        return new Func1<Response<String>, Observable<SearchResultModel>>() {
             @Override
-            public Observable<SearchResultModel> call(final SearchResultModel searchResultModel) {
-                if (TextUtils.isEmpty(userId) || searchResultModel.getProductList().isEmpty()) {
+            public Observable<SearchResultModel> call(final Response<String> response) {
+
+
+                // TODO: 5/21/18 convert string to response model
+                /*if (TextUtils.isEmpty(userId) || searchResultModel.getProductList().isEmpty()) {
                     return Observable.just(searchResultModel);
                 }
 
@@ -126,7 +189,7 @@ public class GetImageSearchUseCase<T> extends UseCase<SearchResultModel> {
                     public SearchResultModel call(Throwable throwable) {
                         return searchResultModel;
                     }
-                });
+                });*/
             }
         };
     }
