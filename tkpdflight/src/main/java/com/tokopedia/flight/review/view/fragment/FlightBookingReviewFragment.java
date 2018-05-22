@@ -329,7 +329,7 @@ public class FlightBookingReviewFragment extends BaseDaggerFragment implements F
         int totalFinal = 0;
         if (attributesVoucher != null && Math.round(attributesVoucher.getDiscountAmountPlain()) > 0) {
             discountAppliedLayout.setVisibility(View.VISIBLE);
-            reviewDiscountPrice.setText(CurrencyFormatUtil.convertPriceValueToIdrFormatNoSpace((int) Math.round(attributesVoucher.getDiscountAmountPlain())));
+            reviewDiscountPrice.setText(getFormattedDiscountPrice(attributesVoucher.getDiscountAmountPlain()));
             reviewTotalPrice.setText(flightBookingReviewModel.getTotalPrice());
             totalFinal = (int) (currentBookingReviewModel.getTotalPriceNumeric() - attributesVoucher.getDiscountAmountPlain());
         } else {
@@ -337,6 +337,10 @@ public class FlightBookingReviewFragment extends BaseDaggerFragment implements F
             totalFinal = currentBookingReviewModel.getTotalPriceNumeric();
         }
         reviewFinalTotalPrice.setText(CurrencyFormatUtil.convertPriceValueToIdrFormatNoSpace(totalFinal));
+    }
+
+    private String getFormattedDiscountPrice(double discountAmountPlain) {
+        return String.format(getString(R.string.flight_review_minus_discount_prefix), CurrencyFormatUtil.convertPriceValueToIdrFormatNoSpace((int) Math.round(discountAmountPlain)));
     }
 
     @Override
