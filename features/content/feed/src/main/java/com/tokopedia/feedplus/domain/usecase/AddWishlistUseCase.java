@@ -1,12 +1,12 @@
 package com.tokopedia.feedplus.domain.usecase;
 
-import com.tokopedia.core.base.domain.RequestParams;
-import com.tokopedia.core.base.domain.UseCase;
-import com.tokopedia.core.base.domain.executor.PostExecutionThread;
-import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.feedplus.data.repository.WishlistRepository;
 import com.tokopedia.feedplus.domain.model.wishlist.AddWishlistDomain;
+import com.tokopedia.usecase.RequestParams;
+import com.tokopedia.usecase.UseCase;
+
+import javax.inject.Inject;
 
 import rx.Observable;
 
@@ -20,10 +20,8 @@ public class AddWishlistUseCase extends UseCase<AddWishlistDomain> {
     public static final String PARAM_PRODUCT_ID = "PARAM_PRODUCT_ID";
     private WishlistRepository wishlistRepository;
 
-    public AddWishlistUseCase(ThreadExecutor threadExecutor,
-                              PostExecutionThread postExecutionThread,
-                              WishlistRepository wishlistRepository) {
-        super(threadExecutor, postExecutionThread);
+    @Inject
+    public AddWishlistUseCase(WishlistRepository wishlistRepository) {
         this.wishlistRepository = wishlistRepository;
     }
 

@@ -1,10 +1,10 @@
 package com.tokopedia.feedplus.domain.usecase;
 
-import com.tokopedia.core.base.domain.RequestParams;
-import com.tokopedia.core.base.domain.UseCase;
-import com.tokopedia.core.base.domain.executor.PostExecutionThread;
-import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.feedplus.data.repository.FavoriteShopRepository;
+import com.tokopedia.usecase.RequestParams;
+import com.tokopedia.usecase.UseCase;
+
+import javax.inject.Inject;
 
 import rx.Observable;
 
@@ -23,12 +23,10 @@ public class FavoriteShopUseCase extends UseCase<Boolean> {
     public static final String PARAM_SHOP_NAME = "shop_name";
     public static final String PARAM_ACTION = "action";
 
-    private ThreadExecutor threadExecutor;
-    private PostExecutionThread postExecutionThread;
     private FavoriteShopRepository repository;
 
-    public FavoriteShopUseCase(ThreadExecutor threadExecutor, PostExecutionThread postExecutionThread, FavoriteShopRepository repository) {
-        super(threadExecutor, postExecutionThread);
+    @Inject
+    public FavoriteShopUseCase(FavoriteShopRepository repository) {
         this.repository = repository;
     }
 

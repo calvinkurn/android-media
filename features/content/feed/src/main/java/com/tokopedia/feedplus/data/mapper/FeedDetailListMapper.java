@@ -1,6 +1,7 @@
 package com.tokopedia.feedplus.data.mapper;
 
 import android.support.annotation.Nullable;
+import android.text.TextUtils;
 
 import com.tkpdfeed.feeds.FeedDetail;
 import com.tokopedia.feedplus.domain.model.feeddetail.DataFeedDetailDomain;
@@ -13,7 +14,8 @@ import com.tokopedia.feedplus.domain.model.feeddetail.FeedDetailWholesaleDomain;
 
 import java.util.ArrayList;
 import java.util.List;
-import android.text.TextUtils;
+
+import javax.inject.Inject;
 
 import rx.functions.Func1;
 
@@ -22,6 +24,10 @@ import rx.functions.Func1;
  */
 
 public class FeedDetailListMapper implements Func1<FeedDetail.Data, List<DataFeedDetailDomain>> {
+
+    @Inject
+    public FeedDetailListMapper() {
+    }
 
     @Override
     public List<DataFeedDetailDomain> call(FeedDetail.Data data) {

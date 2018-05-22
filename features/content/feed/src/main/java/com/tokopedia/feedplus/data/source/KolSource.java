@@ -9,6 +9,8 @@ import com.tokopedia.feedplus.domain.model.FollowKolDomain;
 import com.tokopedia.feedplus.domain.usecase.FollowKolPostUseCase;
 import com.tokopedia.usecase.RequestParams;
 
+import javax.inject.Inject;
+
 import rx.Observable;
 
 /**
@@ -20,6 +22,7 @@ public class KolSource {
     private final FollowKolMapper followKolMapper;
     private ApolloClient apolloClient;
 
+    @Inject
     public KolSource(ApolloClient apolloClient,
                      FollowKolMapper followKolMapper) {
         this.apolloClient = apolloClient;

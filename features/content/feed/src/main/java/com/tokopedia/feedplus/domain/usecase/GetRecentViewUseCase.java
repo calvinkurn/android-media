@@ -7,6 +7,8 @@ import com.tokopedia.usecase.UseCase;
 
 import java.util.List;
 
+import javax.inject.Inject;
+
 import rx.Observable;
 
 /**
@@ -18,6 +20,7 @@ public class GetRecentViewUseCase extends UseCase<List<RecentViewProductDomain>>
 
     private final FeedRepository feedRepository;
 
+    @Inject
     public GetRecentViewUseCase(FeedRepository feedRepository) {
         this.feedRepository = feedRepository;
     }

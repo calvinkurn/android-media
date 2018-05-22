@@ -7,6 +7,8 @@ import com.tokopedia.usecase.UseCase;
 
 import java.util.List;
 
+import javax.inject.Inject;
+
 import rx.Observable;
 
 /**
@@ -21,6 +23,7 @@ public class GetFeedsDetailUseCase extends UseCase<List<DataFeedDetailDomain>> {
 
     private FeedRepository feedRepository;
 
+    @Inject
     public GetFeedsDetailUseCase(FeedRepository feedRepository) {
         this.feedRepository = feedRepository;
     }

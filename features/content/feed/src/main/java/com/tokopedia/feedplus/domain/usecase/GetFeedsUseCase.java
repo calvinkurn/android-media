@@ -1,10 +1,12 @@
 package com.tokopedia.feedplus.domain.usecase;
 
-import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.feedplus.data.repository.FeedRepository;
 import com.tokopedia.feedplus.domain.model.feed.FeedResult;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.usecase.UseCase;
+
+import javax.inject.Inject;
 
 import rx.Observable;
 
@@ -18,6 +20,7 @@ public class GetFeedsUseCase extends UseCase<FeedResult> {
     public static final String PARAM_PAGE = "PARAM_PAGE";
     protected FeedRepository feedRepository;
 
+    @Inject
     public GetFeedsUseCase(FeedRepository feedRepository) {
         this.feedRepository = feedRepository;
     }
@@ -27,19 +30,19 @@ public class GetFeedsUseCase extends UseCase<FeedResult> {
         return feedRepository.getFeedsFromCloud(requestParams);
     }
 
-    public RequestParams getFeedPlusParam(int page, SessionHandler sessionHandler, String
+    public RequestParams getFeedPlusParam(int page, UserSession userSession, String
             currentCursor) {
         RequestParams params = RequestParams.create();
-        params.putInt(GetFeedsUseCase.PARAM_USER_ID, Integer.parseInt(sessionHandler.getLoginID()));
+        params.putInt(GetFeedsUseCase.PARAM_USER_ID, Integer.parseInt(userSession.getUserId()));
         params.putString(GetFeedsUseCase.PARAM_CURSOR, currentCursor);
         params.putInt(GetFeedsUseCase.PARAM_PAGE, page);
         return params;
     }
 
-    public RequestParams getRefreshParam(SessionHandler sessionHandler) {
+    public RequestParams getRefreshParam(UserSession userSession) {
         RequestParams params = RequestParams.create();
-        params.putInt(GetFeedsUseCase.PARAM_USER_ID, Integer.parseInt(sessionHandler.getLoginID()));
-        params.putInt(GetRecentViewUseCase.PARAM_USER_ID, Integer.parseInt(sessionHandler.getLoginID()));
+        params.putInt(GetFeedsUseCase.PARAM_USER_ID, Integer.parseInt(userSession.getUserId()));
+        params.putInt(GetRecentViewUseCase.PARAM_USER_ID, Integer.parseInt(userSession.getUserId()));
         params.putString(GetFeedsUseCase.PARAM_CURSOR, "");
         params.putInt(GetFeedsUseCase.PARAM_PAGE, 1);
         return params;

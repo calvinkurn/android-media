@@ -6,6 +6,8 @@ import com.tokopedia.feedplus.domain.model.wishlist.RemoveWishlistDomain;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.usecase.UseCase;
 
+import javax.inject.Inject;
+
 import rx.Observable;
 
 /**
@@ -19,6 +21,7 @@ public class RemoveWishlistUseCase extends UseCase<RemoveWishlistDomain> {
 
     private WishlistRepository wishlistRepository;
 
+    @Inject
     public RemoveWishlistUseCase(WishlistRepository wishlistRepository) {
         this.wishlistRepository = wishlistRepository;
     }

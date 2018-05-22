@@ -6,8 +6,6 @@ import com.apollographql.apollo.ApolloClient;
 import com.google.gson.Gson;
 import com.tokopedia.core.base.common.service.MojitoService;
 import com.tokopedia.core.base.di.qualifier.ApplicationContext;
-import com.tokopedia.core.base.domain.executor.PostExecutionThread;
-import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.network.apiservices.mojito.MojitoNoRetryAuthService;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
@@ -17,15 +15,11 @@ import com.tokopedia.core.shopinfo.facades.authservices.ActionService;
 import com.tokopedia.feedplus.data.factory.FavoriteShopFactory;
 import com.tokopedia.feedplus.data.factory.FeedFactory;
 import com.tokopedia.feedplus.data.factory.WishlistFactory;
-import com.tokopedia.feedplus.data.mapper.AddWishlistMapper;
 import com.tokopedia.feedplus.data.mapper.CheckNewFeedMapper;
-import com.tokopedia.feedplus.data.mapper.FavoriteShopMapper;
 import com.tokopedia.feedplus.data.mapper.FeedDetailListMapper;
 import com.tokopedia.feedplus.data.mapper.FeedListMapper;
 import com.tokopedia.feedplus.data.mapper.FeedResultMapper;
-import com.tokopedia.feedplus.data.mapper.FollowKolMapper;
 import com.tokopedia.feedplus.data.mapper.RecentProductMapper;
-import com.tokopedia.feedplus.data.mapper.RemoveWishlistMapper;
 import com.tokopedia.feedplus.data.repository.FavoriteShopRepository;
 import com.tokopedia.feedplus.data.repository.FavoriteShopRepositoryImpl;
 import com.tokopedia.feedplus.data.repository.FeedRepository;
@@ -34,17 +28,6 @@ import com.tokopedia.feedplus.data.repository.WishlistRepository;
 import com.tokopedia.feedplus.data.repository.WishlistRepositoryImpl;
 import com.tokopedia.feedplus.data.source.KolSource;
 import com.tokopedia.feedplus.domain.model.feed.FeedResult;
-import com.tokopedia.feedplus.domain.usecase.AddWishlistUseCase;
-import com.tokopedia.feedplus.domain.usecase.CheckNewFeedUseCase;
-import com.tokopedia.feedplus.domain.usecase.FavoriteShopUseCase;
-import com.tokopedia.feedplus.domain.usecase.FollowKolPostUseCase;
-import com.tokopedia.feedplus.domain.usecase.GetFeedsDetailUseCase;
-import com.tokopedia.feedplus.domain.usecase.GetFeedsUseCase;
-import com.tokopedia.feedplus.domain.usecase.GetFirstPageFeedsCloudUseCase;
-import com.tokopedia.feedplus.domain.usecase.GetFirstPageFeedsUseCase;
-import com.tokopedia.feedplus.domain.usecase.GetRecentViewUseCase;
-import com.tokopedia.feedplus.domain.usecase.RefreshFeedUseCase;
-import com.tokopedia.feedplus.domain.usecase.RemoveWishlistUseCase;
 import com.tokopedia.feedplus.view.listener.FeedPlus;
 
 import javax.inject.Named;
@@ -131,12 +114,6 @@ public class FeedPlusModule {
     }
 
     @FeedPlusScope
-    @Provides
-    FeedListMapper provideFeedListMapper() {
-        return new FeedListMapper();
-    }
-
-    @FeedPlusScope
     @Named(NAME_LOCAL)
     @Provides
     FeedResultMapper provideLocalFeedResultMapper() {
@@ -150,31 +127,10 @@ public class FeedPlusModule {
         return new FeedResultMapper(FeedResult.SOURCE_CLOUD);
     }
 
-
-    @FeedPlusScope
-    @Provides
-    FeedDetailListMapper provideFeedDetailListMapper() {
-        return new FeedDetailListMapper();
-    }
-
-    @FeedPlusScope
-    @Provides
-    FavoriteShopMapper provideFavoriteShopMapper() {
-        return new FavoriteShopMapper();
-    }
-
     @FeedPlusScope
     @Provides
     ActionService provideActionService() {
         return new ActionService();
-    }
-
-    @FeedPlusScope
-    @Provides
-    FavoriteShopFactory provideFavoriteShopFactory(@ApplicationContext Context context,
-                                                   FavoriteShopMapper mapper,
-                                                   ActionService service) {
-        return new FavoriteShopFactory(context, mapper, service);
     }
 
     @FeedPlusScope
@@ -185,30 +141,8 @@ public class FeedPlusModule {
 
     @FeedPlusScope
     @Provides
-    AddWishlistMapper provideAddWishlistMapper() {
-        return new AddWishlistMapper();
-    }
-
-    @FeedPlusScope
-    @Provides
-    RemoveWishlistMapper provideRemoveWishlistMapper() {
-        return new RemoveWishlistMapper();
-    }
-
-    @FeedPlusScope
-    @Provides
     MojitoNoRetryAuthService provideMojitoNoRetryAuthService() {
         return new MojitoNoRetryAuthService();
-    }
-
-    @FeedPlusScope
-    @Provides
-    WishlistFactory provideWishlistFactory(AddWishlistMapper addWishlistMapper,
-                                           RemoveWishlistMapper removeWishlistMapper,
-                                           MojitoNoRetryAuthService mojitoNoRetryAuthService) {
-        return new WishlistFactory(addWishlistMapper,
-                removeWishlistMapper,
-                mojitoNoRetryAuthService);
     }
 
     @FeedPlusScope
@@ -217,133 +151,4 @@ public class FeedPlusModule {
         return new WishlistRepositoryImpl(wishlistFactory);
     }
 
-
-    @FeedPlusScope
-    @Provides
-    GetFeedsUseCase provideGetFeedsUseCase(
-            ThreadExecutor threadExecutor,
-            PostExecutionThread postExecutionThread,
-            FeedRepository feedRepository) {
-        return new GetFeedsUseCase(threadExecutor, postExecutionThread, feedRepository);
-    }
-
-    @FeedPlusScope
-    @Provides
-    GetFirstPageFeedsUseCase provideGetFirstPageFeedsUseCase(
-            ThreadExecutor threadExecutor,
-            PostExecutionThread postExecutionThread,
-            FeedRepository feedRepository,
-            GetFirstPageFeedsCloudUseCase getFirstPageFeedsCloudUseCase) {
-        return new GetFirstPageFeedsUseCase(threadExecutor, postExecutionThread,
-                feedRepository, getFirstPageFeedsCloudUseCase);
-    }
-
-    @FeedPlusScope
-    @Provides
-    GetRecentViewUseCase provideGetRecentProductUseCase(ThreadExecutor threadExecutor,
-                                                        PostExecutionThread postExecutionThread,
-                                                        FeedRepository feedRepository) {
-        return new GetRecentViewUseCase(threadExecutor,
-                postExecutionThread,
-                feedRepository);
-    }
-
-    @FeedPlusScope
-    @Provides
-    GetFirstPageFeedsCloudUseCase provideGetFirstPageFeedsCloudUseCase(ThreadExecutor threadExecutor,
-                                                                       PostExecutionThread postExecutionThread,
-                                                                       FeedRepository feedRepository,
-                                                                       GetRecentViewUseCase getRecentProductUsecase) {
-        return new GetFirstPageFeedsCloudUseCase(
-                threadExecutor, postExecutionThread,
-                feedRepository,
-                getRecentProductUsecase);
-    }
-
-
-    @FeedPlusScope
-    @Provides
-    GetFeedsDetailUseCase provideGetFeedsDetailUseCase(ThreadExecutor threadExecutor,
-                                                       PostExecutionThread postExecutionThread,
-                                                       FeedRepository feedRepository) {
-        return new GetFeedsDetailUseCase(threadExecutor, postExecutionThread, feedRepository);
-    }
-
-    @FeedPlusScope
-    @Provides
-    FavoriteShopUseCase provideDoFavoriteShopUseCase(ThreadExecutor threadExecutor,
-                                                     PostExecutionThread postExecutionThread,
-                                                     FavoriteShopRepository repository) {
-        return new FavoriteShopUseCase(threadExecutor, postExecutionThread, repository);
-    }
-
-
-    @FeedPlusScope
-    @Provides
-    AddWishlistUseCase provideAddWishlistUseCase(ThreadExecutor threadExecutor,
-                                                 PostExecutionThread postExecutionThread,
-                                                 WishlistRepository wishlistRepository) {
-        return new AddWishlistUseCase(threadExecutor,
-                postExecutionThread,
-                wishlistRepository);
-    }
-
-    @FeedPlusScope
-    @Provides
-    RemoveWishlistUseCase provideRemoveWishlistUseCase(ThreadExecutor threadExecutor,
-                                                       PostExecutionThread postExecutionThread,
-                                                       WishlistRepository wishlistRepository) {
-        return new RemoveWishlistUseCase(threadExecutor,
-                postExecutionThread,
-                wishlistRepository);
-    }
-
-    @FeedPlusScope
-    @Provides
-    RefreshFeedUseCase provideRefreshFeedUseCase(ThreadExecutor threadExecutor,
-                                                 PostExecutionThread postExecutionThread,
-                                                 FeedRepository feedRepository) {
-        return new RefreshFeedUseCase(threadExecutor,
-                postExecutionThread,
-                feedRepository);
-    }
-
-    @FeedPlusScope
-    @Provides
-    CheckNewFeedMapper provideCheckNewFeedMapper() {
-        return new CheckNewFeedMapper();
-    }
-
-    @FeedPlusScope
-    @Provides
-    CheckNewFeedUseCase provideCheckNewFeedUseCase(ThreadExecutor threadExecutor,
-                                                   PostExecutionThread postExecutionThread,
-                                                   FeedRepository feedRepository) {
-        return new CheckNewFeedUseCase(threadExecutor,
-                postExecutionThread,
-                feedRepository);
-    }
-
-    @FeedPlusScope
-    @Provides
-    KolSource provideKolSource(ApolloClient apolloClient, FollowKolMapper followKolMapper) {
-        return new KolSource(apolloClient, followKolMapper);
-    }
-
-
-    @FeedPlusScope
-    @Provides
-    FollowKolMapper provideFollowKolMapper() {
-        return new FollowKolMapper();
-    }
-
-    @FeedPlusScope
-    @Provides
-    FollowKolPostUseCase provideFollowKolPostUseCase(ThreadExecutor threadExecutor,
-                                                     PostExecutionThread postExecutionThread,
-                                                     FeedRepository feedRepository) {
-        return new FollowKolPostUseCase(threadExecutor,
-                postExecutionThread,
-                feedRepository);
-    }
 }

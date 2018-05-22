@@ -5,6 +5,8 @@ import com.tokopedia.feedplus.domain.model.FollowKolDomain;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.usecase.UseCase;
 
+import javax.inject.Inject;
+
 import rx.Observable;
 
 /**
@@ -22,6 +24,7 @@ public class FollowKolPostUseCase extends UseCase<FollowKolDomain> {
 
     private FeedRepository feedRepository;
 
+    @Inject
     public FollowKolPostUseCase(FeedRepository feedRepository) {
         this.feedRepository = feedRepository;
     }

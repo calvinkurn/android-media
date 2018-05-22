@@ -6,6 +6,8 @@ import com.tokopedia.feedplus.domain.model.CheckFeedDomain;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.usecase.UseCase;
 
+import javax.inject.Inject;
+
 import rx.Observable;
 
 /**
@@ -18,6 +20,7 @@ public class CheckNewFeedUseCase extends UseCase<CheckFeedDomain> {
     public static final String PARAM_CURSOR = "PARAM_CURSOR";
     private FeedRepository feedRepository;
 
+    @Inject
     public CheckNewFeedUseCase(FeedRepository feedRepository) {
         this.feedRepository = feedRepository;
     }

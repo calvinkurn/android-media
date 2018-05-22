@@ -32,6 +32,8 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.inject.Inject;
+
 import rx.functions.Func1;
 
 /**
@@ -39,6 +41,11 @@ import rx.functions.Func1;
  */
 
 public class FeedListMapper implements Func1<FeedQuery.Data, FeedDomain> {
+
+    @Inject
+    public FeedListMapper() {
+    }
+
     @Override
     public FeedDomain call(FeedQuery.Data data) {
         return convertToDataFeedDomain(data);

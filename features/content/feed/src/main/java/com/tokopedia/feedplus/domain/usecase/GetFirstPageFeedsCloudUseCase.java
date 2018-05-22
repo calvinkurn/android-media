@@ -7,6 +7,8 @@ import com.tokopedia.usecase.RequestParams;
 
 import java.util.List;
 
+import javax.inject.Inject;
+
 import rx.Observable;
 import rx.functions.Func2;
 
@@ -18,6 +20,7 @@ public class GetFirstPageFeedsCloudUseCase extends GetFeedsUseCase {
 
     private GetRecentViewUseCase getRecentProductUseCase;
 
+    @Inject
     public GetFirstPageFeedsCloudUseCase(FeedRepository feedRepository,
                                          GetRecentViewUseCase getRecentProductUseCase) {
         super(feedRepository);
