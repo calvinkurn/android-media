@@ -114,7 +114,7 @@ public class ShipmentDataRequestConverter {
 
     private ProductDataCheckoutRequest convertToProductDataCheckout(CartItemModel cartItem) {
         return new ProductDataCheckoutRequest.Builder()
-                .productId(cartItem.getId())
+                .productId(cartItem.getProductId())
                 .build();
     }
 
@@ -142,7 +142,7 @@ public class ShipmentDataRequestConverter {
 
     private CheckPromoCodeCartShipmentRequest.ProductData convertToProductData(CartItemModel cartItem) {
         return new CheckPromoCodeCartShipmentRequest.ProductData.Builder()
-                .productId(cartItem.getId())
+                .productId(cartItem.getProductId())
                 .productNotes(cartItem.getNoteToSeller())
                 .productQuantity(cartItem.getQuantity())
                 .build();

@@ -393,7 +393,8 @@ public class PromoCouponFragment extends BasePresenterFragment
             dPresenter.parseAndSubmitEventVoucher(jsonbody, data);
         } else if (getArguments().getString(PLATFORM_KEY).equalsIgnoreCase(
                 IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.FLIGHT_STRING)) {
-            dPresenter.submitFlightVoucher(data, getArguments().getString(EXTRA_CART_ID));
+            dPresenter.submitFlightVoucher(data, getArguments().getString(
+                    EXTRA_CART_ID));
         } else {
             dPresenter.submitVoucher(data);
         }
@@ -424,11 +425,9 @@ public class PromoCouponFragment extends BasePresenterFragment
     @Override
     public void onRefresh(View view) {
         if (refreshHandler.isRefreshing())
-            if (getArguments().getString(PLATFORM_KEY)
-                    .equals(IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.EVENT_STRING)) {
-                dPresenter.processGetEventCouponList(getArguments().getInt(
-                        DIGITAL_CATEGORY_ID), getArguments().getInt(DIGITAL_PRODUCT_ID)
-                );
+            if (getArguments().getString(PLATFORM_KEY).equals(
+                    IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.EVENT_STRING)) {
+                dPresenter.processGetEventCouponList(getArguments().getInt(DIGITAL_CATEGORY_ID), getArguments().getInt(DIGITAL_PRODUCT_ID));
             } else {
                 dPresenter.processGetCouponList(getArguments().getString(PLATFORM_KEY));
             }
@@ -454,6 +453,8 @@ public class PromoCouponFragment extends BasePresenterFragment
                 String CouponTitle,
                 long discountAmount,
                 long cashbackAmount);
+
+        void onCouponItemClicked();
 
     }
 

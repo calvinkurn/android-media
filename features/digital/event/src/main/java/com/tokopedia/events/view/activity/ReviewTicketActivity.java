@@ -36,7 +36,6 @@ import com.tokopedia.events.view.utils.EventsGAConst;
 import com.tokopedia.events.view.utils.ImageTextViewHolder;
 import com.tokopedia.events.view.viewmodel.PackageViewModel;
 import com.tokopedia.events.view.viewmodel.SelectedSeatViewModel;
-import com.tokopedia.loyalty.view.activity.LoyaltyActivity;
 
 import java.util.List;
 
@@ -479,12 +478,20 @@ public class ReviewTicketActivity extends TActivity implements HasComponent<Even
             hideProgressBar();
             switch (resultCode) {
                 case IRouterConstant.LoyaltyModule.ResultLoyaltyActivity.COUPON_RESULT_CODE:
-                    mPresenter.updatePromoCode(data.getExtras().getString(IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.COUPON_CODE));
-                    showPromoSuccessMessage(data.getExtras().getString(IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.COUPON_MESSAGE), getResources().getColor(R.color.green_nob));
+                    mPresenter.updatePromoCode(data.getExtras().getString(
+                            IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.COUPON_CODE
+                    ));
+                    showPromoSuccessMessage(data.getExtras().getString(
+                            IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.COUPON_MESSAGE),
+                            getResources().getColor(R.color.green_nob));
                     break;
                 case IRouterConstant.LoyaltyModule.ResultLoyaltyActivity.VOUCHER_RESULT_CODE:
-                    mPresenter.updatePromoCode(data.getExtras().getString(IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.VOUCHER_CODE));
-                    showPromoSuccessMessage(data.getExtras().getString(IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.VOUCHER_MESSAGE), getResources().getColor(R.color.green_nob));
+                    mPresenter.updatePromoCode(data.getExtras().getString(
+                            IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.VOUCHER_CODE
+                    ));
+                    showPromoSuccessMessage(data.getExtras().getString(
+                            IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.VOUCHER_MESSAGE
+                    ), getResources().getColor(R.color.green_nob));
                     break;
                 default:
                     break;

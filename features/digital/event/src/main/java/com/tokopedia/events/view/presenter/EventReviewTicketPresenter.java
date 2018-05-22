@@ -191,9 +191,12 @@ public class EventReviewTicketPresenter
         JsonObject requestBody = convertPackageToCartItem(checkoutData);
         Intent loyaltyIntent = LoyaltyActivity.newInstanceCouponActive(getView().getActivity(), Utils.Constants.EVENTS, Utils.Constants.EVENTS);
         loyaltyIntent.putExtra(Utils.Constants.CHECKOUTDATA, requestBody.toString());
-        loyaltyIntent.putExtra(IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.EXTRA_PRODUCTID, checkoutData.getDigitalProductID());
-        loyaltyIntent.putExtra(IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.EXTRA_CATEGORYID, checkoutData.getDigitalCategoryID());
-        getView().navigateToActivityRequest(loyaltyIntent, IRouterConstant.LoyaltyModule.LOYALTY_ACTIVITY_REQUEST_CODE);
+        loyaltyIntent.putExtra(IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.EXTRA_PRODUCTID,
+                checkoutData.getDigitalProductID());
+        loyaltyIntent.putExtra(IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.EXTRA_CATEGORYID,
+                checkoutData.getDigitalCategoryID());
+        getView().navigateToActivityRequest(loyaltyIntent,
+                IRouterConstant.LoyaltyModule.LOYALTY_ACTIVITY_REQUEST_CODE);
     }
 
     @Override

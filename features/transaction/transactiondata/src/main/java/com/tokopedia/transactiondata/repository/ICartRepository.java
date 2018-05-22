@@ -31,7 +31,7 @@ public interface ICartRepository {
 
     Observable<UpdateCartDataResponse> updateCartData(Map<String, String> param);
 
-    Observable<ShippingAddressDataResponse> shippingAddress(Map<String, String> param);
+    Observable<ShippingAddressDataResponse> setShippingAddress(Map<String, String> param);
 
     Observable<ShipmentAddressFormDataResponse> getShipmentAddressForm(Map<String, String> param);
 
@@ -47,4 +47,5 @@ public interface ICartRepository {
 
     Observable<NotifCounterCartDataResponse> getNotificationCounter();
 
+    Observable<String> cancelAutoApplyCoupon(String os, Map<String, String> params);
 }

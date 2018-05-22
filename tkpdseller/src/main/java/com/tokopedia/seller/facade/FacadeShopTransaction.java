@@ -267,6 +267,9 @@ public class FacadeShopTransaction {
             model.RefNum = orderList.getOrderLast().getLastShippingRefNum();
             model.ShippingID = orderList.getOrderShipment().getShipmentId();
             model.isPickUp = orderList.getIsPickUp();
+            if (orderList.getOrderDriver() != null) {
+                orderList.getOrderDriver().getTrackingUrl();
+            }
             modelList.add(model);
         }
         return modelList;

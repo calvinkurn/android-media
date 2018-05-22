@@ -157,6 +157,7 @@ public class ShipmentMapper implements IShipmentMapper {
                                 productResult.setErrorMessage(mapperUtil.convertToString(product.getErrors()));
 
                                 productResult.setProductId(product.getProductId());
+                                productResult.setCartId(product.getCartId());
                                 productResult.setProductName(product.getProductName());
                                 productResult.setProductPriceFmt(product.getProductPriceFmt());
                                 productResult.setProductPrice(product.getProductPrice());

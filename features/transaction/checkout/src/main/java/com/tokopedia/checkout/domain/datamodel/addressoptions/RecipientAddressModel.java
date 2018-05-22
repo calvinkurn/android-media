@@ -26,6 +26,8 @@ public class RecipientAddressModel implements Parcelable, ShipmentData {
     private String destinationDistrictName;
     private Double latitude;
     private Double longitude;
+    private String cityId;
+    private String provinceId;
 
     // For PickupPoint Alfamart
     private String tokenPickup;
@@ -50,6 +52,8 @@ public class RecipientAddressModel implements Parcelable, ShipmentData {
         recipientPhoneNumber = in.readString();
         destinationDistrictId = in.readString();
         destinationDistrictName = in.readString();
+        cityId = in.readString();
+        provinceId = in.readString();
         if (in.readByte() == 0) {
             latitude = null;
         } else {
@@ -80,6 +84,8 @@ public class RecipientAddressModel implements Parcelable, ShipmentData {
         dest.writeString(recipientPhoneNumber);
         dest.writeString(destinationDistrictId);
         dest.writeString(destinationDistrictName);
+        dest.writeString(cityId);
+        dest.writeString(provinceId);
         if (latitude == null) {
             dest.writeByte((byte) 0);
         } else {
@@ -259,6 +265,22 @@ public class RecipientAddressModel implements Parcelable, ShipmentData {
         this.longitude = longitude;
     }
 
+    public String getCityId() {
+        return cityId;
+    }
+
+    public void setCityId(String cityId) {
+        this.cityId = cityId;
+    }
+
+    public String getProvinceId() {
+        return provinceId;
+    }
+
+    public void setProvinceId(String provinceId) {
+        this.provinceId = provinceId;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -286,6 +308,10 @@ public class RecipientAddressModel implements Parcelable, ShipmentData {
             return false;
         if (getDestinationDistrictId() != null ? !getDestinationDistrictId().equals(that.getDestinationDistrictId()) : that.getDestinationDistrictId() != null)
             return false;
+        if (getCityId() != null ? !getCityId().equals(that.getCityId()) : that.getCityId() != null)
+            return false;
+        if (getProvinceId() != null ? !getProvinceId().equals(that.getProvinceId()) : that.getProvinceId() != null)
+            return false;
         return getDestinationDistrictName() != null ? getDestinationDistrictName().equals(that.getDestinationDistrictName()) : that.getDestinationDistrictName() == null;
     }
 
@@ -303,6 +329,8 @@ public class RecipientAddressModel implements Parcelable, ShipmentData {
         result = 31 * result + (getRecipientPhoneNumber() != null ? getRecipientPhoneNumber().hashCode() : 0);
         result = 31 * result + (getDestinationDistrictId() != null ? getDestinationDistrictId().hashCode() : 0);
         result = 31 * result + (getDestinationDistrictName() != null ? getDestinationDistrictName().hashCode() : 0);
+        result = 31 * result + (getCityId() != null ? getCityId().hashCode() : 0);
+        result = 31 * result + (getProvinceId() != null ? getProvinceId().hashCode() : 0);
         return result;
     }
 

@@ -7,14 +7,14 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
 import com.tokopedia.abstraction.common.utils.TKPDMapParam;
-import com.tokopedia.transactiondata.entity.request.MultipleAddressRequest;
+import com.tokopedia.checkout.domain.usecase.ChangeShippingAddressUseCase;
+import com.tokopedia.transactiondata.entity.request.DataChangeAddressRequest;
 import com.tokopedia.checkout.domain.datamodel.MultipleAddressAdapterData;
 import com.tokopedia.checkout.domain.datamodel.MultipleAddressItemData;
 import com.tokopedia.checkout.domain.datamodel.addressoptions.RecipientAddressModel;
 import com.tokopedia.checkout.domain.datamodel.cartlist.CartItemData;
 import com.tokopedia.checkout.domain.datamodel.cartlist.CartListData;
 import com.tokopedia.checkout.domain.datamodel.cartmultipleshipment.SetShippingAddressData;
-import com.tokopedia.checkout.domain.usecase.SubmitMultipleAddressUseCase;
 import com.tokopedia.usecase.RequestParams;
 
 import java.util.ArrayList;
@@ -28,12 +28,12 @@ import rx.Subscriber;
 
 public class MultipleAddressPresenter implements IMultipleAddressPresenter {
 
-    private SubmitMultipleAddressUseCase submitMultipleAddressUseCase;
+    private ChangeShippingAddressUseCase changeShippingAddressUseCase;
 
     private IMultipleAddressView view;
 
-    public MultipleAddressPresenter(IMultipleAddressView view, SubmitMultipleAddressUseCase submitMultipleAddressUseCase) {
-        this.submitMultipleAddressUseCase = submitMultipleAddressUseCase;
+    public MultipleAddressPresenter(IMultipleAddressView view, ChangeShippingAddressUseCase changeShippingAddressUseCase) {
+        this.changeShippingAddressUseCase = changeShippingAddressUseCase;
         this.view = view;
     }
 
@@ -42,7 +42,7 @@ public class MultipleAddressPresenter implements IMultipleAddressPresenter {
         JsonArray dataArray = new JsonArray();
         for (int i = 0; i < dataList.size(); i++) {
             for (int j = 0; j < dataList.get(i).getItemListData().size(); j++) {
-                MultipleAddressRequest request = new MultipleAddressRequest();
+                DataChangeAddressRequest request = new DataChangeAddressRequest();
                 MultipleAddressItemData itemData = dataList.get(i).getItemListData().get(j);
                 request.setCartId(Integer.parseInt(itemData.getCartId()));
                 request.setProductId(Integer.parseInt(itemData.getProductId()));
@@ -57,10 +57,10 @@ public class MultipleAddressPresenter implements IMultipleAddressPresenter {
         param.put("carts", dataArray.toString());
         RequestParams requestParam = RequestParams.create();
         requestParam.putObject(
-                SubmitMultipleAddressUseCase.PARAM_REQUEST_AUTH_MAP_STRING,
+                ChangeShippingAddressUseCase.PARAM_REQUEST_AUTH_MAP_STRING,
                 view.getGeneratedAuthParamNetwork(param)
         );
-        submitMultipleAddressUseCase.execute(
+        changeShippingAddressUseCase.execute(
                 requestParam,
                 addMultipleAddressSubscriber());
     }
@@ -143,7 +143,7 @@ public class MultipleAddressPresenter implements IMultipleAddressPresenter {
 
     @Override
     public void onUnsubscribe() {
-        submitMultipleAddressUseCase.unsubscribe();
+        changeShippingAddressUseCase.unsubscribe();
     }
 
     private Subscriber<SetShippingAddressData> addMultipleAddressSubscriber() {

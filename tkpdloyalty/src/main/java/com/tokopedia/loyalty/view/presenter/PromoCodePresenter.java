@@ -4,11 +4,11 @@ import android.app.Activity;
 import android.content.Context;
 import android.support.annotation.NonNull;
 
-import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.base.domain.RequestParams;
+import com.google.gson.Gson;
 import com.tokopedia.abstraction.common.network.exception.MessageErrorException;
 import com.tokopedia.core.network.exception.ResponseErrorException;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;

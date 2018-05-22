@@ -37,8 +37,6 @@ import com.tokopedia.checkout.view.view.shipment.di.ShipmentComponent;
 import com.tokopedia.checkout.view.view.shipment.di.ShipmentModule;
 import com.tokopedia.checkout.view.view.shipment.viewmodel.ShipmentCartItemModel;
 import com.tokopedia.checkout.view.view.shipment.viewmodel.ShipmentCheckoutButtonModel;
-import com.tokopedia.checkout.view.view.shipment.viewmodel.ShipmentMultipleAddressCartItemModel;
-import com.tokopedia.checkout.view.view.shipment.viewmodel.ShipmentSingleAddressCartItemModel;
 import com.tokopedia.checkout.view.view.shipmentform.CartShipmentActivity;
 import com.tokopedia.checkout.view.view.shippingoptions.CourierBottomsheet;
 import com.tokopedia.core.geolocation.activity.GeolocationActivity;
@@ -66,7 +64,6 @@ import javax.inject.Inject;
 public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentContract.View,
         ShipmentAdapterActionListener, CourierBottomsheet.ActionListener {
 
-    private static final int REQUEST_CODE_SHIPMENT_DETAIL = 11;
     private static final int REQUEST_CHOOSE_PICKUP_POINT = 12;
     private static final int REQUEST_CODE_COURIER_PINPOINT = 13;
     public static final int RESULT_CODE_CANCEL_SHIPMENT_PAYMENT = 4;
@@ -234,7 +231,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
 
     @Override
     public void hideLoading() {
-        if (!progressDialogNormal.isProgress()) progressDialogNormal.dismiss();
+        if (progressDialogNormal.isProgress()) progressDialogNormal.dismiss();
     }
 
     @Override
@@ -365,11 +362,38 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         shipmentAdapter.updatePromo(checkPromoCodeCartShipmentResult.getDataVoucher());
     }
 
+    @Override
+    public void renderEditAddressSuccess(String latitude, String longitude) {
+        shipmentAdapter.updateShipmentDestinationPinpoint(Double.parseDouble(latitude),
+                Double.parseDouble(longitude));
+        courierBottomsheet = null;
+        int position = shipmentAdapter.getLastChooseCourierItemPosition();
+        ShipmentCartItemModel shipmentCartItemModel = shipmentAdapter.getShipmentCartItemModelByIndex(position);
+        if (shipmentCartItemModel != null) {
+            onChooseShipment(position, shipmentCartItemModel, shipmentPresenter.getRecipientAddressModel());
+        }
+    }
+
+    @Override
+    public void renderCancelAutoApplyCouponSuccess() {
+        onRemovePromoCode();
+        shipmentAdapter.cancelAutoApplyCoupon();
+        shipmentAdapter.notifyItemChanged(shipmentAdapter.getShipmentCostPosition());
+    }
+
+    @Override
+    public void renderChangeAddressSuccess(RecipientAddressModel selectedAddress) {
+        shipmentPresenter.setRecipientAddressModel(selectedAddress);
+        shipmentAdapter.updateSelectedAddress(selectedAddress);
+        courierBottomsheet = null;
+        onCartDataDisableToCheckout();
+    }
+
     private void updateAppliedPromo(CartItemPromoHolderData cartPromo) {
         shipmentAdapter.updateItemPromoVoucher(cartPromo);
         if (shipmentAdapter.hasSetAllCourier()) {
             ShipmentAdapter.RequestData requestData =
-                    shipmentAdapter.getRequestPromoData();
+                    shipmentAdapter.getRequestData();
             shipmentPresenter.setPromoCodeCartShipmentRequestData(requestData.getPromoRequestData());
             shipmentPresenter.checkPromoShipment();
 
@@ -397,14 +421,8 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         if (resultCode == Activity.RESULT_OK && data.getExtras() != null) {
             LocationPass locationPass = data.getExtras().getParcelable(GeolocationActivity.EXTRA_EXISTING_LOCATION);
             if (locationPass != null) {
-                shipmentAdapter.updateShipmentDestinationPinpoint(Double.parseDouble(locationPass.getLatitude()),
-                        Double.parseDouble(locationPass.getLongitude()));
-                courierBottomsheet = null;
-                int position = shipmentAdapter.getLastChooseCourierItemPosition();
-                ShipmentCartItemModel shipmentCartItemModel = shipmentAdapter.getShipmentCartItemModelByIndex(position);
-                if (shipmentCartItemModel != null) {
-                    onChooseShipment(position, shipmentCartItemModel, shipmentPresenter.getRecipientAddressModel());
-                }
+                shipmentPresenter.editAddressPinpoint(locationPass.getLatitude(), locationPass.getLongitude(),
+                        shipmentAdapter.getShipmentCartItemModelByIndex(shipmentAdapter.getLastChooseCourierItemPosition()));
             }
         }
     }
@@ -495,16 +513,14 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
             case CartAddressChoiceActivity.RESULT_CODE_ACTION_SELECT_ADDRESS:
                 RecipientAddressModel selectedAddress = data.getParcelableExtra(
                         CartAddressChoiceActivity.EXTRA_SELECTED_ADDRESS_DATA);
-                shipmentPresenter.setRecipientAddressModel(selectedAddress);
-                shipmentAdapter.updateSelectedAddress(selectedAddress);
-                courierBottomsheet = null;
-                onCartDataDisableToCheckout();
+                shipmentPresenter.setDataChangeAddressRequestList(shipmentAdapter.getRequestData().getChangeAddressRequestData());
+                shipmentPresenter.changeShippingAddress(selectedAddress);
                 break;
             case CartAddressChoiceActivity.RESULT_CODE_ACTION_TO_MULTIPLE_ADDRESS_FORM:
                 Intent intent = new Intent();
                 intent.putExtra(CartShipmentActivity.EXTRA_SELECTED_ADDRESS_RECIPIENT_DATA,
                         shipmentAdapter.getAddressShipmentData());
-                getActivity().setResult(CartShipmentActivity.RESULT_CODE_ACTION_TO_MULTIPLE_ADDRESS_FORM, intent);
+                getActivity().setResult(ShipmentActivity.RESULT_CODE_ACTION_TO_MULTIPLE_ADDRESS_FORM, intent);
                 getActivity().finish();
                 break;
 
@@ -618,11 +634,15 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
 
     @Override
     public void onCartPromoCancelVoucherPromoClicked(CartItemPromoHolderData cartPromo, int position) {
-        onRemovePromoCode();
-        cartPromo.setPromoNotActive();
-        shipmentAdapter.updatePromo(null);
-        shipmentAdapter.notifyItemChanged(position);
-        shipmentAdapter.notifyItemChanged(shipmentAdapter.getShipmentCostPosition());
+        if (cartPromo.isFromAutoApply()) {
+            shipmentPresenter.cancelAutoApplyCoupon();
+        } else {
+            onRemovePromoCode();
+            cartPromo.setPromoNotActive();
+            shipmentAdapter.updatePromo(null);
+            shipmentAdapter.notifyItemChanged(position);
+            shipmentAdapter.notifyItemChanged(shipmentAdapter.getShipmentCostPosition());
+        }
     }
 
     @Override

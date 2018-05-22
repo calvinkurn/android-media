@@ -131,15 +131,17 @@ public class PromoCodeFragment extends BasePresenterFragment implements IPromoCo
                     voucherCodeField,
                     voucherCodeFieldHolder)
             );
-        } else if (getArguments().getString(PLATFORM_KEY).equalsIgnoreCase(
+        } else if (getArguments().getString(PLATFORM_KEY).equals(
                 IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.EVENT_STRING)) {
             submitVoucherButton.setOnClickListener(onSubmitEventVoucher(voucherCodeField,
                     voucherCodeFieldHolder));
 
-        } else submitVoucherButton.setOnClickListener(onSubmitMarketplaceVoucher(
-                voucherCodeField,
-                voucherCodeFieldHolder)
-        );
+        } else {
+            submitVoucherButton.setOnClickListener(onSubmitMarketplaceVoucher(
+                    voucherCodeField,
+                    voucherCodeFieldHolder)
+            );
+        }
 
     }
 
@@ -435,6 +437,8 @@ public class PromoCodeFragment extends BasePresenterFragment implements IPromoCo
         void onCodeSuccess(String voucherCode, String voucherMessage, String voucherAmount);
 
         void onDigitalCodeSuccess(String voucherCode, String voucherMessage, long discountAmount, long cashBackAmount);
+
+        void onUsePromoCodeClicked();
 
     }
 }

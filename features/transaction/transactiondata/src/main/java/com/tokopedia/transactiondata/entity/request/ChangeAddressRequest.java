@@ -9,13 +9,13 @@ import java.util.List;
  * Created by kris on 2/5/18. Tokopedia
  */
 
-public class MultipleAddressRequestList {
+public class ChangeAddressRequest {
 
     @SerializedName("carts")
     @Expose
-    List<MultipleAddressRequest> addressRequests;
+    List<DataChangeAddressRequest> addressRequests;
 
-    public void setAddressRequests(List<MultipleAddressRequest> addressRequests) {
+    public void setAddressRequests(List<DataChangeAddressRequest> addressRequests) {
         this.addressRequests = addressRequests;
     }
 }

@@ -7,32 +7,41 @@ import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.abstraction.common.utils.TKPDMapParam;
 import com.tokopedia.abstraction.common.utils.network.AuthUtil;
 import com.tokopedia.checkout.R;
-import com.tokopedia.checkout.view.view.shipment.viewmodel.ShipmentCheckoutButtonModel;
-import com.tokopedia.transactiondata.entity.request.CheckoutRequest;
-import com.tokopedia.transactiondata.entity.request.DataCheckoutRequest;
+import com.tokopedia.checkout.domain.datamodel.MultipleAddressItemData;
 import com.tokopedia.checkout.domain.datamodel.addressoptions.RecipientAddressModel;
 import com.tokopedia.checkout.domain.datamodel.cartcheckout.CheckoutData;
 import com.tokopedia.checkout.domain.datamodel.cartlist.CartPromoSuggestion;
+import com.tokopedia.checkout.domain.datamodel.cartmultipleshipment.SetShippingAddressData;
 import com.tokopedia.checkout.domain.datamodel.cartshipmentform.CartShipmentAddressFormData;
 import com.tokopedia.checkout.domain.datamodel.cartshipmentform.GroupAddress;
 import com.tokopedia.checkout.domain.datamodel.cartshipmentform.GroupShop;
 import com.tokopedia.checkout.domain.datamodel.cartsingleshipment.ShipmentCostModel;
 import com.tokopedia.checkout.domain.datamodel.toppay.ThanksTopPayData;
 import com.tokopedia.checkout.domain.datamodel.voucher.PromoCodeAppliedData;
+import com.tokopedia.checkout.domain.usecase.CancelAutoApplyCouponUseCase;
+import com.tokopedia.checkout.domain.usecase.ChangeShippingAddressUseCase;
 import com.tokopedia.checkout.domain.usecase.CheckPromoCodeCartListUseCase;
 import com.tokopedia.checkout.domain.usecase.CheckPromoCodeCartShipmentUseCase;
 import com.tokopedia.checkout.domain.usecase.CheckoutUseCase;
+import com.tokopedia.checkout.domain.usecase.EditAddressUseCase;
 import com.tokopedia.checkout.domain.usecase.GetShipmentAddressFormUseCase;
 import com.tokopedia.checkout.domain.usecase.GetThanksToppayUseCase;
 import com.tokopedia.checkout.view.view.shipment.viewmodel.ShipmentCartItemModel;
-import com.tokopedia.checkout.view.view.shipment.viewmodel.ShipmentInsuranceTncModel;
+import com.tokopedia.checkout.view.view.shipment.viewmodel.ShipmentCheckoutButtonModel;
+import com.tokopedia.checkout.view.view.shipment.viewmodel.ShipmentMultipleAddressCartItemModel;
 import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.router.transactionmodule.sharedata.CheckPromoCodeCartListResult;
 import com.tokopedia.core.router.transactionmodule.sharedata.CheckPromoCodeCartShipmentRequest;
 import com.tokopedia.core.router.transactionmodule.sharedata.CheckPromoCodeCartShipmentResult;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.payment.utils.ErrorNetMessage;
+import com.tokopedia.transactiondata.entity.request.CheckoutRequest;
+import com.tokopedia.transactiondata.entity.request.DataChangeAddressRequest;
+import com.tokopedia.transactiondata.entity.request.DataCheckoutRequest;
 import com.tokopedia.usecase.RequestParams;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.List;
 
@@ -56,6 +65,9 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     private final CheckPromoCodeCartShipmentUseCase checkPromoCodeCartShipmentUseCase;
     private final GetShipmentAddressFormUseCase getShipmentAddressFormUseCase;
     private final CheckPromoCodeCartListUseCase checkPromoCodeCartListUseCase;
+    private final EditAddressUseCase editAddressUseCase;
+    private final CancelAutoApplyCouponUseCase cancelAutoApplyCouponUseCase;
+    private final ChangeShippingAddressUseCase changeShippingAddressUseCase;
 
     private List<ShipmentCartItemModel> shipmentCartItemModelList;
     private RecipientAddressModel recipientAddressModel;
@@ -66,6 +78,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
 
     private List<DataCheckoutRequest> dataCheckoutRequestList;
     private List<CheckPromoCodeCartShipmentRequest.Data> promoCodeCartShipmentRequestDataList;
+    private List<DataChangeAddressRequest> changeAddressRequestList;
     private CheckoutData checkoutData;
 
     @Inject
@@ -74,13 +87,19 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                              GetThanksToppayUseCase getThanksToppayUseCase,
                              CheckPromoCodeCartShipmentUseCase checkPromoCodeCartShipmentUseCase,
                              GetShipmentAddressFormUseCase getShipmentAddressFormUseCase,
-                             CheckPromoCodeCartListUseCase checkPromoCodeCartListUseCase) {
+                             CheckPromoCodeCartListUseCase checkPromoCodeCartListUseCase,
+                             EditAddressUseCase editAddressUseCase,
+                             CancelAutoApplyCouponUseCase cancelAutoApplyCouponUseCase,
+                             ChangeShippingAddressUseCase changeShippingAddressUseCase) {
         this.compositeSubscription = compositeSubscription;
         this.checkoutUseCase = checkoutUseCase;
         this.getThanksToppayUseCase = getThanksToppayUseCase;
         this.checkPromoCodeCartShipmentUseCase = checkPromoCodeCartShipmentUseCase;
         this.getShipmentAddressFormUseCase = getShipmentAddressFormUseCase;
         this.checkPromoCodeCartListUseCase = checkPromoCodeCartListUseCase;
+        this.editAddressUseCase = editAddressUseCase;
+        this.cancelAutoApplyCouponUseCase = cancelAutoApplyCouponUseCase;
+        this.changeShippingAddressUseCase = changeShippingAddressUseCase;
     }
 
     @Override
@@ -92,11 +111,6 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     public void detachView() {
         super.detachView();
         compositeSubscription.unsubscribe();
-        checkoutUseCase.unsubscribe();
-        getThanksToppayUseCase.unsubscribe();
-        checkPromoCodeCartShipmentUseCase.unsubscribe();
-        getShipmentAddressFormUseCase.unsubscribe();
-        checkPromoCodeCartListUseCase.unsubscribe();
     }
 
     @Override
@@ -125,6 +139,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                                     public void onError(Throwable e) {
                                         e.printStackTrace();
                                         getView().hideLoading();
+                                        getView().showToastError(getView().getActivity().getString(R.string.default_request_error_unknown_short));
                                     }
 
                                     @Override
@@ -261,6 +276,8 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
             @Override
             public void onError(Throwable e) {
                 e.printStackTrace();
+                getView().hideLoading();
+                getView().showToastError(getView().getActivity().getString(R.string.default_request_error_unknown));
             }
 
             @Override
@@ -280,8 +297,9 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
 
             @Override
             public void onError(Throwable e) {
-                getView().hideLoading();
                 e.printStackTrace();
+                getView().hideLoading();
+                getView().showToastError(getView().getActivity().getString(R.string.default_request_error_unknown));
             }
 
             @Override
@@ -321,6 +339,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                             public void onError(Throwable e) {
                                 e.printStackTrace();
                                 getView().hideLoading();
+                                getView().showToastError(getView().getActivity().getString(R.string.default_request_error_unknown));
                             }
 
                             @Override
@@ -401,18 +420,8 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     }
 
     @Override
-    public List<DataCheckoutRequest> getDataCheckoutRequestList() {
-        return dataCheckoutRequestList;
-    }
-
-    @Override
     public void setDataCheckoutRequestList(List<DataCheckoutRequest> dataCheckoutRequestList) {
         this.dataCheckoutRequestList = dataCheckoutRequestList;
-    }
-
-    @Override
-    public List<CheckPromoCodeCartShipmentRequest.Data> getPromoCodeCartShipmentRequestData() {
-        return promoCodeCartShipmentRequestDataList;
     }
 
     @Override
@@ -420,6 +429,11 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
             List<CheckPromoCodeCartShipmentRequest.Data> promoCodeCartShipmentRequestData
     ) {
         this.promoCodeCartShipmentRequestDataList = promoCodeCartShipmentRequestData;
+    }
+
+    @Override
+    public void setDataChangeAddressRequestList(List<DataChangeAddressRequest> dataChangeAddressRequestList) {
+        this.changeAddressRequestList = dataChangeAddressRequestList;
     }
 
     @Override
@@ -442,4 +456,202 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         this.shipmentCheckoutButtonModel = shipmentCheckoutButtonModel;
     }
 
+    @Override
+    public void editAddressPinpoint(final String latitude, final String longitude, ShipmentCartItemModel shipmentCartItemModel) {
+        RequestParams requestParams = generateEditAddressRequestParams(shipmentCartItemModel, latitude, longitude);
+        compositeSubscription.add(
+                editAddressUseCase.createObservable(requestParams)
+                        .subscribeOn(Schedulers.newThread())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .unsubscribeOn(Schedulers.newThread())
+                        .subscribe(new Subscriber<String>() {
+                            @Override
+                            public void onCompleted() {
+
+                            }
+
+                            @Override
+                            public void onError(Throwable e) {
+                                e.printStackTrace();
+                                getView().showToastError(getView().getActivity().getString(R.string.default_request_error_unknown));
+                            }
+
+                            @Override
+                            public void onNext(String stringResponse) {
+                                JSONObject response = null;
+                                boolean status;
+                                try {
+                                    response = new JSONObject(stringResponse);
+                                    int statusCode = response.getJSONObject(EditAddressUseCase.RESPONSE_DATA)
+                                            .getInt(EditAddressUseCase.RESPONSE_IS_SUCCESS);
+                                    status = statusCode == 1;
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                    status = false;
+                                }
+
+                                if (response != null && status) {
+                                    getView().renderEditAddressSuccess(latitude, longitude);
+                                } else {
+                                    getView().showToastError(getView().getActivity().getString(R.string.default_request_error_unknown));
+                                }
+                            }
+                        })
+        );
+
+    }
+
+    @NonNull
+    private RequestParams generateEditAddressRequestParams(ShipmentCartItemModel shipmentCartItemModel,
+                                                           String addressLatitude, String addressLongitude) {
+        TKPDMapParam<String, String> params = getGeneratedAuthParamNetwork(null);
+
+        String addressId = null;
+        String addressName = null;
+        String addressStreet = null;
+        String postalCode = null;
+        String districtId = null;
+        String cityId = null;
+        String provinceId = null;
+        String latitude = null;
+        String longitude = null;
+        String receiverName = null;
+        String receiverPhone = null;
+
+        if (shipmentCartItemModel != null && shipmentCartItemModel instanceof ShipmentMultipleAddressCartItemModel) {
+            MultipleAddressItemData multipleAddressItemData =
+                    ((ShipmentMultipleAddressCartItemModel) shipmentCartItemModel).getMultipleAddressItemData();
+            if (multipleAddressItemData != null) {
+                addressId = multipleAddressItemData.getAddressId();
+                addressName = multipleAddressItemData.getAddressTitle();
+                addressStreet = multipleAddressItemData.getAddressStreet();
+                postalCode = multipleAddressItemData.getAddressPostalCode();
+                districtId = multipleAddressItemData.getDestinationDistrictId();
+                cityId = multipleAddressItemData.getCityId();
+                provinceId = multipleAddressItemData.getProvinceId();
+                latitude = addressLatitude;
+                longitude = addressLongitude;
+                receiverName = multipleAddressItemData.getAddressReceiverName();
+                receiverPhone = multipleAddressItemData.getRecipientPhoneNumber();
+            }
+        } else {
+            addressId = recipientAddressModel.getId();
+            addressName = recipientAddressModel.getAddressName();
+            addressStreet = recipientAddressModel.getAddressStreet();
+            postalCode = recipientAddressModel.getAddressPostalCode();
+            districtId = recipientAddressModel.getDestinationDistrictId();
+            cityId = recipientAddressModel.getCityId();
+            provinceId = recipientAddressModel.getProvinceId();
+            latitude = addressLatitude;
+            longitude = addressLongitude;
+            receiverName = recipientAddressModel.getRecipientName();
+            receiverPhone = recipientAddressModel.getRecipientPhoneNumber();
+        }
+
+        params.put(EditAddressUseCase.Params.ADDRESS_ID, addressId);
+        params.put(EditAddressUseCase.Params.ADDRESS_NAME, addressName);
+        params.put(EditAddressUseCase.Params.ADDRESS_STREET, addressStreet);
+        params.put(EditAddressUseCase.Params.POSTAL_CODE, postalCode);
+        params.put(EditAddressUseCase.Params.DISTRICT_ID, districtId);
+        params.put(EditAddressUseCase.Params.CITY_ID, cityId);
+        params.put(EditAddressUseCase.Params.PROVINCE_ID, provinceId);
+        params.put(EditAddressUseCase.Params.LATITUDE, latitude);
+        params.put(EditAddressUseCase.Params.LONGITUDE, longitude);
+        params.put(EditAddressUseCase.Params.RECEIVER_NAME, receiverName);
+        params.put(EditAddressUseCase.Params.RECEIVER_PHONE, receiverPhone);
+
+        RequestParams requestParams = RequestParams.create();
+        requestParams.putAllString(params);
+
+        return requestParams;
+    }
+
+    @Override
+    public void cancelAutoApplyCoupon() {
+        compositeSubscription.add(
+                cancelAutoApplyCouponUseCase.createObservable(RequestParams.create())
+                        .subscribeOn(Schedulers.newThread())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .unsubscribeOn(Schedulers.newThread())
+                        .subscribe(new Subscriber<String>() {
+                            @Override
+                            public void onCompleted() {
+
+                            }
+
+                            @Override
+                            public void onError(Throwable e) {
+                                e.printStackTrace();
+                                getView().showToastError(getView().getActivity().getString(R.string.default_request_error_unknown));
+                            }
+
+                            @Override
+                            public void onNext(String stringResponse) {
+                                boolean resultSuccess = false;
+                                try {
+                                    JSONObject jsonObject = new JSONObject(stringResponse);
+                                    resultSuccess = jsonObject.getJSONObject(CancelAutoApplyCouponUseCase.RESPONSE_DATA)
+                                            .getBoolean(CancelAutoApplyCouponUseCase.RESPONSE_SUCCESS);
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                }
+
+                                if (resultSuccess) {
+                                    getView().renderCancelAutoApplyCouponSuccess();
+                                } else {
+                                    getView().showToastError(getView().getActivity().getString(R.string.default_request_error_unknown));
+                                }
+
+                            }
+                        })
+        );
+    }
+
+    @Override
+    public void changeShippingAddress(final RecipientAddressModel recipientAddressModel) {
+        getView().showLoading();
+        String changeAddressRequestJsonString = new Gson().toJson(changeAddressRequestList);
+
+        TKPDMapParam<String, String> param = new TKPDMapParam<>();
+        param.put("carts", changeAddressRequestJsonString);
+        RequestParams requestParam = RequestParams.create();
+
+        TKPDMapParam<String, String> authParam = AuthUtil.generateParamsNetwork(
+                getView().getActivity(), param,
+                SessionHandler.getLoginID(getView().getActivity()),
+                GCMHandler.getRegistrationId(getView().getActivity()));
+
+        requestParam.putAllString(authParam);
+
+        compositeSubscription.add(
+                changeShippingAddressUseCase.createObservable(requestParam)
+                        .subscribeOn(Schedulers.newThread())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .unsubscribeOn(Schedulers.newThread())
+                        .subscribe(new Subscriber<SetShippingAddressData>() {
+                            @Override
+                            public void onCompleted() {
+
+                            }
+
+                            @Override
+                            public void onError(Throwable e) {
+                                getView().hideLoading();
+                                e.printStackTrace();
+                                getView().showToastError(getView().getActivity().getString(R.string.default_request_error_unknown));
+                            }
+
+                            @Override
+                            public void onNext(SetShippingAddressData setShippingAddressData) {
+                                getView().hideLoading();
+                                if (setShippingAddressData.isSuccess()) {
+                                    getView().showToastNormal(getView().getActivity().getString(R.string.label_change_address_success));
+                                    getView().renderChangeAddressSuccess(recipientAddressModel);
+                                } else {
+                                    getView().showToastError(getView().getActivity().getString(R.string.label_change_address_failed));
+                                }
+                            }
+                        })
+        );
+    }
 }

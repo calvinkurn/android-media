@@ -2,6 +2,7 @@ package com.tokopedia.transaction.purchase.detail.model.detail.viewmodel;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.text.TextUtils;
 
 import java.util.List;
 
@@ -106,6 +107,8 @@ public class OrderDetailData implements Parcelable {
     private String insuranceNotification;
 
     private String pickupPinCode;
+
+    private String liveTrackingUrl;
 
     private boolean showUploadAwb;
 
@@ -525,6 +528,16 @@ public class OrderDetailData implements Parcelable {
     }
 
 
+    public String getLiveTrackingUrl() {
+        if (TextUtils.isEmpty(liveTrackingUrl))
+            return "";
+        return liveTrackingUrl;
+    }
+
+    public void setLiveTrackingUrl(String liveTrackingUrl) {
+        this.liveTrackingUrl = liveTrackingUrl;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -583,6 +596,7 @@ public class OrderDetailData implements Parcelable {
         dest.writeByte(this.showUploadAwb ? (byte) 1 : (byte) 0);
         dest.writeString(this.awbUploadProofText);
         dest.writeString(this.awbUploadProofUrl);
+        dest.writeString(this.liveTrackingUrl);
     }
 
     protected OrderDetailData(Parcel in) {
@@ -637,6 +651,7 @@ public class OrderDetailData implements Parcelable {
         this.showUploadAwb = in.readByte() != 0;
         this.awbUploadProofText = in.readString();
         this.awbUploadProofUrl = in.readString();
+        this.liveTrackingUrl = in.readString();
     }
 
     public static final Creator<OrderDetailData> CREATOR = new Creator<OrderDetailData>() {

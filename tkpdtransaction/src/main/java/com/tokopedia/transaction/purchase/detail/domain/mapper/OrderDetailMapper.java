@@ -1,5 +1,7 @@
 package com.tokopedia.transaction.purchase.detail.domain.mapper;
 
+import android.text.TextUtils;
+
 import com.tokopedia.core.network.retrofit.response.TkpdResponse;
 import com.tokopedia.payment.utils.ErrorNetMessage;
 import com.tokopedia.transaction.exception.ResponseRuntimeException;
@@ -172,6 +174,16 @@ public class OrderDetailMapper {
             viewData.setDriverVehicle(
                     responseData.getDetail().getShipment().getInfo().getDriver().getLicenseNumber()
             );
+            if (!TextUtils.isEmpty(responseData
+                    .getDetail()
+                    .getShipment()
+                    .getInfo().getDriver().getTrackingUrl())) {
+                viewData.setLiveTrackingUrl(responseData.getDetail()
+                        .getShipment()
+                        .getInfo()
+                        .getDriver()
+                        .getTrackingUrl());
+            } else viewData.setLiveTrackingUrl("");
         }
 
         if (responseData.getDetail().getShipment().getInfo() != null &&

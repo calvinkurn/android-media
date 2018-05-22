@@ -12,71 +12,40 @@ import com.tokopedia.transaction.common.data.pickuppoint.Store;
 public class MultipleAddressItemData implements Parcelable {
 
     private int cartPosition;
-
     private int addressPosition;
-
     private String cartId = "";
-
     private int addressStatus;
-
     private String productId = "";
-
     private String productWeightFmt = "";
-
     private int productRawWeight;
-
     private String productQty = "";
-
     private String productNotes = "";
-
     private String addressId = "";
-
     private String addressTitle = "";
-
     private String addressReceiverName = "";
-
     private String addressProvinceName = "";
-
     private String addressPostalCode = "";
-
     private String addressCityName = "";
-
     private String addressStreet = "";
-
     private String addressCountryName = "";
-
     private String recipientPhoneNumber = "";
-
     private String destinationDistrictId = "";
-
     private String destinationDistrictName = "";
-
+    private String cityId = "";
+    private String provinceId = "";
     private String tokenPickup = "";
-
     private String unixTime = "";
-
     private Store store;
-
     private int maxQuantity;
-
     private int minQuantity;
-
     private String errorCheckoutPriceLimit;
-
     private String errorFieldBetween;
-
     private String errorFieldMaxChar;
-
     private String errorFieldRequired;
-
     private String errorProductAvailableStock;
-
     private String errorProductAvailableStockDetail;
-
     private String errorProductMaxQuantity;
-
     private String errorProductMinQuantity;
-
     private int maxRemark;
 
     public MultipleAddressItemData() {
@@ -354,6 +323,22 @@ public class MultipleAddressItemData implements Parcelable {
         this.maxRemark = maxRemark;
     }
 
+    public String getCityId() {
+        return cityId;
+    }
+
+    public void setCityId(String cityId) {
+        this.cityId = cityId;
+    }
+
+    public String getProvinceId() {
+        return provinceId;
+    }
+
+    public void setProvinceId(String provinceId) {
+        this.provinceId = provinceId;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -395,6 +380,8 @@ public class MultipleAddressItemData implements Parcelable {
         dest.writeString(this.errorProductMaxQuantity);
         dest.writeString(this.errorProductMinQuantity);
         dest.writeInt(this.maxRemark);
+        dest.writeString(this.cityId);
+        dest.writeString(this.provinceId);
     }
 
     protected MultipleAddressItemData(Parcel in) {
@@ -432,6 +419,8 @@ public class MultipleAddressItemData implements Parcelable {
         this.errorProductMaxQuantity = in.readString();
         this.errorProductMinQuantity = in.readString();
         this.maxRemark = in.readInt();
+        this.cityId = in.readString();
+        this.provinceId = in.readString();
     }
 
     public static final Creator<MultipleAddressItemData> CREATOR = new Creator<MultipleAddressItemData>() {
