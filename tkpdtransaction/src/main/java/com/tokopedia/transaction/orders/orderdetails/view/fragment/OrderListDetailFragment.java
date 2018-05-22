@@ -186,7 +186,6 @@ public class OrderListDetailFragment extends BaseDaggerFragment implements Order
         DoubleTextView doubleTextView = new DoubleTextView(getActivity(), LinearLayout.HORIZONTAL);
         doubleTextView.setTopText(detail.label());
         doubleTextView.setBottomText(detail.value());
-        doubleTextView.setBottomGravity(Gravity.RIGHT);
         detailContent.addView(doubleTextView);
     }
 
@@ -210,7 +209,6 @@ public class OrderListDetailFragment extends BaseDaggerFragment implements Order
         DoubleTextView doubleTextView = new DoubleTextView(getActivity(), LinearLayout.HORIZONTAL);
         doubleTextView.setTopText(additionalInfo.label());
         doubleTextView.setBottomText(additionalInfo.value());
-        doubleTextView.setBottomGravity(Gravity.RIGHT);
         additionalInfoLayout.addView(doubleTextView);
     }
 
