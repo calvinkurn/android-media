@@ -66,7 +66,7 @@ public class ShareAdapter extends RecyclerView.Adapter<ShareAdapter.ShareViewHol
             title = "Salin Link";
             type = "salinlink";
         } else if (isPositionOther(position)) {
-            resources = AppCompatResources.getDrawable(holder.iconView.getContext(), R.drawable.ic_14_google);
+            resources = AppCompatResources.getDrawable(holder.iconView.getContext(), R.drawable.ic_btn_more);
             title = "Lainnya";
             type = "lainnya";
         } else {
