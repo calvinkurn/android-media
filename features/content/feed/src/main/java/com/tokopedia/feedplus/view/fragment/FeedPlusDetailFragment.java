@@ -16,7 +16,7 @@ import com.facebook.FacebookSdk;
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.UnifyTracking;
-import com.tokopedia.core.base.adapter.Visitable;
+import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
 import com.tokopedia.core.base.presentation.EndlessRecyclerviewListener;
