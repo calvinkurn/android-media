@@ -84,6 +84,7 @@ public class CartItemData implements Parcelable {
         private String productId;
         private String productName;
         private int minimalQtyOrder;
+        private int invenageValue;
         private double pricePlan;
         private int priceCurrency;
         private String priceFormatted;
@@ -261,6 +262,13 @@ public class CartItemData implements Parcelable {
             this.weightFormatted = weightFormatted;
         }
 
+        public int getInvenageValue() {
+            return invenageValue;
+        }
+
+        public void setInvenageValue(int invenageValue) {
+            this.invenageValue = invenageValue;
+        }
 
         public OriginData() {
         }
@@ -276,6 +284,7 @@ public class CartItemData implements Parcelable {
             dest.writeString(this.productId);
             dest.writeString(this.productName);
             dest.writeInt(this.minimalQtyOrder);
+            dest.writeInt(this.invenageValue);
             dest.writeDouble(this.pricePlan);
             dest.writeInt(this.priceCurrency);
             dest.writeString(this.priceFormatted);
@@ -299,6 +308,7 @@ public class CartItemData implements Parcelable {
             this.productId = in.readString();
             this.productName = in.readString();
             this.minimalQtyOrder = in.readInt();
+            this.invenageValue = in.readInt();
             this.pricePlan = in.readDouble();
             this.priceCurrency = in.readInt();
             this.priceFormatted = in.readString();

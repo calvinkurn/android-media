@@ -55,9 +55,9 @@ public class CartRemoveItemDialog extends DialogFragment {
         final boolean hasSingleElement = isListNotNull && dataRemoved.size() == 1;
 
         final AlertDialog dialog = new AlertDialog.Builder(getActivity())
-                .setTitle("Hapus Barang")
+                .setTitle(R.string.label_dialog_title_delete_item)
                 .setMessage(getMessage(hasSingleElement, dataRemoved))
-                .setPositiveButton("Tambah Wishlist",
+                .setPositiveButton(R.string.label_dialog_action_delete_and_add_to_wishlist,
                         new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
@@ -72,7 +72,8 @@ public class CartRemoveItemDialog extends DialogFragment {
                                 }
                             }
                         })
-                .setNegativeButton(hasSingleElement ? "Hapus" : "Hapus Semua",
+                .setNegativeButton(hasSingleElement ? getString(R.string.label_dialog_action_delete) :
+                                getString(R.string.label_dialog_action_delete_all),
                         new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {

@@ -66,6 +66,7 @@ public class CartMapper implements ICartMapper {
             cartItemDataOrigin.setPreOrder(data.getProduct().getIsPreorder() == 1);
             cartItemDataOrigin.setFavorite(false);
             cartItemDataOrigin.setMinimalQtyOrder(data.getProduct().getProductMinOrder());
+            cartItemDataOrigin.setInvenageValue(data.getProduct().getProductInvenageValue());
             cartItemDataOrigin.setFreeReturn(data.getProduct().getIsFreereturns() == 1);
             if (!mapperUtil.isEmpty(data.getProduct().getFreeReturns())) {
                 cartItemDataOrigin.setFreeReturnLogo(data.getProduct().getFreeReturns().getFreeReturnsLogo());
