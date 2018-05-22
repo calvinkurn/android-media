@@ -130,6 +130,11 @@ public class RefreshHotlistSubscriber extends Subscriber<SearchResultModel> {
             model.setTrackerName(String.format(Locale.getDefault(), "/hot/%s - product %d", view.getHotlistAlias().toLowerCase(), page));
             model.setTrackerPosition(String.valueOf(lastPositionProduct));
             model.setHomeAttribution(view.getHomeAttribution());
+            model.setCountCourier(Integer.toString(domain.getCountCourier()));
+            model.setOriginalPrice(domain.getOriginalPrice());
+            model.setDiscountPercentage(domain.getDiscountPercentage());
+            model.setOfficial(domain.isOfficial());
+
             list.add(model);
         }
         view.setLastPositionProductTracker(lastPositionProduct);
