@@ -1,8 +1,8 @@
 package com.tokopedia.feedplus.data.repository;
 
-import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.feedplus.domain.model.wishlist.AddWishlistDomain;
 import com.tokopedia.feedplus.domain.model.wishlist.RemoveWishlistDomain;
+import com.tokopedia.usecase.RequestParams;
 
 import rx.Observable;
 

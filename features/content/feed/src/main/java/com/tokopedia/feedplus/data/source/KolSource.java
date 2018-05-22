@@ -4,10 +4,10 @@ import com.apollographql.android.rx.RxApollo;
 import com.apollographql.apollo.ApolloClient;
 import com.apollographql.apollo.ApolloWatcher;
 import com.tkpdfeed.feeds.FollowKol;
-import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.feedplus.data.mapper.FollowKolMapper;
 import com.tokopedia.feedplus.domain.model.FollowKolDomain;
 import com.tokopedia.feedplus.domain.usecase.FollowKolPostUseCase;
+import com.tokopedia.usecase.RequestParams;
 
 import rx.Observable;
 

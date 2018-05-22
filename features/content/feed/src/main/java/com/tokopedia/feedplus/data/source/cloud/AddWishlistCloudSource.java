@@ -1,6 +1,5 @@
 package com.tokopedia.feedplus.data.source.cloud;
 
-import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.network.apiservices.mojito.MojitoNoRetryAuthService;
 import com.tokopedia.feedplus.data.mapper.AddWishlistMapper;
 import com.tokopedia.feedplus.data.mapper.RemoveWishlistMapper;
@@ -8,6 +7,7 @@ import com.tokopedia.feedplus.domain.model.wishlist.AddWishlistDomain;
 import com.tokopedia.feedplus.domain.model.wishlist.RemoveWishlistDomain;
 import com.tokopedia.feedplus.domain.usecase.AddWishlistUseCase;
 import com.tokopedia.feedplus.domain.usecase.RemoveWishlistUseCase;
+import com.tokopedia.usecase.RequestParams;
 
 import rx.Observable;
 

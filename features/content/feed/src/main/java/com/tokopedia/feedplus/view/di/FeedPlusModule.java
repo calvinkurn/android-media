@@ -46,9 +46,6 @@ import com.tokopedia.feedplus.domain.usecase.GetRecentViewUseCase;
 import com.tokopedia.feedplus.domain.usecase.RefreshFeedUseCase;
 import com.tokopedia.feedplus.domain.usecase.RemoveWishlistUseCase;
 import com.tokopedia.feedplus.view.listener.FeedPlus;
-import com.tokopedia.kol.common.data.source.api.KolApi;
-import com.tokopedia.kol.feature.post.data.mapper.LikeKolPostMapper;
-import com.tokopedia.kol.feature.post.data.source.LikeKolPostSourceCloud;
 
 import javax.inject.Named;
 
@@ -348,17 +345,5 @@ public class FeedPlusModule {
         return new FollowKolPostUseCase(threadExecutor,
                 postExecutionThread,
                 feedRepository);
-    }
-
-    @FeedPlusScope
-    @Provides
-    LikeKolPostSourceCloud provideLikeKolPostSourceCloud(KolApi kolApi, LikeKolPostMapper likeKolPostMapper) {
-        return new LikeKolPostSourceCloud(view.getContext(), kolApi, likeKolPostMapper);
-    }
-
-    @FeedPlusScope
-    @Provides
-    KolApi provideKolApi(KolApi kolApi, LikeKolPostMapper likeKolPostMapper) {
-        return new KolApi(view.getContext(), kolApi, likeKolPostMapper);
     }
 }

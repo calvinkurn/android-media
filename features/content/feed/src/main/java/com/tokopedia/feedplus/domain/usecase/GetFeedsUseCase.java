@@ -1,12 +1,10 @@
 package com.tokopedia.feedplus.domain.usecase;
 
-import com.tokopedia.core.base.domain.RequestParams;
-import com.tokopedia.core.base.domain.UseCase;
-import com.tokopedia.core.base.domain.executor.PostExecutionThread;
-import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.core.util.SessionHandler;
-import com.tokopedia.feedplus.domain.model.feed.FeedResult;
 import com.tokopedia.feedplus.data.repository.FeedRepository;
+import com.tokopedia.feedplus.domain.model.feed.FeedResult;
+import com.tokopedia.usecase.RequestParams;
+import com.tokopedia.usecase.UseCase;
 
 import rx.Observable;
 
@@ -20,10 +18,7 @@ public class GetFeedsUseCase extends UseCase<FeedResult> {
     public static final String PARAM_PAGE = "PARAM_PAGE";
     protected FeedRepository feedRepository;
 
-    public GetFeedsUseCase(ThreadExecutor threadExecutor,
-                           PostExecutionThread postExecutionThread,
-                           FeedRepository feedRepository) {
-        super(threadExecutor, postExecutionThread);
+    public GetFeedsUseCase(FeedRepository feedRepository) {
         this.feedRepository = feedRepository;
     }
 

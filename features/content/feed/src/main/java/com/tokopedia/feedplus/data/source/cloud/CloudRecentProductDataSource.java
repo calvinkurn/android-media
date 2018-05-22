@@ -1,15 +1,15 @@
 package com.tokopedia.feedplus.data.source.cloud;
 
 import com.google.gson.reflect.TypeToken;
+import com.tokopedia.abstraction.common.utils.network.CacheUtil;
 import com.tokopedia.core.base.common.service.MojitoService;
-import com.tokopedia.core.base.domain.RequestParams;
-import com.tokopedia.core.database.CacheUtil;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.feedplus.data.mapper.RecentProductMapper;
 import com.tokopedia.feedplus.data.source.local.LocalFeedDataSource;
 import com.tokopedia.feedplus.domain.model.feed.FeedDomain;
 import com.tokopedia.feedplus.domain.model.recentview.RecentViewProductDomain;
 import com.tokopedia.feedplus.domain.usecase.GetRecentViewUseCase;
+import com.tokopedia.usecase.RequestParams;
 
 import java.util.List;
 

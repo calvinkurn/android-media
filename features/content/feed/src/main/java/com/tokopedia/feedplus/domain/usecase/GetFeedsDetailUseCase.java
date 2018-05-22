@@ -1,11 +1,9 @@
 package com.tokopedia.feedplus.domain.usecase;
 
-import com.tokopedia.core.base.domain.RequestParams;
-import com.tokopedia.core.base.domain.UseCase;
-import com.tokopedia.core.base.domain.executor.PostExecutionThread;
-import com.tokopedia.core.base.domain.executor.ThreadExecutor;
-import com.tokopedia.feedplus.domain.model.feeddetail.DataFeedDetailDomain;
 import com.tokopedia.feedplus.data.repository.FeedRepository;
+import com.tokopedia.feedplus.domain.model.feeddetail.DataFeedDetailDomain;
+import com.tokopedia.usecase.RequestParams;
+import com.tokopedia.usecase.UseCase;
 
 import java.util.List;
 
@@ -23,10 +21,7 @@ public class GetFeedsDetailUseCase extends UseCase<List<DataFeedDetailDomain>> {
 
     private FeedRepository feedRepository;
 
-    public GetFeedsDetailUseCase(ThreadExecutor threadExecutor,
-                                 PostExecutionThread postExecutionThread,
-                                 FeedRepository feedRepository) {
-        super(threadExecutor, postExecutionThread);
+    public GetFeedsDetailUseCase(FeedRepository feedRepository) {
         this.feedRepository = feedRepository;
     }
 

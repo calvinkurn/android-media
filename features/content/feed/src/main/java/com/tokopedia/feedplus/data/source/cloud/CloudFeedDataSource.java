@@ -4,13 +4,13 @@ import com.apollographql.android.rx.RxApollo;
 import com.apollographql.apollo.ApolloClient;
 import com.apollographql.apollo.ApolloWatcher;
 import com.tkpdfeed.feeds.FeedQuery;
-import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.feedplus.data.mapper.FeedListMapper;
 import com.tokopedia.feedplus.data.mapper.FeedResultMapper;
 import com.tokopedia.feedplus.domain.model.feed.FeedDomain;
 import com.tokopedia.feedplus.domain.model.feed.FeedResult;
 import com.tokopedia.feedplus.domain.usecase.GetFeedsUseCase;
+import com.tokopedia.usecase.RequestParams;
 
 import rx.Observable;
 

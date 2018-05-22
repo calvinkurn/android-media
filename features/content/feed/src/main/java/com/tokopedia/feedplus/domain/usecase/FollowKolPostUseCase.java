@@ -1,11 +1,9 @@
 package com.tokopedia.feedplus.domain.usecase;
 
-import com.tokopedia.core.base.domain.RequestParams;
-import com.tokopedia.core.base.domain.UseCase;
-import com.tokopedia.core.base.domain.executor.PostExecutionThread;
-import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.feedplus.data.repository.FeedRepository;
 import com.tokopedia.feedplus.domain.model.FollowKolDomain;
+import com.tokopedia.usecase.RequestParams;
+import com.tokopedia.usecase.UseCase;
 
 import rx.Observable;
 
@@ -22,12 +20,9 @@ public class FollowKolPostUseCase extends UseCase<FollowKolDomain> {
     public static final int SUCCESS_STATUS = 1;
 
 
-    FeedRepository feedRepository;
+    private FeedRepository feedRepository;
 
-    public FollowKolPostUseCase(ThreadExecutor threadExecutor,
-                                PostExecutionThread postExecutionThread,
-                                FeedRepository feedRepository) {
-        super(threadExecutor, postExecutionThread);
+    public FollowKolPostUseCase(FeedRepository feedRepository) {
         this.feedRepository = feedRepository;
     }
 

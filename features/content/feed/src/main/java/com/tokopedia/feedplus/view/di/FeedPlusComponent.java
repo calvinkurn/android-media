@@ -1,6 +1,6 @@
 package com.tokopedia.feedplus.view.di;
 
-import com.tokopedia.core.base.di.component.AppComponent;
+import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.feedplus.domain.usecase.FollowKolPostUseCase;
 import com.tokopedia.feedplus.view.fragment.FeedPlusDetailFragment;
 import com.tokopedia.feedplus.view.fragment.FeedPlusFragment;
@@ -13,7 +13,7 @@ import dagger.Component;
  */
 
 @FeedPlusScope
-@Component(modules = FeedPlusModule.class, dependencies = AppComponent.class)
+@Component(modules = FeedPlusModule.class, dependencies = BaseAppComponent.class)
 public interface FeedPlusComponent {
 
     void inject(FeedPlusFragment feedPlusFragment);

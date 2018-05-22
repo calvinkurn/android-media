@@ -1,11 +1,9 @@
 package com.tokopedia.feedplus.domain.usecase;
 
-import com.tokopedia.core.base.domain.RequestParams;
-import com.tokopedia.core.base.domain.executor.PostExecutionThread;
-import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.feedplus.data.repository.FeedRepository;
 import com.tokopedia.feedplus.domain.model.feed.FeedResult;
 import com.tokopedia.feedplus.domain.model.recentview.RecentViewProductDomain;
+import com.tokopedia.usecase.RequestParams;
 
 import java.util.List;
 
@@ -18,13 +16,11 @@ import rx.functions.Func2;
 
 public class GetFirstPageFeedsCloudUseCase extends GetFeedsUseCase {
 
-    GetRecentViewUseCase getRecentProductUseCase;
+    private GetRecentViewUseCase getRecentProductUseCase;
 
-    public GetFirstPageFeedsCloudUseCase(ThreadExecutor threadExecutor,
-                                         PostExecutionThread postExecutionThread,
-                                         FeedRepository feedRepository,
+    public GetFirstPageFeedsCloudUseCase(FeedRepository feedRepository,
                                          GetRecentViewUseCase getRecentProductUseCase) {
-        super(threadExecutor, postExecutionThread, feedRepository);
+        super(feedRepository);
         this.getRecentProductUseCase = getRecentProductUseCase;
     }
 
