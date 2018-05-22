@@ -637,15 +637,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
 
     @Override
     public void onCartPromoCancelVoucherPromoClicked(CartItemPromoHolderData cartPromo, int position) {
-        if (cartPromo.isFromAutoApply()) {
-            shipmentPresenter.cancelAutoApplyCoupon();
-        } else {
-            onRemovePromoCode();
-            cartPromo.setPromoNotActive();
-            shipmentAdapter.updatePromo(null);
-            shipmentAdapter.notifyItemChanged(position);
-            shipmentAdapter.notifyItemChanged(shipmentAdapter.getShipmentCostPosition());
-        }
+        shipmentPresenter.cancelAutoApplyCoupon();
     }
 
     @Override

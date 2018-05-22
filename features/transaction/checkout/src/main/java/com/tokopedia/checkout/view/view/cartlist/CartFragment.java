@@ -330,14 +330,7 @@ public class CartFragment extends BaseCheckoutFragment implements CartListAdapte
     @Override
     public void onCartPromoCancelVoucherPromoClicked(CartItemPromoHolderData cartItemPromoHolderData, int position) {
         checkoutAnalytics.eventClickCartClickXOnBannerPromoCode();
-        if (cartItemPromoHolderData.isFromAutoApply()) {
-            dPresenter.processCancelAutoApply();
-        } else {
-            cartItemPromoHolderData.setPromoNotActive();
-            cartListAdapter.notifyItemChanged(position);
-            cartListAdapter.updateSuggestionPromo();
-            cartListAdapter.checkForShipmentForm();
-        }
+        dPresenter.processCancelAutoApply();
     }
 
     @Override
