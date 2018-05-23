@@ -14,6 +14,7 @@ public class FlightPassengerInfoValidator {
     private static final int MAX_PASSENGER_NAME_LENGTH = 48;
     private static final int MIN_PASSENGER_LAST_NAME = 2;
     private static final String REGEX_IS_ALPHABET_AND_SPACE_ONLY = "^[a-zA-Z\\s]*$";
+    private static final String REGEX_IS_ALPHANUMERIC_ONLY = "^[a-zA-Z0-9]*$";
 
     @Inject
     public FlightPassengerInfoValidator() {
@@ -67,28 +68,42 @@ public class FlightPassengerInfoValidator {
                 .compareTo(FlightDateUtil.removeTime(secondDate)) < 0;
     }
 
-    private boolean isAlphabetAndSpaceOnly(String expression) {
-        return expression.matches(new String(REGEX_IS_ALPHABET_AND_SPACE_ONLY));
-    }
-
-    private boolean isSingleWord(String passengerLastName) {
-        return passengerLastName != null && passengerLastName.split(" ").length == 1;
-    }
-
     public boolean validateDateNotLessThan(Date indicator, String selectedDate) {
         Date inputDate = FlightDateUtil.removeTime(FlightDateUtil.stringToDate(
                 FlightDateUtil.DEFAULT_VIEW_FORMAT, selectedDate));
         return inputDate.before(indicator);
     }
 
-    public boolean validateExpiredDateOfPassport(String expiredDateString, Date lastFlightDate) {
+    public boolean validateExpiredDateOfPassportAtLeast6Month(String expiredDateString, Date lastFlightDate) {
         Date expiredDate = FlightDateUtil.stringToDate(FlightDateUtil.DEFAULT_VIEW_FORMAT, expiredDateString);
         Date lastFlightDateUsed = FlightDateUtil.addTimeToSpesificDate(lastFlightDate, Calendar.DATE, -2);
 
         return expiredDate.after(lastFlightDateUsed);
     }
 
+    public boolean validateExpiredDateOfPassportMax20Years(String expiredDateString, Date lastFlightDate) {
+        Date expiredDate = FlightDateUtil.stringToDate(FlightDateUtil.DEFAULT_VIEW_FORMAT, expiredDateString);
+
+        return expiredDate.before(lastFlightDate);
+    }
+
     public boolean validatePassportNumberNotEmpty(String passportNumber) {
         return passportNumber.length() > 0 && !passportNumber.isEmpty();
+    }
+
+    public boolean validatePassportNumberAlphaNumeric(String passportNumber) {
+        return isSingleWord(passportNumber) && isAplhaNumeric(passportNumber);
+    }
+
+    private boolean isAlphabetAndSpaceOnly(String expression) {
+        return expression.matches(new String(REGEX_IS_ALPHABET_AND_SPACE_ONLY));
+    }
+
+    private boolean isAplhaNumeric(String expression) {
+        return expression.matches(new String(REGEX_IS_ALPHANUMERIC_ONLY));
+    }
+
+    private boolean isSingleWord(String passengerLastName) {
+        return passengerLastName != null && passengerLastName.split(" ").length == 1;
     }
 }

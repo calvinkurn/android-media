@@ -96,7 +96,9 @@ public interface FlightPassengerUpdateContract {
 
         void showPassportExpiredDateShouldMoreThan6MonthsFromDeparture(@StringRes int resId, String dateAfterSixMonth);
 
-        void showPassportExpiredDatePickerDialog(Date selectedDate, Date minDate);
+        void showPassportExpiredDateMax20Years(@StringRes int resId, String dateAfterTwentyYears);
+
+        void showPassportExpiredDatePickerDialog(Date selectedDate, Date minDate, Date maxDate);
 
         void hideKeyboard();
 
@@ -131,7 +133,7 @@ public interface FlightPassengerUpdateContract {
 
         void onPassportExpiredClicked();
 
-        void onPassportExpiredDateChanged(int year, int month, int dayOfMonth, Date minDate);
+        void onPassportExpiredDateChanged(int year, int month, int dayOfMonth, Date minDate, Date maxDate);
     }
 
 }

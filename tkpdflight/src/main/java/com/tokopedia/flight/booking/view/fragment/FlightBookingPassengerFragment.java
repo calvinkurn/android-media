@@ -470,6 +470,17 @@ public class FlightBookingPassengerFragment extends BaseDaggerFragment implement
     }
 
     @Override
+    public void showPassengerPassportNumberShouldAlphaNumericError(int resId) {
+        showMessageErrorInSnackBar(resId);
+    }
+
+    @Override
+    public void showPassportExpiredDateMax20Years(int resId, String dateAfterTwentyYears) {
+        NetworkErrorHelper.showRedCloseSnackbar(getActivity(),
+                String.format(getString(resId), dateAfterTwentyYears));
+    }
+
+    @Override
     public void showPassengerBirthdateEmptyError(int resId) {
         showMessageErrorInSnackBar(resId);
     }
@@ -681,23 +692,25 @@ public class FlightBookingPassengerFragment extends BaseDaggerFragment implement
     }
 
     @Override
-    public void showPassportExpiredDatePickerDialog(Date selectedDate, final Date minDate) {
+    public void showPassportExpiredDatePickerDialog(Date selectedDate, final Date minDate, final Date maxDate) {
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(selectedDate);
         DatePickerDialog datePicker = new DatePickerDialog(getActivity(), new DatePickerDialog.OnDateSetListener() {
             @Override
             public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
-                presenter.onPassportExpiredDateChanged(year, month, dayOfMonth, minDate);
+                presenter.onPassportExpiredDateChanged(year, month, dayOfMonth, minDate, maxDate);
             }
         }, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DATE));
         DatePicker datePicker1 = datePicker.getDatePicker();
         datePicker1.setMinDate(minDate.getTime());
+        datePicker1.setMaxDate(maxDate.getTime());
         datePicker.show();
     }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+        clearAllPassportFocus();
         if (resultCode == Activity.RESULT_OK) {
             switch (requestCode) {
                 case REQUEST_CODE_PICK_LUGGAGE:
@@ -734,6 +747,13 @@ public class FlightBookingPassengerFragment extends BaseDaggerFragment implement
                     }
             }
         }
+    }
+
+    private void clearAllPassportFocus() {
+        etPassportNumber.clearFocus();
+        etPassportExpired.clearFocus();
+        etPassportNationality.clearFocus();
+        etPassportIssuerCountry.clearFocus();
     }
 
     private void navigateToChooseNationality() {

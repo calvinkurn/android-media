@@ -126,9 +126,11 @@ public interface FlightBookingPassengerContract {
 
         void showPassengerChildBirthdateShouldLessThanEqual12Years(int resId);
 
-        void showPassportExpiredDatePickerDialog(Date selectedDate, Date minDate);
+        void showPassportExpiredDatePickerDialog(Date selectedDate, Date minDate, Date maxDate);
 
         void showPassportExpiredDateShouldMoreThan6MonthsFromDeparture(@StringRes int resId, String dateAfterSixMonth);
+
+        void showPassportExpiredDateMax20Years(@StringRes int resId, String dateAfterTwentyYears);
 
         void renderPassportNationality(String countryName);
 
@@ -143,6 +145,8 @@ public interface FlightBookingPassengerContract {
         void showPassportIssuerCountryEmptyError(@StringRes int resId);
 
         void showPassengerPassportExpiredDateEmptyError(@StringRes int resId);
+
+        void showPassengerPassportNumberShouldAlphaNumericError(@StringRes int resId);
     }
 
     interface Presenter extends CustomerPresenter<View> {
@@ -175,7 +179,7 @@ public interface FlightBookingPassengerContract {
 
         void onPassportExpiredClicked();
 
-        void onPassportExpiredDateChanged(int year, int month, int dayOfMonth, Date minDate);
+        void onPassportExpiredDateChanged(int year, int month, int dayOfMonth, Date minDate, Date maxxDate);
 
         void onNationalityChanged(FlightBookingPhoneCodeViewModel flightPassportNationalityViewModel);
 
