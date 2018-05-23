@@ -158,20 +158,13 @@ public class ProductInfoActivity extends BasePresenterNoLayoutActivity<ProductIn
         ShareData shareData = bundle.getParcelable(ProductInfoActivity.SHARE_DATA);
 
         if (isAddingProduct) {
-//            ShareBottomSheet.show(getSupportFragmentManager(), shareData, true);
             ShareBottomSheet share = ShareBottomSheet.newInstance(shareData, true);
             share.setDismissListener(this);
-            share.show(getSupportFragmentManager(), "Share");
-//            share.getDialog().setOnDismissListener(new OnDismissListener() {
-//                @Override
-//                public void onDismiss(DialogInterface dialog) {
-//                    closeView();
-//                }
-//            });
+            share.show(getSupportFragmentManager(), ShareBottomSheet.TITLE_EN);
         } else if (shareData != null) {
             ShareBottomSheet share = ShareBottomSheet.newInstance(shareData, false);
             share.setDismissListener(this);
-            share.show(getSupportFragmentManager(), "Share");
+            share.show(getSupportFragmentManager(), ShareBottomSheet.TITLE_EN);
         } else {
             return false;
         }

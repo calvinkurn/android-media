@@ -169,7 +169,7 @@ public class ShareBottomSheet extends BottomSheets implements ShareAdapter.OnIte
         });
 
         Toast.makeText(getActivity(), "Teks berhasil disalin.", Toast.LENGTH_SHORT).show();
-        sendAnalyticsToGTM(data.getType(),"Copy");
+        sendAnalyticsToGtm(data.getType(),"Copy");
     }
 
     private void actionShare(String packageName) {
@@ -177,7 +177,7 @@ public class ShareBottomSheet extends BottomSheets implements ShareAdapter.OnIte
         data.setSource(media);
 
         ShareSocmedHandler.ShareSpecific(data, getActivity(), packageName,
-                "text/plain", null, null);
+                TYPE, null, null);
 
         sendTracker(packageName);
     }
@@ -196,7 +196,7 @@ public class ShareBottomSheet extends BottomSheets implements ShareAdapter.OnIte
 
     private Intent getIntent(String contains) {
         final Intent mIntent = new Intent(Intent.ACTION_SEND);
-        mIntent.setType("text/plain");
+        mIntent.setType(TYPE);
 
         String title = "";
         if (data != null) {
@@ -319,7 +319,7 @@ public class ShareBottomSheet extends BottomSheets implements ShareAdapter.OnIte
             if (data.getType().equals(ShareData.CATEGORY_TYPE)) {
                 shareCategory(data, media);
             } else {
-                sendAnalyticsToGTM(data.getType(), media);
+                sendAnalyticsToGtm(data.getType(), media);
             }
         }
     }
@@ -331,7 +331,7 @@ public class ShareBottomSheet extends BottomSheets implements ShareAdapter.OnIte
         }
     }
 
-    private void sendAnalyticsToGTM(String type, String channel) {
+    private void sendAnalyticsToGtm(String type, String channel) {
         switch (type) {
             case ShareData.REFERRAL_TYPE:
                 UnifyTracking.eventReferralAndShare(AppEventTracking.Action.SELECT_CHANNEL, channel);
