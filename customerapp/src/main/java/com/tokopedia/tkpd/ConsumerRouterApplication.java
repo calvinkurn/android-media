@@ -139,7 +139,6 @@ import com.tokopedia.contact_us.createticket.ContactUsConstant;
 import com.tokopedia.contact_us.createticket.activity.ContactUsActivity;
 import com.tokopedia.contact_us.createticket.activity.ContactUsCreateTicketActivity;
 import com.tokopedia.imageuploader.ImageUploaderRouter;
-import com.tokopedia.inbox.contactus.ContactUsConstant;
 import com.tokopedia.inbox.inboxchat.activity.ChatRoomActivity;
 import com.tokopedia.inbox.inboxchat.activity.InboxChatActivity;
 import com.tokopedia.inbox.rescenter.detailv2.view.activity.DetailResChatActivity;
