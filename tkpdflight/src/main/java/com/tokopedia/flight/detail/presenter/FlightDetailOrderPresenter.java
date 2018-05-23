@@ -13,6 +13,9 @@ import com.tokopedia.flight.booking.constant.FlightBookingPassenger;
 import com.tokopedia.flight.booking.domain.subscriber.model.ProfileInfo;
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingAmenityViewModel;
 import com.tokopedia.flight.booking.view.viewmodel.SimpleViewModel;
+import com.tokopedia.flight.cancellation.constant.FlightCancellationStatus;
+import com.tokopedia.flight.cancellation.domain.mapper.FlightOrderToCancellationJourneyMapper;
+import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationJourney;
 import com.tokopedia.flight.common.constant.FlightErrorConstant;
 import com.tokopedia.flight.common.constant.FlightUrl;
 import com.tokopedia.flight.common.data.model.FlightError;
@@ -21,6 +24,7 @@ import com.tokopedia.flight.common.util.FlightAmenityType;
 import com.tokopedia.flight.common.util.FlightDateUtil;
 import com.tokopedia.flight.common.util.FlightPassengerTitleType;
 import com.tokopedia.flight.common.util.FlightStatusOrderType;
+import com.tokopedia.flight.orderlist.data.cloud.entity.CancellationEntity;
 import com.tokopedia.flight.orderlist.data.cloud.entity.ManualTransferEntity;
 import com.tokopedia.flight.orderlist.data.cloud.entity.PaymentInfoEntity;
 import com.tokopedia.flight.orderlist.domain.FlightGetOrderUseCase;
@@ -31,9 +35,11 @@ import com.tokopedia.flight.orderlist.view.viewmodel.FlightOrderDetailPassData;
 import com.tokopedia.flight.review.view.model.FlightDetailPassenger;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 
@@ -46,17 +52,23 @@ import rx.subscriptions.CompositeSubscription;
  * Created by zulfikarrahman on 12/13/17.
  */
 
-public class FlightDetailOrderPresenter extends BaseDaggerPresenter<FlightDetailOrderContract.View> implements FlightDetailOrderContract.Presenter {
+public class FlightDetailOrderPresenter extends BaseDaggerPresenter<FlightDetailOrderContract.View>
+        implements FlightDetailOrderContract.Presenter {
 
     private static final String NEW_LINE = "\n";
+    private static final int MINIMUM_HOURS_CANCELLATION_DURATION = 6;
+
     private final FlightGetOrderUseCase flightGetOrderUseCase;
+    private FlightOrderToCancellationJourneyMapper flightOrderToCancellationJourneyMapper;
     private UserSession userSession;
     private CompositeSubscription compositeSubscription;
     private int totalPrice = 0;
     private String userResendEmail = "";
 
     @Inject
-    public FlightDetailOrderPresenter(UserSession userSession, FlightGetOrderUseCase flightGetOrderUseCase) {
+    public FlightDetailOrderPresenter(FlightOrderToCancellationJourneyMapper flightOrderToCancellationJourneyMapper,
+                                      UserSession userSession, FlightGetOrderUseCase flightGetOrderUseCase) {
+        this.flightOrderToCancellationJourneyMapper = flightOrderToCancellationJourneyMapper;
         this.userSession = userSession;
         this.flightGetOrderUseCase = flightGetOrderUseCase;
         compositeSubscription = new CompositeSubscription();
@@ -69,7 +81,22 @@ public class FlightDetailOrderPresenter extends BaseDaggerPresenter<FlightDetail
 
     @Override
     public void actionCancelOrderButtonClicked() {
-        getView().navigateToContactUs(getView().getFlightOrder());
+
+        List<FlightCancellationJourney> items = transformOrderToCancellation(getView()
+                .getFlightOrder().getJourneys());
+
+        boolean isRefundable = false;
+        for (FlightCancellationJourney item : items) {
+            if (item.isRefundable()) {
+                isRefundable = true;
+            }
+        }
+
+        if (isRefundable) {
+            getView().showRefundableCancelDialog(getView().getFlightOrder().getId(), items);
+        } else {
+            getView().showNonRefundableCancelDialog(getView().getFlightOrder().getId(), items);
+        }
     }
 
     @Override
@@ -135,6 +162,13 @@ public class FlightDetailOrderPresenter extends BaseDaggerPresenter<FlightDetail
                 );
                 generateStatus(flightOrder.getStatus(), flightOrder.getStatusString());
                 renderPaymentInfo(flightOrder);
+
+                if (flightOrder.getCancellations() != null && flightOrder.getCancellations().size() > 0) {
+                    countCancellationStatus(flightOrder.getCancellations());
+                    getView().showCancellationContainer();
+                } else {
+                    getView().hideCancellationContainer();
+                }
                 renderInsurances(flightOrder);
             }
         };
@@ -175,6 +209,17 @@ public class FlightDetailOrderPresenter extends BaseDaggerPresenter<FlightDetail
                     }
                 })
         );
+    }
+
+    @Override
+    public List<FlightCancellationJourney> transformOrderToCancellation(List<FlightOrderJourney> flightOrderJourneyList) {
+        return flightOrderToCancellationJourneyMapper.transform(flightOrderJourneyList);
+    }
+
+    private boolean isDepartureDateMoreThan6Hours(Date departureDate) {
+        Date currentDate = FlightDateUtil.getCurrentDate();
+        long diffHours = (departureDate.getTime() - currentDate.getTime()) / TimeUnit.HOURS.toMillis(1);
+        return diffHours >= MINIMUM_HOURS_CANCELLATION_DURATION || diffHours < 0;
     }
 
     private void renderPaymentInfo(FlightOrder flightOrder) {
@@ -326,6 +371,23 @@ public class FlightDetailOrderPresenter extends BaseDaggerPresenter<FlightDetail
         }
     }
 
+    @Override
+    public void checkIfFlightCancellable(String invoiceId, List<FlightCancellationJourney> items) {
+        boolean canGoToCancelPage = false;
+        for (FlightOrderJourney item : getView().getFlightOrder().getJourneys()) {
+            if (isDepartureDateMoreThan6Hours(
+                    FlightDateUtil.stringToDate(item.getDepartureTime()))) {
+                canGoToCancelPage = true;
+            }
+        }
+
+        if (canGoToCancelPage) {
+            getView().navigateToCancellationPage(invoiceId, items);
+        } else {
+            getView().showLessThan6HoursDialog();
+        }
+    }
+
     private List<FlightOrderJourney> filterFlightJourneys(int status, List<FlightOrderJourney> journeys, FlightOrderDetailPassData flightOrderDetailPassData) {
         List<FlightOrderJourney> journeyList;
         if (!TextUtils.isEmpty(flightOrderDetailPassData.getDepartureAiportId())) {
@@ -446,6 +508,7 @@ public class FlightDetailOrderPresenter extends BaseDaggerPresenter<FlightDetail
                     flightOrderPassengerViewModel.getPassengerFirstName(), flightOrderPassengerViewModel.getPassengerLastName()));
             flightDetailPassenger.setPassengerType(flightOrderPassengerViewModel.getType());
             flightDetailPassenger.setInfoPassengerList(transformToSimpleModelPassenger(flightOrderPassengerViewModel.getAmenities()));
+            flightDetailPassenger.setPassengerStatus(flightOrderPassengerViewModel.getStatus());
             flightDetailPassengers.add(flightDetailPassenger);
         }
         return flightDetailPassengers;
@@ -484,6 +547,21 @@ public class FlightDetailOrderPresenter extends BaseDaggerPresenter<FlightDetail
                 return getView().getString(R.string.flight_meal_detail_order, departureId, arrivalId);
             default:
                 return "";
+        }
+    }
+
+    private void countCancellationStatus(List<CancellationEntity> cancellationEntityList) {
+        int numberOfProgress = 0;
+        for (CancellationEntity item : cancellationEntityList) {
+            if (item.getStatus() == FlightCancellationStatus.PENDING || item.getStatus() == FlightCancellationStatus.REQUESTED) {
+                numberOfProgress++;
+            }
+        }
+
+        if (numberOfProgress > 0) {
+            getView().showCancellationStatusInProgress(numberOfProgress);
+        } else {
+            getView().showCancellationStatus();
         }
     }
 

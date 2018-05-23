@@ -360,6 +360,7 @@ public class FlightAnalytics {
 
     public static final class Screen {
 
+        public static String FLIGHT_CANCELLATION_STEP_TWO = "Flight Cancellation Reason and Proof";
         public static String HOMEPAGE = "Homepage";
         public static String SEARCH = "Search";
         public static String SEARCH_RETURN = "Search Return";

@@ -52,6 +52,9 @@ public class FlightEntity {
     @SerializedName("insurances")
     @Expose
     private List<FlightOrderInsuranceEntity> insurances;
+    @SerializedName("cancellations")
+    @Expose
+    private List<CancellationEntity> cancellations;
 
     public FlightEntity() {
     }
@@ -110,5 +113,9 @@ public class FlightEntity {
 
     public List<FlightOrderInsuranceEntity> getInsurances() {
         return insurances;
+    }
+
+    public List<CancellationEntity> getCancellations() {
+        return cancellations;
     }
 }

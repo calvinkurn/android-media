@@ -4,10 +4,10 @@ import android.content.Context;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.tokopedia.abstraction.common.di.scope.ApplicationScope;
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
+import com.tokopedia.abstraction.common.di.scope.ApplicationScope;
 import com.tokopedia.abstraction.common.network.OkHttpRetryPolicy;
 import com.tokopedia.abstraction.common.network.interceptor.ErrorResponseInterceptor;
 import com.tokopedia.abstraction.common.utils.GlobalConfig;
@@ -20,13 +20,12 @@ import com.tokopedia.flight.banner.data.source.BannerDataSource;
 import com.tokopedia.flight.common.data.source.cloud.api.retrofit.StringResponseConverter;
 import com.tokopedia.flight.passenger.data.FlightPassengerFactorySource;
 import com.tokopedia.flight.booking.data.cloud.FlightCartDataSource;
-import com.tokopedia.flight.passenger.data.cloud.FlightPassengerDataListCloudSource;
+import com.tokopedia.flight.cancellation.data.cloud.FlightCancellationCloudDataSource;
 import com.tokopedia.flight.common.constant.FlightUrl;
 import com.tokopedia.flight.common.data.model.FlightErrorResponse;
 import com.tokopedia.flight.common.data.repository.FlightRepositoryImpl;
 import com.tokopedia.flight.common.data.source.FlightAuthInterceptor;
 import com.tokopedia.flight.common.data.source.cloud.api.FlightApi;
-import com.tokopedia.flight.common.di.qualifier.BookingQualifier;
 import com.tokopedia.flight.common.di.qualifier.FlightChuckQualifier;
 import com.tokopedia.flight.common.di.qualifier.FlightQualifier;
 import com.tokopedia.flight.common.di.scope.FlightScope;
@@ -34,6 +33,7 @@ import com.tokopedia.flight.common.domain.FlightRepository;
 import com.tokopedia.flight.dashboard.data.cloud.FlightClassesDataSource;
 import com.tokopedia.flight.orderlist.data.cloud.FlightOrderDataSource;
 import com.tokopedia.flight.orderlist.domain.model.FlightOrderMapper;
+import com.tokopedia.flight.passenger.data.FlightPassengerFactorySource;
 import com.tokopedia.flight.review.data.FlightBookingDataSource;
 import com.tokopedia.flight.review.data.FlightCheckVoucheCodeDataSource;
 import com.tokopedia.flight.search.data.FlightSearchReturnDataSource;
@@ -125,7 +125,6 @@ public class FlightModule {
                                                     FlightSearchReturnDataSource flightSearchReturnDataListSource,
                                                     FlightClassesDataSource getFlightClassesUseCase,
                                                     FlightCartDataSource flightCartDataSource,
-                                                    FlightPassengerDataListCloudSource flightPassengerDataListCloudSource,
                                                     FlightMetaDataDBSource flightMetaDataDBSource,
                                                     FlightAirportDataListBackgroundSource flightAirportDataListBackgroundSource,
                                                     FlightCheckVoucheCodeDataSource flightCheckVoucheCodeDataSource,
@@ -133,16 +132,17 @@ public class FlightModule {
                                                     FlightAirportVersionDBSource flightAirportVersionDBSource,
                                                     FlightOrderDataSource flightOrderDataSource,
                                                     FlightOrderMapper flightOrderMapper,
-                                                    FlightPassengerFactorySource flightPassengerFactorySource) {
+                                                    FlightPassengerFactorySource flightPassengerFactorySource,
+                                                    FlightCancellationCloudDataSource flightCancellationCloudDataSource) {
         return new FlightRepositoryImpl(bannerDataSource, flightAirportDataListSource, flightAirlineDataListSource,
                 flightSearchSingleDataListSource, flightSearchReturnDataListSource, getFlightClassesUseCase,
                 flightCartDataSource, flightMetaDataDBSource, flightAirportDataListBackgroundSource,
                 flightCheckVoucheCodeDataSource, flightBookingDataSource, flightAirportVersionDBSource,
-                flightOrderDataSource, flightOrderMapper, flightPassengerFactorySource);
+                flightOrderDataSource, flightOrderMapper, flightPassengerFactorySource, flightCancellationCloudDataSource);
     }
 
     @Provides
-    @BookingQualifier
+    @FlightQualifier
     public Gson provideGson() {
         return new GsonBuilder().create();
     }

@@ -25,6 +25,7 @@ public class FlightOrderJourneyMapper {
         FlightOrderJourney flightOrderJourney = null;
         if (journeyEntity != null) {
             flightOrderJourney = new FlightOrderJourney();
+            flightOrderJourney.setJourneyId(journeyEntity.getId());
             flightOrderJourney.setArrivalAirportId(journeyEntity.getArrivalAirportId());
             flightOrderJourney.setDepartureAiportId(journeyEntity.getDepartureAirportId());
             flightOrderJourney.setDepartureTime(journeyEntity.getDepartureTime());

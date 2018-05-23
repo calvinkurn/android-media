@@ -7,6 +7,8 @@ import com.tokopedia.abstraction.base.view.listener.BaseListViewListener;
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
 import com.tokopedia.design.quickfilter.QuickFilterItem;
 import com.tokopedia.flight.booking.domain.subscriber.model.ProfileInfo;
+import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationJourney;
+import com.tokopedia.flight.orderlist.view.viewmodel.FlightOrderSuccessViewModel;
 
 import java.util.List;
 
@@ -31,6 +33,14 @@ public interface FlightOrderListContract {
         void navigateToInputEmailForm(String invoiceId, String userId, String userEmail);
 
         Observable<ProfileInfo> getProfileObservable();
+
+        void showLessThan6HoursDialog();
+
+        void showNonRefundableCancelDialog(String invoiceId, List<FlightCancellationJourney> item, String departureTime);
+
+        void showRefundableCancelDialog(String invoiceId, List<FlightCancellationJourney> item, String departureTime);
+
+        void goToCancellationPage(String invoiceId, List<FlightCancellationJourney> item);
     }
 
     interface Presenter extends CustomerPresenter<View> {
@@ -42,5 +52,10 @@ public interface FlightOrderListContract {
         void onDownloadEticket(String invoiceId);
 
         void onGetProfileData();
+
+        void onCancelButtonClicked(FlightOrderSuccessViewModel flightOrderSuccessViewModel);
+
+        void checkIfFlightCancellable(String departureTime, String invoiceId, List<FlightCancellationJourney> item);
+
     }
 }
