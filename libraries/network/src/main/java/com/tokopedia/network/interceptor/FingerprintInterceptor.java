@@ -2,7 +2,6 @@ package com.tokopedia.network.interceptor;
 
 import android.net.Network;
 
-import com.tokopedia.network.FingerprintNetworkRouter;
 import com.tokopedia.network.NetworkRouter;
 import com.tokopedia.network.data.model.FingerprintModel;
 import com.tokopedia.network.utils.AuthUtil;
