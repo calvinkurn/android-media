@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.support.v4.app.Fragment;
 
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
-import com.tokopedia.abstraction.base.view.fragment.BaseSessionWebViewFragment;
 
 /**
  * @author anggaprasetiyo on 15/05/18.
@@ -35,6 +34,6 @@ public class UploadAwbLogisticActivity extends BaseSimpleActivity {
                 urlUpload.replace(HOST_LITE_LIVE_DOMAIN, HOST_LITE_STAGING_DOMAIN);
             }
         }
-        return BaseSessionWebViewFragment.newInstance(urlUpload);
+        return UploadAwbLogisticFragment.newInstance(urlUpload);
     }
 }
