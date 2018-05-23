@@ -328,37 +328,7 @@ public class VerificationFragment extends BaseDaggerFragment implements Verifica
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         initData();
-        if (viewModel.isUsingPopUp()
-                && !TextUtils.isEmpty(viewModel.getPopUpHeader())
-                && !TextUtils.isEmpty(viewModel.getPopUpBody())) {
-            showInterruptDialog();
-        } else {
-            presenter.requestOTP(viewModel);
-        }
-    }
-
-    private void showInterruptDialog() {
-        final Dialog dialog = new Dialog(getActivity(), Dialog.Type.LONG_PROMINANCE);
-
-        dialog.setTitle(viewModel.getPopUpHeader());
-        dialog.setDesc(viewModel.getPopUpBody());
-        dialog.setBtnOk(getString(R.string.btn_continue));
-        dialog.setOnOkClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dialog.dismiss();
-                presenter.requestOTP(viewModel);
-            }
-        });
-        dialog.setBtnCancel(getString(R.string.btn_cancel));
-        dialog.setOnCancelClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dialog.dismiss();
-                getActivity().finish();
-            }
-        });
-        dialog.show();
+        presenter.requestOTP(viewModel);
     }
 
     private void initData() {
