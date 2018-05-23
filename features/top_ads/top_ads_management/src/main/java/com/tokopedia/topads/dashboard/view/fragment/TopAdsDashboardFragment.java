@@ -12,6 +12,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.LinearSmoothScroller;
 import android.support.v7.widget.RecyclerView;
 import android.text.Html;
+import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -79,6 +80,7 @@ import javax.inject.Inject;
  */
 
 public class TopAdsDashboardFragment extends BaseDaggerFragment implements TopAdsDashboardView {
+    private static final float MILLISECONDS_PER_INCH = 200f;
     private static final int REQUEST_CODE_ADD_CREDIT = 1;
     public static final int REQUEST_CODE_AD_STATUS = 2;
     public static final int REQUEST_CODE_AD_OPTION = 3;
@@ -218,6 +220,11 @@ public class TopAdsDashboardFragment extends BaseDaggerFragment implements TopAd
             protected int getHorizontalSnapPreference() {
                 return LinearSmoothScroller.SNAP_TO_START;
             }
+
+            @Override
+            protected float calculateSpeedPerPixel(DisplayMetrics displayMetrics) {
+                return MILLISECONDS_PER_INCH/displayMetrics.densityDpi;
+            }
         };
         viewPager = view.findViewById(R.id.pager);
         viewPager.setOffscreenPageLimit(TopAdsConstant.OFFSCREEN_PAGE_LIMIT);
@@ -244,14 +251,6 @@ public class TopAdsDashboardFragment extends BaseDaggerFragment implements TopAd
 
             }
         });
-    }
-
-    private int getCenterOffset(RecyclerView recyclerView, int position) {
-        if (recyclerView == null || recyclerView.getChildAt(position) == null){
-            return 0;
-        } else {
-            return (recyclerView.getWidth() - recyclerView.getChildAt(position).getWidth()) / 2;
-        }
     }
 
     public View getShopInfoLayout() {
