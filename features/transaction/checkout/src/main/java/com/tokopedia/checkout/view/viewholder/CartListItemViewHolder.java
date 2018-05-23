@@ -22,6 +22,9 @@ import com.tokopedia.checkout.R;
 import com.tokopedia.checkout.view.adapter.CartListAdapter;
 import com.tokopedia.checkout.view.holderitemdata.CartItemHolderData;
 
+import java.math.BigDecimal;
+import java.text.DecimalFormat;
+
 /**
  * @author anggaprasetiyo on 13/03/18.
  */
@@ -299,13 +302,13 @@ public class CartListItemViewHolder extends RecyclerView.ViewHolder {
     private void validateWithAvailableQuantity(CartItemHolderData data, int qty) {
         if (data.getCartItemData().getOriginData().getInvenageValue() != 0 &&
                 qty > data.getCartItemData().getOriginData().getInvenageValue()) {
+            String errorMessage = data.getCartItemData().getErrorData().getErrorProductMaxQuantity();
             String maxValue;
             if (data.getCartItemData().getOriginData().getInvenageValue() == QTY_MAX) {
                 maxValue = QTY_MAX_STRING;
             } else {
                 maxValue = String.valueOf(data.getCartItemData().getOriginData().getInvenageValue());
             }
-            String errorMessage = data.getCartItemData().getErrorData().getErrorProductMaxQuantity();
             tvErrorFormValidation.setText(errorMessage.replace("{{value}}", maxValue));
             tvErrorFormValidation.setVisibility(View.VISIBLE);
         } else if (qty < data.getCartItemData().getOriginData().getMinimalQtyOrder()) {
