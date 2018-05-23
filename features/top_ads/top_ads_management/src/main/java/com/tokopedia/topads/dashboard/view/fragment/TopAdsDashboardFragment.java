@@ -9,6 +9,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.LinearSmoothScroller;
 import android.support.v7.widget.RecyclerView;
 import android.text.Html;
 import android.view.LayoutInflater;
@@ -212,6 +213,12 @@ public class TopAdsDashboardFragment extends BaseDaggerFragment implements TopAd
             }
         });
         recyclerTabLayout.setAdapter(topAdsTabAdapter);
+        final RecyclerView.SmoothScroller smoothScroller = new LinearSmoothScroller(getActivity()){
+            @Override
+            protected int getHorizontalSnapPreference() {
+                return LinearSmoothScroller.SNAP_TO_START;
+            }
+        };
         viewPager = view.findViewById(R.id.pager);
         viewPager.setOffscreenPageLimit(TopAdsConstant.OFFSCREEN_PAGE_LIMIT);
         initTabLayouTitles();
@@ -225,7 +232,8 @@ public class TopAdsDashboardFragment extends BaseDaggerFragment implements TopAd
 
             @Override
             public void onPageSelected(int position) {
-                tabLayoutManager.scrollToPositionWithOffset(position, getCenterOffset(recyclerTabLayout, position));
+                smoothScroller.setTargetPosition(position);
+                tabLayoutManager.startSmoothScroll(smoothScroller);
                 topAdsTabAdapter.selected(position);
                 trackingStatisticBar(position);
                 getCurrentStatisticsFragment().updateDataStatistic(dataStatistic);

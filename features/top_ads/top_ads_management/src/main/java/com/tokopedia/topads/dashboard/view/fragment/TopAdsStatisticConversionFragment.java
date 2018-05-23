@@ -48,7 +48,7 @@ public class TopAdsStatisticConversionFragment extends TopAdsDashboardStatisticF
                 title = R.string.title_top_ads_statistic_graph_convertion_all_ads;
                 break;
         }
-        if (contentTitleGraph != null) {
+        if (contentTitleGraph != null && isAdded()) {
             contentTitleGraph.setText(getTitleGraph());
         }
     }
