@@ -564,6 +564,7 @@ public class ImageSearchProductListFragment extends BaseDaggerFragment implement
         data.setName(item.getProductName());
         data.setPrice(item.getPrice());
         data.setImgUri(item.getImageUrl());
+        data.setTrackerListName(String.format(SearchTracking.imageClick, item.getPosition()));
         Bundle bundle = new Bundle();
         Intent intent = ProductDetailRouter.createInstanceProductDetailInfoActivity(getActivity());
         bundle.putParcelable(ProductDetailRouter.EXTRA_PRODUCT_ITEM, data);

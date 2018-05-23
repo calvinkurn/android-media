@@ -15,6 +15,10 @@ public class FlightUrl {
     public static final String FLIGHT_CART_PATH = FLIGHT_PATH + "cart";
     public static final String FLIGHT_CHECK_VOUCHER_CODE = FLIGHT_PATH + "voucher/check";
     public static final String FLIGHT_PASSENGER_SAVED = FLIGHT_PATH + "passenger";
+    public static final String FLIGHT_CANCELLATION_PATH = FLIGHT_PATH + "cancel/";
+    public static final String FLIGHT_CANCELLATION_PASSENGER = FLIGHT_CANCELLATION_PATH + "passenger";
+    public static final String FLIGHT_CANCELLATION_ESTIMATE_REFUND = FLIGHT_CANCELLATION_PATH + "estimate";
+    public static final String FLIGHT_CANCELLATION_REQUEST = FLIGHT_CANCELLATION_PATH + "request";
     public static final String FLIGHT_VERIFY_BOOKING = "travel/v1/oms/verify";
     public static final String FLIGHT_CHECKOUT_BOOKING = "travel/v1/oms/checkout";
     public static final String FLIGHT_ORDERS = FLIGHT_PATH + "order/list";
@@ -24,6 +28,7 @@ public class FlightUrl {
     public static final String CONTACT_US_PATH = "contact-us";
     public static final String CONTACT_US_FLIGHT_PREFIX = "?pid=46&ivtype=4";
     public static final String CATEGORY_ID = "27";
+    public static final String TNC_LINK = "https://www.tokopedia.com/bantuan/pengembalian-dana-dan-penggantian-jadwal";
     public static String BASE_URL = "https://api-staging.tokopedia.com";
     public static String WEB_DOMAIN = "https://staging.tokopedia.com/";
     public static String ALL_PROMO_LINK = WEB_DOMAIN + "promo/";

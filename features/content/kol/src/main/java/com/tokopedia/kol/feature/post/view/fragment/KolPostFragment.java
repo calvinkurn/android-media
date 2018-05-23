@@ -36,7 +36,9 @@ import javax.inject.Inject;
  * @author by milhamj on 19/02/18.
  */
 
-public class KolPostFragment extends BaseDaggerFragment implements KolPostListener.View {
+public class KolPostFragment extends BaseDaggerFragment implements
+        KolPostListener.View,
+        KolPostListener.View.ViewHolder {
 
     public static final String PARAM_IS_LIKED = "is_liked";
     public static final String PARAM_TOTAL_LIKES = "total_likes";
@@ -218,8 +220,7 @@ public class KolPostFragment extends BaseDaggerFragment implements KolPostListen
     }
 
     @Override
-    public void onGoToKolProfile(int page, int rowNumber, String url) {
-
+    public void onGoToKolProfile(int page, int rowNumber, String userId, int postId) {
     }
 
     @Override
