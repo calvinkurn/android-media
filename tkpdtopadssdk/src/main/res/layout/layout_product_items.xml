@@ -4,12 +4,12 @@
     android:id="@+id/image_container"
     app:cardUseCompatPadding="true"
     android:layout_margin="@dimen/dp_3"
-    android:layout_width="@dimen/dp_56"
+    android:layout_width="wrap_content"
     android:layout_height="@dimen/dp_56">
 
-    <com.tokopedia.topads.sdk.view.SquareImageView
+    <ImageView
         android:id="@+id/image"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:adjustViewBounds="true"
         android:gravity="center" />
