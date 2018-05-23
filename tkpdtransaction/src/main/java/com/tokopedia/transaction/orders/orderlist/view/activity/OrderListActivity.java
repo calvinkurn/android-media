@@ -1,13 +1,17 @@
 package com.tokopedia.transaction.orders.orderlist.view.activity;
 
 import android.app.Fragment;
+import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 
+import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tokopedia.core.app.DrawerPresenterActivity;
 import com.tokopedia.core.router.transactionmodule.TransactionPurchaseRouter;
 import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.transaction.R;
+import com.tokopedia.transaction.applink.TransactionAppLink;
 import com.tokopedia.transaction.orders.orderlist.view.fragment.OrderListFragment;
 
 import static com.tokopedia.core.router.transactionmodule.TransactionPurchaseRouter.EXTRA_STATE_TAB_POSITION;
@@ -15,6 +19,15 @@ import static com.tokopedia.core.router.transactionmodule.TransactionPurchaseRou
 public class OrderListActivity extends DrawerPresenterActivity {
     private static final String ORDER_CATEGORY = "orderCategory";
     private int drawerPosition;
+
+    @DeepLink(TransactionAppLink.ORDER_HISTORY)
+    public static Intent getOrderListIntent(Context context, Bundle bundle){
+        Uri.Builder uri = Uri.parse(bundle.getString(DeepLink.URI)).buildUpon();
+        return new Intent(context, OrderListActivity.class)
+                .setData(uri.build())
+                .putExtras(bundle);
+    }
+
     @Override
     protected void setupURIPass(Uri data) {
 
