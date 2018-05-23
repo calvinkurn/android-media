@@ -130,6 +130,8 @@ public interface FlightBookingPassengerContract {
 
         void showPassportExpiredDateShouldMoreThan6MonthsFromDeparture(@StringRes int resId, String dateAfterSixMonth);
 
+        void showPassportExpiredDateMax20Years(@StringRes int resId, String dateAfterTwentyYears);
+
         void renderPassportNationality(String countryName);
 
         void renderPassportIssuerCountry(String countryName);
@@ -143,8 +145,6 @@ public interface FlightBookingPassengerContract {
         void showPassportIssuerCountryEmptyError(@StringRes int resId);
 
         void showPassengerPassportExpiredDateEmptyError(@StringRes int resId);
-
-        void showPassportExpiredDateMax20Years(@StringRes int resId, String dateAfterTwentyYears);
     }
 
     interface Presenter extends CustomerPresenter<View> {
