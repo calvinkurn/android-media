@@ -5,6 +5,7 @@ import android.accounts.NetworkErrorException;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
 import com.tokopedia.core.shopinfo.models.shopmodel.ShopModel;
+import com.tokopedia.gm.common.domain.interactor.SetCashbackUseCase;
 import com.tokopedia.seller.SellerModuleRouter;
 import com.tokopedia.seller.common.featuredproduct.GMFeaturedProductDomainModel;
 import com.tokopedia.seller.product.manage.constant.CatalogProductOption;
@@ -43,6 +44,7 @@ public class ProductManagePresenterImpl extends BaseDaggerPresenter<ProductManag
     private final SellerModuleRouter sellerModuleRouter;
     private final MultipleDeleteProductUseCase multipleDeleteProductUseCase;
     private final TopAdsAddSourceTaggingUseCase topAdsAddSourceTaggingUseCase;
+    private SetCashbackUseCase setCashbackUseCase;
 
     public ProductManagePresenterImpl(GetShopInfoUseCase getShopInfoUseCase,
                                       GetProductListSellingUseCase getProductListSellingUseCase,
@@ -51,7 +53,8 @@ public class ProductManagePresenterImpl extends BaseDaggerPresenter<ProductManag
                                       GetProductListManageMapperView getProductListManageMapperView,
                                       SellerModuleRouter sellerModuleRouter,
                                       MultipleDeleteProductUseCase multipleDeleteProductUseCase,
-                                      TopAdsAddSourceTaggingUseCase topAdsAddSourceTaggingUseCase) {
+                                      TopAdsAddSourceTaggingUseCase topAdsAddSourceTaggingUseCase,
+                                      SetCashbackUseCase setCashbackUseCase) {
         this.getShopInfoUseCase = getShopInfoUseCase;
         this.getProductListSellingUseCase = getProductListSellingUseCase;
         this.editPriceProductUseCase = editPriceProductUseCase;
@@ -60,6 +63,7 @@ public class ProductManagePresenterImpl extends BaseDaggerPresenter<ProductManag
         this.sellerModuleRouter = sellerModuleRouter;
         this.multipleDeleteProductUseCase = multipleDeleteProductUseCase;
         this.topAdsAddSourceTaggingUseCase = topAdsAddSourceTaggingUseCase;
+        this.setCashbackUseCase = setCashbackUseCase;
     }
 
     @Override
@@ -85,7 +89,7 @@ public class ProductManagePresenterImpl extends BaseDaggerPresenter<ProductManag
     @Override
     public void setCashback(final String productId, final int cashback) {
         getView().showLoadingProgress();
-        sellerModuleRouter.setCashBack(productId, cashback).subscribe(new Subscriber<Boolean>() {
+        setCashbackUseCase.execute(SetCashbackUseCase.createRequestParams(productId, cashback), new Subscriber<Boolean>() {
             @Override
             public void onCompleted() {
 
@@ -261,6 +265,7 @@ public class ProductManagePresenterImpl extends BaseDaggerPresenter<ProductManag
     @Override
     public void detachView() {
         super.detachView();
+        setCashbackUseCase.unsubscribe();
         getProductListSellingUseCase.unsubscribe();
         editPriceProductUseCase.unsubscribe();
         deleteProductUseCase.unsubscribe();

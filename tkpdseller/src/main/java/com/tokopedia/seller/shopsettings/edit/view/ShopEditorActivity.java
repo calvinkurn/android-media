@@ -1,7 +1,5 @@
 package com.tokopedia.seller.shopsettings.edit.view;
 
-import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -11,32 +9,18 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
 import android.widget.FrameLayout;
 
-import com.tokopedia.core.ImageGallery;
 import com.tokopedia.core.R;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.TActivity;
-import com.tokopedia.core.gallery.ImageGalleryEntry;
-import com.tokopedia.core.myproduct.utils.FileUtils;
-import com.tokopedia.core.newgallery.GalleryActivity;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.seller.shop.common.di.component.DaggerDeleteCacheComponent;
 import com.tokopedia.seller.shop.common.di.component.DeleteCacheComponent;
 import com.tokopedia.seller.shop.common.domain.interactor.DeleteShopInfoUseCase;
-import com.tokopedia.seller.shopsettings.edit.presenter.ShopCreateView;
-import com.tokopedia.seller.shopsettings.edit.presenter.ShopEditorView;
 import com.tokopedia.seller.shopsettings.edit.presenter.ShopSettingView;
-import com.tokopedia.seller.shopsettings.shipping.OpenShopEditShipping;
-import com.tokopedia.seller.shopsettings.shipping.fragment.EditShippingViewListener;
-import com.tokopedia.seller.shopsettings.shipping.model.openshopshipping.OpenShopData;
-
-import java.io.File;
-import java.util.ArrayList;
 
 import javax.inject.Inject;
-
-import static com.tokopedia.seller.shopsettings.shipping.OpenShopEditShipping.RESUME_OPEN_SHOP_KEY;
 
 /**
  * Created by Zulfikar on 5/19/2016.
@@ -96,11 +80,6 @@ public class ShopEditorActivity extends TActivity implements
         Fragment fragment = null;
 
         switch (FRAGMENT_TAG) {
-            case CREATE_SHOP_FRAGMENT_TAG:
-                fragment = supportFragmentManager.findFragmentByTag(CREATE_SHOP_FRAGMENT_TAG);
-                moveToFragment(fragment, true, CREATE_SHOP_FRAGMENT_TAG);
-                createCustomToolbar(getString(R.string.title_open_shop));
-                break;
             case EDIT_SHOP_FRAGMENT_TAG:
                 if (!isFragmentCreated(EDIT_SHOP_FRAGMENT_TAG)) {
                     fragment = new ShopEditorFragment();
@@ -124,17 +103,6 @@ public class ShopEditorActivity extends TActivity implements
         } else {
             super.onBackPressed();
         }
-    }
-
-    public static void startOpenShopEditShippingActivity(AppCompatActivity context) {
-        Intent intent = new Intent(context, OpenShopEditShipping.class);
-        context.startActivityForResult(intent, ShopCreateView.REQUEST_EDIT_SHIPPING);
-    }
-
-    public static void continueOpenShopEditShippingActivity(AppCompatActivity context, OpenShopData openShopData) {
-        Intent intent = new Intent(context, OpenShopEditShipping.class);
-        intent.putExtra(RESUME_OPEN_SHOP_KEY, openShopData);
-        context.startActivityForResult(intent, ShopCreateView.REQUEST_EDIT_SHIPPING);
     }
 
     @Override
@@ -163,74 +131,8 @@ public class ShopEditorActivity extends TActivity implements
         return supportFragmentManager.findFragmentByTag(tag) != null;
     }
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if ((requestCode == GalleryActivity.INSTAGRAM_SELECT_REQUEST_CODE && resultCode == Activity.RESULT_OK) ||
-                requestCode == ImageGallery.TOKOPEDIA_GALLERY) {
-            ImageGalleryEntry.onActivityForResult(new ImageGalleryEntry.GalleryListener() {
-                @Override
-                public void onSuccess(ArrayList<String> imageUrls) {
-                    File file = FileUtils.writeImageToTkpdPath(imageUrls.get(0));
-                    Fragment fragment = supportFragmentManager.findFragmentByTag(CREATE_SHOP_FRAGMENT_TAG);
-                    if (fragment != null) {
-                        ((ShopCreateView) fragment).setShopAvatar(file.getPath());
-                    }
-                    fragment = supportFragmentManager.findFragmentByTag(EDIT_SHOP_FRAGMENT_TAG);
-                    if (fragment != null) {
-                        ((ShopEditorView) fragment).uploadImage(file.getPath());
-                    }
-                }
-
-                @Override
-                public void onSuccess(String path) {
-                    File file = FileUtils.writeImageToTkpdPath(path);
-                    Fragment fragment = supportFragmentManager.findFragmentByTag(CREATE_SHOP_FRAGMENT_TAG);
-                    if (fragment != null && file != null) {
-                        ((ShopCreateView) fragment).setShopAvatar(file.getPath());
-                    }
-                    fragment = supportFragmentManager.findFragmentByTag(EDIT_SHOP_FRAGMENT_TAG);
-                    if (fragment != null && file != null) {
-                        ((ShopEditorView) fragment).uploadImage(file.getPath());
-                    }
-                }
-
-                @Override
-                public void onFailed(String message) {
-                    Fragment fragment = supportFragmentManager.findFragmentByTag(CREATE_SHOP_FRAGMENT_TAG);
-                    if (fragment != null) {
-                        ((ShopCreateView) fragment).onMessageError(0, message);
-                    }
-                    fragment = supportFragmentManager.findFragmentByTag(EDIT_SHOP_FRAGMENT_TAG);
-                    if (fragment != null) {
-                        ((ShopEditorView) fragment).onMessageError(0, message);
-                    }
-
-                }
-
-                @Override
-                public Context getContext() {
-                    return ShopEditorActivity.this;
-                }
-            }, requestCode, resultCode, data);
-
-        } else if (requestCode == ShopCreateView.REQUEST_EDIT_SHIPPING) {
-            if (data != null) {
-                Fragment fragment = supportFragmentManager.findFragmentByTag(CREATE_SHOP_FRAGMENT_TAG);
-                OpenShopData shippingData = data.getParcelableExtra(EditShippingViewListener.EDIT_SHIPPING_DATA);
-
-                if (fragment != null) {
-                    ((ShopCreateView) fragment).saveShippingData(shippingData);
-                }
-            }
-        }
-
-
-    }
-
     private void createCustomToolbar(String shopTitle) {
         toolbar.setTitle(shopTitle);
-
     }
 
     @Override

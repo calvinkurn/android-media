@@ -26,6 +26,8 @@ dependencies {
     compile project(rootProject.ext.libraries.williamchart)
     compile project(rootProject.ext.features.topAdsSourceTagging)
     compile project(rootProject.ext.features.topAdsCommon)
+    compile project(rootProject.ext.features.goldMerchantCommon)
+    compile project(rootProject.ext.libraries.imagePicker)
 
     compile rootProject.ext.permissionDispatcherDependencies.permissionDispatcher
     apt rootProject.ext.permissionDispatcherDependencies.permissionDispatcherProcessor

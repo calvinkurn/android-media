@@ -21,6 +21,8 @@
     <string name="label_top_ads_click">Klik</string>
     <string name="label_top_ads_ctr">Persentase Klik</string>
     <string name="label_top_ads_conversion">Konversi</string>
+    <string name="label_top_ads_conversion_product">Terjual</string>
+    <string name="label_top_ads_conversion_store">Favorit</string>
     <string name="label_top_ads_average">Rata - Rata</string>
     <string name="label_top_ads_cost">Terpakai</string>
     <string name="label_top_ads_groups">Grup</string>
@@ -123,7 +125,9 @@
     <!-- Top Ads Statistic-->
     <string name="title_top_ads_statistic_graph_impression">Jumlah orang yang melihat iklan Anda.</string>
     <string name="title_top_ads_statistic_graph_avg">Biaya rata-rata yang Anda bayarkan untuk setiap klik.</string>
-    <string name="title_top_ads_statistic_graph_convertion">Jumlah favorit / transaksi dari iklan Anda.</string>
+    <string name="title_top_ads_statistic_graph_convertion_all_ads">Jumlah terjual / favorit dari iklan Anda.</string>
+    <string name="title_top_ads_statistic_graph_convertion_store">Jumlah favorit dari iklan Anda.</string>
+    <string name="title_top_ads_statistic_graph_convertion_product">Jumlah produk terjual dari iklan Anda.</string>
     <string name="title_top_ads_statistic_graph_ctr">Perbandingan orang yang melihat iklan Anda dengan jumlah klik pada iklan tersebut.</string>
     <string name="title_top_ads_statistic_graph_click">Jumlah klik pada iklan Anda.</string>
     <string name="title_top_ads_statistic_graph_spent">Jumlah anggaran yang telah terpakai untuk iklan ini.</string>

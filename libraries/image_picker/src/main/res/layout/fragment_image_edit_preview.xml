@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/top_frame"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white">
+
+    <com.yalantis.ucrop.view.UCropView
+        android:id="@+id/ucrop"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+
+    <ProgressBar
+        android:id="@+id/progressbar"
+        style="?android:attr/indeterminate"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:indeterminate="true"
+        android:visibility="gone"
+        tools:visibility="visible" />
+
+    <View
+        android:id="@+id/blocking_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:clickable="true"
+        android:focusable="true"/>
+
+    <android.support.v7.widget.AppCompatImageView
+        android:id="@+id/iv_undo"
+        android:layout_width="@dimen/dp_40"
+        android:layout_height="@dimen/dp_40"
+        app:srcCompat="@drawable/ic_undo_active"
+        android:scaleType="centerInside"
+        android:background="@drawable/circle_trans_grey"
+        android:layout_gravity="bottom|start"
+        android:layout_marginLeft="@dimen/dp_16"
+        android:layout_marginBottom="@dimen/dp_16"
+        android:visibility="gone"
+        tools:visibility="visible"/>
+
+    <android.support.v7.widget.AppCompatImageView
+        android:id="@+id/iv_redo"
+        android:layout_width="@dimen/dp_40"
+        android:layout_height="@dimen/dp_40"
+        app:srcCompat="@drawable/ic_redo_active"
+        android:scaleType="centerInside"
+        android:background="@drawable/circle_trans_grey"
+        android:layout_gravity="bottom|end"
+        android:layout_marginRight="@dimen/dp_16"
+        android:layout_marginBottom="@dimen/dp_16"
+        android:visibility="gone"
+        tools:visibility="visible"/>
+
+</FrameLayout>
+
