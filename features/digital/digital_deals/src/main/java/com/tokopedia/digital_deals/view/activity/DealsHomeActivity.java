@@ -54,7 +54,6 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import static com.raizlabs.android.dbflow.config.FlowManager.getContext;
 import static com.tokopedia.abstraction.constant.TkpdAppLink.DIGITAL_DEALS;
 
 public class DealsHomeActivity extends BaseSimpleActivity implements HasComponent<DealsComponent>, DealsContract.View, View.OnClickListener {
@@ -159,9 +158,9 @@ public class DealsHomeActivity extends BaseSimpleActivity implements HasComponen
         layoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
 
         recyclerViewTrendingDeals.setLayoutManager(layoutManager);
-        recyclerViewCatItems.setLayoutManager(new GridLayoutManager(getContext(), SPAN_COUNT_4,
+        recyclerViewCatItems.setLayoutManager(new GridLayoutManager(getActivity(), SPAN_COUNT_4,
                 GridLayoutManager.VERTICAL, false));
-        recyclerViewBrandItems.setLayoutManager(new GridLayoutManager(getContext(), SPAN_COUNT_4,
+        recyclerViewBrandItems.setLayoutManager(new GridLayoutManager(getActivity(), SPAN_COUNT_4,
                 GridLayoutManager.VERTICAL, false));
     }
 
