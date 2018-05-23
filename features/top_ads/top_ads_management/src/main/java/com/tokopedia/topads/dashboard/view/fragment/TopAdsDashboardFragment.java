@@ -202,7 +202,8 @@ public class TopAdsDashboardFragment extends BaseDaggerFragment implements TopAd
             }
         });
         recyclerTabLayout = view.findViewById(R.id.recyclerview_tabLayout);
-        recyclerTabLayout.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false));
+        final LinearLayoutManager tabLayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false);
+        recyclerTabLayout.setLayoutManager(tabLayoutManager);
         topAdsTabAdapter = new TopAdsTabAdapter(getActivity());
         topAdsTabAdapter.setListener(new TopAdsTabAdapter.OnRecyclerTabItemClick() {
             @Override
@@ -224,7 +225,7 @@ public class TopAdsDashboardFragment extends BaseDaggerFragment implements TopAd
 
             @Override
             public void onPageSelected(int position) {
-                recyclerTabLayout.scrollToPosition(position);
+                tabLayoutManager.scrollToPositionWithOffset(position, getCenterOffset(recyclerTabLayout, position));
                 topAdsTabAdapter.selected(position);
                 trackingStatisticBar(position);
                 getCurrentStatisticsFragment().updateDataStatistic(dataStatistic);
@@ -235,6 +236,14 @@ public class TopAdsDashboardFragment extends BaseDaggerFragment implements TopAd
 
             }
         });
+    }
+
+    private int getCenterOffset(RecyclerView recyclerView, int position) {
+        if (recyclerView == null || recyclerView.getChildAt(position) == null){
+            return 0;
+        } else {
+            return (recyclerView.getWidth() - recyclerView.getChildAt(position).getWidth()) / 2;
+        }
     }
 
     public View getShopInfoLayout() {
@@ -303,6 +312,13 @@ public class TopAdsDashboardFragment extends BaseDaggerFragment implements TopAd
             return null;
         }
         return (TopAdsDashboardStatisticFragment) pagerAdapter.instantiateItem(viewPager, topAdsTabAdapter.getSelectedTabPosition());
+    }
+
+    private TopAdsStatisticConversionFragment getConversionFragment(){
+        if (pagerAdapter == null) {
+            return null;
+        }
+        return (TopAdsStatisticConversionFragment) pagerAdapter.getItem(5);
     }
 
     private void initTabLayouTitles() {
@@ -686,6 +702,10 @@ public class TopAdsDashboardFragment extends BaseDaggerFragment implements TopAd
                     @Override
                     public void onBottomSheetItemClick(MenuItem item) {
                         selectedStatisticType = item.getItemId();
+                        topAdsTabAdapter.setStatisticsType(selectedStatisticType);
+                        if (getConversionFragment() != null){
+                            getConversionFragment().updateTitle(selectedStatisticType);
+                        }
                         loadStatisticsData();
                     }
                 }).createDialog();
