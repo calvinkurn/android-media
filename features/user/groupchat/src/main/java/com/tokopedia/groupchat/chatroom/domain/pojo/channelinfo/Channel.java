@@ -3,6 +3,8 @@ package com.tokopedia.groupchat.chatroom.domain.pojo.channelinfo;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import com.tokopedia.groupchat.chatroom.domain.pojo.ExitMessage;
+import com.tokopedia.groupchat.chatroom.domain.pojo.PinnedMessagePojo;
 import com.tokopedia.groupchat.chatroom.domain.pojo.poll.ActivePollPojo;
 
 import java.util.List;
@@ -87,6 +89,12 @@ public class Channel {
     @SerializedName("kick_msg")
     @Expose
     private String kickedMessage;
+    @SerializedName("pinned_message")
+    @Expose
+    private PinnedMessagePojo pinnedMessage;
+    @SerializedName("exit_msg")
+    @Expose
+    private ExitMessage exitMessage;
 
     public int getChannelId() {
         return channelId;
@@ -246,5 +254,13 @@ public class Channel {
 
     public String getKickedMessage() {
         return kickedMessage;
+    }
+
+    public PinnedMessagePojo getPinnedMessage() {
+        return pinnedMessage;
+    }
+
+    public ExitMessage getExitMessage() {
+        return exitMessage;
     }
 }

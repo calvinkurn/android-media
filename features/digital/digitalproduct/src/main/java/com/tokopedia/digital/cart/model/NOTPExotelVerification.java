@@ -18,7 +18,6 @@ import com.exotel.verification.contracts.VerificationSuccess;
 import com.exotel.verification.exceptions.InvalidConfigException;
 import com.exotel.verification.exceptions.PermissionNotGrantedException;
 import com.exotel.verification.exceptions.VerificationAlreadyInProgressException;
-import com.logentries.logger.AndroidLogger;
 import com.tkpd.library.utils.AnalyticsLog;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.digital.analytics.NOTPTracking;
