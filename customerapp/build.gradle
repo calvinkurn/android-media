@@ -149,6 +149,7 @@ android {
 
     buildTypes {
         debug {
+            ext.enableHansel=false
             signingConfig signingConfigs.debug
             minifyEnabled false
             zipAlignEnabled false
