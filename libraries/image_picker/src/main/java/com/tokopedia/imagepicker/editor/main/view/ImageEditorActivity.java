@@ -838,8 +838,8 @@ public class ImageEditorActivity extends BaseSimpleActivity implements ImageEdit
         } else {
             if (anyEditChanges()) {
                 AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this, R.style.AppCompatAlertDialogStyle)
-                        .setTitle(getString(R.string.image_edit_backpressed_title))
-                        .setPositiveButton(getString(R.string.exit), new DialogInterface.OnClickListener() {
+                        .setMessage(getString(R.string.image_edit_backpressed_title))
+                        .setPositiveButton(getString(R.string.label_return), new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
                                 ImageUtils.deleteCacheFolder(ImageUtils.DirectoryDef.DIRECTORY_TOKOPEDIA_CACHE);
