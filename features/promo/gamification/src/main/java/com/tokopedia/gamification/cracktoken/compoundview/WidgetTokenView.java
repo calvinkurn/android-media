@@ -319,32 +319,31 @@ public class WidgetTokenView extends FrameLayout {
         playSound(R.raw.reward);
     }
 
-    private void playSound(int resId) {
-        MediaPlayer mp = getCrackMediaPlayer(resId);
-        if (mp!=null) {
-            mp.start();
-        }
-    }
-
-    public MediaPlayer getCrackMediaPlayer(int resId) {
+    public void playSound(int resId) {
         if (crackMediaPlayer == null) {
             crackMediaPlayer = new MediaPlayer();
-        } else {
-            crackMediaPlayer.stop();
-            crackMediaPlayer.reset();
+            crackMediaPlayer.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
+                @Override
+                public void onPrepared(MediaPlayer mp) {
+                    mp.start();
+                }
+            });
         }
         try {
+            if (crackMediaPlayer.isPlaying()) {
+                crackMediaPlayer.stop();
+            }
+            crackMediaPlayer.reset();
             AssetFileDescriptor afd = getContext().getResources().openRawResourceFd(resId);
             if (afd == null) {
-                return null;
+                return;
             }
             crackMediaPlayer.setDataSource(afd.getFileDescriptor(), afd.getStartOffset(), afd.getLength());
             afd.close();
-            crackMediaPlayer.prepare();
+            crackMediaPlayer.prepareAsync();
         } catch (Exception e) {
-            return null;
+            // not play sound.
         }
-        return crackMediaPlayer;
     }
 
     public boolean isCrackPercentageFull() {
