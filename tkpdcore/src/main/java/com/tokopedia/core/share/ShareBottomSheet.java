@@ -41,21 +41,41 @@ public class ShareBottomSheet extends BottomSheets implements ShareAdapter.OnIte
         ShareBottomSheet fragment = new ShareBottomSheet();
         Bundle bundle = new Bundle();
         bundle.putParcelable(ShareBottomSheet.class.getName(), data);
-        bundle.putBoolean(ShareBottomSheet.class.getName()+".isAddingProduct", isAddingProduct);
+        bundle.putBoolean(ShareBottomSheet.class.getName()+KEY_ADDING, isAddingProduct);
         fragment.setArguments(bundle);
         return fragment;
     }
 
     public static void show(FragmentManager fragmentManager, ShareData data, boolean isAddingProduct) {
-        newInstance(data, isAddingProduct).show(fragmentManager, "Share");
+        newInstance(data, isAddingProduct).show(fragmentManager, TITLE_EN);
     }
 
     public static void show(FragmentManager fragmentManager, ShareData data) {
-        newInstance(data, false).show(fragmentManager, "Share");
+        newInstance(data, false).show(fragmentManager, TITLE_EN);
     }
 
-    private String[] ClassNameApplications = new String[] {"com.whatsapp.ContactPicker", "com.facebook.composer.shareintent.ImplicitShareIntentHandlerDefaultAlias",
-            "jp.naver.line.android.activity.selectchat.SelectChatActivityLaunchActivity", "com.twitter.composer.ComposerShareActivity", "com.google.android.apps.plus.GatewayActivityAlias"};
+    public static final String TITLE_EN = "Share";
+    public static final String TITLE_ID = "Bagikan";
+
+    public static final String KEY_ADDING = ".isAddingProduct";
+
+    private static final String PACKAGENAME_WHATSAPP = "com.whatsapp.ContactPicker";
+    private static final String PACKAGENAME_FACEBOOK = "com.facebook.composer.shareintent.ImplicitShareIntentHandlerDefaultAlias";
+    private static final String PACKAGENAME_LINE = "jp.naver.line.android.activity.selectchat.SelectChatActivityLaunchActivity";
+    private static final String PACKAGENAME_TWITTER = "com.twitter.composer.ComposerShareActivity";
+    private static final String PACKAGENAME_GPLUS = "com.google.android.apps.plus.GatewayActivityAlias";
+
+    private static final String KEY_WHATSAPP = "whatsapp";
+    private static final String KEY_LINE = "line";
+    private static final String KEY_TWITTER = "twitter";
+    private static final String KEY_FACEBOOK = "facebook";
+    private static final String KEY_GOOGLE = "google";
+    private static final String KEY_OTHER = "lainnya";
+
+    private static final String TYPE = "text/plain";
+
+    private String[] ClassNameApplications = new String[] {PACKAGENAME_WHATSAPP, PACKAGENAME_FACEBOOK,
+            PACKAGENAME_LINE, PACKAGENAME_TWITTER, PACKAGENAME_GPLUS};
 
     private ShareData data;
     private boolean isAdding;
@@ -72,13 +92,13 @@ public class ShareBottomSheet extends BottomSheets implements ShareAdapter.OnIte
 
     @Override
     protected String title() {
-        return "Bagikan";
+        return TITLE_ID;
     }
 
     @Override
     protected void configView(View parentView) {
-        data = getArguments().getParcelable(ShareBottomSheet.class.getName()); // getting data from parcelable
-        isAdding = getArguments().getBoolean(ShareBottomSheet.class.getName()+".isAddingProduct", false);
+        data = getArguments().getParcelable(ShareBottomSheet.class.getName());
+        isAdding = getArguments().getBoolean(ShareBottomSheet.class.getName()+KEY_ADDING, false);
         super.configView(parentView);
     }
 
@@ -130,7 +150,7 @@ public class ShareBottomSheet extends BottomSheets implements ShareAdapter.OnIte
 
     @Override
     public void onItemClick(String packageName) {
-        if (packageName.equalsIgnoreCase("lainnya")) {
+        if (packageName.equalsIgnoreCase(KEY_OTHER)) {
             actionMore(packageName);
         } else if (packageName.equalsIgnoreCase("salinlink")) {
             actionCopy();
@@ -277,17 +297,17 @@ public class ShareBottomSheet extends BottomSheets implements ShareAdapter.OnIte
      * @return String media tracking
      */
     private String constantMedia(String packageName) {
-        if (packageName.contains("whatsapp")) {
+        if (packageName.contains(KEY_WHATSAPP)) {
             return AppEventTracking.SOCIAL_MEDIA.WHATSHAPP;
-        } else if (packageName.contains("line")) {
+        } else if (packageName.contains(KEY_LINE)) {
             return AppEventTracking.SOCIAL_MEDIA.LINE;
-        } else if (packageName.contains("twitter")) {
+        } else if (packageName.contains(KEY_TWITTER)) {
             return AppEventTracking.SOCIAL_MEDIA.TWITTER;
-        } else if (packageName.contains("facebook")) {
+        } else if (packageName.contains(KEY_FACEBOOK)) {
             return AppEventTracking.SOCIAL_MEDIA.FACEBOOK;
-        } else if (packageName.contains("google")) {
+        } else if (packageName.contains(KEY_GOOGLE)) {
             return AppEventTracking.SOCIAL_MEDIA.GOOGLE_PLUS;
-        } else if (packageName.contains("lainnya")) {
+        } else if (packageName.contains(KEY_OTHER)) {
             return AppEventTracking.SOCIAL_MEDIA.OTHER;
         }
         return "";

@@ -244,4 +244,9 @@ public class SellerMainApplication extends SellerRouterApplication implements Mo
     public Intent getPromoDetailIntent(Context context, String slug) {
         return null;
     }
+
+    @Override
+    public Observable<TKPDMapParam<String, Object>> verifyEventPromo(RequestParams requestParams) {
+        return null;
+    }
 }
