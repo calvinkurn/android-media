@@ -10,17 +10,21 @@ import com.tokopedia.inbox.inboxchat.domain.model.ListReplyViewModel;
 
 public class MyChatViewModel extends ListReplyViewModel{
 
-    public static String SENDING_TEXT = "Sedang mengirim ...";
-
-    boolean isDummy;
-
     boolean readStatus;
 
     boolean isRetry;
 
+    boolean isDummy;
+
     public MyChatViewModel() {
         super();
         this.isDummy = false;
+        this.isRetry = false;
+    }
+
+    public MyChatViewModel(boolean b) {
+        super();
+        this.isDummy = true;
         this.isRetry = false;
     }
 
@@ -31,10 +35,6 @@ public class MyChatViewModel extends ListReplyViewModel{
 
     public boolean isDummy() {
         return isDummy;
-    }
-
-    public void setDummy(boolean dummy) {
-        isDummy = dummy;
     }
 
     public boolean isReadStatus() {

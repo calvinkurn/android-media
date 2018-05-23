@@ -4,8 +4,8 @@ import android.support.annotation.LayoutRes;
 import android.view.View;
 import android.widget.Button;
 
-import com.tokopedia.core.base.adapter.model.EmptyModel;
-import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
+import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel;
+import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.feedplus.R;
 import com.tokopedia.feedplus.view.listener.FeedPlus;
 

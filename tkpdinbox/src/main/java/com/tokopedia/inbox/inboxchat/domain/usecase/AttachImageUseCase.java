@@ -9,6 +9,7 @@ import com.tokopedia.inbox.inboxchat.uploadimage.domain.interactor.GenerateHostU
 import com.tokopedia.inbox.inboxchat.uploadimage.domain.interactor.UploadImageUseCase;
 import com.tokopedia.inbox.inboxchat.uploadimage.domain.model.GenerateHostDomain;
 import com.tokopedia.inbox.inboxchat.uploadimage.domain.model.UploadImageDomain;
+import com.tokopedia.inbox.inboxchat.viewmodel.DummyChatViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.MyChatViewModel;
 
 import java.util.ArrayList;
@@ -139,7 +140,7 @@ public class AttachImageUseCase extends UseCase<UploadImageDomain>{
     }
 
 
-    public static RequestParams getParam(List<MyChatViewModel> attachmentList, String messageId, String userId, String deviceId) {
+    public static RequestParams getParam(List<DummyChatViewModel> attachmentList, String messageId, String userId, String deviceId) {
         RequestParams params = RequestParams.create();
         params.putObject(PARAM_ATTACHMENT, attachmentList);
         params.putString(PARAM_MESSAGE_ID, messageId);
