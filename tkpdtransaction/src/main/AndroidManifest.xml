@@ -12,41 +12,41 @@
         <activity
             android:name=".purchase.activity.ConfirmPaymentActivity"
             android:label="@string/title_change_payment"
-            android:screenOrientation="portrait" />
+             />
         <activity
             android:name=".purchase.activity.TxConfirmationDetailActivity"
             android:label="@string/title_activity_transaction_payment_confirmation_detail"
-            android:screenOrientation="portrait"
+
             android:windowSoftInputMode="stateAlwaysHidden" />
         <activity
             android:name=".purchase.activity.TxVerDetailActivity"
             android:label="@string/title_payment_verification"
-            android:screenOrientation="portrait" />
+             />
         <activity
             android:name=".purchase.activity.TxDetailActivity"
             android:label="@string/title_activity_people_tx_details"
-            android:screenOrientation="portrait" />
+             />
         <activity
             android:name=".purchase.activity.TxHistoryActivity"
             android:label="@string/title_activity_order_history_view"
-            android:screenOrientation="portrait" />
+             />
         <activity
             android:name=".purchase.activity.PurchaseActivity"
             android:label="@string/title_purchase"
-            android:screenOrientation="portrait" />
+             />
         <activity
             android:name=".cart.activity.CartActivity"
             android:label="@string/title_activity_cart"
             android:launchMode="singleTask"
-            android:screenOrientation="portrait" />
+             />
         <activity
             android:name=".cart.activity.ShipmentCartActivity"
             android:label="@string/title_activity_cart_shipment"
-            android:screenOrientation="portrait" />
+             />
         <activity
             android:name=".addtocart.activity.AddToCartActivity"
             android:label="@string/title_activity_add_to_cart_v2"
-            android:screenOrientation="portrait"
+
             android:windowSoftInputMode="adjustResize" />
         <activity
             android:name=".wallet.WalletActivity"

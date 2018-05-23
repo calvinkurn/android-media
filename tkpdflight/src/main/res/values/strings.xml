@@ -174,7 +174,7 @@
     <string name="flight_booking_passenger_birthdate_empty_error">Tanggal lahir harus diisi</string>
     <string name="flight_booking_passenger_birthdate_adult_shoud_more_than_twelve_years">Umur penumpang dewasa harus lebih besar dari 12 tahun</string>
     <string name="flight_booking_passenger_birthdate_child_shoud_more_than_two_years">Umur penumpang anak harus lebih besar dari 2 tahun</string>
-    <string name="flight_booking_passenger_birthdate_child_shoud_between_twelve_to_two_years">Umur penumpang anak harus antara 12 dan 2 tahun</string>
+    <string name="flight_booking_passenger_birthdate_child_shoud_between_twelve_to_two_years">Umur penumpang anak harus antara 2 sampai 12 tahun</string>
     <string name="flight_booking_passenger_birthdate_infant_should_no_more_than_two_years">Umur penumpang bayi harus dibawah 2 tahun</string>
     <string name="flight_booking_passenger_change_label">Ubah</string>
     <string name="flight_booking_passenger_fill_data_label">Isi Data</string>
@@ -192,9 +192,9 @@
     <string name="flight_there_is_zero_flight_for_the_filter">Terdapat 0 penerbangan yang sesuai dengan filter.</string>
     <string name="change_date">Ubah Tanggal</string>
     <string name="reset_filter">Reset Filter</string>
-    <string name="flight_booking_passenger_first_name_hint">Nama Depan</string>
+    <string name="flight_booking_passenger_first_name_hint">Nama Depan (sesuai KTP/SIM/Passport)</string>
     <string name="flight_booking_passenger_firstname_secondary_hint">Isi Nama Depan</string>
-    <string name="flight_booking_passenger_last_name_hint">Nama Belakang</string>
+    <string name="flight_booking_passenger_last_name_hint">Nama Belakang (sesuai KTP/SIM/Passport)</string>
     <string name="flight_booking_passenger_last_name_secondary_hint">Isi Nama Belakang</string>
     <string name="flight_booking_passenger_birthdate_hint">Tanggal Lahir</string>
     <string name="flight_booking_passenger_birthdate_secondary_hint">Pilih Tanggal Lahir</string>
@@ -334,7 +334,7 @@
     <string name="flight_booking_passenger_saved_hint">Pilih Nama dari Daftar Penumpang</string>
     <string name="flight_booking_list_passenger_title">Daftar Penumpang</string>
     <string name="flight_passenger_update_title">Ubah Data Penumpang</string>
-    <string name="flight_list_passenger_add_passenger_label">Tambah Penumpang</string>
+    <string name="flight_list_passenger_add_passenger_label">+ Tambah Penumpang</string>
     <string name="flight_booking_list_passenger_selected_error" formatted="false">Harap pilih penumpang %s</string>
     <string name="flight_passenger_data_diri_label">DATA DIRI</string>
     <string name="flight_passenger_tipe_penumpang_hint">Tipe Penumpang</string>
@@ -357,4 +357,6 @@
     <string name="flight_booking_passenger_birthdate_child_sholud_lessthan_than_equal_12years">Umur penumpang anak maksimal 12 tahun saat waktu pemberangkatan</string>
     <string name="flight_search_discount_tag">HARGA KHUSUS</string>
     <string name="flight_search_filter_special_price">Harga Khusus</string>
+    <string name="flight_passenger_choose_salutation">Pilih Titel</string>
+    <string name="flight_review_minus_discount_prefix">- %1$s</string>
 </resources>
