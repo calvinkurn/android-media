@@ -544,7 +544,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder {
                 }
             }
 
-            if (courierItemData.getInsuranceUsedType() == InsuranceConstant.INSURANCE_USED_TYPE_TOKOPEDIA_INSURANCE) {
+            if (!TextUtils.isEmpty(courierItemData.getInsuranceUsedInfo())) {
                 if (TextUtils.isEmpty(courierItemData.getInsuranceUsedInfo())) {
                     imgInsuranceInfo.setVisibility(View.GONE);
                 } else {
