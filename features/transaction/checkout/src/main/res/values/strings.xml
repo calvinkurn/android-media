@@ -129,7 +129,7 @@
     <string name="label_pay">Bayar</string>
     <string name="iotem_count_and_weight_format" formatted="false">%s barang (%s)</string>
     <string name="cart_item_count_format" formatted="false">Total Harga (%s Barang)</string>
-    <string name="label_weight_format" formatted="false">%s %s</string>
+    <string name="label_weight_format" formatted="false">%d %s</string>
     <string name="label_change_address_failed">Gagal mengubah alamat</string>
     <string name="label_change_address_success">Berhasil mengubah alamat</string>
     <string name="label_title_showcase_shipment">Pilih Kurir Pengiriman</string>

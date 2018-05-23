@@ -601,15 +601,15 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder {
 
     protected String getFormattedWeight(Context context, double weightInGrams) {
         String unit;
-        BigDecimal finalWeight;
+        double finalWeight;
         if (weightInGrams >= KILOGRAM_TO_GRAM_MULTIPLIER) {
             unit = context.getString(R.string.weight_unit_kilogram);
-            finalWeight = new BigDecimal(String.valueOf(weightInGrams / KILOGRAM_TO_GRAM_MULTIPLIER));
+            finalWeight = weightInGrams / KILOGRAM_TO_GRAM_MULTIPLIER;
         } else {
             unit = context.getString(R.string.weight_unit_gram);
-            finalWeight = new BigDecimal(String.valueOf(weightInGrams));
+            finalWeight = weightInGrams;
         }
-        return String.format(context.getString(R.string.label_weight_format), finalWeight.toString(), unit);
+        return String.format(context.getString(R.string.label_weight_format), (int) finalWeight, unit);
     }
 
     private String getPriceFormat(TextView textViewLabel, TextView textViewPrice, int price) {
