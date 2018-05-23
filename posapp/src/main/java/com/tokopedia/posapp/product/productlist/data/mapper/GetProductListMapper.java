@@ -20,16 +20,26 @@ import rx.functions.Func1;
  */
 
 public class GetProductListMapper implements Func1<Response<PosSimpleResponse<List<ProductDetail>>>, Observable<? extends List<ProductDomain>>> {
+
+    private static final String NO_PRODUCT = "no product";
+
     @Inject
     public GetProductListMapper() {
     }
 
     @Override
     public Observable<List<ProductDomain>> call(Response<PosSimpleResponse<List<ProductDetail>>> response) {
-        if (response.isSuccessful() && response.body() != null && response.body().getData() != null && response.body().getData().getData() != null) {
-            return Observable
-                    .just(response.body().getData().getData())
-                    .map(mapToDomain()).flatMapIterable(iterateList()).filter(filterData()).toList();
+        if (response.isSuccessful() && response.body() != null) {
+            if(response.body().getMessage() != null && response.body().getMessage().equalsIgnoreCase(NO_PRODUCT)) {
+                List<ProductDomain> empty = new ArrayList<>();
+                return Observable.just(empty);
+            }
+
+            if(response.body().getData() != null && response.body().getData().getData() != null) {
+                return Observable
+                        .just(response.body().getData().getData())
+                        .map(mapToDomain()).flatMapIterable(iterateList()).filter(filterData()).toList();
+            }
         }
 
         return Observable.error(new RuntimeException("No Product"));
