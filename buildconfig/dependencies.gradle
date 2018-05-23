@@ -299,6 +299,7 @@ ext {
             reactNative     : ":libraries:react_native",
             useCase         : ":libraries:use_case",
             fingerprint     : ":libraries:fingerprint",
+            imageuploader   : ":libraries:imageuploader",
             youtubeApi      : ":libraries:YouTubeAndroidPlayerApi"
     ]
 }

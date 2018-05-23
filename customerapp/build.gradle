@@ -1,7 +1,6 @@
 apply plugin: 'com.android.application'
 apply plugin: 'io.fabric'
 apply plugin: 'com.jakewharton.butterknife'
-apply plugin: 'kotlin-android'
 
 if (!project.hasProperty("disable-performance-plugin")) {
     apply plugin: 'com.google.firebase.firebase-perf'
@@ -294,6 +293,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.design)
     implementation project(rootProject.ext.libraries.useCase)
     implementation project(rootProject.ext.libraries.fingerprint)
+    implementation project(rootProject.ext.libraries.imageuploader)
 
     implementation rootProject.ext.miscDependencies.bcaOneClick
     implementation project(rootProject.ext.features.shopCommon)
