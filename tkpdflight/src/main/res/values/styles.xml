@@ -66,6 +66,39 @@
         <item name="android:textSize">@dimen/sp_12</item>
     </style>
 
+    <style name="FlightChips">
+        <item name="android:paddingTop">@dimen/dp_4</item>
+        <item name="android:paddingBottom">@dimen/dp_4</item>
+        <item name="android:paddingLeft">@dimen/dp_8</item>
+        <item name="android:paddingRight">@dimen/dp_8</item>
+        <item name="android:textAllCaps">true</item>
+        <item name="android:textSize">@dimen/sp_11</item>
+    </style>
+
+    <style name="FlightChips.Danger">
+        <item name="android:textStyle">bold</item>
+        <item name="android:background">@drawable/bg_flight_chip_danger</item>
+        <item name="android:textColor">@color/flight_chips_danger_text</item>
+    </style>
+
+    <style name="CardSuccessStatusStyle">
+        <item name="android:background">@drawable/bg_card_success</item>
+        <item name="android:textSize">@dimen/sp_10</item>
+        <item name="android:textColor">@color/tkpd_main_green</item>
+    </style>
+
+    <style name="CardFailedStatusStyle">
+        <item name="android:background">@drawable/bg_card_failed</item>
+        <item name="android:textSize">@dimen/sp_10</item>
+        <item name="android:textColor">@color/colorRed</item>
+    </style>
+
+    <style name="CardProcessStatusStyle">
+        <item name="android:background">@drawable/bg_card_process</item>
+        <item name="android:textSize">@dimen/sp_10</item>
+        <item name="android:textColor">#CA8600</item>
+    </style>
+  
     <style name="FlightProgressBar" parent="ThemeOverlay.AppCompat.Light">
         <item name="colorAccent">@color/tkpd_main_green</item>
     </style>
@@ -114,6 +147,7 @@
         <item name="android:layout_centerVertical">true</item>
         <item name="android:textSize">@dimen/sp_16</item>
     </style>
+
     <style name="Tabs.Secondary.Flight">
         <item name="android:textSize">@dimen/sp_10</item>
         <item name="selectedBold">false</item>
