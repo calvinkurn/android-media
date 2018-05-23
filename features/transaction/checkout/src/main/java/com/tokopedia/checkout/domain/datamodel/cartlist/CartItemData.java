@@ -3,6 +3,8 @@ package com.tokopedia.checkout.domain.datamodel.cartlist;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import java.util.List;
+
 /**
  * @author anggaprasetiyo on 18/01/18.
  */
@@ -101,6 +103,7 @@ public class CartItemData implements Parcelable {
         private boolean isFavorite;
         private String cashBackInfo;
         private String freeReturnLogo;
+        private List<WholesalePrice> wholesalePrice;
 
         public int getCartId() {
             return cartId;
@@ -270,6 +273,14 @@ public class CartItemData implements Parcelable {
             this.invenageValue = invenageValue;
         }
 
+        public List<WholesalePrice> getWholesalePrice() {
+            return wholesalePrice;
+        }
+
+        public void setWholesalePrice(List<WholesalePrice> wholesalePrice) {
+            this.wholesalePrice = wholesalePrice;
+        }
+
         public OriginData() {
         }
 
@@ -301,6 +312,7 @@ public class CartItemData implements Parcelable {
             dest.writeByte(this.isFavorite ? (byte) 1 : (byte) 0);
             dest.writeString(this.cashBackInfo);
             dest.writeString(this.freeReturnLogo);
+            dest.writeTypedList(this.wholesalePrice);
         }
 
         protected OriginData(Parcel in) {
@@ -325,6 +337,7 @@ public class CartItemData implements Parcelable {
             this.isFavorite = in.readByte() != 0;
             this.cashBackInfo = in.readString();
             this.freeReturnLogo = in.readString();
+            this.wholesalePrice = in.createTypedArrayList(WholesalePrice.CREATOR);
         }
 
         public static final Creator<OriginData> CREATOR = new Creator<OriginData>() {

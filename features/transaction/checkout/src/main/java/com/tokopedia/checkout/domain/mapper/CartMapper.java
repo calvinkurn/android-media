@@ -1,6 +1,7 @@
 package com.tokopedia.checkout.domain.mapper;
 
 import com.tokopedia.checkout.domain.datamodel.cartlist.AutoApplyData;
+import com.tokopedia.checkout.domain.datamodel.cartlist.WholesalePrice;
 import com.tokopedia.transactiondata.entity.response.cartlist.CartDataListResponse;
 import com.tokopedia.transactiondata.entity.response.cartlist.CartList;
 import com.tokopedia.transactiondata.entity.response.deletecart.DeleteCartDataResponse;
@@ -74,6 +75,21 @@ public class CartMapper implements ICartMapper {
             cartItemDataOrigin.setCashBack(!mapperUtil.isEmpty(data.getProduct().getProductCashback()));
             cartItemDataOrigin.setCashBackInfo("Cashback " + data.getProduct().getProductCashback());
             cartItemDataOrigin.setProductImage(data.getProduct().getProductImage().getImageSrc200Square());
+            if (data.getProduct().getWholesalePrice() != null) {
+                List<WholesalePrice> wholesalePrices = new ArrayList<>();
+                for (com.tokopedia.transactiondata.entity.response.cartlist.WholesalePrice wholesalePriceDataModel : data.getProduct().getWholesalePrice()) {
+                    WholesalePrice wholesalePriceDomainModel = new WholesalePrice();
+                    wholesalePriceDomainModel.setPrdPrc(wholesalePriceDataModel.getPrdPrc());
+                    wholesalePriceDomainModel.setPrdPrcFmt(wholesalePriceDataModel.getPrdPrcFmt());
+                    wholesalePriceDomainModel.setQtyMax(wholesalePriceDataModel.getQtyMax());
+                    wholesalePriceDomainModel.setQtyMaxFmt(wholesalePriceDataModel.getQtyMaxFmt());
+                    wholesalePriceDomainModel.setQtyMin(wholesalePriceDataModel.getQtyMin());
+                    wholesalePriceDomainModel.setQtyMinFmt(wholesalePriceDataModel.getQtyMinFmt());
+
+                    wholesalePrices.add(wholesalePriceDomainModel);
+                }
+                cartItemDataOrigin.setWholesalePrice(wholesalePrices);
+            }
 
             CartItemData.UpdatedData cartItemDataUpdated = new CartItemData.UpdatedData();
             cartItemDataUpdated.setRemark(cartItemDataOrigin.getProductVarianRemark());

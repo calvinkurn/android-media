@@ -7,10 +7,6 @@ import com.tokopedia.abstraction.common.network.exception.HttpErrorException;
 import com.tokopedia.abstraction.common.network.exception.ResponseDataNullException;
 import com.tokopedia.abstraction.common.network.exception.ResponseErrorException;
 import com.tokopedia.abstraction.common.utils.TKPDMapParam;
-import com.tokopedia.checkout.domain.usecase.CancelAutoApplyCouponUseCase;
-import com.tokopedia.transactiondata.entity.request.RemoveCartRequest;
-import com.tokopedia.transactiondata.entity.request.UpdateCartRequest;
-import com.tokopedia.transactiondata.exception.ResponseCartApiErrorException;
 import com.tokopedia.checkout.domain.datamodel.DeleteAndRefreshCartListData;
 import com.tokopedia.checkout.domain.datamodel.ResetAndRefreshCartListData;
 import com.tokopedia.checkout.domain.datamodel.ResetAndShipmentFormCartData;
@@ -19,7 +15,9 @@ import com.tokopedia.checkout.domain.datamodel.cartlist.CartItemData;
 import com.tokopedia.checkout.domain.datamodel.cartlist.CartListData;
 import com.tokopedia.checkout.domain.datamodel.cartlist.DeleteCartData;
 import com.tokopedia.checkout.domain.datamodel.cartlist.UpdateToSingleAddressShipmentData;
+import com.tokopedia.checkout.domain.datamodel.cartlist.WholesalePrice;
 import com.tokopedia.checkout.domain.datamodel.cartshipmentform.CartShipmentAddressFormData;
+import com.tokopedia.checkout.domain.usecase.CancelAutoApplyCouponUseCase;
 import com.tokopedia.checkout.domain.usecase.CheckPromoCodeCartListUseCase;
 import com.tokopedia.checkout.domain.usecase.DeleteCartGetCartListUseCase;
 import com.tokopedia.checkout.domain.usecase.DeleteCartUseCase;
@@ -32,6 +30,9 @@ import com.tokopedia.checkout.view.holderitemdata.CartItemHolderData;
 import com.tokopedia.core.network.retrofit.utils.ErrorNetMessage;
 import com.tokopedia.core.router.transactionmodule.sharedata.CheckPromoCodeCartListResult;
 import com.tokopedia.design.utils.CurrencyFormatUtil;
+import com.tokopedia.transactiondata.entity.request.RemoveCartRequest;
+import com.tokopedia.transactiondata.entity.request.UpdateCartRequest;
+import com.tokopedia.transactiondata.exception.ResponseCartApiErrorException;
 import com.tokopedia.transactiondata.utils.CartApiRequestParamGenerator;
 import com.tokopedia.usecase.RequestParams;
 
@@ -277,15 +278,34 @@ public class CartListPresenter implements ICartListPresenter {
     @Override
     public void reCalculateSubTotal(List<CartItemHolderData> dataList) {
         double subtotalPrice = 0;
-        int qty = 0;
+        int totalAllCartItemQty = 0;
         for (CartItemHolderData data : dataList) {
-            qty = qty + data.getCartItemData().getUpdatedData().getQuantity();
-            subtotalPrice = subtotalPrice
-                    + (data.getCartItemData().getUpdatedData().getQuantity()
-                    * data.getCartItemData().getOriginData().getPricePlan());
+            int itemQty = data.getCartItemData().getUpdatedData().getQuantity();
+            totalAllCartItemQty = totalAllCartItemQty + itemQty;
+            List<WholesalePrice> wholesalePrices = data.getCartItemData().getOriginData().getWholesalePrice();
+            boolean hasCalculateWholesalePrice = false;
+            if (wholesalePrices != null && wholesalePrices.size() > 0) {
+                for (WholesalePrice wholesalePrice : wholesalePrices) {
+                    if (itemQty >= wholesalePrice.getQtyMin() &&
+                            itemQty <= wholesalePrice.getQtyMax()) {
+                        subtotalPrice = subtotalPrice + (itemQty * wholesalePrice.getPrdPrc());
+                        hasCalculateWholesalePrice = true;
+                        break;
+                    }
+                }
+                if (!hasCalculateWholesalePrice) {
+                    if (itemQty > wholesalePrices.get(wholesalePrices.size() - 1).getPrdPrc()) {
+                        subtotalPrice = subtotalPrice + (itemQty * wholesalePrices.get(wholesalePrices.size() - 1).getPrdPrc());
+                    } else {
+                        subtotalPrice = subtotalPrice + (itemQty * data.getCartItemData().getOriginData().getPricePlan());
+                    }
+                }
+            } else {
+                subtotalPrice = subtotalPrice + (itemQty * data.getCartItemData().getOriginData().getPricePlan());
+            }
         }
 
-        view.renderDetailInfoSubTotal(String.valueOf(qty),
+        view.renderDetailInfoSubTotal(String.valueOf(totalAllCartItemQty),
                 CurrencyFormatUtil.convertPriceValueToIdrFormat(((int) subtotalPrice), true));
     }
 
