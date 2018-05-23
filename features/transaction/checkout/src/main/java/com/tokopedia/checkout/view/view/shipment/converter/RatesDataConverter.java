@@ -190,23 +190,24 @@ public class RatesDataConverter {
     private ShipmentItemData getShipmentItemData(Attribute attribute) {
         ShipmentItemData shipmentItemData = new ShipmentItemData();
         shipmentItemData.setServiceId(attribute.getServiceId());
-        shipmentItemData.setCourierItemData(getCourierItemDataList(attribute.getProducts()));
-        shipmentItemData.setServiceId(attribute.getServiceId());
         shipmentItemData.setType(WordUtils.capitalize(attribute.getServiceName()));
         shipmentItemData.setMultiplePriceRange(attribute.getServiceRangePrice());
         shipmentItemData.setDeliveryTimeRange(attribute.getServiceEtd());
+        shipmentItemData.setCourierItemData(getCourierItemDataList(attribute.getProducts(), shipmentItemData));
         return shipmentItemData;
     }
 
-    private List<CourierItemData> getCourierItemDataList(List<com.tokopedia.logisticdata.data.entity.rates.Product> products) {
+    private List<CourierItemData> getCourierItemDataList(List<com.tokopedia.logisticdata.data.entity.rates.Product> products,
+                                                         ShipmentItemData shipmentItemData) {
         List<CourierItemData> courierItemDataList = new ArrayList<>();
         for (com.tokopedia.logisticdata.data.entity.rates.Product product : products) {
-            courierItemDataList.add(getCourierItemData(product));
+            courierItemDataList.add(getCourierItemData(product, shipmentItemData));
         }
         return courierItemDataList;
     }
 
-    private CourierItemData getCourierItemData(com.tokopedia.logisticdata.data.entity.rates.Product product) {
+    private CourierItemData getCourierItemData(com.tokopedia.logisticdata.data.entity.rates.Product product,
+                                               ShipmentItemData shipmentItemData) {
         CourierItemData courierItemData = new CourierItemData();
         courierItemData.setUsePinPoint(product.getIsShowMap() == 1);
         courierItemData.setName(product.getShipperName() + " " + product.getShipperProductName());
@@ -222,6 +223,7 @@ public class RatesDataConverter {
         courierItemData.setEstimatedTimeDelivery(product.getShipperEtd());
         courierItemData.setMinEtd(product.getMinEtd());
         courierItemData.setMaxEtd(product.getMaxEtd());
+        courierItemData.setShipmentItemData(shipmentItemData);
 
         return courierItemData;
     }
