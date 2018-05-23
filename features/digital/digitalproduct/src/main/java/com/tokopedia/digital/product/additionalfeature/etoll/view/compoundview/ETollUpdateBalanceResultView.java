@@ -61,37 +61,12 @@ public class ETollUpdateBalanceResultView extends LinearLayout {
         });
     }
 
-    public void showLocalCardInfo(CardInfo cardInfo) {
-        textLabelProgress.setVisibility(GONE);
-        buttonTopup.setVisibility(VISIBLE);
-        eTollCardInfoView.setVisibility(VISIBLE);
-        eTollCardInfoView.showCardInfo(cardInfo);
-    }
-
     public void showCardInfoFromApi(InquiryBalanceModel inquiryBalanceModel) {
         textLabelProgress.setVisibility(GONE);
         buttonTopup.setVisibility(VISIBLE);
         buttonTopup.setText(inquiryBalanceModel.getButtonText());
         eTollCardInfoView.setVisibility(VISIBLE);
         eTollCardInfoView.showCardInfo(inquiryBalanceModel.getCardInfo());
-    }
-
-    public void showCardInfoWithError(InquiryBalanceModel inquiryBalanceModel, String errorMessage) {
-        textLabelProgress.setVisibility(VISIBLE);
-        textLabelProgress.setTextColor(getResources().getColor(R.color.red_error));
-        textLabelProgress.setText(errorMessage);
-        buttonTopup.setVisibility(GONE);
-        eTollCardInfoView.setVisibility(VISIBLE);
-        eTollCardInfoView.showCardInfo(inquiryBalanceModel.getCardInfo());
-    }
-
-    public void showLocalCardInfoWithError(CardInfo cardInfo, String errorMessage) {
-        textLabelProgress.setVisibility(VISIBLE);
-        textLabelProgress.setTextColor(getResources().getColor(R.color.red_error));
-        textLabelProgress.setText(errorMessage);
-        buttonTopup.setVisibility(GONE);
-        eTollCardInfoView.setVisibility(VISIBLE);
-        eTollCardInfoView.showCardInfo(cardInfo);
     }
 
     public void showError(String erroMessage) {
@@ -128,6 +103,10 @@ public class ETollUpdateBalanceResultView extends LinearLayout {
 
     public String getCardLastBalance() {
         return eTollCardInfoView.getCardLastBalance();
+    }
+
+    public String getCardLastUpdatedDate() {
+        return eTollCardInfoView.getCardLastUpdatedDate();
     }
 
 }

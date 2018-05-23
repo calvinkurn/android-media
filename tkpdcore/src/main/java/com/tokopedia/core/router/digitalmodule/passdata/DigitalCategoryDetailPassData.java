@@ -20,6 +20,7 @@ public class DigitalCategoryDetailPassData implements Parcelable {
     private String appLinks;
     private String categoryName;
     private String additionalETollBalance;
+    private String additionalETollLastUpdatedDate;
 
     private DigitalCategoryDetailPassData(Builder builder) {
         setCategoryId(builder.categoryId);
@@ -30,6 +31,7 @@ public class DigitalCategoryDetailPassData implements Parcelable {
         setAppLinks(builder.appLinks);
         setCategoryName(builder.categoryName);
         setAdditionalETollBalance(builder.additionalETollLastBalance);
+        setAdditionalETollLastUpdatedDate(builder.additionalETollLastUpdatedDate);
     }
 
     public String getCategoryId() {
@@ -96,6 +98,14 @@ public class DigitalCategoryDetailPassData implements Parcelable {
         this.additionalETollBalance = additionalETollBalance;
     }
 
+    public String getAdditionalETollLastUpdatedDate() {
+        return additionalETollLastUpdatedDate;
+    }
+
+    public void setAdditionalETollLastUpdatedDate(String additionalETollLastUpdatedDate) {
+        this.additionalETollLastUpdatedDate = additionalETollLastUpdatedDate;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -110,6 +120,8 @@ public class DigitalCategoryDetailPassData implements Parcelable {
         dest.writeString(this.url);
         dest.writeString(this.appLinks);
         dest.writeString(this.categoryName);
+        dest.writeString(this.additionalETollBalance);
+        dest.writeString(this.additionalETollLastUpdatedDate);
     }
 
     public DigitalCategoryDetailPassData() {
@@ -123,6 +135,8 @@ public class DigitalCategoryDetailPassData implements Parcelable {
         this.url = in.readString();
         this.appLinks = in.readString();
         this.categoryName = in.readString();
+        this.additionalETollBalance = in.readString();
+        this.additionalETollLastUpdatedDate = in.readString();
     }
 
     public static final Creator<DigitalCategoryDetailPassData> CREATOR =
@@ -152,6 +166,7 @@ public class DigitalCategoryDetailPassData implements Parcelable {
         private String appLinks;
         private String categoryName;
         private String additionalETollLastBalance;
+        private String additionalETollLastUpdatedDate;
 
         public Builder() {
         }
@@ -193,6 +208,11 @@ public class DigitalCategoryDetailPassData implements Parcelable {
 
         public Builder additionalETollLastBalance(String val) {
             additionalETollLastBalance = val;
+            return this;
+        }
+
+        public Builder additionalETollLastUpdatedDate(String val) {
+            additionalETollLastUpdatedDate = val;
             return this;
         }
 

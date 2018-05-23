@@ -3,6 +3,7 @@ package com.tokopedia.digital.product.additionalfeature.etoll.view.activity;
 import android.Manifest;
 import android.app.Activity;
 import android.app.PendingIntent;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -18,9 +19,11 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
+import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
+import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.core.router.digitalmodule.passdata.DigitalCategoryDetailPassData;
 import com.tokopedia.digital.R;
 import com.tokopedia.digital.common.data.apiservice.DigitalEndpointService;
@@ -36,7 +39,7 @@ import com.tokopedia.digital.product.additionalfeature.etoll.view.compoundview.T
 import com.tokopedia.digital.product.additionalfeature.etoll.view.model.InquiryBalanceModel;
 import com.tokopedia.digital.product.additionalfeature.etoll.view.presenter.ETollPresenter;
 import com.tokopedia.digital.product.view.activity.DigitalProductActivity;
-import com.tokopedia.digital.product.view.listener.IEMoneyView;
+import com.tokopedia.digital.product.view.listener.IETollView;
 import com.tokopedia.digital.utils.NFCUtils;
 
 import java.io.IOException;
@@ -52,7 +55,7 @@ import permissions.dispatcher.RuntimePermissions;
  */
 @RuntimePermissions
 public class DigitalCheckETollBalanceNFCActivity extends BaseSimpleActivity
-        implements IEMoneyView {
+        implements IETollView {
 
     private static final String TAG = DigitalCheckETollBalanceNFCActivity.class.getSimpleName();
 
@@ -75,6 +78,12 @@ public class DigitalCheckETollBalanceNFCActivity extends BaseSimpleActivity
     public static Intent newInstance(Activity activity) {
         return new Intent(activity, DigitalCheckETollBalanceNFCActivity.class);
     }
+
+//    @SuppressWarnings("unused")
+//    @DeepLink({ApplinkConst.DIGITAL_SMARTCARD})
+//    public static Intent getcallingIntent(Context context, Bundle extras) {
+//
+//    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -126,6 +135,7 @@ public class DigitalCheckETollBalanceNFCActivity extends BaseSimpleActivity
                         .operatorId("419")
                         .clientNumber(eTollUpdateBalanceResultView.getCardNumber())
                         .additionalETollLastBalance(eTollUpdateBalanceResultView.getCardLastBalance())
+                        .additionalETollLastUpdatedDate(eTollUpdateBalanceResultView.getCardLastUpdatedDate())
                         .build();
 
                 Intent intent = DigitalProductActivity.newInstance(DigitalCheckETollBalanceNFCActivity.this,
@@ -256,10 +266,8 @@ public class DigitalCheckETollBalanceNFCActivity extends BaseSimpleActivity
             nfcAdapter.enableForegroundDispatch(this, pendingIntent, intentFiltersArray, techListsArray);
             nfcDisabledView.setVisibility(View.GONE);
 
-            // prevent tapEMoneyCardView to show up if eMoneyUpdateBalanceResultView presents (visible)
-            if (eTollUpdateBalanceResultView.getVisibility() == View.GONE) {
-                tapETollCardView.setVisibility(View.VISIBLE);
-            }
+            tapETollCardView.setVisibility(View.VISIBLE);
+            tapETollCardView.showInitialState();
         }
     }
 
@@ -308,7 +316,7 @@ public class DigitalCheckETollBalanceNFCActivity extends BaseSimpleActivity
                         if (responseInByte != null) {
                             String response = NFCUtils.toHex(responseInByte);
                             Log.d(TAG, response);
-                            presenter.sendCommand(response, inquiryBalanceModel.getId(), 1);
+                            presenter.sendCommand(response, inquiryBalanceModel.getId());
                         }
                     }
                 });

@@ -34,6 +34,7 @@ import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.tkpd.library.utils.LocalCacheHandler;
+import com.tokopedia.abstraction.common.utils.view.DateFormatUtils;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.BasePresenterFragment;
@@ -102,7 +103,9 @@ import com.tokopedia.showcase.ShowCaseDialog;
 import com.tokopedia.showcase.ShowCaseObject;
 import com.tokopedia.showcase.ShowCasePreference;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import butterknife.BindView;
@@ -129,6 +132,8 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
     private static final String ARG_PARAM_EXTRA_CLIENT_NUMBER = "ARG_PARAM_EXTRA_CLIENT_NUMBER";
     private static final String ARG_PARAM_EXTRA_ADDITIONAL_ETOLL_LAST_BALANCE =
             "ARG_PARAM_EXTRA_ADDITIONAL_ETOLL_LAST_BALANCE";
+    private static final String ARG_PARAM_EXTRA_ADDITIONAL_ETOLL_LAST_UPDATE_DATE =
+            "ARG_PARAM_EXTRA_ADDITIONAL_ETOLL_LAST_UPDATE_DATE";
 
     private static final String EXTRA_STATE_OPERATOR_SELECTED = "EXTRA_STATE_OPERATOR_SELECTED";
     private static final String EXTRA_STATE_PRODUCT_SELECTED = "EXTRA_STATE_PRODUCT_SELECTED";
@@ -183,6 +188,7 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
     private String productId;
     private String clientNumber;
     private String additionalETollLastBalance;
+    private String additionalETollLastUpdatedDate;
 
     private CheckPulsaBalanceView selectedCheckPulsaBalanceView;
 
@@ -199,7 +205,7 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
 
     public static Fragment newInstance(
             String categoryId, String operatorId, String productId, String clientNumber,
-            String additionalETollBalance) {
+            String additionalETollBalance, String additionalETollLastUpdatedDate) {
         Fragment fragment = new DigitalProductFragment();
         Bundle bundle = new Bundle();
         bundle.putString(ARG_PARAM_EXTRA_CATEGORY_ID, categoryId);
@@ -207,6 +213,7 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
         bundle.putString(ARG_PARAM_EXTRA_PRODUCT_ID, productId);
         bundle.putString(ARG_PARAM_EXTRA_CLIENT_NUMBER, clientNumber);
         bundle.putString(ARG_PARAM_EXTRA_ADDITIONAL_ETOLL_LAST_BALANCE, additionalETollBalance);
+        bundle.putString(ARG_PARAM_EXTRA_ADDITIONAL_ETOLL_LAST_UPDATE_DATE, additionalETollLastUpdatedDate);
         fragment.setArguments(bundle);
         return fragment;
     }
@@ -316,6 +323,7 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
         productId = arguments.getString(ARG_PARAM_EXTRA_PRODUCT_ID);
         clientNumber = arguments.getString(ARG_PARAM_EXTRA_CLIENT_NUMBER);
         additionalETollLastBalance = arguments.getString(ARG_PARAM_EXTRA_ADDITIONAL_ETOLL_LAST_BALANCE);
+        additionalETollLastUpdatedDate = arguments.getString(ARG_PARAM_EXTRA_ADDITIONAL_ETOLL_LAST_UPDATE_DATE);
     }
 
     @Override
@@ -427,7 +435,8 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
             checkETollBalanceView.showCheckBalance(text, buttonText);
         } else {
             checkETollBalanceView.setVisibility(View.VISIBLE);
-            checkETollBalanceView.showRemainingBalance(additionalETollLastBalance, clientNumber);
+            checkETollBalanceView.showRemainingBalance(clientNumber, additionalETollLastBalance,
+                    additionalETollLastUpdatedDate);
         }
     }
 

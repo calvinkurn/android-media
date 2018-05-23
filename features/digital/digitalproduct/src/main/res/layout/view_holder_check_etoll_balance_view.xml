@@ -30,36 +30,37 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:id="@+id/text_label_date"
-                tools:text="Sisa Saldo (12/05/2018)"/>
+                android:id="@+id/text_card_number"
+                tools:text="No. Kartu 6032 9860 5038 2497"/>
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:id="@+id/text_remaining_balance"
+                android:textColor="@color/black"
+                android:textSize="@dimen/sp_18"
                 android:textStyle="bold"
                 tools:text="Rp. 590.000"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/grey_500"
+                android:id="@+id/text_date"
+                tools:text="12 Mei 2018, 06:50"/>
 
         </LinearLayout>
 
     </FrameLayout>
 
-    <LinearLayout
+    <TextView
         android:layout_width="0dp"
         android:layout_height="match_parent"
-        android:id="@+id/view_check_balance"
         android:gravity="center|end"
         android:layout_weight="1"
-        android:orientation="horizontal">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/button_feature"
-            android:textColor="@color/green_300"
-            android:textStyle="bold"
-            android:text="@string/emoney_button_check_balance"/>
-
-    </LinearLayout>
+        android:id="@+id/button_feature"
+        android:textColor="@color/green_300"
+        android:textStyle="bold"
+        android:text="@string/emoney_button_check_balance"/>
 
 </LinearLayout>

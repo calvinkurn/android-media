@@ -11,6 +11,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.tokopedia.digital.R;
+import com.tokopedia.digital.utils.NFCUtils;
 
 /**
  * Created by Rizky on 15/05/18.
@@ -18,11 +19,12 @@ import com.tokopedia.digital.R;
 public class CheckETollBalanceView extends LinearLayout {
 
     private TextView textLabelNote;
-    private TextView textRemainingBalance;
-    private TextView textLabelDate;
-    private LinearLayout viewRemainingBalance;
-    private LinearLayout viewCheckBalance;
     private TextView buttonFeature;
+
+    private LinearLayout viewRemainingBalance;
+    private TextView textCardNumber;
+    private TextView textRemainingBalance;
+    private TextView textDate;
 
     private Context context;
 
@@ -66,13 +68,14 @@ public class CheckETollBalanceView extends LinearLayout {
                 .inflate(R.layout.view_holder_check_etoll_balance_view, this, true);
 
         textLabelNote = view.findViewById(R.id.text_label_note);
-        textLabelDate = view.findViewById(R.id.text_label_date);
-        textRemainingBalance = view.findViewById(R.id.text_remaining_balance);
-        viewRemainingBalance = view.findViewById(R.id.view_remaining_balance);
-        viewCheckBalance = view.findViewById(R.id.view_check_balance);
         buttonFeature = view.findViewById(R.id.button_feature);
 
-        viewCheckBalance.setOnClickListener(new OnClickListener() {
+        viewRemainingBalance = view.findViewById(R.id.view_remaining_balance);
+        textCardNumber = view.findViewById(R.id.text_card_number);
+        textRemainingBalance = view.findViewById(R.id.text_remaining_balance);
+        textDate = view.findViewById(R.id.text_date);
+
+        buttonFeature.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
                 listener.onClick();
@@ -81,20 +84,18 @@ public class CheckETollBalanceView extends LinearLayout {
     }
 
     public void showCheckBalance(String note, String buttonText) {
-        textLabelNote.setText(note);
-        textLabelNote.setVisibility(VISIBLE);
-        buttonFeature.setText(buttonText);
-        buttonFeature.setVisibility(VISIBLE);
         viewRemainingBalance.setVisibility(GONE);
+        textLabelNote.setVisibility(VISIBLE);
+        textLabelNote.setText(note);
+        buttonFeature.setText(buttonText);
     }
 
-    public void showRemainingBalance(String remainingBalance, String cardNumber) {
-        textRemainingBalance.setVisibility(VISIBLE);
-        textRemainingBalance.setText(remainingBalance);
-        textLabelDate.setVisibility(VISIBLE);
-        textLabelDate.setText(cardNumber);
-        viewRemainingBalance.setVisibility(VISIBLE);
+    public void showRemainingBalance(String cardNumber, String remainingBalance, String date) {
         textLabelNote.setVisibility(GONE);
+        viewRemainingBalance.setVisibility(VISIBLE);
+        textCardNumber.setText("No. Kartu " + NFCUtils.formatCardUIDWithSpace(cardNumber));
+        textRemainingBalance.setText(remainingBalance);
+        textDate.setText(date);
     }
 
 }

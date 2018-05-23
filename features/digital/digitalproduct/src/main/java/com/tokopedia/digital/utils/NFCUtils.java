@@ -28,6 +28,11 @@ public class NFCUtils {
                 cardNumber.substring(8, 12) + " - " + cardNumber.substring(12, 16);
     }
 
+    public static String formatCardUIDWithSpace(String cardNumber) {
+        return cardNumber.substring(0, 4) + " " + cardNumber.substring(4, 8) + " " +
+                cardNumber.substring(8, 12) + " " + cardNumber.substring(12, 16);
+    }
+
     public static String convertCardUID(String cardNumber) {
         return cardNumber.substring(0, 4) + cardNumber.substring(4, 8) +
                 cardNumber.substring(8, 12) + cardNumber.substring(12, 16);

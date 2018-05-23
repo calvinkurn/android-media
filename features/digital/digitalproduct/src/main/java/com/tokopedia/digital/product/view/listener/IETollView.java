@@ -5,7 +5,7 @@ import com.tokopedia.digital.product.additionalfeature.etoll.view.model.InquiryB
 /**
  * Created by Rizky on 18/05/18.
  */
-public interface IEMoneyView {
+public interface IETollView {
 
     void sendCommand(InquiryBalanceModel inquiryBalanceModel);
 

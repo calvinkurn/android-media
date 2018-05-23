@@ -12,13 +12,8 @@ public class CardRequest {
     @Expose
     private String payload;
 
-    @SerializedName("issuer_id")
-    @Expose
-    private int issuerId;
-
-    public CardRequest(String payload, int issuerId) {
+    public CardRequest(String payload) {
         this.payload = payload;
-        this.issuerId = issuerId;
     }
 
 }

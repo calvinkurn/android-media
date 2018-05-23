@@ -29,7 +29,7 @@
                     android:layout_width="0dp"
                     android:layout_height="50dp"
                     android:layout_weight="1"
-                    tools:srcCompat="@drawable/emoney"/>
+                    tools:src="@drawable/emoney"/>
 
                 <View
                     android:layout_width="1dp"
@@ -43,14 +43,14 @@
                     android:layout_weight="2"
                     android:orientation="vertical">
 
-                    <com.elyeproj.loaderviewlibrary.LoaderTextView
+                    <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:textSize="@dimen/sp_12"
                         android:text="@string/emoney_card_info_label_card_number"
                         android:layout_marginBottom="@dimen/dp_4" />
 
-                    <com.elyeproj.loaderviewlibrary.LoaderTextView
+                    <TextView
                         android:id="@+id/text_card_number"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -88,19 +88,26 @@
                     android:gravity="center"
                     android:orientation="vertical">
 
-                    <com.elyeproj.loaderviewlibrary.LoaderTextView
+                    <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="@dimen/dp_6"
                         android:text="@string/emoney_card_info_label_your_balance"/>
 
-                    <com.elyeproj.loaderviewlibrary.LoaderTextView
+                    <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_marginBottom="@dimen/dp_8"
                         android:id="@+id/text_remaining_balance"
                         android:textColor="@color/green_400"
                         android:textSize="@dimen/sp_32"
                         tools:text="Rp 800.000"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/text_date"
+                        tools:text="12 Mei 2018, 06:50"/>
 
                 </LinearLayout>
 
