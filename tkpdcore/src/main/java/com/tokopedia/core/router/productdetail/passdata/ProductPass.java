@@ -304,8 +304,7 @@ public class ProductPass implements Parcelable {
     }
 
     public String getTrackerListName() {
-        if (trackerListName == null || trackerListName.isEmpty()) return "none / other";
-        else return trackerListName;
+        return trackerListName;
     }
 
     public String getCashback() {

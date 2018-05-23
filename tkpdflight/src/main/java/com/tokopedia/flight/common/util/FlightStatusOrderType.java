@@ -17,6 +17,7 @@ import java.lang.annotation.RetentionPolicy;
         FlightStatusOrderType.READY_FOR_QUEUE,
         FlightStatusOrderType.PROGRESS,
         FlightStatusOrderType.FAILED,
+        FlightStatusOrderType.FLIGHT_CANCELLED,
         FlightStatusOrderType.REFUNDED,
         FlightStatusOrderType.CONFIRMED,
         FlightStatusOrderType.FINISHED})
@@ -28,6 +29,7 @@ public @interface FlightStatusOrderType {
     int READY_FOR_QUEUE = 200;
     int PROGRESS = 300;
     int FAILED = 600;
+    int FLIGHT_CANCELLED = 610;
     int REFUNDED = 650;
     int CONFIRMED = 700;
     int FINISHED = 800;

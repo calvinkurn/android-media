@@ -1,3 +1,21 @@
+ext.isCiServer = System.getenv().containsKey("CI")
+
+buildCache {
+    local {
+        enabled = false
+    }
+    remote(HttpBuildCache) {
+        url = "${ci_url}"
+        push = true
+        allowUntrustedServer = true
+        credentials {
+            username = "${ci_username}"
+            password = "${ci_password}"
+        }
+    }
+}
+
+
 apply from: "features/settings-features.gradle"
 apply from: "libraries/settings-libraries.gradle"
 
@@ -6,7 +24,6 @@ include 'tkpdhome'
 include 'tkpdloyalty'
 include 'tkpdride'
 include 'tkpdfeed'
-include 'tkpddigital'
 include 'tkpdcore'
 include 'tkpdinbox'
 include 'tkpddiscovery'

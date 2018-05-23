@@ -6,7 +6,6 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.v4.app.TaskStackBuilder;
 import android.text.TextUtils;
 import android.view.View;
 
@@ -16,13 +15,10 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.bumptech.glide.request.target.Target;
-import com.tokopedia.abstraction.common.utils.view.CommonUtils;
 import com.tokopedia.core.SplashScreen;
 import com.tokopedia.core.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.core.remoteconfig.RemoteConfig;
 import com.tokopedia.core.router.home.HomeRouter;
-import com.tokopedia.ride.bookingride.view.activity.RideHomeActivity;
-import com.tokopedia.ride.common.configuration.RideConfiguration;
 
 /**
  * Created by ricoharisin on 11/22/16.
@@ -43,25 +39,8 @@ public class ConsumerSplashScreen extends SplashScreen {
 
     @Override
     public void finishSplashScreen() {
-        RideConfiguration rideConfiguration = new RideConfiguration(getApplicationContext());
-
         Intent homeIntent = HomeRouter.getHomeActivity(this);
-        if ((getIntent() != null &&
-                getIntent().getStringExtra(RideHomeActivity.EXTRA_LAUNCH_SHORTCUT) != null &&
-                getIntent().getStringExtra(RideHomeActivity.EXTRA_LAUNCH_SHORTCUT).equalsIgnoreCase("true")) ||
-                !TextUtils.isEmpty(rideConfiguration.getActiveRequestId())) {
-
-            Intent rideHomeIntent = RideHomeActivity.getCallingIntent(this);
-            if (getIntent().getExtras() != null) rideHomeIntent.putExtras(getIntent().getExtras());
-
-            TaskStackBuilder taskStackBuilder = TaskStackBuilder.create(getApplicationContext());
-            taskStackBuilder.addNextIntent(homeIntent);
-            taskStackBuilder.addNextIntent(rideHomeIntent);
-            taskStackBuilder.startActivities();
-
-        } else {
-            startActivity(homeIntent);
-        }
+        startActivity(homeIntent);
         finish();
     }
 
@@ -94,7 +73,8 @@ public class ConsumerSplashScreen extends SplashScreen {
                                     mainLayout.setBackground(new BitmapDrawable(getResources(), resource));
                                 }
                             }
-                        }catch (Exception ex){}
+                        } catch (Exception ex) {
+                        }
                     }
 
                     @Override
