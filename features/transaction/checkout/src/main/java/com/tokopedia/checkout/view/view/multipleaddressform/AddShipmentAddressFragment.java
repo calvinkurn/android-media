@@ -255,7 +255,11 @@ public class AddShipmentAddressFragment extends BaseCheckoutFragment {
         quantityField = view.findViewById(R.id.quantity_field);
         ImageView decreaseButton = view.findViewById(R.id.decrease_quantity);
         ImageView increaseButton = view.findViewById(R.id.increase_quantity);
-        quantityField.setText(itemData.getProductQty());
+        if (formMode == ADD_MODE) {
+            quantityField.setText("1");
+        } else {
+            quantityField.setText(itemData.getProductQty());
+        }
         quantityField.setOnClickListener(onQuantityEditTextClicked());
         quantityField.addTextChangedListener(quantityTextWatcher(
                 itemData,

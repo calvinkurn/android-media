@@ -59,8 +59,7 @@ public class CartListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     }
 
     @Override
-    public void onBindViewHolder(final RecyclerView.ViewHolder holder,
-                                 @SuppressLint("RecyclerView") final int position) {
+    public void onBindViewHolder(final RecyclerView.ViewHolder holder, int position) {
         if (getItemViewType(position) == CartListItemViewHolder.TYPE_VIEW_ITEM_CART) {
             final CartListItemViewHolder holderView = (CartListItemViewHolder) holder;
             final CartItemHolderData data = (CartItemHolderData) cartItemHolderDataList.get(position);

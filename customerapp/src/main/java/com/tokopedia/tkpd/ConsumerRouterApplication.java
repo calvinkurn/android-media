@@ -821,6 +821,11 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
+    public Intent getHomeFeedIntent(Context context) {
+        return ParentIndexHome.getHomeFeedIntent(context);
+    }
+
+    @Override
     public Intent getInboxReputationIntent(Context context) {
         return InboxReputationActivity.getCallingIntent(context);
     }
@@ -1588,7 +1593,10 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
                         StringBuilder stringBuilder = new StringBuilder();
                         for (int i = 0; i < messageList.size(); i++) {
                             String string = messageList.get(i);
-                            stringBuilder.append(string).append(",");
+                            stringBuilder.append(string);
+                            if (messageList.size() > 1 && i < messageList.size() - 1) {
+                                stringBuilder.append(",");
+                            }
                         }
                         return new AddToCartResult.Builder()
                                 .message(stringBuilder.toString())
@@ -1714,7 +1722,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public Intent checkoutModuleRouterGetShopInfoIntent(Context context, String shopId) {
-        return ShopInfoActivity.createIntent(context, shopId);
+        return ShopPageActivity.createIntent(context, shopId);
     }
 
     @Override

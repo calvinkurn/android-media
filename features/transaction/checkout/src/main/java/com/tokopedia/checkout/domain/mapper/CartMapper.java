@@ -1,6 +1,12 @@
 package com.tokopedia.checkout.domain.mapper;
 
 import com.tokopedia.checkout.domain.datamodel.cartlist.AutoApplyData;
+import com.tokopedia.checkout.domain.datamodel.cartlist.WholesalePrice;
+import com.tokopedia.transactiondata.entity.response.cartlist.CartDataListResponse;
+import com.tokopedia.transactiondata.entity.response.cartlist.CartList;
+import com.tokopedia.transactiondata.entity.response.deletecart.DeleteCartDataResponse;
+import com.tokopedia.transactiondata.entity.response.resetcart.ResetCartDataResponse;
+import com.tokopedia.transactiondata.entity.response.updatecart.UpdateCartDataResponse;
 import com.tokopedia.checkout.domain.datamodel.cartlist.CartItemData;
 import com.tokopedia.checkout.domain.datamodel.cartlist.CartListData;
 import com.tokopedia.checkout.domain.datamodel.cartlist.CartPromoSuggestion;
@@ -66,6 +72,7 @@ public class CartMapper implements ICartMapper {
             cartItemDataOrigin.setPreOrder(data.getProduct().getIsPreorder() == 1);
             cartItemDataOrigin.setFavorite(false);
             cartItemDataOrigin.setMinimalQtyOrder(data.getProduct().getProductMinOrder());
+            cartItemDataOrigin.setInvenageValue(data.getProduct().getProductInvenageValue());
             cartItemDataOrigin.setFreeReturn(data.getProduct().getIsFreereturns() == 1);
             if (!mapperUtil.isEmpty(data.getProduct().getFreeReturns())) {
                 cartItemDataOrigin.setFreeReturnLogo(data.getProduct().getFreeReturns().getFreeReturnsLogo());
@@ -76,6 +83,21 @@ public class CartMapper implements ICartMapper {
             cartItemDataOrigin.setCategory(data.getProduct().getCategory());
             cartItemDataOrigin.setCategory(data.getProduct().getCategory().replace(">", "/"));
             cartItemDataOrigin.setCategoryId(String.valueOf(data.getProduct().getCategoryId()));
+            if (data.getProduct().getWholesalePrice() != null) {
+                List<WholesalePrice> wholesalePrices = new ArrayList<>();
+                for (com.tokopedia.transactiondata.entity.response.cartlist.WholesalePrice wholesalePriceDataModel : data.getProduct().getWholesalePrice()) {
+                    WholesalePrice wholesalePriceDomainModel = new WholesalePrice();
+                    wholesalePriceDomainModel.setPrdPrc(wholesalePriceDataModel.getPrdPrc());
+                    wholesalePriceDomainModel.setPrdPrcFmt(wholesalePriceDataModel.getPrdPrcFmt());
+                    wholesalePriceDomainModel.setQtyMax(wholesalePriceDataModel.getQtyMax());
+                    wholesalePriceDomainModel.setQtyMaxFmt(wholesalePriceDataModel.getQtyMaxFmt());
+                    wholesalePriceDomainModel.setQtyMin(wholesalePriceDataModel.getQtyMin());
+                    wholesalePriceDomainModel.setQtyMinFmt(wholesalePriceDataModel.getQtyMinFmt());
+
+                    wholesalePrices.add(wholesalePriceDomainModel);
+                }
+                cartItemDataOrigin.setWholesalePrice(wholesalePrices);
+            }
 
             CartItemData.UpdatedData cartItemDataUpdated = new CartItemData.UpdatedData();
             cartItemDataUpdated.setRemark(cartItemDataOrigin.getProductVarianRemark());

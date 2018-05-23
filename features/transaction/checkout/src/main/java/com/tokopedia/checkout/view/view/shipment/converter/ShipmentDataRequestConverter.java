@@ -6,8 +6,6 @@ import com.tokopedia.checkout.domain.datamodel.shipmentrates.CourierItemData;
 import com.tokopedia.checkout.domain.datamodel.shipmentrates.ShipmentDetailData;
 import com.tokopedia.checkout.view.view.shipment.ShipmentAdapter;
 import com.tokopedia.checkout.view.view.shipment.viewmodel.ShipmentCartItemModel;
-import com.tokopedia.checkout.view.view.shipment.viewmodel.ShipmentMultipleAddressCartItemModel;
-import com.tokopedia.checkout.view.view.shipment.viewmodel.ShipmentSingleAddressCartItemModel;
 import com.tokopedia.core.router.transactionmodule.sharedata.CheckPromoCodeCartShipmentRequest;
 import com.tokopedia.transactiondata.entity.request.DataChangeAddressRequest;
 import com.tokopedia.transactiondata.entity.request.DataCheckoutRequest;
@@ -36,27 +34,71 @@ public class ShipmentDataRequestConverter {
     public ShipmentAdapter.RequestData generateRequestData(
             List<ShipmentCartItemModel> shipmentCartItemModels, RecipientAddressModel recipientAddress) {
 
-        List<ShopProductCheckoutRequest> shopProductCheckoutRequest = new ArrayList<>();
-
         ShipmentAdapter.RequestData requestData = new ShipmentAdapter.RequestData();
         if (shipmentCartItemModels != null && shipmentCartItemModels.size() > 0) {
-            if (shipmentCartItemModels.get(0) instanceof ShipmentSingleAddressCartItemModel) {
-                List<CheckPromoCodeCartShipmentRequest.ShopProduct> shopProductPromoRequest = new ArrayList<>();
+            List<ShopProductCheckoutRequest> shopProductCheckoutRequestList = new ArrayList<>();
+            List<CheckPromoCodeCartShipmentRequest.ShopProduct> shopProductPromoRequest = new ArrayList<>();
+            if (recipientAddress != null) {
+                List<DataChangeAddressRequest> changeAddressRequestData = new ArrayList<>();
                 for (ShipmentCartItemModel shipmentCartItemModel : shipmentCartItemModels) {
-                    shopProductCheckoutRequest.add(getProductCheckoutRequest(shipmentCartItemModel));
+                    shopProductCheckoutRequestList.add(getProductCheckoutRequest(shipmentCartItemModel));
                     shopProductPromoRequest.add(getShopProductPromoRequest(shipmentCartItemModel));
+                    createChangeAddressRequestData(changeAddressRequestData, shipmentCartItemModel, recipientAddress);
                 }
-                requestData.setCheckoutRequestData(createCheckoutRequestData(shopProductCheckoutRequest, recipientAddress));
+                requestData.setCheckoutRequestData(createCheckoutRequestData(shopProductCheckoutRequestList, recipientAddress));
                 requestData.setPromoRequestData(createPromoRequestData(shopProductPromoRequest, recipientAddress));
-                requestData.setChangeAddressRequestData(createChangeAddressRequestData(shipmentCartItemModels, recipientAddress));
+                requestData.setChangeAddressRequestData(changeAddressRequestData);
             } else {
-                requestData.setPromoRequestData(createPromoCodeRequestData(shipmentCartItemModels));
-                requestData.setCheckoutRequestData(createCheckoutRequestData(shipmentCartItemModels));
-                requestData.setChangeAddressRequestData(createChangeAddressRequestData(shipmentCartItemModels, null));
+                List<DataCheckoutRequest> checkoutRequestData = new ArrayList<>();
+                List<CheckPromoCodeCartShipmentRequest.Data> promoRequestData = new ArrayList<>();
+                List<DataChangeAddressRequest> changeAddressRequestData = new ArrayList<>();
+                for (ShipmentCartItemModel shipmentCartItemModel : shipmentCartItemModels) {
+                    shopProductCheckoutRequestList.add(getProductCheckoutRequest(shipmentCartItemModel));
+                    shopProductPromoRequest.add(getShopProductPromoRequest(shipmentCartItemModel));
+                    createChangeAddressRequestData(changeAddressRequestData, shipmentCartItemModel, null);
+                }
+
+                for (int i = 0; i < shopProductCheckoutRequestList.size(); i++) {
+                    DataCheckoutRequest.Builder dataCheckoutRequestBuilder = new DataCheckoutRequest.Builder();
+                    List<ShopProductCheckoutRequest> shopProductCheckoutRequests = new ArrayList<>();
+                    shopProductCheckoutRequests.add(shopProductCheckoutRequestList.get(i));
+                    dataCheckoutRequestBuilder.shopProducts(shopProductCheckoutRequests);
+                    dataCheckoutRequestBuilder.addressId(Integer.parseInt(shipmentCartItemModels.get(i).getRecipientAddressModel().getId()));
+                    checkoutRequestData.add(dataCheckoutRequestBuilder.build());
+                }
+
+                for (int i = 0; i < shopProductPromoRequest.size(); i++) {
+                    CheckPromoCodeCartShipmentRequest.Data.Builder promoDataBuilder = new CheckPromoCodeCartShipmentRequest.Data.Builder();
+                    List<CheckPromoCodeCartShipmentRequest.ShopProduct> shopProducts = new ArrayList<>();
+                    shopProducts.add(shopProductPromoRequest.get(i));
+                    promoDataBuilder.addressId(Integer.parseInt(shipmentCartItemModels.get(i).getRecipientAddressModel().getId()));
+                    promoDataBuilder.shopProducts(shopProducts);
+                    promoRequestData.add(promoDataBuilder.build());
+                }
+
+                requestData.setCheckoutRequestData(checkoutRequestData);
+                requestData.setPromoRequestData(promoRequestData);
+                requestData.setChangeAddressRequestData(changeAddressRequestData);
             }
         }
 
         return requestData;
+    }
+
+    private void createChangeAddressRequestData(List<DataChangeAddressRequest> changeAddressRequestData,
+                                                ShipmentCartItemModel shipmentCartItemModel,
+                                                RecipientAddressModel recipientAddressModel) {
+        for (CartItemModel cartItemModel : shipmentCartItemModel.getCartItemModels()) {
+            DataChangeAddressRequest dataChangeAddressRequest = new DataChangeAddressRequest();
+            dataChangeAddressRequest.setQuantity(cartItemModel.getQuantity());
+            dataChangeAddressRequest.setProductId(cartItemModel.getProductId());
+            dataChangeAddressRequest.setNotes(cartItemModel.getNoteToSeller());
+            dataChangeAddressRequest.setAddressId(recipientAddressModel != null ?
+                    Integer.parseInt(recipientAddressModel.getId()) :
+                    Integer.parseInt(shipmentCartItemModel.getRecipientAddressModel().getId()));
+            dataChangeAddressRequest.setCartId(cartItemModel.getCartId());
+            changeAddressRequestData.add(dataChangeAddressRequest);
+        }
     }
 
     private ShopProductCheckoutRequest getProductCheckoutRequest(ShipmentCartItemModel shipmentCartItemModel) {
@@ -74,8 +116,7 @@ public class ShipmentDataRequestConverter {
                     .finsurance((shipmentDetailData.getUseInsurance() != null && shipmentDetailData.getUseInsurance()) ? 1 : 0)
                     .isPreorder(shipmentCartItemModel.isProductIsPreorder() ? 1 : 0)
                     .shopId(shipmentCartItemModel.getShopId())
-                    .productData(convertToProductDataCheckout(
-                            ((ShipmentSingleAddressCartItemModel) shipmentCartItemModel).getCartItemModels()));
+                    .productData(convertToProductDataCheckout(shipmentCartItemModel.getCartItemModels()));
 
             if (shipmentDetailData.getUseDropshipper()) {
                 shopProductCheckoutBuilder.isDropship(1)
@@ -105,8 +146,7 @@ public class ShipmentDataRequestConverter {
                             .finsurance((shipmentDetailData.getUseInsurance() != null &&
                                     shipmentDetailData.getUseInsurance()) ? 1 : 0)
                             .isPreorder(shipmentCartItemModel.isProductIsPreorder() ? 1 : 0)
-                            .productData(convertToProductData(
-                                    ((ShipmentSingleAddressCartItemModel) shipmentCartItemModel).getCartItemModels()))
+                            .productData(convertToProductData(shipmentCartItemModel.getCartItemModels()))
                             .shippingInfo(new CheckPromoCodeCartShipmentRequest.ShippingInfo.Builder()
                                     .shippingId(courierItemData.getShipperId())
                                     .spId(courierItemData.getShipperProductId())
@@ -181,158 +221,5 @@ public class ShipmentDataRequestConverter {
 
         return promoRequestData;
     }
-
-    private List<CheckPromoCodeCartShipmentRequest.Data> createPromoCodeRequestData(List<ShipmentCartItemModel> shipmentData) {
-        List<CheckPromoCodeCartShipmentRequest.Data> promoRequestData = new ArrayList<>();
-
-        for (int i = 0; i < shipmentData.size(); i++) {
-            CheckPromoCodeCartShipmentRequest.Data.Builder orderData =
-                    new CheckPromoCodeCartShipmentRequest.Data.Builder();
-            ShipmentMultipleAddressCartItemModel shipmentMultipleAddressCartItemModel =
-                    ((ShipmentMultipleAddressCartItemModel) shipmentData.get(i));
-            orderData.addressId(Integer.parseInt(shipmentMultipleAddressCartItemModel.getMultipleAddressItemData().getAddressId()));
-
-            List<CheckPromoCodeCartShipmentRequest.ShopProduct> shopProducts = new ArrayList<>();
-            CheckPromoCodeCartShipmentRequest.ShopProduct.Builder shopProduct =
-                    new CheckPromoCodeCartShipmentRequest.ShopProduct.Builder();
-
-            List<CheckPromoCodeCartShipmentRequest.ProductData> productDatas = new ArrayList<>();
-            CheckPromoCodeCartShipmentRequest.ProductData.Builder productData =
-                    new CheckPromoCodeCartShipmentRequest.ProductData.Builder();
-            productData.productId(Integer.parseInt(shipmentMultipleAddressCartItemModel.getMultipleAddressItemData().getProductId()))
-                    .productNotes(shipmentMultipleAddressCartItemModel.getMultipleAddressItemData().getProductNotes())
-                    .productQuantity(Integer.parseInt(shipmentMultipleAddressCartItemModel.getMultipleAddressItemData().getProductQty()));
-
-            productDatas.add(productData.build());
-
-            CheckPromoCodeCartShipmentRequest.ShippingInfo.Builder shipmentInfo =
-                    new CheckPromoCodeCartShipmentRequest.ShippingInfo.Builder();
-            shipmentInfo.shippingId(shipmentData.get(i).getSelectedShipmentDetailData()
-                    .getSelectedCourier().getShipperId())
-                    .spId(shipmentData.get(i).getSelectedShipmentDetailData().getSelectedCourier().getShipperProductId());
-
-            shopProduct.productData(productDatas)
-                    .shopId(shipmentData.get(i).getShopId())
-                    .fcancelPartial(shipmentData.get(i).getSelectedShipmentDetailData().getUsePartialOrder() ? 1 : 0)
-                    .finsurance((shipmentData.get(i).getSelectedShipmentDetailData().getUseInsurance() != null &&
-                            shipmentData.get(i).getSelectedShipmentDetailData().getUseInsurance()) ? 1 : 0)
-                    .isPreorder(shipmentData.get(i).isProductIsPreorder() ? 1 : 0)
-                    .shippingInfo(shipmentInfo.build());
-
-            if (shipmentData.get(i).getSelectedShipmentDetailData().getUseDropshipper()) {
-                CheckPromoCodeCartShipmentRequest.DropshipData.Builder dropshipData =
-                        new CheckPromoCodeCartShipmentRequest.DropshipData.Builder();
-
-                dropshipData
-                        .name(shipmentData.get(i).getSelectedShipmentDetailData()
-                                .getDropshipperName())
-                        .telpNo(shipmentData.get(i).getSelectedShipmentDetailData()
-                                .getDropshipperPhone());
-            }
-
-            shopProducts.add(shopProduct.build());
-            orderData.shopProducts(shopProducts);
-            promoRequestData.add(orderData.build());
-        }
-
-        return promoRequestData;
-    }
-
-    private List<DataCheckoutRequest> createCheckoutRequestData(List<ShipmentCartItemModel> shipmentCartItemModels) {
-        List<DataCheckoutRequest> dataCheckoutRequests = new ArrayList<>();
-        for (int i = 0; i < shipmentCartItemModels.size(); i++) {
-            ShipmentMultipleAddressCartItemModel currentShipmentAdapterData =
-                    (ShipmentMultipleAddressCartItemModel) shipmentCartItemModels.get(i);
-            ShipmentDetailData currentShipmentDetailData = currentShipmentAdapterData
-                    .getSelectedShipmentDetailData();
-
-            DataCheckoutRequest.Builder checkoutData = new DataCheckoutRequest.Builder();
-
-            List<ProductDataCheckoutRequest> productDataCheckoutRequests = new ArrayList<>();
-            ProductDataCheckoutRequest.Builder productDataCheckoutRequest =
-                    new ProductDataCheckoutRequest.Builder();
-            productDataCheckoutRequests.add(productDataCheckoutRequest
-                    .productId(Integer.parseInt(
-                            currentShipmentAdapterData.getMultipleAddressItemData().getProductId())
-                    ).build());
-
-            ShopProductCheckoutRequest.Builder shopCheckoutBuilder;
-            shopCheckoutBuilder = new ShopProductCheckoutRequest.Builder()
-                    .productData(productDataCheckoutRequests)
-                    .shippingInfo(setShippingInfoRequest(currentShipmentDetailData))
-                    .fcancelPartial(currentShipmentDetailData.getUsePartialOrder() ? 1 : 0)
-                    .finsurance(currentShipmentDetailData.getUseInsurance() != null &&
-                            currentShipmentDetailData.getUseInsurance() ? 1 : 0)
-                    .isPreorder(currentShipmentAdapterData.isProductIsPreorder() ? 1 : 0)
-                    .isDropship(currentShipmentDetailData.getUseDropshipper() ? 1 : 0)
-                    .shopId(currentShipmentAdapterData.getShopId());
-
-            if (currentShipmentDetailData.getUseDropshipper()) {
-                shopCheckoutBuilder.dropshipData(setDropshipDataCheckoutRequest(currentShipmentDetailData));
-            }
-
-            List<ShopProductCheckoutRequest> shopCheckoutRequests = new ArrayList<>();
-            shopCheckoutRequests.add(shopCheckoutBuilder.build());
-
-            checkoutData.addressId(Integer
-                    .parseInt(currentShipmentAdapterData.getMultipleAddressItemData().getAddressId()))
-                    .shopProducts(shopCheckoutRequests).build();
-            dataCheckoutRequests.add(checkoutData.build());
-        }
-        return dataCheckoutRequests;
-    }
-
-    private DropshipDataCheckoutRequest setDropshipDataCheckoutRequest(ShipmentDetailData data) {
-        return new DropshipDataCheckoutRequest.Builder()
-                .name(data.getDropshipperName())
-                .telpNo(data.getDropshipperPhone()).build();
-    }
-
-    private ShippingInfoCheckoutRequest setShippingInfoRequest(ShipmentDetailData data) {
-        return new ShippingInfoCheckoutRequest.Builder()
-                .shippingId(data.getSelectedCourier().getShipperId())
-                .spId(data.getSelectedCourier().getShipperProductId())
-                .build();
-    }
-
-    private List<DataChangeAddressRequest> createChangeAddressRequestData(
-            List<ShipmentCartItemModel> shipmentCartItemModels, RecipientAddressModel recipientAddress) {
-        List<DataChangeAddressRequest> dataChangeAddressRequests = new ArrayList<>();
-
-        for (ShipmentCartItemModel shipmentCartItemModel : shipmentCartItemModels) {
-            DataChangeAddressRequest dataChangeAddressRequest = new DataChangeAddressRequest();
-            dataChangeAddressRequest.setCartId(shipmentCartItemModel.getCartId());
-            if (recipientAddress != null && shipmentCartItemModel instanceof ShipmentSingleAddressCartItemModel) {
-                dataChangeAddressRequest.setAddressId(Integer.parseInt(recipientAddress.getId()));
-                List<CartItemModel> cartItemModels = ((ShipmentSingleAddressCartItemModel) shipmentCartItemModel).getCartItemModels();
-                if (cartItemModels != null && cartItemModels.size() > 0) {
-                    dataChangeAddressRequest.setNotes(cartItemModels.get(0).getNoteToSeller());
-                    dataChangeAddressRequest.setProductId(cartItemModels.get(0).getProductId());
-                    dataChangeAddressRequest.setQuantity(cartItemModels.get(0).getQuantity());
-                } else {
-                    dataChangeAddressRequest.setNotes("");
-                    dataChangeAddressRequest.setProductId(0);
-                    dataChangeAddressRequest.setQuantity(0);
-                }
-            } else if (shipmentCartItemModel instanceof ShipmentMultipleAddressCartItemModel) {
-                String addressIdString = ((ShipmentMultipleAddressCartItemModel) shipmentCartItemModel)
-                        .getMultipleAddressItemData().getAddressId();
-                dataChangeAddressRequest.setAddressId(Integer.parseInt(addressIdString));
-                dataChangeAddressRequest.setNotes(((ShipmentMultipleAddressCartItemModel) shipmentCartItemModel)
-                        .getMultipleAddressItemData().getProductNotes());
-                dataChangeAddressRequest.setProductId(Integer.parseInt(
-                        ((ShipmentMultipleAddressCartItemModel) shipmentCartItemModel)
-                                .getMultipleAddressItemData().getProductId()));
-                dataChangeAddressRequest.setQuantity(Integer.parseInt(
-                        ((ShipmentMultipleAddressCartItemModel) shipmentCartItemModel)
-                                .getMultipleAddressItemData().getProductQty()));
-            }
-
-            dataChangeAddressRequests.add(dataChangeAddressRequest);
-        }
-
-        return dataChangeAddressRequests;
-    }
-
 
 }

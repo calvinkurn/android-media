@@ -107,6 +107,7 @@ public class CartRemoveProductAdapter extends RecyclerView.Adapter<RecyclerView.
                     isRemoveAll = !isRemoveAll;
                     mActionListener.onCheckBoxCheckAll();
                     notifyDataSetChanged();
+                    mActionListener.onAllItemCheckChanged(isRemoveAll);
                 }
             };
         }
@@ -126,6 +127,11 @@ public class CartRemoveProductAdapter extends RecyclerView.Adapter<RecyclerView.
         }
     }
 
+    public void checkAllItem(boolean checked) {
+        isRemoveAll = checked;
+        notifyItemChanged(0);
+    }
+
     /**
      * Implemented by container fragment which will receive events and data from adapter
      */
@@ -137,10 +143,11 @@ public class CartRemoveProductAdapter extends RecyclerView.Adapter<RecyclerView.
          * @param checked  state of checkbox
          * @param position index of list where the checkbox state is changed
          */
-        void onCheckBoxStateChangedListener(boolean checked, int position);
+        void onCheckBoxStateChanged(boolean checked, int position);
 
         void onCheckBoxCheckAll();
 
+        void onAllItemCheckChanged(boolean checked);
     }
 
     /**
@@ -165,8 +172,10 @@ public class CartRemoveProductAdapter extends RecyclerView.Adapter<RecyclerView.
         private ImageView mIvProductImage;
         private TextView mTvProductName;
         private TextView mTvProductPrice;
-        private TextView mTvProductWeight;
         private TextView mTvTotalProductItem;
+        private TextView mTvCashback;
+        private TextView mTvPreOrder;
+        private ImageView mIvFreeReturnIcon;
 
         private boolean isChecked = false;
 
@@ -178,8 +187,10 @@ public class CartRemoveProductAdapter extends RecyclerView.Adapter<RecyclerView.
             mIvProductImage = itemView.findViewById(R.id.iv_product_image);
             mTvProductName = itemView.findViewById(R.id.tv_product_name);
             mTvProductPrice = itemView.findViewById(R.id.tv_product_price);
-            mTvProductWeight = itemView.findViewById(R.id.tv_product_weight);
             mTvTotalProductItem = itemView.findViewById(R.id.tv_product_total_item);
+            mTvCashback = itemView.findViewById(R.id.tv_cashback);
+            mTvPreOrder = itemView.findViewById(R.id.tv_pre_order);
+            mIvFreeReturnIcon = itemView.findViewById(R.id.iv_free_return_icon);
         }
 
         void bindViewHolder(CartItemData cartItemModel, int position) {
@@ -196,16 +207,34 @@ public class CartRemoveProductAdapter extends RecyclerView.Adapter<RecyclerView.
             mTvSenderName.setText(originData.getShopName());
             mTvProductName.setText(originData.getProductName());
             mTvProductPrice.setText(originData.getPriceFormatted());
-            mTvProductWeight.setText(originData.getWeightFormatted());
             mTvTotalProductItem.setText(String.valueOf(updatedData.getQuantity()));
             ImageHandler.LoadImage(mIvProductImage, originData.getProductImage());
+
+            if (cartItemModel.getOriginData().isFreeReturn()) {
+                mIvFreeReturnIcon.setVisibility(View.VISIBLE);
+            } else {
+                mIvFreeReturnIcon.setVisibility(View.GONE);
+            }
+
+            if (cartItemModel.getOriginData().isPreOrder()) {
+                mTvPreOrder.setVisibility(View.VISIBLE);
+            } else {
+                mTvPreOrder.setVisibility(View.GONE);
+            }
+
+            if (cartItemModel.getOriginData().isCashBack()) {
+                mTvCashback.setText(cartItemModel.getOriginData().getCashBackInfo());
+                mTvCashback.setVisibility(View.VISIBLE);
+            } else {
+                mTvCashback.setVisibility(View.GONE);
+            }
         }
 
         private CompoundButton.OnCheckedChangeListener onChangeStateListener(final int position) {
             return new CompoundButton.OnCheckedChangeListener() {
                 @Override
                 public void onCheckedChanged(CompoundButton compoundButton, boolean checked) {
-                    mActionListener.onCheckBoxStateChangedListener(checked, position);
+                    mActionListener.onCheckBoxStateChanged(checked, position);
                 }
             };
         }
