@@ -220,6 +220,7 @@
             <com.tokopedia.design.pickuppoint.PickupPointLayout
                 android:id="@+id/pickup_point_layout"
                 android:layout_width="match_parent"
+                android:visibility="gone"
                 android:layout_height="wrap_content" />
 
             <TextView
