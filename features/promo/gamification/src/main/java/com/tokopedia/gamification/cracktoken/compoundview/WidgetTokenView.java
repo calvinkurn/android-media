@@ -13,6 +13,7 @@ import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewTreeObserver;
@@ -327,12 +328,14 @@ public class WidgetTokenView extends FrameLayout {
     }
 
     public MediaPlayer getCrackMediaPlayer(int resId) {
+        Log.i("TELORTELORAN", "Start init");
         if (crackMediaPlayer == null) {
             crackMediaPlayer = new MediaPlayer();
         } else {
             crackMediaPlayer.stop();
             crackMediaPlayer.reset();
         }
+        Log.i("TELORTELORAN", "Start to init media player");
         try {
             AssetFileDescriptor afd = getContext().getResources().openRawResourceFd(resId);
             if (afd == null) {
@@ -340,8 +343,11 @@ public class WidgetTokenView extends FrameLayout {
             }
             crackMediaPlayer.setDataSource(afd.getFileDescriptor(), afd.getStartOffset(), afd.getLength());
             afd.close();
+            Log.i("TELORTELORAN", "media player closed");
             crackMediaPlayer.prepareAsync();
+            Log.i("TELORTELORAN", "Finish");
         } catch (Exception e) {
+            Log.i("TELORTELORAN", e.getMessage());
             return null;
         }
         return crackMediaPlayer;
