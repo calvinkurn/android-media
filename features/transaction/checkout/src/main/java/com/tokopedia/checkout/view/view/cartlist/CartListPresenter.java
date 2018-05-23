@@ -290,18 +290,22 @@ public class CartListPresenter implements ICartListPresenter {
                             itemQty <= wholesalePrice.getQtyMax()) {
                         subtotalPrice = subtotalPrice + (itemQty * wholesalePrice.getPrdPrc());
                         hasCalculateWholesalePrice = true;
+                        data.getCartItemData().getOriginData().setWholesalePriceFormatted(wholesalePrice.getPrdPrcFmt());
                         break;
                     }
                 }
                 if (!hasCalculateWholesalePrice) {
                     if (itemQty > wholesalePrices.get(wholesalePrices.size() - 1).getPrdPrc()) {
                         subtotalPrice = subtotalPrice + (itemQty * wholesalePrices.get(wholesalePrices.size() - 1).getPrdPrc());
+                        data.getCartItemData().getOriginData().setWholesalePriceFormatted(wholesalePrices.get(wholesalePrices.size() - 1).getPrdPrcFmt());
                     } else {
                         subtotalPrice = subtotalPrice + (itemQty * data.getCartItemData().getOriginData().getPricePlan());
+                        data.getCartItemData().getOriginData().setWholesalePriceFormatted(null);
                     }
                 }
             } else {
                 subtotalPrice = subtotalPrice + (itemQty * data.getCartItemData().getOriginData().getPricePlan());
+                data.getCartItemData().getOriginData().setWholesalePriceFormatted(null);
             }
         }
 

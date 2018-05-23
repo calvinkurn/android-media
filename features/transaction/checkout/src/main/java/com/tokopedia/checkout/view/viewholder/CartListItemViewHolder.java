@@ -84,7 +84,7 @@ public class CartListItemViewHolder extends RecyclerView.ViewHolder {
         this.tvWarning = itemView.findViewById(R.id.tv_warning);
     }
 
-    public void bindData(final CartItemHolderData data, final int position) {
+    public void bindData(final CartItemHolderData data, int position) {
         cartItemHolderData = data;
         if (cartItemHolderData.getCartItemData().getOriginData().getInvenageValue() == 0) {
             cartItemHolderData.getCartItemData().getOriginData().setInvenageValue(QTY_MAX);
@@ -95,7 +95,11 @@ public class CartListItemViewHolder extends RecyclerView.ViewHolder {
         this.tvProductName.setText(
                 Html.fromHtml(data.getCartItemData().getOriginData().getProductName())
         );
-        this.tvProductPrice.setText(data.getCartItemData().getOriginData().getPriceFormatted());
+        if (data.getCartItemData().getOriginData().getWholesalePriceFormatted() != null) {
+            this.tvProductPrice.setText(data.getCartItemData().getOriginData().getWholesalePriceFormatted());
+        } else {
+            this.tvProductPrice.setText(data.getCartItemData().getOriginData().getPriceFormatted());
+        }
         String quantity = String.valueOf(data.getCartItemData().getUpdatedData().getQuantity());
 
         this.etQty.setText(String.valueOf(data.getCartItemData().getUpdatedData().getQuantity()));
@@ -111,7 +115,7 @@ public class CartListItemViewHolder extends RecyclerView.ViewHolder {
             public boolean onEditorAction(TextView textView, int actionId, KeyEvent keyEvent) {
                 if (actionId == EditorInfo.IME_ACTION_DONE) {
                     actionListener.onCartItemRemarkEditChange(
-                            data.getCartItemData(), position, textView.getText().toString()
+                            data.getCartItemData(), getAdapterPosition(), textView.getText().toString()
                     );
                     return true;
                 }
@@ -138,10 +142,10 @@ public class CartListItemViewHolder extends RecyclerView.ViewHolder {
             this.etRemark.setText(data.getCartItemData().getUpdatedData().getRemark());
         }
 
-        this.ivProductImage.setOnClickListener(getOnClickProductItemListener(position, data));
-        this.tvProductName.setOnClickListener(getOnClickProductItemListener(position, data));
+        this.ivProductImage.setOnClickListener(getOnClickProductItemListener(getAdapterPosition(), data));
+        this.tvProductName.setOnClickListener(getOnClickProductItemListener(getAdapterPosition(), data));
 
-        this.tvShopName.setOnClickListener(getOnClickShopItemListener(position, data));
+        this.tvShopName.setOnClickListener(getOnClickShopItemListener(getAdapterPosition(), data));
 
         if (data.getCartItemData().getOriginData().isFreeReturn()) {
             this.ivIconFreeReturn.setVisibility(View.VISIBLE);
@@ -167,7 +171,7 @@ public class CartListItemViewHolder extends RecyclerView.ViewHolder {
         this.btnQtyPlus.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                actionListener.onCartItemQuantityPlusButtonClicked(data, position);
+                actionListener.onCartItemQuantityPlusButtonClicked(data, getAdapterPosition());
                 validateWithAvailableQuantity(cartItemHolderData, Integer.parseInt(etQty.getText().toString()));
             }
         });
@@ -175,7 +179,7 @@ public class CartListItemViewHolder extends RecyclerView.ViewHolder {
         this.btnQtyMinus.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                actionListener.onCartItemQuantityMinusButtonClicked(data, position);
+                actionListener.onCartItemQuantityMinusButtonClicked(data, getAdapterPosition());
                 validateWithAvailableQuantity(cartItemHolderData, Integer.parseInt(etQty.getText().toString()));
             }
         });
@@ -183,7 +187,7 @@ public class CartListItemViewHolder extends RecyclerView.ViewHolder {
         this.btnDelete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                actionListener.onCartItemDeleteButtonClicked(data, position);
+                actionListener.onCartItemDeleteButtonClicked(data, getAdapterPosition());
             }
         });
 
@@ -369,8 +373,8 @@ public class CartListItemViewHolder extends RecyclerView.ViewHolder {
                 }
                 checkQtyMustDisabled(cartItemHolderData, qty);
                 cartItemHolderData.getCartItemData().getUpdatedData().setQuantity(qty);
-                actionListener.onCartItemQuantityFormEdited();
                 validateWithAvailableQuantity(cartItemHolderData, qty);
+                actionListener.onCartItemQuantityFormEdited();
             }
         }
     }

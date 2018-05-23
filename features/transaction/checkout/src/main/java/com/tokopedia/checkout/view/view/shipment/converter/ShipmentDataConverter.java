@@ -137,7 +137,11 @@ public class ShipmentDataConverter {
         cartItemModel.setName(product.getProductName());
         cartItemModel.setImageUrl(product.getProductImageSrc200Square());
         cartItemModel.setCurrency(product.getProductPriceCurrency());
-        cartItemModel.setPrice(product.getProductPrice());
+        if (product.getProductWholesalePrice() != 0) {
+            cartItemModel.setPrice(product.getProductWholesalePrice());
+        } else {
+            cartItemModel.setPrice(product.getProductPrice());
+        }
         cartItemModel.setQuantity(product.getProductQuantity());
         cartItemModel.setWeight(product.getProductWeight());
         cartItemModel.setWeightFmt(product.getProductWeightFmt());

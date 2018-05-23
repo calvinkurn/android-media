@@ -90,6 +90,7 @@ public class CartItemData implements Parcelable {
         private double pricePlan;
         private int priceCurrency;
         private String priceFormatted;
+        private String wholesalePriceFormatted;
         private String productImage;
         private String productVarianRemark;
         private double weightPlan;
@@ -281,6 +282,14 @@ public class CartItemData implements Parcelable {
             this.wholesalePrice = wholesalePrice;
         }
 
+        public String getWholesalePriceFormatted() {
+            return wholesalePriceFormatted;
+        }
+
+        public void setWholesalePriceFormatted(String wholesalePriceFormatted) {
+            this.wholesalePriceFormatted = wholesalePriceFormatted;
+        }
+
         public OriginData() {
         }
 
@@ -299,6 +308,7 @@ public class CartItemData implements Parcelable {
             dest.writeDouble(this.pricePlan);
             dest.writeInt(this.priceCurrency);
             dest.writeString(this.priceFormatted);
+            dest.writeString(this.wholesalePriceFormatted);
             dest.writeString(this.productImage);
             dest.writeString(this.productVarianRemark);
             dest.writeDouble(this.weightPlan);
@@ -324,6 +334,7 @@ public class CartItemData implements Parcelable {
             this.pricePlan = in.readDouble();
             this.priceCurrency = in.readInt();
             this.priceFormatted = in.readString();
+            this.wholesalePriceFormatted = in.readString();
             this.productImage = in.readString();
             this.productVarianRemark = in.readString();
             this.weightPlan = in.readDouble();
