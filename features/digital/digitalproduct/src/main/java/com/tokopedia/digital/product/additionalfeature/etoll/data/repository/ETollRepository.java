@@ -1,5 +1,6 @@
 package com.tokopedia.digital.product.additionalfeature.etoll.data.repository;
 
+import com.tokopedia.digital.product.additionalfeature.etoll.data.entity.requestbody.smartcardcommand.RequestBodySmartcardCommand;
 import com.tokopedia.digital.product.additionalfeature.etoll.data.entity.requestbody.smartcardinquiry.RequestBodySmartcardInquiry;
 import com.tokopedia.digital.product.additionalfeature.etoll.data.source.SmartcardInquiryDataSource;
 import com.tokopedia.digital.product.additionalfeature.etoll.data.source.SmartcardCommandDataSource;
@@ -28,8 +29,8 @@ public class ETollRepository implements IETollRepository {
     }
 
     @Override
-    public Observable<InquiryBalanceModel> sendCommand() {
-        return smartcardCommandDataSource.sendCommand();
+    public Observable<InquiryBalanceModel> sendCommand(RequestBodySmartcardCommand requestBodySmartcardCommand) {
+        return smartcardCommandDataSource.sendCommand(requestBodySmartcardCommand);
     }
 
 }

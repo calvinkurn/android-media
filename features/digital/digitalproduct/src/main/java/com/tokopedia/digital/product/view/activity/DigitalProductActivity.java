@@ -96,7 +96,8 @@ public class DigitalProductActivity extends BasePresenterActivity
                             passData.getCategoryId(),
                             passData.getOperatorId(),
                             passData.getProductId(),
-                            passData.getClientNumber()))
+                            passData.getClientNumber(),
+                            passData.getAdditionalETollBalance()))
                     .commit();
     }
 

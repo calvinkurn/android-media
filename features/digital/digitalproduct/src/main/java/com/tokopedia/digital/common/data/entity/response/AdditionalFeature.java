@@ -13,20 +13,20 @@ public class AdditionalFeature {
     private int id;
     @SerializedName("text")
     @Expose
-    private int text;
+    private String text;
     @SerializedName("button_text")
     @Expose
-    private int buttonText;
+    private String buttonText;
 
     public int getId() {
         return id;
     }
 
-    public int getText() {
+    public String getText() {
         return text;
     }
 
-    public int getButtonText() {
+    public String getButtonText() {
         return buttonText;
     }
 }

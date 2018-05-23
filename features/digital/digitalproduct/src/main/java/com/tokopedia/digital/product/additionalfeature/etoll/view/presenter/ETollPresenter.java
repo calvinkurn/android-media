@@ -2,8 +2,9 @@ package com.tokopedia.digital.product.additionalfeature.etoll.view.presenter;
 
 import android.util.Log;
 
+import com.tokopedia.digital.R;
 import com.tokopedia.digital.product.additionalfeature.etoll.domain.interactor.SmartcardInquiryUseCase;
-import com.tokopedia.digital.product.additionalfeature.etoll.domain.interactor.SendCommandUseCase;
+import com.tokopedia.digital.product.additionalfeature.etoll.domain.interactor.SmartcardCommandUseCase;
 import com.tokopedia.digital.product.view.listener.IEMoneyView;
 import com.tokopedia.digital.product.additionalfeature.etoll.view.model.InquiryBalanceModel;
 
@@ -18,13 +19,13 @@ public class ETollPresenter implements IETollPresenter {
 
     private IEMoneyView view;
     private SmartcardInquiryUseCase smartcardInquiryUseCase;
-    private SendCommandUseCase sendCommandUseCase;
+    private SmartcardCommandUseCase smartcardCommandUseCase;
 
     public ETollPresenter(IEMoneyView view, SmartcardInquiryUseCase SmartcardInquiryUseCase,
-                          SendCommandUseCase sendCommandUseCase) {
+                          SmartcardCommandUseCase smartcardCommandUseCase) {
         this.view = view;
         this.smartcardInquiryUseCase = SmartcardInquiryUseCase;
-        this.sendCommandUseCase = sendCommandUseCase;
+        this.smartcardCommandUseCase = smartcardCommandUseCase;
     }
 
     @Override
@@ -42,7 +43,7 @@ public class ETollPresenter implements IETollPresenter {
                     @Override
                     public void onError(Throwable e) {
                         Log.d(TAG, e.getMessage());
-                        view.renderLocalCardInfo();
+                        view.showError(view.getStringResource(R.string.update_balance_failed));
                     }
 
                     @Override
@@ -52,15 +53,17 @@ public class ETollPresenter implements IETollPresenter {
                         } else if (inquiryBalanceModel.getStatus() == 1) {
                             view.showCardLastBalance(inquiryBalanceModel);
                         } else if (inquiryBalanceModel.getStatus() == 2) {
-                            view.showCardLastBalanceWithError(inquiryBalanceModel, inquiryBalanceModel.getErrorMessage());
+                            view.showError(inquiryBalanceModel.getErrorMessage());
                         }
                     }
                 });
     }
 
     @Override
-    public void sendCommand() {
-        sendCommandUseCase.execute(new Subscriber<InquiryBalanceModel>() {
+    public void sendCommand(String payload, int id, int issuerId) {
+        smartcardCommandUseCase.execute(
+                smartcardCommandUseCase.createRequestParams(payload, id, issuerId),
+                new Subscriber<InquiryBalanceModel>() {
             @Override
             public void onCompleted() {
 
@@ -69,7 +72,7 @@ public class ETollPresenter implements IETollPresenter {
             @Override
             public void onError(Throwable e) {
                 Log.d(TAG, e.getMessage());
-                view.renderLocalCardInfo();
+                view.showError(view.getStringResource(R.string.update_balance_failed));
             }
 
             @Override
@@ -79,7 +82,7 @@ public class ETollPresenter implements IETollPresenter {
                 } else if (inquiryBalanceModel.getStatus() == 1) {
                     view.showCardLastBalance(inquiryBalanceModel);
                 } else if (inquiryBalanceModel.getStatus() == 2) {
-                    view.showCardLastBalanceWithError(inquiryBalanceModel, inquiryBalanceModel.getErrorMessage());
+                    view.showError(inquiryBalanceModel.getErrorMessage());
                 }
             }
         });

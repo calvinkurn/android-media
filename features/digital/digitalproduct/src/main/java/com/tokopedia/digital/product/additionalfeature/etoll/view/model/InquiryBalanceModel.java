@@ -7,19 +7,25 @@ import com.tokopedia.digital.product.view.model.CardInfo;
  */
 public class InquiryBalanceModel {
 
+    private int id;
     private int status;
     private CardInfo cardInfo;
     private String buttonText;
     private String command;
     private String errorMessage;
 
-    public InquiryBalanceModel(int status, CardInfo cardInfo, String buttonText, String command,
+    public InquiryBalanceModel(int id, int status, CardInfo cardInfo, String buttonText, String command,
                                String errorMessage) {
+        this.id = id;
         this.status = status;
         this.cardInfo = cardInfo;
         this.buttonText = buttonText;
         this.command = command;
         this.errorMessage = errorMessage;
+    }
+
+    public int getId() {
+        return id;
     }
 
     public int getStatus() {

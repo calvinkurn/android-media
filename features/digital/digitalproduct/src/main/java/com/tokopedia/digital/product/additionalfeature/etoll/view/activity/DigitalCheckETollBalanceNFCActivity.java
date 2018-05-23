@@ -18,17 +18,18 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
+import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.core.router.digitalmodule.passdata.DigitalCategoryDetailPassData;
 import com.tokopedia.digital.R;
 import com.tokopedia.digital.common.data.apiservice.DigitalEndpointService;
-import com.tokopedia.digital.product.additionalfeature.etoll.data.mapper.SmartcardInquiryMapper;
+import com.tokopedia.digital.product.additionalfeature.etoll.data.mapper.SmartcardMapper;
 import com.tokopedia.digital.product.additionalfeature.etoll.data.repository.ETollRepository;
 import com.tokopedia.digital.product.additionalfeature.etoll.data.source.SmartcardCommandDataSource;
 import com.tokopedia.digital.product.additionalfeature.etoll.data.source.SmartcardInquiryDataSource;
 import com.tokopedia.digital.product.additionalfeature.etoll.domain.interactor.SmartcardInquiryUseCase;
-import com.tokopedia.digital.product.additionalfeature.etoll.domain.interactor.SendCommandUseCase;
+import com.tokopedia.digital.product.additionalfeature.etoll.domain.interactor.SmartcardCommandUseCase;
 import com.tokopedia.digital.product.additionalfeature.etoll.view.compoundview.ETollUpdateBalanceResultView;
 import com.tokopedia.digital.product.additionalfeature.etoll.view.compoundview.NFCDisabledView;
 import com.tokopedia.digital.product.additionalfeature.etoll.view.compoundview.TapETollCardView;
@@ -36,7 +37,6 @@ import com.tokopedia.digital.product.additionalfeature.etoll.view.model.InquiryB
 import com.tokopedia.digital.product.additionalfeature.etoll.view.presenter.ETollPresenter;
 import com.tokopedia.digital.product.view.activity.DigitalProductActivity;
 import com.tokopedia.digital.product.view.listener.IEMoneyView;
-import com.tokopedia.digital.product.view.model.CardInfo;
 import com.tokopedia.digital.utils.NFCUtils;
 
 import java.io.IOException;
@@ -58,8 +58,6 @@ public class DigitalCheckETollBalanceNFCActivity extends BaseSimpleActivity
 
     private ETollPresenter presenter;
 
-    private CardInfo fetchedCardInfo;
-
     private TapETollCardView tapETollCardView;
     private NFCDisabledView nfcDisabledView;
     private ETollUpdateBalanceResultView eTollUpdateBalanceResultView;
@@ -72,6 +70,8 @@ public class DigitalCheckETollBalanceNFCActivity extends BaseSimpleActivity
     private IntentFilter [] intentFiltersArray;
     private String [][] techListsArray;
 
+    private AbstractionRouter abstractionRouter;
+
     public static Intent newInstance(Activity activity) {
         return new Intent(activity, DigitalCheckETollBalanceNFCActivity.class);
     }
@@ -81,6 +81,8 @@ public class DigitalCheckETollBalanceNFCActivity extends BaseSimpleActivity
         super.onCreate(savedInstanceState);
 
         updateTitle("Cek Saldo");
+
+        abstractionRouter = (AbstractionRouter) getApplication();
 
         nfcAdapter = NfcAdapter.getDefaultAdapter(this);
 
@@ -94,16 +96,17 @@ public class DigitalCheckETollBalanceNFCActivity extends BaseSimpleActivity
 
         techListsArray = new String[][] { new String[] { IsoDep.class.getName(), NfcA.class.getName()} };
 
-        SmartcardInquiryMapper mapper = new SmartcardInquiryMapper();
+        SmartcardMapper mapper = new SmartcardMapper();
         DigitalEndpointService digitalEndpointService = new DigitalEndpointService();
-        SmartcardInquiryDataSource smartcardInquiryDataSource = new SmartcardInquiryDataSource(this,
+        SmartcardInquiryDataSource smartcardInquiryDataSource = new SmartcardInquiryDataSource(
                 digitalEndpointService, mapper);
-        SmartcardCommandDataSource smartcardCommandDataSource = new SmartcardCommandDataSource(this, mapper);
+        SmartcardCommandDataSource smartcardCommandDataSource = new SmartcardCommandDataSource(
+                digitalEndpointService, mapper);
         ETollRepository eTollRepository = new ETollRepository(smartcardInquiryDataSource, smartcardCommandDataSource);
         SmartcardInquiryUseCase smartcardInquiryUseCase = new SmartcardInquiryUseCase(eTollRepository);
-        SendCommandUseCase sendCommandUseCase = new SendCommandUseCase(eTollRepository);
+        SmartcardCommandUseCase smartcardCommandUseCase = new SmartcardCommandUseCase(eTollRepository);
 
-        presenter = new ETollPresenter(this, smartcardInquiryUseCase, sendCommandUseCase);
+        presenter = new ETollPresenter(this, smartcardInquiryUseCase, smartcardCommandUseCase);
     }
 
     @Override
@@ -122,6 +125,7 @@ public class DigitalCheckETollBalanceNFCActivity extends BaseSimpleActivity
                         .categoryId("34")
                         .operatorId("419")
                         .clientNumber(eTollUpdateBalanceResultView.getCardNumber())
+                        .additionalETollLastBalance(eTollUpdateBalanceResultView.getCardLastBalance())
                         .build();
 
                 Intent intent = DigitalProductActivity.newInstance(DigitalCheckETollBalanceNFCActivity.this,
@@ -201,15 +205,6 @@ public class DigitalCheckETollBalanceNFCActivity extends BaseSimpleActivity
                     String responseCardInfo = NFCUtils.toHex(commandCardInfo);
                     String responseCardLastBalance = NFCUtils.toHex(commandLastBalance);
 
-//                    Log.d(TAG, "\nSelect eMoney: " + responseSelectEMoney +
-//                            "\nCard Attribute: " + responseCardAttribute +
-//                            "\nCard UID: " + responseCardUID +
-//                            "\nCard Info: " + responseCardInfo +
-//                            "\nLast Balance: " + responseCardLastBalance);
-
-                    fetchedCardInfo = new CardInfo(NFCUtils.convertCardUID(responseCardInfo),
-                            NFCUtils.convertCardLastBalance(responseCardLastBalance), null);
-
                     if (responseSelectEMoney.equals("9000")) {
                         presenter.inquiryBalance(1, responseCardAttribute, responseCardInfo,
                                 responseCardUID, responseCardLastBalance);
@@ -218,7 +213,7 @@ public class DigitalCheckETollBalanceNFCActivity extends BaseSimpleActivity
                         if (eTollUpdateBalanceResultView.getVisibility() == View.VISIBLE) {
                             eTollUpdateBalanceResultView.showError(getResources().getString(R.string.card_is_not_supported));
                         } else {
-                            tapETollCardView.stopLoading();
+                            tapETollCardView.showInitialState();
                             NetworkErrorHelper.showRedCloseSnackbar(DigitalCheckETollBalanceNFCActivity.this,
                                     getResources().getString(R.string.card_is_not_supported));
                         }
@@ -230,7 +225,7 @@ public class DigitalCheckETollBalanceNFCActivity extends BaseSimpleActivity
             if (eTollUpdateBalanceResultView.getVisibility() == View.VISIBLE) {
                 eTollUpdateBalanceResultView.showError("Gagal membaca kartu");
             } else {
-                tapETollCardView.stopLoading();
+                tapETollCardView.showInitialState();
                 NetworkErrorHelper.showRedCloseSnackbar(DigitalCheckETollBalanceNFCActivity.this,
                         "Gagal membaca kartu");
             }
@@ -313,16 +308,16 @@ public class DigitalCheckETollBalanceNFCActivity extends BaseSimpleActivity
                         if (responseInByte != null) {
                             String response = NFCUtils.toHex(responseInByte);
                             Log.d(TAG, response);
-                            presenter.sendCommand();
+                            presenter.sendCommand(response, inquiryBalanceModel.getId(), 1);
                         }
                     }
                 });
             } catch (IOException e) {
                 e.printStackTrace();
-                showCardLastBalance(inquiryBalanceModel);
+                showError(getResources().getString(R.string.update_balance_failed));
             }
         } else {
-            showCardLastBalanceWithError(inquiryBalanceModel, inquiryBalanceModel.getErrorMessage());
+            showError(getResources().getString(R.string.update_balance_failed));
         }
     }
 
@@ -334,17 +329,20 @@ public class DigitalCheckETollBalanceNFCActivity extends BaseSimpleActivity
     }
 
     @Override
-    public void showCardLastBalanceWithError(InquiryBalanceModel inquiryBalanceModel, String errorMessage) {
-        tapETollCardView.setVisibility(View.GONE);
-        eTollUpdateBalanceResultView.setVisibility(View.VISIBLE);
-        eTollUpdateBalanceResultView.showCardInfoWithError(inquiryBalanceModel, errorMessage);
+    public void showError(String errorMessage) {
+        if (eTollUpdateBalanceResultView.getVisibility() == View.VISIBLE) {
+            eTollUpdateBalanceResultView.showError(errorMessage);
+        } else {
+            tapETollCardView.setVisibility(View.VISIBLE);
+            tapETollCardView.showInitialState();
+            NetworkErrorHelper.showRedCloseSnackbar(DigitalCheckETollBalanceNFCActivity.this,
+                    errorMessage);
+        }
     }
 
     @Override
-    public void renderLocalCardInfo() {
-        tapETollCardView.setVisibility(View.GONE);
-        eTollUpdateBalanceResultView.setVisibility(View.VISIBLE);
-        eTollUpdateBalanceResultView.showLocalCardInfo(fetchedCardInfo);
+    public String getStringResource(int stringRes) {
+        return getResources().getString(stringRes);
     }
 
 }

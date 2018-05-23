@@ -49,14 +49,18 @@ public class TapETollCardView extends RelativeLayout {
 
     public void showLoading(String textLoading) {
         textLabel.setText(textLoading);
+        lottieAnimationView.setVisibility(VISIBLE);
         lottieAnimationView.clearAnimation();
         lottieAnimationView.setAnimation("emoney_loading.json");
         lottieAnimationView.playAnimation();
     }
 
-    public void stopLoading() {
-        lottieAnimationView.setVisibility(VISIBLE);
-        lottieAnimationView.playAnimation();
+    public void showInitialState() {
         textLabel.setText(getResources().getString(R.string.emoney_tap_card_instruction));
+        lottieAnimationView.setVisibility(VISIBLE);
+        lottieAnimationView.clearAnimation();
+        lottieAnimationView.setAnimation("emoney_animation.json");
+        lottieAnimationView.playAnimation();
     }
+
 }

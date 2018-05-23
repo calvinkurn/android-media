@@ -26,7 +26,7 @@ public interface IProductDigitalView extends IBaseView {
     void renderCheckPulsaBalanceData(int selectedSim, String ussdCode, String phoneNumber,
                                      String operatorErrorMsg, Boolean isSimActive, String carrierName);
 
-    void renderCheckEMoneyBalance();
+    void renderCheckETollBalance(String text, String buttonText);
 
     void renderErrorStyleNotSupportedProductDigitalData(String message);
 

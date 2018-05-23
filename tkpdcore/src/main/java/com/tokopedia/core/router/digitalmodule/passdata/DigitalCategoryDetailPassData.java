@@ -19,6 +19,7 @@ public class DigitalCategoryDetailPassData implements Parcelable {
     private String url;
     private String appLinks;
     private String categoryName;
+    private String additionalETollBalance;
 
     private DigitalCategoryDetailPassData(Builder builder) {
         setCategoryId(builder.categoryId);
@@ -28,6 +29,7 @@ public class DigitalCategoryDetailPassData implements Parcelable {
         setUrl(builder.url);
         setAppLinks(builder.appLinks);
         setCategoryName(builder.categoryName);
+        setAdditionalETollBalance(builder.additionalETollLastBalance);
     }
 
     public String getCategoryId() {
@@ -86,6 +88,13 @@ public class DigitalCategoryDetailPassData implements Parcelable {
         this.categoryName = categoryName;
     }
 
+    public String getAdditionalETollBalance() {
+        return additionalETollBalance;
+    }
+
+    public void setAdditionalETollBalance(String additionalETollBalance) {
+        this.additionalETollBalance = additionalETollBalance;
+    }
 
     @Override
     public int describeContents() {
@@ -142,6 +151,7 @@ public class DigitalCategoryDetailPassData implements Parcelable {
         private String url;
         private String appLinks;
         private String categoryName;
+        private String additionalETollLastBalance;
 
         public Builder() {
         }
@@ -178,6 +188,11 @@ public class DigitalCategoryDetailPassData implements Parcelable {
 
         public Builder categoryName(String val) {
             categoryName = val;
+            return this;
+        }
+
+        public Builder additionalETollLastBalance(String val) {
+            additionalETollLastBalance = val;
             return this;
         }
 

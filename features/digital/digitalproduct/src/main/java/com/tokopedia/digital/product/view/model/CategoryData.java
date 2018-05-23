@@ -1,11 +1,7 @@
 package com.tokopedia.digital.product.view.model;
 
-
 import android.os.Parcel;
 import android.os.Parcelable;
-
-import com.google.gson.annotations.Expose;
-import com.google.gson.annotations.SerializedName;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -45,6 +41,7 @@ public class CategoryData implements Parcelable {
     private String defaultOperatorId;
     private String operatorStyle;
     private String operatorLabel;
+    private AdditionalFeature additionalFeature;
     private List<ClientNumber> clientNumberList = new ArrayList<>();
     private List<Operator> operatorList = new ArrayList<>();
     private List<BannerData> bannerDataListIncluded = new ArrayList<>();
@@ -62,6 +59,7 @@ public class CategoryData implements Parcelable {
         setDefaultOperatorId(builder.defaultOperatorId);
         setOperatorStyle(builder.operatorStyle);
         setOperatorLabel(builder.operatorLabel);
+        setAdditionalFeature(builder.additionalFeature);
         setClientNumberList(builder.clientNumberList);
         setOperatorList(builder.operatorList);
         setBannerDataListIncluded(builder.bannerDataListIncluded);
@@ -140,6 +138,14 @@ public class CategoryData implements Parcelable {
         this.operatorLabel = operatorLabel;
     }
 
+    public AdditionalFeature getAdditionalFeature() {
+        return additionalFeature;
+    }
+
+    public void setAdditionalFeature(AdditionalFeature additionalFeature) {
+        this.additionalFeature = additionalFeature;
+    }
+
     public List<ClientNumber> getClientNumberList() {
         return clientNumberList;
     }
@@ -195,7 +201,6 @@ public class CategoryData implements Parcelable {
     public CategoryData() {
     }
 
-
     @Override
     public int describeContents() {
         return 0;
@@ -215,6 +220,7 @@ public class CategoryData implements Parcelable {
         dest.writeString(this.defaultOperatorId);
         dest.writeString(this.operatorStyle);
         dest.writeString(this.operatorLabel);
+        dest.writeParcelable(this.additionalFeature, flags);
         dest.writeTypedList(this.clientNumberList);
         dest.writeTypedList(this.operatorList);
         dest.writeTypedList(this.bannerDataListIncluded);
@@ -234,6 +240,7 @@ public class CategoryData implements Parcelable {
         this.defaultOperatorId = in.readString();
         this.operatorStyle = in.readString();
         this.operatorLabel = in.readString();
+        this.additionalFeature = in.readParcelable(AdditionalFeature.class.getClassLoader());
         this.clientNumberList = in.createTypedArrayList(ClientNumber.CREATOR);
         this.operatorList = in.createTypedArrayList(Operator.CREATOR);
         this.bannerDataListIncluded = in.createTypedArrayList(BannerData.CREATOR);
@@ -266,6 +273,7 @@ public class CategoryData implements Parcelable {
         private String defaultOperatorId;
         private String operatorStyle;
         private String operatorLabel;
+        private AdditionalFeature additionalFeature;
         private List<ClientNumber> clientNumberList;
         private List<Operator> operatorList;
         private List<BannerData> bannerDataListIncluded;
@@ -336,6 +344,11 @@ public class CategoryData implements Parcelable {
 
         public Builder operatorLabel(String val) {
             operatorLabel = val;
+            return this;
+        }
+
+        public Builder additionalFeature(AdditionalFeature val) {
+            additionalFeature = val;
             return this;
         }
 

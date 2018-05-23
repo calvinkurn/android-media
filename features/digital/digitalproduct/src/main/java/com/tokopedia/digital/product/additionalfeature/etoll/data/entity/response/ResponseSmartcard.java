@@ -6,14 +6,14 @@ import com.google.gson.annotations.SerializedName;
 /**
  * Created by Rizky on 18/05/18.
  */
-public class ResponseSmartcardInquiry {
+public class ResponseSmartcard {
 
     @SerializedName("type")
     @Expose
     private String type;
     @SerializedName("id")
     @Expose
-    private String id;
+    private int id;
     @SerializedName("attributes")
     @Expose
     private Attributes attributes;
@@ -22,7 +22,7 @@ public class ResponseSmartcardInquiry {
         return type;
     }
 
-    public String getId() {
+    public int getId() {
         return id;
     }
 

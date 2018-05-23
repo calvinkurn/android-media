@@ -249,7 +249,7 @@ public class ProductDigitalPresenter extends BaseDigitalPresenter
             );
         }
 
-        renderCheckEMoneyBalance();
+        renderCheckETollBalance();
         renderCheckPulsa();
     }
 
@@ -567,12 +567,14 @@ public class ProductDigitalPresenter extends BaseDigitalPresenter
         }
     }
 
-    private void renderCheckEMoneyBalance() {
+    private void renderCheckETollBalance() {
         if (!GlobalConfig.isSellerApp()
                 && categoryData != null
-                && categoryData.getSlug().equalsIgnoreCase(CategoryData.SLUG_PRODUCT_CATEGORY_EMONEY)
+                && categoryData.getAdditionalFeature() != null
+                && categoryData.getAdditionalFeature().getFeatureId() == 1
                 && view.getActivity() != null) {
-            view.renderCheckEMoneyBalance();
+            view.renderCheckETollBalance(categoryData.getAdditionalFeature().getText(),
+                    categoryData.getAdditionalFeature().getButtonText());
         }
     }
 
@@ -618,7 +620,6 @@ public class ProductDigitalPresenter extends BaseDigitalPresenter
     }
 
     private boolean isOperatorListAvailable(CategoryData categoryDataState) {
-
         return (categoryDataState != null &&
                 categoryDataState.getOperatorList() != null &&
                 categoryDataState.getOperatorList().size() != 0);
@@ -630,4 +631,3 @@ public class ProductDigitalPresenter extends BaseDigitalPresenter
     }
 
 }
-

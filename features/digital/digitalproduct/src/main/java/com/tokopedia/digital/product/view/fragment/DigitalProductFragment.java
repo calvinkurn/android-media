@@ -127,6 +127,8 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
     private static final String ARG_PARAM_EXTRA_OPERATOR_ID = "ARG_PARAM_EXTRA_OPERATOR_ID";
     private static final String ARG_PARAM_EXTRA_PRODUCT_ID = "ARG_PARAM_EXTRA_PRODUCT_ID";
     private static final String ARG_PARAM_EXTRA_CLIENT_NUMBER = "ARG_PARAM_EXTRA_CLIENT_NUMBER";
+    private static final String ARG_PARAM_EXTRA_ADDITIONAL_ETOLL_LAST_BALANCE =
+            "ARG_PARAM_EXTRA_ADDITIONAL_ETOLL_LAST_BALANCE";
 
     private static final String EXTRA_STATE_OPERATOR_SELECTED = "EXTRA_STATE_OPERATOR_SELECTED";
     private static final String EXTRA_STATE_PRODUCT_SELECTED = "EXTRA_STATE_PRODUCT_SELECTED";
@@ -180,6 +182,7 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
     private String operatorId;
     private String productId;
     private String clientNumber;
+    private String additionalETollLastBalance;
 
     private CheckPulsaBalanceView selectedCheckPulsaBalanceView;
 
@@ -195,13 +198,15 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
     private boolean ussdInProgress = false;
 
     public static Fragment newInstance(
-            String categoryId, String operatorId, String productId, String clientNumber) {
+            String categoryId, String operatorId, String productId, String clientNumber,
+            String additionalETollBalance) {
         Fragment fragment = new DigitalProductFragment();
         Bundle bundle = new Bundle();
         bundle.putString(ARG_PARAM_EXTRA_CATEGORY_ID, categoryId);
         bundle.putString(ARG_PARAM_EXTRA_OPERATOR_ID, operatorId);
         bundle.putString(ARG_PARAM_EXTRA_PRODUCT_ID, productId);
         bundle.putString(ARG_PARAM_EXTRA_CLIENT_NUMBER, clientNumber);
+        bundle.putString(ARG_PARAM_EXTRA_ADDITIONAL_ETOLL_LAST_BALANCE, additionalETollBalance);
         fragment.setArguments(bundle);
         return fragment;
     }
@@ -310,6 +315,7 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
         operatorId = arguments.getString(ARG_PARAM_EXTRA_OPERATOR_ID);
         productId = arguments.getString(ARG_PARAM_EXTRA_PRODUCT_ID);
         clientNumber = arguments.getString(ARG_PARAM_EXTRA_CLIENT_NUMBER);
+        additionalETollLastBalance = arguments.getString(ARG_PARAM_EXTRA_ADDITIONAL_ETOLL_LAST_BALANCE);
     }
 
     @Override
@@ -415,10 +421,14 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
     }
 
     @Override
-    public void renderCheckEMoneyBalance() {
-        String note = getResources().getString(R.string.emoney_label_check_balance);
-        checkETollBalanceView.setVisibility(View.VISIBLE);
-        checkETollBalanceView.showCheckBalance(note);
+    public void renderCheckETollBalance(String text, String buttonText) {
+        if (TextUtils.isEmpty(additionalETollLastBalance)) {
+            checkETollBalanceView.setVisibility(View.VISIBLE);
+            checkETollBalanceView.showCheckBalance(text, buttonText);
+        } else {
+            checkETollBalanceView.setVisibility(View.VISIBLE);
+            checkETollBalanceView.showRemainingBalance(additionalETollLastBalance, clientNumber);
+        }
     }
 
     @Override

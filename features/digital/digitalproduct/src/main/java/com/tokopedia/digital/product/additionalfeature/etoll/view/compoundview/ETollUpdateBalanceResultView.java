@@ -78,18 +78,38 @@ public class ETollUpdateBalanceResultView extends LinearLayout {
 
     public void showCardInfoWithError(InquiryBalanceModel inquiryBalanceModel, String errorMessage) {
         textLabelProgress.setVisibility(VISIBLE);
+        textLabelProgress.setTextColor(getResources().getColor(R.color.red_error));
         textLabelProgress.setText(errorMessage);
         buttonTopup.setVisibility(GONE);
         eTollCardInfoView.setVisibility(VISIBLE);
         eTollCardInfoView.showCardInfo(inquiryBalanceModel.getCardInfo());
     }
 
-    public void showLoading() {
+    public void showLocalCardInfoWithError(CardInfo cardInfo, String errorMessage) {
+        textLabelProgress.setVisibility(VISIBLE);
+        textLabelProgress.setTextColor(getResources().getColor(R.color.red_error));
+        textLabelProgress.setText(errorMessage);
+        buttonTopup.setVisibility(GONE);
         eTollCardInfoView.setVisibility(VISIBLE);
-        eTollCardInfoView.showLoading();
+        eTollCardInfoView.showCardInfo(cardInfo);
+    }
+
+    public void showError(String erroMessage) {
+        textLabelProgress.setVisibility(VISIBLE);
+        textLabelProgress.setText(erroMessage);
+        textLabelProgress.setTextColor(getResources().getColor(R.color.red_error));
+        eTollCardInfoView.setVisibility(VISIBLE);
+        eTollCardInfoView.stopLoading();
+        eTollCardInfoView.removeCardInfo();
+        buttonTopup.setVisibility(GONE);
+    }
+
+    public void showLoading() {
         textLabelProgress.setVisibility(VISIBLE);
         textLabelProgress.setTextColor(getResources().getColor(R.color.grey));
         textLabelProgress.setText(getResources().getString(R.string.update_card_balance_progress_label));
+        eTollCardInfoView.setVisibility(VISIBLE);
+        eTollCardInfoView.showLoading();
         buttonTopup.setVisibility(GONE);
     }
 
@@ -102,17 +122,12 @@ public class ETollUpdateBalanceResultView extends LinearLayout {
         super.setVisibility(visibility);
     }
 
-    public void showError(String erroMessage) {
-        eTollCardInfoView.setVisibility(VISIBLE);
-        eTollCardInfoView.stopLoading();
-        eTollCardInfoView.removeCardInfo();
-        textLabelProgress.setText(erroMessage);
-        textLabelProgress.setTextColor(getResources().getColor(R.color.red_error));
-        buttonTopup.setVisibility(GONE);
-    }
-
     public String getCardNumber() {
         return eTollCardInfoView.getCardNumber();
+    }
+
+    public String getCardLastBalance() {
+        return eTollCardInfoView.getCardLastBalance();
     }
 
 }

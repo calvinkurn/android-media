@@ -10,9 +10,9 @@ public class Response {
 
     @SerializedName("data")
     @Expose
-    private ResponseSmartcardInquiry data;
+    private ResponseSmartcard data;
 
-    public ResponseSmartcardInquiry getData() {
+    public ResponseSmartcard getData() {
         return data;
     }
 

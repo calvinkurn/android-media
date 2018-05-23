@@ -3,14 +3,17 @@ package com.tokopedia.digital.product.additionalfeature.etoll.data.source;
 import android.content.Context;
 
 import com.google.gson.Gson;
-import com.tokopedia.digital.product.additionalfeature.etoll.data.entity.response.Response;
-import com.tokopedia.digital.product.additionalfeature.etoll.data.mapper.SmartcardInquiryMapper;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+import com.tokopedia.core.network.retrofit.response.TkpdDigitalResponse;
+import com.tokopedia.digital.common.data.apiservice.DigitalEndpointService;
+import com.tokopedia.digital.product.additionalfeature.etoll.data.entity.requestbody.smartcardcommand.RequestBodySmartcardCommand;
+import com.tokopedia.digital.product.additionalfeature.etoll.data.entity.response.ResponseSmartcard;
+import com.tokopedia.digital.product.additionalfeature.etoll.data.mapper.SmartcardMapper;
 import com.tokopedia.digital.product.additionalfeature.etoll.view.model.InquiryBalanceModel;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.concurrent.TimeUnit;
-
+import retrofit2.Response;
 import rx.Observable;
 import rx.functions.Func1;
 
@@ -19,37 +22,25 @@ import rx.functions.Func1;
  */
 public class SmartcardCommandDataSource {
 
-    private Context context;
-    private SmartcardInquiryMapper smartcardInquiryMapper;
+    private DigitalEndpointService digitalEndpointService;
+    private SmartcardMapper smartcardMapper;
 
-    public SmartcardCommandDataSource(Context context, SmartcardInquiryMapper smartcardInquiryMapper) {
-        this.context = context;
-        this.smartcardInquiryMapper = smartcardInquiryMapper;
+    public SmartcardCommandDataSource(DigitalEndpointService digitalEndpointService,
+                                      SmartcardMapper smartcardMapper) {
+        this.digitalEndpointService = digitalEndpointService;
+        this.smartcardMapper = smartcardMapper;
     }
 
-    public Observable<InquiryBalanceModel> sendCommand() {
-        Gson gson = new Gson();
-        Response response;
-        String json = null;
-        try {
-            InputStream inputStream = context.getAssets().open("json/send_command_1.json");
-            int size = inputStream.available();
-            byte [] buffer = new byte[size];
-            inputStream.read(buffer);
-            inputStream.close();
-            json = new String(buffer, "UTF-8");
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+    public Observable<InquiryBalanceModel> sendCommand(RequestBodySmartcardCommand requestBodySmartcardCommand) {
+        JsonElement jsonElement = new JsonParser().parse(new Gson().toJson(requestBodySmartcardCommand));
+        final JsonObject requestBody = new JsonObject();
+        requestBody.add("data", jsonElement);
 
-        response = gson.fromJson(json, Response.class);
-
-        return Observable.just(response)
-                .delay(2, TimeUnit.SECONDS)
-                .map(new Func1<Response, InquiryBalanceModel>() {
+        return digitalEndpointService.getApi().smartcardCommand(requestBody)
+                .map(new Func1<Response<TkpdDigitalResponse>, InquiryBalanceModel>() {
                     @Override
-                    public InquiryBalanceModel call(Response inquiryBalanceResponse) {
-                        return smartcardInquiryMapper.map(inquiryBalanceResponse);
+                    public InquiryBalanceModel call(Response<TkpdDigitalResponse> response) {
+                        return smartcardMapper.map(response.body().convertDataObj(ResponseSmartcard.class));
                     }
                 });
     }

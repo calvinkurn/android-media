@@ -20,4 +20,5 @@ public class RequestBodySmartcardInquiry {
         this.type = type;
         this.attributes = attributes;
     }
+
 }

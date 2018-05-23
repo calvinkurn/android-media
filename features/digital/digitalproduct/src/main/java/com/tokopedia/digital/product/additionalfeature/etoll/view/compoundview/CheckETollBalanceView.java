@@ -22,6 +22,7 @@ public class CheckETollBalanceView extends LinearLayout {
     private TextView textLabelDate;
     private LinearLayout viewRemainingBalance;
     private LinearLayout viewCheckBalance;
+    private TextView buttonFeature;
 
     private Context context;
 
@@ -69,6 +70,7 @@ public class CheckETollBalanceView extends LinearLayout {
         textRemainingBalance = view.findViewById(R.id.text_remaining_balance);
         viewRemainingBalance = view.findViewById(R.id.view_remaining_balance);
         viewCheckBalance = view.findViewById(R.id.view_check_balance);
+        buttonFeature = view.findViewById(R.id.button_feature);
 
         viewCheckBalance.setOnClickListener(new OnClickListener() {
             @Override
@@ -78,16 +80,19 @@ public class CheckETollBalanceView extends LinearLayout {
         });
     }
 
-    public void showCheckBalance(String note) {
+    public void showCheckBalance(String note, String buttonText) {
         textLabelNote.setText(note);
         textLabelNote.setVisibility(VISIBLE);
+        buttonFeature.setText(buttonText);
+        buttonFeature.setVisibility(VISIBLE);
         viewRemainingBalance.setVisibility(GONE);
     }
 
-    public void showRemainingBalance(String remainingBalance, String date) {
-        setVisibility(VISIBLE);
+    public void showRemainingBalance(String remainingBalance, String cardNumber) {
+        textRemainingBalance.setVisibility(VISIBLE);
         textRemainingBalance.setText(remainingBalance);
-        textLabelDate.setText(date);
+        textLabelDate.setVisibility(VISIBLE);
+        textLabelDate.setText(cardNumber);
         viewRemainingBalance.setVisibility(VISIBLE);
         textLabelNote.setVisibility(GONE);
     }

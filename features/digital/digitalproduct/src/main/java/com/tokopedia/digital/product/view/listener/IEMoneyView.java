@@ -11,8 +11,8 @@ public interface IEMoneyView {
 
     void showCardLastBalance(InquiryBalanceModel inquiryBalanceModel);
 
-    void renderLocalCardInfo();
+    void showError(String errorMessage);
 
-    void showCardLastBalanceWithError(InquiryBalanceModel inquiryBalanceModel, String errorMessage);
+    String getStringResource(int stringRes);
 
 }

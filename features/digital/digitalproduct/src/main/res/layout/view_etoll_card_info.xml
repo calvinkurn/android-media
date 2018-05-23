@@ -43,14 +43,14 @@
                     android:layout_weight="2"
                     android:orientation="vertical">
 
-                    <TextView
+                    <com.elyeproj.loaderviewlibrary.LoaderTextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:textSize="@dimen/sp_12"
                         android:text="@string/emoney_card_info_label_card_number"
                         android:layout_marginBottom="@dimen/dp_4" />
 
-                    <TextView
+                    <com.elyeproj.loaderviewlibrary.LoaderTextView
                         android:id="@+id/text_card_number"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -88,13 +88,13 @@
                     android:gravity="center"
                     android:orientation="vertical">
 
-                    <TextView
+                    <com.elyeproj.loaderviewlibrary.LoaderTextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="@dimen/dp_6"
                         android:text="@string/emoney_card_info_label_your_balance"/>
 
-                    <TextView
+                    <com.elyeproj.loaderviewlibrary.LoaderTextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:id="@+id/text_remaining_balance"

@@ -12,6 +12,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.elyeproj.loaderviewlibrary.LoaderTextView;
 import com.tokopedia.design.utils.CurrencyFormatUtil;
 import com.tokopedia.digital.R;
 import com.tokopedia.digital.product.view.model.CardInfo;
@@ -25,8 +26,8 @@ public class ETollCardInfoView extends FrameLayout {
 
     private CardInfo cardInfo;
 
-    private TextView textRemainingBalance;
-    private TextView textCardNumber;
+    private LoaderTextView textRemainingBalance;
+    private LoaderTextView textCardNumber;
     private ProgressBar progressBar;
     private LinearLayout viewRemainingBalance;
     private ImageView imageIssuer;
@@ -69,13 +70,7 @@ public class ETollCardInfoView extends FrameLayout {
                 .load(cardInfo.getIssuerImage())
                 .into(imageIssuer);
         textRemainingBalance.setText(CurrencyFormatUtil.convertPriceValueToIdrFormat(cardInfo.getLastBalance(), true));
-        String formattedCardNumber = formatCardNumber(cardInfo.getCardNumber());
-        textCardNumber.setText(cardInfo.getCardNumber());
-    }
-
-    private String formatCardNumber(String cardNumber) {
-        return cardNumber.substring(0, 4) + " - " + cardNumber.substring(4, 8) + " - " +
-                cardNumber.substring(8, 12) + " - " + cardNumber.substring(12, 16);
+        textCardNumber.setText(cardInfo.getFormattedCardNumber());
     }
 
     public void showLoading() {
@@ -98,4 +93,7 @@ public class ETollCardInfoView extends FrameLayout {
         imageIssuer.setImageDrawable(null);
     }
 
+    public String getCardLastBalance() {
+        return CurrencyFormatUtil.convertPriceValueToIdrFormat(cardInfo.getLastBalance(), true);
+    }
 }
