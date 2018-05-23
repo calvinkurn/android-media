@@ -83,7 +83,7 @@
             android:id="@+id/base_main_content"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/deals_backgroud_color"
+            android:background="@color/bottomnav_bg"
             android:visibility="gone">
 
 

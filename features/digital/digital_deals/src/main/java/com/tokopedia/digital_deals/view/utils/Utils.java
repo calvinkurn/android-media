@@ -4,10 +4,14 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.os.Environment;
+import android.support.design.widget.CoordinatorLayout;
+import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.google.gson.Gson;
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
@@ -413,6 +417,30 @@ public class Utils {
         String json = gson.toJson(location);
         localCacheHandler.putString(TkpdCache.Key.KEY_DEALS_LOCATION, json);
         localCacheHandler.applyEditor();
+    }
+
+    public void setSnackBarLocationChange(String locationName, Context context, CoordinatorLayout coordinatorLayout) {
+        final Snackbar snackbar = Snackbar.make(coordinatorLayout, locationName, Snackbar.LENGTH_INDEFINITE);
+        Snackbar.SnackbarLayout layout = (Snackbar.SnackbarLayout) snackbar.getView();
+        //layout.setBackgroundColor(getResources().getColor(R.color.red_100));
+        TextView textView = (TextView) layout.findViewById(android.support.design.R.id.snackbar_text);
+        textView.setVisibility(View.INVISIBLE);
+
+        // Inflate our custom view
+        LayoutInflater inflater = LayoutInflater.from(context);
+        View snackView = inflater.inflate(R.layout.custom_location_change_snackbar, null);
+        TextView tv = snackView.findViewById(R.id.tv_location_ame);
+        tv.setText(locationName.toUpperCase());
+        TextView okbtn = snackView.findViewById(R.id.snack_ok);
+        okbtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                snackbar.dismiss();
+            }
+        });
+        layout.addView(snackView, 0);
+        layout.setPadding(0, 0, 0, 0);
+        snackbar.show();
     }
 
 }

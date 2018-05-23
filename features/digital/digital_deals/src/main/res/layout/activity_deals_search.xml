@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main_content"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -71,9 +72,8 @@
             <android.support.constraint.ConstraintLayout
                 android:id="@+id/cl_location"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="@dimen/dp_40"
                 android:background="@color/bottomnav_bg"
-                android:paddingBottom="@dimen/dp_16"
                 app:layout_scrollFlags="scroll|enterAlways|exitUntilCollapsed">
 
                 <ImageView
@@ -81,9 +81,11 @@
                     android:layout_width="@dimen/dp_18"
                     android:layout_height="@dimen/dp_18"
                     android:layout_marginLeft="@dimen/dp_16"
-                    android:layout_marginTop="@dimen/dp_16"
+                    android:layout_marginTop="@dimen/dp_11"
+                    android:layout_marginBottom="@dimen/dp_11"
                     app:layout_constraintLeft_toLeftOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"
                     app:srcCompat="@drawable/ic_location_2" />
 
                 <TextView
@@ -92,7 +94,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="@dimen/dp_8"
                     android:fontFamily="sans-serif-medium"
-                    android:text="Jakarta"
+                    tools:text="Jakarta"
                     android:textColor="@color/black_39"
                     android:textSize="@dimen/sp_14"
                     android:textStyle="normal"
@@ -137,9 +139,9 @@
                 android:layout_marginLeft="@dimen/dp_16"
                 android:layout_marginTop="@dimen/dp_24"
                 android:fontFamily="sans-serif-medium"
-                android:text="Deals ‘Spaghetti’ di Jakarta"
+                tools:text="Deals ‘Spaghetti’ di Jakarta"
                 android:textColor="#b3000000"
-                android:textSize="17sp"
+                android:textSize="@dimen/sp_17"
                 android:textStyle="normal" />
 
             <android.support.v7.widget.RecyclerView
@@ -259,4 +261,4 @@
             android:layout_height="@dimen/dp_50"
             android:layout_gravity="center" />
     </FrameLayout>
-</FrameLayout>
+</android.support.design.widget.CoordinatorLayout>

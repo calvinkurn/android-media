@@ -152,7 +152,7 @@ public class DealsHomeActivity extends BaseSimpleActivity implements HasComponen
         locationName = findViewById(R.id.tv_location_name);
         clLocation = findViewById(R.id.cl_location);
         clSearch = findViewById(R.id.cl_search_view);
-        seeAllBrands=findViewById(R.id.tv_see_all_brands);
+        seeAllBrands = findViewById(R.id.tv_see_all_brands);
         seeAllBrands.setOnClickListener(this);
         searchInputView.setOnClickListener(this);
         clLocation.setOnClickListener(this);
@@ -218,6 +218,12 @@ public class DealsHomeActivity extends BaseSimpleActivity implements HasComponen
                     Toast.makeText(getActivity(), getResources().getString(R.string.select_location_first), Toast.LENGTH_SHORT).show();
                     finish();
                 } else {
+                    if (data != null) {
+                        boolean isLocationUpdated = data.getBooleanExtra(DealsLocationActivity.EXTRA_CALLBACK_LOCATION, true);
+                        if (isLocationUpdated)
+                            Utils.getSingletonInstance().setSnackBarLocationChange(location.getName(), getActivity(), mainContent);
+                    }
+
                     locationName.setText(location.getName());
                     mPresenter.getDealsList();
                     mPresenter.getBrandsList();

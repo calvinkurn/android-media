@@ -88,11 +88,13 @@ public class DealDetailsFragment extends BaseDaggerFragment implements DealDetai
     private TextView tvOff;
     private ImageView brandLogo;
     private BrandViewModel brandViewModel;
+    private LinearLayout buyDealNow;
     private Menu mMenu;
     private ConstraintLayout clHeader;
     private CardView cardView;
     private Toolbar toolbar;
     private DealFragmentCallbacks fragmentCallbacks;
+    private CategoryItemsViewModel itemsViewModel;
 
     public static Fragment createInstance(Bundle bundle) {
         Fragment fragment = new DealDetailsFragment();
@@ -135,6 +137,7 @@ public class DealDetailsFragment extends BaseDaggerFragment implements DealDetai
         toolbar.setNavigationIcon(ContextCompat.getDrawable(getActivity(), R.drawable.ic_action_back));
 
         dealImage=view.findViewById(R.id.deal_image);
+        buyDealNow=view.findViewById(R.id.ll_buynow);
         tvExpandableDesc = view.findViewById(R.id.tv_expandable_description);
         seemorebuttonTextDesc = view.findViewById(R.id.seemorebutton_description);
         seeMoreButtonDesc = view.findViewById(R.id.expand_view_description);
@@ -162,6 +165,7 @@ public class DealDetailsFragment extends BaseDaggerFragment implements DealDetai
         seeMoreButtonDesc.setOnClickListener(this);
         seeMoreButtonTC.setOnClickListener(this);
         tvAllLocations.setOnClickListener(this);
+        buyDealNow.setOnClickListener(this);
         tvExpandableDesc.setInterpolator(new OvershootInterpolator());
         tvExpandableTC.setInterpolator(new OvershootInterpolator());
 
@@ -189,7 +193,7 @@ public class DealDetailsFragment extends BaseDaggerFragment implements DealDetai
     }
 
     @Override
-    public void renderBrandDetails(DealsDetailsViewModel detailsViewModel) {
+    public void renderDealDetails(DealsDetailsViewModel detailsViewModel) {
         collapsingToolbarLayout.setTitle(detailsViewModel.getDisplayName());
 
         ImageHandler.loadImage(getContext(), dealImage, detailsViewModel.getImageWeb(), R.color.grey_1100, R.color.grey_1100);
@@ -305,7 +309,7 @@ public class DealDetailsFragment extends BaseDaggerFragment implements DealDetai
 
     @Override
     public RequestParams getParams() {
-        CategoryItemsViewModel itemsViewModel = getArguments().getParcelable(DealDetailsPresenter.HOME_DATA);
+        itemsViewModel = getArguments().getParcelable(DealDetailsPresenter.HOME_DATA);
         brandViewModel = itemsViewModel.getBrand();
         RequestParams requestParams = RequestParams.create();
         Log.d("Myurllll", " " + itemsViewModel.getUrl());
@@ -356,6 +360,9 @@ public class DealDetailsFragment extends BaseDaggerFragment implements DealDetai
         } else if (v.getId() == R.id.tv_findalllocations) {
             Log.d("insidebutton click", "true");
             fragmentCallbacks.replaceFragment(mPresenter.getAllOutlets(), 0);
+        } else if(v.getId() == R.id.ll_buynow){
+            fragmentCallbacks.replaceFragment(itemsViewModel, 1);
+
         }
     }
 

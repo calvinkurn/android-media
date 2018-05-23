@@ -21,7 +21,7 @@ public class DealDetailsContract {
 
         void navigateToActivityRequest(Intent intent, int requestCode);
 
-        void renderBrandDetails(DealsDetailsViewModel detailsViewModel);
+        void renderDealDetails(DealsDetailsViewModel detailsViewModel);
 
         void showProgressBar();
 

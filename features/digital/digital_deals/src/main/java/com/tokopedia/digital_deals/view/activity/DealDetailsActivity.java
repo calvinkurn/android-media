@@ -10,6 +10,7 @@ import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.digital_deals.R;
 import com.tokopedia.digital_deals.view.fragment.DealDetailsAllRedeemLocationsFragment;
 import com.tokopedia.digital_deals.view.fragment.DealDetailsFragment;
+import com.tokopedia.digital_deals.view.fragment.SelectDealQuantityFragment;
 import com.tokopedia.digital_deals.view.presenter.DealDetailsPresenter;
 import com.tokopedia.digital_deals.view.utils.DealFragmentCallbacks;
 import com.tokopedia.digital_deals.view.viewmodel.CategoryItemsViewModel;
@@ -19,7 +20,8 @@ import java.util.List;
 
 public class DealDetailsActivity extends BaseSimpleActivity implements DealFragmentCallbacks {
 
-    List<OutletViewModel> outlets;
+    private List<OutletViewModel> outlets;
+    private CategoryItemsViewModel dealDetail;
 
     @Override
     protected Fragment getNewFragment() {
@@ -39,7 +41,6 @@ public class DealDetailsActivity extends BaseSimpleActivity implements DealFragm
     @Override
     public void replaceFragment(List<OutletViewModel> outlets, int flag) {
         this.outlets=outlets;
-        Log.d("insidebutton click22", "true");
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         transaction.replace(R.id.parent_view, DealDetailsAllRedeemLocationsFragment.createInstance());
         transaction.addToBackStack(null);
@@ -47,7 +48,21 @@ public class DealDetailsActivity extends BaseSimpleActivity implements DealFragm
     }
 
     @Override
+    public void replaceFragment(CategoryItemsViewModel categoryItemsViewModel, int flag) {
+        this.dealDetail=categoryItemsViewModel;
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        transaction.replace(R.id.parent_view, SelectDealQuantityFragment.createInstance());
+        transaction.addToBackStack(null);
+        transaction.commit();
+    }
+
+    @Override
     public List<OutletViewModel> getOutlets() {
         return this.outlets;
+    }
+
+    @Override
+    public CategoryItemsViewModel getDealDetails() {
+        return dealDetail;
     }
 }

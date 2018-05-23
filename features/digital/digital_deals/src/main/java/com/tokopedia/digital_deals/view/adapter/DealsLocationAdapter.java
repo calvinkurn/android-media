@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import com.google.gson.Gson;
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
+import com.tokopedia.core.geolocation.model.coordinate.Location;
 import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.digital_deals.R;
 import com.tokopedia.digital_deals.view.utils.Utils;
@@ -88,12 +89,13 @@ public class DealsLocationAdapter extends RecyclerView.Adapter<DealsLocationAdap
 
         @Override
         public void onClick(View v) {
+            LocationViewModel location=Utils.getSingletonInstance().getLocation(context);
             Utils.getSingletonInstance().updateLocation(context, locations.get(getIndex()));
-            actionListener.onLocationItemSelected();
+            actionListener.onLocationItemSelected(location!=null);
         }
     }
     public interface ActionListener {
-        void onLocationItemSelected();
+        void onLocationItemSelected(boolean locationUpdated);
     }
 
 }

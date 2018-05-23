@@ -54,7 +54,7 @@ public class DealsSearchActivity extends BaseSimpleActivity implements
     @Inject
     public DealsSearchPresenter mPresenter;
 
-    private FrameLayout mainContent;
+    private CoordinatorLayout mainContent;
     private LinearLayout llTopEvents;
     private android.view.View progressBarLayout;
     private ProgressBar progBar;
@@ -349,6 +349,12 @@ public class DealsSearchActivity extends BaseSimpleActivity implements
                         Toast.makeText(getActivity(), getResources().getString(R.string.select_location_first), Toast.LENGTH_SHORT).show();
                         finish();
                     } else {
+
+                        if (data != null) {
+                            boolean isLocationUpdated = data.getBooleanExtra(DealsLocationActivity.EXTRA_CALLBACK_LOCATION, true);
+                            if (isLocationUpdated)
+                                Utils.getSingletonInstance().setSnackBarLocationChange(location.getName(), getActivity(), mainContent);
+                        }
                         tvCityName.setText(location.getName());
                         if (searchInputView.getSearchText() != null && searchInputView.getSearchText() != "")
                             mPresenter.getDealsListBySearch(searchInputView.getSearchText());

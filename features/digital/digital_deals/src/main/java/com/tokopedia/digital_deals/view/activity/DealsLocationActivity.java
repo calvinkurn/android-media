@@ -197,8 +197,9 @@ public class DealsLocationActivity extends BaseSimpleActivity implements
     }
 
     @Override
-    public void onLocationItemSelected() {
-        setResult(RESULT_OK);
+    public void onLocationItemSelected(boolean locationUpdated) {
+
+        setResult(RESULT_OK, new Intent().putExtra(EXTRA_CALLBACK_LOCATION, locationUpdated));
         finish();
     }
 }

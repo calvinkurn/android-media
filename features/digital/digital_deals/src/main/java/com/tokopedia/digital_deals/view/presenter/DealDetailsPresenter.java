@@ -79,7 +79,7 @@ public class DealDetailsPresenter extends BaseDaggerPresenter<DealDetailsContrac
                 dealsDetailsViewModel = Utils.getSingletonInstance()
                         .convertIntoDealDetailsViewModel(dealEntity);
 
-                getView().renderBrandDetails(dealsDetailsViewModel);
+                getView().renderDealDetails(dealsDetailsViewModel);
                 CommonUtils.dumper("enter onNext");
             }
         });

@@ -104,12 +104,8 @@ public class CategoryDetailHomeFragment extends BaseDaggerFragment implements De
 
     private void setViewIds(View view) {
 
-//        toolbar = view.findViewById(R.id.toolbar);
-//        ((BaseSimpleActivity) getActivity()).setSupportActionBar(toolbar);
         ((DealsCategoryDetailActivity)getActivity()).getSupportActionBar().setTitle(categoriesModel.getTitle());
 
-//        toolbar.setNavigationIcon(ContextCompat.getDrawable(getActivity(), R.drawable.ic_action_back));
-//        toolbar.setTitle(categoriesModel.getName());
         seeAllBrands = view.findViewById(R.id.tv_see_all);
 
         popularLocation = view.findViewById(R.id.tv_popular);

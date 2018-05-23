@@ -66,6 +66,7 @@ public class DealDetailsAllRedeemLocationsFragment extends BaseDaggerFragment im
         toolbar = view.findViewById(R.id.toolbar);
         ((BaseSimpleActivity) getActivity()).setSupportActionBar(toolbar);
         toolbar.setNavigationIcon(ContextCompat.getDrawable(getActivity(), R.drawable.ic_close_deals));
+        toolbar.setTitle(getActivity().getResources().getString(R.string.redeem_locations));
         recyclerView=view.findViewById(R.id.recyclerView);
     }
 
