@@ -201,9 +201,6 @@ public class VerificationActivity extends BaseSimpleActivity {
                 methodItem.getImageUrl(),
                 methodItem.getVerificationText(),
                 getDynamicAppScreen(methodItem.getModeName()),
-                methodItem.isUsingPopUp(),
-                methodItem.getPopUpHeader(),
-                methodItem.getPopUpBody(),
                 passModel.canUseOtherMethod()
         );
     }

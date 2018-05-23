@@ -17,9 +17,6 @@ public class VerificationViewModel implements Parcelable {
     private String mode;
     private int iconResId;
     private String message;
-    private boolean usingPopUp;
-    private String popUpHeader;
-    private String popUpBody;
     private boolean canUseOtherMethod;
 
     /**
@@ -43,9 +40,6 @@ public class VerificationViewModel implements Parcelable {
         this.message = message;
         this.appScreen = appScreen;
         this.imageUrl = "";
-        this.usingPopUp = false;
-        this.popUpHeader = "";
-        this.popUpBody = "";
         this.canUseOtherMethod = canUseOtherMethod;
     }
 
@@ -56,15 +50,11 @@ public class VerificationViewModel implements Parcelable {
      * @param imageUrl
      * @param message
      * @param appScreen
-     * @param usingPopUp
-     * @param popUpHeader
-     * @param popUpBody
      * @param canUseOtherMethod
      */
     public VerificationViewModel(String phoneNumber, String email, int otpType,
                                  String mode, String imageUrl, String message,
-                                 String appScreen, boolean usingPopUp,
-                                 String popUpHeader, String popUpBody, boolean canUseOtherMethod) {
+                                 String appScreen, boolean canUseOtherMethod) {
         this.phoneNumber = phoneNumber;
         this.email = email;
         this.otpType = otpType;
@@ -73,9 +63,6 @@ public class VerificationViewModel implements Parcelable {
         this.message = message;
         this.appScreen = appScreen;
         this.imageUrl = imageUrl;
-        this.usingPopUp = usingPopUp;
-        this.popUpHeader = popUpHeader;
-        this.popUpBody = popUpBody;
         this.canUseOtherMethod = canUseOtherMethod;
     }
 
@@ -88,9 +75,6 @@ public class VerificationViewModel implements Parcelable {
         mode = in.readString();
         iconResId = in.readInt();
         message = in.readString();
-        usingPopUp = in.readByte() != 0;
-        popUpHeader = in.readString();
-        popUpBody = in.readString();
         canUseOtherMethod = in.readByte() != 0;
     }
 
@@ -142,18 +126,6 @@ public class VerificationViewModel implements Parcelable {
         return mode;
     }
 
-    public boolean isUsingPopUp() {
-        return usingPopUp;
-    }
-
-    public String getPopUpHeader() {
-        return popUpHeader;
-    }
-
-    public String getPopUpBody() {
-        return popUpBody;
-    }
-
     public boolean canUseOtherMethod() {
         return canUseOtherMethod;
     }
@@ -174,9 +146,6 @@ public class VerificationViewModel implements Parcelable {
         dest.writeString(mode);
         dest.writeInt(iconResId);
         dest.writeString(message);
-        dest.writeByte((byte) (usingPopUp ? 1 : 0));
-        dest.writeString(popUpHeader);
-        dest.writeString(popUpBody);
         dest.writeByte((byte) (canUseOtherMethod ? 1 : 0));
     }
 }

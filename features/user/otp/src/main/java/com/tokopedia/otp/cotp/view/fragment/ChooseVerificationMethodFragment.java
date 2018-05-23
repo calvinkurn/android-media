@@ -31,6 +31,7 @@ import com.tokopedia.otp.cotp.view.viewmodel.ListVerificationMethod;
 import com.tokopedia.otp.cotp.view.viewmodel.MethodItem;
 import com.tokopedia.otp.cotp.view.viewmodel.VerificationPassModel;
 import com.tokopedia.user.session.UserSession;
+import com.tokopedia.design.component.Dialog;
 
 import javax.inject.Inject;
 
@@ -151,9 +152,39 @@ public class ChooseVerificationMethodFragment extends BaseDaggerFragment impleme
 
     @Override
     public void onMethodSelected(MethodItem methodItem) {
-        if (getActivity() instanceof VerificationActivity) {
+
+        if (methodItem.isUsingPopUp()
+                && !TextUtils.isEmpty(methodItem.getPopUpHeader())
+                && !TextUtils.isEmpty(methodItem.getPopUpBody())) {
+            showInterruptDialog(methodItem);
+        } else if (getActivity() instanceof VerificationActivity) {
             ((VerificationActivity) getActivity()).goToVerificationPage(methodItem);
         }
+    }
+
+    private void showInterruptDialog(final MethodItem methodItem) {
+        final Dialog dialog = new Dialog(getActivity(), Dialog.Type.PROMINANCE);
+
+        dialog.setTitle(methodItem.getPopUpHeader());
+        dialog.setDesc(methodItem.getPopUpBody());
+        dialog.setBtnOk(getString(R.string.btn_continue));
+        dialog.setOnOkClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+                if (getActivity() instanceof VerificationActivity) {
+                    ((VerificationActivity) getActivity()).goToVerificationPage(methodItem);
+                }
+            }
+        });
+        dialog.setBtnCancel(getString(R.string.btn_cancel));
+        dialog.setOnCancelClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+        dialog.show();
     }
 
     @Override
