@@ -23,6 +23,7 @@ import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.HotlistPageTracking;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.model.Hotlist;
+import com.tokopedia.core.analytics.nishikino.model.EventTracking;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.base.adapter.Visitable;
@@ -653,6 +654,7 @@ public class HotlistFragment extends SearchSectionFragment
     @Override
     public void onHashTagClicked(String name, String url, String departmentID) {
         IntermediaryActivity.moveTo(getActivity(), departmentID, name);
+        HotlistPageTracking.eventClickHastag(url);
     }
 
     @Override
@@ -713,7 +715,7 @@ public class HotlistFragment extends SearchSectionFragment
     }
 
     @Override
-    public void onWishlistClicked(String productID, boolean wishlist) {
+    public void onWishlistClicked(int position, String productName, String productID, boolean wishlist) {
         if (SessionHandler.isV4Login(getActivity())) {
             hotlistAdapter.disableWishlistButton(productID);
             if (wishlist) {
@@ -724,6 +726,7 @@ public class HotlistFragment extends SearchSectionFragment
         } else {
             openLoginActivity(productID);
         }
+        HotlistPageTracking.eventAddWishlist(position, productName, productID);
     }
 
     @Override

@@ -26,6 +26,7 @@ import com.bumptech.glide.request.target.SimpleTarget;
 import com.bumptech.glide.request.target.Target;
 import com.tkpd.library.utils.ImageHandler;
 import com.tkpd.library.viewpagerindicator.CirclePageIndicator;
+import com.tokopedia.core.analytics.HotlistPageTracking;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
@@ -133,6 +134,7 @@ public class HotlistHeaderViewHolder extends AbstractViewHolder<HotlistHeaderVie
                 TrackingUtils.clickCopyButtonHotlistPromo(hotlistTitle, titlePromo, voucherCode);
             }
         });
+        HotlistPageTracking.eventHotlistPromoImpression(hotlistTitle, hotlistPromo.getTitle(), hotlistPromo.getVoucherCode());
     }
 
     private static class HasTagAdapter extends RecyclerView.Adapter<HasTagAdapter.ItemViewHolder> {
