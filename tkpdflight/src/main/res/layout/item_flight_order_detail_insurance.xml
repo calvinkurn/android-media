@@ -33,4 +33,10 @@
         style="@style/TextView.Small.BlackSecondary"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
+
+    <android.support.v7.widget.AppCompatTextView
+        style="@style/CardSuccessStatusStyle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/flight_order_detail_insurance_description" />
 </LinearLayout>

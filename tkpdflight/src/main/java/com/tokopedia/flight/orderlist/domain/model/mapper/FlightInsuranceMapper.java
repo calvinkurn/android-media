@@ -33,7 +33,7 @@ public class FlightInsuranceMapper {
             for (FlightOrderInsuranceEntity entity : entities) {
                 insurance = transform(entity);
                 if (insurance != null) {
-                    insurances.add(insurance)
+                    insurances.add(insurance);
                 }
             }
         }

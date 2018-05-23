@@ -42,6 +42,8 @@ dependencies {
     implementation rootProject.ext.miscDependencies.rxJava
     implementation rootProject.ext.miscDependencies.rxJavaMath
 
+    implementation rootProject.ext.miscDependencies.gson
+
     compileOnly rootProject.ext.miscDependencies.javaxAnnotation
     implementation rootProject.ext.miscDependencies.dagger
     annotationProcessor rootProject.ext.miscDependencies.daggerCompiler

@@ -1,7 +1,6 @@
 package com.tokopedia.flight.detail.view.fragment;
 
 import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.ClipData;
 import android.content.ClipboardManager;
@@ -48,6 +47,7 @@ import com.tokopedia.flight.detail.presenter.FlightDetailOrderContract;
 import com.tokopedia.flight.detail.presenter.FlightDetailOrderPresenter;
 import com.tokopedia.flight.detail.view.adapter.FlightDetailOrderAdapter;
 import com.tokopedia.flight.detail.view.adapter.FlightDetailOrderTypeFactory;
+import com.tokopedia.flight.detail.view.adapter.FlightOrderDetailInsuranceAdapter;
 import com.tokopedia.flight.orderlist.di.FlightOrderComponent;
 import com.tokopedia.flight.orderlist.domain.model.FlightInsurance;
 import com.tokopedia.flight.orderlist.domain.model.FlightOrder;
@@ -352,7 +352,9 @@ public class FlightDetailOrderFragment extends BaseDaggerFragment implements Fli
 
     @Override
     public void renderInsurances(List<FlightInsurance> insurances) {
-
+        FlightOrderDetailInsuranceAdapter adapter = new FlightOrderDetailInsuranceAdapter(insurances);
+        insuranceRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        insuranceRecyclerView.setAdapter(adapter);
     }
 
     @Override

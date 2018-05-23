@@ -17,8 +17,6 @@ import com.tokopedia.flight.airport.data.source.FlightAirportDataListBackgroundS
 import com.tokopedia.flight.airport.data.source.FlightAirportDataListSource;
 import com.tokopedia.flight.airport.data.source.db.FlightAirportVersionDBSource;
 import com.tokopedia.flight.banner.data.source.BannerDataSource;
-import com.tokopedia.flight.common.data.source.cloud.api.retrofit.StringResponseConverter;
-import com.tokopedia.flight.passenger.data.FlightPassengerFactorySource;
 import com.tokopedia.flight.booking.data.cloud.FlightCartDataSource;
 import com.tokopedia.flight.cancellation.data.cloud.FlightCancellationCloudDataSource;
 import com.tokopedia.flight.common.constant.FlightUrl;
@@ -26,7 +24,9 @@ import com.tokopedia.flight.common.data.model.FlightErrorResponse;
 import com.tokopedia.flight.common.data.repository.FlightRepositoryImpl;
 import com.tokopedia.flight.common.data.source.FlightAuthInterceptor;
 import com.tokopedia.flight.common.data.source.cloud.api.FlightApi;
+import com.tokopedia.flight.common.data.source.cloud.api.retrofit.StringResponseConverter;
 import com.tokopedia.flight.common.di.qualifier.FlightChuckQualifier;
+import com.tokopedia.flight.common.di.qualifier.FlightGsonPlainQualifier;
 import com.tokopedia.flight.common.di.qualifier.FlightQualifier;
 import com.tokopedia.flight.common.di.scope.FlightScope;
 import com.tokopedia.flight.common.domain.FlightRepository;
@@ -142,7 +142,7 @@ public class FlightModule {
     }
 
     @Provides
-    @FlightQualifier
+    @FlightGsonPlainQualifier
     public Gson provideGson() {
         return new GsonBuilder().create();
     }
