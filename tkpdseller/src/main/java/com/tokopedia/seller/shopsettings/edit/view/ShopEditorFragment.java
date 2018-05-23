@@ -1,13 +1,11 @@
 package com.tokopedia.seller.shopsettings.edit.view;
 
-import android.Manifest;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.v4.app.FragmentManager;
 import android.view.View;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
@@ -22,29 +20,39 @@ import android.widget.Toast;
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.ImageHandler;
-import com.tokopedia.core.R;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.session.base.BaseFragment;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.MethodChecker;
-import com.tokopedia.seller.common.imageeditor.GalleryCropActivity;
-import com.tokopedia.seller.product.edit.view.dialog.ProductAddImageEditDialogFragment;
+import com.tokopedia.imagepicker.picker.gallery.type.GalleryType;
+import com.tokopedia.imagepicker.picker.main.builder.ImagePickerBuilder;
+import com.tokopedia.imagepicker.picker.main.builder.ImageSelectionTypeDef;
+import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity;
+import com.tokopedia.seller.R;
 import com.tokopedia.seller.shopsettings.edit.presenter.ShopEditorPresenter;
 import com.tokopedia.seller.shopsettings.edit.presenter.ShopEditorPresenterImpl;
 import com.tokopedia.seller.shopsettings.edit.presenter.ShopEditorView;
+import java.util.ArrayList;
 
-import permissions.dispatcher.NeedsPermission;
-import permissions.dispatcher.RuntimePermissions;
+import static com.tokopedia.imagepicker.picker.main.builder.ImageEditActionTypeDef.ACTION_BRIGHTNESS;
+import static com.tokopedia.imagepicker.picker.main.builder.ImageEditActionTypeDef.ACTION_CONTRAST;
+import static com.tokopedia.imagepicker.picker.main.builder.ImageEditActionTypeDef.ACTION_CROP;
+import static com.tokopedia.imagepicker.picker.main.builder.ImageEditActionTypeDef.ACTION_ROTATE;
+import static com.tokopedia.imagepicker.picker.main.builder.ImagePickerBuilder.DEFAULT_MAX_IMAGE_SIZE_IN_KB;
+import static com.tokopedia.imagepicker.picker.main.builder.ImagePickerBuilder.DEFAULT_MIN_RESOLUTION;
+import static com.tokopedia.imagepicker.picker.main.builder.ImagePickerTabTypeDef.TYPE_CAMERA;
+import static com.tokopedia.imagepicker.picker.main.builder.ImagePickerTabTypeDef.TYPE_GALLERY;
+import static com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity.PICKER_RESULT_PATHS;
 
 /**
  * Created by Toped10 on 5/19/2016.
  */
-@RuntimePermissions
 public class ShopEditorFragment extends BaseFragment<ShopEditorPresenter> implements ShopEditorView {
 
     private static final String TOP_SELLER_APPLICATION_PACKAGE = "com.tokopedia.sellerapp";
+    public static final int REQUEST_CODE_SHOP_IMAGE = 928;
 
     EditText mShopNameText;
     EditText mShopSloganText;
@@ -71,33 +79,29 @@ public class ShopEditorFragment extends BaseFragment<ShopEditorPresenter> implem
     }
 
     public void uploadImage(View view) {
-        FragmentManager fm = getActivity().getSupportFragmentManager();
-        ProductAddImageEditDialogFragment dialogFragment = ProductAddImageEditDialogFragment.newInstance(0);
-        dialogFragment.show(fm, ProductAddImageEditDialogFragment.FRAGMENT_TAG);
-        dialogFragment.setOnImageEditListener(new ProductAddImageEditDialogFragment.OnImageEditListener() {
-
-            @Override
-            public void clickEditProductFromCamera(int position) {
-                ShopEditorFragmentPermissionsDispatcher.goToCameraWithCheck(ShopEditorFragment.this, 0);
-            }
-
-            @Override
-            public void clickEditProductFromGallery(int position) {
-                ShopEditorFragmentPermissionsDispatcher.goToGalleryWithCheck(ShopEditorFragment.this, 0);
-            }
-        });
+        ImagePickerBuilder builder = new ImagePickerBuilder(getString(R.string.choose_shop_picture),
+                new int[]{TYPE_GALLERY, TYPE_CAMERA}, GalleryType.IMAGE_ONLY, ImageSelectionTypeDef.TYPE_SINGLE,
+                false, 1, DEFAULT_MAX_IMAGE_SIZE_IN_KB,
+                DEFAULT_MIN_RESOLUTION, 1, 1, true, true,
+                new int[]{ACTION_BRIGHTNESS, ACTION_CONTRAST, ACTION_CROP, ACTION_ROTATE},
+                false);
+        Intent intent = ImagePickerActivity.getIntent(getContext(), builder);
+        startActivityForResult(intent, REQUEST_CODE_SHOP_IMAGE);
     }
 
-    @TargetApi(16)
-    @NeedsPermission(Manifest.permission.READ_EXTERNAL_STORAGE)
-    public void goToGallery(int imagePosition) {
-        GalleryCropActivity.moveToImageGallery(getActivity(), imagePosition, 1, true);
-    }
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
 
-    @TargetApi(16)
-    @NeedsPermission(Manifest.permission.READ_EXTERNAL_STORAGE)
-    public void goToCamera(int imagePosition) {
-        GalleryCropActivity.moveToImageGalleryCamera(getActivity(), imagePosition, true, 1,true);
+        if (requestCode == REQUEST_CODE_SHOP_IMAGE) {
+            if (resultCode == Activity.RESULT_OK && data!= null) {
+                ArrayList<String> imageUrlOrPathList = data.getStringArrayListExtra(PICKER_RESULT_PATHS);
+                if (imageUrlOrPathList!= null && imageUrlOrPathList.size() > 0) {
+                    uploadImage(imageUrlOrPathList.get(0));
+                }
+            }
+        } else {
+            super.onActivityResult(requestCode, resultCode, data);
+        }
     }
 
     public void kirimData(View view) {

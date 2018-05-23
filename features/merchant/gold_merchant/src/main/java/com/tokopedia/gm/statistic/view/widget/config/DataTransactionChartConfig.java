@@ -3,9 +3,9 @@ package com.tokopedia.gm.statistic.view.widget.config;
 import android.content.Context;
 
 import com.tkpd.library.utils.CommonUtils;
-import com.tokopedia.seller.common.williamchart.config.GrossGraphChartConfig;
-import com.tokopedia.seller.common.williamchart.renderer.AxisRenderer;
-import com.tokopedia.seller.common.williamchart.renderer.StringFormatRenderer;
+import com.db.williamchart.config.GrossGraphChartConfig;
+import com.db.williamchart.renderer.AxisRenderer;
+import com.db.williamchart.renderer.StringFormatRenderer;
 
 /**
  * Created by normansyahputa on 7/7/17.

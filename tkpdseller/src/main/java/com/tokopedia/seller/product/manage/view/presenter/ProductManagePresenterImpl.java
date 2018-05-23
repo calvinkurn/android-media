@@ -5,6 +5,7 @@ import android.accounts.NetworkErrorException;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
 import com.tokopedia.core.shopinfo.models.shopmodel.ShopModel;
+import com.tokopedia.gm.common.domain.interactor.SetCashbackUseCase;
 import com.tokopedia.seller.SellerModuleRouter;
 import com.tokopedia.seller.common.featuredproduct.GMFeaturedProductDomainModel;
 import com.tokopedia.seller.product.manage.constant.CatalogProductOption;
@@ -21,6 +22,8 @@ import com.tokopedia.seller.product.manage.view.model.ProductListManageModelView
 import com.tokopedia.seller.product.picker.data.model.ProductListSellerModel;
 import com.tokopedia.seller.product.picker.domain.interactor.GetProductListSellingUseCase;
 import com.tokopedia.seller.shop.common.domain.interactor.GetShopInfoUseCase;
+import com.tokopedia.topads.sourcetagging.constant.TopAdsSourceOption;
+import com.tokopedia.topads.sourcetagging.domain.interactor.TopAdsAddSourceTaggingUseCase;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -40,6 +43,8 @@ public class ProductManagePresenterImpl extends BaseDaggerPresenter<ProductManag
     private final GetProductListManageMapperView getProductListManageMapperView;
     private final SellerModuleRouter sellerModuleRouter;
     private final MultipleDeleteProductUseCase multipleDeleteProductUseCase;
+    private final TopAdsAddSourceTaggingUseCase topAdsAddSourceTaggingUseCase;
+    private SetCashbackUseCase setCashbackUseCase;
 
     public ProductManagePresenterImpl(GetShopInfoUseCase getShopInfoUseCase,
                                       GetProductListSellingUseCase getProductListSellingUseCase,
@@ -47,7 +52,9 @@ public class ProductManagePresenterImpl extends BaseDaggerPresenter<ProductManag
                                       DeleteProductUseCase deleteProductUseCase,
                                       GetProductListManageMapperView getProductListManageMapperView,
                                       SellerModuleRouter sellerModuleRouter,
-                                      MultipleDeleteProductUseCase multipleDeleteProductUseCase) {
+                                      MultipleDeleteProductUseCase multipleDeleteProductUseCase,
+                                      TopAdsAddSourceTaggingUseCase topAdsAddSourceTaggingUseCase,
+                                      SetCashbackUseCase setCashbackUseCase) {
         this.getShopInfoUseCase = getShopInfoUseCase;
         this.getProductListSellingUseCase = getProductListSellingUseCase;
         this.editPriceProductUseCase = editPriceProductUseCase;
@@ -55,6 +62,8 @@ public class ProductManagePresenterImpl extends BaseDaggerPresenter<ProductManag
         this.getProductListManageMapperView = getProductListManageMapperView;
         this.sellerModuleRouter = sellerModuleRouter;
         this.multipleDeleteProductUseCase = multipleDeleteProductUseCase;
+        this.topAdsAddSourceTaggingUseCase = topAdsAddSourceTaggingUseCase;
+        this.setCashbackUseCase = setCashbackUseCase;
     }
 
     @Override
@@ -80,7 +89,7 @@ public class ProductManagePresenterImpl extends BaseDaggerPresenter<ProductManag
     @Override
     public void setCashback(final String productId, final int cashback) {
         getView().showLoadingProgress();
-        sellerModuleRouter.setCashBack(productId, cashback).subscribe(new Subscriber<Boolean>() {
+        setCashbackUseCase.execute(SetCashbackUseCase.createRequestParams(productId, cashback), new Subscriber<Boolean>() {
             @Override
             public void onCompleted() {
 
@@ -133,6 +142,28 @@ public class ProductManagePresenterImpl extends BaseDaggerPresenter<ProductManag
                 } else {
                     getView().onSuccessMultipleDeleteProduct();
                 }
+            }
+        });
+    }
+
+    @Override
+    public void saveSourceTagging(boolean isSellerApp) {
+        String source = isSellerApp ? TopAdsSourceOption.SA_MANAGE_LIST_PRODUCT : TopAdsSourceOption.MA_MANAGE_LIST_PRODUCT;
+        topAdsAddSourceTaggingUseCase.execute(TopAdsAddSourceTaggingUseCase.createRequestParams(source),
+                new Subscriber<Void>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+
+            }
+
+            @Override
+            public void onNext(Void aVoid) {
+                //do nothing
             }
         });
     }
@@ -234,9 +265,11 @@ public class ProductManagePresenterImpl extends BaseDaggerPresenter<ProductManag
     @Override
     public void detachView() {
         super.detachView();
+        setCashbackUseCase.unsubscribe();
         getProductListSellingUseCase.unsubscribe();
         editPriceProductUseCase.unsubscribe();
         deleteProductUseCase.unsubscribe();
         multipleDeleteProductUseCase.unsubscribe();
+        topAdsAddSourceTaggingUseCase.unsubscribe();
     }
 }

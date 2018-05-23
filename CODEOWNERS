@@ -14,26 +14,32 @@
 /sellerapp/         @tokopedia/minion-stuart
 /tkpdseller/        @tokopedia/minion-stuart
 /tkpdtokocash/      @tokopedia/minion-mark
-/tkpdusecase/       @tokopedia/core-team
 /tkpdabstraction/   @tokopedia/core-team
-/tkpdcacheapi/      @tokopedia/core-team
 /tkpdevents/        @vishalgupta1987
 /tkpdhome/          @tokopedia/minion-dave
 /customerapp/       @tokopedia/core-team
 
-/features/fintech/mitra_toppers/        @tokopedia/minion-stuart
-/features/merchant/gold_merchant_common/ @tokopedia/minion-stuart
-/features/merchant/gold_merchant/       @tokopedia/minion-stuart
-/features/merchant/reputation/          @tokopedia/minion-stuart
-/features/merchant/reputation_common/   @tokopedia/minion-stuart
-/features/merchant/shop_common/         @tokopedia/minion-stuart
-/features/merchant/shop_page/           @tokopedia/minion-stuart
-/features/top_ads/top_ads_management/   @tokopedia/minion-stuart
+/features/fintech/mitra_toppers/                        @tokopedia/minion-stuart
+/features/merchant/gold_merchant_common/                @tokopedia/minion-stuart
+/features/merchant/gold_merchant/                       @tokopedia/minion-stuart
+/features/merchant/reputation/                          @tokopedia/minion-stuart
+/features/merchant/reputation_common/                   @tokopedia/minion-stuart
+/features/merchant/shop_common/                         @tokopedia/minion-stuart
+/features/merchant/shop_page/                           @tokopedia/minion-stuart
+/features/top_ads/top_ads_management/                   @tokopedia/minion-stuart
+/features/top_ads/top_ads_management_common/            @tokopedia/minion-stuart
+/features/top_ads/top_ads_management_sourcetagging/     @tokopedia/minion-stuart
 
 /features/digital/flight_no_op/         @tokopedia/minion-mark
 /features/payment/payment/              @tokopedia/minion-bob
 /features/user/groupchat/               @tokopedia/minion-kevin
 
+/libraries/applink/                     @tokopedia/core-team
+/libraries/bottom_sheet_builder/        @tokopedia/minion-stuart
+/libraries/cache_api/                   @tokopedia/minion-stuart
+/libraries/image_picker/                @tokopedia/minion-stuart
+/libraries/williamchart/                @tokopedia/minion-stuart
+/libraries/use_case/                    @tokopedia/core-team
 /libraries/react_native/                @tokopedia/core-team
 /libraries/applink/                     @tokopedia/core-team
 /libraries/push_notification/           @ricoharisin

@@ -33,6 +33,7 @@ public class TopAdsDetailProductViewModel implements TopAdsDetailAdViewModel, Pa
     private long suggestionBidValue;
     private String suggestionBidButton;
     private boolean enoughDeposit;
+    private String source;
 
     @Override
     public int getStickerId() {
@@ -219,6 +220,14 @@ public class TopAdsDetailProductViewModel implements TopAdsDetailAdViewModel, Pa
         this.enoughDeposit = enoughDeposit;
     }
 
+    public String getSource() {
+        return source;
+    }
+
+    public void setSource(String source) {
+        this.source = source;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -247,6 +256,7 @@ public class TopAdsDetailProductViewModel implements TopAdsDetailAdViewModel, Pa
         dest.writeLong(this.suggestionBidValue);
         dest.writeString(this.suggestionBidButton);
         dest.writeByte(this.enoughDeposit ? (byte) 1 : (byte) 0);
+        dest.writeString(this.source);
     }
 
     protected TopAdsDetailProductViewModel(Parcel in) {
@@ -271,6 +281,7 @@ public class TopAdsDetailProductViewModel implements TopAdsDetailAdViewModel, Pa
         this.suggestionBidValue = in.readLong();
         this.suggestionBidButton = in.readString();
         this.enoughDeposit = in.readByte() != 0;
+        this.source = in.readString();
     }
 
     public static final Creator<TopAdsDetailProductViewModel> CREATOR = new Creator<TopAdsDetailProductViewModel>() {

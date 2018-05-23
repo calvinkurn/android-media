@@ -3,7 +3,8 @@ package com.tokopedia.topads.keyword.di.module;
 
 import com.tokopedia.core.network.di.qualifier.TopAdsQualifier;
 import com.tokopedia.seller.shop.common.domain.repository.ShopInfoRepository;
-import com.tokopedia.topads.dashboard.data.source.cloud.apiservice.api.TopAdsManagementApi;
+import com.tokopedia.topads.sourcetagging.domain.interactor.TopAdsAddSourceTaggingUseCase;
+import com.tokopedia.topads.dashboard.data.source.cloud.apiservice.api.TopAdsOldManagementApi;
 import com.tokopedia.topads.keyword.data.repository.TopAdsKeywordRepositoryImpl;
 import com.tokopedia.topads.keyword.data.source.KeywordDashboardDataSouce;
 import com.tokopedia.topads.keyword.di.scope.TopAdsKeywordScope;
@@ -25,8 +26,8 @@ public class TopAdsKeywordNewChooseModule {
 
     @TopAdsKeywordScope
     @Provides
-    TopAdsManagementApi provideKeywordApi(@TopAdsQualifier Retrofit retrofit) {
-        return retrofit.create(TopAdsManagementApi.class);
+    TopAdsOldManagementApi provideKeywordApi(@TopAdsQualifier Retrofit retrofit) {
+        return retrofit.create(TopAdsOldManagementApi.class);
     }
 
     @TopAdsKeywordScope
@@ -40,7 +41,7 @@ public class TopAdsKeywordNewChooseModule {
     @TopAdsKeywordScope
     @Provides
     TopAdsKeywordListPresenterImpl provideTopAdsKeywordListPresenter(
-            KeywordDashboardUseCase keywordDashboardUseCase) {
-        return new TopAdsKeywordListPresenterImpl(keywordDashboardUseCase);
+            KeywordDashboardUseCase keywordDashboardUseCase, TopAdsAddSourceTaggingUseCase topAdsAddSourceTaggingUseCase) {
+        return new TopAdsKeywordListPresenterImpl(keywordDashboardUseCase, topAdsAddSourceTaggingUseCase);
     }
 }

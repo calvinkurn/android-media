@@ -33,7 +33,7 @@
                 android:paddingRight="@dimen/gmstat_padding_item_left_right"
                 android:paddingTop="8dp">
 
-                <com.tokopedia.seller.common.williamchart.view.LineChartView
+                <com.db.williamchart.view.LineChartView
                     android:id="@+id/gm_statistic_transaction_income_graph"
                     android:layout_width="match_parent"
                     android:layout_height="240dp" />
@@ -108,7 +108,7 @@
                     android:paddingTop="8dp"
                     app:subtitle="@string/gm_statistic_top_ads_amount_subtitle_text">
 
-                    <com.tokopedia.seller.common.williamchart.view.LineChartView
+                    <com.db.williamchart.view.LineChartView
                         android:id="@+id/gm_statistic_topads_graph"
                         android:layout_width="match_parent"
                         android:layout_height="240dp" />

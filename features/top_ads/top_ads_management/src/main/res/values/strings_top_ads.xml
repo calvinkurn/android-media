@@ -5,17 +5,17 @@
     <string name="top_ads_title_product">Produk</string>
     <string name="title_top_ads_store">Toko</string>
     <string name="title_top_ads_promo_group">Grup</string>
-    <string name="title_top_ads_add_credit">Tambah Kredit Promo</string>
-    <string name="title_top_ads_new_promo_shop">Pilih Atau Buat Promo</string>
-    <string name="title_top_ads_new_promo_product">Tambah Promo Produk</string>
+    <string name="title_top_ads_add_credit">Tambah Kredit TopAds</string>
+    <string name="title_top_ads_new_promo_shop">Pilih Atau Buat Iklan</string>
+    <string name="title_top_ads_new_promo_product">Tambah Iklan Produk</string>
     <string name="title_top_ads_filter">Filter</string>
     <string name="title_top_ads_sort_by">Urutkan</string>
     <string name="title_date_picker">Atur Tanggal</string>
     <string name="title_top_ads_manage_promo_product">Atur Grup</string>
-    <string name="title_top_ads_add_promo_product">Tambah Promo Produk</string>
-    <string name="title_top_ads_edit_promo_product">Ubah Promo Produk</string>
+    <string name="title_top_ads_add_promo_product">Tambah Iklan Produk</string>
+    <string name="title_top_ads_edit_promo_product">Ubah Iklan Produk</string>
     <string name="title_top_ads_keyword_add_detail">Tambah Kata Kunci</string>
-    <string name="topads_title_promo_grup_activity">Grup Promo</string>
+    <string name="topads_title_promo_grup_activity">Grup Iklan</string>
 
     <string name="label_top_ads_impression">Tampil</string>
     <string name="label_top_ads_click">Klik</string>
@@ -31,41 +31,41 @@
     <string name="label_top_ads_next">Selanjutnya</string>
     <string name="label_top_ads_save">Simpan</string>
 
-    <string name="menu_top_ads_add_promo_shop">Tambah Promo Toko</string>
-    <string name="menu_top_ads_add_promo_group">Tambah Grup Promo</string>
-    <string name="menu_top_ads_add_promo_product">Tambah Promo Produk</string>
+    <string name="menu_top_ads_add_promo_shop">Tambah Iklan Toko</string>
+    <string name="menu_top_ads_add_promo_group">Tambah Grup Iklan</string>
+    <string name="menu_top_ads_add_promo_product">Tambah Iklan Produk</string>
 
-    <string name="top_ads_delete_product_alert">Promo produk akan dihapus dari daftar promo TopAds Anda.</string>
-    <string name="top_ads_delete_group_alert">Semua promo produk dan kata kunci dalam grup ini akan dihapus.</string>
+    <string name="top_ads_delete_product_alert">Iklan produk akan dihapus dari daftar iklan TopAds Anda.</string>
+    <string name="top_ads_delete_group_alert">Semua iklan produk dan kata kunci dalam grup ini akan dihapus.</string>
 
     <string name="action_filter_date">Filter Tanggal</string>
     <string name="label_manage_group">Atur Grup</string>
     <string name="label_edit">Ubah</string>
 
-    <string name="title_product_ad_detail">Detil Promo Produk</string>
-    <string name="title_shop_ad_detail">Detil Promo Toko</string>
-    <string name="title_group_ad_detail">Detail Grup Promo</string>
-    <string name="title_group_ad_edit">Ubah Promo Grup</string>
-    <string name="title_product_ad_edit">Ubah Promo Produk</string>
-    <string name="title_delete_promo">Hapus Promo?</string>
+    <string name="title_product_ad_detail">Detil Iklan Produk</string>
+    <string name="title_shop_ad_detail">Detil Iklan Toko</string>
+    <string name="title_group_ad_detail">Detail Grup Iklan</string>
+    <string name="title_group_ad_edit">Ubah Iklan Grup</string>
+    <string name="title_product_ad_edit">Ubah Iklan Produk</string>
+    <string name="title_delete_promo">Hapus Iklan?</string>
     <string name="title_delete_group">Hapus Grup?</string>
-    <string name="title_edit_shop_ad">Ubah Promo Toko</string>
+    <string name="title_edit_shop_ad">Ubah Iklan Toko</string>
 
     <!-- Top Ads ad list -->
     <string name="label_top_ads_daily_spend">Anggaran Harian</string>
     <string name="top_ads_bid_format_text">%1$s %2$s</string>
     <string name="top_ads_group_name_format_text">%1$s: %2$s</string>
     <string name="top_ads_spent_separator">/</string>
-    <string name="top_ads_empty_shop_title_text">Promo Toko Anda Kosong</string>
-    <string name="top_ads_empty_shop_content_text">Promosikan toko Anda untuk menambah banyak pengunjung dan mendapatkan banyak favorit.</string>
+    <string name="top_ads_empty_shop_title_text">Iklan Toko Anda Kosong</string>
+    <string name="top_ads_empty_shop_content_text">Iklankan toko Anda untuk menambah banyak pengunjung dan mendapatkan banyak favorit.</string>
     <string name="top_ads_empty_promo_not_found_title_empty_text">Hasil Tidak Ditemukan</string>
     <string name="top_ads_empty_promo_not_found_content_empty_text">Silahkan coba lagi atau ganti kata kunci</string>
-    <string name="top_ads_empty_group_title_promo_text">Grup Promo Anda Kosong</string>
-    <string name="top_ads_empty_product_title_promo_text">Promo Produk Anda Kosong</string>
-    <string name="top_ads_empty_group_promo_content_text">Gunakan Grup Promo dan nikmati kemudahan mengatur Promo Anda dalam sekali pengaturan.</string>
-    <string name="top_ads_empty_product_promo_content_text">Promosikan produk Anda agar lebih mudah ditemukan pembeli untuk mendapatkan lebih banyak pengunjung dan meningkatkan penjualan.</string>
-    <string name="top_ads_empty_group_promo_content_not_empty_text">Produk yang telah anda promosikan ada di dalam items</string>
-    <string name="top_ads_empty_group_promo_content_item_no_text">Lihat %1$s Promo Produk</string>
+    <string name="top_ads_empty_group_title_promo_text">Grup Iklan Anda Kosong</string>
+    <string name="top_ads_empty_product_title_promo_text">Iklan Produk Anda Kosong</string>
+    <string name="top_ads_empty_group_promo_content_text">Gunakan Grup Iklan dan nikmati kemudahan mengatur Iklan Anda dalam sekali pengaturan.</string>
+    <string name="top_ads_empty_product_promo_content_text">Iklankan produk Anda agar lebih mudah ditemukan pembeli untuk mendapatkan lebih banyak pengunjung dan meningkatkan penjualan.</string>
+    <string name="top_ads_empty_group_promo_content_not_empty_text">Produk yang telah anda iklankan ada di dalam items</string>
+    <string name="top_ads_empty_group_promo_content_item_no_text">Lihat %1$s Iklan Produk</string>
 
     <!-- Top Ads Edit Promo -->
     <string name="label_top_ads_add_product">Tambah Produk</string>
@@ -73,7 +73,7 @@
     <string name="label_top_ads_total_selected_product_zero">%1$d / 50 Terpilih</string>
     <string name="label_top_ads_max_price_hint">Biaya Maks</string>
     <string name="label_top_ads_max_price_description">Rekomendasi Biaya </string>
-    <string name="label_top_ads_limit_price_description">Batas anggaran dihitung dari akumulasi biaya promo jika dalam satu grup promo.</string>
+    <string name="label_top_ads_limit_price_description">Batas anggaran dihitung dari akumulasi biaya iklan jika dalam satu grup iklan.</string>
     <string name="label_top_ads_icon">Icon TopAds</string>
     <string name="top_ads_label_cost">Biaya</string>
     <string name="top_ads_label_schedule">Jadwal</string>
@@ -117,16 +117,16 @@
     <string name="label_topads_price_and_schedule">Biaya &amp; Jadwal</string>
     <string name="topads_title_review_statistic">Ringkasan Statistik</string>
     <string name="topads_format_daily_budget">%1$s / %2$s</string>
-    <string name="topads_label_title_price_promo">Biaya Promo</string>
+    <string name="topads_label_title_price_promo">Biaya Iklan</string>
     <string name="topads_label_title_percentation_detail">Persentase Klik</string>
 
     <!-- Top Ads Statistic-->
-    <string name="title_top_ads_statistic_graph_impression">Jumlah orang yang melihat promo anda.</string>
-    <string name="title_top_ads_statistic_graph_avg">Biaya rata-rata yang anda bayarkan untuk setiap klik.</string>
-    <string name="title_top_ads_statistic_graph_convertion">Jumlah favorit / transaksi dari promo anda.</string>
-    <string name="title_top_ads_statistic_graph_ctr">Perbandingan orang yang melihat promo anda dengan jumlah klik pada promo tersebut.</string>
-    <string name="title_top_ads_statistic_graph_click">Jumlah klik pada promo anda.</string>
-    <string name="title_top_ads_statistic_graph_spent">Jumlah anggaran yang telah terpakai untuk promosi ini.</string>
+    <string name="title_top_ads_statistic_graph_impression">Jumlah orang yang melihat iklan Anda.</string>
+    <string name="title_top_ads_statistic_graph_avg">Biaya rata-rata yang Anda bayarkan untuk setiap klik.</string>
+    <string name="title_top_ads_statistic_graph_convertion">Jumlah favorit / transaksi dari iklan Anda.</string>
+    <string name="title_top_ads_statistic_graph_ctr">Perbandingan orang yang melihat iklan Anda dengan jumlah klik pada iklan tersebut.</string>
+    <string name="title_top_ads_statistic_graph_click">Jumlah klik pada iklan Anda.</string>
+    <string name="title_top_ads_statistic_graph_spent">Jumlah anggaran yang telah terpakai untuk iklan ini.</string>
     <string name="title_activity_statistic">Statistik</string>
     <string name="top_ads_statistic_info_default_value">-</string>
 
@@ -144,9 +144,9 @@
     <string name="label_top_ads_error_choose_one_group">Pilih salah satu grup</string>
     <string name="label_top_ads_error_choose_one_option">Silahkan pilih salah satu opsi</string>
     <string name="label_top_ads_error_empty_group_name">Silahkan isi nama grup</string>
-    <string name="label_top_ads_info_group_option_exist">Produk akan dimasukkan ke grup promo yang sudah ada.</string>
-    <string name="label_top_ads_info_group_option_new">Produk akan dimasukkan ke grup promo baru.</string>
-    <string name="label_top_ads_info_group_option_empty">Pengaturan dilakukan per promo.</string>
+    <string name="label_top_ads_info_group_option_exist">Produk akan dimasukkan ke grup iklan yang sudah ada.</string>
+    <string name="label_top_ads_info_group_option_new">Produk akan dimasukkan ke grup iklan baru.</string>
+    <string name="label_top_ads_info_group_option_empty">Pengaturan dilakukan per iklan.</string>
     <string name="label_top_ads_error_fail_move_out_product">Gagal mengeluarkan product dari grup</string>
     <string name="label_top_ads_error_fail_move_new_group">Gagal memindahkan product ke grup baru</string>
     <string name="label_top_ads_error_fail_move_exist_group">Gagal memindahkan product ke grup lain</string>
@@ -160,9 +160,9 @@
     <string name="top_ads_label_count_keyword">%1s Kata Kunci</string>
 
     <string name="top_ads_label_choose_product">Pilih Produk</string>
-    <string name="top_ads_label_choose_product_desc_empty">Pilih produk yang akan dimasukkan ke grup promo.</string>
-    <string name="top_ads_label_choose_product_desc_empty_without_group">Pengaturan dilakukan per promo.</string>
-    <string name="top_ads_label_choose_promo">Pilih Promo</string>
+    <string name="top_ads_label_choose_product_desc_empty">Pilih produk yang akan dimasukkan ke grup iklan.</string>
+    <string name="top_ads_label_choose_product_desc_empty_without_group">Pengaturan dilakukan per iklan.</string>
+    <string name="top_ads_label_choose_promo">Pilih Iklan</string>
 
     <string name="error_top_ads_click_budget_max">Biaya maksimum Rp %1s</string>
     <string name="error_top_ads_click_budget_minimum">Biaya minimal Rp %1s</string>
@@ -208,10 +208,10 @@
     <string name="top_ads_keyword_phrase_match">Phrase Match</string>
     <string name="top_ads_keyword_exact_match">Exact Match</string>
     <string name="top_ads_keyword_broad_match_positive_description">Kata Kunci dengan jangkauan pencarian luas</string>
-    <string name="top_ads_keyword_phrase_match_positive_description">Promo ditampilkan ketika pencarian mengandung kata kunci.</string>
-    <string name="top_ads_keyword_exact_match_positive_description">Promo ditampilkan ketika pencarian mengandung kata kunci yang sama persis.</string>
-    <string name="top_ads_keyword_phrase_match_negative_description">Promo tidak ditampilkan ketika mengandung kata kunci negatif.</string>
-    <string name="top_ads_keyword_exact_match_negative_description">Promo tidak ditampilkan ketika mengandung kata kunci negatif yang sama persis.</string>
+    <string name="top_ads_keyword_phrase_match_positive_description">Iklan ditampilkan ketika pencarian mengandung kata kunci.</string>
+    <string name="top_ads_keyword_exact_match_positive_description">Iklan ditampilkan ketika pencarian mengandung kata kunci yang sama persis.</string>
+    <string name="top_ads_keyword_phrase_match_negative_description">Iklan tidak ditampilkan ketika mengandung kata kunci negatif.</string>
+    <string name="top_ads_keyword_exact_match_negative_description">Iklan tidak ditampilkan ketika mengandung kata kunci negatif yang sama persis.</string>
     <string name="top_ads_keyword_type_hint">Kata Kunci</string>
     <string name="top_ads_keyword_title_keyword_edit_keyword">Ubah Kata Kunci</string>
     <string name="top_ads_keyword_change_hint">Ubah Kata Kunci</string>
@@ -220,7 +220,7 @@
 
     <string name="top_ads_keyword_label_type">Tipe Kata Kunci</string>
     <string name="top_ads_keyword_title_delete">Hapus Kata Kunci?</string>
-    <string name="top_ads_keyword_confirmation_delete">Kata kunci akan dihapus dari daftar promo TopAds Anda.</string>
+    <string name="top_ads_keyword_confirmation_delete">Kata kunci akan dihapus dari daftar iklan TopAds Anda.</string>
 
     <string name="top_ads_keyword_type">Tipe Kata Kunci</string>
     <string name="top_ads_choose_keyword_type">Pilih Tipe Kata Kunci</string>
@@ -233,7 +233,7 @@
     <string name="top_ads_keyword__all_group">Semua Grup</string>
     <string name="top_ads_keyword_delete">Hapus</string>
     <string name="top_ads_label_currency_rupiah_editext">Rp \u0020</string>
-    <string name="top_ads_label_price_desc">Sesuaikan biaya dengan anggaran promo Anda.</string>
+    <string name="top_ads_label_price_desc">Sesuaikan biaya dengan anggaran iklan Anda.</string>
 
     <!-- tooltip statistic topads -->
     <string name="top_ads_tooltip_statistic_use">Rp %1s</string>
@@ -242,16 +242,20 @@
     <string name="title_top_ads_filter_keyword">Filter Kata Kunci</string>
     <string name="top_ads_keyword_your_keyword_empty">Kata Kunci Anda Kosong</string>
     <string name="top_ads_keyword_your_keyword_negative_empty">Kata Kunci Negatif Anda Kosong</string>
-    <string name="top_ads_keyword_please_use">Gunakan kata kunci agar promo Anda dapat tampil  pada pencarian yang sesuai.</string>
-    <string name="top_ads_keyword_please_use_negative">Optimalkan anggaran promo Anda dengan kata kunci negatif agar tidak tampil pada pencarian yang tidak sesuai.</string>
+    <string name="top_ads_keyword_please_use">Gunakan kata kunci agar iklan Anda dapat tampil  pada pencarian yang sesuai.</string>
+    <string name="top_ads_keyword_please_use_negative">Optimalkan anggaran iklan Anda dengan kata kunci negatif agar tidak tampil pada pencarian yang tidak sesuai.</string>
     <string name="top_ads_keyword_add_keyword">Tambah Kata Kunci</string>
     <string name="top_ads_keyword_group_title">Grup</string>
-    <string name="top_ads_keyword_add_group_promo">Tambahkan Grup Promo</string>
-    <string name="top_ads_keyword_add_group_promo_desc">Untuk menggunakan fitur kata \nkunci Anda harus memiliki \ngrup promo</string>
-    <string name="top_ads_keyword_add_group_promo_yes">Tambah Promo</string>
+    <string name="top_ads_keyword_add_group_promo">Tambahkan Grup Iklan</string>
+    <string name="top_ads_keyword_add_group_promo_desc">Untuk menggunakan fitur kata \nkunci Anda harus memiliki \ngrup iklan</string>
+    <string name="top_ads_keyword_add_group_promo_yes">Tambah Iklan</string>
     <string name="top_ads_keyword_add_group_promo_no">Batal</string>
 
     <string name="topads_keyword_add_cancel_dialog">Kata kunci yang sudah Anda masukkan akan hilang\nTinggalkan halaman ini?</string>
-    <string name="static_suggestion_bid_recommendation">Sesuaikan biaya dengan anggaran promo Anda.</string>
+    <string name="static_suggestion_bid_recommendation">Sesuaikan biaya dengan anggaran iklan Anda.</string>
+    <string name="topads_dashboard_empty_usage_title">Jangkau jutaan pengunjung Tokopedia ke toko Anda dengan TopAds</string>
+    <string name="label_top_ads_income">Total Pendapatan</string>
+    <string name="title_top_ads_statistic_graph_total_income">Total pendapatan dari produk terjual melalui iklan dan produk lainnya setelah klik iklan Anda.</string>
+    <string name="title_top_ads_statistic_graph_sold">Total produk terjual dari iklan dan produk lainnya setelah klik iklan Anda.</string>
 
 </resources>

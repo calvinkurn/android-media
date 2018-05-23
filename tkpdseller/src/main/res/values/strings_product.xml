@@ -2,7 +2,7 @@
 <resources>
 
     <!-- Product add -->
-    <string name="product_label_wholesale">Grosir</string>
+    <string name="product_label_wholesale">Harga Grosir</string>
     <string name="product_label_po">PO</string>
     <string name="product_label_product_info">Info Produk</string>
     <string name="product_label_name">Nama Produk</string>
@@ -11,6 +11,8 @@
     <string name="product_label_category">Kategori</string>
     <string name="product_label_etalase">Etalase</string>
     <string name="product_label_choose">Pilih</string>
+    <string name="product_label_add">Tambah</string>
+    <string name="product_label_price">harga</string>
     <string name="product_label_product_recommendation">Rekomendasi Kategori</string>
     <string name="product_label_product_about">Tentang Produk</string>
     <string name="product_label_product_price">Harga Produk</string>
@@ -18,6 +20,7 @@
     <string name="product_label_wholesale_price">Harga Grosir</string>
     <string name="product_label_product_weight">Berat Produk</string>
     <string name="product_label_add_wholesale">+ Tambah Harga Grosir</string>
+    <string name="product_label_product_main_price">Harga Utama Produk</string>
     <string name="product_label_time_process">Waktu Proses</string>
     <string name="product_label_minimum_buy">Pemesanan Minimum</string>
     <string name="product_label_minimum_whole_sale">Jumlah Minimal</string>
@@ -34,6 +37,7 @@
     <string name="product_add_sku_hint">Tulis SKU Produk</string>
     <string name="product_add_sku_allowed_character">0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ./-</string>
     <string name="product_label_product_description">Deskripsi Produk</string>
+    <string name="product_label_product_wholesale">Grosir</string>
     <string name="product_label_enter_product_description">Tulis dengan lengkap dan jelas deskripsi produk Anda</string>
     <string name="product_label_upload_and_add_new_product">Upload dan Tambah Produk Baru</string>
     <string name="product_label_upload_this_product">Upload Produk Ini</string>
@@ -144,6 +148,9 @@
     <string name="product_add_whole_sale_title">Tambah Harga Grosir</string>
     <string name="product_price_should_be_cheaper_than_fix_price">Harga harus lebih murah dari harga pas.</string>
     <string name="product_price_should_be_cheaper_than_previous_wholesale_price">Harga harus lebih murah dari harga grosir sebelumnya.</string>
+    <string name="product_price_should_be_cheaper_than_main_price">Harga harus lebih murah dari harga utama.</string>
+    <string name="wholesale_qty_not_valid">Jumlah harus > dari sebelumnya.</string>
+    <string name="product_fix_previous_wholesale">Perbaiki error sebelumnya terlebih dahulu.</string>
     <string name="product_quantity_range_is_not_valid">Kelompok Jumlah tidak valid.</string>
     <string name="product_wholesale_range_format">≥ %1$s buah</string>
     <string name="product_from_to_video">%1$d dari %2$d Video</string>
@@ -156,7 +163,7 @@
     <string name="product_error_product_name_copy_duplicate">Nama produk harus diganti</string>
     <string name="product_etalase_picker_add_etalase_name_too_short">Nama etalase minimal 3 karakter</string>
     <string name="product_draft_error_cannot_load_draft">Tidak bisa membuka draft product</string>
-
+    <string name="product_add_wholesale_notice_variant"><b>Semua harga varian</b> otomatis mengikuti harga utama jika produk memiliki harga grosir.</string>
     <!-- Draft -->
     <string name="product_draft_delete_all_draft">Hapus Semua Draft</string>
     <string name="product_draft_delete_all_draft_dialog_message">Yakin hapus semua Draft?</string>
@@ -201,6 +208,7 @@
     <string name="product_manage_item_cashback">Cashback %1$d%%</string>
     <string name="product_manage_menu_set_price">Atur Harga</string>
     <string name="product_manage_menu_set_cashback">Atur &#37; cashback</string>
+    <string name="product_manage_menu_set_promo_ads">Iklan TopAds</string>
     <string name="product_manage_filter_menu_etalase_all">Semua Produk</string>
     <string name="product_manage_filter_menu_category_all">Semua Kategori</string>
     <string name="product_manage_filter_menu_picture_both">Dengan &amp; Tanpa Gambar</string>

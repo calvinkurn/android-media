@@ -34,8 +34,6 @@ public interface SellerModuleRouter {
 
     void goToGMSubscribe(Activity activity);
 
-    Observable<Boolean> setCashBack(String productId, int cashback);
-
     Observable<List<DataCashbackModel>> getCashbackList(List<String> productIds);
 
     GetShopInfoUseCase getShopInfo();
@@ -59,4 +57,7 @@ public interface SellerModuleRouter {
     Intent getTopProfileIntent(Context context, String userId);
 
     Intent getInboxMessageIntent(Context context);
+
+    void gotoTopAdsDashboard(Context context);
 }
+
