@@ -16,7 +16,6 @@ import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.di.component.HasComponent;
-import com.tokopedia.core.gcm.IFCMInstanceIDService;
 import com.tokopedia.core.listener.GlobalMainTabSelectedListener;
 import com.tokopedia.loyalty.R;
 import com.tokopedia.loyalty.R2;
@@ -273,6 +272,18 @@ public class LoyaltyActivity extends BasePresenterActivity
         Intent intent = new Intent(activity, LoyaltyActivity.class);
         Bundle bundle = new Bundle();
         bundle.putBoolean(EXTRA_COUPON_ACTIVE, true);
+        bundle.putString(EXTRA_PLATFORM, platform);
+        bundle.putString(EXTRA_CATEGORY, categoryId);
+        bundle.putString(EXTRA_CART_ID, cartId);
+        intent.putExtras(bundle);
+        return intent;
+    }
+
+    public static Intent newInstanceCouponActiveAndSelected(Context context, String platform, String categoryId, String cartId) {
+        Intent intent = new Intent(context, LoyaltyActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putBoolean(EXTRA_COUPON_ACTIVE, true);
+        bundle.putInt(EXTRA_SELECTED_TAB, COUPON_TAB);
         bundle.putString(EXTRA_PLATFORM, platform);
         bundle.putString(EXTRA_CATEGORY, categoryId);
         bundle.putString(EXTRA_CART_ID, cartId);

@@ -366,7 +366,13 @@ public class FlightBookingReviewFragment extends BaseDaggerFragment implements F
     @Override
     public void onClickUseVoucher() {
         if (getActivity() != null && getActivity().getApplication() instanceof FlightModuleRouter) {
-            Intent intent = ((FlightModuleRouter) getActivity().getApplication()).getLoyaltyWithCoupon(getActivity(), HACHIKO_FLIGHT_KEY, FlightUrl.CATEGORY_ID, getCurrentCartData().getId());
+            Intent intent;
+
+            if (getCurrentBookingReviewModel().getVoucherViewModel().getDefaultPromoTab().equals("coupon")) {
+                intent = ((FlightModuleRouter) getActivity().getApplication()).getLoyaltyWithCouponTabSelected(getActivity(), HACHIKO_FLIGHT_KEY, FlightUrl.CATEGORY_ID, getCurrentCartData().getId());
+            } else {
+                intent = ((FlightModuleRouter) getActivity().getApplication()).getLoyaltyWithCoupon(getActivity(), HACHIKO_FLIGHT_KEY, FlightUrl.CATEGORY_ID, getCurrentCartData().getId());
+            }
             startActivityForResult(intent, REQUEST_CODE_LOYALTY);
         }
     }

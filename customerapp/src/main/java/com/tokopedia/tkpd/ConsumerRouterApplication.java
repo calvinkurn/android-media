@@ -752,6 +752,11 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
+    public Intent getLoyaltyWithCouponTabSelected(Activity activity, String platform, String categoryId, String cartId) {
+        return LoyaltyActivity.newInstanceCouponActiveAndSelected(activity, platform, categoryId, cartId);
+    }
+
+    @Override
     public FlightVoucherCodeWrapper getFlightVoucherCodeWrapper() {
         return new FlightVoucherCodeWrapperImpl();
     }

@@ -3,10 +3,8 @@ package com.tokopedia.flight;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.support.v4.app.FragmentActivity;
 
 import com.tokopedia.flight.booking.domain.subscriber.model.ProfileInfo;
-import com.tokopedia.flight.common.view.BaseFlightActivity;
 import com.tokopedia.flight.contactus.model.FlightContactUsPassData;
 import com.tokopedia.flight.review.domain.FlightVoucherCodeWrapper;
 import com.tokopedia.flight.review.view.model.FlightCheckoutViewModel;
@@ -51,6 +49,8 @@ public interface FlightModuleRouter {
     Interceptor getChuckInterceptor();
 
     Intent getLoyaltyWithCoupon(Activity activity, String platform, String categoryId, String cartId);
+
+    Intent getLoyaltyWithCouponTabSelected(Activity activity, String platform, String categoryId, String cartId);
 
     FlightVoucherCodeWrapper getFlightVoucherCodeWrapper();
 
