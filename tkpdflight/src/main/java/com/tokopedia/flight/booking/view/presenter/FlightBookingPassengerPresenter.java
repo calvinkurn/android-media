@@ -28,6 +28,7 @@ public class FlightBookingPassengerPresenter extends BaseDaggerPresenter<FlightB
     private final int MINUS_TWO = -2;
     private final int MINUS_TWELVE = -12;
     private final int PLUS_SIX = 6;
+    private final int PLUS_TWENTY = 20;
 
     private FlightPassengerInfoValidator flightPassengerInfoValidator;
 
@@ -373,10 +374,11 @@ public class FlightBookingPassengerPresenter extends BaseDaggerPresenter<FlightB
     @Override
     public void onPassportExpiredClicked() {
 
-        Date minDate, selectedDate;
+        Date minDate, selectedDate, maxDate;
         Date departureDate = FlightDateUtil.stringToDate(getView().getDepartureDateString());
 
         minDate = FlightDateUtil.addTimeToSpesificDate(departureDate, Calendar.MONTH, PLUS_SIX);
+        maxDate = FlightDateUtil.addTimeToSpesificDate(departureDate, Calendar.YEAR, PLUS_TWENTY);
         selectedDate = minDate;
 
         if (getView().getPassportExpiredDate().length() != 0 &&
@@ -384,7 +386,7 @@ public class FlightBookingPassengerPresenter extends BaseDaggerPresenter<FlightB
             selectedDate = FlightDateUtil.stringToDate(FlightDateUtil.DEFAULT_VIEW_FORMAT, getView().getPassportExpiredDate());
         }
 
-        getView().showPassportExpiredDatePickerDialog(selectedDate, minDate);
+        getView().showPassportExpiredDatePickerDialog(selectedDate, minDate, maxDate);
     }
 
     @Override

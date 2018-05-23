@@ -126,7 +126,7 @@ public interface FlightBookingPassengerContract {
 
         void showPassengerChildBirthdateShouldLessThanEqual12Years(int resId);
 
-        void showPassportExpiredDatePickerDialog(Date selectedDate, Date minDate);
+        void showPassportExpiredDatePickerDialog(Date selectedDate, Date minDate, Date maxDate);
 
         void showPassportExpiredDateShouldMoreThan6MonthsFromDeparture(@StringRes int resId, String dateAfterSixMonth);
 

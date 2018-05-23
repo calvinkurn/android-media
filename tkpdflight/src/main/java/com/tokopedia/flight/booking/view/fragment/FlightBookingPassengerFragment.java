@@ -681,7 +681,7 @@ public class FlightBookingPassengerFragment extends BaseDaggerFragment implement
     }
 
     @Override
-    public void showPassportExpiredDatePickerDialog(Date selectedDate, final Date minDate) {
+    public void showPassportExpiredDatePickerDialog(Date selectedDate, final Date minDate, Date maxDate) {
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(selectedDate);
         DatePickerDialog datePicker = new DatePickerDialog(getActivity(), new DatePickerDialog.OnDateSetListener() {
@@ -692,6 +692,7 @@ public class FlightBookingPassengerFragment extends BaseDaggerFragment implement
         }, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DATE));
         DatePicker datePicker1 = datePicker.getDatePicker();
         datePicker1.setMinDate(minDate.getTime());
+        datePicker1.setMaxDate(maxDate.getTime());
         datePicker.show();
     }
 
