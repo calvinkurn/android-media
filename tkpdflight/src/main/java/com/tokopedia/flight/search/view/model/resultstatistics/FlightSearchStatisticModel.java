@@ -211,7 +211,7 @@ public class FlightSearchStatisticModel {
                 }
             }
         }
-        return new FlightAirlineDB(airlineID, "", "", "", 0);
+        return new FlightAirlineDB(airlineID, "", "", "", 0, 1);
     }
 
     public List<DepartureStat> getDepartureTimeStatList() {
