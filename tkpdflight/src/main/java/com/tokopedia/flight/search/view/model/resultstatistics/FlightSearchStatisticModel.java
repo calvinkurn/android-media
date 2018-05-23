@@ -1,7 +1,6 @@
 package com.tokopedia.flight.search.view.model.resultstatistics;
 
-import android.os.Parcel;
-import android.os.Parcelable;
+import android.text.TextUtils;
 import android.util.SparseIntArray;
 
 import com.tokopedia.flight.airline.data.db.model.FlightAirlineDB;
@@ -20,18 +19,7 @@ import java.util.List;
  * Created by User on 10/30/2017.
  */
 
-public class FlightSearchStatisticModel implements Parcelable {
-    public static final Parcelable.Creator<FlightSearchStatisticModel> CREATOR = new Parcelable.Creator<FlightSearchStatisticModel>() {
-        @Override
-        public FlightSearchStatisticModel createFromParcel(Parcel source) {
-            return new FlightSearchStatisticModel(source);
-        }
-
-        @Override
-        public FlightSearchStatisticModel[] newArray(int size) {
-            return new FlightSearchStatisticModel[size];
-        }
-    };
+public class FlightSearchStatisticModel {
     private int minPrice;
     private int maxPrice;
     private int minDuration;
@@ -40,6 +28,7 @@ public class FlightSearchStatisticModel implements Parcelable {
     private List<AirlineStat> airlineStatList;
     private List<DepartureStat> departureTimeStatList;
     private List<RefundableStat> refundableTypeStatList;
+    private boolean isHaveSpecialPrice;
 
     public FlightSearchStatisticModel(List<FlightSearchViewModel> flightSearchViewModelList) {
         minPrice = Integer.MAX_VALUE;
@@ -160,7 +149,9 @@ public class FlightSearchStatisticModel implements Parcelable {
                     prevRefundableStat.setMinPriceString(priceString);
                 }
             }
-
+            if (!TextUtils.isEmpty(flightSearchViewModel.getBeforeTotal())){
+                isHaveSpecialPrice = true;
+            }
         }
 
         //sort array
@@ -188,17 +179,6 @@ public class FlightSearchStatisticModel implements Parcelable {
                 return o1.getRefundableEnum().getId() - o2.getRefundableEnum().getId();
             }
         });
-    }
-
-    protected FlightSearchStatisticModel(Parcel in) {
-        this.minPrice = in.readInt();
-        this.maxPrice = in.readInt();
-        this.minDuration = in.readInt();
-        this.maxDuration = in.readInt();
-        this.transitTypeStatList = in.createTypedArrayList(TransitStat.CREATOR);
-        this.airlineStatList = in.createTypedArrayList(AirlineStat.CREATOR);
-        this.departureTimeStatList = in.createTypedArrayList(DepartureStat.CREATOR);
-        this.refundableTypeStatList = in.createTypedArrayList(RefundableStat.CREATOR);
     }
 
     public int getMinPrice() {
@@ -246,20 +226,7 @@ public class FlightSearchStatisticModel implements Parcelable {
         return refundableTypeStatList;
     }
 
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeInt(this.minPrice);
-        dest.writeInt(this.maxPrice);
-        dest.writeInt(this.minDuration);
-        dest.writeInt(this.maxDuration);
-        dest.writeTypedList(this.transitTypeStatList);
-        dest.writeTypedList(this.airlineStatList);
-        dest.writeTypedList(this.departureTimeStatList);
-        dest.writeTypedList(this.refundableTypeStatList);
+    public boolean isHaveSpecialPrice() {
+        return isHaveSpecialPrice;
     }
 }
