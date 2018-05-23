@@ -1,6 +1,7 @@
 package com.tokopedia.inbox.inboxchat.viewmodel;
 
-import com.tokopedia.core.base.adapter.Visitable;
+
+import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.inbox.inboxchat.adapter.ChatRoomTypeFactory;
 
 import java.util.List;
