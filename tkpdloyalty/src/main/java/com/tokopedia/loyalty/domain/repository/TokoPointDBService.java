@@ -1,9 +1,11 @@
 package com.tokopedia.loyalty.domain.repository;
 
+import android.text.TextUtils;
+
 import com.google.gson.Gson;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.var.TkpdCache;
-import com.tokopedia.loyalty.domain.entity.response.TokoPointDrawerDataResponse;
+import com.tokopedia.loyalty.domain.entity.response.GqlTokoPointDrawerDataResponse;
 import com.tokopedia.loyalty.domain.exception.TokoPointDBServiceException;
 
 import javax.inject.Inject;
@@ -28,17 +30,19 @@ public class TokoPointDBService implements ITokoPointDBService {
     }
 
     @Override
-    public Observable<TokoPointDrawerDataResponse> getPointDrawer() {
+    public Observable<GqlTokoPointDrawerDataResponse> getPointDrawer() {
         return Observable.just(TkpdCache.Key.KEY_TOKOPOINT_DRAWER_DATA)
-                .map(new Func1<String, TokoPointDrawerDataResponse>() {
+                .map(new Func1<String, GqlTokoPointDrawerDataResponse>() {
                     @Override
-                    public TokoPointDrawerDataResponse call(String s) {
+                    public GqlTokoPointDrawerDataResponse call(String s) {
                         try {
                             String cacheStr = globalCacheManager.getValueString(s);
                             if (cacheStr != null && !cacheStr.isEmpty()) {
-                                TokoPointDrawerDataResponse tokoPointDrawerDataResponse =
-                                        gson.fromJson(cacheStr, TokoPointDrawerDataResponse.class);
-                                if (tokoPointDrawerDataResponse.getHasNotif() == 1) {
+                                GqlTokoPointDrawerDataResponse tokoPointDrawerDataResponse =
+                                        gson.fromJson(cacheStr, GqlTokoPointDrawerDataResponse.class);
+
+                                if (tokoPointDrawerDataResponse.getGqlTokoPointPopupNotif() != null &&
+                                        !TextUtils.isEmpty(tokoPointDrawerDataResponse.getGqlTokoPointPopupNotif().getTitle())) {
                                     globalCacheManager.delete(TkpdCache.Key.KEY_TOKOPOINT_DRAWER_DATA);
                                     throw new TokoPointDBServiceException("cant pull from db, cause data has notif flag active");
                                 }
@@ -57,13 +61,16 @@ public class TokoPointDBService implements ITokoPointDBService {
     }
 
     @Override
-    public Observable<TokoPointDrawerDataResponse> storePointDrawer(
-            TokoPointDrawerDataResponse tokoPointDrawerDataResponse
+    public Observable<GqlTokoPointDrawerDataResponse> storePointDrawer(
+            GqlTokoPointDrawerDataResponse tokoPointDrawerDataResponse
     ) {
-        return Observable.just(tokoPointDrawerDataResponse).doOnNext(new Action1<TokoPointDrawerDataResponse>() {
+        return Observable.just(tokoPointDrawerDataResponse).doOnNext(new Action1<GqlTokoPointDrawerDataResponse>() {
             @Override
-            public void call(TokoPointDrawerDataResponse tokoPointDrawerDataResponse) {
-                if (tokoPointDrawerDataResponse.getHasNotif() != 1) {
+            public void call(GqlTokoPointDrawerDataResponse tokoPointDrawerDataResponse) {
+
+                if (tokoPointDrawerDataResponse.getGqlTokoPointPopupNotif() == null ||
+                        (tokoPointDrawerDataResponse.getGqlTokoPointPopupNotif() != null &&
+                                TextUtils.isEmpty(tokoPointDrawerDataResponse.getGqlTokoPointPopupNotif().getTitle()))) {
                     globalCacheManager.setCacheDuration(60);
                     globalCacheManager.setKey(TkpdCache.Key.KEY_TOKOPOINT_DRAWER_DATA);
                     globalCacheManager.setValue(gson.toJson(tokoPointDrawerDataResponse));
