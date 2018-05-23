@@ -125,9 +125,7 @@ public class ChatRoomActivity extends BasePresenterActivity
         extras.putBoolean(PARAM_WEBSOCKET, true);
         detailsIntent = new Intent(context, ChatRoomActivity.class).putExtras(extras);
         if(TextUtils.equals(extras.getString(TkpdInboxRouter.IS_CHAT_BOT),"true")) {
-            parentIntent = new Intent(context, ContactUsActivity.class);
-            parentIntent.putExtra(ContactUsConstant.PARAM_URL, URLGenerator.generateURLContactUs
-                    (TkpdBaseURL.BASE_CONTACT_US,context));
+            parentIntent = ((TkpdInboxRouter)context.getApplicationContext()).getContactUsIntent(context);
         }
         else {
             parentIntent = new Intent(context, InboxChatActivity.class);

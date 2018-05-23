@@ -11,16 +11,12 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.constraint.ConstraintLayout;
-import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v7.widget.AppCompatEditText;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.TooltipCompat;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
-import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -46,8 +42,6 @@ import com.tokopedia.tkpd.tkpdcontactus.orderquery.di.OrderQueryComponent;
 import com.tokopedia.tkpd.tkpdcontactus.orderquery.view.adapter.ImageUploadAdapter;
 import com.tokopedia.tkpd.tkpdcontactus.orderquery.view.presenter.SubmitTicketContract;
 import com.tokopedia.tkpd.tkpdcontactus.orderquery.view.presenter.SubmitTicketPresenter;
-
-import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -242,7 +236,7 @@ public class SubmitTicketFragment extends BaseDaggerFragment implements SubmitTi
     public void setSubmitButtonEnabled(boolean enabled) {
         sendButton.setClickable(enabled);
         if (enabled) {
-            sendButton.setBackground(getResources().getDrawable(R.drawable.rounded_rectangle_green_solid));
+            sendButton.setBackground(getResources().getDrawable(R.drawable.rounded_rectangle_greenbutton_solid));
         } else {
             sendButton.setBackground(getResources().getDrawable(R.drawable.rounded_rectangle_grey_solid));
         }

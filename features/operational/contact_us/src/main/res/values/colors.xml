@@ -2,6 +2,7 @@
 <resources>
     <color name="grey_text">#141414</color>
     <color name="green_text">#399c3f</color>
+    <color name="medium_green_light">#54da5c</color>
     <color name="yellow_1">#ffc107</color>
     <color name="yellow_text">#f5a623</color>
     <color name="red_text">#f44336</color>

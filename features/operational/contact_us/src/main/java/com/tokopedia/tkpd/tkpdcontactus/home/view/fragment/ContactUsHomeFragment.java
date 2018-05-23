@@ -23,6 +23,7 @@ import com.tokopedia.applink.RouteManager;
 import com.tokopedia.contactus.R;
 import com.tokopedia.contactus.R2;
 import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.inbox.inboxchat.activity.ChatRoomActivity;
 import com.tokopedia.inbox.inboxticket.activity.InboxTicketActivity;
 import com.tokopedia.tkpd.tkpdcontactus.common.api.ContactUsURL;
 import com.tokopedia.tkpd.tkpdcontactus.common.customview.ShadowTransformer;
@@ -65,7 +66,7 @@ public class ContactUsHomeFragment extends BaseDaggerFragment implements Contact
     @BindView(R2.id.txt_hi_user)
     TextView txtHiUser;
 
-    String topBotUrl;
+    String msgId;
     @BindView(R2.id.pager_indicator)
     CirclePageIndicator pagerIndicator;
 
@@ -162,7 +163,7 @@ public class ContactUsHomeFragment extends BaseDaggerFragment implements Contact
     @Override
     public void setPurchaseList(List<BuyerPurchaseList> buyerPurchaseLists) {
         orderList.setVisibility(View.VISIBLE);
-        if (!!SessionHandler.isUserHasShop(getContext()) && buyerPurchaseLists.size() <= 4) {
+        if (!SessionHandler.isUserHasShop(getContext()) && buyerPurchaseLists.size() <= 4) {
             btnFullPurchaseList.setVisibility(View.GONE);
             cardAdapter.addData(buyerPurchaseLists);
         }else {
@@ -180,7 +181,7 @@ public class ContactUsHomeFragment extends BaseDaggerFragment implements Contact
 
     @Override
     public void setChatBotMessageId(int msgId) {
-        topBotUrl = ContactUsURL.TOP_BOT_BASE_URL + msgId;
+        this.msgId = String.valueOf(msgId);
     }
 
     @Override
@@ -208,7 +209,7 @@ public class ContactUsHomeFragment extends BaseDaggerFragment implements Contact
 
     @OnClick(R2.id.btn_chat_toped)
     public void onBtnChatClicked() {
-        RouteManager.route(getContext(), topBotUrl);
+        startActivity(ChatRoomActivity.getChatBotIntent(getContext(),msgId));
     }
 
     @Override
