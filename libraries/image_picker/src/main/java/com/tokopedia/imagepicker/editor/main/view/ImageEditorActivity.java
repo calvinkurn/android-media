@@ -60,7 +60,6 @@ public class ImageEditorActivity extends BaseSimpleActivity implements ImageEdit
     public static final String EDIT_RESULT_PATHS = "result_paths";
 
     public static final int MAX_HISTORY_PER_IMAGE = 5;
-    public static final int BACKPRESS_TIME_LIMIT = 2000; // ms
 
     private ArrayList<String> extraImageUrls;
     private int minResolution;
