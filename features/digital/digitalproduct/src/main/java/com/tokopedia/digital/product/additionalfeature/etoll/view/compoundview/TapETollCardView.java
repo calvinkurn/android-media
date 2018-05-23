@@ -47,8 +47,8 @@ public class TapETollCardView extends RelativeLayout {
         lottieAnimationView = view.findViewById(R.id.lottie_animation_view);
     }
 
-    public void showLoading(String textLoading) {
-        textLabel.setText(textLoading);
+    public void showLoading() {
+        textLabel.setText(getResources().getString(R.string.reading_card_label));
         lottieAnimationView.setVisibility(VISIBLE);
         lottieAnimationView.clearAnimation();
         lottieAnimationView.setAnimation("emoney_loading.json");

@@ -102,10 +102,10 @@ public class ETollCardInfoView extends FrameLayout {
     }
 
     public void removeCardInfo() {
-        textCardNumber.setText("Belum Tersedia");
+        textCardNumber.setText(getResources().getString(R.string.card_info_is_not_available_yet));
         textCardNumber.setTextColor(getResources().getColor(R.color.grey_300));
         textCardNumber.setTypeface(Typeface.DEFAULT);
-        textRemainingBalance.setText("Belum Tersedia");
+        textRemainingBalance.setText(getResources().getString(R.string.card_info_is_not_available_yet));
         textRemainingBalance.setTextColor(getResources().getColor(R.color.grey_300));
         textDate.setText("");
         imageIssuer.setImageDrawable(null);

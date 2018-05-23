@@ -26,12 +26,14 @@ public class DigitalCategoryRepository implements IDigitalCategoryRepository {
     }
 
     @Override
-    public Observable<ProductDigitalData> getCategoryWithFavorit(String categoryId, String operatorId, String clientNumber, String productId) {
+    public Observable<ProductDigitalData> getCategoryWithFavorit(String categoryId, String operatorId,
+                                                                 String clientNumber, String productId) {
         if (TextUtils.isEmpty(operatorId) && TextUtils.isEmpty(clientNumber) && TextUtils.isEmpty(productId)) {
             return categoryDetailDataSource.getCategoryDetailWithFavorit(categoryId);
         }
 
-        return categoryDetailDataSource.getCategoryAndFavoritFromCloud(categoryId, operatorId, clientNumber, productId);
+        return categoryDetailDataSource.getCategoryAndFavoritFromCloud(categoryId, operatorId,
+                clientNumber, productId);
     }
 
     @Override

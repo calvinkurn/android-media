@@ -8,6 +8,6 @@ public interface IETollPresenter {
     void inquiryBalance(int issuerId, String responseCardAttribute, String responseCardInfo,
                         String responseCardUID, String responseCardLastBalance);
 
-    void sendCommand(String payload, int id);
+    void sendCommand(String payload, int id, int issuerId);
 
 }

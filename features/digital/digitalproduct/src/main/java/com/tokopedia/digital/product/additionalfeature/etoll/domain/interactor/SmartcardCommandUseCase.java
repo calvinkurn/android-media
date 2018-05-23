@@ -17,6 +17,7 @@ public class SmartcardCommandUseCase extends UseCase<InquiryBalanceModel> {
 
     private static final String PARAM_PAYLOAD = "PARAM_PAYLOAD";
     private static final String PARAM_ID = "PARAM_ID";
+    private static final String PARAM_ISSUER_ID = "PARAM_ISSUER_ID";
 
     private ETollRepository eTollRepository;
 
@@ -28,20 +29,22 @@ public class SmartcardCommandUseCase extends UseCase<InquiryBalanceModel> {
     public Observable<InquiryBalanceModel> createObservable(RequestParams requestParams) {
         String payload = requestParams.getString(PARAM_PAYLOAD, "");
         int id = requestParams.getInt(PARAM_ID, 0);
+        int issuerId = requestParams.getInt(PARAM_ISSUER_ID, 0);
         RequestBodySmartcardCommand requestBodySmartcardCommand = createRequestBodySmartcardCommand(
-                payload, id);
+                payload, id, issuerId);
         return eTollRepository.sendCommand(requestBodySmartcardCommand);
     }
 
-    public RequestParams createRequestParams(String payload, int id) {
+    public RequestParams createRequestParams(String payload, int id, int issuerId) {
         RequestParams requestParams = RequestParams.create();
         requestParams.putString(PARAM_PAYLOAD, payload);
         requestParams.putInt(PARAM_ID, id);
+        requestParams.putInt(PARAM_ISSUER_ID, issuerId);
         return requestParams;
     }
 
-    private RequestBodySmartcardCommand createRequestBodySmartcardCommand(String payload, int id) {
-        CardRequest cardRequest = new CardRequest(payload);
+    private RequestBodySmartcardCommand createRequestBodySmartcardCommand(String payload, int id, int issuerId) {
+        CardRequest cardRequest = new CardRequest(payload, issuerId);
         Attributes attributes = new Attributes(cardRequest);
         return new RequestBodySmartcardCommand("smartcard_command", id, attributes);
     }

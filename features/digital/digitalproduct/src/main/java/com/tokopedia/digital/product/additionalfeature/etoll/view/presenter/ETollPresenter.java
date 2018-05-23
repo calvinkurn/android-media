@@ -65,9 +65,9 @@ public class ETollPresenter implements IETollPresenter {
     }
 
     @Override
-    public void sendCommand(String payload, int id) {
+    public void sendCommand(String payload, int id, int issuerId) {
         smartcardCommandUseCase.execute(
-                smartcardCommandUseCase.createRequestParams(payload, id),
+                smartcardCommandUseCase.createRequestParams(payload, id, issuerId),
                 new Subscriber<InquiryBalanceModel>() {
                     @Override
                     public void onCompleted() {
