@@ -90,19 +90,31 @@ public class FlightBookingPassengerPresenter extends BaseDaggerPresenter<FlightB
             getView().showPassportContainer();
             if (getView().getCurrentPassengerViewModel().getPassportNumber() != null) {
                 getView().renderPassportNumber(getView().getCurrentPassengerViewModel().getPassportNumber());
+            } else {
+                getView().renderPassportNumber("");
             }
+
             if (getView().getCurrentPassengerViewModel().getPassportExpiredDate() != null) {
                 getView().renderPassportExpiredDate(FlightDateUtil.formatDate(FlightDateUtil.DEFAULT_FORMAT,
                         FlightDateUtil.DEFAULT_VIEW_FORMAT, getView().getCurrentPassengerViewModel().getPassportExpiredDate()));
+            } else {
+                getView().renderPassportExpiredDate("");
             }
+
             if (getView().getCurrentPassengerViewModel().getPassportNationality() != null) {
                 getView().renderPassportNationality(getView().getCurrentPassengerViewModel()
                         .getPassportNationality().getCountryName());
+            } else {
+                getView().renderPassportNationality("");
             }
+
             if (getView().getCurrentPassengerViewModel().getPassportIssuerCountry() != null) {
                 getView().renderPassportIssuerCountry(getView().getCurrentPassengerViewModel()
                         .getPassportIssuerCountry().getCountryName());
+            }else {
+                getView().renderPassportIssuerCountry("");
             }
+
         } else {
             getView().hidePassportContainer();
         }
