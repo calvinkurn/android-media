@@ -2,6 +2,7 @@ package com.tokopedia.tkpdpdp;
 
 import android.app.Dialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
@@ -32,6 +33,7 @@ import com.tokopedia.core.share.ShareActivity;
 import com.tokopedia.core.share.ShareBottomSheet;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.webview.listener.DeepLinkWebViewHandleListener;
+import com.tokopedia.design.component.BottomSheets;
 import com.tokopedia.tkpdpdp.customview.YoutubeThumbnailViewHolder;
 import com.tokopedia.tkpdpdp.fragment.ProductDetailFragment;
 import com.tokopedia.tkpdpdp.listener.ProductInfoView;
@@ -42,7 +44,8 @@ public class ProductInfoActivity extends BasePresenterNoLayoutActivity<ProductIn
         DeepLinkWebViewHandleListener,
         ProductInfoView,
         DetailFragmentInteractionListener,
-        ProductInfoResultReceiver.Receiver,YoutubeThumbnailViewHolder.YouTubeThumbnailLoadInProcess {
+        ProductInfoResultReceiver.Receiver,YoutubeThumbnailViewHolder.YouTubeThumbnailLoadInProcess,
+        BottomSheets.BottomSheetDismissListener {
     public static final String SHARE_DATA = "SHARE_DATA";
     public static final String IS_ADDING_PRODUCT = "IS_ADDING_PRODUCT";
 
@@ -155,9 +158,20 @@ public class ProductInfoActivity extends BasePresenterNoLayoutActivity<ProductIn
         ShareData shareData = bundle.getParcelable(ProductInfoActivity.SHARE_DATA);
 
         if (isAddingProduct) {
-            ShareBottomSheet.show(getSupportFragmentManager(), shareData, true);
+//            ShareBottomSheet.show(getSupportFragmentManager(), shareData, true);
+            ShareBottomSheet share = ShareBottomSheet.newInstance(shareData, true);
+            share.setDismissListener(this);
+            share.show(getSupportFragmentManager(), "Share");
+//            share.getDialog().setOnDismissListener(new OnDismissListener() {
+//                @Override
+//                public void onDismiss(DialogInterface dialog) {
+//                    closeView();
+//                }
+//            });
         } else if (shareData != null) {
-            ShareBottomSheet.show(getSupportFragmentManager(), shareData);
+            ShareBottomSheet share = ShareBottomSheet.newInstance(shareData, false);
+            share.setDismissListener(this);
+            share.show(getSupportFragmentManager(), "Share");
         } else {
             return false;
         }
@@ -341,5 +355,11 @@ public class ProductInfoActivity extends BasePresenterNoLayoutActivity<ProductIn
             onBackPressed();
         }
     }
+
+    @Override
+    public void onDismiss() {
+        closeView();
+    }
+
     // Work Around IF your press back and youtube thumbnail doesn't intalized yet }
 }
