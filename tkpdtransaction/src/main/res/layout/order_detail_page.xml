@@ -69,13 +69,13 @@
 
                 <TextView
                     android:id="@+id/tv_upload_awb_message"
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_toLeftOf="@+id/btn_upload_awb"
                     android:layout_toStartOf="@+id/btn_upload_awb"
+                    android:gravity="start"
                     android:padding="@dimen/activity_vertical_margin"
-                    tools:text="Resi tidak terlacak. Unggah resi fisik sebelum dibatalkan otomatis pada
-                    13 Feb, 21:10 WIB
+                    tools:text="Resi tidak terlacak. Unggah resi fisik sebelum dibatalkan otomatis pada 13 Feb, 21:10 WIB
 "/>
 
 

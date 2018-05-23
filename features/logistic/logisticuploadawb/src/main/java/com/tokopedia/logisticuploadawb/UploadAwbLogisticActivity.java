@@ -35,6 +35,6 @@ public class UploadAwbLogisticActivity extends BaseSimpleActivity {
                 urlUpload.replace(HOST_LITE_LIVE_DOMAIN, HOST_LITE_STAGING_DOMAIN);
             }
         }
-        return BaseSessionWebViewFragment.newInstance(getIntent().getStringExtra(urlUpload));
+        return BaseSessionWebViewFragment.newInstance(urlUpload);
     }
 }
