@@ -73,6 +73,7 @@ public class FlightOrderViewModelMapper {
                     waitingForPaymentViewModel.setPayment(flightOrder.getPayment());
                     visitables.add(waitingForPaymentViewModel);
                     break;
+                case FlightStatusOrderType.FLIGHT_CANCELLED:
                 case FlightStatusOrderType.REFUNDED:
                     FlightOrderRefundViewModel refundViewModel = new FlightOrderRefundViewModel();
                     refundViewModel.setCreateTime(flightOrder.getCreateTime());

@@ -343,6 +343,7 @@ public class FlightDetailOrderPresenter extends BaseDaggerPresenter<FlightDetail
             case FlightStatusOrderType.READY_FOR_QUEUE:
                 getView().updateViewStatus(statusString, R.color.font_black_primary_70, false, false, false, false);
                 break;
+            case FlightStatusOrderType.FLIGHT_CANCELLED:
             case FlightStatusOrderType.REFUNDED:
                 getView().updateViewStatus(statusString, R.color.font_black_primary_70, false, false, false, false);
                 break;
