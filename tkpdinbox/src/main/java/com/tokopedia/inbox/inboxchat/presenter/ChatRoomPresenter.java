@@ -1,11 +1,10 @@
 package com.tokopedia.inbox.inboxchat.presenter;
 
 import android.content.Intent;
-import android.os.CountDownTimer;
 import android.text.TextUtils;
 
 import com.tkpd.library.utils.network.MessageErrorException;
-import com.tokopedia.core.base.adapter.Visitable;
+import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
 import com.tokopedia.core.gcm.GCMHandler;
@@ -17,17 +16,18 @@ import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.inbox.R;
 import com.tokopedia.inbox.attachinvoice.view.resultmodel.SelectedInvoice;
 import com.tokopedia.inbox.attachproduct.view.resultmodel.ResultProduct;
-import com.tokopedia.inbox.inboxchat.ChatWebSocketConstant;
 import com.tokopedia.inbox.inboxchat.ChatWebSocketListenerImpl;
 import com.tokopedia.inbox.inboxchat.InboxChatConstant;
-import com.tokopedia.inbox.inboxchat.data.pojo.SetChatRatingPojo;
+import com.tokopedia.inbox.inboxchat.domain.WebSocketMapper;
+import com.tokopedia.inbox.inboxchat.domain.model.reply.WebSocketResponse;
 import com.tokopedia.inbox.inboxchat.domain.model.replyaction.ReplyActionData;
-import com.tokopedia.inbox.inboxchat.domain.model.websocket.WebSocketResponse;
+import com.tokopedia.inbox.inboxchat.domain.pojo.SetChatRatingPojo;
 import com.tokopedia.inbox.inboxchat.domain.usecase.AttachImageUseCase;
 import com.tokopedia.inbox.inboxchat.domain.usecase.GetReplyListUseCase;
 import com.tokopedia.inbox.inboxchat.domain.usecase.ReplyMessageUseCase;
 import com.tokopedia.inbox.inboxchat.domain.usecase.SendMessageUseCase;
 import com.tokopedia.inbox.inboxchat.domain.usecase.SetChatRatingUseCase;
+import com.tokopedia.inbox.inboxchat.domain.usecase.WebSocketUseCase;
 import com.tokopedia.inbox.inboxchat.domain.usecase.template.GetTemplateUseCase;
 import com.tokopedia.inbox.inboxchat.helper.AttachmentChatHelper;
 import com.tokopedia.inbox.inboxchat.presenter.subscriber.GetReplySubscriber;
@@ -37,28 +37,20 @@ import com.tokopedia.inbox.inboxchat.viewmodel.AttachInvoiceSelectionViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.AttachInvoiceSentViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.AttachProductViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.ChatRoomViewModel;
+import com.tokopedia.inbox.inboxchat.viewmodel.DummyChatViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.GetTemplateViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.MyChatViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.OppositeChatViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.SendMessageViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.TemplateChatModel;
+import com.tokopedia.inbox.inboxchat.viewmodel.chatroom.QuickReplyListViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.mapper.AttachInvoiceMapper;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
-import java.util.Locale;
-import java.util.TimeZone;
 
 import javax.inject.Inject;
 
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.WebSocket;
 import rx.Subscriber;
 
 import static com.tokopedia.inbox.inboxchat.viewmodel.InboxChatViewModel.GET_CHAT_MODE;
@@ -81,8 +73,6 @@ public class ChatRoomPresenter extends BaseDaggerPresenter<ChatRoomContract.View
     private SessionHandler sessionHandler;
     public PagingHandler pagingHandler;
     boolean isRequesting;
-    private OkHttpClient client;
-    private WebSocket ws;
     private String magicString;
     private ChatWebSocketListenerImpl listener;
     private boolean flagTyping;
@@ -95,8 +85,9 @@ public class ChatRoomPresenter extends BaseDaggerPresenter<ChatRoomContract.View
     final static String ADMIN = "Administrator";
     final static String OFFICIAL = "Official";
     final static String SELLER = "shop";
-    private CountDownTimer countDownTimer;
     private SendMessageUseCase sendMessageUseCase;
+    private WebSocketUseCase webSocketUseCase;
+    private WebSocketMapper webSocketMapper;
 
     @Inject
     ChatRoomPresenter(GetReplyListUseCase getReplyListUseCase,
@@ -105,7 +96,8 @@ public class ChatRoomPresenter extends BaseDaggerPresenter<ChatRoomContract.View
                       SendMessageUseCase sendMessageUseCase,
                       AttachImageUseCase attachImageUseCase,
                       SetChatRatingUseCase setChatRatingUseCase,
-                      SessionHandler sessionHandler) {
+                      SessionHandler sessionHandler,
+                      WebSocketMapper webSocketMapper) {
         this.getReplyListUseCase = getReplyListUseCase;
         this.replyMessageUseCase = replyMessageUseCase;
         this.getTemplateUseCase = getTemplateUseCase;
@@ -113,6 +105,7 @@ public class ChatRoomPresenter extends BaseDaggerPresenter<ChatRoomContract.View
         this.attachImageUseCase = attachImageUseCase;
         this.setChatRatingUseCase = setChatRatingUseCase;
         this.sessionHandler = sessionHandler;
+        this.webSocketMapper = webSocketMapper;
     }
 
     @Override
@@ -122,35 +115,23 @@ public class ChatRoomPresenter extends BaseDaggerPresenter<ChatRoomContract.View
         isRequesting = false;
         this.pagingHandler = new PagingHandler();
 
-        client = new OkHttpClient();
         magicString = TkpdBaseURL.CHAT_WEBSOCKET_DOMAIN +
                 TkpdBaseURL.Chat.CHAT_WEBSOCKET +
                 "?os_type=1" +
                 "&device_id=" + GCMHandler.getRegistrationId(getView().getContext()) +
                 "&user_id=" + SessionHandler.getLoginID(getView().getContext());
-        listener = new ChatWebSocketListenerImpl(getView().getInterface());
+        listener = new ChatWebSocketListenerImpl(getView().getInterface(), webSocketMapper);
         isFirstTime = true;
 
         imageUploadHandler = ImageUploadHandlerChat.createInstance(getView().getFragment());
 
-        countDownTimer = new CountDownTimer(5000, 1000) {
-            @Override
-            public void onTick(long l) {
-
-            }
-
-            @Override
-            public void onFinish() {
-                createWebSocket();
-            }
-        };
 
         if (getView().needCreateWebSocket()) {
-            createWebSocket();
+            webSocketUseCase = new WebSocketUseCase(magicString, getView().getUserSession(), listener);
         } else {
             getView().setHeader();
             getView().hideMainLoading();
-            getView().setTextAreaReply(true);
+            getView().displayReplyField(true);
             getView().hideNotifier();
         }
         if (!getView().isChatBot()) {
@@ -161,7 +142,8 @@ public class ChatRoomPresenter extends BaseDaggerPresenter<ChatRoomContract.View
     @Override
     public void detachView() {
         super.detachView();
-        countDownTimer.cancel();
+        if(webSocketUseCase != null)
+            webSocketUseCase.unsubscribe();
         getReplyListUseCase.unsubscribe();
         getTemplateUseCase.unsubscribe();
         replyMessageUseCase.unsubscribe();
@@ -169,23 +151,6 @@ public class ChatRoomPresenter extends BaseDaggerPresenter<ChatRoomContract.View
         attachImageUseCase.unsubscribe();
         setChatRatingUseCase.unsubscribe();
     }
-
-    public void createWebSocket() {
-        Request request = new Request.Builder().url(magicString)
-                .header("Origin", TkpdBaseURL.WEB_DOMAIN)
-                .header("Accounts-Authorization",
-                        sessionHandler.getTokenType(getView().getContext())
-                                + " " +
-                                sessionHandler.getAuthAccessToken())
-                .build();
-        ws = client.newWebSocket(request, listener);
-        attempt++;
-    }
-
-    public void recreateWebSocket() {
-        countDownTimer.start();
-    }
-
 
     @Override
     public void onGoToDetail(String id, String role) {
@@ -207,7 +172,6 @@ public class ChatRoomPresenter extends BaseDaggerPresenter<ChatRoomContract.View
 
         }
     }
-
 
     public void uploadWithApi(final String path, final MyChatViewModel model) {
         String messageId = (getView().getArguments().getString(PARAM_MESSAGE_ID));
@@ -234,31 +198,42 @@ public class ChatRoomPresenter extends BaseDaggerPresenter<ChatRoomContract.View
 
     }
 
+
     @Override
-    public void sendMessageWithApi() {
+    public void sendMessage(int networkType) {
         if (isValidReply()) {
-            getView().addDummyMessage();
-            getView().setViewEnabled(false);
             final String reply = (getView().getReplyMessage());
+            sendMessage(networkType, reply);
+        }
+    }
+
+    public void sendMessage(int networkType, final String reply) {
+        if (isValidReply(reply)) {
+            getView().addDummyMessage(reply);
+            getView().setViewEnabled(false);
             String messageId = (getView().getArguments().getString(PARAM_MESSAGE_ID));
-            RequestParams params = ReplyMessageUseCase.generateParam(messageId, reply);
 
-            replyMessageUseCase.execute(params, new Subscriber<ReplyActionData>() {
-                @Override
-                public void onCompleted() {
-                    isRequesting = false;
-                }
+            if(networkType == InboxChatConstant.MODE_WEBSOCKET) {
+                sendReply(messageId, reply);
+            }else if(networkType == InboxChatConstant.MODE_API) {
+                RequestParams params = ReplyMessageUseCase.generateParam(messageId, reply);
+                replyMessageUseCase.execute(params, new Subscriber<ReplyActionData>() {
+                    @Override
+                    public void onCompleted() {
 
-                @Override
-                public void onError(Throwable e) {
-                    getView().onErrorSendReply();
-                }
+                    }
 
-                @Override
-                public void onNext(ReplyActionData data) {
-                    getView().onSuccessSendReply(data, reply);
-                }
-            });
+                    @Override
+                    public void onError(Throwable e) {
+                        getView().onErrorSendReply();
+                    }
+
+                    @Override
+                    public void onNext(ReplyActionData data) {
+                        getView().onSuccessSendReply(data, reply);
+                    }
+                });
+            }
         }
     }
 
@@ -303,7 +278,6 @@ public class ChatRoomPresenter extends BaseDaggerPresenter<ChatRoomContract.View
                     getView().getAdapter().removeLast();
                     getView().getAdapter().addReply(item);
                 }
-                getView().finishLoading();
                 getView().resetReplyColumn();
                 getView().scrollToBottom();
             } else if (getView() != null && getView().isCurrentThread(response.getData().getMsgId
@@ -337,13 +311,8 @@ public class ChatRoomPresenter extends BaseDaggerPresenter<ChatRoomContract.View
                 } else {
                     getView().getAdapter().addReply(item);
                 }
-                getView().finishLoading();
                 getView().scrollToBottomWithCheck();
-                try {
-                    readMessage(String.valueOf(response.getData().getMsgId()));
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
+                readMessage(String.valueOf(response.getData().getMsgId()));
             }
         } catch (NullPointerException e) {
             e.printStackTrace();
@@ -353,7 +322,7 @@ public class ChatRoomPresenter extends BaseDaggerPresenter<ChatRoomContract.View
     @Override
     public void initMessage(String message, String source, String toShopId, String toUserId) {
         if (isValidReply()) {
-            getView().addInitialMessageBalloon();
+            getView().addDummyMessage(message);
             getView().disableAction();
             sendMessageUseCase.execute(SendMessageUseCase.getParam(
                     message,
@@ -389,7 +358,7 @@ public class ChatRoomPresenter extends BaseDaggerPresenter<ChatRoomContract.View
     }
 
     @Override
-    public void startUpload(final List<MyChatViewModel> list, final int network) {
+    public void startUpload(final List<DummyChatViewModel> list, final int network) {
         getView().setUploadingMode(true);
         String userId = SessionHandler.getTempLoginSession(getView().getActivity());
         String deviceId = GCMHandler.getRegistrationId(getView().getActivity());
@@ -415,11 +384,7 @@ public class ChatRoomPresenter extends BaseDaggerPresenter<ChatRoomContract.View
                     @Override
                     public void onNext(UploadImageDomain uploadImageDomain) {
                         if (network == InboxChatConstant.MODE_WEBSOCKET) {
-                            try {
-                                sendImage(messageId, uploadImageDomain.getPicSrc());
-                            } catch (JSONException e) {
-                                e.printStackTrace();
-                            }
+                            sendImage(messageId, uploadImageDomain.getPicSrc());
                         } else if (network == InboxChatConstant.MODE_API) {
                             uploadWithApi(uploadImageDomain.getPicSrc(), list.get(0));
                         }
@@ -461,8 +426,6 @@ public class ChatRoomPresenter extends BaseDaggerPresenter<ChatRoomContract.View
         if (!isRequesting) {
             pagingHandler.nextPage();
             getReply();
-        } else {
-            getView().finishLoading();
         }
     }
 
@@ -486,9 +449,7 @@ public class ChatRoomPresenter extends BaseDaggerPresenter<ChatRoomContract.View
         }
 
         isRequesting = true;
-        getReplyListUseCase.execute(requestParam,
-                new GetReplySubscriber(getView(),
-                        this));
+        getReplyListUseCase.execute(requestParam, new GetReplySubscriber(getView(), this));
     }
 
     public void setResult(ChatRoomViewModel replyData) {
@@ -500,15 +461,22 @@ public class ChatRoomPresenter extends BaseDaggerPresenter<ChatRoomContract.View
             getView().getAdapter().setList(replyData.getChatList());
             getView().scrollToBottom();
             getView().hideMainLoading();
+            if (replyData.getChatList().get(0)
+                    instanceof QuickReplyListViewModel) {
+                QuickReplyListViewModel model =
+                        (QuickReplyListViewModel)replyData.getChatList().get(0);
+                getView().showQuickReplyView(model);
+            }
         } else {
             getView().getAdapter().addList(replyData.getChatList());
         }
-        getView().setTextAreaReply(replyData.getTextAreaReply() == 1);
+        getView().displayReplyField(replyData.getTextAreaReply() == 1);
         getView().setCanLoadMore(replyData.isHasNext());
 
-        if (!replyData.isHasNext() && replyData.isHasTimeMachine()) {
+        if (!replyData.isHasNext()) {
             getView().addTimeMachine();
         }
+
     }
 
     public void finishRequest() {
@@ -516,28 +484,15 @@ public class ChatRoomPresenter extends BaseDaggerPresenter<ChatRoomContract.View
     }
 
     private boolean isValidReply() {
-        boolean isValid = true;
-        if (getView().getReplyMessage().trim().length() == 0) {
-            isValid = false;
-            getView().showSnackbarError(getView().getString(R.string.error_empty_report));
-        }
-        return isValid;
+        return isValidReply(getView().getReplyMessage().trim());
     }
 
-    public void sendMessageWithWebsocket() {
-        if (isValidReply()) {
-            getView().addDummyMessage();
-            getView().setViewEnabled(false);
-
-            final String reply = (getView().getReplyMessage());
-            String messageId = (getView().getArguments().getString(PARAM_MESSAGE_ID));
-
-            try {
-                sendReply(messageId, reply);
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
+    private boolean isValidReply(String message) {
+        if (message.trim().length() == 0) {
+            getView().showSnackbarError(getView().getString(R.string.error_empty_report));
+            return false;
         }
+        return true;
     }
 
     public void onRefresh() {
@@ -549,129 +504,40 @@ public class ChatRoomPresenter extends BaseDaggerPresenter<ChatRoomContract.View
         }
     }
 
-    public void sendInvoiceAttachment(String messageId, SelectedInvoice invoice) throws
-            JSONException {
-        JSONObject json = new JSONObject();
-        json.put("code", ChatWebSocketConstant.EVENT_TOPCHAT_REPLY_MESSAGE);
-
-        JSONObject data = new JSONObject();
-        data.put("message_id", Integer.parseInt(messageId));
-        data.put("message", invoice.getInvoiceNo());
-        SimpleDateFormat date = new SimpleDateFormat(
-                "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.US);
-        data.put("start_time", date.format(Calendar.getInstance().getTime()));
-        data.put("attachment_type", 7);
-
-        JSONObject payload = new JSONObject();
-        payload.put("type_id", invoice.getInvoiceType());
-        payload.put("type", invoice.getInvoiceTypeStr());
-
-        JSONObject payloadAttributes = new JSONObject();
-        payloadAttributes.put("id", invoice.getInvoiceId());
-        payloadAttributes.put("code", invoice.getInvoiceNo());
-        payloadAttributes.put("title", invoice.getTopProductName());
-        payloadAttributes.put("description", invoice.getDescription());
-        payloadAttributes.put("create_time", invoice.getDate());
-        payloadAttributes.put("image_url", invoice.getTopProductImage());
-        payloadAttributes.put("href_url", invoice.getInvoiceUrl());
-        payloadAttributes.put("status_id", invoice.getStatusId());
-        payloadAttributes.put("status", invoice.getStatus());
-        payloadAttributes.put("total_amount", invoice.getAmount());
-
-        payload.put("attributes", payloadAttributes);
-        data.put("payload", payload);
-        json.put("data", data);
-
-        ws.send(json.toString());
+    public void sendInvoiceAttachment(String messageId, SelectedInvoice invoice) {
+        webSocketUseCase.execute(webSocketUseCase.getParamSendInvoiceAttachment(messageId, invoice));
     }
 
-    public void sendProductAttachment(String messageId, ResultProduct product) throws
-            JSONException {
-        JSONObject json = new JSONObject();
-        json.put("code", ChatWebSocketConstant.EVENT_TOPCHAT_REPLY_MESSAGE);
-        JSONObject data = new JSONObject();
-        data.put("message_id", Integer.valueOf(messageId));
-        data.put("message", product.getProductUrl());
-        SimpleDateFormat date = new SimpleDateFormat(
-                "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.US);
-        date.setTimeZone(TimeZone.getTimeZone("UTC"));
-        data.put("start_time", date.format(Calendar.getInstance().getTime()));
-        data.put("attachment_type", 3);
-        data.put("product_id", product.getProductId());
-
-        JSONObject productProfile = new JSONObject();
-        productProfile.put("name", product.getName());
-        productProfile.put("price", product.getPrice());
-        productProfile.put("image_url", product.getProductImageThumbnail());
-        productProfile.put("url", product.getProductUrl());
-        data.put("product_profile", productProfile);
-        json.put("data", data);
-        ws.send(json.toString());
+    public void sendProductAttachment(String messageId, ResultProduct product) {
+        webSocketUseCase.execute(webSocketUseCase.getParamSendProductAttachment(messageId, product));
     }
 
-    public void sendReply(String messageId, String reply) throws JSONException {
-        JSONObject json = new JSONObject();
-        json.put("code", ChatWebSocketConstant.EVENT_TOPCHAT_REPLY_MESSAGE);
-        JSONObject data = new JSONObject();
-        data.put("message_id", Integer.valueOf(messageId));
-        data.put("message", reply);
-        SimpleDateFormat date = new SimpleDateFormat(
-                "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.US);
-        date.setTimeZone(TimeZone.getTimeZone("UTC"));
-        data.put("start_time", date.format(Calendar.getInstance().getTime()));
-        json.put("data", data);
-        ws.send(json.toString());
+    public void sendReply(String messageId, String reply) {
+        webSocketUseCase.execute(webSocketUseCase.getParamSendReply(messageId, reply));
         flagTyping = false;
     }
 
-    public void sendImage(String messageId, String path) throws JSONException {
+    public void sendImage(String messageId, String path) {
         getView().setUploadingMode(false);
-        JSONObject json = new JSONObject();
-        json.put("code", ChatWebSocketConstant.EVENT_TOPCHAT_REPLY_MESSAGE);
-        JSONObject data = new JSONObject();
-        data.put("message_id", Integer.valueOf(messageId));
-        data.put("message", InboxChatConstant.UPLOADING);
-        SimpleDateFormat date = new SimpleDateFormat(
-                "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.US);
-        date.setTimeZone(TimeZone.getTimeZone("UTC"));
-        data.put("start_time", date.format(Calendar.getInstance().getTime()));
-        data.put("file_path", path);
-        data.put("attachment_type", 2);
-        json.put("data", data);
-        ws.send(json.toString());
+        webSocketUseCase.execute(webSocketUseCase.getParamSendImage(messageId, path));
         flagTyping = false;
 
     }
 
-    public void readMessage(String messageId) throws JSONException {
-        JSONObject json = new JSONObject();
-        json.put("code", ChatWebSocketConstant.EVENT_TOPCHAT_READ_MESSAGE);
-        JSONObject data = new JSONObject();
-        data.put("msg_id", Integer.valueOf(messageId));
-        json.put("data", data);
-        ws.send(json.toString());
+    public void readMessage(String messageId) {
+        webSocketUseCase.execute(webSocketUseCase.getReadMessage(messageId));
     }
 
-    public void setIsTyping(String messageId) throws JSONException {
+    public void setIsTyping(String messageId) {
         if (!flagTyping && messageId != null) {
-            JSONObject json = new JSONObject();
-            json.put("code", ChatWebSocketConstant.EVENT_TOPCHAT_TYPING);
-            JSONObject data = new JSONObject();
-            data.put("msg_id", Integer.valueOf(messageId));
-            json.put("data", data);
-            ws.send(json.toString());
+            webSocketUseCase.execute(webSocketUseCase.getParamStartTyping(messageId));
             flagTyping = true;
         }
     }
 
-    public void stopTyping(String messageId) throws Exception {
+    public void stopTyping(String messageId){
         if (messageId != null) {
-            JSONObject json = new JSONObject();
-            json.put("code", ChatWebSocketConstant.EVENT_TOPCHAT_END_TYPING);
-            JSONObject data = new JSONObject();
-            data.put("msg_id", Integer.valueOf(messageId));
-            json.put("data", data);
-            ws.send(json.toString());
+            webSocketUseCase.execute(webSocketUseCase.getParamStopTyping(messageId));
             flagTyping = false;
         }
     }
@@ -702,21 +568,14 @@ public class ChatRoomPresenter extends BaseDaggerPresenter<ChatRoomContract.View
         if (isFirstTime) {
             isFirstTime = false;
             String messageId = (getView().getArguments().getString(PARAM_MESSAGE_ID));
-            try {
-                readMessage(messageId);
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
+            readMessage(messageId);
         }
     }
 
     @Override
     public void closeWebSocket() {
-        try {
-            client.dispatcher().executorService().shutdown();
-            ws.close(1000, "");
-        } catch (Exception e) {
-            e.printStackTrace();
+        if(webSocketUseCase!=null) {
+            webSocketUseCase.closeConnection();
         }
     }
 
@@ -749,5 +608,9 @@ public class ChatRoomPresenter extends BaseDaggerPresenter<ChatRoomContract.View
                         }
                     }
                 });
+    }
+
+    public void recreateWebSocket() {
+        webSocketUseCase.recreateWebSocket();
     }
 }

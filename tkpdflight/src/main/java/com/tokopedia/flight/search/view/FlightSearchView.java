@@ -18,7 +18,7 @@ public interface FlightSearchView extends BaseListViewListener<FlightSearchViewM
 
     void setSelectedSortItem(int itemId);
 
-    void onSuccessGetDataFromCloud(boolean isDataEmpty, FlightMetaDataDB flightMetaDataDB);
+    void onSuccessGetDataFromCloud(boolean isDataEmpty, FlightMetaDataDB flightMetaDataDB, List<String> airlines);
 
     void onErrorDeleteFlightCache(Throwable throwable);
 
