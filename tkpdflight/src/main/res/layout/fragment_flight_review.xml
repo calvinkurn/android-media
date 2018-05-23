@@ -172,9 +172,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:nestedScrollingEnabled="false"
-                        android:paddingBottom="@dimen/dp_10"
-                        android:paddingLeft="@dimen/dp_20"
-                        android:paddingRight="@dimen/dp_20" />
+                        android:paddingBottom="@dimen/dp_10" />
                 </LinearLayout>
 
                 <com.tokopedia.design.voucher.VoucherCartHachikoView
