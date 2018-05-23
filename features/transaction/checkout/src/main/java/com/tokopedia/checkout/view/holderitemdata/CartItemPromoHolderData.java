@@ -73,6 +73,16 @@ public class CartItemPromoHolderData implements ShipmentData {
         this.voucherDiscountAmount = voucherDiscountAmount;
     }
 
+    public void setPromoVoucherTypeFromAutoApply(
+            String voucherCode, String voucherMessage, long voucherDiscountAmount
+    ) {
+        this.typePromo = TYPE_PROMO_VOUCHER;
+        this.voucherMessage = voucherMessage;
+        this.voucherCode = voucherCode;
+        this.voucherDiscountAmount = voucherDiscountAmount;
+        this.fromAutoApply = true;
+    }
+
     public void setPromoCouponType(
             String couponTitle, String couponCode, String couponMessage, long couponDiscountAmount
     ) {
@@ -112,12 +122,23 @@ public class CartItemPromoHolderData implements ShipmentData {
         if (promoCodeAppliedData == null) {
             data.setPromoNotActive();
         } else if (promoCodeAppliedData.isFromAutoApply()) {
-            data.setPromoCouponTypeFromAutoApply(
-                    promoCodeAppliedData.getCouponTitle(),
-                    promoCodeAppliedData.getPromoCode(),
-                    promoCodeAppliedData.getDescription(),
-                    promoCodeAppliedData.getAmount()
-            );
+            switch (promoCodeAppliedData.getTypeVoucher()) {
+                case PromoCodeAppliedData.TYPE_COUPON:
+                    data.setPromoCouponTypeFromAutoApply(
+                            promoCodeAppliedData.getCouponTitle(),
+                            promoCodeAppliedData.getPromoCode(),
+                            promoCodeAppliedData.getDescription(),
+                            promoCodeAppliedData.getAmount()
+                    );
+                    break;
+                case PromoCodeAppliedData.TYPE_VOUCHER:
+                    data.setPromoVoucherTypeFromAutoApply(
+                            promoCodeAppliedData.getPromoCode(),
+                            promoCodeAppliedData.getDescription(),
+                            promoCodeAppliedData.getAmount()
+                    );
+                    break;
+            }
         } else {
             switch (promoCodeAppliedData.getTypeVoucher()) {
                 case PromoCodeAppliedData.TYPE_COUPON:
@@ -149,7 +170,10 @@ public class CartItemPromoHolderData implements ShipmentData {
                     autoApplyData.getDiscountAmount()
             );
         } else {
-            data.setPromoNotActive();
+            data.setPromoVoucherType(
+                    autoApplyData.getCode(),
+                    autoApplyData.getMessageSuccess(),
+                    autoApplyData.getDiscountAmount());
         }
 
         return data;

@@ -32,10 +32,7 @@ public class ShipmentActivity extends BaseCheckoutActivity implements HasCompone
     public static final String EXTRA_SHIPMENT_FORM_DATA = "EXTRA_SHIPMENT_FORM_DATA";
     public static final String EXTRA_SELECTED_ADDRESS_RECIPIENT_DATA = "EXTRA_DEFAULT_ADDRESS_RECIPIENT_DATA";
     public static final String EXTRA_CART_PROMO_SUGGESTION = "EXTRA_CART_PROMO_SUGGESTION";
-    public static final String EXTRA_ADDRESS_SHIPMENT_TYPE = "EXTRA_ADDRESS_SHIPMENT_TYPE";
     public static final String EXTRA_PROMO_CODE_APPLIED_DATA = "EXTRA_PROMO_CODE_APPLIED_DATA";
-    public static final int TYPE_ADDRESS_SHIPMENT_SINGLE = 1;
-    public static final int TYPE_ADDRESS_SHIPMENT_MULTIPLE = 2;
 
 
     public static Intent createInstance(Context context,

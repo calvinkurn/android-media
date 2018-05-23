@@ -29,6 +29,7 @@ public class CartListItemViewHolder extends RecyclerView.ViewHolder {
     public static final int TYPE_VIEW_ITEM_CART = R.layout.holder_item_cart_new;
     private static final int QTY_MIN = 1;
     private static final int QTY_MAX = 10000;
+    private static final String QTY_MAX_STRING = "10.000";
 
     private final CartListAdapter.ActionListener actionListener;
     private final Context context;
@@ -53,6 +54,8 @@ public class CartListItemViewHolder extends RecyclerView.ViewHolder {
     private TextView tvError;
     private FrameLayout layoutWarning;
     private TextView tvWarning;
+
+    private CartItemHolderData cartItemHolderData;
 
     public CartListItemViewHolder(View itemView, CartListAdapter.ActionListener actionListener) {
         super(itemView);
@@ -81,14 +84,22 @@ public class CartListItemViewHolder extends RecyclerView.ViewHolder {
         this.tvWarning = itemView.findViewById(R.id.tv_warning);
     }
 
-    public void bindData(final CartItemHolderData data, final int position) {
+    public void bindData(final CartItemHolderData data, int position) {
+        cartItemHolderData = data;
+        if (cartItemHolderData.getCartItemData().getOriginData().getInvenageValue() == 0) {
+            cartItemHolderData.getCartItemData().getOriginData().setInvenageValue(QTY_MAX);
+        }
         this.tvShopName.setText(
                 Html.fromHtml(data.getCartItemData().getOriginData().getShopName())
         );
         this.tvProductName.setText(
                 Html.fromHtml(data.getCartItemData().getOriginData().getProductName())
         );
-        this.tvProductPrice.setText(data.getCartItemData().getOriginData().getPriceFormatted());
+        if (data.getCartItemData().getOriginData().getWholesalePriceFormatted() != null) {
+            this.tvProductPrice.setText(data.getCartItemData().getOriginData().getWholesalePriceFormatted());
+        } else {
+            this.tvProductPrice.setText(data.getCartItemData().getOriginData().getPriceFormatted());
+        }
         String quantity = String.valueOf(data.getCartItemData().getUpdatedData().getQuantity());
 
         this.etQty.setText(String.valueOf(data.getCartItemData().getUpdatedData().getQuantity()));
@@ -104,7 +115,7 @@ public class CartListItemViewHolder extends RecyclerView.ViewHolder {
             public boolean onEditorAction(TextView textView, int actionId, KeyEvent keyEvent) {
                 if (actionId == EditorInfo.IME_ACTION_DONE) {
                     actionListener.onCartItemRemarkEditChange(
-                            data.getCartItemData(), position, textView.getText().toString()
+                            data.getCartItemData(), getAdapterPosition(), textView.getText().toString()
                     );
                     return true;
                 }
@@ -131,10 +142,10 @@ public class CartListItemViewHolder extends RecyclerView.ViewHolder {
             this.etRemark.setText(data.getCartItemData().getUpdatedData().getRemark());
         }
 
-        this.ivProductImage.setOnClickListener(getOnClickProductItemListener(position, data));
-        this.tvProductName.setOnClickListener(getOnClickProductItemListener(position, data));
+        this.ivProductImage.setOnClickListener(getOnClickProductItemListener(getAdapterPosition(), data));
+        this.tvProductName.setOnClickListener(getOnClickProductItemListener(getAdapterPosition(), data));
 
-        this.tvShopName.setOnClickListener(getOnClickShopItemListener(position, data));
+        this.tvShopName.setOnClickListener(getOnClickShopItemListener(getAdapterPosition(), data));
 
         if (data.getCartItemData().getOriginData().isFreeReturn()) {
             this.ivIconFreeReturn.setVisibility(View.VISIBLE);
@@ -160,21 +171,23 @@ public class CartListItemViewHolder extends RecyclerView.ViewHolder {
         this.btnQtyPlus.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                actionListener.onCartItemQuantityPlusButtonClicked(data, position);
+                actionListener.onCartItemQuantityPlusButtonClicked(data, getAdapterPosition());
+                validateWithAvailableQuantity(cartItemHolderData, Integer.parseInt(etQty.getText().toString()));
             }
         });
 
         this.btnQtyMinus.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                actionListener.onCartItemQuantityMinusButtonClicked(data, position);
+                actionListener.onCartItemQuantityMinusButtonClicked(data, getAdapterPosition());
+                validateWithAvailableQuantity(cartItemHolderData, Integer.parseInt(etQty.getText().toString()));
             }
         });
 
         this.btnDelete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                actionListener.onCartItemDeleteButtonClicked(data, position);
+                actionListener.onCartItemDeleteButtonClicked(data, getAdapterPosition());
             }
         });
 
@@ -183,10 +196,10 @@ public class CartListItemViewHolder extends RecyclerView.ViewHolder {
         renderWarningItemHeader(data);
 
         if (!TextUtils.isEmpty(etQty.getText().toString())) {
-            checkQtyMustDisabled(Integer.parseInt(etQty.getText().toString()));
+            checkQtyMustDisabled(cartItemHolderData, Integer.parseInt(etQty.getText().toString()));
         }
         this.etRemark.addTextChangedListener(new RemarkTextWatcher(data));
-        this.etQty.addTextChangedListener(new QuantityTextWatcher(data));
+        this.etQty.addTextChangedListener(new QuantityTextWatcher());
 
         if (data.getCartItemData().getOriginData().isFavorite()) {
             this.ivWishlistBadge.setImageResource(R.drawable.ic_wishlist_red);
@@ -263,13 +276,14 @@ public class CartListItemViewHolder extends RecyclerView.ViewHolder {
         }
     }
 
-    private void checkQtyMustDisabled(int qty) {
-        if (qty <= QTY_MIN) {
+    private void checkQtyMustDisabled(CartItemHolderData cartItemHolderData, int qty) {
+        if (qty <= QTY_MIN || qty <= cartItemHolderData.getCartItemData().getOriginData().getMinimalQtyOrder()) {
             btnQtyMinus.setEnabled(false);
             btnQtyPlus.setEnabled(true);
             btnQtyMinus.setBackground(ContextCompat.getDrawable(context, R.drawable.bg_button_disabled));
             btnQtyPlus.setBackground(ContextCompat.getDrawable(context, R.drawable.button_curvy_green));
-        } else if (qty >= QTY_MAX) {
+        } else if (qty >= QTY_MAX || (cartItemHolderData.getCartItemData().getOriginData().getInvenageValue() != 0 &&
+                qty >= cartItemHolderData.getCartItemData().getOriginData().getInvenageValue())) {
             btnQtyPlus.setEnabled(false);
             btnQtyMinus.setEnabled(true);
             btnQtyPlus.setBackground(ContextCompat.getDrawable(context, R.drawable.bg_button_disabled));
@@ -280,6 +294,33 @@ public class CartListItemViewHolder extends RecyclerView.ViewHolder {
             btnQtyPlus.setBackground(ContextCompat.getDrawable(context, R.drawable.button_curvy_green));
             btnQtyMinus.setBackground(ContextCompat.getDrawable(context, R.drawable.button_curvy_green));
         }
+    }
+
+    private void validateWithAvailableQuantity(CartItemHolderData data, int qty) {
+        if (data.getCartItemData().getOriginData().getInvenageValue() != 0 &&
+                qty > data.getCartItemData().getOriginData().getInvenageValue()) {
+            String maxValue;
+            if (data.getCartItemData().getOriginData().getInvenageValue() == QTY_MAX) {
+                maxValue = QTY_MAX_STRING;
+            } else {
+                maxValue = String.valueOf(data.getCartItemData().getOriginData().getInvenageValue());
+            }
+            String errorMessage = data.getCartItemData().getErrorData().getErrorProductMaxQuantity();
+            tvErrorFormValidation.setText(errorMessage.replace("{{value}}", maxValue));
+            tvErrorFormValidation.setVisibility(View.VISIBLE);
+        } else if (qty < data.getCartItemData().getOriginData().getMinimalQtyOrder()) {
+            String errorMessage = data.getCartItemData().getErrorData().getErrorProductMinQuantity();
+            tvErrorFormValidation.setText(errorMessage.replace("{{value}}",
+                    String.valueOf(data.getCartItemData().getOriginData().getMinimalQtyOrder())));
+            tvErrorFormValidation.setVisibility(View.VISIBLE);
+        } else if (qty > QTY_MAX) {
+            String errorMessage = data.getCartItemData().getErrorData().getErrorProductMaxQuantity();
+            tvErrorFormValidation.setText(errorMessage.replace("{{value}}", String.valueOf(QTY_MAX_STRING)));
+            tvErrorFormValidation.setVisibility(View.VISIBLE);
+        } else {
+            tvErrorFormValidation.setVisibility(View.GONE);
+        }
+        actionListener.onCartItemAfterErrorChecked();
     }
 
     private class RemarkTextWatcher implements TextWatcher {
@@ -308,11 +349,6 @@ public class CartListItemViewHolder extends RecyclerView.ViewHolder {
     }
 
     private class QuantityTextWatcher implements TextWatcher {
-        private final CartItemHolderData data;
-
-        QuantityTextWatcher(CartItemHolderData data) {
-            this.data = data;
-        }
 
         @Override
         public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -327,7 +363,6 @@ public class CartListItemViewHolder extends RecyclerView.ViewHolder {
         @Override
         public void afterTextChanged(Editable editable) {
             if (TextUtils.isEmpty(editable)) {
-                etQty.setText("0");
                 actionListener.onCartItemQuantityReseted(getAdapterPosition());
             } else {
                 int qty = 0;
@@ -336,9 +371,9 @@ public class CartListItemViewHolder extends RecyclerView.ViewHolder {
                 } catch (NumberFormatException e) {
                     e.printStackTrace();
                 }
-                checkQtyMustDisabled(qty);
-                data.getCartItemData().getUpdatedData().setQuantity(qty);
-                renderErrorFormItemValidation(data);
+                checkQtyMustDisabled(cartItemHolderData, qty);
+                cartItemHolderData.getCartItemData().getUpdatedData().setQuantity(qty);
+                validateWithAvailableQuantity(cartItemHolderData, qty);
                 actionListener.onCartItemQuantityFormEdited();
             }
         }

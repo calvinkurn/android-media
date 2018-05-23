@@ -50,4 +50,8 @@ public interface ICheckoutModuleRouter {
     Converter.Factory checkoutModuleRouterGetWS4TkpdResponseConverter();
 
     Converter.Factory checkoutModuleRouterGetStringResponseConverter();
+
+    Intent getHomeFeedIntent(Context context);
+
+    Intent getHomeIntent(Context context);
 }

@@ -11,7 +11,7 @@ public class DataChangeAddressRequest {
 
     @SerializedName("cart_id")
     @Expose
-    private int cartId;
+    private long cartId;
 
     @SerializedName("product_id")
     @Expose
@@ -29,7 +29,7 @@ public class DataChangeAddressRequest {
     @Expose
     private int quantity;
 
-    public void setCartId(int cartId) {
+    public void setCartId(long cartId) {
         this.cartId = cartId;
     }
 

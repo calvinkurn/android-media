@@ -1,6 +1,8 @@
 package com.tokopedia.checkout.view.view.cartlist;
 
 
+import android.app.Activity;
+
 import com.tokopedia.abstraction.common.utils.TKPDMapParam;
 
 /**
@@ -13,7 +15,7 @@ public interface IRemoveProductListView<T> {
 
     void showListEmpty();
 
-    void showError();
+    void showError(String message);
 
     TKPDMapParam<String, String> getGenerateParamAuth(TKPDMapParam<String, String> param);
 
@@ -24,4 +26,6 @@ public interface IRemoveProductListView<T> {
     void renderOnFailureDeleteCart(String message);
 
     T getAllCartItemList();
+
+    Activity getActivity();
 }
