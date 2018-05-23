@@ -5,6 +5,8 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.text.TextUtils;
+import android.view.TextureView;
 
 import com.raizlabs.android.dbflow.sql.language.Select;
 import com.tkpd.library.utils.CommonUtils;
@@ -105,6 +107,17 @@ public class ProductInfoPresenterImpl implements ProductInfoPresenter {
                         .setProductImage(productItem.getImgUri())
                         .setTrackerAttribution(productItem.getTrackerAttribution())
                         .setTrackerListName(productItem.getTrackerListName())
+                        .setWishlist(productItem.getIsWishlist())
+                        .setDiscountedPrice(productItem.getOriginalPrice())
+                        .setDiscountPercentage(productItem.getDiscountPercentage())
+                        .setCountReview(!TextUtils.isEmpty(productItem.getReviewCount()) && productItem.getReviewCount().matches("\\d+")
+                                ? Integer.parseInt(productItem.getReviewCount()) : 0)
+                        .setCountCourrier(productItem.getCountCourier())
+                        .setRating(!TextUtils.isEmpty(productItem.getRating()) && productItem.getRating().matches("\\d+")
+                                ? Integer.parseInt(productItem.getRating()) : 0)
+                        .setCashback(productItem.getCashback())
+                        .setOfficial(productItem.getOfficial())
+                        .setShopName(productItem.getShop())
                         .build();
             }
         } else {
