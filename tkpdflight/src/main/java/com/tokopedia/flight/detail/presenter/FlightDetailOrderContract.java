@@ -7,6 +7,7 @@ import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
 import com.tokopedia.flight.booking.domain.subscriber.model.ProfileInfo;
 import com.tokopedia.flight.booking.view.viewmodel.SimpleViewModel;
+import com.tokopedia.flight.orderlist.domain.model.FlightInsurance;
 import com.tokopedia.flight.orderlist.domain.model.FlightOrder;
 import com.tokopedia.flight.orderlist.domain.model.FlightOrderJourney;
 import com.tokopedia.flight.orderlist.view.viewmodel.FlightOrderDetailPassData;
@@ -76,6 +77,12 @@ public interface FlightDetailOrderContract {
         Observable<ProfileInfo> getProfileObservable();
       
         void setTransactionDate(String transactionDate);
+
+        void hideInsuranceLayout();
+
+        void showInsuranceLayout();
+
+        void renderInsurances(List<FlightInsurance> insurances);
     }
 
     interface Presenter extends CustomerPresenter<View> {

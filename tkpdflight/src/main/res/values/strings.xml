@@ -360,4 +360,5 @@
     <string name="flight_insurance_learn_more_label"> Info Selengkapnya</string>
     <string name="flight_passenger_choose_salutation">Pilih Titel</string>
     <string name="flight_review_minus_discount_prefix">- %1$s</string>
+    <string name="flight_detail_order_protection_label">Terproteksi</string>
 </resources>

@@ -161,7 +161,7 @@
                         style="@style/TextView.Small.BlackSecondary"
                         android:layout_width="0dp"
                         android:layout_weight="1"
-                        android:text="@string/flight_order_detail_due_date_label"/>
+                        android:text="@string/flight_order_detail_due_date_label" />
 
                     <TextView
                         android:id="@+id/tv_payment_due_date"
@@ -291,6 +291,22 @@
                 android:paddingLeft="@dimen/dp_20"
                 android:paddingRight="@dimen/dp_20" />
 
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/insurance_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_20"
+            android:background="@color/white"
+            android:orientation="vertical"
+            android:visibility="gone"
+            tools:visibility="visible">
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/rv_insurance"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
         </LinearLayout>
 
         <LinearLayout

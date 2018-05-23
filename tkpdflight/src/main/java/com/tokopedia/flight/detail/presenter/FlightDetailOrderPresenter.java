@@ -142,7 +142,10 @@ public class FlightDetailOrderPresenter extends BaseDaggerPresenter<FlightDetail
 
     private void renderInsurances(FlightOrder flightOrder) {
         if (flightOrder.getInsurances() != null && flightOrder.getInsurances().size() > 0) {
-
+            getView().showInsuranceLayout();
+            getView().renderInsurances(flightOrder.getInsurances());
+        } else {
+            getView().hideInsuranceLayout();
         }
     }
 
