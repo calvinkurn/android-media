@@ -56,7 +56,7 @@ public class FlightCartDataSource {
                                 if (jsonObject.get("type").getAsString().equalsIgnoreCase("insurance_benefit")) {
                                     // insurance
                                     InsuranceEntity insuranceEntity = FlightCartDataSource.this.gson.fromJson(jsonObject.get("attributes").toString(), InsuranceEntity.class);
-                                    insuranceEntity.setId(jsonObject.get("id").toString());
+                                    insuranceEntity.setId(jsonObject.get("id").getAsString());
                                     insuranceEntities.add(insuranceEntity);
                                 }
                             }

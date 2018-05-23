@@ -161,7 +161,7 @@ public class FlightInsuranceView extends LinearLayout {
 
     private SpannableString buildTncText(String tncAggreement, String tncUrl, String title) {
         final int color = getResources().getColor(R.color.green_300);
-        String fullText = tncAggreement + getContext().getString(R.string.flight_insurance_learn_more_label);
+        String fullText = tncAggreement + ". " + getContext().getString(R.string.flight_insurance_learn_more_label);
         int stopIndex = fullText.length();
         SpannableString descriptionStr = new SpannableString(fullText);
         ClickableSpan clickableSpan = new ClickableSpan() {
@@ -178,7 +178,7 @@ public class FlightInsuranceView extends LinearLayout {
                 ds.setTypeface(Typeface.create(Typeface.DEFAULT, Typeface.NORMAL));
             }
         };
-        descriptionStr.setSpan(clickableSpan, tncAggreement.length(), stopIndex, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        descriptionStr.setSpan(clickableSpan, tncAggreement.length() + 2, stopIndex, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
         return descriptionStr;
     }
 

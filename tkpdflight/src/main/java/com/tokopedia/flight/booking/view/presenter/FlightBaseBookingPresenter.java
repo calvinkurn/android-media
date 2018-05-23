@@ -362,7 +362,7 @@ public abstract class FlightBaseBookingPresenter<T extends FlightBaseBookingCont
 
         for (FlightInsuranceViewModel insuranceViewModel : insurances) {
             simpleViewModels.add(new SimpleViewModel(
-                    String.format("%s x%d", getView().getString(R.string.flight_insurance_prefix_label), totalPassenger),
+                    String.format("%s x%d", insuranceViewModel.getName(), totalPassenger),
                     CurrencyFormatUtil.convertPriceValueToIdrFormatNoSpace((int) (insuranceViewModel.getTotalPriceNumeric() * totalPassenger))));
         }
 
