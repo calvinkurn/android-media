@@ -29,7 +29,7 @@ public interface ITokoPointRepository {
 
     Observable<String> getPointMain(TKPDMapParam<String, String> param);
 
-    Observable<TokoPointDrawerData> getPointDrawer(TKPDMapParam<String, String> param);
+    Observable<TokoPointDrawerData> getPointDrawer(String requestQuery);
 
     Observable<String> getPointStatus(TKPDMapParam<String, String> param);
 
