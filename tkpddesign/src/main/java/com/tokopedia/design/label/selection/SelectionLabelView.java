@@ -15,12 +15,14 @@ import com.tokopedia.design.base.BaseCustomView;
 import com.tokopedia.design.label.LabelView;
 
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Created by zulfikarrahman on 12/29/16.
  */
 
 public abstract class SelectionLabelView<T extends SelectionItem> extends BaseCustomView {
+
 
     public interface OnDeleteListener<T> {
         void onDelete(T t);

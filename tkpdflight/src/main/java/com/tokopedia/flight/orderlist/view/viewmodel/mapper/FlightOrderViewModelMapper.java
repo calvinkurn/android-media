@@ -36,6 +36,7 @@ public class FlightOrderViewModelMapper {
                         successViewModel.setId(flightOrder.getId());
                         successViewModel.setOrderJourney(journey);
                         successViewModel.setTitle(flightOrder.getStatusString());
+                        successViewModel.setCancellations(flightOrder.getCancellations());
                         successViewModel.setStatus(flightOrder.getStatus());
                         successViewModel.setPdf(flightOrder.getPdf());
                         visitables.add(successViewModel);
