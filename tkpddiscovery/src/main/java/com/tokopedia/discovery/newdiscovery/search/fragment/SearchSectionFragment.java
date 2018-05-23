@@ -17,6 +17,7 @@ import com.aurelhubert.ahbottomnavigation.AHBottomNavigationItem;
 import com.tokopedia.core.analytics.HotlistPageTracking;
 import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.analytics.SearchTracking;
+import com.tokopedia.core.analytics.TrackingConfig;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
 import com.tokopedia.core.discovery.model.DynamicFilterModel;
@@ -249,13 +250,16 @@ public abstract class SearchSectionFragment extends BaseDaggerFragment
         }
 
         SearchTracking.eventSearchResultShare(getScreenName());
-
         ShareData shareData = ShareData.Builder.aShareData()
                 .setType(ShareData.DISCOVERY_TYPE)
                 .setName(getString(R.string.message_share_catalog))
                 .setTextContent(getString(R.string.message_share_category))
                 .setUri(shareUrl)
                 .build();
+
+        if(getActivity() instanceof HotlistActivity){
+            shareData.setType(ShareData.HOTLIST_TYPE);
+        }
 
         Intent intent = new Intent(getActivity(), ShareActivity.class);
         intent.putExtra(ShareData.TAG, shareData);
@@ -269,7 +273,7 @@ public abstract class SearchSectionFragment extends BaseDaggerFragment
             if (requestCode == getSortRequestCode()) {
                 setSelectedSort((HashMap<String, String>) data.getSerializableExtra(SortProductActivity.EXTRA_SELECTED_SORT));
                 String selectedSortName = data.getStringExtra(SortProductActivity.EXTRA_SELECTED_NAME);
-                if(getActivity() instanceof HotlistActivity) {
+                if (getActivity() instanceof HotlistActivity) {
                     HotlistPageTracking.eventHotlistSort(selectedSortName);
                 } else {
                     UnifyTracking.eventSearchResultSort(getScreenName(), selectedSortName);
@@ -280,7 +284,7 @@ public abstract class SearchSectionFragment extends BaseDaggerFragment
             } else if (requestCode == getFilterRequestCode()) {
                 setFlagFilterHelper((FilterFlagSelectedModel) data.getParcelableExtra(RevampedDynamicFilterActivity.EXTRA_SELECTED_FLAG_FILTER));
                 setSelectedFilter((HashMap<String, String>) data.getSerializableExtra(RevampedDynamicFilterActivity.EXTRA_SELECTED_FILTERS));
-                if(getActivity() instanceof HotlistActivity){
+                if (getActivity() instanceof HotlistActivity) {
                     HotlistPageTracking.eventHotlistFilter(getSelectedFilter());
                 } else {
                     UnifyTracking.eventSearchResultFilter(getScreenName(), getSelectedFilter());

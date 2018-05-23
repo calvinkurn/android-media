@@ -52,6 +52,7 @@ public interface AppEventTracking {
         String GIMMICK = "clickGimmick";
         String REGISTER_SUCCESS = "registerSuccess";
         String HOTLIST = "clickHotlist";
+        String HOTLIST_PAGE = "hotlist page";
         String FAVORITE = "clickFavorite";
         String SEARCH = "clickSearch";
         String IMAGE_SEARCH_CLICK = "imageSearchClick";
