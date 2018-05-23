@@ -470,6 +470,11 @@ public class FlightBookingPassengerFragment extends BaseDaggerFragment implement
     }
 
     @Override
+    public void showPassengerPassportNumberShouldAlphaNumericError(int resId) {
+        showMessageErrorInSnackBar(resId);
+    }
+
+    @Override
     public void showPassportExpiredDateMax20Years(int resId, String dateAfterTwentyYears) {
         NetworkErrorHelper.showRedCloseSnackbar(getActivity(),
                 String.format(getString(resId), dateAfterTwentyYears));
