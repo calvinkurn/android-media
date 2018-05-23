@@ -340,7 +340,7 @@ public class WidgetTokenView extends FrameLayout {
             }
             crackMediaPlayer.setDataSource(afd.getFileDescriptor(), afd.getStartOffset(), afd.getLength());
             afd.close();
-            crackMediaPlayer.prepare();
+            crackMediaPlayer.prepareAsync();
         } catch (Exception e) {
             return null;
         }
