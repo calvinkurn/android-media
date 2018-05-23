@@ -7,7 +7,10 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
 import com.tokopedia.abstraction.common.utils.TKPDMapParam;
+import com.tokopedia.abstraction.common.utils.network.AuthUtil;
 import com.tokopedia.checkout.domain.usecase.ChangeShippingAddressUseCase;
+import com.tokopedia.core.gcm.GCMHandler;
+import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.transactiondata.entity.request.DataChangeAddressRequest;
 import com.tokopedia.checkout.domain.datamodel.MultipleAddressAdapterData;
 import com.tokopedia.checkout.domain.datamodel.MultipleAddressItemData;
@@ -39,6 +42,7 @@ public class MultipleAddressPresenter implements IMultipleAddressPresenter {
 
     @Override
     public void sendData(Context context, List<MultipleAddressAdapterData> dataList) {
+        view.showLoading();
         JsonArray dataArray = new JsonArray();
         for (int i = 0; i < dataList.size(); i++) {
             for (int j = 0; j < dataList.get(i).getItemListData().size(); j++) {
@@ -53,13 +57,18 @@ public class MultipleAddressPresenter implements IMultipleAddressPresenter {
                 dataArray.add(cartData);
             }
         }
+
         TKPDMapParam<String, String> param = new TKPDMapParam<>();
         param.put("carts", dataArray.toString());
         RequestParams requestParam = RequestParams.create();
-        requestParam.putObject(
-                ChangeShippingAddressUseCase.PARAM_REQUEST_AUTH_MAP_STRING,
-                view.getGeneratedAuthParamNetwork(param)
-        );
+
+        TKPDMapParam<String, String> authParam = AuthUtil.generateParamsNetwork(
+                view.getActivity(), param,
+                SessionHandler.getLoginID(view.getActivity()),
+                GCMHandler.getRegistrationId(view.getActivity()));
+
+        requestParam.putAllString(authParam);
+
         changeShippingAddressUseCase.execute(
                 requestParam,
                 addMultipleAddressSubscriber());
@@ -155,13 +164,19 @@ public class MultipleAddressPresenter implements IMultipleAddressPresenter {
 
             @Override
             public void onError(Throwable e) {
-
+                e.printStackTrace();
+                view.hideLoading();
+                view.showError();
             }
 
             @Override
             public void onNext(SetShippingAddressData setShippingAddressData) {
-                if (setShippingAddressData.isSuccess())
+                view.hideLoading();
+                if (setShippingAddressData.isSuccess()) {
                     view.successMakeShipmentData();
+                } else {
+                    view.showError();
+                }
             }
         };
     }

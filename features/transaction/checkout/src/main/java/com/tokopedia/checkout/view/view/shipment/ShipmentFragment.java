@@ -162,8 +162,8 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                     cartShipmentAddressFormData));
         }
 
-        shipmentPresenter.setPromoCodeAppliedData(
-                (PromoCodeAppliedData) arguments.getParcelable(ARG_EXTRA_PROMO_CODE_APPLIED_DATA));
+        PromoCodeAppliedData promoCodeAppliedData = arguments.getParcelable(ARG_EXTRA_PROMO_CODE_APPLIED_DATA);
+        shipmentPresenter.setPromoCodeAppliedData(promoCodeAppliedData);
         shipmentPresenter.setCartPromoSuggestion(
                 (CartPromoSuggestion) arguments.getParcelable(ARG_EXTRA_CART_PROMO_SUGGESTION));
         shipmentPresenter.setShipmentCostModel(new ShipmentCostModel());
@@ -189,9 +189,9 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         rvShipment.addItemDecoration(
                 new CartItemDecoration((int) getResources().getDimension(R.dimen.dp_12), false, 0));
 
-        shipmentAdapter.addPromoVoucherData(
-                CartItemPromoHolderData.createInstanceFromAppliedPromo(shipmentPresenter.getPromoCodeAppliedData())
-        );
+        CartItemPromoHolderData cartItemPromoHolderData =
+                CartItemPromoHolderData.createInstanceFromAppliedPromo(shipmentPresenter.getPromoCodeAppliedData());
+        shipmentAdapter.addPromoVoucherData(cartItemPromoHolderData);
         if (shipmentPresenter.getPromoCodeAppliedData() != null) {
             shipmentPresenter.getCartPromoSuggestion().setVisible(false);
             shipmentAdapter.addPromoSuggestionData(shipmentPresenter.getCartPromoSuggestion());
@@ -550,6 +550,9 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                 shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourier() != null) {
             shipmentDetailData = shipmentCartItemModel.getSelectedShipmentDetailData();
         } else {
+            if (recipientAddressModel == null) {
+                recipientAddressModel = shipmentCartItemModel.getRecipientAddressModel();
+            }
             shipmentDetailData = ratesDataConverter.getShipmentDetailData(shipmentCartItemModel,
                     recipientAddressModel);
         }
@@ -634,15 +637,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
 
     @Override
     public void onCartPromoCancelVoucherPromoClicked(CartItemPromoHolderData cartPromo, int position) {
-        if (cartPromo.isFromAutoApply()) {
-            shipmentPresenter.cancelAutoApplyCoupon();
-        } else {
-            onRemovePromoCode();
-            cartPromo.setPromoNotActive();
-            shipmentAdapter.updatePromo(null);
-            shipmentAdapter.notifyItemChanged(position);
-            shipmentAdapter.notifyItemChanged(shipmentAdapter.getShipmentCostPosition());
-        }
+        shipmentPresenter.cancelAutoApplyCoupon();
     }
 
     @Override

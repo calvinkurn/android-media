@@ -33,8 +33,6 @@ public class MultipleShippingAddressViewHolder extends RecyclerView.ViewHolder {
 
     private TextView productPrice;
 
-    private TextView productWeight;
-
     private TextView productQty;
 
     private ViewGroup notesToSellerLayout;
@@ -108,8 +106,6 @@ public class MultipleShippingAddressViewHolder extends RecyclerView.ViewHolder {
         productName = itemView.findViewById(R.id.tv_product_name);
 
         productPrice = itemView.findViewById(R.id.tv_product_price);
-
-        productWeight = itemView.findViewById(R.id.tv_product_weight);
 
         productQty = itemView.findViewById(R.id.tv_product_total_item);
 
@@ -187,7 +183,6 @@ public class MultipleShippingAddressViewHolder extends RecyclerView.ViewHolder {
         ImageHandler.LoadImage(productImage, data.getProductImageUrl());
         productName.setText(data.getProductName());
         productPrice.setText(data.getProductPrice());
-        productWeight.setText(itemData.getProductWeightFmt());
         productQty.setText(itemData.getProductQty());
         if (itemData.getProductNotes().isEmpty()) {
             notesToSellerLayout.setVisibility(View.GONE);

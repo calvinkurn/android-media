@@ -192,8 +192,8 @@ public class CartRemoveProductFragment extends BaseCheckoutFragment
     }
 
     @Override
-    public void showError() {
-
+    public void showError(String message) {
+        NetworkErrorHelper.showSnackbar(getActivity(), message);
     }
 
     public void removeCheckedProducts() {
@@ -257,15 +257,23 @@ public class CartRemoveProductFragment extends BaseCheckoutFragment
      * @param position index of list where the state of checkbox is changed
      */
     @Override
-    public void onCheckBoxStateChangedListener(boolean checked, int position) {
-        cartPageAnalytics.eventClickCartClickChecklistBoxFormHapus();
+    public void onCheckBoxStateChanged(boolean checked, int position) {
         mCheckedCartItemList.get(position).setChecked(checked);
-        mCheckedCartItem = checked ? mCheckedCartItem + 1 : mCheckedCartItem - 1;
+        checkAllItemChecked();
+    }
 
-        String btnText = mCheckedCartItem == 0 ? "Hapus" :
-                String.format(LOCALE_ID, "Hapus (%d)", mCheckedCartItem);
+    private void checkAllItemChecked() {
+        int selectedItemCount = 0;
+        for (CheckedCartItemData checkedCartItemData : mCheckedCartItemList) {
+            if (checkedCartItemData.isChecked()) {
+                selectedItemCount++;
+            }
+        }
 
-        if (mCheckedCartItem == 0) {
+        String btnText = selectedItemCount == 0 ? getString(R.string.label_delete_cart_tem) :
+                String.format(LOCALE_ID, getString(R.string.label_delete_cart_item_formatted), selectedItemCount);
+
+        if (selectedItemCount == 0) {
             mTvRemoveProduct.setBackground(ContextCompat.getDrawable(getActivity(),
                     R.drawable.bg_button_disabled));
             mTvRemoveProduct.setTextColor(ContextCompat.getColor(getActivity(), R.color.grey_500));
@@ -277,8 +285,29 @@ public class CartRemoveProductFragment extends BaseCheckoutFragment
             mTvRemoveProduct.setClickable(true);
         }
         mTvRemoveProduct.setText(btnText);
+
+        final boolean isAllChecked = selectedItemCount == mCartRemoveProductAdapter.getItemCount() - 1;
+
+        if (mRvCartRemoveProduct.isComputingLayout()) {
+            mRvCartRemoveProduct.post(new Runnable() {
+                @Override
+                public void run() {
+                    mCartRemoveProductAdapter.checkAllItem(isAllChecked);
+                }
+            });
+        } else {
+            mCartRemoveProductAdapter.checkAllItem(isAllChecked);
+        }
+
     }
 
+    @Override
+    public void onAllItemCheckChanged(boolean checked) {
+        for (CheckedCartItemData checkedCartItemData : mCheckedCartItemList) {
+            checkedCartItemData.setChecked(checked);
+        }
+        checkAllItemChecked();
+    }
     @Override
     public void onCheckBoxCheckAll() {
         cartPageAnalytics.eventClickCartClickPilihSemuaFormHapus();
@@ -294,7 +323,7 @@ public class CartRemoveProductFragment extends BaseCheckoutFragment
                 getCallbackActionDialogRemoveCart()
         );
 
-        dialog.show(getFragmentManager(), "dialog");
+        dialog.show(getFragmentManager(), CartRemoveItemDialog.class.getSimpleName());
     }
 
     @NonNull

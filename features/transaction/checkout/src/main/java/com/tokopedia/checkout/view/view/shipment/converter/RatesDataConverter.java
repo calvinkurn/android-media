@@ -2,8 +2,6 @@ package com.tokopedia.checkout.view.view.shipment.converter;
 
 import android.text.TextUtils;
 
-import com.tokopedia.logisticdata.data.entity.rates.Attribute;
-import com.tokopedia.logisticdata.data.entity.rates.RatesResponse;
 import com.tokopedia.checkout.domain.datamodel.addressoptions.RecipientAddressModel;
 import com.tokopedia.checkout.domain.datamodel.cartshipmentform.GroupShop;
 import com.tokopedia.checkout.domain.datamodel.cartshipmentform.Product;
@@ -16,8 +14,8 @@ import com.tokopedia.checkout.domain.datamodel.shipmentrates.ShipmentCartData;
 import com.tokopedia.checkout.domain.datamodel.shipmentrates.ShipmentDetailData;
 import com.tokopedia.checkout.domain.datamodel.shipmentrates.ShipmentItemData;
 import com.tokopedia.checkout.view.view.shipment.viewmodel.ShipmentCartItemModel;
-import com.tokopedia.checkout.view.view.shipment.viewmodel.ShipmentMultipleAddressCartItemModel;
-import com.tokopedia.checkout.view.view.shipment.viewmodel.ShipmentSingleAddressCartItemModel;
+import com.tokopedia.logisticdata.data.entity.rates.Attribute;
+import com.tokopedia.logisticdata.data.entity.rates.RatesResponse;
 
 import org.apache.commons.lang3.text.WordUtils;
 
@@ -40,7 +38,7 @@ public class RatesDataConverter {
     public ShipmentDetailData getShipmentDetailData(ShipmentCartItemModel shipmentCartItemModel,
                                                     RecipientAddressModel recipientAddressModel) {
         ShipmentDetailData shipmentDetailData = new ShipmentDetailData();
-        if (shipmentCartItemModel instanceof ShipmentSingleAddressCartItemModel) {
+        if (shipmentCartItemModel instanceof ShipmentCartItemModel) {
             ShipmentCartData shipmentCartData = shipmentCartItemModel.getShipmentCartData();
             shipmentCartData.setDestinationAddress(recipientAddressModel.getAddressStreet());
             shipmentCartData.setDestinationDistrictId(recipientAddressModel.getDestinationDistrictId());
@@ -49,13 +47,10 @@ public class RatesDataConverter {
             shipmentCartData.setDestinationPostalCode(recipientAddressModel.getAddressPostalCode());
             shipmentDetailData.setShipmentCartData(shipmentCartData);
             int totalQuantity = 0;
-            for (CartItemModel cartItemModel : ((ShipmentSingleAddressCartItemModel) shipmentCartItemModel).getCartItemModels()) {
+            for (CartItemModel cartItemModel : ((ShipmentCartItemModel) shipmentCartItemModel).getCartItemModels()) {
                 totalQuantity += cartItemModel.getQuantity();
             }
             shipmentDetailData.setTotalQuantity(totalQuantity);
-        } else if (shipmentCartItemModel instanceof ShipmentMultipleAddressCartItemModel) {
-            ShipmentMultipleAddressCartItemModel shipmentMultipleAddressItem = (ShipmentMultipleAddressCartItemModel) shipmentCartItemModel;
-            shipmentDetailData.setShipmentCartData(shipmentMultipleAddressItem.getShipmentCartData());
         }
         return shipmentDetailData;
     }
@@ -66,17 +61,11 @@ public class RatesDataConverter {
         initializeShipmentCartData(userAddress, groupShop, shipmentCartData, keroToken, keroUnixTime);
         int orderValue = 0;
         int totalWeight = 0;
-        if (shipmentCartItemModel instanceof ShipmentSingleAddressCartItemModel) {
-            for (CartItemModel cartItemModel : ((ShipmentSingleAddressCartItemModel) shipmentCartItemModel).getCartItemModels()) {
+        if (shipmentCartItemModel instanceof ShipmentCartItemModel) {
+            for (CartItemModel cartItemModel : ((ShipmentCartItemModel) shipmentCartItemModel).getCartItemModels()) {
                 orderValue += (cartItemModel.getQuantity() * cartItemModel.getPrice());
                 totalWeight += (cartItemModel.getQuantity() * cartItemModel.getWeight());
             }
-        } else {
-            int productQuantity = Integer.parseInt(((ShipmentMultipleAddressCartItemModel) shipmentCartItemModel)
-                    .getMultipleAddressItemData().getProductQty());
-            orderValue = ((ShipmentMultipleAddressCartItemModel) shipmentCartItemModel).getProductPrice() * productQuantity;
-            totalWeight = ((ShipmentMultipleAddressCartItemModel) shipmentCartItemModel).getMultipleAddressItemData().getProductRawWeight()
-                    * Integer.parseInt(((ShipmentMultipleAddressCartItemModel) shipmentCartItemModel).getMultipleAddressItemData().getProductQty());
         }
         shipmentCartData.setOrderValue(orderValue);
         shipmentCartData.setWeight(totalWeight);
