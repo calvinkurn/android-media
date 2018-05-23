@@ -497,7 +497,7 @@ public class DiscoveryActivity extends BaseDiscoveryActivity implements
         } else {
             sendGalleryImageSearchResultGTM(FAILURE);
         }
-
+        NetworkErrorHelper.showSnackbar(this, getResources().getString(R.string.no_result_found));
     }
 
     @Override
