@@ -64,7 +64,6 @@ public abstract class BottomSheets extends BottomSheetDialogFragment {
         int height = inflatedView.getMeasuredHeight();
 
         bottomSheetBehavior = BottomSheetBehavior.from(parent);
-//        bottomSheetBehavior.setBottomSheetCallback(bottomSheetCallback);
 
         CoordinatorLayout.LayoutParams params = (CoordinatorLayout.LayoutParams) ((View) inflatedView.getParent()).getLayoutParams();
 
@@ -103,20 +102,6 @@ public abstract class BottomSheets extends BottomSheetDialogFragment {
         initView(subView);
         frameParent.addView(subView);
     }
-
-//    private BottomSheetBehavior.BottomSheetCallback bottomSheetCallback = new BottomSheetBehavior.BottomSheetCallback() {
-//        @Override
-//        public void onStateChanged(@NonNull View bottomSheet, int newState) {
-//            if (newState == BottomSheetBehavior.STATE_DRAGGING) {
-//                if (dismissListener != null) {
-//                    dismissListener.onDismiss();
-//                }
-//            }
-//        }
-//
-//        @Override
-//        public void onSlide(@NonNull View bottomSheet, float slideOffset) { }
-//    };
 
     protected void onCloseButtonClick() {
         if (bottomSheetBehavior.getState() == BottomSheetBehavior.STATE_EXPANDED) {
