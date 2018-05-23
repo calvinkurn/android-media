@@ -1,12 +1,10 @@
 package com.tokopedia.transaction.orders.orderlist.view.adapter;
 
 import android.content.Context;
-
 import android.graphics.Typeface;
 import android.graphics.drawable.GradientDrawable;
 import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -22,29 +20,23 @@ import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.core.router.transactionmodule.TransactionPurchaseRouter;
 import com.tokopedia.transaction.R;
-import com.tokopedia.transaction.R2;
+import com.tokopedia.transaction.orders.common.view.DoubleTextView;
 import com.tokopedia.transaction.orders.orderdetails.view.activity.OrderListDetailActivity;
 import com.tokopedia.transaction.orders.orderlist.data.Color;
 import com.tokopedia.transaction.orders.orderlist.data.DotMenuList;
 import com.tokopedia.transaction.orders.orderlist.data.MetaData;
 import com.tokopedia.transaction.orders.orderlist.data.Order;
 import com.tokopedia.transaction.orders.orderlist.data.Popup;
-import com.tokopedia.transaction.orders.common.view.DoubleTextView;
 import com.tokopedia.transaction.orders.orderlist.view.presenter.ListAdapterContract;
 import com.tokopedia.transaction.orders.orderlist.view.presenter.ListAdapterPresenterImpl;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
-
 public class OrderListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> implements ListAdapterContract.View {
-    private static final String HAS_BUTTON = "1";
     private final int VIEW_ITEM = 1;
     private final int VIEW_PROG = 0;
 
-    private final LayoutInflater inflater;
     private final Context context;
     private ListAdapterContract.Presenter orderListPresenter;
     OrderListViewHolder currentHolder;
@@ -56,7 +48,6 @@ public class OrderListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
 
     public OrderListAdapter(Context context, OnMenuItemListener listener) {
         this.context = context;
-        inflater = LayoutInflater.from(context);
         menuListener = listener;
         orderListPresenter = new ListAdapterPresenterImpl();
 
@@ -315,35 +306,20 @@ public class OrderListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
     }
 
     class OrderListViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-        @BindView(R2.id.list_element_status)
         TextView status;
-        @BindView(R2.id.date)
         TextView date;
-        @BindView(R2.id.invoice)
         TextView invoice;
-        @BindView(R2.id.order_list_but_overflow)
         LinearLayout orderListBtnOverflow;
-        @BindView(R2.id.conditional_info_layout)
         LinearLayout conditionalInfoLayout;
-        @BindView(R2.id.conditional_info)
         TextView conditionalInfoText;
-        @BindView(R2.id.shop_avatar)
         ImageView imgShopAvatar;
-        @BindView(R2.id.category_name)
         TextView categoryName;
-        @BindView(R2.id.title)
         TextView title;
-        @BindView(R2.id.status_shop_avatar)
         ImageView paymentAvatar;
-        @BindView(R2.id.total_price_label)
         TextView totalLabel;
-        @BindView(R2.id.total)
         TextView total;
-        @BindView(R2.id.left_button)
         TextView leftButton;
-        @BindView(R2.id.right_button)
         TextView rightButton;
-        @BindView(R2.id.metadata)
         LinearLayout parentMetadataLayout;
 
         View itemView;
@@ -352,7 +328,22 @@ public class OrderListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
         public OrderListViewHolder(View itemView) {
             super(itemView);
             this.itemView = itemView;
-            ButterKnife.bind(this, itemView);
+
+            status= itemView.findViewById(R.id.list_element_status);
+            date= itemView.findViewById(R.id.date);;
+            invoice= itemView.findViewById(R.id.invoice);;
+            orderListBtnOverflow= itemView.findViewById(R.id.order_list_but_overflow);;
+            conditionalInfoLayout= itemView.findViewById(R.id.conditional_info_layout);;
+            conditionalInfoText= itemView.findViewById(R.id.conditional_info);;
+            imgShopAvatar= itemView.findViewById(R.id.shop_avatar);;
+            categoryName= itemView.findViewById(R.id.category_name);;
+            title= itemView.findViewById(R.id.title);;
+            paymentAvatar= itemView.findViewById(R.id.status_shop_avatar);;
+            totalLabel= itemView.findViewById(R.id.total_price_label);;
+            total= itemView.findViewById(R.id.total);;
+            leftButton= itemView.findViewById(R.id.left_button);;
+            rightButton= itemView.findViewById(R.id.right_button);;
+            parentMetadataLayout= itemView.findViewById(R.id.metadata);;
         }
 
         @Override

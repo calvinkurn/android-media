@@ -28,14 +28,13 @@
                     android:id="@+id/status_label"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Status"
+                    android:text="@string/status"
                     android:textSize="@dimen/sp_11" />
 
                 <TextView
                     android:id="@+id/status_value"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Transaksi Bersil"
                     android:textSize="@dimen/font_medium"
                     android:textStyle="bold" />
 
@@ -77,14 +76,13 @@
                     android:id="@+id/invoice"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="XXXX/XXXX/XXXX" />
+                    android:layout_weight="1" />
 
                 <TextView
                     android:id="@+id/lihat"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="LIHAT"
+                    android:text="@string/lihat_text"
                     android:textColor="@color/green_250" />
 
             </LinearLayout>
@@ -105,7 +103,7 @@
                 android:layout_marginLeft="@dimen/dp_16"
                 android:layout_marginRight="@dimen/dp_16"
                 android:layout_marginBottom="@dimen/dp_8"
-                android:text="Detail Pembelian"
+                android:text="@string/detail_label"
                 android:textSize="@dimen/sp_16"
                 android:textStyle="bold" />
 
@@ -122,7 +120,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="@dimen/dp_16"
-                android:text="Lihat Detail"
+                android:text="@string/lihat_detail"
                 android:textSize="@dimen/font_medium"
                 android:textColor="@color/green_250"
                 android:visibility="gone"/>
@@ -150,7 +148,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="@dimen/dp_16"
-                android:text="Informasi Pembayaran"
+                android:text="@string/info_label"
                 android:textSize="@dimen/font_medium"
                 android:textStyle="bold" />
 
@@ -191,8 +189,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/dp_16"
                 android:layout_marginBottom="@dimen/dp_16"
-                android:gravity="center"
-                android:text="untuk " />
+                android:gravity="center"/>
 
             <TextView
                 android:id="@+id/langannan"
@@ -203,7 +200,7 @@
                 android:background="@drawable/rect_white_stroke_gray"
                 android:gravity="center"
                 android:padding="@dimen/dp_16"
-                android:text="langannan"
+                android:text="@string/top_btn_text"
                 android:textStyle="bold" />
 
             <TextView
@@ -217,7 +214,7 @@
                 android:background="@color/deep_orange_500"
                 android:gravity="center"
                 android:padding="@dimen/dp_16"
-                android:text="Beli Lagi"
+                android:text="@string/bottom_btn_text"
                 android:textStyle="bold" />
 
         </LinearLayout>

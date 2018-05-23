@@ -19,6 +19,12 @@ import java.util.List;
  */
 
 public class ListAdapterPresenterImpl extends BaseDaggerPresenter<ListAdapterContract.View> implements ListAdapterContract.Presenter {
+    private static final int ORDER_CANCELLED = 0;
+    private static final int ORDER_REFUNDED = 800;
+    private static final int ORDER_FAILED = 901;
+    private static final int WAITING_THIRD_PARTY = 103;
+    private static final int WAITING_TRANSFER = 107;
+
     ListAdapterContract.View view;
 
     @Override
@@ -54,7 +60,7 @@ public class ListAdapterPresenterImpl extends BaseDaggerPresenter<ListAdapterCon
     @Override
     public void setViewData(Order order) {
         view.setStatus(order.statusStr());
-        if (order.status() == 0 || order.status() == 800 || order.status() == 901) {
+        if (order.status() == ORDER_CANCELLED || order.status() == ORDER_REFUNDED || order.status() == ORDER_FAILED) {
             view.setFailStatusBgColor(true);
         } else {
             view.setFailStatusBgColor(false);
@@ -75,7 +81,7 @@ public class ListAdapterPresenterImpl extends BaseDaggerPresenter<ListAdapterCon
         view.setCategoryAndTitle(order.categoryName(), order.title());
         List<MetaData> metaDataList = order.metaData();
         for (MetaData metaData : metaDataList) {
-            if ((order.status() == 103) || (order.status() == 107) &&
+            if ((order.status() == WAITING_THIRD_PARTY) || (order.status() == WAITING_TRANSFER) &&
                     (metaData.label().equalsIgnoreCase("Metode Pembayaran")
                             || metaData.label().equalsIgnoreCase("Kode Pembayaran")))
                 continue;

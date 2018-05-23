@@ -42,7 +42,7 @@
                     android:id="@+id/date"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="date"
+                    android:text="@string/date"
                     android:textSize="@dimen/fontvvs" />
 
                 <TextView
@@ -50,7 +50,6 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:fontFamily="OpenSans"
-                    android:text="XXXXXXXXXXXXXXXX"
                     android:textSize="@dimen/fontvs"
                     android:textStyle="bold" />
             </LinearLayout>
@@ -121,7 +120,6 @@
                     android:id="@+id/category_name"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Reksa Dana"
                     android:textSize="@dimen/font_medium"
                     android:textStyle="bold" />
 
@@ -131,7 +129,6 @@
                     android:layout_height="wrap_content"
                     android:ellipsize="end"
                     android:maxLines="1"
-                    android:text="Transaksi Pembelian"
                     android:textSize="@dimen/fontvs"
                     android:textStyle="bold" />
 

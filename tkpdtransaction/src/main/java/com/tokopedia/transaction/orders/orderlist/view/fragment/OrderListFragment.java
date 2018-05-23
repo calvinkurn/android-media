@@ -10,12 +10,10 @@ import android.widget.LinearLayout;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.customwidget.SwipeToRefresh;
-import com.tokopedia.core.home.SimpleWebViewWithFilePickerActivity;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.router.transactionmodule.TransactionPurchaseRouter;
 import com.tokopedia.core.util.RefreshHandler;
 import com.tokopedia.transaction.R;
-import com.tokopedia.transaction.R2;
 import com.tokopedia.transaction.orders.orderlist.data.Order;
 import com.tokopedia.transaction.orders.orderlist.data.OrderCategory;
 import com.tokopedia.transaction.orders.orderlist.di.OrderListComponent;
@@ -30,7 +28,6 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import butterknife.BindView;
 
 
 public class OrderListFragment extends BasePresenterFragment<OrderListContract.Presenter> implements
@@ -38,11 +35,8 @@ public class OrderListFragment extends BasePresenterFragment<OrderListContract.P
 
     private static final java.lang.String ORDER_CATEGORY = "orderCategory";
     OrderListComponent orderListComponent;
-    @BindView(R2.id.order_list_rv)
     RecyclerView recyclerView;
-    @BindView(R2.id.swipe_refresh_layout)
     SwipeToRefresh swipeToRefresh;
-    @BindView(R2.id.empty_view)
     LinearLayout emptyLayout;
     OrderListAdapter orderListAdapter;
     private RefreshHandler refreshHandler;
@@ -132,7 +126,9 @@ public class OrderListFragment extends BasePresenterFragment<OrderListContract.P
 
     @Override
     protected void initView(View view) {
-
+        recyclerView = view.findViewById(R.id.order_list_rv);
+        swipeToRefresh = view.findViewById(R.id.swipe_refresh_layout);
+        emptyLayout = view.findViewById(R.id.empty_view);
     }
 
     @Override

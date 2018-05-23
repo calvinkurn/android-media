@@ -242,4 +242,12 @@
     <string name="additional_text">Masa Perlindungan JKK JKM</string>
     <string name="oops_message">Ooops</string>
     <string name="empty_list_message">Transaksi Anda masih kosong</string>
+    <string name="info_label">Informasi Pembayaran</string>
+    <string name="lihat_detail">Lihat Detail</string>
+    <string name="detail_label">Detail Pembelian</string>
+    <string name="lihat_text">LIHAT</string>
+    <string name="status">Status</string>
+    <string name="top_btn_text">langannan</string>
+    <string name="bottom_btn_text">Beli Lagi</string>
+    <string name="date">date</string>
 </resources>

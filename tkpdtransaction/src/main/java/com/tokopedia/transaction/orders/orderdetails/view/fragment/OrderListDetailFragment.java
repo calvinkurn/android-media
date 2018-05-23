@@ -13,7 +13,6 @@ import android.text.Spanned;
 import android.text.TextPaint;
 import android.text.method.LinkMovementMethod;
 import android.text.style.ClickableSpan;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -26,7 +25,6 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.core.router.transactionmodule.TransactionPurchaseRouter;
 import com.tokopedia.transaction.R;
-import com.tokopedia.transaction.R2;
 import com.tokopedia.transaction.orders.orderdetails.data.ActionButton;
 import com.tokopedia.transaction.orders.orderdetails.data.AdditionalInfo;
 import com.tokopedia.transaction.orders.orderdetails.data.ContactUs;
@@ -47,9 +45,6 @@ import javax.inject.Inject;
 import com.tokopedia.transaction.orders.orderdetails.di.DaggerOrderDetailsComponent;
 import com.tokopedia.transaction.orders.common.view.DoubleTextView;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
-
 /**
  * Created by baghira on 09/05/18.
  */
@@ -61,39 +56,22 @@ public class OrderListDetailFragment extends BaseDaggerFragment implements Order
     OrderListDetailPresenter presenter;
     OrderDetailsComponent orderListComponent;
 
-    @BindView(R2.id.main_view)
     LinearLayout mainView;
-    @BindView(R2.id.status_label)
     TextView statusLabel;
-    @BindView(R2.id.status_value)
     TextView statusValue;
-    @BindView(R2.id.conditional_info)
     TextView conditionalInfoText;
-    @BindView(R2.id.status_detail)
     LinearLayout statusDetail;
-    @BindView(R2.id.invoice)
     TextView invoiceView;
-    @BindView(R2.id.lihat)
     TextView lihat;
-    @BindView(R2.id.detail_label)
     TextView detailLabel;
-    @BindView(R2.id.detail_content)
     LinearLayout detailContent;
-    @BindView(R2.id.additional)
     TextView additionalText;
-    @BindView(R2.id.additional_info)
     LinearLayout additionalInfoLayout;
-    @BindView(R2.id.info_label)
     TextView infoLabel;
-    @BindView(R2.id.info_value)
     LinearLayout infoValue;
-    @BindView(R2.id.total_price)
     LinearLayout totalPrice;
-    @BindView(R2.id.help_label)
     TextView helpLabel;
-    @BindView(R2.id.langannan)
     TextView langannan;
-    @BindView(R2.id.beli_lagi)
     TextView beliLagi;
 
 
@@ -122,8 +100,24 @@ public class OrderListDetailFragment extends BaseDaggerFragment implements Order
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_order_list_detail, container, false);
+        mainView = view.findViewById(R.id.main_view);
+        statusLabel = view.findViewById(R.id.status_label);
+        statusValue = view.findViewById(R.id.status_value);
+        conditionalInfoText = view.findViewById(R.id.conditional_info);
+        statusDetail = view.findViewById(R.id.status_detail);
+        invoiceView = view.findViewById(R.id.invoice);
+        lihat = view.findViewById(R.id.lihat);
+        detailLabel = view.findViewById(R.id.detail_label);
+        detailContent = view.findViewById(R.id.detail_content);
+        additionalText = view.findViewById(R.id.additional);
+        additionalInfoLayout = view.findViewById(R.id.additional_info);
+        infoLabel = view.findViewById(R.id.info_label);
+        infoValue = view.findViewById(R.id.info_value);
+        totalPrice = view.findViewById(R.id.total_price);
+        helpLabel = view.findViewById(R.id.help_label);
+        langannan = view.findViewById(R.id.langannan);
+        beliLagi = view.findViewById(R.id.beli_lagi);
         initInjector();
-        ButterKnife.bind(this, view);
         setMainViewVisible(View.GONE);
         presenter.attachView(this);
         return view;

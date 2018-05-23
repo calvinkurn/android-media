@@ -1,11 +1,10 @@
 package com.tokopedia.transaction.orders.orderlist.view.presenter;
 
 import android.content.Context;
-import android.util.Log;
 
+import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.core.network.retrofit.utils.ErrorNetMessage;
-import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.transaction.orders.orderlist.data.Data;
 import com.tokopedia.transaction.orders.orderlist.data.OrderCategory;
 import com.tokopedia.transaction.orders.orderlist.domain.OrderListUseCase;
@@ -40,7 +39,7 @@ public class OrderListPresenterImpl extends BaseDaggerPresenter<OrderListContrac
 
             @Override
             public void onError(Throwable e) {
-                Log.e("sandeep", "error is :" + e);
+                CommonUtils.dumper(e.toString());
                 getView().removeProgressBarView();
                 getView().unregisterScrollListener();
                 if (e instanceof UnknownHostException || e instanceof ConnectException) {
