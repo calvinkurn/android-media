@@ -660,6 +660,7 @@ public class ProductListFragment extends SearchSectionFragment
     public void setEmptyProduct() {
         topAdsRecyclerAdapter.shouldLoadAds(false);
         adapter.showEmpty(productViewModel.getQuery());
+        SearchTracking.eventSearchNoResult(productViewModel.getQuery(), getScreenName());
     }
 
     @Override

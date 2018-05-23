@@ -124,4 +124,13 @@ public class SearchTracking extends TrackingUtils {
                 tabTitle
         ).setUserId().getEvent());
     }
+
+    public static void eventSearchNoResult(String keyword, String screenName) {
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.NO_RESULT,
+                AppEventTracking.Category.EVENT_TOP_NAV,
+                AppEventTracking.Action.NO_SEARCH_RESULT,
+                "keyword: " + keyword + " - tab: " + screenName
+        ).getEvent());
+    }
 }

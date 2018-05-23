@@ -334,6 +334,7 @@ public interface AppEventTracking {
         String REGISTER_SUCCESS = "Register Success";
         String REGISTER_ERROR = "Register Error";
         String NO_RESULT = "No Result";
+        String NO_SEARCH_RESULT = "no search result";
         String ABANDON = "Abandon";
         String DEEPLINK = "Deeplink";
         String RESET_SUCCESS = "Reset Success";
