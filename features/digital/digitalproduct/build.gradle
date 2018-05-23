@@ -35,12 +35,14 @@ dependencies {
     implementation project(rootProject.ext.features.core)
     implementation project(rootProject.ext.features.payment)
     implementation project(rootProject.ext.features.loyalty)
+    implementation project(rootProject.ext.features.session)
 
     implementation project(rootProject.ext.libraries.design)
     implementation project(rootProject.ext.libraries.abstraction)
     implementation project(rootProject.ext.libraries.useCase)
-    implementation project(rootProject.ext.features.session)
+    implementation project(rootProject.ext.libraries.applink)
 
+    implementation rootProject.ext.miscDependencies.lottie
     implementation rootProject.ext.miscDependencies.gson
     implementation rootProject.ext.miscDependencies.multiDex
     implementation rootProject.ext.miscDependencies.roundCornerProgressBar
