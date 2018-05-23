@@ -1,7 +1,7 @@
 package com.tokopedia.feedplus.view.subscriber;
 
 import com.apollographql.apollo.exception.ApolloNetworkException;
-import com.tokopedia.core.base.adapter.Visitable;
+import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.feedplus.R;
 import com.tokopedia.feedplus.view.listener.FeedPlusDetail;
 import com.tokopedia.feedplus.domain.model.feeddetail.DataFeedDetailDomain;
