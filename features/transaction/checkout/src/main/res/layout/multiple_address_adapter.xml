@@ -110,23 +110,18 @@
                 android:layout_marginTop="@dimen/dp_16"
                 android:background="@color/grey_300" />
 
-            <LinearLayout
-                android:id="@+id/add_new_shipment_address_button"
+            <Button
+                android:id="@+id/bt_add_new_shipment"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:foreground="?selectableItemBackground"
+                android:background="@color/white"
+                android:fontFamily="sans-serif-medium"
                 android:gravity="center"
-                android:padding="@dimen/dp_16">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="sans-serif-medium"
-                    android:text="@string/label_add_new_shipment"
-                    android:textColor="@color/tkpd_main_green"
-                    android:textSize="@dimen/sp_12" />
-
-            </LinearLayout>
+                android:padding="@dimen/dp_16"
+                android:text="@string/label_add_new_shipment"
+                android:textAllCaps="false"
+                android:textColor="@color/tkpd_main_green"
+                android:textSize="@dimen/sp_12" />
 
             <View
                 android:layout_width="match_parent"

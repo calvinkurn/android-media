@@ -143,5 +143,7 @@
     <string name="label_delete_cart_item_failed">Gagal menghapus produk dari keranjang</string>
     <string name="label_delete_cart_tem">Hapus</string>
     <string name="label_delete_cart_item_formatted" formatted="false">Hapus (%d)</string>
+    <string name="label_showcase_multiple_address_title">Kirim Barang Sama ke Beberapa Alamat.</string>
+    <string name="label_showcase_multiple_address_message">Klik tombol untuk mengirim barang yang sama ke beda alamat.</string>
 
 </resources>
