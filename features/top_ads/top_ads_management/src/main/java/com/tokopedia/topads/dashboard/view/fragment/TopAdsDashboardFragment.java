@@ -701,6 +701,9 @@ public class TopAdsDashboardFragment extends BaseDaggerFragment implements TopAd
                 .setItemClickListener(new BottomSheetItemClickListener() {
                     @Override
                     public void onBottomSheetItemClick(MenuItem item) {
+                        if (!isAdded()) {
+                            return;
+                        }
                         selectedStatisticType = item.getItemId();
                         topAdsTabAdapter.setStatisticsType(selectedStatisticType);
                         if (getConversionFragment() != null){
