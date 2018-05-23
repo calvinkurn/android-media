@@ -300,6 +300,7 @@ ext {
             useCase         : ":libraries:use_case",
             fingerprint     : ":libraries:fingerprint",
             userSession     : ":libraries:user_session",
+            imageuploader   : ":libraries:imageuploader",
             youtubeApi      : ":libraries:YouTubeAndroidPlayerApi"
     ]
 }
