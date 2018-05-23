@@ -62,7 +62,6 @@ import com.tokopedia.core.router.productdetail.PdpRouter;
 import com.tokopedia.core.router.productdetail.ProductDetailRouter;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
 import com.tokopedia.core.router.transactionmodule.TransactionRouter;
-import com.tokopedia.core.router.wallet.TokoCashCoreRouter;
 import com.tokopedia.core.share.ShareActivity;
 import com.tokopedia.core.shopinfo.limited.fragment.ShopTalkLimitedFragment;
 import com.tokopedia.core.util.AccessTokenRefresh;
@@ -76,7 +75,6 @@ import com.tokopedia.digital.categorylist.view.activity.DigitalCategoryListActiv
 import com.tokopedia.digital.common.router.DigitalModuleRouter;
 import com.tokopedia.digital.product.view.activity.DigitalProductActivity;
 import com.tokopedia.digital.product.view.activity.DigitalWebActivity;
-import com.tokopedia.digital.receiver.TokocashPendingDataBroadcastReceiver;
 import com.tokopedia.fingerprint.util.FingerprintConstant;
 import com.tokopedia.gm.GMModuleRouter;
 import com.tokopedia.gm.cashback.domain.GetCashbackUseCase;
@@ -186,8 +184,7 @@ public abstract class SellerRouterApplication extends MainApplication
         implements TkpdCoreRouter, SellerModuleRouter, PdpRouter, GMModuleRouter, TopAdsModuleRouter,
         IPaymentModuleRouter, IDigitalModuleRouter, TkpdInboxRouter, TransactionRouter,
         ReputationRouter, LogisticRouter, SessionRouter, ProfileModuleRouter,
-        MitraToppersRouter, AbstractionRouter, DigitalModuleRouter, ShopModuleRouter, ApplinkRouter,
-        TokoCashCoreRouter {
+        MitraToppersRouter, AbstractionRouter, DigitalModuleRouter, ShopModuleRouter, ApplinkRouter {
 
     protected RemoteConfig remoteConfig;
     private DaggerProductComponent.Builder daggerProductBuilder;
@@ -1051,11 +1048,6 @@ public abstract class SellerRouterApplication extends MainApplication
                 .setUserId()
                 .setShopId(shopId)
                 .setShopType(isGoldMerchant, isOfficialStore).getEvent());
-    }
-
-    @Override
-    public BroadcastReceiver getBroadcastReceiverTokocashPending() {
-        return new TokocashPendingDataBroadcastReceiver();
     }
 
     @Override

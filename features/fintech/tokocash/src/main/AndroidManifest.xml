@@ -71,6 +71,10 @@
             android:name=".autosweepmf.view.activity.SetAutoSweepLimitActivity"
 
             android:theme="@style/Theme.White.PopupTransparent" />
+
+        <receiver
+            android:name=".pendingcashback.receiver.TokocashPendingDataBroadcastReceiver"
+            android:enabled="true"/>
     </application>
 
 </manifest>
