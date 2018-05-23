@@ -81,11 +81,17 @@ public class FlightPassengerInfoValidator {
         return inputDate.before(indicator);
     }
 
-    public boolean validateExpiredDateOfPassport(String expiredDateString, Date lastFlightDate) {
+    public boolean validateExpiredDateOfPassportAtLeast6Month(String expiredDateString, Date lastFlightDate) {
         Date expiredDate = FlightDateUtil.stringToDate(FlightDateUtil.DEFAULT_VIEW_FORMAT, expiredDateString);
         Date lastFlightDateUsed = FlightDateUtil.addTimeToSpesificDate(lastFlightDate, Calendar.DATE, -2);
 
         return expiredDate.after(lastFlightDateUsed);
+    }
+
+    public boolean validateExpiredDateOfPassportMax20Years(String expiredDateString, Date lastFlightDate) {
+        Date expiredDate = FlightDateUtil.stringToDate(FlightDateUtil.DEFAULT_VIEW_FORMAT, expiredDateString);
+
+        return expiredDate.before(lastFlightDate);
     }
 
     public boolean validatePassportNumberNotEmpty(String passportNumber) {

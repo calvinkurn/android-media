@@ -156,7 +156,7 @@ public class FlightPassengerUpdatePresenter extends BaseDaggerPresenter<FlightPa
         selectedDate = minDate;
 
         if (getView().getPassportExpiredDate().length() != 0 &&
-                flightPassengerInfoValidator.validateExpiredDateOfPassport(getView().getPassportExpiredDate(), departureDate)) {
+                flightPassengerInfoValidator.validateExpiredDateOfPassportAtLeast6Month(getView().getPassportExpiredDate(), departureDate)) {
             selectedDate = FlightDateUtil.stringToDate(FlightDateUtil.DEFAULT_VIEW_FORMAT, getView().getPassportExpiredDate());
         }
 
@@ -171,7 +171,7 @@ public class FlightPassengerUpdatePresenter extends BaseDaggerPresenter<FlightPa
         now.set(Calendar.DATE, dayOfMonth);
         Date expiredDate = now.getTime();
 
-        if (!flightPassengerInfoValidator.validateExpiredDateOfPassport(FlightDateUtil
+        if (!flightPassengerInfoValidator.validateExpiredDateOfPassportAtLeast6Month(FlightDateUtil
                 .dateToString(expiredDate, FlightDateUtil.DEFAULT_VIEW_FORMAT), minDate)) {
             getView().showPassportExpiredDateShouldMoreThan6MonthsFromDeparture(
                     R.string.flight_passenger_passport_expired_date_less_than_6_month_error,
@@ -393,7 +393,7 @@ public class FlightPassengerUpdatePresenter extends BaseDaggerPresenter<FlightPa
         } else if (isNeedPassport && getView().getCurrentPassengerViewModel().getPassportExpiredDate() == null) {
             isValid = false;
             getView().showPassengerPassportExpiredDateEmptyError(R.string.flight_booking_passport_expired_date_empty_error);
-        } else if (isNeedPassport && !flightPassengerInfoValidator.validateExpiredDateOfPassport(
+        } else if (isNeedPassport && !flightPassengerInfoValidator.validateExpiredDateOfPassportAtLeast6Month(
                 getView().getPassportExpiredDate(), sixMonthFromDeparture)) {
             isValid = false;
             getView().showPassportExpiredDateShouldMoreThan6MonthsFromDeparture(

@@ -143,6 +143,8 @@ public interface FlightBookingPassengerContract {
         void showPassportIssuerCountryEmptyError(@StringRes int resId);
 
         void showPassengerPassportExpiredDateEmptyError(@StringRes int resId);
+
+        void showPassportExpiredDateMax20Years(@StringRes int resId, String dateAfterTwentyYears);
     }
 
     interface Presenter extends CustomerPresenter<View> {
@@ -175,7 +177,7 @@ public interface FlightBookingPassengerContract {
 
         void onPassportExpiredClicked();
 
-        void onPassportExpiredDateChanged(int year, int month, int dayOfMonth, Date minDate);
+        void onPassportExpiredDateChanged(int year, int month, int dayOfMonth, Date minDate, Date maxxDate);
 
         void onNationalityChanged(FlightBookingPhoneCodeViewModel flightPassportNationalityViewModel);
 
