@@ -47,6 +47,8 @@ public class FlightInsuranceView extends LinearLayout {
 
     public interface ActionListener {
         void onInsuranceChecked(FlightInsuranceViewModel insurance, boolean checked);
+
+        void onMoreInfoClicked(String tncUrl, String title);
     }
 
     public FlightInsuranceView(Context context) {
@@ -150,10 +152,14 @@ public class FlightInsuranceView extends LinearLayout {
         } else {
             highlightContainer.setVisibility(GONE);
         }
-        tvHighlightTnc.setText(buildTncText(insuranceViewModel.getTncAggreement(), insuranceViewModel.getTncUrl()));
+        tvHighlightTnc.setText(buildTncText(
+                insuranceViewModel.getTncAggreement(),
+                insuranceViewModel.getTncUrl(),
+                insuranceViewModel.getName())
+        );
     }
 
-    private SpannableString buildTncText(String tncAggreement, String tncUrl) {
+    private SpannableString buildTncText(String tncAggreement, String tncUrl, String title) {
         final int color = getResources().getColor(R.color.green_300);
         String fullText = tncAggreement + getContext().getString(R.string.flight_insurance_learn_more_label);
         int stopIndex = fullText.length();
@@ -161,7 +167,7 @@ public class FlightInsuranceView extends LinearLayout {
         ClickableSpan clickableSpan = new ClickableSpan() {
             @Override
             public void onClick(View widget) {
-
+                if (listener != null) listener.onMoreInfoClicked(tncUrl, title);
             }
 
             @Override

@@ -434,4 +434,5 @@
     <string name="flight_detail_order_protection_label">Terproteksi</string>
     <string name="flight_order_detail_insurance_description">Untuk melihat polis asuransi, cek email Anda.</string>
     <string name="flight_order_prefix_insurance_price_label">Asuransi %1$dx</string>
+    <string name="flight_insurance_webview_toolbar_title">Asuransi Perjalanan</string>
 </resources>

@@ -21,7 +21,7 @@ public class InsuranceEntity {
     @SerializedName("default_checked")
     @Expose
     private boolean defaultChecked;
-    @SerializedName("tnc_aggrement")
+    @SerializedName("tnc_agreement")
     @Expose
     private String tncAggreement;
     @SerializedName("tnc_url")

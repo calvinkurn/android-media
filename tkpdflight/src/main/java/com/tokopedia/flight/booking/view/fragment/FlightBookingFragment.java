@@ -37,6 +37,7 @@ import com.tokopedia.flight.booking.di.FlightBookingComponent;
 import com.tokopedia.flight.booking.domain.subscriber.model.ProfileInfo;
 import com.tokopedia.flight.booking.view.activity.FlightBookingPassengerActivity;
 import com.tokopedia.flight.booking.view.activity.FlightBookingPhoneCodeActivity;
+import com.tokopedia.flight.booking.view.activity.FlightInsuranceWebviewActivity;
 import com.tokopedia.flight.booking.view.adapter.FlightBookingPassengerActionListener;
 import com.tokopedia.flight.booking.view.adapter.FlightBookingPassengerAdapter;
 import com.tokopedia.flight.booking.view.adapter.FlightBookingPassengerAdapterTypeFactory;
@@ -800,6 +801,11 @@ public class FlightBookingFragment extends BaseDaggerFragment implements FlightB
                 }
                 paramViewModel.setInsurances(insurances);
                 presenter.onInsuranceChanges();
+            }
+
+            @Override
+            public void onMoreInfoClicked(String tncUrl, String title) {
+                startActivity(FlightInsuranceWebviewActivity.getCallingIntent(getActivity(), tncUrl, title));
             }
         });
         insuranceRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));

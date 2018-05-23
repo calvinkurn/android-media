@@ -9,7 +9,6 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import com.tokopedia.abstraction.common.data.model.request.DataRequest;
-import com.tokopedia.abstraction.common.data.model.response.DataResponse;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.flight.booking.data.cloud.entity.CartEntity;
 import com.tokopedia.flight.booking.data.cloud.entity.InsuranceEntity;
@@ -54,7 +53,7 @@ public class FlightCartDataSource {
                             JsonArray includes = rootJsonObject.getAsJsonArray("included");
                             for (JsonElement include : includes) {
                                 JsonObject jsonObject = include.getAsJsonObject();
-                                if (jsonObject.get("type").getAsString().equalsIgnoreCase("insurance")) {
+                                if (jsonObject.get("type").getAsString().equalsIgnoreCase("insurance_benefit")) {
                                     // insurance
                                     InsuranceEntity insuranceEntity = FlightCartDataSource.this.gson.fromJson(jsonObject.get("attributes").toString(), InsuranceEntity.class);
                                     insuranceEntity.setId(jsonObject.get("id").toString());
