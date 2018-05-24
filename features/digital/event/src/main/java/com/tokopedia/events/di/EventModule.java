@@ -22,7 +22,6 @@ import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.events.data.EventRepositoryData;
 import com.tokopedia.events.data.EventsDataStoreFactory;
 import com.tokopedia.events.data.source.EventsApi;
-import com.tokopedia.events.data.source.PaymentApi;
 import com.tokopedia.events.di.scope.EventScope;
 import com.tokopedia.events.domain.EventRepository;
 import com.tokopedia.events.domain.GetEventDetailsRequestUseCase;
@@ -34,8 +33,6 @@ import com.tokopedia.events.domain.GetSearchEventsListRequestUseCase;
 import com.tokopedia.events.domain.GetSearchNextUseCase;
 import com.tokopedia.events.domain.postusecase.PostValidateShowUseCase;
 import com.tokopedia.events.domain.postusecase.PostVerifyCartUseCase;
-
-import javax.inject.Named;
 
 import dagger.Module;
 import dagger.Provides;
@@ -64,14 +61,8 @@ public class EventModule {
 
     @Provides
     @EventScope
-    PaymentApi providePaymentApi(@Named("payment_retrofit") Retrofit retrofit) {
-        return retrofit.create(PaymentApi.class);
-    }
-
-    @Provides
-    @EventScope
-    EventsDataStoreFactory provideEventsDataStoreFactory(EventsApi eventApi,PaymentApi paymentApi) {
-        return new EventsDataStoreFactory(eventApi,paymentApi);
+    EventsDataStoreFactory provideEventsDataStoreFactory(EventsApi eventApi) {
+        return new EventsDataStoreFactory(eventApi);
     }
 
     @Provides
@@ -93,14 +84,6 @@ public class EventModule {
     @EventScope
     Retrofit provideEventRetrofit(@EventQualifier OkHttpClient okHttpClient,
                                   Retrofit.Builder retrofitBuilder) {
-        return retrofitBuilder.baseUrl(TkpdBaseURL.EVENTS_DOMAIN).client(okHttpClient).build();
-    }
-
-    @Provides
-    @Named("payment_retrofit")
-    @EventScope
-    Retrofit providePaymentRetrofit(@EventQualifier OkHttpClient okHttpClient,
-                                    Retrofit.Builder retrofitBuilder) {
         return retrofitBuilder.baseUrl(TkpdBaseURL.EVENTS_DOMAIN).client(okHttpClient).build();
     }
 

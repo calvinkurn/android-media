@@ -15,7 +15,6 @@ import com.tokopedia.events.data.entity.response.searchresponse.SearchResponse;
 import com.tokopedia.events.data.entity.response.seatlayoutresponse.SeatLayoutResponse;
 import com.tokopedia.events.data.entity.response.verifyresponse.VerifyCartResponse;
 import com.tokopedia.events.data.source.EventsApi;
-import com.tokopedia.events.data.source.PaymentApi;
 
 import java.util.List;
 
@@ -29,11 +28,8 @@ public class CloudEventsDataStore implements EventDataStore {
 
     private final EventsApi eventsApi;
 
-    private final PaymentApi paymentApi;
-
-    public CloudEventsDataStore(EventsApi eventsApi, PaymentApi paymentApi) {
+    public CloudEventsDataStore(EventsApi eventsApi) {
         this.eventsApi = eventsApi;
-        this.paymentApi = paymentApi;
     }
 
 
@@ -74,19 +70,16 @@ public class CloudEventsDataStore implements EventDataStore {
 
     @Override
     public Observable<VerifyCartResponse> verifyCart(JsonObject requestBody, boolean flag) {
-        //todo:add toggle condition here
         return eventsApi.postCartVerify(requestBody, flag);
     }
 
     @Override
     public Observable<VerifyCartResponse> postCouponInit(JsonObject requestBody) {
-        //todo:add toggle condition here
         return eventsApi.postCouponInit(requestBody);
     }
 
     @Override
     public Observable<CheckoutResponse> checkoutCart(JsonObject requestBody) {
-        //todo:add toggle condition here
         return eventsApi.checkoutCart(requestBody);
     }
 

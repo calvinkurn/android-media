@@ -130,10 +130,6 @@ public class CardPagerAdapter extends PagerAdapter implements CardAdapter, Event
             tv4DateTime.setVisibility(View.VISIBLE);
         }
         tv4DateTime.setOnClickListener(clickListener);
-//        TextView tv4Location = view.findViewById(R.id.tv4_location);
-//        tv4Location.setCompoundDrawablesWithIntrinsicBounds(R.drawable.event_ic_putih,0,0,0);
-//        tv4Location.setText(item.getCityName());
-//        tv4Location.setOnClickListener(clickListener);
         TextView tv4EventTitle = view.findViewById(R.id.tv4_event_title);
         tv4EventTitle.setText(item.getDisplayName());
         tv4EventTitle.setOnClickListener(clickListener);
@@ -142,20 +138,7 @@ public class CardPagerAdapter extends PagerAdapter implements CardAdapter, Event
 
     @Override
     public void notifyDatasetChanged(int position) {
-//        View view = parent.findViewWithTag(position);
-//        if (view != null) {
-//            TextView textView = view.findViewById(R.id.tv_add_to_wishlist);
-//            textView.setText(String.valueOf(mData.get(position).getLikes()));
-//            if (mData.get(position).isLiked()) {
-//                textView.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_event_wishlist_red,
-//                        0, 0, 0);
-//                textView.setTextColor(view.getResources().getColor(R.color.red_1));
-//            } else {
-//                textView.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_event_wishlist,
-//                        0, 0, 0);
-//                textView.setTextColor(view.getResources().getColor(R.color.black_54));
-//            }
-//        }
+
     }
 
     private class CardOnClickListener implements View.OnClickListener {
