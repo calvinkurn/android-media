@@ -4,5 +4,6 @@ include "libraries:push_notification"
 include "libraries:applink"
 include "libraries:cache_api"
 include "libraries:use_case"
+include "libraries:user_session"
 include 'libraries:imageuploader'
 include "libraries:YouTubeAndroidPlayerApi"

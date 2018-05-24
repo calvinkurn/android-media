@@ -4,10 +4,8 @@ import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.domain.UseCase;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
-import com.tokopedia.seller.base.domain.interactor.UploadImageUseCase;
 import com.tokopedia.seller.shop.open.domain.ShopOpenSaveInfoRepository;
 import com.tokopedia.seller.shop.open.view.model.CourierServiceIdWrapper;
-import com.tokopedia.seller.shop.open.data.model.UploadShopImageModel;
 
 import javax.inject.Inject;
 
@@ -31,8 +29,7 @@ public class ShopOpenSaveCourierUseCase extends UseCase<Boolean> {
     @Inject
     public ShopOpenSaveCourierUseCase(ThreadExecutor threadExecutor,
                                       PostExecutionThread postExecutionThread,
-                                      ShopOpenSaveInfoRepository shopOpenSaveInfoRepository,
-                                      UploadImageUseCase<UploadShopImageModel> uploadImageUseCase) {
+                                      ShopOpenSaveInfoRepository shopOpenSaveInfoRepository) {
         super(threadExecutor, postExecutionThread);
         this.shopOpenSaveInfoRepository = shopOpenSaveInfoRepository;
     }
