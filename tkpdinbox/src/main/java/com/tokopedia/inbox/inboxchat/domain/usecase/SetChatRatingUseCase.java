@@ -2,7 +2,7 @@ package com.tokopedia.inbox.inboxchat.domain.usecase;
 
 import com.tokopedia.inbox.inboxchat.data.mapper.SetChatRatingMapper;
 import com.tokopedia.inbox.inboxchat.data.network.ChatBotApi;
-import com.tokopedia.inbox.inboxchat.data.pojo.SetChatRatingPojo;
+import com.tokopedia.inbox.inboxchat.domain.pojo.SetChatRatingPojo;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.usecase.UseCase;
 

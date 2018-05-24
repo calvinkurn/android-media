@@ -112,6 +112,7 @@ import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Set;
 
 import permissions.dispatcher.NeedsPermission;
@@ -659,6 +660,13 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
     public void renderTempProductData(ProductPass productPass) {
         this.headerInfoView.renderTempData(productPass);
         this.pictureView.renderTempData(productPass);
+        this.ratingTalkCourierView.renderTempdata(productPass);
+         if (productPass.isWishlist()) {
+            fabWishlist.setImageDrawable(getResources().getDrawable(R.drawable.ic_wishlist_red));
+        } else {
+            fabWishlist.setImageDrawable(getResources().getDrawable(R.drawable.ic_wishlist));
+        }
+        fabWishlist.setVisibility(View.VISIBLE);
     }
 
     @Override
@@ -1297,22 +1305,23 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
 
     @Override
     public void addProductVariant(ProductVariant productVariant) {
-        this.productVariant = productVariant;
-        this.priceSimulationView.addProductVariant(productVariant, productData);
-        if (variantLevel1 != null && variantLevel1 instanceof Option) {
-            priceSimulationView.updateVariant(generateVariantString());
-        }
-        int defaultChild =  productVariant.getParentId() == productData.getInfo().getProductId()
-                ?  productVariant.getDefaultChild() : productData.getInfo().getProductId();
-        if(productVariant.getChildFromProductId(defaultChild).isEnabled()){
-            productData.getInfo().setProductStockWording(productVariant.getChildFromProductId(defaultChild).getStockWording());
-            productData.getInfo().setLimitedStock(productVariant.getChildFromProductId(defaultChild).isLimitedStock());
-            headerInfoView.renderStockAvailability(productData.getInfo());
-        }
+        if (productData != null) {
+            this.productVariant = productVariant;
+            this.priceSimulationView.addProductVariant(productVariant, productData);
+            if (variantLevel1 != null && variantLevel1 instanceof Option) {
+                priceSimulationView.updateVariant(generateVariantString());
+            }
+            int defaultChild =  productVariant.getParentId() == productData.getInfo().getProductId()
+                    ?  productVariant.getDefaultChild() : productData.getInfo().getProductId();
+            if(productVariant.getChildFromProductId(defaultChild).isEnabled()){
+                productData.getInfo().setProductStockWording(productVariant.getChildFromProductId(defaultChild).getStockWording());
+                productData.getInfo().setLimitedStock(productVariant.getChildFromProductId(defaultChild).isLimitedStock());
+                headerInfoView.renderStockAvailability(productData.getInfo());
+            }
 
-        buttonBuyView.updateButtonForVariantProduct(productVariant.getChildFromProductId(
-                defaultChild).isIsBuyable(), productData);
-
+            buttonBuyView.updateButtonForVariantProduct(productVariant.getChildFromProductId(
+                    defaultChild).isIsBuyable(), productData);
+        }
     }
 
     @Override
@@ -1501,6 +1510,37 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
 
     @Override
     public void trackingEnhanceProductDetail() {
+        Map<String, Object> detail;
+        if (TextUtils.isEmpty(productPass.getTrackerListName())) {
+            detail = DataLayer.mapOf(
+                    "products", DataLayer.listOf(
+                            DataLayer.mapOf(
+                                    "name", productData.getInfo().getProductName(),
+                                    "id", productData.getInfo().getProductId(),
+                                    "price", productData.getInfo().getProductPriceUnformatted(),
+                                    "brand", "none / other",
+                                    "category", productData.getEnhanceCategoryFormatted(),
+                                    "variant", getEnhanceVariant(),
+                                    "dimension38", productPass.getTrackerAttribution()
+                            )
+                    )
+            );
+        } else {
+            detail = DataLayer.mapOf(
+                    "actionField", DataLayer.mapOf("list", productPass.getTrackerListName()),
+                    "products", DataLayer.listOf(
+                            DataLayer.mapOf(
+                                    "name", productData.getInfo().getProductName(),
+                                    "id", productData.getInfo().getProductId(),
+                                    "price", productData.getInfo().getProductPriceUnformatted(),
+                                    "brand", "none / other",
+                                    "category", productData.getEnhanceCategoryFormatted(),
+                                    "variant", getEnhanceVariant(),
+                                    "dimension38", productPass.getTrackerAttribution()
+                            )
+                    )
+            );
+        }
         ProductPageTracking.eventEnhanceProductDetail(
                 DataLayer.mapOf(
                         "event", "viewProduct",
@@ -1513,20 +1553,7 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
                         ),
                         "ecommerce", DataLayer.mapOf(
                                 "currencyCode", "IDR",
-                                "detail", DataLayer.mapOf(
-                                        "actionField", DataLayer.mapOf("list", productPass.getTrackerListName()),
-                                        "products", DataLayer.listOf(
-                                                DataLayer.mapOf(
-                                                        "name", productData.getInfo().getProductName(),
-                                                        "id", productData.getInfo().getProductId(),
-                                                        "price", productData.getInfo().getProductPriceUnformatted(),
-                                                        "brand", "none / other",
-                                                        "category", productData.getEnhanceCategoryFormatted(),
-                                                        "variant", getEnhanceVariant(),
-                                                        "dimension38", productPass.getTrackerAttribution()
-                                                )
-                                        )
-                                )
+                                "detail", detail
                         ),
                         "key", productData.getEnhanceUrl(productData.getInfo().getProductUrl()),
                         "shopName", productData.getShopInfo().getShopName(),

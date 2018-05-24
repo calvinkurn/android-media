@@ -433,6 +433,13 @@ public class DiscoveryActivity extends BaseDiscoveryActivity implements
 
             fromCamera = requestCode == UploadImageDialog.REQUEST_CAMERA;
 
+            if (uploadDialog == null) {
+                uploadDialog = new UploadImageDialog(DiscoveryActivity.this);
+                if (searchView != null) {
+                    searchView.clearFocus();
+                }
+            }
+
             uploadDialog.onResult(
                     requestCode,
                     resultCode,

@@ -8,7 +8,6 @@ import com.tokopedia.flight.booking.constant.FlightBookingPassenger;
 import com.tokopedia.flight.booking.view.viewmodel.SimpleViewModel;
 import com.tokopedia.flight.review.view.adapter.FlightBookingReviewPassengerAdapterTypeFactory;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -21,11 +20,13 @@ public class FlightDetailPassenger implements Parcelable, Visitable<FlightBookin
     String passengerName;
     @FlightBookingPassenger
     int passengerType;
+    int passengerStatus;
 
     protected FlightDetailPassenger(Parcel in) {
         infoPassengerList = in.createTypedArrayList(SimpleViewModel.CREATOR);
         passengerName = in.readString();
         passengerType = in.readInt();
+        passengerStatus = in.readInt();
     }
 
     public static final Creator<FlightDetailPassenger> CREATOR = new Creator<FlightDetailPassenger>() {
@@ -59,6 +60,14 @@ public class FlightDetailPassenger implements Parcelable, Visitable<FlightBookin
     public FlightDetailPassenger() {
     }
 
+    public int getPassengerStatus() {
+        return passengerStatus;
+    }
+
+    public void setPassengerStatus(int passengerStatus) {
+        this.passengerStatus = passengerStatus;
+    }
+
     public @FlightBookingPassenger
     int getPassengerType() {
         return passengerType;
@@ -79,6 +88,7 @@ public class FlightDetailPassenger implements Parcelable, Visitable<FlightBookin
         dest.writeTypedList(infoPassengerList);
         dest.writeString(passengerName);
         dest.writeInt(passengerType);
+        dest.writeInt(passengerStatus);
     }
 
     @Override
