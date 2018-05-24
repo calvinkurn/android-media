@@ -61,6 +61,7 @@ ext {
     tkpdWishlistVersion = '2.22'
     tkpdHomeVersion = '2.22'
     tkpdMitraToppersVersion = '2.22'
+    tkpdTrainVersion = '2.22'
 
     networkDependencies = [
             retrofit          : "com.squareup.retrofit2:retrofit:${retrofitVersion}",

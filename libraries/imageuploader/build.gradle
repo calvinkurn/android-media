@@ -11,4 +11,5 @@ dependencies {
     implementation rootProject.ext.miscDependencies.gson
     implementation rootProject.ext.miscDependencies.rxJavaComputation
     implementation project(rootProject.ext.libraries.abstraction)
+    implementation rootProject.ext.miscDependencies.multiDex
 }

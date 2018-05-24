@@ -1,19 +1,17 @@
 apply plugin: 'com.android.library'
 apply from: "$rootProject.projectDir/buildconfig/module.gradle"
-apply plugin: 'android-apt'
 
 dependencies {
-    compile project(rootProject.ext.libraries.abstraction)
-    compile project(rootProject.ext.libraries.useCase)
-    compile project(rootProject.ext.libraries.design)
+    implementation project(rootProject.ext.libraries.abstraction)
+    implementation project(rootProject.ext.libraries.useCase)
+    implementation project(rootProject.ext.libraries.design)
+    implementation rootProject.ext.miscDependencies.multiDex
 
-    provided rootProject.ext.miscDependencies.javaxAnnotation
-    compile rootProject.ext.miscDependencies.dagger
-    apt rootProject.ext.miscDependencies.daggerCompiler
+    compileOnly rootProject.ext.miscDependencies.javaxAnnotation
 
-    androidTestCompile(rootProject.ext.testDependencies.espressoCore, {
+    androidTestImplementation(rootProject.ext.testDependencies.espressoCore, {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
-    testCompile rootProject.ext.testDependencies.junit
-    testCompile 'org.mockito:mockito-all:1.10.19'
+    testImplementation rootProject.ext.testDependencies.junit
+    testImplementation 'org.mockito:mockito-all:1.10.19'
 }
