@@ -71,8 +71,6 @@ public interface ShopOpenDomainComponent {
 
     ShopOpenInfoPresenter shopSettingInfoPresenter();
 
-    NetworkCalculator networkCalculator();
-
     ShopOpenTracking trackingOpenShop();
 
     SessionHandler sessionHandler();
