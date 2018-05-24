@@ -256,9 +256,6 @@ public abstract class SearchSectionFragment extends BaseDaggerFragment
                 .build();
 
         ShareBottomSheet.show(getChildFragmentManager(), shareData);
-//        Intent intent = new Intent(getActivity(), ShareActivity.class);
-//        intent.putExtra(ShareData.TAG, shareData);
-//        startActivity(intent);
     }
 
     @Override
