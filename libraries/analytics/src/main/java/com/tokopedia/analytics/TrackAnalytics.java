@@ -2,7 +2,6 @@ package com.tokopedia.analytics;
 
 import android.content.Context;
 import android.os.Bundle;
-import android.util.Log;
 
 import com.tokopedia.analytics.firebase.TkpdFirebaseAnalytics;
 
