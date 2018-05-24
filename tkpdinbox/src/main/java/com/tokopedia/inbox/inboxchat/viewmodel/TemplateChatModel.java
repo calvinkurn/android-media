@@ -1,13 +1,14 @@
 package com.tokopedia.inbox.inboxchat.viewmodel;
 
-import com.tokopedia.core.base.adapter.Visitable;
+
+import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.inbox.inboxchat.adapter.TemplateChatTypeFactory;
 
 /**
  * Created by stevenfredian on 11/29/17.
  */
 
-public class TemplateChatModel implements Visitable<TemplateChatTypeFactory>{
+public class TemplateChatModel implements Visitable<TemplateChatTypeFactory> {
 
     String message;
     boolean isIcon;

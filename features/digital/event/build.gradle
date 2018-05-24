@@ -1,6 +1,5 @@
 apply plugin: 'com.android.library'
 apply from: "$rootProject.projectDir/buildconfig/module.gradle"
-apply plugin: 'android-apt'
 apply plugin: 'com.jakewharton.butterknife'
 apply plugin: 'io.hansel.preprocessor.module'
 
@@ -10,39 +9,64 @@ repositories {
 
 buildscript {
     repositories {
+        maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
         mavenCentral()
         jcenter()
         maven { url 'https://hansel.io/maven' }
     }
     dependencies {
-        classpath 'com.jakewharton:butterknife-gradle-plugin:8.4.0'
+        classpath ('com.jakewharton:butterknife-gradle-plugin:9.0.0-SNAPSHOT'){
+            exclude group: 'com.android.tools.build', module: 'gradle'
+        }
         classpath rootProject.ext.miscDependencies.hansel
     }
 }
 
-dependencies {
-
-    compile project(rootProject.ext.features.core)
-    compile project(rootProject.ext.libraries.design)
-
-    compile rootProject.ext.butterKnifeDependencies.butterKnife
-    apt rootProject.ext.butterKnifeDependencies.butterKnifeCompiler
-
-    compile rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
-    apt rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
-
-    compile rootProject.ext.miscDependencies.dagger
-    apt rootProject.ext.miscDependencies.daggerCompiler
-
-    compile rootProject.ext.supportLibDependencies.recyclerViewV7
-    compile rootProject.ext.supportLibDependencies.supportV4
-    compile rootProject.ext.supportLibDependencies.appCompactV7
-    compile rootProject.ext.supportLibDependencies.supportV13
-    compile rootProject.ext.supportLibDependencies.design
-    compile rootProject.ext.supportLibDependencies.cardViewV7
-    compile rootProject.ext.supportLibDependencies.constraintLayout
-
-    compile 'at.blogc:expandabletextview:1.0.5'
-    compile project(rootProject.ext.features.payment)
-    compile project(path: ':tkpdloyalty')
+project.ext {
+    artifactId = 'events'
+    groupId = 'com.tokopedia.events'
+    versionName = "2.22"
+    artifactName ="tkpdevents-release"
 }
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+
+    implementation project(rootProject.ext.features.core)
+    implementation project(rootProject.ext.libraries.abstraction)
+    implementation project(rootProject.ext.libraries.design)
+    implementation project(rootProject.ext.features.payment)
+    implementation project(rootProject.ext.libraries.cacheApi)
+    implementation project(path: ':tkpdloyalty')
+    implementation rootProject.ext.supportLibDependencies.constraintLayout
+    implementation 'at.blogc:expandabletextview:1.0.5'
+    implementation project(rootProject.ext.features.payment)
+    implementation project(rootProject.ext.libraries.useCase)
+
+    implementation (rootProject.ext.debugToolsDependencies.chuck) {
+        exclude group: 'com.squareup.okhttp3'
+        exclude group: 'com.squareup.okio'
+        exclude group: 'com.android.support'
+    }
+
+    implementation rootProject.ext.supportLibDependencies.constraintLayout
+
+    implementation rootProject.ext.miscDependencies.roundCornerProgressBar
+    implementation (rootProject.ext.miscDependencies.loaderviewlibrary){
+        exclude group: 'com.android.support'
+    }
+
+    implementation rootProject.ext.viewDependencies.appIntro
+
+    implementation rootProject.ext.playServicesDependencies.maps
+
+    implementation rootProject.ext.butterKnifeDependencies.butterKnife
+    annotationProcessor  rootProject.ext.butterKnifeDependencies.butterKnifeCompiler
+
+    implementation rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
+    annotationProcessor  rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
+
+    implementation 'at.blogc:expandabletextview:1.0.5'
+}
+
+apply from: '../../../publish_local.gradle'

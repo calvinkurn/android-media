@@ -1,19 +1,20 @@
 apply plugin: 'com.android.library'
 apply from: "$rootProject.projectDir/buildconfig/module.gradle"
 
-dependencies {
+project.ext {
+    artifactId = 'design'
+    groupId = 'com.tokopedia.design'
+    versionName = "2.22"
+    artifactName ="tkpddesign-release"
+}
 
-    compile rootProject.ext.supportLibDependencies.design
-    compile rootProject.ext.supportLibDependencies.cardViewV7
-    compile rootProject.ext.supportLibDependencies.constraintLayout
-    compile (rootProject.ext.miscDependencies.loaderviewlibrary){
+dependencies {
+    implementation rootProject.ext.supportLibDependencies.constraintLayout
+    implementation (rootProject.ext.miscDependencies.loaderviewlibrary){
         exclude group: 'com.android.support'
     }
 
-    compile rootProject.ext.networkDependencies.glide
-
-    androidTestCompile(rootProject.ext.testDependencies.espressoCore, {
-        exclude group: 'com.android.support', module: 'support-annotations'
-    })
-    testCompile rootProject.ext.testDependencies.junit
+    implementation rootProject.ext.networkDependencies.glide
 }
+
+apply from: '../publish_local.gradle'

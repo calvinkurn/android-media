@@ -13,16 +13,11 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.tokopedia.core.R2;
 import com.tokopedia.discovery.R;
 import com.tokopedia.discovery.search.domain.model.SearchItem;
 import com.tokopedia.discovery.search.view.adapter.viewmodel.DefaultViewModel;
 
 import java.util.Locale;
-
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.OnClick;
 
 /**
  * @author erry on 20/02/17.
@@ -71,42 +66,44 @@ public class DefaultSearchResultAdapter extends RecyclerView.Adapter<DefaultSear
 
     class ViewHolder extends RecyclerView.ViewHolder {
 
-        @BindView(R2.id.title)
         TextView resultTxt;
-        @BindView(R2.id.sublabel)
         TextView label;
-        @BindView(R2.id.icon)
         ImageView icon;
-        @BindView(R2.id.container)
         LinearLayout containerTxt;
 
         private Context context;
 
         public ViewHolder(View itemView) {
             super(itemView);
-            ButterKnife.bind(this, itemView);
+            containerTxt = itemView.findViewById(R.id.container);
+            icon = itemView.findViewById(R.id.icon);
+            label = itemView.findViewById(R.id.sublabel);
+            resultTxt = itemView.findViewById(R.id.title);
+
+            icon.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    SearchItem item = model.getSearchItems().get(getAdapterPosition());
+                    switch (model.getId()) {
+                        case "recent_search":
+                            clickListener.onDeleteRecentSearchItem(item);
+                            break;
+                        default:
+                            clickListener.copyTextToSearchView(item.getKeyword());
+                            break;
+                    }
+                }
+            });
+
+            containerTxt.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    SearchItem item = model.getSearchItems().get(getAdapterPosition());
+                    item.setEventAction(model.getId());
+                    clickListener.onItemClicked(item);
+                }
+            });
             context = itemView.getContext();
-        }
-
-        @OnClick(R2.id.icon)
-        void onIconClicked() {
-            SearchItem item = model.getSearchItems().get(getAdapterPosition());
-            switch (model.getId()) {
-                case "recent_search":
-                    clickListener.onDeleteRecentSearchItem(item);
-                    break;
-                default:
-                    clickListener.copyTextToSearchView(item.getKeyword());
-                    break;
-            }
-        }
-
-
-        @OnClick(R2.id.container)
-        void onTextClicked() {
-            SearchItem item = model.getSearchItems().get(getAdapterPosition());
-            item.setEventAction(model.getId());
-            clickListener.onItemClicked(item);
         }
 
         private void bindView(SearchItem searchItem) {

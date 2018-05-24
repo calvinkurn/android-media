@@ -1,5 +1,6 @@
 package com.tokopedia.flight.search.view.adapter.viewholder;
 
+import android.graphics.Paint;
 import android.support.annotation.LayoutRes;
 import android.text.TextUtils;
 import android.view.View;
@@ -38,6 +39,7 @@ public class FlightSearchViewHolder extends AbstractViewHolder<FlightSearchViewM
     TextView airlineRefundableInfo;
     TextView savingPrice;
     TextView arrivalAddDay;
+    TextView discountTag;
     View containerDetail;
     private FilterSearchAdapterTypeFactory.OnFlightSearchListener onFlightSearchListener;
 
@@ -53,6 +55,7 @@ public class FlightSearchViewHolder extends AbstractViewHolder<FlightSearchViewM
         tvDuration = (TextView) itemView.findViewById(R.id.flight_time);
         savingPrice = (TextView) itemView.findViewById(R.id.saving_price);
         arrivalAddDay = (TextView) itemView.findViewById(R.id.arrival_add_day);
+        discountTag = (TextView) itemView.findViewById(R.id.tv_discount_tag);
         containerDetail = itemView.findViewById(R.id.container_detail);
         this.onFlightSearchListener = onFlightSearchListener;
     }
@@ -133,10 +136,12 @@ public class FlightSearchViewHolder extends AbstractViewHolder<FlightSearchViewM
 
     private void setSavingPrice(FlightSearchViewModel flightSearchViewModel) {
         if (TextUtils.isEmpty(flightSearchViewModel.getBeforeTotal())) {
+            discountTag.setVisibility(View.GONE);
             savingPrice.setVisibility(View.GONE);
         } else {
+            discountTag.setVisibility(View.VISIBLE);
             savingPrice.setVisibility(View.VISIBLE);
-            savingPrice.setText(MethodChecker.fromHtml(getString(R.string.flight_label_saving_price_html, flightSearchViewModel.getBeforeTotal())));
+            savingPrice.setText(flightSearchViewModel.getBeforeTotal());
         }
     }
 

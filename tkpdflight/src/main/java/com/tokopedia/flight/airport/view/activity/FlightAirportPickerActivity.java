@@ -16,7 +16,7 @@ import com.tokopedia.flight.common.di.component.FlightComponent;
  */
 
 public class FlightAirportPickerActivity extends BaseSimpleActivity implements HasComponent<FlightComponent> {
-    private static final String EXTRA_TOOLBAR_TITLE = "EXTRA_TOOLBAR_TITLE";
+    public static final String EXTRA_TOOLBAR_TITLE = "EXTRA_TOOLBAR_TITLE";
 
     public static Intent createInstance(Activity activity, String title) {
         Intent intent = new Intent(activity, FlightAirportPickerActivity.class);
@@ -26,7 +26,8 @@ public class FlightAirportPickerActivity extends BaseSimpleActivity implements H
 
     @Override
     protected Fragment getNewFragment() {
-        return FlightAirportPickerFragment.getInstance();
+        return FlightAirportPickerFragment.getInstance(
+                getIntent().getExtras().getString(EXTRA_TOOLBAR_TITLE));
     }
 
     @Override

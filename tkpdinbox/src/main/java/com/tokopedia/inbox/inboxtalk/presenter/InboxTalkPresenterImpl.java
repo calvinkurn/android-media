@@ -108,31 +108,16 @@ public class InboxTalkPresenterImpl implements InboxTalkPresenter {
     @Override
     public void saveState(Bundle state, List<RecyclerViewItem> items, int position, String filterString) {
         if (items != null) {
-            state.putSerializable("list", (Serializable) items);
-            state.putInt("paging", Integer.parseInt(nextPage));
             state.putString("filter", filterString);
-            if (nextPage != null && !nextPage.equals("0") && !nextPage.equals(""))
-                state.putInt("position", position - 1);
-            else
-                state.putInt("position", position);
         }
     }
 
     @Override
     public void restoreState(Bundle savedState) {
-        List<RecyclerViewItem> list = (List<RecyclerViewItem>) savedState.getSerializable("list");
-        int position = savedState.getInt("position");
-        int page = savedState.getInt("paging");
-        nextPage = String.valueOf(page);
-        boolean hasNext = savedState.getBoolean("hasNext");
+        int defaultPage = 0;
+        int defaultPosition = 0;
         String filterString = savedState.getString("filter");
-        if (nextPage != null && !nextPage.equals("0") && !nextPage.equals("")) {
-            view.setLoadingFooter();
-        } else {
-            nextPage = "0";
-            view.removeLoadingFooter();
-        }
-        view.onStateResponse(list, position, page, hasNext, filterString);
+        view.onStateResponse(null, defaultPosition, defaultPage, false, filterString);
     }
 
     @Override
