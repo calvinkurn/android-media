@@ -35,7 +35,7 @@ import java.util.List;
  */
 
 public abstract class TopAdsDashboardStatisticFragment extends TkpdBaseV4Fragment {
-    TextView contentTitleGraph;
+    protected TextView contentTitleGraph;
     LineChartView contentGraph;
     private TopAdsBaseWilliamChartConfig topAdsBaseWilliamChartConfig;
     private BaseWilliamChartConfig baseWilliamChartConfig;

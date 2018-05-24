@@ -93,7 +93,7 @@ public class TkpdResponse {
             }
 
             isNullData = jsonDataArray == null && jsonData == null;
-        } catch (JSONException e) {
+        } catch (Throwable e) {
             e.printStackTrace();
             jsonDataArray = null;
         }
@@ -172,8 +172,12 @@ public class TkpdResponse {
     }
 
     private void setJsonData(@NonNull JSONObject jsonData) {
-        this.stringData = jsonData.toString();
-        this.jsonData = jsonData;
+        try {
+            this.stringData = jsonData.toString();
+            this.jsonData = jsonData;
+        } catch (Throwable throwable) {
+
+        }
     }
 
     private void setJsonDataArray(@NonNull JSONArray jsonDataArray) {

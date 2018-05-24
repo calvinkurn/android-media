@@ -127,6 +127,7 @@ public class TopAdsGroupAdListFragment extends TopAdsBaseListFragment<GroupAd, B
 
     @Override
     public void onBulkActionSuccess(GroupAdBulkAction groupAdBulkAction) {
+        finishActionMode();
         loadInitialData();
     }
 

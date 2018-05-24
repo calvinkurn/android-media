@@ -29,11 +29,13 @@ public abstract class BottomSheets extends BottomSheetDialogFragment {
 
     private BottomSheetBehavior bottomSheetBehavior;
 
+    private View inflatedView;
+
     @SuppressLint("RestrictedApi")
     @Override
     public void setupDialog(Dialog dialog, int style) {
         super.setupDialog(dialog, style);
-        View inflatedView = View.inflate(getContext(), R.layout.widget_bottomsheet, null);
+        inflatedView = View.inflate(getContext(), R.layout.widget_bottomsheet, null);
 
         configView(inflatedView);
 
@@ -77,5 +79,11 @@ public abstract class BottomSheets extends BottomSheetDialogFragment {
         View subView = View.inflate(getContext(), getLayoutResourceId(), null);
         initView(subView);
         frameParent.addView(subView);
+    }
+
+    protected void updateHeight(int height) {
+        inflatedView.invalidate();
+        inflatedView.measure(0, 0);
+        bottomSheetBehavior.setPeekHeight(height);
     }
 }

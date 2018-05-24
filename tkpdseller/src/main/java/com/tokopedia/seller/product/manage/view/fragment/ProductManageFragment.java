@@ -9,9 +9,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.pm.PackageManager;
-import android.content.pm.ResolveInfo;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomSheetDialog;
@@ -25,17 +22,19 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 
+import com.github.rubensousa.bottomsheetbuilder.BottomSheetBuilder;
+import com.github.rubensousa.bottomsheetbuilder.adapter.BottomSheetItemClickListener;
+import com.github.rubensousa.bottomsheetbuilder.custom.CheckedBottomSheetBuilder;
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
-import com.tokopedia.applink.ApplinkRouter;
+import com.tokopedia.abstraction.common.network.exception.MessageErrorException;
+import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.core.ImageGallery;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
-import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.customadapter.NoResultDataBinder;
 import com.tokopedia.core.customadapter.RetryDataBinder;
-import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.product.model.share.ShareData;
 import com.tokopedia.core.router.productdetail.PdpRouter;
@@ -51,9 +50,6 @@ import com.tokopedia.seller.base.view.adapter.BaseMultipleCheckListAdapter;
 import com.tokopedia.seller.base.view.adapter.BaseRetryDataBinder;
 import com.tokopedia.seller.base.view.emptydatabinder.EmptyDataBinder;
 import com.tokopedia.seller.base.view.fragment.BaseSearchListFragment;
-import com.github.rubensousa.bottomsheetbuilder.BottomSheetBuilder;
-import com.github.rubensousa.bottomsheetbuilder.adapter.BottomSheetItemClickListener;
-import com.github.rubensousa.bottomsheetbuilder.custom.CheckedBottomSheetBuilder;
 import com.tokopedia.seller.common.imageeditor.GalleryCropActivity;
 import com.tokopedia.seller.common.imageeditor.GalleryCropWatermarkActivity;
 import com.tokopedia.seller.common.utils.KMNumbers;
@@ -82,7 +78,6 @@ import com.tokopedia.seller.product.manage.view.model.ProductManageSortModel;
 import com.tokopedia.seller.product.manage.view.model.ProductManageViewModel;
 import com.tokopedia.seller.product.manage.view.presenter.ProductManagePresenter;
 import com.tokopedia.topads.sourcetagging.constant.TopAdsSourceOption;
-import com.tokopedia.topads.sourcetagging.util.TopAdsAppLinkUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -103,6 +98,7 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
     private static final int MAX_NUMBER_IMAGE_SELECTED_FROM_GALLERY = 5;
     private static final int MAX_NUMBER_IMAGE_SELECTED_FROM_CAMERA = -1;
     private static final int DEFAULT_IMAGE_GALLERY_POSITION = 0;
+    public static final String ERROR_CODE_LIMIT_CASHBACK = "422";
 
     @Inject
     ProductManagePresenter productManagePresenter;
@@ -528,13 +524,17 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
 
     @Override
     public void onErrorSetCashback(Throwable t, final String productId, final int cashback) {
-        NetworkErrorHelper.createSnackbarWithAction(coordinatorLayout,
-                ViewUtils.getErrorMessage(getActivity(), t), Snackbar.LENGTH_LONG, new NetworkErrorHelper.RetryClickedListener() {
-                    @Override
-                    public void onRetryClicked() {
-                        productManagePresenter.setCashback(productId, cashback);
-                    }
-                }).showRetrySnackbar();
+        if(t instanceof MessageErrorException && ((MessageErrorException)t).getErrorCode().equals(ERROR_CODE_LIMIT_CASHBACK)){
+            showDialogActionGoToGMSubscribe();
+        }else {
+            NetworkErrorHelper.createSnackbarWithAction(coordinatorLayout,
+                    ErrorHandler.getErrorMessage(getActivity(), t), Snackbar.LENGTH_LONG, new NetworkErrorHelper.RetryClickedListener() {
+                        @Override
+                        public void onRetryClicked() {
+                            productManagePresenter.setCashback(productId, cashback);
+                        }
+                    }).showRetrySnackbar();
+        }
     }
 
     @Override
@@ -610,9 +610,9 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
         BottomSheetBuilder bottomSheetBuilder = new BottomSheetBuilder(getActivity())
                 .setMode(BottomSheetBuilder.MODE_LIST)
                 .addTitleItem(productManageViewModel.getProductName());
-        if(productManageViewModel.getProductStatus().equals(StatusProductOption.EMPTY)){
+        if (productManageViewModel.getProductStatus().equals(StatusProductOption.EMPTY)) {
             bottomSheetBuilder.setMenu(R.menu.menu_product_manage_action_item_no_topads);
-        }else{
+        } else {
             bottomSheetBuilder.setMenu(R.menu.menu_product_manage_action_item);
         }
         BottomSheetDialog bottomSheetDialog = bottomSheetBuilder.expandOnStart(true)
@@ -670,7 +670,7 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
         };
     }
 
-    private void showDialogVariantPriceLocked(){
+    private void showDialogVariantPriceLocked() {
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getActivity(), R.style.AppCompatAlertDialogStyle)
                 .setTitle(getString(R.string.product_price_locked))
                 .setMessage(getString(R.string.product_price_locked_manage_desc))
@@ -687,24 +687,17 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
     private void onPromoTopAdsClicked(ProductManageViewModel productManageViewModel) {
         ((PdpRouter) getActivity().getApplication()).goToCreateTopadsPromo(getActivity(),
                 productManageViewModel.getItemId(), productManageViewModel.getProductShopId(),
-                GlobalConfig.isSellerApp()? TopAdsSourceOption.SA_MANAGE_LIST_PRODUCT :
+                GlobalConfig.isSellerApp() ? TopAdsSourceOption.SA_MANAGE_LIST_PRODUCT :
                         TopAdsSourceOption.MA_MANAGE_LIST_PRODUCT);
     }
 
     private void onSetCashbackClicked(ProductManageViewModel productManageViewModel) {
-        if (goldMerchant == null) {
-            return;
-        }
         if (!GlobalConfig.isSellerApp() && getActivity().getApplication() instanceof SellerModuleRouter) {
             ((SellerModuleRouter) getActivity().getApplication()).goToGMSubscribe(getActivity());
             return;
         }
-        if (goldMerchant) {
-            showOptionCashback(productManageViewModel.getProductId(), productManageViewModel.getProductPricePlain(),
-                    productManageViewModel.getProductCurrencySymbol(), productManageViewModel.getProductCashback());
-        } else {
-            showDialogActionGoToGMSubscribe();
-        }
+        showOptionCashback(productManageViewModel.getProductId(), productManageViewModel.getProductPricePlain(),
+                productManageViewModel.getProductCurrencySymbol(), productManageViewModel.getProductCashback());
     }
 
     private void showOptionCashback(String productId, String productPrice, String productPriceSymbol, int productCashback) {
@@ -809,8 +802,8 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
 
     private void showDialogActionGoToGMSubscribe() {
         AlertDialog.Builder alertDialog = new AlertDialog.Builder(getActivity());
-        alertDialog.setTitle(R.string.product_manage_cashback_title);
-        alertDialog.setMessage(R.string.product_manage_cashback_not_subscribe_message);
+        alertDialog.setTitle(R.string.product_manage_cashback_limited_title);
+        alertDialog.setMessage(R.string.product_manage_cashback_limited_desc);
         alertDialog.setPositiveButton(R.string.label_subscribe, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {

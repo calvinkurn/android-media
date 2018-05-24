@@ -11,12 +11,12 @@
             android:screenOrientation="portrait"
             android:theme="@style/Theme.Tokopedia3" />
         <activity
-            android:name=".dashboard.view.activity.TopAdsProductAdListActivity"
+            android:name=".product.view.activity.TopAdsProductAdListActivity"
             android:label="@string/top_ads_title_product"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White"/>
         <activity
-            android:name=".dashboard.view.activity.TopAdsGroupAdListActivity"
+            android:name=".group.view.activity.TopAdsGroupAdListActivity"
             android:label="@string/topads_title_promo_grup_activity"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White"/>
