@@ -287,7 +287,8 @@ ext {
             groupchat       : ":features:user:groupchat",
             gamification    : ":features:promo:gamification",
             profile         : ":features:user:profile",
-            contactUs       : ":features:operational:contact_us"
+            contactUs       : ":features:operational:contact_us",
+            otp             : ":features:user:otp"
     ]
 
     libraries = [
@@ -297,9 +298,9 @@ ext {
             pushNotif       : ":libraries:push_notification",
             applink         : ":libraries:applink",
             cacheApi        : ":libraries:cache_api",
-            reactNative     : ":libraries:react_native",
             useCase         : ":libraries:use_case",
             fingerprint     : ":libraries:fingerprint",
+            userSession     : ":libraries:user_session",
             imageuploader   : ":libraries:imageuploader",
             youtubeApi      : ":libraries:YouTubeAndroidPlayerApi"
     ]

@@ -18,10 +18,8 @@ import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.TextView;
 
-import com.google.gson.reflect.TypeToken;
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
-import com.tokopedia.abstraction.common.utils.network.CacheUtil;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.analytics.LoginAnalytics;
 import com.tokopedia.analytics.RegisterAnalytics;
@@ -29,12 +27,10 @@ import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.base.di.component.AppComponent;
-import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.design.text.TkpdHintTextInputLayout;
 import com.tokopedia.di.DaggerSessionComponent;
 import com.tokopedia.otp.cotp.view.activity.VerificationActivity;
-import com.tokopedia.otp.cotp.view.viewmodel.VerificationPassModel;
 import com.tokopedia.otp.domain.interactor.RequestOtpUseCase;
 import com.tokopedia.profilecompletion.view.activity.ProfileCompletionActivity;
 import com.tokopedia.session.R;
@@ -162,20 +158,15 @@ public class RegisterPhoneNumberFragment extends BaseDaggerFragment
 
     @Override
     public void goToVerifyAccountPage(String phoneNumber) {
-        VerificationPassModel passModel = new
-                VerificationPassModel(phoneNumber,
+
+        Intent intent = VerificationActivity.getCallingIntent(
+                getActivity(),
+                phoneNumber,
                 RequestOtpUseCase.OTP_TYPE_REGISTER_PHONE_NUMBER,
-                true
+                true,
+                RequestOtpUseCase.MODE_SMS
         );
-        GlobalCacheManager cacheManager = new GlobalCacheManager();
-        cacheManager.setKey(VerificationActivity.PASS_MODEL);
-        cacheManager.setValue(CacheUtil.convertModelToString(passModel,
-                new TypeToken<VerificationPassModel>() {
-                }.getType()));
-        cacheManager.store();
-        startActivityForResult(VerificationActivity.getCallingIntent(getActivity(),
-                RequestOtpUseCase.MODE_SMS),
-                REQUEST_VERIFY_PHONE);
+        startActivityForResult(intent, REQUEST_VERIFY_PHONE);
     }
 
     @Override
@@ -285,7 +276,6 @@ public class RegisterPhoneNumberFragment extends BaseDaggerFragment
     }
 
 
-
     private void showSnackbar(String message) {
         NetworkErrorHelper.showSnackbar(getActivity(), message);
     }
@@ -307,7 +297,7 @@ public class RegisterPhoneNumberFragment extends BaseDaggerFragment
 
     private void goToProfileCompletionPage() {
         TaskStackBuilder stackBuilder = TaskStackBuilder.create(getActivity());
-        Intent parentIntent = ((TkpdCoreRouter)getActivity().getApplicationContext()).getHomeIntent(getActivity());
+        Intent parentIntent = ((TkpdCoreRouter) getActivity().getApplicationContext()).getHomeIntent(getActivity());
         parentIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         Intent childIntent = new Intent(getActivity(), ProfileCompletionActivity.class);
         stackBuilder.addNextIntent(parentIntent);

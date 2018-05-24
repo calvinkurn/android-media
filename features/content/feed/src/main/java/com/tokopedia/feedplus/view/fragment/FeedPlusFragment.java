@@ -73,6 +73,7 @@ import com.tokopedia.feedplus.view.presenter.FeedPlusPresenter;
 import com.tokopedia.feedplus.view.util.NpaLinearLayoutManager;
 import com.tokopedia.feedplus.view.util.ShareBottomDialog;
 import com.tokopedia.feedplus.view.viewmodel.inspiration.InspirationViewModel;
+import com.tokopedia.feedplus.view.viewmodel.kol.KolRecommendationViewModel;
 import com.tokopedia.feedplus.view.viewmodel.officialstore.OfficialStoreViewModel;
 import com.tokopedia.feedplus.view.viewmodel.product.ProductFeedViewModel;
 import com.tokopedia.feedplus.view.viewmodel.promo.PromoCardViewModel;
@@ -114,9 +115,11 @@ public class FeedPlusFragment extends BaseDaggerFragment
     private static final int OPEN_DETAIL = 54;
     private static final int OPEN_KOL_COMMENT = 101;
     private static final int OPEN_KOL_PROFILE = 13;
+    private static final int OPEN_KOL_PROFILE_FROM_RECOMMENDATION = 83;
     private static final int DEFAULT_VALUE = -1;
 
     private static final String ARGS_ROW_NUMBER = "row_number";
+    private static final String ARGS_ITEM_ROW_NUMBER = "item_row_number";
 
     private static final String FIRST_CURSOR = "FIRST_CURSOR";
     public static final String KEY_EXPLORE_NATIVE_ENABLE = "mainapp_explore_native_enable";
@@ -746,6 +749,14 @@ public class FeedPlusFragment extends BaseDaggerFragment
                     );
                 }
                 break;
+            case OPEN_KOL_PROFILE_FROM_RECOMMENDATION:
+                if (resultCode == Activity.RESULT_OK) {
+                    onSuccessFollowUnfollowFromProfileRecommendation(
+                            data.getIntExtra(ARGS_ROW_NUMBER, DEFAULT_VALUE),
+                            data.getIntExtra(ARGS_ITEM_ROW_NUMBER, DEFAULT_VALUE),
+                            data.getIntExtra(TopProfileActivity.EXTRA_IS_FOLLOWING, DEFAULT_VALUE)
+                    );
+                }
             default:
                 break;
         }
@@ -970,6 +981,15 @@ public class FeedPlusFragment extends BaseDaggerFragment
     }
 
     @Override
+    public void onGoToKolProfileFromRecommendation(int position, int itemPosition, String userId) {
+        Intent profileIntent = TopProfileActivity.newInstance(getContext(), userId)
+                .putExtra(ARGS_ROW_NUMBER, position)
+                .putExtra(ARGS_ITEM_ROW_NUMBER, itemPosition);
+
+        startActivityForResult(profileIntent, OPEN_KOL_PROFILE_FROM_RECOMMENDATION);
+    }
+
+    @Override
     public void onGoToKolProfile(int page, int rowNumber, String userId, int postId) {
         Intent profileIntent = TopProfileActivity.newInstanceFromFeed(getContext(), userId, postId)
                 .putExtra(ARGS_ROW_NUMBER, rowNumber);
@@ -1123,6 +1143,25 @@ public class FeedPlusFragment extends BaseDaggerFragment
             if (totalComment != DEFAULT_VALUE) {
                 kolViewModel.setTotalComment(totalComment);
             }
+            adapter.notifyItemChanged(rowNumber);
+        }
+    }
+
+    private void onSuccessFollowUnfollowFromProfileRecommendation(int rowNumber,
+                                                                  int itemRowNumber,
+                                                                  int isFollowing) {
+        if (rowNumber != DEFAULT_VALUE
+                && itemRowNumber != DEFAULT_VALUE
+                && adapter.getlist().get(rowNumber) instanceof KolRecommendationViewModel) {
+            KolRecommendationViewModel recommendationViewModel =
+                    (KolRecommendationViewModel) adapter.getlist().get(rowNumber);
+
+            if (isFollowing != DEFAULT_VALUE) {
+                recommendationViewModel.getListRecommend()
+                        .get(itemRowNumber)
+                        .setFollowed(isFollowing == IS_FOLLOWING_TRUE);
+            }
+
             adapter.notifyItemChanged(rowNumber);
         }
     }
