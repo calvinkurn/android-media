@@ -785,27 +785,18 @@ public class FlightBookingFragment extends BaseDaggerFragment implements FlightB
         adapter.setActionListener(new FlightInsuranceView.ActionListener() {
             @Override
             public void onInsuranceChecked(FlightInsuranceViewModel insurance, boolean checked) {
-                List<FlightInsuranceViewModel> insurances;
-                if (paramViewModel.getInsurances() != null) {
-                    insurances = paramViewModel.getInsurances();
-                } else {
-                    insurances = new ArrayList<>();
-                }
-                if (checked) {
-                    insurances.add(insurance);
-                } else {
-                    int index = insurances.indexOf(insurance);
-                    if (index != -1) {
-                        insurances.remove(index);
-                    }
-                }
-                paramViewModel.setInsurances(insurances);
-                presenter.onInsuranceChanges();
+                presenter.onInsuranceChanges(insurance, checked);
             }
 
             @Override
             public void onMoreInfoClicked(String tncUrl, String title) {
                 startActivity(FlightInsuranceWebviewActivity.getCallingIntent(getActivity(), tncUrl, title));
+                presenter.onMoreInsuranceInfoClicked();
+            }
+
+            @Override
+            public void onBenefitExpanded() {
+                presenter.onInsuranceBenefitExpanded();
             }
         });
         insuranceRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));

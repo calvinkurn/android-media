@@ -50,6 +50,8 @@ public class FlightInsuranceView extends LinearLayout {
         void onInsuranceChecked(FlightInsuranceViewModel insurance, boolean checked);
 
         void onMoreInfoClicked(String tncUrl, String title);
+
+        void onBenefitExpanded();
     }
 
     public FlightInsuranceView(Context context) {
@@ -104,6 +106,9 @@ public class FlightInsuranceView extends LinearLayout {
                     ivProtectionImageView.setRotation(180);
                 } else {
                     ivProtectionImageView.setRotation(0);
+                    if (listener != null){
+                        listener.onBenefitExpanded();
+                    }
                 }
             }
         });

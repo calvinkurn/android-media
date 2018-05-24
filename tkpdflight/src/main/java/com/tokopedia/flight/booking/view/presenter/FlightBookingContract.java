@@ -168,6 +168,10 @@ public interface FlightBookingContract {
 
         void onSameAsContactClicked(boolean navigateToPassengerInfo);
 
-        void onInsuranceChanges();
+        void onInsuranceChanges(FlightInsuranceViewModel insurance, boolean checked);
+
+        void onMoreInsuranceInfoClicked();
+
+        void onInsuranceBenefitExpanded();
     }
 }

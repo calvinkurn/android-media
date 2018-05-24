@@ -910,7 +910,23 @@ public class FlightBookingPresenter extends FlightBaseBookingPresenter<FlightBoo
     }
 
     @Override
-    public void onInsuranceChanges() {
+    public void onInsuranceChanges(FlightInsuranceViewModel insurance, boolean checked) {
+        List<FlightInsuranceViewModel> insurances;
+        if (getView().getCurrentBookingParamViewModel().getInsurances() != null) {
+            insurances = getView().getCurrentBookingParamViewModel().getInsurances();
+        } else {
+            insurances = new ArrayList<>();
+        }
+        if (checked) {
+            insurances.add(insurance);
+        } else {
+            int index = insurances.indexOf(insurance);
+            if (index != -1) {
+                insurances.remove(index);
+            }
+        }
+        getView().getCurrentBookingParamViewModel().setInsurances(insurances);
+
         actionCalculatePriceAndRender(getView().getCurrentCartPassData().getNewFarePrices(),
                 getView().getCurrentCartPassData().getDepartureTrip(),
                 getView().getCurrentCartPassData().getReturnTrip(),
@@ -922,5 +938,20 @@ public class FlightBookingPresenter extends FlightBaseBookingPresenter<FlightBoo
                 getView().getReturnFlightDetailViewModel()
         );
         updateTotalPrice(newTotalPrice);
+        flightAnalytics.eventInsuranceChecked(checked,
+                getView().getDepartureFlightDetailViewModel(),
+                getView().getReturnFlightDetailViewModel()
+
+        );
+    }
+
+    @Override
+    public void onMoreInsuranceInfoClicked() {
+        flightAnalytics.eventInsuranceClickMore();
+    }
+
+    @Override
+    public void onInsuranceBenefitExpanded() {
+        flightAnalytics.eventInsuranceAnotherBenefit();
     }
 }
