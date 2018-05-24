@@ -21,7 +21,7 @@ import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.kol.KolComponentInstance;
 import com.tokopedia.kol.KolRouter;
 import com.tokopedia.kol.R;
-import com.tokopedia.kol.common.util.TimeConverter;
+import com.tokopedia.kol.feature.comment.view.activity.KolCommentActivity;
 import com.tokopedia.kol.feature.post.di.DaggerKolProfileComponent;
 import com.tokopedia.kol.feature.post.di.KolProfileModule;
 import com.tokopedia.kol.feature.post.view.adapter.KolPostAdapter;
@@ -36,8 +36,19 @@ import javax.inject.Inject;
  * @author by milhamj on 19/02/18.
  */
 
-public class KolPostFragment extends BaseDaggerFragment implements KolPostListener.View {
+public class KolPostFragment extends BaseDaggerFragment implements
+        KolPostListener.View,
+        KolPostListener.View.ViewHolder {
+
+    public static final String PARAM_IS_LIKED = "is_liked";
+    public static final String PARAM_TOTAL_LIKES = "total_likes";
+    public static final String PARAM_TOTAL_COMMENTS = "total_comments";
+
+    public static final int IS_LIKE_TRUE = 1;
+    public static final int IS_LIKE_FALSE = 0;
+
     private static final String PARAM_USER_ID = "user_id";
+    private static final String PARAM_POST_ID = "post_id";
     private static final int KOL_COMMENT_CODE = 13;
     private static final int LOAD_MORE_THRESHOLD = 2;
 
@@ -54,12 +65,25 @@ public class KolPostFragment extends BaseDaggerFragment implements KolPostListen
     private KolRouter kolRouter;
     private String userId;
     private boolean canLoadMore = true;
+    private Intent resultIntent;
 
     public static KolPostFragment newInstance(String userId) {
         KolPostFragment fragment = new KolPostFragment();
         Bundle bundle = new Bundle();
         bundle.putString(PARAM_USER_ID, userId);
         fragment.setArguments(bundle);
+        return fragment;
+    }
+
+    public static KolPostFragment newInstanceFromFeed(String userId,
+                                                      int postId,
+                                                      Intent resultIntent,
+                                                      Bundle bundle) {
+        KolPostFragment fragment = new KolPostFragment();
+        bundle.putString(PARAM_USER_ID, userId);
+        bundle.putInt(PARAM_POST_ID, postId);
+        fragment.setArguments(bundle);
+        fragment.setResultIntent(resultIntent);
         return fragment;
     }
 
@@ -193,11 +217,17 @@ public class KolPostFragment extends BaseDaggerFragment implements KolPostListen
     public void updateCursor(String lastCursor) {
         canLoadMore = !TextUtils.isEmpty(lastCursor);
         presenter.updateCursor(lastCursor);
+
+        if (!canLoadMore
+                && !adapter.isEmpty()
+                && adapter.getList().get(0) instanceof KolPostViewModel) {
+            KolPostViewModel kolPostViewModel = (KolPostViewModel) adapter.getList().get(0);
+            adapter.showExplore(kolPostViewModel.getName());
+        }
     }
 
     @Override
-    public void onGoToKolProfile(int page, int rowNumber, String url) {
-
+    public void onGoToKolProfile(int page, int rowNumber, String userId, int postId) {
     }
 
     @Override
@@ -229,13 +259,8 @@ public class KolPostFragment extends BaseDaggerFragment implements KolPostListen
 
     @Override
     public void onGoToKolComment(int page, int rowNumber, KolPostViewModel kolPostViewModel) {
-        Intent intent = kolRouter.getKolCommentActivity(
-                getContext(), kolPostViewModel.getAvatar(), kolPostViewModel.getName(),
-                kolPostViewModel.getReview(),
-                TimeConverter.generateTime(getContext(), kolPostViewModel.getTime()),
-                String.valueOf(kolPostViewModel.getUserId()), kolPostViewModel.getKolImage(),
-                kolPostViewModel.getContentName(), kolPostViewModel.getProductPrice(),
-                kolPostViewModel.isWishlisted(), kolPostViewModel.getId(), rowNumber
+        Intent intent = KolCommentActivity.getCallingIntent(
+                getContext(), kolPostViewModel.getId(), rowNumber
         );
         startActivityForResult(intent, KOL_COMMENT_CODE);
     }
@@ -269,6 +294,21 @@ public class KolPostFragment extends BaseDaggerFragment implements KolPostListen
                 kolPostViewModel.setTotalLike(kolPostViewModel.getTotalLike() - 1);
             }
             adapter.notifyItemChanged(rowNumber);
+
+            if (getActivity() != null &&
+                    getArguments() != null &&
+                    getArguments().getInt(PARAM_POST_ID, -1) == kolPostViewModel.getContentId()) {
+
+                if (resultIntent == null) {
+                    resultIntent = new Intent();
+                    resultIntent.putExtras(getArguments());
+                }
+                resultIntent.putExtra(
+                        PARAM_IS_LIKED,
+                        kolPostViewModel.isLiked() ? IS_LIKE_TRUE : IS_LIKE_FALSE);
+                resultIntent.putExtra(PARAM_TOTAL_LIKES, kolPostViewModel.getTotalLike());
+                getActivity().setResult(Activity.RESULT_OK, resultIntent);
+            }
         }
     }
 
@@ -286,15 +326,30 @@ public class KolPostFragment extends BaseDaggerFragment implements KolPostListen
     }
 
     private void onSuccessAddDeleteKolComment(int rowNumber, int totalNewComment) {
-        if (rowNumber != -1) {
-            if (adapter.getList().get(rowNumber) != null
-                    && adapter.getList().get(rowNumber) instanceof KolPostViewModel) {
-                KolPostViewModel kolPostViewModel =
-                        ((KolPostViewModel) adapter.getList().get(rowNumber));
-                kolPostViewModel.setTotalComment(
-                        kolPostViewModel.getTotalComment() + totalNewComment);
-                adapter.notifyItemChanged(rowNumber);
+        if (rowNumber != -1 &&
+                adapter.getList().get(rowNumber) != null &&
+                adapter.getList().get(rowNumber) instanceof KolPostViewModel) {
+            KolPostViewModel kolPostViewModel =
+                    ((KolPostViewModel) adapter.getList().get(rowNumber));
+            kolPostViewModel.setTotalComment(
+                    kolPostViewModel.getTotalComment() + totalNewComment);
+            adapter.notifyItemChanged(rowNumber);
+
+            if (getActivity() != null &&
+                    getArguments() != null &&
+                    getArguments().getInt(PARAM_POST_ID, -1) == kolPostViewModel.getContentId()) {
+
+                if (resultIntent == null) {
+                    resultIntent = new Intent();
+                    resultIntent.putExtras(getArguments());
+                }
+                resultIntent.putExtra(PARAM_TOTAL_COMMENTS, kolPostViewModel.getTotalComment());
+                getActivity().setResult(Activity.RESULT_OK, resultIntent);
             }
         }
+    }
+
+    public void setResultIntent(Intent resultIntent) {
+        this.resultIntent = resultIntent;
     }
 }

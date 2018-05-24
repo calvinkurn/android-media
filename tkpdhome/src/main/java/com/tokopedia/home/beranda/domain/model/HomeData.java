@@ -26,6 +26,8 @@ public class HomeData {
     @SerializedName("dynamicHomeIcon")
     private DynamicHomeIcon dynamicHomeIcon;
 
+    private boolean isCache;
+
     public DynamicHomeChannel getDynamicHomeChannel() {
         return dynamicHomeChannel;
     }
@@ -56,5 +58,13 @@ public class HomeData {
 
     public void setDynamicHomeIcon(DynamicHomeIcon dynamicHomeIcon) {
         this.dynamicHomeIcon = dynamicHomeIcon;
+    }
+
+    public boolean isCache() {
+        return isCache;
+    }
+
+    public void setCache(boolean cache) {
+        isCache = cache;
     }
 }

@@ -1,25 +1,42 @@
 apply plugin: 'com.android.library'
 apply from: "$rootProject.projectDir/buildconfig/module.gradle"
-apply plugin: 'com.neenbedankt.android-apt'
+apply plugin: 'io.hansel.preprocessor.module'
+
+repositories {
+    maven { url 'https://hansel.io/maven' }
+}
+buildscript {
+    repositories {
+        mavenCentral()
+        maven { url 'https://hansel.io/maven' }
+    }
+    dependencies {
+        classpath rootProject.ext.miscDependencies.hansel
+    }
+}
+
+
+project.ext {
+    artifactId = 'abstraction'
+    groupId = 'com.tokopedia.abstraction'
+    versionName = "2.22"
+    artifactName ="tkpdabstraction-release"
+}
 
 dependencies {
-    compile project(rootProject.ext.libraries.design)
-    compile rootProject.ext.supportLibDependencies.appCompactV7
-    compile rootProject.ext.serviceDependencies.hockeyApp
+    implementation project(rootProject.ext.libraries.design)
 
-    compile rootProject.ext.miscDependencies.roundCornerProgressBar
-    compile rootProject.ext.miscDependencies.gson
-    compile rootProject.ext.miscDependencies.rxAndroid
-    compile rootProject.ext.miscDependencies.rxJava
-    compile rootProject.ext.miscDependencies.multiDex
+    implementation (rootProject.ext.miscDependencies.loaderviewlibrary){
+        exclude group: 'com.android.support'
+    }
 
-    compile rootProject.ext.networkDependencies.glide
-    compile rootProject.ext.networkDependencies.converterGson
-    compile rootProject.ext.networkDependencies.retrofit
-    compile rootProject.ext.networkDependencies.adapterRxJava
-    compile rootProject.ext.networkDependencies.loggingInterceptor
+    implementation rootProject.ext.serviceDependencies.hockeyApp
 
-    provided rootProject.ext.miscDependencies.javaxAnnotation
-    compile rootProject.ext.miscDependencies.dagger
-    apt rootProject.ext.miscDependencies.daggerCompiler
+    implementation rootProject.ext.miscDependencies.roundCornerProgressBar
+    implementation rootProject.ext.miscDependencies.gson
+    implementation rootProject.ext.miscDependencies.multiDex
+
+    implementation rootProject.ext.networkDependencies.glide
 }
+
+apply from: '../publish_local.gradle'

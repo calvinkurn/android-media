@@ -50,24 +50,26 @@ public class ImagePagerAdapter extends PagerAdapter {
         imageView.setAdjustViewBounds(true);
         final String urlImage = productImages.get(position).getImageSrc();
         
-        if (!TextUtils.isEmpty(urlTemporary) && position==0) {
+        if (!TextUtils.isEmpty(urlTemporary) && position==0 && !urlImage.equals(urlTemporary)) {
             Glide.with(context.getApplicationContext())
                     .load(urlImage)
                     .dontAnimate()
                     .dontTransform()
                     .centerCrop()
-                    .diskCacheStrategy(DiskCacheStrategy.RESULT)
+                    .diskCacheStrategy(DiskCacheStrategy.SOURCE)
                     .thumbnail(
                             Glide.with(context.getApplicationContext())
                                     .load(urlTemporary)
                                     .dontAnimate()
                                     .dontTransform()
-                                    .fitCenter()
-                                    .diskCacheStrategy(DiskCacheStrategy.RESULT))
+                                    .centerCrop()
+                                    .diskCacheStrategy(DiskCacheStrategy.SOURCE))
                     .into(imageView);
 
+        } else if (urlImage.equals(urlTemporary)) {
+            ImageHandler.loadImageSourceSizeCenterCrop(context.getApplicationContext(),imageView, urlTemporary);
         } else {
-            ImageHandler.loadImageFit2(context, imageView, urlImage);
+            ImageHandler.loadImageSourceSizeCenterCrop(context.getApplicationContext(),imageView, urlImage);
         }
         imageView.setOnClickListener(new OnClickImage(position));
         container.addView(imageView, 0);

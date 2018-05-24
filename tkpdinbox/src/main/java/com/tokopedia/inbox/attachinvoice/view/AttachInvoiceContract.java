@@ -27,9 +27,8 @@ public interface AttachInvoiceContract {
 
     interface Presenter {
         void loadInvoiceData(String query, String userId, int page, int messageId, Context context);
-
         void attachView(AttachInvoiceContract.View view);
-
         void attachActivityContract(AttachInvoiceContract.Activity activityContract);
+        void detachView();
     }
 }

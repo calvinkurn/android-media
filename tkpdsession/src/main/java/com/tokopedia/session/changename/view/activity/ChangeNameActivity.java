@@ -2,19 +2,17 @@ package com.tokopedia.session.changename.view.activity;
 
 import android.content.Context;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 
-import com.tokopedia.abstraction.common.di.component.HasComponent;
-import com.tokopedia.core.app.BasePresenterActivity;
-import com.tokopedia.session.R;
+import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.session.changename.view.fragment.ChangeNameFragment;
 
 /**
  * @author by yfsx on 22/03/18.
  */
 
-public class ChangeNameActivity extends BasePresenterActivity implements HasComponent {
+public class ChangeNameActivity extends BaseSimpleActivity {
 
     public static Intent newInstance(Context context) {
         Intent intent = new Intent(context, ChangeNameActivity.class);
@@ -24,63 +22,7 @@ public class ChangeNameActivity extends BasePresenterActivity implements HasComp
     }
 
     @Override
-    public Object getComponent() {
-        return getApplicationComponent();
-    }
-
-    @Override
-    protected void setupURIPass(Uri data) {
-
-    }
-
-    @Override
-    protected void setupBundlePass(Bundle extras) {
-
-    }
-
-    @Override
-    protected void initialPresenter() {
-
-    }
-
-    @Override
-    protected int getLayoutId() {
-        return R.layout.activity_simple_fragment;
-    }
-
-    @Override
-    protected void initView() {
-        String TAG = ChangeNameFragment.class.getSimpleName();
-        ChangeNameFragment fragment = ChangeNameFragment.newInstance(new Bundle());
-        if (getSupportFragmentManager().findFragmentByTag(TAG) != null) {
-            getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.container,
-                            getSupportFragmentManager().findFragmentByTag(TAG))
-                    .commit();
-        } else {
-            getSupportFragmentManager().beginTransaction()
-                    .add(R.id.container, fragment, TAG)
-                    .commit();
-        }
-    }
-
-    @Override
-    protected void setViewListener() {
-
-    }
-
-    @Override
-    protected void initVar() {
-
-    }
-
-    @Override
-    protected void setActionVar() {
-
-    }
-
-    @Override
-    protected boolean isLightToolbarThemes() {
-        return true;
+    protected Fragment getNewFragment() {
+        return ChangeNameFragment.newInstance(new Bundle());
     }
 }
