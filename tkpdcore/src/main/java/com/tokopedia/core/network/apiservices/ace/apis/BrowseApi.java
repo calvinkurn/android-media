@@ -12,6 +12,7 @@ import java.util.Map;
 
 import retrofit2.Response;
 import retrofit2.http.Body;
+import retrofit2.http.DELETE;
 import retrofit2.http.GET;
 import retrofit2.http.POST;
 import retrofit2.http.Query;
@@ -238,5 +239,20 @@ public interface BrowseApi {
     @GET(GUIDE_V1)
     Observable<Response<GuidedSearchResponse>> getGuidedSearch(
             @Query(Q) String query
+    );
+
+    @GET(TkpdBaseURL.Ace.PATH_UNIVERSE_SEARCH)
+    Observable<Response<String>> getUniverseAutoComplete(
+            @QueryMap TKPDMapParam<String, Object> param
+    );
+
+    @GET(TkpdBaseURL.Ace.PATH_UNIVERSE_SEARCH_V5)
+    Observable<Response<String>> getUniverseAutoCompleteV5(
+            @QueryMap TKPDMapParam<String, Object> param
+    );
+
+    @DELETE(TkpdBaseURL.Ace.PATH_DELETE_SEARCH)
+    Observable<Response<Void>> deleteRecentSearch(
+            @QueryMap TKPDMapParam<String, Object> parameters
     );
 }
