@@ -11,4 +11,5 @@ public class TransactionAppLink extends TkpdAppLink {
     public static final String PURCHASE_ORDER = "tokopedia://buyer/order";
     public static final String PURCHASE_SHIPPING_CONFIRM = "tokopedia://buyer/shipping-confirm";
     public static final String PURCHASE_HISTORY = "tokopedia://buyer/history";
+    public static final String ORDER_HISTORY = "tokopedia://orderlist/digital";
 }
