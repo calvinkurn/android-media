@@ -3,16 +3,16 @@ package com.tokopedia.flight.booking.view.activity;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 
-import com.tokopedia.abstraction.base.view.activity.BaseWebViewActivity;
+import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.abstraction.common.di.component.HasComponent;
 import com.tokopedia.flight.FlightComponentInstance;
 import com.tokopedia.flight.booking.view.fragment.FlightInsuranceWebViewFragment;
 import com.tokopedia.flight.common.di.component.FlightComponent;
 
-public class FlightInsuranceWebviewActivity extends BaseWebViewActivity implements HasComponent<FlightComponent> {
+public class FlightInsuranceWebviewActivity extends BaseSimpleActivity implements HasComponent<FlightComponent> {
     private static final String EXTRA_URL = "EXTRA_URL";
     private static final String EXTRA_TITLE = "EXTRA_TITLE";
 
@@ -27,12 +27,11 @@ public class FlightInsuranceWebviewActivity extends BaseWebViewActivity implemen
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         updateTitle(getIntent().getStringExtra(EXTRA_TITLE));
-    }
-
-    @Nullable
-    @Override
-    protected Intent getContactUsIntent() {
-        return null;
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setHomeAsUpIndicator(
+                    ContextCompat.getDrawable(this, com.tokopedia.abstraction.R.drawable.ic_close_default)
+            );
+        }
     }
 
     @Override
