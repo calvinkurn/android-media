@@ -20,7 +20,6 @@ public class TrackAnalytics {
     }
 
     private static void sendEventToFirebase(String eventName, Map<String, Object> data, Context context) {
-        Log.d("firbase", eventName);
         TkpdFirebaseAnalytics.logEvent(eventName, convertMapToBundle(data), context);
     }
 
@@ -28,7 +27,6 @@ public class TrackAnalytics {
         Bundle bundle = new Bundle();
         for (Map.Entry<String, Object> entry : data.entrySet()) {
             bundle.putString(entry.getKey(), String.valueOf(entry.getValue()));
-            Log.d("firbase", entry.getKey() + " : " + String.valueOf(entry.getValue()));
         }
         return bundle;
     }
