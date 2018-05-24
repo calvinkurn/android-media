@@ -17,4 +17,4 @@ include "features:user:profile"
 include "features:operational:contact_us"
 include "features:user:otp"
 include "features:digital:event"
-include "features:digital:digitalproduct"
+include "features:digital:digitalproduct"\
