@@ -277,7 +277,7 @@ ext {
             shopCommon      : ":features:merchant:shop_common",
             shopPage        : ":features:merchant:shop_page",
             topAdsManagement: ":features:top_ads:top_ads_management",
-            tokoCash        : ":tkpdtokocash",
+            tokoCash        : ":features:fintech:tokocash",
             flight          : ":tkpdflight",
             flightNoOp      : ":features:digital:flight_no_op",
             mitraToppers    : ":features:fintech:mitra_toppers",
@@ -286,7 +286,9 @@ ext {
             kol             : ":features:content:kol",
             groupchat       : ":features:user:groupchat",
             gamification    : ":features:promo:gamification",
-            profile         : ":features:user:profile"
+            profile         : ":features:user:profile",
+            contactUs       : ":features:operational:contact_us",
+            otp             : ":features:user:otp"
     ]
 
     libraries = [
@@ -296,9 +298,10 @@ ext {
             pushNotif       : ":libraries:push_notification",
             applink         : ":libraries:applink",
             cacheApi        : ":libraries:cache_api",
-            reactNative     : ":libraries:react_native",
             useCase         : ":libraries:use_case",
             fingerprint     : ":libraries:fingerprint",
+            userSession     : ":libraries:user_session",
+            imageuploader   : ":libraries:imageuploader",
             youtubeApi      : ":libraries:YouTubeAndroidPlayerApi"
     ]
 }
