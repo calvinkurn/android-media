@@ -35,7 +35,7 @@ public class FlightClassesDataSource {
                 .map(new Func1<Response<DataResponse<List<FlightClassEntity>>>, List<FlightClassEntity>>() {
                     @Override
                     public List<FlightClassEntity> call(Response<DataResponse<List<FlightClassEntity>>> response) {
-                        return response.body().getData();
+                        return response.body().getCancelablePassenger();
                     }
                 });*/
     }

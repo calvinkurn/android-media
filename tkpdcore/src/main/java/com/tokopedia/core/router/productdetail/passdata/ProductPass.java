@@ -26,6 +26,16 @@ public class ProductPass implements Parcelable {
     private String trackerAttribution;
     private String trackerListName;
 
+    private boolean isWishlist = false;
+    private String originalPrice;
+    private int discountPercentage;
+    private int starRating;
+    private int countReview;
+    private int countDiscussion;
+    private int countCourrier;
+    private String cashback;
+    private boolean isOfficial;
+
     public ProductPass() {
         dateTimeInMilis = 0;
     }
@@ -138,6 +148,70 @@ public class ProductPass implements Parcelable {
         return CREATOR;
     }
 
+    public boolean isWishlist() {
+        return isWishlist;
+    }
+
+    public void setWishlist(boolean wishlist) {
+        isWishlist = wishlist;
+    }
+
+    public String getOriginalPrice() {
+        return originalPrice;
+    }
+
+    public void setOriginalPrice(String originalPrice) {
+        this.originalPrice = originalPrice;
+    }
+
+    public int getDiscountPercentage() {
+        return discountPercentage;
+    }
+
+    public void setDiscountPercentage(int discountPercentage) {
+        this.discountPercentage = discountPercentage;
+    }
+
+    public int getCountReview() {
+        return countReview;
+    }
+
+    public void setCountReview(int countReview) {
+        this.countReview = countReview;
+    }
+
+    public int getCountDiscussion() {
+        return countDiscussion;
+    }
+
+    public void setCountDiscussion(int countDiscussion) {
+        this.countDiscussion = countDiscussion;
+    }
+
+    public int getCountCourrier() {
+        return countCourrier;
+    }
+
+    public void setCountCourrier(int countCourrier) {
+        this.countCourrier = countCourrier;
+    }
+
+    public int getStarRating() {
+        return starRating;
+    }
+
+    public void setStarRating(int starRating) {
+        this.starRating = starRating;
+    }
+
+    public boolean isOfficial() {
+        return isOfficial;
+    }
+
+    public void setOfficial(boolean official) {
+        isOfficial = official;
+    }
+
     protected ProductPass(Parcel in) {
         productId = in.readString();
         productName = in.readString();
@@ -152,6 +226,18 @@ public class ProductPass implements Parcelable {
         productDesc = in.readString();
         picToShare = (Bitmap) in.readValue(Bitmap.class.getClassLoader());
         dateTimeInMilis = in.readLong();
+        trackerAttribution = in.readString();
+        trackerListName = in.readString();
+        isWishlist = in.readByte() != 0x00;
+        originalPrice = in.readString();
+        discountPercentage = in.readInt();
+        starRating = in.readInt();
+        countReview = in.readInt();
+        countDiscussion = in.readInt();
+        countCourrier = in.readInt();
+        cashback = in.readString();
+        isOfficial = in.readByte() != 0x00;
+
     }
 
     @Override
@@ -174,6 +260,17 @@ public class ProductPass implements Parcelable {
         dest.writeString(productDesc);
         dest.writeValue(picToShare);
         dest.writeLong(dateTimeInMilis);
+        dest.writeString(trackerAttribution);
+        dest.writeString(trackerListName);
+        dest.writeByte((byte) (isWishlist ? 0x01 : 0x00));
+        dest.writeString(originalPrice);
+        dest.writeInt(discountPercentage);
+        dest.writeInt(starRating);
+        dest.writeInt(countReview);
+        dest.writeInt(countDiscussion);
+        dest.writeInt(countCourrier);
+        dest.writeString(cashback);
+        dest.writeByte((byte) (isOfficial ? 0x01 : 0x00));
     }
 
     @SuppressWarnings("unused")
@@ -207,10 +304,16 @@ public class ProductPass implements Parcelable {
     }
 
     public String getTrackerListName() {
-        if (trackerListName == null || trackerListName.isEmpty()) return "none / other";
-        else return trackerListName;
+        return trackerListName;
     }
 
+    public String getCashback() {
+        return cashback;
+    }
+
+    public void setCashback(String cashback) {
+        this.cashback = cashback;
+    }
 
     public static class Builder {
         private String productId = "";
@@ -224,10 +327,20 @@ public class ProductPass implements Parcelable {
         private String adKey = "";
         private String adR = "";
         private String productDesc = "";
-        private String trackerAttribution = "";
-        private String trackerListName = "";
         private Bitmap picToShare;
         private long dateTimeInMilis;
+        private String trackerAttribution;
+        private String trackerListName;
+
+        private boolean isWishlist = false;
+        private String discountedPrice;
+        private int discountPercentage;
+        private int starRating;
+        private int countReview;
+        private int countDiscussion;
+        private int countCourrier;
+        private String cashback;
+        private boolean isOfficial;
 
         private Builder() {
         }
@@ -317,6 +430,52 @@ public class ProductPass implements Parcelable {
             return this;
         }
 
+        public Builder setWishlist(boolean isWishlist){
+            this.isWishlist = isWishlist;
+            return this;
+        }
+
+        public Builder setDiscountedPrice(String discountedPrice){
+            this.discountedPrice = discountedPrice;
+            return this;
+        }
+
+
+        public Builder setDiscountPercentage(int discountPercentage){
+            this.discountPercentage = discountPercentage;
+            return this;
+        }
+
+        public Builder setRating(int starRating){
+            this.starRating = starRating;
+            return this;
+        }
+
+        public Builder setCountReview(int countReview){
+            this.countReview = countReview;
+            return this;
+        }
+
+        public Builder setCountDiscussion(int countDiscussion){
+            this.countDiscussion = countDiscussion;
+            return this;
+        }
+
+        public Builder setCountCourrier(int countCourrier){
+            this.countCourrier = countCourrier;
+            return this;
+        }
+
+        public Builder setCashback(String cashback){
+            this.cashback = cashback;
+            return this;
+        }
+
+        public Builder setOfficial(boolean isOfficial){
+            this.isOfficial = isOfficial;
+            return this;
+        }
+
         public Builder but() {
             return aProductPass().setProductId(productId).setProductName(productName).setProductPrice(productPrice).setProductImage(productImage).setShopName(shopName).setProductUri(productUri).setProductKey(productKey).setShopDomain(shopDomain).setAdKey(adKey).setAdR(adR).setProductDesc(productDesc).setPicToShare(picToShare).setDateTimeInMilis(dateTimeInMilis);
         }
@@ -338,6 +497,15 @@ public class ProductPass implements Parcelable {
             productPass.setDateTimeInMilis(dateTimeInMilis);
             productPass.setTrackerAttribution(trackerAttribution);
             productPass.setTrackerListName(trackerListName);
+            productPass.setWishlist(isWishlist);
+            productPass.setOriginalPrice(discountedPrice);
+            productPass.setOfficial(isOfficial);
+            productPass.setDiscountPercentage(discountPercentage);
+            productPass.setStarRating(starRating);
+            productPass.setCountReview(countReview);
+            productPass.setCountDiscussion(countDiscussion);
+            productPass.setCountCourrier(countCourrier);
+            productPass.setCashback(cashback);
             return productPass;
         }
     }

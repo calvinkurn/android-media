@@ -1,5 +1,4 @@
 apply plugin: 'com.android.application'
-apply plugin: 'android-apt'
 apply plugin: 'io.fabric'
 
 def getDpiId(String density) {
@@ -11,12 +10,12 @@ def getDpiId(String density) {
 }
 
 def getAPKArchiveFolder(variant) {
-    return "/Android/launching-android/" + "V" + variant.mergedFlavor.versionCode
+    return "/Android/launching-android/" + "V" + variant.mergedFlavor.versionCode;
 }
 
 def allowSplit() {
     return gradle.startParameter.taskNames.contains("assembleRelease") &&
-            (project.hasProperty('tkpdBuildType') && tkpdBuildType == "production")
+            !project.hasProperty('tkpdBuildType');
 }
 
 def allowDistribution() {
@@ -77,14 +76,16 @@ android {
         defaultVersionName = "1.0.4";
     }
 
+    packagingOptions {
+        exclude 'META-INF/LICENSE.txt'
+    }
+
     compileSdkVersion rootProject.ext.compileSdkVersion
     buildToolsVersion rootProject.ext.buildToolsVersion
     useLibrary 'org.apache.http.legacy'
     sourceSets {
 
-        packagingOptions {
-            exclude 'META-INF/LICENSE.txt'
-        }
+
 
         main {
             java.srcDirs = ['src/main/java']
@@ -95,7 +96,7 @@ android {
             assets.srcDirs = ['assets', 'src/main/assets', 'src/main/assets/']
         }
 
-        instrumentTest.setRoot('tests')
+        androidTest.setRoot('tests')
         debug.setRoot('build-types/debug')
         release.setRoot('build-types/release')
     }
@@ -197,6 +198,9 @@ android {
         resolutionStrategy.force 'com.squareup.okio:okio:1.11.0'
     }
 
+    // Specifies two flavor dimensions.
+    flavorDimensions "tier"
+
     productFlavors {
         staging {
 
@@ -217,40 +221,113 @@ repositories {
 }
 
 dependencies {
-    compile fileTree(include: ['*.jar'], dir: 'libs')
-    compile project(rootProject.ext.features.productDetail)
-    compile project(rootProject.ext.features.topAdsManagement)
-    compile project(rootProject.ext.features.goldMerchant)
-    compile project(rootProject.ext.features.session)
-    compile project(rootProject.ext.features.inbox)
-    compile project(rootProject.ext.features.digitalproduct)
-    compile project(rootProject.ext.features.transaction)
-    compile project(rootProject.ext.features.reputation)
-    compile project(rootProject.ext.features.mitraToppers)
-    compile project(rootProject.ext.features.shopPage)
-    compile project(rootProject.ext.features.profile)
-    compile project(rootProject.ext.libraries.pushNotif)
-    compile project(rootProject.ext.libraries.applink)
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
 
-    compile(rootProject.ext.miscDependencies.trueCaller) {
+    implementation project(rootProject.ext.libraries.pushNotif)
+    implementation project(rootProject.ext.libraries.applink)
+    implementation project(rootProject.ext.libraries.cacheApi)
+    implementation project(rootProject.ext.libraries.abstraction)
+    implementation project(rootProject.ext.libraries.design)
+    implementation project(rootProject.ext.libraries.useCase)
+
+    implementation project(rootProject.ext.features.core)
+    implementation project(rootProject.ext.features.shopPage)
+    implementation project(rootProject.ext.features.mitraToppers)
+    implementation project(rootProject.ext.features.goldMerchant)
+    implementation project(rootProject.ext.features.topAdsManagement)
+    implementation project(rootProject.ext.features.seller)
+    implementation project(rootProject.ext.features.session)
+    implementation project(rootProject.ext.features.productDetail)
+    implementation project(rootProject.ext.features.inbox)
+    implementation project(rootProject.ext.features.reputation)
+    implementation project(rootProject.ext.features.reputationCommon)
+    implementation project(rootProject.ext.features.transaction)
+    implementation project(rootProject.ext.features.topAdsSdk)
+    implementation project(rootProject.ext.features.payment)
+    implementation project(rootProject.ext.features.profile)
+    implementation project(rootProject.ext.features.contactUs)
+    implementation project(rootProject.ext.features.otp)
+
+    implementation project(rootProject.ext.features.shopCommon)
+    implementation project(rootProject.ext.features.digitalproduct)
+
+    implementation rootProject.ext.tkpdLibDependencies.youtubePlayer
+
+    implementation (rootProject.ext.debugToolsDependencies.chuck) {
+        exclude group: 'com.squareup.okhttp3'
+        exclude group: 'com.squareup.okio'
         exclude group: 'com.android.support'
     }
 
-    compile('de.hdodenhof:circleimageview:2.1.0') {
+    annotationProcessor rootProject.ext.dbDependencies.dbFlowProcessor
+    implementation rootProject.ext.dbDependencies.dbFlowCore
+    implementation rootProject.ext.dbDependencies.dbFlow
+
+    implementation (rootProject.ext.analyticsDependencies.moengage) {
+        exclude group: 'com.moengage', module: 'moe-push-gcm'
+    }
+    implementation (rootProject.ext.analyticsDependencies.moengageMSG) {
+        exclude group: 'com.android.support'
+    }
+
+    implementation rootProject.ext.playServicesDependencies.maps
+    implementation rootProject.ext.playServicesDependencies.remoteConfig
+    implementation rootProject.ext.playServicesDependencies.firebase
+
+    implementation rootProject.ext.supportLibDependencies.cardViewV7
+    implementation rootProject.ext.supportLibDependencies.appCompactV7
+    implementation rootProject.ext.supportLibDependencies.design
+    implementation rootProject.ext.supportLibDependencies.constraintLayout
+
+    implementation rootProject.ext.networkDependencies.retrofit
+    implementation rootProject.ext.networkDependencies.converterGson
+    implementation rootProject.ext.networkDependencies.adapterRxJava
+    implementation rootProject.ext.networkDependencies.okHttp
+    implementation rootProject.ext.networkDependencies.loggingInterceptor
+
+    implementation rootProject.ext.miscDependencies.roundCornerProgressBar
+    implementation rootProject.ext.miscDependencies.scannerZxing
+
+    implementation rootProject.ext.miscDependencies.rxAndroid
+    implementation rootProject.ext.miscDependencies.rxJava
+    implementation rootProject.ext.miscDependencies.rxJavaMath
+
+    implementation project(rootProject.ext.libraries.fingerprint)
+
+    implementation(rootProject.ext.miscDependencies.trueCaller) {
+        exclude group: 'com.android.support'
+    }
+    implementation (rootProject.ext.miscDependencies.imagecropper){
+        exclude group: "com.android.support"
+    }
+    implementation (rootProject.ext.miscDependencies.loaderviewlibrary){
+        exclude group: 'com.android.support'
+    }
+    compileOnly rootProject.ext.miscDependencies.javaxAnnotation
+    implementation rootProject.ext.miscDependencies.dagger
+    annotationProcessor rootProject.ext.miscDependencies.daggerCompiler
+
+    implementation(rootProject.ext.tkpdLibDependencies.expandableOption) {
+        exclude group: "com.android.support"
+    }
+    implementation(rootProject.ext.tkpdLibDependencies.showcase) {
+        exclude group: "com.android.support"
+    }
+
+    implementation rootProject.ext.viewDependencies.appIntro
+
+    implementation('de.hdodenhof:circleimageview:2.1.0') {
         exclude group: 'com.android.support', module: 'support-annotations'
     }
-    compile rootProject.ext.butterKnifeDependencies.butterKnife
-    apt rootProject.ext.butterKnifeDependencies.butterKnifeCompiler
 
-    provided rootProject.ext.miscDependencies.javaxAnnotation
-    compile rootProject.ext.miscDependencies.dagger
-    apt rootProject.ext.miscDependencies.daggerCompiler
+    implementation rootProject.ext.butterKnifeDependencies.butterKnife
+    annotationProcessor rootProject.ext.butterKnifeDependencies.butterKnifeCompiler
 
-    compile rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
-    apt rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
+    implementation rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
+    annotationProcessor rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
 
-    androidTestCompile(rootProject.ext.testDependencies.espressoCore, {
+    androidTestImplementation(rootProject.ext.testDependencies.espressoCore, {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
-    testCompile rootProject.ext.testDependencies.junit
+    testImplementation rootProject.ext.testDependencies.junit
 }

@@ -14,9 +14,11 @@ import com.tokopedia.flight.orderlist.domain.model.FlightOrderJourney;
 public class FlightDetailOrderTypeFactory extends BaseAdapterTypeFactory {
 
     ExpandableOnClickListener expandableOnClickListener;
+    float titleFontSize;
 
-    public FlightDetailOrderTypeFactory(ExpandableOnClickListener expandableOnClickListener) {
+    public FlightDetailOrderTypeFactory(ExpandableOnClickListener expandableOnClickListener, float titleFontSize) {
         this.expandableOnClickListener = expandableOnClickListener;
+        this.titleFontSize = titleFontSize;
     }
 
     public int type(FlightOrderJourney flightOrderJourney) {
@@ -26,7 +28,7 @@ public class FlightDetailOrderTypeFactory extends BaseAdapterTypeFactory {
     @Override
     public AbstractViewHolder createViewHolder(View parent, int type) {
         if (type == FlightDetailOrderViewHolder.LAYOUT)
-            return new FlightDetailOrderViewHolder(parent, expandableOnClickListener);
+            return new FlightDetailOrderViewHolder(parent, expandableOnClickListener, titleFontSize);
         else
             return super.createViewHolder(parent, type);
     }
