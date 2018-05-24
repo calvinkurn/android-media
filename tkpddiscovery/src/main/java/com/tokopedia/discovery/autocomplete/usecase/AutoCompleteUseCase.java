@@ -50,12 +50,12 @@ public class AutoCompleteUseCase extends UseCase<List<SearchData>> {
         params.putString(KEY_DEVICE, DEFAULT_DEVICE);
         params.putString(KEY_SOURCE, DEFAULT_SOURCE);
         params.putString(KEY_COUNT, DEFAULT_COUNT);
-        String unique_id = AuthUtil.md5(registrationId);
+        String uniqueId = AuthUtil.md5(registrationId);
         if (!TextUtils.isEmpty(userId)) {
-            unique_id = AuthUtil.md5(userId);
+            uniqueId = AuthUtil.md5(userId);
             params.putString(KEY_USER_ID, userId);
         }
-        params.putString(KEY_UNIQUE_ID, unique_id);
+        params.putString(KEY_UNIQUE_ID, uniqueId);
         params.putString(DEVICE_ID, registrationId);
         params.putString(KEY_QUERY, (query.isEmpty() ? "" : query));
         return params;

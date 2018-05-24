@@ -50,8 +50,8 @@ public class SearchMainFragment extends TkpdBaseV4Fragment implements SearchCont
     public static final String INIT_QUERY = "INIT_QUERY";
     private static final String SEARCH_INIT_KEY = "SEARCH_INIT_KEY";
 
-    RecyclerView recyclerView;
-    LinearLayoutManager layoutManager;
+    private RecyclerView recyclerView;
+    private LinearLayoutManager layoutManager;
 
     @Inject
     SearchPresenter presenter;
@@ -129,9 +129,7 @@ public class SearchMainFragment extends TkpdBaseV4Fragment implements SearchCont
         new Handler().post(new Runnable() {
             @Override
             public void run() {
-//                if (viewPager != null) {
-//                    viewPager.setCurrentItem(pos);
-//                }
+
             }
         });
     }

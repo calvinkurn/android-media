@@ -1,7 +1,6 @@
 package com.tokopedia.discovery.autocomplete;
 
 import android.support.annotation.LayoutRes;
-import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
@@ -18,7 +17,6 @@ import com.tokopedia.discovery.search.domain.model.SearchItem;
 import com.tokopedia.discovery.search.view.adapter.ItemClickListener;
 import com.tokopedia.discovery.search.view.adapter.SearchAdapter;
 import com.tokopedia.discovery.search.view.adapter.factory.SearchAdapterTypeFactory;
-import com.tokopedia.discovery.search.view.fragment.SearchResultFragment;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -47,7 +45,7 @@ public class DefaultAutoCompleteViewHolder extends AbstractViewHolder<DefaultAut
         for (SearchData searchData : element.getList()) {
             List<Visitable> list;
             switch (searchData.getId()) {
-                case "recent_search":
+                case SearchData.AUTOCOMPLETE_RECENT_SEARCH:
                     adapter.addAll(
                             insertTitleWithDeleteAll(
                                     prepareRecentSearch(searchData, element.getSearchTerm()),
@@ -55,7 +53,7 @@ public class DefaultAutoCompleteViewHolder extends AbstractViewHolder<DefaultAut
                             )
                     );
                     continue;
-                case "popular_search":
+                case SearchData.AUTOCOMPLETE_POPULAR_SEARCH:
                     adapter.addAll(
                             insertTitle(
                                     preparePopularSearch(searchData, element.getSearchTerm()),

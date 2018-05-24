@@ -42,7 +42,6 @@ public class SearchAdapter extends RecyclerView.Adapter<AbstractViewHolder> {
 
     @Override
     public int getItemViewType(int position) {
-        Log.d("hangnadi", "getItemViewType: " + position);
         return list.get(position).type(typeFactory);
     }
 

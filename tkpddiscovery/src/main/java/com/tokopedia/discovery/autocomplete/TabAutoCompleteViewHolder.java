@@ -78,25 +78,25 @@ public class TabAutoCompleteViewHolder extends AbstractViewHolder<TabAutoComplet
         for (SearchData searchData : element.getList()) {
             List<Visitable> list;
             switch (searchData.getId()) {
-                case "digital":
+                case SearchData.AUTOCOMPLETE_DIGITAL:
                     allFragment.addBulkSearchResult(prepareDigitalSearch(searchData, element.getSearchTerm()));
                     continue;
-                case "category":
+                case SearchData.AUTOCOMPLETE_CATEGORY:
                     allFragment.addBulkSearchResult(insertTitle(prepareCategorySearch(searchData, element.getSearchTerm()), searchData.getName()));
                     continue;
-                case "autocomplete":
+                case SearchData.AUTOCOMPLETE_DEFAULT:
                     list = prepareAutoCompleteSearch(searchData, element.getSearchTerm());
                     allFragment.addBulkSearchResult(list);
                     productFragment.addBulkSearchResult(list);
                     continue;
-                case "hotlist":
+                case SearchData.AUTOCOMPLETE_HOTLIST:
                     continue;
-                case "in_category":
+                case SearchData.AUTOCOMPLETE_IN_CATEGORY:
                     list = prepareInCategorySearch(searchData, element.getSearchTerm());
                     allFragment.addBulkSearchResult(list);
                     productFragment.addBulkSearchResult(list);
                     continue;
-                case "shop":
+                case SearchData.AUTOCOMPLETE_SHOP:
                     list = prepareShopSearch(searchData, element.getSearchTerm());
                     shopFragment.addBulkSearchResult(list);
                     allFragment.addBulkSearchResult(insertTitle(list, searchData.getName()));
