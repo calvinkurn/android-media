@@ -1,6 +1,5 @@
 package com.tokopedia.home.beranda.presentation.view.fragment;
 
-import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -18,12 +17,9 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.WindowManager;
-import android.view.inputmethod.InputMethodManager;
 
 import com.google.firebase.perf.metrics.Trace;
 import com.tkpd.library.ui.view.LinearLayoutManager;
-import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.core.analytics.AppScreen;
@@ -31,7 +27,6 @@ import com.tokopedia.core.analytics.HomePageTracking;
 import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.UnifyTracking;
-import com.tokopedia.core.analytics.nishikino.model.Promotion;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.core.base.adapter.model.LoadingModel;
@@ -58,12 +53,11 @@ import com.tokopedia.core.router.productdetail.PdpRouter;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
 import com.tokopedia.core.router.wallet.IWalletRouter;
 import com.tokopedia.core.router.wallet.WalletRouterUtil;
-import com.tokopedia.home.IHomeRouter;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.design.bottomsheet.BottomSheetView;
-import com.tokopedia.digital.tokocash.model.CashBackData;
 import com.tokopedia.gamification.floating.view.fragment.FloatingEggButtonFragment;
+import com.tokopedia.home.IHomeRouter;
 import com.tokopedia.home.R;
 import com.tokopedia.home.beranda.di.BerandaComponent;
 import com.tokopedia.home.beranda.di.DaggerBerandaComponent;
@@ -76,6 +70,7 @@ import com.tokopedia.home.beranda.presentation.view.SectionContainer;
 import com.tokopedia.home.beranda.presentation.view.adapter.HomeRecycleAdapter;
 import com.tokopedia.home.beranda.presentation.view.adapter.LinearLayoutManagerWithSmoothScroller;
 import com.tokopedia.home.beranda.presentation.view.adapter.factory.HomeAdapterFactory;
+import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.CashBackData;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.HeaderViewModel;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.TopAdsViewModel;
 import com.tokopedia.home.beranda.presentation.view.compoundview.CountDownView;
@@ -291,7 +286,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         refreshLayout.setOnRefreshListener(this);
     }
 
-    private void loadEggData(){
+    private void loadEggData() {
         FloatingEggButtonFragment floatingEggButtonFragment = getFloatingEggButtonFragment();
         if (floatingEggButtonFragment != null) {
             floatingEggButtonFragment.loadEggData();
@@ -314,7 +309,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         }
     }
 
-    private void initEggTokenScrollListener(){
+    private void initEggTokenScrollListener() {
         onEggScrollListener = new RecyclerView.OnScrollListener() {
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
@@ -334,7 +329,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         }
     }
 
-    private FloatingEggButtonFragment getFloatingEggButtonFragment(){
+    private FloatingEggButtonFragment getFloatingEggButtonFragment() {
         if (floatingEggButtonFragment == null) {
             floatingEggButtonFragment = (FloatingEggButtonFragment) getChildFragmentManager().findFragmentById(R.id.floating_egg_fragment);
         }
@@ -722,7 +717,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
 
     @Override
     public void onShowRetryGetFeed() {
-        if(adapter != null ) {
+        if (adapter != null) {
             adapter.hideLoading();
             adapter.showRetry();
             adapter.notifyDataSetChanged();
@@ -844,9 +839,15 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
                         presenter.updateHeaderTokoCashData(homeHeaderWalletAction);
                     break;
                 case HomeFragmentBroadcastReceiverConstant.ACTION_RECEIVER_RECEIVED_TOKOCASH_PENDING_DATA:
-                    CashBackData cashBackData = intent.getParcelableExtra(
-                            HomeFragmentBroadcastReceiverConstant.EXTRA_TOKOCASH_PENDING_DATA
-                    );
+                    int amount = intent.getIntExtra(
+                            HomeFragmentBroadcastReceiverConstant.EXTRA_TOKOCASH_PENDING_AMOUNT, 0);
+                    String amountText = intent.getStringExtra(
+                            HomeFragmentBroadcastReceiverConstant.EXTRA_TOKOCASH_PENDING__AMOUNT_TEXT);
+
+                    CashBackData cashBackData = new CashBackData();
+                    cashBackData.setAmount(amount);
+                    cashBackData.setAmountText(amountText);
+
                     if (cashBackData != null)
                         presenter.updateHeaderTokoCashPendingData(cashBackData);
                     break;
