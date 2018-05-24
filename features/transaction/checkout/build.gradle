@@ -1,34 +1,34 @@
 apply plugin: 'com.android.library'
 apply from: "$rootProject.projectDir/buildconfig/module.gradle"
-apply plugin: 'android-apt'
 
 dependencies {
-    compile project(rootProject.ext.features.transactioncommon)
-    compile project(rootProject.ext.features.core)
-    compile rootProject.ext.playServicesDependencies.maps
-    compile project(rootProject.ext.libraries.design)
-    compile project(rootProject.ext.features.topAdsSdk)
-    compile project(rootProject.ext.features.payment)
-    compile project(rootProject.ext.features.logisticdata)
-    compile project(rootProject.ext.features.transactiondata)
-    compile project(rootProject.ext.features.transactionanalytics)
+    implementation project(rootProject.ext.libraries.useCase)
+    implementation project(rootProject.ext.libraries.design)
+    implementation project(rootProject.ext.libraries.abstraction)
 
-    compile(rootProject.ext.tkpdLibDependencies.showcase) {
+    implementation project(rootProject.ext.features.transactioncommon)
+    implementation project(rootProject.ext.features.core)
+    implementation project(rootProject.ext.features.topAdsSdk)
+    implementation project(rootProject.ext.features.payment)
+    implementation project(rootProject.ext.features.logisticdata)
+    implementation project(rootProject.ext.features.transactiondata)
+    implementation project(rootProject.ext.features.transactionanalytics)
+
+    implementation rootProject.ext.miscDependencies.multiDex
+    implementation rootProject.ext.playServicesDependencies.maps
+    implementation rootProject.ext.miscDependencies.apacheLang
+    implementation rootProject.ext.debugToolsDependencies.chuck
+
+    implementation(rootProject.ext.tkpdLibDependencies.showcase) {
         exclude group: "com.android.support"
     }
 
-    compile fileTree(dir: 'libs', include: ['*.jar'])
-    compile rootProject.ext.supportLibDependencies.appCompactV7
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
 
-    androidTestCompile(rootProject.ext.testDependencies.espressoCore, {
-        exclude group: 'com.android.support', module: 'support-annotations'
-    })
-    testCompile rootProject.ext.testDependencies.junit
+    implementation rootProject.ext.butterKnifeDependencies.butterKnife
+    annotationProcessor rootProject.ext.butterKnifeDependencies.butterKnifeCompiler
 
-    compile rootProject.ext.miscDependencies.dagger
-    apt rootProject.ext.miscDependencies.daggerCompiler
-
-    compile rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
-    apt rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
+    implementation rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
+    annotationProcessor rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
 
 }
