@@ -27,9 +27,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
-import com.bumptech.glide.load.resource.drawable.GlideDrawable;
-import com.bumptech.glide.request.RequestListener;
-import com.bumptech.glide.request.target.Target;
 import com.tkpd.library.ui.widget.TouchViewPager;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.core.analytics.UnifyTracking;
@@ -502,29 +499,5 @@ public class EventsHomeActivity extends TActivity
     @OnClick(R2.id.promo_event)
     void goToPromo() {
         mPresenter.onOptionMenuClick(R.id.action_promo);
-    }
-
-    public class ImageRequestListener implements RequestListener<String, GlideDrawable> {
-
-        int position;
-
-        public ImageRequestListener(int pos) {
-            position = pos;
-        }
-
-        @Override
-        public boolean onException(Exception e, String model, Target<GlideDrawable> target, boolean isFirstResource) {
-            return false;
-        }
-
-        @Override
-        public boolean onResourceReady(GlideDrawable resource, String model, Target<GlideDrawable> target, boolean isFromMemoryCache, boolean isFirstResource) {
-            try {
-                tabs.getTabAt(position).setIcon(resource.getCurrent());
-            } catch (NullPointerException e) {
-                e.printStackTrace();
-            }
-            return false;
-        }
     }
 }

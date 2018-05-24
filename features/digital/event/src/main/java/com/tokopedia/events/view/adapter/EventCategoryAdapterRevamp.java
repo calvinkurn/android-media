@@ -122,10 +122,16 @@ public class EventCategoryAdapterRevamp extends RecyclerView.Adapter<EventCatego
                 tv3SoldCnt.setVisibility(View.GONE);
             }
             tvAddToWishlist.setText(String.valueOf(data.getLikes()));
-            tvAddToWishlist.setTextColor(redColor);
-            tvAddToWishlist.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_event_wishlist_red,
-                    0, 0, 0);
-            ImageHandler.loadImageCover2(eventImage, categoryItems.get(position).getThumbnailApp());
+            if (data.isLiked()) {
+                tvAddToWishlist.setTextColor(context.getResources().getColor(R.color.red_1));
+                tvAddToWishlist.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_event_wishlist_red,
+                        0, 0, 0);
+            } else {
+                tvAddToWishlist.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_event_wishlist,
+                        0, 0, 0);
+                tvAddToWishlist.setTextColor(context.getResources().getColor(R.color.black_54));
+            }
+            ImageHandler.loadImageCover2(eventImage, categoryItems.get(getAdapterPosition()).getThumbnailApp());
 
         }
 

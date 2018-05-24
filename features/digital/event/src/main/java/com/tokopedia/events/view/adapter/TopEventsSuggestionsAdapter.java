@@ -273,7 +273,7 @@ public class TopEventsSuggestionsAdapter extends RecyclerView.Adapter<RecyclerVi
                 tvAddToWishlist.setTextColor(mContext.getResources().getColor(R.color.black_54));
             }
 
-            ImageHandler.loadImageCover2(eventImage, categoryItems.get(position).getThumbnailApp());
+            ImageHandler.loadImageCover2(eventImage, categoryItems.get(getAdapterPosition()).getThumbnailApp());
 
         }
 
