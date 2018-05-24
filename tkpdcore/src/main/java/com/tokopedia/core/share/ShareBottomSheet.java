@@ -37,25 +37,7 @@ import java.util.List;
  */
 public class ShareBottomSheet extends BottomSheets implements ShareAdapter.OnItemClickListener {
 
-    public static ShareBottomSheet newInstance(ShareData data, boolean isAddingProduct) {
-        ShareBottomSheet fragment = new ShareBottomSheet();
-        Bundle bundle = new Bundle();
-        bundle.putParcelable(ShareBottomSheet.class.getName(), data);
-        bundle.putBoolean(ShareBottomSheet.class.getName()+KEY_ADDING, isAddingProduct);
-        fragment.setArguments(bundle);
-        return fragment;
-    }
-
-    public static void show(FragmentManager fragmentManager, ShareData data, boolean isAddingProduct) {
-        newInstance(data, isAddingProduct).show(fragmentManager, TITLE_EN);
-    }
-
-    public static void show(FragmentManager fragmentManager, ShareData data) {
-        newInstance(data, false).show(fragmentManager, TITLE_EN);
-    }
-
     public static final String TITLE_EN = "Share";
-    public static final String TITLE_ID = "Bagikan";
 
     public static final String KEY_ADDING = ".isAddingProduct";
 
@@ -65,20 +47,39 @@ public class ShareBottomSheet extends BottomSheets implements ShareAdapter.OnIte
     private static final String PACKAGENAME_TWITTER = "com.twitter.composer.ComposerShareActivity";
     private static final String PACKAGENAME_GPLUS = "com.google.android.apps.plus.GatewayActivityAlias";
 
+    private String[] ClassNameApplications = new String[] {PACKAGENAME_WHATSAPP,
+            PACKAGENAME_FACEBOOK, PACKAGENAME_LINE, PACKAGENAME_TWITTER, PACKAGENAME_GPLUS};
+
     private static final String KEY_WHATSAPP = "whatsapp";
     private static final String KEY_LINE = "line";
     private static final String KEY_TWITTER = "twitter";
     private static final String KEY_FACEBOOK = "facebook";
     private static final String KEY_GOOGLE = "google";
-    private static final String KEY_OTHER = "lainnya";
+    public static final String KEY_OTHER = "lainnya";
+    public static final String KEY_COPY = "salinlink";
 
     private static final String TYPE = "text/plain";
 
-    private String[] ClassNameApplications = new String[] {PACKAGENAME_WHATSAPP, PACKAGENAME_FACEBOOK,
-            PACKAGENAME_LINE, PACKAGENAME_TWITTER, PACKAGENAME_GPLUS};
-
     private ShareData data;
     private boolean isAdding;
+
+    public static ShareBottomSheet newInstance(ShareData data, boolean isAddingProduct) {
+        ShareBottomSheet fragment = new ShareBottomSheet();
+        Bundle bundle = new Bundle();
+        bundle.putParcelable(ShareBottomSheet.class.getName(), data);
+        bundle.putBoolean(ShareBottomSheet.class.getName()+KEY_ADDING, isAddingProduct);
+        fragment.setArguments(bundle);
+        return fragment;
+    }
+
+    public static void show(FragmentManager fragmentManager, ShareData data,
+                            boolean isAddingProduct) {
+        newInstance(data, isAddingProduct).show(fragmentManager, TITLE_EN);
+    }
+
+    public static void show(FragmentManager fragmentManager, ShareData data) {
+        newInstance(data, false).show(fragmentManager, TITLE_EN);
+    }
 
     @Override
     public int getLayoutResourceId() {
@@ -92,7 +93,7 @@ public class ShareBottomSheet extends BottomSheets implements ShareAdapter.OnIte
 
     @Override
     protected String title() {
-        return TITLE_ID;
+        return getString(R.string.title_share);
     }
 
     @Override
@@ -152,7 +153,7 @@ public class ShareBottomSheet extends BottomSheets implements ShareAdapter.OnIte
     public void onItemClick(String packageName) {
         if (packageName.equalsIgnoreCase(KEY_OTHER)) {
             actionMore(packageName);
-        } else if (packageName.equalsIgnoreCase("salinlink")) {
+        } else if (packageName.equalsIgnoreCase(KEY_COPY)) {
             actionCopy();
         } else {
             actionShare(packageName);
@@ -160,7 +161,7 @@ public class ShareBottomSheet extends BottomSheets implements ShareAdapter.OnIte
     }
 
     private void actionCopy() {
-        data.setSource("Copy");
+        data.setSource(AppEventTracking.Action.COPY);
         BranchSdkUtils.generateBranchLink(data, getActivity(), new BranchSdkUtils.GenerateShareContents() {
             @Override
             public void onCreateShareContents(String shareContents, String shareUri, String branchUrl) {
@@ -168,8 +169,8 @@ public class ShareBottomSheet extends BottomSheets implements ShareAdapter.OnIte
             }
         });
 
-        Toast.makeText(getActivity(), "Teks berhasil disalin.", Toast.LENGTH_SHORT).show();
-        sendAnalyticsToGtm(data.getType(),"Copy");
+        Toast.makeText(getActivity(), getString(R.string.msg_copy), Toast.LENGTH_SHORT).show();
+        sendAnalyticsToGtm(data.getType(), AppEventTracking.Action.COPY);
     }
 
     private void actionShare(String packageName) {
@@ -187,7 +188,7 @@ public class ShareBottomSheet extends BottomSheets implements ShareAdapter.OnIte
             @Override
             public void onCreateShareContents(String shareContents, String shareUri, String branchUrl) {
                 Intent intent = getIntent(shareContents);
-                startActivity(Intent.createChooser(intent, "Lainnya"));
+                startActivity(Intent.createChooser(intent, getString(R.string.fb_cat_etc)));
 
                 sendTracker(packageName);
             }
@@ -230,7 +231,8 @@ public class ShareBottomSheet extends BottomSheets implements ShareAdapter.OnIte
             public void onReceive(Context context, Intent intent) {
                 Bundle bundle = intent.getExtras();
                 if (bundle != null) {
-                    int status = bundle.getInt(TkpdState.ProductService.STATUS_FLAG, TkpdState.ProductService.STATUS_ERROR);
+                    int status = bundle.getInt(TkpdState.ProductService.STATUS_FLAG,
+                            TkpdState.ProductService.STATUS_ERROR);
                     switch (status) {
                         case TkpdState.ProductService.STATUS_DONE:
                             setData(bundle);
@@ -282,7 +284,8 @@ public class ShareBottomSheet extends BottomSheets implements ShareAdapter.OnIte
     @Override
     public void onResume() {
         super.onResume();
-        getActivity().registerReceiver(addProductReceiver, new IntentFilter(TkpdState.ProductService.BROADCAST_ADD_PRODUCT));
+        getActivity().registerReceiver(addProductReceiver,
+                new IntentFilter(TkpdState.ProductService.BROADCAST_ADD_PRODUCT));
     }
 
     @Override
@@ -338,7 +341,8 @@ public class ShareBottomSheet extends BottomSheets implements ShareAdapter.OnIte
                 TrackingUtils.sendMoEngageReferralShareEvent(channel);
                 break;
             case ShareData.APP_SHARE_TYPE:
-                UnifyTracking.eventAppShareWhenReferralOff(AppEventTracking.Action.SELECT_CHANNEL, channel);
+                UnifyTracking.eventAppShareWhenReferralOff(AppEventTracking.Action.SELECT_CHANNEL,
+                        channel);
                 break;
             default:
                 UnifyTracking.eventShare(channel);

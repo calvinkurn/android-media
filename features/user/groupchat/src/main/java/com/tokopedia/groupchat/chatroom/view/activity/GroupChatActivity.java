@@ -414,25 +414,25 @@ public class GroupChatActivity extends BaseSimpleActivity
             onBackPressed();
             return true;
         } else if (item.getItemId() == R.id.action_share) {
-            analytics.eventClickShare();
-
-            String link = ChatroomUrl.GROUP_CHAT_URL.replace(TAG_CHANNEL, viewModel.getChannelUrl());
-
-            String description = String.format("%s %s", String.format(getString(R.string.lets_join_channel),
-                    viewModel.getChannelName()), link);
-
-            ((GroupChatModuleRouter) getApplication()).shareGroupChat(getSupportFragmentManager(),
-                    viewModel.getChannelUuid(), viewModel.getChannelName(), description,
-                    viewModel.getChannelInfoViewModel().getBannerUrl(), viewModel.getChannelUrl());
-
+            shareChannel();
             return true;
-
         } else {
             return super.onOptionsItemSelected(item);
         }
     }
 
-    private void
+    private void shareChannel() {
+        analytics.eventClickShare();
+
+        String link = ChatroomUrl.GROUP_CHAT_URL.replace(TAG_CHANNEL, viewModel.getChannelUrl());
+
+        String description = String.format("%s %s", String.format(getString(R.string.lets_join_channel),
+                viewModel.getChannelName()), link);
+
+        ((GroupChatModuleRouter) getApplication()).shareGroupChat(getSupportFragmentManager(),
+                viewModel.getChannelUuid(), viewModel.getChannelName(), description,
+                viewModel.getChannelInfoViewModel().getBannerUrl(), viewModel.getChannelUrl());
+    }
 
     private void setupViewPager() {
         tabs = findViewById(R.id.tab);

@@ -75,6 +75,7 @@ public abstract class BottomSheets extends BottomSheetDialogFragment {
         if (state() == BottomSheetsState.FULL) {
             height = screenHeight;
         }
+
         bottomSheetBehavior.setPeekHeight(height);
 
         params.height = screenHeight;

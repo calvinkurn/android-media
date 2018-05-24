@@ -13,6 +13,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.tokopedia.core.R;
+import com.tokopedia.core.share.ShareBottomSheet;
 
 import java.util.List;
 
@@ -64,11 +65,11 @@ public class ShareAdapter extends RecyclerView.Adapter<ShareAdapter.ShareViewHol
         if (isPositionCopy(position)) {
             resources = AppCompatResources.getDrawable(holder.iconView.getContext(), R.drawable.ic_copy_clipboard);
             title = "Salin Link";
-            type = "salinlink";
+            type = ShareBottomSheet.KEY_COPY;
         } else if (isPositionOther(position)) {
             resources = AppCompatResources.getDrawable(holder.iconView.getContext(), R.drawable.ic_btn_more);
             title = "Lainnya";
-            type = "lainnya";
+            type = ShareBottomSheet.KEY_OTHER;
         } else {
             final ResolveInfo activity = mActivities.get(position);
             resources = activity.loadIcon(mPackageManager);
