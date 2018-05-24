@@ -146,7 +146,9 @@ public class EventCategoryAdapterRevamp extends RecyclerView.Adapter<EventCatego
             detailsIntent.putExtra(EventDetailsActivity.FROM, EventDetailsActivity.FROM_HOME_OR_SEARCH);
             detailsIntent.putExtra("homedata", categoryItems.get(index));
             context.startActivity(detailsIntent);
-
+            UnifyTracking.eventDigitalEventTracking(EventsGAConst.EVENT_PRODUCT_CLICK,
+                    categoryItems.get(getAdapterPosition()).getTitle()
+                            + " - " + getAdapterPosition());
         }
 
         @OnClick(R2.id.tv_add_to_wishlist)
@@ -158,10 +160,15 @@ public class EventCategoryAdapterRevamp extends RecyclerView.Adapter<EventCatego
                 categoryItems.remove(getAdapterPosition());
                 itemRemoved(getAdapterPosition());
             }
+            String like;
+            if (categoryItems.get(getAdapterPosition()).isLiked())
+                like = "like";
+            else
+                like = "unlike";
             UnifyTracking.eventDigitalEventTracking(EventsGAConst.EVENT_LIKE,
-                    categoryItems.get(getAdapterPosition())
+                    categoryItems.get(getAdapterPosition()).getTitle()
                             + " - " + String.valueOf(getAdapterPosition())
-                            + " - " + categoryItems.get(getAdapterPosition()).isLiked());
+                            + " - " + like);
 
         }
 
@@ -172,8 +179,8 @@ public class EventCategoryAdapterRevamp extends RecyclerView.Adapter<EventCatego
             else
                 ((EventFavouriteActivity) context).mPresenter.shareEvent(categoryItems.get(getAdapterPosition()));
             UnifyTracking.eventDigitalEventTracking(EventsGAConst.EVENT_SHARE,
-                    categoryItems.get(getAdapterPosition())
-                            + "-" + String.valueOf(getAdapterPosition()));
+                    categoryItems.get(getAdapterPosition()).getTitle()
+                            + " - " + String.valueOf(getAdapterPosition()));
         }
 
         public int getIndex() {

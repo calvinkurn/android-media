@@ -314,12 +314,24 @@ public class TopEventsSuggestionsAdapter extends RecyclerView.Adapter<RecyclerVi
         @OnClick(R2.id.tv_add_to_wishlist)
         public void toggleLike() {
             mPresenter.setEventLike(categoryItems.get(getAdapterPosition()), getAdapterPosition());
+            String like;
+            if (categoryItems.get(getAdapterPosition()).isLiked())
+                like = "like";
+            else
+                like = "unlike";
+            UnifyTracking.eventDigitalEventTracking(EventsGAConst.EVENT_LIKE,
+                    categoryItems.get(getAdapterPosition()).getTitle()
+                            + " - " + String.valueOf(getAdapterPosition())
+                            + " - " + like);
         }
 
         @OnClick(R2.id.tv_event_share)
         public void shareEvent() {
             CategoryItemsViewModel item = categoryItems.get(getAdapterPosition());
             Utils.getSingletonInstance().shareEvent(mContext, item.getTitle(), item.getSeoUrl());
+            UnifyTracking.eventDigitalEventTracking(EventsGAConst.EVENT_SHARE,
+                    categoryItems.get(getAdapterPosition()).getTitle()
+                            + " - " + String.valueOf(getAdapterPosition()));
         }
 
         public int getIndex() {
