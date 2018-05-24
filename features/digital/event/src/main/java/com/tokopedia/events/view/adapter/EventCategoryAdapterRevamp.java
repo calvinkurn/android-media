@@ -153,6 +153,12 @@ public class EventCategoryAdapterRevamp extends RecyclerView.Adapter<EventCatego
 
         @OnClick(R2.id.tv_add_to_wishlist)
         public void toggleLike() {
+            String like;
+            String title = categoryItems.get(getAdapterPosition()).getTitle();
+            if (categoryItems.get(getAdapterPosition()).isLiked())
+                like = "unlike";
+            else
+                like = "like";
             if (!isFavActivity)
                 ((EventsHomeActivity) context).mPresenter.setEventLike(categoryItems.get(getAdapterPosition()), getAdapterPosition());
             else {
@@ -160,13 +166,8 @@ public class EventCategoryAdapterRevamp extends RecyclerView.Adapter<EventCatego
                 categoryItems.remove(getAdapterPosition());
                 itemRemoved(getAdapterPosition());
             }
-            String like;
-            if (categoryItems.get(getAdapterPosition()).isLiked())
-                like = "like";
-            else
-                like = "unlike";
             UnifyTracking.eventDigitalEventTracking(EventsGAConst.EVENT_LIKE,
-                    categoryItems.get(getAdapterPosition()).getTitle()
+                    title
                             + " - " + String.valueOf(getAdapterPosition())
                             + " - " + like);
 
