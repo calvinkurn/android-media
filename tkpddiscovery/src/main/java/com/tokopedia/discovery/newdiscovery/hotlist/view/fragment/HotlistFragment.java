@@ -697,7 +697,7 @@ public class HotlistFragment extends SearchSectionFragment
         if (product.getLabelList() != null) {
             for (int i = 0; i < product.getLabelList().size(); i++) {
                 if (product.getLabelList().get(i).getTitle().toLowerCase()
-                        .contains(getContext().getString(R.string.cashback))) {
+                        .contains(ProductItem.CASHBACK)) {
                     data.setCashback(product.getLabelList().get(i).getTitle());
                     break;
                 }
