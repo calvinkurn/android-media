@@ -1842,7 +1842,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
                 .build();
 
         ShareBottomSheet.show(fragmentManager, shareData);
-
     }
 
     @Override
