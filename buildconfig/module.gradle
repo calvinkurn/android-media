@@ -51,6 +51,7 @@ dependencies {
     implementation rootProject.ext.networkDependencies.adapterRxJava
     implementation rootProject.ext.networkDependencies.okHttp
     implementation rootProject.ext.networkDependencies.loggingInterceptor
+    implementation rootProject.ext.miscDependencies.gson
 
     androidTestImplementation(rootProject.ext.testDependencies.espressoCore, {
         exclude group: 'com.android.support', module: 'support-annotations'

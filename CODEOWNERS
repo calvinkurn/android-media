@@ -35,6 +35,7 @@
 /features/user/groupchat/               @tokopedia/minion-kevin
 /features/user/profile/                 @tokopedia/minion-kevin
 /features/user/vote/                    @tokopedia/minion-kevin
+/features/user/otp/                     @tokopedia/minion-kevin
 /features/content/feed/                 @tokopedia/minion-kevin
 /features/content/kol/                  @tokopedia/minion-kevin
 

@@ -5,6 +5,7 @@ import android.content.Context;
 import com.google.gson.Gson;
 import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
+import com.tokopedia.abstraction.common.data.model.storage.CacheManager;
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.flight.FlightModuleRouter;
@@ -35,6 +36,8 @@ public interface FlightComponent {
     Gson gson();
 
     UserSession userSession();
+
+    CacheManager cacheManager();
 
     AnalyticTracker analyticTracker();
 

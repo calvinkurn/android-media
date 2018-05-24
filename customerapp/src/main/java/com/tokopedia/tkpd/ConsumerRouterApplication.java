@@ -40,6 +40,9 @@ import com.tokopedia.core.drawer2.data.pojo.topcash.TokoCashData;
 import com.tokopedia.core.drawer2.data.viewmodel.TokoPointDrawerData;
 import com.tokopedia.core.drawer2.view.DrawerHelper;
 import com.tokopedia.core.drawer2.view.subscriber.ProfileCompletionSubscriber;
+import com.tokopedia.core.gallery.GalleryActivity;
+import com.tokopedia.core.gallery.GallerySelectedFragment;
+import com.tokopedia.core.gallery.GalleryType;
 import com.tokopedia.core.gcm.ApplinkUnsupported;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.gcm.model.NotificationPass;
@@ -53,7 +56,9 @@ import com.tokopedia.core.loyaltysystem.util.URLGenerator;
 import com.tokopedia.core.manage.general.districtrecommendation.domain.model.Token;
 import com.tokopedia.core.manage.general.districtrecommendation.view.DistrictRecommendationActivity;
 import com.tokopedia.core.manage.people.address.activity.ChooseAddressActivity;
+import com.tokopedia.core.myproduct.utils.FileUtils;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
+import com.tokopedia.core.network.retrofit.interceptors.TkpdAuthInterceptor;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.network.retrofit.utils.ServerErrorHandler;
 import com.tokopedia.core.onboarding.OnboardingActivity;
@@ -80,14 +85,12 @@ import com.tokopedia.core.util.AccessTokenRefresh;
 import com.tokopedia.core.util.BranchSdkUtils;
 import com.tokopedia.core.util.DeepLinkChecker;
 import com.tokopedia.core.util.GlobalConfig;
+import com.tokopedia.core.util.ImageUploadHandler;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.util.SessionRefresh;
 import com.tokopedia.core.var.ProductItem;
 import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.design.utils.DateLabelUtils;
-import com.tokopedia.di.DaggerSessionComponent;
-import com.tokopedia.di.SessionComponent;
-import com.tokopedia.di.SessionModule;
 import com.tokopedia.digital.DigitalRouter;
 import com.tokopedia.digital.cart.activity.CartDigitalActivity;
 import com.tokopedia.digital.categorylist.view.activity.DigitalCategoryListActivity;
@@ -116,6 +119,7 @@ import com.tokopedia.flight.FlightComponentInstance;
 import com.tokopedia.flight.FlightModuleRouter;
 import com.tokopedia.flight.TkpdFlight;
 import com.tokopedia.flight.booking.domain.subscriber.model.ProfileInfo;
+import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationCameraPassData;
 import com.tokopedia.flight.common.domain.FlightRepository;
 import com.tokopedia.flight.contactus.model.FlightContactUsPassData;
 import com.tokopedia.flight.dashboard.domain.FlightDeleteDashboardCacheUseCase;
@@ -130,6 +134,7 @@ import com.tokopedia.groupchat.chatroom.data.ChatroomUrl;
 import com.tokopedia.groupchat.chatroom.view.activity.GroupChatActivity;
 import com.tokopedia.groupchat.common.analytics.GroupChatAnalytics;
 import com.tokopedia.home.IHomeRouter;
+import com.tokopedia.imageuploader.ImageUploaderRouter;
 import com.tokopedia.inbox.contactus.ContactUsConstant;
 import com.tokopedia.inbox.contactus.activity.ContactUsActivity;
 import com.tokopedia.inbox.contactus.activity.ContactUsCreateTicketActivity;
@@ -154,6 +159,7 @@ import com.tokopedia.loyalty.view.activity.TokoPointWebviewActivity;
 import com.tokopedia.loyalty.view.data.VoucherViewModel;
 import com.tokopedia.loyalty.view.fragment.LoyaltyNotifFragmentDialog;
 import com.tokopedia.network.service.AccountsService;
+import com.tokopedia.otp.OtpModuleRouter;
 import com.tokopedia.otp.phoneverification.view.activity.PhoneVerificationActivationActivity;
 import com.tokopedia.otp.phoneverification.view.activity.PhoneVerificationProfileActivity;
 import com.tokopedia.otp.phoneverification.view.activity.ReferralPhoneNumberVerificationActivity;
@@ -172,6 +178,8 @@ import com.tokopedia.profilecompletion.view.activity.ProfileCompletionActivity;
 import com.tokopedia.seller.LogisticRouter;
 import com.tokopedia.seller.SellerModuleRouter;
 import com.tokopedia.seller.TkpdSeller;
+import com.tokopedia.seller.base.domain.interactor.UploadImageUseCase;
+import com.tokopedia.seller.base.domain.model.ImageUploadDomainModel;
 import com.tokopedia.seller.common.cashback.DataCashbackModel;
 import com.tokopedia.seller.common.datepicker.view.model.PeriodRangeModel;
 import com.tokopedia.seller.common.featuredproduct.GMFeaturedProductDomainModel;
@@ -196,6 +204,7 @@ import com.tokopedia.seller.shopsettings.notes.activity.ManageShopNotesActivity;
 import com.tokopedia.session.addchangeemail.view.activity.AddEmailActivity;
 import com.tokopedia.session.addchangepassword.view.activity.AddPasswordActivity;
 import com.tokopedia.session.changename.view.activity.ChangeNameActivity;
+import com.tokopedia.session.changephonenumber.view.activity.ChangePhoneNumberRequestActivity;
 import com.tokopedia.session.changephonenumber.view.activity.ChangePhoneNumberWarningActivity;
 import com.tokopedia.session.forgotpassword.activity.ForgotPasswordActivity;
 import com.tokopedia.session.login.loginemail.view.activity.LoginActivity;
@@ -220,6 +229,7 @@ import com.tokopedia.tkpd.flight.FlightGetProfileInfoData;
 import com.tokopedia.tkpd.flight.FlightVoucherCodeWrapperImpl;
 import com.tokopedia.tkpd.flight.di.DaggerFlightConsumerComponent;
 import com.tokopedia.tkpd.flight.di.FlightConsumerComponent;
+import com.tokopedia.tkpd.flight.domain.AttachmentImageModel;
 import com.tokopedia.tkpd.flight.presentation.FlightPhoneVerificationActivity;
 import com.tokopedia.tkpd.goldmerchant.GoldMerchantRedirectActivity;
 import com.tokopedia.tkpd.home.ParentIndexHome;
@@ -249,6 +259,7 @@ import com.tokopedia.transaction.purchase.detail.activity.OrderHistoryActivity;
 import com.tokopedia.transaction.wallet.WalletActivity;
 import com.tokopedia.usecase.UseCase;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -265,7 +276,8 @@ import rx.schedulers.Schedulers;
 
 import static com.tokopedia.core.gcm.Constants.ARG_NOTIFICATION_DESCRIPTION;
 import static com.tokopedia.core.router.productdetail.ProductDetailRouter.ARG_FROM_DEEPLINK;
-import static com.tokopedia.core.router.productdetail.ProductDetailRouter.ARG_PARAM_PRODUCT_PASS_DATA;
+import static com.tokopedia.core.router.productdetail.ProductDetailRouter
+        .ARG_PARAM_PRODUCT_PASS_DATA;
 import static com.tokopedia.core.router.productdetail.ProductDetailRouter.SHARE_DATA;
 
 /**
@@ -279,7 +291,8 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         AbstractionRouter, FlightModuleRouter, LogisticRouter, FeedModuleRouter, IHomeRouter,
         DiscoveryRouter, DigitalModuleRouter, com.tokopedia.tokocash.TokoCashRouter,
         DigitalRouter, KolRouter, GroupChatModuleRouter, ApplinkRouter, ShopModuleRouter,
-        LoyaltyModuleRouter, GamificationRouter, ProfileModuleRouter, ReactNativeRouter {
+        LoyaltyModuleRouter, GamificationRouter, ImageUploaderRouter, ProfileModuleRouter, ReactNativeRouter, 
+        OtpModuleRouter {
 
     @Inject
     ReactNativeHost reactNativeHost;
@@ -355,13 +368,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
                 .reactNativeModule(new ReactNativeModule(this));
         daggerShopBuilder = DaggerShopComponent.builder().shopModule(new ShopModule());
 
-        SessionComponent sessionComponent =
-                DaggerSessionComponent.builder()
-                        .appComponent(getApplicationComponent())
-                        .sessionModule(new SessionModule())
-                        .build();
-        daggerFlightBuilder = DaggerFlightConsumerComponent.builder()
-                .sessionComponent(sessionComponent);
+        daggerFlightBuilder = DaggerFlightConsumerComponent.builder().appComponent(getApplicationComponent());
 
         tokoCashComponent = DaggerTokoCashComponent.builder()
                 .baseAppComponent((this).getBaseAppComponent())
@@ -744,6 +751,30 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @Override
     public Interceptor getChuckInterceptor() {
         return getAppComponent().chuckInterceptor();
+    }
+
+    @Override
+    public Interceptor getAuthInterceptor() {
+        return new TkpdAuthInterceptor();
+    }
+
+    @Override
+    public Intent getGalleryIntent(Activity activity) {
+        return GalleryActivity.createIntent(activity, GalleryType.ofImageOnly(), 1, true);
+    }
+
+    @Override
+    public String getGalleryExtraSelectionPathResultKey() {
+        return GallerySelectedFragment.EXTRA_RESULT_SELECTION_PATH;
+    }
+
+    @Override
+    public FlightCancellationCameraPassData startCaptureWithCamera(FragmentActivity activity) {
+        FlightCancellationCameraPassData passData = new FlightCancellationCameraPassData();
+        ImageUploadHandler imageUploadHandler = ImageUploadHandler.createInstance(activity);
+        passData.setDestinationIntent(imageUploadHandler.getCameraIntent());
+        passData.setImagePathLoc(imageUploadHandler.getCameraFileloc());
+        return passData;
     }
 
     @Override
@@ -1766,6 +1797,11 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         return PromoDetailActivity.getCallingIntent(context, slug);
     }
 
+    @Override
+    public File writeImage(String filePath, int qualityProcentage) {
+        return FileUtils.writeImageToTkpdPath(filePath, qualityProcentage);
+    }
+
     public Intent getProductDetailIntent(Context context, ProductPass productPass) {
         Intent intent = ProductInfoActivity.createInstance(context, productPass);
         return intent;
@@ -1913,6 +1949,11 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @Override
     public String getDesktopLinkGroupChat() {
         return ChatroomUrl.DESKTOP_URL;
+    }
+
+    @Override
+    public Intent getChangePhoneNumberRequestIntent(Context context) {
+        return ChangePhoneNumberRequestActivity.getCallingIntent(context);
     }
 
     @Override
