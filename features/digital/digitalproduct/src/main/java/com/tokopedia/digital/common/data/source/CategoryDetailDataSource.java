@@ -120,7 +120,11 @@ public class CategoryDetailDataSource {
                 .map(new Func1<Response<List<GraphqlResponse<RechargeResponseEntity>>>, RechargeResponseEntity>() {
                     @Override
                     public RechargeResponseEntity call(Response<List<GraphqlResponse<RechargeResponseEntity>>> response) {
-                        return response.body().get(0).getData();
+                        if(response != null && response.body() != null && response.body().size() > 0) {
+                            return response.body().get(0).getData();
+                        }
+
+                        return null;
                     }
                 })
                 .doOnNext(saveCategoryDetailToCache(categoryId))
@@ -159,9 +163,11 @@ public class CategoryDetailDataSource {
                     public RechargeResponseEntity call(Response<List<GraphqlResponse<RechargeResponseEntity>>> response) {
                         RechargeResponseEntity newMappedObject = new RechargeResponseEntity();
 
-                        List<GraphqlResponse<RechargeResponseEntity>> responseEntity = response.body();
-                        newMappedObject.setRechargeCategoryDetail(responseEntity.get(0).getData().getRechargeCategoryDetail());
-                        newMappedObject.setRechargeFavoritNumberResponseEntity(responseEntity.get(1).getData().getRechargeFavoritNumberResponseEntity());
+                        if(response != null && response.body() != null && response.body().size() > 1) {
+                            List<GraphqlResponse<RechargeResponseEntity>> responseEntity = response.body();
+                            newMappedObject.setRechargeCategoryDetail(responseEntity.get(0).getData().getRechargeCategoryDetail());
+                            newMappedObject.setRechargeFavoritNumberResponseEntity(responseEntity.get(1).getData().getRechargeFavoritNumberResponseEntity());
+                        }
 
                         return newMappedObject;
                     }
