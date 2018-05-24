@@ -241,6 +241,12 @@ public abstract class TopAdsBaseListFragment<V extends Visitable, F extends Adap
         return (SwipeRefreshLayout) view.findViewById(R.id.swipe_refresh_layout);
     }
 
+    protected void finishActionMode(){
+        if (actionMode != null){
+            actionMode.finish();
+        }
+    }
+
     protected void setResultAdListChanged() {
         Intent intent = new Intent();
         intent.putExtra(TopAdsExtraConstant.EXTRA_AD_CHANGED, true);

@@ -225,6 +225,7 @@
     <string name="top_ads_keyword_label_type">Tipe Kata Kunci</string>
     <string name="top_ads_keyword_title_delete">Hapus Kata Kunci?</string>
     <string name="top_ads_keyword_confirmation_delete">Kata kunci akan dihapus dari daftar iklan TopAds Anda.</string>
+    <string name="top_ads_keyword_copy_hint_desc">Kata kunci akan disalin ke grup iklan yang sudah ada.</string>
 
     <string name="top_ads_keyword_type">Tipe Kata Kunci</string>
     <string name="top_ads_choose_keyword_type">Pilih Tipe Kata Kunci</string>

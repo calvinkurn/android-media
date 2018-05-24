@@ -29,6 +29,7 @@ import com.tokopedia.topads.R;
 import com.tokopedia.topads.common.view.adapter.TopAdsListAdapterTypeFactory;
 import com.tokopedia.topads.common.view.adapter.TopAdsMultipleCheckListAdapter;
 import com.tokopedia.topads.common.view.fragment.TopAdsBaseListFragment;
+import com.tokopedia.topads.common.view.utils.TopAdsBottomSheetsSelectGroup;
 import com.tokopedia.topads.dashboard.constant.SortTopAdsOption;
 import com.tokopedia.topads.dashboard.constant.TopAdsExtraConstant;
 import com.tokopedia.topads.dashboard.data.model.data.GroupAd;
@@ -48,6 +49,7 @@ import com.tokopedia.topads.keyword.view.activity.TopAdsKeywordNewChooseGroupAct
 import com.tokopedia.topads.keyword.view.listener.TopAdsKeywordListView;
 import com.tokopedia.topads.keyword.view.model.KeywordAd;
 import com.tokopedia.topads.keyword.view.presenter.TopAdsKeywordListPresenter;
+import com.tokopedia.topads.keyword.view.widget.TopAdsKeywordUpdatePriceBottomSheets;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -69,14 +71,7 @@ public abstract class TopAdsKeywordAdListFragment extends TopAdsBaseListFragment
     @Inject TopAdsKeywordListPresenter presenter;
 
     private GroupTopAdsListener groupTopAdsListener;
-
-    private TopAdsAutoCompleteAdapter adapterChooseGroup;
-    private ArrayList<String> groupNames = new ArrayList<>();
-    private List<GroupAd> groupAds = new ArrayList<>();
-    private String selectedGroupAdId;
-
-    private TextInputLayout textInputLayoutChooseGroup;
-    private TopAdsCustomAutoCompleteTextView inputChooseGroup;
+    private TopAdsBottomSheetsSelectGroup bottomSheetsSelectGroup;
 
     @Override
     protected void initInjector() {
@@ -104,14 +99,6 @@ public abstract class TopAdsKeywordAdListFragment extends TopAdsBaseListFragment
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         presenter.attachView(this);
         filterStatus = KeywordStatusTypeDef.KEYWORD_STATUS_ALL;
-
-        adapterChooseGroup = new TopAdsAutoCompleteAdapter(getActivity(), R.layout.item_autocomplete_text);
-        adapterChooseGroup.setListenerGetData(new TopAdsAutoCompleteAdapter.ListenerGetData() {
-            @Override
-            public ArrayList<String> getData() {
-                return groupNames;
-            }
-        });
 
         if (presenter.isDateUpdated(startDate, endDate)){
             startDate = getPresenter().getStartDate();
@@ -296,112 +283,35 @@ public abstract class TopAdsKeywordAdListFragment extends TopAdsBaseListFragment
     }
 
     private void showBottomSheetCopyKeyword(final List<String> ids) {
-        View moveGroupFormView = getLayoutInflater().inflate(R.layout.partial_top_ads_move_group, null);
-
-        inputChooseGroup =
-                (TopAdsCustomAutoCompleteTextView) moveGroupFormView.findViewById(R.id.choose_group_auto_text);
-        textInputLayoutChooseGroup =
-                (TextInputLayout) moveGroupFormView.findViewById(R.id.input_layout_choose_group);
-
-        inputChooseGroup.setAdapter(adapterChooseGroup);
-        inputChooseGroup.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View view, boolean isFocus) {
-                if(isFocus){
-                    presenter.searchGroupName("");
+        if (bottomSheetsSelectGroup == null){
+            bottomSheetsSelectGroup = new TopAdsBottomSheetsSelectGroup();
+            bottomSheetsSelectGroup.setTitle(getString(R.string.menu_copy));
+            bottomSheetsSelectGroup.setHintDescription(getString(R.string.top_ads_keyword_copy_hint_desc));
+            bottomSheetsSelectGroup.setOnSelectGroupListener(new TopAdsBottomSheetsSelectGroup.OnSelectGroupListener() {
+                @Override
+                public void searchGroup(String query) {
+                    presenter.searchGroupName(query);
                 }
-            }
-        });
-        inputChooseGroup.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
 
-            }
-
-            @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
-            }
-
-            @Override
-            public void afterTextChanged(Editable editable) {
-                if(inputChooseGroup.isPerformingCompletion()){
-                    return;
+                @Override
+                public void submitGroup(String selectedId) {
+                    presenter.copyKeyword(ids, selectedId);
+                    bottomSheetsSelectGroup = null;
                 }
-                presenter.searchGroupName(editable.toString());
-            }
-        });
-        inputChooseGroup.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                inputChooseGroup.lockView();
-                if (groupAds.get(i) != null) {
-                    selectedGroupAdId = groupAds.get(i).getId();
-                }
-            }
-        });
-
-
-        final BottomSheetCustomContentView bottomSheetView = new BottomSheetCustomContentView(getActivity());
-        bottomSheetView.setCustomContentLayout(moveGroupFormView);
-        bottomSheetView.renderBottomSheet(new BottomSheetCustomContentView.BottomSheetField
-                .BottomSheetFieldBuilder()
-                .setTitle(getString(R.string.menu_copy))
-                .setCloseButton(getString(R.string.label_top_ads_save))
-                .build());
-        bottomSheetView.setBtnCloseOnClick(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (!TextUtils.isEmpty(selectedGroupAdId)){
-                    presenter.copyKeyword(ids, selectedGroupAdId);
-                    bottomSheetView.dismiss();
-                } else {
-                    textInputLayoutChooseGroup.setError(getString(R.string.label_top_ads_error_choose_one_group));
-                }
-            }
-        });
-        bottomSheetView.show();
+            });
+        }
+        bottomSheetsSelectGroup.show(getActivity().getSupportFragmentManager(), getClass().getSimpleName());
     }
 
     private void showBottomSheetUpdatePrice(final List<String> ids) {
-        View view = getLayoutInflater().inflate(R.layout.partial_top_ads_keyword_edit_price, null);
-
-        final PrefixEditText topAdsCostPerClick = view.findViewById(R.id.edit_text_top_ads_cost_per_click);
-        TextView topAdsMaxPriceInstruction = view.findViewById(R.id.text_view_top_ads_max_price_description);
-        final TextInputLayout textInputLayoutCostPerClick = view.findViewById(R.id.text_input_layout_top_ads_cost_per_click);
-
-        CurrencyIdrTextWatcher textWatcher = new CurrencyIdrTextWatcher(topAdsCostPerClick){
+        TopAdsKeywordUpdatePriceBottomSheets bottomSheets = new TopAdsKeywordUpdatePriceBottomSheets();
+        bottomSheets.setOnSubmitClicked(new TopAdsKeywordUpdatePriceBottomSheets.OnSubmitClicked() {
             @Override
-            public void onNumberChanged(double number) {
-                super.onNumberChanged(number);
-                String errorMessage =
-                        com.tokopedia.topads.dashboard.utils.ViewUtils.getKeywordClickBudgetError(getActivity(), number);
-                if (!TextUtils.isEmpty(errorMessage)) {
-                    textInputLayoutCostPerClick.setError(errorMessage);
-                } else {
-                    textInputLayoutCostPerClick.setError(null);
-                }
-            }
-        };
-        topAdsCostPerClick.addTextChangedListener(textWatcher);
-
-        final BottomSheetCustomContentView bottomSheetView = new BottomSheetCustomContentView(getActivity());
-        bottomSheetView.setCustomContentLayout(view);
-        bottomSheetView.renderBottomSheet(new BottomSheetCustomContentView.BottomSheetField
-                .BottomSheetFieldBuilder()
-                .setTitle(getString(R.string.label_change_price))
-                .setCloseButton(getString(R.string.label_top_ads_save))
-                .build());
-        bottomSheetView.setBtnCloseOnClick(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                String price = topAdsCostPerClick.getTextWithoutPrefix();
-                if (!TextUtils.isEmpty(price)){
-                    presenter.updatePrice(ids, price);
-                }
+            public void submitPrice(String price) {
+                presenter.updatePrice(ids, price);
             }
         });
-        bottomSheetView.show();
+        bottomSheets.show(getActivity().getSupportFragmentManager(), getClass().getSimpleName());
     }
 
     @Override
@@ -411,29 +321,22 @@ public abstract class TopAdsKeywordAdListFragment extends TopAdsBaseListFragment
 
     @Override
     public void onBulkActionSuccess(PageDataResponse<DataBulkKeyword> adBulkActions) {
+        finishActionMode();
         loadInitialData();
     }
 
     @Override
     public void onGetGroupAdListError() {
-        if (textInputLayoutChooseGroup != null) {
-            textInputLayoutChooseGroup.setError(getString(R.string.error_connection_problem));
+        if (bottomSheetsSelectGroup != null){
+            bottomSheetsSelectGroup.setError(getString(R.string.error_connection_problem));
         }
     }
 
     @Override
     public void onGetGroupAdList(List<GroupAd> groupAds) {
-        this.groupAds.clear();
-        this.groupAds.addAll(groupAds);
-        groupNames.clear();
-        if (textInputLayoutChooseGroup != null) {
-            textInputLayoutChooseGroup.setError(null);
-        }
-        for (GroupAd groupAd : groupAds) {
-            groupNames.add(groupAd.getName());
-        }
-        if (inputChooseGroup != null) {
-            inputChooseGroup.showDropDownFilter();
+        if (bottomSheetsSelectGroup != null){
+            bottomSheetsSelectGroup.resetDialog();
+            bottomSheetsSelectGroup.setGroupAds(groupAds);
         }
     }
 

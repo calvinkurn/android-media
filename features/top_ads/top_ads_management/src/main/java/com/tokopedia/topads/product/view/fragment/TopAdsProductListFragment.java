@@ -24,6 +24,7 @@ import com.tokopedia.seller.common.datepicker.view.constant.DatePickerConstant;
 import com.tokopedia.topads.R;
 import com.tokopedia.topads.TopAdsComponentInstance;
 import com.tokopedia.topads.common.view.fragment.TopAdsBaseListFragment;
+import com.tokopedia.topads.common.view.utils.TopAdsBottomSheetsSelectGroup;
 import com.tokopedia.topads.dashboard.constant.SortTopAdsOption;
 import com.tokopedia.topads.dashboard.constant.TopAdsExtraConstant;
 import com.tokopedia.topads.dashboard.data.model.data.GroupAd;
@@ -58,13 +59,7 @@ public class TopAdsProductListFragment extends TopAdsBaseListFragment<ProductAd,
 
     private long groupId;
     private GroupAd groupAd;
-    private TopAdsAutoCompleteAdapter adapterChooseGroup;
-    private ArrayList<String> groupNames = new ArrayList<>();
-    private List<GroupAd> groupAds = new ArrayList<>();
-    private String selectedGroupAdId;
-
-    private TextInputLayout textInputLayoutChooseGroup;
-    private TopAdsCustomAutoCompleteTextView inputChooseGroup;
+    private TopAdsBottomSheetsSelectGroup bottomSheetsSelectGroup;
 
     @Inject TopAdsProductAdListPresenter presenter;
 
@@ -94,13 +89,6 @@ public class TopAdsProductListFragment extends TopAdsBaseListFragment<ProductAd,
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        adapterChooseGroup = new TopAdsAutoCompleteAdapter(getActivity(), R.layout.item_autocomplete_text);
-        adapterChooseGroup.setListenerGetData(new TopAdsAutoCompleteAdapter.ListenerGetData() {
-            @Override
-            public ArrayList<String> getData() {
-                return groupNames;
-            }
-        });
     }
 
 
@@ -182,29 +170,22 @@ public class TopAdsProductListFragment extends TopAdsBaseListFragment<ProductAd,
 
     @Override
     public void onBulkActionSuccess(ProductAdBulkAction productAdBulkAction) {
+        finishActionMode();
         loadInitialData();
     }
 
     @Override
     public void onGetGroupAdListError() {
-        if (textInputLayoutChooseGroup != null) {
-            textInputLayoutChooseGroup.setError(getString(R.string.error_connection_problem));
+        if (bottomSheetsSelectGroup != null){
+            bottomSheetsSelectGroup.setError(getString(R.string.error_connection_problem));
         }
     }
 
     @Override
     public void onGetGroupAdList(List<GroupAd> groupAds) {
-        this.groupAds.clear();
-        this.groupAds.addAll(groupAds);
-        groupNames.clear();
-        if (textInputLayoutChooseGroup != null) {
-            textInputLayoutChooseGroup.setError(null);
-        }
-        for (GroupAd groupAd : groupAds) {
-            groupNames.add(groupAd.getName());
-        }
-        if (inputChooseGroup != null) {
-            inputChooseGroup.showDropDownFilter();
+        if (bottomSheetsSelectGroup != null){
+            bottomSheetsSelectGroup.resetDialog();
+            bottomSheetsSelectGroup.setGroupAds(groupAds);
         }
     }
 
@@ -273,71 +254,24 @@ public class TopAdsProductListFragment extends TopAdsBaseListFragment<ProductAd,
     }
 
     private void showBottomSheetMoveGroup(final List<String> ids) {
-        View moveGroupFormView = getLayoutInflater().inflate(R.layout.partial_top_ads_move_group, null);
-
-        inputChooseGroup =
-                (TopAdsCustomAutoCompleteTextView) moveGroupFormView.findViewById(R.id.choose_group_auto_text);
-        textInputLayoutChooseGroup =
-                (TextInputLayout) moveGroupFormView.findViewById(R.id.input_layout_choose_group);
-
-        inputChooseGroup.setAdapter(adapterChooseGroup);
-        inputChooseGroup.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View view, boolean isFocus) {
-                if(isFocus){
-                    presenter.searchGroupName("");
+        if (bottomSheetsSelectGroup == null){
+            bottomSheetsSelectGroup = new TopAdsBottomSheetsSelectGroup();
+            bottomSheetsSelectGroup.setTitle(getString(R.string.label_top_ads_change_group));
+            bottomSheetsSelectGroup.setHintDescription(getString(R.string.label_top_ads_info_group_option_exist));
+            bottomSheetsSelectGroup.setOnSelectGroupListener(new TopAdsBottomSheetsSelectGroup.OnSelectGroupListener() {
+                @Override
+                public void searchGroup(String query) {
+                    presenter.searchGroupName(query);
                 }
-            }
-        });
-        inputChooseGroup.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
 
-            }
-
-            @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
-            }
-
-            @Override
-            public void afterTextChanged(Editable editable) {
-                if(inputChooseGroup.isPerformingCompletion()){
-                    return;
+                @Override
+                public void submitGroup(String selectedId) {
+                    presenter.moveAdsToExistingGroup(ids, selectedId);
+                    bottomSheetsSelectGroup = null;
                 }
-                presenter.searchGroupName(editable.toString());
-            }
-        });
-        inputChooseGroup.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                inputChooseGroup.lockView();
-                if (groupAds.get(i) != null) {
-                    selectedGroupAdId = groupAds.get(i).getId();
-                }
-            }
-        });
-
-
-        final BottomSheetCustomContentView bottomSheetView = new BottomSheetCustomContentView(getActivity());
-        bottomSheetView.setCustomContentLayout(moveGroupFormView);
-        bottomSheetView.renderBottomSheet(new BottomSheetCustomContentView.BottomSheetField
-                .BottomSheetFieldBuilder()
-                .setTitle(getString(R.string.label_top_ads_change_group))
-                .setCloseButton(getString(R.string.label_top_ads_save))
-                .build());
-        bottomSheetView.setBtnCloseOnClick(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (!TextUtils.isEmpty(selectedGroupAdId)){
-                    presenter.moveAdsToExistingGroup(ids, selectedGroupAdId);
-                    bottomSheetView.dismiss();
-                } else {
-                    textInputLayoutChooseGroup.setError(getString(R.string.label_top_ads_error_choose_one_group));
-                }
-            }
-        });
-        bottomSheetView.show();
+            });
+        }
+        bottomSheetsSelectGroup.show(getActivity().getSupportFragmentManager(), getClass().getSimpleName());
     }
 
     @Override

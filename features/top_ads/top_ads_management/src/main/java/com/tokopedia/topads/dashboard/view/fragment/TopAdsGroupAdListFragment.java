@@ -14,7 +14,7 @@ import com.tokopedia.topads.dashboard.data.model.data.GroupAd;
 import com.tokopedia.topads.dashboard.view.activity.TopAdsDetailGroupActivity;
 import com.tokopedia.topads.dashboard.view.activity.TopAdsFilterGroupActivity;
 import com.tokopedia.topads.dashboard.view.activity.TopAdsGroupNewPromoActivity;
-import com.tokopedia.topads.dashboard.view.activity.TopAdsProductAdListActivity;
+import com.tokopedia.topads.product.view.activity.TopAdsProductAdListActivity;
 import com.tokopedia.topads.dashboard.view.activity.TopAdsSortByActivity;
 import com.tokopedia.topads.dashboard.view.adapter.viewholder.TopAdsEmptyAdDataBinder;
 import com.tokopedia.topads.dashboard.view.adapter.viewholder.TopAdsEmptyGroupAdDataBinder;
@@ -22,8 +22,6 @@ import com.tokopedia.topads.dashboard.view.model.Ad;
 import com.tokopedia.topads.dashboard.view.presenter.TopAdsGroupAdListPresenter;
 import com.tokopedia.topads.dashboard.view.presenter.TopAdsGroupAdListPresenterImpl;
 import com.tokopedia.topads.sourcetagging.constant.TopAdsSourceOption;
-
-import java.util.Date;
 
 /**
  * Created by zulfikarrahman on 12/22/16.

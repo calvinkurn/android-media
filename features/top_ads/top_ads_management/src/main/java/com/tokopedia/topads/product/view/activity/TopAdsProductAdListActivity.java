@@ -1,4 +1,4 @@
-package com.tokopedia.topads.dashboard.view.activity;
+package com.tokopedia.topads.product.view.activity;
 
 import android.graphics.Color;
 import android.support.v4.app.Fragment;
