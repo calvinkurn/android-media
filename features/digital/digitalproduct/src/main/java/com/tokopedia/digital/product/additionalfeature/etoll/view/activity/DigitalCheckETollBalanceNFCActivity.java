@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.net.Uri;
 import android.nfc.NfcAdapter;
 import android.nfc.Tag;
 import android.nfc.tech.IsoDep;
@@ -14,6 +15,7 @@ import android.nfc.tech.NfcA;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.TaskStackBuilder;
 import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.View;
@@ -24,7 +26,11 @@ import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.applink.ApplinkConst;
+import com.tokopedia.core.gcm.Constants;
+import com.tokopedia.core.router.SellerAppRouter;
 import com.tokopedia.core.router.digitalmodule.passdata.DigitalCategoryDetailPassData;
+import com.tokopedia.core.router.home.HomeRouter;
+import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.digital.R;
 import com.tokopedia.digital.common.data.apiservice.DigitalEndpointService;
 import com.tokopedia.digital.product.additionalfeature.etoll.ETollEventTracking;
@@ -32,8 +38,8 @@ import com.tokopedia.digital.product.additionalfeature.etoll.data.mapper.Smartca
 import com.tokopedia.digital.product.additionalfeature.etoll.data.repository.ETollRepository;
 import com.tokopedia.digital.product.additionalfeature.etoll.data.source.SmartcardCommandDataSource;
 import com.tokopedia.digital.product.additionalfeature.etoll.data.source.SmartcardInquiryDataSource;
-import com.tokopedia.digital.product.additionalfeature.etoll.domain.interactor.SmartcardInquiryUseCase;
 import com.tokopedia.digital.product.additionalfeature.etoll.domain.interactor.SmartcardCommandUseCase;
+import com.tokopedia.digital.product.additionalfeature.etoll.domain.interactor.SmartcardInquiryUseCase;
 import com.tokopedia.digital.product.additionalfeature.etoll.view.compoundview.ETollUpdateBalanceResultView;
 import com.tokopedia.digital.product.additionalfeature.etoll.view.compoundview.NFCDisabledView;
 import com.tokopedia.digital.product.additionalfeature.etoll.view.compoundview.TapETollCardView;
@@ -83,15 +89,44 @@ public class DigitalCheckETollBalanceNFCActivity extends BaseSimpleActivity
 
     private AbstractionRouter abstractionRouter;
 
-    public static Intent newInstance(Activity activity) {
-        return new Intent(activity, DigitalCheckETollBalanceNFCActivity.class);
+    public static Intent newInstance(Context context) {
+        return new Intent(context, DigitalCheckETollBalanceNFCActivity.class);
     }
 
-//    @SuppressWarnings("unused")
-//    @DeepLink({ApplinkConst.DIGITAL_SMARTCARD})
-//    public static Intent getcallingIntent(Context context, Bundle extras) {
-//
-//    }
+    @SuppressWarnings("unused")
+    @DeepLink({ApplinkConst.DIGITAL_SMARTCARD})
+    public static Intent getcallingIntent(Context context, Bundle extras) {
+        TaskStackBuilder taskStackBuilder = TaskStackBuilder.create(context);
+        Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
+        if (extras.getBoolean(Constants.EXTRA_APPLINK_FROM_PUSH, false)) {
+            Intent homeIntent;
+            if (GlobalConfig.isSellerApp()) {
+                homeIntent = SellerAppRouter.getSellerHomeActivity(context);
+            } else {
+                homeIntent = HomeRouter.getHomeActivity(context);
+            }
+            homeIntent.putExtra(HomeRouter.EXTRA_INIT_FRAGMENT,
+                    HomeRouter.INIT_STATE_FRAGMENT_HOME);
+            taskStackBuilder.addNextIntent(homeIntent);
+        }
+
+        DigitalCategoryDetailPassData passData = new DigitalCategoryDetailPassData.Builder()
+                .appLinks(uri.toString())
+                .categoryId(extras.getString(DigitalCategoryDetailPassData.PARAM_CATEGORY_ID))
+                .operatorId(extras.getString(DigitalCategoryDetailPassData.PARAM_OPERATOR_ID))
+                .productId(extras.getString(DigitalCategoryDetailPassData.PARAM_PRODUCT_ID))
+                .clientNumber(extras.getString(DigitalCategoryDetailPassData.PARAM_CLIENT_NUMBER))
+                .build();
+        Intent intentDigitalProduct = DigitalProductActivity.newInstance(context, passData);
+        intentDigitalProduct.putExtra(Constants.EXTRA_FROM_PUSH, true);
+        taskStackBuilder.addNextIntent(intentDigitalProduct);
+
+        Intent intentEToll = DigitalCheckETollBalanceNFCActivity.newInstance(context);
+        intentEToll.putExtra(Constants.EXTRA_FROM_PUSH, true);
+        taskStackBuilder.addNextIntent(intentEToll);
+
+        return intentEToll;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -261,25 +296,13 @@ public class DigitalCheckETollBalanceNFCActivity extends BaseSimpleActivity
                                             "emoney"
                                     );
                         }
-                        if (eTollUpdateBalanceResultView.getVisibility() == View.VISIBLE) {
-                            eTollUpdateBalanceResultView.showError(getResources().getString(R.string.card_is_not_supported));
-                        } else {
-                            tapETollCardView.showInitialState();
-                            NetworkErrorHelper.showRedCloseSnackbar(DigitalCheckETollBalanceNFCActivity.this,
-                                    getResources().getString(R.string.card_is_not_supported));
-                        }
+                        showError(getResources().getString(R.string.card_is_not_supported));
                     }
                 }
             });
         } catch (IOException e) {
             e.printStackTrace();
-            if (eTollUpdateBalanceResultView.getVisibility() == View.VISIBLE) {
-                eTollUpdateBalanceResultView.showError(getResources().getString(R.string.failed_read_card));
-            } else {
-                tapETollCardView.showInitialState();
-                NetworkErrorHelper.showRedCloseSnackbar(DigitalCheckETollBalanceNFCActivity.this,
-                        getResources().getString(R.string.failed_read_card));
-            }
+            showError(getResources().getString(R.string.failed_read_card));
         }
     }
 
