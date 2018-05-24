@@ -63,4 +63,12 @@ public class TapETollCardView extends RelativeLayout {
         lottieAnimationView.playAnimation();
     }
 
+    @Override
+    public void setVisibility(int visibility) {
+        super.setVisibility(visibility);
+
+        if (visibility == GONE) {
+            showInitialState();
+        }
+    }
 }
