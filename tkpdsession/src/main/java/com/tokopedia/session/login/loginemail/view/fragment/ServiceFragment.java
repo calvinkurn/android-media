@@ -29,4 +29,10 @@ public class ServiceFragment extends BaseWebViewFragment {
     protected String getUserIdForHeader() {
         return null;
     }
+
+    @Nullable
+    @Override
+    protected String getAccessToken() {
+        return null;
+    }
 }
