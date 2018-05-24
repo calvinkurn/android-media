@@ -6,7 +6,7 @@ import com.tokopedia.core.drawer2.data.pojo.topcash.Action;
 import com.tokopedia.core.drawer2.data.pojo.topcash.TokoCashData;
 import com.tokopedia.tkpd.R;
 import com.tokopedia.tokocash.network.exception.UserInactivateTokoCashException;
-import com.tokopedia.tokocash.qrpayment.domain.GetBalanceTokoCashUseCase;
+import com.tokopedia.tokocash.balance.domain.GetBalanceTokoCashUseCase;
 
 import rx.Observable;
 import rx.functions.Action1;

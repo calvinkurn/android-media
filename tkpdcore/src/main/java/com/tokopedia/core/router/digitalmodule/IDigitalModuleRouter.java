@@ -31,8 +31,6 @@ public interface IDigitalModuleRouter {
     int PAYMENT_CANCELLED = 6;
     int PAYMENT_FAILED = 7;
 
-    BroadcastReceiver getBroadcastReceiverTokocashPending();
-
     Intent instanceIntentCartDigitalProduct(DigitalCheckoutPassData passData);
 
     Intent instanceIntentCartDigitalProductWithBundle(Bundle bundle);
