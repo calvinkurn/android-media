@@ -68,5 +68,7 @@ public interface TkpdInboxRouter {
 
     Intent getHelpUsIntent(Context context);
 
+    Intent getWebviewActivityWithIntent(Context context, String url, String title);
+
     boolean isEnabledGroupChat();
 }
