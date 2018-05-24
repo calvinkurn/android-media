@@ -276,7 +276,6 @@ public class DrawerHeaderDataBinder extends DataBinder<DrawerHeaderDataBinder.Vi
             @Override
             public void onClick(View v) {
                 listener.onGoToDeposit();
-                AnalyticsEventTrackingHelper.homepageSaldoClick();
 
             }
         });
@@ -286,8 +285,6 @@ public class DrawerHeaderDataBinder extends DataBinder<DrawerHeaderDataBinder.Vi
                 if (data.getDrawerTopPoints() != null
                         && data.getDrawerTopPoints().getTopPointsUrl() != null)
                     listener.onGoToTopPoints(data.getDrawerTopPoints().getTopPointsUrl());
-                AnalyticsEventTrackingHelper.homepageTokopointsClick();
-
             }
         });
         holder.tokoCashLayout.setOnClickListener(new View.OnClickListener() {
@@ -306,7 +303,7 @@ public class DrawerHeaderDataBinder extends DataBinder<DrawerHeaderDataBinder.Vi
                                 data.getDrawerTokoCash().getDrawerWalletAction().getRedirectUrlActionButton(),
                                 data.getDrawerTokoCash().getDrawerWalletAction().getAppLinkActionButton()
                         );
-                        AnalyticsEventTrackingHelper.homepageTokocashActivateClick();
+                        AnalyticsEventTrackingHelper.hamburgerTokocashActivateClick();
 
                     }
                 } else {

@@ -96,7 +96,7 @@ public class CategorySectionViewHolder extends AbstractViewHolder<CategorySectio
                 HomePageTracking.eventClickDynamicIcons(layoutSections.getTitle());
 
             }
-            HomeTrackingUtils.homeUsedCaseClick(layoutSections.getIcon(), position, layoutSections.getApplink());
+            HomeTrackingUtils.homeUsedCaseClick(layoutSections.getIcon(), position + 1, layoutSections.getApplink());
 
         }
 

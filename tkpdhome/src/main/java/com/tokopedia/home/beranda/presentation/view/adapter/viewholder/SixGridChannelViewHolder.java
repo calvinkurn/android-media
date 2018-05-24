@@ -136,7 +136,7 @@ public class SixGridChannelViewHolder extends AbstractViewHolder<DynamicChannelV
                             );
                             listener.onSixGridItemClicked(getAvailableLink(grid.getApplink(), grid.getUrl()),
                                     channel.getHomeAttribution(position + 1, grid.getAttribution()));
-                            HomeTrackingUtils.homeDiscoveryWidgetClick(parentPosition, grid, getAvailableLink(grid.getApplink(), grid.getUrl()), channel.getType());
+                            HomeTrackingUtils.homeDiscoveryWidgetClick(parentPosition + 1, grid, getAvailableLink(grid.getApplink(), grid.getUrl()), channel.getType());
                         }
                     });
                 }

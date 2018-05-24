@@ -7,7 +7,7 @@ import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel;
 import com.tokopedia.home.beranda.domain.model.banner.BannerSlidesModel;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.LayoutSections;
-import com.tokopedia.home.explore.domain.model.LayoutRows;
+import com.tokopedia.home.beranda.presentation.view.viewmodel.InspirationProductViewModel;
 
 import java.util.HashMap;
 import java.util.List;
@@ -167,13 +167,13 @@ public class HomeTrackingUtils {
         sendEventToAnalytics(FirebaseEvent.Home.HOMEPAGE_SEARCH_ICON_CLICKED, bundle);
     }
 
-    public static void homepageRecommedationClicked(LayoutRows rowModel) {
+    public static void homepageRecommedationClicked(InspirationProductViewModel model) {
         Map<String, Object> bundle = new HashMap<>();
-        bundle.put(FirebaseParams.Home.PRODUCT_ID, rowModel.getId());
-        bundle.put(FirebaseParams.Home.PRODUCT_NAME, rowModel.getName());
+        bundle.put(FirebaseParams.Home.PRODUCT_ID, model.getProductId());
+        bundle.put(FirebaseParams.Home.PRODUCT_NAME, model.getName());
         bundle.put(FirebaseParams.Home.PRODUCT_LIST_NAME, "Home page recommendation");
-        bundle.put(FirebaseParams.Home.PRODUCT_CATEGORY, rowModel.getType());
-        bundle.put(FirebaseParams.Home.LANDING_SCREEN_NAME, rowModel.getApplinks());
+        bundle.put(FirebaseParams.Home.PRODUCT_CATEGORY, model.getRecommedationType());
+        bundle.put(FirebaseParams.Home.LANDING_SCREEN_NAME, "Product details screen");
         sendEventToAnalytics(FirebaseEvent.Home.HOMEPAGE_RECOMMEDATION_CLICKED, bundle);
     }
 

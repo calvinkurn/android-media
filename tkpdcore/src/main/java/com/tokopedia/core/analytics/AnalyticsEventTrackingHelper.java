@@ -48,9 +48,9 @@ public class AnalyticsEventTrackingHelper {
         bundle.put(FirebaseParams.Home.LANDING_SCREEN_NAME, landingScreen);
         sendEventToAnalytics(FirebaseEvent.Home.HAMBURGER_ICON_CLICK_SIGNUP, bundle);
     }
-    public static void homepageTokocashActivateClick() {
+    public static void hamburgerTokocashActivateClick() {
         Map<String, Object> bundle = new HashMap<>();
-        sendEventToAnalytics(FirebaseEvent.Home.HOMEPAGE_TOKOCASH_ACTIVATE, bundle);
+        sendEventToAnalytics(FirebaseEvent.Home.HAMBURGER_TOKOCASH_ACTIVATE, bundle);
     }
 
     public static void homepageTokocashClick(String landingScreen ) {
@@ -59,13 +59,15 @@ public class AnalyticsEventTrackingHelper {
         sendEventToAnalytics(FirebaseEvent.Home.HAMBURGER_TOKOCASH, bundle);
     }
 
-    public static void homepageTokopointsClick() {
+    public static void hamburgerTokopointsClick(String landingScreen) {
         Map<String, Object> bundle = new HashMap<>();
-        sendEventToAnalytics(FirebaseEvent.Home.HOMEPAGE_TOKOPOINTS, bundle);
+        bundle.put(FirebaseParams.Home.LANDING_SCREEN_NAME, landingScreen);
+        sendEventToAnalytics(FirebaseEvent.Home.HAMBURGER_TOKOPOINTS, bundle);
     }
 
-    public static void homepageSaldoClick() {
+    public static void homepageSaldoClick(String landingScreen) {
         Map<String, Object> bundle = new HashMap<>();
+        bundle.put(FirebaseParams.Home.LANDING_SCREEN_NAME, landingScreen);
         sendEventToAnalytics(FirebaseEvent.Home.HAMBURGER_SALDO, bundle);
     }
 

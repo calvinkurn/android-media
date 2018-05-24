@@ -668,6 +668,7 @@ public class DrawerBuyerHelper extends DrawerHelper
         Intent intent = new Intent(context, DepositActivity.class);
         context.startActivity(intent);
         sendGTMNavigationEvent(AppEventTracking.EventLabel.DEPOSIT);
+        AnalyticsEventTrackingHelper.homepageSaldoClick(DepositActivity.class.getName());
     }
 
     @Override
@@ -730,7 +731,7 @@ public class DrawerBuyerHelper extends DrawerHelper
         else
             context.startActivity(TokoPointWebviewActivity.getIntentWithTitle(context, mainPageUrl, title));
 
-        AnalyticsEventTrackingHelper.homepageTokocashActivateClick();
+        AnalyticsEventTrackingHelper.hamburgerTokopointsClick(TokoPointWebviewActivity.class.getName());
     }
 
     private void onGoToCreateShop() {

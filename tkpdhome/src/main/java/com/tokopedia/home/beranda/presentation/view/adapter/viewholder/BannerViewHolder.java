@@ -108,7 +108,6 @@ public class BannerViewHolder extends AbstractViewHolder<BannerViewModel> implem
                     PromoListActivity.DEFAULT_AUTO_SELECTED_MENU_ID,
                     PromoListActivity.DEFAULT_AUTO_SELECTED_CATEGORY_ID
             ));
-            HomeTrackingUtils.homeViewAllPromotions("PromoListActivity");
         } else {
             Intent intent = new Intent(context, BannerWebView.class);
             intent.putExtra(BannerWebView.EXTRA_TITLE, context.getString(R.string.title_activity_promo));
@@ -116,8 +115,6 @@ public class BannerViewHolder extends AbstractViewHolder<BannerViewModel> implem
                     TkpdBaseURL.URL_PROMO + TkpdBaseURL.FLAG_APP
             );
             context.startActivity(intent);
-            HomeTrackingUtils.homeViewAllPromotions(
-                    TkpdBaseURL.URL_PROMO + TkpdBaseURL.FLAG_APP);
 
         }
     }
