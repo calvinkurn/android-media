@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
           package="com.tokopedia.session">
 
     <uses-permission android:name="android.permission.GET_ACCOUNTS"/>
@@ -10,6 +11,9 @@
         android:allowBackup="true"
         android:label="@string/app_name"
         android:supportsRtl="true">
+
+        <meta-data android:name="android.support.VERSION" android:value="26.1.0"
+            tools:replace="android:value" />
 
         <activity
             android:name=".forgotpassword.activity.ForgotPasswordActivity"
@@ -86,20 +90,14 @@
             android:windowSoftInputMode="stateAlwaysHidden"/>
 
         <activity
-            android:name="com.tokopedia.otp.cotp.view.activity.VerificationActivity"
-            android:label="@string/title_verify"
-            android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustResize"/>
-
-        <activity
             android:name=".login.loginemail.view.activity.LoginActivity"
             android:label="@string/login"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateAlwaysHidden|adjustPan"/>
         <activity
             android:name=".register.view.activity.SmartLockActivity"
-            android:screenOrientation="portrait"
-            android:theme="@style/DialogTheme"/>
+            android:theme="@style/Theme.AppCompat.Dialog"
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".google.GoogleSignInActivity"
             android:screenOrientation="portrait"

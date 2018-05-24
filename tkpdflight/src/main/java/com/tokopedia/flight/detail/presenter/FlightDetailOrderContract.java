@@ -7,6 +7,7 @@ import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
 import com.tokopedia.flight.booking.domain.subscriber.model.ProfileInfo;
 import com.tokopedia.flight.booking.view.viewmodel.SimpleViewModel;
+import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationJourney;
 import com.tokopedia.flight.orderlist.domain.model.FlightOrder;
 import com.tokopedia.flight.orderlist.domain.model.FlightOrderJourney;
 import com.tokopedia.flight.orderlist.view.viewmodel.FlightOrderDetailPassData;
@@ -21,7 +22,7 @@ import rx.Observable;
  */
 
 public interface FlightDetailOrderContract {
-    interface View extends CustomerView{
+    interface View extends CustomerView {
         void showProgressDialog();
 
         void hideProgressDialog();
@@ -53,7 +54,7 @@ public interface FlightDetailOrderContract {
 
         FlightOrder getFlightOrder();
 
-        void navigateToContactUs(FlightOrder flightOrder);
+        void navigateToCancellationPage(String invoiceId, List<FlightCancellationJourney> items);
 
         void showPaymentInfoLayout();
 
@@ -71,11 +72,25 @@ public interface FlightDetailOrderContract {
 
         void hidePaymentDueDate();
 
+        void showCancellationStatus();
+
+        void showCancellationStatusInProgress(int numberOfProcess);
+
+        void showCancellationContainer();
+
+        void hideCancellationContainer();
+
         void navigateToInputEmailForm(String userId, String userEmail);
 
         Observable<ProfileInfo> getProfileObservable();
-      
+
         void setTransactionDate(String transactionDate);
+
+        void showLessThan6HoursDialog();
+
+        void showRefundableCancelDialog(String id, List<FlightCancellationJourney> items);
+
+        void showNonRefundableCancelDialog(String id, List<FlightCancellationJourney> items);
     }
 
     interface Presenter extends CustomerPresenter<View> {
@@ -90,5 +105,10 @@ public interface FlightDetailOrderContract {
         void onDownloadETicketButtonClicked();
 
         void onGetProfileData();
+
+        void checkIfFlightCancellable(String invoiceId, List<FlightCancellationJourney> items);
+
+        List<FlightCancellationJourney> transformOrderToCancellation(List<FlightOrderJourney> flightOrderJourneyList);
+
     }
 }

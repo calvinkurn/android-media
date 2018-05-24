@@ -3,10 +3,10 @@ package com.tokopedia.feedplus.view.adapter.viewholder.productcard;
 import android.support.annotation.LayoutRes;
 import android.view.View;
 
+import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.feedplus.R;
-import com.tokopedia.core.base.adapter.model.RetryModel;
-import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.feedplus.view.listener.FeedPlus;
+import com.tokopedia.feedplus.view.viewmodel.RetryModel;
 
 /**
  * Created by stevenfredian on 5/31/17.

@@ -7,22 +7,6 @@
             <padding
                 android:top="2dp"/>
 
-            <solid android:color="@color/shadow_color_1" />
-        </shape>
-    </item>
-    <item>
-        <shape>
-            <padding
-                android:top="2dp"/>
-
-            <solid android:color="@color/shadow_color_2" />
-        </shape>
-    </item>
-    <item>
-        <shape>
-            <padding
-                android:top="2dp"/>
-
             <solid android:color="@color/shadow_color_3" />
         </shape>
     </item>

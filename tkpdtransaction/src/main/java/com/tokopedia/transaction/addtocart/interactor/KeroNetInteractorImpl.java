@@ -1,21 +1,16 @@
 package com.tokopedia.transaction.addtocart.interactor;
 
 import android.content.Context;
-import android.content.res.Resources;
 import android.support.annotation.NonNull;
 
 import com.google.gson.Gson;
+import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.network.apiservices.logistics.LogisticsAuthService;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.addtocart.model.kero.LogisticsData;
 import com.tokopedia.transaction.addtocart.utils.KeroppiParam;
-
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 
 import retrofit2.Response;
 import rx.Observable;
@@ -123,7 +118,7 @@ public class KeroNetInteractorImpl implements KeroNetInteractor {
     private String getRequestPayload(Context context, TKPDMapParam<String, String> params) {
 
         return String.format(
-                loadRawString(context.getResources(), R.raw.logistics_get_courier_query),
+                CommonUtils.loadRawString(context.getResources(), R.raw.logistics_get_courier_query),
                 params.get(KeroppiParam.CAT_ID),
                 params.get(KeroppiParam.DESTINATION),
                 params.get(KeroppiParam.FROM),
@@ -136,29 +131,6 @@ public class KeroNetInteractorImpl implements KeroNetInteractor {
                 params.get(KeroppiParam.UT),
                 params.get(KeroppiParam.WEIGHT),
                 params.get(KeroppiParam.PARAM_OS_TYPE));
-    }
-
-    private String loadRawString(Resources resources, int resId) {
-        InputStream rawResource = resources.openRawResource(resId);
-        String content = streamToString(rawResource);
-        try {
-            rawResource.close();
-        } catch (IOException e) {
-        }
-        return content;
-    }
-
-    private String streamToString(InputStream in) {
-        String temp;
-        BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(in));
-        StringBuilder stringBuilder = new StringBuilder();
-        try {
-            while ((temp = bufferedReader.readLine()) != null) {
-                stringBuilder.append(temp + "\n");
-            }
-        } catch (IOException e) {
-        }
-        return stringBuilder.toString();
     }
 
     @Override

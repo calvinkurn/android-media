@@ -8,6 +8,8 @@ import com.tokopedia.kol.feature.post.view.adapter.typefactory.KolPostTypeFactor
  */
 
 public class KolPostViewModel implements Visitable<KolPostTypeFactory> {
+    public final static int DEFAULT_ID = -1;
+
     private final String tagsType;
     private final String contentLink;
     private final int userId;

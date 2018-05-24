@@ -21,6 +21,8 @@ import com.facebook.FacebookSdk;
 import com.google.firebase.perf.metrics.Trace;
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.SnackbarManager;
+import com.tokopedia.abstraction.AbstractionRouter;
+import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.FeedTracking;
@@ -28,7 +30,7 @@ import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.TkpdCoreRouter;
-import com.tokopedia.core.base.adapter.Visitable;
+import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.core.base.adapter.model.EmptyModel;
 import com.tokopedia.core.base.adapter.model.RetryModel;
 import com.tokopedia.core.base.di.component.AppComponent;
@@ -71,13 +73,15 @@ import com.tokopedia.feedplus.view.presenter.FeedPlusPresenter;
 import com.tokopedia.feedplus.view.util.NpaLinearLayoutManager;
 import com.tokopedia.feedplus.view.util.ShareBottomDialog;
 import com.tokopedia.feedplus.view.viewmodel.inspiration.InspirationViewModel;
-import com.tokopedia.feedplus.view.viewmodel.kol.KolViewModel;
+import com.tokopedia.feedplus.view.viewmodel.kol.KolRecommendationViewModel;
 import com.tokopedia.feedplus.view.viewmodel.officialstore.OfficialStoreViewModel;
 import com.tokopedia.feedplus.view.viewmodel.product.ProductFeedViewModel;
 import com.tokopedia.feedplus.view.viewmodel.promo.PromoCardViewModel;
 import com.tokopedia.feedplus.view.viewmodel.topads.FeedTopAdsViewModel;
 import com.tokopedia.kol.feature.comment.view.activity.KolCommentActivity;
 import com.tokopedia.kol.feature.comment.view.fragment.KolCommentFragment;
+import com.tokopedia.kol.feature.post.view.listener.KolPostListener;
+import com.tokopedia.kol.feature.post.view.viewmodel.KolPostViewModel;
 import com.tokopedia.profile.view.activity.TopProfileActivity;
 import com.tokopedia.topads.sdk.domain.model.Data;
 import com.tokopedia.topads.sdk.domain.model.Product;
@@ -105,14 +109,17 @@ public class FeedPlusFragment extends BaseDaggerFragment
         FeedPlus.View.Toppicks,
         FeedPlus.View.Kol,
         SwipeRefreshLayout.OnRefreshListener,
-        TopAdsItemClickListener, TopAdsInfoClickListener {
+        TopAdsItemClickListener, TopAdsInfoClickListener,
+        KolPostListener.View.ViewHolder {
 
     private static final int OPEN_DETAIL = 54;
     private static final int OPEN_KOL_COMMENT = 101;
     private static final int OPEN_KOL_PROFILE = 13;
+    private static final int OPEN_KOL_PROFILE_FROM_RECOMMENDATION = 83;
     private static final int DEFAULT_VALUE = -1;
 
     private static final String ARGS_ROW_NUMBER = "row_number";
+    private static final String ARGS_ITEM_ROW_NUMBER = "item_row_number";
 
     private static final String FIRST_CURSOR = "FIRST_CURSOR";
     public static final String KEY_EXPLORE_NATIVE_ENABLE = "mainapp_explore_native_enable";
@@ -126,12 +133,10 @@ public class FeedPlusFragment extends BaseDaggerFragment
     private ShareBottomDialog shareBottomDialog;
     private TkpdProgressDialog progressDialog;
     private RemoteConfig remoteConfig;
+    private AbstractionRouter abstractionRouter;
 
     @Inject
     FeedPlusPresenter presenter;
-
-    @Inject
-    SessionHandler sessionHandler;
 
     private LinearLayoutManager layoutManager;
     private FeedPlusAdapter adapter;
@@ -199,6 +204,13 @@ public class FeedPlusFragment extends BaseDaggerFragment
         callbackManager = CallbackManager.Factory.create();
         String loginIdString = SessionHandler.getLoginID(getActivity());
         loginIdInt = loginIdString.isEmpty() ? 0 : Integer.valueOf(loginIdString);
+
+        if (getActivity().getApplication() instanceof AbstractionRouter) {
+            abstractionRouter = (AbstractionRouter) getActivity().getApplication();
+        } else {
+            throw new IllegalStateException("Application must implement " +
+                    AbstractionRouter.class.getSimpleName());
+        }
     }
 
     @Nullable
@@ -737,6 +749,14 @@ public class FeedPlusFragment extends BaseDaggerFragment
                     );
                 }
                 break;
+            case OPEN_KOL_PROFILE_FROM_RECOMMENDATION:
+                if (resultCode == Activity.RESULT_OK) {
+                    onSuccessFollowUnfollowFromProfileRecommendation(
+                            data.getIntExtra(ARGS_ROW_NUMBER, DEFAULT_VALUE),
+                            data.getIntExtra(ARGS_ITEM_ROW_NUMBER, DEFAULT_VALUE),
+                            data.getIntExtra(TopProfileActivity.EXTRA_IS_FOLLOWING, DEFAULT_VALUE)
+                    );
+                }
             default:
                 break;
         }
@@ -961,6 +981,15 @@ public class FeedPlusFragment extends BaseDaggerFragment
     }
 
     @Override
+    public void onGoToKolProfileFromRecommendation(int position, int itemPosition, String userId) {
+        Intent profileIntent = TopProfileActivity.newInstance(getContext(), userId)
+                .putExtra(ARGS_ROW_NUMBER, position)
+                .putExtra(ARGS_ITEM_ROW_NUMBER, itemPosition);
+
+        startActivityForResult(profileIntent, OPEN_KOL_PROFILE_FROM_RECOMMENDATION);
+    }
+
+    @Override
     public void onGoToKolProfile(int page, int rowNumber, String userId, int postId) {
         Intent profileIntent = TopProfileActivity.newInstanceFromFeed(getContext(), userId, postId)
                 .putExtra(ARGS_ROW_NUMBER, rowNumber);
@@ -995,7 +1024,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void onGoToKolComment(int page, int rowNumber, KolViewModel model) {
+    public void onGoToKolComment(int page, int rowNumber, KolPostViewModel model) {
         if (getActivity().getApplication() instanceof FeedModuleRouter) {
             FeedModuleRouter router = ((FeedModuleRouter) getActivity().getApplication());
             Intent intent = router.getKolCommentActivity(getContext(), model.getId(), rowNumber);
@@ -1027,11 +1056,10 @@ public class FeedPlusFragment extends BaseDaggerFragment
 
     @Override
     public void onSuccessFollowUnfollowKol(int rowNumber) {
-        if (adapter.getlist().get(rowNumber) instanceof KolViewModel) {
-            ((KolViewModel) adapter.getlist().get(rowNumber)).setFollowed(!((KolViewModel) adapter
-                    .getlist().get(rowNumber)).isFollowed());
-            ((KolViewModel) adapter.getlist().get(rowNumber)).setTemporarilyFollowed(!((KolViewModel) adapter
-                    .getlist().get(rowNumber)).isTemporarilyFollowed());
+        if (adapter.getlist().get(rowNumber) instanceof KolPostViewModel) {
+            KolPostViewModel kolPostViewModel = (KolPostViewModel) adapter.getlist().get(rowNumber);
+            kolPostViewModel.setFollowed(!(kolPostViewModel.isFollowed()));
+            kolPostViewModel.setTemporarilyFollowed(!(kolPostViewModel.isTemporarilyFollowed()));
             adapter.notifyItemChanged(rowNumber);
         }
     }
@@ -1044,14 +1072,14 @@ public class FeedPlusFragment extends BaseDaggerFragment
 
     @Override
     public void onSuccessLikeDislikeKolPost(int rowNumber) {
-        if (adapter.getlist().get(rowNumber) instanceof KolViewModel) {
-            ((KolViewModel) adapter.getlist().get(rowNumber)).setLiked(!((KolViewModel) adapter
-                    .getlist().get(rowNumber)).isLiked());
-            if (((KolViewModel) adapter.getlist().get(rowNumber)).isLiked()) {
-                ((KolViewModel) adapter.getlist().get(rowNumber)).setTotalLike(((KolViewModel)
+        if (adapter.getlist().get(rowNumber) instanceof KolPostViewModel) {
+            KolPostViewModel kolPostViewModel = (KolPostViewModel) adapter.getlist().get(rowNumber);
+            kolPostViewModel.setLiked(!(kolPostViewModel.isLiked()));
+            if (kolPostViewModel.isLiked()) {
+                kolPostViewModel.setTotalLike(((KolPostViewModel)
                         adapter.getlist().get(rowNumber)).getTotalLike() + 1);
             } else {
-                ((KolViewModel) adapter.getlist().get(rowNumber)).setTotalLike(((KolViewModel)
+                kolPostViewModel.setTotalLike(((KolPostViewModel)
                         adapter.getlist().get(rowNumber)).getTotalLike() - 1);
             }
             adapter.notifyItemChanged(rowNumber);
@@ -1078,9 +1106,10 @@ public class FeedPlusFragment extends BaseDaggerFragment
     }
 
     private void onSuccessAddDeleteKolComment(int rowNumber, int totalNewComment) {
-        if (adapter.getlist().get(rowNumber) instanceof KolViewModel) {
-            ((KolViewModel) adapter.getlist().get(rowNumber)).setTotalComment((
-                    (KolViewModel)
+        if (adapter.getlist().get(rowNumber) instanceof KolPostViewModel) {
+            KolPostViewModel kolPostViewModel = (KolPostViewModel) adapter.getlist().get(rowNumber);
+            kolPostViewModel.setTotalComment((
+                    (KolPostViewModel)
                             adapter.getlist().get(rowNumber)).getTotalComment() +
                     totalNewComment);
             adapter.notifyItemChanged(rowNumber);
@@ -1088,8 +1117,8 @@ public class FeedPlusFragment extends BaseDaggerFragment
     }
 
     private void onSuccessFollowUnfollowFromProfile(int rowNumber, int isFollowing) {
-        if (rowNumber != DEFAULT_VALUE && adapter.getlist().get(rowNumber) instanceof KolViewModel) {
-            KolViewModel kolViewModel = (KolViewModel) adapter.getlist().get(rowNumber);
+        if (rowNumber != DEFAULT_VALUE && adapter.getlist().get(rowNumber) instanceof KolPostViewModel) {
+            KolPostViewModel kolViewModel = (KolPostViewModel) adapter.getlist().get(rowNumber);
 
             if (isFollowing != DEFAULT_VALUE) {
                 kolViewModel.setFollowed(isFollowing == IS_FOLLOWING_TRUE);
@@ -1100,8 +1129,8 @@ public class FeedPlusFragment extends BaseDaggerFragment
     }
 
     private void updatePostState(int rowNumber, int isLiked, int totalLike, int totalComment) {
-        if (rowNumber != DEFAULT_VALUE && adapter.getlist().get(rowNumber) instanceof KolViewModel) {
-            KolViewModel kolViewModel = (KolViewModel) adapter.getlist().get(rowNumber);
+        if (rowNumber != DEFAULT_VALUE && adapter.getlist().get(rowNumber) instanceof KolPostViewModel) {
+            KolPostViewModel kolViewModel = (KolPostViewModel) adapter.getlist().get(rowNumber);
 
             if (isLiked != DEFAULT_VALUE) {
                 kolViewModel.setLiked(isLiked == IS_LIKE_TRUE);
@@ -1114,6 +1143,25 @@ public class FeedPlusFragment extends BaseDaggerFragment
             if (totalComment != DEFAULT_VALUE) {
                 kolViewModel.setTotalComment(totalComment);
             }
+            adapter.notifyItemChanged(rowNumber);
+        }
+    }
+
+    private void onSuccessFollowUnfollowFromProfileRecommendation(int rowNumber,
+                                                                  int itemRowNumber,
+                                                                  int isFollowing) {
+        if (rowNumber != DEFAULT_VALUE
+                && itemRowNumber != DEFAULT_VALUE
+                && adapter.getlist().get(rowNumber) instanceof KolRecommendationViewModel) {
+            KolRecommendationViewModel recommendationViewModel =
+                    (KolRecommendationViewModel) adapter.getlist().get(rowNumber);
+
+            if (isFollowing != DEFAULT_VALUE) {
+                recommendationViewModel.getListRecommend()
+                        .get(itemRowNumber)
+                        .setFollowed(isFollowing == IS_FOLLOWING_TRUE);
+            }
+
             adapter.notifyItemChanged(rowNumber);
         }
     }
@@ -1135,5 +1183,15 @@ public class FeedPlusFragment extends BaseDaggerFragment
     @Override
     public int getAdapterListSize() {
         return adapter.getItemCount();
+    }
+
+    @Override
+    public UserSession getUserSession() {
+        return abstractionRouter.getSession();
+    }
+
+    @Override
+    public AbstractionRouter getAbstractionRouter() {
+        return abstractionRouter;
     }
 }

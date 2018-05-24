@@ -115,6 +115,7 @@ import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Set;
 
 import permissions.dispatcher.NeedsPermission;
@@ -662,6 +663,13 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
     public void renderTempProductData(ProductPass productPass) {
         this.headerInfoView.renderTempData(productPass);
         this.pictureView.renderTempData(productPass);
+        this.ratingTalkCourierView.renderTempdata(productPass);
+         if (productPass.isWishlist()) {
+            fabWishlist.setImageDrawable(getResources().getDrawable(R.drawable.ic_wishlist_red));
+        } else {
+            fabWishlist.setImageDrawable(getResources().getDrawable(R.drawable.ic_wishlist));
+        }
+        fabWishlist.setVisibility(View.VISIBLE);
     }
 
     @Override
@@ -1505,6 +1513,37 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
 
     @Override
     public void trackingEnhanceProductDetail() {
+        Map<String, Object> detail;
+        if (TextUtils.isEmpty(productPass.getTrackerListName())) {
+            detail = DataLayer.mapOf(
+                    "products", DataLayer.listOf(
+                            DataLayer.mapOf(
+                                    "name", productData.getInfo().getProductName(),
+                                    "id", productData.getInfo().getProductId(),
+                                    "price", productData.getInfo().getProductPriceUnformatted(),
+                                    "brand", "none / other",
+                                    "category", productData.getEnhanceCategoryFormatted(),
+                                    "variant", getEnhanceVariant(),
+                                    "dimension38", productPass.getTrackerAttribution()
+                            )
+                    )
+            );
+        } else {
+            detail = DataLayer.mapOf(
+                    "actionField", DataLayer.mapOf("list", productPass.getTrackerListName()),
+                    "products", DataLayer.listOf(
+                            DataLayer.mapOf(
+                                    "name", productData.getInfo().getProductName(),
+                                    "id", productData.getInfo().getProductId(),
+                                    "price", productData.getInfo().getProductPriceUnformatted(),
+                                    "brand", "none / other",
+                                    "category", productData.getEnhanceCategoryFormatted(),
+                                    "variant", getEnhanceVariant(),
+                                    "dimension38", productPass.getTrackerAttribution()
+                            )
+                    )
+            );
+        }
         ProductPageTracking.eventEnhanceProductDetail(
                 DataLayer.mapOf(
                         "event", "viewProduct",
@@ -1517,20 +1556,7 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
                         ),
                         "ecommerce", DataLayer.mapOf(
                                 "currencyCode", "IDR",
-                                "detail", DataLayer.mapOf(
-                                        "actionField", DataLayer.mapOf("list", productPass.getTrackerListName()),
-                                        "products", DataLayer.listOf(
-                                                DataLayer.mapOf(
-                                                        "name", productData.getInfo().getProductName(),
-                                                        "id", productData.getInfo().getProductId(),
-                                                        "price", productData.getInfo().getProductPriceUnformatted(),
-                                                        "brand", "none / other",
-                                                        "category", productData.getEnhanceCategoryFormatted(),
-                                                        "variant", getEnhanceVariant(),
-                                                        "dimension38", productPass.getTrackerAttribution()
-                                                )
-                                        )
-                                )
+                                "detail", detail
                         ),
                         "key", productData.getEnhanceUrl(productData.getInfo().getProductUrl()),
                         "shopName", productData.getShopInfo().getShopName(),

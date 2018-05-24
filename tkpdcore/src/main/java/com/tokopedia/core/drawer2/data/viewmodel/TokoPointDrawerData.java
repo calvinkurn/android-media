@@ -64,91 +64,6 @@ public class TokoPointDrawerData implements Parcelable {
         this.mainPageUrl = mainPageUrl;
     }
 
-    public static class Catalog implements Parcelable {
-
-        private String title;
-        private String subTitle;
-        private int points;
-        private String thumbnailUrl;
-        private String thumbnailUrlMobile;
-
-        public String getTitle() {
-            return title;
-        }
-
-        public void setTitle(String title) {
-            this.title = title;
-        }
-
-        public String getSubTitle() {
-            return subTitle;
-        }
-
-        public void setSubTitle(String subTitle) {
-            this.subTitle = subTitle;
-        }
-
-        public int getPoints() {
-            return points;
-        }
-
-        public void setPoints(int points) {
-            this.points = points;
-        }
-
-        public String getThumbnailUrl() {
-            return thumbnailUrl;
-        }
-
-        public void setThumbnailUrl(String thumbnailUrl) {
-            this.thumbnailUrl = thumbnailUrl;
-        }
-
-        public String getThumbnailUrlMobile() {
-            return thumbnailUrlMobile;
-        }
-
-        public void setThumbnailUrlMobile(String thumbnailUrlMobile) {
-            this.thumbnailUrlMobile = thumbnailUrlMobile;
-        }
-
-        @Override
-        public int describeContents() {
-            return 0;
-        }
-
-        @Override
-        public void writeToParcel(Parcel dest, int flags) {
-            dest.writeString(this.title);
-            dest.writeString(this.subTitle);
-            dest.writeInt(this.points);
-            dest.writeString(this.thumbnailUrl);
-            dest.writeString(this.thumbnailUrlMobile);
-        }
-
-        public Catalog() {
-        }
-
-        protected Catalog(Parcel in) {
-            this.title = in.readString();
-            this.subTitle = in.readString();
-            this.points = in.readInt();
-            this.thumbnailUrl = in.readString();
-            this.thumbnailUrlMobile = in.readString();
-        }
-
-        public static final Parcelable.Creator<Catalog> CREATOR = new Parcelable.Creator<Catalog>() {
-            @Override
-            public Catalog createFromParcel(Parcel source) {
-                return new Catalog(source);
-            }
-
-            @Override
-            public Catalog[] newArray(int size) {
-                return new Catalog[size];
-            }
-        };
-    }
 
     public static class PopUpNotif implements Parcelable {
 
@@ -158,8 +73,6 @@ public class TokoPointDrawerData implements Parcelable {
         private String buttonText;
         private String buttonUrl;
         private String appLink;
-        private String notes;
-        private Catalog catalog;
 
         public String getTitle() {
             return title;
@@ -209,22 +122,6 @@ public class TokoPointDrawerData implements Parcelable {
             this.appLink = appLink;
         }
 
-        public String getNotes() {
-            return notes;
-        }
-
-        public void setNotes(String notes) {
-            this.notes = notes;
-        }
-
-        public Catalog getCatalog() {
-            return catalog;
-        }
-
-        public void setCatalog(Catalog catalog) {
-            this.catalog = catalog;
-        }
-
         public PopUpNotif() {
         }
 
@@ -241,8 +138,6 @@ public class TokoPointDrawerData implements Parcelable {
             dest.writeString(this.buttonText);
             dest.writeString(this.buttonUrl);
             dest.writeString(this.appLink);
-            dest.writeString(this.notes);
-            dest.writeParcelable(this.catalog, flags);
         }
 
         protected PopUpNotif(Parcel in) {
@@ -252,8 +147,6 @@ public class TokoPointDrawerData implements Parcelable {
             this.buttonText = in.readString();
             this.buttonUrl = in.readString();
             this.appLink = in.readString();
-            this.notes = in.readString();
-            this.catalog = in.readParcelable(Catalog.class.getClassLoader());
         }
 
         public static final Creator<PopUpNotif> CREATOR = new Creator<PopUpNotif>() {
@@ -271,25 +164,9 @@ public class TokoPointDrawerData implements Parcelable {
 
     public static class UserTier implements Parcelable {
 
-        private int tierId;
-        private String tierName;
         private String tierNameDesc;
         private String tierImageUrl;
-        private int rewardPoints;
         private String rewardPointsStr;
-        private String mainPageUrl;
-
-        public int getTierId() {
-            return tierId;
-        }
-
-        public void setTierId(int tierId) {
-            this.tierId = tierId;
-        }
-
-        public String getTierName() {
-            return tierName;
-        }
 
         public String getTierNameDesc() {
             return tierNameDesc;
@@ -299,24 +176,12 @@ public class TokoPointDrawerData implements Parcelable {
             this.tierNameDesc = tierNameDesc;
         }
 
-        public void setTierName(String tierName) {
-            this.tierName = tierName;
-        }
-
         public String getTierImageUrl() {
             return tierImageUrl;
         }
 
         public void setTierImageUrl(String tierImageUrl) {
             this.tierImageUrl = tierImageUrl;
-        }
-
-        public int getRewardPoints() {
-            return rewardPoints;
-        }
-
-        public void setRewardPoints(int rewardPoints) {
-            this.rewardPoints = rewardPoints;
         }
 
         public String getRewardPointsStr() {
@@ -330,14 +195,6 @@ public class TokoPointDrawerData implements Parcelable {
         public UserTier() {
         }
 
-        public String getMainPageUrl() {
-            return mainPageUrl;
-        }
-
-        public void setMainPageUrl(String mainPageUrl) {
-            this.mainPageUrl = mainPageUrl;
-        }
-
         @Override
         public int describeContents() {
             return 0;
@@ -345,23 +202,15 @@ public class TokoPointDrawerData implements Parcelable {
 
         @Override
         public void writeToParcel(Parcel dest, int flags) {
-            dest.writeInt(this.tierId);
-            dest.writeString(this.tierName);
             dest.writeString(this.tierNameDesc);
             dest.writeString(this.tierImageUrl);
-            dest.writeInt(this.rewardPoints);
             dest.writeString(this.rewardPointsStr);
-            dest.writeString(this.mainPageUrl);
         }
 
         protected UserTier(Parcel in) {
-            this.tierId = in.readInt();
-            this.tierName = in.readString();
             this.tierNameDesc = in.readString();
             this.tierImageUrl = in.readString();
-            this.rewardPoints = in.readInt();
             this.rewardPointsStr = in.readString();
-            this.mainPageUrl = in.readString();
         }
 
         public static final Creator<UserTier> CREATOR = new Creator<UserTier>() {
