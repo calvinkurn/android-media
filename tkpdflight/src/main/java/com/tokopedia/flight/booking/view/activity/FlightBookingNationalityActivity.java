@@ -11,20 +11,25 @@ import com.tokopedia.flight.booking.di.DaggerFlightBookingComponent;
 import com.tokopedia.flight.booking.di.FlightBookingComponent;
 import com.tokopedia.flight.booking.view.fragment.FlightBookingNationalityFragment;
 
+import static com.tokopedia.flight.booking.view.fragment.FlightBookingNationalityFragment.EXTRA_SEARCH_HINT;
+
 /**
  * Created by zulfikarrahman on 11/8/17.
  */
 
 public class FlightBookingNationalityActivity extends BaseSimpleActivity implements HasComponent<FlightBookingComponent> {
 
-    public static Intent createIntent(Context context) {
+    public static Intent createIntent(Context context, String searchHint) {
         Intent intent = new Intent(context, FlightBookingNationalityActivity.class);
+        intent.putExtra(EXTRA_SEARCH_HINT, searchHint);
         return intent;
     }
 
     @Override
     protected Fragment getNewFragment() {
-        return new FlightBookingNationalityFragment();
+        return FlightBookingNationalityFragment.createInstance(
+                getIntent().getExtras().getString(EXTRA_SEARCH_HINT)
+        );
     }
 
     @Override
