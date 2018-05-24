@@ -71,6 +71,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     public static final String ARG_EXTRA_CART_PROMO_SUGGESTION = "ARG_EXTRA_CART_PROMO_SUGGESTION";
     public static final String ARG_EXTRA_PROMO_CODE_APPLIED_DATA = "ARG_EXTRA_PROMO_CODE_APPLIED_DATA";
     private static final String NO_PINPOINT_ETD = "Belum Pinpoint";
+    private static final int TOASTER_DURATION = 3000;
 
     private RecyclerView rvShipment;
     private TkpdProgressDialog progressDialogNormal;
@@ -237,14 +238,20 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     @Override
     public void showToastNormal(String message) {
         if (getView() != null) {
-            ToasterNormal.make(getView(), message, 5000).show();
+            ToasterNormal.make(getView(), message, TOASTER_DURATION)
+                    .setAction(getActivity().getString(R.string.label_action_snackbar_close), new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+
+                        }
+                    }).show();
         }
     }
 
     @Override
     public void showToastError(String message) {
         if (getView() != null) {
-            ToasterError.make(getView(), message, 5000)
+            ToasterError.make(getView(), message, TOASTER_DURATION)
                     .setAction(getActivity().getString(R.string.label_action_snackbar_close), new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {

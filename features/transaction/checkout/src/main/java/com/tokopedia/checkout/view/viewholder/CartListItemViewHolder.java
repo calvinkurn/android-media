@@ -22,9 +22,6 @@ import com.tokopedia.checkout.R;
 import com.tokopedia.checkout.view.adapter.CartListAdapter;
 import com.tokopedia.checkout.view.holderitemdata.CartItemHolderData;
 
-import java.math.BigDecimal;
-import java.text.DecimalFormat;
-
 /**
  * @author anggaprasetiyo on 13/03/18.
  */
@@ -365,7 +362,10 @@ public class CartListItemViewHolder extends RecyclerView.ViewHolder {
 
         @Override
         public void afterTextChanged(Editable editable) {
-            if (TextUtils.isEmpty(editable)) {
+            if (editable.length() > 1 && editable.charAt(0) == '0') {
+                etQty.setText(editable.toString().substring(1, editable.length()));
+                etQty.setSelection(1);
+            } else if (TextUtils.isEmpty(editable)) {
                 actionListener.onCartItemQuantityReseted(getAdapterPosition());
             } else {
                 int qty = 0;
