@@ -340,8 +340,6 @@
             android:id="@+id/insurance_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dp_20"
-            android:background="@color/white"
             android:orientation="vertical"
             android:visibility="gone"
             tools:visibility="visible">

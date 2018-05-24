@@ -491,7 +491,7 @@ public class FlightDetailOrderPresenter extends BaseDaggerPresenter<FlightDetail
 
         for (FlightInsurance insurance : flightOrder.getInsurances()) {
             simpleViewModelList.add(new SimpleViewModel(
-                    String.format(getView().getString(R.string.flight_order_prefix_insurance_price_label), totalPassenger),
+                    String.format("%s %dx", insurance.getTitle(), totalPassenger),
                     insurance.getPaidAmount()
             ));
             totalPrice += insurance.getPaidAmountNumeric();
