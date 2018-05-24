@@ -95,37 +95,31 @@ public class DigitalCheckETollBalanceNFCActivity extends BaseSimpleActivity
 
     @SuppressWarnings("unused")
     @DeepLink({ApplinkConst.DIGITAL_SMARTCARD})
-    public static Intent getcallingIntent(Context context, Bundle extras) {
+    public static TaskStackBuilder intentForTaskStackBuilderMethods(Context context, Bundle extras) {
         TaskStackBuilder taskStackBuilder = TaskStackBuilder.create(context);
         Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
-        if (extras.getBoolean(Constants.EXTRA_APPLINK_FROM_PUSH, false)) {
-            Intent homeIntent;
-            if (GlobalConfig.isSellerApp()) {
-                homeIntent = SellerAppRouter.getSellerHomeActivity(context);
-            } else {
-                homeIntent = HomeRouter.getHomeActivity(context);
-            }
-            homeIntent.putExtra(HomeRouter.EXTRA_INIT_FRAGMENT,
-                    HomeRouter.INIT_STATE_FRAGMENT_HOME);
-            taskStackBuilder.addNextIntent(homeIntent);
+        Intent homeIntent;
+        if (GlobalConfig.isSellerApp()) {
+            homeIntent = SellerAppRouter.getSellerHomeActivity(context);
+        } else {
+            homeIntent = HomeRouter.getHomeActivity(context);
         }
+        homeIntent.putExtra(HomeRouter.EXTRA_INIT_FRAGMENT,
+                HomeRouter.INIT_STATE_FRAGMENT_HOME);
+        taskStackBuilder.addNextIntent(homeIntent);
 
         DigitalCategoryDetailPassData passData = new DigitalCategoryDetailPassData.Builder()
                 .appLinks(uri.toString())
-                .categoryId(extras.getString(DigitalCategoryDetailPassData.PARAM_CATEGORY_ID))
-                .operatorId(extras.getString(DigitalCategoryDetailPassData.PARAM_OPERATOR_ID))
-                .productId(extras.getString(DigitalCategoryDetailPassData.PARAM_PRODUCT_ID))
-                .clientNumber(extras.getString(DigitalCategoryDetailPassData.PARAM_CLIENT_NUMBER))
+                .categoryId("34")
+                .operatorId("419")
                 .build();
         Intent intentDigitalProduct = DigitalProductActivity.newInstance(context, passData);
-        intentDigitalProduct.putExtra(Constants.EXTRA_FROM_PUSH, true);
         taskStackBuilder.addNextIntent(intentDigitalProduct);
 
         Intent intentEToll = DigitalCheckETollBalanceNFCActivity.newInstance(context);
-        intentEToll.putExtra(Constants.EXTRA_FROM_PUSH, true);
         taskStackBuilder.addNextIntent(intentEToll);
 
-        return intentEToll;
+        return taskStackBuilder;
     }
 
     @Override
