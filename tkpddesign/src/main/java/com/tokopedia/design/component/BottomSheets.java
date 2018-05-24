@@ -19,8 +19,6 @@ import com.tokopedia.design.R;
 
 public abstract class BottomSheets extends BottomSheetDialogFragment {
 
-    private View inflatedView;
-
     public abstract int getLayoutResourceId();
 
     public abstract void initView(View view);

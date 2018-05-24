@@ -20,6 +20,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.data.model.storage.CacheManager;
+import com.tokopedia.abstraction.common.utils.TKPDMapParam;
 import com.tokopedia.applink.ApplinkRouter;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.cacheapi.domain.interactor.CacheApiClearAllUseCase;
@@ -1327,5 +1328,20 @@ public abstract class SellerRouterApplication extends MainApplication
         intent.setData(Uri.parse(applink));
 
         return intent;
+    }
+
+    @Override
+    public Observable<TKPDMapParam<String, Object>> verifyEventPromo(RequestParams requestParams) {
+        return null;
+    }
+
+    @Override
+    public Intent getPromoDetailIntent(Context context, String slug) {
+        return null;
+    }
+
+    @Override
+    public Intent getPromoListIntent(Activity activity) {
+        return null;
     }
 }
