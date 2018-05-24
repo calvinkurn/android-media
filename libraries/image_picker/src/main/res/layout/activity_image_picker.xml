@@ -51,11 +51,12 @@
         android:clipChildren="false"
         android:clipToPadding="false" />
 
-    <FrameLayout
-        android:id="@+id/vg_preview_container"
+    <com.tokopedia.imagepicker.picker.widget.ImagePickerPreviewWidget
+        android:id="@+id/image_picker_preview_widget"
         android:layout_width="match_parent"
-        android:layout_height="100dp"
-        android:background="@color/grey_500" />
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        tools:visibility="visible"/>
 
     <LinearLayout
         android:layout_width="match_parent"

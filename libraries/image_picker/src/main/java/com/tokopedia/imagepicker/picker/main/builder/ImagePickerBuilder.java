@@ -3,14 +3,11 @@ package com.tokopedia.imagepicker.picker.main.builder;
 import android.content.Context;
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.support.annotation.Nullable;
 
 import com.tokopedia.imagepicker.R;
 import com.tokopedia.imagepicker.picker.gallery.type.GalleryType;
 
-import static com.tokopedia.imagepicker.picker.main.builder.ImageEditActionTypeDef.ACTION_BRIGHTNESS;
-import static com.tokopedia.imagepicker.picker.main.builder.ImageEditActionTypeDef.ACTION_CONTRAST;
-import static com.tokopedia.imagepicker.picker.main.builder.ImageEditActionTypeDef.ACTION_CROP;
-import static com.tokopedia.imagepicker.picker.main.builder.ImageEditActionTypeDef.ACTION_ROTATE;
 import static com.tokopedia.imagepicker.picker.main.builder.ImagePickerTabTypeDef.TYPE_CAMERA;
 import static com.tokopedia.imagepicker.picker.main.builder.ImagePickerTabTypeDef.TYPE_GALLERY;
 import static com.tokopedia.imagepicker.picker.main.builder.ImagePickerTabTypeDef.TYPE_INSTAGRAM;
@@ -19,7 +16,7 @@ import static com.tokopedia.imagepicker.picker.main.builder.ImagePickerTabTypeDe
  * Created by hendry on 19/04/18.
  */
 
-public class ImagePickerBuilder implements Parcelable{
+public class ImagePickerBuilder implements Parcelable {
 
     public static final int DEFAULT_MIN_RESOLUTION = 300;
     public static final int DEFAULT_MAX_IMAGE_SIZE_IN_KB = 15360; // 15 * 1024KB
@@ -30,69 +27,44 @@ public class ImagePickerBuilder implements Parcelable{
     private @GalleryType
     int galleryType;
     private int minResolution;
-    private @ImageSelectionTypeDef
-    int imageSelectionType;
-    private boolean continueToEditAfterPick;
-    private @ImageEditActionTypeDef
-    int[] imageEditActionType;
-    private boolean circlePreview;
+
     private int ratioX;
     private int ratioY;
     private boolean moveImageResultToLocal;
-    private boolean hasPickerPreview;
-    private int maximumNoPick;
+
     private long maxFileSizeInKB;
 
-    public static ImagePickerBuilder getDefaultBuilder(Context context){
+    private ImagePickerEditorBuilder imagePickerEditorBuilder;
+    private ImagePickerMultipleSelectionBuilder imagePickerMultipleSelectionBuilder;
+
+    public static ImagePickerBuilder getDefaultBuilder(Context context) {
         return new ImagePickerBuilder(context.getString(R.string.choose_image),
-                new int[]{TYPE_GALLERY, TYPE_INSTAGRAM, TYPE_CAMERA}, GalleryType.IMAGE_ONLY, ImageSelectionTypeDef.TYPE_MULTIPLE,
-                false, 5, DEFAULT_MAX_IMAGE_SIZE_IN_KB,
-                DEFAULT_MIN_RESOLUTION, 1, 1, true, true,
-                new int[]{ACTION_BRIGHTNESS, ACTION_CONTRAST, ACTION_CROP, ACTION_ROTATE},
-                true);
+                new int[]{TYPE_GALLERY, TYPE_INSTAGRAM, TYPE_CAMERA}, GalleryType.IMAGE_ONLY,
+                DEFAULT_MAX_IMAGE_SIZE_IN_KB,
+                DEFAULT_MIN_RESOLUTION, 1, 1, true,
+                ImagePickerEditorBuilder.getDefaultBuilder(),
+                ImagePickerMultipleSelectionBuilder.getDefaultBuilder());
     }
 
     public ImagePickerBuilder(String title,
-                       @ImagePickerTabTypeDef int[] imagePickerTabTypeDef,
-                       @GalleryType int galleryType,
-                       @ImageSelectionTypeDef int selectionType,
-                       boolean hasPickerPreview,
-                       int maximumNoPick, int maxFileSizeInKB,
-                       int minResolution,
-                       int ratioX, int ratioY, boolean moveImageResultToLocal) {
+                              @ImagePickerTabTypeDef int[] imagePickerTabTypeDef,
+                              @GalleryType int galleryType,
+                              int maxFileSizeInKB,
+                              int minResolution,
+                              int ratioX, int ratioY,
+                              boolean moveImageResultToLocal,
+                              @Nullable ImagePickerEditorBuilder imagePickerEditorBuilder,
+                              @Nullable ImagePickerMultipleSelectionBuilder imagePickerMultipleSelectionBuilder) {
         this.title = title;
         this.tabTypeDef = imagePickerTabTypeDef;
         this.galleryType = galleryType;
-        this.imageSelectionType = selectionType;
-        this.hasPickerPreview = hasPickerPreview;
-        this.maximumNoPick = maximumNoPick;
         this.maxFileSizeInKB = maxFileSizeInKB;
         this.minResolution = minResolution;
         this.ratioX = ratioX;
         this.ratioY = ratioY;
         this.moveImageResultToLocal = moveImageResultToLocal;
-        this.continueToEditAfterPick = false;
-    }
-
-    public ImagePickerBuilder(String title,
-                       @ImagePickerTabTypeDef int[] imagePickerTabTypeDef,
-                       @GalleryType int galleryType,
-                       @ImageSelectionTypeDef int selectionType,
-                       boolean hasPickerPreview,
-                       int maximumNoPick,
-                       int maxFileSizeInKB,
-                       int minResolution,
-                       int ratioX, int ratioY,
-                       boolean moveImageResultToLocal,
-                       boolean continueToEditAfterPick,
-                       @ImageEditActionTypeDef int[] imageEditActionType,
-                       boolean circlePreview) {
-        this(title, imagePickerTabTypeDef, galleryType, selectionType, hasPickerPreview,
-                maximumNoPick, maxFileSizeInKB,
-                minResolution, ratioX, ratioY, moveImageResultToLocal);
-        this.continueToEditAfterPick = continueToEditAfterPick;
-        this.imageEditActionType = imageEditActionType;
-        this.circlePreview = circlePreview;
+        this.imagePickerEditorBuilder = imagePickerEditorBuilder;
+        this.imagePickerMultipleSelectionBuilder = imagePickerMultipleSelectionBuilder;
     }
 
     public int[] getTabTypeDef() {
@@ -125,12 +97,8 @@ public class ImagePickerBuilder implements Parcelable{
         return galleryType;
     }
 
-    public int getImageSelectionType() {
-        return imageSelectionType;
-    }
-
     public boolean supportMultipleSelection() {
-        return imageSelectionType != ImageSelectionTypeDef.TYPE_SINGLE;
+        return imagePickerMultipleSelectionBuilder!= null;
     }
 
     public int getMinResolution() {
@@ -146,15 +114,18 @@ public class ImagePickerBuilder implements Parcelable{
     }
 
     public boolean isContinueToEditAfterPick() {
-        return continueToEditAfterPick;
+        return imagePickerEditorBuilder != null;
     }
 
     public int[] getImageEditActionType() {
-        return imageEditActionType;
+        if (imagePickerEditorBuilder != null) {
+            return imagePickerEditorBuilder.getImageEditActionType();
+        }
+        return null;
     }
 
     public boolean isCirclePreview() {
-        return circlePreview;
+        return imagePickerEditorBuilder != null && imagePickerEditorBuilder.isCirclePreview();
     }
 
     public String getTitle() {
@@ -165,12 +136,11 @@ public class ImagePickerBuilder implements Parcelable{
         return moveImageResultToLocal;
     }
 
-    public boolean isHasPickerPreview() {
-        return hasPickerPreview;
-    }
-
     public int getMaximumNoPick() {
-        return maximumNoPick;
+        if (imagePickerMultipleSelectionBuilder!= null) {
+            return imagePickerMultipleSelectionBuilder.getMaximumNoPick();
+        }
+        return 0;
     }
 
     public long getMaxFileSizeInKB() {
@@ -188,16 +158,12 @@ public class ImagePickerBuilder implements Parcelable{
         dest.writeIntArray(this.tabTypeDef);
         dest.writeInt(this.galleryType);
         dest.writeInt(this.minResolution);
-        dest.writeInt(this.imageSelectionType);
-        dest.writeByte(this.continueToEditAfterPick ? (byte) 1 : (byte) 0);
-        dest.writeIntArray(this.imageEditActionType);
-        dest.writeByte(this.circlePreview ? (byte) 1 : (byte) 0);
         dest.writeInt(this.ratioX);
         dest.writeInt(this.ratioY);
         dest.writeByte(this.moveImageResultToLocal ? (byte) 1 : (byte) 0);
-        dest.writeByte(this.hasPickerPreview ? (byte) 1 : (byte) 0);
-        dest.writeInt(this.maximumNoPick);
         dest.writeLong(this.maxFileSizeInKB);
+        dest.writeParcelable(this.imagePickerEditorBuilder, flags);
+        dest.writeParcelable(this.imagePickerMultipleSelectionBuilder, flags);
     }
 
     protected ImagePickerBuilder(Parcel in) {
@@ -205,16 +171,12 @@ public class ImagePickerBuilder implements Parcelable{
         this.tabTypeDef = in.createIntArray();
         this.galleryType = in.readInt();
         this.minResolution = in.readInt();
-        this.imageSelectionType = in.readInt();
-        this.continueToEditAfterPick = in.readByte() != 0;
-        this.imageEditActionType = in.createIntArray();
-        this.circlePreview = in.readByte() != 0;
         this.ratioX = in.readInt();
         this.ratioY = in.readInt();
         this.moveImageResultToLocal = in.readByte() != 0;
-        this.hasPickerPreview = in.readByte() != 0;
-        this.maximumNoPick = in.readInt();
         this.maxFileSizeInKB = in.readLong();
+        this.imagePickerEditorBuilder = in.readParcelable(ImagePickerEditorBuilder.class.getClassLoader());
+        this.imagePickerMultipleSelectionBuilder = in.readParcelable(ImagePickerMultipleSelectionBuilder.class.getClassLoader());
     }
 
     public static final Creator<ImagePickerBuilder> CREATOR = new Creator<ImagePickerBuilder>() {
