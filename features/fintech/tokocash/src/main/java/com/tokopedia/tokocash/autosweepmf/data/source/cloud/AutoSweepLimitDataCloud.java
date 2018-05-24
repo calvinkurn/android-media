@@ -1,12 +1,13 @@
 package com.tokopedia.tokocash.autosweepmf.data.source.cloud;
 
-import com.google.gson.JsonObject;
+import com.tokopedia.abstraction.common.data.model.response.GraphqlResponse;
 import com.tokopedia.core.network.retrofit.utils.ErrorNetMessage;
 import com.tokopedia.tokocash.autosweepmf.data.mapper.AutoSweepLimitMapperEntity;
 import com.tokopedia.tokocash.autosweepmf.data.model.ResponseAutoSweepLimit;
 import com.tokopedia.tokocash.autosweepmf.data.source.AutoSweepLimitDataStore;
 import com.tokopedia.tokocash.autosweepmf.data.source.cloud.api.AutoSweepApi;
 import com.tokopedia.tokocash.autosweepmf.domain.model.AutoSweepLimitDomain;
+import com.tokopedia.usecase.RequestParams;
 
 import javax.inject.Inject;
 
@@ -26,13 +27,12 @@ public class AutoSweepLimitDataCloud implements AutoSweepLimitDataStore {
 
 
     @Override
-    public Observable<AutoSweepLimitDomain> autoSweepLimit(JsonObject data) {
-        return mApi.postAutoSweepLimit(data).map(new Func1<Response<ResponseAutoSweepLimit>, AutoSweepLimitDomain>() {
+    public Observable<AutoSweepLimitDomain> autoSweepLimit(RequestParams requestParams) {
+        return mApi.postAutoSweepLimit(requestParams.getParameters()).map(new Func1<Response<GraphqlResponse<ResponseAutoSweepLimit>>, AutoSweepLimitDomain>() {
             @Override
-            public AutoSweepLimitDomain call(Response<ResponseAutoSweepLimit> response) {
+            public AutoSweepLimitDomain call(Response<GraphqlResponse<ResponseAutoSweepLimit>> response) {
                 if (response.isSuccessful()) {
-                    ResponseAutoSweepLimit data = response.body();
-                    return mMapper.transform(data);
+                    return mMapper.transform(response.body().getData().getMfAutoSweepUpdate());
                 } else {
                     throw new RuntimeException(
                             ErrorNetMessage.MESSAGE_ERROR_DEFAULT
