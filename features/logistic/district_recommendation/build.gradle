@@ -23,7 +23,7 @@ buildscript {
 
 project.ext {
     artifactId = 'district_recommendation'
-    groupId = 'com.tokopedia.district_recommendation'
+    groupId = 'com.tokopedia.logistic'
     versionName = "${tkpdDistrictRecommendationVersion}"
     artifactName ="district_recommendation-release"
 }
