@@ -170,7 +170,7 @@ public class FlightDetailOrderPresenter extends BaseDaggerPresenter<FlightDetail
                     getView().hideCancellationContainer();
                 }
 
-                if (isShouldHideCancelButton(flightOrder.getJourneys().size(), flightOrder.getPassengerViewModels())) {
+                if (isShouldHideCancelButton(flightOrderJourneyList.size(), flightOrder.getPassengerViewModels())) {
                     getView().hideCancelButton();
                 }
             }
@@ -582,6 +582,6 @@ public class FlightDetailOrderPresenter extends BaseDaggerPresenter<FlightDetail
             }
         }
 
-        return (allPassengerCount == cancelledPassengerCount);
+        return (allPassengerCount >= cancelledPassengerCount);
     }
 }
