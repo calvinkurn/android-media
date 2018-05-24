@@ -1,5 +1,4 @@
 <resources>
-    <string name="app_name">feature/operational/contact_us</string>
     <string name="mail_us">Email</string>
     <string name="hai_user">Hai %s!</string>
     <!-- TODO: Remove or change this placeholder text -->
@@ -37,4 +36,8 @@
     <string name="hai_syefti">Hai Syefti!</string>
     <string name="butuh_bantuan_lain">Butuh Bantuan Lain?</string>
     <string name="empty_string">Anda tidak memiliki riwayat transaksi \n untuk sementara ini</string>
+    <string name="app_name">contact_us</string>
+
+    <string name="title_help">Bantuan</string>
+
 </resources>

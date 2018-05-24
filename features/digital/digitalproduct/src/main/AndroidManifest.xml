@@ -1,6 +1,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-          xmlns:tools="http://schemas.android.com/tools"
-          package="com.tokopedia.digital">
+    package="com.tokopedia.digital">
 
     <application
         android:allowBackup="true"
@@ -9,71 +8,25 @@
         <activity
             android:name=".cart.activity.CartDigitalActivity"
             android:label="@string/title_activity_cart_digital_module"
-
-            android:windowSoftInputMode="adjustResize"/>
+            android:windowSoftInputMode="adjustResize" />
         <activity
             android:name=".product.view.activity.DigitalProductActivity"
-
-            android:windowSoftInputMode="adjustResize"/>
+            android:windowSoftInputMode="adjustResize" />
         <activity
             android:name=".cart.activity.OtpVerificationActivity"
-            android:label="@string/app_name"
-            />
+            android:label="@string/app_name" />
         <activity
             android:name=".cart.activity.InstantCheckoutActivity"
-            android:label="@string/app_name"
-            />
-        <activity
-            android:name=".product.view.activity.DigitalChooserActivity"
-            />
-        <activity
-            android:name=".product.view.activity.DigitalWebActivity"
-            />
+            android:label="@string/app_name" />
+        <activity android:name=".product.view.activity.DigitalChooserActivity" />
+        <activity android:name=".product.view.activity.DigitalWebActivity" />
         <activity
             android:name=".categorylist.view.activity.DigitalCategoryListActivity"
-            android:label="@string/title_activity_category_list_digital_module"
-            />
-        <activity
-            android:name=".tokocash.activity.ActivateTokoCashActivity"
-            />
-        <activity
-            android:name=".tokocash.activity.SuccessActivateTokoCashActivity"
-            />
+            android:label="@string/title_activity_category_list_digital_module" />
 
-        <activity
-            android:name=".tokocash.activity.TopUpTokoCashActivity"
-            />
-        <activity
-            android:name=".tokocash.activity.HistoryTokocashActivity"
-            />
-        <activity
-            android:name=".tokocash.activity.DetailTransactionActivity"
-            />
+        <activity android:name=".product.view.activity.DigitalUssdActivity" />
 
-        <activity android:name=".product.view.activity.DigitalUssdActivity"/>
-
-        <activity
-            android:name=".tokocash.activity.WalletToDepositActivity"
-            />
-        <activity
-            android:name=".tokocash.activity.WalletToDepositThanksActivity"
-            />
-        <activity
-            android:name=".tokocash.activity.WalletAccountSettingActivity"
-            />
-        <activity
-            android:name=".tokocash.activity.HelpHistoryDetailActivity"
-            />
-        <activity
-            android:name=".product.view.activity.DigitalSearchNumberActivity"
-            />
-        <activity
-            android:name=".tokocash.activity.WaitingTransactionActivity"
-            />
-
-        <receiver
-            android:name=".receiver.TokocashPendingDataBroadcastReceiver"
-            android:enabled="true"/>
+        <activity android:name=".product.view.activity.DigitalSearchNumberActivity" />
     </application>
 
 </manifest>
