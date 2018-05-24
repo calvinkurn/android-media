@@ -101,6 +101,8 @@ public class EventsHomeActivity extends TActivity
     ProgressBar progBar;
     @BindView(R2.id.tv_addtocalendar)
     TextView addToCalendar;
+    @BindView(R2.id.promo_event)
+    TextView promoEvent;
     @BindView(R2.id.viewpager_top_events)
     ViewPager topEventsViewPager;
     @BindView(R2.id.htab_maincontent)
@@ -143,6 +145,7 @@ public class EventsHomeActivity extends TActivity
     protected void onCreate(Bundle savedInstanceState) {
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
         super.onCreate(savedInstanceState);
+        setTheme(R.style.EventAppTheme);
         setContentView(R.layout.activity_events_home_revamp);
         defaultSection = getIntent().getStringExtra(EXTRA_SECTION);
         if (defaultSection == null || defaultSection.length() <= 1)
@@ -362,8 +365,11 @@ public class EventsHomeActivity extends TActivity
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
                 try {
-                    ImageView icon = tab.getCustomView().findViewById(R.id.category_icon);
+                    View customeView = tab.getCustomView();
+                    ImageView icon = customeView.findViewById(R.id.category_icon);
                     icon.setColorFilter(getResources().getColor(R.color.transparent_green_nob));
+                    TextView tv = customeView.findViewById(R.id.category_name);
+                    tv.setTextColor(getResources().getColor(R.color.green_nob));
                 } catch (NullPointerException e) {
                     e.printStackTrace();
                 }
@@ -373,8 +379,12 @@ public class EventsHomeActivity extends TActivity
             @Override
             public void onTabUnselected(TabLayout.Tab tab) {
                 try {
-                    ImageView icon = tab.getCustomView().findViewById(R.id.category_icon);
+                    View customeView = tab.getCustomView();
+                    ImageView icon = customeView.findViewById(R.id.category_icon);
                     icon.setColorFilter(getResources().getColor(R.color.transparent));
+                    TextView tv = customeView.findViewById(R.id.category_name);
+                    tv.setTextColor(getResources().getColor(R.color.black_38));
+
                 } catch (NullPointerException e) {
                     e.printStackTrace();
                 }
@@ -383,8 +393,11 @@ public class EventsHomeActivity extends TActivity
             @Override
             public void onTabReselected(TabLayout.Tab tab) {
                 try {
-                    ImageView icon = tab.getCustomView().findViewById(R.id.category_icon);
+                    View customeView = tab.getCustomView();
+                    ImageView icon = customeView.findViewById(R.id.category_icon);
                     icon.setColorFilter(getResources().getColor(R.color.transparent_green_nob));
+                    TextView tv = customeView.findViewById(R.id.category_name);
+                    tv.setTextColor(getResources().getColor(R.color.green_nob));
                 } catch (NullPointerException e) {
                     e.printStackTrace();
                 }
@@ -484,6 +497,11 @@ public class EventsHomeActivity extends TActivity
     @OnClick(R2.id.search_input_view)
     void onClickSearch() {
         mPresenter.onOptionMenuClick(R.id.action_menu_search);
+    }
+
+    @OnClick(R2.id.promo_event)
+    void goToPromo() {
+        mPresenter.onOptionMenuClick(R.id.action_promo);
     }
 
     public class ImageRequestListener implements RequestListener<String, GlideDrawable> {

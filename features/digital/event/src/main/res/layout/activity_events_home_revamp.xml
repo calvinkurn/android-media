@@ -12,7 +12,10 @@
         android:layout_height="?attr/actionBarSize"
         android:layout_gravity="top"
         android:minHeight="?attr/actionBarSize"
+        app:contentInsetEnd="0dp"
+        app:contentInsetEndWithActions="0dp"
         app:contentInsetLeft="0dp"
+        app:contentInsetRight="0dp"
         app:contentInsetStart="0dp"
         app:contentInsetStartWithNavigation="0dp"
         app:elevation="0dp"
@@ -32,6 +35,7 @@
             android:id="@+id/event_app_bar_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/dp_8"
             android:background="@color/white">
 
             <android.support.constraint.ConstraintLayout
@@ -50,7 +54,7 @@
                     android:layout_marginLeft="@dimen/dp_16"
                     android:layout_marginRight="@dimen/dp_16"
                     android:layout_marginTop="@dimen/dp_16"
-                    android:background="@drawable/rounded_rectange_transparent"
+                    android:background="@drawable/rounded_rectangle_grey_solid"
                     android:drawableLeft="@drawable/ic_search_icon"
                     android:drawablePadding="@dimen/dp_8"
                     android:drawableStart="@drawable/ic_search_icon"
@@ -89,8 +93,18 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/event_bannerpager"
                     app:pageColor="@color/grey_400"
-                    app:radius="@dimen/dp_4"
-                    app:strokeColor="@color/grey_400" />
+                    app:radius="@dimen/dp_3" />
+
+                <TextView
+                    android:id="@+id/promo_event"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="@dimen/dp_16"
+                    android:layout_marginTop="@dimen/dp_16"
+                    android:text="@string/promo_button_text"
+                    android:textColor="@color/green_nob"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/event_bannerpager" />
 
                 <TextView
                     android:id="@+id/tv12_topevents"
@@ -132,7 +146,7 @@
                     android:layout_marginLeft="@dimen/dp_16"
                     android:layout_marginStart="@dimen/dp_16"
                     android:layout_marginTop="@dimen/dp_16"
-                    android:background="@drawable/event_blue_gradient"
+                    android:background="@drawable/calendar_bg"
                     android:drawableLeft="@drawable/ic_event_calendar_green"
                     android:gravity="center"
                     android:text="@string/lihat_kalendar_event"
@@ -151,20 +165,24 @@
             <View
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/dp_2"
-                android:background="@color/grey_200" />
+                android:background="@color/grey_200"
+                app:layout_scrollFlags="scroll" />
+
 
             <android.support.design.widget.TabLayout
                 android:id="@+id/tabs"
                 android:layout_width="match_parent"
-                android:layout_height="54dp"
+                android:layout_height="76dp"
                 android:layout_gravity="center_vertical"
                 android:background="@color/white"
-                app:layout_scrollFlags="scroll|snap"
+                android:minHeight="@dimen/dp_48"
+                app:layout_scrollFlags="scroll|exitUntilCollapsed"
                 app:tabGravity="fill"
                 app:tabIndicatorColor="@color/green_nob"
-                app:tabIndicatorHeight="@dimen/dp_2"
+                app:tabIndicatorHeight="@dimen/dp_3"
                 app:tabMode="scrollable"
                 app:tabSelectedTextColor="@color/green_nob" />
+
 
         </android.support.design.widget.AppBarLayout>
 

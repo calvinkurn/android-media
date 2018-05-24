@@ -23,18 +23,17 @@ import com.tokopedia.events.view.adapter.TopEventsSuggestionsAdapter;
 import com.tokopedia.events.view.contractor.EventSearchContract;
 import com.tokopedia.events.view.customview.SearchInputView;
 import com.tokopedia.events.view.presenter.EventSearchPresenter;
-import com.tokopedia.events.view.utils.Utils;
 import com.tokopedia.events.view.utils.EventsGAConst;
+import com.tokopedia.events.view.utils.Utils;
 import com.tokopedia.events.view.viewmodel.CategoryItemsViewModel;
-import com.tokopedia.events.view.viewmodel.SearchViewModel;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import butterknife.Unbinder;
 
 /**
@@ -239,5 +238,10 @@ public class EventSearchActivity extends TActivity implements
     @Override
     public String getScreenName() {
         return mPresenter.getSCREEN_NAME();
+    }
+
+    @OnClick(R2.id.iv_finish)
+    void clickFinish() {
+        finish();
     }
 }

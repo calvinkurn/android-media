@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main_content"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -113,11 +114,11 @@
                 android:textColor="@color/black_54"
                 android:textSize="@dimen/sp_14" />
 
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/dp_16"
-                android:layout_below="@+id/tv_day_time_bta"
-                android:background="@color/grey_100" />
+            <!--<View-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="@dimen/dp_16"-->
+                <!--android:layout_below="@+id/tv_day_time_bta"-->
+                <!--android:background="@color/grey_100" />-->
 
             <FrameLayout
                 android:id="@+id/bookticket_fragment_holder"
@@ -134,6 +135,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
+        android:elevation="@dimen/dp_4"
         android:background="@color/white"
         android:visibility="invisible">
 
@@ -157,10 +159,10 @@
             android:layout_alignStart="@+id/tiket"
             android:layout_below="@+id/tiket"
             android:layout_marginTop="3dp"
-            android:text="1 x Festival"
             android:textColor="@color/green_nob"
             android:textSize="@dimen/sp_12"
-            android:textStyle="bold" />
+            android:textStyle="bold"
+            tools:text="1 x Festival" />
 
         <TextView
             android:id="@+id/total"

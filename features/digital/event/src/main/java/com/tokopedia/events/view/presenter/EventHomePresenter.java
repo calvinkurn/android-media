@@ -207,25 +207,6 @@ public class EventHomePresenter extends BaseDaggerPresenter<EventsContract.View>
             }
         };
         if (SessionHandler.isV4Login(getView().getActivity())) {
-//            LikeUpdateModel requestModel = new LikeUpdateModel();
-//            //todo set requestmodel values
-//            Rating rating = new Rating();
-//            if (model.isLiked()) {
-//                rating.setIsLiked("false");
-//                model.setLiked(false);
-//            } else {
-//                rating.setIsLiked("true");
-//                model.setLiked(true);
-//            }
-//            rating.setUserId(Integer.parseInt(SessionHandler.getLoginID(getView().getActivity())));
-//            rating.setProductId(model.getId());
-//            rating.setFeedback("");
-//            requestModel.setRating(rating);
-//            com.tokopedia.usecase.RequestParams requestParams = com.tokopedia.usecase.RequestParams.create();
-//            requestParams.putObject("request_body", requestModel);
-//            postUpdateEventLikesUseCase.createObservable(requestParams).subscribeOn(Schedulers.newThread())
-//                    .observeOn(AndroidSchedulers.mainThread())
-//                    .subscribe(subscriber);
             Utils.getSingletonInstance().setEventLike(getView().getActivity(), model, postUpdateEventLikesUseCase, subscriber);
         } else {
             getView().showLoginSnackbar("Please Login to like or share events");

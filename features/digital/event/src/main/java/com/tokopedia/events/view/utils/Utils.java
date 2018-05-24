@@ -211,7 +211,7 @@ public class Utils {
     public void setCalendar(TextView textView, String[] dateArray) {
         SpannableString date = new SpannableString(dateArray[1]);
         SpannableString month = new SpannableString(dateArray[2]);
-        date.setSpan(new AbsoluteSizeSpan(16, true), 0, date.length(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
+        date.setSpan(new AbsoluteSizeSpan(20, true), 0, date.length(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
         month.setSpan(new AbsoluteSizeSpan(12, true), 0, month.length(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
         textView.setText(TextUtils.concat(date, "\n", month));
     }

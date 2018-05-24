@@ -156,7 +156,8 @@ public class EventCategoryAdapter extends RecyclerView.Adapter<EventCategoryAdap
             detailsIntent.putExtra(EventDetailsActivity.FROM, EventDetailsActivity.FROM_HOME_OR_SEARCH);
             detailsIntent.putExtra("homedata", categoryItems.get(mViewHolder.getIndex()));
             context.startActivity(detailsIntent);
-            UnifyTracking.eventDigitalEventTracking(EventsGAConst.EVENT_PRODUCT_CLICK, categoryItems.get(mViewHolder.getIndex()).getTitle()
+            UnifyTracking.eventDigitalEventTracking(EventsGAConst.EVENT_PRODUCT_CLICK,
+                    categoryItems.get(mViewHolder.getIndex()).getTitle()
                     + "-" + String.valueOf(mViewHolder.getIndex()));
         }
     }

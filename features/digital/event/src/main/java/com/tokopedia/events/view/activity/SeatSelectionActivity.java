@@ -190,7 +190,7 @@ public class SeatSelectionActivity extends TActivity implements HasComponent<Eve
                             seatLayoutViewModel.getLayoutDetail().get(i).getSeat().get(j).getStatus(),
                             maxTickets, rowId, currentChar);
                 } else {
-                    customSeatAreaLayout.addColumn("-", 0, 0, 0, "");
+                    customSeatAreaLayout.addColumn(".", 0, 0, 0, "");
                 }
             }
             seatTextLayout.addView(customSeatAreaLayout);

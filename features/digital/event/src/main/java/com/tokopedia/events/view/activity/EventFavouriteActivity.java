@@ -47,6 +47,8 @@ public class EventFavouriteActivity extends TActivity implements EventFavouriteC
     View tvNoFav;
     @BindView(R2.id.tv_find_events)
     View tvFindEvents;
+    @BindView(R2.id.tv_favorite_saya)
+    View title;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -108,6 +110,7 @@ public class EventFavouriteActivity extends TActivity implements EventFavouriteC
 
     @Override
     public void toggleEmptyLayout(int visibility) {
+        title.setVisibility(visibility);
         ivNoFav.setVisibility(visibility);
         tvNoFav.setVisibility(visibility);
         tvFindEvents.setVisibility(visibility);

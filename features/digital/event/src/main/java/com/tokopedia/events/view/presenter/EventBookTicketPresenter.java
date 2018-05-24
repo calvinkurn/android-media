@@ -224,14 +224,15 @@ public class EventBookTicketPresenter
             selectedPackageViewModel.setSelectedQuantity(++selectedCount);
             selectedViewHolder.setTvTicketCnt(selectedCount);
             selectedViewHolder.setTicketViewColor(getView().getActivity().getResources().getColor(R.color.light_green));
-        } else {
+        }
+        if (selectedCount > selectedPackageViewModel.getAvailable() ||
+                selectedCount > selectedPackageViewModel.getMaxQty()) {
             selectedViewHolder.toggleMaxTicketWarning(View.VISIBLE, selectedPackageViewModel.getSelectedQuantity());
         }
         if (selectedCount < selectedPackageViewModel.getMinQty()) {
             selectedViewHolder.toggleMinTicketWarning(View.VISIBLE, selectedPackageViewModel.getMinQty());
             getView().hidePayButton();
-        }
-        else {
+        } else {
             getView().showPayButton(selectedCount, selectedPackageViewModel.getSalesPrice(), selectedPackageViewModel.getDisplayName());
         }
         UnifyTracking.eventDigitalEventTracking(EventsGAConst.EVENT_ADD_TICKET, "add - " + selectedPackageViewModel.getTitle() + " - " +

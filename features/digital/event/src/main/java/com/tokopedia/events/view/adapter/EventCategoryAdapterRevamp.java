@@ -89,7 +89,7 @@ public class EventCategoryAdapterRevamp extends RecyclerView.Adapter<EventCatego
 
         public void setViewHolder(CategoryItemsViewModel data, int position) {
             index = position;
-
+            tvCalendar.setVisibility(View.GONE);
             eventTitle.setText(data.getDisplayName());
             eventPrice.setText("Rp" + " " + CurrencyUtil.convertToCurrencyString(data.getSalesPrice()));
             eventLocation.setCompoundDrawablesWithIntrinsicBounds(R.drawable.event_ic_putih, 0, 0, 0);
@@ -98,7 +98,6 @@ public class EventCategoryAdapterRevamp extends RecyclerView.Adapter<EventCatego
             eventTime.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_event_calendar_white, 0, 0, 0);
             if (data.getMinStartDate() == 0) {
                 eventTime.setVisibility(View.GONE);
-                tvCalendar.setVisibility(View.GONE);
             } else {
                 if (data.getMinStartDate() == data.getMaxEndDate())
                     eventTime.setText(Utils.convertEpochToString(data.getMinStartDate()));
@@ -106,8 +105,6 @@ public class EventCategoryAdapterRevamp extends RecyclerView.Adapter<EventCatego
                     eventTime.setText(Utils.convertEpochToString(data.getMinStartDate())
                             + " - " + Utils.convertEpochToString(data.getMaxEndDate()));
                 eventTime.setVisibility(View.VISIBLE);
-                Utils.getSingletonInstance().setCalendar(tvCalendar,
-                        Utils.getDateArray(Utils.convertEpochToString(data.getMinStartDate())));
             }
 
 
@@ -143,6 +140,7 @@ public class EventCategoryAdapterRevamp extends RecyclerView.Adapter<EventCatego
             detailsIntent.putExtra(EventDetailsActivity.FROM, EventDetailsActivity.FROM_HOME_OR_SEARCH);
             detailsIntent.putExtra("homedata", categoryItems.get(index));
             context.startActivity(detailsIntent);
+
         }
 
         @OnClick(R2.id.tv_add_to_wishlist)
@@ -154,6 +152,11 @@ public class EventCategoryAdapterRevamp extends RecyclerView.Adapter<EventCatego
                 categoryItems.remove(getAdapterPosition());
                 itemRemoved(getAdapterPosition());
             }
+            UnifyTracking.eventDigitalEventTracking(EventsGAConst.EVENT_LIKE,
+                    categoryItems.get(getAdapterPosition())
+                            + " - " + String.valueOf(getAdapterPosition())
+                            + " - " + categoryItems.get(getAdapterPosition()).isLiked());
+
         }
 
         @OnClick(R2.id.tv_event_share)
@@ -162,6 +165,9 @@ public class EventCategoryAdapterRevamp extends RecyclerView.Adapter<EventCatego
                 ((EventsHomeActivity) context).mPresenter.shareEvent(categoryItems.get(getAdapterPosition()));
             else
                 ((EventFavouriteActivity) context).mPresenter.shareEvent(categoryItems.get(getAdapterPosition()));
+            UnifyTracking.eventDigitalEventTracking(EventsGAConst.EVENT_SHARE,
+                    categoryItems.get(getAdapterPosition())
+                            + "-" + String.valueOf(getAdapterPosition()));
         }
 
         public int getIndex() {

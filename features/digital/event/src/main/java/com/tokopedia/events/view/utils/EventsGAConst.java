@@ -39,6 +39,9 @@ public class EventsGAConst {
     public static String EVENT_CHECKOUT = "checkout";
     public static String EVENT_SEARCH_CLICK = "search result click";
     public static String EVENT_SEARCH_IMPRESSION = "search result impression";
+    public static String EVENT_SHARE="click share";
+    public static String EVENT_LIKE="click love";
+
 
     public static String PAYMENT_SUCCESS = "payment success";
     public static String PAYMENT_FAILURE = "payment failure";

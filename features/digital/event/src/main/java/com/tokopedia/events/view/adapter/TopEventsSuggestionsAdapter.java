@@ -15,12 +15,14 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.tkpd.library.utils.ImageHandler;
+import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.events.R;
 import com.tokopedia.events.R2;
 import com.tokopedia.events.view.activity.EventDetailsActivity;
 import com.tokopedia.events.view.contractor.EventsContract;
 import com.tokopedia.events.view.presenter.EventSearchPresenter;
 import com.tokopedia.events.view.utils.CurrencyUtil;
+import com.tokopedia.events.view.utils.EventsGAConst;
 import com.tokopedia.events.view.utils.Utils;
 import com.tokopedia.events.view.viewmodel.CategoryItemsViewModel;
 
@@ -170,6 +172,22 @@ public class TopEventsSuggestionsAdapter extends RecyclerView.Adapter<RecyclerVi
     }
 
     @Override
+    public void onViewAttachedToWindow(RecyclerView.ViewHolder holder) {
+        super.onViewAttachedToWindow(holder);
+        if (holder instanceof EventsTitleHolder) {
+            EventsTitleHolder titleHolder = (EventsTitleHolder) holder;
+            if (!titleHolder.isShown()) {
+                titleHolder.setShown(true);
+                categoryItems.get(titleHolder.getAdapterPosition()).setTrack(true);
+                UnifyTracking.eventDigitalEventTracking(EventsGAConst.EVENT_SEARCH_IMPRESSION,
+                        highLightText
+                                + " - " + categoryItems.get(titleHolder.getAdapterPosition()).getTitle()
+                                + " - " + titleHolder.getAdapterPosition());
+            }
+        }
+    }
+
+    @Override
     public void notifyDatasetChanged(int position) {
         notifyItemChanged(position);
     }
@@ -287,6 +305,10 @@ public class TopEventsSuggestionsAdapter extends RecyclerView.Adapter<RecyclerVi
             detailsIntent.putExtra(EventDetailsActivity.FROM, EventDetailsActivity.FROM_HOME_OR_SEARCH);
             detailsIntent.putExtra("homedata", categoryItems.get(index));
             mContext.startActivity(detailsIntent);
+            UnifyTracking.eventDigitalEventTracking(EventsGAConst.EVENT_SEARCH_CLICK,
+                    highLightText
+                            + " - " + categoryItems.get(getAdapterPosition()).getTitle()
+                            + " - " + getAdapterPosition());
         }
 
         @OnClick(R2.id.tv_add_to_wishlist)
