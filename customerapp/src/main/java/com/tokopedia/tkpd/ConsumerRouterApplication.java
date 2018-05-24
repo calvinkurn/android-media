@@ -27,6 +27,10 @@ import com.tokopedia.abstraction.common.data.model.storage.CacheManager;
 import com.tokopedia.abstraction.common.utils.TKPDMapParam;
 import com.tokopedia.applink.ApplinkRouter;
 import com.tokopedia.cacheapi.domain.interactor.CacheApiClearAllUseCase;
+import com.tokopedia.contact_us.ContactUsModuleRouter;
+import com.tokopedia.contact_us.createticket.ContactUsConstant;
+import com.tokopedia.contact_us.createticket.activity.ContactUsActivity;
+import com.tokopedia.contact_us.createticket.activity.ContactUsCreateTicketActivity;
 import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.UnifyTracking;
@@ -71,8 +75,6 @@ import com.tokopedia.core.router.TkpdInboxRouter;
 import com.tokopedia.core.router.digitalmodule.IDigitalModuleRouter;
 import com.tokopedia.core.router.digitalmodule.passdata.DigitalCategoryDetailPassData;
 import com.tokopedia.core.router.digitalmodule.passdata.DigitalCheckoutPassData;
-import com.tokopedia.core.router.digitalmodule.sellermodule.PeriodRangeModelCore;
-import com.tokopedia.core.router.digitalmodule.sellermodule.TokoCashRouter;
 import com.tokopedia.core.router.productdetail.PdpRouter;
 import com.tokopedia.core.router.productdetail.ProductDetailRouter;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
@@ -91,16 +93,13 @@ import com.tokopedia.core.util.SessionRefresh;
 import com.tokopedia.core.var.ProductItem;
 import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.design.utils.DateLabelUtils;
-import com.tokopedia.digital.DigitalRouter;
 import com.tokopedia.digital.cart.activity.CartDigitalActivity;
 import com.tokopedia.digital.categorylist.view.activity.DigitalCategoryListActivity;
 import com.tokopedia.digital.common.constant.DigitalCache;
 import com.tokopedia.digital.common.router.DigitalModuleRouter;
 import com.tokopedia.digital.product.view.activity.DigitalProductActivity;
 import com.tokopedia.digital.product.view.activity.DigitalWebActivity;
-import com.tokopedia.digital.receiver.TokocashPendingDataBroadcastReceiver;
-import com.tokopedia.digital.tokocash.model.CashBackData;
-import com.tokopedia.digital.tokocash.topup.TopupTokoCashFragment;
+import com.tokopedia.digital.tokocash.TopupTokoCashFragment;
 import com.tokopedia.discovery.DiscoveryRouter;
 import com.tokopedia.discovery.intermediary.view.IntermediaryActivity;
 import com.tokopedia.events.data.entity.response.verifyresponse.VerifyCartResponse;
@@ -135,9 +134,6 @@ import com.tokopedia.groupchat.chatroom.view.activity.GroupChatActivity;
 import com.tokopedia.groupchat.common.analytics.GroupChatAnalytics;
 import com.tokopedia.home.IHomeRouter;
 import com.tokopedia.imageuploader.ImageUploaderRouter;
-import com.tokopedia.inbox.contactus.ContactUsConstant;
-import com.tokopedia.inbox.contactus.activity.ContactUsActivity;
-import com.tokopedia.inbox.contactus.activity.ContactUsCreateTicketActivity;
 import com.tokopedia.inbox.inboxchat.activity.ChatRoomActivity;
 import com.tokopedia.inbox.inboxchat.activity.InboxChatActivity;
 import com.tokopedia.inbox.rescenter.detailv2.view.activity.DetailResChatActivity;
@@ -159,7 +155,6 @@ import com.tokopedia.loyalty.view.activity.TokoPointWebviewActivity;
 import com.tokopedia.loyalty.view.data.VoucherViewModel;
 import com.tokopedia.loyalty.view.fragment.LoyaltyNotifFragmentDialog;
 import com.tokopedia.network.service.AccountsService;
-import com.tokopedia.otp.OtpModuleRouter;
 import com.tokopedia.otp.phoneverification.view.activity.PhoneVerificationActivationActivity;
 import com.tokopedia.otp.phoneverification.view.activity.PhoneVerificationProfileActivity;
 import com.tokopedia.otp.phoneverification.view.activity.ReferralPhoneNumberVerificationActivity;
@@ -178,8 +173,6 @@ import com.tokopedia.profilecompletion.view.activity.ProfileCompletionActivity;
 import com.tokopedia.seller.LogisticRouter;
 import com.tokopedia.seller.SellerModuleRouter;
 import com.tokopedia.seller.TkpdSeller;
-import com.tokopedia.seller.base.domain.interactor.UploadImageUseCase;
-import com.tokopedia.seller.base.domain.model.ImageUploadDomainModel;
 import com.tokopedia.seller.common.cashback.DataCashbackModel;
 import com.tokopedia.seller.common.datepicker.view.model.PeriodRangeModel;
 import com.tokopedia.seller.common.featuredproduct.GMFeaturedProductDomainModel;
@@ -204,7 +197,6 @@ import com.tokopedia.seller.shopsettings.notes.activity.ManageShopNotesActivity;
 import com.tokopedia.session.addchangeemail.view.activity.AddEmailActivity;
 import com.tokopedia.session.addchangepassword.view.activity.AddPasswordActivity;
 import com.tokopedia.session.changename.view.activity.ChangeNameActivity;
-import com.tokopedia.session.changephonenumber.view.activity.ChangePhoneNumberRequestActivity;
 import com.tokopedia.session.changephonenumber.view.activity.ChangePhoneNumberWarningActivity;
 import com.tokopedia.session.forgotpassword.activity.ForgotPasswordActivity;
 import com.tokopedia.session.login.loginemail.view.activity.LoginActivity;
@@ -229,7 +221,6 @@ import com.tokopedia.tkpd.flight.FlightGetProfileInfoData;
 import com.tokopedia.tkpd.flight.FlightVoucherCodeWrapperImpl;
 import com.tokopedia.tkpd.flight.di.DaggerFlightConsumerComponent;
 import com.tokopedia.tkpd.flight.di.FlightConsumerComponent;
-import com.tokopedia.tkpd.flight.domain.AttachmentImageModel;
 import com.tokopedia.tkpd.flight.presentation.FlightPhoneVerificationActivity;
 import com.tokopedia.tkpd.goldmerchant.GoldMerchantRedirectActivity;
 import com.tokopedia.tkpd.home.ParentIndexHome;
@@ -241,7 +232,6 @@ import com.tokopedia.tkpd.tkpdreputation.ReputationRouter;
 import com.tokopedia.tkpd.tkpdreputation.TkpdReputationInternalRouter;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.activity.InboxReputationActivity;
 import com.tokopedia.tkpd.tokocash.GetBalanceTokoCashWrapper;
-import com.tokopedia.tkpd.tokocash.TokoCashPendingCashbackMapper;
 import com.tokopedia.tkpd.tokocash.datepicker.DatePickerUtil;
 import com.tokopedia.tkpdpdp.PreviewProductImageDetail;
 import com.tokopedia.tkpdpdp.ProductInfoActivity;
@@ -249,9 +239,13 @@ import com.tokopedia.tkpdreactnative.react.ReactConst;
 import com.tokopedia.tkpdreactnative.react.ReactUtils;
 import com.tokopedia.tkpdreactnative.react.di.ReactNativeModule;
 import com.tokopedia.tkpdreactnative.router.ReactNativeRouter;
+import com.tokopedia.tokocash.TokoCashRouter;
 import com.tokopedia.tokocash.WalletUserSession;
 import com.tokopedia.tokocash.di.DaggerTokoCashComponent;
 import com.tokopedia.tokocash.di.TokoCashComponent;
+import com.tokopedia.tokocash.historytokocash.presentation.model.PeriodRangeModelData;
+import com.tokopedia.tokocash.pendingcashback.domain.PendingCashback;
+import com.tokopedia.tokocash.pendingcashback.receiver.TokocashPendingDataBroadcastReceiver;
 import com.tokopedia.transaction.bcaoneklik.activity.ListPaymentTypeActivity;
 import com.tokopedia.transaction.bcaoneklik.usecase.CreditCardFingerPrintUseCase;
 import com.tokopedia.transaction.purchase.detail.activity.OrderDetailActivity;
@@ -276,8 +270,7 @@ import rx.schedulers.Schedulers;
 
 import static com.tokopedia.core.gcm.Constants.ARG_NOTIFICATION_DESCRIPTION;
 import static com.tokopedia.core.router.productdetail.ProductDetailRouter.ARG_FROM_DEEPLINK;
-import static com.tokopedia.core.router.productdetail.ProductDetailRouter
-        .ARG_PARAM_PRODUCT_PASS_DATA;
+import static com.tokopedia.core.router.productdetail.ProductDetailRouter.ARG_PARAM_PRODUCT_PASS_DATA;
 import static com.tokopedia.core.router.productdetail.ProductDetailRouter.SHARE_DATA;
 
 /**
@@ -287,12 +280,11 @@ import static com.tokopedia.core.router.productdetail.ProductDetailRouter.SHARE_
 public abstract class ConsumerRouterApplication extends MainApplication implements
         TkpdCoreRouter, SellerModuleRouter, IDigitalModuleRouter, PdpRouter,
         OtpRouter, IPaymentModuleRouter, TransactionRouter, IReactNativeRouter, ReactApplication,
-        TkpdInboxRouter, TokoCashRouter, IWalletRouter, LoyaltyRouter, ReputationRouter, SessionRouter,
+        TkpdInboxRouter, IWalletRouter, LoyaltyRouter, ReputationRouter, SessionRouter,
         AbstractionRouter, FlightModuleRouter, LogisticRouter, FeedModuleRouter, IHomeRouter,
-        DiscoveryRouter, DigitalModuleRouter, com.tokopedia.tokocash.TokoCashRouter,
-        DigitalRouter, KolRouter, GroupChatModuleRouter, ApplinkRouter, ShopModuleRouter,
-        LoyaltyModuleRouter, GamificationRouter, ImageUploaderRouter, ProfileModuleRouter, ReactNativeRouter,
-        OtpModuleRouter {
+        DiscoveryRouter, DigitalModuleRouter, TokoCashRouter, KolRouter, GroupChatModuleRouter,
+        ApplinkRouter, ShopModuleRouter, LoyaltyModuleRouter, GamificationRouter,
+        ImageUploaderRouter, ProfileModuleRouter, ReactNativeRouter, ContactUsModuleRouter {
 
     @Inject
     ReactNativeHost reactNativeHost;
@@ -315,18 +307,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     private CacheManager cacheManager;
     private UserSession userSession;
-
-    public static List<PeriodRangeModel> convert(List<PeriodRangeModelCore> periodRangeModelCores) {
-        List<PeriodRangeModel> periodRangeModels = new ArrayList<>();
-        for (PeriodRangeModelCore periodRangeModelCore : periodRangeModelCores) {
-            periodRangeModels.add(new PeriodRangeModel(
-                    periodRangeModelCore.getStartDate(),
-                    periodRangeModelCore.getEndDate(),
-                    periodRangeModelCore.getLabel()
-            ));
-        }
-        return periodRangeModels;
-    }
 
     @Override
     public void onCreate() {
@@ -751,6 +731,14 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @Override
     public Interceptor getChuckInterceptor() {
         return getAppComponent().chuckInterceptor();
+    }
+
+    @Override
+    public Observable<PendingCashback> getPendingCashbackUseCase() {
+        SessionHandler sessionHandler = new SessionHandler(this);
+        com.tokopedia.usecase.RequestParams requestParams = com.tokopedia.usecase.RequestParams.create();
+        requestParams.putString("msisdn", sessionHandler.getPhoneNumber());
+        return tokoCashComponent.getPendingCasbackUseCase().createObservable(requestParams);
     }
 
     @Override
@@ -1235,11 +1223,24 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    public Intent goToDatePicker(Activity activity, List<PeriodRangeModelCore> periodRangeModels,
+    public Intent goToDatePicker(Activity activity,
+                                 List<PeriodRangeModelData> periodRangeModelData,
                                  long startDate, long endDate,
                                  int datePickerSelection, int datePickerType) {
-        return DatePickerUtil.getDatePickerIntent(activity, startDate, endDate, convert(periodRangeModels),
+        return DatePickerUtil.getDatePickerIntent(activity, startDate, endDate, convert(periodRangeModelData),
                 datePickerSelection, datePickerType);
+    }
+
+    public static List<PeriodRangeModel> convert(List<PeriodRangeModelData> periodRangeModelDatas) {
+        List<PeriodRangeModel> periodRangeModels = new ArrayList<>();
+        for (PeriodRangeModelData periodRangeModelData : periodRangeModelDatas) {
+            periodRangeModels.add(new PeriodRangeModel(
+                    periodRangeModelData.getStartDate(),
+                    periodRangeModelData.getEndDate(),
+                    periodRangeModelData.getLabel()
+            ));
+        }
+        return periodRangeModels;
     }
 
     @Override
@@ -1545,16 +1546,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     public GetShopInfoUseCase getShopInfo() {
         return getShopComponent().getShopInfoUseCase();
-    }
-
-    @Override
-    public Observable<CashBackData> getPendingCashbackUseCase(Context context) {
-        SessionHandler sessionHandler = new SessionHandler(context);
-        com.tokopedia.usecase.RequestParams requestParams = com.tokopedia.usecase.RequestParams.create();
-        requestParams.putString("msisdn", sessionHandler.getPhoneNumber());
-        return tokoCashComponent.getPendingCasbackUseCase()
-                .createObservable(requestParams)
-                .map(new TokoCashPendingCashbackMapper());
     }
 
     @Override
@@ -1952,13 +1943,11 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    public Intent getChangePhoneNumberRequestIntent(Context context) {
-        return ChangePhoneNumberRequestActivity.getCallingIntent(context);
+    public Intent getChatBotIntent(Context context, String messageId) {
+        return ChatRoomActivity.getChatBotIntent(context, messageId);
     }
 
-    @Override
     public UseCase<String> setCreditCardSingleAuthentication() {
         return new CreditCardFingerPrintUseCase();
     }
-
 }

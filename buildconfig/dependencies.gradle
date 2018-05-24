@@ -277,7 +277,7 @@ ext {
             shopCommon      : ":features:merchant:shop_common",
             shopPage        : ":features:merchant:shop_page",
             topAdsManagement: ":features:top_ads:top_ads_management",
-            tokoCash        : ":tkpdtokocash",
+            tokoCash        : ":features:fintech:tokocash",
             flight          : ":tkpdflight",
             flightNoOp      : ":features:digital:flight_no_op",
             mitraToppers    : ":features:fintech:mitra_toppers",
@@ -287,6 +287,7 @@ ext {
             groupchat       : ":features:user:groupchat",
             gamification    : ":features:promo:gamification",
             profile         : ":features:user:profile",
+            contactUs       : ":features:operational:contact_us",
             otp             : ":features:user:otp"
     ]
 
