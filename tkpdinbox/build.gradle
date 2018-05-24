@@ -39,6 +39,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.cacheApi)
     implementation project(rootProject.ext.libraries.useCase)
     implementation project(rootProject.ext.libraries.pushNotif)
+    implementation project(rootProject.ext.features.contactUs)
 
     implementation (rootProject.ext.debugToolsDependencies.chuck) {
         exclude group: 'com.squareup.okhttp3'
