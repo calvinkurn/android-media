@@ -16,8 +16,8 @@ import rx.Observable;
  */
 
 public class GetWarningUseCase extends UseCase<WarningViewModel> {
-    private static final String PARAM_OS_TYPE = "os_type";
-    private static final String OS_TYPE_ANDROID = "1";
+    private static final String PARAM_OS_TYPE = "theme";
+    private static final String OS_TYPE_ANDROID = "mobile";
 
     private final ChangePhoneNumberRepository changePhoneNumberRepository;
 

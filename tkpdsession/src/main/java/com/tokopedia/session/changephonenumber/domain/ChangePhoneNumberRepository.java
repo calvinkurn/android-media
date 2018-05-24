@@ -3,6 +3,8 @@ package com.tokopedia.session.changephonenumber.domain;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.session.changephonenumber.view.viewmodel.WarningViewModel;
 
+import java.util.Map;
+
 import rx.Observable;
 
 
@@ -19,4 +21,6 @@ public interface ChangePhoneNumberRepository {
     Observable<Boolean> validateNumber(TKPDMapParam<String, Object> parameters);
 
     Observable<Boolean> validateEmailCode(TKPDMapParam<String, Object> parameters);
+
+    Observable<Boolean> validateOtpStatus(Map<String, Object> parameters);
 }
