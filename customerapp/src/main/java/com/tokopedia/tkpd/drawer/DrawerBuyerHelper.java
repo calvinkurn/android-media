@@ -567,19 +567,16 @@ public class DrawerBuyerHelper extends DrawerHelper
                     intent = SellerRouter.getActivitySellingTransactionList(context);
                     context.startActivity(intent);
                     sendGTMNavigationEvent(AppEventTracking.EventLabel.SALES_LIST);
-                    AnalyticsEventTrackingHelper.hamburgerOptionClicked(intent.getComponent().getClassName(),AppEventTracking.EventLabel.SALES_LIST);
                     break;
                 case TkpdState.DrawerPosition.SHOP_OPPORTUNITY_LIST:
                     intent = SellerRouter.getActivitySellingTransactionOpportunity(context, "");
                     context.startActivity(intent);
-                    AnalyticsEventTrackingHelper.hamburgerOptionClicked(intent.getComponent().getClassName(),AppEventTracking.EventLabel.SALES_LIST);
                     break;
                 case TkpdState.DrawerPosition.ADD_PRODUCT:
                     if (context.getApplication() instanceof TkpdCoreRouter) {
                         TkpdCoreRouter tkpdCoreRouter = (TkpdCoreRouter) context.getApplication();
                         tkpdCoreRouter.goToManageProduct(context);
                         tkpdCoreRouter.goToAddProduct(context);
-                        AnalyticsEventTrackingHelper.hamburgerOptionClicked(context.getPackageName(),AppEventTracking.EventLabel.ADD_PRODUCT);
                     }
                     break;
                 case TkpdState.DrawerPosition.MANAGE_PRODUCT:
