@@ -37,23 +37,21 @@ public class SixGridChannelViewHolder extends AbstractViewHolder<DynamicChannelV
     private ItemAdapter itemAdapter;
     private RecyclerView recyclerView;
     private static final int spanCount = 3;
-
-
     private HomeCategoryListener listener;
 
     public SixGridChannelViewHolder(View itemView, HomeCategoryListener listener) {
         super(itemView);
         this.listener = listener;
         findViews(itemView);
-        itemAdapter = new ItemAdapter(listener);
+        itemAdapter = new ItemAdapter(listener, getAdapterPosition());
         recyclerView.setAdapter(itemAdapter);
     }
 
     private void findViews(View itemView) {
         recyclerView = itemView.findViewById(R.id.recycleList);
-        channelTitle = (TextView)itemView.findViewById( R.id.channel_title );
+        channelTitle = (TextView) itemView.findViewById(R.id.channel_title);
         channelTitleContainer = itemView.findViewById(R.id.channel_title_container);
-        seeAllButton = (TextView)itemView.findViewById(R.id.see_all_button);
+        seeAllButton = (TextView) itemView.findViewById(R.id.see_all_button);
         recyclerView = itemView.findViewById(R.id.recycleList);
         recyclerView.setLayoutManager(new GridLayoutManager(itemView.getContext(), spanCount,
                 GridLayoutManager.VERTICAL, false));
@@ -84,9 +82,8 @@ public class SixGridChannelViewHolder extends AbstractViewHolder<DynamicChannelV
 
                 }
             });
-
-            itemAdapter.setChannel(channel);
-        }catch (Exception e){
+            itemAdapter.setChannel(channel, getAdapterPosition());
+        } catch (Exception e) {
             Crashlytics.log(0, TAG, e.getLocalizedMessage());
         }
     }
@@ -104,15 +101,18 @@ public class SixGridChannelViewHolder extends AbstractViewHolder<DynamicChannelV
         private DynamicHomeChannel.Grid[] list;
         DynamicHomeChannel.Channels channel;
         private final HomeCategoryListener listener;
+        private int parentPosition = 0;
 
-        public ItemAdapter(HomeCategoryListener listener) {
+        public ItemAdapter(HomeCategoryListener listener, int position) {
             this.listener = listener;
             this.list = new DynamicHomeChannel.Grid[0];
+            parentPosition = 0;
         }
 
-        public void setChannel(DynamicHomeChannel.Channels channel) {
+        public void setChannel(DynamicHomeChannel.Channels channel, int position) {
             this.channel = channel;
             this.list = channel.getGrids();
+            this.parentPosition = position;
             notifyDataSetChanged();
         }
 
@@ -136,7 +136,7 @@ public class SixGridChannelViewHolder extends AbstractViewHolder<DynamicChannelV
                             );
                             listener.onSixGridItemClicked(getAvailableLink(grid.getApplink(), grid.getUrl()),
                                     channel.getHomeAttribution(position + 1, grid.getAttribution()));
-                            HomeTrackingUtils.homeDiscoveryWidgetClick(position + 1, grid, getAvailableLink(grid.getApplink(), grid.getUrl()), grid.getAttribution(),channel.getType());
+                            HomeTrackingUtils.homeDiscoveryWidgetClick(parentPosition, grid, getAvailableLink(grid.getApplink(), grid.getUrl()), channel.getType());
                         }
                     });
                 }

@@ -100,8 +100,8 @@ public class HomeTrackingUtils {
         Map<String, Object> bundle = new HashMap<>();
         DynamicHomeChannel.Grid[] grids = channel.getGrids();
         for (int i = 0; i < grids.length; i++) {
-            bundle.put(FirebaseParams.Home.PRODUCT_ID + "_" + position, grids[i].getId());
-            bundle.put(FirebaseParams.Home.PRODUCT_NAME+ "_" + position, grids[i].getName());
+            bundle.put(FirebaseParams.Home.PRODUCT_ID + "_" + i, grids[i].getId());
+            bundle.put(FirebaseParams.Home.PRODUCT_NAME+ "_" + i, grids[i].getName());
         }
 
         bundle.put(FirebaseParams.Home.PRODUCT_LIST_NAME, channel.getPromoName());
@@ -110,11 +110,10 @@ public class HomeTrackingUtils {
     }
 
 
-    public static void homeDiscoveryWidgetClick(int position, DynamicHomeChannel.Grid grid, String landingScreen, String creativeName , String category) {
+    public static void homeDiscoveryWidgetClick(int position, DynamicHomeChannel.Grid grid, String landingScreen, String category) {
         Map<String, Object> bundle = new HashMap<>();
         bundle.put(FirebaseParams.Home.PRODUCT_ID, grid.getId());
         bundle.put(FirebaseParams.Home.PRODUCT_NAME, grid.getLabel());
-        bundle.put(FirebaseParams.Home.BANNER_CREATIVE, creativeName);
         bundle.put(FirebaseParams.Home.PRODUCT_CATEGORY, category);
         bundle.put(FirebaseParams.Home.PRODUCT_LIST_NAME, "Discovery Widget");
         bundle.put(FirebaseParams.Home.LANDING_SCREEN_NAME, landingScreen);

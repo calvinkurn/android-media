@@ -89,7 +89,7 @@ public abstract class DrawerHelper implements DrawerItemDataBinder.DrawerItemLis
                     sendGTMNavigationEvent(AppEventTracking.EventLabel.MESSAGE);
                     ((TkpdCoreRouter) context.getApplication())
                             .sendTrackingGroupChatLeftNavigation();
-                    AnalyticsEventTrackingHelper.hamburgerOptionClicked(intent.getComponent().getClassName(), AppEventTracking.EventLabel.MESSAGE);
+                    AnalyticsEventTrackingHelper.hamburgerOptionClicked(intent.getComponent().getClassName(), AppEventTracking.EventLabel.INBOX, AppEventTracking.EventLabel.MESSAGE);
 
                 }
                 break;
@@ -97,7 +97,7 @@ public abstract class DrawerHelper implements DrawerItemDataBinder.DrawerItemLis
                 intent = InboxRouter.getInboxTalkActivityIntent(context);
                 context.startActivity(intent);
                 sendGTMNavigationEvent(AppEventTracking.EventLabel.PRODUCT_DISCUSSION);
-                AnalyticsEventTrackingHelper.hamburgerOptionClicked(intent.getComponent().getClassName(), AppEventTracking.EventLabel.PRODUCT_DISCUSSION, AppEventTracking.EventLabel.INBOX);
+                AnalyticsEventTrackingHelper.hamburgerOptionClicked(intent.getComponent().getClassName(), AppEventTracking.EventLabel.INBOX, AppEventTracking.EventLabel.PRODUCT_DISCUSSION);
 
                 break;
             case TkpdState.DrawerPosition.INBOX_REVIEW:
@@ -106,7 +106,7 @@ public abstract class DrawerHelper implements DrawerItemDataBinder.DrawerItemLis
                             .getInboxReputationIntent(context);
                     context.startActivity(intent);
                     sendGTMNavigationEvent(AppEventTracking.EventLabel.REVIEW);
-                    AnalyticsEventTrackingHelper.hamburgerOptionClicked(intent.getComponent().getClassName(), AppEventTracking.EventLabel.REVIEW, AppEventTracking.EventLabel.INBOX);
+                    AnalyticsEventTrackingHelper.hamburgerOptionClicked(intent.getComponent().getClassName(), AppEventTracking.EventLabel.INBOX,AppEventTracking.EventLabel.REVIEW);
 
                 }
                 break;
@@ -114,7 +114,7 @@ public abstract class DrawerHelper implements DrawerItemDataBinder.DrawerItemLis
                 intent = InboxRouter.getInboxTicketActivityIntent(context);
                 context.startActivity(intent);
                 sendGTMNavigationEvent(AppEventTracking.EventLabel.HELP);
-                AnalyticsEventTrackingHelper.hamburgerOptionClicked(intent.getComponent().getClassName(), AppEventTracking.EventLabel.HELP, AppEventTracking.EventLabel.INBOX);
+                AnalyticsEventTrackingHelper.hamburgerOptionClicked(intent.getComponent().getClassName(), AppEventTracking.EventLabel.INBOX, AppEventTracking.EventLabel.HELP);
 
                 break;
             case TkpdState.DrawerPosition.DEVELOPER_OPTIONS:

@@ -299,7 +299,7 @@ public class DrawerHeaderDataBinder extends DataBinder<DrawerHeaderDataBinder.Vi
                                 data.getDrawerTokoCash().getDrawerWalletAction().getRedirectUrlBalance(),
                                 data.getDrawerTokoCash().getDrawerWalletAction().getAppLinkBalance()
                         );
-                        AnalyticsEventTrackingHelper.homepageTokocashClick();
+                        AnalyticsEventTrackingHelper.homepageTokocashClick(data.getDrawerTokoCash().getDrawerWalletAction().getRedirectUrlBalance());
 
                     } else {
                         listener.onWalletActionButtonClicked(
