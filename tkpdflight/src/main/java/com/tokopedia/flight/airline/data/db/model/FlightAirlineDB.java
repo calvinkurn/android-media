@@ -18,17 +18,6 @@ import com.tokopedia.flight.common.database.TkpdFlightDatabase;
 @Table(database = TkpdFlightDatabase.class, insertConflict = ConflictAction.REPLACE, updateConflict = ConflictAction.REPLACE)
 public class FlightAirlineDB extends BaseModel implements Parcelable {
 
-    public static final Creator<FlightAirlineDB> CREATOR = new Creator<FlightAirlineDB>() {
-        @Override
-        public FlightAirlineDB createFromParcel(Parcel in) {
-            return new FlightAirlineDB(in);
-        }
-
-        @Override
-        public FlightAirlineDB[] newArray(int size) {
-            return new FlightAirlineDB[size];
-        }
-    };
     @PrimaryKey
     @Column(name = "id")
     String id;
@@ -40,6 +29,8 @@ public class FlightAirlineDB extends BaseModel implements Parcelable {
     String logo;
     @Column(name = "mandatory_dob")
     int mandatoryDob;
+    @Column(name = "mandatory_refund_attachment")
+    int mandatoryRefundAttachment;
 
     public FlightAirlineDB(){
 
@@ -51,14 +42,16 @@ public class FlightAirlineDB extends BaseModel implements Parcelable {
         this.shortName = airlineData.getAttributes().getShortName();
         this.logo = airlineData.getAttributes().getLogo();
         this.mandatoryDob = (airlineData.getAttributes().isMandatoryDob()) ? 1 : 0;
+        this.mandatoryRefundAttachment = (airlineData.getAttributes().isMandatoryRefundAttachment()) ? 1 : 0;
     }
 
-    public FlightAirlineDB(String id, String name, String shortName, String logo, int mandatoryDob) {
+    public FlightAirlineDB(String id, String name, String shortName, String logo, int mandatoryDob, int mandatoryRefundAttachment) {
         this.id = id;
         this.name = name;
         this.shortName = shortName;
         this.logo = logo;
         this.mandatoryDob = mandatoryDob;
+        this.mandatoryRefundAttachment = mandatoryRefundAttachment;
     }
 
     protected FlightAirlineDB(Parcel in) {
@@ -67,7 +60,20 @@ public class FlightAirlineDB extends BaseModel implements Parcelable {
         shortName = in.readString();
         logo = in.readString();
         mandatoryDob = in.readInt();
+        mandatoryRefundAttachment = in.readInt();
     }
+
+    public static final Creator<FlightAirlineDB> CREATOR = new Creator<FlightAirlineDB>() {
+        @Override
+        public FlightAirlineDB createFromParcel(Parcel in) {
+            return new FlightAirlineDB(in);
+        }
+
+        @Override
+        public FlightAirlineDB[] newArray(int size) {
+            return new FlightAirlineDB[size];
+        }
+    };
 
     public String getId() {
         return id;
@@ -106,6 +112,10 @@ public class FlightAirlineDB extends BaseModel implements Parcelable {
         return obj instanceof FlightAirlineDB && ((FlightAirlineDB) obj).getId().equalsIgnoreCase(id);
     }
 
+    public int getMandatoryRefundAttachment() {
+        return mandatoryRefundAttachment;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -118,5 +128,6 @@ public class FlightAirlineDB extends BaseModel implements Parcelable {
         parcel.writeString(shortName);
         parcel.writeString(logo);
         parcel.writeInt(mandatoryDob);
+        parcel.writeInt(mandatoryRefundAttachment);
     }
 }

@@ -33,6 +33,7 @@
 /features/digital/flight_no_op/         @tokopedia/minion-mark
 /features/payment/payment/              @tokopedia/minion-bob
 /features/user/groupchat/               @tokopedia/minion-kevin
+/features/user/otp/                     @tokopedia/minion-kevin
 
 /libraries/react_native/                @tokopedia/core-team
 /libraries/applink/                     @tokopedia/core-team

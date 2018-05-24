@@ -15,7 +15,7 @@
         <activity
             android:name=".activity.TopPayActivity"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar"
-            android:screenOrientation="portrait"/>
+            />
     </application>
 
 </manifest>

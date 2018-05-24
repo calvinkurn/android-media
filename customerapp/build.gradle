@@ -1,7 +1,10 @@
 apply plugin: 'com.android.application'
-apply plugin: 'com.google.firebase.firebase-perf'
-apply plugin: 'android-apt'
 apply plugin: 'io.fabric'
+apply plugin: 'com.jakewharton.butterknife'
+
+if (!project.hasProperty("disable-performance-plugin")) {
+    apply plugin: 'com.google.firebase.firebase-perf'
+}
 apply plugin: 'io.hansel.preprocessor'
 
 
@@ -78,11 +81,15 @@ def archiveAPK(variant, output) {
 buildscript {
     repositories {
         maven { url 'https://maven.fabric.io/public' }
+        maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
         mavenCentral()
         jcenter()
         maven { url 'https://hansel.io/maven' }
     }
     dependencies {
+        classpath ('com.jakewharton:butterknife-gradle-plugin:9.0.0-SNAPSHOT'){
+            exclude group: 'com.android.tools.build', module: 'gradle'
+        }
         classpath 'io.fabric.tools:gradle:1.+'
         classpath rootProject.ext.miscDependencies.hansel
     }
@@ -92,22 +99,22 @@ buildscript {
 android {
 
     project.ext {
-        defaultVersionCode = 221001101;
-        defaultVersionName = "2.21";
+        defaultVersionCode = 222001101;
+        defaultVersionName = "2.22";
         react = [
                 nodeExecutableAndArgs: ["${nodeExecutableAndArgs}"]
         ]
+    }
+
+    packagingOptions {
+        exclude 'META-INF/LICENSE.txt'
+        exclude 'META-INF/rxjava.properties'
     }
 
     compileSdkVersion rootProject.ext.compileSdkVersion
     buildToolsVersion rootProject.ext.buildToolsVersion
     useLibrary 'org.apache.http.legacy'
     sourceSets {
-
-        packagingOptions {
-            exclude 'META-INF/LICENSE.txt'
-            exclude 'META-INF/rxjava.properties'
-        }
 
         main {
             java.srcDirs = ['src/main/java']
@@ -222,12 +229,11 @@ android {
 
     dexOptions {
         javaMaxHeapSize "4g"
-        keepRuntimeAnnotatedClasses false
     }
 
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_7
-        targetCompatibility JavaVersion.VERSION_1_7
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
     }
 
     configurations.all {
@@ -236,100 +242,174 @@ android {
         resolutionStrategy.force 'com.squareup.okio:okio:1.11.0'
     }
 
+    // Specifies two flavor dimensions.
+    flavorDimensions "tier"
+
     productFlavors {
-        live {
-
-        }
         staging {
+            dimension "tier"
+        }
 
+        live {
+            dimension "tier"
         }
     }
 }
 
 dependencies {
-    compile fileTree(include: ['*.jar'], dir: 'libs')
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
 
-    compile project(rootProject.ext.features.core)
-    compile project(rootProject.ext.features.discovery)
-    compile project(rootProject.ext.features.transaction)
-    compile project(rootProject.ext.features.seller)
-    compile project(rootProject.ext.features.session)
-    compile project(rootProject.ext.features.inbox)
-    compile project(rootProject.ext.features.digitalproduct)
-    compile project(rootProject.ext.features.productDetail)
-    compile project(rootProject.ext.features.feed)
-    compile project(rootProject.ext.features.event)
-    compile project(rootProject.ext.features.loyalty)
-    compile project(rootProject.ext.features.reputation)
-    compile project(rootProject.ext.features.tokoCash)
-    compile project(rootProject.ext.features.flight)
-    compile project(rootProject.ext.features.home)
-    compile project(rootProject.ext.features.groupchat)
-    compile project(rootProject.ext.features.profile)
-    compile project(rootProject.ext.features.shopPage)
-    compile project(rootProject.ext.libraries.reactNative)
-    compile project(rootProject.ext.features.kol)
-    compile project(rootProject.ext.libraries.pushNotif)
-    compile project(rootProject.ext.libraries.applink)
-    compile project(rootProject.ext.features.gamification)
-    compile project(rootProject.ext.features.checkout)
-    compile project(rootProject.ext.features.tracking)
+    implementation project(rootProject.ext.features.core)
+    implementation project(rootProject.ext.features.gamification)
+    implementation project(rootProject.ext.features.kol)
+    implementation project(rootProject.ext.features.shopPage)
+    implementation project(rootProject.ext.features.home)
+    implementation project(rootProject.ext.features.groupchat)
+    implementation project(rootProject.ext.features.event)
+    implementation project(rootProject.ext.features.tokoCash)
+    implementation project(rootProject.ext.features.loyalty)
+    implementation project(rootProject.ext.features.feed)
+    implementation project(rootProject.ext.features.inbox)
+    implementation project(rootProject.ext.features.session)
+    implementation project(rootProject.ext.features.loyalty)
+    implementation project(rootProject.ext.features.flight)
+    implementation project(rootProject.ext.features.reputation)
+    implementation project(rootProject.ext.features.transaction)
+    implementation project(rootProject.ext.features.seller)
+    implementation project(rootProject.ext.features.productDetail)
+    implementation project(rootProject.ext.features.discovery)
+    implementation project(rootProject.ext.features.payment)
+    implementation project(rootProject.ext.features.topAdsSdk)
+    implementation project(rootProject.ext.features.profile)
+    implementation project(rootProject.ext.features.reputationCommon)
+    implementation project(rootProject.ext.features.digitalproduct)
+    implementation project(rootProject.ext.features.otp)
+    implementation project(rootProject.ext.features.checkout)
+    implementation project(rootProject.ext.features.tracking)
 
-    androidTestCompile(rootProject.ext.testDependencies.espressoCore, {
-        exclude group: 'com.android.support', module: 'support-annotations'
-    })
-    testCompile rootProject.ext.testDependencies.mockitorCore
-    testCompile rootProject.ext.testDependencies.junit
+    implementation project(rootProject.ext.libraries.pushNotif)
+    implementation project(rootProject.ext.libraries.applink)
+    implementation project(rootProject.ext.libraries.reactNative)
+    implementation rootProject.ext.tkpdLibDependencies.youtubePlayer
+    implementation project(rootProject.ext.libraries.cacheApi)
+    implementation project(rootProject.ext.libraries.abstraction)
+    implementation project(rootProject.ext.libraries.design)
+    implementation project(rootProject.ext.libraries.useCase)
+    implementation project(rootProject.ext.libraries.fingerprint)
+    implementation project(rootProject.ext.libraries.imageuploader)
 
-    compile rootProject.ext.permissionDispatcherDependencies.permissionDispatcher
-    apt rootProject.ext.permissionDispatcherDependencies.permissionDispatcherProcessor
+    implementation rootProject.ext.miscDependencies.bcaOneClick
+    implementation project(rootProject.ext.features.shopCommon)
 
-    compile rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
-    apt rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
+    implementation rootProject.ext.playServicesDependencies.remoteConfig
+    implementation rootProject.ext.playServicesDependencies.firebase
+    implementation rootProject.ext.playServicesDependencies.analytics
+    implementation rootProject.ext.playServicesDependencies.perfMon
 
-    provided rootProject.ext.miscDependencies.javaxAnnotation
-    compile rootProject.ext.miscDependencies.dagger
-    apt rootProject.ext.miscDependencies.daggerCompiler
-
-    compile rootProject.ext.miscDependencies.multiDex
-
-    compile(rootProject.ext.miscDependencies.trueCaller) {
+    implementation (rootProject.ext.debugToolsDependencies.chuck) {
+        exclude group: 'com.squareup.okhttp3'
+        exclude group: 'com.squareup.okio'
         exclude group: 'com.android.support'
     }
 
+    implementation rootProject.ext.supportLibDependencies.design
+    implementation rootProject.ext.supportLibDependencies.cardViewV7
+
+    annotationProcessor rootProject.ext.dbDependencies.dbFlowProcessor
+    implementation rootProject.ext.dbDependencies.dbFlowCore
+    implementation rootProject.ext.dbDependencies.dbFlow
+
+    implementation rootProject.ext.networkDependencies.retrofit
+    implementation rootProject.ext.networkDependencies.converterGson
+    implementation rootProject.ext.networkDependencies.adapterRxJava
+    implementation rootProject.ext.networkDependencies.okHttp
+    implementation rootProject.ext.networkDependencies.loggingInterceptor
+    implementation rootProject.ext.networkDependencies.glide
+
+    implementation rootProject.ext.analyticsDependencies.appsflyer
+    implementation (rootProject.ext.analyticsDependencies.branch) {
+        exclude module: 'answers-shim'
+    }
+    implementation (rootProject.ext.analyticsDependencies.moengage) {
+        exclude group: 'com.moengage', module: 'moe-push-gcm'
+    }
+    implementation (rootProject.ext.analyticsDependencies.moengageMSG) {
+        exclude group: 'com.android.support'
+    }
+
+    implementation rootProject.ext.butterKnifeDependencies.butterKnife
+    annotationProcessor rootProject.ext.butterKnifeDependencies.butterKnifeCompiler
+
+    implementation rootProject.ext.miscDependencies.sendBird
+    implementation rootProject.ext.miscDependencies.chips
+    implementation rootProject.ext.miscDependencies.gson
+    implementation rootProject.ext.miscDependencies.reactNative
+    implementation rootProject.ext.miscDependencies.parcelerApi
+    annotationProcessor rootProject.ext.miscDependencies.parceler
+    implementation rootProject.ext.miscDependencies.rxAndroid
+    implementation rootProject.ext.miscDependencies.rxJava
+    implementation rootProject.ext.miscDependencies.rxJavaMath
+    implementation rootProject.ext.miscDependencies.scannerZxing
+    compileOnly rootProject.ext.miscDependencies.javaxAnnotation
+    implementation rootProject.ext.miscDependencies.dagger
+    annotationProcessor rootProject.ext.miscDependencies.daggerCompiler
+    implementation rootProject.ext.miscDependencies.multiDex
+    implementation(rootProject.ext.miscDependencies.trueCaller) {
+        exclude group: 'com.android.support'
+    }
+
+    implementation rootProject.ext.permissionDispatcherDependencies.permissionDispatcher
+    annotationProcessor rootProject.ext.permissionDispatcherDependencies.permissionDispatcherProcessor
+
+    implementation rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
+    annotationProcessor rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
+
     //[START] test and androidTest dependencies
-    testCompile rootProject.ext.testDependencies.junit
-    testCompile rootProject.ext.testDependencies.mockitorCore
-    testCompile rootProject.ext.miscDependencies.rxJava
-    androidTestCompile rootProject.ext.miscDependencies.rxJava
-    androidTestCompile rootProject.ext.testDependencies.uiautomator
-    androidTestCompile rootProject.ext.testDependencies.spoon
-    androidTestCompile rootProject.ext.testDependencies.androidAnnotation
-    androidTestCompile(rootProject.ext.testDependencies.espressoCore, {
+    androidTestImplementation(rootProject.ext.testDependencies.espressoCore, {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
-    androidTestCompile(rootProject.ext.testDependencies.androidTestRunner) {
+
+    testImplementation rootProject.ext.testDependencies.junit
+    testImplementation rootProject.ext.testDependencies.mockitorCore
+    testImplementation rootProject.ext.miscDependencies.rxJava
+
+    androidTestImplementation rootProject.ext.miscDependencies.rxJava
+    androidTestImplementation rootProject.ext.testDependencies.uiautomator
+    androidTestImplementation rootProject.ext.testDependencies.spoon
+    androidTestImplementation rootProject.ext.testDependencies.androidAnnotation
+    androidTestImplementation(rootProject.ext.testDependencies.espressoCore, {
+        exclude group: 'com.android.support', module: 'support-annotations'
+    })
+    androidTestImplementation(rootProject.ext.testDependencies.androidTestRunner) {
         exclude module: 'support-annotations'
     }
-    androidTestCompile(rootProject.ext.testDependencies.androidRulesVersion) {
+    androidTestImplementation(rootProject.ext.testDependencies.androidRulesVersion) {
         exclude module: 'support-annotations'
     }
-    androidTestCompile(rootProject.ext.testDependencies.espressoIntents) {
+    androidTestImplementation(rootProject.ext.testDependencies.espressoIntents) {
         exclude group: 'com.android.support', module: 'support-annotations'
     }
-    androidTestCompile rootProject.ext.testDependencies.retrofitMock
-    androidTestCompile rootProject.ext.testDependencies.retrofitMockWebser
-    androidTestApt rootProject.ext.miscDependencies.daggerCompiler
-    androidTestCompile rootProject.ext.miscDependencies.dagger
-    androidTestCompile rootProject.ext.miscDependencies.gson
-    androidTestCompile rootProject.ext.miscDependencies.parcelerApi
-    androidTestApt rootProject.ext.miscDependencies.parceler
-    androidTestCompile rootProject.ext.testDependencies.dexMaker
-    androidTestCompile(rootProject.ext.testDependencies.dexMakerMockito) {
+    androidTestImplementation rootProject.ext.testDependencies.retrofitMock
+    androidTestImplementation rootProject.ext.testDependencies.retrofitMockWebser
+    androidTestAnnotationProcessor rootProject.ext.miscDependencies.daggerCompiler
+    androidTestImplementation rootProject.ext.miscDependencies.dagger
+    androidTestImplementation rootProject.ext.miscDependencies.gson
+    androidTestImplementation rootProject.ext.miscDependencies.parcelerApi
+    androidTestAnnotationProcessor rootProject.ext.miscDependencies.parceler
+    androidTestImplementation rootProject.ext.testDependencies.dexMaker
+    androidTestImplementation(rootProject.ext.testDependencies.dexMakerMockito) {
         exclude group: 'org.hamcrest', module: 'hamcrest-core'
     }
+
     // Cloud testing
-    androidTestCompile (name:'cloudtestingscreenshotter_lib', ext:'aar')
+    androidTestImplementation (name:'cloudtestingscreenshotter_lib', ext:'aar')
+
+    androidTestImplementation(rootProject.ext.miscDependencies.facebook) {
+        exclude group: 'com.android.support'
+    }
+
+    androidTestImplementation rootProject.ext.supportLibDependencies.appCompactV7
+    androidTestImplementation rootProject.ext.supportLibDependencies.cardViewV7
     //[END] test and androidTest dependencies
 }
 

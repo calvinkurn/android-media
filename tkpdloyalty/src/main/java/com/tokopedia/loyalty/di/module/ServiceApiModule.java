@@ -4,6 +4,7 @@ import com.tokopedia.core.network.apiservices.transaction.TXVoucherService;
 import com.tokopedia.loyalty.di.LoyaltyScope;
 import com.tokopedia.loyalty.domain.apiservice.DigitalEndpointService;
 import com.tokopedia.loyalty.domain.apiservice.PromoEndpointService;
+import com.tokopedia.loyalty.domain.apiservice.TokoPointGqlService;
 import com.tokopedia.loyalty.domain.apiservice.TokoPointService;
 import com.tokopedia.loyalty.domain.repository.IPromoRepository;
 import com.tokopedia.loyalty.domain.repository.IPromoResponseMapper;
@@ -28,6 +29,12 @@ public class ServiceApiModule {
     @LoyaltyScope
     TokoPointService provideTokoPointService() {
         return new TokoPointService();
+    }
+
+    @Provides
+    @LoyaltyScope
+    TokoPointGqlService provideTokoPointGqlService() {
+        return new TokoPointGqlService();
     }
 
     @Provides
@@ -61,6 +68,7 @@ public class ServiceApiModule {
     @Provides
     @LoyaltyScope
     ITokoPointRepository provideITokoPointRepository(TokoPointService tokoPointService,
+                                                     TokoPointGqlService tokoPointGqlService,
                                                      ITokoPointDBService tokoPointDBService,
                                                      TokoPointResponseMapper tokoPointResponseMapper,
                                                      TXVoucherService txVoucherService,
@@ -68,6 +76,7 @@ public class ServiceApiModule {
     ) {
         return new TokoPointRepository(
                 tokoPointService,
+                tokoPointGqlService,
                 tokoPointDBService,
                 tokoPointResponseMapper,
                 txVoucherService,
