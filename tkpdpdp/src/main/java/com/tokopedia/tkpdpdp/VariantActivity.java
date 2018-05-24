@@ -271,7 +271,8 @@ public class VariantActivity extends TActivity  implements VariantOptionAdapter.
             if (!productDetailData.getProductImages().isEmpty()) {
                 mainImage = productDetailData.getProductImages().get(0).getImageSrc();
             }
-        } else if (productDetailData.getProductImages().size() > 1) {
+        } else if (!productDetailData.getProductImages().isEmpty()
+                && productDetailData.getProductImages().size() > 1) {
             mainImage = productDetailData.getProductImages().get(1).getImageSrc();
         }
 
