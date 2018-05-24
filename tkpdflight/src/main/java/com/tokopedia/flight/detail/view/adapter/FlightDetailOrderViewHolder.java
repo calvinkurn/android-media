@@ -10,7 +10,6 @@ import android.widget.TextView;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.flight.R;
-import com.tokopedia.flight.common.view.FlightExpandableOptionArrow;
 import com.tokopedia.flight.detail.presenter.ExpandableOnClickListener;
 import com.tokopedia.flight.orderlist.domain.model.FlightOrderJourney;
 
@@ -38,7 +37,7 @@ public class FlightDetailOrderViewHolder extends AbstractViewHolder<FlightOrderJ
 
     private boolean isFlightInfoShowed = true;
 
-    public FlightDetailOrderViewHolder(final View layoutView, ExpandableOnClickListener expandableOnClickListener) {
+    public FlightDetailOrderViewHolder(final View layoutView, ExpandableOnClickListener expandableOnClickListener, float titleFontSize) {
         super(layoutView);
         this.expandableOnClickListener = expandableOnClickListener;
 
@@ -69,6 +68,8 @@ public class FlightDetailOrderViewHolder extends AbstractViewHolder<FlightOrderJ
                 toggleFlightInfo();
             }
         });
+
+        flightCounter.setTextSize(titleFontSize);
 
     }
 
