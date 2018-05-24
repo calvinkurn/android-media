@@ -568,8 +568,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder {
         if (recipientAddressModel != null) {
             String fullAddress = recipientAddressModel.getAddressStreet()
                     + ", " + recipientAddressModel.getAddressCityName()
-                    + ", " + recipientAddressModel.getAddressProvinceName()
-                    + ", " + recipientAddressModel.getRecipientPhoneNumber();
+                    + ", " + recipientAddressModel.getAddressProvinceName();
             tvAddressName.setText(recipientAddressModel.getAddressName());
             tvRecipientName.setText(recipientAddressModel.getRecipientName());
             tvRecipientAddress.setText(fullAddress);
