@@ -16,12 +16,12 @@ import com.tokopedia.discovery.newdynamicfilter.view.DynamicFilterView;
 
 public class BottomSheetExpandableItemViewHolder extends DynamicFilterViewHolder {
 
-    LinearLayout titleContainer;
-    TextView title;
-    View seeAllButton;
-    RecyclerView recyclerView;
-    BottomSheetExpandableItemSelectedListAdapter adapter;
-    BottomSheetDynamicFilterView filterView;
+    private LinearLayout titleContainer;
+    private TextView title;
+    private View seeAllButton;
+    private RecyclerView recyclerView;
+    private BottomSheetExpandableItemSelectedListAdapter adapter;
+    private BottomSheetDynamicFilterView filterView;
 
     public BottomSheetExpandableItemViewHolder(View itemView, BottomSheetDynamicFilterView filterView) {
         super(itemView);
