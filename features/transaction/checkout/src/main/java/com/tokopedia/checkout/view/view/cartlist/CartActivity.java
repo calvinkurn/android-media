@@ -37,11 +37,6 @@ public class CartActivity extends BaseCheckoutActivity implements CartFragment.A
     }
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-    }
-
-    @Override
     protected void initInjector() {
 
     }
