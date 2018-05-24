@@ -1,5 +1,6 @@
 package com.tokopedia.flight.common.data.repository;
 
+import com.tokopedia.abstraction.common.data.model.request.DataRequest;
 import com.tokopedia.flight.airline.data.FlightAirlineDataListSource;
 import com.tokopedia.flight.airline.data.db.model.FlightAirlineDB;
 import com.tokopedia.flight.airport.data.source.FlightAirportDataListBackgroundSource;
@@ -11,6 +12,12 @@ import com.tokopedia.flight.banner.data.source.cloud.model.BannerDetail;
 import com.tokopedia.flight.booking.data.cloud.FlightCartDataSource;
 import com.tokopedia.flight.booking.data.cloud.entity.CartEntity;
 import com.tokopedia.flight.booking.data.cloud.requestbody.FlightCartRequest;
+import com.tokopedia.flight.cancellation.data.cloud.FlightCancellationCloudDataSource;
+import com.tokopedia.flight.cancellation.data.cloud.entity.CancellationRequestEntity;
+import com.tokopedia.flight.cancellation.data.cloud.entity.EstimateRefundResultEntity;
+import com.tokopedia.flight.cancellation.data.cloud.entity.Passenger;
+import com.tokopedia.flight.cancellation.data.cloud.requestbody.FlightCancellationRequestBody;
+import com.tokopedia.flight.cancellation.data.cloud.requestbody.FlightEstimateRefundRequest;
 import com.tokopedia.flight.common.domain.FlightRepository;
 import com.tokopedia.flight.dashboard.data.cloud.FlightClassesDataSource;
 import com.tokopedia.flight.dashboard.data.cloud.entity.flightclass.FlightClassEntity;
@@ -44,7 +51,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import retrofit2.Response;
 import rx.Observable;
 import rx.functions.Func1;
 import rx.functions.Func2;
@@ -69,6 +75,7 @@ public class FlightRepositoryImpl implements FlightRepository {
     private FlightOrderDataSource flightOrderDataSource;
     private FlightOrderMapper flightOrderMapper;
     private FlightPassengerFactorySource flightPassengerFactorySource;
+    private FlightCancellationCloudDataSource flightCancellationCloudDataSource;
 
     public FlightRepositoryImpl(BannerDataSource bannerDataSource,
                                 FlightAirportDataListSource flightAirportDataListSource,
@@ -84,7 +91,8 @@ public class FlightRepositoryImpl implements FlightRepository {
                                 FlightAirportVersionDBSource flightAirportVersionDBSource,
                                 FlightOrderDataSource flightOrderDataSource,
                                 FlightOrderMapper flightOrderMapper,
-                                FlightPassengerFactorySource flightPassengerFactorySource) {
+                                FlightPassengerFactorySource flightPassengerFactorySource,
+                                FlightCancellationCloudDataSource flightCancellationCloudDataSource) {
         this.bannerDataSource = bannerDataSource;
         this.flightAirportDataListSource = flightAirportDataListSource;
         this.flightAirlineDataListSource = flightAirlineDataListSource;
@@ -100,6 +108,7 @@ public class FlightRepositoryImpl implements FlightRepository {
         this.flightOrderDataSource = flightOrderDataSource;
         this.flightOrderMapper = flightOrderMapper;
         this.flightPassengerFactorySource = flightPassengerFactorySource;
+        this.flightCancellationCloudDataSource = flightCancellationCloudDataSource;
     }
 
     @Override
@@ -358,6 +367,11 @@ public class FlightRepositoryImpl implements FlightRepository {
     }
 
     @Override
+    public Observable<OrderEntity> getOrderEntity(String id) {
+        return flightOrderDataSource.getOrder(id);
+    }
+
+    @Override
     public Observable<List<BannerDetail>> getBanners(Map<String, String> params) {
         return bannerDataSource.getBannerData(params);
     }
@@ -400,5 +414,21 @@ public class FlightRepositoryImpl implements FlightRepository {
     @Override
     public Observable<FlightAirlineDB> getAirlineCacheById(String airlineId) {
         return flightAirlineDataListSource.getCacheAirline(airlineId);
+    }
+
+    @Override
+    public Observable<List<Passenger>> getCancelablePassenger(String invoiceId) {
+        return flightCancellationCloudDataSource.getCancelablePassenger(invoiceId);
+    }
+
+    @Override
+    public Observable<EstimateRefundResultEntity> estimateRefund(FlightEstimateRefundRequest request) {
+        return flightCancellationCloudDataSource.getEstimateRefund(request);
+    }
+
+    @Override
+    public Observable<CancellationRequestEntity> cancellationRequest(FlightCancellationRequestBody request) {
+        DataRequest<FlightCancellationRequestBody> requestBody = new DataRequest<>(request);
+        return flightCancellationCloudDataSource.requestCancellation(requestBody);
     }
 }

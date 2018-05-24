@@ -11,18 +11,7 @@ import com.google.gson.annotations.SerializedName;
  * Created by User on 10/30/2017.
  */
 
-public class Attributes implements Parcelable {
-    public static final Creator<Attributes> CREATOR = new Creator<Attributes>() {
-        @Override
-        public Attributes createFromParcel(Parcel in) {
-            return new Attributes(in);
-        }
-
-        @Override
-        public Attributes[] newArray(int size) {
-            return new Attributes[size];
-        }
-    };
+public class Attributes implements Parcelable{
     @SerializedName("name")
     @Expose
     private String name;
@@ -35,16 +24,32 @@ public class Attributes implements Parcelable {
     @SerializedName("mandatory_dob")
     @Expose
     private boolean mandatoryDob;
+    @SerializedName("mandatory_refund_attachment")
+    @Expose
+    private boolean mandatoryRefundAttachment;
+
+    public Attributes() {
+    }
 
     protected Attributes(Parcel in) {
         name = in.readString();
         shortName = in.readString();
         logo = in.readString();
         mandatoryDob = in.readByte() != 0;
+        mandatoryRefundAttachment = in.readByte() != 0;
     }
 
-    public Attributes() {
-    }
+    public static final Creator<Attributes> CREATOR = new Creator<Attributes>() {
+        @Override
+        public Attributes createFromParcel(Parcel in) {
+            return new Attributes(in);
+        }
+
+        @Override
+        public Attributes[] newArray(int size) {
+            return new Attributes[size];
+        }
+    };
 
     public String getName() {
         if (TextUtils.isEmpty(shortName)) {
@@ -65,6 +70,14 @@ public class Attributes implements Parcelable {
         return logo;
     }
 
+    public boolean isMandatoryDob() {
+        return mandatoryDob;
+    }
+
+    public boolean isMandatoryRefundAttachment() {
+        return mandatoryRefundAttachment;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -76,9 +89,6 @@ public class Attributes implements Parcelable {
         parcel.writeString(shortName);
         parcel.writeString(logo);
         parcel.writeByte((byte) (mandatoryDob ? 1 : 0));
-    }
-
-    public boolean isMandatoryDob() {
-        return mandatoryDob;
+        parcel.writeByte((byte) (mandatoryRefundAttachment ? 1 : 0));
     }
 }

@@ -5,7 +5,13 @@ import com.tokopedia.flight.airport.data.source.db.model.FlightAirportDB;
 import com.tokopedia.flight.banner.data.source.cloud.model.BannerDetail;
 import com.tokopedia.flight.booking.data.cloud.entity.CartEntity;
 import com.tokopedia.flight.booking.data.cloud.requestbody.FlightCartRequest;
+import com.tokopedia.flight.cancellation.data.cloud.entity.CancellationRequestEntity;
+import com.tokopedia.flight.cancellation.data.cloud.entity.EstimateRefundResultEntity;
+import com.tokopedia.flight.cancellation.data.cloud.entity.Passenger;
+import com.tokopedia.flight.cancellation.data.cloud.requestbody.FlightCancellationRequestBody;
+import com.tokopedia.flight.cancellation.data.cloud.requestbody.FlightEstimateRefundRequest;
 import com.tokopedia.flight.dashboard.data.cloud.entity.flightclass.FlightClassEntity;
+import com.tokopedia.flight.orderlist.data.cloud.entity.OrderEntity;
 import com.tokopedia.flight.orderlist.data.cloud.entity.SendEmailEntity;
 import com.tokopedia.flight.orderlist.domain.model.FlightOrder;
 import com.tokopedia.flight.passenger.data.cloud.requestbody.DeletePassengerRequest;
@@ -24,7 +30,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import retrofit2.Response;
 import rx.Observable;
 
 /**
@@ -77,6 +82,8 @@ public interface FlightRepository {
 
     Observable<FlightOrder> getOrder(String id);
 
+    Observable<OrderEntity> getOrderEntity(String id);
+
     Observable<List<BannerDetail>> getBanners(Map<String, String> params);
 
     Observable<List<FlightAirportDB>> getPhoneCodeList(String string);
@@ -104,4 +111,10 @@ public interface FlightRepository {
     Observable<List<FlightAirlineDB>> refreshAirlines();
 
     Observable<FlightAirlineDB> getAirlineCacheById(String airlineId);
+
+    Observable<List<Passenger>> getCancelablePassenger(String invoiceId);
+
+    Observable<EstimateRefundResultEntity> estimateRefund(FlightEstimateRefundRequest object);
+
+    Observable<CancellationRequestEntity> cancellationRequest(FlightCancellationRequestBody request);
 }

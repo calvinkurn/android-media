@@ -24,6 +24,11 @@ import javax.inject.Inject;
 
 public class FlightBookingPassengerPresenter extends BaseDaggerPresenter<FlightBookingPassengerContract.View> implements FlightBookingPassengerContract.Presenter {
 
+    private final int MINUS_TWO_YEARS = -2;
+    private final int MINUS_TWELVE_YEARS = -12;
+    private static final int DEFAULT_LAST_HOUR_IN_DAY = 23;
+    private static final int DEFAULT_LAST_MIN_IN_DAY = 59;
+    private static final int DEFAULT_LAST_SEC_IN_DAY = 59;
     private final int PLUS_ONE = 1;
     private final int MINUS_TWO = -2;
     private final int MINUS_TWELVE = -12;
@@ -156,17 +161,23 @@ public class FlightBookingPassengerPresenter extends BaseDaggerPresenter<FlightB
             // minDate = 2 tahun + 1 hari
             minDate = FlightDateUtil.addTimeToSpesificDate(departureDate, Calendar.YEAR, -2);
             minDate = FlightDateUtil.addTimeToSpesificDate(minDate, Calendar.DATE, +1);
-            maxDate = FlightDateUtil.addTimeToSpesificDate(departureDate, Calendar.DATE, -1);
+            maxDate = FlightDateUtil.getCurrentDate();
             selectedDate = maxDate;
         }
         if (flightPassengerInfoValidator.validateBirthdateNotEmpty(getView().getPassengerBirthDate())) {
             selectedDate = FlightDateUtil.stringToDate(FlightDateUtil.DEFAULT_VIEW_FORMAT, getView().getPassengerBirthDate());
         }
 
+        Calendar maxDateCalendar = FlightDateUtil.getCurrentCalendar();
+        maxDateCalendar.setTime(maxDate);
+        maxDateCalendar.set(Calendar.HOUR_OF_DAY, DEFAULT_LAST_HOUR_IN_DAY);
+        maxDateCalendar.set(Calendar.MINUTE, DEFAULT_LAST_MIN_IN_DAY);
+        maxDateCalendar.set(Calendar.SECOND, DEFAULT_LAST_SEC_IN_DAY);
+
         if (minDate != null) {
-            getView().showBirthdatePickerDialog(selectedDate, minDate, maxDate);
+            getView().showBirthdatePickerDialog(selectedDate, minDate, maxDateCalendar.getTime());
         } else {
-            getView().showBirthdatePickerDialog(selectedDate, maxDate);
+            getView().showBirthdatePickerDialog(selectedDate, maxDateCalendar.getTime());
         }
     }
 

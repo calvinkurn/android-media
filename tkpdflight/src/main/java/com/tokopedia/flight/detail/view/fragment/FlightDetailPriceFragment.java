@@ -78,13 +78,6 @@ public class FlightDetailPriceFragment extends Fragment {
             double infantPriceTotal = flightDetailViewModel.getInfantNumericPrice() * flightDetailViewModel.getCountInfant();
             infantPrice.setText(getString(R.string.flight_label_currency, CurrencyFormatUtil.getThousandSeparatorString(infantPriceTotal, false, 0).getFormattedString()));
         }
-        if (!TextUtils.isEmpty(flightDetailViewModel.getBeforeTotal())) {
-            containerSavingPrice.setVisibility(View.VISIBLE);
-            normalPrice.setText(flightDetailViewModel.getBeforeTotal());
-            savingPrice.setText(flightDetailViewModel.getBeforeTotal());
-        } else {
-            containerSavingPrice.setVisibility(View.GONE);
-        }
         totalPrice.setText(CurrencyFormatUtil.convertPriceValueToIdrFormatNoSpace(calculateTotal(flightDetailViewModel)));
     }
 

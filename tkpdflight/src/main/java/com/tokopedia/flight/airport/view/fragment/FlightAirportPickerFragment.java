@@ -29,6 +29,8 @@ import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 
+import static com.tokopedia.flight.airport.view.activity.FlightAirportPickerActivity.EXTRA_TOOLBAR_TITLE;
+
 /**
  * Created by nathan on 10/19/17.
  */
@@ -42,9 +44,14 @@ public class FlightAirportPickerFragment extends BaseSearchListFragment<Visitabl
     @Inject
     FlightAirportPickerPresenterImpl flightAirportPickerPresenter;
     private boolean isFirstTime = true;
+    String searchHint;
 
-    public static FlightAirportPickerFragment getInstance() {
-        return new FlightAirportPickerFragment();
+    public static FlightAirportPickerFragment getInstance(String searchHint) {
+        FlightAirportPickerFragment fragment = new FlightAirportPickerFragment();
+        Bundle bundle = new Bundle();
+        bundle.putString(EXTRA_TOOLBAR_TITLE, searchHint);
+        fragment.setArguments(bundle);
+        return fragment;
     }
 
     @Nullable
@@ -59,6 +66,9 @@ public class FlightAirportPickerFragment extends BaseSearchListFragment<Visitabl
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        searchHint = getArguments().getString(EXTRA_TOOLBAR_TITLE);
+        searchInputView.setSearchHint(String.format(
+                getString(R.string.flight_label_search_hint_airport), searchHint));
     }
 
     @Override
