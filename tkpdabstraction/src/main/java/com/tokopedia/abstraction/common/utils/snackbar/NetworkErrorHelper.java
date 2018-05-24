@@ -94,7 +94,9 @@ public class NetworkErrorHelper {
 
     @SuppressWarnings("Range")
     public static void showGreenCloseSnackbar(Activity activity, String message) {
-        showGreenCloseSnackbar(SnackbarManager.getContentView(activity), message);
+        if(activity != null) {
+            showGreenCloseSnackbar(SnackbarManager.getContentView(activity), message);
+        }
     }
 
     @SuppressWarnings("Range")
