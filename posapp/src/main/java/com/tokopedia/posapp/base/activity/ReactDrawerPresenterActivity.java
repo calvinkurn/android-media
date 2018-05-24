@@ -8,6 +8,7 @@ import com.facebook.react.ReactInstanceManager;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.app.DrawerPresenterActivity;
 import com.tokopedia.core.drawer2.data.viewmodel.DrawerNotification;
+import com.tokopedia.core.drawer2.data.viewmodel.DrawerTopPoints;
 import com.tokopedia.core.drawer2.di.DrawerInjector;
 import com.tokopedia.core.drawer2.view.DrawerHelper;
 import com.tokopedia.core.util.SessionHandler;
@@ -61,5 +62,25 @@ public abstract class ReactDrawerPresenterActivity<T> extends DrawerPresenterAct
         drawerHelper.initDrawer(this);
         drawerHelper.setEnabled(true);
         drawerHelper.setSelectedPosition(setDrawerPosition());
+    }
+
+    @Override
+    protected void getDrawerUserAttrUseCase(SessionHandler sessionHandler) {
+        // no-op
+    }
+
+    @Override
+    protected void getDrawerNotification() {
+        // no-op
+    }
+
+    @Override
+    protected void getDrawerDeposit() {
+        // no-op
+    }
+
+    @Override
+    protected void getDrawerTopPoints() {
+        // no-op
     }
 }

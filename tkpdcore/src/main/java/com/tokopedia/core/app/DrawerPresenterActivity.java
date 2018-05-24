@@ -266,7 +266,7 @@ public abstract class DrawerPresenterActivity<T> extends BasePresenterActivity
         drawerHelper.setEnabled(isEnabled);
     }
 
-    private void getDrawerNotification() {
+    protected void getDrawerNotification() {
         drawerDataManager.getNotification();
     }
 
