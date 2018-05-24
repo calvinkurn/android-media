@@ -4,7 +4,7 @@ apply plugin: 'com.jakewharton.butterknife'
 
 project.ext {
     artifactId = 'contactus'
-    groupId = 'com.tokopedia.contact_us'
+    groupId = 'com.tokopedia.contactus'
     versionName = "${tkpdContactUsVersion}"
     artifactName ="contactus-release"
 }

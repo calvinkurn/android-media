@@ -20,7 +20,7 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.di.component.HasComponent;
 import com.tokopedia.applink.RouteManager;
-import com.tokopedia.contact_us.inboxticket.activity.InboxTicketActivity;
+import com.tokopedia.contactus.inboxticket.activity.InboxTicketActivity;
 import com.tokopedia.contactus.R;
 import com.tokopedia.contactus.R2;
 import com.tokopedia.core.util.SessionHandler;

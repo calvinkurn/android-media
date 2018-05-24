@@ -5,7 +5,7 @@ import android.graphics.BitmapFactory;
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
-import com.tokopedia.contact_us.createticket.interactor.ContactUsRetrofitInteractorImpl;
+import com.tokopedia.contactus.createticket.interactor.ContactUsRetrofitInteractorImpl;
 import com.tokopedia.contactus.R;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.tkpd.tkpdcontactus.common.data.BuyerPurchaseList;
