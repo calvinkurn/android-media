@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -25,17 +26,30 @@
             android:layout_height="match_parent"
             android:layout_marginTop="?attr/actionBarSize">
 
-            <ImageView
-                android:id="@+id/imageViewBrand"
-                android:layout_width="@dimen/image_width_brand"
-                android:layout_height="@dimen/image_width_brand"
+            <android.support.v7.widget.CardView
+                android:id="@+id/cardViewBrand"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
                 android:layout_marginLeft="@dimen/dp_16"
                 android:layout_marginTop="@dimen/dp_24"
-                android:background="@drawable/background_green_oval"
-                android:scaleType="centerCrop"
+                android:visibility="gone"
+                app:cardCornerRadius="@dimen/dp_8"
+                app:cardElevation="@dimen/dp_0"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/tv_popular"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toTopOf="parent">
+
+                <ImageView
+                    android:id="@+id/imageViewBrand"
+                    android:layout_width="@dimen/image_width_brand"
+                    android:layout_height="@dimen/image_width_brand"
+                    android:background="@color/grey_1100"
+                    android:scaleType="centerCrop"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/tv_popular"
+                    app:layout_constraintTop_toTopOf="parent" />
+            </android.support.v7.widget.CardView>
 
             <TextView
                 android:id="@+id/tv_deal_details"
@@ -46,13 +60,13 @@
                 android:fontFamily="sans-serif-medium"
                 android:includeFontPadding="false"
                 android:maxLines="3"
-                android:text="5 Persons Package (Include 3 Small Pizza's, 1 pasta, 1 Garlic Bread, Drinks)"
                 android:textColor="@color/black_39"
                 android:textSize="@dimen/sp_17"
                 android:textStyle="normal"
-                app:layout_constraintLeft_toRightOf="@+id/imageViewBrand"
+                app:layout_constraintLeft_toRightOf="@+id/cardViewBrand"
                 app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toTopOf="@id/imageViewBrand" />
+                app:layout_constraintTop_toTopOf="@+id/cardViewBrand"
+                tools:text="5 Persons Package (Include 3 Small Pizza's, 1 pasta, 1 Garlic Bread, Drinks)" />
 
             <TextView
                 android:id="@+id/tv_brandName"
@@ -60,13 +74,13 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/dp_8"
                 android:fontFamily="sans-serif-medium"
-                android:text="Bakerzin"
                 android:includeFontPadding="false"
                 android:textColor="@color/black_40"
                 android:textSize="@dimen/sp_14"
                 android:textStyle="normal"
                 app:layout_constraintLeft_toLeftOf="@+id/tv_deal_details"
-                app:layout_constraintTop_toBottomOf="@+id/tv_deal_details" />
+                app:layout_constraintTop_toBottomOf="@+id/tv_deal_details"
+                tools:text="Bakerzin" />
 
             <View
                 android:id="@+id/divider1"
@@ -74,7 +88,7 @@
                 android:layout_height="@dimen/dp_2"
                 android:layout_marginTop="@dimen/dp_16"
                 android:background="@color/divider_color"
-                app:layout_constraintTop_toBottomOf="@+id/tv_brandName" />
+                app:layout_constraintTop_toBottomOf="@+id/cardViewBrand" />
 
 
             <ImageView
@@ -83,10 +97,9 @@
                 android:layout_height="@dimen/dp_24"
                 android:layout_marginLeft="@dimen/dp_16"
                 android:layout_marginTop="@dimen/dp_16"
-                android:background="@drawable/background_green_oval"
-
                 app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/divider1" />
+                app:layout_constraintTop_toBottomOf="@+id/divider1"
+                app:srcCompat="@drawable/ic_promo_valid_clock" />
 
             <TextView
                 android:id="@+id/tv_expiryDate"
@@ -110,10 +123,9 @@
                 android:layout_height="@dimen/dp_24"
                 android:layout_marginLeft="@dimen/dp_16"
                 android:layout_marginTop="@dimen/dp_16"
-                android:background="@drawable/background_green_oval"
-
                 app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/iv_clock" />
+                app:layout_constraintTop_toBottomOf="@+id/iv_clock"
+                app:srcCompat="@drawable/ic_location_2" />
 
             <TextView
                 android:id="@+id/tv_available_locations"
@@ -153,147 +165,15 @@
                 app:layout_constraintTop_toBottomOf="@+id/iv_map" />
 
 
-            <TextView
-                android:id="@+id/tv_purchase_details"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/dp_16"
-                android:layout_marginTop="@dimen/dp_16"
-                android:fontFamily="sans-serif-medium"
-                android:text="Rincian Pembelian"
-                android:textColor="@color/black_39"
-                android:textSize="@dimen/sp_17"
-                android:textStyle="normal"
-                app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/divider2" />
-
-            <TextView
-                android:id="@+id/tv_quantity"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/dp_16"
-                android:layout_marginTop="@dimen/dp_16"
-                android:fontFamily="sans-serif"
-                android:text="Kuantitas"
-                android:textColor="@color/black_39"
-                android:textSize="@dimen/sp_14"
-                android:textStyle="normal"
-                app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/tv_purchase_details" />
-
-            <ImageView
-                android:id="@+id/iv_add"
-                android:layout_width="@dimen/dp_24"
-                android:layout_height="@dimen/dp_24"
-                android:layout_marginRight="@dimen/dp_16"
-                app:layout_constraintBottom_toBottomOf="@+id/tv_quantity"
-
-                app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tv_purchase_details"
-                app:layout_constraintTop_toTopOf="@+id/tv_quantity"
-                app:srcCompat="@drawable/ic_plus" />
-
-            <TextView
-                android:id="@+id/tv_no_quantity"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginRight="@dimen/dp_4"
-                android:fontFamily="sans-serif"
-                android:gravity="center_horizontal"
-                android:minWidth="40dp"
-                android:text="1"
-                android:textColor="@color/black_39"
-                android:textSize="@dimen/sp_16"
-                android:textStyle="normal"
-                app:layout_constraintBottom_toBottomOf="@+id/iv_add"
-                app:layout_constraintRight_toLeftOf="@+id/iv_add"
-                app:layout_constraintTop_toTopOf="@+id/iv_add" />
-
-            <View
-                android:id="@+id/divider3"
-                android:layout_width="0dp"
-                android:layout_height="@dimen/dp_2"
-                android:layout_marginTop="@dimen/dp_4"
-                android:background="@color/green_nob"
-                app:layout_constraintLeft_toLeftOf="@id/tv_no_quantity"
-                app:layout_constraintRight_toRightOf="@+id/tv_no_quantity"
-                app:layout_constraintTop_toBottomOf="@+id/tv_no_quantity" />
-
-
-            <ImageView
-                android:id="@+id/iv_subtract"
-                android:layout_width="@dimen/dp_24"
-                android:layout_height="@dimen/dp_24"
-                android:layout_marginRight="@dimen/dp_4"
-                app:layout_constraintBottom_toBottomOf="@+id/iv_add"
-                app:layout_constraintRight_toLeftOf="@+id/tv_no_quantity"
-                app:layout_constraintTop_toTopOf="@+id/iv_add"
-                app:srcCompat="@drawable/ic_minus" />
-
-            <TextView
-                android:id="@+id/tv_price"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/dp_16"
-                android:layout_marginTop="@dimen/dp_16"
-                android:fontFamily="sans-serif"
-                android:text="Harga"
-                android:textColor="@color/black_39"
-                android:textSize="@dimen/sp_14"
-                android:textStyle="normal"
-                app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/tv_quantity" />
-
-            <TextView
-                android:id="@+id/tvMrp"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginRight="@dimen/dp_8"
-                android:fontFamily="sans-serif"
-                android:gravity="end"
-                android:text="Rp 1.200.000"
-                android:textColor="@color/black_38"
-                android:textSize="@dimen/sp_12"
-                android:textStyle="normal"
-                app:layout_constraintBottom_toBottomOf="@id/tv_price"
-                app:layout_constraintRight_toLeftOf="@+id/tvSalesPrice"
-                app:layout_constraintTop_toTopOf="@id/tv_price"
-                app:layout_goneMarginRight="@dimen/dp_16" />
-
-            <TextView
-                android:id="@+id/tvSalesPrice"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginRight="@dimen/dp_16"
-                android:fontFamily="sans-serif-medium"
-                android:includeFontPadding="false"
-                android:text="Rp 800.000"
-                android:textColor="@color/black_39"
-                android:textSize="@dimen/sp_14"
-                android:textStyle="normal"
-                app:layout_constraintBottom_toBottomOf="@id/tv_price"
-                app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toTopOf="@id/tv_price" />
-
-
-            <View
-                android:id="@+id/divider4"
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/dp_2"
-                android:layout_marginTop="@dimen/dp_16"
-                android:background="@color/divider_color"
-                app:layout_constraintTop_toBottomOf="@+id/tv_price" />
-
-
             <ImageView
                 android:id="@+id/iv_promo"
                 android:layout_width="@dimen/dp_24"
                 android:layout_height="@dimen/dp_24"
                 android:layout_marginLeft="@dimen/dp_16"
                 android:layout_marginTop="@dimen/dp_16"
-                android:background="@drawable/background_green_oval"
                 app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/divider4" />
+                app:layout_constraintTop_toBottomOf="@+id/divider2"
+                app:srcCompat="@drawable/ic_promo_code" />
 
             <TextView
                 android:id="@+id/tv_promocode"
@@ -318,6 +198,88 @@
                 android:background="@color/divider_color"
                 app:layout_constraintTop_toBottomOf="@+id/iv_promo" />
 
+            <TextView
+                android:id="@+id/tv_price_details"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/dp_16"
+                android:layout_marginTop="@dimen/dp_16"
+                android:fontFamily="sans-serif-medium"
+                android:text="Rincian Pembelian"
+                android:textColor="@color/black_39"
+                android:textSize="@dimen/sp_17"
+                android:textStyle="normal"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/divider5" />
+
+
+            <TextView
+                android:id="@+id/tv_number_vouchers"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/dp_16"
+                android:layout_marginTop="@dimen/dp_16"
+                android:fontFamily="sans-serif"
+                android:text="Harga"
+                android:textColor="@color/black_39"
+                android:textSize="@dimen/sp_14"
+                android:textStyle="normal"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tv_price_details" />
+
+
+            <TextView
+                android:id="@+id/tvSalesPriceAllQuantity"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="@dimen/dp_16"
+                android:fontFamily="sans-serif-medium"
+                android:includeFontPadding="false"
+                android:text="Rp 800.000"
+                android:textColor="@color/black_39"
+                android:textSize="@dimen/sp_14"
+                android:textStyle="normal"
+                app:layout_constraintBottom_toBottomOf="@+id/tv_number_vouchers"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/tv_number_vouchers" />
+
+
+            <TextView
+                android:id="@+id/tvMrp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="sans-serif"
+                android:layout_marginLeft="@dimen/dp_16"
+                android:text="Rp 1.200.000"
+                android:textColor="@color/black_38"
+                android:textSize="@dimen/sp_12"
+                android:textStyle="normal"
+                app:layout_constraintLeft_toLeftOf="parent"
+
+                app:layout_constraintTop_toBottomOf="@+id/tv_number_vouchers" />
+
+            <TextView
+                android:id="@+id/tvSalesPrice"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="sans-serif-medium"
+                android:includeFontPadding="false"
+                android:layout_marginLeft="@dimen/dp_8"
+                android:text="Rp 800.000"
+                android:textColor="@color/black_39"
+                android:textSize="@dimen/sp_14"
+                android:textStyle="normal"
+                app:layout_constraintBottom_toBottomOf="@+id/tvMrp"
+                app:layout_constraintLeft_toRightOf="@+id/tvMrp"
+                app:layout_constraintTop_toTopOf="@+id/tvMrp" />
+
+            <View
+                android:id="@+id/divider4"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/dp_2"
+                android:layout_marginTop="@dimen/dp_16"
+                android:background="@color/divider_color"
+                app:layout_constraintTop_toBottomOf="@+id/tv_number_vouchers" />
 
             <TextView
                 android:id="@+id/tv_total_payment"
@@ -331,7 +293,7 @@
                 android:textSize="@dimen/sp_17"
                 android:textStyle="normal"
                 app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/divider5" />
+                app:layout_constraintTop_toBottomOf="@+id/divider4" />
 
             <TextView
                 android:id="@+id/tv_total_amount"
@@ -345,9 +307,9 @@
                 android:textColor="@color/red_800"
                 android:textSize="@dimen/sp_17"
                 android:textStyle="normal"
-                app:layout_constraintBottom_toBottomOf="@id/tv_total_payment"
+                app:layout_constraintBottom_toBottomOf="@+id/tv_total_payment"
                 app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toTopOf="@id/tv_total_payment" />
+                app:layout_constraintTop_toTopOf="@+id/tv_total_payment" />
 
 
         </android.support.constraint.ConstraintLayout>

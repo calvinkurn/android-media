@@ -12,28 +12,21 @@ dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
 
-    api project(rootProject.ext.features.core)
-    api project(rootProject.ext.libraries.abstraction)
-    api project(rootProject.ext.libraries.design)
-    implementation project(rootProject.ext.features.payment)
-    implementation project(rootProject.ext.libraries.cacheApi)
+    implementation project(rootProject.ext.features.core)
+    implementation project(rootProject.ext.libraries.abstraction)
+    implementation project(rootProject.ext.libraries.design)
     implementation rootProject.ext.miscDependencies.multiDex
     implementation rootProject.ext.supportLibDependencies.constraintLayout
     implementation 'at.blogc:expandabletextview:1.0.5'
     implementation project(rootProject.ext.libraries.useCase)
 
-    implementation (rootProject.ext.debugToolsDependencies.chuck) {
-        exclude group: 'com.squareup.okhttp3'
-        exclude group: 'com.squareup.okio'
-        exclude group: 'com.android.support'
-    }
+//    implementation (rootProject.ext.debugToolsDependencies.chuck) {
+//        exclude group: 'com.squareup.okhttp3'
+//        exclude group: 'com.squareup.okio'
+//        exclude group: 'com.android.support'
+//    }
 
     implementation rootProject.ext.supportLibDependencies.constraintLayout
-    implementation (rootProject.ext.miscDependencies.loaderviewlibrary){
-        exclude group: 'com.android.support'
-    }
-    implementation rootProject.ext.viewDependencies.appIntro
-    implementation rootProject.ext.playServicesDependencies.maps
     implementation rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
     annotationProcessor  rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
 
