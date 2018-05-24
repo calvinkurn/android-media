@@ -11,6 +11,7 @@ public class TopProfileAnalytics {
 
     public static class Category {
         public static final String TOP_PROFILE = "Top Profile";
+        public static final String KOL_TOP_PROFILE = "kol top profile";
     }
 
     public static class Action {
@@ -18,9 +19,10 @@ public class TopProfileAnalytics {
         public static final String CLICK_ON_MANAGE_ACCOUNT = "Click on Atur Akun";
         public static final String CLICK_ON_FAVORITE = "Click on Favoritkan";
         public static final String CLICK_ON_UNFAVORITE = "Click on Unfavorite";
-
+        public static final String CLICK_PROMPT = "click prompt";
     }
 
     public static class Label {
+        public static final String GO_TO_FEED_FORMAT = "go to feed - %s";
     }
 }

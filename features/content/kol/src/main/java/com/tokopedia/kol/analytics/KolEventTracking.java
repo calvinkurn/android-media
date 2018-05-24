@@ -11,11 +11,13 @@ public interface KolEventTracking {
 
     interface Event {
         String USER_INTERACTION_HOMEPAGE = "userInteractionHomePage";
+        String EVENT_CLICK_TOP_PROFILE = "clickTopProfile";
     }
 
     interface Category {
         String FEED_CONTENT_COMMENT_DETAIL = "content - comment detail";
         String HOMEPAGE = "Homepage";
+        String KOL_TOP_PROFILE = "kol top profile";
     }
 
     interface Action {
@@ -30,6 +32,7 @@ public interface KolEventTracking {
         String FEED_UNLIKE_CONTENT = "feed - unlike content";
         String FEED_CLICK_CONTENT_COMMENT = "feed - click content comment";
         String FEED_CLICK_CONTENT_CTA = "feed - click content cta";
+        String CLICK_PROMPT = "click prompt";
     }
 
     interface EventLabel {
@@ -39,5 +42,6 @@ public interface KolEventTracking {
         String FEED_CONTENT_TYPE_RECOMMENDED = "recommended content";
         String FEED_CONTENT_TYPE_FOLLOWED = "followed content";
         String FEED_CAMPAIGN_TYPE_SUFFIX = " endorsement";
+        String GO_TO_EXPLORE_FORMAT = "go to explore - %s";
     }
 }
