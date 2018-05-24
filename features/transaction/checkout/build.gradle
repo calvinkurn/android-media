@@ -3,7 +3,7 @@ apply from: "$rootProject.projectDir/buildconfig/module.gradle"
 apply plugin: 'android-apt'
 
 dependencies {
-    compile project(':tkpdtransaction-common')
+    compile project(rootProject.ext.features.transactioncommon)
     compile project(rootProject.ext.features.core)
     compile rootProject.ext.playServicesDependencies.maps
     compile project(rootProject.ext.libraries.design)

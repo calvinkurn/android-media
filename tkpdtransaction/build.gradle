@@ -13,7 +13,7 @@ buildscript {
 }
 
 dependencies {
-    compile project(':tkpdtransaction-common')
+    compile project(rootProject.ext.features.transactioncommon)
     compile project(rootProject.ext.features.transactiondata)
     compile project(rootProject.ext.features.core)
     compile project(rootProject.ext.libraries.design)
