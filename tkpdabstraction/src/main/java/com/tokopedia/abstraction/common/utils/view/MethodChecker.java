@@ -4,12 +4,10 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.ColorStateList;
-import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Build;
 import android.provider.Telephony;
-import android.support.graphics.drawable.VectorDrawableCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.FileProvider;
 import android.support.v4.view.ViewCompat;
@@ -22,10 +20,6 @@ import android.webkit.CookieManager;
 import android.webkit.CookieSyncManager;
 import android.webkit.ValueCallback;
 import android.webkit.WebSettings;
-import android.widget.ImageView;
-
-import com.bumptech.glide.Glide;
-import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 
 import java.io.File;
 
@@ -160,16 +154,5 @@ public class MethodChecker {
             smsIntent.putExtra("sms_body", shareText);
         }
         return smsIntent;
-    }
-
-    public static void loadImageFitCenter(ImageView imageView, String url) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            ImageHandler.loadImageFitCenter(imageView.getContext(), imageView, url);
-        } else {
-            Glide.with(imageView.getContext())
-                    .load(url)
-                    .fitCenter()
-                    .into(imageView);
-        }
     }
 }

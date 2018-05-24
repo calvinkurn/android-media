@@ -1,0 +1,32 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.tokopedia.digital">
+
+    <application
+        android:allowBackup="true"
+        android:label="@string/app_name"
+        android:supportsRtl="true">
+        <activity
+            android:name=".cart.activity.CartDigitalActivity"
+            android:label="@string/title_activity_cart_digital_module"
+            android:windowSoftInputMode="adjustResize" />
+        <activity
+            android:name=".product.view.activity.DigitalProductActivity"
+            android:windowSoftInputMode="adjustResize" />
+        <activity
+            android:name=".cart.activity.OtpVerificationActivity"
+            android:label="@string/app_name" />
+        <activity
+            android:name=".cart.activity.InstantCheckoutActivity"
+            android:label="@string/app_name" />
+        <activity android:name=".product.view.activity.DigitalChooserActivity" />
+        <activity android:name=".product.view.activity.DigitalWebActivity" />
+        <activity
+            android:name=".categorylist.view.activity.DigitalCategoryListActivity"
+            android:label="@string/title_activity_category_list_digital_module" />
+
+        <activity android:name=".product.view.activity.DigitalUssdActivity" />
+
+        <activity android:name=".product.view.activity.DigitalSearchNumberActivity" />
+    </application>
+
+</manifest>

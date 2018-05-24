@@ -67,6 +67,7 @@
     </declare-styleable>
 
     <declare-styleable name="SpinnerCounterInputView">
+        <attr name="spinner_counter_max_length" format="integer" />
         <attr name="spinner_decimal_max_length" format="integer" />
         <attr name="spinner_decimal_entries" format="reference" />
         <attr name="spinner_decimal_values" format="reference" />
