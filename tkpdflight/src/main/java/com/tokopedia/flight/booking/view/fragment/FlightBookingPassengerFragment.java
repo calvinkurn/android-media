@@ -754,6 +754,10 @@ public class FlightBookingPassengerFragment extends BaseDaggerFragment implement
         etPassportExpired.clearFocus();
         etPassportNationality.clearFocus();
         etPassportIssuerCountry.clearFocus();
+        etBirthDate.clearFocus();
+        etFirstName.clearFocus();
+        etLastName.clearFocus();
+        etSavedPassenger.clearFocus();
     }
 
     private void navigateToChooseNationality() {

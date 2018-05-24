@@ -24,8 +24,6 @@ import javax.inject.Inject;
 
 public class FlightBookingPassengerPresenter extends BaseDaggerPresenter<FlightBookingPassengerContract.View> implements FlightBookingPassengerContract.Presenter {
 
-    private final int MINUS_TWO_YEARS = -2;
-    private final int MINUS_TWELVE_YEARS = -12;
     private static final int DEFAULT_LAST_HOUR_IN_DAY = 23;
     private static final int DEFAULT_LAST_MIN_IN_DAY = 59;
     private static final int DEFAULT_LAST_SEC_IN_DAY = 59;
@@ -346,6 +344,8 @@ public class FlightBookingPassengerPresenter extends BaseDaggerPresenter<FlightB
                 FlightDateUtil.formatDate(FlightDateUtil.DEFAULT_FORMAT, FlightDateUtil.DEFAULT_VIEW_FORMAT,
                 selectedPassenger.getPassportExpiredDate()), twentyYearsFromDeparture)) {
             currentPassengerViewModel.setPassportExpiredDate(selectedPassenger.getPassportExpiredDate());
+        }else {
+            currentPassengerViewModel.setPassportExpiredDate(null);
         }
 
         getView().setCurrentPassengerViewModel(currentPassengerViewModel);
