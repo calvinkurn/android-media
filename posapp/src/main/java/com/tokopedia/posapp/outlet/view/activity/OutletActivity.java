@@ -18,12 +18,13 @@ import com.tokopedia.core.drawer2.view.DrawerHelper;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.posapp.R;
+import com.tokopedia.posapp.base.activity.PosDrawerActivity;
 import com.tokopedia.posapp.outlet.view.fragment.OutletFragment;
 
 /**
  * @author okasurya on 7/31/17
  */
-public class OutletActivity extends DrawerPresenterActivity {
+public class OutletActivity extends PosDrawerActivity {
 
     public static Intent newTopIntent(Context context) {
         Intent intent = new Intent(context, OutletActivity.class);
@@ -116,5 +117,25 @@ public class OutletActivity extends DrawerPresenterActivity {
     @Override
     protected void setActionVar() {
 
+    }
+
+    @Override
+    protected void getDrawerUserAttrUseCase(SessionHandler sessionHandler) {
+        // no-op
+    }
+
+    @Override
+    protected void getDrawerNotification() {
+        // no-op
+    }
+
+    @Override
+    protected void getDrawerDeposit() {
+        // no-op
+    }
+
+    @Override
+    protected void getDrawerTopPoints() {
+        // no-op
     }
 }

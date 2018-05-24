@@ -10,7 +10,8 @@ public class PosUrl {
     public static String POS_DOMAIN = "https://gw.tokopedia.com/";
 
     public static class Product {
-        public static final String GET_CUSTOMER_PRODUCT_LIST = "o2o/v1/outlet/{"+ ProductConstant.Key.OUTLET_ID +"}/product";
+        public static final String BASE_CUSTOMER_PRODUCT_LIST = "o2o/v1/outlet/";
+        public static final String GET_CUSTOMER_PRODUCT_LIST = BASE_CUSTOMER_PRODUCT_LIST + "{"+ ProductConstant.Key.OUTLET_ID +"}/product";
         public static final String GET_ADMIN_PRODUCT_LIST = "o2o/v2/shops/get_products";
         public static final String GET_ETALASE = "o2o/v1/shops/get_etalase";
         public static final String EDIT_PRODUCT = "o2o/v1/price/update/{"+ ProductConstant.Key.OUTLET_ID +"}";

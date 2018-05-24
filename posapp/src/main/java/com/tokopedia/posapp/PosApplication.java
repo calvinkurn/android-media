@@ -3,6 +3,7 @@ package com.tokopedia.posapp;
 import com.facebook.soloader.SoLoader;
 import com.raizlabs.android.dbflow.config.FlowConfig;
 import com.raizlabs.android.dbflow.config.FlowManager;
+import com.raizlabs.android.dbflow.config.TkpdCacheApiGeneratedDatabaseHolder;
 import com.tokopedia.abstraction.common.utils.GlobalConfig;
 import com.tokopedia.abstraction.constant.AbstractionBaseURL;
 import com.tokopedia.cacheapi.domain.interactor.CacheApiWhiteListUseCase;
@@ -11,9 +12,9 @@ import com.tokopedia.cacheapi.util.CacheApiLoggingUtils;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.network.SessionUrl;
+import com.tokopedia.posapp.common.PosCacheWhitelist;
 import com.tokopedia.posapp.common.PosUrl;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -33,10 +34,9 @@ public class PosApplication extends PosRouterApplication {
     }
 
     public void initCacheApi() {
-        CacheApiLoggingUtils.setLogEnabled(com.tokopedia.core.util.GlobalConfig.isAllowDebuggingTools());
-        List<CacheApiWhiteListDomain> cacheApiWhiteListDomains = new ArrayList<>();
+        CacheApiLoggingUtils.setLogEnabled(GlobalConfig.isAllowDebuggingTools());
         new CacheApiWhiteListUseCase().executeSync(CacheApiWhiteListUseCase.createParams(
-                cacheApiWhiteListDomains,
+                PosCacheWhitelist.getWhitelist(),
                 String.valueOf(getCurrentVersion(getApplicationContext()))));
     }
 
@@ -46,6 +46,9 @@ public class PosApplication extends PosRouterApplication {
 
     private void initializeDatabase() {
         FlowManager.init(new FlowConfig.Builder(this).build());
+        FlowManager.init(new FlowConfig.Builder(this)
+                .addDatabaseHolder(TkpdCacheApiGeneratedDatabaseHolder.class)
+                .build());
     }
 
     private void setGlobalConfiguration() {

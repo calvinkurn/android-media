@@ -17,7 +17,7 @@ import com.tokopedia.core.util.SessionHandler;
  * Created by okasurya on 9/26/17.
  */
 
-public abstract class ReactDrawerPresenterActivity<T> extends DrawerPresenterActivity<T> {
+public abstract class ReactDrawerPresenterActivity<T> extends PosDrawerActivity<T> {
     private ReactInstanceManager reactInstanceManager;
 
     @Override
@@ -62,25 +62,5 @@ public abstract class ReactDrawerPresenterActivity<T> extends DrawerPresenterAct
         drawerHelper.initDrawer(this);
         drawerHelper.setEnabled(true);
         drawerHelper.setSelectedPosition(setDrawerPosition());
-    }
-
-    @Override
-    protected void getDrawerUserAttrUseCase(SessionHandler sessionHandler) {
-        // no-op
-    }
-
-    @Override
-    protected void getDrawerNotification() {
-        // no-op
-    }
-
-    @Override
-    protected void getDrawerDeposit() {
-        // no-op
-    }
-
-    @Override
-    protected void getDrawerTopPoints() {
-        // no-op
     }
 }
