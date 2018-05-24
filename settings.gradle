@@ -1,3 +1,21 @@
+ext.isCiServer = System.getenv().containsKey("CI")
+
+buildCache {
+    local {
+        enabled = !isCiServer
+    }
+    remote(HttpBuildCache) {
+        url = "${ci_url}"
+        push = isCiServer
+        allowUntrustedServer = true
+        credentials {
+            username = "${ci_username}"
+            password = "${ci_password}"
+        }
+    }
+}
+
+
 apply from: "features/settings-features.gradle"
 apply from: "libraries/settings-libraries.gradle"
 

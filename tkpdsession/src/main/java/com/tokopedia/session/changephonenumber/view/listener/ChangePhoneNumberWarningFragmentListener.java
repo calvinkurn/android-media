@@ -17,11 +17,19 @@ public interface ChangePhoneNumberWarningFragmentListener {
         void onGetWarningSuccess(WarningViewModel warningViewModel);
 
         void onGetWarningError(String message);
+
+        void onGetValidateOtpStatusSuccess(Boolean isValid);
+
+        void onGetValidateOtpStatusError();
+
+        Integer getUserId();
     }
 
     public interface Presenter extends CustomerPresenter<View> {
         void initView();
 
         void getWarning();
+
+        void validateOtpStatus(int userId);
     }
 }
