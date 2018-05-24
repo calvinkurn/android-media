@@ -96,7 +96,7 @@ public class FlightBookingVerifyUseCase extends UseCase<DataResponseVerify> {
                 passenger.setPassportNo(flightPassengerViewModel.getPassportNumber());
             }
             if (flightPassengerViewModel.getPassportExpiredDate() != null) {
-                passenger.setPassportExpiry(flightPassengerViewModel.getPassportExpiredDate());
+                passenger.setPassportExpiry(FlightDateUtil.formatDate(FlightDateUtil.DEFAULT_FORMAT, FlightDateUtil.FORMAT_DATE_API, flightPassengerViewModel.getPassportExpiredDate()));
             }
             if (flightPassengerViewModel.getPassportNationality() != null) {
                 passenger.setNationality(flightPassengerViewModel.getPassportNationality().getCountryId());
