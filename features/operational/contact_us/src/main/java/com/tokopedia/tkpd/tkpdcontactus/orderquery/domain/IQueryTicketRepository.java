@@ -1,7 +1,6 @@
 package com.tokopedia.tkpd.tkpdcontactus.orderquery.domain;
 
 import com.tokopedia.tkpd.tkpdcontactus.orderquery.data.QueryTicket;
-import com.tokopedia.usecase.RequestParams;
 
 import java.util.HashMap;
 import java.util.List;

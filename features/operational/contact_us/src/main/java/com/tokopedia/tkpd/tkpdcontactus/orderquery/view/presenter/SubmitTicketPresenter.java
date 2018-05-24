@@ -5,11 +5,9 @@ import android.graphics.BitmapFactory;
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
+import com.tokopedia.contact_us.createticket.interactor.ContactUsRetrofitInteractorImpl;
 import com.tokopedia.contactus.R;
-import com.tokopedia.core.network.retrofit.response.TkpdResponse;
 import com.tokopedia.core.util.SessionHandler;
-import com.tokopedia.inbox.contactus.interactor.ContactUsRetrofitInteractor;
-import com.tokopedia.inbox.contactus.interactor.ContactUsRetrofitInteractorImpl;
 import com.tokopedia.tkpd.tkpdcontactus.common.data.BuyerPurchaseList;
 import com.tokopedia.tkpd.tkpdcontactus.orderquery.data.ContactUsPass;
 import com.tokopedia.tkpd.tkpdcontactus.orderquery.data.CreateTicketResult;
@@ -24,7 +22,6 @@ import java.util.ArrayList;
 
 import javax.inject.Inject;
 
-import retrofit2.Response;
 import rx.Subscriber;
 
 /**

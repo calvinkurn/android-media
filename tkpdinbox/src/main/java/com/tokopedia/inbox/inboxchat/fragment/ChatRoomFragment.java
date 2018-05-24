@@ -36,7 +36,6 @@ import com.tkpd.library.utils.KeyboardHandler;
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
-import com.tokopedia.contact_us.createticket.ContactUsConstant;
 import com.tokopedia.core.ImageGallery;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.MainApplication;
@@ -183,6 +182,8 @@ public class ChatRoomFragment extends BaseDaggerFragment
     private RemoteConfig remoteConfig;
     private boolean uploading;
     private boolean isChatBot;
+    private String PARAM_URL = "PARAM_URL";
+    private String IS_CHAT_BOT = "IS_CHAT_BOT";
 
     public static ChatRoomFragment createInstance(Bundle extras) {
         ChatRoomFragment fragment = new ChatRoomFragment();
@@ -500,9 +501,9 @@ public class ChatRoomFragment extends BaseDaggerFragment
                     Intent intent = ((TkpdInboxRouter) MainApplication
                             .getAppContext())
                             .getContactUsIntent(getContext());
-                    intent.putExtra(ContactUsConstant.PARAM_URL,
+                    intent.putExtra(PARAM_URL,
                             URLGenerator.generateURLContactUs(url, getContext()));
-                    intent.putExtra(ContactUsConstant.IS_CHAT_BOT, true);
+                    intent.putExtra(IS_CHAT_BOT, true);
                     startActivity(intent);
                 } else if (isChatBot && isNeedAuthToken) {
                     startActivity(ChatMarketingThumbnailActivity.getCallingIntent(getActivity(),
