@@ -238,8 +238,6 @@ public class DigitalCheckETollBalanceNFCActivity extends BaseSimpleActivity
 
     @Override
     public void onNewIntent(Intent intent) {
-        Log.d(TAG, "onNewIntent");
-
         handleIntent(intent);
     }
 
