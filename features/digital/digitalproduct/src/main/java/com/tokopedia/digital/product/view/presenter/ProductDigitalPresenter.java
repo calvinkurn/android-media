@@ -53,6 +53,8 @@ import java.util.List;
 
 import rx.Subscriber;
 
+import static com.tokopedia.digital.cart.model.NOTPExotelVerification.FIREBASE_NOTP_REMOTE_CONFIG_KEY;
+
 /**
  * @author anggaprasetiyo on 4/26/17.
  */
@@ -572,6 +574,7 @@ public class ProductDigitalPresenter extends BaseDigitalPresenter
                 && categoryData != null
                 && categoryData.getAdditionalFeature() != null
                 && categoryData.getAdditionalFeature().getFeatureId() == 1
+                && view.isDigitalSmartcardEnabled()
                 && view.getActivity() != null) {
             view.renderCheckETollBalance(categoryData.getAdditionalFeature().getText(),
                     categoryData.getAdditionalFeature().getButtonText());

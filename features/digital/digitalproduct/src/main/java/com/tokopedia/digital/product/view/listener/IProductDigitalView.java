@@ -74,4 +74,6 @@ public interface IProductDigitalView extends IBaseView {
 
     Activity getActivity();
 
+    boolean isDigitalSmartcardEnabled();
+
 }

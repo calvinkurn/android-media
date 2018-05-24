@@ -22,6 +22,7 @@ import android.support.design.widget.Snackbar;
 import android.support.v4.widget.NestedScrollView;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -153,6 +154,8 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
     private static final String CLIP_DATA_LABEL_VOUCHER_CODE_DIGITAL =
             "CLIP_DATA_LABEL_VOUCHER_CODE_DIGITAL";
 
+    private static final String DIGITAL_SMARTCARD = "mainapp_digital_smartcard";
+
     @BindView(R2.id.main_container)
     NestedScrollView mainHolderContainer;
     @BindView(R2.id.pb_main_loading)
@@ -198,6 +201,8 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
 
     private ActionListener actionListener;
 
+    private FirebaseRemoteConfigImpl remoteConfig;
+
     private USSDBroadcastReceiver ussdBroadcastReceiver;
     private ShowCaseDialog showCaseDialog;
     private int selectedSimIndex = 0;//start from 0
@@ -221,6 +226,13 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
     @Override
     protected boolean isRetainInstance() {
         return false;
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        remoteConfig = new FirebaseRemoteConfigImpl(getActivity());
+
+        return super.onCreateView(inflater, container, savedInstanceState);
     }
 
     @Override
@@ -465,6 +477,11 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
                 startActivity(intent);
             }
         }
+    }
+
+    @Override
+    public boolean isDigitalSmartcardEnabled() {
+        return remoteConfig.getBoolean(DIGITAL_SMARTCARD, false);
     }
 
     @Override
