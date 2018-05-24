@@ -1,6 +1,7 @@
 package com.tokopedia.checkout.view.view.cartlist;
 
 import android.support.annotation.NonNull;
+import android.text.TextUtils;
 
 import com.google.gson.Gson;
 import com.tokopedia.abstraction.common.network.exception.HttpErrorException;
@@ -27,6 +28,7 @@ import com.tokopedia.checkout.domain.usecase.ResetCartGetCartListUseCase;
 import com.tokopedia.checkout.domain.usecase.ResetCartGetShipmentFormUseCase;
 import com.tokopedia.checkout.domain.usecase.UpdateCartGetShipmentAddressFormUseCase;
 import com.tokopedia.checkout.view.holderitemdata.CartItemHolderData;
+import com.tokopedia.core.analytics.nishikino.model.GTMCart;
 import com.tokopedia.core.network.retrofit.utils.ErrorNetMessage;
 import com.tokopedia.core.router.transactionmodule.sharedata.CheckPromoCodeCartListResult;
 import com.tokopedia.design.utils.CurrencyFormatUtil;
@@ -44,6 +46,7 @@ import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import javax.inject.Inject;
 
@@ -871,5 +874,51 @@ public class CartListPresenter implements ICartListPresenter {
                     }
                 })
         );
+    }
+
+    @Override
+    public Map<String, Object> generateCartDataAnalytics(CartItemData removedCartItem) {
+        List<CartItemData> cartItemDataList = new ArrayList<>();
+        return generateCartDataAnalytics(cartItemDataList);
+    }
+
+    public Map<String, Object> generateCartDataAnalytics(List<CartItemData> cartItemDataList) {
+
+        GTMCart gtmCart = new GTMCart();
+
+        gtmCart.setCurrencyCode("IDR");
+        gtmCart.setAddAction(GTMCart.ADD_ACTION);
+
+        for (CartItemData cartItemData : cartItemDataList) {
+            com.tokopedia.core.analytics.nishikino.model.Product product =
+                    new com.tokopedia.core.analytics.nishikino.model.Product();
+            product.setProductName(cartItemData.getOriginData().getProductName());
+            product.setProductID(String.valueOf(cartItemData.getOriginData().getProductId()));
+            product.setPrice(cartItemData.getOriginData().getPriceFormatted());
+            product.setBrand(com.tokopedia.core.analytics.nishikino.model.Product.DEFAULT_VALUE_NONE_OTHER);
+
+            product.setCategory(TextUtils.isEmpty(cartItemData.getOriginData().getCategoryForAnalytics())
+                    ? com.tokopedia.core.analytics.nishikino.model.Product.DEFAULT_VALUE_NONE_OTHER
+                    : cartItemData.getOriginData().getCategoryForAnalytics());
+            product.setVariant(com.tokopedia.core.analytics.nishikino.model.Product.DEFAULT_VALUE_NONE_OTHER);
+            product.setQty(cartItemData.getUpdatedData().getQuantity());
+            product.setShopId(cartItemData.getOriginData().getShopId());
+         //   product.setShopType(generateShopType(productData.getShopInfo()));
+            product.setShopName(cartItemData.getOriginData().getShopName());
+            product.setCategoryId(cartItemData.getOriginData().getCategoryId());
+//            product.setDimension38(
+//                    TextUtils.isEmpty(productPass.getTrackerAttribution())
+//                            ? com.tokopedia.core.analytics.nishikino.model.Product.DEFAULT_VALUE_NONE_OTHER
+//                            : productPass.getTrackerAttribution()
+//            );
+//            product.setDimension40(
+//                    TextUtils.isEmpty(productPass.getTrackerListName())
+//                            ? com.tokopedia.core.analytics.nishikino.model.Product.DEFAULT_VALUE_NONE_OTHER
+//                            : productPass.getTrackerListName()
+//            );
+            gtmCart.addProduct(product.getProduct());
+        }
+        return gtmCart.getCartMap();
+
     }
 }

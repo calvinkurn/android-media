@@ -119,6 +119,7 @@ import static com.tokopedia.transaction.common.constant.PickupPointIntentConstan
 /**
  * @author anggaprasetiyo on 11/1/16.
  */
+@Deprecated
 public class CartFragment extends BasePresenterFragment<ICartPresenter> implements ICartView,
         PaymentGatewayFragment.ActionListener, CartItemAdapter.CartItemActionListener,
         TopPayBroadcastReceiver.ActionListener, TopAdsItemClickListener {

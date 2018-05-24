@@ -24,6 +24,7 @@ import com.tokopedia.checkout.view.di.component.DaggerCartRemoveProductComponent
 import com.tokopedia.checkout.view.di.module.CartRemoveProductModule;
 import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.transactionanalytics.CheckoutAnalyticsCartPage;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -52,6 +53,8 @@ public class CartRemoveProductFragment extends BaseCheckoutFragment
     CartRemoveProductPresenter mCartRemoveProductPresenter;
     @Inject
     RecyclerView.ItemDecoration itemDecoration;
+    @Inject
+    CheckoutAnalyticsCartPage cartPageAnalytics;
 
     private int mCheckedCartItem = 0;
 
@@ -140,6 +143,7 @@ public class CartRemoveProductFragment extends BaseCheckoutFragment
         mTvRemoveProduct.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                cartPageAnalytics.eventClickCartClickHapusFormHapus();
                 removeCheckedProducts();
             }
         });
@@ -304,6 +308,11 @@ public class CartRemoveProductFragment extends BaseCheckoutFragment
         }
         checkAllItemChecked();
     }
+    @Override
+    public void onCheckBoxCheckAll() {
+        cartPageAnalytics.eventClickCartClickPilihSemuaFormHapus();
+    }
+
 
     private void showDeleteCartItemDialog(
             final List<CartItemData> removedCartItemList, List<CartItemData> updatedCartItemList

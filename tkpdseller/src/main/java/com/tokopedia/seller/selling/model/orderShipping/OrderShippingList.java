@@ -60,6 +60,9 @@ public class OrderShippingList {
     @SerializedName("order_destination")
     @Expose
     OrderDestination orderDestination;
+    @SerializedName("driver_info")
+    @Expose
+    OrderDriver orderDriver;
 
     /**
      * 
@@ -313,5 +316,13 @@ public class OrderShippingList {
 
     public void setIsAllowedRetry(int isAllowedRetry) {
         this.isAllowedRetry = isAllowedRetry;
+    }
+
+    public OrderDriver getOrderDriver() {
+        return orderDriver;
+    }
+
+    public void setOrderDriver(OrderDriver orderDriver) {
+        this.orderDriver = orderDriver;
     }
 }

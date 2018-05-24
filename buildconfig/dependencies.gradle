@@ -23,7 +23,6 @@ ext {
     tkpdPdpVersion = '1.+'
     tkpdDesignVersion = '1.+'
     tkpdFeedVersion = '1.+'
-    tkpdRideVersion = '1.+'
     tkpdLoyaltyVersion = '1.+'
     tkpdReactNativeVersion = '1.+'
     tkpdFlightVersion = '1.+'
@@ -188,6 +187,7 @@ ext {
             inbox      : "com.tokopedia.inbox:inbox:${tkpdInboxVersion}",
             session    : "com.tokopedia.session:session:${tkpdSessionVersion}",
             transaction: "com.tokopedia.transaction:transaction:${tkpdTransactionVersion}",
+            transactioncommon: "com.tokopedia.transaction:transaction-common:${tkpdTransactionVersion}",
             discovery  : "com.tokopedia.discovery:discovery:${tkpdDiscoveryVersion}",
             seller     : "com.tokopedia.seller:seller:${tkpdSellerVersion}",
             digital    : "com.tokopedia.digital:digital:${tkpdDigitalVersion}",
@@ -196,7 +196,6 @@ ext {
             tkpdpdp    : "com.tokopedia.tkpdpdp:tkpdpdp:${tkpdPdpVersion}",
             design     : "com.tokopedia.design:design:${tkpdDesignVersion}",
             feed       : "com.tokopedia.feed:feed:${tkpdFeedVersion}",
-            ride       : "com.tokopedia.ride:ride:${tkpdRideVersion}",
             reactNative: "com.tokopedia.tkpdreactnative:reactnative:${tkpdReactNativeVersion}",
             loyalty    : "com.tokopedia.loyalty:loyalty:${tkpdLoyaltyVersion}",
             flight     : "com.tokopedia.flight:flight:${tkpdFlightVersion}",
@@ -212,13 +211,13 @@ ext {
 
     features = [
             loyalty         : ":tkpdloyalty",
-            ride            : ":tkpdride",
             feed            : ":features:content:feed",
-            digital         : ":tkpddigital",
+            digitalproduct  : ":features:digital:digitalproduct",
             core            : ":tkpdcore",
             inbox           : ":tkpdinbox",
             discovery       : ":tkpddiscovery",
             transaction     : ":tkpdtransaction",
+            transactioncommon     : ":tkpdtransaction-common",
             session         : ":tkpdsession",
             topAdsSdk       : ":tkpdtopadssdk",
             productDetail   : ":tkpdpdp",
@@ -236,7 +235,7 @@ ext {
             flight          : ":tkpdflight",
             flightNoOp      : ":features:digital:flight_no_op",
             mitraToppers    : ":features:fintech:mitra_toppers",
-            event           : ":tkpdevents",
+            event           : ":features:digital:event",
             home            : ":tkpdhome",
             content         : ":tkpdcontent",
             checkout        : ":features:transaction:checkout",
@@ -245,7 +244,9 @@ ext {
             gamification    : ":features:promo:gamification",
             profile         : ":features:user:profile",
             logisticdata    : ":features:logistic:logisticdata",
-            transactiondata : ":features:transaction:transactiondata"
+            transactiondata : ":features:transaction:transactiondata",
+            transactionanalytics : ":features:transaction:transactionanalytics",
+            tracking        : ":features:logistic:tracking"
     ]
 
     libraries = [

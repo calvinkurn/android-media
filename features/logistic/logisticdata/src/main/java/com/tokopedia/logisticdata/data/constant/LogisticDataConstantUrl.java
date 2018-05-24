@@ -5,6 +5,8 @@ package com.tokopedia.logisticdata.data.constant;
  */
 public class LogisticDataConstantUrl {
 
+    public static String BASE_DOMAIN = "https://ws.tokopedia.com/";
+
     public static class KeroRates {
         static public String BASE_URL = "https://gw.tokopedia.com/";
 
@@ -27,5 +29,10 @@ public class LogisticDataConstantUrl {
         static final String BASE_PATH = "action/people/";
 
         public static final String PATH_EDIT_ADDRESS = VERSION + BASE_PATH + "edit_address.pl";
+    }
+
+    public static class CourierTracking {
+        public static String BASE_URL = BASE_DOMAIN + "v4/tracking-order/";
+        public static final String PATH_TRACK_ORDER = "track_order.pl";
     }
 }

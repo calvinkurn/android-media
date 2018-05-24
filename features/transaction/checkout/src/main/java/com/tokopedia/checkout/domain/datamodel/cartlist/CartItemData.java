@@ -104,7 +104,26 @@ public class CartItemData implements Parcelable {
         private boolean isFavorite;
         private String cashBackInfo;
         private String freeReturnLogo;
+        private String category;
+        private String categoryForAnalytics;
+        private String categoryId;
         private List<WholesalePrice> wholesalePrice;
+
+        public String getCategory() {
+            return category;
+        }
+
+        public void setCategory(String category) {
+            this.category = category;
+        }
+
+        public String getCategoryForAnalytics() {
+            return categoryForAnalytics;
+        }
+
+        public void setCategoryForAnalytics(String categoryForAnalytics) {
+            this.categoryForAnalytics = categoryForAnalytics;
+        }
 
         public int getCartId() {
             return cartId;
@@ -116,6 +135,14 @@ public class CartItemData implements Parcelable {
 
         public String getShopName() {
             return shopName;
+        }
+
+        public String getCategoryId() {
+            return categoryId;
+        }
+
+        public void setCategoryId(String categoryId) {
+            this.categoryId = categoryId;
         }
 
         public void setShopName(String shopName) {
@@ -322,6 +349,9 @@ public class CartItemData implements Parcelable {
             dest.writeByte(this.isFavorite ? (byte) 1 : (byte) 0);
             dest.writeString(this.cashBackInfo);
             dest.writeString(this.freeReturnLogo);
+            dest.writeString(this.category);
+            dest.writeString(this.categoryForAnalytics);
+            dest.writeString(this.categoryId);
             dest.writeTypedList(this.wholesalePrice);
         }
 
@@ -348,6 +378,9 @@ public class CartItemData implements Parcelable {
             this.isFavorite = in.readByte() != 0;
             this.cashBackInfo = in.readString();
             this.freeReturnLogo = in.readString();
+            this.category = in.readString();
+            this.categoryForAnalytics = in.readString();
+            this.categoryId = in.readString();
             this.wholesalePrice = in.createTypedArrayList(WholesalePrice.CREATOR);
         }
 

@@ -135,6 +135,11 @@ public class ShakeDetectPresenter extends BaseDaggerPresenter<ShakeDetectContrac
 
                 @Override
                 public void onNext(final CampaignResponseEntity s) {
+                    if((s.getMessage()) != null && !s.getMessage().isEmpty() &&
+                            s.getUrl() != null && s.getUrl().isEmpty()){
+                        getView().showMessage(s.getMessage());
+                        return;
+                    }
                     DeepLinkDelegate deepLinkDelegate = DeeplinkHandlerActivity.getDelegateInstance();
                     if (!deepLinkDelegate.supportsUri(s.getUrl())) {
                         getView().showErrorNetwork(context.getString(R.string.shake_shake_wrong_deeplink));

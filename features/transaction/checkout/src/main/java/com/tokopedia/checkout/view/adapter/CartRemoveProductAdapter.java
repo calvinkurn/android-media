@@ -105,6 +105,7 @@ public class CartRemoveProductAdapter extends RecyclerView.Adapter<RecyclerView.
                 @Override
                 public void onClick(View view) {
                     isRemoveAll = !isRemoveAll;
+                    mActionListener.onCheckBoxCheckAll();
                     notifyDataSetChanged();
                     mActionListener.onAllItemCheckChanged(isRemoveAll);
                 }
@@ -143,6 +144,8 @@ public class CartRemoveProductAdapter extends RecyclerView.Adapter<RecyclerView.
          * @param position index of list where the checkbox state is changed
          */
         void onCheckBoxStateChanged(boolean checked, int position);
+
+        void onCheckBoxCheckAll();
 
         void onAllItemCheckChanged(boolean checked);
     }

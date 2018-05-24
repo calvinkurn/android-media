@@ -491,7 +491,7 @@ public class ShopPageTracking {
     }
 
     private String getProductPosition(int adapterPosition, boolean isGrid) {
-        return String.valueOf(isGrid ? (int) Math.ceil((adapterPosition) / 2) : adapterPosition);
+        return String.valueOf(isGrid ? (int) Math.ceil((float)adapterPosition / 2) : adapterPosition);
     }
 
     public static int getShopType(ShopInfoDetail info) {
