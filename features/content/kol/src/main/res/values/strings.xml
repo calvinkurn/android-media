@@ -26,4 +26,6 @@
     <string name="title_following_kol">Following</string>
     <string name="string_follow_empty">Kamu belum \nmengikuti influencer</string>
     <string name="string_follow_empty_button">Explore Influencer</string>
+
+    <string name="explore_more_button">Explore More</string>
 </resources>

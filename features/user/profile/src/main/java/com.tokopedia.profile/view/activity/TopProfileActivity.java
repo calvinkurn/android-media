@@ -27,11 +27,13 @@ import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh;
 import com.tokopedia.abstraction.common.utils.GlobalConfig;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.applink.ApplinkConst;
+import com.tokopedia.applink.RouteManager;
 import com.tokopedia.core.ManagePeople;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.peoplefave.activity.PeopleFavoritedShop;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.design.component.Tabs;
+import com.tokopedia.design.component.ToasterNormal;
 import com.tokopedia.profile.ProfileComponentInstance;
 import com.tokopedia.profile.ProfileModuleRouter;
 import com.tokopedia.profile.R;
@@ -51,8 +53,11 @@ import java.util.List;
 import javax.inject.Inject;
 
 import static com.tokopedia.profile.analytics.TopProfileAnalytics.Action.CLICK_ON_MANAGE_ACCOUNT;
+import static com.tokopedia.profile.analytics.TopProfileAnalytics.Action.CLICK_PROMPT;
+import static com.tokopedia.profile.analytics.TopProfileAnalytics.Category.KOL_TOP_PROFILE;
 import static com.tokopedia.profile.analytics.TopProfileAnalytics.Category.TOP_PROFILE;
 import static com.tokopedia.profile.analytics.TopProfileAnalytics.Event.EVENT_CLICK_TOP_PROFILE;
+import static com.tokopedia.profile.analytics.TopProfileAnalytics.Label.GO_TO_FEED_FORMAT;
 
 /**
  * @author by milhamj on 08/02/18.
@@ -72,6 +77,8 @@ public class TopProfileActivity extends BaseSimpleActivity
     private static final String ZERO = "0";
     private static final int MANAGE_PEOPLE_CODE = 13;
     private static final int LOGIN_REQUEST_CODE = 23;
+    private static final int TOAST_LENGTH = 3000;
+
     @Inject
     TopProfileActivityListener.Presenter presenter;
     private AppBarLayout appBarLayout;
@@ -365,8 +372,18 @@ public class TopProfileActivity extends BaseSimpleActivity
     public void onSuccessFollowKol() {
         topProfileViewModel.setFollowed(!topProfileViewModel.isFollowed());
 
-        if (!topProfileViewModel.isFollowed()) enableFollowButton();
-        else disableFollowButton();
+        if (topProfileViewModel.isFollowed()) {
+            disableFollowButton();
+            ToasterNormal
+                    .make(swipeToRefresh,
+                            getString(R.string.follow_success_toast),
+                            TOAST_LENGTH)
+                    .setAction(getString(R.string.follow_success_check_now),
+                            followSuccessOnClickListener())
+                    .show();
+        } else {
+            enableFollowButton();
+        }
 
         if (getIntent() != null && getIntent().getExtras() != null) {
             resultIntent.putExtra(
@@ -634,6 +651,24 @@ public class TopProfileActivity extends BaseSimpleActivity
             @Override
             public void onClick(View v) {
                 presenter.initView(userId);
+            }
+        };
+    }
+
+    private View.OnClickListener followSuccessOnClickListener() {
+        return new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                RouteManager.route(getContext(), ApplinkConst.FEED);
+
+                if (getContext().getApplicationContext() instanceof AbstractionRouter) {
+                    String kolName = topProfileViewModel.getName();
+                    ((AbstractionRouter) getContext().getApplicationContext()).getAnalyticTracker()
+                            .sendEventTracking(EVENT_CLICK_TOP_PROFILE,
+                                    KOL_TOP_PROFILE,
+                                    CLICK_PROMPT,
+                                    String.format(GO_TO_FEED_FORMAT, kolName));
+                }
             }
         };
     }
