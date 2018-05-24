@@ -40,6 +40,7 @@ import com.tokopedia.digital.product.additionalfeature.etoll.view.compoundview.T
 import com.tokopedia.digital.product.additionalfeature.etoll.view.model.InquiryBalanceModel;
 import com.tokopedia.digital.product.additionalfeature.etoll.view.presenter.ETollPresenter;
 import com.tokopedia.digital.product.view.activity.DigitalProductActivity;
+import com.tokopedia.digital.product.view.activity.DigitalWebActivity;
 import com.tokopedia.digital.product.view.listener.IETollView;
 import com.tokopedia.digital.utils.NFCUtils;
 
@@ -60,6 +61,9 @@ public class DigitalCheckETollBalanceNFCActivity extends BaseSimpleActivity
 
     private final String ETOLL_CATEGORY_ID = "34";
     private final String ETOLL_EMONEY_OPERATOR_ID = "419";
+
+    private static final String HELP_PAGE_URL = "https://www.tokopedia.com/bantuan/produk-digital/e-money/" +
+            "#cara-update-saldo-kartu";
 
     private static final String TAG = DigitalCheckETollBalanceNFCActivity.class.getSimpleName();
 
@@ -194,6 +198,8 @@ public class DigitalCheckETollBalanceNFCActivity extends BaseSimpleActivity
             DigitalCheckETollBalanceNFCActivityPermissionsDispatcher.detectNFCWithCheck(this);
         } else {
             // show webview help page
+            startActivity(DigitalWebActivity.newInstance(this, HELP_PAGE_URL));
+            finish();
         }
     }
 
