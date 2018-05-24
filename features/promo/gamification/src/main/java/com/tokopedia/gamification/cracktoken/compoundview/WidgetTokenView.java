@@ -320,37 +320,31 @@ public class WidgetTokenView extends FrameLayout {
         playSound(R.raw.reward);
     }
 
-    private void playSound(int resId) {
-        MediaPlayer mp = getCrackMediaPlayer(resId);
-        if (mp!=null) {
-            mp.start();
-        }
-    }
-
-    public MediaPlayer getCrackMediaPlayer(int resId) {
-        Log.i("TELORTELORAN", "Start init");
+    public void playSound(int resId) {
         if (crackMediaPlayer == null) {
             crackMediaPlayer = new MediaPlayer();
-        } else {
-            crackMediaPlayer.stop();
-            crackMediaPlayer.reset();
+            crackMediaPlayer.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
+                @Override
+                public void onPrepared(MediaPlayer mp) {
+                    mp.start();
+                }
+            });
         }
-        Log.i("TELORTELORAN", "Start to init media player");
         try {
+            if (crackMediaPlayer.isPlaying()) {
+                crackMediaPlayer.stop();
+            }
+            crackMediaPlayer.reset();
             AssetFileDescriptor afd = getContext().getResources().openRawResourceFd(resId);
             if (afd == null) {
-                return null;
+                return;
             }
             crackMediaPlayer.setDataSource(afd.getFileDescriptor(), afd.getStartOffset(), afd.getLength());
             afd.close();
-            Log.i("TELORTELORAN", "media player closed");
             crackMediaPlayer.prepareAsync();
-            Log.i("TELORTELORAN", "Finish");
         } catch (Exception e) {
-            Log.i("TELORTELORAN", e.getMessage());
-            return null;
+            // not play sound.
         }
-        return crackMediaPlayer;
     }
 
     public boolean isCrackPercentageFull() {
