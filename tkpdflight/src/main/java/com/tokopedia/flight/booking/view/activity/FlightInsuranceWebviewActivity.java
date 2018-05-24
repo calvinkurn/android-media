@@ -7,20 +7,14 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 
 import com.tokopedia.abstraction.base.view.activity.BaseWebViewActivity;
-import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.di.component.HasComponent;
 import com.tokopedia.flight.FlightComponentInstance;
 import com.tokopedia.flight.booking.view.fragment.FlightInsuranceWebViewFragment;
 import com.tokopedia.flight.common.di.component.FlightComponent;
 
-import javax.inject.Inject;
-
 public class FlightInsuranceWebviewActivity extends BaseWebViewActivity implements HasComponent<FlightComponent> {
     private static final String EXTRA_URL = "EXTRA_URL";
     private static final String EXTRA_TITLE = "EXTRA_TITLE";
-
-    @Inject
-    UserSession userSession;
 
     public static Intent getCallingIntent(Activity activity, String url, String title) {
         Intent intent = new Intent(activity, FlightInsuranceWebviewActivity.class);
@@ -33,7 +27,6 @@ public class FlightInsuranceWebviewActivity extends BaseWebViewActivity implemen
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         updateTitle(getIntent().getStringExtra(EXTRA_TITLE));
-        getComponent().inject(this);
     }
 
     @Nullable
@@ -44,7 +37,7 @@ public class FlightInsuranceWebviewActivity extends BaseWebViewActivity implemen
 
     @Override
     protected Fragment getNewFragment() {
-        return FlightInsuranceWebViewFragment.newInstance(getIntent().getStringExtra(EXTRA_URL), userSession.getUserId());
+        return FlightInsuranceWebViewFragment.newInstance(getIntent().getStringExtra(EXTRA_URL));
     }
 
     @Override

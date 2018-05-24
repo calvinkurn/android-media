@@ -14,6 +14,7 @@ import android.support.v7.widget.RecyclerView;
 import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.TextPaint;
+import android.text.method.LinkMovementMethod;
 import android.text.style.ClickableSpan;
 import android.util.AttributeSet;
 import android.view.View;
@@ -157,17 +158,23 @@ public class FlightInsuranceView extends LinearLayout {
                 insuranceViewModel.getTncUrl(),
                 insuranceViewModel.getName())
         );
+        tvHighlightTnc.setMovementMethod(LinkMovementMethod.getInstance());
     }
 
     private SpannableString buildTncText(String tncAggreement, String tncUrl, String title) {
         final int color = getResources().getColor(R.color.green_300);
-        String fullText = tncAggreement + ". " + getContext().getString(R.string.flight_insurance_learn_more_label);
+        String fullText = tncAggreement + ". ";
+        if (tncUrl != null && tncUrl.length() > 0) {
+            fullText += getContext().getString(R.string.flight_insurance_learn_more_label);
+        }
         int stopIndex = fullText.length();
         SpannableString descriptionStr = new SpannableString(fullText);
         ClickableSpan clickableSpan = new ClickableSpan() {
             @Override
             public void onClick(View widget) {
-                if (listener != null) listener.onMoreInfoClicked(tncUrl, title);
+                if (listener != null && tncUrl != null && tncUrl.length() > 0) {
+                    listener.onMoreInfoClicked(tncUrl, title);
+                }
             }
 
             @Override
