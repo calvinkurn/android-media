@@ -130,6 +130,9 @@ public abstract class TopAdsDashboardStatisticFragment extends TkpdBaseV4Fragmen
     }
 
     public void updateDataStatistic(DataStatistic dataStatistic) {
+        if (dataStatistic == null){
+            return;
+        }
         this.summary = dataStatistic.getSummary();
         this.cells = dataStatistic.getCells();
         mLabels = generateLabels();
