@@ -1,6 +1,8 @@
 package com.tokopedia.digital.categorylist.domain.interactor;
 
-import com.tokopedia.digital.tokocash.model.tokocashitem.TokoCashBalanceData;
+import android.content.Context;
+
+import com.tokopedia.core.drawer2.data.pojo.topcash.TokoCashData;
 import com.tokopedia.digital.categorylist.view.model.DigitalCategoryItemData;
 
 import java.util.List;
@@ -15,5 +17,5 @@ public interface IDigitalCategoryListInteractor {
 
     void getDigitalCategoryItemDataList(Subscriber<List<DigitalCategoryItemData>> subscriber);
 
-    void getTokoCashData(Subscriber<TokoCashBalanceData> subscriber);
+    void getTokoCashData(Subscriber<TokoCashData> subscriber, Context context);
 }

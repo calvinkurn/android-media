@@ -10,7 +10,6 @@ import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.support.v4.app.TaskStackBuilder;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.LocalBroadcastManager;
@@ -29,22 +28,16 @@ import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.di.component.HasComponent;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.gcm.NotificationReceivedListener;
-import com.tokopedia.core.loyaltysystem.util.URLGenerator;
-import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.router.SellerAppRouter;
 import com.tokopedia.core.router.TkpdInboxRouter;
 import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.inbox.R;
 import com.tokopedia.inbox.common.applink.ApplinkConstant;
-import com.tokopedia.inbox.contactus.ContactUsConstant;
-import com.tokopedia.inbox.contactus.activity.ContactUsActivity;
 import com.tokopedia.inbox.inboxchat.ChatNotifInterface;
 import com.tokopedia.inbox.inboxchat.fragment.ChatRoomFragment;
 import com.tokopedia.inbox.inboxmessage.InboxMessageConstant;
 import com.tokopedia.pushnotif.PushNotification;
-
-import java.util.List;
 
 /**
  * Created by Nisie on 5/19/16.
