@@ -10,6 +10,7 @@ import com.tokopedia.checkout.domain.datamodel.shipmentrates.ShipmentDetailData;
 import com.tokopedia.checkout.domain.datamodel.shipmentrates.ShipmentItemData;
 import com.tokopedia.checkout.domain.usecase.GetRatesUseCase;
 import com.tokopedia.checkout.view.view.shippingoptions.viewmodel.ShipmentOptionData;
+import com.tokopedia.checkout.view.view.shippingoptions.viewmodel.ShipmentTickerInfoData;
 import com.tokopedia.checkout.view.view.shippingoptions.viewmodel.ShipmentTypeData;
 import com.tokopedia.core.network.exception.model.UnProcessableHttpException;
 
@@ -89,6 +90,9 @@ public class CourierPresenter extends BaseDaggerPresenter<CourierContract.View>
                 if (isViewAttached()) {
                     getView().hideLoading();
                     List<ShipmentItemData> shipmentItemDataList = shipmentDetailData.getShipmentItemData();
+                    ShipmentTickerInfoData shipmentTickerInfoData = new ShipmentTickerInfoData();
+                    shipmentTickerInfoData.setTickerInfo(getView().getContext().getResources().getString(R.string.label_hardcoded_courier_ticker));
+                    shipmentDataList.add(shipmentTickerInfoData);
                     for (ShipmentItemData shipmentItemData : shipmentItemDataList) {
                         ShipmentTypeData shipmentTypeData = new ShipmentTypeData();
                         shipmentTypeData.setShipmentType(shipmentItemData.getType());
