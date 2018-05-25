@@ -280,32 +280,32 @@ public class CartListItemViewHolder extends RecyclerView.ViewHolder {
         if (qty <= QTY_MIN || qty <= cartItemHolderData.getCartItemData().getOriginData().getMinimalQtyOrder()) {
             btnQtyMinus.setEnabled(false);
             btnQtyPlus.setEnabled(true);
-            btnQtyMinus.setBackground(ContextCompat.getDrawable(context, R.drawable.bg_button_disabled));
-            btnQtyPlus.setBackground(ContextCompat.getDrawable(context, R.drawable.button_curvy_green));
+            btnQtyMinus.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.bg_button_counter_minus_disabled));
+            btnQtyPlus.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.bg_button_counter_plus));
         } else if (qty >= QTY_MAX || (cartItemHolderData.getCartItemData().getOriginData().getInvenageValue() != 0 &&
                 qty >= cartItemHolderData.getCartItemData().getOriginData().getInvenageValue())) {
             btnQtyPlus.setEnabled(false);
             btnQtyMinus.setEnabled(true);
-            btnQtyPlus.setBackground(ContextCompat.getDrawable(context, R.drawable.bg_button_disabled));
-            btnQtyMinus.setBackground(ContextCompat.getDrawable(context, R.drawable.button_curvy_green));
+            btnQtyPlus.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.bg_button_counter_plus_disabled));
+            btnQtyMinus.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.bg_button_counter_minus));
         } else {
             btnQtyPlus.setEnabled(true);
             btnQtyMinus.setEnabled(true);
-            btnQtyPlus.setBackground(ContextCompat.getDrawable(context, R.drawable.button_curvy_green));
-            btnQtyMinus.setBackground(ContextCompat.getDrawable(context, R.drawable.button_curvy_green));
+            btnQtyPlus.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.bg_button_counter_plus));
+            btnQtyMinus.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.bg_button_counter_minus));
         }
     }
 
     private void validateWithAvailableQuantity(CartItemHolderData data, int qty) {
         if (data.getCartItemData().getOriginData().getInvenageValue() != 0 &&
                 qty > data.getCartItemData().getOriginData().getInvenageValue()) {
+            String errorMessage = data.getCartItemData().getErrorData().getErrorProductMaxQuantity();
             String maxValue;
             if (data.getCartItemData().getOriginData().getInvenageValue() == QTY_MAX) {
                 maxValue = QTY_MAX_STRING;
             } else {
                 maxValue = String.valueOf(data.getCartItemData().getOriginData().getInvenageValue());
             }
-            String errorMessage = data.getCartItemData().getErrorData().getErrorProductMaxQuantity();
             tvErrorFormValidation.setText(errorMessage.replace("{{value}}", maxValue));
             tvErrorFormValidation.setVisibility(View.VISIBLE);
         } else if (qty < data.getCartItemData().getOriginData().getMinimalQtyOrder()) {
@@ -362,7 +362,10 @@ public class CartListItemViewHolder extends RecyclerView.ViewHolder {
 
         @Override
         public void afterTextChanged(Editable editable) {
-            if (TextUtils.isEmpty(editable)) {
+            if (editable.length() > 1 && editable.charAt(0) == '0') {
+                etQty.setText(editable.toString().substring(1, editable.length()));
+                etQty.setSelection(1);
+            } else if (TextUtils.isEmpty(editable)) {
                 actionListener.onCartItemQuantityReseted(getAdapterPosition());
             } else {
                 int qty = 0;

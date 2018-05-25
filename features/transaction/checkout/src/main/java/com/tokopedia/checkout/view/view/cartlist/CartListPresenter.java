@@ -364,6 +364,7 @@ public class CartListPresenter implements ICartListPresenter {
     public void processResetAndRefreshCartData() {
         view.renderLoadGetCartData();
         view.disableSwipeRefresh();
+        view.showProgressLoading();
         TKPDMapParam<String, String> paramResetCart = new TKPDMapParam<>();
         paramResetCart.put("lang", "id");
         paramResetCart.put("step", "4");
@@ -762,6 +763,7 @@ public class CartListPresenter implements ICartListPresenter {
 
             @Override
             public void onError(Throwable e) {
+                view.hideProgressLoading();
                 e.printStackTrace();
                 view.renderLoadGetCartDataFinish();
                 if (e instanceof UnknownHostException) {
@@ -795,8 +797,9 @@ public class CartListPresenter implements ICartListPresenter {
 
             @Override
             public void onNext(ResetAndRefreshCartListData resetAndRefreshCartListData) {
+                view.hideProgressLoading();
                 view.renderLoadGetCartDataFinish();
-                if (!resetAndRefreshCartListData.getResetCartData().isSuccess()) {
+                if (resetAndRefreshCartListData.getCartListData() == null) {
                     view.renderErrorInitialGetCartListData(resetAndRefreshCartListData.getResetCartData().getMessage());
                 } else {
                     if (resetAndRefreshCartListData.getCartListData().getCartItemDataList().isEmpty()) {
@@ -805,9 +808,7 @@ public class CartListPresenter implements ICartListPresenter {
                         view.renderInitialGetCartListDataSuccess(resetAndRefreshCartListData.getCartListData());
                     }
                 }
-
             }
-
         };
     }
 

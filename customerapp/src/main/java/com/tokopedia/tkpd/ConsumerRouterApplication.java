@@ -1636,7 +1636,9 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public Intent getCartIntent(Activity activity) {
-        return new Intent(activity, CartActivity.class);
+        Intent intent = new Intent(activity, CartActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        return intent;
     }
 
     public Observable<String> getAtcObsr() {

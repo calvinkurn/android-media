@@ -48,29 +48,6 @@ public class ResetCartGetCartListUseCase extends UseCase<ResetAndRefreshCartList
         return Observable.just(new ResetAndRefreshCartListData())
                 .flatMap(new Func1<ResetAndRefreshCartListData, Observable<ResetAndRefreshCartListData>>() {
                     @Override
-                    public Observable<ResetAndRefreshCartListData> call(
-                            final ResetAndRefreshCartListData resetAndRefreshCartListData
-                    ) {
-                        return cartRepository.resetCart(paramReset)
-                                .map(new Func1<ResetCartDataResponse, ResetAndRefreshCartListData>() {
-                                    @Override
-                                    public ResetAndRefreshCartListData call(ResetCartDataResponse resetCartDataResponse) {
-                                        ResetCartData resetCartData = cartMapper.convertToResetCartData(resetCartDataResponse);
-                                        resetAndRefreshCartListData.setResetCartData(resetCartData);
-                                        if (!resetCartData.isSuccess()) {
-                                            throw new ResponseCartApiErrorException(
-                                                    TkpdBaseURL.Cart.PATH_RESET_CART,
-                                                    0,
-                                                    ""
-                                            );
-                                        }
-                                        return resetAndRefreshCartListData;
-                                    }
-                                });
-                    }
-                })
-                .flatMap(new Func1<ResetAndRefreshCartListData, Observable<ResetAndRefreshCartListData>>() {
-                    @Override
                     public Observable<ResetAndRefreshCartListData> call(final ResetAndRefreshCartListData resetAndRefreshCartListData) {
                         return cartRepository.getCartList(paramGetCart)
                                 .map(new Func1<CartDataListResponse, ResetAndRefreshCartListData>() {

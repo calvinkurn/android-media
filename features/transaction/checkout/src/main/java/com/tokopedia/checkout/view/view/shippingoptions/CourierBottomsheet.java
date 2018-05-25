@@ -2,7 +2,6 @@ package com.tokopedia.checkout.view.view.shippingoptions;
 
 import android.app.Activity;
 import android.content.Context;
-import android.content.res.Resources;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomSheetBehavior;
 import android.support.design.widget.BottomSheetDialog;
@@ -58,6 +57,8 @@ public class CourierBottomsheet extends BottomSheetDialog implements CourierCont
     @Inject
     CourierAdapter courierAdapter;
 
+    private BottomSheetBehavior behavior;
+
     public CourierBottomsheet(@NonNull Activity activity, @NonNull ShipmentDetailData shipmentDetailData,
                               @NonNull int cartItemPosition) {
         super(activity);
@@ -98,22 +99,14 @@ public class CourierBottomsheet extends BottomSheetDialog implements CourierCont
         });
     }
 
-    private int getDeviceHeight() {
-        int heightInPixel = Resources.getSystem().getDisplayMetrics().heightPixels;
-        return (int) (heightInPixel / getContext().getResources().getDisplayMetrics().density);
-    }
-
     public void updateHeight() {
-        final BottomSheetBehavior behavior = BottomSheetBehavior.from((View) bottomSheetView.getParent());
+        behavior = BottomSheetBehavior.from((View) bottomSheetView.getParent());
         behavior.setBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
-            int lastState = BottomSheetBehavior.STATE_DRAGGING;
-
             @Override
             public void onStateChanged(@NonNull View bottomSheet, int newState) {
-                if (newState == BottomSheetBehavior.STATE_HIDDEN) {
+                if (newState == BottomSheetBehavior.STATE_COLLAPSED) {
                     CourierBottomsheet.this.dismiss();
                 }
-                lastState = newState;
             }
 
             @Override
@@ -121,8 +114,7 @@ public class CourierBottomsheet extends BottomSheetDialog implements CourierCont
 
             }
         });
-        int deviceHeight = getDeviceHeight();
-        behavior.setPeekHeight(deviceHeight);
+        behavior.setPeekHeight(0);
         behavior.setState(BottomSheetBehavior.STATE_EXPANDED);
     }
 
@@ -200,13 +192,18 @@ public class CourierBottomsheet extends BottomSheetDialog implements CourierCont
     }
 
     void onCloseClick() {
-        CourierBottomsheet.this.dismiss();
+        behavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+    }
+
+    @Override
+    public void onBackPressed() {
+        behavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
     }
 
     @Override
     public void onCourierItemClick(CourierItemData courierItemData) {
+        behavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
         actionListener.onShipmentItemClick(courierItemData, cartItemPosition);
-        this.dismiss();
     }
 
     @Override
