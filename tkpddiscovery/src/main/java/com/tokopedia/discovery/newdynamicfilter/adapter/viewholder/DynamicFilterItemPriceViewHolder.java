@@ -9,6 +9,7 @@ import android.widget.TextView;
 import com.tokopedia.core.discovery.model.Filter;
 import com.tokopedia.core.discovery.model.Option;
 import com.tokopedia.design.price.PriceRangeInputView;
+import com.tokopedia.design.text.RangeInputView;
 import com.tokopedia.discovery.R;
 import com.tokopedia.discovery.newdynamicfilter.view.DynamicFilterView;
 
@@ -79,6 +80,18 @@ public class DynamicFilterItemPriceViewHolder extends DynamicFilterViewHolder {
         } else {
             defaultMaxValue = lastMaxValue;
         }
+
+        priceRangeInputView.setGestureListener(new RangeInputView.GestureListener() {
+            @Override
+            public void onButtonRelease(int minValue, int maxValue) {
+                dynamicFilterView.onPriceSliderRelease(minValue, maxValue);
+            }
+
+            @Override
+            public void onButtonPressed(int minValue, int maxValue) {
+                dynamicFilterView.onPriceSliderPressed(minValue, maxValue);
+            }
+        });
 
         priceRangeInputView.setOnValueChangedListener(new PriceRangeInputView.OnValueChangedListener() {
             @Override

@@ -9,6 +9,7 @@ import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.View;
 
+import com.tokopedia.core.analytics.SearchTracking;
 import com.tokopedia.core.discovery.model.Option;
 import com.tokopedia.discovery.R;
 import com.tokopedia.discovery.categorynav.domain.model.Category;
@@ -35,6 +36,7 @@ public class DynamicFilterCategoryActivity extends AppCompatActivity
     private static final String EXTRA_DEFAULT_CATEGORY_ID = "EXTRA_DEFAULT_CATEGORY_ID";
     private static final String EXTRA_DEFAULT_CATEGORY_ROOT_ID = "EXTRA_DEFAULT_CATEGORY_ROOT_ID";
     private static final String EXTRA_OPTION_LIST = "EXTRA_OPTION_LIST";
+    private static final String EXTRA_IS_USING_TRACKING = "EXTRA_IS_USING_TRACKING";
     private static final int DEFAULT_OFFSET = 170;
 
     List<Category> categoryList;
@@ -45,17 +47,21 @@ public class DynamicFilterCategoryActivity extends AppCompatActivity
     private CategoryChildAdapter categoryChildAdapter;
     private String defaultCategoryId;
     private String defaultCategoryRootId;
+    private boolean isUsingTracking;
 
     public static void moveTo(AppCompatActivity activity,
                               List<Option> optionList,
                               String defaultCategoryRootId,
-                              String defaultCategoryId) {
+                              String defaultCategoryId,
+                              boolean isUsingTracking
+                              ) {
 
         if (activity != null) {
             Intent intent = new Intent(activity, DynamicFilterCategoryActivity.class);
             intent.putExtra(EXTRA_OPTION_LIST, Parcels.wrap(optionList));
             intent.putExtra(EXTRA_DEFAULT_CATEGORY_ROOT_ID, defaultCategoryRootId);
             intent.putExtra(EXTRA_DEFAULT_CATEGORY_ID, defaultCategoryId);
+            intent.putExtra(EXTRA_IS_USING_TRACKING, isUsingTracking);
             activity.startActivityForResult(intent, REQUEST_CODE);
         }
     }
@@ -70,6 +76,7 @@ public class DynamicFilterCategoryActivity extends AppCompatActivity
     }
 
     private void fetchDataFromIntent() {
+        isUsingTracking = getIntent().getBooleanExtra(DynamicFilterCategoryActivity.EXTRA_IS_USING_TRACKING, false);
         defaultCategoryId
                 = getIntent().getStringExtra(DynamicFilterCategoryActivity.EXTRA_DEFAULT_CATEGORY_ID);
         defaultCategoryRootId
@@ -137,6 +144,11 @@ public class DynamicFilterCategoryActivity extends AppCompatActivity
         if (category.getHasChild()) {
             categoryChildAdapter.toggleSelectedChildbyId(category.getId());
         } else {
+            if (isUsingTracking) {
+                SearchTracking.eventSearchResultFilterJourney(
+                        getResources().getString(R.string.title_category),
+                        category.getName(), true, true);
+            }
             applyFilter(category);
         }
     }
