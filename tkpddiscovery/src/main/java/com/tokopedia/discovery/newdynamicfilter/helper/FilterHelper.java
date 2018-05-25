@@ -12,10 +12,10 @@ import java.util.List;
  * Created by henrypriyono on 11/13/17.
  */
 
-public class PreFilterHelper {
-    public static void addPreFilteredCategory(ArrayList<Filter> filters,
-                                              FilterFlagSelectedModel selectedModel,
-                                              String categoryId) {
+public class FilterHelper {
+    public static void populateWithSelectedCategory(List<Filter> filters,
+                                                    FilterFlagSelectedModel selectedModel,
+                                                    String categoryId) {
 
         Filter categoryFilter = findCategoryFilter(filters);
 
