@@ -41,13 +41,15 @@ public class DynamicFilterLocationActivity extends DynamicFilterDetailGeneralAct
     public static void moveTo(AppCompatActivity activity,
                               String pageTitle,
                               boolean isSearchable,
-                              String searchHint) {
+                              String searchHint,
+                              boolean isUsingTracking) {
 
         if (activity != null) {
             Intent intent = new Intent(activity, DynamicFilterLocationActivity.class);
             intent.putExtra(EXTRA_PAGE_TITLE, pageTitle);
             intent.putExtra(EXTRA_IS_SEARCHABLE, isSearchable);
             intent.putExtra(EXTRA_SEARCH_HINT, searchHint);
+            intent.putExtra(EXTRA_IS_USING_TRACKING, isUsingTracking);
             activity.startActivityForResult(intent, REQUEST_CODE);
         }
     }

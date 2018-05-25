@@ -85,7 +85,6 @@ import com.tokopedia.digital.categorylist.view.activity.DigitalCategoryListActiv
 import com.tokopedia.digital.common.router.DigitalModuleRouter;
 import com.tokopedia.digital.product.view.activity.DigitalProductActivity;
 import com.tokopedia.digital.product.view.activity.DigitalWebActivity;
-import com.tokopedia.digital.receiver.TokocashPendingDataBroadcastReceiver;
 import com.tokopedia.fingerprint.util.FingerprintConstant;
 import com.tokopedia.gm.GMModuleRouter;
 import com.tokopedia.gm.cashback.domain.GetCashbackUseCase;
@@ -96,7 +95,8 @@ import com.tokopedia.gm.common.di.module.GMModule;
 import com.tokopedia.gm.common.logout.GMLogout;
 import com.tokopedia.gm.featured.domain.interactor.GMFeaturedProductGetListUseCase;
 import com.tokopedia.gm.subscribe.view.activity.GmSubscribeHomeActivity;
-import com.tokopedia.inbox.contactus.activity.ContactUsActivity;
+import com.tokopedia.imageuploader.ImageUploaderRouter;
+import com.tokopedia.contact_us.createticket.activity.ContactUsActivity;
 import com.tokopedia.inbox.inboxchat.activity.ChatRoomActivity;
 import com.tokopedia.inbox.inboxchat.activity.InboxChatActivity;
 import com.tokopedia.inbox.rescenter.detailv2.view.activity.DetailResChatActivity;
@@ -204,7 +204,7 @@ public abstract class SellerRouterApplication extends MainApplication
         IPaymentModuleRouter, IDigitalModuleRouter, TkpdInboxRouter, TransactionRouter,
         ReputationRouter, LogisticRouter, SessionRouter, ProfileModuleRouter,
         MitraToppersRouter, AbstractionRouter, DigitalModuleRouter, ShopModuleRouter,
-        ApplinkRouter, OtpModuleRouter {
+        ApplinkRouter, OtpModuleRouter, ImageUploaderRouter  {
 
     protected RemoteConfig remoteConfig;
     private DaggerProductComponent.Builder daggerProductBuilder;
@@ -1074,11 +1074,6 @@ public abstract class SellerRouterApplication extends MainApplication
     public void goToCreateTopadsPromo(Context activity, String productId, String shopId, String source) {
         Intent intent = TopAdsCheckProductPromoActivity.createIntent(activity, shopId, productId, source);
         activity.startActivity(intent);
-    }
-
-    @Override
-    public BroadcastReceiver getBroadcastReceiverTokocashPending() {
-        return new TokocashPendingDataBroadcastReceiver();
     }
 
     @Override

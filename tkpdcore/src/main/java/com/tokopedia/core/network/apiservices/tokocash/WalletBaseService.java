@@ -1,6 +1,5 @@
 package com.tokopedia.core.network.apiservices.tokocash;
 
-import com.tokopedia.core.network.apiservices.tokocash.apis.WalletApi;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.network.core.OkHttpFactory;
 import com.tokopedia.core.network.core.OkHttpRetryPolicy;
@@ -15,7 +14,7 @@ import retrofit2.Retrofit;
  * @author by nisie on 12/5/17.
  */
 
-public class WalletBaseService extends BaseService<WalletApi> {
+public class WalletBaseService extends BaseService<WalletLoginApi> {
 
     @Inject
     public WalletBaseService() {
@@ -24,7 +23,7 @@ public class WalletBaseService extends BaseService<WalletApi> {
 
     @Override
     protected void initApiService(Retrofit retrofit) {
-        this.api = retrofit.create(WalletApi.class);
+        this.api = retrofit.create(WalletLoginApi.class);
     }
 
     @Override
@@ -33,7 +32,7 @@ public class WalletBaseService extends BaseService<WalletApi> {
     }
 
     @Override
-    public WalletApi getApi() {
+    public WalletLoginApi getApi() {
         return api;
     }
 
