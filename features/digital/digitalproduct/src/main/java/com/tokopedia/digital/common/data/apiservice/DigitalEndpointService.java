@@ -25,7 +25,7 @@ public class DigitalEndpointService extends BaseService<DigitalApi> {
 
     @Override
     protected String getBaseUrl() {
-        return TkpdBaseURL.DIGITAL_API_DOMAIN + TkpdBaseURL.DigitalApi.VERSION;
+        return "http://172.31.6.123:9001/recharge/v1/";
     }
 
     @Override
