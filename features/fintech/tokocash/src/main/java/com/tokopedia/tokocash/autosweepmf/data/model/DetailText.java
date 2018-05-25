@@ -1,16 +1,22 @@
 package com.tokopedia.tokocash.autosweepmf.data.model;
 
+import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 public class DetailText {
+    @Expose
     @SerializedName("title")
     private String title;
+    @Expose
     @SerializedName("status")
     private String content;
+    @Expose
     @SerializedName("tooltip_content")
     private String tooltipContent;
+    @Expose
     @SerializedName("description_content")
     private String description;
+    @Expose
     @SerializedName("dialog")
     private DialogContent dialog;
 
