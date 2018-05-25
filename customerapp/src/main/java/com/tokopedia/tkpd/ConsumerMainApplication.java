@@ -58,7 +58,6 @@ import com.tokopedia.tokocash.network.api.WalletUrl;
 import com.tokopedia.transaction.network.TransactionUrl;
 
 import io.hansel.hanselsdk.Hansel;
-import retrofit2.http.HEAD;
 
 /**
  * Created by ricoharisin on 11/11/16.
@@ -163,7 +162,6 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         TkpdBaseURL.MAPS_DOMAIN = ConsumerAppBaseUrl.MAPS_DOMAIN;
         TkpdBaseURL.WALLET_DOMAIN = ConsumerAppBaseUrl.BASE_WALLET;
         TkpdBaseURL.EVENTS_DOMAIN = ConsumerAppBaseUrl.EVENT_DOMAIN;
-        TkpdBaseURL.OMS_DOMAIN = ConsumerAppBaseUrl.OMS_DOMAIN;
         TkpdBaseURL.TOKOPOINT_API_DOMAIN = ConsumerAppBaseUrl.TOKOPOINT_API_DOMAIN;
         FlightUrl.BASE_URL = ConsumerAppBaseUrl.BASE_API_DOMAIN;
         FlightUrl.WEB_DOMAIN = ConsumerAppBaseUrl.BASE_WEB_DOMAIN;
