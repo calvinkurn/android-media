@@ -91,21 +91,21 @@ ext {
     ]
 
     playServicesDependencies = [
-            plus        : "com.google.android.gms:play-services-plus:${playServiceVersion}",
-            base        : "com.google.android.gms:play-services-base:${playServiceVersion}",
-            appIndexing : "com.google.firebase:firebase-appindexing:${playServiceVersion}",
-            analytics   : "com.google.android.gms:play-services-analytics:${playServiceVersion}",
-            firebase    : "com.google.firebase:firebase-messaging:${playServiceVersion}",
-            location    : "com.google.android.gms:play-services-location:${playServiceVersion}",
-            maps        : "com.google.android.gms:play-services-maps:${playServiceVersion}",
-            auth        : "com.google.android.gms:play-services-auth:${playServiceVersion}",
-            places      : "com.google.android.gms:play-services-places:${playServiceVersion}",
-            mapsUtils   : "com.google.maps.android:android-maps-utils:0.4",
-            remoteConfig: "com.google.firebase:firebase-config:${playServiceVersion}",
-            perfMon     : "com.google.firebase:firebase-perf:${playServiceVersion}",
-            ads         : "com.google.android.gms:play-services-ads:${playServiceVersion}",
-            firebase_analytics        :  "com.google.firebase:firebase-core:${playServiceVersion}",
-            tagmanager_analytics        :  "com.google.android.gms:play-services-tagmanager:${playServiceVersion}"
+            plus                : "com.google.android.gms:play-services-plus:${playServiceVersion}",
+            base                : "com.google.android.gms:play-services-base:${playServiceVersion}",
+            appIndexing         : "com.google.firebase:firebase-appindexing:${playServiceVersion}",
+            analytics           : "com.google.android.gms:play-services-analytics:${playServiceVersion}",
+            firebase            : "com.google.firebase:firebase-messaging:${playServiceVersion}",
+            location            : "com.google.android.gms:play-services-location:${playServiceVersion}",
+            maps                : "com.google.android.gms:play-services-maps:${playServiceVersion}",
+            auth                : "com.google.android.gms:play-services-auth:${playServiceVersion}",
+            places              : "com.google.android.gms:play-services-places:${playServiceVersion}",
+            mapsUtils           : "com.google.maps.android:android-maps-utils:0.4",
+            remoteConfig        : "com.google.firebase:firebase-config:${playServiceVersion}",
+            perfMon             : "com.google.firebase:firebase-perf:${playServiceVersion}",
+            ads                 : "com.google.android.gms:play-services-ads:${playServiceVersion}",
+            firebaseAnalytics   :  "com.google.firebase:firebase-core:${playServiceVersion}",
+            tagmanagerAnalytics :  "com.google.android.gms:play-services-tagmanager:${playServiceVersion}"
     ]
 
     butterKnifeDependencies = [

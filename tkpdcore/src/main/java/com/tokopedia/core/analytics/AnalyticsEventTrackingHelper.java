@@ -15,66 +15,66 @@ import java.util.Map;
 public class AnalyticsEventTrackingHelper {
 
     public static void hamburgerIconClickCategory(String landingScreen, String optionName) {
-        Map<String, Object> bundle = new HashMap<>();
-        bundle.put(FirebaseParams.Home.LANDING_SCREEN_NAME, landingScreen);
-        bundle.put(FirebaseParams.Home.OPTION_NAME, landingScreen);
+        Map<String, Object> map = new HashMap<>();
+        map.put(FirebaseParams.Home.LANDING_SCREEN_NAME, landingScreen);
+        map.put(FirebaseParams.Home.OPTION_NAME, landingScreen);
 
-        sendEventToAnalytics(FirebaseEvent.Home.HAMBURGER_OPTION_CLICK, bundle);
+        sendEventToAnalytics(FirebaseEvent.Home.HAMBURGER_OPTION_CLICK, map);
     }
     public static void hamburgerOptionClicked(String landingScreen, String optionName) {
-        Map<String, Object> bundle = new HashMap<>();
-        bundle.put(FirebaseParams.Home.LANDING_SCREEN_NAME, landingScreen);
-        bundle.put(FirebaseParams.Home.OPTION_NAME, optionName);
+        Map<String, Object> map = new HashMap<>();
+        map.put(FirebaseParams.Home.LANDING_SCREEN_NAME, landingScreen);
+        map.put(FirebaseParams.Home.OPTION_NAME, optionName);
 
-        sendEventToAnalytics(FirebaseEvent.Home.HAMBURGER_OPTION_CLICK, bundle);
+        sendEventToAnalytics(FirebaseEvent.Home.HAMBURGER_OPTION_CLICK, map);
     }
     public static void hamburgerOptionClicked(String landingScreen, String optionName, String subCategory) {
-        Map<String, Object> bundle = new HashMap<>();
-        bundle.put(FirebaseParams.Home.LANDING_SCREEN_NAME, landingScreen);
-        bundle.put(FirebaseParams.Home.OPTION_NAME, optionName);
-        bundle.put(FirebaseParams.Home.SUBCATEGORY_NAME, subCategory);
+        Map<String, Object> map = new HashMap<>();
+        map.put(FirebaseParams.Home.LANDING_SCREEN_NAME, landingScreen);
+        map.put(FirebaseParams.Home.OPTION_NAME, optionName);
+        map.put(FirebaseParams.Home.SUBCATEGORY_NAME, subCategory);
 
-        sendEventToAnalytics(FirebaseEvent.Home.HAMBURGER_OPTION_CLICK, bundle);
+        sendEventToAnalytics(FirebaseEvent.Home.HAMBURGER_OPTION_CLICK, map);
     }
 
     public static void hamburgerIconClickLogin(String landingScreen) {
-        Map<String, Object> bundle = new HashMap<>();
-        bundle.put(FirebaseParams.Home.LANDING_SCREEN_NAME, landingScreen);
-        sendEventToAnalytics(FirebaseEvent.Home.HAMBURGER_ICON_CLICK_LOGIN, bundle);
+        Map<String, Object> map = new HashMap<>();
+        map.put(FirebaseParams.Home.LANDING_SCREEN_NAME, landingScreen);
+        sendEventToAnalytics(FirebaseEvent.Home.HAMBURGER_ICON_CLICK_LOGIN, map);
     }
 
     public static void hamburgerIconClickSignup(String landingScreen) {
-        Map<String, Object> bundle = new HashMap<>();
-        bundle.put(FirebaseParams.Home.LANDING_SCREEN_NAME, landingScreen);
-        sendEventToAnalytics(FirebaseEvent.Home.HAMBURGER_ICON_CLICK_SIGNUP, bundle);
+        Map<String, Object> map = new HashMap<>();
+        map.put(FirebaseParams.Home.LANDING_SCREEN_NAME, landingScreen);
+        sendEventToAnalytics(FirebaseEvent.Home.HAMBURGER_ICON_CLICK_SIGNUP, map);
     }
     public static void hamburgerTokocashActivateClick() {
-        Map<String, Object> bundle = new HashMap<>();
-        sendEventToAnalytics(FirebaseEvent.Home.HAMBURGER_TOKOCASH_ACTIVATE, bundle);
+        Map<String, Object> map = new HashMap<>();
+        sendEventToAnalytics(FirebaseEvent.Home.HAMBURGER_TOKOCASH_ACTIVATE, map);
     }
 
     public static void homepageTokocashClick(String landingScreen ) {
-        Map<String, Object> bundle = new HashMap<>();
-        bundle.put(FirebaseParams.Home.LANDING_SCREEN_NAME, landingScreen);
-        sendEventToAnalytics(FirebaseEvent.Home.HAMBURGER_TOKOCASH, bundle);
+        Map<String, Object> map = new HashMap<>();
+        map.put(FirebaseParams.Home.LANDING_SCREEN_NAME, landingScreen);
+        sendEventToAnalytics(FirebaseEvent.Home.HAMBURGER_TOKOCASH, map);
     }
 
     public static void hamburgerTokopointsClick(String landingScreen) {
-        Map<String, Object> bundle = new HashMap<>();
-        bundle.put(FirebaseParams.Home.LANDING_SCREEN_NAME, landingScreen);
-        sendEventToAnalytics(FirebaseEvent.Home.HAMBURGER_TOKOPOINTS, bundle);
+        Map<String, Object> map = new HashMap<>();
+        map.put(FirebaseParams.Home.LANDING_SCREEN_NAME, landingScreen);
+        sendEventToAnalytics(FirebaseEvent.Home.HAMBURGER_TOKOPOINTS, map);
     }
 
     public static void homepageSaldoClick(String landingScreen) {
-        Map<String, Object> bundle = new HashMap<>();
-        bundle.put(FirebaseParams.Home.LANDING_SCREEN_NAME, landingScreen);
-        sendEventToAnalytics(FirebaseEvent.Home.HAMBURGER_SALDO, bundle);
+        Map<String, Object> map = new HashMap<>();
+        map.put(FirebaseParams.Home.LANDING_SCREEN_NAME, landingScreen);
+        sendEventToAnalytics(FirebaseEvent.Home.HAMBURGER_SALDO, map);
     }
 
     public static void hambugerProfileClick(String landingScreen) {
-        Map<String, Object> bundle = new HashMap<>();
-        bundle.put(FirebaseParams.Home.LANDING_SCREEN_NAME, landingScreen);
-        sendEventToAnalytics(FirebaseEvent.Home.HAMBURGER_PROFILE, bundle);
+        Map<String, Object> map = new HashMap<>();
+        map.put(FirebaseParams.Home.LANDING_SCREEN_NAME, landingScreen);
+        sendEventToAnalytics(FirebaseEvent.Home.HAMBURGER_PROFILE, map);
     }
 
 
