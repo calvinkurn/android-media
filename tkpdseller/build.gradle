@@ -34,9 +34,9 @@ dependencies {
     api (rootProject.ext.serviceDependencies.crashlytics) {
         transitive = true
     }
-    compile project(rootProject.ext.libraries.bottomSheetBuilder)
-    compile project(rootProject.ext.libraries.williamchart)
-    compile project(rootProject.ext.features.topAdsSourceTagging)
+    implementation project(rootProject.ext.libraries.bottomSheetBuilder)
+    implementation project(rootProject.ext.libraries.williamchart)
+    implementation project(rootProject.ext.features.topAdsSourceTagging)
 
     implementation project(rootProject.ext.features.core)
     implementation project(rootProject.ext.features.payment)
