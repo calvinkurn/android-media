@@ -20,6 +20,7 @@ import java.util.List;
 public class ProductItem extends RecyclerViewItem implements Serializable, Parcelable {
 
     public static final int PRODUCT_ITEM_TYPE = 192_012;
+    public static final String CASHBACK = "cashback";
 
     @SerializedName("product_id")
     @Expose
