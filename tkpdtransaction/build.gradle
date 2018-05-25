@@ -30,6 +30,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.fingerprint)
     implementation project(rootProject.ext.libraries.abstraction)
     implementation project(rootProject.ext.libraries.useCase)
+    implementation project(rootProject.ext.features.districtRecommendation)
 
     implementation rootProject.ext.networkDependencies.glide
 

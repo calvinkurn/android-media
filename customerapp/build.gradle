@@ -281,6 +281,7 @@ dependencies {
     implementation project(rootProject.ext.features.profile)
     implementation project(rootProject.ext.features.reputationCommon)
     implementation project(rootProject.ext.features.digitalproduct)
+    implementation project(rootProject.ext.features.districtRecommendation)
     implementation project(rootProject.ext.features.contactUs)
     implementation project(rootProject.ext.features.otp)
     implementation project(rootProject.ext.features.topAdsCommon)
