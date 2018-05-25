@@ -15,7 +15,6 @@ import com.tokopedia.tokocash.autosweepmf.view.fragment.SetAutoSweepLimitFragmen
  * It will taking the current tokocash balance as an extras param
  */
 public class SetAutoSweepLimitActivity extends BaseSimpleActivity {
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
