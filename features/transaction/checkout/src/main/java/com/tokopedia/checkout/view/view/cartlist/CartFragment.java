@@ -320,7 +320,7 @@ public class CartFragment extends BaseCheckoutFragment implements CartListAdapte
             startActivityForResult(
                     ((ICheckoutModuleRouter) getActivity().getApplication())
                             .checkoutModuleRouterGetLoyaltyNewCheckoutMarketplaceCartListIntent(
-                                    getActivity(), cartListData.isPromoCouponActive()
+                                    getActivity(), cartListData.isPromoCouponActive(), "", ""
                             ), IRouterConstant.LoyaltyModule.LOYALTY_ACTIVITY_REQUEST_CODE
             );
         }
