@@ -4,7 +4,6 @@ import android.app.FragmentManager;
 
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
-import com.tokopedia.abstraction.constant.IRouterConstant;
 import com.tokopedia.loyalty.di.LoyaltyScope;
 import com.tokopedia.loyalty.view.activity.LoyaltyActivity;
 import com.tokopedia.loyalty.view.adapter.LoyaltyPagerAdapter;
@@ -29,7 +28,6 @@ import dagger.Provides;
 public class LoyaltyViewModule {
 
     private final LoyaltyActivity activity;
-    private final String events = "events";
 
     public LoyaltyViewModule(LoyaltyActivity activity) {
         this.activity = activity;
@@ -54,32 +52,22 @@ public class LoyaltyViewModule {
                 new LoyaltyPagerItem.Builder()
                         .fragment(PromoCodeFragment.newInstance(
                                 activity.getPlatformString(),
-                                activity.getIntent()
-                                        .getExtras()
-                                        .getString(IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.EXTRA_CATEGORY, ""),
-                                activity.getIntent()
-                                        .getExtras()
-                                        .getString(IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.EXTRA_CART_ID, "")))
-                        .position(0)
+                                activity.getPlatformPageString(),
+                                activity.getCategoryString(),
+                                activity.getCartIdString())
+                        ).position(0)
                         .tabTitle("Kode Promo")
                         .build()
         );
-        if (activity.getIntent().getExtras().getString(IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.EXTRA_PLATFORM, "").equals(events)) {
+        String events = "events";
+        if (activity.getPlatformString().equals(events)) {
             loyaltyPagerItemList.add(
                     new LoyaltyPagerItem.Builder()
-                            .fragment(PromoCouponFragment.newInstance(
-                                    activity.getIntent()
-                                            .getExtras()
-                                            .getString(IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.EXTRA_PLATFORM, ""),
-                                    activity.getIntent()
-                                            .getExtras()
-                                            .getString(IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.EXTRA_CATEGORY, ""),
-                                    activity.getIntent()
-                                            .getExtras()
-                                            .getInt(IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.EXTRA_CATEGORYID, 0),
-                                    activity.getIntent()
-                                            .getExtras()
-                                            .getInt(IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.EXTRA_PRODUCTID, 0)))
+                            .fragment(PromoCouponFragment.newInstanceEvent(
+                                    activity.getPlatformString(),
+                                    activity.getCategoryString(),
+                                    activity.getCategoryId(),
+                                    activity.getProductId()))
                             .position(0)
                             .tabTitle("Kupon Saya")
                             .build()
@@ -88,15 +76,12 @@ public class LoyaltyViewModule {
             loyaltyPagerItemList.add(
                     new LoyaltyPagerItem.Builder()
                             .fragment(PromoCouponFragment.newInstance(
-                                    activity.getIntent()
-                                            .getExtras()
-                                            .getString(IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.EXTRA_PLATFORM, ""),
-                                    activity.getIntent()
-                                            .getExtras()
-                                            .getString(IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.EXTRA_CATEGORY, ""),
-                                    activity.getIntent()
-                                            .getExtras()
-                                            .getString(IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.EXTRA_CART_ID, "")))
+                                    activity.getPlatformString(),
+                                    activity.getPlatformPageString(),
+                                    activity.getCategoryString(),
+                                    activity.getCartIdString(),
+                                    activity.getCategoryId(),
+                                    activity.getProductId()))
                             .position(0)
                             .tabTitle("Kupon Saya")
                             .build()
@@ -113,12 +98,10 @@ public class LoyaltyViewModule {
         loyaltyPagerItemList.add(
                 new LoyaltyPagerItem.Builder()
                         .fragment(PromoCodeFragment.newInstance(
-                                activity.getIntent()
-                                        .getExtras()
-                                        .getString(IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.EXTRA_PLATFORM, ""),
-                                activity.getIntent()
-                                        .getExtras()
-                                        .getString(IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.EXTRA_CATEGORY, "")))
+                                activity.getPlatformString(),
+                                activity.getPlatformPageString(),
+                                activity.getCategoryString(),
+                                activity.getCartIdString()))
                         .position(0)
                         .tabTitle("Kode Promo")
                         .build()

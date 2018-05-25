@@ -55,6 +55,8 @@ public class PromoCodeFragment extends BasePresenterFragment implements IPromoCo
 
     private static final String ADDITIONAL_DATA_KEY = "ADDITIONAL_DATA_KEY";
 
+    private static final String CART_ID = "CART_ID";
+
     private static final String CHECKOUT = "checkoutdata";
 
     @Override
@@ -109,31 +111,25 @@ public class PromoCodeFragment extends BasePresenterFragment implements IPromoCo
         final EditText voucherCodeField = view.findViewById(R.id.et_voucher_code);
         TextView submitVoucherButton = view.findViewById(R.id.btn_check_voucher);
 
-        if (getArguments().getString(PLATFORM_KEY, "").equals(
+        if (getArguments().getString(PLATFORM_KEY, "").equalsIgnoreCase(
                 IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.DIGITAL_STRING)) {
             submitVoucherButton.setOnClickListener(onSubmitDigitalVoucher(
                     voucherCodeField,
                     voucherCodeFieldHolder)
             );
-        } else if (getArguments().getString(PLATFORM_KEY, "").equals(
-                IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.MARKETPLACE_CART_LIST_STRING)) {
+        } else if (getArguments().getString(PLATFORM_KEY, "").equalsIgnoreCase(
+                IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.MARKETPLACE_STRING)) {
             submitVoucherButton.setOnClickListener(onSubmitMarketPlaceCartListVoucher(
                     voucherCodeField,
                     voucherCodeFieldHolder)
             );
-        } else if (getArguments().getString(PLATFORM_KEY, "").equals(
-                IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.MARKETPLACE_CART_SHIPMENT_STRING)) {
-            submitVoucherButton.setOnClickListener(onSubmitMarketPlaceCartShipmentVoucher(
-                    voucherCodeField,
-                    voucherCodeFieldHolder)
-            );
-        } else if (getArguments().getString(PLATFORM_KEY).equalsIgnoreCase(
+        } else if (getArguments().getString(PLATFORM_KEY, "").equalsIgnoreCase(
                 IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.FLIGHT_STRING)) {
             submitVoucherButton.setOnClickListener(onSubmitFlightVoucher(
                     voucherCodeField,
                     voucherCodeFieldHolder)
             );
-        } else if (getArguments().getString(PLATFORM_KEY).equals(
+        } else if (getArguments().getString(PLATFORM_KEY, "").equalsIgnoreCase(
                 IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.EVENT_STRING)) {
             submitVoucherButton.setOnClickListener(onSubmitEventVoucher(voucherCodeField,
                     voucherCodeFieldHolder));
@@ -158,8 +154,7 @@ public class PromoCodeFragment extends BasePresenterFragment implements IPromoCo
                     dPresenter.processCheckFlightPromoCode(
                             getActivity(),
                             voucherCodeField.getText().toString(),
-                            getArguments().getString(
-                                    IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.EXTRA_CART_ID)
+                            getArguments().getString(CART_ID)
                     );
             }
         };
@@ -301,24 +296,14 @@ public class PromoCodeFragment extends BasePresenterFragment implements IPromoCo
         return fragment;
     }
 
-    public static Fragment newInstanceCartCheckoutMarketPlace(
-            String platform, String categoryKey, String additionalDataString
-    ) {
-        PromoCodeFragment fragment = new PromoCodeFragment();
-        Bundle bundle = new Bundle();
-        bundle.putString(PLATFORM_KEY, platform);
-        bundle.putString(CATEGORY_KEY, categoryKey);
-        bundle.putString(ADDITIONAL_DATA_KEY, additionalDataString);
-        fragment.setArguments(bundle);
-        return fragment;
-    }
 
-    public static Fragment newInstance(String platform, String categoryKey, String cartId) {
+    public static Fragment newInstance(String platform,String platformPage, String categoryKey, String cartId) {
         PromoCodeFragment fragment = new PromoCodeFragment();
         Bundle bundle = new Bundle();
         bundle.putString(PLATFORM_KEY, platform);
+        bundle.putString(PLATFORM_PAGE_KEY, platformPage);
         bundle.putString(CATEGORY_KEY, categoryKey);
-        bundle.putString(IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.EXTRA_CART_ID, cartId);
+        bundle.putString(CART_ID, cartId);
         fragment.setArguments(bundle);
         return fragment;
     }
