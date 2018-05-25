@@ -14,6 +14,7 @@ public class TopAdsProductListStepperModel implements StepperModel {
 
     List<TopAdsProductViewModel> topAdsProductViewModels;
     private String idToAdd;
+    private String source;
 
     public String getIdToAdd() {
         return idToAdd;
@@ -34,6 +35,16 @@ public class TopAdsProductListStepperModel implements StepperModel {
         this.idToAdd = idToAdd;
     }
 
+
+
+    public void setSource(String source) {
+        this.source = source;
+    }
+
+    public String getSource() {
+        return source;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -43,11 +54,13 @@ public class TopAdsProductListStepperModel implements StepperModel {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeTypedList(this.topAdsProductViewModels);
         dest.writeString(this.idToAdd);
+        dest.writeString(this.source);
     }
 
     protected TopAdsProductListStepperModel(Parcel in) {
         this.topAdsProductViewModels = in.createTypedArrayList(TopAdsProductViewModel.CREATOR);
         this.idToAdd = in.readString();
+        this.source = in.readString();
     }
 
     public static final Creator<TopAdsProductListStepperModel> CREATOR = new Creator<TopAdsProductListStepperModel>() {
