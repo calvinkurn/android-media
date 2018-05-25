@@ -11,6 +11,7 @@ import com.tokopedia.topads.keyword.domain.interactor.TopAdsKeywordActionBulkUse
 import com.tokopedia.topads.keyword.domain.interactor.TopAdsKeywordGetDetailUseCase;
 import com.tokopedia.topads.keyword.view.presenter.TopAdsKeywordDetailPresenterImpl;
 import com.tokopedia.topads.keyword.view.presenter.TopadsKeywordDetailPresenter;
+import com.tokopedia.topads.sourcetagging.domain.interactor.TopAdsAddSourceTaggingUseCase;
 
 import dagger.Module;
 import dagger.Provides;
