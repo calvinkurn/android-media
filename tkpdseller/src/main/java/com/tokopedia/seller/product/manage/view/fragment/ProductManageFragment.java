@@ -9,6 +9,9 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomSheetDialog;
@@ -23,11 +26,16 @@ import android.view.MenuItem;
 import android.view.View;
 
 import com.tkpd.library.utils.CommonUtils;
+import com.tokopedia.abstraction.AbstractionRouter;
+import com.tokopedia.abstraction.common.data.model.session.UserSession;
+import com.tokopedia.applink.ApplinkRouter;
 import com.tokopedia.core.ImageGallery;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
+import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.customadapter.NoResultDataBinder;
 import com.tokopedia.core.customadapter.RetryDataBinder;
+import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.product.model.share.ShareData;
 import com.tokopedia.core.router.productdetail.PdpRouter;
@@ -43,9 +51,9 @@ import com.tokopedia.seller.base.view.adapter.BaseMultipleCheckListAdapter;
 import com.tokopedia.seller.base.view.adapter.BaseRetryDataBinder;
 import com.tokopedia.seller.base.view.emptydatabinder.EmptyDataBinder;
 import com.tokopedia.seller.base.view.fragment.BaseSearchListFragment;
-import com.tokopedia.seller.common.bottomsheet.BottomSheetBuilder;
-import com.tokopedia.seller.common.bottomsheet.adapter.BottomSheetItemClickListener;
-import com.tokopedia.seller.common.bottomsheet.custom.CheckedBottomSheetBuilder;
+import com.github.rubensousa.bottomsheetbuilder.BottomSheetBuilder;
+import com.github.rubensousa.bottomsheetbuilder.adapter.BottomSheetItemClickListener;
+import com.github.rubensousa.bottomsheetbuilder.custom.CheckedBottomSheetBuilder;
 import com.tokopedia.seller.common.imageeditor.GalleryCropActivity;
 import com.tokopedia.seller.common.imageeditor.GalleryCropWatermarkActivity;
 import com.tokopedia.seller.common.utils.KMNumbers;
@@ -73,6 +81,8 @@ import com.tokopedia.seller.product.manage.view.model.ProductManageFilterModel;
 import com.tokopedia.seller.product.manage.view.model.ProductManageSortModel;
 import com.tokopedia.seller.product.manage.view.model.ProductManageViewModel;
 import com.tokopedia.seller.product.manage.view.presenter.ProductManagePresenter;
+import com.tokopedia.topads.sourcetagging.constant.TopAdsSourceOption;
+import com.tokopedia.topads.sourcetagging.util.TopAdsAppLinkUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -108,6 +118,7 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
     private ActionMode actionMode;
     private Boolean goldMerchant;
     private boolean isOfficialStore;
+    private UserSession userSession;
 
     private BroadcastReceiver addProductReceiver = new BroadcastReceiver() {
         @Override
@@ -218,6 +229,8 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
         productManageFilterModel = new ProductManageFilterModel();
         productManageFilterModel.reset();
         hasNextPage = false;
+
+        userSession = ((AbstractionRouter) getActivity().getApplication()).getSession();
     }
 
     @Override
@@ -597,7 +610,11 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
         BottomSheetBuilder bottomSheetBuilder = new BottomSheetBuilder(getActivity())
                 .setMode(BottomSheetBuilder.MODE_LIST)
                 .addTitleItem(productManageViewModel.getProductName());
-        bottomSheetBuilder.setMenu(R.menu.menu_product_manage_action_item);
+        if(productManageViewModel.getProductStatus().equals(StatusProductOption.EMPTY)){
+            bottomSheetBuilder.setMenu(R.menu.menu_product_manage_action_item_no_topads);
+        }else{
+            bottomSheetBuilder.setMenu(R.menu.menu_product_manage_action_item);
+        }
         BottomSheetDialog bottomSheetDialog = bottomSheetBuilder.expandOnStart(true)
                 .setItemClickListener(onOptionBottomSheetClicked(productManageViewModel))
                 .createDialog();
@@ -646,6 +663,8 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
                     goToShareProduct(productManageViewModel);
                 } else if (itemId == R.id.set_cashback_product_menu) {
                     onSetCashbackClicked(productManageViewModel);
+                } else if (itemId == R.id.set_promo_ads_product_menu) {
+                    onPromoTopAdsClicked(productManageViewModel);
                 }
             }
         };
@@ -663,6 +682,13 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
                 });
         AlertDialog dialog = alertDialogBuilder.create();
         dialog.show();
+    }
+
+    private void onPromoTopAdsClicked(ProductManageViewModel productManageViewModel) {
+        ((PdpRouter) getActivity().getApplication()).goToCreateTopadsPromo(getActivity(),
+                productManageViewModel.getItemId(), productManageViewModel.getProductShopId(),
+                GlobalConfig.isSellerApp()? TopAdsSourceOption.SA_MANAGE_LIST_PRODUCT :
+                        TopAdsSourceOption.MA_MANAGE_LIST_PRODUCT);
     }
 
     private void onSetCashbackClicked(ProductManageViewModel productManageViewModel) {

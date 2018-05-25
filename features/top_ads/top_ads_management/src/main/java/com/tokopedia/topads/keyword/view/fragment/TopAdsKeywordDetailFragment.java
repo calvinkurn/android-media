@@ -22,6 +22,7 @@ import com.tokopedia.topads.keyword.di.module.TopAdsKeywordDetailModule;
 import com.tokopedia.topads.keyword.view.activity.TopAdsKeywordEditDetailPositiveActivity;
 import com.tokopedia.topads.keyword.view.model.KeywordAd;
 import com.tokopedia.topads.keyword.view.presenter.TopadsKeywordDetailPresenter;
+import com.tokopedia.topads.sourcetagging.constant.TopAdsSourceOption;
 
 import javax.inject.Inject;
 

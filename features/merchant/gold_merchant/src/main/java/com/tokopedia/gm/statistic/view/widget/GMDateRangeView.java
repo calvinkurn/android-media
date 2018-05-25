@@ -9,7 +9,7 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.tokopedia.seller.common.williamchart.util.GoldMerchantDateUtils;
+import com.db.williamchart.util.GoldMerchantDateUtils;
 import com.tokopedia.gm.statistic.view.model.GMDateRangeDateViewModel;
 import com.tokopedia.gm.R;
 

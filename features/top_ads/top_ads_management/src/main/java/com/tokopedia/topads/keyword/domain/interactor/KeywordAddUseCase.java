@@ -25,6 +25,7 @@ public class KeywordAddUseCase extends UseCase<AddKeywordDomainModel> {
     public static final String GROUP_ID = "grp_id";
     public static final String KEYWORD_TYPE = "key_typ";
     public static final String KEYWORD_LIST = "key_list";
+    private static final String SOURCE = "source";
     private TopAdsKeywordRepository topAdsKeywordRepository;
     private ShopInfoRepository shopInfoRepository;
 
@@ -45,6 +46,7 @@ public class KeywordAddUseCase extends UseCase<AddKeywordDomainModel> {
         final String groupId = requestParams.getString(GROUP_ID, "");
         final int keywordType = requestParams.getInt(KEYWORD_TYPE, KeywordTypeDef.KEYWORD_TYPE_EXACT);
         final ArrayList<String> keywordList = (ArrayList<String>) requestParams.getObject(KEYWORD_LIST);
+        final String source = requestParams.getString(SOURCE, "");
 
         String shopId = shopInfoRepository.getShopId();
         List<AddKeywordDomainModelDatum> addKeywordDomainModelDatumList = new ArrayList<>();
@@ -54,7 +56,8 @@ public class KeywordAddUseCase extends UseCase<AddKeywordDomainModel> {
                     keywordList.get(i),
                     keywordType,
                     groupId,
-                    shopId
+                    shopId,
+                    source
             );
             addKeywordDomainModelDatumList.add(addKeywordDomainModelDatum);
         }
@@ -64,11 +67,13 @@ public class KeywordAddUseCase extends UseCase<AddKeywordDomainModel> {
 
     public static RequestParams createRequestParam(String groupId,
                                                    @KeywordTypeDef int keywordType,
-                                                   ArrayList<String> keywordList) {
+                                                   ArrayList<String> keywordList,
+                                                   String source) {
         RequestParams params = RequestParams.create();
         params.putString(GROUP_ID, groupId);
         params.putInt(KEYWORD_TYPE, keywordType);
         params.putObject(KEYWORD_LIST, keywordList);
+        params.putString(SOURCE, source);
         return params;
     }
 }

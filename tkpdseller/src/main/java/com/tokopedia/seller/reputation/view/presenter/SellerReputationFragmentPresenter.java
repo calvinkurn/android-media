@@ -13,7 +13,7 @@ import com.tokopedia.seller.R;
 import com.tokopedia.seller.base.view.adapter.ItemType;
 import com.tokopedia.seller.common.utils.DefaultErrorSubscriber;
 import com.tokopedia.seller.common.utils.NetworkStatus;
-import com.tokopedia.seller.common.williamchart.util.GoldMerchantDateUtils;
+import com.db.williamchart.util.GoldMerchantDateUtils;
 import com.tokopedia.seller.reputation.data.model.request.SellerReputationRequest;
 import com.tokopedia.seller.reputation.domain.interactor.ReviewReputationMergeUseCase;
 import com.tokopedia.seller.reputation.domain.interactor.ReviewReputationUseCase;

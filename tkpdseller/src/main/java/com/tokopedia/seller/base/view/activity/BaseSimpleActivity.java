@@ -9,6 +9,7 @@ import com.tokopedia.seller.R;
  * Created by zulfikarrahman on 5/30/17.
  */
 
+@Deprecated
 public abstract class BaseSimpleActivity extends BaseToolbarActivity {
 
     private static final String TAG_FRAGMENT = "TAG_FRAGMENT";

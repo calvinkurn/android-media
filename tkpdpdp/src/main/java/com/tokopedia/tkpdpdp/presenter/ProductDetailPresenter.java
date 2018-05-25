@@ -115,4 +115,10 @@ public interface ProductDetailPresenter {
     void onPromoAdsClicked(Context context, String shopId, int itemId, String userId);
 
     void updateRecentView(final @NonNull Context context, final int productId);
+
+    void openPromoteAds(Context context, String url);
+
+    void initTopAdsSourceTaggingUseCase(Context context);
+
+    void saveSource(String source);
 }
