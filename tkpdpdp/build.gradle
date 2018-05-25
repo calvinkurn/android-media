@@ -33,6 +33,7 @@ dependencies {
 
     implementation project(rootProject.ext.features.core)
     implementation project(rootProject.ext.libraries.design)
+    implementation project(rootProject.ext.features.topAdsSourceTagging)
     implementation project(rootProject.ext.libraries.abstraction)
     implementation rootProject.ext.tkpdLibDependencies.youtubePlayer
 

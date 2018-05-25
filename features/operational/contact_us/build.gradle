@@ -1,5 +1,19 @@
 apply plugin: 'com.android.library'
 apply from: "$rootProject.projectDir/buildconfig/module.gradle"
+apply plugin: 'com.jakewharton.butterknife'
+
+buildscript {
+    repositories {
+        maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
+        mavenCentral()
+        jcenter()
+    }
+    dependencies {
+        classpath ('com.jakewharton:butterknife-gradle-plugin:9.0.0-SNAPSHOT'){
+            exclude group: 'com.android.tools.build', module: 'gradle'
+        }
+    }
+}
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])

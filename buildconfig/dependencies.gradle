@@ -279,6 +279,8 @@ ext {
             shopCommon      : ":features:merchant:shop_common",
             shopPage        : ":features:merchant:shop_page",
             topAdsManagement: ":features:top_ads:top_ads_management",
+            topAdsCommon    : ":features:top_ads:top_ads_management_common",
+            topAdsSourceTagging: ":features:top_ads:top_ads_management_sourcetagging",
             tokoCash        : ":features:fintech:tokocash",
             flight          : ":tkpdflight",
             flightNoOp      : ":features:digital:flight_no_op",
@@ -301,10 +303,12 @@ ext {
             applink         : ":libraries:applink",
             cacheApi        : ":libraries:cache_api",
             useCase         : ":libraries:use_case",
+            williamchart    : ":libraries:williamchart",
             fingerprint     : ":libraries:fingerprint",
-            analytics       : ":libraries:analytics",
+            bottomSheetBuilder: ":libraries:bottom_sheet_builder",
             userSession     : ":libraries:user_session",
             imageuploader   : ":libraries:imageuploader",
-            youtubeApi      : ":libraries:YouTubeAndroidPlayerApi"
+            youtubeApi      : ":libraries:YouTubeAndroidPlayerApi",
+            analytics       : ":libraries:analytics"
     ]
 }
