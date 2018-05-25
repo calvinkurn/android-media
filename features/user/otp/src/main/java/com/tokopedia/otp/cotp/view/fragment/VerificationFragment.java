@@ -14,7 +14,6 @@ import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AlertDialog;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
@@ -35,7 +34,6 @@ import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
-import com.tokopedia.design.component.Dialog;
 import com.tokopedia.otp.OtpModuleRouter;
 import com.tokopedia.otp.R;
 import com.tokopedia.otp.common.OTPAnalytics;
@@ -89,6 +87,7 @@ public class VerificationFragment extends BaseDaggerFragment implements Verifica
     TextView verifyButton;
     TextView errorOtp;
     View limitOtp;
+    TextView tvLimitOtp;
     View finishCountdownView;
     TextView noCodeText;
     ImageView errorImage;
@@ -239,6 +238,7 @@ public class VerificationFragment extends BaseDaggerFragment implements Verifica
         countdownText = view.findViewById(R.id.countdown_text);
         verifyButton = view.findViewById(R.id.verify_button);
         limitOtp = view.findViewById(R.id.limit_otp);
+        tvLimitOtp = view.findViewById(R.id.limit_otp_text);
         errorOtp = view.findViewById(R.id.error_otp);
         finishCountdownView = view.findViewById(R.id.finish_countdown);
         noCodeText = view.findViewById(R.id.no_code);
@@ -379,6 +379,7 @@ public class VerificationFragment extends BaseDaggerFragment implements Verifica
     @Override
     public void onErrorGetOTP(String errorMessage) {
         if (errorMessage.contains(getString(R.string.limit_otp_reached_many_times))) {
+            tvLimitOtp.setText(errorMessage);
             limitOtp.setVisibility(View.VISIBLE);
             setLimitReachedCountdownText();
         } else {
