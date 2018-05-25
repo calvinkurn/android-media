@@ -330,7 +330,7 @@ Ingatlah untuk mengkonfirmasi bahwa email di atas adalah benar dan periksa junk 
     <string name="message_prod_depository_2">Produk ini tidak dapat dibeli sementara. Mohon hubungi pemilik Toko untuk lebih lanjut.</string>
     <string name="message_shop_moderated">Toko ini sedang dimoderasi</string>
     <string name="title_buy">Beli</string>
-    <string name="title_promo_topads">Promo TopAds</string>
+    <string name="title_promo_topads">Iklan TopAds</string>
     <string name="title_pre_order">PREORDER</string>
     <string name="title_total_prod">Total Produk : </string>
     <string name="title_submit">Kirim</string>
