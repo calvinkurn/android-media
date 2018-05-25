@@ -24,14 +24,25 @@ import javax.inject.Inject;
 public class FlightBookingNationalityFragment extends BaseSearchListFragment<FlightBookingPhoneCodeViewModel, FlightBookingNationalityAdapterTypeFactory> implements FlightBookingPhoneCodeView {
 
     public static final String EXTRA_SELECTED_COUNTRY = "EXTRA_SELECTED_COUNTRY";
+    public static final String EXTRA_SEARCH_HINT = "EXTRA_SEARCH_HINT";
 
     @Inject
     FlightBookingPhoneCodePresenterImpl flightBookingPhoneCodePresenter;
+
+    public static FlightBookingNationalityFragment createInstance(String searchHint) {
+        FlightBookingNationalityFragment fragment = new FlightBookingNationalityFragment();
+        Bundle bundle = new Bundle();
+        bundle.putString(EXTRA_SEARCH_HINT, searchHint);
+        fragment.setArguments(bundle);
+        return fragment;
+    }
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         flightBookingPhoneCodePresenter.attachView(this);
         super.onViewCreated(view, savedInstanceState);
+
+        searchInputView.setSearchHint(getArguments().getString(EXTRA_SEARCH_HINT));
     }
 
     @Override
