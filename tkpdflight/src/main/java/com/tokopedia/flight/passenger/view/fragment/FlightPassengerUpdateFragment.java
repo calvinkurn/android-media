@@ -459,14 +459,18 @@ public class FlightPassengerUpdateFragment extends BaseDaggerFragment implements
         etPassportExpired.clearFocus();
         etPassportNationality.clearFocus();
         etPassportIssuerCountry.clearFocus();
+        etPassengerBirthdate.clearFocus();
+        etPassengerFirstName.clearFocus();
+        etPassengerLastName.clearFocus();
+        etPassengerType.clearFocus();
     }
 
     private void navigateToChooseNationality() {
-        startActivityForResult(FlightBookingNationalityActivity.createIntent(getContext()), REQUEST_CODE_PICK_NATIONALITY);
+        startActivityForResult(FlightBookingNationalityActivity.createIntent(getContext(), getString(R.string.flight_nationality_search_hint)), REQUEST_CODE_PICK_NATIONALITY);
     }
 
     private void navigateToChooseIssuerCountry() {
-        startActivityForResult(FlightBookingNationalityActivity.createIntent(getContext()), REQUEST_CODE_PICK_ISSUER_COUNTRY);
+        startActivityForResult(FlightBookingNationalityActivity.createIntent(getContext(), getString(R.string.flight_passport_search_hint)), REQUEST_CODE_PICK_ISSUER_COUNTRY);
     }
 
     private void showMessageErrorInSnackbar(int resId) {

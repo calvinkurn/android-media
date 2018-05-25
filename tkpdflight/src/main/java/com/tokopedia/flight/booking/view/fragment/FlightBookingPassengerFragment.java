@@ -61,8 +61,6 @@ public class FlightBookingPassengerFragment extends BaseDaggerFragment implement
     public static final String EXTRA_DEPARTURE_DATE = "EXTRA_DEPARTURE_DATE";
     public static final String EXTRA_REQUEST_ID = "EXTRA_REQUEST_ID";
     public static final String EXTRA_IS_DOMESTIC = "EXTRA_IS_DOMESTIC";
-    private static final String SEARCH_HINT_NATIONALITY = "Cari Negara Kewarganegaraan";
-    private static final String SEARCH_HINT_ISSUER_COUNTRY = "Cari Negara Penerbit Passport";
     private static final int REQUEST_CODE_PICK_LUGGAGE = 1;
     private static final int REQUEST_CODE_PICK_MEAL = 2;
     private static final int REQUEST_CODE_PICK_SAVED_PASSENGER = 3;
@@ -764,12 +762,12 @@ public class FlightBookingPassengerFragment extends BaseDaggerFragment implement
 
     private void navigateToChooseNationality() {
         startActivityForResult(FlightBookingNationalityActivity.createIntent(getContext(),
-                SEARCH_HINT_NATIONALITY), REQUEST_CODE_PICK_NATIONALITY);
+                getString(R.string.flight_nationality_search_hint)), REQUEST_CODE_PICK_NATIONALITY);
     }
 
     private void navigateToChooseIssuerCountry() {
         startActivityForResult(FlightBookingNationalityActivity.createIntent(getContext(),
-                SEARCH_HINT_ISSUER_COUNTRY), REQUEST_CODE_PICK_ISSUER_COUNTRY);
+                getString(R.string.flight_passport_search_hint)), REQUEST_CODE_PICK_ISSUER_COUNTRY);
     }
 
     public interface OnFragmentInteractionListener {

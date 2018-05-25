@@ -1,16 +1,14 @@
 package com.tokopedia.flight.airport.view.presenter;
 
-import android.support.annotation.NonNull;
-
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
-import com.tokopedia.abstraction.common.utils.view.CommonUtils;
-import com.tokopedia.flight.airport.data.source.cloud.model.FlightAirportCountry;
 import com.tokopedia.flight.airport.data.source.db.model.FlightAirportDB;
 import com.tokopedia.flight.airport.domain.interactor.FlightAirportPickerUseCase;
-import com.tokopedia.flight.airport.domain.interactor.FlightAirportVersionCheckUseCase;
 import com.tokopedia.flight.airport.view.viewmodel.FlightAirportViewModel;
 import com.tokopedia.flight.airport.view.viewmodel.FlightCountryAirportViewModel;
+import com.tokopedia.flight.common.subscriber.AutoCompleteInputListener;
+import com.tokopedia.flight.common.subscriber.AutoCompleteKeywordListener;
+import com.tokopedia.flight.common.subscriber.AutoCompleteKeywordSubscriber;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,15 +27,11 @@ import rx.subscriptions.CompositeSubscription;
  * Created by zulfikarrahman on 10/24/17.
  */
 
-public class FlightAirportPickerPresenterImpl extends BaseDaggerPresenter<FlightAirportPickerView> implements FlightAirportPickerPresenter {
+public class FlightAirportPickerPresenterImpl extends BaseDaggerPresenter<FlightAirportPickerView> implements FlightAirportPickerPresenter, AutoCompleteKeywordListener {
 
     private final FlightAirportPickerUseCase flightAirportPickerUseCase;
     private CompositeSubscription compositeSubscription;
-    private OnQueryListener onQueryListener;
-
-    private interface OnQueryListener {
-        void onQuerySubmit(String query);
-    }
+    private AutoCompleteInputListener inputListener;
 
     @Inject
     public FlightAirportPickerPresenterImpl(FlightAirportPickerUseCase flightAirportPickerUseCase) {
@@ -46,10 +40,9 @@ public class FlightAirportPickerPresenterImpl extends BaseDaggerPresenter<Flight
         Observable.create(new Observable.OnSubscribe<String>() {
             @Override
             public void call(final Subscriber<? super String> subscriber) {
-                onQueryListener = new OnQueryListener() {
+                inputListener = new AutoCompleteInputListener() {
                     @Override
                     public void onQuerySubmit(String query) {
-                        CommonUtils.dumper("onQuerySubmit : " + query);
                         subscriber.onNext(String.valueOf(query));
                     }
                 };
@@ -58,14 +51,14 @@ public class FlightAirportPickerPresenterImpl extends BaseDaggerPresenter<Flight
                 .subscribeOn(Schedulers.io())
                 .unsubscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new AutoCompletePlaceTextChanged());
+                .subscribe(new AutoCompleteKeywordSubscriber(this));
     }
 
     @Override
     public void getAirportList(String text, boolean isFirstTime) {
         getView().showGetAirportListLoading();
-        if (onQueryListener != null) {
-            onQueryListener.onQuerySubmit(text);
+        if (inputListener != null) {
+            inputListener.onQuerySubmit(text);
         }
     }
 
@@ -98,70 +91,64 @@ public class FlightAirportPickerPresenterImpl extends BaseDaggerPresenter<Flight
         if (compositeSubscription.hasSubscriptions()) compositeSubscription.unsubscribe();
     }
 
-    private class AutoCompletePlaceTextChanged extends Subscriber<String> {
-        @Override
-        public void onCompleted() {
 
-        }
+    @Override
+    public void onTextReceive(String keyword) {
+        if (isViewAttached()) {
+            getView().showLoading();
+            compositeSubscription.add(flightAirportPickerUseCase
+                    .createObservable(FlightAirportPickerUseCase.createRequestParams(keyword))
+                    .map(new Func1<List<FlightAirportDB>, List<Visitable>>() {
+                        @Override
+                        public List<Visitable> call(List<FlightAirportDB> airports) {
+                            List<Visitable> visitables = new ArrayList<>();
+                            List<Visitable> result = new ArrayList<>();
+                            FlightCountryAirportViewModel negara = null;
 
-        @Override
-        public void onError(Throwable e) {
-
-        }
-
-        @Override
-        public void onNext(String keyword) {
-            if (isViewAttached() && !isUnsubscribed()) {
-                getView().showLoading();
-                compositeSubscription.add(flightAirportPickerUseCase
-                        .createObservable(FlightAirportPickerUseCase.createRequestParams(keyword))
-                        .map(new Func1<List<FlightAirportDB>, List<Visitable>>() {
-                            @Override
-                            public List<Visitable> call(List<FlightAirportDB> airports) {
-                                List<Visitable> visitables = new ArrayList<>();
-                                List<Visitable> result = new ArrayList<>();
-                                FlightCountryAirportViewModel negara = null;
-
-                                for (int i = 0; i < airports.size(); i++) {
-                                    FlightAirportDB airport = airports.get(i);
-                                    if (negara == null || !negara.getCountryId().equalsIgnoreCase(airport.getCountryId())) {
-                                        negara = new FlightCountryAirportViewModel();
-                                        negara.setCountryId(airport.getCountryId());
-                                        negara.setCountryName(airport.getCountryName());
-                                        negara.setAirports(new ArrayList<FlightAirportViewModel>());
-                                        if (negara.getCountryId().equalsIgnoreCase("ID")) {
-                                            result.add(negara);
-                                        } else {
-                                            visitables.add(negara);
-                                        }
-                                    }
-
-                                    FlightAirportViewModel airportViewModel = new FlightAirportViewModel();
-                                    airportViewModel.setAirportName(airport.getAirportName());
-                                    airportViewModel.setCountryName(negara.getCountryName());
-                                    if (airport.getAirportId() != null && airport.getAirportId().length() > 0) {
-                                        airportViewModel.setAirportCode(airport.getAirportId());
-                                    } else {
-                                        airportViewModel.setCityAirports(airport.getAirportIds().split(","));
-                                    }
-                                    airportViewModel.setCityCode(airport.getCityCode());
-                                    airportViewModel.setCityName(airport.getCityName());
+                            for (int i = 0; i < airports.size(); i++) {
+                                FlightAirportDB airport = airports.get(i);
+                                if (negara == null || !negara.getCountryId().equalsIgnoreCase(airport.getCountryId())) {
+                                    negara = new FlightCountryAirportViewModel();
+                                    negara.setCountryId(airport.getCountryId());
+                                    negara.setCountryName(airport.getCountryName());
+                                    negara.setAirports(new ArrayList<FlightAirportViewModel>());
                                     if (negara.getCountryId().equalsIgnoreCase("ID")) {
-                                        result.add(airportViewModel);
+                                        result.add(negara);
                                     } else {
-                                        visitables.add(airportViewModel);
+                                        visitables.add(negara);
                                     }
                                 }
-                                result.addAll(visitables);
-                                return result;
+
+                                FlightAirportViewModel airportViewModel = new FlightAirportViewModel();
+                                airportViewModel.setAirportName(airport.getAirportName());
+                                airportViewModel.setCountryName(negara.getCountryName());
+                                if (airport.getAirportId() != null && airport.getAirportId().length() > 0) {
+                                    airportViewModel.setAirportCode(airport.getAirportId());
+                                } else {
+                                    airportViewModel.setCityAirports(airport.getAirportIds().split(","));
+                                }
+                                airportViewModel.setCityCode(airport.getCityCode());
+                                airportViewModel.setCityName(airport.getCityName());
+                                if (negara.getCountryId().equalsIgnoreCase("ID")) {
+                                    result.add(airportViewModel);
+                                } else {
+                                    visitables.add(airportViewModel);
+                                }
                             }
-                        })
-                        .subscribeOn(Schedulers.io())
-                        .unsubscribeOn(Schedulers.io())
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe(getSubscriberGetAirportList())
-                );
-            }
+                            result.addAll(visitables);
+                            return result;
+                        }
+                    })
+                    .subscribeOn(Schedulers.io())
+                    .unsubscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(getSubscriberGetAirportList())
+            );
         }
+    }
+
+    @Override
+    public void onError(Throwable e) {
+        e.printStackTrace();
     }
 }
