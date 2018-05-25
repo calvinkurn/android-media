@@ -16,7 +16,7 @@ import com.tokopedia.seller.R;
 import com.tokopedia.seller.common.datepicker.view.activity.DatePickerActivity;
 import com.tokopedia.seller.common.datepicker.view.constant.DatePickerConstant;
 import com.tokopedia.seller.common.datepicker.view.model.PeriodRangeModel;
-import com.tokopedia.seller.common.williamchart.util.GoldMerchantDateUtils;
+import com.db.williamchart.util.GoldMerchantDateUtils;
 import com.tokopedia.seller.reputation.util.DateHeaderFormatter;
 import com.tokopedia.seller.reputation.view.activity.SellerReputationDatePickerActivity;
 
