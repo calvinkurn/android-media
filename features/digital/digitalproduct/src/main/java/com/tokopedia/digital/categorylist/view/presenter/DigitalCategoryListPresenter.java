@@ -1,12 +1,13 @@
 package com.tokopedia.digital.categorylist.view.presenter;
 
+import android.content.Context;
 import android.support.annotation.NonNull;
 
+import com.tokopedia.core.drawer2.data.pojo.topcash.TokoCashData;
 import com.tokopedia.core.exception.SessionExpiredException;
 import com.tokopedia.core.network.exception.RuntimeHttpErrorException;
 import com.tokopedia.core.network.retrofit.utils.ErrorNetMessage;
 import com.tokopedia.core.network.retrofit.utils.ServerErrorHandler;
-import com.tokopedia.digital.tokocash.model.tokocashitem.TokoCashBalanceData;
 import com.tokopedia.digital.categorylist.domain.interactor.IDigitalCategoryListInteractor;
 import com.tokopedia.digital.categorylist.view.listener.IDigitalCategoryListView;
 import com.tokopedia.digital.categorylist.view.model.DigitalCategoryItemData;
@@ -45,7 +46,8 @@ public class DigitalCategoryListPresenter implements IDigitalCategoryListPresent
 
     @Override
     public void processGetTokoCashData() {
-        digitalCategoryListInteractor.getTokoCashData(getSubscriberFetchTokoCashData());
+        digitalCategoryListInteractor.getTokoCashData(getSubscriberFetchTokoCashData(),
+                digitalCategoryListView.getContext());
     }
 
     @NonNull
@@ -87,8 +89,8 @@ public class DigitalCategoryListPresenter implements IDigitalCategoryListPresent
     }
 
     @NonNull
-    private Subscriber<TokoCashBalanceData> getSubscriberFetchTokoCashData() {
-        return new Subscriber<TokoCashBalanceData>() {
+    private Subscriber<TokoCashData> getSubscriberFetchTokoCashData() {
+        return new Subscriber<TokoCashData>() {
             @Override
             public void onCompleted() {
 
@@ -103,7 +105,7 @@ public class DigitalCategoryListPresenter implements IDigitalCategoryListPresent
             }
 
             @Override
-            public void onNext(TokoCashBalanceData tokoCashData) {
+            public void onNext(TokoCashData tokoCashData) {
                 digitalCategoryListView.renderTokoCashData(tokoCashData);
             }
         };

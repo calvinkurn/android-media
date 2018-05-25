@@ -36,6 +36,8 @@ dependencies {
     implementation project(rootProject.ext.libraries.design)
     implementation project(rootProject.ext.libraries.abstraction)
     implementation project(rootProject.ext.libraries.useCase)
+    implementation project(rootProject.ext.features.otp)
+    implementation project(rootProject.ext.libraries.userSession)
 
     implementation rootProject.ext.playServicesDependencies.auth
     implementation rootProject.ext.playServicesDependencies.plus
