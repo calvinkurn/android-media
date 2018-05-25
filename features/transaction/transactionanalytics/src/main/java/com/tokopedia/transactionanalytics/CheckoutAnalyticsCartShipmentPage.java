@@ -165,6 +165,61 @@ public class CheckoutAnalyticsCartShipmentPage extends CheckoutAnalytics {
         );
     }
 
+    public void eventClickShipmentClickTerimaSebagian() {
+        analyticTracker.sendEventTracking(ConstantTransactionAnalytics.EventName.CLICK_ATC,
+                ConstantTransactionAnalytics.EventCategory.COURIER_SELECTION,
+                ConstantTransactionAnalytics.EventAction.CLICK_TERIMA_SEBAGIAN,
+                ""
+        );
+    }
+
+    public void eventClickShipmentClickXFromGunakanKodePromoAtauKupon() {
+        analyticTracker.sendEventTracking(ConstantTransactionAnalytics.EventName.CLICK_ATC,
+                ConstantTransactionAnalytics.EventCategory.COURIER_SELECTION,
+                ConstantTransactionAnalytics.EventAction.CLICK_X_FROM_GUNAKAN_KODE_PROMO_ATAU_KUPON,
+                ""
+        );
+    }
+
+    public void eventClickShipmentClickKuponFromGunakanKodePromoAtauKupon() {
+        analyticTracker.sendEventTracking(ConstantTransactionAnalytics.EventName.CLICK_ATC,
+                ConstantTransactionAnalytics.EventCategory.COURIER_SELECTION,
+                ConstantTransactionAnalytics.EventAction.CLICK_KUPON_FROM_GUNAKAN_KODE_PROMO_ATAU_KUPON,
+                ""
+        );
+    }
+
+    public void eventClickShipmentClickPilihMetodePembayaranSuccess() {
+        analyticTracker.sendEventTracking(ConstantTransactionAnalytics.EventName.CLICK_ATC,
+                ConstantTransactionAnalytics.EventCategory.COURIER_SELECTION,
+                ConstantTransactionAnalytics.EventAction.CLICK_PILIH_METODE_PEMBAYARAN,
+                ConstantTransactionAnalytics.EventLabel.SUCCESS
+        );
+    }
+
+    public void eventClickShipmentClickPilihMetodePembayaranNotSuccess() {
+        analyticTracker.sendEventTracking(ConstantTransactionAnalytics.EventName.CLICK_ATC,
+                ConstantTransactionAnalytics.EventCategory.COURIER_SELECTION,
+                ConstantTransactionAnalytics.EventAction.CLICK_PILIH_METODE_PEMBAYARAN,
+                ConstantTransactionAnalytics.EventLabel.NOT_SUCCESS
+        );
+    }
+
+    public void eventClickShipmentClickPilihMetodePembayaranCourierNotComplete() {
+        analyticTracker.sendEventTracking(ConstantTransactionAnalytics.EventName.CLICK_ATC,
+                ConstantTransactionAnalytics.EventCategory.COURIER_SELECTION,
+                ConstantTransactionAnalytics.EventAction.CLICK_PILIH_METODE_PEMBAYARAN,
+                ConstantTransactionAnalytics.EventLabel.COURIER_NOT_COMPLETE
+        );
+    }
+
+    public void eventImpressionShipmentImpressionOnPopUpKupon() {
+        analyticTracker.sendEventTracking(ConstantTransactionAnalytics.EventName.VIEW_ATC,
+                ConstantTransactionAnalytics.EventCategory.COURIER_SELECTION,
+                ConstantTransactionAnalytics.EventAction.IMPRESSION_ON_POP_UP_KUPON,
+                ConstantTransactionAnalytics.EventLabel.KUOTA_PENUKARAN
+        );
+    }
     // Cart change address starts here
 
     public void eventClickShipmentClickPilihAlamatLainnyaFromGantiAlamat() {
@@ -254,5 +309,119 @@ public class CheckoutAnalyticsCartShipmentPage extends CheckoutAnalytics {
                 ""
         );
     }
+
+    public void eventClickShipmentClickArrowBackFromGantiAlamat() {
+        analyticTracker.sendEventTracking(ConstantTransactionAnalytics.EventName.CLICK_ATC,
+                ConstantTransactionAnalytics.EventCategory.CART_CHANGE_ADDRESS,
+                ConstantTransactionAnalytics.EventAction.CLICK_ARROW_BACK_FROM_GANTI_ALAMAT,
+                ""
+        );
+    }
+
+    public void eventClickShipmentClickArrowBackFromPlus() {
+        analyticTracker.sendEventTracking(ConstantTransactionAnalytics.EventName.CLICK_ATC,
+                ConstantTransactionAnalytics.EventCategory.CART_CHANGE_ADDRESS,
+                ConstantTransactionAnalytics.EventAction.CLICK_ARROW_BACK_FROM_PLUS,
+                ""
+        I);
+    }
+
+    public void eventClickShipmemtClickBackArrowFromKirimKeBeberapaAlamat() {
+        analyticTracker.sendEventTracking(ConstantTransactionAnalytics.EventName.CLICK_ATC,
+                ConstantTransactionAnalytics.EventCategory.CART_MULTIPLE_ADDRESS,
+                ConstantTransactionAnalytics.EventAction.CLICK_BACK_ARROW_FROM_KIRIM_KE_BEBERAPA_ALAMAT,
+                ""
+        );
+    }
+
+    public void eventClickShipmentClickKembaliDanHapusPerubahanFromKirimKeBeberapaAlamat() {
+        analyticTracker.sendEventTracking(ConstantTransactionAnalytics.EventName.CLICK_ATC,
+                ConstantTransactionAnalytics.EventCategory.CART_MULTIPLE_ADDRESS,
+                ConstantTransactionAnalytics.EventAction.CLICK_KEMBALI_DAN_HAPUS_PERUBAHAN_FROM_KIRIM_KE_BEBERAPA_ALAMAT,
+                ""
+        );
+    }
+
+    public void eventClickShipmentClickTetapDiHalamanIniFromKirimKeBeberapaAlamat() {
+        analyticTracker.sendEventTracking(ConstantTransactionAnalytics.EventName.CLICK_ATC,
+                ConstantTransactionAnalytics.EventCategory.CART_MULTIPLE_ADDRESS,
+                ConstantTransactionAnalytics.EventAction.CLICK_TETAP_DI_HALAMAN_INI_FROM_KIRIM_KE_BEBERAPA_ALAMAT,
+                ""
+        );
+    }
+
+    public void eventClickShipmentClickTambahPengirimanBaruFromKirimKeBeberapaAlamat() {
+        analyticTracker.sendEventTracking(ConstantTransactionAnalytics.EventName.CLICK_ATC,
+                ConstantTransactionAnalytics.EventCategory.CART_MULTIPLE_ADDRESS,
+                ConstantTransactionAnalytics.EventAction.CLICK_TAMBAH_PENGIRIMAN_BARU_FROM_KIRIM_KE_BEBERAPA_ALAMAT,
+                ""
+        );
+    }
+
+    public void eventClickShipmentClickEditFromKirimKeBeberapaAlamat() {
+        analyticTracker.sendEventTracking(ConstantTransactionAnalytics.EventName.CLICK_ATC,
+                ConstantTransactionAnalytics.EventCategory.CART_MULTIPLE_ADDRESS,
+                ConstantTransactionAnalytics.EventAction.CLICK_EDIT_FROM_KIRIM_KE_BEBERAPA_ALAMAT,
+                ""
+        );
+    }
+
+    public void eventClickShipmentClickPilihKurirPengirimanFromKirimKeBeberapaAlamat() {
+        analyticTracker.sendEventTracking(ConstantTransactionAnalytics.EventName.CLICK_ATC,
+                ConstantTransactionAnalytics.EventCategory.CART_MULTIPLE_ADDRESS,
+                ConstantTransactionAnalytics.EventAction.CLICK_PILIH_KURIR_PENGIRIMAN_FROM_KIRIM_KE_BEBERAPA_ALAMAT,
+                ""
+        );
+    }
+
+    public void eventClickShipmentClickXFromUbahFromKirimKeBeberapaAlamat() {
+        analyticTracker.sendEventTracking(ConstantTransactionAnalytics.EventName.CLICK_ATC,
+                ConstantTransactionAnalytics.EventCategory.CART_MULTIPLE_ADDRESS,
+                ConstantTransactionAnalytics.EventAction.CLICK_X_FROM_UBAH_FROM_KIRIM_KE_BEBERAPA_ALAMAT,
+                ""
+        );
+    }
+
+    public void eventClickShipmentClickMinFromUbahFromKirimKeBeberapaAlamat() {
+        analyticTracker.sendEventTracking(ConstantTransactionAnalytics.EventName.CLICK_ATC,
+                ConstantTransactionAnalytics.EventCategory.CART_MULTIPLE_ADDRESS,
+                ConstantTransactionAnalytics.EventAction.CLICK_MIN_FROM_UBAH_FROM_KIRIM_KE_BEBERAPA_ALAMAT,
+                ""
+        );
+    }
+
+    public void eventClickShipmentClickPlusFromUbahFromKirimKeBeberapaAlamat() {
+        analyticTracker.sendEventTracking(ConstantTransactionAnalytics.EventName.CLICK_ATC,
+                ConstantTransactionAnalytics.EventCategory.CART_MULTIPLE_ADDRESS,
+                ConstantTransactionAnalytics.EventAction.CLICK_PLUS_FROM_UBAH_FROM_KIRIM_KE_BEBERAPA_ALAMAT,
+                ""
+        );
+    }
+
+    public void eventClickShipmentClickInputQuantityFromUbahFromKirimKeBeberapaAlamat(String productQuantity) {
+        analyticTracker.sendEventTracking(ConstantTransactionAnalytics.EventName.CLICK_ATC,
+                ConstantTransactionAnalytics.EventCategory.CART_MULTIPLE_ADDRESS,
+                ConstantTransactionAnalytics.EventAction.CLICK_INPUT_QUANTITY_FROM_UBAH_FROM_KIRIM_KE_BEBERAPA_ALAMAT,
+                productQuantity
+        );
+    }
+
+    public void eventClickShipmentClickTulisCatatanFromUbahFromKirimKeBeberapaAlamat() {
+        analyticTracker.sendEventTracking(ConstantTransactionAnalytics.EventName.CLICK_ATC,
+                ConstantTransactionAnalytics.EventCategory.CART_MULTIPLE_ADDRESS,
+                ConstantTransactionAnalytics.EventAction.CLICK_TULIS_CATATAN_FROM_UBAH_FROM_KIRIM_KE_BEBERAPA_ALAMAT,
+                ""
+        );
+    }
+
+    public void eventClickShipmentClickSimpanFromUbahFromKirimKeBeberapaAlamat() {
+        analyticTracker.sendEventTracking(ConstantTransactionAnalytics.EventName.CLICK_ATC,
+                ConstantTransactionAnalytics.EventCategory.CART_MULTIPLE_ADDRESS,
+                ConstantTransactionAnalytics.EventAction.CLICK_SIMPAN_FROM_UBAH_FROM_KIRIM_KE_BEBERAPA_ALAMAT,
+                ""
+        );
+    }
     // Cart change address ends here
+
+
 }
