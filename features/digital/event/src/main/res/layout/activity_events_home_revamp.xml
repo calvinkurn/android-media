@@ -70,7 +70,7 @@
                 <com.tkpd.library.ui.widget.TouchViewPager
                     android:id="@+id/event_bannerpager"
                     android:layout_width="0dp"
-                    android:layout_height="@dimen/dp_180"
+                    android:layout_height="@dimen/dp_128"
                     android:layout_marginTop="@dimen/dp_16"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
