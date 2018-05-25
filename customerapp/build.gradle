@@ -283,6 +283,8 @@ dependencies {
     implementation project(rootProject.ext.features.digitalproduct)
     implementation project(rootProject.ext.features.contactUs)
     implementation project(rootProject.ext.features.otp)
+    implementation project(rootProject.ext.features.topAdsCommon)
+    implementation project(rootProject.ext.features.topAdsSourceTagging)
 
     implementation project(rootProject.ext.libraries.pushNotif)
     implementation project(rootProject.ext.libraries.applink)
