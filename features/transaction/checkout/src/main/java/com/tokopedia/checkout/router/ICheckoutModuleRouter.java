@@ -20,10 +20,11 @@ public interface ICheckoutModuleRouter {
 
     int LOYALTY_REQUEST_CODE = 77;
 
-    Intent checkoutModuleRouterGetLoyaltyNewCheckoutMarketplaceCartListIntent(Context context, boolean couponActive);
+    Intent checkoutModuleRouterGetLoyaltyNewCheckoutMarketplaceCartListIntent(
+            Context context, boolean couponActive, String additionalStringData, String defaultSelectedTab);
 
     Intent checkoutModuleRouterGetLoyaltyNewCheckoutMarketplaceCartShipmentIntent(
-            Context context, String additionalDataString, boolean couponActive);
+            Context context, boolean couponActive, String additionalStringData, String defaultSelectedTab);
 
     Intent checkoutModuleRouterGetProductDetailIntent(
             Context context, ProductPass productPass

@@ -322,8 +322,7 @@ public class CheckoutAnalyticsCartShipmentPage extends CheckoutAnalytics {
         analyticTracker.sendEventTracking(ConstantTransactionAnalytics.EventName.CLICK_ATC,
                 ConstantTransactionAnalytics.EventCategory.CART_CHANGE_ADDRESS,
                 ConstantTransactionAnalytics.EventAction.CLICK_ARROW_BACK_FROM_PLUS,
-                ""
-        I);
+                "");
     }
 
     public void eventClickShipmemtClickBackArrowFromKirimKeBeberapaAlamat() {

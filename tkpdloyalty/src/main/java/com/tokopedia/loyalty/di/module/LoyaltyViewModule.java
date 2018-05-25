@@ -1,12 +1,12 @@
 package com.tokopedia.loyalty.di.module;
 
-import android.app.Activity;
 import android.app.FragmentManager;
 
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
 import com.tokopedia.abstraction.constant.IRouterConstant;
 import com.tokopedia.loyalty.di.LoyaltyScope;
+import com.tokopedia.loyalty.view.activity.LoyaltyActivity;
 import com.tokopedia.loyalty.view.adapter.LoyaltyPagerAdapter;
 import com.tokopedia.loyalty.view.data.LoyaltyPagerItem;
 import com.tokopedia.loyalty.view.fragment.PromoCodeFragment;
@@ -28,10 +28,10 @@ import dagger.Provides;
 @Module
 public class LoyaltyViewModule {
 
-    private final Activity activity;
-    private String events = "events";
+    private final LoyaltyActivity activity;
+    private final String events = "events";
 
-    public LoyaltyViewModule(Activity activity) {
+    public LoyaltyViewModule(LoyaltyActivity activity) {
         this.activity = activity;
     }
 
@@ -53,10 +53,7 @@ public class LoyaltyViewModule {
         loyaltyPagerItemList.add(
                 new LoyaltyPagerItem.Builder()
                         .fragment(PromoCodeFragment.newInstance(
-                                activity.getIntent()
-                                        .getExtras()
-                                        .getString(
-                                                IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.EXTRA_PLATFORM, ""),
+                                activity.getPlatformString(),
                                 activity.getIntent()
                                         .getExtras()
                                         .getString(IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.EXTRA_CATEGORY, ""),

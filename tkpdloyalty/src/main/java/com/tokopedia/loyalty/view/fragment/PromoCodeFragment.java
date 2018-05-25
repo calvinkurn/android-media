@@ -49,6 +49,8 @@ public class PromoCodeFragment extends BasePresenterFragment implements IPromoCo
 
     private static final String PLATFORM_KEY = "PLATFORM_KEY";
 
+    private static final String PLATFORM_PAGE_KEY = "PLATFORM_PAGE_KEY";
+
     private static final String CATEGORY_KEY = "CATEGORY_KEY";
 
     private static final String ADDITIONAL_DATA_KEY = "ADDITIONAL_DATA_KEY";
