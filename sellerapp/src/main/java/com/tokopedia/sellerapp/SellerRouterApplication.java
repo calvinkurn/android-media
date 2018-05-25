@@ -62,6 +62,15 @@ import com.tokopedia.core.router.digitalmodule.passdata.DigitalCheckoutPassData;
 import com.tokopedia.core.router.productdetail.PdpRouter;
 import com.tokopedia.core.router.productdetail.ProductDetailRouter;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
+import com.tokopedia.inbox.inboxchat.activity.ChatRoomActivity;
+import com.tokopedia.inbox.rescenter.detailv2.view.activity.DetailResChatActivity;
+import com.tokopedia.inbox.rescenter.inbox.activity.InboxResCenterActivity;
+import com.tokopedia.seller.common.imageeditor.GalleryCropActivity;
+import com.tokopedia.seller.shop.common.domain.interactor.GetShopInfoUseCase;
+import com.tokopedia.sellerapp.onboarding.activity.OnboardingSellerActivity;
+import com.tokopedia.sellerapp.truecaller.TruecallerActivity;
+import com.tokopedia.session.changephonenumber.view.activity.ChangePhoneNumberWarningActivity;
+import com.tokopedia.tkpd.tkpdreputation.ReputationRouter;
 import com.tokopedia.core.router.transactionmodule.TransactionRouter;
 import com.tokopedia.core.share.ShareActivity;
 import com.tokopedia.core.shopinfo.limited.fragment.ShopTalkLimitedFragment;
@@ -76,7 +85,6 @@ import com.tokopedia.digital.categorylist.view.activity.DigitalCategoryListActiv
 import com.tokopedia.digital.common.router.DigitalModuleRouter;
 import com.tokopedia.digital.product.view.activity.DigitalProductActivity;
 import com.tokopedia.digital.product.view.activity.DigitalWebActivity;
-import com.tokopedia.digital.receiver.TokocashPendingDataBroadcastReceiver;
 import com.tokopedia.fingerprint.util.FingerprintConstant;
 import com.tokopedia.gm.GMModuleRouter;
 import com.tokopedia.gm.cashback.domain.GetCashbackUseCase;
@@ -87,6 +95,7 @@ import com.tokopedia.gm.common.di.module.GMModule;
 import com.tokopedia.gm.common.logout.GMLogout;
 import com.tokopedia.gm.featured.domain.interactor.GMFeaturedProductGetListUseCase;
 import com.tokopedia.gm.subscribe.view.activity.GmSubscribeHomeActivity;
+import com.tokopedia.imageuploader.ImageUploaderRouter;
 import com.tokopedia.contact_us.createticket.activity.ContactUsActivity;
 import com.tokopedia.inbox.inboxchat.activity.ChatRoomActivity;
 import com.tokopedia.inbox.inboxchat.activity.InboxChatActivity;
@@ -161,11 +170,14 @@ import com.tokopedia.tkpd.tkpdreputation.inbox.view.activity.InboxReputationActi
 import com.tokopedia.tkpdpdp.PreviewProductImageDetail;
 import com.tokopedia.tkpdpdp.ProductInfoActivity;
 import com.tokopedia.topads.TopAdsModuleRouter;
+import com.tokopedia.topads.dashboard.constant.TopAdsExtraConstant;
 import com.tokopedia.topads.dashboard.di.component.DaggerTopAdsComponent;
 import com.tokopedia.topads.dashboard.di.component.TopAdsComponent;
 import com.tokopedia.topads.dashboard.di.module.TopAdsModule;
 import com.tokopedia.topads.dashboard.domain.interactor.GetDepositTopAdsUseCase;
+import com.tokopedia.topads.dashboard.view.activity.TopAdsCheckProductPromoActivity;
 import com.tokopedia.topads.dashboard.view.activity.TopAdsDashboardActivity;
+import com.tokopedia.topads.dashboard.view.activity.TopAdsGroupNewPromoActivity;
 import com.tokopedia.transaction.bcaoneklik.activity.ListPaymentTypeActivity;
 import com.tokopedia.transaction.purchase.detail.activity.OrderDetailActivity;
 import com.tokopedia.transaction.purchase.detail.activity.OrderHistoryActivity;
@@ -192,7 +204,7 @@ public abstract class SellerRouterApplication extends MainApplication
         IPaymentModuleRouter, IDigitalModuleRouter, TkpdInboxRouter, TransactionRouter,
         ReputationRouter, LogisticRouter, SessionRouter, ProfileModuleRouter,
         MitraToppersRouter, AbstractionRouter, DigitalModuleRouter, ShopModuleRouter,
-        ApplinkRouter, OtpModuleRouter {
+        ApplinkRouter, OtpModuleRouter, ImageUploaderRouter  {
 
     protected RemoteConfig remoteConfig;
     private DaggerProductComponent.Builder daggerProductBuilder;
@@ -1059,8 +1071,9 @@ public abstract class SellerRouterApplication extends MainApplication
     }
 
     @Override
-    public BroadcastReceiver getBroadcastReceiverTokocashPending() {
-        return new TokocashPendingDataBroadcastReceiver();
+    public void goToCreateTopadsPromo(Context activity, String productId, String shopId, String source) {
+        Intent intent = TopAdsCheckProductPromoActivity.createIntent(activity, shopId, productId, source);
+        activity.startActivity(intent);
     }
 
     @Override
@@ -1305,11 +1318,17 @@ public abstract class SellerRouterApplication extends MainApplication
     }
 
     @Override
+    public void gotoTopAdsDashboard(Context context){
+        startActivity(TopAdsDashboardActivity.getCallingIntent(context));
+    }
+
+    @Override
     public Intent getProfileCompletionIntent(Context context) {
         Intent intent = new Intent(context, ProfileCompletionActivity.class);
         return intent;
     }
 
+    @Override            
     public void goToApplinkActivity(Context context, String applink) {
         DeepLinkDelegate deepLinkDelegate = DeepLinkHandlerActivity.getDelegateInstance();
         Intent intent = new Intent(context, DeepLinkHandlerActivity.class);

@@ -18,11 +18,11 @@ import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
+import com.tokopedia.core.drawer2.data.pojo.topcash.TokoCashData;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.home.BannerWebView;
 import com.tokopedia.core.loyaltysystem.util.URLGenerator;
 import com.tokopedia.core.network.apiservices.mojito.MojitoService;
-import com.tokopedia.core.network.apiservices.tokocash.TokoCashService;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.core.router.digitalmodule.IDigitalModuleRouter;
@@ -48,7 +48,6 @@ import com.tokopedia.digital.categorylist.view.presenter.DigitalCategoryListPres
 import com.tokopedia.digital.categorylist.view.presenter.IDigitalCategoryListPresenter;
 import com.tokopedia.digital.product.view.activity.DigitalProductActivity;
 import com.tokopedia.digital.product.view.activity.DigitalWebActivity;
-import com.tokopedia.digital.tokocash.model.tokocashitem.TokoCashBalanceData;
 import com.tokopedia.digital.utils.data.RequestBodyIdentifier;
 
 import java.util.ArrayList;
@@ -88,7 +87,7 @@ public class DigitalCategoryListFragment extends BasePresenterFragment<IDigitalC
     private RefreshHandler refreshHandler;
     private GridLayoutManager gridLayoutManager;
     private LinearLayoutManager linearLayoutManager;
-    private TokoCashBalanceData tokoCashBalanceData;
+    private TokoCashData tokoCashBalanceData;
     private List<DigitalCategoryItemData> digitalCategoryListDataState;
     private boolean fromAppShortcut = false;
 
@@ -148,15 +147,12 @@ public class DigitalCategoryListFragment extends BasePresenterFragment<IDigitalC
         if (compositeSubscription == null) compositeSubscription = new CompositeSubscription();
 
         SessionHandler sessionHandler = new SessionHandler(MainApplication.getAppContext());
-        TokoCashService tokoCashService = new TokoCashService(SessionHandler.getAccessToken(
-                MainApplication.getAppContext()
-        ));
         presenter = new DigitalCategoryListPresenter(
                 new DigitalCategoryListInteractor(
                         compositeSubscription,
                         new DigitalCategoryListRepository(
                                 mojitoService, new GlobalCacheManager(), mapperData,
-                                sessionHandler), tokoCashService), this);
+                                sessionHandler)), this);
     }
 
     @Override
@@ -289,7 +285,7 @@ public class DigitalCategoryListFragment extends BasePresenterFragment<IDigitalC
     }
 
     @Override
-    public void renderTokoCashData(TokoCashBalanceData tokoCashData) {
+    public void renderTokoCashData(TokoCashData tokoCashData) {
         this.tokoCashBalanceData = tokoCashData;
     }
 
@@ -387,7 +383,7 @@ public class DigitalCategoryListFragment extends BasePresenterFragment<IDigitalC
                     getActivity().getApplication(),
                     this,
                     IWalletRouter.DEFAULT_WALLET_APPLINK_REQUEST_CODE,
-                    tokoCashBalanceData.getAction().getApplinks(),
+                    tokoCashBalanceData.getAction().getmAppLinks(),
                     tokoCashBalanceData.getAction().getRedirectUrl(),
                     new Bundle()
             );
