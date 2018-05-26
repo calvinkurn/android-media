@@ -22,6 +22,8 @@ import com.tokopedia.checkout.R;
 import com.tokopedia.checkout.view.adapter.CartListAdapter;
 import com.tokopedia.checkout.view.holderitemdata.CartItemHolderData;
 
+import java.text.NumberFormat;
+import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
 import rx.Observable;
@@ -39,7 +41,6 @@ public class CartListItemViewHolder extends RecyclerView.ViewHolder {
     private static final int QTY_MAX = 10000;
     private static final int TEXTWATCHER_QUANTITY_DEBOUNCE_TIME = 500;
     private static final int TEXTWATCHER_NOTE_DEBOUNCE_TIME = 100;
-    private static final String QTY_MAX_STRING = "10.000";
 
     private final CartListAdapter.ActionListener actionListener;
     private final Context context;
@@ -386,11 +387,9 @@ public class CartListItemViewHolder extends RecyclerView.ViewHolder {
                 qty > data.getCartItemData().getOriginData().getInvenageValue()) {
             String errorMessage = data.getCartItemData().getErrorData().getErrorProductMaxQuantity();
             String maxValue;
-            if (data.getCartItemData().getOriginData().getInvenageValue() == QTY_MAX) {
-                maxValue = QTY_MAX_STRING;
-            } else {
-                maxValue = String.valueOf(data.getCartItemData().getOriginData().getInvenageValue());
-            }
+            NumberFormat numberFormat = NumberFormat.getNumberInstance(Locale.US);
+            String numberAsString = numberFormat.format(data.getCartItemData().getOriginData().getInvenageValue());
+            maxValue = numberAsString.replace(",", ".");
             tvErrorFormValidation.setText(errorMessage.replace("{{value}}", maxValue));
             tvErrorFormValidation.setVisibility(View.VISIBLE);
         } else if (qty < data.getCartItemData().getOriginData().getMinimalQtyOrder()) {
@@ -399,8 +398,11 @@ public class CartListItemViewHolder extends RecyclerView.ViewHolder {
                     String.valueOf(data.getCartItemData().getOriginData().getMinimalQtyOrder())));
             tvErrorFormValidation.setVisibility(View.VISIBLE);
         } else if (qty > QTY_MAX) {
+            NumberFormat numberFormat = NumberFormat.getNumberInstance(Locale.US);
+            String numberAsString = numberFormat.format(data.getCartItemData().getOriginData().getInvenageValue());
+            String maxValue = numberAsString.replace(",", ".");
             String errorMessage = data.getCartItemData().getErrorData().getErrorProductMaxQuantity();
-            tvErrorFormValidation.setText(errorMessage.replace("{{value}}", String.valueOf(QTY_MAX_STRING)));
+            tvErrorFormValidation.setText(errorMessage.replace("{{value}}", maxValue));
             tvErrorFormValidation.setVisibility(View.VISIBLE);
         } else {
             tvErrorFormValidation.setVisibility(View.GONE);
