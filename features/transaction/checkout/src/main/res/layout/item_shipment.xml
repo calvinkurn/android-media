@@ -164,7 +164,8 @@
         android:id="@+id/ll_selected_courier"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        tools:visibility="gone">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -378,7 +379,7 @@
         android:layout_height="wrap_content"
         android:background="@color/white"
         android:orientation="vertical"
-        tools:visibility="gone">
+        tools:visibility="visible">
 
         <RelativeLayout
             android:id="@+id/rl_cart_sub_total"
@@ -392,6 +393,7 @@
                 style="@style/TextSmallNormalBlack54"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
                 android:text="@string/label_subtotal"
                 tools:ignore="SmallSp" />
 
@@ -401,7 +403,7 @@
                 android:layout_height="20dp"
                 android:layout_alignParentEnd="true"
                 android:layout_alignParentRight="true"
-                android:layout_centerVertical="false"
+                android:layout_centerVertical="true"
                 android:layout_marginLeft="5dp"
                 android:layout_marginStart="5dp"
                 android:padding="5dp"
@@ -414,6 +416,7 @@
                 style="@style/TextMid"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
                 android:layout_toLeftOf="@id/iv_detail_option_chevron"
                 android:layout_toStartOf="@id/iv_detail_option_chevron"
                 android:textColor="@color/orange_red"
@@ -443,7 +446,8 @@
             android:layout_height="wrap_content"
             android:paddingLeft="@dimen/dp_16"
             android:paddingRight="@dimen/dp_16"
-            android:visibility="visible">
+            android:visibility="visible"
+            tools:visibility="gone">
 
             <TextView
                 android:id="@+id/tv_total_item"
@@ -492,7 +496,7 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@id/tv_shipping_fee"
                 android:layout_marginBottom="@dimen/dp_16"
-                android:text="Biaya Asuransi" />
+                android:text="@string/label_insurance_price" />
 
             <TextView
                 android:id="@+id/tv_insurance_fee_price"

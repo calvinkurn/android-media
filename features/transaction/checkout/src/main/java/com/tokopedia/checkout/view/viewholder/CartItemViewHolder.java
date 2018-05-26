@@ -58,9 +58,7 @@ public class CartItemViewHolder extends ShipmentItemViewHolder {
         mTvProductCountAndWeight.setText(cartItem.getWeightFmt());
         mTvProductCountAndWeight.setText(String.format(mTvProductCountAndWeight.getContext()
                         .getString(R.string.iotem_count_and_weight_format),
-                String.valueOf(cartItem.getQuantity()),
-                getFormattedWeight(mTvProductCountAndWeight.getContext(),
-                        cartItem.getWeight() * cartItem.getQuantity())));
+                String.valueOf(cartItem.getQuantity()), cartItem.getWeightFmt()));
 
         boolean isEmptyNotes = TextUtils.isEmpty(cartItem.getNoteToSeller());
         mLlOptionalNoteToSellerLayout.setVisibility(isEmptyNotes ? View.GONE : View.VISIBLE);
