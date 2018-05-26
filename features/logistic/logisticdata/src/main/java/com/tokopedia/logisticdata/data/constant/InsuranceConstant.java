@@ -1,4 +1,4 @@
-package com.tokopedia.checkout.view.constants;
+package com.tokopedia.logisticdata.data.constant;
 
 /**
  * Created by Irfan Khoirul on 30/01/18.
