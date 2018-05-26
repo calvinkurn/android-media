@@ -118,6 +118,7 @@
     <string name="checkout_module_label_po">PO</string>
     <string name="checkout_module_label_ubah">Ubah</string>
     <string name="checkout_module_title_activity_cart">Keranjang</string>
+    <string name="checkout_module_title_activity_checkout">Checkout</string>
     <string name="checkout_module_title_shipping_dest">Tujuan Pengiriman</string>
     <string name="checkout_module_title_activity_people_tx_details">Detil Transaksi</string>
     <string name="label_cashback">Cashback</string>
@@ -147,6 +148,5 @@
     <string name="label_showcase_multiple_address_message">Klik tombol untuk mengirim barang yang sama ke beda alamat.</string>
     <string name="label_delete_cart_item">Hapus</string>
     <string name="label_hardcoded_courier_ticker">Pembelian dengan Instan dan Same Day diatas pk 14:00 berpotensi dikirim hari berikutnya.</string>
-    <string name="label_insurance_price">Biaya Asuransi</string>
 
 </resources>
