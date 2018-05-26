@@ -24,9 +24,8 @@ public class AutoSweepDetailMapper {
         view.setContent(domain.getContent());
         view.setTooltipContent(domain.getTooltipContent());
         view.setMessage(domain.getMessage());
-        view.setError(domain.getError());
+        view.setSuccess(domain.isSuccess());
         view.setCode(domain.getCode());
-        view.setLatency(domain.getLatency());
         view.setEnable(domain.isEnable());
         view.setDashboardLink(domain.getDashboardLink());
         view.setDescription(domain.getDescription());

@@ -152,8 +152,6 @@ public class ChatRoomPresenter extends BaseDaggerPresenter<ChatRoomContract.View
         setChatRatingUseCase.unsubscribe();
     }
 
-        if(!isViewAttached())
-            return;
     @Override
     public void onGoToDetail(String id, String role) {
         if (role != null && id != null && !role.equals(ADMIN.toLowerCase()) && !role.equals
