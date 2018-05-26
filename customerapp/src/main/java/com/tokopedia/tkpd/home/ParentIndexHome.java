@@ -486,9 +486,15 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
         return intent;
     }
 
-    public static Intent getHomeFeedIntent(Context context){
+    public static Intent getHomeFeedIntent(Context context) {
         Intent intent = new Intent(context, ParentIndexHome.class);
         intent.putExtra(EXTRA_INIT_FRAGMENT, INIT_STATE_FRAGMENT_FEED);
+        return intent;
+    }
+
+    public static Intent getHomeIntent(Context context) {
+        Intent intent = new Intent(context, ParentIndexHome.class);
+        intent.putExtra(EXTRA_INIT_FRAGMENT, INIT_STATE_FRAGMENT_HOME);
         return intent;
     }
 

@@ -70,7 +70,7 @@ public class CartActivity extends BaseCheckoutActivity implements CartFragment.A
         } else {
             startActivity(
                     ((ICheckoutModuleRouter) getApplication())
-                            .getHomeIntent(this)
+                            .getHomePageIntent(this)
             );
             finish();
         }

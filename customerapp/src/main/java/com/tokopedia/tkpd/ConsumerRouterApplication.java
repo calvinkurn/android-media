@@ -952,6 +952,12 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
+    public Intent getHomePageIntent(Context context) {
+        // Force navigation to home tab
+        return ParentIndexHome.getHomeIntent(context);
+    }
+
+    @Override
     public BaseDaggerFragment getKolPostFragment(String userId,
                                                  int postId,
                                                  Intent resultIntent,

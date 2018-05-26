@@ -53,5 +53,5 @@ public interface ICheckoutModuleRouter {
 
     Intent getHomeFeedIntent(Context context);
 
-    Intent getHomeIntent(Context context);
+    Intent getHomePageIntent(Context context);
 }
