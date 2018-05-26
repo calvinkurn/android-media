@@ -48,9 +48,9 @@ public class DeletableItemView extends BaseCustomView {
     }
 
     private void init(Context context, AttributeSet attrs) {
-        TypedArray styledAttributes = getContext().obtainStyledAttributes(attrs, R.styleable.DeleteAbleItemView);
+        TypedArray styledAttributes = getContext().obtainStyledAttributes(attrs, R.styleable.DeletableItemView);
         try {
-            layoutRef = styledAttributes.getResourceId(R.styleable.DeleteAbleItemView_layout, R.layout.widget_deletable_item_view);
+            layoutRef = styledAttributes.getResourceId(R.styleable.DeletableItemView_layout, R.layout.widget_deletable_item_view);
         } finally {
             styledAttributes.recycle();
         }
