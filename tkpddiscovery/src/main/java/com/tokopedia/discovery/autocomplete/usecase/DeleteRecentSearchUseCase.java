@@ -26,6 +26,8 @@ public class DeleteRecentSearchUseCase extends UseCase<List<SearchData>> {
     public static final String KEY_DELETE_ALL = "clear_all";
 
     public static final String DEFAULT_DELETE_ALL = "false";
+    private static final String KEY_DEVICE = "device";
+    private static final String KEY_SOURCE = "source";
 
     private final AutoCompleteRepository autoCompleteRepository;
     private final AutoCompleteUseCase autoCompleteUseCase;
@@ -65,6 +67,8 @@ public class DeleteRecentSearchUseCase extends UseCase<List<SearchData>> {
 
     public static RequestParams getParams(String query, String registrationId, String userId) {
         RequestParams params = RequestParams.create();
+        params.putString(KEY_DEVICE, "android");
+        params.putString(KEY_SOURCE, "searchbar");
         params.putString(KEY_DELETE_ALL, "false");
         params.putString(KEY_Q, query);
         String unique_id = AuthUtil.md5(registrationId);
@@ -79,6 +83,8 @@ public class DeleteRecentSearchUseCase extends UseCase<List<SearchData>> {
 
     public static RequestParams getParams(String registrationId, String userId) {
         RequestParams params = RequestParams.create();
+        params.putString(KEY_DEVICE, "android");
+        params.putString(KEY_SOURCE, "searchbar");
         params.putString(KEY_DELETE_ALL, "true");
         String unique_id = AuthUtil.md5(registrationId);
         if (!TextUtils.isEmpty(userId)) {

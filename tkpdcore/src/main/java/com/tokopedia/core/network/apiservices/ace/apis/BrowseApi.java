@@ -13,7 +13,10 @@ import java.util.Map;
 import retrofit2.Response;
 import retrofit2.http.Body;
 import retrofit2.http.DELETE;
+import retrofit2.http.FieldMap;
+import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
+import retrofit2.http.HTTP;
 import retrofit2.http.POST;
 import retrofit2.http.Query;
 import retrofit2.http.QueryMap;
@@ -256,8 +259,9 @@ public interface BrowseApi {
             @QueryMap TKPDMapParam<String, Object> param
     );
 
-    @DELETE(TkpdBaseURL.Ace.PATH_DELETE_SEARCH)
+    @FormUrlEncoded
+    @HTTP(method = "DELETE", path = TkpdBaseURL.Ace.PATH_DELETE_SEARCH, hasBody = true)
     Observable<Response<Void>> deleteRecentSearch(
-            @QueryMap TKPDMapParam<String, Object> parameters
+            @FieldMap TKPDMapParam<String, Object> parameters
     );
 }

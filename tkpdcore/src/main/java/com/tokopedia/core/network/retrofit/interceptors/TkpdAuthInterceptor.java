@@ -169,28 +169,8 @@ public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
             contentTypeHeader = originRequest.body().contentType().toString();
         if ("GET".equalsIgnoreCase(originRequest.method())) contentTypeHeader = "";
         switch (originRequest.method()) {
-            case "DELETE":
-                //add dirty validation here, because for now, only wsv4 support new hmac key
-                //it's really pain in the ass to find which endpoint is using web_service_v4 beside ws.tokopedia.com
-                if (originRequest.url().host().equals("ws.tokopedia.com")) {
-                    authHeaders = getHeaderMapNew(
-                            originRequest.url().uri().getPath(),
-                            generateQueryString(originRequest),
-                            originRequest.method(),
-                            AuthUtil.KEY.KEY_WSV4_NEW,
-                            contentTypeHeader
-                    );
-                } else {
-                    authHeaders = getHeaderMap(
-                            originRequest.url().uri().getPath(),
-                            generateQueryString(originRequest),
-                            originRequest.method(),
-                            authKey,
-                            contentTypeHeader
-                    );
-                }
-                break;
             case "PATCH":
+            case "DELETE":
             case "POST":
             case "PUT":
                 //add dirty validation here, because for now, only wsv4 support new hmac key
