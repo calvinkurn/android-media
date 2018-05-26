@@ -1,6 +1,5 @@
 package com.tokopedia.checkout.view.adapter;
 
-import android.annotation.SuppressLint;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -21,6 +20,8 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import rx.subscriptions.CompositeSubscription;
+
 /**
  * @author anggaprasetiyo on 18/01/18.
  */
@@ -28,11 +29,13 @@ import javax.inject.Inject;
 public class CartListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private final ActionListener actionListener;
     private List<Object> cartItemHolderDataList;
+    private CompositeSubscription compositeSubscription;
 
     @Inject
     public CartListAdapter(ActionListener actionListener) {
         this.cartItemHolderDataList = new ArrayList<>();
         this.actionListener = actionListener;
+        this.compositeSubscription = new CompositeSubscription();
     }
 
     @Override
@@ -40,7 +43,7 @@ public class CartListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         if (viewType == CartListItemViewHolder.TYPE_VIEW_ITEM_CART) {
             View view = LayoutInflater.from(parent.getContext())
                     .inflate(CartListItemViewHolder.TYPE_VIEW_ITEM_CART, parent, false);
-            return new CartListItemViewHolder(view, actionListener);
+            return new CartListItemViewHolder(view, compositeSubscription, actionListener);
         } else if (viewType == CartPromoSuggestionViewHolder.TYPE_VIEW_PROMO_SUGGESTION) {
             View view = LayoutInflater.from(parent.getContext())
                     .inflate(CartPromoSuggestionViewHolder.TYPE_VIEW_PROMO_SUGGESTION, parent, false);
@@ -53,9 +56,8 @@ public class CartListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             View view = LayoutInflater.from(parent.getContext())
                     .inflate(CartTickerErrorViewHolder.TYPE_VIEW_TICKER_CART_ERROR, parent, false);
             return new CartTickerErrorViewHolder(view, actionListener);
-        } else {
-            return null;
         }
+        return null;
     }
 
     @Override
@@ -63,7 +65,7 @@ public class CartListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         if (getItemViewType(position) == CartListItemViewHolder.TYPE_VIEW_ITEM_CART) {
             final CartListItemViewHolder holderView = (CartListItemViewHolder) holder;
             final CartItemHolderData data = (CartItemHolderData) cartItemHolderDataList.get(position);
-            holderView.bindData(data, position);
+            holderView.bindData(data);
         } else if (getItemViewType(position) == CartPromoSuggestionViewHolder.TYPE_VIEW_PROMO_SUGGESTION) {
             final CartPromoSuggestionViewHolder holderView = (CartPromoSuggestionViewHolder) holder;
             final CartPromoSuggestion data = (CartPromoSuggestion) cartItemHolderDataList.get(position);
@@ -83,6 +85,14 @@ public class CartListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     @Override
     public int getItemCount() {
         return cartItemHolderDataList.size();
+    }
+
+    public CompositeSubscription getCompositeSubscription() {
+        return compositeSubscription;
+    }
+
+    public void unsubscribeSubscription() {
+        compositeSubscription.unsubscribe();
     }
 
     public void addDataList(List<CartItemData> cartItemDataList) {

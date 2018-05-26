@@ -125,6 +125,13 @@ public class CartFragment extends BaseCheckoutFragment implements CartListAdapte
     }
 
     @Override
+    public void onDestroy() {
+        cartListAdapter.unsubscribeSubscription();
+        dPresenter.detachView();
+        super.onDestroy();
+    }
+
+    @Override
     protected void initInjector() {
         CartListComponent cartListComponent = DaggerCartListComponent.builder()
                 .cartComponent(getComponent(CartComponent.class))

@@ -101,6 +101,11 @@ public class CartListPresenter implements ICartListPresenter {
     }
 
     @Override
+    public void detachView() {
+        compositeSubscription.unsubscribe();
+    }
+
+    @Override
     public void processInitialGetCartData() {
         view.renderLoadGetCartData();
         view.disableSwipeRefresh();
