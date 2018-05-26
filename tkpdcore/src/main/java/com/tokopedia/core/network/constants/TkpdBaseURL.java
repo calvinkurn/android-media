@@ -60,6 +60,7 @@ public class TkpdBaseURL {
     public static String MAPS_DOMAIN = "https://gw.tokopedia.com/";
     public static String EVENTS_DOMAIN = "https://booking.tokopedia.com/";
     public static String DEALS_DOMAIN = "https://booking-staging.tokopedia.com/";
+    public static String OMS_DOMAIN = "https://omscart-staging.tokopedia.com/";
     public static String BASE_API_DOMAIN = "https://api.tokopedia.com/";
 
     public static String WALLET_DOMAIN = "https://www.tokocash.com/";

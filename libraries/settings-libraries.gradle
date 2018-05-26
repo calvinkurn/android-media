@@ -6,3 +6,4 @@ include "libraries:cache_api"
 include "libraries:use_case"
 include 'libraries:imageuploader'
 include "libraries:YouTubeAndroidPlayerApi"
+include "libraries:oms"

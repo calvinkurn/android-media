@@ -25,6 +25,7 @@ import com.tokopedia.digital_deals.domain.model.dealdetailsdomailmodel.DealsDeta
 import com.tokopedia.digital_deals.domain.model.dealdetailsdomailmodel.Outlet;
 import com.tokopedia.digital_deals.domain.model.locationdomainmodel.LocationItemDomain;
 import com.tokopedia.digital_deals.view.viewmodel.BrandViewModel;
+import com.tokopedia.digital_deals.view.viewmodel.CatalogViewModel;
 import com.tokopedia.digital_deals.view.viewmodel.CategoryItemsViewModel;
 import com.tokopedia.digital_deals.view.viewmodel.CategoryViewModel;
 import com.tokopedia.digital_deals.view.viewmodel.DealsDetailsViewModel;
@@ -50,6 +51,10 @@ import java.util.TimeZone;
 public class Utils {
     private static Utils singleInstance;
     private static LocationViewModel location;
+    public static String BRAND_QUERY_PARAM_TREE="tree";
+    public static String BRAND_QUERY_PARAM_BRAND="brand";
+    public static String BRAND_QUERY_PARAM_CHILD_CATEGORY_ID="child_category_ids";
+    public static String BRAND_QUERY_PARAM_CITY_ID="cities";
 
     synchronized public static Utils getSingletonInstance() {
         if (singleInstance == null)
@@ -131,6 +136,13 @@ public class Utils {
 
                 categoryItemsViewModel.setUrl(categoryEntity.getUrl());
                 categoryItemsViewModelList.add(categoryItemsViewModel);
+
+                CatalogViewModel catalogViewModel=new CatalogViewModel();
+                catalogViewModel.setDigitalCategoryId(categoryEntity.getCatalog().getDigitalCategoryId());
+                catalogViewModel.setDigitalProductId(categoryEntity.getCatalog().getDigitalProductId());
+                catalogViewModel.setDigitalProductCode(categoryEntity.getCatalog().getDigitalProductCode());
+                categoryItemsViewModel.setCatalog(catalogViewModel);
+
             }
         }
         return categoryItemsViewModelList;
@@ -142,6 +154,7 @@ public class Utils {
             LocationViewModel locationViewModel;
             for (LocationItemDomain locationItemDomain : locationItemsDomain) {
                 locationViewModel = new LocationViewModel();
+                locationViewModel.setId(locationItemDomain.getId());
                 locationViewModel.setCountry(locationItemDomain.getCountry());
                 locationViewModel.setDistrict(locationItemDomain.getDistrict());
                 locationViewModel.setName(locationItemDomain.getName());
@@ -157,6 +170,9 @@ public class Utils {
 
     public DealsDetailsViewModel convertIntoDealDetailsViewModel(DealsDetailsDomain detailsDomain) {
         DealsDetailsViewModel viewModel = new DealsDetailsViewModel();
+        viewModel.setCategoryId(detailsDomain.getCategoryId());
+        viewModel.setId(detailsDomain.getId());
+        viewModel.setBrandId(detailsDomain.getBrandId());
         viewModel.setDisplayName(detailsDomain.getDisplayName());
         viewModel.setLongRichDesc(detailsDomain.getLongRichDesc());
         viewModel.setMrp(detailsDomain.getMrp());
@@ -171,10 +187,18 @@ public class Utils {
             for (Outlet outlet : detailsDomain.getOutlets()) {
                 outletViewModel.add(convertIntoOutletViewModel(outlet));
             }
-
-
         }
+        CatalogViewModel catalogViewModel=new CatalogViewModel();
+        catalogViewModel.setDigitalCategoryId(detailsDomain.getCatalog().getDigitalCategoryId());
+        catalogViewModel.setDigitalProductId(detailsDomain.getCatalog().getDigitalProductId());
+        catalogViewModel.setDigitalProductCode(detailsDomain.getCatalog().getDigitalProductCode());
+        viewModel.setCatalog(catalogViewModel);
         viewModel.setOutlets(outletViewModel);
+        BrandViewModel brandViewModel=new BrandViewModel();
+        brandViewModel.setTitle(detailsDomain.getBrand().getTitle());
+        brandViewModel.setFeaturedImage(detailsDomain.getBrand().getFeaturedImage());
+        brandViewModel.setFeaturedThumbnailImage(detailsDomain.getBrand().getFeaturedThumbnailImage());
+        viewModel.setBrand(brandViewModel);
         viewModel.setImageWeb(detailsDomain.getImageWeb());
         viewModel.setThumbnailWeb(detailsDomain.getThumbnailWeb());
 

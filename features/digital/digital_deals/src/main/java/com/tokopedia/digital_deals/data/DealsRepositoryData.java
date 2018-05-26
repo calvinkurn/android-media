@@ -79,8 +79,8 @@ public class DealsRepositoryData implements DealsRepository {
     }
 
     @Override
-    public Observable<AllBrandsDomain> getAllBrands(String categoryUrl) {
-        return dealsDataStoreFactory.createCloudDataStore().getAllBrands(categoryUrl).map(new AllBrandsMapper());
+    public Observable<AllBrandsDomain> getAllBrands(HashMap<String, Object> parameters) {
+        return dealsDataStoreFactory.createCloudDataStore().getAllBrands(parameters).map(new AllBrandsMapper());
     }
 
     @Override

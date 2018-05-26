@@ -4,6 +4,7 @@ package com.tokopedia.digital_deals.domain.model;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import com.tokopedia.digital_deals.domain.model.branddetailsmodel.BrandDomain;
+import com.tokopedia.digital_deals.domain.model.dealdetailsdomailmodel.Catalog;
 
 public class DealsCategoryItemDomain {
 
@@ -124,6 +125,8 @@ public class DealsCategoryItemDomain {
     @SerializedName("brand")
     @Expose
     private BrandDomain brand;
+    @SerializedName("catalog")
+    private Catalog catalog;
 
 
     public String getDisplayName() {
@@ -440,6 +443,15 @@ public class DealsCategoryItemDomain {
     public void setBrand(BrandDomain brand) {
         this.brand = brand;
     }
+
+    public Catalog getCatalog() {
+        return catalog;
+    }
+
+    public void setCatalog(Catalog catalog) {
+        this.catalog = catalog;
+    }
+
 
 
 }

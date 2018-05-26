@@ -158,4 +158,9 @@ public class LocationViewModel implements Parcelable{
         return 0;
     }
 
+    @Override
+    public String toString() {
+        String str=name+"  "+id;
+        return str;
+    }
 }

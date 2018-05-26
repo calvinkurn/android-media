@@ -14,6 +14,7 @@ import com.tokopedia.digital_deals.view.fragment.SelectDealQuantityFragment;
 import com.tokopedia.digital_deals.view.presenter.DealDetailsPresenter;
 import com.tokopedia.digital_deals.view.utils.DealFragmentCallbacks;
 import com.tokopedia.digital_deals.view.viewmodel.CategoryItemsViewModel;
+import com.tokopedia.digital_deals.view.viewmodel.DealsDetailsViewModel;
 import com.tokopedia.digital_deals.view.viewmodel.OutletViewModel;
 
 import java.util.List;
@@ -21,13 +22,13 @@ import java.util.List;
 public class DealDetailsActivity extends BaseSimpleActivity implements DealFragmentCallbacks {
 
     private List<OutletViewModel> outlets;
-    private CategoryItemsViewModel dealDetail;
+    private DealsDetailsViewModel dealDetail;
 
     @Override
     protected Fragment getNewFragment() {
         CategoryItemsViewModel itemsViewModel = getIntent().getParcelableExtra(DealDetailsPresenter.HOME_DATA);
         Bundle bundle = new Bundle();
-        bundle.putParcelable(DealDetailsPresenter.HOME_DATA, itemsViewModel);
+        bundle.putString(DealDetailsPresenter.HOME_DATA, itemsViewModel.getUrl());
         return DealDetailsFragment.createInstance(bundle);
     }
 
@@ -48,8 +49,8 @@ public class DealDetailsActivity extends BaseSimpleActivity implements DealFragm
     }
 
     @Override
-    public void replaceFragment(CategoryItemsViewModel categoryItemsViewModel, int flag) {
-        this.dealDetail=categoryItemsViewModel;
+    public void replaceFragment(DealsDetailsViewModel dealDetail, int flag) {
+        this.dealDetail=dealDetail;
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         transaction.replace(R.id.parent_view, SelectDealQuantityFragment.createInstance());
         transaction.addToBackStack(null);
@@ -62,7 +63,7 @@ public class DealDetailsActivity extends BaseSimpleActivity implements DealFragm
     }
 
     @Override
-    public CategoryItemsViewModel getDealDetails() {
+    public DealsDetailsViewModel getDealDetails() {
         return dealDetail;
     }
 }

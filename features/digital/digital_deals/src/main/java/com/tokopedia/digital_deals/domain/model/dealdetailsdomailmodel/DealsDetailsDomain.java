@@ -2,6 +2,7 @@ package com.tokopedia.digital_deals.domain.model.dealdetailsdomailmodel;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import com.tokopedia.digital_deals.domain.model.branddetailsmodel.BrandDomain;
 
 import java.util.List;
 
@@ -124,6 +125,9 @@ public class DealsDetailsDomain {
     @SerializedName("saving_percentage")
     @Expose
     private String savingPercentage;
+    @SerializedName("brand")
+    @Expose
+    private BrandDomain brand;
 
     public Integer getId() {
         return id;
@@ -436,6 +440,15 @@ public class DealsDetailsDomain {
     public void setSavingPercentage(String savingPercentage) {
         this.savingPercentage = savingPercentage;
     }
+
+    public BrandDomain getBrand() {
+        return brand;
+    }
+
+    public void setBrand(BrandDomain brand) {
+        this.brand = brand;
+    }
+
 
 }
 

@@ -2,7 +2,6 @@ package com.tokopedia.digital_deals.view.viewmodel;
 
 import android.os.Parcel;
 import android.os.Parcelable;
-import android.os.Parcelable.Creator;
 
 public class CategoryItemsViewModel implements Parcelable {
 
@@ -36,6 +35,7 @@ public class CategoryItemsViewModel implements Parcelable {
     private String savingPercentage;
     private String displayTags;
     private BrandViewModel brand;
+    private CatalogViewModel catalog;
 
     public final static Parcelable.Creator<CategoryItemsViewModel> CREATOR = new Creator<CategoryItemsViewModel>() {
 
@@ -85,6 +85,7 @@ public class CategoryItemsViewModel implements Parcelable {
         this.savingPercentage = ((String) in.readValue((String.class.getClassLoader())));
         this.brand = ((BrandViewModel) in.readValue((BrandViewModel.class.getClassLoader())));
         this.displayTags = ((String) in.readValue((String.class.getClassLoader())));
+        this.catalog = ((CatalogViewModel) in.readValue((CatalogViewModel.class.getClassLoader())));
     }
 
     public CategoryItemsViewModel() {
@@ -306,9 +307,13 @@ public class CategoryItemsViewModel implements Parcelable {
         this.media = media;
     }
 
-    public String getSavingPercentage() { return savingPercentage; }
+    public String getSavingPercentage() {
+        return savingPercentage;
+    }
 
-    public void setSavingPercentage(String savingPercentage) { this.savingPercentage = savingPercentage; }
+    public void setSavingPercentage(String savingPercentage) {
+        this.savingPercentage = savingPercentage;
+    }
 
     public BrandViewModel getBrand() {
         return brand;
@@ -324,6 +329,15 @@ public class CategoryItemsViewModel implements Parcelable {
 
     public void setDisplayTags(String displayTags) {
         this.displayTags = displayTags;
+    }
+
+
+    public CatalogViewModel getCatalog() {
+        return catalog;
+    }
+
+    public void setCatalog(CatalogViewModel catalog) {
+        this.catalog = catalog;
     }
 
 
@@ -358,6 +372,7 @@ public class CategoryItemsViewModel implements Parcelable {
         dest.writeValue(savingPercentage);
         dest.writeValue(brand);
         dest.writeValue(displayTags);
+        dest.writeValue(catalog);
     }
 
     public int describeContents() {

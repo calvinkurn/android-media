@@ -7,7 +7,7 @@ import android.os.Parcelable;
 
 public class DealsDetailsViewModel implements Parcelable {
 
-
+    private Integer id;
     private Integer brandId;
     private Integer categoryId;
     private Integer providerId;
@@ -42,6 +42,8 @@ public class DealsDetailsViewModel implements Parcelable {
     private Integer rating;
     private Integer likes;
     private String savingPercentage;
+    private CatalogViewModel catalog;
+    private BrandViewModel brand;
 
 
     public final static Parcelable.Creator<DealsDetailsViewModel> CREATOR = new Creator<DealsDetailsViewModel>() {
@@ -61,6 +63,7 @@ public class DealsDetailsViewModel implements Parcelable {
     };
 
     protected DealsDetailsViewModel(Parcel in) {
+        this.id = ((Integer) in.readValue((Integer.class.getClassLoader())));
         this.brandId = ((Integer) in.readValue((Integer.class.getClassLoader())));
         this.categoryId = ((Integer) in.readValue((Integer.class.getClassLoader())));
         this.providerId = ((Integer) in.readValue((Integer.class.getClassLoader())));
@@ -95,6 +98,9 @@ public class DealsDetailsViewModel implements Parcelable {
         this.rating = ((Integer) in.readValue((Integer.class.getClassLoader())));
         this.likes = ((Integer) in.readValue((Integer.class.getClassLoader())));
         this.savingPercentage = ((String) in.readValue((Integer.class.getClassLoader())));
+        this.catalog = ((CatalogViewModel) in.readValue((CatalogViewModel.class.getClassLoader())));
+        this.brand = ((BrandViewModel) in.readValue((BrandViewModel.class.getClassLoader())));
+
     }
 
     public DealsDetailsViewModel() {
@@ -373,7 +379,37 @@ public class DealsDetailsViewModel implements Parcelable {
         this.savingPercentage = savingPercentage;
     }
 
+    public CatalogViewModel getCatalog() {
+        return catalog;
+    }
+
+    public void setCatalog(CatalogViewModel catalog) {
+        this.catalog = catalog;
+    }
+
+
+    public BrandViewModel getBrand() {
+        return brand;
+    }
+
+    public void setBrand(BrandViewModel brand) {
+        this.brand = brand;
+    }
+
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+
+
+
     public void writeToParcel(Parcel dest, int flags) {
+        dest.writeValue(id);
         dest.writeValue(brandId);
         dest.writeValue(categoryId);
         dest.writeValue(providerId);
@@ -408,6 +444,8 @@ public class DealsDetailsViewModel implements Parcelable {
         dest.writeValue(rating);
         dest.writeValue(likes);
         dest.writeValue(savingPercentage);
+        dest.writeValue(catalog);
+        dest.writeValue(brand);
     }
 
     public int describeContents() {

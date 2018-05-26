@@ -35,7 +35,7 @@ public interface DealsDataStore {
 
     Observable<CategoryResponse> getCategoryDetails(String nexturl);
 
-    Observable<AllBrandsResponse> getAllBrands(String categoryUrl);
+    Observable<AllBrandsResponse> getAllBrands(HashMap<String, Object> params);
 
     Observable<AllBrandsResponse> getAllBrandsNext(String nextUrl);
 

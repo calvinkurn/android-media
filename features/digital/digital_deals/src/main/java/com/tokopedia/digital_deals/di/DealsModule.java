@@ -2,6 +2,8 @@ package com.tokopedia.digital_deals.di;
 
 import android.content.Context;
 
+import com.google.gson.Gson;
+import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.di.scope.ApplicationScope;
 import com.tokopedia.abstraction.common.network.interceptor.HeaderErrorResponseInterceptor;
 import com.tokopedia.abstraction.common.network.interceptor.TkpdAuthInterceptor;
@@ -22,6 +24,10 @@ import com.tokopedia.digital_deals.domain.GetNextCategoryPageUseCase;
 import com.tokopedia.digital_deals.domain.GetNextDealPageUseCase;
 import com.tokopedia.digital_deals.domain.GetSearchDealsListRequestUseCase;
 import com.tokopedia.digital_deals.domain.GetSearchNextUseCase;
+import com.tokopedia.oms.di.OmsModule;
+import com.tokopedia.oms.di.OmsQualifier;
+import com.tokopedia.oms.domain.OmsRepository;
+import com.tokopedia.oms.domain.postusecase.PostVerifyCartUseCase;
 
 import dagger.Module;
 import dagger.Provides;
@@ -29,7 +35,7 @@ import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
 
-@Module
+@Module(includes = OmsModule.class)
 public class DealsModule {
     Context thisContext;
 
@@ -140,7 +146,6 @@ public class DealsModule {
                 .addInterceptor(httpLoggingInterceptor)
                 .build();
     }
-
 
     @Provides
     @DealsScope

@@ -16,8 +16,6 @@ public class GetAllBrandsUseCase extends UseCase<AllBrandsDomain>{
     }
     @Override
     public Observable<AllBrandsDomain> createObservable(RequestParams requestParams) {
-        String categoryUrl=requestParams.getString(DealsHomePresenter.TAG, "");
-
-        return dealsRepository.getAllBrands(categoryUrl);
+        return dealsRepository.getAllBrands(requestParams.getParameters());
     }
 }

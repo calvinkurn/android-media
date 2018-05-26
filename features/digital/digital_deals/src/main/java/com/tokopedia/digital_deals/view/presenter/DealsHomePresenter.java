@@ -4,6 +4,7 @@ package com.tokopedia.digital_deals.view.presenter;
 import android.content.Intent;
 import android.os.Parcelable;
 import android.support.v7.widget.LinearLayoutManager;
+import android.util.Log;
 
 import com.tokopedia.abstraction.base.view.widget.TouchViewPager;
 import com.tkpd.library.utils.CommonUtils;
@@ -27,6 +28,7 @@ import com.tokopedia.digital_deals.view.viewmodel.BrandViewModel;
 import com.tokopedia.digital_deals.view.viewmodel.CategoriesModel;
 import com.tokopedia.digital_deals.view.viewmodel.CategoryItemsViewModel;
 import com.tokopedia.digital_deals.view.viewmodel.CategoryViewModel;
+import com.tokopedia.digital_deals.view.viewmodel.LocationViewModel;
 import com.tokopedia.usecase.RequestParams;
 
 import java.util.ArrayList;
@@ -196,6 +198,12 @@ public class DealsHomePresenter extends BaseDaggerPresenter<DealsContract.View>
 
     public void getBrandsList() {
         RequestParams brandsParams = RequestParams.create();
+        brandsParams.putString(Utils.BRAND_QUERY_PARAM_TREE, Utils.BRAND_QUERY_PARAM_BRAND);
+        LocationViewModel location=Utils.getSingletonInstance()
+                .getLocation(getView().getActivity());
+        Log.d("hdjshdjs", location.toString());
+
+//        brandsParams.putInt(Utils.BRAND_QUERY_PARAM_CITY_ID, location.getId());
         getView().showProgressBar();
         getAllBrandsUseCase.execute(brandsParams, new Subscriber<AllBrandsDomain>() {
 

@@ -1,6 +1,7 @@
 package com.tokopedia.digital_deals.view.fragment;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.graphics.Paint;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -13,19 +14,30 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-
 import com.tkpd.library.utils.ImageHandler;
+import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
-import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment;
+import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
+import com.tokopedia.digital_deals.di.DaggerDealsComponent;
+import com.tokopedia.digital_deals.di.DealsComponent;
 import com.tokopedia.digital_deals.R;
+import com.tokopedia.digital_deals.di.DealsModule;
 import com.tokopedia.digital_deals.view.activity.DealDetailsActivity;
+import com.tokopedia.digital_deals.view.contractor.SelectQuantityContract;
+import com.tokopedia.digital_deals.view.presenter.SelectQuantityPresenter;
 import com.tokopedia.digital_deals.view.utils.DealFragmentCallbacks;
 import com.tokopedia.digital_deals.view.utils.Utils;
 import com.tokopedia.digital_deals.view.viewmodel.CategoryItemsViewModel;
+import com.tokopedia.digital_deals.view.viewmodel.DealsDetailsViewModel;
+import com.tokopedia.digital_deals.view.viewmodel.PackageViewModel;
+import com.tokopedia.oms.di.OmsModule;
+import com.tokopedia.usecase.RequestParams;
 
-public class SelectDealQuantityFragment extends TkpdBaseV4Fragment implements View.OnClickListener {
+import javax.inject.Inject;
 
-    private CategoryItemsViewModel dealDetails;
+public class SelectDealQuantityFragment extends BaseDaggerFragment implements SelectQuantityContract.View, View.OnClickListener {
+
+    private DealsDetailsViewModel dealDetails;
     private DealFragmentCallbacks fragmentCallbacks;
     private Toolbar toolbar;
     private ImageView imageViewBrand;
@@ -37,6 +49,9 @@ public class SelectDealQuantityFragment extends TkpdBaseV4Fragment implements Vi
     private TextView textViewSalesPrice;
     private TextView textViewTotalAmount;
     private TextView textViewQuantity;
+    private PackageViewModel packageViewModel;
+    @Inject
+    public SelectQuantityPresenter mPresenter;
     private LinearLayout llContinue;
     private int MAX_QUANTITY = 8;
     private int CURRENT_QUANTITY = 1;
@@ -51,6 +66,15 @@ public class SelectDealQuantityFragment extends TkpdBaseV4Fragment implements Vi
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         dealDetails = fragmentCallbacks.getDealDetails();
+    }
+
+    @Override
+    protected void initInjector() {
+        DaggerDealsComponent.builder()
+                .baseAppComponent(((BaseMainApplication) getActivity().getApplication()).getBaseAppComponent())
+                .dealsModule(new DealsModule(getContext()))
+                .build().inject(this);
+        mPresenter.attachView(this);
     }
 
     @Override
@@ -163,7 +187,64 @@ public class SelectDealQuantityFragment extends TkpdBaseV4Fragment implements Vi
             setButtons();
 
         } else if (v.getId() == R.id.ll_continue) {
-
+            packageViewModel=new PackageViewModel();
+            packageViewModel.setCategoryId(dealDetails.getCategoryId());
+            packageViewModel.setProductId(dealDetails.getId());
+            packageViewModel.setSalesPrice(dealDetails.getSalesPrice());
+            packageViewModel.setSelectedQuantity(CURRENT_QUANTITY);
+            packageViewModel.setDigitalCategoryID(dealDetails.getCatalog().getDigitalCategoryId());
+            packageViewModel.setDigitalProductID(dealDetails.getCatalog().getDigitalProductId());
+            mPresenter.verifyCart(packageViewModel);
         }
+    }
+
+    @Override
+    public void showMessage(String message) {
+
+    }
+
+    @Override
+    public void navigateToActivityRequest(Intent intent, int requestCode) {
+
+    }
+
+    @Override
+    public void renderFromDetails(DealsDetailsViewModel dealDetail) {
+
+    }
+
+    @Override
+    public RequestParams getParams() {
+        return null;
+    }
+
+    @Override
+    public void showPayButton() {
+
+    }
+
+    @Override
+    public void hidePayButton() {
+
+    }
+
+    @Override
+    public void showProgressBar() {
+
+    }
+
+    @Override
+    public void hideProgressBar() {
+
+    }
+
+    @Override
+    public View getRootView() {
+        return null;
+    }
+
+    @Override
+    public int getRequestCode() {
+        return 0;
     }
 }

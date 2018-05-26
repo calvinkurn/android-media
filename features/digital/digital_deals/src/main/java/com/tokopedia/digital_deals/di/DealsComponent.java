@@ -13,6 +13,8 @@ import com.tokopedia.digital_deals.view.fragment.AllBrandsFragment;
 import com.tokopedia.digital_deals.view.fragment.CategoryDetailHomeFragment;
 import com.tokopedia.digital_deals.view.fragment.DealDetailsAllRedeemLocationsFragment;
 import com.tokopedia.digital_deals.view.fragment.DealDetailsFragment;
+import com.tokopedia.digital_deals.view.fragment.SelectDealQuantityFragment;
+import com.tokopedia.oms.di.OmsModule;
 
 import dagger.Component;
 
@@ -38,4 +40,6 @@ public interface DealsComponent {
     void inject(CategoryDetailHomeFragment fragment);
 
     void inject(AllBrandsFragment fragment);
+
+    void inject(SelectDealQuantityFragment fragment);
 }

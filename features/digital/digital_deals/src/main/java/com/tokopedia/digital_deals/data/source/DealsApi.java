@@ -48,11 +48,9 @@ public interface DealsApi {
     @GET()
     Observable<CategoryResponse> getCategoryDetailsNext(@Url String nextUrl);
 
-    @GET(DealsUrl.DEALS_BRANDS)
-    Observable<AllBrandsResponse> getAllBrands();
 
-    @GET(DealsUrl.DEALS_BRANDS+"/{url}")
-    Observable<AllBrandsResponse> getAllBrandsByCategory(@Path("url") String url);
+    @GET(DealsUrl.DEALS_LIST_SEARCH)
+    Observable<AllBrandsResponse> getAllBrandsByCategory(@QueryMap Map<String, Object> param);
 
     @GET()
     Observable<AllBrandsResponse> getAllBrandsNext(@Url String nextUrl);

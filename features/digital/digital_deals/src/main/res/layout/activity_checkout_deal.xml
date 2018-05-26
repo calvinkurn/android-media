@@ -3,6 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
+    android:background="@color/bottomnav_bg"
     android:layout_height="match_parent">
 
     <android.support.design.widget.AppBarLayout
@@ -33,7 +34,6 @@
                 android:layout_gravity="center_horizontal"
                 android:layout_marginLeft="@dimen/dp_16"
                 android:layout_marginTop="@dimen/dp_24"
-                android:visibility="gone"
                 app:cardCornerRadius="@dimen/dp_8"
                 app:cardElevation="@dimen/dp_0"
                 app:layout_constraintLeft_toLeftOf="parent"
@@ -220,7 +220,7 @@
                 android:layout_marginLeft="@dimen/dp_16"
                 android:layout_marginTop="@dimen/dp_16"
                 android:fontFamily="sans-serif"
-                android:text="Harga"
+                android:text="2 x Vouchers"
                 android:textColor="@color/black_39"
                 android:textSize="@dimen/sp_14"
                 android:textStyle="normal"
@@ -229,7 +229,7 @@
 
 
             <TextView
-                android:id="@+id/tvSalesPriceAllQuantity"
+                android:id="@+id/tv_sales_price_all_quantity"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginRight="@dimen/dp_16"
@@ -245,33 +245,64 @@
 
 
             <TextView
-                android:id="@+id/tvMrp"
+                android:id="@+id/tv_mrp_per_quantity"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:fontFamily="sans-serif"
                 android:layout_marginLeft="@dimen/dp_16"
-                android:text="Rp 1.200.000"
+                android:layout_marginTop="@dimen/dp_4"
+                android:fontFamily="sans-serif"
                 android:textColor="@color/black_38"
                 android:textSize="@dimen/sp_12"
                 android:textStyle="normal"
                 app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tv_number_vouchers"
 
-                app:layout_constraintTop_toBottomOf="@+id/tv_number_vouchers" />
+                tools:text="Rp 1.200.000" />
 
             <TextView
-                android:id="@+id/tvSalesPrice"
+                android:id="@+id/tv_sales_price_per_quantity"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/dp_8"
                 android:fontFamily="sans-serif-medium"
                 android:includeFontPadding="false"
-                android:layout_marginLeft="@dimen/dp_8"
                 android:text="Rp 800.000"
                 android:textColor="@color/black_39"
                 android:textSize="@dimen/sp_14"
                 android:textStyle="normal"
-                app:layout_constraintBottom_toBottomOf="@+id/tvMrp"
-                app:layout_constraintLeft_toRightOf="@+id/tvMrp"
-                app:layout_constraintTop_toTopOf="@+id/tvMrp" />
+                app:layout_constraintBottom_toBottomOf="@+id/tv_mrp_per_quantity"
+                app:layout_constraintLeft_toRightOf="@+id/tv_mrp_per_quantity"
+                app:layout_constraintTop_toTopOf="@+id/tv_mrp_per_quantity" />
+
+            <TextView
+                android:id="@+id/tv_service_fee"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="sans-serif"
+                android:textColor="@color/black_39"
+                android:textSize="@dimen/sp_14"
+                android:textStyle="normal"
+                android:layout_marginLeft="@dimen/sp_16"
+                app:layout_constraintLeft_toLeftOf="parent"
+                android:layout_marginTop="@dimen/dp_16"
+                app:layout_constraintTop_toBottomOf="@+id/tv_sales_price_per_quantity"
+                tools:text="Biaya Layanan" />
+
+            <TextView
+                android:id="@+id/tv_service_fee_amount"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="@dimen/dp_16"
+                android:fontFamily="sans-serif-medium"
+                android:includeFontPadding="false"
+                android:text="Rp 800.000"
+                android:textColor="@color/black_39"
+                android:textSize="@dimen/sp_14"
+                android:textStyle="normal"
+                app:layout_constraintBottom_toBottomOf="@+id/tv_service_fee"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/tv_service_fee" />
+
 
             <View
                 android:id="@+id/divider4"
@@ -279,7 +310,7 @@
                 android:layout_height="@dimen/dp_2"
                 android:layout_marginTop="@dimen/dp_16"
                 android:background="@color/divider_color"
-                app:layout_constraintTop_toBottomOf="@+id/tv_number_vouchers" />
+                app:layout_constraintTop_toBottomOf="@+id/tv_service_fee" />
 
             <TextView
                 android:id="@+id/tv_total_payment"

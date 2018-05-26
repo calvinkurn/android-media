@@ -69,14 +69,8 @@ public class CloudDealsDataStore implements DealsDataStore {
     }
 
     @Override
-    public Observable<AllBrandsResponse> getAllBrands(String categoryUrl) {
-
-        if (categoryUrl != null && categoryUrl != "" && !categoryUrl.equalsIgnoreCase(""))
-            return dealsApi.getAllBrandsByCategory(categoryUrl);
-        else
-            return dealsApi.getAllBrands();
-
-
+    public Observable<AllBrandsResponse> getAllBrands(HashMap<String, Object> params) {
+            return dealsApi.getAllBrandsByCategory(params);
     }
 
     @Override

@@ -64,7 +64,6 @@ public class DealDetailsFragment extends BaseDaggerFragment implements DealDetai
     private TextView seemorebuttonTextTC;
     private ImageView ivArrowSeeMoreDesc;
     private ImageView ivArrowSeeMoreTC;
-    private DealsComponent mdealsComponent;
     @Inject
     public DealDetailsPresenter mPresenter;
     private DealsCategoryAdapter categoryAdapter;
@@ -87,14 +86,14 @@ public class DealDetailsFragment extends BaseDaggerFragment implements DealDetai
     private ImageView dealImage;
     private TextView tvOff;
     private ImageView brandLogo;
-    private BrandViewModel brandViewModel;
     private LinearLayout buyDealNow;
     private Menu mMenu;
     private ConstraintLayout clHeader;
     private CardView cardView;
     private Toolbar toolbar;
     private DealFragmentCallbacks fragmentCallbacks;
-    private CategoryItemsViewModel itemsViewModel;
+    private DealsDetailsViewModel dealDetail;
+
 
     public static Fragment createInstance(Bundle bundle) {
         Fragment fragment = new DealDetailsFragment();
@@ -194,6 +193,7 @@ public class DealDetailsFragment extends BaseDaggerFragment implements DealDetai
 
     @Override
     public void renderDealDetails(DealsDetailsViewModel detailsViewModel) {
+        this.dealDetail=detailsViewModel;
         collapsingToolbarLayout.setTitle(detailsViewModel.getDisplayName());
 
         ImageHandler.loadImage(getContext(), dealImage, detailsViewModel.getImageWeb(), R.color.grey_1100, R.color.grey_1100);
@@ -211,8 +211,8 @@ public class DealDetailsFragment extends BaseDaggerFragment implements DealDetai
             tvBrandVenue.setText(outletViewModel.getName());
             brandAddress.setText(outletViewModel.getDistrict());
             tvNumberOfLocations.setText(String.format(getString(R.string.number_of_items), detailsViewModel.getOutlets().size()));
-            tvBrandName.setText(brandViewModel.getTitle());
-            ImageHandler.loadImage(getContext(), brandLogo, brandViewModel.getFeaturedThumbnailImage(), R.color.grey_1100, R.color.grey_1100);
+            tvBrandName.setText(detailsViewModel.getBrand().getTitle());
+            ImageHandler.loadImage(getContext(), brandLogo, dealDetail.getBrand().getFeaturedThumbnailImage(), R.color.grey_1100, R.color.grey_1100);
 
         }
 
@@ -309,11 +309,11 @@ public class DealDetailsFragment extends BaseDaggerFragment implements DealDetai
 
     @Override
     public RequestParams getParams() {
-        itemsViewModel = getArguments().getParcelable(DealDetailsPresenter.HOME_DATA);
-        brandViewModel = itemsViewModel.getBrand();
+        String url = getArguments().getString(DealDetailsPresenter.HOME_DATA);
+
         RequestParams requestParams = RequestParams.create();
-        Log.d("Myurllll", " " + itemsViewModel.getUrl());
-        requestParams.putString(mPresenter.TAG, itemsViewModel.getUrl());
+        Log.d("Myurllll", " " + url);
+        requestParams.putString(mPresenter.TAG, url);
         return requestParams;
     }
 
@@ -361,7 +361,7 @@ public class DealDetailsFragment extends BaseDaggerFragment implements DealDetai
             Log.d("insidebutton click", "true");
             fragmentCallbacks.replaceFragment(mPresenter.getAllOutlets(), 0);
         } else if(v.getId() == R.id.ll_buynow){
-            fragmentCallbacks.replaceFragment(itemsViewModel, 1);
+            fragmentCallbacks.replaceFragment(dealDetail, 1);
 
         }
     }

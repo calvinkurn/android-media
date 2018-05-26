@@ -32,7 +32,7 @@ public interface DealsRepository {
 
     Observable<CategoryDetailsDomain> getCategoryDetails(String nexturl);
 
-    Observable<AllBrandsDomain> getAllBrands(String categoryUrl);
+    Observable<AllBrandsDomain> getAllBrands(HashMap<String, Object> parameters);
 
     Observable<AllBrandsDomain> getAllBrandsNext(String nextUrl);
 
