@@ -261,16 +261,23 @@ public class CartFragment extends BaseCheckoutFragment implements CartListAdapte
     }
 
     @Override
-    public void onCartItemQuantityReseted(int position) {
-        cartListAdapter.resetQuantity(position);
-        dPresenter.reCalculateSubTotal(cartListAdapter.getDataList());
-    }
-
-    @Override
     public void onCartItemQuantityMinusButtonClicked(CartItemHolderData cartItemHolderData, int position) {
         cartPageAnalytics.eventClickCartClickButtonMinus();
         cartListAdapter.decreaseQuantity(position);
         dPresenter.reCalculateSubTotal(cartListAdapter.getDataList());
+    }
+
+    @Override
+    public void onCartItemQuantityReseted(int position) {
+        cartListAdapter.resetQuantity(position);
+        dPresenter.reCalculateSubTotal(cartListAdapter.getDataList());
+        cartListAdapter.notifyItemChanged(position);
+    }
+
+    @Override
+    public void onCartItemQuantityFormEdited(int position) {
+        dPresenter.reCalculateSubTotal(cartListAdapter.getDataList());
+        cartListAdapter.notifyItemChanged(position);
     }
 
     @Override
@@ -347,11 +354,6 @@ public class CartFragment extends BaseCheckoutFragment implements CartListAdapte
     @Override
     public void onCartPromoTrackingCancelled(CartItemPromoHolderData cartItemPromoHolderData, int position) {
 
-    }
-
-    @Override
-    public void onCartItemQuantityFormEdited() {
-        dPresenter.reCalculateSubTotal(cartListAdapter.getDataList());
     }
 
     @Override

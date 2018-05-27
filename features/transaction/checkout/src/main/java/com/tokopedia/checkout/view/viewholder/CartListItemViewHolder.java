@@ -478,7 +478,7 @@ public class CartListItemViewHolder extends RecyclerView.ViewHolder {
         checkQtyMustDisabled(cartItemHolderData, qty);
         cartItemHolderData.getCartItemData().getUpdatedData().setQuantity(qty);
         validateWithAvailableQuantity(cartItemHolderData, qty);
-        actionListener.onCartItemQuantityFormEdited();
+        actionListener.onCartItemQuantityFormEdited(getAdapterPosition());
     }
 
     private interface QuantityTextwatcherListener {

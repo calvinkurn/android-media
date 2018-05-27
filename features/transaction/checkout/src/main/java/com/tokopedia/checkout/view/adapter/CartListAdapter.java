@@ -284,7 +284,7 @@ public class CartListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
         void onCartItemListIsEmpty();
 
-        void onCartItemQuantityFormEdited();
+        void onCartItemQuantityFormEdited(int position);
 
         void onCartItemAfterErrorChecked();
 
