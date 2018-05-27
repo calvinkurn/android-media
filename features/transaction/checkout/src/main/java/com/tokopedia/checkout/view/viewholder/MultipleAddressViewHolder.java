@@ -84,6 +84,7 @@ public class MultipleAddressViewHolder extends RecyclerView.ViewHolder {
     }
 
     public void bindAdapterView(
+            ArrayList<MultipleAddressAdapterData> dataList,
             MultipleAddressAdapterData data,
             MultipleAddressItemAdapter.MultipleAddressItemAdapterListener listener,
             MultipleAddressAdapter.MultipleAddressAdapterListener addressListener,
@@ -101,6 +102,7 @@ public class MultipleAddressViewHolder extends RecyclerView.ViewHolder {
         btAddNewShipment.setOnClickListener(
                 onAddAddressClickedListener(
                         data.getItemListData().size(),
+                        dataList,
                         data,
                         data.getItemListData().get(0),
                         addressListener
@@ -175,13 +177,14 @@ public class MultipleAddressViewHolder extends RecyclerView.ViewHolder {
 
     private View.OnClickListener onAddAddressClickedListener(
             final int latestPositionToAdd,
+            final ArrayList<MultipleAddressAdapterData> dataList,
             final MultipleAddressAdapterData data,
             final MultipleAddressItemData firstItemData,
             final MultipleAddressAdapter.MultipleAddressAdapterListener addressListener) {
         return new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                addressListener.onAddNewShipmentAddress(latestPositionToAdd, data, firstItemData);
+                addressListener.onAddNewShipmentAddress(latestPositionToAdd, dataList, data, firstItemData);
             }
         };
     }
