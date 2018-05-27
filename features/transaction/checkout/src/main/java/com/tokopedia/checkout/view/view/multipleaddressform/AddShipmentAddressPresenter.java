@@ -47,8 +47,7 @@ public class AddShipmentAddressPresenter implements IAddShipmentAddressPresenter
     }
 
     @Override
-    public MultipleAddressItemData confirmAddData(String quantity,
-                                                  String notes) {
+    public MultipleAddressItemData confirmAddData(MultipleAddressItemData baseItem, String quantity, String notes) {
         MultipleAddressItemData newItemData = new MultipleAddressItemData();
         newItemData.setProductQty(quantity);
         newItemData.setProductWeightFmt(multipleAddressItemData.getProductWeightFmt());
@@ -68,6 +67,16 @@ public class AddShipmentAddressPresenter implements IAddShipmentAddressPresenter
         newItemData.setProvinceId(editableAddressModel.getProvinceId());
         newItemData.setProductNotes(notes);
         newItemData.setCartId("0");
+        newItemData.setErrorCheckoutPriceLimit(baseItem.getErrorCheckoutPriceLimit());
+        newItemData.setErrorFieldBetween(baseItem.getErrorFieldBetween());
+        newItemData.setErrorFieldMaxChar(baseItem.getErrorFieldMaxChar());
+        newItemData.setErrorFieldRequired(baseItem.getErrorFieldRequired());
+        newItemData.setErrorProductAvailableStock(baseItem.getErrorProductAvailableStock());
+        newItemData.setErrorProductAvailableStockDetail(baseItem.getErrorProductAvailableStockDetail());
+        newItemData.setErrorProductMaxQuantity(baseItem.getErrorProductMaxQuantity());
+        newItemData.setErrorProductMinQuantity(baseItem.getErrorProductMinQuantity());
+        newItemData.setMaxQuantity(baseItem.getMaxQuantity());
+        newItemData.setMinQuantity(baseItem.getMinQuantity());
         return newItemData;
     }
 

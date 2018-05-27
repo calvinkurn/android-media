@@ -22,9 +22,6 @@ import com.tokopedia.checkout.view.di.component.AddShipmentAddressComponent;
 import com.tokopedia.checkout.view.di.component.DaggerAddShipmentAddressComponent;
 import com.tokopedia.checkout.view.view.addressoptions.CartAddressChoiceActivity;
 
-import java.math.BigDecimal;
-import java.text.DecimalFormat;
-
 import javax.inject.Inject;
 
 /**
@@ -333,6 +330,7 @@ public class AddShipmentAddressFragment extends BaseCheckoutFragment {
     private void addNewAddressItem() {
         Intent intent = new Intent();
         MultipleAddressItemData newItemData = presenter.confirmAddData(
+                multipleAddressItemData,
                 quantityField.getText().toString(),
                 checkNotesAvailability(notesLayout.getVisibility() == View.VISIBLE, notesEditText)
         );
