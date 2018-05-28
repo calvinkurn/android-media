@@ -2,7 +2,6 @@ package com.tokopedia.tkpd.tkpdreputation.inbox.domain.interactor.sendreview;
 
 import android.text.TextUtils;
 
-import com.drew.lang.annotations.Nullable;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
@@ -82,7 +81,7 @@ public class EditReviewUseCase extends SendReviewUseCase {
     addListImageUploadToRequestModel(final SendReviewRequestModel sendReviewRequestModel) {
         return new Func1<List<UploadImageDomain>, Observable<SendReviewRequestModel>>() {
             @Override
-            public Observable<SendReviewRequestModel> call(@Nullable List<UploadImageDomain>
+            public Observable<SendReviewRequestModel> call(List<UploadImageDomain>
                                                                    uploadImageDomains) {
                 if (!TextUtils.isEmpty(sendReviewRequestModel.getPostKey())) {
                     for (int i = 0; i < uploadImageDomains.size(); i++) {
