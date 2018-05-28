@@ -1,11 +1,15 @@
 package com.tokopedia.topads.dashboard.view.presenter;
 
+import com.tokopedia.topads.dashboard.constant.TopAdsNetworkConstant;
 import com.tokopedia.topads.dashboard.domain.interactor.TopAdsCheckExistGroupUseCase;
 import com.tokopedia.topads.dashboard.domain.interactor.TopAdsEditProductGroupToNewGroupUseCase;
 import com.tokopedia.topads.dashboard.domain.interactor.TopAdsMoveProductGroupToExistGroupUseCase;
 import com.tokopedia.topads.dashboard.domain.interactor.TopAdsSearchGroupAdsNameUseCase;
 import com.tokopedia.topads.dashboard.utils.ViewUtils;
 import com.tokopedia.topads.dashboard.view.listener.TopAdsGroupEditPromoView;
+import com.tokopedia.topads.sourcetagging.data.TopAdsSourceTaggingModel;
+import com.tokopedia.topads.sourcetagging.domain.interactor.TopAdsAddSourceTaggingUseCase;
+import com.tokopedia.topads.sourcetagging.domain.interactor.TopAdsGetSourceTaggingUseCase;
 
 import rx.Subscriber;
 
@@ -18,14 +22,17 @@ public class TopAdsGroupEditPromoPresenterImpl extends TopAdsManageGroupPromoPre
     public static final String MOVE_OUT_GROUP_CODE = "0";
     private final TopAdsEditProductGroupToNewGroupUseCase topAdsEditProductGroupToNewGroupUseCase;
     private final TopAdsMoveProductGroupToExistGroupUseCase topAdsMoveProductGroupToExistGroupUseCase;
+    private final TopAdsGetSourceTaggingUseCase topAdsGetSourceTaggingUseCase;
 
     public TopAdsGroupEditPromoPresenterImpl(TopAdsSearchGroupAdsNameUseCase topAdsSearchGroupAdsNameUseCase,
                                              TopAdsCheckExistGroupUseCase topAdsCheckExistGroupUseCase,
                                              TopAdsEditProductGroupToNewGroupUseCase topAdsEditProductGroupToNewGroupUseCase,
-                                             TopAdsMoveProductGroupToExistGroupUseCase topAdsMoveProductGroupToExistGroupUseCase) {
+                                             TopAdsMoveProductGroupToExistGroupUseCase topAdsMoveProductGroupToExistGroupUseCase,
+                                             TopAdsGetSourceTaggingUseCase topAdsGetSourceTaggingUseCase) {
         super(topAdsSearchGroupAdsNameUseCase, topAdsCheckExistGroupUseCase);
         this.topAdsEditProductGroupToNewGroupUseCase = topAdsEditProductGroupToNewGroupUseCase;
         this.topAdsMoveProductGroupToExistGroupUseCase = topAdsMoveProductGroupToExistGroupUseCase;
+        this.topAdsGetSourceTaggingUseCase = topAdsGetSourceTaggingUseCase;
     }
 
     @Override
@@ -37,10 +44,32 @@ public class TopAdsGroupEditPromoPresenterImpl extends TopAdsManageGroupPromoPre
     }
 
     @Override
-    public void moveToNewProductGroup(String adid, String groupName, String shopID) {
+    public void moveToNewProductGroup(final String adid, final String groupName, final String shopID) {
         getView().showLoading();
-        topAdsEditProductGroupToNewGroupUseCase.execute(TopAdsEditProductGroupToNewGroupUseCase.createRequestParams(adid, groupName, shopID),
-                getSubscriberMoveToNewProductGroup());
+        topAdsGetSourceTaggingUseCase.execute(new Subscriber<TopAdsSourceTaggingModel>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+
+            }
+
+            @Override
+            public void onNext(TopAdsSourceTaggingModel topAdsSourceTaggingModel) {
+                String source = TopAdsNetworkConstant.VALUE_SOURCE_ANDROID;
+
+                if (topAdsSourceTaggingModel != null){
+                    source = topAdsSourceTaggingModel.getSource();
+                }
+
+                topAdsEditProductGroupToNewGroupUseCase.execute(TopAdsEditProductGroupToNewGroupUseCase
+                                .createRequestParams(adid, groupName, shopID, source),
+                        getSubscriberMoveToNewProductGroup());
+            }
+        });
     }
 
     @Override
@@ -55,6 +84,7 @@ public class TopAdsGroupEditPromoPresenterImpl extends TopAdsManageGroupPromoPre
         super.detachView();
         topAdsEditProductGroupToNewGroupUseCase.unsubscribe();
         topAdsMoveProductGroupToExistGroupUseCase.unsubscribe();
+        topAdsGetSourceTaggingUseCase.unsubscribe();
     }
 
     private Subscriber<Boolean> getSubscriberMoveToExistProductGroup() {

@@ -230,6 +230,11 @@ public interface BrowseApi {
             @QueryMap TKPDMapParam<String, Object> requestParams
     );
 
+    @GET(TkpdBaseURL.Ace.PATH_GET_DYNAMIC_ATTRIBUTE_V4)
+    Observable<Response<String>> getDynamicAttributeV4(
+            @QueryMap TKPDMapParam<String, Object> requestParams
+    );
+
     @GET(TkpdBaseURL.Ace.PATH_BROWSE_CATALOG)
     Observable<Response<String>> browseCatalogRevamp(
             @QueryMap TKPDMapParam<String, Object> parameters
