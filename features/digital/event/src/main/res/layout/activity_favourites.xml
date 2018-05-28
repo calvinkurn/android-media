@@ -46,14 +46,14 @@
 
     <ImageView
         android:id="@+id/iv_no_fav"
-        android:layout_width="0dp"
-        android:layout_height="@dimen/dp_250"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/dp_16"
+        android:scaleType="fitXY"
         android:visibility="gone"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tv_favorite_saya"
-        app:layout_constraintWidth_max="@dimen/dp_250"
         app:srcCompat="@drawable/ic_no_fav" />
 
     <TextView

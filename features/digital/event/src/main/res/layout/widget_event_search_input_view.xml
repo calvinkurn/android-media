@@ -32,7 +32,6 @@
             android:layout_weight="1"
             android:background="@null"
             android:ellipsize="end"
-            android:hint="@string/search_input_hint"
             android:imeOptions="actionSearch"
             android:inputType="text"
             android:maxLines="1"
@@ -44,7 +43,7 @@
             android:layout_height="@dimen/dp_16"
             android:background="@null"
             android:visibility="gone"
-            app:srcCompat="@drawable/ic_close_default" />
+            app:srcCompat="@drawable/ic_close_24dp" />
     </LinearLayout>
 
 </FrameLayout>

@@ -225,8 +225,8 @@ public class EventBookTicketPresenter
             selectedViewHolder.setTvTicketCnt(selectedCount);
             selectedViewHolder.setTicketViewColor(getView().getActivity().getResources().getColor(R.color.light_green));
         }
-        if (selectedCount > selectedPackageViewModel.getAvailable() ||
-                selectedCount > selectedPackageViewModel.getMaxQty()) {
+        if (selectedCount >= selectedPackageViewModel.getAvailable() ||
+                selectedCount >= selectedPackageViewModel.getMaxQty()) {
             selectedViewHolder.toggleMaxTicketWarning(View.VISIBLE, selectedPackageViewModel.getSelectedQuantity());
         }
         if (selectedCount < selectedPackageViewModel.getMinQty()) {

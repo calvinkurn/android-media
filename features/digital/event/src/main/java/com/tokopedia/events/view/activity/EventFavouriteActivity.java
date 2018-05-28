@@ -110,14 +110,17 @@ public class EventFavouriteActivity extends TActivity implements EventFavouriteC
 
     @Override
     public void toggleEmptyLayout(int visibility) {
-        title.setVisibility(visibility);
         ivNoFav.setVisibility(visibility);
         tvNoFav.setVisibility(visibility);
         tvFindEvents.setVisibility(visibility);
-        if (visibility == View.VISIBLE)
+        if (visibility == View.VISIBLE) {
             favRecyclerView.setVisibility(View.GONE);
-        else
+            title.setVisibility(View.GONE);
+        }
+        else {
             favRecyclerView.setVisibility(View.VISIBLE);
+            title.setVisibility(View.VISIBLE);
+        }
     }
 
     @OnClick(R2.id.tv_find_events)

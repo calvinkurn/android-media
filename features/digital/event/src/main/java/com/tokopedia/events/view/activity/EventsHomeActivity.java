@@ -346,7 +346,10 @@ public class EventsHomeActivity extends TActivity
             ImageHandler.loadImageCover2(iconView, tempCategoryList.get(i).getMediaURL());
             if (i == 0) {
                 try {
-                    ImageView icon = tabs.getTabAt(i).getCustomView().findViewById(R.id.category_icon);
+                    View view = tabs.getTabAt(i).getCustomView();
+                    ImageView icon = view.findViewById(R.id.category_icon);
+                    TextView tv = view.findViewById(R.id.category_name);
+                    tv.setTextColor(getResources().getColor(R.color.green_nob));
                     icon.setColorFilter(getResources().getColor(R.color.transparent_green_nob));
                 } catch (NullPointerException e) {
                     e.printStackTrace();
