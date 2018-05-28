@@ -395,7 +395,7 @@ public class RegisterInitialFragment extends BaseDaggerFragment
                 com.tokopedia.core.analytics.AppEventTracking.GTMCacheValue.FACEBOOK);
 
         presenter.getFacebookCredential(this, callbackManager);
-        SessionTrackingUtils.registerPageClickFacebook("Facebook");
+        SessionTrackingUtils.registerPageClickFacebook(com.tokopedia.core.analytics.AppEventTracking.GTMCacheValue.FACEBOOK);
 
     }
 
@@ -406,7 +406,7 @@ public class RegisterInitialFragment extends BaseDaggerFragment
 
         Intent intent = new Intent(getActivity(), GoogleSignInActivity.class);
         startActivityForResult(intent, RC_SIGN_IN_GOOGLE);
-        SessionTrackingUtils.registerPageClickGoogle("GoogleSignInActivity");
+        SessionTrackingUtils.registerPageClickGoogle(GoogleSignInActivity.class.getName());
 
     }
 
