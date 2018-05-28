@@ -1,13 +1,9 @@
 package com.tokopedia.core.drawer2.domain.datamanager;
 
-import android.content.Intent;
 import android.text.TextUtils;
 
 import com.tokopedia.core.R;
-import com.tokopedia.core.app.BaseActivity;
-import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.base.domain.RequestParams;
-import com.tokopedia.core.drawer2.data.pojo.ErrorEntity;
 import com.tokopedia.core.drawer2.data.pojo.Notifications;
 import com.tokopedia.core.drawer2.data.pojo.UserData;
 import com.tokopedia.core.drawer2.data.viewmodel.DrawerDeposit;
