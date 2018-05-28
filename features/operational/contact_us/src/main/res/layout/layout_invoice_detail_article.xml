@@ -3,7 +3,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/white">
 
     <LinearLayout
         android:id="@+id/link_bottom"
@@ -38,12 +39,17 @@
 
     <ScrollView
         android:layout_above="@id/link_bottom"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_alignParentTop="true"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
 
         <android.support.constraint.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:paddingRight="@dimen/margin_default"
+            android:paddingLeft ="@dimen/margin_default"
+            android:paddingTop= "@dimen/margin_default"
+            android:paddingBottom="0dp">
 
             <TextView
                 android:id="@+id/txt_title"
@@ -60,13 +66,8 @@
 
             <WebView
                 android:id="@+id/txt_detail"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginLeft="@dimen/margin_default"
-                android:layout_marginRight="@dimen/margin_default"
-                android:layout_marginTop="@dimen/margin_default"
-                android:lineSpacingExtra="6sp"
-                android:textAlignment="viewStart"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:textColor="@color/black3_text"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
