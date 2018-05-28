@@ -21,6 +21,7 @@ import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.checkout.R;
 import com.tokopedia.checkout.view.adapter.CartListAdapter;
 import com.tokopedia.checkout.view.holderitemdata.CartItemHolderData;
+import com.tokopedia.design.component.TextViewCompat;
 
 import java.text.NumberFormat;
 import java.util.Locale;
@@ -62,9 +63,9 @@ public class CartListItemViewHolder extends RecyclerView.ViewHolder {
     private TextView tvErrorFormValidation;
     private TextView tvErrorFormRemarkValidation;
     private FrameLayout layoutError;
-    private TextView tvError;
+    private TextViewCompat tvError;
     private FrameLayout layoutWarning;
-    private TextView tvWarning;
+    private TextViewCompat tvWarning;
 
     private CartItemHolderData cartItemHolderData;
     private QuantityTextwatcherListener quantityTextwatcherListener;

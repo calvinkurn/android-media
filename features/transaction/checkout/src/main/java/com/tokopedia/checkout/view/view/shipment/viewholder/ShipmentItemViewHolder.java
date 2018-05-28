@@ -32,6 +32,7 @@ import com.tokopedia.checkout.view.view.shipment.ShipmentAdapter;
 import com.tokopedia.checkout.view.view.shipment.ShipmentAdapterActionListener;
 import com.tokopedia.checkout.view.view.shipment.viewmodel.ShipmentCartItemModel;
 import com.tokopedia.design.bottomsheet.BottomSheetView;
+import com.tokopedia.design.component.TextViewCompat;
 import com.tokopedia.design.pickuppoint.PickupPointLayout;
 import com.tokopedia.design.utils.CurrencyFormatUtil;
 import com.tokopedia.logisticdata.data.constant.InsuranceConstant;
@@ -64,9 +65,9 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder {
     private ShipmentAdapterActionListener mActionListener;
     private ShipmentAdapter shipmentAdapter;
 
-    private TextView tvError;
+    private TextViewCompat tvError;
     private FrameLayout layoutError;
-    private TextView tvWarning;
+    private TextViewCompat tvWarning;
     private FrameLayout layoutWarning;
     private TextView tvTextSentBy;
     private TextView tvShopName;

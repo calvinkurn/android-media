@@ -15,19 +15,18 @@
         android:foreground="?selectableItemBackground"
         tools:visibility="gone">
 
-        <TextView
+        <com.tokopedia.design.component.TextViewCompat
             android:id="@+id/textview_voucher"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="start"
-            android:drawableLeft="@drawable/ic_kupon"
             android:drawablePadding="@dimen/dp_8"
-            android:drawableStart="@drawable/ic_kupon"
             android:foreground="?selectableItemBackground"
             android:gravity="center_vertical"
             android:padding="@dimen/dp_16"
             android:text="@string/use_promo_code_or_coupon"
             android:textColor="@color/tkpd_main_green"
+            app:drawableLeftCompat="@drawable/ic_kupon"
             tools:text="Gunakan Kode Promo atau Kupon" />
 
     </FrameLayout>
