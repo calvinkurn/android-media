@@ -42,11 +42,11 @@ public class DefaultImageSearchSubscriber<D2 extends BaseDiscoveryContract.View>
     public void onError(Throwable e) {
 
         if (e instanceof UnknownHostException || e instanceof ConnectException) {
-            discoveryView.showErrorNetwork(ErrorNetMessage.MESSAGE_ERROR_NO_CONNECTION_FULL);
+            discoveryView.showTimeoutErrorNetwork(ErrorNetMessage.MESSAGE_ERROR_NO_CONNECTION_FULL);
         } else if (e instanceof SocketTimeoutException) {
             discoveryView.showErrorNetwork(ErrorNetMessage.MESSAGE_ERROR_TIMEOUT);
         } else if (e instanceof ResponseDataNullException) {
-            discoveryView.onHandleInvalidImageSearchResponse();
+            discoveryView.showErrorNetwork(e.getMessage());
         } else if (e instanceof HttpErrorException) {
             discoveryView.showErrorNetwork(e.getMessage());
         } else if (e instanceof ServerErrorRequestDeniedException) {

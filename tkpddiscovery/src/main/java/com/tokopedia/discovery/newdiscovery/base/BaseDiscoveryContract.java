@@ -41,6 +41,8 @@ public interface BaseDiscoveryContract {
 
         void showErrorNetwork(String message);
 
+        void showTimeoutErrorNetwork(String message);
+
         void onHandleImageSearchResponseSuccess();
     }
 

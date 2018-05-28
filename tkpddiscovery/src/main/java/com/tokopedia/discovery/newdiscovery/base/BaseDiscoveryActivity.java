@@ -160,6 +160,11 @@ public class BaseDiscoveryActivity
     }
 
     @Override
+    public void showTimeoutErrorNetwork(String message) {
+
+    }
+
+    @Override
     public void onHandleImageSearchResponseSuccess() {
 
     }
