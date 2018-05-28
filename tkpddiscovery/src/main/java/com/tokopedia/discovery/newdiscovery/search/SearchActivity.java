@@ -140,6 +140,7 @@ public class SearchActivity extends DiscoveryActivity
         } else {
             forceSwipeToShop = getIntent().getBooleanExtra(EXTRA_FORCE_SWIPE_TO_SHOP, false);
         }
+        bottomSheetFilterView.initFilterBottomSheet(savedInstanceState);
         handleIntent(getIntent());
     }
 
@@ -174,8 +175,6 @@ public class SearchActivity extends DiscoveryActivity
                 intent.getBooleanExtra(FROM_APP_SHORTCUTS, false)) {
             UnifyTracking.eventBeliLongClick();
         }
-        bottomSheetFilterView.initFilterBottomSheet(savedInstanceState);
-
         handleImageUri(intent);
     }
 
