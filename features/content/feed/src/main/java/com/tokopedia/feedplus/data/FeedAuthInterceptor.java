@@ -19,6 +19,8 @@ import javax.inject.Inject;
 public class FeedAuthInterceptor extends TkpdAuthInterceptor {
 
     private static final String HEADER_TKPD_USER_ID = "Tkpd-UserId";
+    private static final String HEADER_ACC_AUTH = "Accounts-Authorization";
+    private static final String BEARER = "Bearer ";
 
     @Inject
     public FeedAuthInterceptor(@ApplicationContext Context context,
@@ -42,6 +44,7 @@ public class FeedAuthInterceptor extends TkpdAuthInterceptor {
                 userSession.getUserId(),
                 userSession.getDeviceId());
         headerMap.put(HEADER_TKPD_USER_ID, userSession.getUserId());
+        headerMap.put(HEADER_ACC_AUTH, BEARER + userSession.getAccessToken());
         return headerMap;
     }
 }
