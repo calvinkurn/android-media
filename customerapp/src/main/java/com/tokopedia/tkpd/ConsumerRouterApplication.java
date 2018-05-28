@@ -232,7 +232,7 @@ import com.tokopedia.tkpd.react.DaggerReactNativeComponent;
 import com.tokopedia.tkpd.react.ReactNativeComponent;
 import com.tokopedia.tkpd.redirect.RedirectCreateShopActivity;
 
-import com.tokopedia.tkpd.tkpdcontactus.home.view.ContactUsHomeActivity;
+import com.tokopedia.contactus.home.view.ContactUsHomeActivity;
 
 import com.tokopedia.tkpd.tkpdreputation.ReputationRouter;
 import com.tokopedia.tkpd.tkpdreputation.TkpdReputationInternalRouter;
@@ -262,6 +262,8 @@ import com.tokopedia.usecase.UseCase;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -1273,6 +1275,12 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @Override
     public WalletUserSession getTokoCashSession() {
         return new WalletUserSessionImpl(this);
+    }
+
+    @Override
+    public Intent getWebviewActivityWithIntent(Context context, String url) {
+            return SimpleWebViewWithFilePickerActivity.getIntent(context,
+                    url);
     }
 
     @Override
