@@ -481,7 +481,7 @@ public class DigitalCheckETollBalanceNFCActivity extends BaseSimpleActivity
     }
 
     @OnPermissionDenied(Manifest.permission.NFC)
-    void showDeniedForCamera() {
+    void showDeniedForNFC() {
         Toast.makeText(this, getStringResource(R.string.nfc_permission_denied_message),
                 Toast.LENGTH_SHORT).show();
     }
