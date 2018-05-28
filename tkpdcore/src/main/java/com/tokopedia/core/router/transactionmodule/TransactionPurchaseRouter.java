@@ -6,7 +6,11 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 
+import com.tokopedia.core.home.SimpleWebViewWithFilePickerActivity;
 import com.tokopedia.core.util.RouterUtils;
+
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 
 /**
  * Created by Nathaniel on 11/9/2016.
@@ -16,6 +20,8 @@ public class TransactionPurchaseRouter {
 
     private static final String TRANSACTION_PURCHASE_ACTIVITY
             = "com.tokopedia.transaction.purchase.activity.PurchaseActivity";
+    private static final String TRANSACTION_ORDER_LIST_ACTIVITY
+            = "com.tokopedia.transaction.orders.orderlist.view.activity.OrderListActivity";
     private static final String TRANSACTION_TX_LIST_FRAGMENT
             = "com.tokopedia.transaction.purchase.fragment.TxListFragment";
 
@@ -50,6 +56,12 @@ public class TransactionPurchaseRouter {
     public static Intent createIntentTxSummary(Context context) {
         Intent intent = RouterUtils.getActivityIntent(context, TRANSACTION_PURCHASE_ACTIVITY);
         intent.putExtra(EXTRA_STATE_TAB_POSITION, TAB_POSITION_PURCHASE_SUMMARY);
+        return intent;
+    }
+
+    public static Intent createIntentOrderListSummary(Context context) {
+        Intent intent = RouterUtils.getActivityIntent(context, TRANSACTION_ORDER_LIST_ACTIVITY);
+        intent.putExtra(EXTRA_STATE_TAB_POSITION, TAB_POSITION_PURCHASE_ALL_ORDER);
         return intent;
     }
 
@@ -113,5 +125,14 @@ public class TransactionPurchaseRouter {
         bundle.putBoolean(ARG_PARAM_EXTRA_INSTANCE_FROM_NOTIFICATION, true);
         fragment.setArguments(bundle);
         return fragment;
+    }
+
+    public static void startWebViewActivity(Context context, String url) {
+        try {
+            context.startActivity(SimpleWebViewWithFilePickerActivity.getIntent(context,
+                    URLEncoder.encode(url, "UTF-8")));
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
     }
 }

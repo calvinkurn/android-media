@@ -14,6 +14,8 @@ public interface BottomNavigationListener {
                                AHBottomNavigation.OnTabSelectedListener tabSelectedListener);
     void showBottomNavigation();
     void hideBottomNavigation();
+    void enableAutoShowBottomNav();
+    void disableAutoShowBottomNav();
 
     void refreshBottomNavigationIcon(List<AHBottomNavigationItem> bottomNavigationItems);
 }

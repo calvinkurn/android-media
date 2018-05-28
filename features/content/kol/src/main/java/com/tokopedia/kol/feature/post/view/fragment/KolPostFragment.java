@@ -217,6 +217,13 @@ public class KolPostFragment extends BaseDaggerFragment implements
     public void updateCursor(String lastCursor) {
         canLoadMore = !TextUtils.isEmpty(lastCursor);
         presenter.updateCursor(lastCursor);
+
+        if (!canLoadMore
+                && !adapter.isEmpty()
+                && adapter.getList().get(0) instanceof KolPostViewModel) {
+            KolPostViewModel kolPostViewModel = (KolPostViewModel) adapter.getList().get(0);
+            adapter.showExplore(kolPostViewModel.getName());
+        }
     }
 
     @Override
