@@ -11,6 +11,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomSheetDialog;
@@ -121,6 +122,7 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
     private ActionMode actionMode;
     private Boolean goldMerchant;
     private boolean isOfficialStore;
+    private String shopDomain;
     private UserSession userSession;
 
     private BroadcastReceiver addProductReceiver = new BroadcastReceiver() {
@@ -497,9 +499,10 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
     }
 
     @Override
-    public void onSuccessGetShopInfo(boolean goldMerchant, boolean officialStore) {
+    public void onSuccessGetShopInfo(boolean goldMerchant, boolean officialStore, String shopDomain) {
         this.goldMerchant = goldMerchant;
         isOfficialStore = officialStore;
+        this.shopDomain = shopDomain;
     }
 
     @Override
@@ -777,16 +780,20 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
     }
 
     public void downloadBitmap(final ProductManageViewModel productManageViewModel){
-        ImageHandler.loadImageWithTarget(getActivity(), productManageViewModel.getImageFullUrl(), new SimpleTarget<Bitmap>(2048,2048) {
+        showLoadingProgress();
+        ImageHandler.loadImageWithTarget(getActivity(), productManageViewModel.getImageFullUrl(), new SimpleTarget<Bitmap>(2048, 2048) {
             @Override
             public void onResourceReady(Bitmap bitmap, GlideAnimation<? super Bitmap> glideAnimation) {
+                String price = (productManageViewModel.getProductCurrencyId() == CurrencyTypeDef.TYPE_USD) ? productManageViewModel.getProductPricePlain() : productManageViewModel.getProductPrice();
+                String cashback = (productManageViewModel.getProductCashback() > 0) ? getString(R.string.sticker_cashback, productManageViewModel.getProductCashback()) : "";
                 AddSticker addSticker = new AddSticker.Builder()
-                        .setName(productManageViewModel.getProductName())
-                        .setPrice(productManageViewModel.getProductPrice())
-                        .setLogo(BitmapFactory.decodeResource(getResources(), R.drawable.ic_new_logo))
+                        .setName(productManageViewModel.getProductName() )
+                        .setPrice(productManageViewModel.getProductCurrencySymbol() + " " + price)
+                        .setShop_link(getString(R.string.sticker_shop_link, shopDomain))
+                        .setCashback(cashback)
                         .build();
 
-                Bitmap newImage = addSticker.addStickerToBitmap(bitmap, getActivity());
+                Bitmap newImage = addSticker.processStickerToImage(bitmap, getActivity());
                 File file = FileUtils.writeImageToTkpdPath(newImage);
 
                 ShareData shareData = ShareData.Builder.aShareData()
@@ -794,7 +801,7 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
                         .setTextContent(productManageViewModel.getProductName())
                         .setDescription(productManageViewModel.getProductName())
                         .setImgUri(productManageViewModel.getImageFullUrl())
-                        .setPrice(CurrencyFormatUtil.convertPriceValue(Double.valueOf(productManageViewModel.getProductPrice()), true))
+                        .setPrice(productManageViewModel.getProductPrice())
                         .setUri(productManageViewModel.getProductUrl())
                         .setType(ShareData.PRODUCT_TYPE)
                         .setId(productManageViewModel.getProductId())
@@ -804,6 +811,15 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
                 newImage.recycle();
 
                 goToShareProduct(shareData);
+                hideLoadingProgress();
+            }
+
+            @Override
+            public void onLoadFailed(Exception e, Drawable errorDrawable) {
+                super.onLoadFailed(e, errorDrawable);
+                hideLoadingProgress();
+                NetworkErrorHelper.showSnackbar(getActivity(), getString(R.string.msg_network_error));
+                e.printStackTrace();
             }
         });
     }
