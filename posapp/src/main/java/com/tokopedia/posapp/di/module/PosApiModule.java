@@ -49,16 +49,15 @@ public class PosApiModule {
         OkHttpRetryPolicy okHttpRetryPolicy = OkHttpRetryPolicy.createdDefaultOkHttpRetryPolicy();
         OkHttpClient.Builder builder = new OkHttpClient.Builder();
 
-        CacheApiInterceptor cacheApiInterceptor = new CacheApiInterceptor();
-        cacheApiInterceptor.setResponseValidator(new PosCacheApiResponseValidator(gson));
+//        CacheApiInterceptor cacheApiInterceptor = new CacheApiInterceptor();
+//        cacheApiInterceptor.setResponseValidator(new PosCacheApiResponseValidator(gson));
 
         builder.readTimeout(okHttpRetryPolicy.readTimeout, TimeUnit.SECONDS)
                 .writeTimeout(okHttpRetryPolicy.writeTimeout, TimeUnit.SECONDS)
                 .connectTimeout(okHttpRetryPolicy.connectTimeout, TimeUnit.SECONDS)
                 .addInterceptor(posAuthInterceptor)
                 .addInterceptor(fingerprintInterceptor)
-                .addInterceptor(httpLoggingInterceptor)
-                .addInterceptor(cacheApiInterceptor);
+                .addInterceptor(httpLoggingInterceptor);
 
         if (GlobalConfig.isAllowDebuggingTools()) {
             builder.addInterceptor(new ChuckInterceptor(context)).addInterceptor(new DebugInterceptor());
