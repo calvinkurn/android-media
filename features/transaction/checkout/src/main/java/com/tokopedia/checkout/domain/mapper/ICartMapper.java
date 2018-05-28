@@ -1,5 +1,7 @@
 package com.tokopedia.checkout.domain.mapper;
 
+import android.content.Context;
+
 import com.tokopedia.transactiondata.entity.response.cartlist.CartDataListResponse;
 import com.tokopedia.transactiondata.entity.response.deletecart.DeleteCartDataResponse;
 import com.tokopedia.transactiondata.entity.response.resetcart.ResetCartDataResponse;
@@ -15,7 +17,7 @@ import com.tokopedia.checkout.domain.datamodel.cartlist.UpdateCartData;
 
 public interface ICartMapper {
 
-    CartListData convertToCartItemDataList(CartDataListResponse cartDataListResponse);
+    CartListData convertToCartItemDataList(Context context, CartDataListResponse cartDataListResponse);
 
     DeleteCartData convertToDeleteCartData(DeleteCartDataResponse deleteCartDataResponse);
 

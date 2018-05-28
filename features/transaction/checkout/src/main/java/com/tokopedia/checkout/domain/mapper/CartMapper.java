@@ -1,5 +1,9 @@
 package com.tokopedia.checkout.domain.mapper;
 
+import android.content.Context;
+import android.text.TextUtils;
+
+import com.tokopedia.checkout.R;
 import com.tokopedia.checkout.domain.datamodel.cartlist.AutoApplyData;
 import com.tokopedia.checkout.domain.datamodel.cartlist.WholesalePrice;
 import com.tokopedia.transactiondata.entity.response.cartlist.CartDataListResponse;
@@ -38,15 +42,26 @@ public class CartMapper implements ICartMapper {
     }
 
     @Override
-    public CartListData convertToCartItemDataList(CartDataListResponse cartDataListResponse) {
+    public CartListData convertToCartItemDataList(Context context, CartDataListResponse cartDataListResponse) {
         CartListData cartListData = new CartListData();
-        cartListData.setError(!mapperUtil.isEmpty(cartDataListResponse.getErrors()));
-        cartListData.setErrorMessage(mapperUtil.convertToString(cartDataListResponse.getErrors()));
+        String errorMessage = mapperUtil.convertToString(cartDataListResponse.getErrors());
+        boolean hasError = false;
+        for (CartList cartList : cartDataListResponse.getCartList()) {
+            if (cartList.getErrors() != null && cartList.getErrors().size() > 0) {
+                hasError = true;
+                if (TextUtils.isEmpty(errorMessage)) {
+                    errorMessage = mapperUtil.convertToString(cartList.getErrors());
+                }
+                break;
+            }
+        }
+        cartListData.setError(!TextUtils.isEmpty(errorMessage) || hasError);
+        cartListData.setErrorMessage(errorMessage);
         if (cartListData.isError()) {
             cartListData.setCartTickerErrorData(
                     new CartTickerErrorData.Builder()
-                            .errorInfo("Terjadi kendala pada pesanan Anda, lihat di bawah untuk info lebih lengkap.")
-                            .actionInfo("Hapus produk yang berkendala")
+                            .errorInfo(context.getString(R.string.cart_error_message))
+                            .actionInfo(context.getString(R.string.cart_error_action))
                             .build()
             );
         }

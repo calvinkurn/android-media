@@ -6,8 +6,6 @@ import android.app.IntentService;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.v4.app.DialogFragment;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SimpleItemAnimator;
@@ -249,8 +247,7 @@ public class CartFragment extends BaseCheckoutFragment implements CartListAdapte
         cartPageAnalytics.eventClickCartClickTrashBin();
         ArrayList<CartItemData> cartItemData =
                 new ArrayList<>(Collections.singletonList(cartItemHolderData.getCartItemData()));
-        ArrayList<CartItemData> emptyList = new ArrayList<>(Collections.<CartItemData>emptyList());
-        showDeleteCartItemDialog(cartItemData, emptyList);
+        showDeleteCartItemDialog(cartItemData);
     }
 
     @Override
@@ -361,7 +358,13 @@ public class CartFragment extends BaseCheckoutFragment implements CartListAdapte
         cartPageAnalytics.enhancedECommerceCartHapusProdukBerkendala(
                 dPresenter.generateCartDataAnalytics(getCartDataList())
         );
-        showDeleteCartItemDialog(getCartDataList(), new ArrayList<CartItemData>());
+        List<CartItemData> toBeDeletedCartItem = new ArrayList<>();
+        for (CartItemData cartItemData : getCartDataList()) {
+            if (cartItemData.isError()) {
+                toBeDeletedCartItem.add(cartItemData);
+            }
+        }
+        showDeleteCartItemDialog(toBeDeletedCartItem);
     }
 
     @Override
@@ -814,14 +817,40 @@ public class CartFragment extends BaseCheckoutFragment implements CartListAdapte
         NetworkErrorHelper.showSnackbar(getActivity(), getActivity().getString(R.string.default_request_error_unknown));
     }
 
-    void showDeleteCartItemDialog(List<CartItemData> cartItemDataList, List<CartItemData> emptyData) {
-        DialogFragment dialog = CartRemoveItemDialog.newInstance(
-                cartItemDataList,
-                emptyData,
-                getCallbackActionDialogRemoveCart());
-        FragmentTransaction ft = getFragmentManager().beginTransaction();
-        ft.add(dialog, CartRemoveItemDialog.DIALOG_FRAGMENT_TAG);
-        ft.commitAllowingStateLoss();
+    void showDeleteCartItemDialog(final List<CartItemData> cartItemDatas) {
+        final com.tokopedia.design.component.Dialog dialog = new com.tokopedia.design.component.Dialog(getActivity(), com.tokopedia.design.component.Dialog.Type.LONG_PROMINANCE);
+        dialog.setTitle(getString(R.string.label_dialog_title_delete_item));
+        dialog.setDesc(getString(R.string.label_dialog_message_remove_cart_item));
+        dialog.setBtnOk(getString(R.string.label_dialog_action_delete_and_add_to_wishlist));
+        dialog.setBtnCancel(getString(R.string.label_dialog_action_delete));
+        dialog.setOnOkClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (cartItemDatas != null && cartItemDatas.size() > 0) {
+                    dPresenter.processDeleteAndRefreshCart(cartItemDatas, true);
+                    cartPageAnalytics.enhancedECommerceRemoveCartAddWishList(
+                            dPresenter.generateCartDataAnalytics(cartItemDatas)
+                    );
+                }
+                dialog.dismiss();
+            }
+        });
+        dialog.setOnCancelClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (cartItemDatas != null && cartItemDatas.size() > 0) {
+                    dPresenter.processDeleteAndRefreshCart(cartItemDatas, false);
+                    cartPageAnalytics.enhancedECommerceRemoveCartNotWishList(
+                            dPresenter.generateCartDataAnalytics(cartItemDatas)
+                    );
+                }
+                dialog.dismiss();
+            }
+        });
+        dialog.getAlertDialog().setCancelable(true);
+        dialog.getAlertDialog().setCanceledOnTouchOutside(true);
+        dialog.show();
+
     }
 
     @NonNull
