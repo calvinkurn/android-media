@@ -72,7 +72,6 @@ import com.tokopedia.core.router.productdetail.passdata.ProductPass;
 import com.tokopedia.core.router.reactnative.IReactNativeRouter;
 import com.tokopedia.core.router.transactionmodule.TransactionCartRouter;
 import com.tokopedia.core.router.transactionmodule.passdata.ProductCartPass;
-import com.tokopedia.core.share.ShareActivity;
 import com.tokopedia.core.share.ShareBottomSheet;
 import com.tokopedia.core.util.AppIndexHandler;
 import com.tokopedia.core.util.GlobalConfig;

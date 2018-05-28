@@ -29,7 +29,6 @@ import com.tokopedia.core.router.SellerAppRouter;
 import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.router.productdetail.ProductDetailRouter;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
-import com.tokopedia.core.share.ShareActivity;
 import com.tokopedia.core.share.ShareBottomSheet;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.webview.listener.DeepLinkWebViewHandleListener;
