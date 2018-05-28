@@ -64,6 +64,13 @@ public class TrainFilterSearchActivity extends TrainBaseActivity
         updateToolbarBackIcon();
         updateTitle("Filter");
 
+        filterButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                onFilterButtonClick();
+            }
+        });
+
         DaggerTrainSearchComponent.builder()
                 .trainComponent(TrainComponentUtils.getTrainComponent(getApplication()))
                 .build()
@@ -146,6 +153,17 @@ public class TrainFilterSearchActivity extends TrainBaseActivity
         }
     }
 
+    private void onFilterButtonClick() {
+        if (getSupportFragmentManager().getBackStackEntryCount() == 0) {
+            Intent intent = new Intent();
+            intent.putExtra("model_filter", filterSearchData);
+            setResult(Activity.RESULT_OK, intent);
+            finish();
+        } else {
+            onBackPressed(true);
+        }
+    }
+
     private void updateToolbarBackIcon() {
         getSupportActionBar().setHomeAsUpIndicator(ContextCompat.getDrawable(this,
                 com.tokopedia.abstraction.R.drawable.ic_close_default));
@@ -163,6 +181,8 @@ public class TrainFilterSearchActivity extends TrainBaseActivity
             } else {
                 super.onBackPressed();
             }
+        } else {
+            super.onBackPressed();
         }
     }
 

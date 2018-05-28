@@ -1,5 +1,7 @@
 package com.tokopedia.train.search.presentation.fragment;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -29,6 +31,7 @@ import com.tokopedia.train.homepage.presentation.model.TrainSearchPassDataViewMo
 import com.tokopedia.train.search.constant.TrainSortOption;
 import com.tokopedia.train.search.di.DaggerTrainSearchComponent;
 import com.tokopedia.train.search.di.TrainSearchComponent;
+import com.tokopedia.train.search.domain.FilterSearchData;
 import com.tokopedia.train.search.domain.GetScheduleUseCase;
 import com.tokopedia.train.search.presentation.activity.TrainFilterSearchActivity;
 import com.tokopedia.train.search.presentation.adapter.TrainSearchAdapterTypeFactory;
@@ -133,8 +136,8 @@ public abstract class TrainSearchFragment extends BaseListFragment<TrainSchedule
         filterAndSortBottomAction.setButton1OnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivity(TrainFilterSearchActivity.getCallingIntent(getActivity(),
-                        getRequestParam().getParameters(), getScheduleVariant()));
+                startActivityForResult(TrainFilterSearchActivity.getCallingIntent(getActivity(),
+                        getRequestParam().getParameters(), getScheduleVariant()), 133);
             }
         });
         filterAndSortBottomAction.setButton2OnClickListener(new View.OnClickListener() {
@@ -284,4 +287,14 @@ public abstract class TrainSearchFragment extends BaseListFragment<TrainSchedule
         return selectedSortOption == sortOption;
     }
 
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == Activity.RESULT_OK && requestCode == 133) {
+            FilterSearchData filterSearchData = data.getExtras().getParcelable("model_filter");
+            presenter.getFilteredAndSortedSchedules(filterSearchData.getMinPrice(),
+                    filterSearchData.getMaxPrice(), filterSearchData.getTrainClass(),
+                    filterSearchData.getTrains(), TrainSortOption.NO_PREFERENCE);
+        }
+    }
 }
