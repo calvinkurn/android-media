@@ -3,6 +3,7 @@ package com.tokopedia.network.interceptor;
 import android.content.Context;
 
 import com.tokopedia.network.NetworkRouter;
+import com.tokopedia.network.refreshtoken.AccessTokenRefresh;
 import com.tokopedia.network.utils.AuthUtil;
 import com.tokopedia.network.utils.CommonUtils;
 import com.tokopedia.user.session.UserSession;
@@ -194,7 +195,7 @@ public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
         return AuthUtil.generateHeaders(path, strParam, method, authKey, contentTypeHeader, userSession.getUserId());
     }
 
-    private void generateHeader(Map<String, String> authHeaders, Request originRequest, Request.Builder newRequest) {
+    protected void generateHeader(Map<String, String> authHeaders, Request originRequest, Request.Builder newRequest) {
         for (Map.Entry<String, String> entry : authHeaders.entrySet()) {
             newRequest.addHeader(entry.getKey(), entry.getValue());
         }
@@ -350,8 +351,16 @@ public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
        // TODO
     }
 
-    protected void refreshToken() throws IOException {
-        // TODO
+    protected Response refreshToken(Chain chain, Response response)  {
+        AccessTokenRefresh accessTokenRefresh = new AccessTokenRefresh();
+        try {
+            accessTokenRefresh.refreshToken(context, userSession, networkRouter);
+            Request newest = recreateRequestWithNewAccessToken(chain);
+            return checkShowForceLogout(chain, newest);
+        } catch (IOException e) {
+            e.printStackTrace();
+            return response;
+        }
     }
 
     private Request recreateRequestWithNewAccessToken(Chain chain) {
@@ -375,9 +384,7 @@ public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
                     return checkShowForceLogout(chain, newestRequest);
                 }
             } else if (isUnauthorized(finalRequest, response)) {
-                refreshToken();
-                Request newest = recreateRequestWithNewAccessToken(chain);
-                return checkShowForceLogout(chain, newest);
+                return refreshToken(chain, response);
             } else if (isInvalidGrantWhenRefreshToken(finalRequest, response)) {
                 networkRouter.logInvalidGrant(response);
                 return response;

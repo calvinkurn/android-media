@@ -19,6 +19,9 @@ public class UserSession {
     private static final String ACCESS_TOKEN = "ACCESS_TOKEN";
     private static final String REFRESH_TOKEN = "REFRESH_TOKEN";
     private static final String PROFILE_PICTURE = "PROFILE_PICTURE";
+    private static final String REFRESH_TOKEN_KEY = "REFRESH_TOKEN_KEY";
+    private static final String KEY_IV = "tokopedia1234567";
+    private static final String TOKEN_TYPE = "TOKEN_TYPE";
 
     private Context context;
 
@@ -78,5 +81,26 @@ public class UserSession {
         SharedPreferences sharedPrefs = context.getSharedPreferences(LOGIN_SESSION,
                 Context.MODE_PRIVATE);
         return sharedPrefs.getString(PROFILE_PICTURE, "");
+    }
+
+    public String getRefreshTokenIV() {
+        SharedPreferences sharedPrefs = context.getSharedPreferences(LOGIN_SESSION, Context.MODE_PRIVATE);
+        return sharedPrefs.getString(REFRESH_TOKEN_KEY, KEY_IV);
+    }
+
+    public void clearToken() {
+        SharedPreferences sharedPrefs = context.getSharedPreferences(LOGIN_SESSION, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPrefs.edit();
+        editor.putString(TOKEN_TYPE, null);
+        editor.putString(ACCESS_TOKEN, null);
+        editor.apply();
+    }
+
+    public void setToken(String accessToken, String tokenType) {
+        SharedPreferences sharedPrefs = context.getSharedPreferences(LOGIN_SESSION, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPrefs.edit();
+        editor.putString(ACCESS_TOKEN, accessToken);
+        editor.putString(TOKEN_TYPE, tokenType);
+        editor.apply();
     }
 }
