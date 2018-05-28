@@ -44,15 +44,10 @@ public class TkpdOkHttpBuilder {
         return this;
     }
 
-    public TkpdOkHttpBuilder setOkHttpRetryPolicy(OkHttpRetryPolicy retryPolicy) {
-        builder.readTimeout(retryPolicy.readTimeout, TimeUnit.SECONDS);
-        builder.connectTimeout(retryPolicy.connectTimeout, TimeUnit.SECONDS);
-        builder.writeTimeout(retryPolicy.writeTimeout, TimeUnit.SECONDS);
-        for (Interceptor interceptor : builder.interceptors()) {
-            if (interceptor instanceof TkpdBaseInterceptor) {
-                ((TkpdBaseInterceptor) interceptor).setMaxRetryAttempt(retryPolicy.maxRetryAttempt);
-            }
-        }
+    public TkpdOkHttpBuilder setOkHttpRetryPolicy() {
+        builder.readTimeout(45, TimeUnit.SECONDS);
+        builder.connectTimeout(45, TimeUnit.SECONDS);
+        builder.writeTimeout(45, TimeUnit.SECONDS);
 
         return this;
     }
@@ -66,6 +61,7 @@ public class TkpdOkHttpBuilder {
     }
 
     public OkHttpClient build() {
+        setOkHttpRetryPolicy();
         addDebugInterceptor();
         return builder.build();
     }

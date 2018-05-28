@@ -1867,4 +1867,14 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         return FingerprintModelGenerator.generateFingerprintModel(this);
     }
 
+    @Override
+    public void doRelogin(String newAccessToken) {
+        SessionRefresh sessionRefresh = new SessionRefresh(newAccessToken);
+        try {
+            sessionRefresh.gcmUpdate();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
 }

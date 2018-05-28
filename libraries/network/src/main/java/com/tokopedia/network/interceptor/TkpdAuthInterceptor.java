@@ -347,8 +347,23 @@ public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
         }
     }
 
-    protected void refreshTokenAndGcmUpdate() throws IOException {
-       // TODO
+    protected Response refreshTokenAndGcmUpdate(Chain chain, Response response, Request finalRequest) throws IOException {
+        AccessTokenRefresh accessTokenRefresh = new AccessTokenRefresh();
+        try {
+            String newAccessToken = accessTokenRefresh.refreshToken(context, userSession, networkRouter);
+            networkRouter.doRelogin(newAccessToken);
+
+            if (finalRequest.header(AUTHORIZATION).contains(BEARER)) {
+                Request newestRequest = recreateRequestWithNewAccessToken(chain);
+                return checkShowForceLogout(chain, newestRequest);
+            } else {
+                Request newestRequest = recreateRequestWithNewAccessTokenAccountsAuth(chain);
+                return checkShowForceLogout(chain, newestRequest);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+            return response;
+        }
     }
 
     protected Response refreshToken(Chain chain, Response response)  {
@@ -375,14 +390,7 @@ public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
             IOException {
         try {
             if (isNeedGcmUpdate(response)) {
-                refreshTokenAndGcmUpdate();
-                if (finalRequest.header(HEADER_PARAM_AUTHORIZATION).contains(HEADER_PARAM_BEARER)) {
-                    Request newestRequest = recreateRequestWithNewAccessToken(chain);
-                    return checkShowForceLogout(chain, newestRequest);
-                } else {
-                    Request newestRequest = recreateRequestWithNewAccessTokenAccountsAuth(chain);
-                    return checkShowForceLogout(chain, newestRequest);
-                }
+                return refreshTokenAndGcmUpdate(chain, response, finalRequest);
             } else if (isUnauthorized(finalRequest, response)) {
                 return refreshToken(chain, response);
             } else if (isInvalidGrantWhenRefreshToken(finalRequest, response)) {

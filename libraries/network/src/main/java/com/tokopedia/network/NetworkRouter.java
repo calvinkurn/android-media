@@ -28,4 +28,6 @@ public interface NetworkRouter {
 
     FingerprintModel getFingerprintModel();
 
+    void doRelogin(String newAccessToken);
+
 }
