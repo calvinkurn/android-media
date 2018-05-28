@@ -12,6 +12,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.beloo.widget.chipslayoutmanager.ChipsLayoutManager;
+import com.crashlytics.android.Crashlytics;
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.TActivity;
@@ -41,6 +42,7 @@ public class VariantActivity extends TActivity  implements VariantOptionAdapter.
     public static final int SELECTED_VARIANT_RESULT = 99;
     public static final int SELECTED_VARIANT_RESULT_TO_BUY = 98;
     public static final int KILL_PDP_BACKGROUND = 97;
+    private static final String CRASHLYTIC_VARIANT_TAG = "CRASHLYTIC VARIANT";
 
     private TextView topBarTitle;
     private ImageView productImage;
@@ -267,10 +269,18 @@ public class VariantActivity extends TActivity  implements VariantOptionAdapter.
             defaultChild = productVariant.getChildFromProductId(productVariant.getDefaultChild());
         }
 
-        if (defaultChild != null && TextUtils.isEmpty(defaultChild.getPicture().getThumbnail())) {
-            mainImage = new String (productDetailData.getProductImages().get(0).getImageSrc());
-        } else if (productDetailData.getProductImages().size()>1) {
-            mainImage = new String (productDetailData.getProductImages().get(1).getImageSrc());
+        try {
+            if (defaultChild != null && TextUtils.isEmpty(defaultChild.getPicture().getThumbnail())) {
+                mainImage = productDetailData.getProductImages().get(0).getImageSrc();
+            } else if (productDetailData.getProductImages().size()>1) {
+                mainImage = productDetailData.getProductImages().get(1).getImageSrc();
+            }
+        } catch (Exception e) {
+            Crashlytics.log(
+                    0,
+                    CRASHLYTIC_VARIANT_TAG,
+                    String.valueOf(productDetailData.getInfo().getProductId()) + " " + e.getMessage()
+            );
         }
 
         for (Child child: productVariant.getChildren()) {
