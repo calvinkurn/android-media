@@ -1,6 +1,6 @@
 package com.tokopedia.feedplus.domain.usecase;
 
-import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.feedplus.data.repository.WishlistRepository;
 import com.tokopedia.feedplus.domain.model.wishlist.RemoveWishlistDomain;
 import com.tokopedia.usecase.RequestParams;
@@ -26,9 +26,9 @@ public class RemoveWishlistUseCase extends UseCase<RemoveWishlistDomain> {
         this.wishlistRepository = wishlistRepository;
     }
 
-    public static RequestParams generateParam(String productId, SessionHandler sessionHandler) {
+    public static RequestParams generateParam(String productId, UserSession userSession) {
         RequestParams params = RequestParams.create();
-        params.putString(PARAM_USER_ID, sessionHandler.getLoginID());
+        params.putString(PARAM_USER_ID, userSession.getUserId());
         params.putString(PARAM_PRODUCT_ID, productId);
         return params;
     }

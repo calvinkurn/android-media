@@ -2,10 +2,10 @@ package com.tokopedia.feedplus.data.factory;
 
 import android.content.Context;
 
-import com.tokopedia.core.base.di.qualifier.ApplicationContext;
+import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.core.shopinfo.facades.authservices.ActionService;
-import com.tokopedia.feedplus.data.source.cloud.FavoriteShopDataSource;
 import com.tokopedia.feedplus.data.mapper.FavoriteShopMapper;
+import com.tokopedia.feedplus.data.source.cloud.FavoriteShopDataSource;
 
 import javax.inject.Inject;
 

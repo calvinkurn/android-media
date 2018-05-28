@@ -10,7 +10,6 @@ import java.util.List;
 import javax.inject.Inject;
 
 import rx.Observable;
-import rx.functions.Func2;
 
 /**
  * @author by nisie on 7/25/17.
@@ -29,17 +28,20 @@ public class GetFirstPageFeedsCloudUseCase extends GetFeedsUseCase {
 
     @Override
     public Observable<FeedResult> createObservable(RequestParams requestParams) {
-        return Observable.zip(
-                getFeedPlus(requestParams),
-                getRecentView(requestParams),
-                new Func2<FeedResult, List<RecentViewProductDomain>, FeedResult>() {
-                    @Override
-                    public FeedResult call(FeedResult feedResult, List<RecentViewProductDomain> recentViewProductDomains) {
-                        feedResult.getFeedDomain().setRecentProduct(recentViewProductDomains);
-                        return feedResult;
-                    }
-                }
-        );
+        return getFeedPlus(requestParams);
+
+        //TODO milhamj
+//        return Observable.zip(
+//                getFeedPlus(requestParams),
+//                getRecentView(requestParams),
+//                new Func2<FeedResult, List<RecentViewProductDomain>, FeedResult>() {
+//                    @Override
+//                    public FeedResult call(FeedResult feedResult, List<RecentViewProductDomain> recentViewProductDomains) {
+//                        feedResult.getFeedDomain().setRecentProduct(recentViewProductDomains);
+//                        return feedResult;
+//                    }
+//                }
+//        );
     }
 
     private Observable<FeedResult> getFeedPlus(RequestParams requestParams) {

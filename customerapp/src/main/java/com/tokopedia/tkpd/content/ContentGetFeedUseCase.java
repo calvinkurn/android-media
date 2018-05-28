@@ -1,7 +1,7 @@
 package com.tokopedia.tkpd.content;
 
-import com.tokopedia.tkpd.content.di.ContentConsumerComponent;
 import com.tokopedia.feedplus.domain.usecase.FollowKolPostUseCase;
+import com.tokopedia.tkpd.content.di.ContentConsumerComponent;
 
 import javax.inject.Inject;
 
@@ -13,8 +13,6 @@ public class ContentGetFeedUseCase {
     private static ContentGetFeedUseCase instance;
     private ContentConsumerComponent contentConsumerComponent;
 
-    @Inject
-    LikeKolPostUseCase likeKolPostUseCase;
     @Inject
     FollowKolPostUseCase followKolPostUseCase;
 
@@ -35,10 +33,6 @@ public class ContentGetFeedUseCase {
             contentConsumerComponent.inject(this);
         }
         return this;
-    }
-
-    public LikeKolPostUseCase getLikeKolPostUseCase() {
-        return likeKolPostUseCase;
     }
 
     public FollowKolPostUseCase getFollowKolPostUseCase() {

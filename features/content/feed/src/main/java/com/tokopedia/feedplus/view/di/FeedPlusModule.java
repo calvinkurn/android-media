@@ -12,9 +12,9 @@ import com.tokopedia.core.base.common.service.MojitoService;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.network.apiservices.mojito.MojitoNoRetryAuthService;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
-import com.tokopedia.core.network.di.qualifier.MojitoQualifier;
 import com.tokopedia.core.shopinfo.facades.authservices.ActionService;
 import com.tokopedia.feedplus.FeedModuleRouter;
+import com.tokopedia.feedplus.data.FeedAuthInterceptor;
 import com.tokopedia.feedplus.data.factory.FavoriteShopFactory;
 import com.tokopedia.feedplus.data.factory.FeedFactory;
 import com.tokopedia.feedplus.data.factory.WishlistFactory;
@@ -31,7 +31,6 @@ import com.tokopedia.feedplus.data.repository.WishlistRepository;
 import com.tokopedia.feedplus.data.repository.WishlistRepositoryImpl;
 import com.tokopedia.feedplus.data.source.KolSource;
 import com.tokopedia.feedplus.domain.model.feed.FeedResult;
-import com.tokopedia.kol.common.di.KolChuckQualifier;
 
 import java.util.concurrent.TimeUnit;
 
@@ -64,11 +63,13 @@ public class FeedPlusModule {
     OkHttpClient provideOkHttpClient(@ApplicationScope HttpLoggingInterceptor
                                              httpLoggingInterceptor,
                                      @FeedPlusQualifier OkHttpRetryPolicy retryPolicy,
-                                     @KolChuckQualifier Interceptor chuckInterceptor) {
+                                     @FeedPlusChuckQualifier Interceptor chuckInterceptor,
+                                     FeedAuthInterceptor feedAuthInterceptor) {
         OkHttpClient.Builder clientBuilder = new OkHttpClient.Builder()
                 .connectTimeout(retryPolicy.connectTimeout, TimeUnit.SECONDS)
                 .readTimeout(retryPolicy.readTimeout, TimeUnit.SECONDS)
-                .writeTimeout(retryPolicy.writeTimeout, TimeUnit.SECONDS);
+                .writeTimeout(retryPolicy.writeTimeout, TimeUnit.SECONDS)
+                .addInterceptor(feedAuthInterceptor);
 
         if (GlobalConfig.isAllowDebuggingTools()) {
             clientBuilder.addInterceptor(httpLoggingInterceptor);
@@ -115,8 +116,11 @@ public class FeedPlusModule {
 
     @FeedPlusScope
     @Provides
-    MojitoService provideRecentProductService(@MojitoQualifier Retrofit retrofit) {
-        return retrofit.create(MojitoService.class);
+    MojitoService provideRecentProductService(Retrofit.Builder builder, OkHttpClient okHttpClient) {
+        return builder.baseUrl(TkpdBaseURL.MOJITO_DOMAIN)
+                .client(okHttpClient)
+                .build()
+                .create(MojitoService.class);
     }
 
     @FeedPlusScope

@@ -11,7 +11,6 @@ import android.view.ViewGroup;
 
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
-import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.router.productdetail.PdpRouter;
@@ -25,6 +24,7 @@ import com.tokopedia.feedplus.view.listener.RecentView;
 import com.tokopedia.feedplus.view.listener.WishlistListener;
 import com.tokopedia.feedplus.view.presenter.RecentViewPresenter;
 import com.tokopedia.feedplus.view.viewmodel.feeddetail.FeedDetailViewModel;
+import com.tokopedia.kol.KolComponentInstance;
 
 import java.util.ArrayList;
 
@@ -59,14 +59,10 @@ public class RecentViewFragment extends BaseDaggerFragment
 
     @Override
     protected void initInjector() {
-        AppComponent appComponent = getComponent(AppComponent.class);
-
-        DaggerFeedPlusComponent daggerFeedPlusComponent =
-                (DaggerFeedPlusComponent) DaggerFeedPlusComponent.builder()
-                        .appComponent(appComponent)
-                        .build();
-
-        daggerFeedPlusComponent.inject(this);
+        DaggerFeedPlusComponent.builder()
+                .kolComponent(KolComponentInstance.getKolComponent(getActivity().getApplication()))
+                .build()
+                .inject(this);
     }
 
     @Override
