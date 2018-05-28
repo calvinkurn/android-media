@@ -4,18 +4,18 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
+import android.view.View;
 
 import com.tokopedia.abstraction.common.di.component.HasComponent;
+import com.tokopedia.checkout.R;
 import com.tokopedia.checkout.domain.datamodel.cartlist.CartPromoSuggestion;
 import com.tokopedia.checkout.domain.datamodel.cartshipmentform.CartShipmentAddressFormData;
 import com.tokopedia.checkout.domain.datamodel.voucher.PromoCodeAppliedData;
 import com.tokopedia.checkout.view.base.BaseCheckoutActivity;
 import com.tokopedia.checkout.view.di.component.CartComponent;
 import com.tokopedia.checkout.view.di.component.CartComponentInjector;
-import com.tokopedia.checkout.view.view.shipmentform.ResetShipmentFormDialog;
+import com.tokopedia.design.component.Dialog;
 
 /**
  * @author Irfan Khoirul on 23/04/18.
@@ -106,24 +106,27 @@ public class ShipmentActivity extends BaseCheckoutActivity implements HasCompone
     }
 
     void showResetDialog() {
-        DialogFragment dialog = ResetShipmentFormDialog.newInstance(
-                new ResetShipmentFormDialog.ResetShipmentFormCallbackAction() {
-
-                    @Override
-                    public void onResetCartShipmentForm() {
-                        setResult(RESULT_CODE_FORCE_RESET_CART_FROM_SINGLE_SHIPMENT);
-                        finish();
-                    }
-
-                    @Override
-                    public void onCancelResetCartShipmentForm() {
-
-                    }
-                });
-        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-        ft.add(dialog, ResetShipmentFormDialog.DIALOG_FRAGMENT_TAG);
-        ft.commitAllowingStateLoss();
+        final Dialog dialog = new Dialog(this, Dialog.Type.LONG_PROMINANCE);
+        dialog.setTitle(getString(R.string.dialog_title_back_to_cart));
+        dialog.setDesc(getString(R.string.dialog_message_back_to_cart));
+        dialog.setBtnCancel(getString(R.string.label_dialog_back_to_cart_button_positive));
+        dialog.setBtnOk(getString(R.string.label_dialog_back_to_cart_button_negative));
+        dialog.setOnCancelClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                setResult(RESULT_CODE_FORCE_RESET_CART_FROM_SINGLE_SHIPMENT);
+                finish();
+            }
+        });
+        dialog.setOnOkClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dialog.dismiss();
+            }
+        });
+        dialog.getAlertDialog().setCancelable(true);
+        dialog.getAlertDialog().setCanceledOnTouchOutside(true);
+        dialog.show();
     }
-
 
 }

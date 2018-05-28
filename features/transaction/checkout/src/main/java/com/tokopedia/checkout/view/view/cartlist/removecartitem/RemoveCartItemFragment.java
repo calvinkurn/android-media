@@ -1,11 +1,11 @@
 package com.tokopedia.checkout.view.view.cartlist.removecartitem;
 
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SimpleItemAnimator;
@@ -23,6 +23,7 @@ import com.tokopedia.checkout.view.di.component.DaggerCartRemoveProductComponent
 import com.tokopedia.checkout.view.di.module.CartRemoveProductModule;
 import com.tokopedia.checkout.view.view.cartlist.CartItemDecoration;
 import com.tokopedia.checkout.view.view.cartlist.removecartitem.viewmodel.CartProductHeaderViewModel;
+import com.tokopedia.design.component.Dialog;
 import com.tokopedia.design.component.ToasterError;
 import com.tokopedia.design.component.ToasterNormal;
 
@@ -197,41 +198,27 @@ public class RemoveCartItemFragment extends BaseCheckoutFragment
     }
 
     private void showDeleteCartItemDialog(int itemCount) {
-        final AlertDialog alertDialog = new AlertDialog.Builder(getActivity())
-                .setTitle(R.string.label_dialog_title_delete_item)
-                .setMessage(R.string.label_dialog_message_remove_cart_item)
-                .setPositiveButton(R.string.label_dialog_action_delete_and_add_to_wishlist,
-                        new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialogInterface, int i) {
-                                removeCartItemPresenter.processRemoveCartItem(removeCartItemAdapter.getCheckedCartIds(), true);
-                            }
-                        })
-                .setNegativeButton(itemCount > 0 ? getString(R.string.label_dialog_action_delete) :
-                                getString(R.string.label_dialog_action_delete_all),
-                        new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialogInterface, int i) {
-                                removeCartItemPresenter.processRemoveCartItem(removeCartItemAdapter.getCheckedCartIds(), false);
-                            }
-                        })
-                .create();
-
-        alertDialog.setOnShowListener(new DialogInterface.OnShowListener() {
+        Dialog dialog = new Dialog(getActivity(), Dialog.Type.LONG_PROMINANCE);
+        dialog.setTitle(getString(R.string.label_dialog_title_delete_item));
+        dialog.setDesc(getString(R.string.label_dialog_message_remove_cart_item));
+        dialog.setBtnOk(getString(R.string.label_dialog_action_delete_and_add_to_wishlist));
+        dialog.setBtnCancel(itemCount > 0 ? getString(R.string.label_dialog_action_delete) :
+                getString(R.string.label_dialog_action_delete_all));
+        dialog.setOnOkClickListener(new View.OnClickListener() {
             @Override
-            public void onShow(DialogInterface dialogInterface) {
-                Button btnPositive = alertDialog.getButton(AlertDialog.BUTTON_POSITIVE);
-                btnPositive.setTextColor(ContextCompat.getColor(getActivity(), R.color.medium_green));
-                btnPositive.setAllCaps(false);
-
-                Button btnNegative = alertDialog.getButton(AlertDialog.BUTTON_NEGATIVE);
-                btnNegative.setTextColor(ContextCompat.getColor(getActivity(), R.color.black_54));
-                btnNegative.setAllCaps(false);
+            public void onClick(View view) {
+                removeCartItemPresenter.processRemoveCartItem(removeCartItemAdapter.getCheckedCartIds(), true);
             }
         });
-
-        alertDialog.show();
-
+        dialog.setOnCancelClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                removeCartItemPresenter.processRemoveCartItem(removeCartItemAdapter.getCheckedCartIds(), false);
+            }
+        });
+        dialog.getAlertDialog().setCancelable(true);
+        dialog.getAlertDialog().setCanceledOnTouchOutside(true);
+        dialog.show();
     }
 
     @Override

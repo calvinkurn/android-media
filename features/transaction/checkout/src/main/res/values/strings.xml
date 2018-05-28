@@ -137,7 +137,7 @@
     <string name="label_message_showcase_shipment">Gunakan layanan jasa pengiriman yang didukung oleh toko ini.</string>
     <string name="label_dialog_action_delete_and_add_to_wishlist"><![CDATA[Hapus & Tambah Wishlist]]></string>
     <string name="label_dialog_title_delete_item">Hapus Barang</string>
-    <string name="label_dialog_action_delete">Hapus</string>
+    <string name="label_dialog_action_delete">\u0020\u0020\u0020\u0020\u0020\u0020\u0020\u0020\u0020\u0020\u0020\u0020\u0020\u0020\u0020\u0020\u0020\u0020\u0020\u0020Hapus</string>
     <string name="label_dialog_action_delete_all">Hapus Semua</string>
     <string name="label_dialog_message_remove_cart_item">Barang ini akan dihapus dari keranjang belanja anda</string>
     <string name="label_delete_cart_item_success">Produk berhasil dihapus dari keranjang</string>
