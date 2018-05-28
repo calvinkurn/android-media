@@ -23,6 +23,7 @@ import com.tokopedia.applink.RouteManager;
 import com.tokopedia.contactus.inboxticket.activity.InboxTicketActivity;
 import com.tokopedia.contactus.R;
 import com.tokopedia.contactus.R2;
+import com.tokopedia.core.router.TkpdInboxRouter;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.inbox.inboxchat.activity.ChatRoomActivity;
 import com.tokopedia.tkpd.tkpdcontactus.common.api.ContactUsURL;
@@ -203,8 +204,7 @@ public class ContactUsHomeFragment extends BaseDaggerFragment implements Contact
 
     @OnClick(R2.id.btn_contact_us)
     public void onBtnContactUsClicked() {
-
-        RouteManager.route(getContext(), ContactUsURL.NAVIGATE_NEXT_URL);
+        startActivity(((TkpdInboxRouter)(getContext().getApplicationContext())).getWebviewActivityWithIntent(getContext(),ContactUsURL.NAVIGATE_NEXT_URL,"Hubungi Kami"));
     }
 
     @OnClick(R2.id.btn_chat_toped)
