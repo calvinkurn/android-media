@@ -16,7 +16,7 @@ import rx.subscriptions.Subscriptions;
  * @author ricoharisin .
  */
 
-public abstract class BaseGraphqlUseCase<T> implements Interactor<T> {
+public abstract class BaseGraphqlUseCase<T>  {
 
     private static final String QUERY_KEY = "query";
     private BaseGraphqlRepository baseGraphqlRepository;
@@ -34,7 +34,6 @@ public abstract class BaseGraphqlUseCase<T> implements Interactor<T> {
 
     public abstract Func1<String, T> getMapper();
 
-    @Override
     public void execute(RequestParams requestParams, Subscriber<T> subscriber) {
         if (getQuery() == null) throw new RuntimeException("query can't be empty!");
         requestParams.putString(QUERY_KEY, getQuery());
@@ -60,7 +59,6 @@ public abstract class BaseGraphqlUseCase<T> implements Interactor<T> {
         }
     }
 
-    @Override
     public Observable<T> getExecuteObservable(RequestParams requestParams) {
         return createObservable(requestParams);
     }

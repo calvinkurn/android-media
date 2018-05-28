@@ -3,5 +3,4 @@ apply from: "$rootProject.projectDir/buildconfig/module.gradle"
 
 dependencies {
     compile project(rootProject.ext.libraries.network)
-    compile project(rootProject.ext.libraries.useCase)
 }
