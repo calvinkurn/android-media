@@ -241,4 +241,6 @@
     <string name="product_category_locked_description">Tidak dapat mengubah kategori dari produk yang sudah memiliki varian.</string>
     <string name="product_add_sku_title">SKU (Stock Keeping Unit)</string>
 
+    <string name="sticker_shop_link">http://tokopedia.com/%s</string>
+    <string name="sticker_cashback">Cashback %1$d%%</string>
 </resources>

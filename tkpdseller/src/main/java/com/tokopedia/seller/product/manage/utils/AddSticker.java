@@ -5,20 +5,25 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
+
 import com.tkpd.library.utils.CommonUtils;
+import com.tokopedia.seller.R;
+
 /**
  * Created by yoshua on 16/05/18.
  */
 public class AddSticker {
-    private Bitmap logo;
     private String name;
     private String price;
-    public Bitmap getLogo() {
-        return logo;
-    }
-    public void setLogo(Bitmap logo) {
-        this.logo = logo;
-    }
+    private String shop_link;
+    private String cashback;
+
     public String getName() {
         return name;
     }
@@ -31,70 +36,59 @@ public class AddSticker {
     public void setPrice(String price) {
         this.price = price;
     }
-    public void recycleBitmap(Bitmap bitmap){
-        if(bitmap!=null){
-            bitmap.recycle();
-        }
+    public String getShop_link() {
+        return shop_link;
     }
-    public int dpToPx(float dp, Context context) {
-        return CommonUtils.convertDpToPixel(dp, context);
-    }
-    public Paint getTextPaint(Paint paint, Context context, int textSize){
-        paint.reset();
-        paint.setAntiAlias(true);
-        paint.setColor(Color.WHITE);
-        paint.setTextSize(dpToPx(textSize, context));
-        paint.setStrokeWidth(dpToPx(1, context));
-        paint.setShadowLayer(dpToPx(5, context), dpToPx(2, context), dpToPx(2, context), Color.BLACK);
-        return paint;
+    public void setShop_link(String shop_link) {
+        this.shop_link = shop_link;
     }
 
-    public void drawBitmap(Canvas canvas, Bitmap bitmap, Paint paint, int x, int y){
-        canvas.drawBitmap(bitmap, x, y, paint);
+    public String getCashback() {
+        return cashback;
     }
-    public void drawText(Canvas canvas, Rect bounds, String text, Paint paint, int x, int y){
-        paint.getTextBounds(text, 0, text.length(), bounds);
-        canvas.drawText(text, x, y, paint);
+
+    public void setCashback(String cashback) {
+        this.cashback = cashback;
     }
-    public void drawLogo(Context context, Canvas canvas, Paint paint){
-        int xCoord = dpToPx(50, context);
-        int yCoord = dpToPx(50, context);
-        drawBitmap(canvas, getLogo(), paint, xCoord, yCoord);
+
+    public Bitmap processStickerToImage(Bitmap source,Context context){
+        LayoutInflater mInflater = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        RelativeLayout view = new RelativeLayout(context);
+        mInflater.inflate(R.layout.ig_with_sticker, view, true);
+
+        ImageView imgSource = view.findViewById(R.id.img_source);
+        TextView tvPrice = view.findViewById(R.id.tv_price);
+        TextView tvName = view.findViewById(R.id.tv_name);
+        TextView tvShopLink = view.findViewById(R.id.tv_shop_link);
+        TextView tvCashback = view.findViewById(R.id.tv_cashback);
+
+        imgSource.setImageBitmap(source);
+        tvPrice.setText(getPrice());
+        tvName.setText(getName());
+        tvShopLink.setText(getShop_link());
+        tvCashback.setText(getCashback());
+
+        view.setLayoutParams(new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT,
+                RelativeLayout.LayoutParams.WRAP_CONTENT));
+
+        view.measure(View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED),
+                View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED));
+
+        view.layout(0, 0, view.getMeasuredWidth(), view.getMeasuredHeight());
+
+        Bitmap bitmap = Bitmap.createBitmap(view.getMeasuredWidth(), view.getMeasuredHeight(), Bitmap.Config.ARGB_8888);
+
+        Canvas c = new Canvas(bitmap);
+        view.draw(c);
+        return bitmap;
     }
-    public void drawNameText(Context context, Canvas canvas, Rect bounds, Paint paint, int sourceWidth, int sourceHeight){
-        Paint paintText = getTextPaint(paint, context, 40);
-        paintText.getTextBounds(getName(), 0, getName().length(), bounds);
-        int xCoord = sourceWidth - bounds.width() - dpToPx(50, context);
-        int yCoord = sourceHeight - dpToPx(80, context);
-        drawText(canvas, bounds, getName(), paintText, xCoord, yCoord);
-    }
-    public void drawPriceText(Context context, Canvas canvas, Rect bounds, Paint paint, int sourceWidth, int sourceHeight){
-        Paint paintText = getTextPaint(paint, context, 20);
-        paintText.getTextBounds(getPrice(), 0, getPrice().length(), bounds);
-        int xCoord = sourceWidth - bounds.width() - dpToPx(50, context);
-        int yCoord = sourceHeight - dpToPx(50, context);
-        drawText(canvas, bounds, getPrice(), paintText, xCoord, yCoord);
-    }
-    public Bitmap addStickerToBitmap(Bitmap source,Context context){
-        int sourceWidth = source.getWidth();
-        int sourceHeight = source.getHeight();
-        Canvas canvas = new Canvas(source);
-        Paint paint = new Paint();
-        Rect bounds = new Rect();
-        drawLogo(context, canvas, paint);
-        drawNameText(context, canvas, bounds, paint, sourceWidth, sourceHeight);
-        drawPriceText(context, canvas, bounds, paint, sourceWidth, sourceHeight);
-        recycleBitmap(getLogo());
-        return source;
-    }
+
     public static class Builder {
-        private Bitmap logo;
         private String name;
         private String price;
-        public Builder setLogo(Bitmap logo) {
-            this.logo = logo;
-            return this;
-        }
+        private String shop_link;
+        private String cashback;
+
         public Builder setName(String name) {
             this.name = name;
             return this;
@@ -103,11 +97,20 @@ public class AddSticker {
             this.price = price;
             return this;
         }
+        public Builder setShop_link(String shop_link) {
+            this.shop_link = shop_link;
+            return this;
+        }
+        public Builder setCashback(String cashback) {
+            this.cashback = cashback;
+            return this;
+        }
         public AddSticker build() {
             AddSticker addSticker = new AddSticker();
             addSticker.setName(name);
             addSticker.setPrice(price);
-            addSticker.setLogo(logo);
+            addSticker.setShop_link(shop_link);
+            addSticker.setCashback(cashback);
             return addSticker;
         }
     }
