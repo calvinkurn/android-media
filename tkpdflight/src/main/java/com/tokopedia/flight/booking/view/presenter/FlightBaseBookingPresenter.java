@@ -183,7 +183,7 @@ public abstract class FlightBaseBookingPresenter<T extends FlightBaseBookingCont
         }
         int totalPassenger = adult + child + infant;
         for (FlightInsuranceViewModel insurance : getInsurances()) {
-            newTotalPrice += insurance.getTotalPriceNumeric() * totalPassenger;
+            newTotalPrice += insurance.getPricePerPax() * totalPassenger;
         }
         return newTotalPrice;
     }
@@ -363,7 +363,7 @@ public abstract class FlightBaseBookingPresenter<T extends FlightBaseBookingCont
         for (FlightInsuranceViewModel insuranceViewModel : insurances) {
             simpleViewModels.add(new SimpleViewModel(
                     String.format("%s x%d", insuranceViewModel.getName(), totalPassenger),
-                    CurrencyFormatUtil.convertPriceValueToIdrFormatNoSpace((int) (insuranceViewModel.getTotalPriceNumeric() * totalPassenger))));
+                    CurrencyFormatUtil.convertPriceValueToIdrFormatNoSpace((int) (insuranceViewModel.getPricePerPax() * totalPassenger))));
         }
 
         getView().renderPriceListDetails(simpleViewModels);
