@@ -1025,12 +1025,9 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
 
     @Override
     protected void onFirstTimeLaunched() {
-        Log.d(TAG, "onFirstTimeLaunched");
         if (productData != null) {
             onProductDetailLoaded(productData);
-            Log.d(TAG, "productData != null");
         } else {
-            Log.d(TAG, "productData == null");
             presenter.processDataPass(productPass);
             presenter.requestProductDetail(context, productPass, INIT_REQUEST, false, useVariant);
         }
@@ -1049,7 +1046,6 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
 
     @Override
     public void onRestoreState(Bundle savedInstanceState) {
-        Log.d(TAG, "onRestoreState");
         presenter.processStateData(savedInstanceState, getActivity());
     }
 
