@@ -28,7 +28,7 @@ public class ArticleTextView extends CustomTextView {
 
     @Override
     public void onViewClick() {
-        getContext().startActivity(((TkpdInboxRouter)(getContext().getApplicationContext())).getWebviewActivityWithIntent(getContext(), TkpdBaseURL.MOBILE_DOMAIN + ContactUsURL.CONTENT_BASE_URL + contactUsArticle.getSlug()));
+        getContext().startActivity(((TkpdInboxRouter)(getContext().getApplicationContext())).getWebviewActivityWithIntent(getContext(), TkpdBaseURL.MOBILE_DOMAIN + ContactUsURL.CONTENT_BASE_URL + contactUsArticle.getSlug() + "?flag_app=1"));
 
        // TransactionPurchaseRouter.startWebViewActivity(getContext(), TkpdBaseURL.MOBILE_DOMAIN + ContactUsURL.CONTENT_BASE_URL + contactUsArticle.getSlug());
       //  getContext().startActivity(

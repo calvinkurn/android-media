@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.WebView;
 import android.widget.TextView;
 
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
@@ -35,7 +36,7 @@ public class QueryTicketDetailFragment extends BaseDaggerFragment implements Que
     @BindView(R2.id.txt_title)
     TextView txtTitle;
     @BindView(R2.id.txt_detail)
-    TextView txtDetail;
+    WebView txtDetail;
     @Inject
     QueryTicketDetailPresenter presenter;
 
@@ -76,7 +77,7 @@ public class QueryTicketDetailFragment extends BaseDaggerFragment implements Que
 
     @Override
     public void setDetail(String details) {
-        txtDetail.setText(MethodChecker.fromHtml(details));
+        txtDetail.loadDataWithBaseURL(null, details, "text/html", "utf-8", null);
     }
 
     @Override

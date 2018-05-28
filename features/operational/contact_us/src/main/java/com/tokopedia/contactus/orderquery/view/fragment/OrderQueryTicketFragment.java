@@ -107,8 +107,7 @@ public class OrderQueryTicketFragment extends BaseDaggerFragment implements Orde
                 invoiceData.setQueryTicket(ticket);
                 if(!ticket.isIsSkipArticle()) {
 
-                    getContext().startActivity(PopularFiveArticleActivity.getInstance(getContext(), invoiceData.getQueryTicket().getDescription()
-                            .replace("text-align: center;","")));
+                    getContext().startActivity(QueryTicketDetailActivity.getQueryTicketDetailActivity(getContext(), invoiceData));
                 }else {
                     getContext().startActivity(SubmitTicketActivity.getSubmitTicketActivity(getContext(),invoiceData));
                 }

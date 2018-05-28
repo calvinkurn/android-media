@@ -25,6 +25,6 @@ public class QueryTicketDetailPresenter extends BaseDaggerPresenter<QueryTicketD
         super.attachView(view);
         QueryTicket queryTicket = getView().getSubmitTicketInvoiceData().getQueryTicket();
         getView().setTitle(queryTicket.getName());
-        getView().setDetail(queryTicket.getDescription());
+        getView().setDetail(queryTicket.getDescription().replace("text-align: center;",""));
     }
 }
