@@ -1,49 +1,46 @@
 package com.tokopedia.seller.shopsettings.address.activity;
 
+import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.design.widget.Snackbar;
+import android.text.Editable;
 import android.text.TextUtils;
-import android.util.Log;
+import android.text.TextWatcher;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.WindowManager;
 import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
-import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.CommonUtils;
-import com.tkpd.library.utils.SnackbarManager;
-import com.tkpd.library.utils.data.DataManagerImpl;
-import com.tkpd.library.utils.data.DataReceiver;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.TActivity;
-import com.tokopedia.core.database.manager.DbManagerImpl;
-import com.tokopedia.core.database.model.Bank;
-import com.tokopedia.core.database.model.CategoryDB;
-import com.tokopedia.core.database.model.City;
-import com.tokopedia.core.database.model.District;
-import com.tokopedia.core.database.model.Province;
+import com.tokopedia.core.manage.people.address.model.DistrictRecommendationAddress;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.apiservices.shop.MyShopAddressActService;
 import com.tokopedia.core.network.retrofit.response.TkpdResponse;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.rxjava.RxUtils;
-import com.tokopedia.core.shoplocation.model.saveaddress.SaveAddress;
+import com.tokopedia.district_recommendation.domain.model.Token;
+import com.tokopedia.district_recommendation.view.DistrictRecommendationActivity;
+import com.tokopedia.seller.shopsettings.address.model.saveaddress.SaveAddress;
 import com.tokopedia.seller.R;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
@@ -54,118 +51,39 @@ import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 
 public class ShopAddressForm extends TActivity {
+    private static final String TOKEN_KEY_PARAM = "token";
+    private static final int DISTRICT_RECOMMENDATION_REQUEST_CODE = 199;
+    private static final String ADDRESS = "district_recommendation_address";
+
     private final int HIDE_MENU = 1;
     private final int SHOW_MENU = 0;
+
     CompositeSubscription compositeSubscription = new CompositeSubscription();
-    String city;
-    String district;
+
     private View rootView;
     private View mainView;
     private EditText AddressName;
-    private EditText PostCode;
     private EditText Address;
     private EditText Phone;
     private EditText Fax;
     private EditText Email;
     private TextView BtnSave;
-    private TextView ProvinceError;
-    private TextView RegencyError;
-    private TextView SubDistrictError;
-    private Spinner SpinnerRegency;
-    private Spinner SpinnerSubDistrict;
-    private Spinner SpinnerProvince;
-    private ArrayList<String> RegencyList = new ArrayList<String>();
-    private ArrayList<String> RegencyID = new ArrayList<String>();
-    private ArrayAdapter<String> RegencyAdapter;
-    private ArrayList<String> SubDistrictList = new ArrayList<String>();
-    private ArrayList<String> SubDistrictID = new ArrayList<String>();
-    private ArrayAdapter<String> SubDistrictAdapter;
-    private ArrayList<String> ProvinceList = new ArrayList<String>();
-    private ArrayList<String> ProvinceID = new ArrayList<String>();
-    private ArrayAdapter<String> ProvinceAdapter;
+
+    private EditText etCompositeAddress;
+    private AutoCompleteTextView tvZipCode;
+
+    private List<String> zipCodes;
+    private Token token;
     private boolean IsNewForm;
-    private int RegeLastIndex = 0;
-    private int ProvLastIndex = 0;
     private int mState = 0;
     private TkpdProgressDialog mProgressDialog;
     private Subscriber subscriber;
-    // this boolean is to check if fetching province, city and district done
-    private boolean isFetchProvinceDone = false;
+
+    private String provinceId;
+    private String cityId;
+    private String districtId;
+
     private TkpdProgressDialog progress;
-
-    private DataReceiver getDataReceiver(final String provinsi, final String city,
-                                         final String district) {
-        return new DataReceiver() {
-
-            @Override
-            public CompositeSubscription getSubscription() {
-                return compositeSubscription;
-            }
-
-            @Override
-            public void setDistricts(List<District> districts) {
-                isFetchProvinceDone = true;
-                if (IsNewForm) {
-                    chooseDistrict(districts);
-                } else {
-                    chooseDistrict(districts, district);
-                }
-            }
-
-            @Override
-            public void setCities(List<City> cities) {
-                if (IsNewForm) {
-                    chooseCity(cities);
-                } else {
-                    chooseCity(cities, city);
-                }
-            }
-
-            @Override
-            public void setProvinces(List<Province> provinces) {
-                if (IsNewForm) {
-                    initProvince(provinces);
-                } else {
-                    initProvince(provinces, provinsi);
-                }
-            }
-
-            @Override
-            public void setBank(List<Bank> banks) {
-
-            }
-
-            @Override
-            public void setShippingCity(List<District> districts) {
-
-            }
-
-            @Override
-            public void onNetworkError(String message) {
-                showNetworkError();
-            }
-
-            @Override
-            public void onMessageError(String message) {
-                showNetworkError();
-            }
-
-            @Override
-            public void onUnknownError(String message) {
-                showNetworkError();
-            }
-
-            @Override
-            public void onTimeout() {
-                showNetworkError();
-            }
-
-            @Override
-            public void onFailAuth() {
-                showNetworkError();
-            }
-        };
-    }
 
     private void showNetworkError() {
         progress.dismiss();
@@ -176,11 +94,7 @@ public class ShopAddressForm extends TActivity {
             public void onRetryClicked() {
                 mState = SHOW_MENU;
                 invalidateOptionsMenu();
-                if (!IsNewForm) {
-                    GetAddress();
-                } else {
-                    initProvince();
-                }
+                if (!IsNewForm) GetAddress();
             }
         });
     }
@@ -195,47 +109,44 @@ public class ShopAddressForm extends TActivity {
         super.onCreate(savedInstanceState);
         inflateView(R.layout.activity_shop_address_form);
 
-
         compositeSubscription = RxUtils.getNewCompositeSubIfUnsubscribed(compositeSubscription);
 
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
         rootView = findViewById(R.id.rootView);
         mainView = findViewById(R.id.mainView);
-        BtnSave = (TextView) findViewById(R.id.btn_save);
-        PostCode = (EditText) findViewById(R.id.post_code);
-        Email = (EditText) findViewById(R.id.shop_email);
-        Fax = (EditText) findViewById(R.id.shop_fax);
-        Phone = (EditText) findViewById(R.id.shop_phone);
-        Address = (EditText) findViewById(R.id.address);
-        AddressName = (EditText) findViewById(R.id.address_name);
+        BtnSave = findViewById(R.id.btn_save);
+        Email = findViewById(R.id.shop_email);
+        Fax = findViewById(R.id.shop_fax);
+        Phone = findViewById(R.id.shop_phone);
+        Address = findViewById(R.id.address);
+        AddressName = findViewById(R.id.address_name);
 
-        SpinnerProvince = (Spinner) findViewById(R.id.provinsi);
-        SpinnerRegency = (Spinner) findViewById(R.id.regency);
-        SpinnerSubDistrict = (Spinner) findViewById(R.id.sub_district);
+        etCompositeAddress = findViewById(R.id.district);
+        tvZipCode = findViewById(R.id.postal_code);
 
         mainView.setVisibility(View.GONE);
         progress = new TkpdProgressDialog(this, TkpdProgressDialog.NORMAL_PROGRESS);
         progress.showDialog();
 
-        initProvince();
-
-        initCity();
-
-        initDistrict();
-
-        initErrorView();
-
         IsNewForm = getIntent().getExtras().getBoolean("is_new");
+        token = getIntent().getParcelableExtra(TOKEN_KEY_PARAM);
 
         BtnSave.setOnClickListener(new OnClickListener() {
-
             @Override
             public void onClick(View v) {
-                if (Validate()) {
-                    SaveAddressV4();
-                }
+                if (Validate()) SaveAddressV4();
             }
         });
+
+        tvZipCode.setOnTouchListener(onZipCodeTouch());
+        tvZipCode.setOnItemClickListener(onZipCodeItemClick());
+        tvZipCode.addTextChangedListener(zipPostTextWatcher());
+        etCompositeAddress.setOnClickListener(onCityDistrictClick());
+
+        GetAddress();
+
+        progress.dismiss();
+        mainView.setVisibility(View.VISIBLE);
     }
 
     @Override
@@ -244,262 +155,62 @@ public class ShopAddressForm extends TActivity {
         RxUtils.unsubscribeIfNotNull(compositeSubscription);
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-        new android.os.Handler().postDelayed(new Runnable() {
+    private Context getContext() {
+        return this;
+    }
+
+    private Activity getActivity() {
+        return this;
+    }
+
+    private View.OnClickListener onCityDistrictClick() {
+        return new View.OnClickListener() {
             @Override
-            public void run() {
-                if (!IsNewForm) {
-                    GetAddress();
+            public void onClick(View view) {
+                Intent intent = DistrictRecommendationActivity.createInstance(getActivity(), token);
+                startActivityForResult(intent, DISTRICT_RECOMMENDATION_REQUEST_CODE);
+            }
+        };
+    }
+
+    private View.OnTouchListener onZipCodeTouch() {
+        return new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+                if (!tvZipCode.isPopupShowing()) tvZipCode.showDropDown();
+                return false;
+            }
+        };
+    }
+
+    private AdapterView.OnItemClickListener onZipCodeItemClick() {
+        return new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                if (i == 0 && !Character.isDigit(tvZipCode.getText().toString().charAt(0))) {
+                    tvZipCode.setText("");
                 }
             }
-        }, 100);
+        };
     }
 
-    private void initErrorView() {
-        ProvinceError = (TextView) findViewById(com.tokopedia.core.R.id.province_error);
-        RegencyError = (TextView) findViewById(com.tokopedia.core.R.id.regency_error);
-        SubDistrictError = (TextView) findViewById(com.tokopedia.core.R.id.sub_district_error);
-    }
-
-    private void initDistrict() {
-        SubDistrictList.add(getString(com.tokopedia.core.R.string.msg_choose));
-        SubDistrictAdapter = new ArrayAdapter<>(ShopAddressForm.this, android.R.layout.simple_spinner_item, SubDistrictList);
-        SubDistrictAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        SpinnerSubDistrict.setAdapter(SubDistrictAdapter);
-        SpinnerSubDistrict.setVisibility(View.GONE);
-        SpinnerSubDistrict.setOnItemSelectedListener(new OnItemSelectedListener() {
+    private TextWatcher zipPostTextWatcher() {
+        return new TextWatcher() {
             @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                if (position != 0) {
-                    SubDistrictError.setVisibility(View.GONE);
-                }
-            }
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-
-            }
-        });
-    }
-
-    private void chooseDistrict(List<District> districts, String district) {
-        if (isFetchProvinceDone) {
-            progress.dismiss();
-            mainView.setVisibility(View.VISIBLE);
-        }
-        SubDistrictList.clear();
-        SubDistrictID.clear();
-        SubDistrictList.add(getString(com.tokopedia.core.R.string.msg_choose));
-        for (District district1 : districts) {
-            SubDistrictList.add(district1.getDistrictName());
-            SubDistrictID.add(district1.getDistrictId());
-        }
-        SpinnerSubDistrict.setVisibility(View.VISIBLE);
-        SubDistrictAdapter.notifyDataSetChanged();
-
-        for (int k = 0; k < SubDistrictID.size(); k++) {
-            if (SubDistrictID.get(k).equals(district)) {
-                SpinnerSubDistrict.setSelection(k + 1);
-                break;
-            }
-        }
-    }
-
-    private void chooseDistrict(List<District> districts) {
-        if (isFetchProvinceDone) {
-            progress.dismiss();
-            mainView.setVisibility(View.VISIBLE);
-        }
-        SubDistrictList.clear();
-        SubDistrictID.clear();
-        SubDistrictList.add(getString(com.tokopedia.core.R.string.msg_choose));
-        for (District district : districts) {
-            SubDistrictList.add(district.getDistrictName());
-            SubDistrictID.add(district.getDistrictId());
-        }
-
-        SpinnerSubDistrict.setVisibility(View.VISIBLE);
-        SubDistrictAdapter.notifyDataSetChanged();
-        SpinnerSubDistrict.setSelection(0);
-    }
-
-    private void initCity() {
-        RegencyList.add(getString(com.tokopedia.core.R.string.msg_choose));
-        RegencyAdapter = new ArrayAdapter<>(ShopAddressForm.this, android.R.layout.simple_spinner_item, RegencyList);
-        RegencyAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        SpinnerRegency.setAdapter(RegencyAdapter);
-        SpinnerRegency.setVisibility(View.GONE);
-        SpinnerRegency.setOnItemSelectedListener(new OnItemSelectedListener() {
-
-            @Override
-            public void onItemSelected(AdapterView<?> arg0, View arg1,
-                                       int pos, long arg3) {
-                if (pos == 0 && pos != RegeLastIndex) {
-                    RegeLastIndex = pos;
-                    SubDistrictList.clear();
-                    SubDistrictID.clear();
-                    SubDistrictList.add(getString(com.tokopedia.core.R.string.msg_choose));
-                    SubDistrictAdapter.notifyDataSetChanged();
-                    SpinnerSubDistrict.setSelection(0);
-                    Log.i("Magic", "regen pos 0");
-                }
-                if (pos != 0 && pos != RegeLastIndex) {
-                    RegeLastIndex = pos;
-                    DataManagerImpl.getDataManager()
-                            .getListDistrict(ShopAddressForm.this
-                                    , getDataReceiver(null, null, null)
-                                    , RegencyID.get(pos - 1));
-                }
-                if (pos != 0) {
-                    RegencyError.setVisibility(View.GONE);
-                }
             }
 
             @Override
-            public void onNothingSelected(AdapterView<?> arg0) {
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
 
-            }
-        });
-    }
-
-    private void chooseCity(List<City> cities, String city) {
-        RegencyList.clear();
-        RegencyID.clear();
-
-        RegencyList.add(getString(com.tokopedia.core.R.string.msg_choose));
-        for (City city1 : cities) {
-            RegencyList.add(city1.getCityName());
-            RegencyID.add(city1.getCityId());
-        }
-        SpinnerRegency.setVisibility(View.VISIBLE);
-        RegencyAdapter.notifyDataSetChanged();
-
-        for (int j = 0; j < RegencyID.size(); j++) {
-            if (RegencyID.get(j).equals(city)) {
-                SpinnerRegency.setSelection(j + 1);
-                RegeLastIndex = j + 1;
-
-                City city1 = DbManagerImpl
-                        .getInstance()
-                        .getCity(city);
-
-                DataManagerImpl.getDataManager()
-                        .getListDistrict(this,
-                                getDataReceiver(null, city, district),
-                                city1.getCityId()
-                        );
-                break;
-            }
-        }
-    }
-
-    private void chooseCity(List<City> cities) {
-        RegencyList.clear();
-        RegencyID.clear();
-
-        RegencyList.add(getString(R.string.msg_choose));
-        for (City city : cities) {
-            RegencyList.add(city.getCityName());
-            RegencyID.add(city.getCityId());
-        }
-        SpinnerRegency.setVisibility(View.VISIBLE);
-        RegencyAdapter.notifyDataSetChanged();
-        SpinnerRegency.setSelection(0);
-
-        SubDistrictList.clear();
-        SubDistrictID.clear();
-        SubDistrictList.add(getString(R.string.msg_choose));
-        SubDistrictAdapter.notifyDataSetChanged();
-        SpinnerSubDistrict.setSelection(0);
-    }
-
-    private void initProvince(List<Province> provinces, String province) {
-        initProvince(provinces);
-
-        for (int i = 0; i < ProvinceID.size(); i++) {
-            if (ProvinceID.get(i).equals(province)) {
-                SpinnerProvince.setSelection(i + 1);
-                ProvLastIndex = i + 1;
-
-                //[START] get city based on province
-                Province provinsi = DbManagerImpl.getInstance()
-                        .getProvinceFromProvinceId(province);
-
-                DataManagerImpl.getDataManager()
-                        .getListCity(
-                                this,
-                                getDataReceiver(provinsi.getProvinceName(), city, null),
-                                provinsi.getProvinceId()
-                        );
-
-                break;
-            }
-        }
-    }
-
-    private void initProvince(List<Province> provinces) {
-        if (IsNewForm) {
-            mainView.setVisibility(View.VISIBLE);
-            progress.dismiss();
-        }
-
-        ProvinceList = new ArrayList<>();
-        ProvinceID = new ArrayList<>();
-
-        ProvinceList.add(getString(R.string.msg_choose));
-        for (Province province : provinces) {
-            ProvinceList.add(province.getProvinceName());
-            ProvinceID.add(province.getProvinceId());
-        }
-        ProvinceAdapter = new ArrayAdapter<>(ShopAddressForm.this, android.R.layout.simple_spinner_item, ProvinceList);
-        ProvinceAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        SpinnerProvince.setAdapter(ProvinceAdapter);
-        SpinnerProvince.setOnItemSelectedListener(new OnItemSelectedListener() {
-
-            @Override
-            public void onItemSelected(AdapterView<?> arg0, View arg1,
-                                       int pos, long arg3) {
-                if (pos == 0 && pos != ProvLastIndex) {
-                    ProvLastIndex = pos;
-                    RegencyList.clear();
-                    RegencyID.clear();
-                    SubDistrictList.clear();
-                    SubDistrictID.clear();
-                    RegencyList.add(getString(R.string.msg_choose));
-                    SubDistrictList.add(getString(R.string.msg_choose));
-                    RegencyAdapter.notifyDataSetChanged();
-                    SubDistrictAdapter.notifyDataSetChanged();
-                    SpinnerRegency.setSelection(0);
-                    SpinnerSubDistrict.setSelection(0);
-                    Log.i("Magic", "prov pos 0");
-                }
-                if (pos != 0 && pos != ProvLastIndex) {
-                    ProvLastIndex = pos;
-                    DataManagerImpl.getDataManager()
-                            .getListCity(ShopAddressForm.this,
-                                    getDataReceiver(
-                                            null, null, null
-                                    ),
-                                    ProvinceID.get(pos - 1));
-                }
-                Log.i("Magic", "prov pos 1");
-                if (pos != 0) {
-                    ProvinceError.setVisibility(View.GONE);
-                }
             }
 
             @Override
-            public void onNothingSelected(AdapterView<?> arg0) {
+            public void afterTextChanged(Editable s) {
 
             }
-        });
-
-    }
-
-    private void initProvince() {
-        DataManagerImpl.getDataManager().getListProvince(this, getDataReceiver(null, null, null));
+        };
     }
 
     private void Loading() {
@@ -513,15 +224,7 @@ public class ShopAddressForm extends TActivity {
         boolean valid = true;
         AddressName.setError(null);
         Address.setError(null);
-        PostCode.setError(null);
-        ProvinceError.setError(null);
-        RegencyError.setError(null);
-        SubDistrictError.setError(null);
-        ProvinceError.setVisibility(View.INVISIBLE);
-        RegencyError.setVisibility(View.INVISIBLE);
-        SubDistrictError.setVisibility(View.INVISIBLE);
-        RegencyError.setError(null);
-        SubDistrictError.setError(null);
+
         if (Email.length() > 0) {
             if (!CommonUtils.EmailValidation(Email.getText().toString().trim())) {
                 Email.setError(getString(R.string.error_invalid_email));
@@ -529,18 +232,6 @@ public class ShopAddressForm extends TActivity {
             }
         }
 
-        if (PostCode.length() == 0) {
-            PostCode.setError(getString(R.string.error_field_required));
-            valid = false;
-        }
-        if (PostCode.length() > 10) {
-            PostCode.setError(getString(R.string.error_max_post_code));
-            valid = false;
-        }
-        if (PostCode.length() < 5) {
-            PostCode.setError(getString(R.string.error_min_post_code));
-            valid = false;
-        }
         if (AddressName.length() == 0) {
             AddressName.setError(getString(R.string.error_field_required));
             valid = false;
@@ -554,30 +245,18 @@ public class ShopAddressForm extends TActivity {
             valid = false;
         }
 
-        if (SpinnerProvince.getSelectedItemPosition() == 0) {
-            ProvinceError.setVisibility(View.VISIBLE);
-            valid = false;
-        }
-        if (SpinnerRegency.getSelectedItemPosition() == 0) {
-            RegencyError.setVisibility(View.VISIBLE);
-            valid = false;
-        }
-        if (SpinnerSubDistrict.getSelectedItemPosition() == 0) {
-            SubDistrictError.setVisibility(View.VISIBLE);
-            valid = false;
-        }
         return valid;
     }
 
     private HashMap<String, String> PrepareParamSaveAddress(
-            String addressName, String address, String provinceID, String regencyID,
-            String subDistricID, String postCode, String email, String phone, String fax) {
+            String addressName, String address, String provinceId, String cityId,
+            String districtId, String postCode, String email, String phone, String fax) {
         HashMap<String, String> addAddress = new HashMap<>();
         addAddress.put("location_address_name", addressName);
         addAddress.put("location_address_street", address);
-        addAddress.put("location_address_province", provinceID);
-        addAddress.put("location_address_city", regencyID);
-        addAddress.put("location_address_district", subDistricID);
+        addAddress.put("location_address_province", provinceId);
+        addAddress.put("location_address_city", cityId);
+        addAddress.put("location_address_district", districtId);
         addAddress.put("location_address_postal", postCode);
         addAddress.put("location_address_email", email);
         addAddress.put("location_address_phone", phone);
@@ -621,10 +300,9 @@ public class ShopAddressForm extends TActivity {
                         for (int i = 0; i < response.getErrorMessages().size(); i++) {
                             responses += response.getErrorMessages().get(i) + " ";
                         }
-                        Snackbar snackbarError = SnackbarManager.make(ShopAddressForm.this,
-                                responses,
-                                Snackbar.LENGTH_LONG);
-                        snackbarError.show();
+//                        Snackbar snackbarError = SnackbarManager.make(ShopAddressForm.this,
+//                                responses, Snackbar.LENGTH_LONG);
+//                        snackbarError.show();
                         return;
                     }
 
@@ -634,8 +312,7 @@ public class ShopAddressForm extends TActivity {
                     // CREATE NEW ADDRESS ALSO RETURN ADDRESS ID, BUT IT IS NOT USED
                     // TO REDUCE REDUNDANCY THE RESPONSE
                     // IS ONLY STORED ONCE AS SAVE ADDRESS OBJECT.
-                    SaveAddress data =
-                            gson.fromJson(jsonObject.toString(), SaveAddress.class);
+                    SaveAddress data = gson.fromJson(jsonObject.toString(), SaveAddress.class);
                     if (data.getIsSuccess() == 1) {
                         NetworkErrorHelper.removeEmptyState(rootView);
                         Intent intent = new Intent(ShopAddressForm.this, ManageShopAddress.class);
@@ -659,10 +336,10 @@ public class ShopAddressForm extends TActivity {
         HashMap<String, String> saveAddressParam = PrepareParamSaveAddress(
                 AddressName.getText().toString(),
                 Address.getText().toString(),
-                ProvinceID.get(SpinnerProvince.getSelectedItemPosition() - 1).toString(),
-                RegencyID.get(SpinnerRegency.getSelectedItemPosition() - 1).toString(),
-                SubDistrictID.get(SpinnerSubDistrict.getSelectedItemPosition() - 1).toString(),
-                PostCode.getText().toString(),
+                provinceId,
+                cityId,
+                districtId,
+                tvZipCode.getText().toString(),
                 Email.getText().toString(),
                 Phone.getText().toString(),
                 Fax.getText().toString());
@@ -690,38 +367,48 @@ public class ShopAddressForm extends TActivity {
     }
 
     public void GetAddress() {
-        int magic = 0;
         Bundle data = getIntent().getExtras();
-        String location_name = data.getString("location_name");
-        String location_address = data.getString("location_address");
-        String post_code = data.getString("post_code");
-        String phone = data.getString("phone");
-        String fax = data.getString("fax");
-        String email = data.getString("email");
-        String province = data.getString("province");
-        city = data.getString("city");
-        district = data.getString("district");
 
-        SpinnerRegency.setVisibility(View.VISIBLE);
-        SpinnerSubDistrict.setVisibility(View.VISIBLE);
-        AddressName.setText(location_name);
-        Address.setText(location_address);
-        PostCode.setText(post_code);
-        if (!phone.equals("null")) {
-            Phone.setText(phone);
-        }
-        if (!fax.equals("null")) {
-            Fax.setText(fax);
-        }
-        if (!email.equals("null")) {
-            Email.setText(email);
-        }
+        if (data != null) {
+            String location_name = data.getString("location_name");
+            String location_address = data.getString("location_address");
+            String phone = data.getString("phone");
+            String fax = data.getString("fax");
+            String email = data.getString("email");
+            String provinceId = data.getString("province");
+            String cityId = data.getString("city");
+            String districtId = data.getString("district");
+            String post_code = data.getString("post_code");
+            String fullAddress = data.getString("address_detail");
 
-        DataManagerImpl.getDataManager()
-                .getListProvince(
-                        this,
-                        getDataReceiver(province, city, district)
-                );
+            AddressName.setText(location_name);
+            Address.setText(location_address);
+            etCompositeAddress.setText(fullAddress);
+            tvZipCode.setText(post_code);
+
+            if (!TextUtils.isEmpty(phone)) {
+                Phone.setText(phone);
+            }
+            if (!TextUtils.isEmpty(phone)) {
+                Fax.setText(fax);
+            }
+            if (!TextUtils.isEmpty(email)) {
+                Email.setText(email);
+            }
+        }
+    }
+
+    public void initializeZipCodes() {
+        String header = getResources().getString(com.tokopedia.core.R.string.hint_type_postal_code);
+        if (!zipCodes.contains(header)) zipCodes.add(0, header);
+
+        ArrayAdapter<String> zipCodeAdapter = new ArrayAdapter<>(
+                getContext(),
+                com.tokopedia.core.R.layout.item_autocomplete_text_double_row,
+                com.tokopedia.core.R.id.item,
+                zipCodes);
+
+        tvZipCode.setAdapter(zipCodeAdapter);
     }
 
     @Override
@@ -758,5 +445,33 @@ public class ShopAddressForm extends TActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == Activity.RESULT_OK) {
+            if (requestCode == DISTRICT_RECOMMENDATION_REQUEST_CODE) {
+                Bundle bundle = data.getExtras();
+                if (bundle != null) {
+                    DistrictRecommendationAddress address = bundle.getParcelable(ADDRESS);
+                    if (address != null) {
+                        List<String> compositeAddress = new ArrayList<>(Arrays.asList(
+                                address.getProvinceName(),
+                                address.getCityName(),
+                                address.getDistrictName()
+                        ));
+                        String fullAddress = TextUtils.join(", ", compositeAddress);
+                        etCompositeAddress.setText(fullAddress);
+
+                        provinceId = String.valueOf(address.getProvinceId());
+                        cityId = String.valueOf(address.getCityId());
+                        districtId = String.valueOf(address.getDistrictId());
+
+                        zipCodes = new ArrayList<>(address.getZipCodes());
+                        initializeZipCodes();
+                    }
+                }
+            }
+        }
+    }
 
 }

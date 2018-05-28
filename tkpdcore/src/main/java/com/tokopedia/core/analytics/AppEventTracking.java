@@ -302,6 +302,7 @@ public interface AppEventTracking {
         String PROMO_MICROSITE_PROMO_TOOLTIP = "promo microsite - promo tooltip";
         String SORT_BY = "sort by";
         String FILTER_PRODUCT = "filter product";
+        String FILTER_JOURNEY = "filter journey";
         String LONG_PRESS = "Long Press";
 
         String HOME_BOTTOM_NAV = "bottom nav";
@@ -387,6 +388,7 @@ public interface AppEventTracking {
         String IMPRESSION = "Impression";
         String COPY_CODE = "Copy Code";
         String FILTER = "Filter";
+        String APPLY_FILTER = "apply filter";
         String INSTALL = "Install";
         String REMOVE = "Remove";
         String CLICK_USSD_CEK_SALDO = "Click Cek Saldo from USSD";
@@ -407,6 +409,7 @@ public interface AppEventTracking {
         String CLICK_PRODUCT_LIST = "click product list";
         String CLICK_SORT_PRODUCT = "click sort product";
         String CLICK_FILTER_PRODUCT = "click filter product";
+        String CLICK_FILTER = "click filter";
         String CLICK_OVERFLOW_MENU = "click overflow menu";
 
         String CLICK_WIDGET_BAR = "click widget";

@@ -30,6 +30,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.fingerprint)
     implementation project(rootProject.ext.libraries.abstraction)
     implementation project(rootProject.ext.libraries.useCase)
+    implementation project(rootProject.ext.features.districtRecommendation)
 
     implementation rootProject.ext.networkDependencies.glide
 
@@ -62,7 +63,7 @@ dependencies {
     annotationProcessor  rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
 
     implementation(group: 'com.bca.widget', name: 'oneclick', version: '1.0', ext: 'aar')
-    compile project(path: ':libraries:applink')
+    implementation project(path: ':libraries:applink')
 }
 
 apply from: '../publish_local.gradle'
