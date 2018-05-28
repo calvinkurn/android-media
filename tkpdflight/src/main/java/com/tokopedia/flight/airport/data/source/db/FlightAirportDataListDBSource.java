@@ -78,7 +78,6 @@ public class FlightAirportDataListDBSource extends BaseDataListDBSource<FlightAi
 
                     private void insertFlight(FlightAirportDB flightAirportDB) {
                         flightAirportDB.insert();
-                        Log.v("FlowLog", flightAirportDB.toString());
                     }
 
                     private void insertFlight(FlightAirportCountry flightAirportCountry, FlightAirportCity flightAirportCity, FlightAirportDetail flightAirportDetail, String airportIds) {
@@ -99,7 +98,6 @@ public class FlightAirportDataListDBSource extends BaseDataListDBSource<FlightAi
                         }
                         flightAirportDB.setAliases(aliases);
                         flightAirportDB.insert();
-                        Log.v("FlowLog", flightAirportDB.toString());
                     }
                 })
                 .toList()
@@ -225,7 +223,6 @@ public class FlightAirportDataListDBSource extends BaseDataListDBSource<FlightAi
                         } else {
                             flightAirportDB.insert();
                         }
-                        Log.v("FlowLog", flightAirportDB.toString());
                     }
 
                     private void insertFlight(FlightAirportCountry flightAirportCountry, FlightAirportCity flightAirportCity, FlightAirportDetail flightAirportDetail, String airportIds) {
@@ -252,7 +249,6 @@ public class FlightAirportDataListDBSource extends BaseDataListDBSource<FlightAi
                             }
                             result.setAliases(aliases);
                             result.save();
-                            Log.v("FlowLog", result.toString());
                         } else {
                             FlightAirportDB flightAirportDB = new FlightAirportDB();
                             flightAirportDB.setCountryId(flightAirportCountry.getId());
@@ -270,7 +266,6 @@ public class FlightAirportDataListDBSource extends BaseDataListDBSource<FlightAi
                             }
                             flightAirportDB.setAliases(aliases);
                             flightAirportDB.insert();
-                            Log.v("FlowLog", flightAirportDB.toString());
                         }
                     }
                 })

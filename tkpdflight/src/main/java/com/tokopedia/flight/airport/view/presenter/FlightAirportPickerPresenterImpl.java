@@ -28,6 +28,7 @@ import rx.subscriptions.CompositeSubscription;
  */
 
 public class FlightAirportPickerPresenterImpl extends BaseDaggerPresenter<FlightAirportPickerView> implements FlightAirportPickerPresenter, AutoCompleteKeywordListener {
+    public static final String ID_COUNTRY_INDONESIA = "ID";
 
     private final FlightAirportPickerUseCase flightAirportPickerUseCase;
     private CompositeSubscription compositeSubscription;
@@ -112,7 +113,7 @@ public class FlightAirportPickerPresenterImpl extends BaseDaggerPresenter<Flight
                                     negara.setCountryId(airport.getCountryId());
                                     negara.setCountryName(airport.getCountryName());
                                     negara.setAirports(new ArrayList<FlightAirportViewModel>());
-                                    if (negara.getCountryId().equalsIgnoreCase("ID")) {
+                                    if (negara.getCountryId().equalsIgnoreCase(ID_COUNTRY_INDONESIA)) {
                                         result.add(negara);
                                     } else {
                                         visitables.add(negara);
@@ -130,7 +131,7 @@ public class FlightAirportPickerPresenterImpl extends BaseDaggerPresenter<Flight
                                 airportViewModel.setCityCode(airport.getCityCode());
                                 airportViewModel.setCityId(airport.getCityId());
                                 airportViewModel.setCityName(airport.getCityName());
-                                if (negara.getCountryId().equalsIgnoreCase("ID")) {
+                                if (negara.getCountryId().equalsIgnoreCase(ID_COUNTRY_INDONESIA)) {
                                     result.add(airportViewModel);
                                 } else {
                                     visitables.add(airportViewModel);

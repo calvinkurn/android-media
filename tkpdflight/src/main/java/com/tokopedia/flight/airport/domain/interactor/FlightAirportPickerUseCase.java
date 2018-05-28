@@ -18,7 +18,6 @@ import rx.functions.Func1;
 
 public class FlightAirportPickerUseCase extends UseCase<List<FlightAirportDB>> {
     public static final String KEYWORD = "keyword";
-    public static final String ID_COUNTRY_INDONESIA = "ID";
     private final FlightRepository flightRepository;
 
     @Inject

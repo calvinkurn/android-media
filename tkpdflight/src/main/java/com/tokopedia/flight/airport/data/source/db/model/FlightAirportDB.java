@@ -168,20 +168,4 @@ public class FlightAirportDB extends BaseModel implements Parcelable{
         dest.writeString(this.aliases);
         dest.writeString(this.airportIds);
     }
-
-    @Override
-    public String toString() {
-        return "FlightAirportDB{" +
-                "countryId='" + countryId + '\'' +
-                ", cityId='" + cityId + '\'' +
-                ", airportId='" + airportId + '\'' +
-                ", countryName='" + countryName + '\'' +
-                ", phoneCode=" + phoneCode +
-                ", cityName='" + cityName + '\'' +
-                ", cityCode='" + cityCode + '\'' +
-                ", airportName='" + airportName + '\'' +
-                ", aliases='" + aliases + '\'' +
-                ", airportIds='" + airportIds + '\'' +
-                '}';
-    }
 }
