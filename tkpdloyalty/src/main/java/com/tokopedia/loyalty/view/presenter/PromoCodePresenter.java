@@ -16,6 +16,7 @@ import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.loyalty.domain.usecase.FlightCheckVoucherUseCase;
 import com.tokopedia.loyalty.exception.LoyaltyErrorException;
 import com.tokopedia.loyalty.exception.TokoPointResponseErrorException;
+import com.tokopedia.loyalty.router.LoyaltyModuleRouter;
 import com.tokopedia.loyalty.view.data.VoucherViewModel;
 import com.tokopedia.loyalty.view.interactor.IPromoCodeInteractor;
 import com.tokopedia.loyalty.view.view.IPromoCodeView;
@@ -73,7 +74,7 @@ public class PromoCodePresenter implements IPromoCodePresenter {
         RequestParams requestParams = RequestParams.create();
         requestParams.putObject("checkoutdata", requestBody);
         requestParams.putBoolean("ispromocodecase", flag);
-        ((TkpdCoreRouter) view.getContext().getApplicationContext()).verifyEventPromo(requestParams).subscribe(new Subscriber<com.tokopedia.abstraction.common.utils.TKPDMapParam<String, Object>>() {
+        ((LoyaltyModuleRouter) view.getContext().getApplicationContext()).verifyEventPromo(requestParams).subscribe(new Subscriber<com.tokopedia.abstraction.common.utils.TKPDMapParam<String, Object>>() {
             @Override
             public void onCompleted() {
 

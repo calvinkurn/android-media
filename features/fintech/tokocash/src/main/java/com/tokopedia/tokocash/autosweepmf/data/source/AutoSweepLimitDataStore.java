@@ -1,11 +1,11 @@
 package com.tokopedia.tokocash.autosweepmf.data.source;
 
 
-import com.google.gson.JsonObject;
 import com.tokopedia.tokocash.autosweepmf.domain.model.AutoSweepLimitDomain;
+import com.tokopedia.usecase.RequestParams;
 
 import rx.Observable;
 
 public interface AutoSweepLimitDataStore {
-    Observable<AutoSweepLimitDomain> autoSweepLimit(JsonObject data);
+    Observable<AutoSweepLimitDomain> autoSweepLimit(RequestParams requestParams);
 }

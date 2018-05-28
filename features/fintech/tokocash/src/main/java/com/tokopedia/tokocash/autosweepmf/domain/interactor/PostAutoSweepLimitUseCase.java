@@ -22,10 +22,6 @@ public class PostAutoSweepLimitUseCase extends UseCase<AutoSweepLimitDomain> {
 
     @Override
     public Observable<AutoSweepLimitDomain> createObservable(RequestParams requestParams) {
-        return mRepository.postAutoSweepLimit(body);
-    }
-
-    public void setBody(JsonObject body) {
-        this.body = body;
+        return mRepository.postAutoSweepLimit(requestParams);
     }
 }

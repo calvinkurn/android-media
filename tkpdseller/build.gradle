@@ -34,19 +34,22 @@ dependencies {
     api (rootProject.ext.serviceDependencies.crashlytics) {
         transitive = true
     }
-    compile project(rootProject.ext.libraries.bottomSheetBuilder)
-    compile project(rootProject.ext.libraries.williamchart)
-    compile project(rootProject.ext.features.topAdsSourceTagging)
+    implementation project(rootProject.ext.libraries.bottomSheetBuilder)
+    implementation project(rootProject.ext.libraries.williamchart)
+    implementation project(rootProject.ext.features.topAdsSourceTagging)
 
     implementation project(rootProject.ext.features.core)
     implementation project(rootProject.ext.features.payment)
     implementation project(rootProject.ext.features.reputationCommon)
+    implementation project(rootProject.ext.libraries.imageuploader)
+    implementation project(rootProject.ext.features.districtRecommendation)
     implementation project(rootProject.ext.libraries.imageuploader)
 
     implementation project(rootProject.ext.libraries.cacheApi)
     implementation project(rootProject.ext.libraries.abstraction)
     implementation project(rootProject.ext.libraries.useCase)
     implementation project(rootProject.ext.libraries.design)
+    implementation project(rootProject.ext.libraries.applink)
 
     implementation rootProject.ext.networkDependencies.glide
 
