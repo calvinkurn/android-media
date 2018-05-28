@@ -198,7 +198,7 @@ public class RemoveCartItemFragment extends BaseCheckoutFragment
     }
 
     private void showDeleteCartItemDialog(int itemCount) {
-        Dialog dialog = new Dialog(getActivity(), Dialog.Type.LONG_PROMINANCE);
+        final Dialog dialog = new Dialog(getActivity(), Dialog.Type.LONG_PROMINANCE);
         dialog.setTitle(getString(R.string.label_dialog_title_delete_item));
         dialog.setDesc(getString(R.string.label_dialog_message_remove_cart_item));
         dialog.setBtnOk(getString(R.string.label_dialog_action_delete_and_add_to_wishlist));
@@ -208,12 +208,14 @@ public class RemoveCartItemFragment extends BaseCheckoutFragment
             @Override
             public void onClick(View view) {
                 removeCartItemPresenter.processRemoveCartItem(removeCartItemAdapter.getCheckedCartIds(), true);
+                dialog.dismiss();
             }
         });
         dialog.setOnCancelClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 removeCartItemPresenter.processRemoveCartItem(removeCartItemAdapter.getCheckedCartIds(), false);
+                dialog.dismiss();
             }
         });
         dialog.getAlertDialog().setCancelable(true);
