@@ -77,6 +77,7 @@ public class AddShipmentAddressPresenter implements IAddShipmentAddressPresenter
         newItemData.setErrorProductMinQuantity(baseItem.getErrorProductMinQuantity());
         newItemData.setMaxQuantity(baseItem.getMaxQuantity());
         newItemData.setMinQuantity(baseItem.getMinQuantity());
+        newItemData.setMaxRemark(baseItem.getMaxRemark());
         return newItemData;
     }
 
