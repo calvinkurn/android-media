@@ -582,6 +582,6 @@ public class FlightDetailOrderPresenter extends BaseDaggerPresenter<FlightDetail
             }
         }
 
-        return (allPassengerCount >= cancelledPassengerCount);
+        return (allPassengerCount <= cancelledPassengerCount);
     }
 }
