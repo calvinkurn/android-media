@@ -102,20 +102,20 @@ public class CartListItemViewHolder extends RecyclerView.ViewHolder {
     }
 
     private void initTextwatcherDebouncer(CompositeSubscription compositeSubscription) {
-        compositeSubscription.add(Observable.create(new Observable.OnSubscribe<Editable>() {
+        compositeSubscription.add(Observable.create(new Observable.OnSubscribe<QuantityWrapper>() {
             @Override
-            public void call(final Subscriber<? super Editable> subscriber) {
+            public void call(final Subscriber<? super QuantityWrapper> subscriber) {
                 quantityTextwatcherListener = new QuantityTextwatcherListener() {
                     @Override
-                    public void onQuantityChanged(Editable editable) {
-                        subscriber.onNext(editable);
+                    public void onQuantityChanged(QuantityWrapper quantity) {
+                        subscriber.onNext(quantity);
                     }
                 };
             }
         }).debounce(TEXTWATCHER_QUANTITY_DEBOUNCE_TIME, TimeUnit.MILLISECONDS)
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Subscriber<Editable>() {
+                .subscribe(new Subscriber<QuantityWrapper>() {
                     @Override
                     public void onCompleted() {
 
@@ -127,8 +127,8 @@ public class CartListItemViewHolder extends RecyclerView.ViewHolder {
                     }
 
                     @Override
-                    public void onNext(Editable editable) {
-                        itemQuantityTextWatcherAction(editable);
+                    public void onNext(QuantityWrapper quantity) {
+                        itemQuantityTextWatcherAction(quantity);
                     }
                 }));
 
@@ -219,6 +219,7 @@ public class CartListItemViewHolder extends RecyclerView.ViewHolder {
             this.etRemark.setVisibility(View.VISIBLE);
             this.tvLabelRemarkOption.setVisibility(View.GONE);
             this.etRemark.setText(data.getCartItemData().getUpdatedData().getRemark());
+            this.etRemark.setSelection(etRemark.length());
         }
 
         this.ivProductImage.setOnClickListener(getOnClickProductItemListener(getAdapterPosition(), data));
@@ -436,9 +437,17 @@ public class CartListItemViewHolder extends RecyclerView.ViewHolder {
 
     private class QuantityTextWatcher implements TextWatcher {
 
+        int qtyBefore;
+        QuantityWrapper quantityWrapper = new QuantityWrapper();
+
         @Override
         public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
+            try {
+                qtyBefore = Integer.parseInt(s.toString());
+            } catch (NumberFormatException e) {
+                qtyBefore = 0;
+                e.printStackTrace();
+            }
         }
 
         @Override
@@ -448,46 +457,57 @@ public class CartListItemViewHolder extends RecyclerView.ViewHolder {
 
         @Override
         public void afterTextChanged(Editable editable) {
-            quantityTextwatcherListener.onQuantityChanged(editable);
+            quantityWrapper.editable = editable;
+            quantityWrapper.qtyBefore = qtyBefore;
+            quantityTextwatcherListener.onQuantityChanged(quantityWrapper);
         }
     }
 
-    private void itemQuantityTextWatcherAction(Editable editable) {
-        if (editable.length() != 0) {
+    private void itemQuantityTextWatcherAction(QuantityWrapper quantity) {
+        boolean needToUpdateView = !String.valueOf(quantity.qtyBefore).equals(quantity.editable.toString());
+        if (quantity.editable.length() != 0) {
             int zeroCount = 0;
-            for (int i = 0; i < editable.length(); i++) {
-                if (editable.charAt(i) == '0') {
+            for (int i = 0; i < quantity.editable.length(); i++) {
+                if (quantity.editable.charAt(i) == '0') {
                     zeroCount++;
                 }
             }
-            if (zeroCount == editable.length()) {
-                actionListener.onCartItemQuantityReseted(getAdapterPosition());
-            } else if (editable.charAt(0) == '0') {
-                etQty.setText(editable.toString().substring(zeroCount, editable.length()));
+            if (zeroCount == quantity.editable.length()) {
+                actionListener.onCartItemQuantityReseted(getAdapterPosition(), needToUpdateView);
+            } else if (quantity.editable.charAt(0) == '0') {
+                etQty.setText(quantity.editable.toString()
+                        .substring(zeroCount, quantity.editable.toString().length()));
                 etQty.setSelection(etQty.length());
+                needToUpdateView = true;
             }
-        } else if (TextUtils.isEmpty(editable)) {
-            actionListener.onCartItemQuantityReseted(getAdapterPosition());
+        } else if (TextUtils.isEmpty(etQty.getText())) {
+            actionListener.onCartItemQuantityReseted(getAdapterPosition(),
+                    !String.valueOf(quantity.qtyBefore).equals(quantity.editable.toString()));
         }
 
         int qty = 0;
         try {
-            qty = Integer.parseInt(etQty.getText().toString());
+            qty = Integer.parseInt(quantity.editable.toString());
         } catch (NumberFormatException e) {
             e.printStackTrace();
         }
         checkQtyMustDisabled(cartItemHolderData, qty);
         cartItemHolderData.getCartItemData().getUpdatedData().setQuantity(qty);
         validateWithAvailableQuantity(cartItemHolderData, qty);
-        actionListener.onCartItemQuantityFormEdited(getAdapterPosition());
+        actionListener.onCartItemQuantityFormEdited(getAdapterPosition(), needToUpdateView);
     }
 
     private interface QuantityTextwatcherListener {
-        void onQuantityChanged(Editable editable);
+        void onQuantityChanged(QuantityWrapper quantityWrapper);
     }
 
     private interface NoteTextwatcherListener {
         void onNoteChanged(Editable editable);
+    }
+
+    private class QuantityWrapper {
+        int qtyBefore;
+        Editable editable;
     }
 
 }

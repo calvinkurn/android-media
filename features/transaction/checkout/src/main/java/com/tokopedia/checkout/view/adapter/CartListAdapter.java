@@ -157,6 +157,18 @@ public class CartListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         checkForShipmentForm();
     }
 
+    public void notifyItems(int position) {
+        Object itemData = cartItemHolderDataList.get(position);
+        String itemDataParentId = ((CartItemHolderData) itemData).getCartItemData().getOriginData().getParentId();
+        notifyItemChanged(position);
+        for (Object object : cartItemHolderDataList) {
+            String parentId = ((CartItemHolderData) itemData).getCartItemData().getOriginData().getParentId();
+            if (object instanceof CartItemHolderData && parentId.equals(itemDataParentId)) {
+                notifyItemChanged(cartItemHolderDataList.indexOf(object));
+            }
+        }
+    }
+
     @Override
     public int getItemViewType(int position) {
         if (cartItemHolderDataList.get(position) instanceof CartItemHolderData) {
@@ -272,7 +284,7 @@ public class CartListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
         void onCartItemQuantityPlusButtonClicked(CartItemHolderData cartItemHolderData, int position);
 
-        void onCartItemQuantityReseted(int position);
+        void onCartItemQuantityReseted(int position, boolean needRefreshItemView);
 
         void onCartItemQuantityMinusButtonClicked(CartItemHolderData cartItemHolderData, int position);
 
@@ -284,7 +296,7 @@ public class CartListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
         void onCartItemListIsEmpty();
 
-        void onCartItemQuantityFormEdited(int position);
+        void onCartItemQuantityFormEdited(int position, boolean needRefreshItemView);
 
         void onCartItemAfterErrorChecked();
 

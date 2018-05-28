@@ -265,16 +265,20 @@ public class CartFragment extends BaseCheckoutFragment implements CartListAdapte
     }
 
     @Override
-    public void onCartItemQuantityReseted(int position) {
+    public void onCartItemQuantityReseted(int position, boolean needRefreshItemView) {
         cartListAdapter.resetQuantity(position);
         dPresenter.reCalculateSubTotal(cartListAdapter.getDataList());
-        cartListAdapter.notifyItemChanged(position);
+        if (needRefreshItemView) {
+            cartListAdapter.notifyItems(position);
+        }
     }
 
     @Override
-    public void onCartItemQuantityFormEdited(int position) {
+    public void onCartItemQuantityFormEdited(int position, boolean needRefreshItemView) {
         dPresenter.reCalculateSubTotal(cartListAdapter.getDataList());
-        cartListAdapter.notifyItemChanged(position);
+        if (needRefreshItemView) {
+            cartListAdapter.notifyItems(position);
+        }
     }
 
     @Override
