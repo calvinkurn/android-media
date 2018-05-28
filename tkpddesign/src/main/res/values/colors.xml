@@ -47,7 +47,7 @@
 
     <color name="black_55">#8C000000</color>
 
-    <color name="bottomnav_bg">#FAFAFA</color>
+    <color name="bottomnav_bg">#FFFFFF</color>
     <color name="bottomnav_active">@color/green_250</color>
     <color name="bottomnav_inactive">#8C000000</color>
 

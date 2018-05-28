@@ -62,6 +62,9 @@ ext {
     tkpdHomeVersion = '2.22'
     tkpdMitraToppersVersion = '2.22'
     tkpdDistrictRecommendationVersion = '2.22'
+    tkpdDealsVersion = '2.22'
+    tkpdOmsVersion = '2.22'
+
 
     networkDependencies = [
             retrofit          : "com.squareup.retrofit2:retrofit:${retrofitVersion}",
@@ -246,6 +249,10 @@ ext {
             goldMerchant        : "com.tokopedia.gm:gold_merchant:${tkpdGoldMerchantVersion}",
             topAdsManagement    : "com.tokopedia.topads:top_ads_management:${tkpdTopAdsSDKVersion}",
             districtRecommendation: "com.tokopedia.district_recommendation:district_recommendation:${tkpdDistrictRecommendationVersion}"
+            topAdsManagement    : "com.tokopedia.topads:top_ads_management:${tkpdTopAdsSDKVersion}",
+            digitalDeals        : "com.tokopedia.digital_deals:digital_deals:${tkpdDealsVersion}",
+            omsApi              : "com.tokopedia.oms:oms:${tkpdOmsVersion}"
+
     ]
 
     tkpdLibDependencies = [
@@ -288,6 +295,7 @@ ext {
             mitraToppers    : ":features:fintech:mitra_toppers",
             event           : ":features:digital:event",
             home            : ":tkpdhome",
+            digitalDeals    : ":features:digital:digital_deals",
             kol             : ":features:content:kol",
             groupchat       : ":features:user:groupchat",
             gamification    : ":features:promo:gamification",
@@ -304,11 +312,13 @@ ext {
             applink         : ":libraries:applink",
             cacheApi        : ":libraries:cache_api",
             useCase         : ":libraries:use_case",
+            reactNative     : ":libraries:react_native",
             williamchart    : ":libraries:williamchart",
             fingerprint     : ":libraries:fingerprint",
             bottomSheetBuilder: ":libraries:bottom_sheet_builder",
             userSession     : ":libraries:user_session",
             imageuploader   : ":libraries:imageuploader",
-            youtubeApi      : ":libraries:YouTubeAndroidPlayerApi"
+            youtubeApi      : ":libraries:YouTubeAndroidPlayerApi",
+            omsApi          : ":libraries:oms"
     ]
 }

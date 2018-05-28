@@ -1,0 +1,201 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="@dimen/dp_16"
+    android:layout_marginLeft="@dimen/dp_16"
+    android:layout_marginRight="@dimen/dp_16"
+    app:cardCornerRadius="@dimen/card_corner_deals_item"
+    app:cardElevation="4dp">
+
+
+    <android.support.constraint.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingBottom="@dimen/dp_8">
+
+
+        <ImageView
+            android:id="@+id/imageView"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/image_width_deal"
+            android:scaleType="fitXY"
+
+            android:src="@color/grey_1100"
+            app:layout_constraintTop_toTopOf="parent" />
+
+
+        <TextView
+            android:id="@+id/tv_deal_intro"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/dp_8"
+            android:layout_marginRight="@dimen/dp_8"
+            android:layout_marginTop="@dimen/dp_8"
+            android:background="@drawable/rect_card_loading"
+            android:ellipsize="end"
+            android:fontFamily="sans-serif-medium"
+            android:maxLines="2"
+            android:textColor="@color/black_39"
+            android:textSize="@dimen/sp_12"
+            android:textStyle="normal"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/imageView" />
+
+        <TextView
+            android:id="@+id/tv_deal_intro1"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/dp_8"
+            android:layout_marginRight="@dimen/dp_8"
+            android:layout_marginTop="@dimen/dp_8"
+            android:background="@drawable/rect_card_loading"
+            android:ellipsize="end"
+            android:fontFamily="sans-serif-medium"
+            android:maxLines="2"
+            android:textColor="@color/black_39"
+            android:textSize="@dimen/sp_12"
+            android:textStyle="normal"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toLeftOf="@+id/tv_deal_intro2"
+            app:layout_constraintTop_toBottomOf="@+id/tv_deal_intro" />
+
+        <TextView
+            android:id="@+id/tv_deal_intro2"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/dp_8"
+            android:layout_marginRight="@dimen/dp_8"
+            android:layout_marginTop="@dimen/dp_8"
+            android:background="@drawable/rect_card_loading"
+            android:ellipsize="end"
+            android:fontFamily="sans-serif-medium"
+            android:maxLines="2"
+            android:textColor="@color/black_39"
+            android:textSize="@dimen/sp_14"
+            android:textStyle="normal"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintLeft_toRightOf="@+id/tv_deal_intro1"
+            app:layout_constraintRight_toRightOf="parent" />
+
+
+        <android.support.v7.widget.CardView
+            android:id="@+id/cv_brand"
+            android:layout_width="@dimen/image_width_brand_deals_card"
+            android:layout_height="@dimen/image_width_brand_deals_card"
+            android:layout_marginLeft="@dimen/dp_8"
+            android:layout_marginTop="@dimen/dp_16"
+            app:cardCornerRadius="@dimen/card_corner_deals_item"
+            app:cardElevation="0dp"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tv_deal_intro1">
+
+            <ImageView
+                android:id="@+id/iv_brand"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/grey_1100"
+                android:scaleType="centerCrop" />
+
+        </android.support.v7.widget.CardView>
+
+        <TextView
+            android:id="@+id/tv_brand_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/dp_8"
+            android:layout_marginLeft="@dimen/dp_8"
+            android:layout_marginRight="@dimen/dp_4"
+            android:background="@drawable/rect_card_loading"
+            android:fontFamily="sans-serif"
+            android:minWidth="@dimen/dp_48"
+            android:textColor="@color/black_38"
+            android:textSize="@dimen/sp_12"
+            android:textStyle="normal"
+            app:layout_constraintBottom_toTopOf="@+id/tv_available_locations"
+            app:layout_constraintLeft_toRightOf="@+id/cv_brand" />
+
+
+        <TextView
+            android:id="@+id/tv_available_locations"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/dp_4"
+            android:background="@drawable/rect_card_loading"
+            android:fontFamily="sans-serif"
+            android:minWidth="@dimen/dp_96"
+            android:textColor="@color/black_38"
+            android:textSize="@dimen/sp_12"
+            android:textStyle="normal"
+            app:layout_constraintBottom_toBottomOf="@+id/cv_brand"
+            app:layout_constraintLeft_toLeftOf="@+id/tv_brand_name" />
+
+
+        <View
+            android:id="@+id/divider"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_2"
+            android:layout_marginLeft="@dimen/dp_8"
+            android:layout_marginRight="@dimen/dp_8"
+            android:layout_marginTop="@dimen/dp_8"
+            android:background="@color/divider_color"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/cv_brand" />
+
+        <TextView
+            android:id="@+id/tv_Mrp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="@dimen/dp_8"
+            android:layout_marginTop="@dimen/dp_8"
+            android:background="@drawable/rect_card_loading"
+            android:fontFamily="sans-serif"
+            android:gravity="end"
+            android:minWidth="@dimen/dp_78"
+            android:textColor="@color/black_40"
+            android:textSize="@dimen/sp_12"
+            android:textStyle="normal"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/divider" />
+
+        <TextView
+            android:id="@+id/tv_salesPrice"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="@dimen/dp_8"
+            android:layout_marginTop="@dimen/dp_8"
+            android:background="@drawable/rect_card_loading"
+            android:fontFamily="sans-serif-medium"
+            android:includeFontPadding="false"
+            android:minWidth="120dp"
+            android:textColor="@color/red_800"
+            android:textSize="@dimen/sp_12"
+            android:textStyle="normal"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tv_Mrp" />
+
+
+        <TextView
+            android:id="@+id/tv_wish_list"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/dp_8"
+            android:background="@drawable/rect_card_loading"
+            android:fontFamily="sans-serif-medium"
+            android:minWidth="@dimen/dp_80"
+            android:textColor="#8a000000"
+            android:textSize="@dimen/sp_12"
+            android:textStyle="normal"
+            app:layout_constraintBottom_toBottomOf="@+id/tv_salesPrice"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/tv_Mrp" />
+
+
+    </android.support.constraint.ConstraintLayout>
+</android.support.v7.widget.CardView>
+

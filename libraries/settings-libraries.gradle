@@ -9,3 +9,4 @@ include "libraries:williamchart"
 include "libraries:user_session"
 include 'libraries:imageuploader'
 include "libraries:YouTubeAndroidPlayerApi"
+include "libraries:oms"

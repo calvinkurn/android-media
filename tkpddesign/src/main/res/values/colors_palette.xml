@@ -14,6 +14,7 @@
     <color name="grey_700">#616161</color>
     <color name="grey_750">#4b4b4b</color>
     <color name="grey_800">#424242</color>
+    <color name="grey_1100">#f6f6f6</color>
     <color name="grey_title">#60000000</color>
 
     <color name="light_blue_300">#4fc3f7</color>
@@ -31,6 +32,7 @@
     <color name="red_500">#e51c23</color>
     <color name="red_600">#dd191d</color>
     <color name="red_a700">#e00032</color>
+    <color name="red_800">#ff5722</color>
 
     <color name="yellow_50">#FFFDE7</color>
     <color name="yellow_600">#fdd835</color>
@@ -44,11 +46,18 @@
     <color name="green_500">#259b24</color>
     <color name="green_600">#0a8f08</color>
     <color name="green_800">#056f00</color>
+    <color name="green_900">#d3f0d4</color>
+    <color name="green_1000">#ade3af</color>
+    <color name="green_1100">#87d58b</color>
+
+    <color name="yellow_100">#fffbcd</color>
+    <color name="yellow_200">#ecdb77</color>
 
     <color name="orange_300">#ffb74d</color>
     <color name="orange_900">#e65100</color>
 
     <color name="deep_orange_500">#ff5722</color>
+    <color name="orange_100">#f5751d</color>
     <color name="orange_607">#ff5607</color>
 
     <color name="shadow_1">#00CCCCCC</color>
@@ -63,5 +72,12 @@
     <color name="grey_button">#e6e6e6</color>
     <color name="preview_bg">#d3f0d4</color>
     <color name="grey_150">#4a4a4a</color>
+
+    <color name="black_38">#60000000</color>
+    <color name="black_39">#b3000000</color>
+    <color name="black_40">#8a000000</color>
+    <color name="medium_green">#42b549</color>
+    <color name="divider_color">#ededed</color>
+    <color name="ic_back_color">#26000000</color>
 
 </resources>

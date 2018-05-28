@@ -22,6 +22,7 @@ import com.tokopedia.core.util.BranchSdkUtils;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.digital.applink.DigitalApplinkModule;
 import com.tokopedia.digital.applink.DigitalApplinkModuleLoader;
+import com.tokopedia.digital_deals.deeplinkmodule.DealsDeepLinkModule;
 import com.tokopedia.discovery.applink.DiscoveryApplinkModule;
 import com.tokopedia.discovery.applink.DiscoveryApplinkModuleLoader;
 import com.tokopedia.events.deeplink.EventsDeepLinkModule;
@@ -60,6 +61,12 @@ import com.tokopedia.tokocash.applink.TokoCashApplinkModule;
 import com.tokopedia.tokocash.applink.TokoCashApplinkModuleLoader;
 import com.tokopedia.transaction.applink.TransactionApplinkModule;
 import com.tokopedia.transaction.applink.TransactionApplinkModuleLoader;
+import com.tokopedia.digital_deals.deeplinkmodule.DealsDeepLinkModule;
+import com.tokopedia.digital_deals.deeplinkmodule.DealsDeepLinkModuleLoader;
+import com.tokopedia.shop.applink.ShopAppLinkModule;
+import com.tokopedia.shop.applink.ShopAppLinkModuleLoader;
+import com.tokopedia.gamification.applink.GamificationApplinkModule;
+import com.tokopedia.gamification.applink.GamificationApplinkModuleLoader;
 
 import org.json.JSONObject;
 
@@ -83,6 +90,7 @@ import io.branch.referral.BranchError;
         TokoCashApplinkModule.class,
         EventsDeepLinkModule.class,
         LoyaltyAppLinkModule.class,
+        DealsDeepLinkModule.class,
         ShopAppLinkModule.class,
         GroupChatApplinkModule.class,
         GamificationApplinkModule.class,
@@ -110,6 +118,7 @@ public class DeeplinkHandlerActivity extends AppCompatActivity {
                 new TokoCashApplinkModuleLoader(),
                 new EventsDeepLinkModuleLoader(),
                 new LoyaltyAppLinkModuleLoader(),
+                new DealsDeepLinkModuleLoader(),
                 new ShopAppLinkModuleLoader(),
                 new GroupChatApplinkModuleLoader(),
                 new GamificationApplinkModuleLoader(),

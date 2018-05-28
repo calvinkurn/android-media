@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:background="@color/red_50">
+    <View
+        android:id="@+id/divider"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/green_1100"/>
+
+    <TextView
+        android:id="@+id/tv_msg"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_marginLeft="@dimen/dp_16"
+        android:layout_marginTop="@dimen/dp_32"
+        android:textSize="@dimen/sp_12"
+        android:textColor="@color/black_40"
+
+        android:layout_marginBottom="@dimen/dp_32"
+        android:maxLines="2"
+        android:text="@string/location_changed_to"/>
+
+    <TextView
+        android:id="@+id/tv_location_ame"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@+id/tv_msg"
+        android:textSize="@dimen/sp_12"
+        android:layout_marginRight="@dimen/dp_16"
+        android:layout_alignTop="@+id/tv_msg"
+        android:textColor="@color/black_40"
+        android:textStyle="bold"
+        android:layout_marginBottom="@dimen/new_margin_sm"
+        android:maxLines="2"
+        tools:text="CIKUPA"/>
+
+    <TextView
+        android:id="@+id/snack_ok"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:textColor="@color/black_39"
+        android:layout_marginLeft="@dimen/new_margin_med"
+        android:layout_marginRight="@dimen/new_margin_sm"
+        android:padding="@dimen/new_margin_small"
+        android:text="OK"/>
+</RelativeLayout>

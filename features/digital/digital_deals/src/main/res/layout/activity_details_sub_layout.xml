@@ -1,0 +1,489 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/base_main_content"
+    android:layout_width="match_parent"
+    android:visibility="gone"
+    android:layout_height="wrap_content"
+    android:background="@color/deals_backgroud_color">
+
+
+    <TextView
+        android:id="@+id/tvMrp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/dp_16"
+        android:fontFamily="sans-serif"
+        android:gravity="end"
+        android:textColor="@color/black_38"
+        android:textSize="@dimen/sp_12"
+        android:textStyle="normal"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_goneMarginRight="@dimen/dp_16"
+        tools:text="Rp40.000.000" />
+
+    <TextView
+        android:id="@+id/tvSalesPrice"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/dp_16"
+        android:layout_marginTop="@dimen/margin_vvvs"
+        android:fontFamily="sans-serif-medium"
+        android:includeFontPadding="false"
+        android:textColor="@color/red_800"
+        android:textSize="@dimen/sp_17"
+        android:textStyle="normal"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvMrp"
+        tools:text="Rp50.000.000" />
+
+    <TextView
+        android:id="@+id/tv_off"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/dp_8"
+        android:layout_marginRight="@dimen/dp_8"
+        android:background="@drawable/background_lightgreen_oval"
+        android:fontFamily="sans-serif"
+        android:gravity="center"
+        android:paddingBottom="@dimen/dp_2"
+        android:paddingLeft="@dimen/dp_8"
+        android:paddingRight="@dimen/dp_8"
+        android:paddingTop="@dimen/dp_2"
+        android:textColor="@color/colorRed"
+        android:textSize="@dimen/sp_11"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="@+id/tvMrp"
+        app:layout_constraintLeft_toRightOf="@+id/tvMrp"
+        app:layout_constraintTop_toTopOf="@+id/tvMrp"
+        tools:text="20% OFF" />
+
+
+    <ImageView
+        android:id="@+id/iv_wish_list"
+        android:layout_width="@dimen/image_width_24"
+        android:layout_height="@dimen/image_width_24"
+        android:layout_marginRight="@dimen/dp_8"
+        app:layout_constraintBottom_toBottomOf="@+id/tvSalesPrice"
+        app:layout_constraintRight_toLeftOf="@+id/tv_favourite"
+        app:layout_constraintTop_toTopOf="@+id/tvSalesPrice"
+        app:srcCompat="@drawable/ic_wishlist_unfilled" />
+
+    <TextView
+        android:id="@+id/tv_favourite"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/dp_8"
+        android:layout_marginRight="@dimen/dp_16"
+        android:fontFamily="sans-serif-medium"
+        android:textColor="@color/black_40"
+        android:textSize="@dimen/sp_12"
+        android:textStyle="normal"
+        app:layout_constraintBottom_toBottomOf="@+id/tvSalesPrice"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/tvSalesPrice"
+        tools:text="5" />
+
+
+    <View
+        android:id="@+id/divider1"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_2"
+        android:layout_marginTop="@dimen/dp_16"
+        android:background="@color/divider_color"
+        app:layout_constraintTop_toBottomOf="@+id/tvSalesPrice" />
+
+
+    <ImageView
+        android:id="@+id/iv_clock"
+        android:layout_width="@dimen/dp_24"
+        android:layout_height="@dimen/dp_24"
+        android:layout_marginLeft="@dimen/dp_16"
+        android:layout_marginTop="@dimen/dp_16"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/divider1"
+        app:srcCompat="@drawable/ic_promo_valid_clock" />
+
+    <TextView
+        android:id="@+id/tv_expiryDate"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/dp_8"
+        android:fontFamily="sans-serif"
+        android:textColor="@color/black_39"
+        android:textSize="@dimen/sp_14"
+        android:textStyle="normal"
+        app:layout_constraintBottom_toBottomOf="@+id/iv_clock"
+        app:layout_constraintLeft_toRightOf="@+id/iv_clock"
+        app:layout_constraintTop_toTopOf="@+id/iv_clock"
+        app:layout_constraintVertical_bias="0.5"
+        tools:text="Berlaku hingga tanggal 1 Juni 2018" />
+
+    <View
+        android:id="@+id/divider2"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_2"
+        android:layout_marginTop="@dimen/dp_16"
+        android:background="@color/divider_color"
+        app:layout_constraintTop_toBottomOf="@+id/iv_clock" />
+
+    <TextView
+        android:id="@+id/tv_popular"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/dp_16"
+        android:layout_marginTop="@dimen/dp_16"
+        android:fontFamily="sans-serif-medium"
+        android:textColor="@color/black_39"
+        android:textSize="@dimen/sp_17"
+        android:textStyle="normal"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/divider2"
+        android:text="@string/redeem_locations" />
+
+    <TextView
+        android:id="@+id/tv_number_of_locations"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:fontFamily="sans-serif-medium"
+        android:textColor="@color/black_38"
+        android:textSize="@dimen/sp_17"
+        android:textStyle="normal"
+        app:layout_constraintBottom_toBottomOf="@+id/tv_popular"
+        app:layout_constraintLeft_toRightOf="@+id/tv_popular"
+        app:layout_constraintTop_toTopOf="@+id/tv_popular"
+        app:layout_constraintVertical_bias="0.5"
+        tools:text="(25)" />
+
+    <TextView
+        android:id="@+id/tv_findalllocations"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="@dimen/dp_16"
+        android:fontFamily="sans-serif"
+        android:lineSpacingExtra="6sp"
+        android:text="@string/see_all_locations"
+        android:textColor="@color/green_nob"
+        android:textSize="@dimen/sp_12"
+        android:textStyle="normal"
+        app:layout_constraintBottom_toBottomOf="@+id/tv_number_of_locations"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/tv_number_of_locations" />
+
+
+    <android.support.v7.widget.CardView
+        android:id="@+id/cv_imageView"
+        android:layout_width="@dimen/image_width_brand"
+        android:layout_height="@dimen/image_width_brand"
+        android:layout_marginLeft="@dimen/dp_16"
+        android:layout_marginTop="@dimen/dp_16"
+        app:cardCornerRadius="@dimen/card_corner_deals_item"
+        app:cardElevation="0dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_popular">
+
+        <ImageView
+            android:id="@+id/imageViewBrand"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/grey_1100"
+            android:scaleType="centerCrop"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tv_popular" />
+    </android.support.v7.widget.CardView>
+
+    <TextView
+        android:id="@+id/tv_brandName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/dp_16"
+        android:fontFamily="sans-serif-medium"
+        android:textColor="@color/black_39"
+        android:textSize="@dimen/sp_17"
+        android:textStyle="normal"
+        app:layout_constraintLeft_toRightOf="@+id/cv_imageView"
+        app:layout_constraintTop_toTopOf="@+id/cv_imageView"
+        tools:text="Bakerzin" />
+
+    <TextView
+        android:id="@+id/tv_brandVenue"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_8"
+        android:fontFamily="sans-serif-medium"
+        android:textColor="@color/black_39"
+        android:textSize="@dimen/sp_12"
+        android:textStyle="normal"
+        app:layout_constraintLeft_toLeftOf="@+id/tv_brandName"
+        app:layout_constraintTop_toBottomOf="@+id/tv_brandName"
+        tools:text="PIK Avenue - Food Hall" />
+
+    <TextView
+        android:id="@+id/tv_brandAddress"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="@dimen/dp_16"
+        android:layout_marginTop="@dimen/margin_vvvs"
+        android:fontFamily="sans-serif-medium"
+        android:maxLines="2"
+        android:textColor="@color/black_38"
+        android:textSize="@dimen/sp_12"
+        android:textStyle="normal"
+        app:layout_constraintLeft_toLeftOf="@+id/tv_brandVenue"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_brandVenue"
+        tools:text="PIK Avenue Ground Floor - B16, Jl. Pantai Indah Kapuk Boulevard, Kapuk Muara" />
+
+    <ImageView
+        android:id="@+id/iv_map"
+        android:layout_width="@dimen/image_width_18"
+        android:layout_height="@dimen/image_width_18"
+        android:layout_marginTop="@dimen/dp_8"
+        app:layout_constraintLeft_toLeftOf="@+id/tv_brandAddress"
+        app:layout_constraintTop_toBottomOf="@+id/tv_brandAddress"
+        app:srcCompat="@drawable/ic_see_location" />
+
+    <TextView
+        android:id="@+id/tv_view_map"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/dp_8"
+        android:fontFamily="sans-serif-medium"
+        android:text="@string/see_on_map"
+        android:textColor="@color/green_nob"
+        android:textSize="@dimen/sp_12"
+        android:textStyle="normal"
+        app:layout_constraintBottom_toBottomOf="@+id/iv_map"
+        app:layout_constraintLeft_toRightOf="@+id/iv_map"
+        app:layout_constraintTop_toTopOf="@+id/iv_map" />
+
+
+    <View
+        android:id="@+id/divider3"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_2"
+        android:layout_marginTop="@dimen/dp_16"
+        android:background="@color/grey_300"
+        app:layout_constraintTop_toBottomOf="@+id/iv_map" />
+
+
+    <TextView
+        android:id="@+id/tv_description"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/dp_16"
+        android:layout_marginTop="@dimen/dp_16"
+        android:fontFamily="sans-serif-medium"
+        android:text="@string/show_description"
+        android:textColor="@color/black_70"
+        android:textSize="@dimen/sp_17"
+        android:textStyle="normal"
+
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/divider3" />
+
+    <at.blogc.android.views.ExpandableTextView
+        android:id="@+id/tv_expandable_description"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="@dimen/dp_16"
+        android:layout_marginTop="@dimen/dp_8"
+        android:ellipsize="end"
+        android:fontFamily="sans-serif"
+        android:maxLines="3"
+        android:textColor="@color/expandable_text_color"
+        android:textSize="@dimen/sp_14"
+        android:textStyle="normal"
+        app:animation_duration="300"
+        app:layout_constraintLeft_toLeftOf="@+id/tv_description"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_description"
+        tools:text="@string/bigcontent" />
+
+    <LinearLayout
+        android:id="@+id/expand_view_description"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintLeft_toLeftOf="@+id/tv_description"
+        app:layout_constraintTop_toBottomOf="@+id/tv_expandable_description">
+
+        <TextView
+            android:id="@+id/seemorebutton_description"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/dp_16"
+            android:layout_marginTop="@dimen/dp_8"
+            android:text="@string/expand"
+            android:textColor="@color/green_nob"
+            android:textSize="@dimen/sp_12"
+            android:textStyle="normal" />
+
+        <ImageView
+            android:id="@+id/down_arrow_description"
+            android:layout_width="@dimen/dp_8"
+            android:layout_height="@dimen/dp_8"
+            android:layout_marginBottom="@dimen/dp_8"
+            android:layout_marginLeft="@dimen/dp_8"
+            android:layout_marginStart="@dimen/dp_8"
+            android:layout_marginTop="@dimen/sp_12"
+            android:tint="@color/green_nob"
+            app:srcCompat="@drawable/ic_arrow_down" />
+    </LinearLayout>
+
+
+    <View
+
+        android:id="@+id/divider4"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_2"
+        android:background="@color/grey_300"
+        app:layout_constraintTop_toBottomOf="@+id/expand_view_description" />
+
+
+    <TextView
+        android:id="@+id/tv_tnc"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/dp_16"
+        android:layout_marginTop="@dimen/dp_16"
+        android:fontFamily="sans-serif-medium"
+        android:text="@string/show_tnc"
+        android:textColor="@color/black_70"
+        android:textSize="@dimen/sp_17"
+        android:textStyle="normal"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/divider4" />
+
+    <at.blogc.android.views.ExpandableTextView
+        android:id="@+id/tv_expandable_tnc"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="@dimen/dp_16"
+        android:layout_marginTop="@dimen/dp_8"
+        android:ellipsize="end"
+        android:fontFamily="sans-serif"
+        android:maxLines="3"
+        android:text="@string/bigcontent"
+        android:textColor="@color/expandable_text_color"
+        android:textSize="@dimen/sp_14"
+        android:textStyle="normal"
+        app:animation_duration="300"
+        app:layout_constraintLeft_toLeftOf="@+id/tv_tnc"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_tnc" />
+
+    <LinearLayout
+        android:id="@+id/expand_view_tnc"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintLeft_toLeftOf="@+id/tv_tnc"
+        app:layout_constraintTop_toBottomOf="@+id/tv_expandable_tnc">
+
+        <TextView
+            android:id="@+id/seemorebutton_tnc"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/dp_16"
+            android:layout_marginTop="@dimen/dp_8"
+            android:fontFamily="sans-serif"
+            android:text="@string/expand"
+            android:textColor="@color/green_nob"
+            android:textSize="@dimen/sp_12"
+            android:textStyle="normal" />
+
+        <ImageView
+            android:id="@+id/down_arrow_tnc"
+            android:layout_width="@dimen/dp_8"
+            android:layout_height="@dimen/dp_8"
+            android:layout_marginBottom="@dimen/dp_8"
+            android:layout_marginLeft="@dimen/dp_8"
+            android:layout_marginStart="@dimen/dp_8"
+            android:layout_marginTop="@dimen/sp_12"
+            android:tint="@color/green_nob"
+            app:srcCompat="@drawable/ic_arrow_down" />
+    </LinearLayout>
+
+
+    <View
+        android:id="@+id/divider5"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_2"
+        android:background="@color/grey_300"
+        app:layout_constraintTop_toBottomOf="@+id/expand_view_tnc" />
+    
+    <ImageView
+        android:id="@+id/iv_howtoredeem"
+        app:srcCompat="@drawable/ic_how_to_redeem"
+        app:layout_constraintLeft_toLeftOf="parent"
+        android:layout_marginLeft="@dimen/dp_16"
+        app:layout_constraintTop_toBottomOf="@+id/divider5"
+        android:layout_marginTop="@dimen/dp_16"
+        android:layout_width="@dimen/dp_24"
+        android:layout_height="@dimen/dp_24" />
+
+    <TextView
+        android:id="@+id/see_how_to_redeem_voucher"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="sans-serif"
+        android:textColor="@color/green_nob"
+        app:layout_constraintTop_toTopOf="@+id/iv_howtoredeem"
+        app:layout_constraintBottom_toBottomOf="@+id/iv_howtoredeem"
+        app:layout_constraintLeft_toRightOf="@+id/iv_howtoredeem"
+        android:layout_marginLeft="@dimen/dp_8"
+        android:textSize="@dimen/sp_14"
+        android:textStyle="normal"
+        android:text="@string/see_how_to_redeem_voucher" />
+
+    <ImageView
+        android:id="@+id/iv_arrow"
+        app:srcCompat="@drawable/ic_arrow_right"
+        android:layout_marginRight="@dimen/dp_16"
+        android:tint="@color/grey_400"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/iv_howtoredeem"
+        app:layout_constraintBottom_toBottomOf="@+id/iv_howtoredeem"
+        app:layout_constraintTop_toBottomOf="@+id/divider5"
+        android:layout_width="@dimen/dp_24"
+        android:layout_height="@dimen/dp_24" />
+
+    <View
+        android:id="@+id/divider6"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_2"
+        android:layout_marginTop="@dimen/dp_16"
+        android:background="@color/grey_300"
+        app:layout_constraintTop_toBottomOf="@+id/iv_howtoredeem" />
+
+    <TextView
+        android:id="@+id/tv_recommended_deals"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/dp_16"
+        android:layout_marginTop="@dimen/dp_16"
+        android:fontFamily="sans-serif-medium"
+        android:text="@string/recommended_deals"
+        android:textColor="@color/black_70"
+        android:textSize="@dimen/sp_17"
+        android:textStyle="normal"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/divider6" />
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/recyclerView"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_16"
+        app:layoutManager="android.support.v7.widget.LinearLayoutManager"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_recommended_deals"
+        tools:listitem="@layout/deal_item_card_short" />
+
+
+</android.support.constraint.ConstraintLayout>

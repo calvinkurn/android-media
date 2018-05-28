@@ -1,0 +1,270 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main_content"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <android.support.design.widget.AppBarLayout
+        android:id="@+id/app_bar_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <android.support.design.widget.CollapsingToolbarLayout
+            android:id="@+id/collapsing_toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/white"
+            app:contentScrim="@color/white"
+            app:expandedTitleGravity="center_horizontal|bottom"
+            app:expandedTitleMarginBottom="16dp"
+            app:expandedTitleTextAppearance="@style/ToolbarExpandedTitle"
+            app:layout_scrollFlags="scroll|exitUntilCollapsed">
+
+            <FrameLayout
+                android:id="@+id/fl_header"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_scrollFlags="scroll|enterAlways|enterAlwaysCollapsed">
+
+                <ImageView
+                    android:id="@+id/header_image"
+                    android:layout_width="match_parent"
+                    android:layout_height="160dp"
+                    android:scaleType="centerCrop"
+                    android:src="@color/tkpd_green_onboarding"
+                    app:layout_scrollFlags="scroll|enterAlways|enterAlwaysCollapsed" />
+
+
+                <android.support.v7.widget.CardView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="107dp"
+                    app:cardCornerRadius="8dp"
+                    app:layout_scrollFlags="scroll|enterAlways|enterAlwaysCollapsed">
+
+                    <ImageView
+                        android:id="@+id/iv_brand_logo"
+                        android:layout_width="@dimen/image_width_brand"
+                        android:layout_height="@dimen/image_width_brand"
+                        android:background="@color/grey_1100"
+                        app:layout_scrollFlags="scroll|enterAlways|enterAlwaysCollapsed" />
+
+                </android.support.v7.widget.CardView>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:layout_marginTop="201dp" />
+            </FrameLayout>
+
+            <android.support.v7.widget.Toolbar
+                android:id="@+id/toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                android:minHeight="?attr/actionBarSize"
+                app:layout_collapseMode="pin" />
+
+        </android.support.design.widget.CollapsingToolbarLayout>
+
+
+    </android.support.design.widget.AppBarLayout>
+
+    <android.support.v4.widget.NestedScrollView
+        android:id="@+id/nestedScroll"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:clipToPadding="false"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+        <android.support.constraint.ConstraintLayout
+            android:id="@+id/base_main_content"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/bottomnav_bg"
+            android:visibility="gone">
+
+
+            <at.blogc.android.views.ExpandableTextView
+                android:id="@+id/tv_expandable_description"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/dp_16"
+                android:layout_marginRight="@dimen/dp_16"
+                android:layout_marginTop="@dimen/dp_16"
+                android:ellipsize="end"
+                android:fontFamily="sans-serif"
+                android:maxLines="3"
+                android:textColor="@color/expandable_text_color"
+                android:textSize="@dimen/sp_14"
+                android:textStyle="normal"
+                app:animation_duration="300"
+
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                tools:text="@string/bigcontent" />
+
+            <LinearLayout
+                android:id="@+id/expand_view_description"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tv_expandable_description">
+
+                <TextView
+                    android:id="@+id/seemorebutton_description"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/dp_8"
+                    android:text="@string/expand"
+                    android:textColor="@color/green_nob"
+                    android:textSize="@dimen/sp_12"
+                    android:textStyle="normal" />
+
+                <ImageView
+                    android:id="@+id/down_arrow_description"
+                    android:layout_width="@dimen/dp_8"
+                    android:layout_height="@dimen/dp_8"
+                    android:layout_marginLeft="@dimen/dp_8"
+                    android:layout_marginStart="@dimen/dp_8"
+                    android:layout_marginTop="@dimen/sp_12"
+                    android:tint="@color/green_nob"
+                    app:srcCompat="@drawable/ic_arrow_down" />
+            </LinearLayout>
+
+
+            <View
+                android:id="@+id/divider1"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/dp_2"
+                android:layout_marginTop="@dimen/dp_16"
+                android:background="@color/divider_color"
+                app:layout_constraintTop_toBottomOf="@+id/expand_view_description" />
+
+            <ImageView
+                android:id="@+id/iv_map"
+                android:layout_width="@dimen/dp_24"
+                android:layout_height="@dimen/dp_24"
+                android:layout_marginLeft="@dimen/dp_16"
+                android:layout_marginTop="@dimen/dp_16"
+                android:background="@color/grey_1100"
+                android:visibility="gone"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/divider1" />
+
+            <TextView
+                android:id="@+id/tv_available_locations"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/dp_8"
+                android:fontFamily="sans-serif"
+                android:text="Terdapat di "
+                android:textColor="@color/black_39"
+                android:textSize="@dimen/sp_14"
+                android:textStyle="normal"
+                android:visibility="gone"
+                app:layout_constraintBottom_toBottomOf="@+id/iv_map"
+                app:layout_constraintLeft_toRightOf="@+id/iv_map"
+                app:layout_constraintTop_toTopOf="@+id/iv_map"
+                app:layout_constraintVertical_bias="0.5" />
+
+            <TextView
+                android:id="@+id/tv_number_locations"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="sans-serif"
+                android:text="3 kota"
+                android:textColor="@color/black_39"
+                android:textSize="@dimen/sp_14"
+                android:textStyle="bold"
+                android:visibility="gone"
+                app:layout_constraintBottom_toBottomOf="@+id/iv_map"
+                app:layout_constraintLeft_toRightOf="@id/tv_available_locations"
+                app:layout_constraintTop_toTopOf="@+id/iv_map"
+                app:layout_constraintVertical_bias="0.5" />
+
+
+            <ImageView
+                android:id="@+id/right_arrow_location"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="@dimen/dp_16"
+                android:tint="@color/grey_400"
+                android:visibility="gone"
+                app:layout_constraintBottom_toBottomOf="@+id/iv_map"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/iv_map"
+                app:srcCompat="@drawable/ic_arrow_right_default" />
+
+            <View
+                android:id="@+id/divider2"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/dp_2"
+                android:layout_marginTop="@dimen/dp_16"
+                android:background="@color/divider_color"
+                android:visibility="gone"
+                app:layout_constraintTop_toBottomOf="@+id/iv_map" />
+
+            <TextView
+                android:id="@+id/tv_popular"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/dp_16"
+                android:layout_marginTop="@dimen/dp_16"
+                android:fontFamily="sans-serif-medium"
+                android:text="Deals di Jakarta "
+                android:textColor="@color/black_39"
+                android:textSize="@dimen/sp_17"
+                android:textStyle="normal"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/divider2" />
+
+            <TextView
+                android:id="@+id/number_of_locations"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="sans-serif-medium"
+                android:text="(23)"
+                android:textColor="@color/black_38"
+                android:textSize="@dimen/sp_17"
+                android:textStyle="normal"
+                app:layout_constraintBottom_toBottomOf="@+id/tv_popular"
+                app:layout_constraintLeft_toRightOf="@+id/tv_popular"
+                app:layout_constraintTop_toTopOf="@+id/tv_popular" />
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/recyclerView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:nestedScrollingEnabled="false"
+                android:layout_marginTop="@dimen/dp_16"
+                app:layoutManager="android.support.v7.widget.LinearLayoutManager"
+                app:layout_behavior="@string/appbar_scrolling_view_behavior"
+                app:layout_constraintTop_toBottomOf="@+id/number_of_locations"
+                tools:listitem="@layout/deals_item_card" />
+
+
+        </android.support.constraint.ConstraintLayout>
+    </android.support.v4.widget.NestedScrollView>
+
+    <FrameLayout
+        android:id="@+id/progress_bar_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/black_12"
+        android:clickable="true"
+        android:focusable="true"
+        android:visibility="gone">
+
+        <ProgressBar
+            android:id="@+id/prog_bar"
+            android:layout_width="@dimen/dp_50"
+            android:layout_height="@dimen/dp_50"
+            android:layout_gravity="center" />
+    </FrameLayout>
+
+</android.support.design.widget.CoordinatorLayout>
