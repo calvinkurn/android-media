@@ -8,7 +8,7 @@ public class EntityPassengersItem{
 	private String errorMessage;
 
 	@SerializedName("product_id")
-	private int productId;
+	private Integer productId;
 
 	@SerializedName("name")
 	private String name;
@@ -17,7 +17,7 @@ public class EntityPassengersItem{
 	private String elementType;
 
 	@SerializedName("id")
-	private int id;
+	private Integer id;
 
 	@SerializedName("title")
 	private String title;
@@ -42,11 +42,11 @@ public class EntityPassengersItem{
 		return errorMessage;
 	}
 
-	public void setProductId(int productId){
+	public void setProductId(Integer productId){
 		this.productId = productId;
 	}
 
-	public int getProductId(){
+	public Integer getProductId(){
 		return productId;
 	}
 
@@ -66,11 +66,11 @@ public class EntityPassengersItem{
 		return elementType;
 	}
 
-	public void setId(int id){
+	public void setId(Integer id){
 		this.id = id;
 	}
 
-	public int getId(){
+	public Integer getId(){
 		return id;
 	}
 

@@ -8,16 +8,16 @@ import com.google.gson.annotations.SerializedName;
 public class Configuration implements Parcelable {
 
 	@SerializedName("price")
-	private int price;
+	private Integer price;
 
 	@SerializedName("sub_config")
 	private SubConfig subConfig;
 
-	public void setPrice(int price){
+	public void setPrice(Integer price){
 		this.price = price;
 	}
 
-	public int getPrice(){
+	public Integer getPrice(){
 		return price;
 	}
 

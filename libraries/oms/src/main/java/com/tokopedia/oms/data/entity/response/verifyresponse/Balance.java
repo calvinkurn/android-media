@@ -11,10 +11,10 @@ public class Balance{
 	private boolean isActive;
 
 	@SerializedName("balance")
-	private int balance;
+	private Integer balance;
 
 	@SerializedName("useable_balance")
-	private int useableBalance;
+	private Integer useableBalance;
 
 	@SerializedName("useable_balance_text")
 	private String useableBalanceText;
@@ -23,16 +23,16 @@ public class Balance{
 	private String thresholdText;
 
 	@SerializedName("threshold_limit")
-	private int thresholdLimit;
+	private Integer thresholdLimit;
 
 	@SerializedName("balance_text")
 	private String balanceText;
 
 	@SerializedName("limit")
-	private int limit;
+	private Integer limit;
 
 	@SerializedName("threshold")
-	private int threshold;
+	private Integer threshold;
 
 	@SerializedName("limit_text")
 	private String limitText;
@@ -53,19 +53,19 @@ public class Balance{
 		return isActive;
 	}
 
-	public void setBalance(int balance){
+	public void setBalance(Integer balance){
 		this.balance = balance;
 	}
 
-	public int getBalance(){
+	public Integer getBalance(){
 		return balance;
 	}
 
-	public void setUseableBalance(int useableBalance){
+	public void setUseableBalance(Integer useableBalance){
 		this.useableBalance = useableBalance;
 	}
 
-	public int getUseableBalance(){
+	public Integer getUseableBalance(){
 		return useableBalance;
 	}
 
@@ -85,11 +85,11 @@ public class Balance{
 		return thresholdText;
 	}
 
-	public void setThresholdLimit(int thresholdLimit){
+	public void setThresholdLimit(Integer thresholdLimit){
 		this.thresholdLimit = thresholdLimit;
 	}
 
-	public int getThresholdLimit(){
+	public Integer getThresholdLimit(){
 		return thresholdLimit;
 	}
 
@@ -101,19 +101,19 @@ public class Balance{
 		return balanceText;
 	}
 
-	public void setLimit(int limit){
+	public void setLimit(Integer limit){
 		this.limit = limit;
 	}
 
-	public int getLimit(){
+	public Integer getLimit(){
 		return limit;
 	}
 
-	public void setThreshold(int threshold){
+	public void setThreshold(Integer threshold){
 		this.threshold = threshold;
 	}
 
-	public int getThreshold(){
+	public Integer getThreshold(){
 		return threshold;
 	}
 

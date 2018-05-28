@@ -19,7 +19,7 @@ dependencies {
     implementation rootProject.ext.supportLibDependencies.constraintLayout
     implementation 'at.blogc:expandabletextview:1.0.5'
     implementation project(path: ':libraries:oms')
-
+    implementation project(path: ':tkpdloyalty')
     implementation project(rootProject.ext.libraries.useCase)
     implementation rootProject.ext.supportLibDependencies.constraintLayout
     implementation rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch

@@ -18,6 +18,8 @@ public class SelectQuantityContract {
 
         void navigateToActivityRequest(Intent intent, int requestCode);
 
+        void navigateToActivity(Intent intent);
+
         void renderFromDetails(DealsDetailsViewModel dealDetail);
 
         RequestParams getParams();
@@ -30,9 +32,7 @@ public class SelectQuantityContract {
 
         void hideProgressBar();
 
-
         android.view.View getRootView();
-
 
         int getRequestCode();
 
@@ -40,9 +40,11 @@ public class SelectQuantityContract {
 
     public interface Presenter extends CustomerPresenter<SelectQuantityContract.View> {
 
-        void initialize();
+        void initialize(DealsDetailsViewModel detailsViewModel);
 
         void onDestroy();
+
+        void onActivityResult(int requestCode);
 
     }
 }

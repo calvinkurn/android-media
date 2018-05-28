@@ -40,6 +40,11 @@
             android:screenOrientation="portrait"
             android:label="@string/title_activity_select_locations"
             android:theme="@style/Theme.White" />
+
+        <activity
+            android:name=".view.activity.CheckoutActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White" />
     </application>
 
 </manifest>

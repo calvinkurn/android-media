@@ -11,7 +11,7 @@ public class Product{
 	private String tnc;
 
 	@SerializedName("mrp")
-	private int mrp;
+	private Integer mrp;
 
 	@SerializedName("display_name")
 	private String displayName;
@@ -35,7 +35,7 @@ public class Product{
 	private String actionText;
 
 	@SerializedName("category_id")
-	private int categoryId;
+	private Integer categoryId;
 
 	@SerializedName("autocode")
 	private String autocode;
@@ -47,13 +47,13 @@ public class Product{
 	private String genre;
 
 	@SerializedName("sales_price")
-	private int salesPrice;
+	private Integer salesPrice;
 
 	@SerializedName("provider_id")
-	private int providerId;
+	private Integer providerId;
 
 	@SerializedName("id")
-	private int id;
+	private Integer id;
 
 	@SerializedName("image_web")
 	private String imageWeb;
@@ -80,11 +80,11 @@ public class Product{
 		return tnc;
 	}
 
-	public void setMrp(int mrp){
+	public void setMrp(Integer mrp){
 		this.mrp = mrp;
 	}
 
-	public int getMrp(){
+	public Integer getMrp(){
 		return mrp;
 	}
 
@@ -144,11 +144,11 @@ public class Product{
 		return actionText;
 	}
 
-	public void setCategoryId(int categoryId){
+	public void setCategoryId(Integer categoryId){
 		this.categoryId = categoryId;
 	}
 
-	public int getCategoryId(){
+	public Integer getCategoryId(){
 		return categoryId;
 	}
 
@@ -176,27 +176,27 @@ public class Product{
 		return genre;
 	}
 
-	public void setSalesPrice(int salesPrice){
+	public void setSalesPrice(Integer salesPrice){
 		this.salesPrice = salesPrice;
 	}
 
-	public int getSalesPrice(){
+	public Integer getSalesPrice(){
 		return salesPrice;
 	}
 
-	public void setProviderId(int providerId){
+	public void setProviderId(Integer providerId){
 		this.providerId = providerId;
 	}
 
-	public int getProviderId(){
+	public Integer getProviderId(){
 		return providerId;
 	}
 
-	public void setId(int id){
+	public void setId(Integer id){
 		this.id = id;
 	}
 
-	public int getId(){
+	public Integer getId(){
 		return id;
 	}
 

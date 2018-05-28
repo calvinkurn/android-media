@@ -3,6 +3,7 @@ package com.tokopedia.oms.data;
 import com.google.gson.JsonObject;
 import com.tokopedia.oms.data.entity.response.checkoutreponse.CheckoutResponse;
 import com.tokopedia.oms.data.entity.response.verifyresponse.VerifyCartResponse;
+import com.tokopedia.oms.data.entity.response.verifyresponse.VerifyMyCartResponse;
 import com.tokopedia.oms.domain.OmsRepository;
 
 import javax.inject.Inject;
@@ -21,7 +22,7 @@ public class OmsRepositoryData implements OmsRepository {
     }
 
     @Override
-    public Observable<VerifyCartResponse> verifyCard(JsonObject requestBody) {
+    public Observable<VerifyMyCartResponse> verifyCard(JsonObject requestBody) {
         return eventsDataStoreFactory
                 .createCloudDataStore()
                 .verifyCart(requestBody);

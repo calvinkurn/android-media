@@ -14,23 +14,21 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
-import com.tokopedia.digital_deals.di.DaggerDealsComponent;
-import com.tokopedia.digital_deals.di.DealsComponent;
 import com.tokopedia.digital_deals.R;
+import com.tokopedia.digital_deals.di.DaggerDealsComponent;
 import com.tokopedia.digital_deals.di.DealsModule;
 import com.tokopedia.digital_deals.view.activity.DealDetailsActivity;
 import com.tokopedia.digital_deals.view.contractor.SelectQuantityContract;
 import com.tokopedia.digital_deals.view.presenter.SelectQuantityPresenter;
 import com.tokopedia.digital_deals.view.utils.DealFragmentCallbacks;
 import com.tokopedia.digital_deals.view.utils.Utils;
-import com.tokopedia.digital_deals.view.viewmodel.CategoryItemsViewModel;
 import com.tokopedia.digital_deals.view.viewmodel.DealsDetailsViewModel;
 import com.tokopedia.digital_deals.view.viewmodel.PackageViewModel;
-import com.tokopedia.oms.di.OmsModule;
 import com.tokopedia.usecase.RequestParams;
 
 import javax.inject.Inject;
@@ -56,6 +54,7 @@ public class SelectDealQuantityFragment extends BaseDaggerFragment implements Se
     private int MAX_QUANTITY = 8;
     private int CURRENT_QUANTITY = 1;
 
+    private static final int EVENT_LOGIN_REQUEST = 1099;
     public static Fragment createInstance() {
         Fragment fragment = new SelectDealQuantityFragment();
         return fragment;
@@ -82,7 +81,7 @@ public class SelectDealQuantityFragment extends BaseDaggerFragment implements Se
         View view = inflater.inflate(R.layout.fragment_deal_quantity, container, false);
         setHasOptionsMenu(true);
         setViewIds(view);
-        initializeViews();
+        mPresenter.initialize(dealDetails);
         return view;
     }
 
@@ -113,26 +112,6 @@ public class SelectDealQuantityFragment extends BaseDaggerFragment implements Se
         textViewSalesPrice = view.findViewById(R.id.tvSalesPrice);
         textViewTotalAmount = view.findViewById(R.id.tv_total_amount);
         llContinue = view.findViewById(R.id.ll_continue);
-
-    }
-
-    private void initializeViews() {
-        if (dealDetails.getBrand() != null) {
-            ImageHandler.loadImage(getContext(), imageViewBrand, dealDetails.getBrand().getFeaturedThumbnailImage(), R.color.grey_1100, R.color.grey_1100);
-            textViewbrandName.setText(dealDetails.getBrand().getTitle());
-        }
-
-        textViewdealDetails.setText(dealDetails.getDisplayName());
-
-        textViewQuantity.setText(CURRENT_QUANTITY + "");
-        textViewMrp.setText(Utils.convertToCurrencyString(dealDetails.getMrp()));
-        textViewMrp.setPaintFlags(textViewMrp.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
-        textViewSalesPrice.setText(Utils.convertToCurrencyString(dealDetails.getSalesPrice()));
-        textViewTotalAmount.setText(Utils.convertToCurrencyString(dealDetails.getSalesPrice()));
-
-        llContinue.setOnClickListener(this);
-        imageViewAdd.setOnClickListener(this);
-        imageViewSubtract.setOnClickListener(this);
 
     }
 
@@ -194,6 +173,7 @@ public class SelectDealQuantityFragment extends BaseDaggerFragment implements Se
             packageViewModel.setSelectedQuantity(CURRENT_QUANTITY);
             packageViewModel.setDigitalCategoryID(dealDetails.getCatalog().getDigitalCategoryId());
             packageViewModel.setDigitalProductID(dealDetails.getCatalog().getDigitalProductId());
+
             mPresenter.verifyCart(packageViewModel);
         }
     }
@@ -205,12 +185,33 @@ public class SelectDealQuantityFragment extends BaseDaggerFragment implements Se
 
     @Override
     public void navigateToActivityRequest(Intent intent, int requestCode) {
+        startActivityForResult(intent, requestCode);
+    }
 
+    @Override
+    public void navigateToActivity(Intent intent) {
+        startActivity(intent);
     }
 
     @Override
     public void renderFromDetails(DealsDetailsViewModel dealDetail) {
 
+        if (dealDetails.getBrand() != null) {
+            ImageHandler.loadImage(getContext(), imageViewBrand, dealDetails.getBrand().getFeaturedThumbnailImage(), R.color.grey_1100, R.color.grey_1100);
+            textViewbrandName.setText(dealDetails.getBrand().getTitle());
+        }
+
+        textViewdealDetails.setText(dealDetails.getDisplayName());
+
+        textViewQuantity.setText(CURRENT_QUANTITY + "");
+        textViewMrp.setText(Utils.convertToCurrencyString(dealDetails.getMrp()));
+        textViewMrp.setPaintFlags(textViewMrp.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+        textViewSalesPrice.setText(Utils.convertToCurrencyString(dealDetails.getSalesPrice()));
+        textViewTotalAmount.setText(Utils.convertToCurrencyString(dealDetails.getSalesPrice()));
+
+        llContinue.setOnClickListener(this);
+        imageViewAdd.setOnClickListener(this);
+        imageViewSubtract.setOnClickListener(this);
     }
 
     @Override
@@ -245,6 +246,6 @@ public class SelectDealQuantityFragment extends BaseDaggerFragment implements Se
 
     @Override
     public int getRequestCode() {
-        return 0;
+        return EVENT_LOGIN_REQUEST;
     }
 }
