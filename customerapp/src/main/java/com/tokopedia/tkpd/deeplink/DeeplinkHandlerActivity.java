@@ -11,6 +11,8 @@ import com.airbnb.deeplinkdispatch.DeepLink;
 import com.airbnb.deeplinkdispatch.DeepLinkHandler;
 import com.tokopedia.applink.SessionApplinkModule;
 import com.tokopedia.applink.SessionApplinkModuleLoader;
+import com.tokopedia.contact_us.applink.CustomerCareApplinkModule;
+import com.tokopedia.contact_us.applink.CustomerCareApplinkModuleLoader;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.deeplink.CoreDeeplinkModule;
@@ -87,7 +89,8 @@ import io.branch.referral.BranchError;
         GroupChatApplinkModule.class,
         GamificationApplinkModule.class,
         ProfileApplinkModule.class,
-        KolApplinkModule.class
+        KolApplinkModule.class,
+        CustomerCareApplinkModule.class
 })
 
 public class DeeplinkHandlerActivity extends AppCompatActivity {
@@ -114,7 +117,8 @@ public class DeeplinkHandlerActivity extends AppCompatActivity {
                 new GroupChatApplinkModuleLoader(),
                 new GamificationApplinkModuleLoader(),
                 new ProfileApplinkModuleLoader(),
-                new KolApplinkModuleLoader()
+                new KolApplinkModuleLoader(),
+                new CustomerCareApplinkModuleLoader()
         );
     }
 
