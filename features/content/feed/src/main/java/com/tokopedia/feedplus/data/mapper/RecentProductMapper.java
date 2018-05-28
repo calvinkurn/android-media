@@ -4,10 +4,10 @@ package com.tokopedia.feedplus.data.mapper;
 import android.support.annotation.NonNull;
 
 import com.google.gson.Gson;
+import com.tokopedia.abstraction.common.data.model.response.DataResponse;
 import com.tokopedia.core.network.entity.home.ProductItemData;
 import com.tokopedia.core.var.Label;
 import com.tokopedia.core.var.ProductItem;
-import com.tokopedia.feedplus.data.pojo.RecentProductResponse;
 import com.tokopedia.feedplus.domain.model.recentview.RecentViewBadgeDomain;
 import com.tokopedia.feedplus.domain.model.recentview.RecentViewLabelDomain;
 import com.tokopedia.feedplus.domain.model.recentview.RecentViewProductDomain;
@@ -25,7 +25,7 @@ import rx.functions.Func1;
  */
 
 public class RecentProductMapper
-        implements Func1<Response<String>, List<RecentViewProductDomain>> {
+        implements Func1<Response<DataResponse<ProductItemData>>, List<RecentViewProductDomain>> {
 
     private final Gson gson;
 
@@ -34,28 +34,22 @@ public class RecentProductMapper
     }
 
     @Override
-    public List<RecentViewProductDomain> call(Response<String> stringResponse) {
+    public List<RecentViewProductDomain> call(
+            Response<DataResponse<ProductItemData>> stringResponse) {
         return mappingResponse(stringResponse);
     }
 
-    private List<RecentViewProductDomain> mappingResponse(Response<String> response) {
-        if (response.body() != null && response.isSuccessful()) {
-            RecentProductResponse recentProduct = gson
-                    .fromJson(response.body(), RecentProductResponse.class);
-
-            if (recentProduct != null
-                    && recentProduct.getData() != null
-                    && recentProduct.getData().getList() != null
-                    && recentProduct.getData().getList().size() > 0) {
-
-                ProductItemData productItemData = recentProduct.getData();
+    private List<RecentViewProductDomain> mappingResponse(Response<DataResponse<ProductItemData>> response) {
+            if (response.body() != null
+                    && response.isSuccessful()
+                    && response.body().getData() != null
+                    && response.body().getData().getList() != null
+                    && response.body().getData().getList().size() > 0) {
+                ProductItemData productItemData = response.body().getData();
                 return getProductsFromResponse(productItemData);
             } else {
                 return Collections.emptyList();
             }
-        } else {
-            return Collections.emptyList();
-        }
     }
 
     @NonNull

@@ -29,6 +29,7 @@ dependencies {
     compile project(rootProject.ext.features.topAdsSdk)
     compile project(rootProject.ext.features.kol)
     compile project(rootProject.ext.features.profile)
+    compile project(rootProject.ext.features.wishlistCommon)
 
     androidTestCompile(rootProject.ext.testDependencies.espressoCore, {
         exclude group: 'com.android.support', module: 'support-annotations'

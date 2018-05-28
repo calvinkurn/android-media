@@ -106,6 +106,7 @@ public class GetFirstPageFeedsSubscriber extends Subscriber<FeedResult> {
 
     @Override
     public void onError(Throwable e) {
+        e.printStackTrace();
         viewListener.onErrorGetFeedFirstPage(
                 ErrorHandler.getErrorMessage(e));
     }

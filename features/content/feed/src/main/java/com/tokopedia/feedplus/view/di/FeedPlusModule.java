@@ -4,9 +4,12 @@ import android.content.Context;
 
 import com.apollographql.apollo.ApolloClient;
 import com.google.gson.Gson;
+import com.tokopedia.abstraction.AbstractionRouter;
+import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.di.scope.ApplicationScope;
 import com.tokopedia.abstraction.common.network.OkHttpRetryPolicy;
+import com.tokopedia.abstraction.common.network.interceptor.HeaderErrorResponseInterceptor;
 import com.tokopedia.abstraction.common.utils.GlobalConfig;
 import com.tokopedia.core.base.common.service.MojitoService;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
@@ -31,6 +34,7 @@ import com.tokopedia.feedplus.data.repository.WishlistRepository;
 import com.tokopedia.feedplus.data.repository.WishlistRepositoryImpl;
 import com.tokopedia.feedplus.data.source.KolSource;
 import com.tokopedia.feedplus.domain.model.feed.FeedResult;
+import com.tokopedia.wishlist.common.data.interceptor.MojitoInterceptor;
 
 import java.util.concurrent.TimeUnit;
 
@@ -65,11 +69,37 @@ public class FeedPlusModule {
                                      @FeedPlusQualifier OkHttpRetryPolicy retryPolicy,
                                      @FeedPlusChuckQualifier Interceptor chuckInterceptor,
                                      FeedAuthInterceptor feedAuthInterceptor) {
+
         OkHttpClient.Builder clientBuilder = new OkHttpClient.Builder()
                 .connectTimeout(retryPolicy.connectTimeout, TimeUnit.SECONDS)
                 .readTimeout(retryPolicy.readTimeout, TimeUnit.SECONDS)
                 .writeTimeout(retryPolicy.writeTimeout, TimeUnit.SECONDS)
                 .addInterceptor(feedAuthInterceptor);
+
+        if (GlobalConfig.isAllowDebuggingTools()) {
+            clientBuilder.addInterceptor(httpLoggingInterceptor);
+            clientBuilder.addInterceptor(chuckInterceptor);
+        }
+
+        return clientBuilder.build();
+    }
+
+    @FeedPlusScope
+    @Provides
+    @FeedMojitoQualifier
+    OkHttpClient provideMojitoOkHttpClient(@ApplicationScope HttpLoggingInterceptor
+                                             httpLoggingInterceptor,
+                                           @FeedPlusQualifier OkHttpRetryPolicy retryPolicy,
+                                           @FeedPlusChuckQualifier Interceptor chuckInterceptor,
+                                           HeaderErrorResponseInterceptor errorResponseInterceptor,
+                                           MojitoInterceptor mojitoInterceptor) {
+
+        OkHttpClient.Builder clientBuilder = new OkHttpClient.Builder()
+                .connectTimeout(retryPolicy.connectTimeout, TimeUnit.SECONDS)
+                .readTimeout(retryPolicy.readTimeout, TimeUnit.SECONDS)
+                .writeTimeout(retryPolicy.writeTimeout, TimeUnit.SECONDS)
+                .addInterceptor(mojitoInterceptor)
+                .addInterceptor(errorResponseInterceptor);
 
         if (GlobalConfig.isAllowDebuggingTools()) {
             clientBuilder.addInterceptor(httpLoggingInterceptor);
@@ -116,11 +146,20 @@ public class FeedPlusModule {
 
     @FeedPlusScope
     @Provides
-    MojitoService provideRecentProductService(Retrofit.Builder builder, OkHttpClient okHttpClient) {
+    MojitoService provideRecentProductService(Retrofit.Builder builder,
+                                              @FeedMojitoQualifier OkHttpClient okHttpClient) {
         return builder.baseUrl(TkpdBaseURL.MOJITO_DOMAIN)
                 .client(okHttpClient)
                 .build()
                 .create(MojitoService.class);
+    }
+
+    @FeedPlusScope
+    @Provides
+    MojitoInterceptor provideMojitoInterceptor(@ApplicationContext Context context,
+                                               AbstractionRouter abstractionRouter,
+                                               UserSession userSession) {
+        return new MojitoInterceptor(context, abstractionRouter, userSession);
     }
 
     @FeedPlusScope

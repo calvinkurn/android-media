@@ -3,9 +3,9 @@ package com.tokopedia.feedplus.view.di;
 import javax.inject.Qualifier;
 
 /**
- * @author by milhamj on 22/05/18.
+ * @author by milhamj on 28/05/18.
  */
 
 @Qualifier
-public @interface FeedPlusChuckQualifier {
+public @interface FeedMojitoQualifier {
 }
