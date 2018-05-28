@@ -103,7 +103,7 @@ CachePresenter implements Cache.Presenter {
 
                             @Override
                             public void onError(Throwable e) {
-
+                                e.printStackTrace();
                             }
 
                             @Override

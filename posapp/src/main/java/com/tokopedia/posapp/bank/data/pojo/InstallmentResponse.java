@@ -24,7 +24,7 @@ public class InstallmentResponse {
     @Expose
     private double interest;
 
-    @SerializedName("minimum_ammount")
+    @SerializedName("minimum_amount")
     @Expose
     private double minimumAmount;
 
