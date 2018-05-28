@@ -1,16 +1,22 @@
 package com.tokopedia.tokocash.autosweepmf.data.model;
 
+import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 public class DialogContent {
+    @Expose
     @SerializedName("content")
     private String content;
+    @Expose
     @SerializedName("title")
     private String title;
+    @Expose
     @SerializedName("positive_label")
     private String positiveLabel;
+    @Expose
     @SerializedName("negative_label")
     private String negativeLabel;
+    @Expose
     @SerializedName("negative_label_link")
     private String dialogNegativeLink;
 

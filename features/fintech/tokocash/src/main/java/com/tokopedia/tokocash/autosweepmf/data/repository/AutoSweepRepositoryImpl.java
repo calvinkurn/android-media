@@ -1,11 +1,11 @@
 package com.tokopedia.tokocash.autosweepmf.data.repository;
 
-import com.google.gson.JsonObject;
-import com.tokopedia.tokocash.autosweepmf.data.source.cloud.AutoSweepLimitDataCloud;
 import com.tokopedia.tokocash.autosweepmf.data.source.cloud.AutoSweepDataDetailCloud;
+import com.tokopedia.tokocash.autosweepmf.data.source.cloud.AutoSweepLimitDataCloud;
 import com.tokopedia.tokocash.autosweepmf.domain.model.AutoSweepDetailDomain;
 import com.tokopedia.tokocash.autosweepmf.domain.model.AutoSweepLimitDomain;
 import com.tokopedia.tokocash.autosweepmf.domain.repository.AutoSweepRepository;
+import com.tokopedia.usecase.RequestParams;
 
 import javax.inject.Inject;
 
@@ -28,7 +28,7 @@ public class AutoSweepRepositoryImpl implements AutoSweepRepository {
     }
 
     @Override
-    public Observable<AutoSweepLimitDomain> postAutoSweepLimit(JsonObject body) {
-        return mAutoSweepLimitDataCloud.autoSweepLimit(body);
+    public Observable<AutoSweepLimitDomain> postAutoSweepLimit(RequestParams requestParams) {
+        return mAutoSweepLimitDataCloud.autoSweepLimit(requestParams);
     }
 }

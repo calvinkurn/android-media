@@ -2,6 +2,7 @@ package com.tokopedia.tokocash.autosweepmf.view.fragment;
 
 import android.content.Context;
 import android.content.DialogInterface;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -32,14 +33,12 @@ import com.tokopedia.tokocash.di.TokoCashComponent;
 
 import javax.inject.Inject;
 
-import static com.tokopedia.tokocash.autosweepmf.view.util.CommonConstant.AUTO_SWEEP_MF_MIN_LIMIT;
 import static com.tokopedia.tokocash.autosweepmf.view.util.CommonConstant.AUTO_SWEEP_SEEK_BAR_STEPS;
 
 /**
  * Autosweep limit set/reset screen, once scuccessful reset limit it will also fire a broadcasts message for current auto sweep status
  */
-public class SetAutoSweepLimitFragment extends BaseDaggerFragment
-        implements SetAutoSweepLimitContract.View, View.OnClickListener {
+public class SetAutoSweepLimitFragment extends BaseDaggerFragment implements SetAutoSweepLimitContract.View, View.OnClickListener {
 
     private AppCompatSeekBar mSeekBarAmount;
     private AppCompatEditText mEditAmount;
@@ -194,12 +193,12 @@ public class SetAutoSweepLimitFragment extends BaseDaggerFragment
 
     @Override
     public Context getAppContext() {
-        return getActivity();
+        return getActivity().getApplicationContext();
     }
 
     @Override
     public Context getActivityContext() {
-        return getActivity().getApplicationContext();
+        return getActivity();
     }
 
     @Override
@@ -218,6 +217,7 @@ public class SetAutoSweepLimitFragment extends BaseDaggerFragment
                 TokoCashComponentInstance.getComponent(getActivity().getApplication());
         tokoCashComponent.inject(this);
         mPresenter.attachView(this);
+        mPresenter.initRemoteConfig();
     }
 
     @Override
@@ -237,6 +237,12 @@ public class SetAutoSweepLimitFragment extends BaseDaggerFragment
 
     private void initViews(@NonNull View view) {
         mSeekBarAmount = view.findViewById(R.id.seek_bar_amount);
+        mSeekBarAmount.setMax((int) mPresenter.getAutoSweepMaxLimit());
+        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            // call something for API Level 26+
+            mSeekBarAmount.setMin((int) mPresenter.getAutoSweepMinLimit());
+        }
+
 
         //Setting auto sweep progress limit if exist to maintain the consistency
         mSeekBarAmount.setProgress((int) mPresenter.getAutoSweepLimit(getArguments()));
@@ -272,7 +278,7 @@ public class SetAutoSweepLimitFragment extends BaseDaggerFragment
     private boolean isValidate() {
         try {
             return mEditAmount != null
-                    && Integer.parseInt(mEditAmount.getText().toString()) >= AUTO_SWEEP_MF_MIN_LIMIT;
+                    && Integer.parseInt(mEditAmount.getText().toString()) >= mPresenter.getAutoSweepMinLimit();
         } catch (NumberFormatException nfe) {
             //To avoiding space NFE crash
             return false;
