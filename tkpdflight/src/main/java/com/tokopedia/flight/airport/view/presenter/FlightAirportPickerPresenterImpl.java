@@ -128,6 +128,7 @@ public class FlightAirportPickerPresenterImpl extends BaseDaggerPresenter<Flight
                                     airportViewModel.setCityAirports(airport.getAirportIds().split(","));
                                 }
                                 airportViewModel.setCityCode(airport.getCityCode());
+                                airportViewModel.setCityId(airport.getCityId());
                                 airportViewModel.setCityName(airport.getCityName());
                                 if (negara.getCountryId().equalsIgnoreCase("ID")) {
                                     result.add(airportViewModel);

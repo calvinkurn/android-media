@@ -8,6 +8,7 @@ import com.tokopedia.flight.airport.view.adapter.FlightAirportAdapterTypeFactory
 
 public class FlightAirportViewModel implements Visitable<FlightAirportAdapterTypeFactory>, Parcelable {
     private String countryName;
+    private String cityId;
     private String cityName;
     private String cityCode;
     private String airportName;
@@ -19,6 +20,7 @@ public class FlightAirportViewModel implements Visitable<FlightAirportAdapterTyp
 
     protected FlightAirportViewModel(Parcel in) {
         countryName = in.readString();
+        cityId = in.readString();
         cityName = in.readString();
         cityCode = in.readString();
         airportName = in.readString();
@@ -91,6 +93,14 @@ public class FlightAirportViewModel implements Visitable<FlightAirportAdapterTyp
         this.countryName = countryName;
     }
 
+    public String getCityId() {
+        return cityId;
+    }
+
+    public void setCityId(String cityId) {
+        this.cityId = cityId;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -99,6 +109,7 @@ public class FlightAirportViewModel implements Visitable<FlightAirportAdapterTyp
     @Override
     public void writeToParcel(Parcel parcel, int i) {
         parcel.writeString(countryName);
+        parcel.writeString(cityId);
         parcel.writeString(cityName);
         parcel.writeString(cityCode);
         parcel.writeString(airportName);

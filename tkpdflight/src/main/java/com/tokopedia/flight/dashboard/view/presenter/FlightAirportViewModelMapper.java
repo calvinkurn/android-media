@@ -19,6 +19,7 @@ public class FlightAirportViewModelMapper {
             viewModel = new FlightAirportViewModel();
             viewModel.setCountryName(airportDB.getCountryName());
             viewModel.setCityName(airportDB.getCityName());
+            viewModel.setCityId(airportDB.getCityId());
             viewModel.setCityCode(airportDB.getCityCode());
             viewModel.setAirportName(airportDB.getAirportName());
             if (airportDB.getAirportId() != null && airportDB.getAirportId().length() > 0) {
