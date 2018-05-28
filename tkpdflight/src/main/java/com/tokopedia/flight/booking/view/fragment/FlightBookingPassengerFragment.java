@@ -750,14 +750,6 @@ public class FlightBookingPassengerFragment extends BaseDaggerFragment implement
     }
 
     private void clearAllKeyboardFocus() {
-        etPassportNumber.clearFocus();
-        etPassportExpired.clearFocus();
-        etPassportNationality.clearFocus();
-        etPassportIssuerCountry.clearFocus();
-        etBirthDate.clearFocus();
-        etFirstName.clearFocus();
-        etLastName.clearFocus();
-        etSavedPassenger.clearFocus();
         KeyboardHandler.hideSoftKeyboard(getActivity());
     }
 

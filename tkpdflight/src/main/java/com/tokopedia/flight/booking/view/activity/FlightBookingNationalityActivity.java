@@ -6,6 +6,7 @@ import android.support.v4.app.Fragment;
 
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.abstraction.common.di.component.HasComponent;
+import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
 import com.tokopedia.flight.FlightComponentInstance;
 import com.tokopedia.flight.booking.di.DaggerFlightBookingComponent;
 import com.tokopedia.flight.booking.di.FlightBookingComponent;
@@ -37,5 +38,11 @@ public class FlightBookingNationalityActivity extends BaseSimpleActivity impleme
         return DaggerFlightBookingComponent.builder()
                 .flightComponent(FlightComponentInstance.getFlightComponent(getApplication()))
                 .build();
+    }
+
+    @Override
+    public void onBackPressed() {
+        KeyboardHandler.hideSoftKeyboard(this);
+        super.onBackPressed();
     }
 }
