@@ -126,6 +126,7 @@ public class ReactProductCloudSource extends ReactDataSource {
     private ProductDetail domainToResponse(ProductDomain productDomain) {
         ProductDetail item = new ProductDetail();
         item.setProductName(productDomain.getName());
+        item.setProductDescription(productDomain.getDescription());
         item.setProductPrice(productDomain.getPrice());
         item.setProductId(productDomain.getId());
         item.setProductImage(productDomain.getImage());
