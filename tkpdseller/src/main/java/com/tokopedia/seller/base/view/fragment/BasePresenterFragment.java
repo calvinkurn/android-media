@@ -18,6 +18,7 @@ import com.tokopedia.core.base.presentation.BaseDaggerFragment;
  * PLEASE THIS IS TEMPORARY CONVERT FROM OLD BASE CLASS TO {@link BaseDaggerFragment}
  */
 
+@Deprecated
 public abstract class BasePresenterFragment<P> extends BaseDaggerFragment {
 
     protected P presenter;

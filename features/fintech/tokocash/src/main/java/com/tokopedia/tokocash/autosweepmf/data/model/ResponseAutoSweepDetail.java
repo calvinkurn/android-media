@@ -1,24 +1,25 @@
 package com.tokopedia.tokocash.autosweepmf.data.model;
+
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class ResponseAutoSweepDetail extends ResponseContainer {
-    @SerializedName("data")
+public class ResponseAutoSweepDetail {
     @Expose
-    private AutoSweepDetailEntity data;
+    @SerializedName("mf_autosweep_detail")
+    private AutoSweepDetailEntity mfAutoSweepDetail;
 
-    public AutoSweepDetailEntity getData() {
-        return data;
+    public AutoSweepDetailEntity getMfAutoSweepDetail() {
+        return mfAutoSweepDetail;
     }
 
-    public void setData(AutoSweepDetailEntity data) {
-        this.data = data;
+    public void setMfAutoSweepDetail(AutoSweepDetailEntity mfAutoSweepDetail) {
+        this.mfAutoSweepDetail = mfAutoSweepDetail;
     }
 
     @Override
     public String toString() {
         return "ResponseAutoSweepDetail{" +
-                "data=" + data +
+                "mfAutoSweepDetail=" + mfAutoSweepDetail +
                 '}';
     }
 }

@@ -697,6 +697,11 @@ public class ShopPageActivity extends BaseTabActivity implements ShopPagePromoWe
     }
 
     @Override
+    protected void onSaveInstanceState(Bundle outState) {
+
+    }
+    
+    @Override
     protected void onDestroy() {
         super.onDestroy();
         if (shopPagePresenter != null) {

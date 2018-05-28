@@ -3,6 +3,7 @@ package com.tokopedia.topads.dashboard.view.fragment;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.text.TextUtils;
 
 import com.tokopedia.core.analytics.AppEventTracking;
@@ -23,10 +24,11 @@ public class TopAdsGroupNewPromoFragment extends TopAdsBaseManageGroupPromoFragm
 
     public static final int REQUEST_CODE_AD_STATUS = 2;
 
-    public static TopAdsGroupNewPromoFragment createInstance(String itemIdToAdd) {
+    public static TopAdsGroupNewPromoFragment createInstance(String itemIdToAdd, String source) {
         TopAdsGroupNewPromoFragment fragment = new TopAdsGroupNewPromoFragment();
         Bundle args = new Bundle();
         args.putString(TopAdsExtraConstant.EXTRA_ITEM_ID, itemIdToAdd);
+        args.putString(TopAdsExtraConstant.EXTRA_SOURCE, source);
         fragment.setupArguments(args);
         return fragment;
     }
@@ -34,14 +36,14 @@ public class TopAdsGroupNewPromoFragment extends TopAdsBaseManageGroupPromoFragm
     @Override
     protected void onSubmitFormNewGroup(String groupName) {
         UnifyTracking.eventTopAdsProductNewPromo(AppEventTracking.EventLabel.GROUP_PRODUCT_OPTION_NEW_GROUP);
-        Intent intent = TopAdsCreatePromoNewGroupActivity.createIntent(getActivity(),groupName, itemIdToAdd);
+        Intent intent = TopAdsCreatePromoNewGroupActivity.createIntent(getActivity(),groupName, itemIdToAdd, source);
         startActivityForResult(intent, REQUEST_CODE_AD_STATUS);
     }
 
     @Override
     protected void onSubmitFormNotInGroup() {
         UnifyTracking.eventTopAdsProductNewPromo(AppEventTracking.EventLabel.GROUP_PRODUCT_OPTION_WITHOUT_GROUP);
-        Intent intent = TopAdsCreatePromoWithoutGroupActivity.createIntent(getActivity(), itemIdToAdd);
+        Intent intent = TopAdsCreatePromoWithoutGroupActivity.createIntent(getActivity(), itemIdToAdd, source);
         startActivityForResult(intent, REQUEST_CODE_AD_STATUS);
     }
 
@@ -52,7 +54,7 @@ public class TopAdsGroupNewPromoFragment extends TopAdsBaseManageGroupPromoFragm
             String groupName = inputChooseGroup.getText().toString();
             if (!TextUtils.isEmpty(groupName)) {
                 startActivityForResult(TopAdsCreatePromoExistingGroupActivity.createIntent(getActivity(),
-                        choosenId, itemIdToAdd), REQUEST_CODE_AD_STATUS);
+                        choosenId, itemIdToAdd, source), REQUEST_CODE_AD_STATUS);
             }
 
         }
