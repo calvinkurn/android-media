@@ -141,8 +141,10 @@ public class ProductDetailFragment extends BaseDaggerFragment
         ProductDetail productDetail = new Gson().fromJson(bundle, ProductDetail.class);
 
         ProductInfo info = new ProductInfo();
+        info.setProductId((int)productDetail.getProductId());
         info.setProductName(productDetail.getProductName());
         info.setProductPrice(productDetail.getProductPrice());
+        info.setProductPriceUnformatted((int)productDetail.getProductPriceUnformatted());
         info.setProductDescription(productDetail.getProductDescription());
 
         List<ProductImage> productImages = new ArrayList<>();
@@ -190,25 +192,7 @@ public class ProductDetailFragment extends BaseDaggerFragment
 
     @Override
     public void onSuccessAddToCart(String message) {
-        AlertDialog dialog = new PosAlertDialog(getContext())
-                .setTitle(getString(R.string.pdp_add_to_cart_title))
-                .setMessage(getString(R.string.pdp_atc_success_message))
-                .setPositiveButton(getString(R.string.pdp_pay_label), new PosAlertDialog.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface) {
-                        goToPaymentCheckout();
-                    }
-                })
-                .setNegativeButton(getString(R.string.pdp_continue_shopping_label), new PosAlertDialog.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface) {
-                        dialogInterface.dismiss();
-                    }
-                })
-                .setCancelable(true)
-                .create();
-
-        dialog.show();
+        CommonUtils.dumper(message);
     }
 
     @Override
