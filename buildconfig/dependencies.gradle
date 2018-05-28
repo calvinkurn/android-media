@@ -62,6 +62,7 @@ ext {
     tkpdHomeVersion = '2.22'
     tkpdMitraToppersVersion = '2.22'
     tkpdContactUsVersion = '2.22'
+    tkpdDistrictRecommendationVersion = '2.22'
 
     networkDependencies = [
             retrofit          : "com.squareup.retrofit2:retrofit:${retrofitVersion}",
@@ -244,7 +245,8 @@ ext {
             gamification        : "com.tokopedia.gamification:gamification:${tkpdGamificationVersion}",
             mitraToppers        : "com.tokopedia.mitratoppers:mitra_toppers:${tkpdMitraToppersVersion}",
             goldMerchant        : "com.tokopedia.gm:gold_merchant:${tkpdGoldMerchantVersion}",
-            topAdsManagement    : "com.tokopedia.topads:top_ads_management:${tkpdTopAdsSDKVersion}"
+            topAdsManagement    : "com.tokopedia.topads:top_ads_management:${tkpdTopAdsSDKVersion}",
+            districtRecommendation: "com.tokopedia.district_recommendation:district_recommendation:${tkpdDistrictRecommendationVersion}"
     ]
 
     tkpdLibDependencies = [
@@ -271,6 +273,7 @@ ext {
             seller          : ":tkpdseller",
             payment         : ":features:payment:payment",
             wishlistCommon  : ":features:discovery:wishlist_common",
+            districtRecommendation: ":features:logistic:district_recommendation",
             goldMerchantCommon: ":features:merchant:gold_merchant_common",
             goldMerchant    : ":features:merchant:gold_merchant",
             reputationCommon: ":features:merchant:reputation_common",

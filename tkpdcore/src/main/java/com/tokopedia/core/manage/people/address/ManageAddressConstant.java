@@ -7,6 +7,7 @@ public interface ManageAddressConstant {
 
     int REQUEST_CODE = 0x12;
     int ADD_ADDRESS_REQUESTCODE = 0x1;
+    String IS_DISTRICT_RECOMMENDATION = "district_recommendation";
     String IS_EDIT = "is_edit";
     String EDIT_PARAM = "EDIT_PARAM";
     int REQUEST_CODE_PARAM_CREATE = 101;
@@ -18,4 +19,6 @@ public interface ManageAddressConstant {
     int GET_LIST_CITY = 3;
 
     String EXTRA_ADDRESS = "EXTRA_ADDRESS";
+
+    String KERO_TOKEN = "token";
 }
