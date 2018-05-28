@@ -62,7 +62,7 @@ public class FlightPassengerDataListDbSource extends BaseDataListDBSource<SavedP
             @Override
             public void call(Subscriber<? super Boolean> subscriber) {
                 ConditionGroup conditions = ConditionGroup.clause();
-//                conditions.and(FlightPassengerDB_Table.id.eq(passengerId));
+                conditions.and(FlightPassengerDB_Table.id.eq(passengerId));
 
                 FlightPassengerDb result = new Select().from(FlightPassengerDb.class)
                         .where(conditions)
@@ -82,13 +82,13 @@ public class FlightPassengerDataListDbSource extends BaseDataListDBSource<SavedP
     @Override
     public Observable<List<FlightPassengerDb>> getData(HashMap<String, Object> params) {
         final ConditionGroup conditions = ConditionGroup.clause();
-//        conditions.and(FlightPassengerDB_Table.is_selected.eq(0));
-//
-//        if (params != null &&
-//                params.containsKey(PASSENGER_ID) &&
-//                !params.get(PASSENGER_ID).equals("")) {
-//            conditions.or(FlightPassengerDB_Table.id.eq((String) params.get(PASSENGER_ID)));
-//        }
+        conditions.and(FlightPassengerDB_Table.is_selected.eq(0));
+
+        if (params != null &&
+                params.containsKey(PASSENGER_ID) &&
+                !params.get(PASSENGER_ID).equals("")) {
+            conditions.or(FlightPassengerDB_Table.id.eq((String) params.get(PASSENGER_ID)));
+        }
 
         return Observable.unsafeCreate(new Observable.OnSubscribe<List<FlightPassengerDb>>() {
             @Override
