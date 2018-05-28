@@ -71,9 +71,6 @@
 
     <integer name="int_3">3</integer>
 
-
-
-    <dimen name="font_headline3">56sp</dimen>
     <dimen name="font_headline2">45sp</dimen>
     <dimen name="font_headline">34sp</dimen>
     <dimen name="font_sub_headline">24sp</dimen>
