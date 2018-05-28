@@ -683,6 +683,27 @@ public class HotlistFragment extends SearchSectionFragment
         data.setImgUri(product.getImageUrl());
         data.setTrackerAttribution(product.getHomeAttribution());
         data.setTrackerListName(product.getTrackerName());
+        data.setCountCourier(!TextUtils.isEmpty(product.getCountCourier()) && product.getCountCourier().matches("\\d+") ?
+                Integer.parseInt(product.getCountCourier()) : 0);
+        data.setOfficial(product.isOfficial());
+        data.setOriginalPrice(product.getOriginalPrice());
+        data.setDiscountPercentage(product.getDiscountPercentage());
+        data.setIsWishlist(product.isWishlist());
+        data.setRating(product.getRating());
+        data.setShop(product.getShopName());
+        data.setShopLocation(product.getShopCity());
+        data.setReviewCount(product.getCountReview());
+
+        if (product.getLabelList() != null) {
+            for (int i = 0; i < product.getLabelList().size(); i++) {
+                if (product.getLabelList().get(i).getTitle().toLowerCase()
+                        .contains(ProductItem.CASHBACK)) {
+                    data.setCashback(product.getLabelList().get(i).getTitle());
+                    break;
+                }
+            }
+        }
+
         return data;
     }
 

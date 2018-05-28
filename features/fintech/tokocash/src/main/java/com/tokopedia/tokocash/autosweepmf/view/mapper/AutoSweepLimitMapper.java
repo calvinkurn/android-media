@@ -14,16 +14,13 @@ public class AutoSweepLimitMapper {
     }
 
     @Nullable
-    public AutoSweepLimit transform(@NonNull AutoSweepLimitDomain data) {
-        AutoSweepLimit sweepEnable = new AutoSweepLimit();
-        sweepEnable.setAmountLimit(data.getAmountLimit());
-        sweepEnable.setAutoSweep(data.getAutoSweep());
-        sweepEnable.setShowAutoSweep(data.getShowAutoSweep());
-        sweepEnable.setStatus(data.isStatus());
-        sweepEnable.setMessage(data.getMessage());
-        sweepEnable.setError(data.getError());
-        sweepEnable.setCode(data.getCode());
-        sweepEnable.setLatency(data.getLatency());
-        return sweepEnable;
+    public AutoSweepLimit transform(@NonNull AutoSweepLimitDomain domain) {
+        AutoSweepLimit view = new AutoSweepLimit();
+        view.setStatus(domain.isStatus());
+        view.setMessage(domain.getMessage());
+        view.setSuccess(domain.isSuccess());
+        view.setCode(domain.getCode());
+
+        return view;
     }
 }
