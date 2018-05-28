@@ -17,10 +17,6 @@ def getDpiId(String density) {
 }
 
 def getAbiId(String abi) {
-
-    def ABI_ID = ['null': 0, 'armeabi-v7a': 10, 'x86': 20]
-    if (abi != null)
-        return ABI_ID.get(abi);
     return 0;
 }
 
