@@ -121,7 +121,7 @@ public class FeedPlusPresenter
         AuthUtil.generateParamsNetwork2(viewListener.getActivity(),
                 mapParam,
                 userSession.getDeviceId(),
-                userSession.getDeviceId());
+                userSession.getUserId());
 
         mapParam.put(FavoriteShopUseCase.PARAM_SHOP_ID, promotedShopViewModel.getShop().getId());
         mapParam.put(FavoriteShopUseCase.PARAM_SHOP_DOMAIN, promotedShopViewModel.getShop().getDomain());
