@@ -19,12 +19,17 @@ import java.util.Map;
 
 public class HomeTrackingUtils {
 
+    private static String SLIDINGBANNER ="sliding baaner";
+    private static String HOMERECOMMENDATION ="Home page recommendation";
+    private static String PRODUCTDETAILSSCREEN ="Product details screen";
+    private static String DISCOVERYWIDGET ="Discovery Widget";
+
     public static void homeSlidingBannerImpression(BannerSlidesModel bannerSlidesModel, int position) {
         Map<String, Object> map = new HashMap<>();
 
         map.put(FirebaseParams.Home.BANNER_CREATIVE, bannerSlidesModel.getCreativeName());
         map.put(FirebaseParams.Home.BANNER_NAME, bannerSlidesModel.getTitle());
-        map.put(FirebaseParams.Home.BANNER_LIST_NAME, "sliding baaner");
+        map.put(FirebaseParams.Home.BANNER_LIST_NAME, SLIDINGBANNER);
         map.put(FirebaseParams.Home.BANNER_POSITION, position);
         sendEventToAnalytics(FirebaseEvent.Home.HOMEPAGE_SLIDING_BANNER_IMPRESSION, map);
     }
@@ -34,7 +39,7 @@ public class HomeTrackingUtils {
 
         map.put(FirebaseParams.Home.BANNER_CREATIVE, bannerSlidesModel.getCreativeName());
         map.put(FirebaseParams.Home.BANNER_NAME, bannerSlidesModel.getTitle());
-        map.put(FirebaseParams.Home.BANNER_LIST_NAME, "sliding baaner");
+        map.put(FirebaseParams.Home.BANNER_LIST_NAME, SLIDINGBANNER);
         map.put(FirebaseParams.Home.BANNER_POSITION, position);
         map.put(FirebaseParams.Home.LANDING_SCREEN_NAME, bannerSlidesModel.getApplink());
         sendEventToAnalytics(FirebaseEvent.Home.HOMEPAGE_SLIDING_BANNER_CLICK, map);
@@ -115,7 +120,7 @@ public class HomeTrackingUtils {
         map.put(FirebaseParams.Home.PRODUCT_ID, grid.getId());
         map.put(FirebaseParams.Home.PRODUCT_NAME, grid.getLabel());
         map.put(FirebaseParams.Home.PRODUCT_CATEGORY, category);
-        map.put(FirebaseParams.Home.PRODUCT_LIST_NAME, "Discovery Widget");
+        map.put(FirebaseParams.Home.PRODUCT_LIST_NAME, DISCOVERYWIDGET);
         map.put(FirebaseParams.Home.LANDING_SCREEN_NAME, landingScreen);
         sendEventToAnalytics(FirebaseEvent.Home.HOMEPAGE_DISCOVERY_WIDGET_CLICK + "_" + position, map);
     }
@@ -171,9 +176,9 @@ public class HomeTrackingUtils {
         Map<String, Object> map = new HashMap<>();
         map.put(FirebaseParams.Home.PRODUCT_ID, model.getProductId());
         map.put(FirebaseParams.Home.PRODUCT_NAME, model.getName());
-        map.put(FirebaseParams.Home.PRODUCT_LIST_NAME, "Home page recommendation");
+        map.put(FirebaseParams.Home.PRODUCT_LIST_NAME, HOMERECOMMENDATION);
         map.put(FirebaseParams.Home.PRODUCT_CATEGORY, model.getRecommedationType());
-        map.put(FirebaseParams.Home.LANDING_SCREEN_NAME, "Product details screen");
+        map.put(FirebaseParams.Home.LANDING_SCREEN_NAME, PRODUCTDETAILSSCREEN);
         sendEventToAnalytics(FirebaseEvent.Home.HOMEPAGE_RECOMMEDATION_CLICKED, map);
     }
 
