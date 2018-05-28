@@ -24,7 +24,6 @@ public class ETollRepository implements IETollRepository {
 
     @Override
     public Observable<InquiryBalanceModel> inquiryBalance(RequestBodySmartcardInquiry requestBodySmartcardInquiry) {
-        // return mock response here
         return smartcardInquiryDataSource.inquiryBalance(requestBodySmartcardInquiry);
     }
 
