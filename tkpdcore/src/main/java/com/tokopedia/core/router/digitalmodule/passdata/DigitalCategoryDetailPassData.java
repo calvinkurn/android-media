@@ -124,9 +124,6 @@ public class DigitalCategoryDetailPassData implements Parcelable {
         dest.writeString(this.additionalETollLastUpdatedDate);
     }
 
-    public DigitalCategoryDetailPassData() {
-    }
-
     protected DigitalCategoryDetailPassData(Parcel in) {
         this.categoryId = in.readString();
         this.operatorId = in.readString();
@@ -158,10 +155,6 @@ public class DigitalCategoryDetailPassData implements Parcelable {
         private String operatorId;
         private String productId;
         private String clientNumber;
-        private String utmSource;
-        private String utmMedium;
-        private String utmCampaign;
-        private String utmContent;
         private String url;
         private String appLinks;
         private String categoryName;
