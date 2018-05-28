@@ -436,7 +436,7 @@ public class FlightPassengerUpdateFragment extends BaseDaggerFragment implements
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        clearAllPassportFocus();
+        clearAllKeyboardFocus();
         if (resultCode == Activity.RESULT_OK) {
             switch (requestCode) {
                 case REQUEST_CODE_PICK_NATIONALITY:
@@ -454,7 +454,7 @@ public class FlightPassengerUpdateFragment extends BaseDaggerFragment implements
         }
     }
 
-    private void clearAllPassportFocus() {
+    private void clearAllKeyboardFocus() {
         etPassportNumber.clearFocus();
         etPassportExpired.clearFocus();
         etPassportNationality.clearFocus();
@@ -463,6 +463,7 @@ public class FlightPassengerUpdateFragment extends BaseDaggerFragment implements
         etPassengerFirstName.clearFocus();
         etPassengerLastName.clearFocus();
         etPassengerType.clearFocus();
+        KeyboardHandler.hideSoftKeyboard(getActivity());
     }
 
     private void navigateToChooseNationality() {

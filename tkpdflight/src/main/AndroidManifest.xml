@@ -63,7 +63,7 @@
         <activity
             android:name=".booking.view.activity.FlightBookingPassengerActivity"
             android:label="@string/flight_booking_passenger_toolbar_title"
-
+            android:windowSoftInputMode="stateHidden"
             android:theme="@style/Theme.White.Flight" />
         <activity
             android:name=".booking.view.activity.FlightBookingPhoneCodeActivity"
@@ -124,7 +124,7 @@
         <activity
             android:name=".passenger.view.activity.FlightPassengerUpdateActivity"
             android:label="@string/flight_passenger_update_title"
-
+            android:windowSoftInputMode="stateHidden"
             android:theme="@style/Theme.White.Flight" />
         <activity
             android:name=".cancellation.view.activity.FlightCancellationTermsAndConditionsActivity"
