@@ -35,8 +35,6 @@ public class GridProductItemViewHolder extends AbstractViewHolder<ProductItem> {
     private ImageView productImage;
     private TextView title;
     private TextView price;
-    private FlowLayout labelContainer;
-    private TextView shopName;
     private TextView location;
     private LinearLayout badgesContainer;
     private ImageView wishlistButton;
@@ -53,8 +51,6 @@ public class GridProductItemViewHolder extends AbstractViewHolder<ProductItem> {
         productImage = (ImageView) itemView.findViewById(R.id.product_image);
         title = (TextView) itemView.findViewById(R.id.title);
         price = (TextView) itemView.findViewById(R.id.price);
-        labelContainer = (FlowLayout) itemView.findViewById(R.id.label_container);
-        shopName = (TextView) itemView.findViewById(R.id.shop_name);
         location = (TextView) itemView.findViewById(R.id.location);
         badgesContainer = (LinearLayout) itemView.findViewById(R.id.badges_container);
         wishlistButton = (ImageView) itemView.findViewById(R.id.wishlist_button);
@@ -76,7 +72,6 @@ public class GridProductItemViewHolder extends AbstractViewHolder<ProductItem> {
         else
             location.setVisibility(View.INVISIBLE);
 
-        shopName.setText(MethodChecker.fromHtml(productItem.getShopName()));
         ImageHandler.loadImageSourceSize(context, productImage, productItem.getImageUrl());
 
         wishlistButtonContainer.setVisibility(View.VISIBLE);
@@ -127,7 +122,6 @@ public class GridProductItemViewHolder extends AbstractViewHolder<ProductItem> {
             titles.add(labelList.get(i).getTitle());
             colors.add(labelList.get(i).getColor());
         }
-        IndicatorViewHelper.renderLabelsViewV2(context, labelContainer, titles, colors);
     }
 
     protected void renderBadges(List<BadgeItem> badgesList) {

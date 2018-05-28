@@ -7,6 +7,7 @@ import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.discovery.newdiscovery.search.fragment.SearchSectionTypeFactoryImpl;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.adapter.listener.ItemClickListener;
+import com.tokopedia.discovery.newdiscovery.search.fragment.product.adapter.viewholder.BigGridProductItemViewHolder;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.adapter.viewholder.EmptySearchViewHolder;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.adapter.viewholder.GridProductItemViewHolder;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.adapter.viewholder.GuidedSearchViewHolder;
@@ -54,6 +55,7 @@ public class ProductListTypeFactoryImpl extends SearchSectionTypeFactoryImpl imp
             case TkpdState.RecyclerView.VIEW_PRODUCT:
                 return ListProductItemViewHolder.LAYOUT;
             case TkpdState.RecyclerView.VIEW_PRODUCT_GRID_1:
+                return BigGridProductItemViewHolder.LAYOUT;
             case TkpdState.RecyclerView.VIEW_PRODUCT_GRID_2:
             default:
                 return GridProductItemViewHolder.LAYOUT;
@@ -74,6 +76,8 @@ public class ProductListTypeFactoryImpl extends SearchSectionTypeFactoryImpl imp
             viewHolder = new ListProductItemViewHolder(view, itemClickListener);
         } else if (type == GridProductItemViewHolder.LAYOUT) {
             viewHolder = new GridProductItemViewHolder(view, itemClickListener);
+        } else if (type == BigGridProductItemViewHolder.LAYOUT) {
+            viewHolder = new BigGridProductItemViewHolder(view, itemClickListener);
         } else if(type == HeaderViewHolder.LAYOUT){
             viewHolder = new HeaderViewHolder(view, itemClickListener, topAdsConfig);
         } else if (type == EmptySearchViewHolder.LAYOUT) {
