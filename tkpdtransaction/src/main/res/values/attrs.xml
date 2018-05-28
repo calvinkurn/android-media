@@ -23,4 +23,14 @@
             <enum name="overshoot" value="10"/>
         </attr>
     </declare-styleable>
+    <declare-styleable name="DoubleText">
+        <attr name="topText" format="string" />
+        <attr name="topFontSize" format="dimension"/>
+        <attr name="topTextStyle" format="string"/>
+        <attr name="topTextColor" format="color|reference"/>
+        <attr name="bottomText" format="string" />
+        <attr name="bottomFontSize" format="dimension"/>
+        <attr name="bottomTextStyle" format="dimension"/>
+        <attr name="bottomTextColor" format="color|reference"/>
+    </declare-styleable>
 </resources>

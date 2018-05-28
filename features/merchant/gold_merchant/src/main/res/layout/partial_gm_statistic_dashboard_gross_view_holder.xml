@@ -18,7 +18,7 @@
         android:paddingTop="8dp"
         app:subtitle="@string/gm_statistic_dashboard_gross">
 
-        <com.tokopedia.seller.common.williamchart.view.LineChartView
+        <com.db.williamchart.view.LineChartView
             android:id="@+id/line_chart_gross"
             style="@style/LineChartView"
             android:layout_width="wrap_content"

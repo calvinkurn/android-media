@@ -7,8 +7,6 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
-import android.graphics.Rect;
-import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -38,6 +36,10 @@ import com.appsflyer.AFInAppEventType;
 import com.google.android.gms.tagmanager.DataLayer;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tkpd.library.utils.SnackbarManager;
+import com.tokopedia.abstraction.AbstractionRouter;
+import com.tokopedia.abstraction.common.data.model.session.UserSession;
+import com.tokopedia.applink.ApplinkRouter;
+import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.ProductPageTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.BasePresenterFragment;
@@ -81,7 +83,6 @@ import com.tokopedia.tkpdpdp.DinkFailedActivity;
 import com.tokopedia.tkpdpdp.DinkSuccessActivity;
 import com.tokopedia.tkpdpdp.InstallmentActivity;
 import com.tokopedia.tkpdpdp.PreviewProductImageDetail;
-import com.tokopedia.tkpdpdp.ProductInfoActivity;
 import com.tokopedia.tkpdpdp.R;
 import com.tokopedia.tkpdpdp.VariantActivity;
 import com.tokopedia.tkpdpdp.WholesaleActivity;
@@ -107,11 +108,14 @@ import com.tokopedia.tkpdpdp.listener.AppBarStateChangeListener;
 import com.tokopedia.tkpdpdp.listener.ProductDetailView;
 import com.tokopedia.tkpdpdp.presenter.ProductDetailPresenter;
 import com.tokopedia.tkpdpdp.presenter.ProductDetailPresenterImpl;
+import com.tokopedia.topads.sourcetagging.constant.TopAdsSourceOption;
+import com.tokopedia.topads.sourcetagging.util.TopAdsAppLinkUtil;
 
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Set;
 
 import permissions.dispatcher.NeedsPermission;
@@ -214,6 +218,7 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
     private Option variantLevel1;
     private Option variantLevel2;
     private boolean onClickBuyWhileRequestingVariant = false;
+    private UserSession userSession;
 
     private RemoteConfig remoteConfig;
 
@@ -249,6 +254,7 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
     @Override
     protected void initialPresenter() {
         this.presenter = new ProductDetailPresenterImpl(this);
+        this.presenter.initTopAdsSourceTaggingUseCase(getActivity().getApplicationContext());
     }
 
     @Override
@@ -379,6 +385,7 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
 
     @Override
     protected void initialVar() {
+        userSession = ((AbstractionRouter) getActivity().getApplication()).getSession();
         appIndexHandler = new AppIndexHandler(getActivity());
         loading = new ProgressDialog(context);
         loading.setCancelable(false);
@@ -659,6 +666,13 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
     public void renderTempProductData(ProductPass productPass) {
         this.headerInfoView.renderTempData(productPass);
         this.pictureView.renderTempData(productPass);
+        this.ratingTalkCourierView.renderTempdata(productPass);
+         if (productPass.isWishlist()) {
+            fabWishlist.setImageDrawable(getResources().getDrawable(R.drawable.ic_wishlist_red));
+        } else {
+            fabWishlist.setImageDrawable(getResources().getDrawable(R.drawable.ic_wishlist));
+        }
+        fabWishlist.setVisibility(View.VISIBLE);
     }
 
     @Override
@@ -984,12 +998,9 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
 
     @Override
     protected void onFirstTimeLaunched() {
-        Log.d(TAG, "onFirstTimeLaunched");
         if (productData != null) {
             onProductDetailLoaded(productData);
-            Log.d(TAG, "productData != null");
         } else {
-            Log.d(TAG, "productData == null");
             presenter.processDataPass(productPass);
             presenter.requestProductDetail(context, productPass, INIT_REQUEST, false, useVariant);
         }
@@ -1264,8 +1275,10 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
 
     @Override
     public void onPromoAdsClicked() {
-        presenter.onPromoAdsClicked(getActivity(), productData.getShopInfo().getShopId(),
-                productData.getInfo().getProductId(), SessionHandler.getLoginID(getActivity()));
+        ((PdpRouter) getActivity().getApplication()).goToCreateTopadsPromo(getActivity(),
+                String.valueOf(productData.getInfo().getProductId()), productData.getShopInfo().getShopId(),
+                GlobalConfig.isSellerApp()? TopAdsSourceOption.SA_PDP :
+                        TopAdsSourceOption.MA_PDP);
     }
 
     @Override
@@ -1502,6 +1515,37 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
 
     @Override
     public void trackingEnhanceProductDetail() {
+        Map<String, Object> detail;
+        if (TextUtils.isEmpty(productPass.getTrackerListName())) {
+            detail = DataLayer.mapOf(
+                    "products", DataLayer.listOf(
+                            DataLayer.mapOf(
+                                    "name", productData.getInfo().getProductName(),
+                                    "id", productData.getInfo().getProductId(),
+                                    "price", productData.getInfo().getProductPriceUnformatted(),
+                                    "brand", "none / other",
+                                    "category", productData.getEnhanceCategoryFormatted(),
+                                    "variant", getEnhanceVariant(),
+                                    "dimension38", productPass.getTrackerAttribution()
+                            )
+                    )
+            );
+        } else {
+            detail = DataLayer.mapOf(
+                    "actionField", DataLayer.mapOf("list", productPass.getTrackerListName()),
+                    "products", DataLayer.listOf(
+                            DataLayer.mapOf(
+                                    "name", productData.getInfo().getProductName(),
+                                    "id", productData.getInfo().getProductId(),
+                                    "price", productData.getInfo().getProductPriceUnformatted(),
+                                    "brand", "none / other",
+                                    "category", productData.getEnhanceCategoryFormatted(),
+                                    "variant", getEnhanceVariant(),
+                                    "dimension38", productPass.getTrackerAttribution()
+                            )
+                    )
+            );
+        }
         ProductPageTracking.eventEnhanceProductDetail(
                 DataLayer.mapOf(
                         "event", "viewProduct",
@@ -1514,20 +1558,7 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
                         ),
                         "ecommerce", DataLayer.mapOf(
                                 "currencyCode", "IDR",
-                                "detail", DataLayer.mapOf(
-                                        "actionField", DataLayer.mapOf("list", productPass.getTrackerListName()),
-                                        "products", DataLayer.listOf(
-                                                DataLayer.mapOf(
-                                                        "name", productData.getInfo().getProductName(),
-                                                        "id", productData.getInfo().getProductId(),
-                                                        "price", productData.getInfo().getProductPriceUnformatted(),
-                                                        "brand", "none / other",
-                                                        "category", productData.getEnhanceCategoryFormatted(),
-                                                        "variant", getEnhanceVariant(),
-                                                        "dimension38", productPass.getTrackerAttribution()
-                                                )
-                                        )
-                                )
+                                "detail", detail
                         ),
                         "key", productData.getEnhanceUrl(productData.getInfo().getProductUrl()),
                         "shopName", productData.getShopInfo().getShopName(),

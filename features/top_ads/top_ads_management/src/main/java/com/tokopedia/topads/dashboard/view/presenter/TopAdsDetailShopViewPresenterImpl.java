@@ -2,6 +2,7 @@ package com.tokopedia.topads.dashboard.view.presenter;
 
 import android.content.Context;
 
+import com.tokopedia.topads.common.util.TopAdsSourceTaggingUseCaseUtil;
 import com.tokopedia.topads.dashboard.domain.interactor.ListenerInteractor;
 import com.tokopedia.topads.dashboard.domain.interactor.TopAdsProductAdInteractor;
 import com.tokopedia.topads.dashboard.domain.interactor.TopAdsShopAdInteractor;
@@ -9,8 +10,11 @@ import com.tokopedia.topads.dashboard.data.model.data.ShopAd;
 import com.tokopedia.topads.dashboard.data.model.request.SearchAdRequest;
 import com.tokopedia.topads.dashboard.data.model.request.ShopRequest;
 import com.tokopedia.topads.dashboard.view.listener.TopAdsDetailViewListener;
+import com.tokopedia.topads.sourcetagging.domain.interactor.TopAdsAddSourceTaggingUseCase;
 
 import java.util.Date;
+
+import rx.Subscriber;
 
 /**
  * Created by zulfikarrahman on 1/3/17.
@@ -51,4 +55,5 @@ public class TopAdsDetailShopViewPresenterImpl extends TopAdsDetailProductViewPr
             shopAdInteractor.unSubscribe();
         }
     }
+
 }

@@ -1,13 +1,12 @@
 package com.tokopedia.feedplus.view.adapter.viewholder.kol;
 
 import android.support.annotation.LayoutRes;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.TextView;
 
 import com.tokopedia.core.analytics.UnifyTracking;
-import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
+import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.feedplus.R;
 import com.tokopedia.feedplus.view.listener.FeedPlus;
@@ -23,19 +22,17 @@ public class KolRecommendationViewHolder extends AbstractViewHolder<KolRecommend
     public static final int LAYOUT = R.layout.kol_recommend_layout;
     private final FeedPlus.View.Kol kolViewListener;
 
-    TextView title;
-    RecyclerView listRecommendation;
-    KolRecommendationAdapter adapter;
-    TextView seeAll;
+    private TextView title;
+    private RecyclerView listRecommendation;
+    private KolRecommendationAdapter adapter;
+    private TextView seeAll;
 
     public KolRecommendationViewHolder(View itemView, FeedPlus.View.Kol kolViewListener) {
         super(itemView);
         this.kolViewListener = kolViewListener;
-        title = (TextView) itemView.findViewById(R.id.title);
-        seeAll = (TextView) itemView.findViewById(R.id.see_all_text);
-        listRecommendation = (RecyclerView) itemView.findViewById(R.id.list_recommendation);
-        listRecommendation.setLayoutManager(new LinearLayoutManager(itemView.getContext(),
-                LinearLayoutManager.HORIZONTAL, false));
+        title = itemView.findViewById(R.id.title);
+        seeAll = itemView.findViewById(R.id.see_all_text);
+        listRecommendation = itemView.findViewById(R.id.list_recommendation);
         adapter = new KolRecommendationAdapter(kolViewListener);
         listRecommendation.setAdapter(adapter);
 
