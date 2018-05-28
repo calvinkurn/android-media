@@ -178,6 +178,9 @@
             android:name=".dashboard.view.activity.TopAdsEditScheduleShopActivity"
             android:label="@string/top_ads_label_schedule"
              />
+        <activity android:name=".dashboard.view.activity.TopAdsCheckProductPromoActivity"
+            android:label="@string/top_ads_title_dashboard"
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".dashboard.view.activity.TopAdsSortByActivity"
             android:label="@string/title_top_ads_sort_by"

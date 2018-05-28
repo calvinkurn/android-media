@@ -17,6 +17,7 @@ import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tkpd.library.utils.KeyboardHandler;
 import com.tokopedia.core.analytics.SearchTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
+import com.tokopedia.core.discovery.model.Filter;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.network.apiservices.ace.apis.BrowseApi;
 import com.tokopedia.core.remoteconfig.FirebaseRemoteConfigImpl;
@@ -25,19 +26,25 @@ import com.tokopedia.core.router.discovery.BrowseProductRouter;
 import com.tokopedia.core.util.RequestPermissionUtil;
 import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.discovery.R;
+import com.tokopedia.discovery.newdiscovery.base.BottomSheetListener;
 import com.tokopedia.discovery.newdiscovery.base.DiscoveryActivity;
 import com.tokopedia.discovery.newdiscovery.base.RedirectionListener;
 import com.tokopedia.discovery.newdiscovery.di.component.DaggerSearchComponent;
 import com.tokopedia.discovery.newdiscovery.di.component.SearchComponent;
 import com.tokopedia.discovery.newdiscovery.search.adapter.SearchSectionPagerAdapter;
+import com.tokopedia.discovery.newdiscovery.search.fragment.SearchSectionFragment;
 import com.tokopedia.discovery.newdiscovery.search.fragment.catalog.CatalogFragment;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.ProductListFragment;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.ProductViewModel;
 import com.tokopedia.discovery.newdiscovery.search.fragment.shop.ShopListFragment;
 import com.tokopedia.discovery.newdiscovery.search.model.SearchSectionItem;
+import com.tokopedia.discovery.newdiscovery.widget.BottomSheetFilterView;
+import com.tokopedia.discovery.newdynamicfilter.helper.FilterDetailActivityRouter;
+import com.tokopedia.discovery.newdynamicfilter.helper.FilterFlagSelectedModel;
 import com.tokopedia.discovery.search.view.DiscoverySearchView;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -58,7 +65,7 @@ import static com.tokopedia.core.router.discovery.BrowseProductRouter.EXTRAS_SEA
 
 @RuntimePermissions
 public class SearchActivity extends DiscoveryActivity
-        implements SearchContract.View, RedirectionListener {
+        implements SearchContract.View, RedirectionListener, BottomSheetListener {
 
     public static final int TAB_THIRD_POSITION = 2;
     public static final int TAB_SECOND_POSITION = 1;
@@ -73,11 +80,14 @@ public class SearchActivity extends DiscoveryActivity
 
     private TabLayout tabLayout;
     private ViewPager viewPager;
+    private SearchSectionPagerAdapter searchSectionPagerAdapter;
 
     private String productTabTitle;
     private String catalogTabTitle;
     private String shopTabTitle;
     private boolean forceSwipeToShop;
+
+    private BottomSheetFilterView bottomSheetFilterView;
 
     @Inject
     SearchPresenter searchPresenter;
@@ -147,6 +157,7 @@ public class SearchActivity extends DiscoveryActivity
             setLastQuerySearchView(productViewModel.getQuery());
             loadSection(productViewModel, forceSwipeToShop);
             setToolbarTitle(productViewModel.getQuery());
+            bottomSheetFilterView.setFilterResultCount(productViewModel.getSuggestionModel().getFormattedResultCount());
         } else if (!TextUtils.isEmpty(searchQuery)) {
             onProductQuerySubmit(searchQuery);
         } else {
@@ -163,6 +174,7 @@ public class SearchActivity extends DiscoveryActivity
                 intent.getBooleanExtra(FROM_APP_SHORTCUTS, false)) {
             UnifyTracking.eventBeliLongClick();
         }
+        bottomSheetFilterView.initFilterBottomSheet(savedInstanceState);
 
         handleImageUri(intent);
     }
@@ -255,7 +267,7 @@ public class SearchActivity extends DiscoveryActivity
         } else {
             populateTwoTabItem(searchSectionItemList, productViewModel);
         }
-        SearchSectionPagerAdapter searchSectionPagerAdapter = new SearchSectionPagerAdapter(getSupportFragmentManager());
+        searchSectionPagerAdapter = new SearchSectionPagerAdapter(getSupportFragmentManager());
         searchSectionPagerAdapter.setData(searchSectionItemList);
         viewPager.setAdapter(searchSectionPagerAdapter);
         tabLayout.setupWithViewPager(viewPager);
@@ -372,8 +384,6 @@ public class SearchActivity extends DiscoveryActivity
                 }
             }
         });
-
-
     }
 
     @Override
@@ -386,6 +396,7 @@ public class SearchActivity extends DiscoveryActivity
         super.initView();
         tabLayout = (TabLayout) findViewById(R.id.tabs);
         viewPager = (ViewPager) findViewById(R.id.pager);
+        bottomSheetFilterView = (BottomSheetFilterView) findViewById(R.id.bottomSheetFilter);
     }
 
     @Override
@@ -396,7 +407,7 @@ public class SearchActivity extends DiscoveryActivity
         viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-
+                bottomSheetFilterView.closeView();
             }
 
             @Override
@@ -410,6 +421,77 @@ public class SearchActivity extends DiscoveryActivity
 
             }
         });
+        initBottomSheetListener();
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        bottomSheetFilterView.onActivityResult(requestCode, resultCode, data);
+    }
+
+    private void initBottomSheetListener() {
+        bottomSheetFilterView.setCallback(new BottomSheetFilterView.Callback() {
+            @Override
+            public void onApplyFilter(HashMap<String, String> selectedFilter,
+                                      FilterFlagSelectedModel filterFlagSelectedModel) {
+                applyFilter(selectedFilter, filterFlagSelectedModel);
+            }
+
+            @Override
+            public void onShow() {
+                hideBottomNavigation();
+                disableAutoShowBottomNav();
+            }
+
+            @Override
+            public void onHide() {
+                enableAutoShowBottomNav();
+                forceShowBottomNav();
+                sendBottomSheetHideEventForProductList();
+            }
+
+            @Override
+            public boolean isSearchShown() {
+                return searchView.isSearchOpen();
+            }
+
+            @Override
+            public void hideKeyboard() {
+                KeyboardHandler.hideSoftKeyboard(SearchActivity.this);
+            }
+
+            @Override
+            public void launchFilterCategoryPage(Filter filter, String selectedCategoryRootId, String selectedCategoryId) {
+                SearchTracking.eventSearchResultNavigateToFilterDetail(getResources().getString(R.string.title_category));
+                FilterDetailActivityRouter.launchCategoryActivity(SearchActivity.this,
+                        filter, selectedCategoryRootId, selectedCategoryId, true);
+            }
+
+            @Override
+            public void launchFilterDetailPage(Filter filter) {
+                SearchTracking.eventSearchResultNavigateToFilterDetail(filter.getTitle());
+                FilterDetailActivityRouter.launchDetailActivity(SearchActivity.this, filter, true);
+            }
+        });
+    }
+
+    private void forceShowBottomNav() {
+        SearchSectionFragment selectedFragment
+                = (SearchSectionFragment) searchSectionPagerAdapter.getItem(viewPager.getCurrentItem());
+
+        if (selectedFragment != null) {
+            selectedFragment.showBottomBarNavigation(true);
+        }
+    }
+
+    private void sendBottomSheetHideEventForProductList() {
+        SearchSectionFragment selectedFragment
+                = (SearchSectionFragment) searchSectionPagerAdapter.getItem(viewPager.getCurrentItem());
+
+        if (selectedFragment != null && selectedFragment instanceof ProductListFragment) {
+            selectedFragment.onBottomSheetHide();
+        }
     }
 
     @Override
@@ -430,5 +512,55 @@ public class SearchActivity extends DiscoveryActivity
     protected void onDestroy() {
         searchPresenter.detachView();
         super.onDestroy();
+    }
+
+    private void applyFilter(HashMap<String, String> selectedFilter,
+                             FilterFlagSelectedModel filterFlagSelectedModel) {
+
+        SearchSectionFragment selectedFragment
+                = (SearchSectionFragment) searchSectionPagerAdapter.getItem(viewPager.getCurrentItem());
+
+        selectedFragment.setSelectedFilter(selectedFilter);
+        selectedFragment.setFlagFilterHelper(filterFlagSelectedModel);
+        selectedFragment.clearDataFilterSort();
+        selectedFragment.reloadData();
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (!bottomSheetFilterView.onBackPressed()) {
+            super.onBackPressed();
+        }
+    }
+
+    @Override
+    public void onSearchViewShown() {
+        super.onSearchViewShown();
+        bottomSheetFilterView.closeView();
+    }
+
+    @Override
+    public void loadFilterItems(ArrayList<Filter> filters, FilterFlagSelectedModel filterFlagSelectedModel) {
+        bottomSheetFilterView.loadFilterItems(filters, filterFlagSelectedModel);
+    }
+
+    @Override
+    public void setFilterResultCount(String formattedResultCount) {
+        bottomSheetFilterView.setFilterResultCount(formattedResultCount);
+    }
+
+    @Override
+    public void closeFilterBottomSheet() {
+        bottomSheetFilterView.closeView();
+    }
+
+    @Override
+    public boolean isBottomSheetShown() {
+        return bottomSheetFilterView.isBottomSheetShown();
+    }
+
+    @Override
+    public void launchFilterBottomSheet() {
+        bottomSheetFilterView.launchFilterBottomSheet();
     }
 }
