@@ -15,6 +15,9 @@ public class Attributes_ {
     @SerializedName("detail")
     @Expose
     private String detail;
+    @SerializedName("detail_compact")
+    @Expose
+    private String detailCompact;
     @SerializedName("info")
     @Expose
     private String info;
@@ -35,55 +38,32 @@ public class Attributes_ {
         return desc;
     }
 
-    public void setDesc(String desc) {
-        this.desc = desc;
-    }
-
     public String getDetail() {
         return detail;
     }
 
-    public void setDetail(String detail) {
-        this.detail = detail;
+    public String getDetailCompact() {
+        return detailCompact;
     }
 
     public String getInfo() {
         return info;
     }
 
-    public void setInfo(String info) {
-        this.info = info;
-    }
-
     public String getPrice() {
         return price;
-    }
-
-    public void setPrice(String price) {
-        this.price = price;
     }
 
     public Integer getPricePlain() {
         return pricePlain;
     }
 
-    public void setPricePlain(Integer pricePlain) {
-        this.pricePlain = pricePlain;
-    }
-
     public Promo getPromo() {
         return promo;
-    }
-
-    public void setPromo(Promo promo) {
-        this.promo = promo;
     }
 
     public Integer getStatus() {
         return status;
     }
 
-    public void setStatus(Integer status) {
-        this.status = status;
-    }
 }

@@ -128,6 +128,7 @@ public class ProductDigitalMapper {
                     Product productOperator = new Product();
                     productOperator.setDesc(product.getAttributes().getDesc());
                     productOperator.setDetail(product.getAttributes().getDetail());
+                    productOperator.setDetailCompact(product.getAttributes().getDetailCompact());
                     productOperator.setInfo(product.getAttributes().getInfo());
                     productOperator.setPrice(product.getAttributes().getPrice());
                     productOperator.setPricePlain(product.getAttributes().getPricePlain());
