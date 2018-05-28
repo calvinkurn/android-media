@@ -9,6 +9,7 @@ import android.widget.TextView;
 import com.tokopedia.checkout.R;
 import com.tokopedia.checkout.domain.datamodel.addressoptions.RecipientAddressModel;
 import com.tokopedia.checkout.view.adapter.SingleAddressShipmentAdapter.ActionListener;
+import com.tokopedia.design.component.TextViewCompat;
 import com.tokopedia.design.pickuppoint.PickupPointLayout;
 import com.tokopedia.showcase.ShowCaseContentPosition;
 import com.tokopedia.showcase.ShowCaseObject;
@@ -31,7 +32,7 @@ public class RecipientAddressViewHolder extends RecyclerView.ViewHolder {
     private TextView tvRecipientPhone;
     private TextView tvAddOrChangeAddress;
     private PickupPointLayout pickupPointLayout;
-    private TextView tvChangeAddress;
+    private TextViewCompat tvChangeAddress;
 
     private ActionListener actionListener;
 

@@ -64,7 +64,7 @@ public class MultipleShippingAddressViewHolder extends RecyclerView.ViewHolder {
 
     private TextView phoneNumber;
 
-    private TextView changeAddress;
+    private TextViewCompat changeAddress;
 
     private RelativeLayout rlProductPoliciesLayout;
 

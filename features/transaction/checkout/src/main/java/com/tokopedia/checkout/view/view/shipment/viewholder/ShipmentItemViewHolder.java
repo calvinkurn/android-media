@@ -48,7 +48,7 @@ import java.util.List;
 
 public class ShipmentItemViewHolder extends RecyclerView.ViewHolder {
 
-    public static final int ITEM_VIEW_SHIPMENT_SINGLE_ADDRESS = R.layout.item_shipment;
+    public static final int ITEM_VIEW_SHIPMENT_ITEM = R.layout.item_shipment;
 
     private static final int FIRST_ELEMENT = 0;
 
@@ -93,7 +93,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder {
     private TextView tvRecipientName;
     private TextView tvRecipientAddress;
     private TextView tvRecipientPhone;
-    private TextView tvChangeAddress;
+    private TextViewCompat tvChangeAddress;
     private LinearLayout addressLayout;
     private PickupPointLayout pickupPointLayout;
     private RecyclerView rvCartItem;
