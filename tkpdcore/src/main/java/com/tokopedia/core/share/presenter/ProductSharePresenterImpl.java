@@ -167,14 +167,21 @@ public class ProductSharePresenterImpl implements ProductSharePresenter {
             sendAnalyticsToGTM(data.getType(),AppEventTracking.SOCIAL_MEDIA.INSTAGRAM);
         }
         data.setSource(AppEventTracking.SOCIAL_MEDIA.INSTAGRAM);
-        if (data.getImgUri() != null) {
+        if(data.getPathSticker() == null) {
+            if (data.getImgUri() != null) {
+                ShareSocmedHandler.ShareSpecificUri(data, activity, TkpdState.PackageName.Instagram,
+                        TkpdState.PackageName.TYPE_IMAGE,
+                        data.getImgUri(), null);
+            } else {
+                ShareSocmedHandler.ShareSpecific(data, activity, TkpdState.PackageName.Instagram,
+                        TkpdState.PackageName.TYPE_TEXT, null, null);
+            }
+        } else {
             ShareSocmedHandler.ShareSpecificUri(data, activity, TkpdState.PackageName.Instagram,
                     TkpdState.PackageName.TYPE_IMAGE,
-                    data.getImgUri(), null);
-        } else {
-            ShareSocmedHandler.ShareSpecific(data, activity, TkpdState.PackageName.Instagram,
-                    TkpdState.PackageName.TYPE_TEXT, null, null);
+                    data.getPathSticker(), null);
         }
+
 
     }
 
