@@ -1,0 +1,118 @@
+package com.tokopedia.contactus.home.view.presenter;
+
+import android.content.Context;
+import android.util.Log;
+
+import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
+import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
+import com.tokopedia.contactus.common.data.BuyerPurchaseList;
+import com.tokopedia.contactus.home.data.ContactUsArticleResponse;
+import com.tokopedia.contactus.home.data.TopBotStatus;
+import com.tokopedia.contactus.home.domain.ContactUsArticleUseCase;
+import com.tokopedia.contactus.home.domain.ContactUsPurchaseListUseCase;
+import com.tokopedia.contactus.home.domain.ContactUsTopBotUseCase;
+import com.tokopedia.core.util.SessionHandler;
+
+import java.util.List;
+
+import javax.inject.Inject;
+
+import rx.Subscriber;
+
+/**
+ * Created by sandeepgoyal on 04/04/18.
+ */
+
+public class  ContactUsHomePresenter extends BaseDaggerPresenter<ContactUsHomeContract.View> implements ContactUsHomeContract.Presenter {
+
+    private final Context context;
+    ContactUsArticleUseCase articleUseCase;
+    ContactUsPurchaseListUseCase purchaseListUseCase;
+    ContactUsTopBotUseCase topBotUseCase;
+
+    @Inject
+    public ContactUsHomePresenter(ContactUsPurchaseListUseCase purchaseListUseCase, ContactUsArticleUseCase contactUsArticleUseCase, ContactUsTopBotUseCase topBotUseCase, @ApplicationContext Context context) {
+        this.articleUseCase = contactUsArticleUseCase;
+        this.purchaseListUseCase = purchaseListUseCase;
+        this.topBotUseCase = topBotUseCase;
+        this.context = context;
+    }
+
+    @Override
+    public void attachView(ContactUsHomeContract.View view) {
+        super.attachView(view);
+        articleUseCase.execute(new Subscriber<List<ContactUsArticleResponse>>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                Log.e("contacus ", " onerror "+e);
+            }
+
+            @Override
+            public void onNext(List<ContactUsArticleResponse> contactUsArticleResponse) {
+                for (ContactUsArticleResponse response : contactUsArticleResponse) {
+                    getView().addPopularArticle(response);
+                }
+            }
+        });
+
+        purchaseListUseCase.execute(new Subscriber<List<BuyerPurchaseList>>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                Log.e("contactus", "exception " + e);
+            }
+
+            @Override
+            public void onNext(List<BuyerPurchaseList> buyerPurchaseLists) {
+                if(buyerPurchaseLists.size()>0) {
+                    getView().setEmptyPurchaseListHide();
+                    getView().setPurchaseList(buyerPurchaseLists);
+                }else {
+                    return;
+                }
+            }
+        });
+
+        topBotUseCase.execute(new Subscriber<TopBotStatus>() {
+
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+
+            }
+
+            @Override
+            public void onNext(TopBotStatus topBotStatus) {
+                if(topBotStatus.isIsActive()) {
+                    getView().setChatBotVisible();
+                    getView().setChatBotMessageId(topBotStatus.getMsgId());
+                    getView().setHighMessageUserName(SessionHandler.getLoginName(context));
+                }
+
+            }
+        });
+
+
+    }
+
+    @Override
+    public void detachView() {
+        super.detachView();
+        articleUseCase.unsubscribe();
+        purchaseListUseCase.unsubscribe();
+        topBotUseCase.unsubscribe();
+    }
+}
