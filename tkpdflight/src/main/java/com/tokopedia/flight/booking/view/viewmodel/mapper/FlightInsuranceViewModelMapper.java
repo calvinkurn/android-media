@@ -26,7 +26,7 @@ public class FlightInsuranceViewModelMapper {
             viewModel.setDescription(entity.getDescription());
             viewModel.setTncUrl(entity.getTncUrl());
             viewModel.setTncAggreement(entity.getTncAggreement());
-            viewModel.setPricePerPax(entity.getPricePerPax());
+            viewModel.setTotalPrice(entity.getTotalPriceNumeric());
             viewModel.setBenefits(benefitViewModelMapper.transform(entity.getBenefits()));
         }
         return viewModel;

@@ -9,7 +9,7 @@ public class FlightInsuranceViewModel implements Parcelable{
     private String id;
     private String name;
     private String description;
-    private long pricePerPax;
+    private long totalPrice;
     private boolean defaultChecked;
     private String tncAggreement;
     private String tncUrl;
@@ -22,7 +22,7 @@ public class FlightInsuranceViewModel implements Parcelable{
         id = in.readString();
         name = in.readString();
         description = in.readString();
-        pricePerPax = in.readLong();
+        totalPrice = in.readLong();
         defaultChecked = in.readByte() != 0;
         tncAggreement = in.readString();
         tncUrl = in.readString();
@@ -65,12 +65,12 @@ public class FlightInsuranceViewModel implements Parcelable{
         this.description = description;
     }
 
-    public long getPricePerPax() {
-        return pricePerPax;
+    public long getTotalPrice() {
+        return totalPrice;
     }
 
-    public void setPricePerPax(long pricePerPax) {
-        this.pricePerPax = pricePerPax;
+    public void setTotalPrice(long totalPrice) {
+        this.totalPrice = totalPrice;
     }
 
     public boolean isDefaultChecked() {
@@ -115,7 +115,7 @@ public class FlightInsuranceViewModel implements Parcelable{
         parcel.writeString(id);
         parcel.writeString(name);
         parcel.writeString(description);
-        parcel.writeLong(pricePerPax);
+        parcel.writeLong(totalPrice);
         parcel.writeByte((byte) (defaultChecked ? 1 : 0));
         parcel.writeString(tncAggreement);
         parcel.writeString(tncUrl);

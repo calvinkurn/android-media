@@ -15,9 +15,9 @@ public class InsuranceEntity {
     @SerializedName("description")
     @Expose
     private String description;
-    @SerializedName("price_per_pax")
+    @SerializedName("total_price_numeric")
     @Expose
-    private long pricePerPax;
+    private long totalPriceNumeric;
     @SerializedName("default_checked")
     @Expose
     private boolean defaultChecked;
@@ -43,10 +43,6 @@ public class InsuranceEntity {
         return description;
     }
 
-    public long getPricePerPax() {
-        return pricePerPax;
-    }
-
     public boolean isDefaultChecked() {
         return defaultChecked;
     }
@@ -65,5 +61,9 @@ public class InsuranceEntity {
 
     public void setId(String id) {
         this.id = id;
+    }
+
+    public long getTotalPriceNumeric() {
+        return totalPriceNumeric;
     }
 }
