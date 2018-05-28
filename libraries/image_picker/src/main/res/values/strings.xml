@@ -20,7 +20,7 @@
     <string name="cancel">Batal</string>
     <string name="save">Simpan</string>
     <string name="exit">Keluar</string>
-    <string name="image_edit_backpressed_title">Keluar dari halaman Edit Gambar?</string>
+    <string name="image_edit_backpressed_title">Hasil edit gambar akan hilang jika anda kembali ke halaman sebelumnya.</string>
     <string name="brightness">Brightness</string>
     <string name="contrast">Contrast</string>
     <string name="default_brightness_value">0</string>
@@ -39,4 +39,5 @@
     <string name="max_no_of_image_reached">Jumlah maksimum gambar sudah terpenuhi.</string>
     <string name="max_file_size_reached">Maksimum ukuran gambar adalah %1$dMB</string>
     <string name="permission_enabled_needed">Untuk dapat mengakses media, permissions harus diaktifkan di bagian pengaturan aplikasi</string>
+    <string name="label_return">Kembali</string>
 </resources>

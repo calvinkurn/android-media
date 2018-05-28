@@ -193,11 +193,11 @@ public class ImagePickerCameraFragment extends TkpdBaseV4Fragment {
 
     private void setUIFlashCamera(int flashEnum) {
         if (flashEnum == Flash.AUTO.ordinal()) {
-            flashImageButton.setImageResource(R.drawable.ic_flash_auto);
+            flashImageButton.setImageResource(R.drawable.ic_auto_flash);
         } else if (flashEnum == Flash.ON.ordinal()) {
-            flashImageButton.setImageResource(R.drawable.ic_flash_on);
+            flashImageButton.setImageResource(R.drawable.ic_on_flash);
         } else if (flashEnum == Flash.OFF.ordinal()) {
-            flashImageButton.setImageResource(R.drawable.ic_flash_off);
+            flashImageButton.setImageResource(R.drawable.ic_off_flash);
         }
     }
 

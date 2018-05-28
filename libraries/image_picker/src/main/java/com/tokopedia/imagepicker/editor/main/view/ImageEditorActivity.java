@@ -60,7 +60,6 @@ public class ImageEditorActivity extends BaseSimpleActivity implements ImageEdit
     public static final String EDIT_RESULT_PATHS = "result_paths";
 
     public static final int MAX_HISTORY_PER_IMAGE = 5;
-    public static final int BACKPRESS_TIME_LIMIT = 2000; // ms
 
     private ArrayList<String> extraImageUrls;
     private int minResolution;
@@ -838,8 +837,8 @@ public class ImageEditorActivity extends BaseSimpleActivity implements ImageEdit
         } else {
             if (anyEditChanges()) {
                 AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this, R.style.AppCompatAlertDialogStyle)
-                        .setTitle(getString(R.string.image_edit_backpressed_title))
-                        .setPositiveButton(getString(R.string.exit), new DialogInterface.OnClickListener() {
+                        .setMessage(getString(R.string.image_edit_backpressed_title))
+                        .setPositiveButton(getString(R.string.label_return), new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
                                 ImageUtils.deleteCacheFolder(ImageUtils.DirectoryDef.DIRECTORY_TOKOPEDIA_CACHE);
