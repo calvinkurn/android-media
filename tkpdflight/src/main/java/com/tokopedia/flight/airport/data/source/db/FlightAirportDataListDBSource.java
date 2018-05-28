@@ -1,9 +1,7 @@
 package com.tokopedia.flight.airport.data.source.db;
 
 import android.text.TextUtils;
-import android.util.Log;
 
-import com.raizlabs.android.dbflow.sql.language.Condition;
 import com.raizlabs.android.dbflow.sql.language.ConditionGroup;
 import com.raizlabs.android.dbflow.sql.language.Method;
 import com.raizlabs.android.dbflow.sql.language.OrderBy;
@@ -292,7 +290,7 @@ public class FlightAirportDataListDBSource extends BaseDataListDBSource<FlightAi
         });
     }
 
-    public Observable<FlightAirportDB> getPhoneCodeById(final String id) {
+    public Observable<FlightAirportDB> getAirportByCountryId(final String id) {
         return Observable.unsafeCreate(new Observable.OnSubscribe<FlightAirportDB>() {
             @Override
             public void call(Subscriber<? super FlightAirportDB> subscriber) {

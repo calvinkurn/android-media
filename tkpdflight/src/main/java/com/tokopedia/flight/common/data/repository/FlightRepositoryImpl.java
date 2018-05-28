@@ -132,8 +132,8 @@ public class FlightRepositoryImpl implements FlightRepository {
     }
 
     @Override
-    public Observable<FlightAirportDB> getPhoneCodeById(String id) {
-        return flightAirportDataListSource.getPhoneCodeById(id);
+    public Observable<FlightAirportDB> getAirportByCountryId(String id) {
+        return flightAirportDataListSource.getAirportByCountryId(id);
     }
 
     @Override

@@ -88,7 +88,7 @@ public interface FlightRepository {
 
     Observable<List<FlightAirportDB>> getPhoneCodeList(String string);
 
-    Observable<FlightAirportDB> getPhoneCodeById(String id);
+    Observable<FlightAirportDB> getAirportByCountryId(String id);
 
     Observable<FlightAirlineDB> getAirlineById(String airlineId);
 

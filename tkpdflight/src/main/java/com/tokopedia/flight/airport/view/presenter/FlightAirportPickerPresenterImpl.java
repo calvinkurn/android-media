@@ -28,8 +28,6 @@ import rx.subscriptions.CompositeSubscription;
  */
 
 public class FlightAirportPickerPresenterImpl extends BaseDaggerPresenter<FlightAirportPickerView> implements FlightAirportPickerPresenter, AutoCompleteKeywordListener {
-    public static final String ID_COUNTRY_INDONESIA = "ID";
-
     private final FlightAirportPickerUseCase flightAirportPickerUseCase;
     private CompositeSubscription compositeSubscription;
     private AutoCompleteInputListener inputListener;
@@ -99,48 +97,6 @@ public class FlightAirportPickerPresenterImpl extends BaseDaggerPresenter<Flight
             getView().showLoading();
             compositeSubscription.add(flightAirportPickerUseCase
                     .createObservable(FlightAirportPickerUseCase.createRequestParams(keyword))
-                    .map(new Func1<List<FlightAirportDB>, List<Visitable>>() {
-                        @Override
-                        public List<Visitable> call(List<FlightAirportDB> airports) {
-                            List<Visitable> visitables = new ArrayList<>();
-                            List<Visitable> result = new ArrayList<>();
-                            FlightCountryAirportViewModel negara = null;
-
-                            for (int i = 0; i < airports.size(); i++) {
-                                FlightAirportDB airport = airports.get(i);
-                                if (negara == null || !negara.getCountryId().equalsIgnoreCase(airport.getCountryId())) {
-                                    negara = new FlightCountryAirportViewModel();
-                                    negara.setCountryId(airport.getCountryId());
-                                    negara.setCountryName(airport.getCountryName());
-                                    negara.setAirports(new ArrayList<FlightAirportViewModel>());
-                                    if (negara.getCountryId().equalsIgnoreCase(ID_COUNTRY_INDONESIA)) {
-                                        result.add(negara);
-                                    } else {
-                                        visitables.add(negara);
-                                    }
-                                }
-
-                                FlightAirportViewModel airportViewModel = new FlightAirportViewModel();
-                                airportViewModel.setAirportName(airport.getAirportName());
-                                airportViewModel.setCountryName(negara.getCountryName());
-                                if (airport.getAirportId() != null && airport.getAirportId().length() > 0) {
-                                    airportViewModel.setAirportCode(airport.getAirportId());
-                                } else {
-                                    airportViewModel.setCityAirports(airport.getAirportIds().split(","));
-                                }
-                                airportViewModel.setCityCode(airport.getCityCode());
-                                airportViewModel.setCityId(airport.getCityId());
-                                airportViewModel.setCityName(airport.getCityName());
-                                if (negara.getCountryId().equalsIgnoreCase(ID_COUNTRY_INDONESIA)) {
-                                    result.add(airportViewModel);
-                                } else {
-                                    visitables.add(airportViewModel);
-                                }
-                            }
-                            result.addAll(visitables);
-                            return result;
-                        }
-                    })
                     .subscribeOn(Schedulers.io())
                     .unsubscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())

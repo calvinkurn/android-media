@@ -58,7 +58,7 @@ public class FlightPassengerGetListUseCase extends UseCase<List<FlightBookingPas
         return Observable.just(flightBookingPassengerViewModel)
                 .flatMap((Func1<FlightBookingPassengerViewModel, Observable<FlightBookingPassengerViewModel>>) flightBookingPassengerViewModel1 -> {
                     if (flightBookingPassengerViewModel1.getPassportNationality() != null) {
-                        return Observable.zip(Observable.just(flightBookingPassengerViewModel1), flightRepository.getPhoneCodeById(flightBookingPassengerViewModel1.getPassportNationality().getCountryId()),
+                        return Observable.zip(Observable.just(flightBookingPassengerViewModel1), flightRepository.getAirportByCountryId(flightBookingPassengerViewModel1.getPassportNationality().getCountryId()),
                                 (flightBookingPassengerViewModel11, nationality) -> {
                                     FlightBookingPhoneCodeViewModel passportNationality = new FlightBookingPhoneCodeViewModel();
                                     passportNationality.setCountryId(nationality.getCountryId());
@@ -74,7 +74,7 @@ public class FlightPassengerGetListUseCase extends UseCase<List<FlightBookingPas
                 })
                 .flatMap((Func1<FlightBookingPassengerViewModel, Observable<FlightBookingPassengerViewModel>>) flightBookingPassengerViewModel12 -> {
                     if (flightBookingPassengerViewModel12.getPassportIssuerCountry() != null) {
-                        return Observable.zip(Observable.just(flightBookingPassengerViewModel12), flightRepository.getPhoneCodeById(flightBookingPassengerViewModel12.getPassportIssuerCountry().getCountryId()),
+                        return Observable.zip(Observable.just(flightBookingPassengerViewModel12), flightRepository.getAirportByCountryId(flightBookingPassengerViewModel12.getPassportIssuerCountry().getCountryId()),
                                 (flightBookingPassengerViewModel121, issuerCountry) -> {
                                     FlightBookingPhoneCodeViewModel passportIssuerCountry = new FlightBookingPhoneCodeViewModel();
                                     passportIssuerCountry.setCountryId(issuerCountry.getCountryId());
