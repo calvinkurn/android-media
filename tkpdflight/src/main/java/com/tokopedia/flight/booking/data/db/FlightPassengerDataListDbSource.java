@@ -6,6 +6,7 @@ import com.raizlabs.android.dbflow.sql.language.Select;
 import com.raizlabs.android.dbflow.structure.Model;
 import com.tokopedia.flight.booking.data.cloud.entity.SavedPassengerEntity;
 import com.tokopedia.flight.booking.data.db.model.FlightPassengerDb;
+import com.tokopedia.flight.booking.data.db.model.FlightPassengerDB_Table;
 import com.tokopedia.flight.common.data.db.BaseDataListDBSource;
 
 import java.util.HashMap;
