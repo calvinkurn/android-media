@@ -113,5 +113,12 @@
     <string name="toolbar_title_etoll_check_balance">Cek Saldo</string>
     <string name="card_info_is_not_available_yet">Belum Tersedia</string>
     <string name="success_update_balance">Informasi saldo berhasil diperbaharui</string>
+    <string name="please_activate_nfc_from_settings">Silahkan aktifkan pengaturan NFC pada handphone Anda, untuk melanjutkan</string>
+    <string name="activate">Aktifkan</string>
+    <string name="cancel">Batalkan</string>
+    <string name="nfc_permission_rationale_message">Aplikasi ini membutuhkan izin untuk mengakses NFC</string>
+    <string name="allow_nfc_permission">Izinkan</string>
+    <string name="deny_nfc_permission">Tolak</string>
+    <string name="nfc_permission_denied_message">Anda tidak memberikan izin akses untuk NFC</string>
 
 </resources>

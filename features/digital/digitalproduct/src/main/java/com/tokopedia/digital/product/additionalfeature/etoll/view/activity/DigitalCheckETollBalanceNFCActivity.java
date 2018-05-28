@@ -31,6 +31,7 @@ import com.tokopedia.core.router.digitalmodule.passdata.DigitalCategoryDetailPas
 import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.digital.R;
+import com.tokopedia.digital.common.constant.DigitalUrl;
 import com.tokopedia.digital.common.data.apiservice.DigitalEndpointService;
 import com.tokopedia.digital.product.additionalfeature.etoll.ETollEventTracking;
 import com.tokopedia.digital.product.additionalfeature.etoll.data.mapper.SmartcardMapper;
@@ -72,8 +73,9 @@ public class DigitalCheckETollBalanceNFCActivity extends BaseSimpleActivity
     private static final String COMMAND_CARD_INFO = "00B300003F";
     private static final String COMMAND_LAST_BALANCE = "00B500000A";
 
-    private static final String HELP_PAGE_URL = "https://www.tokopedia.com/bantuan/produk-digital/" +
-            "e-money/#cara-update-saldo-kartu";
+    private static final String COMMAND_SUCCESSFULLY_EXECUTED = "9000";
+
+    private static final int TRANSCEIVE_TIMEOUT_IN_SEC = 5000;
 
     private static final String TAG = DigitalCheckETollBalanceNFCActivity.class.getSimpleName();
 
@@ -248,7 +250,7 @@ public class DigitalCheckETollBalanceNFCActivity extends BaseSimpleActivity
             DigitalCheckETollBalanceNFCActivityPermissionsDispatcher.detectNFCWithCheck(this);
         } else {
             // show webview help page
-            startActivity(DigitalWebActivity.newInstance(this, HELP_PAGE_URL));
+            startActivity(DigitalWebActivity.newInstance(this, DigitalUrl.HelpUrl.ETOLL));
             finish();
         }
     }
@@ -282,7 +284,7 @@ public class DigitalCheckETollBalanceNFCActivity extends BaseSimpleActivity
 
         try {
             isoDep.connect();
-            isoDep.setTimeout(5000); // 5 sec time out
+            isoDep.setTimeout(TRANSCEIVE_TIMEOUT_IN_SEC); // 5 sec time out
 
             final byte[] commandSelectEMoney =
                     isoDep.transceive(NFCUtils.hexStringToByteArray(COMMAND_SELECT_EMONEY));
@@ -304,7 +306,7 @@ public class DigitalCheckETollBalanceNFCActivity extends BaseSimpleActivity
                     String responseCardInfo = NFCUtils.toHex(commandCardInfo);
                     String responseCardLastBalance = NFCUtils.toHex(commandLastBalance);
 
-                    if (responseSelectEMoney.equals("9000")) {
+                    if (responseSelectEMoney.equals(COMMAND_SUCCESSFULLY_EXECUTED)) {
                         presenter.inquiryBalance(1, responseCardAttribute, responseCardInfo,
                                 responseCardUID, responseCardLastBalance);
                     } else {
@@ -363,7 +365,7 @@ public class DigitalCheckETollBalanceNFCActivity extends BaseSimpleActivity
                             ETollEventTracking.Event.CLICK_NFC,
                             ETollEventTracking.Category.DIGITAL_NFC,
                             ETollEventTracking.Action.SUCCESS_CHECK_BALANCE,
-                            "emoney"
+                            ETollEventTracking.Label.EMONEY
                     );
         }
         tapETollCardView.setVisibility(View.GONE);
@@ -402,8 +404,8 @@ public class DigitalCheckETollBalanceNFCActivity extends BaseSimpleActivity
             tapETollCardView.setVisibility(View.GONE);
 
             new AlertDialog.Builder(this)
-                    .setMessage("Silahkan aktifkan pengaturan NFC pada handphone Anda, untuk melanjutkan")
-                    .setPositiveButton("Aktifkan", new DialogInterface.OnClickListener() {
+                    .setMessage(getStringResource(R.string.please_activate_nfc_from_settings))
+                    .setPositiveButton(getStringResource(R.string.activate), new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             if (getApplication() instanceof AbstractionRouter) {
@@ -419,7 +421,7 @@ public class DigitalCheckETollBalanceNFCActivity extends BaseSimpleActivity
                             directToNFCSettingsPage();
                         }
                     })
-                    .setNegativeButton("Batalkan", new DialogInterface.OnClickListener() {
+                    .setNegativeButton(getStringResource(R.string.cancel), new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             if (getApplication() instanceof AbstractionRouter) {
@@ -463,14 +465,14 @@ public class DigitalCheckETollBalanceNFCActivity extends BaseSimpleActivity
     @OnShowRationale(Manifest.permission.NFC)
     void showRationaleForNFC(final PermissionRequest request) {
         new AlertDialog.Builder(this)
-                .setMessage("Aplikasi ini membutuhkan izin untuk mengakses NFC")
-                .setPositiveButton("Izinkan", new DialogInterface.OnClickListener() {
+                .setMessage(getStringResource(R.string.nfc_permission_rationale_message))
+                .setPositiveButton(getStringResource(R.string.allow_nfc_permission), new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         request.proceed();
                     }
                 })
-                .setNegativeButton("Tolak", new DialogInterface.OnClickListener() {
+                .setNegativeButton(getStringResource(R.string.deny_nfc_permission), new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         request.cancel();
@@ -480,7 +482,7 @@ public class DigitalCheckETollBalanceNFCActivity extends BaseSimpleActivity
 
     @OnPermissionDenied(Manifest.permission.NFC)
     void showDeniedForCamera() {
-        Toast.makeText(this, "Anda tidak memberikan izin akses untuk NFC",
+        Toast.makeText(this, getStringResource(R.string.nfc_permission_denied_message),
                 Toast.LENGTH_SHORT).show();
     }
 
