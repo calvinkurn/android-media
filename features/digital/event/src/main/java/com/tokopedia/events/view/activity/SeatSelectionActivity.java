@@ -116,8 +116,6 @@ public class SeatSelectionActivity extends TActivity implements HasComponent<Eve
         mPresenter.getSeatSelectionDetails();
         setupToolbar();
         toolbar.setTitle(R.string.seat_selection_title);
-
-
     }
 
 
@@ -237,15 +235,20 @@ public class SeatSelectionActivity extends TActivity implements HasComponent<Eve
     @Override
     public void setTicketPrice(int numOfTickets) {
         this.quantity = numOfTickets;
-        ticketCount.setText("" + numOfTickets);
+        ticketCount.setText(String.format(getString(R.string.x_type),
+                numOfTickets, mPresenter.getTicketCategory()));
         ticketPrice.setText(String.format(CurrencyUtil.RUPIAH_FORMAT,
                 CurrencyUtil.convertToCurrencyString(numOfTickets * price)));
     }
 
     @Override
     public void setSelectedSeatText() {
-        String text = TextUtils.join(", ", selectedSeats);
-        selectedSeatText.setText(text);
+        if (selectedSeats == null || selectedSeats.isEmpty()) {
+            selectedSeatText.setText(String.format(getString(R.string.select_seat), quantity));
+        } else {
+            String text = TextUtils.join(", ", selectedSeats);
+            selectedSeatText.setText(text);
+        }
     }
 
     @Override

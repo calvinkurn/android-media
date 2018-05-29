@@ -17,6 +17,7 @@
     <string name="seating_layout">Seating Plan</string>
     <string name="book_ticket">Beli Tiket</string>
     <string name="lanjutkan">Lanjutkan</string>
+    <string name="selanjutnya">Selanjutnya</string>
     <string name="rp_5980000"><strike>Sample Text</strike></string>
     <string name="total_tickets">%d Tiket</string>
     <string name="fare_breakup">Fare Breakup for %s</string>
@@ -56,12 +57,12 @@
     <string name="nomor_kursi">Nomor Kursi:</string>
     <string name="ubah">Ubah</string>
     <string name="email">E-mail</string>
-    <string name="screen_this_way">SCREEN THIS WAY</string>
+    <string name="screen_this_way">PANGGUNG</string>
     <string name="tersedia">Tersedia</string>
     <string name="terjual">Terjual</string>
     <string name="terpilih">Terpilih</string>
-    <string name="tiket">Tiket :</string>
-    <string name="total">Total:</string>
+    <string name="tiket">TIKET:</string>
+    <string name="total">TOTAL:</string>
     <string name="pilihan_kursi">Pilihan Kursi:</string>
     <string name="detail_tiket">Detail Tiket</string>
     <string name="promo_section">Gunakan Kode Promo Tokopedia</string>
@@ -79,6 +80,9 @@
     <string name="find_event_here">Cari Event Seru Di Sini</string>
     <string name="belum_ada_event_favorit">Belum Ada Event Favorit</string>
     <string name="top_event">TOP EVENT</string>
+    <string name="select_seat">Silakan pilih %1$d kursi</string>
+    <string name="hasil_tidak">Hasil pencarian Anda tidak dapat ditemukan.</string>
+    <string name="kunci_filter">Silakan lakukan pencarian dengan kata kunci / filter lain</string>
 
     <!-- need to changed -->
 

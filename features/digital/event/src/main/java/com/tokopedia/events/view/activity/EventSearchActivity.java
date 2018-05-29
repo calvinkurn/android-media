@@ -56,6 +56,8 @@ public class EventSearchActivity extends TActivity implements
     ProgressBar progBar;
     @BindView(R2.id.search_input_view)
     SearchInputView searchInputView;
+    @BindView(R2.id.no_search_results)
+    View noResults;
 
     @BindView(R2.id.rv_search_results)
     RecyclerView rvSearchResults;
@@ -151,10 +153,12 @@ public class EventSearchActivity extends TActivity implements
             tvTopevents.setVisibility(View.VISIBLE);
             rvTopEventSuggestions.setVisibility(View.VISIBLE);
             rvSearchResults.setVisibility(View.GONE);
+            noResults.setVisibility(View.GONE);
         } else {
             tvTopevents.setVisibility(View.GONE);
             rvTopEventSuggestions.setVisibility(View.GONE);
             rvSearchResults.setVisibility(View.GONE);
+            noResults.setVisibility(View.GONE);
         }
     }
 
@@ -169,11 +173,11 @@ public class EventSearchActivity extends TActivity implements
             tvTopevents.setVisibility(View.GONE);
             rvTopEventSuggestions.setVisibility(View.VISIBLE);
             rvSearchResults.setVisibility(View.GONE);
+            noResults.setVisibility(View.GONE);
         } else {
             rvSearchResults.setVisibility(View.GONE);
             rvTopEventSuggestions.setVisibility(View.GONE);
-            tvTopevents.setText("No Events Found");
-            tvTopevents.setVisibility(View.VISIBLE);
+            noResults.setVisibility(View.VISIBLE);
         }
     }
 

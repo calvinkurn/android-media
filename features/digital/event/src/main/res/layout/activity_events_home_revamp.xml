@@ -151,7 +151,7 @@
                     android:includeFontPadding="false"
                     android:text="@string/lihat_kalendar_event"
                     android:textColor="@color/white"
-                    android:textSize="@dimen/sp_13"
+                    android:textSize="@dimen/sp_16"
                     android:textStyle="bold"
                     android:visibility="visible"
                     app:layout_constraintBottom_toBottomOf="parent"

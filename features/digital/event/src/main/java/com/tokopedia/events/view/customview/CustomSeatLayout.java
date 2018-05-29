@@ -81,9 +81,12 @@ public class CustomSeatLayout extends LinearLayout {
         } else if (text.length() > 0 && status == 2) {
             individualSeat.setText(text);
             individualSeat.setClickable(false);
-            individualSeat.setBackgroundResource(R.drawable.booked_seat_bg);
+            individualSeat.setBackgroundResource(R.drawable.cannot_select_seat_bg);
+            individualSeat.setTextColor(ContextCompat.getColor(getContext(), R.color.black_36));
         } else if (text.equalsIgnoreCase(".") || status == 0) {
             individualSeat.setText(text);
+            individualSeat.setTextSize(getContext().getResources().getDimension(R.dimen.dp_16));
+            individualSeat.setTextColor(ContextCompat.getColor(getContext(), R.color.black_36));
             individualSeat.setBackground(null);
             individualSeat.setClickable(false);
         }
@@ -93,7 +96,7 @@ public class CustomSeatLayout extends LinearLayout {
     void seatClicked() {
         if (!individualSeat.isSelected() && numoFSeats < maxCount) {
             individualSeat.setSelected(true);
-            individualSeat.setBackgroundResource(R.drawable.selected_seat_bg);
+            individualSeat.setBackgroundResource(R.drawable.currently_selected_seat_bg);
             individualSeat.setTextColor(ContextCompat.getColor(getContext(), R.color.white));
             numoFSeats++;
             if (rowName != null && rowName.length() > 0) {
@@ -106,7 +109,7 @@ public class CustomSeatLayout extends LinearLayout {
         } else if (individualSeat.isSelected()) {
             individualSeat.setSelected(false);
             individualSeat.setBackgroundResource(R.drawable.seat_bg);
-            individualSeat.setTextColor(ContextCompat.getColor(getContext(), R.color.black));
+            individualSeat.setTextColor(ContextCompat.getColor(getContext(), R.color.black_38));
             numoFSeats--;
             if (rowName != null && rowName.length() > 0) {
                 selectedSeatList.remove("" + rowName + columnName);
@@ -120,7 +123,6 @@ public class CustomSeatLayout extends LinearLayout {
                     String.format(getContext().getString(R.string.more_seat_than_tiket_warning_toast), maxCount),
                     Toast.LENGTH_SHORT).show();
         }
-        mPresenter.setTicketPrice(numoFSeats);
         mPresenter.setSeatData();
     }
 

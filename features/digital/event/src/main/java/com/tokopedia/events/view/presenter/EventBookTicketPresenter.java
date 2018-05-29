@@ -281,12 +281,7 @@ public class EventBookTicketPresenter
             public void onError(Throwable throwable) {
                 getView().hideProgressBar();
                 NetworkErrorHelper.showEmptyState(getView().getActivity(),
-                        getView().getRootView(), new NetworkErrorHelper.RetryClickedListener() {
-                            @Override
-                            public void onRetryClicked() {
-                                getSeatSelectionDetails();
-                            }
-                        });
+                        getView().getRootView(), () -> getSeatSelectionDetails());
             }
 
             @Override
@@ -320,9 +315,11 @@ public class EventBookTicketPresenter
     }
 
     private void scrollToLastIfNeeded() {
-        mChildFragment.setDecorationHeight(getView().getButtonLayoutHeight() + px);
-        if (mSelectedPackage == schedulesList.get(mSelectedSchedule).getPackages().size() - 1)
-            mChildFragment.scrollToLast();
+        if (schedulesList.get(mSelectedSchedule).getPackages().size() > 2) {
+            mChildFragment.setDecorationHeight(getView().getButtonLayoutHeight() + px);
+            if (mSelectedPackage == schedulesList.get(mSelectedSchedule).getPackages().size() - 1)
+                mChildFragment.scrollToLast();
+        }
     }
 
     public void onClickLocationDate(LocationDateModel model, int index) {
