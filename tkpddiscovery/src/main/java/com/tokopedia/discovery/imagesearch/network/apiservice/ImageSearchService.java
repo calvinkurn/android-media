@@ -18,11 +18,11 @@ public class ImageSearchService extends BaseService<ImageSearchApi> {
 
     @Override
     protected String getBaseUrl() {
-        return TkpdBaseURL.ACE_DOMAIN;
+        return TkpdBaseURL.HOME_DATA_BASE_URL;
     }
 
     @Override
     public ImageSearchApi getApi() {
-        return null;
+        return api;
     }
 }

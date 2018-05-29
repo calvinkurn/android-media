@@ -13,6 +13,5 @@ import rx.Observable;
 public interface ImageSearchApi {
 
     @POST("./")
-    @Headers({"Content-Type: application/json"})
     Observable<Response<String>> getImageSearchResults(@Body String requestBody);
 }
