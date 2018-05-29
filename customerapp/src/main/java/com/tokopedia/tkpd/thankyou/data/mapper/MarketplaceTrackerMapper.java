@@ -1,8 +1,10 @@
 package com.tokopedia.tkpd.thankyou.data.mapper;
 
 import com.tokopedia.core.analytics.PurchaseTracking;
+import com.tokopedia.core.analytics.model.BranchIOPayment;
 import com.tokopedia.core.analytics.nishikino.model.Product;
 import com.tokopedia.core.analytics.nishikino.model.Purchase;
+import com.tokopedia.core.util.BranchSdkUtils;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.tkpd.thankyou.data.pojo.marketplace.GraphqlResponse;
 import com.tokopedia.tkpd.thankyou.data.pojo.marketplace.PaymentGraphql;
@@ -13,6 +15,7 @@ import com.tokopedia.tkpd.thankyou.data.pojo.marketplace.payment.PaymentMethod;
 import com.tokopedia.tkpd.thankyou.domain.model.ThanksTrackerConst;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import retrofit2.Response;
@@ -41,6 +44,7 @@ public class MarketplaceTrackerMapper implements Func1<Response<GraphqlResponse<
             if (paymentData.getOrders() != null) {
                 for (OrderData orderData : paymentData.getOrders()) {
                     PurchaseTracking.marketplace(getTrackignData(orderData));
+                    BranchSdkUtils.sendCommerceEvent(getTrackignBranchIOData(orderData));
                 }
             }
             return true;
@@ -157,5 +161,25 @@ public class MarketplaceTrackerMapper implements Func1<Response<GraphqlResponse<
         return "";
     }
 
+    private BranchIOPayment getTrackignBranchIOData(OrderData orderData) {
+        BranchIOPayment branchIOPayment = new BranchIOPayment();
 
+        branchIOPayment.setPaymentId(String.valueOf(paymentData.getPaymentId()));
+        branchIOPayment.setOrderId(String.valueOf(orderData.getOrderId()));
+        branchIOPayment.setShipping(String.valueOf((int)orderData.getShippingPrice()));
+        branchIOPayment.setRevenue(String.valueOf((int)paymentData.getPaymentAmount()));
+        branchIOPayment.setProductType(BranchSdkUtils.PRODUCTTYPE_MARKETPLACE);
+        branchIOPayment.setItemPrice(String.valueOf(orderData.getItemPrice()));
+
+        for (OrderDetail orderDetail : orderData.getOrderDetail()) {
+            HashMap<String, String> product = new HashMap<>();
+            product.put(BranchIOPayment.KEY_ID, String.valueOf(orderDetail.getProductId()));
+            product.put(BranchIOPayment.KEY_NAME, getProductName(orderDetail));
+            product.put(BranchIOPayment.KEY_PRICE, String.valueOf((int)orderDetail.getProductPrice()));
+            product.put(BranchIOPayment.KEY_QTY, String.valueOf(orderDetail.getQuantity()));
+            branchIOPayment.setProduct(product);
+        }
+
+        return branchIOPayment;
+    }
 }

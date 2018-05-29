@@ -1,11 +1,15 @@
 package com.tokopedia.tkpd.thankyou.data.mapper;
 
 import com.tokopedia.core.analytics.PurchaseTracking;
+import com.tokopedia.core.analytics.model.BranchIOPayment;
 import com.tokopedia.core.analytics.nishikino.model.Purchase;
+import com.tokopedia.core.util.BranchSdkUtils;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.tkpd.thankyou.data.pojo.digital.DigitalDataWrapper;
 import com.tokopedia.tkpd.thankyou.data.pojo.digital.response.Product;
 import com.tokopedia.tkpd.thankyou.data.pojo.digital.response.PurchaseData;
+
+import java.util.HashMap;
 
 import retrofit2.Response;
 import rx.functions.Func1;
@@ -26,8 +30,9 @@ public class DigitalTrackerMapper implements Func1<Response<DigitalDataWrapper<P
 
     @Override
     public Boolean call(Response<DigitalDataWrapper<PurchaseData>> response) {
-        if(response != null && response.body() != null && response.body().getData() != null) {
+        if (response != null && response.body() != null && response.body().getData() != null) {
             PurchaseTracking.digital(getMappedData(response.body().getData()));
+            BranchSdkUtils.sendCommerceEvent(getTrackignBranchIOData(response.body().getData()));
             return true;
         }
 
@@ -42,7 +47,7 @@ public class DigitalTrackerMapper implements Func1<Response<DigitalDataWrapper<P
         purchase.setPaymentType(data.getPaymentType());
         purchase.setPaymentStatus(data.getPaymentStatus());
         purchase.setUserId(sessionHandler.getLoginID());
-        if(isActionFieldValid(data)) {
+        if (isActionFieldValid(data)) {
             purchase.setTransactionID(data.getEcommerce().getPurchase().getActionField().getId());
             purchase.setShipping(DEFAULT_DIGITAL_SHIPPING);
             purchase.setVoucherCode(data.getEcommerce().getPurchase().getActionField().getCoupon());
@@ -50,7 +55,7 @@ public class DigitalTrackerMapper implements Func1<Response<DigitalDataWrapper<P
         }
         purchase.setCurrency(Purchase.DEFAULT_CURRENCY_VALUE);
 
-        if(isPurchaseValid(data) && data.getEcommerce().getPurchase().getProducts() != null) {
+        if (isPurchaseValid(data) && data.getEcommerce().getPurchase().getProducts() != null) {
             for (Product product : data.getEcommerce().getPurchase().getProducts()) {
                 purchase.addProduct(mapProduct(product).getProduct());
             }
@@ -77,5 +82,29 @@ public class DigitalTrackerMapper implements Func1<Response<DigitalDataWrapper<P
     private boolean isPurchaseValid(PurchaseData data) {
         return data.getEcommerce() != null
                 && data.getEcommerce().getPurchase() != null;
+    }
+
+    private BranchIOPayment getTrackignBranchIOData(PurchaseData data) {
+        BranchIOPayment branchIOPayment = new BranchIOPayment();
+
+        branchIOPayment.setPaymentId(String.valueOf(data.getPaymentId()));
+        if (isActionFieldValid(data)) {
+            branchIOPayment.setShipping(DEFAULT_DIGITAL_SHIPPING);
+            branchIOPayment.setRevenue(String.valueOf(Integer.parseInt(data.getEcommerce().getPurchase().getActionField().getRevenue())));
+            branchIOPayment.setOrderId(data.getEcommerce().getPurchase().getActionField().getId());
+        }
+
+        branchIOPayment.setProductType(BranchSdkUtils.PRODUCTTYPE_DIGITAL);
+        if (isPurchaseValid(data) && data.getEcommerce().getPurchase().getProducts() != null) {
+            for (Product product : data.getEcommerce().getPurchase().getProducts()) {
+                HashMap<String, String> localProduct = new HashMap<>();
+                localProduct.put(BranchIOPayment.KEY_ID, product.getId());
+                localProduct.put(BranchIOPayment.KEY_NAME, product.getName());
+                localProduct.put(BranchIOPayment.KEY_PRICE,String.valueOf(Integer.parseInt(product.getPrice())));
+                localProduct.put(BranchIOPayment.KEY_QTY, String.valueOf(product.getQuantity()));
+                branchIOPayment.setProduct(localProduct);
+            }
+        }
+        return branchIOPayment;
     }
 }
