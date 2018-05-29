@@ -1,0 +1,84 @@
+query image_search($image: String!, $params: String!) {
+  image_search(image: $image, params: $params) {
+    header {
+      totalData
+      totalDataText
+      processTime
+      additionalParams
+    }
+    data {
+      source
+      shareUrl
+      query
+      suggestionText {
+        text
+        query
+      }
+      redirection {
+        redirectUrl
+        departmentId
+      }
+      suggestions {
+        suggestion
+        totalData
+      }
+      suggestionInstead {
+        suggestionInstead
+        currentKeyword
+        totalData
+      }
+      catalogs {
+        id
+        name
+        price
+        priceMin
+        priceMax
+        countProduct
+        description
+        imageUrl
+        url
+        departmentID
+      }
+      products {
+        id
+        name
+        url
+        imageUrl
+        imageURL700
+        price
+        shop {
+          id
+          name
+          url
+          isGoldShop
+          isOfficial
+          location
+          city
+          reputation
+          clover
+        }
+        condition
+        departmentId
+        rating
+        countReview
+        courierCount
+        originalPrice
+        discountPercentage
+        wholeSale {
+          quantityMin
+          quantityMax
+          price
+        }
+        labels {
+            title
+            color
+        }
+        badges {
+          title
+          imageUrl
+        }
+        isFeatured
+      }
+    }
+  }
+}

@@ -1,13 +1,13 @@
 package com.tokopedia.discovery.imagesearch.domain.usecase;
 
 import android.content.Context;
-import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.text.TextUtils;
 import android.util.Base64;
 
 import com.tkpd.library.utils.ImageHandler;
+import com.tokopedia.abstraction.common.utils.GraphqlHelper;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.domain.UseCase;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
@@ -17,19 +17,18 @@ import com.tokopedia.core.network.apiservices.mojito.apis.MojitoApi;
 import com.tokopedia.core.network.entity.wishlist.WishlistCheckResult;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.discovery.R;
+import com.tokopedia.discovery.imagesearch.data.mapper.ImageProductMapper;
 import com.tokopedia.discovery.imagesearch.network.apiservice.ImageSearchService;
-import com.tokopedia.discovery.newdiscovery.data.mapper.ProductMapper;
 import com.tokopedia.discovery.newdiscovery.domain.model.ProductModel;
 import com.tokopedia.discovery.newdiscovery.domain.model.SearchResultModel;
 
-import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import retrofit2.Response;
 import rx.Observable;
@@ -42,8 +41,13 @@ import rx.functions.Func1;
 public class GetImageSearchUseCase<T> extends UseCase<SearchResultModel> {
 
 
+    private static final String QUERY_KEY = "query";
+    private static final String IMAGE_CONTENT = "image";
+    private static final String PARAMS = "params";
+    private static final String VARIABLE_KEY = "variables";
+    private static final String OPERATIONS_NAME = "operationName";
     private final MojitoApi service;
-    private ProductMapper productMapper;
+    private ImageProductMapper productMapper;
     private ImageSearchService imageSearchService;
     private Context context;
 
@@ -57,7 +61,7 @@ public class GetImageSearchUseCase<T> extends UseCase<SearchResultModel> {
     public GetImageSearchUseCase(Context context, ThreadExecutor threadExecutor,
                                  PostExecutionThread postExecutionThread,
                                  ImageSearchService imageSearchService,
-                                 ProductMapper imageProductMapper,
+                                 ImageProductMapper imageProductMapper,
                                  MojitoApi service) {
         super(threadExecutor, postExecutionThread);
         this.context = context;
@@ -71,7 +75,7 @@ public class GetImageSearchUseCase<T> extends UseCase<SearchResultModel> {
     }
 
     @Override
-    public Observable<SearchResultModel> createObservable(RequestParams requestParams) {
+    public Observable<SearchResultModel> createObservable(RequestParams params) {
         return Observable.just(imagePath)
                 .flatMap(imagePath -> {
                     File imgFile = new File(imagePath);
@@ -90,41 +94,24 @@ public class GetImageSearchUseCase<T> extends UseCase<SearchResultModel> {
                     String encodePicContent = Base64.encodeToString(byteArray,
                             Base64.NO_WRAP | Base64.NO_CLOSE);
 
-                    return imageSearchService.getApi().getImageSearchResults(getRequestPayload(context, encodePicContent,
-                            initializeSearchRequestParamForGql())).map(productMapper).flatMap(wishlistDataEnricher(getUserId()));
+                    com.tokopedia.usecase.RequestParams requestParams = com.tokopedia.usecase.RequestParams.create();
+
+                    Map<String, Object> mapContentVariable = new HashMap<>();
+                    mapContentVariable.put(IMAGE_CONTENT, encodePicContent);
+                    mapContentVariable.put(PARAMS, initializeSearchRequestParamForGql());
+
+                    requestParams.putString(QUERY_KEY, getRequestImageSearchPayload());
+                    requestParams.putObject(VARIABLE_KEY, mapContentVariable);
+                    requestParams.putObject(OPERATIONS_NAME, "image_search");
+                    return imageSearchService.getApi().getImageSearchResults(requestParams.getParameters())
+                            .map(productMapper)
+                            .flatMap(wishlistDataEnricher(getUserId()));
 
                 });
     }
 
-    private String getRequestPayload(Context context, String encodedImage, String params) {
-
-        return String.format(
-                loadRawString(context.getResources(), R.raw.image_search_query),
-                encodedImage,
-                params);
-    }
-
-    private String loadRawString(Resources resources, int resId) {
-        InputStream rawResource = resources.openRawResource(resId);
-        String content = streamToString(rawResource);
-        try {
-            rawResource.close();
-        } catch (IOException e) {
-        }
-        return content;
-    }
-
-    private String streamToString(InputStream in) {
-        String temp;
-        BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(in));
-        StringBuilder stringBuilder = new StringBuilder();
-        try {
-            while ((temp = bufferedReader.readLine()) != null) {
-                stringBuilder.append(temp + "\n");
-            }
-        } catch (IOException e) {
-        }
-        return stringBuilder.toString();
+    private String getRequestImageSearchPayload() {
+        return GraphqlHelper.loadRawString(context.getResources(), R.raw.query_image_search);
     }
 
     private Func1<SearchResultModel, Observable<SearchResultModel>> wishlistDataEnricher(final String userId) {

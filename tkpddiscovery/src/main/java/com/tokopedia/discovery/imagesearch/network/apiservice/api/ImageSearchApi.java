@@ -1,5 +1,11 @@
 package com.tokopedia.discovery.imagesearch.network.apiservice.api;
 
+import com.tokopedia.abstraction.common.data.model.response.GraphqlResponse;
+import com.tokopedia.core.network.entity.discovery.ImageSearchProductResponse;
+import com.tokopedia.core.network.entity.discovery.SearchProductResponse;
+
+import java.util.Map;
+
 import retrofit2.Response;
 import retrofit2.http.Body;
 import retrofit2.http.Headers;
@@ -13,5 +19,7 @@ import rx.Observable;
 public interface ImageSearchApi {
 
     @POST("./")
-    Observable<Response<String>> getImageSearchResults(@Body String requestBody);
+    @Headers({"Content-Type: application/json"})
+    Observable<GraphqlResponse<ImageSearchProductResponse>> getImageSearchResults(@Body Map<String, Object> requestBody);
+
 }

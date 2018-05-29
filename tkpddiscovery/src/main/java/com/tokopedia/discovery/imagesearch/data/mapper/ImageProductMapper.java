@@ -1,9 +1,10 @@
-package com.tokopedia.discovery.newdiscovery.data.mapper;
+package com.tokopedia.discovery.imagesearch.data.mapper;
 
 import android.text.TextUtils;
 
 import com.google.gson.Gson;
-import com.tkpd.library.utils.network.MessageErrorException;
+import com.tokopedia.abstraction.common.data.model.response.GraphqlResponse;
+import com.tokopedia.core.network.entity.discovery.ImageSearchProductResponse;
 import com.tokopedia.core.network.entity.discovery.SearchProductResponse;
 import com.tokopedia.core.network.exception.RuntimeHttpErrorException;
 import com.tokopedia.discovery.newdiscovery.domain.model.BadgeModel;
@@ -15,32 +16,31 @@ import com.tokopedia.discovery.newdiscovery.search.fragment.product.helper.Netwo
 import java.util.ArrayList;
 import java.util.List;
 
-import retrofit2.Response;
 import rx.functions.Func1;
 
 /**
- * Created by hangnadi on 10/5/17.
+ * Created by sachinbansal on 5/29/18.
  */
 
-public class ProductMapper implements Func1<Response<String>, SearchResultModel>{
+public class ImageProductMapper implements Func1<GraphqlResponse<ImageSearchProductResponse>, SearchResultModel> {
 
     private final Gson gson;
 
-    public ProductMapper(Gson gson) {
+    public ImageProductMapper(Gson gson) {
         this.gson = gson;
     }
 
     @Override
-    public SearchResultModel call(Response<String> response) {
-        if (response.isSuccessful()) {
-            SearchProductResponse searchProductResponse = gson.fromJson(response.body(), SearchProductResponse.class);
-            if (searchProductResponse != null) {
-                return mappingPojoIntoDomain(searchProductResponse);
-            } else {
-                throw new MessageErrorException(response.errorBody().toString());
+    public SearchResultModel call(GraphqlResponse<ImageSearchProductResponse> response) {
+        if (response != null) {
+            try {
+                ImageSearchProductResponse searchProductResponse = response.getData();
+                return mappingPojoIntoDomain(searchProductResponse.getSearchProductResponse());
+            } catch (Exception e) {
+                throw new RuntimeHttpErrorException(430);
             }
         } else {
-            throw new RuntimeHttpErrorException(response.code());
+            throw new RuntimeHttpErrorException(432);
         }
     }
 
@@ -127,3 +127,4 @@ public class ProductMapper implements Func1<Response<String>, SearchResultModel>
         return list;
     }
 }
+

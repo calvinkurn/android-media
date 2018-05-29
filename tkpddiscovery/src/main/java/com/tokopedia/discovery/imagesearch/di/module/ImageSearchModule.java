@@ -2,11 +2,13 @@ package com.tokopedia.discovery.imagesearch.di.module;
 
 import android.content.Context;
 
+import com.google.gson.Gson;
 import com.tokopedia.core.base.di.qualifier.ApplicationContext;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.core.network.apiservices.mojito.apis.MojitoApi;
 import com.tokopedia.core.network.di.qualifier.MojitoGetWishlistQualifier;
+import com.tokopedia.discovery.imagesearch.data.mapper.ImageProductMapper;
 import com.tokopedia.discovery.imagesearch.domain.usecase.GetImageSearchUseCase;
 import com.tokopedia.discovery.imagesearch.network.apiservice.ImageSearchService;
 import com.tokopedia.discovery.imagesearch.search.ImageSearchPresenter;
@@ -22,7 +24,7 @@ import dagger.Provides;
  * Created by sachinbansal on 1/10/18.
  */
 
-@Module(includes = ProductModule.class)
+@Module
 public class ImageSearchModule {
 
     @Provides
@@ -36,10 +38,15 @@ public class ImageSearchModule {
             ThreadExecutor threadExecutor,
             PostExecutionThread postExecutionThread,
             ImageSearchService imageSearchService,
-            ProductMapper productMapper,
+            ImageProductMapper imageProductMapper,
             @MojitoGetWishlistQualifier MojitoApi service) {
         return new GetImageSearchUseCase(context, threadExecutor,
-                postExecutionThread, imageSearchService, productMapper, service);
+                postExecutionThread, imageSearchService, imageProductMapper , service);
+    }
+
+    @Provides
+    ImageProductMapper imageProductMapper(Gson gson) {
+        return new ImageProductMapper(gson);
     }
 
     @SearchScope
