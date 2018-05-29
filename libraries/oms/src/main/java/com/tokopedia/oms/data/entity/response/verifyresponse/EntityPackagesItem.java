@@ -21,7 +21,7 @@ public class EntityPackagesItem {
     private String areaId;
     @SerializedName("base_price")
     @Expose
-    private int basePrice;
+    private Integer basePrice;
     @SerializedName("city")
     @Expose
     private String city;
@@ -45,7 +45,7 @@ public class EntityPackagesItem {
     private String errorMessage;
     @SerializedName("group_id")
     @Expose
-    private int groupId;
+    private Integer groupId;
     @SerializedName("group_name")
     @Expose
     private String groupName;
@@ -57,19 +57,19 @@ public class EntityPackagesItem {
     private String invoiceStatus;
     @SerializedName("package_id")
     @Expose
-    private int packageId;
+    private Integer packageId;
     @SerializedName("package_price")
     @Expose
-    private int packagePrice;
+    private Integer packagePrice;
     @SerializedName("payment_type")
     @Expose
     private String paymentType;
     @SerializedName("price_per_seat")
     @Expose
-    private int pricePerSeat;
+    private Integer pricePerSeat;
     @SerializedName("product_id")
     @Expose
-    private int productId;
+    private Integer productId;
     @SerializedName("provider_group_id")
     @Expose
     private String providerGroupId;
@@ -93,10 +93,10 @@ public class EntityPackagesItem {
     private String providerUnhashTicketId;
     @SerializedName("quantity")
     @Expose
-    private int quantity;
+    private Integer quantity;
     @SerializedName("schedule_id")
     @Expose
-    private int scheduleId;
+    private Integer scheduleId;
     @SerializedName("seat_ids")
     @Expose
     private List<String> seatIds = null;
@@ -111,13 +111,13 @@ public class EntityPackagesItem {
     private String showDate;
     @SerializedName("tkp_invoice_id")
     @Expose
-    private int tkpInvoiceId;
+    private Integer tkpInvoiceId;
     @SerializedName("tkp_invoice_item_id")
     @Expose
-    private int tkpInvoiceItemId;
+    private Integer tkpInvoiceItemId;
     @SerializedName("total_ticket_count")
     @Expose
-    private int totalTicketCount;
+    private Integer totalTicketCount;
     @SerializedName("venue_detail")
     @Expose
     private String venueDetail;
@@ -160,11 +160,11 @@ public class EntityPackagesItem {
         this.areaId = areaId;
     }
 
-    public int getBasePrice() {
+    public Integer getBasePrice() {
         return basePrice;
     }
 
-    public void setBasePrice(int basePrice) {
+    public void setBasePrice(Integer basePrice) {
         this.basePrice = basePrice;
     }
 
@@ -232,11 +232,11 @@ public class EntityPackagesItem {
         this.errorMessage = errorMessage;
     }
 
-    public int getGroupId() {
+    public Integer getGroupId() {
         return groupId;
     }
 
-    public void setGroupId(int groupId) {
+    public void setGroupId(Integer groupId) {
         this.groupId = groupId;
     }
 
@@ -264,19 +264,19 @@ public class EntityPackagesItem {
         this.invoiceStatus = invoiceStatus;
     }
 
-    public int getPackageId() {
+    public Integer getPackageId() {
         return packageId;
     }
 
-    public void setPackageId(int packageId) {
+    public void setPackageId(Integer packageId) {
         this.packageId = packageId;
     }
 
-    public int getPackagePrice() {
+    public Integer getPackagePrice() {
         return packagePrice;
     }
 
-    public void setPackagePrice(int packagePrice) {
+    public void setPackagePrice(Integer packagePrice) {
         this.packagePrice = packagePrice;
     }
 
@@ -288,19 +288,19 @@ public class EntityPackagesItem {
         this.paymentType = paymentType;
     }
 
-    public int getPricePerSeat() {
+    public Integer getPricePerSeat() {
         return pricePerSeat;
     }
 
-    public void setPricePerSeat(int pricePerSeat) {
+    public void setPricePerSeat(Integer pricePerSeat) {
         this.pricePerSeat = pricePerSeat;
     }
 
-    public int getProductId() {
+    public Integer getProductId() {
         return productId;
     }
 
-    public void setProductId(int productId) {
+    public void setProductId(Integer productId) {
         this.productId = productId;
     }
 
@@ -360,19 +360,19 @@ public class EntityPackagesItem {
         this.providerUnhashTicketId = providerUnhashTicketId;
     }
 
-    public int getQuantity() {
+    public Integer getQuantity() {
         return quantity;
     }
 
-    public void setQuantity(int quantity) {
+    public void setQuantity(Integer quantity) {
         this.quantity = quantity;
     }
 
-    public int getScheduleId() {
+    public Integer getScheduleId() {
         return scheduleId;
     }
 
-    public void setScheduleId(int scheduleId) {
+    public void setScheduleId(Integer scheduleId) {
         this.scheduleId = scheduleId;
     }
 
@@ -408,27 +408,27 @@ public class EntityPackagesItem {
         this.showDate = showDate;
     }
 
-    public int getTkpInvoiceId() {
+    public Integer getTkpInvoiceId() {
         return tkpInvoiceId;
     }
 
-    public void setTkpInvoiceId(int tkpInvoiceId) {
+    public void setTkpInvoiceId(Integer tkpInvoiceId) {
         this.tkpInvoiceId = tkpInvoiceId;
     }
 
-    public int getTkpInvoiceItemId() {
+    public Integer getTkpInvoiceItemId() {
         return tkpInvoiceItemId;
     }
 
-    public void setTkpInvoiceItemId(int tkpInvoiceItemId) {
+    public void setTkpInvoiceItemId(Integer tkpInvoiceItemId) {
         this.tkpInvoiceItemId = tkpInvoiceItemId;
     }
 
-    public int getTotalTicketCount() {
+    public Integer getTotalTicketCount() {
         return totalTicketCount;
     }
 
-    public void setTotalTicketCount(int totalTicketCount) {
+    public void setTotalTicketCount(Integer totalTicketCount) {
         this.totalTicketCount = totalTicketCount;
     }
 

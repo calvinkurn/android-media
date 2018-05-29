@@ -8,22 +8,22 @@ import com.google.gson.annotations.SerializedName;
 public class CartItem implements Parcelable {
 
 	@SerializedName("quantity")
-	private int quantity;
+	private Integer quantity;
 
 	@SerializedName("configuration")
 	private Configuration configuration;
 
 	@SerializedName("product_id")
-	private int productId;
+	private Integer productId;
 
 	@SerializedName("meta_data")
 	private MetaData metaData;
 
-	public void setQuantity(int quantity){
+	public void setQuantity(Integer quantity){
 		this.quantity = quantity;
 	}
 
-	public int getQuantity(){
+	public Integer getQuantity(){
 		return quantity;
 	}
 
@@ -35,11 +35,11 @@ public class CartItem implements Parcelable {
 		return configuration;
 	}
 
-	public void setProductId(int productId){
+	public void setProductId(Integer productId){
 		this.productId = productId;
 	}
 
-	public int getProductId(){
+	public Integer getProductId(){
 		return productId;
 	}
 

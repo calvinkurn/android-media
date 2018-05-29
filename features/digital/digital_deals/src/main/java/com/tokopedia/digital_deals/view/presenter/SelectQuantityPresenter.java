@@ -1,5 +1,6 @@
 package com.tokopedia.digital_deals.view.presenter;
 
+import android.content.Intent;
 import android.util.Log;
 
 import com.google.gson.Gson;
@@ -7,10 +8,15 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
+import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.network.NetworkErrorHelper;
+import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.digital_deals.view.activity.CheckoutActivity;
 import com.tokopedia.digital_deals.view.contractor.SelectQuantityContract;
+import com.tokopedia.digital_deals.view.viewmodel.DealsDetailsViewModel;
 import com.tokopedia.digital_deals.view.viewmodel.PackageViewModel;
 import com.tokopedia.oms.data.entity.response.verifyresponse.VerifyCartResponse;
+import com.tokopedia.oms.data.entity.response.verifyresponse.VerifyMyCartResponse;
 import com.tokopedia.oms.domain.model.request.cart.CartItem;
 import com.tokopedia.oms.domain.model.request.cart.CartItems;
 import com.tokopedia.oms.domain.model.request.cart.Configuration;
@@ -33,6 +39,8 @@ public class SelectQuantityPresenter
 
     private PostVerifyCartUseCase postVerifyCartUseCase;
     private String promocode="";
+    private PackageViewModel checkoutData;
+    private DealsDetailsViewModel dealDetails;
 
 
     @Inject
@@ -41,8 +49,9 @@ public class SelectQuantityPresenter
     }
 
     @Override
-    public void initialize() {
-
+    public void initialize(DealsDetailsViewModel detailsViewModel) {
+        this.dealDetails=detailsViewModel;
+        getView().renderFromDetails(dealDetails);
     }
 
     @Override
@@ -50,6 +59,16 @@ public class SelectQuantityPresenter
 
     }
 
+    @Override
+    public void onActivityResult(int requestCode) {
+        if (requestCode == getView().getRequestCode()) {
+            if (SessionHandler.isV4Login(getView().getActivity())) {
+                getProfile();
+            } else {
+                getView().hideProgressBar();
+            }
+        }
+    }
 
 
     private JsonObject convertPackageToCartItem(PackageViewModel packageViewModel) {
@@ -70,7 +89,7 @@ public class SelectQuantityPresenter
         cartItem.setMetaData(meta);
         cartItem.setConfiguration(config);
         cartItem.setQuantity(packageViewModel.getSelectedQuantity());
-        cartItem.setProductId(packageViewModel.getProductId());
+        cartItem.setProductId(packageViewModel.getDigitalProductID());
 
 
         cartItems.add(cartItem);
@@ -84,12 +103,29 @@ public class SelectQuantityPresenter
     }
 
 
+    private void getProfile() {
+        getView().showProgressBar();
+        if (!SessionHandler.isV4Login(getView().getActivity())) {
+            Intent intent = ((TkpdCoreRouter) getView().getActivity().getApplication()).
+                    getLoginIntent(getView().getActivity());
+            getView().navigateToActivityRequest(intent, getView().getRequestCode());
+        } else {
+            verifyMyCart();
+        }
+
+    }
 
     public void verifyCart(PackageViewModel checkoutData) {
+        this.checkoutData=checkoutData;
+        getProfile();
+
+    }
+
+    public void verifyMyCart(){
         getView().showProgressBar();
         final RequestParams params = RequestParams.create();
         params.putObject(Utils.Constants.CHECKOUTDATA, convertPackageToCartItem(checkoutData));
-        postVerifyCartUseCase.execute(params, new Subscriber<VerifyCartResponse>() {
+        postVerifyCartUseCase.execute(params, new Subscriber<VerifyMyCartResponse>() {
             @Override
             public void onCompleted() {
 
@@ -110,8 +146,16 @@ public class SelectQuantityPresenter
             }
 
             @Override
-            public void onNext(VerifyCartResponse verifyCartResponse) {
+            public void onNext(VerifyMyCartResponse verifyCartResponse) {
                 Log.d("ReviewTicketPresenter", verifyCartResponse.toString());
+
+
+                Intent intent=new Intent(getView().getActivity(), CheckoutActivity.class);
+                intent.putExtra(CheckoutDealPresenter.EXTRA_PACKAGEVIEWMODEL, checkoutData);
+                intent.putExtra(CheckoutDealPresenter.EXTRA_CART, verifyCartResponse.getCart().toString());
+                intent.putExtra(CheckoutDealPresenter.EXTRA_DEALDETAIL, dealDetails);
+                getView().navigateToActivity(intent);
+
 
 //                if (!isPromoCodeCase) {
 //                    if ("failure".equals(verifyCartResponse.getStatus().getResult())) {

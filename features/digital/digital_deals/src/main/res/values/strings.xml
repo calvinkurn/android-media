@@ -62,6 +62,14 @@
     <string name="select_number_of_voucher">Pilih Jumlah Voucher</string>
     <string name="quantity_of_deals">%d</string>
     <string name="number_of_vouchers">%d x Vouchers</string>
+    <string name="text_voucher_code">Kode Voucher:\u0020</string>
+    <string name="cashback_amount">Potensi Cashback Tokocash sebesar %1$s</string>
+    <string name="title_activity_checkout">Checkout</string>
+    <string name="voucher_delivery_destination">Tujuan pengiriman Voucher</string>
+    <string name="email">Email</string>
+    <string name="ubah">Ubah</string>
+    <string name="please_enter_email">Mohon isi e-mail Anda</string>
+    <string name="pricing_details">Rincian Harga</string>
 
 
 </resources>

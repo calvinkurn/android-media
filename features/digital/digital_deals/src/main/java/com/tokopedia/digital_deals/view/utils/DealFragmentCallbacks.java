@@ -1,6 +1,5 @@
 package com.tokopedia.digital_deals.view.utils;
 
-import com.tokopedia.digital_deals.view.viewmodel.CategoryItemsViewModel;
 import com.tokopedia.digital_deals.view.viewmodel.DealsDetailsViewModel;
 import com.tokopedia.digital_deals.view.viewmodel.OutletViewModel;
 

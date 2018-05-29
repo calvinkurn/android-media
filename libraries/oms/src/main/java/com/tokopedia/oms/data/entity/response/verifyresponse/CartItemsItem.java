@@ -8,10 +8,10 @@ public class CartItemsItem{
 	private Product product;
 
 	@SerializedName("quantity")
-	private int quantity;
+	private Integer quantity;
 
 	@SerializedName("total_price")
-	private int totalPrice;
+	private Integer totalPrice;
 
 	@SerializedName("configuration")
 	private Configuration configuration;
@@ -23,7 +23,7 @@ public class CartItemsItem{
 	private String imageUrl;
 
 	@SerializedName("mrp")
-	private int mrp;
+	private Integer mrp;
 
 	@SerializedName("title")
 	private String title;
@@ -32,22 +32,22 @@ public class CartItemsItem{
 	private String productName;
 
 	@SerializedName("fulfillment_service_id")
-	private int fulfillmentServiceId;
+	private Integer fulfillmentServiceId;
 
 	@SerializedName("discounted_price")
-	private int discountedPrice;
+	private Integer discountedPrice;
 
 	@SerializedName("display_sequnce")
-	private int displaySequnce;
+	private Integer displaySequnce;
 
 	@SerializedName("category_id")
-	private int categoryId;
+	private Integer categoryId;
 
 	@SerializedName("price")
-	private int price;
+	private Integer price;
 
 	@SerializedName("product_id")
-	private int productId;
+	private Integer productId;
 
 	@SerializedName("meta_data")
 	private MetaData metaData;
@@ -60,19 +60,19 @@ public class CartItemsItem{
 		return product;
 	}
 
-	public void setQuantity(int quantity){
+	public void setQuantity(Integer quantity){
 		this.quantity = quantity;
 	}
 
-	public int getQuantity(){
+	public Integer getQuantity(){
 		return quantity;
 	}
 
-	public void setTotalPrice(int totalPrice){
+	public void setTotalPrice(Integer totalPrice){
 		this.totalPrice = totalPrice;
 	}
 
-	public int getTotalPrice(){
+	public Integer getTotalPrice(){
 		return totalPrice;
 	}
 
@@ -100,11 +100,11 @@ public class CartItemsItem{
 		return imageUrl;
 	}
 
-	public void setMrp(int mrp){
+	public void setMrp(Integer mrp){
 		this.mrp = mrp;
 	}
 
-	public int getMrp(){
+	public Integer getMrp(){
 		return mrp;
 	}
 
@@ -124,51 +124,51 @@ public class CartItemsItem{
 		return productName;
 	}
 
-	public void setFulfillmentServiceId(int fulfillmentServiceId){
+	public void setFulfillmentServiceId(Integer fulfillmentServiceId){
 		this.fulfillmentServiceId = fulfillmentServiceId;
 	}
 
-	public int getFulfillmentServiceId(){
+	public Integer getFulfillmentServiceId(){
 		return fulfillmentServiceId;
 	}
 
-	public void setDiscountedPrice(int discountedPrice){
+	public void setDiscountedPrice(Integer discountedPrice){
 		this.discountedPrice = discountedPrice;
 	}
 
-	public int getDiscountedPrice(){
+	public Integer getDiscountedPrice(){
 		return discountedPrice;
 	}
 
-	public void setDisplaySequnce(int displaySequnce){
+	public void setDisplaySequnce(Integer displaySequnce){
 		this.displaySequnce = displaySequnce;
 	}
 
-	public int getDisplaySequnce(){
+	public Integer getDisplaySequnce(){
 		return displaySequnce;
 	}
 
-	public void setCategoryId(int categoryId){
+	public void setCategoryId(Integer categoryId){
 		this.categoryId = categoryId;
 	}
 
-	public int getCategoryId(){
+	public Integer getCategoryId(){
 		return categoryId;
 	}
 
-	public void setPrice(int price){
+	public void setPrice(Integer price){
 		this.price = price;
 	}
 
-	public int getPrice(){
+	public Integer getPrice(){
 		return price;
 	}
 
-	public void setProductId(int productId){
+	public void setProductId(Integer productId){
 		this.productId = productId;
 	}
 
-	public int getProductId(){
+	public Integer getProductId(){
 		return productId;
 	}
 

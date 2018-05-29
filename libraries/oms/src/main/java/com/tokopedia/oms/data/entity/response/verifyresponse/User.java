@@ -5,10 +5,10 @@ import com.google.gson.annotations.SerializedName;
 public class User{
 
 	@SerializedName("completion")
-	private int completion;
+	private Integer completion;
 
 	@SerializedName("gender")
-	private int gender;
+	private Integer gender;
 
 	@SerializedName("phone_masked")
 	private String phoneMasked;
@@ -26,7 +26,7 @@ public class User{
 	private String clientId;
 
 	@SerializedName("remember")
-	private int remember;
+	private Integer remember;
 
 	@SerializedName("access_token")
 	private String accessToken;
@@ -41,7 +41,7 @@ public class User{
 	private boolean phoneVerified;
 
 	@SerializedName("user_id")
-	private int userId;
+	private Integer userId;
 
 	@SerializedName("phone")
 	private String phone;
@@ -62,24 +62,24 @@ public class User{
 	private String email;
 
 	@SerializedName("age")
-	private int age;
+	private Integer age;
 
 	@SerializedName("status")
-	private int status;
+	private Integer status;
 
-	public void setCompletion(int completion){
+	public void setCompletion(Integer completion){
 		this.completion = completion;
 	}
 
-	public int getCompletion(){
+	public Integer getCompletion(){
 		return completion;
 	}
 
-	public void setGender(int gender){
+	public void setGender(Integer gender){
 		this.gender = gender;
 	}
 
-	public int getGender(){
+	public Integer getGender(){
 		return gender;
 	}
 
@@ -123,11 +123,11 @@ public class User{
 		return clientId;
 	}
 
-	public void setRemember(int remember){
+	public void setRemember(Integer remember){
 		this.remember = remember;
 	}
 
-	public int getRemember(){
+	public Integer getRemember(){
 		return remember;
 	}
 
@@ -163,11 +163,11 @@ public class User{
 		return phoneVerified;
 	}
 
-	public void setUserId(int userId){
+	public void setUserId(Integer userId){
 		this.userId = userId;
 	}
 
-	public int getUserId(){
+	public Integer getUserId(){
 		return userId;
 	}
 
@@ -219,19 +219,19 @@ public class User{
 		return email;
 	}
 
-	public void setAge(int age){
+	public void setAge(Integer age){
 		this.age = age;
 	}
 
-	public int getAge(){
+	public Integer getAge(){
 		return age;
 	}
 
-	public void setStatus(int status){
+	public void setStatus(Integer status){
 		this.status = status;
 	}
 
-	public int getStatus(){
+	public Integer getStatus(){
 		return status;
 	}
 

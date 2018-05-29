@@ -8,15 +8,15 @@ import com.google.gson.annotations.SerializedName;
 public class TaxPerQuantityItem implements Parcelable {
 
 	@SerializedName("entertaiment")
-	private int entertaiment;
+	private Integer entertaiment;
 	@SerializedName("service")
-	private int service;
+	private Integer service;
 
-	public void setEntertaiment(int entertaiment){
+	public void setEntertaiment(Integer entertaiment){
 		this.entertaiment = entertaiment;
 	}
 
-	public int getEntertaiment(){
+	public Integer getEntertaiment(){
 		return entertaiment;
 	}
 

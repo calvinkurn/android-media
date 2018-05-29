@@ -467,4 +467,9 @@ public class Utils {
         snackbar.show();
     }
 
+    public static class Constants {
+
+        public final static String DEALS = "deals";
+    }
+
 }

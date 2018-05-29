@@ -8,7 +8,7 @@ public class Status{
 	private String result;
 
 	@SerializedName("code")
-	private int code;
+	private Integer code;
 
 	@SerializedName("message")
 	private Message message;
@@ -21,11 +21,11 @@ public class Status{
 		return result;
 	}
 
-	public void setCode(int code){
+	public void setCode(Integer code){
 		this.code = code;
 	}
 
-	public int getCode(){
+	public Integer getCode(){
 		return code;
 	}
 

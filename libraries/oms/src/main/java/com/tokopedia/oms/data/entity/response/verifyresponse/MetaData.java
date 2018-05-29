@@ -10,25 +10,25 @@ public class MetaData{
 	private String endDate;
 
 	@SerializedName("entity_product_id")
-	private int entityProductId;
+	private Integer entityProductId;
 
 	@SerializedName("entity_provider_id")
-	private int entityProviderId;
+	private Integer entityProviderId;
 
 	@SerializedName("entity_category_id")
-	private int entityCategoryId;
+	private Integer entityCategoryId;
 
 	@SerializedName("tax_per_quantity")
 	private List<Object> taxPerQuantity;
 
 	@SerializedName("use_pdf")
-	private int usePdf;
+	private Integer usePdf;
 
 	@SerializedName("total_other_charges")
-	private int totalOtherCharges;
+	private Integer totalOtherCharges;
 
 	@SerializedName("total_ticket_price")
-	private int totalTicketPrice;
+	private Integer totalTicketPrice;
 
 	@SerializedName("other_charges")
 	private List<OtherChargesItem> otherCharges;
@@ -40,10 +40,10 @@ public class MetaData{
 	private String links;
 
 	@SerializedName("total_tax_amount")
-	private int totalTaxAmount;
+	private Integer totalTaxAmount;
 
 	@SerializedName("entity_schedule_id")
-	private int entityScheduleId;
+	private Integer entityScheduleId;
 
 	@SerializedName("entity_packages")
 	private List<EntityPackagesItem> entityPackages;
@@ -52,7 +52,7 @@ public class MetaData{
 	private String startDate;
 
 	@SerializedName("total_ticket_count")
-	private int totalTicketCount;
+	private Integer totalTicketCount;
 
 	@SerializedName("entity_end_time")
 	private String entityEndTime;
@@ -70,10 +70,10 @@ public class MetaData{
 	private String entityCategoryName;
 
 	@SerializedName("entity_group_id")
-	private int entityGroupId;
+	private Integer entityGroupId;
 
 	@SerializedName("entity_invoice_id")
-	private int entityInvoiceId;
+	private Integer entityInvoiceId;
 
 	@SerializedName("entity_address")
 	private EntityAddress entityAddress;
@@ -89,27 +89,27 @@ public class MetaData{
 		return endDate;
 	}
 
-	public void setEntityProductId(int entityProductId){
+	public void setEntityProductId(Integer entityProductId){
 		this.entityProductId = entityProductId;
 	}
 
-	public int getEntityProductId(){
+	public Integer getEntityProductId(){
 		return entityProductId;
 	}
 
-	public void setEntityProviderId(int entityProviderId){
+	public void setEntityProviderId(Integer entityProviderId){
 		this.entityProviderId = entityProviderId;
 	}
 
-	public int getEntityProviderId(){
+	public Integer getEntityProviderId(){
 		return entityProviderId;
 	}
 
-	public void setEntityCategoryId(int entityCategoryId){
+	public void setEntityCategoryId(Integer entityCategoryId){
 		this.entityCategoryId = entityCategoryId;
 	}
 
-	public int getEntityCategoryId(){
+	public Integer getEntityCategoryId(){
 		return entityCategoryId;
 	}
 
@@ -121,27 +121,27 @@ public class MetaData{
 		return taxPerQuantity;
 	}
 
-	public void setUsePdf(int usePdf){
+	public void setUsePdf(Integer usePdf){
 		this.usePdf = usePdf;
 	}
 
-	public int getUsePdf(){
+	public Integer getUsePdf(){
 		return usePdf;
 	}
 
-	public void setTotalOtherCharges(int totalOtherCharges){
+	public void setTotalOtherCharges(Integer totalOtherCharges){
 		this.totalOtherCharges = totalOtherCharges;
 	}
 
-	public int getTotalOtherCharges(){
+	public Integer getTotalOtherCharges(){
 		return totalOtherCharges;
 	}
 
-	public void setTotalTicketPrice(int totalTicketPrice){
+	public void setTotalTicketPrice(Integer totalTicketPrice){
 		this.totalTicketPrice = totalTicketPrice;
 	}
 
-	public int getTotalTicketPrice(){
+	public Integer getTotalTicketPrice(){
 		return totalTicketPrice;
 	}
 
@@ -169,19 +169,19 @@ public class MetaData{
 		return links;
 	}
 
-	public void setTotalTaxAmount(int totalTaxAmount){
+	public void setTotalTaxAmount(Integer totalTaxAmount){
 		this.totalTaxAmount = totalTaxAmount;
 	}
 
-	public int getTotalTaxAmount(){
+	public Integer getTotalTaxAmount(){
 		return totalTaxAmount;
 	}
 
-	public void setEntityScheduleId(int entityScheduleId){
+	public void setEntityScheduleId(Integer entityScheduleId){
 		this.entityScheduleId = entityScheduleId;
 	}
 
-	public int getEntityScheduleId(){
+	public Integer getEntityScheduleId(){
 		return entityScheduleId;
 	}
 
@@ -201,11 +201,11 @@ public class MetaData{
 		return startDate;
 	}
 
-	public void setTotalTicketCount(int totalTicketCount){
+	public void setTotalTicketCount(Integer totalTicketCount){
 		this.totalTicketCount = totalTicketCount;
 	}
 
-	public int getTotalTicketCount(){
+	public Integer getTotalTicketCount(){
 		return totalTicketCount;
 	}
 
@@ -249,19 +249,19 @@ public class MetaData{
 		return entityCategoryName;
 	}
 
-	public void setEntityGroupId(int entityGroupId){
+	public void setEntityGroupId(Integer entityGroupId){
 		this.entityGroupId = entityGroupId;
 	}
 
-	public int getEntityGroupId(){
+	public Integer getEntityGroupId(){
 		return entityGroupId;
 	}
 
-	public void setEntityInvoiceId(int entityInvoiceId){
+	public void setEntityInvoiceId(Integer entityInvoiceId){
 		this.entityInvoiceId = entityInvoiceId;
 	}
 
-	public int getEntityInvoiceId(){
+	public Integer getEntityInvoiceId(){
 		return entityInvoiceId;
 	}
 

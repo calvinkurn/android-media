@@ -7,7 +7,7 @@ import java.util.List;
 public class Cart {
 
     @SerializedName("total_price")
-    private int totalPrice;
+    private Integer totalPrice;
 
     @SerializedName("promocode_success_message")
     private String promocodeSuccessMessage;
@@ -19,10 +19,10 @@ public class Cart {
     private String promocodeFailureMessage;
 
     @SerializedName("count")
-    private int count;
+    private Integer count;
 
     @SerializedName("total_conv_fee")
-    private int totalConvFee;
+    private Integer totalConvFee;
 
     @SerializedName("promocode")
     private String promocode;
@@ -34,10 +34,10 @@ public class Cart {
     private String promocodeStatus;
 
     @SerializedName("promocode_cashback")
-    private int promocodeCashback;
+    private Integer promocodeCashback;
 
     @SerializedName("promocode_discount")
-    private int promocodeDiscount;
+    private Integer promocodeDiscount;
 
     @SerializedName("promocode_is_coupon")
     private boolean promocodeIsCoupon;
@@ -46,16 +46,16 @@ public class Cart {
     private String errorCode;
 
     @SerializedName("grand_total")
-    private int grandTotal;
+    private Integer grandTotal;
 
     @SerializedName("user")
     private User user;
 
-    public void setTotalPrice(int totalPrice) {
+    public void setTotalPrice(Integer totalPrice) {
         this.totalPrice = totalPrice;
     }
 
-    public int getTotalPrice() {
+    public Integer getTotalPrice() {
         return totalPrice;
     }
 
@@ -83,19 +83,19 @@ public class Cart {
         return promocodeFailureMessage;
     }
 
-    public void setCount(int count) {
+    public void setCount(Integer count) {
         this.count = count;
     }
 
-    public int getCount() {
+    public Integer getCount() {
         return count;
     }
 
-    public void setTotalConvFee(int totalConvFee) {
+    public void setTotalConvFee(Integer totalConvFee) {
         this.totalConvFee = totalConvFee;
     }
 
-    public int getTotalConvFee() {
+    public Integer getTotalConvFee() {
         return totalConvFee;
     }
 
@@ -123,15 +123,15 @@ public class Cart {
         return promocodeStatus;
     }
 
-    public void setPromocodeCashback(int promocodeCashback) {
+    public void setPromocodeCashback(Integer promocodeCashback) {
         this.promocodeCashback = promocodeCashback;
     }
 
-    public int getPromocodeCashback() {
+    public Integer getPromocodeCashback() {
         return promocodeCashback;
     }
 
-    public void setPromocodeDiscount(int promocodeDiscount) {
+    public void setPromocodeDiscount(Integer promocodeDiscount) {
         this.promocodeDiscount = promocodeDiscount;
     }
 
@@ -143,7 +143,7 @@ public class Cart {
         this.promocodeIsCoupon = promocodeIsCoupon;
     }
 
-    public int getPromocodeDiscount() {
+    public Integer getPromocodeDiscount() {
         return promocodeDiscount;
     }
 
@@ -155,11 +155,11 @@ public class Cart {
         return errorCode;
     }
 
-    public void setGrandTotal(int grandTotal) {
+    public void setGrandTotal(Integer grandTotal) {
         this.grandTotal = grandTotal;
     }
 
-    public int getGrandTotal() {
+    public Integer getGrandTotal() {
         return grandTotal;
     }
 

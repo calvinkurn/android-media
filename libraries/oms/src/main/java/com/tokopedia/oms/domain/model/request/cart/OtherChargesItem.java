@@ -8,13 +8,13 @@ import com.google.gson.annotations.SerializedName;
 public class OtherChargesItem implements Parcelable {
 
 	@SerializedName("conv_fee")
-	private int convFee;
+	private Integer convFee;
 
-	public void setConvFee(int convFee){
+	public void setConvFee(Integer convFee){
 		this.convFee = convFee;
 	}
 
-	public int getConvFee(){
+	public Integer getConvFee(){
 		return convFee;
 	}
 

@@ -11,7 +11,7 @@ import java.util.List;
 public class MetaData implements Parcelable {
 
 	@SerializedName("entity_product_id")
-	private int entityProductId;
+	private Integer entityProductId;
 
 	@SerializedName("entity_end_time")
 	private String entityEndTime;
@@ -20,7 +20,7 @@ public class MetaData implements Parcelable {
 	private String entityStartTime;
 
 	@SerializedName("entity_category_id")
-	private int entityCategoryId;
+	private Integer entityCategoryId;
 
 	@SerializedName("city_searched")
 	private String citySearched;
@@ -29,19 +29,19 @@ public class MetaData implements Parcelable {
 	private List<TaxPerQuantityItem> taxPerQuantity;
 
 	@SerializedName("total_other_charges")
-	private int totalOtherCharges;
+	private Integer totalOtherCharges;
 
 	@SerializedName("entity_passengers")
 	private List<EntityPassengerItem> entityPassengers;
 
 	@SerializedName("total_ticket_price")
-	private int totalTicketPrice;
+	private Integer totalTicketPrice;
 
 	@SerializedName("entity_category_name")
 	private String entityCategoryName;
 
 	@SerializedName("entity_group_id")
-	private int entityGroupId;
+	private Integer entityGroupId;
 
 	@SerializedName("other_charges")
 	private List<OtherChargesItem> otherCharges;
@@ -50,25 +50,25 @@ public class MetaData implements Parcelable {
 	private EntityAddress entityAddress;
 
 	@SerializedName("total_tax_amount")
-	private int totalTaxAmount;
+	private Integer totalTaxAmount;
 
 	@SerializedName("entity_image")
 	private String entityImage;
 
 	@SerializedName("entity_schedule_id")
-	private int entityScheduleId;
+	private Integer entityScheduleId;
 
 	@SerializedName("entity_packages")
 	private List<EntityPackageItem> entityPackages;
 
 	@SerializedName("total_ticket_count")
-	private int totalTicketCount;
+	private Integer totalTicketCount;
 
 	public void setEntityProductId(int entityProductId){
 		this.entityProductId = entityProductId;
 	}
 
-	public int getEntityProductId(){
+	public Integer getEntityProductId(){
 		return entityProductId;
 	}
 
@@ -88,11 +88,11 @@ public class MetaData implements Parcelable {
 		return entityStartTime;
 	}
 
-	public void setEntityCategoryId(int entityCategoryId){
+	public void setEntityCategoryId(Integer entityCategoryId){
 		this.entityCategoryId = entityCategoryId;
 	}
 
-	public int getEntityCategoryId(){
+	public Integer getEntityCategoryId(){
 		return entityCategoryId;
 	}
 
@@ -112,11 +112,11 @@ public class MetaData implements Parcelable {
 		return taxPerQuantity;
 	}
 
-	public void setTotalOtherCharges(int totalOtherCharges){
+	public void setTotalOtherCharges(Integer totalOtherCharges){
 		this.totalOtherCharges = totalOtherCharges;
 	}
 
-	public int getTotalOtherCharges(){
+	public Integer getTotalOtherCharges(){
 		return totalOtherCharges;
 	}
 
@@ -128,11 +128,11 @@ public class MetaData implements Parcelable {
 		return entityPassengers;
 	}
 
-	public void setTotalTicketPrice(int totalTicketPrice){
+	public void setTotalTicketPrice(Integer totalTicketPrice){
 		this.totalTicketPrice = totalTicketPrice;
 	}
 
-	public int getTotalTicketPrice(){
+	public Integer getTotalTicketPrice(){
 		return totalTicketPrice;
 	}
 
@@ -144,11 +144,11 @@ public class MetaData implements Parcelable {
 		return entityCategoryName;
 	}
 
-	public void setEntityGroupId(int entityGroupId){
+	public void setEntityGroupId(Integer entityGroupId){
 		this.entityGroupId = entityGroupId;
 	}
 
-	public int getEntityGroupId(){
+	public Integer getEntityGroupId(){
 		return entityGroupId;
 	}
 
@@ -168,11 +168,11 @@ public class MetaData implements Parcelable {
 		return entityAddress;
 	}
 
-	public void setTotalTaxAmount(int totalTaxAmount){
+	public void setTotalTaxAmount(Integer totalTaxAmount){
 		this.totalTaxAmount = totalTaxAmount;
 	}
 
-	public int getTotalTaxAmount(){
+	public Integer getTotalTaxAmount(){
 		return totalTaxAmount;
 	}
 
@@ -184,11 +184,11 @@ public class MetaData implements Parcelable {
 		return entityImage;
 	}
 
-	public void setEntityScheduleId(int entityScheduleId){
+	public void setEntityScheduleId(Integer entityScheduleId){
 		this.entityScheduleId = entityScheduleId;
 	}
 
-	public int getEntityScheduleId(){
+	public Integer getEntityScheduleId(){
 		return entityScheduleId;
 	}
 
@@ -200,36 +200,36 @@ public class MetaData implements Parcelable {
 		return entityPackages;
 	}
 
-	public void setTotalTicketCount(int totalTicketCount){
+	public void setTotalTicketCount(Integer totalTicketCount){
 		this.totalTicketCount = totalTicketCount;
 	}
 
-	public int getTotalTicketCount(){
+	public Integer getTotalTicketCount(){
 		return totalTicketCount;
 	}
 
 	@Override
  	public String toString(){
-		return 
-			"MetaData{" + 
-			"entity_product_id = '" + entityProductId + '\'' + 
-			",entity_end_time = '" + entityEndTime + '\'' + 
-			",entity_start_time = '" + entityStartTime + '\'' + 
-			",entity_category_id = '" + entityCategoryId + '\'' + 
-			",city_searched = '" + citySearched + '\'' + 
-			",tax_per_quantity = '" + taxPerQuantity + '\'' + 
-			",total_other_charges = '" + totalOtherCharges + '\'' + 
-			",entity_passengers = '" + entityPassengers + '\'' + 
-			",total_ticket_price = '" + totalTicketPrice + '\'' + 
-			",entity_category_name = '" + entityCategoryName + '\'' + 
-			",entity_group_id = '" + entityGroupId + '\'' + 
-			",other_charges = '" + otherCharges + '\'' + 
-			",entity_address = '" + entityAddress + '\'' + 
-			",total_tax_amount = '" + totalTaxAmount + '\'' + 
-			",entity_image = '" + entityImage + '\'' + 
-			",entity_schedule_id = '" + entityScheduleId + '\'' + 
-			",entity_packages = '" + entityPackages + '\'' + 
-			",total_ticket_count = '" + totalTicketCount + '\'' + 
+		return
+			"MetaData{" +
+			"entity_product_id = '" + entityProductId + '\'' +
+			",entity_end_time = '" + entityEndTime + '\'' +
+			",entity_start_time = '" + entityStartTime + '\'' +
+			",entity_category_id = '" + entityCategoryId + '\'' +
+			",city_searched = '" + citySearched + '\'' +
+			",tax_per_quantity = '" + taxPerQuantity + '\'' +
+			",total_other_charges = '" + totalOtherCharges + '\'' +
+			",entity_passengers = '" + entityPassengers + '\'' +
+			",total_ticket_price = '" + totalTicketPrice + '\'' +
+			",entity_category_name = '" + entityCategoryName + '\'' +
+			",entity_group_id = '" + entityGroupId + '\'' +
+			",other_charges = '" + otherCharges + '\'' +
+			",entity_address = '" + entityAddress + '\'' +
+			",total_tax_amount = '" + totalTaxAmount + '\'' +
+			",entity_image = '" + entityImage + '\'' +
+			",entity_schedule_id = '" + entityScheduleId + '\'' +
+			",entity_packages = '" + entityPackages + '\'' +
+			",total_ticket_count = '" + totalTicketCount + '\'' +
 			"}";
 		}
 

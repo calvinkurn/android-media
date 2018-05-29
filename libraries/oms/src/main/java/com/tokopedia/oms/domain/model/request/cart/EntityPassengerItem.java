@@ -11,13 +11,13 @@ public class EntityPassengerItem implements Parcelable {
 	private String errorMessage;
 
 	@SerializedName("product_id")
-	private int productId;
+	private Integer productId;
 
 	@SerializedName("name")
 	private String name;
 
 	@SerializedName("id")
-	private int id;
+	private Integer id;
 
 	@SerializedName("element_type")
 	private String elementType;
@@ -42,11 +42,11 @@ public class EntityPassengerItem implements Parcelable {
 		return errorMessage;
 	}
 
-	public void setProductId(int productId){
+	public void setProductId(Integer productId){
 		this.productId = productId;
 	}
 
-	public int getProductId(){
+	public Integer getProductId(){
 		return productId;
 	}
 
@@ -58,11 +58,11 @@ public class EntityPassengerItem implements Parcelable {
 		return name;
 	}
 
-	public void setId(int id){
+	public void setId(Integer id){
 		this.id = id;
 	}
 
-	public int getId(){
+	public Integer getId(){
 		return id;
 	}
 

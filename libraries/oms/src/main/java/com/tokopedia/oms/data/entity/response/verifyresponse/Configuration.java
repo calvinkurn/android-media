@@ -5,27 +5,27 @@ import com.google.gson.annotations.SerializedName;
 public class Configuration{
 
 	@SerializedName("conv_fee")
-	private int convFee;
+	private Integer convFee;
 
 	@SerializedName("price")
-	private int price;
+	private Integer price;
 
 	@SerializedName("sub_config")
 	private SubConfig subConfig;
 
-	public void setConvFee(int convFee){
+	public void setConvFee(Integer convFee){
 		this.convFee = convFee;
 	}
 
-	public int getConvFee(){
+	public Integer getConvFee(){
 		return convFee;
 	}
 
-	public void setPrice(int price){
+	public void setPrice(Integer price){
 		this.price = price;
 	}
 
-	public int getPrice(){
+	public Integer getPrice(){
 		return price;
 	}
 

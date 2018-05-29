@@ -5,57 +5,57 @@ import com.google.gson.annotations.SerializedName;
 public class ValidateShow{
 
 	@SerializedName("quantity")
-	private int quantity;
+	private Integer quantity;
 
 	@SerializedName("group_id")
-	private int groupId;
+	private Integer groupId;
 
 	@SerializedName("product_id")
-	private int productId;
+	private Integer productId;
 
 	@SerializedName("package_id")
-	private int packageId;
+	private Integer packageId;
 
 	@SerializedName("schedule_id")
-	private int scheduleId;
+	private Integer scheduleId;
 
-	public void setQuantity(int quantity){
+	public void setQuantity(Integer quantity){
 		this.quantity = quantity;
 	}
 
-	public int getQuantity(){
+	public Integer getQuantity(){
 		return quantity;
 	}
 
-	public void setGroupId(int groupId){
+	public void setGroupId(Integer groupId){
 		this.groupId = groupId;
 	}
 
-	public int getGroupId(){
+	public Integer getGroupId(){
 		return groupId;
 	}
 
-	public void setProductId(int productId){
+	public void setProductId(Integer productId){
 		this.productId = productId;
 	}
 
-	public int getProductId(){
+	public Integer getProductId(){
 		return productId;
 	}
 
-	public void setPackageId(int packageId){
+	public void setPackageId(Integer packageId){
 		this.packageId = packageId;
 	}
 
-	public int getPackageId(){
+	public Integer getPackageId(){
 		return packageId;
 	}
 
-	public void setScheduleId(int scheduleId){
+	public void setScheduleId(Integer scheduleId){
 		this.scheduleId = scheduleId;
 	}
 
-	public int getScheduleId(){
+	public Integer getScheduleId(){
 		return scheduleId;
 	}
 
