@@ -1,12 +1,15 @@
 package com.tokopedia.core.drawer2.domain.interactor;
 
+import com.tokopedia.abstraction.common.utils.GraphqlHelper;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.domain.UseCase;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.core.drawer2.data.pojo.UserData;
 import com.tokopedia.core.drawer2.data.repository.UserAttributesRepository;
-import com.tokopedia.core.util.SessionHandler;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import rx.Observable;
 
@@ -15,7 +18,9 @@ import rx.Observable;
  */
 
 public class GetUserAttributesUseCase extends UseCase<UserData> {
-    public static final String PARAM_USER_ID = "PARAM_USER_ID";
+    public static final String PARAM_USER_ID = "userID"; //do not change this key
+    private static final String OPERATION_NAME_VALUE = "ConsumerDrawerData";
+
     protected UserAttributesRepository userAttributesRepository;
 
     public GetUserAttributesUseCase(ThreadExecutor threadExecutor,
@@ -30,10 +35,16 @@ public class GetUserAttributesUseCase extends UseCase<UserData> {
         return userAttributesRepository.getConsumerUserAttributes(requestParams);
     }
 
-    public RequestParams getUserAttrParam(SessionHandler sessionHandler) {
-        RequestParams params = RequestParams.create();
-        params.putInt(GetUserAttributesUseCase.PARAM_USER_ID,
-                Integer.parseInt(sessionHandler.getLoginID()));
-        return params;
+    public RequestParams getUserAttrParam(String loginId, String query) {
+        Map<String, Object> variables = new HashMap<>();
+
+        variables.put(PARAM_USER_ID,
+                Integer.parseInt(loginId));
+
+        RequestParams requestParams = RequestParams.create();
+        requestParams.putObject(GraphqlHelper.QUERY, query);
+        requestParams.putObject(GraphqlHelper.VARIABLES, variables);
+        requestParams.putObject(GraphqlHelper.OPERATION_NAME, OPERATION_NAME_VALUE);
+        return requestParams;
     }
 }
