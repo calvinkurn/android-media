@@ -162,9 +162,11 @@ public class CartListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         String itemDataParentId = ((CartItemHolderData) itemData).getCartItemData().getOriginData().getParentId();
         notifyItemChanged(position);
         for (Object object : cartItemHolderDataList) {
-            String parentId = ((CartItemHolderData) itemData).getCartItemData().getOriginData().getParentId();
-            if (object instanceof CartItemHolderData && parentId.equals(itemDataParentId)) {
-                notifyItemChanged(cartItemHolderDataList.indexOf(object));
+            if (object instanceof CartItemHolderData) {
+                String parentId = ((CartItemHolderData) object).getCartItemData().getOriginData().getParentId();
+                if (parentId.equals(itemDataParentId)) {
+                    notifyItemChanged(cartItemHolderDataList.indexOf(object));
+                }
             }
         }
     }
