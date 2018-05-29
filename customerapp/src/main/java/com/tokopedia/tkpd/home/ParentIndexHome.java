@@ -82,6 +82,7 @@ import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.design.component.Tabs;
 import com.tokopedia.digital.categorylist.view.activity.DigitalCategoryListActivity;
 import com.tokopedia.discovery.newdiscovery.search.SearchActivity;
+import com.tokopedia.feedplus.view.fragment.FeedPlusFragment;
 import com.tokopedia.home.beranda.presentation.view.fragment.HomeFragment;
 import com.tokopedia.seller.product.edit.view.activity.ProductAddActivity;
 import com.tokopedia.seller.shop.open.view.activity.ShopOpenDomainActivity;
@@ -95,7 +96,6 @@ import com.tokopedia.tkpd.home.fragment.FragmentHotListV2;
 import com.tokopedia.tkpd.home.fragment.InappMessageDialogFragment;
 import com.tokopedia.tkpd.home.model.InAppMessageModel;
 import com.tokopedia.tkpd.qrscanner.QrScannerActivity;
-import com.tokopedia.feedplus.view.fragment.FeedPlusFragment;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -408,8 +408,7 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
             @Override
             public void onSuccessGetUserAttr(UserData data) {
                 if (data != null)
-                    TrackingUtils.setMoEUserAttributesOld(data);
-                TrackingUtils.setMoEUserAttributes(data);
+                    TrackingUtils.setMoEUserAttributes(data);
             }
         };
 

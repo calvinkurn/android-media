@@ -67,27 +67,6 @@ public class TrackingUtils extends TrackingConfig {
         getMoEngine().setUserProfile(customerWrapper);
     }
 
-    public static void setMoEUserAttributesOld(UserData profileData) {
-        if (profileData != null) {
-            CustomerWrapper customerWrapper = new CustomerWrapper.Builder()
-                    .setFullName(profileData.getProfile() == null ? "" : profileData.getProfile().getFullName())
-                    .setEmailAddress(profileData.getProfile() == null ? "" : profileData.getProfile().getEmail())
-                    .setPhoneNumber(normalizePhoneNumber(profileData.getProfile() == null || profileData.getProfile().getPhone() == null ? "" : profileData.getProfile().getPhone()))
-                    .setCustomerId(profileData.getProfile() == null ? "" : profileData.getProfile().getUserId())
-                    .setShopId(profileData.getShopInfoMoengage() != null ? profileData.getShopInfoMoengage().getInfo().getShopId() : "")
-                    .setSeller((profileData.getShopInfoMoengage() != null &&
-                            profileData.getShopInfoMoengage().getOwner() != null &&
-                            profileData.getShopInfoMoengage().getOwner().getIsSeller() != null) ? profileData.getShopInfoMoengage().getOwner().getIsSeller() : false)
-                    .setShopName(profileData.getShopInfoMoengage() != null ? profileData.getShopInfoMoengage().getInfo().getShopName() : "")
-                    .setFirstName(profileData.getProfile() != null && profileData.getProfile().getFirstName() != null ? profileData.getProfile().getFirstName() : "")
-                    .build();
-
-            getMoEngine().setUserData(customerWrapper, "APP OLD");
-        }
-        if (!TextUtils.isEmpty(FCMCacheManager.getRegistrationId(MainApplication.getAppContext())))
-            PushManager.getInstance().refreshToken(MainApplication.getAppContext(), FCMCacheManager.getRegistrationId(MainApplication.getAppContext()));
-    }
-
     public static String getNetworkSpeed(Context context) {
         if (ConnectivityUtils.isConnected(context)) {
             return ConnectivityUtils.getConnectionType(context);
@@ -116,6 +95,16 @@ public class TrackingUtils extends TrackingConfig {
                         .setShopScore(profileData.getShopInfoMoengage().getInfo() != null ? profileData.getShopInfoMoengage().getInfo().getShopScore() + "" : "")
                         .setDateOfBirth(DateFormatUtils.formatDate(DateFormatUtils.FORMAT_YYYY_MM_DD, DateFormatUtils.FORMAT_DD_MM_YYYY, extractFirstSegment(profileData.getProfile().getBday() != null ? profileData.getProfile().getBday() : "", "T")))
                         .setGender(profileData.getProfile().getGender() != null ? profileData.getProfile().getGender() : "0")
+                        .setFullName(profileData.getProfile() == null ? "" : profileData.getProfile().getFullName())
+                        .setEmailAddress(profileData.getProfile() == null ? "" : profileData.getProfile().getEmail())
+                        .setPhoneNumber(normalizePhoneNumber(profileData.getProfile() == null || profileData.getProfile().getPhone() == null ? "" : profileData.getProfile().getPhone()))
+                        .setCustomerId(profileData.getProfile() == null ? "" : profileData.getProfile().getUserId())
+                        .setShopId(profileData.getShopInfoMoengage() != null ? profileData.getShopInfoMoengage().getInfo().getShopId() : "")
+                        .setSeller((profileData.getShopInfoMoengage() != null &&
+                                profileData.getShopInfoMoengage().getOwner() != null &&
+                                profileData.getShopInfoMoengage().getOwner().getIsSeller() != null) ? profileData.getShopInfoMoengage().getOwner().getIsSeller() : false)
+                        .setShopName(profileData.getShopInfoMoengage() != null ? profileData.getShopInfoMoengage().getInfo().getShopName() : "")
+                        .setFirstName(profileData.getProfile() != null && profileData.getProfile().getFirstName() != null ? profileData.getProfile().getFirstName() : "")
                         .build();
 
                 getMoEngine().setUserData(customerWrapper, "GRAPHQL");
