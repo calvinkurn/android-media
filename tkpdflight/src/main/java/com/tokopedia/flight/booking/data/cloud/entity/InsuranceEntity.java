@@ -43,10 +43,6 @@ public class InsuranceEntity {
         return description;
     }
 
-    public long getTotalPriceNumeric() {
-        return totalPriceNumeric;
-    }
-
     public boolean isDefaultChecked() {
         return defaultChecked;
     }
@@ -65,5 +61,9 @@ public class InsuranceEntity {
 
     public void setId(String id) {
         this.id = id;
+    }
+
+    public long getTotalPriceNumeric() {
+        return totalPriceNumeric;
     }
 }

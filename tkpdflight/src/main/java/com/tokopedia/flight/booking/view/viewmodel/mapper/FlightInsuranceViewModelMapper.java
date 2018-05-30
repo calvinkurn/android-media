@@ -1,6 +1,5 @@
 package com.tokopedia.flight.booking.view.viewmodel.mapper;
 
-import com.tokopedia.flight.booking.data.cloud.entity.BenefitEntity;
 import com.tokopedia.flight.booking.data.cloud.entity.InsuranceEntity;
 import com.tokopedia.flight.booking.view.viewmodel.FlightInsuranceViewModel;
 
@@ -27,7 +26,7 @@ public class FlightInsuranceViewModelMapper {
             viewModel.setDescription(entity.getDescription());
             viewModel.setTncUrl(entity.getTncUrl());
             viewModel.setTncAggreement(entity.getTncAggreement());
-            viewModel.setTotalPriceNumeric(entity.getTotalPriceNumeric());
+            viewModel.setTotalPrice(entity.getTotalPriceNumeric());
             viewModel.setBenefits(benefitViewModelMapper.transform(entity.getBenefits()));
         }
         return viewModel;
