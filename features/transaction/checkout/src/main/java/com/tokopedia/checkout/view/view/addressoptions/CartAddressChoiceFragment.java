@@ -89,7 +89,7 @@ public class CartAddressChoiceFragment extends BaseCheckoutFragment
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.menu_add_address) {
-            startActivityForResult(AddAddressActivity.createInstance(getActivity()),
+            startActivityForResult(AddAddressActivity.createInstance(getActivity(), null),
                     ManageAddressConstant.REQUEST_CODE_PARAM_CREATE);
             return true;
         }
@@ -295,7 +295,7 @@ public class CartAddressChoiceFragment extends BaseCheckoutFragment
     public void onEditClick(RecipientAddressModel model) {
         AddressModelMapper mapper = new AddressModelMapper();
 
-        Intent intent = AddAddressActivity.createInstance(getActivity(), mapper.transform(model));
+        Intent intent = AddAddressActivity.createInstance(getActivity(), mapper.transform(model), null);
         startActivityForResult(intent, ManageAddressConstant.REQUEST_CODE_PARAM_EDIT);
     }
 

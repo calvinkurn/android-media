@@ -26,8 +26,8 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.data.model.storage.CacheManager;
-import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.abstraction.common.utils.TKPDMapParam;
+import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.ApplinkRouter;
 import com.tokopedia.cacheapi.domain.interactor.CacheApiClearAllUseCase;
 import com.tokopedia.checkout.domain.usecase.AddToCartUseCase;
@@ -37,11 +37,11 @@ import com.tokopedia.checkout.domain.usecase.GetCouponListCartMarketPlaceUseCase
 import com.tokopedia.checkout.router.ICheckoutModuleRouter;
 import com.tokopedia.checkout.view.di.component.CartComponentInjector;
 import com.tokopedia.checkout.view.view.cartlist.CartActivity;
-import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.contact_us.ContactUsModuleRouter;
 import com.tokopedia.contact_us.createticket.ContactUsConstant;
 import com.tokopedia.contact_us.createticket.activity.ContactUsActivity;
 import com.tokopedia.contact_us.createticket.activity.ContactUsCreateTicketActivity;
+import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.UnifyTracking;
@@ -68,9 +68,6 @@ import com.tokopedia.core.home.BannerWebView;
 import com.tokopedia.core.home.SimpleWebViewWithFilePickerActivity;
 import com.tokopedia.core.instoped.model.InstagramMediaModel;
 import com.tokopedia.core.loyaltysystem.util.URLGenerator;
-import com.tokopedia.district_recommendation.domain.mapper.TokenMapper;
-import com.tokopedia.district_recommendation.domain.model.Token;
-import com.tokopedia.district_recommendation.view.DistrictRecommendationActivity;
 import com.tokopedia.core.manage.people.address.activity.ChooseAddressActivity;
 import com.tokopedia.core.myproduct.utils.FileUtils;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
@@ -123,6 +120,9 @@ import com.tokopedia.digital.product.view.activity.DigitalWebActivity;
 import com.tokopedia.digital.tokocash.TopupTokoCashFragment;
 import com.tokopedia.discovery.DiscoveryRouter;
 import com.tokopedia.discovery.intermediary.view.IntermediaryActivity;
+import com.tokopedia.district_recommendation.domain.mapper.TokenMapper;
+import com.tokopedia.district_recommendation.domain.model.Token;
+import com.tokopedia.district_recommendation.view.DistrictRecommendationActivity;
 import com.tokopedia.events.data.entity.response.verifyresponse.VerifyCartResponse;
 import com.tokopedia.events.di.DaggerEventComponent;
 import com.tokopedia.events.di.EventComponent;
@@ -179,7 +179,6 @@ import com.tokopedia.loyalty.view.activity.TokoPointWebviewActivity;
 import com.tokopedia.loyalty.view.data.VoucherViewModel;
 import com.tokopedia.loyalty.view.fragment.LoyaltyNotifFragmentDialog;
 import com.tokopedia.network.service.AccountsService;
-import com.tokopedia.otp.OtpModuleRouter;
 import com.tokopedia.otp.phoneverification.view.activity.PhoneVerificationActivationActivity;
 import com.tokopedia.otp.phoneverification.view.activity.PhoneVerificationProfileActivity;
 import com.tokopedia.otp.phoneverification.view.activity.ReferralPhoneNumberVerificationActivity;
@@ -268,10 +267,10 @@ import com.tokopedia.tokocash.TokoCashRouter;
 import com.tokopedia.tokocash.WalletUserSession;
 import com.tokopedia.tokocash.di.DaggerTokoCashComponent;
 import com.tokopedia.tokocash.di.TokoCashComponent;
-import com.tokopedia.topads.sourcetagging.util.TopAdsAppLinkUtil;
 import com.tokopedia.tokocash.historytokocash.presentation.model.PeriodRangeModelData;
 import com.tokopedia.tokocash.pendingcashback.domain.PendingCashback;
 import com.tokopedia.tokocash.pendingcashback.receiver.TokocashPendingDataBroadcastReceiver;
+import com.tokopedia.topads.sourcetagging.util.TopAdsAppLinkUtil;
 import com.tokopedia.transaction.bcaoneklik.activity.ListPaymentTypeActivity;
 import com.tokopedia.transaction.bcaoneklik.usecase.CreditCardFingerPrintUseCase;
 import com.tokopedia.transaction.insurance.view.InsuranceTnCActivity;
@@ -343,8 +342,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         ProfileModuleRouter,
         ReactNativeRouter,
         ImageUploaderRouter,
-        OtpModuleRouter,
-        ContactUsModuleRouter{
+        ContactUsModuleRouter {
 
     @Inject
     ReactNativeHost reactNativeHost;
@@ -1797,16 +1795,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    public Observable<CashBackData> getPendingCashbackUseCase(Context context) {
-        SessionHandler sessionHandler = new SessionHandler(context);
-        com.tokopedia.usecase.RequestParams requestParams = com.tokopedia.usecase.RequestParams.create();
-        requestParams.putString("msisdn", sessionHandler.getPhoneNumber());
-        return tokoCashComponent.getPendingCasbackUseCase()
-                .createObservable(requestParams)
-                .map(new TokoCashPendingCashbackMapper());
-    }
-
-    @Override
     public Intent getContactUsIntent(Context context) {
         return new Intent(context, ContactUsActivity.class);
     }
@@ -2223,7 +2211,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    public void gotoTopAdsDashboard(Context context){
+    public void gotoTopAdsDashboard(Context context) {
         Intent topadsIntent = context.getPackageManager()
                 .getLaunchIntentForPackage(DrawerBuyerHelper.TOP_SELLER_APPLICATION_PACKAGE);
 
