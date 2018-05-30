@@ -41,8 +41,6 @@ import com.tkpd.library.utils.SnackbarManager;
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
-import com.tokopedia.applink.ApplinkRouter;
-import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.ProductPageTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.analytics.nishikino.model.GTMCart;
@@ -95,6 +93,7 @@ import com.tokopedia.tkpdpdp.DinkFailedActivity;
 import com.tokopedia.tkpdpdp.DinkSuccessActivity;
 import com.tokopedia.tkpdpdp.InstallmentActivity;
 import com.tokopedia.tkpdpdp.PreviewProductImageDetail;
+import com.tokopedia.tkpdpdp.ProductInfoActivity;
 import com.tokopedia.tkpdpdp.R;
 import com.tokopedia.tkpdpdp.VariantActivity;
 import com.tokopedia.tkpdpdp.WholesaleActivity;
@@ -120,9 +119,8 @@ import com.tokopedia.tkpdpdp.listener.AppBarStateChangeListener;
 import com.tokopedia.tkpdpdp.listener.ProductDetailView;
 import com.tokopedia.tkpdpdp.presenter.ProductDetailPresenter;
 import com.tokopedia.tkpdpdp.presenter.ProductDetailPresenterImpl;
-import com.tokopedia.transactionanalytics.CheckoutAnalyticProductDetailPage;
 import com.tokopedia.topads.sourcetagging.constant.TopAdsSourceOption;
-import com.tokopedia.topads.sourcetagging.util.TopAdsAppLinkUtil;
+import com.tokopedia.transactionanalytics.CheckoutAnalyticProductDetailPage;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -695,7 +693,7 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
         this.headerInfoView.renderTempData(productPass);
         this.pictureView.renderTempData(productPass);
         this.ratingTalkCourierView.renderTempdata(productPass);
-         if (productPass.isWishlist()) {
+        if (productPass.isWishlist()) {
             fabWishlist.setImageDrawable(getResources().getDrawable(R.drawable.ic_wishlist_red));
         } else {
             fabWishlist.setImageDrawable(getResources().getDrawable(R.drawable.ic_wishlist));
@@ -1305,7 +1303,7 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
     public void onPromoAdsClicked() {
         ((PdpRouter) getActivity().getApplication()).goToCreateTopadsPromo(getActivity(),
                 String.valueOf(productData.getInfo().getProductId()), productData.getShopInfo().getShopId(),
-                GlobalConfig.isSellerApp()? TopAdsSourceOption.SA_PDP :
+                GlobalConfig.isSellerApp() ? TopAdsSourceOption.SA_PDP :
                         TopAdsSourceOption.MA_PDP);
     }
 
