@@ -80,8 +80,24 @@
             android:windowSoftInputMode="stateAlwaysHidden" />
         <activity
             android:name=".newdiscovery.search.SearchActivity"
-            android:label=""
-             />
+            android:label="@string/image_search_title"
+            android:launchMode="singleTask">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data android:mimeType="image/jpeg" />
+                <data android:mimeType="image/png" />
+                <data android:mimeType="image/jpg" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.SEND" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data android:mimeType="image/jpeg" />
+                <data android:mimeType="image/png" />
+                <data android:mimeType="image/jpg" />
+            </intent-filter>
+
+        </activity>
         <activity
             android:name=".imagesearch.search.ImageSearchActivity"
             android:label=""
