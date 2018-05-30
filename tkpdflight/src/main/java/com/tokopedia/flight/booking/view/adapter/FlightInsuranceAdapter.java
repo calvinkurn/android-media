@@ -22,7 +22,7 @@ public class FlightInsuranceAdapter extends RecyclerView.Adapter<FlightInsurance
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_flight_insurance, parent, false);
-        return new ViewHolder(view);
+        return new ViewHolder(view, actionListener);
     }
 
     @Override
@@ -39,10 +39,10 @@ public class FlightInsuranceAdapter extends RecyclerView.Adapter<FlightInsurance
         return viewModels.size();
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder {
+    public static class ViewHolder extends RecyclerView.ViewHolder {
         private FlightInsuranceView flightInsuranceView;
 
-        public ViewHolder(View itemView) {
+        public ViewHolder(View itemView, FlightInsuranceView.ActionListener actionListener) {
             super(itemView);
             flightInsuranceView = itemView.findViewById(R.id.iv_insurance);
             flightInsuranceView.setListener(actionListener);

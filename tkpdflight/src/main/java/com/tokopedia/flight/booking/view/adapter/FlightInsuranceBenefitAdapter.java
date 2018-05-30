@@ -37,7 +37,7 @@ public class FlightInsuranceBenefitAdapter extends RecyclerView.Adapter<FlightIn
         return benefitViewModels.size();
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder {
+    public static class ViewHolder extends RecyclerView.ViewHolder {
         private AppCompatImageView logoImageView;
         private AppCompatTextView titleTextView;
         private AppCompatTextView descriptionTextView;
