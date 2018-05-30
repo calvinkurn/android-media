@@ -36,6 +36,9 @@ public class ProductDetail {
     @SerializedName("product_id")
     @Expose
     private long productId;
+    @SerializedName("product_description")
+    @Expose
+    private String productDescription;
     @SerializedName("product_image_full")
     @Expose
     private String productImageFull;
@@ -378,5 +381,13 @@ public class ProductDetail {
 
     public void setProductCampaign(ProductCampaign productCampaign) {
         this.productCampaign = productCampaign;
+    }
+
+    public String getProductDescription() {
+        return productDescription;
+    }
+
+    public void setProductDescription(String productDescription) {
+        this.productDescription = productDescription;
     }
 }

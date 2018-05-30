@@ -104,7 +104,7 @@ public class ReactProductCloudSource extends ReactDataSource {
 
     public Observable<String> search(final ProductSearchRequest request) {
         if (request.getPage() == null) request.setPage(1);
-        if (request.getLimit() == null) request.setLimit(10);
+        if (request.getLimit() == null) request.setLimit(18);
 
         RequestParams requestParams = RequestParams.create();
 
@@ -126,6 +126,7 @@ public class ReactProductCloudSource extends ReactDataSource {
     private ProductDetail domainToResponse(ProductDomain productDomain) {
         ProductDetail item = new ProductDetail();
         item.setProductName(productDomain.getName());
+        item.setProductDescription(productDomain.getDescription());
         item.setProductPrice(productDomain.getPrice());
         item.setProductId(productDomain.getId());
         item.setProductImage(productDomain.getImage());

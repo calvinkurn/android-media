@@ -15,6 +15,7 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 
+import com.google.gson.Gson;
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.core.base.di.component.AppComponent;
@@ -23,6 +24,7 @@ import com.tokopedia.core.network.entity.variant.ProductVariant;
 import com.tokopedia.core.product.model.goldmerchant.VideoData;
 import com.tokopedia.core.product.model.productdetail.ProductDetailData;
 import com.tokopedia.core.product.model.productdetail.ProductImage;
+import com.tokopedia.core.product.model.productdetail.ProductInfo;
 import com.tokopedia.core.product.model.productdetail.discussion.LatestTalkViewModel;
 import com.tokopedia.core.product.model.productdetail.mosthelpful.Review;
 import com.tokopedia.core.product.model.productdetail.promowidget.PromoAttributes;
@@ -47,6 +49,7 @@ import com.tokopedia.posapp.product.productdetail.view.widget.HeaderInfoView;
 import com.tokopedia.posapp.product.productdetail.view.widget.InstallmentSimulationView;
 import com.tokopedia.posapp.base.fragment.PosAlertDialog;
 import com.tokopedia.posapp.product.productdetail.view.widget.PictureView;
+import com.tokopedia.posapp.product.common.data.pojo.ProductDetail;
 import com.tokopedia.tkpdpdp.DescriptionActivity;
 import com.tokopedia.tkpdpdp.PreviewProductImageDetail;
 import com.tokopedia.tkpdpdp.listener.ProductDetailView;
@@ -124,8 +127,37 @@ public class ProductDetailFragment extends BaseDaggerFragment
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         if (productPass != null) {
-            productPresenter.getProduct(productPass);
+            try{
+                onSuccessGetProduct(responseToProductDetailData(getArguments().getString("extras")));
+            } catch (Exception e){
+                productPresenter.getProduct(productPass);
+                e.printStackTrace();
+            }
         }
+    }
+
+    private ProductDetailData responseToProductDetailData(String bundle) {
+
+        ProductDetail productDetail = new Gson().fromJson(bundle, ProductDetail.class);
+
+        ProductInfo info = new ProductInfo();
+        info.setProductId((int)productDetail.getProductId());
+        info.setProductName(productDetail.getProductName());
+        info.setProductPrice(productDetail.getProductPrice());
+        info.setProductPriceUnformatted((int)productDetail.getProductPriceUnformatted());
+        info.setProductDescription(productDetail.getProductDescription());
+
+        List<ProductImage> productImages = new ArrayList<>();
+        ProductImage image = new ProductImage();
+        image.setImageSrc(productDetail.getProductImage());
+        image.setImageSrc300(productDetail.getProductImage300());
+        productImages.add(image);
+
+        ProductDetailData data = new ProductDetailData();
+        data.setInfo(info);
+        data.setProductImages(productImages);
+
+        return data;
     }
 
     @Override
@@ -160,25 +192,7 @@ public class ProductDetailFragment extends BaseDaggerFragment
 
     @Override
     public void onSuccessAddToCart(String message) {
-        AlertDialog dialog = new PosAlertDialog(getContext())
-                .setTitle(getString(R.string.pdp_add_to_cart_title))
-                .setMessage(getString(R.string.pdp_atc_success_message))
-                .setPositiveButton(getString(R.string.pdp_pay_label), new PosAlertDialog.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface) {
-                        goToPaymentCheckout();
-                    }
-                })
-                .setNegativeButton(getString(R.string.pdp_continue_shopping_label), new PosAlertDialog.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface) {
-                        dialogInterface.dismiss();
-                    }
-                })
-                .setCancelable(true)
-                .create();
-
-        dialog.show();
+        CommonUtils.dumper(message);
     }
 
     @Override
