@@ -12,6 +12,7 @@ import android.nfc.Tag;
 import android.nfc.tech.IsoDep;
 import android.nfc.tech.NfcA;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.provider.Settings;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.TaskStackBuilder;
@@ -26,6 +27,9 @@ import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.applink.ApplinkConst;
+import com.tokopedia.applink.RouteManager;
+import com.tokopedia.core.gcm.Constants;
+import com.tokopedia.core.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.core.router.SellerAppRouter;
 import com.tokopedia.core.router.digitalmodule.passdata.DigitalCategoryDetailPassData;
 import com.tokopedia.core.router.home.HomeRouter;
@@ -77,6 +81,8 @@ public class DigitalCheckETollBalanceNFCActivity extends BaseSimpleActivity
 
     private static final int TRANSCEIVE_TIMEOUT_IN_SEC = 5000;
 
+    private static final String DIGITAL_SMARTCARD = "mainapp_digital_smartcard";
+
     private static final String TAG = DigitalCheckETollBalanceNFCActivity.class.getSimpleName();
 
     private ETollPresenter presenter;
@@ -94,6 +100,8 @@ public class DigitalCheckETollBalanceNFCActivity extends BaseSimpleActivity
     private String [][] techListsArray;
 
     private AbstractionRouter abstractionRouter;
+
+    private FirebaseRemoteConfigImpl remoteConfig;
 
     public static Intent newInstance(Context context) {
         return new Intent(context, DigitalCheckETollBalanceNFCActivity.class);
@@ -132,6 +140,8 @@ public class DigitalCheckETollBalanceNFCActivity extends BaseSimpleActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        remoteConfig = new FirebaseRemoteConfigImpl(this);
+
         updateTitle(getResources().getString(R.string.toolbar_title_etoll_check_balance));
 
         abstractionRouter = (AbstractionRouter) getApplication();
@@ -161,10 +171,7 @@ public class DigitalCheckETollBalanceNFCActivity extends BaseSimpleActivity
 
         presenter = new ETollPresenter(this, smartcardInquiryUseCase, smartcardCommandUseCase);
 
-        if (getIntent() != null && !TextUtils.isEmpty(getIntent().getAction()) &&
-            getIntent().getAction().equals(NfcAdapter.ACTION_TECH_DISCOVERED)) {
-            handleIntent(getIntent());
-        }
+        handleIntent(getIntent());
     }
 
     @Override
@@ -261,24 +268,24 @@ public class DigitalCheckETollBalanceNFCActivity extends BaseSimpleActivity
     }
 
     private void handleIntent(Intent intent) {
-        if (eTollUpdateBalanceResultView.getVisibility() == View.VISIBLE) {
-            eTollUpdateBalanceResultView.showLoading();
-        } else {
-            tapETollCardView.setVisibility(View.VISIBLE);
-            tapETollCardView.showLoading();
-            if (getApplication() instanceof AbstractionRouter) {
-                abstractionRouter
-                        .getAnalyticTracker()
-                        .sendEventTracking(
-                                ETollEventTracking.Event.CLICK_NFC,
-                                ETollEventTracking.Category.DIGITAL_NFC,
-                                ETollEventTracking.Action.CHECK_STEP_2,
-                                ETollEventTracking.Label.EMONEY
-                        );
+        if (intent != null && !TextUtils.isEmpty(intent.getAction()) &&
+                intent.getAction().equals(NfcAdapter.ACTION_TECH_DISCOVERED)) {
+            if (!isDigitalSmartcardEnabled()) {
+                Toast.makeText(this, "Fitur ini belum tersedia", Toast.LENGTH_SHORT).show();
+                RouteManager.route(this, Constants.Applinks.HOME_FEED);
+                finish();
+            } else {
+                final Tag tag = intent.getParcelableExtra(NfcAdapter.EXTRA_TAG);
+                if (tag != null) {
+                    handleTagFromIntent(tag);
+                }
             }
         }
+    }
 
-        final Tag tag = intent.getParcelableExtra(NfcAdapter.EXTRA_TAG);
+    private void handleTagFromIntent(Tag tag) {
+        showLoading();
+
         //do something with tagFromIntent
         isoDep = IsoDep.get(tag);
 
@@ -328,6 +335,25 @@ public class DigitalCheckETollBalanceNFCActivity extends BaseSimpleActivity
         } catch (IOException e) {
             e.printStackTrace();
             showError(getResources().getString(R.string.failed_read_card));
+        }
+    }
+
+    private void showLoading() {
+        if (eTollUpdateBalanceResultView.getVisibility() == View.VISIBLE) {
+            eTollUpdateBalanceResultView.showLoading();
+        } else {
+            tapETollCardView.setVisibility(View.VISIBLE);
+            tapETollCardView.showLoading();
+            if (getApplication() instanceof AbstractionRouter) {
+                abstractionRouter
+                        .getAnalyticTracker()
+                        .sendEventTracking(
+                                ETollEventTracking.Event.CLICK_NFC,
+                                ETollEventTracking.Category.DIGITAL_NFC,
+                                ETollEventTracking.Action.CHECK_STEP_2,
+                                ETollEventTracking.Label.EMONEY
+                        );
+            }
         }
     }
 
@@ -494,6 +520,10 @@ public class DigitalCheckETollBalanceNFCActivity extends BaseSimpleActivity
     @Override
     protected boolean isShowCloseButton() {
         return true;
+    }
+
+    private boolean isDigitalSmartcardEnabled() {
+        return remoteConfig.getBoolean(DIGITAL_SMARTCARD, false);
     }
 
 }
