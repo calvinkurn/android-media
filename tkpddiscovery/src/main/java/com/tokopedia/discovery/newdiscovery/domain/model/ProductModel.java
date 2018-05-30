@@ -18,6 +18,7 @@ public class ProductModel {
     private int countReview;
     private int countCourier;
     private String price;
+    private String priceRange;
     private String shopID;
     private String shopName;
     private String shopCity;
@@ -68,6 +69,14 @@ public class ProductModel {
 
     public String getPrice() {
         return price;
+    }
+
+    public String getPriceRange() {
+        return priceRange;
+    }
+
+    public void setPriceRange(String priceRange) {
+        this.priceRange = priceRange;
     }
 
     public void setShopID(String shopID) {

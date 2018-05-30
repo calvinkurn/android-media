@@ -2,6 +2,7 @@ package com.tokopedia.discovery.newdiscovery.search.fragment.product.adapter.vie
 
 import android.content.Context;
 import android.support.annotation.LayoutRes;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -66,7 +67,9 @@ public class GridProductItemViewHolder extends AbstractViewHolder<ProductItem> {
     @Override
     public void bind(final ProductItem productItem) {
         title.setText(MethodChecker.fromHtml(productItem.getProductName()));
-        price.setText(productItem.getPrice());
+        String priceText = !TextUtils.isEmpty(productItem.getPriceRange()) ?
+                productItem.getPriceRange() : productItem.getPrice();
+        price.setText(priceText);
         if (productItem.getShopCity() != null)
             location.setText(MethodChecker.fromHtml(productItem.getShopCity()));
         else

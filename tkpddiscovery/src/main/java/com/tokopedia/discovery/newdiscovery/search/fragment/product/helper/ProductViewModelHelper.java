@@ -102,6 +102,7 @@ public class ProductViewModelHelper {
         productItem.setDiscountPercentage(productModel.getDiscountPercentage());
         productItem.setOriginalPrice(productModel.getOriginalPrice());
         productItem.setPrice(productModel.getPrice());
+        productItem.setPriceRange(productModel.getPriceRange());
         productItem.setShopID(productModel.getShopID());
         productItem.setShopName(productModel.getShopName());
         productItem.setShopCity(productModel.getShopCity());

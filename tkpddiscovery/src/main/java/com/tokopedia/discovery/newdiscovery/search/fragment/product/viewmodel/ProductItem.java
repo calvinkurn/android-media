@@ -26,6 +26,7 @@ public class ProductItem implements Parcelable, Visitable<ProductListTypeFactory
     private int countReview;
     private int countCourier;
     private String price;
+    private String priceRange;
     private String shopID;
     private String shopName;
     private String shopCity;
@@ -77,6 +78,14 @@ public class ProductItem implements Parcelable, Visitable<ProductListTypeFactory
 
     public String getPrice() {
         return price;
+    }
+
+    public String getPriceRange() {
+        return priceRange;
+    }
+
+    public void setPriceRange(String priceRange) {
+        this.priceRange = priceRange;
     }
 
     public void setShopID(String shopID) {
@@ -252,6 +261,7 @@ public class ProductItem implements Parcelable, Visitable<ProductListTypeFactory
         dest.writeInt(countReview);
         dest.writeInt(countCourier);
         dest.writeString(price);
+        dest.writeString(priceRange);
         dest.writeString(shopID);
         dest.writeString(shopName);
         dest.writeString(shopCity);
@@ -285,6 +295,7 @@ public class ProductItem implements Parcelable, Visitable<ProductListTypeFactory
         countReview = in.readInt();
         countCourier = in.readInt();
         price = in.readString();
+        priceRange = in.readString();
         shopID = in.readString();
         shopName = in.readString();
         shopCity = in.readString();

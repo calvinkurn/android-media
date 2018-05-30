@@ -282,6 +282,8 @@ public class SearchProductResponse {
             private String imageUrl700;
             @SerializedName("price")
             private String price;
+            @SerializedName("price_range")
+            private String priceRange;
             @SerializedName("shop")
             private Shop shop;
             @SerializedName("condition")
@@ -353,6 +355,14 @@ public class SearchProductResponse {
 
             public void setPrice(String price) {
                 this.price = price;
+            }
+
+            public String getPriceRange() {
+                return priceRange;
+            }
+
+            public void setPriceRange(String priceRange) {
+                this.priceRange = priceRange;
             }
 
             public Shop getShop() {

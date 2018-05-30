@@ -88,6 +88,7 @@ public class ProductMapper implements Func1<Response<String>, SearchResultModel>
             model.setDiscountPercentage(data.getDiscountPercentage());
             model.setOriginalPrice(data.getOriginalPrice());
             model.setPrice(data.getPrice());
+            model.setPriceRange(data.getPriceRange());
             model.setShopID(data.getShop().getId());
             model.setShopName(data.getShop().getName());
             model.setShopCity(data.getShop().getCity());
