@@ -75,7 +75,7 @@ import com.tokopedia.seller.product.manage.constant.SortProductOption;
 import com.tokopedia.seller.product.manage.constant.StatusProductOption;
 import com.tokopedia.seller.product.manage.di.DaggerProductManageComponent;
 import com.tokopedia.seller.product.manage.di.ProductManageModule;
-import com.tokopedia.seller.product.manage.utils.AddSticker;
+import com.tokopedia.seller.product.manage.utils.ProductManageImageSticker;
 import com.tokopedia.seller.product.manage.view.activity.ProductManageFilterActivity;
 import com.tokopedia.seller.product.manage.view.activity.ProductManageSortActivity;
 import com.tokopedia.seller.product.manage.view.adapter.ProductManageListAdapter;
@@ -783,14 +783,14 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
             public void onResourceReady(Bitmap bitmap, GlideAnimation<? super Bitmap> glideAnimation) {
                 String price = (productManageViewModel.getProductCurrencyId() == CurrencyTypeDef.TYPE_USD) ? productManageViewModel.getProductPricePlain() : productManageViewModel.getProductPrice();
                 String cashback = (productManageViewModel.getProductCashback() > 0) ? getString(R.string.sticker_cashback, productManageViewModel.getProductCashback()) : "";
-                AddSticker addSticker = new AddSticker.Builder()
+                ProductManageImageSticker productManageImageSticker = new ProductManageImageSticker.Builder()
                         .setName(productManageViewModel.getProductName() )
                         .setPrice(productManageViewModel.getProductCurrencySymbol() + " " + price)
                         .setShop_link(getString(R.string.sticker_shop_link, shopDomain))
                         .setCashback(cashback)
                         .build();
 
-                Bitmap newImage = addSticker.processStickerToImage(bitmap, getActivity());
+                Bitmap newImage = productManageImageSticker.processStickerToImage(bitmap, getActivity());
                 File file = FileUtils.writeImageToTkpdPath(newImage);
 
                 ShareData shareData = ShareData.Builder.aShareData()
