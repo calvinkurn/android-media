@@ -51,10 +51,9 @@ public class CourierViewHolder extends RecyclerView.ViewHolder {
             tvDeliverySchedule.setVisibility(View.GONE);
         }
 
-        if (!TextUtils.isEmpty(courierItemData.getEstimatedTimeDelivery())) {
-            tvDeliveryTimeRange.setText(
-                    String.format("%s*", courierItemData.getEstimatedTimeDelivery())
-            );
+        if (!TextUtils.isEmpty(courierItemData.getEstimatedTimeDelivery()) &&
+                courierItemData.getMinEtd() != 0 && courierItemData.getMaxEtd() != 0) {
+            tvDeliveryTimeRange.setText(courierItemData.getEstimatedTimeDelivery());
             tvDeliveryTimeRange.setVisibility(View.VISIBLE);
         } else {
             tvDeliveryTimeRange.setVisibility(View.GONE);

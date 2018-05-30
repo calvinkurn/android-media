@@ -1,6 +1,6 @@
 package com.tokopedia.logisticdata.data.apiservice;
 
-import com.tokopedia.core.network.retrofit.response.TkpdResponse;
+import com.tokopedia.abstraction.common.network.response.TokopediaWsV4Response;
 import com.tokopedia.logisticdata.data.constant.LogisticDataConstantUrl;
 
 import java.util.Map;
@@ -17,6 +17,6 @@ import rx.Observable;
 public interface TrackingOrderApi {
 
     @GET(LogisticDataConstantUrl.CourierTracking.PATH_TRACK_ORDER)
-    Observable<Response<TkpdResponse>> trackOrder(@QueryMap Map<String, String> params);
+    Observable<Response<TokopediaWsV4Response>> trackOrder(@QueryMap Map<String, String> params);
 
 }

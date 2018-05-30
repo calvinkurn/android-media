@@ -274,6 +274,7 @@ public class TkpdBaseURL {
         public static final String PATH_IS_ALREADY_WISHLIST_PRODUCT = "is_already_wishlist_product.pl";
         public static final String URL_INBOX_MESSAGE_TIME_MACHINE = MOBILE_DOMAIN +
                 "inbox-message-old.pl?flag_app=1";
+        public static final String URL_SECURITY_INFO = "https://www.tokopedia.com/panduan-keamanan/";
     }
 
     public static class Shop {
@@ -399,6 +400,9 @@ public class TkpdBaseURL {
         public static final String PATH_GET_PRODUCT_FEED = "get_product_feed.pl";
         public static final String PATH_GET_RECENT_VIEW_PRODUCT = "get_recent_view_product.pl";
         public static final String PATH_GET_WISHLIST = "get_wishlist.pl";
+
+        public static final String PATH_TERM_CONDITION = "terms.pl";
+        public static final String PATH_PRIVACY_POLICY = "privacy.pl";
 
         public static final String PATH_GET_DATA_SOURCE_TICKER = "get_data_source_ticker.pl";
         public static final String PATH_GET_LIST_FAVE_SHOP_ID = "/v4/home/get_list_fave_shop_id.pl";
@@ -603,6 +607,7 @@ public class TkpdBaseURL {
         public static final String PATH_IMAGE_SEARCH = "search/imagesearch/";
         public static final String PATH_GET_ATTRIBUTE = "search/product/attributes/v3";
         public static final String PATH_GET_DYNAMIC_ATTRIBUTE = "v2/dynamic_attributes";
+        public static final String PATH_GET_DYNAMIC_ATTRIBUTE_V4 = "v4/dynamic_attributes";
         public static final String PATH_BROWSE_CATALOG = "search/v2.1/catalog";
         public static final String PATH_BROWSE_SHOP = "search/v1/shop";
     }

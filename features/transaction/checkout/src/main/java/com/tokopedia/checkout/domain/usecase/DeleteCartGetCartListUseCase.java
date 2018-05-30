@@ -1,5 +1,7 @@
 package com.tokopedia.checkout.domain.usecase;
 
+import android.content.Context;
+
 import com.tokopedia.abstraction.common.utils.TKPDMapParam;
 import com.tokopedia.transactiondata.entity.response.cartlist.CartDataListResponse;
 import com.tokopedia.transactiondata.entity.response.deletecart.DeleteCartDataResponse;
@@ -26,9 +28,11 @@ public class DeleteCartGetCartListUseCase extends UseCase<DeleteAndRefreshCartLi
 
     private final ICartRepository cartRepository;
     private final ICartMapper cartMapper;
+    private final Context context;
 
     @Inject
-    public DeleteCartGetCartListUseCase(ICartRepository cartRepository, ICartMapper cartMapper) {
+    public DeleteCartGetCartListUseCase(Context context, ICartRepository cartRepository, ICartMapper cartMapper) {
+        this.context = context;
         this.cartRepository = cartRepository;
         this.cartMapper = cartMapper;
     }
@@ -69,7 +73,7 @@ public class DeleteCartGetCartListUseCase extends UseCase<DeleteAndRefreshCartLi
                                     @Override
                                     public DeleteAndRefreshCartListData call(CartDataListResponse cartDataListResponse) {
                                         deleteAndRefreshCartListData.setCartListData(
-                                                cartMapper.convertToCartItemDataList(cartDataListResponse)
+                                                cartMapper.convertToCartItemDataList(context, cartDataListResponse)
                                         );
                                         return deleteAndRefreshCartListData;
                                     }

@@ -5,6 +5,8 @@ import com.google.gson.annotations.SerializedName;
 import com.tokopedia.flight.booking.data.cloud.entity.Attribute;
 import com.tokopedia.flight.search.view.model.FlightSearchApiRequestModel;
 
+import java.util.List;
+
 /**
  * Created by User on 11/8/2017.
  */
@@ -31,25 +33,9 @@ public class Attributes {
     @SerializedName("class")
     @Expose
     private int _class;
-
-    public Attributes(int _class,
-                      int adult, int child, int infant){
-        this.adult = adult;
-        this.child = child;
-        this.infant = infant;
-        this._class = _class;
-    }
-
-    public Attributes(String departure, String arrival, String date, int _class,
-                      int adult, int child, int infant) {
-        this.departure = departure;
-        this.arrival = arrival;
-        this.date = date;
-        this.adult = adult;
-        this.child = child;
-        this.infant = infant;
-        this._class = _class;
-    }
+    @SerializedName("excluded_airlines")
+    @Expose
+    private List<String> excludedAirlines;
 
     public Attributes(FlightSearchApiRequestModel flightSearchApiRequestModel) {
         this.departure = flightSearchApiRequestModel.getDepAirport();
@@ -59,6 +45,7 @@ public class Attributes {
         this.child = flightSearchApiRequestModel.getChildren();
         this.infant = flightSearchApiRequestModel.getInfant();
         this._class = flightSearchApiRequestModel.getClassID();
+        this.excludedAirlines = flightSearchApiRequestModel.getAirlines();
     }
 
     public void setDeparture(String departure) {

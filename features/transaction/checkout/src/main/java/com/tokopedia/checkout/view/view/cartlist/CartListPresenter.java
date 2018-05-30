@@ -16,6 +16,7 @@ import com.tokopedia.checkout.domain.datamodel.cartlist.CartItemData;
 import com.tokopedia.checkout.domain.datamodel.cartlist.CartListData;
 import com.tokopedia.checkout.domain.datamodel.cartlist.DeleteCartData;
 import com.tokopedia.checkout.domain.datamodel.cartlist.UpdateToSingleAddressShipmentData;
+import com.tokopedia.checkout.domain.datamodel.cartlist.WholesalePrice;
 import com.tokopedia.checkout.domain.datamodel.cartshipmentform.CartShipmentAddressFormData;
 import com.tokopedia.checkout.domain.usecase.CancelAutoApplyCouponUseCase;
 import com.tokopedia.checkout.domain.usecase.CheckPromoCodeCartListUseCase;
@@ -97,6 +98,11 @@ public class CartListPresenter implements ICartListPresenter {
         this.checkPromoCodeCartListUseCase = checkPromoCodeCartListUseCase;
         this.cartApiRequestParamGenerator = cartApiRequestParamGenerator;
         this.cancelAutoApplyCouponUseCase = cancelAutoApplyCouponUseCase;
+    }
+
+    @Override
+    public void detachView() {
+        compositeSubscription.unsubscribe();
     }
 
     @Override
@@ -280,15 +286,49 @@ public class CartListPresenter implements ICartListPresenter {
     @Override
     public void reCalculateSubTotal(List<CartItemHolderData> dataList) {
         double subtotalPrice = 0;
-        int qty = 0;
+        int totalAllCartItemQty = 0;
         for (CartItemHolderData data : dataList) {
-            qty = qty + data.getCartItemData().getUpdatedData().getQuantity();
-            subtotalPrice = subtotalPrice
-                    + (data.getCartItemData().getUpdatedData().getQuantity()
-                    * data.getCartItemData().getOriginData().getPricePlan());
+            String parentId = data.getCartItemData().getOriginData().getParentId();
+            String productId = data.getCartItemData().getOriginData().getProductId();
+            int itemQty = data.getCartItemData().getUpdatedData().getQuantity();
+            if (!TextUtils.isEmpty(parentId) && !parentId.equals("0")) {
+                for (CartItemHolderData dataForQty : dataList) {
+                    if (!productId.equals(dataForQty.getCartItemData().getOriginData().getProductId()) &&
+                            parentId.equals(dataForQty.getCartItemData().getOriginData().getParentId())) {
+                        itemQty += dataForQty.getCartItemData().getUpdatedData().getQuantity();
+                    }
+                }
+            }
+
+            totalAllCartItemQty = totalAllCartItemQty + data.getCartItemData().getUpdatedData().getQuantity();
+            List<WholesalePrice> wholesalePrices = data.getCartItemData().getOriginData().getWholesalePrice();
+            boolean hasCalculateWholesalePrice = false;
+            if (wholesalePrices != null && wholesalePrices.size() > 0) {
+                for (WholesalePrice wholesalePrice : wholesalePrices) {
+                    if (itemQty >= wholesalePrice.getQtyMin() &&
+                            itemQty <= wholesalePrice.getQtyMax()) {
+                        subtotalPrice = subtotalPrice + (itemQty * wholesalePrice.getPrdPrc());
+                        hasCalculateWholesalePrice = true;
+                        data.getCartItemData().getOriginData().setWholesalePriceFormatted(wholesalePrice.getPrdPrcFmt());
+                        break;
+                    }
+                }
+                if (!hasCalculateWholesalePrice) {
+                    if (itemQty > wholesalePrices.get(wholesalePrices.size() - 1).getPrdPrc()) {
+                        subtotalPrice = subtotalPrice + (itemQty * wholesalePrices.get(wholesalePrices.size() - 1).getPrdPrc());
+                        data.getCartItemData().getOriginData().setWholesalePriceFormatted(wholesalePrices.get(wholesalePrices.size() - 1).getPrdPrcFmt());
+                    } else {
+                        subtotalPrice = subtotalPrice + (itemQty * data.getCartItemData().getOriginData().getPricePlan());
+                        data.getCartItemData().getOriginData().setWholesalePriceFormatted(null);
+                    }
+                }
+            } else {
+                subtotalPrice = subtotalPrice + (itemQty * data.getCartItemData().getOriginData().getPricePlan());
+                data.getCartItemData().getOriginData().setWholesalePriceFormatted(null);
+            }
         }
 
-        view.renderDetailInfoSubTotal(String.valueOf(qty),
+        view.renderDetailInfoSubTotal(String.valueOf(totalAllCartItemQty),
                 CurrencyFormatUtil.convertPriceValueToIdrFormat(((int) subtotalPrice), true));
     }
 
@@ -340,6 +380,7 @@ public class CartListPresenter implements ICartListPresenter {
     public void processResetAndRefreshCartData() {
         view.renderLoadGetCartData();
         view.disableSwipeRefresh();
+        view.showProgressLoading();
         TKPDMapParam<String, String> paramResetCart = new TKPDMapParam<>();
         paramResetCart.put("lang", "id");
         paramResetCart.put("step", "4");
@@ -738,6 +779,7 @@ public class CartListPresenter implements ICartListPresenter {
 
             @Override
             public void onError(Throwable e) {
+                view.hideProgressLoading();
                 e.printStackTrace();
                 view.renderLoadGetCartDataFinish();
                 if (e instanceof UnknownHostException) {
@@ -771,8 +813,9 @@ public class CartListPresenter implements ICartListPresenter {
 
             @Override
             public void onNext(ResetAndRefreshCartListData resetAndRefreshCartListData) {
+                view.hideProgressLoading();
                 view.renderLoadGetCartDataFinish();
-                if (!resetAndRefreshCartListData.getResetCartData().isSuccess()) {
+                if (resetAndRefreshCartListData.getCartListData() == null) {
                     view.renderErrorInitialGetCartListData(resetAndRefreshCartListData.getResetCartData().getMessage());
                 } else {
                     if (resetAndRefreshCartListData.getCartListData().getCartItemDataList().isEmpty()) {
@@ -781,9 +824,7 @@ public class CartListPresenter implements ICartListPresenter {
                         view.renderInitialGetCartListDataSuccess(resetAndRefreshCartListData.getCartListData());
                     }
                 }
-
             }
-
         };
     }
 

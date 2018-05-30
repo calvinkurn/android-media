@@ -13,7 +13,7 @@ import com.tokopedia.checkout.view.view.shippingoptions.viewmodel.ShipmentTypeDa
 
 public class CourierHeaderViewHolder extends RecyclerView.ViewHolder {
 
-    TextView tvShipmentType;
+    private TextView tvShipmentType;
 
     public CourierHeaderViewHolder(View itemView) {
         super(itemView);

@@ -30,6 +30,8 @@ import retrofit2.Response;
  */
 
 public class OrderDetailMapper {
+    private String BASE_URL_UPLOAD_PROOF_AWB = "https://m.tokopedia.com/myorder/list/uploadawb/";
+    private String QUERY_INVOICE_URL_UPLOAD_AWB = "?invoice=";
 
     public OrderDetailData generateOrderDetailModel(OrderDetailResponse responseData) {
         OrderDetailData viewData = new OrderDetailData();
@@ -190,6 +192,14 @@ public class OrderDetailMapper {
                     .getPickupInfo().getName());
         }
 
+        viewData.setShowUploadAwb(responseData.getButtons().getAwbUpload() == 2);
+        viewData.setAwbUploadProofText(responseData.getDetail().getShipment().getAwbUploadProofText());
+        viewData.setAwbUploadProofUrl(BASE_URL_UPLOAD_PROOF_AWB
+                + viewData.getOrderId() + "/"
+                + viewData.getShopId() + "/"
+                + QUERY_INVOICE_URL_UPLOAD_AWB
+                + viewData.getInvoiceNumber()
+        );
         return viewData;
     }
 

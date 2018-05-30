@@ -29,7 +29,7 @@ public class MultipleAddressAdapter
     private static final int MULTIPLE_ADDRESS_FOOTER_LAYOUT =
             R.layout.multiple_address_footer;
 
-    private List<MultipleAddressAdapterData> addressData;
+    private ArrayList<MultipleAddressAdapterData> addressData;
 
     private MultipleAddressAdapterListener listener;
 
@@ -37,7 +37,7 @@ public class MultipleAddressAdapter
 
     public MultipleAddressAdapter(List<MultipleAddressAdapterData> addressData,
                                   MultipleAddressAdapterListener listener) {
-        this.addressData = addressData;
+        this.addressData = new ArrayList<>(addressData);
         this.listener = listener;
         adapterObjectList = new ArrayList<>();
         adapterObjectList.addAll(addressData);
@@ -46,9 +46,9 @@ public class MultipleAddressAdapter
 
     @Override
     public int getItemViewType(int position) {
-        if(adapterObjectList.get(position) instanceof MultipleAddressAdapterData)
+        if (adapterObjectList.get(position) instanceof MultipleAddressAdapterData)
             return MULTIPLE_ADDRESS_ADAPTER_LAYOUT;
-        else if(adapterObjectList.get(position) instanceof List)
+        else if (adapterObjectList.get(position) instanceof List)
             return MULTIPLE_ADDRESS_FOOTER_LAYOUT;
         else
             return super.getItemViewType(position);
@@ -69,11 +69,11 @@ public class MultipleAddressAdapter
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
 
-        if (getItemViewType(position) ==  MULTIPLE_ADDRESS_ADAPTER_LAYOUT) {
+        if (getItemViewType(position) == MULTIPLE_ADDRESS_ADAPTER_LAYOUT) {
             MultipleAddressViewHolder itemViewHolder = (MultipleAddressViewHolder) holder;
             MultipleAddressAdapterData data = (MultipleAddressAdapterData)
                     adapterObjectList.get(position);
-            itemViewHolder.bindAdapterView(data, this, listener, isFirstItem(data));
+            itemViewHolder.bindAdapterView(addressData, data, this, listener, isFirstItem(data));
         } else if (getItemViewType(position) == MULTIPLE_ADDRESS_FOOTER_LAYOUT)
             ((MultipleAddressFooterViewHolder) holder).goToCourierPageButton
                     .setOnClickListener(onGoToCourierPageButtonClicked(addressData));
@@ -91,7 +91,7 @@ public class MultipleAddressAdapter
 
     @Override
     public void onEditItemChoosen(MultipleAddressAdapterData productData, MultipleAddressItemData addressData) {
-        listener.onItemChoosen(productData, addressData);
+        listener.onItemChoosen(this.addressData, productData, addressData);
     }
 
     class MultipleAddressHeaderViewHolder extends RecyclerView.ViewHolder {
@@ -130,10 +130,12 @@ public class MultipleAddressAdapter
 
         void onGoToChooseCourier(List<MultipleAddressAdapterData> data);
 
-        void onItemChoosen(MultipleAddressAdapterData productData,
+        void onItemChoosen(ArrayList<MultipleAddressAdapterData> dataList,
+                           MultipleAddressAdapterData productData,
                            MultipleAddressItemData addressData);
 
         void onAddNewShipmentAddress(int addressPositionToAdd,
+                                     ArrayList<MultipleAddressAdapterData> dataList,
                                      MultipleAddressAdapterData data,
                                      MultipleAddressItemData addressData);
     }
