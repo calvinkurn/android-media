@@ -64,11 +64,11 @@ public class ShareAdapter extends RecyclerView.Adapter<ShareAdapter.ShareViewHol
 
         if (isPositionCopy(position)) {
             resources = AppCompatResources.getDrawable(holder.iconView.getContext(), R.drawable.ic_copy_clipboard);
-            title = "Salin Link";
+            title = holder.labelView.getContext().getString(R.string.copy);
             type = ShareBottomSheet.KEY_COPY;
         } else if (isPositionOther(position)) {
             resources = AppCompatResources.getDrawable(holder.iconView.getContext(), R.drawable.ic_btn_more);
-            title = "Lainnya";
+            title = holder.labelView.getContext().getString(R.string.fb_cat_etc);
             type = ShareBottomSheet.KEY_OTHER;
         } else {
             final ResolveInfo activity = mActivities.get(position);

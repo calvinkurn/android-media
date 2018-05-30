@@ -134,11 +134,12 @@ public class DeepLinkActivity extends BasePresenterActivity<DeepLinkPresenter> i
 
     @Override
     public void shareProductInfo(@NonNull ShareData shareData) {
-        android.support.v4.app.FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-        fragmentTransaction.replace(R.id.main_view, ProductShareFragment.newInstance(shareData,false),
-                ProductShareFragment.class.getSimpleName());
-        fragmentTransaction.addToBackStack(null);
-        fragmentTransaction.commit();
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.main_view,
+                        ProductShareFragment.newInstance(shareData,false),
+                        ProductShareFragment.class.getSimpleName())
+                .addToBackStack(null)
+                .commit();
     }
 
     @Override
