@@ -286,6 +286,7 @@ dependencies {
     implementation project(rootProject.ext.features.otp)
     implementation project(rootProject.ext.features.topAdsCommon)
     implementation project(rootProject.ext.features.topAdsSourceTagging)
+    implementation project(rootProject.ext.features.train)
 
     implementation project(rootProject.ext.libraries.pushNotif)
     implementation project(rootProject.ext.libraries.applink)
@@ -297,6 +298,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.useCase)
     implementation project(rootProject.ext.libraries.fingerprint)
     implementation project(rootProject.ext.libraries.imageuploader)
+    implementation project(rootProject.ext.libraries.travelCalendar)
 
     implementation rootProject.ext.miscDependencies.bcaOneClick
     implementation project(rootProject.ext.features.shopCommon)
@@ -306,6 +308,7 @@ dependencies {
     implementation rootProject.ext.playServicesDependencies.analytics
     implementation rootProject.ext.playServicesDependencies.perfMon
     implementation project(rootProject.ext.features.train)
+
 
     implementation (rootProject.ext.debugToolsDependencies.chuck) {
         exclude group: 'com.squareup.okhttp3'

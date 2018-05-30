@@ -1,26 +1,47 @@
 apply plugin: 'com.android.library'
 apply from: "$rootProject.projectDir/buildconfig/module.gradle"
-apply plugin: 'android-apt'
+apply plugin: 'io.hansel.preprocessor.module'
+
+repositories {
+    maven { url 'https://hansel.io/maven' }
+}
+
+buildscript {
+    repositories {
+        maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
+        mavenCentral()
+        jcenter()
+        maven { url 'https://hansel.io/maven' }
+    }
+    dependencies {
+        classpath rootProject.ext.miscDependencies.hansel
+    }
+}
+
+project.ext {
+    artifactId = 'train'
+    groupId = 'com.tokopedia.train'
+    versionName = "${tkpdTrainVersion}"
+    artifactName ="tkpdtrain-release"
+}
 
 dependencies {
-    compile project(rootProject.ext.libraries.travelCalendar)
-    compile project(rootProject.ext.libraries.useCase)
-    compile project(rootProject.ext.libraries.abstraction)
-    compile project(rootProject.ext.libraries.design)
+    implementation project(rootProject.ext.libraries.travelCalendar)
+    implementation project(rootProject.ext.libraries.useCase)
+    implementation project(rootProject.ext.libraries.abstraction)
+    implementation project(rootProject.ext.libraries.design)
+    implementation rootProject.ext.miscDependencies.multiDex
 
-    compile rootProject.ext.supportLibDependencies.supportV4
-    apt rootProject.ext.dbDependencies.dbFlowProcessor
-    compile rootProject.ext.dbDependencies.dbFlowCore
-    compile rootProject.ext.dbDependencies.dbFlow
+    annotationProcessor rootProject.ext.dbDependencies.dbFlowProcessor
+    implementation rootProject.ext.dbDependencies.dbFlowCore
+    implementation rootProject.ext.dbDependencies.dbFlow
 
-    compile rootProject.ext.miscDependencies.dagger
-    apt rootProject.ext.miscDependencies.daggerCompiler
-    provided rootProject.ext.miscDependencies.javaxAnnotation
+    compileOnly rootProject.ext.miscDependencies.javaxAnnotation
 
-    testCompile rootProject.ext.testDependencies.junit
-    testCompile rootProject.ext.testDependencies.mockitorCore
-    testCompile 'org.powermock:powermock-module-junit4:1.7.3'
-    testCompile 'org.powermock:powermock-api-mockito2:1.7.0'
+    testImplementation rootProject.ext.testDependencies.junit
+    testImplementation rootProject.ext.testDependencies.mockitorCore
+    testImplementation 'org.powermock:powermock-module-junit4:1.7.3'
+    testImplementation 'org.powermock:powermock-api-mockito2:1.7.0'
 
-    compile rootProject.ext.debugToolsDependencies.stetho
+    implementation rootProject.ext.debugToolsDependencies.stetho
 }

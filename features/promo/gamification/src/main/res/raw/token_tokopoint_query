@@ -1,27 +1,27 @@
 {
   tokopointsToken {
-    resultStatus {
-        code
-        message
-        status
-   }
-    offFlag
-    sumToken
-    sumTokenStr
-    tokenUnit
-    floating {
-      tokenId
-      pageUrl
-      applink
-      timeRemainingSeconds
-      isShowTime
-      unixTimestamp
-      tokenAsset {
-        name
-        version
-        floatingImgUrl
-      }
-    }
+         resultStatus {
+             code
+             message
+             status
+        }
+         offFlag
+         sumToken
+         sumTokenStr
+         tokenUnit
+         floating {
+           tokenId
+           pageUrl
+           applink
+           timeRemainingSeconds
+           isShowTime
+           unixTimestamp
+           tokenAsset {
+             name
+             version
+             floatingImgUrl
+           }
+         }
     home {
       emptyState{
           title
