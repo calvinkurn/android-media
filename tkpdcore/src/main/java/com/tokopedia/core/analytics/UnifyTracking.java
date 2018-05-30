@@ -674,6 +674,15 @@ public class UnifyTracking extends TrackingUtils {
         ).getEvent());
     }
 
+    public static void eventDiscoveryExternalImageSearch(String label) {
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.IMAGE_SEARCH_CLICK,
+                AppEventTracking.Category.IMAGE_SEARCH,
+                AppEventTracking.Action.EXTERNAL_IMAGE_SEARCH,
+                ""
+        ).getEvent());
+    }
+
     public static void eventDiscoveryCameraImageSearchResult(String label) {
         sendGTMEvent(new EventTracking(
                 AppEventTracking.Event.IMAGE_SEARCH_CLICK,

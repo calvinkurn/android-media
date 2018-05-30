@@ -1,7 +1,10 @@
 package com.tokopedia.discovery.newdiscovery.search;
 
+import android.Manifest;
+import android.content.ClipData;
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.design.widget.TabLayout;
@@ -17,7 +20,11 @@ import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.discovery.model.Filter;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.network.apiservices.ace.apis.BrowseApi;
+import com.tokopedia.core.remoteconfig.FirebaseRemoteConfigImpl;
+import com.tokopedia.core.remoteconfig.RemoteConfig;
 import com.tokopedia.core.router.discovery.BrowseProductRouter;
+import com.tokopedia.core.util.RequestPermissionUtil;
+import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.discovery.R;
 import com.tokopedia.discovery.newdiscovery.base.BottomSheetListener;
 import com.tokopedia.discovery.newdiscovery.base.DiscoveryActivity;
@@ -42,6 +49,13 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import permissions.dispatcher.NeedsPermission;
+import permissions.dispatcher.OnNeverAskAgain;
+import permissions.dispatcher.OnPermissionDenied;
+import permissions.dispatcher.OnShowRationale;
+import permissions.dispatcher.PermissionRequest;
+import permissions.dispatcher.RuntimePermissions;
+
 import static com.tokopedia.core.gcm.Constants.FROM_APP_SHORTCUTS;
 import static com.tokopedia.core.router.discovery.BrowseProductRouter.EXTRAS_SEARCH_TERM;
 
@@ -49,6 +63,7 @@ import static com.tokopedia.core.router.discovery.BrowseProductRouter.EXTRAS_SEA
  * Created by henrypriyono on 10/6/17.
  */
 
+@RuntimePermissions
 public class SearchActivity extends DiscoveryActivity
         implements SearchContract.View, RedirectionListener, BottomSheetListener {
 
@@ -70,6 +85,7 @@ public class SearchActivity extends DiscoveryActivity
     private String productTabTitle;
     private String catalogTabTitle;
     private String shopTabTitle;
+    private boolean forceSwipeToShop;
 
     private BottomSheetFilterView bottomSheetFilterView;
 
@@ -118,22 +134,26 @@ public class SearchActivity extends DiscoveryActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         initInjector();
-        setPresenter(searchPresenter);
-        searchPresenter.attachView(this);
-        searchPresenter.setDiscoveryView(this);
-        initResources();
-
-        ProductViewModel productViewModel =
-                getIntent().getParcelableExtra(EXTRA_PRODUCT_VIEW_MODEL);
-
-        boolean forceSwipeToShop;
-        String searchQuery = getIntent().getStringExtra(BrowseProductRouter.EXTRAS_SEARCH_TERM);
 
         if (savedInstanceState != null) {
             forceSwipeToShop = isForceSwipeToShop();
         } else {
             forceSwipeToShop = getIntent().getBooleanExtra(EXTRA_FORCE_SWIPE_TO_SHOP, false);
         }
+        bottomSheetFilterView.initFilterBottomSheet(savedInstanceState);
+        handleIntent(getIntent());
+    }
+
+    private void handleIntent(Intent intent) {
+        setPresenter(searchPresenter);
+        searchPresenter.attachView(this);
+        searchPresenter.setDiscoveryView(this);
+        initResources();
+        ProductViewModel productViewModel =
+                intent.getParcelableExtra(EXTRA_PRODUCT_VIEW_MODEL);
+
+        String searchQuery = intent.getStringExtra(BrowseProductRouter.EXTRAS_SEARCH_TERM);
+
         if (productViewModel != null) {
             setLastQuerySearchView(productViewModel.getQuery());
             loadSection(productViewModel, forceSwipeToShop);
@@ -151,11 +171,75 @@ public class SearchActivity extends DiscoveryActivity
             }, 200);
         }
 
-        if (getIntent() != null &&
-                getIntent().getBooleanExtra(FROM_APP_SHORTCUTS, false)) {
+        if (intent != null &&
+                intent.getBooleanExtra(FROM_APP_SHORTCUTS, false)) {
             UnifyTracking.eventBeliLongClick();
         }
-        bottomSheetFilterView.initFilterBottomSheet(savedInstanceState);
+        handleImageUri(intent);
+    }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        handleIntent(intent);
+    }
+
+    private void handleImageUri(Intent intent) {
+
+        RemoteConfig remoteConfig = new FirebaseRemoteConfigImpl(this);
+
+        if (remoteConfig.getBoolean(TkpdCache.RemoteConfigKey.SHOW_IMAGE_SEARCH, false) &&
+                intent != null) {
+
+            if (intent.getClipData() != null &&
+                    intent.getClipData().getItemCount() > 0) {
+
+                searchView.hideShowCaseDialog(true);
+                sendImageSearchFromGalleryGTM("");
+                ClipData clipData = intent.getClipData();
+                Uri uri = clipData.getItemAt(0).getUri();
+                SearchActivityPermissionsDispatcher.onImageSuccessWithCheck(SearchActivity.this, uri.toString());
+            } else if (intent.getData() != null &&
+                    !TextUtils.isEmpty(intent.getData().toString())) {
+                searchView.hideShowCaseDialog(true);
+                sendImageSearchFromGalleryGTM("");
+                SearchActivityPermissionsDispatcher.onImageSuccessWithCheck(SearchActivity.this, intent.getData().toString());
+            }
+        }
+    }
+
+
+    @NeedsPermission(Manifest.permission.READ_EXTERNAL_STORAGE)
+    public void onImageSuccess(String uri) {
+        onImagePickedSuccess(uri);
+    }
+
+
+    @OnShowRationale(Manifest.permission.READ_EXTERNAL_STORAGE)
+    void showRationaleForStorage(final PermissionRequest request) {
+        RequestPermissionUtil.onShowRationale(this, request, Manifest.permission.READ_EXTERNAL_STORAGE);
+    }
+
+    @OnPermissionDenied(Manifest.permission.READ_EXTERNAL_STORAGE)
+    void showDeniedForStorage() {
+        RequestPermissionUtil.onPermissionDenied(this, Manifest.permission.READ_EXTERNAL_STORAGE);
+    }
+
+    @OnNeverAskAgain(Manifest.permission.READ_EXTERNAL_STORAGE)
+    void showNeverAskForStorage() {
+        RequestPermissionUtil.onNeverAskAgain(this, Manifest.permission.READ_EXTERNAL_STORAGE);
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        SearchActivityPermissionsDispatcher.onRequestPermissionsResult(
+                SearchActivity.this, requestCode, grantResults);
+
+    }
+
+    private void sendImageSearchFromGalleryGTM(String label) {
+        UnifyTracking.eventDiscoveryExternalImageSearch(label);
     }
 
     private void initInjector() {

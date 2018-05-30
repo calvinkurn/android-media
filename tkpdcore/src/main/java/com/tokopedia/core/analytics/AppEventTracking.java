@@ -324,6 +324,7 @@ public interface AppEventTracking {
         String VOICE_SEARCH = "Voice Search";
         String CAMERA_SEARCH = "click image search by camera";
         String GALLERY_SEARCH = "click image search from gallery";
+        String EXTERNAL_IMAGE_SEARCH = "click image search external";
         String CAMERA_SEARCH_RESULT = "query search by camera";
         String GALLERY_SEARCH_RESULT = "query search by gallery";
         String VIEW = "View";
