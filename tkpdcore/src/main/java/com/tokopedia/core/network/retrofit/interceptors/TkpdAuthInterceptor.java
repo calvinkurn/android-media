@@ -68,7 +68,16 @@ public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
 
         checkForceLogout(chain, response, finalRequest);
 
-        String bodyResponse = response.body().string();
+        /**
+         * Temporary fix to handle outofmemory
+         * should use inputstream instead
+         */
+        String bodyResponse = "";
+        try {
+            bodyResponse = response.body().string();
+        } catch (Throwable t){
+
+        }
         checkResponse(bodyResponse, response);
 
         return createNewResponse(response, bodyResponse);

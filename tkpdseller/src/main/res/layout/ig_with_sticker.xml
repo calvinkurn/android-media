@@ -31,7 +31,7 @@
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
                 android:layout_marginLeft="20dp"
-                android:background="@drawable/rounded_green"
+                android:background="@drawable/rounded_green_sticker"
                 android:paddingBottom="@dimen/dp_7"
                 android:paddingLeft="@dimen/dp_72"
                 android:paddingRight="@dimen/dp_20"
@@ -45,7 +45,7 @@
                 android:layout_width="85dp"
                 android:layout_height="85dp"
                 android:layout_alignParentLeft="true"
-                android:src="@drawable/asset_4_2_x" />
+                android:src="@drawable/ic_sticker_toped" />
 
             <TextView
                 android:id="@+id/tv_cashback"

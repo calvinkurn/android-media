@@ -26,6 +26,10 @@ public class WholesaleModel implements Parcelable, ItemType {
      */
     private long qtyMin = 0;
     private double qtyPrice = 0;
+    private String statusPrice = "";
+    private String statusQty = "";
+    private boolean focusPrice = false;
+    private boolean focusQty = false;
     private int level;
 
     public WholesaleModel(long quantityOne, double wholeSalePrice) {
@@ -80,5 +84,37 @@ public class WholesaleModel implements Parcelable, ItemType {
     @Override
     public int getType() {
         return TYPE;
+    }
+
+    public boolean isFocusPrice() {
+        return focusPrice;
+    }
+
+    public void setFocusPrice(boolean focusPrice) {
+        this.focusPrice = focusPrice;
+    }
+
+    public boolean isFocusQty() {
+        return focusQty;
+    }
+
+    public void setFocusQty(boolean focusQty) {
+        this.focusQty = focusQty;
+    }
+
+    public String getStatusPrice() {
+        return statusPrice;
+    }
+
+    public void setStatusPrice(String statusPrice) {
+        this.statusPrice = statusPrice;
+    }
+
+    public String getStatusQty() {
+        return statusQty;
+    }
+
+    public void setStatusQty(String statusQty) {
+        this.statusQty = statusQty;
     }
 }

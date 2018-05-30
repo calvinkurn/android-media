@@ -1,23 +1,20 @@
 package com.tokopedia.seller.product.manage.utils;
+
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.Paint;
-import android.graphics.Rect;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.seller.R;
 
 /**
- * Created by yoshua on 16/05/18.
+ * Created by yoshua on 28/05/18.
  */
+
 public class AddSticker {
     private String name;
     private String price;
@@ -51,7 +48,7 @@ public class AddSticker {
         this.cashback = cashback;
     }
 
-    public Bitmap processStickerToImage(Bitmap source,Context context){
+    public Bitmap processStickerToImage(Bitmap source, Context context){
         LayoutInflater mInflater = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         RelativeLayout view = new RelativeLayout(context);
         mInflater.inflate(R.layout.ig_with_sticker, view, true);
