@@ -8,19 +8,19 @@
         <activity
             android:name=".subscribe.view.activity.GmSubscribeHomeActivity"
             android:label="@string/gm_home_title"
-             />
+            android:screenOrientation="portrait" />
         <activity
             android:name=".subscribe.view.activity.GmProductActivity"
             android:label="@string/gmsubscribe_current_product_selector"
-             />
+            android:screenOrientation="portrait" />
         <activity
             android:name=".subscribe.view.activity.GmCheckoutActivity"
             android:label="@string/gmsubscribe_checkout_title"
-             />
+            android:screenOrientation="portrait" />
         <activity
             android:name=".statistic.view.activity.GMStatisticDashboardActivity"
             android:label="@string/gm_statistic_title"
-
+            android:screenOrientation="portrait"
             android:theme="@style/Theme.Tokopedia3" />
         <activity
             android:name=".statistic.view.activity.GMStatisticTransactionActivity"
