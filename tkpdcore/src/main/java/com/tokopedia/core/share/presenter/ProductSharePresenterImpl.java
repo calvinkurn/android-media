@@ -1,6 +1,8 @@
 package com.tokopedia.core.share.presenter;
 
 import android.app.Activity;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.widget.Toast;
 
 import com.facebook.login.LoginManager;
@@ -16,6 +18,8 @@ import com.tokopedia.core.util.BranchSdkUtils;
 import com.tokopedia.core.util.ClipboardHandler;
 import com.tokopedia.core.util.ShareSocmedHandler;
 import com.tokopedia.core.var.TkpdState;
+
+import java.io.FileInputStream;
 
 /**
  * Created by Angga.Prasetiyo on 11/12/2015.
@@ -181,8 +185,6 @@ public class ProductSharePresenterImpl implements ProductSharePresenter {
                     TkpdState.PackageName.TYPE_IMAGE,
                     data.getPathSticker(), null);
         }
-
-
     }
 
     @Override
