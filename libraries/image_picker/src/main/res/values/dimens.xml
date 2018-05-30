@@ -4,7 +4,7 @@
     <dimen name="tab_min_width">50dp</dimen>
     <dimen name="img_thumb_holder">72dp</dimen>
     <dimen name="img_thumb_m">50dp</dimen>
-    <dimen name="media_grid_spacing">2dp</dimen>
+    <dimen name="image_picker_media_grid_spacing">2dp</dimen>
     <dimen name="editor_main_height">64dp</dimen>
     <dimen name="editor_footer_height">150dp</dimen>
     <dimen name="image_edit_thumbnail_width">72dp</dimen>
