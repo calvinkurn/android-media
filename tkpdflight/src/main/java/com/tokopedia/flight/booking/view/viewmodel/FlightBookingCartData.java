@@ -61,7 +61,6 @@ public class FlightBookingCartData implements Parcelable {
 
     public int getRefreshTime() {
         return refreshTime;
-//        return 15;
     }
 
     public void setRefreshTime(int refreshTime) {
