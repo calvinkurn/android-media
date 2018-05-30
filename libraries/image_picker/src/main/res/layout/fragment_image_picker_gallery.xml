@@ -27,7 +27,6 @@
             app:lv_content_color="@color/tkpd_main_green"
             app:lv_title="@string/album"
             app:layout_scrollFlags="enterAlways|scroll" />
-
     </android.support.design.widget.AppBarLayout>
 
     <android.support.v7.widget.RecyclerView

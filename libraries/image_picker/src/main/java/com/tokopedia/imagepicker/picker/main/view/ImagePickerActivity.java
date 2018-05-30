@@ -15,7 +15,6 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
@@ -34,7 +33,7 @@ import com.tokopedia.imagepicker.picker.gallery.model.MediaItem;
 import com.tokopedia.imagepicker.picker.instagram.view.fragment.ImagePickerInstagramFragment;
 import com.tokopedia.imagepicker.picker.main.builder.ImagePickerBuilder;
 import com.tokopedia.imagepicker.picker.main.builder.ImagePickerTabTypeDef;
-import com.tokopedia.imagepicker.picker.main.builder.ImageSelectionTypeDef;
+import com.tokopedia.imagepicker.picker.widget.ImagePickerPreviewWidget;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -69,6 +68,7 @@ public class ImagePickerActivity extends BaseSimpleActivity
     private ArrayList<String> selectedImagePaths;
     private TextView tvDone;
     private boolean isPermissionGotDenied;
+    private ImagePickerPreviewWidget imagePickerPreviewWidget;
 
     public static Intent getIntent(Context context, ImagePickerBuilder imagePickerBuilder) {
         Intent intent = new Intent(context, ImagePickerActivity.class);
@@ -143,11 +143,11 @@ public class ImagePickerActivity extends BaseSimpleActivity
     }
 
     private void setupPreview() {
-        View vgPreviewContainer = findViewById(R.id.vg_preview_container);
-        if (imagePickerBuilder.isHasPickerPreview()) {
-            vgPreviewContainer.setVisibility(View.VISIBLE);
+        imagePickerPreviewWidget = findViewById(R.id.image_picker_preview_widget);
+        if (imagePickerBuilder.supportMultipleSelection()) {
+            imagePickerPreviewWidget.setVisibility(View.VISIBLE);
         } else {
-            vgPreviewContainer.setVisibility(View.GONE);
+            imagePickerPreviewWidget.setVisibility(View.GONE);
         }
     }
 
@@ -323,26 +323,19 @@ public class ImagePickerActivity extends BaseSimpleActivity
     }
 
     private void onImageSelected(String filePathOrUrl, boolean isChecked) {
-        switch (imagePickerBuilder.getImageSelectionType()) {
-            case ImageSelectionTypeDef.TYPE_SINGLE: {
-                onSingleImagePicked(filePathOrUrl);
-            }
-            break;
-            case ImageSelectionTypeDef.TYPE_MULTIPLE: {
-                if (isChecked) {
-                    selectedImagePaths.add(filePathOrUrl);
-                    enableDoneView();
-                } else {
-                    selectedImagePaths.remove(filePathOrUrl);
-                    if (selectedImagePaths.size() == 0) {
-                        disableDoneView();
-                    }
-                }
-                if (imagePickerBuilder.isHasPickerPreview()) {
-                    // TODO update the preview?
+        if (imagePickerBuilder.supportMultipleSelection()) {
+            if (isChecked) {
+                selectedImagePaths.add(filePathOrUrl);
+                enableDoneView();
+            } else {
+                selectedImagePaths.remove(filePathOrUrl);
+                if (selectedImagePaths.size() == 0) {
+                    disableDoneView();
                 }
             }
-            break;
+            // TODO update the preview?
+        } else {
+            onSingleImagePicked(filePathOrUrl);
         }
     }
 

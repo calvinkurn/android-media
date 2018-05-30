@@ -10,7 +10,6 @@ import android.database.Cursor;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.RequiresPermission;
 import android.support.v4.app.ActivityCompat;
@@ -122,7 +121,7 @@ public class ImagePickerGalleryFragment extends TkpdBaseV4Fragment
         recyclerView = view.findViewById(R.id.recycler_view);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new GridLayoutManager(getActivity(), SPAN_COUNT));
-        int spacing = getResources().getDimensionPixelSize(R.dimen.media_grid_spacing);
+        int spacing = getResources().getDimensionPixelSize(R.dimen.image_picker_media_grid_spacing);
         recyclerView.addItemDecoration(new MediaGridInset(SPAN_COUNT, spacing, false));
         recyclerView.setAdapter(albumMediaAdapter);
         RecyclerView.ItemAnimator itemAnimator = recyclerView.getItemAnimator();
