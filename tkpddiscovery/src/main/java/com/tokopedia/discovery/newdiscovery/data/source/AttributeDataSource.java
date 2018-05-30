@@ -37,4 +37,8 @@ public class AttributeDataSource {
     public Observable<DynamicFilterModel> getDynamicAttribute(TKPDMapParam<String, Object> param) {
         return attributeApi.getDynamicAttribute(param).map(dynamicAttributeMapper);
     }
+
+    public Observable<DynamicFilterModel> getDynamicAttributeV4(TKPDMapParam<String, Object> param) {
+        return attributeApi.getDynamicAttributeV4(param).map(dynamicAttributeMapper);
+    }
 }

@@ -13,7 +13,7 @@ ext {
     butterKnifeVersion = '9.0.0-SNAPSHOT'
     dbFlowVersion = '3.0.1'
     retrofitVersion = '2.1.0'
-    okHttpVersion = '3.8.0'
+    okHttpVersion = '3.8.1'
     glideVersion = '3.7.0'
     permissionDispatcherVersion = '2.4.0'
     deeplinkDispatchVersion = '3.0.0-rc1'
@@ -61,6 +61,7 @@ ext {
     tkpdWishlistVersion = '2.22'
     tkpdHomeVersion = '2.22'
     tkpdMitraToppersVersion = '2.22'
+    tkpdDistrictRecommendationVersion = '2.22'
     tkpdTrainVersion = '2.22'
 
     networkDependencies = [
@@ -244,7 +245,8 @@ ext {
             gamification        : "com.tokopedia.gamification:gamification:${tkpdGamificationVersion}",
             mitraToppers        : "com.tokopedia.mitratoppers:mitra_toppers:${tkpdMitraToppersVersion}",
             goldMerchant        : "com.tokopedia.gm:gold_merchant:${tkpdGoldMerchantVersion}",
-            topAdsManagement    : "com.tokopedia.topads:top_ads_management:${tkpdTopAdsSDKVersion}"
+            topAdsManagement    : "com.tokopedia.topads:top_ads_management:${tkpdTopAdsSDKVersion}",
+            districtRecommendation: "com.tokopedia.district_recommendation:district_recommendation:${tkpdDistrictRecommendationVersion}"
     ]
 
     tkpdLibDependencies = [
@@ -271,6 +273,7 @@ ext {
             seller          : ":tkpdseller",
             payment         : ":features:payment:payment",
             wishlistCommon  : ":features:discovery:wishlist_common",
+            districtRecommendation: ":features:logistic:district_recommendation",
             goldMerchantCommon: ":features:merchant:gold_merchant_common",
             goldMerchant    : ":features:merchant:gold_merchant",
             reputationCommon: ":features:merchant:reputation_common",
@@ -278,6 +281,8 @@ ext {
             shopCommon      : ":features:merchant:shop_common",
             shopPage        : ":features:merchant:shop_page",
             topAdsManagement: ":features:top_ads:top_ads_management",
+            topAdsCommon    : ":features:top_ads:top_ads_management_common",
+            topAdsSourceTagging: ":features:top_ads:top_ads_management_sourcetagging",
             tokoCash        : ":features:fintech:tokocash",
             flight          : ":tkpdflight",
             flightNoOp      : ":features:digital:flight_no_op",
@@ -301,7 +306,9 @@ ext {
             applink         : ":libraries:applink",
             cacheApi        : ":libraries:cache_api",
             useCase         : ":libraries:use_case",
+            williamchart    : ":libraries:williamchart",
             fingerprint     : ":libraries:fingerprint",
+            bottomSheetBuilder: ":libraries:bottom_sheet_builder",
             userSession     : ":libraries:user_session",
             imageuploader   : ":libraries:imageuploader",
             youtubeApi      : ":libraries:YouTubeAndroidPlayerApi",

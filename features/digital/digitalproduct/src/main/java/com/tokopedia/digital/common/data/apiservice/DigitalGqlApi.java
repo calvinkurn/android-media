@@ -4,6 +4,8 @@ import com.tokopedia.abstraction.common.data.model.response.GraphqlResponse;
 import com.tokopedia.core.drawer2.data.pojo.UserData;
 import com.tokopedia.digital.common.data.entity.response.RechargeResponseEntity;
 
+import java.util.List;
+
 import retrofit2.Response;
 import retrofit2.http.Body;
 import retrofit2.http.Headers;
@@ -18,9 +20,9 @@ public interface DigitalGqlApi {
 
     @POST("./")
     @Headers({"Content-Type: application/json"})
-    Observable<Response<GraphqlResponse<RechargeResponseEntity>>> getCategory(@Body String requestBody);
+    Observable<Response<List<GraphqlResponse<RechargeResponseEntity>>>> getCategory(@Body String requestBody);
 
     @POST("./")
     @Headers({"Content-Type: application/json"})
-    Observable<Response<GraphqlResponse<RechargeResponseEntity>>> getCategoryAndFavoriteList(@Body String requestBody);
+    Observable<Response<List<GraphqlResponse<RechargeResponseEntity>>>> getCategoryAndFavoriteList(@Body String requestBody);
 }

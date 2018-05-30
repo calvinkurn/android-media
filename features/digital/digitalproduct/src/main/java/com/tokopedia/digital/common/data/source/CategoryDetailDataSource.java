@@ -23,6 +23,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.List;
 
 import retrofit2.Response;
 import rx.Observable;
@@ -116,10 +117,14 @@ public class CategoryDetailDataSource {
      */
     private Observable<ProductDigitalData> getCategoryDataFromCloud(String categoryId) {
         return digitalEndpointService.getApi().getCategory(getCategoryRequestPayload(categoryId))
-                .map(new Func1<Response<GraphqlResponse<RechargeResponseEntity>>, RechargeResponseEntity>() {
+                .map(new Func1<Response<List<GraphqlResponse<RechargeResponseEntity>>>, RechargeResponseEntity>() {
                     @Override
-                    public RechargeResponseEntity call(Response<GraphqlResponse<RechargeResponseEntity>> response) {
-                        return response.body().getData();
+                    public RechargeResponseEntity call(Response<List<GraphqlResponse<RechargeResponseEntity>>> response) {
+                        if(response != null && response.body() != null && response.body().size() > 0) {
+                            return response.body().get(0).getData();
+                        }
+
+                        return null;
                     }
                 })
                 .doOnNext(saveCategoryDetailToCache(categoryId))
@@ -153,10 +158,18 @@ public class CategoryDetailDataSource {
 
     public Observable<ProductDigitalData> getCategoryAndFavoritFromCloud(String categoryId, String operatorId, String clientNumber, String productId) {
         return digitalEndpointService.getApi().getCategoryAndFavoriteList(getCategoryAndFavRequestPayload(categoryId, operatorId, clientNumber, productId))
-                .map(new Func1<Response<GraphqlResponse<RechargeResponseEntity>>, RechargeResponseEntity>() {
+                .map(new Func1<Response<List<GraphqlResponse<RechargeResponseEntity>>>, RechargeResponseEntity>() {
                     @Override
-                    public RechargeResponseEntity call(Response<GraphqlResponse<RechargeResponseEntity>> response) {
-                        return response.body().getData();
+                    public RechargeResponseEntity call(Response<List<GraphqlResponse<RechargeResponseEntity>>> response) {
+                        RechargeResponseEntity newMappedObject = new RechargeResponseEntity();
+
+                        if(response != null && response.body() != null && response.body().size() > 1) {
+                            List<GraphqlResponse<RechargeResponseEntity>> responseEntity = response.body();
+                            newMappedObject.setRechargeCategoryDetail(responseEntity.get(0).getData().getRechargeCategoryDetail());
+                            newMappedObject.setRechargeFavoritNumberResponseEntity(responseEntity.get(1).getData().getRechargeFavoritNumberResponseEntity());
+                        }
+
+                        return newMappedObject;
                     }
                 })
                 .doOnNext(saveCategoryDetailAndFavToCache(categoryId))

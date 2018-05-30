@@ -9,7 +9,9 @@ project.ext {
 }
 
 dependencies {
-
+    implementation project(rootProject.ext.libraries.williamchart)
+    implementation project(rootProject.ext.features.topAdsSourceTagging)
+    implementation project(rootProject.ext.libraries.applink)
     implementation project(rootProject.ext.libraries.useCase)
     implementation project(rootProject.ext.libraries.abstraction)
     implementation project(rootProject.ext.libraries.design)
