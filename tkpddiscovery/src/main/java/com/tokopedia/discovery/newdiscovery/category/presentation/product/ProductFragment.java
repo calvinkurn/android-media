@@ -520,7 +520,7 @@ public class ProductFragment extends SearchSectionFragment
         if (item.getLabelList() != null) {
             for (int i = 0; i < item.getLabelList().size(); i++) {
                 if (item.getLabelList().get(i).getTitle().toLowerCase()
-                        .contains(getContext().getString(R.string.cashback))) {
+                        .contains(com.tokopedia.core.var.ProductItem.CASHBACK)) {
                     data.setCashback(item.getLabelList().get(i).getTitle());
                     break;
                 }
@@ -604,7 +604,7 @@ public class ProductFragment extends SearchSectionFragment
     }
 
     @Override
-    protected void reloadData() {
+    public void reloadData() {
         adapter.clearData();
         initTopAdsParams();
         topAdsRecyclerAdapter.reset();

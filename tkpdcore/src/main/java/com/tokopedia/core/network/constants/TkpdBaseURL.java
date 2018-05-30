@@ -607,6 +607,7 @@ public class TkpdBaseURL {
         public static final String PATH_IMAGE_SEARCH = "search/imagesearch/";
         public static final String PATH_GET_ATTRIBUTE = "search/product/attributes/v3";
         public static final String PATH_GET_DYNAMIC_ATTRIBUTE = "v2/dynamic_attributes";
+        public static final String PATH_GET_DYNAMIC_ATTRIBUTE_V4 = "v4/dynamic_attributes";
         public static final String PATH_BROWSE_CATALOG = "search/v2.1/catalog";
         public static final String PATH_BROWSE_SHOP = "search/v1/shop";
     }

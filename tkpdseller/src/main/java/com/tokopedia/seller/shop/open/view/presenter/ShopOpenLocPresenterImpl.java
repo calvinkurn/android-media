@@ -3,7 +3,7 @@ package com.tokopedia.seller.shop.open.view.presenter;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
 import com.tokopedia.core.geolocation.model.autocomplete.LocationPass;
-import com.tokopedia.core.manage.general.districtrecommendation.domain.model.Token;
+import com.tokopedia.district_recommendation.domain.model.Token;
 import com.tokopedia.seller.logistic.GetOpenShopLocationPassUseCase;
 import com.tokopedia.seller.logistic.GetOpenShopTokenUseCase;
 import com.tokopedia.seller.shop.open.domain.interactor.ShopOpenSaveLocationUseCase;
