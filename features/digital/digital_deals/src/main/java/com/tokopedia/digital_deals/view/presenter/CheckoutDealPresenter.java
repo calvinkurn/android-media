@@ -1,6 +1,7 @@
 package com.tokopedia.digital_deals.view.presenter;
 
 import android.content.Intent;
+import android.os.Bundle;
 import android.util.Log;
 
 import com.google.gson.Gson;
@@ -21,6 +22,7 @@ import com.tokopedia.digital_deals.view.viewmodel.PackageViewModel;
 import com.tokopedia.oms.data.entity.response.checkoutreponse.CheckoutResponse;
 import com.tokopedia.oms.data.entity.response.verifyresponse.Cart;
 import com.tokopedia.oms.domain.postusecase.PostPaymentUseCase;
+import com.tokopedia.oms.scrooge.ScroogePGUtil;
 import com.tokopedia.oms.view.utils.Utils;
 import com.tokopedia.usecase.RequestParams;
 
@@ -261,7 +263,7 @@ public class CheckoutDealPresenter
         paymentparams = RequestParams.create();
 
         paymentparams.putObject(Utils.Constants.CHECKOUTDATA, convertCartItemToJson(cartData));
-        postPaymentUseCase.execute(paymentparams, new Subscriber<CheckoutResponse>() {
+        postPaymentUseCase.execute(paymentparams, new Subscriber<JsonObject>() {
             @Override
             public void onCompleted() {
 
@@ -285,21 +287,17 @@ public class CheckoutDealPresenter
             }
 
             @Override
-            public void onNext(CheckoutResponse checkoutResponse) {
+            public void onNext(JsonObject checkoutResponse) {
 
                 Log.d("CheckoutResponse"," "+ checkoutResponse.toString());
 
-//                com.tokopedia.payment.model.PaymentPassData paymentPassData = new com.tokopedia.payment.model.PaymentPassData();
-//                paymentPassData.setQueryString(checkoutResponse.getQueryString());
-//                paymentPassData.setRedirectUrl(checkoutResponse.getRedirectUrl());
-//                paymentPassData.setCallbackSuccessUrl(checkoutResponse.getCallbackUrlSuccess());
-//                paymentPassData.setCallbackFailedUrl(checkoutResponse.getCallbackUrlFailed());
-//                paymentPassData.setTransactionId(checkoutResponse.getParameter().getTransactionId());
-//                UnifyTracking.eventDigitalEventTracking(EventsGAConst.EVENT_PAYMENT, checkoutData.getTitle() + " - "
-//                        + checkoutData.getDisplayName() + " - " + checkoutData.getSalesPrice() + " - " + promocode);
-//                getView().navigateToActivityRequest(com.tokopedia.payment.activity.TopPayActivity.
-//                                createInstance(getView().getActivity().getApplicationContext(), paymentPassData),
-//                        PAYMENT_REQUEST_CODE);
+                Bundle paymentData = Utils.transform(checkoutResponse);
+                String paymentURL = checkoutResponse.get("url").getAsString();
+                Log.d("URL"," "+ paymentURL);
+
+                ScroogePGUtil.openScroogePage(getView().getActivity(), paymentURL, true, paymentData, "Deal Payment");
+
+
                 getView().hideProgressBar();
 
             }

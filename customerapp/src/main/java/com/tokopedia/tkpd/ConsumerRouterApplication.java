@@ -59,6 +59,7 @@ import com.tokopedia.core.home.BannerWebView;
 import com.tokopedia.core.home.SimpleWebViewWithFilePickerActivity;
 import com.tokopedia.core.instoped.model.InstagramMediaModel;
 import com.tokopedia.core.loyaltysystem.util.URLGenerator;
+import com.tokopedia.digital_deals.DealsRouterApplication;
 import com.tokopedia.district_recommendation.domain.mapper.TokenMapper;
 import com.tokopedia.district_recommendation.domain.model.Token;
 import com.tokopedia.district_recommendation.view.DistrictRecommendationActivity;
@@ -288,7 +289,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         AbstractionRouter, FlightModuleRouter, LogisticRouter, FeedModuleRouter, IHomeRouter,
         DiscoveryRouter, DigitalModuleRouter, TokoCashRouter, KolRouter, GroupChatModuleRouter,
         ApplinkRouter, ShopModuleRouter, LoyaltyModuleRouter, GamificationRouter,
-        ImageUploaderRouter, ProfileModuleRouter, ReactNativeRouter, ContactUsModuleRouter {
+        ImageUploaderRouter, ProfileModuleRouter, ReactNativeRouter, ContactUsModuleRouter, DealsRouterApplication {
 
     @Inject
     ReactNativeHost reactNativeHost;

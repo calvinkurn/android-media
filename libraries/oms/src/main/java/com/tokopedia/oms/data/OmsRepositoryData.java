@@ -27,7 +27,7 @@ public class OmsRepositoryData implements OmsRepository {
     }
 
     @Override
-    public Observable<CheckoutResponse> checkoutCart(JsonObject requestBody) {
+    public Observable<JsonObject> checkoutCart(JsonObject requestBody) {
         return mCloudOmsDataStore.checkoutCart(requestBody);
     }
 }

@@ -12,6 +12,6 @@ public interface OmsDataStore {
 
     Observable<VerifyMyCartResponse> verifyCart(JsonObject requestBody);
 
-    Observable<CheckoutResponse> checkoutCart(JsonObject requestBody);
+    Observable<JsonObject> checkoutCart(JsonObject requestBody);
 
 }

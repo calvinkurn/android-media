@@ -194,6 +194,7 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         PaymentFingerprintConstant.TOP_PAY_DOMAIN = ConsumerAppBaseUrl.TOP_PAY_DOMAIN;
         FingerprintConstantRegister.ACCOUNTS_DOMAIN = ConsumerAppBaseUrl.ACCOUNTS_DOMAIN;
         FingerprintConstantRegister.TOP_PAY_DOMAIN = ConsumerAppBaseUrl.TOP_PAY_DOMAIN;
+        TkpdBaseURL.OMS_DOMAIN = ConsumerAppBaseUrl.OMS_DOMAIN;
     }
 
     private void generateConsumerAppNetworkKeys() {

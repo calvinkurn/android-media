@@ -24,12 +24,12 @@ public class CloudOmsDataStore implements OmsDataStore {
 
     @Override
     public Observable<VerifyMyCartResponse> verifyCart(JsonObject requestBody) {
-        return omsApi.postCartVerify(requestBody).map(new DataResponseMapper<VerifyMyCartResponse>());
+        return omsApi.postCartVerify(requestBody);
     }
 
     @Override
-    public Observable<CheckoutResponse> checkoutCart(JsonObject requestBody) {
-        return omsApi.checkoutCart(requestBody).map(new DataResponseMapper<CheckoutResponse>());
+    public Observable<JsonObject> checkoutCart(JsonObject requestBody) {
+        return omsApi.checkoutCart(requestBody);
     }
 
 }

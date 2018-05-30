@@ -16,10 +16,10 @@ import rx.Observable;
 public interface OmsApi {
 
     @POST(OmsUrl.OMS_VERIFY)
-    Observable<Response<DataResponse<VerifyMyCartResponse>>> postCartVerify(@Body JsonObject requestBody);
+    Observable<VerifyMyCartResponse> postCartVerify(@Body JsonObject requestBody);
 
 
     @POST(OmsUrl.OMS_CHECKOUT)
-    Observable<Response<DataResponse<CheckoutResponse>>> checkoutCart(@Body JsonObject requestBody);
+    Observable<JsonObject> checkoutCart(@Body JsonObject requestBody);
 
 }

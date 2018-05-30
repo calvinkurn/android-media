@@ -14,5 +14,6 @@ dependencies {
     implementation project(rootProject.ext.features.core)
     implementation project(rootProject.ext.libraries.abstraction)
     implementation project(rootProject.ext.libraries.useCase)
+    implementation rootProject.ext.supportLibDependencies.appCompactV7
 }
 apply from: '../../publish_local.gradle'

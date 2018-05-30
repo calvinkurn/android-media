@@ -13,7 +13,7 @@ import javax.inject.Inject;
 import rx.Observable;
 
 
-public class PostPaymentUseCase extends UseCase<CheckoutResponse> {
+public class PostPaymentUseCase extends UseCase<JsonObject> {
 
     private final OmsRepositoryData omsRepository;
 
@@ -24,13 +24,9 @@ public class PostPaymentUseCase extends UseCase<CheckoutResponse> {
     }
 
     @Override
-    public Observable<CheckoutResponse> createObservable(RequestParams requestParams) {
+    public Observable<JsonObject> createObservable(RequestParams requestParams) {
 
         JsonObject requestBody = (JsonObject) requestParams.getObject(Utils.Constants.CHECKOUTDATA);
-
-//        Cart verfiedCart = (Cart) requestParams.getObject("verfiedcart");
-//        JsonElement jsonElement = new JsonParser().parse(new Gson().toJson(verfiedCart));
-//        JsonObject requestBody = jsonElement.getAsJsonObject();
         return omsRepository.checkoutCart(requestBody);
     }
 }
