@@ -9,12 +9,12 @@ import android.support.v4.app.Fragment;
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tokopedia.abstraction.common.di.component.HasComponent;
 import com.tokopedia.checkout.R;
-import com.tokopedia.checkout.applink.CheckoutAppLink;
 import com.tokopedia.checkout.domain.datamodel.cartlist.CartItemData;
 import com.tokopedia.checkout.router.ICheckoutModuleRouter;
 import com.tokopedia.checkout.view.base.BaseCheckoutActivity;
 import com.tokopedia.checkout.view.di.component.CartComponent;
 import com.tokopedia.checkout.view.di.component.CartComponentInjector;
+import com.tokopedia.checkout.view.view.cartlist.removecartitem.RemoveCartItemFragment;
 
 import java.util.List;
 
@@ -25,7 +25,7 @@ import java.util.List;
 public class CartActivity extends BaseCheckoutActivity implements CartFragment.ActionListener,
         HasComponent<CartComponent> {
 
-    @DeepLink(CheckoutAppLink.CART)
+    //   @DeepLink(CheckoutAppLink.CART)
     public static Intent getCallingIntent(Context context, Bundle extras) {
         Intent intent = new Intent(context, CartActivity.class).putExtras(extras);
         intent.putExtras(extras);
@@ -34,11 +34,6 @@ public class CartActivity extends BaseCheckoutActivity implements CartFragment.A
             intent.setData(uri.build());
         }
         return intent;
-    }
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
     }
 
     @Override
@@ -74,7 +69,7 @@ public class CartActivity extends BaseCheckoutActivity implements CartFragment.A
         } else {
             startActivity(
                     ((ICheckoutModuleRouter) getApplication())
-                            .getHomeIntent(this)
+                            .getHomePageIntent(this)
             );
             finish();
         }
@@ -100,7 +95,7 @@ public class CartActivity extends BaseCheckoutActivity implements CartFragment.A
         Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.container);
         if (fragment == null || !(fragment instanceof CartRemoveProductFragment)) {
             getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.parent_view, CartRemoveProductFragment.newInstance(cartItemData))
+                    .replace(R.id.parent_view, RemoveCartItemFragment.newInstance(cartItemData))
                     .addToBackStack(null)
                     .commit();
         }

@@ -674,6 +674,15 @@ public class UnifyTracking extends TrackingUtils {
         ).getEvent());
     }
 
+    public static void eventDiscoveryExternalImageSearch(String label) {
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.IMAGE_SEARCH_CLICK,
+                AppEventTracking.Category.IMAGE_SEARCH,
+                AppEventTracking.Action.EXTERNAL_IMAGE_SEARCH,
+                ""
+        ).getEvent());
+    }
+
     public static void eventDiscoveryCameraImageSearchResult(String label) {
         sendGTMEvent(new EventTracking(
                 AppEventTracking.Event.IMAGE_SEARCH_CLICK,
@@ -2998,87 +3007,6 @@ public class UnifyTracking extends TrackingUtils {
         return kolCategory + " - " + kolName;
     }
 
-    public static void eventKolContentCommentClick(boolean isFollowed, String type) {
-        sendGTMEvent(new EventTracking(
-                AppEventTracking.Event.USER_INTERACTION_HOMEPAGE,
-                AppEventTracking.Category.HOMEPAGE,
-                AppEventTracking.Action.FEED_CLICK_CONTENT_COMMENT,
-                generateKolEventLabel(isFollowed, type)
-        ).setUserId().getEvent());
-    }
-
-    public static void eventKolContentUnlike(boolean isFollowed, String type) {
-        sendGTMEvent(new EventTracking(
-                AppEventTracking.Event.USER_INTERACTION_HOMEPAGE,
-                AppEventTracking.Category.HOMEPAGE,
-                AppEventTracking.Action.FEED_UNLIKE_CONTENT,
-                generateKolEventLabel(isFollowed, type)
-        ).setUserId().getEvent());
-    }
-
-    public static void eventKolContentLike(boolean isFollowed, String type) {
-        sendGTMEvent(new EventTracking(
-                AppEventTracking.Event.USER_INTERACTION_HOMEPAGE,
-                AppEventTracking.Category.HOMEPAGE,
-                AppEventTracking.Action.FEED_LIKE_CONTENT,
-                generateKolEventLabel(isFollowed, type)
-        ).setUserId().getEvent());
-    }
-
-    public static void eventKolContentGoToProfilePage(boolean isFollowed, String type) {
-        sendGTMEvent(new EventTracking(
-                AppEventTracking.Event.USER_INTERACTION_HOMEPAGE,
-                AppEventTracking.Category.HOMEPAGE,
-                AppEventTracking.Action.FEED_CLICK_CONTENT_WRITER_NAME,
-                generateKolEventLabel(isFollowed, type)
-        ).setUserId().getEvent());
-    }
-
-    public static void eventKolContentCtaClick(boolean isFollowed, String type) {
-        sendGTMEvent(new EventTracking(
-                AppEventTracking.Event.USER_INTERACTION_HOMEPAGE,
-                AppEventTracking.Category.HOMEPAGE,
-                AppEventTracking.Action.FEED_CLICK_CONTENT_CTA,
-                generateKolEventLabel(isFollowed, type)
-        ).setUserId().getEvent());
-    }
-
-    public static void eventKolContentReadMoreClick(boolean isFollowed, String type) {
-        sendGTMEvent(new EventTracking(
-                AppEventTracking.Event.USER_INTERACTION_HOMEPAGE,
-                AppEventTracking.Category.HOMEPAGE,
-                AppEventTracking.Action.FEED_EXPAND_CONTENT,
-                generateKolEventLabel(isFollowed, type)
-        ).setUserId().getEvent());
-    }
-
-    public static void eventKolContentFollowClick(String type) {
-        sendGTMEvent(new EventTracking(
-                AppEventTracking.Event.USER_INTERACTION_HOMEPAGE,
-                AppEventTracking.Category.HOMEPAGE,
-                AppEventTracking.Action.FEED_FOLLOW_CONTENT,
-                generateKolEventLabel(false, type)
-        ).setUserId().getEvent());
-    }
-
-    public static void eventKolContentUnfollowClick(String type) {
-        sendGTMEvent(new EventTracking(
-                AppEventTracking.Event.USER_INTERACTION_HOMEPAGE,
-                AppEventTracking.Category.HOMEPAGE,
-                AppEventTracking.Action.FEED_UNFOLLOW_CONTENT,
-                generateKolEventLabel(true, type)
-        ).setUserId().getEvent());
-    }
-
-    private static String generateKolEventLabel(boolean isFollowed, String type) {
-        String contentType = isFollowed ?
-                AppEventTracking.EventLabel.FEED_CONTENT_TYPE_FOLLOWED
-                : AppEventTracking.EventLabel.FEED_CONTENT_TYPE_RECOMMENDED;
-
-        String campaignType = type + AppEventTracking.EventLabel.FEED_CAMPAIGN_TYPE_SUFFIX;
-        return contentType + " - " + campaignType;
-    }
-
     public static void eventOnboardingSkip(int pageNumber) {
         sendGTMEvent(new EventTracking(
                 AppEventTracking.Event.EVENT_ONBOARDING,
@@ -3289,15 +3217,6 @@ public class UnifyTracking extends TrackingUtils {
         ).setUserId().getEvent());
     }
 
-    public static void eventSearchResultFilter(String screenName, Map<String, String> selectedFilter) {
-        sendGTMEvent(new EventTracking(
-                AppEventTracking.Event.SEARCH_RESULT,
-                AppEventTracking.Category.FILTER_PRODUCT,
-                AppEventTracking.Action.FILTER.toLowerCase() + " - " + screenName,
-                generateFilterEventLabel(selectedFilter)
-        ).setUserId().getEvent());
-    }
-
     public static void eventSearchResultQuickFilter(String filterName, String filterValue, boolean isSelected) {
         sendGTMEvent(new EventTracking(
                 AppEventTracking.Event.SEARCH_RESULT,
@@ -3305,14 +3224,6 @@ public class UnifyTracking extends TrackingUtils {
                 AppEventTracking.Action.QUICK_FILTER,
                 filterName + " - " + filterValue + " - " + Boolean.toString(isSelected)
         ).setUserId().getEvent());
-    }
-
-    private static String generateFilterEventLabel(Map<String, String> selectedFilter) {
-        List<String> filterList = new ArrayList<>();
-        for (Map.Entry<String, String> entry : selectedFilter.entrySet()) {
-            filterList.add(entry.getKey() + "=" + entry.getValue());
-        }
-        return TextUtils.join("&", filterList);
     }
 
     public static void eventBeliLongClick() {

@@ -13,6 +13,8 @@ import java.util.Map;
 
 public interface ICartListPresenter {
 
+    void detachView();
+
     void processInitialGetCartData();
 
     void processDeleteCart(CartItemData cartItemData, boolean addWishList);

@@ -83,6 +83,15 @@
             android:layout_marginRight="@dimen/dp_3"
             android:layout_marginTop="@dimen/dp_3" />
 
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/list_quick_reply"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/dp_3"
+            android:layout_marginRight="@dimen/dp_3"
+            android:layout_marginTop="@dimen/dp_3"
+            android:visibility="gone"/>
+
 
         <RelativeLayout
             android:layout_width="match_parent"

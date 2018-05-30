@@ -83,6 +83,7 @@ public class CartItemData implements Parcelable {
         public static final int WEIGHT_GRAM = 2;
 
         private int cartId;
+        private String parentId;
         private String productId;
         private String productName;
         private int minimalQtyOrder;
@@ -195,6 +196,14 @@ public class CartItemData implements Parcelable {
 
         public void setCashBackInfo(String cashBackInfo) {
             this.cashBackInfo = cashBackInfo;
+        }
+
+        public String getParentId() {
+            return parentId;
+        }
+
+        public void setParentId(String parentId) {
+            this.parentId = parentId;
         }
 
         public String getProductId() {
@@ -328,6 +337,7 @@ public class CartItemData implements Parcelable {
         @Override
         public void writeToParcel(Parcel dest, int flags) {
             dest.writeInt(this.cartId);
+            dest.writeString(this.parentId);
             dest.writeString(this.productId);
             dest.writeString(this.productName);
             dest.writeInt(this.minimalQtyOrder);
@@ -357,6 +367,7 @@ public class CartItemData implements Parcelable {
 
         protected OriginData(Parcel in) {
             this.cartId = in.readInt();
+            this.parentId = in.readString();
             this.productId = in.readString();
             this.productName = in.readString();
             this.minimalQtyOrder = in.readInt();

@@ -1,5 +1,7 @@
 package com.tokopedia.checkout.domain.usecase;
 
+import android.content.Context;
+
 import com.tokopedia.abstraction.common.utils.TKPDMapParam;
 import com.tokopedia.transactiondata.entity.response.cartlist.CartDataListResponse;
 import com.tokopedia.transactiondata.repository.ICartRepository;
@@ -20,9 +22,11 @@ public class GetCartListUseCase extends UseCase<CartListData> {
     public static final String PARAM_REQUEST_AUTH_MAP_STRING = "PARAM_REQUEST_AUTH_MAP_STRING";
     private final ICartRepository cartRepository;
     private final ICartMapper cartMapper;
+    private final Context context;
 
     @Inject
-    public GetCartListUseCase(ICartRepository cartRepository, ICartMapper cartMapper) {
+    public GetCartListUseCase(Context context, ICartRepository cartRepository, ICartMapper cartMapper) {
+        this.context = context;
         this.cartRepository = cartRepository;
         this.cartMapper = cartMapper;
     }
@@ -36,7 +40,7 @@ public class GetCartListUseCase extends UseCase<CartListData> {
                 .map(new Func1<CartDataListResponse, CartListData>() {
                     @Override
                     public CartListData call(CartDataListResponse cartDataListResponse) {
-                        return cartMapper.convertToCartItemDataList(cartDataListResponse);
+                        return cartMapper.convertToCartItemDataList(context, cartDataListResponse);
                     }
                 });
     }

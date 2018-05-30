@@ -419,13 +419,13 @@ public class AddToCartActivity extends BasePresenterActivity<AddToCartPresenter>
         } else {
             spShippingAgency.setEnabled(true);
             Log.e("pickupPointLayout", "SetVisibility");
-            pickupPointLayout.setVisibility(View.VISIBLE);
+            pickupPointLayout.setVisibility(View.GONE);
             for (int i = 0; i < datas.size(); i++) {
                 if (datas.get(i).getShipperId().equals(orderData.getShipment())) {
                     spShippingAgency.setSelection(i);
                 }
                 if (datas.get(i).getShipperId().equals(TkpdState.SHIPPING_ID.ALFAMART)) {
-                    pickupPointLayout.setVisibility(View.VISIBLE);
+                    pickupPointLayout.setVisibility(View.GONE);
                 }
             }
         }
@@ -675,7 +675,7 @@ public class AddToCartActivity extends BasePresenterActivity<AddToCartPresenter>
                 shipmentHourAtcLayout.setVisibility(View.GONE);
             }
             if (pickupBooth != null) {
-                layoutPickupBoothInfo.setVisibility(View.VISIBLE);
+                layoutPickupBoothInfo.setVisibility(View.GONE);
             } else {
                 layoutPickupBoothInfo.setVisibility(View.GONE);
             }
@@ -818,6 +818,7 @@ public class AddToCartActivity extends BasePresenterActivity<AddToCartPresenter>
         presenter.sendToGTM(this);
         Intent intent1 = new Intent(this, AddAddressActivity.class);
         Bundle bundle = new Bundle();
+        bundle.putBoolean(ManageAddressConstant.IS_DISTRICT_RECOMMENDATION, false);
         bundle.putBoolean(ManageAddressConstant.IS_EDIT, false);
         intent1.putExtras(bundle);
         startActivityForResult(intent1, ManageAddressConstant.REQUEST_CODE_PARAM_CREATE);

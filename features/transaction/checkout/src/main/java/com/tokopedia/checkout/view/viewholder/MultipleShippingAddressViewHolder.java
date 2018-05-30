@@ -14,6 +14,7 @@ import com.tokopedia.checkout.R;
 import com.tokopedia.checkout.domain.datamodel.MultipleAddressItemData;
 import com.tokopedia.checkout.domain.datamodel.MultipleAddressShipmentAdapterData;
 import com.tokopedia.checkout.view.adapter.MultipleAddressShipmentAdapter;
+import com.tokopedia.design.component.TextViewCompat;
 import com.tokopedia.design.pickuppoint.PickupPointLayout;
 import com.tokopedia.design.utils.CurrencyFormatUtil;
 
@@ -63,7 +64,7 @@ public class MultipleShippingAddressViewHolder extends RecyclerView.ViewHolder {
 
     private TextView phoneNumber;
 
-    private TextView changeAddress;
+    private TextViewCompat changeAddress;
 
     private RelativeLayout rlProductPoliciesLayout;
 
@@ -89,11 +90,11 @@ public class MultipleShippingAddressViewHolder extends RecyclerView.ViewHolder {
 
     private FrameLayout layoutError;
 
-    private TextView tvError;
+    private TextViewCompat tvError;
 
     private FrameLayout layoutWarning;
 
-    private TextView tvWarning;
+    private TextViewCompat tvWarning;
 
     public MultipleShippingAddressViewHolder(View itemView) {
         super(itemView);

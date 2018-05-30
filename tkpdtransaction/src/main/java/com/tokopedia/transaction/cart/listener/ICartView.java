@@ -135,7 +135,7 @@ public interface ICartView extends IBaseView {
 
     void renderPartialOrder(boolean useCancelPartial);
 
-    Context getContext();
+    Activity getActivityContext();
 
     void renderCandelPromoSuccess();
 }

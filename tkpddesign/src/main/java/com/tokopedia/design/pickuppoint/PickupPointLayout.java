@@ -11,6 +11,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.tokopedia.design.R;
+import com.tokopedia.design.component.TextViewCompat;
 
 /**
  * Created by Irfan Khoirul on 03/01/18.
@@ -22,7 +23,7 @@ public class PickupPointLayout extends LinearLayout {
     private TextView tvPickUpBoothName;
     private ImageButton btnCancelPickUp;
     private TextView tvPickUpBoothAddress;
-    private TextView tvEditPickUpBooth;
+    private TextViewCompat tvEditPickUpBooth;
     private LinearLayout llContent;
 
     private ViewListener listener;

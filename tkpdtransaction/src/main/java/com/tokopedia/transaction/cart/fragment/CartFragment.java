@@ -882,6 +882,11 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
     }
 
     @Override
+    public Activity getActivityContext() {
+        return getActivity();
+    }
+
+    @Override
     public void executeIntentService(Bundle bundle, Class<? extends IntentService> clazz) {
         Intent intent = new Intent(Intent.ACTION_SYNC, null, getActivity(), clazz).putExtras(bundle);
         getActivity().startService(intent);
@@ -1320,10 +1325,10 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
     }
 
     private void setDataDialog(final Dialog dialog, View view, CartDonation donation) {
-        TextView title = ButterKnife.findById(view, R.id.donasi_popup_title);
-        ImageView imgDonation = ButterKnife.findById(view, R.id.donasi_popup_img);
-        TextView content = ButterKnife.findById(view, R.id.donasi_popup_content);
-        ImageView closeDialog = ButterKnife.findById(view, R.id.close_popup_donasi);
+        TextView title = view.findViewById(R.id.donasi_popup_title);
+        ImageView imgDonation = view.findViewById(R.id.donasi_popup_img);
+        TextView content = view.findViewById(R.id.donasi_popup_content);
+        ImageView closeDialog = view.findViewById(R.id.close_popup_donasi);
 
         Glide.with(getActivity())
                 .load(donation.getDonationPopupImg())

@@ -10,17 +10,17 @@ import com.tokopedia.core.util.RouterUtils;
  */
 
 public class TransactionCartRouter {
-    private final static String CART_ACTIVITY
+    private final static String CART_ACTIVITY_OLD
             = "com.tokopedia.transaction.cart.activity.CartActivity";
 
     private final static String CART_ACTIVITY_NEW
             = "com.tokopedia.checkout.view.view.cartlist.CartActivity";
 
     public static Intent createInstanceCartActivity(Context context) {
-        return RouterUtils.getActivityIntent(context, CART_ACTIVITY_NEW);
+        return RouterUtils.getActivityIntent(context, CART_ACTIVITY_OLD);
     }
 
     public static Class<?> createInstanceCartClass() throws ClassNotFoundException {
-        return RouterUtils.getActivityClass(CART_ACTIVITY);
+        return RouterUtils.getActivityClass(CART_ACTIVITY_OLD);
     }
 }

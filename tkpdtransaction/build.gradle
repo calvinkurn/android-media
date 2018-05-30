@@ -1,47 +1,74 @@
 apply plugin: 'com.android.library'
 apply from: "$rootProject.projectDir/buildconfig/module.gradle"
-apply plugin: 'android-apt'
 apply plugin: 'com.jakewharton.butterknife'
 
 buildscript {
     repositories {
+        maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
         mavenCentral()
     }
     dependencies {
-        classpath 'com.jakewharton:butterknife-gradle-plugin:8.4.0'
+        classpath ('com.jakewharton:butterknife-gradle-plugin:9.0.0-SNAPSHOT'){
+            exclude group: 'com.android.tools.build', module: 'gradle'
+        }
     }
 }
 
-dependencies {
-    compile project(rootProject.ext.features.transactioncommon)
-    compile project(rootProject.ext.features.transactiondata)
-    compile project(rootProject.ext.features.core)
-    compile project(rootProject.ext.libraries.design)
-    compile project(rootProject.ext.features.loyalty)
-    compile project(rootProject.ext.features.topAdsSdk)
-    compile project(rootProject.ext.features.payment)
-    compile project(rootProject.ext.libraries.applink)
-
-    compile project(rootProject.ext.libraries.fingerprint)
-
-    androidTestCompile(rootProject.ext.testDependencies.espressoCore, {
-        exclude group: 'com.android.support', module: 'support-annotations'
-    })
-    testCompile rootProject.ext.testDependencies.junit
-
-    compile rootProject.ext.permissionDispatcherDependencies.permissionDispatcher
-    apt rootProject.ext.permissionDispatcherDependencies.permissionDispatcherProcessor
-
-    compile rootProject.ext.butterKnifeDependencies.butterKnife
-    apt rootProject.ext.butterKnifeDependencies.butterKnifeCompiler
-
-    compile rootProject.ext.miscDependencies.dagger
-    apt rootProject.ext.miscDependencies.daggerCompiler
-
-    compile rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
-    apt rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
-
-    //compile rootProject.ext.miscDependencies.bcaOneClick
-    compile(group: 'com.bca.widget', name: 'oneclick', version: '1.0', ext: 'aar')
+project.ext {
+    artifactId = 'transaction'
+    groupId = 'com.tokopedia.transaction'
+    versionName = "2.22"
+    artifactName ="tkpdtransaction-release"
 }
+
+dependencies {
+    implementation project(rootProject.ext.features.transactioncommon)
+    implementation project(rootProject.ext.features.transactiondata)
+    implementation project(rootProject.ext.features.core)
+    implementation project(rootProject.ext.features.topAdsSdk)
+    implementation project(rootProject.ext.features.payment)
+    implementation project(rootProject.ext.libraries.design)
+    implementation project(rootProject.ext.features.loyalty)
+    implementation project(rootProject.ext.libraries.fingerprint)
+    implementation project(rootProject.ext.libraries.abstraction)
+    implementation project(rootProject.ext.libraries.useCase)
+    implementation project(rootProject.ext.features.districtRecommendation)
+    implementation project(rootProject.ext.libraries.applink)
+
+
+    implementation rootProject.ext.networkDependencies.glide
+
+    implementation rootProject.ext.miscDependencies.multiDex
+    implementation (rootProject.ext.miscDependencies.loaderviewlibrary){
+        exclude group: 'com.android.support'
+    }
+    implementation rootProject.ext.miscDependencies.roundCornerProgressBar
+
+    implementation rootProject.ext.playServicesDependencies.maps
+    implementation rootProject.ext.playServicesDependencies.base
+
+    implementation rootProject.ext.miscDependencies.scannerZxing
+
+    implementation rootProject.ext.analyticsDependencies.appsflyer
+
+    annotationProcessor  rootProject.ext.dbDependencies.dbFlowProcessor
+    implementation rootProject.ext.dbDependencies.dbFlowCore
+    implementation rootProject.ext.dbDependencies.dbFlow
+
+    implementation rootProject.ext.viewDependencies.appIntro
+
+    implementation rootProject.ext.permissionDispatcherDependencies.permissionDispatcher
+    annotationProcessor  rootProject.ext.permissionDispatcherDependencies.permissionDispatcherProcessor
+
+    implementation rootProject.ext.butterKnifeDependencies.butterKnife
+    annotationProcessor  rootProject.ext.butterKnifeDependencies.butterKnifeCompiler
+
+    implementation rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
+    annotationProcessor  rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
+
+    implementation(group: 'com.bca.widget', name: 'oneclick', version: '1.0', ext: 'aar')
+    implementation project(path: ':libraries:applink')
+}
+
+apply from: '../publish_local.gradle'
 

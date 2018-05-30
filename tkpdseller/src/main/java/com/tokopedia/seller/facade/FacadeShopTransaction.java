@@ -9,6 +9,9 @@ import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.network.apiservices.shop.MyShopOrderService;
 import com.tokopedia.core.network.retrofit.response.TkpdResponse;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
+import com.tokopedia.core.util.PagingHandler;
+import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.core.var.TkpdUrl;
 import com.tokopedia.seller.selling.model.SellingStatusTxModel;
 import com.tokopedia.seller.selling.model.orderShipping.OrderDestination;
 import com.tokopedia.seller.selling.model.orderShipping.OrderDetail;
@@ -17,9 +20,6 @@ import com.tokopedia.seller.selling.model.orderShipping.OrderShippingData;
 import com.tokopedia.seller.selling.model.orderShipping.OrderShippingList;
 import com.tokopedia.seller.selling.presenter.NewOrderImpl;
 import com.tokopedia.seller.selling.presenter.ShippingImpl;
-import com.tokopedia.core.util.PagingHandler;
-import com.tokopedia.core.util.SessionHandler;
-import com.tokopedia.core.var.TkpdUrl;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -125,7 +125,7 @@ public class FacadeShopTransaction {
 
                             @Override
                             public void onNext(Response<TkpdResponse> responseData) {
-                                if(responseData.isSuccessful()) {
+                                if (responseData.isSuccessful()) {
                                     TkpdResponse response = responseData.body();
 
                                     if (response.getStringData() == null || response.getStringData().equals("{}")) {
@@ -145,7 +145,7 @@ public class FacadeShopTransaction {
                                     } catch (JSONException je) {
                                         Log.e(STUART, FACADE_SHOP_TRANSACTION + je.getLocalizedMessage());
                                     }
-                                }else{
+                                } else {
                                     listener.OnError();
                                 }
                             }
@@ -215,7 +215,7 @@ public class FacadeShopTransaction {
 
                             @Override
                             public void onNext(Response<TkpdResponse> responseData) {
-                                if(responseData.isSuccessful()) {
+                                if (responseData.isSuccessful()) {
                                     TkpdResponse response = responseData.body();
 
                                     if (response.getStringData() == null || response.getStringData().equals("{}")) {
@@ -235,7 +235,7 @@ public class FacadeShopTransaction {
                                     } catch (JSONException je) {
                                         Log.e(STUART, FACADE_SHOP_TRANSACTION + je.getLocalizedMessage());
                                     }
-                                }else{
+                                } else {
                                     listener.OnError();
                                 }
                             }
@@ -244,10 +244,9 @@ public class FacadeShopTransaction {
     }
 
 
-
-    private List<SellingStatusTxModel> getStatusModel(OrderShippingData data){
+    private List<SellingStatusTxModel> getStatusModel(OrderShippingData data) {
         List<SellingStatusTxModel> modelList = new ArrayList<>();
-        for(int i = 0; i< data.getOrderShippingList().size(); i++){
+        for (int i = 0; i < data.getOrderShippingList().size(); i++) {
             OrderShippingList orderList = data.getOrderShippingList().get(i);
             SellingStatusTxModel model = new SellingStatusTxModel();
             model.DataList = orderList;
@@ -267,8 +266,9 @@ public class FacadeShopTransaction {
             model.RefNum = orderList.getOrderLast().getLastShippingRefNum();
             model.ShippingID = orderList.getOrderShipment().getShipmentId();
             model.isPickUp = orderList.getIsPickUp();
-            if (orderList.getOrderDriver() != null) {
-                orderList.getOrderDriver().getTrackingUrl();
+            if (orderList.getOrderDriver() != null && orderList.getOrderDriver().getTrackingUrl() != null
+                    && !orderList.getOrderDriver().getTrackingUrl().isEmpty()) {
+                model.liveTracking = orderList.getOrderDriver().getTrackingUrl();
             }
             modelList.add(model);
         }
@@ -296,7 +296,7 @@ public class FacadeShopTransaction {
      * @param endDate
      * @param listener
      */
-    public void getTxListV4(PagingHandler page, String search, String filter, String startDate, String endDate, final GetStatusListener listener){
+    public void getTxListV4(PagingHandler page, String search, String filter, String startDate, String endDate, final GetStatusListener listener) {
         compositeSubscription.add(new MyShopOrderService().getApi().getOrderList(
                 AuthUtil.generateParams(context, getOrderListParam(page, search, filter, startDate, endDate))
         )
@@ -317,7 +317,7 @@ public class FacadeShopTransaction {
 
                             @Override
                             public void onNext(Response<TkpdResponse> responseData) {
-                                if(responseData.isSuccessful()) {
+                                if (responseData.isSuccessful()) {
                                     TkpdResponse response = responseData.body();
                                     if (response.getStringData() == null || response.getStringData().equals("{}")) {
                                         listener.OnNoResult();
@@ -338,7 +338,7 @@ public class FacadeShopTransaction {
                                     } catch (JSONException je) {
                                         Log.e(STUART, FACADE_SHOP_TRANSACTION + je.getLocalizedMessage());
                                     }
-                                }else{
+                                } else {
                                     listener.OnError();
                                 }
                             }
@@ -382,7 +382,7 @@ public class FacadeShopTransaction {
 
                             @Override
                             public void onNext(Response<TkpdResponse> responseData) {
-                                if(responseData.isSuccessful()) {
+                                if (responseData.isSuccessful()) {
                                     TkpdResponse response = responseData.body();
 
                                     if (response.getStringData() == null || response.getStringData().equals("{}")) {
@@ -402,7 +402,7 @@ public class FacadeShopTransaction {
                                     } catch (JSONException je) {
                                         Log.e(STUART, FACADE_SHOP_TRANSACTION + je.getLocalizedMessage());
                                     }
-                                }else{
+                                } else {
                                     listener.OnError();
                                 }
                             }
@@ -412,7 +412,7 @@ public class FacadeShopTransaction {
 
     private List<ShippingImpl.Model> getShippingModel(OrderShippingData data) {
         List<ShippingImpl.Model> modelList = new ArrayList<>();
-        for(int i = 0; i<data.getOrderShippingList().size(); i++){
+        for (int i = 0; i < data.getOrderShippingList().size(); i++) {
             ShippingImpl.Model model = new ShippingImpl.Model();
             OrderShippingList orderShippingList = data.getOrderShippingList().get(i);
             model.orderShippingList = data.getOrderShippingList().get(i);

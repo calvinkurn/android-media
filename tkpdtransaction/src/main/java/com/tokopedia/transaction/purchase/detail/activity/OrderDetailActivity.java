@@ -9,15 +9,18 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Html;
+import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -59,6 +62,7 @@ import com.tokopedia.transaction.purchase.detail.model.rejectorder.EmptyVarianPr
 import com.tokopedia.transaction.purchase.detail.model.rejectorder.WrongProductPriceWeightEditable;
 import com.tokopedia.transaction.purchase.detail.presenter.OrderDetailPresenterImpl;
 import com.tokopedia.transaction.purchase.receiver.TxListUIReceiver;
+import com.tokopedia.transaction.router.ITransactionOrderDetailRouter;
 
 import java.util.List;
 
@@ -140,6 +144,41 @@ public class OrderDetailActivity extends TActivity
         setPriceView(data);
         setButtonView(data);
         setPickupPointView(data);
+        setUploadAwb(data);
+    }
+
+    private void setUploadAwb(final OrderDetailData data) {
+        if (android.os.Build.VERSION.SDK_INT <= Build.VERSION_CODES.KITKAT) return;
+        RelativeLayout uploadAwbHolder = findViewById(R.id.upload_awb_layout);
+        TextView tvUploadAwbMessage = findViewById(R.id.tv_upload_awb_message);
+        TextView btnUploadAwb = findViewById(R.id.btn_upload_awb);
+        View separatorAwb = findViewById(R.id.separator_awb);
+
+        if (TextUtils.isEmpty(data.getAwbUploadProofText())) {
+            uploadAwbHolder.setVisibility(View.GONE);
+            separatorAwb.setVisibility(View.VISIBLE);
+        } else {
+            uploadAwbHolder.setVisibility(View.VISIBLE);
+            separatorAwb.setVisibility(View.GONE);
+            tvUploadAwbMessage.setText(Html.fromHtml(data.getAwbUploadProofText()));
+            if (data.isShowUploadAwb()) {
+                btnUploadAwb.setVisibility(View.VISIBLE);
+                btnUploadAwb.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        if (getApplication() instanceof ITransactionOrderDetailRouter) {
+                            Intent intent = ((ITransactionOrderDetailRouter) getApplication())
+                                    .transactionOrderDetailRouterGetIntentUploadAwb
+                                            (data.getAwbUploadProofUrl());
+                            startActivity(intent);
+                        }
+
+                    }
+                });
+            } else {
+                btnUploadAwb.setVisibility(View.GONE);
+            }
+        }
     }
 
     private void setAwbLayout(OrderDetailData data) {
@@ -464,8 +503,8 @@ public class OrderDetailActivity extends TActivity
         String routingAppLink;
         routingAppLink = ApplinkConst.ORDER_TRACKING;
         Uri.Builder uriBuilder = new Uri.Builder();
-        uriBuilder.appendQueryParameter("order_id", orderId)
-                .appendQueryParameter("live_tracking_url", trackingUrl);
+        uriBuilder.appendQueryParameter(ApplinkConst.Query.ORDER_TRACKING_ORDER_ID, orderId)
+                .appendQueryParameter(ApplinkConst.Query.ORDER_TRACKING_URL_LIVE_TRACKING, trackingUrl);
         routingAppLink += uriBuilder.toString();
         RouteManager.route(this, routingAppLink);
     }

@@ -110,6 +110,20 @@ public class OrderDetailData implements Parcelable {
 
     private String liveTrackingUrl;
 
+    private boolean showUploadAwb;
+
+    private String awbUploadProofText;
+
+    private String awbUploadProofUrl;
+
+    public String getAwbUploadProofUrl() {
+        return awbUploadProofUrl;
+    }
+
+    public void setAwbUploadProofUrl(String awbUploadProofUrl) {
+        this.awbUploadProofUrl = awbUploadProofUrl;
+    }
+
     public OrderDetailData() {
     }
 
@@ -313,6 +327,22 @@ public class OrderDetailData implements Parcelable {
         this.partialOrderStatus = partialOrderStatus;
     }
 
+    public boolean isShowUploadAwb() {
+        return showUploadAwb;
+    }
+
+    public void setShowUploadAwb(boolean showUploadAwb) {
+        this.showUploadAwb = showUploadAwb;
+    }
+
+    public String getAwbUploadProofText() {
+        return awbUploadProofText;
+    }
+
+    public void setAwbUploadProofText(String awbUploadProofText) {
+        this.awbUploadProofText = awbUploadProofText;
+    }
+
     public String getPreorderPeriod() {
         return preorderPeriod;
     }
@@ -499,7 +529,7 @@ public class OrderDetailData implements Parcelable {
 
 
     public String getLiveTrackingUrl() {
-        if(TextUtils.isEmpty(liveTrackingUrl))
+        if (TextUtils.isEmpty(liveTrackingUrl))
             return "";
         return liveTrackingUrl;
     }
@@ -563,6 +593,9 @@ public class OrderDetailData implements Parcelable {
         dest.writeByte(this.showInsuranceNotification ? (byte) 1 : (byte) 0);
         dest.writeString(this.insuranceNotification);
         dest.writeString(this.pickupPinCode);
+        dest.writeByte(this.showUploadAwb ? (byte) 1 : (byte) 0);
+        dest.writeString(this.awbUploadProofText);
+        dest.writeString(this.awbUploadProofUrl);
         dest.writeString(this.liveTrackingUrl);
     }
 
@@ -615,6 +648,9 @@ public class OrderDetailData implements Parcelable {
         this.showInsuranceNotification = in.readByte() != 0;
         this.insuranceNotification = in.readString();
         this.pickupPinCode = in.readString();
+        this.showUploadAwb = in.readByte() != 0;
+        this.awbUploadProofText = in.readString();
+        this.awbUploadProofUrl = in.readString();
         this.liveTrackingUrl = in.readString();
     }
 

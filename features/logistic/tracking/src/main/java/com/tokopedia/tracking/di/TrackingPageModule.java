@@ -3,12 +3,13 @@ package com.tokopedia.tracking.di;
 import android.content.Context;
 
 import com.google.gson.Gson;
+
 import com.readystatesoftware.chuck.ChuckInterceptor;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.network.OkHttpRetryPolicy;
+import com.tokopedia.abstraction.common.network.converter.TokopediaWsV4ResponseConverter;
 import com.tokopedia.core.network.retrofit.coverters.StringResponseConverter;
-import com.tokopedia.core.network.retrofit.coverters.TkpdResponseConverter;
 import com.tokopedia.core.network.retrofit.interceptors.FingerprintInterceptor;
 import com.tokopedia.core.network.retrofit.interceptors.TkpdAuthInterceptor;
 import com.tokopedia.core.util.GlobalConfig;
@@ -62,7 +63,7 @@ public class TrackingPageModule {
                 .connectTimeout(okHttpRetryPolicy.connectTimeout, TimeUnit.SECONDS)
                 .addInterceptor(new TkpdAuthInterceptor())
                 .addInterceptor(new FingerprintInterceptor());
-        if(GlobalConfig.isAllowDebuggingTools()) {
+        if (GlobalConfig.isAllowDebuggingTools()) {
             builder.addInterceptor(new HttpLoggingInterceptor())
                     .addInterceptor(new ChuckInterceptor(context));
         }
@@ -74,8 +75,8 @@ public class TrackingPageModule {
     Retrofit provideCourierTrackingApi(OkHttpClient okHttpClient) {
         return new Retrofit.Builder()
                 .baseUrl(LogisticDataConstantUrl.CourierTracking.BASE_URL)
-                .addConverterFactory(new TkpdResponseConverter())
                 .addConverterFactory(new StringResponseConverter())
+                .addConverterFactory(new TokopediaWsV4ResponseConverter())
                 .addConverterFactory(GsonConverterFactory.create(new Gson()))
                 .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
                 .client(okHttpClient)

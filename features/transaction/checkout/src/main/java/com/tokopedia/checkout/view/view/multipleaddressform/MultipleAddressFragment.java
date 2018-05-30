@@ -24,6 +24,7 @@ import com.tokopedia.checkout.view.di.component.MultipleAddressComponent;
 import com.tokopedia.checkout.view.di.module.MultipleAddressModule;
 import com.tokopedia.design.component.ToasterError;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -52,7 +53,7 @@ public class MultipleAddressFragment extends BaseCheckoutFragment
     private static final String ADDRESS_EXTRA = "ADDRESS_EXTRA";
 
     private MultipleAddressAdapter multipleAddressAdapter;
-
+    private RecyclerView orderAddressList;
     private TkpdProgressDialog progressDialogNormal;
 
     public static MultipleAddressFragment newInstance(
@@ -114,20 +115,21 @@ public class MultipleAddressFragment extends BaseCheckoutFragment
     }
 
     @Override
-    public void onAddNewShipmentAddress(int addressPositionToAdd, MultipleAddressAdapterData data,
+    public void onAddNewShipmentAddress(int addressPositionToAdd,
+                                        ArrayList<MultipleAddressAdapterData> dataList,
+                                        MultipleAddressAdapterData data,
                                         MultipleAddressItemData addressData) {
         startActivityForResult(AddShipmentAddressActivity
-                        .createIntent(getActivity(), data, addressData, ADD_MODE),
+                        .createIntent(getActivity(), dataList, data, addressData, ADD_MODE),
                 ADD_SHIPMENT_ADDRESS_REQUEST_CODE);
     }
 
     @Override
-    public void onItemChoosen(MultipleAddressAdapterData productData,
+    public void onItemChoosen(ArrayList<MultipleAddressAdapterData> dataList,
+                              MultipleAddressAdapterData productData,
                               MultipleAddressItemData addressData) {
         startActivityForResult(AddShipmentAddressActivity
-                        .createIntent(getActivity(),
-                                productData,
-                                addressData, EDIT_MODE),
+                        .createIntent(getActivity(), dataList, productData, addressData, EDIT_MODE),
                 EDIT_SHIPMENT_ADDRESS_REQUEST_CODE);
     }
 
@@ -136,22 +138,31 @@ public class MultipleAddressFragment extends BaseCheckoutFragment
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == EDIT_SHIPMENT_ADDRESS_REQUEST_CODE
                 && resultCode == Activity.RESULT_OK) {
-            MultipleAddressItemData editedAddressData = data
-                    .getParcelableExtra(ADDRESS_DATA_RESULT);
-            multipleAddressAdapter.getAddressData()
-                    .get(editedAddressData.getCartPosition())
-                    .getItemListData()
-                    .set(editedAddressData.getAddressPosition(), editedAddressData);
-            multipleAddressAdapter.notifyDataSetChanged();
+            ArrayList<MultipleAddressAdapterData> adapterDataList =
+                    data.getParcelableArrayListExtra(AddShipmentAddressActivity.PRODUCT_DATA_LIST_EXTRAS);
+            MultipleAddressItemData editedAddressData = data.getParcelableExtra(ADDRESS_DATA_RESULT);
+            if (editedAddressData != null) {
+                adapterDataList.get(editedAddressData.getCartPosition())
+                        .getItemListData()
+                        .set(editedAddressData.getAddressPosition(), editedAddressData);
+            }
+
+            // Re-setup recycler view adapter to prevent crash if don't keep activities is on
+            setRecyclerViewAdapter(adapterDataList);
+
         } else if (requestCode == ADD_SHIPMENT_ADDRESS_REQUEST_CODE
                 && resultCode == Activity.RESULT_OK) {
-            MultipleAddressItemData editedAddressData = data
-                    .getParcelableExtra(ADDRESS_DATA_RESULT);
-            multipleAddressAdapter.getAddressData()
-                    .get(editedAddressData.getCartPosition())
-                    .getItemListData()
-                    .add(editedAddressData.getAddressPosition(), editedAddressData);
-            multipleAddressAdapter.notifyDataSetChanged();
+            ArrayList<MultipleAddressAdapterData> adapterDataList =
+                    data.getParcelableArrayListExtra(AddShipmentAddressActivity.PRODUCT_DATA_LIST_EXTRAS);
+            MultipleAddressItemData editedAddressData = data.getParcelableExtra(ADDRESS_DATA_RESULT);
+            if (editedAddressData != null) {
+                adapterDataList.get(editedAddressData.getCartPosition())
+                        .getItemListData()
+                        .add(editedAddressData.getAddressPosition(), editedAddressData);
+            }
+
+            // Re-setup recycler view adapter to prevent crash if don't keep activities is on
+            setRecyclerViewAdapter(adapterDataList);
         }
     }
 
@@ -228,9 +239,13 @@ public class MultipleAddressFragment extends BaseCheckoutFragment
     @Override
     protected void initView(View view) {
         progressDialogNormal = new TkpdProgressDialog(getActivity(), TkpdProgressDialog.NORMAL_PROGRESS);
-        RecyclerView orderAddressList = view.findViewById(R.id.order_address_list);
+        orderAddressList = view.findViewById(R.id.order_address_list);
         orderAddressList.setLayoutManager(new LinearLayoutManager(getActivity()));
-        multipleAddressAdapter = new MultipleAddressAdapter(initiateAdapterData(), this);
+        setRecyclerViewAdapter(initiateAdapterData());
+    }
+
+    private void setRecyclerViewAdapter(List<MultipleAddressAdapterData> addressData) {
+        multipleAddressAdapter = new MultipleAddressAdapter(addressData, this);
         orderAddressList.setAdapter(multipleAddressAdapter);
     }
 
