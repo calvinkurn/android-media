@@ -123,8 +123,6 @@ public class OTPActivity extends BasePresenterActivity<OTP.Presenter>
         scroogeWebView.setWebViewClient(new OTPWebViewClient());
         scroogeWebView.setWebChromeClient(new OTPWebViewChromeClient());
         scroogeWebView.setOnKeyListener(getWebViewOnKeyListener());
-
-        confirmPayment();
     }
 
     @Override
