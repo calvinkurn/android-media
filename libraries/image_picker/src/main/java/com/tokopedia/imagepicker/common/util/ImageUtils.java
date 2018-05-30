@@ -617,7 +617,7 @@ public class ImageUtils {
         BitmapFactory.decodeFile(imagePath, options);
         options.inSampleSize = calculateInSampleSize(options, maxWidth, maxHeight);
         options.inJustDecodeBounds = false;
-        Bitmap tempPic = BitmapFactory.decodeFile(imagePath, options);
+        Bitmap tempPic = null;
 
         boolean decodeAttemptSuccess = false;
         while (!decodeAttemptSuccess) {
