@@ -49,8 +49,7 @@ import static com.facebook.FacebookSdk.getApplicationContext;
  * Landing page for auto sweep features which can be added into any activity or fragment
  * It will taking the current tokocash balance as an argument param
  */
-public class AutoSweepHomeFragment extends BaseDaggerFragment
-        implements AutoSweepHomeContract.View, View.OnClickListener {
+public class AutoSweepHomeFragment extends BaseDaggerFragment implements AutoSweepHomeContract.View, View.OnClickListener {
 
     private static final int AUTO_SWEEP_INACTIVE = 0;
     private static final int AUTO_SWEEP_ACTIVE = 1;
@@ -324,6 +323,7 @@ public class AutoSweepHomeFragment extends BaseDaggerFragment
                 TokoCashComponentInstance.getComponent(getActivity().getApplication());
         tokoCashComponent.inject(this);
         mPresenter.attachView(this);
+
     }
 
     @Override
