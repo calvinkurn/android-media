@@ -6,6 +6,7 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Typeface;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -14,7 +15,9 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
+import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -176,6 +179,33 @@ public class ImagePickerActivity extends BaseSimpleActivity
         } else {
             tabLayout.setVisibility(View.VISIBLE);
         }
+        tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+            @Override
+            public void onTabSelected(TabLayout.Tab tab) {
+                // there is no way to change style to BOLD in XML and programmatically. we use this trick.
+                try {
+                    TextView textView = ((TextView) ((ViewGroup) ((ViewGroup) tabLayout.getChildAt(0)).getChildAt(tab.getPosition())).getChildAt(1));
+                    textView.setTypeface(textView.getTypeface(), Typeface.BOLD);
+                } catch (Exception e) {
+
+                }
+            }
+
+            @Override
+            public void onTabUnselected(TabLayout.Tab tab) {
+                try {
+                    TextView textView = ((TextView) ((ViewGroup) ((ViewGroup) tabLayout.getChildAt(0)).getChildAt(tab.getPosition())).getChildAt(1));
+                    textView.setTypeface(Typeface.create(textView.getTypeface(), Typeface.NORMAL));
+                } catch (Exception e) {
+
+                }
+            }
+
+            @Override
+            public void onTabReselected(TabLayout.Tab tab) {
+                // do nothing
+            }
+        });
     }
 
     @Override
