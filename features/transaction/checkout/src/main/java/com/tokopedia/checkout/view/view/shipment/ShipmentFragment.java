@@ -41,6 +41,7 @@ import com.tokopedia.checkout.view.view.shipmentform.CartShipmentActivity;
 import com.tokopedia.checkout.view.view.shippingoptions.CourierBottomsheet;
 import com.tokopedia.core.geolocation.activity.GeolocationActivity;
 import com.tokopedia.core.geolocation.model.autocomplete.LocationPass;
+import com.tokopedia.core.manage.people.address.model.Token;
 import com.tokopedia.core.receiver.CartBadgeNotificationReceiver;
 import com.tokopedia.core.router.transactionmodule.TransactionPurchaseRouter;
 import com.tokopedia.core.router.transactionmodule.sharedata.CheckPromoCodeCartListResult;
@@ -88,6 +89,8 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     RatesDataConverter ratesDataConverter;
     @Inject
     CheckoutAnalyticsCartShipmentPage checkoutAnalyticsCartShipmentPage;
+
+    private Token token;
 
     public static ShipmentFragment newInstance(CartShipmentAddressFormData cartShipmentAddressFormData,
                                                PromoCodeAppliedData promoCodeAppliedData,
@@ -162,8 +165,13 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                 shipmentPresenter.setRecipientAddressModel(
                         shipmentDataConverter.getRecipientAddressModel(cartShipmentAddressFormData));
             }
+
             shipmentPresenter.setShipmentCartItemModelList(shipmentDataConverter.getShipmentItems(
                     cartShipmentAddressFormData));
+
+            token = new Token();
+            token.setDistrictRecommendation(cartShipmentAddressFormData.getKeroDiscomToken());
+            token.setUt(cartShipmentAddressFormData.getKeroUnixTime());
         }
 
         PromoCodeAppliedData promoCodeAppliedData = arguments.getParcelable(ARG_EXTRA_PROMO_CODE_APPLIED_DATA);
