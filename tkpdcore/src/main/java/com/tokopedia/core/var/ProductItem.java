@@ -20,6 +20,7 @@ import java.util.List;
 public class ProductItem extends RecyclerViewItem implements Serializable, Parcelable {
 
     public static final int PRODUCT_ITEM_TYPE = 192_012;
+    public static final String CASHBACK = "cashback";
 
     @SerializedName("product_id")
     @Expose
@@ -105,6 +106,11 @@ public class ProductItem extends RecyclerViewItem implements Serializable, Parce
     TopAds topAds;
     private String trackerListName;
     private String trackerAttribution;
+
+    private String originalPrice;
+    private int discountPercentage;
+    private int countCourier;
+    private String cashback;
 
     /**
      *
@@ -312,6 +318,38 @@ public class ProductItem extends RecyclerViewItem implements Serializable, Parce
         setType(PRODUCT_ITEM_TYPE);
     }
 
+    public String getOriginalPrice() {
+        return originalPrice;
+    }
+
+    public void setOriginalPrice(String originalPrice) {
+        this.originalPrice = originalPrice;
+    }
+
+    public int getDiscountPercentage() {
+        return discountPercentage;
+    }
+
+    public void setDiscountPercentage(int discountPercentage) {
+        this.discountPercentage = discountPercentage;
+    }
+
+    public int getCountCourier() {
+        return countCourier;
+    }
+
+    public void setCountCourier(int countCourier) {
+        this.countCourier = countCourier;
+    }
+
+    public String getCashback() {
+        return cashback;
+    }
+
+    public void setCashback(String cashback) {
+        this.cashback = cashback;
+    }
+
     public ProductItem(String name, String price, String shop, String isGold, String imgUri) {
         this();
         this.name = name;
@@ -410,6 +448,10 @@ public class ProductItem extends RecyclerViewItem implements Serializable, Parce
         dest.writeParcelable(this.topAds, flags);
         dest.writeString(this.trackerListName);
         dest.writeString(this.trackerAttribution);
+        dest.writeInt(countCourier);
+        dest.writeString(originalPrice);
+        dest.writeInt(discountPercentage);
+        dest.writeString(cashback);
     }
 
     protected ProductItem(android.os.Parcel in) {
@@ -442,6 +484,10 @@ public class ProductItem extends RecyclerViewItem implements Serializable, Parce
         this.topAds = in.readParcelable(TopAds.class.getClassLoader());
         this.trackerListName = in.readString();
         this.trackerAttribution = in.readString();
+        this.countCourier = in.readInt();
+        this.originalPrice = in.readString();
+        this.discountPercentage = in.readInt();
+        this.cashback = in.readString();
     }
 
     public static final Creator<ProductItem> CREATOR = new Creator<ProductItem>() {

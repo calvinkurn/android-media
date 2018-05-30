@@ -2,6 +2,7 @@ package com.tokopedia.tkpd.drawer;
 
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.view.GravityCompat;
@@ -17,6 +18,7 @@ import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.TkpdCoreRouter;
+import com.tokopedia.seller.SellerModuleRouter;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.deposit.activity.DepositActivity;
 import com.tokopedia.core.drawer2.data.factory.ProfileSourceFactory;
@@ -70,7 +72,7 @@ public class DrawerBuyerHelper extends DrawerHelper
         implements DrawerItemDataBinder.DrawerItemListener,
         DrawerHeaderDataBinder.DrawerHeaderListener {
 
-    private static final String TOP_SELLER_APPLICATION_PACKAGE = "com.tokopedia.sellerapp";
+    public static final String TOP_SELLER_APPLICATION_PACKAGE = "com.tokopedia.sellerapp";
     private static final int VAL_DEFAULT = 0;
 
     private TextView shopName;
@@ -514,8 +516,7 @@ public class DrawerBuyerHelper extends DrawerHelper
                     sendGTMNavigationEvent(AppEventTracking.EventLabel.PURCHASE_LIST);
                     break;
                 case TkpdState.DrawerPosition.PEOPLE_DIGITAL_TRANSACTION_LIST:
-                    context.startActivity(DigitalWebActivity.newInstance(context, TkpdBaseURL.DIGITAL_WEBSITE_DOMAIN
-                            + TkpdBaseURL.DigitalWebsite.PATH_TRANSACTION_LIST));
+                    context.startActivity(TransactionPurchaseRouter.createIntentOrderListSummary(context));
                     sendGTMNavigationEvent(AppEventTracking.EventLabel.DIGITAL_TRANSACTION_LIST);
                     break;
                 case TkpdState.DrawerPosition.PEOPLE_FLIGHT_TRANSACTION_LIST:
@@ -591,16 +592,7 @@ public class DrawerBuyerHelper extends DrawerHelper
                     }
                     break;
                 case TkpdState.DrawerPosition.SELLER_TOP_ADS:
-                    Intent topadsIntent = context.getPackageManager()
-                            .getLaunchIntentForPackage(TOP_SELLER_APPLICATION_PACKAGE);
-
-                    if (topadsIntent != null) {
-                        context.startActivity(topadsIntent);
-                        UnifyTracking.eventTopAdsSwitcher(AppEventTracking.EventLabel.OPEN_APP);
-                    } else if (context.getApplication() instanceof TkpdCoreRouter) {
-                        ((TkpdCoreRouter) context.getApplication()).goToCreateMerchantRedirect(context);
-                        UnifyTracking.eventTopAdsSwitcher(AppEventTracking.Category.SWITCHER);
-                    }
+                    goToTopadsPage(context);
                     break;
                 case TkpdState.DrawerPosition.SELLER_INFO:
                     UnifyTracking.eventClickMenuSellerInfo();
@@ -641,6 +633,21 @@ public class DrawerBuyerHelper extends DrawerHelper
             }
 
             closeDrawer();
+        }
+    }
+
+    private void goToTopadsPage(Activity context) {
+        Intent topadsIntent = context.getPackageManager()
+                .getLaunchIntentForPackage(TOP_SELLER_APPLICATION_PACKAGE);
+
+        if(context.getApplication() instanceof SellerModuleRouter) {
+            ((SellerModuleRouter) context.getApplication()).gotoTopAdsDashboard(context);
+        }
+
+        if (topadsIntent != null) {
+            UnifyTracking.eventTopAdsSwitcher(AppEventTracking.EventLabel.OPEN_APP);
+        } else {
+            UnifyTracking.eventTopAdsSwitcher(AppEventTracking.Category.SWITCHER);
         }
     }
 

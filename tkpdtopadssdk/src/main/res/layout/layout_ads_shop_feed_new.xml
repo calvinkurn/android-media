@@ -13,10 +13,10 @@
         android:id="@+id/header"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="@dimen/dp_10"
         android:background="?attr/selectableItemBackground"
         android:clickable="true"
-        android:focusable="true">
+        android:focusable="true"
+        android:padding="@dimen/dp_10">
 
         <RelativeLayout
             android:id="@+id/shop_image_layout"
@@ -29,8 +29,8 @@
 
             <com.tokopedia.topads.sdk.view.RoundedCornerImageView
                 android:id="@+id/shop_image"
-                android:layout_width="@dimen/feed_shop_image"
-                android:layout_height="@dimen/feed_shop_image"
+                android:layout_width="@dimen/dp_32"
+                android:layout_height="@dimen/dp_32"
                 android:padding="0.5dp"
                 tools:src="@tools:sample/avatars" />
 
@@ -38,14 +38,14 @@
 
         <LinearLayout
             android:id="@+id/shop_title_layout"
-            android:layout_width="@dimen/dp_0"
-            android:layout_height="@dimen/dp_0"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
             android:layout_marginLeft="@dimen/dp_10"
             android:layout_marginRight="@dimen/dp_10"
             android:gravity="center_vertical"
             android:orientation="vertical"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/favorite_button"
             app:layout_constraintStart_toEndOf="@id/shop_image_layout"
             app:layout_constraintTop_toTopOf="parent">
 
@@ -53,12 +53,12 @@
                 android:id="@+id/shop_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:drawablePadding="@dimen/margin_4"
                 android:ellipsize="end"
                 android:fontFamily="sans-serif-medium"
                 android:maxLines="1"
                 android:textColor="@color/black_70"
-                android:textSize="@dimen/font_small"
-                android:drawablePadding="@dimen/margin_4"
+                android:textSize="@dimen/sp_12"
                 tools:text="town_f town_f town_f town_f town_f" />
 
             <TextView
@@ -72,38 +72,43 @@
                 tools:text="kacamata kual kacamata kual kacamata kual " />
         </LinearLayout>
 
+        <FrameLayout
+            android:id="@+id/favorite_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/selector_favorite"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <com.tokopedia.design.component.TextViewCompat
+                android:id="@+id/favorite_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginBottom="@dimen/dp_4"
+                android:layout_marginTop="@dimen/dp_4"
+                android:clickable="true"
+                android:drawablePadding="@dimen/dp_4"
+                android:focusable="true"
+                android:fontFamily="sans-serif-medium"
+                android:foreground="?android:attr/selectableItemBackground"
+                android:gravity="center"
+                android:paddingLeft="@dimen/dp_8"
+                android:paddingRight="@dimen/dp_8"
+                android:paddingTop="@dimen/dp_4"
+                android:paddingBottom="@dimen/dp_4"
+                android:text="@string/favoritkan"
+                android:textColor="@color/white"
+                android:textSize="@dimen/font_very_small"
+                android:textStyle="normal"
+                app:drawableLeftCompat="@drawable/ic_add_white_24px" />
+        </FrameLayout>
     </android.support.constraint.ConstraintLayout>
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/product_list"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
-
-    <LinearLayout
-        android:id="@+id/favorite_button"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_16"
-        android:layout_marginBottom="@dimen/dp_16"
-        android:layout_marginLeft="@dimen/dp_10"
-        android:layout_marginRight="@dimen/dp_10"
-        android:paddingTop="@dimen/feed_fav_padding"
-        android:paddingBottom="@dimen/feed_fav_padding"
-        android:background="@drawable/selector_favorite"
-        android:gravity="center">
-
-        <com.tokopedia.design.component.TextViewCompat
-            android:id="@+id/favorite_text"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:fontFamily="sans-serif-medium"
-            android:gravity="center"
-            android:text="@string/favoritkan"
-            android:textColor="@color/white"
-            android:textSize="@dimen/font_small"
-            android:textStyle="normal"
-            android:drawablePadding="@dimen/dp_5"
-            app:drawableLeftCompat="@drawable/ic_add_white_24px" />
-    </LinearLayout>
 
 </LinearLayout>
