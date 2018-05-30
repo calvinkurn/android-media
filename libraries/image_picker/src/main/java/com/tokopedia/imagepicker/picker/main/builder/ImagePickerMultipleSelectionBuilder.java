@@ -33,8 +33,8 @@ public class ImagePickerMultipleSelectionBuilder implements Parcelable {
         return new ImagePickerMultipleSelectionBuilder(
                 null,
                 null,
-                DEFAULT_MAXIMUM_NO_PICK,
-                0);
+                0,
+                DEFAULT_MAXIMUM_NO_PICK);
     }
 
     public ImagePickerMultipleSelectionBuilder(ArrayList<String> initialSelectedImagePathList,
