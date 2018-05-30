@@ -77,6 +77,17 @@ public class DiscoveryActivity extends BaseDiscoveryActivity implements
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(getLayoutRes());
+        proceed();
+    }
+
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        proceed();
+    }
+
+    private void proceed() {
         initView();
         prepareView();
     }
@@ -491,7 +502,7 @@ public class DiscoveryActivity extends BaseDiscoveryActivity implements
         }
     }
 
-    private void onImagePickedSuccess(String imagePath) {
+    public void onImagePickedSuccess(String imagePath) {
         tkpdProgressDialog = new TkpdProgressDialog(this, 1);
         tkpdProgressDialog.showDialog();
         getPresenter().requestImageSearch(imagePath);
