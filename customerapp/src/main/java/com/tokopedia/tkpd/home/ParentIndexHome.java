@@ -82,6 +82,7 @@ import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.design.component.Tabs;
 import com.tokopedia.digital.categorylist.view.activity.DigitalCategoryListActivity;
 import com.tokopedia.discovery.newdiscovery.search.SearchActivity;
+import com.tokopedia.feedplus.view.fragment.FeedPlusFragment;
 import com.tokopedia.home.beranda.presentation.view.fragment.HomeFragment;
 import com.tokopedia.seller.product.edit.view.activity.ProductAddActivity;
 import com.tokopedia.seller.shop.open.view.activity.ShopOpenDomainActivity;
@@ -94,8 +95,6 @@ import com.tokopedia.tkpd.home.favorite.view.FragmentFavorite;
 import com.tokopedia.tkpd.home.fragment.FragmentHotListV2;
 import com.tokopedia.tkpd.home.fragment.InappMessageDialogFragment;
 import com.tokopedia.tkpd.home.model.InAppMessageModel;
-import com.tokopedia.tkpd.qrscanner.QrScannerActivity;
-import com.tokopedia.feedplus.view.fragment.FeedPlusFragment;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -568,8 +567,9 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
             }
             return true;
         } else if (item.getItemId() == R.id.action_barcode_scan) {
-            startActivity(QrScannerActivity.newInstance(this));
+           // startActivity(QrScannerActivity.newInstance(this));
             CampaignTracking.eventQRButtonClick();
+            startActivity(new Intent(this,TkpdYoutubeVideoActivity.class));
             return true;
         } else {
             return super.onOptionsItemSelected(item);

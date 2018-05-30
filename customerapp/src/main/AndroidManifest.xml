@@ -291,6 +291,9 @@
         <activity
             android:name=".home.ReactNativeBrandListOsActivity"
              />
+        <activity
+            android:name=".home.TkpdYoutubeVideoActivity"
+            />
 
 
 
