@@ -53,7 +53,8 @@ public class ShakeDetectPresenter extends BaseDaggerPresenter<ShakeDetectContrac
     private RemoteConfig remoteConfig;
     public static final String FIREBASE_DOUBLE_SHAKE_CONFIG_KEY = "app_double_shake_enabled";
 
-
+    public final static int SHAKE_SHAKE_WAIT_TIME_SEC = 5;
+    Subscription subscription = null;
 
     @Inject
     public ShakeDetectPresenter(ShakeUseCase shakeDetectUseCase, @ApplicationContext Context context) {
@@ -67,16 +68,22 @@ public class ShakeDetectPresenter extends BaseDaggerPresenter<ShakeDetectContrac
     }
 
     private boolean isDoubleShakeShakeEnable() {
-        return remoteConfig.getBoolean(FIREBASE_DOUBLE_SHAKE_CONFIG_KEY,true);
+        return remoteConfig.getBoolean(FIREBASE_DOUBLE_SHAKE_CONFIG_KEY,true) || true;
 
     }
 
     volatile boolean secondShakeHappen = false;
     @Override
     public void onShakeDetect() {
-        if (!isFirstShake && isDoubleShakeShakeEnable() && !getView().isLongShakeTriggered()) {
+        if(getView().isLongShakeTriggered()) {
+
+        }
+        else if (!isFirstShake && isDoubleShakeShakeEnable()) {
             isFirstShake = true;
             waitForSecondShake();
+            Vibrator v = (Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE);
+            // Vibrate for 500 milliseconds
+                v.vibrate(500);
 
         } else {
             if(shakeUseCase != null)
@@ -160,8 +167,7 @@ public class ShakeDetectPresenter extends BaseDaggerPresenter<ShakeDetectContrac
             });
         }
     }
-    public final static int SHAKE_SHAKE_WAIT_TIME_SEC = 3;
-    Subscription subscription = null;
+
     private void waitForSecondShake() {
         subscription = Observable.interval(0,1,  TimeUnit.SECONDS).subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread()).subscribe(new Subscriber<Long>() {

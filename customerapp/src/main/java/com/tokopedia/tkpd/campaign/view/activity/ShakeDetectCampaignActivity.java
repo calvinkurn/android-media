@@ -38,6 +38,7 @@ public class ShakeDetectCampaignActivity extends BaseSimpleActivity implements S
     public static String SCREEN_NAME = "ShakeDetectCampaignActivity";
     View shakeShakeMessageButton;
     View cancelButton;
+    View cancelBtn;
     private TkpdProgressDialog progressDialog;
     protected CampaignComponent campaignComponent;
 
@@ -58,15 +59,12 @@ public class ShakeDetectCampaignActivity extends BaseSimpleActivity implements S
         shakeShakeMessage = (TextView) findViewById(R.id.shake_shake_message);
         shakeShakeMessageButton =  findViewById(R.id.shake_shake_message_button);
         cancelButton = findViewById(R.id.cancel_button);
+        cancelBtn = findViewById(R.id.cancel_btn);
         initInjector();
         attachToPresenter();
         ButterKnife.bind(this);
-        cancelButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                presenter.onCancelClick();
-            }
-        });
+        cancelButton.setOnClickListener(cancelListener);
+        cancelBtn.setOnClickListener(cancelListener);
         shakeDetect();
 
 
@@ -198,7 +196,6 @@ public class ShakeDetectCampaignActivity extends BaseSimpleActivity implements S
     @Override
     public void setCancelButtonVisible() {
         cancelButton.setVisibility(View.VISIBLE);
-        unregisterShake();
     }
 
     @Override
@@ -211,4 +208,11 @@ public class ShakeDetectCampaignActivity extends BaseSimpleActivity implements S
     public String getScreenName() {
         return SCREEN_NAME;
     }
+    View.OnClickListener cancelListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            presenter.onCancelClick();
+        }
+    };
+
 }

@@ -51,5 +51,9 @@
         android:defaultValue="false"
         android:key="notification_group_chat"
         android:title="@string/pref_receive_group_chat" />
+    <com.tkpd.library.ui.utilities.CustomCheckBoxPreference
+        android:defaultValue="false"
+        android:key="Shake Shake"
+        android:title="@string/pref_shake_shake" />
 
 </PreferenceScreen>

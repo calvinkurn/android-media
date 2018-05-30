@@ -39,6 +39,7 @@ public class ShakeDetectManager implements ShakeDetector.Listener {
     public static final int MESSAGE_SHAKE_START = 3;
     public static final int MESSAGE_SHAKE_END = 4;
     public static final int MESSAGE_SHAKE_SHAKE_CONTINUE_LONG = 5;
+
     public static final int SHAKE_SHAKE_END_TIME_MS = 800;
     public static final int SHAKE_SHAKE_WAIT_FOR_SECOND = 1000;
     public static final int SHAKE_SHAKE_CONTINUE_LONG_TIME_SECOND = 2000;
@@ -151,6 +152,7 @@ public class ShakeDetectManager implements ShakeDetector.Listener {
                case MESSAGE_SHAKE_SHAKE_CONTINUE_LONG:
                    startShake(true);
                    break;
+
            }
         }
     };

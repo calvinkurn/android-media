@@ -44,11 +44,19 @@
                 android:textColor="@color/medium_green"
                 android:text="@string/shake_shake_terus"
                 />
+            <ImageView
+                android:id="@+id/cancel_btn"
+                android:layout_width="@dimen/dp_12"
+                android:layout_height="@dimen/dp_12"
+                app:srcCompat="@drawable/ic_cross"
+                android:layout_marginLeft="@dimen/dp_25"/>
+
             <TextView
                 android:id="@+id/shake_shake_message"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/dp_3"
+                android:visibility="gone"
                 android:textSize="12sp"
                 android:gravity="center"
                 android:fontFamily="sans-serif"
