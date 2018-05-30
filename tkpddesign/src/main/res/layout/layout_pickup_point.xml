@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              xmlns:app="http://schemas.android.com/apk/res-auto"
-              xmlns:tools="http://schemas.android.com/tools"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent"
-              android:orientation="vertical">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
 
     <TextView
         android:id="@+id/tv_send_to_pick_up_booth"
@@ -48,7 +48,7 @@
                 android:layout_width="12dp"
                 android:layout_height="12dp"
                 android:background="@android:color/transparent"
-                app:srcCompat="@drawable/ic_close_default"/>
+                app:srcCompat="@drawable/ic_close_default" />
 
         </LinearLayout>
 
@@ -61,15 +61,14 @@
             android:textSize="12sp"
             tools:text="Jl. Rw. Belong, RT.2/RW.6, Sukabumi Utara, Kebayoran Baru, Kota Jakarta Barat, Daerah…" />
 
-        <TextView
+        <com.tokopedia.design.component.TextViewCompat
             android:id="@+id/tv_edit_pick_up_booth"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:drawableLeft="@drawable/ic_edit"
             android:drawablePadding="@dimen/dp_5"
-            android:drawableStart="@drawable/ic_edit"
             android:text="@string/label_edit_pickup"
-            android:textSize="14sp" />
+            android:textSize="14sp"
+            app:drawableLeftCompat="@drawable/ic_edit" />
 
     </LinearLayout>
 

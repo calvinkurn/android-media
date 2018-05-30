@@ -101,6 +101,11 @@ public class CartListPresenter implements ICartListPresenter {
     }
 
     @Override
+    public void detachView() {
+        compositeSubscription.unsubscribe();
+    }
+
+    @Override
     public void processInitialGetCartData() {
         view.renderLoadGetCartData();
         view.disableSwipeRefresh();
@@ -283,8 +288,19 @@ public class CartListPresenter implements ICartListPresenter {
         double subtotalPrice = 0;
         int totalAllCartItemQty = 0;
         for (CartItemHolderData data : dataList) {
+            String parentId = data.getCartItemData().getOriginData().getParentId();
+            String productId = data.getCartItemData().getOriginData().getProductId();
             int itemQty = data.getCartItemData().getUpdatedData().getQuantity();
-            totalAllCartItemQty = totalAllCartItemQty + itemQty;
+            if (!TextUtils.isEmpty(parentId) && !parentId.equals("0")) {
+                for (CartItemHolderData dataForQty : dataList) {
+                    if (!productId.equals(dataForQty.getCartItemData().getOriginData().getProductId()) &&
+                            parentId.equals(dataForQty.getCartItemData().getOriginData().getParentId())) {
+                        itemQty += dataForQty.getCartItemData().getUpdatedData().getQuantity();
+                    }
+                }
+            }
+
+            totalAllCartItemQty = totalAllCartItemQty + data.getCartItemData().getUpdatedData().getQuantity();
             List<WholesalePrice> wholesalePrices = data.getCartItemData().getOriginData().getWholesalePrice();
             boolean hasCalculateWholesalePrice = false;
             if (wholesalePrices != null && wholesalePrices.size() > 0) {

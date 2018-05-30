@@ -8,6 +8,7 @@ import android.widget.TextView;
 
 import com.tokopedia.checkout.R;
 import com.tokopedia.checkout.domain.datamodel.MultipleAddressItemData;
+import com.tokopedia.design.component.TextViewCompat;
 
 import java.util.List;
 
@@ -23,7 +24,7 @@ public class MultipleAddressItemViewHolder extends RecyclerView.ViewHolder{
 
     private ImageView editButton;
 
-    private TextView pseudoEditButton;
+    private TextViewCompat pseudoEditButton;
 
     private ImageView deleteButton;
 

@@ -23,6 +23,7 @@ import com.tokopedia.checkout.domain.datamodel.cartsingleshipment.CartSellerItem
 import com.tokopedia.checkout.domain.datamodel.shipmentrates.ShipmentDetailData;
 import com.tokopedia.checkout.view.adapter.InnerProductListAdapter;
 import com.tokopedia.checkout.view.adapter.SingleAddressShipmentAdapter.ActionListener;
+import com.tokopedia.design.component.TextViewCompat;
 import com.tokopedia.design.utils.CurrencyFormatUtil;
 import com.tokopedia.showcase.ShowCaseContentPosition;
 import com.tokopedia.showcase.ShowCaseObject;
@@ -81,9 +82,9 @@ public class CartSellerItemViewHolder extends RecyclerView.ViewHolder {
     private ImageView mIvDetailOptionChevron;
     private TextView mTvSubTotal;
     private FrameLayout layoutError;
-    private TextView tvError;
+    private TextViewCompat tvError;
     private FrameLayout layoutWarning;
-    private TextView tvWarning;
+    private TextViewCompat tvWarning;
     private LinearLayout mLlShippingWarningContainer;
     private ImageView mIvShippingWarning;
     private TextView mTvShippingWarning;

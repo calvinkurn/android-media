@@ -14,6 +14,9 @@ import com.tokopedia.checkout.view.di.scope.CartRemoveProductScope;
 import com.tokopedia.checkout.view.view.cartlist.CartItemDecoration;
 import com.tokopedia.checkout.view.view.cartlist.CartRemoveProductFragment;
 import com.tokopedia.checkout.view.view.cartlist.CartRemoveProductPresenter;
+import com.tokopedia.checkout.view.view.cartlist.removecartitem.RemoveCartItemAdapter;
+import com.tokopedia.checkout.view.view.cartlist.removecartitem.RemoveCartItemFragment;
+import com.tokopedia.checkout.view.view.cartlist.removecartitem.RemoveCartItemPresenter;
 
 import dagger.Module;
 import dagger.Provides;
@@ -31,6 +34,11 @@ public class CartRemoveProductModule {
     public CartRemoveProductModule(CartRemoveProductFragment cartRemoveProductFragment) {
         actionListener = cartRemoveProductFragment;
         context = cartRemoveProductFragment.getContext();
+    }
+
+    public CartRemoveProductModule() {
+        actionListener = null;
+        context = null;
     }
 
     @Provides
@@ -69,5 +77,16 @@ public class CartRemoveProductModule {
         return new CartRemoveProductAdapter(actionListener);
     }
 
+    @Provides
+    @CartRemoveProductScope
+    RemoveCartItemPresenter provideRemoveCartItemPresenter(CompositeSubscription compositeSubscription,
+                                                           DeleteCartUseCase deleteCartUseCase) {
+        return new RemoveCartItemPresenter(compositeSubscription, deleteCartUseCase);
+    }
 
+    @Provides
+    @CartRemoveProductScope
+    RemoveCartItemAdapter provideRemoveCartItemAdapter() {
+        return new RemoveCartItemAdapter();
+    }
 }

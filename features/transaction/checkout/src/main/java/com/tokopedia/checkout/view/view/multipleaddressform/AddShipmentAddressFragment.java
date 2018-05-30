@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.text.Editable;
+import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,8 +23,7 @@ import com.tokopedia.checkout.view.di.component.AddShipmentAddressComponent;
 import com.tokopedia.checkout.view.di.component.DaggerAddShipmentAddressComponent;
 import com.tokopedia.checkout.view.view.addressoptions.CartAddressChoiceActivity;
 
-import java.math.BigDecimal;
-import java.text.DecimalFormat;
+import java.util.ArrayList;
 
 import javax.inject.Inject;
 
@@ -32,10 +32,6 @@ import javax.inject.Inject;
  */
 public class AddShipmentAddressFragment extends BaseCheckoutFragment {
 
-    private static final String PRODUCT_DATA_EXTRAS = "PRODUCT_DATA_EXTRAS";
-    private static final String ADDRESS_DATA_EXTRAS = "ADDRESS_DATA_EXTRAS";
-    private static final String MODE_EXTRA = "MODE_EXTRAS";
-    public static final String ADDRESS_DATA_RESULT = "ADDRESxS_DATA_RESULT";
     public static final int ADD_MODE = 1;
     public static final int EDIT_MODE = 2;
     private static final int MAX_QTY_DEFAULT = 10000;
@@ -61,19 +57,22 @@ public class AddShipmentAddressFragment extends BaseCheckoutFragment {
     IAddShipmentAddressPresenter presenter;
 
     private int formMode;
+    ArrayList<MultipleAddressAdapterData> dataList;
     MultipleAddressAdapterData multipleAddressAdapterData;
     MultipleAddressItemData multipleAddressItemData;
 
     public static Fragment newInstance(
+            ArrayList<MultipleAddressAdapterData> dataList,
             MultipleAddressAdapterData data,
             MultipleAddressItemData addressData,
             int mode
     ) {
         Fragment fragment = new AddShipmentAddressFragment();
         Bundle bundle = new Bundle();
-        bundle.putParcelable(PRODUCT_DATA_EXTRAS, data);
-        bundle.putParcelable(ADDRESS_DATA_EXTRAS, addressData);
-        bundle.putInt(MODE_EXTRA, mode);
+        bundle.putParcelableArrayList(AddShipmentAddressActivity.PRODUCT_DATA_LIST_EXTRAS, dataList);
+        bundle.putParcelable(AddShipmentAddressActivity.PRODUCT_DATA_EXTRAS, data);
+        bundle.putParcelable(AddShipmentAddressActivity.ADDRESS_DATA_EXTRAS, addressData);
+        bundle.putInt(AddShipmentAddressActivity.MODE_EXTRA, mode);
         fragment.setArguments(bundle);
         return fragment;
     }
@@ -116,9 +115,10 @@ public class AddShipmentAddressFragment extends BaseCheckoutFragment {
 
     @Override
     protected void setupArguments(Bundle arguments) {
-        formMode = arguments.getInt(MODE_EXTRA);
-        multipleAddressAdapterData = arguments.getParcelable(PRODUCT_DATA_EXTRAS);
-        multipleAddressItemData = arguments.getParcelable(ADDRESS_DATA_EXTRAS);
+        formMode = arguments.getInt(AddShipmentAddressActivity.MODE_EXTRA);
+        dataList = arguments.getParcelableArrayList(AddShipmentAddressActivity.PRODUCT_DATA_LIST_EXTRAS);
+        multipleAddressAdapterData = arguments.getParcelable(AddShipmentAddressActivity.PRODUCT_DATA_EXTRAS);
+        multipleAddressItemData = arguments.getParcelable(AddShipmentAddressActivity.ADDRESS_DATA_EXTRAS);
     }
 
     @Override
@@ -204,43 +204,46 @@ public class AddShipmentAddressFragment extends BaseCheckoutFragment {
     }
 
     private void setEditButtonVisibility(CharSequence charSequence, MultipleAddressItemData data) {
-        if (charSequence.toString().isEmpty()
-                || Integer.parseInt(charSequence.toString()) < 1)
-            quantityField.setText("1");
-        else {
-            if (Integer.parseInt(charSequence.toString()) > MAX_QTY_DEFAULT) {
-                saveChangesButton.setVisibility(View.GONE);
-                quantityErrorLayout.setVisibility(View.VISIBLE);
-                quantityErrorTextView.setText(data.getErrorProductMaxQuantity()
-                        .replace("{{value}}", QTY_MAX_STRING));
-            } else if (Integer.parseInt(charSequence.toString()) < 1) {
-                saveChangesButton.setVisibility(View.GONE);
-                quantityErrorLayout.setVisibility(View.VISIBLE);
-                quantityErrorTextView.setText(data.getErrorProductMinQuantity()
-                        .replace("{{value}}", String.valueOf(data.getMinQuantity())));
-            } else if (Integer.parseInt(charSequence.toString()) > data.getMaxQuantity()) {
-                saveChangesButton.setVisibility(View.GONE);
-                quantityErrorLayout.setVisibility(View.VISIBLE);
-                quantityErrorTextView.setText(data.getErrorProductMaxQuantity()
-                        .replace("{{value}}", String.valueOf(data.getMaxQuantity())));
-            } else if (Integer.parseInt(charSequence.toString()) < data.getMinQuantity()) {
-                saveChangesButton.setVisibility(View.GONE);
-                quantityErrorLayout.setVisibility(View.VISIBLE);
-                quantityErrorTextView.setText(data.getErrorProductMinQuantity()
-                        .replace("{{value}}", String.valueOf(data.getMinQuantity())));
+        try {
+            if (charSequence.toString().isEmpty() || Integer.parseInt(charSequence.toString()) < 1) {
+                quantityField.setText("1");
             } else {
-                quantityErrorLayout.setVisibility(View.GONE);
-            }
+                if (Integer.parseInt(charSequence.toString()) > MAX_QTY_DEFAULT) {
+                    saveChangesButton.setVisibility(View.GONE);
+                    quantityErrorLayout.setVisibility(View.VISIBLE);
+                    quantityErrorTextView.setText(data.getErrorProductMaxQuantity()
+                            .replace("{{value}}", QTY_MAX_STRING));
+                } else if (Integer.parseInt(charSequence.toString()) < 1) {
+                    saveChangesButton.setVisibility(View.GONE);
+                    quantityErrorLayout.setVisibility(View.VISIBLE);
+                    quantityErrorTextView.setText(data.getErrorProductMinQuantity()
+                            .replace("{{value}}", String.valueOf(data.getMinQuantity())));
+                } else if (Integer.parseInt(charSequence.toString()) > data.getMaxQuantity()) {
+                    saveChangesButton.setVisibility(View.GONE);
+                    quantityErrorLayout.setVisibility(View.VISIBLE);
+                    quantityErrorTextView.setText(data.getErrorProductMaxQuantity()
+                            .replace("{{value}}", String.valueOf(data.getMaxQuantity())));
+                } else if (Integer.parseInt(charSequence.toString()) < data.getMinQuantity()) {
+                    saveChangesButton.setVisibility(View.GONE);
+                    quantityErrorLayout.setVisibility(View.VISIBLE);
+                    quantityErrorTextView.setText(data.getErrorProductMinQuantity()
+                            .replace("{{value}}", String.valueOf(data.getMinQuantity())));
+                } else {
+                    quantityErrorLayout.setVisibility(View.GONE);
+                }
 
-            if (addressLayout.getVisibility() != View.VISIBLE) {
-                saveChangesButton.setVisibility(View.GONE);
-            } else {
-                if (addAddressErrorTextView.getVisibility() != View.VISIBLE &&
-                        notesErrorWarningTextView.getVisibility() != View.VISIBLE &&
-                        quantityErrorLayout.getVisibility() != View.VISIBLE) {
-                    saveChangesButton.setVisibility(View.VISIBLE);
+                if (addressLayout.getVisibility() != View.VISIBLE) {
+                    saveChangesButton.setVisibility(View.GONE);
+                } else {
+                    if (addAddressErrorTextView.getVisibility() != View.VISIBLE &&
+                            notesErrorWarningTextView.getVisibility() != View.VISIBLE &&
+                            quantityErrorLayout.getVisibility() != View.VISIBLE) {
+                        saveChangesButton.setVisibility(View.VISIBLE);
+                    }
                 }
             }
+        } catch (NumberFormatException e) {
+            e.printStackTrace();
         }
     }
 
@@ -333,10 +336,12 @@ public class AddShipmentAddressFragment extends BaseCheckoutFragment {
     private void addNewAddressItem() {
         Intent intent = new Intent();
         MultipleAddressItemData newItemData = presenter.confirmAddData(
+                multipleAddressItemData,
                 quantityField.getText().toString(),
                 checkNotesAvailability(notesLayout.getVisibility() == View.VISIBLE, notesEditText)
         );
-        intent.putExtra(ADDRESS_DATA_RESULT, newItemData);
+        intent.putExtra(AddShipmentAddressActivity.ADDRESS_DATA_RESULT, newItemData);
+        intent.putExtra(AddShipmentAddressActivity.PRODUCT_DATA_LIST_EXTRAS, dataList);
         getActivity().setResult(Activity.RESULT_OK, intent);
         getActivity().finish();
     }
@@ -347,7 +352,8 @@ public class AddShipmentAddressFragment extends BaseCheckoutFragment {
                 quantityField.getText().toString(),
                 checkNotesAvailability(notesLayout.getVisibility() == View.VISIBLE, notesEditText)
         );
-        intent.putExtra(ADDRESS_DATA_RESULT, editedItemData);
+        intent.putExtra(AddShipmentAddressActivity.ADDRESS_DATA_RESULT, editedItemData);
+        intent.putExtra(AddShipmentAddressActivity.PRODUCT_DATA_LIST_EXTRAS, dataList);
         getActivity().setResult(Activity.RESULT_OK, intent);
         getActivity().finish();
     }
@@ -361,27 +367,31 @@ public class AddShipmentAddressFragment extends BaseCheckoutFragment {
     private void setQuantityButtonAvailability(CharSequence charSequence,
                                                ImageView decreaseButton,
                                                ImageView increaseButton) {
-        int quantity = Integer.parseInt(charSequence.toString());
-        if (charSequence.toString().isEmpty() || quantity == 0) {
-            decreaseButton.setClickable(false);
-            decreaseButton.setEnabled(false);
-            increaseButton.setClickable(false);
-            increaseButton.setEnabled(false);
-        } else if (quantity == 1 || quantity <= multipleAddressItemData.getMinQuantity()) {
-            decreaseButton.setClickable(false);
-            decreaseButton.setEnabled(false);
-            increaseButton.setClickable(true);
-            increaseButton.setEnabled(true);
-        } else if (quantity == MAX_QTY_DEFAULT || quantity >= multipleAddressItemData.getMaxQuantity()) {
-            decreaseButton.setClickable(true);
-            decreaseButton.setEnabled(true);
-            increaseButton.setClickable(false);
-            increaseButton.setEnabled(false);
-        } else {
-            decreaseButton.setClickable(true);
-            decreaseButton.setEnabled(true);
-            increaseButton.setClickable(true);
-            increaseButton.setEnabled(true);
+        try {
+            int quantity = Integer.parseInt(charSequence.toString());
+            if (charSequence.toString().isEmpty() || quantity == 0) {
+                decreaseButton.setClickable(false);
+                decreaseButton.setEnabled(false);
+                increaseButton.setClickable(false);
+                increaseButton.setEnabled(false);
+            } else if (quantity == 1 || quantity <= multipleAddressItemData.getMinQuantity()) {
+                decreaseButton.setClickable(false);
+                decreaseButton.setEnabled(false);
+                increaseButton.setClickable(true);
+                increaseButton.setEnabled(true);
+            } else if (quantity == MAX_QTY_DEFAULT || quantity >= multipleAddressItemData.getMaxQuantity()) {
+                decreaseButton.setClickable(true);
+                decreaseButton.setEnabled(true);
+                increaseButton.setClickable(false);
+                increaseButton.setEnabled(false);
+            } else {
+                decreaseButton.setClickable(true);
+                decreaseButton.setEnabled(true);
+                increaseButton.setClickable(true);
+                increaseButton.setEnabled(true);
+            }
+        } catch (NumberFormatException e) {
+            e.printStackTrace();
         }
     }
 
@@ -443,13 +453,29 @@ public class AddShipmentAddressFragment extends BaseCheckoutFragment {
 
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                setQuantityButtonAvailability(charSequence, decreaseButton, increaseButton);
-                setEditButtonVisibility(charSequence, data);
+
             }
 
             @Override
             public void afterTextChanged(Editable editable) {
-
+                if (TextUtils.isEmpty(editable)) {
+                    quantityField.setText("1");
+                } else {
+                    int zeroCount = 0;
+                    for (int i = 0; i < editable.length(); i++) {
+                        if (editable.charAt(i) == '0') {
+                            zeroCount++;
+                        }
+                    }
+                    if (zeroCount == editable.length()) {
+                        quantityField.setText("1");
+                    } else if (editable.charAt(0) == '0') {
+                        quantityField.setText(editable.toString().substring(zeroCount, editable.length()));
+                        quantityField.setSelection(quantityField.length());
+                    }
+                    setQuantityButtonAvailability(editable, decreaseButton, increaseButton);
+                    setEditButtonVisibility(editable, data);
+                }
             }
         };
     }
@@ -458,8 +484,12 @@ public class AddShipmentAddressFragment extends BaseCheckoutFragment {
         return new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                int quantity = Integer.parseInt(quantityField.getText().toString());
-                quantityField.setText(String.valueOf(quantity - 1));
+                try {
+                    int quantity = Integer.parseInt(quantityField.getText().toString());
+                    quantityField.setText(String.valueOf(quantity - 1));
+                } catch (NumberFormatException e) {
+                    e.printStackTrace();
+                }
             }
         };
     }
@@ -468,8 +498,12 @@ public class AddShipmentAddressFragment extends BaseCheckoutFragment {
         return new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                int quantity = Integer.parseInt(quantityField.getText().toString());
-                quantityField.setText(String.valueOf(quantity + 1));
+                try {
+                    int quantity = Integer.parseInt(quantityField.getText().toString());
+                    quantityField.setText(String.valueOf(quantity + 1));
+                } catch (NumberFormatException e) {
+                    e.printStackTrace();
+                }
             }
         };
     }

@@ -28,17 +28,17 @@ import com.tokopedia.checkout.domain.datamodel.cartsingleshipment.CartItemModel;
 import com.tokopedia.checkout.domain.datamodel.shipmentrates.CourierItemData;
 import com.tokopedia.checkout.domain.datamodel.shipmentrates.ShipmentDetailData;
 import com.tokopedia.checkout.view.adapter.InnerProductListAdapter;
-import com.tokopedia.checkout.view.constants.InsuranceConstant;
 import com.tokopedia.checkout.view.view.shipment.ShipmentAdapter;
 import com.tokopedia.checkout.view.view.shipment.ShipmentAdapterActionListener;
 import com.tokopedia.checkout.view.view.shipment.viewmodel.ShipmentCartItemModel;
 import com.tokopedia.design.bottomsheet.BottomSheetView;
+import com.tokopedia.design.component.TextViewCompat;
 import com.tokopedia.design.pickuppoint.PickupPointLayout;
 import com.tokopedia.design.utils.CurrencyFormatUtil;
+import com.tokopedia.logisticdata.data.constant.InsuranceConstant;
 import com.tokopedia.showcase.ShowCaseContentPosition;
 import com.tokopedia.showcase.ShowCaseObject;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -48,7 +48,7 @@ import java.util.List;
 
 public class ShipmentItemViewHolder extends RecyclerView.ViewHolder {
 
-    public static final int ITEM_VIEW_SHIPMENT_SINGLE_ADDRESS = R.layout.item_shipment;
+    public static final int ITEM_VIEW_SHIPMENT_ITEM = R.layout.item_shipment;
 
     private static final int FIRST_ELEMENT = 0;
 
@@ -65,9 +65,9 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder {
     private ShipmentAdapterActionListener mActionListener;
     private ShipmentAdapter shipmentAdapter;
 
-    private TextView tvError;
+    private TextViewCompat tvError;
     private FrameLayout layoutError;
-    private TextView tvWarning;
+    private TextViewCompat tvWarning;
     private FrameLayout layoutWarning;
     private TextView tvTextSentBy;
     private TextView tvShopName;
@@ -93,7 +93,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder {
     private TextView tvRecipientName;
     private TextView tvRecipientAddress;
     private TextView tvRecipientPhone;
-    private TextView tvChangeAddress;
+    private TextViewCompat tvChangeAddress;
     private LinearLayout addressLayout;
     private PickupPointLayout pickupPointLayout;
     private RecyclerView rvCartItem;
@@ -270,9 +270,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder {
                 (int) cartItemModel.getPrice(), true));
         tvItemCountAndWeight.setText(String.format(tvItemCountAndWeight.getContext()
                         .getString(R.string.iotem_count_and_weight_format),
-                String.valueOf(cartItemModel.getQuantity()),
-                getFormattedWeight(tvItemCountAndWeight.getContext(),
-                        cartItemModel.getWeight() * cartItemModel.getQuantity())));
+                String.valueOf(cartItemModel.getQuantity()), cartItemModel.getWeightFmt()));
 
         boolean isEmptyNotes = TextUtils.isEmpty(cartItemModel.getNoteToSeller());
         llOptionalNoteToSellerLayout.setVisibility(isEmptyNotes ? View.GONE : View.VISIBLE);
@@ -596,19 +594,6 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder {
         } else {
             layoutWarning.setVisibility(View.GONE);
         }
-    }
-
-    protected String getFormattedWeight(Context context, double weightInGrams) {
-        String unit;
-        double finalWeight;
-        if (weightInGrams >= KILOGRAM_TO_GRAM_MULTIPLIER) {
-            unit = context.getString(R.string.weight_unit_kilogram);
-            finalWeight = weightInGrams / KILOGRAM_TO_GRAM_MULTIPLIER;
-        } else {
-            unit = context.getString(R.string.weight_unit_gram);
-            finalWeight = weightInGrams;
-        }
-        return String.format(context.getString(R.string.label_weight_format), (int) finalWeight, unit);
     }
 
     private String getPriceFormat(TextView textViewLabel, TextView textViewPrice, int price) {

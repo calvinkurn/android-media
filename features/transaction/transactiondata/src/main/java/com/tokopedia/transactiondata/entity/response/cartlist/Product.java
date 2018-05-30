@@ -11,6 +11,9 @@ import java.util.List;
 
 public class Product {
 
+    @SerializedName("parent_id")
+    @Expose
+    private int parentId;
     @SerializedName("product_id")
     @Expose
     private int productId;
@@ -110,6 +113,10 @@ public class Product {
     @SerializedName("product_showcase")
     @Expose
     private ProductShowCase productShowcase;
+
+    public int getParentId() {
+        return parentId;
+    }
 
     public int getProductId() {
         return productId;

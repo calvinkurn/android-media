@@ -15,6 +15,7 @@ import com.tokopedia.checkout.router.ICheckoutModuleRouter;
 import com.tokopedia.checkout.view.base.BaseCheckoutActivity;
 import com.tokopedia.checkout.view.di.component.CartComponent;
 import com.tokopedia.checkout.view.di.component.CartComponentInjector;
+import com.tokopedia.checkout.view.view.cartlist.removecartitem.RemoveCartItemFragment;
 
 import java.util.List;
 
@@ -69,7 +70,7 @@ public class CartActivity extends BaseCheckoutActivity implements CartFragment.A
         } else {
             startActivity(
                     ((ICheckoutModuleRouter) getApplication())
-                            .getHomeIntent(this)
+                            .getHomePageIntent(this)
             );
             finish();
         }
@@ -95,7 +96,7 @@ public class CartActivity extends BaseCheckoutActivity implements CartFragment.A
         Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.container);
         if (fragment == null || !(fragment instanceof CartRemoveProductFragment)) {
             getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.parent_view, CartRemoveProductFragment.newInstance(cartItemData))
+                    .replace(R.id.parent_view, RemoveCartItemFragment.newInstance(cartItemData))
                     .addToBackStack(null)
                     .commit();
         }

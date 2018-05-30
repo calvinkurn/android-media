@@ -93,7 +93,7 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         } else if (item instanceof RecipientAddressModel) {
             return ShipmentRecipientAddressViewHolder.ITEM_VIEW_RECIPIENT_ADDRESS;
         } else if (item instanceof ShipmentCartItemModel) {
-            return ShipmentItemViewHolder.ITEM_VIEW_SHIPMENT_SINGLE_ADDRESS;
+            return ShipmentItemViewHolder.ITEM_VIEW_SHIPMENT_ITEM;
         } else if (item instanceof ShipmentCostModel) {
             return ShipmentCostViewHolder.ITEM_VIEW_SHIPMENT_COST;
         } else if (item instanceof ShipmentInsuranceTncModel) {
@@ -115,7 +115,7 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             return new CartPromoSuggestionViewHolder(view, shipmentAdapterActionListener);
         } else if (viewType == ShipmentRecipientAddressViewHolder.ITEM_VIEW_RECIPIENT_ADDRESS) {
             return new ShipmentRecipientAddressViewHolder(view, shipmentAdapterActionListener);
-        } else if (viewType == ShipmentItemViewHolder.ITEM_VIEW_SHIPMENT_SINGLE_ADDRESS) {
+        } else if (viewType == ShipmentItemViewHolder.ITEM_VIEW_SHIPMENT_ITEM) {
             return new ShipmentItemViewHolder(view, shipmentAdapterActionListener, this);
         } else if (viewType == ShipmentCostViewHolder.ITEM_VIEW_SHIPMENT_COST) {
             return new ShipmentCostViewHolder(view, shipmentAdapterActionListener);
@@ -139,7 +139,7 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         } else if (viewType == ShipmentRecipientAddressViewHolder.ITEM_VIEW_RECIPIENT_ADDRESS) {
             ((ShipmentRecipientAddressViewHolder) holder).bindViewHolder((RecipientAddressModel) data,
                     showCaseObjectList);
-        } else if (viewType == ShipmentItemViewHolder.ITEM_VIEW_SHIPMENT_SINGLE_ADDRESS) {
+        } else if (viewType == ShipmentItemViewHolder.ITEM_VIEW_SHIPMENT_ITEM) {
             ((ShipmentItemViewHolder) holder).bindViewHolder(
                     (ShipmentCartItemModel) data, recipientAddressModel, showCaseObjectList);
             setShowCase(holder.itemView.getContext());
