@@ -12,4 +12,6 @@ public interface ApplinkRouter {
     void goToApplinkActivity(Context context, String applink);
 
     Intent getApplinkIntent(Context context, String applink);
+
+    boolean isSupportApplink(String appLink);
 }
