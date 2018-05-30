@@ -15,6 +15,7 @@ import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.seller.base.view.adapter.BaseListAdapter;
 import com.tokopedia.seller.base.view.fragment.TopAdsFilterListFragment;
 import com.tokopedia.topads.R;
+import com.tokopedia.topads.sourcetagging.constant.TopAdsSourceOption;
 import com.tokopedia.topads.dashboard.constant.TopAdsExtraConstant;
 import com.tokopedia.topads.dashboard.data.model.data.GroupAd;
 import com.tokopedia.topads.dashboard.view.activity.TopAdsGroupNewPromoActivity;
@@ -50,6 +51,7 @@ public class TopAdsKeywordListFragment extends TopAdsAdListFragment<TopAdsKeywor
 
     @Inject
     TopAdsKeywordListPresenterImpl topAdsKeywordListPresenter;
+
     private boolean hasData;
     private GroupTopAdsListener groupTopAdsListener;
 
@@ -177,11 +179,13 @@ public class TopAdsKeywordListFragment extends TopAdsAdListFragment<TopAdsKeywor
     @Override
     public void onCreateAd() {
         UnifyTracking.eventTopAdsProductNewPromoKeywordPositif();
+        topAdsKeywordListPresenter.saveSourceTagging(TopAdsSourceOption.SA_MANAGE_KEYWORD_POSITIVE);
         TopAdsKeywordNewChooseGroupActivity.start(this, getActivity(), REQUEST_CODE_AD_ADD, isPositive());
     }
 
     @Override
     public void onItemClicked(KeywordAd ad) {
+        topAdsKeywordListPresenter.saveSourceTagging(TopAdsSourceOption.SA_MANAGE_KEYWORD_POSITIVE);
         startActivityForResult(TopAdsKeywordDetailActivity.createInstance(getActivity(), ad, ad.getId()), REQUEST_CODE_AD_CHANGE);
     }
 
@@ -218,6 +222,8 @@ public class TopAdsKeywordListFragment extends TopAdsAdListFragment<TopAdsKeywor
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 Intent intent = new Intent(getActivity(), TopAdsGroupNewPromoActivity.class);
+                topAdsKeywordListPresenter.saveSourceTagging(isPositive()? TopAdsSourceOption.SA_MANAGE_KEYWORD_POSITIVE :
+                TopAdsSourceOption.SA_MANAGE_KEYWORD_NEGATIVE);
                 TopAdsKeywordListFragment.this.startActivityForResult(intent, TopAdsGroupNewPromoFragment.REQUEST_CODE_AD_STATUS);
             }
         });

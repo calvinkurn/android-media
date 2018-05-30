@@ -3,6 +3,7 @@ package com.tokopedia.network.service;
 import com.tokopedia.core.network.retrofit.response.TkpdResponse;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.network.SessionUrl;
+import com.tokopedia.session.changephonenumber.data.model.ValidateOtpStatusData;
 
 import java.util.Map;
 
@@ -173,4 +174,9 @@ public interface AccountsApi {
     @POST(SessionUrl.UpdateProfile.PATH_ADD_PASSWORD)
     Observable<Response<TkpdResponse>> addPassword(@FieldMap Map<String,
             Object> parameters);
+
+    @GET(SessionUrl.OTP.VALIDATE_OTP_STATUS)
+    Observable<Response<ValidateOtpStatusData>> validateOtpStatus(@QueryMap Map<String, Object>
+                                                                 parameters);
+
 }

@@ -35,7 +35,7 @@ public class TopAdsKeywordEditDetailDataMapper implements Func1<Response<DataRes
         dataModel.setKeywordTypeId(modelInput.getKeywordTypeId());
         dataModel.setPriceBid(modelInput.getPriceBid());
         dataModel.setShopId(modelInput.getShopId());
-        dataModel.setSource(TopAdsNetworkConstant.SOURCE_DASHBOARD_USER_MAIN);
+        dataModel.setSource(modelInput.getSource());
         if (modelInput.getToggle() == 1) {
             dataModel.setToggle(ON);
         } else {

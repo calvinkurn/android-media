@@ -1,14 +1,11 @@
 package com.tokopedia.inbox.inboxchat.viewholder;
 
 import android.support.annotation.LayoutRes;
-import android.text.method.ScrollingMovementMethod;
-import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageView;
-import android.widget.ScrollView;
 import android.widget.TextView;
 
-import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
+import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.inbox.R;
 import com.tokopedia.inbox.inboxchat.presenter.ChatRoomContract;
 import com.tokopedia.inbox.inboxchat.viewmodel.TemplateChatModel;
@@ -17,7 +14,7 @@ import com.tokopedia.inbox.inboxchat.viewmodel.TemplateChatModel;
  * Created by stevenfredian on 11/29/17.
  */
 
-public class TemplateChatViewHolder extends AbstractViewHolder<TemplateChatModel>{
+public class TemplateChatViewHolder extends AbstractViewHolder<TemplateChatModel> {
 
     @LayoutRes
     public static final int LAYOUT = R.layout.item_template_chat_layout;

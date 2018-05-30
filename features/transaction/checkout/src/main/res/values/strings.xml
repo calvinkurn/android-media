@@ -118,6 +118,7 @@
     <string name="checkout_module_label_po">PO</string>
     <string name="checkout_module_label_ubah">Ubah</string>
     <string name="checkout_module_title_activity_cart">Keranjang</string>
+    <string name="checkout_module_title_activity_checkout">Checkout</string>
     <string name="checkout_module_title_shipping_dest">Tujuan Pengiriman</string>
     <string name="checkout_module_title_activity_people_tx_details">Detil Transaksi</string>
     <string name="label_cashback">Cashback</string>
@@ -136,12 +137,18 @@
     <string name="label_message_showcase_shipment">Gunakan layanan jasa pengiriman yang didukung oleh toko ini.</string>
     <string name="label_dialog_action_delete_and_add_to_wishlist"><![CDATA[Hapus & Tambah Wishlist]]></string>
     <string name="label_dialog_title_delete_item">Hapus Barang</string>
-    <string name="label_dialog_action_delete">Hapus</string>
+    <string name="label_dialog_action_delete">\u0020\u0020\u0020\u0020\u0020\u0020\u0020\u0020\u0020\u0020\u0020\u0020\u0020\u0020\u0020\u0020\u0020\u0020\u0020\u0020Hapus</string>
     <string name="label_dialog_action_delete_all">Hapus Semua</string>
     <string name="label_dialog_message_remove_cart_item">Barang ini akan dihapus dari keranjang belanja anda</string>
     <string name="label_delete_cart_item_success">Produk berhasil dihapus dari keranjang</string>
     <string name="label_delete_cart_item_failed">Gagal menghapus produk dari keranjang</string>
     <string name="label_delete_cart_tem">Hapus</string>
     <string name="label_delete_cart_item_formatted" formatted="false">Hapus (%d)</string>
+    <string name="label_showcase_multiple_address_title">Kirim Barang Sama ke Beberapa Alamat.</string>
+    <string name="label_showcase_multiple_address_message">Klik tombol untuk mengirim barang yang sama ke beda alamat.</string>
+    <string name="label_delete_cart_item">Hapus</string>
+    <string name="label_hardcoded_courier_ticker">Pembelian dengan Instan dan Same Day diatas pk 14:00 berpotensi dikirim hari berikutnya.</string>
+    <string name="cart_error_message">Terjadi kendala pada pesanan Anda, lihat di bawah untuk info lebih lengkap.</string>
+    <string name="cart_error_action">Hapus produk yang berkendala</string>
 
 </resources>

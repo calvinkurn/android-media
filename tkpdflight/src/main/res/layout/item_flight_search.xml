@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/container_layout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_marginBottom="@dimen/margin_8"
     android:layout_marginLeft="@dimen/margin_16"
     android:layout_marginRight="@dimen/margin_16"
     android:layout_marginTop="@dimen/margin_8"
-    android:layout_marginBottom="@dimen/margin_8"
     android:background="@drawable/bg_flight_search_item"
     android:clickable="true"
     android:clipChildren="false"
@@ -20,15 +20,31 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="?attr/selectableItemBackground"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:paddingTop="@dimen/dp_10">
 
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/tv_discount_tag"
+                style="@style/FlightChips.Danger"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/dp_4"
+                android:layout_marginLeft="@dimen/dp_16"
+                android:layout_marginRight="@dimen/dp_16"
+                android:layout_marginTop="@dimen/dp_8"
+                android:text="@string/flight_search_discount_tag" />
+        </LinearLayout>
 
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/dp_16"
-            android:layout_marginRight="@dimen/dp_16"
-            android:layout_marginTop="@dimen/dp_10">
+            android:layout_marginRight="@dimen/dp_16">
 
             <TextView
                 android:id="@+id/tv_airline"
@@ -191,6 +207,7 @@
                     style="@style/TextView.Micro.BlackSecondary"
                     android:layout_marginEnd="@dimen/dp_16"
                     android:layout_marginRight="@dimen/dp_16"
+                    android:background="@drawable/bg_flight_textview_strikethrough"
                     android:textSize="10sp"
                     android:visibility="gone"
                     tools:text="Rp25000"

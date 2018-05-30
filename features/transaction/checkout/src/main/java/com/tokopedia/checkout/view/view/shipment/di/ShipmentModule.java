@@ -1,11 +1,6 @@
 package com.tokopedia.checkout.view.view.shipment.di;
 
 import com.tokopedia.checkout.data.repository.AddressRepository;
-import com.tokopedia.checkout.domain.usecase.CancelAutoApplyCouponUseCase;
-import com.tokopedia.checkout.domain.usecase.ChangeShippingAddressUseCase;
-import com.tokopedia.checkout.domain.usecase.EditAddressUseCase;
-import com.tokopedia.transactiondata.repository.ICartRepository;
-import com.tokopedia.transactiondata.repository.ITopPayRepository;
 import com.tokopedia.checkout.domain.mapper.CartMapper;
 import com.tokopedia.checkout.domain.mapper.ICartMapper;
 import com.tokopedia.checkout.domain.mapper.ICheckoutMapper;
@@ -14,13 +9,17 @@ import com.tokopedia.checkout.domain.mapper.IShipmentMapper;
 import com.tokopedia.checkout.domain.mapper.ITopPayMapper;
 import com.tokopedia.checkout.domain.mapper.IVoucherCouponMapper;
 import com.tokopedia.checkout.domain.mapper.MapperUtil;
+import com.tokopedia.checkout.domain.usecase.CancelAutoApplyCouponUseCase;
+import com.tokopedia.checkout.domain.usecase.ChangeShippingAddressUseCase;
 import com.tokopedia.checkout.domain.usecase.CheckPromoCodeCartListUseCase;
 import com.tokopedia.checkout.domain.usecase.CheckPromoCodeCartShipmentUseCase;
 import com.tokopedia.checkout.domain.usecase.CheckoutUseCase;
+import com.tokopedia.checkout.domain.usecase.EditAddressUseCase;
 import com.tokopedia.checkout.domain.usecase.GetShipmentAddressFormUseCase;
 import com.tokopedia.checkout.domain.usecase.GetThanksToppayUseCase;
 import com.tokopedia.checkout.view.di.module.ConverterDataModule;
 import com.tokopedia.checkout.view.di.module.PeopleAddressModule;
+import com.tokopedia.checkout.view.di.module.TrackingAnalyticsModule;
 import com.tokopedia.checkout.view.di.module.UtilModule;
 import com.tokopedia.checkout.view.view.shipment.ShipmentAdapter;
 import com.tokopedia.checkout.view.view.shipment.ShipmentAdapterActionListener;
@@ -30,6 +29,8 @@ import com.tokopedia.checkout.view.view.shipment.converter.RatesDataConverter;
 import com.tokopedia.checkout.view.view.shipment.converter.ShipmentDataConverter;
 import com.tokopedia.checkout.view.view.shipment.converter.ShipmentDataRequestConverter;
 import com.tokopedia.core.network.apiservices.transaction.TXActService;
+import com.tokopedia.transactiondata.repository.ICartRepository;
+import com.tokopedia.transactiondata.repository.ITopPayRepository;
 
 import dagger.Module;
 import dagger.Provides;
@@ -39,7 +40,7 @@ import rx.subscriptions.CompositeSubscription;
  * Created by Irfan Khoirul on 24/04/18.
  */
 
-@Module(includes = {ConverterDataModule.class, PeopleAddressModule.class, UtilModule.class})
+@Module(includes = {ConverterDataModule.class, PeopleAddressModule.class, UtilModule.class, TrackingAnalyticsModule.class})
 public class ShipmentModule {
 
     private ShipmentAdapterActionListener shipmentAdapterActionListener;
