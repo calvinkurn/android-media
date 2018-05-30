@@ -10,7 +10,6 @@
         <activity
             android:name=".view.view.cartlist.CartActivity"
             android:label="@string/checkout_module_title_activity_cart"
-            android:launchMode="singleTask"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White" />
         <activity
@@ -43,7 +42,7 @@
 
         <activity
             android:name=".view.view.shipment.ShipmentActivity"
-            android:label="@string/title_activity_cart"
+            android:label="@string/checkout_module_title_activity_checkout"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White" />
 

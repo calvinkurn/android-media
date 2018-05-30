@@ -2,7 +2,9 @@ package com.tokopedia.inbox.inboxchat.adapter;
 
 import android.view.View;
 
-import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
+
+import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
+import com.tokopedia.inbox.inboxchat.domain.model.websocket.FallbackAttachmentViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.AttachImageModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.AttachInvoiceSelectionViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.AttachInvoiceSentViewModel;
@@ -12,6 +14,7 @@ import com.tokopedia.inbox.inboxchat.viewmodel.OppositeChatViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.TemplateChatModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.ThumbnailChatViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.TypingChatModel;
+import com.tokopedia.inbox.inboxchat.viewmodel.chatroom.QuickReplyListViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.chatroom.TimeMachineChatModel;
 
 /**
@@ -39,4 +42,9 @@ public interface ChatRoomTypeFactory {
     int type(AttachInvoiceSentViewModel attachInvoiceSentViewModel);
 
     int type(AttachInvoiceSelectionViewModel attachInvoiceSelectionViewModel);
+
+    int type(QuickReplyListViewModel quickReplyListViewModel);
+
+    int type(FallbackAttachmentViewModel fallbackAttachmentViewModel);
+
 }

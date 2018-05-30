@@ -1,23 +1,16 @@
 apply plugin: 'com.android.library'
 apply from: "$rootProject.projectDir/buildconfig/module.gradle"
-apply plugin: 'android-apt'
 
 dependencies {
-    compile rootProject.ext.miscDependencies.gson
-    compile project(rootProject.ext.libraries.abstraction)
+    implementation project(rootProject.ext.features.core)
+    implementation project(rootProject.ext.libraries.design)
+    implementation project(rootProject.ext.features.topAdsSdk)
+    implementation project(rootProject.ext.features.payment)
 
-    compile(rootProject.ext.tkpdLibDependencies.showcase) {
+    implementation(rootProject.ext.tkpdLibDependencies.showcase) {
         exclude group: "com.android.support"
     }
 
-    compile fileTree(dir: 'libs', include: ['*.jar'])
-    compile rootProject.ext.supportLibDependencies.appCompactV7
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
 
-    androidTestCompile(rootProject.ext.testDependencies.espressoCore, {
-        exclude group: 'com.android.support', module: 'support-annotations'
-    })
-    testCompile rootProject.ext.testDependencies.junit
-
-    compile rootProject.ext.miscDependencies.dagger
-    apt rootProject.ext.miscDependencies.daggerCompiler
 }

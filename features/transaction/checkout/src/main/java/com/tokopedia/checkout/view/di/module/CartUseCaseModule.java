@@ -3,12 +3,11 @@ package com.tokopedia.checkout.view.di.module;
 import android.content.Context;
 
 import com.google.gson.Gson;
-import com.tokopedia.checkout.domain.usecase.CancelAutoApplyCouponUseCase;
-import com.tokopedia.transactiondata.repository.ICartRepository;
 import com.tokopedia.checkout.domain.mapper.ICartMapper;
 import com.tokopedia.checkout.domain.mapper.IShipmentMapper;
 import com.tokopedia.checkout.domain.mapper.IVoucherCouponMapper;
 import com.tokopedia.checkout.domain.usecase.AddToCartUseCase;
+import com.tokopedia.checkout.domain.usecase.CancelAutoApplyCouponUseCase;
 import com.tokopedia.checkout.domain.usecase.CheckPromoCodeCartListUseCase;
 import com.tokopedia.checkout.domain.usecase.CheckPromoCodeCartShipmentUseCase;
 import com.tokopedia.checkout.domain.usecase.DeleteCartGetCartListUseCase;
@@ -21,6 +20,7 @@ import com.tokopedia.checkout.domain.usecase.GetShipmentAddressFormUseCase;
 import com.tokopedia.checkout.domain.usecase.ResetCartGetCartListUseCase;
 import com.tokopedia.checkout.domain.usecase.ResetCartGetShipmentFormUseCase;
 import com.tokopedia.checkout.domain.usecase.UpdateCartGetShipmentAddressFormUseCase;
+import com.tokopedia.transactiondata.repository.ICartRepository;
 
 import dagger.Module;
 import dagger.Provides;
@@ -60,8 +60,8 @@ public class CartUseCaseModule {
     }
 
     @Provides
-    GetCartListUseCase getCartListUseCase(ICartRepository cartRepository, ICartMapper mapper) {
-        return new GetCartListUseCase(cartRepository, mapper);
+    GetCartListUseCase getCartListUseCase(Context context, ICartRepository cartRepository, ICartMapper mapper) {
+        return new GetCartListUseCase(context, cartRepository, mapper);
     }
 
     @Provides
@@ -75,8 +75,8 @@ public class CartUseCaseModule {
     }
 
     @Provides
-    DeleteCartGetCartListUseCase deleteCartGetCartListUseCase(ICartRepository cartRepository, ICartMapper mapper) {
-        return new DeleteCartGetCartListUseCase(cartRepository, mapper);
+    DeleteCartGetCartListUseCase deleteCartGetCartListUseCase(Context context, ICartRepository cartRepository, ICartMapper mapper) {
+        return new DeleteCartGetCartListUseCase(context, cartRepository, mapper);
     }
 
     @Provides
@@ -95,9 +95,9 @@ public class CartUseCaseModule {
 
     @Provides
     ResetCartGetCartListUseCase resetCartGetCartListUseCase(
-            ICartRepository cartRepository, ICartMapper cartMapper
+            Context context, ICartRepository cartRepository, ICartMapper cartMapper
     ) {
-        return new ResetCartGetCartListUseCase(cartRepository, cartMapper);
+        return new ResetCartGetCartListUseCase(context, cartRepository, cartMapper);
     }
 
     @Provides
@@ -108,7 +108,7 @@ public class CartUseCaseModule {
     }
 
     @Provides
-    CancelAutoApplyCouponUseCase cancelAutoApplyCouponUseCase(ICartRepository iCartRepository, Context context){
+    CancelAutoApplyCouponUseCase cancelAutoApplyCouponUseCase(ICartRepository iCartRepository, Context context) {
         return new CancelAutoApplyCouponUseCase(iCartRepository, context);
     }
 }

@@ -101,6 +101,11 @@ public class CartListPresenter implements ICartListPresenter {
     }
 
     @Override
+    public void detachView() {
+        compositeSubscription.unsubscribe();
+    }
+
+    @Override
     public void processInitialGetCartData() {
         view.renderLoadGetCartData();
         view.disableSwipeRefresh();
@@ -283,8 +288,19 @@ public class CartListPresenter implements ICartListPresenter {
         double subtotalPrice = 0;
         int totalAllCartItemQty = 0;
         for (CartItemHolderData data : dataList) {
+            String parentId = data.getCartItemData().getOriginData().getParentId();
+            String productId = data.getCartItemData().getOriginData().getProductId();
             int itemQty = data.getCartItemData().getUpdatedData().getQuantity();
-            totalAllCartItemQty = totalAllCartItemQty + itemQty;
+            if (!TextUtils.isEmpty(parentId) && !parentId.equals("0")) {
+                for (CartItemHolderData dataForQty : dataList) {
+                    if (!productId.equals(dataForQty.getCartItemData().getOriginData().getProductId()) &&
+                            parentId.equals(dataForQty.getCartItemData().getOriginData().getParentId())) {
+                        itemQty += dataForQty.getCartItemData().getUpdatedData().getQuantity();
+                    }
+                }
+            }
+
+            totalAllCartItemQty = totalAllCartItemQty + data.getCartItemData().getUpdatedData().getQuantity();
             List<WholesalePrice> wholesalePrices = data.getCartItemData().getOriginData().getWholesalePrice();
             boolean hasCalculateWholesalePrice = false;
             if (wholesalePrices != null && wholesalePrices.size() > 0) {
@@ -364,6 +380,7 @@ public class CartListPresenter implements ICartListPresenter {
     public void processResetAndRefreshCartData() {
         view.renderLoadGetCartData();
         view.disableSwipeRefresh();
+        view.showProgressLoading();
         TKPDMapParam<String, String> paramResetCart = new TKPDMapParam<>();
         paramResetCart.put("lang", "id");
         paramResetCart.put("step", "4");
@@ -762,6 +779,7 @@ public class CartListPresenter implements ICartListPresenter {
 
             @Override
             public void onError(Throwable e) {
+                view.hideProgressLoading();
                 e.printStackTrace();
                 view.renderLoadGetCartDataFinish();
                 if (e instanceof UnknownHostException) {
@@ -795,8 +813,9 @@ public class CartListPresenter implements ICartListPresenter {
 
             @Override
             public void onNext(ResetAndRefreshCartListData resetAndRefreshCartListData) {
+                view.hideProgressLoading();
                 view.renderLoadGetCartDataFinish();
-                if (!resetAndRefreshCartListData.getResetCartData().isSuccess()) {
+                if (resetAndRefreshCartListData.getCartListData() == null) {
                     view.renderErrorInitialGetCartListData(resetAndRefreshCartListData.getResetCartData().getMessage());
                 } else {
                     if (resetAndRefreshCartListData.getCartListData().getCartItemDataList().isEmpty()) {
@@ -805,9 +824,7 @@ public class CartListPresenter implements ICartListPresenter {
                         view.renderInitialGetCartListDataSuccess(resetAndRefreshCartListData.getCartListData());
                     }
                 }
-
             }
-
         };
     }
 

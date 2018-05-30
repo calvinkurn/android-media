@@ -72,6 +72,7 @@
     <string name="title_sprintsale_started">SPRINT SALE TELAH DIMULAI</string>
     <string name="ongoing">Berlangsung</string>
     <string name="anonymous">Anonymous</string>
+    <string name="admin">Admin:</string>
     <string name="check_now">Cek sekarang!</string>
     <string name="error_max_characters_reached">Maaf, anda hanya bisa mengirim kurang dari 200 karakter</string>
     <string name="has_voted_label">Sudah Memilih</string>
@@ -80,5 +81,10 @@
     <string name="you_are_blocked_because_spam">Anda telah di blokir sementara karena terlalu banyak mengirim pesan dalam periode singkat.</string>
     <string name="channel_not_belong_to_user">Anda belum terhubung dengan Group Chat. Silahkan
         coba kembali.</string>
+
+    <string name="exit_group_chat_title">Title</string>
+    <string name="exit_group_chat_body">Body</string>
+    <string name="exit_group_chat_yes">Yes</string>
+    <string name="exit_group_chat_no">No</string>
 
 </resources>

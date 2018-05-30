@@ -3,16 +3,7 @@ package com.tokopedia.discovery.newdynamicfilter;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
-import com.tokopedia.core.discovery.model.Filter;
-import com.tokopedia.core.discovery.model.Option;
-import com.tokopedia.discovery.newdynamicfilter.helper.DynamicFilterDbManager;
 import com.tokopedia.discovery.newdynamicfilter.helper.FilterDbHelper;
-
-import java.lang.reflect.Type;
-import java.util.ArrayList;
-import java.util.List;
 
 import rx.Observable;
 import rx.Subscriber;
@@ -41,13 +32,15 @@ public class DynamicFilterLocationActivity extends DynamicFilterDetailGeneralAct
     public static void moveTo(AppCompatActivity activity,
                               String pageTitle,
                               boolean isSearchable,
-                              String searchHint) {
+                              String searchHint,
+                              boolean isUsingTracking) {
 
         if (activity != null) {
             Intent intent = new Intent(activity, DynamicFilterLocationActivity.class);
             intent.putExtra(EXTRA_PAGE_TITLE, pageTitle);
             intent.putExtra(EXTRA_IS_SEARCHABLE, isSearchable);
             intent.putExtra(EXTRA_SEARCH_HINT, searchHint);
+            intent.putExtra(EXTRA_IS_USING_TRACKING, isUsingTracking);
             activity.startActivityForResult(intent, REQUEST_CODE);
         }
     }

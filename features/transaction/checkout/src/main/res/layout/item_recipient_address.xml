@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
@@ -79,18 +80,17 @@
         android:textSize="@dimen/sp_12"
         tools:text="080989999" />
 
-    <TextView
+    <com.tokopedia.design.component.TextViewCompat
         android:id="@+id/tv_change_address"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/tv_recipient_phone"
         android:layout_marginTop="@dimen/dp_8"
-        android:drawableLeft="@drawable/ic_edit_grey"
         android:drawablePadding="@dimen/dp_8"
-        android:drawableStart="@drawable/ic_edit_grey"
         android:gravity="center_vertical"
         android:text="@string/checkout_module_label_ubah"
         android:textSize="@dimen/sp_11"
-        android:visibility="visible" />
+        android:visibility="visible"
+        app:drawableLeftCompat="@drawable/ic_edit_grey" />
 
 </RelativeLayout>

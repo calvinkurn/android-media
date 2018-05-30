@@ -10,6 +10,7 @@ import com.tokopedia.checkout.view.view.shippingoptions.viewmodel.ShipmentOption
  */
 
 public class CourierItemData implements Parcelable, ShipmentOptionData {
+    private ShipmentItemData shipmentItemData;
     private int shipperId;
     private int shipperProductId;
     private String name;
@@ -32,7 +33,9 @@ public class CourierItemData implements Parcelable, ShipmentOptionData {
     public CourierItemData() {
     }
 
+
     protected CourierItemData(Parcel in) {
+        shipmentItemData = in.readParcelable(ShipmentItemData.class.getClassLoader());
         shipperId = in.readInt();
         shipperProductId = in.readInt();
         name = in.readString();
@@ -48,9 +51,37 @@ public class CourierItemData implements Parcelable, ShipmentOptionData {
         insuranceUsedType = in.readInt();
         insuranceUsedInfo = in.readString();
         insuranceUsedDefault = in.readInt();
-        selected = in.readByte() != 0;
         usePinPoint = in.readByte() != 0;
         allowDropshiper = in.readByte() != 0;
+        selected = in.readByte() != 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeParcelable(shipmentItemData, flags);
+        dest.writeInt(shipperId);
+        dest.writeInt(shipperProductId);
+        dest.writeString(name);
+        dest.writeString(deliverySchedule);
+        dest.writeString(estimatedTimeDelivery);
+        dest.writeInt(minEtd);
+        dest.writeInt(maxEtd);
+        dest.writeInt(deliveryPrice);
+        dest.writeInt(insurancePrice);
+        dest.writeInt(additionalPrice);
+        dest.writeString(courierInfo);
+        dest.writeInt(insuranceType);
+        dest.writeInt(insuranceUsedType);
+        dest.writeString(insuranceUsedInfo);
+        dest.writeInt(insuranceUsedDefault);
+        dest.writeByte((byte) (usePinPoint ? 1 : 0));
+        dest.writeByte((byte) (allowDropshiper ? 1 : 0));
+        dest.writeByte((byte) (selected ? 1 : 0));
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
     }
 
     public static final Creator<CourierItemData> CREATOR = new Creator<CourierItemData>() {
@@ -209,30 +240,12 @@ public class CourierItemData implements Parcelable, ShipmentOptionData {
         this.estimatedTimeDelivery = estimatedTimeDelivery;
     }
 
-    @Override
-    public int describeContents() {
-        return 0;
+    public ShipmentItemData getShipmentItemData() {
+        return shipmentItemData;
     }
 
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeInt(shipperId);
-        dest.writeInt(shipperProductId);
-        dest.writeString(name);
-        dest.writeString(deliverySchedule);
-        dest.writeString(estimatedTimeDelivery);
-        dest.writeInt(minEtd);
-        dest.writeInt(maxEtd);
-        dest.writeInt(deliveryPrice);
-        dest.writeInt(insurancePrice);
-        dest.writeInt(additionalPrice);
-        dest.writeString(courierInfo);
-        dest.writeInt(insuranceType);
-        dest.writeInt(insuranceUsedType);
-        dest.writeString(insuranceUsedInfo);
-        dest.writeInt(insuranceUsedDefault);
-        dest.writeByte((byte) (selected ? 1 : 0));
-        dest.writeByte((byte) (usePinPoint ? 1 : 0));
-        dest.writeByte((byte) (allowDropshiper ? 1 : 0));
+    public void setShipmentItemData(ShipmentItemData shipmentItemData) {
+        this.shipmentItemData = shipmentItemData;
     }
+
 }

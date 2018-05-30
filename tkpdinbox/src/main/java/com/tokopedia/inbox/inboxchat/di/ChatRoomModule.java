@@ -23,6 +23,7 @@ import com.tokopedia.inbox.inboxchat.data.repository.ReplyRepositoryImpl;
 import com.tokopedia.inbox.inboxchat.data.repository.SendMessageSource;
 import com.tokopedia.inbox.inboxchat.data.repository.template.TemplateRepository;
 import com.tokopedia.inbox.inboxchat.data.repository.template.TemplateRepositoryImpl;
+import com.tokopedia.inbox.inboxchat.domain.WebSocketMapper;
 import com.tokopedia.inbox.inboxchat.domain.usecase.AttachImageUseCase;
 import com.tokopedia.inbox.inboxchat.domain.usecase.GetMessageListUseCase;
 import com.tokopedia.inbox.inboxchat.domain.usecase.GetReplyListUseCase;
@@ -69,7 +70,7 @@ public class ChatRoomModule {
     @Provides
     TemplateChatFactory provideTemplateFactory(
             ChatService chatService,
-            TemplateChatMapper templateChatMapper){
+            TemplateChatMapper templateChatMapper) {
         return new TemplateChatFactory(templateChatMapper, chatService);
     }
 
@@ -99,7 +100,7 @@ public class ChatRoomModule {
 
     @InboxChatScope
     @Provides
-    TemplateChatMapper provideTemplateChatMapper(){
+    TemplateChatMapper provideTemplateChatMapper() {
         return new TemplateChatMapper();
     }
 
@@ -151,8 +152,8 @@ public class ChatRoomModule {
     @InboxChatScope
     @Provides
     GetTemplateUseCase provideGetTemplateUseCase(ThreadExecutor threadExecutor,
-                                                    PostExecutionThread postExecutor,
-                                                    TemplateRepository templateRepository) {
+                                                 PostExecutionThread postExecutor,
+                                                 TemplateRepository templateRepository) {
         return new GetTemplateUseCase(threadExecutor, postExecutor, templateRepository);
     }
 
@@ -181,7 +182,6 @@ public class ChatRoomModule {
                                                SendMessageMapper sendMessageMapper) {
         return new SendMessageSource(chatService, sendMessageMapper);
     }
-
 
 
     @InboxChatScope
@@ -264,4 +264,9 @@ public class ChatRoomModule {
         return new UploadImageService();
     }
 
+    @InboxChatScope
+    @Provides
+    WebSocketMapper provideWebSocketMapper() {
+        return new WebSocketMapper();
+    }
 }

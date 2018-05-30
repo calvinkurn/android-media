@@ -50,6 +50,7 @@ import com.tokopedia.design.component.ToasterError;
 import com.tokopedia.design.component.ToasterNormal;
 import com.tokopedia.payment.activity.TopPayActivity;
 import com.tokopedia.payment.model.PaymentPassData;
+import com.tokopedia.transactionanalytics.CheckoutAnalyticsCartShipmentPage;
 import com.tokopedia.transactiondata.entity.request.DataCheckoutRequest;
 
 import java.util.List;
@@ -71,6 +72,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     public static final String ARG_EXTRA_CART_PROMO_SUGGESTION = "ARG_EXTRA_CART_PROMO_SUGGESTION";
     public static final String ARG_EXTRA_PROMO_CODE_APPLIED_DATA = "ARG_EXTRA_PROMO_CODE_APPLIED_DATA";
     private static final String NO_PINPOINT_ETD = "Belum Pinpoint";
+    private static final int TOASTER_DURATION = 3000;
 
     private RecyclerView rvShipment;
     private TkpdProgressDialog progressDialogNormal;
@@ -84,6 +86,8 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     ShipmentDataConverter shipmentDataConverter;
     @Inject
     RatesDataConverter ratesDataConverter;
+    @Inject
+    CheckoutAnalyticsCartShipmentPage checkoutAnalyticsCartShipmentPage;
 
     public static ShipmentFragment newInstance(CartShipmentAddressFormData cartShipmentAddressFormData,
                                                PromoCodeAppliedData promoCodeAppliedData,
@@ -237,14 +241,20 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     @Override
     public void showToastNormal(String message) {
         if (getView() != null) {
-            ToasterNormal.make(getView(), message, 5000).show();
+            ToasterNormal.make(getView(), message, TOASTER_DURATION)
+                    .setAction(getActivity().getString(R.string.label_action_snackbar_close), new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+
+                        }
+                    }).show();
         }
     }
 
     @Override
     public void showToastError(String message) {
         if (getView() != null) {
-            ToasterError.make(getView(), message, 5000)
+            ToasterError.make(getView(), message, TOASTER_DURATION)
                     .setAction(getActivity().getString(R.string.label_action_snackbar_close), new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
@@ -531,6 +541,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
 
     @Override
     public void onAddOrChangeAddress() {
+        checkoutAnalyticsCartShipmentPage.eventClickShipmentClickGantiAlamatAtauKirimKeBeberapaAlamat();
         Intent intent = CartAddressChoiceActivity.createInstance(getActivity(),
                 shipmentPresenter.getRecipientAddressModel(),
                 CartAddressChoiceActivity.TYPE_REQUEST_SELECT_ADDRESS_FROM_SHORT_LIST);
@@ -625,11 +636,12 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
 
     @Override
     public void onCartPromoUseVoucherPromoClicked(CartItemPromoHolderData cartPromo, int position) {
+        checkoutAnalyticsCartShipmentPage.eventClickShipmentClickGunakanKodePromoAtauKupon();
         if (getActivity().getApplication() instanceof ICheckoutModuleRouter) {
             startActivityForResult(
                     ((ICheckoutModuleRouter) getActivity().getApplication())
                             .checkoutModuleRouterGetLoyaltyNewCheckoutMarketplaceCartListIntent(
-                                    getActivity(), true
+                                    getActivity(), true, "", ""
                             ), IRouterConstant.LoyaltyModule.LOYALTY_ACTIVITY_REQUEST_CODE
             );
         }

@@ -11,6 +11,7 @@ import android.widget.TextView;
 
 import com.tokopedia.checkout.R;
 import com.tokopedia.checkout.domain.datamodel.addressoptions.RecipientAddressModel;
+import com.tokopedia.design.component.TextViewCompat;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -117,7 +118,7 @@ public class ShipmentAddressListAdapter
         TextView mTvRecipientAddress;
         TextView mTvRecipientPhone;
 
-        TextView mTvChangeAddress;
+        TextViewCompat mTvChangeAddress;
         RadioButton mRbCheckAddress;
 
         RelativeLayout mRlAddressContainer;

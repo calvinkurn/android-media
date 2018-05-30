@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <com.tokopedia.digital.tokocash.compoundview.TopUpTokoCashView
+    <com.tokopedia.digital.tokocash.TopUpTokoCashView
         android:id="@+id/topup_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />

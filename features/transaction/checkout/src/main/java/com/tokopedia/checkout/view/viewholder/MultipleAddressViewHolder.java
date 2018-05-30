@@ -5,7 +5,7 @@ import android.content.Context;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
-import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -42,8 +42,6 @@ public class MultipleAddressViewHolder extends RecyclerView.ViewHolder {
 
     private RecyclerView shippingDestinationList;
 
-    private ViewGroup addNewShipmentAddressButton;
-
     private ImageView imgFreeReturn;
 
     private TextView tvFreeReturnLabel;
@@ -53,6 +51,8 @@ public class MultipleAddressViewHolder extends RecyclerView.ViewHolder {
     private TextView tvCashback;
 
     private View marginHeader;
+
+    private Button btAddNewShipment;
 
     public MultipleAddressViewHolder(Context context, View itemView) {
         super(itemView);
@@ -69,9 +69,6 @@ public class MultipleAddressViewHolder extends RecyclerView.ViewHolder {
 
         shippingDestinationList = itemView.findViewById(R.id.shipping_destination_list);
 
-        addNewShipmentAddressButton = itemView
-                .findViewById(R.id.add_new_shipment_address_button);
-
         imgFreeReturn = itemView.findViewById(R.id.iv_free_return_icon);
 
         tvFreeReturnLabel = itemView.findViewById(R.id.tv_free_return_label);
@@ -82,10 +79,12 @@ public class MultipleAddressViewHolder extends RecyclerView.ViewHolder {
 
         marginHeader = itemView.findViewById(R.id.margin_header);
 
+        btAddNewShipment = itemView.findViewById(R.id.bt_add_new_shipment);
+
     }
 
-
     public void bindAdapterView(
+            ArrayList<MultipleAddressAdapterData> dataList,
             MultipleAddressAdapterData data,
             MultipleAddressItemAdapter.MultipleAddressItemAdapterListener listener,
             MultipleAddressAdapter.MultipleAddressAdapterListener addressListener,
@@ -100,9 +99,10 @@ public class MultipleAddressViewHolder extends RecyclerView.ViewHolder {
         shippingDestinationList.setAdapter(
                 new MultipleAddressItemAdapter(data, data.getItemListData(), listener)
         );
-        addNewShipmentAddressButton.setOnClickListener(
+        btAddNewShipment.setOnClickListener(
                 onAddAddressClickedListener(
                         data.getItemListData().size(),
+                        dataList,
                         data,
                         data.getItemListData().get(0),
                         addressListener
@@ -110,10 +110,7 @@ public class MultipleAddressViewHolder extends RecyclerView.ViewHolder {
         );
         if (firstItemPosition) {
             marginHeader.setVisibility(View.VISIBLE);
-            setShowCase(
-                    context,
-                    addNewShipmentAddressButton
-            );
+            setShowCase();
         } else {
             marginHeader.setVisibility(View.GONE);
         }
@@ -140,10 +137,10 @@ public class MultipleAddressViewHolder extends RecyclerView.ViewHolder {
         }
     }
 
-    private void setShowCase(Context context, ViewGroup addAddress) {
+    private void setShowCase() {
         ShowCaseObject showCase = new ShowCaseObject(
-                addAddress, "Kirim Barang Sama ke Bebeberapa\n" +
-                "Alamat.", "Klik tombol untuk mengirim barang yang sama ke beda alamat.",
+                btAddNewShipment, context.getString(R.string.label_showcase_multiple_address_title),
+                context.getString(R.string.label_showcase_multiple_address_message),
                 ShowCaseContentPosition.UNDEFINED);
 
         ArrayList<ShowCaseObject> showCaseObjectList = new ArrayList<>();
@@ -180,13 +177,14 @@ public class MultipleAddressViewHolder extends RecyclerView.ViewHolder {
 
     private View.OnClickListener onAddAddressClickedListener(
             final int latestPositionToAdd,
+            final ArrayList<MultipleAddressAdapterData> dataList,
             final MultipleAddressAdapterData data,
             final MultipleAddressItemData firstItemData,
             final MultipleAddressAdapter.MultipleAddressAdapterListener addressListener) {
         return new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                addressListener.onAddNewShipmentAddress(latestPositionToAdd, data, firstItemData);
+                addressListener.onAddNewShipmentAddress(latestPositionToAdd, dataList, data, firstItemData);
             }
         };
     }
