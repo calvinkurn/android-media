@@ -24,6 +24,8 @@ public interface ProductListPresenter extends SearchSectionFragmentPresenter<Pro
     void loadGuidedSearch(String keyword);
 
     void requestQuickFilter(HashMap<String, String> paramMap);
+
+    void setIsUsingFilterV4(boolean isUsingFilterV4);
 }
 
 

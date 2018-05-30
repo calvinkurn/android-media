@@ -1,5 +1,6 @@
 package com.tokopedia.topads.dashboard.view.presenter;
 
+import com.tokopedia.topads.dashboard.constant.TopAdsNetworkConstant;
 import com.tokopedia.topads.dashboard.data.model.request.GetSuggestionBody;
 import com.tokopedia.topads.dashboard.data.model.response.GetSuggestionResponse;
 import com.tokopedia.topads.dashboard.domain.interactor.TopAdsGetDetailGroupUseCase;
@@ -11,6 +12,8 @@ import com.tokopedia.topads.dashboard.utils.ViewUtils;
 import com.tokopedia.topads.dashboard.view.listener.TopAdsDetailEditView;
 import com.tokopedia.topads.dashboard.view.mapper.TopAdDetailGroupMapper;
 import com.tokopedia.topads.dashboard.view.model.TopAdsDetailGroupViewModel;
+import com.tokopedia.topads.sourcetagging.data.TopAdsSourceTaggingModel;
+import com.tokopedia.topads.sourcetagging.domain.interactor.TopAdsGetSourceTaggingUseCase;
 
 import rx.Subscriber;
 
@@ -22,22 +25,45 @@ public class TopAdsDetailEditGroupPresenterImpl<T extends TopAdsDetailEditView> 
     protected TopAdsGetDetailGroupUseCase topAdsGetDetailGroupUseCase;
     protected TopAdsSaveDetailGroupUseCase topAdsSaveDetailGroupUseCase;
     protected TopAdsGetSuggestionUseCase topAdsGetSuggestionUseCase;
+    protected TopAdsGetSourceTaggingUseCase topAdsGetSourceTaggingUseCase;
 
     public TopAdsDetailEditGroupPresenterImpl(TopAdsGetDetailGroupUseCase topAdsGetDetailGroupUseCase,
                                               TopAdsSaveDetailGroupUseCase topAdsSaveDetailGroupUseCase,
                                               TopAdsProductListUseCase topAdsProductListUseCase,
-                                              TopAdsGetSuggestionUseCase topAdsGetSuggestionUseCase) {
+                                              TopAdsGetSuggestionUseCase topAdsGetSuggestionUseCase,
+                                              TopAdsGetSourceTaggingUseCase topAdsGetSourceTaggingUseCase) {
         super(topAdsProductListUseCase);
         this.topAdsGetSuggestionUseCase = topAdsGetSuggestionUseCase;
         this.topAdsGetDetailGroupUseCase = topAdsGetDetailGroupUseCase;
         this.topAdsSaveDetailGroupUseCase = topAdsSaveDetailGroupUseCase;
+        this.topAdsGetSourceTaggingUseCase = topAdsGetSourceTaggingUseCase;
     }
 
     @Override
-    public void saveAd(TopAdsDetailGroupViewModel topAdsDetailGroupViewModel) {
-        topAdsSaveDetailGroupUseCase.execute(TopAdsSaveDetailGroupUseCase.createRequestParams(
-                TopAdDetailGroupMapper.convertViewToDomain(topAdsDetailGroupViewModel)),
-                getSaveGroupSubscriber());
+    public void saveAd(final TopAdsDetailGroupViewModel topAdsDetailGroupViewModel) {
+        topAdsGetSourceTaggingUseCase.execute(new Subscriber<TopAdsSourceTaggingModel>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+
+            }
+
+            @Override
+            public void onNext(TopAdsSourceTaggingModel topAdsSourceTaggingModel) {
+                String source = TopAdsNetworkConstant.VALUE_SOURCE_ANDROID;
+                if (topAdsSourceTaggingModel != null){
+                    source = topAdsSourceTaggingModel.getSource();
+                }
+                topAdsDetailGroupViewModel.setSource(source);
+                topAdsSaveDetailGroupUseCase.execute(TopAdsSaveDetailGroupUseCase.createRequestParams(
+                        TopAdDetailGroupMapper.convertViewToDomain(topAdsDetailGroupViewModel)),
+                        getSaveGroupSubscriber());
+            }
+        });
     }
 
     /**
@@ -121,6 +147,7 @@ public class TopAdsDetailEditGroupPresenterImpl<T extends TopAdsDetailEditView> 
         super.detachView();
         topAdsSaveDetailGroupUseCase.unsubscribe();
         topAdsGetDetailGroupUseCase.unsubscribe();
+        topAdsGetSourceTaggingUseCase.unsubscribe();
     }
 
 

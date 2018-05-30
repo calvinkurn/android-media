@@ -6,8 +6,10 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
+import com.tokopedia.core.discovery.model.Filter;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.discovery.R;
+import com.tokopedia.discovery.newdiscovery.base.BottomSheetListener;
 import com.tokopedia.discovery.newdiscovery.base.DiscoveryActivity;
 import com.tokopedia.discovery.newdiscovery.hotlist.di.component.DaggerHotlistComponent;
 import com.tokopedia.discovery.newdiscovery.hotlist.di.component.HotlistComponent;
@@ -17,6 +19,7 @@ import com.tokopedia.discovery.newdiscovery.hotlist.view.presenter.HotlistPresen
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
+import java.util.ArrayList;
 
 import javax.inject.Inject;
 
