@@ -249,4 +249,6 @@
     <string name="sticker_shop_link">https://tokopedia.com/%s</string>
     <string name="sticker_cashback">Cashback %1$d%%</string>
 
+    <string name="sticker_shop_link">http://tokopedia.com/%s</string>
+    <string name="sticker_cashback">Cashback %1$d%%</string>
 </resources>
