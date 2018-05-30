@@ -155,11 +155,8 @@
         <activity
             android:name=".manage.people.address.activity.ChooseAddressActivity"
             android:label="@string/title_activity_choose_address"
-             />
-        <activity
-            android:name=".manage.general.districtrecommendation.view.DistrictRecommendationActivity"
-            android:label="@string/title_activity_search_address"
-             />
+            android:screenOrientation="portrait" />
+
         <activity
             android:name=".ManagePeople"
             android:label="@string/title_activity_manage_people"

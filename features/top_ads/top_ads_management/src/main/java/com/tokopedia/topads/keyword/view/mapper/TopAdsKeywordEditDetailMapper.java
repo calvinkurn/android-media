@@ -12,7 +12,7 @@ import com.tokopedia.topads.keyword.view.model.KeywordAd;
  */
 
 public class TopAdsKeywordEditDetailMapper {
-    public static TopAdsKeywordEditDetailInputDomainModel mapViewToDomain(KeywordAd viewModel) {
+    public static TopAdsKeywordEditDetailInputDomainModel mapViewToDomain(KeywordAd viewModel, String source) {
         TopAdsKeywordEditDetailInputDomainModel domainModel = new TopAdsKeywordEditDetailInputDomainModel();
 
         domainModel.setKeywordId(viewModel.getId());
@@ -21,6 +21,7 @@ public class TopAdsKeywordEditDetailMapper {
         domainModel.setKeywordTypeId(viewModel.getKeywordTypeId());
         domainModel.setPriceBid(getPrice(viewModel.getPriceBidFmt()));
         domainModel.setToggle(viewModel.getStatusToogle());
+        domainModel.setSource(source);
 
         return domainModel;
     }

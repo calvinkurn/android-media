@@ -221,4 +221,8 @@
         <attr name="buttonDrawableBottomCompat" format="reference"/>
     </declare-styleable>
 
+    <declare-styleable name="DeletableItemView">
+        <attr name="layout" format="reference"/>
+    </declare-styleable>
+
 </resources>
