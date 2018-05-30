@@ -1,5 +1,6 @@
 package com.tokopedia.flight.booking.view.fragment;
 
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 
@@ -33,12 +34,14 @@ public class FlightInsuranceWebViewFragment extends BaseWebViewFragment {
 
     @Override
     protected String getUrl() {
-        return URLGenerator.generateURLSessionLogin(getArguments().getString(EXTRA_URL, FlightUrl.WEB_DOMAIN), userSession.getDeviceId(), userSession.getUserId());
+        String url = getArguments().getString(EXTRA_URL, FlightUrl.WEB_DOMAIN);
+        url = Uri.encode(url);
+        return URLGenerator.generateURLSessionLogin(url, userSession.getDeviceId(), userSession.getUserId());
     }
 
     @Nullable
     @Override
     protected String getUserIdForHeader() {
-        return getArguments().getString(EXTRA_UID);
+        return userSession.getUserId();
     }
 }
