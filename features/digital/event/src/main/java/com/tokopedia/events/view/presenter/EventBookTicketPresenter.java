@@ -208,6 +208,7 @@ public class EventBookTicketPresenter
             selectedViewHolder.setTvTicketCnt(selectedPackageViewModel.getSelectedQuantity());
             selectedViewHolder.setTicketViewColor(getView().getActivity().getResources().getColor(R.color.white));
             selectedViewHolder.toggleMinTicketWarning(View.INVISIBLE, selectedPackageViewModel.getMinQty());
+            selectedViewHolder.toggleMaxTicketWarning(View.INVISIBLE, selectedPackageViewModel.getSelectedQuantity());
             mSelectedPackage = index;
             selectedPackageViewModel = packageVM;
             selectedViewHolder = ticketViewHolder;

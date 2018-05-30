@@ -140,7 +140,7 @@
         android:layout_gravity="bottom"
         android:background="@color/white"
         android:elevation="@dimen/dp_4"
-        android:visibility="invisible"
+        android:visibility="visible"
         tools:targetApi="lollipop">
 
         <TextView
@@ -163,7 +163,10 @@
             android:layout_alignLeft="@+id/tiket"
             android:layout_alignStart="@+id/tiket"
             android:layout_below="@+id/tiket"
-            android:layout_marginTop="3dp"
+            android:layout_marginRight="@dimen/dp_8"
+            android:layout_marginTop="@dimen/dp_3"
+            android:layout_toLeftOf="@+id/totalprice"
+            android:maxLines="1"
             android:textColor="@color/green_nob"
             android:textSize="@dimen/sp_12"
             android:textStyle="bold"
@@ -193,10 +196,10 @@
             android:layout_below="@+id/total"
             android:layout_marginEnd="@dimen/dp_16"
             android:layout_marginRight="@dimen/dp_16"
-            android:text="TOTAL:"
             android:textColor="@color/price_pdp"
             android:textSize="@dimen/sp_12"
-            android:textStyle="bold" />
+            android:textStyle="bold"
+            tools:text="TOTAL:" />
 
 
         <include

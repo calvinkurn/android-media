@@ -41,7 +41,7 @@ public class SearchInputView extends BaseCustomView {
 
     private ImageView searchImageView;
     private EditText searchTextView;
-    private ImageButton closeImageButton;
+    private ImageView closeImageButton;
     private boolean isEditable = true;
 
     private Drawable searchDrawable;
