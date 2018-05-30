@@ -790,12 +790,6 @@ public class FlightBookingFragment extends BaseDaggerFragment implements FlightB
 
             @Override
             public void onMoreInfoClicked(String tncUrl, String title) {
-                /*if (getActivity().getApplication() instanceof FlightModuleRouter
-                        && ((FlightModuleRouter) getActivity().getApplication())
-                        .getWebviewActivity(getActivity(), tncUrl) != null) {
-                    startActivity(((FlightModuleRouter) getActivity().getApplication())
-                            .getWebviewActivity(getActivity(), tncUrl));
-                }*/
                 startActivity(FlightInsuranceWebviewActivity.getCallingIntent(getActivity(), tncUrl, title));
                 presenter.onMoreInsuranceInfoClicked();
             }

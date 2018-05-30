@@ -364,13 +364,13 @@ public class FlightAnalytics {
             eventLabel = transformAirlines(departure);
         }
         if (returntrip != null) {
-            eventLabel += "," + transformAirlines(returntrip);
+            eventLabel += String.format(",%s", transformAirlines(returntrip));
         }
         if (departure != null) {
-            eventLabel += "|" + departure.getDepartureAirport();
+            eventLabel += String.format("|%s", departure.getDepartureAirport());
         }
         if (returntrip != null) {
-            eventLabel += "|" + returntrip.getDepartureAirport();
+            eventLabel += String.format("|%s", returntrip.getDepartureAirport());
         }
 
 

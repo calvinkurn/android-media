@@ -135,26 +135,8 @@ public class FlightInsuranceView extends LinearLayout {
         tvDescription.setText(insuranceViewModel.getDescription());
         cbInsurance.setChecked(flightInsuranceViewModel.isDefaultChecked());
         if (insuranceViewModel.getBenefits() != null && insuranceViewModel.getBenefits().size() > 0) {
-            highlightContainer.setVisibility(VISIBLE);
-            FlightInsuranceBenefitViewModel highlightBenefit = insuranceViewModel.getBenefits().get(0);
-            insuranceViewModel.getBenefits().remove(0);
-            tvHighlight.setText(highlightBenefit.getTitle());
-            tvHighlightDetail.setText(highlightBenefit.getDescription());
-            ImageHandler.loadImageWithoutPlaceholder(ivHighlight, highlightBenefit.getIcon(),
-                    VectorDrawableCompat.create(getResources(), R.drawable.ic_airline_default, getContext().getTheme()));
-
-            if (insuranceViewModel.getBenefits().size() > 0) {
-                otherProtection.setVisibility(VISIBLE);
-                protectionLabelTextView.setText(String.format(getContext().getString(R.string.flight_insurance_additional_benefits_prefix), insuranceViewModel.getBenefits().size()));
-                benefitsRecyclerView.setVisibility(GONE);
-                FlightInsuranceBenefitAdapter benefitAdapter = new FlightInsuranceBenefitAdapter(insuranceViewModel.getBenefits());
-                benefitsRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-                benefitsRecyclerView.setAdapter(benefitAdapter);
-                dividerBenefit.setVisibility(VISIBLE);
-            } else {
-                dividerBenefit.setVisibility(GONE);
-                otherProtection.setVisibility(GONE);
-            }
+            renderHighlightBenefit(insuranceViewModel);
+            renderMoreBenefit(insuranceViewModel);
         } else {
             highlightContainer.setVisibility(GONE);
         }
@@ -166,9 +148,34 @@ public class FlightInsuranceView extends LinearLayout {
         tvHighlightTnc.setMovementMethod(LinkMovementMethod.getInstance());
     }
 
+    private void renderHighlightBenefit(FlightInsuranceViewModel insuranceViewModel) {
+        highlightContainer.setVisibility(VISIBLE);
+        FlightInsuranceBenefitViewModel highlightBenefit = insuranceViewModel.getBenefits().get(0);
+        insuranceViewModel.getBenefits().remove(0);
+        tvHighlight.setText(highlightBenefit.getTitle());
+        tvHighlightDetail.setText(highlightBenefit.getDescription());
+        ImageHandler.loadImageWithoutPlaceholder(ivHighlight, highlightBenefit.getIcon(),
+                VectorDrawableCompat.create(getResources(), R.drawable.ic_airline_default, getContext().getTheme()));
+    }
+
+    private void renderMoreBenefit(FlightInsuranceViewModel insuranceViewModel) {
+        if (insuranceViewModel.getBenefits().size() > 0) {
+            otherProtection.setVisibility(VISIBLE);
+            protectionLabelTextView.setText(String.format(getContext().getString(R.string.flight_insurance_additional_benefits_prefix), insuranceViewModel.getBenefits().size()));
+            benefitsRecyclerView.setVisibility(GONE);
+            FlightInsuranceBenefitAdapter benefitAdapter = new FlightInsuranceBenefitAdapter(insuranceViewModel.getBenefits());
+            benefitsRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+            benefitsRecyclerView.setAdapter(benefitAdapter);
+            dividerBenefit.setVisibility(VISIBLE);
+        } else {
+            dividerBenefit.setVisibility(GONE);
+            otherProtection.setVisibility(GONE);
+        }
+    }
+
     private SpannableString buildTncText(String tncAggreement, String tncUrl, String title) {
         final int color = getResources().getColor(R.color.green_300);
-        String fullText = tncAggreement + ". ";
+        String fullText = String.format("%s. ", tncAggreement);
         if (tncUrl != null && tncUrl.length() > 0) {
             fullText += getContext().getString(R.string.flight_insurance_learn_more_label);
         }
