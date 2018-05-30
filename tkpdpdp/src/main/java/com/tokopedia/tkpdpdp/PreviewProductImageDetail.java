@@ -29,6 +29,7 @@ import android.widget.TextView;
 
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
+import com.crashlytics.android.Crashlytics;
 import com.tkpd.library.ui.widget.TouchViewPager;
 import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.ImageHandler;
@@ -62,6 +63,7 @@ public class PreviewProductImageDetail extends TActivity {
     private static final String IMAGE_DESC = "image_desc";
     private static final String FROM_CHAT = "from_chat";
     private static final String TITLE = "title";
+    private static final String PREVIEW_IMAGE_PDP = "PREVIEW_IMAGE_PDP";
     private TouchViewPager vpImage;
     private View tvDownload;
     private ImageView closeButton;
@@ -278,8 +280,22 @@ public class PreviewProductImageDetail extends TActivity {
         SimpleTarget<Bitmap> targetListener = new SimpleTarget<Bitmap>() {
             @Override
             public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
-                final String path = CommonUtils.SaveImageFromBitmap(PreviewProductImageDetail.this,
-                        resource, filenameParam);
+                final String path;
+                try {
+                    path = CommonUtils.SaveImageFromBitmap(
+                            PreviewProductImageDetail.this,
+                            resource,
+                            filenameParam
+                    );
+                } catch (Exception e) {
+                    Crashlytics.log(
+                            0,
+                            PREVIEW_IMAGE_PDP,
+                            e.getMessage()
+                    );
+                    return;
+                }
+
                 if (path == null) {
                     notificationBuilder.setContentText(getString(com.tokopedia.core.R.string.download_failed))
                             .setProgress(0, 0, false);
