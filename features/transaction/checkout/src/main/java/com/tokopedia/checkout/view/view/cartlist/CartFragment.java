@@ -55,11 +55,13 @@ import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.receiver.CartBadgeNotificationReceiver;
 import com.tokopedia.core.router.productdetail.ProductDetailRouter;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
+import com.tokopedia.core.router.transactionmodule.TransactionPurchaseRouter;
 import com.tokopedia.core.router.transactionmodule.TransactionRouter;
 import com.tokopedia.core.router.transactionmodule.sharedata.CheckPromoCodeCartListResult;
 import com.tokopedia.core.util.RefreshHandler;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.ProductItem;
+import com.tokopedia.payment.activity.TopPayActivity;
 import com.tokopedia.topads.sdk.base.Config;
 import com.tokopedia.topads.sdk.base.Endpoint;
 import com.tokopedia.topads.sdk.domain.TopAdsParams;
@@ -979,9 +981,21 @@ public class CartFragment extends BaseCheckoutFragment implements CartListAdapte
             );
             dPresenter.processToShipmentMultipleAddress(selectedAddress);
         } else if (resultCode == ShipmentActivity.RESULT_CODE_FORCE_RESET_CART_FROM_SINGLE_SHIPMENT ||
-                resultCode == ShipmentActivity.RESULT_CODE_FORCE_RESET_CART_FROM_MULTIPLE_SHIPMENT ||
-                resultCode == ShipmentFragment.RESULT_CODE_CANCEL_SHIPMENT_PAYMENT) {
+                resultCode == ShipmentActivity.RESULT_CODE_FORCE_RESET_CART_FROM_MULTIPLE_SHIPMENT) {
             dPresenter.processResetAndRefreshCartData();
+        } else if (resultCode == TopPayActivity.PAYMENT_CANCELLED) {
+            NetworkErrorHelper.showSnackbar(
+                    getActivity(),
+                    getString(R.string.alert_payment_canceled_or_failed_transaction_module)
+            );
+            dPresenter.processResetAndRefreshCartData();
+        } else if (resultCode == TopPayActivity.PAYMENT_SUCCESS) {
+            showToastMessage(getString(R.string.message_payment_success));
+            startActivity(TransactionPurchaseRouter.createIntentTxSummary(getActivity()));
+            CartBadgeNotificationReceiver.resetBadgeCart(getActivity());
+            getActivity().finish();
+        } else if (resultCode == TopPayActivity.PAYMENT_FAILED) {
+            showToastMessage(getString(R.string.default_request_error_unknown));
         }
     }
 

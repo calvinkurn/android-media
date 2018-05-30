@@ -66,7 +66,6 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
 
     private static final int REQUEST_CHOOSE_PICKUP_POINT = 12;
     private static final int REQUEST_CODE_COURIER_PINPOINT = 13;
-    public static final int RESULT_CODE_CANCEL_SHIPMENT_PAYMENT = 4;
     public static final String ARG_EXTRA_SHIPMENT_FORM_DATA = "ARG_EXTRA_SHIPMENT_FORM_DATA";
     public static final String ARG_EXTRA_CART_PROMO_SUGGESTION = "ARG_EXTRA_CART_PROMO_SUGGESTION";
     public static final String ARG_EXTRA_PROMO_CODE_APPLIED_DATA = "ARG_EXTRA_PROMO_CODE_APPLIED_DATA";
@@ -435,22 +434,26 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     }
 
     private void onResultFromPayment(int resultCode) {
+        getActivity().setResult(resultCode);
+        getActivity().finish();
+/*
         switch (resultCode) {
             case TopPayActivity.PAYMENT_CANCELLED:
-                NetworkErrorHelper.showSnackbar(
-                        getActivity(),
-                        getString(R.string.alert_payment_canceled_or_failed_transaction_module)
-                );
-                getActivity().setResult(RESULT_CODE_CANCEL_SHIPMENT_PAYMENT);
+                getActivity().setResult(TopPayActivity.PAYMENT_CANCELLED);
                 getActivity().finish();
                 break;
             case TopPayActivity.PAYMENT_SUCCESS:
-                shipmentPresenter.processVerifyPayment(shipmentPresenter.getCheckoutData().getTransactionId());
+                getActivity().setResult(TopPayActivity.PAYMENT_SUCCESS);
+                getActivity().finish();
+//                shipmentPresenter.processVerifyPayment(shipmentPresenter.getCheckoutData().getTransactionId());
                 break;
             case TopPayActivity.PAYMENT_FAILED:
-                shipmentPresenter.processVerifyPayment(shipmentPresenter.getCheckoutData().getTransactionId());
+                getActivity().setResult(TopPayActivity.PAYMENT_FAILED);
+                getActivity().finish();
+//                shipmentPresenter.processVerifyPayment(shipmentPresenter.getCheckoutData().getTransactionId());
                 break;
         }
+*/
     }
 
     private void onResultFromRequestCodeLoyalty(int resultCode, Intent data) {

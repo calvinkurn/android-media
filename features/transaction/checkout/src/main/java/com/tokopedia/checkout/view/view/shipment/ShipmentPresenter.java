@@ -205,8 +205,10 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
 
     @Override
     public void processVerifyPayment(String transactionId) {
+        TKPDMapParam<String, String> param = new TKPDMapParam<>();
+        param.put(GetThanksToppayUseCase.PARAM_TRANSACTION_ID, transactionId);
         RequestParams requestParams = RequestParams.create();
-        requestParams.putObject(GetThanksToppayUseCase.PARAM_TRANSACTION_ID, transactionId);
+        requestParams.putAllString(param);
         compositeSubscription.add(
                 getThanksToppayUseCase.createObservable(requestParams)
                         .subscribeOn(Schedulers.newThread())
@@ -283,7 +285,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
             @Override
             public void onNext(ThanksTopPayData thanksTopPayData) {
                 getView().hideLoading();
-                getView().renderThanksTopPaySuccess("Pembayaran Berhasil");
+                getView().renderThanksTopPaySuccess(getView().getActivity().getString(R.string.message_payment_success));
             }
         };
     }
