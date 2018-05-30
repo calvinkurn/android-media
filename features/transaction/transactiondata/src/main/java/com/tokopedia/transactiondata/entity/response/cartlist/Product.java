@@ -3,12 +3,17 @@ package com.tokopedia.transactiondata.entity.response.cartlist;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+import java.util.List;
+
 /**
  * @author anggaprasetiyo on 31/01/18.
  */
 
 public class Product {
 
+    @SerializedName("parent_id")
+    @Expose
+    private int parentId;
     @SerializedName("product_id")
     @Expose
     private int productId;
@@ -35,7 +40,7 @@ public class Product {
     private int catalogId;
     @SerializedName("wholesale_price")
     @Expose
-    private Object wholesalePrice;
+    private List<WholesalePrice> wholesalePrice;
     @SerializedName("product_weight_fmt")
     @Expose
     private String productWeightFmt;
@@ -109,6 +114,10 @@ public class Product {
     @Expose
     private ProductShowCase productShowcase;
 
+    public int getParentId() {
+        return parentId;
+    }
+
     public int getProductId() {
         return productId;
     }
@@ -137,7 +146,7 @@ public class Product {
         return catalogId;
     }
 
-    public Object getWholesalePrice() {
+    public List<WholesalePrice> getWholesalePrice() {
         return wholesalePrice;
     }
 

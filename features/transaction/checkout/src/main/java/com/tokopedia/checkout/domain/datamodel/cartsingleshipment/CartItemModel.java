@@ -8,9 +8,10 @@ import android.os.Parcelable;
  */
 public class CartItemModel implements Parcelable {
 
+    private long cartId;
     private String shopId;
     private String shopName;
-    private int procuctId;
+    private int productId;
     private String name;
     private double price;
     private int currency;
@@ -34,6 +35,14 @@ public class CartItemModel implements Parcelable {
     private boolean fInsurance;
     private boolean fCancelPartial;
 
+    public long getCartId() {
+        return cartId;
+    }
+
+    public void setCartId(long cartId) {
+        this.cartId = cartId;
+    }
+
     public String getShopId() {
         return shopId;
     }
@@ -51,11 +60,11 @@ public class CartItemModel implements Parcelable {
     }
 
     public int getProductId() {
-        return procuctId;
+        return productId;
     }
 
-    public void setProcuctId(int procuctId) {
-        this.procuctId = procuctId;
+    public void setProductId(int productId) {
+        this.productId = productId;
     }
 
     public String getName() {
@@ -193,9 +202,10 @@ public class CartItemModel implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
+        dest.writeLong(this.cartId);
         dest.writeString(this.shopId);
         dest.writeString(this.shopName);
-        dest.writeInt(this.procuctId);
+        dest.writeInt(this.productId);
         dest.writeString(this.name);
         dest.writeDouble(this.price);
         dest.writeInt(this.currency);
@@ -218,9 +228,10 @@ public class CartItemModel implements Parcelable {
     }
 
     protected CartItemModel(Parcel in) {
+        this.cartId = in.readLong();
         this.shopId = in.readString();
         this.shopName = in.readString();
-        this.procuctId = in.readInt();
+        this.productId = in.readInt();
         this.name = in.readString();
         this.price = in.readDouble();
         this.currency = in.readInt();

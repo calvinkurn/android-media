@@ -1,15 +1,20 @@
 package com.tokopedia.checkout.view.view.shipment.viewmodel;
 
+import com.tokopedia.checkout.domain.datamodel.addressoptions.RecipientAddressModel;
+import com.tokopedia.checkout.domain.datamodel.cartsingleshipment.CartItemModel;
 import com.tokopedia.checkout.domain.datamodel.shipmentrates.ShipmentCartData;
 import com.tokopedia.checkout.domain.datamodel.shipmentrates.ShipmentDetailData;
 import com.tokopedia.checkout.view.view.shipment.ShipmentData;
 import com.tokopedia.transaction.common.data.pickuppoint.Store;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * @author Irfan Khoirul on 23/04/18.
  */
 
-public abstract class ShipmentCartItemModel implements ShipmentData {
+public class ShipmentCartItemModel implements ShipmentData {
 
     private boolean isError;
     private String errorMessage;
@@ -20,7 +25,6 @@ public abstract class ShipmentCartItemModel implements ShipmentData {
     private ShipmentCartData shipmentCartData;
     private ShipmentDetailData selectedShipmentDetailData;
     private String shopName;
-    private int cartId;
 
     private int weightUnit;
     private boolean productFinsurance;
@@ -38,6 +42,12 @@ public abstract class ShipmentCartItemModel implements ShipmentData {
     private boolean stateAllItemViewExpanded = true;
     private boolean stateDropshipperDetailExpanded;
     private boolean stateDropshipperHasError;
+
+    // Address Model for multiple address shipment, null if single address shipment
+    private RecipientAddressModel recipientAddressModel;
+
+    // Only for single address shipment
+    private List<CartItemModel> cartItemModels = new ArrayList<>();
 
     public ShipmentCartItemModel() {
     }
@@ -210,11 +220,19 @@ public abstract class ShipmentCartItemModel implements ShipmentData {
         this.stateDropshipperHasError = stateDropshipperHasError;
     }
 
-    public int getCartId() {
-        return cartId;
+    public RecipientAddressModel getRecipientAddressModel() {
+        return recipientAddressModel;
     }
 
-    public void setCartId(int cartId) {
-        this.cartId = cartId;
+    public void setRecipientAddressModel(RecipientAddressModel recipientAddressModel) {
+        this.recipientAddressModel = recipientAddressModel;
+    }
+
+    public List<CartItemModel> getCartItemModels() {
+        return cartItemModels;
+    }
+
+    public void setCartItemModels(List<CartItemModel> cartItemModels) {
+        this.cartItemModels = cartItemModels;
     }
 }

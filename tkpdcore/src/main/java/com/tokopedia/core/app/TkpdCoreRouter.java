@@ -190,8 +190,6 @@ public interface TkpdCoreRouter {
 
     void sendTrackingGroupChatLeftNavigation();
 
-    Observable<TKPDMapParam<String, Object>> verifyEventPromo(RequestParams requestParams);
-
     String getDesktopLinkGroupChat();
 
     Intent getDistrictRecommendationIntent(Activity activity, Token token);

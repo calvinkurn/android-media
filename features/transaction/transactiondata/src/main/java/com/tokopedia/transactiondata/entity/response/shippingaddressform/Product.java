@@ -20,7 +20,7 @@ public class Product {
     private int productId;
     @SerializedName("cart_id")
     @Expose
-    private int cartId;
+    private long cartId;
     @SerializedName("product_name")
     @Expose
     private String productName;
@@ -226,7 +226,7 @@ public class Product {
         return productCatalogId;
     }
 
-    public int getCartId() {
+    public long getCartId() {
         return cartId;
     }
 }

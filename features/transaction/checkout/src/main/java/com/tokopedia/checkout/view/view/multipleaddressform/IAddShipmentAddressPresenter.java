@@ -13,7 +13,7 @@ public interface IAddShipmentAddressPresenter {
     void initiateData(MultipleAddressAdapterData addressAdapterData,
                       MultipleAddressItemData addressItemData);
 
-    MultipleAddressItemData confirmAddData(String quantity, String notes);
+    MultipleAddressItemData confirmAddData(MultipleAddressItemData baseItem, String quantity, String notes);
 
     MultipleAddressItemData confirmEditData(String quantity, String notes);
 

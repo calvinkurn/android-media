@@ -12,7 +12,6 @@
 
     <com.tokopedia.topads.dashboard.view.widget.TopAdsCustomAutoCompleteTextView
         android:id="@+id/choose_group_auto_text"
-        style="@style/EditText.GreenHighlight.TopAdsCustomAutoCompleteTextView"
-        android:drawableRight="@drawable/ic_close_green" />
+        style="@style/EditText.GreenHighlight.TopAdsCustomAutoCompleteTextView" />
 
 </com.tokopedia.design.text.TkpdTextInputLayout>

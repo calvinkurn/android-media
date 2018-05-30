@@ -12,10 +12,12 @@ import android.view.View;
 import android.widget.FrameLayout;
 
 import com.tkpd.library.utils.URLParser;
+import com.tokopedia.core.discovery.model.Filter;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.router.discovery.BrowseProductRouter;
 import com.tokopedia.discovery.R;
 import com.tokopedia.discovery.categorynav.view.CategoryNavigationActivity;
+import com.tokopedia.discovery.newdiscovery.base.BottomSheetListener;
 import com.tokopedia.discovery.newdiscovery.base.DiscoveryActivity;
 import com.tokopedia.discovery.newdiscovery.category.di.component.CategoryComponent;
 import com.tokopedia.discovery.newdiscovery.category.di.component.DaggerCategoryComponent;

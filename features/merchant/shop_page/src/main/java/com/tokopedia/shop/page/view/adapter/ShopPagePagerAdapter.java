@@ -79,14 +79,10 @@ public class ShopPagePagerAdapter extends FragmentStatePagerAdapter {
     @Override
     public Parcelable saveState() {
         Bundle bundle = (Bundle) super.saveState();
-        if (bundle != null) {
-            Parcelable[] states = bundle.getParcelableArray(STATES); // Subset only last 3 states
-            if (states != null)
-                states = Arrays.copyOfRange(states, states.length > 3 ? states.length - 3 : 0, states.length - 1);
-            bundle.putParcelableArray(STATES, states);
-        } else {
+        if (bundle == null) {
             bundle = new Bundle();
         }
+        bundle.putParcelableArray(STATES, null);
         return bundle;
     }
 }

@@ -51,7 +51,7 @@ import com.tokopedia.checkout.domain.datamodel.shipmentrates.ShipmentItemData;
 import com.tokopedia.checkout.router.ICheckoutModuleRouter;
 import com.tokopedia.checkout.view.adapter.CourierChoiceAdapter;
 import com.tokopedia.checkout.view.base.BaseCheckoutFragment;
-import com.tokopedia.checkout.view.constants.InsuranceConstant;
+import com.tokopedia.logisticdata.data.constant.InsuranceConstant;
 import com.tokopedia.checkout.view.di.component.CartComponent;
 import com.tokopedia.checkout.view.di.component.DaggerShipmentDetailComponent;
 import com.tokopedia.checkout.view.di.component.ShipmentDetailComponent;

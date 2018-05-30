@@ -11,6 +11,7 @@ public class TopAdsKeywordEditDetailInputDomainModel {
     private String keywordTypeId;
     private double priceBid;
     private String shopId;
+    private String source;
     private int toggle;
 
     public String getKeywordId() {
@@ -67,5 +68,13 @@ public class TopAdsKeywordEditDetailInputDomainModel {
 
     public void setToggle(int toggle) {
         this.toggle = toggle;
+    }
+
+    public String getSource() {
+        return source;
+    }
+
+    public void setSource(String source) {
+        this.source = source;
     }
 }

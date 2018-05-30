@@ -3,6 +3,8 @@ package com.tokopedia.checkout.domain.datamodel.cartlist;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import java.util.List;
+
 /**
  * @author anggaprasetiyo on 18/01/18.
  */
@@ -81,12 +83,15 @@ public class CartItemData implements Parcelable {
         public static final int WEIGHT_GRAM = 2;
 
         private int cartId;
+        private String parentId;
         private String productId;
         private String productName;
         private int minimalQtyOrder;
+        private int invenageValue;
         private double pricePlan;
         private int priceCurrency;
         private String priceFormatted;
+        private String wholesalePriceFormatted;
         private String productImage;
         private String productVarianRemark;
         private double weightPlan;
@@ -103,6 +108,7 @@ public class CartItemData implements Parcelable {
         private String category;
         private String categoryForAnalytics;
         private String categoryId;
+        private List<WholesalePrice> wholesalePrice;
 
         public String getCategory() {
             return category;
@@ -190,6 +196,14 @@ public class CartItemData implements Parcelable {
 
         public void setCashBackInfo(String cashBackInfo) {
             this.cashBackInfo = cashBackInfo;
+        }
+
+        public String getParentId() {
+            return parentId;
+        }
+
+        public void setParentId(String parentId) {
+            this.parentId = parentId;
         }
 
         public String getProductId() {
@@ -288,6 +302,29 @@ public class CartItemData implements Parcelable {
             this.weightFormatted = weightFormatted;
         }
 
+        public int getInvenageValue() {
+            return invenageValue;
+        }
+
+        public void setInvenageValue(int invenageValue) {
+            this.invenageValue = invenageValue;
+        }
+
+        public List<WholesalePrice> getWholesalePrice() {
+            return wholesalePrice;
+        }
+
+        public void setWholesalePrice(List<WholesalePrice> wholesalePrice) {
+            this.wholesalePrice = wholesalePrice;
+        }
+
+        public String getWholesalePriceFormatted() {
+            return wholesalePriceFormatted;
+        }
+
+        public void setWholesalePriceFormatted(String wholesalePriceFormatted) {
+            this.wholesalePriceFormatted = wholesalePriceFormatted;
+        }
 
         public OriginData() {
         }
@@ -300,12 +337,15 @@ public class CartItemData implements Parcelable {
         @Override
         public void writeToParcel(Parcel dest, int flags) {
             dest.writeInt(this.cartId);
+            dest.writeString(this.parentId);
             dest.writeString(this.productId);
             dest.writeString(this.productName);
             dest.writeInt(this.minimalQtyOrder);
+            dest.writeInt(this.invenageValue);
             dest.writeDouble(this.pricePlan);
             dest.writeInt(this.priceCurrency);
             dest.writeString(this.priceFormatted);
+            dest.writeString(this.wholesalePriceFormatted);
             dest.writeString(this.productImage);
             dest.writeString(this.productVarianRemark);
             dest.writeDouble(this.weightPlan);
@@ -322,16 +362,20 @@ public class CartItemData implements Parcelable {
             dest.writeString(this.category);
             dest.writeString(this.categoryForAnalytics);
             dest.writeString(this.categoryId);
+            dest.writeTypedList(this.wholesalePrice);
         }
 
         protected OriginData(Parcel in) {
             this.cartId = in.readInt();
+            this.parentId = in.readString();
             this.productId = in.readString();
             this.productName = in.readString();
             this.minimalQtyOrder = in.readInt();
+            this.invenageValue = in.readInt();
             this.pricePlan = in.readDouble();
             this.priceCurrency = in.readInt();
             this.priceFormatted = in.readString();
+            this.wholesalePriceFormatted = in.readString();
             this.productImage = in.readString();
             this.productVarianRemark = in.readString();
             this.weightPlan = in.readDouble();
@@ -348,6 +392,7 @@ public class CartItemData implements Parcelable {
             this.category = in.readString();
             this.categoryForAnalytics = in.readString();
             this.categoryId = in.readString();
+            this.wholesalePrice = in.createTypedArrayList(WholesalePrice.CREATOR);
         }
 
         public static final Creator<OriginData> CREATOR = new Creator<OriginData>() {

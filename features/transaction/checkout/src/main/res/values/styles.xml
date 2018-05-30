@@ -83,6 +83,10 @@
         <item name="android:textColor">@color/black_54</item>
     </style>
 
+    <style name="TextMidMediumBlack38" parent="TextMidMedium">
+        <item name="android:textColor">@color/black_38</item>
+    </style>
+
     <style name="TextMidMediumBlack70" parent="TextMidMedium">
         <item name="android:textColor">@color/black_70</item>
     </style>

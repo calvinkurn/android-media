@@ -2,11 +2,15 @@ package com.tokopedia.core.manage.people.address.presenter;
 
 import android.text.TextUtils;
 
+import com.tokopedia.core.database.model.City;
+import com.tokopedia.core.database.model.Province;
 import com.tokopedia.core.manage.people.address.interactor.AddAddressRetrofitInteractor;
 import com.tokopedia.core.manage.people.address.interactor.AddAddressRetrofitInteractorImpl;
 import com.tokopedia.core.manage.people.address.listener.AddAddressFragmentView;
 import com.tokopedia.core.manage.people.address.model.Destination;
+import com.tokopedia.core.manage.people.address.model.FormAddressDomainModel;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -54,6 +58,127 @@ public class AddAddressPresenterImpl implements AddAddressPresenter {
         } else {
             networkInteractor.addAddress(viewListener.context(), getParam(), getListener());
         }
+    }
+
+    @Override
+    public void getListProvince() {
+        viewListener.setActionsEnabled(false);
+        viewListener.showLoading();
+        networkInteractor.getListProvince(viewListener.context(),
+                new HashMap<String, String>(),
+                new AddAddressRetrofitInteractor.GetListProvinceListener() {
+                    @Override
+                    public void onSuccess(ArrayList<Province> provinces) {
+                        viewListener.setActionsEnabled(true);
+                        viewListener.setProvince(provinces);
+                    }
+
+                    @Override
+                    public void onTimeout() {
+                        viewListener.finishLoading();
+                        viewListener.showErrorSnackbar("");
+                    }
+
+                    @Override
+                    public void onError(String error) {
+                        viewListener.finishLoading();
+                        viewListener.setActionsEnabled(true);
+                        viewListener.showErrorSnackbar(error);
+                    }
+
+                    @Override
+                    public void onNullData() {
+                        viewListener.finishLoading();
+                        viewListener.showErrorSnackbar("");
+                    }
+
+                });
+    }
+
+    @Override
+    public void onProvinceSelected(int pos) {
+        viewListener.resetRegency();
+        viewListener.hideSubDistrict();
+        viewListener.resetSubDistrict();
+        if (pos != 0) {
+            getListCity(viewListener.getProvinceAdapter().getList().get(pos - 1));
+        }
+    }
+
+    @Override
+    public void onRegencySelected(int pos) {
+        viewListener.resetSubDistrict();
+        if (pos != 0) {
+            getListDistrict(viewListener.getRegencyAdapter().getList().get(pos - 1));
+        }
+    }
+
+    @Override
+    public void getListCity(Province province) {
+        viewListener.showLoadingRegency();
+        viewListener.setActionsEnabled(false);
+        networkInteractor.getListCity(viewListener.context(),
+                province.getProvinceId(),
+                new AddAddressRetrofitInteractor.GetListCityListener() {
+
+                    @Override
+                    public void onSuccess(FormAddressDomainModel model) {
+                        viewListener.setActionsEnabled(true);
+                        viewListener.setCity(model.getCities());
+                    }
+
+                    @Override
+                    public void onTimeout() {
+                        viewListener.finishLoading();
+                        viewListener.showErrorSnackbar("");
+                    }
+
+                    @Override
+                    public void onError(String error) {
+                        viewListener.finishLoading();
+                        viewListener.setActionsEnabled(true);
+                        viewListener.showErrorSnackbar(error);
+                    }
+
+                    @Override
+                    public void onNullData() {
+                        viewListener.finishLoading();
+                        viewListener.showErrorSnackbar("");
+                    }
+
+                });
+    }
+
+    @Override
+    public void getListDistrict(City city) {
+        viewListener.showLoadingDistrict();
+        viewListener.setActionsEnabled(false);
+        networkInteractor.getListDistrict(viewListener.context(), city.getCityId(), new AddAddressRetrofitInteractor.GetListDistrictListener() {
+            @Override
+            public void onSuccess(FormAddressDomainModel model) {
+                viewListener.setActionsEnabled(true);
+                viewListener.setDistrict(model.getDistricts());
+            }
+
+            @Override
+            public void onTimeout() {
+                viewListener.finishLoading();
+                viewListener.showErrorSnackbar("");
+            }
+
+            @Override
+            public void onError(String error) {
+                viewListener.finishLoading();
+                viewListener.setActionsEnabled(true);
+                viewListener.showErrorSnackbar(error);
+            }
+
+            @Override
+            public void onNullData() {
+                viewListener.finishLoading();
+                viewListener.showErrorSnackbar("");
+            }
+        });
     }
 
     private AddAddressRetrofitInteractor.AddAddressListener getListener() {

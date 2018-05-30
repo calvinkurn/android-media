@@ -15,6 +15,7 @@ import com.tokopedia.core.manage.people.address.model.AddressModel;
 import com.tokopedia.core.manage.people.address.model.Token;
 
 import static com.tokopedia.core.manage.people.address.ManageAddressConstant.EDIT_PARAM;
+import static com.tokopedia.core.manage.people.address.ManageAddressConstant.IS_DISTRICT_RECOMMENDATION;
 import static com.tokopedia.core.manage.people.address.ManageAddressConstant.IS_EDIT;
 import static com.tokopedia.core.manage.people.address.ManageAddressConstant.KERO_TOKEN;
 
@@ -85,6 +86,7 @@ public class AddAddressActivity extends BasePresenterActivity {
     public static Intent createInstance(Activity activity, Token token) {
         Intent intent = new Intent(activity, AddAddressActivity.class);
         Bundle bundle = new Bundle();
+        bundle.putBoolean(IS_DISTRICT_RECOMMENDATION, true);
         bundle.putBoolean(IS_EDIT, false);
         bundle.putParcelable(KERO_TOKEN, token);
         intent.putExtras(bundle);
@@ -94,6 +96,7 @@ public class AddAddressActivity extends BasePresenterActivity {
     public static Intent createInstance(Activity activity, AddressModel data, Token token) {
         Intent intent = new Intent(activity, AddAddressActivity.class);
         Bundle bundle = new Bundle();
+        bundle.putBoolean(IS_DISTRICT_RECOMMENDATION, true);
         bundle.putParcelable(EDIT_PARAM, data.convertToDestination());
         bundle.putBoolean(IS_EDIT, true);
         bundle.putParcelable(KERO_TOKEN, token);

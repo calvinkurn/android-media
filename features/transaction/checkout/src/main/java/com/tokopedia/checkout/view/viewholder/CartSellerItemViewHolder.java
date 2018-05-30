@@ -23,6 +23,7 @@ import com.tokopedia.checkout.domain.datamodel.cartsingleshipment.CartSellerItem
 import com.tokopedia.checkout.domain.datamodel.shipmentrates.ShipmentDetailData;
 import com.tokopedia.checkout.view.adapter.InnerProductListAdapter;
 import com.tokopedia.checkout.view.adapter.SingleAddressShipmentAdapter.ActionListener;
+import com.tokopedia.design.component.TextViewCompat;
 import com.tokopedia.design.utils.CurrencyFormatUtil;
 import com.tokopedia.showcase.ShowCaseContentPosition;
 import com.tokopedia.showcase.ShowCaseObject;
@@ -51,7 +52,6 @@ public class CartSellerItemViewHolder extends RecyclerView.ViewHolder {
     private ImageView mIvProductImage;
     private TextView mTvProductName;
     private TextView mTvProductPrice;
-    private TextView mTvProductWeight;
     private TextView mTvProductTotalItem;
 
     private LinearLayout mLlOptionalNoteToSellerLayout;
@@ -82,13 +82,12 @@ public class CartSellerItemViewHolder extends RecyclerView.ViewHolder {
     private ImageView mIvDetailOptionChevron;
     private TextView mTvSubTotal;
     private FrameLayout layoutError;
-    private TextView tvError;
+    private TextViewCompat tvError;
     private FrameLayout layoutWarning;
-    private TextView tvWarning;
+    private TextViewCompat tvWarning;
     private LinearLayout mLlShippingWarningContainer;
     private ImageView mIvShippingWarning;
     private TextView mTvShippingWarning;
-    private TextView mTvTextProductWeight;
     private TextView mTvLabelItemCount;
     private LinearLayout mLlSelectedCourier;
     private LinearLayout llShipmentOptionLayout;
@@ -108,7 +107,6 @@ public class CartSellerItemViewHolder extends RecyclerView.ViewHolder {
         mIvProductImage = itemView.findViewById(R.id.iv_product_image);
         mTvProductName = itemView.findViewById(R.id.tv_product_name);
         mTvProductPrice = itemView.findViewById(R.id.tv_product_price);
-        mTvProductWeight = itemView.findViewById(R.id.tv_product_weight);
         mTvProductTotalItem = itemView.findViewById(R.id.tv_product_total_item);
 
         mLlOptionalNoteToSellerLayout = itemView.findViewById(R.id.ll_optional_note_to_seller_layout);
@@ -144,7 +142,6 @@ public class CartSellerItemViewHolder extends RecyclerView.ViewHolder {
         mLlShippingWarningContainer = itemView.findViewById(R.id.ll_shipping_warning_container);
         mIvShippingWarning = itemView.findViewById(R.id.img_shipping_warning);
         mTvShippingWarning = itemView.findViewById(R.id.tv_shipping_warning);
-        mTvTextProductWeight = itemView.findViewById(R.id.tv_text_product_weight);
 
         layoutError = itemView.findViewById(R.id.layout_error);
         tvError = itemView.findViewById(R.id.tv_error);
@@ -177,7 +174,6 @@ public class CartSellerItemViewHolder extends RecyclerView.ViewHolder {
         mTvProductName.setText(cartItemModel.getName());
         mTvProductPrice.setText(CurrencyFormatUtil.convertPriceValueToIdrFormat(
                 (int) cartItemModel.getPrice(), true));
-        mTvProductWeight.setText(cartItemModel.getWeightFmt());
         mTvProductTotalItem.setText(String.valueOf(cartItemModel.getQuantity()));
 
         boolean isEmptyNotes = TextUtils.isEmpty(cartItemModel.getNoteToSeller());
@@ -370,8 +366,6 @@ public class CartSellerItemViewHolder extends RecyclerView.ViewHolder {
         mTvProductPrice.setTextColor(ContextCompat.getColor(mContext, R.color.grey_nonactive_text));
         mTvFreeReturnLabel.setTextColor(ContextCompat.getColor(mContext, R.color.grey_nonactive_text));
         mTvPreOrder.setTextColor(ContextCompat.getColor(mContext, R.color.grey_nonactive_text));
-        mTvTextProductWeight.setTextColor(ContextCompat.getColor(mContext, R.color.grey_nonactive_text));
-        mTvProductWeight.setTextColor(ContextCompat.getColor(mContext, R.color.grey_nonactive_text));
         mTvLabelItemCount.setTextColor(ContextCompat.getColor(mContext, R.color.grey_nonactive_text));
         mTvProductTotalItem.setTextColor(ContextCompat.getColor(mContext, R.color.grey_nonactive_text));
         mTvNoteToSellerLabel.setTextColor(ContextCompat.getColor(mContext, R.color.grey_nonactive_text));
@@ -393,8 +387,6 @@ public class CartSellerItemViewHolder extends RecyclerView.ViewHolder {
         mTvProductPrice.setTextColor(ContextCompat.getColor(mContext, R.color.orange_red));
         mTvFreeReturnLabel.setTextColor(ContextCompat.getColor(mContext, R.color.font_black_secondary_54));
         mTvPreOrder.setTextColor(ContextCompat.getColor(mContext, R.color.font_black_secondary_54));
-        mTvTextProductWeight.setTextColor(ContextCompat.getColor(mContext, R.color.black_38));
-        mTvProductWeight.setTextColor(ContextCompat.getColor(mContext, R.color.font_black_secondary_54));
         mTvLabelItemCount.setTextColor(ContextCompat.getColor(mContext, R.color.black_38));
         mTvProductTotalItem.setTextColor(ContextCompat.getColor(mContext, R.color.font_black_secondary_54));
         mTvNoteToSellerLabel.setTextColor(ContextCompat.getColor(mContext, R.color.black_38));

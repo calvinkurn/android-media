@@ -97,7 +97,7 @@ public class TkpdResponse {
             }
 
             isNullData = jsonDataArray == null && jsonData == null;
-        } catch (JSONException e) {
+        } catch (Exception e) {
             e.printStackTrace();
             jsonDataArray = null;
         }

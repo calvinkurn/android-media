@@ -1,15 +1,13 @@
 package com.tokopedia.checkout.domain.usecase;
 
+import android.content.Context;
+
 import com.tokopedia.abstraction.common.utils.TKPDMapParam;
-import com.tokopedia.transactiondata.entity.response.cartlist.CartDataListResponse;
-import com.tokopedia.transactiondata.entity.response.resetcart.ResetCartDataResponse;
-import com.tokopedia.transactiondata.exception.ResponseCartApiErrorException;
-import com.tokopedia.transactiondata.repository.ICartRepository;
 import com.tokopedia.checkout.domain.datamodel.ResetAndRefreshCartListData;
 import com.tokopedia.checkout.domain.datamodel.cartlist.CartListData;
-import com.tokopedia.checkout.domain.datamodel.cartlist.ResetCartData;
 import com.tokopedia.checkout.domain.mapper.ICartMapper;
-import com.tokopedia.core.network.constants.TkpdBaseURL;
+import com.tokopedia.transactiondata.entity.response.cartlist.CartDataListResponse;
+import com.tokopedia.transactiondata.repository.ICartRepository;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.usecase.UseCase;
 
@@ -28,9 +26,11 @@ public class ResetCartGetCartListUseCase extends UseCase<ResetAndRefreshCartList
             = "PARAM_REQUEST_AUTH_MAP_STRING_GET_CART";
     private final ICartRepository cartRepository;
     private final ICartMapper cartMapper;
+    private final Context context;
 
     @Inject
-    public ResetCartGetCartListUseCase(ICartRepository cartRepository, ICartMapper cartMapper) {
+    public ResetCartGetCartListUseCase(Context context, ICartRepository cartRepository, ICartMapper cartMapper) {
+        this.context = context;
         this.cartRepository = cartRepository;
         this.cartMapper = cartMapper;
     }
@@ -48,29 +48,6 @@ public class ResetCartGetCartListUseCase extends UseCase<ResetAndRefreshCartList
         return Observable.just(new ResetAndRefreshCartListData())
                 .flatMap(new Func1<ResetAndRefreshCartListData, Observable<ResetAndRefreshCartListData>>() {
                     @Override
-                    public Observable<ResetAndRefreshCartListData> call(
-                            final ResetAndRefreshCartListData resetAndRefreshCartListData
-                    ) {
-                        return cartRepository.resetCart(paramReset)
-                                .map(new Func1<ResetCartDataResponse, ResetAndRefreshCartListData>() {
-                                    @Override
-                                    public ResetAndRefreshCartListData call(ResetCartDataResponse resetCartDataResponse) {
-                                        ResetCartData resetCartData = cartMapper.convertToResetCartData(resetCartDataResponse);
-                                        resetAndRefreshCartListData.setResetCartData(resetCartData);
-                                        if (!resetCartData.isSuccess()) {
-                                            throw new ResponseCartApiErrorException(
-                                                    TkpdBaseURL.Cart.PATH_RESET_CART,
-                                                    0,
-                                                    ""
-                                            );
-                                        }
-                                        return resetAndRefreshCartListData;
-                                    }
-                                });
-                    }
-                })
-                .flatMap(new Func1<ResetAndRefreshCartListData, Observable<ResetAndRefreshCartListData>>() {
-                    @Override
                     public Observable<ResetAndRefreshCartListData> call(final ResetAndRefreshCartListData resetAndRefreshCartListData) {
                         return cartRepository.getCartList(paramGetCart)
                                 .map(new Func1<CartDataListResponse, ResetAndRefreshCartListData>() {
@@ -79,7 +56,7 @@ public class ResetCartGetCartListUseCase extends UseCase<ResetAndRefreshCartList
                                             CartDataListResponse cartDataListResponse
                                     ) {
                                         CartListData cartListData = cartMapper.convertToCartItemDataList(
-                                                cartDataListResponse
+                                                context, cartDataListResponse
                                         );
                                         resetAndRefreshCartListData.setCartListData(cartListData);
                                         return resetAndRefreshCartListData;
