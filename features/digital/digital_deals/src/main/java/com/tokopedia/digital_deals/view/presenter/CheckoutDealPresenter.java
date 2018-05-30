@@ -234,11 +234,10 @@ public class CheckoutDealPresenter
 //        return requestBody;
 //    }
 
-    @Override
-    public void attachView(CheckoutDealContractor.View view) {
-        super.attachView(view);
+
+    public void getCheckoutDetails() {
         getView().showProgressBar();
-        Intent intent = view.getActivity().getIntent();
+        Intent intent = getView().getActivity().getIntent();
         this.dealDetail = intent.getParcelableExtra(CheckoutDealPresenter.EXTRA_DEALDETAIL);
         this.cartData = intent.getStringExtra(CheckoutDealPresenter.EXTRA_CART);
         this.packageViewModel=intent.getParcelableExtra(CheckoutDealPresenter.EXTRA_PACKAGEVIEWMODEL);
@@ -259,6 +258,7 @@ public class CheckoutDealPresenter
 
     public void getPaymentLink() {
 
+        paymentparams = RequestParams.create();
 
         paymentparams.putObject(Utils.Constants.CHECKOUTDATA, convertCartItemToJson(cartData));
         postPaymentUseCase.execute(paymentparams, new Subscriber<CheckoutResponse>() {

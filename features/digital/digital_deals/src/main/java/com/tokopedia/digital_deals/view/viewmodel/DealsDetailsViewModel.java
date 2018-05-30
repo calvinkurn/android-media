@@ -1,5 +1,6 @@
 package com.tokopedia.digital_deals.view.viewmodel;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import android.os.Parcel;
@@ -94,7 +95,8 @@ public class DealsDetailsViewModel implements Parcelable {
         this.saleEndTime = ((String) in.readValue((String.class.getClassLoader())));
         this.dateRange = ((Boolean) in.readValue((Boolean.class.getClassLoader())));
         this.cityName = ((String) in.readValue((String.class.getClassLoader())));
-        in.readList(this.outlets, (OutletViewModel.class.getClassLoader()));
+        this.outlets = new ArrayList<OutletViewModel>();
+        in.readList(this.outlets, OutletViewModel.class.getClassLoader());
         this.rating = ((Integer) in.readValue((Integer.class.getClassLoader())));
         this.likes = ((Integer) in.readValue((Integer.class.getClassLoader())));
         this.savingPercentage = ((String) in.readValue((Integer.class.getClassLoader())));

@@ -25,6 +25,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.digital_deals.R;
 import com.tokopedia.digital_deals.di.DaggerDealsComponent;
 import com.tokopedia.digital_deals.di.DealsModule;
+import com.tokopedia.digital_deals.view.activity.CheckoutActivity;
 import com.tokopedia.digital_deals.view.activity.DealsCategoryDetailActivity;
 import com.tokopedia.digital_deals.view.adapter.DealsBrandAdapter;
 import com.tokopedia.digital_deals.view.adapter.DealsCategoryAdapter;
@@ -104,7 +105,7 @@ public class CategoryDetailHomeFragment extends BaseDaggerFragment implements De
 
     private void setViewIds(View view) {
 
-        ((DealsCategoryDetailActivity)getActivity()).getSupportActionBar().setTitle(categoriesModel.getTitle());
+//        ((CheckoutActivity)getActivity()).getSupportActionBar().setTitle(categoriesModel.getTitle());
 
         seeAllBrands = view.findViewById(R.id.tv_see_all);
 

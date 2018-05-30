@@ -450,6 +450,20 @@ public class OkHttpFactory {
         return tkpdOkHttpBuilder.build();
     }
 
+    public OkHttpClient buildDaggerClientBearerEventsDeals(EventInerceptors eventInterceptor,
+                                                      OkHttpRetryPolicy okHttpRetryPolicy,
+                                                      DebugInterceptor debugInterceptor,
+                                                      HttpLoggingInterceptor loggingInterceptor) {
+        TkpdOkHttpBuilder tkpdOkHttpBuilder = new TkpdOkHttpBuilder(builder)
+                .addInterceptor(eventInterceptor)
+                .setOkHttpRetryPolicy(okHttpRetryPolicy);
+        if (GlobalConfig.isAllowDebuggingTools()) {
+            tkpdOkHttpBuilder.addInterceptor(debugInterceptor);
+            tkpdOkHttpBuilder.addInterceptor(loggingInterceptor);
+        }
+        return tkpdOkHttpBuilder.build();
+    }
+
     public OkHttpClient buildDaggerClientBearerTopAdsAuth(FingerprintInterceptor fingerprintInterceptor,
                                                           TopAdsAuthInterceptor topAdsAuthInterceptor,
                                                           OkHttpRetryPolicy okHttpRetryPolicy,

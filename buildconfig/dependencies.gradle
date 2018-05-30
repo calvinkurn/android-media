@@ -248,8 +248,7 @@ ext {
             mitraToppers        : "com.tokopedia.mitratoppers:mitra_toppers:${tkpdMitraToppersVersion}",
             goldMerchant        : "com.tokopedia.gm:gold_merchant:${tkpdGoldMerchantVersion}",
             topAdsManagement    : "com.tokopedia.topads:top_ads_management:${tkpdTopAdsSDKVersion}",
-            districtRecommendation: "com.tokopedia.district_recommendation:district_recommendation:${tkpdDistrictRecommendationVersion}"
-            topAdsManagement    : "com.tokopedia.topads:top_ads_management:${tkpdTopAdsSDKVersion}",
+            districtRecommendation: "com.tokopedia.district_recommendation:district_recommendation:${tkpdDistrictRecommendationVersion}",
             digitalDeals        : "com.tokopedia.digital_deals:digital_deals:${tkpdDealsVersion}",
             omsApi              : "com.tokopedia.oms:oms:${tkpdOmsVersion}"
 

@@ -16,12 +16,10 @@ import rx.Observable;
 public interface OmsApi {
 
     @POST(OmsUrl.OMS_VERIFY)
-    @Headers({"Content-Type: application/json"})
     Observable<Response<DataResponse<VerifyMyCartResponse>>> postCartVerify(@Body JsonObject requestBody);
 
 
     @POST(OmsUrl.OMS_CHECKOUT)
-    @Headers({"Content-Type: application/json"})
     Observable<Response<DataResponse<CheckoutResponse>>> checkoutCart(@Body JsonObject requestBody);
 
 }

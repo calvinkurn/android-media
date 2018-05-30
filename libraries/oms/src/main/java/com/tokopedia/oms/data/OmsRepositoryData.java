@@ -13,28 +13,21 @@ import rx.Observable;
 
 public class OmsRepositoryData implements OmsRepository {
 
-    private OmsDataStoreFactory eventsDataStoreFactory;
+    private CloudOmsDataStore mCloudOmsDataStore;
 
     @Inject
-    public OmsRepositoryData(OmsDataStoreFactory eventsDataStoreFactory) {
-        this.eventsDataStoreFactory = eventsDataStoreFactory;
+    public OmsRepositoryData(CloudOmsDataStore cloudOmsDataStore) {
+        this.mCloudOmsDataStore = cloudOmsDataStore;
 
     }
 
     @Override
     public Observable<VerifyMyCartResponse> verifyCard(JsonObject requestBody) {
-        return eventsDataStoreFactory
-                .createCloudDataStore()
-                .verifyCart(requestBody);
+        return mCloudOmsDataStore.verifyCart(requestBody);
     }
 
     @Override
     public Observable<CheckoutResponse> checkoutCart(JsonObject requestBody) {
-        return eventsDataStoreFactory
-                .createCloudDataStore()
-                .checkoutCart(requestBody);
+        return mCloudOmsDataStore.checkoutCart(requestBody);
     }
-
-
-
 }

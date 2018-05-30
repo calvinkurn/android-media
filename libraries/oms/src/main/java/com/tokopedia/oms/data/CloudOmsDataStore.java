@@ -7,6 +7,8 @@ import com.tokopedia.oms.data.entity.response.verifyresponse.VerifyCartResponse;
 import com.tokopedia.oms.data.entity.response.verifyresponse.VerifyMyCartResponse;
 import com.tokopedia.oms.data.source.OmsApi;
 
+import javax.inject.Inject;
+
 import rx.Observable;
 
 
@@ -15,6 +17,7 @@ public class CloudOmsDataStore implements OmsDataStore {
 
     private final OmsApi omsApi;
 
+    @Inject
     public CloudOmsDataStore(OmsApi eventsApi) {
         this.omsApi = eventsApi;
     }

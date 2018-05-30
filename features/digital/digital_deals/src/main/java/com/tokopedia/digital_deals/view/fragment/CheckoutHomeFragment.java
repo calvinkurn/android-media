@@ -84,7 +84,7 @@ public class CheckoutHomeFragment extends BaseDaggerFragment implements Checkout
     }
 
     public static Fragment createInstance(Bundle bundle) {
-        Fragment fragment = new CategoryDetailHomeFragment();
+        Fragment fragment = new CheckoutHomeFragment();
         fragment.setArguments(bundle);
         return fragment;
     }
@@ -103,8 +103,9 @@ public class CheckoutHomeFragment extends BaseDaggerFragment implements Checkout
         setHasOptionsMenu(true);
 
 
-        mPresenter.attachView(this);
+//        mPresenter.attachView(this);
         mPresenter.getProfile();
+        mPresenter.getCheckoutDetails();
 //        mPresenter.getBrandsList();
         return view;
     }
@@ -112,8 +113,8 @@ public class CheckoutHomeFragment extends BaseDaggerFragment implements Checkout
     private void setViewIds(View view) {
         toolbar = view.findViewById(R.id.toolbar);
         ((BaseSimpleActivity) getActivity()).setSupportActionBar(toolbar);
-        toolbar.setNavigationIcon(ContextCompat.getDrawable(getActivity(), R.drawable.ic_close_deals));
-        toolbar.setTitle(getActivity().getResources().getString(R.string.title_activity_checkout));
+//        toolbar.setNavigationIcon(ContextCompat.getDrawable(getActivity(), R.drawable.ic_close_deals));
+//        toolbar.setTitle(getActivity().getResources().getString(R.string.title_activity_checkout));
         imageViewBrand = view.findViewById(R.id.image_view_brand);
         textViewdealDetails = view.findViewById(R.id.tv_deal_details);
         textViewbrandName = view.findViewById(R.id.tv_brandName);
