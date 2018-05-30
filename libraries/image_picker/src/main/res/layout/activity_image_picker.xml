@@ -74,7 +74,7 @@
             style="@style/ImagePickerTab"
             app:tabGravity="fill"
             app:tabIndicatorColor="@null"
-            app:tabMinWidth="@dimen/tab_min_width"
+            app:tabMinWidth="@dimen/image_picker_tab_min_width"
             app:tabMode="fixed">
             <!--will be added programmatically at ImagePickerActivity-->
 
