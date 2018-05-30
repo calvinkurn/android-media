@@ -143,6 +143,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
 
                                     @Override
                                     public void onNext(CartShipmentAddressFormData cartShipmentAddressFormData) {
+                                        getView().hideLoading();
                                         boolean isEnableCheckout = true;
                                         for (GroupAddress groupAddress : cartShipmentAddressFormData.getGroupAddress()) {
                                             if (groupAddress.isError() || groupAddress.isWarning())
@@ -281,6 +282,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
 
             @Override
             public void onNext(ThanksTopPayData thanksTopPayData) {
+                getView().hideLoading();
                 getView().renderThanksTopPaySuccess("Pembayaran Berhasil");
             }
         };
