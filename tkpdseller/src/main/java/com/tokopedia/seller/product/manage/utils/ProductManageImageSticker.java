@@ -15,7 +15,7 @@ import com.tokopedia.seller.R;
  * Created by yoshua on 28/05/18.
  */
 
-public class AddSticker {
+public class ProductManageImageSticker {
     private String name;
     private String price;
     private String shop_link;
@@ -51,7 +51,7 @@ public class AddSticker {
     public Bitmap processStickerToImage(Bitmap source, Context context){
         LayoutInflater mInflater = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         RelativeLayout view = new RelativeLayout(context);
-        mInflater.inflate(R.layout.ig_with_sticker, view, true);
+        mInflater.inflate(R.layout.partial_product_manage_image_sticker, view, true);
 
         ImageView imgSource = view.findViewById(R.id.img_source);
         TextView tvPrice = view.findViewById(R.id.tv_price);
@@ -102,13 +102,13 @@ public class AddSticker {
             this.cashback = cashback;
             return this;
         }
-        public AddSticker build() {
-            AddSticker addSticker = new AddSticker();
-            addSticker.setName(name);
-            addSticker.setPrice(price);
-            addSticker.setShop_link(shop_link);
-            addSticker.setCashback(cashback);
-            return addSticker;
+        public ProductManageImageSticker build() {
+            ProductManageImageSticker productManageImageSticker = new ProductManageImageSticker();
+            productManageImageSticker.setName(name);
+            productManageImageSticker.setPrice(price);
+            productManageImageSticker.setShop_link(shop_link);
+            productManageImageSticker.setCashback(cashback);
+            return productManageImageSticker;
         }
     }
 }
