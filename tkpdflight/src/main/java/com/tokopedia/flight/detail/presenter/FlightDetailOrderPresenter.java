@@ -169,6 +169,10 @@ public class FlightDetailOrderPresenter extends BaseDaggerPresenter<FlightDetail
                 } else {
                     getView().hideCancellationContainer();
                 }
+
+                if (isShouldHideCancelButton(flightOrderJourneyList.size(), flightOrder.getPassengerViewModels())) {
+                    getView().hideCancelButton();
+                }
             }
         };
     }
@@ -562,5 +566,22 @@ public class FlightDetailOrderPresenter extends BaseDaggerPresenter<FlightDetail
             compositeSubscription.unsubscribe();
         }
         super.detachView();
+    }
+
+    private boolean isShouldHideCancelButton(int journeyCount, List<FlightOrderPassengerViewModel> passengerViewModels) {
+        int allPassengerCount = passengerViewModels.size() * journeyCount;
+        int cancelledPassengerCount = 0;
+
+        for (FlightOrderPassengerViewModel flightOrderPassengerViewModel : passengerViewModels) {
+            switch (flightOrderPassengerViewModel.getStatus()) {
+                case FlightCancellationStatus.REQUESTED:
+                case FlightCancellationStatus.PENDING:
+                case FlightCancellationStatus.REFUNDED:
+                    cancelledPassengerCount++;
+                    break;
+            }
+        }
+
+        return (allPassengerCount <= cancelledPassengerCount);
     }
 }
