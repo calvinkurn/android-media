@@ -99,6 +99,11 @@ public class CartAddressChoicePresenter extends BaseDaggerPresenter<ICartAddress
                                 getView().hideLoading();
                                 getView().renderRecipientData(shortList(shipmentAddressModels, currentAddress));
                             }
+                        } else {
+                            if (isViewAttached()) {
+                                getView().hideLoading();
+                                getView().renderEmptyRecipientData();
+                            }
                         }
                     }
                 });

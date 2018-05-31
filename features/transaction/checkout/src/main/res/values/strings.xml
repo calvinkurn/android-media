@@ -150,5 +150,8 @@
     <string name="label_hardcoded_courier_ticker">Pembelian dengan Instan dan Same Day diatas pk 14:00 berpotensi dikirim hari berikutnya.</string>
     <string name="cart_error_message">Terjadi kendala pada pesanan Anda, lihat di bawah untuk info lebih lengkap.</string>
     <string name="cart_error_action">Hapus produk yang berkendala</string>
+    <string name="checkout_module_title_error_empty_address">Terjadi Kesalahan</string>
+    <string name="checkout_module_subtitle_error_empty_address">Tidak ada alamat</string>
+    <string name="checkout_module_label_button_retry_error_empty_address">Tambah Alamat</string>
 
 </resources>

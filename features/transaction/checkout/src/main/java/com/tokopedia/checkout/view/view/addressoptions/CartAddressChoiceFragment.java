@@ -5,7 +5,6 @@ import android.app.FragmentManager;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -193,6 +192,21 @@ public class CartAddressChoiceFragment extends BaseCheckoutFragment
     public void renderRecipientData(List<RecipientAddressModel> recipientAddressModels) {
         mShipmentAddressListAdapter.setAddressList(recipientAddressModels);
         mShipmentAddressListAdapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void renderEmptyRecipientData() {
+        llContent.setVisibility(View.GONE);
+        btSendToCurrentAddress.setVisibility(View.GONE);
+        llNetworkErrorView.setVisibility(View.VISIBLE);
+        swipeToRefreshLayout.setEnabled(true);
+        NetworkErrorHelper.showEmptyState(getActivity(), llNetworkErrorView,
+                getString(R.string.checkout_module_title_error_empty_address),
+                getString(R.string.checkout_module_subtitle_error_empty_address),
+                getString(R.string.checkout_module_label_button_retry_error_empty_address),
+                R.drawable.ic_empty_state,
+                () -> startActivityForResult(AddAddressActivity.createInstance(getActivity(), null),
+                        ManageAddressConstant.REQUEST_CODE_PARAM_CREATE));
     }
 
     @Override

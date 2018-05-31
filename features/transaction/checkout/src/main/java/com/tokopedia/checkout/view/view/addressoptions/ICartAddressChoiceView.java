@@ -24,4 +24,6 @@ public interface ICartAddressChoiceView extends CustomerView {
     void renderRecipientData(List<RecipientAddressModel> recipientAddressModels);
 
     Activity getActivity();
+
+    void renderEmptyRecipientData();
 }
