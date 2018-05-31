@@ -55,7 +55,7 @@ public class InvoiceActivity extends ReactFragmentActivity {
 
     @Override
     protected ReactNativeFragment getReactNativeFragment() {
-        return ReactInvoiceFragment.newInstance(getReactNativeProps());
+        return ReactInvoiceFragment.newInstance(getIntent().getExtras());
     }
 
     @Override

@@ -6,19 +6,9 @@ import android.util.Log;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.posapp.PosConstants;
-import com.tokopedia.posapp.PosSessionHandler;
-import com.tokopedia.posapp.payment.otp.data.pojo.CartDetail;
-import com.tokopedia.posapp.payment.otp.data.pojo.CreateOrderParameter;
-import com.tokopedia.posapp.payment.otp.data.pojo.OrderCartParameter;
-import com.tokopedia.posapp.payment.otp.domain.model.CreateOrderDomain;
 import com.tokopedia.posapp.bank.domain.model.BankDomain;
-import com.tokopedia.posapp.cart.domain.model.CartDomain;
 import com.tokopedia.posapp.payment.otp.domain.model.PaymentStatusDomain;
-import com.tokopedia.posapp.payment.otp.domain.model.PaymentStatusItemDomain;
-import com.tokopedia.posapp.payment.otp.domain.usecase.CheckPaymentStatusUseCase;
 import com.tokopedia.posapp.payment.otp.domain.usecase.CheckTransactionWithRetryUseCase;
-import com.tokopedia.posapp.payment.otp.domain.usecase.CreateOrderUseCase;
-import com.tokopedia.posapp.cart.domain.usecase.GetAllCartUseCase;
 import com.tokopedia.posapp.payment.otp.OTP;
 import com.tokopedia.posapp.payment.otp.view.viewmodel.OTPData;
 import com.tokopedia.posapp.payment.otp.view.viewmodel.OTPDetailTransaction;
@@ -30,16 +20,11 @@ import org.json.JSONObject;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
-import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.List;
 
 import javax.inject.Inject;
 
-import rx.Observable;
 import rx.Subscriber;
-import rx.functions.Func1;
-import rx.functions.Func2;
 
 /**
  * Created by okasurya on 10/5/17.
@@ -105,7 +90,7 @@ public class OTPPresenter implements OTP.Presenter {
 
             bankDomain = getBankData(response);
 
-            JSONObject data = response.getJSONObject(PARAM_DATA);
+            JSONObject data = response.getJSONObject(PARAM_DATA).getJSONObject(PARAM_DATA);
             if (data != null && !data.getString(PARAM_URL).isEmpty()) {
                 otpData = new OTPData();
                 otpData.setUrl(data.getString(PARAM_URL));
@@ -113,7 +98,7 @@ public class OTPPresenter implements OTP.Presenter {
                 otpData.setGateway(data.getString(PARAM_GATEWAY));
                 otpData.setParameters(getQueryParam(data.getJSONObject(PARAM_FORM)).getBytes(UTF_8));
                 otpData.setOtpDetailTransaction(getDetailTransaction(data.getJSONObject(PARAM_FORM)));
-                otpData.setCallbackUrl(data.getString(REDIRECT_URL));
+                otpData.setRedirectUrl(data.getString(REDIRECT_URL));
 
                 if (otpData.getMethod().equals(POST_METHOD)) {
                     viewListener.postOTPWebview(otpData);
@@ -130,7 +115,7 @@ public class OTPPresenter implements OTP.Presenter {
 
     @Override
     public boolean isPaymentProcessed(String url) {
-        return otpData != null && url.contains(otpData.getCallbackUrl());
+        return otpData != null && url.contains(otpData.getRedirectUrl());
     }
 
     @Override

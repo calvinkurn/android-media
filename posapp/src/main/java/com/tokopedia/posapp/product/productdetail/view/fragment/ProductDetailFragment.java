@@ -193,6 +193,7 @@ public class ProductDetailFragment extends BaseDaggerFragment
     @Override
     public void onSuccessAddToCart(String message) {
         CommonUtils.dumper(message);
+        listener.onAddToCart();
     }
 
     @Override
@@ -621,7 +622,6 @@ public class ProductDetailFragment extends BaseDaggerFragment
             @Override
             public void onClick(View view) {
                 addToCartPresenter.add(productData, 1);
-                listener.onAddToCart();
             }
         });
 

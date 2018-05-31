@@ -6,6 +6,7 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.net.http.SslError;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.webkit.ConsoleMessage;
@@ -213,7 +214,7 @@ public class OTPActivity extends BasePresenterActivity<OTP.Presenter>
         public void onPageStarted(final WebView view, String url, Bitmap favicon) {
             Log.d("o2o", "initial " + url);
             progressBar.setVisibility(View.VISIBLE);
-            if(presenter.isPaymentProcessed(url)) {
+            if(!TextUtils.isEmpty(url) && presenter.isPaymentProcessed(url)) {
                 confirmPayment();
                 return;
             }
