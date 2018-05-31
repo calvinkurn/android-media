@@ -69,10 +69,14 @@ public class ImagePagerAdapter extends PagerAdapter {
                                         .diskCacheStrategy(DiskCacheStrategy.SOURCE))
                         .into(imageView);
 
-            } else if (!TextUtils.isEmpty(urlTemporary) && urlImage.equals(urlTemporary)) {
-                ImageHandler.loadImageSourceSizeFitCenter(context.getApplicationContext(),imageView, urlTemporary);
-            } else {
-                ImageHandler.loadImageSourceSizeFitCenter(context.getApplicationContext(),imageView, urlImage);
+            } else{
+                if(!TextUtils.isEmpty(urlImage)){
+                    if (!TextUtils.isEmpty(urlTemporary) && urlImage.equals(urlTemporary)) {
+                        ImageHandler.loadImageSourceSizeFitCenter(context.getApplicationContext(),imageView, urlTemporary);
+                    } else {
+                        ImageHandler.loadImageSourceSizeFitCenter(context.getApplicationContext(),imageView, urlImage);
+                    }
+                }
             }
         }
         else {
