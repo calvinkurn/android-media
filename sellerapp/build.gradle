@@ -249,6 +249,7 @@ dependencies {
     implementation project(rootProject.ext.features.districtRecommendation)
     implementation project(rootProject.ext.features.logisticuploadawb)
     implementation project(rootProject.ext.features.tracking)
+    implementation project(rootProject.ext.libraries.imageuploader)
 
     implementation project(rootProject.ext.features.shopCommon)
     implementation project(rootProject.ext.features.digitalproduct)
