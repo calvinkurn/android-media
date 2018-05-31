@@ -80,6 +80,8 @@ public interface FlightDetailOrderContract {
 
         void hideCancellationContainer();
 
+        void hideCancelButton();
+
         void navigateToInputEmailForm(String userId, String userEmail);
 
         Observable<ProfileInfo> getProfileObservable();
