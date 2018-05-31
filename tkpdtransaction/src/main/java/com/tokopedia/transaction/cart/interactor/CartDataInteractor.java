@@ -167,7 +167,6 @@ public class CartDataInteractor implements ICartDataInteractor {
     @Override
     public void getParameterTopPay(TKPDMapParam<String, Object> params, Scheduler scheduler,
                                    Subscriber<TopPayParameterData> subscriber) {
-        txActService.setUserAgent(System.getProperty("http.agent"));
         Observable<Response<TkpdResponse>> observable
                 = txActService.getApi().getParameterDynamicPayment(params);
         compositeSubscription.add(observable

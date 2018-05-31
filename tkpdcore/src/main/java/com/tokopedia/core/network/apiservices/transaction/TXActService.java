@@ -15,16 +15,9 @@ import retrofit2.Retrofit;
 public class TXActService extends AuthService<TXActApi> {
     private static final String TAG = TXActService.class.getSimpleName();
 
-    private String userAgent;
-
     @Override
     protected void initApiService(Retrofit retrofit) {
         api = retrofit.create(TXActApi.class);
-    }
-
-
-    public void setUserAgent(String userAgent) {
-        this.userAgent = userAgent;
     }
 
     @Override
@@ -33,11 +26,13 @@ public class TXActService extends AuthService<TXActApi> {
         OkHttpFactory factory = OkHttpFactory.create();
         factory.addOkHttpRetryPolicy(getOkHttpRetryPolicy());
 
+        String userAgent = System.getProperty("http.agent");
+
         OkHttpClient client;
-        if (userAgent.isEmpty())
-            client = factory.buildClientDefaultAuth();
-        else
+        if (userAgent != null && !userAgent.isEmpty())
             client = factory.buildClientDefaultAuthWithCustomUserAgent(userAgent);
+        else
+            client = factory.buildClientDefaultAuth();
 
         builder.client(client);
         return builder.build();
