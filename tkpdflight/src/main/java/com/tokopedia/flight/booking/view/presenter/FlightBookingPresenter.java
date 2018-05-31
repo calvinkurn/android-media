@@ -197,12 +197,7 @@ public class FlightBookingPresenter extends FlightBaseBookingPresenter<FlightBoo
                 getView().getCurrentBookingParamViewModel().getInsurances()
         );
 
-        if (flightBookingCartData.getInsurances() != null && flightBookingCartData.getInsurances().size() > 0) {
-            getView().showInsuranceLayout();
-            getView().renderInsurance(flightBookingCartData.getInsurances());
-        } else {
-            getView().hideInsuranceLayout();
-        }
+        renderInsurance(flightBookingCartData, isFromSavedInstance);
 
 //        if (validatePassengerData()) {
 //            toggleSameAsContactCheckbox();
@@ -211,7 +206,36 @@ public class FlightBookingPresenter extends FlightBaseBookingPresenter<FlightBoo
 
     }
 
-    private int actionCalculateCurrentTotalPrice(FlightDetailViewModel departureFlightDetailViewModel, FlightDetailViewModel returnFlightDetailViewModel) {
+    private void renderInsurance(FlightBookingCartData flightBookingCartData, boolean isFromSavedInstance) {
+        if (!isFromSavedInstance) {
+            if (flightBookingCartData.getInsurances() != null && flightBookingCartData.getInsurances().size() > 0) {
+                getView().showInsuranceLayout();
+                getView().renderInsurance(flightBookingCartData.getInsurances());
+            } else {
+                getView().hideInsuranceLayout();
+            }
+        } else {
+            if (flightBookingCartData.getInsurances() != null && flightBookingCartData.getInsurances().size() > 0) {
+                for (FlightInsuranceViewModel insuranceViewModel : flightBookingCartData.getInsurances()) {
+                    insuranceViewModel.setDefaultChecked(false);
+                    if (getView().getCurrentBookingParamViewModel() != null && getView().getCurrentBookingParamViewModel().getInsurances() != null)
+                        for (FlightInsuranceViewModel selected : getView().getCurrentBookingParamViewModel().getInsurances()) {
+                            if (selected.getId().equalsIgnoreCase(insuranceViewModel.getId())) {
+                                insuranceViewModel.setDefaultChecked(true);
+                                break;
+                            }
+                        }
+                }
+                getView().showInsuranceLayout();
+                getView().renderInsurance(flightBookingCartData.getInsurances());
+            } else {
+                getView().hideInsuranceLayout();
+            }
+        }
+    }
+
+    private int actionCalculateCurrentTotalPrice(FlightDetailViewModel
+                                                         departureFlightDetailViewModel, FlightDetailViewModel returnFlightDetailViewModel) {
         BaseCartData baseCartData = getCurrentCartData();
         List<Fare> fares = new ArrayList<>();
         fares.add(
@@ -455,7 +479,8 @@ public class FlightBookingPresenter extends FlightBaseBookingPresenter<FlightBoo
     }
 
     @NonNull
-    private Func1<FlightBookingCartData, Observable<FlightBookingCartData>> getFlightRoundTripDataObservable() {
+    private Func1<FlightBookingCartData, Observable<FlightBookingCartData>> getFlightRoundTripDataObservable
+            () {
         return new Func1<FlightBookingCartData, Observable<FlightBookingCartData>>() {
             @Override
             public Observable<FlightBookingCartData> call(FlightBookingCartData flightBookingCartData) {
@@ -598,7 +623,8 @@ public class FlightBookingPresenter extends FlightBaseBookingPresenter<FlightBoo
         );
     }
 
-    private List<FlightBookingPassengerViewModel> buildPassengerViewModel(FlightSearchPassDataViewModel passData) {
+    private List<FlightBookingPassengerViewModel> buildPassengerViewModel
+            (FlightSearchPassDataViewModel passData) {
         int passengerNumber = 1;
         List<FlightBookingPassengerViewModel> viewModels = new ArrayList<>();
         for (int i = 1, adultTotal = passData.getFlightPassengerViewModel().getAdult(); i <= adultTotal; i++) {
@@ -697,7 +723,8 @@ public class FlightBookingPresenter extends FlightBaseBookingPresenter<FlightBoo
         return !contactEmail.contains("+");
     }
 
-    private boolean isAllPassengerFilled(List<FlightBookingPassengerViewModel> passengerViewModels) {
+    private boolean isAllPassengerFilled
+            (List<FlightBookingPassengerViewModel> passengerViewModels) {
         boolean isvalid = true;
         for (FlightBookingPassengerViewModel flightBookingPassengerViewModel : passengerViewModels) {
             if (flightBookingPassengerViewModel.getPassengerFirstName() == null) {
