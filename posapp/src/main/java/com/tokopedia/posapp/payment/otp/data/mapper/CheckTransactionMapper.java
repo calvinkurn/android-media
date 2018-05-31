@@ -12,6 +12,11 @@ import javax.inject.Inject;
 import retrofit2.Response;
 import rx.functions.Func1;
 
+import static com.tokopedia.posapp.payment.PaymentConst.TransactionStatus.ORDER_PROGRESS;
+import static com.tokopedia.posapp.payment.PaymentConst.TransactionStatus.ORDER_SUCCESS;
+import static com.tokopedia.posapp.payment.PaymentConst.TransactionStatus.PAYMENT_PROGRESS;
+import static com.tokopedia.posapp.payment.PaymentConst.TransactionStatus.PAYMENT_SUCCESS;
+
 /**
  * @author okasurya on 5/4/18.
  */
@@ -25,11 +30,12 @@ public class CheckTransactionMapper implements Func1<Response<DataResponse<Check
     @Override
     public PaymentStatusDomain call(Response<DataResponse<CheckTransactionResponse>> response) {
         switch (response.body().getData().getTransactionStatus()) {
-            case PaymentConst.TransactionStatus.SUCCESS:
+            case ORDER_SUCCESS:
                 return successResponse(response.body().getData());
-            case PaymentConst.TransactionStatus.PENDING:
+            case PAYMENT_PROGRESS:
+            case PAYMENT_SUCCESS:
+            case ORDER_PROGRESS:
                 throw new TransactionPendingException();
-            case PaymentConst.TransactionStatus.FAILED:
             default:
                 throw new TransactionFailedException();
         }

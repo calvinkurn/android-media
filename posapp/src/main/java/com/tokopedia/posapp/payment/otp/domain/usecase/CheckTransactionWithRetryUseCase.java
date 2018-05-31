@@ -22,8 +22,9 @@ import rx.functions.Func2;
  */
 
 public class CheckTransactionWithRetryUseCase extends UseCase<PaymentStatusDomain> {
-    private static final int COUNTER_START = 1;
+    private static final int COUNTER_START = 0;
     private static final int COUNTER_END = 4;
+    private static final int RETRY_DELAY = 5; // in second
     private CheckTransactionUseCase checkTransactionUseCase;
 
     @Inject
@@ -59,7 +60,7 @@ public class CheckTransactionWithRetryUseCase extends UseCase<PaymentStatusDomai
                         public Observable<?> call(Integer i) {
                             if (i == COUNTER_END) return Observable.error(new TransactionFailedException());
 
-                            return Observable.timer(7, TimeUnit.SECONDS);
+                            return Observable.timer(RETRY_DELAY, TimeUnit.SECONDS);
                         }
                     }
                 );

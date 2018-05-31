@@ -12,8 +12,12 @@ public class PaymentConst {
     }
 
     public class TransactionStatus {
-        public static final int SUCCESS = 1;
-        public static final int PENDING = 2;
-        public static final int FAILED = 3;
+        public static final int PAYMENT_SUCCESS = 11;
+        public static final int PAYMENT_PROGRESS = 12;
+        public static final int PAYMENT_FAILED = 13;
+
+        public static final int ORDER_SUCCESS = 21;
+        public static final int ORDER_PROGRESS = 22;
+        public static final int ORDER_FAILED = 23;
     }
 }
