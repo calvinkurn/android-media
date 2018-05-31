@@ -127,6 +127,7 @@ public class FlightBookingFragment extends BaseDaggerFragment implements FlightB
     private String contactBirthdate;
     private int contactGender;
     private Date expiredTransactionDate;
+    private FlightInsuranceAdapter flightInsuranceAdapter;
 
     public FlightBookingFragment() {
         // Required empty public constructor
@@ -781,26 +782,28 @@ public class FlightBookingFragment extends BaseDaggerFragment implements FlightB
 
     @Override
     public void renderInsurance(List<FlightInsuranceViewModel> insurances) {
-        FlightInsuranceAdapter adapter = new FlightInsuranceAdapter(insurances);
-        adapter.setActionListener(new FlightInsuranceView.ActionListener() {
-            @Override
-            public void onInsuranceChecked(FlightInsuranceViewModel insurance, boolean checked) {
-                presenter.onInsuranceChanges(insurance, checked);
-            }
+        if (flightInsuranceAdapter == null) {
+            flightInsuranceAdapter = new FlightInsuranceAdapter(insurances);
+            flightInsuranceAdapter.setActionListener(new FlightInsuranceView.ActionListener() {
+                @Override
+                public void onInsuranceChecked(FlightInsuranceViewModel insurance, boolean checked) {
+                    presenter.onInsuranceChanges(insurance, checked);
+                }
 
-            @Override
-            public void onMoreInfoClicked(String tncUrl, String title) {
-                startActivity(FlightInsuranceWebviewActivity.getCallingIntent(getActivity(), tncUrl, title));
-                presenter.onMoreInsuranceInfoClicked();
-            }
+                @Override
+                public void onMoreInfoClicked(String tncUrl, String title) {
+                    startActivity(FlightInsuranceWebviewActivity.getCallingIntent(getActivity(), tncUrl, title));
+                    presenter.onMoreInsuranceInfoClicked();
+                }
 
-            @Override
-            public void onBenefitExpanded() {
-                presenter.onInsuranceBenefitExpanded();
-            }
-        });
-        insuranceRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        insuranceRecyclerView.setAdapter(adapter);
+                @Override
+                public void onBenefitExpanded() {
+                    presenter.onInsuranceBenefitExpanded();
+                }
+            });
+            insuranceRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+            insuranceRecyclerView.setAdapter(flightInsuranceAdapter);
+        }
     }
 
     //    private View.OnClickListener getCheckboxClickListener() {
