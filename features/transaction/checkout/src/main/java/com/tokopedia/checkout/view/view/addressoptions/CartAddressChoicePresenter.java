@@ -5,6 +5,7 @@ import android.text.TextUtils;
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.checkout.R;
+import com.tokopedia.checkout.domain.datamodel.addressoptions.PeopleAddressModel;
 import com.tokopedia.checkout.domain.datamodel.addressoptions.RecipientAddressModel;
 import com.tokopedia.checkout.domain.usecase.GetPeopleAddressUseCase;
 import com.tokopedia.core.network.exception.model.UnProcessableHttpException;
@@ -60,9 +61,9 @@ public class CartAddressChoicePresenter extends BaseDaggerPresenter<ICartAddress
     @Override
     public void getAddressShortedList(Context context, final RecipientAddressModel currentAddress) {
         getView().showLoading();
-        mGetPeopleAddressUseCase.execute(mGetPeopleAddressUseCase
-                        .getRequestParams(context, DEFAULT_ORDER, DEFAULT_QUERY, DEFAULT_PAGE),
-                new Subscriber<List<RecipientAddressModel>>() {
+        mGetPeopleAddressUseCase.execute(mGetPeopleAddressUseCase.getRequestParams(
+                context, DEFAULT_ORDER, DEFAULT_QUERY, DEFAULT_PAGE),
+                new Subscriber<PeopleAddressModel>() {
                     @Override
                     public void onCompleted() {
 
@@ -74,9 +75,9 @@ public class CartAddressChoicePresenter extends BaseDaggerPresenter<ICartAddress
                         if (isViewAttached()) {
                             getView().hideLoading();
                             String message;
-                            if (throwable instanceof UnknownHostException ||
-                                    throwable instanceof ConnectException ||
-                                    throwable instanceof SocketTimeoutException) {
+                            if (throwable instanceof UnknownHostException
+                                    || throwable instanceof ConnectException
+                                    || throwable instanceof SocketTimeoutException) {
                                 message = getView().getActivity().getResources().getString(
                                         R.string.msg_no_connection);
                             } else if (throwable instanceof UnProcessableHttpException) {
@@ -93,11 +94,14 @@ public class CartAddressChoicePresenter extends BaseDaggerPresenter<ICartAddress
                     }
 
                     @Override
-                    public void onNext(List<RecipientAddressModel> shipmentAddressModels) {
-                        if (!shipmentAddressModels.isEmpty()) {
+                    public void onNext(PeopleAddressModel peopleAddressModel) {
+                        if (!peopleAddressModel.getRecipientAddressModelList().isEmpty()) {
                             if (isViewAttached()) {
                                 getView().hideLoading();
-                                getView().renderRecipientData(shortList(shipmentAddressModels, currentAddress));
+                                getView().renderRecipientData(
+                                        shortList(peopleAddressModel.getRecipientAddressModelList(),
+                                                currentAddress));
+                                getView().setToken(peopleAddressModel.getToken());
                             }
                         } else {
                             if (isViewAttached()) {

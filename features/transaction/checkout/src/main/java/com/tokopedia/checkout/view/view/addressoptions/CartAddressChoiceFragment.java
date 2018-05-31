@@ -28,6 +28,7 @@ import com.tokopedia.checkout.view.di.component.DaggerCartAddressChoiceComponent
 import com.tokopedia.checkout.view.di.module.CartAddressChoiceModule;
 import com.tokopedia.core.manage.people.address.ManageAddressConstant;
 import com.tokopedia.core.manage.people.address.activity.AddAddressActivity;
+import com.tokopedia.core.manage.people.address.model.Token;
 
 import java.util.List;
 
@@ -55,6 +56,8 @@ public class CartAddressChoiceFragment extends BaseCheckoutFragment
     private SwipeToRefresh swipeToRefreshLayout;
 
     private ICartAddressChoiceActivityListener mCartAddressChoiceListener;
+
+    private Token token;
 
     @Inject
     CartAddressChoicePresenter mCartAddressChoicePresenter;
@@ -88,7 +91,7 @@ public class CartAddressChoiceFragment extends BaseCheckoutFragment
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.menu_add_address) {
-            startActivityForResult(AddAddressActivity.createInstance(getActivity(), null),
+            startActivityForResult(AddAddressActivity.createInstance(getActivity(), token),
                     ManageAddressConstant.REQUEST_CODE_PARAM_CREATE);
             return true;
         }
@@ -192,6 +195,11 @@ public class CartAddressChoiceFragment extends BaseCheckoutFragment
     public void renderRecipientData(List<RecipientAddressModel> recipientAddressModels) {
         mShipmentAddressListAdapter.setAddressList(recipientAddressModels);
         mShipmentAddressListAdapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void setToken(Token token) {
+        this.token = token;
     }
 
     @Override
@@ -309,7 +317,7 @@ public class CartAddressChoiceFragment extends BaseCheckoutFragment
     public void onEditClick(RecipientAddressModel model) {
         AddressModelMapper mapper = new AddressModelMapper();
 
-        Intent intent = AddAddressActivity.createInstance(getActivity(), mapper.transform(model), null);
+        Intent intent = AddAddressActivity.createInstance(getActivity(), mapper.transform(model), token);
         startActivityForResult(intent, ManageAddressConstant.REQUEST_CODE_PARAM_EDIT);
     }
 

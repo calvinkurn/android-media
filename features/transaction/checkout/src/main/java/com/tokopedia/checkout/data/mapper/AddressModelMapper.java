@@ -2,8 +2,10 @@ package com.tokopedia.checkout.data.mapper;
 
 import android.text.TextUtils;
 
+import com.tokopedia.checkout.domain.datamodel.addressoptions.PeopleAddressModel;
 import com.tokopedia.core.manage.people.address.model.AddressModel;
 import com.tokopedia.checkout.domain.datamodel.addressoptions.RecipientAddressModel;
+import com.tokopedia.core.manage.people.address.model.GetPeopleAddress;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,6 +18,14 @@ public class AddressModelMapper {
 
     public AddressModelMapper() {
 
+    }
+
+    public PeopleAddressModel transform(GetPeopleAddress peopleAddress) {
+        PeopleAddressModel peopleAddressModel = new PeopleAddressModel();
+        peopleAddressModel.setRecipientAddressModelList(transform(peopleAddress.getList()));
+        peopleAddressModel.setToken(peopleAddress.getToken());
+
+        return peopleAddressModel;
     }
 
     public RecipientAddressModel transform(AddressModel addressModel) {

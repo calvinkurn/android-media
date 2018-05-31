@@ -340,8 +340,8 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
     public void onEditClick(RecipientAddressModel model) {
         AddressModelMapper mapper = new AddressModelMapper();
 
-        Intent intent = AddAddressActivity.createInstance(getActivity(), mapper.transform(model), null);
-        startActivityForResult(intent, ManageAddressConstant.REQUEST_CODE_PARAM_EDIT);
+//        Intent intent = AddAddressActivity.createInstance(getActivity(), mapper.transform(model));
+//        startActivityForResult(intent, ManageAddressConstant.REQUEST_CODE_PARAM_EDIT);
     }
 
 }
