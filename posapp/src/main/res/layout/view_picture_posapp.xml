@@ -21,13 +21,6 @@
         android:layout_marginBottom="@dimen/margin_vs"
         android:visibility="visible" />
 
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="85dp"
-        android:background="@drawable/cover_shadow_pdp">
-
-    </RelativeLayout>
-
     <LinearLayout
         android:id="@id/error_product_container"
         android:layout_width="match_parent"
