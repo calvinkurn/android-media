@@ -2,6 +2,7 @@ package com.tokopedia.discovery.search.view.adapter;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -58,6 +59,12 @@ public class SearchAdapter extends RecyclerView.Adapter<AbstractViewHolder> {
     public void addList(Visitable visitable){
         this.list.add(visitable);
         notifyItemInserted(list.size());
+    }
+
+    public void addAll(List<Visitable> list) {
+        int positionStart = this.list.size();
+        this.list.addAll(list);
+        notifyItemRangeInserted(positionStart, list.size());
     }
 
     public void clearData() {

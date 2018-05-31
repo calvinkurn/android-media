@@ -18,7 +18,7 @@ import rx.functions.Func1;
  */
 
 public class SearchMapper implements Func1<Response<String>, List<SearchData>> {
-    private final String mDefaultErrorMessage;
+    private String mDefaultErrorMessage;
     private Context context;
     private Gson gson;
 
@@ -26,6 +26,10 @@ public class SearchMapper implements Func1<Response<String>, List<SearchData>> {
         this.context = context;
         this.gson = gson;
         mDefaultErrorMessage = context.getString(R.string.msg_network_error);
+    }
+
+    public SearchMapper(Gson gson) {
+        this.gson = gson;
     }
 
     @Override
