@@ -445,7 +445,7 @@ public class ImagePickerActivity extends BaseSimpleActivity
 
     private void hideDownloadProgressDialog() {
         if (progressDialog != null) {
-            progressDialog.hide();
+            progressDialog.dismiss();
         }
     }
 

@@ -38,6 +38,7 @@ import com.tokopedia.imagepicker.picker.gallery.widget.MediaGridInset;
 import java.io.File;
 import java.util.ArrayList;
 
+import static com.tokopedia.imagepicker.picker.album.AlbumPickerActivity.EXTRA_ALBUM_ITEM;
 import static com.tokopedia.imagepicker.picker.album.AlbumPickerActivity.EXTRA_ALBUM_POSITION;
 import static com.tokopedia.imagepicker.picker.gallery.model.AlbumItem.ALBUM_ID_ALL;
 
@@ -144,6 +145,7 @@ public class ImagePickerGalleryFragment extends TkpdBaseV4Fragment
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == ALBUM_REQUEST_CODE) {
             if (resultCode == Activity.RESULT_OK && data != null) {
+                selectedAlbumItem = data.getParcelableExtra(EXTRA_ALBUM_ITEM);
                 selectedAlbumPosition = data.getIntExtra(EXTRA_ALBUM_POSITION, 0);
                 getLoaderManager().restartLoader(ALBUM_LOADER_ID, null, ImagePickerGalleryFragment.this);
             }
