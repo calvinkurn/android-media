@@ -1,9 +1,11 @@
 package com.tokopedia.digital_deals.view.adapter;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Paint;
 import android.support.v7.widget.RecyclerView;
+import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -237,6 +239,16 @@ public class DealsCategoryAdapter extends RecyclerView.Adapter<RecyclerView.View
             brandImage = itemView.findViewById(R.id.iv_brand);
             dealSellingPrice = itemView.findViewById(R.id.tv_salesPrice);
             hotDeal = itemView.findViewById(R.id.tv_hot_deal);
+            DisplayMetrics displaymetrics = new DisplayMetrics();
+            ((Activity) context).getWindowManager().getDefaultDisplay().getMetrics(displaymetrics);
+            //if you need three fix imageview in width
+            int devicewidth = (int) (displaymetrics.widthPixels / 1.2);
+
+            //if you need 4-5-6 anything fix imageview in height
+
+            itemView.getLayoutParams().width = devicewidth;
+
+            //if you need same height as width you can set devicewidth in holder.image_view.getLayoutParams().height
         }
 
         public void bindData(final CategoryItemsViewModel categoryItemsViewModel, int position) {

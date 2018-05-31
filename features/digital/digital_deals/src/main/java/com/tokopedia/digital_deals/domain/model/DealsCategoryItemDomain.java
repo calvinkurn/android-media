@@ -126,6 +126,7 @@ public class DealsCategoryItemDomain {
     @Expose
     private BrandDomain brand;
     @SerializedName("catalog")
+    @Expose
     private Catalog catalog;
 
 

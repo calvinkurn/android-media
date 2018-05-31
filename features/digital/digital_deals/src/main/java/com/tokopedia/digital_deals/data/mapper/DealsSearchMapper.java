@@ -8,6 +8,7 @@ import com.tokopedia.digital_deals.data.entity.response.searchresponse.SearchRes
 import com.tokopedia.digital_deals.data.entity.response.searchresponse.ValuesItem;
 import com.tokopedia.digital_deals.domain.model.DealsCategoryItemDomain;
 import com.tokopedia.digital_deals.domain.model.branddetailsmodel.BrandDomain;
+import com.tokopedia.digital_deals.domain.model.dealdetailsdomailmodel.Catalog;
 import com.tokopedia.digital_deals.domain.model.searchdomainmodel.FilterDomainModel;
 import com.tokopedia.digital_deals.domain.model.PageDomain;
 import com.tokopedia.digital_deals.domain.model.searchdomainmodel.SearchDomainModel;
@@ -60,6 +61,7 @@ public class DealsSearchMapper {
                     itemDomain.setRating(dealItem.getRating());
                     itemDomain.setSaleEndDate(dealItem.getSaleEndDate());
                     itemDomain.setSaleEndTime(dealItem.getSaleEndTime());
+                    itemDomain.setSavingPercentage(dealItem.getSavingPercentage());
                     itemDomain.setSalesPrice(dealItem.getSalesPrice());
                     itemDomain.setSaleStartDate(dealItem.getSaleStartDate());
                     itemDomain.setSaleStartTime(dealItem.getSaleStartTime());
@@ -73,16 +75,23 @@ public class DealsSearchMapper {
                     itemDomain.setThumbsUp(dealItem.getThumbsUp());
                     itemDomain.setSoldQuantity(dealItem.getSoldQuantity());
                     itemDomain.setDisplayTags(dealItem.getDisplayTags());
+
                     BrandDomain brandDomain=new BrandDomain();
                     brandDomain.setTitle(dealItem.getBrand().getTitle());
                     brandDomain.setFeaturedImage(dealItem.getBrand().getFeaturedImage());
                     brandDomain.setFeaturedThumbnailImage(dealItem.getBrand().getFeaturedThumbnailImage());
                     itemDomain.setBrand(brandDomain);
 
+                    Catalog catalogDomain = new Catalog();
+                    catalogDomain.setDigitalCategoryId(dealItem.getCatalog().getDigitalCategoryId());
+                    catalogDomain.setDigitalProductId(dealItem.getCatalog().getDigitalProductId());
+                    catalogDomain.setDigitalProductCode(dealItem.getCatalog().getDigitalProductCode());
+                    itemDomain.setCatalog(catalogDomain);
+
                     dealsItemDomains.add(itemDomain);
                 }
             }
-            target.setEvents(dealsItemDomains);
+            target.setDeals(dealsItemDomains);
 
         } catch (IndexOutOfBoundsException e) {
             Log.d("SearchMapper", "IOB 1");

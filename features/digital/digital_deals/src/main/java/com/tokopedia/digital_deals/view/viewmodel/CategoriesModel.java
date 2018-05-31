@@ -5,7 +5,8 @@ import android.os.Parcelable;
 
 public class CategoriesModel implements Parcelable {
 
-
+    private Integer position;
+    private Integer categoryId;
     private String title;
     private String name;
     private String url;
@@ -29,6 +30,9 @@ public class CategoriesModel implements Parcelable {
         this.title = ((String) in.readValue((String.class.getClassLoader())));
         this.name = ((String) in.readValue((String.class.getClassLoader())));
         this.url = ((String) in.readValue((String.class.getClassLoader())));
+        this.position = ((Integer) in.readValue((Integer.class.getClassLoader())));
+        this.categoryId = ((Integer) in.readValue((Integer.class.getClassLoader())));
+
     }
 
     public CategoriesModel() {
@@ -58,10 +62,30 @@ public class CategoriesModel implements Parcelable {
         this.url = url;
     }
 
+    public int getPosition() {
+        return position;
+    }
+
+    public void setPosition(int position) {
+        this.position = position;
+    }
+
+    public Integer getCategoryId() {
+        return categoryId;
+    }
+
+    public void setCategoryId(Integer categoryId) {
+        this.categoryId = categoryId;
+    }
+
+
+
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeValue(title);
         dest.writeValue(name);
         dest.writeValue(url);
+        dest.writeValue(position);
+        dest.writeValue(categoryId);
     }
 
     public int describeContents() {

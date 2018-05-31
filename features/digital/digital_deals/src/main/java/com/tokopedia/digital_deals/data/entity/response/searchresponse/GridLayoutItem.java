@@ -2,6 +2,7 @@ package com.tokopedia.digital_deals.data.entity.response.searchresponse;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import com.tokopedia.digital_deals.domain.model.dealdetailsdomailmodel.Catalog;
 
 public class GridLayoutItem {
 
@@ -124,6 +125,15 @@ public class GridLayoutItem {
     @SerializedName("display_tags")
     @Expose
     private String displayTags;
+    @SerializedName("catalog")
+    @Expose
+    private Catalog catalog;
+    @SerializedName("saving_percentage")
+    @Expose
+    private String savingPercentage;
+    @SerializedName("saving")
+    @Expose
+    private Integer saving;
 
     public Integer getId() {
         return id;
@@ -444,6 +454,25 @@ public class GridLayoutItem {
     public void setDisplayTags(String displayTags) {
         this.displayTags = displayTags;
     }
+
+
+    public Catalog getCatalog() {
+        return catalog;
+    }
+
+    public void setCatalog(Catalog catalog) {
+        this.catalog = catalog;
+    }
+
+    public String getSavingPercentage() {
+        return savingPercentage;
+    }
+
+    public void setSavingPercentage(String savingPercentage) {
+        this.savingPercentage = savingPercentage;
+    }
+
+
 
 
     @Override

@@ -16,6 +16,9 @@ public class DealsCategoryDomain {
     @SerializedName("url")
     @Expose
     private String url;
+    @SerializedName("media_url")
+    @Expose
+    private String mediaUrl;
     @SerializedName("items")
     @Expose
     private List<DealsCategoryItemDomain> items = null;
@@ -43,6 +46,14 @@ public class DealsCategoryDomain {
 
     public void setUrl(String url) {
         this.url = url;
+    }
+
+    public String getMediaUrl() {
+        return mediaUrl;
+    }
+
+    public void setMediaUrl(String mediaUrl) {
+        this.mediaUrl = mediaUrl;
     }
 
 

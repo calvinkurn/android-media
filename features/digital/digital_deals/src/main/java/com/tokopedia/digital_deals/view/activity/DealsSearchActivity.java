@@ -216,11 +216,6 @@ public class DealsSearchActivity extends BaseSimpleActivity implements
     public void setTrendingDeals(List<CategoryItemsViewModel> searchViewModels, LocationViewModel location) {
 
 
-        if (location != null) {
-            Log.d("fhjfhjrehtjhj", location.getName() + "");
-        } else {
-            Log.d("fhjfhjrehtjfdfhj", "null");
-        }
         if (searchViewModels != null && !searchViewModels.isEmpty()) {
             TopDealsSuggestionsAdapter adapter = new TopDealsSuggestionsAdapter(this, searchViewModels, mPresenter);
             rvTopDealsSuggestions.setAdapter(adapter);

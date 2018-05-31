@@ -19,7 +19,6 @@
             android:id="@+id/imageViewBrandItem"
             android:layout_width="@dimen/image_category_height"
             android:layout_height="@dimen/image_category_height"
-            android:background="@color/grey_1100"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent" />
     </android.support.v7.widget.CardView>

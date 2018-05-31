@@ -45,6 +45,7 @@ public class DealsDetailsViewModel implements Parcelable {
     private String savingPercentage;
     private CatalogViewModel catalog;
     private BrandViewModel brand;
+    private String recommendationUrl;
 
 
     public final static Parcelable.Creator<DealsDetailsViewModel> CREATOR = new Creator<DealsDetailsViewModel>() {
@@ -102,6 +103,7 @@ public class DealsDetailsViewModel implements Parcelable {
         this.savingPercentage = ((String) in.readValue((Integer.class.getClassLoader())));
         this.catalog = ((CatalogViewModel) in.readValue((CatalogViewModel.class.getClassLoader())));
         this.brand = ((BrandViewModel) in.readValue((BrandViewModel.class.getClassLoader())));
+        this.recommendationUrl= ((String) in.readValue((Integer.class.getClassLoader())));
 
     }
 
@@ -407,6 +409,13 @@ public class DealsDetailsViewModel implements Parcelable {
         this.id = id;
     }
 
+    public String getRecommendationUrl() {
+        return recommendationUrl;
+    }
+
+    public void setRecommendationUrl(String recommendationUrl) {
+        this.recommendationUrl = recommendationUrl;
+    }
 
 
 
@@ -448,6 +457,7 @@ public class DealsDetailsViewModel implements Parcelable {
         dest.writeValue(savingPercentage);
         dest.writeValue(catalog);
         dest.writeValue(brand);
+        dest.writeValue(recommendationUrl);
     }
 
     public int describeContents() {

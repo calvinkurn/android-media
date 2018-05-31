@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.digital_deals.R;
 import com.tokopedia.digital_deals.view.activity.DealsCategoryDetailActivity;
 import com.tokopedia.digital_deals.view.presenter.DealDetailsPresenter;
@@ -47,8 +48,10 @@ public class DealsCategoryItemAdapter extends RecyclerView.Adapter<DealsCategory
 
         public void bindData(final CategoryViewModel categoryViewModel) {
 //            discount.setText(categoryItemsViewModel.getd);
-            textViewCatItem.setText(categoryViewModel.getName());
+            textViewCatItem.setText(categoryViewModel.getTitle());
             itemView.setOnClickListener(this);
+            ImageHandler.loadImage(context, imageViewCatItem, categoryViewModel.getMediaUrl(), R.color.grey_1100, R.color.grey_1100);
+
         }
 
         public void setIndex(int position) {

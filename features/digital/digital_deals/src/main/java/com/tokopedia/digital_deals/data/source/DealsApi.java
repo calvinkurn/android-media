@@ -33,8 +33,8 @@ public interface DealsApi {
 //    @GET()
 //    Observable<BrandDetailsResponse> getBrandDetails(@Url String brandDetailUrl);
 
-    @GET(DealsUrl.DEALS_BRAND+"/{url}")
-    Observable<BrandDetailsResponse> getBrandDetails(@Path("url") String brandDetailUrl);
+    @GET()
+    Observable<BrandDetailsResponse> getBrandDetails(@Url String brandDetailUrl);
 
     @GET()
     Observable<DealDetailsResponse> getDealDetails(@Url String dealDetailUrl);

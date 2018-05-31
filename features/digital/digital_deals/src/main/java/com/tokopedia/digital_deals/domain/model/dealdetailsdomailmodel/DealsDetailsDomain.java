@@ -128,6 +128,10 @@ public class DealsDetailsDomain {
     @SerializedName("brand")
     @Expose
     private BrandDomain brand;
+    @SerializedName("recommendation_url")
+    @Expose
+    private String recommendationUrl;
+
 
     public Integer getId() {
         return id;
@@ -447,6 +451,14 @@ public class DealsDetailsDomain {
 
     public void setBrand(BrandDomain brand) {
         this.brand = brand;
+    }
+
+    public String getRecommendationUrl() {
+        return recommendationUrl;
+    }
+
+    public void setRecommendationUrl(String recommendationUrl) {
+        this.recommendationUrl = recommendationUrl;
     }
 
 

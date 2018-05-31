@@ -22,7 +22,6 @@
             android:id="@+id/imageViewCatItem"
             android:layout_width="@dimen/image_width_ll"
             android:layout_height="@dimen/image_width_ll"
-            android:background="@color/grey_1100"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent" />
 

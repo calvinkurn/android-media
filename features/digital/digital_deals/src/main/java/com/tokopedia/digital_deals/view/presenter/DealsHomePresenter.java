@@ -333,6 +333,7 @@ public class DealsHomePresenter extends BaseDaggerPresenter<DealsContract.View>
                 categoriesModel.setName(listItems.get(i).getName());
                 categoriesModel.setTitle(listItems.get(i).getTitle());
                 categoriesModel.setUrl(listItems.get(i).getUrl());
+                categoriesModel.setPosition(i-1);
                 categoriesModels.add(categoriesModel);
             }
         }
@@ -340,6 +341,7 @@ public class DealsHomePresenter extends BaseDaggerPresenter<DealsContract.View>
         categoriesModel.setUrl("");
         categoriesModel.setTitle(getView().getActivity().getResources().getString(R.string.all_brands));
         categoriesModel.setName(getView().getActivity().getResources().getString(R.string.all_brands));
+        categoriesModel.setPosition(0);
         categoriesModels.add(0, categoriesModel);
         return categoryList;
     }

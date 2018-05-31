@@ -1,16 +1,22 @@
 package com.tokopedia.digital_deals.view.presenter;
 
 
+import android.util.Log;
+
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.digital_deals.R;
 import com.tokopedia.digital_deals.domain.GetDealDetailsUseCase;
+import com.tokopedia.digital_deals.domain.GetSearchNextUseCase;
 import com.tokopedia.digital_deals.domain.model.dealdetailsdomailmodel.DealsDetailsDomain;
+import com.tokopedia.digital_deals.domain.model.searchdomainmodel.SearchDomainModel;
 import com.tokopedia.digital_deals.view.contractor.DealDetailsContract;
 import com.tokopedia.digital_deals.view.utils.Utils;
+import com.tokopedia.digital_deals.view.viewmodel.CategoryItemsViewModel;
 import com.tokopedia.digital_deals.view.viewmodel.DealsDetailsViewModel;
 import com.tokopedia.digital_deals.view.viewmodel.OutletViewModel;
+import com.tokopedia.usecase.RequestParams;
 
 import java.util.List;
 
@@ -23,6 +29,7 @@ public class DealDetailsPresenter extends BaseDaggerPresenter<DealDetailsContrac
         implements DealDetailsContract.Presenter {
 
     private GetDealDetailsUseCase getBrandDetailsUseCase;
+    private GetSearchNextUseCase getSearchNextUseCase;
     private DealsDetailsViewModel dealsDetailsViewModel;
     public static final String HOME_DATA = "home_data";
     public final String TAG = "url";
@@ -32,8 +39,9 @@ public class DealDetailsPresenter extends BaseDaggerPresenter<DealDetailsContrac
 
 
     @Inject
-    public DealDetailsPresenter(GetDealDetailsUseCase getDealDetailsUseCase) {
+    public DealDetailsPresenter(GetDealDetailsUseCase getDealDetailsUseCase, GetSearchNextUseCase getSearchNextUseCase) {
         this.getBrandDetailsUseCase = getDealDetailsUseCase;
+        this.getSearchNextUseCase=getSearchNextUseCase;
     }
 
     @Override
@@ -44,6 +52,7 @@ public class DealDetailsPresenter extends BaseDaggerPresenter<DealDetailsContrac
     @Override
     public void onDestroy() {
         getBrandDetailsUseCase.unsubscribe();
+        getSearchNextUseCase.unsubscribe();
     }
 
     public void getDealDetails() {
@@ -78,13 +87,43 @@ public class DealDetailsPresenter extends BaseDaggerPresenter<DealDetailsContrac
                 getView().showCollapsingHeader();
                 dealsDetailsViewModel = Utils.getSingletonInstance()
                         .convertIntoDealDetailsViewModel(dealEntity);
-
                 getView().renderDealDetails(dealsDetailsViewModel);
+                getRecommendedDeals();
                 CommonUtils.dumper("enter onNext");
             }
         });
     }
 
+    private void getRecommendedDeals() {
+        RequestParams searchNextParams = RequestParams.create();
+        searchNextParams.putString("nexturl", dealsDetailsViewModel.getRecommendationUrl());
+        getSearchNextUseCase.execute(searchNextParams, new Subscriber<SearchDomainModel>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable throwable) {
+                    Log.d("inOnErrrror", throwable.getMessage());
+            }
+
+            @Override
+            public void onNext(SearchDomainModel searchDomainModel) {
+                Log.d("inOnNext", "ds");
+
+                    getView().addDealsToCards(processSearchResponse(searchDomainModel));
+
+            }
+        });
+    }
+
+    List<CategoryItemsViewModel> processSearchResponse(SearchDomainModel searchDomainModel) {
+
+        List<CategoryItemsViewModel> categoryItemsViewModels = Utils.getSingletonInstance()
+                .convertIntoCategoryListItemsViewModel(searchDomainModel.getDeals());
+        return categoryItemsViewModels;
+    }
     @Override
     public boolean onOptionMenuClick(int id) {
         if (id == R.id.action_menu_share) {

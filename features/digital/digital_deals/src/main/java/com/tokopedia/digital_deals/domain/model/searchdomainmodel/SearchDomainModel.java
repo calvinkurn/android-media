@@ -15,7 +15,7 @@ public class SearchDomainModel {
         return deals;
     }
 
-    public void setEvents(List<DealsCategoryItemDomain> deals) {
+    public void setDeals(List<DealsCategoryItemDomain> deals) {
         this.deals = deals;
     }
 

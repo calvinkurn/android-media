@@ -23,6 +23,8 @@ public class DealDetailsContract {
 
         void renderDealDetails(DealsDetailsViewModel detailsViewModel);
 
+        void addDealsToCards(List<CategoryItemsViewModel> categoryItemsViewModels);
+
         void showProgressBar();
 
         void hideProgressBar();

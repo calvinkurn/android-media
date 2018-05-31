@@ -11,12 +11,14 @@ public class CategoryViewModel implements Parcelable {
     private String title;
     private String name;
     private String url;
+    private String mediaUrl;
     private List<CategoryItemsViewModel> items = null;
 
-    public CategoryViewModel(String title, String name, String url, List<CategoryItemsViewModel> items) {
+    public CategoryViewModel(String title, String name, String url, String mediaUrl, List<CategoryItemsViewModel> items) {
         this.title = title;
         this.name = name;
         this.items = items;
+        this.mediaUrl=mediaUrl;
         this.url = url;
     }
 
@@ -45,6 +47,14 @@ public class CategoryViewModel implements Parcelable {
     }
 
 
+    public String getMediaUrl() {
+        return mediaUrl;
+    }
+
+    public void setMediaUrl(String mediaUrl) {
+        this.mediaUrl = mediaUrl;
+    }
+
     public List<CategoryItemsViewModel> getItems() {
         return items;
     }
@@ -63,14 +73,16 @@ public class CategoryViewModel implements Parcelable {
         dest.writeString(this.title);
         dest.writeString(this.name);
         dest.writeString(this.url);
+        dest.writeString(this.mediaUrl);
         dest.writeList(this.items);
     }
 
     protected CategoryViewModel(Parcel in) {
         this.title = in.readString();
         this.name = in.readString();
-        this.url=in.readString();
+        this.url = in.readString();
         this.items = new ArrayList<CategoryItemsViewModel>();
+        this.mediaUrl = in.readString();
         in.readList(this.items, CategoryItemsViewModel.class.getClassLoader());
     }
 

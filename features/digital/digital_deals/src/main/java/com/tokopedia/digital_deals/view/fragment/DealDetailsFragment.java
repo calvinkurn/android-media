@@ -12,6 +12,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.graphics.drawable.DrawableCompat;
 import android.support.v7.widget.CardView;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -46,6 +47,9 @@ import com.tokopedia.digital_deals.view.viewmodel.CategoryItemsViewModel;
 import com.tokopedia.digital_deals.view.viewmodel.DealsDetailsViewModel;
 import com.tokopedia.digital_deals.view.viewmodel.OutletViewModel;
 import com.tokopedia.usecase.RequestParams;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -93,6 +97,8 @@ public class DealDetailsFragment extends BaseDaggerFragment implements DealDetai
     private Toolbar toolbar;
     private DealFragmentCallbacks fragmentCallbacks;
     private DealsDetailsViewModel dealDetail;
+    private LinearLayoutManager mLayoutManager;
+    private final boolean IS_SHORT_LAYOUT = true;
 
 
     public static Fragment createInstance(Bundle bundle) {
@@ -135,8 +141,8 @@ public class DealDetailsFragment extends BaseDaggerFragment implements DealDetai
 
         toolbar.setNavigationIcon(ContextCompat.getDrawable(getActivity(), R.drawable.ic_action_back));
 
-        dealImage=view.findViewById(R.id.deal_image);
-        buyDealNow=view.findViewById(R.id.ll_buynow);
+        dealImage = view.findViewById(R.id.deal_image);
+        buyDealNow = view.findViewById(R.id.ll_buynow);
         tvExpandableDesc = view.findViewById(R.id.tv_expandable_description);
         seemorebuttonTextDesc = view.findViewById(R.id.seemorebutton_description);
         seeMoreButtonDesc = view.findViewById(R.id.expand_view_description);
@@ -167,7 +173,9 @@ public class DealDetailsFragment extends BaseDaggerFragment implements DealDetai
         buyDealNow.setOnClickListener(this);
         tvExpandableDesc.setInterpolator(new OvershootInterpolator());
         tvExpandableTC.setInterpolator(new OvershootInterpolator());
-
+        mLayoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false);
+        recyclerViewDeals.setLayoutManager(mLayoutManager);
+        recyclerViewDeals.setAdapter(new DealsCategoryAdapter(getActivity(), new ArrayList<CategoryItemsViewModel>(), IS_SHORT_LAYOUT));
     }
 
 
@@ -193,7 +201,7 @@ public class DealDetailsFragment extends BaseDaggerFragment implements DealDetai
 
     @Override
     public void renderDealDetails(DealsDetailsViewModel detailsViewModel) {
-        this.dealDetail=detailsViewModel;
+        this.dealDetail = detailsViewModel;
         collapsingToolbarLayout.setTitle(detailsViewModel.getDisplayName());
 
         ImageHandler.loadImage(getContext(), dealImage, detailsViewModel.getImageWeb(), R.color.grey_1100, R.color.grey_1100);
@@ -236,6 +244,12 @@ public class DealDetailsFragment extends BaseDaggerFragment implements DealDetai
         cardView.setVisibility(View.VISIBLE);
         baseMainContent.setVisibility(View.VISIBLE);
 
+    }
+
+    @Override
+    public void addDealsToCards(List<CategoryItemsViewModel> categoryItemsViewModels) {
+        Log.d("hdjshdjhsjdhjdhsajhdj", "aagye");
+        ((DealsCategoryAdapter) recyclerViewDeals.getAdapter()).addAll(categoryItemsViewModels);
     }
 
     @Override
@@ -360,7 +374,7 @@ public class DealDetailsFragment extends BaseDaggerFragment implements DealDetai
         } else if (v.getId() == R.id.tv_findalllocations) {
             Log.d("insidebutton click", "true");
             fragmentCallbacks.replaceFragment(mPresenter.getAllOutlets(), 0);
-        } else if(v.getId() == R.id.ll_buynow){
+        } else if (v.getId() == R.id.ll_buynow) {
             fragmentCallbacks.replaceFragment(dealDetail, 1);
 
         }
@@ -369,6 +383,6 @@ public class DealDetailsFragment extends BaseDaggerFragment implements DealDetai
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
-        fragmentCallbacks = (DealDetailsActivity)activity;
+        fragmentCallbacks = (DealDetailsActivity) activity;
     }
 }

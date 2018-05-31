@@ -18,8 +18,7 @@
         <ImageView
             android:id="@+id/imageViewBrandItem"
             android:layout_width="@dimen/image_brand_height"
-            android:layout_height="@dimen/image_brand_height"
-            android:background="@color/grey_1100" />
+            android:layout_height="@dimen/image_brand_height" />
     </android.support.v7.widget.CardView>
 
 
