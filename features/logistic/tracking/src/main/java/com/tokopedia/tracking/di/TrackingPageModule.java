@@ -22,6 +22,7 @@ import com.tokopedia.tracking.presenter.TrackingPagePresenter;
 import com.tokopedia.tracking.repository.ITrackingPageRepository;
 import com.tokopedia.tracking.repository.TrackingPageRepository;
 import com.tokopedia.tracking.usecase.TrackCourierUseCase;
+import com.tokopedia.tracking.utils.DateUtil;
 import com.tokopedia.tracking.view.ITrackingPageFragment;
 
 import java.util.concurrent.TimeUnit;
@@ -112,6 +113,12 @@ public class TrackingPageModule {
     ITrackingPagePresenter provideTrackingPagePresenter(TrackCourierUseCase useCase,
                                                         UserSession userSession) {
         return new TrackingPagePresenter(useCase, userSession, view);
+    }
+
+    @Provides
+    @TrackingPageScope
+    DateUtil provideDateUtil(){
+        return new DateUtil();
     }
 
 }

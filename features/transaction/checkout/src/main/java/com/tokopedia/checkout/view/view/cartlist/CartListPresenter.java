@@ -919,19 +919,19 @@ public class CartListPresenter implements ICartListPresenter {
             product.setVariant(com.tokopedia.core.analytics.nishikino.model.Product.DEFAULT_VALUE_NONE_OTHER);
             product.setQty(cartItemData.getUpdatedData().getQuantity());
             product.setShopId(cartItemData.getOriginData().getShopId());
-         //   product.setShopType(generateShopType(productData.getShopInfo()));
+            //   product.setShopType(generateShopType(productData.getShopInfo()));
             product.setShopName(cartItemData.getOriginData().getShopName());
             product.setCategoryId(cartItemData.getOriginData().getCategoryId());
-//            product.setDimension38(
-//                    TextUtils.isEmpty(productPass.getTrackerAttribution())
-//                            ? com.tokopedia.core.analytics.nishikino.model.Product.DEFAULT_VALUE_NONE_OTHER
-//                            : productPass.getTrackerAttribution()
-//            );
-//            product.setDimension40(
-//                    TextUtils.isEmpty(productPass.getTrackerListName())
-//                            ? com.tokopedia.core.analytics.nishikino.model.Product.DEFAULT_VALUE_NONE_OTHER
-//                            : productPass.getTrackerListName()
-//            );
+            product.setDimension38(
+                    TextUtils.isEmpty(cartItemData.getOriginData().getTrackerAttribution())
+                            ? com.tokopedia.core.analytics.nishikino.model.Product.DEFAULT_VALUE_NONE_OTHER
+                            : cartItemData.getOriginData().getTrackerAttribution()
+            );
+            product.setDimension40(
+                    TextUtils.isEmpty(cartItemData.getOriginData().getTrackerListName())
+                            ? com.tokopedia.core.analytics.nishikino.model.Product.DEFAULT_VALUE_NONE_OTHER
+                            : cartItemData.getOriginData().getTrackerListName()
+            );
             gtmCart.addProduct(product.getProduct());
         }
         return gtmCart.getCartMap();

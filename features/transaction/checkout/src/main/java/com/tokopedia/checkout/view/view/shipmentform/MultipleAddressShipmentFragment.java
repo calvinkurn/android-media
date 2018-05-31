@@ -27,12 +27,12 @@ import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.constant.IRouterConstant;
 import com.tokopedia.checkout.R;
-import com.tokopedia.checkout.domain.mapper.ShipmentRatesDataMapper;
 import com.tokopedia.checkout.domain.datamodel.MultipleAddressShipmentAdapterData;
 import com.tokopedia.checkout.domain.datamodel.cartlist.CartPromoSuggestion;
 import com.tokopedia.checkout.domain.datamodel.cartshipmentform.CartShipmentAddressFormData;
 import com.tokopedia.checkout.domain.datamodel.shipmentrates.ShipmentDetailData;
 import com.tokopedia.checkout.domain.datamodel.voucher.PromoCodeAppliedData;
+import com.tokopedia.checkout.domain.mapper.ShipmentRatesDataMapper;
 import com.tokopedia.checkout.router.ICheckoutModuleRouter;
 import com.tokopedia.checkout.view.adapter.MultipleAddressShipmentAdapter;
 import com.tokopedia.checkout.view.base.BaseCheckoutFragment;
@@ -481,7 +481,9 @@ public class MultipleAddressShipmentFragment extends BaseCheckoutFragment implem
     @Override
     public void showPromoError(String message) {
         NetworkErrorHelper.showRedCloseSnackbar(getActivity(),
-                !TextUtils.isEmpty(message) ? message : "Terjadi kesalahan");
+                !TextUtils.isEmpty(message) ? message :
+                        getActivity().getString(R.string.default_request_error_unknown)
+        );
     }
 
     @Override
