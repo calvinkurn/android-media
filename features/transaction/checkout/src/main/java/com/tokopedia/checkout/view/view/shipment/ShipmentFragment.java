@@ -284,22 +284,6 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                 cartShipmentAddressFormData
         );
         shipmentPresenter.setShipmentCartItemModelList(shipmentCartItemModelList);
-//        for (ShipmentCartItem shipmentCartItem : shipmentCartItemList) {
-//
-//        }
-//        this.singleShipmentData.setError(shipmentCartItemList.isError());
-//        this.singleShipmentData.setErrorMessage(shipmentCartItemList.getErrorMessage());
-//        this.singleShipmentData.setWarning(shipmentCartItemList.isWarning());
-//        this.singleShipmentData.setWarningMessage(shipmentCartItemList.getWarningMessage());
-//
-//        List<CartSellerItemModel> cartItem = shipmentCartItemList.getCartItem();
-//        for (int i = 0, cartItemSize = cartItem.size(); i < cartItemSize; i++) {
-//            CartSellerItemModel data = cartItem.get(i);
-//            this.singleShipmentData.getCartItem().get(i).setError(data.isError());
-//            this.singleShipmentData.getCartItem().get(i).setErrorMessage(data.getErrorMessage());
-//            this.singleShipmentData.getCartItem().get(i).setWarning(data.isWarning());
-//            this.singleShipmentData.getCartItem().get(i).setWarningMessage(data.getWarningMessage());
-//        }
 
         shipmentAdapter.clearData();
 
@@ -446,24 +430,6 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     private void onResultFromPayment(int resultCode) {
         getActivity().setResult(resultCode);
         getActivity().finish();
-/*
-        switch (resultCode) {
-            case TopPayActivity.PAYMENT_CANCELLED:
-                getActivity().setResult(TopPayActivity.PAYMENT_CANCELLED);
-                getActivity().finish();
-                break;
-            case TopPayActivity.PAYMENT_SUCCESS:
-                getActivity().setResult(TopPayActivity.PAYMENT_SUCCESS);
-                getActivity().finish();
-//                shipmentPresenter.processVerifyPayment(shipmentPresenter.getCheckoutData().getTransactionId());
-                break;
-            case TopPayActivity.PAYMENT_FAILED:
-                getActivity().setResult(TopPayActivity.PAYMENT_FAILED);
-                getActivity().finish();
-//                shipmentPresenter.processVerifyPayment(shipmentPresenter.getCheckoutData().getTransactionId());
-                break;
-        }
-*/
     }
 
     private void onResultFromRequestCodeLoyalty(int resultCode, Intent data) {
@@ -705,7 +671,21 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     public void onShipmentItemClick(CourierItemData courierItemData, int cartItemPosition) {
         if (courierItemData.getEstimatedTimeDelivery().equalsIgnoreCase(NO_PINPOINT_ETD)) {
             shipmentAdapter.setLastChooseCourierItemPosition(cartItemPosition);
-            Intent intent = GeolocationActivity.createInstance(getActivity(), null);
+            LocationPass locationPass = new LocationPass();
+            if (shipmentAdapter.getAddressShipmentData() != null) {
+                locationPass.setCityName(shipmentAdapter.getAddressShipmentData().getAddressCityName());
+                locationPass.setDistrictName(shipmentAdapter.getAddressShipmentData().getDestinationDistrictName());
+            } else {
+                ShipmentCartItemModel shipmentCartItemModel = shipmentAdapter.getShipmentCartItemModelByIndex(cartItemPosition);
+                if (shipmentCartItemModel != null) {
+                    RecipientAddressModel recipientAddressModel = shipmentCartItemModel.getRecipientAddressModel();
+                    if (recipientAddressModel != null) {
+                        locationPass.setCityName(recipientAddressModel.getAddressCityName());
+                        locationPass.setDistrictName(recipientAddressModel.getDestinationDistrictName());
+                    }
+                }
+            }
+            Intent intent = GeolocationActivity.createInstance(getActivity(), locationPass);
             startActivityForResult(intent, REQUEST_CODE_COURIER_PINPOINT);
         } else {
             shipmentAdapter.setSelecteCourier(cartItemPosition, courierItemData);
