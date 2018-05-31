@@ -93,6 +93,20 @@ public class FlightBookingVerifyUseCase extends UseCase<DataResponseVerify> {
             passenger.setTitle(flightPassengerViewModel.getPassengerTitleId());
             passenger.setType(flightPassengerViewModel.getType());
             passenger.setAmenities(generateAmenities(flightPassengerViewModel.getFlightBookingLuggageMetaViewModels(), flightPassengerViewModel.getFlightBookingMealMetaViewModels()));
+
+            if (flightPassengerViewModel.getPassportNumber() != null) {
+                passenger.setPassportNo(flightPassengerViewModel.getPassportNumber());
+            }
+            if (flightPassengerViewModel.getPassportExpiredDate() != null) {
+                passenger.setPassportExpiry(FlightDateUtil.formatDate(FlightDateUtil.DEFAULT_FORMAT, FlightDateUtil.FORMAT_DATE_API, flightPassengerViewModel.getPassportExpiredDate()));
+            }
+            if (flightPassengerViewModel.getPassportNationality() != null) {
+                passenger.setNationality(flightPassengerViewModel.getPassportNationality().getCountryId());
+            }
+            if (flightPassengerViewModel.getPassportIssuerCountry() != null) {
+                passenger.setPassportCountry(flightPassengerViewModel.getPassportIssuerCountry().getCountryId());
+            }
+
             passengers.add(passenger);
         }
         return passengers;

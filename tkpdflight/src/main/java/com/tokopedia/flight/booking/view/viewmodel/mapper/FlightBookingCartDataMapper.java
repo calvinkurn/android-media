@@ -33,6 +33,7 @@ public class FlightBookingCartDataMapper {
             }
             data.setId(entity.getId());
             data.setRefreshTime(entity.getAttribute().getFlightAttribute().getRefreshTime());
+            data.setDomestic(entity.getAttribute().getFlightAttribute().isDomestic() );
             if (entity.getAttribute().getFlightAttribute().getAmenities() != null) {
                 List<FlightBookingAmenityMetaViewModel> luggageMetaViewModels = new ArrayList<>();
                 List<FlightBookingAmenityMetaViewModel> mealMetaViewModels = new ArrayList<>();

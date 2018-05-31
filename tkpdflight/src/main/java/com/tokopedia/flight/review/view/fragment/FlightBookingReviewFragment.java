@@ -372,7 +372,7 @@ public class FlightBookingReviewFragment extends BaseDaggerFragment implements F
 
     @Override
     public void disableVoucherDisount() {
-
+        updateFinalTotal(null, getCurrentBookingReviewModel());
     }
 
     @Override

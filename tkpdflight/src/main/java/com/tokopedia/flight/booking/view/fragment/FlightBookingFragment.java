@@ -416,7 +416,8 @@ public class FlightBookingFragment extends BaseDaggerFragment implements FlightB
                         flightBookingCartData.getMealViewModels(),
                         isAirAsiaAirlines,
                         departureDate,
-                        requestId
+                        requestId,
+                        flightBookingCartData.isDomestic()
                 ),
                 REQUEST_CODE_PASSENGER
         );

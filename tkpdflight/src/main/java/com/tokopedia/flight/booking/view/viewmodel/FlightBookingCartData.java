@@ -21,6 +21,7 @@ public class FlightBookingCartData implements Parcelable {
     private List<FlightBookingAmenityMetaViewModel> luggageViewModels;
     private List<FlightBookingAmenityMetaViewModel> mealViewModels;
     private List<NewFarePrice> newFarePrices;
+    private boolean isDomestic;
 
     protected FlightBookingCartData(Parcel in) {
         id = in.readString();
@@ -31,7 +32,27 @@ public class FlightBookingCartData implements Parcelable {
         luggageViewModels = in.createTypedArrayList(FlightBookingAmenityMetaViewModel.CREATOR);
         mealViewModels = in.createTypedArrayList(FlightBookingAmenityMetaViewModel.CREATOR);
         newFarePrices = in.createTypedArrayList(NewFarePrice.CREATOR);
+        isDomestic = in.readByte() != 0;
         insurances = in.createTypedArrayList(FlightInsuranceViewModel.CREATOR);
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(id);
+        dest.writeInt(refreshTime);
+        dest.writeParcelable(defaultPhoneCode, flags);
+        dest.writeParcelable(departureTrip, flags);
+        dest.writeParcelable(returnTrip, flags);
+        dest.writeTypedList(luggageViewModels);
+        dest.writeTypedList(mealViewModels);
+        dest.writeTypedList(newFarePrices);
+        dest.writeByte((byte) (isDomestic ? 1 : 0));
+        dest.writeTypedList(insurances);
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
     }
 
     public static final Creator<FlightBookingCartData> CREATOR = new Creator<FlightBookingCartData>() {
@@ -123,21 +144,11 @@ public class FlightBookingCartData implements Parcelable {
         this.defaultPhoneCode = defaultPhoneCode;
     }
 
-    @Override
-    public int describeContents() {
-        return 0;
+    public boolean isDomestic() {
+        return isDomestic;
     }
 
-    @Override
-    public void writeToParcel(Parcel parcel, int i) {
-        parcel.writeString(id);
-        parcel.writeInt(refreshTime);
-        parcel.writeParcelable(defaultPhoneCode, i);
-        parcel.writeParcelable(departureTrip, i);
-        parcel.writeParcelable(returnTrip, i);
-        parcel.writeTypedList(luggageViewModels);
-        parcel.writeTypedList(mealViewModels);
-        parcel.writeTypedList(newFarePrices);
-        parcel.writeTypedList(insurances);
+    public void setDomestic(boolean domestic) {
+        isDomestic = domestic;
     }
 }

@@ -546,6 +546,11 @@ public class FlightDetailOrderFragment extends BaseDaggerFragment implements Fli
     }
 
     @Override
+    public void hideCancelButton() {
+        buttonCancelTicket.setVisibility(View.GONE);
+    }
+
+    @Override
     public void navigateToInputEmailForm(String userId, String userEmail) {
         DialogFragment dialogFragment = FlightResendETicketDialogFragment.newInstace(
                 flightOrderDetailPassData.getOrderId(),
