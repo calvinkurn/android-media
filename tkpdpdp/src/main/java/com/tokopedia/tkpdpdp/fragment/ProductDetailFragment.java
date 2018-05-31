@@ -1180,6 +1180,7 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
     public void onPause() {
         super.onPause();
         presenter.stopIndexingApp(appIndexHandler);
+        destroyVideoLayout();
     }
 
     @SuppressWarnings("Range")
