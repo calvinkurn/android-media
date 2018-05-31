@@ -1,11 +1,9 @@
 package com.tokopedia.posapp.product.management.data.source;
 
 import com.google.gson.JsonObject;
-import com.tokopedia.posapp.base.data.pojo.PosResponse;
 import com.tokopedia.posapp.base.data.pojo.PosSimpleResponse;
 import com.tokopedia.posapp.common.PosUrl;
 import com.tokopedia.posapp.product.common.ProductConstant;
-import com.tokopedia.posapp.product.management.data.pojo.ProductListData;
 import com.tokopedia.posapp.product.productlist.data.pojo.ProductDetail;
 
 import java.util.List;

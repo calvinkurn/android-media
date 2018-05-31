@@ -1,16 +1,11 @@
 package com.tokopedia.posapp.product.productdetail.data.mapper;
 
-import com.tokopedia.abstraction.common.data.model.response.DataResponse;
-import com.tokopedia.core.people.model.PeopleInfoData;
 import com.tokopedia.core.product.model.productdetail.ProductDetailData;
 import com.tokopedia.core.product.model.productdetail.ProductImage;
 import com.tokopedia.core.product.model.productdetail.ProductInfo;
-import com.tokopedia.core.product.model.productdetail.ProductShopInfo;
-import com.tokopedia.core.shop.model.shopinfo.ShopInfo;
 import com.tokopedia.design.utils.CurrencyFormatUtil;
 import com.tokopedia.posapp.base.data.pojo.PosSimpleResponse;
 import com.tokopedia.posapp.product.productlist.data.pojo.ProductDetail;
-import com.tokopedia.posapp.product.productlist.data.pojo.ProductList;
 import com.tokopedia.posapp.product.productlist.data.pojo.ProductPicture;
 
 import java.util.ArrayList;
