@@ -513,6 +513,7 @@ public class VerificationFragment extends BaseDaggerFragment implements Verifica
         if (viewModel != null
                 && viewModel.canUseOtherMethod()) {
             countdownText.setVisibility(View.VISIBLE);
+            countdownText.setEnabled(true);
             countdownText.setTextColor(MethodChecker.getColor(getActivity(), R.color.tkpd_main_green));
             countdownText.setText(R.string.login_with_other_method);
             countdownText.setOnClickListener(new View.OnClickListener() {
