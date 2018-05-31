@@ -81,10 +81,10 @@ public class RetrofitInteractorImpl implements RetrofitInteractor {
                     if (!response.body().isError()) {
                         GetPeopleAddress data =
                                 response.body().convertDataObj(GetPeopleAddress.class);
-                        if (data.getList().size() != 0) {
+                        if (!data.getList().isEmpty()) {
                             listener.onSuccess(context, params, data);
                         } else {
-                            listener.onNullData();
+                            listener.onEmptyList(context, params, data);
                         }
                     } else {
                         if (response.body().isNullData()) {

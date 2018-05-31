@@ -27,6 +27,7 @@ import com.tokopedia.checkout.view.di.component.ShipmentAddressListComponent;
 import com.tokopedia.checkout.view.di.module.ShipmentAddressListModule;
 import com.tokopedia.core.manage.people.address.ManageAddressConstant;
 import com.tokopedia.core.manage.people.address.activity.AddAddressActivity;
+import com.tokopedia.core.manage.people.address.model.Token;
 import com.tokopedia.design.text.SearchInputView;
 
 import java.util.ArrayList;
@@ -68,6 +69,8 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
 
     @Inject
     ShipmentAddressListPresenter mShipmentAddressListPresenter;
+
+    private Token token;
 
     public static ShipmentAddressListFragment newInstance(RecipientAddressModel currentAddress) {
         Bundle bundle = new Bundle();
@@ -340,7 +343,7 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
     public void onEditClick(RecipientAddressModel model) {
         AddressModelMapper mapper = new AddressModelMapper();
 
-        Intent intent = AddAddressActivity.createInstance(getActivity(), mapper.transform(model));
+        Intent intent = AddAddressActivity.createInstance(getActivity(), mapper.transform(model), null);
         startActivityForResult(intent, ManageAddressConstant.REQUEST_CODE_PARAM_EDIT);
     }
 

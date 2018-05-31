@@ -22,7 +22,7 @@ import com.tokopedia.core.util.RouterUtils;
 @Deprecated
 public class InboxRouter {
 
-    private static final String INBOX_CONTACT_US_ACTIVITY = "com.tokopedia.inbox.contactus.activity.ContactUsActivity";
+    private static final String INBOX_CONTACT_US_ACTIVITY = "com.tokopedia.contact_us.createticket.activity.ContactUsActivity";
     private static final String CREATE_RESCENTER_ACTIVITY = "com.tokopedia.inbox.rescenter.create.activity.CreateResCenterActivity";
     private static final String INBOX_RESCENTER_ACTIVITY = "com.tokopedia.inbox.rescenter.inbox.activity.InboxResCenterActivity";
     private static final String INBOX_RESCENTER_FRAGMENT = "com.tokopedia.inbox.rescenter.inbox.fragment.InboxResCenterFragment";
@@ -41,8 +41,8 @@ public class InboxRouter {
     public static final int RESO_BUYER = 1;
     public static final int RESO_MINE = 0;
 
-    private static final String INBOX_TICKET_ACTIVITY = "com.tokopedia.inbox.inboxticket.activity.InboxTicketActivity";
-    private static final String INBOX_TICKET_FRAGMENT = "com.tokopedia.inbox.inboxticket.fragment.InboxTicketFragment";
+    private static final String INBOX_TICKET_ACTIVITY = "com.tokopedia.contact_us.inboxticket.activity.InboxTicketActivity";
+    private static final String INBOX_TICKET_FRAGMENT = "com.tokopedia.contact_us.inboxticket.fragment.InboxTicketFragment";
 
     private static final String INBOX_MESSAGE_ACTIVITY = "com.tokopedia.inbox.inboxmessage.activity.InboxMessageActivity";
     private static final String INBOX_MESSAGE_FRAGMENT = "com.tokopedia.inbox.inboxmessage.fragment.InboxMessageFragment";

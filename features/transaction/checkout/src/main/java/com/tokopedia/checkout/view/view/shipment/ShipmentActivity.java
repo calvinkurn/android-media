@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.View;
 
+import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.common.di.component.HasComponent;
 import com.tokopedia.checkout.R;
 import com.tokopedia.checkout.domain.datamodel.cartlist.CartPromoSuggestion;
@@ -16,6 +17,7 @@ import com.tokopedia.checkout.view.base.BaseCheckoutActivity;
 import com.tokopedia.checkout.view.di.component.CartComponent;
 import com.tokopedia.checkout.view.di.component.CartComponentInjector;
 import com.tokopedia.design.component.Dialog;
+import com.tokopedia.transactionanalytics.CheckoutAnalyticsCartShipmentPage;
 
 /**
  * @author Irfan Khoirul on 23/04/18.
@@ -33,6 +35,7 @@ public class ShipmentActivity extends BaseCheckoutActivity implements HasCompone
     public static final String EXTRA_SELECTED_ADDRESS_RECIPIENT_DATA = "EXTRA_DEFAULT_ADDRESS_RECIPIENT_DATA";
     public static final String EXTRA_CART_PROMO_SUGGESTION = "EXTRA_CART_PROMO_SUGGESTION";
     public static final String EXTRA_PROMO_CODE_APPLIED_DATA = "EXTRA_PROMO_CODE_APPLIED_DATA";
+    private CheckoutAnalyticsCartShipmentPage checkoutAnalyticsCartShipmentPage;
 
 
     public static Intent createInstance(Context context,
@@ -78,7 +81,9 @@ public class ShipmentActivity extends BaseCheckoutActivity implements HasCompone
 
     @Override
     protected void initVar() {
-
+        checkoutAnalyticsCartShipmentPage = new CheckoutAnalyticsCartShipmentPage(
+                ((AbstractionRouter) getApplication()).getAnalyticTracker()
+        );
     }
 
     @Override
@@ -102,6 +107,7 @@ public class ShipmentActivity extends BaseCheckoutActivity implements HasCompone
 
     @Override
     public void onBackPressed() {
+        checkoutAnalyticsCartShipmentPage.eventClickShipmentClickBackArrow();
         showResetDialog();
     }
 
@@ -114,6 +120,8 @@ public class ShipmentActivity extends BaseCheckoutActivity implements HasCompone
         dialog.setOnCancelClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                checkoutAnalyticsCartShipmentPage
+                        .eventClickShipmentClickKembaliDanHapusPerubahanFromBackArrow();
                 setResult(RESULT_CODE_FORCE_RESET_CART_FROM_SINGLE_SHIPMENT);
                 finish();
             }
@@ -121,6 +129,8 @@ public class ShipmentActivity extends BaseCheckoutActivity implements HasCompone
         dialog.setOnOkClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                checkoutAnalyticsCartShipmentPage
+                        .eventClickShipmentClickTetapDiHalamanIniFromBackArrow();
                 dialog.dismiss();
             }
         });

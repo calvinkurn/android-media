@@ -52,6 +52,7 @@ import com.tokopedia.checkout.view.view.shipment.ShipmentData;
 import com.tokopedia.checkout.view.view.shipment.ShipmentFragment;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.gcm.GCMHandler;
+import com.tokopedia.core.manage.people.address.model.Token;
 import com.tokopedia.core.receiver.CartBadgeNotificationReceiver;
 import com.tokopedia.core.router.productdetail.ProductDetailRouter;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
@@ -337,7 +338,7 @@ public class CartFragment extends BaseCheckoutFragment implements CartListAdapte
             startActivityForResult(
                     ((ICheckoutModuleRouter) getActivity().getApplication())
                             .checkoutModuleRouterGetLoyaltyNewCheckoutMarketplaceCartListIntent(
-                                    getActivity(), cartListData.isPromoCouponActive()
+                                    getActivity(), cartListData.isPromoCouponActive(), "", ""
                             ), IRouterConstant.LoyaltyModule.LOYALTY_ACTIVITY_REQUEST_CODE
             );
         }
@@ -569,8 +570,20 @@ public class CartFragment extends BaseCheckoutFragment implements CartListAdapte
 
     @Override
     public void renderNoRecipientAddressShipmentForm(CartShipmentAddressFormData shipmentAddressFormData) {
-        Intent intent = CartAddressChoiceActivity.createInstance(getActivity(), null,
-                CartAddressChoiceActivity.TYPE_REQUEST_ADD_SHIPMENT_DEFAULT_ADDRESS);
+        Intent intent;
+        if (shipmentAddressFormData.getKeroDiscomToken() != null &&
+                shipmentAddressFormData.getKeroUnixTime() != 0) {
+            Token token = new Token();
+            token.setUt(shipmentAddressFormData.getKeroUnixTime());
+            token.setDistrictRecommendation(shipmentAddressFormData.getKeroDiscomToken());
+
+            intent = CartAddressChoiceActivity.createInstance(getActivity(), null,
+                    CartAddressChoiceActivity.TYPE_REQUEST_ADD_SHIPMENT_DEFAULT_ADDRESS, token);
+        } else {
+            intent = CartAddressChoiceActivity.createInstance(getActivity(), null,
+                    CartAddressChoiceActivity.TYPE_REQUEST_ADD_SHIPMENT_DEFAULT_ADDRESS);
+        }
+
         startActivityForResult(intent, CartAddressChoiceActivity.REQUEST_CODE);
     }
 

@@ -10,6 +10,9 @@ import java.util.List;
  */
 
 public class PassengerEntity {
+    @SerializedName("id")
+    @Expose
+    private String id;
     @SerializedName("type")
     @Expose
     private int type;
@@ -40,6 +43,10 @@ public class PassengerEntity {
     @SerializedName("amenities")
     @Expose
     private List<PassengerAmentityEntity> amenities;
+
+    public String getId() {
+        return id;
+    }
 
     public int getType() {
         return type;

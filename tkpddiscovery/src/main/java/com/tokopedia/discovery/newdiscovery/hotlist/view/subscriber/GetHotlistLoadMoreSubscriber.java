@@ -72,14 +72,14 @@ public class GetHotlistLoadMoreSubscriber extends rx.Subscriber<SearchResultMode
             HotlistProductViewModel model = new HotlistProductViewModel();
             model.setBadgesList(mappingBadges(domain.getBadgesList()));
             model.setLabelList(mappingLabels(domain.getLabelList()));
-            model.setCountReview(domain.getCountReview());
+            model.setCountReview(Integer.toString(domain.getCountReview()));
             model.setGoldMerchant(domain.isGoldMerchant());
             model.setImageUrl(domain.getImageUrl());
             model.setImageUrl700(domain.getImageUrl700());
             model.setPrice(domain.getPrice());
             model.setProductID(domain.getProductID());
             model.setProductName(domain.getProductName());
-            model.setRating(domain.getRating());
+            model.setRating(Integer.toString(domain.getRating()));
             model.setShopCity(domain.getShopCity());
             model.setShopID(domain.getShopID());
             model.setShopName(domain.getShopName());
@@ -89,6 +89,10 @@ public class GetHotlistLoadMoreSubscriber extends rx.Subscriber<SearchResultMode
             model.setTrackerName(String.format(Locale.getDefault(), "/hot/%s - product %d", view.getHotlistAlias().toLowerCase(), page));
             model.setTrackerPosition(String.valueOf(lastPositionProduct));
             model.setHomeAttribution(view.getHomeAttribution());
+            model.setCountCourier(Integer.toString(domain.getCountCourier()));
+            model.setOriginalPrice(domain.getOriginalPrice());
+            model.setDiscountPercentage(domain.getDiscountPercentage());
+            model.setOfficial(domain.isOfficial());
             list.add(model);
         }
         view.setLastPositionProductTracker(lastPositionProduct);

@@ -3,6 +3,7 @@ package com.tokopedia.tracking.di;
 import android.content.Context;
 
 import com.google.gson.Gson;
+
 import com.readystatesoftware.chuck.ChuckInterceptor;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;

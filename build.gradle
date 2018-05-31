@@ -5,17 +5,30 @@ buildscript {
     repositories {
         mavenLocal()
         maven { url 'https://maven.fabric.io/public' }
+        maven { url 'http://central.maven.org/maven2/'}
         mavenCentral()
         jcenter()
+        google()
+        maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
     }
     dependencies {
-        classpath 'com.uber:okbuck:0.32.2'
-        classpath 'com.android.tools.build:gradle:2.3.3'
-        classpath "org.jfrog.buildinfo:build-info-extractor-gradle:4.0.1"
+        classpath 'com.uber:okbuck:0.37.2'
+        classpath ('com.android.tools.build:gradle:3.1.2') {
+            exclude module: 'proguard-gradle'
+        }
+        classpath('net.sf.proguard:proguard-gradle:5.2.1') {
+            force = true
+        }
+        classpath("org.jfrog.buildinfo:build-info-extractor-gradle:4.0.1") {
+            exclude group: 'org.codehaus.groovy', module: 'groovy-all'
+        }
         classpath 'com.apollographql.apollo:gradle-plugin:0.3.0'
-        classpath 'com.google.firebase:firebase-plugins:1.1.1'
-        classpath 'com.neenbedankt.gradle.plugins:android-apt:1.8'
-
+        if (!project.hasProperty("disable-performance-plugin")) {
+            classpath('com.google.firebase:firebase-plugins:1.1.1') {
+                exclude group: 'com.google.guava', module: 'guava-jdk5'
+            }
+        }
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:1.2.40"
     }
 }
 
@@ -25,11 +38,13 @@ allprojects {
         mavenLocal()
         jcenter()
         mavenCentral()
+        google()
+        maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
         maven { url "https://www.jitpack.io" }
         maven { url 'https://maven.fabric.io/public' }
         maven { url 'https://dl.bintray.com/guardian/android' }
         maven { url "https://maven.google.com" }
-        maven { url 'https://mymavenrepo.com/repo/e01iL1W9Gdxw73PGI9LA'}
+        maven { url 'https://mymavenrepo.com/repo/e01iL1W9Gdxw73PGI9LA' }
         maven {
             url "${artifactory_url}" + "/libs-release-local";
             credentials {
@@ -48,33 +63,35 @@ allprojects {
 apply plugin: 'com.uber.okbuck'
 
 okbuck {
-    buildToolVersion = "25.0.0"
-    target = "android-26"
+    buildToolVersion = "27.0.3"
+    target = "android-27"
     linearAllocHardLimit = [
             customerapp: 10130000,
             sellerapp: 10130000
     ]
     extraBuckOpts = [
             'customerappDebug': [
-                    "android_binary": ["trim_resource_ids = True"]
-            ],
-            'sellerappDebug': [
-                    "android_binary": ["trim_resource_ids = True"]
+                    "android_binary": ["trim_resource_ids = True"] as Set
+            ]
+            ,'sellerappDebug': [
+                    "android_binary": ["trim_resource_ids = True"] as Set
             ]
     ]
 
     intellij {
         sources = true
     }
-    
-    // Allows okbuck to espresso and robolectric buck rules.
-    test {
-        espresso = true
-        robolectric = true
+
+    lint {
+        disabled = true
     }
 
     wrapper {
         repo = 'https://github.com/facebook/buck.git'
+    }
+
+    lint {
+        version = "26.0.1"
     }
 
 }
@@ -113,39 +130,19 @@ subprojects {
                 substitute module('com.google.code.findbugs:jsr305') with module('com.google.code.findbugs:jsr305:1.3.9')
                 substitute module('com.android.support:support-annotations') with module('com.android.support:support-annotations:26.0.2')
                 substitute module('com.android.support:multidex') with module('com.android.support:multidex:1.0.3')
+                substitute module('com.android.support:support-v13') with module('com.android.support:support-v13:26.0.2')
+                substitute module('com.android.support:support-v4') with module('com.android.support:support-v4:26.0.2')
+                substitute module('com.android.support:support-compat') with module('com.android.support:support-compat:26.0.2')
             }
         }
     }
 
 }
 
-def addCommonConfigurationForAndroidModules(Project project) {
-    project.android {
-        compileSdkVersion rootProject.ext.compileSdkVersion
-        buildToolsVersion rootProject.ext.buildToolsVersion
-
-        defaultConfig {
-            minSdkVersion rootProject.ext.minSdkVersion
-            targetSdkVersion rootProject.ext.targetSdkVersion
-            versionCode 1
-            versionName "1.0"
-
-        }
-        buildTypes {
-            release {
-                minifyEnabled false
-                proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-            }
-        }
-        compileOptions {
-            sourceCompatibility JavaVersion.VERSION_1_7
-        }
-    }
-
-}
 
 gradle.buildFinished {
     "zip -d .okbuck/cache/org.hamcrest.hamcrest-core-1.3.jar LICENSE.txt".execute()
     "zip -d .okbuck/cache/org.hamcrest.hamcrest-library-1.3.jar LICENSE.txt".execute()
     "zip -d .okbuck/cache/org.hamcrest.hamcrest-integration-1.3.jar LICENSE.txt".execute()
 }
+

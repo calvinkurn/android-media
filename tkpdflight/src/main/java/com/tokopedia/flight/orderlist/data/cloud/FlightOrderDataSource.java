@@ -2,6 +2,7 @@ package com.tokopedia.flight.orderlist.data.cloud;
 
 import com.tokopedia.abstraction.common.data.model.response.DataResponse;
 import com.tokopedia.flight.common.data.source.cloud.api.FlightApi;
+import com.tokopedia.flight.orderlist.data.cache.FlightOrderDataCacheSource;
 import com.tokopedia.flight.orderlist.data.cloud.entity.OrderEntity;
 import com.tokopedia.flight.orderlist.data.cloud.entity.SendEmailEntity;
 
@@ -20,10 +21,12 @@ import rx.functions.Func1;
 
 public class FlightOrderDataSource {
     private FlightApi flightApi;
+    private FlightOrderDataCacheSource flightOrderDataCacheSource;
 
     @Inject
-    public FlightOrderDataSource(FlightApi flightApi) {
+    public FlightOrderDataSource(FlightApi flightApi, FlightOrderDataCacheSource flightOrderDataCacheSource) {
         this.flightApi = flightApi;
+        this.flightOrderDataCacheSource = flightOrderDataCacheSource;
     }
 
     public Observable<List<OrderEntity>> getOrders(Map<String, Object> maps) {
@@ -41,7 +44,14 @@ public class FlightOrderDataSource {
             public OrderEntity call(Response<DataResponse<OrderEntity>> dataResponseResponse) {
                 return dataResponseResponse.body().getData();
             }
-        });
+        })
+                .flatMap(new Func1<OrderEntity, Observable<OrderEntity>>() {
+                    @Override
+                    public Observable<OrderEntity> call(OrderEntity orderEntity) {
+                        flightOrderDataCacheSource.saveCache(orderEntity);
+                        return Observable.just(orderEntity);
+                    }
+                });
     }
 
     public Observable<SendEmailEntity> sendEmail(Map<String, Object> maps) {
