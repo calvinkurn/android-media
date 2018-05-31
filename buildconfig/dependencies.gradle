@@ -62,6 +62,7 @@ ext {
     tkpdHomeVersion = '2.22'
     tkpdMitraToppersVersion = '2.22'
     tkpdDistrictRecommendationVersion = '2.22'
+    tkpdAnalyticsVersion = '2.22'
 
     networkDependencies = [
             retrofit          : "com.squareup.retrofit2:retrofit:${retrofitVersion}",
@@ -106,7 +107,6 @@ ext {
             perfMon             : "com.google.firebase:firebase-perf:${playServiceVersion}",
             ads                 : "com.google.android.gms:play-services-ads:${playServiceVersion}",
             firebaseAnalytics   :  "com.google.firebase:firebase-core:${playServiceVersion}",
-            tagmanagerAnalytics :  "com.google.android.gms:play-services-tagmanager:${playServiceVersion}"
     ]
 
     butterKnifeDependencies = [

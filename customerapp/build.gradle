@@ -409,6 +409,9 @@ dependencies {
     androidTestImplementation rootProject.ext.supportLibDependencies.appCompactV7
     androidTestImplementation rootProject.ext.supportLibDependencies.cardViewV7
     //[END] test and androidTest dependencies
+
+    implementation project(rootProject.ext.libraries.analytics)
+
 }
 
 

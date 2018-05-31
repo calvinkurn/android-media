@@ -1,6 +1,7 @@
 apply plugin: 'com.android.library'
 apply from: "$rootProject.projectDir/buildconfig/module.gradle"
 apply plugin: 'io.hansel.preprocessor.module'
+
 buildscript {
     repositories {
         mavenCentral()
@@ -11,7 +12,13 @@ buildscript {
     }
 }
 
+project.ext {
+    artifactId = 'analytics'
+    groupId = 'com.tokopedia.analytics'
+    versionName = "${tkpdAnalyticsVersion}"
+    artifactName ="analytics-release"
+}
+
 dependencies {
-    compile rootProject.ext.playServicesDependencies.firebaseAnalytics
-    compile rootProject.ext.playServicesDependencies.tagmanagerAnalytics
+    implementation rootProject.ext.playServicesDependencies.firebaseAnalytics
 }

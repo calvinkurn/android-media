@@ -130,7 +130,7 @@ dependencies {
     implementation rootProject.ext.debugToolsDependencies.stetho
     implementation rootProject.ext.analyticsDependencies.logentries
     compile rootProject.ext.analyticsDependencies.logentries
-    compile project(rootProject.ext.libraries.analytics)
+    implementation project(rootProject.ext.libraries.analytics)
 
 }
 
