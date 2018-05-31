@@ -140,7 +140,7 @@ public class ImagePickerBuilder implements Parcelable {
         if (imagePickerMultipleSelectionBuilder!= null) {
             return imagePickerMultipleSelectionBuilder.getMaximumNoPick();
         }
-        return 0;
+        return 1;
     }
 
     public long getMaxFileSizeInKB() {
