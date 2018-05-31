@@ -26,6 +26,7 @@ import com.tokopedia.digital_deals.view.contractor.DealAllBrandsContract;
 import com.tokopedia.digital_deals.view.customview.SearchInputView;
 import com.tokopedia.digital_deals.view.presenter.DealAllBrandsPresenter;
 import com.tokopedia.digital_deals.view.presenter.DealsHomePresenter;
+import com.tokopedia.digital_deals.view.utils.Utils;
 import com.tokopedia.digital_deals.view.viewmodel.BrandViewModel;
 import com.tokopedia.digital_deals.view.viewmodel.CategoriesModel;
 import com.tokopedia.usecase.RequestParams;
@@ -189,7 +190,10 @@ public class AllBrandsFragment extends BaseDaggerFragment implements DealAllBran
     @Override
     public RequestParams getParams() {
         RequestParams requestParams = RequestParams.create();
-        requestParams.putString(DealsHomePresenter.TAG, categoriesModel.getUrl());
+        requestParams.putString(Utils.BRAND_QUERY_PARAM_TREE, Utils.BRAND_QUERY_PARAM_BRAND);
+//        if(categoriesModel.getPosition()==0){
+//            requestParams.putInt(Utils.BRAND_QUERY_PARAM_CHILD_CATEGORY_ID, categoriesModel.getCategoryId());
+//        }
         return requestParams;
     }
 
