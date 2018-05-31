@@ -47,7 +47,7 @@ public class FlightBookingPassengerPresenter extends BaseDaggerPresenter<FlightB
         if (isAdultPassenger()) {
             getView().renderHeaderSubtitle(R.string.flight_booking_passenger_adult_subtitle);
             getView().renderSpinnerForAdult();
-            if (getView().isMandatoryDoB()) {
+            if (getView().isMandatoryDoB() || !getView().isDomestic()) {
                 getView().showBirthdayInputView();
             } else {
                 getView().hideBirthdayInputView();
