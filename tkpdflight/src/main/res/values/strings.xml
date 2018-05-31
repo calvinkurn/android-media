@@ -407,13 +407,13 @@
     <string name="flight_order_detail_cancellation_label">Detail Pembatalan</string>
     <string name="flight_cancellation_list_title">Detail Pembatalan</string>
     <string name="flight_cancellation_list_id" formatted="false">Cancellation ID: %s</string>
-    <string name="flight_cancellation_list_created_time">Tanggal Pembatalan: %s</string>
+    <string name="flight_cancellation_list_created_time" formatted="false">Tanggal Pembatalan: %s</string>
     <string name="flight_cancellation_cancelled_passegner_detail">Detail Penumpang yang Dibatalkan</string>
     <string name="flight_cancellation_detail_refund_information_label">Informasi Refund</string>
     <string name="flight_cancellation_total_refund_label">Total Refund</string>
     <string name="flight_cancellation_estimate_refund_label">Estimate Refund</string>
-    <string name="flight_cancellation_passenger_status">Pembatalan tiket %s</string>
-    <string name="flight_cancellation_ticket_status_in_progress">Terdapat %d proses pembatalan tiket.</string>
+    <string name="flight_cancellation_passenger_status" formatted="false">Pembatalan tiket %s</string>
+    <string name="flight_cancellation_ticket_status_in_progress" formatted="false">Terdapat %d proses pembatalan tiket.</string>
     <string name="flight_cancellation_ticket_status">Terdapat pembatalan pada tiket ini.</string>
     <string name="flight_label_cancellation_date">Tanggal Pembatalan</string>
     <string name="flight_cancellation_status_success">Pembatalan Berhasil</string>
@@ -426,6 +426,9 @@
     <string name="flight_cancellation_journey_title" formatted="false">Penerbangan %d - %s</string>
     <string name="flight_cancellation_review_dialog_description">Apakah anda yakin ingin membatalkan pesanan?</string>
     <string name="flight_cancellation_review_journey_number">Penerbangan %d</string>
+    <string name="flight_insurance_prefix_label">Asuransi Perjalanan</string>
+    <string name="flight_insurance_additional_benefits_prefix" formatted="false">Termasuk %d Proteksi Lain</string>
+    <string name="flight_insurance_learn_more_label"> Info Selengkapnya</string>
     <string name="flight_passenger_choose_salutation">Pilih Titel</string>
     <string name="flight_review_minus_discount_prefix">- %1$s</string>
     <string name="flight_passenger_passport_number_secondary_hint">Isi nomor passport</string>
@@ -441,4 +444,8 @@
     <string name="flight_booking_passport_expired_date_empty_error">Tanggal Berakhir Passport harus diisi</string>
     <string name="flight_passport_search_hint">Cari Negara Penerbit Passport</string>
     <string name="flight_nationality_search_hint">Cari Negara Kewarganegaraan</string>
+    <string name="flight_detail_order_protection_label">Terproteksi</string>
+    <string name="flight_order_detail_insurance_description">Untuk melihat polis asuransi, cek email Anda.</string>
+    <string name="flight_order_prefix_insurance_price_label" formatted="false">Asuransi %dx</string>
+    <string name="flight_insurance_webview_toolbar_title">Asuransi Perjalanan</string>
 </resources>

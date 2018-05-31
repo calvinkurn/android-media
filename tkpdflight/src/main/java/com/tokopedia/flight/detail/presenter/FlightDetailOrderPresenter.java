@@ -28,6 +28,7 @@ import com.tokopedia.flight.orderlist.data.cloud.entity.CancellationEntity;
 import com.tokopedia.flight.orderlist.data.cloud.entity.ManualTransferEntity;
 import com.tokopedia.flight.orderlist.data.cloud.entity.PaymentInfoEntity;
 import com.tokopedia.flight.orderlist.domain.FlightGetOrderUseCase;
+import com.tokopedia.flight.orderlist.domain.model.FlightInsurance;
 import com.tokopedia.flight.orderlist.domain.model.FlightOrder;
 import com.tokopedia.flight.orderlist.domain.model.FlightOrderJourney;
 import com.tokopedia.flight.orderlist.domain.model.FlightOrderPassengerViewModel;
@@ -173,8 +174,18 @@ public class FlightDetailOrderPresenter extends BaseDaggerPresenter<FlightDetail
                 if (isShouldHideCancelButton(flightOrderJourneyList.size(), flightOrder.getPassengerViewModels())) {
                     getView().hideCancelButton();
                 }
+                renderInsurances(flightOrder);
             }
         };
+    }
+
+    private void renderInsurances(FlightOrder flightOrder) {
+        if (flightOrder.getInsurances() != null && flightOrder.getInsurances().size() > 0) {
+            getView().showInsuranceLayout();
+            getView().renderInsurances(flightOrder.getInsurances());
+        } else {
+            getView().hideInsuranceLayout();
+        }
     }
 
     @Override
@@ -478,6 +489,16 @@ public class FlightDetailOrderPresenter extends BaseDaggerPresenter<FlightDetail
                     String.format("%s %s", getView().getString(R.string.flight_price_detail_prefixl_meal_label),
                             entry.getKey()),
                     CurrencyFormatUtil.convertPriceValueToIdrFormatNoSpace(entry.getValue())));
+        }
+
+        int totalPassenger = passengerAdultCount + passengerChildCount + passengerInfantCount;
+
+        for (FlightInsurance insurance : flightOrder.getInsurances()) {
+            simpleViewModelList.add(new SimpleViewModel(
+                    String.format("%s %dx", insurance.getTitle(), totalPassenger),
+                    insurance.getPaidAmount()
+            ));
+            totalPrice += insurance.getPaidAmountNumeric();
         }
 
         return simpleViewModelList;

@@ -50,7 +50,8 @@ public class FlightBookingVerifyUseCase extends UseCase<DataResponseVerify> {
 
     public RequestParams createRequestParams(String promoCode, int price, String cartId,
                                              List<FlightBookingPassengerViewModel> flightPassengerViewModels,
-                                             String contactName, String country, String email, String phone) {
+                                             String contactName, String country, String email, String phone,
+                                             List<String> insuranceIds) {
         RequestParams requestParams = RequestParams.create();
         VerifyRequest verifyRequest = new VerifyRequest();
         Data data = new Data();
@@ -71,6 +72,7 @@ public class FlightBookingVerifyUseCase extends UseCase<DataResponseVerify> {
         metaData.setPhone(phone);
         metaData.setCartId(cartId);
         metaData.setPassengers(generatePassengers(flightPassengerViewModels));
+        metaData.setInsurances(insuranceIds);
         cartItem.setMetaData(metaData);
         cartItems.add(cartItem);
         attributesData.setCartItems(cartItems);

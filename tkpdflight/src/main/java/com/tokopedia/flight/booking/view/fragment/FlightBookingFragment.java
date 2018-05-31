@@ -28,7 +28,6 @@ import android.widget.RelativeLayout;
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
-import com.tokopedia.abstraction.base.view.recyclerview.VerticalRecyclerView;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.design.text.TkpdHintTextInputLayout;
@@ -38,9 +37,11 @@ import com.tokopedia.flight.booking.di.FlightBookingComponent;
 import com.tokopedia.flight.booking.domain.subscriber.model.ProfileInfo;
 import com.tokopedia.flight.booking.view.activity.FlightBookingPassengerActivity;
 import com.tokopedia.flight.booking.view.activity.FlightBookingPhoneCodeActivity;
+import com.tokopedia.flight.booking.view.activity.FlightInsuranceWebviewActivity;
 import com.tokopedia.flight.booking.view.adapter.FlightBookingPassengerActionListener;
 import com.tokopedia.flight.booking.view.adapter.FlightBookingPassengerAdapter;
 import com.tokopedia.flight.booking.view.adapter.FlightBookingPassengerAdapterTypeFactory;
+import com.tokopedia.flight.booking.view.adapter.FlightInsuranceAdapter;
 import com.tokopedia.flight.booking.view.adapter.FlightSimpleAdapter;
 import com.tokopedia.flight.booking.view.presenter.FlightBookingContract;
 import com.tokopedia.flight.booking.view.presenter.FlightBookingPresenter;
@@ -48,9 +49,11 @@ import com.tokopedia.flight.booking.view.viewmodel.FlightBookingCartData;
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingParamViewModel;
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingPassengerViewModel;
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingPhoneCodeViewModel;
+import com.tokopedia.flight.booking.view.viewmodel.FlightInsuranceViewModel;
 import com.tokopedia.flight.booking.view.viewmodel.SimpleViewModel;
 import com.tokopedia.flight.booking.widget.CardWithActionView;
 import com.tokopedia.flight.booking.widget.CountdownTimeView;
+import com.tokopedia.flight.booking.widget.FlightInsuranceView;
 import com.tokopedia.flight.common.constant.FlightFlowConstant;
 import com.tokopedia.flight.common.constant.FlightFlowExtraConstant;
 import com.tokopedia.flight.common.util.FlightDateUtil;
@@ -112,6 +115,8 @@ public class FlightBookingFragment extends BaseDaggerFragment implements FlightB
     private AppCompatTextView tvPhoneCountryCode;
     private RecyclerView pricelistsRecyclerView;
     private AppCompatEditText etPhoneNumber;
+    private LinearLayout insuranceLayout;
+    private RecyclerView insuranceRecyclerView;
 
     private FlightSimpleAdapter priceListAdapter;
 
@@ -122,6 +127,7 @@ public class FlightBookingFragment extends BaseDaggerFragment implements FlightB
     private String contactBirthdate;
     private int contactGender;
     private Date expiredTransactionDate;
+    private FlightInsuranceAdapter flightInsuranceAdapter;
 
     public FlightBookingFragment() {
         // Required empty public constructor
@@ -190,6 +196,8 @@ public class FlightBookingFragment extends BaseDaggerFragment implements FlightB
         fullPageLayout = (NestedScrollView) view.findViewById(R.id.container_full_page);
         sameAsContactContainer = view.findViewById(R.id.container_same_as_contact);
         sameAsContactCheckbox = view.findViewById(R.id.checkbox);
+        insuranceLayout = view.findViewById(R.id.insurance_layout);
+        insuranceRecyclerView = view.findViewById(R.id.rv_insurance);
 
         tvPhoneCountryCode.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -761,6 +769,42 @@ public class FlightBookingFragment extends BaseDaggerFragment implements FlightB
     @Override
     public Date getExpiredTransactionDate() {
         return expiredTransactionDate;
+    }
+
+    @Override
+    public void showInsuranceLayout() {
+        insuranceLayout.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void hideInsuranceLayout() {
+        insuranceLayout.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void renderInsurance(List<FlightInsuranceViewModel> insurances) {
+        if (flightInsuranceAdapter == null) {
+            flightInsuranceAdapter = new FlightInsuranceAdapter(insurances);
+            flightInsuranceAdapter.setActionListener(new FlightInsuranceView.ActionListener() {
+                @Override
+                public void onInsuranceChecked(FlightInsuranceViewModel insurance, boolean checked) {
+                    presenter.onInsuranceChanges(insurance, checked);
+                }
+
+                @Override
+                public void onMoreInfoClicked(String tncUrl, String title) {
+                    startActivity(FlightInsuranceWebviewActivity.getCallingIntent(getActivity(), tncUrl, title));
+                    presenter.onMoreInsuranceInfoClicked();
+                }
+
+                @Override
+                public void onBenefitExpanded() {
+                    presenter.onInsuranceBenefitExpanded();
+                }
+            });
+            insuranceRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+            insuranceRecyclerView.setAdapter(flightInsuranceAdapter);
+        }
     }
 
     //    private View.OnClickListener getCheckboxClickListener() {

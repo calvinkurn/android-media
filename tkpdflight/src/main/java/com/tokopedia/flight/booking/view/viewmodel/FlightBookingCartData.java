@@ -23,9 +23,6 @@ public class FlightBookingCartData implements Parcelable {
     private List<NewFarePrice> newFarePrices;
     private boolean isDomestic;
 
-    public FlightBookingCartData() {
-    }
-
     protected FlightBookingCartData(Parcel in) {
         id = in.readString();
         refreshTime = in.readInt();
@@ -36,6 +33,7 @@ public class FlightBookingCartData implements Parcelable {
         mealViewModels = in.createTypedArrayList(FlightBookingAmenityMetaViewModel.CREATOR);
         newFarePrices = in.createTypedArrayList(NewFarePrice.CREATOR);
         isDomestic = in.readByte() != 0;
+        insurances = in.createTypedArrayList(FlightInsuranceViewModel.CREATOR);
     }
 
     @Override
@@ -49,6 +47,7 @@ public class FlightBookingCartData implements Parcelable {
         dest.writeTypedList(mealViewModels);
         dest.writeTypedList(newFarePrices);
         dest.writeByte((byte) (isDomestic ? 1 : 0));
+        dest.writeTypedList(insurances);
     }
 
     @Override
@@ -68,9 +67,21 @@ public class FlightBookingCartData implements Parcelable {
         }
     };
 
+    public List<FlightInsuranceViewModel> getInsurances() {
+        return insurances;
+    }
+
+    public void setInsurances(List<FlightInsuranceViewModel> insurances) {
+        this.insurances = insurances;
+    }
+
+    private List<FlightInsuranceViewModel> insurances;
+
+    public FlightBookingCartData() {
+    }
+
     public int getRefreshTime() {
         return refreshTime;
-//        return 15;
     }
 
     public void setRefreshTime(int refreshTime) {
