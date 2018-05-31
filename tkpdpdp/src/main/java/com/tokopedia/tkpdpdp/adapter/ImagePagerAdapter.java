@@ -1,6 +1,7 @@
 package com.tokopedia.tkpdpdp.adapter;
 
 import android.content.Context;
+import android.content.res.Configuration;
 import android.support.v4.view.PagerAdapter;
 import android.text.TextUtils;
 import android.view.View;
@@ -46,30 +47,58 @@ public class ImagePagerAdapter extends PagerAdapter {
     @Override
     public Object instantiateItem(final ViewGroup container, final int position) {
         final ImageView imageView = new ImageView(context);
-        imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
-        imageView.setAdjustViewBounds(true);
         final String urlImage = productImages.get(position).getImageSrc();
-        
-        if (!TextUtils.isEmpty(urlTemporary) && position==0 && !urlImage.equals(urlTemporary)) {
-            Glide.with(context.getApplicationContext())
-                    .load(urlImage)
-                    .dontAnimate()
-                    .dontTransform()
-                    .centerCrop()
-                    .diskCacheStrategy(DiskCacheStrategy.SOURCE)
-                    .thumbnail(
-                            Glide.with(context.getApplicationContext())
-                                    .load(urlTemporary)
-                                    .dontAnimate()
-                                    .dontTransform()
-                                    .centerCrop()
-                                    .diskCacheStrategy(DiskCacheStrategy.SOURCE))
-                    .into(imageView);
 
-        } else if (urlImage.equals(urlTemporary)) {
-            ImageHandler.loadImageSourceSizeCenterCrop(context.getApplicationContext(),imageView, urlTemporary);
-        } else {
-            ImageHandler.loadImageSourceSizeCenterCrop(context.getApplicationContext(),imageView, urlImage);
+        int currentOrientation = context.getResources().getConfiguration().orientation;
+        if (currentOrientation == Configuration.ORIENTATION_LANDSCAPE) {
+            imageView.setScaleType(ImageView.ScaleType.FIT_CENTER);
+            imageView.setAdjustViewBounds(true);
+            if (!TextUtils.isEmpty(urlTemporary) && position==0) {
+                Glide.with(context.getApplicationContext())
+                        .load(urlImage)
+                        .dontAnimate()
+                        .dontTransform()
+                        .fitCenter()
+                        .diskCacheStrategy(DiskCacheStrategy.SOURCE)
+                        .thumbnail(
+                                Glide.with(context.getApplicationContext())
+                                        .load(urlTemporary)
+                                        .dontAnimate()
+                                        .dontTransform()
+                                        .fitCenter()
+                                        .diskCacheStrategy(DiskCacheStrategy.SOURCE))
+                        .into(imageView);
+
+            } else if (urlImage.equals(urlTemporary)) {
+                ImageHandler.loadImageSourceSizeFitCenter(context.getApplicationContext(),imageView, urlTemporary);
+            } else {
+                ImageHandler.loadImageSourceSizeFitCenter(context.getApplicationContext(),imageView, urlImage);
+            }
+        }
+        else {
+            imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
+            imageView.setAdjustViewBounds(true);
+            if (!TextUtils.isEmpty(urlTemporary) && position==0) {
+                Glide.with(context.getApplicationContext())
+                        .load(urlImage)
+                        .dontAnimate()
+                        .dontTransform()
+                        .centerCrop()
+                        .diskCacheStrategy(DiskCacheStrategy.SOURCE)
+                        .thumbnail(
+                                Glide.with(context.getApplicationContext())
+                                        .load(urlTemporary)
+                                        .dontAnimate()
+                                        .dontTransform()
+                                        .centerCrop()
+                                        .diskCacheStrategy(DiskCacheStrategy.SOURCE))
+                        .into(imageView);
+
+            } else if (urlImage.equals(urlTemporary)) {
+                ImageHandler.loadImageSourceSizeCenterCrop(context.getApplicationContext(),imageView, urlTemporary);
+            } else {
+                ImageHandler.loadImageSourceSizeCenterCrop(context.getApplicationContext(),imageView, urlImage);
+            }
         }
         imageView.setOnClickListener(new OnClickImage(position));
         container.addView(imageView, 0);

@@ -11,63 +11,63 @@
         <activity
             android:name=".catalog.activity.CatalogDetailActivity"
             android:label="@string/title_activity_catalog"
-             />
+            android:screenOrientation="portrait" />
         <activity
             android:name=".activity.BrowseProductActivity"
             android:label=""
-
+            android:screenOrientation="portrait"
             android:windowSoftInputMode="stateAlwaysHidden" />
         <activity
             android:name=".newdynamicfilter.RevampedDynamicFilterActivity"
             android:label="Filter"
-
+            android:screenOrientation="portrait"
             android:theme="@style/Theme.Tokopedia3"
             android:windowSoftInputMode="adjustResize|stateAlwaysHidden" />
         <activity
             android:name=".newdynamicfilter.DynamicFilterColorActivity"
             android:label="Warna"
-
+            android:screenOrientation="portrait"
             android:theme="@style/Theme.Tokopedia3"
             android:windowSoftInputMode="adjustResize|stateAlwaysHidden" />
         <activity
             android:name=".newdynamicfilter.DynamicFilterLocationActivity"
             android:label="Lokasi"
-
+            android:screenOrientation="portrait"
             android:theme="@style/Theme.Tokopedia3"
             android:windowSoftInputMode="adjustResize|stateAlwaysHidden" />
         <activity
             android:name=".newdynamicfilter.DynamicFilterRatingActivity"
             android:label="Rating"
-
+            android:screenOrientation="portrait"
             android:theme="@style/Theme.Tokopedia3"
             android:windowSoftInputMode="adjustResize" />
         <activity
             android:name=".newdynamicfilter.DynamicFilterDetailGeneralActivity"
             android:label="Filter"
-
+            android:screenOrientation="portrait"
             android:theme="@style/Theme.Tokopedia3"
             android:windowSoftInputMode="adjustResize|stateAlwaysHidden" />
         <activity
             android:name=".newdynamicfilter.DynamicFilterDetailBrandActivity"
             android:label="Brand"
-
+            android:screenOrientation="portrait"
             android:theme="@style/Theme.Tokopedia3"
             android:windowSoftInputMode="adjustResize|stateAlwaysHidden" />
         <activity
             android:name=".newdynamicfilter.DynamicFilterCategoryActivity"
             android:label="Kategori"
-
+            android:screenOrientation="portrait"
             android:theme="@style/Theme.Tokopedia3"
             android:windowSoftInputMode="adjustResize" />
         <activity
             android:name=".activity.SortProductActivity"
             android:label="Urutkan"
-
+            android:screenOrientation="portrait"
             android:theme="@style/Theme.Tokopedia3" />
         <activity
             android:name=".intermediary.view.IntermediaryActivity"
             android:label=""
-
+            android:screenOrientation="portrait"
             android:windowSoftInputMode="stateAlwaysHidden" />
         <activity
             android:name=".intermediary.view.adapter.YoutubeIntermediaryActivity"
@@ -76,10 +76,11 @@
         <activity
             android:name=".newdiscovery.hotlist.view.activity.HotlistActivity"
             android:label="@string/title_activity_hotlist"
-
+            android:screenOrientation="portrait"
             android:windowSoftInputMode="stateAlwaysHidden" />
         <activity
             android:name=".newdiscovery.search.SearchActivity"
+            android:screenOrientation="portrait"
             android:label="@string/image_search_title"
             android:launchMode="singleTask">
             <intent-filter>
@@ -101,7 +102,7 @@
         <activity
             android:name=".imagesearch.search.ImageSearchActivity"
             android:label=""
-             />
+            android:screenOrientation="portrait" />
         <activity android:name=".newdiscovery.category.presentation.CategoryActivity"></activity>
     </application>
 

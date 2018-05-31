@@ -7,8 +7,8 @@ import android.app.FragmentTransaction;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.graphics.Color;
-import android.graphics.Rect;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -23,7 +23,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.text.util.Linkify;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -119,7 +118,6 @@ import com.tokopedia.tkpdpdp.listener.AppBarStateChangeListener;
 import com.tokopedia.tkpdpdp.listener.ProductDetailView;
 import com.tokopedia.tkpdpdp.presenter.ProductDetailPresenter;
 import com.tokopedia.tkpdpdp.presenter.ProductDetailPresenterImpl;
-import com.tokopedia.topads.sourcetagging.constant.TopAdsSourceOption;
 import com.tokopedia.transactionanalytics.CheckoutAnalyticProductDetailPage;
 
 import java.util.ArrayList;
@@ -142,6 +140,8 @@ import static com.tokopedia.core.product.model.productdetail.ProductInfo.PRD_STA
 import static com.tokopedia.core.router.productdetail.ProductDetailRouter.EXTRA_PRODUCT_ID;
 import static com.tokopedia.core.router.productdetail.ProductDetailRouter.WIHSLIST_STATUS_IS_WISHLIST;
 import static com.tokopedia.core.router.productdetail.ProductDetailRouter.WISHLIST_STATUS_UPDATED_POSITION;
+import static com.tokopedia.core.var.TkpdCache.Key.STATE_ORIENTATION_CHANGED;
+import static com.tokopedia.core.var.TkpdCache.PRODUCT_DETAIL;
 import static com.tokopedia.tkpdpdp.VariantActivity.KEY_LEVEL1_SELECTED;
 import static com.tokopedia.tkpdpdp.VariantActivity.KEY_LEVEL2_SELECTED;
 import static com.tokopedia.tkpdpdp.VariantActivity.KEY_PRODUCT_DETAIL_DATA;
@@ -222,6 +222,7 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
     private YoutubeThumbnailViewHolder.YouTubeThumbnailLoadInProcess youTubeThumbnailLoadInProcessListener;
     private ReportProductDialogFragment fragment;
     private Bundle recentBundle;
+    private com.tokopedia.abstraction.common.utils.LocalCacheHandler localCacheHandler;
 
     private ProductPass productPass;
     private ProductDetailData productData;
@@ -262,6 +263,10 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
         if (remoteConfig.getBoolean(ENABLE_VARIANT) == false) {
             useVariant = false;
         }
+        localCacheHandler = new com.tokopedia.abstraction.common.utils.LocalCacheHandler(MainApplication.getAppContext(), PRODUCT_DETAIL);
+        localCacheHandler.putBoolean(STATE_ORIENTATION_CHANGED, Boolean.FALSE);
+        localCacheHandler.applyEditor();
+
     }
 
     @Override
@@ -272,7 +277,6 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
     @Override
     protected void initialPresenter() {
         this.presenter = new ProductDetailPresenterImpl(this);
-        this.presenter.initTopAdsSourceTaggingUseCase(getActivity().getApplicationContext());
     }
 
     @Override
@@ -326,10 +330,7 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
         ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
         ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        float heightScreen = getResources().getDisplayMetrics().widthPixels;
-        CoordinatorLayout.LayoutParams layoutParams = (CoordinatorLayout.LayoutParams) appBarLayout.getLayoutParams();
-        layoutParams.height = (int) heightScreen;
-        appBarLayout.setVisibility(View.VISIBLE);
+        setUpByConfiguration(getResources().getConfiguration());
 
         appBarLayout.addOnOffsetChangedListener(new AppBarStateChangeListener() {
             @Override
@@ -357,6 +358,34 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
             CoordinatorLayout.LayoutParams params = (CoordinatorLayout.LayoutParams) appBarLayout.getLayoutParams();
             params.setBehavior(new FlingBehavior(R.id.nested_scroll_pdp));
+        }
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        setUpByConfiguration(newConfig);
+    }
+
+    private void setUpByConfiguration(Configuration configuration) {
+        float widthScreen = getResources().getDisplayMetrics().widthPixels;
+        if (configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            CoordinatorLayout.LayoutParams layoutParams = (CoordinatorLayout.LayoutParams) appBarLayout.getLayoutParams();
+            layoutParams.height = (int) widthScreen / 3;
+            appBarLayout.setVisibility(View.VISIBLE);
+            if (!localCacheHandler.getBoolean(STATE_ORIENTATION_CHANGED).booleanValue()) {
+                if (productData != null) {
+                    UnifyTracking.eventPDPOrientationChanged(Integer.toString(productData.getInfo().getProductId()));
+                } else {
+                    UnifyTracking.eventPDPOrientationChanged(productPass.getProductId());
+                }
+                localCacheHandler.putBoolean(STATE_ORIENTATION_CHANGED, Boolean.TRUE);
+                localCacheHandler.applyEditor();
+            }
+        } else if (configuration.orientation == Configuration.ORIENTATION_PORTRAIT) {
+            CoordinatorLayout.LayoutParams layoutParams = (CoordinatorLayout.LayoutParams) appBarLayout.getLayoutParams();
+            layoutParams.height = (int) widthScreen;
+            appBarLayout.setVisibility(View.VISIBLE);
         }
     }
 
@@ -1045,7 +1074,6 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
 
     @Override
     public void onRestoreState(Bundle savedInstanceState) {
-        Log.d(TAG, "onRestoreState");
         presenter.processStateData(savedInstanceState, getActivity());
     }
 
@@ -1301,10 +1329,8 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
 
     @Override
     public void onPromoAdsClicked() {
-        ((PdpRouter) getActivity().getApplication()).goToCreateTopadsPromo(getActivity(),
-                String.valueOf(productData.getInfo().getProductId()), productData.getShopInfo().getShopId(),
-                GlobalConfig.isSellerApp() ? TopAdsSourceOption.SA_PDP :
-                        TopAdsSourceOption.MA_PDP);
+        presenter.onPromoAdsClicked(getActivity(), productData.getShopInfo().getShopId(),
+                productData.getInfo().getProductId(), SessionHandler.getLoginID(getActivity()));
     }
 
     @Override
