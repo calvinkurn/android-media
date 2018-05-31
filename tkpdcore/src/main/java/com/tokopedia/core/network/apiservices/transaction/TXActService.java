@@ -13,6 +13,7 @@ import retrofit2.Retrofit;
  * @author Angga.Prasetiyo on 08/12/2015.
  */
 public class TXActService extends AuthService<TXActApi> {
+
     private static final String TAG = TXActService.class.getSimpleName();
 
     @Override
@@ -22,20 +23,11 @@ public class TXActService extends AuthService<TXActApi> {
 
     @Override
     protected Retrofit createRetrofitInstance(String processedBaseUrl) {
-        Retrofit.Builder builder = RetrofitFactory.createRetrofitDefaultConfig(processedBaseUrl);
-        OkHttpFactory factory = OkHttpFactory.create();
-        factory.addOkHttpRetryPolicy(getOkHttpRetryPolicy());
-
-        String userAgent = System.getProperty("http.agent");
-
-        OkHttpClient client;
-        if (userAgent != null && !userAgent.isEmpty())
-            client = factory.buildClientDefaultAuthWithCustomUserAgent(userAgent);
-        else
-            client = factory.buildClientDefaultAuth();
-
-        builder.client(client);
-        return builder.build();
+        return RetrofitFactory.createRetrofitDefaultConfig(processedBaseUrl)
+                .client(OkHttpFactory.create()
+                        .addOkHttpRetryPolicy(getOkHttpRetryPolicy())
+                        .buildClientDefaultAuthWithUserAgent())
+                .build();
     }
 
     @Override

@@ -167,12 +167,11 @@ public class OkHttpFactory {
                 .build();
     }
 
-    public OkHttpClient buildClientDefaultAuthWithCustomUserAgent(String userAgent) {
+    public OkHttpClient buildClientDefaultAuthWithUserAgent() {
         return new TkpdOkHttpBuilder(builder)
                 .addInterceptor(new FingerprintInterceptor())
                 .addInterceptor(new CacheApiInterceptor())
-                .addInterceptor(new TkpdAuthInterceptor())
-                .addInterceptor(new UserAgentInterceptor(userAgent))
+                .addInterceptor(new UserAgentInterceptor())
                 .setOkHttpRetryPolicy(getOkHttpRetryPolicy())
                 .addDebugInterceptor()
                 .build();
