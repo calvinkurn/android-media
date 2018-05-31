@@ -151,7 +151,7 @@ public class OTPPresenter implements OTP.Presenter {
             });
         } else {
             viewListener.onPaymentError(new Exception("Data error"));
-        }
+        }o
     }
 
     @Override
