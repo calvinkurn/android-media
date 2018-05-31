@@ -19,14 +19,20 @@ import com.tokopedia.digital_deals.view.contractor.CheckoutDealContractor;
 import com.tokopedia.digital_deals.view.viewmodel.DealsDetailsViewModel;
 import com.tokopedia.digital_deals.view.viewmodel.LocationViewModel;
 import com.tokopedia.digital_deals.view.viewmodel.PackageViewModel;
+import com.tokopedia.loyalty.view.activity.LoyaltyActivity;
 import com.tokopedia.oms.data.entity.response.checkoutreponse.CheckoutResponse;
 import com.tokopedia.oms.data.entity.response.verifyresponse.Cart;
+import com.tokopedia.oms.domain.model.request.cart.CartItem;
+import com.tokopedia.oms.domain.model.request.cart.CartItems;
+import com.tokopedia.oms.domain.model.request.cart.Configuration;
+import com.tokopedia.oms.domain.model.request.cart.MetaData;
 import com.tokopedia.oms.domain.postusecase.PostPaymentUseCase;
 import com.tokopedia.oms.scrooge.ScroogePGUtil;
 import com.tokopedia.oms.view.utils.Utils;
 import com.tokopedia.usecase.RequestParams;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -39,7 +45,7 @@ public class CheckoutDealPresenter
 
     private ProfileUseCase profileUseCase;
     private PostPaymentUseCase postPaymentUseCase;
-    private String promocode;
+    private String promocode="";
     private boolean isPromoCodeCase;
     private ArrayList<String> hints = new ArrayList<>();
     private ArrayList<String> errors = new ArrayList<>();
@@ -118,14 +124,45 @@ public class CheckoutDealPresenter
         goToLoyaltyActivity();
     }
 
+    private JsonObject convertPackageToCartItem(PackageViewModel packageViewModel) {
+        Configuration config = new Configuration();
+        config.setPrice(packageViewModel.getSalesPrice() * packageViewModel.getSelectedQuantity());
+        MetaData meta = new MetaData();
+        meta.setEntityCategoryId(packageViewModel.getCategoryId());
+        meta.setEntityProductId(packageViewModel.getProductId());
+        meta.setTotalTicketCount(packageViewModel.getSelectedQuantity());
+        meta.setTotalTicketPrice(packageViewModel.getSalesPrice() * packageViewModel.getSelectedQuantity());
+
+
+        meta.setEntityStartTime("");
+
+
+        List<CartItem> cartItems = new ArrayList<>();
+        CartItem cartItem = new CartItem();
+        cartItem.setMetaData(meta);
+        cartItem.setConfiguration(config);
+        cartItem.setQuantity(packageViewModel.getSelectedQuantity());
+        cartItem.setProductId(packageViewModel.getDigitalProductID());
+
+
+        cartItems.add(cartItem);
+        CartItems cart = new CartItems();
+        cart.setCartItems(cartItems);
+        cart.setPromocode(promocode);
+
+        JsonElement jsonElement = new JsonParser().parse(new Gson().toJson(cart));
+        JsonObject requestBody = jsonElement.getAsJsonObject();
+        return requestBody;
+    }
+
 
     private void goToLoyaltyActivity() {
-//        JsonObject requestBody = convertPackageToCartItem(checkoutData);
-//        Intent loyaltyIntent = LoyaltyActivity.newInstanceCouponActive(getView().getActivity(), Utils.Constants.DEALS, Utils.Constants.DEALS);
-//        loyaltyIntent.putExtra(com.tokopedia.oms.view.utils.Utils.Constants.CHECKOUTDATA, requestBody.toString());
-//        loyaltyIntent.putExtra(LoyaltyActivity.EXTRA_PRODUCTID, checkoutData.getDigitalProductID());
-//        loyaltyIntent.putExtra(LoyaltyActivity.EXTRA_CATEGORYID, checkoutData.getDigitalCategoryID());
-//        getView().navigateToActivityRequest(loyaltyIntent, LoyaltyActivity.LOYALTY_REQUEST_CODE);
+        JsonObject requestBody = convertPackageToCartItem(packageViewModel);
+        Intent loyaltyIntent = LoyaltyActivity.newInstanceCouponActive(getView().getActivity(), com.tokopedia.digital_deals.view.utils.Utils.Constants.DEALS, com.tokopedia.digital_deals.view.utils.Utils.Constants.DEALS);
+        loyaltyIntent.putExtra(com.tokopedia.oms.view.utils.Utils.Constants.CHECKOUTDATA, requestBody.toString());
+        loyaltyIntent.putExtra(LoyaltyActivity.EXTRA_PRODUCTID, packageViewModel.getDigitalProductID());
+        loyaltyIntent.putExtra(LoyaltyActivity.EXTRA_CATEGORYID, packageViewModel.getDigitalCategoryID());
+        getView().navigateToActivityRequest(loyaltyIntent, LoyaltyActivity.LOYALTY_REQUEST_CODE);
     }
 
     @Override

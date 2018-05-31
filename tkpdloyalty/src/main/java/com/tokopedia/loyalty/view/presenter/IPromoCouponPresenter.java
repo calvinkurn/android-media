@@ -35,7 +35,9 @@ public interface IPromoCouponPresenter {
 
     void submitEventVoucher(CouponData couponData, JsonObject requestBody, boolean flag);
 
-    void parseAndSubmitEventVoucher(String json,CouponData couponData);
+    void submitDealVoucher(CouponData couponData, JsonObject requestBody, boolean flag);
+
+    void parseAndSubmitEventVoucher(String json, CouponData couponData, String platform);
 
     void detachView();
 

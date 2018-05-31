@@ -88,7 +88,8 @@ public class DealDetailsAllLocationsAdapter extends RecyclerView.Adapter<DealDet
         @Override
         public void onClick(View v) {
             if(v.getId()==R.id.iv_map){
-                Uri gmmIntentUri = Uri.parse("geo:"+outlets.get(getIndex()).getCoordinates());
+//                Uri gmmIntentUri=Uri.parse("https://www.google.com/maps/dir/?api=1&destination="+outlets.get(getIndex()).getCoordinates());
+                Uri gmmIntentUri = Uri.parse("geo:0,0?q="+outlets.get(getIndex()).getCoordinates());
                 Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
                 mapIntent.setPackage("com.google.android.apps.maps");
                 if (mapIntent.resolveActivity(context.getPackageManager()) != null) {

@@ -33,6 +33,7 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import static com.tokopedia.loyalty.view.activity.LoyaltyActivity.DEAL_STRING;
 import static com.tokopedia.loyalty.view.activity.LoyaltyActivity.DIGITAL_STRING;
 import static com.tokopedia.loyalty.view.activity.LoyaltyActivity.EVENT_STRING;
 import static com.tokopedia.loyalty.view.activity.LoyaltyActivity.EXTRA_CART_ID;
@@ -388,9 +389,9 @@ public class PromoCouponFragment extends BasePresenterFragment
         UnifyTracking.eventCouponChosen(data.getTitle());
         if (getArguments().getString(PLATFORM_KEY).equals(DIGITAL_STRING)) {
             dPresenter.submitDigitalVoucher(data, getArguments().getString(CATEGORY_KEY));
-        } else if (getArguments().getString(PLATFORM_KEY).equals(EVENT_STRING)) {
+        } else if (getArguments().getString(PLATFORM_KEY).equals(EVENT_STRING) || getArguments().getString(PLATFORM_KEY).equals(DEAL_STRING)) {
             String jsonbody = getActivity().getIntent().getStringExtra(CHECKOUT);
-            dPresenter.parseAndSubmitEventVoucher(jsonbody, data);
+            dPresenter.parseAndSubmitEventVoucher(jsonbody, data, PLATFORM_KEY);
         } else if (getArguments().getString(PLATFORM_KEY).equalsIgnoreCase(FLIGHT_STRING)) {
             dPresenter.submitFlightVoucher(data, getArguments().getString(EXTRA_CART_ID));
         } else {
@@ -423,7 +424,7 @@ public class PromoCouponFragment extends BasePresenterFragment
     @Override
     public void onRefresh(View view) {
         if (refreshHandler.isRefreshing())
-            if (getArguments().getString(PLATFORM_KEY).equals(EVENT_STRING)) {
+            if (getArguments().getString(PLATFORM_KEY).equals(EVENT_STRING) || getArguments().getString(PLATFORM_KEY).equals(DEAL_STRING)) {
                 dPresenter.processGetEventCouponList(getArguments().getInt(DIGITAL_CATEGORY_ID), getArguments().getInt(DIGITAL_PRODUCT_ID));
             } else {
                 dPresenter.processGetCouponList(getArguments().getString(PLATFORM_KEY));

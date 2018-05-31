@@ -30,6 +30,7 @@ import com.tokopedia.loyalty.view.view.IPromoCodeView;
 
 import javax.inject.Inject;
 
+import static com.tokopedia.loyalty.view.activity.LoyaltyActivity.DEAL_STRING;
 import static com.tokopedia.loyalty.view.activity.LoyaltyActivity.DIGITAL_STRING;
 import static com.tokopedia.loyalty.view.activity.LoyaltyActivity.EVENT_STRING;
 import static com.tokopedia.loyalty.view.activity.LoyaltyActivity.EXTRA_CART_ID;
@@ -123,7 +124,12 @@ public class PromoCodeFragment extends BasePresenterFragment implements IPromoCo
             submitVoucherButton.setOnClickListener(onSubmitEventVoucher(voucherCodeField,
                     voucherCodeFieldHolder));
 
-        } else submitVoucherButton.setOnClickListener(onSubmitMarketplaceVoucher(
+        }else if (getArguments().getString(PLATFORM_KEY).equals(DEAL_STRING)) {
+            submitVoucherButton.setOnClickListener(onSubmitDealVoucher(voucherCodeField,
+                    voucherCodeFieldHolder));
+
+        }
+        else submitVoucherButton.setOnClickListener(onSubmitMarketplaceVoucher(
                 voucherCodeField,
                 voucherCodeFieldHolder)
         );
@@ -199,6 +205,32 @@ public class PromoCodeFragment extends BasePresenterFragment implements IPromoCo
                         JsonElement jsonElement = new JsonParser().parse(jsonbody);
                         requestBody = jsonElement.getAsJsonObject();
                         dPresenter.processCheckEventPromoCode(
+                                voucherCodeField.getText().toString(),
+                                requestBody,
+                                false);
+                    }
+
+                }
+            }
+        };
+    }
+
+    private View.OnClickListener onSubmitDealVoucher(
+            final EditText voucherCodeField,
+            final TextInputLayout textHolder) {
+        return new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                voucherCodeFieldHolder.setError(null);
+                if (voucherCodeField.getText().toString().isEmpty()) {
+                    textHolder.setError(getActivity().getString(R.string.error_empty_voucher_code));
+                } else {
+                    String jsonbody = getActivity().getIntent().getStringExtra(CHECKOUT);
+                    JsonObject requestBody = null;
+                    if (jsonbody != null || jsonbody.length() > 0) {
+                        JsonElement jsonElement = new JsonParser().parse(jsonbody);
+                        requestBody = jsonElement.getAsJsonObject();
+                        dPresenter.processCheckDealPromoCode(
                                 voucherCodeField.getText().toString(),
                                 requestBody,
                                 false);

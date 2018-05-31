@@ -477,4 +477,8 @@ public class Utils {
         public final static String DEALS = "deals";
     }
 
+    public String fetchOrderId(String url){
+        return url.substring(url.lastIndexOf('/')+1);
+    }
+
 }

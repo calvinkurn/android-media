@@ -2,13 +2,11 @@ package com.tokopedia.digital_deals.di;
 
 import android.content.Context;
 
-import com.google.gson.Gson;
-import com.tokopedia.abstraction.common.data.model.session.UserSession;
+import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.di.scope.ApplicationScope;
 import com.tokopedia.abstraction.common.network.interceptor.HeaderErrorResponseInterceptor;
 import com.tokopedia.abstraction.common.network.interceptor.TkpdAuthInterceptor;
 import com.tokopedia.core.base.data.executor.JobExecutor;
-import com.tokopedia.core.base.di.qualifier.ApplicationContext;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.core.base.presentation.UIThread;
@@ -21,6 +19,7 @@ import com.tokopedia.core.drawer2.domain.interactor.ProfileUseCase;
 import com.tokopedia.core.network.apiservices.user.PeopleService;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.digital_deals.DealsModuleRouter;
 import com.tokopedia.digital_deals.data.DealsDataStoreFactory;
 import com.tokopedia.digital_deals.data.DealsRepositoryData;
 import com.tokopedia.digital_deals.data.source.DealsApi;
@@ -38,9 +37,6 @@ import com.tokopedia.digital_deals.domain.GetNextDealPageUseCase;
 import com.tokopedia.digital_deals.domain.GetSearchDealsListRequestUseCase;
 import com.tokopedia.digital_deals.domain.GetSearchNextUseCase;
 import com.tokopedia.oms.di.OmsModule;
-import com.tokopedia.oms.di.OmsQualifier;
-import com.tokopedia.oms.domain.OmsRepository;
-import com.tokopedia.oms.domain.postusecase.PostVerifyCartUseCase;
 
 import dagger.Module;
 import dagger.Provides;
@@ -192,11 +188,12 @@ public class DealsModule {
     @DealsQualifier
     @Provides
     public OkHttpClient provideOkHttpClient(@ApplicationScope HttpLoggingInterceptor httpLoggingInterceptor,
-                                            HeaderErrorResponseInterceptor errorResponseInterceptor, TkpdAuthInterceptor authInterceptor) {
+                                            HeaderErrorResponseInterceptor errorResponseInterceptor, TkpdAuthInterceptor authInterceptor, @ApplicationContext Context context) {
         return new OkHttpClient.Builder()
                 .addInterceptor(authInterceptor)
                 .addInterceptor(errorResponseInterceptor)
                 .addInterceptor(httpLoggingInterceptor)
+                .addInterceptor(((DealsModuleRouter) context).getChuckInterceptor())
                 .build();
     }
 

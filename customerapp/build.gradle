@@ -87,7 +87,7 @@ buildscript {
         maven { url 'https://hansel.io/maven' }
     }
     dependencies {
-        classpath ('com.jakewharton:butterknife-gradle-plugin:9.0.0-SNAPSHOT'){
+        classpath('com.jakewharton:butterknife-gradle-plugin:9.0.0-SNAPSHOT') {
             exclude group: 'com.android.tools.build', module: 'gradle'
         }
         classpath 'io.fabric.tools:gradle:1.+'
@@ -149,12 +149,12 @@ android {
 
     buildTypes {
         debug {
-            ext.enableHansel=false
+            ext.enableHansel = false
             signingConfig signingConfigs.debug
             minifyEnabled false
             zipAlignEnabled false
             buildConfigField "boolean", "ENABLE_DISTRIBUTION", allowDistribution()
-            proguardFiles  'proguard-rules.txt'
+            proguardFiles 'proguard-rules.txt'
         }
         release {
             signingConfig signingConfigs.debug
@@ -295,6 +295,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.cacheApi)
     implementation project(rootProject.ext.libraries.abstraction)
     implementation project(rootProject.ext.libraries.design)
+    implementation project(rootProject.ext.libraries.omsApi)
     implementation project(rootProject.ext.libraries.useCase)
     implementation project(rootProject.ext.libraries.fingerprint)
     implementation project(rootProject.ext.libraries.imageuploader)
@@ -307,7 +308,7 @@ dependencies {
     implementation rootProject.ext.playServicesDependencies.analytics
     implementation rootProject.ext.playServicesDependencies.perfMon
 
-    implementation (rootProject.ext.debugToolsDependencies.chuck) {
+    implementation(rootProject.ext.debugToolsDependencies.chuck) {
         exclude group: 'com.squareup.okhttp3'
         exclude group: 'com.squareup.okio'
         exclude group: 'com.android.support'
@@ -328,13 +329,13 @@ dependencies {
     implementation rootProject.ext.networkDependencies.glide
 
     implementation rootProject.ext.analyticsDependencies.appsflyer
-    implementation (rootProject.ext.analyticsDependencies.branch) {
+    implementation(rootProject.ext.analyticsDependencies.branch) {
         exclude module: 'answers-shim'
     }
-    implementation (rootProject.ext.analyticsDependencies.moengage) {
+    implementation(rootProject.ext.analyticsDependencies.moengage) {
         exclude group: 'com.moengage', module: 'moe-push-gcm'
     }
-    implementation (rootProject.ext.analyticsDependencies.moengageMSG) {
+    implementation(rootProject.ext.analyticsDependencies.moengageMSG) {
         exclude group: 'com.android.support'
     }
 
@@ -403,7 +404,7 @@ dependencies {
     }
 
     // Cloud testing
-    androidTestImplementation (name:'cloudtestingscreenshotter_lib', ext:'aar')
+    androidTestImplementation(name: 'cloudtestingscreenshotter_lib', ext: 'aar')
 
     androidTestImplementation(rootProject.ext.miscDependencies.facebook) {
         exclude group: 'com.android.support'
@@ -416,7 +417,7 @@ dependencies {
 
 
 project.ext.sentryCli = [
-        logLevel: "debug",
+        logLevel   : "debug",
         flavorAware: true
 ]
 

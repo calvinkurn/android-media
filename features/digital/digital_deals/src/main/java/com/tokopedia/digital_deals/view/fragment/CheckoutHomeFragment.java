@@ -136,6 +136,7 @@ public class CheckoutHomeFragment extends BaseDaggerFragment implements Checkout
         baseMainContent = view.findViewById(R.id.base_main_content);
         mainContent = view.findViewById(R.id.main_content);
 
+
     }
 
 
@@ -184,6 +185,7 @@ public class CheckoutHomeFragment extends BaseDaggerFragment implements Checkout
         }
         llPaymentMethod.setOnClickListener(this);
         textViewUpdateEmail.setOnClickListener(this);
+        clApplyPromo.setOnClickListener(this);
         baseMainContent.setVisibility(View.VISIBLE);
         llPaymentMethod.setVisibility(View.VISIBLE);
     }
@@ -272,5 +274,10 @@ public class CheckoutHomeFragment extends BaseDaggerFragment implements Checkout
     @Override
     protected String getScreenName() {
         return null;
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
     }
 }
