@@ -47,7 +47,7 @@ public class FlightBookingPassengerPresenter extends BaseDaggerPresenter<FlightB
         if (isAdultPassenger()) {
             getView().renderHeaderSubtitle(R.string.flight_booking_passenger_adult_subtitle);
             getView().renderSpinnerForAdult();
-            if (getView().isMandatoryDoB()) {
+            if (getView().isMandatoryDoB() || !getView().isDomestic()) {
                 getView().showBirthdayInputView();
             } else {
                 getView().hideBirthdayInputView();
@@ -337,7 +337,7 @@ public class FlightBookingPassengerPresenter extends BaseDaggerPresenter<FlightB
         currentPassengerViewModel.setPassportIssuerCountry(selectedPassenger.getPassportIssuerCountry());
 
         if (flightPassengerInfoValidator.validateBirthdateNotEmpty(selectedPassenger.getPassengerBirthdate()) &&
-                (isChildPassenger() || isInfantPassenger() || getView().isMandatoryDoB())) {
+                (isChildPassenger() || isInfantPassenger() || getView().isMandatoryDoB() || !getView().isDomestic())) {
             currentPassengerViewModel.setPassengerBirthdate(selectedPassenger.getPassengerBirthdate());
         }
 
@@ -493,11 +493,11 @@ public class FlightBookingPassengerPresenter extends BaseDaggerPresenter<FlightB
             isValid = false;
             getView().showPassengerBirthdateEmptyError(R.string.flight_booking_passenger_birthdate_empty_error);
         } else if ((isAdultPassenger()) && !flightPassengerInfoValidator.validateBirthdateNotEmpty(
-                getView().getPassengerBirthDate()) && getView().isMandatoryDoB()) {
+                getView().getPassengerBirthDate()) && (getView().isMandatoryDoB() || !getView().isDomestic())) {
             isValid = false;
             getView().showPassengerBirthdateEmptyError(R.string.flight_booking_passenger_birthdate_empty_error);
         } else if (isAdultPassenger() && flightPassengerInfoValidator.validateBirthdateNotEmpty(
-                getView().getPassengerBirthDate()) && getView().isMandatoryDoB() &&
+                getView().getPassengerBirthDate()) &&  (getView().isMandatoryDoB() || !getView().isDomestic()) &&
                 flightPassengerInfoValidator.validateDateMoreThan(getView().getPassengerBirthDate(), twelveYearsAgo)) {
             isValid = false;
             getView().showPassengerAdultBirthdateShouldMoreThan12Years(R.string.flight_booking_passenger_birthdate_adult_shoud_more_than_twelve_years);

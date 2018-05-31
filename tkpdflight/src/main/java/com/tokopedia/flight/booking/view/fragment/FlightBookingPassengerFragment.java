@@ -100,7 +100,7 @@ public class FlightBookingPassengerFragment extends BaseDaggerFragment implement
     private String departureDate;
     private String selectedPassengerId;
     private String requestId;
-    private boolean isDomestic = false;
+    private boolean isDomestic = true;
 
     public FlightBookingPassengerFragment() {
         // Required empty public constructor
