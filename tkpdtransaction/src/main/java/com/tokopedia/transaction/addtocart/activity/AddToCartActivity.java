@@ -777,6 +777,7 @@ public class AddToCartActivity extends BasePresenterActivity<AddToCartPresenter>
         presenter.sendToGTM(this);
         Intent intent1 = new Intent(this, AddAddressActivity.class);
         Bundle bundle = new Bundle();
+        bundle.putBoolean(ManageAddressConstant.IS_DISTRICT_RECOMMENDATION, false);
         bundle.putBoolean(ManageAddressConstant.IS_EDIT, false);
         intent1.putExtras(bundle);
         startActivityForResult(intent1, ManageAddressConstant.REQUEST_CODE_PARAM_CREATE);

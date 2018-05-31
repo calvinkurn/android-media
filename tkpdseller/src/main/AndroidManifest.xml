@@ -9,38 +9,38 @@
 
         <activity
             android:name=".common.imageeditor.GalleryCropActivity"
-             />
+            android:screenOrientation="portrait" />
 
         <activity
             android:name=".shop.open.view.activity.ShopOpenRoutingActivity"
             android:label="@string/title_open_shop"
-             />
+            android:screenOrientation="portrait" />
 
         <activity
             android:name=".shop.open.view.activity.ShopOpenCreateSuccessActivity"
             android:label="@string/title_shop_is_active"
-             />
+            android:screenOrientation="portrait" />
 
         <activity
             android:name=".shop.open.view.activity.ShopOpenReserveDomainSuccessActivity"
             android:label="@string/title_shop_is_active"
-             />
+            android:screenOrientation="portrait" />
 
         <activity
             android:name=".shop.open.view.activity.ShopOpenDomainActivity"
             android:label="@string/title_open_shop"
-             />
+            android:screenOrientation="portrait" />
 
         <activity
             android:name=".shop.open.view.activity.ShopOpenMandatoryActivity"
             android:exported="true"
             android:label="@string/title_shop_setting"
-
+            android:screenOrientation="portrait"
             android:windowSoftInputMode="stateHidden" />
 
         <activity
             android:name=".common.imageeditor.GalleryCropWatermarkActivity"
-             />
+            android:screenOrientation="portrait" />
 
         <activity
             android:name=".seller.info.view.activity.SellerInfoWebViewActivity"
@@ -50,51 +50,51 @@
             android:name=".seller.info.view.activity.SellerInfoActivity"
             android:exported="true"
             android:label="@string/title_seller_info"
-             />
+            android:screenOrientation="portrait" />
 
         <activity
             android:name=".shopscore.view.activity.ShopScoreDetailActivity"
             android:label="@string/title_shop_score"
-             />
+            android:screenOrientation="portrait" />
         <activity
             android:name=".selling.orderReject.ConfirmRejectOrderActivity"
             android:label="@string/title_reject_confirm"
-             />
+            android:screenOrientation="portrait" />
         <activity
             android:name=".selling.view.activity.SellingDetailActivity"
             android:label="@string/title_activity_people_tx_details"
-
+            android:screenOrientation="portrait"
             android:theme="@style/Theme.Tokopedia3" />
         <activity
             android:name=".selling.view.activity.ActivitySellingTransaction"
             android:label="@string/title_activity_shop_transaction_new"
-
+            android:screenOrientation="portrait"
             android:windowSoftInputMode="stateAlwaysHidden" />
         <activity
             android:name=".OrderHistoryView"
             android:label="@string/title_activity_order_history_view"
-             />
+            android:screenOrientation="portrait" />
         <activity
             android:name=".ShippingConfirmationDetail"
             android:label="@string/title_activity_shipping_confirmation_detail"
-             />
+            android:screenOrientation="portrait" />
         <activity
             android:name=".instoped.InstopedActivity"
-             />
+            android:screenOrientation="portrait" />
         <activity
             android:name=".instoped.InstopedSellerActivity"
-             />
+            android:screenOrientation="portrait" />
         <activity
             android:name=".instoped.InstopedSellerCropperActivity"
-             />
+            android:screenOrientation="portrait" />
         <activity
             android:name=".instoped.InstopedSellerCropWatermarkActivity"
-             />
+            android:screenOrientation="portrait" />
 
         <activity
             android:name=".common.datepicker.view.activity.DatePickerActivity"
             android:label="@string/title_date_setting"
-
+            android:screenOrientation="portrait"
             android:theme="@style/Theme.Tokopedia3" />
 
         <activity
@@ -108,24 +108,24 @@
             android:name=".product.manage.view.activity.ProductManageActivity"
             android:label="@string/title_activity_manage_product"
             android:launchMode="singleTask"
-
+            android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustPan" />
 
         <activity
             android:name=".product.manage.view.activity.ProductManageSortActivity"
             android:label="@string/title_sort_by"
-             />
+            android:screenOrientation="portrait" />
 
         <activity
             android:name=".product.manage.view.activity.ProductManageFilterActivity"
             android:label="@string/title_filter_but"
-             />
+            android:screenOrientation="portrait" />
 
         <!-- Product Add / Edit -->
         <activity
             android:name=".product.edit.view.activity.ProductAddActivity"
             android:label="@string/title_activity_add_product"
-            >
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.SEND" />
 
@@ -145,121 +145,121 @@
         <activity
             android:name="com.tokopedia.seller.common.imageeditor.ImageEditorActivity"
             android:label="@string/title_activity_image_edit"
-
+            android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat" />
         <activity
             android:name="com.tokopedia.seller.common.imageeditor.ImageEditorWatermarkActivity"
             android:label="@string/title_activity_image_edit"
-
+            android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat" />
 
         <activity
             android:name=".product.edit.view.activity.ProductEditActivity"
             android:label="@string/title_activity_edit_product"
-             />
+            android:screenOrientation="portrait" />
 
         <activity
             android:name=".product.edit.view.activity.ProductDraftAddActivity"
             android:label="@string/title_activity_add_product"
-             />
+            android:screenOrientation="portrait" />
 
         <activity
             android:name=".product.edit.view.activity.ProductDraftEditActivity"
             android:label="@string/title_activity_edit_product"
-             />
+            android:screenOrientation="portrait" />
 
         <activity
             android:name=".product.edit.view.activity.ProductDuplicateActivity"
             android:label="@string/title_activity_add_product"
-             />
+            android:screenOrientation="portrait" />
 
         <activity
             android:name=".product.edit.view.activity.ProductScoringDetailActivity"
             android:label="@string/product_title_activity_product_score"
-             />
+            android:screenOrientation="portrait" />
 
         <activity
             android:name=".product.category.view.activity.CategoryPickerActivity"
             android:label="@string/title_activity_category_picker"
-             />
+            android:screenOrientation="portrait" />
 
         <activity
             android:name=".product.category.view.activity.CategoryDynamicPickerActivity"
             android:label="@string/title_activity_category_picker"
-             />
+            android:screenOrientation="portrait" />
 
         <activity
             android:name=".product.etalase.view.activity.EtalasePickerActivity"
             android:label="@string/product_title_activity_etalase_picker"
-             />
+            android:screenOrientation="portrait" />
 
         <activity
             android:name=".product.edit.view.activity.ProductAddCatalogPickerActivity"
             android:exported="true"
             android:label="@string/title_activity_catalog_picker"
-             />
+            android:screenOrientation="portrait" />
 
         <activity
             android:name=".product.edit.view.activity.ProductAddDescriptionPickerActivity"
             android:label="@string/product_label_product_description"
-
+            android:screenOrientation="portrait"
             android:theme="@style/Theme.White" />
 
         <activity
             android:name=".product.edit.view.activity.ProductAddDescriptionInfoActivity"
             android:label="@string/product_desc_guide"
-             />
+            android:screenOrientation="portrait" />
 
         <activity
             android:name=".product.edit.view.activity.ProductAddVideoActivity"
             android:label="@string/product_label_video"
-             />
+            android:screenOrientation="portrait" />
 
         <activity
             android:name=".product.variant.view.activity.ProductVariantDashboardActivity"
             android:exported="true"
             android:label="@string/product_variant_label_title"
-             />
+            android:screenOrientation="portrait" />
 
         <activity
             android:name=".product.variant.view.activity.ProductVariantPickerActivity"
             android:label="@string/product_variant_label_title"
-             />
+            android:screenOrientation="portrait" />
 
         <activity
             android:name=".product.variant.view.activity.ProductVariantDetailLevel1ListActivity"
             android:label="@string/product_variant_detail_label_title"
-             />
+            android:screenOrientation="portrait" />
 
         <activity
             android:name=".product.variant.view.activity.ProductVariantDetailLevelLeafActivity"
             android:label="@string/product_variant_detail_label_title"
-             />
+            android:screenOrientation="portrait" />
 
         <activity
             android:name=".product.draft.view.activity.ProductDraftListActivity"
             android:exported="true"
             android:label="@string/title_activity_draft_product"
-             />
+            android:screenOrientation="portrait" />
 
         <!-- Opportunity -->
         <activity
             android:name=".opportunity.activity.OpportunitySortActivity"
             android:label="@string/title_sort_but"
-             />
+            android:screenOrientation="portrait" />
         <activity
             android:name=".opportunity.activity.OpportunityFilterActivity"
             android:label="@string/title_filter_but"
-
+            android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustPan" />
         <activity
             android:name=".opportunity.activity.OpportunityDetailActivity"
             android:label="@string/title_opportunity_detail"
-             />
+            android:screenOrientation="portrait" />
         <activity
             android:name=".opportunity.activity.OpportunityTncActivity"
             android:label="@string/take_opportunity"
-             />
+            android:screenOrientation="portrait" />
 
         <activity
             android:name=".reputation.view.activity.SellerReputationDatePickerActivity"
@@ -276,28 +276,28 @@
         <activity
             android:name=".shopsettings.ManageShopActivity"
             android:label="@string/title_activity_manage_shop"
-             />
+            android:screenOrientation="portrait" />
         <activity
             android:name=".shopsettings.payment.PaymentEditor"
             android:label="@string/title_activity_payment_editor"
-             />
+            android:screenOrientation="portrait" />
         <activity
             android:name=".shopsettings.address.activity.ManageShopAddress"
             android:label="@string/title_activity_manage_shop_address"
-             />
+            android:screenOrientation="portrait" />
         <activity
             android:name=".shopsettings.address.activity.ShopAddressForm"
             android:label="@string/title_activity_shop_address_form"
-             />
+            android:screenOrientation="portrait" />
         <activity
             android:name=".shopsettings.etalase.activity.EtalaseShopEditor"
             android:label="@string/title_activity_etalase_shop_editor"
-             />
+            android:screenOrientation="portrait" />
 
         <activity
             android:name=".shopsettings.shipping.EditShippingActivity"
             android:label="@string/shop_shipping_setting"
-            >
+            android:screenOrientation="portrait">
             <intent-filter tools:ignore="GoogleAppIndexingWarning">
                 <action android:name="android.intent.action.VIEW" />
 
@@ -318,31 +318,31 @@
         <activity
             android:name=".shopsettings.notes.activity.ManageShopNotesActivity"
             android:label="@string/title_activity_manage_shop_notes"
-             />
+            android:screenOrientation="portrait" />
 
         <activity
             android:name="com.tokopedia.seller.product.etalase.view.activity.EtalaseDynamicPickerActivity"
             android:label="@string/product_title_activity_etalase_picker"
-             />
+            android:screenOrientation="portrait" />
 
         <activity
             android:name="com.tokopedia.seller.product.etalase.view.activity.EtalaseDynamicPickerGeneralActivity"
             android:label="@string/product_title_activity_etalase_picker"
-             />
+            android:screenOrientation="portrait" />
 
         <activity
             android:name="com.tokopedia.seller.product.etalase.view.activity.EtalaseDynamicPickerSellerActivity"
             android:label="@string/product_title_activity_etalase_picker"
-             />
+            android:screenOrientation="portrait" />
 
         <activity
             android:name=".product.picker.view.ProductListPickerActivity"
             android:label="@string/title_activity_product_list_picker"
-
+            android:screenOrientation="portrait"
             android:windowSoftInputMode="stateHidden" />
         <activity
             android:name=".common.gallery.GalleryCropActivity"
-             />
+            android:screenOrientation="portrait" />
 
         <activity
             android:name=".selling.view.fragment.CustomScannerBarcodeActivity"
