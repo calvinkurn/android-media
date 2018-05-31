@@ -266,7 +266,7 @@ public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
             json = new JSONObject(response);
             String status = json.optString("status", "OK");
             return status.equals("UNDER_MAINTENANCE");
-        } catch (JSONException e) {
+        } catch (Throwable e) {
             e.printStackTrace();
             return false;
         }

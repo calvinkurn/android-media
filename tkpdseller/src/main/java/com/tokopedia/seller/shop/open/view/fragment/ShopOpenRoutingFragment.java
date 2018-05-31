@@ -109,4 +109,10 @@ public class ShopOpenRoutingFragment extends BaseDaggerFragment implements ShopO
     protected String getScreenName() {
         return null;
     }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        shopCheckIsReservePresenter.detachView();
+    }
 }
