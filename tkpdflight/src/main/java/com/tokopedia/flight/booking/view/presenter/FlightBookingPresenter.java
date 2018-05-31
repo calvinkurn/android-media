@@ -314,6 +314,7 @@ public class FlightBookingPresenter extends FlightBaseBookingPresenter<FlightBoo
                             public void onError(Throwable e) {
                                 e.printStackTrace();
                                 if (isViewAttached()) {
+                                    getView().hideUpdatePriceLoading();
                                     getView().hideFullPageLoading();
                                     getView().showGetCartDataErrorStateLayout(e);
                                 }
@@ -918,7 +919,10 @@ public class FlightBookingPresenter extends FlightBaseBookingPresenter<FlightBoo
             insurances = new ArrayList<>();
         }
         if (checked) {
-            insurances.add(insurance);
+            int index = insurances.indexOf(insurance);
+            if (index == -1) {
+                insurances.add(insurance);
+            }
         } else {
             int index = insurances.indexOf(insurance);
             if (index != -1) {
