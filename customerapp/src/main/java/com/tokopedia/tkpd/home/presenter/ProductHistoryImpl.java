@@ -87,7 +87,7 @@ public class ProductHistoryImpl implements ProductHistory {
             productHistoryView.displayPull(false);
         }
 
-        mPaging.setHasNext(false);// PagingHandler.CheckHasNext(productFeedData.receiveData().getPagingHandlerModel())
+        mPaging.setHasNext(false);// PagingHandler.CheckHasNext(productFeedData.getData().getPagingHandlerModel())
 
         if (mPaging.CheckNextPage()) {
             productHistoryView.displayLoadMore(true);
