@@ -284,6 +284,7 @@ ext {
             topAdsCommon    : ":features:top_ads:top_ads_management_common",
             topAdsSourceTagging: ":features:top_ads:top_ads_management_sourcetagging",
             tokoCash        : ":features:fintech:tokocash",
+            instantLoan        : ":features:fintech:instant_loan",
             flight          : ":tkpdflight",
             flightNoOp      : ":features:digital:flight_no_op",
             mitraToppers    : ":features:fintech:mitra_toppers",

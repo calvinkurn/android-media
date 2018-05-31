@@ -283,6 +283,7 @@ dependencies {
     implementation project(rootProject.ext.features.districtRecommendation)
     implementation project(rootProject.ext.features.contactUs)
     implementation project(rootProject.ext.features.otp)
+    implementation project(rootProject.ext.features.instantLoan)
     implementation project(rootProject.ext.features.topAdsCommon)
     implementation project(rootProject.ext.features.topAdsSourceTagging)
 
