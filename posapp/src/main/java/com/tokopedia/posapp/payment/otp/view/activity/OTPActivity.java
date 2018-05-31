@@ -6,7 +6,6 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.net.http.SslError;
 import android.os.Bundle;
-import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.webkit.ConsoleMessage;
@@ -172,7 +171,7 @@ public class OTPActivity extends BasePresenterActivity<OTP.Presenter>
         @Override
         public boolean shouldOverrideUrlLoading(WebView view, String url) {
             Log.d("o2o override ", url);
-            if(presenter.isPaymentProcessed(url)) {
+            if(otpPresenter.isPaymentProcessed(url)) {
                 confirmPayment();
                 return true;
             }
@@ -214,7 +213,7 @@ public class OTPActivity extends BasePresenterActivity<OTP.Presenter>
         public void onPageStarted(final WebView view, String url, Bitmap favicon) {
             Log.d("o2o", "initial " + url);
             progressBar.setVisibility(View.VISIBLE);
-            if(!TextUtils.isEmpty(url) && presenter.isPaymentProcessed(url)) {
+            if(otpPresenter.isPaymentProcessed(url)) {
                 confirmPayment();
                 return;
             }
@@ -248,7 +247,7 @@ public class OTPActivity extends BasePresenterActivity<OTP.Presenter>
         scroogeWebView.destroy();
         scroogeWebView.setEnabled(false);
         scroogeWebView.setVisibility(View.GONE);
-        otpPresenter.confirmPayment();
+        otpPresenter.checkTransaction();
     }
 
     private class OTPWebViewChromeClient extends WebChromeClient {

@@ -97,7 +97,8 @@
             android:screenOrientation="portrait" />
         <activity
             android:name=".payment.invoice.InvoiceActivity"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.Green"/>
         <activity
             android:name=".product.management.view.activity.ProductManagementActivity"
             android:theme="@style/Theme.Green"

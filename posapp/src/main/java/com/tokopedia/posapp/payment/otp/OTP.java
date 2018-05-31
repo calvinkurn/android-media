@@ -13,7 +13,7 @@ public interface OTP {
 
         boolean isPaymentProcessed(String url);
 
-        void confirmPayment();
+        void checkTransaction();
 
         void setTransactionId(String transactionId);
     }

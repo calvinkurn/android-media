@@ -119,7 +119,7 @@ public class OTPPresenter implements OTP.Presenter {
     }
 
     @Override
-    public void confirmPayment() {
+    public void checkTransaction() {
         if (otpData != null
                 && otpData.getOtpDetailTransaction() != null
                 && otpData.getOtpDetailTransaction().getTransactionId() != null) {
@@ -155,7 +155,7 @@ public class OTPPresenter implements OTP.Presenter {
     }
 
     @Override
-    public void setTransactionId(String transactionId) {
+    public void setTransactionId(String transactionId) throws RuntimeException {
         if(transactionId != null && !transactionId.isEmpty()) {
             this.transactionId = transactionId;
         } else {
