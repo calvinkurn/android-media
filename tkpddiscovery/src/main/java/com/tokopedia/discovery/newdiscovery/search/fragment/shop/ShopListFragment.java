@@ -296,6 +296,7 @@ public class ShopListFragment extends SearchSectionFragment
             public boolean onTabSelected(final int position, boolean wasSelected) {
                 switch (position) {
                     case 0:
+                        SearchTracking.eventSearchResultOpenFilterPageShop();
                         openFilterActivity();
                         return true;
                     case 1:
@@ -442,7 +443,7 @@ public class ShopListFragment extends SearchSectionFragment
     }
 
     @Override
-    protected void reloadData() {
+    public void reloadData() {
         adapter.clearData();
         showBottomBarNavigation(false);
         loadShopFirstTime();

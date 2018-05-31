@@ -2,24 +2,31 @@ package com.tokopedia.seller.shop.open.domain.interactor;
 
 import android.text.TextUtils;
 
-import com.tokopedia.core.base.domain.RequestParams;
-import com.tokopedia.core.base.domain.UseCase;
+import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
+import com.tokopedia.core.myproduct.utils.FileUtils;
 import com.tokopedia.core.network.ErrorMessageException;
-import com.tokopedia.seller.base.domain.interactor.UploadImageUseCase;
-import com.tokopedia.seller.base.domain.model.ImageUploadDomainModel;
+import com.tokopedia.imageuploader.di.qualifier.ImageUploaderQualifier;
+import com.tokopedia.imageuploader.domain.UploadImageUseCase;
+import com.tokopedia.imageuploader.domain.model.ImageUploadDomainModel;
 import com.tokopedia.seller.shop.open.data.model.UploadShopImageModel;
 import com.tokopedia.seller.shop.open.domain.ShopOpenSaveInfoRepository;
 import com.tokopedia.seller.shop.open.domain.model.ShopOpenSaveInfoRequestDomainModel;
 import com.tokopedia.seller.shop.open.domain.model.ShopOpenSaveInfoResponseModel;
 import com.tokopedia.seller.shop.setting.constant.ShopSettingNetworkConstant;
+import com.tokopedia.usecase.RequestParams;
+import com.tokopedia.usecase.UseCase;
 
+import java.io.File;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.inject.Inject;
 
+import okhttp3.MediaType;
+import okhttp3.RequestBody;
 import rx.Observable;
 import rx.functions.Func1;
 
@@ -39,18 +46,19 @@ public class ShopOpenSaveInfoUseCase extends UseCase<ShopOpenSaveInfoResponseMod
     public static final String TAG_LINE_REQUEST_CLOUD = "tag_line";
     public static final String STEP = "step";
     public static final String URL_IMAGE_CLOUD = "URL_IMAGE_CLOUD";
+    public static final String SHOP_ID = "shop_id";
 
     private ShopOpenSaveInfoRepository shopOpenSaveInfoRepository;
     private UploadImageUseCase<UploadShopImageModel> uploadImageUseCase;
+    private UserSession userSession;
 
     @Inject
-    public ShopOpenSaveInfoUseCase(ThreadExecutor threadExecutor,
-                                   PostExecutionThread postExecutionThread,
-                                   ShopOpenSaveInfoRepository shopOpenSaveInfoRepository,
-                                   UploadImageUseCase<UploadShopImageModel> uploadImageUseCase) {
-        super(threadExecutor, postExecutionThread);
+    public ShopOpenSaveInfoUseCase(ShopOpenSaveInfoRepository shopOpenSaveInfoRepository,
+                                   UploadImageUseCase<UploadShopImageModel> uploadImageUseCase,
+                                   @ImageUploaderQualifier UserSession userSession) {
         this.shopOpenSaveInfoRepository = shopOpenSaveInfoRepository;
         this.uploadImageUseCase = uploadImageUseCase;
+        this.userSession = userSession;
     }
 
     public static RequestParams createRequestParams(String uriPathImage, String description, String shopSlogan,
@@ -77,31 +85,23 @@ public class ShopOpenSaveInfoUseCase extends UseCase<ShopOpenSaveInfoResponseMod
     @Override
     public Observable<ShopOpenSaveInfoResponseModel> createObservable(final RequestParams requestParams) {
         if (!TextUtils.isEmpty(requestParams.getString(PATH_FILE_IMAGE, ""))) {
-            return uploadImageUseCase.getExecuteObservable(uploadImageUseCase.createRequestParams(ShopSettingNetworkConstant.UPLOAD_SHOP_IMAGE_PATH,
-                    requestParams.getString(PATH_FILE_IMAGE, ""), ShopSettingNetworkConstant.LOGO_FILENAME_IMAGE_JPG, ""))
-                    .flatMap(new Func1<ImageUploadDomainModel<UploadShopImageModel>, Observable<ShopOpenSaveInfoRequestDomainModel>>() {
+            return uploadImageUseCase.getExecuteObservable(createParamUploadImage(requestParams.getString(PATH_FILE_IMAGE, "")))
+                    .flatMap(new Func1<ImageUploadDomainModel<UploadShopImageModel>,Observable<ShopOpenSaveInfoRequestDomainModel>>() {
                         @Override
-                        public Observable<ShopOpenSaveInfoRequestDomainModel> call(final ImageUploadDomainModel<UploadShopImageModel> dataImageUploadDomainModel) {
-                            final UploadShopImageModel uploadShopImageModel = dataImageUploadDomainModel.getDataResultImageUpload();
+                        public Observable<ShopOpenSaveInfoRequestDomainModel> call(final ImageUploadDomainModel<UploadShopImageModel> imageUploadDomainModel) {
+                            final UploadShopImageModel uploadShopImageModel = imageUploadDomainModel.getDataResultImageUpload();
                             if (uploadShopImageModel == null) {
                                 throw new RuntimeException();
                             }
                             List<String> errorMessageList = uploadShopImageModel.getMessageError();
                             if (errorMessageList != null && errorMessageList.size() > 0 && !TextUtils.isEmpty(errorMessageList.get(0))) {
-                                throw  new ErrorMessageException(errorMessageList.get(0));
+                                throw new ErrorMessageException(errorMessageList.get(0));
                             }
-                            return shopOpenSaveInfoRepository.openShopPicture(uploadShopImageModel.getData().getUpload().getSrc(),
-                                    dataImageUploadDomainModel.getServerId(), dataImageUploadDomainModel.getUrl())
-                                    .flatMap(new Func1<String, Observable<ShopOpenSaveInfoRequestDomainModel>>() {
-                                        @Override
-                                        public Observable<ShopOpenSaveInfoRequestDomainModel> call(String picUploaded) {
-                                            ShopOpenSaveInfoRequestDomainModel dataRequest = new ShopOpenSaveInfoRequestDomainModel();
-                                            dataRequest.setPicSrc(uploadShopImageModel.getData().getUpload().getSrc());
-                                            dataRequest.setPicUploaded(picUploaded);
-                                            dataRequest.setServerId(dataImageUploadDomainModel.getServerId());
-                                            return Observable.just(dataRequest);
-                                        }
-                                    });
+                            ShopOpenSaveInfoRequestDomainModel dataRequest = new ShopOpenSaveInfoRequestDomainModel();
+                            dataRequest.setPicSrc(uploadShopImageModel.getData().getImage().getPicSrc());
+                            dataRequest.setPicUploaded(uploadShopImageModel.getData().getImage().getPicCode());
+                            dataRequest.setServerId(imageUploadDomainModel.getServerId());
+                            return Observable.just(dataRequest);
                         }
                     })
                     .flatMap(new Func1<ShopOpenSaveInfoRequestDomainModel, Observable<ShopOpenSaveInfoResponseModel>>() {
@@ -151,5 +151,16 @@ public class ShopOpenSaveInfoUseCase extends UseCase<ShopOpenSaveInfoResponseMod
         params.put(TAG_LINE_REQUEST_CLOUD, tagLine);
         params.put(STEP, STEP_INFO_1);
         return params;
+    }
+
+    public RequestParams createParamUploadImage(String pathFileImage) {
+        Map<String, RequestBody> maps =  new HashMap<String, RequestBody>();
+        RequestBody shopId = RequestBody.create(MediaType.parse("text/plain"), userSession.getUserId());
+        RequestBody newAdd = RequestBody.create(MediaType.parse("text/plain"), ShopSettingNetworkConstant.GOLANG_VALUE);
+        RequestBody resolution = RequestBody.create(MediaType.parse("text/plain"), ShopSettingNetworkConstant.RESOLUTION_DEFAULT_VALUE);
+        maps.put(SHOP_ID, shopId);
+        maps.put(ShopSettingNetworkConstant.SERVER_LANGUAGE, newAdd);
+        maps.put(ShopSettingNetworkConstant.RESOLUTION, resolution);
+        return uploadImageUseCase.createRequestParam(pathFileImage, ShopSettingNetworkConstant.UPLOAD_SHOP_IMAGE_PATH, ShopSettingNetworkConstant.LOGO_FILENAME_IMAGE_JPG, maps);
     }
 }

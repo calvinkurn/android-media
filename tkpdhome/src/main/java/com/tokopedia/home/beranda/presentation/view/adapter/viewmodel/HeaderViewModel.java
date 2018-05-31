@@ -6,7 +6,6 @@ import android.os.Parcelable;
 import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.core.drawer2.data.viewmodel.HomeHeaderWalletAction;
 import com.tokopedia.core.drawer2.data.viewmodel.TokoPointDrawerData;
-import com.tokopedia.digital.tokocash.model.CashBackData;
 import com.tokopedia.home.beranda.presentation.view.adapter.factory.HomeTypeFactory;
 
 /**

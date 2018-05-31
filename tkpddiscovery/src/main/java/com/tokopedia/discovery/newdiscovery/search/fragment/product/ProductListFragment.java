@@ -46,10 +46,9 @@ import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.He
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.ProductItem;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.ProductViewModel;
 import com.tokopedia.discovery.newdiscovery.util.SearchParameter;
-import com.tokopedia.discovery.newdynamicfilter.RevampedDynamicFilterActivity;
 import com.tokopedia.discovery.newdynamicfilter.helper.FilterFlagSelectedModel;
 import com.tokopedia.discovery.newdynamicfilter.helper.OptionHelper;
-import com.tokopedia.discovery.newdynamicfilter.helper.PreFilterHelper;
+import com.tokopedia.discovery.newdynamicfilter.helper.FilterHelper;
 import com.tokopedia.topads.sdk.base.Config;
 import com.tokopedia.topads.sdk.base.Endpoint;
 import com.tokopedia.topads.sdk.domain.TopAdsParams;
@@ -159,6 +158,7 @@ public class ProductListFragment extends SearchSectionFragment
     public View onCreateView(LayoutInflater inflater,
                              @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         presenter.attachView(this, this);
+        presenter.setIsUsingFilterV4(isUsingBottomSheetFilter());
         return inflater.inflate(R.layout.fragment_base_discovery, null);
     }
 
@@ -245,6 +245,7 @@ public class ProductListFragment extends SearchSectionFragment
     private void setupListener() {
         topAdsRecyclerAdapter.setAdsItemClickListener(this);
         topAdsRecyclerAdapter.setTopAdsListener(this);
+        recyclerView.addOnScrollListener(getRecyclerViewBottomSheetScrollListener());
     }
 
     @Override
@@ -398,6 +399,7 @@ public class ProductListFragment extends SearchSectionFragment
                         openSortActivity();
                         return true;
                     case 1:
+                        SearchTracking.eventSearchResultOpenFilterPageProduct();
                         openFilterActivity();
                         return true;
                     case 2:
@@ -506,7 +508,7 @@ public class ProductListFragment extends SearchSectionFragment
         if (item.getLabelList() != null) {
             for (int i = 0; i < item.getLabelList().size(); i++) {
                 if (item.getLabelList().get(i).getTitle().toLowerCase()
-                        .contains(getContext().getString(R.string.cashback))) {
+                        .contains(com.tokopedia.core.var.ProductItem.CASHBACK)) {
                     data.setCashback(item.getLabelList().get(i).getTitle());
                     break;
                 }
@@ -529,7 +531,9 @@ public class ProductListFragment extends SearchSectionFragment
         SearchTracking.trackEventClickSearchResultProduct(
                 item.getProductAsObjectDataLayer(userId),
                 item.getPageNumber(),
-                productViewModel.getQuery()
+                productViewModel.getQuery(),
+                getSelectedFilter(),
+                getSelectedSort()
         );
     }
 
@@ -563,7 +567,12 @@ public class ProductListFragment extends SearchSectionFragment
             getFlagFilterHelper().setSavedCheckedState(new HashMap<String, Boolean>());
             getFlagFilterHelper().setSavedTextInput(new HashMap<String, String>());
         }
-        getFlagFilterHelper().getSavedCheckedState().put(option.getUniqueId(), isQuickFilterSelected);
+
+        if (isQuickFilterSelected) {
+            getFlagFilterHelper().getSavedCheckedState().put(option.getUniqueId(), true);
+        } else {
+            getFlagFilterHelper().getSavedCheckedState().remove(option.getUniqueId());
+        }
 
         if (getSelectedFilter() == null) {
             setSelectedFilter(new HashMap<String, String>());
@@ -669,7 +678,7 @@ public class ProductListFragment extends SearchSectionFragment
     }
 
     @Override
-    protected void reloadData() {
+    public void reloadData() {
         if (!adapter.hasGuidedSearch()) {
             getGuidedSearch();
         }
@@ -846,28 +855,27 @@ public class ProductListFragment extends SearchSectionFragment
     }
 
     @Override
-    protected void openFilterActivity() {
-        if (isFilterDataAvailable()) {
-            String preFilteredSc = getSearchParameter().getDepartmentId();
-            if (!TextUtils.isEmpty(preFilteredSc)) {
-                addPreFilteredCategory(preFilteredSc);
-            }
-            Intent intent = RevampedDynamicFilterActivity.createInstance(
-                    getActivity(), getScreenNameId(), getFlagFilterHelper()
-            );
-            startActivityForResult(intent, getFilterRequestCode());
-            getActivity().overridePendingTransition(R.anim.pull_up, android.R.anim.fade_out);
-        } else {
-            NetworkErrorHelper.showSnackbar(getActivity(), getActivity().getString(R.string.error_filter_data_not_ready));
-        }
+    protected void openBottomSheetFilter() {
+        addPreFilteredCategory();
+        super.openBottomSheetFilter();
     }
 
-    private void addPreFilteredCategory(String categoryId) {
+    @Override
+    protected void openFilterPage() {
+        addPreFilteredCategory();
+        super.openFilterPage();
+    }
+
+    private void addPreFilteredCategory() {
+        String preFilteredSc = getSearchParameter().getDepartmentId();
+        if (TextUtils.isEmpty(preFilteredSc)) {
+            return;
+        }
         if (getFlagFilterHelper() == null) {
             setFlagFilterHelper(new FilterFlagSelectedModel());
             getFlagFilterHelper().setSavedCheckedState(new HashMap<String, Boolean>());
             getFlagFilterHelper().setSavedTextInput(new HashMap<String, String>());
-            PreFilterHelper.addPreFilteredCategory(getFilters(), getFlagFilterHelper(), categoryId);
+            FilterHelper.populateWithSelectedCategory(getFilters(), getFlagFilterHelper(), preFilteredSc);
         }
     }
 

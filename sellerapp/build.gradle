@@ -245,6 +245,10 @@ dependencies {
     implementation project(rootProject.ext.features.topAdsSdk)
     implementation project(rootProject.ext.features.payment)
     implementation project(rootProject.ext.features.profile)
+    implementation project(rootProject.ext.features.contactUs)
+    implementation project(rootProject.ext.features.otp)
+    implementation project(rootProject.ext.features.districtRecommendation)
+    implementation project(rootProject.ext.libraries.imageuploader)
 
     implementation project(rootProject.ext.features.shopCommon)
     implementation project(rootProject.ext.features.digitalproduct)
@@ -264,6 +268,7 @@ dependencies {
     implementation (rootProject.ext.analyticsDependencies.moengage) {
         exclude group: 'com.moengage', module: 'moe-push-gcm'
     }
+
     implementation (rootProject.ext.analyticsDependencies.moengageMSG) {
         exclude group: 'com.android.support'
     }

@@ -172,6 +172,7 @@ public interface AppEventTracking {
         String PRODUCT_VIEW = "productView";
         String LONG_CLICK = "longClick";
         String CLICK_PDP = "clickPDP";
+        String VIEW_PDP = "viewPDP";
         String EVENT_RESOLUTION_CENTER = "resolutionCenter";
         String EVENT_RESOLUTION_CENTER_VIEW = "resolutionCenterView";
         String ADD_TO_CART_PDP = "addToCart";
@@ -302,6 +303,7 @@ public interface AppEventTracking {
         String PROMO_MICROSITE_PROMO_TOOLTIP = "promo microsite - promo tooltip";
         String SORT_BY = "sort by";
         String FILTER_PRODUCT = "filter product";
+        String FILTER_JOURNEY = "filter journey";
         String LONG_PRESS = "Long Press";
 
         String HOME_BOTTOM_NAV = "bottom nav";
@@ -323,6 +325,7 @@ public interface AppEventTracking {
         String VOICE_SEARCH = "Voice Search";
         String CAMERA_SEARCH = "click image search by camera";
         String GALLERY_SEARCH = "click image search from gallery";
+        String EXTERNAL_IMAGE_SEARCH = "click image search external";
         String CAMERA_SEARCH_RESULT = "query search by camera";
         String GALLERY_SEARCH_RESULT = "query search by gallery";
         String VIEW = "View";
@@ -388,6 +391,7 @@ public interface AppEventTracking {
         String IMPRESSION = "Impression";
         String COPY_CODE = "Copy Code";
         String FILTER = "Filter";
+        String APPLY_FILTER = "apply filter";
         String INSTALL = "Install";
         String REMOVE = "Remove";
         String CLICK_USSD_CEK_SALDO = "Click Cek Saldo from USSD";
@@ -408,6 +412,7 @@ public interface AppEventTracking {
         String CLICK_PRODUCT_LIST = "click product list";
         String CLICK_SORT_PRODUCT = "click sort product";
         String CLICK_FILTER_PRODUCT = "click filter product";
+        String CLICK_FILTER = "click filter";
         String CLICK_OVERFLOW_MENU = "click overflow menu";
 
         String CLICK_WIDGET_BAR = "click widget";
@@ -497,6 +502,7 @@ public interface AppEventTracking {
         String SELECT_COLOR_VARIANT = "select color on variants page";
         String SELECT_SIZE_VARIANT = "select size on variants page";
         String CLICK_BUY_VARIANT_PAGE = "click - buy on variants page";
+        String LANDSCAPE_VIEW = "landscape view";
 
         String LOGIN_NOW = "masuk sekarang";
         String CHECKOUT = "Checkout";
@@ -537,6 +543,7 @@ public interface AppEventTracking {
         String SHARE_TO = "Share - ";
         String REVIEW = "Review";
         String PRODUCT_DESCRIPTION = "Product Description";
+        String PRODUCT_ID_VALUE = "product_id : %1$s";
         String PRODUCT_TALK = "Talk";
         String ADD_ADDRESS = "Add Address";
         String CHANGE_ADDRESS = "Change Address";

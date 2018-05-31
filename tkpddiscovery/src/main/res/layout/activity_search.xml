@@ -80,4 +80,12 @@
         android:layout_alignParentBottom="true"
         android:layout_gravity="bottom" />
 
+    <com.tokopedia.discovery.newdiscovery.widget.BottomSheetFilterView
+        android:id="@+id/bottomSheetFilter"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/white"
+        app:behavior_hideable="true"
+        app:layout_behavior="com.tokopedia.discovery.newdiscovery.widget.UserLockBottomSheetBehavior"/>
+
 </android.support.design.widget.CoordinatorLayout>
