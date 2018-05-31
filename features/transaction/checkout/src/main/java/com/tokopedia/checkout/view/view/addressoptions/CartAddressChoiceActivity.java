@@ -11,6 +11,7 @@ import com.tokopedia.checkout.R;
 import com.tokopedia.checkout.domain.datamodel.addressoptions.RecipientAddressModel;
 import com.tokopedia.checkout.view.base.BaseCheckoutActivity;
 import com.tokopedia.core.manage.people.address.activity.AddAddressActivity;
+import com.tokopedia.core.manage.people.address.model.Token;
 
 import static com.tokopedia.core.manage.people.address.ManageAddressConstant.REQUEST_CODE_PARAM_CREATE;
 
@@ -32,16 +33,29 @@ public class CartAddressChoiceActivity extends BaseCheckoutActivity
     public static final String EXTRA_DEFAULT_SELECTED_ADDRESS = "EXTRA_DEFAULT_SELECTED_ADDRESS";
     public static final String EXTRA_SELECTED_ADDRESS_DATA = "EXTRA_SELECTED_ADDRESS_DATA";
     public static final String EXTRA_CURRENT_ADDRESS = "CURRENT_ADDRESS";
+    public static final String EXTRA_DISCOM_TOKEN = "discom_token";
 
     public static final int TYPE_REQUEST_SELECT_ADDRESS_FROM_COMPLETE_LIST = 0;
     public static final int TYPE_REQUEST_SELECT_ADDRESS_FROM_SHORT_LIST = 1;
     public static final int TYPE_REQUEST_ADD_SHIPMENT_DEFAULT_ADDRESS = 2;
 
     private int typeRequest;
+    private Token token;
 
     public static Intent createInstance(Activity activity, RecipientAddressModel currentAddress, int typeRequest) {
         Intent intent = new Intent(activity, CartAddressChoiceActivity.class);
         intent.putExtra(EXTRA_TYPE_REQUEST, typeRequest);
+        if (currentAddress != null) {
+            intent.putExtra(EXTRA_CURRENT_ADDRESS, currentAddress);
+        }
+
+        return intent;
+    }
+
+    public static Intent createInstance(Activity activity, RecipientAddressModel currentAddress, int typeRequest, Token token) {
+        Intent intent = new Intent(activity, CartAddressChoiceActivity.class);
+        intent.putExtra(EXTRA_TYPE_REQUEST, typeRequest);
+        intent.putExtra(EXTRA_DISCOM_TOKEN, token);
         if (currentAddress != null) {
             intent.putExtra(EXTRA_CURRENT_ADDRESS, currentAddress);
         }
@@ -62,6 +76,7 @@ public class CartAddressChoiceActivity extends BaseCheckoutActivity
     @Override
     protected void setupBundlePass(Bundle extras) {
         this.typeRequest = extras.getInt(EXTRA_TYPE_REQUEST);
+        this.token = extras.getParcelable(EXTRA_DISCOM_TOKEN);
     }
 
     @Override
@@ -74,8 +89,8 @@ public class CartAddressChoiceActivity extends BaseCheckoutActivity
     protected void initView() {
         switch (typeRequest) {
             case TYPE_REQUEST_ADD_SHIPMENT_DEFAULT_ADDRESS:
-//                startActivityForResult(AddAddressActivity.createInstance(this),
-//                        REQUEST_CODE_PARAM_CREATE);
+                startActivityForResult(AddAddressActivity.createInstance(this, token),
+                        REQUEST_CODE_PARAM_CREATE);
                 break;
 
             default:
