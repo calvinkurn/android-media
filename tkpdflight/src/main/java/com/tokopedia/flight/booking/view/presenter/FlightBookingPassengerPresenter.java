@@ -493,7 +493,7 @@ public class FlightBookingPassengerPresenter extends BaseDaggerPresenter<FlightB
             isValid = false;
             getView().showPassengerBirthdateEmptyError(R.string.flight_booking_passenger_birthdate_empty_error);
         } else if ((isAdultPassenger()) && !flightPassengerInfoValidator.validateBirthdateNotEmpty(
-                getView().getPassengerBirthDate()) && getView().isMandatoryDoB()) {
+                getView().getPassengerBirthDate()) && (getView().isMandatoryDoB() || !getView().isDomestic())) {
             isValid = false;
             getView().showPassengerBirthdateEmptyError(R.string.flight_booking_passenger_birthdate_empty_error);
         } else if (isAdultPassenger() && flightPassengerInfoValidator.validateBirthdateNotEmpty(
