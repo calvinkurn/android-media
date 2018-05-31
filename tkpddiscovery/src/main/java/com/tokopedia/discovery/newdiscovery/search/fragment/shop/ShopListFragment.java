@@ -254,7 +254,7 @@ public class ShopListFragment extends SearchSectionFragment
         if (adapter.isListEmpty()) {
             String message = String.format(getString(R.string.empty_search_content_template), query);
             adapter.showEmptyState(message);
-            SearchTracking.eventSearchNoResult(query, getScreenName());
+            SearchTracking.eventSearchNoResult(query, getScreenName(), getSelectedFilter());
         }
     }
 

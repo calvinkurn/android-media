@@ -244,12 +244,13 @@ public class SearchTracking extends TrackingUtils {
         ).setUserId().getEvent());
     }
 
-    public static void eventSearchNoResult(String keyword, String screenName) {
+    public static void eventSearchNoResult(String keyword, String screenName,
+                                           Map<String, String> selectedFilter) {
         sendGTMEvent(new EventTracking(
                 AppEventTracking.Event.NO_RESULT,
                 AppEventTracking.Category.EVENT_TOP_NAV,
                 AppEventTracking.Action.NO_SEARCH_RESULT,
-                "keyword: " + keyword + " - tab: " + screenName
+                "keyword: " + keyword + " - tab: " + screenName + " - param: " + generateFilterEventLabel(selectedFilter)
         ).getEvent());
     }
 }
