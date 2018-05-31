@@ -17,10 +17,6 @@ def getDpiId(String density) {
 }
 
 def getAbiId(String abi) {
-
-    def ABI_ID = ['null': 0, 'armeabi-v7a': 10, 'x86': 20]
-    if (abi != null)
-        return ABI_ID.get(abi);
     return 0;
 }
 
@@ -203,7 +199,6 @@ android {
         abi {
             enable allowSplit()
             reset()
-            include "armeabi-v7a", "x86"
             universalApk false
         }
 
@@ -219,7 +214,7 @@ android {
         vectorDrawables.useSupportLibrary = true
         testInstrumentationRunner 'com.tokopedia.tkpd.MyRunner'
         ndk {
-            abiFilters "armeabi-v7a", "x86"
+            abiFilters "x86", "armeabi-v7a"
         }
         packagingOptions {
             exclude "lib/arm64-v8a/libgnustl_shared.so"
