@@ -94,6 +94,10 @@ public class BaseActivity extends AppCompatActivity implements SessionHandler.on
         super.onStart();
         MainApplication.setActivityState(TkpdState.Application.ACTIVITY);
         MainApplication.setActivityname(this.getClass().getSimpleName());
+        forceRotation();
+    }
+
+    protected void forceRotation() {
         if (!MainApplication.isTablet()) {
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         } else {
