@@ -50,6 +50,7 @@ import com.tokopedia.posapp.product.productdetail.view.widget.InstallmentSimulat
 import com.tokopedia.posapp.base.fragment.PosAlertDialog;
 import com.tokopedia.posapp.product.productdetail.view.widget.PictureView;
 import com.tokopedia.posapp.product.common.data.pojo.ProductDetail;
+import com.tokopedia.posapp.product.productlist.data.pojo.ProductPicture;
 import com.tokopedia.tkpdpdp.DescriptionActivity;
 import com.tokopedia.tkpdpdp.PreviewProductImageDetail;
 import com.tokopedia.tkpdpdp.listener.ProductDetailView;
@@ -148,10 +149,13 @@ public class ProductDetailFragment extends BaseDaggerFragment
         info.setProductDescription(productDetail.getProductDescription());
 
         List<ProductImage> productImages = new ArrayList<>();
-        ProductImage image = new ProductImage();
-        image.setImageSrc(productDetail.getProductImage());
-        image.setImageSrc300(productDetail.getProductImage300());
-        productImages.add(image);
+        for(ProductPicture productPicture : productDetail.getPictures()){
+            ProductImage image = new ProductImage();
+            image.setImageSrc(productPicture.getUrlOriginal());
+            image.setImageSrc300(productPicture.getUrlThumbnail());
+            image.setImageId(productPicture.getPicId());
+            productImages.add(image);
+        }
 
         ProductDetailData data = new ProductDetailData();
         data.setInfo(info);

@@ -2,6 +2,7 @@ package com.tokopedia.posapp.product.common.data.pojo;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import com.tokopedia.posapp.product.productlist.data.pojo.ProductPicture;
 
 import java.util.List;
 
@@ -108,6 +109,9 @@ public class ProductDetail {
     @SerializedName("product_price_unformatted")
     @Expose
     private double productPriceUnformatted;
+    @SerializedName("product_picture")
+    @Expose
+    private List<ProductPicture> pictures;
 
     private ProductCampaign productCampaign;
 
@@ -389,5 +393,13 @@ public class ProductDetail {
 
     public void setProductDescription(String productDescription) {
         this.productDescription = productDescription;
+    }
+
+    public List<ProductPicture> getPictures() {
+        return pictures;
+    }
+
+    public void setPictures(List<ProductPicture> pictures) {
+        this.pictures = pictures;
     }
 }

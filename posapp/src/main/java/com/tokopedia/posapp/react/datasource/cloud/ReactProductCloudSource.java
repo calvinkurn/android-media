@@ -132,6 +132,7 @@ public class ReactProductCloudSource extends ReactDataSource {
         item.setProductImage(productDomain.getImage());
         item.setProductImage300(productDomain.getImage300());
         item.setProductImageFull(productDomain.getImageFull());
+        item.setPictures(productDomain.getPictures());
         return item;
     }
 }
