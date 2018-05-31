@@ -60,8 +60,8 @@
     <string name="product_shown_status">Status</string>
     <string name="currency_symbol_idr">Rp \u0020</string>
     <string name="currency_idr">Rp</string>
-    <string name="hide">Sembunyikan</string>
-    <string name="show">Tampilkan</string>
+    <string name="hide">Available</string>
+    <string name="show">Not Available</string>
     <string name="edit_product_title">Edit Harga</string>
     <string name="edit_product_cancel">Batal</string>
     <string name="edit_product_save">Simpan</string>

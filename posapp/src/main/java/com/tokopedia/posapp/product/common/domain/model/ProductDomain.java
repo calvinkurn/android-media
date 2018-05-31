@@ -1,5 +1,9 @@
 package com.tokopedia.posapp.product.common.domain.model;
 
+import com.tokopedia.posapp.product.productlist.data.pojo.ProductPicture;
+
+import java.util.List;
+
 /**
  * Created by okasurya on 8/9/17.
  */
@@ -13,6 +17,7 @@ public class ProductDomain {
     private String image;
     private String image300;
     private String imageFull;
+    private List<ProductPicture> pictures;
     private long etalaseId;
     private String originalPrice;
     private double originalPriceUnformatted;
@@ -120,5 +125,13 @@ public class ProductDomain {
 
     public void setStatus(int status) {
         this.status = status;
+    }
+
+    public List<ProductPicture> getPictures() {
+        return pictures;
+    }
+
+    public void setPictures(List<ProductPicture> pictures) {
+        this.pictures = pictures;
     }
 }
