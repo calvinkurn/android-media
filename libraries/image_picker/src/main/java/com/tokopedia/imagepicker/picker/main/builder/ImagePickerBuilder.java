@@ -8,6 +8,8 @@ import android.support.annotation.Nullable;
 import com.tokopedia.imagepicker.R;
 import com.tokopedia.imagepicker.picker.gallery.type.GalleryType;
 
+import java.util.ArrayList;
+
 import static com.tokopedia.imagepicker.picker.main.builder.ImagePickerTabTypeDef.TYPE_CAMERA;
 import static com.tokopedia.imagepicker.picker.main.builder.ImagePickerTabTypeDef.TYPE_GALLERY;
 import static com.tokopedia.imagepicker.picker.main.builder.ImagePickerTabTypeDef.TYPE_INSTAGRAM;
@@ -141,6 +143,13 @@ public class ImagePickerBuilder implements Parcelable {
             return imagePickerMultipleSelectionBuilder.getMaximumNoPick();
         }
         return 1;
+    }
+
+    public ArrayList<String> getInitialSelectedImagePathList(){
+        if (imagePickerMultipleSelectionBuilder!= null) {
+            return imagePickerMultipleSelectionBuilder.getInitialSelectedImagePathList();
+        }
+        return new ArrayList<>();
     }
 
     public ImagePickerMultipleSelectionBuilder getImagePickerMultipleSelectionBuilder() {

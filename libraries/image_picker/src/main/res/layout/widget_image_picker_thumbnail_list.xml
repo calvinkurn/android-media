@@ -3,4 +3,8 @@
     android:id="@+id/recycler_view"
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_height="match_parent"
-    android:layout_width="wrap_content" />
+    android:layout_width="wrap_content"
+    android:paddingLeft="@dimen/dp_4"
+    android:paddingRight="@dimen/dp_4"
+    android:paddingTop="@dimen/dp_16"
+    android:paddingBottom="@dimen/dp_16"/>

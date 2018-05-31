@@ -98,7 +98,11 @@ public class ImagePickerActivity extends BaseSimpleActivity
         super.onCreate(savedInstanceState);
 
         if (savedInstanceState == null) {
-            selectedImagePaths = new ArrayList<>();
+            if (imagePickerBuilder.supportMultipleSelection()) {
+                selectedImagePaths = imagePickerBuilder.getInitialSelectedImagePathList();
+            } else {
+                selectedImagePaths = new ArrayList<>();
+            }
         } else {
             selectedTab = savedInstanceState.getInt(SAVED_SELECTED_TAB, 0);
             selectedImagePaths = savedInstanceState.getStringArrayList(SAVED_SELECTED_IMAGES);
@@ -146,6 +150,7 @@ public class ImagePickerActivity extends BaseSimpleActivity
         imagePickerPreviewWidget = findViewById(R.id.image_picker_preview_widget);
         if (imagePickerBuilder.supportMultipleSelection()) {
             imagePickerPreviewWidget.setVisibility(View.VISIBLE);
+            imagePickerPreviewWidget.setMaxAdapterSize(imagePickerBuilder.getMaximumNoPick());
         } else {
             imagePickerPreviewWidget.setVisibility(View.GONE);
         }
@@ -326,14 +331,15 @@ public class ImagePickerActivity extends BaseSimpleActivity
         if (imagePickerBuilder.supportMultipleSelection()) {
             if (isChecked) {
                 selectedImagePaths.add(filePathOrUrl);
+                imagePickerPreviewWidget.addData(filePathOrUrl);
                 enableDoneView();
             } else {
                 selectedImagePaths.remove(filePathOrUrl);
+                imagePickerPreviewWidget.removeData(filePathOrUrl);
                 if (selectedImagePaths.size() == 0) {
                     disableDoneView();
                 }
             }
-            // TODO update the preview?
         } else {
             onSingleImagePicked(filePathOrUrl);
         }

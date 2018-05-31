@@ -7,6 +7,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SimpleItemAnimator;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.widget.FrameLayout;
@@ -60,6 +61,11 @@ public class ImagePickerPreviewWidget extends FrameLayout implements ImagePicker
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
         recyclerView.setHasFixedSize(true);
         recyclerView.setAdapter(imagePickerThumbnailAdapter);
+
+        RecyclerView.ItemAnimator animator = recyclerView.getItemAnimator();
+        if (animator instanceof SimpleItemAnimator) {
+            ((SimpleItemAnimator) animator).setSupportsChangeAnimations(false);
+        }
     }
 
     public void setOnImagePickerThumbnailListWidgetListener(OnImagePickerThumbnailListWidgetListener onImagePickerThumbnailListWidgetListener) {
@@ -70,9 +76,21 @@ public class ImagePickerPreviewWidget extends FrameLayout implements ImagePicker
         imagePickerThumbnailAdapter.setData(imagePathList);
     }
 
-    @Override
-    public void onPickerThumbnailItemClicked(String imagePath, int position) {
-
+    public void addData(String imagePath){
+        imagePickerThumbnailAdapter.addData(imagePath);
     }
 
+    public void removeData(String imagePath){
+        imagePickerThumbnailAdapter.removeData(imagePath);
+    }
+
+    @Override
+    public void onPickerThumbnailItemClicked(String imagePath, int position) {
+        //TODO picker clicked
+    }
+
+    public void setMaxAdapterSize(int size) {
+        imagePickerThumbnailAdapter.setMaxData(size);
+        imagePickerThumbnailAdapter.notifyDataSetChanged();
+    }
 }

@@ -16,10 +16,13 @@ import java.util.ArrayList;
  * Created by hendry on 02/05/18.
  */
 
-public class ImagePickerThumbnailAdapter extends RecyclerView.Adapter<ImagePickerThumbnailAdapter.ImagePickerThumbnailViewHolder> {
+public class ImagePickerThumbnailAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
+    public static final int PLACEHOLDER_TYPE = 0;
+    public static final int ITEM_TYPE = 1;
     private Context context;
     private ArrayList<String> imagePathList;
+    private int maxSize;
 
     private OnImageEditThumbnailAdapterListener onImageEditThumbnailAdapterListener;
 
@@ -48,6 +51,23 @@ public class ImagePickerThumbnailAdapter extends RecyclerView.Adapter<ImagePicke
         public void onClick(View v) {
             int position = getAdapterPosition();
             //TODO onclick
+        }
+        public void bind(String imagePath) {
+            ImageHandler.loadImageAndCache(imageView, imagePath);
+        }
+    }
+
+    public class PlaceholderThumbnailViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+
+        public PlaceholderThumbnailViewHolder(View itemView) {
+            super(itemView);
+            itemView.setOnClickListener(this);
+        }
+
+        @Override
+        public void onClick(View v) {
+            int position = getAdapterPosition();
+            //TODO onclick
 
         }
     }
@@ -57,25 +77,72 @@ public class ImagePickerThumbnailAdapter extends RecyclerView.Adapter<ImagePicke
         notifyDataSetChanged();
     }
 
-    @Override
-    public ImagePickerThumbnailViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(context).inflate(R.layout.image_picker_thumbnail_item, parent, false);
-        return new ImagePickerThumbnailViewHolder(view);
+    public void addData(String imagePath) {
+        if (imagePathList == null) {
+            imagePathList = new ArrayList<>();
+        }
+        this.imagePathList.add(imagePath);
+        notifyItemChanged(imagePathList.size() - 1);
+    }
+
+    public void removeData(String imagePath) {
+        int index = this.imagePathList.indexOf(imagePath);
+        if (index > -1) {
+            this.imagePathList.remove(index);
+            notifyDataSetChanged();
+        }
     }
 
     @Override
-    public void onBindViewHolder(ImagePickerThumbnailViewHolder holder, int position) {
-        String imagePath = imagePathList.get(position);
-        ImageHandler.loadImageAndCache(holder.imageView, imagePath);
+    public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        LayoutInflater inflater = LayoutInflater.from(context);
+        View view;
+        switch (viewType) {
+            case ITEM_TYPE:
+                view = inflater.inflate(R.layout.image_picker_thumbnail_item, parent, false);
+                return new ImagePickerThumbnailViewHolder(view);
+            default:
+            case PLACEHOLDER_TYPE:
+                view = inflater.inflate(R.layout.image_picker_placeholder_thumbnail_item, parent, false);
+                return new PlaceholderThumbnailViewHolder(view);
+        }
+    }
+
+    @Override
+    public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
+        if (isItemType(position)) {
+            String imagePath = imagePathList.get(position);
+            ((ImagePickerThumbnailViewHolder)holder).bind(imagePath);
+        } else {
+            // draw the empty preview
+        }
+    }
+
+    @Override
+    public int getItemViewType(int position) {
+        if (imagePathList!= null && position < imagePathList.size()) {
+            return ITEM_TYPE;
+        }
+        return PLACEHOLDER_TYPE;
+    }
+
+    private boolean isItemType(int position){
+        return getItemViewType(position) == ITEM_TYPE;
     }
 
     @Override
     public int getItemCount() {
-        if (imagePathList == null) {
+        if (maxSize > 0) {
+            return maxSize;
+        } else if (imagePathList == null) {
             return 0;
         } else {
             return imagePathList.size();
         }
+    }
+
+    public void setMaxData(int size) {
+        this.maxSize = size;
     }
 
 }
