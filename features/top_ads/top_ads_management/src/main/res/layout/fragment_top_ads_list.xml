@@ -23,6 +23,8 @@
         <com.tokopedia.design.label.LabelView
             android:id="@+id/date_label_view"
             style="@style/LabelLayout.TopAdsLabelView"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_64"
             app:lv_content_color="@color/tkpd_main_green"
             app:lv_image="@drawable/ic_top_ads_kalender"
             app:lv_title="@string/label_date_period"

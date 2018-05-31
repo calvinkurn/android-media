@@ -28,6 +28,7 @@ import java.util.List;
 
 public class TopAdsBottomSheetsSelectGroup extends BottomSheets{
     private String title;
+    private String selectedGroupName;
     private String hintDescription;
     private TextInputLayout textInputLayoutChooseGroup;
     private TopAdsCustomAutoCompleteTextView inputChooseGroup;
@@ -104,6 +105,10 @@ public class TopAdsBottomSheetsSelectGroup extends BottomSheets{
                 }
             }
         });
+        if (!TextUtils.isEmpty(selectedGroupName)){
+            inputChooseGroup.setText(selectedGroupName);
+            inputChooseGroup.lockView();
+        }
 
         Button btnSave = (Button) view.findViewById(R.id.btn_save);
         btnSave.setOnClickListener(new View.OnClickListener() {
@@ -172,6 +177,10 @@ public class TopAdsBottomSheetsSelectGroup extends BottomSheets{
         if (textInputLayoutChooseGroup != null) {
             textInputLayoutChooseGroup.setError(message);
         }
+    }
+
+    public void setSelectedGroup(String groupName) {
+        selectedGroupName = groupName;
     }
 
     public interface OnSelectGroupListener {

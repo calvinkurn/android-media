@@ -135,4 +135,9 @@
         <item>@string/label_top_ads_average</item>
         <item>@string/label_top_ads_sold</item>
     </string-array>
+
+    <string-array name="top_ads_list_menu_more">
+        <item>@string/topads_menu_help</item>
+        <item>@string/action_more</item>
+    </string-array>
 </resources>

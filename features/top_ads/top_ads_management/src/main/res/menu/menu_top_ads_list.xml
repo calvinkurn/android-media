@@ -10,9 +10,9 @@
         app:showAsAction="always|collapseActionView" />
 
     <item
-        android:id="@+id/menu_multi_select"
-        android:icon="@drawable/ic_action_checkable"
-        android:title="@string/title_multiple_select"
+        android:id="@+id/menu_more"
+        android:icon="@drawable/ic_more_vert_white"
+        android:title="@string/title_view_more"
         app:iconTint="@color/black_70"
         app:showAsAction="always"/>
 

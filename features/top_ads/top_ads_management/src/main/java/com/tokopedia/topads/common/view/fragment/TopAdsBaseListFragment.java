@@ -37,6 +37,7 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.EmptyResultViewHo
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment;
 import com.tokopedia.abstraction.base.view.listener.EndlessLayoutManagerListener;
 import com.tokopedia.design.button.BottomActionView;
+import com.tokopedia.design.component.Menus;
 import com.tokopedia.design.label.LabelView;
 import com.tokopedia.design.text.SearchInputView;
 import com.tokopedia.design.utils.DateLabelUtils;
@@ -98,7 +99,7 @@ public abstract class TopAdsBaseListFragment<V extends Visitable, F extends Adap
     private CoordinatorLayout.Behavior appBarBehaviour;
     private RecyclerView recyclerView;
     private MenuItem menuAdd;
-    private MenuItem menuCheck;
+    private MenuItem menuMore;
     private ActionMode actionMode;
     private LinearLayoutManager layoutManager;
 
@@ -135,6 +136,8 @@ public abstract class TopAdsBaseListFragment<V extends Visitable, F extends Adap
             listener = (OnAdListFragmentListener) context;
         }
     }
+
+
 
     @Nullable
     @Override
@@ -394,9 +397,6 @@ public abstract class TopAdsBaseListFragment<V extends Visitable, F extends Adap
             showOption(true);
         }
         super.renderList(data, hasNextPage);
-        if (listener != null){
-            listener.startShowCase();
-        }
     }
 
     private void showOption(boolean show) {
@@ -407,8 +407,8 @@ public abstract class TopAdsBaseListFragment<V extends Visitable, F extends Adap
         if(menuAdd != null){
             menuAdd.setVisible(show);
         }
-        if (menuCheck != null){
-            menuCheck.setVisible(show);
+        if (menuMore != null){
+            menuMore.setVisible(show);
         }
     }
 
@@ -503,14 +503,50 @@ public abstract class TopAdsBaseListFragment<V extends Visitable, F extends Adap
             }
         });
 
-        menuCheck = menu.findItem(R.id.menu_multi_select);
-        menuCheck.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+        menuMore = menu.findItem(R.id.menu_more);
+        menuMore.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem menuItem) {
-                getActivity().startActionMode(getActionModeCallback());
+                showMoreMenus();
                 return true;
             }
         });
+    }
+
+    public void showMoreMenus() {
+        final Menus menus = new Menus(getActivity());
+        menus.setItemMenuList(R.array.top_ads_list_menu_more);
+        menus.setActionText(getString(R.string.close));
+        menus.setOnActionClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                menus.dismiss();
+            }
+        });
+
+        menus.setOnItemMenuClickListener(new Menus.OnItemMenuClickListener() {
+            @Override
+            public void onClick(Menus.ItemMenus itemMenus, int pos) {
+                switch (pos){
+                    case 0: {
+                        menus.dismiss();
+                        if (listener != null) {
+                            recyclerView.scrollTo(0, 0);
+                            listener.startShowCase();
+                        }
+                        break;
+                    }
+                    case 1: {
+                        menus.dismiss();
+                        getActivity().startActionMode(getActionModeCallback());
+                        break;
+                    }
+                    default: break;
+                }
+            }
+        });
+
+        menus.show();
     }
 
     public ActionMode.Callback getActionModeCallback() {

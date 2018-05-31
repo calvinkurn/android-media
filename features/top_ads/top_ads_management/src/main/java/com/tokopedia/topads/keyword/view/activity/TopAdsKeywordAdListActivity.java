@@ -4,7 +4,6 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
-import android.support.v7.app.AppCompatDelegate;
 import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -16,13 +15,12 @@ import com.tokopedia.core.listener.GlobalMainTabSelectedListener;
 import com.tokopedia.showcase.ShowCaseContentPosition;
 import com.tokopedia.showcase.ShowCaseDialog;
 import com.tokopedia.showcase.ShowCaseObject;
-import com.tokopedia.showcase.ShowCasePreference;
 import com.tokopedia.topads.R;
 import com.tokopedia.topads.TopAdsComponentInstance;
+import com.tokopedia.topads.common.view.fragment.TopAdsBaseListFragment;
 import com.tokopedia.topads.common.view.utils.ShowCaseDialogFactory;
 import com.tokopedia.topads.dashboard.constant.TopAdsExtraConstant;
 import com.tokopedia.topads.dashboard.di.component.TopAdsComponent;
-import com.tokopedia.topads.dashboard.view.fragment.TopAdsAdListFragment;
 import com.tokopedia.topads.keyword.view.adapter.TopAdsPagerAdapter;
 import com.tokopedia.topads.keyword.view.fragment.TopAdsKeywordAdListFragment;
 
@@ -33,7 +31,7 @@ import java.util.ArrayList;
  */
 
 public class TopAdsKeywordAdListActivity extends BaseTabActivity implements HasComponent<TopAdsComponent>,
-        TopAdsAdListFragment.OnAdListFragmentListener, TopAdsKeywordAdListFragment.GroupTopAdsListener {
+        TopAdsBaseListFragment.OnAdListFragmentListener, TopAdsKeywordAdListFragment.GroupTopAdsListener {
 
     public static final int OFFSCREEN_PAGE_LIMIT = 2;
     private static final String TAG = TopAdsKeywordAdListActivity.class.getName();
@@ -97,14 +95,14 @@ public class TopAdsKeywordAdListActivity extends BaseTabActivity implements HasC
                 getTopAdsBaseKeywordListFragment().onCreateAd();
             }
             return true;
-        } else if (item.getItemId() == R.id.menu_multi_select) {
+        } else if (item.getItemId() == R.id.menu_more) {
             final TopAdsKeywordAdListFragment fragment = getTopAdsBaseKeywordListFragment();
 
             if (fragment == null){
                 return false;
             }
 
-            startActionMode(fragment.getActionModeCallback());
+            fragment.showMoreMenus();
             return true;
         }
         return super.onOptionsItemSelected(item);
@@ -139,13 +137,6 @@ public class TopAdsKeywordAdListActivity extends BaseTabActivity implements HasC
 
     @Override
     public void startShowCase() {
-        if (ShowCasePreference.hasShown(this, TAG)) {
-            return;
-        }
-        if (showCaseDialog != null || isShowingShowCase) {
-            return;
-        }
-        isShowingShowCase = true;
 
         viewPager.setCurrentItem(0);
         viewPager.post(new Runnable() {

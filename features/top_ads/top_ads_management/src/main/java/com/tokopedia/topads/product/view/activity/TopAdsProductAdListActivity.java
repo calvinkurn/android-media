@@ -35,12 +35,6 @@ public class TopAdsProductAdListActivity extends BaseSimpleActivity
     @Override
     public void startShowCase() {
         final String showCaseTag = TopAdsProductAdListActivity.class.getName();
-        if (ShowCasePreference.hasShown(this, showCaseTag)) {
-            return;
-        }
-        if (showCaseDialog != null) {
-            return;
-        }
         final TopAdsProductListFragment topAdsProductAdListFragment =
                 (TopAdsProductListFragment) getSupportFragmentManager().findFragmentByTag(TAG);
         if (topAdsProductAdListFragment == null || topAdsProductAdListFragment.getView() == null) {
