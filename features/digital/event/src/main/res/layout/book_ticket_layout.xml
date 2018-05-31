@@ -140,7 +140,7 @@
         android:layout_gravity="bottom"
         android:background="@color/white"
         android:elevation="@dimen/dp_4"
-        android:visibility="visible"
+        android:visibility="invisible"
         tools:targetApi="lollipop">
 
         <TextView
