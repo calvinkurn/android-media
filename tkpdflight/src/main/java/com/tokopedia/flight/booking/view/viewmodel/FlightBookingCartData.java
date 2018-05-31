@@ -21,6 +21,7 @@ public class FlightBookingCartData implements Parcelable {
     private List<FlightBookingAmenityMetaViewModel> luggageViewModels;
     private List<FlightBookingAmenityMetaViewModel> mealViewModels;
     private List<NewFarePrice> newFarePrices;
+    private boolean isDomestic;
 
     public FlightBookingCartData() {
     }
@@ -34,6 +35,25 @@ public class FlightBookingCartData implements Parcelable {
         luggageViewModels = in.createTypedArrayList(FlightBookingAmenityMetaViewModel.CREATOR);
         mealViewModels = in.createTypedArrayList(FlightBookingAmenityMetaViewModel.CREATOR);
         newFarePrices = in.createTypedArrayList(NewFarePrice.CREATOR);
+        isDomestic = in.readByte() != 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(id);
+        dest.writeInt(refreshTime);
+        dest.writeParcelable(defaultPhoneCode, flags);
+        dest.writeParcelable(departureTrip, flags);
+        dest.writeParcelable(returnTrip, flags);
+        dest.writeTypedList(luggageViewModels);
+        dest.writeTypedList(mealViewModels);
+        dest.writeTypedList(newFarePrices);
+        dest.writeByte((byte) (isDomestic ? 1 : 0));
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
     }
 
     public static final Creator<FlightBookingCartData> CREATOR = new Creator<FlightBookingCartData>() {
@@ -113,20 +133,11 @@ public class FlightBookingCartData implements Parcelable {
         this.defaultPhoneCode = defaultPhoneCode;
     }
 
-    @Override
-    public int describeContents() {
-        return 0;
+    public boolean isDomestic() {
+        return isDomestic;
     }
 
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(id);
-        dest.writeInt(refreshTime);
-        dest.writeParcelable(defaultPhoneCode, flags);
-        dest.writeParcelable(departureTrip, flags);
-        dest.writeParcelable(returnTrip, flags);
-        dest.writeTypedList(luggageViewModels);
-        dest.writeTypedList(mealViewModels);
-        dest.writeTypedList(newFarePrices);
+    public void setDomestic(boolean domestic) {
+        isDomestic = domestic;
     }
 }

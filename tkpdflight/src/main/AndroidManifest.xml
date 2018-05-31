@@ -4,8 +4,6 @@
     package="com.tokopedia.flight">
 
     <application android:label="@string/app_name">
-        <meta-data android:name="android.support.VERSION" android:value="26.1.0"
-            tools:replace="android:value" />
         <activity
             android:name=".dashboard.view.activity.FlightDashboardActivity"
             android:label="@string/flight_dashboard_toolbar_title"
@@ -64,6 +62,7 @@
             android:name=".booking.view.activity.FlightBookingPassengerActivity"
             android:label="@string/flight_booking_passenger_toolbar_title"
             android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden"
             android:theme="@style/Theme.White.Flight" />
         <activity
             android:name=".booking.view.activity.FlightBookingPhoneCodeActivity"
@@ -125,6 +124,7 @@
             android:name=".passenger.view.activity.FlightPassengerUpdateActivity"
             android:label="@string/flight_passenger_update_title"
             android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden"
             android:theme="@style/Theme.White.Flight" />
         <activity
             android:name=".cancellation.view.activity.FlightCancellationTermsAndConditionsActivity"

@@ -428,4 +428,17 @@
     <string name="flight_cancellation_review_journey_number">Penerbangan %d</string>
     <string name="flight_passenger_choose_salutation">Pilih Titel</string>
     <string name="flight_review_minus_discount_prefix">- %1$s</string>
+    <string name="flight_passenger_passport_number_secondary_hint">Isi nomor passport</string>
+    <string name="flight_passenger_passport_expiration_secondary_hint">Pilih tanggal</string>
+    <string name="flight_passenger_nationality_secondary_hint">Pilih kewarganegaraan</string>
+    <string name="flight_passenger_passport_issuer_country_secondary_hint">Pilih negara</string>
+    <string name="flight_passenger_passport_expired_date_less_than_6_month_error">Passport harus valid setidaknya sampai %s.</string>
+    <string name="flight_passenger_passport_expired_date_more_than_20_year_error">Masa berlaku passport tidak boleh lebih dari %s.</string>
+    <string name="flight_booking_passport_number_empty_error">Nomor Passport harus diisi</string>
+    <string name="flight_booking_passport_number_alphanumeric_error">Nomor Passport hanya boleh terdiri dari huruf dan angka</string>
+    <string name="flight_booking_passport_nationality_empty_error">Kewarganegaraan harus diisi</string>
+    <string name="flight_booking_passport_issuer_country_empty_error">Negara Penerbit Passport harus diisi</string>
+    <string name="flight_booking_passport_expired_date_empty_error">Tanggal Berakhir Passport harus diisi</string>
+    <string name="flight_passport_search_hint">Cari Negara Penerbit Passport</string>
+    <string name="flight_nationality_search_hint">Cari Negara Kewarganegaraan</string>
 </resources>
