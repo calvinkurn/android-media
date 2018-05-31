@@ -101,7 +101,7 @@
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintWidth_default="wrap"
-            tools:text="23 Jan '18 - 5 Des '18" />
+            tools:text="Sabtu, 8 Sep 2018 - Minngu, 3Sep" />
 
         <TextView
             android:id="@+id/tv4_event_title"
@@ -115,6 +115,7 @@
             android:layout_marginTop="@dimen/dp_8"
             android:gravity="center_vertical"
             android:maxLines="1"
+            android:ellipsize="end"
             android:paddingLeft="@dimen/margin_vvvs"
             android:paddingRight="@dimen/margin_vvvs"
             android:textColor="@color/black_70"
@@ -127,7 +128,7 @@
             app:layout_constraintTop_toBottomOf="@+id/iv_event_thumb"
             app:layout_constraintVertical_bias="0.0"
             app:layout_constraintWidth_default="wrap"
-            tools:text="vrrvrjnrvvvrirvrirniv and the bbear oncerrhv" />
+            tools:text="vrfdvevveeevvrirniv and the bbear oncerrhv" />
 
 
     </android.support.constraint.ConstraintLayout>
