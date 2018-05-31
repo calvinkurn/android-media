@@ -6,7 +6,10 @@ import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.graphics.Color;
+import android.graphics.Rect;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -37,10 +40,6 @@ import com.appsflyer.AFInAppEventType;
 import com.google.android.gms.tagmanager.DataLayer;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tkpd.library.utils.SnackbarManager;
-import com.tokopedia.abstraction.AbstractionRouter;
-import com.tokopedia.abstraction.common.data.model.session.UserSession;
-import com.tokopedia.applink.ApplinkRouter;
-import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.ProductPageTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.BasePresenterFragment;
@@ -85,6 +84,7 @@ import com.tokopedia.tkpdpdp.DinkFailedActivity;
 import com.tokopedia.tkpdpdp.DinkSuccessActivity;
 import com.tokopedia.tkpdpdp.InstallmentActivity;
 import com.tokopedia.tkpdpdp.PreviewProductImageDetail;
+import com.tokopedia.tkpdpdp.ProductInfoActivity;
 import com.tokopedia.tkpdpdp.R;
 import com.tokopedia.tkpdpdp.VariantActivity;
 import com.tokopedia.tkpdpdp.WholesaleActivity;
@@ -110,8 +110,6 @@ import com.tokopedia.tkpdpdp.listener.AppBarStateChangeListener;
 import com.tokopedia.tkpdpdp.listener.ProductDetailView;
 import com.tokopedia.tkpdpdp.presenter.ProductDetailPresenter;
 import com.tokopedia.tkpdpdp.presenter.ProductDetailPresenterImpl;
-import com.tokopedia.topads.sourcetagging.constant.TopAdsSourceOption;
-import com.tokopedia.topads.sourcetagging.util.TopAdsAppLinkUtil;
 
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
@@ -131,6 +129,8 @@ import static com.tokopedia.core.product.model.productdetail.ProductInfo.PRD_STA
 import static com.tokopedia.core.router.productdetail.ProductDetailRouter.EXTRA_PRODUCT_ID;
 import static com.tokopedia.core.router.productdetail.ProductDetailRouter.WIHSLIST_STATUS_IS_WISHLIST;
 import static com.tokopedia.core.router.productdetail.ProductDetailRouter.WISHLIST_STATUS_UPDATED_POSITION;
+import static com.tokopedia.core.var.TkpdCache.Key.STATE_ORIENTATION_CHANGED;
+import static com.tokopedia.core.var.TkpdCache.PRODUCT_DETAIL;
 import static com.tokopedia.tkpdpdp.VariantActivity.KEY_LEVEL1_SELECTED;
 import static com.tokopedia.tkpdpdp.VariantActivity.KEY_LEVEL2_SELECTED;
 import static com.tokopedia.tkpdpdp.VariantActivity.KEY_PRODUCT_DETAIL_DATA;
@@ -208,6 +208,7 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
     private YoutubeThumbnailViewHolder.YouTubeThumbnailLoadInProcess youTubeThumbnailLoadInProcessListener;
     private ReportProductDialogFragment fragment;
     private Bundle recentBundle;
+    private com.tokopedia.abstraction.common.utils.LocalCacheHandler localCacheHandler;
 
     private ProductPass productPass;
     private ProductDetailData productData;
@@ -220,7 +221,6 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
     private Option variantLevel1;
     private Option variantLevel2;
     private boolean onClickBuyWhileRequestingVariant = false;
-    private UserSession userSession;
 
     private RemoteConfig remoteConfig;
 
@@ -246,6 +246,10 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
         if (remoteConfig.getBoolean(ENABLE_VARIANT)==false) {
             useVariant = false;
         }
+        localCacheHandler = new com.tokopedia.abstraction.common.utils.LocalCacheHandler(MainApplication.getAppContext(), PRODUCT_DETAIL);
+        localCacheHandler.putBoolean(STATE_ORIENTATION_CHANGED,Boolean.FALSE);
+        localCacheHandler.applyEditor();
+
     }
 
     @Override
@@ -256,7 +260,6 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
     @Override
     protected void initialPresenter() {
         this.presenter = new ProductDetailPresenterImpl(this);
-        this.presenter.initTopAdsSourceTaggingUseCase(getActivity().getApplicationContext());
     }
 
     @Override
@@ -310,10 +313,7 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
         ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
         ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        float heightScreen = getResources().getDisplayMetrics().widthPixels;
-        CoordinatorLayout.LayoutParams layoutParams = (CoordinatorLayout.LayoutParams)appBarLayout.getLayoutParams();
-        layoutParams.height = (int)heightScreen;
-        appBarLayout.setVisibility(View.VISIBLE);
+        setUpByConfiguration(getResources().getConfiguration());
 
         appBarLayout.addOnOffsetChangedListener(new AppBarStateChangeListener() {
             @Override
@@ -341,6 +341,34 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
             CoordinatorLayout.LayoutParams params = (CoordinatorLayout.LayoutParams) appBarLayout.getLayoutParams();
             params.setBehavior(new FlingBehavior(R.id.nested_scroll_pdp));
+        }
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        setUpByConfiguration(newConfig);
+    }
+
+    private void setUpByConfiguration(Configuration configuration) {
+        float widthScreen = getResources().getDisplayMetrics().widthPixels;
+        if (configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            CoordinatorLayout.LayoutParams layoutParams = (CoordinatorLayout.LayoutParams)appBarLayout.getLayoutParams();
+            layoutParams.height = (int)widthScreen / 3;
+            appBarLayout.setVisibility(View.VISIBLE);
+            if (!localCacheHandler.getBoolean(STATE_ORIENTATION_CHANGED).booleanValue()) {
+                if (productData!=null) {
+                    UnifyTracking.eventPDPOrientationChanged(Integer.toString(productData.getInfo().getProductId()));
+                } else {
+                    UnifyTracking.eventPDPOrientationChanged(productPass.getProductId());
+                }
+                localCacheHandler.putBoolean(STATE_ORIENTATION_CHANGED,Boolean.TRUE);
+                localCacheHandler.applyEditor();
+            }
+        } else if (configuration.orientation == Configuration.ORIENTATION_PORTRAIT){
+            CoordinatorLayout.LayoutParams layoutParams = (CoordinatorLayout.LayoutParams)appBarLayout.getLayoutParams();
+            layoutParams.height = (int)widthScreen;
+            appBarLayout.setVisibility(View.VISIBLE);
         }
     }
 
@@ -387,7 +415,6 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
 
     @Override
     protected void initialVar() {
-        userSession = ((AbstractionRouter) getActivity().getApplication()).getSession();
         appIndexHandler = new AppIndexHandler(getActivity());
         loading = new ProgressDialog(getActivity());
         loading.setCancelable(false);
@@ -528,7 +555,7 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
                 && productVariant!=null && productVariant.getChildren()!=null) {
             for (Child child: productVariant.getChildren()) {
                 if (!TextUtils.isEmpty(child.getPicture().getOriginal()) && child.getProductId()!=productData.getInfo().getProductId()) {
-                   arrayList.add(child.getPicture().getOriginal());
+                    arrayList.add(child.getPicture().getOriginal());
                 }
             }
             Set<String> imagesSet = new LinkedHashSet<>(arrayList);
@@ -669,7 +696,7 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
         this.headerInfoView.renderTempData(productPass);
         this.pictureView.renderTempData(productPass);
         this.ratingTalkCourierView.renderTempdata(productPass);
-         if (productPass.isWishlist()) {
+        if (productPass.isWishlist()) {
             fabWishlist.setImageDrawable(getResources().getDrawable(R.drawable.ic_wishlist_red));
         } else {
             fabWishlist.setImageDrawable(getResources().getDrawable(R.drawable.ic_wishlist));
@@ -1021,7 +1048,6 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
 
     @Override
     public void onRestoreState(Bundle savedInstanceState) {
-        Log.d(TAG, "onRestoreState");
         presenter.processStateData(savedInstanceState, getActivity());
     }
 
@@ -1224,11 +1250,11 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
     @Override
     public void moveToEditFragment(boolean isEdit) {
         if (getActivity().getApplication() instanceof TkpdCoreRouter) {
-                        Integer productId = productData.getInfo().getProductId();
-                        if (productData != null && productData.getInfo().getHasVariant() && productVariant != null) {
-                                productId = productVariant.getParentId();
-                            }
-                        Intent intent = ((TkpdCoreRouter) getActivity().getApplication()).goToEditProduct(getActivity(), isEdit, Integer.toString(productId));
+            Integer productId = productData.getInfo().getProductId();
+            if (productData != null && productData.getInfo().getHasVariant() && productVariant != null) {
+                productId = productVariant.getParentId();
+            }
+            Intent intent = ((TkpdCoreRouter) getActivity().getApplication()).goToEditProduct(context, isEdit, Integer.toString(productId));
             navigateToActivityRequest(intent, ProductDetailFragment.REQUEST_CODE_EDIT_PRODUCT);
         }
     }
@@ -1277,10 +1303,8 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
 
     @Override
     public void onPromoAdsClicked() {
-        ((PdpRouter) getActivity().getApplication()).goToCreateTopadsPromo(getActivity(),
-                String.valueOf(productData.getInfo().getProductId()), productData.getShopInfo().getShopId(),
-                GlobalConfig.isSellerApp()? TopAdsSourceOption.SA_PDP :
-                        TopAdsSourceOption.MA_PDP);
+        presenter.onPromoAdsClicked(getActivity(), productData.getShopInfo().getShopId(),
+                productData.getInfo().getProductId(), SessionHandler.getLoginID(getActivity()));
     }
 
     @Override

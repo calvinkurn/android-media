@@ -21,6 +21,8 @@ public class SearchItem {
     private String imageURI;
     @SerializedName("isOfficial")
     private boolean isOfficial;
+    @SerializedName("location")
+    private String location;
     private String eventAction;
 
     public String getEventAction() {
@@ -85,6 +87,14 @@ public class SearchItem {
 
     public void setApplink(String applink) {
         this.applink = applink;
+    }
+
+    public String getLocation() {
+        return location;
+    }
+
+    public void setLocation(String location) {
+        this.location = location;
     }
 }
 

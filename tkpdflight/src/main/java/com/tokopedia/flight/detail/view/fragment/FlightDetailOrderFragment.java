@@ -1,7 +1,6 @@
 package com.tokopedia.flight.detail.view.fragment;
 
 import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.ClipData;
 import android.content.ClipboardManager;
@@ -522,6 +521,11 @@ public class FlightDetailOrderFragment extends BaseDaggerFragment implements Fli
     @Override
     public void hideCancellationContainer() {
         containerCancellation.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void hideCancelButton() {
+        buttonCancelTicket.setVisibility(View.GONE);
     }
 
     @Override

@@ -45,8 +45,10 @@ import com.tokopedia.core.geolocation.model.autocomplete.LocationPass;
 import com.tokopedia.core.home.BannerWebView;
 import com.tokopedia.core.instoped.model.InstagramMediaModel;
 import com.tokopedia.core.loyaltysystem.util.URLGenerator;
+import com.tokopedia.core.network.retrofit.interceptors.TkpdAuthInterceptor;
+import com.tokopedia.district_recommendation.domain.mapper.TokenMapper;
 import com.tokopedia.district_recommendation.domain.model.Token;
-import com.tokopedia.core.manage.general.districtrecommendation.view.DistrictRecommendationActivity;
+import com.tokopedia.district_recommendation.view.DistrictRecommendationActivity;
 import com.tokopedia.core.manage.people.address.activity.ChooseAddressActivity;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.network.retrofit.utils.ServerErrorHandler;
@@ -1362,5 +1364,15 @@ public abstract class SellerRouterApplication extends MainApplication
     @Override
     public Intent getPromoDetailIntent(Context context, String slug) {
         return null;
+    }
+
+    @Override
+    public Intent getDistrictRecommendationIntent(Activity activity, com.tokopedia.core.manage.people.address.model.Token token) {
+        return DistrictRecommendationActivity.createInstance(activity, new TokenMapper().convertTokenModel(token));
+    }
+
+    @Override
+    public Interceptor getAuthInterceptor() {
+        return new TkpdAuthInterceptor();
     }
 }

@@ -21,6 +21,8 @@ import com.tokopedia.tkpdpdp.DescriptionActivity;
 import com.tokopedia.tkpdpdp.R;
 import com.tokopedia.tkpdpdp.listener.ProductDetailView;
 
+import static com.tokopedia.core.router.productdetail.ProductDetailRouter.EXTRA_PRODUCT_ID;
+
 /**
  * @author kris on 11/3/16. Tokopedia
  */
@@ -34,6 +36,7 @@ public class VideoDescriptionLayout extends BaseView<ProductDetailData, ProductD
     private ProductVideoHorizontalScroll productVideoHorizontalScroll;
 
     String description = "";
+    String productId = "";
     VideoData videoData;
 
     public static final int MAX_CHAR = 300;
@@ -86,6 +89,7 @@ public class VideoDescriptionLayout extends BaseView<ProductDetailData, ProductD
         desc.setText(getContext().getString(R.string.title_desc));
         description = data.getInfo().getProductDescription() == null ? "" :
                 data.getInfo().getProductDescription();
+        productId = Integer.toString(data.getInfo().getProductId());
         ClickToggle clickToggleDescription = new VideoDescriptionLayout.ClickToggle();
         container.setOnClickListener(clickToggleDescription);
         tvDesc.setOnClickListener(clickToggleDescription);
@@ -136,6 +140,7 @@ public class VideoDescriptionLayout extends BaseView<ProductDetailData, ProductD
         public void onClick(View v) {
             Bundle bundle = new Bundle();
             bundle.putString(DescriptionActivity.KEY_DESCRIPTION, description);
+            bundle.putString(EXTRA_PRODUCT_ID, productId);
             if (videoData != null) bundle.putParcelable(DescriptionActivity.KEY_VIDEO, videoData);
             listener.onDescriptionClicked(bundle);
             UnifyTracking.eventPDPExpandDescription();
