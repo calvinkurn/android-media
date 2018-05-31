@@ -589,6 +589,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
             @Override
             public void onShow(DialogInterface dialogInterface) {
                 courierBottomsheet.updateHeight();
+                checkoutAnalyticsCartShipmentPage.eventImpressionShipmentImpressionCourierSelection();
             }
         });
         courierBottomsheet.show();
@@ -667,7 +668,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
 
     @Override
     public void onCartPromoTrackingCancelled(CartItemPromoHolderData cartPromo, int position) {
-
+        checkoutAnalyticsCartShipmentPage.eventClickShipmentClickXOnBannerPromoCodeCode();
     }
 
     @Override
@@ -742,6 +743,11 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     }
 
     @Override
+    public void onSubTotalCartItemClicked(int position) {
+        checkoutAnalyticsCartShipmentPage.eventClickShipmentClickSubtotal();
+    }
+
+    @Override
     public void onInsuranceTncClicked() {
         startActivity(((ICheckoutModuleRouter) getActivity().getApplication()).checkoutModuleRouterGetInsuranceTncActivityIntent());
     }
@@ -749,5 +755,15 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     @Override
     public void onNeedUpdateRequestData() {
         shipmentAdapter.checkHasSelectAllCourier();
+    }
+
+    @Override
+    public void onDropshipCheckedForTrackingAnalytics() {
+        checkoutAnalyticsCartShipmentPage.eventClickShipmentClickDropship();
+    }
+
+    @Override
+    public void onInsuranceCheckedForTrackingAnalytics() {
+        checkoutAnalyticsCartShipmentPage.eventClickShipmentClickAsuransiPengiriman();
     }
 }

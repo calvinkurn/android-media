@@ -11,6 +11,7 @@ import com.tokopedia.loyalty.view.data.LoyaltyPagerItem;
 import com.tokopedia.loyalty.view.fragment.PromoCodeFragment;
 import com.tokopedia.loyalty.view.fragment.PromoCouponFragment;
 import com.tokopedia.transactionanalytics.CheckoutAnalyticsCartPage;
+import com.tokopedia.transactionanalytics.CheckoutAnalyticsCartShipmentPage;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -116,7 +117,15 @@ public class LoyaltyViewModule {
             analyticTracker = ((AbstractionRouter) activity.getApplication()).getAnalyticTracker();
         }
         return new CheckoutAnalyticsCartPage(analyticTracker);
+    }
 
+    @Provides
+    CheckoutAnalyticsCartShipmentPage provideCheckoutAnalyticsCartShipmentPage() {
+        AnalyticTracker analyticTracker = null;
+        if (activity.getApplication() instanceof AbstractionRouter) {
+            analyticTracker = ((AbstractionRouter) activity.getApplication()).getAnalyticTracker();
+        }
+        return new CheckoutAnalyticsCartShipmentPage(analyticTracker);
     }
 
 }
