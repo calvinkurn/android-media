@@ -3,8 +3,8 @@ package com.tokopedia.transaction.cart.presenter;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.util.Log;
 import android.text.TextUtils;
+import android.util.Log;
 
 import com.appsflyer.AFInAppEventParameterName;
 import com.google.gson.Gson;
@@ -29,8 +29,8 @@ import com.tokopedia.core.util.BranchSdkUtils;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.transaction.R;
-import com.tokopedia.transaction.cart.activity.CartActivity;
 import com.tokopedia.transaction.addtocart.model.kero.Data;
+import com.tokopedia.transaction.cart.activity.CartActivity;
 import com.tokopedia.transaction.cart.interactor.CartDataInteractor;
 import com.tokopedia.transaction.cart.interactor.ICartDataInteractor;
 import com.tokopedia.transaction.cart.listener.ICartView;
@@ -629,6 +629,8 @@ public class CartPresenter implements ICartPresenter {
     @Override
     public void unSubscribeObservable() {
         cartDataInteractor.unSubscribeObservable();
+        editCartPickupPointsUseCase.unsubscribe();
+        removeCartPickupPointsUseCase.unsubscribe();
     }
 
     @Override
@@ -931,7 +933,7 @@ public class CartPresenter implements ICartPresenter {
     }
 
     private String checkCouponDefaultNull(String defaultPromoTab) {
-        if(TextUtils.isEmpty(defaultPromoTab)) return "";
+        if (TextUtils.isEmpty(defaultPromoTab)) return "";
         else return defaultPromoTab;
     }
 
@@ -1077,20 +1079,20 @@ public class CartPresenter implements ICartPresenter {
         removeCartPickupPointsUseCase.execute(
                 RemoveCartPickupPointsUseCase.generateParams(view.getActivityContext(), cartId, oldStoreId),
                 new Subscriber<Response<TkpdResponse>>() {
-            @Override
-            public void onCompleted() {
-                Log.e("removeCartPickupPoints", "onCompleted");
-            }
+                    @Override
+                    public void onCompleted() {
+                        Log.e("removeCartPickupPoints", "onCompleted");
+                    }
 
-            @Override
-            public void onError(Throwable e) {
-                Log.e("removeCartPickupPoints", "onError");
-            }
+                    @Override
+                    public void onError(Throwable e) {
+                        Log.e("removeCartPickupPoints", "onError");
+                    }
 
-            @Override
-            public void onNext(Response<TkpdResponse> tkpdResponseResponse) {
-                Log.e("removeCartPickupPoints", "onNext");
-            }
-        });
+                    @Override
+                    public void onNext(Response<TkpdResponse> tkpdResponseResponse) {
+                        Log.e("removeCartPickupPoints", "onNext");
+                    }
+                });
     }
 }

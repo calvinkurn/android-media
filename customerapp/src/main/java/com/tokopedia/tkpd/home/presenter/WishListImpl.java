@@ -423,7 +423,7 @@ public class WishListImpl implements WishList {
         fetchDataFromInternet(context);
        /* if(cache.getWishListCache()!=null){
             setData(cache.getWishListCache());
-            sendToAppsflyer(context,cache.getWishListCache().receiveData());
+            sendToAppsflyer(context,cache.getWishListCache().getData());
         }else{
             wishListView.displayPull(true);
             fetchDataFromInternet(context);

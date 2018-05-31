@@ -25,12 +25,8 @@ import com.tokopedia.tracking.di.DaggerTrackingPageComponent;
 import com.tokopedia.tracking.di.TrackingPageComponent;
 import com.tokopedia.tracking.di.TrackingPageModule;
 import com.tokopedia.tracking.presenter.ITrackingPagePresenter;
+import com.tokopedia.tracking.utils.DateUtil;
 import com.tokopedia.tracking.viewmodel.TrackingViewModel;
-
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Locale;
 
 import javax.inject.Inject;
 
@@ -67,6 +63,8 @@ public class TrackingPageFragment extends BaseDaggerFragment implements ITrackin
 
     @Inject
     ITrackingPagePresenter presenter;
+    @Inject
+    DateUtil dateUtil;
 
     public static TrackingPageFragment createFragment(String orderId, String liveTrackingUrl) {
         TrackingPageFragment fragment = new TrackingPageFragment();
@@ -118,7 +116,7 @@ public class TrackingPageFragment extends BaseDaggerFragment implements ITrackin
         referenceNumber.setText(model.getReferenceNumber());
         ImageHandler.LoadImage(courierLogo, model.getCourierLogoUrl());
         if (!TextUtils.isEmpty(model.getDeliveryDate())) {
-            deliveryDate.setText(formattedDate(model.getDeliveryDate()));
+            deliveryDate.setText(dateUtil.getFormattedDate(model.getDeliveryDate()));
         }
         storeName.setText(model.getSellerStore());
         storeAddress.setText(model.getSellerAddress());
@@ -127,7 +125,7 @@ public class TrackingPageFragment extends BaseDaggerFragment implements ITrackin
         buyerLocation.setText(model.getBuyerAddress());
         currentStatus.setText(model.getStatus());
         trackingHistory.setLayoutManager(new LinearLayoutManager(getActivity()));
-        trackingHistory.setAdapter(new TrackingHistoryAdapter(model.getHistoryList()));
+        trackingHistory.setAdapter(new TrackingHistoryAdapter(model.getHistoryList(), dateUtil));
         setEmptyHistoryView(model);
         setLiveTrackingButton();
 
@@ -227,24 +225,6 @@ public class TrackingPageFragment extends BaseDaggerFragment implements ITrackin
                                 getArguments().getString(URL_LIVE_TRACKING)));
             }
         };
-    }
-
-    private String formattedDate(String unformattedTime) {
-        String inputPattern = "yyyy-MM-dd";
-        String outputPattern = "dd MMM yyyy";
-
-        SimpleDateFormat inputFormat = new SimpleDateFormat(inputPattern,
-                new Locale("in", "ID"));
-
-        SimpleDateFormat outputFormat = new SimpleDateFormat(outputPattern,
-                new Locale("in", "ID"));
-
-        try {
-            Date date = inputFormat.parse(unformattedTime);
-            return outputFormat.format(date);
-        } catch (ParseException e) {
-            return unformattedTime;
-        }
     }
 
     @Override

@@ -578,21 +578,6 @@ public class CartFragment extends BaseCheckoutFragment implements CartListAdapte
                 promoCodeAppliedData, cartListData.getCartPromoSuggestion()
         );
         startActivityForResult(intent, ShipmentActivity.REQUEST_CODE);
-/*
-        if (shipmentAddressFormData.isMultiple()) {
-            Intent intent = CartShipmentActivity.createInstanceMultipleAddress(
-                    getActivity(), shipmentAddressFormData, this.promoCodeAppliedData,
-                    this.cartListData.getCartPromoSuggestion()
-            );
-            startActivityForResult(intent, CartShipmentActivity.REQUEST_CODE);
-        } else {
-            Intent intent = CartShipmentActivity.createInstanceSingleAddress(
-                    getActivity(), shipmentAddressFormData, this.promoCodeAppliedData,
-                    this.cartListData.getCartPromoSuggestion()
-            );
-            startActivityForResult(intent, CartShipmentActivity.REQUEST_CODE);
-        }
-*/
     }
 
     @Override
