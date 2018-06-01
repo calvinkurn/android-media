@@ -34,6 +34,8 @@ import javax.inject.Inject;
 
 import rx.Subscriber;
 
+import static com.tokopedia.loyalty.view.activity.LoyaltyActivity.DEAL_STRING;
+import static com.tokopedia.loyalty.view.activity.LoyaltyActivity.EVENT_STRING;
 import static com.tokopedia.loyalty.view.activity.LoyaltyActivity.FLIGHT_STRING;
 
 /**
@@ -327,12 +329,69 @@ public class PromoCouponPresenter implements IPromoCouponPresenter {
     }
 
     @Override
-    public void parseAndSubmitEventVoucher(String jsonbody,CouponData data) {
+    public void submitDealVoucher(CouponData couponData, JsonObject requestBody, boolean flag) {
+        view.showProgressLoading();
+        requestBody.addProperty("promocode", couponData.getCode());
+        com.tokopedia.usecase.RequestParams requestParams = com.tokopedia.usecase.RequestParams.create();
+        requestParams.putObject("checkoutdata", requestBody);
+        requestParams.putBoolean("ispromocodecase", flag);
+        ((LoyaltyModuleRouter) view.getContext().getApplicationContext()).verifyDealPromo(requestParams).subscribe(new Subscriber<com.tokopedia.abstraction.common.utils.TKPDMapParam<String, Object>>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                view.hideProgressLoading();
+                if (e instanceof LoyaltyErrorException || e instanceof ResponseErrorException) {
+                    couponData.setErrorMessage(e.getMessage());
+                    view.couponError();
+                } else {
+                    view.showSnackbarError(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
+                }
+            }
+
+            @Override
+            public void onNext(com.tokopedia.abstraction.common.utils.TKPDMapParam<String, Object> resultMap) {
+                view.hideProgressLoading();
+                String promocode = (String) resultMap.get("promocode");
+                int discount = (int) resultMap.get("promocode_discount");
+                int cashback = (int) resultMap.get("promocode_cashback");
+                String failmsg = (String) resultMap.get("promocode_failure_message");
+                String successMsg = (String) resultMap.get("promocode_success_message");
+                String status = (String) resultMap.get("promocode_status");
+                if ((failmsg != null && failmsg.length() > 0) || status.length() == 0) {
+                    couponData.setErrorMessage(failmsg);
+                    view.couponError();
+                    UnifyTracking.eventDigitalEventTracking("voucher failed - " + promocode, failmsg);
+                } else {
+                    CouponViewModel couponViewModel = new CouponViewModel();
+                    couponViewModel.setCode(promocode);
+                    couponViewModel.setMessage(successMsg);
+                    couponViewModel.setSuccess(true);
+                    couponViewModel.setAmount("");
+                    couponViewModel.setRawCashback(cashback);
+                    couponViewModel.setRawDiscount(discount);
+                    couponViewModel.setTitle("");
+                    UnifyTracking.eventDigitalEventTracking("voucher success - " + promocode, successMsg);
+                    view.receiveDigitalResult(couponViewModel);
+                }
+            }
+        });
+
+    }
+
+    @Override
+    public void parseAndSubmitEventVoucher(String jsonbody, CouponData data, String platform) {
         JsonObject requestBody;
         if (jsonbody != null || jsonbody.length() > 0) {
             JsonElement jsonElement = new JsonParser().parse(jsonbody);
             requestBody = jsonElement.getAsJsonObject();
-            submitEventVoucher(data, requestBody, false);
+            if(platform.equals(EVENT_STRING))
+                submitEventVoucher(data, requestBody, false);
+            else
+                submitDealVoucher(data, requestBody, false);
         }
     }
 

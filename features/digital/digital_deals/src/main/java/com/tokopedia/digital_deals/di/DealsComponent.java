@@ -14,6 +14,7 @@ import com.tokopedia.digital_deals.view.fragment.CheckoutHomeFragment;
 import com.tokopedia.digital_deals.view.fragment.DealDetailsAllRedeemLocationsFragment;
 import com.tokopedia.digital_deals.view.fragment.DealDetailsFragment;
 import com.tokopedia.digital_deals.view.fragment.SelectDealQuantityFragment;
+import com.tokopedia.oms.domain.postusecase.PostVerifyCartUseCase;
 
 import dagger.Component;
 
@@ -21,6 +22,8 @@ import dagger.Component;
 @Component(modules = DealsModule.class, dependencies = BaseAppComponent.class)
 
 public interface DealsComponent {
+
+    PostVerifyCartUseCase getPostVerifyCartUseCase();
 
     void inject(DealsHomeActivity activity);
 

@@ -248,4 +248,10 @@ public class SelectDealQuantityFragment extends BaseDaggerFragment implements Se
     public int getRequestCode() {
         return EVENT_LOGIN_REQUEST;
     }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        mPresenter.onActivityResult(requestCode);
+    }
 }
