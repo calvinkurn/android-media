@@ -12,21 +12,25 @@ import java.util.List;
  */
 
 public interface ContactUsHomeContract {
-    public interface View extends CustomerView{
-        public void addPopularArticle(ContactUsArticleResponse articleResponse);
-        public void addPopularArticleDivider();
+    String ContactUsName = "Contact_Us";
 
-        public void setEmptyPurchaseListVisible();
-        public void setEmptyPurchaseListHide();
-        public void setPurchaseList(List<BuyerPurchaseList> buyerPurchaseLists);
+    interface View extends CustomerView {
+        void addPopularArticle(ContactUsArticleResponse articleResponse);
 
-        public void setChatBotVisible();
+        void addPopularArticleDivider();
+
+        void setEmptyPurchaseListHide();
+
+        void setPurchaseList(List<BuyerPurchaseList> buyerPurchaseLists);
+
+        void setChatBotVisible();
 
         void setChatBotMessageId(int msgId);
+
         void setHighMessageUserName(String userName);
     }
 
-    public interface Presenter extends CustomerPresenter<View> {
+    interface Presenter extends CustomerPresenter<View> {
 
 
     }

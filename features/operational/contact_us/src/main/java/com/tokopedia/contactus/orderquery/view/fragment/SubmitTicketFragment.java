@@ -246,7 +246,6 @@ public class SubmitTicketFragment extends BaseDaggerFragment implements SubmitTi
     public void setSnackBarErrorMessage(String hello) {
         final Snackbar snackbar = Snackbar.make(constraint_layout, hello, Snackbar.LENGTH_INDEFINITE);
         Snackbar.SnackbarLayout layout = (Snackbar.SnackbarLayout) snackbar.getView();
-        //layout.setBackgroundColor(getResources().getColor(R.color.red_100));
         TextView textView = (TextView) layout.findViewById(android.support.design.R.id.snackbar_text);
         textView.setVisibility(View.INVISIBLE);
 

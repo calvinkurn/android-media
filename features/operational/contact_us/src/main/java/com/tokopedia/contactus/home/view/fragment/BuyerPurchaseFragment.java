@@ -2,6 +2,8 @@ package com.tokopedia.contactus.home.view.fragment;
 
 
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,16 +11,15 @@ import android.widget.LinearLayout;
 
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
-import com.tokopedia.abstraction.base.view.recyclerview.VerticalRecyclerView;
 import com.tokopedia.abstraction.common.di.component.HasComponent;
 import com.tokopedia.contactus.R;
 import com.tokopedia.contactus.R2;
 import com.tokopedia.contactus.common.data.BuyerPurchaseList;
 import com.tokopedia.contactus.home.di.ContactUsComponent;
+import com.tokopedia.contactus.home.di.DaggerContactUsComponent;
 import com.tokopedia.contactus.home.view.adapter.PurchaseListAdpater;
 import com.tokopedia.contactus.home.view.presenter.PurchaseListContract;
 import com.tokopedia.contactus.home.view.presenter.PurchaseListPresenter;
-import com.tokopedia.contactus.home.di.DaggerContactUsComponent;
 
 import java.util.List;
 
@@ -33,11 +34,11 @@ public class BuyerPurchaseFragment extends BaseDaggerFragment implements Purchas
     @Inject
     PurchaseListPresenter presenter;
     @BindView(R2.id.order_list_full)
-    VerticalRecyclerView orderListFull;
+    RecyclerView orderListFull;
     @BindView(R2.id.empty_layout)
     LinearLayout emptyLayout;
     private ContactUsComponent contactUsComponent;
-    PurchaseListAdpater adapter;
+    private PurchaseListAdpater adapter;
 
     public BuyerPurchaseFragment() {
         // Required empty public constructor
@@ -54,6 +55,7 @@ public class BuyerPurchaseFragment extends BaseDaggerFragment implements Purchas
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         adapter = new PurchaseListAdpater(getContext());
+        initInjector();
     }
 
     @Override
@@ -62,10 +64,9 @@ public class BuyerPurchaseFragment extends BaseDaggerFragment implements Purchas
 
         View view = inflater.inflate(R.layout.layout_full_order_list, container, false);
         getPresenter().attachView(this);
-
-        initInjector();
         ButterKnife.bind(this, view);
         orderListFull.setAdapter(adapter);
+        orderListFull.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
         return view;
     }
 
@@ -93,9 +94,9 @@ public class BuyerPurchaseFragment extends BaseDaggerFragment implements Purchas
 
     @Override
     public void setPurchaseList(List<BuyerPurchaseList> buyerPurchaseLists) {
-        if(buyerPurchaseLists.size()<=0) {
+        if (buyerPurchaseLists.size() <= 0) {
             emptyLayout.setVisibility(View.VISIBLE);
-        }else {
+        } else {
             adapter.setBuyerPurchaseLists(buyerPurchaseLists);
         }
     }

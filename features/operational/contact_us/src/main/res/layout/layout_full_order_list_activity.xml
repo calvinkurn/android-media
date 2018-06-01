@@ -2,8 +2,8 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:orientation="vertical"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:orientation="vertical">
 
     <android.support.v7.widget.Toolbar
         android:id="@+id/toolbar"
@@ -16,40 +16,40 @@
         app:contentInsetStartWithNavigation="0dp"
         app:subtitleTextAppearance="?subtitleTextAppearance"
         app:titleTextAppearance="?titleTextAppearance" />
+
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/margin_default"
+        android:layout_marginLeft="@dimen/dp_16"
+        android:layout_marginStart="@dimen/dp_16"
         android:layout_marginTop="@dimen/dp_16"
         android:text="Pilih Transaksi"
         android:textColor="@color/black"
-        android:textStyle="bold"
-        android:textSize="@dimen/font_medium"
-        android:layout_marginLeft="@dimen/margin_default" />
+        android:textSize="@dimen/sp_16"
+        android:textStyle="bold" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/margin_default"
-        android:layout_marginTop="@dimen/margin_ms"
+        android:layout_marginLeft="@dimen/dp_16"
+        android:layout_marginTop="@dimen/dp_8"
         android:text="Laporkan kendala seputar transaksi di Tokopedia"
         android:textColor="@color/grey2_text"
-        android:textSize="@dimen/font_small"/>
+        android:textSize="@dimen/font_small" />
 
     <com.tokopedia.design.component.Tabs
         android:id="@+id/tab"
-        app:tabType="secondary"
-        android:padding="@dimen/dp_8"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:tabTextAppearance="@style/Tabs.Secondary"/>
+        android:padding="@dimen/dp_8"
+        app:tabTextAppearance="@style/Tabs.Secondary"
+        app:tabType="secondary" />
 
     <com.tokopedia.abstraction.base.view.widget.TouchViewPager
-        xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/view_pager_list"
-        android:paddingTop="@dimen/dp_8"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        android:paddingTop="@dimen/dp_8" />
 
     <FrameLayout
         android:id="@+id/parent_view"

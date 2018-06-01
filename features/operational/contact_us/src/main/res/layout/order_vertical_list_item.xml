@@ -6,6 +6,8 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginBottom="@dimen/dp_16"
+    android:layout_marginLeft="@dimen/dp_20"
+    android:layout_marginRight="@dimen/dp_20"
     android:orientation="vertical"
     app:cardCornerRadius="@dimen/default_card_corner_radius">
 
@@ -31,6 +33,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="@dimen/dp_16"
+            android:layout_marginRight="@dimen/dp_16"
             android:textColor="@color/black_55"
             android:textSize="@dimen/font_micro"
             android:textStyle="italic"
@@ -68,6 +71,7 @@
             android:id="@+id/txt_more_item"
             android:layout_width="98dp"
             android:layout_height="19dp"
+            android:layout_marginLeft="16dp"
             android:layout_marginStart="16dp"
             android:layout_marginTop="4dp"
             android:textColor="@color/black_55"

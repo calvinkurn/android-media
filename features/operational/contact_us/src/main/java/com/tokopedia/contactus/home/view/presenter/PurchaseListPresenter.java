@@ -1,5 +1,7 @@
 package com.tokopedia.contactus.home.view.presenter;
 
+import android.util.Log;
+
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.contactus.common.data.BuyerPurchaseList;
 import com.tokopedia.contactus.home.domain.ContactUsPurchaseListUseCase;
@@ -15,7 +17,8 @@ import rx.Subscriber;
  * Created by sandeepgoyal on 11/04/18.
  */
 
-public class PurchaseListPresenter extends BaseDaggerPresenter<PurchaseListContract.View> implements PurchaseListContract.Presenter {
+public class PurchaseListPresenter extends BaseDaggerPresenter<PurchaseListContract.View>
+        implements PurchaseListContract.Presenter {
 
 
     private final ContactUsPurchaseListUseCase purchaseListUseCase;
@@ -24,6 +27,7 @@ public class PurchaseListPresenter extends BaseDaggerPresenter<PurchaseListContr
     public PurchaseListPresenter(ContactUsPurchaseListUseCase purchaseListUseCase) {
         this.purchaseListUseCase = purchaseListUseCase;
     }
+
     @Override
     public void attachView(PurchaseListContract.View view) {
         super.attachView(view);
@@ -35,6 +39,8 @@ public class PurchaseListPresenter extends BaseDaggerPresenter<PurchaseListContr
 
             @Override
             public void onError(Throwable e) {
+                Log.e(ContactUsHomeContract.ContactUsName, "PurchaseList OnError" + e.getLocalizedMessage());
+                e.printStackTrace();
                 getView().setEmptyLayout();
             }
 

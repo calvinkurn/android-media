@@ -7,35 +7,40 @@
     <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="#fafbfc">
-<LinearLayout
-    android:id="@+id/layout_article"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:orientation="vertical"
-    >
-        <include
-            android:id="@+id/toped_bot"
-            layout="@layout/layout_toped_chatbot"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:visibility="gone"
-            app:layout_constraintTop_toTopOf="parent"
-            android:layout_marginBottom="@dimen/new_margin_sm"
-            />
+        android:background="@color/white_bg">
 
-        <include
+        <LinearLayout
+            android:id="@+id/layout_article"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/artikel_populer"
-            layout="@layout/layout_article_popular"
-            app:layout_constraintTop_toBottomOf="@+id/toped_bot"/>
-</LinearLayout>
+            android:orientation="vertical">
+
+            <include
+                android:id="@+id/toped_bot"
+                layout="@layout/layout_toped_chatbot"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/new_margin_sm"
+                android:visibility="gone" />
+
+            <include
+                android:id="@+id/artikel_populer"
+                layout="@layout/layout_article_popular"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+            <View
+                android:id="@+id/divider"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/dp_2"
+                android:background="@color/grey_300" />
+        </LinearLayout>
+
         <FrameLayout
             android:id="@+id/transactions_orders"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/new_margin_sm"
+            android:layout_marginTop="@dimen/dp_24"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/layout_article">
@@ -46,7 +51,7 @@
 
             <include
                 layout="@layout/layout_no_orders"
-                android:visibility="visible" />
+                android:visibility="invisible" />
 
         </FrameLayout>
 
@@ -55,7 +60,7 @@
             layout="@layout/layout_contact_chat"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/new_margin_sm"
+            android:layout_marginTop="@dimen/dp_24"
             app:layout_constraintTop_toBottomOf="@+id/transactions_orders" />
     </android.support.constraint.ConstraintLayout>
 </ScrollView>

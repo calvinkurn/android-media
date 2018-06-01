@@ -31,13 +31,12 @@ import rx.Subscriber;
 public class SubmitTicketPresenter extends BaseDaggerPresenter<SubmitTicketContract.View> implements SubmitTicketContract.Presenter {
     private static final int MESSAGE_WRONG_DIMENSION = 0;
     private static final int MESSAGE_WRONG_FILE_SIZE = 1;
-    Context context;
-    private String cameraFileLoc;
+    private Context context;
     private ContactUsRetrofitInteractorImpl networkInteractor;
-    SubmitTicketUseCase submitTicketUseCase;
+    private SubmitTicketUseCase submitTicketUseCase;
 
     @Inject
-    public SubmitTicketPresenter(@ApplicationContext Context context,SubmitTicketUseCase submitTicketUseCase) {
+    public SubmitTicketPresenter(@ApplicationContext Context context, SubmitTicketUseCase submitTicketUseCase) {
         this.context = context;
         this.submitTicketUseCase = submitTicketUseCase;
     }
@@ -60,7 +59,7 @@ public class SubmitTicketPresenter extends BaseDaggerPresenter<SubmitTicketContr
         if (isTicketValid() && isUploadImageValid()) {
             RequestParams requestParams = RequestParams.create();
             requestParams.putObject("submitTicket", getSendTicketParam());
-            getView().showProgress("Please Wait...");
+            getView().showProgress(context.getString(R.string.please_wait));
             submitTicketUseCase.execute(requestParams, new Subscriber<CreateTicketResult>() {
                 @Override
                 public void onCompleted() {
@@ -69,8 +68,7 @@ public class SubmitTicketPresenter extends BaseDaggerPresenter<SubmitTicketContr
 
                 @Override
                 public void onError(Throwable e) {
-                    getView().showMessage(e.getMessage());
-                    getView().hideProgress();
+                    showMessage(e.getLocalizedMessage());
                 }
 
                 @Override
@@ -81,7 +79,7 @@ public class SubmitTicketPresenter extends BaseDaggerPresenter<SubmitTicketContr
                 }
             });
         }
-}
+    }
 
     private void showMessage(String s) {
         getView().hideProgress();
@@ -90,9 +88,9 @@ public class SubmitTicketPresenter extends BaseDaggerPresenter<SubmitTicketContr
 
     @Override
     public void onImageSelect(ImageUpload image) {
-        if(!fileSizeValid(image.getFileLoc())){
+        if (!fileSizeValid(image.getFileLoc())) {
             showErrorMessage(MESSAGE_WRONG_FILE_SIZE);
-        } else if(!getBitmapDimens(image.getFileLoc())) {
+        } else if (!getBitmapDimens(image.getFileLoc())) {
             showErrorMessage(MESSAGE_WRONG_DIMENSION);
         } else {
             getView().addimage(image);
@@ -100,9 +98,9 @@ public class SubmitTicketPresenter extends BaseDaggerPresenter<SubmitTicketContr
     }
 
     private void showErrorMessage(int messageWrongParam) {
-        if(messageWrongParam == MESSAGE_WRONG_FILE_SIZE){
+        if (messageWrongParam == MESSAGE_WRONG_FILE_SIZE) {
             getView().setSnackBarErrorMessage(context.getString(R.string.error_msg_wrong_size));
-        } else if(messageWrongParam == MESSAGE_WRONG_DIMENSION){
+        } else if (messageWrongParam == MESSAGE_WRONG_DIMENSION) {
             getView().setSnackBarErrorMessage(context.getString(R.string.error_msg_wrong_height_width));
         }
     }
@@ -110,14 +108,14 @@ public class SubmitTicketPresenter extends BaseDaggerPresenter<SubmitTicketContr
     private boolean isUploadImageValid() {
         ArrayList<ImageUpload> uploadImageList = getView().getImageList();
         int numOfImages = uploadImageList.size();
-        if(numOfImages > 0){
-            for(int item = 0; item < numOfImages; item++){
+        if (numOfImages > 0) {
+            for (int item = 0; item < numOfImages; item++) {
                 ImageUpload image = uploadImageList.get(item);
-                if(fileSizeValid(image.getFileLoc()) && getBitmapDimens(image.getFileLoc())){
+                if (fileSizeValid(image.getFileLoc()) && getBitmapDimens(image.getFileLoc())) {
                     return true;
                 }
             }
-        } else if (numOfImages == 0){
+        } else if (numOfImages == 0) {
             return true;
         }
         return false;
@@ -126,7 +124,7 @@ public class SubmitTicketPresenter extends BaseDaggerPresenter<SubmitTicketContr
     private boolean fileSizeValid(String fileLoc) {
         File file = new File(fileLoc);
         long size = file.length();
-        return ((size/1024) < 10240);
+        return ((size / 1024) < 10240);
 
     }
 
@@ -136,62 +134,30 @@ public class SubmitTicketPresenter extends BaseDaggerPresenter<SubmitTicketContr
         BitmapFactory.decodeFile(new File(fileLoc).getAbsolutePath(), options);
         int imageHeight = options.outHeight;
         int imageWidth = options.outWidth;
-        if(imageHeight < 300 && imageWidth < 300){
-            return false;
-        }
-        return true;
+        return !(imageHeight < 300 && imageWidth < 300);
     }
 
     private ContactUsPass getSendTicketParam() {
-        String description = getView().getDescription();
         SubmitTicketInvoiceData submitTicketInvoiceData = getView().getSubmitTicketInvoiceData();
         ContactUsPass pass = new ContactUsPass();
-        pass.setSolutionId(submitTicketInvoiceData.getQueryTicket().getId()+"");
+        pass.setSolutionId(String.valueOf(submitTicketInvoiceData.getQueryTicket().getId()));
         pass.setMessageBody(getView().getDescription());
-            pass.setAttachment(getView().getImageList());
+        pass.setAttachment(getView().getImageList());
         pass.setName(SessionHandler.getLoginName(context));
         if (submitTicketInvoiceData.getBuyerPurchaseList().getDetail().getId() > 0)
-            pass.setOrderId(submitTicketInvoiceData.getBuyerPurchaseList().getDetail().getId()+"");
+            pass.setOrderId(String.valueOf(submitTicketInvoiceData.getBuyerPurchaseList().getDetail().getId()));
         if (submitTicketInvoiceData.getBuyerPurchaseList().getDetail().getId() > 0)
-            pass.setInvoiceNumber(submitTicketInvoiceData.getBuyerPurchaseList().getDetail().getId()+"");
-        if (!SessionHandler.isV4Login(context)) {
-        }
+            pass.setInvoiceNumber(String.valueOf(submitTicketInvoiceData.getBuyerPurchaseList().getDetail().getId()));
         return pass;
     }
 
-    private RequestParams getRequestParam(RequestParams requestParams) {
-        SubmitTicketInvoiceData submitTicketInvoiceData = getView().getSubmitTicketInvoiceData();
-        requestParams.putString("solutionId",submitTicketInvoiceData.getQueryTicket().getId()+"");
-        requestParams.putString("messageBody",getView().getDescription());
-        requestParams.putObject("attachment", getView().getImageList());
-        requestParams.putString("name", SessionHandler.getLoginName(context));
-        if (submitTicketInvoiceData.getBuyerPurchaseList().getDetail().getId() > 0)
-            requestParams.putString("orderId",submitTicketInvoiceData.getBuyerPurchaseList().getDetail().getId()+"");
-        if (submitTicketInvoiceData.getBuyerPurchaseList().getDetail().getId() > 0)
-            requestParams.putString("invoiceNumber",submitTicketInvoiceData.getBuyerPurchaseList().getDetail().getId()+"");
-
-        return requestParams;
-    }
-
     private boolean isTicketValid() {
-
-        if (!SessionHandler.isV4Login(context)) {
-
-        }
-
-        if (getView().getDescription().toString().trim().length() == 0) {
+        if (getView().getDescription().trim().length() == 0) {
             return false;
-        } else if (getView().getDescription().toString().trim().length() < 30) {
+        } else if (getView().getDescription().trim().length() < 30) {
             return false;
         }
-
-
         return true;
-    }
-
-
-    public void sendCount(int count) {
-
     }
 
     public void onToolTipClick() {

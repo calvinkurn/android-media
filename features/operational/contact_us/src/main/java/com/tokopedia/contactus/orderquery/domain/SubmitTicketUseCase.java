@@ -12,14 +12,16 @@ import rx.Observable;
  */
 
 public class SubmitTicketUseCase extends UseCase<CreateTicketResult> {
-    ISubmitTicketRepository submitTicketRepository;
+    private ISubmitTicketRepository submitTicketRepository;
+
     public SubmitTicketUseCase(ISubmitTicketRepository submitTicketRepository) {
         this.submitTicketRepository = submitTicketRepository;
     }
 
     @Override
     public Observable<CreateTicketResult> createObservable(RequestParams requestParams) {
-
-        return submitTicketRepository.getQueryTickets((ContactUsPass)requestParams.getObject("submitTicket"));
+        String GET_TICKET = "submitTicket";
+        return submitTicketRepository.getQueryTickets((ContactUsPass)
+                requestParams.getObject(GET_TICKET));
     }
 }

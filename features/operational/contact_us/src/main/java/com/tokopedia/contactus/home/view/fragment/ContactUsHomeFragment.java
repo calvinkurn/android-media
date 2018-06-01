@@ -27,6 +27,7 @@ import com.tokopedia.contactus.common.customview.ShadowTransformer;
 import com.tokopedia.contactus.common.data.BuyerPurchaseList;
 import com.tokopedia.contactus.home.data.ContactUsArticleResponse;
 import com.tokopedia.contactus.home.di.ContactUsComponent;
+import com.tokopedia.contactus.home.di.DaggerContactUsComponent;
 import com.tokopedia.contactus.home.view.BuyerPurchaseListActivity;
 import com.tokopedia.contactus.home.view.adapter.CardPagerAdapter;
 import com.tokopedia.contactus.home.view.customview.ArticleTextView;
@@ -36,7 +37,6 @@ import com.tokopedia.contactus.inboxticket.activity.InboxTicketActivity;
 import com.tokopedia.core.router.TkpdInboxRouter;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.inbox.inboxchat.activity.ChatRoomActivity;
-import com.tokopedia.contactus.home.di.DaggerContactUsComponent;
 
 import java.util.List;
 
@@ -47,7 +47,8 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 
-public class ContactUsHomeFragment extends BaseDaggerFragment implements ContactUsHomeContract.View, HasComponent<ContactUsComponent> {
+public class ContactUsHomeFragment extends BaseDaggerFragment
+        implements ContactUsHomeContract.View, HasComponent<ContactUsComponent> {
 
     @Inject
     ContactUsHomePresenter presenter;
@@ -72,6 +73,8 @@ public class ContactUsHomeFragment extends BaseDaggerFragment implements Contact
     CirclePageIndicator pagerIndicator;
 
     private ContactUsComponent campaignComponent;
+
+    private int MIN_BUYER_LIST_SIZE = 4;
 
     public ContactUsHomeFragment() {
         // Required empty public constructor
@@ -151,11 +154,6 @@ public class ContactUsHomeFragment extends BaseDaggerFragment implements Contact
     }
 
     @Override
-    public void setEmptyPurchaseListVisible() {
-        noOrders.setVisibility(View.VISIBLE);
-    }
-
-    @Override
     public void setEmptyPurchaseListHide() {
         noOrders.setVisibility(View.GONE);
     }
@@ -164,14 +162,14 @@ public class ContactUsHomeFragment extends BaseDaggerFragment implements Contact
     @Override
     public void setPurchaseList(List<BuyerPurchaseList> buyerPurchaseLists) {
         orderList.setVisibility(View.VISIBLE);
-        if (!SessionHandler.isUserHasShop(getContext()) && buyerPurchaseLists.size() <= 4) {
+        if (!SessionHandler.isUserHasShop(getContext()) && buyerPurchaseLists.size() <= MIN_BUYER_LIST_SIZE) {
             btnFullPurchaseList.setVisibility(View.GONE);
             cardAdapter.addData(buyerPurchaseLists);
-        }else {
-            cardAdapter.addData(buyerPurchaseLists.subList(0, 4));
+        } else {
+            cardAdapter.addData(buyerPurchaseLists.subList(0, MIN_BUYER_LIST_SIZE));
         }
         orderListViewpager.setAdapter(cardAdapter);
-        if(buyerPurchaseLists.size()>1)
+        if (buyerPurchaseLists.size() > 1)
             pagerIndicator.setViewPager(orderListViewpager);
     }
 
@@ -204,12 +202,12 @@ public class ContactUsHomeFragment extends BaseDaggerFragment implements Contact
 
     @OnClick(R2.id.btn_contact_us)
     public void onBtnContactUsClicked() {
-        startActivity(((TkpdInboxRouter)(getContext().getApplicationContext())).getWebviewActivityWithIntent(getContext(), ContactUsURL.NAVIGATE_NEXT_URL,"Hubungi Kami"));
+        startActivity(((TkpdInboxRouter) (getContext().getApplicationContext())).getWebviewActivityWithIntent(getContext(), ContactUsURL.NAVIGATE_NEXT_URL, "Hubungi Kami"));
     }
 
     @OnClick(R2.id.btn_chat_toped)
     public void onBtnChatClicked() {
-        startActivity(ChatRoomActivity.getChatBotIntent(getContext(),msgId));
+        startActivity(ChatRoomActivity.getChatBotIntent(getContext(), msgId));
     }
 
     @Override

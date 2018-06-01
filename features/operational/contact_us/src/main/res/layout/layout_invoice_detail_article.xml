@@ -11,9 +11,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:orientation="horizontal"
         android:gravity="center_horizontal"
-        android:paddingBottom="10dp">
+        android:orientation="horizontal"
+        android:paddingBottom="@dimen/dp_10">
 
         <TextView
             android:id="@+id/txt_sample"
@@ -24,7 +24,7 @@
             android:layout_marginTop="31dp"
             android:text="Butuh bantuan lain?"
             android:textColor="@color/black3_text"
-            android:textSize="14sp" />
+            android:textSize="@dimen/sp_14" />
 
         <TextView
             android:id="@+id/txt_hyper"
@@ -34,22 +34,22 @@
             android:layout_marginTop="31dp"
             android:text="Hubungi Kami"
             android:textColor="@color/green_nob"
-            android:textSize="14sp" />
+            android:textSize="@dimen/sp_14" />
     </LinearLayout>
 
     <ScrollView
-        android:layout_above="@id/link_bottom"
-        android:layout_alignParentTop="true"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:layout_above="@id/link_bottom"
+        android:layout_alignParentTop="true">
 
         <android.support.constraint.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:paddingBottom="0dp"
+            android:paddingLeft="@dimen/margin_default"
             android:paddingRight="@dimen/margin_default"
-            android:paddingLeft ="@dimen/margin_default"
-            android:paddingTop= "@dimen/margin_default"
-            android:paddingBottom="0dp">
+            android:paddingTop="@dimen/margin_default">
 
             <TextView
                 android:id="@+id/txt_title"
@@ -68,11 +68,11 @@
                 android:id="@+id/txt_detail"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:gravity="start"
                 android:textColor="@color/black3_text"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/txt_title"
-                android:gravity="start" />
+                app:layout_constraintTop_toBottomOf="@+id/txt_title" />
 
 
         </android.support.constraint.ConstraintLayout>

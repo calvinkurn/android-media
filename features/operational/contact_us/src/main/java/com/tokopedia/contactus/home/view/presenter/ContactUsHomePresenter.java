@@ -23,7 +23,7 @@ import rx.Subscriber;
  * Created by sandeepgoyal on 04/04/18.
  */
 
-public class  ContactUsHomePresenter extends BaseDaggerPresenter<ContactUsHomeContract.View> implements ContactUsHomeContract.Presenter {
+public class ContactUsHomePresenter extends BaseDaggerPresenter<ContactUsHomeContract.View> implements ContactUsHomeContract.Presenter {
 
     private final Context context;
     ContactUsArticleUseCase articleUseCase;
@@ -49,7 +49,8 @@ public class  ContactUsHomePresenter extends BaseDaggerPresenter<ContactUsHomeCo
 
             @Override
             public void onError(Throwable e) {
-                Log.e("contacus ", " onerror "+e);
+                Log.e(ContactUsHomeContract.ContactUsName, "Article OnError " + e.getLocalizedMessage());
+                e.printStackTrace();
             }
 
             @Override
@@ -68,16 +69,15 @@ public class  ContactUsHomePresenter extends BaseDaggerPresenter<ContactUsHomeCo
 
             @Override
             public void onError(Throwable e) {
-                Log.e("contactus", "exception " + e);
+                Log.e(ContactUsHomeContract.ContactUsName, "PurchaseList OnError" + e.getLocalizedMessage());
+                e.printStackTrace();
             }
 
             @Override
             public void onNext(List<BuyerPurchaseList> buyerPurchaseLists) {
-                if(buyerPurchaseLists.size()>0) {
+                if (buyerPurchaseLists.size() > 0) {
                     getView().setEmptyPurchaseListHide();
                     getView().setPurchaseList(buyerPurchaseLists);
-                }else {
-                    return;
                 }
             }
         });
@@ -91,12 +91,13 @@ public class  ContactUsHomePresenter extends BaseDaggerPresenter<ContactUsHomeCo
 
             @Override
             public void onError(Throwable e) {
-
+                Log.e(ContactUsHomeContract.ContactUsName, "TopBot OnError" + e.getLocalizedMessage());
+                e.printStackTrace();
             }
 
             @Override
             public void onNext(TopBotStatus topBotStatus) {
-                if(topBotStatus.isIsActive()) {
+                if (topBotStatus.isIsActive()) {
                     getView().setChatBotVisible();
                     getView().setChatBotMessageId(topBotStatus.getMsgId());
                     getView().setHighMessageUserName(SessionHandler.getLoginName(context));

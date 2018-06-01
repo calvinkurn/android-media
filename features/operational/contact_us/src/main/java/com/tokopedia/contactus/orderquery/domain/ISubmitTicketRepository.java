@@ -10,5 +10,5 @@ import rx.Observable;
  */
 
 public interface ISubmitTicketRepository {
-    public Observable<CreateTicketResult> getQueryTickets(ContactUsPass ticket);
+    Observable<CreateTicketResult> getQueryTickets(ContactUsPass ticket);
 }

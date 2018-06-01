@@ -39,5 +39,12 @@
     <string name="app_name">contact_us</string>
 
     <string name="title_help">Bantuan</string>
+    <string name="please_wait">Please Wait...</string>
+    <string name="artikel_populer">Artikel Populer</string>
+    <string name="lihat_selengkapnya">Lihat Selengkapnya</string>
+    <string name="total">Total:</string>
+    <string name="riwayat_transaksi">Riwayat Transaksi</string>
+    <string name="laporkan_kendala_transaksi_di_tokopedia">Laporkan kendala transaksi di Tokopedia</string>
+    <string name="kirim">Kirim</string>
 
 </resources>

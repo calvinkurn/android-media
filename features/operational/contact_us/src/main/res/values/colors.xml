@@ -11,6 +11,8 @@
     <color name="black4_text">#8a000000</color>
     <color name="black5_text">#2e000000</color>
     <color name="black6_text">#61000000</color>
+    <color name="white_bg">#fafbfc</color>
+    <color name="grey_transparent">#a5ffffff</color>
 
     <color name="green_selected">#f3fef3</color>
     <color name="grey_time_machine">#fbfbfb</color>

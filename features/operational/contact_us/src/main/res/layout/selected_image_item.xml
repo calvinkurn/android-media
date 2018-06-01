@@ -8,23 +8,23 @@
         android:id="@+id/selected_image"
         android:layout_width="80dp"
         android:layout_height="80dp"
+        android:layout_marginRight="@dimen/margin_default"
         android:scaleType="center"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/ic_topedbot"
-        android:layout_marginRight="@dimen/margin_default"/>
+        app:srcCompat="@drawable/ic_topedbot" />
 
     <ImageView
         android:id="@+id/delete_image"
-        android:layout_width="18dp"
-        android:layout_height="18dp"
+        android:layout_width="@dimen/dp_18"
+        android:layout_height="@dimen/dp_18"
         android:layout_marginEnd="@dimen/padding_vvvs"
+        android:layout_marginRight="@dimen/margin_default"
         android:layout_marginTop="@dimen/padding_vvvs"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/ic_black_cross"
-        android:layout_marginRight="@dimen/margin_default"/>
+        app:srcCompat="@drawable/ic_black_cross" />
 
 </android.support.constraint.ConstraintLayout>

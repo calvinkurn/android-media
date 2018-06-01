@@ -6,6 +6,7 @@ import android.util.Log;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.contactus.common.data.BuyerPurchaseList;
+import com.tokopedia.contactus.home.view.presenter.ContactUsHomeContract;
 import com.tokopedia.contactus.orderquery.data.QueryTicket;
 import com.tokopedia.contactus.orderquery.domain.QueryTicketUseCase;
 import com.tokopedia.usecase.RequestParams;
@@ -24,6 +25,7 @@ public class OrderQueryTicketPresenter extends BaseDaggerPresenter<OrderQueryTic
 
     private final Context context;
     QueryTicketUseCase queryTicketUseCase;
+
     @Inject
     public OrderQueryTicketPresenter(QueryTicketUseCase queryTicketUseCase, @ApplicationContext Context context) {
         this.queryTicketUseCase = queryTicketUseCase;
@@ -31,27 +33,27 @@ public class OrderQueryTicketPresenter extends BaseDaggerPresenter<OrderQueryTic
     }
 
 
-
-    public RequestParams createRequestParam(BuyerPurchaseList purchaseList ) {
+    public RequestParams createRequestParam(BuyerPurchaseList purchaseList) {
         RequestParams requestParams = RequestParams.create();
         requestParams.putString("order", String.valueOf(buyerPurchaseList.getDetail().getId()));
         requestParams.putString("order_type", String.valueOf(buyerPurchaseList.getDetail().getTypeId()));
         requestParams.putString("product_type_id", String.valueOf(buyerPurchaseList.getDetail().getProductTypeId()));
 
-        requestParams.putString("selected_ord_status",String.valueOf(purchaseList.getDetail().getStatusId()));
-        requestParams.putString("selected_pym_method",String.valueOf(purchaseList.getPayment().getMethod()));
-        requestParams.putString("selected_pg_id",String.valueOf(purchaseList.getPayment().getGatewayId()));
+        requestParams.putString("selected_ord_status", String.valueOf(purchaseList.getDetail().getStatusId()));
+        requestParams.putString("selected_pym_method", String.valueOf(purchaseList.getPayment().getMethod()));
+        requestParams.putString("selected_pg_id", String.valueOf(purchaseList.getPayment().getGatewayId()));
         return requestParams;
     }
 
     BuyerPurchaseList buyerPurchaseList;
+
     @Override
     public void setBuyerPurchaseList(BuyerPurchaseList buyerPurchaseList) {
         this.buyerPurchaseList = buyerPurchaseList;
         getView().setInvoiceNumber(buyerPurchaseList.getDetail().getCode());
         getView().setPurchaseTitle(buyerPurchaseList.getProducts().get(0).getName());
         getView().setOrderImage(buyerPurchaseList.getProducts().get(0).getImage());
-        queryTicketUseCase.execute(createRequestParam(buyerPurchaseList),new Subscriber<List<QueryTicket>>() {
+        queryTicketUseCase.execute(createRequestParam(buyerPurchaseList), new Subscriber<List<QueryTicket>>() {
             @Override
             public void onCompleted() {
 
@@ -59,7 +61,7 @@ public class OrderQueryTicketPresenter extends BaseDaggerPresenter<OrderQueryTic
 
             @Override
             public void onError(Throwable e) {
-                Log.e("contacus ", " onerror "+e);
+                Log.e(ContactUsHomeContract.ContactUsName, " BuyerPurchase OnError " + e);
             }
 
             @Override
