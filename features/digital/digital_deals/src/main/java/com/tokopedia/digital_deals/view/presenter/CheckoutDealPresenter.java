@@ -45,7 +45,7 @@ public class CheckoutDealPresenter
 
     private ProfileUseCase profileUseCase;
     private PostPaymentUseCase postPaymentUseCase;
-    private String promocode="";
+    private String promocode = "";
     private boolean isPromoCodeCase;
     private ArrayList<String> hints = new ArrayList<>();
     private ArrayList<String> errors = new ArrayList<>();
@@ -279,7 +279,7 @@ public class CheckoutDealPresenter
         Intent intent = getView().getActivity().getIntent();
         this.dealDetail = intent.getParcelableExtra(CheckoutDealPresenter.EXTRA_DEALDETAIL);
         this.cartData = intent.getStringExtra(CheckoutDealPresenter.EXTRA_CART);
-        this.packageViewModel=intent.getParcelableExtra(CheckoutDealPresenter.EXTRA_PACKAGEVIEWMODEL);
+        this.packageViewModel = intent.getParcelableExtra(CheckoutDealPresenter.EXTRA_PACKAGEVIEWMODEL);
         getView().renderFromPackageVM(dealDetail, packageViewModel);
     }
 
@@ -291,7 +291,13 @@ public class CheckoutDealPresenter
 
     private JsonObject convertCartItemToJson(String cart) {
         Gson gson = new Gson();
-        return gson.fromJson(cart, JsonObject.class);
+        JsonObject jsonObject = gson.fromJson(cart, JsonObject.class);
+
+        for (JsonElement jsonElement: jsonObject.get("cart_items").getAsJsonArray()){
+            jsonElement.getAsJsonObject().get("meta_data").getAsJsonObject().get("entity_address")
+                    .getAsJsonObject().addProperty("email", this.email);
+        }
+        return jsonObject;
     }
 
 
@@ -326,11 +332,11 @@ public class CheckoutDealPresenter
             @Override
             public void onNext(JsonObject checkoutResponse) {
 
-                Log.d("CheckoutResponse"," "+ checkoutResponse.toString());
+                Log.d("CheckoutResponse", " " + checkoutResponse.toString());
 
                 Bundle paymentData = Utils.transform(checkoutResponse);
                 String paymentURL = checkoutResponse.get("url").getAsString();
-                Log.d("URL"," "+ paymentURL);
+                Log.d("URL", " " + paymentURL);
 
                 ScroogePGUtil.openScroogePage(getView().getActivity(), paymentURL, true, paymentData, "Deal Payment");
 

@@ -170,6 +170,7 @@ public class SelectDealQuantityFragment extends BaseDaggerFragment implements Se
             packageViewModel.setCategoryId(dealDetails.getCategoryId());
             packageViewModel.setProductId(dealDetails.getId());
             packageViewModel.setSalesPrice(dealDetails.getSalesPrice());
+            packageViewModel.setMrp(dealDetails.getMrp());
             packageViewModel.setSelectedQuantity(CURRENT_QUANTITY);
             packageViewModel.setDigitalCategoryID(dealDetails.getCatalog().getDigitalCategoryId());
             packageViewModel.setDigitalProductID(dealDetails.getCatalog().getDigitalProductId());

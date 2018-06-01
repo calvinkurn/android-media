@@ -281,21 +281,17 @@ public class DealDetailsFragment extends BaseDaggerFragment implements DealDetai
 
     public void onPrepareOptionsMenu(final Menu menu) {
         hideShareButton();
-        appBarLayout.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
+        appBarLayout.addOnOffsetChangedListener((appBarLayout, verticalOffset) -> {
+            MenuItem item = menu.findItem(R.id.action_menu_share);
 
-            @Override
-            public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
-                MenuItem item = menu.findItem(R.id.action_menu_share);
-
-                verticalOffset = Math.abs(verticalOffset);
-                int difference = appBarLayout.getTotalScrollRange() - toolbar.getHeight();
-                if (verticalOffset >= difference) {
-                    DrawableCompat.setTint(toolbar.getNavigationIcon(), ContextCompat.getColor(getActivity(), R.color.tkpd_dark_gray_toolbar));
-                    DrawableCompat.setTint(item.getIcon(), ContextCompat.getColor(getActivity(), R.color.tkpd_dark_gray_toolbar));
-                } else {
-                    DrawableCompat.setTint(toolbar.getNavigationIcon(), ContextCompat.getColor(getActivity(), R.color.white));
-                    DrawableCompat.setTint(item.getIcon(), ContextCompat.getColor(getActivity(), R.color.white));
-                }
+            verticalOffset = Math.abs(verticalOffset);
+            int difference = appBarLayout.getTotalScrollRange() - toolbar.getHeight();
+            if (verticalOffset >= difference) {
+                DrawableCompat.setTint(toolbar.getNavigationIcon(), ContextCompat.getColor(getActivity(), R.color.tkpd_dark_gray_toolbar));
+                DrawableCompat.setTint(item.getIcon(), ContextCompat.getColor(getActivity(), R.color.tkpd_dark_gray_toolbar));
+            } else {
+                DrawableCompat.setTint(toolbar.getNavigationIcon(), ContextCompat.getColor(getActivity(), R.color.white));
+                DrawableCompat.setTint(item.getIcon(), ContextCompat.getColor(getActivity(), R.color.white));
             }
         });
     }

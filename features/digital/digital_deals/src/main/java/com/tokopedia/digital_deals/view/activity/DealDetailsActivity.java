@@ -43,7 +43,7 @@ public class DealDetailsActivity extends BaseSimpleActivity implements DealFragm
     public void replaceFragment(List<OutletViewModel> outlets, int flag) {
         this.outlets=outlets;
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        transaction.replace(R.id.parent_view, DealDetailsAllRedeemLocationsFragment.createInstance());
+        transaction.add(R.id.parent_view, DealDetailsAllRedeemLocationsFragment.createInstance());
         transaction.addToBackStack(null);
         transaction.commit();
     }
@@ -52,7 +52,7 @@ public class DealDetailsActivity extends BaseSimpleActivity implements DealFragm
     public void replaceFragment(DealsDetailsViewModel dealDetail, int flag) {
         this.dealDetail=dealDetail;
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        transaction.replace(R.id.parent_view, SelectDealQuantityFragment.createInstance());
+        transaction.add(R.id.parent_view, SelectDealQuantityFragment.createInstance());
         transaction.addToBackStack(null);
         transaction.commit();
     }

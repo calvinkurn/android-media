@@ -4,10 +4,13 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Typeface;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.constraint.ConstraintLayout;
+import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
@@ -76,16 +79,17 @@ public class DealsHomeActivity extends BaseSimpleActivity implements HasComponen
     private int mBannnerPos;
     private final static String THEMEPARK = "themepark";
     private final static String TOP = "top";
-    private LinearLayout searchInputView;
+    private TextView searchInputView;
     private final boolean IS_SHORT_LAYOUT = false;
     public static final int REQUEST_CODE_DEALSLOCATIONACTIVITY = 101;
     public static final int REQUEST_CODE_DEALSSEARCHACTIVITY = 102;
     private ConstraintLayout clSearch;
-    private ConstraintLayout clLocation;
+    private TextView tvChangeLocation;
     private TextView locationName;
     private LinearLayoutManager layoutManager;
     private String category = null;
     private TextView seeAllBrands;
+    private AppBarLayout appBarLayout;
 
     @DeepLink({DIGITAL_DEALS})
     public static Intent getCallingApplinksTaskStask(Context context, Bundle extras) {
@@ -118,6 +122,19 @@ public class DealsHomeActivity extends BaseSimpleActivity implements HasComponen
         executeInjector();
         mPresenter.attachView(this);
         checkLocationStatus();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            appBarLayout.addOnOffsetChangedListener((appBarLayout, verticalOffset) -> {
+                verticalOffset = Math.abs(verticalOffset);
+                int difference = appBarLayout.getTotalScrollRange() - toolbar.getHeight();
+                if (verticalOffset >= difference) {
+                    toolbar.setElevation(getResources().getDimension(R.dimen.dp_8));
+
+                } else {
+                    toolbar.setElevation(getResources().getDimension(R.dimen.dp_0));
+                }
+
+            });
+        }
 
     }
 
@@ -141,6 +158,7 @@ public class DealsHomeActivity extends BaseSimpleActivity implements HasComponen
         recyclerViewAllDeals = findViewById(R.id.recyclerViewAllDeals);
         recyclerViewBrandItems = findViewById(R.id.recyclerViewBrandItems);
         recyclerViewTrendingDeals = findViewById(R.id.recyclerViewTrendingDeals);
+        appBarLayout=findViewById(R.id.app_bar_layout);
         viewPager = findViewById(R.id.deals_bannerpager);
         circlePageIndicator = findViewById(R.id.pager_indicator);
         mainContent = findViewById(R.id.main_content);
@@ -149,12 +167,12 @@ public class DealsHomeActivity extends BaseSimpleActivity implements HasComponen
         baseMainContent = findViewById(R.id.base_main_content);
         searchInputView = findViewById(R.id.search_input_view);
         locationName = findViewById(R.id.tv_location_name);
-        clLocation = findViewById(R.id.cl_location);
+        tvChangeLocation = findViewById(R.id.tv_location_name);
         clSearch = findViewById(R.id.cl_search_view);
         seeAllBrands = findViewById(R.id.tv_see_all_brands);
         seeAllBrands.setOnClickListener(this);
         searchInputView.setOnClickListener(this);
-        clLocation.setOnClickListener(this);
+        tvChangeLocation.setOnClickListener(this);
         layoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
 
         recyclerViewTrendingDeals.setLayoutManager(layoutManager);
@@ -162,6 +180,12 @@ public class DealsHomeActivity extends BaseSimpleActivity implements HasComponen
                 GridLayoutManager.VERTICAL, false));
         recyclerViewBrandItems.setLayoutManager(new GridLayoutManager(getActivity(), SPAN_COUNT_4,
                 GridLayoutManager.VERTICAL, false));
+
+        Drawable img = getResources().getDrawable(R.drawable.ic_search_grey);
+        searchInputView.setCompoundDrawablesWithIntrinsicBounds(img, null, null, null);
+
+        img = getResources().getDrawable(R.drawable.ic_location_2);
+        tvChangeLocation.setCompoundDrawablesWithIntrinsicBounds(img, null, null, null);
     }
 
     private void initInjector() {

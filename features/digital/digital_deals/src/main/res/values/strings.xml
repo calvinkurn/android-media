@@ -71,6 +71,7 @@
     <string name="please_enter_email">Mohon isi e-mail Anda</string>
     <string name="pricing_details">Rincian Harga</string>
     <string name="cannot_find_application">Cannot find an application to show location</string>
+    <string name="text_service_fees">Biaya Layanan</string>
 
 
 </resources>

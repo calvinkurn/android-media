@@ -7,69 +7,60 @@
     android:layout_height="match_parent"
     android:background="@color/bottomnav_bg">
 
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:minHeight="?attr/actionBarSize" />
 
     <android.support.design.widget.AppBarLayout
+        android:id="@+id/app_bar_layout"
         android:layout_width="match_parent"
+        android:layout_marginTop="?attr/actionBarSize"
         android:layout_height="wrap_content">
 
-        <android.support.v7.widget.Toolbar
-            android:id="@+id/toolbar"
-            android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            android:minHeight="?attr/actionBarSize" />
+
 
         <View
             android:id="@+id/divider1"
             android:layout_width="match_parent"
             android:layout_height="@dimen/divider_height_thinv"
+            app:layout_scrollFlags="scroll|enterAlways"
             android:background="@color/divider_color" />
 
         <android.support.constraint.ConstraintLayout
             android:id="@+id/cl_search_view"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            android:background="@color/bottomnav_bg"
             android:visibility="gone"
+            app:layout_scrollFlags="scroll|enterAlways"
+            android:background="@color/bottomnav_bg"
             app:layout_behavior="com.tokopedia.digital_deals.view.behaviour.QuickHideBehavior">
 
-            <LinearLayout
+
+            <TextView
                 android:id="@+id/search_input_view"
                 android:layout_width="0dp"
-                android:layout_height="@dimen/dp_40"
+                android:layout_height="wrap_content"
                 android:layout_marginBottom="@dimen/dp_8"
                 android:layout_marginLeft="@dimen/dp_16"
+                android:layout_marginRight="@dimen/dp_15"
                 android:layout_marginTop="@dimen/dp_8"
+                android:layout_weight="1"
                 android:background="@drawable/rect_grey_search_background"
+                android:drawablePadding="@dimen/dp_4"
+                android:ellipsize="end"
                 android:gravity="center_vertical"
+                android:hint="@string/search_input_hint_deals"
+                android:maxLines="1"
                 android:orientation="horizontal"
                 android:padding="@dimen/dp_10"
+                android:textColor="@color/black_70"
+                android:textSize="@dimen/sp_14"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toLeftOf="@+id/guideline"
-                app:layout_constraintTop_toTopOf="parent">
-
-                <ImageView
-                    android:id="@+id/image_view_search"
-                    android:layout_width="@dimen/dp_18"
-                    android:layout_height="@dimen/dp_18"
-                    app:srcCompat="@drawable/ic_search_grey" />
-
-                <TextView
-                    android:id="@+id/edit_text_search"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="@dimen/dp_15"
-                    android:layout_marginRight="@dimen/dp_15"
-                    android:layout_weight="1"
-                    android:background="@null"
-                    android:ellipsize="end"
-                    android:hint="@string/search_input_hint_deals"
-                    android:maxLines="1"
-                    android:textColor="@color/black_70"
-                    android:textSize="@dimen/sp_14" />
-
-
-            </LinearLayout>
+                app:layout_constraintTop_toTopOf="parent" />
 
 
             <android.support.constraint.Guideline
@@ -80,43 +71,25 @@
                 app:layout_constraintGuide_percent="0.67" />
 
 
-            <android.support.constraint.ConstraintLayout
-                android:id="@+id/cl_location"
+            <TextView
+                android:id="@+id/tv_location_name"
                 android:layout_width="0dp"
-                android:layout_height="@dimen/dp_40"
-                android:orientation="horizontal"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="@dimen/dp_16"
+                android:drawablePadding="@dimen/dp_8"
+                android:fontFamily="sans-serif"
+                android:gravity="center_vertical"
                 android:paddingBottom="@dimen/dp_8"
                 android:paddingTop="@dimen/dp_8"
+                android:text="Surabayhjhhhhhhhhhhjhjhjhhghgha"
+                android:textColor="@color/black_39"
+                android:textSize="@dimen/sp_14"
+                android:textStyle="normal"
+                android:lines="1"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintLeft_toRightOf="@id/guideline"
-
+                app:layout_constraintLeft_toRightOf="@+id/guideline"
                 app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toTopOf="parent">
-
-
-                <ImageView
-                    android:id="@+id/iv_map"
-                    android:layout_width="@dimen/dp_24"
-                    android:layout_height="@dimen/dp_24"
-                    android:layout_marginRight="@dimen/dp_8"
-                    app:layout_constraintRight_toLeftOf="@+id/tv_location_name"
-                    app:srcCompat="@drawable/ic_location_2" />
-
-
-                <TextView
-                    android:id="@+id/tv_location_name"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginRight="@dimen/dp_16"
-                    android:fontFamily="sans-serif"
-                    android:text="Surabaya"
-                    android:textColor="@color/black_39"
-                    android:textSize="@dimen/sp_14"
-                    android:textStyle="normal"
-                    app:layout_constraintBottom_toBottomOf="@+id/iv_map"
-                    app:layout_constraintRight_toRightOf="parent"
-                    app:layout_constraintTop_toTopOf="@+id/iv_map" />
-            </android.support.constraint.ConstraintLayout>
+                app:layout_constraintTop_toTopOf="parent" />
 
         </android.support.constraint.ConstraintLayout>
 
@@ -200,9 +173,9 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="@dimen/dp_16"
-                    android:nestedScrollingEnabled="false"
                     android:layout_marginRight="@dimen/dp_16"
                     android:layout_marginTop="@dimen/dp_16"
+                    android:nestedScrollingEnabled="false"
                     app:layoutManager="android.support.v7.widget.GridLayoutManager"
                     app:layout_constraintTop_toBottomOf="@+id/tv_popular_category"
                     app:spanCount="4"
@@ -229,7 +202,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:nestedScrollingEnabled="false"
-                    app:layout_constraintTop_toBottomOf="@id/tv_popular" />
+                    app:layout_constraintTop_toBottomOf="@+id/tv_popular" />
 
 
                 <TextView
@@ -266,8 +239,8 @@
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="@dimen/dp_16"
                     android:layout_marginRight="@dimen/dp_16"
-                    android:nestedScrollingEnabled="false"
                     android:layout_marginTop="@dimen/dp_16"
+                    android:nestedScrollingEnabled="false"
                     app:layoutManager="android.support.v7.widget.GridLayoutManager"
                     app:layout_constraintTop_toBottomOf="@+id/tv_popular_brand"
                     app:spanCount="4"
@@ -300,7 +273,7 @@
             android:visibility="gone"
             app:layoutManager="android.support.v7.widget.LinearLayoutManager"
             app:layout_behavior="@string/appbar_scrolling_view_behavior"
-            app:layout_constraintTop_toBottomOf="@id/tv_all_deals"
+            app:layout_constraintTop_toBottomOf="@+id/tv_all_deals"
             tools:listitem="@layout/deals_item_card" />
 
 

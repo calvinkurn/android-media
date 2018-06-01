@@ -29,6 +29,7 @@ import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.digital_deals.R;
 import com.tokopedia.digital_deals.di.DaggerDealsComponent;
 import com.tokopedia.digital_deals.di.DealsModule;
+import com.tokopedia.digital_deals.view.activity.CheckoutActivity;
 import com.tokopedia.digital_deals.view.contractor.CheckoutDealContractor;
 import com.tokopedia.digital_deals.view.presenter.CheckoutDealPresenter;
 import com.tokopedia.digital_deals.view.presenter.DealDetailsPresenter;
@@ -62,7 +63,7 @@ public class CheckoutHomeFragment extends BaseDaggerFragment implements Checkout
     private ConstraintLayout clApplyPromo;
     private ConstraintLayout clPromoApplied;
     private ConstraintLayout baseMainContent;
-    private FrameLayout mainContent;
+    private LinearLayout mainContent;
 
     private LinearLayout llPaymentMethod;
 
@@ -111,8 +112,8 @@ public class CheckoutHomeFragment extends BaseDaggerFragment implements Checkout
     }
 
     private void setViewIds(View view) {
-        toolbar = view.findViewById(R.id.toolbar);
-        ((BaseSimpleActivity) getActivity()).setSupportActionBar(toolbar);
+
+        ((CheckoutActivity) getActivity()).getSupportActionBar().setTitle("Checkout");
 //        toolbar.setNavigationIcon(ContextCompat.getDrawable(getActivity(), R.drawable.ic_close_deals));
 //        toolbar.setTitle(getActivity().getResources().getString(R.string.title_activity_checkout));
         imageViewBrand = view.findViewById(R.id.image_view_brand);
