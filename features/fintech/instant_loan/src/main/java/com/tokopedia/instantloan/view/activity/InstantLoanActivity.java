@@ -235,7 +235,7 @@ public class InstantLoanActivity extends BaseSimpleActivity implements HasCompon
     @Override
     public void searchLoanOnline() {
 
-        if (mCurrentTab != TAB_INSTANT_FUND
+        /*if (mCurrentTab != TAB_INSTANT_FUND
                 && mSpinnerLoanAmount.getSelectedItem().toString().equalsIgnoreCase(getString(R.string.label_select_nominal))) {
             TextView errorText = (TextView) mSpinnerLoanAmount.getSelectedView();
             errorText.setError("Please select");
@@ -257,7 +257,9 @@ public class InstantLoanActivity extends BaseSimpleActivity implements HasCompon
             }
         } else {
             navigateToLoginPage();
-        }
+        }*/
+
+        startIntroSlider();
     }
 
     @Override

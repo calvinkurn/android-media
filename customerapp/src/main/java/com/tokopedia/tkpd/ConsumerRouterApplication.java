@@ -142,6 +142,7 @@ import com.tokopedia.inbox.inboxchat.activity.InboxChatActivity;
 import com.tokopedia.inbox.rescenter.detailv2.view.activity.DetailResChatActivity;
 import com.tokopedia.inbox.rescenter.inbox.activity.InboxResCenterActivity;
 import com.tokopedia.inbox.rescenter.inboxv2.view.activity.ResoInboxActivity;
+import com.tokopedia.instantloan.di.module.InstantLoanRouter;
 import com.tokopedia.instantloan.view.activity.InstantLoanActivity;
 import com.tokopedia.kol.KolRouter;
 import com.tokopedia.kol.feature.comment.view.activity.KolCommentActivity;
@@ -288,7 +289,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         TkpdInboxRouter, IWalletRouter, LoyaltyRouter, ReputationRouter, SessionRouter,
         AbstractionRouter, FlightModuleRouter, LogisticRouter, FeedModuleRouter, IHomeRouter,
         DiscoveryRouter, DigitalModuleRouter, TokoCashRouter, KolRouter, GroupChatModuleRouter,
-        ApplinkRouter, ShopModuleRouter, LoyaltyModuleRouter, GamificationRouter,
+        ApplinkRouter, ShopModuleRouter, LoyaltyModuleRouter, GamificationRouter, InstantLoanRouter,
         ImageUploaderRouter, ProfileModuleRouter, ReactNativeRouter, ContactUsModuleRouter {
 
     @Inject
