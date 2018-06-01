@@ -27,12 +27,14 @@ public class PushNotificationIntentService extends IntentService {
 
     @Override
     protected void onHandleIntent(Intent intent) {
-        int code = intent.getIntExtra(ARG_EXTRA_GCM_UPDATE, 0);
-        switch (code) {
-            case CODE_EXTRA_GCM_UPDATE:
-                FCMTokenUpdate data = intent.getParcelableExtra(ARG_EXTRA_GCM_UPDATE_DATA);
-                handleUpdateClientId(data);
-                break;
+        if (intent != null) {
+            int code = intent.getIntExtra(ARG_EXTRA_GCM_UPDATE, 0);
+            switch (code) {
+                case CODE_EXTRA_GCM_UPDATE:
+                    FCMTokenUpdate data = intent.getParcelableExtra(ARG_EXTRA_GCM_UPDATE_DATA);
+                    handleUpdateClientId(data);
+                    break;
+            }
         }
     }
 
