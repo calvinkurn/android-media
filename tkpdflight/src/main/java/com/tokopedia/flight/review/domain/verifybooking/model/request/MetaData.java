@@ -1,9 +1,10 @@
 
 package com.tokopedia.flight.review.domain.verifybooking.model.request;
 
-import java.util.List;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+
+import java.util.List;
 
 public class MetaData {
 
@@ -25,6 +26,10 @@ public class MetaData {
     @SerializedName("passengers")
     @Expose
     private List<Passenger> passengers = null;
+    @SerializedName("insurances")
+    @Expose
+    private List<String> insurances;
+
 
     public String getCartId() {
         return cartId;
@@ -74,4 +79,11 @@ public class MetaData {
         this.passengers = passengers;
     }
 
+    public List<String> getInsurances() {
+        return insurances;
+    }
+
+    public void setInsurances(List<String> insurances) {
+        this.insurances = insurances;
+    }
 }

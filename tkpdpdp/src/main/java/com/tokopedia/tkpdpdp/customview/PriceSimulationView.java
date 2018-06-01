@@ -22,6 +22,8 @@ import com.tokopedia.tkpdpdp.listener.ProductDetailView;
 
 import java.util.ArrayList;
 
+import static com.tokopedia.core.router.productdetail.ProductDetailRouter.EXTRA_PRODUCT_ID;
+
 public class PriceSimulationView extends BaseView<ProductDetailData, ProductDetailView> {
 
     private LinearLayout variantLayout;
@@ -100,6 +102,7 @@ public class PriceSimulationView extends BaseView<ProductDetailData, ProductDeta
                     Bundle bundle = new Bundle();
                     bundle.putParcelableArrayList(InstallmentActivity.KEY_INSTALLMENT_DATA,
                             new ArrayList<>(data.getInfo().getProductInstallments()));
+                    bundle.putString(EXTRA_PRODUCT_ID, String.valueOf(data.getInfo().getProductId()));
                     listener.onInstallmentClicked(bundle);
                 }
             });
@@ -116,6 +119,7 @@ public class PriceSimulationView extends BaseView<ProductDetailData, ProductDeta
                     Bundle bundle = new Bundle();
                     bundle.putParcelableArrayList(WholesaleActivity.KEY_WHOLESALE_DATA,
                             new ArrayList<>(data.getWholesalePrice()));
+                    bundle.putString(EXTRA_PRODUCT_ID, String.valueOf(data.getInfo().getProductId()));
                     listener.onWholesaleClicked(bundle);
                 }
             });

@@ -1877,6 +1877,12 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
+    public boolean isSupportApplink(String appLink) {
+        DeepLinkDelegate deepLinkDelegate = DeeplinkHandlerActivity.getDelegateInstance();
+        return deepLinkDelegate.supportsUri(appLink);
+    }
+
+    @Override
     public void goToCreateTopadsPromo(Context context, String productId, String shopId, String source) {
 
         Intent topadsIntent = context.getPackageManager()
