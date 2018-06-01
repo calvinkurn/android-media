@@ -27,6 +27,7 @@ public class ScroogePGUtil {
     public static final int RESULT_CODE_SUCCESS = 206;
     public static final int RESULT_CODE_FAIL = 207;
     public static final String RESULT_EXTRA_MSG = "RESULT_EXTRA_MSG";
+    public static final String SUCCESS_MSG_URL = "RESULT_EXTRA_URL";
 
     /**
      * To launch scrooge activity

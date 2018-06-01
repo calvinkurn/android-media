@@ -253,6 +253,7 @@ import com.tokopedia.tokocash.pendingcashback.domain.PendingCashback;
 import com.tokopedia.tokocash.pendingcashback.receiver.TokocashPendingDataBroadcastReceiver;
 import com.tokopedia.transaction.bcaoneklik.activity.ListPaymentTypeActivity;
 import com.tokopedia.transaction.bcaoneklik.usecase.CreditCardFingerPrintUseCase;
+import com.tokopedia.transaction.orders.orderdetails.view.activity.OrderListDetailActivity;
 import com.tokopedia.transaction.purchase.detail.activity.OrderDetailActivity;
 import com.tokopedia.transaction.purchase.detail.activity.OrderHistoryActivity;
 import com.tokopedia.transaction.wallet.WalletActivity;
@@ -1991,5 +1992,10 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @Override
     public Intent getDistrictRecommendationIntent(Activity activity, com.tokopedia.core.manage.people.address.model.Token token) {
         return DistrictRecommendationActivity.createInstance(activity, new TokenMapper().convertTokenModel(token));
+    }
+
+    @Override
+    public Intent getOrderListDetailActivity(Context context, String type, String orderId) {
+        return new OrderListDetailActivity().createInstance(context, type, orderId);
     }
 }
