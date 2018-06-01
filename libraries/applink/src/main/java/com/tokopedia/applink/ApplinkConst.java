@@ -96,6 +96,7 @@ public interface ApplinkConst {
   
     String CONTENT_EXPLORE = "tokopedia://content/explore/{tab_name}/{category_id}";
     String CONTENT_DETAIL ="tokopedia://content/{post_id}";
+    String PLAY_NOTIFICATION_VIDEO ="tokopedia://play-notif-video";
 
     interface SellerApp {
         String PRODUCT_ADD = "sellerapp://product/add";
