@@ -58,6 +58,7 @@ public class TkpdCache extends com.tokopedia.abstraction.constant.TkpdCache {
     public static final String ADVERTISINGID = "ADVERTISINGID";
     public static final String DEALS_LOCATION = "DEALS_LOCATION";
     public static final String ANDROID_ID = "ANDROID_ID";
+    public static final String PRODUCT_DETAIL = "PRODUCT_DETAIL_PAGE";
 
     public static void clearAllCache(Context context) {
         LocalCacheHandler.clearCache(context, TkpdCache.USER_INFO);
@@ -68,6 +69,7 @@ public class TkpdCache extends com.tokopedia.abstraction.constant.TkpdCache {
         LocalCacheHandler.clearCache(context, TkpdCache.CACHE_MAIN);
         LocalCacheHandler.clearCache(context, TkpdCache.CACHE_PROMO);
         LocalCacheHandler.clearCache(context, TkpdCache.DEALS_LOCATION);
+        LocalCacheHandler.clearCache(context, TkpdCache.PRODUCT_DETAIL);
     }
 
     public class Key extends com.tokopedia.abstraction.constant.TkpdCache.Key {
@@ -153,6 +155,7 @@ public class TkpdCache extends com.tokopedia.abstraction.constant.TkpdCache {
         public static final String RECOMMEND_SHOP = "RECOMMEND_SHOP";
         public static final String FAVORITE_PAGING = "FAVORITE_PAGING";
         public static final String TOP_ADS_SHOP = "TOP_ADS_SHOP";
+        public static final String STATE_ORIENTATION_CHANGED = "IS_PDP_ORIENTATION_CHANGED";
 
         public static final String PROMO = "PROMO";
 

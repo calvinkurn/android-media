@@ -20,6 +20,6 @@ public interface OmsApi {
 
 
     @POST(OmsUrl.OMS_CHECKOUT)
-    Observable<JsonObject> checkoutCart(@Body JsonObject requestBody);
+    Observable<JsonObject> checkoutCart(@Body JsonObject requestBody, @Query("client") String client, @Query("version") String version);
 
 }

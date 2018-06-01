@@ -154,7 +154,8 @@ android {
             minifyEnabled false
             zipAlignEnabled false
             buildConfigField "boolean", "ENABLE_DISTRIBUTION", allowDistribution()
-            proguardFiles 'proguard-rules.txt'
+            proguardFiles  'proguard-rules.txt'
+            ext.enableHansel=false
         }
         release {
             signingConfig signingConfigs.debug
@@ -219,6 +220,9 @@ android {
         versionName getTkpdVersionName()
         vectorDrawables.useSupportLibrary = true
         testInstrumentationRunner 'com.tokopedia.tkpd.MyRunner'
+        ndk {
+            abiFilters "x86", "armeabi-v7a"
+        }
         packagingOptions {
             exclude "lib/arm64-v8a/libgnustl_shared.so"
         }

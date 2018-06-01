@@ -29,14 +29,16 @@ import com.tokopedia.design.text.TkpdHintTextInputLayout;
 import com.tokopedia.flight.R;
 import com.tokopedia.flight.booking.di.FlightBookingComponent;
 import com.tokopedia.flight.booking.view.activity.FlightBookingAmenityActivity;
-import com.tokopedia.flight.passenger.view.activity.FlightPassengerListActivity;
+import com.tokopedia.flight.booking.view.activity.FlightBookingNationalityActivity;
 import com.tokopedia.flight.booking.view.adapter.FlightSimpleAdapter;
 import com.tokopedia.flight.booking.view.presenter.FlightBookingPassengerContract;
 import com.tokopedia.flight.booking.view.presenter.FlightBookingPassengerPresenter;
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingAmenityMetaViewModel;
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingAmenityViewModel;
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingPassengerViewModel;
+import com.tokopedia.flight.booking.view.viewmodel.FlightBookingPhoneCodeViewModel;
 import com.tokopedia.flight.booking.view.viewmodel.SimpleViewModel;
+import com.tokopedia.flight.passenger.view.activity.FlightPassengerListActivity;
 import com.tokopedia.flight.passenger.view.fragment.FlightPassengerListFragment;
 
 import java.util.ArrayList;
@@ -58,11 +60,15 @@ public class FlightBookingPassengerFragment extends BaseDaggerFragment implement
     public static final String EXTRA_AIR_ASIA = "EXTRA_AIR_ASIA";
     public static final String EXTRA_DEPARTURE_DATE = "EXTRA_DEPARTURE_DATE";
     public static final String EXTRA_REQUEST_ID = "EXTRA_REQUEST_ID";
+    public static final String EXTRA_IS_DOMESTIC = "EXTRA_IS_DOMESTIC";
     private static final int REQUEST_CODE_PICK_LUGGAGE = 1;
     private static final int REQUEST_CODE_PICK_MEAL = 2;
     private static final int REQUEST_CODE_PICK_SAVED_PASSENGER = 3;
+    private static final int REQUEST_CODE_PICK_NATIONALITY = 4;
+    private static final int REQUEST_CODE_PICK_ISSUER_COUNTRY = 5;
     @Inject
     FlightBookingPassengerPresenter presenter;
+
     private AppCompatTextView tvHeader;
     private AppCompatTextView tvSubheader;
     private SpinnerTextView spTitle;
@@ -77,8 +83,13 @@ public class FlightBookingPassengerFragment extends BaseDaggerFragment implement
     private LinearLayout mealsContainer;
     private RecyclerView rvMeals;
     private AppCompatEditText etSavedPassenger;
-
+    private AppCompatEditText etPassportNumber;
+    private AppCompatEditText etPassportExpired;
+    private AppCompatEditText etPassportNationality;
+    private AppCompatEditText etPassportIssuerCountry;
     private AppCompatButton buttonSubmit;
+    private LinearLayout passportContainer;
+
     private FlightBookingPassengerViewModel viewModel;
     private List<FlightBookingAmenityMetaViewModel> luggageViewModels;
     private List<FlightBookingAmenityMetaViewModel> mealViewModels;
@@ -89,6 +100,7 @@ public class FlightBookingPassengerFragment extends BaseDaggerFragment implement
     private String departureDate;
     private String selectedPassengerId;
     private String requestId;
+    private boolean isDomestic = true;
 
     public FlightBookingPassengerFragment() {
         // Required empty public constructor
@@ -101,7 +113,8 @@ public class FlightBookingPassengerFragment extends BaseDaggerFragment implement
                                                              List<FlightBookingAmenityMetaViewModel> mealViewModels,
                                                              boolean isAirAsiaAirlines,
                                                              String departureDate,
-                                                             String requestId) {
+                                                             String requestId,
+                                                             boolean isDomestic) {
         FlightBookingPassengerFragment fragment = new FlightBookingPassengerFragment();
         Bundle bundle = new Bundle();
         bundle.putString(EXTRA_DEPARTURE, departureId);
@@ -112,6 +125,7 @@ public class FlightBookingPassengerFragment extends BaseDaggerFragment implement
         bundle.putParcelableArrayList(EXTRA_LUGGAGES, (ArrayList<? extends Parcelable>) luggageViewModels);
         bundle.putParcelableArrayList(EXTRA_MEALS, (ArrayList<? extends Parcelable>) mealViewModels);
         bundle.putString(EXTRA_REQUEST_ID, requestId);
+        bundle.putBoolean(EXTRA_IS_DOMESTIC, isDomestic);
         fragment.setArguments(bundle);
         return fragment;
     }
@@ -123,7 +137,8 @@ public class FlightBookingPassengerFragment extends BaseDaggerFragment implement
                                                              List<FlightBookingAmenityMetaViewModel> mealViewModels,
                                                              boolean isAirAsiaAirlines,
                                                              String departureDate,
-                                                             String requestId) {
+                                                             String requestId,
+                                                             boolean isDomestic) {
         FlightBookingPassengerFragment fragment = new FlightBookingPassengerFragment();
         Bundle bundle = new Bundle();
         bundle.putString(EXTRA_DEPARTURE, departureId);
@@ -133,6 +148,7 @@ public class FlightBookingPassengerFragment extends BaseDaggerFragment implement
         bundle.putParcelableArrayList(EXTRA_LUGGAGES, (ArrayList<? extends Parcelable>) luggageViewModels);
         bundle.putParcelableArrayList(EXTRA_MEALS, (ArrayList<? extends Parcelable>) mealViewModels);
         bundle.putString(EXTRA_REQUEST_ID, requestId);
+        bundle.putBoolean(EXTRA_IS_DOMESTIC, isDomestic);
         fragment.setArguments(bundle);
         return fragment;
     }
@@ -147,6 +163,7 @@ public class FlightBookingPassengerFragment extends BaseDaggerFragment implement
         departureDate = getArguments().getString(EXTRA_DEPARTURE_DATE);
         requestId = getArguments().getString(EXTRA_REQUEST_ID);
         selectedPassengerId = (viewModel.getPassengerId() != null) ? viewModel.getPassengerId() : "";
+        isDomestic = getArguments().getBoolean(EXTRA_IS_DOMESTIC);
     }
 
     @Override
@@ -168,6 +185,11 @@ public class FlightBookingPassengerFragment extends BaseDaggerFragment implement
         mealsContainer = (LinearLayout) view.findViewById(R.id.meals_container);
         rvMeals = (RecyclerView) view.findViewById(R.id.rv_meals);
         etSavedPassenger = view.findViewById(R.id.et_saved_passenger);
+        etPassportNumber = view.findViewById(R.id.et_passport_no);
+        etPassportExpired = view.findViewById(R.id.et_passport_expiration_date);
+        etPassportNationality = view.findViewById(R.id.et_nationality);
+        etPassportIssuerCountry = view.findViewById(R.id.et_passport_issuer_country);
+        passportContainer = view.findViewById(R.id.container_passport_data);
         buttonSubmit = (AppCompatButton) view.findViewById(R.id.button_submit);
         buttonSubmit.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -185,6 +207,24 @@ public class FlightBookingPassengerFragment extends BaseDaggerFragment implement
             @Override
             public void onClick(View v) {
                 presenter.onSavedPassengerClicked();
+            }
+        });
+        etPassportExpired.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                presenter.onPassportExpiredClicked();
+            }
+        });
+        etPassportNationality.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                navigateToChooseNationality();
+            }
+        });
+        etPassportIssuerCountry.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                navigateToChooseIssuerCountry();
             }
         });
         return view;
@@ -239,6 +279,11 @@ public class FlightBookingPassengerFragment extends BaseDaggerFragment implement
     @Override
     public String getDepartureId() {
         return getArguments().getString(EXTRA_DEPARTURE);
+    }
+
+    @Override
+    public boolean isDomestic() {
+        return isDomestic;
     }
 
     @Override
@@ -395,6 +440,47 @@ public class FlightBookingPassengerFragment extends BaseDaggerFragment implement
     }
 
     @Override
+    public String getPassportExpiredDate() {
+        return etPassportExpired.getText().toString().trim();
+    }
+
+    @Override
+    public String getPassportNumber() {
+        return etPassportNumber.getText().toString().trim();
+    }
+
+    @Override
+    public void showPassengerPassportNumberEmptyError(int resId) {
+        showMessageErrorInSnackBar(resId);
+    }
+
+    @Override
+    public void showPassportNationalityEmptyError(int resId) {
+        showMessageErrorInSnackBar(resId);
+    }
+
+    @Override
+    public void showPassportIssuerCountryEmptyError(int resId) {
+        showMessageErrorInSnackBar(resId);
+    }
+
+    @Override
+    public void showPassengerPassportExpiredDateEmptyError(int resId) {
+        showMessageErrorInSnackBar(resId);
+    }
+
+    @Override
+    public void showPassengerPassportNumberShouldAlphaNumericError(int resId) {
+        showMessageErrorInSnackBar(resId);
+    }
+
+    @Override
+    public void showPassportExpiredDateMax20Years(int resId, String dateAfterTwentyYears) {
+        NetworkErrorHelper.showRedCloseSnackbar(getActivity(),
+                String.format(getString(resId), dateAfterTwentyYears));
+    }
+
+    @Override
     public void showPassengerBirthdateEmptyError(int resId) {
         showMessageErrorInSnackBar(resId);
     }
@@ -456,8 +542,39 @@ public class FlightBookingPassengerFragment extends BaseDaggerFragment implement
     }
 
     @Override
+    public void showPassportExpiredDateShouldMoreThan6MonthsFromDeparture(int resId, String dateAfterSixMonth) {
+        NetworkErrorHelper.showRedCloseSnackbar(getActivity(),
+                String.format(getString(resId), dateAfterSixMonth));
+    }
+
+    @Override
+    public void renderPassportNationality(String countryName) {
+        etPassportNationality.setText(countryName);
+    }
+
+    @Override
+    public void renderPassportIssuerCountry(String countryName) {
+        etPassportIssuerCountry.setText(countryName);
+    }
+
+    @Override
+    public void renderPassportNumber(String passportNumber) {
+        etPassportNumber.setText(passportNumber);
+    }
+
+    @Override
     public void hideKeyboard() {
         KeyboardHandler.hideSoftKeyboard(getActivity());
+    }
+
+    @Override
+    public void hidePassportContainer() {
+        passportContainer.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void showPassportContainer() {
+        passportContainer.setVisibility(View.VISIBLE);
     }
 
     @Override
@@ -549,6 +666,11 @@ public class FlightBookingPassengerFragment extends BaseDaggerFragment implement
     }
 
     @Override
+    public void renderPassportExpiredDate(String expiredDateStr) {
+        etPassportExpired.setText(expiredDateStr);
+    }
+
+    @Override
     public void navigateToLuggagePicker(List<FlightBookingAmenityViewModel> luggages, FlightBookingAmenityMetaViewModel selected) {
         String title = String.format("%s %s", getString(R.string.flight_booking_luggage_toolbar_title), selected.getDescription());
         Intent intent = FlightBookingAmenityActivity.createIntent(getActivity(), title, luggages, selected);
@@ -565,13 +687,30 @@ public class FlightBookingPassengerFragment extends BaseDaggerFragment implement
     @Override
     public void navigateToSavedPassengerPicker(FlightBookingPassengerViewModel selected) {
         Intent intent = FlightPassengerListActivity.createIntent(getActivity(),
-                selected, requestId, departureDate);
+                selected, requestId, departureDate, isDomestic);
         startActivityForResult(intent, REQUEST_CODE_PICK_SAVED_PASSENGER);
+    }
+
+    @Override
+    public void showPassportExpiredDatePickerDialog(Date selectedDate, final Date minDate, final Date maxDate) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(selectedDate);
+        DatePickerDialog datePicker = new DatePickerDialog(getActivity(), new DatePickerDialog.OnDateSetListener() {
+            @Override
+            public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
+                presenter.onPassportExpiredDateChanged(year, month, dayOfMonth, minDate, maxDate);
+            }
+        }, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DATE));
+        DatePicker datePicker1 = datePicker.getDatePicker();
+        datePicker1.setMinDate(minDate.getTime());
+        datePicker1.setMaxDate(maxDate.getTime());
+        datePicker.show();
     }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+        clearAllKeyboardFocus();
         if (resultCode == Activity.RESULT_OK) {
             switch (requestCode) {
                 case REQUEST_CODE_PICK_LUGGAGE:
@@ -595,8 +734,33 @@ public class FlightBookingPassengerFragment extends BaseDaggerFragment implement
                         presenter.onNewPassengerChoosed();
                     }
                     break;
+                case REQUEST_CODE_PICK_NATIONALITY:
+                    if (data != null) {
+                        FlightBookingPhoneCodeViewModel flightPassportNationalityViewModel = data.getParcelableExtra(FlightBookingNationalityFragment.EXTRA_SELECTED_COUNTRY);
+                        presenter.onNationalityChanged(flightPassportNationalityViewModel);
+                    }
+                    break;
+                case REQUEST_CODE_PICK_ISSUER_COUNTRY:
+                    if (data != null) {
+                        FlightBookingPhoneCodeViewModel flightPassportIssuerCountry = data.getParcelableExtra(FlightBookingNationalityFragment.EXTRA_SELECTED_COUNTRY);
+                        presenter.onIssuerCountryChanged(flightPassportIssuerCountry);
+                    }
             }
         }
+    }
+
+    private void clearAllKeyboardFocus() {
+        KeyboardHandler.hideSoftKeyboard(getActivity());
+    }
+
+    private void navigateToChooseNationality() {
+        startActivityForResult(FlightBookingNationalityActivity.createIntent(getContext(),
+                getString(R.string.flight_nationality_search_hint)), REQUEST_CODE_PICK_NATIONALITY);
+    }
+
+    private void navigateToChooseIssuerCountry() {
+        startActivityForResult(FlightBookingNationalityActivity.createIntent(getContext(),
+                getString(R.string.flight_passport_search_hint)), REQUEST_CODE_PICK_ISSUER_COUNTRY);
     }
 
     public interface OnFragmentInteractionListener {

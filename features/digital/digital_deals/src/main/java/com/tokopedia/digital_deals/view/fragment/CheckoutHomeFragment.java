@@ -276,9 +276,4 @@ public class CheckoutHomeFragment extends BaseDaggerFragment implements Checkout
     protected String getScreenName() {
         return null;
     }
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-    }
 }

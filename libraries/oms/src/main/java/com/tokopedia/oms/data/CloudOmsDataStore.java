@@ -2,6 +2,7 @@ package com.tokopedia.oms.data;
 
 import com.google.gson.JsonObject;
 import com.tokopedia.abstraction.common.network.mapper.DataResponseMapper;
+import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.oms.data.entity.response.checkoutreponse.CheckoutResponse;
 import com.tokopedia.oms.data.entity.response.verifyresponse.VerifyCartResponse;
 import com.tokopedia.oms.data.entity.response.verifyresponse.VerifyMyCartResponse;
@@ -29,7 +30,9 @@ public class CloudOmsDataStore implements OmsDataStore {
 
     @Override
     public Observable<JsonObject> checkoutCart(JsonObject requestBody) {
-        return omsApi.checkoutCart(requestBody);
+        String appversion = GlobalConfig.VERSION_NAME;
+        String client = "android";
+        return omsApi.checkoutCart(requestBody, client, appversion);
     }
 
 }

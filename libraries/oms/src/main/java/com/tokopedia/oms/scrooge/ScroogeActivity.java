@@ -161,6 +161,7 @@ public class ScroogeActivity extends AppCompatActivity {
                     finish();
                 } else if (url.startsWith(SUCCESS_CALLBACK)) {
                     responseIntent.putExtra(ScroogePGUtil.RESULT_EXTRA_MSG, "Success");
+                    responseIntent.putExtra(ScroogePGUtil.SUCCESS_MSG_URL, url);
                     setResult(ScroogePGUtil.RESULT_CODE_SUCCESS, responseIntent);
                     finish();
                 } else {

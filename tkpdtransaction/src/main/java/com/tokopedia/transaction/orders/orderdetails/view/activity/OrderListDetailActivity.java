@@ -23,6 +23,12 @@ public class OrderListDetailActivity extends BaseSimpleActivity{
          intent.putExtra(KEY_ORDER_ID, orderId);
         return intent;
     }
+
+    public static Intent createInstance(Context context, String type, String orderId) {
+        Intent intent = new Intent(context, OrderListDetailActivity.class);
+        intent.putExtra(KEY_ORDER_ID, orderId);
+        return intent;
+    }
     @Override
     protected Fragment getNewFragment() {
         return OrderListDetailFragment.getInstance((String) getIntent().getExtras().get(KEY_ORDER_ID));
