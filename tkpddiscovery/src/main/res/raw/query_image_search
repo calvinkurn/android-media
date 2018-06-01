@@ -75,7 +75,7 @@ query image_search($image: String!, $params: String!) {
         }
         badges {
           title
-          imageUrl
+          image_url
         }
         is_featured
       }
