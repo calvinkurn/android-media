@@ -78,43 +78,39 @@ public class GetImageSearchUseCase<T> extends UseCase<SearchResultModel> {
     @Override
     public Observable<SearchResultModel> createObservable(RequestParams params) {
         return Observable.just(imagePath)
-                .flatMap(new Func1<String, Observable<SearchResultModel>>() {
-                    @Override
-                    public Observable<SearchResultModel> call(String imagePath) {
-                        File imgFile = new File(imagePath);
-                        Bitmap myBitmap = BitmapFactory.decodeFile(imgFile.getAbsolutePath());
-                        try {
-                            if (myBitmap == null) {
-                                myBitmap = ImageHandler.getBitmapFromUri(context, Uri.parse(imagePath), MAX_WIDTH, MAX_HEIGHT);
-                            }
-
-                            myBitmap = ImageHandler.resizeImage(myBitmap, MAX_WIDTH, MAX_HEIGHT);
-                            myBitmap = ImageHandler.RotatedBitmap(myBitmap, imagePath);
-                        } catch (IOException exception) {
-                            exception.printStackTrace();
+                .flatMap(imagePath -> {
+                    File imgFile = new File(imagePath);
+                    Bitmap myBitmap = BitmapFactory.decodeFile(imgFile.getAbsolutePath());
+                    try {
+                        if (myBitmap == null) {
+                            myBitmap = ImageHandler.getBitmapFromUri(context, Uri.parse(imagePath), MAX_WIDTH, MAX_HEIGHT);
                         }
 
-                        ByteArrayOutputStream stream = new ByteArrayOutputStream();
-                        myBitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream);
-                        byte[] byteArray = stream.toByteArray();
-
-                        String encodePicContent = Base64.encodeToString(byteArray,
-                                Base64.NO_WRAP | Base64.NO_CLOSE);
-
-                        com.tokopedia.usecase.RequestParams requestParams = com.tokopedia.usecase.RequestParams.create();
-
-                        Map<String, Object> mapContentVariable = new HashMap<>();
-                        mapContentVariable.put(IMAGE_CONTENT, encodePicContent);
-                        mapContentVariable.put(PARAMS, initializeSearchRequestParamForGql());
-
-                        requestParams.putString(QUERY_KEY, getRequestImageSearchPayload());
-                        requestParams.putObject(VARIABLE_KEY, mapContentVariable);
-                        requestParams.putObject(OPERATIONS_NAME, "image_search");
-                        return imageSearchService.getApi().getImageSearchResults(requestParams.getParameters())
-                                .map(productMapper)
-                                .flatMap(wishlistDataEnricher(getUserId()));
+                        myBitmap = ImageHandler.resizeImage(myBitmap, MAX_WIDTH, MAX_HEIGHT);
+                        myBitmap = ImageHandler.RotatedBitmap(myBitmap, imagePath);
+                    } catch (IOException exception) {
+                        exception.printStackTrace();
                     }
 
+                    ByteArrayOutputStream stream = new ByteArrayOutputStream();
+                    myBitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream);
+                    byte[] byteArray = stream.toByteArray();
+
+                    String encodePicContent = Base64.encodeToString(byteArray,
+                            Base64.NO_WRAP | Base64.NO_CLOSE);
+
+                    com.tokopedia.usecase.RequestParams requestParams = com.tokopedia.usecase.RequestParams.create();
+
+                    Map<String, Object> mapContentVariable = new HashMap<>();
+                    mapContentVariable.put(IMAGE_CONTENT, encodePicContent);
+                    mapContentVariable.put(PARAMS, initializeSearchRequestParamForGql());
+
+                    requestParams.putString(QUERY_KEY, getRequestImageSearchPayload());
+                    requestParams.putObject(VARIABLE_KEY, mapContentVariable);
+                    requestParams.putObject(OPERATIONS_NAME, "image_search");
+                    return imageSearchService.getApi().getImageSearchResults(requestParams.getParameters())
+                            .map(productMapper)
+                            .flatMap(wishlistDataEnricher(getUserId()));
                 });
     }
 

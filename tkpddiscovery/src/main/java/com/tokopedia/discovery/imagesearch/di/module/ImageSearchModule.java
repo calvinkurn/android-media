@@ -13,7 +13,6 @@ import com.tokopedia.discovery.imagesearch.domain.usecase.GetImageSearchUseCase;
 import com.tokopedia.discovery.imagesearch.network.apiservice.ImageSearchService;
 import com.tokopedia.discovery.imagesearch.search.ImageSearchPresenter;
 import com.tokopedia.discovery.newdiscovery.data.mapper.ProductMapper;
-import com.tokopedia.discovery.newdiscovery.di.module.ProductModule;
 import com.tokopedia.discovery.newdiscovery.di.scope.SearchScope;
 import com.tokopedia.discovery.newdiscovery.domain.usecase.GetProductUseCase;
 
@@ -41,12 +40,12 @@ public class ImageSearchModule {
             ImageProductMapper imageProductMapper,
             @MojitoGetWishlistQualifier MojitoApi service) {
         return new GetImageSearchUseCase(context, threadExecutor,
-                postExecutionThread, imageSearchService, imageProductMapper , service);
+                postExecutionThread, imageSearchService, imageProductMapper, service);
     }
 
     @Provides
-    ImageProductMapper imageProductMapper(Gson gson) {
-        return new ImageProductMapper(gson);
+    ImageProductMapper imageProductMapper(Gson gson, ProductMapper productMapper) {
+        return new ImageProductMapper(gson, productMapper);
     }
 
     @SearchScope
