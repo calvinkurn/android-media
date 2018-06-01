@@ -19,11 +19,12 @@ import com.tokopedia.flight.passenger.view.fragment.FlightPassengerListFragment;
 public class FlightPassengerListActivity extends BaseFlightActivity implements HasComponent<FlightPassengerComponent> {
 
     public static Intent createIntent(Context context, FlightBookingPassengerViewModel selected,
-                                      String requestId, String departureDate) {
+                                      String requestId, String departureDate, boolean isDomestic) {
         Intent intent = new Intent(context, FlightPassengerListActivity.class);
         intent.putExtra(FlightPassengerListFragment.EXTRA_SELECTED_PASSENGER, selected);
         intent.putExtra(FlightPassengerListFragment.EXTRA_REQUEST_ID, requestId);
         intent.putExtra(FlightPassengerListFragment.EXTRA_DEPARTURE_DATE, departureDate);
+        intent.putExtra(FlightPassengerListFragment.EXTRA_IS_DOMESTIC, isDomestic);
         return intent;
     }
 
@@ -35,8 +36,10 @@ public class FlightPassengerListActivity extends BaseFlightActivity implements H
                 FlightPassengerListFragment.EXTRA_REQUEST_ID);
         String departureDate = getIntent().getStringExtra(
                 FlightPassengerListFragment.EXTRA_DEPARTURE_DATE);
+        boolean isDomestic = getIntent().getBooleanExtra(
+                FlightPassengerListFragment.EXTRA_IS_DOMESTIC, false);
         return FlightPassengerListFragment.createInstance(flightBookingPassengerViewModel,
-                requestId, departureDate);
+                requestId, departureDate, isDomestic);
     }
 
     @Override
