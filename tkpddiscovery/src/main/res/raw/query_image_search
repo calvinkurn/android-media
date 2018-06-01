@@ -1,72 +1,72 @@
 query image_search($image: String!, $params: String!) {
   image_search(image: $image, params: $params) {
     header {
-      totalData
-      totalDataText
-      processTime
-      additionalParams
+      total_data
+      total_data_text
+      process_time
+      additional_params
     }
     data {
       source
-      shareUrl
-      query
-      suggestionText {
+      share_url
+      q
+      suggestion_text {
         text
         query
       }
       redirection {
-        redirectUrl
-        departmentId
+        redirect_url
+        department_id
       }
       suggestions {
         suggestion
-        totalData
+        total_data
       }
-      suggestionInstead {
-        suggestionInstead
-        currentKeyword
-        totalData
+      suggestion_instead {
+        suggestion_instead
+        current_keyword
+        total_data
       }
       catalogs {
         id
         name
         price
-        priceMin
-        priceMax
-        countProduct
+        price_min
+        price_max
+        count_product
         description
-        imageUrl
+        image_url
         url
-        departmentID
+        department_id
       }
       products {
         id
         name
         url
-        imageUrl
-        imageURL700
+        image_url
+        image_url_700
         price
         shop {
           id
           name
           url
-          isGoldShop
-          isOfficial
+          is_gold_shop
+          is_official
           location
           city
           reputation
           clover
         }
         condition
-        departmentId
+        department_id
         rating
-        countReview
-        courierCount
-        originalPrice
-        discountPercentage
-        wholeSale {
-          quantityMin
-          quantityMax
+        count_review
+        courier_count
+        original_price
+        discount_percentage
+        whole_sale_price {
+          quantity_min
+          quantity_max
           price
         }
         labels {
@@ -77,7 +77,7 @@ query image_search($image: String!, $params: String!) {
           title
           imageUrl
         }
-        isFeatured
+        is_featured
       }
     }
   }
