@@ -15,6 +15,7 @@ import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.discovery.R;
 import com.tokopedia.discovery.autocomplete.viewmodel.ShopSearch;
 import com.tokopedia.discovery.search.view.adapter.ItemClickListener;
+import com.tokopedia.discovery.util.AutoCompleteTracking;
 
 import java.util.Locale;
 
@@ -23,6 +24,7 @@ public class ShopViewHolder extends AbstractViewHolder<ShopSearch> {
     @LayoutRes
     public static final int LAYOUT = R.layout.layout_shop_auto_complete;
     private final Context context;
+    private final String tabName;
 
     private TextView titleTextView;
     private TextView location;
@@ -32,10 +34,11 @@ public class ShopViewHolder extends AbstractViewHolder<ShopSearch> {
 
     private final ItemClickListener listener;
 
-    public ShopViewHolder(View itemView, ItemClickListener clickListener) {
+    public ShopViewHolder(View itemView, ItemClickListener clickListener, String tabName) {
         super(itemView);
         this.context = itemView.getContext();
         this.listener = clickListener;
+        this.tabName = tabName;
         titleTextView = itemView.findViewById(R.id.titleTextView);
         location = itemView.findViewById(R.id.subTitleTextView);
         badgesOfficialStore = itemView.findViewById(R.id.badgesOfficialStore);
@@ -70,6 +73,16 @@ public class ShopViewHolder extends AbstractViewHolder<ShopSearch> {
         itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                AutoCompleteTracking.eventClickShopSearch(
+                        itemView.getContext(),
+                        String.format(
+                                "keyword: %s - shop: %s - applink: %s",
+                                element.getSearchTerm(),
+                                element.getKeyword(),
+                                element.getApplink()
+                        ),
+                        tabName
+                );
                 listener.onItemClicked(element.getApplink(), element.getUrl());
             }
         });

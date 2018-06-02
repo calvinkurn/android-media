@@ -18,6 +18,7 @@ import com.tokopedia.discovery.R;
 import com.tokopedia.discovery.autocomplete.viewmodel.BaseItemAutoCompleteSearch;
 import com.tokopedia.discovery.autocomplete.viewmodel.RecentSearch;
 import com.tokopedia.discovery.search.view.adapter.ItemClickListener;
+import com.tokopedia.discovery.util.AutoCompleteTracking;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -107,7 +108,15 @@ public class RecentViewHolder extends AbstractViewHolder<RecentSearch> {
                 textView.setOnTextClickListener(new DeletableItemView.OnTextClickListener() {
                     @Override
                     public void onClick() {
-                        UnifyTracking.eventClickRecentSearch(item.getKeyword());
+                        AutoCompleteTracking.eventClickRecentSearch(
+                                itemView.getContext(),
+                                String.format(
+                                        "value: %s - po: %s - applink: %s",
+                                        item.getKeyword(),
+                                        String.valueOf(getAdapterPosition() + 1),
+                                        item.getApplink()
+                                )
+                        );
                         clickListener.onItemSearchClicked(
                                 item.getKeyword(),
                                 item.getCategoryId()

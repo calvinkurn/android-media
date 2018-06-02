@@ -27,7 +27,7 @@ public class SearchPageAdapter extends FragmentStatePagerAdapter {
                 context.getString(R.string.title_shop)
         };
         for (int i = 0; i < 3; i++) {
-            registeredFragments.put(i, SearchResultFragment.newInstance(clickListener));
+            registeredFragments.put(i, SearchResultFragment.newInstance(TITLE[i], clickListener));
         }
     }
 

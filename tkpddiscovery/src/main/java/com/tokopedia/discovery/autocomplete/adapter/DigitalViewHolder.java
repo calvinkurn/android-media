@@ -10,6 +10,7 @@ import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.discovery.R;
 import com.tokopedia.discovery.autocomplete.viewmodel.DigitalSearch;
 import com.tokopedia.discovery.search.view.adapter.ItemClickListener;
+import com.tokopedia.discovery.util.AutoCompleteTracking;
 
 public class DigitalViewHolder extends AbstractViewHolder<DigitalSearch> {
 
@@ -32,6 +33,16 @@ public class DigitalViewHolder extends AbstractViewHolder<DigitalSearch> {
         itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                AutoCompleteTracking.eventClickDigital(
+                        itemView.getContext(),
+                        String.format(
+                                "keyword: %s - product: %s - po: %s - page: %s",
+                                element.getSearchTerm(),
+                                element.getKeyword(),
+                                String.valueOf(getAdapterPosition() + 1),
+                                element.getApplink()
+                        )
+                );
                 listener.onItemClicked(element.getApplink(), element.getUrl());
             }
         });
