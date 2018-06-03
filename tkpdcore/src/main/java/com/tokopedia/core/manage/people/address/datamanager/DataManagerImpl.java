@@ -77,6 +77,17 @@ public class DataManagerImpl implements DataManager {
             }
 
             @Override
+            public void onEmptyList(Context context, Map<String, String> params, GetPeopleAddress data) {
+                if (isUseFilter(params)) {
+                    setCacheAddressList(generateCacheKey(context, params), data);
+                }
+
+                presenter.setOnEmptyAddressList(data);
+                presenter.setAllowConnection(true);
+                presenter.setOnRequestSuccess();
+            }
+
+            @Override
             public void onTimeOut(NetworkErrorHelper.RetryClickedListener clickedListener) {
                 presenter.setOnRequestTimeOut(clickedListener);
             }
@@ -248,6 +259,11 @@ public class DataManagerImpl implements DataManager {
                 presenter.setOnSuccessLoadMoreData(data);
                 presenter.setAllowConnection(true);
                 presenter.setOnRequestSuccess();
+            }
+
+            @Override
+            public void onEmptyList(Context context, Map<String, String> params, GetPeopleAddress data) {
+
             }
 
             @Override

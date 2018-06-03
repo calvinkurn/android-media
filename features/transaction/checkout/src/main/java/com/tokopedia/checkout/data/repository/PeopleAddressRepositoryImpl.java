@@ -1,11 +1,10 @@
 package com.tokopedia.checkout.data.repository;
 
-import com.tokopedia.core.manage.people.address.model.AddressModel;
+import com.tokopedia.checkout.domain.datamodel.addressoptions.PeopleAddressModel;
 import com.tokopedia.core.manage.people.address.model.GetPeopleAddress;
 import com.tokopedia.core.network.apiservices.user.PeopleService;
 import com.tokopedia.core.network.retrofit.response.TkpdResponse;
 import com.tokopedia.checkout.data.mapper.AddressModelMapper;
-import com.tokopedia.checkout.domain.datamodel.addressoptions.RecipientAddressModel;
 
 import java.util.List;
 import java.util.Map;
@@ -21,7 +20,6 @@ import rx.functions.Func1;
 public class PeopleAddressRepositoryImpl implements PeopleAddressRepository {
 
     private static final int FIRST_ELEMENT = 0;
-    private static final int PRIME_ADDRESS = 2;
 
     private final PeopleService mPeopleService;
     private final AddressModelMapper mAddressModelMapper;
@@ -32,53 +30,18 @@ public class PeopleAddressRepositoryImpl implements PeopleAddressRepository {
     }
 
     /**
-     * Get an {@link Observable} which will emit a {@link RecipientAddressModel}
-     *
-     * @param params Parameters used to retrieve data
-     * @return Shortlist Address
-     */
-    public Observable<RecipientAddressModel> getShortListedAddress(Map<String, String> params) {
-        return getAllAddress(params)
-                .flatMap(new Func1<List<RecipientAddressModel>, Observable<RecipientAddressModel>>() {
-                    @Override
-                    public Observable<RecipientAddressModel> call(List<RecipientAddressModel> recipientAddressModels) {
-                        return Observable.from(recipientAddressModels);
-                    }
-                })
-                .filter(new Func1<RecipientAddressModel, Boolean>() {
-                    @Override
-                    public Boolean call(RecipientAddressModel recipientAddressModel) {
-                        return recipientAddressModel.getAddressStatus() == PRIME_ADDRESS;
-                    }
-                })
-                .toList()
-                .filter(new Func1<List<RecipientAddressModel>, Boolean>() {
-                    @Override
-                    public Boolean call(List<RecipientAddressModel> recipientAddressModels) {
-                        return !recipientAddressModels.isEmpty();
-                    }
-                })
-                .map(new Func1<List<RecipientAddressModel>, RecipientAddressModel>() {
-                    @Override
-                    public RecipientAddressModel call(List<RecipientAddressModel> recipientAddressModels) {
-                        return recipientAddressModels.get(FIRST_ELEMENT);
-                    }
-                });
-    }
-
-    /**
      * Get an {@link Observable} which will emits a {@link List < ShipmentAddressModel >}
      *
      * @param params Parameters used to retrieve address data
      * @return List of address
      */
     @Override
-    public Observable<List<RecipientAddressModel>> getAllAddress(Map<String, String> params) {
+    public Observable<PeopleAddressModel> getAllAddress(Map<String, String> params) {
         return mPeopleService.getApi()
                 .getAddress(params)
-                .map(new Func1<Response<TkpdResponse>, List<AddressModel>>() {
+                .map(new Func1<Response<TkpdResponse>, GetPeopleAddress>() {
                     @Override
-                    public List<AddressModel> call(Response<TkpdResponse> response) {
+                    public GetPeopleAddress call(Response<TkpdResponse> response) {
                         if (response.isSuccessful()) {
                             if (!response.body().isError()) {
                                 GetPeopleAddress peopleAddress = response.body()
@@ -86,7 +49,7 @@ public class PeopleAddressRepositoryImpl implements PeopleAddressRepository {
 
                                 if (!peopleAddress.getList().isEmpty()) {
                                     // Successfully obtaining user's list of address
-                                    return peopleAddress.getList();
+                                    return peopleAddress;
                                 } else {
                                     // List of address is empty, therefore result will be treated
                                     // as null data
@@ -103,9 +66,9 @@ public class PeopleAddressRepositoryImpl implements PeopleAddressRepository {
                         return null;
                     }
                 })
-                .map(new Func1<List<AddressModel>, List<RecipientAddressModel>>() {
+                .map(new Func1<GetPeopleAddress, PeopleAddressModel>() {
                     @Override
-                    public List<RecipientAddressModel> call(List<AddressModel> addressModels) {
+                    public PeopleAddressModel call(GetPeopleAddress addressModels) {
                         return mAddressModelMapper.transform(addressModels);
                     }
                 });

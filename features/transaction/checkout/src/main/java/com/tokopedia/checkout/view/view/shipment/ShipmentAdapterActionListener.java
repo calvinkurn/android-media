@@ -1,11 +1,11 @@
 package com.tokopedia.checkout.view.view.shipment;
 
-import com.tokopedia.transactiondata.entity.request.DataCheckoutRequest;
 import com.tokopedia.checkout.domain.datamodel.addressoptions.RecipientAddressModel;
 import com.tokopedia.checkout.domain.datamodel.cartsingleshipment.ShipmentCostModel;
 import com.tokopedia.checkout.view.adapter.CartAdapterActionListener;
 import com.tokopedia.checkout.view.view.shipment.viewmodel.ShipmentCartItemModel;
 import com.tokopedia.core.router.transactionmodule.sharedata.CheckPromoCodeCartShipmentRequest;
+import com.tokopedia.transactiondata.entity.request.DataCheckoutRequest;
 
 import java.util.List;
 
@@ -38,8 +38,13 @@ public interface ShipmentAdapterActionListener extends CartAdapterActionListener
 
     void onNeedUpdateViewItem(int position);
 
+    void onSubTotalCartItemClicked(int position);
+
     void onInsuranceTncClicked();
 
     void onNeedUpdateRequestData();
 
+    void onDropshipCheckedForTrackingAnalytics();
+
+    void onInsuranceCheckedForTrackingAnalytics();
 }

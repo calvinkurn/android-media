@@ -1,6 +1,5 @@
 package com.tokopedia.checkout.view.di.module;
 
-import com.tokopedia.checkout.domain.mapper.ShipmentRatesDataMapper;
 import com.tokopedia.checkout.domain.mapper.CartMapper;
 import com.tokopedia.checkout.domain.mapper.CheckoutMapper;
 import com.tokopedia.checkout.domain.mapper.ICartMapper;
@@ -51,11 +50,6 @@ public class DataMapperModule {
     @Provides
     IShipmentMapper provideIShipmentMapper(IMapperUtil mapperUtil) {
         return new ShipmentMapper(mapperUtil);
-    }
-
-    @Provides
-    ShipmentRatesDataMapper provideShipmentRatesDatamapper() {
-        return new ShipmentRatesDataMapper();
     }
 
     @Provides

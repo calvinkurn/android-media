@@ -5,7 +5,6 @@ import android.app.FragmentManager;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -29,6 +28,7 @@ import com.tokopedia.checkout.view.di.component.DaggerCartAddressChoiceComponent
 import com.tokopedia.checkout.view.di.module.CartAddressChoiceModule;
 import com.tokopedia.core.manage.people.address.ManageAddressConstant;
 import com.tokopedia.core.manage.people.address.activity.AddAddressActivity;
+import com.tokopedia.core.manage.people.address.model.Token;
 
 import java.util.List;
 
@@ -56,6 +56,8 @@ public class CartAddressChoiceFragment extends BaseCheckoutFragment
     private SwipeToRefresh swipeToRefreshLayout;
 
     private ICartAddressChoiceActivityListener mCartAddressChoiceListener;
+
+    private Token token;
 
     @Inject
     CartAddressChoicePresenter mCartAddressChoicePresenter;
@@ -89,7 +91,7 @@ public class CartAddressChoiceFragment extends BaseCheckoutFragment
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.menu_add_address) {
-            startActivityForResult(AddAddressActivity.createInstance(getActivity(), null),
+            startActivityForResult(AddAddressActivity.createInstance(getActivity(), token),
                     ManageAddressConstant.REQUEST_CODE_PARAM_CREATE);
             return true;
         }
@@ -196,6 +198,26 @@ public class CartAddressChoiceFragment extends BaseCheckoutFragment
     }
 
     @Override
+    public void setToken(Token token) {
+        this.token = token;
+    }
+
+    @Override
+    public void renderEmptyRecipientData() {
+        llContent.setVisibility(View.GONE);
+        btSendToCurrentAddress.setVisibility(View.GONE);
+        llNetworkErrorView.setVisibility(View.VISIBLE);
+        swipeToRefreshLayout.setEnabled(true);
+        NetworkErrorHelper.showEmptyState(getActivity(), llNetworkErrorView,
+                getString(R.string.checkout_module_title_error_empty_address),
+                getString(R.string.checkout_module_subtitle_error_empty_address),
+                getString(R.string.checkout_module_label_button_retry_error_empty_address),
+                R.drawable.ic_empty_state,
+                () -> startActivityForResult(AddAddressActivity.createInstance(getActivity(), token),
+                        ManageAddressConstant.REQUEST_CODE_PARAM_CREATE));
+    }
+
+    @Override
     public void renderSaveButtonEnabled() {
         btSendToCurrentAddress.setBackgroundResource(R.drawable.medium_green_button_rounded);
         btSendToCurrentAddress.setTextColor(getResources().getColor(R.color.white));
@@ -295,7 +317,7 @@ public class CartAddressChoiceFragment extends BaseCheckoutFragment
     public void onEditClick(RecipientAddressModel model) {
         AddressModelMapper mapper = new AddressModelMapper();
 
-        Intent intent = AddAddressActivity.createInstance(getActivity(), mapper.transform(model), null);
+        Intent intent = AddAddressActivity.createInstance(getActivity(), mapper.transform(model), token);
         startActivityForResult(intent, ManageAddressConstant.REQUEST_CODE_PARAM_EDIT);
     }
 

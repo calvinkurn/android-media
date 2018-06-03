@@ -4,6 +4,7 @@ import android.content.Context;
 import android.text.TextUtils;
 
 import com.tokopedia.checkout.R;
+import com.tokopedia.checkout.domain.datamodel.addressoptions.PeopleAddressModel;
 import com.tokopedia.checkout.domain.datamodel.addressoptions.RecipientAddressModel;
 import com.tokopedia.checkout.domain.usecase.GetPeopleAddressUseCase;
 import com.tokopedia.checkout.view.base.CartMvpPresenter;
@@ -72,7 +73,7 @@ public class ShipmentAddressListPresenter
         getMvpView().showLoading();
         mGetPeopleAddressUseCase.execute(mGetPeopleAddressUseCase
                         .getRequestParams(context, order, query, mPagingHandler.getPage()),
-                new Subscriber<List<RecipientAddressModel>>() {
+                new Subscriber<PeopleAddressModel>() {
                     @Override
                     public void onCompleted() {
 
@@ -103,22 +104,22 @@ public class ShipmentAddressListPresenter
                     }
 
                     @Override
-                    public void onNext(List<RecipientAddressModel> shipmentAddressModels) {
+                    public void onNext(PeopleAddressModel peopleAddressModel) {
                         boolean viewIsAttached = isViewAttached();
                         if (viewIsAttached) {
                             getMvpView().hideLoading();
-                            if (shipmentAddressModels.isEmpty()) {
+                            if (peopleAddressModel.getRecipientAddressModelList().isEmpty()) {
                                 getMvpView().showListEmpty();
                             } else {
                                 if (currentAddress != null) {
-                                    for (RecipientAddressModel recipientAddressModel : shipmentAddressModels) {
+                                    for (RecipientAddressModel recipientAddressModel : peopleAddressModel.getRecipientAddressModelList()) {
                                         if (recipientAddressModel.getId().equalsIgnoreCase(currentAddress.getId())) {
                                             recipientAddressModel.setSelected(true);
                                             break;
                                         }
                                     }
                                 }
-                                getMvpView().showList(shipmentAddressModels);
+                                getMvpView().showList(peopleAddressModel.getRecipientAddressModelList());
                             }
                         }
                     }
