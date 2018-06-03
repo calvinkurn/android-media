@@ -24,7 +24,7 @@
     <string name="label_payment_total">Total Tagihan</string>
     <string name="label_button_choose_payment_method">Pilih Metode Pembayaran</string>
     <string name="label_menu_cart_remove">Hapus</string>
-    <string name="dialog_title_back_to_cart">Kembali Ke Keranjang</string>
+    <string name="dialog_title_back_to_cart">Kembali Ke Keranjang?</string>
     <string name="dialog_message_back_to_cart">Perubahan yang Anda lakukan di halaman ini tidak akan disimpan</string>
     <string name="label_dialog_back_to_cart_button_positive"><![CDATA[Kembali & Hapus Perubahan]]></string>
     <string name="label_dialog_back_to_cart_button_negative">Tetap di Halaman Ini</string>
@@ -135,11 +135,11 @@
     <string name="label_change_address_success">Berhasil mengubah alamat</string>
     <string name="label_title_showcase_shipment">Pilih Kurir Pengiriman</string>
     <string name="label_message_showcase_shipment">Gunakan layanan jasa pengiriman yang didukung oleh toko ini.</string>
-    <string name="label_dialog_action_delete_and_add_to_wishlist"><![CDATA[Hapus & Tambah Wishlist]]></string>
-    <string name="label_dialog_title_delete_item">Hapus Barang</string>
+    <string name="label_dialog_action_delete_and_add_to_wishlist"><![CDATA[Hapus & Tambah Ke Wishlist]]></string>
+    <string name="label_dialog_title_delete_item">Hapus Barang?</string>
     <string name="label_dialog_action_delete">\u0020\u0020\u0020\u0020\u0020\u0020\u0020\u0020\u0020\u0020\u0020\u0020\u0020\u0020\u0020\u0020\u0020\u0020\u0020\u0020Hapus</string>
     <string name="label_dialog_action_delete_all">Hapus Semua</string>
-    <string name="label_dialog_message_remove_cart_item">Barang ini akan dihapus dari keranjang belanja anda</string>
+    <string name="label_dialog_message_remove_cart_item">Barang ini akan dihapus dari keranjang belanja Anda</string>
     <string name="label_delete_cart_item_success">Produk berhasil dihapus dari keranjang</string>
     <string name="label_delete_cart_item_failed">Gagal menghapus produk dari keranjang</string>
     <string name="label_delete_cart_tem">Hapus</string>
@@ -153,5 +153,6 @@
     <string name="checkout_module_title_error_empty_address">Terjadi Kesalahan</string>
     <string name="checkout_module_subtitle_error_empty_address">Tidak ada alamat</string>
     <string name="checkout_module_label_button_retry_error_empty_address">Tambah Alamat</string>
+    <string name="message_payment_success">Pembayaran Berhasil</string>
 
 </resources>

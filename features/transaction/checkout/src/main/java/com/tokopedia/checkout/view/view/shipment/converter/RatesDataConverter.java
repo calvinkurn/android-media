@@ -38,20 +38,18 @@ public class RatesDataConverter {
     public ShipmentDetailData getShipmentDetailData(ShipmentCartItemModel shipmentCartItemModel,
                                                     RecipientAddressModel recipientAddressModel) {
         ShipmentDetailData shipmentDetailData = new ShipmentDetailData();
-        if (shipmentCartItemModel instanceof ShipmentCartItemModel) {
-            ShipmentCartData shipmentCartData = shipmentCartItemModel.getShipmentCartData();
-            shipmentCartData.setDestinationAddress(recipientAddressModel.getAddressStreet());
-            shipmentCartData.setDestinationDistrictId(recipientAddressModel.getDestinationDistrictId());
-            shipmentCartData.setDestinationLatitude(recipientAddressModel.getLatitude());
-            shipmentCartData.setDestinationLongitude(recipientAddressModel.getLongitude());
-            shipmentCartData.setDestinationPostalCode(recipientAddressModel.getAddressPostalCode());
-            shipmentDetailData.setShipmentCartData(shipmentCartData);
-            int totalQuantity = 0;
-            for (CartItemModel cartItemModel : ((ShipmentCartItemModel) shipmentCartItemModel).getCartItemModels()) {
-                totalQuantity += cartItemModel.getQuantity();
-            }
-            shipmentDetailData.setTotalQuantity(totalQuantity);
+        ShipmentCartData shipmentCartData = shipmentCartItemModel.getShipmentCartData();
+        shipmentCartData.setDestinationAddress(recipientAddressModel.getAddressStreet());
+        shipmentCartData.setDestinationDistrictId(recipientAddressModel.getDestinationDistrictId());
+        shipmentCartData.setDestinationLatitude(recipientAddressModel.getLatitude());
+        shipmentCartData.setDestinationLongitude(recipientAddressModel.getLongitude());
+        shipmentCartData.setDestinationPostalCode(recipientAddressModel.getAddressPostalCode());
+        shipmentDetailData.setShipmentCartData(shipmentCartData);
+        int totalQuantity = 0;
+        for (CartItemModel cartItemModel : shipmentCartItemModel.getCartItemModels()) {
+            totalQuantity += cartItemModel.getQuantity();
         }
+        shipmentDetailData.setTotalQuantity(totalQuantity);
         return shipmentDetailData;
     }
 
@@ -61,8 +59,8 @@ public class RatesDataConverter {
         initializeShipmentCartData(userAddress, groupShop, shipmentCartData, keroToken, keroUnixTime);
         int orderValue = 0;
         int totalWeight = 0;
-        if (shipmentCartItemModel instanceof ShipmentCartItemModel) {
-            for (CartItemModel cartItemModel : ((ShipmentCartItemModel) shipmentCartItemModel).getCartItemModels()) {
+        if (shipmentCartItemModel.getCartItemModels() != null) {
+            for (CartItemModel cartItemModel : shipmentCartItemModel.getCartItemModels()) {
                 orderValue += (cartItemModel.getQuantity() * cartItemModel.getPrice());
                 totalWeight += (cartItemModel.getQuantity() * cartItemModel.getWeight());
             }

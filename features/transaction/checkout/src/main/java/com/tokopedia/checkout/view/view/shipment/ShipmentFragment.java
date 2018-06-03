@@ -37,7 +37,6 @@ import com.tokopedia.checkout.view.view.shipment.di.ShipmentComponent;
 import com.tokopedia.checkout.view.view.shipment.di.ShipmentModule;
 import com.tokopedia.checkout.view.view.shipment.viewmodel.ShipmentCartItemModel;
 import com.tokopedia.checkout.view.view.shipment.viewmodel.ShipmentCheckoutButtonModel;
-import com.tokopedia.checkout.view.view.shipmentform.CartShipmentActivity;
 import com.tokopedia.checkout.view.view.shippingoptions.CourierBottomsheet;
 import com.tokopedia.core.geolocation.activity.GeolocationActivity;
 import com.tokopedia.core.geolocation.model.autocomplete.LocationPass;
@@ -68,7 +67,6 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
 
     private static final int REQUEST_CHOOSE_PICKUP_POINT = 12;
     private static final int REQUEST_CODE_COURIER_PINPOINT = 13;
-    public static final int RESULT_CODE_CANCEL_SHIPMENT_PAYMENT = 4;
     public static final String ARG_EXTRA_SHIPMENT_FORM_DATA = "ARG_EXTRA_SHIPMENT_FORM_DATA";
     public static final String ARG_EXTRA_CART_PROMO_SUGGESTION = "ARG_EXTRA_CART_PROMO_SUGGESTION";
     public static final String ARG_EXTRA_PROMO_CODE_APPLIED_DATA = "ARG_EXTRA_PROMO_CODE_APPLIED_DATA";
@@ -286,22 +284,6 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                 cartShipmentAddressFormData
         );
         shipmentPresenter.setShipmentCartItemModelList(shipmentCartItemModelList);
-//        for (ShipmentCartItem shipmentCartItem : shipmentCartItemList) {
-//
-//        }
-//        this.singleShipmentData.setError(shipmentCartItemList.isError());
-//        this.singleShipmentData.setErrorMessage(shipmentCartItemList.getErrorMessage());
-//        this.singleShipmentData.setWarning(shipmentCartItemList.isWarning());
-//        this.singleShipmentData.setWarningMessage(shipmentCartItemList.getWarningMessage());
-//
-//        List<CartSellerItemModel> cartItem = shipmentCartItemList.getCartItem();
-//        for (int i = 0, cartItemSize = cartItem.size(); i < cartItemSize; i++) {
-//            CartSellerItemModel data = cartItem.get(i);
-//            this.singleShipmentData.getCartItem().get(i).setError(data.isError());
-//            this.singleShipmentData.getCartItem().get(i).setErrorMessage(data.getErrorMessage());
-//            this.singleShipmentData.getCartItem().get(i).setWarning(data.isWarning());
-//            this.singleShipmentData.getCartItem().get(i).setWarningMessage(data.getWarningMessage());
-//        }
 
         shipmentAdapter.clearData();
 
@@ -446,22 +428,8 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     }
 
     private void onResultFromPayment(int resultCode) {
-        switch (resultCode) {
-            case TopPayActivity.PAYMENT_CANCELLED:
-                NetworkErrorHelper.showSnackbar(
-                        getActivity(),
-                        getString(R.string.alert_payment_canceled_or_failed_transaction_module)
-                );
-                getActivity().setResult(RESULT_CODE_CANCEL_SHIPMENT_PAYMENT);
-                getActivity().finish();
-                break;
-            case TopPayActivity.PAYMENT_SUCCESS:
-                shipmentPresenter.processVerifyPayment(shipmentPresenter.getCheckoutData().getTransactionId());
-                break;
-            case TopPayActivity.PAYMENT_FAILED:
-                shipmentPresenter.processVerifyPayment(shipmentPresenter.getCheckoutData().getTransactionId());
-                break;
-        }
+        getActivity().setResult(resultCode);
+        getActivity().finish();
     }
 
     private void onResultFromRequestCodeLoyalty(int resultCode, Intent data) {
@@ -536,7 +504,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                 break;
             case CartAddressChoiceActivity.RESULT_CODE_ACTION_TO_MULTIPLE_ADDRESS_FORM:
                 Intent intent = new Intent();
-                intent.putExtra(CartShipmentActivity.EXTRA_SELECTED_ADDRESS_RECIPIENT_DATA,
+                intent.putExtra(ShipmentActivity.EXTRA_SELECTED_ADDRESS_RECIPIENT_DATA,
                         shipmentAdapter.getAddressShipmentData());
                 getActivity().setResult(ShipmentActivity.RESULT_CODE_ACTION_TO_MULTIPLE_ADDRESS_FORM, intent);
                 getActivity().finish();
@@ -704,7 +672,21 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     public void onShipmentItemClick(CourierItemData courierItemData, int cartItemPosition) {
         if (courierItemData.getEstimatedTimeDelivery().equalsIgnoreCase(NO_PINPOINT_ETD)) {
             shipmentAdapter.setLastChooseCourierItemPosition(cartItemPosition);
-            Intent intent = GeolocationActivity.createInstance(getActivity(), null);
+            LocationPass locationPass = new LocationPass();
+            if (shipmentAdapter.getAddressShipmentData() != null) {
+                locationPass.setCityName(shipmentAdapter.getAddressShipmentData().getAddressCityName());
+                locationPass.setDistrictName(shipmentAdapter.getAddressShipmentData().getDestinationDistrictName());
+            } else {
+                ShipmentCartItemModel shipmentCartItemModel = shipmentAdapter.getShipmentCartItemModelByIndex(cartItemPosition);
+                if (shipmentCartItemModel != null) {
+                    RecipientAddressModel recipientAddressModel = shipmentCartItemModel.getRecipientAddressModel();
+                    if (recipientAddressModel != null) {
+                        locationPass.setCityName(recipientAddressModel.getAddressCityName());
+                        locationPass.setDistrictName(recipientAddressModel.getDestinationDistrictName());
+                    }
+                }
+            }
+            Intent intent = GeolocationActivity.createInstance(getActivity(), locationPass);
             startActivityForResult(intent, REQUEST_CODE_COURIER_PINPOINT);
         } else {
             shipmentAdapter.setSelecteCourier(cartItemPosition, courierItemData);
