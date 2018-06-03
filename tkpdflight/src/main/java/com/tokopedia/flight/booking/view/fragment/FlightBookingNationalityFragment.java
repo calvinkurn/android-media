@@ -8,6 +8,7 @@ import android.support.annotation.Nullable;
 import android.view.View;
 
 import com.tokopedia.abstraction.base.view.fragment.BaseSearchListFragment;
+import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
 import com.tokopedia.flight.booking.di.FlightBookingComponent;
 import com.tokopedia.flight.booking.view.adapter.FlightBookingNationalityAdapterTypeFactory;
 import com.tokopedia.flight.booking.view.presenter.FlightBookingPhoneCodePresenterImpl;
@@ -24,9 +25,26 @@ import javax.inject.Inject;
 public class FlightBookingNationalityFragment extends BaseSearchListFragment<FlightBookingPhoneCodeViewModel, FlightBookingNationalityAdapterTypeFactory> implements FlightBookingPhoneCodeView {
 
     public static final String EXTRA_SELECTED_COUNTRY = "EXTRA_SELECTED_COUNTRY";
+    public static final String EXTRA_SEARCH_HINT = "EXTRA_SEARCH_HINT";
 
     @Inject
     FlightBookingPhoneCodePresenterImpl flightBookingPhoneCodePresenter;
+
+    public static FlightBookingNationalityFragment createInstance(String searchHint) {
+        FlightBookingNationalityFragment fragment = new FlightBookingNationalityFragment();
+        Bundle bundle = new Bundle();
+        bundle.putString(EXTRA_SEARCH_HINT, searchHint);
+        fragment.setArguments(bundle);
+        return fragment;
+    }
+
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        flightBookingPhoneCodePresenter.attachView(this);
+        super.onViewCreated(view, savedInstanceState);
+
+        searchInputView.setSearchHint(getArguments().getString(EXTRA_SEARCH_HINT));
+    }
 
     @Override
     protected String getScreenName() {
@@ -53,6 +71,7 @@ public class FlightBookingNationalityFragment extends BaseSearchListFragment<Fli
     public void onItemClicked(FlightBookingPhoneCodeViewModel flightBookingPhoneCodeViewModel) {
         Intent intent = new Intent();
         intent.putExtra(EXTRA_SELECTED_COUNTRY, flightBookingPhoneCodeViewModel);
+        KeyboardHandler.hideSoftKeyboard(getActivity());
         getActivity().setResult(Activity.RESULT_OK, intent);
         getActivity().finish();
     }

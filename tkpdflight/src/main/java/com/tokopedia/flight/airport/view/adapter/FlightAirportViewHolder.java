@@ -12,51 +12,55 @@ import android.widget.TextView;
 
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.flight.R;
-import com.tokopedia.flight.airport.data.source.db.model.FlightAirportDB;
+import com.tokopedia.flight.airport.view.viewmodel.FlightAirportViewModel;
 
 /**
  * Created by zulfikarrahman on 10/24/17.
  */
 
-public class FlightAirportViewHolder extends AbstractViewHolder<FlightAirportDB> {
+public class FlightAirportViewHolder extends AbstractViewHolder<FlightAirportViewModel> {
     @LayoutRes
     public static int LAYOUT = R.layout.item_flight_airport;
 
-    private TextView city;
-    private TextView airport;
+    private TextView cityTextView;
+    private TextView airportTextView;
 
-    private FilterTextListener filterTextListener;
+    private FlightAirportClickListener filterTextListener;
     private ForegroundColorSpan boldColor;
 
-    public interface FilterTextListener {
-        String getFilterText();
-    }
 
-    public FlightAirportViewHolder(View itemView, FilterTextListener filterTextListener) {
+    public FlightAirportViewHolder(View itemView, FlightAirportClickListener filterTextListener) {
         super(itemView);
-        city = (TextView) itemView.findViewById(R.id.city);
-        airport = (TextView) itemView.findViewById(R.id.airport);
+        cityTextView = (TextView) itemView.findViewById(R.id.city);
+        airportTextView = (TextView) itemView.findViewById(R.id.airport);
         this.filterTextListener = filterTextListener;
-        boldColor = new ForegroundColorSpan(ContextCompat.getColor(itemView.getContext(),R.color.font_black_primary_70));
+        boldColor = new ForegroundColorSpan(ContextCompat.getColor(itemView.getContext(), R.color.font_black_primary_70));
+
     }
 
     @Override
-    public void bind(FlightAirportDB flightAirportDB) {
+    public void bind(final FlightAirportViewModel airport) {
         Context context = itemView.getContext();
         String filterText = filterTextListener.getFilterText();
 
         String cityStr = context.getString(R.string.flight_label_city,
-                flightAirportDB.getCityName(), flightAirportDB.getCountryName());
-        city.setText(getSpandableBoldText(cityStr, filterText));
+                airport.getCityName(), airport.getCountryName());
+        cityTextView.setText(getSpandableBoldText(cityStr, filterText));
 
-        if (!TextUtils.isEmpty(flightAirportDB.getAirportId())) {
+        if (!TextUtils.isEmpty(airport.getAirportCode())) {
             String airportString = context.getString(R.string.flight_label_airport,
-                    flightAirportDB.getAirportId(), flightAirportDB.getAirportName());
-            airport.setText(getSpandableBoldText(airportString, filterText));
+                    airport.getAirportCode(), airport.getAirportName());
+            airportTextView.setText(getSpandableBoldText(airportString, filterText));
         } else {
             String airportString = context.getString(R.string.flight_labe_all_airport);
-            airport.setText(airportString);
+            airportTextView.setText(airportString);
         }
+        itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                FlightAirportViewHolder.this.filterTextListener.airportClicked(airport);
+            }
+        });
     }
 
     private CharSequence getSpandableBoldText(String strToPut, String stringToBold) {
