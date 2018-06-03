@@ -41,24 +41,27 @@ public class FlightPassengerListFragment extends BaseListFragment<FlightBookingP
     public static final String EXTRA_SELECTED_PASSENGER = "EXTRA_SELECTED_PASSENGER";
     public static final String EXTRA_REQUEST_ID = "EXTRA_REQUEST_ID";
     public static final String EXTRA_DEPARTURE_DATE = "EXTRA_DEPARTURE_DATE";
+    public static final String EXTRA_IS_DOMESTIC = "EXTRA_IS_DOMESTIC";
     public static final int IS_SELECTING = 1;
     public static final int IS_NOT_SELECTING = 0;
 
     private String selectedPassengerId;
     private String requestId;
     private String departureDate;
+    private boolean isDomestic;
     private FlightBookingPassengerViewModel selectedPassenger;
     @Inject
     FlightPassengerListPresenter presenter;
     List<FlightBookingPassengerViewModel> flightBookingPassengerViewModelList;
 
     public static FlightPassengerListFragment createInstance(FlightBookingPassengerViewModel selectedPassenger,
-                                                             String requestId, String departureDate) {
+                                                             String requestId, String departureDate, boolean isDomestic) {
         FlightPassengerListFragment flightPassengerListFragment = new FlightPassengerListFragment();
         Bundle bundle = new Bundle();
         bundle.putParcelable(EXTRA_SELECTED_PASSENGER, selectedPassenger);
         bundle.putString(EXTRA_REQUEST_ID, requestId);
         bundle.putString(EXTRA_DEPARTURE_DATE, departureDate);
+        bundle.putBoolean(EXTRA_IS_DOMESTIC, isDomestic);
         flightPassengerListFragment.setArguments(bundle);
         return flightPassengerListFragment;
     }
@@ -72,6 +75,7 @@ public class FlightPassengerListFragment extends BaseListFragment<FlightBookingP
         selectedPassenger = getArguments().getParcelable(EXTRA_SELECTED_PASSENGER);
         requestId = getArguments().getString(EXTRA_REQUEST_ID);
         departureDate = getArguments().getString(EXTRA_DEPARTURE_DATE);
+        isDomestic = getArguments().getBoolean(EXTRA_IS_DOMESTIC);
         selectedPassengerId = (selectedPassenger.getPassengerId() != null) ? selectedPassenger.getPassengerId() : "";
         flightBookingPassengerViewModelList = new ArrayList<>();
     }
@@ -203,7 +207,7 @@ public class FlightPassengerListFragment extends BaseListFragment<FlightBookingP
     public void editPassenger(FlightBookingPassengerViewModel passengerViewModel) {
         startActivityForResult(
                 FlightPassengerUpdateActivity.getCallingIntent(getActivity(),
-                        passengerViewModel, departureDate, requestId),
+                        passengerViewModel, departureDate, requestId, isDomestic),
                 REQUEST_EDIT_PASSENGER_CODE
         );
     }
