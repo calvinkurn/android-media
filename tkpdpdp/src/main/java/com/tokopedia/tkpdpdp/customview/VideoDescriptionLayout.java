@@ -1,13 +1,16 @@
 package com.tokopedia.tkpdpdp.customview;
 
 import android.content.Context;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.v7.content.res.AppCompatResources;
 import android.text.util.Linkify;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.product.customview.BaseView;
@@ -18,6 +21,8 @@ import com.tokopedia.tkpdpdp.DescriptionActivity;
 import com.tokopedia.tkpdpdp.R;
 import com.tokopedia.tkpdpdp.listener.ProductDetailView;
 
+import static com.tokopedia.core.router.productdetail.ProductDetailRouter.EXTRA_PRODUCT_ID;
+
 /**
  * @author kris on 11/3/16. Tokopedia
  */
@@ -27,9 +32,11 @@ public class VideoDescriptionLayout extends BaseView<ProductDetailData, ProductD
     private DescriptionTextView tvDesc;
     private LinearLayout descriptionContainer;
     private LinearLayout container;
+    private TextView desc;
     private ProductVideoHorizontalScroll productVideoHorizontalScroll;
 
     String description = "";
+    String productId = "";
     VideoData videoData;
 
     public static final int MAX_CHAR = 300;
@@ -59,6 +66,7 @@ public class VideoDescriptionLayout extends BaseView<ProductDetailData, ProductD
     protected void initView(Context context) {
         super.initView(context);
         tvDesc = (DescriptionTextView) findViewById(R.id.tv_description);
+        desc = findViewById(R.id.desc);
         ImageView ivToggle = (ImageView) findViewById(R.id.iv_toggle);
         descriptionContainer = (LinearLayout) findViewById(R.id.tv_desc);
         productVideoHorizontalScroll
@@ -78,8 +86,10 @@ public class VideoDescriptionLayout extends BaseView<ProductDetailData, ProductD
 
     @Override
     public void renderData(@NonNull ProductDetailData data) {
+        desc.setText(getContext().getString(R.string.title_desc));
         description = data.getInfo().getProductDescription() == null ? "" :
                 data.getInfo().getProductDescription();
+        productId = Integer.toString(data.getInfo().getProductId());
         ClickToggle clickToggleDescription = new VideoDescriptionLayout.ClickToggle();
         container.setOnClickListener(clickToggleDescription);
         tvDesc.setOnClickListener(clickToggleDescription);
@@ -97,6 +107,18 @@ public class VideoDescriptionLayout extends BaseView<ProductDetailData, ProductD
             tvDesc.setText(MethodChecker.fromHtml(tvDesc.getText().toString()));
         }
         descriptionContainer.setVisibility(VISIBLE);
+
+        Drawable drawableShadow = AppCompatResources.getDrawable(getContext(), R.drawable.bg_shadow);
+        if (drawableShadow != null) {
+            container.setBackground(drawableShadow);
+        }
+
+
+        float density = getContext().getResources().getDisplayMetrics().density;
+        float padding = 10 * density;
+
+        container.setPadding((int) padding, (int) padding, (int) padding, (int) padding);
+
         setVisibility(VISIBLE);
     }
 
@@ -118,6 +140,7 @@ public class VideoDescriptionLayout extends BaseView<ProductDetailData, ProductD
         public void onClick(View v) {
             Bundle bundle = new Bundle();
             bundle.putString(DescriptionActivity.KEY_DESCRIPTION, description);
+            bundle.putString(EXTRA_PRODUCT_ID, productId);
             if (videoData != null) bundle.putParcelable(DescriptionActivity.KEY_VIDEO, videoData);
             listener.onDescriptionClicked(bundle);
             UnifyTracking.eventPDPExpandDescription();

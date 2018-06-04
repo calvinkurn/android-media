@@ -43,7 +43,6 @@ public interface FlightRepository {
 
     Observable<FlightAirportDB> getAirportWithParam(Map<String, String> params);
 
-    Observable<List<FlightAirportDB>> getAirportList(String query, String idCountry);
 
     Observable<List<FlightClassEntity>> getFlightClasses();
 
@@ -88,6 +87,8 @@ public interface FlightRepository {
     Observable<List<BannerDetail>> getBanners(Map<String, String> params);
 
     Observable<List<FlightAirportDB>> getPhoneCodeList(String string);
+
+    Observable<FlightAirportDB> getAirportByCountryId(String id);
 
     Observable<FlightAirlineDB> getAirlineById(String airlineId);
 

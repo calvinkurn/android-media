@@ -34,7 +34,6 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
-
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.google.gson.GsonBuilder;
 import com.moengage.inapp.InAppManager;
@@ -46,6 +45,7 @@ import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
 import com.tokopedia.core.analytics.AppEventTracking;
+import com.tokopedia.core.analytics.HomePageTracking;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.analytics.handler.AnalyticsCacheHandler;
@@ -73,6 +73,7 @@ import com.tokopedia.core.onboarding.NewOnboardingActivity;
 import com.tokopedia.core.referral.ReferralActivity;
 import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.router.transactionmodule.TransactionCartRouter;
+import com.tokopedia.core.router.transactionmodule.TransactionRouter;
 import com.tokopedia.core.rxjava.RxUtils;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.HockeyAppHelper;
@@ -82,6 +83,7 @@ import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.design.component.Tabs;
 import com.tokopedia.digital.categorylist.view.activity.DigitalCategoryListActivity;
 import com.tokopedia.discovery.newdiscovery.search.SearchActivity;
+import com.tokopedia.home.beranda.presentation.view.analytics.HomeTrackingUtils;
 import com.tokopedia.home.beranda.presentation.view.fragment.HomeFragment;
 import com.tokopedia.seller.product.edit.view.activity.ProductAddActivity;
 import com.tokopedia.seller.shop.open.view.activity.ShopOpenDomainActivity;
@@ -146,7 +148,8 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
     private boolean exit = false;
 
     private BroadcastReceiver hockeyBroadcastReceiver;
-    private NudgeView nudgeView;
+    private BroadcastReceiver cartNotificationBroadcastReceiver;
+    private NudgeView nudgeView ;
 
     @DeepLink(Constants.Applinks.HOME)
     public static TaskStackBuilder getApplinkCallingIntent(Context context, Bundle extras) {
@@ -376,6 +379,7 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
             @Override
             public void onClick(View v) {
                 onSearchOptionSelected();
+                HomeTrackingUtils.homeSearchIconClicked("SearchActivity");
             }
         });
         View notif = view.findViewById(R.id.burger_menu);
@@ -389,6 +393,7 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
                     drawerHelper.openDrawer();
                 }
                 KeyboardHandler.hideSoftKeyboard(ParentIndexHome.this);
+                HomeTrackingUtils.homepageHamburgerClick();
             }
         });
         toolbar.addView(view);
@@ -486,6 +491,18 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
         return intent;
     }
 
+    public static Intent getHomeFeedIntent(Context context) {
+        Intent intent = new Intent(context, ParentIndexHome.class);
+        intent.putExtra(EXTRA_INIT_FRAGMENT, INIT_STATE_FRAGMENT_FEED);
+        return intent;
+    }
+
+    public static Intent getHomeIntent(Context context) {
+        Intent intent = new Intent(context, ParentIndexHome.class);
+        intent.putExtra(EXTRA_INIT_FRAGMENT, INIT_STATE_FRAGMENT_HOME);
+        return intent;
+    }
+
     private void setupViewPager() {
         adapter.addFragment(HomeFragment.newInstance(), getString(R.string.title_categories));
         adapter.addFragment(new FeedPlusFragment(), getString(R.string.title_index_prod_shop));
@@ -558,14 +575,17 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.action_cart) {
+            Intent intent;
             if (!SessionHandler.isV4Login(getBaseContext())) {
                 UnifyTracking.eventClickCart();
-                Intent intent = ((TkpdCoreRouter) MainApplication.getAppContext())
+                 intent = ((TkpdCoreRouter) MainApplication.getAppContext())
                         .getLoginIntent(this);
                 startActivity(intent);
             } else {
-                startActivity(TransactionCartRouter.createInstanceCartActivity(this));
+                intent = TransactionCartRouter.createInstanceCartActivity(this);
+                startActivity(intent);
             }
+            HomeTrackingUtils.cartIconClicked(intent.getComponent().getClassName());
             return true;
         } else if (item.getItemId() == R.id.action_barcode_scan) {
             startActivity(QrScannerActivity.newInstance(this));
@@ -612,11 +632,14 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
         HockeyAppHelper.checkForUpdate(this);
         RxUtils.getNewCompositeSubIfUnsubscribed(subscription);
         FCMCacheManager.checkAndSyncFcmId(getApplicationContext());
-        if (SessionHandler.isV4Login(this) && isUserFirstTimeLogin) {
-            initStateFragment = INIT_STATE_FRAGMENT_HOME;
-            adapter = new PagerAdapter(getSupportFragmentManager());
-            setupViewPager();
-            adapter.notifyDataSetChanged();
+        if (SessionHandler.isV4Login(this)) {
+            if (isUserFirstTimeLogin) {
+                initStateFragment = INIT_STATE_FRAGMENT_HOME;
+                adapter = new PagerAdapter(getSupportFragmentManager());
+                setupViewPager();
+                adapter.notifyDataSetChanged();
+            }
+            updateCartNotification();
         }
 
         isUserFirstTimeLogin = !SessionHandler.isV4Login(this);
@@ -681,6 +704,16 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
         MainApplication.resetCartStatus(false);
     }
 
+    private void updateCartNotification() {
+        ((TransactionRouter) getApplication()).updateMarketplaceCartCounter(
+                new TransactionRouter.CartNotificationListener() {
+                    @Override
+                    public void onDataReady() {
+                        invalidateOptionsMenu();
+                    }
+                });
+    }
+
     @Override
     public boolean showInAppMessage(InAppMessage inAppMessage) {
         try {
@@ -728,19 +761,22 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
 
     private void sendGTMButtonEvent(int position) {
         String label = "";
-
         switch (position) {
             case INIT_STATE_FRAGMENT_HOME:
                 label = AppEventTracking.EventLabel.HOME;
+                HomeTrackingUtils.homeNavTopHomeClick(label);
                 break;
             case INIT_STATE_FRAGMENT_FEED:
                 label = AppEventTracking.EventLabel.PRODUCT_FEED;
+                HomeTrackingUtils.homeNavTopFeedClick(label);
                 break;
             case INIT_STATE_FRAGMENT_FAVORITE:
                 label = AppEventTracking.EventLabel.FAVORITE;
+                HomeTrackingUtils.homeNavTopFavoriteClick(label);
                 break;
             case INIT_STATE_FRAGMENT_HOTLIST:
                 label = AppEventTracking.EventLabel.HOTLIST;
+                HomeTrackingUtils.homeNavTopHotlistClick(label);
                 break;
         }
 

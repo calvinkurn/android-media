@@ -14,7 +14,7 @@
         app:layout_scrollFlags="scroll|snap|enterAlways"
         app:siv_search_hint="@string/flight_label_search_hint_airport" />
 
-    <com.tokopedia.abstraction.base.view.recyclerview.VerticalRecyclerView
+    <android.support.v7.widget.RecyclerView
         android:id="@+id/recycler_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

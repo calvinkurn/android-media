@@ -27,9 +27,8 @@ public class GetCategoryByIdUseCase extends UseCase<ProductDigitalData> {
     private final String PARAM_PRODUCT_ID = "product_id";
     private final String PARAM_CLIENT_NUMBER = "client_number";
     private final String PARAM_SORT = "sort";
-    private final String DEFAULT_EMPTY_FIELD = "";
-
     private final String PARAM_NEED_FAVORITE_LIST = "need_favorite_list";
+    private final String DEFAULT_EMPTY_FIELD = "";
 
     private Context context;
     private IDigitalCategoryRepository digitalCategoryRepository;
@@ -49,7 +48,7 @@ public class GetCategoryByIdUseCase extends UseCase<ProductDigitalData> {
         boolean needFavoriteList = requestParams.getBoolean(PARAM_NEED_FAVORITE_LIST, false);
 
         if (needFavoriteList) {
-            //fetch category detail and favorit both if user is not logged in
+            //fetch category detail and favorit both if user is logged in
             if (SessionHandler.isV4Login(MainApplication.getAppContext())) {
                 return digitalCategoryRepository.getCategoryWithFavorit(categoryId, operatorId, clientNumber, productId);
             }

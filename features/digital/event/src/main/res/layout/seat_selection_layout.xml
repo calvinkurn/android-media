@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main_content"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -30,8 +31,9 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/dp_16"
             android:layout_marginTop="@dimen/dp_8"
-            android:textColor="@color/green_400"
-            android:textSize="@dimen/sp_16" />
+            android:textColor="@color/black_70"
+            android:textSize="@dimen/sp_14"
+            tools:text="Katty Perry WITNESS: The Tour 2018 Jakarta" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -73,7 +75,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/pilihan_kursi"
-                android:textColor="@color/grey_600"
+                android:textColor="@color/black_54"
                 android:textSize="@dimen/sp_12" />
 
             <TextView
@@ -81,8 +83,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/dp_8"
-                android:textColor="@color/green_400"
-                android:textSize="@dimen/sp_12" />
+                android:textColor="@color/green_nob"
+                android:textSize="@dimen/sp_12"
+                android:layout_marginStart="@dimen/dp_8" />
         </LinearLayout>
 
         <View

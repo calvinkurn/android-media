@@ -47,7 +47,7 @@ public class FlightAuthInterceptor extends TkpdAuthInterceptor {
         Response oldResponse = super.getResponse(chain, request);
         String contentEncoding = oldResponse.header(PARAM_CONTENT_ENCODING);
         if (contentEncoding != null && contentEncoding.equalsIgnoreCase(KEY_ZIP_ENCODING)) {
-            if (oldResponse.body() != null){
+            if (oldResponse.body() != null) {
                 GzipSource source = new GzipSource(oldResponse.body().source());
                 String bodyString = Okio.buffer(source).readUtf8();
                 System.out.println(bodyString);

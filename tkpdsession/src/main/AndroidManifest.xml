@@ -96,11 +96,10 @@
             android:windowSoftInputMode="stateAlwaysHidden|adjustPan"/>
         <activity
             android:name=".register.view.activity.SmartLockActivity"
-            android:theme="@style/Theme.AppCompat.Dialog" />
+            android:theme="@style/AppTheme.Dialog"/>
         <activity
             android:name=".google.GoogleSignInActivity"
-            android:theme="@style/DialogTheme"/>
-
+            android:theme="@style/AppTheme.Dialog"/>
         <activity android:name="com.tokopedia.otp.phoneverification.view.activity.ReferralPhoneNumberVerificationActivity">
         </activity>
 

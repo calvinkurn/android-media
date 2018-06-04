@@ -172,6 +172,7 @@ public interface AppEventTracking {
         String PRODUCT_VIEW = "productView";
         String LONG_CLICK = "longClick";
         String CLICK_PDP = "clickPDP";
+        String VIEW_PDP = "viewPDP";
         String EVENT_RESOLUTION_CENTER = "resolutionCenter";
         String EVENT_RESOLUTION_CENTER_VIEW = "resolutionCenterView";
         String ADD_TO_CART_PDP = "addToCart";
@@ -309,7 +310,7 @@ public interface AppEventTracking {
         String ECOMMERCE = "Ecommerce";
         String APPSHARE = "App share";
 
-        String DIGITAL_EVENT = "digital-event";
+        String DIGITAL_EVENT = "digital - event";
 
         String SEARCH_SHARE = "search share";
         String GRID_MENU = "grid menu";
@@ -324,6 +325,7 @@ public interface AppEventTracking {
         String VOICE_SEARCH = "Voice Search";
         String CAMERA_SEARCH = "click image search by camera";
         String GALLERY_SEARCH = "click image search from gallery";
+        String EXTERNAL_IMAGE_SEARCH = "click image search external";
         String CAMERA_SEARCH_RESULT = "query search by camera";
         String GALLERY_SEARCH_RESULT = "query search by gallery";
         String VIEW = "View";
@@ -355,6 +357,8 @@ public interface AppEventTracking {
         String UPLOAD_SUCCESS = "Success Upload";
         String CLICK_USE_VOUCHER = " Click Gunakan Voucher - ";
         String CLICK_CANCEL_VOUCHER = " Click Batalkan Voucher";
+
+        String COPY = "Copy";
 
         String CLICK_CATEGORY = "Click Category";
         String NAVIGATION_CLICK = "Navigation";
@@ -499,6 +503,7 @@ public interface AppEventTracking {
         String SELECT_COLOR_VARIANT = "select color on variants page";
         String SELECT_SIZE_VARIANT = "select size on variants page";
         String CLICK_BUY_VARIANT_PAGE = "click - buy on variants page";
+        String LANDSCAPE_VIEW = "landscape view";
 
         String LOGIN_NOW = "masuk sekarang";
         String CHECKOUT = "Checkout";
@@ -539,6 +544,7 @@ public interface AppEventTracking {
         String SHARE_TO = "Share - ";
         String REVIEW = "Review";
         String PRODUCT_DESCRIPTION = "Product Description";
+        String PRODUCT_ID_VALUE = "product_id : %1$s";
         String PRODUCT_TALK = "Talk";
         String ADD_ADDRESS = "Add Address";
         String CHANGE_ADDRESS = "Change Address";

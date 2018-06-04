@@ -20,6 +20,9 @@ public class Driver {
     @SerializedName("license_number")
     @Expose
     private String licenseNumber;
+    @SerializedName("tracking_url")
+    @Expose
+    private String trackingUrl;
 
     public Driver() {
     }
@@ -50,6 +53,14 @@ public class Driver {
 
     public String getLicenseNumber() {
         return licenseNumber;
+    }
+
+    public String getTrackingUrl() {
+        return trackingUrl;
+    }
+
+    public void setTrackingUrl(String trackingUrl) {
+        this.trackingUrl = trackingUrl;
     }
 
     public void setLicenseNumber(String licenseNumber) {

@@ -3,6 +3,7 @@ package com.tkpd.library.utils;
 import android.app.Activity;
 import android.app.Application;
 import android.content.Context;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
@@ -14,8 +15,11 @@ import android.graphics.Rect;
 import android.graphics.RectF;
 import android.graphics.drawable.Drawable;
 import android.media.ExifInterface;
+import android.net.Uri;
+import android.provider.MediaStore;
 import android.support.v7.content.res.AppCompatResources;
 import android.text.TextUtils;
+import android.util.Log;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
@@ -28,7 +32,9 @@ import com.tokopedia.core.R;
 import com.tokopedia.core.gcm.BuildAndShowNotification;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
 
 
 public class ImageHandler extends com.tokopedia.abstraction.common.utils.image.ImageHandler {
@@ -101,6 +107,16 @@ public class ImageHandler extends com.tokopedia.abstraction.common.utils.image.I
         }
         image = Bitmap.createScaledBitmap(image, finalWidth, finalHeight, true);
         return image;
+    }
+
+    public static Bitmap getBitmapFromUri(Context context, Uri uri, int width, int height) {
+        Bitmap bitmap = null;
+        try {
+            bitmap = Glide.with(context).load(uri).asBitmap().into(width, height).get();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return bitmap;
     }
 
     public static void loadImageWithId(ImageView imageview, int resId) {

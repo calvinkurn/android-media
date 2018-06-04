@@ -53,6 +53,8 @@ import java.util.List;
 
 import rx.Subscriber;
 
+import static com.tokopedia.digital.cart.model.NOTPExotelVerification.FIREBASE_NOTP_REMOTE_CONFIG_KEY;
+
 /**
  * @author anggaprasetiyo on 4/26/17.
  */
@@ -185,8 +187,7 @@ public class ProductDigitalPresenter extends BaseDigitalPresenter
                 List<BannerData> otherBannerDataList = productDigitalData.getOtherBannerDataList();
                 HistoryClientNumber historyClientNumber =
                         productDigitalData.getHistoryClientNumber();
-                if (historyClientNumber.getLastOrderClientNumber() == null
-                        || historyClientNumber.getLastOrderClientNumber().isEmpty()) {
+                if (historyClientNumber.getLastOrderClientNumber() == null) {
                     String lastSelectedOperatorId = getLastOperatorSelected(categoryData.getCategoryId());
                     String lastSelectedProductId = getLastProductSelected(categoryData.getCategoryId());
                     String lastTypedClientNumber = getLastClientNumberTyped(categoryData.getCategoryId());
@@ -250,6 +251,7 @@ public class ProductDigitalPresenter extends BaseDigitalPresenter
             );
         }
 
+        renderCheckETollBalance();
         renderCheckPulsa();
     }
 
@@ -567,6 +569,18 @@ public class ProductDigitalPresenter extends BaseDigitalPresenter
         }
     }
 
+    private void renderCheckETollBalance() {
+        if (!GlobalConfig.isSellerApp()
+                && categoryData != null
+                && categoryData.getAdditionalFeature() != null
+                && categoryData.getAdditionalFeature().getFeatureId() == 1
+                && view.isDigitalSmartcardEnabled()
+                && view.getActivity() != null) {
+            view.renderCheckETollBalance(categoryData.getAdditionalFeature().getText(),
+                    categoryData.getAdditionalFeature().getButtonText());
+        }
+    }
+
     @Override
     public void processGetHelpUrlData(String categoryId) {
         digitalGetHelpUrlUseCase.execute(digitalGetHelpUrlUseCase.createRequest(categoryId),
@@ -609,7 +623,6 @@ public class ProductDigitalPresenter extends BaseDigitalPresenter
     }
 
     private boolean isOperatorListAvailable(CategoryData categoryDataState) {
-
         return (categoryDataState != null &&
                 categoryDataState.getOperatorList() != null &&
                 categoryDataState.getOperatorList().size() != 0);
@@ -621,4 +634,3 @@ public class ProductDigitalPresenter extends BaseDigitalPresenter
     }
 
 }
-

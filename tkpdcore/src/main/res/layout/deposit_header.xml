@@ -1,4 +1,5 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/deposit_header"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -27,19 +28,18 @@
         android:textSize="@dimen/font_medium"
         android:textStyle="bold"/>
 
-    <TextView
+    <com.tokopedia.design.component.ButtonCompat
+        app:buttonCompatSize="big"
+        app:buttonCompatType="primary"
+        android:textAllCaps="false"
         android:id="@+id/withdraw_button"
         android:layout_width="@dimen/half_screen_pad"
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
         android:layout_alignParentTop="true"
-        android:background="@drawable/button_buy_from_cart"
         android:gravity="center"
-        android:padding="@dimen/padding_small"
         android:text="@string/title_withdraw"
-        android:textColor="@color/white"
-        android:textSize="@dimen/fonts"
         android:textStyle="bold" />
 
     <TextView
@@ -126,8 +126,11 @@
             android:text="End Date"
             android:textSize="@dimen/fonts"/>
 
-        <TextView
+        <com.tokopedia.design.component.ButtonCompat
             android:id="@+id/search_button"
+            app:buttonCompatType="primary"
+            app:buttonCompatSize="medium"
+            android:textAllCaps="false"
             android:layout_width="0dp"
             android:layout_height="@dimen/tx_list_search_btn_h"
             android:layout_gravity="center"

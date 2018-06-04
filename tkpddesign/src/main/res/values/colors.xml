@@ -27,6 +27,8 @@
     <color name="font_white_primary_70">#FFFFFFFF</color>
     <color name="font_white_secondary_54">#B3FFFFFF</color>
     <color name="font_white_disabled_38">#88FFFFFF</color>
+    <color name="light_grey">#FAFBFC</color>
+    <color name="label_text_color">#9B9B9B</color>
 
     <color name="font_voucher">#8a000000</color>
     <color name="separator_voucher">#1f000000</color>
