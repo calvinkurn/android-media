@@ -87,10 +87,15 @@ public class GridProductItemViewHolder extends AbstractViewHolder<ProductItem> {
         String priceText = !TextUtils.isEmpty(productItem.getPriceRange()) ?
                 productItem.getPriceRange() : productItem.getPrice();
         price.setText(priceText);
-        if (productItem.getShopCity() != null)
-            location.setText(MethodChecker.fromHtml(productItem.getShopCity()));
-        else
+        if (productItem.getShopCity() != null) {
+            if (productItem.getBadgesList() != null && !productItem.getBadgesList().isEmpty()) {
+                location.setText(" \u2022 " + MethodChecker.fromHtml(productItem.getShopCity()));
+            } else {
+                location.setText(MethodChecker.fromHtml(productItem.getShopCity()));
+            }
+        } else {
             location.setVisibility(View.INVISIBLE);
+        }
 
         ImageHandler.loadImageSourceSize(context, productImage, productItem.getImageUrl());
 
