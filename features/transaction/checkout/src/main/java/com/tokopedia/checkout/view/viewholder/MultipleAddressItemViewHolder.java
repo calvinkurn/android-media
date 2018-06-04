@@ -63,8 +63,6 @@ public class MultipleAddressItemViewHolder extends RecyclerView.ViewHolder{
 
         productQty = itemView.findViewById(R.id.product_qty);
 
-        notesForSeller = itemView.findViewById(R.id.notes_for_seller);
-
         addressLayout = itemView.findViewById(R.id.address_layout);
 
         addressTitle = itemView.findViewById(R.id.tv_address_name);
