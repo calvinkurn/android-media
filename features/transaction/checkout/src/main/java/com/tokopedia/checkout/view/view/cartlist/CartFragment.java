@@ -49,7 +49,6 @@ import com.tokopedia.checkout.view.view.addressoptions.CartAddressChoiceActivity
 import com.tokopedia.checkout.view.view.multipleaddressform.MultipleAddressFormActivity;
 import com.tokopedia.checkout.view.view.shipment.ShipmentActivity;
 import com.tokopedia.checkout.view.view.shipment.ShipmentData;
-import com.tokopedia.checkout.view.view.shipment.ShipmentFragment;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.manage.people.address.model.Token;

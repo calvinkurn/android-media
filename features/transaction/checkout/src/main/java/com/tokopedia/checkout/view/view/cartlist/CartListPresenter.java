@@ -45,6 +45,7 @@ import java.net.ConnectException;
 import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -287,6 +288,7 @@ public class CartListPresenter implements ICartListPresenter {
     public void reCalculateSubTotal(List<CartItemHolderData> dataList) {
         double subtotalPrice = 0;
         int totalAllCartItemQty = 0;
+        Map<String, Double> subtotalWholesalePriceMap = new HashMap<>();
         for (CartItemHolderData data : dataList) {
             String parentId = data.getCartItemData().getOriginData().getParentId();
             String productId = data.getCartItemData().getOriginData().getProductId();
@@ -304,10 +306,11 @@ public class CartListPresenter implements ICartListPresenter {
             List<WholesalePrice> wholesalePrices = data.getCartItemData().getOriginData().getWholesalePrice();
             boolean hasCalculateWholesalePrice = false;
             if (wholesalePrices != null && wholesalePrices.size() > 0) {
+                double subTotalWholesalePrice = 0;
                 for (WholesalePrice wholesalePrice : wholesalePrices) {
                     if (itemQty >= wholesalePrice.getQtyMin() &&
                             itemQty <= wholesalePrice.getQtyMax()) {
-                        subtotalPrice = subtotalPrice + (itemQty * wholesalePrice.getPrdPrc());
+                        subTotalWholesalePrice = itemQty * wholesalePrice.getPrdPrc();
                         hasCalculateWholesalePrice = true;
                         data.getCartItemData().getOriginData().setWholesalePriceFormatted(wholesalePrice.getPrdPrcFmt());
                         break;
@@ -315,16 +318,25 @@ public class CartListPresenter implements ICartListPresenter {
                 }
                 if (!hasCalculateWholesalePrice) {
                     if (itemQty > wholesalePrices.get(wholesalePrices.size() - 1).getPrdPrc()) {
-                        subtotalPrice = subtotalPrice + (itemQty * wholesalePrices.get(wholesalePrices.size() - 1).getPrdPrc());
+                        subTotalWholesalePrice = itemQty * wholesalePrices.get(wholesalePrices.size() - 1).getPrdPrc();
                         data.getCartItemData().getOriginData().setWholesalePriceFormatted(wholesalePrices.get(wholesalePrices.size() - 1).getPrdPrcFmt());
                     } else {
-                        subtotalPrice = subtotalPrice + (itemQty * data.getCartItemData().getOriginData().getPricePlan());
+                        subTotalWholesalePrice = itemQty * data.getCartItemData().getOriginData().getPricePlan();
                         data.getCartItemData().getOriginData().setWholesalePriceFormatted(null);
                     }
+                }
+                if (!subtotalWholesalePriceMap.containsKey(parentId)) {
+                    subtotalWholesalePriceMap.put(parentId, subTotalWholesalePrice);
                 }
             } else {
                 subtotalPrice = subtotalPrice + (itemQty * data.getCartItemData().getOriginData().getPricePlan());
                 data.getCartItemData().getOriginData().setWholesalePriceFormatted(null);
+            }
+        }
+
+        if (!subtotalWholesalePriceMap.isEmpty()) {
+            for (Map.Entry<String, Double> item : subtotalWholesalePriceMap.entrySet()) {
+                subtotalPrice += item.getValue();
             }
         }
 
@@ -604,6 +616,7 @@ public class CartListPresenter implements ICartListPresenter {
 
             @Override
             public void onError(Throwable e) {
+                view.hideProgressLoading();
                 e.printStackTrace();
                 if (e instanceof UnknownHostException) {
                     /* Ini kalau ga ada internet */
