@@ -28,6 +28,7 @@ import com.tkpd.library.utils.SnackbarManager;
 import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
 import com.tokopedia.core.app.BasePresenterFragment;
+import com.tokopedia.core.app.BasePresenterFragmentV4;
 import com.tokopedia.core.base.utils.StringUtils;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.product.model.share.ShareData;
@@ -46,7 +47,7 @@ import static com.tokopedia.core.router.productdetail.ProductDetailRouter.IS_ADD
  * Created by Angga.Prasetiyo on 11/12/2015.
  * Modified by Alvarisi on 17/12/2016
  */
-public class ProductShareFragment extends BasePresenterFragment<ProductSharePresenter> implements ShareView {
+public class ProductShareFragment extends BasePresenterFragmentV4<ProductSharePresenter> implements ShareView {
     public static final String TAG = "ProductShareFragment";
     private static final String ARGS_SHARE_DATA = "ARGS_SHARE_DATA";
 

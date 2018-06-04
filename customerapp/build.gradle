@@ -16,12 +16,8 @@ def getDpiId(String density) {
     return 0;
 }
 
-def getAbiId(String abi) {
-    return 0;
-}
-
-def generateBuildId(String density, String abi) {
-    return getAbiId(abi) + getDpiId(density);
+def generateBuildId(String density) {
+    return getDpiId(density);
 }
 
 def getAPKArchiveFolder(variant) {
@@ -169,8 +165,7 @@ android {
                 applicationVariants.all { variant ->
                     variant.outputs.each { output ->
                         String density = output.getFilter(com.android.build.OutputFile.DENSITY);
-                        String abi = output.getFilter(com.android.build.OutputFile.ABI);
-                        output.versionCodeOverride = (getTkpdVersionCode() * 100) + generateBuildId(density, abi);
+                        output.versionCodeOverride = (getTkpdVersionCode() * 100) + generateBuildId(density);
                     }
                     variant.assemble.doLast {
                         variant.outputs.each { output ->
@@ -197,12 +192,7 @@ android {
             include "mdpi", "hdpi", "xhdpi", "xxhdpi"
             compatibleScreens 'small', 'normal', 'large', 'xlarge'
         }
-        abi {
-            enable allowSplit()
-            reset()
-            universalApk false
-        }
-
+       
     }
 
     defaultConfig {
@@ -415,6 +405,9 @@ dependencies {
     androidTestImplementation rootProject.ext.supportLibDependencies.appCompactV7
     androidTestImplementation rootProject.ext.supportLibDependencies.cardViewV7
     //[END] test and androidTest dependencies
+
+    implementation project(rootProject.ext.libraries.analytics)
+
 }
 
 

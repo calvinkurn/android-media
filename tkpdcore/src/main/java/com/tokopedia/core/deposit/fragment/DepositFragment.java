@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.method.LinkMovementMethod;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -312,6 +313,7 @@ public class DepositFragment extends BasePresenterFragment<DepositFragmentPresen
     public void showHoldWarning(String warningText) {
         reviewWarning.setVisibility(View.VISIBLE);
         amountBeingReviewed.setText(MethodChecker.fromHtml(warningText));
+        amountBeingReviewed.setMovementMethod(LinkMovementMethod.getInstance());
     }
 
     @Override
