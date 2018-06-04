@@ -121,39 +121,10 @@
         android:visibility="gone"/>
 
     <LinearLayout
-        android:id="@+id/shop_info_container"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/price"
-        android:layout_marginTop="3dp"
-        android:layout_marginLeft="@dimen/product_grid_padding"
-        android:layout_marginRight="@dimen/product_grid_padding"
-        android:orientation="horizontal">
-
-        <LinearLayout
-            android:id="@+id/badges_container"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal" />
-
-        <com.tokopedia.design.component.TextViewCompat
-            android:id="@+id/location"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="2dp"
-            android:gravity="center_vertical"
-            android:textColor="@color/black_38"
-            android:textSize="11sp"
-            android:fontFamily="sans-serif"
-            android:textStyle="normal"/>
-
-    </LinearLayout>
-
-    <LinearLayout
         android:id="@+id/rating_review_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/shop_info_container"
+        android:layout_below="@+id/price"
         android:layout_marginTop="3dp"
         android:layout_marginLeft="@dimen/product_grid_padding"
         android:layout_marginRight="@dimen/product_grid_padding"
@@ -175,5 +146,61 @@
             />
 
     </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/shop_detail_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/rating_review_container"
+        android:gravity="bottom"
+        android:layout_marginLeft="@dimen/product_grid_padding"
+        android:layout_marginRight="@dimen/product_grid_padding"
+        android:layout_marginTop="5dp"
+        android:layout_marginBottom="@dimen/product_grid_padding"
+        android:orientation="vertical">
+
+        <com.tokopedia.core.customwidget.FlowLayout
+            android:id="@+id/label_container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="left"
+            android:orientation="horizontal" />
+
+        <TextView
+            android:id="@+id/shop_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:textColor="@color/black_54"
+            android:text="ORIGINAL-ZONE"
+            android:textSize="11sp"
+            android:fontFamily="sans-serif"
+            android:textStyle="normal"
+            android:lineSpacingExtra="5sp" />
+
+        <com.tokopedia.design.component.TextViewCompat
+            android:id="@+id/location"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="2dp"
+            app:drawableLeftCompat="@drawable/ic_place_grey_24dp"
+            android:gravity="center_vertical"
+            android:minHeight="25dp"
+            android:textColor="@color/black_38"
+            android:text="Jakarta"
+            android:textSize="11sp"
+            android:fontFamily="sans-serif"
+            android:textStyle="normal"
+            android:lineSpacingExtra="5sp"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/badges_container"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignRight="@id/shop_detail_container"
+        android:layout_alignBottom="@id/shop_detail_container"
+        android:orientation="horizontal" />
 
 </RelativeLayout>
