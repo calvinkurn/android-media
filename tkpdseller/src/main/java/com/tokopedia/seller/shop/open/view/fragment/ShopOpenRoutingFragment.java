@@ -81,7 +81,7 @@ public class ShopOpenRoutingFragment extends BaseDaggerFragment implements ShopO
     @Override
     public void onErrorCheckReserveDomain(Throwable t) {
         showLoading(false);
-        if(!GlobalConfig.DEBUG) Crashlytics.logException(t);
+        if (!GlobalConfig.DEBUG) Crashlytics.logException(t);
         String errorMessage = ShopErrorHandler.getErrorMessage(getActivity(), t);
         if (!TextUtils.isEmpty(errorMessage)) {
             tvMessageRetry.setText(errorMessage);
@@ -108,6 +108,14 @@ public class ShopOpenRoutingFragment extends BaseDaggerFragment implements ShopO
     @Override
     protected String getScreenName() {
         return null;
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if (shopCheckIsReservePresenter != null) {
+            shopCheckIsReservePresenter.detachView();
+        }
     }
 
     @Override

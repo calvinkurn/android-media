@@ -64,7 +64,7 @@ public class AlbumMediaLoader extends CursorLoader {
 
     // MediaType = [IMAGE] AND id = [ALBUM_ID]; no need to check gif type
     private static final String SELECTION_ALBUM_IMAGE_ONLY =
-            String.format("%s=? AND %s>0 AND %s!=?",
+            String.format("%s=? AND %s=? AND %s>0",
                     MediaStore.Files.FileColumns.MEDIA_TYPE,
                     BUCKET_ID,
                     MediaStore.MediaColumns.SIZE

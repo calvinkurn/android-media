@@ -131,7 +131,7 @@ public class ImagePickerInstagramFragment extends BaseListFragment<InstagramMedi
     @Override
     public RecyclerView getRecyclerView(View view) {
         RecyclerView recyclerView = super.getRecyclerView(view);
-        int spacing = getResources().getDimensionPixelSize(R.dimen.media_grid_spacing);
+        int spacing = getResources().getDimensionPixelSize(R.dimen.image_picker_media_grid_spacing);
         recyclerView.addItemDecoration(new MediaGridInset(InstagramConstant.SPAN_COUNT, spacing, false));
         RecyclerView.ItemAnimator itemAnimator = recyclerView.getItemAnimator();
         if (itemAnimator instanceof SimpleItemAnimator) {
@@ -170,7 +170,7 @@ public class ImagePickerInstagramFragment extends BaseListFragment<InstagramMedi
         int spanCount = InstagramConstant.SPAN_COUNT;
         int screenWidth = getResources().getDisplayMetrics().widthPixels;
         int availableWidth = screenWidth - getResources().getDimensionPixelSize(
-                R.dimen.media_grid_spacing) * (spanCount - 1);
+                R.dimen.image_picker_media_grid_spacing) * (spanCount - 1);
         imageResize = availableWidth / spanCount;
         imageResize = (int) (imageResize * 0.85f);
         return imageResize;
