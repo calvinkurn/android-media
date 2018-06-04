@@ -12,6 +12,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.content.LocalBroadcastManager;
+import android.util.Log;
 
 import com.facebook.soloader.SoLoader;
 import com.moengage.inapp.InAppManager;
@@ -58,7 +59,6 @@ import com.tokopedia.tokocash.network.api.WalletUrl;
 import com.tokopedia.transaction.network.TransactionUrl;
 
 import io.hansel.hanselsdk.Hansel;
-import retrofit2.http.HEAD;
 
 /**
  * Created by ricoharisin on 11/11/16.
@@ -243,7 +243,7 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
     }
 
     private boolean handleClick(@Nullable String screenName, @Nullable Bundle extras, @Nullable Uri deepLinkUri) {
-
+        Log.e("bundle"," bundle " + extras);
         if (deepLinkUri != null) {
 
             if (deepLinkUri.getScheme().equals(Constants.Schemes.HTTP) || deepLinkUri.getScheme().equals(Constants.Schemes.HTTPS)) {

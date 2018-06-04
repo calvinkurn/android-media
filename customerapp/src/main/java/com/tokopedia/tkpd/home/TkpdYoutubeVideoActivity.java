@@ -97,6 +97,7 @@ public class TkpdYoutubeVideoActivity extends YouTubeBaseActivity implements
             player.loadVideo(videoUrl);
             // Hiding player controls
             // player.setPlayerStyle(YouTubePlayer.PlayerStyle.CHROMELESS);
+            player.setShowFullscreenButton(false);
         }
     }
 
@@ -113,10 +114,11 @@ public class TkpdYoutubeVideoActivity extends YouTubeBaseActivity implements
     }
 
     private void extractValues(Bundle bundle) {
-        Log.e("bundle",bundle.toString() + " bundle " + bundle);
+        Log.e("bundle"," bundle " + bundle);
         videoUrl = "tOgX9e75Zvg";
         if (bundle != null) {
             videoUrl = bundle.getString(videoUrlKey, "tOgX9e75Zvg");
+            Log.e("url",videoUrl);
             tvHeadTitle.setText(bundle.getString(videoTitleKey, ""));
             tvHeadTitle.setText(bundle.getString(videoDescHeadKey, ""));
             tvDesc.setText(bundle.getString(videoDescKey, ""));

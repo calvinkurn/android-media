@@ -814,6 +814,8 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
                     DeepLinkDelegate deepLinkDelegate = DeeplinkHandlerActivity.getDelegateInstance();
                     Intent applinkIntent = new Intent(this, ParentIndexHome.class);
                     applinkIntent.setData(Uri.parse(applink));
+                    if (getIntent() != null && getIntent().getExtras() != null)
+                        applinkIntent.putExtras(getIntent().getExtras());
                     deepLinkDelegate.dispatchFrom(this, applinkIntent);
                 } catch (ActivityNotFoundException ex) {
                     ex.printStackTrace();

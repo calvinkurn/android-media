@@ -293,7 +293,8 @@
              />
         <activity
             android:name=".home.TkpdYoutubeVideoActivity"
-            android:theme="@style/Theme.AppCompat.Translucent"/>
+            android:theme="@style/Theme.AppCompat.Translucent"
+            android:screenOrientation="sensor"/>
     </application>
 
 </manifest>
