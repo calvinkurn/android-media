@@ -241,9 +241,4 @@ public class SellerMainApplication extends SellerRouterApplication implements Mo
         return deepLinkDelegate.supportsUri(appLink);
     }
 
-    @Override
-    public Observable<TKPDMapParam<String, Object>> verifyEventPromo(RequestParams requestParams) {
-        return null;
-    }
-
 }
