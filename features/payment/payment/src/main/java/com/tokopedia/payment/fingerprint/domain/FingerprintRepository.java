@@ -17,5 +17,5 @@ public interface FingerprintRepository {
 
     Observable<Boolean> savePublicKey(HashMap<String, String> params);
 
-    Observable<HashMap<String,String>> getPostDataOtp(String transactionId);
+    Observable<HashMap<String, String>> getPostDataOtp(String transactionId);
 }

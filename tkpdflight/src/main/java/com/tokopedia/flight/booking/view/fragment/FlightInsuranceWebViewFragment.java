@@ -48,6 +48,6 @@ public class FlightInsuranceWebViewFragment extends BaseWebViewFragment {
     @Nullable
     @Override
     protected String getAccessToken() {
-        return null;
+        return userSession.getAccessToken();
     }
 }

@@ -53,7 +53,7 @@
                 android:popupBackground="@color/white"
                 android:textColor="@color/digital_item_title"
                 android:textColorHint="@color/grey_400"
-                android:textSize="@dimen/fonts" />
+                android:textSize="@dimen/fonts"/>
 
             <LinearLayout
                 android:layout_width="wrap_content"

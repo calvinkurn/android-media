@@ -4,10 +4,18 @@
     xmlns:tools="http://schemas.android.com/tools">
     <item
         android:id="@+id/action_menu_search"
-        android:icon="@drawable/ic_search_icon"
+        android:icon="@drawable/ic_event_search"
         android:orderInCategory="100"
         android:title="@string/search"
         android:visible="false"
+        app:showAsAction="always"
+        tools:ignore="AppCompatResource" />
+    <item
+        android:id="@+id/action_menu_fav"
+        android:icon="@drawable/ic_event_wishlist"
+        android:orderInCategory="120"
+        android:title="@string/fav"
+        android:visible="true"
         app:showAsAction="always"
         tools:ignore="AppCompatResource" />
     <item

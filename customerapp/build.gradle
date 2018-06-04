@@ -141,7 +141,6 @@ android {
 
     buildTypes {
         debug {
-            ext.enableHansel=false
             signingConfig signingConfigs.debug
             minifyEnabled false
             zipAlignEnabled false
@@ -215,7 +214,7 @@ android {
 
 
     dexOptions {
-        javaMaxHeapSize "8g"
+        javaMaxHeapSize "4g"
     }
 
     compileOptions {
@@ -263,6 +262,7 @@ dependencies {
     implementation project(rootProject.ext.features.loyalty)
     implementation project(rootProject.ext.features.flight)
     implementation project(rootProject.ext.features.reputation)
+    implementation project(rootProject.ext.features.transactiondata)
     implementation project(rootProject.ext.features.transaction)
     implementation project(rootProject.ext.features.seller)
     implementation project(rootProject.ext.features.productDetail)
@@ -277,6 +277,11 @@ dependencies {
     implementation project(rootProject.ext.features.otp)
     implementation project(rootProject.ext.features.topAdsCommon)
     implementation project(rootProject.ext.features.topAdsSourceTagging)
+    implementation project(rootProject.ext.features.checkout)
+    implementation project(rootProject.ext.features.logisticdata)
+    implementation project(rootProject.ext.features.tracking)
+    implementation project(rootProject.ext.features.logisticuploadawb)
+
 
     implementation project(rootProject.ext.libraries.pushNotif)
     implementation project(rootProject.ext.libraries.applink)

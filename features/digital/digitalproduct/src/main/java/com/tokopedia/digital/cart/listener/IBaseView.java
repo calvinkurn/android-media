@@ -31,12 +31,6 @@ public interface IBaseView {
 
     void showToastMessage(String message);
 
-    void showDialog(Dialog dialog);
-
-    void dismissDialog(Dialog dialog);
-
-    void executeIntentService(Bundle bundle, Class<? extends IntentService> clazz);
-
     String getStringFromResource(@StringRes int resId);
 
     TKPDMapParam<String, String> getGeneratedAuthParamNetwork(

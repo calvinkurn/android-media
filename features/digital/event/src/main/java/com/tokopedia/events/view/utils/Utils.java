@@ -1,18 +1,29 @@
 package com.tokopedia.events.view.utils;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.os.Environment;
 import android.support.v4.content.ContextCompat;
+import android.text.SpannableString;
+import android.text.Spanned;
+import android.text.TextUtils;
+import android.text.style.AbsoluteSizeSpan;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.View;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
+import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.events.R;
 import com.tokopedia.events.domain.model.EventsCategoryDomain;
 import com.tokopedia.events.domain.model.EventsItemDomain;
+import com.tokopedia.events.domain.model.LikeUpdateResultDomain;
+import com.tokopedia.events.domain.model.request.likes.LikeUpdateModel;
+import com.tokopedia.events.domain.model.request.likes.Rating;
+import com.tokopedia.events.domain.postusecase.PostUpdateEventLikesUseCase;
 import com.tokopedia.events.view.viewmodel.CategoryItemsViewModel;
 import com.tokopedia.events.view.viewmodel.CategoryViewModel;
 import com.tokopedia.events.view.viewmodel.SearchViewModel;
@@ -28,12 +39,17 @@ import java.util.Locale;
 import java.util.Random;
 import java.util.TimeZone;
 
+import rx.Subscriber;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
+
 /**
  * Created by pranaymohapatra on 10/01/18.
  */
 
 public class Utils {
     private static Utils singleInstance;
+    private List<CategoryItemsViewModel> topEvents;
 
     synchronized public static Utils getSingletonInstance() {
         if (singleInstance == null)
@@ -53,11 +69,13 @@ public class Utils {
                 if ("top".equalsIgnoreCase(eventsCategoryDomain.getName())) {
                     categoryViewModels.add(0, new CategoryViewModel(eventsCategoryDomain.getTitle(),
                             eventsCategoryDomain.getName(),
+                            eventsCategoryDomain.getMediaURL(),
                             convertIntoCategoryListItemsVeiwModel(eventsCategoryDomain.getItems())));
 
                 } else {
                     categoryViewModels.add(new CategoryViewModel(eventsCategoryDomain.getTitle(),
                             eventsCategoryDomain.getName(),
+                            eventsCategoryDomain.getMediaURL(),
                             convertIntoCategoryListItemsVeiwModel(eventsCategoryDomain.getItems())));
 
                 }
@@ -98,25 +116,15 @@ public class Utils {
         return categoryItemsViewModelList;
     }
 
-    public ArrayList<SearchViewModel> convertIntoSearchViewModel(List<CategoryViewModel> source) {
-        ArrayList<SearchViewModel> searchViewModels = new ArrayList<>();
+    public ArrayList<CategoryItemsViewModel> convertIntoSearchViewModel(List<CategoryViewModel> source) {
+        ArrayList<CategoryItemsViewModel> searchViewModels = new ArrayList<>();
         if (source != null) {
-            SearchViewModel searchModelItem;
             for (CategoryViewModel item : source) {
                 if (item.getItems() != null) {
                     List<CategoryItemsViewModel> sourceModels = item.getItems();
                     for (CategoryItemsViewModel sourceItem : sourceModels) {
-                        if (sourceItem.getIsTop() == 1 && !isPresent(searchViewModels, sourceItem.getTitle())) {
-                            searchModelItem = new SearchViewModel();
-                            searchModelItem.setCityName(sourceItem.getCityName());
-                            searchModelItem.setDisplayName(sourceItem.getDisplayName());
-                            searchModelItem.setImageApp(sourceItem.getImageApp());
-                            searchModelItem.setMaxEndDate(sourceItem.getMaxEndDate());
-                            searchModelItem.setMinStartDate(sourceItem.getMinStartDate());
-                            searchModelItem.setSalesPrice(sourceItem.getSalesPrice());
-                            searchModelItem.setTitle(sourceItem.getTitle());
-                            searchModelItem.setUrl(sourceItem.getUrl());
-                            searchViewModels.add(searchModelItem);
+                        if (sourceItem.getIsTop() == 1) {
+                            searchViewModels.add(sourceItem);
                         }
                     }
                 }
@@ -155,6 +163,30 @@ public class Utils {
         return searchResults;
     }
 
+    public void setEventLike(Context context, CategoryItemsViewModel model, PostUpdateEventLikesUseCase postUpdateEventLikesUseCase,
+                             Subscriber<LikeUpdateResultDomain> subscriber) {
+        LikeUpdateModel requestModel = new LikeUpdateModel();
+        //todo set requestmodel values
+        Rating rating = new Rating();
+        if (model.isLiked()) {
+            rating.setIsLiked("false");
+            model.setLiked(false);
+        } else {
+            rating.setIsLiked("true");
+            model.setLiked(true);
+        }
+        rating.setUserId(Integer.parseInt(SessionHandler.getLoginID(context)));
+        rating.setProductId(model.getId());
+        rating.setFeedback("");
+        requestModel.setRating(rating);
+        com.tokopedia.usecase.RequestParams requestParams = com.tokopedia.usecase.RequestParams.create();
+        requestParams.putObject("request_body", requestModel);
+        postUpdateEventLikesUseCase.createObservable(requestParams).subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(subscriber);
+
+    }
+
     public static boolean containsIgnoreCase(String src, String what) {
         final int length = what.length();
         if (length == 0)
@@ -174,6 +206,14 @@ public class Utils {
         }
 
         return false;
+    }
+
+    public void setCalendar(TextView textView, String[] dateArray) {
+        SpannableString date = new SpannableString(dateArray[1]);
+        SpannableString month = new SpannableString(dateArray[2]);
+        date.setSpan(new AbsoluteSizeSpan(20, true), 0, date.length(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
+        month.setSpan(new AbsoluteSizeSpan(12, true), 0, month.length(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
+        textView.setText(TextUtils.concat(date, "\n", month));
     }
 
     public static List<String> getDisplayTags(String displayTag) {
@@ -197,12 +237,22 @@ public class Utils {
         return dateString;
     }
 
+    public void setTopEvents(List<CategoryItemsViewModel> topEvents) {
+        this.topEvents = topEvents;
+    }
+
+    public List<CategoryItemsViewModel> getTopEvents() {
+        return this.topEvents;
+    }
+
     public static String[] getDateArray(String dateRange) {
         String[] date = new String[3];
-        date[0] = dateRange.substring(0, 3);//day
+        String[] temp = dateRange.split(",");
+        date[0] = temp[0];//day
+        String[] temp2 = temp[1].split(" ");
         //Sat, 14 Apr 2018 - Sat, 14 Apr 2018
-        date[1] = dateRange.substring(5, 7).trim();//date
-        date[2] = dateRange.substring(7, 11).trim();//month
+        date[1] = temp2[1];//date
+        date[2] = temp2[2];//month
         return date;
     }
 
@@ -262,6 +312,17 @@ public class Utils {
 
     }
 
+    public void shareEvent(Context context, String title, String URL) {
+        Intent share = new Intent(android.content.Intent.ACTION_SEND);
+        share.setType("text/plain");
+        share.addFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
+        share.putExtra(Intent.EXTRA_SUBJECT,
+                String.format(context.getResources().getString(R.string.check_this_out),
+                        title));
+        share.putExtra(Intent.EXTRA_TEXT, "https://www.tokopedia.com/events/detail/" + URL);
+        context.startActivity(Intent.createChooser(share, "Share Event!"));
+    }
+
     public static class Constants {
         public final static String EXTRA_EVENT_CALENDAR = "EVENTCALENDAR";
         public final static String THEMEPARK = "hiburan";
@@ -276,5 +337,6 @@ public class Utils {
         public final static String TOPEVENTS = "TOPEVENTS";
         public final static String EVENTS = "events";
         public final static String HOMEDATA = "homedata";
+        public final static String FAVOURITEDATA = "favouritedata";
     }
 }

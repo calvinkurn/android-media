@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.LinearLayoutManager;
+import android.util.Log;
 
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.analytics.UnifyTracking;
@@ -12,11 +13,14 @@ import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
 import com.tokopedia.events.R;
 import com.tokopedia.events.domain.GetSearchEventsListRequestUseCase;
 import com.tokopedia.events.domain.GetSearchNextUseCase;
+import com.tokopedia.events.domain.model.LikeUpdateResultDomain;
 import com.tokopedia.events.domain.model.searchdomainmodel.SearchDomainModel;
 import com.tokopedia.events.domain.model.searchdomainmodel.ValuesItemDomain;
+import com.tokopedia.events.domain.postusecase.PostUpdateEventLikesUseCase;
 import com.tokopedia.events.view.activity.EventDetailsActivity;
 import com.tokopedia.events.view.adapter.FiltersAdapter;
 import com.tokopedia.events.view.contractor.EventSearchContract;
+import com.tokopedia.events.view.contractor.EventsContract;
 import com.tokopedia.events.view.fragment.FilterFragment;
 import com.tokopedia.events.view.utils.EventsGAConst;
 import com.tokopedia.events.view.utils.Utils;
@@ -39,9 +43,10 @@ public class EventSearchPresenter
         implements EventSearchContract.IEventSearchPresenter {
 
     private GetSearchEventsListRequestUseCase getSearchEventsListRequestUseCase;
+    private PostUpdateEventLikesUseCase postUpdateEventLikesUseCase;
     private GetSearchNextUseCase getSearchNextUseCase;
     private String FRAGMENT_TAG = "FILTERFRAGMENT";
-    private ArrayList<SearchViewModel> mTopEvents;
+    private ArrayList<CategoryItemsViewModel> mTopEvents;
     private SearchDomainModel mSearchData;
     private ValuesItemDomain selectedTime;
     private String catgoryFilters;
@@ -52,13 +57,16 @@ public class EventSearchPresenter
     private boolean isEventCalendar;
     private final int PAGE_SIZE = 20;
     private String searchTag;
+    private List<EventsContract.AdapterCallbacks> adapterCallbacks;
     RequestParams searchNextParams = RequestParams.create();
 
     @Inject
     public EventSearchPresenter(GetSearchEventsListRequestUseCase getSearchEventsListRequestUseCase,
-                                GetSearchNextUseCase searchNextUseCase) {
+                                GetSearchNextUseCase searchNextUseCase, PostUpdateEventLikesUseCase eventLikesUseCase) {
         this.getSearchEventsListRequestUseCase = getSearchEventsListRequestUseCase;
         this.getSearchNextUseCase = searchNextUseCase;
+        this.postUpdateEventLikesUseCase = eventLikesUseCase;
+        adapterCallbacks = new ArrayList<>();
     }
 
     @Override
@@ -91,6 +99,11 @@ public class EventSearchPresenter
     }
 
     @Override
+    public void setupCallback(EventsContract.AdapterCallbacks callbacks) {
+        adapterCallbacks.add(callbacks);
+    }
+
+    @Override
     public void initialize() {
         isEventCalendar = getView().getActivity().getIntent().
                 getBooleanExtra(Utils.Constants.EXTRA_EVENT_CALENDAR, false);
@@ -108,12 +121,41 @@ public class EventSearchPresenter
     }
 
     @Override
+    public void setEventLike(final CategoryItemsViewModel model, final int position) {
+        Subscriber<LikeUpdateResultDomain> subscriber = new Subscriber<LikeUpdateResultDomain>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                Log.d("UPDATEEVENTLIKE", e.getLocalizedMessage());
+                e.printStackTrace();
+            }
+
+            @Override
+            public void onNext(LikeUpdateResultDomain likeUpdateResultDomain) {
+                Log.d("UPDATEEVENTLIKE", "onNext");
+                if (likeUpdateResultDomain.isLiked() && model.isLiked()) {
+                    model.setLikes();
+                } else if (!likeUpdateResultDomain.isLiked() && !model.isLiked()) {
+                    model.setLikes();
+                }
+                for (EventsContract.AdapterCallbacks adapterCallback : adapterCallbacks)
+                    adapterCallback.notifyDatasetChanged(position);
+            }
+        };
+        Utils.getSingletonInstance().setEventLike(getView().getActivity(), model, postUpdateEventLikesUseCase, subscriber);
+    }
+
+    @Override
     public void searchTextChanged(String searchText) {
         if (searchText != null) {
             if (searchText.length() > 2) {
                 getEventsListBySearch(searchText);
                 searchTag = searchText;
-                UnifyTracking.eventDigitalEventTracking(EventsGAConst.EVENT_SEARCH,searchText);
+                UnifyTracking.eventDigitalEventTracking(EventsGAConst.EVENT_SEARCH, searchText);
             }
             if (searchText.length() == 0) {
                 getView().setTopEvents(mTopEvents);
@@ -127,7 +169,7 @@ public class EventSearchPresenter
     public void searchSubmitted(String searchText) {
         getEventsListBySearch(searchText);
         searchTag = searchText;
-        UnifyTracking.eventDigitalEventTracking(EventsGAConst.EVENT_SEARCH,searchText);
+        UnifyTracking.eventDigitalEventTracking(EventsGAConst.EVENT_SEARCH, searchText);
     }
 
     @Override
@@ -179,7 +221,7 @@ public class EventSearchPresenter
 
     @Override
     public void onSearchResultClick(SearchViewModel searchViewModel, int position) {
-        UnifyTracking.eventDigitalEventTracking(EventsGAConst.EVENT_SEARCH_CLICK,searchTag + " - " +
+        UnifyTracking.eventDigitalEventTracking(EventsGAConst.EVENT_SEARCH_CLICK, searchTag + " - " +
                 searchViewModel.getTitle() + " - " + position);
         CategoryItemsViewModel detailsViewModel = new CategoryItemsViewModel();
         detailsViewModel.setTitle(searchViewModel.getTitle());
@@ -249,7 +291,7 @@ public class EventSearchPresenter
         }
     }
 
-    List<SearchViewModel> processSearchResponse(SearchDomainModel searchDomainModel) {
+    List<CategoryItemsViewModel> processSearchResponse(SearchDomainModel searchDomainModel) {
         mSearchData = searchDomainModel;
         String nexturl = mSearchData.getPage().getUriNext();
         if (nexturl != null && !nexturl.isEmpty() && nexturl.length() > 0) {
@@ -258,10 +300,10 @@ public class EventSearchPresenter
         } else {
             isLastPage = true;
         }
-        List<CategoryItemsViewModel> categoryItemsViewModels = Utils.getSingletonInstance()
-                .convertIntoCategoryListItemsVeiwModel(searchDomainModel.getEvents());
         return Utils.getSingletonInstance()
-                .convertSearchResultsToModel(categoryItemsViewModels);
+                .convertIntoCategoryListItemsVeiwModel(searchDomainModel.getEvents());
+//        return Utils.getSingletonInstance()
+//                .convertSearchResultsToModel(categoryItemsViewModels);
     }
 
     public String getSearchTag() {
