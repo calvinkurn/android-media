@@ -77,6 +77,7 @@ public class GetProductListSellingUseCase extends UseCase<ProductListSellerModel
         requestParams.putString(ProductListPickerConstant.QUERY_PAGE, String.valueOf(page));
         requestParams.putString(ProductListPickerConstant.QUERY_SORT, ProductListPickerConstant.DEFAULT_SORT);
         requestParams.putString(ProductListPickerConstant.QUERY_KEYWORD, keywordFilter);
+        requestParams.putString(ProductListPickerConstant.REQUEST_PARAM_PRODUCT_VARIANT, VALUE_REQUEST_PRODUCT_VARIANT);
         return requestParams;
     }
 
