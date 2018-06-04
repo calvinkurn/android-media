@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <Button
+        android:id="@+id/button_view_more"
+        android:text="@string/shop_page_label_view_more"
+        style="@style/Button.Submit.White.Border"/>
+</LinearLayout>

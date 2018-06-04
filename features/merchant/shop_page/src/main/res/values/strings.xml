@@ -101,6 +101,7 @@
     <string name="see_label">Lihat</string>
     <string name="shop_product_empty_title_desc">Tidak ada produk di etalase ini</string>
     <string name="out_of_stock">Stok Kosong</string>
+    <string name="shop_page_label_view_more">Lihat Produk Selengkapnya</string>
 
 
 </resources>
