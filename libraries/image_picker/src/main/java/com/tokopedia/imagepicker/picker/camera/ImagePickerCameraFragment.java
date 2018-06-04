@@ -255,7 +255,7 @@ public class ImagePickerCameraFragment extends TkpdBaseV4Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        
+
         // This is to prevent bug in cameraview library
         // https://github.com/natario1/CameraView/issues/154
         if (onImagePickerCameraFragmentListener.isFinishEditting()) {
