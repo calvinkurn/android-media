@@ -61,7 +61,6 @@ import com.tokopedia.transaction.network.TransactionUrl;
 import com.tokopedia.transactiondata.constant.TransactionDataApiUrl;
 
 import io.hansel.hanselsdk.Hansel;
-import retrofit2.http.HEAD;
 
 /**
  * Created by ricoharisin on 11/11/16.

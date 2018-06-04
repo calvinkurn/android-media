@@ -741,6 +741,10 @@ public class CategoryItemsViewModel implements Parcelable {
         dest.writeString(this.saleEndTime);
         dest.writeValue(this.dateRange);
         dest.writeString(this.cityName);
+        dest.writeInt(this.likes);
+        dest.writeByte(this.isLiked ? (byte) 1 : (byte) 0);
+        dest.writeByte(this.wasLiked ? (byte) 1 : (byte) 0);
+        dest.writeInt(this.minLikes);
         dest.writeByte(this.isTrack ? (byte) 1 : (byte) 0);
     }
 
@@ -810,6 +814,10 @@ public class CategoryItemsViewModel implements Parcelable {
         this.saleEndTime = in.readString();
         this.dateRange = (Boolean) in.readValue(Boolean.class.getClassLoader());
         this.cityName = in.readString();
+        this.likes = in.readInt();
+        this.isLiked = in.readByte() != 0;
+        this.wasLiked = in.readByte() != 0;
+        this.minLikes = in.readInt();
         this.isTrack = in.readByte() != 0;
     }
 
