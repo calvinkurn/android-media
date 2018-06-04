@@ -330,7 +330,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     }
 
     private FloatingEggButtonFragment getFloatingEggButtonFragment() {
-        if (floatingEggButtonFragment == null) {
+        if (floatingEggButtonFragment == null && getChildFragmentManager() != null) {
             floatingEggButtonFragment = (FloatingEggButtonFragment) getChildFragmentManager().findFragmentById(R.id.floating_egg_fragment);
         }
         return floatingEggButtonFragment;
