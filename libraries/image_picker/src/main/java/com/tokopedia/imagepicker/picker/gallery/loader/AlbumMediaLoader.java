@@ -10,6 +10,8 @@ import com.tokopedia.imagepicker.picker.gallery.model.AlbumItem;
 import com.tokopedia.imagepicker.picker.gallery.model.MimeType;
 import com.tokopedia.imagepicker.picker.gallery.type.GalleryType;
 
+import static com.tokopedia.imagepicker.common.util.ImageUtils.TOKOPEDIA_FOLDER_PREFIX;
+
 /**
  * Created by hangnadi on 5/29/17.
  */
@@ -28,11 +30,12 @@ public class AlbumMediaLoader extends CursorLoader {
 
     // media type [image] or media type [video] AND size > 0 and mime type not [gif]
     private static final String SELECTION_ALL =
-            String.format("(%s=? OR %s=?) AND %s>0 AND %s!=?",
+            String.format("(%s=? OR %s=?) AND %s>0 AND %s!=? AND %s NOT LIKE '"+TOKOPEDIA_FOLDER_PREFIX +"%%' ",
                     MediaStore.Files.FileColumns.MEDIA_TYPE,
                     MediaStore.Files.FileColumns.MEDIA_TYPE,
                     MediaStore.MediaColumns.SIZE,
-                    MediaStore.MediaColumns.MIME_TYPE
+                    MediaStore.MediaColumns.MIME_TYPE,
+                    BUCKET_DISPLAY_NAME
             );
 
     private static final String[] SELECTION_ALL_ARGS = {
@@ -43,10 +46,11 @@ public class AlbumMediaLoader extends CursorLoader {
 
     // media type [image] AND size > 0 and mime type not [gif]
     private static final String SELECTION_ALL_IMAGE_ONLY =
-            String.format("(%s=?) AND %s>0 AND %s!=?" ,
+            String.format("(%s=?) AND %s>0 AND %s!=? AND %s NOT LIKE '"+TOKOPEDIA_FOLDER_PREFIX +"%%' " ,
                     MediaStore.Files.FileColumns.MEDIA_TYPE,
                     MediaStore.MediaColumns.SIZE,
-                    MediaStore.MediaColumns.MIME_TYPE
+                    MediaStore.MediaColumns.MIME_TYPE,
+                    BUCKET_DISPLAY_NAME
             );
 
     private static final String[] SELECTION_IMAGE_ONLY_ARGS = {
@@ -55,19 +59,21 @@ public class AlbumMediaLoader extends CursorLoader {
     };
 
     private static final String SELECTION_ALBUM =
-            String.format("(%s=? OR %s=?) AND %s=? AND %s>0",
+            String.format("(%s=? OR %s=?) AND %s=? AND %s>0 AND %s NOT LIKE '"+TOKOPEDIA_FOLDER_PREFIX +"%%' ",
                     MediaStore.Files.FileColumns.MEDIA_TYPE,
                     MediaStore.Files.FileColumns.MEDIA_TYPE,
                     BUCKET_ID,
-                    MediaStore.MediaColumns.SIZE
+                    MediaStore.MediaColumns.SIZE,
+                    BUCKET_DISPLAY_NAME
             );
 
     // MediaType = [IMAGE] AND id = [ALBUM_ID]; no need to check gif type
     private static final String SELECTION_ALBUM_IMAGE_ONLY =
-            String.format("%s=? AND %s=? AND %s>0",
+            String.format("%s=? AND %s=? AND %s>0 AND %s NOT LIKE '"+TOKOPEDIA_FOLDER_PREFIX +"%%' ",
                     MediaStore.Files.FileColumns.MEDIA_TYPE,
                     BUCKET_ID,
-                    MediaStore.MediaColumns.SIZE
+                    MediaStore.MediaColumns.SIZE,
+                    BUCKET_DISPLAY_NAME
             );
 
     private static String[] getSelectionAlbumArgs(String albumId) {

@@ -28,7 +28,7 @@ import com.tokopedia.imagepicker.common.util.ImageUtils;
 import com.tokopedia.imagepicker.editor.main.view.ImageEditorActivity;
 import com.tokopedia.imagepicker.picker.main.adapter.ImagePickerViewPagerAdapter;
 import com.tokopedia.imagepicker.picker.camera.ImagePickerCameraFragment;
-import com.tokopedia.imagepicker.picker.gallery.ImagePickerGalleryFragment;
+import com.tokopedia.imagepicker.picker.gallery.ImagePickerGalleryInterface;
 import com.tokopedia.imagepicker.picker.gallery.model.MediaItem;
 import com.tokopedia.imagepicker.picker.instagram.view.fragment.ImagePickerInstagramFragment;
 import com.tokopedia.imagepicker.picker.main.builder.ImagePickerBuilder;
@@ -39,9 +39,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ImagePickerActivity extends BaseSimpleActivity
-        implements ImagePickerGalleryFragment.OnImagePickerGalleryFragmentListener,
+        implements ImagePickerGalleryInterface.OnImagePickerGalleryFragmentListener,
         ImagePickerCameraFragment.OnImagePickerCameraFragmentListener,
-        ImagePickerInstagramFragment.ListenerImagePickerInstagram, ImagePickerPresenter.ImagePickerView {
+        ImagePickerInstagramFragment.ListenerImagePickerInstagram, ImagePickerPresenter.ImagePickerView, ImagePickerPreviewWidget.OnImagePickerThumbnailListWidgetListener {
 
     public static final String EXTRA_IMAGE_PICKER_BUILDER = "x_img_pick_builder";
 
@@ -98,7 +98,11 @@ public class ImagePickerActivity extends BaseSimpleActivity
         super.onCreate(savedInstanceState);
 
         if (savedInstanceState == null) {
-            selectedImagePaths = new ArrayList<>();
+            if (imagePickerBuilder.supportMultipleSelection()) {
+                selectedImagePaths = imagePickerBuilder.getInitialSelectedImagePathList();
+            } else {
+                selectedImagePaths = new ArrayList<>();
+            }
         } else {
             selectedTab = savedInstanceState.getInt(SAVED_SELECTED_TAB, 0);
             selectedImagePaths = savedInstanceState.getStringArrayList(SAVED_SELECTED_IMAGES);
@@ -146,6 +150,8 @@ public class ImagePickerActivity extends BaseSimpleActivity
         imagePickerPreviewWidget = findViewById(R.id.image_picker_preview_widget);
         if (imagePickerBuilder.supportMultipleSelection()) {
             imagePickerPreviewWidget.setVisibility(View.VISIBLE);
+            imagePickerPreviewWidget.setOnImagePickerThumbnailListWidgetListener(this);
+            imagePickerPreviewWidget.setMaxAdapterSize(imagePickerBuilder.getMaximumNoPick());
         } else {
             imagePickerPreviewWidget.setVisibility(View.GONE);
         }
@@ -304,7 +310,11 @@ public class ImagePickerActivity extends BaseSimpleActivity
 
     @Override
     public boolean isMaxImageReached() {
-        return selectedImagePaths.size() >= imagePickerBuilder.getMaximumNoPick();
+        boolean isMaxImageReached = selectedImagePaths.size() >= imagePickerBuilder.getMaximumNoPick();
+        if (isMaxImageReached) {
+            NetworkErrorHelper.showRedCloseSnackbar(this, getString(R.string.max_no_of_image_reached));
+        }
+        return isMaxImageReached;
     }
 
     @Override
@@ -326,17 +336,42 @@ public class ImagePickerActivity extends BaseSimpleActivity
         if (imagePickerBuilder.supportMultipleSelection()) {
             if (isChecked) {
                 selectedImagePaths.add(filePathOrUrl);
+                imagePickerPreviewWidget.addData(filePathOrUrl);
                 enableDoneView();
             } else {
                 selectedImagePaths.remove(filePathOrUrl);
+                imagePickerPreviewWidget.removeData(filePathOrUrl);
                 if (selectedImagePaths.size() == 0) {
                     disableDoneView();
                 }
             }
-            // TODO update the preview?
         } else {
             onSingleImagePicked(filePathOrUrl);
         }
+    }
+
+    @Override
+    public void onThumbnailItemClicked(String imagePath, int position) {
+        //TODO when thumbnail clicked.
+    }
+
+    @Override
+    public void onThumbnailRemoved(String imagePath) {
+        int index = selectedImagePaths.indexOf(imagePath);
+        if (index > -1) {
+            selectedImagePaths.remove(index);
+            if (selectedImagePaths.size() == 0) {
+                disableDoneView();
+            }
+            Fragment fragment = getCurrentFragment();
+            if (fragment!= null && fragment instanceof ImagePickerInterface) {
+                ((ImagePickerInterface) fragment).onThumbnailImageRemoved(imagePath);
+            }
+        }
+    }
+
+    public Fragment getCurrentFragment(){
+        return imagePickerViewPagerAdapter.getRegisteredFragment(viewPager.getCurrentItem());
     }
 
     private void disableDoneView() {
@@ -471,5 +506,6 @@ public class ImagePickerActivity extends BaseSimpleActivity
         outState.putInt(SAVED_SELECTED_TAB, tabLayout.getSelectedTabPosition());
         outState.putStringArrayList(SAVED_SELECTED_IMAGES, selectedImagePaths);
     }
+
 
 }

@@ -10,7 +10,7 @@ import android.view.ViewGroup;
 
 import com.tokopedia.imagepicker.R;
 import com.tokopedia.imagepicker.picker.camera.ImagePickerCameraFragment;
-import com.tokopedia.imagepicker.picker.gallery.ImagePickerGalleryFragment;
+import com.tokopedia.imagepicker.picker.gallery.ImagePickerGalleryInterface;
 import com.tokopedia.imagepicker.picker.instagram.view.fragment.ImagePickerInstagramFragment;
 import com.tokopedia.imagepicker.picker.main.builder.ImagePickerBuilder;
 import com.tokopedia.imagepicker.picker.main.builder.ImagePickerTabTypeDef;
@@ -37,7 +37,7 @@ public class ImagePickerViewPagerAdapter extends FragmentStatePagerAdapter {
     public Fragment getItem(int position) {
         switch (imagePickerBuilder.getTabTypeDef(position)) {
             case ImagePickerTabTypeDef.TYPE_GALLERY:
-                return ImagePickerGalleryFragment.newInstance(
+                return ImagePickerGalleryInterface.newInstance(
                         imagePickerBuilder.getGalleryType(),
                         imagePickerBuilder.supportMultipleSelection() ,
                         imagePickerBuilder.getMinResolution());

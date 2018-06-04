@@ -28,7 +28,6 @@ import com.otaliastudios.cameraview.CameraView;
 import com.otaliastudios.cameraview.Flash;
 import com.otaliastudios.cameraview.Size;
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment;
-import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.imagepicker.R;
 import com.tokopedia.imagepicker.common.util.ImageUtils;
 
@@ -137,7 +136,7 @@ public class ImagePickerCameraFragment extends TkpdBaseV4Fragment {
         flashImageButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (supportedFlashList!= null && supportedFlashList.size() > 0) {
+                if (supportedFlashList != null && supportedFlashList.size() > 0) {
                     flashIndex = (flashIndex + 1) % supportedFlashList.size();
                     setCameraFlash();
                 }
@@ -155,7 +154,6 @@ public class ImagePickerCameraFragment extends TkpdBaseV4Fragment {
                     return;
                 }
                 if (onImagePickerCameraFragmentListener.isMaxImageReached()) {
-                    NetworkErrorHelper.showRedCloseSnackbar(getView(), getString(R.string.max_no_of_image_reached));
                     return;
                 }
                 if (isAdded()) {
@@ -220,7 +218,7 @@ public class ImagePickerCameraFragment extends TkpdBaseV4Fragment {
                     reset();
                 }
             });
-        }catch (OutOfMemoryError error) {
+        } catch (OutOfMemoryError error) {
             File file = ImageUtils.writeImageToTkpdPath(ImageUtils.DirectoryDef.DIRECTORY_TOKOPEDIA_CACHE_CAMERA, imageByte, false);
             onImagePickerCameraFragmentListener.onImageTaken(file.getAbsolutePath());
             reset();
@@ -258,17 +256,33 @@ public class ImagePickerCameraFragment extends TkpdBaseV4Fragment {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
             String permission = Manifest.permission.CAMERA;
             if (ActivityCompat.checkSelfPermission(getContext(), permission) == PackageManager.PERMISSION_GRANTED) {
-                cameraView.start();
+                startCamera();
             }
         } else {
+            startCamera();
+        }
+    }
+
+    private void startCamera() {
+        try {
             cameraView.start();
+        } catch (Exception e) {
+            // no-op
+        }
+    }
+
+    private void stopCamera() {
+        try {
+            cameraView.stop();
+        } catch (Exception e) {
+            // no-op
         }
     }
 
     @Override
     public void onPause() {
         super.onPause();
-        cameraView.stop();
+        stopCamera();
     }
 
     @Override

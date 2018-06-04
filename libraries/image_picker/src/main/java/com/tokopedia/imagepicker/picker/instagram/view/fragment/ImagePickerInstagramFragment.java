@@ -33,6 +33,7 @@ import com.tokopedia.imagepicker.picker.instagram.view.model.InstagramErrorLogin
 import com.tokopedia.imagepicker.picker.instagram.view.model.InstagramMediaModel;
 import com.tokopedia.imagepicker.picker.instagram.view.presenter.ImagePickerInstagramContract;
 import com.tokopedia.imagepicker.picker.instagram.view.presenter.ImagePickerInstagramPresenter;
+import com.tokopedia.imagepicker.picker.main.view.ImagePickerInterface;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -46,7 +47,8 @@ import javax.inject.Inject;
 
 public class ImagePickerInstagramFragment extends BaseListFragment<InstagramMediaModel, ImageInstagramAdapterTypeFactory>
         implements ImagePickerInstagramContract.View, InstagramLoginDialog.ListenerLoginInstagram,
-        InstagramErrorLoginModel.ListenerLoginInstagram, ImageInstagramAdapter.OnImageInstagramAdapterListener {
+        InstagramErrorLoginModel.ListenerLoginInstagram, ImageInstagramAdapter.OnImageInstagramAdapterListener,
+        ImagePickerInterface {
 
     public static final String ARGS_GALLERY_TYPE = "args_gallery_type";
     public static final String ARGS_SUPPORT_MULTIPLE = "args_support_multiple";
@@ -228,7 +230,6 @@ public class ImagePickerInstagramFragment extends BaseListFragment<InstagramMedi
     public boolean canAddMoreImage() {
         //check the image number allowed.
         if (listenerImagePickerInstagram.isMaxImageReached()) {
-            NetworkErrorHelper.showRedCloseSnackbar(getView(), getString(R.string.max_no_of_image_reached));
             return false;
         }
         return true;
@@ -252,6 +253,11 @@ public class ImagePickerInstagramFragment extends BaseListFragment<InstagramMedi
     @Override
     public void onItemClicked(InstagramMediaModel instagramMediaModel) {
         // no implementation, use onItemClicked(model, boolean) instead.
+    }
+
+    @Override
+    public void onThumbnailImageRemoved(String imagePath) {
+        //TODO remove selection from adapter
     }
 
     public interface ListenerImagePickerInstagram {
