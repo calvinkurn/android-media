@@ -31,6 +31,7 @@ import com.tokopedia.core.drawer2.view.DrawerHelper;
 import com.tokopedia.core.drawer2.view.subscriber.ProfileCompletionSubscriber;
 import com.tokopedia.core.gcm.ApplinkUnsupported;
 import com.tokopedia.core.gcm.model.NotificationPass;
+import com.tokopedia.core.network.retrofit.utils.ServerErrorHandler;
 import com.tokopedia.core.router.digitalmodule.IDigitalModuleRouter;
 import com.tokopedia.core.router.digitalmodule.passdata.DigitalCategoryDetailPassData;
 import com.tokopedia.core.router.digitalmodule.passdata.DigitalCheckoutPassData;
@@ -520,7 +521,9 @@ public class PosRouterApplication extends MainApplication implements
 
     @Override
     public void onForceLogout(Activity activity) {
-
+        PosSessionHandler.clearPosUserData(activity);
+        PosCacheHandler.clearUserData(activity);
+        SchedulerService.cancelCacheScheduler(activity.getApplicationContext());
     }
 
     @Override
@@ -535,7 +538,8 @@ public class PosRouterApplication extends MainApplication implements
 
     @Override
     public void showForceLogoutDialog(Response response) {
-
+        ServerErrorHandler.showForceLogoutDialog();
+        ServerErrorHandler.sendForceLogoutAnalytics(response.request().url().toString());
     }
 
     @Override

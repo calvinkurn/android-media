@@ -156,6 +156,12 @@ public class ProductDetailActivity extends BasePresenterActivity
     }
 
     @Override
+    protected void onResume() {
+        super.onResume();
+        if(cartMenuPresenter != null) cartMenuPresenter.checkCartItem();
+    }
+
+    @Override
     public void onAddToCart() {
         Toast.makeText(this, R.string.pdp_atc_success_message, Toast.LENGTH_LONG).show();
         cartMenuPresenter.checkCartItem();
