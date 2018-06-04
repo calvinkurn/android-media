@@ -169,7 +169,7 @@
 
                         <include
                             android:id="@+id/layout_crop"
-                            android:layout_height="@dimen/control_height"
+                            android:layout_height="@dimen/image_editor_control_height"
                             android:layout_width="match_parent"
                             android:layout_marginLeft="@dimen/dp_16"
                             android:layout_marginRight="@dimen/dp_16"
@@ -179,7 +179,7 @@
 
                         <include
                             android:id="@+id/layout_rotate"
-                            android:layout_height="@dimen/control_height"
+                            android:layout_height="@dimen/image_editor_control_height"
                             android:layout_width="match_parent"
                             android:layout_marginLeft="@dimen/dp_16"
                             android:layout_marginRight="@dimen/dp_16"
@@ -189,7 +189,7 @@
 
                         <include
                             android:id="@+id/layout_brightness"
-                            android:layout_height="@dimen/control_height"
+                            android:layout_height="@dimen/image_editor_control_height"
                             android:layout_width="match_parent"
                             android:layout_marginLeft="@dimen/dp_16"
                             android:layout_marginRight="@dimen/dp_16"
@@ -199,7 +199,7 @@
 
                         <include
                             android:id="@+id/layout_contrast"
-                            android:layout_height="@dimen/control_height"
+                            android:layout_height="@dimen/image_editor_control_height"
                             android:layout_width="match_parent"
                             android:layout_marginLeft="@dimen/dp_16"
                             android:layout_marginRight="@dimen/dp_16"

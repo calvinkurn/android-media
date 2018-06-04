@@ -693,7 +693,7 @@ public class ImageEditorActivity extends BaseSimpleActivity implements ImageEdit
 
     private void hideDoneLoading() {
         if (progressDialog != null) {
-            progressDialog.hide();
+            progressDialog.dismiss();
         }
     }
 
