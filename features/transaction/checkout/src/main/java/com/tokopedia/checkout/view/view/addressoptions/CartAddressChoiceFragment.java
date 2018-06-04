@@ -28,6 +28,7 @@ import com.tokopedia.checkout.view.di.component.DaggerCartAddressChoiceComponent
 import com.tokopedia.checkout.view.di.module.CartAddressChoiceModule;
 import com.tokopedia.core.manage.people.address.ManageAddressConstant;
 import com.tokopedia.core.manage.people.address.activity.AddAddressActivity;
+import com.tokopedia.core.manage.people.address.model.Destination;
 import com.tokopedia.core.manage.people.address.model.Token;
 
 import java.util.List;
@@ -38,6 +39,7 @@ import static com.tokopedia.checkout.view.view.addressoptions.CartAddressChoiceA
 import static com.tokopedia.checkout.view.view.addressoptions.CartAddressChoiceActivity.EXTRA_DEFAULT_SELECTED_ADDRESS;
 import static com.tokopedia.checkout.view.view.addressoptions.CartAddressChoiceActivity.EXTRA_SELECTED_ADDRESS_DATA;
 import static com.tokopedia.checkout.view.view.addressoptions.CartAddressChoiceActivity.RESULT_CODE_ACTION_SELECT_ADDRESS;
+import static com.tokopedia.core.manage.people.address.ManageAddressConstant.EXTRA_ADDRESS;
 
 /**
  * @author Irfan Khoirul on 05/02/18
@@ -326,8 +328,21 @@ public class CartAddressChoiceFragment extends BaseCheckoutFragment
         if (resultCode == Activity.RESULT_OK) {
             switch (requestCode) {
                 case ManageAddressConstant.REQUEST_CODE_PARAM_CREATE:
-                    mCartAddressChoicePresenter.getAddressShortedList(getActivity(),
-                            (RecipientAddressModel) getArguments().getParcelable(EXTRA_CURRENT_ADDRESS));
+                    RecipientAddressModel newRecipientAddressModel = null;
+                    if (data != null && data.hasExtra(EXTRA_ADDRESS)) {
+                        Destination newAddress = data.getParcelableExtra(EXTRA_ADDRESS);
+                        newRecipientAddressModel = new RecipientAddressModel();
+                        newRecipientAddressModel.setAddressName(newAddress.getAddressName());
+                        newRecipientAddressModel.setDestinationDistrictId(newAddress.getDistrictId());
+                        newRecipientAddressModel.setCityId(newAddress.getCityId());
+                        newRecipientAddressModel.setProvinceId(newAddress.getProvinceId());
+                        newRecipientAddressModel.setRecipientName(newAddress.getReceiverName());
+                        newRecipientAddressModel.setRecipientPhoneNumber(newAddress.getReceiverPhone());
+                        newRecipientAddressModel.setAddressStreet(newAddress.getAddressStreet());
+                    } else {
+                        newRecipientAddressModel = (RecipientAddressModel) getArguments().getParcelable(EXTRA_CURRENT_ADDRESS);
+                    }
+                    mCartAddressChoicePresenter.getAddressShortedList(getActivity(), newRecipientAddressModel);
                     break;
                 case ManageAddressConstant.REQUEST_CODE_PARAM_EDIT:
                     mCartAddressChoicePresenter.getAddressShortedList(getActivity(),
