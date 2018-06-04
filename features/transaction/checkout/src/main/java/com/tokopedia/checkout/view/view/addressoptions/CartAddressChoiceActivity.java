@@ -65,6 +65,19 @@ public class CartAddressChoiceActivity extends BaseCheckoutActivity
     }
 
     @Override
+    protected void setupLayout(Bundle savedInstanceState) {
+        super.setupLayout(savedInstanceState);
+        if (getSupportActionBar() != null) {
+            if (getIntent().getExtras() != null && getIntent().hasExtra(EXTRA_TYPE_REQUEST)) {
+                if (getIntent().getIntExtra(EXTRA_TYPE_REQUEST, 0) == TYPE_REQUEST_SELECT_ADDRESS_FROM_COMPLETE_LIST) {
+                    getSupportActionBar().setTitle(getString(R.string.checkout_module_title_change_address));
+                }
+
+            }
+        }
+    }
+
+    @Override
     protected void initInjector() {
 
     }

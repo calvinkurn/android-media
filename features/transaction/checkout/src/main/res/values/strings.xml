@@ -121,6 +121,8 @@
     <string name="checkout_module_title_activity_checkout">Checkout</string>
     <string name="checkout_module_title_shipping_dest">Tujuan Pengiriman</string>
     <string name="checkout_module_title_activity_people_tx_details">Detil Transaksi</string>
+    <string name="checkout_module_title_shipping_dest_add_new">Tambah Pengiriman Baru</string>
+    <string name="checkout_module_title_change_address">Ganti Alamat</string>
     <string name="label_cashback">Cashback</string>
     <string name="weight_unit_gram">gr</string>
     <string name="weight_unit_kilogram">Kg</string>

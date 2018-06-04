@@ -13,6 +13,8 @@ import com.tokopedia.checkout.view.base.BaseCheckoutActivity;
 
 import java.util.ArrayList;
 
+import com.tokopedia.checkout.R;
+
 /**
  * Created by kris on 1/25/18. Tokopedia
  */
@@ -50,6 +52,18 @@ public class AddShipmentAddressActivity extends BaseCheckoutActivity {
     @Override
     protected void setupURIPass(Uri data) {
 
+    }
+
+    @Override
+    protected void setupLayout(Bundle savedInstanceState) {
+        super.setupLayout(savedInstanceState);
+        if (getSupportActionBar() != null) {
+            if (formMode == ADD_MODE) {
+                getSupportActionBar().setTitle(getString(R.string.checkout_module_title_shipping_dest_add_new));
+            } else if (formMode == EDIT_MODE) {
+                getSupportActionBar().setTitle(getString(R.string.checkout_module_title_shipping_dest));
+            }
+        }
     }
 
     @Override
