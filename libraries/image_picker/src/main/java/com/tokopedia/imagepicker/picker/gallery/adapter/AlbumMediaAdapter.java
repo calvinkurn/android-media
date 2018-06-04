@@ -61,7 +61,6 @@ public class AlbumMediaAdapter extends RecyclerViewCursorAdapter<AlbumMediaAdapt
             } else {
                 selectionIdList.add(item.getId());
                 isChecked = true;
-
             }
         }
 

@@ -25,6 +25,7 @@ public class ImagePickerThumbnailAdapter extends RecyclerView.Adapter<RecyclerVi
     private int maxSize;
 
     private OnImageEditThumbnailAdapterListener onImageEditThumbnailAdapterListener;
+    private final float roundedSize;
 
     public interface OnImageEditThumbnailAdapterListener {
         void onPickerThumbnailItemClicked(String imagePath, int position);
@@ -35,8 +36,8 @@ public class ImagePickerThumbnailAdapter extends RecyclerView.Adapter<RecyclerVi
         this.context = context;
         this.imagePathList = imagePathList;
         this.onImageEditThumbnailAdapterListener = onImageEditThumbnailAdapterListener;
+        roundedSize = context.getResources().getDimension(R.dimen.dp_6);
     }
-
 
     public class ImagePickerThumbnailViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         private ImageView imageView;
@@ -53,7 +54,7 @@ public class ImagePickerThumbnailAdapter extends RecyclerView.Adapter<RecyclerVi
             //TODO onclick
         }
         public void bind(String imagePath) {
-            ImageHandler.loadImageAndCache(imageView, imagePath);
+            ImageHandler.loadImageRounded2(context, imageView, imagePath, roundedSize);
         }
     }
 

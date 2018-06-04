@@ -228,7 +228,6 @@ public class ImagePickerInstagramFragment extends BaseListFragment<InstagramMedi
     public boolean canAddMoreImage() {
         //check the image number allowed.
         if (listenerImagePickerInstagram.isMaxImageReached()) {
-            NetworkErrorHelper.showRedCloseSnackbar(getView(), getString(R.string.max_no_of_image_reached));
             return false;
         }
         return true;

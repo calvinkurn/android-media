@@ -12,6 +12,10 @@ import com.tokopedia.imagepicker.picker.gallery.model.AlbumItem;
 import com.tokopedia.imagepicker.picker.gallery.model.MimeType;
 import com.tokopedia.imagepicker.picker.gallery.type.GalleryType;
 
+import static com.tokopedia.imagepicker.common.util.ImageUtils.TOKOPEDIA_FOLDER_PREFIX;
+import static com.tokopedia.imagepicker.picker.gallery.loader.AlbumMediaLoader.BUCKET_DISPLAY_NAME;
+import static com.tokopedia.imagepicker.picker.gallery.loader.AlbumMediaLoader.BUCKET_ID;
+
 /**
  * Created by hangnadi on 5/22/17.
  */
@@ -21,8 +25,8 @@ public class AlbumLoader extends CursorLoader {
     public static final String COLUMN_COUNT = "count";
     private static final String[] COLUMNS = {
             MediaStore.Files.FileColumns._ID,
-            "bucket_id",
-            "bucket_display_name",
+            BUCKET_ID,
+            BUCKET_DISPLAY_NAME,
             MediaStore.MediaColumns.DATA,
             COLUMN_COUNT};
 
@@ -31,8 +35,8 @@ public class AlbumLoader extends CursorLoader {
     // Get relevant columns for use later.
     private static final String[] PROJECTION = {
             MediaStore.Files.FileColumns._ID,
-            "bucket_id",
-            "bucket_display_name",
+            BUCKET_ID,
+            BUCKET_DISPLAY_NAME,
             MediaStore.MediaColumns.DATA,
             "COUNT(*) AS " + COLUMN_COUNT
     };
@@ -44,6 +48,7 @@ public class AlbumLoader extends CursorLoader {
                     + MediaStore.Files.FileColumns.MEDIA_TYPE + "=?)"
                     + " AND " + MediaStore.MediaColumns.SIZE + ">0"
                     + " AND " + MediaStore.MediaColumns.MIME_TYPE + " != '" + MimeType.GIF.toString()+"' "
+                    + " AND " + BUCKET_DISPLAY_NAME + " NOT LIKE '"+TOKOPEDIA_FOLDER_PREFIX+" %' "
                     + ") GROUP BY (bucket_id";
 
     // Return only video and image metadata.
@@ -51,6 +56,7 @@ public class AlbumLoader extends CursorLoader {
             MediaStore.Files.FileColumns.MEDIA_TYPE + "=?"
                     + " AND " + MediaStore.MediaColumns.SIZE + ">0"
                     + " AND " + MediaStore.MediaColumns.MIME_TYPE + " != '" + MimeType.GIF.toString()+"' "
+                    + " AND " + BUCKET_DISPLAY_NAME + " NOT LIKE '"+TOKOPEDIA_FOLDER_PREFIX+" %' "
                     + ") GROUP BY (bucket_id";
 
     private static final String[] SELECTION_ARGS = {

@@ -62,8 +62,6 @@ public class ImagePickerGalleryFragment extends TkpdBaseV4Fragment
     private static final int ALBUM_LOADER_ID = 1;
     private static final int MEDIA_LOADER_ID = 2;
 
-    public static final int SPAN_COUNT = 3;
-
     private OnImagePickerGalleryFragmentListener onImagePickerGalleryFragmentListener;
     private View loadingView;
     private RecyclerView recyclerView;
@@ -121,9 +119,10 @@ public class ImagePickerGalleryFragment extends TkpdBaseV4Fragment
         loadingView = view.findViewById(R.id.loading);
         recyclerView = view.findViewById(R.id.recycler_view);
         recyclerView.setHasFixedSize(true);
-        recyclerView.setLayoutManager(new GridLayoutManager(getActivity(), SPAN_COUNT));
+        int spanCount = getContext().getResources().getInteger(R.integer.gallery_span_count);
+        recyclerView.setLayoutManager(new GridLayoutManager(getActivity(), spanCount));
         int spacing = getResources().getDimensionPixelSize(R.dimen.image_picker_media_grid_spacing);
-        recyclerView.addItemDecoration(new MediaGridInset(SPAN_COUNT, spacing, false));
+        recyclerView.addItemDecoration(new MediaGridInset(spanCount, spacing, false));
         recyclerView.setAdapter(albumMediaAdapter);
         RecyclerView.ItemAnimator itemAnimator = recyclerView.getItemAnimator();
         if (itemAnimator instanceof SimpleItemAnimator) {
@@ -259,7 +258,6 @@ public class ImagePickerGalleryFragment extends TkpdBaseV4Fragment
     public boolean canAddMoreImage() {
         //check the image number allowed.
         if (onImagePickerGalleryFragmentListener.isMaxImageReached()) {
-            NetworkErrorHelper.showRedCloseSnackbar(getView(), getString(R.string.max_no_of_image_reached));
             return false;
         }
         return true;

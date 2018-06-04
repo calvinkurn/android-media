@@ -309,7 +309,11 @@ public class ImagePickerActivity extends BaseSimpleActivity
 
     @Override
     public boolean isMaxImageReached() {
-        return selectedImagePaths.size() >= imagePickerBuilder.getMaximumNoPick();
+        boolean isMaxImageReached = selectedImagePaths.size() >= imagePickerBuilder.getMaximumNoPick();
+        if (isMaxImageReached) {
+            NetworkErrorHelper.showRedCloseSnackbar(this, getString(R.string.max_no_of_image_reached));
+        }
+        return isMaxImageReached;
     }
 
     @Override
