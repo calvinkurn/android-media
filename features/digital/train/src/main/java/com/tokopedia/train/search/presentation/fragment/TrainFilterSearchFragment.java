@@ -57,6 +57,7 @@ public class TrainFilterSearchFragment extends BaseDaggerFragment {
 
         renderPriceRangeFilter(view);
         renderTrainNameFilter(view);
+        renderTrainDepartureFilter(view);
     }
 
     private void renderTrainNameFilter(View view) {
@@ -80,6 +81,29 @@ public class TrainFilterSearchFragment extends BaseDaggerFragment {
             listener.onChangeFilterSearchData(filterSearchData);
         });
         selectionTextLabelViewName.setOnClickListener(v -> listener.onNameFilterSearchTrainClicked());
+    }
+
+    private void renderTrainDepartureFilter(View view) {
+        SelectionTextLabelView selectionTextLabelViewName = view.findViewById(R.id.selection_label_time_departure);
+        final List<SelectionItem<String>> selectionItemList = new ArrayList<>();
+        if (filterSearchData.getSelectedDepartureTimeList() != null) {
+            for (int i = 0; i < filterSearchData.getSelectedDepartureTimeList().size(); i++) {
+                SelectionItem<String> selectionItem = new SelectionItem<>();
+                selectionItem.setKey(filterSearchData.getSelectedDepartureTimeList().get(i));
+                selectionItem.setValue(filterSearchData.getSelectedDepartureTimeList().get(i));
+                selectionItemList.add(selectionItem);
+            }
+        }
+        selectionTextLabelViewName.setItemList(selectionItemList);
+        selectionTextLabelViewName.setOnDeleteListener(selectionItem -> {
+            for (int i = 0; i < filterSearchData.getSelectedDepartureTimeList().size(); i++) {
+                if (filterSearchData.getSelectedDepartureTimeList().get(i).equals(selectionItem.getKey())) {
+                    filterSearchData.getSelectedDepartureTimeList().remove(i);
+                }
+            }
+            listener.onChangeFilterSearchData(filterSearchData);
+        });
+        selectionTextLabelViewName.setOnClickListener(v -> listener.onDepartureFilterSearchTrainClicked());
     }
 
     private void renderPriceRangeFilter(View view) {

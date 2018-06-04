@@ -1,6 +1,7 @@
 package com.tokopedia.train.search.domain;
 
 import com.tokopedia.train.common.domain.TrainRepository;
+import com.tokopedia.train.search.data.typedef.DepartureTimeTypeDef;
 import com.tokopedia.train.search.presentation.model.FilterSearchData;
 import com.tokopedia.train.search.presentation.model.TrainScheduleViewModel;
 import com.tokopedia.usecase.RequestParams;
@@ -42,6 +43,7 @@ public class GetFilterSearchParamDataUseCase extends UseCase<FilterSearchData> {
                         LinkedHashSet<String> trainNameSet = new LinkedHashSet<>();
                         List<String> trainClassList = new ArrayList<>();
                         LinkedHashSet<String> trainClassSet = new LinkedHashSet<>();
+                        List<String> trainDepartureList = new ArrayList<>();
 
                         FilterSearchData filterSearchData = new FilterSearchData();
                         for (int i = 0; i < trainScheduleViewModels.size(); i++) {
@@ -61,6 +63,12 @@ public class GetFilterSearchParamDataUseCase extends UseCase<FilterSearchData> {
                         filterSearchData.setTrains(trainNameList);
                         trainClassList.addAll(trainClassSet);
                         filterSearchData.setTrainClass(trainClassList);
+
+                        trainDepartureList.add(DepartureTimeTypeDef.MORNING);
+                        trainDepartureList.add(DepartureTimeTypeDef.AFTERNOON);
+                        trainDepartureList.add(DepartureTimeTypeDef.NIGHT);
+                        filterSearchData.setDepartureTimeList(trainDepartureList);
+
                         return filterSearchData;
                     }
                 });

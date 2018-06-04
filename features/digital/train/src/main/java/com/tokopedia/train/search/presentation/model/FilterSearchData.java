@@ -13,29 +13,28 @@ public class FilterSearchData implements Parcelable {
 
     private long minPrice;
     private long maxPrice;
-    private String[] departureTimeList;
+    private List<String> departureTimeList;
     private List<String> trains;
     private List<String> trainClass;
 
     private long selectedMinPrice;
     private long selectedMaxPrice;
-    private String[] selectedDepartureTimeList;
+    private List<String> selectedDepartureTimeList;
     private List<String> selectedTrains;
     private List<String> selectedTrainClass;
 
     public FilterSearchData() {
     }
 
-
     protected FilterSearchData(Parcel in) {
         minPrice = in.readLong();
         maxPrice = in.readLong();
-        departureTimeList = in.createStringArray();
+        departureTimeList = in.createStringArrayList();
         trains = in.createStringArrayList();
         trainClass = in.createStringArrayList();
         selectedMinPrice = in.readLong();
         selectedMaxPrice = in.readLong();
-        selectedDepartureTimeList = in.createStringArray();
+        selectedDepartureTimeList = in.createStringArrayList();
         selectedTrains = in.createStringArrayList();
         selectedTrainClass = in.createStringArrayList();
     }
@@ -44,12 +43,12 @@ public class FilterSearchData implements Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeLong(minPrice);
         dest.writeLong(maxPrice);
-        dest.writeStringArray(departureTimeList);
+        dest.writeStringList(departureTimeList);
         dest.writeStringList(trains);
         dest.writeStringList(trainClass);
         dest.writeLong(selectedMinPrice);
         dest.writeLong(selectedMaxPrice);
-        dest.writeStringArray(selectedDepartureTimeList);
+        dest.writeStringList(selectedDepartureTimeList);
         dest.writeStringList(selectedTrains);
         dest.writeStringList(selectedTrainClass);
     }
@@ -87,11 +86,11 @@ public class FilterSearchData implements Parcelable {
         this.maxPrice = maxPrice;
     }
 
-    public String[] getDepartureTimeList() {
+    public List<String> getDepartureTimeList() {
         return departureTimeList;
     }
 
-    public void setDepartureTimeList(String[] departureTimeList) {
+    public void setDepartureTimeList(List<String> departureTimeList) {
         this.departureTimeList = departureTimeList;
     }
 
@@ -127,11 +126,11 @@ public class FilterSearchData implements Parcelable {
         this.selectedMaxPrice = selectedMaxPrice;
     }
 
-    public String[] getSelectedDepartureTimeList() {
+    public List<String> getSelectedDepartureTimeList() {
         return selectedDepartureTimeList;
     }
 
-    public void setSelectedDepartureTimeList(String[] selectedDepartureTimeList) {
+    public void setSelectedDepartureTimeList(List<String> selectedDepartureTimeList) {
         this.selectedDepartureTimeList = selectedDepartureTimeList;
     }
 
