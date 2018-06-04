@@ -4,7 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.view.View;
+import android.util.Log;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -25,7 +25,7 @@ public class TkpdYoutubeVideoActivity extends YouTubeBaseActivity implements
     private YouTubePlayer mPlayer;
     private YouTubePlayerView youTubeView;
     private ImageView imgClose;
-    private TextView tvHeadTitle,tvTitle,tvDesc,btnCta;
+    private TextView tvHeadTitle, tvTitle, tvDesc, btnCta;
 
     private String videoUrlKey = "video_url";
     private String videoCtaKey = "video_cta";
@@ -38,18 +38,19 @@ public class TkpdYoutubeVideoActivity extends YouTubeBaseActivity implements
     private String videoLand;
 
     @DeepLink(ApplinkConst.PLAY_NOTIFICATION_VIDEO)
-    public static Intent getNotifVodeoApplinkCallingIntent(Context context, Bundle bundle){
+    public static Intent getNotifVodeoApplinkCallingIntent(Context context, Bundle bundle) {
         return TkpdYoutubeVideoActivity.createApplinkCallingIntent(
                 context,
                 bundle
         );
     }
 
-    public static Intent createApplinkCallingIntent(Context context, Bundle extras){
+    public static Intent createApplinkCallingIntent(Context context, Bundle extras) {
         Intent intent = new Intent(context, TkpdYoutubeVideoActivity.class);
         intent.putExtras(extras);
         return intent;
     }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -61,22 +62,14 @@ public class TkpdYoutubeVideoActivity extends YouTubeBaseActivity implements
         tvDesc = findViewById(R.id.tv_desc);
         btnCta = findViewById(R.id.btn_cta);
 
-        imgClose.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                finish();
-            }
-        });
+        imgClose.setOnClickListener(v -> finish());
 
-        btnCta.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-               Intent intent = new Intent(TkpdYoutubeVideoActivity.this, DeepLinkActivity.class);
-                intent.setData(Uri.parse(videoLand));
-                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                startActivity(intent);
-                finish();
-            }
+        btnCta.setOnClickListener(v -> {
+            Intent intent = new Intent(TkpdYoutubeVideoActivity.this, DeepLinkActivity.class);
+            intent.setData(Uri.parse(videoLand));
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(intent);
+            finish();
         });
 
         extractValues(getIntent().getExtras());
@@ -100,7 +93,7 @@ public class TkpdYoutubeVideoActivity extends YouTubeBaseActivity implements
             mPlayer = player;
             // loadVideo() will auto play video
             // Use cueVideo() method, if you don't want to play it automatically
-          //  player.loadVideo("tOgX9e75Zvg");
+            //  player.loadVideo("tOgX9e75Zvg");
             player.loadVideo(videoUrl);
             // Hiding player controls
             // player.setPlayerStyle(YouTubePlayer.PlayerStyle.CHROMELESS);
@@ -120,7 +113,8 @@ public class TkpdYoutubeVideoActivity extends YouTubeBaseActivity implements
     }
 
     private void extractValues(Bundle bundle) {
-        videoUrl="tOgX9e75Zvg";
+        Log.e("bundle",bundle.toString() + " bundle " + bundle);
+        videoUrl = "tOgX9e75Zvg";
         if (bundle != null) {
             videoUrl = bundle.getString(videoUrlKey, "tOgX9e75Zvg");
             tvHeadTitle.setText(bundle.getString(videoTitleKey, ""));
