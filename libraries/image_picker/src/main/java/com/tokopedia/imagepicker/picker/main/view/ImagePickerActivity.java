@@ -28,7 +28,7 @@ import com.tokopedia.imagepicker.common.util.ImageUtils;
 import com.tokopedia.imagepicker.editor.main.view.ImageEditorActivity;
 import com.tokopedia.imagepicker.picker.main.adapter.ImagePickerViewPagerAdapter;
 import com.tokopedia.imagepicker.picker.camera.ImagePickerCameraFragment;
-import com.tokopedia.imagepicker.picker.gallery.ImagePickerGalleryInterface;
+import com.tokopedia.imagepicker.picker.gallery.ImagePickerGalleryFragment;
 import com.tokopedia.imagepicker.picker.gallery.model.MediaItem;
 import com.tokopedia.imagepicker.picker.instagram.view.fragment.ImagePickerInstagramFragment;
 import com.tokopedia.imagepicker.picker.main.builder.ImagePickerBuilder;
@@ -39,7 +39,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ImagePickerActivity extends BaseSimpleActivity
-        implements ImagePickerGalleryInterface.OnImagePickerGalleryFragmentListener,
+        implements ImagePickerGalleryFragment.OnImagePickerGalleryFragmentListener,
         ImagePickerCameraFragment.OnImagePickerCameraFragmentListener,
         ImagePickerInstagramFragment.ListenerImagePickerInstagram, ImagePickerPresenter.ImagePickerView, ImagePickerPreviewWidget.OnImagePickerThumbnailListWidgetListener {
 
@@ -95,7 +95,6 @@ public class ImagePickerActivity extends BaseSimpleActivity
         } else {
             imagePickerBuilder = ImagePickerBuilder.getDefaultBuilder(getContext());
         }
-        super.onCreate(savedInstanceState);
 
         if (savedInstanceState == null) {
             if (imagePickerBuilder.supportMultipleSelection()) {
@@ -107,6 +106,8 @@ public class ImagePickerActivity extends BaseSimpleActivity
             selectedTab = savedInstanceState.getInt(SAVED_SELECTED_TAB, 0);
             selectedImagePaths = savedInstanceState.getStringArrayList(SAVED_SELECTED_IMAGES);
         }
+
+        super.onCreate(savedInstanceState);
 
         viewPager = findViewById(R.id.view_pager);
         tabLayout = findViewById(R.id.tab_layout);
@@ -318,6 +319,11 @@ public class ImagePickerActivity extends BaseSimpleActivity
     }
 
     @Override
+    public ArrayList<String> getImagePath() {
+        return selectedImagePaths;
+    }
+
+    @Override
     public void onAlbumItemClicked(MediaItem item, boolean isChecked) {
         onImageSelected(item.getRealPath(), isChecked);
     }
@@ -363,15 +369,14 @@ public class ImagePickerActivity extends BaseSimpleActivity
             if (selectedImagePaths.size() == 0) {
                 disableDoneView();
             }
-            Fragment fragment = getCurrentFragment();
-            if (fragment!= null && fragment instanceof ImagePickerInterface) {
-                ((ImagePickerInterface) fragment).onThumbnailImageRemoved(imagePath);
+
+            List<Fragment> fragments = getSupportFragmentManager().getFragments();
+            for (Fragment fragment: fragments) {
+                if (fragment!= null && fragment.isAdded() && fragment instanceof ImagePickerInterface) {
+                    ((ImagePickerInterface) fragment).onThumbnailImageRemoved(imagePath);
+                }
             }
         }
-    }
-
-    public Fragment getCurrentFragment(){
-        return imagePickerViewPagerAdapter.getRegisteredFragment(viewPager.getCurrentItem());
     }
 
     private void disableDoneView() {
