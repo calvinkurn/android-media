@@ -6,7 +6,7 @@ import com.tokopedia.train.search.data.TrainScheduleDataStoreFactory;
 import com.tokopedia.train.search.data.specification.TrainDetailScheduleSpecification;
 import com.tokopedia.train.search.data.specification.TrainScheduleSpecification;
 import com.tokopedia.train.search.domain.FilterParam;
-import com.tokopedia.train.search.domain.FilterSearchData;
+import com.tokopedia.train.search.presentation.model.FilterSearchData;
 import com.tokopedia.train.search.presentation.model.AvailabilityKeySchedule;
 import com.tokopedia.train.search.presentation.model.TrainScheduleViewModel;
 import com.tokopedia.train.station.data.TrainStationDataStoreFactory;

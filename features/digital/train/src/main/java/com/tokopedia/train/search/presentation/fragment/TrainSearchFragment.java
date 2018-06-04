@@ -31,11 +31,11 @@ import com.tokopedia.train.homepage.presentation.model.TrainSearchPassDataViewMo
 import com.tokopedia.train.search.constant.TrainSortOption;
 import com.tokopedia.train.search.di.DaggerTrainSearchComponent;
 import com.tokopedia.train.search.di.TrainSearchComponent;
-import com.tokopedia.train.search.domain.FilterSearchData;
 import com.tokopedia.train.search.domain.GetScheduleUseCase;
 import com.tokopedia.train.search.presentation.activity.TrainFilterSearchActivity;
 import com.tokopedia.train.search.presentation.adapter.TrainSearchAdapterTypeFactory;
 import com.tokopedia.train.search.presentation.contract.TrainSearchContract;
+import com.tokopedia.train.search.presentation.model.FilterSearchData;
 import com.tokopedia.train.search.presentation.model.TrainScheduleViewModel;
 import com.tokopedia.train.search.presentation.presenter.TrainSearchPresenter;
 import com.tokopedia.usecase.RequestParams;

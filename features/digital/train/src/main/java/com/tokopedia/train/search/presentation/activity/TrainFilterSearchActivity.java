@@ -17,11 +17,11 @@ import com.tokopedia.tkpdtrain.R;
 import com.tokopedia.train.common.di.utils.TrainComponentUtils;
 import com.tokopedia.train.common.presentation.TrainBaseActivity;
 import com.tokopedia.train.search.di.DaggerTrainSearchComponent;
-import com.tokopedia.train.search.domain.FilterSearchData;
 import com.tokopedia.train.search.presentation.contract.FilterSearchActionView;
 import com.tokopedia.train.search.presentation.contract.TrainFilterSearchContract;
 import com.tokopedia.train.search.presentation.fragment.TrainFilterNameFragment;
 import com.tokopedia.train.search.presentation.fragment.TrainFilterSearchFragment;
+import com.tokopedia.train.search.presentation.model.FilterSearchData;
 import com.tokopedia.train.search.presentation.presenter.TrainFilterSearchPresenter;
 
 import java.util.HashMap;
@@ -45,6 +45,7 @@ public class TrainFilterSearchActivity extends TrainBaseActivity
     private LinearLayout containerLayout;
     private FilterSearchData filterSearchData;
     private Button filterButton;
+    private boolean showCloseButton;
 
     public static Intent getCallingIntent(Activity activity, HashMap<String, Object> mapParam, int scheduleVariant) {
         Intent intent = new Intent(activity, TrainFilterSearchActivity.class);
@@ -60,9 +61,6 @@ public class TrainFilterSearchActivity extends TrainBaseActivity
         progressBar = findViewById(R.id.progress_bar);
         containerLayout = findViewById(R.id.container_layout);
         filterButton = findViewById(R.id.button_filter);
-
-        updateToolbarBackIcon();
-        updateTitle("Filter");
 
         filterButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -132,7 +130,17 @@ public class TrainFilterSearchActivity extends TrainBaseActivity
 
     @Override
     public void onNameFilterSearchTrainClicked() {
-        replaceFragment(TrainFilterNameFragment.newInstance(this.filterSearchData.getTrains()), TrainFilterNameFragment.TAG);
+        replaceFragment(TrainFilterNameFragment.newInstance(), TrainFilterNameFragment.TAG);
+    }
+
+    @Override
+    public void setCloseButton(boolean showCloseButton) {
+        this.showCloseButton = showCloseButton;
+        if (getSupportActionBar() != null && showCloseButton) {
+            getSupportActionBar().setHomeAsUpIndicator(ContextCompat.getDrawable(this, com.tokopedia.abstraction.R.drawable.ic_close_default));
+        } else {
+            getSupportActionBar().setHomeAsUpIndicator(null);
+        }
     }
 
     @Override
@@ -153,6 +161,7 @@ public class TrainFilterSearchActivity extends TrainBaseActivity
         }
     }
 
+    //TODO refactor this
     private void onFilterButtonClick() {
         if (getSupportFragmentManager().getBackStackEntryCount() == 0) {
             Intent intent = new Intent();
@@ -162,11 +171,6 @@ public class TrainFilterSearchActivity extends TrainBaseActivity
         } else {
             onBackPressed(true);
         }
-    }
-
-    private void updateToolbarBackIcon() {
-        getSupportActionBar().setHomeAsUpIndicator(ContextCompat.getDrawable(this,
-                com.tokopedia.abstraction.R.drawable.ic_close_default));
     }
 
     @Override
@@ -190,5 +194,10 @@ public class TrainFilterSearchActivity extends TrainBaseActivity
         getSupportFragmentManager().beginTransaction()
                 .setCustomAnimations(R.anim.enter_from_right, R.anim.exit_to_left, R.anim.enter_from_left, R.anim.exit_to_right)
                 .replace(R.id.parent_view, fragment, tag).addToBackStack(tag).commit();
+    }
+
+    @Override
+    public boolean isShowCloseButton() {
+        return showCloseButton;
     }
 }

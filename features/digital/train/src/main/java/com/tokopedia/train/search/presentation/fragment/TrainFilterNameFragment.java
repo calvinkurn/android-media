@@ -6,15 +6,14 @@ import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.base.view.recyclerview.VerticalRecyclerView;
 import com.tokopedia.tkpdtrain.R;
+import com.tokopedia.train.search.presentation.model.FilterSearchData;
 import com.tokopedia.train.search.presentation.adapter.TrainFilterAdapter;
 import com.tokopedia.train.search.presentation.contract.FilterSearchActionView;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -24,17 +23,14 @@ import java.util.List;
 public class TrainFilterNameFragment extends BaseDaggerFragment {
 
     public static final String TAG = TrainFilterNameFragment.class.getSimpleName();
-    private static final String NAME_LIST = "name_list";
 
     private VerticalRecyclerView recyclerView;
     private TrainFilterAdapter adapter;
     private FilterSearchActionView listener;
+    private FilterSearchData filterSearchData;
 
-    public static TrainFilterNameFragment newInstance(List<String> nameTrainList) {
+    public static TrainFilterNameFragment newInstance() {
         TrainFilterNameFragment fragment = new TrainFilterNameFragment();
-        Bundle bundle = new Bundle();
-        bundle.putStringArrayList(NAME_LIST, (ArrayList) nameTrainList);
-        fragment.setArguments(bundle);
         return fragment;
     }
 
@@ -50,13 +46,17 @@ public class TrainFilterNameFragment extends BaseDaggerFragment {
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        filterSearchData = listener.getFilterSearchData();
+
         listener.setTitleToolbar("Kereta");
+        listener.setCloseButton(false);
         adapter = new TrainFilterAdapter();
-        adapter.addList(getArguments().getStringArrayList(NAME_LIST));
+        adapter.addList(filterSearchData.getTrains(), filterSearchData.getSelectedTrains());
         adapter.setListener(new TrainFilterAdapter.ActionListener() {
             @Override
-            public void onCheckChanged(String itemSelected) {
-                Toast.makeText(getActivity(), itemSelected, Toast.LENGTH_SHORT).show();
+            public void onCheckChanged(List<String> listObjectFilter) {
+                filterSearchData.setSelectedTrains(listObjectFilter);
+                listener.onChangeFilterSearchData(filterSearchData);
             }
         });
         recyclerView.setAdapter(adapter);

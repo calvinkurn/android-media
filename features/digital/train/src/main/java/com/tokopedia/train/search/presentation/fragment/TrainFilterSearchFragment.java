@@ -11,13 +11,12 @@ import android.widget.EditText;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.design.intdef.CurrencyEnum;
 import com.tokopedia.design.label.selection.SelectionItem;
-import com.tokopedia.design.label.selection.SelectionLabelView;
 import com.tokopedia.design.label.selection.text.SelectionTextLabelView;
 import com.tokopedia.design.text.RangeInputView;
 import com.tokopedia.design.text.watcher.CurrencyTextWatcher;
 import com.tokopedia.tkpdtrain.R;
-import com.tokopedia.train.search.domain.FilterSearchData;
 import com.tokopedia.train.search.presentation.contract.FilterSearchActionView;
+import com.tokopedia.train.search.presentation.model.FilterSearchData;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -40,8 +39,10 @@ public class TrainFilterSearchFragment extends BaseDaggerFragment {
 
     @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_train_filter_search, container, false);
+    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,
+                             @Nullable Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.fragment_train_filter_search, container,
+                false);
         return view;
     }
 
@@ -51,6 +52,9 @@ public class TrainFilterSearchFragment extends BaseDaggerFragment {
 
         filterSearchData = listener.getFilterSearchData();
 
+        listener.setTitleToolbar("Filter");
+        listener.setCloseButton(true);
+
         renderPriceRangeFilter(view);
         renderTrainNameFilter(view);
     }
@@ -58,27 +62,24 @@ public class TrainFilterSearchFragment extends BaseDaggerFragment {
     private void renderTrainNameFilter(View view) {
         SelectionTextLabelView selectionTextLabelViewName = view.findViewById(R.id.selection_label_train_name);
         final List<SelectionItem<String>> selectionItemList = new ArrayList<>();
-        if (filterSearchData.getTrains() != null) {
-            for (int i = 0, sizei = filterSearchData.getTrains().size(); i < sizei; i++) {
+        if (filterSearchData.getSelectedTrains() != null) {
+            for (int i = 0; i < filterSearchData.getSelectedTrains().size(); i++) {
                 SelectionItem<String> selectionItem = new SelectionItem<>();
-                selectionItem.setKey(filterSearchData.getTrains().get(0));
-                selectionItem.setValue(filterSearchData.getTrains().get(0));
+                selectionItem.setKey(filterSearchData.getSelectedTrains().get(i));
+                selectionItem.setValue(filterSearchData.getSelectedTrains().get(i));
                 selectionItemList.add(selectionItem);
             }
         }
         selectionTextLabelViewName.setItemList(selectionItemList);
-        selectionTextLabelViewName.setOnDeleteListener(new SelectionLabelView.OnDeleteListener<SelectionItem<String>>() {
-            @Override
-            public void onDelete(SelectionItem<String> selectionItem) {
-                //TODO delete
+        selectionTextLabelViewName.setOnDeleteListener(selectionItem -> {
+            for (int i = 0; i < filterSearchData.getSelectedTrains().size(); i++) {
+                if (filterSearchData.getSelectedTrains().get(i).equals(selectionItem.getKey())) {
+                    filterSearchData.getSelectedTrains().remove(i);
+                }
             }
+            listener.onChangeFilterSearchData(filterSearchData);
         });
-        selectionTextLabelViewName.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                listener.onNameFilterSearchTrainClicked();
-            }
-        });
+        selectionTextLabelViewName.setOnClickListener(v -> listener.onNameFilterSearchTrainClicked());
     }
 
     private void renderPriceRangeFilter(View view) {
@@ -103,14 +104,11 @@ public class TrainFilterSearchFragment extends BaseDaggerFragment {
                 (int) filterSearchData.getMaxPrice(),
                 (int) filterSearchData.getMinPrice(),
                 (int) filterSearchData.getMaxPrice());
-        rangeInputView.setOnValueChangedListener(new RangeInputView.OnValueChangedListener() {
-            @Override
-            public void onValueChanged(int minValue, int maxValue, int minBound, int maxBound) {
-                FilterSearchData filterSearchData = listener.getFilterSearchData();
-                filterSearchData.setMinPrice(minValue);
-                filterSearchData.setMaxPrice(maxValue);
-                listener.onChangeFilterSearchData(filterSearchData);
-            }
+        rangeInputView.setOnValueChangedListener((minValue, maxValue, minBound, maxBound) -> {
+            FilterSearchData filterSearchData = listener.getFilterSearchData();
+            filterSearchData.setMinPrice(minValue);
+            filterSearchData.setMaxPrice(maxValue);
+            listener.onChangeFilterSearchData(filterSearchData);
         });
     }
 

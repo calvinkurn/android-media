@@ -1,6 +1,7 @@
 package com.tokopedia.train.search.domain;
 
 import com.tokopedia.train.common.domain.TrainRepository;
+import com.tokopedia.train.search.presentation.model.FilterSearchData;
 import com.tokopedia.train.search.presentation.model.TrainScheduleViewModel;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.usecase.UseCase;

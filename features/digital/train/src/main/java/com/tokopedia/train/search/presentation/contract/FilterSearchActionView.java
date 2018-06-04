@@ -1,6 +1,6 @@
 package com.tokopedia.train.search.presentation.contract;
 
-import com.tokopedia.train.search.domain.FilterSearchData;
+import com.tokopedia.train.search.presentation.model.FilterSearchData;
 
 /**
  * Created by nabillasabbaha on 3/22/18.
@@ -15,4 +15,6 @@ public interface FilterSearchActionView {
     void setTitleToolbar(String titleToolbar);
 
     void onNameFilterSearchTrainClicked();
+
+    void setCloseButton(boolean showCloseButton);
 }

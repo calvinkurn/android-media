@@ -13,7 +13,7 @@ import com.tokopedia.train.search.data.specification.TrainScheduleSortSpecificat
 import com.tokopedia.train.search.data.specification.TrainScheduleSpecification;
 import com.tokopedia.train.search.data.typedef.TrainScheduleTypeDef;
 import com.tokopedia.train.search.domain.FilterParam;
-import com.tokopedia.train.search.domain.FilterSearchData;
+import com.tokopedia.train.search.presentation.model.FilterSearchData;
 import com.tokopedia.train.search.domain.mapper.AvailabilityKeysMapper;
 import com.tokopedia.train.search.presentation.model.AvailabilityKeySchedule;
 import com.tokopedia.train.search.presentation.model.TrainScheduleViewModel;
