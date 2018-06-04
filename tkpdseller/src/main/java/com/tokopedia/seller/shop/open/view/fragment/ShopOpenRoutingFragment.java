@@ -117,4 +117,10 @@ public class ShopOpenRoutingFragment extends BaseDaggerFragment implements ShopO
             shopCheckIsReservePresenter.detachView();
         }
     }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        shopCheckIsReservePresenter.detachView();
+    }
 }
