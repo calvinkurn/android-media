@@ -16,7 +16,6 @@ import com.tokopedia.contactus.R2;
 import com.tokopedia.contactus.home.view.fragment.BuyerPurchaseFragment;
 import com.tokopedia.contactus.home.view.fragment.SellerPurchaseFragment;
 import com.tokopedia.core.util.SessionHandler;
-import com.tokopedia.design.component.Tabs;
 
 import java.util.ArrayList;
 
@@ -29,7 +28,7 @@ import butterknife.ButterKnife;
 
 public class BuyerPurchaseListActivity extends BaseSimpleActivity {
     @BindView(R2.id.tab)
-    Tabs tab;
+    TabLayout tab;
     @BindView(R2.id.view_pager_list)
     TouchViewPager viewPagerList;
 
@@ -47,7 +46,9 @@ public class BuyerPurchaseListActivity extends BaseSimpleActivity {
     protected int getLayoutRes() {
         return R.layout.layout_full_order_list_activity;
     }
+
     ViewPagerAdapter adapter;
+
     @Override
     protected void setupLayout(Bundle savedInstanceState) {
         super.setupLayout(savedInstanceState);
@@ -78,10 +79,10 @@ public class BuyerPurchaseListActivity extends BaseSimpleActivity {
     }
 
     private void setupViewPager() {
-        if(SessionHandler.isUserHasShop(this)) {
+        if (SessionHandler.isUserHasShop(this)) {
             adapter.addFragment(BuyerPurchaseFragment.newInstance(), getString(R.string.pembelian));
             adapter.addFragment(SellerPurchaseFragment.newInstance(), getString(R.string.penjualan));
-        }else {
+        } else {
             tab.setVisibility(View.GONE);
             adapter.addFragment(BuyerPurchaseFragment.newInstance(), getString(R.string.pembelian));
         }

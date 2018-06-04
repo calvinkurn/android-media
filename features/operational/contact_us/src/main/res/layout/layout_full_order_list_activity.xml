@@ -37,13 +37,17 @@
         android:textColor="@color/grey2_text"
         android:textSize="@dimen/font_small" />
 
-    <com.tokopedia.design.component.Tabs
+    <android.support.design.widget.TabLayout
         android:id="@+id/tab"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="@dimen/dp_8"
+        android:overScrollMode="ifContentScrolls"
+        android:padding="@dimen/dp_4"
+        app:tabIndicatorColor="@color/tkpd_main_green"
+        app:tabMode="scrollable"
         app:tabTextAppearance="@style/Tabs.Secondary"
-        app:tabType="secondary" />
+        app:tabSelectedTextColor="@color/tkpd_main_green"
+        app:tabTextColor="@color/black_38" />
 
     <com.tokopedia.abstraction.base.view.widget.TouchViewPager
         android:id="@+id/view_pager_list"
