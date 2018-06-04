@@ -1,6 +1,6 @@
 package com.tokopedia.tkpdpdp.listener;
 
-import android.app.Fragment;
+import android.support.v4.app.Fragment;
 
 import com.tokopedia.core.product.listener.ViewListener;
 

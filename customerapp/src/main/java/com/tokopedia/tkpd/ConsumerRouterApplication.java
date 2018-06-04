@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 
@@ -84,7 +85,7 @@ import com.tokopedia.core.router.productdetail.passdata.ProductPass;
 import com.tokopedia.core.router.reactnative.IReactNativeRouter;
 import com.tokopedia.core.router.transactionmodule.TransactionRouter;
 import com.tokopedia.core.router.wallet.IWalletRouter;
-import com.tokopedia.core.share.ShareActivity;
+import com.tokopedia.core.share.ShareBottomSheet;
 import com.tokopedia.core.shopinfo.limited.fragment.ShopTalkLimitedFragment;
 import com.tokopedia.core.util.AccessTokenRefresh;
 import com.tokopedia.core.util.BranchSdkUtils;
@@ -1602,7 +1603,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    public void goToShareShop(Context context, String shopId, String shopUrl, String shareLabel) {
+    public void goToShareShop(FragmentManager fragmentManager, String shopId, String shopUrl, String shareLabel) {
         ShareData shareData = ShareData.Builder.aShareData()
                 .setType(ShareData.SHOP_TYPE)
                 .setName(getString(R.string.message_share_shop))
@@ -1610,7 +1611,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
                 .setUri(shopUrl)
                 .setId(shopId)
                 .build();
-        context.startActivity(ShareActivity.createIntent(context, shareData));
+        ShareBottomSheet.show(fragmentManager, shareData);
     }
 
     @Override
@@ -1867,6 +1868,22 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
                 listener.onGenerateLink(shareContents, shareUri);
             }
         });
+    }
+
+    @Override
+    public void shareGroupChat(FragmentManager fragmentManager, String channelId, String title, String contentMessage, String imgUrl,
+                               String shareUrl) {
+        ShareData shareData = ShareData.Builder.aShareData()
+                .setId(channelId)
+                .setName(title)
+                .setTextContent(contentMessage)
+                .setDescription(contentMessage)
+                .setImgUri(imgUrl)
+                .setUri(shareUrl)
+                .setType(ShareData.GROUPCHAT_TYPE)
+                .build();
+
+        ShareBottomSheet.show(fragmentManager, shareData);
     }
 
     @Override

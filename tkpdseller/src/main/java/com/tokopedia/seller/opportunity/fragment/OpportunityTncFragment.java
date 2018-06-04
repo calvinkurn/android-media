@@ -121,6 +121,12 @@ public class OpportunityTncFragment extends BaseWebViewFragment implements Oppor
         return userSession.getUserId();
     }
 
+    @Nullable
+    @Override
+    protected String getAccessToken() {
+        return userSession.getAccessToken();
+    }
+
     @Override
     public void onActionDeleteClicked() {
         // no delete here
