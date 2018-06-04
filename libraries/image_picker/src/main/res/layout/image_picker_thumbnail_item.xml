@@ -31,7 +31,7 @@
             android:layout_marginBottom="@dimen/dp_4"
             android:layout_marginLeft="@dimen/dp_4"
             android:layout_marginStart="@dimen/dp_4"
-            android:background="@drawable/circle_green"
+            android:background="@drawable/rect_round_green"
             android:gravity="center"
             android:textColor="@android:color/white"
             android:textSize="@dimen/sp_10"
