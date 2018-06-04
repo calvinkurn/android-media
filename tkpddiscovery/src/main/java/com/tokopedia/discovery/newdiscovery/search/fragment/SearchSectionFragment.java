@@ -201,7 +201,7 @@ public abstract class SearchSectionFragment extends BaseDaggerFragment
         return linearLayoutManager;
     }
 
-    protected void switchLayoutType(boolean isImageSearch) {
+    protected void switchLayoutType() {
         if (!getUserVisibleHint()) {
             return;
         }
@@ -211,37 +211,21 @@ public abstract class SearchSectionFragment extends BaseDaggerFragment
                 setSpanCount(2);
                 gridLayoutManager.setSpanCount(spanCount);
                 getAdapter().changeDoubleGridView();
-                if (isImageSearch) {
-                    SearchTracking.eventImageSearchResultChangeGrid(DEFAULT_GRID);
-                } else {
-                    SearchTracking.eventSearchResultChangeGrid("grid 2", getScreenName());
-                }
+                SearchTracking.eventSearchResultChangeGrid("grid 2", getScreenName());
                 break;
             case GRID_2:
                 setSpanCount(1);
                 gridLayoutManager.setSpanCount(spanCount);
                 getAdapter().changeSingleGridView();
-                if (isImageSearch) {
-                    SearchTracking.eventImageSearchResultChangeGrid(INSTAGRAM_GRID);
-                } else {
-                    SearchTracking.eventSearchResultChangeGrid("grid 1", getScreenName());
-                }
+                SearchTracking.eventSearchResultChangeGrid("grid 1", getScreenName());
                 break;
             case GRID_3:
                 setSpanCount(1);
                 getAdapter().changeListView();
-                if (isImageSearch) {
-                    SearchTracking.eventImageSearchResultChangeGrid(LIST_GRID);
-                } else {
-                    SearchTracking.eventSearchResultChangeGrid("list", getScreenName());
-                }
+                SearchTracking.eventSearchResultChangeGrid("list", getScreenName());
                 break;
         }
         refreshBottomBarGridIcon();
-    }
-
-    protected void switchLayoutType() {
-        switchLayoutType(false);
     }
 
     private void refreshBottomBarGridIcon() {

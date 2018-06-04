@@ -22,9 +22,10 @@ public class ImageSearchDataSource {
     }
 
 
-    public Observable<SearchResultModel> getImageSearch(TKPDMapParam<String, Object> param) {
+    public Observable<SearchResultModel> getImageSearch(TKPDMapParam<String, Object> queryParam,
+                                                        TKPDMapParam<String, Object> formParam) {
 
-        return searchApi.browseProductsV3(param).map(productMapper);
+        return searchApi.browseImageSearch(queryParam, formParam).map(productMapper);
 
     }
 }

@@ -7,22 +7,19 @@ import com.appsflyer.AFInAppEventParameterName;
 import com.appsflyer.AFInAppEventType;
 import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.CurrencyFormatHelper;
-import com.tokopedia.core.R;
 import com.tokopedia.core.analytics.appsflyer.Jordan;
 import com.tokopedia.core.analytics.container.AppsflyerContainer;
 import com.tokopedia.core.analytics.handler.AnalyticsCacheHandler;
 import com.tokopedia.core.analytics.nishikino.model.Authenticated;
-import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.product.model.productdetail.ProductDetailData;
-import com.tokopedia.core.util.SessionHandler;
 
 import java.util.HashMap;
 import java.util.Map;
 
 /**
- * @author  by Herdi_WORK on 25.10.16.
- * modified by Alvarisi
- * This Class for screen tracking
+ * @author by Herdi_WORK on 25.10.16.
+ *         modified by Alvarisi
+ *         This Class for screen tracking
  */
 
 public class ScreenTracking extends TrackingUtils {
@@ -43,27 +40,27 @@ public class ScreenTracking extends TrackingUtils {
         }
     }
 
-    public static void screen(String screen){
-        if(TextUtils.isEmpty(screen)){
+    public static void screen(String screen) {
+        if (TextUtils.isEmpty(screen)) {
             screen = "Default Fragment Name";
         }
 
         getGTMEngine().sendScreen(screen);
     }
 
-    public static void sendAFGeneralScreenEvent(String screenName){
+    public static void sendAFGeneralScreenEvent(String screenName) {
         Map<String, Object> afValue = new HashMap<>();
         afValue.put(AFInAppEventParameterName.DESCRIPTION, screenName);
         getAFEngine().sendTrackEvent(AFInAppEventType.CONTENT_VIEW, afValue);
     }
 
-    public static void eventAuthScreen(Authenticated authenticated, String screenName){
+    public static void eventAuthScreen(Authenticated authenticated, String screenName) {
         getGTMEngine()
                 .eventAuthenticate(authenticated)
                 .sendScreen(screenName);
     }
 
-    public static void sendAFPDPEvent(final ProductDetailData data, final String eventName){
+    public static void sendAFPDPEvent(final ProductDetailData data, final String eventName) {
         final AnalyticsCacheHandler analHandler = new AnalyticsCacheHandler();
         getAFEngine().getAdsID(new AppsflyerContainer.AFAdsIDCallback() {
             @Override
@@ -79,7 +76,7 @@ public class ScreenTracking extends TrackingUtils {
                 values.put(AFInAppEventParameterName.PRICE, productPrice);
                 values.put(AFInAppEventParameterName.CURRENCY, "IDR");
                 values.put(AFInAppEventParameterName.QUANTITY, 1);
-                if(!analHandler.isAdsIdAvailable()){
+                if (!analHandler.isAdsIdAvailable()) {
                     analHandler.setAdsId(adsID);
                 }
 
@@ -94,15 +91,15 @@ public class ScreenTracking extends TrackingUtils {
         });
     }
 
-    public static void eventDiscoveryScreenAuth(String departmentId){
-        if(!TextUtils.isEmpty(departmentId)) {
+    public static void eventDiscoveryScreenAuth(String departmentId) {
+        if (!TextUtils.isEmpty(departmentId)) {
             getGTMEngine().sendScreenAuthenticated(
                     AppScreen.SCREEN_BROWSE_PRODUCT_FROM_CATEGORY + departmentId
             );
         }
     }
 
-    public static void eventOfficialStoreScreenAuth(String shopID, String shopType, String pageType, String productId){
+    public static void eventOfficialStoreScreenAuth(String shopID, String shopType, String pageType, String productId) {
         getGTMEngine().sendScreenAuthenticatedOfficialStore(
                 AppScreen.SCREEN_PRODUCT_INFO, shopID, shopType, pageType, productId
         );
