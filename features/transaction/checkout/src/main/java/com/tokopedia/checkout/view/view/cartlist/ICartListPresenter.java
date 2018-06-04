@@ -37,7 +37,7 @@ public interface ICartListPresenter {
 
     void processCancelAutoApply();
 
-    Map<String, Object> generateCartDataAnalytics(CartItemData removedCartItem);
+    Map<String, Object> generateCartDataAnalytics(CartItemData removedCartItem, String enhancedECommerceAction);
 
-    Map<String, Object> generateCartDataAnalytics(List<CartItemData> cartItemDataList);
+    Map<String, Object> generateCartDataAnalytics(List<CartItemData> cartItemDataList, String enhancedECommerceAction);
 }

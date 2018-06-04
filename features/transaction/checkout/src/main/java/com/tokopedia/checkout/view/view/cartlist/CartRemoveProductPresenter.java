@@ -1,5 +1,7 @@
 package com.tokopedia.checkout.view.view.cartlist;
 
+import android.text.TextUtils;
+
 import com.google.gson.Gson;
 import com.tokopedia.abstraction.common.utils.TKPDMapParam;
 import com.tokopedia.checkout.R;
@@ -9,12 +11,15 @@ import com.tokopedia.checkout.domain.datamodel.cartlist.DeleteCartData;
 import com.tokopedia.checkout.domain.usecase.DeleteCartUpdateCartUseCase;
 import com.tokopedia.checkout.domain.usecase.DeleteCartUseCase;
 import com.tokopedia.checkout.view.base.CartMvpPresenter;
+import com.tokopedia.transactionanalytics.EnhancedECommerceCartMapData;
+import com.tokopedia.transactionanalytics.EnhancedECommerceProductCartMapData;
 import com.tokopedia.transactiondata.entity.request.RemoveCartRequest;
 import com.tokopedia.transactiondata.entity.request.UpdateCartRequest;
 import com.tokopedia.usecase.RequestParams;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import javax.inject.Inject;
 
@@ -164,4 +169,58 @@ public class CartRemoveProductPresenter
         }
     }
 
+    public Map<String, Object> generateCartDataAnalytics(CartItemData removedCartItem, String enhancedECommerceAction) {
+        List<CartItemData> cartItemDataList = new ArrayList<>();
+        return generateCartDataAnalytics(cartItemDataList, enhancedECommerceAction);
+    }
+
+    public Map<String, Object> generateCartDataAnalytics(List<CartItemData> cartItemDataList, String enhancedECommerceAction) {
+
+        EnhancedECommerceCartMapData enhancedECommerceCartMapData = new EnhancedECommerceCartMapData();
+
+        enhancedECommerceCartMapData.setCurrencyCode("IDR");
+        enhancedECommerceCartMapData.setAction(enhancedECommerceAction);
+
+        for (CartItemData cartItemData : cartItemDataList) {
+            EnhancedECommerceProductCartMapData enhancedECommerceProductCartMapData =
+                    new EnhancedECommerceProductCartMapData();
+            enhancedECommerceProductCartMapData.setProductName(cartItemData.getOriginData().getProductName());
+            enhancedECommerceProductCartMapData.setProductID(String.valueOf(cartItemData.getOriginData().getProductId()));
+            enhancedECommerceProductCartMapData.setPrice(cartItemData.getOriginData().getPriceFormatted());
+            enhancedECommerceProductCartMapData.setBrand(EnhancedECommerceProductCartMapData.DEFAULT_VALUE_NONE_OTHER);
+
+            enhancedECommerceProductCartMapData.setCategory(TextUtils.isEmpty(cartItemData.getOriginData().getCategoryForAnalytics())
+                    ? EnhancedECommerceProductCartMapData.DEFAULT_VALUE_NONE_OTHER
+                    : cartItemData.getOriginData().getCategoryForAnalytics());
+            enhancedECommerceProductCartMapData.setVariant(EnhancedECommerceProductCartMapData.DEFAULT_VALUE_NONE_OTHER);
+            enhancedECommerceProductCartMapData.setQty(cartItemData.getUpdatedData().getQuantity());
+            enhancedECommerceProductCartMapData.setShopId(cartItemData.getOriginData().getShopId());
+            //   product.setShopType(generateShopType(productData.getShopInfo()));
+            enhancedECommerceProductCartMapData.setShopName(cartItemData.getOriginData().getShopName());
+            enhancedECommerceProductCartMapData.setCategoryId(cartItemData.getOriginData().getCategoryId());
+            enhancedECommerceProductCartMapData.setDimension38(
+                    TextUtils.isEmpty(cartItemData.getOriginData().getTrackerAttribution())
+                            ? EnhancedECommerceProductCartMapData.DEFAULT_VALUE_NONE_OTHER
+                            : cartItemData.getOriginData().getTrackerAttribution()
+            );
+            enhancedECommerceProductCartMapData.setAttribution(
+                    TextUtils.isEmpty(cartItemData.getOriginData().getTrackerAttribution())
+                            ? EnhancedECommerceProductCartMapData.DEFAULT_VALUE_NONE_OTHER
+                            : cartItemData.getOriginData().getTrackerAttribution()
+            );
+            enhancedECommerceProductCartMapData.setDimension40(
+                    TextUtils.isEmpty(cartItemData.getOriginData().getTrackerListName())
+                            ? EnhancedECommerceProductCartMapData.DEFAULT_VALUE_NONE_OTHER
+                            : cartItemData.getOriginData().getTrackerListName()
+            );
+            enhancedECommerceProductCartMapData.setListName(
+                    TextUtils.isEmpty(cartItemData.getOriginData().getTrackerListName())
+                            ? EnhancedECommerceProductCartMapData.DEFAULT_VALUE_NONE_OTHER
+                            : cartItemData.getOriginData().getTrackerListName()
+            );
+            enhancedECommerceCartMapData.addProduct(enhancedECommerceProductCartMapData.getProduct());
+        }
+        return enhancedECommerceCartMapData.getCartMap();
+
+    }
 }

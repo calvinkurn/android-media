@@ -73,6 +73,7 @@ import com.tokopedia.topads.sdk.listener.TopAdsItemClickListener;
 import com.tokopedia.topads.sdk.view.DisplayMode;
 import com.tokopedia.topads.sdk.view.TopAdsView;
 import com.tokopedia.transactionanalytics.CheckoutAnalyticsCartPage;
+import com.tokopedia.transactionanalytics.EnhancedECommerceCartMapData;
 import com.tokopedia.transactiondata.entity.request.UpdateCartRequest;
 
 import java.util.ArrayList;
@@ -846,7 +847,7 @@ public class CartFragment extends BaseCheckoutFragment implements CartListAdapte
                 if (cartItemDatas != null && cartItemDatas.size() > 0) {
                     dPresenter.processDeleteAndRefreshCart(cartItemDatas, true);
                     cartPageAnalytics.enhancedECommerceRemoveCartAddWishList(
-                            dPresenter.generateCartDataAnalytics(cartItemDatas)
+                            dPresenter.generateCartDataAnalytics(cartItemDatas, EnhancedECommerceCartMapData.REMOVE_ACTION)
                     );
                 }
                 dialog.dismiss();
@@ -858,7 +859,7 @@ public class CartFragment extends BaseCheckoutFragment implements CartListAdapte
                 if (cartItemDatas != null && cartItemDatas.size() > 0) {
                     dPresenter.processDeleteAndRefreshCart(cartItemDatas, false);
                     cartPageAnalytics.enhancedECommerceRemoveCartNotWishList(
-                            dPresenter.generateCartDataAnalytics(cartItemDatas)
+                            dPresenter.generateCartDataAnalytics(cartItemDatas, EnhancedECommerceCartMapData.REMOVE_ACTION)
                     );
                 }
                 dialog.dismiss();
@@ -868,51 +869,6 @@ public class CartFragment extends BaseCheckoutFragment implements CartListAdapte
         dialog.getAlertDialog().setCanceledOnTouchOutside(true);
         dialog.show();
 
-    }
-
-    @NonNull
-    private CartRemoveItemDialog.CartItemRemoveCallbackAction getCallbackActionDialogRemoveCart() {
-        return new CartRemoveItemDialog.CartItemRemoveCallbackAction() {
-            @Override
-            public void onDeleteSingleItemClicked(
-                    CartItemData removedCartItem, List<CartItemData> updatedCartItems
-            ) {
-                dPresenter.processDeleteCart(removedCartItem, false);
-                cartPageAnalytics.enhancedECommerceRemoveCartNotWishList(
-                        dPresenter.generateCartDataAnalytics(removedCartItem)
-                );
-            }
-
-            @Override
-            public void onDeleteSingleItemWithWishListClicked(
-                    CartItemData removedCartItem, List<CartItemData> updatedCartItems
-            ) {
-                dPresenter.processDeleteCart(removedCartItem, true);
-                cartPageAnalytics.enhancedECommerceRemoveCartAddWishList(
-                        dPresenter.generateCartDataAnalytics(removedCartItem)
-                );
-            }
-
-            @Override
-            public void onDeleteMultipleItemClicked(
-                    List<CartItemData> removedCartItems, List<CartItemData> updatedCartItems
-            ) {
-                dPresenter.processDeleteAndRefreshCart(removedCartItems, false);
-                cartPageAnalytics.enhancedECommerceRemoveCartNotWishList(
-                        dPresenter.generateCartDataAnalytics(removedCartItems)
-                );
-            }
-
-            @Override
-            public void onDeleteMultipleItemWithWishListClicked(
-                    List<CartItemData> removedCartItems, List<CartItemData> updatedCartItems
-            ) {
-                dPresenter.processDeleteAndRefreshCart(removedCartItems, true);
-                cartPageAnalytics.enhancedECommerceRemoveCartAddWishList(
-                        dPresenter.generateCartDataAnalytics(removedCartItems)
-                );
-            }
-        };
     }
 
     public static CartFragment newInstance() {

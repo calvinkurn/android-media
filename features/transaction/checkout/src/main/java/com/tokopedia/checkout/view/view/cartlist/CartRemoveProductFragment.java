@@ -25,6 +25,7 @@ import com.tokopedia.checkout.view.di.module.CartRemoveProductModule;
 import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.transactionanalytics.CheckoutAnalyticsCartPage;
+import com.tokopedia.transactionanalytics.EnhancedECommerceCartMapData;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -308,6 +309,7 @@ public class CartRemoveProductFragment extends BaseCheckoutFragment
         }
         checkAllItemChecked();
     }
+
     @Override
     public void onCheckBoxCheckAll() {
         cartPageAnalytics.eventClickCartClickPilihSemuaFormHapus();
@@ -326,6 +328,7 @@ public class CartRemoveProductFragment extends BaseCheckoutFragment
         dialog.show(getFragmentManager(), CartRemoveItemDialog.class.getSimpleName());
     }
 
+
     @NonNull
     private CartRemoveItemDialog.CartItemRemoveCallbackAction getCallbackActionDialogRemoveCart() {
         return new CartRemoveItemDialog.CartItemRemoveCallbackAction() {
@@ -338,6 +341,11 @@ public class CartRemoveProductFragment extends BaseCheckoutFragment
                 mCartRemoveProductPresenter.processDeleteCart(
                         cartItemDataList, updatedCartItem, false
                 );
+                cartPageAnalytics.enhancedECommerceRemoveCartNotWishList(
+                        mCartRemoveProductPresenter.generateCartDataAnalytics(
+                                removedCartItem, EnhancedECommerceCartMapData.REMOVE_ACTION
+                        )
+                );
             }
 
             @Override
@@ -349,6 +357,11 @@ public class CartRemoveProductFragment extends BaseCheckoutFragment
                 mCartRemoveProductPresenter.processDeleteCart(
                         cartItemDataList, updatedCartItem, true
                 );
+                cartPageAnalytics.enhancedECommerceRemoveCartAddWishList(
+                        mCartRemoveProductPresenter.generateCartDataAnalytics(
+                                removedCartItem, EnhancedECommerceCartMapData.REMOVE_ACTION
+                        )
+                );
             }
 
             @Override
@@ -358,6 +371,11 @@ public class CartRemoveProductFragment extends BaseCheckoutFragment
                 mCartRemoveProductPresenter.processDeleteCart(
                         removedCartItem, updatedCartItem, false
                 );
+                cartPageAnalytics.enhancedECommerceRemoveCartNotWishList(
+                        mCartRemoveProductPresenter.generateCartDataAnalytics(
+                                removedCartItem, EnhancedECommerceCartMapData.REMOVE_ACTION
+                        )
+                );
             }
 
             @Override
@@ -366,6 +384,11 @@ public class CartRemoveProductFragment extends BaseCheckoutFragment
             ) {
                 mCartRemoveProductPresenter.processDeleteCart(
                         removedCartItem, updatedCartItem, true
+                );
+                cartPageAnalytics.enhancedECommerceRemoveCartAddWishList(
+                        mCartRemoveProductPresenter.generateCartDataAnalytics(
+                                removedCartItem, EnhancedECommerceCartMapData.REMOVE_ACTION
+                        )
                 );
             }
         };

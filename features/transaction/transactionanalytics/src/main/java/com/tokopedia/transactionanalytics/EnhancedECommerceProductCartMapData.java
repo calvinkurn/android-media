@@ -1,13 +1,12 @@
-package com.tokopedia.core.analytics.nishikino.model;
+package com.tokopedia.transactionanalytics;
 
 import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Created by ricoharisin on 9/29/15.
+ * @author anggaprasetiyo on 05/06/18.
  */
-public class Product extends BaseGTMModel {
-
+public class EnhancedECommerceProductCartMapData {
     private Map<String, Object> Product = new HashMap<>();
 
     public static final String KEY_NAME = "name";
@@ -30,7 +29,7 @@ public class Product extends BaseGTMModel {
 
     public static final String DEFAULT_VALUE_NONE_OTHER = "none/other";
 
-    public Product() {
+    public EnhancedECommerceProductCartMapData() {
 
     }
 
@@ -58,7 +57,7 @@ public class Product extends BaseGTMModel {
         Product.put(KEY_DIMENSION_38, data);
     }
 
-    public void setAttribution(Object data){
+    public void setAttribution(Object data) {
         Product.put(KEY_ATTRIBUTION, data);
     }
 
@@ -105,5 +104,4 @@ public class Product extends BaseGTMModel {
     public void setCartId(String cartId) {
         Product.put(KEY_CART_ID, cartId);
     }
-
 }
