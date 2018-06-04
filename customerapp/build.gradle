@@ -150,6 +150,7 @@ android {
             zipAlignEnabled false
             buildConfigField "boolean", "ENABLE_DISTRIBUTION", allowDistribution()
             proguardFiles  'proguard-rules.txt'
+            ext.enableHansel=false
         }
         release {
             signingConfig signingConfigs.debug

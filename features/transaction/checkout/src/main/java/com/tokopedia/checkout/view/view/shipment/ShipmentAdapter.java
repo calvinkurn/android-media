@@ -26,7 +26,6 @@ import com.tokopedia.checkout.view.view.shipment.viewholder.ShipmentRecipientAdd
 import com.tokopedia.checkout.view.view.shipment.viewmodel.ShipmentCartItemModel;
 import com.tokopedia.checkout.view.view.shipment.viewmodel.ShipmentCheckoutButtonModel;
 import com.tokopedia.checkout.view.view.shipment.viewmodel.ShipmentInsuranceTncModel;
-import com.tokopedia.checkout.view.view.shipmentform.SingleAddressShipmentFragment;
 import com.tokopedia.checkout.view.viewholder.CartPromoSuggestionViewHolder;
 import com.tokopedia.checkout.view.viewholder.CartVoucherPromoViewHolder;
 import com.tokopedia.core.router.transactionmodule.sharedata.CheckPromoCodeCartShipmentRequest;
@@ -158,10 +157,10 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     }
 
     private void setShowCase(Context context) {
-        if (!hasShownShowCase && !ShowCasePreference.hasShown(context, SingleAddressShipmentFragment.class.getName())) {
+        if (!hasShownShowCase && !ShowCasePreference.hasShown(context, ShipmentFragment.class.getName())) {
             hasShownShowCase = true;
             createShowCaseDialog().show((Activity) context,
-                    SingleAddressShipmentFragment.class.getName(),
+                    ShipmentFragment.class.getName(),
                     showCaseObjectList
             );
         }

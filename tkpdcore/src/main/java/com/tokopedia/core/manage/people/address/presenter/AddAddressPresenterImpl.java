@@ -114,7 +114,6 @@ public class AddAddressPresenterImpl implements AddAddressPresenter {
     }
 
     @Override
-
     public void getListCity(Province province) {
         viewListener.showLoadingRegency();
         viewListener.setActionsEnabled(false);

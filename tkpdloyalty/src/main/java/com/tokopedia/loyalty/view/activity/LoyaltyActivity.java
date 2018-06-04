@@ -35,6 +35,7 @@ import com.tokopedia.showcase.ShowCaseDialog;
 import com.tokopedia.showcase.ShowCaseObject;
 import com.tokopedia.showcase.ShowCasePreference;
 import com.tokopedia.transactionanalytics.CheckoutAnalyticsCartPage;
+import com.tokopedia.transactionanalytics.CheckoutAnalyticsCartShipmentPage;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -43,6 +44,9 @@ import javax.inject.Inject;
 import javax.inject.Named;
 
 import butterknife.BindView;
+
+import static com.tokopedia.abstraction.constant.IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.PLATFORM_PAGE_MARKETPLACE_CART_LIST;
+import static com.tokopedia.abstraction.constant.IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.PLATFORM_PAGE_MARKETPLACE_CART_SHIPMENT;
 
 /**
  * @author anggaprasetiyo on 27/11/17.
@@ -69,6 +73,8 @@ public class LoyaltyActivity extends BasePresenterActivity
     List<LoyaltyPagerItem> loyaltyPagerItemListCouponNotActive;
     @Inject
     CheckoutAnalyticsCartPage checkoutAnalyticsCartPage;
+    @Inject
+    CheckoutAnalyticsCartShipmentPage checkoutAnalyticsCartShipmentPage;
 
     private boolean isCouponActive;
     private String platformString;
@@ -425,7 +431,7 @@ public class LoyaltyActivity extends BasePresenterActivity
         bundle.putString(IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.EXTRA_PLATFORM,
                 IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.MARKETPLACE_STRING);
         bundle.putString(IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.EXTRA_PLATFORM_PAGE,
-                IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.PLATFORM_PAGE_MARKETPLACE_CART_LIST);
+                PLATFORM_PAGE_MARKETPLACE_CART_LIST);
         bundle.putString(IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.EXTRA_ADDITIONAL_STRING_DATA,
                 additionalStringData);
         intent.putExtras(bundle);
@@ -441,7 +447,7 @@ public class LoyaltyActivity extends BasePresenterActivity
         bundle.putString(IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.EXTRA_PLATFORM,
                 IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.MARKETPLACE_STRING);
         bundle.putString(IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.EXTRA_PLATFORM_PAGE,
-                IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.PLATFORM_PAGE_MARKETPLACE_CART_LIST);
+                PLATFORM_PAGE_MARKETPLACE_CART_LIST);
         bundle.putString(IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.EXTRA_ADDITIONAL_STRING_DATA,
                 additionalStringData);
         if (!TextUtils.isEmpty(defaultSelectedTab) && DEFAULT_COUPON_TAB_SELECTED.equalsIgnoreCase(defaultSelectedTab)) {
@@ -527,13 +533,34 @@ public class LoyaltyActivity extends BasePresenterActivity
         public void onTabSelected(TabLayout.Tab tab) {
             if (doubleTab) {
                 if (tab.getPosition() == 1) {
-                    checkoutAnalyticsCartPage.eventClickCartClickKuponSayaFromGunakanPromoAtauKupon();
+                    switch (platformPageString) {
+                        case PLATFORM_PAGE_MARKETPLACE_CART_LIST:
+                            checkoutAnalyticsCartPage.eventClickCartClickKuponSayaFromGunakanPromoAtauKupon();
+                            break;
+                        case PLATFORM_PAGE_MARKETPLACE_CART_SHIPMENT:
+                            checkoutAnalyticsCartShipmentPage.eventClickShipmentClickKuponSayaFromGunakanKodePromoAtauKupon();
+                            break;
+                    }
                 } else {
-                    checkoutAnalyticsCartPage.eventClickCartClickKodePromoFromGunakanPromoAtauKupon();
+                    switch (platformPageString) {
+                        case PLATFORM_PAGE_MARKETPLACE_CART_LIST:
+                            checkoutAnalyticsCartPage.eventClickCartClickKodePromoFromGunakanPromoAtauKupon();
+                            break;
+                        case PLATFORM_PAGE_MARKETPLACE_CART_SHIPMENT:
+                            checkoutAnalyticsCartShipmentPage.eventClickShipmentClickKodePromoFromGunakanKodePromoAtauKupon();
+                            break;
+                    }
                 }
             } else {
                 if (tab.getPosition() == 0) {
-                    checkoutAnalyticsCartPage.eventClickCartClickKodePromoFromGunakanPromoAtauKupon();
+                    switch (platformPageString) {
+                        case PLATFORM_PAGE_MARKETPLACE_CART_LIST:
+                            checkoutAnalyticsCartPage.eventClickCartClickKodePromoFromGunakanPromoAtauKupon();
+                            break;
+                        case PLATFORM_PAGE_MARKETPLACE_CART_SHIPMENT:
+                            checkoutAnalyticsCartShipmentPage.eventClickShipmentClickKodePromoFromGunakanKodePromoAtauKupon();
+                            break;
+                    }
                 }
             }
         }

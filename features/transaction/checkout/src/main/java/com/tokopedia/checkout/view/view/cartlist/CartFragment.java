@@ -52,14 +52,17 @@ import com.tokopedia.checkout.view.view.shipment.ShipmentData;
 import com.tokopedia.checkout.view.view.shipment.ShipmentFragment;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.gcm.GCMHandler;
+import com.tokopedia.core.manage.people.address.model.Token;
 import com.tokopedia.core.receiver.CartBadgeNotificationReceiver;
 import com.tokopedia.core.router.productdetail.ProductDetailRouter;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
+import com.tokopedia.core.router.transactionmodule.TransactionPurchaseRouter;
 import com.tokopedia.core.router.transactionmodule.TransactionRouter;
 import com.tokopedia.core.router.transactionmodule.sharedata.CheckPromoCodeCartListResult;
 import com.tokopedia.core.util.RefreshHandler;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.ProductItem;
+import com.tokopedia.payment.activity.TopPayActivity;
 import com.tokopedia.topads.sdk.base.Config;
 import com.tokopedia.topads.sdk.base.Endpoint;
 import com.tokopedia.topads.sdk.domain.TopAdsParams;
@@ -567,8 +570,20 @@ public class CartFragment extends BaseCheckoutFragment implements CartListAdapte
 
     @Override
     public void renderNoRecipientAddressShipmentForm(CartShipmentAddressFormData shipmentAddressFormData) {
-        Intent intent = CartAddressChoiceActivity.createInstance(getActivity(), null,
-                CartAddressChoiceActivity.TYPE_REQUEST_ADD_SHIPMENT_DEFAULT_ADDRESS);
+        Intent intent;
+        if (shipmentAddressFormData.getKeroDiscomToken() != null &&
+                shipmentAddressFormData.getKeroUnixTime() != 0) {
+            Token token = new Token();
+            token.setUt(shipmentAddressFormData.getKeroUnixTime());
+            token.setDistrictRecommendation(shipmentAddressFormData.getKeroDiscomToken());
+
+            intent = CartAddressChoiceActivity.createInstance(getActivity(), null,
+                    CartAddressChoiceActivity.TYPE_REQUEST_ADD_SHIPMENT_DEFAULT_ADDRESS, token);
+        } else {
+            intent = CartAddressChoiceActivity.createInstance(getActivity(), null,
+                    CartAddressChoiceActivity.TYPE_REQUEST_ADD_SHIPMENT_DEFAULT_ADDRESS);
+        }
+
         startActivityForResult(intent, CartAddressChoiceActivity.REQUEST_CODE);
     }
 
@@ -964,9 +979,21 @@ public class CartFragment extends BaseCheckoutFragment implements CartListAdapte
             );
             dPresenter.processToShipmentMultipleAddress(selectedAddress);
         } else if (resultCode == ShipmentActivity.RESULT_CODE_FORCE_RESET_CART_FROM_SINGLE_SHIPMENT ||
-                resultCode == ShipmentActivity.RESULT_CODE_FORCE_RESET_CART_FROM_MULTIPLE_SHIPMENT ||
-                resultCode == ShipmentFragment.RESULT_CODE_CANCEL_SHIPMENT_PAYMENT) {
+                resultCode == ShipmentActivity.RESULT_CODE_FORCE_RESET_CART_FROM_MULTIPLE_SHIPMENT) {
             dPresenter.processResetAndRefreshCartData();
+        } else if (resultCode == TopPayActivity.PAYMENT_CANCELLED) {
+            NetworkErrorHelper.showSnackbar(
+                    getActivity(),
+                    getString(R.string.alert_payment_canceled_or_failed_transaction_module)
+            );
+            dPresenter.processResetAndRefreshCartData();
+        } else if (resultCode == TopPayActivity.PAYMENT_SUCCESS) {
+            showToastMessage(getString(R.string.message_payment_success));
+            startActivity(TransactionPurchaseRouter.createIntentTxSummary(getActivity()));
+            CartBadgeNotificationReceiver.resetBadgeCart(getActivity());
+            getActivity().finish();
+        } else if (resultCode == TopPayActivity.PAYMENT_FAILED) {
+            showToastMessage(getString(R.string.default_request_error_unknown));
         }
     }
 

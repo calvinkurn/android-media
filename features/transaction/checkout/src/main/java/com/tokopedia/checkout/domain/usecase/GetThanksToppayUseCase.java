@@ -1,9 +1,8 @@
 package com.tokopedia.checkout.domain.usecase;
 
-import com.tokopedia.abstraction.common.utils.TKPDMapParam;
-import com.tokopedia.transactiondata.repository.ITopPayRepository;
 import com.tokopedia.checkout.domain.datamodel.toppay.ThanksTopPayData;
 import com.tokopedia.checkout.domain.mapper.ITopPayMapper;
+import com.tokopedia.transactiondata.repository.ITopPayRepository;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.usecase.UseCase;
 
@@ -31,9 +30,7 @@ public class GetThanksToppayUseCase extends UseCase<ThanksTopPayData> {
     @Override
     @SuppressWarnings("unchecked")
     public Observable<ThanksTopPayData> createObservable(RequestParams requestParams) {
-        TKPDMapParam<String, String> param =
-                (TKPDMapParam<String, String>) requestParams.getObject(PARAM_REQUEST_AUTH_MAP_STRING);
-        return topPayRepository.getThanksTopPay(param)
+        return topPayRepository.getThanksTopPay(requestParams.getParamsAllValueInString())
                 .map(new Func1<com.tokopedia.transactiondata.entity.response.thankstoppaydata.ThanksTopPayData,
                         ThanksTopPayData>() {
                     @Override

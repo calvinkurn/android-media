@@ -16,11 +16,4 @@ import dagger.Provides;
 @Module
 public class FlightAirportModule {
 
-    @FlightAirportScope
-    @Provides
-    public FlightAirportPickerPresenter provideFlightAirportPickerPresenter(FlightAirportPickerUseCase flightAirportPickerUseCase,
-                                                                            FlightAirportVersionCheckUseCase flightAirportVersionCheckUseCase){
-        return new FlightAirportPickerPresenterImpl(flightAirportPickerUseCase, flightAirportVersionCheckUseCase);
-    }
-
 }

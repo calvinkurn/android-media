@@ -75,7 +75,8 @@ import javax.inject.Inject;
  * Created by zulfikarrahman on 11/9/17.
  */
 
-public class FlightBookingReviewFragment extends BaseDaggerFragment implements FlightBookingReviewContract.View, OnBackActionListener, VoucherCartHachikoView.ActionListener {
+public class FlightBookingReviewFragment extends BaseDaggerFragment implements
+        FlightBookingReviewContract.View, OnBackActionListener, VoucherCartHachikoView.ActionListener {
 
     public static final String HACHIKO_FLIGHT_KEY = "flight";
     public static final String EXTRA_NEED_TO_REFRESH = "EXTRA_NEED_TO_REFRESH";
@@ -195,9 +196,18 @@ public class FlightBookingReviewFragment extends BaseDaggerFragment implements F
     }
 
     private void actionVerifyAndCheckoutBooking() {
-        flightBookingReviewPresenter.verifyBooking(voucherCartView.getVoucherCode(), flightBookingReviewModel.getTotalPriceNumeric(),
-                flightBookingReviewModel.getAdult(), flightBookingReviewModel.getId(), flightBookingReviewModel.getDetailPassengersData(), flightBookingReviewModel.getContactName(),
-                flightBookingReviewModel.getPhoneCodeViewModel().getCountryId(), flightBookingReviewModel.getContactEmail(), flightBookingReviewModel.getContactPhone());
+        flightBookingReviewPresenter.verifyBooking(
+                voucherCartView.getVoucherCode(),
+                flightBookingReviewModel.getTotalPriceNumeric(),
+                flightBookingReviewModel.getAdult(),
+                flightBookingReviewModel.getId(),
+                flightBookingReviewModel.getDetailPassengersData(),
+                flightBookingReviewModel.getContactName(),
+                flightBookingReviewModel.getPhoneCodeViewModel().getCountryId(),
+                flightBookingReviewModel.getContactEmail(),
+                flightBookingReviewModel.getContactPhone(),
+                flightBookingReviewModel.getInsuranceIds()
+        );
     }
 
     void initView() {
@@ -356,15 +366,14 @@ public class FlightBookingReviewFragment extends BaseDaggerFragment implements F
     @Override
     public void onClickUseVoucher() {
         if (getActivity() != null && getActivity().getApplication() instanceof FlightModuleRouter) {
-            Intent intent = ((FlightModuleRouter) getActivity().getApplication()).getLoyaltyWithCoupon(getActivity(),
-                    HACHIKO_FLIGHT_KEY, FlightUrl.CATEGORY_ID, getCurrentCartData().getId());
+            Intent intent = ((FlightModuleRouter) getActivity().getApplication()).getLoyaltyWithCoupon(getActivity(), HACHIKO_FLIGHT_KEY, FlightUrl.CATEGORY_ID, getCurrentCartData().getId());
             startActivityForResult(intent, REQUEST_CODE_LOYALTY);
         }
     }
 
     @Override
     public void disableVoucherDiscount() {
-
+        updateFinalTotal(null, getCurrentBookingReviewModel());
     }
 
     @Override

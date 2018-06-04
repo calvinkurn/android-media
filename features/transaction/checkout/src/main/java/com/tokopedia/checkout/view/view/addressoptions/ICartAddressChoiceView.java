@@ -4,6 +4,7 @@ import android.app.Activity;
 
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.checkout.domain.datamodel.addressoptions.RecipientAddressModel;
+import com.tokopedia.core.manage.people.address.model.Token;
 
 import java.util.List;
 
@@ -23,5 +24,9 @@ public interface ICartAddressChoiceView extends CustomerView {
 
     void renderRecipientData(List<RecipientAddressModel> recipientAddressModels);
 
+    void setToken(Token token);
+
     Activity getActivity();
+
+    void renderEmptyRecipientData();
 }

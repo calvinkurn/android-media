@@ -5,7 +5,7 @@
     android:id="@+id/container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/grey_200"
+    android:background="@color/white"
     android:orientation="vertical">
 
     <LinearLayout
@@ -124,8 +124,8 @@
                             android:inputType="number"
                             android:maxLength="5"
                             android:textSize="16sp"
-                            tools:text="88888"
-                            tools:ignore="LabelFor" />
+                            tools:ignore="LabelFor"
+                            tools:text="88888" />
 
                         <ImageView
                             android:id="@+id/increase_quantity"

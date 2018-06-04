@@ -26,6 +26,7 @@ import com.tokopedia.checkout.view.di.component.CartComponentInjector;
 import com.tokopedia.checkout.view.view.shippingoptions.di.CourierComponent;
 import com.tokopedia.checkout.view.view.shippingoptions.di.CourierModule;
 import com.tokopedia.checkout.view.view.shippingoptions.di.DaggerCourierComponent;
+import com.tokopedia.transactionanalytics.CheckoutAnalyticsCartShipmentPage;
 
 import javax.inject.Inject;
 
@@ -56,6 +57,8 @@ public class CourierBottomsheet extends BottomSheetDialog implements CourierCont
 
     @Inject
     CourierAdapter courierAdapter;
+    @Inject
+    CheckoutAnalyticsCartShipmentPage checkoutAnalyticsCartShipmentPage;
 
     private BottomSheetBehavior behavior;
 
@@ -95,6 +98,7 @@ public class CourierBottomsheet extends BottomSheetDialog implements CourierCont
             @Override
             public void onClick(View view) {
                 onCloseClick();
+                checkoutAnalyticsCartShipmentPage.eventClickShipmentClickXOnCourierOption();
             }
         });
     }
