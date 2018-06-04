@@ -2,6 +2,7 @@ package com.tokopedia.imagepicker.picker.gallery.adapter;
 
 import android.content.Context;
 import android.database.Cursor;
+import android.provider.MediaStore;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -47,7 +48,9 @@ public class AlbumMediaAdapter extends RecyclerViewCursorAdapter<AlbumMediaAdapt
 
     public interface OnMediaClickListener {
         void onMediaClick(MediaItem item, boolean checked, int adapterPosition);
+
         boolean isImageValid(MediaItem item);
+
         boolean canAddMoreImage();
     }
 
@@ -81,6 +84,29 @@ public class AlbumMediaAdapter extends RecyclerViewCursorAdapter<AlbumMediaAdapt
                     item,
                     isChecked,
                     holder.getAdapterPosition());
+        }
+    }
+
+    public void removeImageFromSelection(String imagePath) {
+        if (getCursor() == null || getCursor().getCount() == 0) {
+            return;
+        }
+
+        if (!supportMultipleSelection) {
+            return;
+        }
+        int position = 0;
+        int columnIdIndex = getCursor().getColumnIndex(MediaStore.Files.FileColumns._ID);
+        int dataColumnIndex = getCursor().getColumnIndex(MediaStore.MediaColumns.DATA);
+        while (getCursor().moveToPosition(position)) {
+            long cursorId = getCursor().getLong(columnIdIndex);
+            String cursorImagePath = getCursor().getString(dataColumnIndex);
+            if (imagePath.equals(cursorImagePath)) {
+                selectionIdList.remove(cursorId);
+                notifyItemChanged(position);
+                break;
+            }
+            position++;
         }
     }
 

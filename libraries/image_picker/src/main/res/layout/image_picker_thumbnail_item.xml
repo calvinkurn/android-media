@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="@dimen/image_picker_thumbnail_outer_width"
     android:layout_height="@dimen/image_picker_thumbnail_outer_width"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_marginLeft="@dimen/dp_4"
     android:layout_marginRight="@dimen/dp_4">
 
@@ -38,10 +39,13 @@
             tools:text="1" />
     </FrameLayout>
 
-    <ImageView
+    <android.support.v7.widget.AppCompatImageView
+        android:id="@+id/iv_delete"
         android:layout_width="@dimen/dp_24"
         android:layout_height="@dimen/dp_24"
         android:layout_gravity="top|end"
-        android:src="@drawable/circle_light_grey" />
+        android:background="@drawable/circle_light_grey"
+        app:srcCompat="@drawable/ic_close_white"
+        android:padding="@dimen/dp_2"/>
 </FrameLayout>
 

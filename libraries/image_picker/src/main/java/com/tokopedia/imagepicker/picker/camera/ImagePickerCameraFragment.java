@@ -28,7 +28,6 @@ import com.otaliastudios.cameraview.CameraView;
 import com.otaliastudios.cameraview.Flash;
 import com.otaliastudios.cameraview.Size;
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment;
-import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.imagepicker.R;
 import com.tokopedia.imagepicker.common.util.ImageUtils;
 
@@ -268,22 +267,22 @@ public class ImagePickerCameraFragment extends TkpdBaseV4Fragment {
         try {
             cameraView.start();
         } catch (Exception e) {
-
+            // no-op
         }
     }
 
-    private void pauseCamera() {
+    private void stopCamera() {
         try {
             cameraView.stop();
         } catch (Exception e) {
-
+            // no-op
         }
     }
 
     @Override
     public void onPause() {
         super.onPause();
-        pauseCamera();
+        stopCamera();
     }
 
     @Override

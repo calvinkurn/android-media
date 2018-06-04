@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.imagepicker.R;
@@ -29,6 +30,7 @@ public class ImagePickerThumbnailAdapter extends RecyclerView.Adapter<RecyclerVi
 
     public interface OnImageEditThumbnailAdapterListener {
         void onPickerThumbnailItemClicked(String imagePath, int position);
+        void onThumbnailRemoved(String imagePath);
     }
 
     public ImagePickerThumbnailAdapter(Context context, ArrayList<String> imagePathList,
@@ -41,20 +43,33 @@ public class ImagePickerThumbnailAdapter extends RecyclerView.Adapter<RecyclerVi
 
     public class ImagePickerThumbnailViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         private ImageView imageView;
+        private TextView tvCounter;
+        private ImageView ivDelete;
 
         public ImagePickerThumbnailViewHolder(View itemView) {
             super(itemView);
             imageView = itemView.findViewById(R.id.image_view);
+            tvCounter = itemView.findViewById(R.id.tv_counter);
+            ivDelete = itemView.findViewById(R.id.iv_delete);
             itemView.setOnClickListener(this);
+            ivDelete.setOnClickListener(this);
         }
 
         @Override
         public void onClick(View v) {
             int position = getAdapterPosition();
+            if (v == ivDelete) {
+                removeData(position);
+            } else {
+
+            }
             //TODO onclick
         }
-        public void bind(String imagePath) {
+
+        public void bind(String imagePath, int position) {
             ImageHandler.loadImageRounded2(context, imageView, imagePath, roundedSize);
+            String positionString = String.valueOf(position + 1);
+            tvCounter.setText(positionString);
         }
     }
 
@@ -88,8 +103,13 @@ public class ImagePickerThumbnailAdapter extends RecyclerView.Adapter<RecyclerVi
 
     public void removeData(String imagePath) {
         int index = this.imagePathList.indexOf(imagePath);
+        removeData(index);
+    }
+
+    public void removeData(int index) {
         if (index > -1) {
-            this.imagePathList.remove(index);
+            String imagePath = this.imagePathList.remove(index);
+            onImageEditThumbnailAdapterListener.onThumbnailRemoved(imagePath);
             notifyDataSetChanged();
         }
     }
@@ -113,7 +133,7 @@ public class ImagePickerThumbnailAdapter extends RecyclerView.Adapter<RecyclerVi
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         if (isItemType(position)) {
             String imagePath = imagePathList.get(position);
-            ((ImagePickerThumbnailViewHolder)holder).bind(imagePath);
+            ((ImagePickerThumbnailViewHolder)holder).bind(imagePath, position);
         } else {
             // draw the empty preview
         }
