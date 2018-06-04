@@ -22,14 +22,16 @@
         <android.support.v7.widget.CardView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_margin="@dimen/card_view_margin"
+            android:layout_marginTop="@dimen/dp_16"
+            android:layout_marginLeft="@dimen/dp_16"
+            android:layout_marginBottom="@dimen/dp_16"
             app:cardUseCompatPadding="true"
             app:cardElevation="0dp">
 
             <com.tokopedia.core.customwidget.SquareImageView
                 android:id="@+id/product_image"
-                android:layout_width="110dp"
-                android:layout_height="110dp"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
                 android:adjustViewBounds="true"
                 android:gravity="center"
                 app:srcCompat="@drawable/loading_page" />
@@ -38,8 +40,8 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="11dp"
-            android:layout_marginBottom="11dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="16dp"
             android:orientation="vertical">
 
             <TextView
@@ -48,7 +50,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginRight="38dp"
                 tools:text="Nexus 5X 32 GB sedia carbon black, ice blue,  pure white dan juga warna rose gold"
-                android:textSize="@dimen/text_size_s_medium"
+                android:textSize="@dimen/sp_14"
                 android:fontFamily="sans-serif-medium"
                 android:textStyle="normal"
                 android:textColor="@color/black_70"
@@ -74,7 +76,7 @@
                     android:gravity="center_vertical"
                     tools:text="Rp 3.121.500"
                     android:textColor="@color/orange_red"
-                    android:textSize="@dimen/text_size_s_medium"
+                    android:textSize="@dimen/sp_14"
                     android:fontFamily="sans-serif-medium"
                     android:textStyle="normal"
                     android:lineSpacingExtra="5sp" />
@@ -101,7 +103,7 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="2dp"
+                android:layout_marginTop="5dp"
                 android:orientation="horizontal">
 
                 <LinearLayout
@@ -115,7 +117,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:gravity="center_vertical"
-                    android:textSize="@dimen/text_size_xsmall"
+                    android:textSize="@dimen/sp_12"
                     android:fontFamily="sans-serif"
                     android:textStyle="normal"
                     android:textColor="@color/black_38"/>
@@ -132,8 +134,8 @@
 
                 <ImageView
                     android:id="@+id/rating"
-                    android:layout_width="68dp"
-                    android:layout_height="12dp"
+                    android:layout_width="51dp"
+                    android:layout_height="10dp"
                     />
 
                 <TextView
@@ -141,7 +143,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="4dp"
-                    android:textSize="@dimen/text_size_xsmall"
+                    android:textSize="@dimen/sp_12"
+                    android:textColor="@color/black_38"
                     />
 
             </LinearLayout>
@@ -181,17 +184,17 @@
         android:id="@+id/wishlist_button_container"
         android:layout_alignParentTop="true"
         android:layout_alignParentRight="true"
-        android:layout_width="38dp"
-        android:layout_height="38dp"
-        android:layout_marginTop="-5dp"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:layout_marginTop="@dimen/dp_16"
         android:layout_marginRight="-5dp"
         android:background="@drawable/circle_white"
         android:visibility="gone">
 
         <ImageView
             android:id="@+id/wishlist_button"
-            android:layout_width="19dp"
-            android:layout_height="19dp"
+            android:layout_width="18dp"
+            android:layout_height="18dp"
             android:layout_marginLeft="8dp"
             android:layout_centerVertical="true"
             android:background="@drawable/ic_wishlist"

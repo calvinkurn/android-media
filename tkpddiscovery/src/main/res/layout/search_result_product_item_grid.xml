@@ -17,9 +17,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:cardElevation="0dp"
-        android:layout_marginTop="@dimen/product_grid_padding"
-        android:layout_marginLeft="@dimen/product_grid_padding"
-        android:layout_marginRight="@dimen/product_grid_padding"
+        android:layout_marginTop="@dimen/dp_16"
+        android:layout_marginLeft="@dimen/dp_16"
+        android:layout_marginRight="@dimen/dp_16"
         app:cardUseCompatPadding="true">
 
         <com.tokopedia.core.customwidget.SquareImageView
@@ -60,8 +60,8 @@
 
     <RelativeLayout
         android:id="@id/wishlist_button_container"
-        android:layout_width="@dimen/wishlish_button_size"
-        android:layout_height="@dimen/wishlish_button_size"
+        android:layout_width="@dimen/dp_32"
+        android:layout_height="@dimen/dp_32"
         android:layout_alignParentRight="true"
         android:layout_alignParentTop="true"
         android:layout_marginTop="-5dp"
@@ -71,9 +71,9 @@
 
         <ImageView
             android:id="@id/wishlist_button"
-            android:layout_width="19dp"
-            android:layout_height="19dp"
-            android:layout_marginLeft="8dp"
+            android:layout_width="18dp"
+            android:layout_height="18dp"
+            android:layout_marginLeft="7dp"
             android:layout_centerVertical="true"
             android:background="@drawable/ic_wishlist"
             />
@@ -85,14 +85,14 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/image_card"
-        android:layout_marginTop="4dp"
+        android:layout_marginTop="8dp"
         android:ellipsize="end"
         android:maxLines="2"
-        android:layout_marginLeft="@dimen/product_grid_padding"
-        android:layout_marginRight="@dimen/product_grid_padding"
+        android:layout_marginLeft="@dimen/dp_16"
+        android:layout_marginRight="@dimen/dp_16"
         android:minHeight="@dimen/product_item_title_min_height"
         tools:text="Nexus 5X 32 GB sedia carbon black, ice blue,  pure white dan juga warna rose gold"
-        android:textSize="@dimen/text_size_s_medium"
+        android:textSize="@dimen/sp_14"
         android:fontFamily="sans-serif-medium"
         android:textStyle="normal"
         android:textColor="@color/black_70"
@@ -105,8 +105,8 @@
         android:layout_below="@id/title"
         android:textColor="@color/warm_grey"
         android:textSize="@dimen/fontvvs"
-        android:layout_marginLeft="@dimen/product_grid_padding"
-        android:layout_marginRight="@dimen/product_grid_padding"
+        android:layout_marginLeft="@dimen/dp_16"
+        android:layout_marginRight="@dimen/dp_16"
         android:visibility="gone"/>
 
     <TextView
@@ -115,13 +115,14 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/text_original_price"
         android:layout_marginBottom="5dp"
+        android:ellipsize="end"
         android:layout_weight="1"
         android:gravity="center_vertical"
-        android:layout_marginTop="2dp"
-        android:layout_marginLeft="@dimen/product_grid_padding"
-        android:layout_marginRight="@dimen/product_grid_padding"
+        android:layout_marginTop="4dp"
+        android:layout_marginLeft="@dimen/dp_16"
+        android:layout_marginRight="@dimen/dp_16"
         tools:text="Rp 3.121.500"
-        android:textSize="@dimen/text_size_s_medium"
+        android:textSize="@dimen/sp_14"
         android:fontFamily="sans-serif-medium"
         android:textStyle="normal"
         android:textColor="@color/orange_red"
@@ -151,9 +152,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/price"
-        android:layout_marginTop="3dp"
-        android:layout_marginLeft="@dimen/product_grid_padding"
-        android:layout_marginRight="@dimen/product_grid_padding"
+        android:layout_marginLeft="@dimen/dp_16"
+        android:layout_marginRight="@dimen/dp_16"
         android:orientation="horizontal">
 
         <LinearLayout
@@ -166,10 +166,9 @@
             android:id="@+id/location"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="2dp"
             android:gravity="center_vertical"
             android:textColor="@color/black_38"
-            android:textSize="11sp"
+            android:textSize="@dimen/sp_12"
             android:fontFamily="sans-serif"
             android:textStyle="normal"/>
 
@@ -181,23 +180,23 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/shop_info_container"
         android:layout_marginTop="3dp"
-        android:layout_marginLeft="@dimen/product_grid_padding"
-        android:layout_marginRight="@dimen/product_grid_padding"
+        android:layout_marginLeft="@dimen/dp_16"
+        android:layout_marginRight="@dimen/dp_16"
         android:orientation="horizontal"
         android:visibility="gone">
 
         <ImageView
             android:id="@+id/rating"
-            android:layout_width="68dp"
-            android:layout_height="12dp"
+            android:layout_width="51dp"
+            android:layout_height="10dp"
             />
 
         <TextView
             android:id="@+id/review_count"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="4dp"
-            android:textSize="@dimen/text_size_xsmall"
+            android:layout_marginLeft="2dp"
+            android:textSize="@dimen/sp_12"
             />
 
     </LinearLayout>
