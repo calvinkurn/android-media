@@ -129,6 +129,7 @@ public class ProductMapper implements Func1<Response<String>, SearchResultModel>
             BadgeModel model = new BadgeModel();
             model.setTitle(data.getTitle());
             model.setImageUrl(data.getImageUrl());
+            model.setShown(data.isShown());
             list.add(model);
         }
         return list;

@@ -13,6 +13,7 @@ import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.core.customwidget.FlowLayout;
 import com.tokopedia.core.helper.IndicatorViewHelper;
+import com.tokopedia.core.loyaltysystem.util.LuckyShopImage;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.discovery.R;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.adapter.listener.ItemClickListener;
@@ -144,10 +145,11 @@ public class GridProductItemViewHolder extends AbstractViewHolder<ProductItem> {
     }
 
     protected void renderBadges(List<BadgeItem> badgesList) {
-        List<String> badgesImageUrl = new ArrayList<>();
-        for (BadgeItem model : badgesList) {
-            badgesImageUrl.add(model.getImageUrl());
+        badgesContainer.removeAllViews();
+        for (BadgeItem badgeItem : badgesList) {
+            if (badgeItem.isShown()) {
+                LuckyShopImage.loadImage(context, badgeItem.getImageUrl(), badgesContainer);
+            }
         }
-        IndicatorViewHelper.renderBadgesViewV2(context, badgesContainer, badgesImageUrl);
     }
 }

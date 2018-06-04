@@ -642,6 +642,8 @@ public class SearchProductResponse {
                 private String title;
                 @SerializedName("image_url")
                 private String imageUrl;
+                @SerializedName("is_shown")
+                private boolean isShown = true;
 
                 public String getTitle() {
                     return title;
@@ -657,6 +659,14 @@ public class SearchProductResponse {
 
                 public void setImageUrl(String imageUrl) {
                     this.imageUrl = imageUrl;
+                }
+
+                public boolean isShown() {
+                    return isShown;
+                }
+
+                public void setShown(boolean shown) {
+                    isShown = shown;
                 }
             }
         }

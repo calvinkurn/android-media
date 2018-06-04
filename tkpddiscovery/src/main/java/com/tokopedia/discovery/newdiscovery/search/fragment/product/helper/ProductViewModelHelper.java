@@ -131,6 +131,7 @@ public class ProductViewModelHelper {
         BadgeItem badgeItem = new BadgeItem();
         badgeItem.setImageUrl(badgeModel.getImageUrl());
         badgeItem.setTitle(badgeModel.getTitle());
+        badgeItem.setShown(badgeModel.isShown());
         return badgeItem;
     }
 
