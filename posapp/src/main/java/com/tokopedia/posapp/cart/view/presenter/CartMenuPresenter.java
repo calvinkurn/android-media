@@ -26,7 +26,8 @@ public class CartMenuPresenter implements CartMenu.Presenter {
 
     @Override
     public void detachView() {
-
+        this.view = null;
+        getAllCartUseCase.unsubscribe();
     }
 
     @Override

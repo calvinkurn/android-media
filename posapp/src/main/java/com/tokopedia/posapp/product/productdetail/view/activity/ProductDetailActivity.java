@@ -169,13 +169,23 @@ public class ProductDetailActivity extends BasePresenterActivity
 
     @Override
     public void onCartFilled(int cartCount) {
-        tvNotif.setVisibility(View.VISIBLE);
-        tvNotif.setText(Integer.toString(cartCount));
+        if(tvNotif != null) {
+            tvNotif.setVisibility(View.VISIBLE);
+            tvNotif.setText(Integer.toString(cartCount));
+        }
     }
 
     @Override
     public void onCartEmpty() {
-        tvNotif.setVisibility(View.GONE);
+        if(tvNotif != null) {
+            tvNotif.setVisibility(View.GONE);
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        cartMenuPresenter.detachView();
     }
 
     private void initInjector() {

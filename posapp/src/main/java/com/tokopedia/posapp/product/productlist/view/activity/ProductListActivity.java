@@ -160,6 +160,12 @@ public class ProductListActivity extends ReactDrawerPresenterActivity implements
         }
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        cartMenuPresenter.detachView();
+    }
+
     protected void initInjector() {
         PosAppComponent appComponent = ((PosApplication) this.getApplicationContext()).getPosAppComponent();
         CartComponent cartComponent = DaggerCartComponent.builder().posAppComponent(appComponent).build();
