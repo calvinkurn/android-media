@@ -9,4 +9,5 @@
     <color name="text_warning_red">#d30b16</color>
     <color name="text_warning_grey">#8b000000</color>
     <color name="text_cart_item_error_red">#d30b16</color>
+    <color name="bg_upload_awb">#fde18e</color>
 </resources>

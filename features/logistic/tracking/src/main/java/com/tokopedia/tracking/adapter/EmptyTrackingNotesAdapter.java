@@ -12,7 +12,9 @@ import com.tokopedia.tracking.R;
  * Created by kris on 5/11/18. Tokopedia
  */
 
-public class EmptyTrackingNotesAdapter extends RecyclerView.Adapter<EmptyTrackingNotesAdapter.EmptyTrackingNotesViewHolder> {
+public class EmptyTrackingNotesAdapter extends
+        RecyclerView.Adapter<EmptyTrackingNotesAdapter.EmptyTrackingNotesViewHolder> {
+    private static final int DEFAULT_SIZE = 3;
 
     @Override
     public EmptyTrackingNotesViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -38,7 +40,7 @@ public class EmptyTrackingNotesAdapter extends RecyclerView.Adapter<EmptyTrackin
 
     @Override
     public int getItemCount() {
-        return 3;
+        return DEFAULT_SIZE;
     }
 
     class EmptyTrackingNotesViewHolder extends RecyclerView.ViewHolder {

@@ -148,7 +148,9 @@ public class OrderDetailActivity extends TActivity
     }
 
     private void setUploadAwb(final OrderDetailData data) {
-        if (android.os.Build.VERSION.SDK_INT <= Build.VERSION_CODES.KITKAT) return;
+        if (android.os.Build.VERSION.SDK_INT <= Build.VERSION_CODES.KITKAT) {
+            return;
+        }
         RelativeLayout uploadAwbHolder = findViewById(R.id.upload_awb_layout);
         TextView tvUploadAwbMessage = findViewById(R.id.tv_upload_awb_message);
         TextView btnUploadAwb = findViewById(R.id.btn_upload_awb);
