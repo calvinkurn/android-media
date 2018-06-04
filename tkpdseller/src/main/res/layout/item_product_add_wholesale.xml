@@ -33,15 +33,14 @@
         android:layout_marginLeft="@dimen/dp_8"
         android:layout_marginRight="@dimen/dp_16"
         style="@style/TextInputLayout">
-        <com.tokopedia.seller.common.widget.PrefixEditText
+        <EditText
             android:id="@+id/et_whole_sale_price"
             android:layout_height="match_parent"
             android:layout_width="match_parent"
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"
             android:layout_centerVertical="true"
-            android:inputType="numberDecimal"
-            app:prefix="Rp  "/>
+            android:inputType="numberDecimal" />
     </android.support.design.widget.TextInputLayout>
 
     <ImageView

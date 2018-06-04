@@ -275,7 +275,7 @@ public class ChatRoomPresenter extends BaseDaggerPresenter<ChatRoomContract.View
                 item.setReplyId(response.getData().getMsgId());
                 item.setMsgId(response.getData().getMsgId());
                 item.setSenderId(String.valueOf(response.getData().getFromUid()));
-                item.setMsg(response.getData().getMessage().getCensoredReply());
+                item.setMsg(response.getData().getMessage().getOriginalReply());
                 item.setReplyTime(response.getData().getMessage().getTimeStampUnix());
                 item.setAttachment(response.getData().getAttachment());
                 if (response.getData().getAttachment() != null &&

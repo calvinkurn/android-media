@@ -18,6 +18,7 @@ import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.design.bottomsheet.BottomSheetView;
 import com.tokopedia.tokocash.R;
 import com.tokopedia.tokocash.TokoCashRouter;
+import com.tokopedia.tokocash.autosweepmf.view.fragment.AutoSweepHomeFragment;
 import com.tokopedia.tokocash.di.TokoCashComponent;
 import com.tokopedia.tokocash.historytokocash.presentation.compoundview.BalanceTokoCashView;
 import com.tokopedia.tokocash.historytokocash.presentation.compoundview.ReceivedTokoCashView;
@@ -26,6 +27,8 @@ import com.tokopedia.tokocash.historytokocash.presentation.presenter.HomeTokoCas
 import com.tokopedia.tokocash.qrpayment.presentation.model.BalanceTokoCash;
 
 import javax.inject.Inject;
+
+import static com.tokopedia.tokocash.autosweepmf.view.util.CommonConstant.EXTRA_AVAILABLE_TOKOCASH;
 
 /**
  * Created by nabillasabbaha on 8/18/17.
@@ -132,6 +135,11 @@ public class HomeTokoCashFragment extends BaseDaggerFragment implements HomeToko
                 .setBody(getString(R.string.body_tooltip_tokocash))
                 .setImg(R.drawable.activate_ic_activated)
                 .build());
+
+        //Adding auto sweep fragment on successful retrieval of tokocash balance
+        Bundle bundle = new Bundle();
+        bundle.putString(EXTRA_AVAILABLE_TOKOCASH, balanceTokoCash.getBalance());
+        addAutoSweepFragment(bundle);
     }
 
     private BalanceTokoCashView.ActionListener getBalanceListener() {
@@ -161,6 +169,15 @@ public class HomeTokoCashFragment extends BaseDaggerFragment implements HomeToko
     @Override
     public void navigateToActivityRequest(Intent intent, int requestCode) {
         startActivityForResult(intent, requestCode);
+    }
+
+    @Override
+    public void addAutoSweepFragment(Bundle bundle) {
+        getChildFragmentManager()
+                .beginTransaction()
+                .replace(R.id.fragment_autosweepmf, AutoSweepHomeFragment.newInstance(bundle))
+                .commit();
+
     }
 
     @Override
