@@ -8,7 +8,7 @@ public class PaymentConst {
     public static final String CHECKOUT_DATA = "checkout_data";
 
     public class Parameter {
-
+        public static final String TRANSACTION_ID = "transaction_id";
     }
 
     public class TransactionStatus {

@@ -30,7 +30,7 @@ public class PosUrl {
         public static final String PROCESS_CREDIT_CARD = "o2o/v1/payment/process/creditcard";
         public static final String GET_PAYMENT_STATUS = "o2o/v1/payment/status";
         public static final String CREATE_ORDER = "o2o/v1/payment_action";
-        public static final String CHECK_TRANSACTION_STATUS = "/o2o/v1/confirm_payment";
+        public static final String CHECK_TRANSACTION_STATUS = "/o2o/v1/payment/get_order_data";
     }
 
     public class ContentType {

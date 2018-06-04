@@ -5,6 +5,7 @@ import android.util.Log;
 import com.google.gson.Gson;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.posapp.PosConstants;
+import com.tokopedia.posapp.payment.PaymentConst;
 import com.tokopedia.posapp.payment.otp.data.mapper.CheckTransactionMapper;
 import com.tokopedia.posapp.payment.otp.data.mapper.CreateOrderMapper;
 import com.tokopedia.posapp.payment.otp.data.mapper.PaymentStatusMapper;
@@ -83,6 +84,6 @@ public class PaymentCloudSource {
     }
 
     public Observable<PaymentStatusDomain> checkTransaction(RequestParams requestParams) {
-        return paymentApi.checkTransaction("").map(checkTransactionMapper);
+        return paymentApi.checkTransaction(requestParams.getString(PaymentConst.Parameter.TRANSACTION_ID, "")).map(checkTransactionMapper);
     }
 }

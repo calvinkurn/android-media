@@ -7,6 +7,7 @@ import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.posapp.PosConstants;
 import com.tokopedia.posapp.bank.domain.model.BankDomain;
+import com.tokopedia.posapp.payment.PaymentConst;
 import com.tokopedia.posapp.payment.otp.domain.model.PaymentStatusDomain;
 import com.tokopedia.posapp.payment.otp.domain.usecase.CheckTransactionWithRetryUseCase;
 import com.tokopedia.posapp.payment.otp.OTP;
@@ -45,10 +46,10 @@ public class OTPPresenter implements OTP.Presenter {
     private static final String PARAM_DATA = "data";
     private static final String PARAM_DETAIL = "detail";
     private static final String PARAM_ERRORS = "errors";
-    private static final String CREATE_ORDER_PARAMETER = "CREATE_ORDER_PARAMETER";
+//    private static final String CREATE_ORDER_PARAMETER = "CREATE_ORDER_PARAMETER";
     private static final String EMPTY_URL = "Empty url";
-    private static final String CREDITCARD = "CREDITCARD";
-    private static final String INSTALLMENT = "INSTALLMENT";
+//    private static final String CREDITCARD = "CREDITCARD";
+//    private static final String INSTALLMENT = "INSTALLMENT";
     public static final String PARAM_BANK_NAME = "bank_name";
     public static final String PARAM_BANK_ID = "bank_id";
     public static final String PARAM_BANK_LOGO = "bank_logo";
@@ -124,11 +125,9 @@ public class OTPPresenter implements OTP.Presenter {
                 && otpData.getOtpDetailTransaction() != null
                 && otpData.getOtpDetailTransaction().getTransactionId() != null) {
             RequestParams requestParams = RequestParams.create();
-            requestParams.putString(PARAM_MERCHANT_CODE, PosConstants.Payment.MERCHANT_CODE);
-            requestParams.putString(PARAM_TRANSACTION_ID, otpData.getOtpDetailTransaction().getTransactionId());
-            requestParams.putString(PARAM_IP_ADDRESS, "");
+            requestParams.putString(PaymentConst.Parameter.TRANSACTION_ID, otpData.getOtpDetailTransaction().getTransactionId());
 
-            checkTransactionWithRetryUseCase.execute(RequestParams.create(), new Subscriber<PaymentStatusDomain>() {
+            checkTransactionWithRetryUseCase.execute(requestParams, new Subscriber<PaymentStatusDomain>() {
                 @Override
                 public void onCompleted() {
 
