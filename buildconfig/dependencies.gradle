@@ -13,7 +13,7 @@ ext {
     butterKnifeVersion = '9.0.0-SNAPSHOT'
     dbFlowVersion = '3.0.1'
     retrofitVersion = '2.1.0'
-    okHttpVersion = '3.8.0'
+    okHttpVersion = '3.8.1'
     glideVersion = '3.7.0'
     permissionDispatcherVersion = '2.4.0'
     deeplinkDispatchVersion = '3.0.0-rc1'
@@ -62,6 +62,7 @@ ext {
     tkpdHomeVersion = '2.22'
     tkpdMitraToppersVersion = '2.22'
     tkpdDistrictRecommendationVersion = '2.22'
+    tkpdAnalyticsVersion = '2.22'
 
     networkDependencies = [
             retrofit          : "com.squareup.retrofit2:retrofit:${retrofitVersion}",
@@ -92,19 +93,20 @@ ext {
     ]
 
     playServicesDependencies = [
-            plus        : "com.google.android.gms:play-services-plus:${playServiceVersion}",
-            base        : "com.google.android.gms:play-services-base:${playServiceVersion}",
-            appIndexing : "com.google.firebase:firebase-appindexing:${playServiceVersion}",
-            analytics   : "com.google.android.gms:play-services-analytics:${playServiceVersion}",
-            firebase    : "com.google.firebase:firebase-messaging:${playServiceVersion}",
-            location    : "com.google.android.gms:play-services-location:${playServiceVersion}",
-            maps        : "com.google.android.gms:play-services-maps:${playServiceVersion}",
-            auth        : "com.google.android.gms:play-services-auth:${playServiceVersion}",
-            places      : "com.google.android.gms:play-services-places:${playServiceVersion}",
-            mapsUtils   : "com.google.maps.android:android-maps-utils:0.4",
-            remoteConfig: "com.google.firebase:firebase-config:${playServiceVersion}",
-            perfMon     : "com.google.firebase:firebase-perf:${playServiceVersion}",
-            ads         : "com.google.android.gms:play-services-ads:${playServiceVersion}"
+            plus                : "com.google.android.gms:play-services-plus:${playServiceVersion}",
+            base                : "com.google.android.gms:play-services-base:${playServiceVersion}",
+            appIndexing         : "com.google.firebase:firebase-appindexing:${playServiceVersion}",
+            analytics           : "com.google.android.gms:play-services-analytics:${playServiceVersion}",
+            firebase            : "com.google.firebase:firebase-messaging:${playServiceVersion}",
+            location            : "com.google.android.gms:play-services-location:${playServiceVersion}",
+            maps                : "com.google.android.gms:play-services-maps:${playServiceVersion}",
+            auth                : "com.google.android.gms:play-services-auth:${playServiceVersion}",
+            places              : "com.google.android.gms:play-services-places:${playServiceVersion}",
+            mapsUtils           : "com.google.maps.android:android-maps-utils:0.4",
+            remoteConfig        : "com.google.firebase:firebase-config:${playServiceVersion}",
+            perfMon             : "com.google.firebase:firebase-perf:${playServiceVersion}",
+            ads                 : "com.google.android.gms:play-services-ads:${playServiceVersion}",
+            firebaseAnalytics   :  "com.google.firebase:firebase-core:${playServiceVersion}",
     ]
 
     butterKnifeDependencies = [
@@ -176,9 +178,10 @@ ext {
             imagecropper          : "com.theartofdev.edmodo:android-image-cropper:2.5.1",
             reactNative           : "com.facebook.react:react-native:$reactNativeVersion",
             codePushReactNative   : "com.microsoft.codepush:rn-codepush:5.1.3",
-            hansel                : "io.hansel.preprocessor:preprocessor:6.0.3",
+            hansel                : "io.hansel.preprocessor:preprocessor:6.3.0",
             sendBird              : "com.sendbird.sdk:sendbird-android-sdk:3.0.49",
-            apacheLang            : "org.apache.commons:commons-lang3:3.0"
+            apacheLang            : "org.apache.commons:commons-lang3:3.0",
+            flexBoxLayout         : "com.google.android:flexbox:0.3.2"
     ]
 
     testDependencies = [
@@ -309,6 +312,7 @@ ext {
             bottomSheetBuilder: ":libraries:bottom_sheet_builder",
             userSession     : ":libraries:user_session",
             imageuploader   : ":libraries:imageuploader",
-            youtubeApi      : ":libraries:YouTubeAndroidPlayerApi"
+            youtubeApi      : ":libraries:YouTubeAndroidPlayerApi",
+            analytics       : ":libraries:analytics"
     ]
 }

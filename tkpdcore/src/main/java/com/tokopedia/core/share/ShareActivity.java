@@ -1,9 +1,9 @@
 package com.tokopedia.core.share;
 
-import android.app.FragmentTransaction;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.FragmentTransaction;
 import android.view.MenuItem;
 
 import com.tokopedia.core.R;
@@ -50,7 +50,7 @@ public class ShareActivity extends TActivity {
             isAddingProduct = intent.getBooleanExtra(ProductDetailRouter.IS_ADDING_PRODUCT,false);
         }
 
-        FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
+        FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
         fragmentTransaction.replace(R.id.container, ProductShareFragment.newInstance(data,isAddingProduct),
                 ProductShareFragment.class.getSimpleName());
         fragmentTransaction.commit();

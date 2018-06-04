@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.support.v4.app.Fragment;
 
 import com.tokopedia.flight.airport.data.source.db.model.FlightAirportDB;
+import com.tokopedia.flight.airport.view.viewmodel.FlightAirportViewModel;
 import com.tokopedia.flight.booking.view.activity.FlightBookingActivity;
 import com.tokopedia.flight.common.constant.FlightFlowExtraConstant;
 import com.tokopedia.flight.common.util.FlightAnalytics;
@@ -50,11 +51,11 @@ public class FlightSearchReturnActivity extends FlightSearchActivity implements 
         classString = passDataViewModel.getFlightClass().getTitle();
     }
 
-    protected FlightAirportDB getDepartureAirport() {
+    protected FlightAirportViewModel getDepartureAirport() {
         return passDataViewModel.getArrivalAirport();
     }
 
-    protected FlightAirportDB getArrivalAirport() {
+    protected FlightAirportViewModel getArrivalAirport() {
         return passDataViewModel.getDepartureAirport();
     }
 

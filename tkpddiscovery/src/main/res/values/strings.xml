@@ -49,4 +49,6 @@
     <string name="cashback" >cashback</string>
     <string name="bottom_sheet_filter_finish_button_template_text">Tampilkan %s produk</string>
     <string name="other_filter_title">Lainnya</string>
+    <string name="invalid_image_search_response" >Terjadi kesalahan, ulangi beberapa saat lagi</string>
+    <string name="title_all">Semua</string>
 </resources>
