@@ -39,6 +39,8 @@ public class ProductItem implements Parcelable, Visitable<ProductListTypeFactory
     private String originalPrice;
     private int discountPercentage;
     private boolean isOfficial;
+    private String topLabel;
+    private String bottomLabel;
 
     public void setProductID(String productID) {
         this.productID = productID;
@@ -212,6 +214,22 @@ public class ProductItem implements Parcelable, Visitable<ProductListTypeFactory
         isOfficial = official;
     }
 
+    public String getTopLabel() {
+        return topLabel;
+    }
+
+    public void setTopLabel(String topLabel) {
+        this.topLabel = topLabel;
+    }
+
+    public String getBottomLabel() {
+        return bottomLabel;
+    }
+
+    public void setBottomLabel(String bottomLabel) {
+        this.bottomLabel = bottomLabel;
+    }
+
     public ProductItem() {
     }
 
@@ -284,6 +302,8 @@ public class ProductItem implements Parcelable, Visitable<ProductListTypeFactory
         dest.writeString(originalPrice);
         dest.writeInt(discountPercentage);
         dest.writeByte((byte) (isOfficial ? 0x01 : 0x00));
+        dest.writeString(topLabel);
+        dest.writeString(bottomLabel);
     }
 
     protected ProductItem(Parcel in) {
@@ -318,6 +338,8 @@ public class ProductItem implements Parcelable, Visitable<ProductListTypeFactory
         originalPrice = in.readString();
         discountPercentage = in.readInt();
         isOfficial = in.readByte() != 0x00;
+        topLabel = in.readString();
+        bottomLabel = in.readString();
 
     }
 

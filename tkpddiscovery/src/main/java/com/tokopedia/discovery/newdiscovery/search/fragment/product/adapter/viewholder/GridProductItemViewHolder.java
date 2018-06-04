@@ -46,6 +46,8 @@ public class GridProductItemViewHolder extends AbstractViewHolder<ProductItem> {
     private LinearLayout ratingReviewContainer;
     private ItemClickListener itemClickListener;
     private Context context;
+    private TextView topLabel;
+    private TextView bottomLabel;
 
     public GridProductItemViewHolder(View itemView, ItemClickListener itemClickListener) {
         super(itemView);
@@ -60,12 +62,26 @@ public class GridProductItemViewHolder extends AbstractViewHolder<ProductItem> {
         rating = (ImageView) itemView.findViewById(R.id.rating);
         reviewCount = (TextView) itemView.findViewById(R.id.review_count);
         ratingReviewContainer = (LinearLayout) itemView.findViewById(R.id.rating_review_container);
+        topLabel = itemView.findViewById(R.id.topLabel);
+        bottomLabel = itemView.findViewById(R.id.bottomLabel);
         context = itemView.getContext();
         this.itemClickListener = itemClickListener;
     }
 
     @Override
     public void bind(final ProductItem productItem) {
+        if (!TextUtils.isEmpty(productItem.getTopLabel())) {
+            topLabel.setText(productItem.getTopLabel());
+            topLabel.setVisibility(View.VISIBLE);
+        } else {
+            topLabel.setVisibility(View.GONE);
+        }
+        if (!TextUtils.isEmpty(productItem.getBottomLabel())) {
+            bottomLabel.setText(productItem.getBottomLabel());
+            bottomLabel.setVisibility(View.VISIBLE);
+        } else {
+            bottomLabel.setVisibility(View.GONE);
+        }
         title.setText(MethodChecker.fromHtml(productItem.getProductName()));
         String priceText = !TextUtils.isEmpty(productItem.getPriceRange()) ?
                 productItem.getPriceRange() : productItem.getPrice();

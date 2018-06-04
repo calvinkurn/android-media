@@ -30,6 +30,8 @@ public class ProductModel {
     private String originalPrice;
     private int discountPercentage;
     private boolean isOfficial;
+    private String topLabel;
+    private String bottomLabel;
 
     public void setProductID(String productID) {
         this.productID = productID;
@@ -189,5 +191,21 @@ public class ProductModel {
 
     public void setOfficial(boolean official) {
         isOfficial = official;
+    }
+
+    public String getTopLabel() {
+        return topLabel;
+    }
+
+    public void setTopLabel(String topLabel) {
+        this.topLabel = topLabel;
+    }
+
+    public String getBottomLabel() {
+        return bottomLabel;
+    }
+
+    public void setBottomLabel(String bottomLabel) {
+        this.bottomLabel = bottomLabel;
     }
 }

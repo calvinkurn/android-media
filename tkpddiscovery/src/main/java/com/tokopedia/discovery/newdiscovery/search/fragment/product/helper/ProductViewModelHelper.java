@@ -113,6 +113,8 @@ public class ProductViewModelHelper {
         productItem.setBadgesList(convertToBadgesItemList(productModel.getBadgesList()));
         productItem.setLabelList(convertToLabelsItemList(productModel.getLabelList()));
         productItem.setPosition(position);
+        productItem.setTopLabel(productModel.getTopLabel());
+        productItem.setBottomLabel(productModel.getBottomLabel());
         return productItem;
     }
 

@@ -2,6 +2,7 @@ package com.tokopedia.core.network.entity.discovery;
 
 import com.google.gson.annotations.SerializedName;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -308,6 +309,10 @@ public class SearchProductResponse {
             private List<Badges> badges;
             @SerializedName("is_featured")
             private int isFeatured;
+            @SerializedName("top_label")
+            private List<String> topLabel;
+            @SerializedName("bottom_label")
+            private List<String> bottomLabel;
 
             public String getId() {
                 return id;
@@ -460,6 +465,26 @@ public class SearchProductResponse {
 
             public void setIsFeatured(int isFeatured) {
                 this.isFeatured = isFeatured;
+            }
+
+            public List<String> getTopLabel() {
+                topLabel = new ArrayList<>();
+                topLabel.add("Preorder");
+                return topLabel;
+            }
+
+            public void setTopLabel(List<String> topLabel) {
+                this.topLabel = topLabel;
+            }
+
+            public List<String> getBottomLabel() {
+                bottomLabel = new ArrayList<>();
+                bottomLabel.add("Cashback 3%");
+                return bottomLabel;
+            }
+
+            public void setBottomLabel(List<String> bottomLabel) {
+                this.bottomLabel = bottomLabel;
             }
 
             public static class Shop {

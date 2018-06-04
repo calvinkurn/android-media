@@ -97,9 +97,15 @@ public class ProductMapper implements Func1<Response<String>, SearchResultModel>
             model.setLabelList(mappingLabels(data.getLabels()));
             model.setBadgesList(mappingBadges(data.getBadges()));
             model.setFeatured(data.getIsFeatured() == 1);
+            model.setTopLabel(isContainItems(data.getTopLabel()) ? data.getTopLabel().get(0) : "");
+            model.setBottomLabel(isContainItems(data.getBottomLabel()) ? data.getBottomLabel().get(0) : "");
             list.add(model);
         }
         return list;
+    }
+
+    private boolean isContainItems(List list) {
+        return list != null && !list.isEmpty();
     }
 
     private List<LabelModel> mappingLabels(List<SearchProductResponse.Data.Products.Labels> labels) {
