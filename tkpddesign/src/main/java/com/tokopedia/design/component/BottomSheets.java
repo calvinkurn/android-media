@@ -2,6 +2,8 @@ package com.tokopedia.design.component;
 
 import android.annotation.SuppressLint;
 import android.app.Dialog;
+import android.content.DialogInterface;
+import android.support.annotation.NonNull;
 import android.support.design.widget.BottomSheetBehavior;
 import android.support.design.widget.BottomSheetDialogFragment;
 import android.support.design.widget.CoordinatorLayout;
@@ -39,6 +41,12 @@ public abstract class BottomSheets extends BottomSheetDialogFragment {
 
     private BottomSheetBehavior bottomSheetBehavior;
 
+    public interface BottomSheetDismissListener {
+        void onDismiss();
+    }
+
+    private BottomSheetDismissListener dismissListener;
+
     @SuppressLint("RestrictedApi")
     @Override
     public void setupDialog(Dialog dialog, int style) {
@@ -67,6 +75,7 @@ public abstract class BottomSheets extends BottomSheetDialogFragment {
         if (state() == BottomSheetsState.FULL) {
             height = screenHeight;
         }
+
         bottomSheetBehavior.setPeekHeight(height);
 
         params.height = screenHeight;
@@ -101,6 +110,42 @@ public abstract class BottomSheets extends BottomSheetDialogFragment {
         } else if (bottomSheetBehavior.getState() == BottomSheetBehavior.STATE_COLLAPSED) {
             BottomSheets.this.dismiss();
         }
+    }
+
+    public void setDismissListener(BottomSheetDismissListener dismissListener) {
+        this.dismissListener = dismissListener;
+    }
+
+    @Override
+    public void onDismiss(DialogInterface dialog) {
+        if (dismissListener != null) {
+            dismissListener.onDismiss();
+        }
+        super.onDismiss(dialog);
+    }
+
+    @Override
+    public void onCancel(DialogInterface dialog) {
+        if (dismissListener != null) {
+            dismissListener.onDismiss();
+        }
+        super.onCancel(dialog);
+    }
+
+    @Override
+    public void onDestroy() {
+        if (dismissListener != null) {
+            dismissListener.onDismiss();
+        }
+        super.onDestroy();
+    }
+
+    @Override
+    public void onDetach() {
+        if (dismissListener != null) {
+            dismissListener.onDismiss();
+        }
+        super.onDetach();
     }
 
     protected void updateHeight() {

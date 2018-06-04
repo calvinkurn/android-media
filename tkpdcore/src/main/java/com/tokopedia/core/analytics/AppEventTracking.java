@@ -358,6 +358,8 @@ public interface AppEventTracking {
         String CLICK_USE_VOUCHER = " Click Gunakan Voucher - ";
         String CLICK_CANCEL_VOUCHER = " Click Batalkan Voucher";
 
+        String COPY = "Copy";
+
         String CLICK_CATEGORY = "Click Category";
         String NAVIGATION_CLICK = "Navigation";
         String BANNER_CLICK = "Banner Click";
