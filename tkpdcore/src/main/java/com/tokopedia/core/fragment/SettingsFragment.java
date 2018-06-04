@@ -46,7 +46,9 @@ public class SettingsFragment extends TkpdBasePreferenceFragment {
     private static Context context;
     private CustomCheckBoxPreference optionVibrate;
     private CustomCheckBoxPreference optionPromo;
+    private CustomCheckBoxPreference optionShakeShake;
     public static final String SETTING_NOTIFICATION_VIBRATE = "notifications_new_message_vibrate";
+    public static final String SETTING_NOTIFICATION_SHAKE_SHAKE = Constants.Settings.NOTIFICATION_SHAKE_SHAKE;
 
     public static SettingsFragment newInstance() {
         return new SettingsFragment();
@@ -83,7 +85,18 @@ public class SettingsFragment extends TkpdBasePreferenceFragment {
         addPreferencesFromResource(R.xml.pref_notification);
 
         bindPreferenceSummaryToValue(findPreference(Constants.Settings.NOTIFICATION_RINGTONE));
-
+        optionShakeShake = (CustomCheckBoxPreference) findPreference(SETTING_NOTIFICATION_SHAKE_SHAKE);
+        optionShakeShake.setOnPreferenceClickListener(new OnPreferenceClickListener() {
+            @Override
+            public boolean onPreferenceClick(Preference preference) {
+                SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences
+                        (context);
+                SharedPreferences.Editor editor = settings.edit();
+                editor.putBoolean(SETTING_NOTIFICATION_SHAKE_SHAKE, preference.isEnabled());
+                editor.apply();
+                return true;
+            }
+        });
         optionVibrate = (CustomCheckBoxPreference) findPreference(Constants.Settings.NOTIFICATION_VIBRATE);
         optionVibrate.setOnPreferenceClickListener(new OnPreferenceClickListener() {
             public boolean onPreferenceClick(Preference preference) {
@@ -100,6 +113,7 @@ public class SettingsFragment extends TkpdBasePreferenceFragment {
         optionPromo = (CustomCheckBoxPreference) findPreference(Constants.Settings.NOTIFICATION_PROMO);
         optionPromo.setOnPreferenceChangeListener(sBindPreferenceSummaryToValueListener);
     }
+
 
     /** {@inheritDoc} */
     /*@Override

@@ -39,6 +39,7 @@ public class ShakeDetectCampaignActivity extends BaseSimpleActivity implements S
     View shakeShakeMessageButton;
     View cancelButton;
     View cancelBtn;
+    View disableShakeShake;
     private TkpdProgressDialog progressDialog;
     protected CampaignComponent campaignComponent;
 
@@ -60,12 +61,19 @@ public class ShakeDetectCampaignActivity extends BaseSimpleActivity implements S
         shakeShakeMessageButton =  findViewById(R.id.shake_shake_message_button);
         cancelButton = findViewById(R.id.cancel_button);
         cancelBtn = findViewById(R.id.cancel_btn);
+        disableShakeShake = findViewById(R.id.disable_shake_shake_button);
         initInjector();
         attachToPresenter();
         ButterKnife.bind(this);
         cancelButton.setOnClickListener(cancelListener);
         cancelBtn.setOnClickListener(cancelListener);
         shakeDetect();
+        disableShakeShake.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                presenter.onDisableShakeShake();
+            }
+        });
 
 
     }
@@ -191,6 +199,11 @@ public class ShakeDetectCampaignActivity extends BaseSimpleActivity implements S
     @Override
     public void setInvisibleCounter() {
         shakeShakeMessageButton.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void showDisableShakeShakeVisible() {
+        disableShakeShake.setVisibility(View.VISIBLE);
     }
 
     @Override

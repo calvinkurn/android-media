@@ -182,6 +182,8 @@ public interface Constants {
         String NOTIFICATION_RESCENTER = "notification_receive_rescenter";
         String NOTIFICATION_SELLER_INFO = "notification_seller_info";
         String NOTIFICATION_GROUP_CHAT = "notification_group_chat";
+        String NOTIFICATION_SHAKE_SHAKE ="notification_shake_shake";
+
     }
 
     interface AppLinkQueryParameter {

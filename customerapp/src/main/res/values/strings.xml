@@ -101,5 +101,7 @@
     <string name="sedang_dalam_proses_shake">Sedang dalam Proses Shake</string>
     <string name="cancel_shake_shake">Memuat Shake-Shake</string>
     <string name="shake_shake_terus">Ayo Shake Terus</string>
+    <string name="disable_shake_shake">“Sepertinya sistem Shake di hp-mu sedang lelah. Istirahat dulu yuk main Shake Shake-nya.” OK
+</string>
     <string name="yes">Ya</string>
 </resources>

@@ -32,6 +32,7 @@ public interface ShakeDetectContract {
 
         boolean isLongShakeTriggered();
         void setInvisibleCounter();
+        void showDisableShakeShakeVisible();
 
         public void setCancelButtonVisible();
     }
@@ -40,6 +41,7 @@ public interface ShakeDetectContract {
         public void onShakeDetect();
         public void onDestroyView();
         public void onRetryClick();
+        public void onDisableShakeShake();
         public void onActivityResult(int requestCode, int resultCode, Intent data);
 
         void onCancelClick();

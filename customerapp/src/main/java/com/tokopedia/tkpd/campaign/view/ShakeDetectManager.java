@@ -4,13 +4,16 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.hardware.SensorManager;
 import android.net.Uri;
 import android.os.Handler;
 import android.os.Message;
+import android.preference.PreferenceManager;
 
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TkpdCoreRouter;
+import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.core.remoteconfig.RemoteConfig;
 import com.tokopedia.tkpd.campaign.configuration.ShakeDetector;
@@ -18,6 +21,7 @@ import com.tokopedia.tkpd.campaign.view.activity.ShakeDetectCampaignActivity;
 import com.tokopedia.tkpd.campaign.view.activity.ShakeShakeAudioCampaignActivity;
 
 import static android.content.Context.SENSOR_SERVICE;
+import static com.raizlabs.android.dbflow.config.FlowManager.getContext;
 
 /**
  * Created by sandeepgoyal on 20/02/18.
@@ -33,7 +37,8 @@ public class ShakeDetectManager implements ShakeDetector.Listener {
     public static final String ACTION_SHAKE_SHAKE_SYNCED = "com.tkpd.action.shake.shake";
     public static final String FIREBASE_SHAKE_SHAKE_REMOTE_CONFIG_KEY = "app_shake_feature_enabled";
     public static final String FIREBASE_SHAKE_SHAKE_AUDIO_REMOTE_CONFIG_KEY = "audio_campaign_is_audio";
-
+    SharedPreferences sharedPreferences;
+    String NOTIFICATION_SHAKE_SHAKE = Constants.Settings.NOTIFICATION_SHAKE_SHAKE;
     public static final int MESSAGE_ENABLE_SHAKE = 1;
     public static final int MESSAGE_DISABLE_SHAKE = 2;
     public static final int MESSAGE_SHAKE_START = 3;
@@ -79,16 +84,28 @@ public class ShakeDetectManager implements ShakeDetector.Listener {
             sd = new ShakeDetector();
             sensorManager = (SensorManager)mContext.getSystemService(SENSOR_SERVICE);
             initRemoteConfig();
+            initSettingConfig();
         }
     }
+    boolean isNotificationOn = true;
 
+    private void initSettingConfig() {
+        sharedPreferences =
+                PreferenceManager.getDefaultSharedPreferences(mContext);
+        isNotificationOn =
+                sharedPreferences.getBoolean(NOTIFICATION_SHAKE_SHAKE, false);
+    }
+
+    public void disableShakeShake() {
+        sharedPreferences.edit().putBoolean(NOTIFICATION_SHAKE_SHAKE, false).apply();
+    }
 
     private void initRemoteConfig() {
         remoteConfig = new FirebaseRemoteConfigImpl(mContext);
     }
 
     private boolean isShakeShakeEnable() {
-        return remoteConfig.getBoolean(FIREBASE_SHAKE_SHAKE_REMOTE_CONFIG_KEY,true) ;
+        return (true || remoteConfig.getBoolean(FIREBASE_SHAKE_SHAKE_REMOTE_CONFIG_KEY,true)) && isNotificationOn;
 
     }
 

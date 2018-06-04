@@ -68,7 +68,7 @@ public class ShakeDetectPresenter extends BaseDaggerPresenter<ShakeDetectContrac
     }
 
     private boolean isDoubleShakeShakeEnable() {
-        return remoteConfig.getBoolean(FIREBASE_DOUBLE_SHAKE_CONFIG_KEY,true) || true;
+        return remoteConfig.getBoolean(FIREBASE_DOUBLE_SHAKE_CONFIG_KEY,true) || true; //enable double shake shake default
 
     }
 
@@ -76,7 +76,9 @@ public class ShakeDetectPresenter extends BaseDaggerPresenter<ShakeDetectContrac
     @Override
     public void onShakeDetect() {
         if(getView().isLongShakeTriggered()) {
-
+            getView().setInvisibleCounter();
+            getView().showDisableShakeShakeVisible();
+            return;
         }
         else if (!isFirstShake && isDoubleShakeShakeEnable()) {
             isFirstShake = true;
@@ -211,6 +213,13 @@ public class ShakeDetectPresenter extends BaseDaggerPresenter<ShakeDetectContrac
 
     @Override
     public void onRetryClick() {
+        getView().finish();
+    }
+
+    @Override
+    public void onDisableShakeShake() {
+        //disable the shake shake
+        ShakeDetectManager.getShakeDetectManager().disableShakeShake();
         getView().finish();
     }
 
