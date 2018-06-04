@@ -369,6 +369,13 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder {
         String shippingFeeLabel = tvShippingFee.getContext().getString(R.string.label_delivery_price);
         String totalItemLabel = tvTotalItem.getContext().getString(R.string.label_item_count_without_format);
 
+        for (CartItemModel cartItemModel : shipmentCartItemModel.getCartItemModels()) {
+            totalItemPrice += (cartItemModel.getQuantity() * cartItemModel.getPrice());
+            totalItem += cartItemModel.getQuantity();
+            totalWeight += cartItemModel.getWeight();
+        }
+        totalItemLabel = String.format(tvTotalItem.getContext().getString(R.string.label_item_count_with_format), totalItem);
+
         if (shipmentCartItemModel.getSelectedShipmentDetailData() != null &&
                 shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourier() != null) {
             shippingPrice = shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourier()
@@ -380,20 +387,10 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder {
             }
             additionalPrice = shipmentCartItemModel.getSelectedShipmentDetailData()
                     .getSelectedCourier().getAdditionalPrice();
-            for (CartItemModel cartItemModel : shipmentCartItemModel.getCartItemModels()) {
-                totalItemPrice += (cartItemModel.getQuantity() * cartItemModel.getPrice());
-                totalItem += cartItemModel.getQuantity();
-                totalWeight += cartItemModel.getWeight();
-            }
-            totalItemLabel = String.format(tvTotalItem.getContext().getString(R.string.label_item_count_with_format), totalItem);
             subTotalPrice += (totalItemPrice + shippingPrice + insurancePrice + additionalPrice);
         } else {
-            for (CartItemModel cartItemModel : shipmentCartItemModel.getCartItemModels()) {
-                totalItemPrice += (cartItemModel.getQuantity() * cartItemModel.getPrice());
-            }
             subTotalPrice = totalItemPrice;
         }
-
         tvSubTotalPrice.setText(subTotalPrice == 0 ? "-" : CurrencyFormatUtil.convertPriceValueToIdrFormat(subTotalPrice, true));
         tvTotalItemPrice.setText(totalItemPrice == 0 ? "-" : getPriceFormat(tvTotalItem, tvTotalItemPrice, totalItemPrice));
         tvTotalItem.setText(totalItemLabel);
