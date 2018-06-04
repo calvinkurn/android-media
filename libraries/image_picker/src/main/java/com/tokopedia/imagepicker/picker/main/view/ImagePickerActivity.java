@@ -69,6 +69,7 @@ public class ImagePickerActivity extends BaseSimpleActivity
     private TextView tvDone;
     private boolean isPermissionGotDenied;
     private ImagePickerPreviewWidget imagePickerPreviewWidget;
+    private boolean isFinishEditting;
 
     public static Intent getIntent(Context context, ImagePickerBuilder imagePickerBuilder) {
         Intent intent = new Intent(context, ImagePickerActivity.class);
@@ -245,6 +246,9 @@ public class ImagePickerActivity extends BaseSimpleActivity
     @Override
     protected void onResume() {
         super.onResume();
+        if (isFinishEditting) {
+            return;
+        }
         if (isPermissionGotDenied) {
             finish();
             return;
@@ -316,6 +320,11 @@ public class ImagePickerActivity extends BaseSimpleActivity
             NetworkErrorHelper.showRedCloseSnackbar(this, getString(R.string.max_no_of_image_reached));
         }
         return isMaxImageReached;
+    }
+
+    @Override
+    public boolean isFinishEditting() {
+        return isFinishEditting;
     }
 
     @Override
@@ -497,6 +506,7 @@ public class ImagePickerActivity extends BaseSimpleActivity
                 if (resultCode == Activity.RESULT_OK && data != null && data.hasExtra(ImageEditorActivity.EDIT_RESULT_PATHS)) {
                     ArrayList<String> finalPathList = data.getStringArrayListExtra(ImageEditorActivity.EDIT_RESULT_PATHS);
                     onFinishWithMultipleImageValidateNetworkPath(finalPathList);
+                    isFinishEditting = true;
                 }
                 break;
             default:

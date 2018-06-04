@@ -59,21 +59,17 @@ public class AlbumMediaAdapter extends RecyclerViewCursorAdapter<AlbumMediaAdapt
         boolean isChecked = true;
         if (supportMultipleSelection) {
             if (selectionImagePathList.contains(item.getRealPath())) {
-                selectionImagePathList.remove(item.getRealPath());
                 isChecked = false;
             } else {
-                selectionImagePathList.add(item.getRealPath());
                 isChecked = true;
             }
         }
 
         if (isChecked && !mOnMediaClickListener.canAddMoreImage()) {
-            selectionImagePathList.remove(item.getRealPath()); //in case support multiple selection
             return;
         }
 
         if (isChecked && !mOnMediaClickListener.isImageValid(item)) {
-            selectionImagePathList.remove(item.getRealPath()); //in case support multiple selection
             return;
         }
 

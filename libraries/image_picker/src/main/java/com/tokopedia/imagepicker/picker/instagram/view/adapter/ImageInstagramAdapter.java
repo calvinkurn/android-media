@@ -51,21 +51,17 @@ public class ImageInstagramAdapter extends BaseListAdapter<InstagramMediaModel, 
                     String itemUrl = item.getImageStandardResolutionUrl();
                     if (supportMultipleSelection) {
                         if (selectedImagePath.contains(itemUrl)) {
-                            selectedImagePath.remove(itemUrl);
                             isChecked = false;
                         } else {
-                            selectedImagePath.add(itemUrl);
                             isChecked = true;
                         }
                     }
 
                     if (isChecked && !listener.canAddMoreImage()) {
-                        selectedImagePath.remove(itemUrl); //in case support multiple selection
                         return;
                     }
 
                     if (isChecked && !listener.isImageValid(item)) {
-                        selectedImagePath.remove(itemUrl); //in case support multiple selection
                         return;
                     }
                     notifyItemChanged(holder.getAdapterPosition());
