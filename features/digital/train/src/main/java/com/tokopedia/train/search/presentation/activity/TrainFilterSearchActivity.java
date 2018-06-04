@@ -19,6 +19,7 @@ import com.tokopedia.train.common.presentation.TrainBaseActivity;
 import com.tokopedia.train.search.di.DaggerTrainSearchComponent;
 import com.tokopedia.train.search.presentation.contract.FilterSearchActionView;
 import com.tokopedia.train.search.presentation.contract.TrainFilterSearchContract;
+import com.tokopedia.train.search.presentation.fragment.TrainFilterClassFragment;
 import com.tokopedia.train.search.presentation.fragment.TrainFilterDepartureFragment;
 import com.tokopedia.train.search.presentation.fragment.TrainFilterNameFragment;
 import com.tokopedia.train.search.presentation.fragment.TrainFilterSearchFragment;
@@ -137,6 +138,11 @@ public class TrainFilterSearchActivity extends TrainBaseActivity
     @Override
     public void onDepartureFilterSearchTrainClicked() {
         replaceFragment(TrainFilterDepartureFragment.newInstance(), TrainFilterNameFragment.TAG);
+    }
+
+    @Override
+    public void onClassFilterSearchTrainClicked() {
+        replaceFragment(TrainFilterClassFragment.newInstance(), TrainFilterNameFragment.TAG);
     }
 
     @Override

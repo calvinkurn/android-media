@@ -18,5 +18,7 @@ public interface FilterSearchActionView {
 
     void onDepartureFilterSearchTrainClicked();
 
+    void onClassFilterSearchTrainClicked();
+
     void setCloseButton(boolean showCloseButton);
 }
