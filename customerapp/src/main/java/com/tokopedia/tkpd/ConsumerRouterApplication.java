@@ -1697,20 +1697,31 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public Observable<CheckPromoCodeCartListResult> tkpdLoyaltyGetCheckPromoCodeCartListResultObservable(
-            String promoCode
-    ) {
-        TKPDMapParam<String, String> param = new TKPDMapParam<>();
-        param.put(CheckPromoCodeCartListUseCase.PARAM_PROMO_CODE, promoCode);
-        param.put(CheckPromoCodeCartListUseCase.PARAM_PROMO_SUGGESTED,
+            String promoCode,
+            String paramUpdateCartString) {
+        com.tokopedia.usecase.RequestParams requestParams = com.tokopedia.usecase.RequestParams.create();
+        if (!TextUtils.isEmpty(paramUpdateCartString)) {
+            TKPDMapParam<String, String> paramUpdateCart = new TKPDMapParam<>();
+            paramUpdateCart.put(CheckPromoCodeCartListUseCase.PARAM_CARTS, paramUpdateCartString);
+
+            requestParams.putObject(CheckPromoCodeCartListUseCase.PARAM_REQUEST_AUTH_MAP_STRING_UPDATE_CART,
+                    com.tokopedia.abstraction.common.utils.network.AuthUtil.generateParamsNetwork(
+                            this, paramUpdateCart, userSession.getUserId(), userSession.getDeviceId()
+                    ));
+        }
+        TKPDMapParam<String, String> paramCheckPromo = new TKPDMapParam<>();
+        paramCheckPromo.put(CheckPromoCodeCartListUseCase.PARAM_PROMO_CODE, promoCode);
+        paramCheckPromo.put(CheckPromoCodeCartListUseCase.PARAM_PROMO_SUGGESTED,
                 CheckPromoCodeCartListUseCase.PARAM_VALUE_NOT_SUGGESTED);
-        param.put(CheckPromoCodeCartListUseCase.PARAM_PROMO_LANG,
+        paramCheckPromo.put(CheckPromoCodeCartListUseCase.PARAM_PROMO_LANG,
                 CheckPromoCodeCartListUseCase.PARAM_VALUE_LANG_ID);
 
-        com.tokopedia.usecase.RequestParams requestParams = com.tokopedia.usecase.RequestParams.create();
+
         requestParams.putObject(CheckPromoCodeCartListUseCase.PARAM_REQUEST_AUTH_MAP_STRING_CHECK_PROMO,
                 com.tokopedia.abstraction.common.utils.network.AuthUtil.generateParamsNetwork(
-                        this, param, userSession.getUserId(), userSession.getDeviceId()
+                        this, paramCheckPromo, userSession.getUserId(), userSession.getDeviceId()
                 ));
+
 
         return CartComponentInjector.newInstance(this)
                 .getCheckPromoCodeCartListUseCase()

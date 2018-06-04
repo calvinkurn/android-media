@@ -200,17 +200,14 @@ public class PromoCodeFragment extends BasePresenterFragment implements IPromoCo
     private View.OnClickListener onSubmitMarketPlaceCartListVoucher(
             final EditText voucherCodeField,
             final TextInputLayout textHolder) {
-        return new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                voucherCodeFieldHolder.setError(null);
-                if (voucherCodeField.getText().toString().isEmpty()) {
-                    textHolder.setError(getActivity().getString(R.string.error_empty_voucher_code));
-                } else {
-                    dPresenter.processCheckMarketPlaceCartListPromoCode(
-                            getActivity(),
-                            voucherCodeField.getText().toString());
-                }
+        return view -> {
+            voucherCodeFieldHolder.setError(null);
+            if (voucherCodeField.getText().toString().isEmpty()) {
+                textHolder.setError(getActivity().getString(R.string.error_empty_voucher_code));
+            } else {
+                dPresenter.processCheckMarketPlaceCartListPromoCode(
+                        getActivity(),
+                        voucherCodeField.getText().toString(), getArguments().getString(ADDITIONAL_DATA_KEY, ""));
             }
         };
     }
@@ -297,13 +294,15 @@ public class PromoCodeFragment extends BasePresenterFragment implements IPromoCo
     }
 
 
-    public static Fragment newInstance(String platform,String platformPage, String categoryKey, String cartId) {
+    public static Fragment newInstance(String platform,String platformPage, String categoryKey,
+                                       String cartId, String additionalDataString) {
         PromoCodeFragment fragment = new PromoCodeFragment();
         Bundle bundle = new Bundle();
         bundle.putString(PLATFORM_KEY, platform);
         bundle.putString(PLATFORM_PAGE_KEY, platformPage);
         bundle.putString(CATEGORY_KEY, categoryKey);
         bundle.putString(CART_ID, cartId);
+        bundle.putString(ADDITIONAL_DATA_KEY, additionalDataString);
         fragment.setArguments(bundle);
         return fragment;
     }

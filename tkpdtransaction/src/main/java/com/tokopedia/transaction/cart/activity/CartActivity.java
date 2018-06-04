@@ -25,7 +25,7 @@ public class CartActivity extends BasePresenterActivity {
     }
 
 
-    @DeepLink(Constants.Applinks.CART)
+    //@DeepLink(Constants.Applinks.CART)
     public static Intent getCallingIntent(Context context, Bundle extras) {
         Intent intent = new Intent(context, CartActivity.class).putExtras(extras);
         intent.putExtras(extras);

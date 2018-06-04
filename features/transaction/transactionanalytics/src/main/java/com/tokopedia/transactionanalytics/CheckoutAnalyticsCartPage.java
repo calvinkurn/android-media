@@ -165,6 +165,90 @@ public class CheckoutAnalyticsCartPage extends CheckoutAnalytics {
                 "");
     }
 
+    public void eventMultipleAddressKlikTombolBack() {
+        analyticTracker.sendEventTracking(EventName.CLICK_ATC,
+                EventCategory.CART_MULTIPLE_ADDRESS,
+                EventAction.CLICK_BACK_ARROW_FROM_KIRIM_KE_BEBERAPA_ALAMAT,
+                "");
+    }
+
+    public void eventMultipleAddressKlikTombolKembaliDanHapusPerubahan() {
+        analyticTracker.sendEventTracking(EventName.CLICK_ATC,
+                EventCategory.CART_MULTIPLE_ADDRESS,
+                EventAction.CLICK_KEMBALI_DAN_HAPUS_PERUBAHAN_FROM_KIRIM_KE_BEBERAPA_ALAMAT,
+                "");
+    }
+
+    public void eventMultipleAddressTetapDiHalamanIni() {
+        analyticTracker.sendEventTracking(EventName.CLICK_ATC,
+                EventCategory.CART_MULTIPLE_ADDRESS,
+                EventAction.CLICK_TETAP_DI_HALAMAN_INI_FROM_KIRIM_KE_BEBERAPA_ALAMAT,
+                "");
+    }
+
+    public void eventMultipleAddressKlikTambahAlamatBaru() {
+        analyticTracker.sendEventTracking(EventName.CLICK_ATC,
+                EventCategory.CART_MULTIPLE_ADDRESS,
+                EventAction.CLICK_TAMBAH_PENGIRIMAN_BARU_FROM_KIRIM_KE_BEBERAPA_ALAMAT,
+                "");
+    }
+
+    public void eventMultipleAddressKlikEdit() {
+        analyticTracker.sendEventTracking(EventName.CLICK_ATC,
+                EventCategory.CART_MULTIPLE_ADDRESS,
+                EventAction.CLICK_EDIT_FROM_KIRIM_KE_BEBERAPA_ALAMAT,
+                "");
+    }
+
+    public void eventMultipleAddressKlikPilihKurirPengiriman() {
+        analyticTracker.sendEventTracking(EventName.CLICK_ATC,
+                EventCategory.CART_MULTIPLE_ADDRESS,
+                EventAction.CLICK_PILIH_KURIR_PENGIRIMAN_FROM_KIRIM_KE_BEBERAPA_ALAMAT,
+                "");
+    }
+
+    public void eventMultipleAddressKlikTombolX() {
+        analyticTracker.sendEventTracking(EventName.CLICK_ATC,
+                EventCategory.CART_MULTIPLE_ADDRESS,
+                EventAction.CLICK_X_FROM_UBAH_FROM_KIRIM_KE_BEBERAPA_ALAMAT,
+                "");
+    }
+
+    public void eventMultipleAddressKlikTombolMinus() {
+        analyticTracker.sendEventTracking(EventName.CLICK_ATC,
+                EventCategory.CART_MULTIPLE_ADDRESS,
+                EventAction.CLICK_MIN_FROM_UBAH_FROM_KIRIM_KE_BEBERAPA_ALAMAT,
+                "");
+    }
+
+    public void eventMultipleAddressKlikTombolPlus() {
+        analyticTracker.sendEventTracking(EventName.CLICK_ATC,
+                EventCategory.CART_MULTIPLE_ADDRESS,
+                EventAction.CLICK_PLUS_FROM_UBAH_FROM_KIRIM_KE_BEBERAPA_ALAMAT,
+                "");
+    }
+
+    public void eventMultipleAddressKlikAngka() {
+        analyticTracker.sendEventTracking(EventName.CLICK_ATC,
+                EventCategory.CART_MULTIPLE_ADDRESS,
+                EventAction.CLICK_INPUT_QUANTITY_FROM_UBAH_FROM_KIRIM_KE_BEBERAPA_ALAMAT,
+                "");
+    }
+
+    public void eventViewMultipleAddressKlikTulisCatatan() {
+        analyticTracker.sendEventTracking(EventName.CLICK_ATC,
+                EventCategory.CART_MULTIPLE_ADDRESS,
+                EventAction.CLICK_TULIS_CATATAN_FROM_UBAH_FROM_KIRIM_KE_BEBERAPA_ALAMAT,
+                "");
+    }
+
+    public void eventViewMultipleAddressKlikSimpan() {
+        analyticTracker.sendEventTracking(EventName.CLICK_ATC,
+                EventCategory.CART_MULTIPLE_ADDRESS,
+                EventAction.CLICK_SIMPAN_FROM_UBAH_FROM_KIRIM_KE_BEBERAPA_ALAMAT,
+                "");
+    }
+
     public void enhancedECommerceRemoveCartAddWishList(Map<String, Object> cartMap) {
         analyticTracker.sendEnhancedEcommerce(
                 DataLayer.mapOf("event", EventName.REMOVE_FORM_CART,

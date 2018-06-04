@@ -70,6 +70,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     public static final String ARG_EXTRA_SHIPMENT_FORM_DATA = "ARG_EXTRA_SHIPMENT_FORM_DATA";
     public static final String ARG_EXTRA_CART_PROMO_SUGGESTION = "ARG_EXTRA_CART_PROMO_SUGGESTION";
     public static final String ARG_EXTRA_PROMO_CODE_APPLIED_DATA = "ARG_EXTRA_PROMO_CODE_APPLIED_DATA";
+    public static final String ARG_EXTRA_DEFAULT_SELECTED_TAB_PROMO = "ARG_EXTRA_DEFAULT_SELECTED_TAB_PROMO";
     private static final String NO_PINPOINT_ETD = "Belum Pinpoint";
     private static final int TOASTER_DURATION = 3000;
 
@@ -88,15 +89,15 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     @Inject
     CheckoutAnalyticsCartShipmentPage checkoutAnalyticsCartShipmentPage;
 
-    private Token token;
-
     public static ShipmentFragment newInstance(CartShipmentAddressFormData cartShipmentAddressFormData,
                                                PromoCodeAppliedData promoCodeAppliedData,
-                                               CartPromoSuggestion cartPromoSuggestionData) {
+                                               CartPromoSuggestion cartPromoSuggestionData,
+                                               String defaultSelectedTabPromo) {
         Bundle bundle = new Bundle();
         bundle.putParcelable(ARG_EXTRA_SHIPMENT_FORM_DATA, cartShipmentAddressFormData);
         bundle.putParcelable(ARG_EXTRA_CART_PROMO_SUGGESTION, cartPromoSuggestionData);
         bundle.putParcelable(ARG_EXTRA_PROMO_CODE_APPLIED_DATA, promoCodeAppliedData);
+        bundle.putString(ARG_EXTRA_DEFAULT_SELECTED_TAB_PROMO, defaultSelectedTabPromo);
         ShipmentFragment shipmentFragment = new ShipmentFragment();
         shipmentFragment.setArguments(bundle);
 
@@ -167,7 +168,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
             shipmentPresenter.setShipmentCartItemModelList(shipmentDataConverter.getShipmentItems(
                     cartShipmentAddressFormData));
 
-            token = new Token();
+            Token token = new Token();
             token.setDistrictRecommendation(cartShipmentAddressFormData.getKeroDiscomToken());
             token.setUt(cartShipmentAddressFormData.getKeroUnixTime());
         }
@@ -201,6 +202,9 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
 
         CartItemPromoHolderData cartItemPromoHolderData =
                 CartItemPromoHolderData.createInstanceFromAppliedPromo(shipmentPresenter.getPromoCodeAppliedData());
+        cartItemPromoHolderData.setDefaultSelectedTabString(
+                getArguments().getString(ARG_EXTRA_DEFAULT_SELECTED_TAB_PROMO, "")
+        );
         shipmentAdapter.addPromoVoucherData(cartItemPromoHolderData);
         if (shipmentPresenter.getPromoCodeAppliedData() != null) {
             shipmentPresenter.getCartPromoSuggestion().setVisible(false);
@@ -287,9 +291,13 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
 
         shipmentAdapter.clearData();
 
-        shipmentAdapter.addPromoVoucherData(
-                CartItemPromoHolderData.createInstanceFromAppliedPromo(shipmentPresenter.getPromoCodeAppliedData())
+        CartItemPromoHolderData cartItemPromoHolderData =
+                CartItemPromoHolderData.createInstanceFromAppliedPromo(shipmentPresenter.getPromoCodeAppliedData());
+        cartItemPromoHolderData.setDefaultSelectedTabString(
+                getArguments().getString(ARG_EXTRA_DEFAULT_SELECTED_TAB_PROMO, "")
         );
+        shipmentAdapter.addPromoVoucherData(cartItemPromoHolderData);
+
         if (shipmentPresenter.getCartPromoSuggestion() != null) {
             shipmentAdapter.addPromoSuggestionData(shipmentPresenter.getCartPromoSuggestion());
         }
@@ -337,6 +345,9 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                 .build()
         );
         CartItemPromoHolderData cartItemPromoHolderData = new CartItemPromoHolderData();
+        cartItemPromoHolderData.setDefaultSelectedTabString(
+                getArguments().getString(ARG_EXTRA_DEFAULT_SELECTED_TAB_PROMO, "")
+        );
         PromoCodeAppliedData promoCodeAppliedData = shipmentPresenter.getPromoCodeAppliedData();
         cartItemPromoHolderData.setPromoVoucherType(promoCodeAppliedData.getPromoCode(),
                 promoCodeAppliedData.getDescription(), promoCodeAppliedData.getAmount());
@@ -450,6 +461,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                         .build()
                 );
                 CartItemPromoHolderData cartPromo = new CartItemPromoHolderData();
+                cartPromo.setDefaultSelectedTabString(getArguments().getString(ARG_EXTRA_DEFAULT_SELECTED_TAB_PROMO, ""));
                 cartPromo.setPromoVoucherType(voucherCode, voucherMessage, voucherDiscountAmount);
 
                 updateAppliedPromo(cartPromo);
@@ -474,6 +486,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                         .build()
                 );
                 CartItemPromoHolderData cartPromo = new CartItemPromoHolderData();
+                cartPromo.setDefaultSelectedTabString(getArguments().getString(ARG_EXTRA_DEFAULT_SELECTED_TAB_PROMO, ""));
                 cartPromo.setPromoCouponType(
                         couponTitle, couponCode, couponMessage, couponDiscountAmount
                 );
@@ -618,7 +631,8 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
             startActivityForResult(
                     ((ICheckoutModuleRouter) getActivity().getApplication())
                             .checkoutModuleRouterGetLoyaltyNewCheckoutMarketplaceCartListIntent(
-                                    getActivity(), true, "", ""
+                                    getActivity(), true, "",
+                                    cartPromo.getDefaultSelectedTabString()
                             ), IRouterConstant.LoyaltyModule.LOYALTY_ACTIVITY_REQUEST_CODE
             );
         }
