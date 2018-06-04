@@ -29,6 +29,8 @@ public class AddShipmentAddressActivity extends BaseCheckoutActivity {
     public static final int ADD_MODE = 1;
     public static final int EDIT_MODE = 2;
 
+    private AddShipmentAddressFragment fragment;
+
     private int formMode;
     ArrayList<MultipleAddressAdapterData> dataList;
     MultipleAddressAdapterData multipleAddressAdapterData;
@@ -100,6 +102,7 @@ public class AddShipmentAddressActivity extends BaseCheckoutActivity {
 
     @Override
     public void onBackPressed() {
+        fragment.onCloseButtonPressed();
         Intent intent = new Intent();
         intent.putExtra(AddShipmentAddressActivity.PRODUCT_DATA_LIST_EXTRAS, dataList);
         setResult(Activity.RESULT_OK, intent);
@@ -113,8 +116,8 @@ public class AddShipmentAddressActivity extends BaseCheckoutActivity {
 
     @Override
     protected Fragment getNewFragment() {
-        return AddShipmentAddressFragment.newInstance(
-                dataList, multipleAddressAdapterData, multipleAddressItemData, formMode
-        );
+        fragment = (AddShipmentAddressFragment) AddShipmentAddressFragment.newInstance(
+                dataList, multipleAddressAdapterData, multipleAddressItemData, formMode);
+        return fragment;
     }
 }

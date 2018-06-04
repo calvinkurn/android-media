@@ -28,6 +28,7 @@ import com.tkpd.library.utils.KeyboardHandler;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.analytics.LoginAnalytics;
+import com.tokopedia.analytics.SessionTrackingUtils;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.ScreenTracking;
@@ -203,7 +204,6 @@ public class RegisterInitialFragment extends BaseDaggerFragment
                 showProgressBar();
                 Intent intent = RegisterPhoneNumberActivity.getCallingIntent(getActivity());
                 startActivityForResult(intent, REQUEST_REGISTER_PHONE_NUMBER);
-
             }
         });
         String sourceString = getActivity().getResources().getString(R.string.span_already_have_tokopedia_account);
@@ -395,7 +395,7 @@ public class RegisterInitialFragment extends BaseDaggerFragment
                 com.tokopedia.core.analytics.AppEventTracking.GTMCacheValue.FACEBOOK);
 
         presenter.getFacebookCredential(this, callbackManager);
-
+        SessionTrackingUtils.registerPageClickFacebook(com.tokopedia.core.analytics.AppEventTracking.GTMCacheValue.FACEBOOK);
 
     }
 
@@ -406,6 +406,7 @@ public class RegisterInitialFragment extends BaseDaggerFragment
 
         Intent intent = new Intent(getActivity(), GoogleSignInActivity.class);
         startActivityForResult(intent, RC_SIGN_IN_GOOGLE);
+        SessionTrackingUtils.registerPageClickGoogle(GoogleSignInActivity.class.getName());
 
     }
 

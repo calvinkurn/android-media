@@ -19,6 +19,15 @@ public class CartListData implements Parcelable {
     private boolean promoCouponActive;
     private CartTickerErrorData cartTickerErrorData;
     private AutoApplyData autoApplyData;
+    private String defaultPromoDialogTab;
+
+    public String getDefaultPromoDialogTab() {
+        return defaultPromoDialogTab;
+    }
+
+    public void setDefaultPromoDialogTab(String defaultPromoDialogTab) {
+        this.defaultPromoDialogTab = defaultPromoDialogTab;
+    }
 
     public CartTickerErrorData getCartTickerErrorData() {
         return cartTickerErrorData;

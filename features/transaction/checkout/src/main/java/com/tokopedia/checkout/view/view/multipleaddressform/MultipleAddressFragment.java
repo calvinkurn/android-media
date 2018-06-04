@@ -23,6 +23,7 @@ import com.tokopedia.checkout.view.di.component.DaggerMultipleAddressComponent;
 import com.tokopedia.checkout.view.di.component.MultipleAddressComponent;
 import com.tokopedia.checkout.view.di.module.MultipleAddressModule;
 import com.tokopedia.design.component.ToasterError;
+import com.tokopedia.transactionanalytics.CheckoutAnalyticsCartPage;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -45,6 +46,8 @@ public class MultipleAddressFragment extends BaseCheckoutFragment
     IMultipleAddressPresenter presenter;
     @Inject
     UserSession userSession;
+    @Inject
+    CheckoutAnalyticsCartPage checkoutAnalyticsCartPage;
 
     public static final int ADD_SHIPMENT_ADDRESS_REQUEST_CODE = 21;
     public static final int EDIT_SHIPMENT_ADDRESS_REQUEST_CODE = 22;
@@ -110,6 +113,7 @@ public class MultipleAddressFragment extends BaseCheckoutFragment
 
     @Override
     public void onGoToChooseCourier(List<MultipleAddressAdapterData> dataList) {
+        checkoutAnalyticsCartPage.eventMultipleAddressKlikPilihKurirPengiriman();
         presenter.sendData(getActivity(), dataList);
 
     }
@@ -119,6 +123,7 @@ public class MultipleAddressFragment extends BaseCheckoutFragment
                                         ArrayList<MultipleAddressAdapterData> dataList,
                                         MultipleAddressAdapterData data,
                                         MultipleAddressItemData addressData) {
+        checkoutAnalyticsCartPage.eventMultipleAddressKlikTambahAlamatBaru();
         startActivityForResult(AddShipmentAddressActivity
                         .createIntent(getActivity(), dataList, data, addressData, ADD_MODE),
                 ADD_SHIPMENT_ADDRESS_REQUEST_CODE);
@@ -128,6 +133,7 @@ public class MultipleAddressFragment extends BaseCheckoutFragment
     public void onItemChoosen(ArrayList<MultipleAddressAdapterData> dataList,
                               MultipleAddressAdapterData productData,
                               MultipleAddressItemData addressData) {
+        checkoutAnalyticsCartPage.eventMultipleAddressKlikEdit();
         startActivityForResult(AddShipmentAddressActivity
                         .createIntent(getActivity(), dataList, productData, addressData, EDIT_MODE),
                 EDIT_SHIPMENT_ADDRESS_REQUEST_CODE);
@@ -262,5 +268,17 @@ public class MultipleAddressFragment extends BaseCheckoutFragment
     @Override
     protected void setActionVar() {
 
+    }
+
+    public void backPressed() {
+        checkoutAnalyticsCartPage.eventMultipleAddressKlikTombolBack();
+    }
+
+    public void deleteChanges() {
+        checkoutAnalyticsCartPage.eventMultipleAddressKlikTombolKembaliDanHapusPerubahan();
+    }
+
+    public void stayInPage() {
+        checkoutAnalyticsCartPage.eventMultipleAddressTetapDiHalamanIni();
     }
 }

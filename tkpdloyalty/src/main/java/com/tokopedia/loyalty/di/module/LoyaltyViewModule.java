@@ -55,7 +55,8 @@ public class LoyaltyViewModule {
                                 activity.getPlatformString(),
                                 activity.getPlatformPageString(),
                                 activity.getCategoryString(),
-                                activity.getCartIdString())
+                                activity.getCartIdString(),
+                                activity.getAdditionalDataString())
                         ).position(0)
                         .tabTitle("Kode Promo")
                         .build()
@@ -102,7 +103,8 @@ public class LoyaltyViewModule {
                                 activity.getPlatformString(),
                                 activity.getPlatformPageString(),
                                 activity.getCategoryString(),
-                                activity.getCartIdString()))
+                                activity.getCartIdString(),
+                                activity.getAdditionalDataString()))
                         .position(0)
                         .tabTitle("Kode Promo")
                         .build()

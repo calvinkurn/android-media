@@ -21,6 +21,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tokopedia.abstraction.common.utils.TKPDMapParam;
 import com.tokopedia.abstraction.common.utils.network.AuthUtil;
@@ -72,6 +73,7 @@ import com.tokopedia.topads.sdk.listener.TopAdsItemClickListener;
 import com.tokopedia.topads.sdk.view.DisplayMode;
 import com.tokopedia.topads.sdk.view.TopAdsView;
 import com.tokopedia.transactionanalytics.CheckoutAnalyticsCartPage;
+import com.tokopedia.transactiondata.entity.request.UpdateCartRequest;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -333,11 +335,22 @@ public class CartFragment extends BaseCheckoutFragment implements CartListAdapte
     @Override
     public void onCartPromoUseVoucherPromoClicked(CartItemPromoHolderData cartItemPromoHolderData, int position) {
         cartPageAnalytics.eventClickCartClickGunakanKodePromoAatauKupon();
+        List<CartItemData> cartItemDataList = getCartDataList();
+        List<UpdateCartRequest> updateCartRequestList = new ArrayList<>();
+        for (CartItemData data : cartItemDataList) {
+            updateCartRequestList.add(new UpdateCartRequest.Builder()
+                    .cartId(data.getOriginData().getCartId())
+                    .notes(data.getUpdatedData().getRemark())
+                    .quantity(data.getUpdatedData().getQuantity())
+                    .build());
+        }
         if (getActivity().getApplication() instanceof ICheckoutModuleRouter) {
             startActivityForResult(
                     ((ICheckoutModuleRouter) getActivity().getApplication())
                             .checkoutModuleRouterGetLoyaltyNewCheckoutMarketplaceCartListIntent(
-                                    getActivity(), cartListData.isPromoCouponActive(), "", ""
+                                    getActivity(), cartListData.isPromoCouponActive(),
+                                    new Gson().toJson(updateCartRequestList),
+                                    cartItemPromoHolderData.getDefaultSelectedTabString()
                             ), IRouterConstant.LoyaltyModule.LOYALTY_ACTIVITY_REQUEST_CODE
             );
         }
@@ -500,6 +513,7 @@ public class CartFragment extends BaseCheckoutFragment implements CartListAdapte
             cartItemPromoHolderData.setPromoNotActive();
             promoCodeAppliedData = null;
         }
+        cartItemPromoHolderData.setDefaultSelectedTabString(cartListData.getDefaultPromoDialogTab());
         cartListAdapter.addPromoVoucherData(cartItemPromoHolderData);
 
         if (cartListData.isError()) {
@@ -590,7 +604,7 @@ public class CartFragment extends BaseCheckoutFragment implements CartListAdapte
     @Override
     public void renderToShipmentFormSuccess(CartShipmentAddressFormData shipmentAddressFormData) {
         Intent intent = ShipmentActivity.createInstance(getActivity(), shipmentAddressFormData,
-                promoCodeAppliedData, cartListData.getCartPromoSuggestion()
+                promoCodeAppliedData, cartListData.getCartPromoSuggestion(), cartListData.getDefaultPromoDialogTab()
         );
         startActivityForResult(intent, ShipmentActivity.REQUEST_CODE);
     }

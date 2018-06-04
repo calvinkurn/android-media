@@ -35,17 +35,20 @@ public class ShipmentActivity extends BaseCheckoutActivity implements HasCompone
     public static final String EXTRA_SELECTED_ADDRESS_RECIPIENT_DATA = "EXTRA_DEFAULT_ADDRESS_RECIPIENT_DATA";
     public static final String EXTRA_CART_PROMO_SUGGESTION = "EXTRA_CART_PROMO_SUGGESTION";
     public static final String EXTRA_PROMO_CODE_APPLIED_DATA = "EXTRA_PROMO_CODE_APPLIED_DATA";
+    public static final String EXTRA_PROMO_CODE_COUPON_DEFAULT_SELECTED_TAB = "EXTRA_PROMO_CODE_COUPON_DEFAULT_SELECTED_TAB";
     private CheckoutAnalyticsCartShipmentPage checkoutAnalyticsCartShipmentPage;
 
 
     public static Intent createInstance(Context context,
                                         CartShipmentAddressFormData cartShipmentAddressFormData,
                                         PromoCodeAppliedData promoCodeCartListData,
-                                        CartPromoSuggestion cartPromoSuggestion) {
+                                        CartPromoSuggestion cartPromoSuggestion,
+                                        String defaultSelectedTabPromo) {
         Intent intent = new Intent(context, ShipmentActivity.class);
         intent.putExtra(EXTRA_PROMO_CODE_APPLIED_DATA, promoCodeCartListData);
         intent.putExtra(EXTRA_SHIPMENT_FORM_DATA, cartShipmentAddressFormData);
         intent.putExtra(EXTRA_CART_PROMO_SUGGESTION, cartPromoSuggestion);
+        intent.putExtra(EXTRA_PROMO_CODE_COUPON_DEFAULT_SELECTED_TAB, defaultSelectedTabPromo);
         return intent;
     }
 
@@ -94,9 +97,10 @@ public class ShipmentActivity extends BaseCheckoutActivity implements HasCompone
     @Override
     protected Fragment getNewFragment() {
         return ShipmentFragment.newInstance(
-                (CartShipmentAddressFormData) getIntent().getParcelableExtra(EXTRA_SHIPMENT_FORM_DATA),
-                (PromoCodeAppliedData) getIntent().getParcelableExtra(EXTRA_PROMO_CODE_APPLIED_DATA),
-                (CartPromoSuggestion) getIntent().getParcelableExtra(EXTRA_CART_PROMO_SUGGESTION)
+                getIntent().getParcelableExtra(EXTRA_SHIPMENT_FORM_DATA),
+                getIntent().getParcelableExtra(EXTRA_PROMO_CODE_APPLIED_DATA),
+                getIntent().getParcelableExtra(EXTRA_CART_PROMO_SUGGESTION),
+                getIntent().getStringExtra(EXTRA_PROMO_CODE_COUPON_DEFAULT_SELECTED_TAB)
         );
     }
 

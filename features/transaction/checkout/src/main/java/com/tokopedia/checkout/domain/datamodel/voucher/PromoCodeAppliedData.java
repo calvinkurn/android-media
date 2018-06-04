@@ -63,6 +63,7 @@ public class PromoCodeAppliedData implements Parcelable {
         return amount;
     }
 
+
     public void setAmount(int amount) {
         this.amount = amount;
     }

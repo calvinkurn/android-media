@@ -95,7 +95,9 @@ public interface ApplinkConst {
     String TC_LANDING = "tokopedia://tc-landing";
 
     String CONTENT_EXPLORE = "tokopedia://content/explore/{tab_name}/{category_id}";
-    String CONTENT_DETAIL = "tokopedia://content/{post_id}";
+    String CONTENT_DETAIL ="tokopedia://content/{post_id}";
+    String INBOX_TICKET = "tokopedia://customercare";
+    String TICKET_DETAIL = "tokopedia://customercare/{ticket_id}";
 
     String ORDER_TRACKING = "tokopedia://order/tracking";
 
