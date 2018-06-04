@@ -62,6 +62,7 @@ ext {
     tkpdHomeVersion = '2.22'
     tkpdMitraToppersVersion = '2.22'
     tkpdDistrictRecommendationVersion = '2.22'
+    tkpdAnalyticsVersion = '2.22'
 
     networkDependencies = [
             retrofit          : "com.squareup.retrofit2:retrofit:${retrofitVersion}",
@@ -92,19 +93,20 @@ ext {
     ]
 
     playServicesDependencies = [
-            plus        : "com.google.android.gms:play-services-plus:${playServiceVersion}",
-            base        : "com.google.android.gms:play-services-base:${playServiceVersion}",
-            appIndexing : "com.google.firebase:firebase-appindexing:${playServiceVersion}",
-            analytics   : "com.google.android.gms:play-services-analytics:${playServiceVersion}",
-            firebase    : "com.google.firebase:firebase-messaging:${playServiceVersion}",
-            location    : "com.google.android.gms:play-services-location:${playServiceVersion}",
-            maps        : "com.google.android.gms:play-services-maps:${playServiceVersion}",
-            auth        : "com.google.android.gms:play-services-auth:${playServiceVersion}",
-            places      : "com.google.android.gms:play-services-places:${playServiceVersion}",
-            mapsUtils   : "com.google.maps.android:android-maps-utils:0.4",
-            remoteConfig: "com.google.firebase:firebase-config:${playServiceVersion}",
-            perfMon     : "com.google.firebase:firebase-perf:${playServiceVersion}",
-            ads         : "com.google.android.gms:play-services-ads:${playServiceVersion}"
+            plus                : "com.google.android.gms:play-services-plus:${playServiceVersion}",
+            base                : "com.google.android.gms:play-services-base:${playServiceVersion}",
+            appIndexing         : "com.google.firebase:firebase-appindexing:${playServiceVersion}",
+            analytics           : "com.google.android.gms:play-services-analytics:${playServiceVersion}",
+            firebase            : "com.google.firebase:firebase-messaging:${playServiceVersion}",
+            location            : "com.google.android.gms:play-services-location:${playServiceVersion}",
+            maps                : "com.google.android.gms:play-services-maps:${playServiceVersion}",
+            auth                : "com.google.android.gms:play-services-auth:${playServiceVersion}",
+            places              : "com.google.android.gms:play-services-places:${playServiceVersion}",
+            mapsUtils           : "com.google.maps.android:android-maps-utils:0.4",
+            remoteConfig        : "com.google.firebase:firebase-config:${playServiceVersion}",
+            perfMon             : "com.google.firebase:firebase-perf:${playServiceVersion}",
+            ads                 : "com.google.android.gms:play-services-ads:${playServiceVersion}",
+            firebaseAnalytics   :  "com.google.firebase:firebase-core:${playServiceVersion}",
     ]
 
     butterKnifeDependencies = [
@@ -310,6 +312,7 @@ ext {
             bottomSheetBuilder: ":libraries:bottom_sheet_builder",
             userSession     : ":libraries:user_session",
             imageuploader   : ":libraries:imageuploader",
-            youtubeApi      : ":libraries:YouTubeAndroidPlayerApi"
+            youtubeApi      : ":libraries:YouTubeAndroidPlayerApi",
+            analytics       : ":libraries:analytics"
     ]
 }

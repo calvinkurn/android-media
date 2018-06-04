@@ -38,6 +38,7 @@ import com.tkpd.library.utils.KeyboardHandler;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.analytics.LoginAnalytics;
+import com.tokopedia.analytics.SessionTrackingUtils;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.ScreenTracking;
@@ -283,6 +284,7 @@ public class LoginFragment extends BaseDaggerFragment
                 presenter.login(emailEditText.getText().toString().trim(),
                         passwordEditText.getText().toString());
                 UnifyTracking.eventCTAAction();
+                SessionTrackingUtils.loginPageClickLogin();
             }
         });
 
@@ -295,6 +297,8 @@ public class LoginFragment extends BaseDaggerFragment
                         .toString());
                 intent.setFlags(Intent.FLAG_ACTIVITY_FORWARD_RESULT);
                 startActivity(intent);
+                SessionTrackingUtils.loginPageClickForgotPassword("ForgotPasswordActivity");
+
             }
         });
 
@@ -717,17 +721,22 @@ public class LoginFragment extends BaseDaggerFragment
         UnifyTracking.eventTracking(LoginAnalytics.getEventClickLoginPhoneNumber());
         Intent intent = LoginPhoneNumberActivity.getCallingIntent(getActivity());
         startActivityForResult(intent, REQUEST_LOGIN_PHONE_NUMBER);
+        SessionTrackingUtils.loginPageClickLoginPhone("LoginPhoneNumberActivity");
+
     }
 
     private void onLoginGoogleClick() {
         UnifyTracking.eventTracking(LoginAnalytics.getEventClickLoginGoogle());
         Intent intent = new Intent(getActivity(), GoogleSignInActivity.class);
         startActivityForResult(intent, RC_SIGN_IN_GOOGLE);
+        SessionTrackingUtils.loginPageClickLoginGoogle("GoogleSignInActivity");
+
     }
 
     private void onLoginFacebookClick() {
         UnifyTracking.eventTracking(LoginAnalytics.getEventClickLoginFacebook());
         presenter.getFacebookCredential(this, callbackManager);
+        SessionTrackingUtils.loginPageClickLoginFacebook("Facebook");
     }
 
     private DiscoverItemViewModel getLoginPhoneNumberBean() {
