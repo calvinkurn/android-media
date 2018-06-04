@@ -53,7 +53,9 @@
         android:layout_gravity="fill_vertical"
         android:descendantFocusability="blocksDescendants"
         app:layout_behavior="@string/appbar_scrolling_view_behavior"
-        android:id="@+id/nested_scroll_pdp">
+        android:id="@+id/nested_scroll_pdp"
+        android:background="@color/white"
+        android:clipToPadding="false">
 
         <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
             xmlns:tools="http://schemas.android.com/tools"

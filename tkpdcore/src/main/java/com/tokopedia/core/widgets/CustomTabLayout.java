@@ -2,6 +2,7 @@ package com.tokopedia.core.widgets;
 
 import android.content.Context;
 import android.graphics.Point;
+import android.os.Build;
 import android.support.design.widget.TabLayout;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -49,6 +50,17 @@ public class CustomTabLayout extends TabLayout {
             e.printStackTrace();
         } catch (IllegalAccessException e) {
             e.printStackTrace();
+        }
+
+        initShadow();
+    }
+
+    private void initShadow() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            this.setElevation(10);
+            this.setBackgroundResource(com.tokopedia.design.R.color.tkpd_main_green);
+        } else {
+            this.setBackgroundResource(com.tokopedia.design.R.drawable.bg_green_toolbar_drop_shadow);
         }
     }
 }
