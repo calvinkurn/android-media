@@ -24,7 +24,9 @@ import com.tokopedia.flight.common.data.model.FlightErrorResponse;
 import com.tokopedia.flight.common.data.repository.FlightRepositoryImpl;
 import com.tokopedia.flight.common.data.source.FlightAuthInterceptor;
 import com.tokopedia.flight.common.data.source.cloud.api.FlightApi;
+import com.tokopedia.flight.common.data.source.cloud.api.retrofit.StringResponseConverter;
 import com.tokopedia.flight.common.di.qualifier.FlightChuckQualifier;
+import com.tokopedia.flight.common.di.qualifier.FlightGsonPlainQualifier;
 import com.tokopedia.flight.common.di.qualifier.FlightQualifier;
 import com.tokopedia.flight.common.di.scope.FlightScope;
 import com.tokopedia.flight.common.domain.FlightRepository;
@@ -46,6 +48,8 @@ import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
+import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 /**
  * Created by User on 10/24/2017.
@@ -58,6 +62,7 @@ public class FlightModule {
     private static final int NET_WRITE_TIMEOUT = 30;
     private static final int NET_CONNECT_TIMEOUT = 30;
     private static final int NET_RETRY = 1;
+    private static final String GSON_DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ssZ";
 
     @FlightScope
     @Provides
@@ -107,7 +112,7 @@ public class FlightModule {
     @Provides
     @FlightQualifier
     public Retrofit provideFlightRetrofit(OkHttpClient okHttpClient,
-                                          Retrofit.Builder retrofitBuilder) {
+                                          @FlightQualifier Retrofit.Builder retrofitBuilder) {
         return retrofitBuilder.baseUrl(FlightUrl.BASE_URL).client(okHttpClient).build();
     }
 
@@ -137,7 +142,7 @@ public class FlightModule {
     }
 
     @Provides
-    @FlightQualifier
+    @FlightGsonPlainQualifier
     public Gson provideGson() {
         return new GsonBuilder().create();
     }
@@ -153,5 +158,26 @@ public class FlightModule {
     @Provides
     public OkHttpRetryPolicy provideOkHttpRetryPolicy() {
         return new OkHttpRetryPolicy(NET_READ_TIMEOUT, NET_WRITE_TIMEOUT, NET_CONNECT_TIMEOUT, NET_RETRY);
+    }
+
+    @FlightScope
+    @Provides
+    @FlightQualifier
+    public Retrofit.Builder provideRetrofitBuilder(@FlightQualifier Gson gson) {
+        return new Retrofit.Builder()
+                .addConverterFactory(new StringResponseConverter())
+                .addConverterFactory(GsonConverterFactory.create(gson))
+                .addCallAdapterFactory(RxJavaCallAdapterFactory.create());
+    }
+
+    @FlightScope
+    @FlightQualifier
+    @Provides
+    public Gson provideFlightGson() {
+        return new GsonBuilder()
+                .setDateFormat(GSON_DATE_FORMAT)
+                .setPrettyPrinting()
+                .serializeNulls()
+                .create();
     }
 }

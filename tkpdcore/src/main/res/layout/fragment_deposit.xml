@@ -37,8 +37,8 @@
             android:dividerHeight="@dimen/margin_vs"
             android:longClickable="false"
             android:scrollbars="vertical"
-            android:padding="@dimen/padding_small"
-             />
+            android:clipToPadding="false"
+            android:padding="@dimen/padding_small" />
 
     </com.tokopedia.core.customwidget.SwipeToRefresh>
 </android.support.design.widget.CoordinatorLayout>
