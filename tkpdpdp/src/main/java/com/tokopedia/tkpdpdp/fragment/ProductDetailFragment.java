@@ -3,7 +3,6 @@ package com.tokopedia.tkpdpdp.fragment;
 import android.Manifest;
 import android.app.Activity;
 import android.app.Dialog;
-import android.app.FragmentTransaction;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -13,7 +12,6 @@ import android.graphics.Rect;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.annotation.RequiresApi;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.CoordinatorLayout;
@@ -45,7 +43,6 @@ import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.core.analytics.ProductPageTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.analytics.nishikino.model.GTMCart;
-import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.app.BasePresenterFragmentV4;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TkpdCoreRouter;
@@ -1633,7 +1630,7 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
     public void renderAddToCartSuccess(String message) {
         checkoutAnalyticProductDetailPage.eventClickAddToCartImpressionAtcSuccess();
         updateCartNotification();
-        FragmentTransaction ft = getFragmentManager().beginTransaction();
+        android.support.v4.app.FragmentTransaction ft = getFragmentManager().beginTransaction();
         ft.add(
                 AddToCartConfirmationDialog.newInstance(
                         message,
