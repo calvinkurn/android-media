@@ -15,8 +15,8 @@ import rx.Observable;
 public interface ITkpdLoyaltyModuleRouter {
 
     Observable<CheckPromoCodeCartListResult> tkpdLoyaltyGetCheckPromoCodeCartListResultObservable(
-            String promoCode
-    );
+            String promoCode,
+            String paramUpdateCart);
 
     Observable<CheckPromoCodeCartShipmentResult> tkpdLoyaltyGetCheckPromoCodeCartShipmentResultObservable(
             CheckPromoCodeCartShipmentRequest checkPromoCodeCartShipmentRequest

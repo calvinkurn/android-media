@@ -335,6 +335,19 @@ public class CartListPresenter implements ICartListPresenter {
     @Override
     public void processCheckPromoCodeFromSuggestedPromo(String promoCode) {
         view.showProgressLoading();
+
+        List<UpdateCartRequest> updateCartRequestList = new ArrayList<>();
+        for (CartItemData data : view.getCartDataList()) {
+            updateCartRequestList.add(new UpdateCartRequest.Builder()
+                    .cartId(data.getOriginData().getCartId())
+                    .notes(data.getUpdatedData().getRemark())
+                    .quantity(data.getUpdatedData().getQuantity())
+                    .build());
+        }
+
+        TKPDMapParam<String, String> paramUpdate = new TKPDMapParam<>();
+        paramUpdate.put(CheckPromoCodeCartListUseCase.PARAM_CARTS, new Gson().toJson(updateCartRequestList));
+
         TKPDMapParam<String, String> param = new TKPDMapParam<>();
         param.put(CheckPromoCodeCartListUseCase.PARAM_PROMO_CODE, promoCode);
         param.put(CheckPromoCodeCartListUseCase.PARAM_PROMO_LANG,
@@ -343,6 +356,8 @@ public class CartListPresenter implements ICartListPresenter {
                 CheckPromoCodeCartListUseCase.PARAM_VALUE_SUGGESTED);
 
         RequestParams requestParams = RequestParams.create();
+        requestParams.putObject(CheckPromoCodeCartListUseCase.PARAM_REQUEST_AUTH_MAP_STRING_UPDATE_CART,
+                view.getGeneratedAuthParamNetwork(paramUpdate));
         requestParams.putObject(CheckPromoCodeCartListUseCase.PARAM_REQUEST_AUTH_MAP_STRING_CHECK_PROMO,
                 view.getGeneratedAuthParamNetwork(param));
 

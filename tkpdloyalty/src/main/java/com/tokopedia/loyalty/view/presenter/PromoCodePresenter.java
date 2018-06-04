@@ -4,12 +4,11 @@ import android.app.Activity;
 import android.content.Context;
 import android.support.annotation.NonNull;
 
-import com.google.gson.JsonObject;
-import com.tokopedia.core.analytics.UnifyTracking;
-import com.tokopedia.core.app.TkpdCoreRouter;
-import com.tokopedia.core.base.domain.RequestParams;
 import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 import com.tokopedia.abstraction.common.network.exception.MessageErrorException;
+import com.tokopedia.core.analytics.UnifyTracking;
+import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.network.exception.ResponseErrorException;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.network.retrofit.utils.ErrorNetMessage;
@@ -73,11 +72,11 @@ public class PromoCodePresenter implements IPromoCodePresenter {
     }
 
     @Override
-    public void processCheckMarketPlaceCartListPromoCode(Activity activity, final String voucherCode) {
+    public void processCheckMarketPlaceCartListPromoCode(Activity activity, String voucherCode, String paramUpdateCart) {
         if (activity.getApplication() instanceof ITkpdLoyaltyModuleRouter) {
             promoCodeInteractor.submitVoucherMarketPlaceCartList(
                     ((ITkpdLoyaltyModuleRouter) activity.getApplication())
-                            .tkpdLoyaltyGetCheckPromoCodeCartListResultObservable(voucherCode),
+                            .tkpdLoyaltyGetCheckPromoCodeCartListResultObservable(voucherCode, paramUpdateCart),
                     new Subscriber<CheckPromoCodeCartListResult>() {
                         @Override
                         public void onCompleted() {
@@ -234,7 +233,7 @@ public class PromoCodePresenter implements IPromoCodePresenter {
                 view.hideProgressLoading();
                 if (e instanceof LoyaltyErrorException || e instanceof ResponseErrorException) {
                     view.onPromoCodeError(e.getMessage());
-                }else if (e instanceof MessageErrorException) {
+                } else if (e instanceof MessageErrorException) {
                     view.onGetGeneralError(e.getMessage());
                 } else view.onGetGeneralError(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
             }

@@ -84,6 +84,7 @@ public class LoyaltyActivity extends BasePresenterActivity
     private int categoryId;
     private int productId;
     private String cartIdString;
+    private String additionalDataString;
 
     public boolean isCouponActive() {
         return isCouponActive;
@@ -115,6 +116,10 @@ public class LoyaltyActivity extends BasePresenterActivity
 
     public String getCartIdString() {
         return cartIdString;
+    }
+
+    public String getAdditionalDataString() {
+        return additionalDataString;
     }
 
     private OnTabSelectedForTrackingCheckoutMarketPlace onTabSelectedForTrackingCheckoutMarketPlace;
@@ -152,6 +157,9 @@ public class LoyaltyActivity extends BasePresenterActivity
         );
         this.cartIdString = extras.getString(
                 IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.EXTRA_CART_ID, ""
+        );
+        this.additionalDataString = extras.getString(
+                IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.EXTRA_ADDITIONAL_STRING_DATA, ""
         );
     }
 
