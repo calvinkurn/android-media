@@ -1,16 +1,17 @@
 package com.tokopedia.tkpdpdp;
 
 import android.app.Dialog;
-import android.app.Fragment;
-import android.app.FragmentManager;
-import android.app.FragmentTransaction;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.google.firebase.perf.metrics.AddTrace;
@@ -28,9 +29,10 @@ import com.tokopedia.core.router.SellerAppRouter;
 import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.router.productdetail.ProductDetailRouter;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
-import com.tokopedia.core.share.ShareActivity;
+import com.tokopedia.core.share.ShareBottomSheet;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.webview.listener.DeepLinkWebViewHandleListener;
+import com.tokopedia.design.component.BottomSheets;
 import com.tokopedia.tkpdpdp.customview.YoutubeThumbnailViewHolder;
 import com.tokopedia.tkpdpdp.fragment.ProductDetailFragment;
 import com.tokopedia.tkpdpdp.listener.ProductInfoView;
@@ -41,7 +43,8 @@ public class ProductInfoActivity extends BasePresenterNoLayoutActivity<ProductIn
         DeepLinkWebViewHandleListener,
         ProductInfoView,
         DetailFragmentInteractionListener,
-        ProductInfoResultReceiver.Receiver,YoutubeThumbnailViewHolder.YouTubeThumbnailLoadInProcess {
+        ProductInfoResultReceiver.Receiver,YoutubeThumbnailViewHolder.YouTubeThumbnailLoadInProcess,
+        BottomSheets.BottomSheetDismissListener {
     public static final String SHARE_DATA = "SHARE_DATA";
     public static final String IS_ADDING_PRODUCT = "IS_ADDING_PRODUCT";
 
@@ -49,6 +52,11 @@ public class ProductInfoActivity extends BasePresenterNoLayoutActivity<ProductIn
     private Bundle bundleData;
 
     ProductInfoResultReceiver mReceiver;
+
+    @Override
+    protected void forceRotation() {
+
+    }
 
     @DeepLink(Constants.Applinks.PRODUCT_INFO)
     public static Intent getCallingIntent(Context context, Bundle extras) {
@@ -142,7 +150,29 @@ public class ProductInfoActivity extends BasePresenterNoLayoutActivity<ProductIn
 
     @Override
     protected void setViewListener() {
-        presenter.initialFragment(this, uriData, bundleData);
+        if (!share()) {
+            presenter.initialFragment(this, uriData, bundleData);
+        }
+    }
+
+    private boolean share() {
+
+        Bundle bundle = this.bundleData;
+        boolean isAddingProduct = bundle.getBoolean(ProductInfoActivity.IS_ADDING_PRODUCT);
+        ShareData shareData = bundle.getParcelable(ProductInfoActivity.SHARE_DATA);
+
+        if (isAddingProduct) {
+            ShareBottomSheet share = ShareBottomSheet.newInstance(shareData, true);
+            share.setDismissListener(this);
+            share.show(getSupportFragmentManager(), ShareBottomSheet.TITLE_EN);
+        } else if (shareData != null) {
+            ShareBottomSheet share = ShareBottomSheet.newInstance(shareData, false);
+            share.setDismissListener(this);
+            share.show(getSupportFragmentManager(), ShareBottomSheet.TITLE_EN);
+        } else {
+            return false;
+        }
+        return true;
     }
 
     @Override
@@ -159,7 +189,7 @@ public class ProductInfoActivity extends BasePresenterNoLayoutActivity<ProductIn
     @Override
     public void shareProductInfo(@NonNull ShareData shareData) {
         presenter.processToShareProduct(this, shareData);
-        startActivity(ShareActivity.createIntent(ProductInfoActivity.this, shareData));
+        ShareBottomSheet.show(getSupportFragmentManager(), shareData);
     }
 
     @Override
@@ -174,9 +204,9 @@ public class ProductInfoActivity extends BasePresenterNoLayoutActivity<ProductIn
 
     @Override
     public void inflateFragment(Fragment fragment, String tag) {
-        if (getFragmentManager().findFragmentByTag(tag) == null) {
-            FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
-            getFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+        if (getSupportFragmentManager().findFragmentByTag(tag) == null) {
+            FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+            getSupportFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
             fragmentTransaction.add(R.id.container, fragment, tag);
             fragmentTransaction.commit();
         }
@@ -194,7 +224,7 @@ public class ProductInfoActivity extends BasePresenterNoLayoutActivity<ProductIn
     }
 
     private void inflateNewFragment(Fragment fragment, String tag) {
-        FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
+        FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
         fragmentTransaction.replace(R.id.container, fragment, tag);
         fragmentTransaction.addToBackStack(null);
         fragmentTransaction.commit();
@@ -267,7 +297,7 @@ public class ProductInfoActivity extends BasePresenterNoLayoutActivity<ProductIn
 
     @Override
     public void onReceiveResult(int resultCode, Bundle resultData) {
-        Fragment fragment = getFragmentManager().findFragmentById(R.id.container);
+        Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.container);
         if (fragment != null) {
             switch (resultCode) {
                 case ProductInfoIntentService.STATUS_SUCCESS_REPORT_PRODUCT:
@@ -321,6 +351,11 @@ public class ProductInfoActivity extends BasePresenterNoLayoutActivity<ProductIn
         if(isBackPressed) {
             onBackPressed();
         }
+    }
+
+    @Override
+    public void onDismiss() {
+        closeView();
     }
 
     // Work Around IF your press back and youtube thumbnail doesn't intalized yet }

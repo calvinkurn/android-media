@@ -10,7 +10,7 @@ import android.text.TextUtils;
 import android.text.style.ForegroundColorSpan;
 import android.text.style.RelativeSizeSpan;
 
-import com.tokopedia.flight.airport.data.source.db.model.FlightAirportDB;
+import com.tokopedia.flight.airport.view.viewmodel.FlightAirportViewModel;
 
 /**
  * Created by alvarisi on 10/30/17.
@@ -24,9 +24,9 @@ public class FlightDashboardViewModel implements Parcelable, Cloneable {
     private boolean isOneWay;
     private FlightPassengerViewModel flightPassengerViewModel;
     private String flightPassengerFmt;
-    private FlightAirportDB departureAirport;
+    private FlightAirportViewModel departureAirport;
     private String departureAirportFmt;
-    private FlightAirportDB arrivalAirport;
+    private FlightAirportViewModel arrivalAirport;
     private String arrivalAirportFmt;
     private FlightClassViewModel flightClass;
 
@@ -40,9 +40,9 @@ public class FlightDashboardViewModel implements Parcelable, Cloneable {
                                     boolean isOneWay,
                                     FlightPassengerViewModel flightPassengerViewModel,
                                     String flightPassengerFmt,
-                                    FlightAirportDB departureAirport,
+                                    FlightAirportViewModel departureAirport,
                                     String departureAirportFmt,
-                                    FlightAirportDB arrivalAirport,
+                                    FlightAirportViewModel arrivalAirport,
                                     String arrivalAirportFmt,
                                     FlightClassViewModel flightClass) {
         this.departureDate = departureDate;
@@ -67,9 +67,9 @@ public class FlightDashboardViewModel implements Parcelable, Cloneable {
         isOneWay = in.readByte() != 0;
         flightPassengerViewModel = in.readParcelable(FlightPassengerViewModel.class.getClassLoader());
         flightPassengerFmt = in.readString();
-        departureAirport = in.readParcelable(FlightAirportDB.class.getClassLoader());
+        departureAirport = in.readParcelable(FlightAirportViewModel.class.getClassLoader());
         departureAirportFmt = in.readString();
-        arrivalAirport = in.readParcelable(FlightAirportDB.class.getClassLoader());
+        arrivalAirport = in.readParcelable(FlightAirportViewModel.class.getClassLoader());
         arrivalAirportFmt = in.readString();
         flightClass = in.readParcelable(FlightClassViewModel.class.getClassLoader());
     }
@@ -118,19 +118,19 @@ public class FlightDashboardViewModel implements Parcelable, Cloneable {
         this.flightPassengerViewModel = flightPassengerViewModel;
     }
 
-    public FlightAirportDB getDepartureAirport() {
+    public FlightAirportViewModel getDepartureAirport() {
         return departureAirport;
     }
 
-    public void setDepartureAirport(FlightAirportDB departureAirport) {
+    public void setDepartureAirport(FlightAirportViewModel departureAirport) {
         this.departureAirport = departureAirport;
     }
 
-    public FlightAirportDB getArrivalAirport() {
+    public FlightAirportViewModel getArrivalAirport() {
         return arrivalAirport;
     }
 
-    public void setArrivalAirport(FlightAirportDB arrivalAirport) {
+    public void setArrivalAirport(FlightAirportViewModel arrivalAirport) {
         this.arrivalAirport = arrivalAirport;
     }
 
@@ -167,10 +167,10 @@ public class FlightDashboardViewModel implements Parcelable, Cloneable {
     }
 
     public CharSequence getAirportTextForView(Context context, boolean isDeparture){
-        FlightAirportDB flightAirportDB = isDeparture? departureAirport: arrivalAirport;
+        FlightAirportViewModel flightAirportDB = isDeparture? departureAirport: arrivalAirport;
 
         SpannableStringBuilder text = new SpannableStringBuilder();
-        String depAirportID = flightAirportDB.getAirportId();
+        String depAirportID = flightAirportDB.getAirportCode();
         if (TextUtils.isEmpty(depAirportID)) {
             // id is more than one
             String cityCode = flightAirportDB.getCityCode();
@@ -272,9 +272,9 @@ public class FlightDashboardViewModel implements Parcelable, Cloneable {
         private boolean isOneWay;
         private FlightPassengerViewModel flightPassengerViewModel;
         private String flightPassengerFmt;
-        private FlightAirportDB departureAirport;
+        private FlightAirportViewModel departureAirport;
         private String departureAirportFmt;
-        private FlightAirportDB arrivalAirport;
+        private FlightAirportViewModel arrivalAirport;
         private String arrivalAirportFmt;
         private FlightClassViewModel flightClass;
 
@@ -316,7 +316,7 @@ public class FlightDashboardViewModel implements Parcelable, Cloneable {
             return this;
         }
 
-        public Builder setDepartureAirport(FlightAirportDB departureAirport) {
+        public Builder setDepartureAirport(FlightAirportViewModel departureAirport) {
             this.departureAirport = departureAirport;
             return this;
         }
@@ -326,7 +326,7 @@ public class FlightDashboardViewModel implements Parcelable, Cloneable {
             return this;
         }
 
-        public Builder setArrivalAirport(FlightAirportDB arrivalAirport) {
+        public Builder setArrivalAirport(FlightAirportViewModel arrivalAirport) {
             this.arrivalAirport = arrivalAirport;
             return this;
         }

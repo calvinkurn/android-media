@@ -8,6 +8,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 
@@ -44,8 +45,10 @@ import com.tokopedia.core.geolocation.model.autocomplete.LocationPass;
 import com.tokopedia.core.home.BannerWebView;
 import com.tokopedia.core.instoped.model.InstagramMediaModel;
 import com.tokopedia.core.loyaltysystem.util.URLGenerator;
+import com.tokopedia.core.network.retrofit.interceptors.TkpdAuthInterceptor;
+import com.tokopedia.district_recommendation.domain.mapper.TokenMapper;
 import com.tokopedia.district_recommendation.domain.model.Token;
-import com.tokopedia.core.manage.general.districtrecommendation.view.DistrictRecommendationActivity;
+import com.tokopedia.district_recommendation.view.DistrictRecommendationActivity;
 import com.tokopedia.core.manage.people.address.activity.ChooseAddressActivity;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.network.retrofit.utils.ServerErrorHandler;
@@ -71,7 +74,7 @@ import com.tokopedia.sellerapp.truecaller.TruecallerActivity;
 import com.tokopedia.session.changephonenumber.view.activity.ChangePhoneNumberWarningActivity;
 import com.tokopedia.tkpd.tkpdreputation.ReputationRouter;
 import com.tokopedia.core.router.transactionmodule.TransactionRouter;
-import com.tokopedia.core.share.ShareActivity;
+import com.tokopedia.core.share.ShareBottomSheet;
 import com.tokopedia.core.shopinfo.limited.fragment.ShopTalkLimitedFragment;
 import com.tokopedia.core.util.AccessTokenRefresh;
 import com.tokopedia.core.util.DeepLinkChecker;
@@ -1175,7 +1178,7 @@ public abstract class SellerRouterApplication extends MainApplication
     }
 
     @Override
-    public void goToShareShop(Context context, String shopId, String shopUrl, String shareLabel) {
+    public void goToShareShop(FragmentManager fragmentManager, String shopId, String shopUrl, String shareLabel) {
         ShareData shareData = ShareData.Builder.aShareData()
                 .setType(ShareData.SHOP_TYPE)
                 .setName(getString(R.string.message_share_shop))
@@ -1183,7 +1186,7 @@ public abstract class SellerRouterApplication extends MainApplication
                 .setUri(shopUrl)
                 .setId(shopId)
                 .build();
-        context.startActivity(ShareActivity.createIntent(context, shareData));
+        ShareBottomSheet.show(fragmentManager, shareData);
     }
 
     @Override
@@ -1361,5 +1364,15 @@ public abstract class SellerRouterApplication extends MainApplication
     @Override
     public Intent getPromoDetailIntent(Context context, String slug) {
         return null;
+    }
+
+    @Override
+    public Intent getDistrictRecommendationIntent(Activity activity, com.tokopedia.core.manage.people.address.model.Token token) {
+        return DistrictRecommendationActivity.createInstance(activity, new TokenMapper().convertTokenModel(token));
+    }
+
+    @Override
+    public Interceptor getAuthInterceptor() {
+        return new TkpdAuthInterceptor();
     }
 }

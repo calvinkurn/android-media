@@ -6,8 +6,11 @@ import android.text.TextUtils;
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
+import com.tokopedia.flight.FlightModuleRouter;
 import com.tokopedia.flight.R;
 import com.tokopedia.flight.airport.data.source.db.model.FlightAirportDB;
+import com.tokopedia.flight.airport.domain.interactor.FlightAirportVersionCheckUseCase;
+import com.tokopedia.flight.airport.view.viewmodel.FlightAirportViewModel;
 import com.tokopedia.flight.banner.data.source.cloud.model.BannerDetail;
 import com.tokopedia.flight.banner.domain.interactor.BannerGetDataUseCase;
 import com.tokopedia.flight.common.constant.FlightUrl;
@@ -61,6 +64,7 @@ public class FlightDashboardPresenter extends BaseDaggerPresenter<FlightDashboar
     private static final int DEFAULT_LAST_HOUR_IN_DAY = 23;
     private static final int DEFAULT_LAST_MIN_IN_DAY = 59;
     private static final int DEFAULT_LAST_SEC_IN_DAY = 59;
+    private static final String FLIGHT_AIRPORT = "flight_airport";
 
     private BannerGetDataUseCase bannerGetDataUseCase;
     private FlightDashboardValidator validator;
@@ -73,6 +77,9 @@ public class FlightDashboardPresenter extends BaseDaggerPresenter<FlightDashboar
     private FlightAnalytics flightAnalytics;
     private CompositeSubscription compositeSubscription;
     private FlightSelectPassengerValidator passengerValidator;
+    private FlightAirportVersionCheckUseCase flightAirportVersionCheckUseCase;
+    private FlightModuleRouter flightModuleRouter;
+    private FlightAirportViewModelMapper flightAirportViewModelMapper;
 
     @Inject
     public FlightDashboardPresenter(BannerGetDataUseCase bannerGetDataUseCase,
@@ -84,7 +91,10 @@ public class FlightDashboardPresenter extends BaseDaggerPresenter<FlightDashboar
                                     FlightDashboardCache flightDashboardCache,
                                     UserSession userSession,
                                     FlightAnalytics flightAnalytics,
-                                    FlightSelectPassengerValidator passengerValidator) {
+                                    FlightSelectPassengerValidator passengerValidator,
+                                    FlightAirportVersionCheckUseCase flightAirportVersionCheckUseCase,
+                                    FlightModuleRouter flightModuleRouter,
+                                    FlightAirportViewModelMapper flightAirportViewModelMapper) {
         this.bannerGetDataUseCase = bannerGetDataUseCase;
         this.validator = validator;
         this.deleteFlightCacheUseCase = deleteFlightCacheUseCase;
@@ -95,6 +105,9 @@ public class FlightDashboardPresenter extends BaseDaggerPresenter<FlightDashboar
         this.userSession = userSession;
         this.flightAnalytics = flightAnalytics;
         this.passengerValidator = passengerValidator;
+        this.flightAirportVersionCheckUseCase = flightAirportVersionCheckUseCase;
+        this.flightModuleRouter = flightModuleRouter;
+        this.flightAirportViewModelMapper = flightAirportViewModelMapper;
         this.compositeSubscription = new CompositeSubscription();
     }
 
@@ -207,7 +220,7 @@ public class FlightDashboardPresenter extends BaseDaggerPresenter<FlightDashboar
     @Override
     public void onReverseAirportButtonClicked() {
         FlightDashboardViewModel viewModel = cloneViewModel(getView().getCurrentDashboardViewModel());
-        FlightAirportDB flightAirportDB = viewModel.getArrivalAirport();
+        FlightAirportViewModel flightAirportDB = viewModel.getArrivalAirport();
         String destinationFmt = viewModel.getArrivalAirportFmt();
         viewModel.setArrivalAirport(viewModel.getDepartureAirport());
         viewModel.setArrivalAirportFmt(viewModel.getDepartureAirportFmt());
@@ -362,24 +375,24 @@ public class FlightDashboardPresenter extends BaseDaggerPresenter<FlightDashboar
     }
 
     @Override
-    public void onDepartureAirportChange(FlightAirportDB departureAirport) {
-        flightAnalytics.eventOriginClick(departureAirport.getCityName(), departureAirport.getAirportId());
+    public void onDepartureAirportChange(FlightAirportViewModel departureAirport) {
+        flightAnalytics.eventOriginClick(departureAirport.getCityName(), departureAirport.getAirportCode());
         FlightDashboardViewModel flightDashboardViewModel = cloneViewModel(getView().getCurrentDashboardViewModel());
         flightDashboardViewModel.setDepartureAirport(departureAirport);
         String code = buildAirportFmt(departureAirport);
         flightDashboardViewModel.setDepartureAirportFmt(code);
         getView().setDashBoardViewModel(flightDashboardViewModel);
-        if (!departureAirport.getAirportIds().isEmpty() && departureAirport.getAirportIds() != null) {
+        if (departureAirport.getCityAirports() != null && departureAirport.getCityAirports().length > 0) {
             flightDashboardCache.putDepartureAirport(departureAirport.getCityCode());
         } else {
-            flightDashboardCache.putDepartureAirport(departureAirport.getAirportId());
+            flightDashboardCache.putDepartureAirport(departureAirport.getAirportCode());
         }
         renderUi();
     }
 
     @NonNull
-    private String buildAirportFmt(FlightAirportDB departureAirport) {
-        String code = departureAirport.getAirportId();
+    private String buildAirportFmt(FlightAirportViewModel departureAirport) {
+        String code = departureAirport.getAirportCode();
         if (TextUtils.isEmpty(code)) {
             code = departureAirport.getCityCode();
         }
@@ -388,20 +401,20 @@ public class FlightDashboardPresenter extends BaseDaggerPresenter<FlightDashboar
     }
 
     @Override
-    public void onArrivalAirportChange(FlightAirportDB arrivalAirport) {
-        flightAnalytics.eventDestinationClick(arrivalAirport.getCityName(), arrivalAirport.getAirportId());
+    public void onArrivalAirportChange(FlightAirportViewModel arrivalAirport) {
+        flightAnalytics.eventDestinationClick(arrivalAirport.getCityName(), arrivalAirport.getAirportCode());
         FlightDashboardViewModel flightDashboardViewModel = cloneViewModel(getView().getCurrentDashboardViewModel());
         flightDashboardViewModel.setArrivalAirport(arrivalAirport);
-        String code = arrivalAirport.getAirportId();
+        String code = arrivalAirport.getAirportCode();
         if (TextUtils.isEmpty(code)) {
             code = arrivalAirport.getCityCode();
         }
         flightDashboardViewModel.setArrivalAirportFmt(arrivalAirport.getCityName() + " (" + code + ")");
         getView().setDashBoardViewModel(flightDashboardViewModel);
-        if (!arrivalAirport.getAirportIds().isEmpty() && arrivalAirport.getAirportIds() != null) {
+        if (arrivalAirport.getCityAirports() != null && arrivalAirport.getCityAirports().length > 0) {
             flightDashboardCache.putArrivalAirport(arrivalAirport.getCityCode());
         } else {
-            flightDashboardCache.putArrivalAirport(arrivalAirport.getAirportId());
+            flightDashboardCache.putArrivalAirport(arrivalAirport.getAirportCode());
         }
         renderUi();
     }
@@ -564,7 +577,7 @@ public class FlightDashboardPresenter extends BaseDaggerPresenter<FlightDashboar
                     ), new Func2<FlightDashboardAirportAndClassWrapper, FlightAirportDB, FlightDashboardAirportAndClassWrapper>() {
                 @Override
                 public FlightDashboardAirportAndClassWrapper call(FlightDashboardAirportAndClassWrapper flightDashboardAirportsWrapper, FlightAirportDB airportDB) {
-                    flightDashboardAirportsWrapper.setDepartureAirport(airportDB);
+                    flightDashboardAirportsWrapper.setDepartureAirport(flightAirportViewModelMapper.transform(airportDB));
                     return flightDashboardAirportsWrapper;
                 }
             }).zipWith(getFlightAirportWithParamUseCase
@@ -573,7 +586,7 @@ public class FlightDashboardPresenter extends BaseDaggerPresenter<FlightDashboar
                     ), new Func2<FlightDashboardAirportAndClassWrapper, FlightAirportDB, FlightDashboardAirportAndClassWrapper>() {
                 @Override
                 public FlightDashboardAirportAndClassWrapper call(FlightDashboardAirportAndClassWrapper flightDashboardAirportsWrapper, FlightAirportDB airportDB) {
-                    flightDashboardAirportsWrapper.setArrivalAirport(airportDB);
+                    flightDashboardAirportsWrapper.setArrivalAirport(flightAirportViewModelMapper.transform(airportDB));
                     return flightDashboardAirportsWrapper;
                 }
             });
@@ -588,7 +601,7 @@ public class FlightDashboardPresenter extends BaseDaggerPresenter<FlightDashboar
                         .subscribe(new Subscriber<FlightDashboardAirportAndClassWrapper>() {
                             @Override
                             public void onCompleted() {
-
+                                actionAirportSync();
                             }
 
                             @Override
@@ -598,7 +611,6 @@ public class FlightDashboardPresenter extends BaseDaggerPresenter<FlightDashboar
                                     getView().hideProgressBar();
                                     getView().showFormContainer();
                                 }
-
                             }
 
                             @Override
@@ -635,6 +647,30 @@ public class FlightDashboardPresenter extends BaseDaggerPresenter<FlightDashboar
                             }
                         })
         );
+    }
+
+    private void actionAirportSync() {
+        if (isViewAttached()){
+            flightAirportVersionCheckUseCase.execute(flightAirportVersionCheckUseCase.createRequestParams(flightModuleRouter.getLongConfig(FLIGHT_AIRPORT)),
+                    new Subscriber<Boolean>() {
+                        @Override
+                        public void onCompleted() {
+
+                        }
+
+                        @Override
+                        public void onError(Throwable e) {
+
+                        }
+
+                        @Override
+                        public void onNext(Boolean aBoolean) {
+                            if (aBoolean){
+                                getView().startAirportSyncInBackground(flightModuleRouter.getLongConfig(FLIGHT_AIRPORT));
+                            }
+                        }
+                    });
+        }
     }
 
     @Override

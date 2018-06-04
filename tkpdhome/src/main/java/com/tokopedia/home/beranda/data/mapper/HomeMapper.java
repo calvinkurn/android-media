@@ -20,6 +20,7 @@ import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.DigitalsVi
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.DynamicChannelViewModel;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.LayoutSections;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.TickerViewModel;
+import com.tokopedia.home.beranda.presentation.view.analytics.HomeTrackingUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -76,6 +77,7 @@ public class HomeMapper implements Func1<Response<GraphqlResponse<HomeData>>, Li
                                 channel.setHomeAttribution(String.format("%d - sprintSaleProduct - $1 - $2", position));
                                 HomePageTracking.eventEnhancedImpressionSprintSaleHomePage(
                                         channel.getEnhanceImpressionSprintSaleHomePage(position)
+
                                 );
                             } else if (channel.getLayout().equals(DynamicHomeChannel.Channels.LAYOUT_SPRINT_CAROUSEL)) {
                                 channel.setHomeAttribution(String.format("%d - sprintSaleBanner - $1", position));
@@ -100,6 +102,7 @@ public class HomeMapper implements Func1<Response<GraphqlResponse<HomeData>>, Li
                             list.add(new DigitalsViewModel(MainApplication.getAppContext().getString(R.string.digital_widget_title), 0));
                         } else {
                             list.add(mappingDynamicChannel(channel));
+                            HomeTrackingUtils.homeDiscoveryWidgetImpression(list.size(),channel);
                         }
                     }
                 }

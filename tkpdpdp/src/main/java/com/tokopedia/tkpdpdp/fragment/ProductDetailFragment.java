@@ -6,10 +6,14 @@ import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.graphics.Color;
+import android.graphics.Rect;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.RequiresApi;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.CoordinatorLayout;
@@ -36,13 +40,10 @@ import com.appsflyer.AFInAppEventType;
 import com.google.android.gms.tagmanager.DataLayer;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tkpd.library.utils.SnackbarManager;
-import com.tokopedia.abstraction.AbstractionRouter;
-import com.tokopedia.abstraction.common.data.model.session.UserSession;
-import com.tokopedia.applink.ApplinkRouter;
-import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.ProductPageTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.BasePresenterFragment;
+import com.tokopedia.core.app.BasePresenterFragmentV4;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.drawer2.data.viewmodel.DrawerNotification;
@@ -70,7 +71,7 @@ import com.tokopedia.core.router.productdetail.passdata.ProductPass;
 import com.tokopedia.core.router.reactnative.IReactNativeRouter;
 import com.tokopedia.core.router.transactionmodule.TransactionCartRouter;
 import com.tokopedia.core.router.transactionmodule.passdata.ProductCartPass;
-import com.tokopedia.core.share.ShareActivity;
+import com.tokopedia.core.share.ShareBottomSheet;
 import com.tokopedia.core.util.AppIndexHandler;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.MethodChecker;
@@ -83,6 +84,7 @@ import com.tokopedia.tkpdpdp.DinkFailedActivity;
 import com.tokopedia.tkpdpdp.DinkSuccessActivity;
 import com.tokopedia.tkpdpdp.InstallmentActivity;
 import com.tokopedia.tkpdpdp.PreviewProductImageDetail;
+import com.tokopedia.tkpdpdp.ProductInfoActivity;
 import com.tokopedia.tkpdpdp.R;
 import com.tokopedia.tkpdpdp.VariantActivity;
 import com.tokopedia.tkpdpdp.WholesaleActivity;
@@ -108,8 +110,6 @@ import com.tokopedia.tkpdpdp.listener.AppBarStateChangeListener;
 import com.tokopedia.tkpdpdp.listener.ProductDetailView;
 import com.tokopedia.tkpdpdp.presenter.ProductDetailPresenter;
 import com.tokopedia.tkpdpdp.presenter.ProductDetailPresenterImpl;
-import com.tokopedia.topads.sourcetagging.constant.TopAdsSourceOption;
-import com.tokopedia.topads.sourcetagging.util.TopAdsAppLinkUtil;
 
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
@@ -129,6 +129,8 @@ import static com.tokopedia.core.product.model.productdetail.ProductInfo.PRD_STA
 import static com.tokopedia.core.router.productdetail.ProductDetailRouter.EXTRA_PRODUCT_ID;
 import static com.tokopedia.core.router.productdetail.ProductDetailRouter.WIHSLIST_STATUS_IS_WISHLIST;
 import static com.tokopedia.core.router.productdetail.ProductDetailRouter.WISHLIST_STATUS_UPDATED_POSITION;
+import static com.tokopedia.core.var.TkpdCache.Key.STATE_ORIENTATION_CHANGED;
+import static com.tokopedia.core.var.TkpdCache.PRODUCT_DETAIL;
 import static com.tokopedia.tkpdpdp.VariantActivity.KEY_LEVEL1_SELECTED;
 import static com.tokopedia.tkpdpdp.VariantActivity.KEY_LEVEL2_SELECTED;
 import static com.tokopedia.tkpdpdp.VariantActivity.KEY_PRODUCT_DETAIL_DATA;
@@ -140,7 +142,7 @@ import static com.tokopedia.tkpdpdp.VariantActivity.KEY_VARIANT_DATA;
  * Edited by alifa, rohmadi, henry for v2
  */
 @RuntimePermissions
-public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPresenter>
+public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetailPresenter>
         implements ProductDetailView {
 
     private static final int FROM_COLLAPSED = 0;
@@ -206,6 +208,7 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
     private YoutubeThumbnailViewHolder.YouTubeThumbnailLoadInProcess youTubeThumbnailLoadInProcessListener;
     private ReportProductDialogFragment fragment;
     private Bundle recentBundle;
+    private com.tokopedia.abstraction.common.utils.LocalCacheHandler localCacheHandler;
 
     private ProductPass productPass;
     private ProductDetailData productData;
@@ -218,7 +221,6 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
     private Option variantLevel1;
     private Option variantLevel2;
     private boolean onClickBuyWhileRequestingVariant = false;
-    private UserSession userSession;
 
     private RemoteConfig remoteConfig;
 
@@ -244,6 +246,10 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
         if (remoteConfig.getBoolean(ENABLE_VARIANT)==false) {
             useVariant = false;
         }
+        localCacheHandler = new com.tokopedia.abstraction.common.utils.LocalCacheHandler(MainApplication.getAppContext(), PRODUCT_DETAIL);
+        localCacheHandler.putBoolean(STATE_ORIENTATION_CHANGED,Boolean.FALSE);
+        localCacheHandler.applyEditor();
+
     }
 
     @Override
@@ -254,7 +260,6 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
     @Override
     protected void initialPresenter() {
         this.presenter = new ProductDetailPresenterImpl(this);
-        this.presenter.initTopAdsSourceTaggingUseCase(getActivity().getApplicationContext());
     }
 
     @Override
@@ -308,10 +313,7 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
         ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
         ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        float heightScreen = getResources().getDisplayMetrics().widthPixels;
-        CoordinatorLayout.LayoutParams layoutParams = (CoordinatorLayout.LayoutParams)appBarLayout.getLayoutParams();
-        layoutParams.height = (int)heightScreen;
-        appBarLayout.setVisibility(View.VISIBLE);
+        setUpByConfiguration(getResources().getConfiguration());
 
         appBarLayout.addOnOffsetChangedListener(new AppBarStateChangeListener() {
             @Override
@@ -339,6 +341,34 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
             CoordinatorLayout.LayoutParams params = (CoordinatorLayout.LayoutParams) appBarLayout.getLayoutParams();
             params.setBehavior(new FlingBehavior(R.id.nested_scroll_pdp));
+        }
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        setUpByConfiguration(newConfig);
+    }
+
+    private void setUpByConfiguration(Configuration configuration) {
+        float widthScreen = getResources().getDisplayMetrics().widthPixels;
+        if (configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            CoordinatorLayout.LayoutParams layoutParams = (CoordinatorLayout.LayoutParams)appBarLayout.getLayoutParams();
+            layoutParams.height = (int)widthScreen / 3;
+            appBarLayout.setVisibility(View.VISIBLE);
+            if (!localCacheHandler.getBoolean(STATE_ORIENTATION_CHANGED).booleanValue()) {
+                if (productData!=null) {
+                    UnifyTracking.eventPDPOrientationChanged(Integer.toString(productData.getInfo().getProductId()));
+                } else {
+                    UnifyTracking.eventPDPOrientationChanged(productPass.getProductId());
+                }
+                localCacheHandler.putBoolean(STATE_ORIENTATION_CHANGED,Boolean.TRUE);
+                localCacheHandler.applyEditor();
+            }
+        } else if (configuration.orientation == Configuration.ORIENTATION_PORTRAIT){
+            CoordinatorLayout.LayoutParams layoutParams = (CoordinatorLayout.LayoutParams)appBarLayout.getLayoutParams();
+            layoutParams.height = (int)widthScreen;
+            appBarLayout.setVisibility(View.VISIBLE);
         }
     }
 
@@ -377,7 +407,7 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
             @Override
             public void onClick(View view) {
                 if (productData != null) {
-                    presenter.processWishList(context, productData);
+                    presenter.processWishList(getActivity(), productData);
                 }
             }
         });
@@ -385,9 +415,8 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
 
     @Override
     protected void initialVar() {
-        userSession = ((AbstractionRouter) getActivity().getApplication()).getSession();
         appIndexHandler = new AppIndexHandler(getActivity());
-        loading = new ProgressDialog(context);
+        loading = new ProgressDialog(getActivity());
         loading.setCancelable(false);
         loading.setMessage("Loading");
         if (presenter != null)
@@ -402,37 +431,37 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
 
     @Override
     public void onProductDepartmentClicked(@NonNull Bundle bundle) {
-        presenter.processToBrowseProduct(context, bundle);
+        presenter.processToBrowseProduct(getActivity(), bundle);
     }
 
     @Override
     public void onProductCatalogClicked(@NonNull String catalogId) {
-        presenter.processToCatalog(context, catalogId);
+        presenter.processToCatalog(getActivity(), catalogId);
     }
 
     @Override
     public void onProductEtalaseClicked(@NonNull Bundle bundle) {
-        presenter.processToShopInfo(context, bundle);
+        presenter.processToShopInfo(getActivity(), bundle);
     }
 
     @Override
     public void onProductTalkClicked(@NonNull Bundle bundle) {
-        presenter.processToTalk(context, bundle);
+        presenter.processToTalk(getActivity(), bundle);
     }
 
     @Override
     public void onProductRatingClicked(String productId, String shopId, String productName) {
-        presenter.processToReputation(context, productId, productName);
+        presenter.processToReputation(getActivity(), productId, productName);
     }
 
     @Override
     public void onProductReviewClicked(String productId, String shopId, String productName) {
-        presenter.processToReputation(context, productId, productName);
+        presenter.processToReputation(getActivity(), productId, productName);
     }
 
     @Override
     public void onProductManagePromoteClicked(ProductDetailData productData) {
-        presenter.requestPromoteProduct(context, productData);
+        presenter.requestPromoteProduct(getActivity(), productData);
     }
 
     @Override
@@ -526,7 +555,7 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
                 && productVariant!=null && productVariant.getChildren()!=null) {
             for (Child child: productVariant.getChildren()) {
                 if (!TextUtils.isEmpty(child.getPicture().getOriginal()) && child.getProductId()!=productData.getInfo().getProductId()) {
-                   arrayList.add(child.getPicture().getOriginal());
+                    arrayList.add(child.getPicture().getOriginal());
                 }
             }
             Set<String> imagesSet = new LinkedHashSet<>(arrayList);
@@ -544,27 +573,27 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
         bundle.putString("product_name", MethodChecker.fromHtml(productData.getInfo().getProductName()).toString());
         bundle.putString("product_price", MethodChecker.fromHtml(productData.getInfo().getProductPrice()).toString());
         bundle.putInt(PreviewProductImageDetail.IMG_POSITION, position);
-        presenter.processToPicturePreview(context, bundle);
+        presenter.processToPicturePreview(getActivity(), bundle);
     }
 
     @Override
     public void onProductManageToEtalaseClicked(int productId) {
-        presenter.requestMoveToEtalase(context, productId);
+        presenter.requestMoveToEtalase(getActivity(), productId);
     }
 
     @Override
     public void onProductManageEditClicked(@NonNull Bundle bundle) {
-        presenter.processToEditProduct(context, bundle);
+        presenter.processToEditProduct(getActivity(), bundle);
     }
 
     @Override
     public void onProductManageSoldOutClicked(int productId) {
-        presenter.requestMoveToWarehouse(context, productId);
+        presenter.requestMoveToWarehouse(getActivity(), productId);
     }
 
     @Override
     public void onProductShopAvatarClicked(@NonNull Bundle bundle) {
-        presenter.processToShopInfo(context, bundle);
+        presenter.processToShopInfo(getActivity(), bundle);
     }
 
     @Override
@@ -574,12 +603,12 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
 
     @Override
     public void onProductShopNameClicked(@NonNull Bundle bundle) {
-        presenter.processToShopInfo(context, bundle);
+        presenter.processToShopInfo(getActivity(), bundle);
     }
 
     @Override
     public void onProductShareClicked(@NonNull ShareData data) {
-        startActivity(ShareActivity.createIntent(getActivity(), data));
+        ShareBottomSheet.show(getFragmentManager(), data);
     }
 
     @NeedsPermission(Manifest.permission.READ_EXTERNAL_STORAGE)
@@ -589,7 +618,7 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
 
     @Override
     public void onCourierClicked(@NonNull Bundle bundle) {
-        Intent intent = new Intent(context, CourierActivity.class);
+        Intent intent = new Intent(getActivity(), CourierActivity.class);
         intent.putExtras(bundle);
         startActivity(intent);
         getActivity().overridePendingTransition(0, 0);
@@ -597,7 +626,7 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
 
     @Override
     public void onWholesaleClicked(@NonNull Bundle bundle) {
-        Intent intent = new Intent(context, WholesaleActivity.class);
+        Intent intent = new Intent(getActivity(), WholesaleActivity.class);
         intent.putExtras(bundle);
         startActivity(intent);
         getActivity().overridePendingTransition(0, 0);
@@ -605,7 +634,7 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
 
     @Override
     public void onVariantClicked(@NonNull Bundle bundle) {
-        Intent intent = new Intent(context, VariantActivity.class);
+        Intent intent = new Intent(getActivity(), VariantActivity.class);
         intent.putExtras(bundle);
         intent.putExtra(KEY_LEVEL1_SELECTED, variantLevel1);
         intent.putExtra(KEY_LEVEL2_SELECTED, variantLevel2);
@@ -623,7 +652,7 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
 
     @Override
     public void onDescriptionClicked(@NonNull Bundle bundle) {
-        Intent intent = new Intent(context, DescriptionActivity.class);
+        Intent intent = new Intent(getActivity(), DescriptionActivity.class);
         intent.putExtras(bundle);
         startActivity(intent);
         getActivity().overridePendingTransition(com.tokopedia.core.R.anim.pull_up, 0);
@@ -631,7 +660,7 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
 
     @Override
     public void onInstallmentClicked(@NonNull Bundle bundle) {
-        Intent intent = new Intent(context, InstallmentActivity.class);
+        Intent intent = new Intent(getActivity(), InstallmentActivity.class);
         intent.putExtras(bundle);
         startActivity(intent);
         getActivity().overridePendingTransition(com.tokopedia.core.R.anim.pull_up, 0);
@@ -649,17 +678,17 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
 
     @Override
     public void onProductNewShopClicked() {
-        presenter.processToCreateShop(context);
+        presenter.processToCreateShop(getActivity());
     }
 
     @Override
     public void onProductBuySessionLogin(@NonNull ProductCartPass data) {
-        presenter.processToCart(context, data);
+        presenter.processToCart(getActivity(), data);
     }
 
     @Override
     public void onProductBuySessionNotLogin(@NonNull Bundle bundle) {
-        presenter.processToLogin(context, bundle);
+        presenter.processToLogin(getActivity(), bundle);
     }
 
     @Override
@@ -667,7 +696,7 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
         this.headerInfoView.renderTempData(productPass);
         this.pictureView.renderTempData(productPass);
         this.ratingTalkCourierView.renderTempdata(productPass);
-         if (productPass.isWishlist()) {
+        if (productPass.isWishlist()) {
             fabWishlist.setImageDrawable(getResources().getDrawable(R.drawable.ic_wishlist_red));
         } else {
             fabWishlist.setImageDrawable(getResources().getDrawable(R.drawable.ic_wishlist));
@@ -693,7 +722,7 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
         this.priceSimulationView.renderData(successResult);
         this.interactionListener.onProductDetailLoaded(successResult);
         this.presenter.sendAnalytics(successResult);
-        this.presenter.sendAppsFlyerData(context, successResult, AFInAppEventType.CONTENT_VIEW);
+        this.presenter.sendAppsFlyerData(getActivity(), successResult, AFInAppEventType.CONTENT_VIEW);
         this.presenter.startIndexingApp(appIndexHandler, successResult);
         this.refreshMenu();
         this.updateWishListStatus(productData.getInfo().getProductAlreadyWishlist());
@@ -707,17 +736,17 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
 
     @Override
     public void onProductShopMessageClicked(@NonNull Intent intent) {
-        presenter.processToSendMessage(context, intent);
+        presenter.processToSendMessage(getActivity(), intent);
     }
 
     @Override
     public void onProductHasEdited() {
-        presenter.requestProductDetail(context, productPass, RE_REQUEST, true, useVariant);
+        presenter.requestProductDetail(getActivity(), productPass, RE_REQUEST, true, useVariant);
     }
 
     @Override
     public void onProductTalkUpdated() {
-        presenter.requestProductDetail(context, productPass, RE_REQUEST, true, useVariant);
+        presenter.requestProductDetail(getActivity(), productPass, RE_REQUEST, true, useVariant);
     }
 
     @Override
@@ -727,12 +756,12 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
 
     @Override
     public void onProductShopFaveClicked(String shopId, Integer productId) {
-        presenter.requestFaveShop(context, shopId, productId);
+        presenter.requestFaveShop(getActivity(), shopId, productId);
     }
 
     @Override
     public void onProductShopRatingClicked(Bundle bundle) {
-        presenter.processToShopInfo(context, bundle);
+        presenter.processToShopInfo(getActivity(), bundle);
     }
 
     @Override
@@ -811,7 +840,7 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
     public void showErrorVariant() {
         Snackbar snack = Snackbar.make(coordinatorLayout, getString(R.string.error_variant), Snackbar.LENGTH_INDEFINITE);
         TextView tv = snack.getView().findViewById(com.tokopedia.core.R.id.snackbar_text);
-        tv.setTextColor(ContextCompat.getColor(context, R.color.black_54));
+        tv.setTextColor(ContextCompat.getColor(getActivity(), R.color.black_54));
         tv.setMaxLines(5);
 
         Button snackBarAction = snack.getView().findViewById(android.support.design.R.id.snackbar_action);
@@ -822,7 +851,7 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
         snack.setAction(getString(R.string.title_retry), new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                presenter.requestProductDetail(context, productPass, INIT_REQUEST, false, useVariant);
+                presenter.requestProductDetail(getActivity(), productPass, INIT_REQUEST, false, useVariant);
             }
         });
         snack.show();
@@ -871,20 +900,20 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
         } else {
             throw new RuntimeException("Activity must implement DeepLinkWebViewHandleListener");
         }
-        if (context instanceof YoutubeThumbnailViewHolder.YouTubeThumbnailLoadInProcess)
-            youTubeThumbnailLoadInProcessListener = (YoutubeThumbnailViewHolder.YouTubeThumbnailLoadInProcess) context;
+        if (getActivity() instanceof YoutubeThumbnailViewHolder.YouTubeThumbnailLoadInProcess)
+            youTubeThumbnailLoadInProcessListener = (YoutubeThumbnailViewHolder.YouTubeThumbnailLoadInProcess) getActivity();
     }
 
     @Override
     public void onAttach(Context activity) {
-        super.onAttach(context);
+        super.onAttach(activity);
         if (activity instanceof DeepLinkWebViewHandleListener) {
             webViewHandleListener = (DeepLinkWebViewHandleListener) activity;
         } else {
             throw new RuntimeException("Activity must implement DeepLinkWebViewHandleListener");
         }
-        if (context instanceof YoutubeThumbnailViewHolder.YouTubeThumbnailLoadInProcess)
-            youTubeThumbnailLoadInProcessListener = (YoutubeThumbnailViewHolder.YouTubeThumbnailLoadInProcess) context;
+        if (getActivity() instanceof YoutubeThumbnailViewHolder.YouTubeThumbnailLoadInProcess)
+            youTubeThumbnailLoadInProcessListener = (YoutubeThumbnailViewHolder.YouTubeThumbnailLoadInProcess) getActivity();
     }
 
     @Override
@@ -896,7 +925,7 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
 
     @Override
     public void onProductReportClicked() {
-        presenter.reportProduct(context);
+        presenter.reportProduct(getActivity());
     }
 
     @Override
@@ -971,7 +1000,7 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        presenter.onDestroyView(context);
+        presenter.onDestroyView(getActivity());
         destroyVideoLayout();
     }
 
@@ -988,7 +1017,7 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
 
     @Override
     public void onPrepareOptionsMenu(Menu menu) {
-        presenter.prepareOptionMenu(menu, context, productData);
+        presenter.prepareOptionMenu(menu, getActivity(), productData);
     }
 
     @Override
@@ -1002,7 +1031,7 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
             onProductDetailLoaded(productData);
         } else {
             presenter.processDataPass(productPass);
-            presenter.requestProductDetail(context, productPass, INIT_REQUEST, false, useVariant);
+            presenter.requestProductDetail(getActivity(), productPass, INIT_REQUEST, false, useVariant);
         }
     }
 
@@ -1019,7 +1048,6 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
 
     @Override
     public void onRestoreState(Bundle savedInstanceState) {
-        Log.d(TAG, "onRestoreState");
         presenter.processStateData(savedInstanceState, getActivity());
     }
 
@@ -1061,10 +1089,10 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
             onProductReportClicked();
             return true;
         } else if (i == R.id.action_warehouse) {
-            presenter.requestMoveToWarehouse(context, productData.getInfo().getProductId());
+            presenter.requestMoveToWarehouse(getActivity(), productData.getInfo().getProductId());
             return true;
         } else if (i == R.id.action_etalase) {
-            presenter.requestMoveToEtalase(context, productData.getInfo().getProductId());
+            presenter.requestMoveToEtalase(getActivity(), productData.getInfo().getProductId());
             return true;
         } else {
             return super.onOptionsItemSelected(item);
@@ -1092,7 +1120,7 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
             case REQUEST_CODE_LOGIN:
                 videoDescriptionLayout.refreshVideo();
                 if (SessionHandler.isV4Login(getActivity()))
-                    presenter.requestProductDetail(context, productPass, RE_REQUEST, true, useVariant);
+                    presenter.requestProductDetail(getActivity(), productPass, RE_REQUEST, true, useVariant);
                 break;
             case REQUEST_VARIANT:
                 if (data.getParcelableExtra(KEY_PRODUCT_DETAIL_DATA) != null) {
@@ -1112,7 +1140,7 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
                         headerInfoView.renderData(productData);
                         headerInfoView.renderStockAvailability(productData.getInfo());
                         shopInfoView.renderData(productData);
-                        presenter.updateRecentView(context, productData.getInfo().getProductId());
+                        presenter.updateRecentView(getActivity(), productData.getInfo().getProductId());
                         ratingTalkCourierView.renderData(productData);
                         latestTalkView.renderData(productData);
                         buttonBuyView.updateButtonForVariantProduct(productVariant.getChildFromProductId(
@@ -1154,6 +1182,7 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
     public void onPause() {
         super.onPause();
         presenter.stopIndexingApp(appIndexHandler);
+        destroyVideoLayout();
     }
 
     @SuppressWarnings("Range")
@@ -1207,7 +1236,7 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
         return new NetworkErrorHelper.RetryClickedListener() {
             @Override
             public void onRetryClicked() {
-                presenter.requestProductDetail(context, productPass, INIT_REQUEST, false, useVariant);
+                presenter.requestProductDetail(getActivity(), productPass, INIT_REQUEST, false, useVariant);
             }
         };
     }
@@ -1222,28 +1251,28 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
     @Override
     public void moveToEditFragment(boolean isEdit) {
         if (getActivity().getApplication() instanceof TkpdCoreRouter) {
-                        Integer productId = productData.getInfo().getProductId();
-                        if (productData != null && productData.getInfo().getHasVariant() && productVariant != null) {
-                                productId = productVariant.getParentId();
-                            }
-                        Intent intent = ((TkpdCoreRouter) getActivity().getApplication()).goToEditProduct(context, isEdit, Integer.toString(productId));
+            Integer productId = productData.getInfo().getProductId();
+            if (productData != null && productData.getInfo().getHasVariant() && productVariant != null) {
+                productId = productVariant.getParentId();
+            }
+            Intent intent = ((TkpdCoreRouter) getActivity().getApplication()).goToEditProduct(context, isEdit, Integer.toString(productId));
             navigateToActivityRequest(intent, ProductDetailFragment.REQUEST_CODE_EDIT_PRODUCT);
         }
     }
 
     @Override
     public void showSuccessWishlistSnackBar() {
-        Snackbar.make(coordinatorLayout, context.getString(R.string.msg_add_wishlist), Snackbar.LENGTH_LONG)
-                .setAction(context.getString(R.string.go_to_wishlist), new View.OnClickListener() {
+        Snackbar.make(coordinatorLayout, getActivity().getString(R.string.msg_add_wishlist), Snackbar.LENGTH_LONG)
+                .setAction(getActivity().getString(R.string.go_to_wishlist), new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        if (!isAdded() || context == null) {
+                        if (!isAdded() || getActivity() == null) {
                             return;
                         }
                         if (GlobalConfig.isSellerApp()) {
                             return;
                         }
-                        Intent intent = new Intent(context, SimpleHomeRouter.getSimpleHomeActivityClass());
+                        Intent intent = new Intent(getActivity(), SimpleHomeRouter.getSimpleHomeActivityClass());
                         intent.putExtra(
                                 SimpleHomeRouter.FRAGMENT_TYPE,
                                 SimpleHomeRouter.WISHLIST_FRAGMENT);
@@ -1275,10 +1304,8 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
 
     @Override
     public void onPromoAdsClicked() {
-        ((PdpRouter) getActivity().getApplication()).goToCreateTopadsPromo(getActivity(),
-                String.valueOf(productData.getInfo().getProductId()), productData.getShopInfo().getShopId(),
-                GlobalConfig.isSellerApp()? TopAdsSourceOption.SA_PDP :
-                        TopAdsSourceOption.MA_PDP);
+        presenter.onPromoAdsClicked(getActivity(), productData.getShopInfo().getShopId(),
+                productData.getInfo().getProductId(), SessionHandler.getLoginID(getActivity()));
     }
 
     @Override
@@ -1289,9 +1316,9 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
 
     @Override
     public void onPromoWidgetCopied() {
-        final Snackbar snackbar = Snackbar.make(coordinatorLayout, context.getString(R.string.title_copied),
+        final Snackbar snackbar = Snackbar.make(coordinatorLayout, getActivity().getString(R.string.title_copied),
                 Snackbar.LENGTH_LONG);
-        snackbar.setAction(context.getString(R.string.close), new View.OnClickListener() {
+        snackbar.setAction(getActivity().getString(R.string.close), new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 snackbar.dismiss();
@@ -1418,42 +1445,42 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
 
     private void initToolbarLight() {
         if (isAdded()) {
-            collapsingToolbarLayout.setCollapsedTitleTextColor(ContextCompat.getColor(context, R.color.grey_toolbar_icon));
+            collapsingToolbarLayout.setCollapsedTitleTextColor(ContextCompat.getColor(getActivity(), R.color.grey_toolbar_icon));
             collapsingToolbarLayout.setExpandedTitleColor(Color.TRANSPARENT);
-            toolbar.setTitleTextColor(ContextCompat.getColor(context, R.color.grey_toolbar_icon));
-            toolbar.setBackgroundColor(ContextCompat.getColor(context, R.color.white));
+            toolbar.setTitleTextColor(ContextCompat.getColor(getActivity(), R.color.grey_toolbar_icon));
+            toolbar.setBackgroundColor(ContextCompat.getColor(getActivity(), R.color.white));
             ((AppCompatActivity) getActivity()).getSupportActionBar().setHomeAsUpIndicator(R.drawable.icon_back);
             if (menu != null && menu.size() > 2) {
-                menu.findItem(R.id.action_share).setIcon(ContextCompat.getDrawable(context, R.drawable.icon_share));
+                menu.findItem(R.id.action_share).setIcon(ContextCompat.getDrawable(getActivity(), R.drawable.icon_share));
                 LocalCacheHandler Cache = new LocalCacheHandler(getActivity(), DrawerHelper.DRAWER_CACHE);
                 int CartCache = Cache.getInt(DrawerNotification.IS_HAS_CART);
                 if (CartCache > 0) {
-                    menu.findItem(R.id.action_cart).setIcon(ContextCompat.getDrawable(context, R.drawable.icon_cart_notif));
+                    menu.findItem(R.id.action_cart).setIcon(ContextCompat.getDrawable(getActivity(), R.drawable.icon_cart_notif));
                 } else {
-                    menu.findItem(R.id.action_cart).setIcon(ContextCompat.getDrawable(context, R.drawable.icon_cart));
+                    menu.findItem(R.id.action_cart).setIcon(ContextCompat.getDrawable(getActivity(), R.drawable.icon_cart));
                 }
             }
-            toolbar.setOverflowIcon(ContextCompat.getDrawable(context, R.drawable.icon_more));
+            toolbar.setOverflowIcon(ContextCompat.getDrawable(getActivity(), R.drawable.icon_more));
         }
     }
 
     private void initToolbarTransparant() {
         if (isAdded()) {
-            collapsingToolbarLayout.setCollapsedTitleTextColor(ContextCompat.getColor(context, R.color.white));
+            collapsingToolbarLayout.setCollapsedTitleTextColor(ContextCompat.getColor(getActivity(), R.color.white));
             collapsingToolbarLayout.setExpandedTitleColor(Color.TRANSPARENT);
             toolbar.setBackgroundColor(Color.TRANSPARENT);
             ((AppCompatActivity) getActivity()).getSupportActionBar().setHomeAsUpIndicator(R.drawable.icon_back_white);
             if (menu != null && menu.size() > 1) {
-                menu.findItem(R.id.action_share).setIcon(ContextCompat.getDrawable(context, R.drawable.icon_share_white));
+                menu.findItem(R.id.action_share).setIcon(ContextCompat.getDrawable(getActivity(), R.drawable.icon_share_white));
                 LocalCacheHandler Cache = new LocalCacheHandler(getActivity(), DrawerHelper.DRAWER_CACHE);
                 int CartCache = Cache.getInt(DrawerNotification.IS_HAS_CART);
                 if (CartCache > 0) {
-                    menu.findItem(R.id.action_cart).setIcon(ContextCompat.getDrawable(context, R.drawable.cart_active_white));
+                    menu.findItem(R.id.action_cart).setIcon(ContextCompat.getDrawable(getActivity(), R.drawable.cart_active_white));
                 } else {
-                    menu.findItem(R.id.action_cart).setIcon(ContextCompat.getDrawable(context, R.drawable.icon_cart_white));
+                    menu.findItem(R.id.action_cart).setIcon(ContextCompat.getDrawable(getActivity(), R.drawable.icon_cart_white));
                 }
             }
-            toolbar.setOverflowIcon(ContextCompat.getDrawable(context, R.drawable.icon_more_white));
+            toolbar.setOverflowIcon(ContextCompat.getDrawable(getActivity(), R.drawable.icon_more_white));
         }
     }
 

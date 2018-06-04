@@ -8,6 +8,4 @@ import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
 
 public interface FlightAirportPickerPresenter extends CustomerPresenter<FlightAirportPickerView> {
     void getAirportList(String text, boolean isFirstTime);
-
-    void checkAirportVersion(long currentVersion);
 }

@@ -10,8 +10,8 @@ import com.tokopedia.flight.orderlist.data.cloud.entity.JourneyEntity;
 import com.tokopedia.flight.orderlist.data.cloud.entity.OrderEntity;
 import com.tokopedia.flight.orderlist.data.cloud.entity.PassengerEntity;
 import com.tokopedia.flight.orderlist.domain.model.FlightOrderJourney;
-import com.tokopedia.flight.orderlist.domain.model.FlightOrderJourneyMapper;
-import com.tokopedia.flight.orderlist.domain.model.FlightOrderPassengerViewModelMapper;
+import com.tokopedia.flight.orderlist.domain.model.mapper.FlightOrderJourneyMapper;
+import com.tokopedia.flight.orderlist.domain.model.mapper.FlightOrderPassengerViewModelMapper;
 
 import java.util.ArrayList;
 import java.util.List;

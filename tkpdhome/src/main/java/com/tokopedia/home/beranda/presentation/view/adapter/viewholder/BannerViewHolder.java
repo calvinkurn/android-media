@@ -17,6 +17,7 @@ import com.tokopedia.home.R;
 import com.tokopedia.home.beranda.domain.model.banner.BannerSlidesModel;
 import com.tokopedia.home.beranda.listener.HomeCategoryListener;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.BannerViewModel;
+import com.tokopedia.home.beranda.presentation.view.analytics.HomeTrackingUtils;
 import com.tokopedia.loyalty.view.activity.PromoListActivity;
 
 import java.util.ArrayList;
@@ -57,7 +58,7 @@ public class BannerViewHolder extends AbstractViewHolder<BannerViewModel> implem
             }
             bannerView.setPromoList(promoUrls);
             bannerView.buildView();
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -76,21 +77,25 @@ public class BannerViewHolder extends AbstractViewHolder<BannerViewModel> implem
 
     @Override
     public void onPromoClick(int position) {
-        Promotion promotion =getPromotion(position);
-        HomePageTracking.eventPromoClick(promotion);listener.onPromoClick(position, slidesList.get(position),
+        Promotion promotion = getPromotion(position);
+        HomePageTracking.eventPromoClick(promotion);
+        listener.onPromoClick(position, slidesList.get(position),
                 String.valueOf(promotion.getImpressionDataLayer().get(ATTRIBUTION)));
+        HomeTrackingUtils.homeSlidingBannerClick(slidesList.get(position), position);
     }
 
     @Override
     public void onPromoScrolled(int position) {
         if (listener.isMainViewVisible()) {
             HomePageTracking.eventPromoImpression(getPromotion(position));
+            HomeTrackingUtils.homeSlidingBannerImpression(slidesList.get(position), position);
         }
     }
 
     @Override
     public void onPromoAllClick() {
         HomePageTracking.eventClickViewAllPromo();
+        HomeTrackingUtils.homeViewAllPromotions("PromoListActivity");
 
         boolean remoteConfigEnable;
         FirebaseRemoteConfigImpl remoteConfig = new FirebaseRemoteConfigImpl(context);
@@ -110,7 +115,7 @@ public class BannerViewHolder extends AbstractViewHolder<BannerViewModel> implem
                     TkpdBaseURL.URL_PROMO + TkpdBaseURL.FLAG_APP
             );
             context.startActivity(intent);
-        }
 
+        }
     }
 }

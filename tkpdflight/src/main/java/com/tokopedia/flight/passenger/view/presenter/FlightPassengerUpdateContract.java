@@ -1,7 +1,10 @@
 package com.tokopedia.flight.passenger.view.presenter;
 
+import android.support.annotation.StringRes;
+
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingPassengerViewModel;
+import com.tokopedia.flight.booking.view.viewmodel.FlightBookingPhoneCodeViewModel;
 
 import java.util.Date;
 
@@ -31,6 +34,12 @@ public interface FlightPassengerUpdateContract {
 
         String getRequestId();
 
+        boolean getIsDomestic();
+
+        String getPassportNumber();
+
+        String getPassportExpiredDate();
+
         void setPassengerViewModel(FlightBookingPassengerViewModel flightBookingPassengerViewModel);
 
         void renderSpinnerForAdult();
@@ -44,6 +53,10 @@ public interface FlightPassengerUpdateContract {
         void renderPassengerName(String firstName, String lastName);
 
         void renderPassengerBirthdate(String birthdate);
+
+        void hidePassportContainer();
+
+        void showPassportContainer();
 
         void showBirthdatePickerDialog(Date selectedDate, Date minDate, Date maxDate);
 
@@ -73,10 +86,33 @@ public interface FlightPassengerUpdateContract {
 
         void showPassengerBirthdateEmptyError(int resId);
 
+        void showPassengerPassportNumberEmptyError(@StringRes int resId);
+
+        void showPassengerPassportExpiredDateEmptyError(@StringRes int resId);
+
+        void showPassportNationalityEmptyError(@StringRes int resId);
+
+        void showPassportIssuerCountryEmptyError(@StringRes int resId);
+
+        void showPassportExpiredDateShouldMoreThan6MonthsFromDeparture(@StringRes int resId, String dateAfterSixMonth);
+
+        void showPassportExpiredDateMax20Years(@StringRes int resId, String dateAfterTwentyYears);
+
+        void showPassportExpiredDatePickerDialog(Date selectedDate, Date minDate, Date maxDate);
+
+        void hideKeyboard();
+
         void onSuccessUpdatePassengerData();
 
         void onErrorUpdatePassengerData();
 
+        void renderPassportNumber(String passportNumber);
+
+        void renderPassportExpiredDate(String passportExpiredDate);
+
+        void renderPassportNationality(String passportNationality);
+
+        void renderPassportIssuerCountry(String passportIssuerCountry);
     }
 
     interface Presenter {
@@ -91,6 +127,13 @@ public interface FlightPassengerUpdateContract {
 
         void onBirthdateChanged(int year, int month, int date, Date maxDate);
 
+        void onNationalityChanged(FlightBookingPhoneCodeViewModel flightPassportNationalityViewModel);
+
+        void onIssuerCountryChanged(FlightBookingPhoneCodeViewModel flightPassportIssuerCountry);
+
+        void onPassportExpiredClicked();
+
+        void onPassportExpiredDateChanged(int year, int month, int dayOfMonth, Date minDate, Date maxDate);
     }
 
 }
