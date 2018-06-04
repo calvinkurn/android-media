@@ -8,7 +8,7 @@ import com.tokopedia.discovery.newdiscovery.search.fragment.product.adapter.list
 
 public class BigGridProductItemViewHolder extends GridProductItemViewHolder {
     @LayoutRes
-    public static final int LAYOUT = R.layout.listview_product_item_big_grid;
+    public static final int LAYOUT = R.layout.search_result_product_item_big_grid;
 
     public BigGridProductItemViewHolder(View itemView, ItemClickListener itemClickListener) {
         super(itemView, itemClickListener);

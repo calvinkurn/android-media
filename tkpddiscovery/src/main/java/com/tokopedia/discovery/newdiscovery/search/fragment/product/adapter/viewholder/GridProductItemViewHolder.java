@@ -31,7 +31,7 @@ import java.util.List;
 public class GridProductItemViewHolder extends AbstractViewHolder<ProductItem> {
 
     @LayoutRes
-    public static final int LAYOUT = R.layout.listview_product_item_grid;
+    public static final int LAYOUT = R.layout.search_result_product_item_grid;
 
     private ImageView productImage;
     private TextView title;
