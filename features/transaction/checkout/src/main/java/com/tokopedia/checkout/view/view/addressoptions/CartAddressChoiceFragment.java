@@ -37,6 +37,7 @@ import javax.inject.Inject;
 
 import static com.tokopedia.checkout.view.view.addressoptions.CartAddressChoiceActivity.EXTRA_CURRENT_ADDRESS;
 import static com.tokopedia.checkout.view.view.addressoptions.CartAddressChoiceActivity.EXTRA_DEFAULT_SELECTED_ADDRESS;
+import static com.tokopedia.checkout.view.view.addressoptions.CartAddressChoiceActivity.EXTRA_NAVIGATION_FROM_ADDRESS_LIST;
 import static com.tokopedia.checkout.view.view.addressoptions.CartAddressChoiceActivity.EXTRA_SELECTED_ADDRESS_DATA;
 import static com.tokopedia.checkout.view.view.addressoptions.CartAddressChoiceActivity.RESULT_CODE_ACTION_SELECT_ADDRESS;
 import static com.tokopedia.core.manage.people.address.ManageAddressConstant.EXTRA_ADDRESS;
@@ -176,7 +177,15 @@ public class CartAddressChoiceFragment extends BaseCheckoutFragment
         mCartAddressChoicePresenter.attachView(this);
         if (getArguments() != null) {
             RecipientAddressModel model = getArguments().getParcelable(EXTRA_DEFAULT_SELECTED_ADDRESS);
-            mCartAddressChoicePresenter.setSelectedRecipientAddress(model);
+            if (getArguments().getBoolean(EXTRA_NAVIGATION_FROM_ADDRESS_LIST)) {
+                Intent intent = new Intent();
+                intent.putExtra(EXTRA_SELECTED_ADDRESS_DATA, model);
+
+                getActivity().setResult(RESULT_CODE_ACTION_SELECT_ADDRESS, intent);
+                getActivity().finish();
+            } else {
+                mCartAddressChoicePresenter.setSelectedRecipientAddress(model);
+            }
         }
         swipeToRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
