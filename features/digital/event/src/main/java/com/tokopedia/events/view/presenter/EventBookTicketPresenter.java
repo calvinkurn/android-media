@@ -208,6 +208,7 @@ public class EventBookTicketPresenter
             selectedViewHolder.setTvTicketCnt(selectedPackageViewModel.getSelectedQuantity());
             selectedViewHolder.setTicketViewColor(getView().getActivity().getResources().getColor(R.color.white));
             selectedViewHolder.toggleMinTicketWarning(View.INVISIBLE, selectedPackageViewModel.getMinQty());
+            selectedViewHolder.toggleMaxTicketWarning(View.INVISIBLE, selectedPackageViewModel.getSelectedQuantity());
             mSelectedPackage = index;
             selectedPackageViewModel = packageVM;
             selectedViewHolder = ticketViewHolder;
@@ -224,14 +225,15 @@ public class EventBookTicketPresenter
             selectedPackageViewModel.setSelectedQuantity(++selectedCount);
             selectedViewHolder.setTvTicketCnt(selectedCount);
             selectedViewHolder.setTicketViewColor(getView().getActivity().getResources().getColor(R.color.light_green));
-        } else {
+        }
+        if (selectedCount >= selectedPackageViewModel.getAvailable() ||
+                selectedCount >= selectedPackageViewModel.getMaxQty()) {
             selectedViewHolder.toggleMaxTicketWarning(View.VISIBLE, selectedPackageViewModel.getSelectedQuantity());
         }
         if (selectedCount < selectedPackageViewModel.getMinQty()) {
             selectedViewHolder.toggleMinTicketWarning(View.VISIBLE, selectedPackageViewModel.getMinQty());
             getView().hidePayButton();
-        }
-        else {
+        } else {
             getView().showPayButton(selectedCount, selectedPackageViewModel.getSalesPrice(), selectedPackageViewModel.getDisplayName());
         }
         UnifyTracking.eventDigitalEventTracking(EventsGAConst.EVENT_ADD_TICKET, "add - " + selectedPackageViewModel.getTitle() + " - " +
@@ -280,12 +282,7 @@ public class EventBookTicketPresenter
             public void onError(Throwable throwable) {
                 getView().hideProgressBar();
                 NetworkErrorHelper.showEmptyState(getView().getActivity(),
-                        getView().getRootView(), new NetworkErrorHelper.RetryClickedListener() {
-                            @Override
-                            public void onRetryClicked() {
-                                getSeatSelectionDetails();
-                            }
-                        });
+                        getView().getRootView(), () -> getSeatSelectionDetails());
             }
 
             @Override
@@ -319,9 +316,11 @@ public class EventBookTicketPresenter
     }
 
     private void scrollToLastIfNeeded() {
-        mChildFragment.setDecorationHeight(getView().getButtonLayoutHeight() + px);
-        if (mSelectedPackage == schedulesList.get(mSelectedSchedule).getPackages().size() - 1)
-            mChildFragment.scrollToLast();
+        if (schedulesList.get(mSelectedSchedule).getPackages().size() > 2) {
+            mChildFragment.setDecorationHeight(getView().getButtonLayoutHeight() + px);
+            if (mSelectedPackage == schedulesList.get(mSelectedSchedule).getPackages().size() - 1)
+                mChildFragment.scrollToLast();
+        }
     }
 
     public void onClickLocationDate(LocationDateModel model, int index) {

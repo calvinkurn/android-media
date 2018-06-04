@@ -87,7 +87,7 @@ public class TopPayActivity extends AppCompatActivity implements TopPayContract.
     private TextView tvTitle;
     private ProgressDialog progressDialog;
 
-    public static final int REQUEST_CODE = TopPayActivity.class.hashCode();
+    public static final int REQUEST_CODE = 45675;
     private FingerPrintDialogPayment fingerPrintDialogPayment;
     private FingerprintDialogRegister fingerPrintDialogRegister;
     private boolean isInterceptOtp = true;

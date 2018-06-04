@@ -1,0 +1,31 @@
+package com.tokopedia.checkout.view.view.cartlist;
+
+
+import android.app.Activity;
+
+import com.tokopedia.abstraction.common.utils.TKPDMapParam;
+
+/**
+ * @author Aghny A. Putra on 05/02/18
+ */
+
+public interface IRemoveProductListView<T> {
+
+    void showList(T t);
+
+    void showListEmpty();
+
+    void showError(String message);
+
+    TKPDMapParam<String, String> getGenerateParamAuth(TKPDMapParam<String, String> param);
+
+    void renderSuccessDeletePartialCart(String message);
+
+    void renderSuccessDeleteAllCart(String message);
+
+    void renderOnFailureDeleteCart(String message);
+
+    T getAllCartItemList();
+
+    Activity getActivity();
+}

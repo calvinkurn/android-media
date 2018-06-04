@@ -82,7 +82,7 @@ public class ShopProductLimitedPromoViewHolder extends AbstractViewHolder<ShopPr
 
     @Override
     public void bind(ShopProductLimitedPromoViewModel shopProductLimitedPromoViewModel) {
-        if (binded && isLogin==shopProductLimitedPromoViewModel.isLogin()) {
+        if (binded && isLogin == shopProductLimitedPromoViewModel.isLogin()) {
             return;
         }
         if (shopProductLimitedPromoViewModel.isLogin()) {

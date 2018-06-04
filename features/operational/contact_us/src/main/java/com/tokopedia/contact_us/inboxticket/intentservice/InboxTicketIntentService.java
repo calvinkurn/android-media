@@ -7,12 +7,12 @@ import android.os.Bundle;
 import android.os.ResultReceiver;
 
 import com.tkpd.library.utils.CommonUtils;
-import com.tokopedia.core.R;
 import com.tokopedia.contact_us.inboxticket.InboxTicketConstant;
 import com.tokopedia.contact_us.inboxticket.interactor.InboxTicketActRetrofitInteractor;
 import com.tokopedia.contact_us.inboxticket.interactor.InboxTicketActRetrofitInteractorImpl;
 import com.tokopedia.contact_us.inboxticket.model.InboxTicketParam;
 import com.tokopedia.contact_us.inboxticket.model.giverating.GiveRating;
+import com.tokopedia.core.R;
 
 /**
  * Created by Nisie on 7/5/16.

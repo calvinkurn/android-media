@@ -89,7 +89,7 @@ public class SummaryNotificationFactory extends BaseNotificationFactory {
     }
 
     public String genarateContentText(HistoryNotificationDB historyNotificationDB) {
-        return historyNotificationDB.getSenderName()+" : "+historyNotificationDB.getMessage();
+        return historyNotificationDB.getSenderName() + " : " + historyNotificationDB.getMessage();
 
     }
 }
