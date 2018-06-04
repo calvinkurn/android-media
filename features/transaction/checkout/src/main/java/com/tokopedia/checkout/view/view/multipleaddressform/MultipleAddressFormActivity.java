@@ -30,6 +30,7 @@ public class MultipleAddressFormActivity extends BaseCheckoutActivity implements
 
     private CartListData cartListData;
     private RecipientAddressModel addressData;
+    private MultipleAddressFragment fragment;
 
     public static Intent createInstance(Context context,
                                         CartListData cartListData,
@@ -79,6 +80,7 @@ public class MultipleAddressFormActivity extends BaseCheckoutActivity implements
     @Override
     public void onBackPressed() {
         final Dialog dialog = new Dialog(this, Dialog.Type.LONG_PROMINANCE);
+        fragment.backPressed();
         dialog.setTitle(getString(R.string.dialog_title_back_to_cart));
         dialog.setDesc(getString(R.string.dialog_message_back_to_cart));
         dialog.setBtnCancel(getString(R.string.label_dialog_back_to_cart_button_positive));
@@ -87,12 +89,14 @@ public class MultipleAddressFormActivity extends BaseCheckoutActivity implements
             @Override
             public void onClick(View view) {
                 setResult(RESULT_CODE_FORCE_RESET_CART_ADDRESS_FORM);
+                fragment.deleteChanges();
                 finish();
             }
         });
         dialog.setOnOkClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                fragment.stayInPage();
                 dialog.dismiss();
             }
         });
@@ -104,9 +108,10 @@ public class MultipleAddressFormActivity extends BaseCheckoutActivity implements
 
     @Override
     protected android.support.v4.app.Fragment getNewFragment() {
-        return MultipleAddressFragment.newInstance(
+        fragment = MultipleAddressFragment.newInstance(
                 cartListData,
                 addressData);
+        return fragment;
     }
 
     @Override

@@ -170,8 +170,8 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
     @Override
     public void processToCart(@NonNull Activity context, @NonNull ProductCartPass data) {
         sendAppsFlyerCheckout(context, data);
-//        routeToNewCheckout(context, data);
-        routeToOldCheckout(context, data);
+        routeToNewCheckout(context, data);
+        //routeToOldCheckout(context, data);
         UnifyTracking.eventPDPCart();
     }
 

@@ -96,11 +96,9 @@
             android:windowSoftInputMode="stateAlwaysHidden|adjustPan"/>
         <activity
             android:name=".register.view.activity.SmartLockActivity"
-            android:theme="@style/Theme.AppCompat.Dialog"
-            android:screenOrientation="portrait"/>
+            android:theme="@style/Theme.AppCompat.Dialog" />
         <activity
             android:name=".google.GoogleSignInActivity"
-            android:screenOrientation="portrait"
             android:theme="@style/DialogTheme"/>
 
         <activity android:name="com.tokopedia.otp.phoneverification.view.activity.ReferralPhoneNumberVerificationActivity">
