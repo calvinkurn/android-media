@@ -1,5 +1,7 @@
 package com.tokopedia.transaction.purchase.detail.domain.mapper;
 
+import android.text.TextUtils;
+
 import com.tokopedia.core.network.retrofit.response.TkpdResponse;
 import com.tokopedia.payment.utils.ErrorNetMessage;
 import com.tokopedia.transaction.exception.ResponseRuntimeException;
@@ -28,6 +30,8 @@ import retrofit2.Response;
  */
 
 public class OrderDetailMapper {
+    private String BASE_URL_UPLOAD_PROOF_AWB = "https://m.tokopedia.com/myorder/list/uploadawb/";
+    private String QUERY_INVOICE_URL_UPLOAD_AWB = "?invoice=";
 
     public OrderDetailData generateOrderDetailModel(OrderDetailResponse responseData) {
         OrderDetailData viewData = new OrderDetailData();
@@ -38,7 +42,7 @@ public class OrderDetailMapper {
         viewData.setOrderImage(responseData.getStatus().getImage());
 
         viewData.setBuyerName(responseData.getDetail().getReceiver().getName());
-        if(responseData.getDetail().getCustomer() != null) {
+        if (responseData.getDetail().getCustomer() != null) {
             viewData.setBuyerUserName(responseData.getDetail().getCustomer().getName());
             viewData.setBuyerId(responseData.getDetail().getCustomer().getId());
             viewData.setBuyerLogo(responseData.getDetail().getCustomer().getPicture());
@@ -53,11 +57,11 @@ public class OrderDetailMapper {
         } else {
             viewData.setPurchaseDate(responseData.getDetail().getCheckoutDate());
         }
-        if(responseData.getDetail().getDeadline() != null) {
+        if (responseData.getDetail().getDeadline() != null) {
             viewData.setResponseTimeLimit(responseData.getDetail().getDeadline().getText());
             viewData.setDeadlineColorString(responseData.getDetail().getDeadline().getColor());
         }
-        if(responseData.getDetail().getShop() !=null) {
+        if (responseData.getDetail().getShop() != null) {
             viewData.setShopId(String.valueOf(responseData.getDetail().getShop().getId()));
             viewData.setShopName(responseData.getDetail().getShop().getName());
             viewData.setShopLogo(responseData.getDetail().getShop().getLogo());
@@ -65,7 +69,7 @@ public class OrderDetailMapper {
         viewData.setPartialOrderStatus(
                 getPartialOrderStatus(responseData.getDetail().getPartialOrder())
         );
-        if(responseData.getDetail().getPreorder() == null
+        if (responseData.getDetail().getPreorder() == null
                 || responseData.getDetail().getPreorder().getIsPreorder() == 0) {
             viewData.setPreorder(false);
         } else {
@@ -74,7 +78,7 @@ public class OrderDetailMapper {
                     responseData.getDetail().getPreorder().getProcessTime()));
             viewData.setPreorderPeriodText(responseData.getDetail().getPreorder().getProcessTimeText());
         }
-        if(responseData.getDetail().getDropShipper() != null) {
+        if (responseData.getDetail().getDropShipper() != null) {
             viewData.setDropshipperName(responseData.getDetail().getDropShipper().getName());
             viewData.setDropshipperPhone(responseData.getDetail().getDropShipper().getPhone());
         }
@@ -107,7 +111,7 @@ public class OrderDetailMapper {
         viewData.setProductPrice(responseData.getSummary().getItemsPrice());
         viewData.setTotalPayment(responseData.getSummary().getTotalPrice());
 
-        if(responseData.getDetail().getInsurance() != null) {
+        if (responseData.getDetail().getInsurance() != null) {
             viewData.setShowInsuranceNotification(
                     responseData.getDetail().getInsurance().getInsuranceType().equals("2")
             );
@@ -170,8 +174,32 @@ public class OrderDetailMapper {
             viewData.setDriverVehicle(
                     responseData.getDetail().getShipment().getInfo().getDriver().getLicenseNumber()
             );
+            if (!TextUtils.isEmpty(responseData
+                    .getDetail()
+                    .getShipment()
+                    .getInfo().getDriver().getTrackingUrl())) {
+                viewData.setLiveTrackingUrl(responseData.getDetail()
+                        .getShipment()
+                        .getInfo()
+                        .getDriver()
+                        .getTrackingUrl());
+            } else viewData.setLiveTrackingUrl("");
         }
 
+        if (responseData.getDetail().getShipment().getInfo() != null &&
+                responseData.getDetail().getShipment().getInfo().getPickupInfo() != null) {
+            viewData.setPickupPinCode(responseData.getDetail().getShipment().getInfo()
+                    .getPickupInfo().getName());
+        }
+
+        viewData.setShowUploadAwb(responseData.getButtons().getAwbUpload() == 2);
+        viewData.setAwbUploadProofText(responseData.getDetail().getShipment().getAwbUploadProofText());
+        viewData.setAwbUploadProofUrl(BASE_URL_UPLOAD_PROOF_AWB
+                + viewData.getOrderId() + "/"
+                + viewData.getShopId() + "/"
+                + QUERY_INVOICE_URL_UPLOAD_AWB
+                + viewData.getInvoiceNumber()
+        );
         return viewData;
     }
 
@@ -181,12 +209,12 @@ public class OrderDetailMapper {
                 .Data historyData = response.getData();
         viewData.setStepperMode(historyData.getOrderStatusCode());
         viewData.setStepperStatusTitle(historyData.getHistoryTitle());
-        if(response.getData().getHistoryImg() != null) {
+        if (response.getData().getHistoryImg() != null) {
             viewData.setHistoryImage(historyData.getHistoryImg());
         } else viewData.setHistoryImage("");
         List<OrderHistoryListData> historyListData = new ArrayList<>();
         List<History> orderHistories = historyData.getHistories();
-        for(int i = 0; i < orderHistories.size(); i++) {
+        for (int i = 0; i < orderHistories.size(); i++) {
             OrderHistoryListData listData = new OrderHistoryListData();
             listData.setOrderHistoryDate(orderHistories.get(i).getDate());
             listData.setActionBy(orderHistories.get(i).getActionBy());
@@ -213,7 +241,7 @@ public class OrderDetailMapper {
             courierViewModel.setCourierName(response.getShipment().get(i).getShipmentName());
             courierViewModel.setCourierImageUrl(response.getShipment().get(i).getShipmentImage());
             List<CourierServiceModel> courierServiceModelList = new ArrayList<>();
-            for(int j = 0; j < response.getShipment().get(i).getShipmentPackage().size(); j++) {
+            for (int j = 0; j < response.getShipment().get(i).getShipmentPackage().size(); j++) {
                 CourierServiceModel courierServiceModel = new CourierServiceModel();
                 Shipment courierShipment = response.getShipment().get(i);
                 courierServiceModel.setServiceId(courierShipment.getShipmentPackage().get(j).getSpId());
@@ -228,7 +256,7 @@ public class OrderDetailMapper {
     }
 
     private String getPartialOrderStatus(int partialOrder) {
-        if(partialOrder == 1) return "Ya";
+        if (partialOrder == 1) return "Ya";
         else return "Tidak";
     }
 
@@ -248,9 +276,9 @@ public class OrderDetailMapper {
     }
 
     private void handleResponseError(TkpdResponse response) {
-        if(response == null)
+        if (response == null)
             throw new ResponseRuntimeException(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
-        else if(response.isError())
+        else if (response.isError())
             throw new ResponseRuntimeException(response.getErrorMessageJoined());
     }
 

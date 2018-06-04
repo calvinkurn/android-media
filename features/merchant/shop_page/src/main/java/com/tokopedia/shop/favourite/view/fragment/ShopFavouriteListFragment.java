@@ -49,9 +49,9 @@ public class ShopFavouriteListFragment extends BaseListFragment<ShopFavouriteVie
 
     @Override
     public void loadData(int page) {
-        if(page == DEFAULT_INITIAL_PAGE){
+        if (page == DEFAULT_INITIAL_PAGE) {
             shopFavouriteListPresenter.getShopInfo(shopId);
-        } else{
+        } else {
             shopFavouriteListPresenter.getshopFavouriteList(shopId, page);
         }
     }

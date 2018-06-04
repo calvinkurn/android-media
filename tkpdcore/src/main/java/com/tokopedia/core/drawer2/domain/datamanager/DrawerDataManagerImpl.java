@@ -234,7 +234,7 @@ public class DrawerDataManagerImpl implements DrawerDataManager {
         drawerNotification.setInboxMessage(unreads);
         drawerNotification.setInboxResCenter(notificationData.getResolution());
 
-        if(notificationData.getInbox() != null) {
+        if (notificationData.getInbox() != null) {
             drawerNotification.setInboxReview(notificationData.getInbox().getInboxReputation());
             drawerNotification.setInboxTalk(notificationData.getInbox().getInboxTalk());
             drawerNotification.setInboxTicket(notificationData.getInbox().getInboxTicket());

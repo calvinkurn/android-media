@@ -60,6 +60,9 @@ public class Buttons {
     @SerializedName("view_complaint")
     @Expose
     private int viewComplaint;
+    @SerializedName("awb_upload")
+    @Expose
+    private int awbUpload;
 
     public int getAskSeller() {
         return askSeller;
@@ -133,4 +136,7 @@ public class Buttons {
         return viewComplaint;
     }
 
+    public int getAwbUpload() {
+        return awbUpload;
+    }
 }
