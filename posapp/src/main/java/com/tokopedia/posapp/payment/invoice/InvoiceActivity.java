@@ -64,6 +64,11 @@ public class InvoiceActivity extends ReactFragmentActivity {
     }
 
     @Override
+    protected boolean isLightToolbarThemes() {
+        return false;
+    }
+
+    @Override
     public void onBackPressed() {
         // no-op
     }

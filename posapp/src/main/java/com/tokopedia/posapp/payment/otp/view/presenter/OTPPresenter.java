@@ -145,6 +145,7 @@ public class OTPPresenter implements OTP.Presenter {
                         paymentStatusDomain.setBankName(bankDomain.getBankName());
                         paymentStatusDomain.setBankLogo(bankDomain.getBankLogo());
                     }
+                    paymentStatusDomain.setTransactionId(otpData.getOtpDetailTransaction().getTransactionId());
                     viewListener.onPaymentCompleted(paymentStatusDomain);
                 }
             });

@@ -48,7 +48,7 @@ public class CheckTransactionUseCase extends UseCase<PaymentStatusDomain> {
                                 paymentItem.setQuantity(cartItem.getQuantity());
                                 paymentItem.setPrice(cartItem.getProductPriceUnformatted());
                                 paymentItem.setName(cartItem.getProductName());
-                                paymentItem.setImageUrl(cartItem.getProductImage());
+                                paymentItem.setImageUrl(cartItem.getProductImage300());
                                 items.add(paymentItem);
                             }
                             paymentStatusDomain.setItems(items);

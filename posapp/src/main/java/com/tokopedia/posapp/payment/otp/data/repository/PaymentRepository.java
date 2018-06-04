@@ -11,9 +11,5 @@ import rx.Observable;
  */
 
 public interface PaymentRepository {
-    Observable<PaymentStatusDomain> getPaymentStatus(RequestParams requestParams);
-
-    Observable<CreateOrderDomain> createOrder(RequestParams requestParams);
-
     Observable<PaymentStatusDomain> checkTransaction(RequestParams requestParams);
 }
