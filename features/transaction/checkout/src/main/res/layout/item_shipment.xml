@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@drawable/bg_shadow"
     android:orientation="vertical">
 
@@ -96,19 +97,20 @@
         android:id="@+id/rl_expand_other_product"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:foreground="?selectableItemBackground"
         android:background="@color/white"
         android:orientation="horizontal">
 
-        <TextView
+        <com.tokopedia.design.component.TextViewCompat
             android:id="@+id/tv_expand_other_product"
             style="@style/TextSmallMedium"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
             android:layout_centerVertical="true"
-            android:foreground="?selectableItemBackground"
             android:gravity="center"
             android:padding="16dp"
+            app:drawableRightCompat="@drawable/ic_keyboard_arrow_down_24dp"
             android:textColor="@color/medium_green"
             tools:text="+3 Produk Lainnya" />
 

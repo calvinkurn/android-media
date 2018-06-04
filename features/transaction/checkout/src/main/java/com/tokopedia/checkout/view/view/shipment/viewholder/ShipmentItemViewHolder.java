@@ -97,7 +97,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder {
     private LinearLayout addressLayout;
     private PickupPointLayout pickupPointLayout;
     private RecyclerView rvCartItem;
-    private TextView tvExpandOtherProduct;
+    private TextViewCompat tvExpandOtherProduct;
     private RelativeLayout rlExpandOtherProduct;
     private TextView tvTextShipment;
     private TextView chooseCourierButton;
@@ -287,17 +287,18 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder {
 
     private void renderOtherCartItems(ShipmentCartItemModel shipmentItem, List<CartItemModel> cartItemModels) {
         rlExpandOtherProduct.setOnClickListener(showAllProductListener(shipmentItem));
-        tvExpandOtherProduct.setOnClickListener(showAllProductListener(shipmentItem));
         initInnerRecyclerView(cartItemModels);
         if (shipmentItem.isStateAllItemViewExpanded()) {
             rvCartItem.setVisibility(View.VISIBLE);
             vSeparatorMultipleProductSameStore.setVisibility(View.GONE);
             tvExpandOtherProduct.setText(R.string.label_hide_other_item);
+            tvExpandOtherProduct.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_keyboard_arrow_up_24dp, 0);
         } else {
             rvCartItem.setVisibility(View.GONE);
             vSeparatorMultipleProductSameStore.setVisibility(View.GONE);
             tvExpandOtherProduct.setText(String.format(tvExpandOtherProduct.getContext().getString(R.string.label_other_item_count_format),
                     String.valueOf(cartItemModels.size())));
+            tvExpandOtherProduct.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_keyboard_arrow_down_24dp, 0);
         }
     }
 
