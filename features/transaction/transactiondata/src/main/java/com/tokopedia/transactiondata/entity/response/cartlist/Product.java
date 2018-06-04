@@ -113,6 +113,13 @@ public class Product {
     @SerializedName("product_showcase")
     @Expose
     private ProductShowCase productShowcase;
+    @SerializedName("product_tracker_data")
+    @Expose
+    private ProductTrackerData productTrackerData;
+
+    public ProductTrackerData getProductTrackerData() {
+        return productTrackerData;
+    }
 
     public int getParentId() {
         return parentId;

@@ -349,7 +349,8 @@ public class CartFragment extends BaseCheckoutFragment implements CartListAdapte
                     ((ICheckoutModuleRouter) getActivity().getApplication())
                             .checkoutModuleRouterGetLoyaltyNewCheckoutMarketplaceCartListIntent(
                                     getActivity(), cartListData.isPromoCouponActive(),
-                                    new Gson().toJson(updateCartRequestList), ""
+                                    new Gson().toJson(updateCartRequestList),
+                                    cartItemPromoHolderData.getDefaultSelectedTabString()
                             ), IRouterConstant.LoyaltyModule.LOYALTY_ACTIVITY_REQUEST_CODE
             );
         }
@@ -511,6 +512,7 @@ public class CartFragment extends BaseCheckoutFragment implements CartListAdapte
             cartItemPromoHolderData = new CartItemPromoHolderData();
             cartItemPromoHolderData.setPromoNotActive();
         }
+        cartItemPromoHolderData.setDefaultSelectedTabString(cartListData.getDefaultPromoDialogTab());
         cartListAdapter.addPromoVoucherData(cartItemPromoHolderData);
 
         if (cartListData.isError()) {
@@ -601,7 +603,7 @@ public class CartFragment extends BaseCheckoutFragment implements CartListAdapte
     @Override
     public void renderToShipmentFormSuccess(CartShipmentAddressFormData shipmentAddressFormData) {
         Intent intent = ShipmentActivity.createInstance(getActivity(), shipmentAddressFormData,
-                promoCodeAppliedData, cartListData.getCartPromoSuggestion()
+                promoCodeAppliedData, cartListData.getCartPromoSuggestion(), cartListData.getDefaultPromoDialogTab()
         );
         startActivityForResult(intent, ShipmentActivity.REQUEST_CODE);
     }

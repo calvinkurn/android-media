@@ -5,12 +5,6 @@ import android.text.TextUtils;
 
 import com.tokopedia.checkout.R;
 import com.tokopedia.checkout.domain.datamodel.cartlist.AutoApplyData;
-import com.tokopedia.checkout.domain.datamodel.cartlist.WholesalePrice;
-import com.tokopedia.transactiondata.entity.response.cartlist.CartDataListResponse;
-import com.tokopedia.transactiondata.entity.response.cartlist.CartList;
-import com.tokopedia.transactiondata.entity.response.deletecart.DeleteCartDataResponse;
-import com.tokopedia.transactiondata.entity.response.resetcart.ResetCartDataResponse;
-import com.tokopedia.transactiondata.entity.response.updatecart.UpdateCartDataResponse;
 import com.tokopedia.checkout.domain.datamodel.cartlist.CartItemData;
 import com.tokopedia.checkout.domain.datamodel.cartlist.CartListData;
 import com.tokopedia.checkout.domain.datamodel.cartlist.CartPromoSuggestion;
@@ -18,6 +12,7 @@ import com.tokopedia.checkout.domain.datamodel.cartlist.CartTickerErrorData;
 import com.tokopedia.checkout.domain.datamodel.cartlist.DeleteCartData;
 import com.tokopedia.checkout.domain.datamodel.cartlist.ResetCartData;
 import com.tokopedia.checkout.domain.datamodel.cartlist.UpdateCartData;
+import com.tokopedia.checkout.domain.datamodel.cartlist.WholesalePrice;
 import com.tokopedia.transactiondata.entity.response.cartlist.CartDataListResponse;
 import com.tokopedia.transactiondata.entity.response.cartlist.CartList;
 import com.tokopedia.transactiondata.entity.response.deletecart.DeleteCartDataResponse;
@@ -65,6 +60,8 @@ public class CartMapper implements ICartMapper {
                             .build()
             );
         }
+        cartListData.setDefaultPromoDialogTab(cartDataListResponse.getDefaultPromoDialogTab());
+
         List<CartItemData> cartItemDataList = new ArrayList<>();
         for (CartList data : cartDataListResponse.getCartList()) {
             CartItemData cartItemData = new CartItemData();
@@ -90,6 +87,8 @@ public class CartMapper implements ICartMapper {
             cartItemDataOrigin.setMinimalQtyOrder(data.getProduct().getProductMinOrder());
             cartItemDataOrigin.setInvenageValue(data.getProduct().getProductInvenageValue());
             cartItemDataOrigin.setFreeReturn(data.getProduct().getIsFreereturns() == 1);
+            cartItemDataOrigin.setTrackerAttribution(data.getProduct().getProductTrackerData().getAttribution());
+            cartItemDataOrigin.setTrackerListName(data.getProduct().getProductTrackerData().getTrackerListName());
             if (!mapperUtil.isEmpty(data.getProduct().getFreeReturns())) {
                 cartItemDataOrigin.setFreeReturnLogo(data.getProduct().getFreeReturns().getFreeReturnsLogo());
             }
@@ -97,7 +96,6 @@ public class CartMapper implements ICartMapper {
             cartItemDataOrigin.setCashBackInfo("Cashback " + data.getProduct().getProductCashback());
             cartItemDataOrigin.setProductImage(data.getProduct().getProductImage().getImageSrc200Square());
             cartItemDataOrigin.setCategory(data.getProduct().getCategory());
-            cartItemDataOrigin.setCategory(data.getProduct().getCategory().replace(">", "/"));
             cartItemDataOrigin.setCategoryId(String.valueOf(data.getProduct().getCategoryId()));
             if (data.getProduct().getWholesalePrice() != null) {
                 List<WholesalePrice> wholesalePrices = new ArrayList<>();

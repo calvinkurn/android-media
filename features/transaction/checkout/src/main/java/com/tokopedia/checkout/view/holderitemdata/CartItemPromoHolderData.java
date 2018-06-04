@@ -25,6 +25,9 @@ public class CartItemPromoHolderData implements ShipmentData {
     private String couponCode;
     private long couponDiscountAmount;
 
+    private String defaultSelectedTabString;
+
+
     private boolean fromAutoApply;
 
     public int getTypePromo() {
@@ -39,6 +42,13 @@ public class CartItemPromoHolderData implements ShipmentData {
         return voucherMessage;
     }
 
+    public String getDefaultSelectedTabString() {
+        return defaultSelectedTabString;
+    }
+
+    public void setDefaultSelectedTabString(String defaultSelectedTabString) {
+        this.defaultSelectedTabString = defaultSelectedTabString;
+    }
 
     public String getCouponTitle() {
         return couponTitle;
@@ -113,6 +123,7 @@ public class CartItemPromoHolderData implements ShipmentData {
         this.couponCode = "";
         this.couponDiscountAmount = 0;
         this.couponTitle = "";
+        this.defaultSelectedTabString = "";
     }
 
     public static CartItemPromoHolderData createInstanceFromAppliedPromo(

@@ -414,7 +414,7 @@ public class LoyaltyActivity extends BasePresenterActivity
         bundle.putBoolean(IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.EXTRA_COUPON_ACTIVE, true);
         bundle.putString(IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.EXTRA_PLATFORM, platform);
         bundle.putString(IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.EXTRA_CATEGORY, category);
-        if (!TextUtils.isEmpty(defaultSelectedTab) && DEFAULT_COUPON_TAB_SELECTED.equalsIgnoreCase(defaultSelectedTab)) {
+        if (!TextUtils.isEmpty(defaultSelectedTab) && defaultSelectedTab.contains(DEFAULT_COUPON_TAB_SELECTED)) {
             bundle.putInt(IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.EXTRA_SELECTED_TAB,
                     IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.COUPON_TAB);
         }
@@ -458,7 +458,7 @@ public class LoyaltyActivity extends BasePresenterActivity
                 PLATFORM_PAGE_MARKETPLACE_CART_LIST);
         bundle.putString(IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.EXTRA_ADDITIONAL_STRING_DATA,
                 additionalStringData);
-        if (!TextUtils.isEmpty(defaultSelectedTab) && DEFAULT_COUPON_TAB_SELECTED.equalsIgnoreCase(defaultSelectedTab)) {
+        if (!TextUtils.isEmpty(defaultSelectedTab) && defaultSelectedTab.contains(DEFAULT_COUPON_TAB_SELECTED)) {
             bundle.putInt(IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.EXTRA_SELECTED_TAB,
                     IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.COUPON_TAB);
         }
@@ -492,7 +492,7 @@ public class LoyaltyActivity extends BasePresenterActivity
                 IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.PLATFORM_PAGE_MARKETPLACE_CART_SHIPMENT);
         bundle.putString(IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.EXTRA_ADDITIONAL_STRING_DATA,
                 additionalStringData);
-        if (!TextUtils.isEmpty(defaultSelectedTab) && DEFAULT_COUPON_TAB_SELECTED.equalsIgnoreCase(defaultSelectedTab)) {
+        if (!TextUtils.isEmpty(defaultSelectedTab) && defaultSelectedTab.contains(DEFAULT_COUPON_TAB_SELECTED)) {
             bundle.putInt(IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.EXTRA_SELECTED_TAB,
                     IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.COUPON_TAB);
         }
