@@ -54,15 +54,12 @@ public class ImagePickerInstagramFragment extends BaseListFragment<InstagramMedi
     public static final String ARGS_SUPPORT_MULTIPLE = "args_support_multiple";
     public static final String ARGS_MIN_RESOLUTION = "args_min_resolution";
 
-    public static final String SAVED_SELECTED_INSTAGRAM_ID = "sv_selected_inst_id";
     @Inject
     ImagePickerInstagramPresenter imagePickerInstagramPresenter;
 
     private ListenerImagePickerInstagram listenerImagePickerInstagram;
     private String code = "";
     private String nextMediaId = "";
-
-    private ArrayList<String> selectedInstagramIds;
 
     private @GalleryType
     int galleryType;
@@ -91,11 +88,6 @@ public class ImagePickerInstagramFragment extends BaseListFragment<InstagramMedi
         supportMultipleSelection = bundle.getBoolean(ARGS_SUPPORT_MULTIPLE);
         minImageResolution = bundle.getInt(ARGS_MIN_RESOLUTION);
 
-        if (savedInstanceState== null) {
-            selectedInstagramIds = new ArrayList<>();
-        } else {
-            selectedInstagramIds = savedInstanceState.getStringArrayList(SAVED_SELECTED_INSTAGRAM_ID);
-        }
         super.onCreate(savedInstanceState);
     }
 
@@ -103,7 +95,7 @@ public class ImagePickerInstagramFragment extends BaseListFragment<InstagramMedi
     @Override
     protected BaseListAdapter<InstagramMediaModel, ImageInstagramAdapterTypeFactory> createAdapterInstance() {
         imageInstagramAdapter = new ImageInstagramAdapter(getAdapterTypeFactory(),
-                this, selectedInstagramIds, supportMultipleSelection);
+                this, listenerImagePickerInstagram.getImagePath(), supportMultipleSelection);
         return imageInstagramAdapter;
     }
 
@@ -228,11 +220,7 @@ public class ImagePickerInstagramFragment extends BaseListFragment<InstagramMedi
 
     @Override
     public boolean canAddMoreImage() {
-        //check the image number allowed.
-        if (listenerImagePickerInstagram.isMaxImageReached()) {
-            return false;
-        }
-        return true;
+        return !listenerImagePickerInstagram.isMaxImageReached();
     }
 
     @Override
@@ -257,18 +245,13 @@ public class ImagePickerInstagramFragment extends BaseListFragment<InstagramMedi
 
     @Override
     public void onThumbnailImageRemoved(String imagePath) {
-        //TODO remove selection from adapter
+        imageInstagramAdapter.removeImageFromSelection(imagePath);
     }
 
     public interface ListenerImagePickerInstagram {
         void onClickImageInstagram(String url, boolean isChecked);
         boolean isMaxImageReached();
-    }
-
-    @Override
-    public void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-        outState.putSerializable(SAVED_SELECTED_INSTAGRAM_ID, imageInstagramAdapter.getSelectedInstagramId());
+        ArrayList<String> getImagePath();
     }
 
 }

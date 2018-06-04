@@ -62,6 +62,8 @@ public class ImagePickerCameraFragment extends TkpdBaseV4Fragment {
         void onImageTaken(String filePath);
 
         boolean isMaxImageReached();
+
+        boolean isFinishEditting();
     }
 
     @SuppressLint("MissingPermission")
@@ -253,6 +255,12 @@ public class ImagePickerCameraFragment extends TkpdBaseV4Fragment {
     @Override
     public void onResume() {
         super.onResume();
+        
+        // This is to prevent bug in cameraview library
+        // https://github.com/natario1/CameraView/issues/154
+        if (onImagePickerCameraFragmentListener.isFinishEditting()) {
+            return;
+        }
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
             String permission = Manifest.permission.CAMERA;
             if (ActivityCompat.checkSelfPermission(getContext(), permission) == PackageManager.PERMISSION_GRANTED) {
@@ -261,6 +269,18 @@ public class ImagePickerCameraFragment extends TkpdBaseV4Fragment {
         } else {
             startCamera();
         }
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        stopCamera();
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        destroyCamera();
     }
 
     private void startCamera() {
@@ -279,16 +299,12 @@ public class ImagePickerCameraFragment extends TkpdBaseV4Fragment {
         }
     }
 
-    @Override
-    public void onPause() {
-        super.onPause();
-        stopCamera();
-    }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        cameraView.destroy();
+    private void destroyCamera() {
+        try {
+            cameraView.destroy();
+        } catch (Exception e) {
+            // no-op
+        }
     }
 
     @Override

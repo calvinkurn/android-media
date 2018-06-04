@@ -29,20 +29,20 @@ public class AlbumMediaAdapter extends RecyclerViewCursorAdapter<AlbumMediaAdapt
     private int mImageResize;
 
     private boolean supportMultipleSelection;
-    private ArrayList<Long> selectionIdList;
+    private ArrayList<String> selectionImagePathList;
 
-    public AlbumMediaAdapter(boolean supportMultipleSelection, ArrayList<Long> selectionIdList, OnMediaClickListener listener) {
+    public AlbumMediaAdapter(boolean supportMultipleSelection, ArrayList<String> selectionImagePathList, OnMediaClickListener listener) {
         super(null);
-        setSelectionIdList(selectionIdList);
+        setSelectionIdList(selectionImagePathList);
         this.supportMultipleSelection = supportMultipleSelection;
         mOnMediaClickListener = listener;
     }
 
-    private void setSelectionIdList(ArrayList<Long> selectionIdList) {
-        if (selectionIdList == null) {
-            this.selectionIdList = new ArrayList<>();
+    private void setSelectionIdList(ArrayList<String> selectionImagePathList) {
+        if (selectionImagePathList == null) {
+            this.selectionImagePathList = new ArrayList<>();
         } else {
-            this.selectionIdList = selectionIdList;
+            this.selectionImagePathList = selectionImagePathList;
         }
     }
 
@@ -58,22 +58,18 @@ public class AlbumMediaAdapter extends RecyclerViewCursorAdapter<AlbumMediaAdapt
     public void onThumbnailClicked(ImageView thumbnail, MediaItem item, RecyclerView.ViewHolder holder) {
         boolean isChecked = true;
         if (supportMultipleSelection) {
-            if (selectionIdList.contains(item.getId())) {
-                selectionIdList.remove(item.getId());
+            if (selectionImagePathList.contains(item.getRealPath())) {
                 isChecked = false;
             } else {
-                selectionIdList.add(item.getId());
                 isChecked = true;
             }
         }
 
         if (isChecked && !mOnMediaClickListener.canAddMoreImage()) {
-            selectionIdList.remove(item.getId()); //in case support multiple selection
             return;
         }
 
         if (isChecked && !mOnMediaClickListener.isImageValid(item)) {
-            selectionIdList.remove(item.getId()); //in case support multiple selection
             return;
         }
 
@@ -95,19 +91,8 @@ public class AlbumMediaAdapter extends RecyclerViewCursorAdapter<AlbumMediaAdapt
         if (!supportMultipleSelection) {
             return;
         }
-        int position = 0;
-        int columnIdIndex = getCursor().getColumnIndex(MediaStore.Files.FileColumns._ID);
-        int dataColumnIndex = getCursor().getColumnIndex(MediaStore.MediaColumns.DATA);
-        while (getCursor().moveToPosition(position)) {
-            long cursorId = getCursor().getLong(columnIdIndex);
-            String cursorImagePath = getCursor().getString(dataColumnIndex);
-            if (imagePath.equals(cursorImagePath)) {
-                selectionIdList.remove(cursorId);
-                notifyItemChanged(position);
-                break;
-            }
-            position++;
-        }
+        selectionImagePathList.remove(imagePath);
+        notifyDataSetChanged();
     }
 
     class MediaViewHolder extends RecyclerView.ViewHolder {
@@ -130,7 +115,7 @@ public class AlbumMediaAdapter extends RecyclerViewCursorAdapter<AlbumMediaAdapt
                         0, R.drawable.error_drawable,
                         holder
                 ));
-        holder.mMediaGrid.bindMedia(item, selectionIdList);
+        holder.mMediaGrid.bindMedia(item, selectionImagePathList);
         holder.mMediaGrid.setOnMediaGridClickListener(this);
     }
 
@@ -145,10 +130,6 @@ public class AlbumMediaAdapter extends RecyclerViewCursorAdapter<AlbumMediaAdapt
             mImageResize = (int) (mImageResize * 0.85f);
         }
         return mImageResize;
-    }
-
-    public ArrayList<Long> getSelectionIdList() {
-        return selectionIdList;
     }
 
     @Override

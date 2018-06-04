@@ -1,7 +1,9 @@
 package com.tokopedia.imagepicker.picker.instagram.view.adapter;
 
+import android.provider.MediaStore;
 import android.view.View;
 
+import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.LoadingShimmeringGridViewHolder;
@@ -15,7 +17,7 @@ import java.util.ArrayList;
  */
 
 public class ImageInstagramAdapter extends BaseListAdapter<InstagramMediaModel, ImageInstagramAdapterTypeFactory> {
-    private ArrayList<String> selectedInstagramId;
+    private ArrayList<String> selectedImagePath;
     private OnImageInstagramAdapterListener listener;
     private boolean supportMultipleSelection;
 
@@ -29,10 +31,10 @@ public class ImageInstagramAdapter extends BaseListAdapter<InstagramMediaModel, 
 
     public ImageInstagramAdapter(ImageInstagramAdapterTypeFactory baseListAdapterTypeFactory,
                                  OnImageInstagramAdapterListener onImageInstagramAdapterListener,
-                                 ArrayList<String> selectedInstagramId,
+                                 ArrayList<String> selectedImagePath,
                                  boolean supportMultipleSelection) {
         super(baseListAdapterTypeFactory, null);
-        this.selectedInstagramId = selectedInstagramId;
+        this.selectedImagePath = selectedImagePath;
         this.listener = onImageInstagramAdapterListener;
         this.supportMultipleSelection = supportMultipleSelection;
     }
@@ -45,23 +47,21 @@ public class ImageInstagramAdapter extends BaseListAdapter<InstagramMediaModel, 
                 public void onClick(View v) {
                     InstagramMediaModel item = (InstagramMediaModel) visitables.get(holder.getAdapterPosition());
                     boolean isChecked = true;
+
+                    String itemUrl = item.getImageStandardResolutionUrl();
                     if (supportMultipleSelection) {
-                        if (selectedInstagramId.contains(item.getId())) {
-                            selectedInstagramId.remove(item.getId());
+                        if (selectedImagePath.contains(itemUrl)) {
                             isChecked = false;
                         } else {
-                            selectedInstagramId.add(item.getId());
                             isChecked = true;
                         }
                     }
 
                     if (isChecked && !listener.canAddMoreImage()) {
-                        selectedInstagramId.remove(item.getId()); //in case support multiple selection
                         return;
                     }
 
                     if (isChecked && !listener.isImageValid(item)) {
-                        selectedInstagramId.remove(item.getId()); //in case support multiple selection
                         return;
                     }
                     notifyItemChanged(holder.getAdapterPosition());
@@ -70,12 +70,20 @@ public class ImageInstagramAdapter extends BaseListAdapter<InstagramMediaModel, 
                 }
             });
             InstagramMediaModel item = (InstagramMediaModel) visitables.get(holder.getAdapterPosition());
-            ((ImagePickerInstagramViewHolder)holder).setIsCheck(selectedInstagramId.contains(item.getId()));
+            ((ImagePickerInstagramViewHolder)holder).setIsCheck(selectedImagePath.contains(item.getImageStandardResolutionUrl()));
         }
         super.onBindViewHolder(holder, position);
     }
 
-    public ArrayList<String> getSelectedInstagramId() {
-        return selectedInstagramId;
+    public void removeImageFromSelection(String imagePath) {
+        if (visitables == null || visitables.size() == 0) {
+            return;
+        }
+        if (!supportMultipleSelection) {
+            return;
+        }
+        selectedImagePath.remove(imagePath);
+        notifyDataSetChanged();
     }
+
 }
