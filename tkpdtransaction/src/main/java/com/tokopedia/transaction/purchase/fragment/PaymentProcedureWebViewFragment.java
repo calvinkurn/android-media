@@ -21,7 +21,6 @@ import android.widget.ProgressBar;
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment;
 import com.tokopedia.core.app.TkpdCoreRouter;
-import com.tokopedia.core.home.fragment.SimpleWebViewFragment;
 import com.tokopedia.core.loyaltysystem.util.URLGenerator;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.router.digitalmodule.IDigitalModuleRouter;
@@ -93,7 +92,7 @@ public class PaymentProcedureWebViewFragment extends TkpdBaseV4Fragment {
     }
 
     private boolean overrideUrl(String url) {
-        if(((IDigitalModuleRouter) getActivity().getApplicationContext()).isSupportedDelegateDeepLink(url)) {
+        if(getActivity() != null && ((IDigitalModuleRouter) getActivity().getApplicationContext()).isSupportedDelegateDeepLink(url)) {
             ((TkpdCoreRouter) getActivity().getApplicationContext()).actionApplinkFromActivity(getActivity(), url);
             return true;
         }

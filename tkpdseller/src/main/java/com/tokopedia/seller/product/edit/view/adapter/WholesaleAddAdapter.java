@@ -7,15 +7,17 @@ import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.ImageView;
 
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.design.text.watcher.NumberTextWatcher;
+import com.tokopedia.design.utils.CurrencyFormatHelper;
+import com.tokopedia.design.utils.StringUtils;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.common.widget.PrefixEditText;
 import com.tokopedia.seller.product.edit.constant.CurrencyTypeDef;
 import com.tokopedia.seller.product.edit.utils.ProductPriceRangeUtils;
-import com.tokopedia.seller.product.edit.view.fragment.ProductAddWholesaleFragment;
 import com.tokopedia.seller.product.edit.view.model.edit.ProductWholesaleViewModel;
 import com.tokopedia.seller.product.edit.view.model.wholesale.WholesaleModel;
 import com.tokopedia.seller.util.CurrencyIdrTextWatcher;
@@ -33,9 +35,6 @@ import java.util.concurrent.CopyOnWriteArrayList;
  */
 
 public class WholesaleAddAdapter extends RecyclerView.Adapter<WholesaleAddAdapter.ViewHolder> {
-
-    private static final String RUPIAH_CURRENCY = "Rp";
-    private static final String USD_CURRENCY = "US$";
 
     private List<WholesaleModel> wholesaleModels;
     private Listener listener;
@@ -77,7 +76,7 @@ public class WholesaleAddAdapter extends RecyclerView.Adapter<WholesaleAddAdapte
         private final PrefixEditText etRangeWholesale;
         private final TextInputLayout tilRangeWholesale;
         private final ImageView imageWholesale;
-        private final PrefixEditText etWholeSalePrice;
+        private final EditText etWholeSalePrice;
         private final TextInputLayout tilWholeSalePrice;
         private final Locale dollarLocale = Locale.US;
         private NumberFormat formatter;
@@ -102,7 +101,6 @@ public class WholesaleAddAdapter extends RecyclerView.Adapter<WholesaleAddAdapte
             TextWatcher textWatcher = new CurrencyIdrTextWatcher(etWholeSalePrice);
             switch (listener.getCurrencyType()) {
                 case CurrencyTypeDef.TYPE_USD:
-                    etWholeSalePrice.setPrefix(MethodChecker.fromHtml(USD_CURRENCY).toString());
                     textWatcher = new CurrencyUsdTextWatcher(etWholeSalePrice) {
                         @Override
                         public void onNumberChanged(double number) {
@@ -113,7 +111,6 @@ public class WholesaleAddAdapter extends RecyclerView.Adapter<WholesaleAddAdapte
                     };
                     break;
                 case CurrencyTypeDef.TYPE_IDR:
-                    etWholeSalePrice.setPrefix(MethodChecker.fromHtml(RUPIAH_CURRENCY).toString());
                     textWatcher = new CurrencyIdrTextWatcher(etWholeSalePrice) {
                         @Override
                         public void onNumberChanged(double number) {
@@ -176,17 +173,40 @@ public class WholesaleAddAdapter extends RecyclerView.Adapter<WholesaleAddAdapte
             });
         }
 
+        public double getDoubleValue() {
+            String valueString = CurrencyFormatHelper.removeCurrencyPrefix(etWholeSalePrice.getText().toString());
+            try {
+                valueString = StringUtils.removeComma(valueString);
+                if (TextUtils.isEmpty(valueString)) {
+                    return 0;
+                }
+                return Double.parseDouble(valueString);
+            } catch (NumberFormatException e) {
+                return StringUtils.convertToNumeric(valueString, false);
+            }
+        }
+
         private void setValueAndRefresh(double number){
-            wholesaleModels.get(getAdapterPosition()).setQtyPrice(number);
+            wholesaleModels.get(getAdapterPosition()).setQtyPrice(getDoubleValue());
             wholesaleModels.get(getAdapterPosition()).setFocusPrice(false);
             currentPositionFocusPrice = getAdapterPosition();
             currentPositionFocusQty = -1;
-            etWholeSalePrice.post(new Runnable() {
-                @Override
-                public void run() {
-                    notifyDataSetChanged();
+            isPriceValid(wholesaleModels.get(getAdapterPosition()), getAdapterPosition());
+            isQtyValid(wholesaleModels.get(getAdapterPosition()), getAdapterPosition());
+            initFocus(getAdapterPosition());
+            setEditTextState(wholesaleModels.get(getAdapterPosition()));
+            setButtonSaveState();
+            for(int i = 0 ; i < wholesaleModels.size() ; i++){
+                final int j = i;
+                if(j!= getAdapterPosition()){
+                    etWholeSalePrice.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            notifyItemChanged(j);
+                        }
+                    });
                 }
-            });
+            }
         }
 
         private void initFocus(int position){

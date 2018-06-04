@@ -9,8 +9,10 @@ import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.LinearSmoothScroller;
 import android.support.v7.widget.RecyclerView;
 import android.text.Html;
+import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -78,6 +80,7 @@ import javax.inject.Inject;
  */
 
 public class TopAdsDashboardFragment extends BaseDaggerFragment implements TopAdsDashboardView {
+    private static final float MILLISECONDS_PER_INCH = 200f;
     private static final int REQUEST_CODE_ADD_CREDIT = 1;
     public static final int REQUEST_CODE_AD_STATUS = 2;
     public static final int REQUEST_CODE_AD_OPTION = 3;
@@ -141,6 +144,7 @@ public class TopAdsDashboardFragment extends BaseDaggerFragment implements TopAd
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         topAdsDashboardPresenter.attachView(this);
+        topAdsDashboardPresenter.resetDate();
         selectedStatisticType = TopAdsStatisticsType.ALL_ADS;
         totalProductAd = Integer.MIN_VALUE;
         swipeToRefresh = (SwipeToRefresh) view.findViewById(R.id.swipe_refresh_layout);
@@ -201,7 +205,8 @@ public class TopAdsDashboardFragment extends BaseDaggerFragment implements TopAd
             }
         });
         recyclerTabLayout = view.findViewById(R.id.recyclerview_tabLayout);
-        recyclerTabLayout.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false));
+        final LinearLayoutManager tabLayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false);
+        recyclerTabLayout.setLayoutManager(tabLayoutManager);
         topAdsTabAdapter = new TopAdsTabAdapter(getActivity());
         topAdsTabAdapter.setListener(new TopAdsTabAdapter.OnRecyclerTabItemClick() {
             @Override
@@ -210,6 +215,17 @@ public class TopAdsDashboardFragment extends BaseDaggerFragment implements TopAd
             }
         });
         recyclerTabLayout.setAdapter(topAdsTabAdapter);
+        final RecyclerView.SmoothScroller smoothScroller = new LinearSmoothScroller(getActivity()){
+            @Override
+            protected int getHorizontalSnapPreference() {
+                return LinearSmoothScroller.SNAP_TO_START;
+            }
+
+            @Override
+            protected float calculateSpeedPerPixel(DisplayMetrics displayMetrics) {
+                return MILLISECONDS_PER_INCH/displayMetrics.densityDpi;
+            }
+        };
         viewPager = view.findViewById(R.id.pager);
         viewPager.setOffscreenPageLimit(TopAdsConstant.OFFSCREEN_PAGE_LIMIT);
         initTabLayouTitles();
@@ -223,7 +239,8 @@ public class TopAdsDashboardFragment extends BaseDaggerFragment implements TopAd
 
             @Override
             public void onPageSelected(int position) {
-                recyclerTabLayout.scrollToPosition(position);
+                smoothScroller.setTargetPosition(position);
+                tabLayoutManager.startSmoothScroll(smoothScroller);
                 topAdsTabAdapter.selected(position);
                 trackingStatisticBar(position);
                 getCurrentStatisticsFragment().updateDataStatistic(dataStatistic);
@@ -302,6 +319,13 @@ public class TopAdsDashboardFragment extends BaseDaggerFragment implements TopAd
             return null;
         }
         return (TopAdsDashboardStatisticFragment) pagerAdapter.instantiateItem(viewPager, topAdsTabAdapter.getSelectedTabPosition());
+    }
+
+    private TopAdsStatisticConversionFragment getConversionFragment(){
+        if (pagerAdapter == null) {
+            return null;
+        }
+        return (TopAdsStatisticConversionFragment) pagerAdapter.getItem(5);
     }
 
     private void initTabLayouTitles() {
@@ -684,7 +708,14 @@ public class TopAdsDashboardFragment extends BaseDaggerFragment implements TopAd
                 .setItemClickListener(new BottomSheetItemClickListener() {
                     @Override
                     public void onBottomSheetItemClick(MenuItem item) {
+                        if (!isAdded()) {
+                            return;
+                        }
                         selectedStatisticType = item.getItemId();
+                        topAdsTabAdapter.setStatisticsType(selectedStatisticType);
+                        if (getConversionFragment() != null){
+                            getConversionFragment().updateTitle(selectedStatisticType);
+                        }
                         loadStatisticsData();
                     }
                 }).createDialog();
