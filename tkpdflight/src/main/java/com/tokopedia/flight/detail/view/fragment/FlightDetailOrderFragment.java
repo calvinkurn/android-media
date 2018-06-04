@@ -1,7 +1,6 @@
 package com.tokopedia.flight.detail.view.fragment;
 
 import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.ClipData;
 import android.content.ClipboardManager;
@@ -48,7 +47,9 @@ import com.tokopedia.flight.detail.presenter.FlightDetailOrderContract;
 import com.tokopedia.flight.detail.presenter.FlightDetailOrderPresenter;
 import com.tokopedia.flight.detail.view.adapter.FlightDetailOrderAdapter;
 import com.tokopedia.flight.detail.view.adapter.FlightDetailOrderTypeFactory;
+import com.tokopedia.flight.detail.view.adapter.FlightOrderDetailInsuranceAdapter;
 import com.tokopedia.flight.orderlist.di.FlightOrderComponent;
+import com.tokopedia.flight.orderlist.domain.model.FlightInsurance;
 import com.tokopedia.flight.orderlist.domain.model.FlightOrder;
 import com.tokopedia.flight.orderlist.domain.model.FlightOrderJourney;
 import com.tokopedia.flight.orderlist.view.fragment.FlightResendETicketDialogFragment;
@@ -118,6 +119,8 @@ public class FlightDetailOrderFragment extends BaseDaggerFragment implements Fli
     private TextView tvPaymentDueDate;
     private LinearLayout containerTicketCancellationStatus;
     private AppCompatTextView tvTicketCancellationStatus;
+    private LinearLayout insuranceLayout;
+    private RecyclerView insuranceRecyclerView;
 
     public static Fragment createInstance(FlightOrderDetailPassData flightOrderDetailPassData) {
         FlightDetailOrderFragment flightDetailOrderFragment = new FlightDetailOrderFragment();
@@ -164,7 +167,6 @@ public class FlightDetailOrderFragment extends BaseDaggerFragment implements Fli
         buttonCancelTicket = view.findViewById(R.id.button_cancel);
         buttonRescheduleTicket = view.findViewById(R.id.button_reschedule);
         buttonReorder = view.findViewById(R.id.button_reorder);
-
         paymentInfoLayout = (LinearLayout) view.findViewById(R.id.payment_info_layout);
         paymentCostLayout = (LinearLayout) view.findViewById(R.id.payment_cost_layout);
         paymentDueDateLayout = (LinearLayout) view.findViewById(R.id.payment_due_date_layout);
@@ -173,6 +175,8 @@ public class FlightDetailOrderFragment extends BaseDaggerFragment implements Fli
         tvPaymentCost = (TextView) view.findViewById(R.id.tv_payment_cost);
         tvPaymentCostLabel = (TextView) view.findViewById(R.id.tv_payment_cost_label);
         tvPaymentDueDate = (TextView) view.findViewById(R.id.tv_payment_due_date);
+        insuranceLayout = (LinearLayout) view.findViewById(R.id.insurance_layout);
+        insuranceRecyclerView = (RecyclerView) view.findViewById(R.id.rv_insurance);
         progressDialog = new ProgressDialog(getActivity());
 
         containerCancellation = view.findViewById(R.id.cancellation_container);
@@ -334,6 +338,23 @@ public class FlightDetailOrderFragment extends BaseDaggerFragment implements Fli
     @Override
     public void setTransactionDate(String transactionDate) {
         this.transactionDate.setText(transactionDate);
+    }
+
+    @Override
+    public void hideInsuranceLayout() {
+        insuranceLayout.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void showInsuranceLayout() {
+        insuranceLayout.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void renderInsurances(List<FlightInsurance> insurances) {
+        FlightOrderDetailInsuranceAdapter adapter = new FlightOrderDetailInsuranceAdapter(insurances);
+        insuranceRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        insuranceRecyclerView.setAdapter(adapter);
     }
 
     @Override
@@ -522,6 +543,11 @@ public class FlightDetailOrderFragment extends BaseDaggerFragment implements Fli
     @Override
     public void hideCancellationContainer() {
         containerCancellation.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void hideCancelButton() {
+        buttonCancelTicket.setVisibility(View.GONE);
     }
 
     @Override

@@ -4,16 +4,15 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/white"
     android:padding="@dimen/dp_10"
     android:paddingTop="@dimen/dp_10">
 
     <TextView
+        android:id="@+id/desc"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/dp_10"
         android:layout_marginTop="@dimen/dp_10"
-        android:text="@string/title_desc"
         android:textColor="@color/black_70"
         android:textStyle="bold" />
 
@@ -26,8 +25,9 @@
         android:id="@+id/tv_desc"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:visibility="gone"
         android:orientation="vertical"
+        android:visibility="gone"
+        android:paddingBottom="@dimen/dp_10"
         android:paddingRight="@dimen/dp_10"
         android:paddingTop="@dimen/dp_10">
 
@@ -50,4 +50,5 @@
         </LinearLayout>
 
     </LinearLayout>
+
 </LinearLayout>

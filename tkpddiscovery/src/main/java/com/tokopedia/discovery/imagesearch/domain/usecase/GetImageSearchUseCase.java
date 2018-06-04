@@ -3,6 +3,7 @@ package com.tokopedia.discovery.imagesearch.domain.usecase;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.text.TextUtils;
 import android.util.Base64;
 
@@ -83,8 +84,12 @@ public class GetImageSearchUseCase<T> extends UseCase<SearchResultModel> {
                     public Observable<SearchResultModel> call(String imagePath) {
                         File imgFile = new File(imagePath);
                         Bitmap myBitmap = BitmapFactory.decodeFile(imgFile.getAbsolutePath());
-                        myBitmap = ImageHandler.resizeImage(myBitmap, MAX_WIDTH, MAX_HEIGHT);
                         try {
+                            if (myBitmap == null) {
+                                myBitmap = ImageHandler.getBitmapFromUri(context, Uri.parse(imagePath), MAX_WIDTH, MAX_HEIGHT);
+                            }
+
+                            myBitmap = ImageHandler.resizeImage(myBitmap, MAX_WIDTH, MAX_HEIGHT);
                             myBitmap = ImageHandler.RotatedBitmap(myBitmap, imagePath);
                         } catch (IOException exception) {
                             exception.printStackTrace();
@@ -97,7 +102,8 @@ public class GetImageSearchUseCase<T> extends UseCase<SearchResultModel> {
                         String encodePicContent = Base64.encodeToString(byteArray,
                                 Base64.NO_WRAP | Base64.NO_CLOSE);
 
-                        return imageSearchRepository.getImageSearchResults(GetImageSearchUseCase.initializeSearchRequestParam().getParameters(),
+                        return imageSearchRepository.getImageSearchResults(
+                                GetImageSearchUseCase.initializeSearchRequestParam().getParameters(),
                                 GetImageSearchUseCase.initializeFormDataSearchRequestParam(generateUniqueId(),
                                         encodePicContent).getParameters()).flatMap(wishlistDataEnricher(getUserId()));
                     }

@@ -349,7 +349,7 @@ public class ShopProductListFragment extends BaseSearchListFragment<ShopProductV
 
     private void onShareShop() {
         if (shopInfo != null) {
-            ((ShopModuleRouter) getActivity().getApplication()).goToShareShop(getActivity(), shopId, shopInfo.getInfo().getShopUrl(),
+            ((ShopModuleRouter) getActivity().getApplication()).goToShareShop(getFragmentManager(), shopId, shopInfo.getInfo().getShopUrl(),
                     getString(R.string.shop_label_share_formatted, shopInfo.getInfo().getShopName(), shopInfo.getInfo().getShopLocation()));
         }
     }

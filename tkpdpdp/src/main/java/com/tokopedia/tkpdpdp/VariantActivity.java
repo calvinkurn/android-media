@@ -1,6 +1,7 @@
 package com.tokopedia.tkpdpdp;
 
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.graphics.Paint;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
@@ -13,6 +14,7 @@ import android.widget.TextView;
 
 import com.beloo.widget.chipslayoutmanager.ChipsLayoutManager;
 import com.tkpd.library.utils.ImageHandler;
+import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.TActivity;
 import com.tokopedia.core.network.entity.variant.Child;
@@ -26,6 +28,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static android.view.View.VISIBLE;
+import static com.tokopedia.core.router.productdetail.ProductDetailRouter.EXTRA_PRODUCT_ID;
+import static com.tokopedia.core.var.TkpdCache.Key.STATE_ORIENTATION_CHANGED;
+import static com.tokopedia.core.var.TkpdCache.PRODUCT_DETAIL;
 
 
 public class VariantActivity extends TActivity  implements VariantOptionAdapter.OnVariantOptionChoosedListener  {
@@ -67,12 +72,19 @@ public class VariantActivity extends TActivity  implements VariantOptionAdapter.
     private ProductVariant productVariant;
     private ProductDetailData productDetailData;
     private String mainImage = "";
+    private LocalCacheHandler localCacheHandler;
+
+    @Override
+    protected void forceRotation() {
+
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         productVariant = getIntent().getParcelableExtra(KEY_VARIANT_DATA);
         productDetailData = getIntent().getParcelableExtra(KEY_PRODUCT_DETAIL_DATA);
+        localCacheHandler = new LocalCacheHandler(VariantActivity.this, PRODUCT_DETAIL);
         setContentView(R.layout.activity_variant);
         hideToolbar();
         initView();
@@ -124,6 +136,23 @@ public class VariantActivity extends TActivity  implements VariantOptionAdapter.
             });
         }
         renderHeaderInfo();
+        setUpByConfiguration(getResources().getConfiguration());
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        setUpByConfiguration(newConfig);
+    }
+
+    private void setUpByConfiguration(Configuration configuration) {
+        if (configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            if (!localCacheHandler.getBoolean(STATE_ORIENTATION_CHANGED).booleanValue()) {
+                UnifyTracking.eventPDPOrientationChanged(Integer.toString(productDetailData.getInfo().getProductId()));
+                localCacheHandler.putBoolean(STATE_ORIENTATION_CHANGED,Boolean.TRUE);
+                localCacheHandler.applyEditor();
+            }
+        }
     }
 
     private void renderHeaderInfo() {
@@ -163,7 +192,7 @@ public class VariantActivity extends TActivity  implements VariantOptionAdapter.
 
     private void initViewListener() {
         if (getIntent().getBooleanExtra(KEY_SELLER_MODE,false)) {
-           buttonSave.setVisibility(View.GONE);
+            buttonSave.setVisibility(View.GONE);
         }
         findViewById(R.id.simple_top_bar_close_button)
                 .setOnClickListener(new View.OnClickListener() {

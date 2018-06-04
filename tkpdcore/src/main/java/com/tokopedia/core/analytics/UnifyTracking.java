@@ -674,6 +674,15 @@ public class UnifyTracking extends TrackingUtils {
         ).getEvent());
     }
 
+    public static void eventDiscoveryExternalImageSearch(String label) {
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.IMAGE_SEARCH_CLICK,
+                AppEventTracking.Category.IMAGE_SEARCH,
+                AppEventTracking.Action.EXTERNAL_IMAGE_SEARCH,
+                ""
+        ).getEvent());
+    }
+
     public static void eventDiscoveryCameraImageSearchResult(String label) {
         sendGTMEvent(new EventTracking(
                 AppEventTracking.Event.IMAGE_SEARCH_CLICK,
@@ -1095,6 +1104,15 @@ public class UnifyTracking extends TrackingUtils {
                 AppEventTracking.EventLabel.SHARE
         ).getEvent());
     }
+
+    public static void eventPDPOrientationChanged(String productId) {
+       sendGTMEvent(new EventTracking(
+                       AppEventTracking.Event.VIEW_PDP,
+                       AppEventTracking.Category.PRODUCT_DETAIL.toLowerCase(),
+                       AppEventTracking.Action.LANDSCAPE_VIEW,
+                       String.format(AppEventTracking.EventLabel.PRODUCT_ID_VALUE, productId)
+                       ).getEvent());
+        }
 
     public static void eventPDPCart() {
         sendGTMEvent(new EventTracking(
