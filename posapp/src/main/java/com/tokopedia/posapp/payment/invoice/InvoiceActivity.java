@@ -41,12 +41,12 @@ public class InvoiceActivity extends ReactFragmentActivity {
     public static Intent newTopIntent(Context context, String data) {
         return new Intent(context, InvoiceActivity.class)
                 .putExtra(DATA, data)
-                .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
     }
 
     public static Intent newErrorIntent(Context context, String errorTitle, String errorMessage) {
         Intent intent = new Intent(context, InvoiceActivity.class);
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         intent.putExtra(IS_ERROR, true);
         intent.putExtra(ERROR_TITLE, errorTitle);
         intent.putExtra(ERROR_MESSAGE, errorMessage);

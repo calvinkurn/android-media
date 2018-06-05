@@ -30,6 +30,7 @@ import com.tokopedia.core.profile.model.GetUserInfoDomainData;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.design.text.TkpdHintTextInputLayout;
 import com.tokopedia.otp.phoneverification.view.activity.PhoneVerificationActivationActivity;
+import com.tokopedia.posapp.PosRouterApplication;
 import com.tokopedia.posapp.R;
 import com.tokopedia.posapp.auth.login.di.component.PosLoginComponent;
 import com.tokopedia.posapp.auth.login.di.component.DaggerPosLoginComponent;
@@ -190,7 +191,7 @@ public class PosLoginFragment extends BaseLoginFragment implements PosLogin.View
 
     @Override
     public void onSuccessLogin() {
-        startActivity(OutletActivity.newTopIntent(getActivity()));
+        startActivity(((PosRouterApplication) getActivity().getApplicationContext()).getHomeIntent(getActivity()));
         getActivity().finish();
     }
 
