@@ -5,27 +5,20 @@ import android.content.res.ColorStateList;
 import android.content.res.Resources;
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.graphics.PorterDuff;
-import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.support.annotation.LayoutRes;
 import android.support.v4.content.ContextCompat;
-import android.support.v4.graphics.drawable.DrawableCompat;
 import android.support.v4.view.ViewCompat;
-import android.support.v7.widget.AppCompatDrawableManager;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SnapHelper;
 import android.text.TextUtils;
-import android.util.DisplayMetrics;
-import android.util.Log;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -45,10 +38,9 @@ import com.tokopedia.home.beranda.listener.GridItemClickListener;
 import com.tokopedia.home.beranda.listener.HomeCategoryListener;
 import com.tokopedia.home.beranda.presentation.view.adapter.itemdecoration.SpacingItemDecoration;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.DynamicChannelViewModel;
+import com.tokopedia.home.beranda.presentation.view.analytics.HomeTrackingUtils;
 import com.tokopedia.home.beranda.presentation.view.compoundview.CountDownView;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Map;
 
@@ -110,6 +102,7 @@ public class SprintSaleCarouselViewHolder extends AbstractViewHolder<DynamicChan
 
         listener.onDynamicChannelClicked(DynamicLinkHelper.getActionLink(grid),
                 String.valueOf(evenMap.get(ATTRIBUTION)));
+        HomeTrackingUtils.homeSprintSaleClick(pos+1,channels,grid,DynamicLinkHelper.getActionLink(grid));
     }
 
     @Override
@@ -122,6 +115,7 @@ public class SprintSaleCarouselViewHolder extends AbstractViewHolder<DynamicChan
             }
             itemAdapter.setList(channels.getGrids());
             itemAdapter.setGridItemClickListener(this);
+            HomeTrackingUtils.homeSprintSaleImpression(channels.getGrids(),channels.getType());
             Date expiredTime = DateHelper.getExpiredTime(channels.getHeader().getExpiredTime());
             countDownView.setup(expiredTime, countDownListener);
             if (!TextUtils.isEmpty(DynamicLinkHelper.getActionLink(channels.getHeader()))) {
@@ -147,6 +141,7 @@ public class SprintSaleCarouselViewHolder extends AbstractViewHolder<DynamicChan
     private void onClickSeeAll() {
         listener.onDynamicChannelClicked(DynamicLinkHelper.getActionLink(channels.getHeader()), channels.getHomeAttribution());
         HomePageTracking.eventClickSeeAllProductSprintBackground();
+        HomeTrackingUtils.homeSprintSaleViewAll(DynamicLinkHelper.getActionLink(channels.getHeader()));
     }
 
     private static class ItemAdapter extends RecyclerView.Adapter<ItemViewHolder> {

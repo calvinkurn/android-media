@@ -31,6 +31,7 @@ import com.tkpd.library.utils.KeyboardHandler;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.design.bottomsheet.BottomSheetView;
+import com.tokopedia.design.pickuppoint.PickupPointLayout;
 import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.R2;
 import com.tokopedia.transaction.addtocart.utils.KeroppiConstants;
@@ -39,10 +40,10 @@ import com.tokopedia.transaction.cart.model.CartItemEditable;
 import com.tokopedia.transaction.cart.model.CartPartialDeliver;
 import com.tokopedia.transaction.cart.model.calculateshipment.ProductEditData;
 import com.tokopedia.transaction.cart.model.cartdata.CartCourierPrices;
-import com.tokopedia.transaction.cart.model.cartdata.CartData;
 import com.tokopedia.transaction.cart.model.cartdata.CartItem;
 import com.tokopedia.transaction.cart.model.cartdata.CartProduct;
 import com.tokopedia.transaction.cart.model.cartdata.CartShop;
+import com.tokopedia.transaction.common.data.pickuppoint.Store;
 import com.tokopedia.transaction.customview.expandablelayout.ExpandableLayoutListenerAdapter;
 import com.tokopedia.transaction.customview.expandablelayout.ExpandableLinearLayout;
 import com.tokopedia.transaction.customview.expandablelayout.Utils;
@@ -107,7 +108,39 @@ public class CartItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             renderHolderViewListener(holderItemCart, cartData, adapterProduct, position);
             renderInsuranceOption(holderItemCart, cartItemEditable);
             renderAcceptPartial(holderItemCart);
+            /* renderPickupPoint(holderItemCart, cartData); */
         }
+    }
+
+    private void renderPickupPoint(final ViewHolder holderItemCart, final CartItem cartData) {
+        holderItemCart.pickupPointLayout.setListener(new PickupPointLayout.ViewListener() {
+            @Override
+            public void onChoosePickupPoint() {
+
+            }
+
+            @Override
+            public void onClearPickupPoint() {
+                cartItemActionListener.onClearPickupPoint(cartData);
+            }
+
+            @Override
+            public void onEditPickupPoint() {
+                cartItemActionListener.onEditPickupPoint(cartData);
+            }
+        });
+        holderItemCart.pickupPointLayout.disableChooserButton(holderItemCart.pickupPointLayout.getContext());
+        // Dummy store
+        Store store = new Store();
+        store.setId(2392);
+        store.setDistrictId(2287);
+        store.setAddress("Jl. Bentengan 2, Kel.Sunter Jaya,Kec. Tanjungpriok");
+        store.setGeolocation("-6.150220,106.867300");
+        store.setStoreName("Bentengan 2");
+        store.setStoreCode("Alfa - J492");
+
+        holderItemCart.pickupPointLayout.setData(holderItemCart.pickupPointLayout.getContext(),
+                store.getStoreName(), store.getAddress());
     }
 
     private boolean unEditable(CartItem cartData) {
@@ -853,6 +886,8 @@ public class CartItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         ImageView imgInsuranceInfo;
         @BindView(R2.id.label_partial_order)
         TextView labelPartialOrder;
+        @BindView(R2.id.pickup_point_layout)
+        PickupPointLayout pickupPointLayout;
 
         public ViewHolder(View itemView) {
             super(itemView);
@@ -876,5 +911,9 @@ public class CartItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         void onShopDetailInfoClicked(CartShop cartShop);
 
         void onDropShipperOptionChecked();
+
+        void onClearPickupPoint(CartItem data);
+
+        void onEditPickupPoint(CartItem data);
     }
 }

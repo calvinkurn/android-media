@@ -90,6 +90,8 @@ dependencies {
     implementation rootProject.ext.dbDependencies.dbFlow
 
     implementation rootProject.ext.debugToolsDependencies.stetho
+    implementation project(rootProject.ext.libraries.analytics)
+
 }
 
 apply from: '../publish_local.gradle'
