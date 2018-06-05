@@ -82,4 +82,72 @@
             app:srcCompat="@drawable/ic_flip_camera" />
 
     </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/layout_preview"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <ImageView
+            android:id="@+id/image_preview"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="centerCrop"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_alignParentBottom="true"
+            android:layout_marginBottom="@dimen/dp_40">
+
+            <LinearLayout
+                android:id="@+id/layout_recapture"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <ImageView
+                    android:layout_width="@dimen/dp_24"
+                    android:layout_height="@dimen/dp_24"
+                    android:layout_gravity="center_horizontal"
+                    android:scaleType="fitCenter"
+                    android:padding="@dimen/dp_4"
+                    app:srcCompat="@drawable/ic_close_default"/>
+
+                <TextView
+                    style="@style/TextView.Micro.BlackSecondary"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_horizontal"
+                    android:text="Ulangi"
+                    android:layout_marginTop="@dimen/dp_4"/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/layout_use"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <ImageView
+                    android:layout_width="@dimen/dp_24"
+                    android:layout_height="@dimen/dp_24"
+                    android:layout_gravity="center_horizontal"
+                    android:scaleType="fitCenter"
+                    app:srcCompat="@drawable/ic_check" />
+                <TextView
+                    style="@style/TextView.Micro.BlackSecondary"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_horizontal"
+                    android:text="Gunakan"
+                    android:textColor="@color/tkpd_main_green"
+                    android:layout_marginTop="@dimen/dp_4"/>
+            </LinearLayout>
+        </LinearLayout>
+
+    </RelativeLayout>
 </FrameLayout>
