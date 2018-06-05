@@ -10,16 +10,16 @@ import com.google.gson.annotations.SerializedName;
 public class OrderDataResponse {
     @SerializedName("order_id")
     @Expose
-    private int orderId;
+    private Integer orderId;
     @SerializedName("invoice_ref")
     @Expose
     private String invoiceRef;
 
-    public int getOrderId() {
+    public Integer getOrderId() {
         return orderId;
     }
 
-    public void setOrderId(int orderId) {
+    public void setOrderId(Integer orderId) {
         this.orderId = orderId;
     }
 

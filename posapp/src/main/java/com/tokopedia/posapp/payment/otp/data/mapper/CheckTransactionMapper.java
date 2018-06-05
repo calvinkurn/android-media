@@ -1,5 +1,7 @@
 package com.tokopedia.posapp.payment.otp.data.mapper;
 
+import android.text.TextUtils;
+
 import com.tokopedia.posapp.base.data.pojo.PosResponse;
 import com.tokopedia.posapp.payment.otp.data.pojo.transaction.CheckTransactionResponse;
 import com.tokopedia.posapp.payment.otp.data.pojo.transaction.OrderDataResponse;
@@ -49,6 +51,22 @@ public class CheckTransactionMapper implements Func1<Response<PosResponse<CheckT
         return parseData(mock);
     }
 
+    private PaymentStatusDomain mockFailedWithSuccessStatus() {
+        PosResponse<CheckTransactionResponse> mock = new PosResponse<>();
+        CheckTransactionResponse mockTransactionData = new CheckTransactionResponse();
+
+        OrderDataResponse mockOrderData = new OrderDataResponse();
+        mockOrderData.setInvoiceRef("");
+        mockOrderData.setOrderId(null);
+
+        mockTransactionData.setOrderData(mockOrderData);
+        mockTransactionData.setTransactionStatus(ORDER_SUCCESS);
+
+        mock.setData(mockTransactionData);
+        mock.setMessage("Success");
+        return parseData(mock);
+    }
+
     private PaymentStatusDomain mockFailed() {
         PosResponse<CheckTransactionResponse> mock = new PosResponse<>();
         CheckTransactionResponse mockTransactionData = new CheckTransactionResponse();
@@ -74,7 +92,7 @@ public class CheckTransactionMapper implements Func1<Response<PosResponse<CheckT
     private PaymentStatusDomain parseData(PosResponse<CheckTransactionResponse> posResponse) {
         switch (posResponse.getData().getTransactionStatus()) {
             case ORDER_SUCCESS:
-                return successResponse(posResponse.getData());
+                return getResponse(posResponse.getData());
             case PAYMENT_PROGRESS:
             case PAYMENT_SUCCESS:
             case ORDER_PROGRESS:
@@ -84,10 +102,18 @@ public class CheckTransactionMapper implements Func1<Response<PosResponse<CheckT
         }
     }
 
-    private PaymentStatusDomain successResponse(CheckTransactionResponse data) {
-        PaymentStatusDomain paymentStatusDomain = new PaymentStatusDomain();
-        paymentStatusDomain.setOrderId(data.getOrderData().getOrderId());
-        paymentStatusDomain.setInvoiceRef(data.getOrderData().getInvoiceRef());
-        return paymentStatusDomain;
+    private boolean isValid(OrderDataResponse orderData) {
+        return !TextUtils.isEmpty(orderData.getInvoiceRef()) && orderData.getOrderId() != null;
+    }
+
+    private PaymentStatusDomain getResponse(CheckTransactionResponse data) {
+        if(isValid(data.getOrderData())) {
+            PaymentStatusDomain paymentStatusDomain = new PaymentStatusDomain();
+            paymentStatusDomain.setOrderId(data.getOrderData().getOrderId());
+            paymentStatusDomain.setInvoiceRef(data.getOrderData().getInvoiceRef());
+            return paymentStatusDomain;
+        } else {
+            throw new TransactionFailedException();
+        }
     }
 }
