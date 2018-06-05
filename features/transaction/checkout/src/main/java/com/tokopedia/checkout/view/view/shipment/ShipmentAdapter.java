@@ -228,7 +228,7 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         notifyDataSetChanged();
     }
 
-    public void updateCheckoutButtonData(String defaultTotal) {
+    public void updateCheckoutButtonData(boolean hasViewValidationError, String defaultTotal) {
         boolean availableCheckout = true;
         for (ShipmentData shipmentData : shipmentDataList) {
             if (shipmentData instanceof ShipmentCartItemModel) {
@@ -244,7 +244,7 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             shipmentCheckoutButtonModel = new ShipmentCheckoutButtonModel();
         }
 
-        shipmentCheckoutButtonModel.setAbleToCheckout(availableCheckout);
+        shipmentCheckoutButtonModel.setAbleToCheckout(!hasViewValidationError && availableCheckout);
         if (shipmentCostModel != null) {
             String priceTotal = shipmentCostModel.getTotalPrice() == 0 ? "-" :
                     CurrencyFormatUtil.convertPriceValueToIdrFormat((int) shipmentCostModel.getTotalPrice(), true);
@@ -358,6 +358,7 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     }
 
     public void checkDropshipperValidation() {
+        checkHasSelectAllCourier();
         boolean availableCheckout = true;
         int errorPosition = DEFAULT_ERROR_POSITION;
         ShipmentData selectedShipmentData = null;

@@ -540,7 +540,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
 
     @Override
     public void resetTotalPrice() {
-        shipmentAdapter.updateCheckoutButtonData("-");
+        shipmentAdapter.updateCheckoutButtonData(true, "-");
     }
 
     @Override
@@ -593,7 +593,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
 
     @Override
     public void onTotalPaymentChange(ShipmentCostModel shipmentCostModel) {
-        shipmentAdapter.updateCheckoutButtonData(null);
+        shipmentAdapter.updateCheckoutButtonData(false, null);
     }
 
     @Override
@@ -655,12 +655,12 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
 
     @Override
     public void onCartDataEnableToCheckout() {
-        shipmentAdapter.updateCheckoutButtonData(null);
+        shipmentAdapter.updateCheckoutButtonData(false, null);
     }
 
     @Override
     public void onCartDataDisableToCheckout() {
-        shipmentAdapter.updateCheckoutButtonData(null);
+        shipmentAdapter.updateCheckoutButtonData(true, null);
     }
 
     @Override
@@ -670,6 +670,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                 rvShipment.smoothScrollToPosition(errorPosition);
             }
             showToastError(getActivity().getString(R.string.message_error_dropshipper));
+            onCartDataDisableToCheckout();
             ((ShipmentCartItemModel) shipmentData).setStateDropshipperHasError(true);
             shipmentAdapter.notifyItemChanged(errorPosition);
         } else {
