@@ -21,7 +21,7 @@ public class DataChangeAddressRequest {
     @Expose
     private int addressId;
 
-    @SerializedName("notes")
+    @SerializedName("note")
     @Expose
     private String notes;
 
