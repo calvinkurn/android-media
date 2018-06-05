@@ -13,9 +13,8 @@ def getDpiId(String density) {
 }
 
 def allowSplit() {
-//    return gradle.startParameter.taskNames.contains("assembleRelease") &&
-//            !project.hasProperty('tkpdBuildType');
-    return false;
+    return gradle.startParameter.taskNames.contains("assembleRelease") &&
+            project.hasProperty('tkpdBuildType') && tkpdBuildType == "production"
 }
 
 def allowProguard() {
@@ -74,7 +73,7 @@ buildscript {
 }
 
 android {
-    compileSdkVersion rootProject.ext.compileSdkVersion
+    compileSdkVersion rootProject.ext.ctompileSdkVersion
     buildToolsVersion rootProject.ext.buildToolsVersion
 
     project.ext {
