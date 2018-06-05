@@ -1,6 +1,9 @@
 package com.tokopedia.seller.product.edit.domain;
 
 import com.tokopedia.seller.product.edit.data.source.cloud.model.catalogdata.CatalogDataModel;
+import com.tokopedia.seller.product.imagepicker.CatalogModelView;
+
+import java.util.List;
 
 import rx.Observable;
 

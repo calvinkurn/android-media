@@ -3,8 +3,10 @@ package com.tokopedia.seller.product.edit.data.source.cloud;
 import com.tokopedia.seller.product.common.constant.ProductNetworkConstant;
 import com.tokopedia.seller.product.edit.data.source.cloud.api.SearchApi;
 import com.tokopedia.seller.product.edit.data.source.cloud.model.catalogdata.CatalogDataModel;
+import com.tokopedia.seller.product.imagepicker.CatalogModelView;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.inject.Inject;

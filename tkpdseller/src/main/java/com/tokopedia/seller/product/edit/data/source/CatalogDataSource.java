@@ -2,6 +2,9 @@ package com.tokopedia.seller.product.edit.data.source;
 
 import com.tokopedia.seller.product.edit.data.source.cloud.CatalogCloud;
 import com.tokopedia.seller.product.edit.data.source.cloud.model.catalogdata.CatalogDataModel;
+import com.tokopedia.seller.product.imagepicker.CatalogModelView;
+
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -22,6 +25,4 @@ public class CatalogDataSource {
     public Observable<CatalogDataModel> fetchCatalog(String keyword, long prodDeptId, int start, int row) {
         return catalogCloud.fetchData(keyword, prodDeptId, start, row);
     }
-
-
 }
