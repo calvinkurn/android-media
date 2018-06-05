@@ -22,6 +22,7 @@ import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 
+import com.bumptech.glide.Glide;
 import com.otaliastudios.cameraview.CameraListener;
 import com.otaliastudios.cameraview.CameraOptions;
 import com.otaliastudios.cameraview.CameraUtils;
@@ -140,8 +141,7 @@ public class ImagePickerCameraFragment extends TkpdBaseV4Fragment {
             }
 
             private void setPreviewCameraLayout() {
-                if (onImagePickerCameraFragmentListener.getRatioX() > 0 &&
-                        onImagePickerCameraFragmentListener.getRatioX() == onImagePickerCameraFragmentListener.getRatioY()) {
+                if (isOneOneRatio()) {
                     ViewGroup.LayoutParams params = cameraLayout.getLayoutParams();
                     int cameraSize = getDeviceWidth();
                     params.width = cameraSize;
@@ -152,8 +152,6 @@ public class ImagePickerCameraFragment extends TkpdBaseV4Fragment {
                     //noinspection SuspiciousNameCombination
                     params.height = params.width;
                     previewImageView.setLayoutParams(params);
-
-                    previewImageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
                 } else {
                     ViewGroup.LayoutParams params = cameraLayout.getLayoutParams();
                     params.width = ViewGroup.LayoutParams.MATCH_PARENT;
@@ -164,8 +162,6 @@ public class ImagePickerCameraFragment extends TkpdBaseV4Fragment {
                     //noinspection SuspiciousNameCombination
                     params.height = params.width;
                     previewImageView.setLayoutParams(params);
-
-                    previewImageView.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
                 }
             }
 
@@ -239,6 +235,11 @@ public class ImagePickerCameraFragment extends TkpdBaseV4Fragment {
         progressDialog.setMessage(getString(R.string.title_loading));
     }
 
+    private boolean isOneOneRatio(){
+        return onImagePickerCameraFragmentListener.getRatioX() > 0 &&
+                onImagePickerCameraFragmentListener.getRatioX() == onImagePickerCameraFragmentListener.getRatioY();
+    }
+
     private void setCameraFlash() {
         if (supportedFlashList == null || flashIndex < 0 || supportedFlashList.size() <= flashIndex) {
             return;
@@ -288,7 +289,17 @@ public class ImagePickerCameraFragment extends TkpdBaseV4Fragment {
 
     private void onSuccessImageTaken(File file) {
         if (onImagePickerCameraFragmentListener.needShowCameraPreview()) {
-            ImageHandler.loadImageFromFile(getContext(), previewImageView, file);
+            if (isOneOneRatio()) {
+                Glide.with(getContext())
+                        .load(file)
+                        .centerCrop()
+                        .into(previewImageView);
+            } else {
+                Glide.with(getContext())
+                        .load(file)
+                        .fitCenter()
+                        .into(previewImageView);
+            }
             showPreviewView();
         } else {
             onImagePickerCameraFragmentListener.onImageTaken(file.getAbsolutePath());
