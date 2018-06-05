@@ -7,6 +7,7 @@ import com.tokopedia.train.search.data.entity.AvailabilityEntity;
 import com.tokopedia.train.search.data.entity.ScheduleEntity;
 import com.tokopedia.train.search.data.specification.TrainAvailabilitySpecification;
 import com.tokopedia.train.search.data.specification.TrainScheduleClassFilterSpecification;
+import com.tokopedia.train.search.data.specification.TrainScheduleDepartureTimeFilterSpecification;
 import com.tokopedia.train.search.data.specification.TrainScheduleNameFilterSpecification;
 import com.tokopedia.train.search.data.specification.TrainSchedulePriceFilterSpecification;
 import com.tokopedia.train.search.data.specification.TrainScheduleSortSpecification;
@@ -118,16 +119,51 @@ public class TrainScheduleDataStoreFactory {
     }
 
     public Observable<Integer> getCountSchedule(FilterSearchData filterSearchData) {
-        DbFlowSpecification specification = new TrainSchedulePriceFilterSpecification(filterSearchData.getMinPrice(), filterSearchData.getMaxPrice());
-        if (filterSearchData.getTrainClass() != null && !filterSearchData.getTrainClass().isEmpty()) {
-            specification = new AndDbFlowSpecification(specification,
-                    new TrainScheduleClassFilterSpecification(filterSearchData.getTrainClass()));
-        }
-        if (filterSearchData.getTrainClass() != null && !filterSearchData.getTrains().isEmpty()) {
-            specification = new AndDbFlowSpecification(specification,
-                    new TrainScheduleNameFilterSpecification(filterSearchData.getTrains()));
-        }
+        DbFlowSpecification specification = getSpecificationPrice(filterSearchData);
+        specification = new AndDbFlowSpecification(specification, getSpecificationTrainClass(filterSearchData));
+        specification = new AndDbFlowSpecification(specification, getSpecificationTrainName(filterSearchData));
+        specification = new AndDbFlowSpecification(specification, getSpecificationTrainDeparture(filterSearchData));
         return dbDataStore.getCount(specification);
+    }
+
+    private DbFlowSpecification getSpecificationPrice(FilterSearchData filterSearchData) {
+        long minPrice;
+        long maxPrice;
+        if (filterSearchData.getSelectedMinPrice() > 0) {
+            minPrice = filterSearchData.getSelectedMinPrice();
+        } else {
+            minPrice = filterSearchData.getMinPrice();
+        }
+        if (filterSearchData.getSelectedMaxPrice() > 0) {
+            maxPrice = filterSearchData.getSelectedMaxPrice();
+        } else {
+            maxPrice = filterSearchData.getMaxPrice();
+        }
+        return new TrainSchedulePriceFilterSpecification(minPrice, maxPrice);
+    }
+
+    private DbFlowSpecification getSpecificationTrainClass(FilterSearchData filterSearchData) {
+        if (filterSearchData.getSelectedTrainClass() != null && !filterSearchData.getSelectedTrainClass().isEmpty()) {
+            return new TrainScheduleClassFilterSpecification(filterSearchData.getSelectedTrainClass());
+        } else {
+            return new TrainScheduleClassFilterSpecification(filterSearchData.getTrainClass());
+        }
+    }
+
+    private DbFlowSpecification getSpecificationTrainName(FilterSearchData filterSearchData) {
+        if (filterSearchData.getSelectedTrains() != null && !filterSearchData.getSelectedTrains().isEmpty()) {
+            return new TrainScheduleNameFilterSpecification(filterSearchData.getSelectedTrains());
+        } else {
+            return new TrainScheduleNameFilterSpecification(filterSearchData.getTrains());
+        }
+    }
+
+    private DbFlowSpecification getSpecificationTrainDeparture(FilterSearchData filterSearchData) {
+        if (filterSearchData.getSelectedDepartureTimeList() != null && !filterSearchData.getSelectedDepartureTimeList().isEmpty()) {
+            return new TrainScheduleDepartureTimeFilterSpecification(filterSearchData.getSelectedDepartureTimeList());
+        } else {
+            return new TrainScheduleDepartureTimeFilterSpecification(filterSearchData.getDepartureTimeList());
+        }
     }
 
     public Observable<TrainScheduleViewModel> getDetailScheduleById(Specification specification) {
