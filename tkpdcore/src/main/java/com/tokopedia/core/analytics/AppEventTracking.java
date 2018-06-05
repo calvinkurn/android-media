@@ -310,7 +310,7 @@ public interface AppEventTracking {
         String ECOMMERCE = "Ecommerce";
         String APPSHARE = "App share";
 
-        String DIGITAL_EVENT = "digital-event";
+        String DIGITAL_EVENT = "digital - event";
 
         String SEARCH_SHARE = "search share";
         String GRID_MENU = "grid menu";

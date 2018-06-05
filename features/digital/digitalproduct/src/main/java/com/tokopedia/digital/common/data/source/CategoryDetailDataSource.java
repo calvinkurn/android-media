@@ -271,6 +271,9 @@ public class CategoryDetailDataSource {
             case DigitalCategoryConstant.CREDIT_CARD:
                 result = DigitalUrl.HelpUrl.CREDIT_CARD;
                 break;
+            case DigitalCategoryConstant.ETOLL:
+                result = DigitalUrl.HelpUrl.ETOLL;
+                break;
             default:
                 result = "";
         }

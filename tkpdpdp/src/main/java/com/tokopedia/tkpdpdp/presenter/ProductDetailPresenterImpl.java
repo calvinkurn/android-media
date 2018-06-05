@@ -76,7 +76,6 @@ import com.tokopedia.tkpdpdp.R;
 import com.tokopedia.tkpdpdp.dialog.DialogToEtalase;
 import com.tokopedia.tkpdpdp.fragment.ProductDetailFragment;
 import com.tokopedia.tkpdpdp.listener.ProductDetailView;
-import com.tokopedia.topads.sourcetagging.constant.TopAdsSourceTaggingConstant;
 import com.tokopedia.topads.sourcetagging.data.repository.TopAdsSourceTaggingRepositoryImpl;
 import com.tokopedia.topads.sourcetagging.data.source.TopAdsSourceTaggingDataSource;
 import com.tokopedia.topads.sourcetagging.data.source.TopAdsSourceTaggingLocal;
@@ -99,8 +98,6 @@ import java.util.Map;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
-
-import rx.Subscriber;
 
 import static com.tokopedia.core.network.apiservices.galadriel.GaladrielApi.VALUE_TARGET_GOLD_MERCHANT;
 import static com.tokopedia.core.network.apiservices.galadriel.GaladrielApi.VALUE_TARGET_GUEST;
@@ -177,8 +174,8 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
     @Override
     public void processToCart(@NonNull Activity context, @NonNull ProductCartPass data) {
         sendAppsFlyerCheckout(context, data);
-        routeToNewCheckout(context, data);
-        //routeToOldCheckout(context, data);
+        /* routeToNewCheckout(context, data);*/
+        routeToOldCheckout(context, data);
         UnifyTracking.eventPDPCart();
     }
 

@@ -93,7 +93,6 @@ public interface Constants {
         String WEBVIEW_PARENT_HOME = "tokopedia://webviewbackhome";
         String PRODUCT_TALK = "tokopedia://product/{product_id}/talk";
         String DIGITAL = "tokopedia://digital";
-        String DIGITAL_PRODUCT = "tokopedia://digital/form";
         String DIGITAL_CART = "tokopedia://digital/cart";
         String DIGITAL_CATEGORY = "tokopedia://digital/category";
         String DISCOVERY_PAGE = "tokopedia://discovery/{page_id}";
