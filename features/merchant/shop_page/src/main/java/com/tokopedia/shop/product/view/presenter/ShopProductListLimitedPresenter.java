@@ -86,9 +86,9 @@ public class ShopProductListLimitedPresenter extends BaseDaggerPresenter<ShopPro
                     public void onNext(PagingList<ShopProductBaseViewModel> shopProductBaseViewModelList) {
                         boolean hasNextPage;
                         if(GlobalConfig.isSellerApp()){
-                            hasNextPage = PagingListUtils.checkNextPage(shopProductBaseViewModelList);
-                        }else{
                             hasNextPage = false;
+                        }else{
+                            hasNextPage = PagingListUtils.checkNextPage(shopProductBaseViewModelList);
                         }
                         if (page == FIRST_LOAD) {
                             boolean shopHasProduct = shopProductBaseViewModelList.getList().size() > 0;
@@ -111,7 +111,7 @@ public class ShopProductListLimitedPresenter extends BaseDaggerPresenter<ShopPro
                                     }
                                 }
                             }
-                            if(!GlobalConfig.isSellerApp()){
+                            if(GlobalConfig.isSellerApp()){
                                 shopProductBaseViewModelList.getList().add(new ShopProductMoreViewModel());
                             }
                             getView().renderList(shopProductBaseViewModelList.getList(), hasNextPage, shopHasProduct);
