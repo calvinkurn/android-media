@@ -8,6 +8,7 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Point;
 import android.os.Build;
 import android.os.Bundle;
@@ -19,6 +20,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
 import com.otaliastudios.cameraview.CameraListener;
@@ -44,11 +47,15 @@ public class ImagePickerCameraFragment extends TkpdBaseV4Fragment {
 
     public static final String SAVED_FLASH_INDEX = "saved_flash_index";
 
+    private ImageView previewImageView;
     private CameraView cameraView;
     private ImageButton flashImageButton;
     private View shutterImageButton;
     private View flipImageButton;
     private RelativeLayout cameraLayout;
+    private RelativeLayout previewLayout;
+    private LinearLayout useImageLayout;
+    private LinearLayout recaptureLayout;
     private OnImagePickerCameraFragmentListener onImagePickerCameraFragmentListener;
 
     private boolean mCapturingPicture;
@@ -57,6 +64,7 @@ public class ImagePickerCameraFragment extends TkpdBaseV4Fragment {
     private List<Flash> supportedFlashList;
     private int flashIndex;
     private ProgressDialog progressDialog;
+    private File file;
 
     public interface OnImagePickerCameraFragmentListener {
         void onImageTaken(String filePath);
@@ -89,11 +97,16 @@ public class ImagePickerCameraFragment extends TkpdBaseV4Fragment {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        previewImageView = view.findViewById(R.id.image_preview);
         cameraView = view.findViewById(R.id.camera_view);
         flashImageButton = view.findViewById(R.id.image_button_flash);
         shutterImageButton = view.findViewById(R.id.image_button_shutter);
         flipImageButton = view.findViewById(R.id.image_button_flip);
         cameraLayout = view.findViewById(R.id.layout_camera);
+        previewLayout = view.findViewById(R.id.layout_preview);
+        useImageLayout = view.findViewById(R.id.layout_use);
+        recaptureLayout = view.findViewById(R.id.layout_recapture);
+
         cameraView.addCameraListener(new CameraListener() {
 
             @Override
@@ -127,6 +140,11 @@ public class ImagePickerCameraFragment extends TkpdBaseV4Fragment {
                 params.width = cameraSize;
                 params.height = cameraSize;
                 cameraLayout.setLayoutParams(params);
+
+                params = previewImageView.getLayoutParams();
+                params.width = cameraSize;
+                params.height = cameraSize;
+                previewImageView.setLayoutParams(params);
             }
 
             @Override
@@ -167,12 +185,28 @@ public class ImagePickerCameraFragment extends TkpdBaseV4Fragment {
                 cameraView.capturePicture();
             }
         });
+
         flipImageButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 toggleCamera();
             }
         });
+
+        recaptureLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                showCameraView();
+            }
+        });
+
+        useImageLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                goToImageEditor();
+            }
+        });
+
         progressDialog = new ProgressDialog(getActivity());
         progressDialog.setCancelable(false);
         progressDialog.setMessage(getString(R.string.title_loading));
@@ -215,16 +249,33 @@ public class ImagePickerCameraFragment extends TkpdBaseV4Fragment {
             CameraUtils.decodeBitmap(imageByte, mCaptureNativeSize.getWidth(), mCaptureNativeSize.getHeight(), new CameraUtils.BitmapCallback() {
                 @Override
                 public void onBitmapReady(Bitmap bitmap) {
-                    File file = ImageUtils.writeImageToTkpdPath(ImageUtils.DirectoryDef.DIRECTORY_TOKOPEDIA_CACHE_CAMERA, bitmap, false);
-                    onImagePickerCameraFragmentListener.onImageTaken(file.getAbsolutePath());
+                    file = ImageUtils.writeImageToTkpdPath(ImageUtils.DirectoryDef.DIRECTORY_TOKOPEDIA_CACHE_CAMERA, bitmap, false);
+                    previewImageView.setImageBitmap(bitmap);
+                    showPreviewView();
                     reset();
                 }
             });
         } catch (OutOfMemoryError error) {
-            File file = ImageUtils.writeImageToTkpdPath(ImageUtils.DirectoryDef.DIRECTORY_TOKOPEDIA_CACHE_CAMERA, imageByte, false);
-            onImagePickerCameraFragmentListener.onImageTaken(file.getAbsolutePath());
+            file = ImageUtils.writeImageToTkpdPath(ImageUtils.DirectoryDef.DIRECTORY_TOKOPEDIA_CACHE_CAMERA, imageByte, false);
+            Bitmap bitmap = BitmapFactory.decodeByteArray(imageByte , 0, imageByte.length);
+            previewImageView.setImageBitmap(bitmap);
+            showPreviewView();
             reset();
         }
+    }
+
+    private void goToImageEditor(){
+        onImagePickerCameraFragmentListener.onImageTaken(file.getAbsolutePath());
+    }
+
+    private void showCameraView(){
+        previewLayout.setVisibility(View.GONE);
+        cameraView.setVisibility(View.VISIBLE);
+    }
+
+    private void showPreviewView(){
+        previewLayout.setVisibility(View.VISIBLE);
+        cameraView.setVisibility(View.GONE);
     }
 
     private void reset() {
@@ -285,6 +336,7 @@ public class ImagePickerCameraFragment extends TkpdBaseV4Fragment {
 
     private void startCamera() {
         try {
+            showCameraView();
             cameraView.start();
         } catch (Exception e) {
             // no-op
