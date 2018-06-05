@@ -39,7 +39,7 @@ public class PurchaseListPresenter extends BaseDaggerPresenter<PurchaseListContr
 
             @Override
             public void onError(Throwable e) {
-                Log.e(ContactUsHomeContract.ContactUsName, "PurchaseList OnError" + e.getLocalizedMessage());
+                Log.d(ContactUsHomeContract.ContactUsName, "PurchaseList OnError" + e.getLocalizedMessage());
                 e.printStackTrace();
                 getView().setEmptyLayout();
             }
