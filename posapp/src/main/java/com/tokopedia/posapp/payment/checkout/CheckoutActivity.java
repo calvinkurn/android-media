@@ -35,7 +35,7 @@ public class CheckoutActivity extends ReactFragmentActivity {
 
     @Override
     public void onBackPressed() {
-
+        super.onBackPressed();
     }
 
     @Override

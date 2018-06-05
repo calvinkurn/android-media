@@ -27,6 +27,7 @@ import com.tokopedia.tkpdreactnative.react.app.ReactNativeActivity;
 public class LocalCartActivity extends ReactNativeActivity {
 
     public static final String BACK_FROM_CART = "backFromCart";
+    public static final String ON_RESUME = "onResume";
 
     @DeepLink(PosAppLink.CART)
     public static TaskStackBuilder newInstance(Context context, Bundle extras) {
@@ -65,6 +66,14 @@ public class LocalCartActivity extends ReactNativeActivity {
     @Override
     public void onBackPressed() {
         backFromCart();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        WritableMap params = Arguments.createMap();
+        params.putBoolean(ON_RESUME, true);
+        sendEmitter(reactInstanceManager.getCurrentReactContext(), ON_RESUME, params);
     }
 
     private void backFromCart() {
