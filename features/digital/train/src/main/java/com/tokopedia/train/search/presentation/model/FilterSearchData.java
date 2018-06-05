@@ -149,4 +149,20 @@ public class FilterSearchData implements Parcelable {
     public void setSelectedTrainClass(List<String> selectedTrainClass) {
         this.selectedTrainClass = selectedTrainClass;
     }
+
+    public FilterSearchData copy(){
+        FilterSearchData filterSearchData = new FilterSearchData();
+        filterSearchData.setMinPrice(getMinPrice());
+        filterSearchData.setMaxPrice(getMaxPrice());
+        filterSearchData.setTrainClass(getTrainClass());
+        filterSearchData.setTrains(getTrains());
+        filterSearchData.setDepartureTimeList(getDepartureTimeList());
+
+        filterSearchData.setSelectedMinPrice(getSelectedMinPrice());
+        filterSearchData.setSelectedMaxPrice(getSelectedMaxPrice());
+        filterSearchData.setSelectedDepartureTimeList(getSelectedDepartureTimeList());
+        filterSearchData.setSelectedTrains(getSelectedTrains());
+        filterSearchData.setSelectedTrainClass(getSelectedTrainClass());
+        return filterSearchData;
+    }
 }
