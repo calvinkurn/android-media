@@ -1,7 +1,5 @@
 package com.tokopedia.posapp.payment.otp.domain.usecase;
 
-import android.util.Log;
-
 import com.tokopedia.posapp.payment.otp.domain.model.PaymentStatusDomain;
 import com.tokopedia.posapp.payment.otp.exception.TransactionFailedException;
 import com.tokopedia.posapp.payment.otp.exception.TransactionPendingException;
@@ -23,7 +21,7 @@ import rx.functions.Func2;
 
 public class CheckTransactionWithRetryUseCase extends UseCase<PaymentStatusDomain> {
     private static final int COUNTER_START = 0;
-    private static final int COUNTER_END = 4;
+    private static final int RETRY_AMOUNT = 4;
     private static final int RETRY_DELAY = 5; // in second
     private CheckTransactionUseCase checkTransactionUseCase;
 
@@ -45,7 +43,7 @@ public class CheckTransactionWithRetryUseCase extends UseCase<PaymentStatusDomai
             @Override
             public Observable<?> call(Observable<? extends Throwable> attempts) {
                 return attempts.zipWith(
-                    Observable.range(COUNTER_START, COUNTER_END),
+                    Observable.range(COUNTER_START, RETRY_AMOUNT),
                     new Func2<Throwable, Integer, Integer>() {
                         @Override
                         public Integer call(Throwable throwable, Integer count) {
@@ -58,7 +56,7 @@ public class CheckTransactionWithRetryUseCase extends UseCase<PaymentStatusDomai
                     new Func1<Integer, Observable<?>>() {
                         @Override
                         public Observable<?> call(Integer i) {
-                            if (i == COUNTER_END) return Observable.error(new TransactionFailedException());
+                            if (i == RETRY_AMOUNT - 1) return Observable.error(new TransactionFailedException());
 
                             return Observable.timer(RETRY_DELAY, TimeUnit.SECONDS);
                         }

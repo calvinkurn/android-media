@@ -31,7 +31,6 @@ public class CheckTransactionMapper implements Func1<Response<PosResponse<CheckT
     @Override
     public PaymentStatusDomain call(Response<PosResponse<CheckTransactionResponse>> response) {
         return parseData(response.body());
-//        return mockSuccess();
     }
 
     private PaymentStatusDomain mockSuccess() {
