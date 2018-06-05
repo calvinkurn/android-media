@@ -349,7 +349,9 @@ public class ImagePickerActivity extends BaseSimpleActivity
         if (tabLayout.getTabCount() > 1) {
             tabLayout.setVisibility(View.VISIBLE);
         }
-        imagePickerPreviewWidget.setVisibility(View.VISIBLE);
+        if (imagePickerBuilder.supportMultipleSelection()) {
+            imagePickerPreviewWidget.setVisibility(View.VISIBLE);
+        }
         if (selectedImagePaths.size() > 0) {
             enableDoneView();
         }
@@ -364,6 +366,16 @@ public class ImagePickerActivity extends BaseSimpleActivity
     @Override
     public void onAlbumItemClicked(MediaItem item, boolean isChecked) {
         onImageSelected(item.getRealPath(), isChecked);
+    }
+
+    @Override
+    public int getRatioY() {
+        return imagePickerBuilder.getRatioY();
+    }
+
+    @Override
+    public int getRatioX() {
+        return imagePickerBuilder.getRatioX();
     }
 
     @Override

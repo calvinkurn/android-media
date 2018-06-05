@@ -95,6 +95,9 @@ public class ImageEditorPresenter extends BaseDaggerPresenter<ImageEditorPresent
     }
 
     public void cropBitmapToExpectedRatio(final List<String> localImagePaths, final int ratioX, final int ratioY) {
+        if (ratioX <= 0 || ratioY <= 0 ) {
+            getView().onSuccessCropImageToRatio((ArrayList<String>) localImagePaths);
+        }
         Subscription subscription =
                 Observable.from(localImagePaths)
                         .concatMap(new Func1<String, Observable<String>>() {

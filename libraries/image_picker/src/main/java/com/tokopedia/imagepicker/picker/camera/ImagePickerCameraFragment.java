@@ -18,8 +18,10 @@ import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
 import com.otaliastudios.cameraview.CameraListener;
@@ -49,8 +51,8 @@ public class ImagePickerCameraFragment extends TkpdBaseV4Fragment {
     private ImageView previewImageView;
     private CameraView cameraView;
     private ImageButton flashImageButton;
-    private RelativeLayout cameraLayout;
-    private RelativeLayout previewLayout;
+    private FrameLayout cameraLayout;
+    private LinearLayout previewLayout;
     private OnImagePickerCameraFragmentListener onImagePickerCameraFragmentListener;
 
     private boolean mCapturingPicture;
@@ -73,10 +75,14 @@ public class ImagePickerCameraFragment extends TkpdBaseV4Fragment {
         void onCameraViewVisible();
 
         void onPreviewCameraViewVisible();
+
+        int getRatioX();
+
+        int getRatioY();
     }
 
     @SuppressLint("MissingPermission")
-    @RequiresPermission("android.permission.CAMERA")
+    @RequiresPermission(Manifest.permission.CAMERA)
     public static ImagePickerCameraFragment newInstance() {
         return new ImagePickerCameraFragment();
     }
@@ -113,7 +119,7 @@ public class ImagePickerCameraFragment extends TkpdBaseV4Fragment {
             @Override
             public void onCameraOpened(CameraOptions options) {
                 initialFlash();
-                setPreviewCameraLayoutOneByOne();
+                setPreviewCameraLayout();
             }
 
             private void initialFlash() {
@@ -135,17 +141,30 @@ public class ImagePickerCameraFragment extends TkpdBaseV4Fragment {
                 }
             }
 
-            private void setPreviewCameraLayoutOneByOne() {
-                ViewGroup.LayoutParams params = cameraLayout.getLayoutParams();
-                int cameraSize = getPreviewSizeOneByOne();
-                params.width = cameraSize;
-                params.height = cameraSize;
-                cameraLayout.setLayoutParams(params);
+            private void setPreviewCameraLayout() {
+                if (onImagePickerCameraFragmentListener.getRatioX() > 0 &&
+                        onImagePickerCameraFragmentListener.getRatioX() == onImagePickerCameraFragmentListener.getRatioY()) {
+                    ViewGroup.LayoutParams params = cameraLayout.getLayoutParams();
+                    int cameraSize = getDeviceWidth();
+                    params.width = cameraSize;
+                    params.height = cameraSize;
+                    cameraLayout.setLayoutParams(params);
 
-                params = previewImageView.getLayoutParams();
-                params.width = cameraSize;
-                params.height = cameraSize;
-                previewImageView.setLayoutParams(params);
+                    params = previewImageView.getLayoutParams();
+                    //noinspection SuspiciousNameCombination
+                    params.height = params.width;
+                    previewImageView.setLayoutParams(params);
+                } else {
+                    ViewGroup.LayoutParams params = cameraLayout.getLayoutParams();
+                    params.width = ViewGroup.LayoutParams.MATCH_PARENT;
+                    params.height = ViewGroup.LayoutParams.WRAP_CONTENT;
+                    cameraLayout.setLayoutParams(params);
+
+                    params = previewImageView.getLayoutParams();
+                    params.width = ViewGroup.LayoutParams.MATCH_PARENT;
+                    params.height = ViewGroup.LayoutParams.WRAP_CONTENT;
+                    previewImageView.setLayoutParams(params);
+                }
             }
 
             @Override
@@ -264,7 +283,7 @@ public class ImagePickerCameraFragment extends TkpdBaseV4Fragment {
         }
     }
 
-    private void onSuccessImageTaken(File file){
+    private void onSuccessImageTaken(File file) {
         if (onImagePickerCameraFragmentListener.supportMultipleSelection()) {
             ImageHandler.loadImageFromFile(getContext(), previewImageView, file);
             showPreviewView();
@@ -274,13 +293,13 @@ public class ImagePickerCameraFragment extends TkpdBaseV4Fragment {
         reset();
     }
 
-    private void showCameraView(){
+    private void showCameraView() {
         previewLayout.setVisibility(View.GONE);
         cameraView.setVisibility(View.VISIBLE);
         onImagePickerCameraFragmentListener.onCameraViewVisible();
     }
 
-    private void showPreviewView(){
+    private void showPreviewView() {
         previewLayout.setVisibility(View.VISIBLE);
         cameraView.setVisibility(View.GONE);
         onImagePickerCameraFragmentListener.onPreviewCameraViewVisible();
@@ -302,7 +321,7 @@ public class ImagePickerCameraFragment extends TkpdBaseV4Fragment {
         cameraView.toggleFacing();
     }
 
-    private int getPreviewSizeOneByOne() {
+    private int getDeviceWidth() {
         Display display = getActivity().getWindowManager().getDefaultDisplay();
         Point size = new Point();
         display.getSize(size);
