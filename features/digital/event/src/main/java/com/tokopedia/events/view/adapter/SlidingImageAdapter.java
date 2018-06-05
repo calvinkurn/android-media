@@ -49,7 +49,7 @@ public class SlidingImageAdapter extends PagerAdapter {
         View imageLayout = inflater.inflate(R.layout.evnt_banner_item, view, false);
 
         assert imageLayout != null;
-        final ImageView imageView = (ImageView) imageLayout
+        final ImageView imageView = imageLayout
                 .findViewById(R.id.banner_item);
 
         ImageHandler.loadImageCover2(imageView, IMAGES.get(position));

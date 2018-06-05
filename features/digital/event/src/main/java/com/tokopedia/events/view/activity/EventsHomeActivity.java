@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
@@ -15,16 +16,19 @@ import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.style.AlignmentSpan;
 import android.text.style.StyleSpan;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tkpd.library.ui.widget.TouchViewPager;
+import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.TActivity;
 import com.tokopedia.core.app.TkpdCoreRouter;
@@ -49,6 +53,7 @@ import com.tokopedia.events.view.utils.ShadowTransformer;
 import com.tokopedia.events.view.utils.Utils;
 import com.tokopedia.events.view.viewmodel.CategoryViewModel;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -93,10 +98,16 @@ public class EventsHomeActivity extends TActivity
     ProgressBar progBar;
     @BindView(R2.id.tv_addtocalendar)
     TextView addToCalendar;
+    @BindView(R2.id.promo_event)
+    TextView promoEvent;
     @BindView(R2.id.viewpager_top_events)
     ViewPager topEventsViewPager;
     @BindView(R2.id.htab_maincontent)
     View hTabMainContent;
+    @BindView(R2.id.search_input_view)
+    TextView searchView;
+    @BindView(R2.id.event_app_bar_layout)
+    AppBarLayout appBarLayout;
 
 
     private int mBannnerPos;
@@ -131,6 +142,7 @@ public class EventsHomeActivity extends TActivity
     protected void onCreate(Bundle savedInstanceState) {
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
         super.onCreate(savedInstanceState);
+        setTheme(R.style.EventAppTheme);
         setContentView(R.layout.activity_events_home_revamp);
         defaultSection = getIntent().getStringExtra(EXTRA_SECTION);
         if (defaultSection == null || defaultSection.length() <= 1)
@@ -143,8 +155,21 @@ public class EventsHomeActivity extends TActivity
         mPresenter.getEventsList();
         setupToolbar();
         toolbar.setTitle("Events");
-        addToCalendar.setCompoundDrawablesWithIntrinsicBounds(null, null,
-                getResources().getDrawable(R.drawable.ic_event_calendar_green), null);
+        addToCalendar.setCompoundDrawablesWithIntrinsicBounds(getResources().getDrawable(R.drawable.ic_event_calendar_green), null,
+                null, null);
+        searchView.setCompoundDrawablesWithIntrinsicBounds(getResources().getDrawable(R.drawable.ic_search_icon),
+                null, null, null);
+        appBarLayout.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
+            @Override
+            public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
+                if (verticalOffset < -1440) {
+                    showSearchButton();
+                } else if (verticalOffset > -100) {
+                    hideSearchButton();
+                }
+                Log.d("Offest Changed", "Offset : " + verticalOffset);
+            }
+        });
 
     }
 
@@ -196,16 +221,20 @@ public class EventsHomeActivity extends TActivity
 
     @Override
     public void hideSearchButton() {
-        MenuItem item = mMenu.findItem(R.id.action_menu_search);
-        item.setVisible(false);
-        item.setEnabled(false);
+        if (mMenu != null) {
+            MenuItem item = mMenu.findItem(R.id.action_menu_search);
+            item.setVisible(false);
+            item.setEnabled(false);
+        }
     }
 
     @Override
     public void showSearchButton() {
-        MenuItem item = mMenu.findItem(R.id.action_menu_search);
-        item.setVisible(true);
-        item.setEnabled(true);
+        if (mMenu != null) {
+            MenuItem item = mMenu.findItem(R.id.action_menu_search);
+            item.setVisible(true);
+            item.setEnabled(true);
+        }
     }
 
     @Override
@@ -256,6 +285,7 @@ public class EventsHomeActivity extends TActivity
     @Override
     public void renderCategoryList(List<CategoryViewModel> categoryList) {
         int pos = -1;
+        List<CategoryViewModel> tempCategoryList = new ArrayList<>();
         for (CategoryViewModel categoryViewModel : categoryList) {
             if (categoryViewModel.getItems() != null && categoryViewModel.getItems().size() != 0) {
                 if ("carousel".equalsIgnoreCase(categoryViewModel.getName())) {
@@ -267,6 +297,7 @@ public class EventsHomeActivity extends TActivity
                 } else if ("top".equalsIgnoreCase(categoryViewModel.getName())) {
                     CardPagerAdapter cardPagerAdapter = new CardPagerAdapter(mPresenter);
                     cardPagerAdapter.addData(categoryViewModel.getItems());
+                    Utils.getSingletonInstance().setTopEvents(categoryViewModel.getItems());
                     ShadowTransformer cardShadowTransformer = new ShadowTransformer(topEventsViewPager, cardPagerAdapter);
                     cardShadowTransformer.enableScaling(true);
                     topEventsViewPager.setAdapter(cardPagerAdapter);
@@ -291,6 +322,7 @@ public class EventsHomeActivity extends TActivity
                     });
                     continue;
                 }
+                tempCategoryList.add(categoryViewModel);
                 if (defaultViewPagerPos <= 0) {
                     pos++;
                     if (defaultSection.equalsIgnoreCase(categoryViewModel.getName()))
@@ -306,13 +338,73 @@ public class EventsHomeActivity extends TActivity
         categoryViewPager.setAdapter(categoryTabsPagerAdapter);
         setCategoryViewPagerListener();
         tabs.setupWithViewPager(categoryViewPager);
-        categoryViewPager.setCurrentItem(defaultViewPagerPos);
+        for (int i = 0; i < tabs.getTabCount(); i++) {
+            ImageView iconView = tabs.getTabAt(i).setCustomView(R.layout.tab_icon_view)
+                    .getCustomView().findViewById(R.id.category_icon);
+            TextView textView = tabs.getTabAt(i).getCustomView().findViewById(R.id.category_name);
+            textView.setText(tempCategoryList.get(i).getTitle());
+            ImageHandler.loadImageCover2(iconView, tempCategoryList.get(i).getMediaURL());
+            if (i == 0) {
+                try {
+                    View view = tabs.getTabAt(i).getCustomView();
+                    ImageView icon = view.findViewById(R.id.category_icon);
+                    TextView tv = view.findViewById(R.id.category_name);
+                    tv.setTextColor(getResources().getColor(R.color.green_nob));
+                    icon.setColorFilter(getResources().getColor(R.color.transparent_green_nob));
+                } catch (NullPointerException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
         categoryViewPager.setSaveFromParentEnabled(false);
         if (defaultViewPagerPos == 0) {
             IFragmentLifecycleCallback fragmentToShow = (CategoryFragment) categoryTabsPagerAdapter.getItem(defaultViewPagerPos);
             fragmentToShow.fragmentResume();
         }
+        tabs.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+            @Override
+            public void onTabSelected(TabLayout.Tab tab) {
+                try {
+                    View customeView = tab.getCustomView();
+                    ImageView icon = customeView.findViewById(R.id.category_icon);
+                    icon.setColorFilter(getResources().getColor(R.color.transparent_green_nob));
+                    TextView tv = customeView.findViewById(R.id.category_name);
+                    tv.setTextColor(getResources().getColor(R.color.green_nob));
+                } catch (NullPointerException e) {
+                    e.printStackTrace();
+                }
+
+            }
+
+            @Override
+            public void onTabUnselected(TabLayout.Tab tab) {
+                try {
+                    View customeView = tab.getCustomView();
+                    ImageView icon = customeView.findViewById(R.id.category_icon);
+                    icon.setColorFilter(getResources().getColor(R.color.transparent));
+                    TextView tv = customeView.findViewById(R.id.category_name);
+                    tv.setTextColor(getResources().getColor(R.color.black_38));
+
+                } catch (NullPointerException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void onTabReselected(TabLayout.Tab tab) {
+                try {
+                    View customeView = tab.getCustomView();
+                    ImageView icon = customeView.findViewById(R.id.category_icon);
+                    icon.setColorFilter(getResources().getColor(R.color.transparent_green_nob));
+                    TextView tv = customeView.findViewById(R.id.category_name);
+                    tv.setTextColor(getResources().getColor(R.color.green_nob));
+                } catch (NullPointerException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
         hTabMainContent.setVisibility(View.VISIBLE);
+        categoryViewPager.setCurrentItem(defaultViewPagerPos);
     }
 
 
@@ -394,10 +486,21 @@ public class EventsHomeActivity extends TActivity
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+        mPresenter.onActivityResult(requestCode);
     }
 
     @OnClick(R2.id.tv_addtocalendar)
     void onClickCalendar() {
         mPresenter.onClickEventCalendar();
+    }
+
+    @OnClick(R2.id.search_input_view)
+    void onClickSearch() {
+        mPresenter.onOptionMenuClick(R.id.action_menu_search);
+    }
+
+    @OnClick(R2.id.promo_event)
+    void goToPromo() {
+        mPresenter.onOptionMenuClick(R.id.action_promo);
     }
 }

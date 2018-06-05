@@ -28,5 +28,6 @@ public class SellingStatusTxModel {
     public String Permission;
     public String ShippingID;
     public int isPickUp;
+    public String liveTracking;
 
 }

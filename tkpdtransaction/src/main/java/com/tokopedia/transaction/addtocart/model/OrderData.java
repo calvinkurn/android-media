@@ -35,6 +35,7 @@ public class OrderData implements Parcelable {
     private List<Shipment> shipments;
     private String catId;
     private Integer mustInsurance;
+    private int storeId;
     private String homeAttribution;
     private String listNameProduct;
 
@@ -177,6 +178,14 @@ public class OrderData implements Parcelable {
         this.mustInsurance = mustInsurance;
     }
 
+    public int getStoreId() {
+        return storeId;
+    }
+
+    public void setPickupStoreId(int storeId) {
+        this.storeId = storeId;
+    }
+
     public String getHomeAttribution() {
         return homeAttribution;
     }
@@ -192,69 +201,6 @@ public class OrderData implements Parcelable {
     public void setListNameProduct(String listNameProduct) {
         this.listNameProduct = listNameProduct;
     }
-
-    protected OrderData(Parcel in) {
-        insurance = in.readString();
-        notes = in.readString();
-        productId = in.readString();
-        address = (Destination) in.readValue(Destination.class.getClassLoader());
-        shipment = in.readString();
-        shipmentPackage = in.readString();
-        quantity = in.readInt();
-        weight = in.readString();
-        shopId = in.readString();
-        minOrder = in.readInt();
-        priceItem = in.readString();
-        priceTotal = in.readString();
-        shop = (Shop) in.readValue(Shop.class.getClassLoader());
-        initWeight = in.readString();
-        shipments = in.readArrayList(Shipment.class.getClassLoader());
-        catId = in.readString();
-        mustInsurance = in.readInt();
-        homeAttribution = in.readString();
-        listNameProduct = in.readString();
-    }
-
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(insurance);
-        dest.writeString(notes);
-        dest.writeString(productId);
-        dest.writeValue(address);
-        dest.writeString(shipment);
-        dest.writeString(shipmentPackage);
-        dest.writeInt(quantity);
-        dest.writeString(weight);
-        dest.writeString(shopId);
-        dest.writeInt(minOrder);
-        dest.writeString(priceItem);
-        dest.writeString(priceTotal);
-        dest.writeValue(shop);
-        dest.writeString(initWeight);
-        dest.writeArray(shipments.toArray());
-        dest.writeString(catId);
-        dest.writeInt(mustInsurance);
-        dest.writeString(homeAttribution);
-        dest.writeString(listNameProduct);
-    }
-
-    @SuppressWarnings("unused")
-    public static final Parcelable.Creator<OrderData> CREATOR = new Parcelable.Creator<OrderData>() {
-        @Override
-        public OrderData createFromParcel(Parcel in) {
-            return new OrderData(in);
-        }
-
-        @Override
-        public OrderData[] newArray(int size) {
-            return new OrderData[size];
-        }
-    };
 
     public static OrderData createFromATCForm(AtcFormData data, ProductCartPass productCartPass) {
         OrderData orderData = new OrderData();
@@ -278,4 +224,68 @@ public class OrderData implements Parcelable {
         orderData.setListNameProduct(productCartPass.getListName());
         return orderData;
     }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(this.insurance);
+        dest.writeString(this.notes);
+        dest.writeString(this.productId);
+        dest.writeParcelable(this.address, flags);
+        dest.writeString(this.shipment);
+        dest.writeString(this.shipmentPackage);
+        dest.writeInt(this.quantity);
+        dest.writeString(this.weight);
+        dest.writeString(this.initWeight);
+        dest.writeString(this.shopId);
+        dest.writeInt(this.minOrder);
+        dest.writeString(this.priceItem);
+        dest.writeString(this.priceTotal);
+        dest.writeParcelable(this.shop, flags);
+        dest.writeTypedList(this.shipments);
+        dest.writeString(this.catId);
+        dest.writeValue(this.mustInsurance);
+        dest.writeInt(this.storeId);
+        dest.writeString(this.homeAttribution);
+        dest.writeString(this.listNameProduct);
+    }
+
+    protected OrderData(Parcel in) {
+        this.insurance = in.readString();
+        this.notes = in.readString();
+        this.productId = in.readString();
+        this.address = in.readParcelable(Destination.class.getClassLoader());
+        this.shipment = in.readString();
+        this.shipmentPackage = in.readString();
+        this.quantity = in.readInt();
+        this.weight = in.readString();
+        this.initWeight = in.readString();
+        this.shopId = in.readString();
+        this.minOrder = in.readInt();
+        this.priceItem = in.readString();
+        this.priceTotal = in.readString();
+        this.shop = in.readParcelable(Shop.class.getClassLoader());
+        this.shipments = in.createTypedArrayList(Shipment.CREATOR);
+        this.catId = in.readString();
+        this.mustInsurance = (Integer) in.readValue(Integer.class.getClassLoader());
+        this.storeId = in.readInt();
+        this.homeAttribution = in.readString();
+        this.listNameProduct = in.readString();
+    }
+
+    public static final Creator<OrderData> CREATOR = new Creator<OrderData>() {
+        @Override
+        public OrderData createFromParcel(Parcel source) {
+            return new OrderData(source);
+        }
+
+        @Override
+        public OrderData[] newArray(int size) {
+            return new OrderData[size];
+        }
+    };
 }

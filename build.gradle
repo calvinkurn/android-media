@@ -3,6 +3,7 @@ apply from: 'buildconfig/dependencies.gradle'
 
 buildscript {
     repositories {
+        mavenLocal()
         maven { url 'https://maven.fabric.io/public' }
         maven { url 'http://central.maven.org/maven2/'}
         mavenCentral()
