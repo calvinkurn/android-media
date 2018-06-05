@@ -16,6 +16,10 @@ import retrofit2.Retrofit;
 /**
  * @author Angga.Prasetiyo on 01/12/2015.
  */
+@Deprecated
+/**
+ * @see com.tokopedia.abstraction.common.network.converter.TokopediaWsV4ResponseConverter
+ */
 public class TkpdResponseConverter extends Converter.Factory {
     private static final MediaType MEDIA_TYPE = MediaType.parse("text/plain");
 

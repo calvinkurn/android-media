@@ -81,7 +81,7 @@ public class OrderDetailPresenterImpl implements OrderDetailPresenter {
 
     @Override
     public void processTrackOrder(Context context, OrderDetailData data) {
-        mainView.trackShipment(data.getOrderId());
+        mainView.trackShipment(data.getOrderId(), data.getLiveTrackingUrl());
     }
 
     @Override

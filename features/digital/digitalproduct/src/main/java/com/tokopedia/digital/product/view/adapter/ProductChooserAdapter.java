@@ -81,7 +81,8 @@ public class ProductChooserAdapter extends RecyclerView.Adapter<RecyclerView.Vie
             return TYPE_HOLDER_PRODUCT_PROMO;
         else if (!TextUtils.isEmpty(productList.get(position).getDetailCompact()))
             return TYPE_HOLDER_PRODUCT_PRICE_PLUS_ADMIN_AND_DESC;
-        else return TYPE_HOLDER_PRODUCT_DESC_AND_PRICE_ITEM;
+        else
+            return TYPE_HOLDER_PRODUCT_DESC_AND_PRICE_ITEM;
     }
 
     @Override

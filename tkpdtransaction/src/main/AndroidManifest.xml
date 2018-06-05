@@ -2,7 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.tokopedia.transaction">
 
-    <uses-feature android:name="android.hardware.fingerprint"
+    <uses-feature
+        android:name="android.hardware.fingerprint"
         android:required="false"/>
 
     <application
@@ -68,18 +69,17 @@
             android:name=".bcaoneklik.activity.ListPaymentTypeActivity"
             android:label="@string/label_payment_setting" />
 
-        <activity android:name=".bcaoneklik.activity.CreditCardDetailActivity"
+        <activity
+            android:name=".bcaoneklik.activity.CreditCardDetailActivity"
             android:label="@string/label_detail_credit_card" />
 
         <activity
             android:name=".insurance.view.InsuranceTnCActivity"
-            android:label="@string/title_term_and_condition"/>
-
+            android:label="@string/title_term_and_condition" />
         <activity
             android:name=".purchase.detail.activity.OrderDetailActivity"
             android:label="@string/title_activity_people_tx_details"
             android:windowSoftInputMode="adjustPan"/>
-
         <activity
             android:name=".purchase.detail.activity.OrderHistoryActivity"
             android:label="@string/title_activity_people_tx_history"/>
@@ -94,7 +94,14 @@
 
         <activity
             android:name=".purchase.detail.activity.CustomScannerBarcodeActivity"
-            android:label="@string/title_scan_awb"/>
+            android:label="@string/title_scan_awb" />
+        <activity
+            android:name=".pickuppoint.view.activity.PickupPointActivity"
+            android:label="@string/title_send_to_pick_up_booth"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".pickuppoint.view.activity.PickupPointMapActivity"
+            android:label="@string/title_send_to_pick_up_booth" />
 
         <service
             android:name=".purchase.services.TxActionIntentService"
@@ -106,6 +113,7 @@
         <service
             android:name=".addtocart.services.ATCIntentService"
             android:exported="false" />
+
     </application>
 
 </manifest>

@@ -72,4 +72,13 @@ public interface DigitalApi {
     @POST(TkpdBaseURL.DigitalApi.PATH_CANCEL_VOUCHER)
     @Headers({"Content-Type: application/json"})
     Observable<Response<TkpdDigitalResponse>> cancelVoucher(@Body JsonObject requestBody);
+
+    @POST(TkpdBaseURL.DigitalApi.PATH_SMARTCARD_INQUIRY)
+    @Headers({"Content-Type: application/json"})
+    Observable<Response<TkpdDigitalResponse>> smartcardInquiry(@Body JsonObject requestBody);
+
+    @POST(TkpdBaseURL.DigitalApi.PATH_SMARTCARD_COMMAND)
+    @Headers({"Content-Type: application/json"})
+    Observable<Response<TkpdDigitalResponse>> smartcardCommand(@Body JsonObject requestBody);
+
 }

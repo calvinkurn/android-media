@@ -149,7 +149,7 @@ public class ContactUsActivity extends BasePresenterActivity implements
             FragmentTransaction transaction = getFragmentManager().beginTransaction();
             transaction.setCustomAnimations(R.animator.slide_in_left, 0, 0, R.animator.slide_out_right);
             transaction.add(R.id.main_view, fragment, CreateTicketFormFragment.class.getSimpleName());
-            if(!getIntent().getBooleanExtra(ContactUsConstant.IS_CHAT_BOT,false)) {
+            if (!getIntent().getBooleanExtra(ContactUsConstant.IS_CHAT_BOT, false)) {
                 transaction.addToBackStack(CreateTicketFormFragment.class.getSimpleName());
             }
             transaction.commit();

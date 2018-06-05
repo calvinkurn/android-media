@@ -126,7 +126,9 @@ public class SeatSelectionPresenter extends BaseDaggerPresenter<SeatSelectionCon
 
 
     public void getSeatSelectionDetails() {
-        getView().renderSeatSelection(selectedpkgViewModel.getSalesPrice(), selectedpkgViewModel.getSelectedQuantity(), seatLayoutViewModel);
+        getView().renderSeatSelection(selectedpkgViewModel.getSalesPrice(),
+                selectedpkgViewModel.getSelectedQuantity(), seatLayoutViewModel);
+        getView().setTicketPrice(selectedpkgViewModel.getSelectedQuantity());
     }
 
     @Override
@@ -294,5 +296,9 @@ public class SeatSelectionPresenter extends BaseDaggerPresenter<SeatSelectionCon
         JsonElement jsonElement = new JsonParser().parse(new Gson().toJson(cart));
         JsonObject requestBody = jsonElement.getAsJsonObject();
         return requestBody;
+    }
+
+    public String getTicketCategory() {
+        return selectedpkgViewModel.getTitle();
     }
 }
