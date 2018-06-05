@@ -2,7 +2,7 @@ package com.tokopedia.applink;
 
 /**
  * @author ricoharisin .
- *
+ * <p>
  * Central interface for AppLink in apps, do not use any new applink module
  */
 
@@ -41,6 +41,7 @@ public interface ApplinkConst {
     String PRODUCT_TALK = "tokopedia://product/{product_id}/talk";
     String DIGITAL = "tokopedia://digital";
     String DIGITAL_PRODUCT = "tokopedia://digital/form";
+    String DIGITAL_SMARTCARD = "tokopedia://digital/smartcard";
     String DIGITAL_CART = "tokopedia://digital/cart";
     String DIGITAL_CATEGORY = "tokopedia://digital/category";
     String DISCOVERY_PAGE = "tokopedia://discovery/{page_id}";
@@ -93,11 +94,13 @@ public interface ApplinkConst {
     String SELLER_INFO_DETAIL = "tokopedia://sellerinfo/detail";
 
     String TC_LANDING = "tokopedia://tc-landing";
-  
+
     String CONTENT_EXPLORE = "tokopedia://content/explore/{tab_name}/{category_id}";
     String CONTENT_DETAIL ="tokopedia://content/{post_id}";
     String INBOX_TICKET = "tokopedia://customercare";
     String TICKET_DETAIL = "tokopedia://customercare/{ticket_id}";
+
+    String ORDER_TRACKING = "tokopedia://order/tracking";
 
     interface SellerApp {
         String PRODUCT_ADD = "sellerapp://product/add";
@@ -110,5 +113,10 @@ public interface ApplinkConst {
         String TOPADS_PRODUCT_DETAIL = "sellerapp://topads/product/{ad_id}";
         String TOPADS_PRODUCT_DETAIL_CONSTS = "sellerapp://topads/product";
         String BROWSER = "sellerapp://browser";
+    }
+
+    interface Query {
+        String ORDER_TRACKING_ORDER_ID = "order_id";
+        String ORDER_TRACKING_URL_LIVE_TRACKING = "url_live_tracking";
     }
 }

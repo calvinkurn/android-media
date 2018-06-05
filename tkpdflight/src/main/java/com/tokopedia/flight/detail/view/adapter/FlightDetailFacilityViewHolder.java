@@ -89,7 +89,7 @@ public class FlightDetailFacilityViewHolder extends AbstractViewHolder<FlightDet
             separatorInfoView.setVisibility(View.VISIBLE);
             facilityInfoTextView.setVisibility(View.VISIBLE);
             adapterAmenity.addData(flightDetailRouteViewModel.getAmenities());
-        }else {
+        } else {
             separatorInfoView.setVisibility(View.GONE);
             gridAmenity.setVisibility(View.GONE);
             facilityInfoTextView.setVisibility(View.GONE);

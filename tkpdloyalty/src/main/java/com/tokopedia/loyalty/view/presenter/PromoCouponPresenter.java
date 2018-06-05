@@ -6,6 +6,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.tokopedia.abstraction.common.network.exception.MessageErrorException;
+import com.tokopedia.abstraction.constant.IRouterConstant;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.base.domain.RequestParams;
@@ -34,8 +35,6 @@ import javax.inject.Inject;
 
 import rx.Subscriber;
 
-import static com.tokopedia.loyalty.view.activity.LoyaltyActivity.FLIGHT_STRING;
-
 /**
  * @author anggaprasetiyo on 29/11/17.
  */
@@ -58,8 +57,8 @@ public class PromoCouponPresenter implements IPromoCouponPresenter {
         view.disableSwipeRefresh();
         TKPDMapParam<String, String> param = new TKPDMapParam<>();
         //param.put("user_id", SessionHandler.getLoginID(view.getContext()));
-        if (platform.equalsIgnoreCase(FLIGHT_STRING)) {
-            platform = LoyaltyActivity.DIGITAL_STRING;
+        if (platform.equalsIgnoreCase(IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.FLIGHT_STRING)) {
+            platform = IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.DIGITAL_STRING;
             param.put("category_id", view.getCategoryId());
         }
         ;
