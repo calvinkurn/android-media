@@ -10,7 +10,6 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.Px;
 import android.support.design.widget.AppBarLayout;
-import android.support.design.widget.BottomSheetDialog;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AlertDialog;
@@ -25,8 +24,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.github.rubensousa.bottomsheetbuilder.BottomSheetBuilder;
-import com.github.rubensousa.bottomsheetbuilder.adapter.BottomSheetItemClickListener;
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter;
@@ -45,8 +42,10 @@ import com.tokopedia.seller.common.datepicker.view.activity.DatePickerActivity;
 import com.tokopedia.seller.common.datepicker.view.constant.DatePickerConstant;
 import com.tokopedia.topads.R;
 import com.tokopedia.topads.common.view.adapter.TopAdsMultipleCheckListAdapter;
+import com.tokopedia.topads.common.view.adapter.TopAdsOptionMenuAdapter;
 import com.tokopedia.topads.common.view.adapter.viewholder.BaseMultipleCheckViewHolder;
 import com.tokopedia.topads.common.view.presenter.TopAdsBaseListPresenter;
+import com.tokopedia.topads.common.view.utils.TopAdsMenuBottomSheets;
 import com.tokopedia.topads.dashboard.constant.SortTopAdsOption;
 import com.tokopedia.topads.dashboard.constant.TopAdsConstant;
 import com.tokopedia.topads.dashboard.constant.TopAdsExtraConstant;
@@ -99,7 +98,8 @@ public abstract class TopAdsBaseListFragment<V extends Visitable, F extends Adap
     private CoordinatorLayout.Behavior appBarBehaviour;
     private RecyclerView recyclerView;
     private MenuItem menuAdd;
-    private MenuItem menuMore;
+    private MenuItem menuMulti;
+    private MenuItem menuHelp;
     private ActionMode actionMode;
     private LinearLayoutManager layoutManager;
 
@@ -292,7 +292,7 @@ public abstract class TopAdsBaseListFragment<V extends Visitable, F extends Adap
 
     public abstract void deleteBulkAction(List<String> adIds);
 
-    public abstract BottomSheetItemClickListener getOptionMoreBottomSheetItemClickListener(final List<String> ids);
+    public abstract TopAdsMenuBottomSheets.OnMenuItemSelected getOptionMoreBottomSheetItemClickListener(final List<String> ids);
 
     public void setSearchMode(boolean searchMode) {
         isSearchMode = searchMode;
@@ -407,8 +407,8 @@ public abstract class TopAdsBaseListFragment<V extends Visitable, F extends Adap
         if(menuAdd != null){
             menuAdd.setVisible(show);
         }
-        if (menuMore != null){
-            menuMore.setVisible(show);
+        if (menuMulti != null){
+            menuMulti.setVisible(show);
         }
     }
 
@@ -503,17 +503,29 @@ public abstract class TopAdsBaseListFragment<V extends Visitable, F extends Adap
             }
         });
 
-        menuMore = menu.findItem(R.id.menu_more);
-        menuMore.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+        menuMulti = menu.findItem(R.id.menu_multi_select);
+        menuMulti.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem menuItem) {
-                showMoreMenus();
+                getActivity().startActionMode(getActionModeCallback());
+                return true;
+            }
+        });
+
+        menuHelp = menu.findItem(R.id.menu_help);
+        menuHelp.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem menuItem) {
+                if (listener != null) {
+                    recyclerView.scrollTo(0, 0);
+                    listener.startShowCase();
+                }
                 return true;
             }
         });
     }
 
-    public void showMoreMenus() {
+    /*public void showMoreMenus() {
         final Menus menus = new Menus(getActivity());
         menus.setItemMenuList(R.array.top_ads_list_menu_more);
         menus.setActionText(getString(R.string.close));
@@ -547,7 +559,7 @@ public abstract class TopAdsBaseListFragment<V extends Visitable, F extends Adap
         });
 
         menus.show();
-    }
+    }*/
 
     public ActionMode.Callback getActionModeCallback() {
         return new ActionMode.Callback() {
@@ -631,18 +643,26 @@ public abstract class TopAdsBaseListFragment<V extends Visitable, F extends Adap
     }
 
     protected void showBottomsheetOptionMore(String title, @MenuRes int menuId,
-                                             BottomSheetItemClickListener listener){
+                                             final TopAdsMenuBottomSheets.OnMenuItemSelected listener){
         CommonUtils.hideKeyboard(getActivity(), getActivity().getCurrentFocus());
 
-        BottomSheetBuilder bottomSheetBuilder = new BottomSheetBuilder(getActivity())
-                .setMode(BottomSheetBuilder.MODE_LIST)
-                .addTitleItem(title);
-        bottomSheetBuilder.setMenu(menuId);
+        final TopAdsMenuBottomSheets bottomSheetMenu = new TopAdsMenuBottomSheets()
+                .setContext(getContext())
+                .setMode(TopAdsOptionMenuAdapter.MODE_DEFAULT)
+                .setTitle(title)
+                .setMenu(menuId);
 
-        BottomSheetDialog bottomSheetDialog = bottomSheetBuilder.expandOnStart(true)
-                .setItemClickListener(listener)
-                .createDialog();
-        bottomSheetDialog.show();
+        bottomSheetMenu.setMenuItemSelected(new TopAdsMenuBottomSheets.OnMenuItemSelected() {
+            @Override
+            public void onItemSelected(int itemId) {
+                bottomSheetMenu.dismiss();
+                if (listener != null){
+                    listener.onItemSelected(itemId);
+                }
+            }
+        });
+
+        bottomSheetMenu.show(getActivity().getSupportFragmentManager(), getClass().getSimpleName());
     }
 
     @Nullable

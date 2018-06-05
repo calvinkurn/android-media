@@ -87,22 +87,28 @@ public class TopAdsKeywordAdListActivity extends BaseTabActivity implements HasC
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        final TopAdsKeywordAdListFragment fragment = getTopAdsBaseKeywordListFragment();
         if (item.getItemId() == android.R.id.home) {
             onBackPressed();
             return true;
         } else if (item.getItemId() == R.id.menu_add) {
-            if (getTopAdsBaseKeywordListFragment() != null) {
-                getTopAdsBaseKeywordListFragment().onCreateAd();
+            if (fragment != null) {
+                fragment.onCreateAd();
             }
             return true;
-        } else if (item.getItemId() == R.id.menu_more) {
-            final TopAdsKeywordAdListFragment fragment = getTopAdsBaseKeywordListFragment();
+        } else if (item.getItemId() == R.id.menu_multi_select) {
 
-            if (fragment == null){
-                return false;
+            if (fragment != null) {
+                startActionMode(fragment.getActionModeCallback());
             }
-
-            fragment.showMoreMenus();
+            return true;
+        } else if (item.getItemId() == R.id.menu_help){
+            if (fragment != null){
+                if (fragment.getRecyclerView() != null){
+                    fragment.getRecyclerView().scrollTo(0,0);
+                }
+                startShowCase();
+            }
             return true;
         }
         return super.onOptionsItemSelected(item);

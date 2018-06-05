@@ -6,11 +6,9 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.github.rubensousa.bottomsheetbuilder.adapter.BottomSheetItemClickListener;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel;
 import com.tokopedia.core.analytics.AppEventTracking;
@@ -20,6 +18,7 @@ import com.tokopedia.topads.R;
 import com.tokopedia.topads.TopAdsComponentInstance;
 import com.tokopedia.topads.common.view.fragment.TopAdsBaseListFragment;
 import com.tokopedia.topads.common.view.utils.TopAdsBottomSheetsSelectGroup;
+import com.tokopedia.topads.common.view.utils.TopAdsMenuBottomSheets;
 import com.tokopedia.topads.dashboard.constant.SortTopAdsOption;
 import com.tokopedia.topads.dashboard.constant.TopAdsExtraConstant;
 import com.tokopedia.topads.dashboard.data.model.data.GroupAd;
@@ -227,11 +226,10 @@ public class TopAdsProductListFragment extends TopAdsBaseListFragment<ProductAd,
     }
 
     @Override
-    public BottomSheetItemClickListener getOptionMoreBottomSheetItemClickListener(final List<String> ids) {
-        return new BottomSheetItemClickListener() {
+    public TopAdsMenuBottomSheets.OnMenuItemSelected getOptionMoreBottomSheetItemClickListener(final List<String> ids) {
+        return new TopAdsMenuBottomSheets.OnMenuItemSelected() {
             @Override
-            public void onBottomSheetItemClick(MenuItem item) {
-                int itemId = item.getItemId();
+            public void onItemSelected(int itemId) {
                 if (itemId == R.id.status_active){
                     presenter.setAdActive(ids);
                 } else if (itemId == R.id.status_inactive) {
