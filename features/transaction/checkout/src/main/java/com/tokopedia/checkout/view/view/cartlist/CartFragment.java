@@ -376,7 +376,9 @@ public class CartFragment extends BaseCheckoutFragment implements CartListAdapte
     @Override
     public void onCartItemTickerErrorActionClicked(CartItemTickerErrorHolderData data, int position) {
         cartPageAnalytics.enhancedECommerceCartHapusProdukBerkendala(
-                dPresenter.generateCartDataAnalytics(getCartDataList())
+                dPresenter.generateCartDataAnalytics(
+                        getCartDataList(), EnhancedECommerceCartMapData.REMOVE_ACTION
+                )
         );
         List<CartItemData> toBeDeletedCartItem = new ArrayList<>();
         for (CartItemData cartItemData : getCartDataList()) {
