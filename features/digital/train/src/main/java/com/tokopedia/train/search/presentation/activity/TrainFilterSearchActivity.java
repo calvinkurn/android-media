@@ -11,12 +11,12 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
-import android.widget.Toast;
 
 import com.tokopedia.tkpdtrain.R;
 import com.tokopedia.train.common.di.utils.TrainComponentUtils;
 import com.tokopedia.train.common.presentation.TrainBaseActivity;
 import com.tokopedia.train.search.di.DaggerTrainSearchComponent;
+import com.tokopedia.train.search.presentation.contract.BaseTrainFilterListener;
 import com.tokopedia.train.search.presentation.contract.FilterSearchActionView;
 import com.tokopedia.train.search.presentation.contract.TrainFilterSearchContract;
 import com.tokopedia.train.search.presentation.fragment.TrainFilterClassFragment;
@@ -27,6 +27,7 @@ import com.tokopedia.train.search.presentation.model.FilterSearchData;
 import com.tokopedia.train.search.presentation.presenter.TrainFilterSearchPresenter;
 
 import java.util.HashMap;
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -165,11 +166,24 @@ public class TrainFilterSearchActivity extends TrainBaseActivity
     public boolean onOptionsItemSelected(MenuItem item) {
         int menuId = item.getItemId();
         if (menuId == R.id.action_reset) {
-            //TODO make menu reset here
-            Toast.makeText(getApplicationContext(), "RESET", Toast.LENGTH_SHORT).show();
+            onResetAllFilter();
             return true;
         } else {
             return super.onOptionsItemSelected(item);
+        }
+    }
+
+    private void onResetAllFilter() {
+        Fragment fragment = getCurrentFragment();
+        if (fragment != null && fragment instanceof BaseTrainFilterListener) {
+            ((BaseTrainFilterListener) fragment).resetFilter();
+        }
+    }
+
+    private void onResetSpecificFilter() {
+        Fragment fragment = getCurrentFragment();
+        if (fragment != null && fragment instanceof BaseTrainFilterListener) {
+            ((BaseTrainFilterListener) fragment).changeFilterToOriginal();
         }
     }
 
@@ -180,9 +194,8 @@ public class TrainFilterSearchActivity extends TrainBaseActivity
             intent.putExtra("model_filter", filterSearchData);
             setResult(Activity.RESULT_OK, intent);
             finish();
-        } else {
-            onBackPressed(true);
         }
+        onBackPressed(true);
     }
 
     @Override
@@ -193,13 +206,23 @@ public class TrainFilterSearchActivity extends TrainBaseActivity
     private void onBackPressed(boolean submitFilter) {
         if (getSupportFragmentManager().getBackStackEntryCount() != 0) {
             if (!submitFilter) {
-                getSupportFragmentManager().popBackStack();
-            } else {
-                super.onBackPressed();
+                onResetSpecificFilter();
             }
+            getSupportFragmentManager().popBackStack();
         } else {
             super.onBackPressed();
         }
+    }
+
+    private Fragment getCurrentFragment() {
+        List<Fragment> fragmentList = getSupportFragmentManager().getFragments();
+        for (int i = 0, sizei = fragmentList.size(); i < sizei; i++) {
+            Fragment fragment = fragmentList.get(i);
+            if (fragment.isAdded() && fragment.isVisible()) {
+                return fragment;
+            }
+        }
+        return null;
     }
 
     public void replaceFragment(Fragment fragment, String tag) {

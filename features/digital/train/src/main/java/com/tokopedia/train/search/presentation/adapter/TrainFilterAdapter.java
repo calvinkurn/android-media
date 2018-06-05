@@ -49,6 +49,8 @@ public class TrainFilterAdapter extends RecyclerView.Adapter {
                 if (itemViewFilter.itemName.getText().toString().equals(selectFilter))
                     itemViewFilter.checkBoxFilter.setChecked(true);
             }
+        } else {
+            itemViewFilter.checkBoxFilter.setChecked(false);
         }
 
         itemViewFilter.checkBoxFilter.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
@@ -101,6 +103,11 @@ public class TrainFilterAdapter extends RecyclerView.Adapter {
         this.listObjectFilter.clear();
         this.listObjectFilter = listObjectFilter;
         this.selectedFilter = selectedFilter;
+        notifyDataSetChanged();
+    }
+
+    public void removeListSelected() {
+        this.selectedFilter.clear();
         notifyDataSetChanged();
     }
 

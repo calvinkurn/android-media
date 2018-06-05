@@ -15,6 +15,7 @@ import com.tokopedia.design.label.selection.text.SelectionTextLabelView;
 import com.tokopedia.design.text.RangeInputView;
 import com.tokopedia.design.text.watcher.CurrencyTextWatcher;
 import com.tokopedia.tkpdtrain.R;
+import com.tokopedia.train.search.presentation.contract.BaseTrainFilterListener;
 import com.tokopedia.train.search.presentation.contract.FilterSearchActionView;
 import com.tokopedia.train.search.presentation.model.FilterSearchData;
 
@@ -25,7 +26,7 @@ import java.util.List;
  * Created by nabillasabbaha on 3/20/18.
  */
 
-public class TrainFilterSearchFragment extends BaseDaggerFragment {
+public class TrainFilterSearchFragment extends BaseDaggerFragment implements BaseTrainFilterListener {
 
     private FilterSearchActionView listener;
     private FilterSearchData filterSearchData;
@@ -55,6 +56,10 @@ public class TrainFilterSearchFragment extends BaseDaggerFragment {
         listener.setTitleToolbar("Filter");
         listener.setCloseButton(true);
 
+        populateView(view);
+    }
+
+    private void populateView(View view) {
         renderPriceRangeFilter(view);
         renderTrainNameFilter(view);
         renderTrainDepartureFilter(view);
@@ -153,9 +158,8 @@ public class TrainFilterSearchFragment extends BaseDaggerFragment {
                 (int) filterSearchData.getMinPrice(),
                 (int) filterSearchData.getMaxPrice());
         rangeInputView.setOnValueChangedListener((minValue, maxValue, minBound, maxBound) -> {
-            FilterSearchData filterSearchData = listener.getFilterSearchData();
-            filterSearchData.setMinPrice(minValue);
-            filterSearchData.setMaxPrice(maxValue);
+            filterSearchData.setSelectedMinPrice(minValue);
+            filterSearchData.setSelectedMaxPrice(maxValue);
             listener.onChangeFilterSearchData(filterSearchData);
         });
     }
@@ -173,5 +177,27 @@ public class TrainFilterSearchFragment extends BaseDaggerFragment {
     @Override
     protected void onAttachActivity(Context context) {
         listener = (FilterSearchActionView) context;
+    }
+
+    @Override
+    public void resetFilter() {
+        View view = getView();
+        if (view == null) {
+            return;
+        }
+
+        FilterSearchData filterSearchData = listener.getFilterSearchData();
+        filterSearchData.setSelectedMaxPrice(0);
+        filterSearchData.setSelectedMinPrice(0);
+        filterSearchData.setSelectedTrainClass(new ArrayList<>());
+        filterSearchData.setSelectedTrains(new ArrayList<>());
+        filterSearchData.setSelectedDepartureTimeList(new ArrayList<>());
+        populateView(view);
+        listener.onChangeFilterSearchData(filterSearchData);
+    }
+
+    @Override
+    public void changeFilterToOriginal() {
+        // no need implementation
     }
 }

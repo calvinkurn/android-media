@@ -6,7 +6,9 @@ import android.support.v4.app.Fragment;
 import android.view.View;
 
 import com.tokopedia.train.search.presentation.adapter.TrainFilterAdapter;
+import com.tokopedia.train.search.presentation.model.FilterSearchData;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -33,5 +35,13 @@ public class TrainFilterNameFragment extends BaseTrainFilterSearchFragment {
                 listener.onChangeFilterSearchData(filterSearchData);
             }
         });
+    }
+
+    @Override
+    public void resetFilter() {
+        FilterSearchData filterSearchData = listener.getFilterSearchData();
+        filterSearchData.setSelectedTrains(new ArrayList<>());
+        adapter.removeListSelected();
+        listener.onChangeFilterSearchData(filterSearchData);
     }
 }

@@ -5,6 +5,10 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.View;
 
+import com.tokopedia.train.search.presentation.model.FilterSearchData;
+
+import java.util.ArrayList;
+
 /**
  * Created by nabillasabbaha on 3/23/18.
  */
@@ -27,5 +31,13 @@ public class TrainFilterDepartureFragment extends BaseTrainFilterSearchFragment 
             filterSearchData.setSelectedDepartureTimeList(listObjectFilter);
             listener.onChangeFilterSearchData(filterSearchData);
         });
+    }
+
+    @Override
+    public void resetFilter() {
+        FilterSearchData filterSearchData = listener.getFilterSearchData();
+        filterSearchData.setSelectedDepartureTimeList(new ArrayList<>());
+        adapter.removeListSelected();
+        listener.onChangeFilterSearchData(filterSearchData);
     }
 }
