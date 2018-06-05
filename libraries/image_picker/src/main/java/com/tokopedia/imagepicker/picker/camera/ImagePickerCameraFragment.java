@@ -152,6 +152,8 @@ public class ImagePickerCameraFragment extends TkpdBaseV4Fragment {
                     //noinspection SuspiciousNameCombination
                     params.height = params.width;
                     previewImageView.setLayoutParams(params);
+
+                    previewImageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
                 } else {
                     ViewGroup.LayoutParams params = cameraLayout.getLayoutParams();
                     params.width = ViewGroup.LayoutParams.MATCH_PARENT;
