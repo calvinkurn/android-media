@@ -295,13 +295,13 @@ public class ImagePickerCameraFragment extends TkpdBaseV4Fragment {
 
     private void showCameraView() {
         previewLayout.setVisibility(View.GONE);
-        cameraView.setVisibility(View.VISIBLE);
+        cameraLayout.setVisibility(View.VISIBLE);
         onImagePickerCameraFragmentListener.onCameraViewVisible();
     }
 
     private void showPreviewView() {
         previewLayout.setVisibility(View.VISIBLE);
-        cameraView.setVisibility(View.GONE);
+        cameraLayout.setVisibility(View.GONE);
         onImagePickerCameraFragmentListener.onPreviewCameraViewVisible();
     }
 
