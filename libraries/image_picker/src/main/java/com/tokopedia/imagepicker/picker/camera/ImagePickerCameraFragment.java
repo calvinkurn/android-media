@@ -8,7 +8,6 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Point;
 import android.os.Build;
 import android.os.Bundle;
@@ -21,7 +20,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
 import com.otaliastudios.cameraview.CameraListener;
@@ -31,6 +29,7 @@ import com.otaliastudios.cameraview.CameraView;
 import com.otaliastudios.cameraview.Flash;
 import com.otaliastudios.cameraview.Size;
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment;
+import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.imagepicker.R;
 import com.tokopedia.imagepicker.common.util.ImageUtils;
 
@@ -50,12 +49,8 @@ public class ImagePickerCameraFragment extends TkpdBaseV4Fragment {
     private ImageView previewImageView;
     private CameraView cameraView;
     private ImageButton flashImageButton;
-    private View shutterImageButton;
-    private View flipImageButton;
     private RelativeLayout cameraLayout;
     private RelativeLayout previewLayout;
-    private LinearLayout useImageLayout;
-    private LinearLayout recaptureLayout;
     private OnImagePickerCameraFragmentListener onImagePickerCameraFragmentListener;
 
     private boolean mCapturingPicture;
@@ -72,6 +67,12 @@ public class ImagePickerCameraFragment extends TkpdBaseV4Fragment {
         boolean isMaxImageReached();
 
         boolean isFinishEditting();
+
+        boolean supportMultipleSelection();
+
+        void onCameraViewVisible();
+
+        void onPreviewCameraViewVisible();
     }
 
     @SuppressLint("MissingPermission")
@@ -100,12 +101,12 @@ public class ImagePickerCameraFragment extends TkpdBaseV4Fragment {
         previewImageView = view.findViewById(R.id.image_preview);
         cameraView = view.findViewById(R.id.camera_view);
         flashImageButton = view.findViewById(R.id.image_button_flash);
-        shutterImageButton = view.findViewById(R.id.image_button_shutter);
-        flipImageButton = view.findViewById(R.id.image_button_flip);
+        View shutterImageButton = view.findViewById(R.id.image_button_shutter);
+        View flipImageButton = view.findViewById(R.id.image_button_flip);
         cameraLayout = view.findViewById(R.id.layout_camera);
         previewLayout = view.findViewById(R.id.layout_preview);
-        useImageLayout = view.findViewById(R.id.layout_use);
-        recaptureLayout = view.findViewById(R.id.layout_recapture);
+        View useImageLayout = view.findViewById(R.id.layout_use);
+        View recaptureLayout = view.findViewById(R.id.layout_recapture);
 
         cameraView.addCameraListener(new CameraListener() {
 
@@ -203,7 +204,11 @@ public class ImagePickerCameraFragment extends TkpdBaseV4Fragment {
         useImageLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                goToImageEditor();
+                onImagePickerCameraFragmentListener.onImageTaken(file.getAbsolutePath());
+                //if multiple selection, will continue preview camera
+                if (onImagePickerCameraFragmentListener.supportMultipleSelection()) {
+                    showCameraView();
+                }
             }
         });
 
@@ -250,32 +255,35 @@ public class ImagePickerCameraFragment extends TkpdBaseV4Fragment {
                 @Override
                 public void onBitmapReady(Bitmap bitmap) {
                     file = ImageUtils.writeImageToTkpdPath(ImageUtils.DirectoryDef.DIRECTORY_TOKOPEDIA_CACHE_CAMERA, bitmap, false);
-                    previewImageView.setImageBitmap(bitmap);
-                    showPreviewView();
-                    reset();
+                    onSuccessImageTaken(file);
                 }
             });
         } catch (OutOfMemoryError error) {
             file = ImageUtils.writeImageToTkpdPath(ImageUtils.DirectoryDef.DIRECTORY_TOKOPEDIA_CACHE_CAMERA, imageByte, false);
-            Bitmap bitmap = BitmapFactory.decodeByteArray(imageByte , 0, imageByte.length);
-            previewImageView.setImageBitmap(bitmap);
-            showPreviewView();
-            reset();
+            onSuccessImageTaken(file);
         }
     }
 
-    private void goToImageEditor(){
-        onImagePickerCameraFragmentListener.onImageTaken(file.getAbsolutePath());
+    private void onSuccessImageTaken(File file){
+        if (onImagePickerCameraFragmentListener.supportMultipleSelection()) {
+            ImageHandler.loadImageFromFile(getContext(), previewImageView, file);
+            showPreviewView();
+        } else {
+            onImagePickerCameraFragmentListener.onImageTaken(file.getAbsolutePath());
+        }
+        reset();
     }
 
     private void showCameraView(){
         previewLayout.setVisibility(View.GONE);
         cameraView.setVisibility(View.VISIBLE);
+        onImagePickerCameraFragmentListener.onCameraViewVisible();
     }
 
     private void showPreviewView(){
         previewLayout.setVisibility(View.VISIBLE);
         cameraView.setVisibility(View.GONE);
+        onImagePickerCameraFragmentListener.onPreviewCameraViewVisible();
     }
 
     private void reset() {
