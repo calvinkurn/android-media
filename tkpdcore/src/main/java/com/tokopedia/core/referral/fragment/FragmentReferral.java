@@ -17,7 +17,7 @@ import com.tokopedia.core.R2;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.BasePresenterActivity;
-import com.tokopedia.core.app.BasePresenterFragment;
+import com.tokopedia.core.app.BasePresenterFragmentV4;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.manage.general.ManageWebViewActivity;
@@ -45,7 +45,7 @@ import static com.facebook.FacebookSdk.getApplicationContext;
  * Created by ashwanityagi on 18/09/17.
  */
 
-public class FragmentReferral extends BasePresenterFragment<IReferralPresenter> implements ReferralView {
+public class FragmentReferral extends BasePresenterFragmentV4<IReferralPresenter> implements ReferralView {
 
     @Inject
     ReferralPresenter presenter;
@@ -159,10 +159,15 @@ public class FragmentReferral extends BasePresenterFragment<IReferralPresenter> 
     }
 
     @Override
+    public void onCreate(Bundle savedInstanceState) {
+        initInjector();
+        super.onCreate(savedInstanceState);
+    }
+
     protected void initInjector() {
         ReferralComponent referralComponent = DaggerReferralComponent.builder()
                 .referralModule(new ReferralModule())
-                .appComponent(((BasePresenterActivity) context).getApplicationComponent())
+                .appComponent(((BasePresenterActivity) getActivity()).getApplicationComponent())
                 .build();
         referralComponent.inject(this);
 
@@ -193,7 +198,7 @@ public class FragmentReferral extends BasePresenterFragment<IReferralPresenter> 
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                presenter.shareApp();
+                presenter.shareApp(getChildFragmentManager());
                 if (presenter.isAppShowReferralButtonActivated()) {
                     UnifyTracking.eventReferralAndShare(AppEventTracking.Action.CLICK_SHARE_CODE, getReferralCodeFromTextView());
                 } else {
@@ -223,8 +228,8 @@ public class FragmentReferral extends BasePresenterFragment<IReferralPresenter> 
 
     @Override
     public void navigateToLoginPage() {
-        Intent intent = ((TkpdCoreRouter) MainApplication.getAppContext()).getLoginIntent(context);
-        startActivityForResult(intent, LOGIN_REQUEST_CODE);
+        Intent intent = ((TkpdCoreRouter) MainApplication.getAppContext()).getLoginIntent(getActivity());
+        startActivityForResult(intent,LOGIN_REQUEST_CODE);
     }
 
     @Override

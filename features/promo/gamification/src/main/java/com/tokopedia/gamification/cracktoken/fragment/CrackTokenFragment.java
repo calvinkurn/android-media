@@ -204,7 +204,7 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
     public void onResume() {
         super.onResume();
         // restart the timer (only if the timer was paused in onPaused)
-        if (tokenData != null ) {
+        if (tokenData != null) {
             if (prevTimeStamp > 0) {
                 long currentTimeStamp = System.currentTimeMillis();
                 int diffSeconds = (int) ((currentTimeStamp - prevTimeStamp) / 1000L);
@@ -535,7 +535,7 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
     }
 
     private void trackingLuckyEggView() {
-        if (getActivity().getApplication() instanceof AbstractionRouter) {
+        if (getActivity() != null && getActivity().getApplication() instanceof AbstractionRouter) {
             abstractionRouter
                     .getAnalyticTracker()
                     .sendEventTracking(
@@ -548,7 +548,7 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
     }
 
     private void trackingLuckyEggClick() {
-        if (getActivity().getApplication() instanceof AbstractionRouter) {
+        if (getActivity() != null && getActivity().getApplication() instanceof AbstractionRouter) {
             abstractionRouter
                     .getAnalyticTracker()
                     .sendEventTracking(
@@ -561,7 +561,7 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
     }
 
     private void trackingRewardLuckyEggView(String benefitType) {
-        if (getActivity().getApplication() instanceof AbstractionRouter) {
+        if (getActivity() != null && getActivity().getApplication() instanceof AbstractionRouter) {
             abstractionRouter
                     .getAnalyticTracker()
                     .sendEventTracking(
@@ -574,7 +574,7 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
     }
 
     private void trackingButtonClick(String benefitType, String buttonTitle) {
-        if (getActivity().getApplication() instanceof AbstractionRouter) {
+        if (getActivity() != null && getActivity().getApplication() instanceof AbstractionRouter) {
             abstractionRouter
                     .getAnalyticTracker()
                     .sendEventTracking(
@@ -587,7 +587,7 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
     }
 
     private void trackingTryAgainBtnClick() {
-        if (getActivity().getApplication() instanceof AbstractionRouter) {
+        if (getActivity() != null && getActivity().getApplication() instanceof AbstractionRouter) {
             abstractionRouter
                     .getAnalyticTracker()
                     .sendEventTracking(
@@ -600,7 +600,7 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
     }
 
     private void trackingExpiredBtnClick() {
-        if (getActivity().getApplication() instanceof AbstractionRouter) {
+        if (getActivity() != null && getActivity().getApplication() instanceof AbstractionRouter) {
             abstractionRouter
                     .getAnalyticTracker()
                     .sendEventTracking(
@@ -613,7 +613,7 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
     }
 
     private void trackingCloseRewardButtonClick(CrackResult crackResult) {
-        if (getActivity().getApplication() instanceof AbstractionRouter) {
+        if (getActivity() != null && getActivity().getApplication() instanceof AbstractionRouter) {
             String category = "";
             if (crackResult.isCrackTokenSuccess()) {
                 if (crackResult.isTokenUserInvalid()) {

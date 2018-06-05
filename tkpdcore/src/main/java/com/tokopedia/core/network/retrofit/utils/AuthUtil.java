@@ -39,7 +39,7 @@ import rx.schedulers.Schedulers;
 
 /**
  * @author Angga.Prasetiyo on 25/11/2015.
- *         Modified by kulomady add method without params
+ * Modified by kulomady add method without params
  */
 public class AuthUtil {
     private static final String CONTENT_TYPE = "application/x-www-form-urlencoded";
@@ -89,6 +89,23 @@ public class AuthUtil {
 
     public static final String HEADER_HMAC_SIGNATURE_KEY = "TKPDROID AndroidApps:";
     private static final String HEADER_TKPD_USER_ID = "Tkpd-UserId";
+
+    public static Map<String, String> generateHeaderCartCheckout(String path,
+                                                                 String strParam,
+                                                                 String method,
+                                                                 String authKey,
+                                                                 String contentTypeHeader) {
+        Map<String, String> finalHeader = getDefaultHeaderMap(
+                path, strParam, method, contentTypeHeader != null ? contentTypeHeader : CONTENT_TYPE,
+                authKey, DATE_FORMAT
+        );
+
+        finalHeader.put("X-APP-VERSION", "\"" + GlobalConfig.VERSION_NAME + "\"");
+        finalHeader.put("Tkpd-UserId", SessionHandler.getLoginID(MainApplication.getAppContext()));
+        finalHeader.put(HEADER_DEVICE, "android");
+        finalHeader.put("Tkpd-SessionId", GCMHandler.getRegistrationId(MainApplication.getAppContext()));
+        return finalHeader;
+    }
 
 
     /**

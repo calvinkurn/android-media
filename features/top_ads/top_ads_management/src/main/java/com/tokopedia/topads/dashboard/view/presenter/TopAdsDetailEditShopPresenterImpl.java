@@ -2,6 +2,7 @@ package com.tokopedia.topads.dashboard.view.presenter;
 
 import android.support.annotation.NonNull;
 
+import com.tokopedia.topads.dashboard.constant.TopAdsNetworkConstant;
 import com.tokopedia.topads.dashboard.domain.interactor.TopAdsGetDetailShopUseCase;
 import com.tokopedia.topads.dashboard.domain.interactor.TopAdsProductListUseCase;
 import com.tokopedia.topads.dashboard.domain.interactor.TopAdsSaveDetailShopUseCase;
@@ -10,6 +11,8 @@ import com.tokopedia.topads.dashboard.utils.ViewUtils;
 import com.tokopedia.topads.dashboard.view.listener.TopAdsDetailEditView;
 import com.tokopedia.topads.dashboard.view.mapper.TopAdDetailProductMapper;
 import com.tokopedia.topads.dashboard.view.model.TopAdsDetailShopViewModel;
+import com.tokopedia.topads.sourcetagging.data.TopAdsSourceTaggingModel;
+import com.tokopedia.topads.sourcetagging.domain.interactor.TopAdsGetSourceTaggingUseCase;
 
 import rx.Subscriber;
 
@@ -20,18 +23,44 @@ public class TopAdsDetailEditShopPresenterImpl<T extends TopAdsDetailEditView> e
 
     private TopAdsGetDetailShopUseCase topAdsGetDetailShopUseCase;
     private TopAdsSaveDetailShopUseCase topAdsSaveDetailShopUseCase;
+    protected TopAdsGetSourceTaggingUseCase topAdsGetSourceTaggingUseCase;
 
     public TopAdsDetailEditShopPresenterImpl(TopAdsGetDetailShopUseCase topAdsGetDetailShopUseCase,
                                              TopAdsSaveDetailShopUseCase topAdsSaveDetailShopUseCase,
-                                             TopAdsProductListUseCase topAdsProductListUseCase) {
+                                             TopAdsProductListUseCase topAdsProductListUseCase,
+                                             TopAdsGetSourceTaggingUseCase topAdsGetSourceTaggingUseCase) {
         super(topAdsProductListUseCase);
         this.topAdsGetDetailShopUseCase = topAdsGetDetailShopUseCase;
         this.topAdsSaveDetailShopUseCase = topAdsSaveDetailShopUseCase;
+        this.topAdsGetSourceTaggingUseCase = topAdsGetSourceTaggingUseCase;
     }
 
-    public void saveAd(TopAdsDetailShopViewModel viewModel) {
-        topAdsSaveDetailShopUseCase.execute(TopAdsSaveDetailShopUseCase.createRequestParams(TopAdDetailProductMapper.convertViewToDomain(viewModel)),
-                getSubscriberSaveShop());
+    public void saveAd(final TopAdsDetailShopViewModel viewModel) {
+        topAdsGetSourceTaggingUseCase.execute(new Subscriber<TopAdsSourceTaggingModel>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+
+            }
+
+            @Override
+            public void onNext(TopAdsSourceTaggingModel topAdsSourceTaggingModel) {
+                String source = TopAdsNetworkConstant.VALUE_SOURCE_ANDROID;
+
+                if (topAdsSourceTaggingModel != null){
+                    source = topAdsSourceTaggingModel.getSource();
+                }
+                viewModel.setSource(source);
+                topAdsSaveDetailShopUseCase.execute(TopAdsSaveDetailShopUseCase
+                                .createRequestParams(TopAdDetailProductMapper.convertViewToDomain(viewModel)),
+                        getSubscriberSaveShop());
+            }
+        });
+
     }
 
     @NonNull

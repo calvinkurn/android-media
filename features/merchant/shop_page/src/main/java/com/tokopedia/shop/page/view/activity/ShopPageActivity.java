@@ -76,8 +76,8 @@ public class ShopPageActivity extends BaseTabActivity implements ShopPagePromoWe
     private static final int REQUEST_CODER_USER_LOGIN = 100;
     private static final int PAGE_LIMIT = 3;
     private static final int TAB_POSITION_HOME = 0;
-    private static final int TAB_POSITION_TALK = 1;
-    private static final int TAB_POSITION_REVIEW = 2;
+    private static final int TAB_POSITION_TALK = 2;
+    private static final int TAB_POSITION_REVIEW = 1;
     private static final int VIEW_CONTENT = 1;
     private static final int VIEW_LOADING = 2;
     private static final int VIEW_ERROR = 3;
@@ -363,7 +363,7 @@ public class ShopPageActivity extends BaseTabActivity implements ShopPagePromoWe
             shopPageTracking.eventClickShareShop(getTitlePage(viewPager.getCurrentItem()), shopId,
                     shopPagePresenter.isMyShop(shopId), ShopPageTracking.getShopType(shopInfo.getInfo()));
         }
-        ((ShopModuleRouter) getApplication()).goToShareShop(this, shopId, shopInfo.getInfo().getShopUrl(),
+        ((ShopModuleRouter) getApplication()).goToShareShop(getSupportFragmentManager(), shopId, shopInfo.getInfo().getShopUrl(),
                 getString(R.string.shop_label_share_formatted, shopName, shopInfo.getInfo().getShopLocation()));
     }
 
@@ -696,6 +696,11 @@ public class ShopPageActivity extends BaseTabActivity implements ShopPagePromoWe
         return component;
     }
 
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+
+    }
+    
     @Override
     protected void onDestroy() {
         super.onDestroy();

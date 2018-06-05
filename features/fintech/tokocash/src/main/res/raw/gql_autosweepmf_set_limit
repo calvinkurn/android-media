@@ -1,0 +1,10 @@
+mutation UpdateAutoSweep($enable: Int!, $amountLimit: Int!) {
+  mf_autosweep_update(enable: $enable, amountLimit: $amountLimit) {
+    status
+    result {
+      code
+      message
+      success
+    }
+  }
+}

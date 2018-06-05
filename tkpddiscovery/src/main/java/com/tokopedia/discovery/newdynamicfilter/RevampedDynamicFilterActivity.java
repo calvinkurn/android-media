@@ -399,6 +399,16 @@ public class RevampedDynamicFilterActivity extends BaseActivity implements Dynam
                 = data.getStringExtra(DynamicFilterCategoryActivity.EXTRA_SELECTED_CATEGORY_NAME);
     }
 
+    @Override
+    public void onPriceSliderRelease(int minValue, int maxValue) {
+
+    }
+
+    @Override
+    public void onPriceSliderPressed(int minValue, int maxValue) {
+
+    }
+
     private void applyFilter() {
         renderFilterResult();
         finish();
@@ -529,8 +539,8 @@ public class RevampedDynamicFilterActivity extends BaseActivity implements Dynam
     }
 
     @Override
-    public String removeSavedTextInput(String key) {
-        return savedTextInput.remove(key);
+    public void removeSavedTextInput(String key) {
+        savedTextInput.remove(key);
     }
 
     @Override

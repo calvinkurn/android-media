@@ -80,7 +80,7 @@ public abstract class BaseNotificationFactory {
                     .asBitmap()
                     .into(getImageWidth(), getImageHeight())
                     .get(3, TimeUnit.SECONDS);
-        } catch (InterruptedException | ExecutionException | TimeoutException e ) {
+        } catch (InterruptedException | ExecutionException | TimeoutException | IllegalArgumentException e ) {
             return BitmapFactory.decodeResource(context.getResources(), getDrawableLargeIcon());
         }
     }
