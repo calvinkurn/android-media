@@ -9,6 +9,7 @@ import com.tokopedia.checkout.view.di.scope.AddShipmentAddressScope;
 import com.tokopedia.checkout.view.view.multipleaddressform.AddShipmentAddressPresenter;
 import com.tokopedia.checkout.view.view.multipleaddressform.IAddShipmentAddressPresenter;
 import com.tokopedia.transactionanalytics.CheckoutAnalyticsCartPage;
+import com.tokopedia.transactionanalytics.CheckoutAnalyticsChangeAddress;
 
 import dagger.Module;
 import dagger.Provides;
@@ -47,8 +48,16 @@ public class AddShipmentAddressModule {
             analyticTracker = ((AbstractionRouter) activity.getApplication()).getAnalyticTracker();
         }
         return new CheckoutAnalyticsCartPage(analyticTracker);
-
     }
 
+    @Provides
+    @AddShipmentAddressScope
+    CheckoutAnalyticsChangeAddress provideCheckoutAnalyticsChangeAddress() {
+        AnalyticTracker analyticTracker = null;
+        if (activity.getApplication() instanceof AbstractionRouter) {
+            analyticTracker = ((AbstractionRouter) activity.getApplication()).getAnalyticTracker();
+        }
+        return new CheckoutAnalyticsChangeAddress(analyticTracker);
+    }
 
 }

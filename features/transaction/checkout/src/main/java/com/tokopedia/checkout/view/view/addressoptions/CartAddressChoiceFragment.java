@@ -31,6 +31,7 @@ import com.tokopedia.core.manage.people.address.activity.AddAddressActivity;
 import com.tokopedia.core.manage.people.address.model.Destination;
 import com.tokopedia.core.manage.people.address.model.Token;
 import com.tokopedia.transactionanalytics.CheckoutAnalyticsCartPage;
+import com.tokopedia.transactionanalytics.CheckoutAnalyticsChangeAddress;
 
 import java.util.List;
 
@@ -71,6 +72,9 @@ public class CartAddressChoiceFragment extends BaseCheckoutFragment
 
     @Inject
     CheckoutAnalyticsCartPage analytic;
+
+    @Inject
+    CheckoutAnalyticsChangeAddress checkoutAnalyticsChangeAddress;
 
     public static CartAddressChoiceFragment newInstance(RecipientAddressModel currentAddress) {
         Bundle bundle = new Bundle();
@@ -303,7 +307,7 @@ public class CartAddressChoiceFragment extends BaseCheckoutFragment
                 .add(R.id.parent_view, fragment, fragment.getClass().getSimpleName())
                 .addToBackStack(fragment.getClass().getSimpleName())
                 .commit();
-        analytic.eventChangeSendMultiAddressPilihAlamatLainnya();
+        checkoutAnalyticsChangeAddress.eventClickChangeAddressClickPilihAlamatLainyaFromGAntiAlamat();
     }
 
     private void onSendToMultipleAddress() {

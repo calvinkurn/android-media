@@ -24,6 +24,7 @@ import com.tokopedia.checkout.view.di.component.MultipleAddressComponent;
 import com.tokopedia.checkout.view.di.module.MultipleAddressModule;
 import com.tokopedia.design.component.ToasterError;
 import com.tokopedia.transactionanalytics.CheckoutAnalyticsCartPage;
+import com.tokopedia.transactionanalytics.CheckoutAnalyticsChangeAddress;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -47,7 +48,7 @@ public class MultipleAddressFragment extends BaseCheckoutFragment
     @Inject
     UserSession userSession;
     @Inject
-    CheckoutAnalyticsCartPage checkoutAnalyticsCartPage;
+    CheckoutAnalyticsChangeAddress checkoutAnalyticsCartPage;
 
     public static final int ADD_SHIPMENT_ADDRESS_REQUEST_CODE = 21;
     public static final int EDIT_SHIPMENT_ADDRESS_REQUEST_CODE = 22;

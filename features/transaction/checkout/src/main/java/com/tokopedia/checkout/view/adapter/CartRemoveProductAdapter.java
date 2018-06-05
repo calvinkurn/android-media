@@ -101,14 +101,11 @@ public class CartRemoveProductAdapter extends RecyclerView.Adapter<RecyclerView.
         }
 
         private View.OnClickListener checkBoxClickedListener() {
-            return new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    isRemoveAll = !isRemoveAll;
-                    mActionListener.onCheckBoxCheckAll();
-                    notifyDataSetChanged();
-                    mActionListener.onAllItemCheckChanged(isRemoveAll);
-                }
+            return view -> {
+                isRemoveAll = !isRemoveAll;
+                if (isRemoveAll) mActionListener.sendAnalyticsOnCheckBoxAllSelected();
+                notifyDataSetChanged();
+                mActionListener.onAllItemCheckChanged(isRemoveAll);
             };
         }
 
@@ -145,7 +142,9 @@ public class CartRemoveProductAdapter extends RecyclerView.Adapter<RecyclerView.
          */
         void onCheckBoxStateChanged(boolean checked, int position);
 
-        void onCheckBoxCheckAll();
+        void sendAnalyticsOnCheckBoxAllSelected();
+
+        void sendAnalyticsOnCheckBoxSelected();
 
         void onAllItemCheckChanged(boolean checked);
     }
@@ -235,6 +234,7 @@ public class CartRemoveProductAdapter extends RecyclerView.Adapter<RecyclerView.
                 @Override
                 public void onCheckedChanged(CompoundButton compoundButton, boolean checked) {
                     mActionListener.onCheckBoxStateChanged(checked, position);
+                    if (checked) mActionListener.sendAnalyticsOnCheckBoxSelected();
                 }
             };
         }

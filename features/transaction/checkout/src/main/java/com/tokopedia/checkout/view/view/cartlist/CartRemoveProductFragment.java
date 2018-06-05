@@ -308,8 +308,13 @@ public class CartRemoveProductFragment extends BaseCheckoutFragment
     }
 
     @Override
-    public void onCheckBoxCheckAll() {
+    public void sendAnalyticsOnCheckBoxAllSelected() {
         cartPageAnalytics.eventClickCartClickPilihSemuaFormHapus();
+    }
+
+    @Override
+    public void sendAnalyticsOnCheckBoxSelected() {
+        cartPageAnalytics.eventClickCartClickChecklistBoxFormHapus();
     }
 
 

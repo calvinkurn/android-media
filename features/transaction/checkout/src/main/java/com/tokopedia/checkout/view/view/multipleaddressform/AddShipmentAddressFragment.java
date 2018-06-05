@@ -24,6 +24,7 @@ import com.tokopedia.checkout.view.di.component.DaggerAddShipmentAddressComponen
 import com.tokopedia.checkout.view.di.module.AddShipmentAddressModule;
 import com.tokopedia.checkout.view.view.addressoptions.CartAddressChoiceActivity;
 import com.tokopedia.transactionanalytics.CheckoutAnalyticsCartPage;
+import com.tokopedia.transactionanalytics.CheckoutAnalyticsChangeAddress;
 
 import java.util.ArrayList;
 
@@ -59,7 +60,7 @@ public class AddShipmentAddressFragment extends BaseCheckoutFragment {
     IAddShipmentAddressPresenter presenter;
 
     @Inject
-    CheckoutAnalyticsCartPage analytic;
+    CheckoutAnalyticsChangeAddress analytic;
 
     private int formMode;
     ArrayList<MultipleAddressAdapterData> dataList;

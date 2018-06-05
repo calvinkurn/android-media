@@ -222,14 +222,6 @@ public class CheckoutAnalyticsCartShipmentPage extends CheckoutAnalytics {
     }
     // Cart change address starts here
 
-    public void eventClickShipmentClickPilihAlamatLainnyaFromGantiAlamat() {
-        analyticTracker.sendEventTracking(ConstantTransactionAnalytics.EventName.CLICK_ATC,
-                ConstantTransactionAnalytics.EventCategory.CART_CHANGE_ADDRESS,
-                ConstantTransactionAnalytics.EventAction.CLICK_PILIH_ALAMAT_LAINNYA_FROM_GANTI_ALAMAT,
-                ""
-        );
-    }
-
     public void eventClickShipmentClickTambahAlamatBaruFromGantiAlamat() {
         analyticTracker.sendEventTracking(ConstantTransactionAnalytics.EventName.CLICK_ATC,
                 ConstantTransactionAnalytics.EventCategory.CART_CHANGE_ADDRESS,
@@ -323,14 +315,6 @@ public class CheckoutAnalyticsCartShipmentPage extends CheckoutAnalytics {
                 ConstantTransactionAnalytics.EventCategory.CART_CHANGE_ADDRESS,
                 ConstantTransactionAnalytics.EventAction.CLICK_ARROW_BACK_FROM_PLUS,
                 "");
-    }
-
-    public void eventClickShipmemtClickBackArrowFromKirimKeBeberapaAlamat() {
-        analyticTracker.sendEventTracking(ConstantTransactionAnalytics.EventName.CLICK_ATC,
-                ConstantTransactionAnalytics.EventCategory.CART_MULTIPLE_ADDRESS,
-                ConstantTransactionAnalytics.EventAction.CLICK_BACK_ARROW_FROM_KIRIM_KE_BEBERAPA_ALAMAT,
-                ""
-        );
     }
 
     public void eventClickShipmentClickKembaliDanHapusPerubahanFromKirimKeBeberapaAlamat() {
