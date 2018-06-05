@@ -32,7 +32,7 @@ public class TopAdsKeywordNegativeListFragment extends TopAdsKeywordAdListFragme
     public Visitable getDefaultEmptyViewModel() {
         EmptyModel emptyModel = (EmptyModel) super.getDefaultEmptyViewModel();
         emptyModel.setTitle(getString(R.string.top_ads_keyword_your_keyword_negative_empty));
-        emptyModel.setContent(getString(R.string.top_ads_empty_product_promo_content_text));
+        emptyModel.setContent(getString(R.string.top_ads_keyword_please_use_negative));
         return emptyModel;
     }
 

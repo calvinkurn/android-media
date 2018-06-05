@@ -29,7 +29,7 @@ public class TopAdsKeywordPositiveListFragment extends TopAdsKeywordAdListFragme
     public Visitable getDefaultEmptyViewModel() {
         EmptyModel emptyModel = (EmptyModel) super.getDefaultEmptyViewModel();
         emptyModel.setTitle(getString(R.string.top_ads_keyword_your_keyword_empty));
-        emptyModel.setContent(getString(R.string.top_ads_keyword_please_use_negative));
+        emptyModel.setContent(getString(R.string.top_ads_empty_product_promo_content_text));
         return emptyModel;
     }
 

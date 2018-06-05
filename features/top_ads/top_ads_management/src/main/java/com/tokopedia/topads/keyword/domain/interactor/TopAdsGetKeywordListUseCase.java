@@ -41,7 +41,7 @@ public class TopAdsGetKeywordListUseCase extends UseCase<KeywodDashboardViewMode
             requestParams.putString(KeywordTypeDef.END_DATE, baseKeywordParam.endDateDesc);
         }
         requestParams.putString(KeywordTypeDef.PAGE, Integer.toString(baseKeywordParam.page));
-        requestParams.putString(KeywordTypeDef.IS_POSITIVE, Integer.toString(baseKeywordParam.isPositive()));
+        requestParams.putInt(KeywordTypeDef.IS_POSITIVE, baseKeywordParam.isPositive());
 
         if (baseKeywordParam.groupId > 0)
             requestParams.putString(KeywordTypeDef.GROUP_ID, Long.toString(baseKeywordParam.groupId));

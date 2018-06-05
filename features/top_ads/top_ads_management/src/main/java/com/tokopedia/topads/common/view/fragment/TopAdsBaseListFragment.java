@@ -122,11 +122,6 @@ public abstract class TopAdsBaseListFragment<V extends Visitable, F extends Adap
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        if (savedInstanceState == null) {
-            onFirstTimeLaunched();
-        } else {
-            onRestoreState (savedInstanceState);
-        }
     }
 
     @Override
@@ -147,6 +142,11 @@ public abstract class TopAdsBaseListFragment<V extends Visitable, F extends Adap
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        if (savedInstanceState == null) {
+            onFirstTimeLaunched();
+        } else {
+            onRestoreState (savedInstanceState);
+        }
         super.onViewCreated(view, savedInstanceState);
         recyclerView = view.findViewById(R.id.recycler_view);
         layoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
@@ -669,7 +669,7 @@ public abstract class TopAdsBaseListFragment<V extends Visitable, F extends Adap
 
     public View getFab() {
         if(menuAdd != null)
-            menuAdd.getActionView();
+            return menuAdd.getActionView();
         return null;
     }
 

@@ -161,22 +161,28 @@ public class TopAdsKeywordAdListActivity extends BaseTabActivity implements HasC
         if (searchView == null) {
             return;
         }
-        // Pencarian
-        showCaseList.add(
-                new ShowCaseObject(
-                        searchView,
-                        getString(R.string.topads_showcase_keyword_list_title_1),
-                        getString(R.string.topads_showcase_keyword_list_desc_1),
-                        ShowCaseContentPosition.UNDEFINED,
-                        Color.WHITE));
 
-        // Filter
-        showCaseList.add(
-                new ShowCaseObject(
-                        topAdsKeywordListFragment.getFilterView(),
-                        getString(R.string.topads_showcase_keyword_list_title_2),
-                        getString(R.string.topads_showcase_keyword_list_desc_2),
-                        ShowCaseContentPosition.UNDEFINED));
+        if (searchView.getVisibility() == View.VISIBLE) {
+            // Pencarian
+            showCaseList.add(
+                    new ShowCaseObject(
+                            searchView,
+                            getString(R.string.topads_showcase_keyword_list_title_1),
+                            getString(R.string.topads_showcase_keyword_list_desc_1),
+                            ShowCaseContentPosition.UNDEFINED,
+                            Color.WHITE));
+        }
+
+        if (topAdsKeywordListFragment.getFilterView() != null &&
+                topAdsKeywordListFragment.getFilterView().getVisibility() == View.VISIBLE) {
+            // Filter
+            showCaseList.add(
+                    new ShowCaseObject(
+                            topAdsKeywordListFragment.getFilterView(),
+                            getString(R.string.topads_showcase_keyword_list_title_2),
+                            getString(R.string.topads_showcase_keyword_list_desc_2),
+                            ShowCaseContentPosition.UNDEFINED));
+        }
 
         RecyclerView recyclerView = topAdsKeywordListFragment.getRecyclerView();
         recyclerView.postDelayed(new Runnable() {
