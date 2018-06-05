@@ -21,17 +21,17 @@ public class ArticleTextView extends CustomTextView {
 
 
     public void setContactUsArticle(ContactUsArticleResponse contactUsArticle) {
-       this.contactUsArticle = contactUsArticle;
-       setText(contactUsArticle.getTitle());
+        this.contactUsArticle = contactUsArticle;
+        setText(contactUsArticle.getTitle());
     }
 
 
     @Override
     public void onViewClick() {
-        getContext().startActivity(((TkpdInboxRouter)(getContext().getApplicationContext())).getWebviewActivityWithIntent(getContext(), TkpdBaseURL.MOBILE_DOMAIN + ContactUsURL.CONTENT_BASE_URL + contactUsArticle.getSlug() + "?flag_app=1"));
+        getContext().startActivity(((TkpdInboxRouter) (getContext().getApplicationContext()))
+                .getWebviewActivityWithIntent(getContext(),
+                        TkpdBaseURL.MOBILE_DOMAIN + ContactUsURL.CONTENT_BASE_URL
+                                + contactUsArticle.getSlug() + "?flag_app=1"));
 
-       // TransactionPurchaseRouter.startWebViewActivity(getContext(), TkpdBaseURL.MOBILE_DOMAIN + ContactUsURL.CONTENT_BASE_URL + contactUsArticle.getSlug());
-      //  getContext().startActivity(
-        //        PopularFiveArticleActivity.getInstance(getContext(),contactUsArticle.getSlug()));*/
     }
 }

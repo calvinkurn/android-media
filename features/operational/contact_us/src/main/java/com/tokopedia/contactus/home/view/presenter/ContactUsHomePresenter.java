@@ -49,7 +49,7 @@ public class ContactUsHomePresenter extends BaseDaggerPresenter<ContactUsHomeCon
 
             @Override
             public void onError(Throwable e) {
-                Log.e(ContactUsHomeContract.ContactUsName, "Article OnError " + e.getLocalizedMessage());
+                Log.d(ContactUsHomeContract.ContactUsName, "Article OnError " + e.getLocalizedMessage());
                 e.printStackTrace();
             }
 
@@ -69,7 +69,7 @@ public class ContactUsHomePresenter extends BaseDaggerPresenter<ContactUsHomeCon
 
             @Override
             public void onError(Throwable e) {
-                Log.e(ContactUsHomeContract.ContactUsName, "PurchaseList OnError" + e.getLocalizedMessage());
+                Log.d(ContactUsHomeContract.ContactUsName, "PurchaseList OnError" + e.getLocalizedMessage());
                 e.printStackTrace();
             }
 
@@ -91,7 +91,7 @@ public class ContactUsHomePresenter extends BaseDaggerPresenter<ContactUsHomeCon
 
             @Override
             public void onError(Throwable e) {
-                Log.e(ContactUsHomeContract.ContactUsName, "TopBot OnError" + e.getLocalizedMessage());
+                Log.d(ContactUsHomeContract.ContactUsName, "TopBot OnError" + e.getLocalizedMessage());
                 e.printStackTrace();
             }
 

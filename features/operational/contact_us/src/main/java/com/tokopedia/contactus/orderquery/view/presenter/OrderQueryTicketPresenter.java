@@ -27,13 +27,13 @@ public class OrderQueryTicketPresenter extends BaseDaggerPresenter<OrderQueryTic
     QueryTicketUseCase queryTicketUseCase;
 
     @Inject
-    public OrderQueryTicketPresenter(QueryTicketUseCase queryTicketUseCase, @ApplicationContext Context context) {
+    OrderQueryTicketPresenter(QueryTicketUseCase queryTicketUseCase, @ApplicationContext Context context) {
         this.queryTicketUseCase = queryTicketUseCase;
         this.context = context;
     }
 
 
-    public RequestParams createRequestParam(BuyerPurchaseList purchaseList) {
+    private RequestParams createRequestParam(BuyerPurchaseList purchaseList) {
         RequestParams requestParams = RequestParams.create();
         requestParams.putString("order", String.valueOf(buyerPurchaseList.getDetail().getId()));
         requestParams.putString("order_type", String.valueOf(buyerPurchaseList.getDetail().getTypeId()));
@@ -45,7 +45,7 @@ public class OrderQueryTicketPresenter extends BaseDaggerPresenter<OrderQueryTic
         return requestParams;
     }
 
-    BuyerPurchaseList buyerPurchaseList;
+    private BuyerPurchaseList buyerPurchaseList;
 
     @Override
     public void setBuyerPurchaseList(BuyerPurchaseList buyerPurchaseList) {
@@ -61,7 +61,7 @@ public class OrderQueryTicketPresenter extends BaseDaggerPresenter<OrderQueryTic
 
             @Override
             public void onError(Throwable e) {
-                Log.e(ContactUsHomeContract.ContactUsName, " BuyerPurchase OnError " + e);
+                Log.d(ContactUsHomeContract.ContactUsName, " BuyerPurchase OnError " + e);
             }
 
             @Override

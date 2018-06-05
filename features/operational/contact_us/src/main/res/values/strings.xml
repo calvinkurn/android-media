@@ -46,5 +46,6 @@
     <string name="riwayat_transaksi">Riwayat Transaksi</string>
     <string name="laporkan_kendala_transaksi_di_tokopedia">Laporkan kendala transaksi di Tokopedia</string>
     <string name="kirim">Kirim</string>
+    <string name="more_items">+ %1$d barang lainnya</string>
 
 </resources>

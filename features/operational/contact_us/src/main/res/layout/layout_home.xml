@@ -51,7 +51,7 @@
 
             <include
                 layout="@layout/layout_no_orders"
-                android:visibility="invisible" />
+                android:visibility="visible" />
 
         </FrameLayout>
 

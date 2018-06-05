@@ -23,6 +23,8 @@ public class ContactUsPass {
     private static final String PARAM_INVOICE = "invoice";
     private static final String PARAM_PHONE = "phone";
     private static final String PARAM_TAG = "tag";
+    private static final String PARAM_ANDROID = "android";
+    private static final String ONE = "1";
 
 
     private static final String PARAM_POST_KEY = "post_key";
@@ -36,13 +38,13 @@ public class ContactUsPass {
     private static final String PARAM_UTM_SOURCE = "utm_source";
     private static final String PARAM_FLAG_APP = "flag_app";
 
-    String solutionId;
-    String messageBody;
-    String invoiceNumber;
-    String serverId;
-    ArrayList<ImageUpload> attachment;
+    private String solutionId;
+    private String messageBody;
+    private String invoiceNumber;
+    private String serverId;
+    private ArrayList<ImageUpload> attachment;
 
-    String postKey;
+    private String postKey;
     private GeneratedHost generatedHost;
     private String email;
     private String name;
@@ -50,8 +52,7 @@ public class ContactUsPass {
     private String orderId;
     private String tag;
 
-
-    public String getSolutionId() {
+    private String getSolutionId() {
         return solutionId;
     }
 
@@ -59,7 +60,7 @@ public class ContactUsPass {
         this.solutionId = solutionId;
     }
 
-    public String getMessageBody() {
+    private String getMessageBody() {
         return messageBody;
     }
 
@@ -67,7 +68,7 @@ public class ContactUsPass {
         this.messageBody = messageBody;
     }
 
-    public String getInvoiceNumber() {
+    private String getInvoiceNumber() {
         return invoiceNumber;
     }
 
@@ -124,13 +125,13 @@ public class ContactUsPass {
         }
         param.put(PARAM_PHONE, getPhoneNumber());
         param.put(PARAM_TAG, getPhoneNumber());
-        param.put(PARAM_UTM_SOURCE, "android");
-        param.put(PARAM_FLAG_APP,"1");
+        param.put(PARAM_UTM_SOURCE, PARAM_ANDROID);
+        param.put(PARAM_FLAG_APP, ONE);
 
         if (getAttachment() != null && getAttachment().size() > 0) {
             param.put(PARAM_ATTACHMENT_STRING, getPhotoAll());
             param.put(PARAM_PHOTO_ALL, getPhotoAll());
-            param.put(PARAM_P_PHOTO, "1");
+            param.put(PARAM_P_PHOTO, ONE);
             param.put(PARAM_PHOTO_OBJ, getPhotoObj());
 
         }
@@ -143,7 +144,7 @@ public class ContactUsPass {
             for (ImageUpload image : getAttachment()) {
                 JSONObject photoObj = new JSONObject();
                 photoObj.put(PARAM_IMAGE_ID, image.getImageId());
-                photoObj.put(PARAM_IS_TEMP, "1");
+                photoObj.put(PARAM_IS_TEMP, ONE);
                 reviewPhotos.put(image.getImageId(), photoObj);
             }
 
@@ -171,8 +172,8 @@ public class ContactUsPass {
         HashMap<String, String> param = new HashMap<>();
         param.put(PARAM_POST_KEY, getPostKey());
         param.put(PARAM_FILE_UPLOADED, getFileUploaded());
-        param.put(PARAM_UTM_SOURCE, "android");
-        param.put(PARAM_FLAG_APP,"1");
+        param.put(PARAM_UTM_SOURCE, PARAM_ANDROID);
+        param.put(PARAM_FLAG_APP, ONE);
         return param;
     }
 
@@ -208,7 +209,7 @@ public class ContactUsPass {
         this.phoneNumber = phoneNumber;
     }
 
-    public String getOrderId() {
+    private String getOrderId() {
         return orderId;
     }
 
