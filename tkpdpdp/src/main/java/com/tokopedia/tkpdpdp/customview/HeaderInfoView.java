@@ -138,6 +138,38 @@ public class HeaderInfoView extends BaseView<ProductDetailData, ProductDetailVie
     public void renderTempData(ProductPass productPass) {
         tvName.setText(MethodChecker.fromHtml(productPass.getProductName()));
         tvPriceFinal.setText(productPass.getProductPrice());
+        if (!TextUtils.isEmpty(productPass.getOriginalPrice()) && productPass.getDiscountPercentage()>0) {
+            textOriginalPrice.setText(productPass.getOriginalPrice());
+            textOriginalPrice.setPaintFlags(
+                    textOriginalPrice.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG
+            );
+
+            textDiscount.setText(String.format(
+                    getContext().getString(R.string.label_discount_percentage),
+                    productPass.getDiscountPercentage()
+            ));
+
+            tvPriceFinal.setVisibility(VISIBLE);
+            textDiscount.setVisibility(VISIBLE);
+            textOriginalPrice.setVisibility(VISIBLE);
+        }
+        if (!TextUtils.isEmpty(productPass.getCashback())) {
+            cashbackTextView.setText(productPass.getCashback());
+            cashbackTextView.setBackgroundResource(com.tokopedia.core.R.drawable.bg_label);
+            cashbackTextView.setTextColor(ContextCompat.getColor(context, com.tokopedia.core.R.color.white));
+            ColorStateList tint = ColorStateList.valueOf(ContextCompat.getColor(context,com.tokopedia.core.R.color.tkpd_main_green));
+            if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP) {
+                cashbackTextView.setBackgroundTintList(tint);
+            } else if (Build.VERSION.SDK_INT == Build.VERSION_CODES.LOLLIPOP && cashbackTextView instanceof TintableBackgroundView) {
+                ((TintableBackgroundView) cashbackTextView).setSupportBackgroundTintList(tint);
+            } else {
+                ViewCompat.setBackgroundTintList(cashbackTextView, tint);
+            }
+            cashbackTextView.setVisibility(VISIBLE);
+        }
+        if(productPass.isOfficial()) {
+            textOfficialStore.setVisibility(VISIBLE);
+        }
         setVisibility(VISIBLE);
     }
 

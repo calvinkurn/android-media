@@ -3,6 +3,7 @@ package com.tokopedia.core.referral.presenter;
 import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
+import android.support.v4.app.FragmentManager;
 import android.text.TextUtils;
 
 import com.tkpd.library.utils.CommonUtils;
@@ -28,7 +29,7 @@ import com.tokopedia.core.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.core.remoteconfig.RemoteConfig;
 import com.tokopedia.core.router.wallet.IWalletRouter;
 import com.tokopedia.core.router.wallet.WalletRouterUtil;
-import com.tokopedia.core.share.ShareActivity;
+import com.tokopedia.core.share.ShareBottomSheet;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.core.var.TokoCashTypeDef;
@@ -82,7 +83,7 @@ public class ReferralPresenter extends BaseDaggerPresenter<ReferralView> impleme
     }
 
     @Override
-    public void shareApp() {
+    public void shareApp(FragmentManager fragmentManager) {
         formatSharingContents();
         String type= ShareData.APP_SHARE_TYPE;
         if(isAppShowReferralButtonActivated()){
@@ -95,10 +96,9 @@ public class ReferralPresenter extends BaseDaggerPresenter<ReferralView> impleme
                 .setTextContent(contents)
                 .setUri(Constants.WEB_PLAYSTORE_BUYER_APP_URL)
                 .build();
-        activity.startActivity(ShareActivity.createIntent(activity, shareData));
+
+        ShareBottomSheet.show(fragmentManager, shareData);
         TrackingUtils.sendMoEngageReferralScreenOpen(activity.getString(R.string.referral_share_screen_name));
-
-
     }
 
     private void formatSharingContents() {

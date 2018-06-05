@@ -1,5 +1,6 @@
 package com.tokopedia.flight.orderlist.domain.model;
 
+import com.tokopedia.flight.orderlist.data.cloud.entity.CancellationEntity;
 import com.tokopedia.flight.orderlist.data.cloud.entity.PaymentInfoEntity;
 
 import java.util.List;
@@ -26,6 +27,8 @@ public class FlightOrder {
     private List<FlightOrderJourney> journeys;
     private List<FlightOrderPassengerViewModel> passengerViewModels;
     private PaymentInfoEntity payment;
+    private List<CancellationEntity> cancellations;
+    private List<FlightInsurance> insurances;
 
     public FlightOrder() {
     }
@@ -164,5 +167,21 @@ public class FlightOrder {
 
     public void setPdf(String pdf) {
         this.pdf = pdf;
+    }
+
+    public List<CancellationEntity> getCancellations() {
+        return cancellations;
+    }
+
+    public void setCancellations(List<CancellationEntity> cancellations) {
+        this.cancellations = cancellations;
+    }
+
+    public List<FlightInsurance> getInsurances() {
+        return insurances;
+    }
+
+    public void setInsurances(List<FlightInsurance> insurances) {
+        this.insurances = insurances;
     }
 }

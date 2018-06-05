@@ -43,6 +43,7 @@ public class CampaignDataStore {
             }
         });
     }
+
     public Observable<CampaignResponseEntity> getCampaignForShake(HashMap<String, Object> param) {
         return this.mCampaignAPI.getCampaignForShake(param).map(new Func1<Response<DataResponse<CampaignResponseEntity>>, CampaignResponseEntity>() {
             @Override

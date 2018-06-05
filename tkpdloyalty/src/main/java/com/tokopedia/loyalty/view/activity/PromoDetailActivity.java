@@ -11,7 +11,7 @@ import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.abstraction.common.di.component.HasComponent;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.product.model.share.ShareData;
-import com.tokopedia.core.share.ShareActivity;
+import com.tokopedia.core.share.ShareBottomSheet;
 import com.tokopedia.loyalty.R;
 import com.tokopedia.loyalty.di.component.DaggerPromoDetailComponent;
 import com.tokopedia.loyalty.di.component.PromoDetailComponent;
@@ -99,6 +99,6 @@ public class PromoDetailActivity extends BaseSimpleActivity implements HasCompon
                         + getString(R.string.share_promo_additional_text))
                 .setUri(promoData.getLink())
                 .build();
-        this.startActivity(ShareActivity.createIntent(this, shareData));
+        ShareBottomSheet.show(getSupportFragmentManager(), shareData);
     }
 }
