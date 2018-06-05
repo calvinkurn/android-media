@@ -39,6 +39,7 @@ dependencies {
 
     compile project(rootProject.ext.libraries.cacheApi)
     compile project(rootProject.ext.libraries.abstraction)
+    compile project(rootProject.ext.libraries.imagePicker)
 
     testCompile rootProject.ext.testDependencies.junit
     testCompile rootProject.ext.testDependencies.mockitorCore

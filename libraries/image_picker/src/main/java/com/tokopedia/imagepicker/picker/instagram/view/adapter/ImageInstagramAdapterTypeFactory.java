@@ -1,16 +1,12 @@
 package com.tokopedia.imagepicker.picker.instagram.view.adapter;
 
-import android.content.Context;
-import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory;
-import com.tokopedia.abstraction.base.view.adapter.model.ErrorNetworkModel;
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingModel;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.LoadingShimmeringGridViewHolder;
-import com.tokopedia.imagepicker.R;
+import com.tokopedia.abstraction.base.view.adapter.viewholders.LoadingViewholder;
 import com.tokopedia.imagepicker.picker.instagram.view.model.InstagramErrorLoginModel;
 import com.tokopedia.imagepicker.picker.instagram.view.model.InstagramMediaModel;
 
@@ -36,15 +32,15 @@ public class ImageInstagramAdapterTypeFactory extends BaseAdapterTypeFactory {
 
     @Override
     public int type(LoadingModel viewModel) {
-        return LoadingShimmeringGridViewHolder.LAYOUT;
+        return LoadingViewholder.LAYOUT;
     }
 
     @Override
     public AbstractViewHolder createViewHolder(View parent, int type) {
         if (type == ImagePickerInstagramViewHolder.LAYOUT) {
             return new ImagePickerInstagramViewHolder(parent, imageResize);
-        } else if (type == LoadingShimmeringGridViewHolder.LAYOUT) {
-            return new LoadingShimmeringGridViewHolder(parent);
+        } else if (type == LoadingViewholder.LAYOUT) {
+            return new LoadingViewholder(parent);
         } else if (type == InstagramErrorLoginViewHolder.LAYOUT){
             return new InstagramErrorLoginViewHolder(parent);
         }

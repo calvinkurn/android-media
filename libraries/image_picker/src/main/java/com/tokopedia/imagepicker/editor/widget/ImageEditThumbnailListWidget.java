@@ -47,6 +47,7 @@ public class ImageEditThumbnailListWidget extends FrameLayout implements ImageEd
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     public ImageEditThumbnailListWidget(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
+        init();
     }
 
     private void init() {

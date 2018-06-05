@@ -28,6 +28,7 @@ import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.imagepicker.picker.gallery.type.GalleryType;
 import com.tokopedia.imagepicker.picker.main.builder.ImagePickerBuilder;
+import com.tokopedia.imagepicker.picker.main.builder.ImagePickerEditorBuilder;
 import com.tokopedia.imagepicker.picker.main.builder.ImageSelectionTypeDef;
 import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity;
 import com.tokopedia.seller.R;
@@ -80,11 +81,11 @@ public class ShopEditorFragment extends BaseFragment<ShopEditorPresenter> implem
 
     public void uploadImage(View view) {
         ImagePickerBuilder builder = new ImagePickerBuilder(getString(R.string.choose_shop_picture),
-                new int[]{TYPE_GALLERY, TYPE_CAMERA}, GalleryType.IMAGE_ONLY, ImageSelectionTypeDef.TYPE_SINGLE,
-                false, 1, DEFAULT_MAX_IMAGE_SIZE_IN_KB,
-                DEFAULT_MIN_RESOLUTION, 1, 1, true, true,
-                new int[]{ACTION_BRIGHTNESS, ACTION_CONTRAST, ACTION_CROP, ACTION_ROTATE},
-                false);
+                new int[]{TYPE_GALLERY, TYPE_CAMERA}, GalleryType.IMAGE_ONLY, DEFAULT_MAX_IMAGE_SIZE_IN_KB,
+                DEFAULT_MIN_RESOLUTION, 1, 1, true,
+                new ImagePickerEditorBuilder(new int[]{ACTION_BRIGHTNESS, ACTION_CONTRAST, ACTION_CROP, ACTION_ROTATE},
+                        false)
+                ,null);
         Intent intent = ImagePickerActivity.getIntent(getContext(), builder);
         startActivityForResult(intent, REQUEST_CODE_SHOP_IMAGE);
     }
