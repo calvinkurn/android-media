@@ -235,17 +235,69 @@ public class CheckoutAnalyticsCartPage extends CheckoutAnalytics {
                 "");
     }
 
-    public void eventViewMultipleAddressKlikTulisCatatan() {
+    public void eventMultipleAddressKlikTulisCatatan() {
         analyticTracker.sendEventTracking(EventName.CLICK_ATC,
                 EventCategory.CART_MULTIPLE_ADDRESS,
                 EventAction.CLICK_TULIS_CATATAN_FROM_UBAH_FROM_KIRIM_KE_BEBERAPA_ALAMAT,
                 "");
     }
 
-    public void eventViewMultipleAddressKlikSimpan() {
+    public void eventMultipleAddressKlikSimpan() {
         analyticTracker.sendEventTracking(EventName.CLICK_ATC,
                 EventCategory.CART_MULTIPLE_ADDRESS,
                 EventAction.CLICK_SIMPAN_FROM_UBAH_FROM_KIRIM_KE_BEBERAPA_ALAMAT,
+                "");
+    }
+
+    public void eventChangeSendMultiAddressPilihAlamatLainnya() {
+        analyticTracker.sendEventTracking(EventName.CLICK_ATC,
+                EventCategory.CART_CHANGE_ADDRESS,
+                EventAction.CLICK_PILIH_ALAMAT_LAINNYA_FROM_GANTI_ALAMAT,
+                "");
+    }
+
+    public void eventChangeSendMultiAddressTambahAlamatBaru() {
+        analyticTracker.sendEventTracking(EventName.CLICK_ATC,
+                EventCategory.CART_CHANGE_ADDRESS,
+                EventAction.CLICK_TAMBAH_ALAMAT_BARU_FROM_GANTI_ALAMAT,
+                "");
+    }
+    public void eventChangeSendMultiAddressKirimKeBeberapaAlamat() {
+        analyticTracker.sendEventTracking(EventName.CLICK_ATC,
+                EventCategory.CART_CHANGE_ADDRESS,
+                EventAction.CLICK_KIRIM_KE_BEBERAPA_ALAMAT_FROM_GANTI_ALAMAT,
+                "");
+    }
+    public void eventChangeSendMultiAddressKirimKeAlamatIni() {
+        analyticTracker.sendEventTracking(EventName.CLICK_ATC,
+                EventCategory.CART_CHANGE_ADDRESS,
+                EventAction.CLICK_KIRIM_KE_ALAMAT_INI_FROM_GANTI_ALAMAT,
+                "");
+    }
+    public void eventChangeSendMultiAddressKlikTombolX() {
+        analyticTracker.sendEventTracking(EventName.CLICK_ATC,
+                EventCategory.CART_CHANGE_ADDRESS,
+                EventAction.CLICK_X_FROM_PILIH_ALAMAT_LAINNYA,
+                "");
+    }
+    public void eventChangeSendMultiAddressKlikTombolPlus() {
+        analyticTracker.sendEventTracking(EventName.CLICK_ATC,
+                EventCategory.CART_CHANGE_ADDRESS,
+                EventAction.CLICK_PLUS_FROM_PILIH_ALAMAT_LAINNYA,
+                "");
+    }
+
+    public void eventChangeSendMultiAddressKlikUbah() {
+        analyticTracker.sendEventTracking(EventName.CLICK_ATC,
+                EventCategory.CART_CHANGE_ADDRESS,
+                EventAction.CLICK_UBAH_FROM_PILIH_ALAMAT_LAINNYA,
+                "");
+    }
+
+    public void eventChangeSendMultiAddressPilihAlamat() {
+        analyticTracker.sendEventTracking(EventName.CLICK_ATC,
+                EventCategory.CART_CHANGE_ADDRESS,
+                EventAction.CLICK_CHECKLIST_ALAMAT_FROM_PILIH_ALAMAT_LAINNYA,
                 "");
     }
 

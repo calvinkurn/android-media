@@ -30,6 +30,7 @@ import com.tokopedia.core.manage.people.address.ManageAddressConstant;
 import com.tokopedia.core.manage.people.address.activity.AddAddressActivity;
 import com.tokopedia.core.manage.people.address.model.Destination;
 import com.tokopedia.core.manage.people.address.model.Token;
+import com.tokopedia.transactionanalytics.CheckoutAnalyticsCartPage;
 
 import java.util.List;
 
@@ -68,6 +69,9 @@ public class CartAddressChoiceFragment extends BaseCheckoutFragment
     @Inject
     ShipmentAddressListAdapter mShipmentAddressListAdapter;
 
+    @Inject
+    CheckoutAnalyticsCartPage analytic;
+
     public static CartAddressChoiceFragment newInstance(RecipientAddressModel currentAddress) {
         Bundle bundle = new Bundle();
         bundle.putParcelable(EXTRA_CURRENT_ADDRESS, currentAddress);
@@ -79,7 +83,7 @@ public class CartAddressChoiceFragment extends BaseCheckoutFragment
     @Override
     protected void initInjector() {
         CartAddressChoiceComponent component = DaggerCartAddressChoiceComponent.builder()
-                .cartAddressChoiceModule(new CartAddressChoiceModule(this))
+                .cartAddressChoiceModule(new CartAddressChoiceModule(getActivity(), this))
                 .build();
         component.inject(this);
     }
@@ -94,6 +98,7 @@ public class CartAddressChoiceFragment extends BaseCheckoutFragment
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.menu_add_address) {
+            analytic.eventChangeSendMultiAddressKlikTombolPlus();
             startActivityForResult(AddAddressActivity.createInstance(getActivity(), token),
                     ManageAddressConstant.REQUEST_CODE_PARAM_CREATE);
             return true;
@@ -298,10 +303,12 @@ public class CartAddressChoiceFragment extends BaseCheckoutFragment
                 .add(R.id.parent_view, fragment, fragment.getClass().getSimpleName())
                 .addToBackStack(fragment.getClass().getSimpleName())
                 .commit();
+        analytic.eventChangeSendMultiAddressPilihAlamatLainnya();
     }
 
     private void onSendToMultipleAddress() {
         mCartAddressChoiceListener.finishSendResultActionToMultipleAddressForm();
+        analytic.eventChangeSendMultiAddressKirimKeBeberapaAlamat();
     }
 
     private void onSendToCurrentAddress() {
@@ -317,6 +324,7 @@ public class CartAddressChoiceFragment extends BaseCheckoutFragment
         } else {
             getActivity().finish();
         }
+        analytic.eventChangeSendMultiAddressKirimKeAlamatIni();
     }
 
     @Override
@@ -326,6 +334,7 @@ public class CartAddressChoiceFragment extends BaseCheckoutFragment
 
     @Override
     public void onEditClick(RecipientAddressModel model) {
+        analytic.eventChangeSendMultiAddressKlikUbah();
         AddressModelMapper mapper = new AddressModelMapper();
 
         Intent intent = AddAddressActivity.createInstance(getActivity(), mapper.transform(model), token);
