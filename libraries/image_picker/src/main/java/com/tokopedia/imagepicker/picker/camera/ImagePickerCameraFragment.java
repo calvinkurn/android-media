@@ -8,6 +8,7 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Point;
 import android.os.Build;
 import android.os.Bundle;
@@ -152,6 +153,8 @@ public class ImagePickerCameraFragment extends TkpdBaseV4Fragment {
                     //noinspection SuspiciousNameCombination
                     params.height = params.width;
                     previewImageView.setLayoutParams(params);
+
+                    previewImageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
                 } else {
                     ViewGroup.LayoutParams params = cameraLayout.getLayoutParams();
                     params.width = ViewGroup.LayoutParams.MATCH_PARENT;
@@ -162,6 +165,8 @@ public class ImagePickerCameraFragment extends TkpdBaseV4Fragment {
                     //noinspection SuspiciousNameCombination
                     params.height = params.width;
                     previewImageView.setLayoutParams(params);
+
+                    previewImageView.setScaleType(ImageView.ScaleType.FIT_CENTER);
                 }
             }
 
@@ -235,7 +240,7 @@ public class ImagePickerCameraFragment extends TkpdBaseV4Fragment {
         progressDialog.setMessage(getString(R.string.title_loading));
     }
 
-    private boolean isOneOneRatio(){
+    private boolean isOneOneRatio() {
         return onImagePickerCameraFragmentListener.getRatioX() > 0 &&
                 onImagePickerCameraFragmentListener.getRatioX() == onImagePickerCameraFragmentListener.getRatioY();
     }
@@ -289,18 +294,15 @@ public class ImagePickerCameraFragment extends TkpdBaseV4Fragment {
 
     private void onSuccessImageTaken(File file) {
         if (onImagePickerCameraFragmentListener.needShowCameraPreview()) {
-            if (isOneOneRatio()) {
-                Glide.with(getContext())
-                        .load(file)
-                        .centerCrop()
-                        .into(previewImageView);
-            } else {
-                Glide.with(getContext())
-                        .load(file)
-                        .fitCenter()
-                        .into(previewImageView);
+            try {
+                if (file.exists()) {
+                    Bitmap myBitmap = BitmapFactory.decodeFile(file.getAbsolutePath());
+                    previewImageView.setImageBitmap(myBitmap);
+                }
+                showPreviewView();
+            } catch (Exception e) {
+                onImagePickerCameraFragmentListener.onImageTaken(file.getAbsolutePath());
             }
-            showPreviewView();
         } else {
             onImagePickerCameraFragmentListener.onImageTaken(file.getAbsolutePath());
         }
