@@ -50,7 +50,7 @@ public class AccessTokenRefresh {
 
         if (model != null) {
             return model.getAccessToken();
-        }else{
+        } else {
             return "";
         }
     }

@@ -23,7 +23,7 @@ import javax.crypto.spec.SecretKeySpec;
 
 /**
  * @author Angga.Prasetiyo on 25/11/2015.
- *         Modified by kulomady add method without params
+ * Modified by kulomady add method without params
  */
 public class AuthUtil {
     private static final String CONTENT_TYPE = "application/x-www-form-urlencoded";

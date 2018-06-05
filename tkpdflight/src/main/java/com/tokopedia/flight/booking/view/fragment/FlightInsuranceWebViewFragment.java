@@ -44,4 +44,10 @@ public class FlightInsuranceWebViewFragment extends BaseWebViewFragment {
     protected String getUserIdForHeader() {
         return userSession.getUserId();
     }
+
+    @Nullable
+    @Override
+    protected String getAccessToken() {
+        return userSession.getAccessToken();
+    }
 }

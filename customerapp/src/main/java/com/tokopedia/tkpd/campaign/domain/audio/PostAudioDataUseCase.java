@@ -52,7 +52,7 @@ public class PostAudioDataUseCase extends ShakeUseCase {
                         "false"));
         HashMap<String, RequestBody> requestBodyMap = new HashMap<>();
         requestBodyMap.put(IS_AUDIO, isAudio);
-        requestBodyMap.put(SCREEN_NAME,screenName);
+        requestBodyMap.put(SCREEN_NAME, screenName);
         return requestBodyMap;
     }
 

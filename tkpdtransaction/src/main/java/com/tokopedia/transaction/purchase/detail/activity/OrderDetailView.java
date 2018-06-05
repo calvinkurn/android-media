@@ -48,7 +48,7 @@ public interface OrderDetailView extends FinishOrderDialog.FinishOrderDialogList
 
     void goToProductInfo(ProductPass productPass);
 
-    void trackShipment(String orderId);
+    void trackShipment(String orderId, String trackingUrl);
 
     void showConfirmDialog(String orderId, String orderStatus);
 
