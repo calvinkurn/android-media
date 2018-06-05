@@ -308,3 +308,21 @@
 -keep class com.tokopedia.core.analytics.fingerprint.domain.model.** { *; }
 
 -keep class com.tokopedia.posapp.database.model.** { *; }
+
+-dontwarn android.content.pm.PackageManager
+-dontwarn com.crashlytics.android.answers.shim.**
+-dontwarn com.nimbusds.jwt.SignedJWT
+-dontwarn com.nimbusds.jwt.JWTClaimsSet
+
+-dontwarn com.appsflyer.**
+-keep public class com.google.firebase.iid.FirebaseInstanceId {
+    public *;
+}
+-keep public class com.google.android.gms.iid.InstanceID {
+    public *;
+}
+
+-dontwarn android.net.http.**
+-dontwarn org.apache.http.impl.auth.NegotiateScheme
+-dontwarn com.android.internal.http.multipart.MultipartEntity
+-dontwarn org.xbill.DNS.spi.DNSJavaNameServiceDescriptor
