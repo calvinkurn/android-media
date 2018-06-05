@@ -470,6 +470,8 @@ public class CartListItemViewHolder extends RecyclerView.ViewHolder {
             for (int i = 0; i < quantity.editable.length(); i++) {
                 if (quantity.editable.charAt(i) == '0') {
                     zeroCount++;
+                } else {
+                    break;
                 }
             }
             if (zeroCount == quantity.editable.length()) {
