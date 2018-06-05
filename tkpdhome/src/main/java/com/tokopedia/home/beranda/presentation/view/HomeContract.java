@@ -9,7 +9,7 @@ import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
 import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.core.drawer2.data.viewmodel.HomeHeaderWalletAction;
 import com.tokopedia.core.drawer2.data.viewmodel.TokoPointDrawerData;
-import com.tokopedia.digital.tokocash.model.CashBackData;
+import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.CashBackData;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.HeaderViewModel;
 
 import java.util.List;
@@ -77,5 +77,7 @@ public interface HomeContract {
         void onResume();
 
         void onFirstLaunch();
+
+        void onDestroy();
     }
 }

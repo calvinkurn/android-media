@@ -1,69 +1,100 @@
 apply plugin: 'com.android.library'
 apply from: "$rootProject.projectDir/buildconfig/module.gradle"
-apply plugin: 'android-apt'
-apply plugin: 'com.neenbedankt.android-apt'
 
 buildscript {
     repositories {
+        maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
         mavenCentral()
     }
     dependencies {
-        classpath 'com.jakewharton:butterknife-gradle-plugin:8.4.0'
+        classpath ('com.jakewharton:butterknife-gradle-plugin:9.0.0-SNAPSHOT'){
+            exclude group: 'com.android.tools.build', module: 'gradle'
+        }
     }
 }
 
-apt {
-    arguments {
-        targetModuleName 'TkpdSeller'
+android {
+    defaultConfig {
+        javaCompileOptions {
+            annotationProcessorOptions {
+                arguments = ['targetModuleName': 'TkpdSeller']
+            }
+        }
     }
+}
+
+project.ext {
+    artifactId = 'seller'
+    groupId = 'com.tokopedia.seller'
+    versionName = "2.22"
+    artifactName ="tkpdseller-release"
 }
 
 dependencies {
-    compile project(rootProject.ext.features.core)
-    compile project(rootProject.ext.libraries.design)
-    compile project(rootProject.ext.features.payment)
+    api (rootProject.ext.serviceDependencies.crashlytics) {
+        transitive = true
+    }
+    implementation project(rootProject.ext.libraries.bottomSheetBuilder)
+    implementation project(rootProject.ext.libraries.williamchart)
+    implementation project(rootProject.ext.features.topAdsSourceTagging)
 
-    compile rootProject.ext.permissionDispatcherDependencies.permissionDispatcher
-    apt rootProject.ext.permissionDispatcherDependencies.permissionDispatcherProcessor
+    implementation project(rootProject.ext.features.core)
+    implementation project(rootProject.ext.features.payment)
+    implementation project(rootProject.ext.features.reputationCommon)
+    implementation project(rootProject.ext.libraries.imageuploader)
+    implementation project(rootProject.ext.features.districtRecommendation)
+    implementation project(rootProject.ext.libraries.imageuploader)
 
-    compile rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
-    apt rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
+    implementation project(rootProject.ext.libraries.cacheApi)
+    implementation project(rootProject.ext.libraries.abstraction)
+    implementation project(rootProject.ext.libraries.useCase)
+    implementation project(rootProject.ext.libraries.design)
+    implementation project(rootProject.ext.libraries.applink)
 
-    compile rootProject.ext.miscDependencies.dagger
-    apt rootProject.ext.miscDependencies.daggerCompiler
+    implementation rootProject.ext.networkDependencies.glide
 
-    compile rootProject.ext.miscDependencies.parcelerApi
-    apt rootProject.ext.miscDependencies.parceler
+    implementation rootProject.ext.playServicesDependencies.maps
 
-    apt rootProject.ext.dbDependencies.dbFlowProcessor
-    compile rootProject.ext.dbDependencies.dbFlowCore
-    compile rootProject.ext.dbDependencies.dbFlow
+    implementation rootProject.ext.viewDependencies.recyclerMultiSelect
+    implementation rootProject.ext.viewDependencies.appIntro
 
-    compile rootProject.ext.miscDependencies.rxJavaComputation
-    compile rootProject.ext.miscDependencies.gson
-    compile rootProject.ext.miscDependencies.roundCornerProgressBar
-    compile (rootProject.ext.miscDependencies.imagecropper){
+    implementation rootProject.ext.butterKnifeDependencies.butterKnife
+    annotationProcessor rootProject.ext.butterKnifeDependencies.butterKnifeCompiler
+
+    implementation rootProject.ext.permissionDispatcherDependencies.permissionDispatcher
+    annotationProcessor  rootProject.ext.permissionDispatcherDependencies.permissionDispatcherProcessor
+
+    implementation rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
+    annotationProcessor  rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
+
+    implementation rootProject.ext.miscDependencies.parcelerApi
+    annotationProcessor  rootProject.ext.miscDependencies.parceler
+
+    annotationProcessor  rootProject.ext.dbDependencies.dbFlowProcessor
+    implementation rootProject.ext.dbDependencies.dbFlowCore
+    implementation rootProject.ext.dbDependencies.dbFlow
+
+    implementation rootProject.ext.miscDependencies.rxJavaComputation
+    implementation rootProject.ext.miscDependencies.gson
+    implementation rootProject.ext.miscDependencies.roundCornerProgressBar
+    implementation (rootProject.ext.miscDependencies.imagecropper){
         exclude group: "com.android.support"
     }
-    compile rootProject.ext.supportLibDependencies.exifinterface
+    implementation (rootProject.ext.miscDependencies.loaderviewlibrary){
+        exclude group: 'com.android.support'
+    }
+    implementation rootProject.ext.miscDependencies.scannerZxing
+    implementation rootProject.ext.miscDependencies.multiDex
+    implementation rootProject.ext.supportLibDependencies.exifinterface
 
-    compile rootProject.ext.miscDependencies.dagger
-    apt rootProject.ext.miscDependencies.daggerCompiler
+    implementation rootProject.ext.supportLibDependencies.constraintLayout
 
-    compile rootProject.ext.supportLibDependencies.constraintLayout
-
-    provided rootProject.ext.miscDependencies.javaxAnnotation
-
-    compile(rootProject.ext.tkpdLibDependencies.expandableOption) {
+    implementation(rootProject.ext.tkpdLibDependencies.expandableOption) {
         exclude group: "com.android.support"
     }
-
-    compile(rootProject.ext.tkpdLibDependencies.showcase) {
+    implementation(rootProject.ext.tkpdLibDependencies.showcase) {
         exclude group: "com.android.support"
     }
-
-    androidTestCompile(rootProject.ext.testDependencies.espressoCore, {
-        exclude group: 'com.android.support', module: 'support-annotations'
-    })
-    testCompile rootProject.ext.testDependencies.junit
 }
+
+apply from: '../publish_local.gradle'

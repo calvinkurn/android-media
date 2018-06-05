@@ -80,7 +80,7 @@ public abstract class BaseNotificationFactory {
                     .asBitmap()
                     .into(getImageWidth(), getImageHeight())
                     .get(3, TimeUnit.SECONDS);
-        } catch (InterruptedException | ExecutionException | TimeoutException e ) {
+        } catch (InterruptedException | ExecutionException | TimeoutException | IllegalArgumentException e ) {
             return BitmapFactory.decodeResource(context.getResources(), getDrawableLargeIcon());
         }
     }
@@ -121,9 +121,10 @@ public abstract class BaseNotificationFactory {
         return resultPendingIntent;
     }
 
-    protected PendingIntent createDismissPendingIntent(int notificationType) {
+    protected PendingIntent createDismissPendingIntent(int notificationType, int notificationId) {
         Intent intent = new Intent(context, DismissBroadcastReceiver.class);
         intent.putExtra(Constant.EXTRA_NOTIFICATION_TYPE, notificationType);
+        intent.putExtra(Constant.EXTRA_NOTIFICATION_ID, notificationId);
         return PendingIntent.getBroadcast(context.getApplicationContext(), 0, intent, 0);
     }
 

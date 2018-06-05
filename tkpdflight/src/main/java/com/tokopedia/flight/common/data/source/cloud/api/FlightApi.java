@@ -8,6 +8,10 @@ import com.tokopedia.flight.airport.data.source.cloud.model.FlightAirportCountry
 import com.tokopedia.flight.banner.data.source.cloud.model.BannerDetail;
 import com.tokopedia.flight.booking.data.cloud.entity.CartEntity;
 import com.tokopedia.flight.booking.data.cloud.requestbody.FlightCartRequest;
+import com.tokopedia.flight.cancellation.data.cloud.entity.CancelPassengerEntity;
+import com.tokopedia.flight.cancellation.data.cloud.entity.CancellationRequestEntity;
+import com.tokopedia.flight.cancellation.data.cloud.entity.EstimateRefundResultEntity;
+import com.tokopedia.flight.cancellation.data.cloud.requestbody.FlightEstimateRefundRequest;
 import com.tokopedia.flight.common.constant.FlightUrl;
 import com.tokopedia.flight.dashboard.data.cloud.entity.flightclass.FlightClassEntity;
 import com.tokopedia.flight.orderlist.data.cloud.entity.OrderEntity;
@@ -53,9 +57,11 @@ public interface FlightApi {
     @POST(FlightUrl.FLIGHT_SEARCH_SINGLE)
     Observable<Response<FlightDataResponse<List<FlightSearchData>>>> searchFlightSingle(@Body DataRequest<FlightSearchSingleRequestData> flightSearchRequest);
 
+    @Headers({"Accept-Encoding: gzip"})
     @GET(FlightUrl.FLIGHT_AIRPORT_PATH)
     Observable<Response<DataResponse<List<FlightAirportCountry>>>> getFlightAirportList(@QueryMap Map<String, String> keyword);
 
+    @Headers({"Accept-Encoding: gzip"})
     @GET(FlightUrl.FLIGHT_AIRLINE_PATH)
     Observable<Response<DataResponse<List<AirlineData>>>> getFlightAirlineList();
 
@@ -104,4 +110,15 @@ public interface FlightApi {
     @PATCH(FlightUrl.FLIGHT_PASSENGER_SAVED)
     Observable<Response<FlightDataResponse<PassengerListEntity>>> updatePassengerListData(@Body DataRequest<UpdatePassengerRequest> request,
                                                                                           @Header("Idempotency-Key") String idemPotencyKeyHeader);
+
+    @GET(FlightUrl.FLIGHT_CANCELLATION_PASSENGER)
+    Observable<Response<DataResponse<CancelPassengerEntity>>> getCancellablePassenger(@Query("invoice_id") String invoiceId);
+
+    @Headers({"Content-Type: application/json"})
+    @POST(FlightUrl.FLIGHT_CANCELLATION_ESTIMATE_REFUND)
+    Observable<Response<DataResponse<EstimateRefundResultEntity>>> getEstimateRefund(@Body DataRequest<FlightEstimateRefundRequest> flightEstimateRefundRequestDataRequest);
+
+    @Headers({"Content-Type: application/json"})
+    @POST(FlightUrl.FLIGHT_CANCELLATION_REQUEST)
+    Observable<Response<DataResponse<CancellationRequestEntity>>> requestCancellation(@Body JsonObject cancellationRequest);
 }

@@ -1,5 +1,6 @@
 package com.tokopedia.flight.detail.view.fragment;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.ClipData;
@@ -13,6 +14,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.TaskStackBuilder;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.AppCompatImageView;
+import android.support.v7.widget.AppCompatTextView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -27,14 +29,19 @@ import android.widget.Toast;
 
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.base.view.recyclerview.VerticalRecyclerView;
+import com.tokopedia.abstraction.base.view.widget.DividerItemDecoration;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
+import com.tokopedia.abstraction.common.utils.view.MethodChecker;
+import com.tokopedia.design.component.Dialog;
 import com.tokopedia.flight.FlightModuleRouter;
 import com.tokopedia.flight.R;
 import com.tokopedia.flight.booking.domain.subscriber.model.ProfileInfo;
 import com.tokopedia.flight.booking.view.adapter.FlightSimpleAdapter;
 import com.tokopedia.flight.booking.view.viewmodel.SimpleViewModel;
+import com.tokopedia.flight.cancellation.view.activity.FlightCancellationActivity;
+import com.tokopedia.flight.cancellation.view.activity.FlightCancellationListActivity;
+import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationJourney;
 import com.tokopedia.flight.common.util.FlightErrorUtil;
-import com.tokopedia.flight.contactus.model.FlightContactUsPassData;
 import com.tokopedia.flight.dashboard.view.activity.FlightDashboardActivity;
 import com.tokopedia.flight.detail.presenter.ExpandableOnClickListener;
 import com.tokopedia.flight.detail.presenter.FlightDetailOrderContract;
@@ -56,6 +63,8 @@ import javax.inject.Inject;
 
 import rx.Observable;
 
+import static android.app.Activity.RESULT_OK;
+
 /**
  * Created by zulfikarrahman on 12/12/17.
  */
@@ -63,19 +72,22 @@ import rx.Observable;
 public class FlightDetailOrderFragment extends BaseDaggerFragment implements FlightDetailOrderContract.View, ExpandableOnClickListener {
 
     private static final int REQUEST_CODE_RESEND_ETICKET_DIALOG = 1;
+    private static final int REQUEST_CODE_CANCELLATION = 2;
     private static final String RESEND_ETICKET_DIALOG_TAG = "resend_eticket_dialog_tag";
     public static final String EXTRA_ORDER_DETAIL_PASS = "EXTRA_ORDER_DETAIL_PASS";
     private static final String CANCEL_SOLUTION_ID = "1378";
-    private static final int CONTACT_US_REQUEST_CODE = 100;
+    private static final float JOURNEY_TITLE_FONT_SIZE = 18;
+    public static final String EXTRA_IS_AFTER_CANCELLATION = "EXTRA_IS_AFTER_CANCELLATION";
+
     @Inject
     FlightDetailOrderPresenter flightDetailOrderPresenter;
     private TextView orderId;
     private ImageView copyOrderId;
     private View containerDownloadEticket;
+    private LinearLayout containerCancellation;
     private TextView orderStatus;
     private TextView transactionDate;
     private View layoutExpendablePassenger;
-    private TextView titleExpendablePassenger;
     private AppCompatImageView imageExpendablePassenger;
     private VerticalRecyclerView recyclerViewFlight;
     private VerticalRecyclerView recyclerViewPassenger;
@@ -104,6 +116,8 @@ public class FlightDetailOrderFragment extends BaseDaggerFragment implements Fli
     private TextView tvPaymentCost;
     private TextView tvPaymentCostLabel;
     private TextView tvPaymentDueDate;
+    private LinearLayout containerTicketCancellationStatus;
+    private AppCompatTextView tvTicketCancellationStatus;
 
     public static Fragment createInstance(FlightOrderDetailPassData flightOrderDetailPassData) {
         FlightDetailOrderFragment flightDetailOrderFragment = new FlightDetailOrderFragment();
@@ -140,7 +154,6 @@ public class FlightDetailOrderFragment extends BaseDaggerFragment implements Fli
         orderStatus = view.findViewById(R.id.status_ticket);
         transactionDate = view.findViewById(R.id.transaction_date);
         layoutExpendablePassenger = view.findViewById(R.id.layout_expendable_passenger);
-        titleExpendablePassenger = view.findViewById(R.id.title_expendable_passenger);
         imageExpendablePassenger = view.findViewById(R.id.image_expendable_passenger);
         recyclerViewFlight = view.findViewById(R.id.recycler_view_flight);
         recyclerViewPassenger = view.findViewById(R.id.recycler_view_data_passenger);
@@ -162,9 +175,13 @@ public class FlightDetailOrderFragment extends BaseDaggerFragment implements Fli
         tvPaymentDueDate = (TextView) view.findViewById(R.id.tv_payment_due_date);
         progressDialog = new ProgressDialog(getActivity());
 
+        containerCancellation = view.findViewById(R.id.cancellation_container);
+        containerTicketCancellationStatus = view.findViewById(R.id.container_cancellation_warning);
+        tvTicketCancellationStatus = view.findViewById(R.id.tv_cancellation_ticket_status);
+
         setViewClickListener();
 
-        FlightDetailOrderTypeFactory flightDetailOrderTypeFactory = new FlightDetailOrderTypeFactory(this);
+        FlightDetailOrderTypeFactory flightDetailOrderTypeFactory = new FlightDetailOrderTypeFactory(this, JOURNEY_TITLE_FONT_SIZE);
         flightDetailOrderAdapter = new FlightDetailOrderAdapter(flightDetailOrderTypeFactory);
         FlightBookingReviewPassengerAdapterTypeFactory flightBookingReviewPassengerAdapterTypeFactory = new FlightBookingReviewPassengerAdapterTypeFactory();
         flightBookingReviewPassengerAdapter = new FlightBookingReviewPassengerAdapter(flightBookingReviewPassengerAdapterTypeFactory);
@@ -240,6 +257,13 @@ public class FlightDetailOrderFragment extends BaseDaggerFragment implements Fli
             }
         });
 
+        containerCancellation.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                navigateToCancellationListPage();
+            }
+        });
+
         orderHelp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -290,8 +314,10 @@ public class FlightDetailOrderFragment extends BaseDaggerFragment implements Fli
 
     @Override
     public void updatePassengerList(List<FlightDetailPassenger> flightDetailPassengers) {
-        if (flightBookingReviewPassengerAdapter.getDataSize() < 2) {
+        if (flightDetailPassengers.size() < 2) {
             removePassengerRecyclerDivider();
+        } else {
+            addPassengerRecyclerDivider();
         }
 
         flightBookingReviewPassengerAdapter.addElement(flightDetailPassengers);
@@ -319,6 +345,10 @@ public class FlightDetailOrderFragment extends BaseDaggerFragment implements Fli
 
     private void removePassengerRecyclerDivider() {
         recyclerViewPassenger.clearItemDecoration();
+    }
+
+    private void addPassengerRecyclerDivider() {
+        recyclerViewPassenger.addItemDecoration(new DividerItemDecoration(recyclerViewPassenger.getContext()));
     }
 
     private void togglePassengerInfo() {
@@ -414,37 +444,12 @@ public class FlightDetailOrderFragment extends BaseDaggerFragment implements Fli
     }
 
     @Override
-    public void navigateToContactUs(FlightOrder flightOrder) {
-        startActivityForResult(getCallintIntent(
-                CANCEL_SOLUTION_ID,
-                flightOrder.getId(),
-                getString(R.string.flight_contact_us_cancel_desc),
-                getString(R.string.flight_contact_us_cancel_attc),
-                cancelMessage,
-                getString(R.string.flight_contact_us_cancel_toolbar))
-                , CONTACT_US_REQUEST_CODE);
-    }
+    public void navigateToCancellationPage(String invoiceId, List<FlightCancellationJourney> items) {
+        startActivityForResult(
+                FlightCancellationActivity.createIntent(getContext(), invoiceId, items),
+                REQUEST_CODE_CANCELLATION
+        );
 
-    private Intent getCallintIntent(String solutionId,
-                                    String orderId,
-                                    String descriptionTitle,
-                                    String attachmentTitle,
-                                    String description,
-                                    String toolbarTitle) {
-
-        FlightContactUsPassData passData = new FlightContactUsPassData();
-        passData.setSolutionId(solutionId);
-        passData.setOrderId(orderId);
-        passData.setDescriptionTitle(descriptionTitle);
-        passData.setAttachmentTitle(attachmentTitle);
-        passData.setDescription(description);
-        passData.setToolbarTitle(toolbarTitle);
-
-        if (getActivity().getApplication() instanceof FlightModuleRouter) {
-            return ((FlightModuleRouter) getActivity().getApplication()).getContactUsIntent(getActivity(), passData);
-        } else {
-            throw new RuntimeException("Application Module should implement FlightModuleRouter");
-        }
     }
 
     @Override
@@ -497,6 +502,29 @@ public class FlightDetailOrderFragment extends BaseDaggerFragment implements Fli
     }
 
     @Override
+    public void showCancellationStatus() {
+        tvTicketCancellationStatus.setText(getString(R.string.flight_cancellation_ticket_status));
+        containerTicketCancellationStatus.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void showCancellationStatusInProgress(int numberOfProcess) {
+        tvTicketCancellationStatus.setText(String.format(getString(
+                R.string.flight_cancellation_ticket_status_in_progress), numberOfProcess));
+        containerTicketCancellationStatus.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void showCancellationContainer() {
+        containerCancellation.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void hideCancellationContainer() {
+        containerCancellation.setVisibility(View.GONE);
+    }
+
+    @Override
     public void navigateToInputEmailForm(String userId, String userEmail) {
         DialogFragment dialogFragment = FlightResendETicketDialogFragment.newInstace(
                 flightOrderDetailPassData.getOrderId(),
@@ -509,8 +537,16 @@ public class FlightDetailOrderFragment extends BaseDaggerFragment implements Fli
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         switch (requestCode) {
             case REQUEST_CODE_RESEND_ETICKET_DIALOG:
-                if (resultCode == Activity.RESULT_OK) {
+                if (resultCode == RESULT_OK) {
                     showGreenSnackbar(R.string.resend_eticket_success);
+                }
+                break;
+            case REQUEST_CODE_CANCELLATION:
+                if (resultCode == RESULT_OK) {
+                    Intent intent = new Intent();
+                    intent.putExtra(EXTRA_IS_AFTER_CANCELLATION, true);
+                    getActivity().setResult(RESULT_OK, intent);
+                    getActivity().finish();
                 }
                 break;
         }
@@ -527,7 +563,78 @@ public class FlightDetailOrderFragment extends BaseDaggerFragment implements Fli
         return Observable.empty();
     }
 
+    @SuppressLint("StringFormatMatches")
+    @Override
+    public void showLessThan6HoursDialog() {
+        int color = getContext().getResources().getColor(R.color.green_500);
+        final Dialog dialog = new Dialog(getActivity(), Dialog.Type.RETORIC);
+        dialog.setTitle(getString(R.string.flight_cancellation_dialog_title));
+        dialog.setDesc(MethodChecker.fromHtml(getString(
+                R.string.flight_cancellation_recommendation_to_contact_airlines_description,
+                color, "#")));
+        dialog.setBtnOk("OK");
+        dialog.setOnOkClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+        dialog.show();
+    }
+
+    @Override
+    public void showRefundableCancelDialog(final String invoiceId, final List<FlightCancellationJourney> items) {
+        final Dialog dialog = new Dialog(getActivity(), Dialog.Type.PROMINANCE);
+        dialog.setTitle(getString(R.string.flight_cancellation_dialog_title));
+        dialog.setDesc(MethodChecker.fromHtml(
+                getString(R.string.flight_cancellation_dialog_refundable_description)));
+        dialog.setBtnOk(getString(R.string.flight_cancellation_dialog_back_button_text));
+        dialog.setOnOkClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+        dialog.setBtnCancel("Lanjut");
+        dialog.setOnCancelClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                flightDetailOrderPresenter.checkIfFlightCancellable(invoiceId, items);
+                dialog.dismiss();
+            }
+        });
+        dialog.show();
+    }
+
+    @Override
+    public void showNonRefundableCancelDialog(final String invoiceId, final List<FlightCancellationJourney> items) {
+        final Dialog dialog = new Dialog(getActivity(), Dialog.Type.PROMINANCE);
+        dialog.setTitle(getString(R.string.flight_cancellation_dialog_title));
+        dialog.setDesc(MethodChecker.fromHtml(getString(
+                R.string.flight_cancellation_dialog_non_refundable_description)));
+        dialog.setBtnOk(getString(R.string.flight_cancellation_dialog_back_button_text));
+        dialog.setOnOkClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+        dialog.setBtnCancel("Lanjut");
+        dialog.setOnCancelClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                flightDetailOrderPresenter.checkIfFlightCancellable(invoiceId, items);
+                dialog.dismiss();
+            }
+        });
+        dialog.show();
+    }
+
     private void showGreenSnackbar(int resId) {
         NetworkErrorHelper.showGreenCloseSnackbar(getActivity(), getString(resId));
+    }
+
+    private void navigateToCancellationListPage() {
+        startActivity(FlightCancellationListActivity.createIntent(getContext(), getFlightOrder().getId()));
     }
 }

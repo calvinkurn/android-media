@@ -1,7 +1,6 @@
 package com.tokopedia.pushnotif.db;
 
 import com.raizlabs.android.dbflow.annotation.Database;
-
 /**
  * @author ricoharisin .
  */
@@ -9,7 +8,8 @@ import com.raizlabs.android.dbflow.annotation.Database;
 @Database(name = PushNotificationDatabase.NAME, version = PushNotificationDatabase.VERSION)
 public class PushNotificationDatabase {
 
-    static final String NAME = "PushNotificationDB";
+    static final String NAME = "PushNotificationDB2";
 
     static final int VERSION = 1;
+
 }

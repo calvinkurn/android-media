@@ -18,10 +18,10 @@ import com.tokopedia.tkpd.campaign.domain.barcode.PostBarCodeDataUseCase;
 import com.tokopedia.tkpd.deeplink.domain.branchio.BranchIODeeplinkUseCase;
 import com.tokopedia.tkpd.deeplink.source.entity.BranchIOAndroidDeepLink;
 import com.tokopedia.tokocash.network.exception.WalletException;
-import com.tokopedia.tokocash.qrpayment.domain.GetBalanceTokoCashUseCase;
+import com.tokopedia.tokocash.balance.domain.GetBalanceTokoCashUseCase;
 import com.tokopedia.tokocash.qrpayment.domain.GetInfoQrTokoCashUseCase;
 import com.tokopedia.tokocash.qrpayment.presentation.activity.NominalQrPaymentActivity;
-import com.tokopedia.tokocash.qrpayment.presentation.model.BalanceTokoCash;
+import com.tokopedia.tokocash.balance.view.BalanceTokoCash;
 import com.tokopedia.tokocash.qrpayment.presentation.model.InfoQrTokoCash;
 import com.tokopedia.usecase.RequestParams;
 
@@ -95,7 +95,7 @@ public class QrScannerPresenter extends BaseDaggerPresenter<QrScannerContract.Vi
         getView().showProgressDialog();
         RequestParams requestParams = RequestParams.create();
         requestParams.putString("url", qrCode);
-        requestParams.putString("branch_key",KEY_BRANCHIO);
+        requestParams.putString("branch_key", KEY_BRANCHIO);
         branchIODeeplinkUseCase.execute(requestParams, new Subscriber<BranchIOAndroidDeepLink>() {
             @Override
             public void onCompleted() {

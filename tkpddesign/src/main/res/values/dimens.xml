@@ -13,6 +13,7 @@
     <dimen name="dp_6">6dp</dimen> <!-- not recommended -->
     <dimen name="dp_7">7dp</dimen> <!-- not recommended -->
     <dimen name="dp_8">8dp</dimen>
+    <dimen name="dp_9">9dp</dimen>
     <dimen name="dp_10">10dp</dimen>
     <dimen name="dp_12">12dp</dimen>
     <dimen name="dp_14">14dp</dimen>
@@ -51,6 +52,7 @@
     <dimen name="dp_350">350dp</dimen> <!-- not recommended -->
     <dimen name="dp_500">500dp</dimen> <!-- not recommended -->
 
+    <dimen name="sp_5">5sp</dimen> <!-- not recommended -->
     <dimen name="sp_8">8sp</dimen> <!-- not recommended -->
     <dimen name="sp_10">10sp</dimen> <!-- not recommended -->
     <dimen name="sp_11">11sp</dimen>

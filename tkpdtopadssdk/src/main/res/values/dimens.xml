@@ -3,6 +3,7 @@
     <dimen name="top_option_h">30dp</dimen>
     <dimen name="top_promote_h">35dp</dimen>
     <dimen name="badge_size">15dp</dimen>
+    <dimen name="badge_size_small">10dp</dimen>
     <dimen name="small_dp">10dp</dimen>
     <dimen name="image_thumbnail_size">200dp</dimen>
     <dimen name="padding_item_decoration">3dp</dimen>
@@ -42,5 +43,6 @@
     <dimen name="feed_fav_icon">10dp</dimen>
     <dimen name="feed_fav_padding">7dp</dimen>
     <dimen name="feed_image_padding">0.5dp</dimen>
+    <dimen name="ads_banner_height">65dp</dimen>
 
 </resources>

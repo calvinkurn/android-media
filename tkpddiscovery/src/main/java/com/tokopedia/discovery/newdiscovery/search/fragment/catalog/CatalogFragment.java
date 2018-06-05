@@ -268,8 +268,8 @@ public class CatalogFragment extends SearchSectionFragment implements
 
         topAdsRecyclerAdapter = new TopAdsRecyclerAdapter(getActivity(), catalogAdapter);
         topAdsRecyclerAdapter.setConfig(topAdsConfig);
-        topAdsRecyclerAdapter.setSpanSizeLookup(onSpanSizeLookup());
         topAdsRecyclerAdapter.setAdsItemClickListener(this);
+        topAdsRecyclerAdapter.setSpanSizeLookup(onSpanSizeLookup());
         topAdsRecyclerAdapter.setTopAdsListener(this);
         topAdsRecyclerAdapter.setHasHeader(true);
         recyclerView.setAdapter(topAdsRecyclerAdapter);
@@ -457,6 +457,7 @@ public class CatalogFragment extends SearchSectionFragment implements
                         openSortActivity();
                         return true;
                     case 1:
+                        SearchTracking.eventSearchResultOpenFilterPageCatalog();
                         openFilterActivity();
                         return true;
                     case 2:
@@ -545,7 +546,7 @@ public class CatalogFragment extends SearchSectionFragment implements
     }
 
     @Override
-    protected void reloadData() {
+    public void reloadData() {
         catalogAdapter.resetStartFrom();
         catalogAdapter.clearData();
         topAdsRecyclerAdapter.reset();

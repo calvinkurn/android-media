@@ -2,7 +2,7 @@ package com.tokopedia.inbox.inboxchat.viewmodel.chatroom;
 
 import android.text.TextUtils;
 
-import com.tokopedia.core.base.adapter.Visitable;
+import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.inbox.inboxchat.adapter.ChatRoomTypeFactory;
 
@@ -12,7 +12,7 @@ import com.tokopedia.inbox.inboxchat.adapter.ChatRoomTypeFactory;
 
 public class TimeMachineChatModel implements Visitable<ChatRoomTypeFactory> {
 
-    private String url = TkpdBaseURL.User.URL_INBOX_MESSAGE_TIME_MACHINE;
+    private String url = TkpdBaseURL.User.URL_SECURITY_INFO;
 
     public TimeMachineChatModel(String url) {
         if (!TextUtils.isEmpty(url))

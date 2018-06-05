@@ -11,7 +11,9 @@ import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import java.util.Map;
 
 import retrofit2.Response;
+import retrofit2.http.Body;
 import retrofit2.http.GET;
+import retrofit2.http.POST;
 import retrofit2.http.Query;
 import retrofit2.http.QueryMap;
 import rx.Observable;
@@ -63,6 +65,7 @@ public interface BrowseApi {
     String DEVICE = "device";
     String START = "start";
     String ROWS = "rows";
+    String IMAGE = "image";
     String SC = "sc"; //  (category id)
     String DEFAULT_SC = "default_sc"; //  (category id)
     String FLOC = "floc"; // (location id)
@@ -93,9 +96,10 @@ public interface BrowseApi {
     String RETURNABLES = "returnables";
     String HOT_ID = "hot_id";
     String REFINED = "rf";
+    String PAGE = "page";
+    String PAGE_SIZE = "page_size";
 
     /**
-     *
      * @param sc
      * @param id
      * @param q
@@ -105,8 +109,8 @@ public interface BrowseApi {
      * @param rows
      * @param start
      * @param device
-     * @param terms String empty "", digunakan di catalog contoh di desktop
-     *              https://www.tokopedia.com/p/handphone-tablet/handphone?vi=1
+     * @param terms      String empty "", digunakan di catalog contoh di desktop
+     *                   https://www.tokopedia.com/p/handphone-tablet/handphone?vi=1
      * @param breadcrumb "true" jika langsung menampilkan breadcumb atau false
      * @return
      */
@@ -137,32 +141,29 @@ public interface BrowseApi {
 
 
     /**
-     *
      * @param device
      * @param start
      * @param rows
      * @param sc
      * @param floc
-     * @param ob reads wiki for detail
+     * @param ob         reads wiki for detail
      * @param pmin
      * @param pmax
-     * @param fshop 2 for gold merchant, others for non gold merchant
+     * @param fshop      2 for gold merchant, others for non gold merchant
      * @param wholesale, String "true" or "" empty
      * @param q
-     * @param id DIDn't use anymore
-     * @param negative negative keyword di dapat dari, String format
-     * @param highlight DIDN't use anymore
-     * @param terms String empty "", digunakan di catalog contoh di desktop
-     *              https://www.tokopedia.com/p/handphone-tablet/handphone?vi=1
-     * @param fq user dapat search lagi ketika masuk hot / directory user, searchview here
-     * @param MinId digunakan untuk Product Detail, Other Product
-     * @param shopId ini untuk product feed bentuk yang dikirimkan 123,456,128,981,123
-     * @return
-     *
-     * contoh penggunaan other product, product detail :
-     *
-    https://ace.tokopedia.com/search/v1/product?shop_id=87419&-id=26703379&rows=5
-    &full_domain=www.tokopedia.com&scheme=https&device=desktop&source=other_product&po=1&start=0
+     * @param id         DIDn't use anymore
+     * @param negative   negative keyword di dapat dari, String format
+     * @param highlight  DIDN't use anymore
+     * @param terms      String empty "", digunakan di catalog contoh di desktop
+     *                   https://www.tokopedia.com/p/handphone-tablet/handphone?vi=1
+     * @param fq         user dapat search lagi ketika masuk hot / directory user, searchview here
+     * @param MinId      digunakan untuk Product Detail, Other Product
+     * @param shopId     ini untuk product feed bentuk yang dikirimkan 123,456,128,981,123
+     * @return contoh penggunaan other product, product detail :
+     * <p>
+     * https://ace.tokopedia.com/search/v1/product?shop_id=87419&-id=26703379&rows=5
+     * &full_domain=www.tokopedia.com&scheme=https&device=desktop&source=other_product&po=1&start=0
      */
     @GET(SEARCH_V2_PRODUCT)
     Observable<Response<BrowseProductModel>> browseProducts(
@@ -204,6 +205,11 @@ public interface BrowseApi {
             @QueryMap Map<String, String> query
     );
 
+    @POST(TkpdBaseURL.Ace.PATH_IMAGE_SEARCH)
+    Observable<Response<String>> browseImageSearch(@QueryMap TKPDMapParam<String, Object> queryMap,
+                                                   @Body TKPDMapParam<String, Object> requestParams
+    );
+
     @GET(TkpdBaseURL.Ace.PATH_SEARCH_PRODUCT)
     Observable<Response<String>> browseProductsV3(
             @QueryMap TKPDMapParam<String, Object> requestParams
@@ -221,6 +227,11 @@ public interface BrowseApi {
 
     @GET(TkpdBaseURL.Ace.PATH_GET_DYNAMIC_ATTRIBUTE)
     Observable<Response<String>> getDynamicAttribute(
+            @QueryMap TKPDMapParam<String, Object> requestParams
+    );
+
+    @GET(TkpdBaseURL.Ace.PATH_GET_DYNAMIC_ATTRIBUTE_V4)
+    Observable<Response<String>> getDynamicAttributeV4(
             @QueryMap TKPDMapParam<String, Object> requestParams
     );
 

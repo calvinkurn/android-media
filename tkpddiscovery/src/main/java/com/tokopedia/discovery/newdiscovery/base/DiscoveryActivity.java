@@ -17,7 +17,6 @@ import android.view.View;
 import android.view.Window;
 import android.widget.FrameLayout;
 import android.widget.ProgressBar;
-import android.widget.Toast;
 
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigation;
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigationItem;
@@ -375,6 +374,20 @@ public class DiscoveryActivity extends BaseDiscoveryActivity implements
     }
 
     @Override
+    public void enableAutoShowBottomNav() {
+        if (bottomNavigation != null) {
+            bottomNavigation.setBehaviorTranslationEnabled(true);
+        }
+    }
+
+    @Override
+    public void disableAutoShowBottomNav() {
+        if (bottomNavigation != null) {
+            bottomNavigation.setBehaviorTranslationEnabled(false);
+        }
+    }
+
+    @Override
     public void refreshBottomNavigationIcon(List<AHBottomNavigationItem> items) {
         bottomNavigation.removeAllItems();
         bottomNavigation.addItems(items);
@@ -433,6 +446,13 @@ public class DiscoveryActivity extends BaseDiscoveryActivity implements
         if (requestCode == UploadImageDialog.REQUEST_CAMERA || requestCode == UploadImageDialog.REQUEST_GALLERY) {
 
             fromCamera = requestCode == UploadImageDialog.REQUEST_CAMERA;
+
+            if (uploadDialog == null) {
+                uploadDialog = new UploadImageDialog(DiscoveryActivity.this);
+                if (searchView != null) {
+                    searchView.clearFocus();
+                }
+            }
 
             uploadDialog.onResult(
                     requestCode,
@@ -509,6 +529,10 @@ public class DiscoveryActivity extends BaseDiscoveryActivity implements
 
     @Override
     public void onHandleImageSearchResponseSuccess() {
+
+        if (tkpdProgressDialog != null) {
+            tkpdProgressDialog.dismiss();
+        }
         if (fromCamera) {
             sendCameraImageSearchResultGTM(SUCCESS);
         } else {

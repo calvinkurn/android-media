@@ -9,7 +9,6 @@ import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
 import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
-import com.tokopedia.core.people.activity.PeopleInfoNoDrawerActivity;
 import com.tokopedia.core.router.TkpdInboxRouter;
 import com.tokopedia.core.util.PagingHandler;
 import com.tokopedia.core.util.SessionHandler;
@@ -17,6 +16,7 @@ import com.tokopedia.inbox.R;
 import com.tokopedia.inbox.inboxchat.ChatWebSocketListenerImpl;
 import com.tokopedia.inbox.inboxchat.activity.ChatRoomActivity;
 import com.tokopedia.inbox.inboxchat.analytics.TopChatAnalytics;
+import com.tokopedia.inbox.inboxchat.domain.WebSocketMapper;
 import com.tokopedia.inbox.inboxchat.domain.usecase.DeleteMessageListUseCase;
 import com.tokopedia.inbox.inboxchat.domain.usecase.GetMessageListUseCase;
 import com.tokopedia.inbox.inboxchat.domain.usecase.SearchMessageUseCase;
@@ -47,6 +47,7 @@ public class InboxChatPresenter extends BaseDaggerPresenter<InboxChatContract.Vi
         implements InboxChatContract.Presenter, InboxMessageConstant {
 
     private final SessionHandler sessionHandler;
+    private final WebSocketMapper webSocketMapper;
     private GetMessageListUseCase getMessageListUseCase;
     private SearchMessageUseCase searchMessageUseCase;
     private DeleteMessageListUseCase deleteMessageListUseCase;
@@ -69,11 +70,13 @@ public class InboxChatPresenter extends BaseDaggerPresenter<InboxChatContract.Vi
     InboxChatPresenter(GetMessageListUseCase getMessageListUseCase,
                        SearchMessageUseCase searchMessageUseCase,
                        DeleteMessageListUseCase deleteMessageListUseCase,
-                       SessionHandler sessionHandler) {
+                       SessionHandler sessionHandler,
+                       WebSocketMapper webSocketMapper) {
         this.getMessageListUseCase = getMessageListUseCase;
         this.searchMessageUseCase = searchMessageUseCase;
         this.deleteMessageListUseCase = deleteMessageListUseCase;
         this.sessionHandler = sessionHandler;
+        this.webSocketMapper = webSocketMapper;
     }
 
     @Override
@@ -97,7 +100,7 @@ public class InboxChatPresenter extends BaseDaggerPresenter<InboxChatContract.Vi
                 "?os_type=1" +
                 "&device_id=" + GCMHandler.getRegistrationId(getView().getContext()) +
                 "&user_id=" + SessionHandler.getLoginID(getView().getContext());
-        listener = new ChatWebSocketListenerImpl(getView().getInterface());
+        listener = new ChatWebSocketListenerImpl(getView().getInterface(), webSocketMapper);
 
         countDownTimer = new CountDownTimer(5000, 1000) {
             @Override

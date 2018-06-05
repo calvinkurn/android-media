@@ -16,14 +16,14 @@ import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
 import com.tokopedia.core.geolocation.activity.GeolocationActivity;
 import com.tokopedia.core.geolocation.model.autocomplete.LocationPass;
-import com.tokopedia.core.manage.general.districtrecommendation.domain.model.Address;
-import com.tokopedia.core.manage.general.districtrecommendation.domain.model.Token;
-import com.tokopedia.core.manage.general.districtrecommendation.view.DistrictRecommendationContract;
+import com.tokopedia.district_recommendation.domain.model.Address;
+import com.tokopedia.district_recommendation.domain.model.Token;
 import com.tokopedia.core.manage.people.address.ManageAddressConstant;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.retrofit.response.ErrorHandler;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.util.GlobalConfig;
+import com.tokopedia.district_recommendation.view.DistrictRecommendationContract;
 import com.tokopedia.seller.LogisticRouter;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.base.view.activity.BaseStepperActivity;
@@ -228,8 +228,8 @@ public class ShopOpenMandatoryLocationFragment extends BaseDaggerFragment implem
     @Override
     public void navigateToGoogleMap(String generatedMap, LocationPass locationPass) {
 
-        if(TextUtils.isEmpty(locationShippingViewHolder.getDistrictName())
-                && TextUtils.isEmpty(locationShippingViewHolder.getCityName())) {
+        if(!TextUtils.isEmpty(locationShippingViewHolder.getDistrictName())
+                && !TextUtils.isEmpty(locationShippingViewHolder.getCityName())) {
 
             if(locationPass == null)
                 locationPass = new LocationPass();

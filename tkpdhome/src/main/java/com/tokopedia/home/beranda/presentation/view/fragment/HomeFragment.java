@@ -17,8 +17,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.WindowManager;
-import android.view.inputmethod.InputMethodManager;
 
 import com.google.firebase.perf.metrics.Trace;
 import com.tkpd.library.ui.view.LinearLayoutManager;
@@ -55,12 +53,11 @@ import com.tokopedia.core.router.productdetail.PdpRouter;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
 import com.tokopedia.core.router.wallet.IWalletRouter;
 import com.tokopedia.core.router.wallet.WalletRouterUtil;
-import com.tokopedia.home.IHomeRouter;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.design.bottomsheet.BottomSheetView;
-import com.tokopedia.digital.tokocash.model.CashBackData;
 import com.tokopedia.gamification.floating.view.fragment.FloatingEggButtonFragment;
+import com.tokopedia.home.IHomeRouter;
 import com.tokopedia.home.R;
 import com.tokopedia.home.beranda.di.BerandaComponent;
 import com.tokopedia.home.beranda.di.DaggerBerandaComponent;
@@ -73,6 +70,7 @@ import com.tokopedia.home.beranda.presentation.view.SectionContainer;
 import com.tokopedia.home.beranda.presentation.view.adapter.HomeRecycleAdapter;
 import com.tokopedia.home.beranda.presentation.view.adapter.LinearLayoutManagerWithSmoothScroller;
 import com.tokopedia.home.beranda.presentation.view.adapter.factory.HomeAdapterFactory;
+import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.CashBackData;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.HeaderViewModel;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.TopAdsViewModel;
 import com.tokopedia.home.beranda.presentation.view.compoundview.CountDownView;
@@ -264,6 +262,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     public void onDestroy() {
         super.onDestroy();
         getActivity().unregisterReceiver(homeFragmentBroadcastReceiver);
+        presenter.onDestroy();
         presenter.detachView();
         recyclerView.setAdapter(null);
         adapter = null;
@@ -278,15 +277,16 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         refreshLayout.post(new Runnable() {
             @Override
             public void run() {
-                presenter.getHomeData();
-                presenter.getHeaderData(true);
-                loadEggData();
+                if (presenter != null) {
+                    presenter.getHomeData();
+                    presenter.getHeaderData(true);
+                }
             }
         });
         refreshLayout.setOnRefreshListener(this);
     }
 
-    private void loadEggData(){
+    private void loadEggData() {
         FloatingEggButtonFragment floatingEggButtonFragment = getFloatingEggButtonFragment();
         if (floatingEggButtonFragment != null) {
             floatingEggButtonFragment.loadEggData();
@@ -309,7 +309,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         }
     }
 
-    private void initEggTokenScrollListener(){
+    private void initEggTokenScrollListener() {
         onEggScrollListener = new RecyclerView.OnScrollListener() {
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
@@ -329,7 +329,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         }
     }
 
-    private FloatingEggButtonFragment getFloatingEggButtonFragment(){
+    private FloatingEggButtonFragment getFloatingEggButtonFragment() {
         if (floatingEggButtonFragment == null) {
             floatingEggButtonFragment = (FloatingEggButtonFragment) getChildFragmentManager().findFragmentById(R.id.floating_egg_fragment);
         }
@@ -487,12 +487,11 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     }
 
     @Override
-    public void onPromoClick(int position, BannerSlidesModel slidesModel) {
-        String promoAttribution = String.format("1 - sliderBanner - %d - %s", position, slidesModel.getCreativeName());
+    public void onPromoClick(int position, BannerSlidesModel slidesModel, String attribution) {
         if (getActivity() != null
                 && getActivity().getApplicationContext() instanceof TkpdCoreRouter
                 && ((TkpdCoreRouter) getActivity().getApplicationContext()).isSupportedDelegateDeepLink(slidesModel.getApplink())) {
-            openApplink(slidesModel.getApplink(), promoAttribution);
+            openApplink(slidesModel.getApplink(), attribution);
         } else {
             openWebViewURL(slidesModel.getRedirectUrl(), getContext());
         }
@@ -539,7 +538,9 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
 
     @Override
     public void onCountDownFinished() {
-        presenter.updateHomeData();
+        if (presenter != null) {
+            presenter.updateHomeData();
+        }
     }
 
     @Override
@@ -716,9 +717,11 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
 
     @Override
     public void onShowRetryGetFeed() {
-        adapter.hideLoading();
-        adapter.showRetry();
-        adapter.notifyDataSetChanged();
+        if (adapter != null) {
+            adapter.hideLoading();
+            adapter.showRetry();
+            adapter.notifyDataSetChanged();
+        }
     }
 
     @Override
@@ -787,6 +790,12 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         restartBanner(isVisibleToUser);
     }
 
+    @Override
+    public void onStart() {
+        super.onStart();
+        ScreenTracking.screen(getScreenName());
+    }
+
     private void restartBanner(boolean isVisibleToUser) {
         if ((isVisibleToUser && getView() != null) && adapter != null) {
             adapter.notifyDataSetChanged();
@@ -830,9 +839,15 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
                         presenter.updateHeaderTokoCashData(homeHeaderWalletAction);
                     break;
                 case HomeFragmentBroadcastReceiverConstant.ACTION_RECEIVER_RECEIVED_TOKOCASH_PENDING_DATA:
-                    CashBackData cashBackData = intent.getParcelableExtra(
-                            HomeFragmentBroadcastReceiverConstant.EXTRA_TOKOCASH_PENDING_DATA
-                    );
+                    int amount = intent.getIntExtra(
+                            HomeFragmentBroadcastReceiverConstant.EXTRA_TOKOCASH_PENDING_AMOUNT, 0);
+                    String amountText = intent.getStringExtra(
+                            HomeFragmentBroadcastReceiverConstant.EXTRA_TOKOCASH_PENDING__AMOUNT_TEXT);
+
+                    CashBackData cashBackData = new CashBackData();
+                    cashBackData.setAmount(amount);
+                    cashBackData.setAmountText(amountText);
+
                     if (cashBackData != null)
                         presenter.updateHeaderTokoCashPendingData(cashBackData);
                     break;

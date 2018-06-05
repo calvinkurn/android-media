@@ -1,11 +1,29 @@
 apply plugin: 'com.android.library'
 apply from: "$rootProject.projectDir/buildconfig/module.gradle"
 
-dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
-    compile rootProject.ext.supportLibDependencies.appCompactV7
-    androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
-        exclude group: 'com.android.support', module: 'support-annotations'
-    })
-    testCompile 'junit:junit:4.12'
+project.ext {
+    artifactId = 'payment'
+    groupId = 'com.tokopedia.payment'
+    versionName = "${tkpdPaymentVersion}"
+    artifactName ="payment-release"
 }
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+
+    implementation project(rootProject.ext.libraries.useCase)
+    implementation project(rootProject.ext.libraries.abstraction)
+    implementation project(rootProject.ext.libraries.design)
+    implementation project(rootProject.ext.libraries.fingerprint)
+    implementation project(rootProject.ext.features.core)
+
+    implementation rootProject.ext.miscDependencies.multiDex
+
+    implementation rootProject.ext.supportLibDependencies.appCompactV7
+
+    implementation project(rootProject.ext.libraries.abstraction)
+    implementation project(rootProject.ext.libraries.useCase)
+    implementation project(rootProject.ext.libraries.fingerprint)
+}
+
+apply from: '../../../publish_local.gradle'

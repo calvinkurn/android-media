@@ -65,6 +65,7 @@
     <string name="error_reply_discussion_resolution_reach_max">Maksimal video yg dapat diupload 1 buah</string>
     <string name="error_reply_discussion_resolution_not_support">Extensi file belum disupport</string>
     <string name="error_reply_discussion_resolution_file_not_allowed">Maaf, file Extension tidak disupport</string>
+    <string name="error_reply_discussion_resolution_version_minimum">Mohon maaf device Anda tidak dapat menggunakan fitur ini</string>
     <string name="error_reply_discussion_resolution_reach_max_size_video">Maksimum ukuran file adalah 20mb</string>
     <string name="error_reply_discussion_resolution_reach_max_size_image">Maksimum ukuran gambar adalah 15mb</string>
     <string name="error_reply_discussion_resolution_min_size">Ukuran panjang dan lebar minimal adalah 300px</string>
@@ -75,6 +76,9 @@
         Pesan</string>
     <string name="time_machine_chat">Untuk melihat percakapan sebelumnya, kunjungi\nRiwayat
         Pesan</string>
+
+    <string name="security_info_chat">Mohon berhati-hati bila pengguna lain meminta Anda berkomunikasi dan bertransaksi di luar Tokopedia.</string>
+    <string name="security_info_chat_link">Cek panduan keamanan disini.</string>
 
     <string name="no_existing_chat"> Tidak Ada Chat</string>
     <string name="no_existing_chat_user"> Tidak ada pengguna atau chat
@@ -313,7 +317,7 @@ yang ditemukan</string>
     <string name="string_attach_invoice_activity_title">Pilih Transaksi</string>
 
     <string name="title_personal">Personal</string>
-    <string name="title_community">Channel</string>
+    <string name="title_community">Group Chat</string>
     <string name="chat_title">Chat ( %d )</string>
 
     <!-- attach invoice -->

@@ -18,7 +18,7 @@ import com.tokopedia.core.shopinfo.models.shopmodel.ShopModel;
 import com.tokopedia.core.util.DeepLinkChecker;
 import com.tokopedia.core.util.PagingHandler;
 import com.tokopedia.core.util.SessionHandler;
-import com.tokopedia.digital.tokocash.model.CashBackData;
+import com.tokopedia.feedplus.domain.usecase.GetHomeFeedsUseCase;
 import com.tokopedia.home.IHomeRouter;
 import com.tokopedia.home.R;
 import com.tokopedia.home.beranda.domain.interactor.GetHomeDataUseCase;
@@ -26,9 +26,9 @@ import com.tokopedia.home.beranda.domain.interactor.GetLocalHomeDataUseCase;
 import com.tokopedia.home.beranda.listener.HomeFeedListener;
 import com.tokopedia.home.beranda.presentation.view.HomeContract;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.BannerViewModel;
+import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.CashBackData;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.HeaderViewModel;
 import com.tokopedia.home.beranda.presentation.view.subscriber.GetHomeFeedsSubscriber;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.usecase.GetHomeFeedsUseCase;
 import com.tokopedia.usecase.RequestParams;
 
 import java.util.List;
@@ -470,4 +470,26 @@ public class HomePresenter extends BaseDaggerPresenter<HomeContract.View> implem
         return false;
     }
 
+    @Override
+    public void onDestroy() {
+        unsubscribeAllUseCase();
+    }
+
+    private void unsubscribeAllUseCase() {
+        if (getHomeDataUseCase != null) {
+            getHomeFeedsUseCase.unsubscribe();
+        }
+
+        if (getHomeFeedsUseCase != null) {
+            getHomeFeedsUseCase.unsubscribe();
+        }
+
+        if (localHomeDataUseCase != null) {
+            localHomeDataUseCase.unsubscribe();
+        }
+
+        if (subscription != null) {
+            subscription.unsubscribe();
+        }
+    }
 }

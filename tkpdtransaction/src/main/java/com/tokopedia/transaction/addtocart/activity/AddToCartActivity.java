@@ -636,7 +636,8 @@ public class AddToCartActivity extends BasePresenterActivity<AddToCartPresenter>
                 setInsuranceInfoButtonVisibility(product);
             }
 
-            if (product.getMaxHoursId() != null && product.getDescHoursId() != null) {
+            if (!TextUtils.isEmpty(product.getMaxHoursId())
+                    && !TextUtils.isEmpty(product.getDescHoursId())) {
                 arrowMaxHour.setText(product.getMaxHoursId());
                 descMaxHour.setText(product.getDescHoursId());
                 shipmentHourAtcLayout.setVisibility(View.VISIBLE);
@@ -776,6 +777,7 @@ public class AddToCartActivity extends BasePresenterActivity<AddToCartPresenter>
         presenter.sendToGTM(this);
         Intent intent1 = new Intent(this, AddAddressActivity.class);
         Bundle bundle = new Bundle();
+        bundle.putBoolean(ManageAddressConstant.IS_DISTRICT_RECOMMENDATION, false);
         bundle.putBoolean(ManageAddressConstant.IS_EDIT, false);
         intent1.putExtras(bundle);
         startActivityForResult(intent1, ManageAddressConstant.REQUEST_CODE_PARAM_CREATE);

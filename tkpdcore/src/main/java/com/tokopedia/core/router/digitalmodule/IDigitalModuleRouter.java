@@ -31,8 +31,6 @@ public interface IDigitalModuleRouter {
     int PAYMENT_CANCELLED = 6;
     int PAYMENT_FAILED = 7;
 
-    BroadcastReceiver getBroadcastReceiverTokocashPending();
-
     Intent instanceIntentCartDigitalProduct(DigitalCheckoutPassData passData);
 
     Intent instanceIntentCartDigitalProductWithBundle(Bundle bundle);
@@ -42,6 +40,10 @@ public interface IDigitalModuleRouter {
     Intent instanceIntentDigitalCategoryList();
 
     Intent instanceIntentDigitalWeb(String url);
+
+    Intent getPromoListIntent(Activity activity);
+
+    Intent getPromoDetailIntent(Context context, String slug);
 
     boolean isSupportedDelegateDeepLink(String appLinks);
 
