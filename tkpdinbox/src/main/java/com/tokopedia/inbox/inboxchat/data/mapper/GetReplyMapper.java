@@ -177,9 +177,11 @@ public class GetReplyMapper implements Func1<Response<TkpdResponse>, ChatRoomVie
 
     private void setOpponentViewModel(ChatRoomViewModel chatRoomViewModel, List<Contact>
             contacts) {
+        String adminShopRole = "Shop Admin";
         for (Contact contact : contacts) {
             if (contact.getUserId() != 0
-                    && !String.valueOf(contact.getUserId()).equals(sessionHandler.getLoginID())) {
+                    && !String.valueOf(contact.getUserId()).equals(sessionHandler.getLoginID())
+                    && !TextUtils.equals(contact.getRole(),adminShopRole)) {
 
                 if (!TextUtils.isEmpty(contact.getAttributes().getName())) {
                     chatRoomViewModel.setNameHeader(contact.getAttributes().getName());
