@@ -16,7 +16,7 @@ import com.tokopedia.core.R;
 import com.tokopedia.core.router.discovery.BrowseProductRouter;
 import com.tokopedia.core.router.transactionmodule.TransactionCartRouter;
 import com.tokopedia.core.util.SessionHandler;
-import android.support.v7.graphics.drawable.VectorDrawableCompat;
+import android.support.graphics.drawable.VectorDrawableCompat;
 
 /**
  * Created by Nisie on 31/08/15.
