@@ -100,7 +100,7 @@ public class FlightBookingReviewPassengerViewHolder extends AbstractViewHolder<F
                 return true;
             case FlightCancellationStatus.REFUNDED:
                 passengerCancellationStatus.setText(String.format(getString(
-                        R.string.flight_cancellation_passenger_status), "telah dibatalkan."));
+                        R.string.flight_cancellation_passenger_status), "telah disetujui."));
                 passengerCancellationStatus.setTextAppearance(context, R.style.CardSuccessStatusStyle);
                 passengerCancellationStatus.setBackground(context.getResources().getDrawable(R.drawable.bg_card_process));
                 return true;

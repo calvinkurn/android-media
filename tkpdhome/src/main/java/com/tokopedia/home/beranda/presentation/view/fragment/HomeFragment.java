@@ -648,7 +648,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
             trackingAttribution = trackingAttribution.replaceAll(" ", "%20");
         }
 
-        if (applink.contains("?")) {
+        if (applink.contains("?") || applink.contains("%3F") || applink.contains("%3f")) {
             return applink + "&tracker_attribution=" + trackingAttribution;
         } else {
             return applink + "?tracker_attribution=" + trackingAttribution;
