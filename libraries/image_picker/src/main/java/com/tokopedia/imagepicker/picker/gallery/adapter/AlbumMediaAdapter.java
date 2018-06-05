@@ -58,11 +58,7 @@ public class AlbumMediaAdapter extends RecyclerViewCursorAdapter<AlbumMediaAdapt
     public void onThumbnailClicked(ImageView thumbnail, MediaItem item, RecyclerView.ViewHolder holder) {
         boolean isChecked = true;
         if (supportMultipleSelection) {
-            if (selectionImagePathList.contains(item.getRealPath())) {
-                isChecked = false;
-            } else {
-                isChecked = true;
-            }
+            isChecked = !selectionImagePathList.contains(item.getRealPath());
         }
 
         if (isChecked && !mOnMediaClickListener.canAddMoreImage()) {

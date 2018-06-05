@@ -25,6 +25,7 @@ import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.imagepicker.R;
 import com.tokopedia.imagepicker.common.util.ImageUtils;
+import com.tokopedia.imagepicker.common.widget.NonSwipeableViewPager;
 import com.tokopedia.imagepicker.editor.main.view.ImageEditorActivity;
 import com.tokopedia.imagepicker.picker.main.adapter.ImagePickerViewPagerAdapter;
 import com.tokopedia.imagepicker.picker.camera.ImagePickerCameraFragment;
@@ -56,7 +57,7 @@ public class ImagePickerActivity extends BaseSimpleActivity
     private ImagePickerBuilder imagePickerBuilder;
 
     private int selectedTab = 0;
-    private ViewPager viewPager;
+    private NonSwipeableViewPager viewPager;
 
     private ImagePickerViewPagerAdapter imagePickerViewPagerAdapter;
     private List<String> permissionsToRequest;
@@ -328,6 +329,32 @@ public class ImagePickerActivity extends BaseSimpleActivity
     }
 
     @Override
+    public boolean supportMultipleSelection() {
+        return imagePickerBuilder.supportMultipleSelection();
+    }
+
+    @Override
+    public void onPreviewCameraViewVisible() {
+        viewPager.setCanSwipe(false);
+        tabLayout.setVisibility(View.GONE);
+        imagePickerPreviewWidget.setVisibility(View.GONE);
+        disableDoneView();
+    }
+
+    @Override
+    public void onCameraViewVisible() {
+        viewPager.setCanSwipe(true);
+        if (tabLayout.getTabCount() > 1) {
+            tabLayout.setVisibility(View.VISIBLE);
+        }
+        imagePickerPreviewWidget.setVisibility(View.VISIBLE);
+        if (selectedImagePaths.size() > 0) {
+            enableDoneView();
+        }
+    }
+
+
+    @Override
     public ArrayList<String> getImagePath() {
         return selectedImagePaths;
     }
@@ -380,8 +407,8 @@ public class ImagePickerActivity extends BaseSimpleActivity
             }
 
             List<Fragment> fragments = getSupportFragmentManager().getFragments();
-            for (Fragment fragment: fragments) {
-                if (fragment!= null && fragment.isAdded() && fragment instanceof ImagePickerInterface) {
+            for (Fragment fragment : fragments) {
+                if (fragment != null && fragment.isAdded() && fragment instanceof ImagePickerInterface) {
                     ((ImagePickerInterface) fragment).onThumbnailImageRemoved(imagePath);
                 }
             }
