@@ -351,8 +351,18 @@ public class LoyaltyActivity extends BasePresenterActivity
     }
 
     @Override
-    public void onCouponItemClicked() {
+    public void sendAnalyticsOnCouponItemClicked() {
         checkoutAnalyticsCartPage.eventClickCartClickKuponFromGunakanPromoAtauKupon();
+    }
+
+    @Override
+    public void sendAnalyticsImpressionCouponEmptyCartListPage() {
+        checkoutAnalyticsCartPage.eventImpressionCartImpressionOnPopUpKupon();
+    }
+
+    @Override
+    public void sendAnalyticsImpressionCouponEmptyShipmentPage() {
+        checkoutAnalyticsCartShipmentPage.eventImpressionShipmentImpressionOnPopUpKupon();
     }
 
     public static Intent newInstanceCouponActive(Activity activity, String platform, String categoryId, String cartId) {
