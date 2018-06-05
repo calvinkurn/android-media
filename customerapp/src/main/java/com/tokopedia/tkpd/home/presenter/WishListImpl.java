@@ -6,6 +6,10 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
 
+import com.tokopedia.abstraction.common.network.constant.ErrorNetMessage;
+import com.tokopedia.abstraction.common.network.exception.HttpErrorException;
+import com.tokopedia.abstraction.common.network.exception.ResponseDataNullException;
+import com.tokopedia.abstraction.common.network.exception.ResponseErrorException;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.database.CacheDuration;
@@ -30,9 +34,13 @@ import com.tokopedia.tkpd.home.service.FavoritePart1Service;
 import com.tokopedia.tkpd.home.wishlist.WishlistViewModelMapper;
 import com.tokopedia.tkpd.home.wishlist.domain.SearchWishlistUsecase;
 import com.tokopedia.tkpd.home.wishlist.domain.model.DataWishlist;
+import com.tokopedia.transactiondata.exception.ResponseCartApiErrorException;
 
 import org.parceler.Parcels;
 
+import java.net.ConnectException;
+import java.net.SocketTimeoutException;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -288,6 +296,7 @@ public class WishListImpl implements WishList {
     }
 
     private void routeToNewCheckout(Activity activity, Wishlist dataDetail) {
+        wishListView.showProgressDialog();
         ((TransactionRouter) activity.getApplication()).addToCartProduct(
                 new AddToCartRequest.Builder()
                         .productId(Integer.parseInt(dataDetail.getId()))
@@ -549,12 +558,36 @@ public class WishListImpl implements WishList {
 
             @Override
             public void onError(Throwable e) {
+                wishListView.dismissProgressDialog();
                 e.printStackTrace();
-                wishListView.showAddToCartMessage(e.getMessage());
+                if (e instanceof UnknownHostException) {
+                    /* Ini kalau ga ada internet */
+                    wishListView.showAddToCartMessage(ErrorNetMessage.MESSAGE_ERROR_NO_CONNECTION_FULL);
+                } else if (e instanceof SocketTimeoutException || e instanceof ConnectException) {
+                    /* Ini kalau timeout */
+                    wishListView.showAddToCartMessage(ErrorNetMessage.MESSAGE_ERROR_TIMEOUT);
+                } else if (e instanceof ResponseErrorException) {
+                    /* Ini kalau error dari API kasih message error */
+                    wishListView.showAddToCartMessage(e.getMessage());
+                } else if (e instanceof ResponseDataNullException) {
+                    /* Dari Api data null => "data":{}, tapi ga ada message error apa apa */
+                    wishListView.showAddToCartMessage(e.getMessage());
+                } else if (e instanceof HttpErrorException) {
+                    /* Ini Http error, misal 403, 500, 404,
+                     code http errornya bisa diambil
+                     e.getErrorCode */
+                    wishListView.showAddToCartMessage(e.getMessage());
+                } else if (e instanceof ResponseCartApiErrorException) {
+                    wishListView.showAddToCartMessage(e.getMessage());
+                } else {
+                    /* Ini diluar dari segalanya hahahaha */
+                    wishListView.showAddToCartMessage(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
+                }
             }
 
             @Override
             public void onNext(AddToCartResult addToCartResult) {
+                wishListView.dismissProgressDialog();
                 wishListView.showAddToCartMessage(addToCartResult.getMessage());
             }
         };

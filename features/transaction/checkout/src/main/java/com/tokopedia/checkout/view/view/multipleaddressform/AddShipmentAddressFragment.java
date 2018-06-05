@@ -310,7 +310,9 @@ public class AddShipmentAddressFragment extends BaseCheckoutFragment {
             );
         } else {
             notesLayout.setVisibility(View.VISIBLE);
-            notesEditText.setText(itemData.getProductNotes());
+            if (formMode == EDIT_MODE) {
+                notesEditText.setText(itemData.getProductNotes());
+            }
         }
     }
 

@@ -137,7 +137,7 @@ public class MultipleAddressPresenter implements IMultipleAddressPresenter {
         addressData.setRecipientPhoneNumber(shipmentRecipientModel.getRecipientPhoneNumber());
         addressData.setDestinationDistrictId(shipmentRecipientModel.getDestinationDistrictId());
         addressData.setDestinationDistrictName(shipmentRecipientModel.getDestinationDistrictName());
-        addressData.setMaxQuantity(updatedData.getMaxQuantity());
+        addressData.setMaxQuantity(originData.getInvenageValue() != 0 ? originData.getInvenageValue() : updatedData.getMaxQuantity());
         addressData.setMinQuantity(originData.getMinimalQtyOrder());
         addressData.setErrorCheckoutPriceLimit(messageErrorData.getErrorCheckoutPriceLimit());
         addressData.setErrorFieldBetween(messageErrorData.getErrorFieldBetween());

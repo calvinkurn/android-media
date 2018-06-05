@@ -514,6 +514,7 @@ public class CartFragment extends BaseCheckoutFragment implements CartListAdapte
         } else {
             cartItemPromoHolderData = new CartItemPromoHolderData();
             cartItemPromoHolderData.setPromoNotActive();
+            promoCodeAppliedData = null;
         }
         cartItemPromoHolderData.setDefaultSelectedTabString(cartListData.getDefaultPromoDialogTab());
         cartListAdapter.addPromoVoucherData(cartItemPromoHolderData);

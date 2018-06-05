@@ -31,6 +31,7 @@ public class CartAddressChoiceActivity extends BaseCheckoutActivity
 
     private static final String EXTRA_TYPE_REQUEST = "EXTRA_TYPE_REQUEST";
     public static final String EXTRA_DEFAULT_SELECTED_ADDRESS = "EXTRA_DEFAULT_SELECTED_ADDRESS";
+    public static final String EXTRA_NAVIGATION_FROM_ADDRESS_LIST = "EXTRA_NAVIGATION_FROM_ADDRESS_LIST";
     public static final String EXTRA_SELECTED_ADDRESS_DATA = "EXTRA_SELECTED_ADDRESS_DATA";
     public static final String EXTRA_CURRENT_ADDRESS = "CURRENT_ADDRESS";
     public static final String EXTRA_DISCOM_TOKEN = "discom_token";
@@ -61,6 +62,19 @@ public class CartAddressChoiceActivity extends BaseCheckoutActivity
         }
 
         return intent;
+    }
+
+    @Override
+    protected void setupLayout(Bundle savedInstanceState) {
+        super.setupLayout(savedInstanceState);
+        if (getSupportActionBar() != null) {
+            if (getIntent().getExtras() != null && getIntent().hasExtra(EXTRA_TYPE_REQUEST)) {
+                if (getIntent().getIntExtra(EXTRA_TYPE_REQUEST, 0) == TYPE_REQUEST_SELECT_ADDRESS_FROM_COMPLETE_LIST) {
+                    getSupportActionBar().setTitle(getString(R.string.checkout_module_title_change_address));
+                }
+
+            }
+        }
     }
 
     @Override
@@ -127,6 +141,7 @@ public class CartAddressChoiceActivity extends BaseCheckoutActivity
             case TYPE_REQUEST_SELECT_ADDRESS_FROM_SHORT_LIST:
                 Bundle bundle = new Bundle();
                 bundle.putParcelable(EXTRA_DEFAULT_SELECTED_ADDRESS, selectedAddressResult);
+                bundle.putBoolean(EXTRA_NAVIGATION_FROM_ADDRESS_LIST, true);
 
                 Fragment fragment = CartAddressChoiceFragment.newInstance(selectedAddressResult);
                 fragment.setArguments(bundle);
