@@ -40,6 +40,7 @@ import rx.functions.Func1;
 
 public class GetReplyMapper implements Func1<Response<TkpdResponse>, ChatRoomViewModel> {
 
+    private static final String SHOP_ADMIN_ROLE = "Shop Admin";
     private static final String TOKOPEDIA = "Tokopedia";
     private static final String TYPE_QUICK_REPLY = "8";
     private final SessionHandler sessionHandler;
@@ -177,11 +178,10 @@ public class GetReplyMapper implements Func1<Response<TkpdResponse>, ChatRoomVie
 
     private void setOpponentViewModel(ChatRoomViewModel chatRoomViewModel, List<Contact>
             contacts) {
-        String adminShopRole = "Shop Admin";
         for (Contact contact : contacts) {
             if (contact.getUserId() != 0
                     && !String.valueOf(contact.getUserId()).equals(sessionHandler.getLoginID())
-                    && !TextUtils.equals(contact.getRole(),adminShopRole)) {
+                    && !TextUtils.equals(contact.getRole(), SHOP_ADMIN_ROLE)) {
 
                 if (!TextUtils.isEmpty(contact.getAttributes().getName())) {
                     chatRoomViewModel.setNameHeader(contact.getAttributes().getName());
