@@ -331,8 +331,8 @@ public class ImagePickerActivity extends BaseSimpleActivity
     }
 
     @Override
-    public boolean supportMultipleSelection() {
-        return imagePickerBuilder.supportMultipleSelection();
+    public boolean needShowCameraPreview() {
+        return imagePickerBuilder.supportMultipleSelection() || !imagePickerBuilder.isContinueToEditAfterPick();
     }
 
     @Override

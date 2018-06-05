@@ -21,8 +21,6 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 
 import com.otaliastudios.cameraview.CameraListener;
 import com.otaliastudios.cameraview.CameraOptions;
@@ -52,7 +50,7 @@ public class ImagePickerCameraFragment extends TkpdBaseV4Fragment {
     private CameraView cameraView;
     private ImageButton flashImageButton;
     private FrameLayout cameraLayout;
-    private LinearLayout previewLayout;
+    private FrameLayout previewLayout;
     private OnImagePickerCameraFragmentListener onImagePickerCameraFragmentListener;
 
     private boolean mCapturingPicture;
@@ -70,11 +68,11 @@ public class ImagePickerCameraFragment extends TkpdBaseV4Fragment {
 
         boolean isFinishEditting();
 
-        boolean supportMultipleSelection();
-
         void onCameraViewVisible();
 
         void onPreviewCameraViewVisible();
+
+        boolean needShowCameraPreview();
 
         int getRatioX();
 
@@ -224,8 +222,9 @@ public class ImagePickerCameraFragment extends TkpdBaseV4Fragment {
             @Override
             public void onClick(View view) {
                 onImagePickerCameraFragmentListener.onImageTaken(file.getAbsolutePath());
+
                 //if multiple selection, will continue preview camera
-                if (onImagePickerCameraFragmentListener.supportMultipleSelection()) {
+                if (onImagePickerCameraFragmentListener.needShowCameraPreview()) {
                     showCameraView();
                 }
             }
@@ -284,7 +283,7 @@ public class ImagePickerCameraFragment extends TkpdBaseV4Fragment {
     }
 
     private void onSuccessImageTaken(File file) {
-        if (onImagePickerCameraFragmentListener.supportMultipleSelection()) {
+        if (onImagePickerCameraFragmentListener.needShowCameraPreview()) {
             ImageHandler.loadImageFromFile(getContext(), previewImageView, file);
             showPreviewView();
         } else {

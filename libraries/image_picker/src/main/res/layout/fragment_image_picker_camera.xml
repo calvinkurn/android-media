@@ -78,12 +78,10 @@
 
     </FrameLayout>
 
-    <LinearLayout
+    <FrameLayout
         android:id="@+id/layout_preview"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:minHeight="@dimen/dp_100"
-        android:orientation="vertical">
+        android:layout_height="match_parent">
 
         <ImageView
             android:id="@+id/image_preview"
@@ -93,15 +91,12 @@
             android:adjustViewBounds="true"
             android:scaleType="centerCrop" />
 
-        <View
-            android:layout_width="wrap_content"
-            android:layout_height="0dp"
-            android:layout_weight="1" />
-
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:layout_marginBottom="@dimen/dp_16"
+            android:layout_gravity="bottom">
 
             <LinearLayout
                 android:id="@+id/layout_recapture"
@@ -151,10 +146,5 @@
                     android:textColor="@color/tkpd_main_green" />
             </LinearLayout>
         </LinearLayout>
-
-        <View
-            android:layout_width="wrap_content"
-            android:layout_height="0dp"
-            android:layout_weight="2" />
-    </LinearLayout>
+    </FrameLayout>
 </FrameLayout>
