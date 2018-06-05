@@ -42,7 +42,6 @@ public class CartRemoveProductFragment extends BaseCheckoutFragment
         CartRemoveProductAdapter.CartRemoveProductActionListener {
 
     private static final Locale LOCALE_ID = new Locale("in", "ID");
-    private static final String TAG = CartRemoveProductFragment.class.getSimpleName();
     private static final String ARG_EXTRA_CART_DATA_LIST = "ARG_EXTRA_CART_DATA_LIST";
 
     private RecyclerView mRvCartRemoveProduct;
@@ -56,8 +55,6 @@ public class CartRemoveProductFragment extends BaseCheckoutFragment
     RecyclerView.ItemDecoration itemDecoration;
     @Inject
     CheckoutAnalyticsCartPage cartPageAnalytics;
-
-    private int mCheckedCartItem = 0;
 
     private List<CartItemData> mCartItemDataList = new ArrayList<>();
     private List<CheckedCartItemData> mCheckedCartItemList = new ArrayList<>();
@@ -341,7 +338,7 @@ public class CartRemoveProductFragment extends BaseCheckoutFragment
                 mCartRemoveProductPresenter.processDeleteCart(
                         cartItemDataList, updatedCartItem, false
                 );
-                cartPageAnalytics.enhancedECommerceRemoveCartNotWishList(
+                cartPageAnalytics.enhanceECommerceCartClickHapusFromClickHapus(
                         mCartRemoveProductPresenter.generateCartDataAnalytics(
                                 removedCartItem, EnhancedECommerceCartMapData.REMOVE_ACTION
                         )
@@ -357,7 +354,7 @@ public class CartRemoveProductFragment extends BaseCheckoutFragment
                 mCartRemoveProductPresenter.processDeleteCart(
                         cartItemDataList, updatedCartItem, true
                 );
-                cartPageAnalytics.enhancedECommerceRemoveCartAddWishList(
+                cartPageAnalytics.enhanceECommerceCartClickHapusDanTambahWishlistFromClickHapus(
                         mCartRemoveProductPresenter.generateCartDataAnalytics(
                                 removedCartItem, EnhancedECommerceCartMapData.REMOVE_ACTION
                         )
@@ -371,7 +368,7 @@ public class CartRemoveProductFragment extends BaseCheckoutFragment
                 mCartRemoveProductPresenter.processDeleteCart(
                         removedCartItem, updatedCartItem, false
                 );
-                cartPageAnalytics.enhancedECommerceRemoveCartNotWishList(
+                cartPageAnalytics.enhanceECommerceCartClickHapusFromClickHapus(
                         mCartRemoveProductPresenter.generateCartDataAnalytics(
                                 removedCartItem, EnhancedECommerceCartMapData.REMOVE_ACTION
                         )
@@ -385,7 +382,7 @@ public class CartRemoveProductFragment extends BaseCheckoutFragment
                 mCartRemoveProductPresenter.processDeleteCart(
                         removedCartItem, updatedCartItem, true
                 );
-                cartPageAnalytics.enhancedECommerceRemoveCartAddWishList(
+                cartPageAnalytics.enhanceECommerceCartClickHapusDanTambahWishlistFromClickHapus(
                         mCartRemoveProductPresenter.generateCartDataAnalytics(
                                 removedCartItem, EnhancedECommerceCartMapData.REMOVE_ACTION
                         )

@@ -2,8 +2,10 @@ package com.tokopedia.checkout.view.base;
 
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
+import com.tokopedia.checkout.R;
 
 import butterknife.ButterKnife;
 
@@ -34,6 +36,10 @@ public abstract class BaseCheckoutActivity extends BaseSimpleActivity {
         initVar();
         setViewListener();
         setActionVar();
+    }
+
+    protected Fragment getCurrentFragment(){
+        return getSupportFragmentManager().findFragmentById(R.id.parent_view);
     }
 
     protected abstract void initInjector();
