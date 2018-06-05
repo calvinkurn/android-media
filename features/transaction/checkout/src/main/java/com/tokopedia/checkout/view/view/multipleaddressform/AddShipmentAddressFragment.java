@@ -429,7 +429,7 @@ public class AddShipmentAddressFragment extends BaseCheckoutFragment {
             public void onClick(View view) {
                 if (addressLayout.getVisibility() == View.VISIBLE) {
                     addAddressErrorTextView.setVisibility(View.GONE);
-                    analytic.eventViewMultipleAddressKlikSimpan();
+                    analytic.eventMultipleAddressKlikSimpan();
                     if (formMode == ADD_MODE) {
                         addNewAddressItem();
                     } else {
@@ -564,7 +564,7 @@ public class AddShipmentAddressFragment extends BaseCheckoutFragment {
             public void onClick(View view) {
                 emptyNotesLayout.setVisibility(View.GONE);
                 notesLayout.setVisibility(View.VISIBLE);
-                analytic.eventViewMultipleAddressKlikTulisCatatan();
+                analytic.eventMultipleAddressKlikTulisCatatan();
             }
         };
     }

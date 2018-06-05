@@ -28,6 +28,7 @@ import com.tokopedia.checkout.view.di.module.ShipmentAddressListModule;
 import com.tokopedia.core.manage.people.address.ManageAddressConstant;
 import com.tokopedia.core.manage.people.address.activity.AddAddressActivity;
 import com.tokopedia.design.text.SearchInputView;
+import com.tokopedia.transactionanalytics.CheckoutAnalyticsCartPage;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -69,6 +70,9 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
     @Inject
     ShipmentAddressListPresenter mShipmentAddressListPresenter;
 
+    @Inject
+    CheckoutAnalyticsCartPage analytic;
+
     public static ShipmentAddressListFragment newInstance(RecipientAddressModel currentAddress) {
         Bundle bundle = new Bundle();
         bundle.putParcelable(EXTRA_CURRENT_ADDRESS, currentAddress);
@@ -90,7 +94,7 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
     @Override
     protected void initInjector() {
         ShipmentAddressListComponent component = DaggerShipmentAddressListComponent.builder()
-                .shipmentAddressListModule(new ShipmentAddressListModule(this))
+                .shipmentAddressListModule(new ShipmentAddressListModule(getActivity(), this))
                 .build();
         component.inject(this);
     }
@@ -332,12 +336,14 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
     @Override
     public void onAddressContainerClicked(RecipientAddressModel model) {
         if (mCartAddressChoiceActivityListener != null) {
+            analytic.eventChangeSendMultiAddressPilihAlamat();
             mCartAddressChoiceActivityListener.finishSendResultActionSelectedAddress(model);
         }
     }
 
     @Override
     public void onEditClick(RecipientAddressModel model) {
+        analytic.eventChangeSendMultiAddressKlikUbah();
         AddressModelMapper mapper = new AddressModelMapper();
 
         Intent intent = AddAddressActivity.createInstance(getActivity(), mapper.transform(model), null);
