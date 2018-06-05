@@ -8,6 +8,7 @@ import com.tokopedia.digital.common.data.entity.response.RechargeFavoritNumberRe
 import com.tokopedia.digital.common.data.entity.response.RechargeResponseEntity;
 import com.tokopedia.digital.common.data.entity.response.Validation;
 import com.tokopedia.digital.exception.MapperDataException;
+import com.tokopedia.digital.product.view.model.AdditionalFeature;
 import com.tokopedia.digital.product.view.model.BannerData;
 import com.tokopedia.digital.product.view.model.CategoryData;
 import com.tokopedia.digital.product.view.model.ClientNumber;
@@ -44,6 +45,9 @@ public class ProductDigitalMapper {
             categoryData.setSlug(categoryDetail.getSlug());
             categoryData.setOperatorStyle(categoryDetail.getOperatorStyle());
             categoryData.setOperatorLabel(categoryDetail.getOperatorLabel());
+            if (categoryDetail.getAdditionalFeature() != null) {
+                categoryData.setAdditionalFeature(transformAdditionalFeature(categoryDetail.getAdditionalFeature()));
+            }
 
             categoryData.setClientNumberList(transformClientNumberList(categoryDetail));
             categoryData.setOperatorList(transformOperators(categoryDetail));
@@ -62,6 +66,11 @@ public class ProductDigitalMapper {
                 .build();
     }
 
+    private AdditionalFeature transformAdditionalFeature(
+            com.tokopedia.digital.common.data.entity.response.AdditionalFeature additionalFeature) {
+        return new AdditionalFeature(additionalFeature.getText(), additionalFeature.getButtonText(),
+                additionalFeature.getId());
+    }
 
     /**
      * Helper function to transfor client number list
