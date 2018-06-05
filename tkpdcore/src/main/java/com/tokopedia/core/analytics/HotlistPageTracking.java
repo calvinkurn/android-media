@@ -76,8 +76,17 @@ public class HotlistPageTracking extends TrackingUtils {
         sendGTMEvent(new EventTracking(
                 AppEventTracking.Event.HOTLIST,
                 AppEventTracking.Event.HOTLIST_PAGE,
-                "produk detail page",
+                "click social share",
                 channel
+        ).setUserId().getEvent());
+    }
+
+    public static void eventHotlistDisplay(String display) {
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.HOTLIST,
+                AppEventTracking.Event.HOTLIST_PAGE,
+                "click display",
+                display
         ).setUserId().getEvent());
     }
 }

@@ -20,6 +20,7 @@ public class HotlistProductViewModel implements Visitable<HotlistAdapterTypeFact
 
     private String productID;
     private String productName;
+    private String productUrl;
     private String imageUrl;
     private String imageUrl700;
     private String rating;
@@ -48,6 +49,14 @@ public class HotlistProductViewModel implements Visitable<HotlistAdapterTypeFact
 
     public void setWishlistButtonEnabled(boolean wishlistButtonEnabled) {
         isWishlistButtonEnabled = wishlistButtonEnabled;
+    }
+
+    public String getProductUrl() {
+        return productUrl;
+    }
+
+    public void setProductUrl(String productUrl) {
+        this.productUrl = productUrl;
     }
 
     public void setProductID(String productID) {
@@ -345,6 +354,7 @@ public class HotlistProductViewModel implements Visitable<HotlistAdapterTypeFact
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(this.productID);
         dest.writeString(this.productName);
+        dest.writeString(this.productUrl);
         dest.writeString(this.imageUrl);
         dest.writeString(this.imageUrl700);
         dest.writeString(this.rating);
@@ -367,6 +377,7 @@ public class HotlistProductViewModel implements Visitable<HotlistAdapterTypeFact
     protected HotlistProductViewModel(Parcel in) {
         this.productID = in.readString();
         this.productName = in.readString();
+        this.productUrl = in.readString();
         this.imageUrl = in.readString();
         this.imageUrl700 = in.readString();
         this.rating = in.readString();

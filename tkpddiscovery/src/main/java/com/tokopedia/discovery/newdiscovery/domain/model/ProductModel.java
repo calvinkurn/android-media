@@ -10,6 +10,7 @@ public class ProductModel {
 
     private String productID;
     private String productName;
+    private String productUrl;
     private String imageUrl;
     private String imageUrl700;
     private String rating;
@@ -23,6 +24,14 @@ public class ProductModel {
     private List<BadgeModel> badgesList;
     private List<LabelModel> labelList;
     private boolean featured;
+
+    public String getProductUrl() {
+        return productUrl;
+    }
+
+    public void setProductUrl(String productUrl) {
+        this.productUrl = productUrl;
+    }
 
     public void setProductID(String productID) {
         this.productID = productID;

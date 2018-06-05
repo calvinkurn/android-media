@@ -672,8 +672,8 @@ public class HotlistFragment extends SearchSectionFragment
     private void trackingClickEnhance(HotlistProductViewModel product) {
         Map<String, Object> map = DataLayer.mapOf("event", "productClick",
                 "eventCategory", "hotlist page",
-                "eventAction", "click product curation",
-                "eventLabel", "",
+                "eventAction", "click product list",
+                "eventLabel", product.getProductUrl(),
                 "ecommerce", DataLayer.mapOf(
                         "currencyCode", "IDR",
                         "click", DataLayer.mapOf(

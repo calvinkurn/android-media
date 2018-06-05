@@ -146,6 +146,7 @@ public class GetHotlistInitializeSubscriber extends rx.Subscriber<HotlistModel> 
             model.setLabelList(mappingLabels(domain.getLabelList()));
             model.setCountReview(domain.getCountReview());
             model.setGoldMerchant(domain.isGoldMerchant());
+            model.setProductUrl(domain.getProductUrl());
             model.setImageUrl(domain.getImageUrl());
             model.setImageUrl700(domain.getImageUrl700());
             model.setPrice(domain.getPrice());

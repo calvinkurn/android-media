@@ -214,18 +214,30 @@ public abstract class SearchSectionFragment extends BaseDaggerFragment
                 setSpanCount(2);
                 gridLayoutManager.setSpanCount(spanCount);
                 getAdapter().changeDoubleGridView();
-                SearchTracking.eventSearchResultChangeGrid("grid 2", getScreenName());
+                if(getActivity() instanceof HotlistActivity){
+                    HotlistPageTracking.eventHotlistDisplay("grid");
+                } else {
+                    SearchTracking.eventSearchResultChangeGrid("grid 2", getScreenName());
+                }
                 break;
             case GRID_2:
                 setSpanCount(1);
                 gridLayoutManager.setSpanCount(spanCount);
                 getAdapter().changeSingleGridView();
-                SearchTracking.eventSearchResultChangeGrid("grid 1", getScreenName());
+                if(getActivity() instanceof HotlistActivity){
+                    HotlistPageTracking.eventHotlistDisplay("full");
+                } else {
+                    SearchTracking.eventSearchResultChangeGrid("grid 1", getScreenName());
+                }
                 break;
             case GRID_3:
                 setSpanCount(1);
                 getAdapter().changeListView();
-                SearchTracking.eventSearchResultChangeGrid("list", getScreenName());
+                if(getActivity() instanceof HotlistActivity){
+                    HotlistPageTracking.eventHotlistDisplay("list");
+                } else {
+                    SearchTracking.eventSearchResultChangeGrid("list", getScreenName());
+                }
                 break;
         }
         refreshBottomBarGridIcon();
@@ -249,7 +261,6 @@ public abstract class SearchSectionFragment extends BaseDaggerFragment
             return;
         }
 
-        SearchTracking.eventSearchResultShare(getScreenName());
         ShareData shareData = ShareData.Builder.aShareData()
                 .setType(ShareData.DISCOVERY_TYPE)
                 .setName(getString(R.string.message_share_catalog))
@@ -259,6 +270,8 @@ public abstract class SearchSectionFragment extends BaseDaggerFragment
 
         if(getActivity() instanceof HotlistActivity){
             shareData.setType(ShareData.HOTLIST_TYPE);
+        } else {
+            SearchTracking.eventSearchResultShare(getScreenName());
         }
 
         Intent intent = new Intent(getActivity(), ShareActivity.class);
