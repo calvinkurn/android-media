@@ -22,9 +22,10 @@ import com.tokopedia.checkout.view.di.component.CartComponent;
 import com.tokopedia.checkout.view.di.component.CartRemoveProductComponent;
 import com.tokopedia.checkout.view.di.component.DaggerCartRemoveProductComponent;
 import com.tokopedia.checkout.view.di.module.CartRemoveProductModule;
+import com.tokopedia.checkout.view.di.module.TrackingAnalyticsModule;
 import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.util.SessionHandler;
-import com.tokopedia.transactionanalytics.CheckoutAnalyticsCartPage;
+import com.tokopedia.transactionanalytics.CheckoutAnalyticsCart;
 import com.tokopedia.transactionanalytics.EnhancedECommerceCartMapData;
 
 import java.util.ArrayList;
@@ -54,7 +55,7 @@ public class CartRemoveProductFragment extends BaseCheckoutFragment
     @Inject
     RecyclerView.ItemDecoration itemDecoration;
     @Inject
-    CheckoutAnalyticsCartPage cartPageAnalytics;
+    CheckoutAnalyticsCart cartPageAnalytics;
 
     private List<CartItemData> mCartItemDataList = new ArrayList<>();
     private List<CheckedCartItemData> mCheckedCartItemList = new ArrayList<>();
@@ -73,6 +74,7 @@ public class CartRemoveProductFragment extends BaseCheckoutFragment
         CartRemoveProductComponent component = DaggerCartRemoveProductComponent.builder()
                 .cartComponent(getComponent(CartComponent.class))
                 .cartRemoveProductModule(new CartRemoveProductModule(this))
+                .trackingAnalyticsModule(new TrackingAnalyticsModule())
                 .build();
         component.inject(this);
     }

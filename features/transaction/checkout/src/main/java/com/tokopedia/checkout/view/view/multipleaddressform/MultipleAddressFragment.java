@@ -22,9 +22,10 @@ import com.tokopedia.checkout.view.di.component.CartComponent;
 import com.tokopedia.checkout.view.di.component.DaggerMultipleAddressComponent;
 import com.tokopedia.checkout.view.di.component.MultipleAddressComponent;
 import com.tokopedia.checkout.view.di.module.MultipleAddressModule;
+import com.tokopedia.checkout.view.di.module.TrackingAnalyticsModule;
 import com.tokopedia.design.component.ToasterError;
-import com.tokopedia.transactionanalytics.CheckoutAnalyticsCartPage;
 import com.tokopedia.transactionanalytics.CheckoutAnalyticsChangeAddress;
+import com.tokopedia.transactionanalytics.CheckoutAnalyticsMultipleAddress;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -48,7 +49,9 @@ public class MultipleAddressFragment extends BaseCheckoutFragment
     @Inject
     UserSession userSession;
     @Inject
-    CheckoutAnalyticsChangeAddress checkoutAnalyticsCartPage;
+    CheckoutAnalyticsChangeAddress checkoutAnalyticsChangeAddress;
+    @Inject
+    CheckoutAnalyticsMultipleAddress checkoutAnalyticsMultipleAddress;
 
     public static final int ADD_SHIPMENT_ADDRESS_REQUEST_CODE = 21;
     public static final int EDIT_SHIPMENT_ADDRESS_REQUEST_CODE = 22;
@@ -97,7 +100,8 @@ public class MultipleAddressFragment extends BaseCheckoutFragment
         MultipleAddressComponent component = DaggerMultipleAddressComponent
                 .builder()
                 .cartComponent(getComponent(CartComponent.class))
-                .multipleAddressModule(new MultipleAddressModule(this)).build();
+                .multipleAddressModule(new MultipleAddressModule(this))
+                .trackingAnalyticsModule(new TrackingAnalyticsModule()).build();
         component.inject(this);
     }
 
@@ -114,7 +118,7 @@ public class MultipleAddressFragment extends BaseCheckoutFragment
 
     @Override
     public void onGoToChooseCourier(List<MultipleAddressAdapterData> dataList) {
-        checkoutAnalyticsCartPage.eventMultipleAddressKlikPilihKurirPengiriman();
+        checkoutAnalyticsMultipleAddress.eventClickMultipleAddressClickPilihKurirPengirimanFromKirimKeBeberapaAlamat();
         presenter.sendData(getActivity(), dataList);
 
     }
@@ -124,7 +128,7 @@ public class MultipleAddressFragment extends BaseCheckoutFragment
                                         ArrayList<MultipleAddressAdapterData> dataList,
                                         MultipleAddressAdapterData data,
                                         MultipleAddressItemData addressData) {
-        checkoutAnalyticsCartPage.eventMultipleAddressKlikTambahAlamatBaru();
+        checkoutAnalyticsMultipleAddress.eventClickMultipleAddressClickTambahPengirimanBaruFromKirimKeBeberapaAlamat();
         startActivityForResult(AddShipmentAddressActivity
                         .createIntent(getActivity(), dataList, data, addressData, ADD_MODE),
                 ADD_SHIPMENT_ADDRESS_REQUEST_CODE);
@@ -134,7 +138,7 @@ public class MultipleAddressFragment extends BaseCheckoutFragment
     public void onItemChoosen(ArrayList<MultipleAddressAdapterData> dataList,
                               MultipleAddressAdapterData productData,
                               MultipleAddressItemData addressData) {
-        checkoutAnalyticsCartPage.eventMultipleAddressKlikEdit();
+        checkoutAnalyticsMultipleAddress.eventClickMultipleAddressClickEditFromKirimKeBeberapaAlamat();
         startActivityForResult(AddShipmentAddressActivity
                         .createIntent(getActivity(), dataList, productData, addressData, EDIT_MODE),
                 EDIT_SHIPMENT_ADDRESS_REQUEST_CODE);
@@ -272,14 +276,14 @@ public class MultipleAddressFragment extends BaseCheckoutFragment
     }
 
     public void backPressed() {
-        checkoutAnalyticsCartPage.eventMultipleAddressKlikTombolBack();
+        checkoutAnalyticsMultipleAddress.eventClickMultipleAddressClickBackArrowFromKirimKeBeberapaAlamat();
     }
 
     public void deleteChanges() {
-        checkoutAnalyticsCartPage.eventMultipleAddressKlikTombolKembaliDanHapusPerubahan();
+        checkoutAnalyticsMultipleAddress.eventClickMultipleAddressClickKembaliDanHapusPerubahanFromKirimKeBeberapaAlamat();
     }
 
     public void stayInPage() {
-        checkoutAnalyticsCartPage.eventMultipleAddressTetapDiHalamanIni();
+        checkoutAnalyticsMultipleAddress.eventClickMultipleAddressClickTetapDiHalamanIniFromKirimKeBeberapaAlamat();
     }
 }

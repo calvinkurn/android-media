@@ -7,11 +7,10 @@ import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
 import com.tokopedia.checkout.data.repository.PeopleAddressRepository;
 import com.tokopedia.checkout.domain.usecase.GetPeopleAddressUseCase;
 import com.tokopedia.checkout.view.adapter.ShipmentAddressListAdapter;
-import com.tokopedia.checkout.view.di.scope.AddShipmentAddressScope;
 import com.tokopedia.checkout.view.di.scope.CartAddressChoiceScope;
 import com.tokopedia.checkout.view.view.addressoptions.CartAddressChoiceFragment;
 import com.tokopedia.checkout.view.view.addressoptions.CartAddressChoicePresenter;
-import com.tokopedia.transactionanalytics.CheckoutAnalyticsCartPage;
+import com.tokopedia.transactionanalytics.CheckoutAnalyticsCart;
 import com.tokopedia.transactionanalytics.CheckoutAnalyticsChangeAddress;
 
 import dagger.Module;
@@ -53,12 +52,12 @@ public class CartAddressChoiceModule {
 
     @Provides
     @CartAddressChoiceScope
-    CheckoutAnalyticsCartPage provideCheckoutAnalyticCartPage() {
+    CheckoutAnalyticsCart provideCheckoutAnalyticCartPage() {
         AnalyticTracker analyticTracker = null;
         if (activity.getApplication() instanceof AbstractionRouter) {
             analyticTracker = ((AbstractionRouter) activity.getApplication()).getAnalyticTracker();
         }
-        return new CheckoutAnalyticsCartPage(analyticTracker);
+        return new CheckoutAnalyticsCart(analyticTracker);
     }
 
     @Provides

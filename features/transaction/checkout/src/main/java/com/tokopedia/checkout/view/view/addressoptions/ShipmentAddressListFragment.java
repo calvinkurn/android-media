@@ -22,14 +22,17 @@ import com.tokopedia.checkout.data.mapper.AddressModelMapper;
 import com.tokopedia.checkout.domain.datamodel.addressoptions.RecipientAddressModel;
 import com.tokopedia.checkout.view.adapter.ShipmentAddressListAdapter;
 import com.tokopedia.checkout.view.base.BaseCheckoutFragment;
+import com.tokopedia.checkout.view.di.component.CartComponent;
 import com.tokopedia.checkout.view.di.component.DaggerShipmentAddressListComponent;
 import com.tokopedia.checkout.view.di.component.ShipmentAddressListComponent;
 import com.tokopedia.checkout.view.di.module.ShipmentAddressListModule;
+import com.tokopedia.checkout.view.di.module.TrackingAnalyticsModule;
 import com.tokopedia.core.manage.people.address.ManageAddressConstant;
 import com.tokopedia.core.manage.people.address.activity.AddAddressActivity;
 import com.tokopedia.core.manage.people.address.model.Token;
 import com.tokopedia.design.text.SearchInputView;
-import com.tokopedia.transactionanalytics.CheckoutAnalyticsCartPage;
+import com.tokopedia.transactionanalytics.CheckoutAnalyticsCart;
+import com.tokopedia.transactionanalytics.CheckoutAnalyticsChangeAddress;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -72,7 +75,10 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
     ShipmentAddressListPresenter mShipmentAddressListPresenter;
 
     @Inject
-    CheckoutAnalyticsCartPage analytic;
+    CheckoutAnalyticsCart checkoutAnalyticsCart;
+
+    @Inject
+    CheckoutAnalyticsChangeAddress checkoutAnalyticsChangeAddress;
 
     private Token token;
 
@@ -97,7 +103,9 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
     @Override
     protected void initInjector() {
         ShipmentAddressListComponent component = DaggerShipmentAddressListComponent.builder()
+                .cartComponent(getComponent(CartComponent.class))
                 .shipmentAddressListModule(new ShipmentAddressListModule(getActivity(), this))
+                .trackingAnalyticsModule(new TrackingAnalyticsModule())
                 .build();
         component.inject(this);
     }
@@ -339,14 +347,14 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
     @Override
     public void onAddressContainerClicked(RecipientAddressModel model) {
         if (mCartAddressChoiceActivityListener != null) {
-            analytic.eventChangeSendMultiAddressPilihAlamat();
+            checkoutAnalyticsChangeAddress.eventClickChangeAddressClickChecklistAlamatFromPilihAlamatLainnya();
             mCartAddressChoiceActivityListener.finishSendResultActionSelectedAddress(model);
         }
     }
 
     @Override
     public void onEditClick(RecipientAddressModel model) {
-        analytic.eventChangeSendMultiAddressKlikUbah();
+        checkoutAnalyticsChangeAddress.eventClickChangeAddressClickUbahFromPilihAlamatLainnya();
         AddressModelMapper mapper = new AddressModelMapper();
 
         Intent intent = AddAddressActivity.createInstance(getActivity(), mapper.transform(model), token);

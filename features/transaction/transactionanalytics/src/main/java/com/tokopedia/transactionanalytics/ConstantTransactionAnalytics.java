@@ -96,7 +96,7 @@ public interface ConstantTransactionAnalytics {
 
         String CLICK_ARROW_BACK_FROM_HAPUS = "click arrow back from hapus";
         String CLICK_ARROW_BACK_FROM_GANTI_ALAMAT = "click arrow back from ganti alamat";
-        String CLICK_ARROW_BACK_FROM_PLUS = "click arrow back from plus";
+        String CLICK_ARROW_BACK_FROM_PLUS = "click arrow back from +";
 
         String CLICK_PILIH_METODE_PEMBAYARAN = "click pilih metode pembayaran";
 

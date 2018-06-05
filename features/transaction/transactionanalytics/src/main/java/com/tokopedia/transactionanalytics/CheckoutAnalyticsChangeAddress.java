@@ -27,87 +27,91 @@ public class CheckoutAnalyticsChangeAddress extends CheckoutAnalytics {
                 "");
     }
 
-    public void eventClickChangeAddressClickBackArrowFromKirimKeBeberapaAlamat() {
+    public void eventClickChangeAddressClickKirimKeBeberapaAlamatFromGantiAlamat() {
         analyticTracker.sendEventTracking(ConstantTransactionAnalytics.EventName.CLICK_ATC,
-                ConstantTransactionAnalytics.EventCategory.CART_MULTIPLE_ADDRESS,
-                ConstantTransactionAnalytics.EventAction.CLICK_BACK_ARROW_FROM_KIRIM_KE_BEBERAPA_ALAMAT,
+                ConstantTransactionAnalytics.EventCategory.CART_CHANGE_ADDRESS,
+                ConstantTransactionAnalytics.EventAction.CLICK_KIRIM_KE_BEBERAPA_ALAMAT_FROM_GANTI_ALAMAT,
+                ""
+        );
+    }
+
+    public void eventClickChangeAddressClickKirimKeAlamatIniFromGantiAlamat() {
+        analyticTracker.sendEventTracking(ConstantTransactionAnalytics.EventName.CLICK_ATC,
+                ConstantTransactionAnalytics.EventCategory.CART_CHANGE_ADDRESS,
+                ConstantTransactionAnalytics.EventAction.CLICK_KIRIM_KE_ALAMAT_INI_FROM_GANTI_ALAMAT,
+                ""
+        );
+    }
+
+    public void eventClickChangeAddressClickXFromPilihAlamatLainnya() {
+        analyticTracker.sendEventTracking(ConstantTransactionAnalytics.EventName.CLICK_ATC,
+                ConstantTransactionAnalytics.EventCategory.CART_CHANGE_ADDRESS,
+                ConstantTransactionAnalytics.EventAction.CLICK_X_FROM_PILIH_ALAMAT_LAINNYA,
+                ""
+        );
+    }
+
+    public void eventClickChangeAddressClickPlusFromPilihAlamatLainnya() {
+        analyticTracker.sendEventTracking(ConstantTransactionAnalytics.EventName.CLICK_ATC,
+                ConstantTransactionAnalytics.EventCategory.CART_CHANGE_ADDRESS,
+                ConstantTransactionAnalytics.EventAction.CLICK_PLUS_FROM_PILIH_ALAMAT_LAINNYA,
+                ""
+        );
+    }
+
+    public void eventClickChangeAddressClickUbahFromPilihAlamatLainnya() {
+        analyticTracker.sendEventTracking(ConstantTransactionAnalytics.EventName.CLICK_ATC,
+                ConstantTransactionAnalytics.EventCategory.CART_CHANGE_ADDRESS,
+                ConstantTransactionAnalytics.EventAction.CLICK_UBAH_FROM_PILIH_ALAMAT_LAINNYA,
+                ""
+        );
+    }
+
+    public void eventClickChangeAddressClickChecklistAlamatFromPilihAlamatLainnya() {
+        analyticTracker.sendEventTracking(ConstantTransactionAnalytics.EventName.CLICK_ATC,
+                ConstantTransactionAnalytics.EventCategory.CART_CHANGE_ADDRESS,
+                ConstantTransactionAnalytics.EventAction.CLICK_CHECKLIST_ALAMAT_FROM_PILIH_ALAMAT_LAINNYA,
+                ""
+        );
+    }
+
+    public void eventImpressionShipmentImpressionChangeAddress() {
+        analyticTracker.sendEventTracking(ConstantTransactionAnalytics.EventName.VIEW_ATC,
+                ConstantTransactionAnalytics.EventCategory.CART_CHANGE_ADDRESS,
+                ConstantTransactionAnalytics.EventAction.IMPRESSION_CHANGE_ADDRESS,
+                ""
+        );
+    }
+
+    public void eventClickChangeAddressSubmitSearchFromPilihAlamatLainnya() {
+        analyticTracker.sendEventTracking(ConstantTransactionAnalytics.EventName.CLICK_ATC,
+                ConstantTransactionAnalytics.EventCategory.CART_CHANGE_ADDRESS,
+                ConstantTransactionAnalytics.EventAction.SUBMIT_SEARCH_FROM_PILIH_ALAMAT_LAINNYA,
+                ""
+        );
+    }
+
+    public void eventClickChangeAddressClickTambahAlamatFromPlus() {
+        analyticTracker.sendEventTracking(ConstantTransactionAnalytics.EventName.CLICK_ATC,
+                ConstantTransactionAnalytics.EventCategory.CART_CHANGE_ADDRESS,
+                ConstantTransactionAnalytics.EventAction.CLICK_TAMBAH_ALAMAT_FROM_PLUS,
+                ""
+        );
+    }
+
+    public void eventClickChangeAddressClickArrowBackFromGantiAlamat() {
+        analyticTracker.sendEventTracking(ConstantTransactionAnalytics.EventName.CLICK_ATC,
+                ConstantTransactionAnalytics.EventCategory.CART_CHANGE_ADDRESS,
+                ConstantTransactionAnalytics.EventAction.CLICK_ARROW_BACK_FROM_GANTI_ALAMAT,
+                ""
+        );
+    }
+
+    public void eventClickChangeAddressClickArrowBackFromPlus() {
+        analyticTracker.sendEventTracking(ConstantTransactionAnalytics.EventName.CLICK_ATC,
+                ConstantTransactionAnalytics.EventCategory.CART_CHANGE_ADDRESS,
+                ConstantTransactionAnalytics.EventAction.CLICK_ARROW_BACK_FROM_PLUS,
                 "");
     }
 
-    public void eventMultipleAddressKlikTombolKembaliDanHapusPerubahan() {
-        analyticTracker.sendEventTracking(ConstantTransactionAnalytics.EventName.CLICK_ATC,
-                ConstantTransactionAnalytics.EventCategory.CART_MULTIPLE_ADDRESS,
-                ConstantTransactionAnalytics.EventAction.CLICK_KEMBALI_DAN_HAPUS_PERUBAHAN_FROM_KIRIM_KE_BEBERAPA_ALAMAT,
-                "");
-    }
-
-    public void eventMultipleAddressTetapDiHalamanIni() {
-        analyticTracker.sendEventTracking(ConstantTransactionAnalytics.EventName.CLICK_ATC,
-                ConstantTransactionAnalytics.EventCategory.CART_MULTIPLE_ADDRESS,
-                ConstantTransactionAnalytics.EventAction.CLICK_TETAP_DI_HALAMAN_INI_FROM_KIRIM_KE_BEBERAPA_ALAMAT,
-                "");
-    }
-
-    public void eventMultipleAddressKlikTambahAlamatBaru() {
-        analyticTracker.sendEventTracking(ConstantTransactionAnalytics.EventName.CLICK_ATC,
-                ConstantTransactionAnalytics.EventCategory.CART_MULTIPLE_ADDRESS,
-                ConstantTransactionAnalytics.EventAction.CLICK_TAMBAH_PENGIRIMAN_BARU_FROM_KIRIM_KE_BEBERAPA_ALAMAT,
-                "");
-    }
-
-    public void eventMultipleAddressKlikEdit() {
-        analyticTracker.sendEventTracking(ConstantTransactionAnalytics.EventName.CLICK_ATC,
-                ConstantTransactionAnalytics.EventCategory.CART_MULTIPLE_ADDRESS,
-                ConstantTransactionAnalytics.EventAction.CLICK_EDIT_FROM_KIRIM_KE_BEBERAPA_ALAMAT,
-                "");
-    }
-
-    public void eventMultipleAddressKlikPilihKurirPengiriman() {
-        analyticTracker.sendEventTracking(ConstantTransactionAnalytics.EventName.CLICK_ATC,
-                ConstantTransactionAnalytics.EventCategory.CART_MULTIPLE_ADDRESS,
-                ConstantTransactionAnalytics.EventAction.CLICK_PILIH_KURIR_PENGIRIMAN_FROM_KIRIM_KE_BEBERAPA_ALAMAT,
-                "");
-    }
-
-    public void eventMultipleAddressKlikTombolX() {
-        analyticTracker.sendEventTracking(ConstantTransactionAnalytics.EventName.CLICK_ATC,
-                ConstantTransactionAnalytics.EventCategory.CART_MULTIPLE_ADDRESS,
-                ConstantTransactionAnalytics.EventAction.CLICK_X_FROM_UBAH_FROM_KIRIM_KE_BEBERAPA_ALAMAT,
-                "");
-    }
-
-    public void eventMultipleAddressKlikTombolMinus() {
-        analyticTracker.sendEventTracking(ConstantTransactionAnalytics.EventName.CLICK_ATC,
-                ConstantTransactionAnalytics.EventCategory.CART_MULTIPLE_ADDRESS,
-                ConstantTransactionAnalytics.EventAction.CLICK_MIN_FROM_UBAH_FROM_KIRIM_KE_BEBERAPA_ALAMAT,
-                "");
-    }
-
-    public void eventMultipleAddressKlikTombolPlus() {
-        analyticTracker.sendEventTracking(ConstantTransactionAnalytics.EventName.CLICK_ATC,
-                ConstantTransactionAnalytics.EventCategory.CART_MULTIPLE_ADDRESS,
-                ConstantTransactionAnalytics.EventAction.CLICK_PLUS_FROM_UBAH_FROM_KIRIM_KE_BEBERAPA_ALAMAT,
-                "");
-    }
-
-    public void eventMultipleAddressKlikAngka() {
-        analyticTracker.sendEventTracking(ConstantTransactionAnalytics.EventName.CLICK_ATC,
-                ConstantTransactionAnalytics.EventCategory.CART_MULTIPLE_ADDRESS,
-                ConstantTransactionAnalytics.EventAction.CLICK_INPUT_QUANTITY_FROM_UBAH_FROM_KIRIM_KE_BEBERAPA_ALAMAT,
-                "");
-    }
-
-    public void eventMultipleAddressKlikTulisCatatan() {
-        analyticTracker.sendEventTracking(ConstantTransactionAnalytics.EventName.CLICK_ATC,
-                ConstantTransactionAnalytics.EventCategory.CART_MULTIPLE_ADDRESS,
-                ConstantTransactionAnalytics.EventAction.CLICK_TULIS_CATATAN_FROM_UBAH_FROM_KIRIM_KE_BEBERAPA_ALAMAT,
-                "");
-    }
-
-    public void eventMultipleAddressKlikSimpan() {
-        analyticTracker.sendEventTracking(ConstantTransactionAnalytics.EventName.CLICK_ATC,
-                ConstantTransactionAnalytics.EventCategory.CART_MULTIPLE_ADDRESS,
-                ConstantTransactionAnalytics.EventAction.CLICK_SIMPAN_FROM_UBAH_FROM_KIRIM_KE_BEBERAPA_ALAMAT,
-                "");
-    }
 }

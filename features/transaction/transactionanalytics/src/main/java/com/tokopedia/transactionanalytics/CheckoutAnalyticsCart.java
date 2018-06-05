@@ -15,10 +15,10 @@ import static com.tokopedia.transactionanalytics.ConstantTransactionAnalytics.Ev
 /**
  * @author anggaprasetiyo on 18/05/18.
  */
-public class CheckoutAnalyticsCartPage extends CheckoutAnalytics {
+public class CheckoutAnalyticsCart extends CheckoutAnalytics {
 
     @Inject
-    public CheckoutAnalyticsCartPage(AnalyticTracker analyticTracker) {
+    public CheckoutAnalyticsCart(AnalyticTracker analyticTracker) {
         super(analyticTracker);
     }
 
@@ -162,55 +162,6 @@ public class CheckoutAnalyticsCartPage extends CheckoutAnalytics {
         analyticTracker.sendEventTracking(EventName.VIEW_ATC,
                 EventCategory.CART,
                 EventAction.VIEW_IMPRESSION_CART_EMPTY,
-                "");
-    }
-
-    public void eventChangeSendMultiAddressTambahAlamatBaru() {
-        analyticTracker.sendEventTracking(EventName.CLICK_ATC,
-                EventCategory.CART_CHANGE_ADDRESS,
-                EventAction.CLICK_TAMBAH_ALAMAT_BARU_FROM_GANTI_ALAMAT,
-                "");
-    }
-
-    public void eventChangeSendMultiAddressKirimKeBeberapaAlamat() {
-        analyticTracker.sendEventTracking(EventName.CLICK_ATC,
-                EventCategory.CART_CHANGE_ADDRESS,
-                EventAction.CLICK_KIRIM_KE_BEBERAPA_ALAMAT_FROM_GANTI_ALAMAT,
-                "");
-    }
-
-    public void eventChangeSendMultiAddressKirimKeAlamatIni() {
-        analyticTracker.sendEventTracking(EventName.CLICK_ATC,
-                EventCategory.CART_CHANGE_ADDRESS,
-                EventAction.CLICK_KIRIM_KE_ALAMAT_INI_FROM_GANTI_ALAMAT,
-                "");
-    }
-
-    public void eventChangeSendMultiAddressKlikTombolX() {
-        analyticTracker.sendEventTracking(EventName.CLICK_ATC,
-                EventCategory.CART_CHANGE_ADDRESS,
-                EventAction.CLICK_X_FROM_PILIH_ALAMAT_LAINNYA,
-                "");
-    }
-
-    public void eventChangeSendMultiAddressKlikTombolPlus() {
-        analyticTracker.sendEventTracking(EventName.CLICK_ATC,
-                EventCategory.CART_CHANGE_ADDRESS,
-                EventAction.CLICK_PLUS_FROM_PILIH_ALAMAT_LAINNYA,
-                "");
-    }
-
-    public void eventChangeSendMultiAddressKlikUbah() {
-        analyticTracker.sendEventTracking(EventName.CLICK_ATC,
-                EventCategory.CART_CHANGE_ADDRESS,
-                EventAction.CLICK_UBAH_FROM_PILIH_ALAMAT_LAINNYA,
-                "");
-    }
-
-    public void eventChangeSendMultiAddressPilihAlamat() {
-        analyticTracker.sendEventTracking(EventName.CLICK_ATC,
-                EventCategory.CART_CHANGE_ADDRESS,
-                EventAction.CLICK_CHECKLIST_ALAMAT_FROM_PILIH_ALAMAT_LAINNYA,
                 "");
     }
 

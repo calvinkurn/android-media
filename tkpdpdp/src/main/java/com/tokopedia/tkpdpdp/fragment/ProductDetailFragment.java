@@ -117,7 +117,7 @@ import com.tokopedia.tkpdpdp.listener.AppBarStateChangeListener;
 import com.tokopedia.tkpdpdp.listener.ProductDetailView;
 import com.tokopedia.tkpdpdp.presenter.ProductDetailPresenter;
 import com.tokopedia.tkpdpdp.presenter.ProductDetailPresenterImpl;
-import com.tokopedia.transactionanalytics.CheckoutAnalyticProductDetailPage;
+import com.tokopedia.transactionanalytics.CheckoutAnalyticsAddToCart;
 import com.tokopedia.transactionanalytics.EnhancedECommerceCartMapData;
 import com.tokopedia.transactionanalytics.EnhancedECommerceProductCartMapData;
 
@@ -240,7 +240,7 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
 
     private RemoteConfig remoteConfig;
     private ShowCaseDialog showCaseDialog;
-    private CheckoutAnalyticProductDetailPage checkoutAnalyticProductDetailPage;
+    private CheckoutAnalyticsAddToCart checkoutAnalyticsAddToCart;
 
     public static ProductDetailFragment newInstance(@NonNull ProductPass productPass) {
         ProductDetailFragment fragment = new ProductDetailFragment();
@@ -433,7 +433,7 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
 
     @Override
     protected void initialVar() {
-        checkoutAnalyticProductDetailPage = new CheckoutAnalyticProductDetailPage(getAnalyticTracker());
+        checkoutAnalyticsAddToCart = new CheckoutAnalyticsAddToCart(getAnalyticTracker());
         userSession = ((AbstractionRouter) getActivity().getApplication()).getSession();
         appIndexHandler = new AppIndexHandler(getActivity());
         loading = new ProgressDialog(getActivity());
@@ -1629,7 +1629,7 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
 
     @Override
     public void renderAddToCartSuccess(String message) {
-        checkoutAnalyticProductDetailPage.eventClickAddToCartImpressionAtcSuccess();
+        checkoutAnalyticsAddToCart.eventClickAddToCartImpressionAtcSuccess();
         updateCartNotification();
         android.support.v4.app.FragmentTransaction ft = getFragmentManager().beginTransaction();
         ft.add(
@@ -1638,7 +1638,7 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
                         new AddToCartConfirmationDialog.ActionListener() {
                             @Override
                             public void onButtonAddToCartPayClicked() {
-                                checkoutAnalyticProductDetailPage.eventClickAddToCartClickBayarOnAtcSuccess();
+                                checkoutAnalyticsAddToCart.eventClickAddToCartClickBayarOnAtcSuccess();
                                 if (getActivity().getApplication() instanceof PdpRouter) {
                                     Intent intent = ((PdpRouter) getActivity().getApplication())
                                             .getCartIntent(getActivity());
@@ -1648,7 +1648,7 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
 
                             @Override
                             public void onButtonAddToCartContinueShopingClicked() {
-                                checkoutAnalyticProductDetailPage.eventClickAddToCartClickLanjutkanBelanjaOnAtcSuccess();
+                                checkoutAnalyticsAddToCart.eventClickAddToCartClickLanjutkanBelanjaOnAtcSuccess();
                             }
                         }),
                 AddToCartConfirmationDialog.ADD_TO_CART_DIALOG_FRAGMENT_TAG
@@ -1699,7 +1699,7 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
         enhancedECommerceCartMapData.setCurrencyCode("IDR");
         enhancedECommerceCartMapData.setAction(EnhancedECommerceCartMapData.ADD_ACTION);
 
-        checkoutAnalyticProductDetailPage.enhancedECommerceAddToCart(enhancedECommerceCartMapData.getCartMap());
+        checkoutAnalyticsAddToCart.enhancedECommerceAddToCart(enhancedECommerceCartMapData.getCartMap());
     }
 
     private String generateCategoryStringLevel(List<ProductBreadcrumb> breadcrumb) {

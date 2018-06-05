@@ -23,8 +23,7 @@ import java.util.List;
  * @author anggaprasetiyo on 18/01/18.
  */
 
-public class CartActivity extends BaseCheckoutActivity implements CartFragment.ActionListener,
-        HasComponent<CartComponent> {
+public class CartActivity extends BaseCheckoutActivity implements CartFragment.ActionListener{
 
     @DeepLink(CheckoutAppLink.CART)
     public static Intent getCallingIntent(Context context, Bundle extras) {
@@ -112,8 +111,5 @@ public class CartActivity extends BaseCheckoutActivity implements CartFragment.A
         return CartFragment.newInstance();
     }
 
-    @Override
-    public CartComponent getComponent() {
-        return CartComponentInjector.newInstance(getApplication()).getCartApiServiceComponent();
-    }
+
 }

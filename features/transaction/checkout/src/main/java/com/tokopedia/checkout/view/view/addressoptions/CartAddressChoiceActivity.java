@@ -17,7 +17,7 @@ import static com.tokopedia.core.manage.people.address.ManageAddressConstant.REQ
 
 /**
  * @author Irfan Khoirul on 05/02/18
- * Aghny A. Putra on 07/02/18
+ *         Aghny A. Putra on 07/02/18
  */
 
 public class CartAddressChoiceActivity extends BaseCheckoutActivity

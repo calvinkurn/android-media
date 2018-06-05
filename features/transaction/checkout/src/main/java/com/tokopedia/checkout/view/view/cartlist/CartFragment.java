@@ -72,7 +72,7 @@ import com.tokopedia.topads.sdk.domain.model.Shop;
 import com.tokopedia.topads.sdk.listener.TopAdsItemClickListener;
 import com.tokopedia.topads.sdk.view.DisplayMode;
 import com.tokopedia.topads.sdk.view.TopAdsView;
-import com.tokopedia.transactionanalytics.CheckoutAnalyticsCartPage;
+import com.tokopedia.transactionanalytics.CheckoutAnalyticsCart;
 import com.tokopedia.transactionanalytics.EnhancedECommerceCartMapData;
 import com.tokopedia.transactiondata.entity.request.UpdateCartRequest;
 
@@ -106,7 +106,7 @@ public class CartFragment extends BaseCheckoutFragment implements CartListAdapte
     @Inject
     RecyclerView.ItemDecoration cartItemDecoration;
     @Inject
-    CheckoutAnalyticsCartPage cartPageAnalytics;
+    CheckoutAnalyticsCart cartPageAnalytics;
 
     private RefreshHandler refreshHandler;
 

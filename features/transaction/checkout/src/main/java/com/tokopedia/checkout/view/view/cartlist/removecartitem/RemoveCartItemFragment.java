@@ -21,6 +21,7 @@ import com.tokopedia.checkout.view.di.component.CartComponent;
 import com.tokopedia.checkout.view.di.component.CartRemoveProductComponent;
 import com.tokopedia.checkout.view.di.component.DaggerCartRemoveProductComponent;
 import com.tokopedia.checkout.view.di.module.CartRemoveProductModule;
+import com.tokopedia.checkout.view.di.module.TrackingAnalyticsModule;
 import com.tokopedia.checkout.view.view.cartlist.CartItemDecoration;
 import com.tokopedia.checkout.view.view.cartlist.removecartitem.viewmodel.CartProductHeaderViewModel;
 import com.tokopedia.design.component.Dialog;
@@ -65,6 +66,7 @@ public class RemoveCartItemFragment extends BaseCheckoutFragment
         CartRemoveProductComponent component = DaggerCartRemoveProductComponent.builder()
                 .cartComponent(getComponent(CartComponent.class))
                 .cartRemoveProductModule(new CartRemoveProductModule())
+                .trackingAnalyticsModule(new TrackingAnalyticsModule())
                 .build();
         component.inject(this);
     }

@@ -1,8 +1,11 @@
 package com.tokopedia.checkout.view.di.module;
 
 import com.tokopedia.abstraction.AbstractionRouter;
-import com.tokopedia.transactionanalytics.CheckoutAnalyticsCartPage;
-import com.tokopedia.transactionanalytics.CheckoutAnalyticsCartShipmentPage;
+import com.tokopedia.transactionanalytics.CheckoutAnalyticsAddToCart;
+import com.tokopedia.transactionanalytics.CheckoutAnalyticsCart;
+import com.tokopedia.transactionanalytics.CheckoutAnalyticsChangeAddress;
+import com.tokopedia.transactionanalytics.CheckoutAnalyticsCourierSelection;
+import com.tokopedia.transactionanalytics.CheckoutAnalyticsMultipleAddress;
 
 import dagger.Module;
 import dagger.Provides;
@@ -14,12 +17,27 @@ import dagger.Provides;
 public class TrackingAnalyticsModule {
 
     @Provides
-    CheckoutAnalyticsCartPage checkoutAnalyticsCartPage(AbstractionRouter abstractionRouter) {
-        return new CheckoutAnalyticsCartPage(abstractionRouter.getAnalyticTracker());
+    CheckoutAnalyticsCart checkoutAnalyticsCartPage(AbstractionRouter abstractionRouter) {
+        return new CheckoutAnalyticsCart(abstractionRouter.getAnalyticTracker());
     }
 
     @Provides
-    CheckoutAnalyticsCartShipmentPage checkoutAnalyticsCartShipmentPage(AbstractionRouter abstractionRouter) {
-        return new CheckoutAnalyticsCartShipmentPage(abstractionRouter.getAnalyticTracker());
+    CheckoutAnalyticsChangeAddress checkoutAnalyticsChangeAddress(AbstractionRouter abstractionRouter) {
+        return new CheckoutAnalyticsChangeAddress(abstractionRouter.getAnalyticTracker());
+    }
+
+    @Provides
+    CheckoutAnalyticsMultipleAddress checkoutAnalyticsMultipleAddress(AbstractionRouter abstractionRouter) {
+        return new CheckoutAnalyticsMultipleAddress(abstractionRouter.getAnalyticTracker());
+    }
+
+    @Provides
+    CheckoutAnalyticsAddToCart checkoutAnalyticsAddToCart(AbstractionRouter abstractionRouter) {
+        return new CheckoutAnalyticsAddToCart(abstractionRouter.getAnalyticTracker());
+    }
+
+    @Provides
+    CheckoutAnalyticsCourierSelection checkoutAnalyticsCourierSelection(AbstractionRouter abstractionRouter) {
+        return new CheckoutAnalyticsCourierSelection(abstractionRouter.getAnalyticTracker());
     }
 }
