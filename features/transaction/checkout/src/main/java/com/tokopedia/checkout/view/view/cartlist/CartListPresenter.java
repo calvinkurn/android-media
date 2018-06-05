@@ -167,10 +167,23 @@ public class CartListPresenter implements ICartListPresenter {
         TKPDMapParam<String, String> paramGetList = new TKPDMapParam<>();
         paramGetList.put("lang", "id");
 
+        List<CartItemData> cartItemDataList = view.getCartDataList();
+        List<UpdateCartRequest> updateCartRequestList = new ArrayList<>();
+        for (CartItemData data : cartItemDataList) {
+            updateCartRequestList.add(new UpdateCartRequest.Builder()
+                    .cartId(data.getOriginData().getCartId())
+                    .notes(data.getUpdatedData().getRemark())
+                    .quantity(data.getUpdatedData().getQuantity())
+                    .build());
+        }
+        TKPDMapParam<String, String> paramUpdate = new TKPDMapParam<>();
+        paramUpdate.put("carts", new Gson().toJson(updateCartRequestList));
 
         RequestParams requestParams = RequestParams.create();
         requestParams.putObject(DeleteCartGetCartListUseCase.PARAM_REQUEST_AUTH_MAP_STRING_DELETE_CART,
                 view.getGeneratedAuthParamNetwork(paramDelete));
+        requestParams.putObject(UpdateCartGetShipmentAddressFormUseCase.PARAM_REQUEST_AUTH_MAP_STRING_UPDATE_CART,
+                view.getGeneratedAuthParamNetwork(paramUpdate));
         requestParams.putObject(DeleteCartGetCartListUseCase.PARAM_REQUEST_AUTH_MAP_STRING_GET_CART,
                 view.getGeneratedAuthParamNetwork(paramGetList));
 

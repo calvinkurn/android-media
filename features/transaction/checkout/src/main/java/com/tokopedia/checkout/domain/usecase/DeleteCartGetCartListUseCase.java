@@ -3,8 +3,11 @@ package com.tokopedia.checkout.domain.usecase;
 import android.content.Context;
 
 import com.tokopedia.abstraction.common.utils.TKPDMapParam;
+import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.transactiondata.entity.response.cartlist.CartDataListResponse;
 import com.tokopedia.transactiondata.entity.response.deletecart.DeleteCartDataResponse;
+import com.tokopedia.transactiondata.entity.response.updatecart.UpdateCartDataResponse;
+import com.tokopedia.transactiondata.exception.ResponseCartApiErrorException;
 import com.tokopedia.transactiondata.repository.ICartRepository;
 import com.tokopedia.checkout.domain.datamodel.DeleteAndRefreshCartListData;
 import com.tokopedia.checkout.domain.mapper.ICartMapper;
@@ -22,9 +25,10 @@ import rx.functions.Func1;
 public class DeleteCartGetCartListUseCase extends UseCase<DeleteAndRefreshCartListData> {
     public static final String PARAM_REQUEST_AUTH_MAP_STRING_DELETE_CART
             = "PARAM_REQUEST_AUTH_MAP_STRING_DELETE_CART";
+    public static final String PARAM_REQUEST_AUTH_MAP_STRING_UPDATE_CART
+            = "PARAM_REQUEST_AUTH_MAP_STRING_UPDATE_CART";
     public static final String PARAM_REQUEST_AUTH_MAP_STRING_GET_CART
             = "PARAM_REQUEST_AUTH_MAP_STRING_GET_CART";
-
 
     private final ICartRepository cartRepository;
     private final ICartMapper cartMapper;
@@ -41,12 +45,15 @@ public class DeleteCartGetCartListUseCase extends UseCase<DeleteAndRefreshCartLi
     @SuppressWarnings("unchecked")
     public Observable<DeleteAndRefreshCartListData> createObservable(RequestParams requestParams) {
 
-
         final TKPDMapParam<String, String> paramDelete = (TKPDMapParam<String, String>)
                 requestParams.getObject(PARAM_REQUEST_AUTH_MAP_STRING_DELETE_CART);
 
+        final TKPDMapParam<String, String> paramUpdateCart = (TKPDMapParam<String, String>)
+                requestParams.getObject(PARAM_REQUEST_AUTH_MAP_STRING_UPDATE_CART);
+
         final TKPDMapParam<String, String> paramGetCart = (TKPDMapParam<String, String>)
                 requestParams.getObject(PARAM_REQUEST_AUTH_MAP_STRING_GET_CART);
+
         return Observable.just(new DeleteAndRefreshCartListData())
                 .flatMap(new Func1<DeleteAndRefreshCartListData, Observable<DeleteAndRefreshCartListData>>() {
                     @Override
@@ -61,6 +68,26 @@ public class DeleteCartGetCartListUseCase extends UseCase<DeleteAndRefreshCartLi
                                                 cartMapper.convertToDeleteCartData(deleteCartDataResponse)
                                         );
                                         return deleteAndRefreshCartListData;
+                                    }
+                                });
+                    }
+                })
+                .flatMap(new Func1<DeleteAndRefreshCartListData, Observable<DeleteAndRefreshCartListData>>() {
+                    @Override
+                    public Observable<DeleteAndRefreshCartListData> call(final DeleteAndRefreshCartListData deleteAndRefreshCartListData) {
+                        return cartRepository.updateCartData(paramUpdateCart)
+                                .map(new Func1<UpdateCartDataResponse, DeleteAndRefreshCartListData>() {
+                                    @Override
+                                    public DeleteAndRefreshCartListData call(UpdateCartDataResponse updateCartDataResponse) {
+                                        if (updateCartDataResponse.isStatus()) {
+                                            return deleteAndRefreshCartListData;
+                                        } else {
+                                            throw new ResponseCartApiErrorException(
+                                                    TkpdBaseURL.Cart.PATH_UPDATE_CART,
+                                                    0,
+                                                    updateCartDataResponse.getError()
+                                            );
+                                        }
                                     }
                                 });
                     }
