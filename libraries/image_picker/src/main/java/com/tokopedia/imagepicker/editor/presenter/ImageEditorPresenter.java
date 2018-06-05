@@ -9,6 +9,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.FutureTarget;
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
+import com.tokopedia.imagepicker.common.exception.FileSizeAboveMaximumException;
 import com.tokopedia.imagepicker.common.util.ImageUtils;
 
 import java.io.File;
@@ -40,6 +41,10 @@ public class ImageEditorPresenter extends BaseDaggerPresenter<ImageEditorPresent
         void onErrorCropImageToRatio(Throwable e);
 
         void onSuccessCropImageToRatio(ArrayList<String> cropppedImagePaths);
+
+        void onErrorResizeImage(Throwable e);
+
+        void onSuccessResizeImage(ArrayList<String> resultPaths);
     }
 
     public void detachView() {
@@ -197,6 +202,64 @@ public class ImageEditorPresenter extends BaseDaggerPresenter<ImageEditorPresent
                         }
                     }
                 });
+    }
+
+    public void resizeImage(List<String> imagePath, final long maxFileSize) {
+
+        Subscription subscription = Observable.from(imagePath)
+                .concatMap(new Func1<String, Observable<String>>() {
+                    @Override
+                    public Observable<String> call(String path) {
+
+                        if (ImageUtils.getFileSizeInKb(path) > maxFileSize) {
+                            if (ImageUtils.isImageType(getView().getContext(), path)) {
+                                //resize image
+                                String pathResult = ImageUtils.resizeBitmap(path, ImageUtils.DEF_WIDTH, ImageUtils.DEF_HEIGHT,
+                                        true, ImageUtils.DirectoryDef.DIRECTORY_TOKOPEDIA_EDIT_RESULT);
+                                return Observable.just(pathResult);
+                            } else {
+                                throw new FileSizeAboveMaximumException();
+                            }
+                        } else {
+                            return Observable.just(path);
+                        }
+                    }
+                }).toList()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .unsubscribeOn(Schedulers.io())
+                .subscribe(
+                        new Subscriber<List<String>>() {
+                            @Override
+                            public void onCompleted() {
+                            }
+
+                            @Override
+                            public void onError(Throwable e) {
+                                if (isViewAttached()) {
+                                    getView().onErrorResizeImage(e);
+                                }
+                            }
+
+                            @Override
+                            public void onNext(List<String> paths) {
+                                ArrayList<String> resultLocalPaths = new ArrayList<>();
+                                if (paths == null || paths.size() == 0) {
+                                    throw new NullPointerException();
+                                }
+                                for (int i = 0, sizei = paths.size(); i < sizei; i++) {
+                                    resultLocalPaths.add(paths.get(i));
+                                }
+                                if (isViewAttached()) {
+                                    getView().onSuccessResizeImage(resultLocalPaths);
+                                }
+                            }
+                        }
+                );
+        if (compositeSubscription == null || compositeSubscription.isUnsubscribed()) {
+            compositeSubscription = new CompositeSubscription();
+        }
+        compositeSubscription.add(subscription);
     }
 
 }

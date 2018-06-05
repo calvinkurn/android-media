@@ -24,6 +24,7 @@ import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.imagepicker.R;
+import com.tokopedia.imagepicker.common.exception.FileSizeAboveMaximumException;
 import com.tokopedia.imagepicker.common.util.ImageUtils;
 import com.tokopedia.imagepicker.common.widget.NonSwipeableViewPager;
 import com.tokopedia.imagepicker.editor.main.view.ImageEditorActivity;
@@ -141,7 +142,8 @@ public class ImagePickerActivity extends BaseSimpleActivity
                 Intent intent = ImageEditorActivity.getIntent(this, selectedImagePaths,
                         imagePickerBuilder.getMinResolution(), imagePickerBuilder.getImageEditActionType(),
                         imagePickerBuilder.getRatioX(), imagePickerBuilder.getRatioY(),
-                        imagePickerBuilder.isCirclePreview());
+                        imagePickerBuilder.isCirclePreview(),
+                        imagePickerBuilder.getMaxFileSizeInKB());
                 startActivityForResult(intent, REQUEST_CODE_EDITOR);
             } else {
                 onFinishWithMultipleImageValidateNetworkPath(selectedImagePaths);
@@ -432,7 +434,8 @@ public class ImagePickerActivity extends BaseSimpleActivity
             Intent intent = ImageEditorActivity.getIntent(this, imageUrlOrPath,
                     imagePickerBuilder.getMinResolution(), imagePickerBuilder.getImageEditActionType(),
                     imagePickerBuilder.getRatioX(), imagePickerBuilder.getRatioY(),
-                    imagePickerBuilder.isCirclePreview());
+                    imagePickerBuilder.isCirclePreview(),
+                    imagePickerBuilder.getMaxFileSizeInKB());
             startActivityForResult(intent, REQUEST_CODE_EDITOR);
         } else {
             onFinishWithSingleImage(imageUrlOrPath);
@@ -490,7 +493,7 @@ public class ImagePickerActivity extends BaseSimpleActivity
     @Override
     public void onErrorResizeImage(Throwable e) {
         hideDownloadProgressDialog();
-        if (e instanceof ImagePickerPresenter.FileSizeAboveMaximumException) {
+        if (e instanceof FileSizeAboveMaximumException) {
             NetworkErrorHelper.showRedCloseSnackbar(this, getString(R.string.max_file_size_reached));
         } else {
             NetworkErrorHelper.showRedCloseSnackbar(this, ErrorHandler.getErrorMessage(getContext(), e));
@@ -532,7 +535,7 @@ public class ImagePickerActivity extends BaseSimpleActivity
             case REQUEST_CODE_EDITOR:
                 if (resultCode == Activity.RESULT_OK && data != null && data.hasExtra(ImageEditorActivity.EDIT_RESULT_PATHS)) {
                     ArrayList<String> finalPathList = data.getStringArrayListExtra(ImageEditorActivity.EDIT_RESULT_PATHS);
-                    onFinishWithMultipleImageValidateNetworkPath(finalPathList);
+                    onFinishWithMultipleFinalImage(finalPathList);
                     isFinishEditting = true;
                 }
                 break;
