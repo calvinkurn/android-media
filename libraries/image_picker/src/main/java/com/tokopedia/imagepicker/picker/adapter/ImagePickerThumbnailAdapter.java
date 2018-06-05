@@ -1,6 +1,9 @@
 package com.tokopedia.imagepicker.picker.adapter;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
+import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -8,7 +11,8 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.tokopedia.abstraction.common.utils.image.ImageHandler;
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.target.BitmapImageViewTarget;
 import com.tokopedia.imagepicker.R;
 
 import java.util.ArrayList;
@@ -21,6 +25,7 @@ public class ImagePickerThumbnailAdapter extends RecyclerView.Adapter<RecyclerVi
 
     public static final int PLACEHOLDER_TYPE = 0;
     public static final int ITEM_TYPE = 1;
+    private final int thumbnailSize;
     private Context context;
     private ArrayList<String> imagePathList;
     private int maxSize;
@@ -30,6 +35,7 @@ public class ImagePickerThumbnailAdapter extends RecyclerView.Adapter<RecyclerVi
 
     public interface OnImageEditThumbnailAdapterListener {
         void onPickerThumbnailItemClicked(String imagePath, int position);
+
         void onThumbnailRemoved(String imagePath);
     }
 
@@ -39,6 +45,7 @@ public class ImagePickerThumbnailAdapter extends RecyclerView.Adapter<RecyclerVi
         this.imagePathList = imagePathList;
         this.onImageEditThumbnailAdapterListener = onImageEditThumbnailAdapterListener;
         roundedSize = context.getResources().getDimension(R.dimen.dp_6);
+        thumbnailSize = context.getResources().getDimensionPixelOffset(R.dimen.dp_72);
     }
 
     public class ImagePickerThumbnailViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
@@ -61,13 +68,26 @@ public class ImagePickerThumbnailAdapter extends RecyclerView.Adapter<RecyclerVi
             if (v == ivDelete) {
                 removeData(position);
             } else {
-
+                // TODO drag and drop (long clicked?)
+                // click on item
             }
-            //TODO onclick
         }
 
         public void bind(String imagePath, int position) {
-            ImageHandler.loadImageRounded2(context, imageView, imagePath, roundedSize);
+            Glide.with(context)
+                    .load(imagePath)
+                    .asBitmap()
+                    .override(thumbnailSize, thumbnailSize)
+                    .centerCrop()
+                    .into(new BitmapImageViewTarget(imageView) {
+                        @Override
+                        protected void setResource(Bitmap resource) {
+                            RoundedBitmapDrawable circularBitmapDrawable =
+                                    RoundedBitmapDrawableFactory.create(imageView.getContext().getResources(), resource);
+                            circularBitmapDrawable.setCornerRadius(roundedSize);
+                            imageView.setImageDrawable(circularBitmapDrawable);
+                        }
+                    });
             String positionString = String.valueOf(position + 1);
             tvCounter.setText(positionString);
         }
@@ -133,7 +153,7 @@ public class ImagePickerThumbnailAdapter extends RecyclerView.Adapter<RecyclerVi
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         if (isItemType(position)) {
             String imagePath = imagePathList.get(position);
-            ((ImagePickerThumbnailViewHolder)holder).bind(imagePath, position);
+            ((ImagePickerThumbnailViewHolder) holder).bind(imagePath, position);
         } else {
             // draw the empty preview
         }
@@ -141,13 +161,13 @@ public class ImagePickerThumbnailAdapter extends RecyclerView.Adapter<RecyclerVi
 
     @Override
     public int getItemViewType(int position) {
-        if (imagePathList!= null && position < imagePathList.size()) {
+        if (imagePathList != null && position < imagePathList.size()) {
             return ITEM_TYPE;
         }
         return PLACEHOLDER_TYPE;
     }
 
-    private boolean isItemType(int position){
+    private boolean isItemType(int position) {
         return getItemViewType(position) == ITEM_TYPE;
     }
 

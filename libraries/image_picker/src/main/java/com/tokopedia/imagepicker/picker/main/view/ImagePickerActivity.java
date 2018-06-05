@@ -24,7 +24,9 @@ import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.imagepicker.R;
+import com.tokopedia.imagepicker.common.exception.FileSizeAboveMaximumException;
 import com.tokopedia.imagepicker.common.util.ImageUtils;
+import com.tokopedia.imagepicker.common.widget.NonSwipeableViewPager;
 import com.tokopedia.imagepicker.editor.main.view.ImageEditorActivity;
 import com.tokopedia.imagepicker.picker.main.adapter.ImagePickerViewPagerAdapter;
 import com.tokopedia.imagepicker.picker.camera.ImagePickerCameraFragment;
@@ -56,7 +58,7 @@ public class ImagePickerActivity extends BaseSimpleActivity
     private ImagePickerBuilder imagePickerBuilder;
 
     private int selectedTab = 0;
-    private ViewPager viewPager;
+    private NonSwipeableViewPager viewPager;
 
     private ImagePickerViewPagerAdapter imagePickerViewPagerAdapter;
     private List<String> permissionsToRequest;
@@ -140,7 +142,8 @@ public class ImagePickerActivity extends BaseSimpleActivity
                 Intent intent = ImageEditorActivity.getIntent(this, selectedImagePaths,
                         imagePickerBuilder.getMinResolution(), imagePickerBuilder.getImageEditActionType(),
                         imagePickerBuilder.getRatioX(), imagePickerBuilder.getRatioY(),
-                        imagePickerBuilder.isCirclePreview());
+                        imagePickerBuilder.isCirclePreview(),
+                        imagePickerBuilder.getMaxFileSizeInKB());
                 startActivityForResult(intent, REQUEST_CODE_EDITOR);
             } else {
                 onFinishWithMultipleImageValidateNetworkPath(selectedImagePaths);
@@ -328,6 +331,34 @@ public class ImagePickerActivity extends BaseSimpleActivity
     }
 
     @Override
+    public boolean needShowCameraPreview() {
+        return imagePickerBuilder.supportMultipleSelection() || !imagePickerBuilder.isContinueToEditAfterPick();
+    }
+
+    @Override
+    public void onPreviewCameraViewVisible() {
+        viewPager.setCanSwipe(false);
+        tabLayout.setVisibility(View.GONE);
+        imagePickerPreviewWidget.setVisibility(View.GONE);
+        disableDoneView();
+    }
+
+    @Override
+    public void onCameraViewVisible() {
+        viewPager.setCanSwipe(true);
+        if (tabLayout.getTabCount() > 1) {
+            tabLayout.setVisibility(View.VISIBLE);
+        }
+        if (imagePickerBuilder.supportMultipleSelection()) {
+            imagePickerPreviewWidget.setVisibility(View.VISIBLE);
+        }
+        if (selectedImagePaths.size() > 0) {
+            enableDoneView();
+        }
+    }
+
+
+    @Override
     public ArrayList<String> getImagePath() {
         return selectedImagePaths;
     }
@@ -335,6 +366,16 @@ public class ImagePickerActivity extends BaseSimpleActivity
     @Override
     public void onAlbumItemClicked(MediaItem item, boolean isChecked) {
         onImageSelected(item.getRealPath(), isChecked);
+    }
+
+    @Override
+    public int getRatioY() {
+        return imagePickerBuilder.getRatioY();
+    }
+
+    @Override
+    public int getRatioX() {
+        return imagePickerBuilder.getRatioX();
     }
 
     @Override
@@ -380,8 +421,8 @@ public class ImagePickerActivity extends BaseSimpleActivity
             }
 
             List<Fragment> fragments = getSupportFragmentManager().getFragments();
-            for (Fragment fragment: fragments) {
-                if (fragment!= null && fragment.isAdded() && fragment instanceof ImagePickerInterface) {
+            for (Fragment fragment : fragments) {
+                if (fragment != null && fragment.isAdded() && fragment instanceof ImagePickerInterface) {
                     ((ImagePickerInterface) fragment).onThumbnailImageRemoved(imagePath);
                 }
             }
@@ -405,7 +446,8 @@ public class ImagePickerActivity extends BaseSimpleActivity
             Intent intent = ImageEditorActivity.getIntent(this, imageUrlOrPath,
                     imagePickerBuilder.getMinResolution(), imagePickerBuilder.getImageEditActionType(),
                     imagePickerBuilder.getRatioX(), imagePickerBuilder.getRatioY(),
-                    imagePickerBuilder.isCirclePreview());
+                    imagePickerBuilder.isCirclePreview(),
+                    imagePickerBuilder.getMaxFileSizeInKB());
             startActivityForResult(intent, REQUEST_CODE_EDITOR);
         } else {
             onFinishWithSingleImage(imageUrlOrPath);
@@ -463,7 +505,7 @@ public class ImagePickerActivity extends BaseSimpleActivity
     @Override
     public void onErrorResizeImage(Throwable e) {
         hideDownloadProgressDialog();
-        if (e instanceof ImagePickerPresenter.FileSizeAboveMaximumException) {
+        if (e instanceof FileSizeAboveMaximumException) {
             NetworkErrorHelper.showRedCloseSnackbar(this, getString(R.string.max_file_size_reached));
         } else {
             NetworkErrorHelper.showRedCloseSnackbar(this, ErrorHandler.getErrorMessage(getContext(), e));
@@ -505,7 +547,7 @@ public class ImagePickerActivity extends BaseSimpleActivity
             case REQUEST_CODE_EDITOR:
                 if (resultCode == Activity.RESULT_OK && data != null && data.hasExtra(ImageEditorActivity.EDIT_RESULT_PATHS)) {
                     ArrayList<String> finalPathList = data.getStringArrayListExtra(ImageEditorActivity.EDIT_RESULT_PATHS);
-                    onFinishWithMultipleImageValidateNetworkPath(finalPathList);
+                    onFinishWithMultipleFinalImage(finalPathList);
                     isFinishEditting = true;
                 }
                 break;
