@@ -871,51 +871,6 @@ public class CartFragment extends BaseCheckoutFragment implements CartListAdapte
 
     }
 
-    @NonNull
-    private CartRemoveItemDialog.CartItemRemoveCallbackAction getCallbackActionDialogRemoveCart() {
-        return new CartRemoveItemDialog.CartItemRemoveCallbackAction() {
-            @Override
-            public void onDeleteSingleItemClicked(
-                    CartItemData removedCartItem, List<CartItemData> updatedCartItems
-            ) {
-                dPresenter.processDeleteCart(removedCartItem, false);
-                cartPageAnalytics.enhancedECommerceRemoveCartNotWishList(
-                        dPresenter.generateCartDataAnalytics(removedCartItem)
-                );
-            }
-
-            @Override
-            public void onDeleteSingleItemWithWishListClicked(
-                    CartItemData removedCartItem, List<CartItemData> updatedCartItems
-            ) {
-                dPresenter.processDeleteCart(removedCartItem, true);
-                cartPageAnalytics.enhancedECommerceRemoveCartAddWishList(
-                        dPresenter.generateCartDataAnalytics(removedCartItem)
-                );
-            }
-
-            @Override
-            public void onDeleteMultipleItemClicked(
-                    List<CartItemData> removedCartItems, List<CartItemData> updatedCartItems
-            ) {
-                dPresenter.processDeleteAndRefreshCart(removedCartItems, false);
-                cartPageAnalytics.enhancedECommerceRemoveCartNotWishList(
-                        dPresenter.generateCartDataAnalytics(removedCartItems)
-                );
-            }
-
-            @Override
-            public void onDeleteMultipleItemWithWishListClicked(
-                    List<CartItemData> removedCartItems, List<CartItemData> updatedCartItems
-            ) {
-                dPresenter.processDeleteAndRefreshCart(removedCartItems, true);
-                cartPageAnalytics.enhancedECommerceRemoveCartAddWishList(
-                        dPresenter.generateCartDataAnalytics(removedCartItems)
-                );
-            }
-        };
-    }
-
     public static CartFragment newInstance() {
         return new CartFragment();
     }
