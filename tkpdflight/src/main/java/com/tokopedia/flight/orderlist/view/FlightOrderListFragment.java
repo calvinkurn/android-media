@@ -1,7 +1,6 @@
 package com.tokopedia.flight.orderlist.view;
 
 import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -119,6 +118,8 @@ public class FlightOrderListFragment extends BaseListFragment<Visitable, FlightO
     @Override
     public void loadData(int page) {
         presenter.attachView(this);
+        getAdapter().clearAllElements();
+        getAdapter().notifyDataSetChanged();
         presenter.loadData(selectedFilter, page, PER_PAGE);
         presenter.onGetProfileData();
     }
