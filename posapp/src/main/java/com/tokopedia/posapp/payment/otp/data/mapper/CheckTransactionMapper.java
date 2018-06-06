@@ -102,10 +102,6 @@ public class CheckTransactionMapper implements Func1<Response<PosResponse<CheckT
         }
     }
 
-    private boolean isValid(OrderDataResponse orderData) {
-        return !TextUtils.isEmpty(orderData.getInvoiceRef()) && orderData.getOrderId() != null;
-    }
-
     private PaymentStatusDomain getResponse(CheckTransactionResponse data) {
         if(isValid(data.getOrderData())) {
             PaymentStatusDomain paymentStatusDomain = new PaymentStatusDomain();
@@ -115,5 +111,9 @@ public class CheckTransactionMapper implements Func1<Response<PosResponse<CheckT
         } else {
             throw new TransactionFailedException();
         }
+    }
+
+    private boolean isValid(OrderDataResponse orderData) {
+        return !TextUtils.isEmpty(orderData.getInvoiceRef()) && orderData.getOrderId() != null && orderData.getOrderId() != 0;
     }
 }
