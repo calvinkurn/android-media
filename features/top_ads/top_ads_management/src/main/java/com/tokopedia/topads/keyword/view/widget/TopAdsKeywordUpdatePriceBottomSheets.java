@@ -1,6 +1,7 @@
 package com.tokopedia.topads.keyword.view.widget;
 
 import android.app.Dialog;
+import android.support.design.widget.BottomSheetBehavior;
 import android.support.design.widget.TextInputLayout;
 import android.text.TextUtils;
 import android.view.View;
@@ -24,6 +25,11 @@ public class TopAdsKeywordUpdatePriceBottomSheets extends BottomSheets {
 
     public void setOnSubmitClicked(OnSubmitClicked onSubmitClicked) {
         this.onSubmitClicked = onSubmitClicked;
+    }
+
+    @Override
+    public int getBaseLayoutResourceId() {
+        return R.layout.topads_widget_bottomsheet;
     }
 
     @Override
@@ -69,6 +75,11 @@ public class TopAdsKeywordUpdatePriceBottomSheets extends BottomSheets {
                 }
             }
         });
+    }
+
+    @Override
+    public BottomSheetBehavior getBottomSheetBehavior() {
+        return super.getBottomSheetBehavior();
     }
 
     @Override

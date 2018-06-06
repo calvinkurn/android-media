@@ -38,6 +38,11 @@ public class TopAdsBottomSheetsSelectGroup extends BottomSheets{
     private String selectedGroupAdId;
 
     @Override
+    public int getBaseLayoutResourceId() {
+        return R.layout.topads_widget_bottomsheet;
+    }
+
+    @Override
     public int getLayoutResourceId() {
         return R.layout.partial_top_ads_move_group;
     }

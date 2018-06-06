@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.MenuRes;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
 import android.view.View;
@@ -64,12 +65,6 @@ public abstract class TopAdsKeywordAdListFragment extends TopAdsBaseListFragment
                 .topAdsComponent(getComponent(TopAdsComponent.class))
                 .build()
                 .inject(this);
-    }
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setHasOptionsMenu(false);
     }
 
     @Override
@@ -163,6 +158,16 @@ public abstract class TopAdsKeywordAdListFragment extends TopAdsBaseListFragment
     }
 
     @Override
+    protected void showOption(boolean show) {
+        super.showOption(show);
+        if (!isPositive()){
+            showDateLabel(false);
+        } else {
+            showDateLabel(show);
+        }
+    }
+
+    @Override
     public void onSearchLoaded(List<KeywordAd> data, boolean hasNextData) {
         super.onSuccessLoadedData(data, hasNextData);
     }
@@ -202,8 +207,16 @@ public abstract class TopAdsKeywordAdListFragment extends TopAdsBaseListFragment
     @Override
     public void showBulkActionBottomSheet(List<String> adIds) {
         showBottomsheetOptionMore(getString(R.string.topads_multi_select_title, adIds.size()),
-                R.menu.menu_top_ads_keyword_bottomsheet,
+                getBottomSheetMenuRes(),
                 getOptionMoreBottomSheetItemClickListener(adIds));
+    }
+
+    private @MenuRes int getBottomSheetMenuRes(){
+        if (isPositive()){
+            return R.menu.menu_top_ads_keyword_bottomsheet;
+        } else {
+            return R.menu.menu_top_ads_keyword_negative_bottomsheet;
+        }
     }
 
     @Override
@@ -241,7 +254,7 @@ public abstract class TopAdsKeywordAdListFragment extends TopAdsBaseListFragment
 
     @Override
     public void onClickMore(KeywordAd ad) {
-        showBottomsheetOptionMore(ad.getName(), R.menu.menu_top_ads_keyword_bottomsheet,
+        showBottomsheetOptionMore(ad.getName(), getBottomSheetMenuRes(),
                 getOptionMoreBottomSheetItemClickListener(Collections.nCopies(1, ad.getId())));
     }
 
@@ -307,6 +320,7 @@ public abstract class TopAdsKeywordAdListFragment extends TopAdsBaseListFragment
     public void onBulkActionSuccess(PageDataResponse<DataBulkKeyword> adBulkActions) {
         finishActionMode();
         loadInitialData();
+        setResultAdListChanged();
     }
 
     @Override

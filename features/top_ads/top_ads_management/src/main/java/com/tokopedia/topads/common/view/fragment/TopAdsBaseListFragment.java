@@ -89,6 +89,7 @@ public abstract class TopAdsBaseListFragment<V extends Visitable, F extends Adap
     protected int status;
     protected String keyword;
     private boolean isSearchMode;
+    private boolean isMenuShown;
     private OnAdListFragmentListener listener;
 
     protected SearchInputView searchInputView;
@@ -399,7 +400,9 @@ public abstract class TopAdsBaseListFragment<V extends Visitable, F extends Adap
         super.renderList(data, hasNextPage);
     }
 
-    private void showOption(boolean show) {
+    protected void showOption(boolean show) {
+        isMenuShown = show;
+        getActivity().invalidateOptionsMenu();
         if(buttonActionView != null)
             buttonActionView.setVisibility(show ? View.VISIBLE : View.GONE);
         showDateLabel(show);
@@ -409,6 +412,9 @@ public abstract class TopAdsBaseListFragment<V extends Visitable, F extends Adap
         }
         if (menuMulti != null){
             menuMulti.setVisible(show);
+        }
+        if (menuHelp != null){
+            menuHelp.setVisible(show);
         }
     }
 
@@ -525,41 +531,13 @@ public abstract class TopAdsBaseListFragment<V extends Visitable, F extends Adap
         });
     }
 
-    /*public void showMoreMenus() {
-        final Menus menus = new Menus(getActivity());
-        menus.setItemMenuList(R.array.top_ads_list_menu_more);
-        menus.setActionText(getString(R.string.close));
-        menus.setOnActionClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                menus.dismiss();
-            }
-        });
-
-        menus.setOnItemMenuClickListener(new Menus.OnItemMenuClickListener() {
-            @Override
-            public void onClick(Menus.ItemMenus itemMenus, int pos) {
-                switch (pos){
-                    case 0: {
-                        menus.dismiss();
-                        if (listener != null) {
-                            recyclerView.scrollTo(0, 0);
-                            listener.startShowCase();
-                        }
-                        break;
-                    }
-                    case 1: {
-                        menus.dismiss();
-                        getActivity().startActionMode(getActionModeCallback());
-                        break;
-                    }
-                    default: break;
-                }
-            }
-        });
-
-        menus.show();
-    }*/
+    @Override
+    public void onPrepareOptionsMenu(Menu menu) {
+        super.onPrepareOptionsMenu(menu);
+        menuAdd.setVisible(isMenuShown);
+        menuMulti.setVisible(isMenuShown);
+        menuHelp.setVisible(isMenuShown);
+    }
 
     public ActionMode.Callback getActionModeCallback() {
         return new ActionMode.Callback() {

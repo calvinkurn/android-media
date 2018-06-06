@@ -1,5 +1,9 @@
 package com.tokopedia.topads.keyword.view.fragment;
 
+import android.os.Bundle;
+import android.support.annotation.Nullable;
+import android.view.View;
+
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel;
 import com.tokopedia.topads.R;
@@ -13,6 +17,13 @@ import java.util.List;
  */
 
 public class TopAdsKeywordNegativeListFragment extends TopAdsKeywordAdListFragment {
+
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        showDateLabel(false);
+    }
+
     @Override
     public boolean isPositive() {
         return false;
