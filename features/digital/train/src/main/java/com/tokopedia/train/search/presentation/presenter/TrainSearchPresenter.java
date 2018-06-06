@@ -93,12 +93,14 @@ public class TrainSearchPresenter extends BaseDaggerPresenter<TrainSearchContrac
     }
 
     @Override
-    public void getFilteredAndSortedSchedules(long minPrice, long maxPrice, List<String> trainClass, List<String> trains, final int sortOptionId) {
+    public void getFilteredAndSortedSchedules(long minPrice, long maxPrice, List<String> trainClass,
+                                              List<String> trains, List<String> departureTrains, final int sortOptionId) {
         FilterParam filterParam = new FilterParam.Builder()
                 .minPrice(minPrice)
                 .maxPrice(maxPrice)
                 .trains(trains)
                 .trainClass(trainClass)
+                .departureTimeList(departureTrains)
                 .build();
         RequestParams requestParams = getFilteredAndSortedScheduleUseCase.createRequestParam(filterParam, sortOptionId);
 
@@ -116,7 +118,6 @@ public class TrainSearchPresenter extends BaseDaggerPresenter<TrainSearchContrac
 
             @Override
             public void onNext(List<TrainScheduleViewModel> trainSchedulesViewModel) {
-                Log.d(TAG, "onNext size: " + trainSchedulesViewModel.size());
                 if (trainSchedulesViewModel != null) {
                     getView().showLayoutTripInfo();
                     getView().showDataFromCache(trainSchedulesViewModel);

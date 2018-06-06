@@ -276,7 +276,8 @@ public abstract class TrainSearchFragment extends BaseListFragment<TrainSchedule
                     public void onBottomSheetItemClick(MenuItem item) {
                         List<String> trains = new ArrayList<>();
                         getAdapter().showLoading();
-                        presenter.getFilteredAndSortedSchedules(0, 200000, new ArrayList<String>(), trains, item.getItemId());
+                        presenter.getFilteredAndSortedSchedules(0, 200000,
+                                new ArrayList<String>(), trains, new ArrayList<>(), item.getItemId());
                     }
                 })
                 .createDialog();
@@ -292,9 +293,17 @@ public abstract class TrainSearchFragment extends BaseListFragment<TrainSchedule
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == Activity.RESULT_OK && requestCode == 133) {
             FilterSearchData filterSearchData = data.getExtras().getParcelable("model_filter");
-            presenter.getFilteredAndSortedSchedules(filterSearchData.getMinPrice(),
-                    filterSearchData.getMaxPrice(), filterSearchData.getTrainClass(),
-                    filterSearchData.getTrains(), TrainSortOption.NO_PREFERENCE);
+            long minPrice = filterSearchData.getSelectedMinPrice() == 0 ? filterSearchData.getMinPrice() : filterSearchData.getSelectedMinPrice();
+            long maxPrice = filterSearchData.getSelectedMaxPrice() == 0 ? filterSearchData.getMaxPrice() : filterSearchData.getSelectedMaxPrice();
+            List<String> trains = filterSearchData.getSelectedTrains() != null && !filterSearchData.getSelectedTrains().isEmpty() ?
+                    filterSearchData.getSelectedTrains() : filterSearchData.getTrains();
+            List<String> trainsClass = filterSearchData.getSelectedTrainClass() != null && !filterSearchData.getSelectedTrainClass().isEmpty() ?
+                    filterSearchData.getSelectedTrainClass() : filterSearchData.getTrainClass();
+            List<String> departureHours = filterSearchData.getSelectedDepartureTimeList() != null && !filterSearchData.getSelectedDepartureTimeList().isEmpty() ?
+                    filterSearchData.getSelectedDepartureTimeList() : filterSearchData.getDepartureTimeList();
+
+            presenter.getFilteredAndSortedSchedules(minPrice, maxPrice, trainsClass, trains,
+                    departureHours, TrainSortOption.NO_PREFERENCE);
         }
     }
 }

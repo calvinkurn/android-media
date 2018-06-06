@@ -113,6 +113,10 @@ public class TrainScheduleDataStoreFactory {
             specification = new AndDbFlowSpecification(specification,
                     new TrainScheduleNameFilterSpecification(filterParam.getTrains()));
         }
+        if (!filterParam.getDepartureTimeList().isEmpty()) {
+            specification = new AndDbFlowSpecification(specification,
+                    new TrainScheduleDepartureTimeFilterSpecification(filterParam.getDepartureTimeList()));
+        }
         specification = new AndDbFlowSpecification(specification,
                 new TrainScheduleSortSpecification(sortOptionId));
         return dbDataStore.getDatas(specification);
