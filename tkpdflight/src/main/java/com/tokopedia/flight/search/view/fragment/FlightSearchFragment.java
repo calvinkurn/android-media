@@ -33,6 +33,7 @@ import com.tokopedia.design.button.BottomActionView;
 import com.tokopedia.flight.FlightComponentInstance;
 import com.tokopedia.flight.R;
 import com.tokopedia.flight.airport.data.source.db.model.FlightAirportDB;
+import com.tokopedia.flight.airport.view.viewmodel.FlightAirportViewModel;
 import com.tokopedia.flight.common.util.FlightDateUtil;
 import com.tokopedia.flight.common.util.FlightErrorUtil;
 import com.tokopedia.flight.common.view.HorizontalProgressBar;
@@ -137,10 +138,9 @@ public class FlightSearchFragment extends BaseListFragment<FlightSearchViewModel
 
     private void setUpCombinationAirport() {
         List<String> departureAirportList;
-        String depAirportID = getDepartureAirport().getAirportId();
+        String depAirportID = getDepartureAirport().getAirportCode();
         if (TextUtils.isEmpty(depAirportID)) {
-            String depAirportIDString = getDepartureAirport().getAirportIds();
-            String[] depAirportIDs = depAirportIDString.split(",");
+            String[] depAirportIDs = getDepartureAirport().getCityAirports();
             departureAirportList = Arrays.asList(depAirportIDs);
         } else {
             departureAirportList = new ArrayList<>();
@@ -148,10 +148,9 @@ public class FlightSearchFragment extends BaseListFragment<FlightSearchViewModel
         }
 
         List<String> arrivalAirportList;
-        String arrAirportID = getArrivalAirport().getAirportId();
+        String arrAirportID = getArrivalAirport().getAirportCode();
         if (TextUtils.isEmpty(arrAirportID)) {
-            String arrAirportIDString = getArrivalAirport().getAirportIds();
-            String[] arrAirportIDs = arrAirportIDString.split(",");
+            String[] arrAirportIDs = getArrivalAirport().getCityAirports();
             arrivalAirportList = Arrays.asList(arrAirportIDs);
         } else {
             arrivalAirportList = new ArrayList<>();
@@ -161,11 +160,11 @@ public class FlightSearchFragment extends BaseListFragment<FlightSearchViewModel
         airportCombineModelList = new AirportCombineModelList(departureAirportList, arrivalAirportList);
     }
 
-    protected FlightAirportDB getDepartureAirport() {
+    protected FlightAirportViewModel getDepartureAirport() {
         return flightSearchPassDataViewModel.getDepartureAirport();
     }
 
-    protected FlightAirportDB getArrivalAirport() {
+    protected FlightAirportViewModel getArrivalAirport() {
         return flightSearchPassDataViewModel.getArrivalAirport();
     }
 

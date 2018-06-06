@@ -32,6 +32,7 @@
         <attr name="siv_search_icon" format="reference" />
         <attr name="siv_search_text" format="string" />
         <attr name="siv_search_hint" format="string" />
+        <attr name="isEditable" format="boolean"/>
     </declare-styleable>
 
     <declare-styleable name="DecimalInputView">
@@ -218,6 +219,10 @@
         <attr name="buttonDrawableRightCompat" format="reference"/>
         <attr name="buttonDrawableTopCompat" format="reference"/>
         <attr name="buttonDrawableBottomCompat" format="reference"/>
+    </declare-styleable>
+
+    <declare-styleable name="DeletableItemView">
+        <attr name="layout" format="reference"/>
     </declare-styleable>
 
 </resources>

@@ -2,15 +2,12 @@ package com.tokopedia.digital.cart.fragment;
 
 import android.Manifest;
 import android.app.Activity;
-import android.app.Dialog;
 import android.app.Fragment;
-import android.app.IntentService;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
 import android.support.design.widget.Snackbar;
 import android.support.v4.widget.NestedScrollView;
@@ -20,6 +17,8 @@ import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
+import com.tokopedia.abstraction.constant.IRouterConstant;
+import com.tokopedia.abstraction.common.utils.network.CacheUtil;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.apprating.AdvancedAppRatingDialog;
@@ -279,21 +278,6 @@ public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPrese
         View view = getView();
         if (view != null) NetworkErrorHelper.showSnackbar(getActivity(), message);
         else Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
-    }
-
-    @Override
-    public void showDialog(Dialog dialog) {
-
-    }
-
-    @Override
-    public void dismissDialog(Dialog dialog) {
-        if (dialog.isShowing()) dialog.dismiss();
-    }
-
-    @Override
-    public void executeIntentService(Bundle bundle, Class<? extends IntentService> clazz) {
-
     }
 
     @Override
@@ -652,18 +636,6 @@ public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPrese
         mainContainer.setVisibility(View.GONE);
     }
 
-    @Override
-    public void interruptRequestTokenVerification(@Nullable CartDigitalInfoData cartDigitalInfoData) {
-        if (cartDigitalInfoData != null) {
-            this.cartDigitalInfoDataState = cartDigitalInfoData;
-            buildCheckoutData(cartDigitalInfoData);
-        }
-        navigateToActivityRequest(
-                OtpVerificationActivity.newInstance(getActivity()),
-                OtpVerificationActivity.REQUEST_CODE
-        );
-    }
-
     public void setCartDigitalInfo(CartDigitalInfoData cartDigitalInfoData) {
         if (cartDigitalInfoData != null) {
             this.cartDigitalInfoDataState = cartDigitalInfoData;
@@ -688,7 +660,6 @@ public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPrese
 
     @Override
     public void interruptRequestTokenVerification() {
-
         Intent intent = VerificationActivity.getCallingIntent(getActivity(),
                 SessionHandler.getPhoneNumber(), RequestOtpUseCase.OTP_TYPE_CHECKOUT_DIGITAL,
                 true, RequestOtpUseCase.MODE_SMS);
@@ -727,22 +698,29 @@ public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPrese
             Intent intent;
             if (cartDigitalInfoDataState.getAttributes().isCouponActive() == COUPON_ACTIVE) {
                 if (cartDigitalInfoDataState.getAttributes().getDefaultPromoTab() != null &&
-                        cartDigitalInfoDataState.getAttributes().getDefaultPromoTab().equalsIgnoreCase(LoyaltyActivity.COUPON_STATE)) {
-                    intent = LoyaltyActivity.newInstanceCouponActiveAndSelected(context, LoyaltyActivity.DIGITAL_STRING, passData.getCategoryId());
+                        cartDigitalInfoDataState.getAttributes().getDefaultPromoTab().equalsIgnoreCase(
+                                IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.COUPON_STATE)) {
+                    intent = LoyaltyActivity.newInstanceCouponActiveAndSelected(
+                            context, IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.DIGITAL_STRING, passData.getCategoryId()
+                    );
                 } else {
-                    intent = LoyaltyActivity.newInstanceCouponActive(context, LoyaltyActivity.DIGITAL_STRING, passData.getCategoryId());
+                    intent = LoyaltyActivity.newInstanceCouponActive(
+                            context, IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.DIGITAL_STRING, passData.getCategoryId()
+                    );
                 }
             } else {
-                intent = LoyaltyActivity.newInstanceCouponNotActive(context, LoyaltyActivity.DIGITAL_STRING, passData.getCategoryId());
+                intent = LoyaltyActivity.newInstanceCouponNotActive(
+                        context, IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.DIGITAL_STRING, passData.getCategoryId()
+                );
             }
-            navigateToActivityRequest(intent, LoyaltyActivity.LOYALTY_REQUEST_CODE);
+            navigateToActivityRequest(intent, IRouterConstant.LoyaltyModule.LOYALTY_ACTIVITY_REQUEST_CODE);
         } else {
             voucherCartHachikoView.setVisibility(View.GONE);
         }
     }
 
     @Override
-    public void disableVoucherDisount() {
+    public void disableVoucherDiscount() {
         presenter.onClearVoucher();
         this.voucherDigitalState = null;
         checkoutHolderView.disableVoucherDiscount();
@@ -803,13 +781,16 @@ public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPrese
             }
         } else if (requestCode == InstantCheckoutActivity.REQUEST_CODE) {
             closeView();
-        } else if (requestCode == LoyaltyActivity.LOYALTY_REQUEST_CODE) {
-            if (resultCode == LoyaltyActivity.VOUCHER_RESULT_CODE) {
+        } else if (requestCode == IRouterConstant.LoyaltyModule.LOYALTY_ACTIVITY_REQUEST_CODE) {
+            if (resultCode == IRouterConstant.LoyaltyModule.ResultLoyaltyActivity.VOUCHER_RESULT_CODE) {
                 Bundle bundle = data.getExtras();
                 if (bundle != null) {
-                    String voucherCode = bundle.getString(LoyaltyActivity.VOUCHER_CODE, "");
-                    String voucherMessage = bundle.getString(LoyaltyActivity.VOUCHER_MESSAGE, "");
-                    long voucherDiscountAmount = bundle.getLong(LoyaltyActivity.VOUCHER_DISCOUNT_AMOUNT);
+                    String voucherCode = bundle.getString(
+                            IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.VOUCHER_CODE, "");
+                    String voucherMessage = bundle.getString(
+                            IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.VOUCHER_MESSAGE, "");
+                    long voucherDiscountAmount = bundle.getLong(
+                            IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.VOUCHER_DISCOUNT_AMOUNT);
 
                     VoucherDigital voucherDigital = new VoucherDigital();
                     VoucherAttributeDigital voucherAttributeDigital = new VoucherAttributeDigital();
@@ -828,13 +809,17 @@ public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPrese
                         checkoutHolderView.enableVoucherDiscount(voucherDiscountAmount);
                     }
                 }
-            } else if (resultCode == LoyaltyActivity.COUPON_RESULT_CODE) {
+            } else if (resultCode == IRouterConstant.LoyaltyModule.ResultLoyaltyActivity.COUPON_RESULT_CODE) {
                 Bundle bundle = data.getExtras();
                 if (bundle != null) {
-                    String couponTitle = bundle.getString(LoyaltyActivity.COUPON_TITLE, "");
-                    String couponMessage = bundle.getString(LoyaltyActivity.COUPON_MESSAGE, "");
-                    String couponCode = bundle.getString(LoyaltyActivity.COUPON_CODE, "");
-                    long couponDiscountAmount = bundle.getLong(LoyaltyActivity.COUPON_DISCOUNT_AMOUNT);
+                    String couponTitle = bundle.getString(
+                            IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.COUPON_TITLE, "");
+                    String couponMessage = bundle.getString(
+                            IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.COUPON_MESSAGE, "");
+                    String couponCode = bundle.getString(
+                            IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.COUPON_CODE, "");
+                    long couponDiscountAmount = bundle.getLong(
+                            IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.COUPON_DISCOUNT_AMOUNT);
 
                     VoucherDigital voucherDigital = new VoucherDigital();
                     VoucherAttributeDigital voucherAttributeDigital = new VoucherAttributeDigital();

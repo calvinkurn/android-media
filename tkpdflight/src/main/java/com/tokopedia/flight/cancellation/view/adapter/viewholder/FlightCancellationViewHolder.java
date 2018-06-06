@@ -218,7 +218,11 @@ public class FlightCancellationViewHolder extends AbstractViewHolder<FlightCance
             }
 
             isJourneyChecked = !allChecked;
-            toggleCheckJourney(false);
+            if (allChecked) {
+                toggleCheckJourney(true);
+            } else {
+                toggleCheckJourney(false);
+            }
         }
     }
 

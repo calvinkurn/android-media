@@ -2,9 +2,18 @@ package com.tokopedia.contact_us.inboxticket.activity;
 
 import android.app.Fragment;
 import android.app.FragmentTransaction;
+import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v4.app.TaskStackBuilder;
 
+import com.airbnb.deeplinkdispatch.DeepLink;
+import com.tokopedia.applink.ApplinkConst;
+import com.tokopedia.contact_us.ContactUsModuleRouter;
+import com.tokopedia.contact_us.inboxticket.fragment.InboxTicketFragment;
+import com.tokopedia.contact_us.inboxticket.presenter.InboxTicketPresenter;
+import com.tokopedia.contact_us.inboxticket.presenter.InboxTicketPresenterImpl;
 import com.tokopedia.core.R;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.DrawerPresenterActivity;
@@ -12,15 +21,24 @@ import com.tokopedia.core.gcm.NotificationModHandler;
 import com.tokopedia.core.router.SellerAppRouter;
 import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.util.GlobalConfig;
-import com.tokopedia.contact_us.inboxticket.fragment.InboxTicketFragment;
-import com.tokopedia.contact_us.inboxticket.presenter.InboxTicketPresenter;
-import com.tokopedia.contact_us.inboxticket.presenter.InboxTicketPresenterImpl;
 import com.tokopedia.core.var.TkpdState;
 
 /**
  * Created by Nisie on 4/21/16.
  */
 public class InboxTicketActivity extends DrawerPresenterActivity<InboxTicketPresenter> {
+
+    @DeepLink(ApplinkConst.INBOX_TICKET)
+    public static TaskStackBuilder getCallingTaskStackList(Context context, Bundle extras) {
+        Intent homeIntent = ((ContactUsModuleRouter) context.getApplicationContext()).getHomeIntent
+                (context);
+        Intent parentIntent = InboxTicketActivity.getCallingIntent(context);
+
+        TaskStackBuilder taskStackBuilder = TaskStackBuilder.create(context);
+        taskStackBuilder.addNextIntent(homeIntent);
+        taskStackBuilder.addNextIntent(parentIntent);
+        return taskStackBuilder;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -99,5 +117,9 @@ public class InboxTicketActivity extends DrawerPresenterActivity<InboxTicketPres
             finish();
         }
         super.onBackPressed();
+    }
+
+    private static Intent getCallingIntent(Context context) {
+        return new Intent(context, InboxTicketActivity.class);
     }
 }

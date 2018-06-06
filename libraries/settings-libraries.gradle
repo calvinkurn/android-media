@@ -1,4 +1,5 @@
 include "libraries:react_native"
+include "libraries:analytics"
 include "libraries:fingerprint"
 include "libraries:push_notification"
 include "libraries:applink"
