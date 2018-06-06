@@ -42,7 +42,7 @@
             android:layout_width="18dp"
             android:layout_height="18dp"
             android:visibility="gone"
-            app:srcCompat="@drawable/ic_close_event" />
+            app:srcCompat="@drawable/ic_close_rounded" />
     </LinearLayout>
 
 </FrameLayout>

@@ -2,9 +2,8 @@ package com.tokopedia.otp.cotp.view.viewlistener;
 
 import android.content.Context;
 
-import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
-import com.tokopedia.otp.cotp.view.viewmodel.VerificationPassModel;
+import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
 import com.tokopedia.otp.cotp.view.viewmodel.VerificationViewModel;
 
 /**
@@ -13,7 +12,7 @@ import com.tokopedia.otp.cotp.view.viewmodel.VerificationViewModel;
 
 public interface Verification {
     interface View extends CustomerView {
-        void onSuccessGetOTP();
+        void onSuccessGetOTP(String message);
 
         void onSuccessVerifyOTP();
 
