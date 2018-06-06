@@ -199,7 +199,7 @@ public class ReactNavigationModule extends ReactContextBaseJavaModule implements
         if (GlobalConfig.isAllowDebuggingTools()) {
             promise.resolve("debug");
         } else {
-            promise.resolve("resolve");
+            promise.resolve("release");
         }
     }
 }
