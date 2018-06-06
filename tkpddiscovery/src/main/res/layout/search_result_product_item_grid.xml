@@ -161,6 +161,7 @@
         android:layout_below="@+id/price"
         android:layout_marginLeft="@dimen/dp_16"
         android:layout_marginRight="@dimen/dp_16"
+        android:gravity="center_vertical"
         android:orientation="horizontal">
 
         <LinearLayout
