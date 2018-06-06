@@ -11,6 +11,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
+import com.crashlytics.android.Crashlytics;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -228,36 +229,41 @@ public class FragmentGeneralWebView extends Fragment implements BaseWebViewClien
     }
 
     private boolean overrideUrl(String url) {
-        if (((Uri.parse(url).getHost().contains(Uri.parse(TkpdBaseURL.WEB_DOMAIN).getHost()))
-                || Uri.parse(url).getHost().contains(Uri.parse(TkpdBaseURL.MOBILE_DOMAIN).getHost()))
-                && !url.endsWith(".pl")) {
-            CommonUtils.dumper(DeepLinkChecker.getDeepLinkType(url));
-            switch (DeepLinkChecker.getDeepLinkType(url)) {
-                case DeepLinkChecker.CATEGORY:
-                    DeepLinkChecker.openCategory(url, getActivity());
-                    return true;
-                case DeepLinkChecker.BROWSE:
-                    DeepLinkChecker.openBrowse(url, getActivity());
-                    return true;
-                case DeepLinkChecker.HOT:
-                    DeepLinkChecker.openHot(url, getActivity());
-                    return true;
-                case DeepLinkChecker.CATALOG:
-                    DeepLinkChecker.openCatalog(url, getActivity());
-                    return true;
-                case DeepLinkChecker.PRODUCT:
-                    DeepLinkChecker.openProduct(url, getActivity());
-                    return true;
-                case DeepLinkChecker.HOME:
-                    DeepLinkChecker.openHomepage(getActivity(), HomeRouter.INIT_STATE_FRAGMENT_HOME);
-                    return true;
-                case DeepLinkChecker.TOKOPOINT:
-                    DeepLinkChecker.openTokoPoint(getActivity(), url);
-                    return true;
-                default:
-                    return false;
+        try {
+            if (((Uri.parse(url).getHost().contains(Uri.parse(TkpdBaseURL.WEB_DOMAIN).getHost()))
+                    || Uri.parse(url).getHost().contains(Uri.parse(TkpdBaseURL.MOBILE_DOMAIN).getHost()))
+                    && !url.endsWith(".pl")) {
+                CommonUtils.dumper(DeepLinkChecker.getDeepLinkType(url));
+                switch (DeepLinkChecker.getDeepLinkType(url)) {
+                    case DeepLinkChecker.CATEGORY:
+                        DeepLinkChecker.openCategory(url, getActivity());
+                        return true;
+                    case DeepLinkChecker.BROWSE:
+                        DeepLinkChecker.openBrowse(url, getActivity());
+                        return true;
+                    case DeepLinkChecker.HOT:
+                        DeepLinkChecker.openHot(url, getActivity());
+                        return true;
+                    case DeepLinkChecker.CATALOG:
+                        DeepLinkChecker.openCatalog(url, getActivity());
+                        return true;
+                    case DeepLinkChecker.PRODUCT:
+                        DeepLinkChecker.openProduct(url, getActivity());
+                        return true;
+                    case DeepLinkChecker.HOME:
+                        DeepLinkChecker.openHomepage(getActivity(), HomeRouter.INIT_STATE_FRAGMENT_HOME);
+                        return true;
+                    case DeepLinkChecker.TOKOPOINT:
+                        DeepLinkChecker.openTokoPoint(getActivity(), url);
+                        return true;
+                    default:
+                        return false;
+                }
+            } else {
+                return false;
             }
-        } else {
+        } catch (Exception e){
+            Crashlytics.log(0, TAG, e.getLocalizedMessage());
             return false;
         }
     }
