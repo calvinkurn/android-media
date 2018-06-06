@@ -74,8 +74,6 @@ public class BannerShopViewHolder extends AbstractViewHolder<BannerShopViewModel
             promotedTxt.setText(cpm.getPromotedText());
             nameTxt.setText(TopAdsBannerView.escapeHTML(cpm.getName()));
 
-            String desc = String.format("%s %s", TopAdsBannerView.escapeHTML(cpm.getDecription()), cpm.getCta());
-            TopAdsBannerView.setTextColor(descriptionTxt, desc, cpm.getCta(), ContextCompat.getColor(context, R.color.tkpd_main_green));
 
             if (cpm.getBadges().size() > 0) {
                 badgeContainer.removeAllViews();
@@ -106,6 +104,8 @@ public class BannerShopViewHolder extends AbstractViewHolder<BannerShopViewModel
                 } else {
                     imageContainer.setVisibility(View.GONE);
                 }
+                String desc = String.format("%s %s", TopAdsBannerView.escapeHTML(cpm.getCpmShop().getSlogan()), cpm.getCta());
+                TopAdsBannerView.setTextColor(descriptionTxt, desc, cpm.getCta(), ContextCompat.getColor(context, R.color.tkpd_main_green));
             }
             descriptionTxt.setOnClickListener(new View.OnClickListener() {
                 @Override

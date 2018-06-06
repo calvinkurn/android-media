@@ -17,6 +17,7 @@ public class Product implements Parcelable {
     private String productType;
     private String desc;
     private String detail;
+    private String detailCompact;
     private String detailUrl;
     private String detailUrlText;
     private String info;
@@ -24,13 +25,13 @@ public class Product implements Parcelable {
     private long pricePlain;
     private Promo promo;
     private int status;
-    private String detailCompact;
 
     private Product(Builder builder) {
         setProductId(builder.productId);
         setProductType(builder.productType);
         setDesc(builder.desc);
         setDetail(builder.detail);
+        setDetailCompact(builder.detailCompact);
         setDetailUrl(builder.detailUrl);
         setDetailUrlText(builder.detailUrlText);
         setInfo(builder.info);
@@ -191,6 +192,7 @@ public class Product implements Parcelable {
         private String productType;
         private String desc;
         private String detail;
+        private String detailCompact;
         private String detailUrl;
         private String detailUrlText;
         private String info;
@@ -219,6 +221,11 @@ public class Product implements Parcelable {
 
         public Builder detail(String val) {
             detail = val;
+            return this;
+        }
+
+        public Builder detailCompact(String val) {
+            detailCompact = val;
             return this;
         }
 
