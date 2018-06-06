@@ -23,6 +23,7 @@ import com.tokopedia.tkpd.tkpdreputation.inbox.view.fragment.InboxReputationDeta
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.inboxdetail.InboxReputationDetailPassModel;
 
 import javax.inject.Inject;
+import android.support.graphics.drawable.VectorDrawableCompat;
 
 /**
  * @author by nisie on 8/19/17.
@@ -123,8 +124,7 @@ public class InboxReputationDetailActivity extends BasePresenterActivity impleme
         }
 
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
-        Drawable upArrow = ContextCompat.getDrawable(this,
-                android.support.v7.appcompat.R.drawable.abc_ic_ab_back_material);
+        Drawable upArrow = VectorDrawableCompat.create(getResources(), android.support.v7.appcompat.R.drawable.abc_ic_ab_back_material, null);
         if (upArrow != null) {
             upArrow.setColorFilter(ContextCompat.getColor(this, R.color.grey_700),
                     PorterDuff.Mode.SRC_ATOP);

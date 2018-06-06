@@ -22,6 +22,7 @@ import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.TActivity;
 import com.tokopedia.inbox.R;
 import com.tokopedia.inbox.inboxchat.fragment.SendChatFragment;
+import android.support.graphics.drawable.VectorDrawableCompat;
 
 /**
  * Created by Nisie on 5/26/16.
@@ -66,7 +67,7 @@ public class SendMessageActivity extends TActivity {
             toolbar.setElevation(10);
         }
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
-        Drawable upArrow = ContextCompat.getDrawable(this, android.support.v7.appcompat.R.drawable.abc_ic_ab_back_material);
+        Drawable upArrow = VectorDrawableCompat.create(getResources(), android.support.v7.appcompat.R.drawable.abc_ic_ab_back_material, null);
         if (upArrow != null) {
             upArrow.setColorFilter(ContextCompat.getColor(this, R.color.grey_700), PorterDuff.Mode.SRC_ATOP);
             getSupportActionBar().setHomeAsUpIndicator(upArrow);

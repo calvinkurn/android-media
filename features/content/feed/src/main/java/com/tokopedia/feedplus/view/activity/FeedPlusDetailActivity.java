@@ -21,6 +21,7 @@ import com.tokopedia.core.base.di.component.HasComponent;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.feedplus.R;
 import com.tokopedia.feedplus.view.fragment.FeedPlusDetailFragment;
+import android.support.graphics.drawable.VectorDrawableCompat;
 
 /**
  * @author by nisie on 5/18/17.
@@ -114,7 +115,7 @@ public class FeedPlusDetailActivity extends BasePresenterActivity implements Has
         }
 
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
-        Drawable upArrow = ContextCompat.getDrawable(this, android.support.v7.appcompat.R.drawable.abc_ic_ab_back_material);
+        Drawable upArrow = VectorDrawableCompat.create(getResources(), android.support.v7.appcompat.R.drawable.abc_ic_ab_back_material, null);
         if (upArrow != null) {
             upArrow.setColorFilter(ContextCompat.getColor(this, R.color.grey_700), PorterDuff.Mode.SRC_ATOP);
             getSupportActionBar().setHomeAsUpIndicator(upArrow);
