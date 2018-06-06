@@ -2,6 +2,7 @@ package com.tokopedia.discovery.newdiscovery.search;
 
 import android.Manifest;
 import android.content.ClipData;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
@@ -216,7 +217,7 @@ public class SearchActivity extends DiscoveryActivity
     }
 
     private boolean isValidMimeType(String url){
-        String mimeType = getMimeType(url);
+        String mimeType = getMimeTypeUri(Uri.parse(url));
         return mimeType.equalsIgnoreCase("jpg") ||
                 mimeType.equalsIgnoreCase("png") ||
                 mimeType.equalsIgnoreCase("jpeg");
@@ -231,6 +232,21 @@ public class SearchActivity extends DiscoveryActivity
             type = mime.getMimeTypeFromExtension(extension);
         }
         return type;
+    }
+
+
+    public String getMimeTypeUri(Uri uri) {
+        String mimeType = null;
+        if (uri.getScheme().equals(ContentResolver.SCHEME_CONTENT)) {
+            ContentResolver cr = getContentResolver();
+            mimeType = cr.getType(uri);
+        } else {
+            String fileExtension = MimeTypeMap.getFileExtensionFromUrl(uri
+                    .toString());
+            mimeType = MimeTypeMap.getSingleton().getMimeTypeFromExtension(
+                    fileExtension.toLowerCase());
+        }
+        return mimeType;
     }
 
     @NeedsPermission(Manifest.permission.READ_EXTERNAL_STORAGE)
