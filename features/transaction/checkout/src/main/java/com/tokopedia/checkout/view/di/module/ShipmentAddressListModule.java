@@ -1,5 +1,7 @@
 package com.tokopedia.checkout.view.di.module;
 
+import android.app.Activity;
+
 import com.tokopedia.checkout.data.repository.PeopleAddressRepository;
 import com.tokopedia.checkout.domain.usecase.GetPeopleAddressUseCase;
 import com.tokopedia.checkout.view.adapter.ShipmentAddressListAdapter;
@@ -15,18 +17,20 @@ import dagger.Provides;
  * @author Aghny A. Putra on 31/01/18.
  */
 
-@Module(includes = {PeopleAddressModule.class})
+@Module(includes = {PeopleAddressModule.class, TrackingAnalyticsModule.class})
 public class ShipmentAddressListModule {
 
     private final ShipmentAddressListAdapter.ActionListener actionListener;
 
-    public ShipmentAddressListModule(ShipmentAddressListFragment shipmentAddressListFragment) {
+    public ShipmentAddressListModule(Activity activity, ShipmentAddressListFragment shipmentAddressListFragment) {
         actionListener = shipmentAddressListFragment;
+        Activity activity1 = activity;
     }
 
     @Provides
     @ShipmentAddressListScope
-    ShipmentAddressListPresenter provideCartAddressListPresenter(GetPeopleAddressUseCase getPeopleAddressUseCase, PagingHandler pagingHandler) {
+    ShipmentAddressListPresenter provideCartAddressListPresenter(
+            GetPeopleAddressUseCase getPeopleAddressUseCase, PagingHandler pagingHandler) {
         return new ShipmentAddressListPresenter(getPeopleAddressUseCase, pagingHandler);
     }
 

@@ -23,8 +23,7 @@ import java.util.List;
  * @author anggaprasetiyo on 18/01/18.
  */
 
-public class CartActivity extends BaseCheckoutActivity implements CartFragment.ActionListener,
-        HasComponent<CartComponent> {
+public class CartActivity extends BaseCheckoutActivity implements CartFragment.ActionListener{
 
     @DeepLink(CheckoutAppLink.CART)
     public static Intent getCallingIntent(Context context, Bundle extras) {
@@ -65,6 +64,11 @@ public class CartActivity extends BaseCheckoutActivity implements CartFragment.A
 
     @Override
     public void onBackPressed() {
+        Fragment currentFragment = getCurrentFragment();
+        if (currentFragment instanceof CartRemoveProductFragment) {
+            ((CartRemoveProductFragment) currentFragment)
+                    .cartPageAnalytics.eventClickCartClickArrowBackFromHapus();
+        }
         if (getSupportFragmentManager().getBackStackEntryCount() > 0) {
             getSupportFragmentManager().popBackStack();
         } else {
@@ -93,7 +97,7 @@ public class CartActivity extends BaseCheckoutActivity implements CartFragment.A
 
     @Override
     public void onRemoveAllCartMenuClicked(List<CartItemData> cartItemData) {
-        Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.container);
+        Fragment fragment = getCurrentFragment();
         if (fragment == null || !(fragment instanceof CartRemoveProductFragment)) {
             getSupportFragmentManager().beginTransaction()
                     .replace(R.id.parent_view, RemoveCartItemFragment.newInstance(cartItemData))
@@ -107,8 +111,5 @@ public class CartActivity extends BaseCheckoutActivity implements CartFragment.A
         return CartFragment.newInstance();
     }
 
-    @Override
-    public CartComponent getComponent() {
-        return CartComponentInjector.newInstance(getApplication()).getCartApiServiceComponent();
-    }
+
 }

@@ -8,12 +8,12 @@ import java.util.Map;
 import javax.inject.Inject;
 
 /**
- * @author anggaprasetiyo on 18/05/18.
+ * @author anggaprasetiyo on 06/06/18.
  */
-public class CheckoutAnalyticProductDetailPage extends CheckoutAnalytics {
+public class CheckoutAnalyticsAddToCart extends CheckoutAnalytics {
 
     @Inject
-    public CheckoutAnalyticProductDetailPage(AnalyticTracker analyticTracker) {
+    public CheckoutAnalyticsAddToCart(AnalyticTracker analyticTracker) {
         super(analyticTracker);
     }
 

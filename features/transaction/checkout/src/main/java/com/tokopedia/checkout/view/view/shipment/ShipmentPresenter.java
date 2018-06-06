@@ -303,14 +303,17 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                 e.printStackTrace();
                 getView().hideLoading();
                 getView().showToastError(getView().getActivity().getString(R.string.default_request_error_unknown));
+                getView().sendAnalyticsChoosePaymentMethodFailed();
             }
 
             @Override
             public void onNext(CheckoutData checkoutData) {
                 getView().hideLoading();
                 if (!checkoutData.isError()) {
+                    getView().sendAnalyticsChoosePaymentMethodSuccess();
                     getView().renderCheckoutCartSuccess(checkoutData);
                 } else {
+                    getView().sendAnalyticsChoosePaymentMethodFailed();
                     getView().renderCheckoutCartError(checkoutData.getErrorMessage());
                 }
             }

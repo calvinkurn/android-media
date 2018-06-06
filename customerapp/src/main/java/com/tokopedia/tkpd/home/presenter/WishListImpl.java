@@ -288,7 +288,7 @@ public class WishListImpl implements WishList {
         for (int i = 0; i < dataWishlist.size(); i++) {
             if (productId.equals(dataWishlist.get(i).getId())) {
                 Wishlist dataDetail = dataWishlist.get(i);
-                /* routeToOldCheckout(activity, dataDetail);*/
+                /*routeToOldCheckout(activity, dataDetail);*/
                 routeToNewCheckout(activity, dataDetail);
                 return;
             }

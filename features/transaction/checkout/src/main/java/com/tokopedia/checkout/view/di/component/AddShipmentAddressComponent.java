@@ -12,7 +12,7 @@ import dagger.Component;
  */
 
 @AddShipmentAddressScope
-@Component(modules = AddShipmentAddressModule.class)
+@Component(modules = AddShipmentAddressModule.class, dependencies = CartComponent.class)
 public interface AddShipmentAddressComponent {
     void inject(AddShipmentAddressFragment addShipmentAddressFragment);
 }

@@ -32,6 +32,7 @@
         <attr name="siv_search_icon" format="reference" />
         <attr name="siv_search_text" format="string" />
         <attr name="siv_search_hint" format="string" />
+        <attr name="isEditable" format="boolean"/>
     </declare-styleable>
 
     <declare-styleable name="DecimalInputView">

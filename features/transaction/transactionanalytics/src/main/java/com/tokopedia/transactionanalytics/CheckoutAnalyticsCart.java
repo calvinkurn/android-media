@@ -15,14 +15,14 @@ import static com.tokopedia.transactionanalytics.ConstantTransactionAnalytics.Ev
 /**
  * @author anggaprasetiyo on 18/05/18.
  */
-public class CheckoutAnalyticsCartPage extends CheckoutAnalytics {
+public class CheckoutAnalyticsCart extends CheckoutAnalytics {
 
     @Inject
-    public CheckoutAnalyticsCartPage(AnalyticTracker analyticTracker) {
+    public CheckoutAnalyticsCart(AnalyticTracker analyticTracker) {
         super(analyticTracker);
     }
 
-    public void eventClickCartClickKuponFromGunakanPromoAtauKupon() {
+    public void  eventClickCartClickKuponFromGunakanPromoAtauKupon() {
         analyticTracker.sendEventTracking(EventName.CLICK_ATC,
                 EventCategory.CART,
                 EventAction.CLICK_KUPON_FROM_GUNAKAN_KODE_PROMO_ATAU_KUPON,
@@ -165,88 +165,66 @@ public class CheckoutAnalyticsCartPage extends CheckoutAnalytics {
                 "");
     }
 
-    public void eventMultipleAddressKlikTombolBack() {
+
+    public void eventClickCartClickArrowBackFromHapus() {
         analyticTracker.sendEventTracking(EventName.CLICK_ATC,
-                EventCategory.CART_MULTIPLE_ADDRESS,
-                EventAction.CLICK_BACK_ARROW_FROM_KIRIM_KE_BEBERAPA_ALAMAT,
-                "");
+                EventCategory.CART,
+                EventAction.CLICK_ARROW_BACK_FROM_HAPUS,
+                ""
+        );
     }
 
-    public void eventMultipleAddressKlikTombolKembaliDanHapusPerubahan() {
+    public void eventClickCartClickTulisCatatan() {
         analyticTracker.sendEventTracking(EventName.CLICK_ATC,
-                EventCategory.CART_MULTIPLE_ADDRESS,
-                EventAction.CLICK_KEMBALI_DAN_HAPUS_PERUBAHAN_FROM_KIRIM_KE_BEBERAPA_ALAMAT,
-                "");
+                EventCategory.CART,
+                EventAction.CLICK_TULIS_CATATAN,
+                ""
+        );
     }
 
-    public void eventMultipleAddressTetapDiHalamanIni() {
+    public void eventClickCartClickInputQuantity(String qty) {
         analyticTracker.sendEventTracking(EventName.CLICK_ATC,
-                EventCategory.CART_MULTIPLE_ADDRESS,
-                EventAction.CLICK_TETAP_DI_HALAMAN_INI_FROM_KIRIM_KE_BEBERAPA_ALAMAT,
-                "");
+                EventCategory.CART,
+                EventAction.CLICK_INPUT_QUANTITY,
+                qty
+        );
     }
 
-    public void eventMultipleAddressKlikTambahAlamatBaru() {
+
+    public void eventClickCartClickXFromGunakanKodePromoAtauKupon() {
         analyticTracker.sendEventTracking(EventName.CLICK_ATC,
-                EventCategory.CART_MULTIPLE_ADDRESS,
-                EventAction.CLICK_TAMBAH_PENGIRIMAN_BARU_FROM_KIRIM_KE_BEBERAPA_ALAMAT,
-                "");
+                EventCategory.CART,
+                EventAction.CLICK_X_FROM_GUNAKAN_KODE_PROMO_ATAU_KUPON,
+                ""
+        );
     }
 
-    public void eventMultipleAddressKlikEdit() {
-        analyticTracker.sendEventTracking(EventName.CLICK_ATC,
-                EventCategory.CART_MULTIPLE_ADDRESS,
-                EventAction.CLICK_EDIT_FROM_KIRIM_KE_BEBERAPA_ALAMAT,
-                "");
+    public void eventImpressionCartImpressionOnPopUpKupon() {
+        analyticTracker.sendEventTracking(EventName.VIEW_ATC,
+                EventCategory.CART,
+                EventAction.IMPRESSION_ON_POP_UP_KUPON,
+                ConstantTransactionAnalytics.EventLabel.KUOTA_PENUKARAN
+        );
     }
 
-    public void eventMultipleAddressKlikPilihKurirPengiriman() {
-        analyticTracker.sendEventTracking(EventName.CLICK_ATC,
-                EventCategory.CART_MULTIPLE_ADDRESS,
-                EventAction.CLICK_PILIH_KURIR_PENGIRIMAN_FROM_KIRIM_KE_BEBERAPA_ALAMAT,
-                "");
+    public void enhanceECommerceCartClickHapusFromClickHapus(Map<String, Object> cartMap) {
+        analyticTracker.sendEnhancedEcommerce(
+                DataLayer.mapOf("event", EventName.REMOVE_FORM_CART,
+                        "eventCategory", "",
+                        "eventAction", EventCategory.CART,
+                        "eventLabel", ConstantTransactionAnalytics.EventLabel.CLICK_HAPUS_FROM_CLICK_HAPUS,
+                        "ecommerce", cartMap)
+        );
     }
 
-    public void eventMultipleAddressKlikTombolX() {
-        analyticTracker.sendEventTracking(EventName.CLICK_ATC,
-                EventCategory.CART_MULTIPLE_ADDRESS,
-                EventAction.CLICK_X_FROM_UBAH_FROM_KIRIM_KE_BEBERAPA_ALAMAT,
-                "");
-    }
-
-    public void eventMultipleAddressKlikTombolMinus() {
-        analyticTracker.sendEventTracking(EventName.CLICK_ATC,
-                EventCategory.CART_MULTIPLE_ADDRESS,
-                EventAction.CLICK_MIN_FROM_UBAH_FROM_KIRIM_KE_BEBERAPA_ALAMAT,
-                "");
-    }
-
-    public void eventMultipleAddressKlikTombolPlus() {
-        analyticTracker.sendEventTracking(EventName.CLICK_ATC,
-                EventCategory.CART_MULTIPLE_ADDRESS,
-                EventAction.CLICK_PLUS_FROM_UBAH_FROM_KIRIM_KE_BEBERAPA_ALAMAT,
-                "");
-    }
-
-    public void eventMultipleAddressKlikAngka() {
-        analyticTracker.sendEventTracking(EventName.CLICK_ATC,
-                EventCategory.CART_MULTIPLE_ADDRESS,
-                EventAction.CLICK_INPUT_QUANTITY_FROM_UBAH_FROM_KIRIM_KE_BEBERAPA_ALAMAT,
-                "");
-    }
-
-    public void eventViewMultipleAddressKlikTulisCatatan() {
-        analyticTracker.sendEventTracking(EventName.CLICK_ATC,
-                EventCategory.CART_MULTIPLE_ADDRESS,
-                EventAction.CLICK_TULIS_CATATAN_FROM_UBAH_FROM_KIRIM_KE_BEBERAPA_ALAMAT,
-                "");
-    }
-
-    public void eventViewMultipleAddressKlikSimpan() {
-        analyticTracker.sendEventTracking(EventName.CLICK_ATC,
-                EventCategory.CART_MULTIPLE_ADDRESS,
-                EventAction.CLICK_SIMPAN_FROM_UBAH_FROM_KIRIM_KE_BEBERAPA_ALAMAT,
-                "");
+    public void enhanceECommerceCartClickHapusDanTambahWishlistFromClickHapus(Map<String, Object> cartMap) {
+        analyticTracker.sendEnhancedEcommerce(
+                DataLayer.mapOf("event", EventName.REMOVE_FORM_CART,
+                        "eventCategory", "",
+                        "eventAction", EventCategory.CART,
+                        "eventLabel", ConstantTransactionAnalytics.EventLabel.CLICK_HAPUS_DAN_TAMBAH_WISHLIST_FROM_CLICK_HAPUS,
+                        "ecommerce", cartMap)
+        );
     }
 
     public void enhancedECommerceRemoveCartAddWishList(Map<String, Object> cartMap) {
@@ -279,47 +257,23 @@ public class CheckoutAnalyticsCartPage extends CheckoutAnalytics {
         );
     }
 
-    public void eventClickCartClickArrowBackFromHapus() {
-        analyticTracker.sendEventTracking(EventName.CLICK_ATC,
-                EventCategory.CART,
-                EventAction.CLICK_ARROW_BACK_FROM_HAPUS,
-                ""
-        );
-    }
-
-    public void enhanceECommerceCartClickHapusFromClickHapus(Map<String, Object> cartMap) {
+    public void enhancedECommerceCartHapusDanTambahWishlistFromHapusProdukBerkendala(Map<String, Object> cartMap) {
         analyticTracker.sendEnhancedEcommerce(
                 DataLayer.mapOf("event", EventName.REMOVE_FORM_CART,
                         "eventCategory", "",
                         "eventAction", EventCategory.CART,
-                        "eventLabel", ConstantTransactionAnalytics.EventLabel.CLICK_HAPUS_FROM_CLICK_HAPUS,
+                        "eventLabel", ConstantTransactionAnalytics.EventLabel.CLICK_HAPUS_DAN_TAMBAH_WISHLIST_FrOM_HaPUS_PRODUK_BERKENDALA,
                         "ecommerce", cartMap)
         );
     }
 
-    public void enhanceECommerceCartClickHapusDanTambahWishlistFromClickHapus(Map<String, Object> cartMap) {
+    public void enhancedECommerceCartHapusFromHapusProdukBerkendala(Map<String, Object> cartMap) {
         analyticTracker.sendEnhancedEcommerce(
                 DataLayer.mapOf("event", EventName.REMOVE_FORM_CART,
                         "eventCategory", "",
                         "eventAction", EventCategory.CART,
-                        "eventLabel", ConstantTransactionAnalytics.EventLabel.CLICK_HAPUS_DAN_TAMBAH_WISHLIST_FROM_CLICK_HAPUS,
+                        "eventLabel", ConstantTransactionAnalytics.EventLabel.CLICK_HAPUS_FROM_HAPUS_PRODUK_BERKENDALA,
                         "ecommerce", cartMap)
-        );
-    }
-
-    public void eventClickCartClickXFromGunakanKodePromoAtauKupon() {
-        analyticTracker.sendEventTracking(EventName.CLICK_ATC,
-                EventCategory.CART,
-                EventAction.CLICK_X_FROM_GUNAKAN_KODE_PROMO_ATAU_KUPON,
-                ""
-        );
-    }
-
-    public void eventImpressionCartImpressionOnPopUpKupon() {
-        analyticTracker.sendEventTracking(EventName.VIEW_ATC,
-                EventCategory.CART,
-                EventAction.IMPRESSION_ON_POP_UP_KUPON,
-                ConstantTransactionAnalytics.EventLabel.KUOTA_PENUKARAN
         );
     }
 }

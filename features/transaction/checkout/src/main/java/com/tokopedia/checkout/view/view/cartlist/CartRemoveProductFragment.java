@@ -22,9 +22,11 @@ import com.tokopedia.checkout.view.di.component.CartComponent;
 import com.tokopedia.checkout.view.di.component.CartRemoveProductComponent;
 import com.tokopedia.checkout.view.di.component.DaggerCartRemoveProductComponent;
 import com.tokopedia.checkout.view.di.module.CartRemoveProductModule;
+import com.tokopedia.checkout.view.di.module.TrackingAnalyticsModule;
 import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.util.SessionHandler;
-import com.tokopedia.transactionanalytics.CheckoutAnalyticsCartPage;
+import com.tokopedia.transactionanalytics.CheckoutAnalyticsCart;
+import com.tokopedia.transactionanalytics.EnhancedECommerceCartMapData;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -41,7 +43,6 @@ public class CartRemoveProductFragment extends BaseCheckoutFragment
         CartRemoveProductAdapter.CartRemoveProductActionListener {
 
     private static final Locale LOCALE_ID = new Locale("in", "ID");
-    private static final String TAG = CartRemoveProductFragment.class.getSimpleName();
     private static final String ARG_EXTRA_CART_DATA_LIST = "ARG_EXTRA_CART_DATA_LIST";
 
     private RecyclerView mRvCartRemoveProduct;
@@ -54,9 +55,7 @@ public class CartRemoveProductFragment extends BaseCheckoutFragment
     @Inject
     RecyclerView.ItemDecoration itemDecoration;
     @Inject
-    CheckoutAnalyticsCartPage cartPageAnalytics;
-
-    private int mCheckedCartItem = 0;
+    CheckoutAnalyticsCart cartPageAnalytics;
 
     private List<CartItemData> mCartItemDataList = new ArrayList<>();
     private List<CheckedCartItemData> mCheckedCartItemList = new ArrayList<>();
@@ -75,6 +74,7 @@ public class CartRemoveProductFragment extends BaseCheckoutFragment
         CartRemoveProductComponent component = DaggerCartRemoveProductComponent.builder()
                 .cartComponent(getComponent(CartComponent.class))
                 .cartRemoveProductModule(new CartRemoveProductModule(this))
+                .trackingAnalyticsModule(new TrackingAnalyticsModule())
                 .build();
         component.inject(this);
     }
@@ -308,9 +308,15 @@ public class CartRemoveProductFragment extends BaseCheckoutFragment
         }
         checkAllItemChecked();
     }
+
     @Override
-    public void onCheckBoxCheckAll() {
+    public void sendAnalyticsOnCheckBoxAllSelected() {
         cartPageAnalytics.eventClickCartClickPilihSemuaFormHapus();
+    }
+
+    @Override
+    public void sendAnalyticsOnCheckBoxSelected() {
+        cartPageAnalytics.eventClickCartClickChecklistBoxFormHapus();
     }
 
 
@@ -326,6 +332,7 @@ public class CartRemoveProductFragment extends BaseCheckoutFragment
         dialog.show(getFragmentManager(), CartRemoveItemDialog.class.getSimpleName());
     }
 
+
     @NonNull
     private CartRemoveItemDialog.CartItemRemoveCallbackAction getCallbackActionDialogRemoveCart() {
         return new CartRemoveItemDialog.CartItemRemoveCallbackAction() {
@@ -338,6 +345,11 @@ public class CartRemoveProductFragment extends BaseCheckoutFragment
                 mCartRemoveProductPresenter.processDeleteCart(
                         cartItemDataList, updatedCartItem, false
                 );
+                cartPageAnalytics.enhanceECommerceCartClickHapusFromClickHapus(
+                        mCartRemoveProductPresenter.generateCartDataAnalytics(
+                                removedCartItem, EnhancedECommerceCartMapData.REMOVE_ACTION
+                        )
+                );
             }
 
             @Override
@@ -349,6 +361,11 @@ public class CartRemoveProductFragment extends BaseCheckoutFragment
                 mCartRemoveProductPresenter.processDeleteCart(
                         cartItemDataList, updatedCartItem, true
                 );
+                cartPageAnalytics.enhanceECommerceCartClickHapusDanTambahWishlistFromClickHapus(
+                        mCartRemoveProductPresenter.generateCartDataAnalytics(
+                                removedCartItem, EnhancedECommerceCartMapData.REMOVE_ACTION
+                        )
+                );
             }
 
             @Override
@@ -358,6 +375,11 @@ public class CartRemoveProductFragment extends BaseCheckoutFragment
                 mCartRemoveProductPresenter.processDeleteCart(
                         removedCartItem, updatedCartItem, false
                 );
+                cartPageAnalytics.enhanceECommerceCartClickHapusFromClickHapus(
+                        mCartRemoveProductPresenter.generateCartDataAnalytics(
+                                removedCartItem, EnhancedECommerceCartMapData.REMOVE_ACTION
+                        )
+                );
             }
 
             @Override
@@ -366,6 +388,11 @@ public class CartRemoveProductFragment extends BaseCheckoutFragment
             ) {
                 mCartRemoveProductPresenter.processDeleteCart(
                         removedCartItem, updatedCartItem, true
+                );
+                cartPageAnalytics.enhanceECommerceCartClickHapusDanTambahWishlistFromClickHapus(
+                        mCartRemoveProductPresenter.generateCartDataAnalytics(
+                                removedCartItem, EnhancedECommerceCartMapData.REMOVE_ACTION
+                        )
                 );
             }
         };

@@ -22,13 +22,16 @@ import com.tokopedia.checkout.data.mapper.AddressModelMapper;
 import com.tokopedia.checkout.domain.datamodel.addressoptions.RecipientAddressModel;
 import com.tokopedia.checkout.view.adapter.ShipmentAddressListAdapter;
 import com.tokopedia.checkout.view.base.BaseCheckoutFragment;
+import com.tokopedia.checkout.view.di.component.CartComponent;
 import com.tokopedia.checkout.view.di.component.DaggerShipmentAddressListComponent;
 import com.tokopedia.checkout.view.di.component.ShipmentAddressListComponent;
 import com.tokopedia.checkout.view.di.module.ShipmentAddressListModule;
+import com.tokopedia.checkout.view.di.module.TrackingAnalyticsModule;
 import com.tokopedia.core.manage.people.address.ManageAddressConstant;
 import com.tokopedia.core.manage.people.address.activity.AddAddressActivity;
 import com.tokopedia.core.manage.people.address.model.Token;
 import com.tokopedia.design.text.SearchInputView;
+import com.tokopedia.transactionanalytics.CheckoutAnalyticsChangeAddress;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -72,6 +75,9 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
     @Inject
     ShipmentAddressListPresenter mShipmentAddressListPresenter;
 
+    @Inject
+    CheckoutAnalyticsChangeAddress checkoutAnalyticsChangeAddress;
+
     private Token token;
 
     public static ShipmentAddressListFragment newInstance(RecipientAddressModel currentAddress) {
@@ -95,7 +101,9 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
     @Override
     protected void initInjector() {
         ShipmentAddressListComponent component = DaggerShipmentAddressListComponent.builder()
-                .shipmentAddressListModule(new ShipmentAddressListModule(this))
+                .cartComponent(getComponent(CartComponent.class))
+                .shipmentAddressListModule(new ShipmentAddressListModule(getActivity(), this))
+                .trackingAnalyticsModule(new TrackingAnalyticsModule())
                 .build();
         component.inject(this);
     }
@@ -125,31 +133,16 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
 
     }
 
-    /**
-     * apakah fragment ini support options menu?
-     *
-     * @return iya atau tidak
-     */
     @Override
     protected boolean getOptionsMenuEnable() {
         return false;
     }
 
-    /**
-     * Cast si activity ke listener atau bisa juga ini untuk context activity
-     *
-     * @param activity si activity yang punya fragment
-     */
     @Override
     protected void initialListener(Activity activity) {
         mCartAddressChoiceActivityListener = (ICartAddressChoiceActivityListener) activity;
     }
 
-    /**
-     * kalau memang argument tidak kosong. ini data argumentnya
-     *
-     * @param arguments argument nya
-     */
     @Override
     protected void setupArguments(Bundle arguments) {
 
@@ -160,13 +153,9 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
         return R.layout.fragment_shipment_address_list;
     }
 
-    /**
-     * initial view atau widget.. misalkan textView = (TextView) findById...
-     *
-     * @param view root view si fragment
-     */
     @Override
     protected void initView(View view) {
+        checkoutAnalyticsChangeAddress.eventImpressionChangeAddressImpressionChangeAddress();
         mRvRecipientAddressList = view.findViewById(R.id.rv_address_list);
         mSvAddressSearchBox = view.findViewById(R.id.sv_address_search_box);
         swipeToRefreshLayout = view.findViewById(R.id.swipe_refresh_layout);
@@ -212,9 +201,6 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
 
     }
 
-    /**
-     * set listener atau attribute si view. misalkan texView.setText("blablalba");
-     */
     @Override
     protected void setViewListener() {
         mShipmentAddressListPresenter.attachView(this);
@@ -222,18 +208,12 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
                 .getSystemService(Context.INPUT_METHOD_SERVICE);
     }
 
-    /**
-     * initial Variabel di fragment, selain yg sifatnya widget. Misal: variable state, handler dll
-     */
     @Override
     protected void initialVar() {
         mRvRecipientAddressList.setLayoutManager(new LinearLayoutManager(getActivity()));
         mRvRecipientAddressList.setAdapter(mShipmentAddressListAdapter);
     }
 
-    /**
-     * setup aksi, attr, atau listener untuk si variable. misal. appHandler.startAction();
-     */
     @Override
     protected void setActionVar() {
         initSearchView();
@@ -337,11 +317,12 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
     @Override
     public void onSearchReset() {
         mShipmentAddressListPresenter.resetAddressList(getActivity(), ORDER_ASC,
-                (RecipientAddressModel) getArguments().getParcelable(EXTRA_CURRENT_ADDRESS));
+                getArguments().getParcelable(EXTRA_CURRENT_ADDRESS));
         closeSoftKeyboard();
     }
 
     private void performSearch(String query, boolean resetPage) {
+        checkoutAnalyticsChangeAddress.eventClickChangeAddressSubmitSearchFromPilihAlamatLainnya();
         if (!query.isEmpty()) {
             mShipmentAddressListPresenter.getAddressList(getActivity(), ORDER_ASC, query,
                     (RecipientAddressModel) getArguments().getParcelable(EXTRA_CURRENT_ADDRESS), true);
@@ -368,16 +349,17 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
     @Override
     public void onAddressContainerClicked(RecipientAddressModel model) {
         if (mCartAddressChoiceActivityListener != null) {
+            checkoutAnalyticsChangeAddress.eventClickChangeAddressClickChecklistAlamatFromPilihAlamatLainnya();
             mCartAddressChoiceActivityListener.finishSendResultActionSelectedAddress(model);
         }
     }
 
     @Override
     public void onEditClick(RecipientAddressModel model) {
+        checkoutAnalyticsChangeAddress.eventClickChangeAddressClickUbahFromPilihAlamatLainnya();
         AddressModelMapper mapper = new AddressModelMapper();
 
         Intent intent = AddAddressActivity.createInstance(getActivity(), mapper.transform(model), token);
         startActivityForResult(intent, ManageAddressConstant.REQUEST_CODE_PARAM_EDIT);
     }
-
 }

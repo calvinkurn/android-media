@@ -185,6 +185,17 @@ public class CartListItemViewHolder extends RecyclerView.ViewHolder {
         if (quantity.length() > 0) {
             this.etQty.setSelection(quantity.length());
         }
+        this.etQty.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ((AppCompatEditText) v).selectAll();
+                String qtyStr = ((AppCompatEditText) v).getText().toString();
+                actionListener.onCartItemQuantityInputFormClicked(
+                        !TextUtils.isEmpty(qtyStr) ? qtyStr : ""
+                );
+            }
+        });
+
         ImageHandler.loadImageRounded2(
                 this.itemView.getContext(), this.ivProductImage,
                 data.getCartItemData().getOriginData().getProductImage()
@@ -206,6 +217,7 @@ public class CartListItemViewHolder extends RecyclerView.ViewHolder {
         this.tvLabelRemarkOption.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                actionListener.onCartItemLabelInputRemarkClicked();
                 etRemark.setVisibility(View.VISIBLE);
                 tvLabelRemarkOption.setVisibility(View.GONE);
             }

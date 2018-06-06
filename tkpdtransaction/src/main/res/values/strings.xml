@@ -267,4 +267,5 @@
     <string name="top_btn_text">langannan</string>
     <string name="bottom_btn_text">Beli Lagi</string>
     <string name="date">date</string>
+    <string name="label_oder_detail_btn_unggah_awb">Unggah</string>
 </resources>

@@ -6,21 +6,17 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
 
-import com.tokopedia.abstraction.common.di.component.HasComponent;
 import com.tokopedia.checkout.R;
 import com.tokopedia.checkout.domain.datamodel.addressoptions.RecipientAddressModel;
 import com.tokopedia.checkout.domain.datamodel.cartlist.CartListData;
 import com.tokopedia.checkout.view.base.BaseCheckoutActivity;
-import com.tokopedia.checkout.view.di.component.CartComponent;
-import com.tokopedia.checkout.view.di.component.CartComponentInjector;
 import com.tokopedia.design.component.Dialog;
 
 /**
  * Created by kris on 2/22/18. Tokopedia
  */
 
-public class MultipleAddressFormActivity extends BaseCheckoutActivity implements
-        HasComponent<CartComponent> {
+public class MultipleAddressFormActivity extends BaseCheckoutActivity {
     public static final int REQUEST_CODE = 982;
 
     private static final String EXTRA_CART_LIST_DATA = "EXTRA_CART_LIST_DATA";
@@ -112,10 +108,5 @@ public class MultipleAddressFormActivity extends BaseCheckoutActivity implements
                 cartListData,
                 addressData);
         return fragment;
-    }
-
-    @Override
-    public CartComponent getComponent() {
-        return CartComponentInjector.newInstance(getApplication()).getCartApiServiceComponent();
     }
 }

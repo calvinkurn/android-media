@@ -215,6 +215,17 @@ public class PromoCouponFragment extends BasePresenterFragment
 
     @Override
     public void couponDataNoResult(String title, String subTitle) {
+        if (getArguments().getString(PLATFORM_KEY, "")
+                .equalsIgnoreCase(IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.MARKETPLACE_STRING)) {
+            switch (getArguments().getString(PLATFORM_PAGE_KEY, "")) {
+                case IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.PLATFORM_PAGE_MARKETPLACE_CART_LIST:
+                    listener.sendAnalyticsImpressionCouponEmptyCartListPage();
+                    break;
+                case IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.PLATFORM_PAGE_MARKETPLACE_CART_SHIPMENT:
+                    listener.sendAnalyticsImpressionCouponEmptyShipmentPage();
+                    break;
+            }
+        }
         NetworkErrorHelper.showEmptyState(context, mainView,
                 title,
                 subTitle,
@@ -381,16 +392,25 @@ public class PromoCouponFragment extends BasePresenterFragment
 
     @Override
     public void onVoucherChosen(CouponData data) {
+        switch (getArguments().getString(PLATFORM_PAGE_KEY, "")) {
+            case IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.PLATFORM_PAGE_MARKETPLACE_CART_LIST:
+                listener.sendAnalyticsOnCouponItemClickedCartListPage();
+                break;
+            case IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.PLATFORM_PAGE_MARKETPLACE_CART_SHIPMENT:
+                listener.sendAnalyticsOnCouponItemClickedCartShipmentPage();
+                break;
+        }
+
         adapter.clearError();
         UnifyTracking.eventCouponChosen(data.getTitle());
-        if (getArguments().getString(PLATFORM_KEY).equalsIgnoreCase(
+        if (getArguments().getString(PLATFORM_KEY, "").equalsIgnoreCase(
                 IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.DIGITAL_STRING)) {
-            dPresenter.submitDigitalVoucher(data, getArguments().getString(CATEGORY_KEY));
-        } else if (getArguments().getString(PLATFORM_KEY).equalsIgnoreCase(
+            dPresenter.submitDigitalVoucher(data, getArguments().getString(CATEGORY_KEY, ""));
+        } else if (getArguments().getString(PLATFORM_KEY, "").equalsIgnoreCase(
                 IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.EVENT_STRING)) {
             String jsonbody = getActivity().getIntent().getStringExtra(CHECKOUT);
             dPresenter.parseAndSubmitEventVoucher(jsonbody, data);
-        } else if (getArguments().getString(PLATFORM_KEY).equalsIgnoreCase(
+        } else if (getArguments().getString(PLATFORM_KEY, "").equalsIgnoreCase(
                 IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.FLIGHT_STRING)) {
             dPresenter.submitFlightVoucher(data, getArguments().getString(CART_ID_KEY));
         } else {
@@ -425,7 +445,10 @@ public class PromoCouponFragment extends BasePresenterFragment
         if (refreshHandler.isRefreshing())
             if (getArguments().getString(PLATFORM_KEY, "").equals(
                     IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.EVENT_STRING)) {
-                dPresenter.processGetEventCouponList(getArguments().getInt(DIGITAL_CATEGORY_ID), getArguments().getInt(DIGITAL_PRODUCT_ID));
+                dPresenter.processGetEventCouponList(
+                        getArguments().getInt(DIGITAL_CATEGORY_ID),
+                        getArguments().getInt(DIGITAL_PRODUCT_ID)
+                );
             } else {
                 dPresenter.processGetCouponList(getArguments().getString(PLATFORM_KEY));
             }
@@ -452,7 +475,13 @@ public class PromoCouponFragment extends BasePresenterFragment
                 long discountAmount,
                 long cashbackAmount);
 
-        void onCouponItemClicked();
+        void sendAnalyticsOnCouponItemClickedCartListPage();
+
+        void sendAnalyticsOnCouponItemClickedCartShipmentPage();
+
+        void sendAnalyticsImpressionCouponEmptyCartListPage();
+
+        void sendAnalyticsImpressionCouponEmptyShipmentPage();
 
     }
 

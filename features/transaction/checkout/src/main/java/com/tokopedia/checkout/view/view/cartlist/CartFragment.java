@@ -73,7 +73,8 @@ import com.tokopedia.topads.sdk.domain.model.Shop;
 import com.tokopedia.topads.sdk.listener.TopAdsItemClickListener;
 import com.tokopedia.topads.sdk.view.DisplayMode;
 import com.tokopedia.topads.sdk.view.TopAdsView;
-import com.tokopedia.transactionanalytics.CheckoutAnalyticsCartPage;
+import com.tokopedia.transactionanalytics.CheckoutAnalyticsCart;
+import com.tokopedia.transactionanalytics.EnhancedECommerceCartMapData;
 import com.tokopedia.transactiondata.entity.request.UpdateCartRequest;
 
 import java.util.ArrayList;
@@ -106,7 +107,7 @@ public class CartFragment extends BaseCheckoutFragment implements CartListAdapte
     @Inject
     RecyclerView.ItemDecoration cartItemDecoration;
     @Inject
-    CheckoutAnalyticsCartPage cartPageAnalytics;
+    CheckoutAnalyticsCart cartPageAnalytics;
 
     private RefreshHandler refreshHandler;
 
@@ -250,9 +251,32 @@ public class CartFragment extends BaseCheckoutFragment implements CartListAdapte
     @Override
     public void onCartItemDeleteButtonClicked(CartItemHolderData cartItemHolderData, int position) {
         cartPageAnalytics.eventClickCartClickTrashBin();
-        ArrayList<CartItemData> cartItemData =
+        ArrayList<CartItemData> cartItemDatas =
                 new ArrayList<>(Collections.singletonList(cartItemHolderData.getCartItemData()));
-        showDeleteCartItemDialog(cartItemData);
+        final com.tokopedia.design.component.Dialog dialog = getDialogDeleteConfirmation();
+        dialog.setOnOkClickListener(view -> {
+            if (cartItemDatas.size() > 0) {
+                dPresenter.processDeleteAndRefreshCart(cartItemDatas, true);
+                cartPageAnalytics.enhancedECommerceRemoveCartAddWishList(
+                        dPresenter.generateCartDataAnalytics(
+                                cartItemDatas, EnhancedECommerceCartMapData.REMOVE_ACTION
+                        )
+                );
+            }
+            dialog.dismiss();
+        });
+        dialog.setOnCancelClickListener(view -> {
+            if (cartItemDatas.size() > 0) {
+                dPresenter.processDeleteAndRefreshCart(cartItemDatas, false);
+                cartPageAnalytics.enhancedECommerceRemoveCartNotWishList(
+                        dPresenter.generateCartDataAnalytics(
+                                cartItemDatas, EnhancedECommerceCartMapData.REMOVE_ACTION
+                        )
+                );
+            }
+            dialog.dismiss();
+        });
+        dialog.show();
     }
 
     @Override
@@ -359,7 +383,6 @@ public class CartFragment extends BaseCheckoutFragment implements CartListAdapte
 
     @Override
     public void onCartPromoCancelVoucherPromoClicked(CartItemPromoHolderData cartItemPromoHolderData, int position) {
-        cartPageAnalytics.eventClickCartClickXOnBannerPromoCode();
         dPresenter.processCancelAutoApply();
     }
 
@@ -370,13 +393,16 @@ public class CartFragment extends BaseCheckoutFragment implements CartListAdapte
 
     @Override
     public void onCartPromoTrackingCancelled(CartItemPromoHolderData cartItemPromoHolderData, int position) {
-
+        cartPageAnalytics.eventClickCartClickXOnBannerPromoCode();
+        cartPageAnalytics.eventClickCartClickXFromGunakanKodePromoAtauKupon();
     }
 
     @Override
     public void onCartItemTickerErrorActionClicked(CartItemTickerErrorHolderData data, int position) {
         cartPageAnalytics.enhancedECommerceCartHapusProdukBerkendala(
-                dPresenter.generateCartDataAnalytics(getCartDataList())
+                dPresenter.generateCartDataAnalytics(
+                        getCartDataList(), EnhancedECommerceCartMapData.REMOVE_ACTION
+                )
         );
         List<CartItemData> toBeDeletedCartItem = new ArrayList<>();
         for (CartItemData cartItemData : getCartDataList()) {
@@ -384,7 +410,30 @@ public class CartFragment extends BaseCheckoutFragment implements CartListAdapte
                 toBeDeletedCartItem.add(cartItemData);
             }
         }
-        showDeleteCartItemDialog(toBeDeletedCartItem);
+        final com.tokopedia.design.component.Dialog dialog = getDialogDeleteConfirmation();
+        dialog.setOnOkClickListener(view -> {
+            if (toBeDeletedCartItem.size() > 0) {
+                dPresenter.processDeleteAndRefreshCart(toBeDeletedCartItem, true);
+                cartPageAnalytics.enhancedECommerceCartHapusDanTambahWishlistFromHapusProdukBerkendala(
+                        dPresenter.generateCartDataAnalytics(
+                                toBeDeletedCartItem, EnhancedECommerceCartMapData.REMOVE_ACTION
+                        )
+                );
+            }
+            dialog.dismiss();
+        });
+        dialog.setOnCancelClickListener(view -> {
+            if (toBeDeletedCartItem.size() > 0) {
+                dPresenter.processDeleteAndRefreshCart(toBeDeletedCartItem, false);
+                cartPageAnalytics.enhancedECommerceCartHapusFromHapusProdukBerkendala(
+                        dPresenter.generateCartDataAnalytics(
+                                toBeDeletedCartItem, EnhancedECommerceCartMapData.REMOVE_ACTION
+                        )
+                );
+            }
+            dialog.dismiss();
+        });
+        dialog.show();
     }
 
     @Override
@@ -409,6 +458,16 @@ public class CartFragment extends BaseCheckoutFragment implements CartListAdapte
     @Override
     public void onCartItemAfterErrorChecked() {
         cartListAdapter.checkForShipmentForm();
+    }
+
+    @Override
+    public void onCartItemQuantityInputFormClicked(String qty) {
+        cartPageAnalytics.eventClickCartClickInputQuantity(qty);
+    }
+
+    @Override
+    public void onCartItemLabelInputRemarkClicked() {
+        cartPageAnalytics.eventClickCartClickTulisCatatan();
     }
 
     @Override
@@ -836,40 +895,18 @@ public class CartFragment extends BaseCheckoutFragment implements CartListAdapte
         NetworkErrorHelper.showSnackbar(getActivity(), getActivity().getString(R.string.default_request_error_unknown));
     }
 
-    void showDeleteCartItemDialog(final List<CartItemData> cartItemDatas) {
-        final com.tokopedia.design.component.Dialog dialog = new com.tokopedia.design.component.Dialog(getActivity(), com.tokopedia.design.component.Dialog.Type.LONG_PROMINANCE);
+    @NonNull
+    private com.tokopedia.design.component.Dialog getDialogDeleteConfirmation() {
+        final com.tokopedia.design.component.Dialog dialog =
+                new com.tokopedia.design.component.Dialog(getActivity(),
+                        com.tokopedia.design.component.Dialog.Type.LONG_PROMINANCE);
         dialog.setTitle(getString(R.string.label_dialog_title_delete_item));
         dialog.setDesc(getString(R.string.label_dialog_message_remove_cart_item));
         dialog.setBtnOk(getString(R.string.label_dialog_action_delete_and_add_to_wishlist));
         dialog.setBtnCancel(getString(R.string.label_dialog_action_delete));
-        dialog.setOnOkClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (cartItemDatas != null && cartItemDatas.size() > 0) {
-                    dPresenter.processDeleteAndRefreshCart(cartItemDatas, true);
-                    cartPageAnalytics.enhancedECommerceRemoveCartAddWishList(
-                            dPresenter.generateCartDataAnalytics(cartItemDatas)
-                    );
-                }
-                dialog.dismiss();
-            }
-        });
-        dialog.setOnCancelClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (cartItemDatas != null && cartItemDatas.size() > 0) {
-                    dPresenter.processDeleteAndRefreshCart(cartItemDatas, false);
-                    cartPageAnalytics.enhancedECommerceRemoveCartNotWishList(
-                            dPresenter.generateCartDataAnalytics(cartItemDatas)
-                    );
-                }
-                dialog.dismiss();
-            }
-        });
         dialog.getAlertDialog().setCancelable(true);
         dialog.getAlertDialog().setCanceledOnTouchOutside(true);
-        dialog.show();
-
+        return dialog;
     }
 
     public static CartFragment newInstance() {

@@ -47,6 +47,12 @@ public interface ShipmentContract {
 
         void renderCheckoutCartError(String message);
 
+        void sendAnalyticsChoosePaymentMethodSuccess();
+
+        void sendAnalyticsChoosePaymentMethodFailed();
+
+        void sendAnalyticsChoosePaymentMethodCourierNotComplete();
+
         void renderCheckPromoCodeFromSuggestedPromoSuccess(CheckPromoCodeCartListResult promoCodeCartListData);
 
         void renderErrorCheckPromoCodeFromSuggestedPromo(String message);

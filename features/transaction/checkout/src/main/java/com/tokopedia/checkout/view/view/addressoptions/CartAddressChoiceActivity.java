@@ -17,7 +17,7 @@ import static com.tokopedia.core.manage.people.address.ManageAddressConstant.REQ
 
 /**
  * @author Irfan Khoirul on 05/02/18
- * Aghny A. Putra on 07/02/18
+ *         Aghny A. Putra on 07/02/18
  */
 
 public class CartAddressChoiceActivity extends BaseCheckoutActivity
@@ -174,11 +174,21 @@ public class CartAddressChoiceActivity extends BaseCheckoutActivity
         switch (typeRequest) {
             default:
                 return CartAddressChoiceFragment.newInstance(
-                        (RecipientAddressModel) getIntent().getParcelableExtra(EXTRA_CURRENT_ADDRESS));
+                        getIntent().getParcelableExtra(EXTRA_CURRENT_ADDRESS));
             case TYPE_REQUEST_SELECT_ADDRESS_FROM_COMPLETE_LIST:
                 return ShipmentAddressListFragment.newInstance(
                         (RecipientAddressModel) getIntent().getParcelableExtra(EXTRA_CURRENT_ADDRESS));
 
         }
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (getCurrentFragment() instanceof CartAddressChoiceFragment) {
+            ((CartAddressChoiceFragment) getCurrentFragment())
+                    .checkoutAnalyticsChangeAddress.eventClickChangeAddressClickArrowBackFromGantiAlamat();
+        }
+        super.onBackPressed();
+
     }
 }

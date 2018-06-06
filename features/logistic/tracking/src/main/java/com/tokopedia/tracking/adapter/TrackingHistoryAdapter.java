@@ -61,8 +61,10 @@ public class TrackingHistoryAdapter extends RecyclerView.Adapter<TrackingHistory
             holder.title.setTextColor((Color.parseColor(
                     trackingHistoryData.get(position).getColor()
             )));
-        } else holder.title.setTextColor(
-                holder.context.getResources().getColor(R.color.black_70));
+        } else {
+            holder.title.setTextColor(
+                    holder.context.getResources().getColor(R.color.black_70));
+        }
     }
 
     @Override
