@@ -53,7 +53,7 @@ public class OrderListFragment extends BasePresenterFragment<OrderListContract.P
     private boolean hasRecyclerListener = false;
 
     private ArrayList<Order> mOrderDataList;
-    private OrderCategory mOrderCategory;
+    private String mOrderCategory;
 
     @Override
     protected boolean isRetainInstance() {
@@ -103,20 +103,8 @@ public class OrderListFragment extends BasePresenterFragment<OrderListContract.P
         int category = arguments.getInt(ORDER_CATEGORY);
         Log.e("sandeep","category ="+category);
         switch (category) {
-            case 0:
-                mOrderCategory = OrderCategory.ALL;
-                break;
-            case 1:
-                mOrderCategory = OrderCategory.GOLD;
-                break;
             case 2:
                 mOrderCategory = OrderCategory.DIGITAL;
-                break;
-            case 3:
-                mOrderCategory = OrderCategory.MARKETPLACE;
-                break;
-            case 4:
-                mOrderCategory = OrderCategory.RIDE;
                 break;
         }
     }
@@ -247,17 +235,9 @@ public class OrderListFragment extends BasePresenterFragment<OrderListContract.P
     }
 
     @Override
-    public void showProcessGetData(OrderCategory orderCategory) {
+    public void showProcessGetData(String orderCategory) {
         switch (orderCategory) {
-            case DIGITAL:
-                if (!refreshHandler.isRefreshing()) {
-                    refreshHandler.setRefreshing(true);
-                    refreshHandler.setPullEnabled(false);
-                }
-                break;
-            case ALL:
-                break;
-            case MARKETPLACE:
+            case OrderCategory.DIGITAL:
                 if (!refreshHandler.isRefreshing()) {
                     refreshHandler.setRefreshing(true);
                     refreshHandler.setPullEnabled(false);

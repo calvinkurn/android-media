@@ -7,7 +7,6 @@ import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.core.network.retrofit.utils.ErrorNetMessage;
 import com.tokopedia.transaction.orders.orderlist.data.Data;
-import com.tokopedia.transaction.orders.orderlist.data.OrderCategory;
 import com.tokopedia.transaction.orders.orderlist.domain.OrderListUseCase;
 import com.tokopedia.usecase.RequestParams;
 
@@ -29,7 +28,7 @@ public class OrderListPresenterImpl extends BaseDaggerPresenter<OrderListContrac
     }
 
     @Override
-    public void getAllOrderData(Context context, OrderCategory orderCategory, final int typeRequest, int page) {
+    public void getAllOrderData(Context context, String orderCategory, final int typeRequest, int page) {
         getView().showProcessGetData(orderCategory);
         RequestParams params = RequestParams.create();
         params.putInt(OrderListUseCase.PAGE_NUM, page);
