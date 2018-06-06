@@ -184,8 +184,6 @@
 
     <dimen name="new_margin_small">8dp</dimen>
     <dimen name="new_margin_med">16dp</dimen>
-
-    <dimen name="new_margin_med_sm">19dp</dimen>
     <dimen name="new_margin_sm">24dp</dimen>
     <dimen name="new_icon_size">32dp</dimen>
     <dimen name="new_text_size_title">18sp</dimen>
@@ -210,7 +208,6 @@
     <dimen name="drop_down_indicator_width">10dp</dimen>
     <dimen name="drop_down_indicator_height">5dp</dimen>
     <dimen name="product_grid_padding">10dp</dimen>
-    <dimen name="product_item_margin">15dp</dimen>
     <dimen name="top_ads_separator_height">15dp</dimen>
 
     <dimen name="spacing_show_case">12dp</dimen>
@@ -258,4 +255,6 @@
     <dimen name="space_extra_sm">5sp</dimen>
     <dimen name="space_extra_med">7sp</dimen>
     <dimen name="separator_size">0.5dp</dimen>
+
+
 </resources>

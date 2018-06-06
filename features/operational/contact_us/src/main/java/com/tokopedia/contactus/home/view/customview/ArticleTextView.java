@@ -2,11 +2,11 @@ package com.tokopedia.contactus.home.view.customview;
 
 import android.content.Context;
 
+import com.tokopedia.contactus.ContactUsModuleRouter;
 import com.tokopedia.contactus.common.api.ContactUsURL;
 import com.tokopedia.contactus.common.customview.CustomTextView;
 import com.tokopedia.contactus.home.data.ContactUsArticleResponse;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
-import com.tokopedia.core.router.TkpdInboxRouter;
 
 /**
  * Created by sandeepgoyal on 05/04/18.
@@ -28,7 +28,7 @@ public class ArticleTextView extends CustomTextView {
 
     @Override
     public void onViewClick() {
-        getContext().startActivity(((TkpdInboxRouter) (getContext().getApplicationContext()))
+        getContext().startActivity(((ContactUsModuleRouter) (getContext().getApplicationContext()))
                 .getWebviewActivityWithIntent(getContext(),
                         TkpdBaseURL.MOBILE_DOMAIN + ContactUsURL.CONTENT_BASE_URL
                                 + contactUsArticle.getSlug() + "?flag_app=1"));

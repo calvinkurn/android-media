@@ -21,7 +21,6 @@ import com.tokopedia.core.R2;
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.loyaltysystem.util.URLGenerator;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
-import com.tokopedia.core.router.TkpdInboxRouter;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.TkpdWebView;
 import com.tokopedia.core.util.TkpdWebViewClient;
@@ -225,8 +224,8 @@ public class ContactUsFaqFragment extends BasePresenterFragment {
                     startActivity(chatBotIntent);
                     return true;
                 } else if (url.toString().contains(APPLINK_SCHEME)
-                        && getActivity().getApplicationContext() instanceof TkpdInboxRouter) {
-                    ((TkpdInboxRouter) getActivity().getApplicationContext())
+                        && getActivity().getApplicationContext() instanceof ContactUsModuleRouter) {
+                    ((ContactUsModuleRouter) getActivity().getApplicationContext())
                             .actionNavigateByApplinksUrl(getActivity(), url.toString(), new
                                     Bundle());
                     return true;

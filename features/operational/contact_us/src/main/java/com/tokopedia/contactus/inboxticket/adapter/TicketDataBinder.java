@@ -12,12 +12,12 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.tkpd.library.utils.ImageHandler;
+import com.tokopedia.contactus.ContactUsModuleRouter;
 import com.tokopedia.core.PreviewProductImage;
 import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
 import com.tokopedia.core.customadapter.ImageUpload;
 import com.tokopedia.core.customadapter.ImageUploadAdapter;
-import com.tokopedia.core.router.TkpdInboxRouter;
 import com.tokopedia.core.util.DataBindAdapter;
 import com.tokopedia.core.util.DataBinder;
 import com.tokopedia.core.util.LabelUtils;
@@ -133,9 +133,9 @@ public class TicketDataBinder extends DataBinder<TicketDataBinder.ViewHolder> {
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (context.getApplicationContext() instanceof TkpdInboxRouter) {
+                if (context.getApplicationContext() instanceof ContactUsModuleRouter) {
                     context.startActivity(
-                            ((TkpdInboxRouter) context.getApplicationContext())
+                            ((ContactUsModuleRouter) context.getApplicationContext())
                                     .getTopProfileIntent(context, list.get(position)
                                             .getTicketDetailUserId())
                     );

@@ -6,6 +6,7 @@ import android.net.Uri;
 import android.os.Bundle;
 
 import com.tkpd.library.utils.CommonUtils;
+import com.tokopedia.contactus.ContactUsModuleRouter;
 import com.tokopedia.contactus.R;
 import com.tokopedia.contactus.createticket.ContactUsConstant;
 import com.tokopedia.contactus.createticket.fragment.ContactUsFaqFragment;
@@ -16,7 +17,6 @@ import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.router.InboxRouter;
 import com.tokopedia.core.router.SellerAppRouter;
-import com.tokopedia.core.router.TkpdInboxRouter;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.SessionHandler;
 
@@ -176,7 +176,7 @@ public class ContactUsActivity extends BasePresenterActivity implements
             startActivity(intent);
             finish();
         } else {
-            Intent intent = ((TkpdInboxRouter) MainApplication.getAppContext())
+            Intent intent = ((ContactUsModuleRouter) MainApplication.getAppContext())
                     .getHomeIntent(this);
             intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             startActivity(intent);

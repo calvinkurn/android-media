@@ -20,6 +20,7 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.di.component.HasComponent;
 import com.tokopedia.applink.RouteManager;
+import com.tokopedia.contactus.ContactUsModuleRouter;
 import com.tokopedia.contactus.R;
 import com.tokopedia.contactus.R2;
 import com.tokopedia.contactus.common.api.ContactUsURL;
@@ -34,7 +35,6 @@ import com.tokopedia.contactus.home.view.customview.ArticleTextView;
 import com.tokopedia.contactus.home.view.presenter.ContactUsHomeContract;
 import com.tokopedia.contactus.home.view.presenter.ContactUsHomePresenter;
 import com.tokopedia.contactus.inboxticket.activity.InboxTicketActivity;
-import com.tokopedia.core.router.TkpdInboxRouter;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.inbox.inboxchat.activity.ChatRoomActivity;
 
@@ -203,7 +203,7 @@ public class ContactUsHomeFragment extends BaseDaggerFragment
 
     @OnClick(R2.id.btn_contact_us)
     public void onBtnContactUsClicked() {
-        startActivity(((TkpdInboxRouter) (getContext().getApplicationContext())).getWebviewActivityWithIntent(getContext(), ContactUsURL.NAVIGATE_NEXT_URL, "Hubungi Kami"));
+        startActivity(((ContactUsModuleRouter) (getContext().getApplicationContext())).getWebviewActivityWithIntent(getContext(), ContactUsURL.NAVIGATE_NEXT_URL, "Hubungi Kami"));
     }
 
     @OnClick(R2.id.btn_chat_toped)
