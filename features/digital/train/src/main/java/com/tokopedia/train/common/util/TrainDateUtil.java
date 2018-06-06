@@ -14,7 +14,7 @@ import java.util.TimeZone;
  */
 
 public class TrainDateUtil {
-    public static final String FORMAT_DATE_API = "yyyy-MM-dd'T'HH:mm:ss'Z'";
+    public static final String FORMAT_DATE_API = "yyyy-MM-dd'T'HH:mm:ssZ";
     public static final String FORMAT_TIME = "HH:mm";
     public static final String FORMAT_HOUR = "HH";
     public static final String FORMAT_DATE = "EEEE, dd LLLL yyyy";
