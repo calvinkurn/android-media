@@ -16,7 +16,7 @@ import com.tokopedia.train.search.presentation.activity.TrainSearchReturnActivit
 import com.tokopedia.train.search.presentation.activity.TrainSearchActivity;
 import com.tokopedia.train.search.presentation.contract.TrainSearchReturnContract;
 import com.tokopedia.train.search.presentation.model.TrainScheduleViewModel;
-import com.tokopedia.train.search.presentation.presenter.TrainReturnSearchPresenter;
+import com.tokopedia.train.search.presentation.presenter.TrainSearchReturnPresenter;
 
 import javax.inject.Inject;
 
@@ -28,7 +28,7 @@ public class TrainSearchReturnFragment extends TrainSearchFragment
         implements TrainSearchReturnContract.View {
 
     @Inject
-    TrainReturnSearchPresenter presenterReturn;
+    TrainSearchReturnPresenter presenterReturn;
 
     private TextView titleDepartureInfoTv;
     private TextView trainNameTv;
