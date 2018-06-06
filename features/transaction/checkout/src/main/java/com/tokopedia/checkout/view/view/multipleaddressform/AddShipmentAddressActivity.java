@@ -7,13 +7,12 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 
+import com.tokopedia.checkout.R;
 import com.tokopedia.checkout.domain.datamodel.MultipleAddressAdapterData;
 import com.tokopedia.checkout.domain.datamodel.MultipleAddressItemData;
 import com.tokopedia.checkout.view.base.BaseCheckoutActivity;
 
 import java.util.ArrayList;
-
-import com.tokopedia.checkout.R;
 
 /**
  * Created by kris on 1/25/18. Tokopedia

@@ -2,7 +2,6 @@ package com.tokopedia.checkout.view.di.component;
 
 import com.tokopedia.checkout.view.di.module.AddShipmentAddressModule;
 import com.tokopedia.checkout.view.di.scope.AddShipmentAddressScope;
-import com.tokopedia.checkout.view.view.multipleaddressform.AddShipmentAddressActivity;
 import com.tokopedia.checkout.view.view.multipleaddressform.AddShipmentAddressFragment;
 
 import dagger.Component;

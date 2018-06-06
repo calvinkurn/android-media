@@ -15,7 +15,6 @@ import com.tokopedia.checkout.view.view.cartlist.CartItemDecoration;
 import com.tokopedia.checkout.view.view.cartlist.CartRemoveProductFragment;
 import com.tokopedia.checkout.view.view.cartlist.CartRemoveProductPresenter;
 import com.tokopedia.checkout.view.view.cartlist.removecartitem.RemoveCartItemAdapter;
-import com.tokopedia.checkout.view.view.cartlist.removecartitem.RemoveCartItemFragment;
 import com.tokopedia.checkout.view.view.cartlist.removecartitem.RemoveCartItemPresenter;
 
 import dagger.Module;

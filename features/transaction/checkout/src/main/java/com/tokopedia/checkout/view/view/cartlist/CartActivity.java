@@ -7,14 +7,11 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
-import com.tokopedia.abstraction.common.di.component.HasComponent;
 import com.tokopedia.checkout.R;
 import com.tokopedia.checkout.applink.CheckoutAppLink;
 import com.tokopedia.checkout.domain.datamodel.cartlist.CartItemData;
 import com.tokopedia.checkout.router.ICheckoutModuleRouter;
 import com.tokopedia.checkout.view.base.BaseCheckoutActivity;
-import com.tokopedia.checkout.view.di.component.CartComponent;
-import com.tokopedia.checkout.view.di.component.CartComponentInjector;
 import com.tokopedia.checkout.view.view.cartlist.removecartitem.RemoveCartItemFragment;
 
 import java.util.List;
@@ -23,7 +20,7 @@ import java.util.List;
  * @author anggaprasetiyo on 18/01/18.
  */
 
-public class CartActivity extends BaseCheckoutActivity implements CartFragment.ActionListener{
+public class CartActivity extends BaseCheckoutActivity implements CartFragment.ActionListener {
 
     @DeepLink(CheckoutAppLink.CART)
     public static Intent getCallingIntent(Context context, Bundle extras) {
