@@ -6,6 +6,7 @@ import com.tokopedia.abstraction.common.data.model.response.DataResponse;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.utils.GraphqlHelper;
 import com.tokopedia.train.common.constant.TrainApi;
+import com.tokopedia.train.common.constant.TrainUrl;
 import com.tokopedia.train.common.specification.GqlNetworkSpecification;
 import com.tokopedia.train.common.specification.Specification;
 import com.tokopedia.train.station.data.entity.StationDataEntity;
@@ -22,8 +23,6 @@ import rx.functions.Func1;
  */
 
 public class TrainStationCloudDataStore {
-    private static final String QUERY_GQL = "query";
-    private static final String VARIABLE_GQL = "query";
 
     private TrainApi trainApi;
     private Context context;
@@ -36,10 +35,7 @@ public class TrainStationCloudDataStore {
     public Observable<List<TrainStationIslandEntity>> getDatas(Specification specification) {
         String jsonQuery = getRequestStationPayload(((GqlNetworkSpecification) specification).rawFileNameQuery());
         RequestParams requestParams = RequestParams.create();
-        requestParams.putString(QUERY_GQL, jsonQuery);
-        if (((GqlNetworkSpecification) specification).mapVariable() != null) {
-            requestParams.putObject(VARIABLE_GQL, ((GqlNetworkSpecification) specification).mapVariable());
-        }
+        requestParams.putString(TrainUrl.QUERY_GQL, jsonQuery);
 
         return trainApi.stationsInIsland(requestParams.getParameters()).map(new Func1<DataResponse<StationDataEntity>, List<TrainStationIslandEntity>>() {
             @Override
