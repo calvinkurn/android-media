@@ -192,6 +192,10 @@ public class ImagesSelectView extends BaseCustomView {
         }
     }
 
+    public void setImagesString(List<String> imageStringList) {
+        imageSelectorAdapter.setImageString(imageStringList);
+    }
+
     public void setImage(ArrayList<ImageSelectModel> imageSelectModelList) {
 //        handleResolutionFromList(imageSelectModelList);
 
@@ -261,6 +265,10 @@ public class ImagesSelectView extends BaseCustomView {
 
     public ArrayList<ImageSelectModel> getImageList() {
         return imageSelectorAdapter.getImageSelectModelList();
+    }
+
+    public ArrayList<String> getImageStringList() {
+        return imageSelectorAdapter.getImageStringList();
     }
 
     public int getSelectedImageIndex() {
