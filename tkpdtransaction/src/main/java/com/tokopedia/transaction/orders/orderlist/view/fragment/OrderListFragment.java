@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
 import android.widget.LinearLayout;
 
@@ -100,6 +101,7 @@ public class OrderListFragment extends BasePresenterFragment<OrderListContract.P
     @Override
     protected void setupArguments(Bundle arguments) {
         int category = arguments.getInt(ORDER_CATEGORY);
+        Log.e("sandeep","category ="+category);
         switch (category) {
             case 0:
                 mOrderCategory = OrderCategory.ALL;
