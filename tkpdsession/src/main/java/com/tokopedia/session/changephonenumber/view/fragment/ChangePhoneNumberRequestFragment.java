@@ -1,11 +1,16 @@
 package com.tokopedia.session.changephonenumber.view.fragment;
 
+import android.Manifest;
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.Dialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
+import android.view.Window;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -14,12 +19,13 @@ import android.widget.TextView;
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.ImageHandler;
 import com.tkpd.library.utils.KeyboardHandler;
+import com.tokopedia.core.GalleryBrowser;
+import com.tokopedia.core.ImageGallery;
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
+import com.tokopedia.core.util.ImageUploadHandler;
 import com.tokopedia.core.util.MethodChecker;
-import com.tokopedia.imagepicker.picker.gallery.type.GalleryType;
-import com.tokopedia.imagepicker.picker.main.builder.ImagePickerBuilder;
-import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity;
+import com.tokopedia.core.util.RequestPermissionUtil;
 import com.tokopedia.session.changephonenumber.data.model.changephonenumberrequest.CheckStatusData;
 import com.tokopedia.session.R;
 import com.tokopedia.session.changephonenumber.view.listener.ChangePhoneNumberRequestView;
@@ -28,24 +34,25 @@ import com.tokopedia.session.changephonenumber.view.presenter.ChangePhoneNumberR
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.List;
 
-import static com.tokopedia.imagepicker.picker.main.builder.ImagePickerBuilder.DEFAULT_MAX_IMAGE_SIZE_IN_KB;
-import static com.tokopedia.imagepicker.picker.main.builder.ImagePickerBuilder.DEFAULT_MIN_RESOLUTION;
-import static com.tokopedia.imagepicker.picker.main.builder.ImagePickerTabTypeDef.TYPE_CAMERA;
-import static com.tokopedia.imagepicker.picker.main.builder.ImagePickerTabTypeDef.TYPE_GALLERY;
-import static com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity.PICKER_RESULT_PATHS;
+import permissions.dispatcher.NeedsPermission;
+import permissions.dispatcher.OnNeverAskAgain;
+import permissions.dispatcher.OnPermissionDenied;
+import permissions.dispatcher.OnShowRationale;
+import permissions.dispatcher.PermissionRequest;
+import permissions.dispatcher.RuntimePermissions;
 
 /**
  * Created by nisie on 3/2/17.
  */
 
+@RuntimePermissions
 public class ChangePhoneNumberRequestFragment
         extends BasePresenterFragment<ChangePhoneNumberRequestPresenter>
         implements ChangePhoneNumberRequestView {
 
-    public static final int REQUEST_CODE_ACCOUNT_BOOK = 281;
-    public static final int REQUEST_CODE_ACCOUNT_ID = 282;
-    private ImagePickerBuilder imagePickerBuilder;
+    private static final String PARAM_UPLOAD_TYPE = "PARAM_UPLOAD_TYPE";
 
 
     public interface ChangePhoneNumberRequestListener {
@@ -54,6 +61,8 @@ public class ChangePhoneNumberRequestFragment
         void shouldHandleBackPress(boolean isBackPressHandle);
     }
 
+    private static final String UPLOAD_ID = "UPLOAD_ID";
+    private static final String UPLOAD_ACCOUNT_BOOK = "UPLOAD_ACCOUNT_BOOK";
     ImageView buttonUploadId;
     ImageView buttonUploadAccountBook;
     ImageView idPhoto;
@@ -63,6 +72,7 @@ public class ChangePhoneNumberRequestFragment
     View newPhoneNumberView;
     View photoIdMainView;
     View accountIdMainView;
+    ImageUploadHandler imageUploadHandler;
     Button buttonSubmit;
     View mainView;
     View contentView;
@@ -71,6 +81,7 @@ public class ChangePhoneNumberRequestFragment
     private TextView nextButton;
     TkpdProgressDialog progressDialog;
 
+    String uploadType;
     ChangePhoneNumberRequestListener listener;
 
     public static ChangePhoneNumberRequestFragment createInstance(ChangePhoneNumberRequestListener listener) {
@@ -79,6 +90,19 @@ public class ChangePhoneNumberRequestFragment
         return fragment;
     }
 
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        if(savedInstanceState != null)
+            uploadType = savedInstanceState.getString(PARAM_UPLOAD_TYPE);
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+
+        super.onSaveInstanceState(outState);
+        outState.putString(PARAM_UPLOAD_TYPE, uploadType);
+    }
 
     public void setActionListener(ChangePhoneNumberRequestListener listener) {
         this.listener = listener;
@@ -141,6 +165,7 @@ public class ChangePhoneNumberRequestFragment
         contentView = view.findViewById(R.id.content_view);
         idPhotoView = view.findViewById(R.id.upload_id_photo_view);
         accountBookPhotoView = view.findViewById(R.id.upload_account_book_photo_view);
+        imageUploadHandler = ImageUploadHandler.createInstance(this);
         newPhoneNumber = view.findViewById(R.id.new_phone_number_value);
         nextButton = view.findViewById(R.id.next_button);
         newPhoneNumberView = view.findViewById(R.id.new_phone_number);
@@ -195,32 +220,83 @@ public class ChangePhoneNumberRequestFragment
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ImagePickerBuilder builder = getImagePickerBuilder();
-                Intent intent = ImagePickerActivity.getIntent(getActivity(), builder);
-                startActivityForResult(intent, REQUEST_CODE_ACCOUNT_ID);
+                AlertDialog.Builder myAlertDialog = new AlertDialog.Builder(getActivity());
+                myAlertDialog.setMessage(getActivity().getString(com.tokopedia.core.R.string.dialog_upload_option));
+                myAlertDialog.setPositiveButton(getActivity().getString(com.tokopedia.core.R.string.title_gallery), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        ChangePhoneNumberRequestFragmentPermissionsDispatcher.uploadIdImageGalleryWithCheck(ChangePhoneNumberRequestFragment.this);
+                    }
+                });
+                myAlertDialog.setNegativeButton(getActivity().getString(com.tokopedia.core.R.string.title_camera), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        ChangePhoneNumberRequestFragmentPermissionsDispatcher.uploadIdImageCameraWithCheck(ChangePhoneNumberRequestFragment.this);
+
+                    }
+
+
+                });
+                Dialog dialog = myAlertDialog.create();
+                dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+                dialog.show();
             }
         };
+    }
+
+    @NeedsPermission({Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE})
+    public void uploadIdImageCamera() {
+        uploadType = UPLOAD_ID;
+        imageUploadHandler.actionCamera();
+
+    }
+
+    @NeedsPermission(Manifest.permission.READ_EXTERNAL_STORAGE)
+    public void uploadIdImageGallery() {
+        uploadType = UPLOAD_ID;
+        imageUploadHandler.actionImagePicker();
+
     }
 
     private View.OnClickListener onUploadAccountBook() {
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ImagePickerBuilder builder = getImagePickerBuilder();
-                Intent intent = ImagePickerActivity.getIntent(getActivity(), builder);
-                startActivityForResult(intent, REQUEST_CODE_ACCOUNT_BOOK);
+                AlertDialog.Builder myAlertDialog = new AlertDialog.Builder(getActivity());
+                myAlertDialog.setMessage(getActivity().getString(com.tokopedia.core.R.string.dialog_upload_option));
+                myAlertDialog.setPositiveButton(getActivity().getString(com.tokopedia.core.R.string.title_gallery), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        ChangePhoneNumberRequestFragmentPermissionsDispatcher.uploadAccountBookImageGalleryWithCheck(ChangePhoneNumberRequestFragment.this);
+
+                    }
+                });
+                myAlertDialog.setNegativeButton(getActivity().getString(com.tokopedia.core.R.string.title_camera), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        ChangePhoneNumberRequestFragmentPermissionsDispatcher.uploadAccountBookImageCameraWithCheck(ChangePhoneNumberRequestFragment.this);
+
+                    }
+
+
+                });
+                Dialog dialog = myAlertDialog.create();
+                dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+                dialog.show();
             }
         };
     }
 
-    private ImagePickerBuilder getImagePickerBuilder() {
-        if (imagePickerBuilder == null) {
-            imagePickerBuilder = new ImagePickerBuilder(getString(R.string.choose_image),
-                    new int[]{TYPE_GALLERY, TYPE_CAMERA}, GalleryType.IMAGE_ONLY, DEFAULT_MAX_IMAGE_SIZE_IN_KB,
-                    DEFAULT_MIN_RESOLUTION, null, true,
-                    null, null);
-        }
-        return imagePickerBuilder;
+    @NeedsPermission({Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE})
+    public void uploadAccountBookImageCamera() {
+        uploadType = UPLOAD_ACCOUNT_BOOK;
+        imageUploadHandler.actionCamera();
+    }
+
+    @NeedsPermission(Manifest.permission.READ_EXTERNAL_STORAGE)
+    public void uploadAccountBookImageGallery() {
+        uploadType = UPLOAD_ACCOUNT_BOOK;
+        imageUploadHandler.actionImagePicker();
     }
 
     @Override
@@ -237,33 +313,43 @@ public class ChangePhoneNumberRequestFragment
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        switch (requestCode) {
-            case REQUEST_CODE_ACCOUNT_ID:
-                if (resultCode == Activity.RESULT_OK && data != null) {
-                    ArrayList<String> imageUrlOrPathList = data.getStringArrayListExtra(PICKER_RESULT_PATHS);
-                    if (imageUrlOrPathList != null && imageUrlOrPathList.size() > 0) {
-                        String imagePath = imageUrlOrPathList.get(0);
-                        buttonUploadId.setVisibility(View.GONE);
-                        idPhotoView.setVisibility(View.VISIBLE);
+        if (imageUploadHandler != null
+                && imageUploadHandler.getCameraFileloc() != null
+                && requestCode == ImageUploadHandler.REQUEST_CODE
+                && (resultCode == Activity.RESULT_OK)
+                && uploadType.equals(UPLOAD_ID)) {
+            buttonUploadId.setVisibility(View.GONE);
+            idPhotoView.setVisibility(View.VISIBLE);
 
-                        loadImageToImageView(idPhoto, imagePath);
-                        presenter.setIdImage(imagePath);
-                    }
-                }
-                break;
-            case REQUEST_CODE_ACCOUNT_BOOK:
-                if (resultCode == Activity.RESULT_OK && data != null) {
-                    ArrayList<String> imageUrlOrPathList = data.getStringArrayListExtra(PICKER_RESULT_PATHS);
-                    if (imageUrlOrPathList != null && imageUrlOrPathList.size() > 0) {
-                        String imagePath = imageUrlOrPathList.get(0);
-                        buttonUploadAccountBook.setVisibility(View.GONE);
-                        accountBookPhotoView.setVisibility(View.VISIBLE);
-                        loadImageToImageView(accountBookPhoto, imagePath);
-                        presenter.setBankBookImage(imagePath);
-                    }
-                }
-                break;
+            loadImageToImageView(idPhoto, imageUploadHandler.getCameraFileloc());
+            presenter.setIdImage(imageUploadHandler.getCameraFileloc());
+        } else if (data != null
+                && requestCode == ImageUploadHandler.REQUEST_CODE
+                && (resultCode == GalleryBrowser.RESULT_CODE)
+                && uploadType.equals(UPLOAD_ID)) {
+            buttonUploadId.setVisibility(View.GONE);
+            idPhotoView.setVisibility(View.VISIBLE);
+            loadImageToImageView(idPhoto, data.getStringExtra(ImageGallery.EXTRA_URL));
+            presenter.setIdImage(data.getStringExtra(ImageGallery.EXTRA_URL));
+        } else if (imageUploadHandler != null
+                && imageUploadHandler.getCameraFileloc() != null
+                && requestCode == ImageUploadHandler.REQUEST_CODE
+                && (resultCode == Activity.RESULT_OK)
+                && uploadType.equals(UPLOAD_ACCOUNT_BOOK)) {
+            buttonUploadAccountBook.setVisibility(View.GONE);
+            accountBookPhotoView.setVisibility(View.VISIBLE);
+            loadImageToImageView(accountBookPhoto, imageUploadHandler.getCameraFileloc());
+            presenter.setBankBookImage(imageUploadHandler.getCameraFileloc());
+        } else if (data != null
+                && requestCode == ImageUploadHandler.REQUEST_CODE
+                && (resultCode == GalleryBrowser.RESULT_CODE)
+                && uploadType.equals(UPLOAD_ACCOUNT_BOOK)) {
+            buttonUploadAccountBook.setVisibility(View.GONE);
+            accountBookPhotoView.setVisibility(View.VISIBLE);
+            loadImageToImageView(accountBookPhoto, data.getStringExtra(ImageGallery.EXTRA_URL));
+            presenter.setBankBookImage(data.getStringExtra(ImageGallery.EXTRA_URL));
         }
+
         setSubmitButton();
 
     }
@@ -279,8 +365,11 @@ public class ChangePhoneNumberRequestFragment
         }
     }
 
-    private void loadImageToImageView(ImageView idImage, String imagePath) {
-        ImageHandler.loadImageFromFile(getActivity(), idImage, new File(imagePath));
+    private void loadImageToImageView(ImageView idImage, String fileLoc) {
+        if (fileLoc == null)
+            ImageHandler.LoadImage(idImage, imageUploadHandler.getCameraFileloc());
+        else
+            ImageHandler.loadImageFromFile(getActivity(), idImage, new File(fileLoc));
     }
 
 
@@ -349,9 +438,72 @@ public class ChangePhoneNumberRequestFragment
     }
 
     @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        ChangePhoneNumberRequestFragmentPermissionsDispatcher.onRequestPermissionsResult(ChangePhoneNumberRequestFragment.this,
+                requestCode, grantResults);
+
+    }
+
+    @Override
     public void onDestroyView() {
         super.onDestroyView();
         presenter.onDestroyView();
+    }
+
+    @OnShowRationale({Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE})
+    void showRationaleForStorageAndCamera(final PermissionRequest request) {
+        List<String> listPermission = new ArrayList<>();
+        listPermission.add(Manifest.permission.READ_EXTERNAL_STORAGE);
+        listPermission.add(Manifest.permission.CAMERA);
+        listPermission.add(Manifest.permission.WRITE_EXTERNAL_STORAGE);
+
+        RequestPermissionUtil.onShowRationale(getActivity(), request, listPermission);
+    }
+
+    @OnShowRationale(Manifest.permission.READ_EXTERNAL_STORAGE)
+    void showRationaleForStorage(final PermissionRequest request) {
+        RequestPermissionUtil.onShowRationale(getActivity(), request, Manifest.permission.READ_EXTERNAL_STORAGE);
+    }
+
+    @OnPermissionDenied(Manifest.permission.CAMERA)
+    void showDeniedForCamera() {
+        RequestPermissionUtil.onPermissionDenied(getActivity(), Manifest.permission.CAMERA);
+    }
+
+    @OnNeverAskAgain(Manifest.permission.CAMERA)
+    void showNeverAskForCamera() {
+        RequestPermissionUtil.onNeverAskAgain(getActivity(), Manifest.permission.CAMERA);
+    }
+
+    @OnPermissionDenied(Manifest.permission.READ_EXTERNAL_STORAGE)
+    void showDeniedForStorage() {
+        RequestPermissionUtil.onPermissionDenied(getActivity(), Manifest.permission.READ_EXTERNAL_STORAGE);
+    }
+
+    @OnNeverAskAgain(Manifest.permission.READ_EXTERNAL_STORAGE)
+    void showNeverAskForStorage() {
+        RequestPermissionUtil.onNeverAskAgain(getActivity(), Manifest.permission.READ_EXTERNAL_STORAGE);
+    }
+
+    @OnPermissionDenied({Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE})
+    void showDeniedForStorageAndCamera() {
+        List<String> listPermission = new ArrayList<>();
+        listPermission.add(Manifest.permission.READ_EXTERNAL_STORAGE);
+        listPermission.add(Manifest.permission.CAMERA);
+        listPermission.add(Manifest.permission.WRITE_EXTERNAL_STORAGE);
+
+        RequestPermissionUtil.onPermissionDenied(getActivity(), listPermission);
+    }
+
+    @OnNeverAskAgain({Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE})
+    void showNeverAskForStorageAndCamera() {
+        List<String> listPermission = new ArrayList<>();
+        listPermission.add(Manifest.permission.READ_EXTERNAL_STORAGE);
+        listPermission.add(Manifest.permission.CAMERA);
+        listPermission.add(Manifest.permission.WRITE_EXTERNAL_STORAGE);
+
+        RequestPermissionUtil.onNeverAskAgain(getActivity(), listPermission);
     }
 
     private String cleanPhoneNumber(EditText newPhoneNumber) {
