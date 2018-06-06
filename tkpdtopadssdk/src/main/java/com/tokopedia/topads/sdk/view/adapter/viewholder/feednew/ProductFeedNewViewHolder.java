@@ -29,6 +29,7 @@ public class ProductFeedNewViewHolder extends AbstractViewHolder<ProductFeedNewV
     private Data data;
     public TextView productName;
     public ImageView productImage;
+    public TextView productPrice;
     private Context context;
     private ImageLoader imageLoader;
     private LocalAdsClickListener itemClickListener;
@@ -41,8 +42,9 @@ public class ProductFeedNewViewHolder extends AbstractViewHolder<ProductFeedNewV
         this.imageLoader = imageLoader;
         this.itemClickListener = itemClickListener;
 
-        productImage = (ImageView) itemView.findViewById(R.id.product_image);
-        productName = (TextView) itemView.findViewById(R.id.title);
+        productImage = itemView.findViewById(R.id.product_image);
+        productName = itemView.findViewById(R.id.title);
+        productPrice = itemView.findViewById(R.id.price);
     }
 
     @Override
@@ -70,5 +72,6 @@ public class ProductFeedNewViewHolder extends AbstractViewHolder<ProductFeedNewV
         } else {
             productName.setText(Html.fromHtml(product.getName()));
         }
+        productPrice.setText(product.getPriceFormat());
     }
 }

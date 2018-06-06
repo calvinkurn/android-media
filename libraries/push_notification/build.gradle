@@ -19,4 +19,6 @@ dependencies {
     compile rootProject.ext.dbDependencies.dbFlowCore
     compile rootProject.ext.dbDependencies.dbFlow
 
+    testCompile rootProject.ext.testDependencies.junit
+
 }

@@ -60,9 +60,7 @@ public class DeepLinkChecker {
     private static final String KEY_SALE = "sale";
     private static final String GROUPCHAT_SEGMENT = "groupchat";
 
-    public static int
-
-    getDeepLinkType(String url) {
+    public static int getDeepLinkType(String url) {
         Uri uriData = Uri.parse(url);
 
         List<String> linkSegment = uriData.getPathSegments();

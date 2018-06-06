@@ -10,6 +10,7 @@ public class ShopAppLink extends TkpdAppLink {
 
     public static final String SHOP = "tokopedia://shop/{shop_id}";
     public static final String SHOP_ETALASE = "tokopedia://shop/{shop_id}/etalase/{etalase_id}";
+    public static final String SHOP_ETALASE_WITH_KEYWORD_AND_SORT = "tokopedia://shop/{shop_id}/etalase/{etalase_id}/?search={search}&sort={sort}";
     public static final String SHOP_TALK = "tokopedia://shop/{shop_id}/talk";
     public static final String SHOP_REVIEW = "tokopedia://shop/{shop_id}/review";
     public static final String SHOP_NOTE = "tokopedia://shop/{shop_id}/note";

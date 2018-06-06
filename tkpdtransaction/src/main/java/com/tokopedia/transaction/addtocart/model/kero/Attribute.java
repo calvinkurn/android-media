@@ -24,12 +24,6 @@ public class Attribute implements Parcelable {
     @SerializedName("shipper_name")
     @Expose
     private String shipperName;
-    @SerializedName("origin_id")
-    @Expose
-    private Integer originId;
-    @SerializedName("destination_id")
-    @Expose
-    private Integer destinationId;
     @SerializedName("weight")
     @Expose
     private Integer weight;
@@ -82,33 +76,6 @@ public class Attribute implements Parcelable {
         this.shipperName = shipperName;
     }
 
-    /**
-     * @return The originId
-     */
-    public Integer getOriginId() {
-        return originId;
-    }
-
-    /**
-     * @param originId The origin_id
-     */
-    public void setOriginId(Integer originId) {
-        this.originId = originId;
-    }
-
-    /**
-     * @return The destinationId
-     */
-    public Integer getDestinationId() {
-        return destinationId;
-    }
-
-    /**
-     * @param destinationId The destination_id
-     */
-    public void setDestinationId(Integer destinationId) {
-        this.destinationId = destinationId;
-    }
 
     /**
      * @return The weight
@@ -155,8 +122,6 @@ public class Attribute implements Parcelable {
         id = in.readByte() == 0x00 ? null : in.readInt();
         shipperId = in.readString();
         shipperName = in.readString();
-        originId = in.readByte() == 0x00 ? null : in.readInt();
-        destinationId = in.readByte() == 0x00 ? null : in.readInt();
         weight = in.readByte() == 0x00 ? null : in.readInt();
         if (in.readByte() == 0x01) {
             products = new ArrayList<Product>();
@@ -181,18 +146,6 @@ public class Attribute implements Parcelable {
         }
         dest.writeString(shipperId);
         dest.writeString(shipperName);
-        if (originId == null) {
-            dest.writeByte((byte) (0x00));
-        } else {
-            dest.writeByte((byte) (0x01));
-            dest.writeInt(originId);
-        }
-        if (destinationId == null) {
-            dest.writeByte((byte) (0x00));
-        } else {
-            dest.writeByte((byte) (0x01));
-            dest.writeInt(destinationId);
-        }
         if (weight == null) {
             dest.writeByte((byte) (0x00));
         } else {

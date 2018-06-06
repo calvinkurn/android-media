@@ -86,6 +86,8 @@ public class TokoCashHistoryMapper implements Func1<TokoCashHistoryEntity, TokoC
                             actionHistory.setUrl(actionHistoryEntity.getUrl());
 
                             ParamsActionHistory paramAction = new ParamsActionHistory();
+                            paramAction.setAmount(actionHistoryEntity.getParams().getAmount());
+                            paramAction.setAmountFormatted(actionHistoryEntity.getParams().getAmountFormatted());
                             paramAction.setRefundId(actionHistoryEntity.getParams().getRefundId());
                             paramAction.setRefundType(actionHistoryEntity.getParams().getRefundType());
                             actionHistory.setParams(paramAction);

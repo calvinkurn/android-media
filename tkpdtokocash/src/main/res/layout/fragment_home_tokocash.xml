@@ -32,6 +32,13 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical" />
 
+            <!-- For adding autosweep mutual fund fragment-->
+            <FrameLayout
+                android:id="@+id/fragment_autosweepmf"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/mf_margin_regular" />
+
         </LinearLayout>
 
     </android.support.v4.widget.NestedScrollView>

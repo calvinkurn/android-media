@@ -458,8 +458,8 @@ public class InboxTalkFragment extends BasePresenterFragment<InboxTalkPresenter>
 
     @Override
     public void onDestroy() {
-        super.onDestroy();
         presenter.unSubscribe();
+        super.onDestroy();
     }
 
     @Override

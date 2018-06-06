@@ -35,7 +35,6 @@ import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 import com.tokopedia.core.R;
 import com.tokopedia.core.app.MainApplication;
-import com.tokopedia.core.gcm.FCMCacheManager;
 import com.tokopedia.core.network.retrofit.response.ResponseStatus;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.MethodChecker;
@@ -160,7 +159,8 @@ public class CommonUtils {
     }
 
     public static String getUniqueDeviceID(Context context) {
-        String DeviceID = FCMCacheManager.getRegistrationId(context);
+        TelephonyManager tm = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
+        String DeviceID = tm.getDeviceId();
         String Brand = Build.BRAND;
         String Model = Build.MODEL;
         String UniqueDeviceID = Brand + "~" + Model + "~" + DeviceID;

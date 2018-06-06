@@ -314,7 +314,7 @@ yang ditemukan</string>
     <string name="string_attach_invoice_activity_title">Pilih Transaksi</string>
 
     <string name="title_personal">Personal</string>
-    <string name="title_community">Channel</string>
+    <string name="title_community">Group Chat</string>
     <string name="chat_title">Chat ( %d )</string>
 
     <!-- attach invoice -->

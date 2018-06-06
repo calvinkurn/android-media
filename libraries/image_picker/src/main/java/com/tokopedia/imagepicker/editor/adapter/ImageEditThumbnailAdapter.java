@@ -41,7 +41,7 @@ public class ImageEditThumbnailAdapter extends RecyclerView.Adapter<ImageEditThu
         this.imagePathList = imagePathList;
         this.selectedIndex = imageIndex;
         this.onImageEditThumbnailAdapterListener = onImageEditThumbnailAdapterListener;
-        itemWidth = context.getResources().getDimensionPixelOffset(R.dimen.image_edit_thumbnail_width);
+        itemWidth = context.getResources().getDimensionPixelOffset(R.dimen.image_editor_thumbnail_width);
         this.currentEditStepIndexList = currentEditStepIndexList;
     }
 

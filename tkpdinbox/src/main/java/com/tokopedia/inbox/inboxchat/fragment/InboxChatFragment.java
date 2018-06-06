@@ -649,6 +649,7 @@ public class InboxChatFragment extends BaseDaggerFragment
     public void onDestroy() {
         super.onDestroy();
         presenter.closeWebsocket();
+        presenter.detachView();
     }
 
     @Override

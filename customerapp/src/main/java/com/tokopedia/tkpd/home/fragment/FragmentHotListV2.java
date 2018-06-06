@@ -9,6 +9,7 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -21,14 +22,17 @@ import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.app.TkpdBaseV4Fragment;
+import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.customadapter.BaseRecyclerViewAdapter;
 import com.tokopedia.core.customwidget.SwipeToRefresh;
+import com.tokopedia.core.home.SimpleWebViewWithFilePickerActivity;
 import com.tokopedia.core.home.helper.ProductFeedHelper;
 import com.tokopedia.core.home.model.HotListViewModel;
 import com.tokopedia.core.home.presenter.HotList;
 import com.tokopedia.core.home.presenter.HotListImpl;
 import com.tokopedia.core.home.presenter.HotListView;
 import com.tokopedia.core.router.discovery.BrowseProductRouter;
+import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.service.DownloadService;
 import com.tokopedia.core.var.RecyclerViewItem;
 import com.tokopedia.core.var.TkpdState;
@@ -405,4 +409,23 @@ public class FragmentHotListV2 extends TkpdBaseV4Fragment implements HotListView
                 hotList.setData(items, hasNext, nextPage);
     }
 
+    @Override
+    public boolean isSupportApplink(String hotListApplinks) {
+        return !TextUtils.isEmpty(hotListApplinks)
+                && getActivity() != null
+                && getActivity().getApplicationContext() instanceof TkpdCoreRouter
+                && ((TkpdCoreRouter) getActivity().getApplicationContext()).isSupportedDelegateDeepLink(hotListApplinks);
+    }
+
+    @Override
+    public void openApplink(String hotListApplinks) {
+        ((TkpdCoreRouter) getActivity().getApplicationContext())
+                .actionApplinkFromActivity(getActivity(), hotListApplinks);
+    }
+
+    @Override
+    public void openWebView(String url) {
+        Intent intent = SimpleWebViewWithFilePickerActivity.getIntent(getActivity(), url);
+        startActivity(intent);
+    }
 }

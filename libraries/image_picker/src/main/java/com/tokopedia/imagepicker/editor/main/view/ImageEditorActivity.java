@@ -19,6 +19,8 @@ import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.imagepicker.R;
+import com.tokopedia.imagepicker.common.exception.FileSizeAboveMaximumException;
+import com.tokopedia.imagepicker.picker.main.view.ImagePickerPresenter;
 import com.tokopedia.imagepicker.common.util.ImageUtils;
 import com.tokopedia.imagepicker.common.widget.NonSwipeableViewPager;
 import com.tokopedia.imagepicker.editor.adapter.ImageEditorViewPagerAdapter;
@@ -36,13 +38,15 @@ import static com.tokopedia.imagepicker.editor.main.Constant.HALF_BRIGHTNESS_RAN
 import static com.tokopedia.imagepicker.editor.main.Constant.HALF_CONTRAST_RANGE;
 import static com.tokopedia.imagepicker.editor.main.Constant.HALF_ROTATE_RANGE;
 import static com.tokopedia.imagepicker.editor.main.Constant.INITIAL_CONTRAST_VALUE;
+import static com.tokopedia.imagepicker.picker.main.builder.ImagePickerBuilder.DEFAULT_MAX_IMAGE_SIZE_IN_KB;
+import static com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity.PICKER_RESULT_PATHS;
 
 /**
  * Created by Hendry on 9/25/2017.
  */
 
 public class ImageEditorActivity extends BaseSimpleActivity implements ImageEditorPresenter.ImageEditorView,
-        ImageEditPreviewFragment.OnImageEditPreviewFragmentListener, ImageEditThumbnailListWidget.OnImageEditThumbnailListWidgetListener, ImageEditActionMainWidget.OnImageEditActionMainWidgetListener {
+        ImageEditPreviewFragment.OnImageEditPreviewFragmentListener, ImageEditThumbnailListWidget.OnImageEditThumbnailListWidgetListener, ImageEditActionMainWidget.OnImageEditActionMainWidgetListener, ImagePickerPresenter.ImagePickerView {
 
     public static final String EXTRA_IMAGE_URLS = "IMG_URLS";
     public static final String EXTRA_MIN_RESOLUTION = "MIN_IMG_RESOLUTION";
@@ -50,6 +54,7 @@ public class ImageEditorActivity extends BaseSimpleActivity implements ImageEdit
     public static final String EXTRA_RATIO_X = "RATIO_X";
     public static final String EXTRA_RATIO_Y = "RATIO_Y";
     public static final String EXTRA_IS_CIRCLE_PREVIEW = "IS_CIRCLE_PREVIEW";
+    public static final String EXTRA_MAX_FILE_SIZE = "MAX_FILE_SIZE";
 
     public static final String SAVED_IMAGE_INDEX = "IMG_IDX";
     public static final String SAVED_EDITTED_PATHS = "SAVED_EDITTED_PATHS";
@@ -57,10 +62,10 @@ public class ImageEditorActivity extends BaseSimpleActivity implements ImageEdit
     public static final String SAVED_IN_EDIT_MODE = "SAVED_IN_EDIT_MODE";
     public static final String SAVED_EDIT_TYPE = "SAVED_EDIT_TYPE";
 
-    public static final String EDIT_RESULT_PATHS = "result_paths";
+    public static final String RESULT_IS_EDITTED = "is_editted";
+    public static final String RESULT_PREVIOUS_IMAGE = "ori_image";
 
     public static final int MAX_HISTORY_PER_IMAGE = 5;
-    public static final int BACKPRESS_TIME_LIMIT = 2000; // ms
 
     private ArrayList<String> extraImageUrls;
     private int minResolution;
@@ -90,8 +95,6 @@ public class ImageEditorActivity extends BaseSimpleActivity implements ImageEdit
     private ImageEditActionMainWidget imageEditActionMainWidget;
     private View editorMainView;
     private View editorControlView;
-    private View editCancelView;
-    private View editSaveView;
     private View doneButton;
     private View vEditProgressBar;
     private View blockingView;
@@ -106,11 +109,16 @@ public class ImageEditorActivity extends BaseSimpleActivity implements ImageEdit
     private TextView tvBrightness;
     private TextView tvContrast;
     private TextView tvActionTitle;
+    private long maxFileSize;
+
+    //to give flag if the image is editted or not, in case the caller need it.
+    private ArrayList<Boolean> isEdittedList;
 
     public static Intent getIntent(Context context, ArrayList<String> imageUrls, int minResolution,
                                    @ImageEditActionTypeDef int[] imageEditActionType,
                                    int ratioX, int ratioY,
-                                   boolean isCirclePreview) {
+                                   boolean isCirclePreview,
+                                   long maxFileSize) {
         Intent intent = new Intent(context, ImageEditorActivity.class);
         intent.putExtra(EXTRA_IMAGE_URLS, imageUrls);
         intent.putExtra(EXTRA_MIN_RESOLUTION, minResolution);
@@ -118,16 +126,18 @@ public class ImageEditorActivity extends BaseSimpleActivity implements ImageEdit
         intent.putExtra(EXTRA_RATIO_X, ratioX);
         intent.putExtra(EXTRA_RATIO_Y, ratioY);
         intent.putExtra(EXTRA_IS_CIRCLE_PREVIEW, isCirclePreview);
+        intent.putExtra(EXTRA_MAX_FILE_SIZE, maxFileSize);
         return intent;
     }
 
     public static Intent getIntent(Context context, String imageUrl, int minResolution,
                                    @ImageEditActionTypeDef int[] imageEditActionType,
                                    int ratioX, int ratioY,
-                                   boolean isCirclePreview) {
+                                   boolean isCirclePreview,
+                                   long maxFileSize) {
         ArrayList<String> imageUrls = new ArrayList<>();
         imageUrls.add(imageUrl);
-        return getIntent(context, imageUrls, minResolution, imageEditActionType, ratioX, ratioY, isCirclePreview);
+        return getIntent(context, imageUrls, minResolution, imageEditActionType, ratioX, ratioY, isCirclePreview, maxFileSize);
     }
 
     @Override
@@ -153,6 +163,7 @@ public class ImageEditorActivity extends BaseSimpleActivity implements ImageEdit
         ratioX = intent.getIntExtra(EXTRA_RATIO_X, 1);
         ratioY = intent.getIntExtra(EXTRA_RATIO_Y, 1);
         isCirclePreview = intent.getBooleanExtra(EXTRA_IS_CIRCLE_PREVIEW, false);
+        maxFileSize = intent.getLongExtra(EXTRA_MAX_FILE_SIZE, DEFAULT_MAX_IMAGE_SIZE_IN_KB);
 
         if (savedInstanceState == null) {
             currentImageIndex = 0;
@@ -177,8 +188,8 @@ public class ImageEditorActivity extends BaseSimpleActivity implements ImageEdit
         viewPager = findViewById(R.id.view_pager);
         editorMainView = findViewById(R.id.vg_editor_main);
         editorControlView = findViewById(R.id.vg_editor_control);
-        editCancelView = findViewById(R.id.tv_edit_cancel);
-        editSaveView = findViewById(R.id.tv_edit_save);
+        View editCancelView = findViewById(R.id.tv_edit_cancel);
+        View editSaveView = findViewById(R.id.tv_edit_save);
         imageEditActionMainWidget = findViewById(R.id.image_edit_action_main_widget);
         imageEditThumbnailListWidget = findViewById(R.id.image_edit_thumbnail_list_widget);
         doneButton = findViewById(R.id.tv_done);
@@ -651,8 +662,11 @@ public class ImageEditorActivity extends BaseSimpleActivity implements ImageEdit
         blockingView.setVisibility(View.VISIBLE);
 
         ArrayList<String> resultList = new ArrayList<>();
+        isEdittedList = new ArrayList<>();
         for (int i = 0, sizei = edittedImagePaths.size(); i < sizei; i++) {
-            resultList.add(edittedImagePaths.get(i).get(currentEditStepIndexList.get(i)));
+            int currentStep = currentEditStepIndexList.get(i);
+            resultList.add(edittedImagePaths.get(i).get(currentStep));
+            isEdittedList.add(currentStep > 0);
         }
 
         showDoneLoading();
@@ -661,20 +675,21 @@ public class ImageEditorActivity extends BaseSimpleActivity implements ImageEdit
     }
 
     @Override
-    public void onSuccessCropImageToRatio(ArrayList<String> cropppedImagePaths) {
+    public void onSuccessCropImageToRatio(ArrayList<String> cropppedImagePaths, ArrayList<Boolean> isEdittedList) {
         hideDoneLoading();
         ArrayList<String> resultList;
         try {
             resultList = ImageUtils.copyFiles(cropppedImagePaths, ImageUtils.DirectoryDef.DIRECTORY_TOKOPEDIA_EDIT_RESULT);
-            ImageUtils.deleteCacheFolder(ImageUtils.DirectoryDef.DIRECTORY_TOKOPEDIA_CACHE);
-            ImageUtils.deleteCacheFolder(ImageUtils.DirectoryDef.DIRECTORY_TOKOPEDIA_CACHE_CAMERA);
-            Intent intent = new Intent();
-            intent.putStringArrayListExtra(EDIT_RESULT_PATHS, resultList);
-            setResult(Activity.RESULT_OK, intent);
-            finish();
+            onFinishWithMultipleImageValidateFileSize(resultList);
         } catch (Exception e) {
             NetworkErrorHelper.showRedCloseSnackbar(this, ErrorHandler.getErrorMessage(this, e));
         }
+    }
+
+    private void onFinishWithMultipleImageValidateFileSize(ArrayList<String> imagePathList) {
+        showDoneLoading();
+        initImageEditorPresenter();
+        imageEditorPresenter.resizeImage(imagePathList, maxFileSize);
     }
 
     @Override
@@ -694,7 +709,7 @@ public class ImageEditorActivity extends BaseSimpleActivity implements ImageEdit
 
     private void hideDoneLoading() {
         if (progressDialog != null) {
-            progressDialog.hide();
+            progressDialog.dismiss();
         }
     }
 
@@ -721,11 +736,38 @@ public class ImageEditorActivity extends BaseSimpleActivity implements ImageEdit
         }
     }
 
+    @Override
+    public void onErrorResizeImage(Throwable e) {
+        hideDoneLoading();
+        if (e instanceof FileSizeAboveMaximumException) {
+            NetworkErrorHelper.showRedCloseSnackbar(this, getString(R.string.max_file_size_reached));
+        } else {
+            NetworkErrorHelper.showRedCloseSnackbar(this, ErrorHandler.getErrorMessage(getContext(), e));
+        }
+    }
+
+    @Override
+    public void onSuccessResizeImage(ArrayList<String> resultPaths) {
+        hideDoneLoading();
+        onFinishWithMultipleFinalImage(resultPaths);
+    }
+
+    private void onFinishWithMultipleFinalImage(ArrayList<String> imageUrlOrPathList) {
+        ImageUtils.deleteCacheFolder(ImageUtils.DirectoryDef.DIRECTORY_TOKOPEDIA_CACHE);
+        ImageUtils.deleteCacheFolder(ImageUtils.DirectoryDef.DIRECTORY_TOKOPEDIA_CACHE_CAMERA);
+        Intent intent = new Intent();
+        intent.putStringArrayListExtra(PICKER_RESULT_PATHS, imageUrlOrPathList);
+        intent.putStringArrayListExtra(RESULT_PREVIOUS_IMAGE, extraImageUrls);
+        intent.putExtra(RESULT_IS_EDITTED, isEdittedList);
+        setResult(Activity.RESULT_OK, intent);
+        finish();
+    }
+
     /**
      * to cater instagram bugs: resolution in api is not correct.
      */
-    private boolean isResolutionValid(ArrayList<String> localPaths){
-        for (String localPath: localPaths) {
+    private boolean isResolutionValid(ArrayList<String> localPaths) {
+        for (String localPath : localPaths) {
             if (ImageUtils.getMinResolution(localPath) < minResolution) {
                 return false;
             }
@@ -859,9 +901,9 @@ public class ImageEditorActivity extends BaseSimpleActivity implements ImageEdit
     }
 
     private boolean anyEditChanges() {
-        if (edittedImagePaths!= null) {
+        if (edittedImagePaths != null) {
             for (int i = 0, sizei = edittedImagePaths.size(); i < sizei; i++) {
-                if (edittedImagePaths.get(i)!= null && edittedImagePaths.get(i).size() > 1) {
+                if (edittedImagePaths.get(i) != null && edittedImagePaths.get(i).size() > 1) {
                     return true;
                 }
             }

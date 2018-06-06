@@ -275,4 +275,8 @@ public class TopAdsDashboardPresenter extends BaseDaggerPresenter<TopAdsDashboar
     public void clearTotalAdCache() {
         deleteTopAdsTotalAdUseCase.executeSync();
     }
+
+    public void resetDate() {
+        topAdsDatePickerInteractor.resetDate();
+    }
 }

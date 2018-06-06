@@ -12,6 +12,9 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.base.di.component.AppComponent;
@@ -28,6 +31,7 @@ import com.tokopedia.loyalty.view.view.IPromoCodeView;
 import javax.inject.Inject;
 
 import static com.tokopedia.loyalty.view.activity.LoyaltyActivity.DIGITAL_STRING;
+import static com.tokopedia.loyalty.view.activity.LoyaltyActivity.EVENT_STRING;
 import static com.tokopedia.loyalty.view.activity.LoyaltyActivity.EXTRA_CART_ID;
 import static com.tokopedia.loyalty.view.activity.LoyaltyActivity.FLIGHT_STRING;
 
@@ -49,6 +53,8 @@ public class PromoCodeFragment extends BasePresenterFragment implements IPromoCo
     private static final String PLATFORM_KEY = "PLATFORM_KEY";
 
     private static final String CATEGORY_KEY = "CATEGORY_KEY";
+
+    private static final String CHECKOUT = "checkoutdata";
 
     @Override
     protected boolean isRetainInstance() {
@@ -112,6 +118,11 @@ public class PromoCodeFragment extends BasePresenterFragment implements IPromoCo
                     voucherCodeField,
                     voucherCodeFieldHolder)
             );
+        }
+        else if (getArguments().getString(PLATFORM_KEY).equals(EVENT_STRING)) {
+            submitVoucherButton.setOnClickListener(onSubmitEventVoucher(voucherCodeField,
+                    voucherCodeFieldHolder));
+
         } else submitVoucherButton.setOnClickListener(onSubmitMarketplaceVoucher(
                 voucherCodeField,
                 voucherCodeFieldHolder)
@@ -143,12 +154,12 @@ public class PromoCodeFragment extends BasePresenterFragment implements IPromoCo
             @Override
             public void onClick(View view) {
                 voucherCodeFieldHolder.setError(null);
-                if(voucherCodeField.getText().toString().isEmpty()) {
+                if (voucherCodeField.getText().toString().isEmpty()) {
                     textHolder.setError(getActivity().getString(R.string.error_empty_voucher_code));
                 } else
-                dPresenter.processCheckPromoCode(
-                        getActivity(),
-                        voucherCodeField.getText().toString());
+                    dPresenter.processCheckPromoCode(
+                            getActivity(),
+                            voucherCodeField.getText().toString());
             }
         };
     }
@@ -160,7 +171,7 @@ public class PromoCodeFragment extends BasePresenterFragment implements IPromoCo
             @Override
             public void onClick(View view) {
                 voucherCodeFieldHolder.setError(null);
-                if(voucherCodeField.getText().toString().isEmpty()) {
+                if (voucherCodeField.getText().toString().isEmpty()) {
                     textHolder.setError(getActivity().getString(R.string.error_empty_voucher_code));
                 } else {
                     dPresenter.processCheckDigitalPromoCode(
@@ -171,6 +182,33 @@ public class PromoCodeFragment extends BasePresenterFragment implements IPromoCo
             }
         };
     }
+
+    private View.OnClickListener onSubmitEventVoucher(
+            final EditText voucherCodeField,
+            final TextInputLayout textHolder) {
+        return new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                voucherCodeFieldHolder.setError(null);
+                if (voucherCodeField.getText().toString().isEmpty()) {
+                    textHolder.setError(getActivity().getString(R.string.error_empty_voucher_code));
+                } else {
+                    String jsonbody = getActivity().getIntent().getStringExtra(CHECKOUT);
+                    JsonObject requestBody = null;
+                    if (jsonbody != null || jsonbody.length() > 0) {
+                        JsonElement jsonElement = new JsonParser().parse(jsonbody);
+                        requestBody = jsonElement.getAsJsonObject();
+                        dPresenter.processCheckEventPromoCode(
+                                voucherCodeField.getText().toString(),
+                                requestBody,
+                                false);
+                    }
+
+                }
+            }
+        };
+    }
+
 
     @Override
     protected void setViewListener() {
@@ -239,6 +277,11 @@ public class PromoCodeFragment extends BasePresenterFragment implements IPromoCo
     @Override
     public void onPromoCodeError(String errorMessage) {
         voucherCodeFieldHolder.setError(errorMessage);
+    }
+
+    @Override
+    public Context getContext() {
+        return getActivity();
     }
 
     @Override

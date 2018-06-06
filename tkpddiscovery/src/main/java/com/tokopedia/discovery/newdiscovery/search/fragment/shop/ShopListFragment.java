@@ -421,8 +421,8 @@ public class ShopListFragment extends SearchSectionFragment
     }
 
     @Override
-    protected void switchLayoutType(boolean isImageSearch) {
-        super.switchLayoutType(isImageSearch);
+    protected void switchLayoutType() {
+        super.switchLayoutType();
         
         if (!getUserVisibleHint()) {
             return;

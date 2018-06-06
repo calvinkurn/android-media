@@ -20,8 +20,9 @@ public class ImageSearchRepositoryImpl implements ImageSearchRepository {
     }
 
     @Override
-    public Observable<SearchResultModel> getImageSearchResults(TKPDMapParam<String, Object> param) {
-        return imageSearchDataSource.getImageSearch(param);
+    public Observable<SearchResultModel> getImageSearchResults(TKPDMapParam<String, Object> queryParam,
+                                                               TKPDMapParam<String, Object> formParam) {
+        return imageSearchDataSource.getImageSearch(queryParam, formParam);
     }
 
 }

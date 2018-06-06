@@ -25,7 +25,8 @@ import com.tokopedia.seller.product.edit.view.widget.ImagesSelectView;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.tokopedia.core.newgallery.GalleryActivity.INSTAGRAM_SELECT_REQUEST_CODE;
+import static com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity.PICKER_RESULT_PATHS;
+import static com.tokopedia.seller.product.edit.view.fragment.BaseProductAddEditFragment.REQUEST_CODE_ADD_PRODUCT_IMAGE;
 
 /**
  * Created by nathan on 4/11/17.
@@ -155,38 +156,13 @@ public class ProductImageViewHolder extends ProductViewHolder {
     }
 
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if ((requestCode == com.tokopedia.core.ImageGallery.TOKOPEDIA_GALLERY || (
-                requestCode == INSTAGRAM_SELECT_REQUEST_CODE && resultCode == Activity.RESULT_OK)) &&
+        if (requestCode == REQUEST_CODE_ADD_PRODUCT_IMAGE && resultCode == Activity.RESULT_OK &&
                 data != null) {
-            String imageUrl = data.getStringExtra(GalleryActivity.IMAGE_URL);
-            if (!TextUtils.isEmpty(imageUrl)) {
-                addOrChangeImage(imageUrl);
-            } else {
-                ArrayList<String> imageUrls = data.getStringArrayListExtra(GalleryActivity.IMAGE_URLS);
-                if (imageUrls != null) {
-                    if (imageUrls.size() > 1) {
-                        imagesSelectView.addImagesString(imageUrls);
-                    } else {
-                        addOrChangeImage(imageUrls.get(0));
-                    }
-                }
-            }
-        } else if (resultCode == Activity.RESULT_OK && requestCode == ImageEditorActivity.REQUEST_CODE && data != null) {
-            List<String> resultImageUrl = data.getStringArrayListExtra(ImageEditorActivity.RESULT_IMAGE_PATH);
-            if (resultImageUrl != null && resultImageUrl.size() > 0) {
-                String imageUrl = resultImageUrl.get(0);
-                addOrChangeImage(imageUrl);
-            }
-        }
-    }
+            ArrayList<String> imageUrlOrPathList = data.getStringArrayListExtra(PICKER_RESULT_PATHS);
 
-    private void addOrChangeImage(String imageUrl) {
-        if (!TextUtils.isEmpty(imageUrl)) {
-            if (imagesSelectView.getSelectedImageIndex() < 0) {
-                imagesSelectView.addImageString(imageUrl);
-            } else {
-                imagesSelectView.changeImagePath(imageUrl);
-            }
+            ArrayList<ImageSelectModel> imageSelectModelList = imagesSelectView.getImageList();
+
+            imagesSelectView.setImagesString(imageUrlOrPathList);
         }
     }
 

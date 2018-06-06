@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <merge xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:android="http://schemas.android.com/apk/res/android">
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <ImageView
         android:id="@+id/media_thumbnail"
@@ -20,14 +21,12 @@
         style="@style/TextView.Micro"
         android:visibility="gone" />
 
-    <android.support.v7.widget.AppCompatImageView
+    <View
         android:id="@+id/iv_check"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="end|top"
-        android:layout_marginEnd="8dp"
-        android:layout_marginRight="8dp"
-        android:layout_marginTop="8dp"
-        app:srcCompat="@drawable/ic_round_check"/>
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/selected_image_overlay"
+        android:visibility="gone"
+        tools:visibility="visible"/>
 
 </merge>

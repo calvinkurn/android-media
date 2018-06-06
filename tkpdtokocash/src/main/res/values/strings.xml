@@ -97,4 +97,30 @@
     <string name="tokocash_toolbar_success_activation">Aktivasi TokoCash Berhasil</string>
     <string name="help_general_tokocash">Bantuan TokoCash</string>
 
+
+    <!-- Auto Sweep Strings (MF=Mutual Fund)-->
+    <string name="mf_title_mutual_fund_not_listed">Anda Belum Terdaftar di Reksa Dana</string>
+    <string name="mf_title_autosweep_help">Autosweep ke Reksa Dana</string>
+    <string name="mf_titile_mf_account_in_process">Aplikasi Reksa Dana Anda Dalam Proses</string>
+    <string name="mf_title_tokocash_limit">Batasi Dana TokoCash Anda</string>
+    <string name="mf_message_success">Sukses mengirimkan</string>
+    <string name="mf_message_access_fund">Kelebihan dana dari limit TokoCash akan otomatis di autosweep ke Reksa Dana</string>
+    <string name="mf_label_limit_tokocash">Limit TokoCash</string>
+    <string name="mf_label_ok">Baik</string>
+    <string name="mf_label_tokocash_balance">TokoCash Balance</string>
+    <string name="mf_label_idr">Rp</string>
+    <string name="mf_label_back">Kembali</string>
+    <string name="mf_label_list_mutual_fund">Daftar Reksa Dana</string>
+    <string name="mf_label_autosweep_to_mutual_fund">Autosweep ke Reksadana</string>
+    <string name="mf_label_new">baru</string>
+    <string name="mf_text_tab_use">Penggunaan</string>
+    <string name="mf_text_tab_refund">Kebijakan Pengembalian</string>
+    <string name="mf_action_limit_tokocash">Simpan Limit TokoCash</string>
+    <string name="mf_action_enable">Aktifkan</string>
+    <string name="mf_action_enable_autosweep">Aktifkan Autosweep</string>
+    <string name="mf_action_learn">Pelajari</string>
+    <string name="mf_action_goto_dashboard">Ke Dashboard Reksadana</string>
+    <string name="mf_action_retry">Mencoba kembali</string>
+    <string name="mf_error_min_auto_sweep_limit">Limit minimum</string>
+
 </resources>

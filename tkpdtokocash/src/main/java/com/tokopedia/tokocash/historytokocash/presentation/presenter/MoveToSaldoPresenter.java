@@ -29,6 +29,7 @@ public class MoveToSaldoPresenter extends BaseDaggerPresenter<MoveToSaldoContrac
     public void processMoveToSaldo(String url, ParamsActionHistory paramsActionHistory) {
         getView().showProgressLoading();
         RequestParams requestParams = RequestParams.create();
+        requestParams.putString(MoveToSaldoUseCase.AMOUNT, String.valueOf(paramsActionHistory.getAmount()));
         requestParams.putString(MoveToSaldoUseCase.REFUND_ID, paramsActionHistory.getRefundId());
         requestParams.putString(MoveToSaldoUseCase.REFUND_TYPE, paramsActionHistory.getRefundType());
         moveToSaldoUseCase.setUrl(url);

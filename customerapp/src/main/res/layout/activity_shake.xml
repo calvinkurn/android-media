@@ -1,12 +1,111 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
-    android:layout_height="100dp"
-    android:layout_alignParentBottom="true">
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@color/transparent">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
-        android:text="Shake Shake" />
-</RelativeLayout>
+    <android.support.v7.widget.LinearLayoutCompat
+        android:id="@+id/shake_shake_message_button"
+        android:layout_width="288dp"
+        android:layout_height="38dp"
+        android:layout_gravity="bottom|center_horizontal"
+        android:gravity="center"
+        android:background="@drawable/bg_rect_rounded_white_shadow"
+        android:layout_margin="@dimen/dp_10"
+        android:padding="@dimen/dp_5">
+
+        <android.support.v7.widget.LinearLayoutCompat
+            android:id="@+id/linear_layout_button_1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:minWidth="@dimen/dp_80"
+            android:clickable="true"
+            android:gravity="center"
+            android:minHeight="@dimen/dp_32"
+            android:paddingLeft="@dimen/dp_5"
+            android:paddingRight="@dimen/dp_5">
+
+            <ImageView
+                android:id="@+id/shake_shake_icon"
+                android:layout_width="@dimen/dp_24"
+                android:layout_height="@dimen/dp_24"
+                android:layout_marginEnd="@dimen/dp_10"
+                android:layout_marginRight="@dimen/dp_10"
+                app:srcCompat="@drawable/ic_shake_shake" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="14sp"
+                android:fontFamily="sans-serif"
+                android:textStyle="normal"
+                android:textColor="@color/medium_green"
+                android:text="@string/shake_shake_terus"
+                />
+            <TextView
+                android:id="@+id/shake_shake_message"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/dp_3"
+                android:textSize="12sp"
+                android:gravity="center"
+                android:fontFamily="sans-serif"
+                android:textStyle="normal"
+                android:text="1"
+                android:background="@layout/layout_circle"
+                android:textColor="@color/medium_green">
+
+            </TextView>
+
+        </android.support.v7.widget.LinearLayoutCompat>
+
+    </android.support.v7.widget.LinearLayoutCompat>
+
+    <android.support.v7.widget.LinearLayoutCompat
+        android:id="@+id/cancel_button"
+        android:layout_width="288dp"
+        android:layout_height="38dp"
+        android:layout_gravity="bottom|center_horizontal"
+        android:gravity="center"
+        android:visibility="gone"
+        android:background="@drawable/bg_rect_rounded_white_shadow"
+        android:layout_margin="@dimen/dp_10">
+
+        <android.support.v7.widget.LinearLayoutCompat
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:minWidth="@dimen/dp_80"
+            android:gravity="center_vertical"
+            android:visibility="visible"
+            android:minHeight="@dimen/dp_32"
+            android:paddingLeft="@dimen/dp_5"
+            android:paddingRight="@dimen/dp_5">
+
+            <ImageView
+                android:layout_width="@dimen/dp_24"
+                android:layout_height="@dimen/dp_24"
+                app:srcCompat="@drawable/ic_shake_shake"
+                android:layout_marginEnd="@dimen/dp_10"
+                android:layout_marginRight="@dimen/dp_10"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="14sp"
+                android:fontFamily="sans-serif"
+                android:textStyle="normal"
+                android:textColor="@color/medium_green"
+                android:text="@string/cancel_shake_shake"
+                />
+            <ImageView
+                android:layout_width="@dimen/dp_12"
+                android:layout_height="@dimen/dp_12"
+                app:srcCompat="@drawable/ic_cross"
+                android:layout_marginLeft="@dimen/dp_25"/>
+
+        </android.support.v7.widget.LinearLayoutCompat>
+
+    </android.support.v7.widget.LinearLayoutCompat>
+</FrameLayout>

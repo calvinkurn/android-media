@@ -12,10 +12,12 @@ public class ImageProduct {
     private static final String KEY_PRODUCT_ID = "product_id";
     private static final String KEY_PRODUCT_NAME = "product_name";
     private static final String KEY_IMAGE_URL = "image_url";
+    private static final String KEY_IMAGE_CLICK_URL = "image_click_url";
 
     private String productId;
     private String productName;
     private String imageUrl;
+    private String imageClickUrl;
 
     public ImageProduct(JSONObject object) throws JSONException {
         if(!object.isNull(KEY_PRODUCT_ID)) {
@@ -27,6 +29,17 @@ public class ImageProduct {
         if(!object.isNull(KEY_IMAGE_URL)) {
             setImageUrl(object.getString(KEY_IMAGE_URL));
         }
+        if(!object.isNull(KEY_IMAGE_CLICK_URL)) {
+            setImageClickUrl(object.getString(KEY_IMAGE_CLICK_URL));
+        }
+    }
+
+    public String getImageClickUrl() {
+        return imageClickUrl;
+    }
+
+    public void setImageClickUrl(String imageClickUrl) {
+        this.imageClickUrl = imageClickUrl;
     }
 
     public String getProductId() {

@@ -30,6 +30,7 @@ import com.tokopedia.digital.common.constant.DigitalUrl;
 import com.tokopedia.gm.common.constant.GMCommonUrl;
 import com.tokopedia.mitratoppers.common.constant.MitraToppersBaseURL;
 import com.tokopedia.network.SessionUrl;
+import com.tokopedia.payment.fingerprint.util.PaymentFingerprintConstant;
 import com.tokopedia.pushnotif.PushNotification;
 import com.tokopedia.reputation.common.constant.ReputationCommonUrl;
 import com.tokopedia.sellerapp.deeplink.DeepLinkActivity;
@@ -186,6 +187,8 @@ public class SellerMainApplication extends SellerRouterApplication implements Mo
         MitraToppersBaseURL.WEB_DOMAIN = SellerAppBaseUrl.BASE_WEB_DOMAIN;
         MitraToppersBaseURL.PATH_MITRA_TOPPERS = SellerAppBaseUrl.PATH_MITRA_TOPPERS;
         DigitalUrl.WEB_DOMAIN = SellerAppBaseUrl.BASE_WEB_DOMAIN;
+        PaymentFingerprintConstant.ACCOUNTS_DOMAIN = SellerAppBaseUrl.ACCOUNTS_DOMAIN;
+        PaymentFingerprintConstant.TOP_PAY_DOMAIN = SellerAppBaseUrl.TOP_PAY_DOMAIN;
         TkpdBaseURL.HOME_DATA_BASE_URL = SellerAppBaseUrl.HOME_DATA_BASE_URL;
         GMCommonUrl.BASE_URL = SellerAppBaseUrl.BASE_GOLD_MERCHANT_DOMAIN;
     }

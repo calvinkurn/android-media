@@ -1,6 +1,5 @@
 package com.tokopedia.discovery.imagesearch.data.subscriber;
 
-import com.tokopedia.discovery.imagesearch.domain.usecase.GetImageSearchUseCase;
 import com.tokopedia.discovery.newdiscovery.base.BaseDiscoveryContract;
 import com.tokopedia.discovery.newdiscovery.base.DefaultSearchSubscriber;
 import com.tokopedia.discovery.newdiscovery.domain.model.SearchResultModel;
@@ -31,13 +30,7 @@ public class DefaultImageSearchSubscriber<D2 extends BaseDiscoveryContract.View>
 
     @Override
     public void onError(Throwable throwable) {
-        if (throwable instanceof GetImageSearchUseCase.GetImageSearchException) {
-            discoveryView.onHandleInvalidImageSearchResponse();
-        } else if (throwable instanceof GetImageSearchUseCase.HandleImageSearchResponseError) {
-            discoveryView.onHandleImageSearchResponseError();
-        } else {
-            discoveryView.onHandleResponseError();
-        }
+        discoveryView.onHandleInvalidImageSearchResponse();
         throwable.printStackTrace();
     }
 
@@ -51,7 +44,13 @@ public class DefaultImageSearchSubscriber<D2 extends BaseDiscoveryContract.View>
         model.setSearchParameter(imageSearchProductParameter);
         model.setForceSearch(forceSearch);
         model.setImageSearch(imageSearch);
+
+        if (model.getProductList() == null || model.getProductList().size() == 0) {
+            discoveryView.onHandleImageSearchResponseError();
+            return;
+        }
+
         discoveryView.onHandleImageSearchResponseSuccess();
-        discoveryView.onHandleResponseSearch(model);
+        discoveryView.onHandleImageResponseSearch(model);
     }
 }

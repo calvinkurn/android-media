@@ -32,16 +32,16 @@
 
 /features/digital/flight_no_op/         @tokopedia/minion-mark
 /features/payment/payment/              @tokopedia/minion-bob
-/features/digital/flight_no_op/         @tokopedia/minion-mark
 /features/user/groupchat/               @tokopedia/minion-kevin
 
 /libraries/applink/                     @tokopedia/core-team
 /libraries/bottom_sheet_builder/        @tokopedia/minion-stuart
 /libraries/cache_api/                   @tokopedia/minion-stuart
 /libraries/image_picker/                @tokopedia/minion-stuart
-/libraries/push_notification/           @tokopedia/core-team
-/libraries/react_native/                @tokopedia/core-team
-/libraries/use_case/                    @tokopedia/core-team
 /libraries/williamchart/                @tokopedia/minion-stuart
+/libraries/use_case/                    @tokopedia/core-team
+/libraries/react_native/                @tokopedia/core-team
+/libraries/applink/                     @tokopedia/core-team
+/libraries/push_notification/           @ricoharisin
 
 

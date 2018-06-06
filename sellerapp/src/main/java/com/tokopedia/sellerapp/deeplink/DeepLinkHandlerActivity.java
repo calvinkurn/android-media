@@ -19,6 +19,8 @@ import com.tokopedia.gm.applink.GMApplinkModule;
 import com.tokopedia.gm.applink.GMApplinkModuleLoader;
 import com.tokopedia.inbox.deeplink.InboxDeeplinkModule;
 import com.tokopedia.inbox.deeplink.InboxDeeplinkModuleLoader;
+import com.tokopedia.profile.applink.ProfileApplinkModule;
+import com.tokopedia.profile.applink.ProfileApplinkModuleLoader;
 import com.tokopedia.seller.applink.SellerApplinkModule;
 import com.tokopedia.seller.applink.SellerApplinkModuleLoader;
 import com.tokopedia.sellerapp.SplashScreenActivity;
@@ -40,7 +42,8 @@ import com.tokopedia.topads.applink.TopAdsApplinkModuleLoader;
         GMApplinkModule.class,
         SellerappAplinkModule.class,
         InboxDeeplinkModule.class,
-        ShopAppLinkModule.class
+        ShopAppLinkModule.class,
+        ProfileApplinkModule.class
 })
 public class DeepLinkHandlerActivity extends AppCompatActivity {
 
@@ -52,7 +55,8 @@ public class DeepLinkHandlerActivity extends AppCompatActivity {
                 new GMApplinkModuleLoader(),
                 new SellerappAplinkModuleLoader(),
                 new InboxDeeplinkModuleLoader(),
-                new ShopAppLinkModuleLoader()
+                new ShopAppLinkModuleLoader(),
+                new ProfileApplinkModuleLoader()
         );
     }
 

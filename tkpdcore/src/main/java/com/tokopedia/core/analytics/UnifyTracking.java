@@ -2998,33 +2998,6 @@ public class UnifyTracking extends TrackingUtils {
         return kolCategory + " - " + kolName;
     }
 
-    public static void eventKolCommentDetailLoadMore() {
-        sendGTMEvent(new EventTracking(
-                AppEventTracking.Event.USER_INTERACTION_HOMEPAGE,
-                AppEventTracking.Category.FEED_CONTENT_COMMENT_DETAIL,
-                AppEventTracking.Action.FEED_LOAD_MORE_COMMENTS,
-                AppEventTracking.EventLabel.FEED_CONTENT_COMMENT_DETAIL_LOAD_MORE
-        ).setUserId().getEvent());
-    }
-
-    public static void eventKolCommentDetailBack() {
-        sendGTMEvent(new EventTracking(
-                AppEventTracking.Event.USER_INTERACTION_HOMEPAGE,
-                AppEventTracking.Category.FEED_CONTENT_COMMENT_DETAIL,
-                AppEventTracking.Action.FEED_COMMENT_CLICK_BACK,
-                AppEventTracking.EventLabel.FEED_CONTENT_COMMENT_DETAIL_BACK
-        ).setUserId().getEvent());
-    }
-
-    public static void eventKolCommentDetailSubmitComment() {
-        sendGTMEvent(new EventTracking(
-                AppEventTracking.Event.USER_INTERACTION_HOMEPAGE,
-                AppEventTracking.Category.FEED_CONTENT_COMMENT_DETAIL,
-                AppEventTracking.Action.FEED_SUBMIT_COMMENT,
-                AppEventTracking.EventLabel.FEED_CONTENT_COMMENT_DETAIL_COMMENT
-        ).setUserId().getEvent());
-    }
-
     public static void eventKolContentCommentClick(boolean isFollowed, String type) {
         sendGTMEvent(new EventTracking(
                 AppEventTracking.Event.USER_INTERACTION_HOMEPAGE,

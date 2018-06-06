@@ -1,5 +1,6 @@
 package com.tokopedia.home.beranda.presentation.view.fragment;
 
+import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -22,6 +23,7 @@ import android.view.inputmethod.InputMethodManager;
 
 import com.google.firebase.perf.metrics.Trace;
 import com.tkpd.library.ui.view.LinearLayoutManager;
+import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.core.analytics.AppScreen;
@@ -791,6 +793,12 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         super.setUserVisibleHint(isVisibleToUser);
         trackScreen(isVisibleToUser);
         restartBanner(isVisibleToUser);
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        ScreenTracking.screen(getScreenName());
     }
 
     private void restartBanner(boolean isVisibleToUser) {

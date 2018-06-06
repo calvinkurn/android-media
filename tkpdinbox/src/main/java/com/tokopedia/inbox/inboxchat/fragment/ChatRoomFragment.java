@@ -493,7 +493,7 @@ public class ChatRoomFragment extends BaseDaggerFragment
             boolean isTargetTkpMeAndNotRedirect = (TextUtils.equals(uri.getHost(),BASE_DOMAIN_SHORTENED) &&
                     !TextUtils.equals(uri.getEncodedPath(),"/r"));
             boolean isNeedAuthToken = (isTargetDomainTokopedia || isTargetTkpMeAndNotRedirect);
-            
+
             if(uri.getScheme().equals(APPLINK_SCHEME)){
                 ((TkpdInboxRouter) getActivity().getApplicationContext())
                         .actionNavigateByApplinksUrl(getActivity(), url, new Bundle());

@@ -6,11 +6,13 @@ import android.support.annotation.NonNull;
 import android.support.annotation.StyleRes;
 import android.support.design.widget.BottomSheetDialog;
 import android.support.v4.content.ContextCompat;
+import android.text.Html;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+
 import com.tokopedia.design.R;
 
 /**
@@ -95,8 +97,13 @@ public class BottomSheetView extends BottomSheetDialog {
 
         titleBottomSheet.setText(bottomSheetField.getTitle());
 
-        if (bodyBottomSheet != null)
-            bodyBottomSheet.setText(bottomSheetField.getBody());
+        if (bodyBottomSheet != null) {
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
+                bodyBottomSheet.setText(Html.fromHtml(bottomSheetField.getBody(), Html.FROM_HTML_MODE_LEGACY));
+            } else {
+                bodyBottomSheet.setText(Html.fromHtml(bottomSheetField.getBody()));
+            }
+        }
 
         if (linkBottomSheet != null) {
             if (bottomSheetField.getUrlTextLink() != null) {
@@ -118,16 +125,16 @@ public class BottomSheetView extends BottomSheetDialog {
             btnOpsiBottomSheet.setVisibility(View.GONE);
         }
 
-        if(bottomSheetField.getLabelCloseButton() != null){
+        if (bottomSheetField.getLabelCloseButton() != null) {
             btnCloseBottomSheet.setText(bottomSheetField.getLabelCloseButton());
         }
     }
 
-    public void setBtnCloseOnClick(View.OnClickListener onClickListener){
+    public void setBtnCloseOnClick(View.OnClickListener onClickListener) {
         btnCloseBottomSheet.setOnClickListener(onClickListener);
     }
 
-    public void setBtnOpsiOnClick(View.OnClickListener onClickListener){
+    public void setBtnOpsiOnClick(View.OnClickListener onClickListener) {
         btnOpsiBottomSheet.setOnClickListener(onClickListener);
     }
 
@@ -151,11 +158,11 @@ public class BottomSheetView extends BottomSheetDialog {
     }
 
     public void setTitleTextSize(float dimension) {
-        titleBottomSheet.setTextSize(TypedValue.COMPLEX_UNIT_PX,dimension);
+        titleBottomSheet.setTextSize(TypedValue.COMPLEX_UNIT_PX, dimension);
     }
 
     public void setBodyTextSize(float dimension) {
-        bodyBottomSheet.setTextSize(TypedValue.COMPLEX_UNIT_PX,dimension);
+        bodyBottomSheet.setTextSize(TypedValue.COMPLEX_UNIT_PX, dimension);
     }
 
     public static class BottomSheetField {
@@ -261,8 +268,8 @@ public class BottomSheetView extends BottomSheetDialog {
                 return this;
             }
 
-            public BottomSheetFieldBuilder setCloseButton(String labelCloseButton){
-                this.labelCloseButton= labelCloseButton;
+            public BottomSheetFieldBuilder setCloseButton(String labelCloseButton) {
+                this.labelCloseButton = labelCloseButton;
                 return this;
             }
 

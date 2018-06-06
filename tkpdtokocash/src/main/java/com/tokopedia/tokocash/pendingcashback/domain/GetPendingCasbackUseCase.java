@@ -4,6 +4,8 @@ import com.tokopedia.tokocash.pendingcashback.data.PendingCashbackRepository;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.usecase.UseCase;
 
+import javax.inject.Inject;
+
 import rx.Observable;
 
 /**
@@ -14,6 +16,7 @@ public class GetPendingCasbackUseCase extends UseCase<PendingCashback> {
 
     private PendingCashbackRepository repository;
 
+    @Inject
     public GetPendingCasbackUseCase(PendingCashbackRepository repository) {
         this.repository = repository;
     }

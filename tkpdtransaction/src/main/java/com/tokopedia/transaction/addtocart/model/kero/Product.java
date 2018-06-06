@@ -17,9 +17,6 @@ public class Product implements Parcelable {
     @SerializedName("shipper_product_name")
     @Expose
     private String shipperProductName;
-    @SerializedName("shipper_product_desc")
-    @Expose
-    private String shipperProductDesc;
     @SerializedName("is_show_map")
     @Expose
     private Integer isShowMap;
@@ -41,15 +38,6 @@ public class Product implements Parcelable {
     @SerializedName("insurance_type")
     @Expose
     private Integer insuranceMode;
-    @SerializedName("insurance_type_info")
-    @Expose
-    private String insuranceTypeInfo;
-    @SerializedName("weight_product")
-    @Expose
-    private int weightProduct;
-    @SerializedName("weight_order_spid")
-    @Expose
-    private int weightOrderSpid;
     @SerializedName("insurance_used_type")
     @Expose
     private int insuranceUsedType;
@@ -95,20 +83,6 @@ public class Product implements Parcelable {
      */
     public void setShipperProductName(String shipperProductName) {
         this.shipperProductName = shipperProductName;
-    }
-
-    /**
-     * @return The shipperProductDesc
-     */
-    public String getShipperProductDesc() {
-        return shipperProductDesc;
-    }
-
-    /**
-     * @param shipperProductDesc The shipper_product_desc
-     */
-    public void setShipperProductDesc(String shipperProductDesc) {
-        this.shipperProductDesc = shipperProductDesc;
     }
 
     /**
@@ -213,30 +187,6 @@ public class Product implements Parcelable {
         this.insuranceMode = insuranceMode;
     }
 
-    public String getInsuranceTypeInfo() {
-        return insuranceTypeInfo;
-    }
-
-    public void setInsuranceTypeInfo(String insuranceTypeInfo) {
-        this.insuranceTypeInfo = insuranceTypeInfo;
-    }
-
-    public Integer getWeightProduct() {
-        return weightProduct;
-    }
-
-    public void setWeightProduct(Integer weightProduct) {
-        this.weightProduct = weightProduct;
-    }
-
-    public Integer getWeightOrderSpid() {
-        return weightOrderSpid;
-    }
-
-    public void setWeightOrderSpid(Integer weightOrderSpid) {
-        this.weightOrderSpid = weightOrderSpid;
-    }
-
     public Integer getInsuranceUsedType() {
         return insuranceUsedType;
     }
@@ -279,7 +229,6 @@ public class Product implements Parcelable {
     protected Product(Parcel in) {
         shipperProductId = in.readString();
         shipperProductName = in.readString();
-        shipperProductDesc = in.readString();
         isShowMap = in.readByte() == 0x00 ? null : in.readInt();
         price = in.readByte() == 0x00 ? null : in.readInt();
         formattedPrice = in.readString();
@@ -289,9 +238,6 @@ public class Product implements Parcelable {
         descHoursId = in.readString();
         insurancePrice = in.readByte() == 0x00 ? null : in.readInt();
         insuranceMode = in.readByte() == 0x00 ? null : in.readInt();
-        insuranceTypeInfo = in.readString();
-        weightProduct = in.readInt();
-        weightOrderSpid = in.readInt();
         insuranceUsedType = in.readInt();
         insuranceUsedInfo = in.readString();
         insuranceUsedDefault = in.readInt();
@@ -306,7 +252,6 @@ public class Product implements Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(shipperProductId);
         dest.writeString(shipperProductName);
-        dest.writeString(shipperProductDesc);
         if (isShowMap == null) {
             dest.writeByte((byte) (0x00));
         } else {
@@ -336,9 +281,6 @@ public class Product implements Parcelable {
             dest.writeByte((byte) (0x01));
             dest.writeInt(insuranceMode);
         }
-        dest.writeString(insuranceTypeInfo);
-        dest.writeInt(weightProduct);
-        dest.writeInt(weightOrderSpid);
         dest.writeInt(insuranceUsedType);
         dest.writeString(insuranceUsedInfo);
         dest.writeInt(insuranceUsedDefault);

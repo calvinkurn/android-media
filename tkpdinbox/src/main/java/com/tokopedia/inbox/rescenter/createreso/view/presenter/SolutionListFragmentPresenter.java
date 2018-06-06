@@ -134,5 +134,6 @@ public class SolutionListFragmentPresenter
         getEditSolutionUseCase.unsubscribe();
         postEditSolutionUseCase.unsubscribe();
         postAppealSolutionUseCase.unsubscribe();
+        getAppealSolutionUseCase.unsubscribe();
     }
 }

@@ -1,0 +1,48 @@
+apply plugin: 'com.android.library'
+apply from: "$rootProject.projectDir/buildconfig/module.gradle"
+apply plugin: 'android-apt'
+apply plugin: 'com.jakewharton.butterknife'
+apply plugin: 'io.hansel.preprocessor.module'
+
+repositories {
+    maven { url 'https://hansel.io/maven' }
+}
+
+buildscript {
+    repositories {
+        mavenCentral()
+        jcenter()
+        maven { url 'https://hansel.io/maven' }
+    }
+    dependencies {
+        classpath 'com.jakewharton:butterknife-gradle-plugin:8.4.0'
+        classpath rootProject.ext.miscDependencies.hansel
+    }
+}
+
+dependencies {
+
+    compile project(rootProject.ext.features.core)
+    compile project(rootProject.ext.libraries.design)
+
+    compile rootProject.ext.butterKnifeDependencies.butterKnife
+    apt rootProject.ext.butterKnifeDependencies.butterKnifeCompiler
+
+    compile rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
+    apt rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
+
+    compile rootProject.ext.miscDependencies.dagger
+    apt rootProject.ext.miscDependencies.daggerCompiler
+
+    compile rootProject.ext.supportLibDependencies.recyclerViewV7
+    compile rootProject.ext.supportLibDependencies.supportV4
+    compile rootProject.ext.supportLibDependencies.appCompactV7
+    compile rootProject.ext.supportLibDependencies.supportV13
+    compile rootProject.ext.supportLibDependencies.design
+    compile rootProject.ext.supportLibDependencies.cardViewV7
+    compile rootProject.ext.supportLibDependencies.constraintLayout
+
+    compile 'at.blogc:expandabletextview:1.0.5'
+    compile project(rootProject.ext.features.payment)
+    compile project(path: ':tkpdloyalty')
+}

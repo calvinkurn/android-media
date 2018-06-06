@@ -251,7 +251,7 @@ public class CartItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         });
 
 
-        holder.btnOverflow.setOnClickListener(new View.OnClickListener() {
+        holder.editCartLabel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 PopupMenu popupMenu = new PopupMenu(hostFragment.getActivity(), v);
@@ -753,7 +753,7 @@ public class CartItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                                     CartProductItemAdapter adapterProduct) {
         if (isEditMode) {
             holder.holderActionEditor.setVisibility(View.VISIBLE);
-            holder.btnOverflow.setVisibility(View.GONE);
+            holder.editCartLabel.setVisibility(View.GONE);
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
                 holder.holderContainer.setBackground(
                         hostFragment.getResources().getDrawable(R.drawable.bg_cart_item_editable_mode)
@@ -763,12 +763,12 @@ public class CartItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                         hostFragment.getResources().getDrawable(R.drawable.bg_cart_item_editable_mode)
                 );
             }
-            holder.btnOverflow.setEnabled(false);
+            holder.editCartLabel.setEnabled(false);
             adapterProduct.enableEditMode();
             adapterProduct.notifyDataSetChanged();
         } else {
             holder.holderActionEditor.setVisibility(View.GONE);
-            holder.btnOverflow.setVisibility(View.VISIBLE);
+            holder.editCartLabel.setVisibility(View.VISIBLE);
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
                 holder.holderContainer.setBackground(
                         hostFragment.getResources().getDrawable(R.drawable.bg_cart_item_normal_mode)
@@ -778,12 +778,12 @@ public class CartItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                         hostFragment.getResources().getDrawable(R.drawable.bg_cart_item_normal_mode)
                 );
             }
-            holder.btnOverflow.setEnabled(true);
+            holder.editCartLabel.setEnabled(true);
             adapterProduct.disableEditMode();
             adapterProduct.notifyDataSetChanged();
         }
         holder.holderActionEditor.setVisibility(isEditMode ? View.VISIBLE : View.GONE);
-        holder.btnOverflow.setVisibility(isEditMode ? View.GONE : View.VISIBLE);
+        holder.editCartLabel.setVisibility(isEditMode ? View.GONE : View.VISIBLE);
     }
 
     static class ViewHolder extends RecyclerView.ViewHolder {
@@ -799,8 +799,8 @@ public class CartItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         LinearLayout holderError;
         @BindView(R2.id.tv_shop_name)
         TextView tvShopName;
-        @BindView(R2.id.btn_overflow)
-        ImageView btnOverflow;
+        @BindView(R2.id.edit_cart_label)
+        TextView editCartLabel;
         @BindView(R2.id.rv_cart_product)
         RecyclerView rvCartProduct;
         @BindView(R2.id.cb_dropshiper)

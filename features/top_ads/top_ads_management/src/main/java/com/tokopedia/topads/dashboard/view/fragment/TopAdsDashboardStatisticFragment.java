@@ -35,7 +35,7 @@ import java.util.List;
  */
 
 public abstract class TopAdsDashboardStatisticFragment extends TkpdBaseV4Fragment {
-    TextView contentTitleGraph;
+    protected TextView contentTitleGraph;
     LineChartView contentGraph;
     private TopAdsBaseWilliamChartConfig topAdsBaseWilliamChartConfig;
     private BaseWilliamChartConfig baseWilliamChartConfig;
@@ -130,6 +130,9 @@ public abstract class TopAdsDashboardStatisticFragment extends TkpdBaseV4Fragmen
     }
 
     public void updateDataStatistic(DataStatistic dataStatistic) {
+        if (dataStatistic == null){
+            return;
+        }
         this.summary = dataStatistic.getSummary();
         this.cells = dataStatistic.getCells();
         mLabels = generateLabels();

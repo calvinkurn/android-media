@@ -5,6 +5,8 @@ import com.tokopedia.tokocash.accountsetting.presentation.fragment.AccountSettin
 import com.tokopedia.tokocash.activation.presentation.fragment.ActivateTokoCashFragment;
 import com.tokopedia.tokocash.activation.presentation.fragment.RequestOTPWalletFragment;
 import com.tokopedia.tokocash.activation.presentation.fragment.SuccessActivateFragment;
+import com.tokopedia.tokocash.autosweepmf.view.fragment.AutoSweepHomeFragment;
+import com.tokopedia.tokocash.autosweepmf.view.fragment.SetAutoSweepLimitFragment;
 import com.tokopedia.tokocash.historytokocash.presentation.fragment.HelpHistoryDetailFragment;
 import com.tokopedia.tokocash.historytokocash.presentation.fragment.HistoryTokoCashFragment;
 import com.tokopedia.tokocash.historytokocash.presentation.fragment.HomeTokoCashFragment;
@@ -46,4 +48,8 @@ public interface TokoCashComponent {
     void inject(MoveToSaldoFragment moveToSaldoFragment);
 
     void inject(AccountSettingFragment accountSettingFragment);
+
+    void inject(AutoSweepHomeFragment fragment);
+
+    void inject(SetAutoSweepLimitFragment fragment);
 }

@@ -1,6 +1,7 @@
 package com.tokopedia.tokocash.historytokocash.presentation.contract;
 
 import android.content.Intent;
+import android.os.Bundle;
 
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
@@ -26,6 +27,8 @@ public interface HomeTokoCashContract {
         void showEmptyPage(Throwable throwable);
 
         void navigateToActivityRequest(Intent intent, int requestCode);
+
+        void addAutoSweepFragment(Bundle bundle);
     }
 
     interface Presenter extends CustomerPresenter<View> {

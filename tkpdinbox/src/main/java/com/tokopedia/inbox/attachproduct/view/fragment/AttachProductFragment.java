@@ -241,4 +241,10 @@ public class AttachProductFragment extends BaseSearchListFragment<AttachProductI
             );
         }
     }
+
+    @Override
+    public void onDestroy() {
+        if(presenter != null) presenter.detachView();
+        super.onDestroy();
+    }
 }

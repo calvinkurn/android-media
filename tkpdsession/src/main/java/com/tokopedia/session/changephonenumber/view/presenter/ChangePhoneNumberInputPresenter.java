@@ -87,4 +87,10 @@ public class ChangePhoneNumberInputPresenter
         validateNumberUseCase.execute(getSubmitNumberParam(newPhoneNumber),
                 new SubmitNumberSubscriber(view));
     }
+
+    @Override
+    public void detachView() {
+        super.detachView();
+        validateNumberUseCase.unsubscribe();
+    }
 }

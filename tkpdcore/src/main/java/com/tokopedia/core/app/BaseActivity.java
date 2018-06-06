@@ -175,7 +175,7 @@ public class BaseActivity extends AppCompatActivity implements SessionHandler.on
             finish();
             Intent intent;
             if (GlobalConfig.isSellerApp()) {
-                intent = ((TkpdCoreRouter)MainApplication.getAppContext()).getHomeIntent(this);
+                intent = ((TkpdCoreRouter) MainApplication.getAppContext()).getHomeIntent(this);
             } else {
                 invalidateCategoryCache();
                 intent = HomeRouter.getHomeActivity(this);
@@ -252,6 +252,9 @@ public class BaseActivity extends AppCompatActivity implements SessionHandler.on
                     @Override
                     public void onDialogClicked() {
                         sessionHandler.forceLogout();
+                        try {
+                            ((TkpdCoreRouter) getApplication()).onLogout(getApplicationComponent());
+                        } catch (Exception ex) {}
                         if (GlobalConfig.isSellerApp()) {
                             Intent intent = SellerRouter.getActivitySplashScreenActivity(getBaseContext());
                             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -300,14 +303,19 @@ public class BaseActivity extends AppCompatActivity implements SessionHandler.on
             ((AbstractionRouter) getApplication()).init();
         }
     }
+
     private void registerShake() {
         if (!GlobalConfig.isSellerApp() && getApplication() instanceof AbstractionRouter) {
-            ((AbstractionRouter) getApplication()).registerShake(getScreenName());
+            String screenName = getScreenName();
+            if (screenName == null) {
+                screenName = this.getClass().getSimpleName();
+            }
+            ((AbstractionRouter) getApplication()).registerShake(screenName);
         }
     }
 
     private void unregisterShake() {
-        if (!GlobalConfig.isSellerApp() &&  getApplication() instanceof AbstractionRouter) {
+        if (!GlobalConfig.isSellerApp() && getApplication() instanceof AbstractionRouter) {
             ((AbstractionRouter) getApplication()).unregisterShake();
         }
     }
