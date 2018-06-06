@@ -29,7 +29,7 @@ public class ImagePickerPreviewWidget extends FrameLayout implements ImagePicker
 
     public interface OnImagePickerThumbnailListWidgetListener {
         void onThumbnailItemClicked(String imagePath, int position);
-        void onThumbnailRemoved(String imagePath);
+        void afterThumbnailRemoved();
     }
 
     public ImagePickerPreviewWidget(@NonNull Context context) {
@@ -93,9 +93,9 @@ public class ImagePickerPreviewWidget extends FrameLayout implements ImagePicker
     }
 
     @Override
-    public void onThumbnailRemoved(String imagePath) {
+    public void onThumbnailRemoved() {
         if (onImagePickerThumbnailListWidgetListener!= null) {
-            onImagePickerThumbnailListWidgetListener.onThumbnailRemoved(imagePath);
+            onImagePickerThumbnailListWidgetListener.afterThumbnailRemoved();
         }
     }
 

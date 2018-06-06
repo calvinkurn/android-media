@@ -75,15 +75,4 @@ public class ImageInstagramAdapter extends BaseListAdapter<InstagramMediaModel, 
         super.onBindViewHolder(holder, position);
     }
 
-    public void removeImageFromSelection(String imagePath) {
-        if (visitables == null || visitables.size() == 0) {
-            return;
-        }
-        if (!supportMultipleSelection) {
-            return;
-        }
-        selectedImagePath.remove(imagePath);
-        notifyDataSetChanged();
-    }
-
 }
