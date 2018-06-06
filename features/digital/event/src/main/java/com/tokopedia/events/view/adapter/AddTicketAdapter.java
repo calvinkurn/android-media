@@ -43,6 +43,15 @@ public class AddTicketAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
         LayoutInflater inflater = LayoutInflater.from(
                 parent.getContext());
         View v = inflater.inflate(R.layout.add_tickets_layout, parent, false);
+        if (viewType == 1001) {
+            ViewGroup.LayoutParams params = v.getLayoutParams();
+            if (params instanceof RecyclerView.LayoutParams) {
+                RecyclerView.LayoutParams rp = (RecyclerView.LayoutParams) params;
+                rp.setMargins(0,
+                        mContext.getResources().getDimensionPixelSize(R.dimen.dp_16), 0, 0);
+                v.setLayoutParams(rp);
+            }
+        }
         TicketViewHolder holder = new TicketViewHolder(v);
         return holder;
     }
@@ -55,6 +64,14 @@ public class AddTicketAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
     @Override
     public int getItemCount() {
         return packageViewModelList.size();
+    }
+
+    @Override
+    public int getItemViewType(int position) {
+        if (position == 0)
+            return 1001;
+        else
+            return -1;
     }
 
     public void setData(List<PackageViewModel> data) {

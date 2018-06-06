@@ -38,23 +38,29 @@ public interface KolPostListener {
 
         void updateCursor(String lastCursor);
 
-        void onGoToKolProfile(int page, int rowNumber, String url);
-
-        void onOpenKolTooltip(int page, int rowNumber, String url);
-
-        void onFollowKolClicked(int page, int rowNumber, int id);
-
-        void onUnfollowKolClicked(int page, int rowNumber, int id);
-
-        void onLikeKolClicked(int page, int rowNumber, int id);
-
-        void onUnlikeKolClicked(int page, int adapterPosition, int id);
-
-        void onGoToKolComment(int page, int rowNumber, KolPostViewModel kolPostViewModel);
-
         void onLikeKolSuccess(int rowNumber);
 
         void onLikeKolError(String message);
+
+        interface ViewHolder {
+            UserSession getUserSession();
+
+            AbstractionRouter getAbstractionRouter();
+
+            void onGoToKolProfile(int page, int rowNumber, String userId, int postId);
+
+            void onOpenKolTooltip(int page, int rowNumber, String url);
+
+            void onFollowKolClicked(int page, int rowNumber, int id);
+
+            void onUnfollowKolClicked(int page, int rowNumber, int id);
+
+            void onLikeKolClicked(int page, int rowNumber, int id);
+
+            void onUnlikeKolClicked(int page, int adapterPosition, int id);
+
+            void onGoToKolComment(int page, int rowNumber, KolPostViewModel kolPostViewModel);
+        }
     }
 
     interface Presenter extends CustomerPresenter<View> {

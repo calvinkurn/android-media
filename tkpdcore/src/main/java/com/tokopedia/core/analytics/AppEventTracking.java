@@ -172,6 +172,7 @@ public interface AppEventTracking {
         String PRODUCT_VIEW = "productView";
         String LONG_CLICK = "longClick";
         String CLICK_PDP = "clickPDP";
+        String VIEW_PDP = "viewPDP";
         String EVENT_RESOLUTION_CENTER = "resolutionCenter";
         String EVENT_RESOLUTION_CENTER_VIEW = "resolutionCenterView";
         String ADD_TO_CART_PDP = "addToCart";
@@ -302,13 +303,14 @@ public interface AppEventTracking {
         String PROMO_MICROSITE_PROMO_TOOLTIP = "promo microsite - promo tooltip";
         String SORT_BY = "sort by";
         String FILTER_PRODUCT = "filter product";
+        String FILTER_JOURNEY = "filter journey";
         String LONG_PRESS = "Long Press";
 
         String HOME_BOTTOM_NAV = "bottom nav";
         String ECOMMERCE = "Ecommerce";
         String APPSHARE = "App share";
 
-        String DIGITAL_EVENT = "digital-event";
+        String DIGITAL_EVENT = "digital - event";
 
         String SEARCH_SHARE = "search share";
         String GRID_MENU = "grid menu";
@@ -323,6 +325,7 @@ public interface AppEventTracking {
         String VOICE_SEARCH = "Voice Search";
         String CAMERA_SEARCH = "click image search by camera";
         String GALLERY_SEARCH = "click image search from gallery";
+        String EXTERNAL_IMAGE_SEARCH = "click image search external";
         String CAMERA_SEARCH_RESULT = "query search by camera";
         String GALLERY_SEARCH_RESULT = "query search by gallery";
         String VIEW = "View";
@@ -354,6 +357,8 @@ public interface AppEventTracking {
         String UPLOAD_SUCCESS = "Success Upload";
         String CLICK_USE_VOUCHER = " Click Gunakan Voucher - ";
         String CLICK_CANCEL_VOUCHER = " Click Batalkan Voucher";
+
+        String COPY = "Copy";
 
         String CLICK_CATEGORY = "Click Category";
         String NAVIGATION_CLICK = "Navigation";
@@ -387,6 +392,7 @@ public interface AppEventTracking {
         String IMPRESSION = "Impression";
         String COPY_CODE = "Copy Code";
         String FILTER = "Filter";
+        String APPLY_FILTER = "apply filter";
         String INSTALL = "Install";
         String REMOVE = "Remove";
         String CLICK_USSD_CEK_SALDO = "Click Cek Saldo from USSD";
@@ -407,6 +413,7 @@ public interface AppEventTracking {
         String CLICK_PRODUCT_LIST = "click product list";
         String CLICK_SORT_PRODUCT = "click sort product";
         String CLICK_FILTER_PRODUCT = "click filter product";
+        String CLICK_FILTER = "click filter";
         String CLICK_OVERFLOW_MENU = "click overflow menu";
 
         String CLICK_WIDGET_BAR = "click widget";
@@ -440,17 +447,6 @@ public interface AppEventTracking {
         String TOKOPOINTS_POP_UP_CLICK = "click any pop up button";
 
         String FEED_CONTENT_IMPRESSION = "feed - content impression";
-        String FEED_FOLLOW_CONTENT = "feed - follow content";
-        String FEED_UNFOLLOW_CONTENT = "feed - unfollow content";
-        String FEED_EXPAND_CONTENT = "feed - expand content";
-        String FEED_CLICK_CONTENT_CTA = "feed - click content cta";
-        String FEED_CLICK_CONTENT_WRITER_NAME = "feed - click content writer name";
-        String FEED_LIKE_CONTENT = "feed - like content";
-        String FEED_UNLIKE_CONTENT = "feed - unlike content";
-        String FEED_CLICK_CONTENT_COMMENT = "feed - click content comment";
-        String FEED_SUBMIT_COMMENT = "submit comment";
-        String FEED_COMMENT_CLICK_BACK = "click back";
-        String FEED_LOAD_MORE_COMMENTS = "load more comments";
         String FEED_KOL_RECOMMENDATION_IMPRESSION = "feed - kol recommendation impression";
         String FEED_FOLLOW_KOL_RECOMMENDATION = "feed - follow kol recommendation";
         String FEED_UNFOLLOW_KOL_RECOMMENDATION = "feed - unfollow kol recommendation";
@@ -507,6 +503,7 @@ public interface AppEventTracking {
         String SELECT_COLOR_VARIANT = "select color on variants page";
         String SELECT_SIZE_VARIANT = "select size on variants page";
         String CLICK_BUY_VARIANT_PAGE = "click - buy on variants page";
+        String LANDSCAPE_VIEW = "landscape view";
 
         String LOGIN_NOW = "masuk sekarang";
         String CHECKOUT = "Checkout";
@@ -547,6 +544,7 @@ public interface AppEventTracking {
         String SHARE_TO = "Share - ";
         String REVIEW = "Review";
         String PRODUCT_DESCRIPTION = "Product Description";
+        String PRODUCT_ID_VALUE = "product_id : %1$s";
         String PRODUCT_TALK = "Talk";
         String ADD_ADDRESS = "Add Address";
         String CHANGE_ADDRESS = "Change Address";
@@ -860,12 +858,6 @@ public interface AppEventTracking {
         String TOKOPOINTS_LABEL = "tokopoints";
         String TOKOPOINTS_POP_UP = "pop up";
         String TOKOPOINTS_POP_UP_BUTTON = "pop up button";
-        String FEED_CONTENT_TYPE_RECOMMENDED = "recommended content";
-        String FEED_CONTENT_TYPE_FOLLOWED = "followed content";
-        String FEED_CAMPAIGN_TYPE_SUFFIX = " endorsement";
-        String FEED_CONTENT_COMMENT_DETAIL_COMMENT = "comment";
-        String FEED_CONTENT_COMMENT_DETAIL_BACK = "back";
-        String FEED_CONTENT_COMMENT_DETAIL_LOAD_MORE = "load more";
         String FEED_KOL_RECOMMENDATION_VIEW_ALL = "kol discovery page";
         String ONBOARDING_SKIP_LABEL = "skip - ";
         String ONBOARDING_START_LABEL = "click mulai sekarang";

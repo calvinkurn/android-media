@@ -25,7 +25,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -126,6 +125,10 @@ public class FileUtils {
     public static File writeImageToTkpdPath(String galleryOrCameraPath) {
         return writeImageToTkpdPath(convertLocalImagePathToBytes(galleryOrCameraPath, DEF_WIDTH_CMPR,
                 DEF_WIDTH_CMPR, DEF_QLTY_COMPRESS));
+    }
+    public static File writeImageToTkpdPath(String galleryOrCameraPath,  int compressionQuality) {
+        return writeImageToTkpdPath(convertLocalImagePathToBytes(galleryOrCameraPath, DEF_WIDTH_CMPR,
+                DEF_WIDTH_CMPR, compressionQuality));
     }
 
     /**

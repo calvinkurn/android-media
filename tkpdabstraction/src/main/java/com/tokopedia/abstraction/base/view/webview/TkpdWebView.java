@@ -38,6 +38,10 @@ public class TkpdWebView extends WebView {
         loadUrl(generateUri(url));
     }
 
+    /**
+     * use loadAuthUrl(String url, String userId, String accessToken) instead.
+     */
+    @Deprecated
     public void loadAuthUrl(String url, String userId) {
         if (TextUtils.isEmpty(userId)) {
             loadUrl(url);
@@ -50,12 +54,20 @@ public class TkpdWebView extends WebView {
         }
     }
 
-    private String getQuery(String query) {
-        return query != null ? query : "";
+    public void loadAuthUrl(String url, String userId, String accessToken) {
+        if (TextUtils.isEmpty(userId)) {
+            loadUrl(url);
+        } else {
+            loadUrl(url, AuthUtil.generateHeadersWithBearer(
+                    Uri.parse(url).getPath(),
+                    getQuery(Uri.parse(url).getQuery()),
+                    "GET",
+                    AuthUtil.KEY.KEY_WSV4, userId, accessToken));
+        }
     }
 
-    public void loadAuthUrlWithFlags(String url, String userId) {
-        loadAuthUrl(generateUri(url), userId);
+    private String getQuery(String query) {
+        return query != null ? query : "";
     }
 
     private String generateUri(String uri) {

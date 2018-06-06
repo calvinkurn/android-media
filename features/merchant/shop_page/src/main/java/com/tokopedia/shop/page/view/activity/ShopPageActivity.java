@@ -363,7 +363,7 @@ public class ShopPageActivity extends BaseTabActivity implements ShopPagePromoWe
             shopPageTracking.eventClickShareShop(getTitlePage(viewPager.getCurrentItem()), shopId,
                     shopPagePresenter.isMyShop(shopId), ShopPageTracking.getShopType(shopInfo.getInfo()));
         }
-        ((ShopModuleRouter) getApplication()).goToShareShop(this, shopId, shopInfo.getInfo().getShopUrl(),
+        ((ShopModuleRouter) getApplication()).goToShareShop(getSupportFragmentManager(), shopId, shopInfo.getInfo().getShopUrl(),
                 getString(R.string.shop_label_share_formatted, shopName, shopInfo.getInfo().getShopLocation()));
     }
 
@@ -696,6 +696,11 @@ public class ShopPageActivity extends BaseTabActivity implements ShopPagePromoWe
         return component;
     }
 
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+
+    }
+    
     @Override
     protected void onDestroy() {
         super.onDestroy();

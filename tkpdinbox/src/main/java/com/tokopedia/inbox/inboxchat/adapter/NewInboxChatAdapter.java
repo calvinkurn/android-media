@@ -2,7 +2,6 @@ package com.tokopedia.inbox.inboxchat.adapter;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
-import android.text.Html;
 import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,13 +12,12 @@ import com.tokopedia.core.base.adapter.model.EmptyModel;
 import com.tokopedia.core.base.adapter.model.LoadingModel;
 import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.core.util.MethodChecker;
-import com.tokopedia.inbox.inboxchat.domain.model.websocket.WebSocketResponse;
+import com.tokopedia.inbox.inboxchat.domain.model.reply.WebSocketResponse;
 import com.tokopedia.inbox.inboxchat.presenter.InboxChatPresenter;
 import com.tokopedia.inbox.inboxchat.viewmodel.ChatListViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.DeleteChatViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.EmptyChatModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.TimeMachineListViewModel;
-import com.tokopedia.inbox.inboxchat.viewmodel.chatroom.TimeMachineChatModel;
 
 import java.util.ArrayList;
 import java.util.Date;

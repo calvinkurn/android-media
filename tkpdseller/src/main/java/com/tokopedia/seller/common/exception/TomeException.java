@@ -3,8 +3,6 @@ package com.tokopedia.seller.common.exception;
 import android.annotation.TargetApi;
 import android.os.Build;
 
-import com.drew.lang.StringUtil;
-
 import java.io.IOException;
 import java.util.List;
 
@@ -24,9 +22,17 @@ public class TomeException extends IOException {
         return errorCode;
     }
     public TomeException(String errorCode, List<String> messages) {
-        super(StringUtil.join(messages, ","));
+        super(join(messages, ","));
         this.errorCode = errorCode;
         this.messageErrorList = messages;
+    }
+
+    private static String join(List<String> messages, String errorCode) {
+        StringBuilder sb = new StringBuilder();
+        for (String message : messages) {
+            sb.append(message).append(errorCode);
+        }
+        return sb.toString();
     }
 
     public TomeException(String errorListMessage) {

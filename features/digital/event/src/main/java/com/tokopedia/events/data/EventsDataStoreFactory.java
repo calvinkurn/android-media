@@ -9,11 +9,11 @@ import com.tokopedia.events.data.source.EventsApi;
 public class EventsDataStoreFactory {
     private final EventsApi eventsApi;
 
-    public EventsDataStoreFactory(EventsApi eventsApi){
-        this.eventsApi=eventsApi;
+    public EventsDataStoreFactory(EventsApi eventsApi) {
+        this.eventsApi = eventsApi;
     }
 
-    public EventDataStore createCloudDataStore(){
+    public EventDataStore createCloudDataStore() {
         return new CloudEventsDataStore(eventsApi);
     }
 }

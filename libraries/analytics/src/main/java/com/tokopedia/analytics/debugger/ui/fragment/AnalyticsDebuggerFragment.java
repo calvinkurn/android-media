@@ -93,7 +93,7 @@ public class AnalyticsDebuggerFragment
         AnalyticsDebuggerComponent component = DaggerAnalyticsDebuggerComponent
                 .builder()
                 .baseAppComponent(
-                    ((BaseMainApplication) getActivity().getApplicationContext()).getBaseAppComponent()
+                    ((BaseMainApplication) getActivity().getApplication()).getBaseAppComponent()
                 ).build();
 
         component.inject(this);

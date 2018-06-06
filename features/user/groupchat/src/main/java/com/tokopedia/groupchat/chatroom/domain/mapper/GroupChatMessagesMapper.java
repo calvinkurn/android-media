@@ -7,6 +7,7 @@ import com.sendbird.android.BaseMessage;
 import com.sendbird.android.UserMessage;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.groupchat.chatroom.domain.pojo.GeneratedMessagePojo;
+import com.tokopedia.groupchat.chatroom.domain.pojo.PinnedMessagePojo;
 import com.tokopedia.groupchat.chatroom.domain.pojo.imageannouncement.AdminImagePojo;
 import com.tokopedia.groupchat.chatroom.domain.pojo.poll.ActivePollPojo;
 import com.tokopedia.groupchat.chatroom.domain.pojo.poll.Option;
@@ -14,9 +15,11 @@ import com.tokopedia.groupchat.chatroom.domain.pojo.poll.StatisticOption;
 import com.tokopedia.groupchat.chatroom.domain.pojo.sprintsale.FlashSalePojo;
 import com.tokopedia.groupchat.chatroom.domain.pojo.sprintsale.Product;
 import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.AdminAnnouncementViewModel;
+import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.AdsViewModel;
 import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.ChatViewModel;
 import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.GeneratedMessageViewModel;
 import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.ImageAnnouncementViewModel;
+import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.PinnedMessageViewModel;
 import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.SprintSaleAnnouncementViewModel;
 import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.SprintSaleProductViewModel;
 import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.VibrateViewModel;
@@ -76,6 +79,10 @@ public class GroupChatMessagesMapper {
                 && ((SprintSaleAnnouncementViewModel) mappedMessage).getSprintSaleType().equals
                 (SprintSaleAnnouncementViewModel.SPRINT_SALE_UPCOMING)) {
             return true;
+        } else if (mappedMessage instanceof PinnedMessageViewModel) {
+            return true;
+        } else if (mappedMessage instanceof AdsViewModel) {
+            return true;
         } else {
             return false;
         }
@@ -122,9 +129,25 @@ public class GroupChatMessagesMapper {
                 return new VibrateViewModel();
             case GeneratedMessageViewModel.TYPE:
                 return mapToGeneratedMessage(message, message.getData());
+            case PinnedMessageViewModel.TYPE:
+                return mapToPinnedMessage(message, message.getData());
+            case AdsViewModel.TYPE:
+                return mapToAds(message, message.getData());
             default:
                 return mapToUserChat(message);
         }
+    }
+
+    private Visitable mapToAds(UserMessage message, String json) {
+        Gson gson = new Gson();
+        AdsViewModel adsViewModel = gson.fromJson(json, AdsViewModel.class);
+        return adsViewModel;
+    }
+
+    private Visitable mapToPinnedMessage(UserMessage message, String json) {
+        Gson gson = new Gson();
+        PinnedMessagePojo pinnedMessage = gson.fromJson(json, PinnedMessagePojo.class);
+        return new PinnedMessageViewModel(pinnedMessage.getMessage(), pinnedMessage.getTitle(), pinnedMessage.getRedirectUrl(), pinnedMessage.getImageUrl());
     }
 
     private Visitable mapToGeneratedMessage(UserMessage message, String json) {
