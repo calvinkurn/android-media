@@ -9,12 +9,16 @@ import com.tokopedia.train.search.domain.FilterParam;
 import com.tokopedia.train.search.domain.FilterSearchData;
 import com.tokopedia.train.search.presentation.model.AvailabilityKeySchedule;
 import com.tokopedia.train.search.presentation.model.TrainScheduleViewModel;
+import com.tokopedia.train.seat.data.TrainSeatCloudDataStore;
+import com.tokopedia.train.seat.data.entity.TrainSeatMapEntity;
+import com.tokopedia.train.seat.data.specification.TrainSeatSpecification;
 import com.tokopedia.train.station.data.TrainStationDataStoreFactory;
 import com.tokopedia.train.station.data.specification.TrainPopularStationSpecification;
 import com.tokopedia.train.station.data.specification.TrainStationByKeywordSpecification;
 import com.tokopedia.train.station.data.specification.TrainStationCityByKeywordSpecification;
 import com.tokopedia.train.station.domain.model.TrainStation;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -26,14 +30,14 @@ import rx.Observable;
 
 public class TrainRepositoryImpl implements TrainRepository {
 
-    private TrainDataStoreFactory dataStoreFactory;
+    private TrainSeatCloudDataStore trainSeatCloudDataStore;
     private TrainStationDataStoreFactory trainStationDataStoreFactory;
     private TrainScheduleDataStoreFactory trainScheduleDataStoreFactory;
 
-    public TrainRepositoryImpl(TrainDataStoreFactory dataStoreFactory,
+    public TrainRepositoryImpl(TrainSeatCloudDataStore trainSeatCloudDataStore,
                                TrainStationDataStoreFactory trainStationDataStoreFactory,
                                TrainScheduleDataStoreFactory scheduleDataStoreFactory) {
-        this.dataStoreFactory = dataStoreFactory;
+        this.trainSeatCloudDataStore = trainSeatCloudDataStore;
         this.trainStationDataStoreFactory = trainStationDataStoreFactory;
         this.trainScheduleDataStoreFactory = scheduleDataStoreFactory;
     }
@@ -81,5 +85,10 @@ public class TrainRepositoryImpl implements TrainRepository {
     @Override
     public Observable<List<TrainScheduleViewModel>> getFilterSearchParamData(Map<String, Object> mapParam, int scheduleVariant) {
         return trainScheduleDataStoreFactory.getFilterSearchParamData(mapParam, scheduleVariant);
+    }
+
+    @Override
+    public Observable<List<TrainSeatMapEntity>> getSeat(HashMap<String, Object> parameters) {
+        return trainSeatCloudDataStore.getData(new TrainSeatSpecification(parameters));
     }
 }
