@@ -32,4 +32,4 @@ dependencies {
     implementation rootProject.ext.supportLibDependencies.constraintLayout
 }
 
-apply from: '../publish_local.gradle'
+apply from: '../../../publish_local.gradle'
