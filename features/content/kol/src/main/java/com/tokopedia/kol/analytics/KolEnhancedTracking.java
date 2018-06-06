@@ -83,6 +83,7 @@ public class KolEnhancedTracking {
 
     public static class Promotion {
 
+        private static final String CONTENT_FEED = "content feed";
         private static final String NAME_PROFILE_PAGE = "/profile page";
         private static final String KOL_POST = "kolpost";
         int id;
@@ -153,6 +154,12 @@ public class KolEnhancedTracking {
         public static String createContentNameKolPost(String tagsType) {
             return NAME_PROFILE_PAGE + " - "
                     + KOL_POST + " - "
+                    + tagsType;
+        }
+
+        public static String createContentNameFeed(String tagsType, String cardType) {
+            return CONTENT_FEED + " - "
+                    + cardType + " - "
                     + tagsType;
         }
     }

@@ -10,6 +10,7 @@ import java.util.List;
 
 public class FlightOrderPassengerViewModel {
     private int type;
+    private int status;
     private int passengerTitleId;
     private String passengerFirstName;
     private String passengerLastName;
@@ -65,5 +66,13 @@ public class FlightOrderPassengerViewModel {
 
     public void setAmenities(List<FlightBookingAmenityViewModel> amenities) {
         this.amenities = amenities;
+    }
+
+    public int getStatus() {
+        return status;
+    }
+
+    public void setStatus(int status) {
+        this.status = status;
     }
 }

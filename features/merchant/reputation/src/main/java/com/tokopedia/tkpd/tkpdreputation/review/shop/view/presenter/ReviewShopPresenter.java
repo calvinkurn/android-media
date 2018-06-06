@@ -43,11 +43,11 @@ public class ReviewShopPresenter extends BaseDaggerPresenter<ReviewShopContract.
 
     @Override
     public void onDestroy() {
-        if (shopReviewUseCase != null){
+        if (shopReviewUseCase != null) {
             shopReviewUseCase.unsubscribe();
         }
 
-        if (likeDislikeReviewUseCase != null){
+        if (likeDislikeReviewUseCase != null) {
             likeDislikeReviewUseCase.unsubscribe();
         }
 

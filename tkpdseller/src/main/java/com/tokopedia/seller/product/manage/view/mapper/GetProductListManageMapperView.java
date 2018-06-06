@@ -61,6 +61,7 @@ public class GetProductListManageMapperView {
             productListPickerViewModel.setProductStock(product.getProductStock());
             productListPickerViewModel.setProductUsingStock(product.getProductUsingStock());
             productListPickerViewModel.setProductVariant(product.getProductVariant());
+            productListPickerViewModel.setProductShopId(String.valueOf(product.getProductShopId()));
             productManageViewModels.add(productListPickerViewModel);
         }
         return productManageViewModels;

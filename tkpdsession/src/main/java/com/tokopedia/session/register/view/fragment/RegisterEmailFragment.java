@@ -383,6 +383,8 @@ public class RegisterEmailFragment extends BaseDaggerFragment
             private void formatPhoneNumber(String formattedText, int cursorPosition) {
                 editText.removeTextChangedListener(this);
                 editText.setText(formattedText);
+                if(cursorPosition<0)
+                    cursorPosition = 0;
                 editText.setSelection(cursorPosition);
                 editText.addTextChangedListener(this);
             }

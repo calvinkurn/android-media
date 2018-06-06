@@ -11,6 +11,10 @@ import com.airbnb.deeplinkdispatch.DeepLink;
 import com.airbnb.deeplinkdispatch.DeepLinkHandler;
 import com.tokopedia.applink.SessionApplinkModule;
 import com.tokopedia.applink.SessionApplinkModuleLoader;
+import com.tokopedia.checkout.applink.CheckoutAppLinkModule;
+import com.tokopedia.checkout.applink.CheckoutAppLinkModuleLoader;
+import com.tokopedia.contact_us.applink.CustomerCareApplinkModule;
+import com.tokopedia.contact_us.applink.CustomerCareApplinkModuleLoader;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.deeplink.CoreDeeplinkModule;
@@ -46,10 +50,6 @@ import com.tokopedia.profile.applink.ProfileApplinkModule;
 import com.tokopedia.profile.applink.ProfileApplinkModuleLoader;
 import com.tokopedia.pushnotif.Constant;
 import com.tokopedia.pushnotif.HistoryNotification;
-import com.tokopedia.pushnotif.SummaryNotification;
-import com.tokopedia.pushnotif.factory.SummaryNotificationFactory;
-import com.tokopedia.ride.deeplink.RideDeeplinkModule;
-import com.tokopedia.ride.deeplink.RideDeeplinkModuleLoader;
 import com.tokopedia.seller.applink.SellerApplinkModule;
 import com.tokopedia.seller.applink.SellerApplinkModuleLoader;
 import com.tokopedia.shop.applink.ShopAppLinkModule;
@@ -62,6 +62,8 @@ import com.tokopedia.tkpdpdp.applink.PdpApplinkModule;
 import com.tokopedia.tkpdpdp.applink.PdpApplinkModuleLoader;
 import com.tokopedia.tokocash.applink.TokoCashApplinkModule;
 import com.tokopedia.tokocash.applink.TokoCashApplinkModuleLoader;
+import com.tokopedia.tracking.applink.TrackingAppLinkModule;
+import com.tokopedia.tracking.applink.TrackingAppLinkModuleLoader;
 import com.tokopedia.transaction.applink.TransactionApplinkModule;
 import com.tokopedia.transaction.applink.TransactionApplinkModuleLoader;
 
@@ -79,7 +81,6 @@ import io.branch.referral.BranchError;
         DigitalApplinkModule.class,
         PdpApplinkModule.class,
         HomeApplinkModule.class,
-        RideDeeplinkModule.class,
         DiscoveryApplinkModule.class,
         SessionApplinkModule.class,
         FeedDeeplinkModule.class,
@@ -92,7 +93,10 @@ import io.branch.referral.BranchError;
         GroupChatApplinkModule.class,
         GamificationApplinkModule.class,
         ProfileApplinkModule.class,
-        KolApplinkModule.class
+        KolApplinkModule.class,
+        TrackingAppLinkModule.class,
+        CheckoutAppLinkModule.class,
+        CustomerCareApplinkModule.class
 })
 
 public class DeeplinkHandlerActivity extends AppCompatActivity {
@@ -107,7 +111,6 @@ public class DeeplinkHandlerActivity extends AppCompatActivity {
                 new DigitalApplinkModuleLoader(),
                 new PdpApplinkModuleLoader(),
                 new HomeApplinkModuleLoader(),
-                new RideDeeplinkModuleLoader(),
                 new DiscoveryApplinkModuleLoader(),
                 new SessionApplinkModuleLoader(),
                 new FeedDeeplinkModuleLoader(),
@@ -120,7 +123,10 @@ public class DeeplinkHandlerActivity extends AppCompatActivity {
                 new GroupChatApplinkModuleLoader(),
                 new GamificationApplinkModuleLoader(),
                 new ProfileApplinkModuleLoader(),
-                new KolApplinkModuleLoader()
+                new KolApplinkModuleLoader(),
+                new TrackingAppLinkModuleLoader(),
+                new CheckoutAppLinkModuleLoader(),
+                new CustomerCareApplinkModuleLoader()
         );
     }
 
@@ -219,7 +225,7 @@ public class DeeplinkHandlerActivity extends AppCompatActivity {
                 @Override
                 public void onInitFinished(JSONObject referringParams, BranchError error) {
                     if (error == null) {
-                        BranchSdkUtils.storeWebToAppPromoCodeIfExist(referringParams,DeeplinkHandlerActivity.this);
+                        BranchSdkUtils.storeWebToAppPromoCodeIfExist(referringParams, DeeplinkHandlerActivity.this);
                     }
                 }
             }, this.getIntent().getData(), this);

@@ -5,6 +5,7 @@ package com.tokopedia.seller.product.manage.constant;
  */
 
 public class ProductManageConstant {
+    public static final String SOURCE_CREATE_TOPADS_MANAGE_PRODUCT = "sa_manage_product";
     public static final String ACTION_COMPLETED_ADD_PRODUCT = "action_completed_add_product";
     public static final String EXTRA_SORT_SELECTED = "extra_sort_selected";
     public static final String EXTRA_FILTER_SELECTED = "extra_filter_selected";
@@ -20,7 +21,6 @@ public class ProductManageConstant {
     public static final int FILTER_FREE_RETURNS = -6;
     public static final int FILTER_PREORDER = -7;
     public static final int FILTER_ALL_SHOWCASE = -8;
-
     public static final long FILTER_ALL_CATEGORY = -9;
 
     public static final String FILTER_ALL_PRODUK_VALUE = "";

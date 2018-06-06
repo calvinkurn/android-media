@@ -21,11 +21,14 @@ public interface ProductManagePresenter extends CustomerPresenter<ProductManageV
 
     void getListProduct(int page, String keywordFilter, @CatalogProductOption String catalogOption,
                         @ConditionProductOption String conditionOption, int etalaseId,
-                        @PictureStatusProductOption String pictureOption, @SortProductOption String sortOption, String categoryId);
+                        @PictureStatusProductOption String pictureOption, @SortProductOption String sortOption,
+                        String categoryId);
 
     void editPrice(String productId, String price, String currencyId, String currencyText);
 
     void setCashback(String productId, int cashback);
 
     void deleteProduct(List<String> productIds);
+
+    void saveSourceTagging(boolean isSellerApp);
 }

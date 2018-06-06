@@ -23,13 +23,18 @@ import rx.schedulers.Schedulers;
 public class FilterDetailActivityRouter {
 
     public static void launchDetailActivity(AppCompatActivity activity, Filter filter) {
+        launchDetailActivity(activity, filter, false);
+    }
+
+    public static void launchDetailActivity(AppCompatActivity activity,
+                                            Filter filter, boolean isUsingTracking) {
         if (filter.isColorFilter()) {
             DynamicFilterColorActivity
                     .moveTo(activity,
                             filter.getTitle(),
                             filter.getOptions(),
                             filter.getSearch().getSearchable() == 1,
-                            filter.getSearch().getPlaceholder());
+                            filter.getSearch().getPlaceholder(), isUsingTracking);
 
         } else if (filter.isRatingFilter()) {
             DynamicFilterRatingActivity
@@ -37,7 +42,7 @@ public class FilterDetailActivityRouter {
                             filter.getTitle(),
                             filter.getOptions(),
                             filter.getSearch().getSearchable() == 1,
-                            filter.getSearch().getPlaceholder());
+                            filter.getSearch().getPlaceholder(), isUsingTracking);
 
         } else if (filter.isBrandFilter()) {
             DynamicFilterDetailBrandActivity
@@ -45,21 +50,23 @@ public class FilterDetailActivityRouter {
                             filter.getTitle(),
                             filter.getOptions(),
                             filter.getSearch().getSearchable() == 1,
-                            filter.getSearch().getPlaceholder());
+                            filter.getSearch().getPlaceholder(), isUsingTracking);
 
         } else if (filter.isLocationFilter()) {
-            launchLocationFilterPage(activity, filter);
+            launchLocationFilterPage(activity, filter, isUsingTracking);
         } else {
             DynamicFilterDetailGeneralActivity
                     .moveTo(activity,
                             filter.getTitle(),
                             filter.getOptions(),
                             filter.getSearch().getSearchable() == 1,
-                            filter.getSearch().getPlaceholder());
+                            filter.getSearch().getPlaceholder(), isUsingTracking);
         }
     }
 
-    private static void launchLocationFilterPage(final AppCompatActivity activity, final Filter filter) {
+    private static void launchLocationFilterPage(final AppCompatActivity activity,
+                                                 final Filter filter,
+                                                 final boolean isUsingTracking) {
         Observable.create(new Observable.OnSubscribe<Boolean>() {
             @Override
             public void call(Subscriber<? super Boolean> subscriber) {
@@ -85,7 +92,7 @@ public class FilterDetailActivityRouter {
                         .moveTo(activity,
                                 filter.getTitle(),
                                 filter.getSearch().getSearchable() == 1,
-                                filter.getSearch().getPlaceholder());
+                                filter.getSearch().getPlaceholder(), isUsingTracking);
             }
         });
     }
@@ -94,10 +101,20 @@ public class FilterDetailActivityRouter {
                                               Filter filter,
                                               String defaultCategoryRootId,
                                               String defaultCategoryId) {
+        launchCategoryActivity(activity, filter,
+                defaultCategoryRootId, defaultCategoryId, false);
+    }
+
+    public static void launchCategoryActivity(AppCompatActivity activity,
+                                              Filter filter,
+                                              String defaultCategoryRootId,
+                                              String defaultCategoryId,
+                                              boolean isUsingTracking) {
         DynamicFilterCategoryActivity
                 .moveTo(activity,
                         filter.getOptions(),
                         defaultCategoryRootId,
-                        defaultCategoryId);
+                        defaultCategoryId,
+                        isUsingTracking);
     }
 }

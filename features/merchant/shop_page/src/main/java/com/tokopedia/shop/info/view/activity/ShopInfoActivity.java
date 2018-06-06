@@ -78,7 +78,7 @@ public class ShopInfoActivity extends BaseTabActivity implements ShopInfoView, H
         return new Intent(context, ShopInfoActivity.class)
                 .setData(uri.build())
                 .putExtra(EXTRA_STATE_TAB_POSITION, TAB_POSITION_NOTE)
-                .putExtras(extras);
+                .putExtra(ShopParamConstant.EXTRA_SHOP_ID, extras.getString(ShopParamConstant.KEY_SHOP_ID));
     }
 
     @DeepLink(ShopAppLink.SHOP_INFO)
@@ -87,7 +87,7 @@ public class ShopInfoActivity extends BaseTabActivity implements ShopInfoView, H
         return new Intent(context, ShopInfoActivity.class)
                 .setData(uri.build())
                 .putExtra(EXTRA_STATE_TAB_POSITION, TAB_POSITION_INFO)
-                .putExtras(extras);
+                .putExtra(ShopParamConstant.EXTRA_SHOP_ID, extras.getString(ShopParamConstant.KEY_SHOP_ID));
     }
 
     @Override
@@ -201,7 +201,7 @@ public class ShopInfoActivity extends BaseTabActivity implements ShopInfoView, H
     private void onShareShop() {
         if (shopInfo != null) {
             shopPageTracking.eventClickShareShopNotePage(shopId, shopInfoPresenter.isMyShop(shopId), ShopPageTracking.getShopType(shopInfo.getInfo()));
-            ((ShopModuleRouter) getApplication()).goToShareShop(this, shopId, shopInfo.getInfo().getShopUrl(),
+            ((ShopModuleRouter) getApplication()).goToShareShop(getSupportFragmentManager(), shopId, shopInfo.getInfo().getShopUrl(),
                     getString(R.string.shop_label_share_formatted, shopInfo.getInfo().getShopName(), shopInfo.getInfo().getShopLocation()));
         }
     }

@@ -27,6 +27,7 @@ import com.tokopedia.wishlist.common.domain.interactor.RemoveFromWishListUseCase
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Pattern;
 
 import javax.inject.Inject;
 
@@ -141,7 +142,7 @@ public class ShopProductListPresenter extends BaseDaggerPresenter<ShopProductLis
             public void onNext(PagingListOther<EtalaseModel> etalaseModelList) {
                 List<EtalaseModel> etalaseModelListTemp = new ArrayList<>();
                 etalaseModelListTemp.addAll(etalaseModelList.getListOther());
-                if(etalaseModelList.getList()!=null&&!etalaseModelList.getList().isEmpty()){
+                if (etalaseModelList.getList() != null && !etalaseModelList.getList().isEmpty()) {
                     etalaseModelListTemp.addAll(etalaseModelList.getList());
                 }
                 String etalaseName = "";
@@ -153,7 +154,17 @@ public class ShopProductListPresenter extends BaseDaggerPresenter<ShopProductLis
                 }
                 // If etalase Id not found, then reset etalaseId
                 if (TextUtils.isEmpty(etalaseName)) {
-                    shopProductRequestModel.setEtalaseId("");
+                    for (EtalaseModel etalaseModel : etalaseModelListTemp) {
+                        if (shopProductRequestModel.getEtalaseId().replaceAll("[\\W_]","")
+                                .equalsIgnoreCase(etalaseModel.getEtalaseName().replaceAll("[\\W_]",""))) {
+                            shopProductRequestModel.setEtalaseId(etalaseModel.getEtalaseId());
+                            etalaseName = etalaseModel.getEtalaseName();
+                            shopProductRequestModel.setUseAce((etalaseModel.getUseAce() == USE_ACE));
+                        }
+                    }
+                    if (TextUtils.isEmpty(etalaseName)) {
+                        shopProductRequestModel.setEtalaseId("");
+                    }
                 }
                 getView().onSuccessGetEtalase(shopProductRequestModel.getEtalaseId(), etalaseName);
                 getShopProductWithWishList(shopProductRequestModel);

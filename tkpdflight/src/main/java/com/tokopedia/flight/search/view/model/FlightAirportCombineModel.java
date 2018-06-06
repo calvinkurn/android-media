@@ -3,16 +3,20 @@ package com.tokopedia.flight.search.view.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Created by User on 11/16/2017.
  */
 
-public class FlightAirportCombineModel implements Parcelable {
+public class FlightAirportCombineModel implements Parcelable{
     private String depAirport;
     private String arrAirport;
     private boolean hasLoad;
     private boolean needRefresh;
     private int noOfRetry = 0;
+    private List<String> airlines;
 
     public FlightAirportCombineModel(String depAirport, String arrAirport) {
         this.depAirport = depAirport;
@@ -20,7 +24,29 @@ public class FlightAirportCombineModel implements Parcelable {
         this.hasLoad = false;
         this.needRefresh = true;
         this.noOfRetry = 0;
+        this.airlines = new ArrayList<>();
     }
+
+    protected FlightAirportCombineModel(Parcel in) {
+        depAirport = in.readString();
+        arrAirport = in.readString();
+        hasLoad = in.readByte() != 0;
+        needRefresh = in.readByte() != 0;
+        noOfRetry = in.readInt();
+        airlines = in.createStringArrayList();
+    }
+
+    public static final Creator<FlightAirportCombineModel> CREATOR = new Creator<FlightAirportCombineModel>() {
+        @Override
+        public FlightAirportCombineModel createFromParcel(Parcel in) {
+            return new FlightAirportCombineModel(in);
+        }
+
+        @Override
+        public FlightAirportCombineModel[] newArray(int size) {
+            return new FlightAirportCombineModel[size];
+        }
+    };
 
     public String getDepAirport() {
         return depAirport;
@@ -54,37 +80,26 @@ public class FlightAirportCombineModel implements Parcelable {
         this.noOfRetry = noOfRetry;
     }
 
+    public List<String> getAirlines() {
+        return airlines;
+    }
+
+    public void setAirlines(List<String> airlines) {
+        this.airlines = airlines;
+    }
+
     @Override
     public int describeContents() {
         return 0;
     }
 
     @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(this.depAirport);
-        dest.writeString(this.arrAirport);
-        dest.writeByte(this.hasLoad ? (byte) 1 : (byte) 0);
-        dest.writeByte(this.needRefresh ? (byte) 1 : (byte) 0);
-        dest.writeInt(this.noOfRetry);
+    public void writeToParcel(Parcel parcel, int i) {
+        parcel.writeString(depAirport);
+        parcel.writeString(arrAirport);
+        parcel.writeByte((byte) (hasLoad ? 1 : 0));
+        parcel.writeByte((byte) (needRefresh ? 1 : 0));
+        parcel.writeInt(noOfRetry);
+        parcel.writeStringList(airlines);
     }
-
-    protected FlightAirportCombineModel(Parcel in) {
-        this.depAirport = in.readString();
-        this.arrAirport = in.readString();
-        this.hasLoad = in.readByte() != 0;
-        this.needRefresh = in.readByte() != 0;
-        this.noOfRetry = in.readInt();
-    }
-
-    public static final Parcelable.Creator<FlightAirportCombineModel> CREATOR = new Parcelable.Creator<FlightAirportCombineModel>() {
-        @Override
-        public FlightAirportCombineModel createFromParcel(Parcel source) {
-            return new FlightAirportCombineModel(source);
-        }
-
-        @Override
-        public FlightAirportCombineModel[] newArray(int size) {
-            return new FlightAirportCombineModel[size];
-        }
-    };
 }
