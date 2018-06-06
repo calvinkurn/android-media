@@ -23,12 +23,13 @@ public class AddressModelMapper {
 
     public PeopleAddressModel transform(GetPeopleAddress peopleAddress) {
         PeopleAddressModel peopleAddressModel = new PeopleAddressModel();
-        peopleAddressModel.setRecipientAddressModelList(transform(peopleAddress.getList()));
-        peopleAddressModel.setToken(peopleAddress.getToken());
-        Paging paging = new Paging();
-        paging.setUriNext(peopleAddress.getPaging().getUriNext());
-        peopleAddressModel.setPaging(paging);
-
+        if (peopleAddress != null) {
+            peopleAddressModel.setRecipientAddressModelList(transform(peopleAddress.getList()));
+            peopleAddressModel.setToken(peopleAddress.getToken());
+            Paging paging = new Paging();
+            paging.setUriNext(peopleAddress.getPaging().getUriNext());
+            peopleAddressModel.setPaging(paging);
+        }
         return peopleAddressModel;
     }
 

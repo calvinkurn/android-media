@@ -113,31 +113,31 @@ public class ShipmentAddressListPresenter
 
                         @Override
                         public void onNext(PeopleAddressModel peopleAddressModel) {
-                            if (peopleAddressModel.getPaging().getUriNext() != null &&
-                                    !peopleAddressModel.getPaging().getUriNext().equals("0")) {
-                                hasNext = true;
-                            } else {
-                                hasNext = false;
-                            }
                             boolean viewIsAttached = isViewAttached();
                             if (viewIsAttached) {
                                 getMvpView().hideLoading();
-                                if (peopleAddressModel.getRecipientAddressModelList().isEmpty()) {
-                                    getMvpView().showListEmpty();
-                                } else {
-                                    if (currentAddress != null) {
-                                        for (RecipientAddressModel recipientAddressModel : peopleAddressModel.getRecipientAddressModelList()) {
-                                            if (recipientAddressModel.getId().equalsIgnoreCase(currentAddress.getId())) {
-                                                recipientAddressModel.setSelected(true);
-                                                break;
+                                if (peopleAddressModel != null && peopleAddressModel.getPaging() != null) {
+                                    hasNext = peopleAddressModel.getPaging().getUriNext() != null &&
+                                            !peopleAddressModel.getPaging().getUriNext().equals("0");
+                                    if (peopleAddressModel.getRecipientAddressModelList().isEmpty()) {
+                                        getMvpView().showListEmpty();
+                                    } else {
+                                        if (currentAddress != null) {
+                                            for (RecipientAddressModel recipientAddressModel : peopleAddressModel.getRecipientAddressModelList()) {
+                                                if (recipientAddressModel.getId().equalsIgnoreCase(currentAddress.getId())) {
+                                                    recipientAddressModel.setSelected(true);
+                                                    break;
+                                                }
                                             }
                                         }
+                                        if (resetPage) {
+                                            getMvpView().showList(peopleAddressModel.getRecipientAddressModelList());
+                                        } else {
+                                            getMvpView().updateList(peopleAddressModel.getRecipientAddressModelList());
+                                        }
                                     }
-                                    if (resetPage) {
-                                        getMvpView().showList(peopleAddressModel.getRecipientAddressModelList());
-                                    } else {
-                                        getMvpView().updateList(peopleAddressModel.getRecipientAddressModelList());
-                                    }
+                                } else {
+                                    getMvpView().showListEmpty();
                                 }
                             }
                         }
