@@ -43,7 +43,7 @@ public class ImagePickerBuilder implements Parcelable {
         return new ImagePickerBuilder(context.getString(R.string.choose_image),
                 new int[]{TYPE_GALLERY, TYPE_CAMERA, TYPE_INSTAGRAM}, GalleryType.IMAGE_ONLY,
                 DEFAULT_MAX_IMAGE_SIZE_IN_KB,
-                DEFAULT_MIN_RESOLUTION, 1, 1, true,
+                DEFAULT_MIN_RESOLUTION, new int[] {1,1}, true,
                 ImagePickerEditorBuilder.getDefaultBuilder(),
                 ImagePickerMultipleSelectionBuilder.getDefaultBuilder());
     }
@@ -53,7 +53,7 @@ public class ImagePickerBuilder implements Parcelable {
                               @GalleryType int galleryType,
                               int maxFileSizeInKB,
                               int minResolution,
-                              int ratioX, int ratioY,
+                              int[] ratioXY,
                               boolean moveImageResultToLocal,
                               @Nullable ImagePickerEditorBuilder imagePickerEditorBuilder,
                               @Nullable ImagePickerMultipleSelectionBuilder imagePickerMultipleSelectionBuilder) {
@@ -62,8 +62,13 @@ public class ImagePickerBuilder implements Parcelable {
         this.galleryType = galleryType;
         this.maxFileSizeInKB = maxFileSizeInKB;
         this.minResolution = minResolution;
-        this.ratioX = ratioX;
-        this.ratioY = ratioY;
+        if (ratioXY!= null && ratioXY.length == 2) {
+            this.ratioX = ratioXY[0];
+            this.ratioY = ratioXY[1];
+        } else {
+            this.ratioX = -1;
+            this.ratioY = -1;
+        }
         this.moveImageResultToLocal = moveImageResultToLocal;
         this.imagePickerEditorBuilder = imagePickerEditorBuilder;
         this.imagePickerMultipleSelectionBuilder = imagePickerMultipleSelectionBuilder;

@@ -29,6 +29,11 @@ import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.myproduct.utils.FileUtils;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.util.RequestPermissionUtil;
+import com.tokopedia.imagepicker.picker.gallery.type.GalleryType;
+import com.tokopedia.imagepicker.picker.main.builder.ImagePickerBuilder;
+import com.tokopedia.imagepicker.picker.main.builder.ImagePickerEditorBuilder;
+import com.tokopedia.imagepicker.picker.main.builder.ImagePickerMultipleSelectionBuilder;
+import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.SellerModuleRouter;
 import com.tokopedia.seller.common.imageeditor.GalleryCropWatermarkActivity;
@@ -89,6 +94,15 @@ import permissions.dispatcher.PermissionRequest;
 import permissions.dispatcher.RuntimePermissions;
 
 import static com.tokopedia.core.newgallery.GalleryActivity.INSTAGRAM_SELECT_REQUEST_CODE;
+import static com.tokopedia.imagepicker.picker.main.builder.ImageEditActionTypeDef.ACTION_BRIGHTNESS;
+import static com.tokopedia.imagepicker.picker.main.builder.ImageEditActionTypeDef.ACTION_CONTRAST;
+import static com.tokopedia.imagepicker.picker.main.builder.ImageEditActionTypeDef.ACTION_CROP;
+import static com.tokopedia.imagepicker.picker.main.builder.ImageEditActionTypeDef.ACTION_ROTATE;
+import static com.tokopedia.imagepicker.picker.main.builder.ImagePickerBuilder.DEFAULT_MAX_IMAGE_SIZE_IN_KB;
+import static com.tokopedia.imagepicker.picker.main.builder.ImagePickerBuilder.DEFAULT_MIN_RESOLUTION;
+import static com.tokopedia.imagepicker.picker.main.builder.ImagePickerTabTypeDef.TYPE_CAMERA;
+import static com.tokopedia.imagepicker.picker.main.builder.ImagePickerTabTypeDef.TYPE_GALLERY;
+import static com.tokopedia.imagepicker.picker.main.builder.ImagePickerTabTypeDef.TYPE_INSTAGRAM;
 
 @RuntimePermissions
 public abstract class BaseProductAddEditFragment<T extends ProductAddPresenter>
@@ -100,6 +114,7 @@ public abstract class BaseProductAddEditFragment<T extends ProductAddPresenter>
         ProductDescriptionViewHolder.Listener {
 
     public static final int DEFAULT_PARENT_STOCK_IF_VARIANT = 1;
+    public static final int REQUEST_CODE_ADD_PRODUCT_IMAGE = 3912;
     @Inject
     protected T presenter;
 
@@ -264,27 +279,21 @@ public abstract class BaseProductAddEditFragment<T extends ProductAddPresenter>
 
     @Override
     public void onAddImagePickerClicked(final int imagePosition) {
-        FragmentManager fm = getActivity().getSupportFragmentManager();
-        ProductAddImageDialogFragment dialogFragment = ProductAddImageDialogFragment.newInstance(imagePosition);
-        dialogFragment.show(fm, ProductAddImageDialogFragment.FRAGMENT_TAG);
-        dialogFragment.setOnImageAddListener(new ProductAddImageDialogFragment.OnImageAddListener() {
-            @Override
-            public void clickAddProductFromCamera(int position) {
-                BaseProductAddEditFragmentPermissionsDispatcher.goToCameraWithCheck(BaseProductAddEditFragment.this, imagePosition);
-            }
+        ImagePickerBuilder builder = getImagePickerBuilder();
+        Intent intent = ImagePickerActivity.getIntent(getContext(), builder);
+        startActivityForResult(intent, REQUEST_CODE_ADD_PRODUCT_IMAGE);
+    }
 
-            @Override
-            public void clickAddProductFromGallery(int position) {
-                BaseProductAddEditFragmentPermissionsDispatcher.goToGalleryWithCheck(BaseProductAddEditFragment.this, imagePosition);
-            }
-
-            @Override
-            public void clickAddProductFromInstagram(int position) {
-                int remainingEmptySlot = productImageViewHolder.getImagesSelectView().getRemainingEmptySlot();
-                InstopedSellerCropWatermarkActivity.startInstopedActivityForResult(getContext(), BaseProductAddEditFragment.this,
-                        INSTAGRAM_SELECT_REQUEST_CODE, remainingEmptySlot);
-            }
-        });
+    private ImagePickerBuilder getImagePickerBuilder(){
+        return new ImagePickerBuilder(getString(R.string.choose_shop_picture),
+                new int[]{TYPE_GALLERY, TYPE_CAMERA, TYPE_INSTAGRAM}, GalleryType.IMAGE_ONLY, DEFAULT_MAX_IMAGE_SIZE_IN_KB,
+                DEFAULT_MIN_RESOLUTION, new int[]{1,1}, true,
+                new ImagePickerEditorBuilder(new int[]{ACTION_BRIGHTNESS, ACTION_CONTRAST, ACTION_CROP, ACTION_ROTATE},
+                        false)
+                ,new ImagePickerMultipleSelectionBuilder(productImageViewHolder.getImagesSelectView().getImageStringList(),
+                null,
+                0,
+                ImagesSelectView.DEFAULT_LIMIT));
     }
 
     @Override

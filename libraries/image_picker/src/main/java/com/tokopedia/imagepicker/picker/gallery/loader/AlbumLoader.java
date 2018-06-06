@@ -41,6 +41,9 @@ public class AlbumLoader extends CursorLoader {
             "COUNT(*) AS " + COLUMN_COUNT
     };
 
+    // we exclude TOKOPEDIA_FOLDER_PREFIX so the edit result and camera result will not show up.
+    // the edit result are too much and not needed.
+
     // Return only video and image metadata.
     private static final String SELECTION =
             "(" + MediaStore.Files.FileColumns.MEDIA_TYPE + "=?"

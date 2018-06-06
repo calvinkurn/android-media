@@ -82,7 +82,7 @@ public class ShopEditorFragment extends BaseFragment<ShopEditorPresenter> implem
     public void uploadImage(View view) {
         ImagePickerBuilder builder = new ImagePickerBuilder(getString(R.string.choose_shop_picture),
                 new int[]{TYPE_GALLERY, TYPE_CAMERA}, GalleryType.IMAGE_ONLY, DEFAULT_MAX_IMAGE_SIZE_IN_KB,
-                DEFAULT_MIN_RESOLUTION, 1, 1, true,
+                DEFAULT_MIN_RESOLUTION, new int[]{1,1}, true,
                 new ImagePickerEditorBuilder(new int[]{ACTION_BRIGHTNESS, ACTION_CONTRAST, ACTION_CROP, ACTION_ROTATE},
                         false)
                 ,null);

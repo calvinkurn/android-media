@@ -178,6 +178,16 @@ public class ImageSelectorAdapter extends RecyclerView.Adapter<ImageSelectorAdap
         return imageSelectModelList;
     }
 
+    public ArrayList<String> getImageStringList() {
+        ArrayList<String> imageList = new ArrayList<>();
+        if (imageSelectModelList!= null) {
+            for (ImageSelectModel imageSelectModel:imageSelectModelList) {
+                imageList.add(imageSelectModel.getUriOrPath());
+            }
+        }
+        return imageList;
+    }
+
     @Override
     public int getItemViewType(int position) {
         if (position == imageSelectModelList.size()) {

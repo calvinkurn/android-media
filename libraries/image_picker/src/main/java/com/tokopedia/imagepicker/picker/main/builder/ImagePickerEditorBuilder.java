@@ -20,7 +20,7 @@ public class ImagePickerEditorBuilder implements Parcelable {
     public static ImagePickerEditorBuilder getDefaultBuilder(){
         return new ImagePickerEditorBuilder(
                 new int[]{ACTION_BRIGHTNESS, ACTION_CONTRAST, ACTION_CROP, ACTION_ROTATE},
-                true);
+                false);
     }
 
     public ImagePickerEditorBuilder(@ImageEditActionTypeDef int[] imageEditActionType,
