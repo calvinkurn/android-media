@@ -83,8 +83,8 @@ public class TrainScheduleDataStoreFactory {
                 });
     }
 
-    public Observable<List<TrainScheduleViewModel>> getAvailabilitySchedule(String idTrain, final int scheduleVariant) {
-        return cloudDataStore.getDatasAvailability(idTrain)
+    public Observable<List<TrainScheduleViewModel>> getAvailabilitySchedule(Specification specification, final int scheduleVariant) {
+        return cloudDataStore.getDatasAvailability(specification)
                 .flatMap(new Func1<List<AvailabilityEntity>, Observable<List<TrainScheduleViewModel>>>() {
                     @Override
                     public Observable<List<TrainScheduleViewModel>> call(final List<AvailabilityEntity> scheduleAvailabilityEntities) {
