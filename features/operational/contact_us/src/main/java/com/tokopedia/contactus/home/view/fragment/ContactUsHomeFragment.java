@@ -166,7 +166,8 @@ public class ContactUsHomeFragment extends BaseDaggerFragment
             btnFullPurchaseList.setVisibility(View.GONE);
             cardAdapter.addData(buyerPurchaseLists);
         } else {
-            cardAdapter.addData(buyerPurchaseLists.subList(0, MIN_BUYER_LIST_SIZE));
+            cardAdapter.addData(buyerPurchaseLists.subList(0,
+                    buyerPurchaseLists.size() < MIN_BUYER_LIST_SIZE ? buyerPurchaseLists.size() : MIN_BUYER_LIST_SIZE));
         }
         orderListViewpager.setAdapter(cardAdapter);
         if (buyerPurchaseLists.size() > 1)
