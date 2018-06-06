@@ -48,6 +48,12 @@
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White"
             android:windowSoftInputMode="adjustResize" />
+        <activity
+            android:name="com.tokopedia.train.seat.presentation.activity.TrainSeatActivity"
+            android:label="Pilih Tempat Duduk"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White"
+            android:windowSoftInputMode="adjustResize" />
     </application>
 
 </manifest>
