@@ -17,6 +17,7 @@ import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.tkpdpdp.CourierActivity;
 import com.tokopedia.tkpdpdp.R;
 import com.tokopedia.tkpdpdp.listener.ProductDetailView;
+import static com.tokopedia.core.router.productdetail.ProductDetailRouter.EXTRA_PRODUCT_ID;
 
 /**
  * @author alifa on 5/8/17.
@@ -88,6 +89,7 @@ public class RatingTalkCourierView extends BaseView<ProductDetailData, ProductDe
                 Bundle bundle = new Bundle();
                 bundle.putParcelableArrayList(CourierActivity.KEY_COURIER_DATA,
                         data.getShopInfo().getShopShipments());
+                bundle.putString(EXTRA_PRODUCT_ID, String.valueOf(data.getInfo().getProductId()));
                 listener.onCourierClicked(bundle);
             }
         });

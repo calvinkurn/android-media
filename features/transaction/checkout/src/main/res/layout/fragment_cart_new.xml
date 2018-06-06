@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    android:orientation="vertical">
+
+    <FrameLayout
+        android:id="@+id/bottom_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="-8dp"
+        android:background="@drawable/bg_shadow"
+        android:visibility="gone"
+        tools:visibility="visible">
+
+        <LinearLayout
+            android:id="@+id/layout_1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/white"
+            android:orientation="horizontal">
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:padding="@dimen/dp_16">
+
+                <TextView
+                    android:id="@+id/tv_item_count"
+                    style="@style/TextSmallMediumBlack38"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:lineSpacingExtra="4sp"
+                    tools:text="Harga Barang (3 Item)" />
+
+                <TextView
+                    android:id="@+id/tv_total_prices"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="sans-serif-medium"
+                    android:gravity="end"
+                    android:textColor="@color/orange_red"
+                    android:textSize="16sp"
+                    tools:text="Rp600.000" />
+
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/go_to_courier_page_button"
+                android:layout_width="0dp"
+                android:layout_height="@dimen/dp_44"
+                android:layout_gravity="center_vertical"
+                android:layout_margin="@dimen/dp_10"
+                android:layout_weight="1"
+                android:background="@drawable/orange_button_rounded"
+                android:fontFamily="sans-serif-medium"
+                android:gravity="center"
+                android:text="Checkout"
+                android:textAllCaps="false"
+                android:textColor="@color/white"
+                android:textSize="14sp" />
+
+        </LinearLayout>
+    </FrameLayout>
+
+    <com.tokopedia.core.customwidget.SwipeToRefresh
+        android:id="@+id/swipe_refresh_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@id/bottom_layout"
+        android:layout_gravity="bottom"
+        android:visibility="visible">
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/rv_cart"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+    </com.tokopedia.core.customwidget.SwipeToRefresh>
+
+</RelativeLayout>

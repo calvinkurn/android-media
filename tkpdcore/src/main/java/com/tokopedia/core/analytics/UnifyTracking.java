@@ -1105,6 +1105,15 @@ public class UnifyTracking extends TrackingUtils {
         ).getEvent());
     }
 
+    public static void eventPDPOrientationChanged(String productId) {
+       sendGTMEvent(new EventTracking(
+                       AppEventTracking.Event.VIEW_PDP,
+                       AppEventTracking.Category.PRODUCT_DETAIL.toLowerCase(),
+                       AppEventTracking.Action.LANDSCAPE_VIEW,
+                       String.format(AppEventTracking.EventLabel.PRODUCT_ID_VALUE, productId)
+                       ).getEvent());
+        }
+
     public static void eventPDPCart() {
         sendGTMEvent(new EventTracking(
                 AppEventTracking.Event.BUY,

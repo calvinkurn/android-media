@@ -17,7 +17,6 @@ import com.tokopedia.core.product.model.share.ShareData;
 import com.tokopedia.core.router.discovery.BrowseProductRouter;
 import com.tokopedia.core.router.productdetail.ProductDetailRouter;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
-import com.tokopedia.core.share.ShareActivity;
 import com.tokopedia.core.share.fragment.ProductShareFragment;
 import com.tokopedia.core.var.ProductItem;
 import com.tokopedia.tkpdpdp.ProductInfoActivity;
@@ -41,19 +40,7 @@ public class ProductInfoPresenterImpl implements ProductInfoPresenter {
 
     @Override
     public void initialFragment(@NonNull Context context, Uri uri, Bundle bundle) {
-
-        boolean isAddingProduct = bundle.getBoolean(ProductInfoActivity.IS_ADDING_PRODUCT);
-
-        ShareData shareDa = bundle.getParcelable(ProductInfoActivity.SHARE_DATA);
-        // [variable for add product before share]
-        if(isAddingProduct){
-            viewListener.navigateToActivity(ShareActivity.createIntent(context,shareDa,isAddingProduct));
-            viewListener.closeView();
-            // [variable for add product before share]
-        }else if(shareDa !=null){
-            viewListener.navigateToActivity(ShareActivity.createIntent(context,shareDa));
-            viewListener.closeView();
-        } else if (bundle !=null && uri !=null && uri.getPathSegments().size() == 2) {
+        if (bundle !=null && uri !=null && uri.getPathSegments().size() == 2) {
             viewListener.inflateFragment(ProductDetailFragment.newInstanceForDeeplink(ProductPass.Builder.aProductPass()
                             .setProductKey(uri.getPathSegments().get(1))
                             .setShopDomain(uri.getPathSegments().get(0))

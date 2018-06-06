@@ -1,7 +1,8 @@
 package com.tokopedia.flight.booking.data.cloud;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.tokopedia.abstraction.common.data.model.request.DataRequest;
-import com.tokopedia.abstraction.common.data.model.response.DataResponse;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.flight.booking.data.cloud.entity.CartEntity;
 import com.tokopedia.flight.booking.data.cloud.requestbody.FlightCartRequest;
@@ -20,19 +21,23 @@ import rx.functions.Func1;
 public class FlightCartDataSource {
     private FlightApi flightApi;
     private UserSession userSession;
+    private Gson gsonWithDeserializer;
+    private FlightCartJsonDeserializer flightCartJsonDeserializer;
 
     @Inject
-    public FlightCartDataSource(FlightApi flightApi, UserSession userSession) {
+    public FlightCartDataSource(FlightApi flightApi, UserSession userSession, FlightCartJsonDeserializer flightCartJsonDeserializer) {
         this.flightApi = flightApi;
         this.userSession = userSession;
+        this.flightCartJsonDeserializer = flightCartJsonDeserializer;
+        this.gsonWithDeserializer = new GsonBuilder().registerTypeAdapter(CartEntity.class, this.flightCartJsonDeserializer).create();
     }
 
     public Observable<CartEntity> addCart(FlightCartRequest request, String idEmpotencyKey) {
         return this.flightApi.addCart(new DataRequest<>(request), idEmpotencyKey, userSession.getUserId())
-                .map(new Func1<Response<DataResponse<CartEntity>>, CartEntity>() {
+                .map(new Func1<Response<String>, CartEntity>() {
                     @Override
-                    public CartEntity call(Response<DataResponse<CartEntity>> dataResponseResponse) {
-                        return dataResponseResponse.body().getData();
+                    public CartEntity call(Response<String> stringResponse) {
+                        return gsonWithDeserializer.fromJson(stringResponse.body(), CartEntity.class);
                     }
                 });
     }

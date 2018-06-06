@@ -2,7 +2,7 @@
     <string name="app_name">Design</string>
     <string name="product_default_counter_text">0</string>
     <string name="text_ticker_action_close">Tutup</string>
-    <string name="search_input_hint">Cari</string>
+    <string name="search_input_hint">Cari Event/Lokasi</string>
     <string name="top_ads_range_date_text">%1$s - %2$s</string>
 
     <string name="reputation_shop_point">%1$s point</string>
@@ -35,5 +35,7 @@
     <string name="seller_reputation_given_by_buyer">Nilai toko yang diberikan pembeli</string>
     <string name="point">Poin</string>
     <string name="no_reputation_yet">Belum ada nilai reputasi</string>
+    <string name="label_send_to_pick_up_booth">Kirim ke Gerai Pengambilan</string>
+    <string name="label_edit_pickup">Ubah Gerai</string>
 
 </resources>

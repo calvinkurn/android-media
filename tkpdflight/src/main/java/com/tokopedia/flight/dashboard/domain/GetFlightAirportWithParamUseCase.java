@@ -5,9 +5,6 @@ import com.tokopedia.flight.common.domain.FlightRepository;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.usecase.UseCase;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import javax.inject.Inject;
 
 import rx.Observable;

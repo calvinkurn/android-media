@@ -201,7 +201,7 @@ public class ShopInfoActivity extends BaseTabActivity implements ShopInfoView, H
     private void onShareShop() {
         if (shopInfo != null) {
             shopPageTracking.eventClickShareShopNotePage(shopId, shopInfoPresenter.isMyShop(shopId), ShopPageTracking.getShopType(shopInfo.getInfo()));
-            ((ShopModuleRouter) getApplication()).goToShareShop(this, shopId, shopInfo.getInfo().getShopUrl(),
+            ((ShopModuleRouter) getApplication()).goToShareShop(getSupportFragmentManager(), shopId, shopInfo.getInfo().getShopUrl(),
                     getString(R.string.shop_label_share_formatted, shopInfo.getInfo().getShopName(), shopInfo.getInfo().getShopLocation()));
         }
     }
