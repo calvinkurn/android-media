@@ -79,15 +79,7 @@ public class DeleteCartGetCartListUseCase extends UseCase<DeleteAndRefreshCartLi
                                 .map(new Func1<UpdateCartDataResponse, DeleteAndRefreshCartListData>() {
                                     @Override
                                     public DeleteAndRefreshCartListData call(UpdateCartDataResponse updateCartDataResponse) {
-                                        if (updateCartDataResponse.isStatus()) {
-                                            return deleteAndRefreshCartListData;
-                                        } else {
-                                            throw new ResponseCartApiErrorException(
-                                                    TkpdBaseURL.Cart.PATH_UPDATE_CART,
-                                                    0,
-                                                    updateCartDataResponse.getError()
-                                            );
-                                        }
+                                        return deleteAndRefreshCartListData;
                                     }
                                 });
                     }

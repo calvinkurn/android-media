@@ -17,6 +17,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -97,7 +98,7 @@ public class CartFragment extends BaseCheckoutFragment implements CartListAdapte
     private View bottomLayout;
     private TextView tvItemCount;
     private TkpdProgressDialog progressDialogNormal;
-    private RelativeLayout layoutUsedPromo;
+    private LinearLayout layoutUsedPromo;
 
     @Inject
     ICartListPresenter dPresenter;

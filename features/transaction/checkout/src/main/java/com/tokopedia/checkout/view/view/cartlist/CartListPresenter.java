@@ -725,9 +725,9 @@ public class CartListPresenter implements ICartListPresenter {
                     /* Dari Api data null => "data":{}, tapi ga ada message error apa apa */
                     view.renderErrorToShipmentForm(e.getMessage());
                 } else if (e instanceof HttpErrorException) {
-            /* Ini Http error, misal 403, 500, 404,
-             code http errornya bisa diambil
-             e.getErrorCode */
+                    /* Ini Http error, misal 403, 500, 404,
+                    code http errornya bisa diambil
+                    e.getErrorCode */
                     view.renderErrorHttpToShipmentForm(e.getMessage());
                 } else if (e instanceof ResponseCartApiErrorException) {
                     view.renderErrorToShipmentForm(e.getMessage());
@@ -735,7 +735,7 @@ public class CartListPresenter implements ICartListPresenter {
                     /* Ini diluar dari segalanya hahahaha */
                     view.renderErrorHttpToShipmentForm(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
                 }
-
+                processInitialGetCartData();
             }
 
             @Override
