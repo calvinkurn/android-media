@@ -180,8 +180,8 @@ public class ImagePickerGalleryFragment extends TkpdBaseV4Fragment
     }
 
     @Override
-    public void onThumbnailImageRemoved(String imagePath) {
-        albumMediaAdapter.removeImageFromSelection(imagePath);
+    public void afterThumbnailImageRemoved() {
+        albumMediaAdapter.notifyDataSetChanged();
     }
 
     @Override

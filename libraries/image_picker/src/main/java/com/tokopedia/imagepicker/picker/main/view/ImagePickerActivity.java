@@ -154,6 +154,7 @@ public class ImagePickerActivity extends BaseSimpleActivity
     private void setupPreview() {
         imagePickerPreviewWidget = findViewById(R.id.image_picker_preview_widget);
         if (imagePickerBuilder.supportMultipleSelection()) {
+            imagePickerPreviewWidget.setData(selectedImagePaths);
             imagePickerPreviewWidget.setVisibility(View.VISIBLE);
             imagePickerPreviewWidget.setOnImagePickerThumbnailListWidgetListener(this);
             imagePickerPreviewWidget.setMaxAdapterSize(imagePickerBuilder.getMaximumNoPick());
@@ -391,11 +392,9 @@ public class ImagePickerActivity extends BaseSimpleActivity
     private void onImageSelected(String filePathOrUrl, boolean isChecked) {
         if (imagePickerBuilder.supportMultipleSelection()) {
             if (isChecked) {
-                selectedImagePaths.add(filePathOrUrl);
                 imagePickerPreviewWidget.addData(filePathOrUrl);
                 enableDoneView();
             } else {
-                selectedImagePaths.remove(filePathOrUrl);
                 imagePickerPreviewWidget.removeData(filePathOrUrl);
                 if (selectedImagePaths.size() == 0) {
                     disableDoneView();
@@ -412,19 +411,15 @@ public class ImagePickerActivity extends BaseSimpleActivity
     }
 
     @Override
-    public void onThumbnailRemoved(String imagePath) {
-        int index = selectedImagePaths.indexOf(imagePath);
-        if (index > -1) {
-            selectedImagePaths.remove(index);
-            if (selectedImagePaths.size() == 0) {
-                disableDoneView();
-            }
+    public void afterThumbnailRemoved() {
+        if (selectedImagePaths.size() == 0) {
+            disableDoneView();
+        }
 
-            List<Fragment> fragments = getSupportFragmentManager().getFragments();
-            for (Fragment fragment : fragments) {
-                if (fragment != null && fragment.isAdded() && fragment instanceof ImagePickerInterface) {
-                    ((ImagePickerInterface) fragment).onThumbnailImageRemoved(imagePath);
-                }
+        List<Fragment> fragments = getSupportFragmentManager().getFragments();
+        for (Fragment fragment : fragments) {
+            if (fragment != null && fragment.isAdded() && fragment instanceof ImagePickerInterface) {
+                ((ImagePickerInterface) fragment).afterThumbnailImageRemoved();
             }
         }
     }

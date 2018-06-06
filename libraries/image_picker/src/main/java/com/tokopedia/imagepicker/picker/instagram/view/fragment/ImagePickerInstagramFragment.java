@@ -244,8 +244,8 @@ public class ImagePickerInstagramFragment extends BaseListFragment<InstagramMedi
     }
 
     @Override
-    public void onThumbnailImageRemoved(String imagePath) {
-        imageInstagramAdapter.removeImageFromSelection(imagePath);
+    public void afterThumbnailImageRemoved() {
+        imageInstagramAdapter.notifyDataSetChanged();
     }
 
     public interface ListenerImagePickerInstagram {

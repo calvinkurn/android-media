@@ -36,7 +36,7 @@ public class ImagePickerThumbnailAdapter extends RecyclerView.Adapter<RecyclerVi
     public interface OnImageEditThumbnailAdapterListener {
         void onPickerThumbnailItemClicked(String imagePath, int position);
 
-        void onThumbnailRemoved(String imagePath);
+        void onThumbnailRemoved();
     }
 
     public ImagePickerThumbnailAdapter(Context context, ArrayList<String> imagePathList,
@@ -117,8 +117,10 @@ public class ImagePickerThumbnailAdapter extends RecyclerView.Adapter<RecyclerVi
         if (imagePathList == null) {
             imagePathList = new ArrayList<>();
         }
-        this.imagePathList.add(imagePath);
-        notifyItemChanged(imagePathList.size() - 1);
+        if (!imagePathList.contains(imagePath)) {
+            this.imagePathList.add(imagePath);
+            notifyItemChanged(imagePathList.size() - 1);
+        }
     }
 
     public void removeData(String imagePath) {
@@ -129,7 +131,7 @@ public class ImagePickerThumbnailAdapter extends RecyclerView.Adapter<RecyclerVi
     public void removeData(int index) {
         if (index > -1) {
             String imagePath = this.imagePathList.remove(index);
-            onImageEditThumbnailAdapterListener.onThumbnailRemoved(imagePath);
+            onImageEditThumbnailAdapterListener.onThumbnailRemoved();
             notifyDataSetChanged();
         }
     }

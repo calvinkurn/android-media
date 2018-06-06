@@ -41,10 +41,10 @@ public class ImagePickerMultipleSelectionBuilder implements Parcelable {
                                                ArrayList<Integer> placeholderImagePathResList,
                                                int primaryImageStringRes,
                                                int maximumNoPick) {
+        this.maximumNoPick = maximumNoPick;
         setInitialSelectedImagePathList(initialSelectedImagePathList);
         this.placeholderImagePathResList = placeholderImagePathResList;
         this.primaryImageStringRes = primaryImageStringRes;
-        this.maximumNoPick = maximumNoPick;
     }
 
     private void setInitialSelectedImagePathList(ArrayList<String> initialSelectedImagePathList){
