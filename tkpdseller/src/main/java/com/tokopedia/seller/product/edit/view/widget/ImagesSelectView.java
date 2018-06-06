@@ -197,7 +197,7 @@ public class ImagesSelectView extends BaseCustomView {
     }
 
     public void setImage(ArrayList<ImageSelectModel> imageSelectModelList) {
-//        handleResolutionFromList(imageSelectModelList);
+        handleResolutionFromList(imageSelectModelList);
 
         if (imageSelectModelList.size() > 0) {
             imageSelectorAdapter.setImage(imageSelectModelList);

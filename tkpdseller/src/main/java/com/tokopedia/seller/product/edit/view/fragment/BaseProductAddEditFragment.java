@@ -285,12 +285,20 @@ public abstract class BaseProductAddEditFragment<T extends ProductAddPresenter>
     }
 
     private ImagePickerBuilder getImagePickerBuilder(){
+        //TODO just for test
+        ArrayList<String> initialPathList = new ArrayList<>();
+        initialPathList.add("https://scontent-sit4-1.cdninstagram.com/vp/4d462c7e62452e54862602872a4f2f55/5B772ADA/t51.2885-15/e35/30603662_2044572549200360_6725615414816014336_n.jpg");
+        initialPathList.add("https://scontent-sit4-1.cdninstagram.com/vp/4d462c7e62452e54862602872a4f2f55/5B772ADA/t51.2885-15/e35/30603662_2044572549200360_6725615414816014336_n.jpg");
+        initialPathList.add("https://9to5google.files.wordpress.com/2016/10/google.jpg");
+
         return new ImagePickerBuilder(getString(R.string.choose_shop_picture),
                 new int[]{TYPE_GALLERY, TYPE_CAMERA, TYPE_INSTAGRAM}, GalleryType.IMAGE_ONLY, DEFAULT_MAX_IMAGE_SIZE_IN_KB,
                 DEFAULT_MIN_RESOLUTION, new int[]{1,1}, true,
                 new ImagePickerEditorBuilder(new int[]{ACTION_BRIGHTNESS, ACTION_CONTRAST, ACTION_CROP, ACTION_ROTATE},
                         false)
-                ,new ImagePickerMultipleSelectionBuilder(productImageViewHolder.getImagesSelectView().getImageStringList(),
+                ,new ImagePickerMultipleSelectionBuilder(
+//                        productImageViewHolder.getImagesSelectView().getImageStringList(),
+                initialPathList,
                 null,
                 0,
                 ImagesSelectView.DEFAULT_LIMIT));
