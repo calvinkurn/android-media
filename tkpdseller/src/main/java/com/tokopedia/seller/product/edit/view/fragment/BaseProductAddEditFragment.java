@@ -29,6 +29,7 @@ import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.myproduct.utils.FileUtils;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.util.RequestPermissionUtil;
+import com.tokopedia.imagepicker.editor.main.view.ImageEditorActivity;
 import com.tokopedia.imagepicker.picker.gallery.type.GalleryType;
 import com.tokopedia.imagepicker.picker.main.builder.ImagePickerBuilder;
 import com.tokopedia.imagepicker.picker.main.builder.ImagePickerEditorBuilder;
@@ -115,6 +116,7 @@ public abstract class BaseProductAddEditFragment<T extends ProductAddPresenter>
 
     public static final int DEFAULT_PARENT_STOCK_IF_VARIANT = 1;
     public static final int REQUEST_CODE_ADD_PRODUCT_IMAGE = 3912;
+    public static final int REQUEST_CODE_EDIT_IMAGE = 3412;
     @Inject
     protected T presenter;
 
@@ -223,11 +225,11 @@ public abstract class BaseProductAddEditFragment<T extends ProductAddPresenter>
         return view;
     }
 
-    protected boolean needHideShareAndAddMore(){
+    protected boolean needHideShareAndAddMore() {
         return false;
     }
 
-    private void hideShareAndAddMore(View view){
+    private void hideShareAndAddMore(View view) {
         view.findViewById(R.id.button_save_and_add).setVisibility(View.GONE);
         view.findViewById(R.id.label_switch_share).setVisibility(View.GONE);
     }
@@ -260,7 +262,7 @@ public abstract class BaseProductAddEditFragment<T extends ProductAddPresenter>
         // if it has catalog, image is valid (because no image needed)
         // if no catalog, check stock, if the stock is not empty, it should have picture.
         return productInfoViewHolder.getCatalogId() > 0 ||
-                !currentProductViewModel.isProductStatusActive()||
+                !currentProductViewModel.isProductStatusActive() ||
                 productImageViewHolder.isDataValid();
     }
 
@@ -284,21 +286,14 @@ public abstract class BaseProductAddEditFragment<T extends ProductAddPresenter>
         startActivityForResult(intent, REQUEST_CODE_ADD_PRODUCT_IMAGE);
     }
 
-    private ImagePickerBuilder getImagePickerBuilder(){
-        //TODO just for test
-        ArrayList<String> initialPathList = new ArrayList<>();
-        initialPathList.add("https://scontent-sit4-1.cdninstagram.com/vp/4d462c7e62452e54862602872a4f2f55/5B772ADA/t51.2885-15/e35/30603662_2044572549200360_6725615414816014336_n.jpg");
-        initialPathList.add("https://scontent-sit4-1.cdninstagram.com/vp/4d462c7e62452e54862602872a4f2f55/5B772ADA/t51.2885-15/e35/30603662_2044572549200360_6725615414816014336_n.jpg");
-        initialPathList.add("https://9to5google.files.wordpress.com/2016/10/google.jpg");
-
+    private ImagePickerBuilder getImagePickerBuilder() {
         return new ImagePickerBuilder(getString(R.string.choose_shop_picture),
                 new int[]{TYPE_GALLERY, TYPE_CAMERA, TYPE_INSTAGRAM}, GalleryType.IMAGE_ONLY, DEFAULT_MAX_IMAGE_SIZE_IN_KB,
-                DEFAULT_MIN_RESOLUTION, new int[]{1,1}, true,
+                DEFAULT_MIN_RESOLUTION, new int[]{1, 1}, true,
                 new ImagePickerEditorBuilder(new int[]{ACTION_BRIGHTNESS, ACTION_CONTRAST, ACTION_CROP, ACTION_ROTATE},
                         false)
-                ,new ImagePickerMultipleSelectionBuilder(
-//                        productImageViewHolder.getImagesSelectView().getImageStringList(),
-                initialPathList,
+                , new ImagePickerMultipleSelectionBuilder(
+                productImageViewHolder.getImagesSelectView().getImageStringList(),
                 null,
                 0,
                 ImagesSelectView.DEFAULT_LIMIT));
@@ -312,20 +307,8 @@ public abstract class BaseProductAddEditFragment<T extends ProductAddPresenter>
         ((ProductAddImageEditProductDialogFragment) dialogFragment).setOnImageEditListener(new ProductAddImageEditProductDialogFragment.OnImageEditListener() {
 
             @Override
-            public void clickEditImagePathFromCamera(int position) {
-                GalleryCropWatermarkActivity.moveToImageGalleryCamera(getActivity(), BaseProductAddEditFragment.this, position,
-                        true, 1, true);
-            }
-
-            @Override
-            public void clickEditImagePathFromGallery(int position) {
-                GalleryCropWatermarkActivity.moveToImageGallery(getActivity(), BaseProductAddEditFragment.this, position, 1, true);
-            }
-
-            @Override
-            public void clickEditImagePathFromInstagram(int position) {
-                InstopedSellerCropWatermarkActivity.startInstopedActivityForResult(getContext(), BaseProductAddEditFragment.this,
-                        INSTAGRAM_SELECT_REQUEST_CODE, 1);
+            public void clickChangeImage(int position) {
+                onAddImagePickerClicked(position);
             }
 
             @Override
@@ -393,11 +376,11 @@ public abstract class BaseProductAddEditFragment<T extends ProductAddPresenter>
 
     @Override
     public void onImageEditor(String uriOrPath) {
-        ArrayList<String> imageUrls = new ArrayList<>();
-        imageUrls.add(uriOrPath);
-        ImageEditorWatermarkActivity.start(getContext(),
-                BaseProductAddEditFragment.this, imageUrls,
-                !isEdittingDraft());
+        Intent editorIntent = ImageEditorActivity.getIntent(getContext(),uriOrPath, ImagePickerBuilder.DEFAULT_MIN_RESOLUTION,
+                new int[] {ACTION_BRIGHTNESS, ACTION_CONTRAST, ACTION_CROP, ACTION_ROTATE},
+                1,1,false,
+                ImagePickerBuilder.DEFAULT_MAX_IMAGE_SIZE_IN_KB);
+        startActivityForResult(editorIntent, REQUEST_CODE_EDIT_IMAGE);
     }
 
     @Override
@@ -463,7 +446,7 @@ public abstract class BaseProductAddEditFragment<T extends ProductAddPresenter>
             return;
         }
 
-        boolean hasWholesale = currentProductViewModel.getProductWholesale()!=null && currentProductViewModel.getProductWholesale().size() > 0;
+        boolean hasWholesale = currentProductViewModel.getProductWholesale() != null && currentProductViewModel.getProductWholesale().size() > 0;
 
         Intent intent = ProductVariantDashboardActivity.getIntent(getActivity(),
                 productVariantByCatModelList,
@@ -522,7 +505,7 @@ public abstract class BaseProductAddEditFragment<T extends ProductAddPresenter>
     @Override
     public boolean hasWholesale() {
         productPriceViewHolder.updateModel(currentProductViewModel);
-        return currentProductViewModel.getProductWholesale()!=null && currentProductViewModel.getProductWholesale().size() > 0;
+        return currentProductViewModel.getProductWholesale() != null && currentProductViewModel.getProductWholesale().size() > 0;
     }
 
     @Override
@@ -750,7 +733,7 @@ public abstract class BaseProductAddEditFragment<T extends ProductAddPresenter>
 
     @Override
     public void onCatalogPicked(boolean isCatalogExist) {
-        if (valueIndicatorScoreModel.isHasCatalog()!= isCatalogExist) {
+        if (valueIndicatorScoreModel.isHasCatalog() != isCatalogExist) {
             valueIndicatorScoreModel.setHasCatalog(isCatalogExist);
             updateProductScoring();
         }
@@ -944,7 +927,7 @@ public abstract class BaseProductAddEditFragment<T extends ProductAddPresenter>
 
     @Override
     public void onVariantCountChange(boolean hasActiveVariant) {
-        if (hasActiveVariant!= valueIndicatorScoreModel.isVariantActive()) {
+        if (hasActiveVariant != valueIndicatorScoreModel.isVariantActive()) {
             valueIndicatorScoreModel.setVariantActive(hasActiveVariant);
             updateProductScoring();
         }
@@ -960,7 +943,7 @@ public abstract class BaseProductAddEditFragment<T extends ProductAddPresenter>
 
     @Override
     public void onImageResolutionChanged(long maxSize) {
-        if (valueIndicatorScoreModel.getImageResolution()!= maxSize) {
+        if (valueIndicatorScoreModel.getImageResolution() != maxSize) {
             valueIndicatorScoreModel.setImageResolution((int) maxSize);
             updateProductScoring();
         }
@@ -977,7 +960,7 @@ public abstract class BaseProductAddEditFragment<T extends ProductAddPresenter>
     @Override
     public void onTotalStockUpdated(int total) {
         //we need to update this in "realtime" because stock and total will be needed for variant immediately
-        if (currentProductViewModel!= null) {
+        if (currentProductViewModel != null) {
             currentProductViewModel.setProductStock(total);
         }
         boolean stockStatus = total > 0;
@@ -989,7 +972,7 @@ public abstract class BaseProductAddEditFragment<T extends ProductAddPresenter>
 
     @Override
     public void onStockStatusUpdated(boolean isActive) {
-        if (currentProductViewModel!= null) {
+        if (currentProductViewModel != null) {
             currentProductViewModel.setProductStatus(isActive);
         }
     }
@@ -1004,7 +987,7 @@ public abstract class BaseProductAddEditFragment<T extends ProductAddPresenter>
 
     @Override
     public void onDescriptionTextChanged(String text) {
-        if (valueIndicatorScoreModel.getLengthDescProduct()!= text.length()) {
+        if (valueIndicatorScoreModel.getLengthDescProduct() != text.length()) {
             valueIndicatorScoreModel.setLengthDescProduct(text.length());
             updateProductScoring();
         }
@@ -1063,7 +1046,7 @@ public abstract class BaseProductAddEditFragment<T extends ProductAddPresenter>
     @Override
     public List<ProductVideoViewModel> getVideoIdList() {
         if (currentProductViewModel == null || currentProductViewModel.getProductVideo() == null ||
-                currentProductViewModel.getProductVideo().size() == 0){
+                currentProductViewModel.getProductVideo().size() == 0) {
             return new ArrayList<>();
         }
         return currentProductViewModel.getProductVideo();

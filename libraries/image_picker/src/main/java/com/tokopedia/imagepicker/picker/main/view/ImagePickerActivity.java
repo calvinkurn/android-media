@@ -542,6 +542,7 @@ public class ImagePickerActivity extends BaseSimpleActivity
         }
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -550,7 +551,7 @@ public class ImagePickerActivity extends BaseSimpleActivity
                 if (resultCode == Activity.RESULT_OK && data != null && data.hasExtra(PICKER_RESULT_PATHS)) {
                     ArrayList<String> finalPathList = data.getStringArrayListExtra(PICKER_RESULT_PATHS);
                     ArrayList<String> originalImageList = data.getStringArrayListExtra(RESULT_PREVIOUS_IMAGE);
-                    ArrayList<Boolean> isEdittedList = data.getParcelableExtra(RESULT_IS_EDITTED);
+                    ArrayList<Boolean> isEdittedList = (ArrayList<Boolean>) data.getSerializableExtra(RESULT_IS_EDITTED);
                     onFinishWithMultipleFinalImage(finalPathList, originalImageList, isEdittedList);
                     isFinishEditting = true;
                 }

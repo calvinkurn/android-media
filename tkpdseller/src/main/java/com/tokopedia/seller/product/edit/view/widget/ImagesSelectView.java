@@ -10,6 +10,7 @@ import android.support.v7.widget.SimpleItemAnimator;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.View;
+import android.webkit.URLUtil;
 import android.widget.TextView;
 
 import com.tokopedia.seller.R;
@@ -156,6 +157,9 @@ public class ImagesSelectView extends BaseCustomView {
     }
 
     public boolean successHandleResolution(String localUri) {
+        if (URLUtil.isNetworkUrl(localUri)) {
+            return true;
+        }
         if (onCheckResolutionListener == null || onCheckResolutionListener.isResolutionCorrect(localUri)) {
             return true;
         } else { // resolution is not correct

@@ -25,6 +25,7 @@ import static com.tokopedia.imagepicker.editor.main.view.ImageEditorActivity.RES
 import static com.tokopedia.imagepicker.editor.main.view.ImageEditorActivity.RESULT_PREVIOUS_IMAGE;
 import static com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity.PICKER_RESULT_PATHS;
 import static com.tokopedia.seller.product.edit.view.fragment.BaseProductAddEditFragment.REQUEST_CODE_ADD_PRODUCT_IMAGE;
+import static com.tokopedia.seller.product.edit.view.fragment.BaseProductAddEditFragment.REQUEST_CODE_EDIT_IMAGE;
 
 /**
  * Created by nathan on 4/11/17.
@@ -153,54 +154,68 @@ public class ProductImageViewHolder extends ProductViewHolder {
         return imagesSelectView;
     }
 
+    @SuppressWarnings("unchecked")
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == REQUEST_CODE_ADD_PRODUCT_IMAGE && resultCode == Activity.RESULT_OK &&
-                data != null) {
-            ArrayList<String> imageUrlOrPathList = data.getStringArrayListExtra(PICKER_RESULT_PATHS);
-            if (imageUrlOrPathList == null || imageUrlOrPathList.isEmpty()) {
-                imagesSelectView.setImage(new ArrayList<ImageSelectModel>());
-            } else {
-                ArrayList<String> editOriginalUrlList = data.getStringArrayListExtra(RESULT_PREVIOUS_IMAGE);
-                ArrayList<Boolean> resultIsEdittedList = data.getParcelableExtra(RESULT_IS_EDITTED);
+        if (requestCode == REQUEST_CODE_ADD_PRODUCT_IMAGE ) {
+            if (resultCode == Activity.RESULT_OK &&
+                    data != null) {
+                ArrayList<String> imageUrlOrPathList = data.getStringArrayListExtra(PICKER_RESULT_PATHS);
+                if (imageUrlOrPathList == null || imageUrlOrPathList.isEmpty()) {
+                    imagesSelectView.setImage(new ArrayList<ImageSelectModel>());
+                } else {
+                    ArrayList<String> editOriginalUrlList = data.getStringArrayListExtra(RESULT_PREVIOUS_IMAGE);
+                    ArrayList<Boolean> resultIsEdittedList = (ArrayList<Boolean>) data.getSerializableExtra(RESULT_IS_EDITTED);
 
-                ArrayList<ImageSelectModel> prevImageSelectModelList = imagesSelectView.getImageList();
+                    ArrayList<ImageSelectModel> prevImageSelectModelList = imagesSelectView.getImageList();
 
-                // LOGIC to retain HTTP url:
-                // check with the previous imageSelectView
-                // if the new Image Path's original Image is HTTP and exist in the prevImageSelectModel.getUri and editted = false
-                // then the data in previous model will be retained, and the uri will be the previous model
-                // Otherwise, set the new ImagePath to ImageSelectView
-                // example: prev data: "http://a.jpg", "http://b.jpg"
-                // example: result data: { "http://a.jpg" edit=false }, "data://b_edit.jpg"
-                // example: final data: "http://a.jpg", "data://b_edit.jpg"
-                ArrayList<ImageSelectModel> newImageSelectModelList = new ArrayList<>();
-                for (int i = 0, sizei = imageUrlOrPathList.size(); i < sizei; i++) {
-                    String imagePath = imageUrlOrPathList.get(i);
-                    if (editOriginalUrlList != null && prevImageSelectModelList != null && prevImageSelectModelList.size() > 0) {
-                        String editOriginalPath = editOriginalUrlList.get(i);
-                        boolean hasAnyEdit = resultIsEdittedList.get(i);
+                    // LOGIC to retain HTTP url:
+                    // check with the previous imageSelectView
+                    // if the new Image Path's original Image is HTTP and exist in the prevImageSelectModel.getUri and editted = false
+                    // then the data in previous model will be retained, and the uri will be the previous model
+                    // Otherwise, set the new ImagePath to ImageSelectView
+                    // example: prev data: "http://a.jpg", "http://b.jpg"
+                    // example: result data: { "http://a.jpg" edit=false }, "data://b_edit.jpg"
+                    // example: final data: "http://a.jpg", "data://b_edit.jpg"
+                    ArrayList<ImageSelectModel> newImageSelectModelList = new ArrayList<>();
+                    for (int i = 0, sizei = imageUrlOrPathList.size(); i < sizei; i++) {
+                        String imagePath = imageUrlOrPathList.get(i);
+                        if (editOriginalUrlList != null && prevImageSelectModelList != null && prevImageSelectModelList.size() > 0) {
+                            String editOriginalPath = editOriginalUrlList.get(i);
+                            boolean hasAnyEdit = resultIsEdittedList.get(i);
 
-                        if (URLUtil.isNetworkUrl(editOriginalPath) && hasAnyEdit) {
-                            boolean existInPrevModel = false;
-                            for (ImageSelectModel prevImageSelectModel : prevImageSelectModelList) {
-                                if (prevImageSelectModel.getUriOrPath().equals(editOriginalPath)){
-                                    // HTTP, no edit, exists in prev model, add with prev model
-                                    newImageSelectModelList.add(prevImageSelectModel);
-                                    existInPrevModel = true;
-                                    break;
+                            if (URLUtil.isNetworkUrl(editOriginalPath) && !hasAnyEdit) {
+                                boolean existInPrevModel = false;
+                                for (ImageSelectModel prevImageSelectModel : prevImageSelectModelList) {
+                                    if (prevImageSelectModel.getUriOrPath().equals(editOriginalPath)) {
+                                        // HTTP, no edit, exists in prev model, add with prev model
+                                        newImageSelectModelList.add(prevImageSelectModel);
+                                        existInPrevModel = true;
+                                        break;
+                                    }
                                 }
-                            }
-                            if (!existInPrevModel) { // HTTP AND no edit, but not exists in prev model
+                                if (!existInPrevModel) { // HTTP AND no edit, but not exists in prev model
+                                    newImageSelectModelList.add(new ImageSelectModel(imagePath));
+                                }
+                            } else { // not HTTP OR has any edit
                                 newImageSelectModelList.add(new ImageSelectModel(imagePath));
                             }
-                        } else { // not HTTP OR has any edit
+                        } else {
                             newImageSelectModelList.add(new ImageSelectModel(imagePath));
                         }
-                    } else {
-                        newImageSelectModelList.add(new ImageSelectModel(imagePath));
+                    }
+                    imagesSelectView.setImage(newImageSelectModelList);
+                }
+            }
+        } else if (requestCode == REQUEST_CODE_EDIT_IMAGE){
+            if (resultCode == Activity.RESULT_OK &&
+                    data != null) {
+                ArrayList<String> imageUrlOrPathList = data.getStringArrayListExtra(PICKER_RESULT_PATHS);
+                if (imageUrlOrPathList != null && imageUrlOrPathList.size() > 0) {
+                    String imagePath = imageUrlOrPathList.get(0);
+                    if (!TextUtils.isEmpty(imagePath) && imagesSelectView.getSelectedImageIndex() >= 0) {
+                        imagesSelectView.changeImagePath(imagePath);
                     }
                 }
-                imagesSelectView.setImage(newImageSelectModelList);
             }
         }
     }
