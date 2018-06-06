@@ -64,16 +64,23 @@
         android:layout_height="@dimen/dp_32"
         android:layout_alignParentRight="true"
         android:layout_alignParentTop="true"
-        android:layout_marginTop="-5dp"
-        android:layout_marginRight="-5dp"
+        android:layout_marginTop="18dp"
+        android:layout_marginRight="18dp"
         android:background="@drawable/circle_white"
         android:visibility="gone">
+
+        <View
+            android:layout_width="@dimen/dp_16"
+            android:layout_height="@dimen/dp_16"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentTop="true"
+            android:background="@color/white"/>
 
         <ImageView
             android:id="@id/wishlist_button"
             android:layout_width="18dp"
             android:layout_height="18dp"
-            android:layout_marginLeft="7dp"
+            android:layout_marginLeft="5dp"
             android:layout_centerVertical="true"
             android:background="@drawable/ic_wishlist"
             />

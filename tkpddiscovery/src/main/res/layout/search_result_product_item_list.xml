@@ -188,7 +188,6 @@
         android:layout_width="32dp"
         android:layout_height="32dp"
         android:layout_marginTop="@dimen/dp_16"
-        android:layout_marginRight="-5dp"
         android:background="@drawable/circle_white"
         android:visibility="gone">
 
@@ -196,7 +195,7 @@
             android:id="@+id/wishlist_button"
             android:layout_width="18dp"
             android:layout_height="18dp"
-            android:layout_marginLeft="8dp"
+            android:layout_marginLeft="5dp"
             android:layout_centerVertical="true"
             android:background="@drawable/ic_wishlist"
             />
