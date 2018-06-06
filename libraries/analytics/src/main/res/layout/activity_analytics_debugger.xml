@@ -5,16 +5,6 @@
     android:clipToPadding="false"
     android:orientation="vertical">
 
-    <android.support.v7.widget.Toolbar
-        android:id="@+id/toolbar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:elevation="@dimen/dp_4"
-        android:theme="?toolbarTheme"
-        app:contentInsetLeft="0dp"
-        app:contentInsetStart="0dp"
-        app:contentInsetStartWithNavigation="0dp"/>
-
     <FrameLayout
         android:id="@+id/parent_view"
         android:layout_width="match_parent"

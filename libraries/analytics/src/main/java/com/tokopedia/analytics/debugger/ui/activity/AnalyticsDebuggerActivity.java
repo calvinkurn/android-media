@@ -19,11 +19,8 @@ public class AnalyticsDebuggerActivity extends BaseSimpleActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(getLayoutRes());
-        if(getSupportActionBar() != null) {
-            getSupportActionBar().setDisplayHomeAsUpEnabled(false);
-            getSupportActionBar().setDisplayShowTitleEnabled(true);
-            getSupportActionBar().setTitle("Analytics Debugger");
-        }
+        toolbar.setTitle("Analytics Debugger");
+        setSupportActionBar(toolbar);
     }
 
     @Override
@@ -48,6 +45,6 @@ public class AnalyticsDebuggerActivity extends BaseSimpleActivity {
 
     @Override
     protected int getLayoutRes() {
-        return R.layout.activity_analytics_debugger;
+        return super.getLayoutRes();
     }
 }

@@ -4,12 +4,10 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
@@ -49,6 +47,12 @@ public class AnalyticsDebuggerFragment
     }
 
     @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        searchInputView.setSearchHint("Cari");
+    }
+
+    @Override
     public void onDestroyView() {
         super.onDestroyView();
         presenter.detachView();
@@ -83,7 +87,7 @@ public class AnalyticsDebuggerFragment
 
     @Override
     public void onItemClicked(Visitable visitable) {
-        if(visitable instanceof AnalyticsDebuggerViewModel) {
+        if (visitable instanceof AnalyticsDebuggerViewModel) {
             openDetail((AnalyticsDebuggerViewModel) visitable);
         }
     }
@@ -93,7 +97,7 @@ public class AnalyticsDebuggerFragment
         AnalyticsDebuggerComponent component = DaggerAnalyticsDebuggerComponent
                 .builder()
                 .baseAppComponent(
-                    ((BaseMainApplication) getActivity().getApplication()).getBaseAppComponent()
+                        ((BaseMainApplication) getActivity().getApplication()).getBaseAppComponent()
                 ).build();
 
         component.inject(this);
@@ -145,7 +149,7 @@ public class AnalyticsDebuggerFragment
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if(item.getItemId() == R.id.action_menu_delete) {
+        if (item.getItemId() == R.id.action_menu_delete) {
             presenter.deleteAll();
             return true;
         }
