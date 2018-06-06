@@ -2,7 +2,6 @@ package com.tokopedia.flight.banner.view.adapter;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.bumptech.glide.request.target.Target;
 import com.tokopedia.design.banner.BannerPagerAdapter;
 import com.tokopedia.design.banner.BannerView;
 
@@ -33,8 +32,7 @@ public class FlightBannerPagerAdapter extends BannerPagerAdapter {
                     .diskCacheStrategy(DiskCacheStrategy.SOURCE)
                     .placeholder(com.tokopedia.design.R.drawable.ic_loading_image)
                     .error(com.tokopedia.design.R.drawable.ic_loading_image)
-                    .override(BANNER_WIDTH, Target.SIZE_ORIGINAL)
-                    .into(holder.getBannerImage());
+                     .into(holder.getBannerImage());
         } catch (Exception e) {
             e.printStackTrace();
         }
