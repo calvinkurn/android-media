@@ -184,6 +184,7 @@ public class CartRemoveProductPresenter
         for (CartItemData cartItemData : cartItemDataList) {
             EnhancedECommerceProductCartMapData enhancedECommerceProductCartMapData =
                     new EnhancedECommerceProductCartMapData();
+            enhancedECommerceProductCartMapData.setCartId(String.valueOf(cartItemData.getOriginData().getCartId()));
             enhancedECommerceProductCartMapData.setProductName(cartItemData.getOriginData().getProductName());
             enhancedECommerceProductCartMapData.setProductID(String.valueOf(cartItemData.getOriginData().getProductId()));
             enhancedECommerceProductCartMapData.setPrice(cartItemData.getOriginData().getPriceFormatted());

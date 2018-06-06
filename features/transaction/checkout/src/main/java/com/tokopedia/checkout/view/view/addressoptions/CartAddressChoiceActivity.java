@@ -174,11 +174,21 @@ public class CartAddressChoiceActivity extends BaseCheckoutActivity
         switch (typeRequest) {
             default:
                 return CartAddressChoiceFragment.newInstance(
-                        (RecipientAddressModel) getIntent().getParcelableExtra(EXTRA_CURRENT_ADDRESS));
+                        getIntent().getParcelableExtra(EXTRA_CURRENT_ADDRESS));
             case TYPE_REQUEST_SELECT_ADDRESS_FROM_COMPLETE_LIST:
                 return ShipmentAddressListFragment.newInstance(
                         (RecipientAddressModel) getIntent().getParcelableExtra(EXTRA_CURRENT_ADDRESS));
 
         }
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (getCurrentFragment() instanceof CartAddressChoiceFragment) {
+            ((CartAddressChoiceFragment) getCurrentFragment())
+                    .checkoutAnalyticsChangeAddress.eventClickChangeAddressClickArrowBackFromGantiAlamat();
+        }
+        super.onBackPressed();
+
     }
 }

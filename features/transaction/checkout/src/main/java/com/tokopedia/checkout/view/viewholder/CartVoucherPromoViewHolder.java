@@ -63,7 +63,4 @@ public class CartVoucherPromoViewHolder extends RecyclerView.ViewHolder {
         }
     }
 
-    public CartItemPromoHolderData getCartItemPromoHolderData() {
-        return cartItemPromoHolderData;
-    }
 }

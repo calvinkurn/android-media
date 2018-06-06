@@ -392,6 +392,15 @@ public class PromoCouponFragment extends BasePresenterFragment
 
     @Override
     public void onVoucherChosen(CouponData data) {
+        switch (getArguments().getString(PLATFORM_PAGE_KEY, "")) {
+            case IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.PLATFORM_PAGE_MARKETPLACE_CART_LIST:
+                listener.sendAnalyticsOnCouponItemClickedCartListPage();
+                break;
+            case IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.PLATFORM_PAGE_MARKETPLACE_CART_SHIPMENT:
+                listener.sendAnalyticsOnCouponItemClickedCartShipmentPage();
+                break;
+        }
+
         adapter.clearError();
         UnifyTracking.eventCouponChosen(data.getTitle());
         if (getArguments().getString(PLATFORM_KEY, "").equalsIgnoreCase(
@@ -466,7 +475,9 @@ public class PromoCouponFragment extends BasePresenterFragment
                 long discountAmount,
                 long cashbackAmount);
 
-        void sendAnalyticsOnCouponItemClicked();
+        void sendAnalyticsOnCouponItemClickedCartListPage();
+
+        void sendAnalyticsOnCouponItemClickedCartShipmentPage();
 
         void sendAnalyticsImpressionCouponEmptyCartListPage();
 

@@ -30,7 +30,6 @@ import com.tokopedia.core.manage.people.address.ManageAddressConstant;
 import com.tokopedia.core.manage.people.address.activity.AddAddressActivity;
 import com.tokopedia.core.manage.people.address.model.Destination;
 import com.tokopedia.core.manage.people.address.model.Token;
-import com.tokopedia.transactionanalytics.CheckoutAnalyticsCart;
 import com.tokopedia.transactionanalytics.CheckoutAnalyticsChangeAddress;
 
 import java.util.List;
@@ -71,9 +70,6 @@ public class CartAddressChoiceFragment extends BaseCheckoutFragment
     ShipmentAddressListAdapter mShipmentAddressListAdapter;
 
     @Inject
-    CheckoutAnalyticsCart checkoutAnalyticsCart;
-
-    @Inject
     CheckoutAnalyticsChangeAddress checkoutAnalyticsChangeAddress;
 
     public static CartAddressChoiceFragment newInstance(RecipientAddressModel currentAddress) {
@@ -102,7 +98,7 @@ public class CartAddressChoiceFragment extends BaseCheckoutFragment
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.menu_add_address) {
-            checkoutAnalyticsChangeAddress.eventClickChangeAddressClickPlusFromPilihAlamatLainnya();
+            checkoutAnalyticsChangeAddress.eventClickChangeAddressClickTambahAlamatBaruFromGantiAlamat();
             startActivityForResult(AddAddressActivity.createInstance(getActivity(), token),
                     ManageAddressConstant.REQUEST_CODE_PARAM_CREATE);
             return true;

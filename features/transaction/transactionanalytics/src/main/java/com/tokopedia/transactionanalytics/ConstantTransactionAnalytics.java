@@ -58,6 +58,8 @@ public interface ConstantTransactionAnalytics {
         String CLICK_PILIH_LOKASI_PETA = "click pilih lokasi peta";
         String CLICK_ASURANSI_PENGIRIMAN = "click asuransi pengiriman";
         String CLICK_DROPSHIP = "click dropship";
+        String CLICK_INPUT_QUANTITY = "click input quantity";
+        String CLICK_TULIS_CATATAN = "click tulis catatan";
 
         // Cart change address starts here
 
@@ -109,11 +111,18 @@ public interface ConstantTransactionAnalytics {
 
     interface EventLabel {
         String CLICK_BELI = "click beli";
+
         String CLICK_HAPUS_FROM_TRASH_BIN = "click hapus from trash bin";
         String CLICK_HAPUS_DAN_TAMBAH_WISHLIST_FROM_TRASH_BIN = "click hapus dan tambah wishlist from trash bin";
-        String CLICK_HAPUS_PRODUK_BERKENDALA = "click hapus produk berkendala";
+
         String CLICK_HAPUS_FROM_CLICK_HAPUS = "click hapus from click hapus";
         String CLICK_HAPUS_DAN_TAMBAH_WISHLIST_FROM_CLICK_HAPUS = "click hapus dan tambah wishlist from click hapus";
+
+        String CLICK_HAPUS_PRODUK_BERKENDALA = "click hapus produk berkendala";
+        String CLICK_HAPUS_DAN_TAMBAH_WISHLIST_FrOM_HaPUS_PRODUK_BERKENDALA = "click hapus dan tambah wishlist from hapus produk berkendala";
+        String CLICK_HAPUS_FROM_HAPUS_PRODUK_BERKENDALA = "click hapus from hapus produk berkendala";
+
+
         String SUCCESS = "success";
         String NOT_SUCCESS = "not success";
         String COURIER_NOT_COMPLETE = "courier not complete";

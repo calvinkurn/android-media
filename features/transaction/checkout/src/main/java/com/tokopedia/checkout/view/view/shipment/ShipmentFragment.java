@@ -60,7 +60,7 @@ import javax.inject.Inject;
 
 /**
  * @author Irfan Khoirul on 23/04/18.
- * Originaly authored by Aghny, Angga, Kris
+ *         Originaly authored by Aghny, Angga, Kris
  */
 
 public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentContract.View,
@@ -177,8 +177,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
 
         PromoCodeAppliedData promoCodeAppliedData = arguments.getParcelable(ARG_EXTRA_PROMO_CODE_APPLIED_DATA);
         shipmentPresenter.setPromoCodeAppliedData(promoCodeAppliedData);
-        shipmentPresenter.setCartPromoSuggestion(
-                (CartPromoSuggestion) arguments.getParcelable(ARG_EXTRA_CART_PROMO_SUGGESTION));
+        shipmentPresenter.setCartPromoSuggestion(arguments.getParcelable(ARG_EXTRA_CART_PROMO_SUGGESTION));
         shipmentPresenter.setShipmentCostModel(new ShipmentCostModel());
         shipmentPresenter.setShipmentCheckoutButtonModel(new ShipmentCheckoutButtonModel());
     }
@@ -335,6 +334,21 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     @Override
     public void renderCheckoutCartError(String message) {
         NetworkErrorHelper.showRedCloseSnackbar(getActivity(), message);
+    }
+
+    @Override
+    public void sendAnalyticsChoosePaymentMethodSuccess() {
+        checkoutAnalyticsCourierSelection.eventClickCourierSelectionClickPilihMetodePembayaranSuccess();
+    }
+
+    @Override
+    public void sendAnalyticsChoosePaymentMethodFailed() {
+        checkoutAnalyticsCourierSelection.eventClickCourierSelectionClickPilihMetodePembayaranNotSuccess();
+    }
+
+    @Override
+    public void sendAnalyticsChoosePaymentMethodCourierNotComplete() {
+        checkoutAnalyticsCourierSelection.eventClickCourierSelectionClickPilihMetodePembayaranCourierNotComplete();
     }
 
     @Override
@@ -653,6 +667,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     @Override
     public void onCartPromoTrackingCancelled(CartItemPromoHolderData cartPromo, int position) {
         checkoutAnalyticsCourierSelection.eventClickCourierSelectionClickXOnBannerPromoCodeCode();
+        checkoutAnalyticsCourierSelection.eventClickCourierSelectionClickXFromGunakanKodePromoAtauKupon();
     }
 
     @Override

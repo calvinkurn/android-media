@@ -31,7 +31,6 @@ import com.tokopedia.core.manage.people.address.ManageAddressConstant;
 import com.tokopedia.core.manage.people.address.activity.AddAddressActivity;
 import com.tokopedia.core.manage.people.address.model.Token;
 import com.tokopedia.design.text.SearchInputView;
-import com.tokopedia.transactionanalytics.CheckoutAnalyticsCart;
 import com.tokopedia.transactionanalytics.CheckoutAnalyticsChangeAddress;
 
 import java.util.ArrayList;
@@ -73,9 +72,6 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
 
     @Inject
     ShipmentAddressListPresenter mShipmentAddressListPresenter;
-
-    @Inject
-    CheckoutAnalyticsCart checkoutAnalyticsCart;
 
     @Inject
     CheckoutAnalyticsChangeAddress checkoutAnalyticsChangeAddress;
@@ -135,31 +131,16 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
 
     }
 
-    /**
-     * apakah fragment ini support options menu?
-     *
-     * @return iya atau tidak
-     */
     @Override
     protected boolean getOptionsMenuEnable() {
         return false;
     }
 
-    /**
-     * Cast si activity ke listener atau bisa juga ini untuk context activity
-     *
-     * @param activity si activity yang punya fragment
-     */
     @Override
     protected void initialListener(Activity activity) {
         mCartAddressChoiceActivityListener = (ICartAddressChoiceActivityListener) activity;
     }
 
-    /**
-     * kalau memang argument tidak kosong. ini data argumentnya
-     *
-     * @param arguments argument nya
-     */
     @Override
     protected void setupArguments(Bundle arguments) {
 
@@ -170,13 +151,9 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
         return R.layout.fragment_shipment_address_list;
     }
 
-    /**
-     * initial view atau widget.. misalkan textView = (TextView) findById...
-     *
-     * @param view root view si fragment
-     */
     @Override
     protected void initView(View view) {
+        checkoutAnalyticsChangeAddress.eventImpressionChangeAddressImpressionChangeAddress();
         mRvRecipientAddressList = view.findViewById(R.id.rv_address_list);
         mSvAddressSearchBox = view.findViewById(R.id.sv_address_search_box);
         swipeToRefreshLayout = view.findViewById(R.id.swipe_refresh_layout);
@@ -200,9 +177,6 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
         });
     }
 
-    /**
-     * set listener atau attribute si view. misalkan texView.setText("blablalba");
-     */
     @Override
     protected void setViewListener() {
         mShipmentAddressListPresenter.attachView(this);
@@ -210,18 +184,12 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
                 .getSystemService(Context.INPUT_METHOD_SERVICE);
     }
 
-    /**
-     * initial Variabel di fragment, selain yg sifatnya widget. Misal: variable state, handler dll
-     */
     @Override
     protected void initialVar() {
         mRvRecipientAddressList.setLayoutManager(new LinearLayoutManager(getActivity()));
         mRvRecipientAddressList.setAdapter(mShipmentAddressListAdapter);
     }
 
-    /**
-     * setup aksi, attr, atau listener untuk si variable. misal. appHandler.startAction();
-     */
     @Override
     protected void setActionVar() {
         initSearchView();
@@ -311,20 +279,20 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
     @Override
     public void onSearchTextChanged(String text) {
         openSoftKeyboard();
-//        performSearch(text);
     }
 
     @Override
     public void onSearchReset() {
         mShipmentAddressListPresenter.resetAddressList(getActivity(), ORDER_ASC,
-                (RecipientAddressModel) getArguments().getParcelable(EXTRA_CURRENT_ADDRESS));
+                getArguments().getParcelable(EXTRA_CURRENT_ADDRESS));
         closeSoftKeyboard();
     }
 
     private void performSearch(String query) {
+        checkoutAnalyticsChangeAddress.eventClickChangeAddressSubmitSearchFromPilihAlamatLainnya();
         if (!query.isEmpty()) {
             mShipmentAddressListPresenter.getAddressList(getActivity(), ORDER_ASC, query,
-                    (RecipientAddressModel) getArguments().getParcelable(EXTRA_CURRENT_ADDRESS));
+                    getArguments().getParcelable(EXTRA_CURRENT_ADDRESS));
         } else {
             onSearchReset();
         }
@@ -360,5 +328,4 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
         Intent intent = AddAddressActivity.createInstance(getActivity(), mapper.transform(model), token);
         startActivityForResult(intent, ManageAddressConstant.REQUEST_CODE_PARAM_EDIT);
     }
-
 }

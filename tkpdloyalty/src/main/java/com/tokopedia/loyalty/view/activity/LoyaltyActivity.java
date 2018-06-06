@@ -351,8 +351,13 @@ public class LoyaltyActivity extends BasePresenterActivity
     }
 
     @Override
-    public void sendAnalyticsOnCouponItemClicked() {
+    public void sendAnalyticsOnCouponItemClickedCartListPage() {
         checkoutAnalyticsCart.eventClickCartClickKuponFromGunakanPromoAtauKupon();
+    }
+
+    @Override
+    public void sendAnalyticsOnCouponItemClickedCartShipmentPage() {
+        checkoutAnalyticsCourierSelection.eventClickCourierSelectionClickKuponFromGunakanKodePromoAtauKupon();
     }
 
     @Override
