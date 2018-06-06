@@ -40,6 +40,9 @@ import com.tokopedia.imagepicker.picker.widget.ImagePickerPreviewWidget;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.tokopedia.imagepicker.editor.main.view.ImageEditorActivity.RESULT_IS_EDITTED;
+import static com.tokopedia.imagepicker.editor.main.view.ImageEditorActivity.RESULT_PREVIOUS_IMAGE;
+
 public class ImagePickerActivity extends BaseSimpleActivity
         implements ImagePickerGalleryFragment.OnImagePickerGalleryFragmentListener,
         ImagePickerCameraFragment.OnImagePickerCameraFragmentListener,
@@ -473,9 +476,13 @@ public class ImagePickerActivity extends BaseSimpleActivity
         imagePickerPresenter.resizeImage(imagePathList, maxFileSizeInKB);
     }
 
-    private void onFinishWithMultipleFinalImage(ArrayList<String> imageUrlOrPathList) {
+    private void onFinishWithMultipleFinalImage(ArrayList<String> imageUrlOrPathList,
+                                                ArrayList<String> originalImageList,
+                                                ArrayList<Boolean> isEdittedList) {
         Intent intent = new Intent();
         intent.putStringArrayListExtra(PICKER_RESULT_PATHS, imageUrlOrPathList);
+        intent.putStringArrayListExtra(RESULT_PREVIOUS_IMAGE, originalImageList);
+        intent.putExtra(RESULT_IS_EDITTED, isEdittedList);
         setResult(Activity.RESULT_OK, intent);
         finish();
     }
@@ -510,7 +517,7 @@ public class ImagePickerActivity extends BaseSimpleActivity
     @Override
     public void onSuccessResizeImage(ArrayList<String> resultPaths) {
         hideDownloadProgressDialog();
-        onFinishWithMultipleFinalImage(resultPaths);
+        onFinishWithMultipleFinalImage(resultPaths, selectedImagePaths, new ArrayList<Boolean>(selectedImagePaths.size()));
     }
 
     private void initImagePickerPresenter() {
@@ -540,9 +547,11 @@ public class ImagePickerActivity extends BaseSimpleActivity
         super.onActivityResult(requestCode, resultCode, data);
         switch (requestCode) {
             case REQUEST_CODE_EDITOR:
-                if (resultCode == Activity.RESULT_OK && data != null && data.hasExtra(ImageEditorActivity.EDIT_RESULT_PATHS)) {
-                    ArrayList<String> finalPathList = data.getStringArrayListExtra(ImageEditorActivity.EDIT_RESULT_PATHS);
-                    onFinishWithMultipleFinalImage(finalPathList);
+                if (resultCode == Activity.RESULT_OK && data != null && data.hasExtra(PICKER_RESULT_PATHS)) {
+                    ArrayList<String> finalPathList = data.getStringArrayListExtra(PICKER_RESULT_PATHS);
+                    ArrayList<String> originalImageList = data.getStringArrayListExtra(RESULT_PREVIOUS_IMAGE);
+                    ArrayList<Boolean> isEdittedList = (ArrayList<Boolean>) data.getSerializableExtra(RESULT_IS_EDITTED);
+                    onFinishWithMultipleFinalImage(finalPathList, originalImageList, isEdittedList);
                     isFinishEditting = true;
                 }
                 break;

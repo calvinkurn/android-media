@@ -62,7 +62,8 @@ public class ImageEditorActivity extends BaseSimpleActivity implements ImageEdit
     public static final String SAVED_IN_EDIT_MODE = "SAVED_IN_EDIT_MODE";
     public static final String SAVED_EDIT_TYPE = "SAVED_EDIT_TYPE";
 
-    public static final String EDIT_RESULT_PATHS = "result_paths";
+    public static final String RESULT_IS_EDITTED = "is_editted";
+    public static final String RESULT_PREVIOUS_IMAGE = "ori_image";
 
     public static final int MAX_HISTORY_PER_IMAGE = 5;
 
@@ -109,6 +110,9 @@ public class ImageEditorActivity extends BaseSimpleActivity implements ImageEdit
     private TextView tvContrast;
     private TextView tvActionTitle;
     private long maxFileSize;
+
+    //to give flag if the image is editted or not, in case the caller need it.
+    private ArrayList<Boolean> isEdittedList;
 
     public static Intent getIntent(Context context, ArrayList<String> imageUrls, int minResolution,
                                    @ImageEditActionTypeDef int[] imageEditActionType,
@@ -658,8 +662,11 @@ public class ImageEditorActivity extends BaseSimpleActivity implements ImageEdit
         blockingView.setVisibility(View.VISIBLE);
 
         ArrayList<String> resultList = new ArrayList<>();
+        isEdittedList = new ArrayList<>();
         for (int i = 0, sizei = edittedImagePaths.size(); i < sizei; i++) {
-            resultList.add(edittedImagePaths.get(i).get(currentEditStepIndexList.get(i)));
+            int currentStep = currentEditStepIndexList.get(i);
+            resultList.add(edittedImagePaths.get(i).get(currentStep));
+            isEdittedList.add(currentStep > 0);
         }
 
         showDoneLoading();
@@ -668,7 +675,7 @@ public class ImageEditorActivity extends BaseSimpleActivity implements ImageEdit
     }
 
     @Override
-    public void onSuccessCropImageToRatio(ArrayList<String> cropppedImagePaths) {
+    public void onSuccessCropImageToRatio(ArrayList<String> cropppedImagePaths, ArrayList<Boolean> isEdittedList) {
         hideDoneLoading();
         ArrayList<String> resultList;
         try {
@@ -750,6 +757,8 @@ public class ImageEditorActivity extends BaseSimpleActivity implements ImageEdit
         ImageUtils.deleteCacheFolder(ImageUtils.DirectoryDef.DIRECTORY_TOKOPEDIA_CACHE_CAMERA);
         Intent intent = new Intent();
         intent.putStringArrayListExtra(PICKER_RESULT_PATHS, imageUrlOrPathList);
+        intent.putStringArrayListExtra(RESULT_PREVIOUS_IMAGE, extraImageUrls);
+        intent.putExtra(RESULT_IS_EDITTED, isEdittedList);
         setResult(Activity.RESULT_OK, intent);
         finish();
     }
