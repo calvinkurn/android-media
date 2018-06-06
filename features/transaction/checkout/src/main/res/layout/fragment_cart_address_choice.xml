@@ -84,12 +84,12 @@
                     android:background="@drawable/bg_shadow"
                     android:foreground="?selectableItemBackground"
                     android:gravity="center_vertical"
-                    android:orientation="horizontal"
-                    android:padding="16dp">
+                    android:orientation="horizontal">
 
                     <TextView
+                        android:padding="@dimen/dp_16"
                         android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
+                        android:layout_height="wrap_content"
                         android:text="@string/label_send_to_multiple_address" />
 
                     <View
@@ -98,6 +98,7 @@
                         android:layout_weight="1" />
 
                     <ImageView
+                        android:padding="@dimen/dp_16"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:tint="@color/grey_550"

@@ -63,6 +63,8 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
 
     InputMethodManager mInputMethodManager;
     ICartAddressChoiceActivityListener mCartAddressChoiceActivityListener;
+    private int maxItemPosition;
+    private boolean isLoading;
 
     @Inject
     ShipmentAddressListAdapter mShipmentAddressListAdapter;
@@ -182,10 +184,32 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
         swipeToRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
+                isLoading = true;
                 mSvAddressSearchBox.getSearchTextView().setText("");
                 onSearchReset();
             }
         });
+        mRvRecipientAddressList.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+                RecyclerView.Adapter adapter = recyclerView.getAdapter();
+                int totalItemCount = adapter.getItemCount();
+                int lastVisibleItemPosition = ((LinearLayoutManager) recyclerView.getLayoutManager())
+                        .findLastVisibleItemPosition();
+
+                if (maxItemPosition < lastVisibleItemPosition) {
+                    maxItemPosition = lastVisibleItemPosition;
+                }
+
+                if ((maxItemPosition + 1) == totalItemCount) {
+                    if (!isLoading) {
+                        performSearch(mSvAddressSearchBox.getSearchText(), false);
+                    }
+                }
+            }
+        });
+
     }
 
     /**
@@ -224,6 +248,13 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
     }
 
     @Override
+    public void updateList(List<RecipientAddressModel> recipientAddressModels) {
+        mShipmentAddressListAdapter.updateAddressList(recipientAddressModels);
+        mShipmentAddressListAdapter.notifyDataSetChanged();
+        mRvRecipientAddressList.setVisibility(View.VISIBLE);
+    }
+
+    @Override
     public void showListEmpty() {
         mShipmentAddressListAdapter.setAddressList(new ArrayList<RecipientAddressModel>());
         mShipmentAddressListAdapter.notifyDataSetChanged();
@@ -242,18 +273,20 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
                     @Override
                     public void onRetryClicked() {
                         String keyword = mSvAddressSearchBox.getSearchText();
-                        performSearch(!TextUtils.isEmpty(keyword) ? keyword : "");
+                        performSearch(!TextUtils.isEmpty(keyword) ? keyword : "", true);
                     }
                 });
     }
 
     @Override
     public void showLoading() {
+        isLoading = true;
         swipeToRefreshLayout.setRefreshing(true);
     }
 
     @Override
     public void hideLoading() {
+        isLoading = false;
         rlContent.setVisibility(View.VISIBLE);
         llNetworkErrorView.setVisibility(View.GONE);
         llNoResult.setVisibility(View.GONE);
@@ -292,14 +325,13 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
 
     @Override
     public void onSearchSubmitted(String text) {
-        performSearch(text);
+        performSearch(text, false);
         closeSoftKeyboard();
     }
 
     @Override
     public void onSearchTextChanged(String text) {
         openSoftKeyboard();
-//        performSearch(text);
     }
 
     @Override
@@ -309,12 +341,13 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
         closeSoftKeyboard();
     }
 
-    private void performSearch(String query) {
+    private void performSearch(String query, boolean resetPage) {
         if (!query.isEmpty()) {
             mShipmentAddressListPresenter.getAddressList(getActivity(), ORDER_ASC, query,
-                    (RecipientAddressModel) getArguments().getParcelable(EXTRA_CURRENT_ADDRESS));
+                    (RecipientAddressModel) getArguments().getParcelable(EXTRA_CURRENT_ADDRESS), true);
         } else {
-            onSearchReset();
+            mShipmentAddressListPresenter.getAddressList(getActivity(), ORDER_ASC, "",
+                    (RecipientAddressModel) getArguments().getParcelable(EXTRA_CURRENT_ADDRESS), resetPage);
         }
     }
 
@@ -326,10 +359,10 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
     }
 
     private void closeSoftKeyboard() {
-        if (mInputMethodManager != null) {
-            mInputMethodManager.hideSoftInputFromWindow(
-                    mSvAddressSearchBox.getSearchTextView().getWindowToken(), 0);
-        }
+//        if (mInputMethodManager != null) {
+//            mInputMethodManager.hideSoftInputFromWindow(
+//                    mSvAddressSearchBox.getSearchTextView().getWindowToken(), 0);
+//        }
     }
 
     @Override
