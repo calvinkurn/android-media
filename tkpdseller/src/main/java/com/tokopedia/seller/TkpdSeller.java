@@ -6,7 +6,7 @@ import android.content.Intent;
 import com.tokopedia.seller.selling.view.activity.ActivitySellingTransaction;
 import com.tokopedia.seller.selling.view.fragment.FragmentSellingNewOrder;
 import com.tokopedia.seller.shopsettings.edit.view.ShopEditorActivity;
-import com.tokopedia.seller.shop.open.view.activity.ShopOpenRoutingActivity;
+import com.tokopedia.shop.open.view.activity.ShopOpenRoutingActivity;
 import com.tokopedia.seller.shopsettings.edit.presenter.ShopSettingView;
 import com.tokopedia.seller.shopsettings.FragmentSettingShop;
 import com.tokopedia.seller.shopsettings.ManageShopActivity;

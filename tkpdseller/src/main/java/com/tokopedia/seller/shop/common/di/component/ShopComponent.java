@@ -18,8 +18,8 @@ import com.tokopedia.seller.shop.common.di.ShopScope;
 import com.tokopedia.seller.shop.common.di.module.ShopModule;
 import com.tokopedia.seller.shop.common.domain.interactor.GetShopInfoUseCase;
 import com.tokopedia.seller.shop.common.domain.repository.ShopInfoRepository;
-import com.tokopedia.seller.shop.open.analytic.ShopOpenTracking;
-import com.tokopedia.seller.shop.open.data.source.cloud.api.TomeApi;
+import com.tokopedia.shop.open.analytic.ShopOpenTracking;
+import com.tokopedia.shop.open.data.source.cloud.api.TomeApi;
 
 import dagger.Component;
 import okhttp3.OkHttpClient;

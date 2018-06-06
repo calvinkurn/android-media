@@ -1,7 +1,7 @@
 package com.tokopedia.seller.common.data.mapper;
 
 
-import com.tokopedia.seller.shop.open.data.model.response.DataResponse;
+import com.tokopedia.shop.open.data.model.response.DataResponse;
 
 import javax.inject.Inject;
 
