@@ -40,14 +40,15 @@ public class CheckTransactionMapper implements Func1<Response<PosResponse<CheckT
         CheckTransactionResponse mockTransactionData = new CheckTransactionResponse();
 
         OrderDataResponse mockOrderData = new OrderDataResponse();
-        mockOrderData.setInvoiceRef("INV/SOmething/SOMETHING");
-        mockOrderData.setOrderId(123456);
+        mockOrderData.setInvoiceRef("O2O/20180606/XVIII/VI/169529283");
+        mockOrderData.setOrderId(169481131);
 
         mockTransactionData.setOrderData(mockOrderData);
         mockTransactionData.setTransactionStatus(ORDER_SUCCESS);
+        mockTransactionData.setStatus("OK");
 
         mock.setData(mockTransactionData);
-        mock.setMessage("Success");
+        mock.setMessage("200 Ok");
         return parseData(mock);
     }
 
