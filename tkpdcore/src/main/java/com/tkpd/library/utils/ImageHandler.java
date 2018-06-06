@@ -3,7 +3,6 @@ package com.tkpd.library.utils;
 import android.app.Activity;
 import android.app.Application;
 import android.content.Context;
-import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
@@ -16,10 +15,8 @@ import android.graphics.RectF;
 import android.graphics.drawable.Drawable;
 import android.media.ExifInterface;
 import android.net.Uri;
-import android.provider.MediaStore;
 import android.support.v7.content.res.AppCompatResources;
 import android.text.TextUtils;
-import android.util.Log;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
@@ -32,9 +29,7 @@ import com.tokopedia.core.R;
 import com.tokopedia.core.gcm.BuildAndShowNotification;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.InputStream;
 
 
 public class ImageHandler extends com.tokopedia.abstraction.common.utils.image.ImageHandler {
@@ -435,7 +430,8 @@ public class ImageHandler extends com.tokopedia.abstraction.common.utils.image.I
 
     }
 
-    public static void LoadImageWGender(ImageView imageview, String url, Activity context, String gender) {
+    public static void LoadImageWGender(ImageView imageview, String url, Context context, String
+            gender) {
         if (!url.equals("null")) {
             loadImageCircle2(imageview.getContext(), imageview, url);
         } else {
