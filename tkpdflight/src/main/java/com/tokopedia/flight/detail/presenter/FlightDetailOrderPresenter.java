@@ -171,7 +171,8 @@ public class FlightDetailOrderPresenter extends BaseDaggerPresenter<FlightDetail
                     getView().hideCancellationContainer();
                 }
 
-                if (isShouldHideCancelButton(flightOrder.getJourneys().size(), flightOrder.getPassengerViewModels())) {
+                if (isShouldHideCancelButton(flightOrder.getJourneys().size(), flightOrder.getPassengerViewModels(),
+                        flightOrder.getCancelledPassengerCount())) {
                     getView().hideCancelButton();
                 }
                 renderInsurances(flightOrder);
@@ -589,20 +590,9 @@ public class FlightDetailOrderPresenter extends BaseDaggerPresenter<FlightDetail
         super.detachView();
     }
 
-    private boolean isShouldHideCancelButton(int journeyCount, List<FlightOrderPassengerViewModel> passengerViewModels) {
+    private boolean isShouldHideCancelButton(int journeyCount, List<FlightOrderPassengerViewModel> passengerViewModels,
+                                             int cancelledPassengerCount) {
         int allPassengerCount = passengerViewModels.size() * journeyCount;
-        int cancelledPassengerCount = 0;
-
-        for (FlightOrderPassengerViewModel flightOrderPassengerViewModel : passengerViewModels) {
-            switch (flightOrderPassengerViewModel.getStatus()) {
-                case FlightCancellationStatus.REQUESTED:
-                case FlightCancellationStatus.PENDING:
-                case FlightCancellationStatus.REFUNDED:
-                    cancelledPassengerCount++;
-                    break;
-            }
-        }
-
         return (allPassengerCount <= cancelledPassengerCount);
     }
 }
