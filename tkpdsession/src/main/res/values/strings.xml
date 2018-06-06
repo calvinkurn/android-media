@@ -195,6 +195,7 @@
     <string name="forbidden_title"><![CDATA[<b>Peringatan</b>]]></string>
     <string name="forbidden_msg"><![CDATA[<p>Kami mendeteksi adanya aktivitas mencurigakan pada perangkat Anda yang melanggar <u><font color=\'#42b549\'>Persyaratan Layanan</font></u> Tokopedia.</p> <p>Anda bisa kembali menggunakan aplikasi Tokopedia setelah aktivitas tersebut dihentikan.</p>]]></string>
     <string name="forbidden_button">Coba Lagi</string>
+    <string name="change_inactive_number">Nomor ponsel sudah tidak aktif? Klik di sini </string>
 
     <!--REGISTER PHONE NUMBER-->
     <string name="register_with_phone_number">Daftar dengan Nomor Ponsel</string>

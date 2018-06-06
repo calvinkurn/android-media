@@ -2,9 +2,15 @@ package com.tokopedia.session.login.loginphonenumber.view.fragment;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.text.SpannableString;
+import android.text.Spanned;
+import android.text.TextPaint;
+import android.text.method.LinkMovementMethod;
+import android.text.style.ClickableSpan;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,6 +18,7 @@ import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
@@ -51,6 +58,7 @@ public class LoginPhoneNumberFragment extends BaseDaggerFragment
     TextView nextButton;
     TextView message;
     TextView errorText;
+    TextView changeInactiveNumber;
     String phoneNumberString;
 
     TkpdProgressDialog progressDialog;
@@ -97,6 +105,7 @@ public class LoginPhoneNumberFragment extends BaseDaggerFragment
         message = view.findViewById(R.id.message);
         nextButton = view.findViewById(R.id.next_btn);
         errorText = view.findViewById(R.id.error);
+        changeInactiveNumber = view.findViewById(R.id.change_inactive);
         presenter.attachView(this);
         prepareView();
         return view;
@@ -132,6 +141,27 @@ public class LoginPhoneNumberFragment extends BaseDaggerFragment
                 nextButton.performClick();
             }
         }
+
+        SpannableString changeInactiveString = new SpannableString(changeInactiveNumber.getText());
+        ClickableSpan clickableSpan = new ClickableSpan() {
+            @Override
+            public void onClick(View widget) {
+                //TODO atin add webview
+                Toast.makeText(getContext(), "halo", Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void updateDrawState(TextPaint ds) {
+                super.updateDrawState(ds);
+                ds.setColor(getResources().getColor(R.color.tkpd_main_green));
+                ds.setUnderlineText(false);
+            }
+        };
+
+        changeInactiveString.setSpan(clickableSpan, 37, 44, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        changeInactiveNumber.setText(changeInactiveString);
+        changeInactiveNumber.setMovementMethod(LinkMovementMethod.getInstance());
+        changeInactiveNumber.setHighlightColor(Color.TRANSPARENT);
     }
 
     @Override
