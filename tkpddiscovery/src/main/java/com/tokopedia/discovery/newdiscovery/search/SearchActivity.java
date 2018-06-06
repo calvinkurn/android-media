@@ -216,26 +216,17 @@ public class SearchActivity extends DiscoveryActivity
         }
     }
 
-    private boolean isValidMimeType(String url){
+    private boolean isValidMimeType(String url) {
         String mimeType = getMimeTypeUri(Uri.parse(url));
-        return mimeType.equalsIgnoreCase("jpg") ||
-                mimeType.equalsIgnoreCase("png") ||
-                mimeType.equalsIgnoreCase("jpeg");
+
+        return mimeType != null &&
+                (mimeType.equalsIgnoreCase("image/jpg") ||
+                        mimeType.equalsIgnoreCase("image/png") ||
+                        mimeType.equalsIgnoreCase("image/jpeg"));
+
     }
 
-
-    private String getMimeType(String url) {
-        String type = null;
-        String extension = MimeTypeMap.getFileExtensionFromUrl(url);
-        if (extension != null) {
-            MimeTypeMap mime = MimeTypeMap.getSingleton();
-            type = mime.getMimeTypeFromExtension(extension);
-        }
-        return type;
-    }
-
-
-    public String getMimeTypeUri(Uri uri) {
+    private String getMimeTypeUri(Uri uri) {
         String mimeType = null;
         if (uri.getScheme().equals(ContentResolver.SCHEME_CONTENT)) {
             ContentResolver cr = getContentResolver();
