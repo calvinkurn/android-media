@@ -135,7 +135,8 @@ public class ImagePickerGalleryFragment extends TkpdBaseV4Fragment
         labelViewAlbum.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = AlbumPickerActivity.getIntent(getActivity(), selectedAlbumItem.getmId(), galleryType);
+                String albumItemId = selectedAlbumItem== null? AlbumItem.ALBUM_ID_ALL :selectedAlbumItem.getmId();
+                Intent intent = AlbumPickerActivity.getIntent(getActivity(), albumItemId, galleryType);
                 startActivityForResult(intent, ALBUM_REQUEST_CODE);
             }
         });
