@@ -12,6 +12,7 @@ public class ProductModel {
 
     private String productID;
     private String productName;
+    private String productUrl;
     private String imageUrl;
     private String imageUrl700;
     private int rating;
@@ -29,6 +30,14 @@ public class ProductModel {
     private String originalPrice;
     private int discountPercentage;
     private boolean isOfficial;
+
+    public String getProductUrl() {
+        return productUrl;
+    }
+
+    public void setProductUrl(String productUrl) {
+        this.productUrl = productUrl;
+    }
 
     public void setProductID(String productID) {
         this.productID = productID;

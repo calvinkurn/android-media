@@ -74,8 +74,11 @@ public class GetHotlistInitializeSubscriber extends rx.Subscriber<HotlistModel> 
         view.setQueryModel(hotlistModel.getBanner().getHotlistQueryModel());
         view.setDisableTopads(hotlistModel.getBanner().isDisableTopads());
         view.setShareUrl(hotlistModel.getShareURL());
-
-        HotlistHeaderViewModel header = mappingHotlistHeader(hotlistModel.getBanner(), hotlistModel.getAttribute().getHastTags());
+        view.loadImageHeader(hotlistModel.getBanner().getBannerImage());
+        view.setTitleHeader(hotlistModel.getBanner().getHotlistTitle());
+        view.setDescription(hotlistModel.getBanner().getBannerDesc());
+        HotlistHeaderViewModel header = mappingHotlistHeader(hotlistModel.getBanner(),
+                hotlistModel.getAttribute().getHastTags(), hotlistModel.getTotalDataText());
 
         view.clearLastProductTracker(page == 1);
 
@@ -143,6 +146,7 @@ public class GetHotlistInitializeSubscriber extends rx.Subscriber<HotlistModel> 
             model.setLabelList(mappingLabels(domain.getLabelList()));
             model.setCountReview(Integer.toString(domain.getCountReview()));
             model.setGoldMerchant(domain.isGoldMerchant());
+            model.setProductUrl(domain.getProductUrl());
             model.setImageUrl(domain.getImageUrl());
             model.setImageUrl700(domain.getImageUrl700());
             model.setPrice(domain.getPrice());
@@ -191,9 +195,10 @@ public class GetHotlistInitializeSubscriber extends rx.Subscriber<HotlistModel> 
         return list;
     }
 
-    private HotlistHeaderViewModel mappingHotlistHeader(HotlistBannerModel banner, List<HotlistHashtagModel> hashTags) {
+    private HotlistHeaderViewModel mappingHotlistHeader(HotlistBannerModel banner, List<HotlistHashtagModel> hashTags, String totalData) {
         HotlistHeaderViewModel headerViewModel = new HotlistHeaderViewModel();
         headerViewModel.setImageUrl(banner.getBannerImage());
+        headerViewModel.setTotalData(totalData);
         headerViewModel.setHotlistTitle(banner.getHotlistTitle());
         headerViewModel.setDesc(banner.getBannerDesc());
         headerViewModel.setHashTags(mappingHashtags(hashTags));

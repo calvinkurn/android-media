@@ -51,4 +51,6 @@
     <string name="other_filter_title">Lainnya</string>
     <string name="invalid_image_search_response" >Terjadi kesalahan, ulangi beberapa saat lagi</string>
     <string name="title_all">Semua</string>
+    <string name="baca_deskripsi">Baca Deskripsi</string>
+    <string name="product_count">%s+ Produk</string>
 </resources>

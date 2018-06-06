@@ -44,6 +44,12 @@ public interface HotlistFragmentContract {
 
         void setShareUrl(String shareUrl);
 
+        void loadImageHeader(String bannerImageUrl);
+
+        void setTitleHeader(String title);
+
+        void setDescription(String description);
+
         void storeTotalData(int totalData);
 
         void setQueryModel(HotlistQueryModel queryModel);

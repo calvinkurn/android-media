@@ -9,19 +9,21 @@ import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigation;
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigationItem;
 import com.google.android.gms.tagmanager.DataLayer;
+import com.tkpd.library.utils.ImageHandler;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.HotlistPageTracking;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.model.Hotlist;
+import com.tokopedia.core.analytics.nishikino.model.EventTracking;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.base.adapter.Visitable;
@@ -40,6 +42,7 @@ import com.tokopedia.discovery.newdiscovery.base.BottomNavigationListener;
 import com.tokopedia.discovery.newdiscovery.hotlist.di.component.DaggerHotlistComponent;
 import com.tokopedia.discovery.newdiscovery.hotlist.di.component.HotlistComponent;
 import com.tokopedia.discovery.newdiscovery.hotlist.domain.model.HotlistQueryModel;
+import com.tokopedia.discovery.newdiscovery.hotlist.view.activity.HotlistActivity;
 import com.tokopedia.discovery.newdiscovery.hotlist.view.adapter.HotlistAdapter;
 import com.tokopedia.discovery.newdiscovery.hotlist.view.adapter.ItemClickListener;
 import com.tokopedia.discovery.newdiscovery.hotlist.view.adapter.factory.HotlistAdapterTypeFactory;
@@ -167,6 +170,22 @@ public class HotlistFragment extends SearchSectionFragment
     }
 
     @Override
+    public void loadImageHeader(String bannerImageUrl) {
+        ImageView imageHeader = getActivity().findViewById(R.id.hotlist_background);
+        ImageHandler.LoadImage(imageHeader, bannerImageUrl);
+    }
+
+    @Override
+    public void setTitleHeader(String title) {
+        getActivity().setTitle(title);
+    }
+
+    @Override
+    public void setDescription(String description) {
+        ((HotlistActivity) getActivity()).renderHotlistDescription(description);
+    }
+
+    @Override
     public void setDisableTopads(boolean disableTopads) {
         this.disableTopads = disableTopads;
     }
@@ -213,7 +232,6 @@ public class HotlistFragment extends SearchSectionFragment
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-//        setRetainInstance(true);
         trackerProductCache = new LocalCacheHandler(getActivity(), HOTLIST_DETAIL_ENHANCE_ANALYTIC);
         if (getArguments() != null) {
             setTrackerAttribution(getArguments().getString(EXTRA_TRACKER_ATTRIBUTION, ""));
@@ -636,6 +654,7 @@ public class HotlistFragment extends SearchSectionFragment
     @Override
     public void onHashTagClicked(String name, String url, String departmentID) {
         IntermediaryActivity.moveTo(getActivity(), departmentID, name);
+        HotlistPageTracking.eventClickHastag(url);
     }
 
     @Override
@@ -653,8 +672,8 @@ public class HotlistFragment extends SearchSectionFragment
     private void trackingClickEnhance(HotlistProductViewModel product) {
         Map<String, Object> map = DataLayer.mapOf("event", "productClick",
                 "eventCategory", "hotlist page",
-                "eventAction", "click product curation",
-                "eventLabel", "",
+                "eventAction", "click product list",
+                "eventLabel", product.getProductUrl(),
                 "ecommerce", DataLayer.mapOf(
                         "currencyCode", "IDR",
                         "click", DataLayer.mapOf(
@@ -717,7 +736,7 @@ public class HotlistFragment extends SearchSectionFragment
     }
 
     @Override
-    public void onWishlistClicked(String productID, boolean wishlist) {
+    public void onWishlistClicked(int position, String productName, String productID, boolean wishlist) {
         if (SessionHandler.isV4Login(getActivity())) {
             hotlistAdapter.disableWishlistButton(productID);
             if (wishlist) {
@@ -728,6 +747,7 @@ public class HotlistFragment extends SearchSectionFragment
         } else {
             openLoginActivity(productID);
         }
+        HotlistPageTracking.eventAddWishlist(position, productName, productID);
     }
 
     @Override

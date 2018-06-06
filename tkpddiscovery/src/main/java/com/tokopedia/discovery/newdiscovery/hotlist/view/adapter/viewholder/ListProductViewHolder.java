@@ -108,7 +108,8 @@ public class ListProductViewHolder extends AbstractViewHolder<HotlistProductView
 
     protected void onWishlistButtonClick(HotlistProductViewModel element) {
         if (element.isWishlistButtonEnabled()) {
-            mItemClickListener.onWishlistClicked(element.getProductID(), element.isWishlist());
+            mItemClickListener.onWishlistClicked(getAdapterPosition(),
+                    element.getProductName(), element.getProductID(), element.isWishlist());
         }
     }
 

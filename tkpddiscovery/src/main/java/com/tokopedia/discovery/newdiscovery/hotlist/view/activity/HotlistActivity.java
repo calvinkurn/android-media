@@ -3,7 +3,12 @@ package com.tokopedia.discovery.newdiscovery.hotlist.view.activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.AppBarLayout;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
+import android.view.Menu;
+import android.view.View;
+import android.widget.TextView;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tokopedia.core.discovery.model.Filter;
@@ -13,9 +18,11 @@ import com.tokopedia.discovery.newdiscovery.base.BottomSheetListener;
 import com.tokopedia.discovery.newdiscovery.base.DiscoveryActivity;
 import com.tokopedia.discovery.newdiscovery.hotlist.di.component.DaggerHotlistComponent;
 import com.tokopedia.discovery.newdiscovery.hotlist.di.component.HotlistComponent;
+import com.tokopedia.discovery.newdiscovery.hotlist.view.customview.DescriptionView;
 import com.tokopedia.discovery.newdiscovery.hotlist.view.fragment.HotlistFragment;
 import com.tokopedia.discovery.newdiscovery.hotlist.view.presenter.HotlistContract;
 import com.tokopedia.discovery.newdiscovery.hotlist.view.presenter.HotlistPresenter;
+import com.tokopedia.tkpdpdp.listener.AppBarStateChangeListener;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
@@ -34,6 +41,10 @@ public class HotlistActivity extends DiscoveryActivity
     private static final String EXTRA_HOTLIST_PARAM_QUERY = "EXTRA_HOTLIST_PARAM_QUERY";
     private static final String EXTRA_HOTLIST_PARAM_ALIAS = "HOTLIST_ALIAS";
     private static final String EXTRA_HOTLIST_PARAM_TRACKER = "EXTRA_HOTLIST_PARAM_TRACKER";
+    private static final String TAG = HotlistActivity.class.getSimpleName();
+    private AppBarLayout appBarLayout;
+    private TextView descriptionTxt;
+    private DescriptionView descriptionView;
 
     @Inject
     HotlistPresenter hotlistPresenter;
@@ -87,6 +98,65 @@ public class HotlistActivity extends DiscoveryActivity
         hotlistPresenter.attachView(this);
         hotlistPresenter.setDiscoveryView(this);
         inflateFragment();
+        descriptionTxt = findViewById(R.id.description);
+        appBarLayout = findViewById(R.id.appbar);
+        appBarLayout.addOnOffsetChangedListener(new AppBarStateChangeListener() {
+            @Override
+            public void onStateChanged(AppBarLayout appBarLayout, State state) {
+                switch (state) {
+                    case COLLAPSED:
+                        getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_back_black_thin);
+                        if(searchItem!=null)
+                            searchItem.setIcon(ContextCompat.getDrawable(HotlistActivity.this,
+                                    R.drawable.search_icon));
+                        break;
+                    case EXPANDED:
+                        getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_back_white);
+                        if(searchItem!=null)
+                            searchItem.setIcon(ContextCompat.getDrawable(HotlistActivity.this,
+                                    R.drawable.ic_search_thin));
+                        break;
+                }
+            }
+        });
+
+    }
+
+    @Override
+    public void onSearchViewShown() {
+        super.onSearchViewShown();
+        appBarLayout.setExpanded(true, false);
+        appBarLayout.setActivated(false);
+        setSearchQuery(getToolbarTitle().toString());
+    }
+
+    @Override
+    public void onSearchViewClosed() {
+        super.onSearchViewClosed();
+        appBarLayout.setActivated(true);
+    }
+
+    public void renderHotlistDescription(String txt){
+        descriptionView = new DescriptionView();
+        descriptionView.setDescTxt(txt);
+        descriptionTxt.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                descriptionView.show(getSupportFragmentManager(), TAG);
+            }
+        });
+    }
+
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        menu.findItem(R.id.action_search).setIcon(R.drawable.search_icon);
+        return super.onPrepareOptionsMenu(menu);
+    }
+
+    @Override
+    public void setTitle(CharSequence title) {
+        appBarLayout.setExpanded(true);
+        setToolbarTitle(title.toString());
     }
 
     private void inflateFragment() {
@@ -120,4 +190,5 @@ public class HotlistActivity extends DiscoveryActivity
         hotlistPresenter.detachView();
         super.onDestroy();
     }
+
 }
