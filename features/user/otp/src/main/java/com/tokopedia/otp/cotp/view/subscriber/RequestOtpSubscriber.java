@@ -33,6 +33,6 @@ public class RequestOtpSubscriber extends Subscriber<RequestOtpViewModel> {
     @Override
     public void onNext(RequestOtpViewModel requestOtpViewModel) {
         view.dismissLoadingProgress();
-        view.onSuccessGetOTP();
+        view.onSuccessGetOTP(requestOtpViewModel.getMessageStatus());
     }
 }
