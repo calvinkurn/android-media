@@ -27,5 +27,6 @@ public class DigitalUrl {
         public static String RETRIBUTION = DIGITAL_BANTUAN + "retribusi/";
         public static String MTIX = DIGITAL_BANTUAN + "m-tix-xxi/";
         public static String CREDIT_CARD = DIGITAL_BANTUAN + "tagihan-kartu-kredit/";
+        public static String ETOLL = "e-money/#cara-update-saldo-kartu";
     }
 }

@@ -192,13 +192,16 @@ public class CommonUtils {
     }
 
     public static void addImageToGallery(final String filePath, final Context context) {
-        ContentValues values = new ContentValues();
+        try {
+            ContentValues values = new ContentValues();
 
-        values.put(Images.Media.DATE_TAKEN, System.currentTimeMillis());
-        values.put(Images.Media.MIME_TYPE, "image/jpeg");
-        values.put(MediaStore.MediaColumns.DATA, filePath);
+            values.put(Images.Media.DATE_TAKEN, System.currentTimeMillis());
+            values.put(Images.Media.MIME_TYPE, "image/jpeg");
+            values.put(MediaStore.MediaColumns.DATA, filePath);
 
-        context.getContentResolver().insert(Images.Media.EXTERNAL_CONTENT_URI, values);
+            context.getContentResolver().insert(Images.Media.EXTERNAL_CONTENT_URI, values);
+        } catch (Exception ex) {
+        }
     }
 
     private static File getOutputMediaFile(Activity context, String PicName) {

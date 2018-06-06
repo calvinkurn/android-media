@@ -25,7 +25,7 @@ public class ShopPageTracking {
         this.shopModuleRouter = shopModuleRouter;
     }
 
-    private void sendScreenName(String screenName){
+    private void sendScreenName(String screenName) {
         shopModuleRouter.sendScreenName(screenName);
     }
 

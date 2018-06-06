@@ -28,24 +28,24 @@ import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.analytics.nishikino.model.Product;
 import com.tokopedia.core.analytics.nishikino.model.ProductDetail;
-import com.tokopedia.core.network.entity.variant.Campaign;
-import com.tokopedia.core.network.entity.variant.Child;
-import com.tokopedia.core.network.entity.variant.ProductVariant;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.gcm.Constants;
+import com.tokopedia.core.network.entity.variant.Campaign;
+import com.tokopedia.core.network.entity.variant.Child;
+import com.tokopedia.core.network.entity.variant.ProductVariant;
 import com.tokopedia.core.product.facade.NetworkParam;
 import com.tokopedia.core.product.interactor.CacheInteractor;
 import com.tokopedia.core.product.interactor.CacheInteractorImpl;
 import com.tokopedia.core.product.interactor.RetrofitInteractor;
-import com.tokopedia.core.product.interactor.RetrofitInteractor.MostHelpfulListener;
 import com.tokopedia.core.product.interactor.RetrofitInteractor.DiscussionListener;
+import com.tokopedia.core.product.interactor.RetrofitInteractor.MostHelpfulListener;
 import com.tokopedia.core.product.interactor.RetrofitInteractorImpl;
 import com.tokopedia.core.product.model.etalase.Etalase;
 import com.tokopedia.core.product.model.goldmerchant.VideoData;
 import com.tokopedia.core.product.model.productdetail.ProductDetailData;
-import com.tokopedia.core.product.model.productdetail.mosthelpful.Review;
 import com.tokopedia.core.product.model.productdetail.discussion.LatestTalkViewModel;
+import com.tokopedia.core.product.model.productdetail.mosthelpful.Review;
 import com.tokopedia.core.product.model.productdetail.promowidget.DataPromoWidget;
 import com.tokopedia.core.product.model.productdetail.promowidget.PromoAttributes;
 import com.tokopedia.core.product.model.productdink.ProductDinkData;
@@ -57,6 +57,8 @@ import com.tokopedia.core.router.productdetail.PdpRouter;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
 import com.tokopedia.core.router.transactionmodule.TransactionAddToCartRouter;
 import com.tokopedia.core.router.transactionmodule.passdata.ProductCartPass;
+import com.tokopedia.core.router.transactionmodule.sharedata.AddToCartRequest;
+import com.tokopedia.core.router.transactionmodule.sharedata.AddToCartResult;
 import com.tokopedia.core.talk.talkproduct.activity.TalkProductActivity;
 import com.tokopedia.core.util.AppIndexHandler;
 import com.tokopedia.core.util.DeepLinkUtils;
@@ -70,7 +72,6 @@ import com.tokopedia.tkpdpdp.R;
 import com.tokopedia.tkpdpdp.dialog.DialogToEtalase;
 import com.tokopedia.tkpdpdp.fragment.ProductDetailFragment;
 import com.tokopedia.tkpdpdp.listener.ProductDetailView;
-import com.tokopedia.topads.sourcetagging.constant.TopAdsSourceTaggingConstant;
 import com.tokopedia.topads.sourcetagging.data.repository.TopAdsSourceTaggingRepositoryImpl;
 import com.tokopedia.topads.sourcetagging.data.source.TopAdsSourceTaggingDataSource;
 import com.tokopedia.topads.sourcetagging.data.source.TopAdsSourceTaggingLocal;
@@ -88,6 +89,8 @@ import java.util.Locale;
 import java.util.Map;
 
 import rx.Subscriber;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 
 import static com.tokopedia.core.network.apiservices.galadriel.GaladrielApi.VALUE_TARGET_GOLD_MERCHANT;
 import static com.tokopedia.core.network.apiservices.galadriel.GaladrielApi.VALUE_TARGET_GUEST;
@@ -147,9 +150,9 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
         String etalaseName = bundle.getString("etalase_name");
         String etalaseId = bundle.getString("etalase_id");
         Intent intent = null;
-        if(!TextUtils.isEmpty(etalaseId)) {
+        if (!TextUtils.isEmpty(etalaseId)) {
             intent = ((PdpRouter) context.getApplicationContext()).getShoProductListIntent(context, bundle.getString("shop_id"), "", etalaseId);
-        }else{
+        } else {
             intent = ((PdpRouter) context.getApplicationContext()).getShopPageIntent(context, bundle.getString("shop_id"));
         }
         viewListener.navigateToActivityRequest(intent, ProductDetailFragment.REQUEST_CODE_SHOP_INFO);
@@ -162,12 +165,52 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
     }
 
     @Override
-    public void processToCart(@NonNull Context context, @NonNull ProductCartPass data) {
+    public void processToCart(@NonNull Activity context, @NonNull ProductCartPass data) {
         sendAppsFlyerCheckout(context, data);
+        /* routeToNewCheckout(context, data);*/
+        routeToOldCheckout(context, data);
+        UnifyTracking.eventPDPCart();
+    }
+
+    private void routeToOldCheckout(@NonNull Activity context, @NonNull ProductCartPass data) {
         viewListener.navigateToActivity(
                 TransactionAddToCartRouter.createInstanceAddToCartActivity(context, data)
         );
-        UnifyTracking.eventPDPCart();
+    }
+
+    private void routeToNewCheckout(@NonNull Activity context, @NonNull ProductCartPass data) {
+        if (context.getApplication() instanceof PdpRouter) {
+            ((PdpRouter) context.getApplication()).addToCartProduct(
+                    new AddToCartRequest.Builder()
+                            .productId(Integer.parseInt(data.getProductId()))
+                            .notes("")
+                            .quantity(data.getMinOrder())
+                            .shopId(Integer.parseInt(data.getShopId()))
+                            .build()
+            ).subscribeOn(Schedulers.newThread())
+                    .unsubscribeOn(Schedulers.newThread())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(new Subscriber<AddToCartResult>() {
+                        @Override
+                        public void onCompleted() {
+
+                        }
+
+                        @Override
+                        public void onError(Throwable e) {
+                            e.printStackTrace();
+                            viewListener.showToastMessage(e.getMessage());
+                        }
+
+                        @Override
+                        public void onNext(AddToCartResult addToCartResult) {
+                            if (addToCartResult.isSuccess())
+                                viewListener.renderAddToCartSuccess(addToCartResult.getMessage());
+                            else
+                                viewListener.showToastMessage(addToCartResult.getMessage());
+                        }
+                    });
+        }
     }
 
     @Override
@@ -293,9 +336,9 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
             } else {
                 ScreenTracking.eventOfficialStoreScreenAuth(successResult.getShopInfo().getShopId(), "regular", "/product", String.valueOf(successResult.getInfo().getProductId()));
             }
-        }catch(Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
-            CommonUtils.dumper("GAv4 error "+e.getMessage());
+            CommonUtils.dumper("GAv4 error " + e.getMessage());
         }
 
     }
@@ -335,9 +378,9 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
                                 productDetailData.getInfo().setHasVariant(false);
                                 viewListener.trackingEnhanceProductDetail();
                                 getProductStock(context
-                                        ,Integer.toString(productDetailData.getInfo().getProductId()));
+                                        , Integer.toString(productDetailData.getInfo().getProductId()));
                             }
-                            validateProductDataWithProductPassAndShowMessage(productDetailData,productPass,context);
+                            validateProductDataWithProductPassAndShowMessage(productDetailData, productPass, context);
                         }
 
                         @Override
@@ -530,7 +573,7 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
     @Override
     public void onDestroyView(@NonNull Context context) {
         retrofitInteractor.unSubscribeObservable();
-        if (topAdsAddSourceTaggingUseCase != null){
+        if (topAdsAddSourceTaggingUseCase != null) {
             topAdsAddSourceTaggingUseCase.unsubscribe();
         }
         cacheHandler = null;
@@ -707,12 +750,12 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
 
         if (productVariant != null) {
             viewListener.addProductVariant(productVariant);
-        } else if (productData != null && productData.getInfo() != null && productData.getInfo().getHasVariant() && productVariant==null) {
-            getProductVariant(context,Integer.toString(productData.getInfo().getProductId()));
-        } else if (productStockNonVariant != null ){
+        } else if (productData != null && productData.getInfo() != null && productData.getInfo().getHasVariant() && productVariant == null) {
+            getProductVariant(context, Integer.toString(productData.getInfo().getProductId()));
+        } else if (productStockNonVariant != null) {
             viewListener.addProductStock(productStockNonVariant);
         } else if (productData != null && productData.getInfo() != null) {
-            getProductStock(context,Integer.toString(productData.getInfo().getProductId()));
+            getProductStock(context, Integer.toString(productData.getInfo().getProductId()));
         }
 
         if (productData != null && productData.getCampaign() != null) {
@@ -868,9 +911,9 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
                             data.getInfo().setHasVariant(false);
                             viewListener.trackingEnhanceProductDetail();
                             getProductStock(context
-                                    ,Integer.toString(data.getInfo().getProductId()));
+                                    , Integer.toString(data.getInfo().getProductId()));
                         }
-                        validateProductDataWithProductPassAndShowMessage(data,productPass,context);
+                        validateProductDataWithProductPassAndShowMessage(data, productPass, context);
                     }
 
                     @Override
@@ -1063,7 +1106,7 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
 
     @Override
     public void onPromoAdsClicked(final Context context, String shopId, final int itemId, final String userId) {
-        if (topAdsSourceTaggingLocal == null){
+        if (topAdsSourceTaggingLocal == null) {
             topAdsSourceTaggingLocal = new TopAdsSourceTaggingLocal(context);
         }
         retrofitInteractor.checkPromoAds(shopId, itemId, userId, new RetrofitInteractor.CheckPromoAdsListener() {
@@ -1117,7 +1160,7 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
     }
 
     @Override
-    public void saveSource(String source){
+    public void saveSource(String source) {
         topAdsAddSourceTaggingUseCase.execute(TopAdsAddSourceTaggingUseCase.createRequestParams(source), new Subscriber<Void>() {
             @Override
             public void onCompleted() {
@@ -1141,8 +1184,8 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
                 new RetrofitInteractor.ProductVariantListener() {
                     @Override
                     public void onSucccess(final ProductVariant productVariant) {
-                        if (productVariant!=null && productVariant.getVariant()!=null && productVariant.getVariant().size()>0
-                                && productVariant.getChildren() != null && productVariant.getChildren().size()>0  ) {
+                        if (productVariant != null && productVariant.getVariant() != null && productVariant.getVariant().size() > 0
+                                && productVariant.getChildren() != null && productVariant.getChildren().size() > 0) {
                             viewListener.addProductVariant(productVariant);
                         } else {
                             viewListener.setVariantFalse();
@@ -1163,7 +1206,7 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
                 new RetrofitInteractor.ProductStockListener() {
                     @Override
                     public void onSucccess(final Child productStock) {
-                        if (productStock!=null) {
+                        if (productStock != null) {
                             viewListener.addProductStock(productStock);
                         }
                     }
@@ -1175,21 +1218,19 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
         );
     }
 
-    private void validateProductDataWithProductPassAndShowMessage(ProductDetailData data, ProductPass productPass, @NonNull Context context){
-        if(productPass == null)
+    private void validateProductDataWithProductPassAndShowMessage(ProductDetailData data, ProductPass productPass, @NonNull Context context) {
+        if (productPass == null)
             return;
-        if(productPass.getDateTimeInMilis() != 0){
+        if (productPass.getDateTimeInMilis() != 0) {
             try {
                 Date date = new Date(productPass.getDateTimeInMilis());
-                String lastUpdate = data.getInfo().getProductLastUpdate().replace(" WIB","");
+                String lastUpdate = data.getInfo().getProductLastUpdate().replace(" WIB", "");
                 SimpleDateFormat df = new SimpleDateFormat("dd-MM-yyyy, HH:mm", Locale.ENGLISH);
                 Date lastUpdateDate = df.parse(lastUpdate);
-                if(lastUpdateDate.after(date)){
+                if (lastUpdateDate.after(date)) {
                     viewListener.showToastMessage(context.getString(R.string.product_updated_on_message_container, lastUpdate));
                 }
-            }
-            catch (ParseException ex)
-            {
+            } catch (ParseException ex) {
                 ex.printStackTrace();
                 return;
             }

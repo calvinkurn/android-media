@@ -1,6 +1,9 @@
 package com.tokopedia.flight.orderlist.domain.model;
 
 import com.tokopedia.flight.orderlist.data.cloud.entity.OrderEntity;
+import com.tokopedia.flight.orderlist.domain.model.mapper.FlightInsuranceMapper;
+import com.tokopedia.flight.orderlist.domain.model.mapper.FlightOrderJourneyMapper;
+import com.tokopedia.flight.orderlist.domain.model.mapper.FlightOrderPassengerViewModelMapper;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,11 +17,15 @@ import javax.inject.Inject;
 public class FlightOrderMapper {
     private FlightOrderJourneyMapper flightOrderJourneyMapper;
     private FlightOrderPassengerViewModelMapper passengerViewModelMapper;
+    private FlightInsuranceMapper flightInsuranceMapper;
 
     @Inject
-    public FlightOrderMapper(FlightOrderJourneyMapper flightOrderJourneyMapper, FlightOrderPassengerViewModelMapper passengerViewModelMapper) {
+    public FlightOrderMapper(FlightOrderJourneyMapper flightOrderJourneyMapper,
+                             FlightOrderPassengerViewModelMapper passengerViewModelMapper,
+                             FlightInsuranceMapper flightInsuranceMapper) {
         this.flightOrderJourneyMapper = flightOrderJourneyMapper;
         this.passengerViewModelMapper = passengerViewModelMapper;
+        this.flightInsuranceMapper = flightInsuranceMapper;
     }
 
     public FlightOrder transform(OrderEntity orderEntity) {
@@ -44,6 +51,7 @@ public class FlightOrderMapper {
                     orderEntity.getAttributes().getFlight().getCancellations()));
             flightOrder.setPayment(orderEntity.getAttributes().getFlight().getPayment());
             flightOrder.setCancellations(orderEntity.getAttributes().getFlight().getCancellations());
+            flightOrder.setInsurances(flightInsuranceMapper.transform(orderEntity.getAttributes().getFlight().getInsurances()));
         }
         return flightOrder;
     }

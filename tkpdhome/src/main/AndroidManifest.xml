@@ -6,7 +6,7 @@
         <activity
             android:name="com.tokopedia.home.explore.view.activity.ExploreActivity"
             android:label="@string/explore"
-
+            android:screenOrientation="portrait"
             android:theme="@style/Theme.White" />
     </application>
 

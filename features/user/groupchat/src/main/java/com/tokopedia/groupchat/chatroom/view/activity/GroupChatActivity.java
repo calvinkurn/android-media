@@ -57,13 +57,12 @@ import com.tokopedia.groupchat.GroupChatModuleRouter;
 import com.tokopedia.groupchat.R;
 import com.tokopedia.groupchat.channel.view.activity.ChannelActivity;
 import com.tokopedia.groupchat.channel.view.model.ChannelViewModel;
+import com.tokopedia.groupchat.chatroom.data.ChatroomUrl;
 import com.tokopedia.groupchat.chatroom.di.DaggerChatroomComponent;
 import com.tokopedia.groupchat.chatroom.domain.ConnectionManager;
 import com.tokopedia.groupchat.chatroom.domain.pojo.ExitMessage;
 import com.tokopedia.groupchat.chatroom.domain.usecase.ChannelHandlerUseCase;
 import com.tokopedia.groupchat.chatroom.domain.usecase.LoginGroupChatUseCase;
-import com.tokopedia.groupchat.chatroom.view.ShareData;
-import com.tokopedia.groupchat.chatroom.view.ShareLayout;
 import com.tokopedia.groupchat.chatroom.view.adapter.tab.GroupChatTabAdapter;
 import com.tokopedia.groupchat.chatroom.view.fragment.ChannelInfoFragment;
 import com.tokopedia.groupchat.chatroom.view.fragment.ChannelVoteFragment;
@@ -186,6 +185,9 @@ public class GroupChatActivity extends BaseSimpleActivity
     public static final String VOTE = "vote";
     public static final String TOTAL_VIEW = "total_view";
     public static final String EXTRA_POSITION = "position";
+
+    public static final String TAG_CHANNEL = "{channel_url}";
+
     private Runnable runnable;
     private Handler tooltipHandler;
     private boolean canShowDialog = true;
@@ -418,31 +420,25 @@ public class GroupChatActivity extends BaseSimpleActivity
             onBackPressed();
             return true;
         } else if (item.getItemId() == R.id.action_share) {
-            analytics.eventClickShare();
-            ShareData shareData = ShareData.Builder.aShareData()
-                    .setId(viewModel.getChannelUuid())
-                    .setName(viewModel.getChannelName())
-                    .setDescription(String.format(getString(R.string.lets_join_channel),
-                            viewModel.getChannelName()))
-                    .setImgUri(viewModel.getChannelInfoViewModel().getBannerUrl())
-                    .setUri(viewModel.getChannelUrl())
-                    .setType(ShareData.FEED_TYPE)
-                    .build();
-
-            ShareLayout shareLayout = new ShareLayout(
-                    this,
-                    callbackManager, viewModel.getChannelUrl(),
-                    toolbar.getTitle().toString(), analytics);
-            shareLayout.setShareModel(shareData);
-            shareLayout.show();
+            shareChannel();
             return true;
-
         } else {
             return super.onOptionsItemSelected(item);
         }
-
     }
 
+    private void shareChannel() {
+        analytics.eventClickShare();
+
+        String link = ChatroomUrl.GROUP_CHAT_URL.replace(TAG_CHANNEL, viewModel.getChannelUrl());
+
+        String description = String.format("%s %s", String.format(getString(R.string.lets_join_channel),
+                viewModel.getChannelName()), link);
+
+        ((GroupChatModuleRouter) getApplication()).shareGroupChat(getSupportFragmentManager(),
+                viewModel.getChannelUuid(), viewModel.getChannelName(), description,
+                viewModel.getChannelInfoViewModel().getBannerUrl(), viewModel.getChannelUrl());
+    }
 
     private void setupViewPager() {
         tabs = findViewById(R.id.tab);
