@@ -18,6 +18,7 @@ import android.widget.TextView;
 
 import com.tokopedia.checkout.R;
 import com.tokopedia.checkout.domain.datamodel.cartsingleshipment.ShipmentCostModel;
+import com.tokopedia.checkout.view.holderitemdata.CartItemPromoHolderData;
 import com.tokopedia.checkout.view.view.shipment.ShipmentAdapterActionListener;
 import com.tokopedia.design.utils.CurrencyFormatUtil;
 
@@ -69,7 +70,7 @@ public class ShipmentCostViewHolder extends RecyclerView.ViewHolder {
         this.shipmentAdapterActionListener = shipmentAdapterActionListener;
     }
 
-    public void bindViewHolder(ShipmentCostModel shipmentCost) {
+    public void bindViewHolder(ShipmentCostModel shipmentCost, CartItemPromoHolderData promo) {
         mRlShipmentCostLayout.setVisibility(View.VISIBLE);
 
         mTvTotalItemLabel.setText(getTotalItemLabel(mTvTotalItemLabel.getContext(), shipmentCost.getTotalItem()));
@@ -80,10 +81,12 @@ public class ShipmentCostViewHolder extends RecyclerView.ViewHolder {
         mTvInsuranceFee.setText(getPriceFormat(mTvInsuranceFeeLabel, mTvInsuranceFee, shipmentCost.getInsuranceFee()));
         mTvPromoDiscount.setText(getPriceFormat(mTvPromoLabel, mTvPromoDiscount, shipmentCost.getPromoPrice()));
         mTvSellerCostAdditionFee.setText(getPriceFormat(mTvSellerCostAdditionLabel, mTvSellerCostAdditionFee, shipmentCost.getAdditionalFee()));
-
         if (!TextUtils.isEmpty(shipmentCost.getPromoMessage())) {
             formatPromoMessage(mTvPromoMessage, shipmentCost.getPromoMessage());
             mTvPromoMessage.setVisibility(View.VISIBLE);
+            if (promo != null && promo.getTypePromo() == CartItemPromoHolderData.TYPE_PROMO_COUPON) {
+                mTvPromoLabel.setText("Kupon");
+            }
         } else {
             mTvPromoMessage.setVisibility(View.GONE);
         }

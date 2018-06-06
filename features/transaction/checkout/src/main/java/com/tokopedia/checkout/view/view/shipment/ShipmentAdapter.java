@@ -143,7 +143,10 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                     (ShipmentCartItemModel) data, recipientAddressModel, showCaseObjectList);
             setShowCase(holder.itemView.getContext());
         } else if (viewType == ShipmentCostViewHolder.ITEM_VIEW_SHIPMENT_COST) {
-            ((ShipmentCostViewHolder) holder).bindViewHolder((ShipmentCostModel) data);
+            ((ShipmentCostViewHolder) holder).bindViewHolder(
+                    (ShipmentCostModel) data,
+                    cartItemPromoHolderData
+            );
         } else if (viewType == ShipmentInsuranceTncViewHolder.ITEM_VIEW_INSURANCE_TNC) {
             ((ShipmentInsuranceTncViewHolder) holder).bindViewHolder((ShipmentInsuranceTncModel) data);
         } else if (viewType == ShipmentCheckoutButtonViewHolder.ITEM_VIEW_CHECKOUT_BUTTON) {
@@ -506,6 +509,7 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             ShipmentData shipmentData = shipmentDataList.get(i);
             if (shipmentData instanceof CartItemPromoHolderData) {
                 shipmentDataList.set(i, cartPromo);
+                checkDataForCheckout();
                 checkDataForCheckout();
                 notifyItemChanged(i);
             } else if (shipmentData instanceof CartPromoSuggestion) {
