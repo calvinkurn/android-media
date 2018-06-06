@@ -171,7 +171,7 @@ public class FlightDetailOrderPresenter extends BaseDaggerPresenter<FlightDetail
                     getView().hideCancellationContainer();
                 }
 
-                if (isShouldHideCancelButton(flightOrderJourneyList.size(), flightOrder.getPassengerViewModels())) {
+                if (isShouldHideCancelButton(flightOrder.getJourneys().size(), flightOrder.getPassengerViewModels())) {
                     getView().hideCancelButton();
                 }
                 renderInsurances(flightOrder);
