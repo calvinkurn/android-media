@@ -25,7 +25,6 @@ import com.tokopedia.seller.product.edit.view.widget.ImagesSelectView;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.tokopedia.core.newgallery.GalleryActivity.INSTAGRAM_SELECT_REQUEST_CODE;
 import static com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity.PICKER_RESULT_PATHS;
 import static com.tokopedia.seller.product.edit.view.fragment.BaseProductAddEditFragment.REQUEST_CODE_ADD_PRODUCT_IMAGE;
 
@@ -160,6 +159,9 @@ public class ProductImageViewHolder extends ProductViewHolder {
         if (requestCode == REQUEST_CODE_ADD_PRODUCT_IMAGE && resultCode == Activity.RESULT_OK &&
                 data != null) {
             ArrayList<String> imageUrlOrPathList = data.getStringArrayListExtra(PICKER_RESULT_PATHS);
+
+            ArrayList<ImageSelectModel> imageSelectModelList = imagesSelectView.getImageList();
+
             imagesSelectView.setImagesString(imageUrlOrPathList);
         }
     }

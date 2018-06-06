@@ -279,7 +279,6 @@ public abstract class BaseProductAddEditFragment<T extends ProductAddPresenter>
 
     @Override
     public void onAddImagePickerClicked(final int imagePosition) {
-        // TODO if pick http images should not convert to local image
         ImagePickerBuilder builder = getImagePickerBuilder();
         Intent intent = ImagePickerActivity.getIntent(getContext(), builder);
         startActivityForResult(intent, REQUEST_CODE_ADD_PRODUCT_IMAGE);
