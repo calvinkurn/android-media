@@ -263,7 +263,7 @@ public class FragmentGeneralWebView extends Fragment implements BaseWebViewClien
                 return false;
             }
         } catch (Exception e){
-            Crashlytics.log(0, TAG, e.getLocalizedMessage());
+            Log.e(TAG, e.getLocalizedMessage());
             return false;
         }
     }
