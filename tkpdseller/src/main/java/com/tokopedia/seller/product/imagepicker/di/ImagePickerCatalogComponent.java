@@ -1,7 +1,7 @@
 package com.tokopedia.seller.product.imagepicker.di;
 
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
-import com.tokopedia.seller.product.imagepicker.ImagePickerCatalogFragment;
+import com.tokopedia.seller.product.imagepicker.view.fragment.ImagePickerCatalogFragment;
 
 import dagger.Component;
 

@@ -3,9 +3,6 @@ package com.tokopedia.seller.product.edit.data.repository;
 import com.tokopedia.seller.product.edit.data.source.CatalogDataSource;
 import com.tokopedia.seller.product.edit.data.source.cloud.model.catalogdata.CatalogDataModel;
 import com.tokopedia.seller.product.edit.domain.CatalogRepository;
-import com.tokopedia.seller.product.imagepicker.CatalogModelView;
-
-import java.util.List;
 
 import javax.inject.Inject;
 

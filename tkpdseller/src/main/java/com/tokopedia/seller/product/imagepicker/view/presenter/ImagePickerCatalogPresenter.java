@@ -1,6 +1,8 @@
-package com.tokopedia.seller.product.imagepicker;
+package com.tokopedia.seller.product.imagepicker.view.presenter;
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
+import com.tokopedia.seller.product.imagepicker.domain.interactor.GetCatalogImageUseCase;
+import com.tokopedia.seller.product.imagepicker.view.model.CatalogModelView;
 
 import java.util.List;
 

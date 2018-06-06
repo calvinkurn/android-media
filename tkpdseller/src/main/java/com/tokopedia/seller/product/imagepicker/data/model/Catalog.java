@@ -1,5 +1,5 @@
 
-package com.tokopedia.seller.product.imagepicker.model;
+package com.tokopedia.seller.product.imagepicker.data.model;
 
 import java.util.List;
 import com.google.gson.annotations.Expose;
@@ -28,15 +28,15 @@ public class Catalog {
     @SerializedName("update_time")
     @Expose
     private String updateTime;
-    @SerializedName("catalog_images")
+    @SerializedName("catalog_image")
     @Expose
-    private List<CatalogImage> catalogImages = null;
-    @SerializedName("market_prices")
+    private List<CatalogImage> catalogImage = null;
+    @SerializedName("market_price")
     @Expose
-    private List<Object> marketPrices = null;
+    private List<MarketPrice> marketPrice = null;
     @SerializedName("expert_review")
     @Expose
-    private List<ExpertReview> expertReview = null;
+    private List<Object> expertReview = null;
     @SerializedName("specification")
     @Expose
     private List<Specification> specification = null;
@@ -103,27 +103,27 @@ public class Catalog {
         this.updateTime = updateTime;
     }
 
-    public List<CatalogImage> getCatalogImages() {
-        return catalogImages;
+    public List<CatalogImage> getCatalogImage() {
+        return catalogImage;
     }
 
-    public void setCatalogImages(List<CatalogImage> catalogImages) {
-        this.catalogImages = catalogImages;
+    public void setCatalogImage(List<CatalogImage> catalogImage) {
+        this.catalogImage = catalogImage;
     }
 
-    public List<Object> getMarketPrices() {
-        return marketPrices;
+    public List<MarketPrice> getMarketPrice() {
+        return marketPrice;
     }
 
-    public void setMarketPrices(List<Object> marketPrices) {
-        this.marketPrices = marketPrices;
+    public void setMarketPrice(List<MarketPrice> marketPrice) {
+        this.marketPrice = marketPrice;
     }
 
-    public List<ExpertReview> getExpertReview() {
+    public List<Object> getExpertReview() {
         return expertReview;
     }
 
-    public void setExpertReview(List<ExpertReview> expertReview) {
+    public void setExpertReview(List<Object> expertReview) {
         this.expertReview = expertReview;
     }
 

@@ -1,8 +1,8 @@
-package com.tokopedia.seller.product.imagepicker;
+package com.tokopedia.seller.product.imagepicker.data.source;
 
 import com.tokopedia.abstraction.common.data.model.response.DataResponse;
-import com.tokopedia.seller.product.imagepicker.model.CatalogImage;
-import com.tokopedia.seller.product.imagepicker.model.DataResponseCatalogImage;
+import com.tokopedia.seller.product.imagepicker.data.model.CatalogImage;
+import com.tokopedia.seller.product.imagepicker.data.model.DataResponseCatalogImage;
 
 import java.util.List;
 
@@ -32,7 +32,7 @@ public class CatalogImageDataSourceCloud {
                     public Observable<List<CatalogImage>> call(Response<DataResponse<DataResponseCatalogImage>> dataResponseResponse) {
                         if(dataResponseResponse.isSuccessful() && dataResponseResponse.body() != null
                                 && dataResponseResponse.body().getData() != null) {
-                            return Observable.just(dataResponseResponse.body().getData().getCatalogs().get(0).getCatalogImages());
+                            return Observable.just(dataResponseResponse.body().getData().getCatalog().getCatalogImage());
                         }else{
                             throw new RuntimeException();
                         }

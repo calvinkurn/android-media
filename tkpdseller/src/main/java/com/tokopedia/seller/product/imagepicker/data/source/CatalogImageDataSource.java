@@ -1,6 +1,6 @@
-package com.tokopedia.seller.product.imagepicker;
+package com.tokopedia.seller.product.imagepicker.data.source;
 
-import com.tokopedia.seller.product.imagepicker.model.CatalogImage;
+import com.tokopedia.seller.product.imagepicker.data.model.CatalogImage;
 
 import java.util.List;
 

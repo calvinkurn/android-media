@@ -1,5 +1,5 @@
 
-package com.tokopedia.seller.product.imagepicker.model;
+package com.tokopedia.seller.product.imagepicker.data.model;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;

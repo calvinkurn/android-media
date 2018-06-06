@@ -1,11 +1,11 @@
 package com.tokopedia.seller.product.imagepicker.di;
 
-import com.tokopedia.seller.product.imagepicker.CatalogApi;
-import com.tokopedia.seller.product.imagepicker.CatalogImageDataSource;
-import com.tokopedia.seller.product.imagepicker.CatalogImageRepository;
-import com.tokopedia.seller.product.imagepicker.CatalogImageRepositoryImpl;
-import com.tokopedia.seller.product.imagepicker.GetCatalogImageUseCase;
-import com.tokopedia.seller.product.imagepicker.ImagePickerCatalogPresenter;
+import com.tokopedia.seller.product.imagepicker.data.source.CatalogApi;
+import com.tokopedia.seller.product.imagepicker.data.source.CatalogImageDataSource;
+import com.tokopedia.seller.product.imagepicker.domain.CatalogImageRepository;
+import com.tokopedia.seller.product.imagepicker.data.repository.CatalogImageRepositoryImpl;
+import com.tokopedia.seller.product.imagepicker.domain.interactor.GetCatalogImageUseCase;
+import com.tokopedia.seller.product.imagepicker.view.presenter.ImagePickerCatalogPresenter;
 
 import dagger.Module;
 import dagger.Provides;
