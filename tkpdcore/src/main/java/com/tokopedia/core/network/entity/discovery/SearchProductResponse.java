@@ -468,8 +468,6 @@ public class SearchProductResponse {
             }
 
             public List<String> getTopLabel() {
-                topLabel = new ArrayList<>();
-                topLabel.add("Preorder");
                 return topLabel;
             }
 
@@ -478,8 +476,6 @@ public class SearchProductResponse {
             }
 
             public List<String> getBottomLabel() {
-                bottomLabel = new ArrayList<>();
-                bottomLabel.add("Cashback 3%");
                 return bottomLabel;
             }
 
@@ -642,8 +638,8 @@ public class SearchProductResponse {
                 private String title;
                 @SerializedName("image_url")
                 private String imageUrl;
-                @SerializedName("is_shown")
-                private boolean isShown = true;
+                @SerializedName("show")
+                private boolean isShown;
 
                 public String getTitle() {
                     return title;
