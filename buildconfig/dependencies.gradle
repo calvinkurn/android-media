@@ -324,7 +324,7 @@ ext {
             userSession     : ":libraries:user_session",
             imageuploader   : ":libraries:imageuploader",
             youtubeApi      : ":libraries:YouTubeAndroidPlayerApi",
-            analytics       : ":libraries:analytics"
+            analytics       : ":libraries:analytics",
             travelCalendar  : ":libraries:travel_calendar"
     ]
 }
