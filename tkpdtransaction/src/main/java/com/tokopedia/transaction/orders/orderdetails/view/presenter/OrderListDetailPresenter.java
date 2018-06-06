@@ -45,6 +45,10 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
 
             @Override
             public void onNext(DetailsData data) {
+                if(data == null){
+                    Log.e("sandeep", "data null");
+                } else
+                    Log.e("sandeep",data.toString());
                 setDetailsData(data.orderDetails());
             }
         });

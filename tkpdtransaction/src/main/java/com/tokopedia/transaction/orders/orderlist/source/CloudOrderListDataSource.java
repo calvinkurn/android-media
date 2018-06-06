@@ -37,6 +37,7 @@ public class CloudOrderListDataSource {
             @Override
             public Data call(Response<GraphqlResponse<Data>> graphqlResponseResponse) {
                 if(graphqlResponseResponse != null && graphqlResponseResponse.isSuccessful()){
+                    Log.e("sandeep","list response from cloud ="+graphqlResponseResponse.body().getData());
                     return graphqlResponseResponse.body().getData();
                 }
                 return null;

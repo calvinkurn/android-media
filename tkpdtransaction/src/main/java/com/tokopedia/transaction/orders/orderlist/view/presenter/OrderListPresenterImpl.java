@@ -1,6 +1,7 @@
 package com.tokopedia.transaction.orders.orderlist.view.presenter;
 
 import android.content.Context;
+import android.util.Log;
 
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
@@ -39,6 +40,7 @@ public class OrderListPresenterImpl extends BaseDaggerPresenter<OrderListContrac
 
             @Override
             public void onError(Throwable e) {
+                Log.e("sandeep","exception="+e.toString());
                 CommonUtils.dumper(e.toString());
                 getView().removeProgressBarView();
                 getView().unregisterScrollListener();
@@ -51,6 +53,7 @@ public class OrderListPresenterImpl extends BaseDaggerPresenter<OrderListContrac
 
             @Override
             public void onNext(Data data) {
+                Log.e("sandeep","data in order list is :"+data);
                 getView().removeProgressBarView();
                 if (data != null) {
                     if (!data.orders().isEmpty()) {

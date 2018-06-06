@@ -44,6 +44,7 @@ public class CloudOrderDetailsDataSource {
             @Override
             public DetailsData call(Response<GraphqlResponse<DetailsData>> graphqlResponseResponse) {
                 if (graphqlResponseResponse != null && graphqlResponseResponse.isSuccessful()) {
+                    Log.e("sandeep","successful response = "+graphqlResponseResponse.body().getData());
                     return graphqlResponseResponse.body().getData();
                 }
                 return null;
