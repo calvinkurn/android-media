@@ -48,8 +48,9 @@
             android:id="@+id/recycler_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:background="@color/white"
             android:clipToPadding="false"
-            android:paddingTop="@dimen/dp_16" />
+            android:paddingTop="@dimen/dp_8" />
 
     </com.tokopedia.core.customwidget.SwipeToRefresh>
 
