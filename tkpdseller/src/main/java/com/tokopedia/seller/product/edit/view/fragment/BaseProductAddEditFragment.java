@@ -1,6 +1,5 @@
 package com.tokopedia.seller.product.edit.view.fragment;
 
-import android.Manifest;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Context;
@@ -10,7 +9,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.CallSuper;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
 import android.support.v4.app.DialogFragment;
@@ -28,7 +26,6 @@ import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.myproduct.utils.FileUtils;
 import com.tokopedia.core.network.NetworkErrorHelper;
-import com.tokopedia.core.util.RequestPermissionUtil;
 import com.tokopedia.imagepicker.editor.main.view.ImageEditorActivity;
 import com.tokopedia.imagepicker.picker.gallery.type.GalleryType;
 import com.tokopedia.imagepicker.picker.main.builder.ImagePickerBuilder;
@@ -37,12 +34,8 @@ import com.tokopedia.imagepicker.picker.main.builder.ImagePickerMultipleSelectio
 import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.SellerModuleRouter;
-import com.tokopedia.seller.common.imageeditor.GalleryCropWatermarkActivity;
-import com.tokopedia.seller.common.imageeditor.ImageEditorWatermarkActivity;
 import com.tokopedia.seller.common.widget.LabelSwitch;
-import com.tokopedia.seller.instoped.InstopedSellerCropWatermarkActivity;
 import com.tokopedia.seller.product.category.view.activity.CategoryPickerActivity;
-import com.tokopedia.seller.product.edit.constant.CurrencyTypeDef;
 import com.tokopedia.seller.product.edit.constant.StockTypeDef;
 import com.tokopedia.seller.product.edit.data.source.cloud.model.catalogdata.Catalog;
 import com.tokopedia.seller.product.edit.view.activity.ProductAddCatalogPickerActivity;
@@ -50,7 +43,6 @@ import com.tokopedia.seller.product.edit.view.activity.ProductAddDescriptionPick
 import com.tokopedia.seller.product.edit.view.activity.ProductAddVideoActivity;
 import com.tokopedia.seller.product.edit.view.activity.ProductAddWholesaleActivity;
 import com.tokopedia.seller.product.edit.view.activity.ProductScoringDetailActivity;
-import com.tokopedia.seller.product.edit.view.dialog.ProductAddImageDialogFragment;
 import com.tokopedia.seller.product.edit.view.dialog.ProductAddImageDescriptionDialog;
 import com.tokopedia.seller.product.edit.view.dialog.ProductAddImageEditProductDialogFragment;
 import com.tokopedia.seller.product.edit.view.dialog.ProductChangeVariantPriceDialogFragment;
@@ -73,13 +65,11 @@ import com.tokopedia.seller.product.edit.view.model.edit.ProductWholesaleViewMod
 import com.tokopedia.seller.product.edit.view.model.scoringproduct.DataScoringProductView;
 import com.tokopedia.seller.product.edit.view.model.scoringproduct.ValueIndicatorScoreModel;
 import com.tokopedia.seller.product.edit.view.model.upload.intdef.ProductStatus;
-import com.tokopedia.seller.product.edit.view.model.wholesale.WholesaleModel;
 import com.tokopedia.seller.product.edit.view.presenter.ProductAddPresenter;
 import com.tokopedia.seller.product.edit.view.widget.ImagesSelectView;
 import com.tokopedia.seller.product.etalase.view.activity.EtalasePickerActivity;
 import com.tokopedia.seller.product.variant.data.model.variantbycat.ProductVariantByCatModel;
 import com.tokopedia.seller.product.variant.data.model.variantbyprd.ProductVariantViewModel;
-import com.tokopedia.seller.product.variant.data.model.variantbyprd.variantcombination.ProductVariantCombinationViewModel;
 import com.tokopedia.seller.product.variant.view.activity.ProductVariantDashboardActivity;
 
 import java.util.ArrayList;
@@ -87,14 +77,6 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import permissions.dispatcher.NeedsPermission;
-import permissions.dispatcher.OnNeverAskAgain;
-import permissions.dispatcher.OnPermissionDenied;
-import permissions.dispatcher.OnShowRationale;
-import permissions.dispatcher.PermissionRequest;
-import permissions.dispatcher.RuntimePermissions;
-
-import static com.tokopedia.core.newgallery.GalleryActivity.INSTAGRAM_SELECT_REQUEST_CODE;
 import static com.tokopedia.imagepicker.picker.main.builder.ImageEditActionTypeDef.ACTION_BRIGHTNESS;
 import static com.tokopedia.imagepicker.picker.main.builder.ImageEditActionTypeDef.ACTION_CONTRAST;
 import static com.tokopedia.imagepicker.picker.main.builder.ImageEditActionTypeDef.ACTION_CROP;
@@ -105,7 +87,6 @@ import static com.tokopedia.imagepicker.picker.main.builder.ImagePickerTabTypeDe
 import static com.tokopedia.imagepicker.picker.main.builder.ImagePickerTabTypeDef.TYPE_GALLERY;
 import static com.tokopedia.imagepicker.picker.main.builder.ImagePickerTabTypeDef.TYPE_INSTAGRAM;
 
-@RuntimePermissions
 public abstract class BaseProductAddEditFragment<T extends ProductAddPresenter>
         extends BaseDaggerFragment
         implements ProductAddView,
@@ -401,22 +382,6 @@ public abstract class BaseProductAddEditFragment<T extends ProductAddPresenter>
                 }
             }
         });
-    }
-
-    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
-    @NeedsPermission(Manifest.permission.READ_EXTERNAL_STORAGE)
-    public void goToGallery(int imagePosition) {
-        int remainingEmptySlot = productImageViewHolder.getImagesSelectView().getRemainingEmptySlot();
-        GalleryCropWatermarkActivity.moveToImageGallery(getActivity(), this, imagePosition, remainingEmptySlot, true);
-    }
-
-    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
-    @NeedsPermission(Manifest.permission.READ_EXTERNAL_STORAGE)
-    public void goToCamera(int imagePosition) {
-        int remainingEmptySlot = productImageViewHolder.getImagesSelectView().getRemainingEmptySlot();
-        GalleryCropWatermarkActivity.moveToImageGalleryCamera(getActivity(), this, imagePosition,
-                true, remainingEmptySlot, true);
-
     }
 
     @Override
@@ -840,32 +805,6 @@ public abstract class BaseProductAddEditFragment<T extends ProductAddPresenter>
         productDescriptionViewHolder.onActivityResult(requestCode, resultCode, data);
         productPriceViewHolder.onActivityResult(requestCode, resultCode, data);
         super.onActivityResult(requestCode, resultCode, data);
-    }
-
-    // Permission part
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        // NOTE: delegate the permission handling to generated method
-        BaseProductAddEditFragmentPermissionsDispatcher.onRequestPermissionsResult(this, requestCode, grantResults);
-    }
-
-    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
-    @OnPermissionDenied(Manifest.permission.WRITE_EXTERNAL_STORAGE)
-    void showDeniedForExternalStorage() {
-        RequestPermissionUtil.onPermissionDenied(getActivity(), Manifest.permission.WRITE_EXTERNAL_STORAGE);
-    }
-
-    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
-    @OnNeverAskAgain(Manifest.permission.WRITE_EXTERNAL_STORAGE)
-    void showNeverAskForExternalStorage() {
-        RequestPermissionUtil.onNeverAskAgain(getActivity(), Manifest.permission.WRITE_EXTERNAL_STORAGE);
-    }
-
-    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
-    @OnShowRationale(Manifest.permission.WRITE_EXTERNAL_STORAGE)
-    void showRationaleForExternalStorage(final PermissionRequest request) {
-        request.proceed();
     }
 
     // View holder listener part
