@@ -26,6 +26,7 @@ import com.tokopedia.transaction.bcaoneklik.model.creditcard.CreditCardModelItem
 import com.tokopedia.transaction.bcaoneklik.presenter.ListPaymentTypePresenterImpl;
 
 import javax.inject.Inject;
+import android.support.graphics.drawable.VectorDrawableCompat;
 
 /**
  * @author Aghny A. Putra on 09/01/18
@@ -176,8 +177,7 @@ public class CreditCardDetailActivity extends TActivity
             toolbar.setBackgroundResource(com.tokopedia.core.R.drawable.bg_white_toolbar_drop_shadow);
         }
 
-        Drawable drawable = ContextCompat.getDrawable(
-                this, com.tokopedia.core.R.drawable.ic_toolbar_overflow_level_two_black);
+        Drawable drawable = VectorDrawableCompat.create(getResources(), com.tokopedia.core.R.drawable.ic_toolbar_overflow_level_two_black, null);
         drawable.setBounds(5, 5, 5, 5);
         toolbar.setOverflowIcon(drawable);
 
