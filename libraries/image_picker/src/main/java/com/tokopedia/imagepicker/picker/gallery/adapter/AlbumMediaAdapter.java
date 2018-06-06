@@ -2,6 +2,7 @@ package com.tokopedia.imagepicker.picker.gallery.adapter;
 
 import android.content.Context;
 import android.database.Cursor;
+import android.provider.MediaStore;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -28,26 +29,28 @@ public class AlbumMediaAdapter extends RecyclerViewCursorAdapter<AlbumMediaAdapt
     private int mImageResize;
 
     private boolean supportMultipleSelection;
-    private ArrayList<Long> selectionIdList;
+    private ArrayList<String> selectionImagePathList;
 
-    public AlbumMediaAdapter(boolean supportMultipleSelection, ArrayList<Long> selectionIdList, OnMediaClickListener listener) {
+    public AlbumMediaAdapter(boolean supportMultipleSelection, ArrayList<String> selectionImagePathList, OnMediaClickListener listener) {
         super(null);
-        setSelectionIdList(selectionIdList);
+        setSelectionIdList(selectionImagePathList);
         this.supportMultipleSelection = supportMultipleSelection;
         mOnMediaClickListener = listener;
     }
 
-    private void setSelectionIdList(ArrayList<Long> selectionIdList) {
-        if (selectionIdList == null) {
-            this.selectionIdList = new ArrayList<>();
+    private void setSelectionIdList(ArrayList<String> selectionImagePathList) {
+        if (selectionImagePathList == null) {
+            this.selectionImagePathList = new ArrayList<>();
         } else {
-            this.selectionIdList = selectionIdList;
+            this.selectionImagePathList = selectionImagePathList;
         }
     }
 
     public interface OnMediaClickListener {
         void onMediaClick(MediaItem item, boolean checked, int adapterPosition);
+
         boolean isImageValid(MediaItem item);
+
         boolean canAddMoreImage();
     }
 
@@ -55,23 +58,14 @@ public class AlbumMediaAdapter extends RecyclerViewCursorAdapter<AlbumMediaAdapt
     public void onThumbnailClicked(ImageView thumbnail, MediaItem item, RecyclerView.ViewHolder holder) {
         boolean isChecked = true;
         if (supportMultipleSelection) {
-            if (selectionIdList.contains(item.getId())) {
-                selectionIdList.remove(item.getId());
-                isChecked = false;
-            } else {
-                selectionIdList.add(item.getId());
-                isChecked = true;
-
-            }
+            isChecked = !selectionImagePathList.contains(item.getRealPath());
         }
 
         if (isChecked && !mOnMediaClickListener.canAddMoreImage()) {
-            selectionIdList.remove(item.getId()); //in case support multiple selection
             return;
         }
 
         if (isChecked && !mOnMediaClickListener.isImageValid(item)) {
-            selectionIdList.remove(item.getId()); //in case support multiple selection
             return;
         }
 
@@ -83,6 +77,18 @@ public class AlbumMediaAdapter extends RecyclerViewCursorAdapter<AlbumMediaAdapt
                     isChecked,
                     holder.getAdapterPosition());
         }
+    }
+
+    public void removeImageFromSelection(String imagePath) {
+        if (getCursor() == null || getCursor().getCount() == 0) {
+            return;
+        }
+
+        if (!supportMultipleSelection) {
+            return;
+        }
+        selectionImagePathList.remove(imagePath);
+        notifyDataSetChanged();
     }
 
     class MediaViewHolder extends RecyclerView.ViewHolder {
@@ -105,7 +111,7 @@ public class AlbumMediaAdapter extends RecyclerViewCursorAdapter<AlbumMediaAdapt
                         0, R.drawable.error_drawable,
                         holder
                 ));
-        holder.mMediaGrid.bindMedia(item, selectionIdList);
+        holder.mMediaGrid.bindMedia(item, selectionImagePathList);
         holder.mMediaGrid.setOnMediaGridClickListener(this);
     }
 
@@ -120,10 +126,6 @@ public class AlbumMediaAdapter extends RecyclerViewCursorAdapter<AlbumMediaAdapt
             mImageResize = (int) (mImageResize * 0.85f);
         }
         return mImageResize;
-    }
-
-    public ArrayList<Long> getSelectionIdList() {
-        return selectionIdList;
     }
 
     @Override
