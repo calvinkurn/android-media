@@ -62,16 +62,16 @@ public class InstantLoanModule {
     }
 
     @Provides
-    public InstantLoanRouter provideInstantLoanRouter(@ApplicationContext Context context) {
-        if (context instanceof InstantLoanRouter) {
-            return ((InstantLoanRouter) context);
+    public InstantLoanChuckRouter provideInstantLoanRouter(@ApplicationContext Context context) {
+        if (context instanceof InstantLoanChuckRouter) {
+            return ((InstantLoanChuckRouter) context);
         }
-        throw new RuntimeException("App should implement " + InstantLoanRouter.class.getSimpleName());
+        throw new RuntimeException("App should implement " + InstantLoanChuckRouter.class.getSimpleName());
     }
 
     @Provides
     @ChuckQualifier
-    public Interceptor provideChuckInterceptor(InstantLoanRouter router) {
+    public Interceptor provideChuckInterceptor(InstantLoanChuckRouter router) {
         return router.getChuckInterceptor();
     }
 }

@@ -4,6 +4,8 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.tokopedia.instantloan.data.model.response.ResponseLoanProfileStatus;
+import com.tokopedia.instantloan.data.model.response.ResponseUserProfileStatus;
+import com.tokopedia.instantloan.data.model.response.UserProfileLoanEntity;
 import com.tokopedia.instantloan.domain.model.LoanProfileStatusModelDomain;
 
 import javax.inject.Inject;
@@ -22,5 +24,13 @@ public class LoanProfileStatusMapper {
     public LoanProfileStatusModelDomain transform(@NonNull ResponseLoanProfileStatus response) {
         return response.getData() == null
                 ? null : new LoanProfileStatusModelDomain(response.getData().isSubmitted());
+    }
+
+    @Nullable
+    public UserProfileLoanEntity transformResponse(@NonNull ResponseUserProfileStatus response) {
+        return response.getUserProfileLoanEntity() == null
+                ? null : new UserProfileLoanEntity(response.getUserProfileLoanEntity().getWhitelist(),
+                response.getUserProfileLoanEntity().getWhiteListUrl(),
+                response.getUserProfileLoanEntity().getDataCollection(), response.getUserProfileLoanEntity().getDataCollected());
     }
 }

@@ -1,5 +1,6 @@
 package com.tokopedia.instantloan.domain.interactor;
 
+import com.tokopedia.instantloan.data.model.response.UserProfileLoanEntity;
 import com.tokopedia.instantloan.data.repository.InstantLoanDataRepository;
 import com.tokopedia.instantloan.domain.model.LoanProfileStatusModelDomain;
 import com.tokopedia.usecase.RequestParams;
@@ -13,7 +14,7 @@ import rx.Observable;
  * Created by lavekush on 21/03/18.
  */
 
-public class GetLoanProfileStatusUseCase extends UseCase<LoanProfileStatusModelDomain> {
+public class GetLoanProfileStatusUseCase extends UseCase<UserProfileLoanEntity> {
     private final InstantLoanDataRepository mRepository;
 
     @Inject
@@ -22,7 +23,7 @@ public class GetLoanProfileStatusUseCase extends UseCase<LoanProfileStatusModelD
     }
 
     @Override
-    public Observable<LoanProfileStatusModelDomain> createObservable(RequestParams requestParams) {
+    public Observable<UserProfileLoanEntity> createObservable(RequestParams requestParams) {
         return mRepository.getLoanProfileStatus();
     }
 }

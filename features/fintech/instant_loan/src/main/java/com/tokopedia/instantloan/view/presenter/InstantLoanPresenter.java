@@ -11,6 +11,7 @@ import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.instantloan.constant.DeviceDataKeys;
+import com.tokopedia.instantloan.data.model.response.UserProfileLoanEntity;
 import com.tokopedia.instantloan.ddcollector.DDCollectorManager;
 import com.tokopedia.instantloan.ddcollector.OnDeviceDataReady;
 import com.tokopedia.instantloan.ddcollector.PermissionResultCallback;
@@ -78,15 +79,15 @@ public class InstantLoanPresenter extends BaseDaggerPresenter<InstantLoanContrac
     @Override
     public void getLoanProfileStatus() {
         getView().showLoader();
-        mGetLoanProfileStatusUseCase.getExecuteObservable(RequestParams.EMPTY).map(new Func1<LoanProfileStatusModelDomain, LoanProfileStatusViewModel>() {
+        mGetLoanProfileStatusUseCase.getExecuteObservable(RequestParams.EMPTY)/*.map(new Func1<LoanProfileStatusModelDomain, UserProfileLoanEntity>() {
             @Override
-            public LoanProfileStatusViewModel call(LoanProfileStatusModelDomain bannerDomains) {
+            public UserProfileLoanEntity call(LoanProfileStatusModelDomain bannerDomains) {
                 return mMapper.transform(bannerDomains);
 
             }
-        }).subscribeOn(Schedulers.io())
+        })*/.subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Subscriber<LoanProfileStatusViewModel>() {
+                .subscribe(new Subscriber<UserProfileLoanEntity>() {
                     @Override
                     public void onCompleted() {
                         getView().hideLoader();
@@ -98,7 +99,7 @@ public class InstantLoanPresenter extends BaseDaggerPresenter<InstantLoanContrac
                     }
 
                     @Override
-                    public void onNext(LoanProfileStatusViewModel viewModel) {
+                    public void onNext(UserProfileLoanEntity viewModel) {
                         getView().onSuccessLoanProfileStatus(viewModel);
                     }
                 });

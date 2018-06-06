@@ -1,5 +1,6 @@
 package com.tokopedia.instantloan.data.soruce;
 
+import com.tokopedia.instantloan.data.model.response.UserProfileLoanEntity;
 import com.tokopedia.instantloan.domain.model.LoanProfileStatusModelDomain;
 
 import rx.Observable;
@@ -10,5 +11,5 @@ import rx.Observable;
 
 public interface LoanProfileStatusDataStore {
 
-    Observable<LoanProfileStatusModelDomain> loanProfileStatus();
+    Observable<UserProfileLoanEntity> loanProfileStatus();
 }

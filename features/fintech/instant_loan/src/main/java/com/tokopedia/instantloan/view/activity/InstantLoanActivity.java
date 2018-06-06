@@ -10,6 +10,7 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
+import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
@@ -30,6 +31,7 @@ import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.design.viewpagerindicator.CirclePageIndicator;
 import com.tokopedia.instantloan.InstantLoanComponentInstance;
 import com.tokopedia.instantloan.R;
+import com.tokopedia.instantloan.data.model.response.UserProfileLoanEntity;
 import com.tokopedia.instantloan.ddcollector.DDCollectorManager;
 import com.tokopedia.instantloan.di.component.InstantLoanComponent;
 import com.tokopedia.instantloan.router.InstantLoanRouter;
@@ -39,7 +41,6 @@ import com.tokopedia.instantloan.view.adapter.InstantLoanIntroViewPagerAdapter;
 import com.tokopedia.instantloan.view.contractor.BannerContractor;
 import com.tokopedia.instantloan.view.contractor.InstantLoanContractor;
 import com.tokopedia.instantloan.view.model.BannerViewModel;
-import com.tokopedia.instantloan.view.model.LoanProfileStatusViewModel;
 import com.tokopedia.instantloan.view.model.PhoneDataViewModel;
 import com.tokopedia.instantloan.view.presenter.BannerListPresenter;
 import com.tokopedia.instantloan.view.presenter.InstantLoanPresenter;
@@ -49,7 +50,6 @@ import java.util.List;
 import javax.inject.Inject;
 
 import static com.tokopedia.instantloan.network.InstantLoanUrl.WEB_LINK_COLLATERAL_FUND;
-import static com.tokopedia.instantloan.network.InstantLoanUrl.WEB_LINK_DASHBOARD;
 import static com.tokopedia.instantloan.network.InstantLoanUrl.WEB_LINK_NO_COLLATERAL;
 import static com.tokopedia.instantloan.network.InstantLoanUrl.WEB_LINK_OTP;
 
@@ -228,14 +228,14 @@ public class InstantLoanActivity extends BaseSimpleActivity implements HasCompon
 
     @Override
     public void openWebView(String url) {
-        Intent intent = SimpleWebViewWithFilePickerActivity.getIntent(this, url);
+        Intent intent = SimpleWebViewWithFilePickerActivity.getIntentWithTitle(this, url,"Pinjaman Online");
         startActivity(intent);
     }
 
     @Override
     public void searchLoanOnline() {
 
-        /*if (mCurrentTab != TAB_INSTANT_FUND
+        if (mCurrentTab != TAB_INSTANT_FUND
                 && mSpinnerLoanAmount.getSelectedItem().toString().equalsIgnoreCase(getString(R.string.label_select_nominal))) {
             TextView errorText = (TextView) mSpinnerLoanAmount.getSelectedView();
             errorText.setError("Please select");
@@ -257,9 +257,9 @@ public class InstantLoanActivity extends BaseSimpleActivity implements HasCompon
             }
         } else {
             navigateToLoginPage();
-        }*/
+        }
 
-        startIntroSlider();
+//        startIntroSlider();
     }
 
     @Override
@@ -325,13 +325,37 @@ public class InstantLoanActivity extends BaseSimpleActivity implements HasCompon
     }
 
     @Override
-    public void onSuccessLoanProfileStatus(LoanProfileStatusViewModel data) {
+    public void onSuccessLoanProfileStatus(UserProfileLoanEntity data) {
         //TODO @lavekush check possible error cases from @OKA
-        if (!data.isSubmitted()) {
-            openWebView(WEB_LINK_DASHBOARD);
-        } else {
+
+        if (!data.getWhitelist()) {
+            // TODO: 6/5/18 open coming soon web view
+
+            if (!TextUtils.isEmpty(data.getWhiteListUrl())) {
+                // TODO: 6/6/18 open webview activity
+
+//                Toast.makeText(this, data.getWhiteListUrl(), Toast.LENGTH_SHORT).show();
+                com.tkpd.library.utils.CommonUtils.dumper(data.getWhiteListUrl());
+                openWebView(data.getWhiteListUrl());
+
+            } else {
+                Toast.makeText(this, "Instant Loan Coming Soon", Toast.LENGTH_SHORT).show();
+            }
+        } else if (!data.getDataCollection() ||
+                (data.getDataCollection() && data.getDataCollected())) {
+
+            // TODO: 6/5/18 check has fintech profile builded
+            Toast.makeText(this, "Check if fintech profile is build", Toast.LENGTH_SHORT).show();
+
+        } /*else if (data.getDataCollection() && data.getDataCollected()) {
+
+            // TODO: 6/5/18 check has fintech profile builded
+            Toast.makeText(this, "Check if fintech profile is build", Toast.LENGTH_SHORT).show();
+        }*/ else {
             startIntroSlider();
         }
+
+
     }
 
     @Override

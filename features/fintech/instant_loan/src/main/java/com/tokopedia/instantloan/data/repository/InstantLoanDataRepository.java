@@ -1,6 +1,7 @@
 package com.tokopedia.instantloan.data.repository;
 
 import com.google.gson.JsonObject;
+import com.tokopedia.instantloan.data.model.response.UserProfileLoanEntity;
 import com.tokopedia.instantloan.data.soruce.cloud.BannerDataCloud;
 import com.tokopedia.instantloan.data.soruce.cloud.LoanProfileStatusDataCloud;
 import com.tokopedia.instantloan.data.soruce.cloud.PhoneDetailsDataCloud;
@@ -38,7 +39,7 @@ public class InstantLoanDataRepository implements InstantLoanDomainRepository {
     }
 
     @Override
-    public Observable<LoanProfileStatusModelDomain> getLoanProfileStatus() {
+    public Observable<UserProfileLoanEntity> getLoanProfileStatus() {
         return mLoanStatusDataCloud.loanProfileStatus();
     }
 

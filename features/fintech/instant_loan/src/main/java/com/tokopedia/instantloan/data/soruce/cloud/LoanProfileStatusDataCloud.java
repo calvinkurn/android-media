@@ -3,6 +3,8 @@ package com.tokopedia.instantloan.data.soruce.cloud;
 import com.tokopedia.core.network.retrofit.utils.ErrorNetMessage;
 import com.tokopedia.instantloan.data.mapper.LoanProfileStatusMapper;
 import com.tokopedia.instantloan.data.model.response.ResponseLoanProfileStatus;
+import com.tokopedia.instantloan.data.model.response.ResponseUserProfileStatus;
+import com.tokopedia.instantloan.data.model.response.UserProfileLoanEntity;
 import com.tokopedia.instantloan.data.soruce.LoanProfileStatusDataStore;
 import com.tokopedia.instantloan.data.soruce.cloud.api.InstantLoanApi;
 import com.tokopedia.instantloan.domain.model.LoanProfileStatusModelDomain;
@@ -30,13 +32,13 @@ public class LoanProfileStatusDataCloud implements LoanProfileStatusDataStore {
     }
 
     @Override
-    public Observable<LoanProfileStatusModelDomain> loanProfileStatus() {
-        return mApi.getStatus().map(new Func1<Response<ResponseLoanProfileStatus>, LoanProfileStatusModelDomain>() {
+    public Observable<UserProfileLoanEntity> loanProfileStatus() {
+        return mApi.getUserProfileStatus().map(new Func1<Response<ResponseUserProfileStatus>, UserProfileLoanEntity>() {
             @Override
-            public LoanProfileStatusModelDomain call(Response<ResponseLoanProfileStatus> response) {
+            public UserProfileLoanEntity call(Response<ResponseUserProfileStatus> response) {
                 if (response.isSuccessful()) {
-                    ResponseLoanProfileStatus responseLoanProfileStatus = response.body();
-                    return mMapper.transform(responseLoanProfileStatus);
+                    ResponseUserProfileStatus responseLoanProfileStatus = response.body();
+                    return mMapper.transformResponse(responseLoanProfileStatus);
                 } else {
                     throw new RuntimeException(
                             ErrorNetMessage.MESSAGE_ERROR_DEFAULT

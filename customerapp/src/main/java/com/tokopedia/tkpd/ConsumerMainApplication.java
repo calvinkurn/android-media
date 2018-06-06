@@ -3,6 +3,7 @@ package com.tokopedia.tkpd;
 import android.app.Activity;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
+import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageInfo;
@@ -345,5 +346,10 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
     @Override
     public void logisticUploadRouterActionNavigateByApplinksUrl(Activity activity, String applinks, Bundle bundle) {
         actionNavigateByApplinksUrl(activity, applinks, bundle);
+    }
+
+    @Override
+    public Intent getInstantLoanActivityIntent(Context context) {
+        return null;
     }
 }
