@@ -219,6 +219,7 @@ public class SearchMainFragment extends TkpdBaseV4Fragment implements SearchCont
         } else {
             openWebViewURL(webUrl, getActivity());
         }
+        getActivity().finish();
     }
 
     public void openWebViewURL(String url, Context context) {
