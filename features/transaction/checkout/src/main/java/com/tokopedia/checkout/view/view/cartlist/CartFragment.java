@@ -98,6 +98,8 @@ public class CartFragment extends BaseCheckoutFragment implements CartListAdapte
     private TextView tvItemCount;
     private TkpdProgressDialog progressDialogNormal;
     private LinearLayout layoutUsedPromo;
+    private RelativeLayout rlContent;
+    private LinearLayout llNetworkErrorView;
 
     @Inject
     ICartListPresenter dPresenter;
@@ -209,6 +211,8 @@ public class CartFragment extends BaseCheckoutFragment implements CartListAdapte
         tvTotalPrice = view.findViewById(R.id.tv_total_prices);
         bottomLayout = view.findViewById(R.id.bottom_layout);
         tvItemCount = view.findViewById(R.id.tv_item_count);
+        rlContent = view.findViewById(R.id.rl_content);
+        llNetworkErrorView = view.findViewById(R.id.ll_network_error_view);
 
         progressDialogNormal = new TkpdProgressDialog(getActivity(), TkpdProgressDialog.NORMAL_PROGRESS);
         refreshHandler = new RefreshHandler(getActivity(), view, this);
@@ -595,24 +599,41 @@ public class CartFragment extends BaseCheckoutFragment implements CartListAdapte
         cartListAdapter.checkForShipmentForm();
     }
 
+    private void showError(String message) {
+        refreshHandler.finishRefresh();
+        rlContent.setVisibility(View.GONE);
+        llNetworkErrorView.setVisibility(View.VISIBLE);
+        NetworkErrorHelper.showEmptyState(getActivity(), llNetworkErrorView, message,
+                new NetworkErrorHelper.RetryClickedListener() {
+                    @Override
+                    public void onRetryClicked() {
+                        llNetworkErrorView.setVisibility(View.GONE);
+                        rlContent.setVisibility(View.VISIBLE);
+                        refreshHandler.startRefresh();
+                        cartListAdapter.resetData();
+                        dPresenter.processInitialGetCartData();
+                    }
+                });
+    }
+
     @Override
     public void renderErrorInitialGetCartListData(String message) {
-        refreshHandler.finishRefresh();
+        showError(message);
     }
 
     @Override
     public void renderErrorHttpInitialGetCartListData(String message) {
-        refreshHandler.finishRefresh();
+        showError(message);
     }
 
     @Override
     public void renderErrorNoConnectionInitialGetCartListData(String message) {
-        refreshHandler.finishRefresh();
+        showError(message);
     }
 
     @Override
     public void renderErrorTimeoutConnectionInitialGetCartListData(String message) {
-        refreshHandler.finishRefresh();
+        showError(message);
     }
 
     @Override

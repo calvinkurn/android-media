@@ -2,6 +2,7 @@ package com.tokopedia.checkout.data.mapper;
 
 import android.text.TextUtils;
 
+import com.tokopedia.checkout.domain.datamodel.addressoptions.Paging;
 import com.tokopedia.checkout.domain.datamodel.addressoptions.PeopleAddressModel;
 import com.tokopedia.checkout.domain.datamodel.addressoptions.RecipientAddressModel;
 import com.tokopedia.core.manage.people.address.model.AddressModel;
@@ -22,9 +23,13 @@ public class AddressModelMapper {
 
     public PeopleAddressModel transform(GetPeopleAddress peopleAddress) {
         PeopleAddressModel peopleAddressModel = new PeopleAddressModel();
-        peopleAddressModel.setRecipientAddressModelList(transform(peopleAddress.getList()));
-        peopleAddressModel.setToken(peopleAddress.getToken());
-
+        if (peopleAddress != null) {
+            peopleAddressModel.setRecipientAddressModelList(transform(peopleAddress.getList()));
+            peopleAddressModel.setToken(peopleAddress.getToken());
+            Paging paging = new Paging();
+            paging.setUriNext(peopleAddress.getPaging().getUriNext());
+            peopleAddressModel.setPaging(paging);
+        }
         return peopleAddressModel;
     }
 
