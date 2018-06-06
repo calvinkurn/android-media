@@ -3,6 +3,7 @@ package com.tokopedia.train.common.data;
 
 import com.tokopedia.train.common.domain.TrainRepository;
 import com.tokopedia.train.search.data.TrainScheduleDataStoreFactory;
+import com.tokopedia.train.search.data.specification.TrainAvailabilitySearchSpecification;
 import com.tokopedia.train.search.data.specification.TrainDetailScheduleSpecification;
 import com.tokopedia.train.search.data.specification.TrainScheduleSpecification;
 import com.tokopedia.train.search.domain.FilterParam;
@@ -59,8 +60,8 @@ public class TrainRepositoryImpl implements TrainRepository {
     }
 
     @Override
-    public Observable<List<TrainScheduleViewModel>> getAvailabilitySchedule(String idTrain, int scheduleVariant) {
-        return trainScheduleDataStoreFactory.getAvailabilitySchedule(idTrain, scheduleVariant);
+    public Observable<List<TrainScheduleViewModel>> getAvailabilitySchedule(Map<String, Object> mapParam, int scheduleVariant) {
+        return trainScheduleDataStoreFactory.getAvailabilitySchedule(new TrainAvailabilitySearchSpecification(mapParam), scheduleVariant);
     }
 
     @Override

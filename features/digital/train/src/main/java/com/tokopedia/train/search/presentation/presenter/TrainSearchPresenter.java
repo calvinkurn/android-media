@@ -66,9 +66,10 @@ public class TrainSearchPresenter extends BaseDaggerPresenter<TrainSearchContrac
     }
 
     private void getAvailabilitySchedule(final String idTrain, int scheduleVariant) {
+        RequestParams requestParams = RequestParams.create();
+        requestParams.putObject(GetAvailabilityScheduleUseCase.TRAIN_ID_KEY, idTrain);
         getAvailabilityScheduleUseCase.setScheduleVariant(scheduleVariant);
-        getAvailabilityScheduleUseCase.setIdTrain(idTrain);
-        getAvailabilityScheduleUseCase.execute(new Subscriber<List<TrainScheduleViewModel>>() {
+        getAvailabilityScheduleUseCase.execute(requestParams, new Subscriber<List<TrainScheduleViewModel>>() {
             @Override
             public void onCompleted() {
 
