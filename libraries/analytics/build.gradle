@@ -25,6 +25,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.abstraction)
     implementation rootProject.ext.playServicesDependencies.firebaseAnalytics
 
+    implementation rootProject.ext.miscDependencies.multiDex
     implementation rootProject.ext.supportLibDependencies.supportV4
     implementation rootProject.ext.supportLibDependencies.appCompactV7
     implementation rootProject.ext.supportLibDependencies.constraintLayout
