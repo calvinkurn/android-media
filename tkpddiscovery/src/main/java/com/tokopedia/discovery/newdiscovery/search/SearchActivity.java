@@ -12,6 +12,7 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.view.ViewTreeObserver;
+import android.webkit.MimeTypeMap;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tkpd.library.utils.KeyboardHandler;
@@ -205,7 +206,8 @@ public class SearchActivity extends DiscoveryActivity
                 Uri uri = clipData.getItemAt(0).getUri();
                 SearchActivityPermissionsDispatcher.onImageSuccessWithCheck(SearchActivity.this, uri.toString());
             } else if (intent.getData() != null &&
-                    !TextUtils.isEmpty(intent.getData().toString())) {
+                    !TextUtils.isEmpty(intent.getData().toString()) &&
+                    isValidMimeType(intent.getData().toString())) {
                 searchView.hideShowCaseDialog(true);
                 sendImageSearchFromGalleryGTM("");
                 SearchActivityPermissionsDispatcher.onImageSuccessWithCheck(SearchActivity.this, intent.getData().toString());
@@ -213,6 +215,23 @@ public class SearchActivity extends DiscoveryActivity
         }
     }
 
+    private boolean isValidMimeType(String url){
+        String mimeType = getMimeType(url);
+        return mimeType.equalsIgnoreCase("jpg") ||
+                mimeType.equalsIgnoreCase("png") ||
+                mimeType.equalsIgnoreCase("jpeg");
+    }
+
+
+    private String getMimeType(String url) {
+        String type = null;
+        String extension = MimeTypeMap.getFileExtensionFromUrl(url);
+        if (extension != null) {
+            MimeTypeMap mime = MimeTypeMap.getSingleton();
+            type = mime.getMimeTypeFromExtension(extension);
+        }
+        return type;
+    }
 
     @NeedsPermission(Manifest.permission.READ_EXTERNAL_STORAGE)
     public void onImageSuccess(String uri) {
