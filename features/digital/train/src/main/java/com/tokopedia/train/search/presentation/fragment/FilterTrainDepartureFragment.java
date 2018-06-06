@@ -13,10 +13,10 @@ import java.util.ArrayList;
  * Created by nabillasabbaha on 3/23/18.
  */
 
-public class TrainFilterDepartureFragment extends BaseTrainFilterSearchFragment {
+public class FilterTrainDepartureFragment extends BaseFilterTrainFragment {
 
     public static Fragment newInstance() {
-        TrainFilterDepartureFragment fragment = new TrainFilterDepartureFragment();
+        FilterTrainDepartureFragment fragment = new FilterTrainDepartureFragment();
         return fragment;
     }
 

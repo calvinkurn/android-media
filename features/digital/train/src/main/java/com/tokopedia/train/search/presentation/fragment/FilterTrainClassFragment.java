@@ -13,10 +13,10 @@ import javax.annotation.Nullable;
 /**
  * Created by nabillasabbaha on 04/06/18.
  */
-public class TrainFilterClassFragment extends BaseTrainFilterSearchFragment {
+public class FilterTrainClassFragment extends BaseFilterTrainFragment {
 
     public static Fragment newInstance() {
-        TrainFilterClassFragment fragment = new TrainFilterClassFragment();
+        FilterTrainClassFragment fragment = new FilterTrainClassFragment();
         return fragment;
     }
 

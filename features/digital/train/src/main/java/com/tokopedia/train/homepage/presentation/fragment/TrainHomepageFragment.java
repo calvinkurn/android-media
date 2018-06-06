@@ -28,7 +28,7 @@ import com.tokopedia.train.homepage.presentation.model.TrainHomepageViewModel;
 import com.tokopedia.train.homepage.presentation.model.TrainPassengerViewModel;
 import com.tokopedia.train.homepage.presentation.model.TrainSearchPassDataViewModel;
 import com.tokopedia.train.homepage.presentation.presenter.TrainHomepagePresenterImpl;
-import com.tokopedia.train.search.presentation.activity.TrainDepartureSearchActivity;
+import com.tokopedia.train.search.presentation.activity.TrainSearchDepartureActivity;
 import com.tokopedia.train.station.presentation.TrainStationsActivity;
 import com.tokopedia.train.station.presentation.adapter.viewmodel.TrainStationViewModel;
 import com.tokopedia.travelcalendar.view.TravelCalendarActivity;
@@ -275,7 +275,7 @@ public class TrainHomepageFragment extends BaseDaggerFragment implements TrainHo
 
     @Override
     public void navigateToSearchPage(TrainSearchPassDataViewModel passDataViewModel) {
-        Intent intent = TrainDepartureSearchActivity.getCallingIntent(getActivity(), passDataViewModel);
+        Intent intent = TrainSearchDepartureActivity.getCallingIntent(getActivity(), passDataViewModel);
         startActivity(intent);
     }
 

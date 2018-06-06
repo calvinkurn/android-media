@@ -18,9 +18,9 @@ import com.tokopedia.train.search.presentation.model.FilterSearchData;
 /**
  * Created by nabillasabbaha on 04/06/18.
  */
-public abstract class BaseTrainFilterSearchFragment extends BaseDaggerFragment implements BaseTrainFilterListener {
+public abstract class BaseFilterTrainFragment extends BaseDaggerFragment implements BaseTrainFilterListener {
 
-    public static final String TAG = TrainFilterDepartureFragment.class.getSimpleName();
+    public static final String TAG = FilterTrainDepartureFragment.class.getSimpleName();
     private static final String SAVE_FILTER_EXISTING = "filter_existing";
 
     private VerticalRecyclerView recyclerView;

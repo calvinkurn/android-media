@@ -15,10 +15,10 @@ import java.util.List;
  * Created by nabillasabbaha on 3/23/18.
  */
 
-public class TrainFilterNameFragment extends BaseTrainFilterSearchFragment {
+public class FilterTrainNameFragment extends BaseFilterTrainFragment {
 
     public static Fragment newInstance() {
-        TrainFilterNameFragment fragment = new TrainFilterNameFragment();
+        FilterTrainNameFragment fragment = new FilterTrainNameFragment();
         return fragment;
     }
 

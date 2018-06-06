@@ -19,9 +19,9 @@ import com.tokopedia.train.search.di.DaggerTrainSearchComponent;
 import com.tokopedia.train.search.presentation.contract.BaseTrainFilterListener;
 import com.tokopedia.train.search.presentation.contract.FilterSearchActionView;
 import com.tokopedia.train.search.presentation.contract.TrainFilterSearchContract;
-import com.tokopedia.train.search.presentation.fragment.TrainFilterClassFragment;
-import com.tokopedia.train.search.presentation.fragment.TrainFilterDepartureFragment;
-import com.tokopedia.train.search.presentation.fragment.TrainFilterNameFragment;
+import com.tokopedia.train.search.presentation.fragment.FilterTrainClassFragment;
+import com.tokopedia.train.search.presentation.fragment.FilterTrainDepartureFragment;
+import com.tokopedia.train.search.presentation.fragment.FilterTrainNameFragment;
 import com.tokopedia.train.search.presentation.fragment.TrainFilterSearchFragment;
 import com.tokopedia.train.search.presentation.model.FilterSearchData;
 import com.tokopedia.train.search.presentation.presenter.TrainFilterSearchPresenter;
@@ -133,17 +133,28 @@ public class TrainFilterSearchActivity extends TrainBaseActivity
 
     @Override
     public void onNameFilterSearchTrainClicked() {
-        replaceFragment(TrainFilterNameFragment.newInstance(), TrainFilterNameFragment.TAG);
+        replaceFragment(FilterTrainNameFragment.newInstance(), FilterTrainNameFragment.TAG);
     }
 
     @Override
     public void onDepartureFilterSearchTrainClicked() {
-        replaceFragment(TrainFilterDepartureFragment.newInstance(), TrainFilterNameFragment.TAG);
+        replaceFragment(FilterTrainDepartureFragment.newInstance(), FilterTrainNameFragment.TAG);
     }
 
     @Override
     public void onClassFilterSearchTrainClicked() {
-        replaceFragment(TrainFilterClassFragment.newInstance(), TrainFilterNameFragment.TAG);
+        replaceFragment(FilterTrainClassFragment.newInstance(), FilterTrainNameFragment.TAG);
+    }
+
+    public void replaceFragment(Fragment fragment, String tag) {
+        getSupportFragmentManager().beginTransaction()
+                .setCustomAnimations(R.anim.enter_from_right, R.anim.exit_to_left, R.anim.enter_from_left, R.anim.exit_to_right)
+                .replace(R.id.parent_view, fragment, tag).addToBackStack(tag).commit();
+    }
+
+    @Override
+    public boolean isShowCloseButton() {
+        return showCloseButton;
     }
 
     @Override
@@ -223,16 +234,5 @@ public class TrainFilterSearchActivity extends TrainBaseActivity
             }
         }
         return null;
-    }
-
-    public void replaceFragment(Fragment fragment, String tag) {
-        getSupportFragmentManager().beginTransaction()
-                .setCustomAnimations(R.anim.enter_from_right, R.anim.exit_to_left, R.anim.enter_from_left, R.anim.exit_to_right)
-                .replace(R.id.parent_view, fragment, tag).addToBackStack(tag).commit();
-    }
-
-    @Override
-    public boolean isShowCloseButton() {
-        return showCloseButton;
     }
 }

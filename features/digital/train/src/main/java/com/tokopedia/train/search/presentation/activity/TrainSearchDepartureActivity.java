@@ -5,23 +5,23 @@ import android.content.Intent;
 import android.support.v4.app.Fragment;
 
 import com.tokopedia.train.homepage.presentation.model.TrainSearchPassDataViewModel;
-import com.tokopedia.train.search.presentation.fragment.TrainDepartureSearchFragment;
+import com.tokopedia.train.search.presentation.fragment.TrainSearchDepartureFragment;
 
 /**
  * Created by nabillasabbaha on 3/19/18.
  */
 
-public class TrainDepartureSearchActivity extends TrainSearchActivity {
+public class TrainSearchDepartureActivity extends TrainSearchActivity {
 
     public static Intent getCallingIntent(Activity activity, TrainSearchPassDataViewModel viewModel) {
-        Intent intent = new Intent(activity, TrainDepartureSearchActivity.class);
+        Intent intent = new Intent(activity, TrainSearchDepartureActivity.class);
         intent.putExtra(EXTRA_SEARCH_PASS_DATA, viewModel);
         return intent;
     }
 
     @Override
     protected Fragment getNewFragment() {
-        return TrainDepartureSearchFragment.newInstance(trainSearchPassDataViewModel);
+        return TrainSearchDepartureFragment.newInstance(trainSearchPassDataViewModel);
     }
 
     @Override
