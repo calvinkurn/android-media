@@ -40,7 +40,7 @@ public class ImageEditorPresenter extends BaseDaggerPresenter<ImageEditorPresent
 
         void onErrorCropImageToRatio(Throwable e);
 
-        void onSuccessCropImageToRatio(ArrayList<String> cropppedImagePaths);
+        void onSuccessCropImageToRatio(ArrayList<String> cropppedImagePaths, ArrayList<Boolean> isEditted);
 
         void onErrorResizeImage(Throwable e);
 
@@ -96,7 +96,7 @@ public class ImageEditorPresenter extends BaseDaggerPresenter<ImageEditorPresent
 
     public void cropBitmapToExpectedRatio(final List<String> localImagePaths, final int ratioX, final int ratioY) {
         if (ratioX <= 0 || ratioY <= 0 ) {
-            getView().onSuccessCropImageToRatio((ArrayList<String>) localImagePaths);
+            getView().onSuccessCropImageToRatio((ArrayList<String>) localImagePaths, new ArrayList<Boolean>(localImagePaths.size()));
         }
         Subscription subscription =
                 Observable.from(localImagePaths)
@@ -104,9 +104,7 @@ public class ImageEditorPresenter extends BaseDaggerPresenter<ImageEditorPresent
                             @Override
                             public Observable<String> call(String imagePath) {
                                 System.gc();
-                                // if it is step0, need to check the dimension
                                 // if the dimension is not expected dimension, crop it
-                                // then delete the step0 file
                                 float expectedRatio = (float) ratioX / ratioY;
                                 int[] widthHeight = ImageUtils.getWidthAndHeight(imagePath);
                                 int defaultOrientation;
@@ -156,10 +154,17 @@ public class ImageEditorPresenter extends BaseDaggerPresenter<ImageEditorPresent
                             public void onNext(List<String> croppedImagedPath) {
                                 if (isViewAttached()) {
                                     ArrayList<String> resultLocalPaths = new ArrayList<>();
+                                    ArrayList<Boolean> isEdittedList = new ArrayList<>();
                                     for (int i = 0, sizei = croppedImagedPath.size(); i < sizei; i++) {
-                                        resultLocalPaths.add(croppedImagedPath.get(i));
+                                        String result = croppedImagedPath.get(i);
+                                        resultLocalPaths.add(result);
+                                        if (result.equals(localImagePaths.get(i))) {
+                                            isEdittedList.add(false);
+                                        } else {
+                                            isEdittedList.add(true);
+                                        }
                                     }
-                                    getView().onSuccessCropImageToRatio(resultLocalPaths);
+                                    getView().onSuccessCropImageToRatio(resultLocalPaths, isEdittedList);
                                 }
                             }
                         });
