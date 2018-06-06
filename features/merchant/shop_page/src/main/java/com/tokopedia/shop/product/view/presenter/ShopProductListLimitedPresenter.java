@@ -4,7 +4,9 @@ import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.abstraction.common.data.model.response.PagingList;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.network.exception.UserNotLoginException;
+import com.tokopedia.abstraction.common.utils.GlobalConfig;
 import com.tokopedia.abstraction.common.utils.view.CommonUtils;
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant;
 import com.tokopedia.shop.common.util.PagingListUtils;
 import com.tokopedia.shop.common.util.TextApiUtils;
 import com.tokopedia.shop.product.domain.interactor.GetShopProductLimitedUseCase;
@@ -15,6 +17,7 @@ import com.tokopedia.shop.product.view.model.ShopProductHomeViewModel;
 import com.tokopedia.shop.product.view.model.ShopProductLimitedEtalaseTitleViewModel;
 import com.tokopedia.shop.product.view.model.ShopProductLimitedFeaturedViewModel;
 import com.tokopedia.shop.product.view.model.ShopProductLimitedPromoViewModel;
+import com.tokopedia.shop.product.view.model.ShopProductMoreViewModel;
 import com.tokopedia.shop.product.view.model.ShopProductTitleFeaturedViewModel;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.wishlist.common.domain.interactor.AddToWishListUseCase;
@@ -82,6 +85,12 @@ public class ShopProductListLimitedPresenter extends BaseDaggerPresenter<ShopPro
 
                     @Override
                     public void onNext(PagingList<ShopProductBaseViewModel> shopProductBaseViewModelList) {
+                        boolean hasNextPage;
+                        if(GlobalConfig.isSellerApp()){
+                            hasNextPage = false;
+                        }else{
+                            hasNextPage = PagingListUtils.checkNextPage(shopProductBaseViewModelList);
+                        }
                         if (page == FIRST_LOAD) {
                             boolean shopHasProduct = shopProductBaseViewModelList.getList().size() > 0;
                             if (!TextApiUtils.isTextEmpty(promotionWebViewUrl)) {
@@ -102,10 +111,14 @@ public class ShopProductListLimitedPresenter extends BaseDaggerPresenter<ShopPro
                                         break;
                                     }
                                 }
+
+                                if(GlobalConfig.isSellerApp() && shopProductBaseViewModelList.getList().size() >= ShopPageTrackingConstant.DEFAULT_PER_PAGE){
+                                    shopProductBaseViewModelList.getList().add(new ShopProductMoreViewModel());
+                                }
                             }
-                            getView().renderList(shopProductBaseViewModelList.getList(), PagingListUtils.checkNextPage(shopProductBaseViewModelList), shopHasProduct);
+                            getView().renderList(shopProductBaseViewModelList.getList(), hasNextPage, shopHasProduct);
                         } else {
-                            getView().renderList(shopProductBaseViewModelList.getList(), PagingListUtils.checkNextPage(shopProductBaseViewModelList));
+                            getView().renderList(shopProductBaseViewModelList.getList(), hasNextPage);
                         }
                     }
 
