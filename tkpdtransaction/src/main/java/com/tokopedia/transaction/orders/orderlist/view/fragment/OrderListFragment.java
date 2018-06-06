@@ -101,7 +101,6 @@ public class OrderListFragment extends BasePresenterFragment<OrderListContract.P
     @Override
     protected void setupArguments(Bundle arguments) {
         int category = arguments.getInt(ORDER_CATEGORY);
-        Log.e("sandeep","category ="+category);
         switch (category) {
             case 2:
                 mOrderCategory = OrderCategory.DIGITAL;

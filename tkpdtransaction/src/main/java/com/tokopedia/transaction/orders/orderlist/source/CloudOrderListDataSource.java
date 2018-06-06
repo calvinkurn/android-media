@@ -37,7 +37,6 @@ public class CloudOrderListDataSource {
             @Override
             public Data call(Response<GraphqlResponse<Data>> graphqlResponseResponse) {
                 if(graphqlResponseResponse != null && graphqlResponseResponse.isSuccessful()){
-                    Log.e("sandeep","list response from cloud ="+graphqlResponseResponse.body().getData());
                     return graphqlResponseResponse.body().getData();
                 }
                 return null;
@@ -46,7 +45,6 @@ public class CloudOrderListDataSource {
     }
 
     private RequestParams getPayload(RequestParams params) {
-        Log.e("sandeep","page="+Integer.parseInt(params.getString(OrderListUseCase.PAGE, "1")));
         Map<String, Object> variables = new HashMap<>();
         variables.put(OrderListUseCase.PER_PAGE, params.getInt(OrderListUseCase.PER_PAGE, 10));
         variables.put(OrderListUseCase.PAGE, params.getInt(OrderListUseCase.PAGE,1));

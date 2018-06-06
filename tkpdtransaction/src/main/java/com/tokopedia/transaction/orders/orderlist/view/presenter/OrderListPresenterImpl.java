@@ -39,7 +39,6 @@ public class OrderListPresenterImpl extends BaseDaggerPresenter<OrderListContrac
 
             @Override
             public void onError(Throwable e) {
-                Log.e("sandeep","exception="+e.toString());
                 CommonUtils.dumper(e.toString());
                 getView().removeProgressBarView();
                 getView().unregisterScrollListener();
@@ -52,7 +51,6 @@ public class OrderListPresenterImpl extends BaseDaggerPresenter<OrderListContrac
 
             @Override
             public void onNext(Data data) {
-                Log.e("sandeep","data in order list is :"+data);
                 getView().removeProgressBarView();
                 if (data != null) {
                     if (!data.orders().isEmpty()) {

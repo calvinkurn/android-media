@@ -15,6 +15,3 @@
 #-keepclassmembers class fqcn.of.javascript.interface.for.webview {
 #   public *;
 #}
--keep public enum com.tokopedia.transaction.orders.**{
-    *;
-}
