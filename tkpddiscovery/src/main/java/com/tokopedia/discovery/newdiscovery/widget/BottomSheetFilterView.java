@@ -19,6 +19,7 @@ import com.tokopedia.core.analytics.SearchTracking;
 import com.tokopedia.core.discovery.model.Filter;
 import com.tokopedia.core.discovery.model.Option;
 import com.tokopedia.core.discovery.model.Search;
+import com.tokopedia.core.helper.KeyboardHelper;
 import com.tokopedia.design.base.BaseCustomView;
 import com.tokopedia.discovery.R;
 import com.tokopedia.discovery.newdynamicfilter.AbstractDynamicFilterDetailActivity;
@@ -111,6 +112,7 @@ public class BottomSheetFilterView extends BaseCustomView implements BottomSheet
         bottomSheetLayout = this;
         buttonFinish = (TextView) rootView.findViewById(R.id.button_finish);
         loadingView = rootView.findViewById(R.id.filterProgressBar);
+        initKeyboardVisibilityListener();
     }
 
     public void setCallback(Callback callback) {
@@ -736,6 +738,21 @@ public class BottomSheetFilterView extends BaseCustomView implements BottomSheet
                 = data.getStringExtra(DynamicFilterCategoryActivity.EXTRA_SELECTED_CATEGORY_ROOT_ID);
         selectedCategoryName
                 = data.getStringExtra(DynamicFilterCategoryActivity.EXTRA_SELECTED_CATEGORY_NAME);
+    }
+
+    private void initKeyboardVisibilityListener() {
+        KeyboardHelper.setKeyboardVisibilityChangedListener(bottomSheetLayout, new KeyboardHelper.OnKeyboardVisibilityChangedListener() {
+            @Override
+            public void onKeyboardShown() {
+                buttonFinish.setVisibility(View.GONE);
+            }
+
+            @Override
+            public void onKeyboardHide() {
+                buttonFinish.setVisibility(View.VISIBLE);
+                bottomSheetLayout.requestFocus();
+            }
+        });
     }
 
     public interface Callback {
