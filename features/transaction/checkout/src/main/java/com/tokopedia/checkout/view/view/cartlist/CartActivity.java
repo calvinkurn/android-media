@@ -62,9 +62,9 @@ public class CartActivity extends BaseCheckoutActivity implements CartFragment.A
     @Override
     public void onBackPressed() {
         Fragment currentFragment = getCurrentFragment();
-        if (currentFragment instanceof CartRemoveProductFragment) {
-            ((CartRemoveProductFragment) currentFragment)
-                    .cartPageAnalytics.eventClickCartClickArrowBackFromHapus();
+        if (currentFragment instanceof RemoveCartItemFragment) {
+            ((RemoveCartItemFragment) currentFragment)
+                    .getCheckoutAnalyticsCart().eventClickCartClickArrowBackFromHapus();
         }
         if (getSupportFragmentManager().getBackStackEntryCount() > 0) {
             getSupportFragmentManager().popBackStack();
@@ -95,7 +95,7 @@ public class CartActivity extends BaseCheckoutActivity implements CartFragment.A
     @Override
     public void onRemoveAllCartMenuClicked(List<CartItemData> cartItemData) {
         Fragment fragment = getCurrentFragment();
-        if (fragment == null || !(fragment instanceof CartRemoveProductFragment)) {
+        if (fragment == null || !(fragment instanceof RemoveCartItemFragment)) {
             getSupportFragmentManager().beginTransaction()
                     .replace(R.id.parent_view, RemoveCartItemFragment.newInstance(cartItemData))
                     .addToBackStack(null)
