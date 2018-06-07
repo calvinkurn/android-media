@@ -1,5 +1,6 @@
 package com.tokopedia.loyalty.view.presenter;
 
+import android.app.Activity;
 import android.support.annotation.NonNull;
 
 import com.google.gson.JsonElement;
@@ -15,9 +16,11 @@ import com.tokopedia.core.network.exception.ResponseErrorException;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.network.retrofit.utils.ErrorNetMessage;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
+import com.tokopedia.core.router.transactionmodule.sharedata.CheckPromoCodeCartListResult;
 import com.tokopedia.loyalty.domain.usecase.FlightCheckVoucherUseCase;
 import com.tokopedia.loyalty.exception.LoyaltyErrorException;
 import com.tokopedia.loyalty.exception.TokoPointResponseErrorException;
+import com.tokopedia.loyalty.router.ITkpdLoyaltyModuleRouter;
 import com.tokopedia.loyalty.router.LoyaltyModuleRouter;
 import com.tokopedia.loyalty.view.activity.LoyaltyActivity;
 import com.tokopedia.loyalty.view.data.CouponData;
@@ -211,6 +214,90 @@ public class PromoCouponPresenter implements IPromoCouponPresenter {
                 AuthUtil.generateParamsNetwork(view.getContext(), param
                 ), makeCouponSubscriber(couponData));
 
+    }
+
+    @Override
+    public void submitVoucherMarketPlaceCartList(Activity activity, CouponData couponData, String paramUpdateCart) {
+        if (activity.getApplication() instanceof ITkpdLoyaltyModuleRouter) {
+            promoCouponInteractor.submitVoucherMarketPlaceCartList(
+                    ((ITkpdLoyaltyModuleRouter) activity.getApplication())
+                            .tkpdLoyaltyGetCheckPromoCodeCartListResultObservable(couponData.getCode(), null),
+                    new Subscriber<CheckPromoCodeCartListResult>() {
+                        @Override
+                        public void onCompleted() {
+
+                        }
+
+                        @Override
+                        public void onError(Throwable e) {
+                            e.printStackTrace();
+                            view.hideProgressLoading();
+                            if (e instanceof TokoPointResponseErrorException || e instanceof ResponseErrorException) {
+                                view.onPromoCodeError(e.getMessage());
+                            } else view.onGetGeneralError(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
+                        }
+
+                        @Override
+                        public void onNext(CheckPromoCodeCartListResult checkPromoCodeCartListResult) {
+                            if (checkPromoCodeCartListResult.isError()) {
+                                view.onPromoCodeError(checkPromoCodeCartListResult.getErrorMessage());
+                            } else {
+                                VoucherViewModel viewModel = new VoucherViewModel();
+                                viewModel.setAmount(checkPromoCodeCartListResult.getDataVoucher().getDiscountAmount());
+                                viewModel.setMessage(checkPromoCodeCartListResult.getDataVoucher().getMessageSuccess());
+                                viewModel.setCode(checkPromoCodeCartListResult.getDataVoucher().getCode());
+                                view.hideProgressLoading();
+                                view.checkVoucherSuccessfull(viewModel);
+                            }
+
+                        }
+
+                        @Override
+                        public void onError(Throwable e) {
+                            view.hideProgressLoading();
+                            if (e instanceof LoyaltyErrorException || e instanceof ResponseErrorException) {
+                                couponData.setErrorMessage(e.getMessage());
+                                view.couponError();
+                            } else {
+                                view.showSnackbarError(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
+                            }
+                        }
+
+                        @Override
+                        public void onNext(CheckPromoCodeCartListResult checkPromoCodeCartListResult) {
+
+                            if(checkPromoCodeCartListResult.isError()){
+                                couponData.setErrorMessage(checkPromoCodeCartListResult.getErrorMessage());
+                                view.couponError();
+                            }else {
+                                listener.onCouponSuccess(couponViewModel.getCode(),
+                                        couponViewModel.getMessage(),
+                                        couponViewModel.getAmount(),
+                                        couponViewModel.getTitle());
+
+
+                                CouponViewModel couponViewModel = new CouponViewModel();
+                                couponViewModel.setCode(
+                                        checkPromoCodeCartListResult.getDataVoucher().getCode()
+                                );
+                                couponViewModel.setMessage(
+                                        checkPromoCodeCartListResult.getDataVoucher().getMessageSuccess()
+                                );
+                                couponViewModel.setAmount(
+                                        checkPromoCodeCartListResult.getDataVoucher().getDiscountAmount()
+                                );
+                                couponViewModel.setTitle(
+                                        ""
+                                );
+                                view.receiveResult(couponViewModel);
+                                view.hideProgressLoading();
+                            }
+
+
+                        }
+                    }
+            );
+        }
     }
 
     @Override

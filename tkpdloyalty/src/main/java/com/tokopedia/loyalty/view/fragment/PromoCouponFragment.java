@@ -19,6 +19,7 @@ import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
+import com.tokopedia.core.router.transactionmodule.sharedata.CheckPromoCodeCartListResult;
 import com.tokopedia.core.util.RefreshHandler;
 import com.tokopedia.loyalty.R;
 import com.tokopedia.loyalty.di.component.DaggerPromoCouponComponent;
@@ -62,6 +63,8 @@ public class PromoCouponFragment extends BasePresenterFragment
     private static final String CATEGORY_KEY = "CATEGORY_KEY";
 
     private static final String PLATFORM_PAGE_KEY = "PLATFORM_PAGE_KEY";
+
+    private static final String ADDITIONAL_DATA_KEY = "ADDITIONAL_DATA_KEY";
 
     private static final String DIGITAL_CATEGORY_ID = "DIGI_CATEGORY_ID";
 
@@ -365,7 +368,8 @@ public class PromoCouponFragment extends BasePresenterFragment
     }
 
     public static PromoCouponFragment newInstance(
-            String platformString, String platformPageString, String categoryKey, String cartIdString,
+            String platformString, String platformPageString, String additionalDataString,
+            String categoryKey, String cartIdString,
             int categoryId, int productId) {
         PromoCouponFragment fragment = new PromoCouponFragment();
         Bundle bundle = new Bundle();
@@ -375,11 +379,15 @@ public class PromoCouponFragment extends BasePresenterFragment
         bundle.putString(CART_ID_KEY, cartIdString);
         bundle.putInt(DIGITAL_CATEGORY_ID, categoryId);
         bundle.putInt(DIGITAL_PRODUCT_ID, productId);
+        bundle.putString(ADDITIONAL_DATA_KEY, additionalDataString);
         fragment.setArguments(bundle);
         return fragment;
     }
 
-    public static PromoCouponFragment newInstanceEvent(String platform, String categoryKey, int categoryId, int productId) {
+    @Deprecated
+    public static PromoCouponFragment newInstanceEvent(
+            String platform, String categoryKey, int categoryId, int productId
+    ) {
         PromoCouponFragment fragment = new PromoCouponFragment();
         Bundle bundle = new Bundle();
         bundle.putString(PLATFORM_KEY, platform);
@@ -414,7 +422,9 @@ public class PromoCouponFragment extends BasePresenterFragment
                 IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.FLIGHT_STRING)) {
             dPresenter.submitFlightVoucher(data, getArguments().getString(CART_ID_KEY));
         } else {
-            dPresenter.submitVoucher(data);
+            dPresenter.submitVoucherMarketPlaceCartList(
+                    getActivity(), data, getArguments().getString(ADDITIONAL_DATA_KEY, "")
+            );
         }
     }
 
