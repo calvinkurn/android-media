@@ -2,7 +2,9 @@ package com.tokopedia.checkout.view.view.multipleaddressform;
 
 import android.app.Activity;
 
-import com.tokopedia.abstraction.common.utils.TKPDMapParam; /**
+import com.tokopedia.abstraction.common.utils.TKPDMapParam;
+
+/**
  * Created by kris on 2/5/18. Tokopedia
  */
 

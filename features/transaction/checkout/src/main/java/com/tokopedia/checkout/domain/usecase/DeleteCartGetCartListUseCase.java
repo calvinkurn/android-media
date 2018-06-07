@@ -3,14 +3,12 @@ package com.tokopedia.checkout.domain.usecase;
 import android.content.Context;
 
 import com.tokopedia.abstraction.common.utils.TKPDMapParam;
-import com.tokopedia.core.network.constants.TkpdBaseURL;
+import com.tokopedia.checkout.domain.datamodel.DeleteAndRefreshCartListData;
+import com.tokopedia.checkout.domain.mapper.ICartMapper;
 import com.tokopedia.transactiondata.entity.response.cartlist.CartDataListResponse;
 import com.tokopedia.transactiondata.entity.response.deletecart.DeleteCartDataResponse;
 import com.tokopedia.transactiondata.entity.response.updatecart.UpdateCartDataResponse;
-import com.tokopedia.transactiondata.exception.ResponseCartApiErrorException;
 import com.tokopedia.transactiondata.repository.ICartRepository;
-import com.tokopedia.checkout.domain.datamodel.DeleteAndRefreshCartListData;
-import com.tokopedia.checkout.domain.mapper.ICartMapper;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.usecase.UseCase;
 

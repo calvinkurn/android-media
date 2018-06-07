@@ -11,8 +11,8 @@ import com.tokopedia.checkout.view.view.shippingoptions.viewholder.CourierHeader
 import com.tokopedia.checkout.view.view.shippingoptions.viewholder.CourierTickerViewHolder;
 import com.tokopedia.checkout.view.view.shippingoptions.viewholder.CourierViewHolder;
 import com.tokopedia.checkout.view.view.shippingoptions.viewmodel.ShipmentOptionData;
-import com.tokopedia.checkout.view.view.shippingoptions.viewmodel.ShipmentTypeData;
 import com.tokopedia.checkout.view.view.shippingoptions.viewmodel.ShipmentTickerInfoData;
+import com.tokopedia.checkout.view.view.shippingoptions.viewmodel.ShipmentTypeData;
 
 import java.util.List;
 

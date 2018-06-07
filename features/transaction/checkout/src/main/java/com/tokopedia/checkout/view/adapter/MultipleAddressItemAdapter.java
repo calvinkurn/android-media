@@ -17,7 +17,7 @@ import java.util.List;
  */
 
 public class MultipleAddressItemAdapter extends RecyclerView.Adapter
-        <MultipleAddressItemViewHolder>{
+        <MultipleAddressItemViewHolder> {
 
     private List<MultipleAddressItemData> itemDataList;
 
@@ -26,8 +26,8 @@ public class MultipleAddressItemAdapter extends RecyclerView.Adapter
     private MultipleAddressAdapterData productData;
 
     public MultipleAddressItemAdapter(MultipleAddressAdapterData productData,
-                               List<MultipleAddressItemData> itemDataList,
-                               MultipleAddressItemAdapterListener listener) {
+                                      List<MultipleAddressItemData> itemDataList,
+                                      MultipleAddressItemAdapterListener listener) {
         this.itemDataList = itemDataList;
         this.listener = listener;
         this.productData = productData;
