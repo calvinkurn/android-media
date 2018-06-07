@@ -15,6 +15,7 @@ public class AutoCompleteTracking {
     public static final String CLICK_RECENT_SEARCH = "click - recent search";
     public static final String CLICK_DIGITAL_PRODUCT_SUGGESTION = "click - digital product suggestion";
     public static final String CLICK_CATEGORY_SUGGESTION = "click - category suggestion";
+    public static final String CLICK_SEARCH = "click - search";
 
     public static void eventClickPopularSearch(Context context, String label) {
         if (!(context.getApplicationContext() instanceof AbstractionRouter)) {
@@ -111,4 +112,18 @@ public class AutoCompleteTracking {
                 label
         );
     }
+
+    public static void eventClickSubmit(Context context, String label) {
+        if (!(context.getApplicationContext() instanceof AbstractionRouter)) {
+            return;
+        }
+        AnalyticTracker tracker = ((AbstractionRouter) context.getApplicationContext()).getAnalyticTracker();
+        tracker.sendEventTracking(
+                CLICK_TOP_NAV,
+                TOP_NAV,
+                CLICK_SEARCH,
+                label
+        );
+    }
+
 }
