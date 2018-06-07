@@ -88,7 +88,7 @@ public class GridProductItemViewHolder extends AbstractViewHolder<ProductItem> {
                 productItem.getPriceRange() : productItem.getPrice();
         price.setText(priceText);
         if (productItem.getShopCity() != null) {
-            if (productItem.getBadgesList() != null && !productItem.getBadgesList().isEmpty()) {
+            if (isBadgesExist(productItem)) {
                 location.setText(" \u2022 " + MethodChecker.fromHtml(productItem.getShopCity()));
             } else {
                 location.setText(MethodChecker.fromHtml(productItem.getShopCity()));
@@ -138,6 +138,20 @@ public class GridProductItemViewHolder extends AbstractViewHolder<ProductItem> {
 
         renderBadges(productItem.getBadgesList());
         renderLabels(productItem.getLabelList());
+    }
+
+    private boolean isBadgesExist(ProductItem productItem) {
+        List<BadgeItem> badgesList = productItem.getBadgesList();
+        if (badgesList == null || badgesList.isEmpty()) {
+            return false;
+        }
+
+        for (BadgeItem badgeItem : badgesList) {
+            if (badgeItem.isShown()) {
+                return true;
+            }
+        }
+        return false;
     }
 
     protected void renderLabels(List<LabelItem> labelList) {
