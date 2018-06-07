@@ -18,5 +18,6 @@
     <dimen name="line_chart_height">200dp</dimen>
     <dimen name="viewpager_statistics_height">250dp</dimen>
     <dimen name="dp_28">28dp</dimen>
+    <dimen name="dp_minus10">-10dp</dimen>
 
 </resources>

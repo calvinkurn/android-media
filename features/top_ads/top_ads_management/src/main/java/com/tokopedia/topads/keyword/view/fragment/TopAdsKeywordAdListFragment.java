@@ -162,6 +162,8 @@ public abstract class TopAdsKeywordAdListFragment extends TopAdsBaseListFragment
         super.showOption(show);
         if (!isPositive()){
             showDateLabel(false);
+            getView().findViewById(R.id.app_bar_separator).setVisibility(View.GONE);
+
         } else {
             showDateLabel(show);
         }
