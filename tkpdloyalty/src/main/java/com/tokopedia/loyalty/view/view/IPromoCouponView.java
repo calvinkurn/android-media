@@ -2,7 +2,6 @@ package com.tokopedia.loyalty.view.view;
 
 import android.content.Context;
 
-import com.tokopedia.core.router.transactionmodule.sharedata.CheckPromoCodeCartListResult;
 import com.tokopedia.loyalty.view.data.CouponData;
 import com.tokopedia.loyalty.view.data.CouponViewModel;
 

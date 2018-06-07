@@ -212,25 +212,6 @@ public class PromoCodeFragment extends BasePresenterFragment implements IPromoCo
         };
     }
 
-    private View.OnClickListener onSubmitMarketPlaceCartShipmentVoucher(
-            final EditText voucherCodeField,
-            final TextInputLayout textHolder) {
-        return new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                voucherCodeFieldHolder.setError(null);
-                if (voucherCodeField.getText().toString().isEmpty()) {
-                    textHolder.setError(getActivity().getString(R.string.error_empty_voucher_code));
-                } else {
-                    dPresenter.processCheckMarketPlaceCartShipmentPromoCode(
-                            getActivity(),
-                            voucherCodeField.getText().toString(),
-                            getArguments().getString(ADDITIONAL_DATA_KEY));
-                }
-            }
-        };
-    }
-
     private View.OnClickListener onSubmitEventVoucher(
             final EditText voucherCodeField,
             final TextInputLayout textHolder) {

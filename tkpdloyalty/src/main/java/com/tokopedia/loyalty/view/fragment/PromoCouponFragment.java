@@ -421,7 +421,7 @@ public class PromoCouponFragment extends BasePresenterFragment
                 IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.FLIGHT_STRING)) {
             dPresenter.submitFlightVoucher(data, getArguments().getString(CART_ID_KEY));
         } else {
-            dPresenter.submitVoucherMarketPlaceCartList(
+            dPresenter.processCheckMarketPlaceCartListPromoCode(
                     getActivity(), data, getArguments().getString(ADDITIONAL_DATA_KEY, "")
             );
         }

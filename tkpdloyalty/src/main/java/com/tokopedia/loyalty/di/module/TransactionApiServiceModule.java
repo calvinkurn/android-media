@@ -22,6 +22,8 @@ import com.tokopedia.transactiondata.apiservice.CartApi;
 import com.tokopedia.transactiondata.apiservice.CartApiInterceptor;
 import com.tokopedia.transactiondata.apiservice.CartResponseConverter;
 import com.tokopedia.transactiondata.constant.TransactionDataApiUrl;
+import com.tokopedia.transactiondata.repository.CartRepository;
+import com.tokopedia.transactiondata.repository.ICartRepository;
 
 import java.util.concurrent.TimeUnit;
 
@@ -116,6 +118,11 @@ public class TransactionApiServiceModule {
     @Provides
     CartApi provideCartApi(@LoyaltyCartApiRetrofitQualifier Retrofit retrofit) {
         return retrofit.create(CartApi.class);
+    }
+
+    @Provides
+    ICartRepository provideICartRepository(CartApi cartApi) {
+        return new CartRepository(cartApi);
     }
 
 }

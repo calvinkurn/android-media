@@ -23,6 +23,8 @@ import com.tokopedia.checkout.domain.datamodel.cartsingleshipment.ShipmentCostMo
 import com.tokopedia.checkout.domain.datamodel.shipmentrates.CourierItemData;
 import com.tokopedia.checkout.domain.datamodel.shipmentrates.ShipmentDetailData;
 import com.tokopedia.checkout.domain.datamodel.voucher.PromoCodeAppliedData;
+import com.tokopedia.checkout.domain.datamodel.voucher.PromoCodeCartListData;
+import com.tokopedia.checkout.domain.datamodel.voucher.PromoCodeCartShipmentData;
 import com.tokopedia.checkout.router.ICheckoutModuleRouter;
 import com.tokopedia.checkout.view.base.BaseCheckoutFragment;
 import com.tokopedia.checkout.view.di.component.CartComponent;
@@ -44,14 +46,12 @@ import com.tokopedia.core.geolocation.model.autocomplete.LocationPass;
 import com.tokopedia.core.manage.people.address.model.Token;
 import com.tokopedia.core.receiver.CartBadgeNotificationReceiver;
 import com.tokopedia.core.router.transactionmodule.TransactionPurchaseRouter;
-import com.tokopedia.core.router.transactionmodule.sharedata.CheckPromoCodeCartListResult;
-import com.tokopedia.core.router.transactionmodule.sharedata.CheckPromoCodeCartShipmentRequest;
-import com.tokopedia.core.router.transactionmodule.sharedata.CheckPromoCodeCartShipmentResult;
 import com.tokopedia.design.component.ToasterError;
 import com.tokopedia.design.component.ToasterNormal;
 import com.tokopedia.payment.activity.TopPayActivity;
 import com.tokopedia.payment.model.PaymentPassData;
 import com.tokopedia.transactionanalytics.CheckoutAnalyticsCourierSelection;
+import com.tokopedia.transactiondata.entity.request.CheckPromoCodeCartShipmentRequest;
 import com.tokopedia.transactiondata.entity.request.DataCheckoutRequest;
 
 import java.util.List;
@@ -352,7 +352,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     }
 
     @Override
-    public void renderCheckPromoCodeFromSuggestedPromoSuccess(CheckPromoCodeCartListResult promoCodeCartListData) {
+    public void renderCheckPromoCodeFromSuggestedPromoSuccess(PromoCodeCartListData promoCodeCartListData) {
         shipmentPresenter.setPromoCodeAppliedData(new PromoCodeAppliedData.Builder()
                 .typeVoucher(PromoCodeAppliedData.TYPE_VOUCHER)
                 .promoCode(promoCodeCartListData.getDataVoucher().getCode())
@@ -385,7 +385,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     }
 
     @Override
-    public void renderCheckPromoShipmentDataSuccess(CheckPromoCodeCartShipmentResult checkPromoCodeCartShipmentResult) {
+    public void renderCheckPromoShipmentDataSuccess(PromoCodeCartShipmentData checkPromoCodeCartShipmentResult) {
         shipmentAdapter.updatePromo(checkPromoCodeCartShipmentResult.getDataVoucher());
     }
 

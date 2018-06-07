@@ -18,6 +18,7 @@ import com.tokopedia.checkout.domain.datamodel.cartlist.DeleteCartData;
 import com.tokopedia.checkout.domain.datamodel.cartlist.UpdateToSingleAddressShipmentData;
 import com.tokopedia.checkout.domain.datamodel.cartlist.WholesalePrice;
 import com.tokopedia.checkout.domain.datamodel.cartshipmentform.CartShipmentAddressFormData;
+import com.tokopedia.checkout.domain.datamodel.voucher.PromoCodeCartListData;
 import com.tokopedia.checkout.domain.usecase.CancelAutoApplyCouponUseCase;
 import com.tokopedia.checkout.domain.usecase.CheckPromoCodeCartListUseCase;
 import com.tokopedia.checkout.domain.usecase.DeleteCartGetCartListUseCase;
@@ -29,7 +30,6 @@ import com.tokopedia.checkout.domain.usecase.ResetCartGetShipmentFormUseCase;
 import com.tokopedia.checkout.domain.usecase.UpdateCartGetShipmentAddressFormUseCase;
 import com.tokopedia.checkout.view.holderitemdata.CartItemHolderData;
 import com.tokopedia.core.network.retrofit.utils.ErrorNetMessage;
-import com.tokopedia.core.router.transactionmodule.sharedata.CheckPromoCodeCartListResult;
 import com.tokopedia.design.utils.CurrencyFormatUtil;
 import com.tokopedia.transactionanalytics.EnhancedECommerceCartMapData;
 import com.tokopedia.transactionanalytics.EnhancedECommerceProductCartMapData;
@@ -871,8 +871,8 @@ public class CartListPresenter implements ICartListPresenter {
     }
 
     @NonNull
-    private Subscriber<CheckPromoCodeCartListResult> getSubscriberCheckPromoCodeFromSuggestion() {
-        return new Subscriber<CheckPromoCodeCartListResult>() {
+    private Subscriber<PromoCodeCartListData> getSubscriberCheckPromoCodeFromSuggestion() {
+        return new Subscriber<PromoCodeCartListData>() {
             @Override
             public void onCompleted() {
 
@@ -885,7 +885,7 @@ public class CartListPresenter implements ICartListPresenter {
             }
 
             @Override
-            public void onNext(CheckPromoCodeCartListResult promoCodeCartListData) {
+            public void onNext(PromoCodeCartListData promoCodeCartListData) {
                 view.hideProgressLoading();
                 if (!promoCodeCartListData.isError())
                     view.renderCheckPromoCodeFromSuggestedPromoSuccess(promoCodeCartListData);

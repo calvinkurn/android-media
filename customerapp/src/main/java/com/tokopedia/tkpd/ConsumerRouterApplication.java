@@ -16,7 +16,6 @@ import android.text.TextUtils;
 
 import com.facebook.react.ReactApplication;
 import com.facebook.react.ReactNativeHost;
-import com.google.gson.Gson;
 import com.readystatesoftware.chuck.ChuckInterceptor;
 import com.tkpd.library.utils.AnalyticsLog;
 import com.tkpd.library.utils.CommonUtils;
@@ -32,8 +31,6 @@ import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.ApplinkRouter;
 import com.tokopedia.cacheapi.domain.interactor.CacheApiClearAllUseCase;
 import com.tokopedia.checkout.domain.usecase.AddToCartUseCase;
-import com.tokopedia.checkout.domain.usecase.CheckPromoCodeCartListUseCase;
-import com.tokopedia.checkout.domain.usecase.CheckPromoCodeCartShipmentUseCase;
 import com.tokopedia.checkout.domain.usecase.GetCouponListCartMarketPlaceUseCase;
 import com.tokopedia.checkout.router.ICheckoutModuleRouter;
 import com.tokopedia.checkout.view.di.component.CartComponentInjector;
@@ -95,9 +92,6 @@ import com.tokopedia.core.router.reactnative.IReactNativeRouter;
 import com.tokopedia.core.router.transactionmodule.TransactionRouter;
 import com.tokopedia.core.router.transactionmodule.sharedata.AddToCartRequest;
 import com.tokopedia.core.router.transactionmodule.sharedata.AddToCartResult;
-import com.tokopedia.core.router.transactionmodule.sharedata.CheckPromoCodeCartListResult;
-import com.tokopedia.core.router.transactionmodule.sharedata.CheckPromoCodeCartShipmentRequest;
-import com.tokopedia.core.router.transactionmodule.sharedata.CheckPromoCodeCartShipmentResult;
 import com.tokopedia.core.router.transactionmodule.sharedata.CouponListResult;
 import com.tokopedia.core.router.wallet.IWalletRouter;
 import com.tokopedia.core.share.ShareBottomSheet;
@@ -1692,60 +1686,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     ) {
         return couponActive ? LoyaltyActivity.newInstanceNewCheckoutCartShipmentCouponActive(context, additionalStringData, defaultSelectedTab)
                 : LoyaltyActivity.newInstanceNewCheckoutCartShipmentCouponNotActive(context, additionalStringData);
-    }
-
-    @Override
-    public Observable<CheckPromoCodeCartListResult> tkpdLoyaltyGetCheckPromoCodeCartListResultObservable(
-            String promoCode,
-            String paramUpdateCartString) {
-        com.tokopedia.usecase.RequestParams requestParams = com.tokopedia.usecase.RequestParams.create();
-        if (!TextUtils.isEmpty(paramUpdateCartString)) {
-            TKPDMapParam<String, String> paramUpdateCart = new TKPDMapParam<>();
-            paramUpdateCart.put(CheckPromoCodeCartListUseCase.PARAM_CARTS, paramUpdateCartString);
-
-            requestParams.putObject(CheckPromoCodeCartListUseCase.PARAM_REQUEST_AUTH_MAP_STRING_UPDATE_CART,
-                    com.tokopedia.abstraction.common.utils.network.AuthUtil.generateParamsNetwork(
-                            this, paramUpdateCart, userSession.getUserId(), userSession.getDeviceId()
-                    ));
-        }
-        TKPDMapParam<String, String> paramCheckPromo = new TKPDMapParam<>();
-        paramCheckPromo.put(CheckPromoCodeCartListUseCase.PARAM_PROMO_CODE, promoCode);
-        paramCheckPromo.put(CheckPromoCodeCartListUseCase.PARAM_PROMO_SUGGESTED,
-                CheckPromoCodeCartListUseCase.PARAM_VALUE_NOT_SUGGESTED);
-        paramCheckPromo.put(CheckPromoCodeCartListUseCase.PARAM_PROMO_LANG,
-                CheckPromoCodeCartListUseCase.PARAM_VALUE_LANG_ID);
-
-
-        requestParams.putObject(CheckPromoCodeCartListUseCase.PARAM_REQUEST_AUTH_MAP_STRING_CHECK_PROMO,
-                com.tokopedia.abstraction.common.utils.network.AuthUtil.generateParamsNetwork(
-                        this, paramCheckPromo, userSession.getUserId(), userSession.getDeviceId()
-                ));
-
-
-        return CartComponentInjector.newInstance(this)
-                .getCheckPromoCodeCartListUseCase()
-                .createObservable(requestParams);
-    }
-
-    @Override
-    public Observable<CheckPromoCodeCartShipmentResult> tkpdLoyaltyGetCheckPromoCodeCartShipmentResultObservable(
-            CheckPromoCodeCartShipmentRequest checkPromoCodeCartShipmentRequest
-    ) {
-        TKPDMapParam<String, String> param = new TKPDMapParam<>();
-        param.put(CheckPromoCodeCartShipmentUseCase.PARAM_CARTS,
-                new Gson().toJson(checkPromoCodeCartShipmentRequest));
-        param.put(CheckPromoCodeCartShipmentUseCase.PARAM_PROMO_LANG,
-                CheckPromoCodeCartShipmentUseCase.PARAM_VALUE_LANG_ID);
-        param.put(CheckPromoCodeCartShipmentUseCase.PARAM_PROMO_SUGGESTED,
-                CheckPromoCodeCartShipmentUseCase.PARAM_VALUE_NOT_SUGGESTED);
-
-        com.tokopedia.usecase.RequestParams requestParams = com.tokopedia.usecase.RequestParams.create();
-        requestParams.putObject(CheckPromoCodeCartShipmentUseCase.PARAM_REQUEST_AUTH_MAP_STRING_CHECK_PROMO,
-                com.tokopedia.abstraction.common.utils.network.AuthUtil.generateParamsNetwork(
-                        this, param, userSession.getUserId(), userSession.getDeviceId())
-        );
-        return CartComponentInjector.newInstance(this)
-                .getCheckPromoCodeCartShipmentUseCase().createObservable(requestParams);
     }
 
     @Override

@@ -11,6 +11,7 @@ import com.tokopedia.loyalty.view.interactor.PromoCodeInteractor;
 import com.tokopedia.loyalty.view.presenter.IPromoCodePresenter;
 import com.tokopedia.loyalty.view.presenter.PromoCodePresenter;
 import com.tokopedia.loyalty.view.view.IPromoCodeView;
+import com.tokopedia.transactiondata.repository.ICartRepository;
 
 import dagger.Module;
 import dagger.Provides;
@@ -38,8 +39,9 @@ public class PromoCodeViewModule {
     @Provides
     @LoyaltyScope
     IPromoCodeInteractor providePromoCodeInteractor(CompositeSubscription compositeSubscription,
-                                                    TokoPointRepository loyaltyRepository) {
-        return new PromoCodeInteractor(compositeSubscription, loyaltyRepository);
+                                                    TokoPointRepository loyaltyRepository,
+                                                    ICartRepository cartRepository) {
+        return new PromoCodeInteractor(compositeSubscription, loyaltyRepository, cartRepository);
     }
 
     @Provides

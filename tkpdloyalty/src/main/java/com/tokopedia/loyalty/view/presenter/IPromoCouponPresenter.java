@@ -19,21 +19,8 @@ public interface IPromoCouponPresenter {
 
     void processGetEventCouponList(int categoryId, int productId);
 
-    void processPostCouponValidateRedeem();
-
-    void processPostCouponRedeem();
-
-    void processGetPointRecentHistory();
-
-    void processGetCatalogList();
-
-    void processGetCatalogDetail();
-
-    void processGetCatalogFilterCategory();
-
-    void submitVoucher(CouponData couponData);
-
-    void submitVoucherMarketPlaceCartList(Activity activity, CouponData couponData, String paramUpdateCart);
+    void processCheckMarketPlaceCartListPromoCode(Activity activity, CouponData couponData,
+                                                  String paramUpdateCart);
 
     void submitDigitalVoucher(CouponData couponData, String categoryId);
 

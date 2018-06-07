@@ -16,6 +16,7 @@ import com.tokopedia.checkout.domain.datamodel.cartsingleshipment.CartItemModel;
 import com.tokopedia.checkout.domain.datamodel.cartsingleshipment.ShipmentCostModel;
 import com.tokopedia.checkout.domain.datamodel.shipmentrates.CourierItemData;
 import com.tokopedia.checkout.domain.datamodel.shipmentrates.ShipmentDetailData;
+import com.tokopedia.checkout.domain.datamodel.voucher.PromoCodeCartShipmentData;
 import com.tokopedia.checkout.view.holderitemdata.CartItemPromoHolderData;
 import com.tokopedia.checkout.view.view.shipment.converter.ShipmentDataRequestConverter;
 import com.tokopedia.checkout.view.view.shipment.viewholder.ShipmentCheckoutButtonViewHolder;
@@ -28,13 +29,12 @@ import com.tokopedia.checkout.view.view.shipment.viewmodel.ShipmentCheckoutButto
 import com.tokopedia.checkout.view.view.shipment.viewmodel.ShipmentInsuranceTncModel;
 import com.tokopedia.checkout.view.viewholder.CartPromoSuggestionViewHolder;
 import com.tokopedia.checkout.view.viewholder.CartVoucherPromoViewHolder;
-import com.tokopedia.core.router.transactionmodule.sharedata.CheckPromoCodeCartShipmentRequest;
-import com.tokopedia.core.router.transactionmodule.sharedata.CheckPromoCodeCartShipmentResult;
 import com.tokopedia.design.utils.CurrencyFormatUtil;
 import com.tokopedia.showcase.ShowCaseBuilder;
 import com.tokopedia.showcase.ShowCaseDialog;
 import com.tokopedia.showcase.ShowCaseObject;
 import com.tokopedia.showcase.ShowCasePreference;
+import com.tokopedia.transactiondata.entity.request.CheckPromoCodeCartShipmentRequest;
 import com.tokopedia.transactiondata.entity.request.DataChangeAddressRequest;
 import com.tokopedia.transactiondata.entity.request.DataCheckoutRequest;
 
@@ -473,7 +473,7 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         notifyItemChanged(position);
     }
 
-    public void updatePromo(CheckPromoCodeCartShipmentResult.DataVoucher dataVoucher) {
+    public void updatePromo(PromoCodeCartShipmentData.DataVoucher dataVoucher) {
         if (dataVoucher != null) {
             shipmentCostModel.setPromoPrice(dataVoucher.getVoucherAmount());
             shipmentCostModel.setPromoMessage(dataVoucher.getVoucherPromoDesc());

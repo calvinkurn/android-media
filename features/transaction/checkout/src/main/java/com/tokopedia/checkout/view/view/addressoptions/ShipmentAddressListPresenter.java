@@ -10,7 +10,6 @@ import com.tokopedia.checkout.domain.usecase.GetPeopleAddressUseCase;
 import com.tokopedia.checkout.view.base.CartMvpPresenter;
 import com.tokopedia.checkout.view.utils.PagingHandler;
 import com.tokopedia.core.network.exception.model.UnProcessableHttpException;
-import com.tokopedia.abstraction.common.utils.paging.PagingHandler.PagingHandlerModel;
 
 import java.net.ConnectException;
 import java.net.SocketTimeoutException;

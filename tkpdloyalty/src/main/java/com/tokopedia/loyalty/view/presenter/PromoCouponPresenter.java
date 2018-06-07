@@ -2,6 +2,7 @@ package com.tokopedia.loyalty.view.presenter;
 
 import android.app.Activity;
 import android.support.annotation.NonNull;
+import android.text.TextUtils;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -15,11 +16,9 @@ import com.tokopedia.core.network.exception.ResponseErrorException;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.network.retrofit.utils.ErrorNetMessage;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
-import com.tokopedia.core.router.transactionmodule.sharedata.CheckPromoCodeCartListResult;
 import com.tokopedia.loyalty.domain.usecase.FlightCheckVoucherUseCase;
 import com.tokopedia.loyalty.exception.LoyaltyErrorException;
 import com.tokopedia.loyalty.exception.TokoPointResponseErrorException;
-import com.tokopedia.loyalty.router.ITkpdLoyaltyModuleRouter;
 import com.tokopedia.loyalty.router.LoyaltyModuleRouter;
 import com.tokopedia.loyalty.view.data.CouponData;
 import com.tokopedia.loyalty.view.data.CouponViewModel;
@@ -172,103 +171,47 @@ public class PromoCouponPresenter implements IPromoCouponPresenter {
     }
 
     @Override
-    public void processPostCouponValidateRedeem() {
+    public void processCheckMarketPlaceCartListPromoCode(Activity activity, CouponData couponData,
+                                                         String paramUpdateCartString) {
+        TKPDMapParam<String, String> paramUpdateCart = null;
+        if (!TextUtils.isEmpty(paramUpdateCartString)) {
+            paramUpdateCart = new TKPDMapParam<>();
+            paramUpdateCart.put("carts", paramUpdateCartString);
+        }
+        TKPDMapParam<String, String> paramCheckPromo = new TKPDMapParam<>();
+        paramCheckPromo.put("promo_code", couponData.getCode());
+        paramCheckPromo.put("suggested", "0");
+        paramCheckPromo.put("lang", "id");
 
-    }
+        promoCouponInteractor.submitCheckPromoCodeMarketPlace(
+                paramUpdateCart != null ? AuthUtil.generateParamsNetwork(activity, paramUpdateCart) : null,
+                AuthUtil.generateParamsNetwork(activity, paramCheckPromo),
+                new Subscriber<CouponViewModel>() {
+                    @Override
+                    public void onCompleted() {
 
-    @Override
-    public void processPostCouponRedeem() {
+                    }
 
-    }
-
-    @Override
-    public void processGetPointRecentHistory() {
-
-    }
-
-    @Override
-    public void processGetCatalogList() {
-
-    }
-
-    @Override
-    public void processGetCatalogDetail() {
-
-    }
-
-    @Override
-    public void processGetCatalogFilterCategory() {
-
-    }
-
-    @Override
-    public void submitVoucher(final CouponData couponData) {
-        view.showProgressLoading();
-        TKPDMapParam<String, String> param = new TKPDMapParam<>();
-        param.put(VOUCHER_CODE, couponData.getCode());
-        promoCouponInteractor.submitVoucher(
-                couponData.getTitle(),
-                couponData.getCode(),
-                AuthUtil.generateParamsNetwork(view.getContext(), param
-                ), makeCouponSubscriber(couponData));
-
-    }
-
-    @Override
-    public void submitVoucherMarketPlaceCartList(Activity activity, CouponData couponData, String paramUpdateCart) {
-        promoCouponInteractor.submitVoucherMarketPlaceCartList(
-
-        );
-
-        if (activity.getApplication() instanceof ITkpdLoyaltyModuleRouter) {
-            promoCouponInteractor.submitVoucherMarketPlaceCartList(
-                    ((ITkpdLoyaltyModuleRouter) activity.getApplication())
-                            .tkpdLoyaltyGetCheckPromoCodeCartListResultObservable(
-                                    couponData.getCode(), paramUpdateCart
-                            ),
-                    new Subscriber<CheckPromoCodeCartListResult>() {
-                        @Override
-                        public void onCompleted() {
-
-                        }
-
-                        @Override
-                        public void onError(Throwable e) {
-                            view.hideProgressLoading();
-                            if (e instanceof LoyaltyErrorException || e instanceof ResponseErrorException) {
-                                couponData.setErrorMessage(e.getMessage());
-                                view.couponError();
-                            } else {
-                                view.showSnackbarError(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
-                            }
-                        }
-
-                        @Override
-                        public void onNext(CheckPromoCodeCartListResult checkPromoCodeCartListResult) {
-                            if (checkPromoCodeCartListResult.isError()) {
-                                couponData.setErrorMessage(checkPromoCodeCartListResult.getErrorMessage());
-                                view.couponError();
-                            } else {
-                                CouponViewModel couponViewModel = new CouponViewModel();
-                                couponViewModel.setCode(
-                                        checkPromoCodeCartListResult.getDataVoucher().getCode()
-                                );
-                                couponViewModel.setMessage(
-                                        checkPromoCodeCartListResult.getDataVoucher().getMessageSuccess()
-                                );
-                                couponViewModel.setAmount(
-                                        checkPromoCodeCartListResult.getDataVoucher().getDiscountAmount()
-                                );
-                                couponViewModel.setTitle(
-                                        couponData.getTitle()
-                                );
-                                view.receiveResult(couponViewModel);
-                                view.hideProgressLoading();
-                            }
+                    @Override
+                    public void onError(Throwable e) {
+                        view.hideProgressLoading();
+                        if (e instanceof LoyaltyErrorException || e instanceof ResponseErrorException) {
+                            couponData.setErrorMessage(e.getMessage());
+                            view.couponError();
+                        } else {
+                            view.showSnackbarError(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
                         }
                     }
-            );
-        }
+
+                    @Override
+                    public void onNext(CouponViewModel couponViewModel) {
+                        couponViewModel.setTitle(couponData.getTitle());
+                        view.receiveResult(couponViewModel);
+                        view.hideProgressLoading();
+                    }
+                }
+
+        );
     }
 
     @Override
