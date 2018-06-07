@@ -194,4 +194,5 @@ public interface TkpdCoreRouter {
 
     Intent getDistrictRecommendationIntent(Activity activity, Token token);
 
+    Intent getSettingBankIntent(Context context);
 }
