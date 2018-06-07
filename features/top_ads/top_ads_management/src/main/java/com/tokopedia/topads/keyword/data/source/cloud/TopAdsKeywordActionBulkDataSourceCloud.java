@@ -1,8 +1,8 @@
 package com.tokopedia.topads.keyword.data.source.cloud;
 
+import com.tokopedia.abstraction.common.data.model.request.DataRequest;
 import com.tokopedia.core.base.common.util.GetData;
 import com.tokopedia.topads.dashboard.constant.TopAdsNetworkConstant;
-import com.tokopedia.topads.dashboard.data.model.request.DataRequest;
 import com.tokopedia.topads.dashboard.data.model.response.PageDataResponse;
 import com.tokopedia.topads.keyword.data.model.cloud.bulkkeyword.DataBulkKeyword;
 import com.tokopedia.topads.keyword.data.model.cloud.bulkkeyword.Keyword;
@@ -31,8 +31,7 @@ public class TopAdsKeywordActionBulkDataSourceCloud {
 
     public Observable<PageDataResponse<DataBulkKeyword>> actionBulk(RequestParams requestParams) {
         DataRequest<DataBulkKeyword> dataRequest = createDataRequest(requestParams);
-        return null;
-        //return keywordApi.actionBulkKeyword(dataRequest).map(new GetData<PageDataResponse<DataBulkKeyword>>());
+        return keywordApi.actionBulkKeyword(dataRequest).map(new GetData<PageDataResponse<DataBulkKeyword>>());
     }
 
     private DataRequest<DataBulkKeyword> createDataRequest(RequestParams requestParams) {

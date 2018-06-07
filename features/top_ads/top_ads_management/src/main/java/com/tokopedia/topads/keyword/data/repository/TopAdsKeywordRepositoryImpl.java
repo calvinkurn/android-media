@@ -41,7 +41,8 @@ public class TopAdsKeywordRepositoryImpl implements TopAdsKeywordRepository {
                         keywodDashboardViewModel.setPage(convertPage(listPageDataResponse.getPage()));
                         List<KeywordAd> keywordAds = new ArrayList<>();
                         for (Datum datum : listPageDataResponse.getData()){
-                            keywordAds.add(convertToKeywordAd(datum, requestParams.getInt(KeywordTypeDef.IS_POSITIVE, 1)));
+                            keywordAds.add(convertToKeywordAd(datum, Integer.parseInt(requestParams
+                                    .getString(KeywordTypeDef.IS_POSITIVE, "1"))));
                         }
                         keywodDashboardViewModel.setData(keywordAds);
                         return keywodDashboardViewModel;

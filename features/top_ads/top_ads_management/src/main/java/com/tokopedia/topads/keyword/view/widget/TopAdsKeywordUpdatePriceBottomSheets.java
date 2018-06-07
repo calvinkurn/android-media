@@ -1,6 +1,7 @@
 package com.tokopedia.topads.keyword.view.widget;
 
 import android.app.Dialog;
+import android.support.design.widget.BottomSheetBehavior;
 import android.support.design.widget.TextInputLayout;
 import android.text.TextUtils;
 import android.view.View;
@@ -10,6 +11,7 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.tokopedia.design.component.BottomSheets;
+import com.tokopedia.design.component.ButtonCompat;
 import com.tokopedia.seller.common.widget.PrefixEditText;
 import com.tokopedia.seller.util.CurrencyIdrTextWatcher;
 import com.tokopedia.topads.R;
@@ -23,6 +25,11 @@ public class TopAdsKeywordUpdatePriceBottomSheets extends BottomSheets {
 
     public void setOnSubmitClicked(OnSubmitClicked onSubmitClicked) {
         this.onSubmitClicked = onSubmitClicked;
+    }
+
+    @Override
+    public int getBaseLayoutResourceId() {
+        return R.layout.topads_widget_bottomsheet;
     }
 
     @Override
@@ -40,6 +47,7 @@ public class TopAdsKeywordUpdatePriceBottomSheets extends BottomSheets {
         final PrefixEditText topAdsCostPerClick = view.findViewById(R.id.edit_text_top_ads_cost_per_click);
         TextView topAdsMaxPriceInstruction = view.findViewById(R.id.text_view_top_ads_max_price_description);
         final TextInputLayout textInputLayoutCostPerClick = view.findViewById(R.id.text_input_layout_top_ads_cost_per_click);
+        final ButtonCompat btnSave = (ButtonCompat) view.findViewById(R.id.btn_save);
 
         CurrencyIdrTextWatcher textWatcher = new CurrencyIdrTextWatcher(topAdsCostPerClick){
             @Override
@@ -49,14 +57,14 @@ public class TopAdsKeywordUpdatePriceBottomSheets extends BottomSheets {
                         com.tokopedia.topads.dashboard.utils.ViewUtils.getKeywordClickBudgetError(getActivity(), number);
                 if (!TextUtils.isEmpty(errorMessage)) {
                     textInputLayoutCostPerClick.setError(errorMessage);
+                    btnSave.setEnabled(false);
                 } else {
                     textInputLayoutCostPerClick.setError(null);
+                    btnSave.setEnabled(true);
                 }
             }
         };
         topAdsCostPerClick.addTextChangedListener(textWatcher);
-
-        Button btnSave = (Button) view.findViewById(R.id.btn_save);
         btnSave.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -67,6 +75,11 @@ public class TopAdsKeywordUpdatePriceBottomSheets extends BottomSheets {
                 }
             }
         });
+    }
+
+    @Override
+    public BottomSheetBehavior getBottomSheetBehavior() {
+        return super.getBottomSheetBehavior();
     }
 
     @Override

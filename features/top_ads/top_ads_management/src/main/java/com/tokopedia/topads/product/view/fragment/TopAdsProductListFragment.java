@@ -3,28 +3,22 @@ package com.tokopedia.topads.product.view.fragment;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.Fragment;
-import android.text.Editable;
 import android.text.TextUtils;
-import android.text.TextWatcher;
 import android.view.LayoutInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 
-import com.github.rubensousa.bottomsheetbuilder.adapter.BottomSheetItemClickListener;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
-import com.tokopedia.design.bottomsheet.BottomSheetCustomContentView;
 import com.tokopedia.seller.common.datepicker.view.constant.DatePickerConstant;
 import com.tokopedia.topads.R;
 import com.tokopedia.topads.TopAdsComponentInstance;
 import com.tokopedia.topads.common.view.fragment.TopAdsBaseListFragment;
 import com.tokopedia.topads.common.view.utils.TopAdsBottomSheetsSelectGroup;
+import com.tokopedia.topads.common.view.utils.TopAdsMenuBottomSheets;
 import com.tokopedia.topads.dashboard.constant.SortTopAdsOption;
 import com.tokopedia.topads.dashboard.constant.TopAdsExtraConstant;
 import com.tokopedia.topads.dashboard.data.model.data.GroupAd;
@@ -34,16 +28,13 @@ import com.tokopedia.topads.dashboard.view.activity.TopAdsDetailProductActivity;
 import com.tokopedia.topads.dashboard.view.activity.TopAdsFilterProductActivity;
 import com.tokopedia.topads.dashboard.view.activity.TopAdsGroupNewPromoActivity;
 import com.tokopedia.topads.dashboard.view.activity.TopAdsSortByActivity;
-import com.tokopedia.topads.dashboard.view.adapter.TopAdsAutoCompleteAdapter;
 import com.tokopedia.topads.dashboard.view.fragment.TopAdsNewScheduleNewGroupFragment;
-import com.tokopedia.topads.dashboard.view.widget.TopAdsCustomAutoCompleteTextView;
 import com.tokopedia.topads.product.di.component.DaggerTopAdsProductAdListComponent;
 import com.tokopedia.topads.common.view.adapter.TopAdsListAdapterTypeFactory;
 import com.tokopedia.topads.product.view.listener.TopAdsProductAdListView;
 import com.tokopedia.topads.product.view.presenter.TopAdsProductAdListPresenter;
 import com.tokopedia.topads.sourcetagging.constant.TopAdsSourceOption;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -235,11 +226,10 @@ public class TopAdsProductListFragment extends TopAdsBaseListFragment<ProductAd,
     }
 
     @Override
-    public BottomSheetItemClickListener getOptionMoreBottomSheetItemClickListener(final List<String> ids) {
-        return new BottomSheetItemClickListener() {
+    public TopAdsMenuBottomSheets.OnMenuItemSelected getOptionMoreBottomSheetItemClickListener(final List<String> ids) {
+        return new TopAdsMenuBottomSheets.OnMenuItemSelected() {
             @Override
-            public void onBottomSheetItemClick(MenuItem item) {
-                int itemId = item.getItemId();
+            public void onItemSelected(int itemId) {
                 if (itemId == R.id.status_active){
                     presenter.setAdActive(ids);
                 } else if (itemId == R.id.status_inactive) {

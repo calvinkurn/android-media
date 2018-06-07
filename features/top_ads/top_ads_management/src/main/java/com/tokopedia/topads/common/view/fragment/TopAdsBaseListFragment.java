@@ -10,7 +10,6 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.Px;
 import android.support.design.widget.AppBarLayout;
-import android.support.design.widget.BottomSheetDialog;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AlertDialog;
@@ -25,8 +24,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.github.rubensousa.bottomsheetbuilder.BottomSheetBuilder;
-import com.github.rubensousa.bottomsheetbuilder.adapter.BottomSheetItemClickListener;
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter;
@@ -37,6 +34,7 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.EmptyResultViewHo
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment;
 import com.tokopedia.abstraction.base.view.listener.EndlessLayoutManagerListener;
 import com.tokopedia.design.button.BottomActionView;
+import com.tokopedia.design.component.Menus;
 import com.tokopedia.design.label.LabelView;
 import com.tokopedia.design.text.SearchInputView;
 import com.tokopedia.design.utils.DateLabelUtils;
@@ -44,8 +42,10 @@ import com.tokopedia.seller.common.datepicker.view.activity.DatePickerActivity;
 import com.tokopedia.seller.common.datepicker.view.constant.DatePickerConstant;
 import com.tokopedia.topads.R;
 import com.tokopedia.topads.common.view.adapter.TopAdsMultipleCheckListAdapter;
+import com.tokopedia.topads.common.view.adapter.TopAdsOptionMenuAdapter;
 import com.tokopedia.topads.common.view.adapter.viewholder.BaseMultipleCheckViewHolder;
 import com.tokopedia.topads.common.view.presenter.TopAdsBaseListPresenter;
+import com.tokopedia.topads.common.view.utils.TopAdsMenuBottomSheets;
 import com.tokopedia.topads.dashboard.constant.SortTopAdsOption;
 import com.tokopedia.topads.dashboard.constant.TopAdsConstant;
 import com.tokopedia.topads.dashboard.constant.TopAdsExtraConstant;
@@ -89,6 +89,7 @@ public abstract class TopAdsBaseListFragment<V extends Visitable, F extends Adap
     protected int status;
     protected String keyword;
     private boolean isSearchMode;
+    private boolean isMenuShown;
     private OnAdListFragmentListener listener;
 
     protected SearchInputView searchInputView;
@@ -98,7 +99,8 @@ public abstract class TopAdsBaseListFragment<V extends Visitable, F extends Adap
     private CoordinatorLayout.Behavior appBarBehaviour;
     private RecyclerView recyclerView;
     private MenuItem menuAdd;
-    private MenuItem menuCheck;
+    private MenuItem menuMulti;
+    private MenuItem menuHelp;
     private ActionMode actionMode;
     private LinearLayoutManager layoutManager;
 
@@ -121,11 +123,6 @@ public abstract class TopAdsBaseListFragment<V extends Visitable, F extends Adap
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        if (savedInstanceState == null) {
-            onFirstTimeLaunched();
-        } else {
-            onRestoreState (savedInstanceState);
-        }
     }
 
     @Override
@@ -136,6 +133,8 @@ public abstract class TopAdsBaseListFragment<V extends Visitable, F extends Adap
         }
     }
 
+
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -144,6 +143,11 @@ public abstract class TopAdsBaseListFragment<V extends Visitable, F extends Adap
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        if (savedInstanceState == null) {
+            onFirstTimeLaunched();
+        } else {
+            onRestoreState (savedInstanceState);
+        }
         super.onViewCreated(view, savedInstanceState);
         recyclerView = view.findViewById(R.id.recycler_view);
         layoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
@@ -289,7 +293,7 @@ public abstract class TopAdsBaseListFragment<V extends Visitable, F extends Adap
 
     public abstract void deleteBulkAction(List<String> adIds);
 
-    public abstract BottomSheetItemClickListener getOptionMoreBottomSheetItemClickListener(final List<String> ids);
+    public abstract TopAdsMenuBottomSheets.OnMenuItemSelected getOptionMoreBottomSheetItemClickListener(final List<String> ids);
 
     public void setSearchMode(boolean searchMode) {
         isSearchMode = searchMode;
@@ -394,12 +398,11 @@ public abstract class TopAdsBaseListFragment<V extends Visitable, F extends Adap
             showOption(true);
         }
         super.renderList(data, hasNextPage);
-        if (listener != null){
-            listener.startShowCase();
-        }
     }
 
-    private void showOption(boolean show) {
+    protected void showOption(boolean show) {
+        isMenuShown = show;
+        getActivity().invalidateOptionsMenu();
         if(buttonActionView != null)
             buttonActionView.setVisibility(show ? View.VISIBLE : View.GONE);
         showDateLabel(show);
@@ -407,8 +410,11 @@ public abstract class TopAdsBaseListFragment<V extends Visitable, F extends Adap
         if(menuAdd != null){
             menuAdd.setVisible(show);
         }
-        if (menuCheck != null){
-            menuCheck.setVisible(show);
+        if (menuMulti != null){
+            menuMulti.setVisible(show);
+        }
+        if (menuHelp != null){
+            menuHelp.setVisible(show);
         }
     }
 
@@ -503,14 +509,34 @@ public abstract class TopAdsBaseListFragment<V extends Visitable, F extends Adap
             }
         });
 
-        menuCheck = menu.findItem(R.id.menu_multi_select);
-        menuCheck.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+        menuMulti = menu.findItem(R.id.menu_multi_select);
+        menuMulti.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem menuItem) {
                 getActivity().startActionMode(getActionModeCallback());
                 return true;
             }
         });
+
+        menuHelp = menu.findItem(R.id.menu_help);
+        menuHelp.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem menuItem) {
+                if (listener != null) {
+                    recyclerView.scrollTo(0, 0);
+                    listener.startShowCase();
+                }
+                return true;
+            }
+        });
+    }
+
+    @Override
+    public void onPrepareOptionsMenu(Menu menu) {
+        super.onPrepareOptionsMenu(menu);
+        menuAdd.setVisible(isMenuShown);
+        menuMulti.setVisible(isMenuShown);
+        menuHelp.setVisible(isMenuShown);
     }
 
     public ActionMode.Callback getActionModeCallback() {
@@ -595,18 +621,26 @@ public abstract class TopAdsBaseListFragment<V extends Visitable, F extends Adap
     }
 
     protected void showBottomsheetOptionMore(String title, @MenuRes int menuId,
-                                             BottomSheetItemClickListener listener){
+                                             final TopAdsMenuBottomSheets.OnMenuItemSelected listener){
         CommonUtils.hideKeyboard(getActivity(), getActivity().getCurrentFocus());
 
-        BottomSheetBuilder bottomSheetBuilder = new BottomSheetBuilder(getActivity())
-                .setMode(BottomSheetBuilder.MODE_LIST)
-                .addTitleItem(title);
-        bottomSheetBuilder.setMenu(menuId);
+        final TopAdsMenuBottomSheets bottomSheetMenu = new TopAdsMenuBottomSheets()
+                .setContext(getContext())
+                .setMode(TopAdsOptionMenuAdapter.MODE_DEFAULT)
+                .setTitle(title)
+                .setMenu(menuId);
 
-        BottomSheetDialog bottomSheetDialog = bottomSheetBuilder.expandOnStart(true)
-                .setItemClickListener(listener)
-                .createDialog();
-        bottomSheetDialog.show();
+        bottomSheetMenu.setMenuItemSelected(new TopAdsMenuBottomSheets.OnMenuItemSelected() {
+            @Override
+            public void onItemSelected(int itemId) {
+                bottomSheetMenu.dismiss();
+                if (listener != null){
+                    listener.onItemSelected(itemId);
+                }
+            }
+        });
+
+        bottomSheetMenu.show(getActivity().getSupportFragmentManager(), getClass().getSimpleName());
     }
 
     @Nullable
@@ -633,7 +667,7 @@ public abstract class TopAdsBaseListFragment<V extends Visitable, F extends Adap
 
     public View getFab() {
         if(menuAdd != null)
-            menuAdd.getActionView();
+            return menuAdd.getActionView();
         return null;
     }
 

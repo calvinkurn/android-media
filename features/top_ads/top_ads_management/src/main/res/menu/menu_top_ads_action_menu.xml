@@ -13,5 +13,6 @@
         android:icon="@drawable/ic_more_vert_grey"
         android:title="@string/action_more"
         android:visible="false"
+        app:iconTint="@color/black_70"
         app:showAsAction="always" />
 </menu>

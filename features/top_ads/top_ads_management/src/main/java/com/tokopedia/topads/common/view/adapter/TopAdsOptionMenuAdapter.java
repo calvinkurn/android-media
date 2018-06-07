@@ -43,7 +43,7 @@ public class TopAdsOptionMenuAdapter extends RecyclerView.Adapter<TopAdsOptionMe
 
     @Override
     public TopAdsOptionMenuViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_product_manage_list_sort, parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_topads_menu_option, parent, false);
         return new TopAdsOptionMenuViewHolder(view);
     }
 

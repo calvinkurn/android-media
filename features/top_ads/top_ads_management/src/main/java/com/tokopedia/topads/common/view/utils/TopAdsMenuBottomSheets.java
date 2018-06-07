@@ -1,8 +1,13 @@
 package com.tokopedia.topads.common.view.utils;
 
 import android.app.Dialog;
+import android.content.Context;
 import android.support.annotation.MenuRes;
+import android.support.v7.view.SupportMenuInflater;
+import android.support.v7.view.menu.MenuBuilder;
 import android.support.v7.widget.RecyclerView;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageButton;
 
@@ -24,9 +29,15 @@ public class TopAdsMenuBottomSheets extends BottomSheets {
     private int mode;
     private int selectedId;
     private OnMenuItemSelected menuItemSelected;
+    private Context mContext;
 
     public TopAdsMenuBottomSheets setTitle(String title) {
         this.title = title;
+        return this;
+    }
+
+    public TopAdsMenuBottomSheets setContext(Context context) {
+        this.mContext = context;
         return this;
     }
 
@@ -82,6 +93,13 @@ public class TopAdsMenuBottomSheets extends BottomSheets {
     }
 
     public TopAdsMenuBottomSheets setMenu(@MenuRes int menuId) {
+        Menu menu = new MenuBuilder(mContext);
+        new SupportMenuInflater(mContext).inflate(menuId, menu);
+
+        for (int i = 0; i < menu.size(); ++i){
+            MenuItem item = menu.getItem(i);
+            addItem(item.getItemId(), item.getTitle().toString(), false);
+        }
 
         return this;
     }

@@ -6,30 +6,19 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.MenuRes;
 import android.support.annotation.Nullable;
-import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AlertDialog;
-import android.text.Editable;
-import android.text.TextUtils;
-import android.text.TextWatcher;
-import android.util.Log;
-import android.view.MenuItem;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.TextView;
 
-import com.github.rubensousa.bottomsheetbuilder.adapter.BottomSheetItemClickListener;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel;
-import com.tokopedia.design.bottomsheet.BottomSheetCustomContentView;
 import com.tokopedia.seller.base.view.fragment.TopAdsFilterListFragment;
-import com.tokopedia.seller.common.widget.PrefixEditText;
-import com.tokopedia.seller.util.CurrencyIdrTextWatcher;
 import com.tokopedia.topads.R;
 import com.tokopedia.topads.common.view.adapter.TopAdsListAdapterTypeFactory;
-import com.tokopedia.topads.common.view.adapter.TopAdsMultipleCheckListAdapter;
 import com.tokopedia.topads.common.view.fragment.TopAdsBaseListFragment;
 import com.tokopedia.topads.common.view.utils.TopAdsBottomSheetsSelectGroup;
+import com.tokopedia.topads.common.view.utils.TopAdsMenuBottomSheets;
 import com.tokopedia.topads.dashboard.constant.SortTopAdsOption;
 import com.tokopedia.topads.dashboard.constant.TopAdsExtraConstant;
 import com.tokopedia.topads.dashboard.data.model.data.GroupAd;
@@ -37,9 +26,7 @@ import com.tokopedia.topads.dashboard.data.model.response.PageDataResponse;
 import com.tokopedia.topads.dashboard.di.component.TopAdsComponent;
 import com.tokopedia.topads.dashboard.view.activity.TopAdsGroupNewPromoActivity;
 import com.tokopedia.topads.dashboard.view.activity.TopAdsSortByActivity;
-import com.tokopedia.topads.dashboard.view.adapter.TopAdsAutoCompleteAdapter;
 import com.tokopedia.topads.dashboard.view.fragment.TopAdsGroupNewPromoFragment;
-import com.tokopedia.topads.dashboard.view.widget.TopAdsCustomAutoCompleteTextView;
 import com.tokopedia.topads.keyword.constant.KeywordStatusTypeDef;
 import com.tokopedia.topads.keyword.data.model.cloud.bulkkeyword.DataBulkKeyword;
 import com.tokopedia.topads.keyword.di.component.DaggerTopAdsKeywordComponent;
@@ -51,7 +38,6 @@ import com.tokopedia.topads.keyword.view.model.KeywordAd;
 import com.tokopedia.topads.keyword.view.presenter.TopAdsKeywordListPresenter;
 import com.tokopedia.topads.keyword.view.widget.TopAdsKeywordUpdatePriceBottomSheets;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -79,12 +65,6 @@ public abstract class TopAdsKeywordAdListFragment extends TopAdsBaseListFragment
                 .topAdsComponent(getComponent(TopAdsComponent.class))
                 .build()
                 .inject(this);
-    }
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setHasOptionsMenu(false);
     }
 
     @Override
@@ -178,6 +158,16 @@ public abstract class TopAdsKeywordAdListFragment extends TopAdsBaseListFragment
     }
 
     @Override
+    protected void showOption(boolean show) {
+        super.showOption(show);
+        if (!isPositive()){
+            showDateLabel(false);
+        } else {
+            showDateLabel(show);
+        }
+    }
+
+    @Override
     public void onSearchLoaded(List<KeywordAd> data, boolean hasNextData) {
         super.onSuccessLoadedData(data, hasNextData);
     }
@@ -217,8 +207,16 @@ public abstract class TopAdsKeywordAdListFragment extends TopAdsBaseListFragment
     @Override
     public void showBulkActionBottomSheet(List<String> adIds) {
         showBottomsheetOptionMore(getString(R.string.topads_multi_select_title, adIds.size()),
-                R.menu.menu_top_ads_keyword_bottomsheet,
+                getBottomSheetMenuRes(),
                 getOptionMoreBottomSheetItemClickListener(adIds));
+    }
+
+    private @MenuRes int getBottomSheetMenuRes(){
+        if (isPositive()){
+            return R.menu.menu_top_ads_keyword_bottomsheet;
+        } else {
+            return R.menu.menu_top_ads_keyword_negative_bottomsheet;
+        }
     }
 
     @Override
@@ -256,17 +254,16 @@ public abstract class TopAdsKeywordAdListFragment extends TopAdsBaseListFragment
 
     @Override
     public void onClickMore(KeywordAd ad) {
-        showBottomsheetOptionMore(ad.getName(), R.menu.menu_top_ads_keyword_bottomsheet,
+        showBottomsheetOptionMore(ad.getName(), getBottomSheetMenuRes(),
                 getOptionMoreBottomSheetItemClickListener(Collections.nCopies(1, ad.getId())));
     }
 
 
     @Override
-    public BottomSheetItemClickListener getOptionMoreBottomSheetItemClickListener(final List<String> ids) {
-        return new BottomSheetItemClickListener() {
+    public TopAdsMenuBottomSheets.OnMenuItemSelected getOptionMoreBottomSheetItemClickListener(final List<String> ids) {
+        return new TopAdsMenuBottomSheets.OnMenuItemSelected() {
             @Override
-            public void onBottomSheetItemClick(MenuItem item) {
-                int itemId = item.getItemId();
+            public void onItemSelected(int itemId) {
                 if (itemId == R.id.status_active){
                     presenter.setKeywordActive(ids);
                 } else if (itemId == R.id.status_inactive) {
@@ -323,6 +320,7 @@ public abstract class TopAdsKeywordAdListFragment extends TopAdsBaseListFragment
     public void onBulkActionSuccess(PageDataResponse<DataBulkKeyword> adBulkActions) {
         finishActionMode();
         loadInitialData();
+        setResultAdListChanged();
     }
 
     @Override

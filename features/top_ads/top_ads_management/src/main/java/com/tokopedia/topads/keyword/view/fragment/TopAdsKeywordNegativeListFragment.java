@@ -1,5 +1,9 @@
 package com.tokopedia.topads.keyword.view.fragment;
 
+import android.os.Bundle;
+import android.support.annotation.Nullable;
+import android.view.View;
+
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel;
 import com.tokopedia.topads.R;
@@ -13,6 +17,13 @@ import java.util.List;
  */
 
 public class TopAdsKeywordNegativeListFragment extends TopAdsKeywordAdListFragment {
+
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        showDateLabel(false);
+    }
+
     @Override
     public boolean isPositive() {
         return false;
@@ -32,7 +43,7 @@ public class TopAdsKeywordNegativeListFragment extends TopAdsKeywordAdListFragme
     public Visitable getDefaultEmptyViewModel() {
         EmptyModel emptyModel = (EmptyModel) super.getDefaultEmptyViewModel();
         emptyModel.setTitle(getString(R.string.top_ads_keyword_your_keyword_negative_empty));
-        emptyModel.setContent(getString(R.string.top_ads_empty_product_promo_content_text));
+        emptyModel.setContent(getString(R.string.top_ads_keyword_please_use_negative));
         return emptyModel;
     }
 
