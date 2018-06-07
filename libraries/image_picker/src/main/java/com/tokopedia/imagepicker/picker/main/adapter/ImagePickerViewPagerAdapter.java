@@ -22,8 +22,8 @@ import com.tokopedia.imagepicker.picker.main.builder.ImagePickerTabTypeDef;
 public class ImagePickerViewPagerAdapter extends FragmentStatePagerAdapter {
 
     private SparseArrayCompat<Fragment> registeredFragments = new SparseArrayCompat<>();
-    private ImagePickerBuilder imagePickerBuilder;
-    private Context context;
+    protected ImagePickerBuilder imagePickerBuilder;
+    protected Context context;
 
     public ImagePickerViewPagerAdapter(Context context, FragmentManager fm, ImagePickerBuilder imagePickerBuilder) {
         super(fm);

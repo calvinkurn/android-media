@@ -69,6 +69,7 @@ import com.tokopedia.seller.product.edit.view.model.upload.intdef.ProductStatus;
 import com.tokopedia.seller.product.edit.view.presenter.ProductAddPresenter;
 import com.tokopedia.seller.product.edit.view.widget.ImagesSelectView;
 import com.tokopedia.seller.product.etalase.view.activity.EtalasePickerActivity;
+import com.tokopedia.seller.product.imagepicker.view.activity.ImagePickerAddProductActivity;
 import com.tokopedia.seller.product.variant.data.model.variantbycat.ProductVariantByCatModel;
 import com.tokopedia.seller.product.variant.data.model.variantbyprd.ProductVariantViewModel;
 import com.tokopedia.seller.product.variant.view.activity.ProductVariantDashboardActivity;
@@ -87,6 +88,7 @@ import static com.tokopedia.imagepicker.picker.main.builder.ImagePickerBuilder.D
 import static com.tokopedia.imagepicker.picker.main.builder.ImagePickerTabTypeDef.TYPE_CAMERA;
 import static com.tokopedia.imagepicker.picker.main.builder.ImagePickerTabTypeDef.TYPE_GALLERY;
 import static com.tokopedia.imagepicker.picker.main.builder.ImagePickerTabTypeDef.TYPE_INSTAGRAM;
+import static com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity.PICKER_RESULT_PATHS;
 
 public abstract class BaseProductAddEditFragment<T extends ProductAddPresenter>
         extends BaseDaggerFragment
@@ -264,7 +266,7 @@ public abstract class BaseProductAddEditFragment<T extends ProductAddPresenter>
     @Override
     public void onAddImagePickerClicked(final int imagePosition) {
         ImagePickerBuilder builder = getImagePickerBuilder();
-        Intent intent = ImagePickerActivity.getIntent(getContext(), builder);
+        Intent intent = ImagePickerAddProductActivity.getIntent(getContext(), builder, "1");
         startActivityForResult(intent, REQUEST_CODE_ADD_PRODUCT_IMAGE);
     }
 

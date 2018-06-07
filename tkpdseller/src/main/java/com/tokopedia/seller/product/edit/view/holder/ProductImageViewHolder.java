@@ -13,6 +13,7 @@ import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.product.edit.view.adapter.ImageSelectorAdapter;
+import com.tokopedia.seller.product.edit.view.fragment.BaseProductAddEditFragment;
 import com.tokopedia.seller.product.edit.view.model.ImageSelectModel;
 import com.tokopedia.seller.product.edit.view.model.edit.ProductPictureViewModel;
 import com.tokopedia.seller.product.edit.view.model.edit.ProductViewModel;
