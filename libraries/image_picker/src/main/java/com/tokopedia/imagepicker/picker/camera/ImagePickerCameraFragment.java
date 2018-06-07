@@ -23,7 +23,6 @@ import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 
-import com.bumptech.glide.Glide;
 import com.otaliastudios.cameraview.CameraListener;
 import com.otaliastudios.cameraview.CameraOptions;
 import com.otaliastudios.cameraview.CameraUtils;
@@ -31,7 +30,6 @@ import com.otaliastudios.cameraview.CameraView;
 import com.otaliastudios.cameraview.Flash;
 import com.otaliastudios.cameraview.Size;
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment;
-import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.imagepicker.R;
 import com.tokopedia.imagepicker.common.util.ImageUtils;
 
@@ -52,7 +50,7 @@ public class ImagePickerCameraFragment extends TkpdBaseV4Fragment {
     private CameraView cameraView;
     private ImageButton flashImageButton;
     private FrameLayout cameraLayout;
-    private FrameLayout previewLayout;
+    private View previewLayout;
     private OnImagePickerCameraFragmentListener onImagePickerCameraFragmentListener;
 
     private boolean mCapturingPicture;
