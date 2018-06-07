@@ -1765,6 +1765,21 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
+    public ChuckInterceptor loyaltyModuleRouterGetCartCheckoutChuckInterceptor() {
+        return getAppComponent().chuckInterceptor();
+    }
+
+    @Override
+    public FingerprintInterceptor loyaltyModuleRouterGetCartCheckoutFingerPrintInterceptor() {
+        return getAppComponent().fingerprintInterceptor();
+    }
+
+    @Override
+    public Converter.Factory loyaltyModuleRouterGetStringResponseConverter() {
+        return new StringResponseConverter();
+    }
+
+    @Override
     public Intent checkoutModuleRouterGetProductDetailIntent(Context context, ProductPass productPass) {
         return ProductInfoActivity.createInstance(context, productPass);
     }

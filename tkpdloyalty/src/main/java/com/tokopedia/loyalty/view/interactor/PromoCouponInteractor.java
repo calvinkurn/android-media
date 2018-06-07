@@ -4,14 +4,13 @@ import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.loyalty.domain.entity.request.RequestBodyCouponRedeem;
 import com.tokopedia.loyalty.domain.entity.request.RequestBodyValidateRedeem;
 import com.tokopedia.loyalty.domain.repository.ITokoPointRepository;
-import com.tokopedia.loyalty.view.data.CouponData;
 import com.tokopedia.loyalty.view.data.CouponViewModel;
 import com.tokopedia.loyalty.view.data.CouponsDataWrapper;
-
-import java.util.List;
+import com.tokopedia.transactiondata.repository.ICartRepository;
 
 import javax.inject.Inject;
 
+import rx.Observable;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
@@ -24,12 +23,15 @@ import rx.subscriptions.CompositeSubscription;
 public class PromoCouponInteractor implements IPromoCouponInteractor {
     private final CompositeSubscription compositeSubscription;
     private final ITokoPointRepository tokoplusRepository;
+    private final ICartRepository cartRepository;
 
     @Inject
     public PromoCouponInteractor(CompositeSubscription compositeSubscription,
-                                 ITokoPointRepository tokoplusRepository) {
+                                 ITokoPointRepository tokoplusRepository,
+                                 ICartRepository cartRepository) {
         this.compositeSubscription = compositeSubscription;
         this.tokoplusRepository = tokoplusRepository;
+        this.cartRepository = cartRepository;
     }
 
 
@@ -123,6 +125,17 @@ public class PromoCouponInteractor implements IPromoCouponInteractor {
     public void unsubscribe() {
         if (compositeSubscription != null && compositeSubscription.hasSubscriptions())
             compositeSubscription.unsubscribe();
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public void submitVoucherMarketPlaceCartList(Observable observable, Subscriber<?> subscriber) {
+        compositeSubscription.add(
+                observable.subscribeOn(Schedulers.newThread())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .unsubscribeOn(Schedulers.newThread())
+                        .subscribe(subscriber)
+        );
     }
 
 }

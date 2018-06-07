@@ -2,7 +2,6 @@ package com.tokopedia.loyalty.di.module;
 
 import android.content.Context;
 
-import com.tokopedia.core.base.di.qualifier.ApplicationContext;
 import com.tokopedia.loyalty.di.LoyaltyScope;
 import com.tokopedia.loyalty.domain.repository.TokoPointRepository;
 import com.tokopedia.loyalty.domain.usecase.FlightCheckVoucherUseCase;
@@ -21,7 +20,7 @@ import rx.subscriptions.CompositeSubscription;
  * @author anggaprasetiyo on 29/11/17.
  */
 
-@Module(includes = {ServiceApiModule.class})
+@Module(includes = {RouterModule.class, ServiceApiModule.class, TransactionApiServiceModule.class})
 public class PromoCodeViewModule {
 
     private final IPromoCodeView view;
@@ -48,8 +47,9 @@ public class PromoCodeViewModule {
     IPromoCodePresenter provideIPromoCodePresenter(IPromoCodeInteractor promoCodeInteractor, FlightCheckVoucherUseCase flightCheckVoucherUseCase) {
         return new PromoCodePresenter(view, promoCodeInteractor, flightCheckVoucherUseCase);
     }
+
     @Provides
-    LoyaltyModuleRouter provideLoyaltyViewModule(@ApplicationContext Context context) {
+    LoyaltyModuleRouter provideLoyaltyViewModule(Context context) {
         if (context instanceof LoyaltyModuleRouter) {
             return (LoyaltyModuleRouter) context;
         }

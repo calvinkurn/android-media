@@ -1,6 +1,7 @@
 package com.tokopedia.loyalty.view.interactor;
 
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
+import com.tokopedia.core.router.transactionmodule.sharedata.CheckPromoCodeCartListResult;
 import com.tokopedia.loyalty.domain.entity.request.RequestBodyCouponRedeem;
 import com.tokopedia.loyalty.domain.entity.request.RequestBodyValidateRedeem;
 import com.tokopedia.loyalty.view.data.CouponData;
@@ -9,6 +10,7 @@ import com.tokopedia.loyalty.view.data.CouponsDataWrapper;
 
 import java.util.List;
 
+import rx.Observable;
 import rx.Subscriber;
 
 /**
@@ -49,4 +51,5 @@ public interface IPromoCouponInteractor {
 
     void unsubscribe();
 
+    void submitVoucherMarketPlaceCartList(Observable observable, Subscriber<?> subscriber);
 }

@@ -9,7 +9,6 @@ import com.google.gson.JsonParser;
 import com.tokopedia.abstraction.common.network.exception.MessageErrorException;
 import com.tokopedia.abstraction.constant.IRouterConstant;
 import com.tokopedia.core.analytics.UnifyTracking;
-import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.network.exception.HttpErrorException;
 import com.tokopedia.core.network.exception.ResponseErrorException;
@@ -22,7 +21,6 @@ import com.tokopedia.loyalty.exception.LoyaltyErrorException;
 import com.tokopedia.loyalty.exception.TokoPointResponseErrorException;
 import com.tokopedia.loyalty.router.ITkpdLoyaltyModuleRouter;
 import com.tokopedia.loyalty.router.LoyaltyModuleRouter;
-import com.tokopedia.loyalty.view.activity.LoyaltyActivity;
 import com.tokopedia.loyalty.view.data.CouponData;
 import com.tokopedia.loyalty.view.data.CouponViewModel;
 import com.tokopedia.loyalty.view.data.CouponsDataWrapper;
@@ -218,37 +216,19 @@ public class PromoCouponPresenter implements IPromoCouponPresenter {
 
     @Override
     public void submitVoucherMarketPlaceCartList(Activity activity, CouponData couponData, String paramUpdateCart) {
+        promoCouponInteractor.submitVoucherMarketPlaceCartList(
+
+        );
+
         if (activity.getApplication() instanceof ITkpdLoyaltyModuleRouter) {
             promoCouponInteractor.submitVoucherMarketPlaceCartList(
                     ((ITkpdLoyaltyModuleRouter) activity.getApplication())
-                            .tkpdLoyaltyGetCheckPromoCodeCartListResultObservable(couponData.getCode(), null),
+                            .tkpdLoyaltyGetCheckPromoCodeCartListResultObservable(
+                                    couponData.getCode(), paramUpdateCart
+                            ),
                     new Subscriber<CheckPromoCodeCartListResult>() {
                         @Override
                         public void onCompleted() {
-
-                        }
-
-                        @Override
-                        public void onError(Throwable e) {
-                            e.printStackTrace();
-                            view.hideProgressLoading();
-                            if (e instanceof TokoPointResponseErrorException || e instanceof ResponseErrorException) {
-                                view.onPromoCodeError(e.getMessage());
-                            } else view.onGetGeneralError(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
-                        }
-
-                        @Override
-                        public void onNext(CheckPromoCodeCartListResult checkPromoCodeCartListResult) {
-                            if (checkPromoCodeCartListResult.isError()) {
-                                view.onPromoCodeError(checkPromoCodeCartListResult.getErrorMessage());
-                            } else {
-                                VoucherViewModel viewModel = new VoucherViewModel();
-                                viewModel.setAmount(checkPromoCodeCartListResult.getDataVoucher().getDiscountAmount());
-                                viewModel.setMessage(checkPromoCodeCartListResult.getDataVoucher().getMessageSuccess());
-                                viewModel.setCode(checkPromoCodeCartListResult.getDataVoucher().getCode());
-                                view.hideProgressLoading();
-                                view.checkVoucherSuccessfull(viewModel);
-                            }
 
                         }
 
@@ -265,17 +245,10 @@ public class PromoCouponPresenter implements IPromoCouponPresenter {
 
                         @Override
                         public void onNext(CheckPromoCodeCartListResult checkPromoCodeCartListResult) {
-
-                            if(checkPromoCodeCartListResult.isError()){
+                            if (checkPromoCodeCartListResult.isError()) {
                                 couponData.setErrorMessage(checkPromoCodeCartListResult.getErrorMessage());
                                 view.couponError();
-                            }else {
-                                listener.onCouponSuccess(couponViewModel.getCode(),
-                                        couponViewModel.getMessage(),
-                                        couponViewModel.getAmount(),
-                                        couponViewModel.getTitle());
-
-
+                            } else {
                                 CouponViewModel couponViewModel = new CouponViewModel();
                                 couponViewModel.setCode(
                                         checkPromoCodeCartListResult.getDataVoucher().getCode()
@@ -287,13 +260,11 @@ public class PromoCouponPresenter implements IPromoCouponPresenter {
                                         checkPromoCodeCartListResult.getDataVoucher().getDiscountAmount()
                                 );
                                 couponViewModel.setTitle(
-                                        ""
+                                        couponData.getTitle()
                                 );
                                 view.receiveResult(couponViewModel);
                                 view.hideProgressLoading();
                             }
-
-
                         }
                     }
             );
@@ -413,7 +384,7 @@ public class PromoCouponPresenter implements IPromoCouponPresenter {
     }
 
     @Override
-    public void parseAndSubmitEventVoucher(String jsonbody,CouponData data) {
+    public void parseAndSubmitEventVoucher(String jsonbody, CouponData data) {
         JsonObject requestBody;
         if (jsonbody != null || jsonbody.length() > 0) {
             JsonElement jsonElement = new JsonParser().parse(jsonbody);
