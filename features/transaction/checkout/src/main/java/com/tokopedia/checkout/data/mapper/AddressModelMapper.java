@@ -78,12 +78,16 @@ public class AddressModelMapper {
         addressModel.setAddressStreet(recipientAddress.getAddressStreet());
         addressModel.setDistrictId(recipientAddress.getDestinationDistrictId());
         addressModel.setDistrictName(recipientAddress.getDestinationDistrictName());
+        addressModel.setCityId(recipientAddress.getCityId());
         addressModel.setCityName(recipientAddress.getAddressCityName());
+        addressModel.setProvinceId(recipientAddress.getProvinceId());
         addressModel.setProvinceName(recipientAddress.getAddressProvinceName());
         addressModel.setCountryName(recipientAddress.getAddressCountryName());
         addressModel.setPostalCode(recipientAddress.getAddressPostalCode());
         addressModel.setReceiverName(recipientAddress.getRecipientName());
         addressModel.setReceiverPhone(recipientAddress.getRecipientPhoneNumber());
+        addressModel.setLatitude(recipientAddress.getLatitude() != null ? String.valueOf(recipientAddress.getLatitude()) : "");
+        addressModel.setLongitude(recipientAddress.getLongitude() != null ? String.valueOf(recipientAddress.getLongitude()) : "");
 
         return addressModel;
     }
