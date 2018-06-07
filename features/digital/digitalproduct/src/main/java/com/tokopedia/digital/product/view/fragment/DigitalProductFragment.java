@@ -19,6 +19,8 @@ import android.provider.ContactsContract;
 import android.support.annotation.NonNull;
 import android.support.annotation.StringRes;
 import android.support.design.widget.Snackbar;
+import android.support.design.widget.TabLayout;
+import android.support.v4.view.PagerAdapter;
 import android.support.v4.widget.NestedScrollView;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
@@ -35,7 +37,6 @@ import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.tkpd.library.utils.LocalCacheHandler;
-import com.tokopedia.abstraction.common.utils.view.DateFormatUtils;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.BasePresenterFragment;
@@ -66,6 +67,8 @@ import com.tokopedia.digital.common.domain.interactor.GetCategoryByIdUseCase;
 import com.tokopedia.digital.common.router.DigitalModuleRouter;
 import com.tokopedia.digital.common.view.compoundview.BaseDigitalProductView;
 import com.tokopedia.digital.common.view.compoundview.ClientNumberInputView;
+import com.tokopedia.digital.product.additionalfeature.etoll.view.activity.DigitalCheckETollBalanceNFCActivity;
+import com.tokopedia.digital.product.additionalfeature.etoll.view.compoundview.CheckETollBalanceView;
 import com.tokopedia.digital.product.data.mapper.USSDMapper;
 import com.tokopedia.digital.product.data.repository.UssdCheckBalanceRepository;
 import com.tokopedia.digital.product.domain.IUssdCheckBalanceRepository;
@@ -74,14 +77,14 @@ import com.tokopedia.digital.product.domain.interactor.IProductDigitalInteractor
 import com.tokopedia.digital.product.domain.interactor.ProductDigitalInteractor;
 import com.tokopedia.digital.product.receiver.USSDBroadcastReceiver;
 import com.tokopedia.digital.product.service.USSDAccessibilityService;
-import com.tokopedia.digital.product.additionalfeature.etoll.view.activity.DigitalCheckETollBalanceNFCActivity;
 import com.tokopedia.digital.product.view.activity.DigitalChooserActivity;
 import com.tokopedia.digital.product.view.activity.DigitalSearchNumberActivity;
 import com.tokopedia.digital.product.view.activity.DigitalUssdActivity;
 import com.tokopedia.digital.product.view.activity.DigitalWebActivity;
 import com.tokopedia.digital.product.view.adapter.BannerAdapter;
-import com.tokopedia.digital.product.additionalfeature.etoll.view.compoundview.CheckETollBalanceView;
+import com.tokopedia.digital.product.view.adapter.PromoPanduanPagerAdapter;
 import com.tokopedia.digital.product.view.compoundview.CheckPulsaBalanceView;
+import com.tokopedia.digital.product.view.compoundview.DigitalWrapContentViewPager;
 import com.tokopedia.digital.product.view.listener.IProductDigitalView;
 import com.tokopedia.digital.product.view.listener.IUssdUpdateListener;
 import com.tokopedia.digital.product.view.model.BannerData;
@@ -104,9 +107,7 @@ import com.tokopedia.showcase.ShowCaseDialog;
 import com.tokopedia.showcase.ShowCaseObject;
 import com.tokopedia.showcase.ShowCasePreference;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import butterknife.BindView;
@@ -168,6 +169,10 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
     LinearLayout holderCheckBalance;
     @BindView(R2.id.holder_check_emoney_balance)
     CheckETollBalanceView checkETollBalanceView;
+    @BindView(R2.id.indicator)
+    TabLayout promoTabLayout;
+    @BindView(R2.id.pager)
+    DigitalWrapContentViewPager promoViewPager;
 
     private ProductDigitalPresenter presenter;
 
@@ -345,8 +350,10 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
 
     @Override
     protected void initView(View view) {
+        rvBanner.setVisibility(View.GONE);
         rvBanner.setLayoutManager(new LinearLayoutManagerNonScroll(getActivity()));
         mainHolderContainer.setDescendantFocusability(ViewGroup.FOCUS_BEFORE_DESCENDANTS);
+        mainHolderContainer.setFillViewport(true);
         mainHolderContainer.setFocusable(true);
         mainHolderContainer.setFocusableInTouchMode(true);
         mainHolderContainer.setOnTouchListener(new View.OnTouchListener() {
@@ -1277,6 +1284,18 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
 
     public interface ActionListener {
         void updateTitleToolbar(String title);
+    }
+
+    @Override
+    public void renderPromoPanduanTab() {
+        promoTabLayout.setupWithViewPager(promoViewPager);
+        promoViewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(promoTabLayout));
+        promoViewPager.setAdapter(getViewPagerAdapter());
+        promoViewPager.setCurrentItem(0);
+    }
+
+    private PagerAdapter getViewPagerAdapter() {
+        return new PromoPanduanPagerAdapter(getFragmentManager(), context);
     }
 
 }

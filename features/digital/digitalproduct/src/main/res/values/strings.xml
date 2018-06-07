@@ -121,4 +121,6 @@
     <string name="deny_nfc_permission">Tolak</string>
     <string name="nfc_permission_denied_message">Anda tidak memberikan izin akses untuk NFC</string>
 
+    <string name="promo_tab_title">Promo</string>
+    <string name="panduan_tab_title">Panduan</string>
 </resources>
