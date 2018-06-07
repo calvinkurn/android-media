@@ -26,6 +26,7 @@ import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.myproduct.utils.FileUtils;
 import com.tokopedia.core.network.NetworkErrorHelper;
+import com.tokopedia.imagepicker.common.util.ImageUtils;
 import com.tokopedia.imagepicker.editor.main.view.ImageEditorActivity;
 import com.tokopedia.imagepicker.picker.gallery.type.GalleryType;
 import com.tokopedia.imagepicker.picker.main.builder.ImagePickerBuilder;
@@ -744,6 +745,7 @@ public abstract class BaseProductAddEditFragment<T extends ProductAddPresenter>
             uriArrayList.add(imageSelectModelArrayList.get(i).getUriOrPath());
         }
         FileUtils.deleteAllCacheTkpdFiles(uriArrayList);
+        ImageUtils.deleteFilesInTokopediaFolder(uriArrayList);
     }
 
     public void saveDraft(boolean isUploading) {
