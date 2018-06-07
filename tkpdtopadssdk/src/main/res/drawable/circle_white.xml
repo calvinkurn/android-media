@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
     <item>
-        <shape android:shape="oval">
+        <shape android:shape="rectangle">
             <solid android:color="#08000000" />
             <padding
                 android:bottom="3px"
@@ -43,11 +43,6 @@
     <item>
         <shape android:shape="oval">
             <solid android:color="@color/white" />
-            <padding
-                android:bottom="1px"
-                android:left="1px"
-                android:right="0px"
-                android:top="0px" />
         </shape>
     </item>
 </layer-list>
