@@ -167,7 +167,7 @@ public class MultipleAddressPresenter implements IMultipleAddressPresenter {
             public void onError(Throwable e) {
                 e.printStackTrace();
                 view.hideLoading();
-                view.showError();
+                view.showError(null);
             }
 
             @Override
@@ -176,7 +176,15 @@ public class MultipleAddressPresenter implements IMultipleAddressPresenter {
                 if (setShippingAddressData.isSuccess()) {
                     view.successMakeShipmentData();
                 } else {
-                    view.showError();
+                    if (setShippingAddressData.getMessages() != null && setShippingAddressData.getMessages().size() > 0) {
+                        StringBuilder stringBuilder = new StringBuilder();
+                        for (String errorMessage : setShippingAddressData.getMessages()) {
+                            stringBuilder.append(errorMessage).append(" ");
+                        }
+                        view.showError(stringBuilder.toString());
+                    } else {
+                        view.showError(null);
+                    }
                 }
             }
         };

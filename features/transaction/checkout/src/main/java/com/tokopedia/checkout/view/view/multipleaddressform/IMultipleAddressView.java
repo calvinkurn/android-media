@@ -10,7 +10,7 @@ public interface IMultipleAddressView {
 
     void successMakeShipmentData();
 
-    void showError();
+    void showError(String message);
 
     TKPDMapParam<String, String> getGeneratedAuthParamNetwork(TKPDMapParam<String, String> param);
 

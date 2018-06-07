@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.View;
 
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
@@ -214,9 +215,12 @@ public class MultipleAddressFragment extends BaseCheckoutFragment
     }
 
     @Override
-    public void showError() {
+    public void showError(String message) {
         if (getView() != null) {
-            ToasterError.make(getView(), getActivity().getString(R.string.default_request_error_unknown), 5000)
+            if (TextUtils.isEmpty(message)) {
+                message = getActivity().getString(R.string.default_request_error_unknown);
+            }
+            ToasterError.make(getView(), message, 5000)
                     .setAction(getActivity().getString(R.string.label_action_snackbar_close), new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
