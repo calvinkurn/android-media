@@ -57,7 +57,7 @@ public class FlightMultiAirlineView extends LinearLayout {
         } else if (airlineLogoList.size() > 1) {
             View view = LayoutInflater.from(getContext()).inflate(R.layout.view_airline_logo, this, false);
             ImageView ivAirline = view.findViewById(R.id.iv_airline_logo);
-            ivAirline.setImageDrawable(ContextCompat.getDrawable(getContext(), R.drawable.ic_multi_airlines));
+            ivAirline.setImageDrawable(VectorDrawableCompat.create(getResources(), R.drawable.ic_multi_airlines, getContext().getTheme()));
             addView(ivAirline);
         } else if (airlineLogoList.size() == 1) {
             View view = LayoutInflater.from(getContext()).inflate(R.layout.view_airline_logo, this, false);

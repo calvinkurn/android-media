@@ -20,6 +20,7 @@ import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.seller.SellerModuleRouter;
 import com.tokopedia.sellerapp.R;
 import com.tokopedia.sellerapp.SellerRouterApplication;
+import android.support.graphics.drawable.VectorDrawableCompat;
 
 public class OnBoardingSellerFragment extends OnBoardingFragment {
 
