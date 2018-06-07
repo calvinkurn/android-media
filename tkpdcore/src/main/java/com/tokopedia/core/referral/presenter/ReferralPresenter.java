@@ -29,6 +29,7 @@ import com.tokopedia.core.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.core.remoteconfig.RemoteConfig;
 import com.tokopedia.core.router.wallet.IWalletRouter;
 import com.tokopedia.core.router.wallet.WalletRouterUtil;
+import com.tokopedia.core.share.DefaultShare;
 import com.tokopedia.core.share.ShareBottomSheet;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdCache;
@@ -97,7 +98,8 @@ public class ReferralPresenter extends BaseDaggerPresenter<ReferralView> impleme
                 .setUri(Constants.WEB_PLAYSTORE_BUYER_APP_URL)
                 .build();
 
-        ShareBottomSheet.show(fragmentManager, shareData);
+        new DefaultShare(activity, shareData).show();
+//        ShareBottomSheet.show(fragmentManager, shareData);
         TrackingUtils.sendMoEngageReferralScreenOpen(activity.getString(R.string.referral_share_screen_name));
     }
 

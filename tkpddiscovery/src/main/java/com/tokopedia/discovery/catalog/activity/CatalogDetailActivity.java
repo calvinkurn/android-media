@@ -18,6 +18,7 @@ import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.product.model.share.ShareData;
 import com.tokopedia.core.router.SellerAppRouter;
 import com.tokopedia.core.router.home.HomeRouter;
+import com.tokopedia.core.share.DefaultShare;
 import com.tokopedia.core.share.ShareBottomSheet;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.discovery.catalog.fragment.CatalogDetailFragment;
@@ -146,7 +147,8 @@ public class CatalogDetailActivity extends BasePresenterActivity implements ICat
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == com.tokopedia.discovery.R.id.action_share_prod) {
             if (shareData != null)
-                ShareBottomSheet.show(getSupportFragmentManager(), shareData);
+                new DefaultShare(this, shareData).show();
+//                ShareBottomSheet.show(getSupportFragmentManager(), shareData);
             else NetworkErrorHelper.showSnackbar(this, "Data katalog belum tersedia");
             return true;
         }

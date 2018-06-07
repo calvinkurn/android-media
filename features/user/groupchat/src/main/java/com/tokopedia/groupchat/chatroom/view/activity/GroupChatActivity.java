@@ -435,7 +435,7 @@ public class GroupChatActivity extends BaseSimpleActivity
         String description = String.format("%s %s", String.format(getString(R.string.lets_join_channel),
                 viewModel.getChannelName()), link);
 
-        ((GroupChatModuleRouter) getApplication()).shareGroupChat(getSupportFragmentManager(),
+        ((GroupChatModuleRouter) getApplication()).shareGroupChat(this,
                 viewModel.getChannelUuid(), viewModel.getChannelName(), description,
                 viewModel.getChannelInfoViewModel().getBannerUrl(), viewModel.getChannelUrl());
     }

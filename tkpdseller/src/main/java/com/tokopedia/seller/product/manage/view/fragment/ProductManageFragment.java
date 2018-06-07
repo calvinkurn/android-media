@@ -39,6 +39,7 @@ import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.product.model.share.ShareData;
 import com.tokopedia.core.router.productdetail.PdpRouter;
+import com.tokopedia.core.share.DefaultShare;
 import com.tokopedia.core.share.ShareBottomSheet;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.var.TkpdState;
@@ -779,7 +780,8 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
                 .setType(ShareData.PRODUCT_TYPE)
                 .setId(productManageViewModel.getProductId())
                 .build();
-        ShareBottomSheet.show(getFragmentManager(), shareData);
+        new DefaultShare(getActivity(), shareData).show();
+//        ShareBottomSheet.show(getFragmentManager(), shareData);
     }
 
     private void showDialogChangeProductPrice(final String productId, String productPrice, @CurrencyTypeDef int productCurrencyId) {
