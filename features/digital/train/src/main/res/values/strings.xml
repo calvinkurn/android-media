@@ -52,4 +52,5 @@
     <string name="train_homepage_origin_hint">Kota/Stasiun Asal</string>
     <string name="train_homepage_destination_label">Tujuan</string>
     <string name="train_homepage_destination_hint">Kota/Statiun Tujuan</string>
+    <string name="train_station_all_station_label">Semua Stasiun</string>
 </resources>

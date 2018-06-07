@@ -9,7 +9,7 @@ import com.tokopedia.abstraction.common.di.component.HasComponent;
 import com.tokopedia.train.common.di.utils.TrainComponentUtils;
 import com.tokopedia.train.station.di.DaggerTrainStationsComponent;
 import com.tokopedia.train.station.di.TrainStationsComponent;
-import com.tokopedia.train.station.presentation.adapter.viewmodel.TrainStationViewModel;
+import com.tokopedia.train.station.presentation.adapter.viewmodel.TrainStationAndCityViewModel;
 
 /**
  * Created by alvarisi on 3/5/18.
@@ -38,7 +38,7 @@ public class TrainStationsActivity extends BaseSimpleActivity implements HasComp
     }
 
     @Override
-    public void onStationClicked(TrainStationViewModel viewModel) {
+    public void onStationClicked(TrainStationAndCityViewModel viewModel) {
         Intent intent = getIntent();
         intent.putExtra(EXTRA_SELECTED_STATION, viewModel);
         setResult(RESULT_OK, intent);

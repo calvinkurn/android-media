@@ -1,5 +1,6 @@
 package com.tokopedia.train.station.presentation.adapter.viewholder.listener;
 
+import com.tokopedia.train.station.presentation.adapter.viewmodel.TrainStationCityViewModel;
 import com.tokopedia.train.station.presentation.adapter.viewmodel.TrainStationViewModel;
 
 /**
@@ -8,4 +9,6 @@ import com.tokopedia.train.station.presentation.adapter.viewmodel.TrainStationVi
 
 public interface TrainStationActionListener {
     void onStationClicked(TrainStationViewModel viewModel);
+
+    void onCityClicked(TrainStationCityViewModel element);
 }

@@ -6,6 +6,7 @@ import com.tokopedia.abstraction.base.view.adapter.factory.AdapterTypeFactory;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.train.station.presentation.adapter.viewmodel.TrainAllStationsViewModel;
 import com.tokopedia.train.station.presentation.adapter.viewmodel.TrainPopularStationViewModel;
+import com.tokopedia.train.station.presentation.adapter.viewmodel.TrainStationCityViewModel;
 import com.tokopedia.train.station.presentation.adapter.viewmodel.TrainStationGroupViewModel;
 import com.tokopedia.train.station.presentation.adapter.viewmodel.TrainStationViewModel;
 import com.tokopedia.train.station.presentation.adapter.viewmodel.TrainStationsCityGroupViewModel;
@@ -26,4 +27,6 @@ public interface TrainStationTypeFactory extends AdapterTypeFactory {
     int type(TrainStationGroupViewModel trainStationGroupViewModel);
 
     int type(TrainAllStationsViewModel trainAllStationsViewModel);
+
+    int type(TrainStationCityViewModel trainStationCityViewModel);
 }

@@ -6,12 +6,13 @@ import com.tokopedia.train.station.domain.TrainGetAllStationsUseCase;
 import com.tokopedia.train.station.domain.TrainGetPopularStationsUseCase;
 import com.tokopedia.train.station.domain.TrainGetStationCitiesByKeywordUseCase;
 import com.tokopedia.train.station.domain.TrainGetStationsByKeywordUseCase;
-import com.tokopedia.train.station.domain.model.TrainStation;
 import com.tokopedia.train.station.presentation.adapter.viewmodel.TrainAllStationsViewModel;
 import com.tokopedia.train.station.presentation.adapter.viewmodel.TrainPopularStationViewModel;
+import com.tokopedia.train.station.presentation.adapter.viewmodel.TrainStationCityViewModel;
 import com.tokopedia.train.station.presentation.adapter.viewmodel.TrainStationGroupViewModel;
 import com.tokopedia.train.station.presentation.adapter.viewmodel.TrainStationViewModel;
 import com.tokopedia.train.station.presentation.adapter.viewmodel.TrainStationsCityGroupViewModel;
+import com.tokopedia.train.station.presentation.adapter.viewmodel.mapper.TrainStationCityViewModelMapper;
 import com.tokopedia.train.station.presentation.adapter.viewmodel.mapper.TrainStationViewModelMapper;
 import com.tokopedia.train.station.presentation.contract.TrainStationsContract;
 import com.tokopedia.usecase.RequestParams;
@@ -23,8 +24,6 @@ import javax.inject.Inject;
 
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Func1;
-import rx.functions.Func2;
 import rx.schedulers.Schedulers;
 
 /**
@@ -38,103 +37,87 @@ public class TrainStationsPresenter extends BaseDaggerPresenter<TrainStationsCon
     private TrainGetStationCitiesByKeywordUseCase trainGetStationCitiesByKeywordUseCase;
     private TrainGetAllStationsUseCase trainGetAllStationsUseCase;
     private TrainStationViewModelMapper trainStationViewModelMapper;
+    private TrainStationCityViewModelMapper trainStationCityViewModelMapper;
 
     @Inject
     public TrainStationsPresenter(TrainGetStationsByKeywordUseCase trainGetStationsByKeywordUseCase,
                                   TrainGetPopularStationsUseCase trainGetPopularStationsUseCase,
                                   TrainGetStationCitiesByKeywordUseCase trainGetStationCitiesByKeywordUseCase,
-                                  TrainGetAllStationsUseCase trainGetAllStationsUseCase, TrainStationViewModelMapper trainStationViewModelMapper) {
+                                  TrainGetAllStationsUseCase trainGetAllStationsUseCase,
+                                  TrainStationViewModelMapper trainStationViewModelMapper,
+                                  TrainStationCityViewModelMapper trainStationCityViewModelMapper) {
         this.trainGetStationsByKeywordUseCase = trainGetStationsByKeywordUseCase;
         this.trainGetPopularStationsUseCase = trainGetPopularStationsUseCase;
         this.trainGetStationCitiesByKeywordUseCase = trainGetStationCitiesByKeywordUseCase;
         this.trainGetAllStationsUseCase = trainGetAllStationsUseCase;
         this.trainStationViewModelMapper = trainStationViewModelMapper;
+        this.trainStationCityViewModelMapper = trainStationCityViewModelMapper;
     }
 
     @Override
     public void actionOnInitialLoad() {
         trainGetPopularStationsUseCase.createObservable(trainGetPopularStationsUseCase.createRequest())
-                .onErrorReturn(new Func1<Throwable, List<TrainStation>>() {
-                    @Override
-                    public List<TrainStation> call(Throwable throwable) {
-                        return new ArrayList<>();
-                    }
-                }).zipWith(trainGetAllStationsUseCase.createObservable(RequestParams.create()), new Func2<List<TrainStation>, List<TrainStation>, List<Visitable>>() {
-            @Override
-            public List<Visitable> call(List<TrainStation> trainStations, List<TrainStation> allStations) {
-                List<Visitable> visitables = new ArrayList<>();
-                TrainPopularStationViewModel viewModel = new TrainPopularStationViewModel();
-                viewModel.setStations(trainStationViewModelMapper.transform(trainStations));
-                visitables.add(viewModel);
-                visitables.add(new TrainAllStationsViewModel());
-                visitables.addAll(trainStationViewModelMapper.transform(allStations));
-                return visitables;
-            }
-        }).subscribeOn(Schedulers.io())
+                .onErrorReturn(throwable -> new ArrayList<>()).zipWith(trainGetAllStationsUseCase.createObservable(RequestParams.create()), (trainStations, allStations) -> {
+                    List<Visitable> visitables = new ArrayList<>();
+                    TrainPopularStationViewModel viewModel = new TrainPopularStationViewModel();
+                    viewModel.setStations(trainStationViewModelMapper.transform(trainStations));
+                    visitables.add(viewModel);
+                    visitables.add(new TrainAllStationsViewModel());
+                    visitables.addAll(trainStationViewModelMapper.transform(allStations));
+                    return visitables;
+                }).subscribeOn(Schedulers.io())
                 .unsubscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Subscriber<List<Visitable>>() {
-            @Override
-            public void onCompleted() {
+                    @Override
+                    public void onCompleted() {
 
-            }
+                    }
 
-            @Override
-            public void onError(Throwable e) {
-                e.printStackTrace();
+                    @Override
+                    public void onError(Throwable e) {
+                        e.printStackTrace();
 
-            }
+                    }
 
-            @Override
-            public void onNext(List<Visitable> visitables) {
-                getView().hideLoading();
-                getView().renderStationList(visitables);
-            }
-        });
+                    @Override
+                    public void onNext(List<Visitable> visitables) {
+                        getView().hideLoading();
+                        getView().renderStationList(visitables);
+                    }
+                });
     }
 
     @Override
     public void onKeywordChange(String keyword) {
         getView().clearStationList();
         getView().showLoading();
-        if (keyword.length() > 2) {
+        if (keyword.length() > 0) {
             trainGetStationsByKeywordUseCase.createObservable(trainGetStationsByKeywordUseCase.createRequest(keyword))
-                    .onErrorReturn(new Func1<Throwable, List<TrainStation>>() {
-                        @Override
-                        public List<TrainStation> call(Throwable throwable) {
-                            return new ArrayList<>();
-                        }
-                    })
+                    .onErrorReturn(throwable -> new ArrayList<>())
                     .zipWith(
                             trainGetStationCitiesByKeywordUseCase.createObservable(trainGetStationCitiesByKeywordUseCase.createRequest(keyword))
-                                    .onErrorReturn(new Func1<Throwable, List<TrainStation>>() {
-                                        @Override
-                                        public List<TrainStation> call(Throwable throwable) {
-                                            return new ArrayList<>();
-                                        }
-                                    }),
-                            new Func2<List<TrainStation>, List<TrainStation>, List<Visitable>>() {
-                                @Override
-                                public List<Visitable> call(List<TrainStation> stations, List<TrainStation> stationCities) {
-                                    List<Visitable> visitables = new ArrayList<>();
+                                    .onErrorReturn(throwable -> new ArrayList<>()),
+                            (stations, stationCities) -> {
+                                List<Visitable> visitables = new ArrayList<>();
 
-                                    if (stationCities.size() > 0) {
-                                        List<TrainStationViewModel> viewModels = trainStationViewModelMapper.transform(stationCities);
-                                        TrainStationsCityGroupViewModel cityGroupViewModel = new TrainStationsCityGroupViewModel();
-                                        cityGroupViewModel.setCities(new ArrayList<>());
-                                        visitables.add(cityGroupViewModel);
-                                        visitables.addAll(viewModels);
-                                    }
-                                    if (stations.size() > 0) {
-                                        List<TrainStationViewModel> viewModels = trainStationViewModelMapper.transform(stations);
-                                        TrainStationGroupViewModel stationGroupViewModel = new TrainStationGroupViewModel();
-                                        stationGroupViewModel.setStations(new ArrayList<>());
-                                        visitables.add(stationGroupViewModel);
-                                        visitables.addAll(viewModels);
-                                    }
-
-                                    return visitables;
+                                if (stationCities.size() > 0) {
+                                    List<TrainStationCityViewModel> viewModels = trainStationCityViewModelMapper.transform(stationCities);
+                                    TrainStationsCityGroupViewModel cityGroupViewModel = new TrainStationsCityGroupViewModel();
+                                    cityGroupViewModel.setCities(new ArrayList<>());
+                                    visitables.add(cityGroupViewModel);
+                                    visitables.addAll(viewModels);
                                 }
+
+                                if (stations.size() > 0) {
+                                    List<TrainStationViewModel> viewModels = trainStationViewModelMapper.transform(stations);
+                                    TrainStationGroupViewModel stationGroupViewModel = new TrainStationGroupViewModel();
+                                    stationGroupViewModel.setStations(new ArrayList<>());
+                                    visitables.add(stationGroupViewModel);
+                                    visitables.addAll(viewModels);
+                                }
+
+                                return visitables;
                             }
                     ).subscribe(new Subscriber<List<Visitable>>() {
                 @Override
@@ -153,7 +136,7 @@ public class TrainStationsPresenter extends BaseDaggerPresenter<TrainStationsCon
                     getView().renderStationList(visitables);
                 }
             });
-        } else if (keyword.length() == 0) {
+        } else {
             actionOnInitialLoad();
         }
     }

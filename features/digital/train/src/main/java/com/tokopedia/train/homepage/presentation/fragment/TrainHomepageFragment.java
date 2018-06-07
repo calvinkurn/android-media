@@ -30,7 +30,7 @@ import com.tokopedia.train.homepage.presentation.model.TrainSearchPassDataViewMo
 import com.tokopedia.train.homepage.presentation.presenter.TrainHomepagePresenterImpl;
 import com.tokopedia.train.search.presentation.activity.TrainSearchDepartureActivity;
 import com.tokopedia.train.station.presentation.TrainStationsActivity;
-import com.tokopedia.train.station.presentation.adapter.viewmodel.TrainStationViewModel;
+import com.tokopedia.train.station.presentation.adapter.viewmodel.TrainStationAndCityViewModel;
 import com.tokopedia.travelcalendar.view.TravelCalendarActivity;
 
 import java.util.Calendar;
@@ -305,13 +305,13 @@ public class TrainHomepageFragment extends BaseDaggerFragment implements TrainHo
         switch (requestCode) {
             case ORIGIN_STATION_REQUEST_CODE:
                 if (resultCode == Activity.RESULT_OK) {
-                    TrainStationViewModel viewModel = data.getParcelableExtra(TrainStationsActivity.EXTRA_SELECTED_STATION);
+                    TrainStationAndCityViewModel viewModel = data.getParcelableExtra(TrainStationsActivity.EXTRA_SELECTED_STATION);
                     trainHomepagePresenterImpl.onOriginStationChanged(viewModel);
                 }
                 break;
             case DESTINATION_STATION_REQUEST_CODE:
                 if (resultCode == Activity.RESULT_OK) {
-                    TrainStationViewModel viewModel = data.getParcelableExtra(TrainStationsActivity.EXTRA_SELECTED_STATION);
+                    TrainStationAndCityViewModel viewModel = data.getParcelableExtra(TrainStationsActivity.EXTRA_SELECTED_STATION);
                     trainHomepagePresenterImpl.onDepartureStationChanged(viewModel);
                 }
                 break;

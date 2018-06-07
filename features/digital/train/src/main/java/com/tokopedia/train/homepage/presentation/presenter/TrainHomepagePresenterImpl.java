@@ -9,7 +9,7 @@ import com.tokopedia.train.homepage.presentation.listener.TrainHomepageView;
 import com.tokopedia.train.homepage.presentation.model.TrainHomepageViewModel;
 import com.tokopedia.train.homepage.presentation.model.TrainPassengerViewModel;
 import com.tokopedia.train.homepage.presentation.model.TrainSearchPassDataViewModel;
-import com.tokopedia.train.station.presentation.adapter.viewmodel.TrainStationViewModel;
+import com.tokopedia.train.station.presentation.adapter.viewmodel.TrainStationAndCityViewModel;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -125,7 +125,7 @@ public class TrainHomepagePresenterImpl extends BaseDaggerPresenter<TrainHomepag
     }
 
     @Override
-    public void onOriginStationChanged(TrainStationViewModel viewModel) {
+    public void onOriginStationChanged(TrainStationAndCityViewModel viewModel) {
         TrainHomepageViewModel homepageViewModel = getView().getHomepageViewModel();
         homepageViewModel.setOriginStation(viewModel);
         getView().setHomepageViewModel(homepageViewModel);
@@ -133,7 +133,7 @@ public class TrainHomepagePresenterImpl extends BaseDaggerPresenter<TrainHomepag
     }
 
     @Override
-    public void onDepartureStationChanged(TrainStationViewModel viewModel) {
+    public void onDepartureStationChanged(TrainStationAndCityViewModel viewModel) {
         TrainHomepageViewModel homepageViewModel = getView().getHomepageViewModel();
         homepageViewModel.setDestinationStation(viewModel);
         getView().setHomepageViewModel(homepageViewModel);
