@@ -156,6 +156,7 @@ public interface AppEventTracking {
         String EVENT_MANAGE_PRODUCT = "eventManageProduct";
 
         String EVENT_CLICK_USER_PROFILE = "clickUserProfile";
+        String EVENT_CLICK_PROFILE = "eventClickProfile";
         String EVENT_INTERNAL_PROMO = "internalPromo";
         String EVENT_INTERNAL_PROMO_MULTI = "internalPromoEvent";
         String EVENT_CLICK_HOME_DIGITAL_WIDGET = "clickHomeDigitalWidget";
@@ -297,6 +298,7 @@ public interface AppEventTracking {
         String ONBOARDING = "onboarding";
         String RESOLUTION_CENTER = "resolution center";
         String MANAGE_PROFILE = "pengaturan profile";
+        String PROFILE_PAGE = "profile page";
         String RESOLUTION_CENTER_CHAT = "resolution chat";
 
         String PROMO_MICROSITE_PROMO_LIST = "promo microsite - promo list";
