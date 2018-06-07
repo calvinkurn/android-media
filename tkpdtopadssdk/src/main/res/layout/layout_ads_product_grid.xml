@@ -173,7 +173,7 @@
         android:textColor="#279ba4"
         android:textSize="@dimen/text_size_xsmall"
         android:visibility="gone"
-        tools:text="Baru" />
+        android:text="@string/baru" />
 
     <com.tokopedia.topads.sdk.view.FlowLayout
         android:id="@id/label_container"
