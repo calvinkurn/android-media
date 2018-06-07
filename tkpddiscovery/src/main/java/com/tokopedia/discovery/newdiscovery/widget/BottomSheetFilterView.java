@@ -259,7 +259,10 @@ public class BottomSheetFilterView extends BaseCustomView implements BottomSheet
         List<Option> checkedOptions = new ArrayList<>();
 
         for (Option option : filter.getOptions()) {
-            if (Boolean.TRUE.equals(shownInMainState.get(option.getUniqueId())) && !option.isPopular()) {
+            boolean isDisplayed = Boolean.TRUE.equals(loadLastCheckedState(option))
+                    || Boolean.TRUE.equals(shownInMainState.get(option.getUniqueId()));
+
+            if (isDisplayed && !option.isPopular()) {
                 checkedOptions.add(option);
             }
         }
