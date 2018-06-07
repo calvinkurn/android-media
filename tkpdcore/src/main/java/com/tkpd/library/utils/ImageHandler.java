@@ -25,6 +25,7 @@ import com.bumptech.glide.load.resource.drawable.GlideDrawable;
 import com.bumptech.glide.request.FutureTarget;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.SimpleTarget;
+import com.tokopedia.abstraction.common.utils.view.CommonUtils;
 import com.tokopedia.core.R;
 import com.tokopedia.core.gcm.BuildAndShowNotification;
 
@@ -444,6 +445,10 @@ public class ImageHandler extends com.tokopedia.abstraction.common.utils.image.I
     }
 
     private static boolean isContextValid(Context context) {
-        return (context instanceof Activity && !((Activity) context).isFinishing()) || context instanceof Application;
+        Context tempContext = context;
+        if (android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.LOLLIPOP){
+           tempContext = CommonUtils.getActivity(context);
+        }
+        return (tempContext instanceof Activity && !((Activity) tempContext).isFinishing()) || tempContext instanceof Application;
     }
 }
