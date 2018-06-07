@@ -24,12 +24,14 @@ public class InstagramMediaMapper  {
         InstagramMediaResponse instagramMediaResponse = new InstagramMediaResponse();
         List<InstagramMediaModel> instagramMediaModels = new ArrayList<>();
         for(MediaInstagram mediaInstagram : responseListMediaInstagram.getData()){
+            //TODO caption for next sprint
             InstagramMediaModel instagramMediaModel = new InstagramMediaModel(
                     mediaInstagram.getId(),
                     mediaInstagram.getImages().getThumbnail().getUrl(),
                     mediaInstagram.getImages().getStandardResolution().getUrl(),
                     mediaInstagram.getImages().getStandardResolution().getWidth(),
-                    mediaInstagram.getImages().getStandardResolution().getHeight());
+                    mediaInstagram.getImages().getStandardResolution().getHeight(),
+                    "");
             instagramMediaModels.add(instagramMediaModel);
         }
         instagramMediaResponse.setInstagramMediaModels(instagramMediaModels);

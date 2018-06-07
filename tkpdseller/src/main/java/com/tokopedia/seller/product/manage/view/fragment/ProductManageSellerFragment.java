@@ -1,7 +1,6 @@
 package com.tokopedia.seller.product.manage.view.fragment;
 
 import android.Manifest;
-import android.app.Activity;
 import android.app.ActivityManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -14,26 +13,16 @@ import android.widget.TextView;
 
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
-import com.tokopedia.core.app.TkpdCoreRouter;
-import com.tokopedia.core.instoped.model.InstagramMediaModel;
-import com.tokopedia.core.newgallery.GalleryActivity;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.seller.R;
-import com.tokopedia.seller.SellerModuleRouter;
-import com.tokopedia.seller.common.imageeditor.GalleryCropActivity;
-import com.tokopedia.seller.instoped.InstopedSellerActivity;
 import com.tokopedia.seller.instoped.InstopedSellerCropWatermarkActivity;
-import com.tokopedia.seller.instoped.InstopedSellerCropperActivity;
 import com.tokopedia.seller.product.common.di.component.ProductComponent;
 import com.tokopedia.seller.product.draft.di.component.DaggerProductDraftListCountComponent;
 import com.tokopedia.seller.product.draft.di.module.ProductDraftListCountModule;
 import com.tokopedia.seller.product.draft.view.activity.ProductDraftListActivity;
 import com.tokopedia.seller.product.draft.view.listener.ProductDraftListCountView;
 import com.tokopedia.seller.product.draft.view.presenter.ProductDraftListCountPresenter;
-import com.tokopedia.seller.product.edit.view.activity.ProductAddActivity;
 import com.tokopedia.seller.product.edit.view.service.UploadProductService;
-
-import java.util.ArrayList;
 
 import javax.inject.Inject;
 
@@ -94,15 +83,7 @@ public class ProductManageSellerFragment extends ProductManageFragment implement
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent intent) {
-        if (requestCode == INSTAGRAM_SELECT_REQUEST_CODE && resultCode == Activity.RESULT_OK && intent != null) {
-            ArrayList<String> imageUrls = intent.getStringArrayListExtra(GalleryActivity.IMAGE_URLS);
-            ArrayList<String> imageDescList = intent.getStringArrayListExtra(InstopedSellerActivity.EXTRA_IMAGE_DESC_LIST);
-            if (imageUrls != null) {
-                ProductDraftListActivity.startInstagramSaveBulkFromLocal(getContext(), imageUrls, imageDescList);
-            }
-        } else {
-            super.onActivityResult(requestCode, resultCode, intent);
-        }
+        super.onActivityResult(requestCode, resultCode, intent);
     }
 
     @Override
