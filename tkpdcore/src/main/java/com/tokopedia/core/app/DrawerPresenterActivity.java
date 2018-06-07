@@ -158,7 +158,7 @@ public abstract class DrawerPresenterActivity<T> extends BasePresenterActivity
         drawerHelper.initDrawer(this);
         drawerHelper.setEnabled(true);
         drawerHelper.setSelectedPosition(setDrawerPosition());
-        drawerDataManager = DrawerInjector.getDrawerDataManager(this, this, sessionHandler, drawerCache);
+        drawerDataManager = DrawerInjector.getDrawerDataManager(this, this, drawerCache);
     }
 
     protected void getDrawerUserAttrUseCase(SessionHandler sessionHandler) {

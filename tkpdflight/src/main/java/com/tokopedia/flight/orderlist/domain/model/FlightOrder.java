@@ -29,6 +29,7 @@ public class FlightOrder {
     private PaymentInfoEntity payment;
     private List<CancellationEntity> cancellations;
     private List<FlightInsurance> insurances;
+    private int cancelledPassengerCount;
 
     public FlightOrder() {
     }
@@ -183,5 +184,13 @@ public class FlightOrder {
 
     public void setInsurances(List<FlightInsurance> insurances) {
         this.insurances = insurances;
+    }
+
+    public int getCancelledPassengerCount() {
+        return cancelledPassengerCount;
+    }
+
+    public void setCancelledPassengerCount(int cancelledPassengerCount) {
+        this.cancelledPassengerCount = cancelledPassengerCount;
     }
 }
