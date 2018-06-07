@@ -10,7 +10,7 @@ import com.tokopedia.train.station.data.databasetable.TrainStationDb_Table;
  * @author by alvarisi on 3/12/18.
  */
 
-public class TrainStationCityByKeywordSpecification implements DbFlowSpecification, DbFlowGroupBySpecification {
+public class TrainStationCityByKeywordSpecification extends TrainStationSpecification implements DbFlowSpecification, DbFlowGroupBySpecification {
 
     private String keyword;
 

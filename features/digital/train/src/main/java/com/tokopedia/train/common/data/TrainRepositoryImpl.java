@@ -7,8 +7,8 @@ import com.tokopedia.train.search.data.specification.TrainAvailabilitySearchSpec
 import com.tokopedia.train.search.data.specification.TrainDetailScheduleSpecification;
 import com.tokopedia.train.search.data.specification.TrainScheduleSpecification;
 import com.tokopedia.train.search.domain.FilterParam;
-import com.tokopedia.train.search.presentation.model.FilterSearchData;
 import com.tokopedia.train.search.presentation.model.AvailabilityKeySchedule;
+import com.tokopedia.train.search.presentation.model.FilterSearchData;
 import com.tokopedia.train.search.presentation.model.TrainScheduleViewModel;
 import com.tokopedia.train.seat.data.TrainSeatCloudDataStore;
 import com.tokopedia.train.seat.data.entity.TrainSeatMapEntity;
@@ -17,6 +17,7 @@ import com.tokopedia.train.station.data.TrainStationDataStoreFactory;
 import com.tokopedia.train.station.data.specification.TrainPopularStationSpecification;
 import com.tokopedia.train.station.data.specification.TrainStationByKeywordSpecification;
 import com.tokopedia.train.station.data.specification.TrainStationCityByKeywordSpecification;
+import com.tokopedia.train.station.data.specification.TrainStationSpecification;
 import com.tokopedia.train.station.domain.model.TrainStation;
 
 import java.util.HashMap;
@@ -46,6 +47,11 @@ public class TrainRepositoryImpl implements TrainRepository {
     @Override
     public Observable<List<TrainStation>> getPopularStations() {
         return trainStationDataStoreFactory.getStations(new TrainPopularStationSpecification());
+    }
+
+    @Override
+    public Observable<List<TrainStation>> getAllStations() {
+        return trainStationDataStoreFactory.getStations(new TrainStationSpecification());
     }
 
     @Override

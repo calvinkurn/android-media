@@ -1,6 +1,7 @@
 package com.tokopedia.train.station.di;
 
 import com.tokopedia.train.common.domain.TrainRepository;
+import com.tokopedia.train.station.domain.TrainGetAllStationsUseCase;
 import com.tokopedia.train.station.domain.TrainGetPopularStationsUseCase;
 import com.tokopedia.train.station.domain.TrainGetStationCitiesByKeywordUseCase;
 import com.tokopedia.train.station.domain.TrainGetStationsByKeywordUseCase;
@@ -26,5 +27,9 @@ public class TrainStationModule {
     @Provides
     TrainGetStationCitiesByKeywordUseCase provideTrainGetStationCitiesByKeywordUseCase(TrainRepository trainRepository) {
         return new TrainGetStationCitiesByKeywordUseCase(trainRepository);
+    }
+    @Provides
+    TrainGetAllStationsUseCase provideTrainGetAllStationsUseCase(TrainRepository trainRepository) {
+        return new TrainGetAllStationsUseCase(trainRepository);
     }
 }
