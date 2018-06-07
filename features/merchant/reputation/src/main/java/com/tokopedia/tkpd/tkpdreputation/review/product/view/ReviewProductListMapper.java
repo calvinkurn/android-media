@@ -71,7 +71,11 @@ public class ReviewProductListMapper {
             productReviewModelContent.setReviewerId(String.valueOf(review.getUser().getUserId()));
             productReviewModelContent.setReviewAttachment(generateImageAttachmentModel(review));
             productReviewModelContent.setReviewIsAnonymous(review.getReviewAnonymous() == 1);
-            productReviewModelContent.setReviewStar(review.getProductRating());
+            float productRating = review.getProductRating();
+            if(productRating > 5){
+                productRating = productRating / 20;
+            }
+            productReviewModelContent.setReviewStar(productRating);
             productReviewModelContent.setSellerName(dataResponseReviewHelpful.getOwner().getUser().getUserFullName());
             productReviewModelContent.setReviewTime(getReviewCreateTime(review));
             productReviewModelContent.setReviewMessage(review.getReviewMessage());
