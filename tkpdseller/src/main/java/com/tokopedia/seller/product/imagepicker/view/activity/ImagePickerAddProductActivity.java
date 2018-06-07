@@ -37,9 +37,9 @@ public class ImagePickerAddProductActivity extends ImagePickerActivity implement
     @NonNull
     @Override
     protected ImagePickerViewPagerAdapter getImagePickerViewPagerAdapter() {
-        if(!TextUtils.isEmpty(catalogId)) {
+        if (!TextUtils.isEmpty(catalogId)) {
             return new ImagePickerViewPageAddProductAdapter(this, getSupportFragmentManager(), imagePickerBuilder, catalogId);
-        }else{
+        } else {
             return super.getImagePickerViewPagerAdapter();
         }
     }

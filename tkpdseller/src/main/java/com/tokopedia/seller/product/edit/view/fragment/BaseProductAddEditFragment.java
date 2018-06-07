@@ -27,12 +27,6 @@ import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.myproduct.utils.FileUtils;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.imagepicker.common.util.ImageUtils;
-import com.tokopedia.imagepicker.editor.main.view.ImageEditorActivity;
-import com.tokopedia.imagepicker.picker.gallery.type.GalleryType;
-import com.tokopedia.imagepicker.picker.main.builder.ImagePickerBuilder;
-import com.tokopedia.imagepicker.picker.main.builder.ImagePickerEditorBuilder;
-import com.tokopedia.imagepicker.picker.main.builder.ImagePickerMultipleSelectionBuilder;
-import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.SellerModuleRouter;
 import com.tokopedia.seller.common.widget.LabelSwitch;
@@ -54,6 +48,7 @@ import com.tokopedia.seller.product.edit.view.holder.ProductInfoViewHolder;
 import com.tokopedia.seller.product.edit.view.holder.ProductManageViewHolder;
 import com.tokopedia.seller.product.edit.view.holder.ProductPriceViewHolder;
 import com.tokopedia.seller.product.edit.view.holder.ProductScoreViewHolder;
+import com.tokopedia.seller.product.edit.view.imagepickerbuilder.AddProductImagePickerBuilder;
 import com.tokopedia.seller.product.edit.view.listener.ProductAddView;
 import com.tokopedia.seller.product.edit.view.listener.YoutubeAddVideoView;
 import com.tokopedia.seller.product.edit.view.mapper.AnalyticsMapper;
@@ -69,7 +64,6 @@ import com.tokopedia.seller.product.edit.view.model.upload.intdef.ProductStatus;
 import com.tokopedia.seller.product.edit.view.presenter.ProductAddPresenter;
 import com.tokopedia.seller.product.edit.view.widget.ImagesSelectView;
 import com.tokopedia.seller.product.etalase.view.activity.EtalasePickerActivity;
-import com.tokopedia.seller.product.imagepicker.view.activity.ImagePickerAddProductActivity;
 import com.tokopedia.seller.product.variant.data.model.variantbycat.ProductVariantByCatModel;
 import com.tokopedia.seller.product.variant.data.model.variantbyprd.ProductVariantViewModel;
 import com.tokopedia.seller.product.variant.view.activity.ProductVariantDashboardActivity;
@@ -78,17 +72,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
-
-import static com.tokopedia.imagepicker.picker.main.builder.ImageEditActionTypeDef.ACTION_BRIGHTNESS;
-import static com.tokopedia.imagepicker.picker.main.builder.ImageEditActionTypeDef.ACTION_CONTRAST;
-import static com.tokopedia.imagepicker.picker.main.builder.ImageEditActionTypeDef.ACTION_CROP;
-import static com.tokopedia.imagepicker.picker.main.builder.ImageEditActionTypeDef.ACTION_ROTATE;
-import static com.tokopedia.imagepicker.picker.main.builder.ImagePickerBuilder.DEFAULT_MAX_IMAGE_SIZE_IN_KB;
-import static com.tokopedia.imagepicker.picker.main.builder.ImagePickerBuilder.DEFAULT_MIN_RESOLUTION;
-import static com.tokopedia.imagepicker.picker.main.builder.ImagePickerTabTypeDef.TYPE_CAMERA;
-import static com.tokopedia.imagepicker.picker.main.builder.ImagePickerTabTypeDef.TYPE_GALLERY;
-import static com.tokopedia.imagepicker.picker.main.builder.ImagePickerTabTypeDef.TYPE_INSTAGRAM;
-import static com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity.PICKER_RESULT_PATHS;
 
 public abstract class BaseProductAddEditFragment<T extends ProductAddPresenter>
         extends BaseDaggerFragment
@@ -265,22 +248,9 @@ public abstract class BaseProductAddEditFragment<T extends ProductAddPresenter>
 
     @Override
     public void onAddImagePickerClicked(final int imagePosition) {
-        ImagePickerBuilder builder = getImagePickerBuilder();
-        Intent intent = ImagePickerAddProductActivity.getIntent(getContext(), builder, "1");
+        Intent intent = AddProductImagePickerBuilder.createPickerIntentPrimary(getContext(),
+                productImageViewHolder.getImagesSelectView().getImageStringList());
         startActivityForResult(intent, REQUEST_CODE_ADD_PRODUCT_IMAGE);
-    }
-
-    private ImagePickerBuilder getImagePickerBuilder() {
-        return new ImagePickerBuilder(getString(R.string.choose_shop_picture),
-                new int[]{TYPE_GALLERY, TYPE_CAMERA, TYPE_INSTAGRAM}, GalleryType.IMAGE_ONLY, DEFAULT_MAX_IMAGE_SIZE_IN_KB,
-                DEFAULT_MIN_RESOLUTION, new int[]{1, 1}, true,
-                new ImagePickerEditorBuilder(new int[]{ACTION_BRIGHTNESS, ACTION_CONTRAST, ACTION_CROP, ACTION_ROTATE},
-                        false)
-                , new ImagePickerMultipleSelectionBuilder(
-                productImageViewHolder.getImagesSelectView().getImageStringList(),
-                null,
-                0,
-                ImagesSelectView.DEFAULT_LIMIT));
     }
 
     @Override
@@ -338,7 +308,7 @@ public abstract class BaseProductAddEditFragment<T extends ProductAddPresenter>
                 if (imageSelectModel != null) {
                     String path = imageSelectModel.getUriOrPath();
                     if (!TextUtils.isEmpty(path) && !isEdittingDraft()) {
-                        FileUtils.deleteAllCacheTkpdFile(path);
+                        ImageUtils.deleteFileInTokopediaFolder(path);
                     }
                 }
                 imagesSelectView.removeImage();
@@ -360,17 +330,14 @@ public abstract class BaseProductAddEditFragment<T extends ProductAddPresenter>
 
     @Override
     public void onImageEditor(String uriOrPath) {
-        Intent editorIntent = ImageEditorActivity.getIntent(getContext(),uriOrPath, ImagePickerBuilder.DEFAULT_MIN_RESOLUTION,
-                new int[] {ACTION_BRIGHTNESS, ACTION_CONTRAST, ACTION_CROP, ACTION_ROTATE},
-                1,1,false,
-                ImagePickerBuilder.DEFAULT_MAX_IMAGE_SIZE_IN_KB);
+        Intent editorIntent = AddProductImagePickerBuilder.createEditorIntent(getContext(), uriOrPath);
         startActivityForResult(editorIntent, REQUEST_CODE_EDIT_IMAGE);
     }
 
     @Override
     public void onRemovePreviousPath(String uri) {
         if (!TextUtils.isEmpty(uri) && !isEdittingDraft()) {
-            FileUtils.deleteAllCacheTkpdFile(uri);
+            ImageUtils.deleteFileInTokopediaFolder(uri);
         }
     }
 
@@ -687,7 +654,7 @@ public abstract class BaseProductAddEditFragment<T extends ProductAddPresenter>
     @Override
     public final void onResolutionImageCheckFailed(String uri) {
         NetworkErrorHelper.showSnackbar(getActivity(), getString(R.string.error_image_resolution));
-        FileUtils.deleteAllCacheTkpdFile(uri);
+        ImageUtils.deleteFileInTokopediaFolder(uri);
     }
 
     @Override
@@ -746,7 +713,6 @@ public abstract class BaseProductAddEditFragment<T extends ProductAddPresenter>
         for (int i = 0, sizei = imageSelectModelArrayList.size(); i < sizei; i++) {
             uriArrayList.add(imageSelectModelArrayList.get(i).getUriOrPath());
         }
-        FileUtils.deleteAllCacheTkpdFiles(uriArrayList);
         ImageUtils.deleteFilesInTokopediaFolder(uriArrayList);
     }
 

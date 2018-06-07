@@ -120,7 +120,6 @@ public class AddProductServicePresenterImpl extends AddProductServicePresenter {
             }
         }
         if (pathToDeleteList.size() > 0) {
-            FileUtils.deleteAllCacheTkpdFiles(pathToDeleteList);
             ImageUtils.deleteFilesInTokopediaFolder(pathToDeleteList);
         }
     }

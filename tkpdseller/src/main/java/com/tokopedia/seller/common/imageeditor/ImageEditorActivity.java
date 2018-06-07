@@ -229,7 +229,6 @@ public class ImageEditorActivity extends AppCompatActivity implements ImageEdito
                 toBeDeletedFiles.add(savedCroppedPath);
             }
         }
-        FileUtils.deleteAllCacheTkpdFiles(toBeDeletedFiles);
         ImageUtils.deleteFilesInTokopediaFolder(toBeDeletedFiles);
     }
 

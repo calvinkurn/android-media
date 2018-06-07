@@ -34,39 +34,30 @@ public class ImagePickerViewPageAddProductAdapter extends ImagePickerViewPagerAd
     @Override
     public CharSequence getPageTitle(int position) {
         switch (position) {
-            case 1:
+            case 0:
                 return context.getString(R.string.catalog);
-            case 2:
+            case 1:
                 return context.getString(R.string.gallery);
-            case 3:
+            case 2:
                 return context.getString(R.string.camera);
-            case 4:
+            case 3:
                 return context.getString(R.string.instagram);
             default:
                 return context.getString(R.string.gallery);
         }
     }
 
-    // Note: camera permission will be handled in activity, before the adapter is attached.
-    @SuppressLint("MissingPermission")
     @Override
     public Fragment getItem(int position) {
         switch (position) {
-            case 1:
+            case 0:
                 return ImagePickerCatalogFragment.createInstance(catalogId);
+            case 1:
+                return createGalleryFragment();
             case 2:
-                return ImagePickerGalleryFragment.newInstance(
-                        imagePickerBuilder.getGalleryType(),
-                        imagePickerBuilder.supportMultipleSelection(),
-                        imagePickerBuilder.getMinResolution());
+                return createCameraFragment();
             case 3:
-                return ImagePickerCameraFragment.newInstance();
-            case 4:
-                return ImagePickerInstagramFragment.newInstance(
-                        imagePickerBuilder.getGalleryType(),
-                        imagePickerBuilder.supportMultipleSelection(),
-                        imagePickerBuilder.getMinResolution()
-                );
+                return createInstagramFragment();
             default:
                 return new Fragment();
         }
