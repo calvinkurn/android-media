@@ -27,8 +27,8 @@ public class PageViewModel implements Parcelable
 			;
 
 	protected PageViewModel(Parcel in) {
-		this.uriNext = ((String) in.readValue((String.class.getClassLoader())));
-		this.uriPrev = ((String) in.readValue((String.class.getClassLoader())));
+		this.uriNext = in.readString();
+		this.uriPrev = in.readString();
 	}
 
 	public PageViewModel() {
@@ -51,8 +51,8 @@ public class PageViewModel implements Parcelable
 	}
 
 	public void writeToParcel(Parcel dest, int flags) {
-		dest.writeValue(uriNext);
-		dest.writeValue(uriPrev);
+		dest.writeString(uriNext);
+		dest.writeString(uriPrev);
 	}
 
 	public int describeContents() {

@@ -5,6 +5,7 @@ import android.content.Intent;
 
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
+import com.tokopedia.abstraction.base.view.widget.TouchViewPager;
 import com.tokopedia.digital_deals.view.viewmodel.BrandViewModel;
 import com.tokopedia.digital_deals.view.viewmodel.CategoryItemsViewModel;
 import com.tokopedia.digital_deals.view.viewmodel.DealsDetailsViewModel;
@@ -49,6 +50,10 @@ public class DealDetailsContract {
         void onDestroy();
 
         boolean onOptionMenuClick(int id);
+
+        void onBannerSlide(int page);
+
+        void startBannerSlide(TouchViewPager viewPager);
 
         List<OutletViewModel> getAllOutlets();
 

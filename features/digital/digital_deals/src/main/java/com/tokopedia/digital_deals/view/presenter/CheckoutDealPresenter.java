@@ -2,10 +2,8 @@ package com.tokopedia.digital_deals.view.presenter;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 
 import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
@@ -17,11 +15,8 @@ import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.digital_deals.R;
 import com.tokopedia.digital_deals.view.contractor.CheckoutDealContractor;
 import com.tokopedia.digital_deals.view.viewmodel.DealsDetailsViewModel;
-import com.tokopedia.digital_deals.view.viewmodel.LocationViewModel;
 import com.tokopedia.digital_deals.view.viewmodel.PackageViewModel;
 import com.tokopedia.loyalty.view.activity.LoyaltyActivity;
-import com.tokopedia.oms.data.entity.response.checkoutreponse.CheckoutResponse;
-import com.tokopedia.oms.data.entity.response.verifyresponse.Cart;
 import com.tokopedia.oms.domain.model.request.cart.CartItem;
 import com.tokopedia.oms.domain.model.request.cart.CartItems;
 import com.tokopedia.oms.domain.model.request.cart.Configuration;
@@ -46,9 +41,6 @@ public class CheckoutDealPresenter
     private ProfileUseCase profileUseCase;
     private PostPaymentUseCase postPaymentUseCase;
     private String promocode = "";
-    private boolean isPromoCodeCase;
-    private ArrayList<String> hints = new ArrayList<>();
-    private ArrayList<String> errors = new ArrayList<>();
     private RequestParams paymentparams;
     private String INVALID_EMAIL = "Invalid Email";
     public static String EXTRA_DEALDETAIL = "EXTRA_DEALDETAIL";
@@ -68,9 +60,9 @@ public class CheckoutDealPresenter
 
     @Override
     public void onDestroy() {
-
+        postPaymentUseCase.unsubscribe();
+        profileUseCase.unsubscribe();
     }
-
 
     @Override
     public void updateEmail(String email) {
@@ -85,7 +77,6 @@ public class CheckoutDealPresenter
         }
     }
 
-
     @Override
     public void getProfile() {
         getView().showProgressBar();
@@ -98,7 +89,6 @@ public class CheckoutDealPresenter
 
             @Override
             public void onError(Throwable throwable) {
-                Log.d("ProfileUseCase", "ON ERROR");
                 throwable.printStackTrace();
                 Intent intent = ((TkpdCoreRouter) getView().getActivity().getApplication()).
                         getLoginIntent(getView().getActivity());
@@ -110,7 +100,6 @@ public class CheckoutDealPresenter
             public void onNext(ProfileModel model) {
                 profileModel = model;
                 email = profileModel.getProfileData().getUserInfo().getUserEmail();
-
                 getView().setEmailID(profileModel.getProfileData().getUserInfo().getUserEmail());
                 getView().hideProgressBar();
             }
@@ -132,10 +121,7 @@ public class CheckoutDealPresenter
         meta.setEntityProductId(packageViewModel.getProductId());
         meta.setTotalTicketCount(packageViewModel.getSelectedQuantity());
         meta.setTotalTicketPrice(packageViewModel.getSalesPrice() * packageViewModel.getSelectedQuantity());
-
-
         meta.setEntityStartTime("");
-
 
         List<CartItem> cartItems = new ArrayList<>();
         CartItem cartItem = new CartItem();
@@ -143,9 +129,8 @@ public class CheckoutDealPresenter
         cartItem.setConfiguration(config);
         cartItem.setQuantity(packageViewModel.getSelectedQuantity());
         cartItem.setProductId(packageViewModel.getDigitalProductID());
-
-
         cartItems.add(cartItem);
+
         CartItems cart = new CartItems();
         cart.setCartItems(cartItems);
         cart.setPromocode(promocode);
@@ -170,124 +155,14 @@ public class CheckoutDealPresenter
         return null;
     }
 
-//    private JsonObject convertPackageToCartItem(PackageViewModel packageViewModel) {
-//        Configuration config = new Configuration();
-//        config.setPrice(packageViewModel.getSalesPrice() * checkoutData.getSelectedQuantity());
-//        com.tokopedia.events.domain.model.request.cart.SubConfig sub = new com.tokopedia.events.domain.model.request.cart.SubConfig();
-//        sub.setName(profileModel.getProfileData().getUserInfo().getUserName());
-//        config.setSubConfig(sub);
-//        MetaData meta = new MetaData();
-//        meta.setEntityCategoryId(packageViewModel.getCategoryId());
-//        meta.setEntityCategoryName("");
-//        meta.setEntityGroupId(packageViewModel.getProductGroupId());
-//        List<EntityPackageItem> entityPackages = new ArrayList<>();
-//        EntityPackageItem packageItem = new EntityPackageItem();
-//        packageItem.setPackageId(packageViewModel.getId());
-//        if (selectedSeatViewModel != null) {
-//            packageItem.setAreaCode(selectedSeatViewModel.getAreaCodes());
-//            packageItem.setSeatId(selectedSeatViewModel.getSeatIds());
-//            packageItem.setSeatRowId(selectedSeatViewModel.getSeatRowIds());
-//            packageItem.setSeatPhysicalRowId(selectedSeatViewModel.getPhysicalRowIds());
-//            packageItem.setQuantity(selectedSeatViewModel.getQuantity());
-//            packageItem.setPricePerSeat(selectedSeatViewModel.getPrice());
-//            packageItem.setAreaId(selectedSeatViewModel.getAreaId());
-//            packageItem.setActualSeatNos(selectedSeatViewModel.getActualSeatNos());
-//        } else {
-//            packageItem.setAreaCode(new ArrayList<String>());
-//            packageItem.setSeatId(new ArrayList<String>());
-//            packageItem.setAreaId("");
-//            packageItem.setSeatRowId(new ArrayList<String>());
-//            packageItem.setSeatPhysicalRowId(new ArrayList<String>());
-//            packageItem.setQuantity(packageViewModel.getSelectedQuantity());
-//            packageItem.setPricePerSeat(packageViewModel.getSalesPrice());
-//            packageItem.setActualSeatNos(new ArrayList<String>());
-//        }
-//        packageItem.setDescription(packageViewModel.getDescription());
-//
-//        packageItem.setSessionId("");
-//        packageItem.setProductId(packageViewModel.getProductId());
-//        packageItem.setGroupId(packageViewModel.getProductGroupId());
-//        packageItem.setScheduleId(packageViewModel.getProductScheduleId());
-//        entityPackages.add(packageItem);
-//        meta.setEntityPackages(entityPackages);
-//        meta.setTotalTicketCount(packageViewModel.getSelectedQuantity());
-//        meta.setEntityProductId(packageViewModel.getProductId());
-//        meta.setEntityScheduleId(packageViewModel.getProductScheduleId());
-//        List<EntityPassengerItem> passengerItems = new ArrayList<>();
-//
-//        if (packageViewModel.getForms() != null) {
-//            for (Form form : packageViewModel.getForms()) {
-//                EntityPassengerItem passenger = new EntityPassengerItem();
-//                passenger.setId(form.getId());
-//                passenger.setProductId(form.getProductId());
-//                passenger.setName(form.getName());
-//                passenger.setTitle(form.getTitle());
-//                passenger.setValue(form.getValue());
-//                passenger.setElementType(form.getElementType());
-//                passenger.setRequired(String.valueOf(form.getRequired()));
-//                passenger.setValidatorRegex(form.getValidatorRegex());
-//                passenger.setErrorMessage(form.getErrorMessage());
-//                passengerItems.add(passenger);
-//            }
-//        }
-//
-//        meta.setEntityPassengers(passengerItems);
-//        EntityAddress address = new EntityAddress();
-//        address.setAddress("");
-//        address.setName(profileModel.getProfileData().getUserInfo().getUserName());
-//        address.setCity("");
-//        address.setEmail(this.email);
-//        address.setMobile(this.number);
-//        address.setLatitude("");
-//        address.setLongitude("");
-//        meta.setEntityAddress(address);
-//        meta.setCitySearched("");
-//        meta.setEntityEndTime("");
-//        meta.setEntityStartTime("");
-//        meta.setTotalTaxAmount(0);
-//        meta.setTotalOtherCharges(0);
-//        meta.setTotalTicketPrice(packageViewModel.getSelectedQuantity() * packageViewModel.getSalesPrice());
-//        meta.setEntityImage("");
-//        List<OtherChargesItem> otherChargesItems = new ArrayList<>();
-//        OtherChargesItem otherCharges = new OtherChargesItem();
-//        otherCharges.setConvFee(packageViewModel.getConvenienceFee());
-//        otherChargesItems.add(otherCharges);
-//        meta.setOtherCharges(otherChargesItems);
-//        List<TaxPerQuantityItem> taxPerQuantityItems = new ArrayList<>();
-//        meta.setTaxPerQuantity(taxPerQuantityItems);
-//        List<CartItem> cartItems = new ArrayList<>();
-//        CartItem cartItem = new CartItem();
-//        cartItem.setMetaData(meta);
-//        cartItem.setConfiguration(config);
-//        cartItem.setQuantity(packageViewModel.getSelectedQuantity());
-//        cartItem.setProductId(packageViewModel.getProductId());
-//
-//
-//        cartItems.add(cartItem);
-//        CartItems cart = new CartItems();
-//        cart.setCartItems(cartItems);
-//        cart.setPromocode(promocode);
-//
-//        JsonElement jsonElement = new JsonParser().parse(new Gson().toJson(cart));
-//        JsonObject requestBody = jsonElement.getAsJsonObject();
-//        return requestBody;
-//    }
-
-
     public void getCheckoutDetails() {
         getView().showProgressBar();
         Intent intent = getView().getActivity().getIntent();
         this.dealDetail = intent.getParcelableExtra(CheckoutDealPresenter.EXTRA_DEALDETAIL);
         this.cartData = intent.getStringExtra(CheckoutDealPresenter.EXTRA_CART);
         this.packageViewModel = intent.getParcelableExtra(CheckoutDealPresenter.EXTRA_PACKAGEVIEWMODEL);
-        getView().renderFromPackageVM(dealDetail, packageViewModel);
+        getView().renderFromDetails(dealDetail, packageViewModel);
     }
-
-//    private JsonObject convertCartItemToJson(Cart cart) {
-//        cart.getUser().setEmail(email);
-//        JsonElement jsonElement = new JsonParser().parse(new Gson().toJson(cart));
-//        return jsonElement.getAsJsonObject();
-//    }
 
     private JsonObject convertCartItemToJson(String cart) {
         Gson gson = new Gson();
@@ -300,11 +175,8 @@ public class CheckoutDealPresenter
         return jsonObject;
     }
 
-
     public void getPaymentLink() {
-
         paymentparams = RequestParams.create();
-
         paymentparams.putObject(Utils.Constants.CHECKOUTDATA, convertCartItemToJson(cartData));
         postPaymentUseCase.execute(paymentparams, new Subscriber<JsonObject>() {
             @Override
@@ -331,21 +203,12 @@ public class CheckoutDealPresenter
 
             @Override
             public void onNext(JsonObject checkoutResponse) {
-
-                Log.d("CheckoutResponse", " " + checkoutResponse.toString());
-
                 Bundle paymentData = Utils.transform(checkoutResponse);
                 String paymentURL = checkoutResponse.get("url").getAsString();
-                Log.d("URL", " " + paymentURL);
-
                 ScroogePGUtil.openScroogePage(getView().getActivity(), paymentURL, true, paymentData, "Deal Payment");
-
-
                 getView().hideProgressBar();
 
             }
         });
     }
-
-
 }

@@ -4,26 +4,35 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Paint;
+import android.support.design.widget.Snackbar;
 import android.support.v7.widget.RecyclerView;
 import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.tkpd.library.utils.ImageHandler;
+import com.tokopedia.abstraction.base.app.BaseMainApplication;
+import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.digital_deals.R;
+import com.tokopedia.digital_deals.di.DaggerDealsComponent;
+import com.tokopedia.digital_deals.di.DealsModule;
 import com.tokopedia.digital_deals.view.activity.DealDetailsActivity;
+import com.tokopedia.digital_deals.view.contractor.DealCategoryAdapterContract;
+import com.tokopedia.digital_deals.view.presenter.DealCategoryAdapterPresenter;
 import com.tokopedia.digital_deals.view.presenter.DealDetailsPresenter;
-import com.tokopedia.digital_deals.view.presenter.DealsBrandPresenter;
 import com.tokopedia.digital_deals.view.utils.Utils;
 import com.tokopedia.digital_deals.view.viewmodel.CategoryItemsViewModel;
+import com.tokopedia.usecase.RequestParams;
 
 import java.util.List;
 
-public class DealsCategoryAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+import javax.inject.Inject;
+
+public class DealsCategoryAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> implements DealCategoryAdapterContract.View {
 
     private List<CategoryItemsViewModel> categoryItems;
     private Context context;
@@ -32,6 +41,8 @@ public class DealsCategoryAdapter extends RecyclerView.Adapter<RecyclerView.View
     private static final int ITEM2 = 3;
     private boolean isFooterAdded = false;
     private boolean isShortLayout;
+    @Inject
+    DealCategoryAdapterPresenter mPresenter;
 
 
     public DealsCategoryAdapter(Context context, List<CategoryItemsViewModel> categoryItems, boolean isShortLayout) {
@@ -50,7 +61,6 @@ public class DealsCategoryAdapter extends RecyclerView.Adapter<RecyclerView.View
 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-
 
         LayoutInflater inflater = LayoutInflater.from(
                 parent.getContext());
@@ -71,6 +81,12 @@ public class DealsCategoryAdapter extends RecyclerView.Adapter<RecyclerView.View
             default:
                 break;
         }
+
+        DaggerDealsComponent.builder()
+                .baseAppComponent(((BaseMainApplication) getActivity().getApplication()).getBaseAppComponent())
+                .dealsModule(new DealsModule(context))
+                .build().inject(this);
+        mPresenter.attachView(this);
         return holder;
     }
 
@@ -79,13 +95,13 @@ public class DealsCategoryAdapter extends RecyclerView.Adapter<RecyclerView.View
 
         switch (getItemViewType(position)) {
             case ITEM:
-                ((ItemViewHolder) holder).bindData(categoryItems.get(position), position);
+                ((ItemViewHolder) holder).bindData(categoryItems.get(position));
                 ((ItemViewHolder) holder).setIndex(position);
                 break;
             case FOOTER:
                 break;
             case ITEM2:
-                ((ItemViewHolder2) holder).bindData(categoryItems.get(position), position);
+                ((ItemViewHolder2) holder).bindData(categoryItems.get(position));
                 ((ItemViewHolder2) holder).setIndex(position);
                 break;
             default:
@@ -138,6 +154,33 @@ public class DealsCategoryAdapter extends RecyclerView.Adapter<RecyclerView.View
         }
     }
 
+    @Override
+    public Activity getActivity() {
+        return (Activity) context;
+    }
+
+    @Override
+    public RequestParams getParams() {
+        return null;
+    }
+
+    @Override
+    public void notifyDataSetChanged(int position) {
+        notifyItemChanged(position);
+    }
+
+    @Override
+    public void showLoginSnackbar(String message) {
+        Snackbar snackbar = Snackbar.make(getActivity().getWindow().getDecorView().getRootView(), message, Snackbar.LENGTH_LONG).setAction(context.getResources().getString(R.string.title_activity_login), new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = ((TkpdCoreRouter) getActivity().getApplication()).
+                        getLoginIntent(getActivity());
+                getActivity().startActivityForResult(intent, 1099);
+            }
+        });
+        snackbar.show();
+    }
 
     public class ItemViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         private View itemView;
@@ -158,21 +201,21 @@ public class DealsCategoryAdapter extends RecyclerView.Adapter<RecyclerView.View
         public ItemViewHolder(View itemView) {
             super(itemView);
             this.itemView = itemView;
-            dealImage = itemView.findViewById(R.id.imageView);
+            dealImage = itemView.findViewById(R.id.iv_product);
             likes = itemView.findViewById(R.id.tv_wish_list);
             discount = itemView.findViewById(R.id.tv_off);
             dealsDetails = itemView.findViewById(R.id.tv_deal_intro);
             brandName = itemView.findViewById(R.id.tv_brand_name);
             ivFavourite = itemView.findViewById(R.id.iv_wish_list);
             dealavailableLocations = itemView.findViewById(R.id.tv_available_locations);
-            dealListPrice = itemView.findViewById(R.id.tv_Mrp);
+            dealListPrice = itemView.findViewById(R.id.tv_mrp);
             brandImage = itemView.findViewById(R.id.iv_brand);
             ivShareVia = itemView.findViewById(R.id.iv_share);
-            dealSellingPrice = itemView.findViewById(R.id.tv_salesPrice);
+            dealSellingPrice = itemView.findViewById(R.id.tv_sales_price);
             hotDeal = itemView.findViewById(R.id.tv_hot_deal);
         }
 
-        public void bindData(final CategoryItemsViewModel categoryItemsViewModel, int position) {
+        public void bindData(final CategoryItemsViewModel categoryItemsViewModel) {
             dealsDetails.setText(categoryItemsViewModel.getDisplayName());
             ImageHandler.loadImage(context, dealImage, categoryItemsViewModel.getImageWeb(), R.color.grey_1100, R.color.grey_1100);
             ImageHandler.loadImage(context, brandImage, categoryItemsViewModel.getBrand().getFeaturedThumbnailImage(), R.color.grey_1100, R.color.grey_1100);
@@ -181,6 +224,11 @@ public class DealsCategoryAdapter extends RecyclerView.Adapter<RecyclerView.View
             dealListPrice.setPaintFlags(dealListPrice.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
             discount.setText(categoryItemsViewModel.getSavingPercentage());
             dealSellingPrice.setText(Utils.convertToCurrencyString(categoryItemsViewModel.getSalesPrice()));
+            if (categoryItemsViewModel.isLiked()) {
+                ivFavourite.setBackgroundResource(R.drawable.ic_wishlist_filled);
+            } else {
+                ivFavourite.setBackgroundResource(R.drawable.ic_wishlist_unfilled);
+            }
             if (categoryItemsViewModel.getDisplayTags() != null) {
                 hotDeal.setVisibility(View.VISIBLE);
             } else {
@@ -203,14 +251,14 @@ public class DealsCategoryAdapter extends RecyclerView.Adapter<RecyclerView.View
         @Override
         public void onClick(View v) {
             if (v.getId() == R.id.iv_share) {
-                Toast.makeText(context, "iv_share", Toast.LENGTH_SHORT).show();
+                Utils.getSingletonInstance().shareDeal(categoryItems.get(getIndex()).getSeoUrl(),
+                        context, categoryItems.get(getIndex()).getDisplayName(),
+                        categoryItems.get(getIndex()).getImageWeb()) ;
             } else if (v.getId() == R.id.iv_wish_list) {
-                Toast.makeText(context, "iv_favourite", Toast.LENGTH_SHORT).show();
+                mPresenter.setEventLike(categoryItems.get(getIndex()), getIndex());
             } else {
-                Toast.makeText(context, "iv_card", Toast.LENGTH_SHORT).show();
                 Intent detailsIntent = new Intent(context, DealDetailsActivity.class);
-//            detailsIntent.putExtra(EventDetailsActivity.FROM, EventDetailsActivity.FROM_HOME_OR_SEARCH);
-                detailsIntent.putExtra(DealDetailsPresenter.HOME_DATA, categoryItems.get(getIndex()));
+                detailsIntent.putExtra(DealDetailsPresenter.HOME_DATA, categoryItems.get(getIndex()).getSeoUrl());
                 context.startActivity(detailsIntent);
             }
         }
@@ -231,27 +279,28 @@ public class DealsCategoryAdapter extends RecyclerView.Adapter<RecyclerView.View
         public ItemViewHolder2(View itemView) {
             super(itemView);
             this.itemView = itemView;
-            dealImage = itemView.findViewById(R.id.imageView);
+            dealImage = itemView.findViewById(R.id.iv_product);
             discount = itemView.findViewById(R.id.tv_off);
             dealsDetails = itemView.findViewById(R.id.tv_deal_intro);
             brandName = itemView.findViewById(R.id.tv_brand_name);
-            dealListPrice = itemView.findViewById(R.id.tv_Mrp);
+            dealListPrice = itemView.findViewById(R.id.tv_mrp);
             brandImage = itemView.findViewById(R.id.iv_brand);
-            dealSellingPrice = itemView.findViewById(R.id.tv_salesPrice);
+            dealSellingPrice = itemView.findViewById(R.id.tv_sales_price);
             hotDeal = itemView.findViewById(R.id.tv_hot_deal);
+
             DisplayMetrics displaymetrics = new DisplayMetrics();
             ((Activity) context).getWindowManager().getDefaultDisplay().getMetrics(displaymetrics);
-            //if you need three fix imageview in width
             int devicewidth = (int) (displaymetrics.widthPixels / 1.2);
-
-            //if you need 4-5-6 anything fix imageview in height
-
             itemView.getLayoutParams().width = devicewidth;
+            RecyclerView.LayoutParams params= (RecyclerView.LayoutParams) itemView.getLayoutParams();
+            if(getIndex()==categoryItems.size()-1) {
+                params.setMargins(context.getResources().getDimensionPixelSize(R.dimen.dp_16),
+                        0, context.getResources().getDimensionPixelSize(R.dimen.dp_16), 0);
+            }
 
-            //if you need same height as width you can set devicewidth in holder.image_view.getLayoutParams().height
         }
 
-        public void bindData(final CategoryItemsViewModel categoryItemsViewModel, int position) {
+        public void bindData(final CategoryItemsViewModel categoryItemsViewModel) {
             dealsDetails.setText(categoryItemsViewModel.getDisplayName());
             ImageHandler.loadImage(context, dealImage, categoryItemsViewModel.getImageWeb(), R.color.grey_1100, R.color.grey_1100);
             ImageHandler.loadImage(context, brandImage, categoryItemsViewModel.getBrand().getFeaturedThumbnailImage(), R.color.grey_1100, R.color.grey_1100);
@@ -280,9 +329,8 @@ public class DealsCategoryAdapter extends RecyclerView.Adapter<RecyclerView.View
         @Override
         public void onClick(View v) {
 
-            Toast.makeText(context, "iv_card", Toast.LENGTH_SHORT).show();
             Intent detailsIntent = new Intent(context, DealDetailsActivity.class);
-            detailsIntent.putExtra(DealDetailsPresenter.HOME_DATA, categoryItems.get(getIndex()));
+            detailsIntent.putExtra(DealDetailsPresenter.HOME_DATA, categoryItems.get(getIndex()).getSeoUrl());
             context.startActivity(detailsIntent);
         }
     }

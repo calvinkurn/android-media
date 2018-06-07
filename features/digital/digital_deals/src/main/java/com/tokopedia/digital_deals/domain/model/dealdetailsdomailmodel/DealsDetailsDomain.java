@@ -10,16 +10,16 @@ public class DealsDetailsDomain {
 
     @SerializedName("id")
     @Expose
-    private Integer id;
+    private int id;
     @SerializedName("brand_id")
     @Expose
-    private Integer brandId;
+    private int brandId;
     @SerializedName("category_id")
     @Expose
-    private Integer categoryId;
+    private int categoryId;
     @SerializedName("provider_id")
     @Expose
-    private Integer providerId;
+    private int providerId;
     @SerializedName("provider_product_id")
     @Expose
     private String providerProductId;
@@ -43,40 +43,40 @@ public class DealsDetailsDomain {
     private String longRichDesc;
     @SerializedName("mrp")
     @Expose
-    private Integer mrp;
+    private int mrp;
     @SerializedName("sales_price")
     @Expose
-    private Integer salesPrice;
+    private int salesPrice;
     @SerializedName("quantity")
     @Expose
-    private Integer quantity;
+    private int quantity;
     @SerializedName("sold_quantity")
     @Expose
-    private Integer soldQuantity;
+    private int soldQuantity;
     @SerializedName("sell_rate")
     @Expose
-    private Integer sellRate;
+    private int sellRate;
     @SerializedName("thumbs_up")
     @Expose
-    private Integer thumbsUp;
+    private int thumbsUp;
     @SerializedName("thumbs_down")
     @Expose
-    private Integer thumbsDown;
+    private int thumbsDown;
     @SerializedName("status")
     @Expose
-    private Integer status;
+    private int status;
     @SerializedName("min_start_date")
     @Expose
-    private Integer minStartDate;
+    private int minStartDate;
     @SerializedName("max_end_date")
     @Expose
-    private Integer maxEndDate;
+    private int maxEndDate;
     @SerializedName("sale_start_date")
     @Expose
-    private Integer saleStartDate;
+    private int saleStartDate;
     @SerializedName("sale_end_date")
     @Expose
-    private Integer saleEndDate;
+    private int saleEndDate;
     @SerializedName("created_at")
     @Expose
     private String createdAt;
@@ -107,18 +107,15 @@ public class DealsDetailsDomain {
     @SerializedName("forms")
     @Expose
     private Object forms;
-    @SerializedName("media")
-    @Expose
-    private Object media;
     @SerializedName("outlets")
     @Expose
     private List<Outlet> outlets = null;
     @SerializedName("rating")
     @Expose
-    private Integer rating;
+    private int rating;
     @SerializedName("likes")
     @Expose
-    private Integer likes;
+    private int likes;
     @SerializedName("catalog")
     @Expose
     private Catalog catalog;
@@ -131,37 +128,40 @@ public class DealsDetailsDomain {
     @SerializedName("recommendation_url")
     @Expose
     private String recommendationUrl;
+    @SerializedName("media")
+    @Expose
+    private List<MediaDomain> media;
 
 
-    public Integer getId() {
+    public int getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(int id) {
         this.id = id;
     }
 
-    public Integer getBrandId() {
+    public int getBrandId() {
         return brandId;
     }
 
-    public void setBrandId(Integer brandId) {
+    public void setBrandId(int brandId) {
         this.brandId = brandId;
     }
 
-    public Integer getCategoryId() {
+    public int getCategoryId() {
         return categoryId;
     }
 
-    public void setCategoryId(Integer categoryId) {
+    public void setCategoryId(int categoryId) {
         this.categoryId = categoryId;
     }
 
-    public Integer getProviderId() {
+    public int getProviderId() {
         return providerId;
     }
 
-    public void setProviderId(Integer providerId) {
+    public void setProviderId(int providerId) {
         this.providerId = providerId;
     }
 
@@ -221,99 +221,99 @@ public class DealsDetailsDomain {
         this.longRichDesc = longRichDesc;
     }
 
-    public Integer getMrp() {
+    public int getMrp() {
         return mrp;
     }
 
-    public void setMrp(Integer mrp) {
+    public void setMrp(int mrp) {
         this.mrp = mrp;
     }
 
-    public Integer getSalesPrice() {
+    public int getSalesPrice() {
         return salesPrice;
     }
 
-    public void setSalesPrice(Integer salesPrice) {
+    public void setSalesPrice(int salesPrice) {
         this.salesPrice = salesPrice;
     }
 
-    public Integer getQuantity() {
+    public int getQuantity() {
         return quantity;
     }
 
-    public void setQuantity(Integer quantity) {
+    public void setQuantity(int quantity) {
         this.quantity = quantity;
     }
 
-    public Integer getSoldQuantity() {
+    public int getSoldQuantity() {
         return soldQuantity;
     }
 
-    public void setSoldQuantity(Integer soldQuantity) {
+    public void setSoldQuantity(int soldQuantity) {
         this.soldQuantity = soldQuantity;
     }
 
-    public Integer getSellRate() {
+    public int getSellRate() {
         return sellRate;
     }
 
-    public void setSellRate(Integer sellRate) {
+    public void setSellRate(int sellRate) {
         this.sellRate = sellRate;
     }
 
-    public Integer getThumbsUp() {
+    public int getThumbsUp() {
         return thumbsUp;
     }
 
-    public void setThumbsUp(Integer thumbsUp) {
+    public void setThumbsUp(int thumbsUp) {
         this.thumbsUp = thumbsUp;
     }
 
-    public Integer getThumbsDown() {
+    public int getThumbsDown() {
         return thumbsDown;
     }
 
-    public void setThumbsDown(Integer thumbsDown) {
+    public void setThumbsDown(int thumbsDown) {
         this.thumbsDown = thumbsDown;
     }
 
-    public Integer getStatus() {
+    public int getStatus() {
         return status;
     }
 
-    public void setStatus(Integer status) {
+    public void setStatus(int status) {
         this.status = status;
     }
 
-    public Integer getMinStartDate() {
+    public int getMinStartDate() {
         return minStartDate;
     }
 
-    public void setMinStartDate(Integer minStartDate) {
+    public void setMinStartDate(int minStartDate) {
         this.minStartDate = minStartDate;
     }
 
-    public Integer getMaxEndDate() {
+    public int getMaxEndDate() {
         return maxEndDate;
     }
 
-    public void setMaxEndDate(Integer maxEndDate) {
+    public void setMaxEndDate(int maxEndDate) {
         this.maxEndDate = maxEndDate;
     }
 
-    public Integer getSaleStartDate() {
+    public int getSaleStartDate() {
         return saleStartDate;
     }
 
-    public void setSaleStartDate(Integer saleStartDate) {
+    public void setSaleStartDate(int saleStartDate) {
         this.saleStartDate = saleStartDate;
     }
 
-    public Integer getSaleEndDate() {
+    public int getSaleEndDate() {
         return saleEndDate;
     }
 
-    public void setSaleEndDate(Integer saleEndDate) {
+    public void setSaleEndDate(int saleEndDate) {
         this.saleEndDate = saleEndDate;
     }
 
@@ -397,14 +397,6 @@ public class DealsDetailsDomain {
         this.forms = forms;
     }
 
-    public Object getMedia() {
-        return media;
-    }
-
-    public void setMedia(Object media) {
-        this.media = media;
-    }
-
     public List<Outlet> getOutlets() {
         return outlets;
     }
@@ -413,19 +405,19 @@ public class DealsDetailsDomain {
         this.outlets = outlets;
     }
 
-    public Integer getRating() {
+    public int getRating() {
         return rating;
     }
 
-    public void setRating(Integer rating) {
+    public void setRating(int rating) {
         this.rating = rating;
     }
 
-    public Integer getLikes() {
+    public int getLikes() {
         return likes;
     }
 
-    public void setLikes(Integer likes) {
+    public void setLikes(int likes) {
         this.likes = likes;
     }
 
@@ -459,6 +451,14 @@ public class DealsDetailsDomain {
 
     public void setRecommendationUrl(String recommendationUrl) {
         this.recommendationUrl = recommendationUrl;
+    }
+
+    public List<MediaDomain> getMedia() {
+        return media;
+    }
+
+    public void setMedia(List<MediaDomain> media) {
+        this.media = media;
     }
 
 

@@ -7,7 +7,6 @@ import android.os.Bundle;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.FrameLayout;
@@ -36,24 +35,24 @@ import javax.inject.Inject;
 public class DealsLocationActivity extends BaseSimpleActivity implements
         DealsLocationContract.View, SearchInputView.Listener, DealsLocationAdapter.ActionListener{
 
-    private DealsComponent dealsComponent;
-    @Inject
-    public DealsLocationPresenter mPresenter;
-
     public static final String EXTRA_CALLBACK_LOCATION = "EXTRA_CALLBACK_LOCATION";
+
     private CoordinatorLayout mainContent;
     private CoordinatorLayout baseMainContent;
     private LinearLayout llTopEvents;
     private FrameLayout progressBarLayout;
-    private ProgressBar progBar;
-    private SearchInputView searchInputView;
-
-    private RecyclerView rvSearchResults;
-    private TextView tvTopDeals;
     private LinearLayout noContent;
     private LinearLayout llSearchView;
-    private DealsLocationAdapter dealsCategoryAdapter;
 
+    private ProgressBar progBar;
+    private SearchInputView searchInputView;
+    private RecyclerView rvSearchResults;
+    private TextView tvTopDeals;
+
+    @Inject
+    public DealsLocationPresenter mPresenter;
+    private DealsComponent dealsComponent;
+    private DealsLocationAdapter dealsCategoryAdapter;
 
     @Override
     public int getLayoutRes() {
@@ -88,13 +87,8 @@ public class DealsLocationActivity extends BaseSimpleActivity implements
         searchInputView.setSearchImageViewDimens(getResources().getDimensionPixelSize(R.dimen.dp_24), getResources().getDimensionPixelSize(R.dimen.dp_24));
         searchInputView.setSearchImageView(getResources().getDrawable(R.drawable.ic_location));
         searchInputView.setListener(this);
-
-
     }
 
-    public static Intent getCallingIntent(Activity activity) {
-        return new Intent(activity, DealsSearchActivity.class);
-    }
 
     @Override
     public void onSearchSubmitted(String text) {
@@ -109,23 +103,17 @@ public class DealsLocationActivity extends BaseSimpleActivity implements
     }
 
     @Override
-    public void showMessage(String message) {
-
-    }
-
-    @Override
     public Activity getActivity() {
         return this;
     }
 
     @Override
     public void navigateToActivityRequest(Intent intent, int requestCode) {
-
+        startActivityForResult(intent, requestCode);
     }
 
     @Override
     public void renderFromSearchResults(List<LocationViewModel> locationViewModelList, boolean isTopLocations) {
-        Log.d("hdshsjhsaj", "" + locationViewModelList.size() + "  " + isTopLocations);
 
         if (isTopLocations) {
             tvTopDeals.setVisibility(View.VISIBLE);
@@ -141,9 +129,7 @@ public class DealsLocationActivity extends BaseSimpleActivity implements
             if (isTopLocations) {
                 InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
                 if (imm != null) {
-                    Log.d("inputMeethod", "notnull");
                     imm.hideSoftInputFromWindow(searchInputView.getSearchTextView().getWindowToken(), 0);
-//                searchInputView.getSearchTextView().setFocusable(false);
                     rvSearchResults.requestFocus();
                 }
             }
@@ -201,5 +187,11 @@ public class DealsLocationActivity extends BaseSimpleActivity implements
 
         setResult(RESULT_OK, new Intent().putExtra(EXTRA_CALLBACK_LOCATION, locationUpdated));
         finish();
+    }
+
+    @Override
+    protected void onDestroy() {
+        mPresenter.onDestroy();
+        super.onDestroy();
     }
 }

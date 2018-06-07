@@ -20,7 +20,7 @@ public class AllBrandsMapper implements Func1<AllBrandsResponse, AllBrandsDomain
     public AllBrandsDomain call(AllBrandsResponse categoryResponse) {
 
         AllBrandsDomain allBrandsDomain = new AllBrandsDomain();
-        JsonArray brands = categoryResponse.getData().getBrands();
+        JsonArray brands = categoryResponse.getBrands();
 
 
         List<BrandDomain> dealsBrandsDomain = new ArrayList<>();
@@ -31,7 +31,7 @@ public class AllBrandsMapper implements Func1<AllBrandsResponse, AllBrandsDomain
         }
         allBrandsDomain.setBrands(dealsBrandsDomain);
 
-        JsonObject brand = categoryResponse.getData().getPage();
+        JsonObject brand = categoryResponse.getPage();
         PageDomain pageDomain = new Gson().fromJson(brand, PageDomain.class);
         allBrandsDomain.setPage(pageDomain);
 

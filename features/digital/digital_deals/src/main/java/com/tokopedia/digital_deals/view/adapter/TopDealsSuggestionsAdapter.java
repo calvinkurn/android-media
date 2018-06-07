@@ -15,7 +15,6 @@ import com.tokopedia.digital_deals.R;
 import com.tokopedia.digital_deals.view.presenter.DealsSearchPresenter;
 import com.tokopedia.digital_deals.view.utils.Utils;
 import com.tokopedia.digital_deals.view.viewmodel.CategoryItemsViewModel;
-import com.tokopedia.digital_deals.view.viewmodel.SearchViewModel;
 
 import java.util.List;
 
@@ -48,7 +47,7 @@ public class TopDealsSuggestionsAdapter extends RecyclerView.Adapter<RecyclerVie
         View v;
         switch (viewType) {
             case ITEM:
-                v = inflater.inflate(R.layout.simple_recycler_item, parent, false);
+                v = inflater.inflate(R.layout.item_top_suggestions, parent, false);
                 holder = new DealsTitleHolder(v);
                 break;
             case FOOTER:

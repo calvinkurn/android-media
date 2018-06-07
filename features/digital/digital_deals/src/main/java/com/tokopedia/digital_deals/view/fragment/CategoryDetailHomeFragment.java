@@ -4,13 +4,10 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -25,14 +22,14 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.digital_deals.R;
 import com.tokopedia.digital_deals.di.DaggerDealsComponent;
 import com.tokopedia.digital_deals.di.DealsModule;
-import com.tokopedia.digital_deals.view.activity.CheckoutActivity;
-import com.tokopedia.digital_deals.view.activity.DealsCategoryDetailActivity;
+import com.tokopedia.digital_deals.view.activity.CategoryDetailActivity;
 import com.tokopedia.digital_deals.view.adapter.DealsBrandAdapter;
 import com.tokopedia.digital_deals.view.adapter.DealsCategoryAdapter;
 import com.tokopedia.digital_deals.view.contractor.DealsCategoryDetailContract;
 import com.tokopedia.digital_deals.view.presenter.DealDetailsPresenter;
 import com.tokopedia.digital_deals.view.presenter.DealsCategoryDetailPresenter;
 import com.tokopedia.digital_deals.view.presenter.DealsHomePresenter;
+import com.tokopedia.digital_deals.view.utils.CategoryDetailCallbacks;
 import com.tokopedia.digital_deals.view.utils.Utils;
 import com.tokopedia.digital_deals.view.viewmodel.BrandViewModel;
 import com.tokopedia.digital_deals.view.viewmodel.CategoriesModel;
@@ -45,26 +42,23 @@ import javax.inject.Inject;
 
 public class CategoryDetailHomeFragment extends BaseDaggerFragment implements DealsCategoryDetailContract.View, View.OnClickListener {
 
-
+    private final boolean IS_SHORT_LAYOUT = true;
     private RecyclerView recyclerViewDeals;
     private RecyclerView recyclerViewBrands;
     private View progressBarLayout;
     private ProgressBar progBar;
     private CoordinatorLayout mainContent;
-    private ConstraintLayout baseMainContent;
+    private CoordinatorLayout baseMainContent;
     private Menu mMenu;
-    private Toolbar toolbar;
     private TextView seeAllBrands;
-    private final boolean IS_SHORT_LAYOUT = true;
     private TextView popularLocation;
     private TextView numberOfDeals;
     private LinearLayoutManager layoutManager;
-    private CategoriesModel categoriesModel;
-
-
 
     @Inject
     DealsCategoryDetailPresenter mPresenter;
+    private CategoriesModel categoriesModel;
+    private CategoryDetailCallbacks fragmentCallbacks;
 
 
     @Override
@@ -92,27 +86,28 @@ public class CategoryDetailHomeFragment extends BaseDaggerFragment implements De
 
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_category_home, container, false);
+        View view = inflater.inflate(R.layout.fragment_category_detail_home, container, false);
         setViewIds(view);
         setHasOptionsMenu(true);
 
 
         mPresenter.getCategoryDetails();
-//        mPresenter.getBrandsList();
+        mPresenter.getBrandsList();
         return view;
     }
 
 
     private void setViewIds(View view) {
 
-//        ((CheckoutActivity)getActivity()).getSupportActionBar().setTitle(categoriesModel.getTitle());
+        if (categoriesModel.getTitle() != null) {
+            ((CategoryDetailActivity) getActivity()).getSupportActionBar().setTitle(categoriesModel.getTitle());
+        }
 
         seeAllBrands = view.findViewById(R.id.tv_see_all);
-
         popularLocation = view.findViewById(R.id.tv_popular);
         numberOfDeals = view.findViewById(R.id.number_of_locations);
-        recyclerViewDeals = view.findViewById(R.id.recyclerView);
-        recyclerViewBrands = view.findViewById(R.id.recyclerViewBrands);
+        recyclerViewDeals = view.findViewById(R.id.rv_deals);
+        recyclerViewBrands = view.findViewById(R.id.rv_brands);
         mainContent = view.findViewById(R.id.main_content);
         baseMainContent = view.findViewById(R.id.base_main_content);
         progressBarLayout = view.findViewById(R.id.progress_bar_layout);
@@ -131,24 +126,19 @@ public class CategoryDetailHomeFragment extends BaseDaggerFragment implements De
 
 
     @Override
-    public void showMessage(String message) {
-
-    }
-
-    @Override
     public void navigateToActivityRequest(Intent intent, int requestCode) {
-
+        startActivityForResult(intent, requestCode);
     }
 
     @Override
     public void navigateToActivity(Intent intent) {
-
+        startActivity(intent);
     }
 
     @Override
     public void renderCategoryList(List<CategoryItemsViewModel> deals) {
         if (deals != null) {
-            recyclerViewDeals.setAdapter(new DealsCategoryAdapter(getContext(), deals, !IS_SHORT_LAYOUT));
+            recyclerViewDeals.setAdapter(new DealsCategoryAdapter(getActivity(), deals, !IS_SHORT_LAYOUT));
         }
 
         popularLocation.setText(String.format(getActivity().getResources().getString(R.string.popular_deals_in_location)
@@ -180,8 +170,7 @@ public class CategoryDetailHomeFragment extends BaseDaggerFragment implements De
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
 
-        Log.d("onCreateOptions1", "aagye");
-        inflater.inflate(R.menu.menu_brand_details, menu);
+        inflater.inflate(R.menu.menu_deal_details, menu);
         mMenu = menu;
         onPrepareOptionsMenu(menu);
 
@@ -255,10 +244,17 @@ public class CategoryDetailHomeFragment extends BaseDaggerFragment implements De
     };
 
     @Override
-    public RequestParams getParams() {
+    public RequestParams getCategoryParams() {
         RequestParams requestParams = RequestParams.create();
-        Log.d("Myurllll", " " + categoriesModel.getUrl());
         requestParams.putString(DealsHomePresenter.TAG, categoriesModel.getUrl());
+        return requestParams;
+    }
+
+    @Override
+    public RequestParams getBrandParams() {
+        RequestParams requestParams = RequestParams.create();
+        requestParams.putString(Utils.BRAND_QUERY_PARAM_TREE, Utils.BRAND_QUERY_PARAM_BRAND);
+        requestParams.putInt(Utils.BRAND_QUERY_PARAM_CHILD_CATEGORY_ID, categoriesModel.getCategoryId());
         return requestParams;
     }
 
@@ -269,13 +265,22 @@ public class CategoryDetailHomeFragment extends BaseDaggerFragment implements De
 
     @Override
     public void onClick(View v) {
-        mPresenter.onOptionMenuClick(v.getId());
-
+        if(v.getId() == R.id.tv_see_all) {
+            fragmentCallbacks.replaceFragment(categoriesModel);
+        } else {
+            mPresenter.onOptionMenuClick(v.getId());
+        }
     }
 
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
+        fragmentCallbacks = (CategoryDetailActivity) activity;
     }
 
+    @Override
+    public void onDestroyView() {
+        mPresenter.onDestroy();
+        super.onDestroyView();
+    }
 }

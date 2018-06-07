@@ -133,37 +133,35 @@ public class OmsInterceptor extends TkpdAuthInterceptor {
 
     @Override
     public Response intercept(Chain chain) throws IOException {
-        String chainURL = chain.request().url().url().toString();
-        if (chainURL.contains(TkpdBaseURL.OMS_DOMAIN + "v1/api/expresscart/verify")
-                || chainURL.contains(TkpdBaseURL.OMS_DOMAIN + "v1/api/expresscart/checkout")
-                || chainURL.contains(TkpdBaseURL.OMS_DOMAIN + "v1/api/expresscart/init")
-                || chainURL.contains(TkpdBaseURL.OMS_DOMAIN + "v1/api/rating")
-                || chainURL.contains(TkpdBaseURL.OMS_DOMAIN + "v1/api/rating/user")) {
-            final Request originRequest = chain.request();
-            Request.Builder newRequest = chain.request().newBuilder();
 
-            generateHmacAuthRequest(originRequest, newRequest);
+        final Request originRequest = chain.request();
+        Request.Builder newRequest = chain.request().newBuilder();
+
+        generateHmacAuthRequest(originRequest, newRequest);
+
+        if (SessionHandler.isV4Login(mContext)) {
+
             newRequest.removeHeader("Authorization")
                     .addHeader("Authorization", "Bearer " + SessionHandler.getAccessToken())
                     .addHeader("Tkpd-UserId", SessionHandler.getLoginID(mContext));
+        }
 
-            final Request finalRequest = newRequest.build();
-            Response response = getResponse(chain, finalRequest);
+        final Request finalRequest = newRequest.build();
+        Response response = getResponse(chain, finalRequest);
 
-            if (isNeedGcmUpdate(response)) {
-                doRelogin();
-                response = getResponse(chain, finalRequest);
-            }
+        if (isNeedGcmUpdate(response)) {
+            doRelogin();
+            response = getResponse(chain, finalRequest);
+        }
 
-            if (!response.isSuccessful()) {
-                throwChainProcessCauseHttpError(response);
-            }
+        if (!response.isSuccessful()) {
+            throwChainProcessCauseHttpError(response);
+        }
 
-            String bodyResponse = response.body().string();
-            checkResponse(bodyResponse, response);
+        String bodyResponse = response.body().string();
+        checkResponse(bodyResponse, response);
 
-            return createNewResponse(response, bodyResponse);
-        } else
-            return super.intercept(chain);
+        return createNewResponse(response, bodyResponse);
     }
 }
+

@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.constraint.ConstraintLayout;
@@ -22,10 +21,10 @@ import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.style.AlignmentSpan;
 import android.text.style.StyleSpan;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -57,13 +56,13 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import static com.tokopedia.abstraction.constant.TkpdAppLink.DIGITAL_DEALS;
+import static com.tokopedia.digital_deals.view.utils.Utils.Constants.DIGITAL_DEALS;
 
 public class DealsHomeActivity extends BaseSimpleActivity implements HasComponent<DealsComponent>, DealsContract.View, View.OnClickListener {
 
     private final int SPAN_COUNT_4 = 4;
     private Menu mMenu;
-    private DealsComponent mdealsComponent;
+    private DealsComponent dealsComponent;
     @Inject
     public DealsHomePresenter mPresenter;
     private TouchViewPager viewPager;
@@ -71,24 +70,19 @@ public class DealsHomeActivity extends BaseSimpleActivity implements HasComponen
     private CoordinatorLayout mainContent;
     private View progressBarLayout;
     private ProgressBar progBar;
-    private RecyclerView recyclerViewCatItems;
-    private RecyclerView recyclerViewAllDeals;
-    private RecyclerView recyclerViewTrendingDeals;
-    private RecyclerView recyclerViewBrandItems;
+    private RecyclerView rvCatItems;
+    private RecyclerView rvTrendingDeals;
+    private RecyclerView rvBrandItems;
     private CoordinatorLayout baseMainContent;
-    private int mBannnerPos;
-    private final static String THEMEPARK = "themepark";
-    private final static String TOP = "top";
     private TextView searchInputView;
     private final boolean IS_SHORT_LAYOUT = false;
     public static final int REQUEST_CODE_DEALSLOCATIONACTIVITY = 101;
     public static final int REQUEST_CODE_DEALSSEARCHACTIVITY = 102;
     private ConstraintLayout clSearch;
-    private TextView tvChangeLocation;
-    private TextView locationName;
+    private TextView tvLocationName;
     private LinearLayoutManager layoutManager;
     private String category = null;
-    private TextView seeAllBrands;
+    private TextView tvSeeAllBrands;
     private AppBarLayout appBarLayout;
 
     @DeepLink({DIGITAL_DEALS})
@@ -96,12 +90,14 @@ public class DealsHomeActivity extends BaseSimpleActivity implements HasComponen
         Intent destination;
         try {
             String deepLink = extras.getString(DeepLink.URI);
+            Log.d("Mydeeplink2", deepLink);
             Uri.Builder uri = Uri.parse(deepLink).buildUpon();
             destination = new Intent(context, DealsHomeActivity.class)
                     .setData(uri.build())
                     .putExtras(extras);
 
         } catch (Exception e) {
+            Log.d("MudeeplinkCatch", "aagya");
             destination = new Intent(context, DealsHomeActivity.class);
         }
         return destination;
@@ -122,19 +118,6 @@ public class DealsHomeActivity extends BaseSimpleActivity implements HasComponen
         executeInjector();
         mPresenter.attachView(this);
         checkLocationStatus();
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            appBarLayout.addOnOffsetChangedListener((appBarLayout, verticalOffset) -> {
-                verticalOffset = Math.abs(verticalOffset);
-                int difference = appBarLayout.getTotalScrollRange() - toolbar.getHeight();
-                if (verticalOffset >= difference) {
-                    toolbar.setElevation(getResources().getDimension(R.dimen.dp_8));
-
-                } else {
-                    toolbar.setElevation(getResources().getDimension(R.dimen.dp_0));
-                }
-
-            });
-        }
 
     }
 
@@ -143,7 +126,7 @@ public class DealsHomeActivity extends BaseSimpleActivity implements HasComponen
         LocationViewModel location = Utils.getSingletonInstance().getLocation(getActivity());
 
         if (location != null) {
-            locationName.setText(location.getName());
+            tvLocationName.setText(location.getName());
             mPresenter.getDealsList();
             mPresenter.getBrandsList();
 
@@ -154,10 +137,9 @@ public class DealsHomeActivity extends BaseSimpleActivity implements HasComponen
     }
 
     private void setUpVariables() {
-        recyclerViewCatItems = findViewById(R.id.recyclerViewCatItems);
-        recyclerViewAllDeals = findViewById(R.id.recyclerViewAllDeals);
-        recyclerViewBrandItems = findViewById(R.id.recyclerViewBrandItems);
-        recyclerViewTrendingDeals = findViewById(R.id.recyclerViewTrendingDeals);
+        rvCatItems = findViewById(R.id.rv_category_items);
+        rvBrandItems = findViewById(R.id.rv_brand_items);
+        rvTrendingDeals = findViewById(R.id.rv_trending_deals);
         appBarLayout=findViewById(R.id.app_bar_layout);
         viewPager = findViewById(R.id.deals_bannerpager);
         circlePageIndicator = findViewById(R.id.pager_indicator);
@@ -166,38 +148,38 @@ public class DealsHomeActivity extends BaseSimpleActivity implements HasComponen
         progBar = findViewById(R.id.prog_bar);
         baseMainContent = findViewById(R.id.base_main_content);
         searchInputView = findViewById(R.id.search_input_view);
-        locationName = findViewById(R.id.tv_location_name);
-        tvChangeLocation = findViewById(R.id.tv_location_name);
+        tvLocationName = findViewById(R.id.tv_location_name);
+
         clSearch = findViewById(R.id.cl_search_view);
-        seeAllBrands = findViewById(R.id.tv_see_all_brands);
-        seeAllBrands.setOnClickListener(this);
+        tvSeeAllBrands = findViewById(R.id.tv_see_all_brands);
+        tvSeeAllBrands.setOnClickListener(this);
         searchInputView.setOnClickListener(this);
-        tvChangeLocation.setOnClickListener(this);
+        tvLocationName.setOnClickListener(this);
         layoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
 
-        recyclerViewTrendingDeals.setLayoutManager(layoutManager);
-        recyclerViewCatItems.setLayoutManager(new GridLayoutManager(getActivity(), SPAN_COUNT_4,
+        rvTrendingDeals.setLayoutManager(layoutManager);
+        rvCatItems.setLayoutManager(new GridLayoutManager(getActivity(), SPAN_COUNT_4,
                 GridLayoutManager.VERTICAL, false));
-        recyclerViewBrandItems.setLayoutManager(new GridLayoutManager(getActivity(), SPAN_COUNT_4,
+        rvBrandItems.setLayoutManager(new GridLayoutManager(getActivity(), SPAN_COUNT_4,
                 GridLayoutManager.VERTICAL, false));
 
         Drawable img = getResources().getDrawable(R.drawable.ic_search_grey);
         searchInputView.setCompoundDrawablesWithIntrinsicBounds(img, null, null, null);
 
         img = getResources().getDrawable(R.drawable.ic_location_2);
-        tvChangeLocation.setCompoundDrawablesWithIntrinsicBounds(img, null, null, null);
+        tvLocationName.setCompoundDrawablesWithIntrinsicBounds(img, null, null, null);
     }
 
     private void initInjector() {
-        mdealsComponent = DaggerDealsComponent.builder()
+        dealsComponent = DaggerDealsComponent.builder()
                 .baseAppComponent(((BaseMainApplication) getApplication()).getBaseAppComponent())
                 .dealsModule(new DealsModule(this))
                 .build();
     }
 
     private void executeInjector() {
-        if (mdealsComponent == null) initInjector();
-        mdealsComponent.inject(this);
+        if (dealsComponent == null) initInjector();
+        dealsComponent.inject(this);
     }
 
     @Override
@@ -207,8 +189,8 @@ public class DealsHomeActivity extends BaseSimpleActivity implements HasComponen
 
     @Override
     public DealsComponent getComponent() {
-        if (mdealsComponent == null) initInjector();
-        return mdealsComponent;
+        if (dealsComponent == null) initInjector();
+        return dealsComponent;
     }
 
     @Override
@@ -247,7 +229,7 @@ public class DealsHomeActivity extends BaseSimpleActivity implements HasComponen
                             Utils.getSingletonInstance().setSnackBarLocationChange(location.getName(), getActivity(), mainContent);
                     }
 
-                    locationName.setText(location.getName());
+                    tvLocationName.setText(location.getName());
                     mPresenter.getDealsList();
                     mPresenter.getBrandsList();
                 }
@@ -256,7 +238,7 @@ public class DealsHomeActivity extends BaseSimpleActivity implements HasComponen
             case REQUEST_CODE_DEALSSEARCHACTIVITY:
                 if (resultCode == RESULT_OK) {
                     LocationViewModel location1 = Utils.getSingletonInstance().getLocation(getActivity());
-                    locationName.setText(location1.getName());
+                    tvLocationName.setText(location1.getName());
                 }
                 break;
         }
@@ -269,8 +251,7 @@ public class DealsHomeActivity extends BaseSimpleActivity implements HasComponen
 
         if (top.getItems() != null) {
             DealsCategoryAdapter categoryAdapter = new DealsCategoryAdapter(getActivity(), top.getItems(), IS_SHORT_LAYOUT);
-//            recyclerViewAllDeals.setAdapter(categoryAdapter);
-            recyclerViewTrendingDeals.setAdapter(categoryAdapter);
+            rvTrendingDeals.setAdapter(categoryAdapter);
         }
         if (carousel.getItems() != null) {
             setViewPagerListener(new SlidingImageAdapter(getActivity(), mPresenter.getCarouselImages(carousel.getItems()), mPresenter));
@@ -278,7 +259,7 @@ public class DealsHomeActivity extends BaseSimpleActivity implements HasComponen
             mPresenter.startBannerSlide(viewPager);
         }
         if (categoryList != null) {
-            recyclerViewCatItems.setAdapter(new DealsCategoryItemAdapter(getActivity(), categoryList));
+            rvCatItems.setAdapter(new DealsCategoryItemAdapter(getActivity(), categoryList));
         }
 
     }
@@ -286,15 +267,14 @@ public class DealsHomeActivity extends BaseSimpleActivity implements HasComponen
     @Override
     public void renderBrandList(List<BrandViewModel> brandList) {
         if (brandList != null) {
-            recyclerViewBrandItems.setAdapter(new DealsBrandAdapter(getActivity(), brandList, true));
+            rvBrandItems.setAdapter(new DealsBrandAdapter(getActivity(), brandList, true));
         }
     }
 
     @Override
     public void addDealsToCards(CategoryViewModel top) {
         if (top.getItems() != null) {
-
-            ((DealsCategoryAdapter) recyclerViewTrendingDeals.getAdapter()).addAll(top.getItems());
+            ((DealsCategoryAdapter) rvTrendingDeals.getAdapter()).addAll(top.getItems());
         }
     }
 
@@ -305,14 +285,12 @@ public class DealsHomeActivity extends BaseSimpleActivity implements HasComponen
 
     @Override
     public void removeFooter() {
-        ((DealsCategoryAdapter) recyclerViewTrendingDeals.getAdapter()).removeFooter();
-//        ((DealsCategoryAdapter) recyclerViewAllDeals.getAdapter()).removeFooter();
+        ((DealsCategoryAdapter) rvTrendingDeals.getAdapter()).removeFooter();
     }
 
     @Override
     public void addFooter() {
-        ((DealsCategoryAdapter) recyclerViewTrendingDeals.getAdapter()).addFooter();
-//        ((DealsCategoryAdapter) recyclerViewAllDeals.getAdapter()).addFooter();
+        ((DealsCategoryAdapter) rvTrendingDeals.getAdapter()).addFooter();
     }
 
     @Override
@@ -429,7 +407,11 @@ public class DealsHomeActivity extends BaseSimpleActivity implements HasComponen
     @Override
     public void onClick(View v) {
         mPresenter.onOptionMenuClick(v.getId());
-
     }
 
+    @Override
+    protected void onDestroy() {
+        mPresenter.onDestroy();
+        super.onDestroy();
+    }
 }

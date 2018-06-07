@@ -19,7 +19,7 @@ public class BrandDetailsTransformMapper implements Func1<BrandDetailsResponse, 
     public BrandDetailsDomain call(BrandDetailsResponse brandDetailsResponse) {
 
         BrandDetailsDomain dealsDomain = new BrandDetailsDomain();
-        JsonArray deals = brandDetailsResponse.getData().getDeals();
+        JsonArray deals = brandDetailsResponse.getDeals();
         List<DealsCategoryItemDomain> dealsCategoryItemDomains = new ArrayList<>();
         DealsCategoryItemDomain dealsCategoryDomain;
         if (deals != null) {
@@ -32,7 +32,7 @@ public class BrandDetailsTransformMapper implements Func1<BrandDetailsResponse, 
         dealsDomain.setDealItems(dealsCategoryItemDomains);
 
 
-        JsonObject brand = brandDetailsResponse.getData().getBrand();
+        JsonObject brand = brandDetailsResponse.getBrand();
         BrandDomain brandDomain = new Gson().fromJson(brand, BrandDomain.class);
 
         dealsDomain.setDealBrand(brandDomain);

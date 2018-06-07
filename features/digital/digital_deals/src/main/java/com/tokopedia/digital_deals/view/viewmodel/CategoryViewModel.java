@@ -12,14 +12,11 @@ public class CategoryViewModel implements Parcelable {
     private String name;
     private String url;
     private String mediaUrl;
+    private int categoryId;
+    private int count;
     private List<CategoryItemsViewModel> items = null;
 
-    public CategoryViewModel(String title, String name, String url, String mediaUrl, List<CategoryItemsViewModel> items) {
-        this.title = title;
-        this.name = name;
-        this.items = items;
-        this.mediaUrl=mediaUrl;
-        this.url = url;
+    public CategoryViewModel() {
     }
 
     public String getTitle() {
@@ -46,7 +43,6 @@ public class CategoryViewModel implements Parcelable {
         this.url = url;
     }
 
-
     public String getMediaUrl() {
         return mediaUrl;
     }
@@ -63,6 +59,23 @@ public class CategoryViewModel implements Parcelable {
         this.items = items;
     }
 
+
+    public int getCategoryId() {
+        return categoryId;
+    }
+
+    public void setCategoryId(int categoryId) {
+        this.categoryId = categoryId;
+    }
+
+    public int getCount() {
+        return count;
+    }
+
+    public void setCount(int count) {
+        this.count = count;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -75,6 +88,8 @@ public class CategoryViewModel implements Parcelable {
         dest.writeString(this.url);
         dest.writeString(this.mediaUrl);
         dest.writeList(this.items);
+        dest.writeInt(categoryId);
+        dest.writeInt(count);
     }
 
     protected CategoryViewModel(Parcel in) {
@@ -84,6 +99,8 @@ public class CategoryViewModel implements Parcelable {
         this.items = new ArrayList<CategoryItemsViewModel>();
         this.mediaUrl = in.readString();
         in.readList(this.items, CategoryItemsViewModel.class.getClassLoader());
+        this.categoryId = in.readInt();
+        this.count = in.readInt();
     }
 
     public static final Parcelable.Creator<CategoryViewModel> CREATOR = new Parcelable.Creator<CategoryViewModel>() {

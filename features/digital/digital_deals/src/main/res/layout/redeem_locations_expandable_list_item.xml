@@ -3,6 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    xmlns:tools="http://schemas.android.com/tools"
 
     android:background="@color/deals_backgroud_color">
 
@@ -13,7 +14,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/dp_16"
         android:fontFamily="sans-serif"
-        android:text="Pacific Place"
+        tools:text="Pacific Place"
         android:layout_marginLeft="@dimen/dp_16"
         app:layout_constraintLeft_toLeftOf="parent"
         android:textColor="@color/black_39"
@@ -31,7 +32,7 @@
         android:layout_marginLeft="@dimen/dp_16"
         android:maxLines="1"
         android:ellipsize="end"
-        android:text="PACIFIC PLACE MALL, 4th Floor…"
+        tools:text="PACIFIC PLACE MALL, 4th Floor…"
         android:textColor="@color/black_38"
         android:textSize="@dimen/sp_14"
         app:layout_constraintLeft_toLeftOf="parent"

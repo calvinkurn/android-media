@@ -5,8 +5,8 @@ import android.os.Parcelable;
 
 public class CategoriesModel implements Parcelable {
 
-    private Integer position;
-    private Integer categoryId;
+    private int position;
+    private int categoryId;
     private String title;
     private String name;
     private String url;
@@ -27,11 +27,11 @@ public class CategoriesModel implements Parcelable {
     };
 
     protected CategoriesModel(Parcel in) {
-        this.title = ((String) in.readValue((String.class.getClassLoader())));
-        this.name = ((String) in.readValue((String.class.getClassLoader())));
-        this.url = ((String) in.readValue((String.class.getClassLoader())));
-        this.position = ((Integer) in.readValue((Integer.class.getClassLoader())));
-        this.categoryId = ((Integer) in.readValue((Integer.class.getClassLoader())));
+        this.title = in.readString();
+        this.name = in.readString();
+        this.url = in.readString();
+        this.position = in.readInt();
+        this.categoryId = in.readInt();
 
     }
 
@@ -70,22 +70,21 @@ public class CategoriesModel implements Parcelable {
         this.position = position;
     }
 
-    public Integer getCategoryId() {
+    public int getCategoryId() {
         return categoryId;
     }
 
-    public void setCategoryId(Integer categoryId) {
+    public void setCategoryId(int categoryId) {
         this.categoryId = categoryId;
     }
 
 
-
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeValue(title);
-        dest.writeValue(name);
-        dest.writeValue(url);
-        dest.writeValue(position);
-        dest.writeValue(categoryId);
+        dest.writeString(title);
+        dest.writeString(name);
+        dest.writeString(url);
+        dest.writeInt(position);
+        dest.writeInt(categoryId);
     }
 
     public int describeContents() {

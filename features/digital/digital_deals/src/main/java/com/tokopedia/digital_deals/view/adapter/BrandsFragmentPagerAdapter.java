@@ -18,9 +18,8 @@ public class BrandsFragmentPagerAdapter extends FragmentStatePagerAdapter {
         super(fm);
         this.categoryList = categoryList;
         fragmentArrayList = new ArrayList<>();
-        Fragment fragment = null;
         for (int i = 0; i < this.categoryList.size(); i++)
-            fragmentArrayList.add(fragment);
+            fragmentArrayList.add(null);
     }
 
     @Override
@@ -29,12 +28,12 @@ public class BrandsFragmentPagerAdapter extends FragmentStatePagerAdapter {
         try {
             fragment = fragmentArrayList.get(position);
             if (fragment == null) {
-                fragment = AllBrandsFragment.newInstance(categoryList.get(position), position);
+                fragment = AllBrandsFragment.newInstance(categoryList.get(position));
                 fragmentArrayList.remove(position);
                 fragmentArrayList.add(position, fragment);
             }
         } catch (IndexOutOfBoundsException e) {
-            AllBrandsFragment categoryFragment = (AllBrandsFragment) AllBrandsFragment.newInstance(categoryList.get(position), position);
+            AllBrandsFragment categoryFragment = (AllBrandsFragment) AllBrandsFragment.newInstance(categoryList.get(position));
             fragmentArrayList.add(position, categoryFragment);
             fragment = fragmentArrayList.get(position);
         }

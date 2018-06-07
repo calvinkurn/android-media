@@ -19,11 +19,7 @@
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White" />
         <activity
-            android:name=".view.activity.BrandOutletDetailsActivity"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.White" />
-        <activity
-            android:name=".view.activity.DealsCategoryDetailActivity"
+            android:name=".view.activity.CategoryDetailActivity"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White" />
         <activity

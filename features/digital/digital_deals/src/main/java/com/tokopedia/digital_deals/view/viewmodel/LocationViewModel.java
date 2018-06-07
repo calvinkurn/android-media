@@ -7,15 +7,15 @@ public class LocationViewModel implements Parcelable{
 
 
 
-    private Integer id;
-    private Integer categoryId;
+    private int id;
+    private int categoryId;
     private String name;
     private String searchName;
     private String district;
     private String state;
     private String country;
-    private Integer isSearchable;
-    private Integer status;
+    private int isSearchable;
+    private int status;
     private String icon;
     private String url;
 
@@ -36,35 +36,35 @@ public class LocationViewModel implements Parcelable{
     };
 
     protected LocationViewModel(Parcel in) {
-        this.id = ((Integer) in.readValue((Integer.class.getClassLoader())));
-        this.categoryId = ((Integer) in.readValue((Integer.class.getClassLoader())));
-        this.name = ((String) in.readValue((String.class.getClassLoader())));
-        this.searchName = ((String) in.readValue((String.class.getClassLoader())));
-        this.district = ((String) in.readValue((String.class.getClassLoader())));
-        this.state = ((String) in.readValue((String.class.getClassLoader())));
-        this.country = ((String) in.readValue((String.class.getClassLoader())));
-        this.isSearchable = ((Integer) in.readValue((Integer.class.getClassLoader())));
-        this.status = ((Integer) in.readValue((Integer.class.getClassLoader())));
-        this.icon = ((String) in.readValue((String.class.getClassLoader())));
-        this.url = ((String) in.readValue((String.class.getClassLoader())));
+        this.id = in.readInt();
+        this.categoryId = in.readInt();
+        this.name = in.readString();
+        this.searchName = in.readString();
+        this.district = in.readString();
+        this.state = in.readString();
+        this.country = in.readString();
+        this.isSearchable = in.readInt();
+        this.status = in.readInt();
+        this.icon = in.readString();
+        this.url = in.readString();
     }
 
     public LocationViewModel() {
     }
 
-    public Integer getId() {
+    public int getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(int id) {
         this.id = id;
     }
 
-    public Integer getCategoryId() {
+    public int getCategoryId() {
         return categoryId;
     }
 
-    public void setCategoryId(Integer categoryId) {
+    public void setCategoryId(int categoryId) {
         this.categoryId = categoryId;
     }
 
@@ -108,19 +108,19 @@ public class LocationViewModel implements Parcelable{
         this.country = country;
     }
 
-    public Integer getIsSearchable() {
+    public int getIsSearchable() {
         return isSearchable;
     }
 
-    public void setIsSearchable(Integer isSearchable) {
+    public void setIsSearchable(int isSearchable) {
         this.isSearchable = isSearchable;
     }
 
-    public Integer getStatus() {
+    public int getStatus() {
         return status;
     }
 
-    public void setStatus(Integer status) {
+    public void setStatus(int status) {
         this.status = status;
     }
 
@@ -141,17 +141,18 @@ public class LocationViewModel implements Parcelable{
     }
 
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeValue(id);
-        dest.writeValue(categoryId);
-        dest.writeValue(name);
-        dest.writeValue(searchName);
-        dest.writeValue(district);
-        dest.writeValue(state);
-        dest.writeValue(country);
-        dest.writeValue(isSearchable);
-        dest.writeValue(status);
-        dest.writeValue(icon);
-        dest.writeValue(url);
+
+        dest.writeInt(id);
+        dest.writeInt(categoryId);
+        dest.writeString(name);
+        dest.writeString(searchName);
+        dest.writeString(district);
+        dest.writeString(state);
+        dest.writeString(country);
+        dest.writeInt(isSearchable);
+        dest.writeInt(status);
+        dest.writeString(icon);
+        dest.writeString(url);
     }
 
     public int describeContents() {

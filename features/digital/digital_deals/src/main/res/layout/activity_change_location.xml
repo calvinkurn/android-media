@@ -67,7 +67,7 @@
                 android:layout_marginLeft="@dimen/dp_16"
                 android:layout_marginTop="@dimen/dp_24"
                 android:fontFamily="sans-serif-medium"
-                android:text="KOTA POPULER"
+                android:text="@string/popular_location"
                 android:textColor="@color/black_38"
                 android:textSize="@dimen/sp_12"
                 android:textStyle="normal" />

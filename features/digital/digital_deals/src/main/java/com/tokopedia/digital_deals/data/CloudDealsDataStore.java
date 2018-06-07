@@ -1,14 +1,14 @@
 package com.tokopedia.digital_deals.data;
 
+import com.google.gson.JsonObject;
+import com.tokopedia.digital_deals.data.entity.response.LikeUpdateResponse;
 import com.tokopedia.digital_deals.data.entity.response.allbrandsresponse.AllBrandsResponse;
 import com.tokopedia.digital_deals.data.entity.response.alllocationresponse.LocationResponse;
 import com.tokopedia.digital_deals.data.entity.response.branddetailsresponse.BrandDetailsResponse;
 import com.tokopedia.digital_deals.data.entity.response.categorydetailresponse.CategoryResponse;
-import com.tokopedia.digital_deals.data.entity.response.dealdetailsresponse.DealDetailsResponse;
 import com.tokopedia.digital_deals.data.entity.response.homeresponse.DealsResponse;
 import com.tokopedia.digital_deals.data.entity.response.searchresponse.SearchResponse;
 import com.tokopedia.digital_deals.data.source.DealsApi;
-import com.tokopedia.digital_deals.domain.model.locationdomainmodel.LocationDomainModel;
 import com.tokopedia.digital_deals.view.presenter.DealsHomePresenter;
 
 import java.util.HashMap;
@@ -49,7 +49,7 @@ public class CloudDealsDataStore implements DealsDataStore {
     }
 
     @Override
-    public Observable<DealDetailsResponse> getDealDetails(String url) {
+    public Observable<JsonObject> getDealDetails(String url) {
         return dealsApi.getDealDetails(url);
     }
 
@@ -76,6 +76,11 @@ public class CloudDealsDataStore implements DealsDataStore {
     @Override
     public Observable<AllBrandsResponse> getAllBrandsNext(String nextUrl) {
         return dealsApi.getAllBrandsNext(nextUrl);
+    }
+
+    @Override
+    public Observable<LikeUpdateResponse> updateLikes(JsonObject requestBody) {
+        return dealsApi.updateLikes(requestBody);
     }
 
 

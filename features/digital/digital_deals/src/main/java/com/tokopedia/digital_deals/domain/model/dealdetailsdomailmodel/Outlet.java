@@ -7,13 +7,13 @@ public class Outlet{
 
     @SerializedName("id")
     @Expose
-    private Integer id;
+    private int id;
     @SerializedName("product_id")
     @Expose
-    private Integer productId;
+    private int productId;
     @SerializedName("location_id")
     @Expose
-    private Integer locationId;
+    private int locationId;
     @SerializedName("name")
     @Expose
     private String name;
@@ -49,32 +49,32 @@ public class Outlet{
     private String country;
     @SerializedName("is_searchable")
     @Expose
-    private Integer isSearchable;
+    private int isSearchable;
     @SerializedName("location_status")
     @Expose
-    private Integer locationStatus;
+    private int locationStatus;
 
-    public Integer getId() {
+    public int getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(int id) {
         this.id = id;
     }
 
-    public Integer getProductId() {
+    public int getProductId() {
         return productId;
     }
 
-    public void setProductId(Integer productId) {
+    public void setProductId(int productId) {
         this.productId = productId;
     }
 
-    public Integer getLocationId() {
+    public int getLocationId() {
         return locationId;
     }
 
-    public void setLocationId(Integer locationId) {
+    public void setLocationId(int locationId) {
         this.locationId = locationId;
     }
 
@@ -166,19 +166,19 @@ public class Outlet{
         this.country = country;
     }
 
-    public Integer getIsSearchable() {
+    public int getIsSearchable() {
         return isSearchable;
     }
 
-    public void setIsSearchable(Integer isSearchable) {
+    public void setIsSearchable(int isSearchable) {
         this.isSearchable = isSearchable;
     }
 
-    public Integer getLocationStatus() {
+    public int getLocationStatus() {
         return locationStatus;
     }
 
-    public void setLocationStatus(Integer locationStatus) {
+    public void setLocationStatus(int locationStatus) {
         this.locationStatus = locationStatus;
     }
 

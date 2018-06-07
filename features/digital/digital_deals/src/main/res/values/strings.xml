@@ -1,5 +1,6 @@
 <resources>
     <string name="app_name">digital_deals</string>
+    <string name="activity_checkout_title">Checkout</string>
     <string name="promo_button_text">Lihat Semua Promo</string>
     <string name="search">Search</string>
     <string name="daftar_transaksi">Daftar Transaksi</string>
@@ -72,6 +73,14 @@
     <string name="pricing_details">Rincian Harga</string>
     <string name="cannot_find_application">Cannot find an application to show location</string>
     <string name="text_service_fees">Biaya Layanan</string>
+    <string name="available_locations">Dapat ditukar di\u0020</string>
+    <string name="redeem_coupon_promo">Gunakan Kode Promo atau Kupon</string>
+    <string name="category_voucher">Kategori Voucher</string>
+    <string name="popular_location">KOTA POPULER</string>
+    <string name="terdapat_di">Terdapat di</string>
+    <string name="number_of_locations">%d Lokasi</string>
+    <string name="brands">Brands</string>
+    <string name="brand_category">Brand %s</string>
 
 
 </resources>

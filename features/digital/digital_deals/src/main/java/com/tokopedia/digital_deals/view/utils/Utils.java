@@ -1,27 +1,29 @@
 package com.tokopedia.digital_deals.view.utils;
 
+import android.app.Activity;
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.Canvas;
-import android.os.Environment;
-import android.support.design.widget.CoordinatorLayout;
+import android.content.Intent;
+import android.net.Uri;
 import android.support.design.widget.Snackbar;
-import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.LinearLayout;
+import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
+import com.tokopedia.core.product.model.share.ShareData;
+import com.tokopedia.core.util.BranchSdkUtils;
 import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.digital_deals.R;
-import com.tokopedia.digital_deals.domain.model.PageDomain;
-import com.tokopedia.digital_deals.domain.model.branddetailsmodel.BrandDomain;
 import com.tokopedia.digital_deals.domain.model.DealsCategoryDomain;
 import com.tokopedia.digital_deals.domain.model.DealsCategoryItemDomain;
+import com.tokopedia.digital_deals.domain.model.PageDomain;
+import com.tokopedia.digital_deals.domain.model.branddetailsmodel.BrandDomain;
 import com.tokopedia.digital_deals.domain.model.dealdetailsdomailmodel.DealsDetailsDomain;
+import com.tokopedia.digital_deals.domain.model.dealdetailsdomailmodel.MediaDomain;
 import com.tokopedia.digital_deals.domain.model.dealdetailsdomailmodel.Outlet;
 import com.tokopedia.digital_deals.domain.model.locationdomainmodel.LocationItemDomain;
 import com.tokopedia.digital_deals.view.viewmodel.BrandViewModel;
@@ -32,20 +34,16 @@ import com.tokopedia.digital_deals.view.viewmodel.DealsDetailsViewModel;
 import com.tokopedia.digital_deals.view.viewmodel.LocationViewModel;
 import com.tokopedia.digital_deals.view.viewmodel.OutletViewModel;
 import com.tokopedia.digital_deals.view.viewmodel.PageViewModel;
-import com.tokopedia.digital_deals.view.viewmodel.SearchViewModel;
 
-
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
-import java.util.Random;
 import java.util.TimeZone;
+
+import static com.tokopedia.digital_deals.view.utils.Utils.Constants.DIGITAL_DEALS;
 
 
 public class Utils {
@@ -72,21 +70,24 @@ public class Utils {
         if (categoryList != null) {
             for (DealsCategoryDomain dealsCategoryDomain : categoryList) {
 
+                CategoryViewModel category=new CategoryViewModel();
+                category.setTitle(dealsCategoryDomain.getTitle());
+                category.setCategoryId(dealsCategoryDomain.getId());
+                category.setCount(dealsCategoryDomain.getCount());
+                category.setName(dealsCategoryDomain.getName());
+                category.setMediaUrl(dealsCategoryDomain.getMediaUrl());
+                category.setUrl(dealsCategoryDomain.getUrl());
+                category.setItems(convertIntoCategoryListItemsViewModel(dealsCategoryDomain.getItems()));
+
                 switch (dealsCategoryDomain.getName().toLowerCase()) {
                     case "top":
-                        categoryViewModels.add(0, new CategoryViewModel(dealsCategoryDomain.getTitle(),
-                                dealsCategoryDomain.getName(), dealsCategoryDomain.getUrl(), dealsCategoryDomain.getMediaUrl(),
-                                convertIntoCategoryListItemsViewModel(dealsCategoryDomain.getItems())));
+                        categoryViewModels.add(0, category);
                         break;
                     case "carousel":
-                        categoryViewModels.add(0, new CategoryViewModel(dealsCategoryDomain.getTitle(),
-                                dealsCategoryDomain.getName(), dealsCategoryDomain.getUrl(), dealsCategoryDomain.getMediaUrl(),
-                                convertIntoCategoryListItemsViewModel(dealsCategoryDomain.getItems())));
+                        categoryViewModels.add(0, category);
                         break;
                     default:
-                        categoryViewModels.add(new CategoryViewModel(dealsCategoryDomain.getTitle(),
-                                dealsCategoryDomain.getName(), dealsCategoryDomain.getUrl(), dealsCategoryDomain.getMediaUrl(),
-                                convertIntoCategoryListItemsViewModel(dealsCategoryDomain.getItems())));
+                        categoryViewModels.add(category);
                         break;
 
                 }
@@ -104,6 +105,7 @@ public class Utils {
                 for (DealsCategoryItemDomain categoryEntity : categoryResponseItemsList) {
                     categoryItemsViewModel = new CategoryItemsViewModel();
                     categoryItemsViewModel.setMrp(categoryEntity.getMrp());
+                    categoryItemsViewModel.setId(categoryEntity.getId());
                     categoryItemsViewModel.setDisplayName(categoryEntity.getDisplayName());
                     categoryItemsViewModel.setSalesPrice(categoryEntity.getSalesPrice());
                     categoryItemsViewModel.setSeoUrl(categoryEntity.getSeoUrl());
@@ -124,8 +126,7 @@ public class Utils {
                     } catch (Exception e) {
 
                     }
-//                categoryItemsViewModel.setThumbnailApp(categoryEntity.getThumbnailApp());
-//                categoryItemsViewModel.setMinStartTime(categoryEntity.getMinStartTime());
+
                     categoryItemsViewModel.setCityName(categoryEntity.getCityName());
                     categoryItemsViewModel.setMinStartDate(categoryEntity.getMinStartDate());
                     categoryItemsViewModel.setMaxEndDate(categoryEntity.getMaxEndDate());
@@ -182,6 +183,7 @@ public class Utils {
         viewModel.setMrp(detailsDomain.getMrp());
         viewModel.setSalesPrice(detailsDomain.getSalesPrice());
         viewModel.setSavingPercentage(detailsDomain.getSavingPercentage());
+        viewModel.setUrl(detailsDomain.getUrl());
         viewModel.setSaleEndDate(detailsDomain.getSaleEndDate());
         viewModel.setLikes(detailsDomain.getLikes());
         viewModel.setRecommendationUrl(detailsDomain.getRecommendationUrl());
@@ -193,6 +195,13 @@ public class Utils {
                 outletViewModel.add(convertIntoOutletViewModel(outlet));
             }
         }
+        List<String> mediaUrl = null;
+        if(detailsDomain.getMedia()!=null && detailsDomain.getMedia().size()!=0){
+            mediaUrl=new ArrayList<>();
+            for(MediaDomain mediaDomain: detailsDomain.getMedia())
+                mediaUrl.add(mediaDomain.getUrl());
+        }
+        viewModel.setMediaUrl(mediaUrl);
         CatalogViewModel catalogViewModel = new CatalogViewModel();
         catalogViewModel.setDigitalCategoryId(detailsDomain.getCatalog().getDigitalCategoryId());
         catalogViewModel.setDigitalProductId(detailsDomain.getCatalog().getDigitalProductId());
@@ -247,33 +256,6 @@ public class Utils {
         return brandViewModel;
     }
 
-    public ArrayList<SearchViewModel> convertIntoSearchViewModel(List<CategoryViewModel> source) {
-        ArrayList<SearchViewModel> searchViewModels = new ArrayList<>();
-        if (source != null) {
-            SearchViewModel searchModelItem;
-            for (CategoryViewModel item : source) {
-                if (item.getItems() != null) {
-                    List<CategoryItemsViewModel> sourceModels = item.getItems();
-                    for (CategoryItemsViewModel sourceItem : sourceModels) {
-//                        if (sourceItem.getIsTop() == 1 && !isPresent(searchViewModels, sourceItem.getTitle())) {
-                        searchModelItem = new SearchViewModel();
-                        searchModelItem.setCityName(sourceItem.getCityName());
-                        searchModelItem.setDisplayName(sourceItem.getDisplayName());
-//                            searchModelItem.setImageApp(sourceItem.getImageApp());
-                        searchModelItem.setMaxEndDate(sourceItem.getMaxEndDate());
-                        searchModelItem.setMinStartDate(sourceItem.getMinStartDate());
-                        searchModelItem.setSalesPrice(sourceItem.getSalesPrice());
-                        searchModelItem.setTitle(sourceItem.getDisplayName());
-                        searchModelItem.setUrl(sourceItem.getUrl());
-                        searchViewModels.add(searchModelItem);
-//                        }
-                    }
-                }
-
-            }
-        }
-        return searchViewModels;
-    }
 
     public PageViewModel convertIntoPageViewModel(PageDomain pageDomain) {
 
@@ -285,34 +267,7 @@ public class Utils {
         return pageViewModel;
     }
 
-    private boolean isPresent(ArrayList<SearchViewModel> searchViewModels, String title) {
-        for (SearchViewModel viewModel : searchViewModels) {
-            if (viewModel.getTitle().equals(title))
-                return true;
-        }
-        return false;
-    }
 
-    public List<SearchViewModel> convertSearchResultsToModel(List<CategoryItemsViewModel> categoryItemsViewModels) {
-        List<SearchViewModel> searchResults = null;
-        if (categoryItemsViewModels != null && !categoryItemsViewModels.isEmpty()) {
-            SearchViewModel searchModelItem;
-            searchResults = new ArrayList<>();
-            for (CategoryItemsViewModel sourceItem : categoryItemsViewModels) {
-                searchModelItem = new SearchViewModel();
-                searchModelItem.setCityName(sourceItem.getCityName());
-                searchModelItem.setDisplayName(sourceItem.getDisplayName());
-//                searchModelItem.setImageApp(sourceItem.getImageApp());
-                searchModelItem.setMaxEndDate(sourceItem.getMaxEndDate());
-                searchModelItem.setMinStartDate(sourceItem.getMinStartDate());
-                searchModelItem.setSalesPrice(sourceItem.getSalesPrice());
-                searchModelItem.setTitle(sourceItem.getDisplayName());
-                searchModelItem.setUrl(sourceItem.getUrl());
-                searchResults.add(searchModelItem);
-            }
-        }
-        return searchResults;
-    }
 
     public static boolean containsIgnoreCase(String src, String what) {
         final int length = what.length();
@@ -335,77 +290,12 @@ public class Utils {
         return false;
     }
 
-    public static List<String> getDisplayTags(String displayTag) {
-        List<String> displayTagsList = new ArrayList<>();
-
-        String[] temp = displayTag.split("\\|");
-        for (int i = 0; i < temp.length; i++) {
-            displayTagsList.add(temp[i]);
-        }
-
-        return displayTagsList;
-    }
-
-
-    public static String[] getDateArray(String dateRange) {
-        String[] date = new String[3];
-        date[0] = dateRange.substring(0, 3);//day
-        //Sat, 14 Apr 2018 - Sat, 14 Apr 2018
-        date[1] = dateRange.substring(5, 7).trim();//date
-        date[2] = dateRange.substring(7, 11).trim();//month
-        return date;
-    }
-
     private static boolean isNullOrEmpty(String string) {
         return string == null || string.length() == 0;
     }
 
     public static boolean isNotNullOrEmpty(String string) {
         return !isNullOrEmpty(string);
-    }
-
-    public static Bitmap getBitmap(Context context, LinearLayout v) {
-        v.setDrawingCacheEnabled(true);
-        v.measure(View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED),
-                View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED));
-        Bitmap bmp = Bitmap.createBitmap(v.getMeasuredWidth(), v.getMeasuredHeight(), Bitmap.Config.ARGB_8888);
-        Canvas canvas = new Canvas(bmp);
-        v.layout(0, 0, v.getMeasuredWidth(), v.getMeasuredHeight());
-        canvas.drawColor(ContextCompat.getColor(context, R.color.preview_bg));
-        v.draw(canvas);
-        return bmp;
-    }
-
-    public static void saveImage(Context context, Bitmap finalBitmap) {
-
-
-        String extStorageDirectory = context.getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS).toString();
-        File folder = new File(extStorageDirectory, "store_image");
-        if (!folder.exists())
-            folder.mkdir();
-
-        Random generator = new Random();
-        int n = 10000;
-        n = generator.nextInt(n);
-        String fname = "Image" + n + ".png";
-
-        File pdfFile = new File(folder, fname);
-
-        try {
-            pdfFile.createNewFile();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        try {
-            FileOutputStream out = new FileOutputStream(pdfFile);
-            finalBitmap.compress(Bitmap.CompressFormat.PNG, 90, out);
-            out.flush();
-            out.close();
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
     }
 
 
@@ -448,14 +338,24 @@ public class Utils {
         localCacheHandler.applyEditor();
     }
 
-    public void setSnackBarLocationChange(String locationName, Context context, CoordinatorLayout coordinatorLayout) {
+    public void openGoogleMapsActivity(Context context, String latLng){
+        Uri gmmIntentUri = Uri.parse("geo:0,0?q="+latLng);
+        Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
+        mapIntent.setPackage("com.google.android.apps.maps");
+        if (mapIntent.resolveActivity(context.getPackageManager()) != null) {
+            context.startActivity(mapIntent);
+        }else {
+            Toast.makeText(context, context.getResources().getString(R.string.cannot_find_application), Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    public void setSnackBarLocationChange(String locationName, Context context, ViewGroup coordinatorLayout) {
         final Snackbar snackbar = Snackbar.make(coordinatorLayout, locationName, Snackbar.LENGTH_INDEFINITE);
         Snackbar.SnackbarLayout layout = (Snackbar.SnackbarLayout) snackbar.getView();
-        //layout.setBackgroundColor(getResources().getColor(R.color.red_100));
-        TextView textView = (TextView) layout.findViewById(android.support.design.R.id.snackbar_text);
+
+        TextView textView = layout.findViewById(android.support.design.R.id.snackbar_text);
         textView.setVisibility(View.INVISIBLE);
 
-        // Inflate our custom view
         LayoutInflater inflater = LayoutInflater.from(context);
         View snackView = inflater.inflate(R.layout.custom_location_change_snackbar, null);
         TextView tv = snackView.findViewById(R.id.tv_location_ame);
@@ -472,9 +372,31 @@ public class Utils {
         snackbar.show();
     }
 
+    public void shareDeal(String deeplinkSlug, Context context, String name, String imageUrl){
+
+        ShareData shareData = ShareData.Builder.aShareData()
+                .setType("")
+                .setName(name)
+                .setUri(DIGITAL_DEALS+"/"+deeplinkSlug)
+                .setImgUri(imageUrl)
+                .build();
+        BranchSdkUtils.generateBranchLink(shareData, (Activity) context,new BranchSdkUtils.GenerateShareContents() {
+            @Override
+            public void onCreateShareContents(String shareContents, String shareUri, String branchUrl) {
+                Intent share = new Intent(android.content.Intent.ACTION_SEND);
+                share.setType("text/plain");
+                share.addFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
+                share.putExtra(Intent.EXTRA_TEXT, branchUrl);
+                context.startActivity(Intent.createChooser(share, "Share link!"));
+            }
+        });
+    }
+
     public static class Constants {
 
         public final static String DEALS = "deals";
+        public static final String DIGITAL_DEALS = "tokopedia://digital-deals";
+        public static final String DIGITAL_DEALS_DETAILS="tokopedia://digital-deals/{slug}";
     }
 
     public static String fetchOrderId(String url){

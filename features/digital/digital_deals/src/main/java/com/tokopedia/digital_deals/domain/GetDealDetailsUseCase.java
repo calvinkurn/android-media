@@ -1,6 +1,7 @@
 package com.tokopedia.digital_deals.domain;
 
 import com.tokopedia.digital_deals.domain.model.dealdetailsdomailmodel.DealsDetailsDomain;
+import com.tokopedia.digital_deals.view.presenter.DealDetailsPresenter;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.usecase.UseCase;
 
@@ -16,7 +17,7 @@ public class GetDealDetailsUseCase extends UseCase<DealsDetailsDomain> {
 
     @Override
     public Observable<DealsDetailsDomain> createObservable(RequestParams requestParams) {
-        String url = requestParams.getString("url", "");
+        String url = requestParams.getString(DealDetailsPresenter.TAG, "");
         return dealsRepository.getDealDetails(url);
     }
 }

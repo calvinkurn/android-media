@@ -1,5 +1,7 @@
 package com.tokopedia.digital_deals.data;
 
+import com.google.gson.JsonObject;
+import com.tokopedia.digital_deals.data.entity.response.LikeUpdateResponse;
 import com.tokopedia.digital_deals.data.mapper.AllBrandsMapper;
 import com.tokopedia.digital_deals.data.mapper.BrandDetailsTransformMapper;
 import com.tokopedia.digital_deals.data.mapper.DealDetailsTransformMapper;
@@ -8,6 +10,7 @@ import com.tokopedia.digital_deals.data.mapper.DealsLocationTransformMapper;
 import com.tokopedia.digital_deals.data.mapper.DealsTransformMapper;
 import com.tokopedia.digital_deals.data.mapper.SearchResponseMapper;
 import com.tokopedia.digital_deals.domain.DealsRepository;
+import com.tokopedia.digital_deals.domain.model.LikeUpdateResultDomain;
 import com.tokopedia.digital_deals.domain.model.allbrandsdomainmodel.AllBrandsDomain;
 import com.tokopedia.digital_deals.domain.model.branddetailsmodel.BrandDetailsDomain;
 import com.tokopedia.digital_deals.domain.model.DealsDomain;
@@ -19,6 +22,7 @@ import com.tokopedia.digital_deals.domain.model.searchdomainmodel.SearchDomainMo
 import java.util.HashMap;
 
 import rx.Observable;
+import rx.functions.Func1;
 
 public class DealsRepositoryData implements DealsRepository {
 
@@ -86,5 +90,21 @@ public class DealsRepositoryData implements DealsRepository {
     @Override
     public Observable<AllBrandsDomain> getAllBrandsNext(String nextUrl) {
         return dealsDataStoreFactory.createCloudDataStore().getAllBrandsNext(nextUrl).map(new AllBrandsMapper());
+    }
+
+    @Override
+    public Observable<LikeUpdateResultDomain> updateLikes(JsonObject requestBody) {
+        return dealsDataStoreFactory
+                .createCloudDataStore()
+                .updateLikes(requestBody).map(new Func1<LikeUpdateResponse, LikeUpdateResultDomain>() {
+                    @Override
+                    public LikeUpdateResultDomain call(LikeUpdateResponse likeUpdateResponse) {
+                        LikeUpdateResultDomain likeUpdateResultDomain = new LikeUpdateResultDomain();
+                        likeUpdateResultDomain.setMessage(likeUpdateResponse.getMessage());
+                        likeUpdateResultDomain.setStatus(likeUpdateResponse.getStatus());
+                        likeUpdateResultDomain.setLiked(likeUpdateResponse.isLiked());
+                        return likeUpdateResultDomain;
+                    }
+                });
     }
 }

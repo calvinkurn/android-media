@@ -5,35 +5,37 @@ import android.os.Parcelable;
 
 public class CategoryItemsViewModel implements Parcelable {
 
+    private int id;
     private String displayName;
     private String url;
     private String seoUrl;
     private String imageWeb;
     private String thumbnailWeb;
     private String longRichDesc;
-    private Integer mrp;
-    private Integer salesPrice;
-    private Integer quantity;
-    private Integer soldQuantity;
-    private Integer sellRate;
-    private Integer thumbsUp;
-    private Integer thumbsDown;
-    private Integer isFeatured;
-    private Integer minStartDate;
-    private Integer maxEndDate;
-    private Integer saleStartDate;
-    private Integer saleEndDate;
+    private int mrp;
+    private int salesPrice;
+    private int quantity;
+    private int soldQuantity;
+    private int sellRate;
+    private int thumbsUp;
+    private int thumbsDown;
+    private int isFeatured;
+    private int minStartDate;
+    private int maxEndDate;
+    private int saleStartDate;
+    private int saleEndDate;
     private String createdAt;
     private String updatedAt;
     private Boolean dateRange;
     private String cityName;
-    private Integer rating;
-    private Integer likes;
+    private int rating;
+    private int likes;
     private Object schedules;
     private Object forms;
     private Object media;
     private String savingPercentage;
     private String displayTags;
+    private boolean isLiked;
     private BrandViewModel brand;
     private CatalogViewModel catalog;
 
@@ -55,37 +57,40 @@ public class CategoryItemsViewModel implements Parcelable {
 
 
     protected CategoryItemsViewModel(Parcel in) {
-        this.displayName = ((String) in.readValue((String.class.getClassLoader())));
-        this.url = ((String) in.readValue((String.class.getClassLoader())));
-        this.seoUrl = ((String) in.readValue((String.class.getClassLoader())));
-        this.imageWeb = ((String) in.readValue((String.class.getClassLoader())));
-        this.thumbnailWeb = ((String) in.readValue((String.class.getClassLoader())));
-        this.longRichDesc = ((String) in.readValue((String.class.getClassLoader())));
-        this.mrp = ((Integer) in.readValue((Integer.class.getClassLoader())));
-        this.salesPrice = ((Integer) in.readValue((Integer.class.getClassLoader())));
-        this.quantity = ((Integer) in.readValue((Integer.class.getClassLoader())));
-        this.soldQuantity = ((Integer) in.readValue((Integer.class.getClassLoader())));
-        this.sellRate = ((Integer) in.readValue((Integer.class.getClassLoader())));
-        this.thumbsUp = ((Integer) in.readValue((Integer.class.getClassLoader())));
-        this.thumbsDown = ((Integer) in.readValue((Integer.class.getClassLoader())));
-        this.isFeatured = ((Integer) in.readValue((Integer.class.getClassLoader())));
-        this.minStartDate = ((Integer) in.readValue((Integer.class.getClassLoader())));
-        this.maxEndDate = ((Integer) in.readValue((Integer.class.getClassLoader())));
-        this.saleStartDate = ((Integer) in.readValue((Integer.class.getClassLoader())));
-        this.saleEndDate = ((Integer) in.readValue((Integer.class.getClassLoader())));
-        this.createdAt = ((String) in.readValue((String.class.getClassLoader())));
-        this.updatedAt = ((String) in.readValue((String.class.getClassLoader())));
+        this.id=in.readInt();
+        this.displayName = in.readString();
+        this.url = in.readString();
+        this.seoUrl = in.readString();
+        this.imageWeb = in.readString();
+        this.thumbnailWeb = in.readString();
+        this.longRichDesc = in.readString();
+        this.mrp = in.readInt();
+        this.salesPrice = in.readInt();
+        this.quantity = in.readInt();
+        this.soldQuantity = in.readInt();
+        this.sellRate = in.readInt();
+        this.thumbsUp = in.readInt();
+        this.thumbsDown = in.readInt();
+        this.isFeatured = in.readInt();
+        this.minStartDate = in.readInt();
+        this.maxEndDate = in.readInt();
+        this.saleStartDate = in.readInt();
+        this.saleEndDate = in.readInt();
+        this.createdAt = in.readString();
+        this.updatedAt = in.readString();
         this.dateRange = ((Boolean) in.readValue((Boolean.class.getClassLoader())));
-        this.cityName = ((String) in.readValue((String.class.getClassLoader())));
+        this.cityName = in.readString();
         this.rating = ((Integer) in.readValue((Integer.class.getClassLoader())));
         this.likes = ((Integer) in.readValue((Integer.class.getClassLoader())));
         this.schedules = ((Object) in.readValue((Object.class.getClassLoader())));
         this.forms = ((Object) in.readValue((Object.class.getClassLoader())));
         this.media = ((Object) in.readValue((Object.class.getClassLoader())));
-        this.savingPercentage = ((String) in.readValue((String.class.getClassLoader())));
+        this.savingPercentage = in.readString();
         this.brand = ((BrandViewModel) in.readValue((BrandViewModel.class.getClassLoader())));
-        this.displayTags = ((String) in.readValue((String.class.getClassLoader())));
+        this.displayTags = in.readString();
         this.catalog = ((CatalogViewModel) in.readValue((CatalogViewModel.class.getClassLoader())));
+        this.isLiked = in.readValue((Boolean.class.getClassLoader())) != null;
+
     }
 
     public CategoryItemsViewModel() {
@@ -340,39 +345,57 @@ public class CategoryItemsViewModel implements Parcelable {
         this.catalog = catalog;
     }
 
+    public boolean isLiked() {
+        return isLiked;
+    }
+
+    public void setLiked(boolean liked) {
+        isLiked = liked;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
 
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeValue(displayName);
-        dest.writeValue(url);
-        dest.writeValue(seoUrl);
-        dest.writeValue(imageWeb);
-        dest.writeValue(thumbnailWeb);
-        dest.writeValue(longRichDesc);
-        dest.writeValue(mrp);
-        dest.writeValue(salesPrice);
-        dest.writeValue(quantity);
-        dest.writeValue(soldQuantity);
-        dest.writeValue(sellRate);
-        dest.writeValue(thumbsUp);
-        dest.writeValue(thumbsDown);
-        dest.writeValue(isFeatured);
-        dest.writeValue(minStartDate);
-        dest.writeValue(maxEndDate);
-        dest.writeValue(saleStartDate);
-        dest.writeValue(saleEndDate);
-        dest.writeValue(createdAt);
-        dest.writeValue(updatedAt);
+        dest.writeInt(id);
+        dest.writeString(displayName);
+        dest.writeString(url);
+        dest.writeString(seoUrl);
+        dest.writeString(imageWeb);
+        dest.writeString(thumbnailWeb);
+        dest.writeString(longRichDesc);
+        dest.writeInt(mrp);
+        dest.writeInt(salesPrice);
+        dest.writeInt(quantity);
+        dest.writeInt(soldQuantity);
+        dest.writeInt(sellRate);
+        dest.writeInt(thumbsUp);
+        dest.writeInt(thumbsDown);
+        dest.writeInt(isFeatured);
+        dest.writeInt(minStartDate);
+        dest.writeInt(maxEndDate);
+        dest.writeInt(saleStartDate);
+        dest.writeInt(saleEndDate);
+        dest.writeString(createdAt);
+        dest.writeString(updatedAt);
         dest.writeValue(dateRange);
-        dest.writeValue(cityName);
+        dest.writeString(cityName);
         dest.writeValue(rating);
         dest.writeValue(likes);
         dest.writeValue(schedules);
         dest.writeValue(forms);
         dest.writeValue(media);
-        dest.writeValue(savingPercentage);
+        dest.writeString(savingPercentage);
         dest.writeValue(brand);
-        dest.writeValue(displayTags);
+        dest.writeString(displayTags);
         dest.writeValue(catalog);
+        dest.writeValue(isLiked);
     }
 
     public int describeContents() {

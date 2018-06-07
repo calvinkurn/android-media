@@ -8,9 +8,11 @@ import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.CoordinatorLayout;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.graphics.drawable.DrawableCompat;
+import android.support.v4.view.ViewPager;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -32,17 +34,22 @@ import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
+import com.tokopedia.abstraction.base.view.widget.TouchViewPager;
+import com.tokopedia.core.app.TkpdCoreRouter;
+import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.design.viewpagerindicator.CirclePageIndicator;
 import com.tokopedia.digital_deals.R;
 import com.tokopedia.digital_deals.di.DaggerDealsComponent;
-import com.tokopedia.digital_deals.di.DealsComponent;
 import com.tokopedia.digital_deals.di.DealsModule;
 import com.tokopedia.digital_deals.view.activity.DealDetailsActivity;
 import com.tokopedia.digital_deals.view.adapter.DealsCategoryAdapter;
+import com.tokopedia.digital_deals.view.adapter.SlidingImageAdapterDealDetails;
+import com.tokopedia.digital_deals.view.contractor.DealCategoryAdapterContract;
 import com.tokopedia.digital_deals.view.contractor.DealDetailsContract;
+import com.tokopedia.digital_deals.view.presenter.DealCategoryAdapterPresenter;
 import com.tokopedia.digital_deals.view.presenter.DealDetailsPresenter;
 import com.tokopedia.digital_deals.view.utils.DealFragmentCallbacks;
 import com.tokopedia.digital_deals.view.utils.Utils;
-import com.tokopedia.digital_deals.view.viewmodel.BrandViewModel;
 import com.tokopedia.digital_deals.view.viewmodel.CategoryItemsViewModel;
 import com.tokopedia.digital_deals.view.viewmodel.DealsDetailsViewModel;
 import com.tokopedia.digital_deals.view.viewmodel.OutletViewModel;
@@ -53,7 +60,7 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-public class DealDetailsFragment extends BaseDaggerFragment implements DealDetailsContract.View, View.OnClickListener {
+public class DealDetailsFragment extends BaseDaggerFragment implements DealDetailsContract.View, View.OnClickListener, DealCategoryAdapterContract.View {
 
     private CollapsingToolbarLayout collapsingToolbarLayout;
     private at.blogc.android.views.ExpandableTextView tvExpandableDesc;
@@ -64,13 +71,14 @@ public class DealDetailsFragment extends BaseDaggerFragment implements DealDetai
     private AppBarLayout appBarLayout;
 
     private RecyclerView recyclerViewDeals;
-    private TextView seemorebuttonTextDesc;
-    private TextView seemorebuttonTextTC;
+    private TextView tvSeeMoreTextDesc;
+    private TextView tvSeeMoreTextTC;
     private ImageView ivArrowSeeMoreDesc;
     private ImageView ivArrowSeeMoreTC;
     @Inject
     public DealDetailsPresenter mPresenter;
-    private DealsCategoryAdapter categoryAdapter;
+    @Inject
+    DealCategoryAdapterPresenter mPresenter2;
 
     private View progressBarLayout;
     private ProgressBar progBar;
@@ -85,11 +93,10 @@ public class DealDetailsFragment extends BaseDaggerFragment implements DealDetai
     private TextView tvAllLocations;
     private TextView tvBrandName;
     private TextView tvBrandVenue;
-    private TextView brandAddress;
+    private TextView tvBrandAddress;
     private TextView tvViewMap;
-    private ImageView dealImage;
     private TextView tvOff;
-    private ImageView brandLogo;
+    private ImageView ivBrandLogo;
     private LinearLayout buyDealNow;
     private Menu mMenu;
     private ConstraintLayout clHeader;
@@ -99,6 +106,11 @@ public class DealDetailsFragment extends BaseDaggerFragment implements DealDetai
     private DealsDetailsViewModel dealDetail;
     private LinearLayoutManager mLayoutManager;
     private final boolean IS_SHORT_LAYOUT = true;
+    private String latLng;
+    private TouchViewPager viewPager;
+    private CirclePageIndicator circlePageIndicator;
+    private final int LIKE_REQUEST_CODE=1099;
+
 
 
     public static Fragment createInstance(Bundle bundle) {
@@ -110,7 +122,7 @@ public class DealDetailsFragment extends BaseDaggerFragment implements DealDetai
 
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.activity_deals_details, container, false);
+        View view = inflater.inflate(R.layout.fragment_deal_details, container, false);
         setViewIds(view);
         setHasOptionsMenu(true);
 
@@ -121,42 +133,42 @@ public class DealDetailsFragment extends BaseDaggerFragment implements DealDetai
 
 
     private void setViewIds(View view) {
-        tvMrp = view.findViewById(R.id.tvMrp);
-        tvSalesPrice = view.findViewById(R.id.tvSalesPrice);
+        tvMrp = view.findViewById(R.id.tv_mrp);
+        tvSalesPrice = view.findViewById(R.id.tv_sales_price);
         tvOff = view.findViewById(R.id.tv_off);
         ivFavourite = view.findViewById(R.id.iv_wish_list);
         tvLikes = view.findViewById(R.id.tv_favourite);
-        tvExpiryDate = view.findViewById(R.id.tv_expiryDate);
+        tvExpiryDate = view.findViewById(R.id.tv_expiry_date);
         tvNumberOfLocations = view.findViewById(R.id.tv_number_of_locations);
-        brandLogo = view.findViewById(R.id.imageViewBrand);
-        tvAllLocations = view.findViewById(R.id.tv_findalllocations);
-        tvBrandName = view.findViewById(R.id.tv_brandName);
-        tvBrandVenue = view.findViewById(R.id.tv_brandVenue);
-        brandAddress = view.findViewById(R.id.tv_brandAddress);
+        ivBrandLogo = view.findViewById(R.id.image_view_brand);
+        tvAllLocations = view.findViewById(R.id.tv_see_all_locations);
+        tvBrandName = view.findViewById(R.id.tv_brand_name);
+        tvBrandVenue = view.findViewById(R.id.tv_brand_venue);
+        tvBrandAddress = view.findViewById(R.id.tv_brand_address);
         tvViewMap = view.findViewById(R.id.tv_view_map);
         clHeader = view.findViewById(R.id.cl_header);
         toolbar = view.findViewById(R.id.toolbar);
 
+        viewPager = view.findViewById(R.id.deals_images);
+        circlePageIndicator = view.findViewById(R.id.pager_indicator);
         ((BaseSimpleActivity) getActivity()).setSupportActionBar(toolbar);
 
         toolbar.setNavigationIcon(ContextCompat.getDrawable(getActivity(), R.drawable.ic_action_back));
 
-        dealImage = view.findViewById(R.id.deal_image);
         buyDealNow = view.findViewById(R.id.ll_buynow);
         tvExpandableDesc = view.findViewById(R.id.tv_expandable_description);
-        seemorebuttonTextDesc = view.findViewById(R.id.seemorebutton_description);
+        tvSeeMoreTextDesc = view.findViewById(R.id.seemorebutton_description);
         seeMoreButtonDesc = view.findViewById(R.id.expand_view_description);
         ivArrowSeeMoreDesc = view.findViewById(R.id.down_arrow_description);
 
 
         tvExpandableTC = view.findViewById(R.id.tv_expandable_tnc);
-        seemorebuttonTextTC = view.findViewById(R.id.seemorebutton_tnc);
+        tvSeeMoreTextTC = view.findViewById(R.id.seemorebutton_tnc);
         seeMoreButtonTC = view.findViewById(R.id.expand_view_tnc);
         ivArrowSeeMoreTC = view.findViewById(R.id.down_arrow_tnc);
 
-        recyclerViewDeals = view.findViewById(R.id.recyclerView);
-
-
+        recyclerViewDeals = view.findViewById(R.id.recycler_view);
+        circlePageIndicator.setRadius(getResources().getDimension(R.dimen.dp_3));
         collapsingToolbarLayout = view.findViewById(R.id.collapsing_toolbar);
         appBarLayout = view.findViewById(R.id.app_bar_layout);
 
@@ -171,6 +183,8 @@ public class DealDetailsFragment extends BaseDaggerFragment implements DealDetai
         seeMoreButtonTC.setOnClickListener(this);
         tvAllLocations.setOnClickListener(this);
         buyDealNow.setOnClickListener(this);
+        tvViewMap.setOnClickListener(this);
+        ivFavourite.setOnClickListener(this);
         tvExpandableDesc.setInterpolator(new OvershootInterpolator());
         tvExpandableTC.setInterpolator(new OvershootInterpolator());
         mLayoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false);
@@ -186,6 +200,7 @@ public class DealDetailsFragment extends BaseDaggerFragment implements DealDetai
                 .dealsModule(new DealsModule(getContext()))
                 .build().inject(this);
         mPresenter.attachView(this);
+        mPresenter2.attachView(this);
     }
 
     @Override
@@ -204,7 +219,6 @@ public class DealDetailsFragment extends BaseDaggerFragment implements DealDetai
         this.dealDetail = detailsViewModel;
         collapsingToolbarLayout.setTitle(detailsViewModel.getDisplayName());
 
-        ImageHandler.loadImage(getContext(), dealImage, detailsViewModel.getImageWeb(), R.color.grey_1100, R.color.grey_1100);
 
         tvMrp.setText(Utils.convertToCurrencyString(detailsViewModel.getMrp()));
 
@@ -216,34 +230,55 @@ public class DealDetailsFragment extends BaseDaggerFragment implements DealDetai
 
         if (detailsViewModel.getOutlets() != null && detailsViewModel.getOutlets().size() != 0) {
             OutletViewModel outletViewModel = detailsViewModel.getOutlets().get(0);
+            latLng=outletViewModel.getCoordinates();
             tvBrandVenue.setText(outletViewModel.getName());
-            brandAddress.setText(outletViewModel.getDistrict());
+            tvBrandAddress.setText(outletViewModel.getDistrict());
             tvNumberOfLocations.setText(String.format(getString(R.string.number_of_items), detailsViewModel.getOutlets().size()));
             tvBrandName.setText(detailsViewModel.getBrand().getTitle());
-            ImageHandler.loadImage(getContext(), brandLogo, dealDetail.getBrand().getFeaturedThumbnailImage(), R.color.grey_1100, R.color.grey_1100);
+            ImageHandler.loadImage(getContext(), ivBrandLogo, dealDetail.getBrand().getFeaturedThumbnailImage(), R.color.grey_1100, R.color.grey_1100);
 
         }
 
-//        tvViewMap
+        if(detailsViewModel.getMediaUrl()!=null && detailsViewModel.getMediaUrl().size()!=0){
+            setViewPagerListener(new SlidingImageAdapterDealDetails(getActivity(), detailsViewModel.getMediaUrl()));
+            circlePageIndicator.setViewPager(viewPager);
+            mPresenter.startBannerSlide(viewPager);
+        }
+
 
         tvExpandableDesc.setText(detailsViewModel.getLongRichDesc());
-
-
-//        tvExpandableTC.setText();
-
 
         seeMoreButtonDesc.setOnClickListener(this);
         seeMoreButtonTC.setOnClickListener(this);
         tvExpandableDesc.setInterpolator(new OvershootInterpolator());
         tvExpandableTC.setInterpolator(new OvershootInterpolator());
 
-//        categoryAdapter = new DealsCategoryAdapter(getActivity(), categoryItemsViewModels);
-
-
-//        recyclerViewDeals.setAdapter(categoryAdapter);
         cardView.setVisibility(View.VISIBLE);
         baseMainContent.setVisibility(View.VISIBLE);
 
+    }
+
+    private void setViewPagerListener(SlidingImageAdapterDealDetails adapter) {
+
+        viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageSelected(int arg0) {
+                mPresenter.onBannerSlide(arg0);
+            }
+
+            @Override
+            public void onPageScrolled(int arg0, float arg1, int arg2) {
+
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int arg0) {
+                // TODO Auto-generated method stub
+
+            }
+        });
+
+        viewPager.setAdapter(adapter);
     }
 
     @Override
@@ -269,12 +304,9 @@ public class DealDetailsFragment extends BaseDaggerFragment implements DealDetai
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
 
-        Log.d("onCreateOptions1", "aagye");
-        inflater.inflate(R.menu.menu_brand_details, menu);
+        inflater.inflate(R.menu.menu_deal_details, menu);
         mMenu = menu;
         onPrepareOptionsMenu(menu);
-
-        Log.d("onCreateOptions2", "aagye");
 
     }
 
@@ -311,7 +343,6 @@ public class DealDetailsFragment extends BaseDaggerFragment implements DealDetai
 
     @Override
     public void showShareButton() {
-        Log.d("onCreateOptions3", "aagye");
         MenuItem item = mMenu.findItem(R.id.action_menu_share);
         item.setVisible(true);
         item.setEnabled(true);
@@ -323,8 +354,30 @@ public class DealDetailsFragment extends BaseDaggerFragment implements DealDetai
 
         RequestParams requestParams = RequestParams.create();
         Log.d("Myurllll", " " + url);
-        requestParams.putString(mPresenter.TAG, url);
+        requestParams.putString(DealDetailsPresenter.TAG, url);
         return requestParams;
+    }
+
+    @Override
+    public void notifyDataSetChanged(int position) {
+        if (dealDetail.isLiked()) {
+            ivFavourite.setBackgroundResource(R.drawable.ic_wishlist_filled);
+        } else {
+            ivFavourite.setBackgroundResource(R.drawable.ic_wishlist_unfilled);
+        }
+    }
+
+    @Override
+    public void showLoginSnackbar(String message) {
+        Snackbar snackbar = Snackbar.make(getActivity().getWindow().getDecorView().getRootView(), message, Snackbar.LENGTH_LONG).setAction(getResources().getString(R.string.title_activity_login), new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = ((TkpdCoreRouter) getActivity().getApplication()).
+                        getLoginIntent(getActivity());
+                getActivity().startActivityForResult(intent, LIKE_REQUEST_CODE);
+            }
+        });
+        snackbar.show();
     }
 
     @Override
@@ -347,32 +400,34 @@ public class DealDetailsFragment extends BaseDaggerFragment implements DealDetai
     public void onClick(View v) {
         if (v.getId() == R.id.expand_view_description) {
             if (tvExpandableDesc.isExpanded()) {
-                seemorebuttonTextDesc.setText(R.string.expand);
+                tvSeeMoreTextDesc.setText(R.string.expand);
                 ivArrowSeeMoreDesc.animate().rotation(0f);
 
             } else {
-                seemorebuttonTextDesc.setText(R.string.collapse);
+                tvSeeMoreTextDesc.setText(R.string.collapse);
                 ivArrowSeeMoreDesc.animate().rotation(180f);
 
             }
             tvExpandableDesc.toggle();
         } else if (v.getId() == R.id.expand_view_tnc) {
             if (tvExpandableTC.isExpanded()) {
-                seemorebuttonTextTC.setText(R.string.expand);
+                tvSeeMoreTextTC.setText(R.string.expand);
                 ivArrowSeeMoreTC.animate().rotation(0f);
 
             } else {
-                seemorebuttonTextTC.setText(R.string.collapse);
+                tvSeeMoreTextTC.setText(R.string.collapse);
                 ivArrowSeeMoreTC.animate().rotation(180f);
 
             }
             tvExpandableTC.toggle();
-        } else if (v.getId() == R.id.tv_findalllocations) {
-            Log.d("insidebutton click", "true");
+        } else if (v.getId() == R.id.tv_see_all_locations) {
             fragmentCallbacks.replaceFragment(mPresenter.getAllOutlets(), 0);
         } else if (v.getId() == R.id.ll_buynow) {
             fragmentCallbacks.replaceFragment(dealDetail, 1);
-
+        } else if(v.getId()==R.id.tv_view_map){
+            Utils.getSingletonInstance().openGoogleMapsActivity(getContext(), latLng);
+        }else if(v.getId() == R.id.iv_wish_list){
+            mPresenter2.setEventLike(dealDetail, 0);
         }
     }
 
@@ -380,5 +435,21 @@ public class DealDetailsFragment extends BaseDaggerFragment implements DealDetai
     public void onAttach(Activity activity) {
         super.onAttach(activity);
         fragmentCallbacks = (DealDetailsActivity) activity;
+    }
+
+    @Override
+    public void onDestroyView() {
+        mPresenter.onDestroy();
+        super.onDestroyView();
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == LIKE_REQUEST_CODE) {
+            if (SessionHandler.isV4Login(getActivity())) {
+                mPresenter2.setEventLike(dealDetail, 0);
+            }
+        }
     }
 }

@@ -6,10 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import com.google.gson.Gson;
-import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
-import com.tokopedia.core.geolocation.model.coordinate.Location;
-import com.tokopedia.core.var.TkpdCache;
+
 import com.tokopedia.digital_deals.R;
 import com.tokopedia.digital_deals.view.utils.Utils;
 import com.tokopedia.digital_deals.view.viewmodel.LocationViewModel;
@@ -23,10 +20,6 @@ public class DealsLocationAdapter extends RecyclerView.Adapter<DealsLocationAdap
     private Context context;
     private List<LocationViewModel> locations;
     private ActionListener actionListener;
-
-    public DealsLocationAdapter(Context context) {
-        this.context = context;
-    }
 
     public DealsLocationAdapter(Context context, List<LocationViewModel> locations, ActionListener actionListener) {
         this.context = context;
@@ -53,7 +46,6 @@ public class DealsLocationAdapter extends RecyclerView.Adapter<DealsLocationAdap
 
     @Override
     public int getItemCount() {
-//        Log.d("gjwdgsjjsa", ""+locations.size());
         if (locations != null) {
             return locations.size();
         }

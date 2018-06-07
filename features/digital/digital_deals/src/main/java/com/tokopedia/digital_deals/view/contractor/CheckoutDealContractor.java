@@ -2,7 +2,6 @@ package com.tokopedia.digital_deals.view.contractor;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.widget.EditText;
 
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
@@ -20,12 +19,11 @@ public class CheckoutDealContractor {
 
         void navigateToActivityRequest(Intent intent, int requestCode);
 
-        void renderFromPackageVM(DealsDetailsViewModel dealDetails, PackageViewModel packageViewModel);
+        void renderFromDetails(DealsDetailsViewModel dealDetails, PackageViewModel packageViewModel);
 
         void showProgressBar();
 
         void hideProgressBar();
-
 
         void setEmailID(String emailID);
 

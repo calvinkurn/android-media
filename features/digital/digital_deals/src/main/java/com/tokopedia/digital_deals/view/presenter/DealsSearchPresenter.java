@@ -3,35 +3,22 @@ package com.tokopedia.digital_deals.view.presenter;
 
 import android.content.Intent;
 import android.support.v7.widget.LinearLayoutManager;
-import android.util.Log;
-import android.widget.Toast;
 
-import com.google.gson.Gson;
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
-
-
-import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
-import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.digital_deals.R;
 import com.tokopedia.digital_deals.domain.GetSearchDealsListRequestUseCase;
 import com.tokopedia.digital_deals.domain.GetSearchNextUseCase;
 import com.tokopedia.digital_deals.domain.model.searchdomainmodel.SearchDomainModel;
-import com.tokopedia.digital_deals.domain.model.searchdomainmodel.ValuesItemDomain;
 import com.tokopedia.digital_deals.view.activity.DealDetailsActivity;
 import com.tokopedia.digital_deals.view.activity.DealsHomeActivity;
 import com.tokopedia.digital_deals.view.activity.DealsLocationActivity;
-import com.tokopedia.digital_deals.view.adapter.FiltersAdapter;
 import com.tokopedia.digital_deals.view.contractor.DealsSearchContract;
 import com.tokopedia.digital_deals.view.utils.Utils;
 import com.tokopedia.digital_deals.view.viewmodel.CategoryItemsViewModel;
-import com.tokopedia.digital_deals.view.viewmodel.CategoryViewModel;
 import com.tokopedia.digital_deals.view.viewmodel.LocationViewModel;
-import com.tokopedia.digital_deals.view.viewmodel.SearchViewModel;
 import com.tokopedia.usecase.RequestParams;
 
-
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -45,12 +32,8 @@ public class DealsSearchPresenter
 
     private GetSearchDealsListRequestUseCase getSearchDealsListRequestUseCase;
     private GetSearchNextUseCase getSearchNextUseCase;
-    private String FRAGMENT_TAG = "FILTERFRAGMENT";
     private List<CategoryItemsViewModel> mTopDeals;
     private SearchDomainModel mSearchData;
-    private ValuesItemDomain selectedTime;
-    private String catgoryFilters;
-    private String timeFilter;
     private String highlight;
     private boolean isLoading;
     private boolean isLastPage;
@@ -85,7 +68,6 @@ public class DealsSearchPresenter
 
             @Override
             public void onNext(SearchDomainModel searchDomainModel) {
-                Log.d("MySearchDataaa", " " + searchDomainModel.toString() + " " + SEARCH_SUBMITTED);
                 if (SEARCH_SUBMITTED)
                     getView().renderFromSearchResults(processSearchResponse(searchDomainModel), searchText);
                 else
@@ -127,7 +109,6 @@ public class DealsSearchPresenter
     @Override
     public void searchSubmitted(String searchText) {
         SEARCH_SUBMITTED = true;
-        Log.d("InsideSearchSubmitted", " " + SEARCH_SUBMITTED);
         getDealsListBySearch(searchText);
 
     }
@@ -143,41 +124,11 @@ public class DealsSearchPresenter
         return true;
     }
 
-    @Override
-    public void onClickFilterItem(ValuesItemDomain filterItem, FiltersAdapter.FilterViewHolder viewHolder) {
-        if (!filterItem.isMulti()) {
-            if (!filterItem.getIsSelected()) {
-                if (selectedTime != null)
-                    selectedTime.setIsSelected(false);
-                filterItem.setIsSelected(true);
-                selectedTime = filterItem;
-                timeFilter = selectedTime.getName();
-            } else {
-                filterItem.setIsSelected(false);
-                selectedTime = null;
-                timeFilter = "";
-            }
-
-        } else {
-            if (!filterItem.getIsSelected()) {
-                filterItem.setIsSelected(true);
-                if (catgoryFilters != null && catgoryFilters.length() == 0) {
-                    catgoryFilters.concat(",").concat(filterItem.getName());
-                } else {
-                    catgoryFilters = filterItem.getName();
-                }
-            } else {
-                filterItem.setIsSelected(false);
-                catgoryFilters.replace("," + filterItem.getName(), "");
-            }
-        }
-    }
-
 
     @Override
     public void onSearchResultClick(CategoryItemsViewModel searchViewModel) {
         Intent detailsIntent = new Intent(getView().getActivity(), DealDetailsActivity.class);
-        detailsIntent.putExtra(DealDetailsPresenter.HOME_DATA, searchViewModel);
+        detailsIntent.putExtra(DealDetailsPresenter.HOME_DATA, searchViewModel.getSeoUrl());
         getView().navigateToActivity(detailsIntent);
     }
 

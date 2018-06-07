@@ -12,21 +12,16 @@ import android.support.v4.content.ContextCompat;
 import android.support.v4.graphics.drawable.DrawableCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.gson.Gson;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
-import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
-import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.digital_deals.R;
 import com.tokopedia.digital_deals.di.DaggerDealsComponent;
 import com.tokopedia.digital_deals.di.DealsComponent;
@@ -50,31 +45,31 @@ import static com.tokopedia.digital_deals.view.activity.DealsHomeActivity.REQUES
 public class DealsSearchActivity extends BaseSimpleActivity implements
         DealsSearchContract.View, SearchInputView.Listener, android.view.View.OnClickListener {
 
-    private DealsComponent dealsComponent;
-    @Inject
-    public DealsSearchPresenter mPresenter;
+    private final boolean IS_SHORT_LAYOUT = true;
 
     private CoordinatorLayout mainContent;
+    private LinearLayout noContent;
+    private LinearLayout llDeals;
+    private CoordinatorLayout baseMainContent;
+    private ConstraintLayout clLocation;
     private LinearLayout llTopEvents;
+    private LinearLayoutManager layoutManager;
+    private LinearLayoutManager layoutManager1;
+
     private android.view.View progressBarLayout;
     private ProgressBar progBar;
     private SearchInputView searchInputView;
-
     private RecyclerView rvSearchResults;
     private RecyclerView rvTopDealsSuggestions;
     private TextView tvTopDeals;
     private ImageView back;
-    private LinearLayoutManager layoutManager;
-    private LinearLayout noContent;
-    private LinearLayout llDeals;
     private TextView dealsInCity;
-    private final boolean IS_SHORT_LAYOUT = true;
     private TextView tvCityName;
     private TextView tvChangeCity;
-    private CoordinatorLayout baseMainContent;
-    private ConstraintLayout clLocation;
-    private LinearLayoutManager layoutManager1;
 
+    private DealsComponent dealsComponent;
+    @Inject
+    public DealsSearchPresenter mPresenter;
 
     @Override
     public int getLayoutRes() {
@@ -170,9 +165,7 @@ public class DealsSearchActivity extends BaseSimpleActivity implements
             llTopEvents.setVisibility(View.GONE);
             InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
             if (imm != null) {
-                Log.d("inputMeethod", "notnull");
                 imm.hideSoftInputFromWindow(searchInputView.getSearchTextView().getWindowToken(), 0);
-//                searchInputView.getSearchTextView().setFocusable(false);
                 rvSearchResults.requestFocus();
             }
 
@@ -256,8 +249,6 @@ public class DealsSearchActivity extends BaseSimpleActivity implements
         }
         llDeals.setVisibility(View.GONE);
         tvCityName.setText(location.getName());
-
-
     }
 
     @Override
@@ -279,14 +270,12 @@ public class DealsSearchActivity extends BaseSimpleActivity implements
     @Override
     public void addDealsToCards(List<CategoryItemsViewModel> categoryItemsViewModels) {
         ((DealsCategoryAdapter) rvSearchResults.getAdapter()).addAll(categoryItemsViewModels);
-
     }
 
 
     @Override
     public void addDeals(List<CategoryItemsViewModel> searchViewModels) {
         ((TopDealsSuggestionsAdapter) rvTopDealsSuggestions.getAdapter()).addAll(searchViewModels);
-
     }
 
     @Override
@@ -296,9 +285,7 @@ public class DealsSearchActivity extends BaseSimpleActivity implements
         }else{
             return layoutManager1;
         }
-
     }
-
 
     private void initInjector() {
         dealsComponent = DaggerDealsComponent.builder()
@@ -344,7 +331,6 @@ public class DealsSearchActivity extends BaseSimpleActivity implements
                         Toast.makeText(getActivity(), getResources().getString(R.string.select_location_first), Toast.LENGTH_SHORT).show();
                         finish();
                     } else {
-
                         if (data != null) {
                             boolean isLocationUpdated = data.getBooleanExtra(DealsLocationActivity.EXTRA_CALLBACK_LOCATION, true);
                             if (isLocationUpdated)
@@ -375,9 +361,7 @@ public class DealsSearchActivity extends BaseSimpleActivity implements
 
     @Override
     public void goBack() {
-
         setResult(RESULT_OK);
         super.onBackPressed();
     }
-
 }

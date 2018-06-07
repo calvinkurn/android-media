@@ -56,7 +56,7 @@ public class SelectQuantityPresenter
 
     @Override
     public void onDestroy() {
-
+        postVerifyCartUseCase.unsubscribe();
     }
 
     @Override
@@ -104,7 +104,6 @@ public class SelectQuantityPresenter
 
 
     private void getProfile() {
-        getView().showProgressBar();
         if (!SessionHandler.isV4Login(getView().getActivity())) {
             Intent intent = ((TkpdCoreRouter) getView().getActivity().getApplication()).
                     getLoginIntent(getView().getActivity());
@@ -155,43 +154,9 @@ public class SelectQuantityPresenter
                 intent.putExtra(CheckoutDealPresenter.EXTRA_CART, verifyCartResponse.getCart().toString());
                 intent.putExtra(CheckoutDealPresenter.EXTRA_DEALDETAIL, dealDetails);
                 getView().navigateToActivity(intent);
+                getView().hideProgressBar();
 
 
-//                if (!isPromoCodeCase) {
-//                    if ("failure".equals(verifyCartResponse.getStatus().getResult())) {
-//                        getView().hideProgressBar();
-//                        getView().showMessage("Silahkan Isi Data Pelanggan Tambahan");
-//                    } else {
-//                        paymentparams = RequestParams.create();
-//                        if (selectedSeatViewModel != null) {
-//                            EntityPackagesItem entityPackagesItem = verifyCartResponse.getCart().getCartItems().get(0).getMetaData().getEntityPackages().get(0);
-//                            entityPackagesItem.setSeatIds(selectedSeatViewModel.getSeatIds());
-//                            entityPackagesItem.setSeatPhysicalRowIds(selectedSeatViewModel.getPhysicalRowIds());
-//                            entityPackagesItem.setSeatRowIds(selectedSeatViewModel.getSeatRowIds());
-//                            entityPackagesItem.setActualSeatNos(selectedSeatViewModel.getActualSeatNos());
-//                        }
-//                        paymentparams.putObject("verfiedcart", verifyCartResponse.getCart());
-//                        getPaymentLink();
-//                    }
-//                } else {
-//                    String errorMsg = verifyCartResponse.getCart().getPromocodeFailureMessage();
-//                    if (errorMsg != null &&
-//                            errorMsg.length() > 0) {
-//                        getView().hideProgressBar();
-//                        getView().hideSuccessMessage();
-//                        getView().showPromoSuccessMessage(errorMsg,
-//                                getView().getActivity().getResources().getColor(R.color.red_a700));
-//                        UnifyTracking.eventDigitalEventTracking(EventsGAConst.EVENT_PROMO_FAILURE + promocode, errorMsg);
-//                        promocode = "";
-//                    } else {
-//                        String successMsg = verifyCartResponse.getCart().getPromocodeSuccessMessage();
-//                        if (successMsg != null && successMsg.length() > 0) {
-//                            getView().hideProgressBar();
-//                            getView().showPromoSuccessMessage(getView().getActivity().getResources().getString(R.string.promo_success_msg),
-//                                    getView().getActivity().getResources().getColor(R.color.black_54));
-//                        }
-//                    }
-//                }
             }
         });
     }

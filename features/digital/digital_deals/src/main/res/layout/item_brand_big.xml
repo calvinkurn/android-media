@@ -16,7 +16,7 @@
         app:layout_constraintRight_toRightOf="parent">
 
         <ImageView
-            android:id="@+id/imageViewBrandItem"
+            android:id="@+id/iv_brand"
             android:layout_width="@dimen/image_category_height"
             android:layout_height="@dimen/image_category_height"
             app:layout_constraintLeft_toLeftOf="parent"

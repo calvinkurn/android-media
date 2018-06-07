@@ -1,17 +1,23 @@
 package com.tokopedia.digital_deals.data.entity.response.alllocationresponse;
 
+import com.google.gson.JsonArray;
 import com.google.gson.annotations.SerializedName;
 
 public class LocationResponse {
 
-    @SerializedName("data")
-    private LocationDataResponse data;
+    @SerializedName("location")
+    private JsonArray locations;
 
-    public LocationDataResponse getData() {
-        return data;
+    public JsonArray getLocations() {
+        return locations;
     }
 
-    public void setData(LocationDataResponse data) {
-        this.data = data;
+    public void setLocations(JsonArray locations) {
+        this.locations = locations;
+    }
+
+    @Override
+    public String toString() {
+        return locations.toString();
     }
 }

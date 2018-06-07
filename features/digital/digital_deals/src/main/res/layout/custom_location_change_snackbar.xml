@@ -51,5 +51,5 @@
         android:layout_marginLeft="@dimen/new_margin_med"
         android:layout_marginRight="@dimen/new_margin_sm"
         android:padding="@dimen/new_margin_small"
-        android:text="OK"/>
+        android:text="@string/title_ok"/>
 </RelativeLayout>

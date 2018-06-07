@@ -1,22 +1,35 @@
 package com.tokopedia.digital_deals.data.entity.response.branddetailsresponse;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
 import com.google.gson.annotations.SerializedName;
 
 public class BrandDetailsResponse {
 
-    @SerializedName("data")
-    private BrandDetailsDataResponse data;
+    @SerializedName("brand")
+    private JsonObject brand;
 
-    public BrandDetailsDataResponse getData() {
-        return data;
+    @SerializedName("products")
+    private JsonArray deals;
+
+    public JsonObject getBrand() {
+        return brand;
     }
 
-    public void setData(BrandDetailsDataResponse data) {
-        this.data = data;
+    public void setBrand(JsonObject brand) {
+        this.brand = brand;
+    }
+
+    public JsonArray getDeals() {
+        return deals;
+    }
+
+    public void setDeals(JsonArray deals) {
+        this.deals = deals;
     }
 
     @Override
     public String toString() {
-        return data.toString();
+        return brand.toString()+"   "+deals.toString();
     }
 }

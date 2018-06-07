@@ -19,8 +19,6 @@ public class DealsCategoryDetailContract {
 
     public interface View extends CustomerView {
 
-        void showMessage(String message);
-
         Activity getActivity();
 
         void navigateToActivityRequest(Intent intent, int requestCode);
@@ -31,7 +29,9 @@ public class DealsCategoryDetailContract {
 
         void renderBrandList(List<BrandViewModel> brandList);
 
-        RequestParams getParams();
+        RequestParams getCategoryParams();
+
+        RequestParams getBrandParams();
 
         android.view.View getRootView();
 
@@ -55,7 +55,6 @@ public class DealsCategoryDetailContract {
 
         void showViews();
 
-
     }
 
     public interface Presenter extends CustomerPresenter<DealsCategoryDetailContract.View> {
@@ -67,8 +66,6 @@ public class DealsCategoryDetailContract {
         boolean onOptionMenuClick(int id);
 
         void onRecyclerViewScrolled(LinearLayoutManager layoutManager);
-
-
 
     }
 }

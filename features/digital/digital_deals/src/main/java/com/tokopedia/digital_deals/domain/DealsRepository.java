@@ -1,5 +1,7 @@
 package com.tokopedia.digital_deals.domain;
 
+import com.google.gson.JsonObject;
+import com.tokopedia.digital_deals.domain.model.LikeUpdateResultDomain;
 import com.tokopedia.digital_deals.domain.model.allbrandsdomainmodel.AllBrandsDomain;
 import com.tokopedia.digital_deals.domain.model.branddetailsmodel.BrandDetailsDomain;
 import com.tokopedia.digital_deals.domain.model.DealsDomain;
@@ -35,5 +37,7 @@ public interface DealsRepository {
     Observable<AllBrandsDomain> getAllBrands(HashMap<String, Object> parameters);
 
     Observable<AllBrandsDomain> getAllBrandsNext(String nextUrl);
+
+    Observable<LikeUpdateResultDomain> updateLikes(JsonObject requestBody);
 
 }

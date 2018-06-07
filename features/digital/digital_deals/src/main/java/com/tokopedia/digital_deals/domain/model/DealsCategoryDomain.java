@@ -13,7 +13,7 @@ public class DealsCategoryDomain {
     @SerializedName("name")
     @Expose
     private String name;
-    @SerializedName("url")
+    @SerializedName("category_url")
     @Expose
     private String url;
     @SerializedName("media_url")
@@ -22,6 +22,12 @@ public class DealsCategoryDomain {
     @SerializedName("items")
     @Expose
     private List<DealsCategoryItemDomain> items = null;
+    @SerializedName("id")
+    @Expose
+    private int id;
+    @SerializedName("count")
+    @Expose
+    private int count;
 
     public String getTitle() {
         return title;
@@ -56,6 +62,22 @@ public class DealsCategoryDomain {
         this.mediaUrl = mediaUrl;
     }
 
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public int getCount() {
+        return count;
+    }
+
+    public void setCount(int count) {
+        this.count = count;
+    }
 
     public List<DealsCategoryItemDomain> getItems() {
         return items;

@@ -31,22 +31,24 @@ import rx.Subscriber;
 public class DealsCategoryDetailPresenter extends BaseDaggerPresenter<DealsCategoryDetailContract.View>
         implements DealsCategoryDetailContract.Presenter {
 
-    private GetAllBrandsUseCase getAllBrandsUseCase;
-    private GetCategoryDetailRequestUseCase getCategoryDetailRequestUseCase;
-    private GetNextCategoryPageUseCase getNextCategoryPageUseCase;
-    private ArrayList<CategoryItemsViewModel> categoryViewModels;
-    private List<BrandViewModel> brandViewModels;
-    private PageViewModel pageViewModel;
     private String PROMOURL = "https://www.tokopedia.com/promo/tiket/events/";
     private String FAQURL = "https://www.tokopedia.com/bantuan/faq-tiket-event/";
     private String TRANSATIONSURL = "https://pulsa.tokopedia.com/order-list/";
     public final static String TAG = "url";
     private boolean isLoading;
     private boolean isLastPage;
-    private final int PAGE_SIZE = 20;
-    RequestParams searchNextParams = RequestParams.create();
     private volatile boolean isDealsLoaded = false;
     private volatile boolean isBrandsLoaded = false;
+    private final int PAGE_SIZE = 20;
+
+    private GetAllBrandsUseCase getAllBrandsUseCase;
+    private GetCategoryDetailRequestUseCase getCategoryDetailRequestUseCase;
+    private GetNextCategoryPageUseCase getNextCategoryPageUseCase;
+    private ArrayList<CategoryItemsViewModel> categoryViewModels;
+    private List<BrandViewModel> brandViewModels;
+    private PageViewModel pageViewModel;
+
+    RequestParams searchNextParams = RequestParams.create();
 
 
     @Inject
@@ -68,17 +70,12 @@ public class DealsCategoryDetailPresenter extends BaseDaggerPresenter<DealsCateg
         getAllBrandsUseCase.unsubscribe();
     }
 
-
     @Override
     public boolean onOptionMenuClick(int id) {
         if (id == R.id.search_input_view) {
-//            ArrayList<SearchViewModel> searchViewModelList = Utils.getSingletonInstance().convertIntoSearchViewModel(categoryViewModels);
             Intent searchIntent = new Intent(getView().getActivity(), DealsSearchActivity.class);
-
             searchIntent.putParcelableArrayListExtra("TOPDEALS", categoryViewModels);
             getView().navigateToActivityRequest(searchIntent, DealsHomeActivity.REQUEST_CODE_DEALSSEARCHACTIVITY);
-        } else if (id == R.id.tv_see_all) {
-
         } else if (id == R.id.action_promo) {
             getView().startGeneralWebView(PROMOURL);
         } else if (id == R.id.action_booked_history) {
@@ -98,7 +95,7 @@ public class DealsCategoryDetailPresenter extends BaseDaggerPresenter<DealsCateg
 
     public void getBrandsList() {
         getView().showProgressBar();
-        getAllBrandsUseCase.execute(getView().getParams(), new Subscriber<AllBrandsDomain>() {
+        getAllBrandsUseCase.execute(getView().getBrandParams(), new Subscriber<AllBrandsDomain>() {
 
             @Override
             public void onCompleted() {
@@ -131,7 +128,7 @@ public class DealsCategoryDetailPresenter extends BaseDaggerPresenter<DealsCateg
 
     public void getCategoryDetails() {
         getView().showProgressBar();
-        getCategoryDetailRequestUseCase.execute(getView().getParams(), new Subscriber<CategoryDetailsDomain>() {
+        getCategoryDetailRequestUseCase.execute(getView().getCategoryParams(), new Subscriber<CategoryDetailsDomain>() {
 
             @Override
             public void onCompleted() {
@@ -154,14 +151,12 @@ public class DealsCategoryDetailPresenter extends BaseDaggerPresenter<DealsCateg
             @Override
             public void onNext(CategoryDetailsDomain dealEntity) {
                 isDealsLoaded=true;
-                isBrandsLoaded=true;        //to be removed
                 categoryViewModels = Utils.getSingletonInstance()
                         .convertIntoCategoryListItemsViewModel(dealEntity.getDealItems());
                 brandViewModels = Utils.getSingletonInstance().convertIntoBrandListViewModel(dealEntity.getDealBrands()); //to be removed
                 pageViewModel = Utils.getSingletonInstance().convertIntoPageViewModel(dealEntity.getPage());
                 getNextPageUrl();
                 getView().renderCategoryList(categoryViewModels);
-                getView().renderBrandList(brandViewModels);     //to be removed
                 checkIfToLoad(getView().getLayoutManager());
                 showHideViews();
             }

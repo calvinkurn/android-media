@@ -7,25 +7,20 @@
     android:layout_height="match_parent"
     android:background="@color/bottomnav_bg">
 
-    <android.support.v7.widget.Toolbar
-        android:id="@+id/toolbar"
-        android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
-        android:minHeight="?attr/actionBarSize" />
-
     <android.support.design.widget.AppBarLayout
-        android:id="@+id/app_bar_layout"
         android:layout_width="match_parent"
-        android:layout_marginTop="?attr/actionBarSize"
         android:layout_height="wrap_content">
 
-
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:minHeight="?attr/actionBarSize" />
 
         <View
             android:id="@+id/divider1"
             android:layout_width="match_parent"
             android:layout_height="@dimen/divider_height_thinv"
-            app:layout_scrollFlags="scroll|enterAlways"
             android:background="@color/divider_color" />
 
         <android.support.constraint.ConstraintLayout
@@ -33,7 +28,6 @@
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             android:visibility="gone"
-            app:layout_scrollFlags="scroll|enterAlways"
             android:background="@color/bottomnav_bg"
             app:layout_behavior="com.tokopedia.digital_deals.view.behaviour.QuickHideBehavior">
 
@@ -48,6 +42,7 @@
                 android:layout_marginTop="@dimen/dp_8"
                 android:layout_weight="1"
                 android:background="@drawable/rect_grey_search_background"
+                android:drawableLeft="@drawable/ic_search_grey"
                 android:drawablePadding="@dimen/dp_4"
                 android:ellipsize="end"
                 android:gravity="center_vertical"
@@ -76,6 +71,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginRight="@dimen/dp_16"
+                android:drawableLeft="@drawable/ic_location_2"
                 android:drawablePadding="@dimen/dp_8"
                 android:fontFamily="sans-serif"
                 android:gravity="center_vertical"
@@ -103,11 +99,7 @@
         android:visibility="gone"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-        <!--<android.support.design.widget.AppBarLayout-->
-        <!--android:id="@+id/app_bar_layout"-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:background="@color/bottomnav_bg">-->
+
         <android.support.v4.widget.NestedScrollView
             android:id="@+id/nested_scroll_view"
             android:layout_width="match_parent"
@@ -161,7 +153,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/dp_24"
                     android:fontFamily="sans-serif-medium"
-                    android:text="Kategori Voucher"
+                    android:text="@string/category_voucher"
                     android:textColor="@color/black_39"
                     android:textSize="@dimen/font_medium"
                     android:textStyle="normal"
@@ -169,7 +161,7 @@
                     app:layout_constraintTop_toBottomOf="@+id/pager_indicator" />
 
                 <android.support.v7.widget.RecyclerView
-                    android:id="@+id/recyclerViewCatItems"
+                    android:id="@+id/rv_category_items"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="@dimen/dp_16"
@@ -194,11 +186,11 @@
                     android:textSize="@dimen/sp_17"
                     android:textStyle="normal"
                     app:layout_constraintLeft_toLeftOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/recyclerViewCatItems" />
+                    app:layout_constraintTop_toBottomOf="@+id/rv_category_items" />
 
 
                 <android.support.v7.widget.RecyclerView
-                    android:id="@+id/recyclerViewTrendingDeals"
+                    android:id="@+id/rv_trending_deals"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:nestedScrollingEnabled="false"
@@ -217,7 +209,7 @@
                     android:textSize="@dimen/sp_17"
                     android:textStyle="normal"
                     app:layout_constraintLeft_toLeftOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/recyclerViewTrendingDeals" />
+                    app:layout_constraintTop_toBottomOf="@+id/rv_trending_deals" />
 
                 <TextView
                     android:id="@+id/tv_see_all_brands"
@@ -234,7 +226,7 @@
 
 
                 <android.support.v7.widget.RecyclerView
-                    android:id="@+id/recyclerViewBrandItems"
+                    android:id="@+id/rv_brand_items"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="@dimen/dp_16"
@@ -244,37 +236,12 @@
                     app:layoutManager="android.support.v7.widget.GridLayoutManager"
                     app:layout_constraintTop_toBottomOf="@+id/tv_popular_brand"
                     app:spanCount="4"
-                    tools:listitem="@layout/item_category_brand" />
+                    tools:listitem="@layout/item_brand" />
 
-                <TextView
-                    android:id="@+id/tv_all_deals"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="@dimen/dp_16"
-                    android:fontFamily="sans-serif-medium"
-                    android:paddingBottom="@dimen/dp_16"
-                    android:paddingTop="@dimen/dp_16"
-                    android:text="@string/text_all_deals"
-                    android:textColor="@color/black_39"
-                    android:textSize="@dimen/sp_17"
-                    android:textStyle="normal"
-                    android:visibility="gone"
-                    app:layout_constraintLeft_toLeftOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/recyclerViewBrandItems" />
             </android.support.constraint.ConstraintLayout>
 
 
         </android.support.v4.widget.NestedScrollView>
-
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/recyclerViewAllDeals"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:visibility="gone"
-            app:layoutManager="android.support.v7.widget.LinearLayoutManager"
-            app:layout_behavior="@string/appbar_scrolling_view_behavior"
-            app:layout_constraintTop_toBottomOf="@+id/tv_all_deals"
-            tools:listitem="@layout/deals_item_card" />
 
 
     </android.support.design.widget.CoordinatorLayout>

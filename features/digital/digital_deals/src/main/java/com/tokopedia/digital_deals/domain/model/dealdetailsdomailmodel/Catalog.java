@@ -7,27 +7,27 @@ public class Catalog {
 
     @SerializedName("digital_category_id")
     @Expose
-    private Integer digitalCategoryId;
+    private int digitalCategoryId;
     @SerializedName("digital_product_id")
     @Expose
-    private Integer digitalProductId;
+    private int digitalProductId;
     @SerializedName("digital_product_code")
     @Expose
     private String digitalProductCode;
 
-    public Integer getDigitalCategoryId() {
+    public int getDigitalCategoryId() {
         return digitalCategoryId;
     }
 
-    public void setDigitalCategoryId(Integer digitalCategoryId) {
+    public void setDigitalCategoryId(int digitalCategoryId) {
         this.digitalCategoryId = digitalCategoryId;
     }
 
-    public Integer getDigitalProductId() {
+    public int getDigitalProductId() {
         return digitalProductId;
     }
 
-    public void setDigitalProductId(Integer digitalProductId) {
+    public void setDigitalProductId(int digitalProductId) {
         this.digitalProductId = digitalProductId;
     }
 

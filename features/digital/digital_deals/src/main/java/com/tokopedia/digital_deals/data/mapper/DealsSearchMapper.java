@@ -36,9 +36,10 @@ public class DealsSearchMapper {
         List<DealsCategoryItemDomain> dealsItemDomains = new ArrayList<>();
         List<FilterDomainModel> filterDomainModels = new ArrayList<>();
         try {
-            if(source.getData().getGridLayout()!=null) {
-                for (GridLayoutItem dealItem : source.getData().getGridLayout()) {
+            if(source.getGridLayout()!=null) {
+                for (GridLayoutItem dealItem : source.getGridLayout()) {
                     DealsCategoryItemDomain itemDomain = new DealsCategoryItemDomain();
+                    itemDomain.setId(dealItem.getId());
                     itemDomain.setCategoryId(dealItem.getCategoryId());
                     itemDomain.setCityName(dealItem.getCityName());
 
@@ -46,7 +47,6 @@ public class DealsSearchMapper {
 
                     itemDomain.setForms(dealItem.getForms());
                     itemDomain.setId(dealItem.getId());
-//                itemDomain.setImageApp(dealItem.getImageApp());
                     itemDomain.setImageWeb(dealItem.getImageWeb());
                     itemDomain.setIsFeatured(dealItem.getIsFeatured());
                     itemDomain.setIsSearchable(dealItem.getIsSearchable());
@@ -69,7 +69,6 @@ public class DealsSearchMapper {
                     itemDomain.setSellRate(dealItem.getSellRate());
                     itemDomain.setStatus(dealItem.getStatus());
                     itemDomain.setUrl(dealItem.getUrl());
-//                itemDomain.setThumbnailApp(dealItem.getThumbnailApp());
                     itemDomain.setThumbnailWeb(dealItem.getThumbnailWeb());
                     itemDomain.setThumbsDown(dealItem.getThumbsDown());
                     itemDomain.setThumbsUp(dealItem.getThumbsUp());
@@ -102,7 +101,7 @@ public class DealsSearchMapper {
         }
 
         try {
-            for (FiltersItem filtersItem : source.getData().getFilters()) {
+            for (FiltersItem filtersItem : source.getFilters()) {
                 if (filtersItem.getName().equals("tags"))
                     continue;
                 FilterDomainModel filter = new FilterDomainModel();
@@ -133,8 +132,8 @@ public class DealsSearchMapper {
         }
         target.setFilters(filterDomainModels);
         PageDomain pageDomain = new PageDomain();
-        pageDomain.setUriNext(source.getData().getPage().getUriNext());
-        pageDomain.setUriPrev(source.getData().getPage().getUriPrev());
+        pageDomain.setUriNext(source.getPage().getUriNext());
+        pageDomain.setUriPrev(source.getPage().getUriPrev());
         target.setPage(pageDomain);
         return target;
     }

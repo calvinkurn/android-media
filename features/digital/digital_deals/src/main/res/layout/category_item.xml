@@ -9,7 +9,7 @@
 
 
     <android.support.v7.widget.CardView
-        android:id="@+id/ic_card"
+        android:id="@+id/cv_card"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
@@ -19,7 +19,7 @@
         app:layout_constraintRight_toRightOf="parent">
 
         <ImageView
-            android:id="@+id/imageViewCatItem"
+            android:id="@+id/iv_category"
             android:layout_width="@dimen/image_width_ll"
             android:layout_height="@dimen/image_width_ll"
             app:layout_constraintLeft_toLeftOf="parent"
@@ -30,16 +30,16 @@
 
 
     <TextView
-        android:id="@+id/textViewCatItem"
+        android:id="@+id/tv_category"
         android:layout_width="70dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/new_margin_small"
         android:gravity="center"
         android:singleLine="true"
-        android:text="Makanan"
+        tools:text="Makanan"
         android:textColor="@color/black_39"
         android:textSize="@dimen/sp_12"
         app:layout_constraintLeft_toRightOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/ic_card" />
+        app:layout_constraintTop_toBottomOf="@+id/cv_card" />
 </android.support.constraint.ConstraintLayout><!--android:layout_marginRight="@dimen/new_margin_med"-->

@@ -7,10 +7,8 @@ import android.support.v7.widget.LinearLayoutManager;
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
 import com.tokopedia.digital_deals.domain.model.searchdomainmodel.ValuesItemDomain;
-import com.tokopedia.digital_deals.view.adapter.FiltersAdapter;
 import com.tokopedia.digital_deals.view.viewmodel.CategoryItemsViewModel;
 import com.tokopedia.digital_deals.view.viewmodel.LocationViewModel;
-import com.tokopedia.digital_deals.view.viewmodel.SearchViewModel;
 import com.tokopedia.usecase.RequestParams;
 
 import java.util.List;
@@ -69,8 +67,6 @@ public class DealsSearchContract {
         void searchSubmitted(String searchText);
 
         boolean onItemClick(int id);
-
-        void onClickFilterItem(ValuesItemDomain filterItem, FiltersAdapter.FilterViewHolder viewHolder);
 
         void onSearchResultClick(CategoryItemsViewModel searchViewModel);
 

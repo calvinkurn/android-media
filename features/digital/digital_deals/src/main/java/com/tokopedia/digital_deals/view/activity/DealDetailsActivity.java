@@ -1,34 +1,65 @@
 package com.tokopedia.digital_deals.view.activity;
 
+import android.content.Context;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.app.TaskStackBuilder;
 import android.util.Log;
 import android.view.View;
 
+import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
+import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.digital_deals.R;
 import com.tokopedia.digital_deals.view.fragment.DealDetailsAllRedeemLocationsFragment;
 import com.tokopedia.digital_deals.view.fragment.DealDetailsFragment;
 import com.tokopedia.digital_deals.view.fragment.SelectDealQuantityFragment;
 import com.tokopedia.digital_deals.view.presenter.DealDetailsPresenter;
 import com.tokopedia.digital_deals.view.utils.DealFragmentCallbacks;
-import com.tokopedia.digital_deals.view.viewmodel.CategoryItemsViewModel;
 import com.tokopedia.digital_deals.view.viewmodel.DealsDetailsViewModel;
 import com.tokopedia.digital_deals.view.viewmodel.OutletViewModel;
 
 import java.util.List;
+
+import static com.tokopedia.digital_deals.view.utils.Utils.Constants.DIGITAL_DEALS_DETAILS;
 
 public class DealDetailsActivity extends BaseSimpleActivity implements DealFragmentCallbacks {
 
     private List<OutletViewModel> outlets;
     private DealsDetailsViewModel dealDetail;
 
+    @DeepLink({DIGITAL_DEALS_DETAILS})
+    public static TaskStackBuilder getInstanceIntentAppLinkBackToHome(Context context, Bundle extras) {
+        String deepLink = extras.getString(DeepLink.URI);
+        Intent destination;
+
+        TaskStackBuilder taskStackBuilder = TaskStackBuilder.create(context);
+
+        Intent homeIntent = ((TkpdCoreRouter) context.getApplicationContext()).getHomeIntent(context);
+        taskStackBuilder.addNextIntent(homeIntent);
+        taskStackBuilder.addNextIntent(new Intent(context, DealsHomeActivity.class));
+
+
+        Uri.Builder uri = Uri.parse(deepLink).buildUpon();
+        Log.d("MylllllSlug", extras.getString("slug"));
+
+        extras.putString(DealDetailsPresenter.HOME_DATA, extras.getString("slug"));
+        destination = new Intent(context, DealDetailsActivity.class)
+                .setData(uri.build())
+                .putExtras(extras);
+
+        taskStackBuilder.addNextIntent(destination);
+        return taskStackBuilder;
+    }
+
     @Override
     protected Fragment getNewFragment() {
-        CategoryItemsViewModel itemsViewModel = getIntent().getParcelableExtra(DealDetailsPresenter.HOME_DATA);
+        String seoUrl = getIntent().getStringExtra(DealDetailsPresenter.HOME_DATA);
         Bundle bundle = new Bundle();
-        bundle.putString(DealDetailsPresenter.HOME_DATA, itemsViewModel.getUrl());
+        bundle.putString(DealDetailsPresenter.HOME_DATA, seoUrl);
         return DealDetailsFragment.createInstance(bundle);
     }
 
@@ -41,7 +72,7 @@ public class DealDetailsActivity extends BaseSimpleActivity implements DealFragm
 
     @Override
     public void replaceFragment(List<OutletViewModel> outlets, int flag) {
-        this.outlets=outlets;
+        this.outlets = outlets;
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         transaction.add(R.id.parent_view, DealDetailsAllRedeemLocationsFragment.createInstance());
         transaction.addToBackStack(null);
@@ -50,7 +81,7 @@ public class DealDetailsActivity extends BaseSimpleActivity implements DealFragm
 
     @Override
     public void replaceFragment(DealsDetailsViewModel dealDetail, int flag) {
-        this.dealDetail=dealDetail;
+        this.dealDetail = dealDetail;
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         transaction.add(R.id.parent_view, SelectDealQuantityFragment.createInstance());
         transaction.addToBackStack(null);

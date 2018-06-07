@@ -11,8 +11,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.graphics.drawable.DrawableCompat;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.OvershootInterpolator;
 import android.widget.FrameLayout;
@@ -30,8 +28,8 @@ import com.tokopedia.digital_deals.di.DaggerDealsComponent;
 import com.tokopedia.digital_deals.di.DealsComponent;
 import com.tokopedia.digital_deals.di.DealsModule;
 import com.tokopedia.digital_deals.view.adapter.DealsCategoryAdapter;
-import com.tokopedia.digital_deals.view.contractor.DealsBrandDetailsContract;
-import com.tokopedia.digital_deals.view.presenter.DealsBrandPresenter;
+import com.tokopedia.digital_deals.view.contractor.BrandDetailsContract;
+import com.tokopedia.digital_deals.view.presenter.BrandDetailsPresenter;
 import com.tokopedia.digital_deals.view.viewmodel.BrandViewModel;
 import com.tokopedia.digital_deals.view.viewmodel.CategoryItemsViewModel;
 import com.tokopedia.usecase.RequestParams;
@@ -40,32 +38,31 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-public class BrandDetailsActivity extends BaseSimpleActivity implements HasComponent<DealsComponent>, DealsBrandDetailsContract.View, View.OnClickListener {
-    private CollapsingToolbarLayout collapsingToolbarLayout;
-    private at.blogc.android.views.ExpandableTextView tvExpandableDesc;
-    private LinearLayout seeMoreButton;
-    private TextView numberofDeals;
-    private TextView popularCityName;
-    private ImageView imageHeader;
-    private AppBarLayout appBarLayout;
-    private ImageView brandLogo;
-    private RecyclerView recyclerViewDeals;
-    private TextView seemorebuttonText;
-    private ImageView ivArrowSeeMore;
-    private DealsComponent mdealsComponent;
-    @Inject
-    public DealsBrandPresenter mPresenter;
-    private DealsCategoryAdapter categoryAdapter;
+public class BrandDetailsActivity extends BaseSimpleActivity implements HasComponent<DealsComponent>, BrandDetailsContract.View, View.OnClickListener {
+    private final boolean isShortLayout = true;
 
-    private BrandViewModel brandViewModel;
-    private View progressBarLayout;
-    private ProgressBar progBar;
+    private CollapsingToolbarLayout collapsingToolbarLayout;
+    private LinearLayout tvSeeMoreBtn;
+    private AppBarLayout appBarLayout;
     private CoordinatorLayout mainContent;
     private ConstraintLayout baseMainContent;
     private FrameLayout flHeader;
-    private CollapsingToolbarLayout cTOllBar;
 
-    private final boolean IS_SHORT_LAYOUT = true;
+    private TextView tvDealsCount;
+    private TextView tvCityName;
+    private TextView tvSeeMore;
+    private ImageView ivHeader;
+    private ImageView ivBrandLogo;
+    private ImageView ivArrowSeeMore;
+    private RecyclerView recyclerViewDeals;
+    private View progressBarLayout;
+    private at.blogc.android.views.ExpandableTextView tvExpandableDesc;
+    private ProgressBar progBar;
+
+    @Inject
+    public BrandDetailsPresenter mPresenter;
+    private DealsComponent dealsComponent;
+    private DealsCategoryAdapter categoryAdapter;
 
     @Override
     protected Fragment getNewFragment() {
@@ -98,15 +95,15 @@ public class BrandDetailsActivity extends BaseSimpleActivity implements HasCompo
 
     private void setViewIds() {
         tvExpandableDesc = findViewById(R.id.tv_expandable_description);
-        seeMoreButton = findViewById(R.id.expand_view_description);
-        numberofDeals = findViewById(R.id.number_of_locations);
-        popularCityName = findViewById(R.id.tv_popular);
+        tvSeeMoreBtn = findViewById(R.id.expand_view_description);
+        tvDealsCount = findViewById(R.id.number_of_locations);
+        tvCityName = findViewById(R.id.tv_popular);
         collapsingToolbarLayout = findViewById(R.id.collapsing_toolbar);
         appBarLayout = findViewById(R.id.app_bar_layout);
-        imageHeader = findViewById(R.id.header_image);
-        brandLogo = findViewById(R.id.iv_brand_logo);
+        ivHeader = findViewById(R.id.header_image);
+        ivBrandLogo = findViewById(R.id.iv_brand_logo);
         recyclerViewDeals = findViewById(R.id.recyclerView);
-        seemorebuttonText = findViewById(R.id.seemorebutton_description);
+        tvSeeMore = findViewById(R.id.seemorebutton_description);
         ivArrowSeeMore = findViewById(R.id.down_arrow_description);
         progressBarLayout = findViewById(R.id.progress_bar_layout);
         mainContent = findViewById(R.id.main_content);
@@ -114,7 +111,7 @@ public class BrandDetailsActivity extends BaseSimpleActivity implements HasCompo
         progBar = findViewById(R.id.prog_bar);
         flHeader = findViewById(R.id.fl_header);
         collapsingToolbarLayout.setTitle(" ");
-        seeMoreButton.setOnClickListener(this);
+        tvSeeMoreBtn.setOnClickListener(this);
         tvExpandableDesc.setInterpolator(new OvershootInterpolator());
 
     }
@@ -128,11 +125,11 @@ public class BrandDetailsActivity extends BaseSimpleActivity implements HasCompo
     public void onClick(View v) {
         if (v.getId() == R.id.expand_view_description) {
             if (tvExpandableDesc.isExpanded()) {
-                seemorebuttonText.setText(R.string.expand);
+                tvSeeMore.setText(R.string.expand);
                 ivArrowSeeMore.animate().rotation(0f);
 
             } else {
-                seemorebuttonText.setText(R.string.collapse);
+                tvSeeMore.setText(R.string.collapse);
                 ivArrowSeeMore.animate().rotation(180f);
 
             }
@@ -141,22 +138,22 @@ public class BrandDetailsActivity extends BaseSimpleActivity implements HasCompo
     }
 
     private void initInjector() {
-        mdealsComponent = DaggerDealsComponent.builder()
+        dealsComponent = DaggerDealsComponent.builder()
                 .baseAppComponent(((BaseMainApplication) getApplication()).getBaseAppComponent())
                 .dealsModule(new DealsModule(this))
                 .build();
     }
 
     private void executeInjector() {
-        if (mdealsComponent == null) initInjector();
-        mdealsComponent.inject(this);
+        if (dealsComponent == null) initInjector();
+        dealsComponent.inject(this);
     }
 
 
     @Override
     public DealsComponent getComponent() {
-        if (mdealsComponent == null) initInjector();
-        return mdealsComponent;
+        if (dealsComponent == null) initInjector();
+        return dealsComponent;
     }
 
     @Override
@@ -166,7 +163,7 @@ public class BrandDetailsActivity extends BaseSimpleActivity implements HasCompo
 
     @Override
     public void navigateToActivityRequest(Intent intent, int requestCode) {
-
+        startActivityForResult(intent, requestCode);
     }
 
 
@@ -174,16 +171,14 @@ public class BrandDetailsActivity extends BaseSimpleActivity implements HasCompo
     public void renderBrandDetails(List<CategoryItemsViewModel> categoryItemsViewModels, BrandViewModel brandViewModel) {
         collapsingToolbarLayout.setTitle(brandViewModel.getTitle());
         tvExpandableDesc.setText(brandViewModel.getDescription());
-        ImageHandler.loadImage(getActivity(), imageHeader, brandViewModel.getFeaturedImage(), R.color.grey_1100, R.color.grey_1100);
-        ImageHandler.loadImage(getActivity(), brandLogo, brandViewModel.getFeaturedThumbnailImage(), R.color.grey_1100, R.color.grey_1100);
+        ImageHandler.loadImage(getActivity(), ivHeader, brandViewModel.getFeaturedImage(), R.color.grey_1100, R.color.grey_1100);
+        ImageHandler.loadImage(getActivity(), ivBrandLogo, brandViewModel.getFeaturedThumbnailImage(), R.color.grey_1100, R.color.grey_1100);
 
         for (CategoryItemsViewModel categoryItemsViewModel : categoryItemsViewModels) {
             categoryItemsViewModel.setBrand(brandViewModel);
         }
-        categoryAdapter = new DealsCategoryAdapter(getActivity(), categoryItemsViewModels, !IS_SHORT_LAYOUT);
-
-        Log.d("ListSizeee", " " + categoryItemsViewModels.size());
-        numberofDeals.setText(String.format(getString(R.string.number_of_items), categoryItemsViewModels.size()));
+        categoryAdapter = new DealsCategoryAdapter(getActivity(), categoryItemsViewModels, !isShortLayout);
+        tvDealsCount.setText(String.format(getString(R.string.number_of_items), categoryItemsViewModels.size()));
         recyclerViewDeals.setAdapter(categoryAdapter);
         baseMainContent.setVisibility(View.VISIBLE);
 
@@ -214,7 +209,7 @@ public class BrandDetailsActivity extends BaseSimpleActivity implements HasCompo
 
     @Override
     public RequestParams getParams() {
-        BrandViewModel brandViewModel = getIntent().getParcelableExtra(DealsBrandPresenter.BRAND_DATA);
+        BrandViewModel brandViewModel = getIntent().getParcelableExtra(BrandDetailsPresenter.BRAND_DATA);
         RequestParams requestParams = RequestParams.create();
         requestParams.putString(mPresenter.TAG, brandViewModel.getUrl());
         return requestParams;
@@ -225,5 +220,9 @@ public class BrandDetailsActivity extends BaseSimpleActivity implements HasCompo
         return mainContent;
     }
 
-
+    @Override
+    protected void onDestroy() {
+        mPresenter.onDestroy();
+        super.onDestroy();
+    }
 }

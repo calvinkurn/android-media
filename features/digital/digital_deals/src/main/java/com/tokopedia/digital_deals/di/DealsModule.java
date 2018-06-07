@@ -18,6 +18,7 @@ import com.tokopedia.core.drawer2.domain.ProfileRepository;
 import com.tokopedia.core.drawer2.domain.interactor.ProfileUseCase;
 import com.tokopedia.core.network.apiservices.user.PeopleService;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
+import com.tokopedia.core.network.retrofit.interceptors.OmsInterceptor;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.digital_deals.DealsModuleRouter;
 import com.tokopedia.digital_deals.data.DealsDataStoreFactory;
@@ -36,6 +37,7 @@ import com.tokopedia.digital_deals.domain.GetNextCategoryPageUseCase;
 import com.tokopedia.digital_deals.domain.GetNextDealPageUseCase;
 import com.tokopedia.digital_deals.domain.GetSearchDealsListRequestUseCase;
 import com.tokopedia.digital_deals.domain.GetSearchNextUseCase;
+import com.tokopedia.digital_deals.domain.PostUpdateDealLikesUseCase;
 import com.tokopedia.oms.di.OmsModule;
 
 import dagger.Module;
@@ -139,6 +141,12 @@ public class DealsModule {
 
     @Provides
     @DealsScope
+    PostUpdateDealLikesUseCase providePostUpdateDealLikesUseCase(DealsRepository dealsRepository) {
+        return new PostUpdateDealLikesUseCase(dealsRepository);
+    }
+
+    @Provides
+    @DealsScope
     ProfileSourceFactory providesProfileSourceFactory(Context context, SessionHandler sessionHandler) {
         return new ProfileSourceFactory(context,
                 new PeopleService(),
@@ -187,8 +195,15 @@ public class DealsModule {
 
     @DealsQualifier
     @Provides
+    OmsInterceptor provideRideInterCeptor(@ApplicationContext Context context) {
+        String oAuthString = "Bearer " + SessionHandler.getAccessToken();
+        return new OmsInterceptor(oAuthString, context);
+    }
+
+    @DealsQualifier
+    @Provides
     public OkHttpClient provideOkHttpClient(@ApplicationScope HttpLoggingInterceptor httpLoggingInterceptor,
-                                            HeaderErrorResponseInterceptor errorResponseInterceptor, TkpdAuthInterceptor authInterceptor, @ApplicationContext Context context) {
+                                            HeaderErrorResponseInterceptor errorResponseInterceptor, @DealsQualifier OmsInterceptor authInterceptor, @ApplicationContext Context context) {
         return new OkHttpClient.Builder()
                 .addInterceptor(authInterceptor)
                 .addInterceptor(errorResponseInterceptor)

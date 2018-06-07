@@ -17,7 +17,7 @@ import java.util.Map;
 public class DealsEntityMapper {
 
     public DealsDomain transform(DealsResponse dealsResponse) {
-        HomeResponse homeResponse = dealsResponse.getData().getHome();
+        HomeResponse homeResponse = dealsResponse.getHome();
 
         DealsDomain dealsDomain = new DealsDomain();
         JsonObject layout = homeResponse.getLayout();
@@ -31,7 +31,7 @@ public class DealsEntityMapper {
         dealsDomain.setDealsCategory(dealsCategoryDomains);
 
 
-        JsonArray brands = dealsResponse.getData().getBrands();
+        JsonArray brands = dealsResponse.getBrands();
         List<BrandDomain> dealsBrandsDomain = new ArrayList<>();
         BrandDomain brandDomain;
         for (JsonElement jsonElement : brands) {

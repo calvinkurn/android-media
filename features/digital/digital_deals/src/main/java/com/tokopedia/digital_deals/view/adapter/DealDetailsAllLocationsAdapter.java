@@ -1,17 +1,15 @@
 package com.tokopedia.digital_deals.view.adapter;
 
 import android.content.Context;
-import android.content.Intent;
-import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.tokopedia.digital_deals.R;
+import com.tokopedia.digital_deals.view.utils.Utils;
 import com.tokopedia.digital_deals.view.viewmodel.OutletViewModel;
 
 import java.util.ArrayList;
@@ -88,16 +86,7 @@ public class DealDetailsAllLocationsAdapter extends RecyclerView.Adapter<DealDet
         @Override
         public void onClick(View v) {
             if(v.getId()==R.id.iv_map){
-//                Uri gmmIntentUri=Uri.parse("https://www.google.com/maps/dir/?api=1&destination="+outlets.get(getIndex()).getCoordinates());
-                Uri gmmIntentUri = Uri.parse("geo:0,0?q="+outlets.get(getIndex()).getCoordinates());
-                Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
-                mapIntent.setPackage("com.google.android.apps.maps");
-                if (mapIntent.resolveActivity(context.getPackageManager()) != null) {
-                    context.startActivity(mapIntent);
-                }else {
-                    Toast.makeText(context, context.getResources().getString(R.string.cannot_find_application), Toast.LENGTH_SHORT).show();
-                }
-
+                Utils.getSingletonInstance().openGoogleMapsActivity(context, outlets.get(getIndex()).getCoordinates());
             }
         }
     }

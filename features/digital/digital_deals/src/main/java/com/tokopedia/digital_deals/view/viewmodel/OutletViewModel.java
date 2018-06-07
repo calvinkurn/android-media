@@ -9,9 +9,9 @@ import com.google.gson.annotations.SerializedName;
 public class OutletViewModel implements Parcelable {
 
 
-    private Integer id;
-    private Integer productId;
-    private Integer locationId;
+    private int id;
+    private int productId;
+    private int locationId;
     private String name;
     private String searchName;
     private String metaTitle;
@@ -23,8 +23,8 @@ public class OutletViewModel implements Parcelable {
     private String coordinates;
     private String state;
     private String country;
-    private Integer isSearchable;
-    private Integer locationStatus;
+    private int isSearchable;
+    private int locationStatus;
     public final static Creator<OutletViewModel> CREATOR = new Creator<OutletViewModel>() {
 
 
@@ -42,48 +42,48 @@ public class OutletViewModel implements Parcelable {
     };
 
     protected OutletViewModel(Parcel in) {
-        this.id = ((Integer) in.readValue((Integer.class.getClassLoader())));
-        this.productId = ((Integer) in.readValue((Integer.class.getClassLoader())));
-        this.locationId = ((Integer) in.readValue((Integer.class.getClassLoader())));
-        this.name = ((String) in.readValue((String.class.getClassLoader())));
-        this.searchName = ((String) in.readValue((String.class.getClassLoader())));
-        this.metaTitle = ((String) in.readValue((String.class.getClassLoader())));
-        this.metaDescription = ((String) in.readValue((String.class.getClassLoader())));
-        this.metaKeywords = ((String) in.readValue((String.class.getClassLoader())));
-        this.district = ((String) in.readValue((String.class.getClassLoader())));
-        this.gmapAddress = ((String) in.readValue((String.class.getClassLoader())));
-        this.neighbourhood = ((String) in.readValue((String.class.getClassLoader())));
-        this.coordinates = ((String) in.readValue((String.class.getClassLoader())));
-        this.state = ((String) in.readValue((String.class.getClassLoader())));
-        this.country = ((String) in.readValue((String.class.getClassLoader())));
-        this.isSearchable = ((Integer) in.readValue((Integer.class.getClassLoader())));
-        this.locationStatus = ((Integer) in.readValue((Integer.class.getClassLoader())));
+        this.id = in.readInt();
+        this.productId = in.readInt();
+        this.locationId = in.readInt();
+        this.isSearchable = in.readInt();
+        this.locationStatus = in.readInt();
+        this.name = in.readString();
+        this.searchName = in.readString();
+        this.metaTitle = in.readString();
+        this.metaDescription = in.readString();
+        this.metaKeywords = in.readString();
+        this.district = in.readString();
+        this.gmapAddress = in.readString();
+        this.neighbourhood = in.readString();
+        this.coordinates = in.readString();
+        this.state = in.readString();
+        this.country = in.readString();
     }
 
     public OutletViewModel() {
     }
 
-    public Integer getId() {
+    public int getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(int id) {
         this.id = id;
     }
 
-    public Integer getProductId() {
+    public int getProductId() {
         return productId;
     }
 
-    public void setProductId(Integer productId) {
+    public void setProductId(int productId) {
         this.productId = productId;
     }
 
-    public Integer getLocationId() {
+    public int getLocationId() {
         return locationId;
     }
 
-    public void setLocationId(Integer locationId) {
+    public void setLocationId(int locationId) {
         this.locationId = locationId;
     }
 
@@ -175,39 +175,40 @@ public class OutletViewModel implements Parcelable {
         this.country = country;
     }
 
-    public Integer getIsSearchable() {
+    public int getIsSearchable() {
         return isSearchable;
     }
 
-    public void setIsSearchable(Integer isSearchable) {
+    public void setIsSearchable(int isSearchable) {
         this.isSearchable = isSearchable;
     }
 
-    public Integer getLocationStatus() {
+    public int getLocationStatus() {
         return locationStatus;
     }
 
-    public void setLocationStatus(Integer locationStatus) {
+    public void setLocationStatus(int locationStatus) {
         this.locationStatus = locationStatus;
     }
 
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeValue(id);
-        dest.writeValue(productId);
-        dest.writeValue(locationId);
-        dest.writeValue(name);
-        dest.writeValue(searchName);
-        dest.writeValue(metaTitle);
-        dest.writeValue(metaDescription);
-        dest.writeValue(metaKeywords);
-        dest.writeValue(district);
-        dest.writeValue(gmapAddress);
-        dest.writeValue(neighbourhood);
-        dest.writeValue(coordinates);
-        dest.writeValue(state);
-        dest.writeValue(country);
-        dest.writeValue(isSearchable);
-        dest.writeValue(locationStatus);
+        dest.writeInt(id);
+        dest.writeInt(productId);
+        dest.writeInt(locationId);
+        dest.writeInt(isSearchable);
+        dest.writeInt(locationStatus);
+        dest.writeString(name);
+        dest.writeString(searchName);
+        dest.writeString(metaTitle);
+        dest.writeString(metaDescription);
+        dest.writeString(metaKeywords);
+        dest.writeString(district);
+        dest.writeString(gmapAddress);
+        dest.writeString(neighbourhood);
+        dest.writeString(coordinates);
+        dest.writeString(state);
+        dest.writeString(country);
+
     }
 
     public int describeContents() {

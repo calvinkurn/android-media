@@ -12,9 +12,8 @@ import android.widget.ImageView;
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.digital_deals.R;
 import com.tokopedia.digital_deals.view.activity.BrandDetailsActivity;
-import com.tokopedia.digital_deals.view.presenter.DealsBrandPresenter;
+import com.tokopedia.digital_deals.view.presenter.BrandDetailsPresenter;
 import com.tokopedia.digital_deals.view.viewmodel.BrandViewModel;
-import com.tokopedia.digital_deals.view.viewmodel.LocationViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -57,7 +56,7 @@ public class DealsBrandAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         public BrandViewHolder(View itemView) {
             super(itemView);
             this.itemView = itemView;
-            imageViewBrandItem = itemView.findViewById(R.id.imageViewBrandItem);
+            imageViewBrandItem = itemView.findViewById(R.id.iv_brand);
         }
 
         public void bindData(final BrandViewModel brandViewModel, int position) {
@@ -79,7 +78,7 @@ public class DealsBrandAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         @Override
         public void onClick(View v) {
             Intent detailsIntent = new Intent(context, BrandDetailsActivity.class);
-            detailsIntent.putExtra(DealsBrandPresenter.BRAND_DATA, brandItems.get(getIndex()));
+            detailsIntent.putExtra(BrandDetailsPresenter.BRAND_DATA, brandItems.get(getIndex()));
             context.startActivity(detailsIntent);
         }
     }
@@ -157,7 +156,7 @@ public class DealsBrandAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         View v;
         switch (viewType) {
             case ITEM:
-                v = inflater.inflate(R.layout.item_category_brand, parent, false);
+                v = inflater.inflate(R.layout.item_brand, parent, false);
                 holder = new DealsBrandAdapter.BrandViewHolder(v);
                 break;
             case FOOTER:

@@ -50,7 +50,8 @@ public class SlidingImageAdapter extends PagerAdapter {
         assert imageLayout != null;
         final ImageView imageView = imageLayout.findViewById(R.id.banner_item);
 
-        ImageHandler.loadImageCover2(imageView, IMAGES.get(position));
+        ImageHandler.loadImage(context, imageView, IMAGES.get(position), R.color.grey_1100, R.color.grey_1100);
+
         view.addView(imageLayout, 0);
         imageLayout.setOnClickListener(new View.OnClickListener() {
             @Override

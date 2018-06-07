@@ -5,6 +5,7 @@ import android.util.Log;
 
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
+import com.tokopedia.abstraction.base.view.widget.TouchViewPager;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.digital_deals.R;
 import com.tokopedia.digital_deals.domain.GetDealDetailsUseCase;
@@ -19,28 +20,33 @@ import com.tokopedia.digital_deals.view.viewmodel.OutletViewModel;
 import com.tokopedia.usecase.RequestParams;
 
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 
+import rx.Observable;
 import rx.Subscriber;
+import rx.android.schedulers.AndroidSchedulers;
 
 
 public class DealDetailsPresenter extends BaseDaggerPresenter<DealDetailsContract.View>
         implements DealDetailsContract.Presenter {
 
-    private GetDealDetailsUseCase getBrandDetailsUseCase;
+    private int currentPage, totalPages;
+    private GetDealDetailsUseCase getDealDetailsUseCase;
     private GetSearchNextUseCase getSearchNextUseCase;
     private DealsDetailsViewModel dealsDetailsViewModel;
     public static final String HOME_DATA = "home_data";
-    public final String TAG = "url";
+    public final static String TAG = "url";
     String PROMOURL = "https://www.tokopedia.com/promo/tiket/events/";
     String FAQURL = "https://www.tokopedia.com/bantuan/faq-tiket-event/";
     String TRANSATIONSURL = "https://pulsa.tokopedia.com/order-list/";
+    private TouchViewPager mTouchViewPager;
 
 
     @Inject
     public DealDetailsPresenter(GetDealDetailsUseCase getDealDetailsUseCase, GetSearchNextUseCase getSearchNextUseCase) {
-        this.getBrandDetailsUseCase = getDealDetailsUseCase;
+        this.getDealDetailsUseCase = getDealDetailsUseCase;
         this.getSearchNextUseCase=getSearchNextUseCase;
     }
 
@@ -51,7 +57,7 @@ public class DealDetailsPresenter extends BaseDaggerPresenter<DealDetailsContrac
 
     @Override
     public void onDestroy() {
-        getBrandDetailsUseCase.unsubscribe();
+        getDealDetailsUseCase.unsubscribe();
         getSearchNextUseCase.unsubscribe();
     }
 
@@ -59,7 +65,7 @@ public class DealDetailsPresenter extends BaseDaggerPresenter<DealDetailsContrac
 
         getView().showProgressBar();
         getView().hideCollapsingHeader();
-        getBrandDetailsUseCase.execute(getView().getParams(), new Subscriber<DealsDetailsDomain>() {
+        getDealDetailsUseCase.execute(getView().getParams(), new Subscriber<DealsDetailsDomain>() {
 
             @Override
             public void onCompleted() {
@@ -127,11 +133,55 @@ public class DealDetailsPresenter extends BaseDaggerPresenter<DealDetailsContrac
     @Override
     public boolean onOptionMenuClick(int id) {
         if (id == R.id.action_menu_share) {
+            String seoUrl=dealsDetailsViewModel.getUrl().substring(dealsDetailsViewModel.getUrl().lastIndexOf('/')+1);
+            Utils.getSingletonInstance().shareDeal(seoUrl,
+                    getView().getActivity(), dealsDetailsViewModel.getDisplayName(),
+                    dealsDetailsViewModel.getImageWeb()) ;
 
         } else {
             getView().getActivity().onBackPressed();
         }
         return true;
+    }
+
+    @Override
+    public void onBannerSlide(int page) {
+        currentPage = page;
+    }
+
+    @Override
+    public void startBannerSlide(TouchViewPager viewPager) {
+        this.mTouchViewPager = viewPager;
+        currentPage = viewPager.getCurrentItem();
+        try {
+            totalPages = viewPager.getAdapter().getCount();
+        } catch (Exception e) {
+            e.printStackTrace();
+            totalPages = viewPager.getChildCount();
+        }
+        Observable.interval(5000, 5000, TimeUnit.MILLISECONDS)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Subscriber<Long>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable throwable) {
+                        throwable.printStackTrace();
+                    }
+
+                    @Override
+                    public void onNext(Long aLong) {
+                        if (currentPage + 1 < totalPages)
+                            ++currentPage;
+                        else if (currentPage + 1 >= totalPages) {
+                            currentPage = 0;
+                        }
+                        mTouchViewPager.setCurrentItem(currentPage, true);
+                    }
+                });
     }
 
     @Override

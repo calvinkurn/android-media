@@ -21,7 +21,7 @@ public class DealsLocationTransformMapper implements Func1<LocationResponse, Loc
     public LocationDomainModel call(LocationResponse locationResponse) {
 
         LocationDomainModel locationDomain= new LocationDomainModel();
-        JsonArray locations=locationResponse.getData().getLocations();
+        JsonArray locations=locationResponse.getLocations();
         List<LocationItemDomain> locationItemDomains = new ArrayList<>();
         LocationItemDomain locationItem;
         if (locations != null) {

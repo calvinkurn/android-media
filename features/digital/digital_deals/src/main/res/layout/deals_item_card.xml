@@ -18,7 +18,7 @@
 
 
         <ImageView
-            android:id="@+id/imageView"
+            android:id="@+id/iv_product"
             android:layout_width="match_parent"
             android:layout_height="@dimen/image_width_deal"
             android:scaleType="fitXY"
@@ -62,7 +62,7 @@
             android:textStyle="normal"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/imageView"
+            app:layout_constraintTop_toBottomOf="@+id/iv_product"
             tools:text="1 Set Jumbo Bento for 2 persons on Weekdays (Monday - Friday)" />
 
 
@@ -148,7 +148,7 @@
             app:layout_constraintTop_toBottomOf="@+id/cv_brand" />
 
         <TextView
-            android:id="@+id/tv_Mrp"
+            android:id="@+id/tv_mrp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginRight="@dimen/dp_8"
@@ -163,7 +163,7 @@
             tools:text="Rp50.000.000" />
 
         <TextView
-            android:id="@+id/tv_salesPrice"
+            android:id="@+id/tv_sales_price"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginRight="@dimen/dp_8"
@@ -173,7 +173,7 @@
             android:textSize="@dimen/sp_17"
             android:textStyle="normal"
             app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tv_Mrp"
+            app:layout_constraintTop_toBottomOf="@+id/tv_mrp"
             tools:text="Rp40.000.000" />
 
         <ImageView
@@ -181,9 +181,9 @@
             android:layout_width="@dimen/image_width_24"
             android:layout_height="@dimen/image_width_24"
             android:layout_marginLeft="@dimen/dp_16"
-            app:layout_constraintBottom_toBottomOf="@+id/tv_salesPrice"
+            app:layout_constraintBottom_toBottomOf="@+id/tv_sales_price"
             app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/tv_Mrp"
+            app:layout_constraintTop_toTopOf="@+id/tv_mrp"
             app:srcCompat="@drawable/ic_wishlist_unfilled" />
 
         <TextView
@@ -205,10 +205,9 @@
             android:layout_width="@dimen/image_width_24"
             android:layout_height="@dimen/image_width_24"
             android:layout_marginLeft="@dimen/dp_16"
-            android:clickable="true"
-            app:layout_constraintBottom_toBottomOf="@+id/tv_salesPrice"
+            app:layout_constraintBottom_toBottomOf="@+id/tv_sales_price"
             app:layout_constraintLeft_toRightOf="@id/tv_wish_list"
-            app:layout_constraintTop_toTopOf="@+id/tv_Mrp"
+            app:layout_constraintTop_toTopOf="@+id/tv_mrp"
             app:srcCompat="@drawable/ic_share_via" />
     </android.support.constraint.ConstraintLayout>
 </android.support.v7.widget.CardView>

@@ -1,22 +1,34 @@
 package com.tokopedia.digital_deals.data.entity.response.homeresponse;
 
+import com.google.gson.JsonArray;
 import com.google.gson.annotations.SerializedName;
 
 public class DealsResponse {
 
-    @SerializedName("data")
-    private DealsDataResponse data;
+    @SerializedName("home")
+    private HomeResponse home;
 
-    public DealsDataResponse getData() {
-        return data;
+    @SerializedName("brands")
+    private JsonArray brands;
+
+    public HomeResponse getHome() {
+        return home;
     }
 
-    public void setData(DealsDataResponse data) {
-        this.data = data;
+    public void setHome(HomeResponse home) {
+        this.home = home;
+    }
+
+    public JsonArray getBrands() {
+        return brands;
+    }
+
+    public void setBrands(JsonArray brands) {
+        this.brands = brands;
     }
 
     @Override
     public String toString() {
-        return data.toString();
+        return home.toString()+" "+brands.toString();
     }
 }

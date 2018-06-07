@@ -4,12 +4,10 @@ package com.tokopedia.digital_deals.view.presenter;
 import android.content.Intent;
 import android.os.Parcelable;
 import android.support.v7.widget.LinearLayoutManager;
-import android.util.Log;
 
-import com.tokopedia.abstraction.base.view.widget.TouchViewPager;
 import com.tkpd.library.utils.CommonUtils;
-
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
+import com.tokopedia.abstraction.base.view.widget.TouchViewPager;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.digital_deals.R;
 import com.tokopedia.digital_deals.domain.GetAllBrandsUseCase;
@@ -45,6 +43,19 @@ import rx.android.schedulers.AndroidSchedulers;
 public class DealsHomePresenter extends BaseDaggerPresenter<DealsContract.View>
         implements DealsContract.Presenter {
 
+    private int currentPage, totalPages;
+    private final int PAGE_SIZE = 20;
+    private boolean isLoading;
+    private boolean isLastPage;
+    private volatile boolean isDealsLoaded = false;
+    private volatile boolean isBrandsLoaded = false;
+    private String PROMOURL = "https://www.tokopedia.com/promo/tiket/events/";
+    private String FAQURL = "https://www.tokopedia.com/bantuan/faq-tiket-event/";
+    private String TRANSATIONSURL = "https://pulsa.tokopedia.com/order-list/";
+    public final static String TAG = "url";
+    private final String CAROUSEL = "carousel";
+    private final String TOP = "top";
+
     private GetDealsListRequestUseCase getDealsListRequestUseCase;
     private GetAllBrandsUseCase getAllBrandsUseCase;
     private GetNextDealPageUseCase getNextDealPageUseCase;
@@ -52,19 +63,7 @@ public class DealsHomePresenter extends BaseDaggerPresenter<DealsContract.View>
     private List<BrandViewModel> brandViewModels;
     private List<CategoriesModel> categoriesModels;
     private TouchViewPager mTouchViewPager;
-    private int currentPage, totalPages;
-    private String PROMOURL = "https://www.tokopedia.com/promo/tiket/events/";
-    private String FAQURL = "https://www.tokopedia.com/bantuan/faq-tiket-event/";
-    private String TRANSATIONSURL = "https://pulsa.tokopedia.com/order-list/";
-    public final static String TAG = "url";
-    private final String CAROUSEL = "carousel";
-    private final String TOP = "top";
-    private final int PAGE_SIZE = 20;
-    private boolean isLoading;
-    private boolean isLastPage;
     private RequestParams searchNextParams = RequestParams.create();
-    private volatile boolean isDealsLoaded = false;
-    private volatile boolean isBrandsLoaded = false;
 
 
     @Inject
@@ -81,7 +80,9 @@ public class DealsHomePresenter extends BaseDaggerPresenter<DealsContract.View>
 
     @Override
     public void onDestroy() {
+        getAllBrandsUseCase.unsubscribe();
         getDealsListRequestUseCase.unsubscribe();
+        getNextDealPageUseCase.unsubscribe();
     }
 
     @Override
@@ -127,9 +128,7 @@ public class DealsHomePresenter extends BaseDaggerPresenter<DealsContract.View>
     @Override
     public boolean onOptionMenuClick(int id) {
         if (id == R.id.search_input_view) {
-//            ArrayList<SearchViewModel> searchViewModelList = Utils.getSingletonInstance().convertIntoSearchViewModel(categoryViewModels);
             Intent searchIntent = new Intent(getView().getActivity(), DealsSearchActivity.class);
-
             searchIntent.putParcelableArrayListExtra("TOPDEALS", (ArrayList<? extends Parcelable>) getCarouselOrTop(categoryViewModels, TOP).getItems());
             getView().navigateToActivityRequest(searchIntent, DealsHomeActivity.REQUEST_CODE_DEALSSEARCHACTIVITY);
         } else if (id == R.id.tv_location_name) {
@@ -146,7 +145,6 @@ public class DealsHomePresenter extends BaseDaggerPresenter<DealsContract.View>
             Intent brandIntent = new Intent(getView().getActivity(), AllBrandsActivity.class);
             brandIntent.putParcelableArrayListExtra(AllBrandsActivity.EXTRA_LIST, (ArrayList<? extends Parcelable>) categoriesModels);
             getView().navigateToActivity(brandIntent);
-
         } else {
             getView().getActivity().onBackPressed();
         }
@@ -201,9 +199,7 @@ public class DealsHomePresenter extends BaseDaggerPresenter<DealsContract.View>
         brandsParams.putString(Utils.BRAND_QUERY_PARAM_TREE, Utils.BRAND_QUERY_PARAM_BRAND);
         LocationViewModel location=Utils.getSingletonInstance()
                 .getLocation(getView().getActivity());
-        Log.d("hdjshdjs", location.toString());
 
-//        brandsParams.putInt(Utils.BRAND_QUERY_PARAM_CITY_ID, location.getId());
         getView().showProgressBar();
         getAllBrandsUseCase.execute(brandsParams, new Subscriber<AllBrandsDomain>() {
 
@@ -290,7 +286,7 @@ public class DealsHomePresenter extends BaseDaggerPresenter<DealsContract.View>
                 getView().startGeneralWebView(categoryItemsViewModel.getUrl());
             } else {
                 Intent detailsIntent = new Intent(getView().getActivity(), DealDetailsActivity.class);
-                detailsIntent.putExtra(DealDetailsPresenter.HOME_DATA, categoryItemsViewModel);
+                detailsIntent.putExtra(DealDetailsPresenter.HOME_DATA, categoryItemsViewModel.getSeoUrl());
                 getView().navigateToActivity(detailsIntent);
             }
         }
@@ -334,6 +330,7 @@ public class DealsHomePresenter extends BaseDaggerPresenter<DealsContract.View>
                 categoriesModel.setTitle(listItems.get(i).getTitle());
                 categoriesModel.setUrl(listItems.get(i).getUrl());
                 categoriesModel.setPosition(i-1);
+                categoriesModel.setCategoryId(listItems.get(i).getCategoryId());
                 categoriesModels.add(categoriesModel);
             }
         }
@@ -347,14 +344,6 @@ public class DealsHomePresenter extends BaseDaggerPresenter<DealsContract.View>
     }
 
     void processSearchResponse(DealsDomain dealEntity) {
-//        String nexturl = dealEntity.getPage().getUriNext();
-//        if (nexturl != null && !nexturl.isEmpty() && nexturl.length() > 0) {
-//            searchNextParams.putString(TAG, nexturl);
-//            isLastPage = false;
-//        } else {
-//            isLastPage = true;
-//        }
-
         categoryViewModels = Utils.getSingletonInstance()
                 .convertIntoCategoryListViewModel(dealEntity.getDealsCategory());
     }
