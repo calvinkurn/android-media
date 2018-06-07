@@ -175,6 +175,7 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
             public void onRefresh() {
                 isLoading = true;
                 mSvAddressSearchBox.getSearchTextView().setText("");
+                maxItemPosition = 0;
                 onSearchReset();
             }
         });
@@ -192,7 +193,7 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
                 }
 
                 if ((maxItemPosition + 1) == totalItemCount) {
-                    if (!isLoading) {
+                    if (!isLoading && mShipmentAddressListPresenter.hasNext()) {
                         performSearch(mSvAddressSearchBox.getSearchText(), false);
                     }
                 }
@@ -273,6 +274,11 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
         swipeToRefreshLayout.setRefreshing(false);
     }
 
+    @Override
+    public void resetPagination() {
+        maxItemPosition = 0;
+    }
+
     private void initSearchView() {
         mSvAddressSearchBox.getSearchTextView().setOnClickListener(onSearchViewClickListener());
         mSvAddressSearchBox.getSearchTextView().setOnTouchListener(onSearchViewTouchListener());
@@ -305,8 +311,7 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
 
     @Override
     public void onSearchSubmitted(String text) {
-        performSearch(text, false);
-        closeSoftKeyboard();
+        performSearch(text, true);
     }
 
     @Override
@@ -318,7 +323,6 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
     public void onSearchReset() {
         mShipmentAddressListPresenter.resetAddressList(getActivity(), ORDER_ASC,
                 getArguments().getParcelable(EXTRA_CURRENT_ADDRESS));
-        closeSoftKeyboard();
     }
 
     private void performSearch(String query, boolean resetPage) {
@@ -337,13 +341,6 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
             mInputMethodManager.showSoftInput(
                     mSvAddressSearchBox.getSearchTextView(), InputMethodManager.SHOW_IMPLICIT);
         }
-    }
-
-    private void closeSoftKeyboard() {
-//        if (mInputMethodManager != null) {
-//            mInputMethodManager.hideSoftInputFromWindow(
-//                    mSvAddressSearchBox.getSearchTextView().getWindowToken(), 0);
-//        }
     }
 
     @Override

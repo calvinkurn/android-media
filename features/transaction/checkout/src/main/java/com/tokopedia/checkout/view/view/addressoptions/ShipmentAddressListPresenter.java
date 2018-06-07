@@ -36,6 +36,8 @@ public class ShipmentAddressListPresenter
     private final PagingHandler mPagingHandler;
     private int currentPage = 1;
     private boolean hasNext;
+    private String lastQueryKeyword = "";
+    private boolean resetPage;
 
     @Inject
     public ShipmentAddressListPresenter(GetPeopleAddressUseCase getPeopleAddressUseCase,
@@ -54,25 +56,26 @@ public class ShipmentAddressListPresenter
         super.checkViewAttached();
     }
 
-    /**
-     * @param context
-     * @param order
-     */
+    public boolean hasNext() {
+        return hasNext;
+    }
+
     public void resetAddressList(Context context, int order, RecipientAddressModel currentAddress) {
         getAddressList(context, order, DEFAULT_KEYWORD, currentAddress, true);
     }
 
-    /**
-     * @param context
-     * @param order
-     * @param query
-     */
     public void getAddressList(Context context, int order, String query,
                                final RecipientAddressModel currentAddress, boolean resetPage) {
+        if (!TextUtils.isEmpty(query)) {
+            resetPage = !lastQueryKeyword.equals(query);
+        }
         if (resetPage) {
             currentPage = 1;
+            getMvpView().resetPagination();
         }
-        if (!TextUtils.isEmpty(query) || currentPage == 1 || hasNext) {
+        lastQueryKeyword = query;
+        this.resetPage = resetPage;
+        if (currentPage == 1 || hasNext) {
             getMvpView().showLoading();
             mGetPeopleAddressUseCase.execute(mGetPeopleAddressUseCase
                             .getRequestParams(context, order, query, currentPage++),
@@ -125,7 +128,7 @@ public class ShipmentAddressListPresenter
                                                 }
                                             }
                                         }
-                                        if (resetPage) {
+                                        if (ShipmentAddressListPresenter.this.resetPage) {
                                             getMvpView().showList(peopleAddressModel.getRecipientAddressModelList());
                                         } else {
                                             getMvpView().updateList(peopleAddressModel.getRecipientAddressModelList());
