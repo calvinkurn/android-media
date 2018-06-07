@@ -7,7 +7,6 @@ import com.tokopedia.checkout.R;
 import com.tokopedia.checkout.domain.mapper.IMapperUtil;
 import com.tokopedia.checkout.domain.mapper.IShipmentMapper;
 import com.tokopedia.checkout.domain.mapper.ShipmentMapper;
-import com.tokopedia.checkout.domain.usecase.DeleteCartUpdateCartUseCase;
 import com.tokopedia.checkout.domain.usecase.DeleteCartUseCase;
 import com.tokopedia.checkout.view.adapter.CartRemoveProductAdapter;
 import com.tokopedia.checkout.view.di.scope.CartRemoveProductScope;
