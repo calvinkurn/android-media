@@ -14,13 +14,13 @@ import rx.Subscriber;
  * Created by nabillasabbaha on 3/19/18.
  */
 
-public class TrainReturnSearchPresenter extends BaseDaggerPresenter<TrainSearchReturnContract.View>
+public class TrainSearchReturnPresenter extends BaseDaggerPresenter<TrainSearchReturnContract.View>
         implements TrainSearchReturnContract.Presenter {
 
     private GetDetailScheduleUseCase getDetailScheduleUseCase;
 
     @Inject
-    public TrainReturnSearchPresenter(GetDetailScheduleUseCase getDetailScheduleUseCase) {
+    public TrainSearchReturnPresenter(GetDetailScheduleUseCase getDetailScheduleUseCase) {
         this.getDetailScheduleUseCase = getDetailScheduleUseCase;
     }
 

@@ -1,5 +1,7 @@
 package com.tokopedia.train.search.presentation.fragment;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -33,6 +35,7 @@ import com.tokopedia.train.search.domain.GetScheduleUseCase;
 import com.tokopedia.train.search.presentation.activity.TrainFilterSearchActivity;
 import com.tokopedia.train.search.presentation.adapter.TrainSearchAdapterTypeFactory;
 import com.tokopedia.train.search.presentation.contract.TrainSearchContract;
+import com.tokopedia.train.search.presentation.model.FilterSearchData;
 import com.tokopedia.train.search.presentation.model.TrainScheduleViewModel;
 import com.tokopedia.train.search.presentation.presenter.TrainSearchPresenter;
 import com.tokopedia.usecase.RequestParams;
@@ -133,8 +136,8 @@ public abstract class TrainSearchFragment extends BaseListFragment<TrainSchedule
         filterAndSortBottomAction.setButton1OnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivity(TrainFilterSearchActivity.getCallingIntent(getActivity(),
-                        getRequestParam().getParameters(), getScheduleVariant()));
+                startActivityForResult(TrainFilterSearchActivity.getCallingIntent(getActivity(),
+                        getRequestParam().getParameters(), getScheduleVariant()), 133);
             }
         });
         filterAndSortBottomAction.setButton2OnClickListener(new View.OnClickListener() {
@@ -170,12 +173,14 @@ public abstract class TrainSearchFragment extends BaseListFragment<TrainSchedule
     public RequestParams getRequestParam() {
         RequestParams requestParams = RequestParams.create();
         requestParams.putString(GetScheduleUseCase.DATE_SCHEDULE, dateDeparture);
-        requestParams.putInt(GetScheduleUseCase.TOTAL_ADULT, adultPassanger);
-        requestParams.putInt(GetScheduleUseCase.TOTAL_INFANT, infantPassanger);
         requestParams.putString(GetScheduleUseCase.ORIGIN_CODE, originCode);
         requestParams.putString(GetScheduleUseCase.ORIGIN_CITY, originCity);
         requestParams.putString(GetScheduleUseCase.DEST_CODE, destinationCode);
         requestParams.putString(GetScheduleUseCase.DEST_CITY, destinationCity);
+
+        //not yet implemented in query gql staging
+//        requestParams.putInt(GetScheduleUseCase.TOTAL_ADULT, adultPassanger);
+//        requestParams.putInt(GetScheduleUseCase.TOTAL_INFANT, infantPassanger);
         return requestParams;
     }
 
@@ -273,7 +278,8 @@ public abstract class TrainSearchFragment extends BaseListFragment<TrainSchedule
                     public void onBottomSheetItemClick(MenuItem item) {
                         List<String> trains = new ArrayList<>();
                         getAdapter().showLoading();
-                        presenter.getFilteredAndSortedSchedules(0, 200000, new ArrayList<String>(), trains, item.getItemId());
+                        presenter.getFilteredAndSortedSchedules(0, 200000,
+                                new ArrayList<String>(), trains, new ArrayList<>(), item.getItemId());
                     }
                 })
                 .createDialog();
@@ -284,4 +290,22 @@ public abstract class TrainSearchFragment extends BaseListFragment<TrainSchedule
         return selectedSortOption == sortOption;
     }
 
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == Activity.RESULT_OK && requestCode == 133) {
+            FilterSearchData filterSearchData = data.getExtras().getParcelable("model_filter");
+            long minPrice = filterSearchData.getSelectedMinPrice() == 0 ? filterSearchData.getMinPrice() : filterSearchData.getSelectedMinPrice();
+            long maxPrice = filterSearchData.getSelectedMaxPrice() == 0 ? filterSearchData.getMaxPrice() : filterSearchData.getSelectedMaxPrice();
+            List<String> trains = filterSearchData.getSelectedTrains() != null && !filterSearchData.getSelectedTrains().isEmpty() ?
+                    filterSearchData.getSelectedTrains() : filterSearchData.getTrains();
+            List<String> trainsClass = filterSearchData.getSelectedTrainClass() != null && !filterSearchData.getSelectedTrainClass().isEmpty() ?
+                    filterSearchData.getSelectedTrainClass() : filterSearchData.getTrainClass();
+            List<String> departureHours = filterSearchData.getSelectedDepartureTimeList() != null && !filterSearchData.getSelectedDepartureTimeList().isEmpty() ?
+                    filterSearchData.getSelectedDepartureTimeList() : filterSearchData.getDepartureTimeList();
+
+            presenter.getFilteredAndSortedSchedules(minPrice, maxPrice, trainsClass, trains,
+                    departureHours, TrainSortOption.NO_PREFERENCE);
+        }
+    }
 }

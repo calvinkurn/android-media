@@ -117,8 +117,8 @@ public class TrainModule {
 
     @TrainScope
     @Provides
-    public TrainScheduleCloudDataStore provideTrainScheduleCloudDataStore(TrainApi trainApi) {
-        return new TrainScheduleCloudDataStore(trainApi);
+    public TrainScheduleCloudDataStore provideTrainScheduleCloudDataStore(TrainApi trainApi, @ApplicationContext Context context) {
+        return new TrainScheduleCloudDataStore(trainApi, context);
     }
 
     @TrainScope

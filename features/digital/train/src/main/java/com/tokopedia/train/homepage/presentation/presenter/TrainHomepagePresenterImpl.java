@@ -144,15 +144,19 @@ public class TrainHomepagePresenterImpl extends BaseDaggerPresenter<TrainHomepag
     public void onSubmitButtonClicked() {
         if (validateFields()) {
             TrainHomepageViewModel viewModel = getView().getHomepageViewModel();
+
+            String returnDate = viewModel.getReturnDate().replace("-", "");
+            String departureDate = viewModel.getDepartureDate().replace("-", "");
+
             TrainSearchPassDataViewModel passDataViewModel = new TrainSearchPassDataViewModel();
             passDataViewModel.setAdult(viewModel.getTrainPassengerViewModel().getAdult());
             passDataViewModel.setInfant(viewModel.getTrainPassengerViewModel().getInfant());
-            passDataViewModel.setDepartureDate(viewModel.getDepartureDate());
-            passDataViewModel.setReturnDate(viewModel.getReturnDate());
+            passDataViewModel.setDepartureDate(departureDate);
+            passDataViewModel.setReturnDate(returnDate);
             passDataViewModel.setDestinationStationCode(viewModel.getDestinationStation().getStationCode());
             passDataViewModel.setDestinationCityName(viewModel.getDestinationStation().getCityName());
             passDataViewModel.setOriginStationCode(viewModel.getOriginStation().getStationCode());
-            passDataViewModel.setOriginCityName(viewModel.getOriginStation().getStationName());
+            passDataViewModel.setOriginCityName(viewModel.getOriginStation().getCityName());
             passDataViewModel.setOneWay(viewModel.isOneWay());
             getView().navigateToSearchPage(passDataViewModel);
         }

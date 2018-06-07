@@ -309,7 +309,6 @@ dependencies {
     implementation rootProject.ext.playServicesDependencies.perfMon
     implementation project(rootProject.ext.features.train)
 
-
     implementation (rootProject.ext.debugToolsDependencies.chuck) {
         exclude group: 'com.squareup.okhttp3'
         exclude group: 'com.squareup.okio'
