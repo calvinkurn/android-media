@@ -1,7 +1,6 @@
 package com.tokopedia.tkpd.flight.di;
 
 import com.tokopedia.core.base.di.component.AppComponent;
-import com.tokopedia.shop.open.data.model.UploadShopImageModel;
 import com.tokopedia.tkpd.flight.FlightGetProfileInfoData;
 import com.tokopedia.tkpd.flight.di.module.FlightConsumerModule;
 

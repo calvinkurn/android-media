@@ -1,4 +1,4 @@
-package com.tokopedia.seller.common.data.mapper;
+package com.tokopedia.shop.open.data.mapper;
 
 
 import com.tokopedia.shop.open.data.model.response.DataResponse;

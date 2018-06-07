@@ -1,6 +1,6 @@
 package com.tokopedia.shop.open.data.source.cloud;
 
-import com.tokopedia.seller.common.data.mapper.DataResponseMapper;
+import com.tokopedia.shop.open.data.mapper.DataResponseMapper;
 import com.tokopedia.seller.shop.common.di.ShopQualifier;
 import com.tokopedia.shop.open.data.model.response.ResponseCheckDomainName;
 import com.tokopedia.shop.open.data.model.response.ResponseCheckShopName;

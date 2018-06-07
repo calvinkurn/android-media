@@ -3,7 +3,7 @@ package com.tokopedia.shop.open.data.source.cloud;
 import android.text.TextUtils;
 
 import com.tokopedia.core.base.domain.RequestParams;
-import com.tokopedia.seller.common.data.mapper.DataResponseMapper;
+import com.tokopedia.shop.open.data.mapper.DataResponseMapper;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.network.di.qualifier.DefaultAuthWithErrorHandler;
 import com.tokopedia.seller.shop.common.di.ShopQualifier;

@@ -17,8 +17,6 @@ import com.tokopedia.seller.shop.common.di.ShopScope;
 import com.tokopedia.seller.shop.common.domain.repository.ShopInfoRepository;
 import com.tokopedia.seller.shop.common.domain.repository.ShopInfoRepositoryImpl;
 import com.tokopedia.seller.shop.common.interceptor.HeaderErrorResponseInterceptor;
-import com.tokopedia.shop.open.analytic.ShopOpenTracking;
-import com.tokopedia.shop.open.data.source.cloud.api.TomeApi;
 import com.tokopedia.core.base.di.qualifier.ApplicationContext;
 import com.tokopedia.core.network.di.qualifier.WsV4Qualifier;
 import com.tokopedia.core.shopinfo.models.shopmodel.ShopModel;
@@ -61,13 +59,6 @@ public class ShopModule {
     @ShopQualifier
     @ShopScope
     @Provides
-    public TomeApi provideTomeApi(@ShopQualifier Retrofit retrofit) {
-        return retrofit.create(TomeApi.class);
-    }
-
-    @ShopQualifier
-    @ShopScope
-    @Provides
     public Retrofit provideRetrofit(@ShopQualifier OkHttpClient okHttpClient,
                                     Retrofit.Builder retrofitBuilder){
         return retrofitBuilder.baseUrl(TkpdBaseURL.TOME_DOMAIN).client(okHttpClient).build();
@@ -104,16 +95,6 @@ public class ShopModule {
     @Provides
     public ErrorResponseInterceptor provideErrorResponseInterceptor() {
         return new HeaderErrorResponseInterceptor(TomeErrorResponse.class);
-    }
-
-    @ShopScope
-    @Provides
-    public ShopOpenTracking provideTrackingOpenShop(@ApplicationContext Context context){
-        if(context instanceof SellerModuleRouter) {
-            return new ShopOpenTracking((SellerModuleRouter)context);
-        }else{
-            return null;
-        }
     }
 
     @ShopScope

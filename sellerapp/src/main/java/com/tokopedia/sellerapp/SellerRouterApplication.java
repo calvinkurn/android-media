@@ -71,6 +71,7 @@ import com.tokopedia.seller.shop.common.domain.interactor.GetShopInfoUseCase;
 import com.tokopedia.sellerapp.onboarding.activity.OnboardingSellerActivity;
 import com.tokopedia.sellerapp.truecaller.TruecallerActivity;
 import com.tokopedia.session.changephonenumber.view.activity.ChangePhoneNumberWarningActivity;
+import com.tokopedia.shop.open.ShopOpenRouter;
 import com.tokopedia.tkpd.tkpdreputation.ReputationRouter;
 import com.tokopedia.core.router.transactionmodule.TransactionRouter;
 import com.tokopedia.core.share.ShareBottomSheet;
@@ -797,7 +798,7 @@ public abstract class SellerRouterApplication extends MainApplication
 
     @Override
     public Intent getIntentCreateShop(Context context) {
-        Intent intent = TkpdSeller.getIntentCreateEditShop(context, true, true);
+        Intent intent = ShopOpenRouter.getIntentCreateEditShop(context, true, true);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         return intent;
     }

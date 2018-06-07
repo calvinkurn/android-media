@@ -44,7 +44,6 @@ dependencies {
     implementation project(rootProject.ext.features.core)
     implementation project(rootProject.ext.features.payment)
     implementation project(rootProject.ext.features.reputationCommon)
-    implementation project(rootProject.ext.features.shopOpen)
     implementation project(rootProject.ext.libraries.applink)
 
     implementation project(rootProject.ext.libraries.imageuploader)
