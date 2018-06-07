@@ -85,7 +85,7 @@ public class ProductGridViewHolder extends AbstractViewHolder<ProductGridViewMod
         if(shop.getBadges() !=null){
             imageLoader.loadBadge(badgeContainer, shop.getBadges());
             SpannableString loc = new SpannableString(shop.getLocation());
-            loc.setSpan(new BulletSpan(20, Color.LTGRAY), 0,
+            loc.setSpan(new BulletSpan(20, Color.GRAY), 0,
                     shop.getLocation().length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
             shopLocation.setText(loc);
         } else {
@@ -116,6 +116,7 @@ public class ProductGridViewHolder extends AbstractViewHolder<ProductGridViewMod
                 newLabelTxt.setVisibility(View.GONE);
             }
         } else {
+            newLabelTxt.setVisibility(View.GONE);
             rating.setVisibility(View.VISIBLE);
             reviewCount.setVisibility(View.VISIBLE);
             rating.setImageResource(
