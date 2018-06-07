@@ -8,7 +8,6 @@ import com.tokopedia.flight.airline.data.db.model.FlightAirlineDB;
 import com.tokopedia.flight.banner.data.source.cloud.model.BannerDetail;
 import com.tokopedia.flight.detail.view.model.FlightDetailRouteViewModel;
 import com.tokopedia.flight.detail.view.model.FlightDetailViewModel;
-import com.tokopedia.flight.review.view.model.FlightCheckoutViewModel;
 import com.tokopedia.flight.search.view.model.FlightSearchViewModel;
 import com.tokopedia.flight.search.view.model.filter.RefundableEnum;
 
@@ -358,6 +357,49 @@ public class FlightAnalytics {
     }
 
 
+    public void eventInsuranceChecked(boolean checked, FlightDetailViewModel departure, FlightDetailViewModel returntrip) {
+        String eventAction = checked ? Category.ADD_INSURANCE : Category.REMOVE_INSURANCE;
+        String eventLabel = "";
+        if (departure != null) {
+            eventLabel = transformAirlines(departure);
+        }
+        if (returntrip != null) {
+            eventLabel += String.format(",%s", transformAirlines(returntrip));
+        }
+        if (departure != null) {
+            eventLabel += String.format("|%s", departure.getDepartureAirport());
+        }
+        if (returntrip != null) {
+            eventLabel += String.format("|%s", returntrip.getDepartureAirport());
+        }
+
+
+        analyticTracker.sendEventTracking(
+                GENERIC_EVENT,
+                GENERIC_CATEGORY,
+                eventAction,
+                eventLabel
+        );
+    }
+
+    public void eventInsuranceClickMore() {
+        analyticTracker.sendEventTracking(
+                GENERIC_EVENT,
+                GENERIC_CATEGORY,
+                Category.MORE_INSURANCE_INFO,
+                Label.NONE
+        );
+    }
+
+    public void eventInsuranceAnotherBenefit() {
+        analyticTracker.sendEventTracking(
+                GENERIC_EVENT,
+                GENERIC_CATEGORY,
+                Category.MORE_INSURANCE,
+                Label.NONE
+        );
+    }
+
     public static final class Screen {
 
         public static String FLIGHT_CANCELLATION_STEP_TWO = "Flight Cancellation Reason and Proof";
@@ -392,10 +434,15 @@ public class FlightAnalytics {
         static String VOUCHER_SUCCESS = "voucher success";
         static String VOUCHER_ERROR = "voucher error";
         static String PURCHASE_ATTEMPT = "purchase attempt";
+        static String ADD_INSURANCE = "add insurance";
+        static String REMOVE_INSURANCE = "remove insurance";
+        static String MORE_INSURANCE_INFO = "click more insurance information";
+        static String MORE_INSURANCE = "see another insurance benefit";
 
     }
 
     private static class Label {
+        static String NONE = "none";
         static String FAILED_PURCHASE = "FAILED";
         static String SUCCESS_PURCHASE = "SUCCESS";
         static String CANCEL_PURCHASE = "CANCEL";

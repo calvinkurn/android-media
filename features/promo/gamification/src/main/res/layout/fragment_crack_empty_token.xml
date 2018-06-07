@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/root_container"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical">
+             xmlns:tools="http://schemas.android.com/tools"
+             android:id="@+id/root_container"
+             android:layout_width="match_parent"
+             android:layout_height="match_parent"
+             android:orientation="vertical">
 
     <ImageView
         android:id="@+id/iv_container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:scaleType="fitXY"
-        tools:src="@drawable/bg_egg" />
+        tools:src="@drawable/bg_egg"/>
 
     <TextView
         android:id="@+id/text_info_page"
@@ -38,7 +38,7 @@
         android:layout_height="@dimen/height_egg"
         android:layout_gravity="center"
         android:scaleType="fitCenter"
-        tools:srcCompat="@drawable/ic_empty_egg" />
+        tools:srcCompat="@drawable/ic_empty_egg"/>
 
     <Button
         android:id="@+id/get_more_token_button"
@@ -46,6 +46,6 @@
         android:layout_gravity="bottom"
         android:layout_marginBottom="@dimen/dp_16"
         tools:text="@string/get_more_token_btn_text"
-        android:textSize="@dimen/sp_14" />
+        android:textSize="@dimen/sp_14"/>
 
 </FrameLayout>

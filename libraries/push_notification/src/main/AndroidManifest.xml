@@ -8,7 +8,7 @@
                  android:supportsRtl="true"
     >
 
-        <receiver android:name=".DismissBroadcastReceiver" />
+        <receiver android:name=".DismissBroadcastReceiver"/>
 
     </application>
 

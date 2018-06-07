@@ -1,13 +1,10 @@
 package com.tokopedia.core.drawer2.domain.datamanager;
 
-import android.content.Intent;
 import android.text.TextUtils;
 
+import com.tokopedia.abstraction.common.utils.GraphqlHelper;
 import com.tokopedia.core.R;
-import com.tokopedia.core.app.BaseActivity;
-import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.base.domain.RequestParams;
-import com.tokopedia.core.drawer2.data.pojo.ErrorEntity;
 import com.tokopedia.core.drawer2.data.pojo.Notifications;
 import com.tokopedia.core.drawer2.data.pojo.UserData;
 import com.tokopedia.core.drawer2.data.viewmodel.DrawerDeposit;
@@ -74,7 +71,12 @@ public class DrawerDataManagerImpl implements DrawerDataManager {
 
     @Override
     public void getUserAttributes(SessionHandler sessionHandler) {
-        userAttributesUseCase.execute(userAttributesUseCase.getUserAttrParam(sessionHandler), new Subscriber<UserData>() {
+        if (viewListener == null || viewListener.getActivity() == null || sessionHandler == null) {
+            return;
+        }
+
+        String query = GraphqlHelper.loadRawString(viewListener.getActivity().getResources(), R.raw.consumer_drawer_data_query);
+        userAttributesUseCase.execute(userAttributesUseCase.getUserAttrParam(sessionHandler.getLoginID(), query), new Subscriber<UserData>() {
             @Override
             public void onCompleted() {
 
@@ -113,7 +115,12 @@ public class DrawerDataManagerImpl implements DrawerDataManager {
 
     @Override
     public void getSellerUserAttributes(SessionHandler sessionHandler) {
-        sellerUserAttributesUseCase.execute(sellerUserAttributesUseCase.getUserAttrParam(sessionHandler), new Subscriber<UserData>() {
+        if (viewListener == null || viewListener.getActivity() == null || sessionHandler == null) {
+            return;
+        }
+
+        String query = GraphqlHelper.loadRawString(viewListener.getActivity().getResources(), R.raw.seller_drawer_data_query);
+        sellerUserAttributesUseCase.execute(sellerUserAttributesUseCase.getUserAttrParam(sessionHandler.getLoginID(), query), new Subscriber<UserData>() {
             @Override
             public void onCompleted() {
 
@@ -234,7 +241,7 @@ public class DrawerDataManagerImpl implements DrawerDataManager {
         drawerNotification.setInboxMessage(unreads);
         drawerNotification.setInboxResCenter(notificationData.getResolution());
 
-        if(notificationData.getInbox() != null) {
+        if (notificationData.getInbox() != null) {
             drawerNotification.setInboxReview(notificationData.getInbox().getInboxReputation());
             drawerNotification.setInboxTalk(notificationData.getInbox().getInboxTalk());
             drawerNotification.setInboxTicket(notificationData.getInbox().getInboxTicket());

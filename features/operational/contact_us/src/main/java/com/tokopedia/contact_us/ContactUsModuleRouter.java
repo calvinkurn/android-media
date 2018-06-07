@@ -9,4 +9,6 @@ import android.content.Intent;
 
 public interface ContactUsModuleRouter {
     Intent getChatBotIntent(Context context, String messageId);
+
+    Intent getHomeIntent(Context context);
 }

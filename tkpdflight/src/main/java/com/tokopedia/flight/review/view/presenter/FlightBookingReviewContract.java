@@ -6,6 +6,7 @@ import android.support.annotation.StringRes;
 import com.tokopedia.flight.booking.view.presenter.FlightBaseBookingContact;
 import com.tokopedia.flight.booking.view.viewmodel.BaseCartData;
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingPassengerViewModel;
+import com.tokopedia.flight.booking.view.viewmodel.FlightInsuranceViewModel;
 import com.tokopedia.flight.review.data.model.AttributesVoucher;
 import com.tokopedia.flight.review.view.model.FlightBookingReviewModel;
 import com.tokopedia.flight.review.view.model.FlightCheckoutViewModel;
@@ -75,7 +76,7 @@ public interface FlightBookingReviewContract {
 
         void verifyBooking(String promoCode, int price, int adult, String cartId,
                            List<FlightBookingPassengerViewModel> flightPassengerViewModels,
-                           String contactName, String country, String email, String phone);
+                           String contactName, String country, String email, String phone, List<FlightInsuranceViewModel> insurances);
 
         void onPaymentSuccess();
 
