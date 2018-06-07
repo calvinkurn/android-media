@@ -1,6 +1,7 @@
 package com.tokopedia.train.search.presentation.adapter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.drawable.GradientDrawable;
 import android.graphics.drawable.LayerDrawable;
 import android.support.annotation.LayoutRes;
@@ -14,6 +15,7 @@ import android.widget.TextView;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.tkpdtrain.R;
 import com.tokopedia.train.common.util.TrainDateUtil;
+import com.tokopedia.train.scheduledetail.presentation.TrainScheduleDetailActivity;
 import com.tokopedia.train.search.presentation.model.TrainScheduleViewModel;
 
 /**
@@ -114,6 +116,8 @@ public class TrainSearchViewHolder extends AbstractViewHolder<TrainScheduleViewM
             @Override
             public void onClick(View view) {
                 //TODO go to detail schedule
+                Intent intent = TrainScheduleDetailActivity.createIntent(context, trainScheduleViewModel);
+                context.startActivity(intent);
             }
         });
     }
