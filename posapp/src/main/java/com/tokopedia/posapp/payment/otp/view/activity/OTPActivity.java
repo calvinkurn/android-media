@@ -6,6 +6,7 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.net.http.SslError;
 import android.os.Bundle;
+import android.support.v4.app.TaskStackBuilder;
 import android.util.Log;
 import android.view.View;
 import android.webkit.ConsoleMessage;
@@ -29,6 +30,7 @@ import com.tokopedia.payment.utils.ErrorNetMessage;
 import com.tokopedia.posapp.PosApplication;
 import com.tokopedia.posapp.R;
 import com.tokopedia.posapp.applink.PosAppLink;
+import com.tokopedia.posapp.cart.view.activity.LocalCartActivity;
 import com.tokopedia.posapp.payment.di.PaymentComponent;
 import com.tokopedia.posapp.payment.di.DaggerPaymentComponent;
 import com.tokopedia.posapp.payment.otp.domain.model.PaymentStatusDomain;
@@ -289,6 +291,12 @@ public class OTPActivity extends BasePresenterActivity<OTP.Presenter>
 
     private void goToErrorPage(String title, String message) {
         startActivity(InvoiceActivity.newErrorIntent(this, title, message));
+        finish();
+    }
+
+    @Override
+    public void onBackPressed() {
+        LocalCartActivity.newTopInstance(this).startActivities();
         finish();
     }
 }
