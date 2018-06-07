@@ -27,6 +27,7 @@ public class Product {
     private static final String KEY_FREERETURN = "free_feturn";
     private static final String KEY_PRODUCT_CASHBACK = "product_cashback";
     private static final String KEY_PRODUCT_CASHBACK_RATE = "product_cashback_rate";
+    private static final String KEY_PRODUCT_NEW_LABEL = "product_new_label";
     private static final String KEY_PRODUCT_RATE = "product_rating";
     private static final String KEY_WHOLESALE_PRICE = "wholesale_price";
     private static final String KEY_LABELS = "labels";
@@ -49,6 +50,7 @@ public class Product {
     private String freeReturn;
     private boolean productCashback;
     private String productCashbackRate;
+    private boolean productNewLabel;
     private int productRating;
     private String applinks;
     private List<WholesalePrice> wholesalePrice = new ArrayList<>();
@@ -97,6 +99,9 @@ public class Product {
         }
         if(!object.isNull(KEY_PRODUCT_CASHBACK)){
             setProductCashback(object.getBoolean(KEY_PRODUCT_CASHBACK));
+        }
+        if(!object.isNull(KEY_PRODUCT_NEW_LABEL)){
+            setProductNewLabel(object.getBoolean(KEY_PRODUCT_NEW_LABEL));
         }
         if(!object.isNull(KEY_APPLINKS)){
             setApplinks(object.getString(KEY_APPLINKS));
@@ -190,6 +195,14 @@ public class Product {
 
     public String getCountReviewFormat() {
         return countReviewFormat;
+    }
+
+    public boolean isProductNewLabel() {
+        return productNewLabel;
+    }
+
+    public void setProductNewLabel(boolean productNewLabel) {
+        this.productNewLabel = productNewLabel;
     }
 
     public void setCountReviewFormat(String countReviewFormat) {

@@ -24,8 +24,48 @@
             android:layout_height="wrap_content"
             android:adjustViewBounds="true"
             android:gravity="center"
-            android:scaleType="centerCrop" />
+            android:scaleType="centerCrop"
+            tools:src="@color/red_100" />
     </android.support.v7.widget.CardView>
+
+    <RelativeLayout
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginLeft="20dp"
+        android:layout_marginTop="20dp"
+        android:background="@drawable/circle_white"
+        android:visibility="visible">
+
+        <ImageView
+            android:id="@id/info_topads"
+            android:layout_width="16dp"
+            android:layout_height="13dp"
+            android:layout_centerInParent="true"
+            app:srcCompat="@drawable/ic_toa" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/wishlist_button_container"
+        android:layout_width="@dimen/wishlish_button_size"
+        android:layout_height="@dimen/wishlish_button_size"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginRight="-5dp"
+        android:layout_marginTop="-5dp"
+        android:background="@drawable/circle_white"
+        android:visibility="gone">
+
+        <ImageView
+            android:id="@+id/wishlist_button"
+            android:layout_width="19dp"
+            android:layout_height="19dp"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="8dp"
+            android:background="@drawable/ic_wishlist" />
+
+    </RelativeLayout>
 
     <TextView
         android:id="@id/title"
@@ -50,7 +90,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/title"
-        android:layout_marginBottom="5dp"
         android:layout_marginLeft="@dimen/product_grid_padding"
         android:layout_marginRight="@dimen/product_grid_padding"
         android:layout_marginTop="2dp"
@@ -63,10 +102,36 @@
         tools:text="Rp 3.121.500" />
 
     <LinearLayout
+        android:id="@+id/location_container"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/price"
+        android:layout_marginLeft="@dimen/product_grid_padding"
+        android:layout_marginRight="@dimen/product_grid_padding"
+        android:orientation="horizontal">
+
+        <LinearLayout
+            android:id="@+id/badges_container"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal" />
+
+        <com.tokopedia.design.component.TextViewCompat
+            android:id="@+id/location"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:minHeight="25dp"
+            android:textColor="@color/black_70"
+            android:textSize="@dimen/text_size_xsmall"
+            tools:text="Jakarta" />
+    </LinearLayout>
+
+    <LinearLayout
         android:id="@id/rating_review_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/price"
+        android:layout_below="@+id/location_container"
         android:layout_marginLeft="@dimen/product_grid_padding"
         android:layout_marginRight="@dimen/product_grid_padding"
         android:layout_marginTop="3dp"
@@ -88,75 +153,33 @@
 
     </LinearLayout>
 
-    <LinearLayout
-        android:id="@id/shop_detail_container"
+    <TextView
+        android:id="@+id/new_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/location_container"
+        android:layout_marginBottom="@dimen/product_grid_padding"
+        android:layout_marginLeft="@dimen/product_grid_padding"
+        android:layout_marginRight="@dimen/product_grid_padding"
+        android:background="@drawable/bg_new_label"
+        android:fontFamily="sans-serif-medium"
+        android:gravity="center"
+        android:textColor="#279ba4"
+        android:textSize="@dimen/text_size_xsmall"
+        android:visibility="gone"
+        tools:text="Baru" />
+
+    <com.tokopedia.topads.sdk.view.FlowLayout
+        android:id="@id/label_container"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_below="@id/rating_review_container"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/location_container"
         android:layout_marginBottom="@dimen/product_grid_padding"
         android:layout_marginLeft="@dimen/product_grid_padding"
         android:layout_marginRight="@dimen/product_grid_padding"
         android:layout_marginTop="5dp"
-        android:gravity="bottom"
-        android:orientation="vertical">
-
-        <com.tokopedia.topads.sdk.view.FlowLayout
-            android:id="@id/label_container"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="left"
-            android:orientation="horizontal" />
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="4dp"
-            android:gravity="center_vertical"
-            android:orientation="horizontal">
-
-            <TextView
-                android:id="@id/shop_name"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:textColor="@color/black_54"
-                android:textSize="@dimen/text_size_xsmall"
-                tools:text="ORIGINAL-ZONE" />
-
-            <RelativeLayout
-                android:layout_width="18dp"
-                android:layout_height="18dp">
-
-                <ImageView
-                    android:id="@id/info_topads"
-                    android:layout_width="17dp"
-                    android:layout_height="14dp"
-                    android:layout_centerInParent="true"
-                    app:srcCompat="@drawable/ic_toa" />
-
-            </RelativeLayout>
-        </LinearLayout>
-
-        <com.tokopedia.design.component.TextViewCompat
-            android:id="@+id/location"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="2dp"
-            app:drawableLeftCompat="@drawable/ic_place_grey_24dp"
-            android:gravity="center_vertical"
-            android:minHeight="25dp"
-            android:textColor="@color/black_70"
-            android:textSize="@dimen/text_size_xsmall"
-            tools:text="Jakarta" />
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/badges_container"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignBottom="@id/shop_detail_container"
-        android:layout_alignRight="@id/shop_detail_container"
-        android:orientation="horizontal" />
+        android:gravity="left"
+        android:orientation="horizontal"
+        android:visibility="gone" />
 
 </RelativeLayout>
