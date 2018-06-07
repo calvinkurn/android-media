@@ -9,7 +9,7 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal">
 
-        <TextView
+        <android.support.v7.widget.AppCompatTextView
             android:id="@+id/tv_passenger_label"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -23,7 +23,7 @@
             android:layout_height="match_parent"
             android:background="@color/grey_300" />
 
-        <TextView
+        <android.support.v7.widget.AppCompatTextView
             android:id="@+id/tv_wagon_label"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -32,4 +32,9 @@
             android:drawableRight="@drawable/ic_arrow_down_grey"
             android:text="Gerbong" />
     </LinearLayout>
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/rv_passenger"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
 </LinearLayout>
