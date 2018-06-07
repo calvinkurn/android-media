@@ -58,7 +58,7 @@ public class ImagePickerActivity extends BaseSimpleActivity
     private static final int REQUEST_CODE_EDITOR = 933;
 
     private TabLayout tabLayout;
-    private ImagePickerBuilder imagePickerBuilder;
+    protected ImagePickerBuilder imagePickerBuilder;
 
     private int selectedTab = 0;
     private NonSwipeableViewPager viewPager;
@@ -167,7 +167,7 @@ public class ImagePickerActivity extends BaseSimpleActivity
     }
 
     private void setupViewPager() {
-        imagePickerViewPagerAdapter = new ImagePickerViewPagerAdapter(this, getSupportFragmentManager(), imagePickerBuilder);
+        imagePickerViewPagerAdapter = getImagePickerViewPagerAdapter();
         viewPager.setAdapter(imagePickerViewPagerAdapter);
         viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
@@ -185,6 +185,11 @@ public class ImagePickerActivity extends BaseSimpleActivity
 
             }
         });
+    }
+
+    @NonNull
+    protected ImagePickerViewPagerAdapter getImagePickerViewPagerAdapter() {
+        return new ImagePickerViewPagerAdapter(this, getSupportFragmentManager(), imagePickerBuilder);
     }
 
     private void setupTabLayout() {
@@ -392,7 +397,7 @@ public class ImagePickerActivity extends BaseSimpleActivity
         onImageSelected(filePath, true);
     }
 
-    private void onImageSelected(String filePathOrUrl, boolean isChecked) {
+    protected void onImageSelected(String filePathOrUrl, boolean isChecked) {
         if (imagePickerBuilder.supportMultipleSelection()) {
             if (isChecked) {
                 imagePickerPreviewWidget.addData(filePathOrUrl);

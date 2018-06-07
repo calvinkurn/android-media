@@ -15,7 +15,7 @@ import com.tokopedia.abstraction.base.view.adapter.model.LoadingMoreModel;
 
 public class LoadingMoreViewHolder extends AbstractViewHolder<LoadingMoreModel> {
     @LayoutRes
-    public final static int LAYOUT = R.layout.item_shimmering_list;
+    public final static int LAYOUT = R.layout.loading_layout;
 
     public LoadingMoreViewHolder(View itemView) {
         super(itemView);
