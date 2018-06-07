@@ -11,6 +11,7 @@ import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
+import android.text.Html;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -38,8 +39,11 @@ import com.tokopedia.groupchat.chatroom.di.DaggerChatroomComponent;
 import com.tokopedia.groupchat.chatroom.domain.mapper.GroupChatMessagesMapper;
 import com.tokopedia.groupchat.chatroom.view.activity.GroupChatActivity;
 import com.tokopedia.groupchat.chatroom.view.adapter.chatroom.GroupChatAdapter;
+import com.tokopedia.groupchat.chatroom.view.adapter.chatroom.QuickReplyAdapter;
 import com.tokopedia.groupchat.chatroom.view.adapter.chatroom.typefactory.GroupChatTypeFactory;
 import com.tokopedia.groupchat.chatroom.view.adapter.chatroom.typefactory.GroupChatTypeFactoryImpl;
+import com.tokopedia.groupchat.chatroom.view.adapter.chatroom.typefactory.QuickReplyTypeFactory;
+import com.tokopedia.groupchat.chatroom.view.adapter.chatroom.typefactory.QuickReplyTypeFactoryImpl;
 import com.tokopedia.groupchat.chatroom.view.listener.ChatroomContract;
 import com.tokopedia.groupchat.chatroom.view.listener.GroupChatContract;
 import com.tokopedia.groupchat.chatroom.view.presenter.ChatroomPresenter;
@@ -47,6 +51,7 @@ import com.tokopedia.groupchat.chatroom.view.viewmodel.ChannelInfoViewModel;
 import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.AdsViewModel;
 import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.ChatViewModel;
 import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.GroupChatPointsViewModel;
+import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.GroupChatQuickReplyViewModel;
 import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.PendingChatViewModel;
 import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.PinnedMessageViewModel;
 import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.SprintSaleAnnouncementViewModel;
@@ -92,11 +97,13 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
     GroupChatMessagesMapper groupChatMessagesMapper;
 
     private RecyclerView chatRecyclerView;
+    private RecyclerView quickReplyRecyclerView;
     private EditText replyEditText;
     private View sendButton;
     private View divider;
     private View main, loading;
     private GroupChatAdapter adapter;
+    private QuickReplyAdapter quickReplyAdapter;
     private LinearLayoutManager layoutManager;
     private View chatNotificationView;
     private View login;
@@ -148,6 +155,7 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_group_chat_room_new, container, false);
         chatRecyclerView = view.findViewById(R.id.chat_list);
+        quickReplyRecyclerView = view.findViewById(R.id.quick_reply);
         replyEditText = view.findViewById(R.id.reply_edit_text);
         sendButton = view.findViewById(R.id.button_send);
         divider = view.findViewById(R.id.view);
@@ -184,11 +192,20 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
     private void prepareView() {
         GroupChatTypeFactory groupChatTypeFactory = new GroupChatTypeFactoryImpl(this);
         adapter = GroupChatAdapter.createInstance(groupChatTypeFactory);
+        QuickReplyTypeFactory quickReplyTypeFactory = new QuickReplyTypeFactoryImpl(this);
+        quickReplyAdapter = new QuickReplyAdapter(quickReplyTypeFactory);
+        List<Visitable> list = new ArrayList<>();
+        list.add(new GroupChatQuickReplyViewModel("1","Hello &#128522"));
+        list.add(new GroupChatQuickReplyViewModel("1","&#128512"));
+        list.add(new GroupChatQuickReplyViewModel("1","&#128532"));
+        quickReplyAdapter.setList(list);
         layoutManager = new LinearLayoutManager(getActivity());
         layoutManager.setReverseLayout(true);
         layoutManager.setStackFromEnd(true);
         chatRecyclerView.setLayoutManager(layoutManager);
+        quickReplyRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false));
         chatRecyclerView.setAdapter(adapter);
+        quickReplyRecyclerView.setAdapter(quickReplyAdapter);
         SpaceItemDecoration itemDecoration = new SpaceItemDecoration((int) getActivity()
                 .getResources().getDimension(R.dimen.space_chat));
         chatRecyclerView.addItemDecoration(itemDecoration);
@@ -447,6 +464,14 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
             sprintSaleHandler.postDelayed(sprintSaleRunnable, DELAY_TIME_SPRINT_SALE);
 
         }
+    }
+
+    @Override
+    public void addQuickReply(String message) {
+        String text = replyEditText.getText().toString();
+        int index = replyEditText.getSelectionStart();
+        replyEditText.setText(Html.fromHtml(String.format("%s %s %s", text.substring(0, index), message, text
+                .substring(index))));
     }
 
     private void trackViewSprintSaleComponent(SprintSaleViewModel sprintSaleViewModel) {

@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="@dimen/dp_8"
+    android:layout_marginBottom="@dimen/dp_8"
+    android:layout_marginRight="@dimen/dp_2"
+    android:layout_marginLeft="@dimen/dp_2">
+
+    <TextView
+        android:id="@+id/text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:minWidth="@dimen/min_width_template"
+        android:maxWidth="@dimen/max_width_template"
+        android:minHeight="@dimen/min_height_template"
+        android:gravity="center"
+        android:background="@drawable/interactive_label_quick_reply"
+        android:singleLine="true"
+        android:ellipsize="marquee"
+        android:textSize="@dimen/sp_12"
+        android:textColor="@color/tkpd_main_green"
+        tools:text="Maafm" />
+
+
+
+</LinearLayout>

@@ -54,6 +54,8 @@ public interface ChatroomContract {
 
         void autoAddSprintSaleAnnouncement(SprintSaleViewModel sprintSaleViewModel, ChannelInfoViewModel channelInfoViewModel);
 
+        void addQuickReply(String text);
+
         interface ImageAnnouncementViewHolderListener {
             void onImageAnnouncementClicked(String url);
         }

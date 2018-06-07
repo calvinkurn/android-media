@@ -76,7 +76,7 @@
                 app:layout_constraintStart_toStartOf="@id/bottom"
                 app:layout_constraintTop_toBottomOf="@id/view"
                 tools:text="dsajj\nfdfidjidfijdfijd\n asd\basd"
-                tools:visibility="gone"/>
+                tools:visibility="visible"/>
 
             <TextView
                 android:id="@+id/login"
@@ -94,7 +94,7 @@
                 android:textColor="@color/medium_green"
                 android:textSize="@dimen/sp_14"
                 android:textStyle="normal"
-                tools:visibility="visible"
+                tools:visibility="gone"
                 />
         </android.support.constraint.ConstraintLayout>
 
@@ -193,12 +193,24 @@
 
         </RelativeLayout>
 
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/quick_reply"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layout_constraintBottom_toTopOf="@id/bottom"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginLeft="@dimen/dp_16"
+            android:layout_marginStart="@dimen/dp_16"
+            android:layout_marginRight="@dimen/dp_16"
+            android:layout_marginEnd="@dimen/dp_16"/>
+
         <include
             android:id="@+id/pinned_message"
             layout="@layout/pinned_message_view_holder"
             android:layout_height="wrap_content"
             android:layout_width="match_parent"
-            app:layout_constraintBottom_toTopOf="@id/bottom"
+            app:layout_constraintBottom_toTopOf="@id/quick_reply"
             app:layout_constraintEnd_toEndOf="parent"
             android:visibility="visible"
             android:paddingLeft="@dimen/dp_16"
