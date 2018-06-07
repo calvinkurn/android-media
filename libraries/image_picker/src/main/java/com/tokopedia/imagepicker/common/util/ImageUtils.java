@@ -56,12 +56,13 @@ public class ImageUtils {
     public static final String JPG_EXT = ".jpg";
     public static final String PNG = "png";
     public static final String TOKOPEDIA_FOLDER_PREFIX = "Tokopedia";
+    public static final String TOKOPEDIA_DIRECTORY = "Tokopedia/";
 
     @StringDef({DIRECTORY_TOKOPEDIA_CACHE, DIRECTORY_TOKOPEDIA_CACHE_CAMERA, DIRECTORY_TOKOPEDIA_EDIT_RESULT})
     public @interface DirectoryDef {
-        String DIRECTORY_TOKOPEDIA_CACHE = "Tokopedia/"+TOKOPEDIA_FOLDER_PREFIX+" Cache/";
-        String DIRECTORY_TOKOPEDIA_CACHE_CAMERA = "Tokopedia/"+TOKOPEDIA_FOLDER_PREFIX+" Camera/";
-        String DIRECTORY_TOKOPEDIA_EDIT_RESULT = "Tokopedia/"+TOKOPEDIA_FOLDER_PREFIX+" Edit/";
+        String DIRECTORY_TOKOPEDIA_CACHE = TOKOPEDIA_DIRECTORY+TOKOPEDIA_FOLDER_PREFIX+" Cache/";
+        String DIRECTORY_TOKOPEDIA_CACHE_CAMERA = TOKOPEDIA_DIRECTORY+TOKOPEDIA_FOLDER_PREFIX+" Camera/";
+        String DIRECTORY_TOKOPEDIA_EDIT_RESULT = TOKOPEDIA_DIRECTORY+TOKOPEDIA_FOLDER_PREFIX+" Edit/";
     }
 
     public static File getTokopediaPublicDirectory(@DirectoryDef String directoryType) {
@@ -106,6 +107,29 @@ public class ImageUtils {
             }
             directory.delete();
         }
+    }
+
+    public static void deleteFilesInTokopediaFolder(ArrayList<String> filesToDelete) {
+        if (filesToDelete == null || filesToDelete.size() == 0) {
+            return;
+        }
+        for (int i = 0, sizei = filesToDelete.size(); i < sizei; i++) {
+            String filePathToDelete = filesToDelete.get(i);
+            if (TextUtils.isEmpty(filePathToDelete)) {
+                return;
+            }
+            File fileToDelete = new File(filePathToDelete);
+            if (isInTokopediaDirectory(fileToDelete)) {
+                fileToDelete.delete();
+            }
+        }
+    }
+
+    /**
+     * check if the file is in Tokopedia directory.
+     */
+    private static boolean isInTokopediaDirectory(File file) {
+        return file.exists() && file.getAbsolutePath().contains(TOKOPEDIA_DIRECTORY);
     }
 
     public static boolean isPng(String referencePath) {

@@ -4,18 +4,14 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.design.widget.Snackbar;
-import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
 import android.view.View;
+import android.webkit.URLUtil;
 
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
-import com.tokopedia.core.newgallery.GalleryActivity;
 import com.tokopedia.seller.R;
-import com.tokopedia.seller.common.imageeditor.ImageEditorActivity;
-import com.tokopedia.seller.product.common.utils.UrlUtils;
 import com.tokopedia.seller.product.edit.view.adapter.ImageSelectorAdapter;
 import com.tokopedia.seller.product.edit.view.fragment.BaseProductAddEditFragment;
 import com.tokopedia.seller.product.edit.view.model.ImageSelectModel;
@@ -26,8 +22,11 @@ import com.tokopedia.seller.product.edit.view.widget.ImagesSelectView;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.tokopedia.imagepicker.editor.main.view.ImageEditorActivity.RESULT_IS_EDITTED;
+import static com.tokopedia.imagepicker.editor.main.view.ImageEditorActivity.RESULT_PREVIOUS_IMAGE;
 import static com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity.PICKER_RESULT_PATHS;
 import static com.tokopedia.seller.product.edit.view.fragment.BaseProductAddEditFragment.REQUEST_CODE_ADD_PRODUCT_IMAGE;
+import static com.tokopedia.seller.product.edit.view.fragment.BaseProductAddEditFragment.REQUEST_CODE_EDIT_IMAGE;
 
 /**
  * Created by nathan on 4/11/17.
@@ -125,7 +124,7 @@ public class ProductImageViewHolder extends ProductViewHolder {
     public void renderData(ProductViewModel productViewModel) {
         ArrayList<ImageSelectModel> images = new ArrayList<>();
 
-        for (ProductPictureViewModel productPictureViewModel: productViewModel.getProductPictureViewModelList()) {
+        for (ProductPictureViewModel productPictureViewModel : productViewModel.getProductPictureViewModelList()) {
             String url = productPictureViewModel.getUrlOriginal();
             if (TextUtils.isEmpty(url)) {
                 url = productPictureViewModel.getFilePath();
@@ -156,14 +155,69 @@ public class ProductImageViewHolder extends ProductViewHolder {
         return imagesSelectView;
     }
 
+    @SuppressWarnings("unchecked")
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == REQUEST_CODE_ADD_PRODUCT_IMAGE && resultCode == Activity.RESULT_OK &&
-                data != null) {
-            ArrayList<String> imageUrlOrPathList = data.getStringArrayListExtra(PICKER_RESULT_PATHS);
+        if (requestCode == REQUEST_CODE_ADD_PRODUCT_IMAGE ) {
+            if (resultCode == Activity.RESULT_OK &&
+                    data != null) {
+                ArrayList<String> imageUrlOrPathList = data.getStringArrayListExtra(PICKER_RESULT_PATHS);
+                if (imageUrlOrPathList == null || imageUrlOrPathList.isEmpty()) {
+                    imagesSelectView.setImage(new ArrayList<ImageSelectModel>());
+                } else {
+                    ArrayList<String> editOriginalUrlList = data.getStringArrayListExtra(RESULT_PREVIOUS_IMAGE);
+                    ArrayList<Boolean> resultIsEdittedList = (ArrayList<Boolean>) data.getSerializableExtra(RESULT_IS_EDITTED);
 
-            ArrayList<ImageSelectModel> imageSelectModelList = imagesSelectView.getImageList();
+                    ArrayList<ImageSelectModel> prevImageSelectModelList = imagesSelectView.getImageList();
 
-            imagesSelectView.setImagesString(imageUrlOrPathList);
+                    // LOGIC to retain HTTP url:
+                    // check with the previous imageSelectView
+                    // if the new Image Path's original Image is HTTP and exist in the prevImageSelectModel.getUri and editted = false
+                    // then the data in previous model will be retained, and the uri will be the previous model
+                    // Otherwise, set the new ImagePath to ImageSelectView
+                    // example: prev data: "http://a.jpg", "http://b.jpg"
+                    // example: result data: { "http://a.jpg" edit=false }, "data://b_edit.jpg"
+                    // example: final data: "http://a.jpg", "data://b_edit.jpg"
+                    ArrayList<ImageSelectModel> newImageSelectModelList = new ArrayList<>();
+                    for (int i = 0, sizei = imageUrlOrPathList.size(); i < sizei; i++) {
+                        String imagePath = imageUrlOrPathList.get(i);
+                        if (editOriginalUrlList != null && prevImageSelectModelList != null && prevImageSelectModelList.size() > 0) {
+                            String editOriginalPath = editOriginalUrlList.get(i);
+                            boolean hasAnyEdit = resultIsEdittedList.get(i);
+
+                            if (URLUtil.isNetworkUrl(editOriginalPath) && !hasAnyEdit) {
+                                boolean existInPrevModel = false;
+                                for (ImageSelectModel prevImageSelectModel : prevImageSelectModelList) {
+                                    if (prevImageSelectModel.getUriOrPath().equals(editOriginalPath)) {
+                                        // HTTP, no edit, exists in prev model, add with prev model
+                                        newImageSelectModelList.add(prevImageSelectModel);
+                                        existInPrevModel = true;
+                                        break;
+                                    }
+                                }
+                                if (!existInPrevModel) { // HTTP AND no edit, but not exists in prev model
+                                    newImageSelectModelList.add(new ImageSelectModel(imagePath));
+                                }
+                            } else { // not HTTP OR has any edit
+                                newImageSelectModelList.add(new ImageSelectModel(imagePath));
+                            }
+                        } else {
+                            newImageSelectModelList.add(new ImageSelectModel(imagePath));
+                        }
+                    }
+                    imagesSelectView.setImage(newImageSelectModelList);
+                }
+            }
+        } else if (requestCode == REQUEST_CODE_EDIT_IMAGE){
+            if (resultCode == Activity.RESULT_OK &&
+                    data != null) {
+                ArrayList<String> imageUrlOrPathList = data.getStringArrayListExtra(PICKER_RESULT_PATHS);
+                if (imageUrlOrPathList != null && imageUrlOrPathList.size() > 0) {
+                    String imagePath = imageUrlOrPathList.get(0);
+                    if (!TextUtils.isEmpty(imagePath) && imagesSelectView.getSelectedImageIndex() >= 0) {
+                        imagesSelectView.changeImagePath(imagePath);
+                    }
+                }
+            }
         }
     }
 
@@ -178,7 +232,7 @@ public class ProductImageViewHolder extends ProductViewHolder {
             productPictureViewModel.setY(selectModel.getHeight());
 
             // Update image to server
-            if (!UrlUtils.isValidURL(selectModel.getUriOrPath())) {
+            if (!URLUtil.isNetworkUrl(selectModel.getUriOrPath())) {
                 productPictureViewModel.setId(0);
                 productPictureViewModel.setFilePath(selectModel.getUriOrPath());
             } else {
