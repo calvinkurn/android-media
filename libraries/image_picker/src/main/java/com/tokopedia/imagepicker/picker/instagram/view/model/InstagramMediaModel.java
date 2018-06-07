@@ -29,6 +29,10 @@ public class InstagramMediaModel implements Visitable<ImageInstagramAdapterTypeF
         this.caption = caption;
     }
 
+    public String getCaption() {
+        return caption;
+    }
+
     public String getId() {
         return id;
     }
