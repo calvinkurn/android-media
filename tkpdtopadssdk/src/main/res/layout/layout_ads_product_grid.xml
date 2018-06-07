@@ -118,7 +118,7 @@
             android:id="@+id/badges_container"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginRight="@dimen/dp_2"
+            android:layout_marginRight="@dimen/dp_4"
             android:orientation="horizontal" />
 
         <com.tokopedia.design.component.TextViewCompat
