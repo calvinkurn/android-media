@@ -222,15 +222,7 @@ public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
     }
 
     protected boolean isMaintenance(String response) {
-        JSONObject json;
-        try {
-            json = new JSONObject(response);
-            String status = json.optString(RESPONSE_PARAM_STATUS, RESPONSE_STATUS_OK);
-            return status.equals(RESPONSE_STATUS_UNDER_MAINTENANCE);
-        } catch (JSONException e) {
-            e.printStackTrace();
-            return false;
-        }
+        return response.toUpperCase().contains(RESPONSE_STATUS_UNDER_MAINTENANCE);
     }
 
     protected boolean isHasErrorMessage(String response) {
@@ -239,18 +231,6 @@ public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
             json = new JSONObject(response);
             JSONArray errorMessage = json.optJSONArray(RESPONSE_PARAM_MESSAGE_ERROR);
             return errorMessage.length() > 0;
-        } catch (JSONException e) {
-            e.printStackTrace();
-            return false;
-        }
-    }
-
-    protected boolean isRequestDenied(String response) {
-        JSONObject json;
-        try {
-            json = new JSONObject(response);
-            String status = json.optString(RESPONSE_PARAM_STATUS, RESPONSE_STATUS_OK);
-            return status.equals(RESPONSE_STATUS_REQUEST_DENIED);
         } catch (JSONException e) {
             e.printStackTrace();
             return false;

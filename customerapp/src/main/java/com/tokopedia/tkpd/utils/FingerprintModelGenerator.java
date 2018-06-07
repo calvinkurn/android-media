@@ -50,11 +50,11 @@ public class FingerprintModelGenerator {
 
     private static String getFingerPrintJson(Context context) {
         LocalCacheHandler localCacheHandler = new LocalCacheHandler(context, FINGERPRINT_KEY_NAME);
-        localCacheHandler.setExpire(3600);
         String cache =  localCacheHandler.getString(FINGERPRINT_USE_CASE);
         if(TextUtils.isEmpty(cache) || localCacheHandler.isExpired()){
             String fingerPrint = generateFingerprintData(context);
             localCacheHandler.putString(FINGERPRINT_USE_CASE, fingerPrint);
+            localCacheHandler.setExpire(3600);
             return fingerPrint;
         }
 
@@ -65,10 +65,10 @@ public class FingerprintModelGenerator {
         LocalCacheHandler localCacheHandler = new LocalCacheHandler(context, TkpdCache.ADVERTISINGID);
 
         String adsId = localCacheHandler.getString(TkpdCache.Key.KEY_ADVERTISINGID);
-        if (adsId != null && !"".equalsIgnoreCase(adsId.trim())) {
+        if (adsId != null && !TextUtils.isEmpty(adsId.trim())) {
             return adsId;
         } else {
-            AdvertisingIdClient.Info adInfo = null;
+            AdvertisingIdClient.Info adInfo;
             try {
                 adInfo = AdvertisingIdClient.getAdvertisingIdInfo(context);
             } catch (IOException | GooglePlayServicesNotAvailableException | GooglePlayServicesRepairableException e) {
