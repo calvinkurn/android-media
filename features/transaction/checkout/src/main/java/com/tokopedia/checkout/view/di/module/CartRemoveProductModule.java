@@ -12,8 +12,6 @@ import com.tokopedia.checkout.domain.usecase.DeleteCartUseCase;
 import com.tokopedia.checkout.view.adapter.CartRemoveProductAdapter;
 import com.tokopedia.checkout.view.di.scope.CartRemoveProductScope;
 import com.tokopedia.checkout.view.view.cartlist.CartItemDecoration;
-import com.tokopedia.checkout.view.view.cartlist.CartRemoveProductFragment;
-import com.tokopedia.checkout.view.view.cartlist.CartRemoveProductPresenter;
 import com.tokopedia.checkout.view.view.cartlist.removecartitem.RemoveCartItemAdapter;
 import com.tokopedia.checkout.view.view.cartlist.removecartitem.RemoveCartItemPresenter;
 
@@ -29,11 +27,6 @@ public class CartRemoveProductModule {
 
     private final CartRemoveProductAdapter.CartRemoveProductActionListener actionListener;
     private final Context context;
-
-    public CartRemoveProductModule(CartRemoveProductFragment cartRemoveProductFragment) {
-        actionListener = cartRemoveProductFragment;
-        context = cartRemoveProductFragment.getContext();
-    }
 
     public CartRemoveProductModule() {
         actionListener = null;
@@ -56,18 +49,6 @@ public class CartRemoveProductModule {
     @CartRemoveProductScope
     RecyclerView.ItemDecoration provideCartItemDecoration() {
         return new CartItemDecoration((int) context.getResources().getDimension(R.dimen.new_margin_med), false, 0);
-    }
-
-    @Provides
-    @CartRemoveProductScope
-    CartRemoveProductPresenter provideCartRemoveProductPresenter(
-            CompositeSubscription compositeSubscription,
-            DeleteCartUseCase deleteCartUseCase,
-            DeleteCartUpdateCartUseCase deleteCartUpdateCartUseCase
-    ) {
-        return new CartRemoveProductPresenter(
-                compositeSubscription, deleteCartUseCase, deleteCartUpdateCartUseCase
-        );
     }
 
     @Provides

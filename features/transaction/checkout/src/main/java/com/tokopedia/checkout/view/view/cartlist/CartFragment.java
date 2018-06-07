@@ -98,7 +98,7 @@ public class CartFragment extends BaseCheckoutFragment implements CartListAdapte
     private View bottomLayout;
     private TextView tvItemCount;
     private TkpdProgressDialog progressDialogNormal;
-    private LinearLayout layoutUsedPromo;
+    private RelativeLayout layoutUsedPromo;
     private RelativeLayout rlContent;
     private LinearLayout llNetworkErrorView;
 

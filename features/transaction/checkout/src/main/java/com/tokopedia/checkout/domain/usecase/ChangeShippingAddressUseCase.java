@@ -34,6 +34,7 @@ public class ChangeShippingAddressUseCase extends UseCase<SetShippingAddressData
                     public SetShippingAddressData call(ShippingAddressDataResponse shippingAddressDataResponse) {
                         return new SetShippingAddressData.Builder()
                                 .success(shippingAddressDataResponse.getSuccess() == 1)
+                                .messages(shippingAddressDataResponse.getMessages())
                                 .build();
                     }
                 });

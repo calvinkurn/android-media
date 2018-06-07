@@ -111,7 +111,7 @@ public class RemoveCartItemAdapter extends RecyclerView.Adapter<RecyclerView.Vie
                 checkedCartIds.remove(cartId);
             }
         }
-        removeCartItemViewListener.onSingleItemCheckChanged(itemPosition);
+        removeCartItemViewListener.onSingleItemCheckChanged(checked, itemPosition);
     }
 
     public List<String> getCheckedCartIds() {

@@ -19,6 +19,8 @@ public interface ISearchAddressListView<T> {
 
     void hideLoading();
 
+    void resetPagination();
+
     Activity getActivity();
 
 }
