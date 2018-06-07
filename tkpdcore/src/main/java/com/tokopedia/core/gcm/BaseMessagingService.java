@@ -1,5 +1,6 @@
 package com.tokopedia.core.gcm;
 
+import android.app.Application;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -52,8 +53,22 @@ public class BaseMessagingService extends BaseNotificationMessagingService {
         if (GlobalConfig.isSellerApp()) {
             return SellerAppRouter.getAppNotificationReceiver();
         } else if(GlobalConfig.isPosApp()) {
-            // TODO: 1/17/18 manage notification for PosApp
-            return null;
+            return new IAppNotificationReceiver() {
+                @Override
+                public void init(Application application) {
+                    // no-op
+                }
+
+                @Override
+                public void onNotificationReceived(String from, Bundle bundle) {
+                    // no-op
+                }
+
+                @Override
+                public void onMoengageNotificationReceived(RemoteMessage message) {
+                    // no-op
+                }
+            };
         } else {
             return HomeRouter.getAppNotificationReceiver();
         }
