@@ -33,15 +33,6 @@
         />
 
     <com.tokopedia.gm.subscribe.view.widget.home.GmMainFeatureView
-        android:id="@+id/feature_gold_ticket"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:feature_desc="@string/gmsubscribe_feature_ticket_desc"
-        app:feature_img="@drawable/ic_gmsubscribe_feature_ticket"
-        app:feature_title="@string/gmsubscribe_feature_ticket"
-        />
-
-    <com.tokopedia.gm.subscribe.view.widget.home.GmMainFeatureView
         android:id="@+id/feature_cover"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

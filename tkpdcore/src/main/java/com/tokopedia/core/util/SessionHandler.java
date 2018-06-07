@@ -80,6 +80,7 @@ public class SessionHandler {
     private static final String EMAIL = "EMAIL";
     private static final String PROFILE_PICTURE = "PROFILE_PICTURE";
     private static final String HAS_PASSWORD = "HAS_PASSWORD";
+    public static final String INSTAGRAM_CACHE_KEY = "instagram_cache_key";
 
     private Context context;
     private String email;
@@ -193,6 +194,8 @@ public class SessionHandler {
     }
 
     private static void logoutInstagram(Context context) {
+        LocalCacheHandler localCacheHandler = new LocalCacheHandler(context,  INSTAGRAM_CACHE_KEY);
+        localCacheHandler.clearCache(INSTAGRAM_CACHE_KEY);
         if (isV4Login(context) && context instanceof AppCompatActivity) {
             ((AppCompatActivity) context).setContentView(R.layout.activity_webview_general);
             WebView webView = (WebView) ((AppCompatActivity) context).findViewById(R.id.webview);

@@ -21,8 +21,6 @@ import com.tokopedia.design.R;
 
 public abstract class BottomSheets extends BottomSheetDialogFragment {
 
-    private View inflatedView;
-
     public abstract int getLayoutResourceId();
 
     public abstract void initView(View view);
@@ -40,7 +38,8 @@ public abstract class BottomSheets extends BottomSheetDialogFragment {
     }
 
     private BottomSheetBehavior bottomSheetBehavior;
-
+    private View inflatedView;
+    
     public interface BottomSheetDismissListener {
         void onDismiss();
     }
@@ -152,5 +151,11 @@ public abstract class BottomSheets extends BottomSheetDialogFragment {
         inflatedView.invalidate();
         inflatedView.measure(0, 0);
         bottomSheetBehavior.setPeekHeight(inflatedView.getMeasuredHeight());
+    }
+
+    protected void updateHeight(int height) {
+        inflatedView.invalidate();
+        inflatedView.measure(0, 0);
+        bottomSheetBehavior.setPeekHeight(height);
     }
 }

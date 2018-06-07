@@ -1,0 +1,27 @@
+apply plugin: 'com.android.library'
+apply from: "$rootProject.projectDir/buildconfig/module.gradle"
+apply plugin: 'android-apt'
+
+apt {
+    arguments {
+        targetModuleName 'ImagePicker'
+    }
+}
+
+dependencies {
+    compile rootProject.ext.supportLibDependencies.supportV4
+    compile rootProject.ext.supportLibDependencies.appCompactV7
+    compile rootProject.ext.supportLibDependencies.exifinterface
+
+    compile project(rootProject.ext.libraries.useCase)
+    compile project(rootProject.ext.libraries.abstraction)
+    compile project(rootProject.ext.libraries.design)
+    compile rootProject.ext.miscDependencies.dagger
+    apt rootProject.ext.miscDependencies.daggerCompiler
+
+    compile rootProject.ext.miscDependencies.cameraView
+
+    compile (rootProject.ext.miscDependencies.ucrop){
+        exclude group: 'com.android.support'
+    }
+}
