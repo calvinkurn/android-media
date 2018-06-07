@@ -173,9 +173,17 @@ public abstract class TrainSearchFragment extends BaseListFragment<TrainSchedule
     public RequestParams getRequestParam() {
         RequestParams requestParams = RequestParams.create();
         requestParams.putString(GetScheduleUseCase.DATE_SCHEDULE, dateDeparture);
-        requestParams.putString(GetScheduleUseCase.ORIGIN_CODE, originCode);
+        if (originCode != null) {
+            requestParams.putString(GetScheduleUseCase.ORIGIN_CODE, originCode);
+        }else {
+            requestParams.putString(GetScheduleUseCase.ORIGIN_CODE, "");
+        }
         requestParams.putString(GetScheduleUseCase.ORIGIN_CITY, originCity);
-        requestParams.putString(GetScheduleUseCase.DEST_CODE, destinationCode);
+        if (destinationCode != null) {
+            requestParams.putString(GetScheduleUseCase.DEST_CODE, destinationCode);
+        }else {
+            requestParams.putString(GetScheduleUseCase.DEST_CODE, "");
+        }
         requestParams.putString(GetScheduleUseCase.DEST_CITY, destinationCity);
 
         //not yet implemented in query gql staging
