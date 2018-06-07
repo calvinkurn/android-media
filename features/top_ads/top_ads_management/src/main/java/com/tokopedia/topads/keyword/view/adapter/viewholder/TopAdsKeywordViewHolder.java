@@ -67,7 +67,8 @@ public class TopAdsKeywordViewHolder extends BaseMultipleCheckViewHolder<Keyword
         keywordTypeDescription.setText(keywordAd.getKeywordTypeDesc());
         titleProduct.setText(keywordAd.getKeywordTag());
         statusActive.setText(keywordAd.getStatusDesc());
-        pricePromoPerClick.setText(getString(R.string.top_ads_per_click_detail, keywordAd.getPriceBidFmt()));
+        pricePromoPerClick.setText(itemView.getContext()
+                .getString(R.string.top_ads_bid_format_text, keywordAd.getPriceBidFmt(), keywordAd.getLabelPerClick()));
         promoPriceUsed.setText(keywordAd.getStatTotalSpent());
         groupName.setText(itemView.getContext().getString(R.string.top_ads_keywords_groups_format, keywordAd.getGroupName()));
         switch (keywordAd.getStatus()) {
