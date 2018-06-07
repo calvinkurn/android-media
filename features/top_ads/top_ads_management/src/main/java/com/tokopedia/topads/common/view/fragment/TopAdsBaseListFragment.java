@@ -522,6 +522,7 @@ public abstract class TopAdsBaseListFragment<V extends Visitable, F extends Adap
             @Override
             public boolean onMenuItemClick(MenuItem menuItem) {
                 if (listener != null) {
+                    recyclerView.scrollToPosition(0);
                     appBarLayout.setExpanded(true, true);
                     showButtonActionView();
                     listener.startShowCase();
