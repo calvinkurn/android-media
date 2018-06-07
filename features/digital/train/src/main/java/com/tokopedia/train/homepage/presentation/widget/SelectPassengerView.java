@@ -87,8 +87,8 @@ public class SelectPassengerView extends BaseCustomView {
     }
 
     private void init() {
-        View view = inflate(getContext(), R.layout.widget_select_passenger_view, this);
-        numberPickerWithCounterView = view.findViewById(R.id.number_picker_passenger);
+        View view = inflate(getContext(), R.layout.widget_train_select_passenger_view, this);
+        numberPickerWithCounterView = view.findViewById(R.id.train_number_picker_passenger);
         passengerImageView = view.findViewById(R.id.image_passenger_icon);
         titleTextView = view.findViewById(R.id.textview_title);
         subtitleTextView = view.findViewById(R.id.textview_subtitle);

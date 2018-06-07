@@ -37,7 +37,7 @@
     </LinearLayout>
 
     <com.tokopedia.train.homepage.presentation.widget.NumberPickerWithCounterView
-        android:id="@+id/number_picker_passenger"
+        android:id="@+id/train_number_picker_passenger"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
