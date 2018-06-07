@@ -66,9 +66,10 @@ public class TrainSearchPresenter extends BaseDaggerPresenter<TrainSearchContrac
     }
 
     private void getAvailabilitySchedule(final String idTrain, int scheduleVariant) {
+        RequestParams requestParams = RequestParams.create();
+        requestParams.putObject(GetAvailabilityScheduleUseCase.TRAIN_ID_KEY, idTrain);
         getAvailabilityScheduleUseCase.setScheduleVariant(scheduleVariant);
-        getAvailabilityScheduleUseCase.setIdTrain(idTrain);
-        getAvailabilityScheduleUseCase.execute(new Subscriber<List<TrainScheduleViewModel>>() {
+        getAvailabilityScheduleUseCase.execute(requestParams, new Subscriber<List<TrainScheduleViewModel>>() {
             @Override
             public void onCompleted() {
 
@@ -93,12 +94,14 @@ public class TrainSearchPresenter extends BaseDaggerPresenter<TrainSearchContrac
     }
 
     @Override
-    public void getFilteredAndSortedSchedules(long minPrice, long maxPrice, List<String> trainClass, List<String> trains, final int sortOptionId) {
+    public void getFilteredAndSortedSchedules(long minPrice, long maxPrice, List<String> trainClass,
+                                              List<String> trains, List<String> departureTrains, final int sortOptionId) {
         FilterParam filterParam = new FilterParam.Builder()
                 .minPrice(minPrice)
                 .maxPrice(maxPrice)
                 .trains(trains)
                 .trainClass(trainClass)
+                .departureTimeList(departureTrains)
                 .build();
         RequestParams requestParams = getFilteredAndSortedScheduleUseCase.createRequestParam(filterParam, sortOptionId);
 
@@ -116,7 +119,6 @@ public class TrainSearchPresenter extends BaseDaggerPresenter<TrainSearchContrac
 
             @Override
             public void onNext(List<TrainScheduleViewModel> trainSchedulesViewModel) {
-                Log.d(TAG, "onNext size: " + trainSchedulesViewModel.size());
                 if (trainSchedulesViewModel != null) {
                     getView().showLayoutTripInfo();
                     getView().showDataFromCache(trainSchedulesViewModel);

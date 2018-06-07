@@ -1,7 +1,7 @@
 package com.tokopedia.train.search.presentation.presenter;
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
-import com.tokopedia.train.search.domain.FilterSearchData;
+import com.tokopedia.train.search.presentation.model.FilterSearchData;
 import com.tokopedia.train.search.domain.GetFilterSearchParamDataUseCase;
 import com.tokopedia.train.search.domain.GetTotalScheduleUseCase;
 import com.tokopedia.train.search.presentation.contract.TrainFilterSearchContract;

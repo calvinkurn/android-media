@@ -12,11 +12,11 @@ import com.tokopedia.train.common.util.TrainDateUtil;
 import com.tokopedia.train.homepage.presentation.model.TrainSearchPassDataViewModel;
 import com.tokopedia.train.search.data.typedef.TrainScheduleTypeDef;
 import com.tokopedia.train.search.di.DaggerTrainSearchComponent;
-import com.tokopedia.train.search.presentation.activity.TrainReturnSearchActivity;
+import com.tokopedia.train.search.presentation.activity.TrainSearchReturnActivity;
 import com.tokopedia.train.search.presentation.activity.TrainSearchActivity;
 import com.tokopedia.train.search.presentation.contract.TrainSearchReturnContract;
 import com.tokopedia.train.search.presentation.model.TrainScheduleViewModel;
-import com.tokopedia.train.search.presentation.presenter.TrainReturnSearchPresenter;
+import com.tokopedia.train.search.presentation.presenter.TrainSearchReturnPresenter;
 
 import javax.inject.Inject;
 
@@ -24,23 +24,23 @@ import javax.inject.Inject;
  * Created by nabillasabbaha on 3/19/18.
  */
 
-public class TrainReturnSearchFragment extends TrainSearchFragment
+public class TrainSearchReturnFragment extends TrainSearchFragment
         implements TrainSearchReturnContract.View {
 
     @Inject
-    TrainReturnSearchPresenter presenterReturn;
+    TrainSearchReturnPresenter presenterReturn;
 
     private TextView titleDepartureInfoTv;
     private TextView trainNameTv;
     private TextView detailDepartureInfoTv;
     private LinearLayout departureDetailLayout;
 
-    public static TrainReturnSearchFragment newInstance(TrainSearchPassDataViewModel trainSearchPassDataViewModel,
+    public static TrainSearchReturnFragment newInstance(TrainSearchPassDataViewModel trainSearchPassDataViewModel,
                                                         String idSchedule) {
-        TrainReturnSearchFragment fragment = new TrainReturnSearchFragment();
+        TrainSearchReturnFragment fragment = new TrainSearchReturnFragment();
         Bundle bundle = new Bundle();
         bundle.putParcelable(TrainSearchActivity.EXTRA_SEARCH_PASS_DATA, trainSearchPassDataViewModel);
-        bundle.putString(TrainReturnSearchActivity.EXTRA_SEARCH_ID_SCHEDULE, idSchedule);
+        bundle.putString(TrainSearchReturnActivity.EXTRA_SEARCH_ID_SCHEDULE, idSchedule);
         fragment.setArguments(bundle);
         return fragment;
     }
@@ -71,7 +71,7 @@ public class TrainReturnSearchFragment extends TrainSearchFragment
         detailDepartureInfoTv = view.findViewById(R.id.detail_departure_info);
         departureDetailLayout = view.findViewById(R.id.layout_departure_detail);
 
-        presenterReturn.getDetailSchedules(getArguments().getString(TrainReturnSearchActivity.EXTRA_SEARCH_ID_SCHEDULE));
+        presenterReturn.getDetailSchedules(getArguments().getString(TrainSearchReturnActivity.EXTRA_SEARCH_ID_SCHEDULE));
     }
 
     @Override

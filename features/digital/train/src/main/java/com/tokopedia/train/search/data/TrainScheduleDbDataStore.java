@@ -7,10 +7,12 @@ import com.raizlabs.android.dbflow.sql.language.Method;
 import com.raizlabs.android.dbflow.sql.language.OrderBy;
 import com.raizlabs.android.dbflow.sql.language.Select;
 import com.raizlabs.android.dbflow.structure.ModelAdapter;
+import com.tokopedia.abstraction.common.utils.view.DateFormatUtils;
 import com.tokopedia.train.common.TrainDataDBSource;
 import com.tokopedia.train.common.specification.DbFlowSpecification;
 import com.tokopedia.train.common.specification.DbFlowWithOrderSpecification;
 import com.tokopedia.train.common.specification.Specification;
+import com.tokopedia.train.common.util.TrainDateUtil;
 import com.tokopedia.train.search.data.databasetable.TrainScheduleDbTable;
 import com.tokopedia.train.search.data.databasetable.TrainScheduleDbTable_Table;
 import com.tokopedia.train.search.data.entity.AvailabilityEntity;
@@ -112,6 +114,10 @@ public class TrainScheduleDbDataStore implements TrainDataDBSource<TrainSchedule
         trainScheduleDbTable.setCheapestFlag(false);
         trainScheduleDbTable.setFastestFlag(false);
         trainScheduleDbTable.setReturnSchedule(scheduleVariant == TrainScheduleTypeDef.RETURN_SCHEDULE);
+
+        String departureHour = TrainDateUtil.formatDate(TrainDateUtil.FORMAT_DATE_API,
+                TrainDateUtil.FORMAT_HOUR, trainScheduleEntity.getDepartureTimestamp());
+        trainScheduleDbTable.setDepartureHour(Integer.valueOf(departureHour));
         adapter.insert(trainScheduleDbTable);
     }
 

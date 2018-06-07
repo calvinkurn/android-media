@@ -9,7 +9,7 @@ import android.os.Parcelable;
 
 public class TrainSearchPassDataViewModel implements Parcelable {
     /*
-        "date": "2018-01-01",
+        "date": "20180101",
         "adult": 1,
         "infant": 0,
         "origin": "", -->station code

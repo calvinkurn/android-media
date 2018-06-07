@@ -5,18 +5,18 @@ import android.content.Intent;
 import android.support.v4.app.Fragment;
 
 import com.tokopedia.train.homepage.presentation.model.TrainSearchPassDataViewModel;
-import com.tokopedia.train.search.presentation.fragment.TrainReturnSearchFragment;
+import com.tokopedia.train.search.presentation.fragment.TrainSearchReturnFragment;
 
 /**
  * Created by nabillasabbaha on 3/19/18.
  */
 
-public class TrainReturnSearchActivity extends TrainSearchActivity {
+public class TrainSearchReturnActivity extends TrainSearchActivity {
 
     public static final String EXTRA_SEARCH_ID_SCHEDULE = "id_schedule";
 
     public static Intent getCallingIntent(Activity activity, TrainSearchPassDataViewModel viewModel, String idSchedule) {
-        Intent intent = new Intent(activity, TrainReturnSearchActivity.class);
+        Intent intent = new Intent(activity, TrainSearchReturnActivity.class);
         intent.putExtra(EXTRA_SEARCH_PASS_DATA, viewModel);
         intent.putExtra(EXTRA_SEARCH_ID_SCHEDULE, idSchedule);
         return intent;
@@ -24,7 +24,7 @@ public class TrainReturnSearchActivity extends TrainSearchActivity {
 
     @Override
     protected Fragment getNewFragment() {
-        return TrainReturnSearchFragment.newInstance(trainSearchPassDataViewModel,
+        return TrainSearchReturnFragment.newInstance(trainSearchPassDataViewModel,
                 getIntent().getStringExtra(EXTRA_SEARCH_ID_SCHEDULE));
     }
 

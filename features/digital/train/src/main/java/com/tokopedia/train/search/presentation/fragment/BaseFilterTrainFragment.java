@@ -6,37 +6,28 @@ import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.base.view.recyclerview.VerticalRecyclerView;
 import com.tokopedia.tkpdtrain.R;
 import com.tokopedia.train.search.presentation.adapter.TrainFilterAdapter;
+import com.tokopedia.train.search.presentation.contract.BaseTrainFilterListener;
 import com.tokopedia.train.search.presentation.contract.FilterSearchActionView;
-
-import java.util.ArrayList;
-import java.util.List;
+import com.tokopedia.train.search.presentation.model.FilterSearchData;
 
 /**
- * Created by nabillasabbaha on 3/23/18.
+ * Created by nabillasabbaha on 04/06/18.
  */
+public abstract class BaseFilterTrainFragment extends BaseDaggerFragment implements BaseTrainFilterListener {
 
-public class TrainFilterNameFragment extends BaseDaggerFragment {
-
-    public static final String TAG = TrainFilterNameFragment.class.getSimpleName();
-    private static final String NAME_LIST = "name_list";
+    public static final String TAG = FilterTrainDepartureFragment.class.getSimpleName();
+    private static final String SAVE_FILTER_EXISTING = "filter_existing";
 
     private VerticalRecyclerView recyclerView;
-    private TrainFilterAdapter adapter;
-    private FilterSearchActionView listener;
-
-    public static TrainFilterNameFragment newInstance(List<String> nameTrainList) {
-        TrainFilterNameFragment fragment = new TrainFilterNameFragment();
-        Bundle bundle = new Bundle();
-        bundle.putStringArrayList(NAME_LIST, (ArrayList) nameTrainList);
-        fragment.setArguments(bundle);
-        return fragment;
-    }
+    protected TrainFilterAdapter adapter;
+    protected FilterSearchActionView listener;
+    protected FilterSearchData filterSearchData;
+    private FilterSearchData existingFilterSearchData;
 
     @Nullable
     @Override
@@ -49,16 +40,16 @@ public class TrainFilterNameFragment extends BaseDaggerFragment {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        if (savedInstanceState == null) {
+            existingFilterSearchData = listener.getFilterSearchData().copy();
+        } else {
+            existingFilterSearchData = savedInstanceState.getParcelable(SAVE_FILTER_EXISTING);
+        }
 
-        listener.setTitleToolbar("Kereta");
+        filterSearchData = listener.getFilterSearchData();
+
+        listener.setCloseButton(false);
         adapter = new TrainFilterAdapter();
-        adapter.addList(getArguments().getStringArrayList(NAME_LIST));
-        adapter.setListener(new TrainFilterAdapter.ActionListener() {
-            @Override
-            public void onCheckChanged(String itemSelected) {
-                Toast.makeText(getActivity(), itemSelected, Toast.LENGTH_SHORT).show();
-            }
-        });
         recyclerView.setAdapter(adapter);
     }
 
@@ -75,5 +66,16 @@ public class TrainFilterNameFragment extends BaseDaggerFragment {
     @Override
     protected void onAttachActivity(Context context) {
         listener = (FilterSearchActionView) context;
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putParcelable(SAVE_FILTER_EXISTING, existingFilterSearchData);
+    }
+
+    @Override
+    public void changeFilterToOriginal() {
+        listener.onChangeFilterSearchData(existingFilterSearchData);
     }
 }
