@@ -141,7 +141,8 @@ public class BottomSheetFilterView extends BaseCustomView implements BottomSheet
 
     public void closeView() {
         if (bottomSheetBehavior != null
-                && bottomSheetBehavior.getState() != BottomSheetBehavior.STATE_HIDDEN) {
+                && bottomSheetBehavior.getState() != BottomSheetBehavior.STATE_HIDDEN
+                && buttonFinish.getVisibility() == View.VISIBLE) {
             bottomSheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
         }
     }
