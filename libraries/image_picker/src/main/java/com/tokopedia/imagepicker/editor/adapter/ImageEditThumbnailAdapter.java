@@ -103,7 +103,7 @@ public class ImageEditThumbnailAdapter extends RecyclerView.Adapter<ImageEditThu
     @Override
     public void onBindViewHolder(ImageEditThumbnailViewHolder holder, int position) {
         String imagePath = imagePathList.get(position).get(currentEditStepIndexList.get(position));
-        ImageHandler.loadImageAndCache(holder.imageView, imagePath);
+        ImageHandler.loadImageFit2(holder.imageView.getContext(), holder.imageView, imagePath);
         holder.rectGreenView.setVisibility(selectedIndex == position ? View.VISIBLE : View.GONE);
     }
 

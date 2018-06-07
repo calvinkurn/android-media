@@ -547,6 +547,7 @@ public class ImagePickerActivity extends BaseSimpleActivity
         }
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);

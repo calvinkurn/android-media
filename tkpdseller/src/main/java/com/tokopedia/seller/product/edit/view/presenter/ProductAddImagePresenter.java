@@ -5,6 +5,7 @@ import android.text.TextUtils;
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.core.myproduct.utils.FileUtils;
+import com.tokopedia.imagepicker.common.util.ImageUtils;
 
 import java.util.ArrayList;
 
@@ -45,9 +46,13 @@ public class ProductAddImagePresenter extends BaseDaggerPresenter<ProductAddImag
                     Uri imageUri = imageUris.get(i);
                     String uriString = imageUri.toString();
                     if (uriString.startsWith(CONTENT_GMAIL_LS)) {// get email attachment from gmail
-                        imageUrls.add(FileUtils.getPathFromGmail(getView().getContext(), imageUri));
+                        imageUrls.add(ImageUtils.getPathFromGmail(getView().getContext(),
+                                imageUri,
+                                ImageUtils.DirectoryDef.DIRECTORY_TOKOPEDIA_CACHE));
                     } else { // get extras for import from gallery
-                        String url = FileUtils.getTkpdPathFromURI(getView().getContext(), imageUri);
+                        String url = ImageUtils.getTkpdPathFromURI(getView().getContext(),
+                                imageUri,
+                                ImageUtils.DirectoryDef.DIRECTORY_TOKOPEDIA_CACHE);
                         if (!TextUtils.isEmpty(url)) {
                             imageUrls.add(url);
                         }

@@ -35,13 +35,13 @@ import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.network.exception.MessageErrorException;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
-import com.tokopedia.core.ImageGallery;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.customadapter.NoResultDataBinder;
 import com.tokopedia.core.customadapter.RetryDataBinder;
 import com.tokopedia.core.myproduct.utils.FileUtils;
 import com.tokopedia.core.network.NetworkErrorHelper;
+import com.tokopedia.core.newgallery.GalleryActivity;
 import com.tokopedia.core.product.model.share.ShareData;
 import com.tokopedia.core.router.productdetail.PdpRouter;
 import com.tokopedia.core.share.ShareActivity;
@@ -56,16 +56,17 @@ import com.tokopedia.seller.base.view.adapter.BaseMultipleCheckListAdapter;
 import com.tokopedia.seller.base.view.adapter.BaseRetryDataBinder;
 import com.tokopedia.seller.base.view.emptydatabinder.EmptyDataBinder;
 import com.tokopedia.seller.base.view.fragment.BaseSearchListFragment;
-import com.tokopedia.seller.common.imageeditor.GalleryCropActivity;
-import com.tokopedia.seller.common.imageeditor.GalleryCropWatermarkActivity;
 import com.tokopedia.seller.common.utils.KMNumbers;
-import com.tokopedia.seller.instoped.InstopedSellerCropWatermarkActivity;
+import com.tokopedia.seller.instoped.InstopedSellerActivity;
+import com.tokopedia.seller.instoped.InstopedSellerCropperActivity;
 import com.tokopedia.seller.product.common.di.component.ProductComponent;
+import com.tokopedia.seller.product.draft.view.activity.ProductDraftListActivity;
 import com.tokopedia.seller.product.edit.constant.CurrencyTypeDef;
 import com.tokopedia.seller.product.edit.utils.ViewUtils;
 import com.tokopedia.seller.product.edit.view.activity.ProductAddActivity;
 import com.tokopedia.seller.product.edit.view.activity.ProductDuplicateActivity;
 import com.tokopedia.seller.product.edit.view.activity.ProductEditActivity;
+import com.tokopedia.seller.product.edit.view.imagepickerbuilder.AddProductImagePickerBuilder;
 import com.tokopedia.seller.product.manage.constant.CashbackOption;
 import com.tokopedia.seller.product.manage.constant.CatalogProductOption;
 import com.tokopedia.seller.product.manage.constant.ConditionProductOption;
@@ -93,20 +94,21 @@ import java.util.List;
 import javax.inject.Inject;
 
 import permissions.dispatcher.NeedsPermission;
+import permissions.dispatcher.RuntimePermissions;
 
 import static com.tokopedia.core.newgallery.GalleryActivity.INSTAGRAM_SELECT_REQUEST_CODE;
+import static com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity.PICKER_RESULT_PATHS;
 
 /**
  * Created by zulfikarrahman on 9/22/17.
  */
 
+@RuntimePermissions
 public class ProductManageFragment extends BaseSearchListFragment<ProductManagePresenter, ProductManageViewModel>
         implements ProductManageView, ProductManageListAdapter.ClickOptionCallback, BaseMultipleCheckListAdapter.CheckedCallback<ProductManageViewModel> {
 
-    private static final int MAX_NUMBER_IMAGE_SELECTED_FROM_GALLERY = 5;
-    private static final int MAX_NUMBER_IMAGE_SELECTED_FROM_CAMERA = -1;
-    private static final int DEFAULT_IMAGE_GALLERY_POSITION = 0;
     public static final String ERROR_CODE_LIMIT_CASHBACK = "422";
+    public static final int REQUEST_CODE_ADD_IMAGE = 3859;
 
     @Inject
     ProductManagePresenter productManagePresenter;
@@ -248,18 +250,10 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
     public boolean onOptionsItemSelected(MenuItem item) {
         int itemId = item.getItemId();
         if (itemId == R.id.add_product_menu) {
-            item.getSubMenu().findItem(R.id.label_view_added_from_camera).setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+            item.getSubMenu().findItem(R.id.label_view_add_image).setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
                 @Override
                 public boolean onMenuItemClick(MenuItem item) {
-                    onAddFromCamera();
-                    UnifyTracking.eventProductManageTopNav(item.getTitle().toString());
-                    return true;
-                }
-            });
-            item.getSubMenu().findItem(R.id.label_view_added_from_gallery).setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
-                @Override
-                public boolean onMenuItemClick(MenuItem item) {
-                    onAddFromGallery();
+                    openImagePickerToAddProduct();
                     UnifyTracking.eventProductManageTopNav(item.getTitle().toString());
                     return true;
                 }
@@ -267,7 +261,7 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
             item.getSubMenu().findItem(R.id.label_view_import_from_instagram).setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
                 @Override
                 public boolean onMenuItemClick(MenuItem item) {
-                    importFromInstagram();
+                    ProductManageFragmentPermissionsDispatcher.importFromInstagramWithCheck(ProductManageFragment.this);
                     UnifyTracking.eventProductManageTopNav(item.getTitle().toString());
                     return false;
                 }
@@ -279,22 +273,23 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
         return super.onOptionsItemSelected(item);
     }
 
-    @NeedsPermission(Manifest.permission.READ_EXTERNAL_STORAGE)
-    public void onAddFromGallery() {
-        GalleryCropWatermarkActivity.moveToImageGalleryCamera(getActivity(), this, DEFAULT_IMAGE_GALLERY_POSITION,
-                false, MAX_NUMBER_IMAGE_SELECTED_FROM_GALLERY, true);
+    private void openImagePickerToAddProduct(){
+        Intent intent = AddProductImagePickerBuilder.createPickerIntentPrimary(getContext(), null);
+        startActivityForResult(intent, REQUEST_CODE_ADD_IMAGE);
     }
 
-    @NeedsPermission({Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE})
-    public void onAddFromCamera() {
-        GalleryCropWatermarkActivity.moveToImageGalleryCamera(getActivity(), this, DEFAULT_IMAGE_GALLERY_POSITION,
-                true, MAX_NUMBER_IMAGE_SELECTED_FROM_CAMERA, true);
-    }
-
+    @NeedsPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)
     public void importFromInstagram() {
-        InstopedSellerCropWatermarkActivity.startInstopedActivityForResult(getContext(), ProductManageFragment.this,
+        UnifyTracking.eventClickInstoped();
+        InstopedSellerCropperActivity.startInstopedActivityForResult(getContext(), ProductManageFragment.this,
                 INSTAGRAM_SELECT_REQUEST_CODE, ProductManageSellerFragment.MAX_INSTAGRAM_SELECT);
         UnifyTracking.eventClickInstoped();
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        ProductManageFragmentPermissionsDispatcher.onRequestPermissionsResult(ProductManageFragment.this, requestCode, grantResults);
     }
 
     @NonNull
@@ -346,8 +341,21 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent intent) {
         switch (requestCode) {
-            case ImageGallery.TOKOPEDIA_GALLERY:
-                onActivityResultFromGallery(intent);
+            case REQUEST_CODE_ADD_IMAGE:
+                if (resultCode == Activity.RESULT_OK &&
+                        intent != null) {
+                    ArrayList<String> imageUrlOrPathList = intent.getStringArrayListExtra(PICKER_RESULT_PATHS);
+                    if (imageUrlOrPathList != null && imageUrlOrPathList.size() > 0) {
+                        ProductAddActivity.start(getActivity(), imageUrlOrPathList);
+                    }
+                }
+                break;
+            case INSTAGRAM_SELECT_REQUEST_CODE:
+                ArrayList<String> imageUrls = intent.getStringArrayListExtra(GalleryActivity.IMAGE_URLS);
+                ArrayList<String> imageDescList = intent.getStringArrayListExtra(InstopedSellerActivity.EXTRA_IMAGE_DESC_LIST);
+                if (imageUrls != null) {
+                    ProductDraftListActivity.startInstagramSaveBulkFromLocal(getContext(), imageUrls, imageDescList);
+                }
                 break;
             case ProductManageConstant.REQUEST_CODE_FILTER:
                 if (resultCode == Activity.RESULT_OK) {
@@ -404,24 +412,6 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
     protected void resetPageAndRefresh() {
         resetPageAndSearch();
         swipeToRefresh.setRefreshing(true);
-    }
-
-    private void onActivityResultFromGallery(Intent intent) {
-        if (intent == null) {
-            return;
-        }
-        int position = intent.getIntExtra(GalleryCropActivity.ADD_PRODUCT_IMAGE_LOCATION, GalleryCropActivity.ADD_PRODUCT_IMAGE_LOCATION_DEFAULT);
-        String imageUrl = intent.getStringExtra(GalleryCropActivity.IMAGE_URL);
-        if (!TextUtils.isEmpty(imageUrl)) {
-            ArrayList<String> imageUrls = new ArrayList<>();
-            imageUrls.add(imageUrl);
-            ProductAddActivity.start(getActivity(), imageUrls);
-        } else {
-            ArrayList<String> imageUrls = intent.getStringArrayListExtra(GalleryCropActivity.IMAGE_URLS);
-            if (imageUrls != null) {
-                ProductAddActivity.start(getActivity(), imageUrls);
-            }
-        }
     }
 
     @Override

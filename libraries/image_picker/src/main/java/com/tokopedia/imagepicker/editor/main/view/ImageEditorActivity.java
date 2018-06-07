@@ -1,12 +1,17 @@
 package com.tokopedia.imagepicker.editor.main.view;
 
+import android.Manifest;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AlertDialog;
@@ -20,6 +25,8 @@ import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.imagepicker.R;
 import com.tokopedia.imagepicker.common.exception.FileSizeAboveMaximumException;
+import com.tokopedia.imagepicker.picker.main.builder.ImagePickerEditorBuilder;
+import com.tokopedia.imagepicker.picker.main.builder.ImagePickerTabTypeDef;
 import com.tokopedia.imagepicker.picker.main.view.ImagePickerPresenter;
 import com.tokopedia.imagepicker.common.util.ImageUtils;
 import com.tokopedia.imagepicker.common.widget.NonSwipeableViewPager;
@@ -66,6 +73,7 @@ public class ImageEditorActivity extends BaseSimpleActivity implements ImageEdit
     public static final String RESULT_PREVIOUS_IMAGE = "ori_image";
 
     public static final int MAX_HISTORY_PER_IMAGE = 5;
+    private static final int REQUEST_STORAGE_PERMISSIONS = 5109;
 
     private ArrayList<String> extraImageUrls;
     private int minResolution;
@@ -113,6 +121,7 @@ public class ImageEditorActivity extends BaseSimpleActivity implements ImageEdit
 
     //to give flag if the image is editted or not, in case the caller need it.
     private ArrayList<Boolean> isEdittedList;
+    private boolean isPermissionGotDenied;
 
     public static Intent getIntent(Context context, ArrayList<String> imageUrls, int minResolution,
                                    @ImageEditActionTypeDef int[] imageEditActionType,
@@ -778,6 +787,40 @@ public class ImageEditorActivity extends BaseSimpleActivity implements ImageEdit
     @Override
     protected void onResume() {
         super.onResume();
+        if (isPermissionGotDenied) {
+            finish();
+            return;
+        }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+            String[] permissions = new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE};
+            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                    != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(this, permissions, REQUEST_STORAGE_PERMISSIONS);
+            } else {
+                onResumeAfterCheckPermission();
+            }
+        } else { // under jellybean, no need to check runtime permission
+            onResumeAfterCheckPermission();
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        int result = grantResults[0];
+        if (result == PackageManager.PERMISSION_DENIED) {
+            isPermissionGotDenied = true;
+            if (!ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+                //Never ask again selected, or device policy prohibits the app from having that permission.
+                Toast.makeText(getContext(), getString(R.string.permission_enabled_needed), Toast.LENGTH_LONG).show();
+            }
+        } else {
+            isPermissionGotDenied = false;
+            onResumeAfterCheckPermission();
+        }
+    }
+
+    private void onResumeAfterCheckPermission() {
         // download network image url if needed
         if (edittedImagePaths == null || edittedImagePaths.size() == 0) {
             boolean hasNetworkImage = false;

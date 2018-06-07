@@ -24,9 +24,7 @@ public class ProductAddImageEditProductDialogFragment extends DialogFragment {
     private OnImageEditListener mListener;
 
     public interface OnImageEditListener {
-        void clickEditImagePathFromCamera(int position);
-        void clickEditImagePathFromGallery(int position);
-        void clickEditImagePathFromInstagram(int position);
+        void clickChangeImage(int position);
 
         void clickImageEditor(int position);
 
@@ -68,19 +66,15 @@ public class ProductAddImageEditProductDialogFragment extends DialogFragment {
         if (isPrimary) { // primary image and allow delete
             imageMenu = new CharSequence[]{
                     getString(R.string.title_img_delete),
-                    getString(R.string.edit_from_camera_text_description),
-                    getString(R.string.edit_from_gallery_text_description),
-                    getString(R.string.edit_from_instagram_text_description),
-                    getString(R.string.action_editor),
-                    getString(R.string.title_img_desc)};
+                    getString(R.string.change_image),
+                    getString(R.string.action_editor)/*,
+                    getString(R.string.title_img_desc)*/};
         } else {
             imageMenu = new CharSequence[]{
                     getString(R.string.title_img_delete),
-                    getString(R.string.edit_from_camera_text_description),
-                    getString(R.string.edit_from_gallery_text_description),
-                    getString(R.string.edit_from_instagram_text_description),
+                    getString(R.string.change_image),
                     getString(R.string.action_editor),
-                    getString(R.string.title_img_desc),
+                    /*getString(R.string.title_img_desc),*/
                     getString(R.string.title_img_default)};
         }
         builder.setItems(imageMenu, getImageAddProductListener());
@@ -95,12 +89,8 @@ public class ProductAddImageEditProductDialogFragment extends DialogFragment {
                     CharSequence stringClicked = imageMenu[which];
                     if (stringClicked.equals(getString(R.string.title_img_delete))) {
                         mListener.clickRemoveImage(position);
-                    } else if (stringClicked.equals(getString(R.string.edit_from_camera_text_description))) {
-                        mListener.clickEditImagePathFromCamera(position);
-                    } else if (stringClicked.equals(getString(R.string.edit_from_gallery_text_description))) {
-                        mListener.clickEditImagePathFromGallery(position);
-                    } else if (stringClicked.equals(getString(R.string.edit_from_instagram_text_description))) {
-                        mListener.clickEditImagePathFromInstagram(position);
+                    } else if (stringClicked.equals(getString(R.string.change_image))) {
+                        mListener.clickChangeImage(position);
                     } else if (stringClicked.equals(getString(R.string.action_editor))) {
                         mListener.clickImageEditor(position);
                     } else if (stringClicked.equals(getString(R.string.title_img_desc))) {
