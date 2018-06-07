@@ -228,15 +228,14 @@ public class FragmentGeneralWebView extends Fragment implements BaseWebViewClien
     }
 
     private boolean overrideUrl(String url) {
-        if (url == null || Uri.parse(url) == null || Uri.parse(url).getHost() == null) {
+        if (url == null) {
             return false;
         }
 
         Uri uri = null;
         try {
             Uri.parse(url);
-        } catch (Exception ex) {
-        }
+        } catch (Exception ex) {}
 
         if (uri == null || uri.getHost() == null) {
             return false;
