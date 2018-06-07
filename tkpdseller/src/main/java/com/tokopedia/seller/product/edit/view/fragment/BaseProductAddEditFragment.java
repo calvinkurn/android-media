@@ -283,7 +283,11 @@ public abstract class BaseProductAddEditFragment<T extends ProductAddPresenter>
     @Override
     public void onAddImagePickerClicked(final int imagePosition) {
         ImagePickerBuilder builder = getImagePickerBuilder();
-        Intent intent = ImagePickerAddProductActivity.getIntent(getContext(), builder, "1");
+        String catalogId = "";
+        if(productInfoViewHolder.getCatalogId() > 0){
+            catalogId = String.valueOf(productInfoViewHolder.getCatalogId());
+        }
+        Intent intent = ImagePickerAddProductActivity.getIntent(getContext(), builder, catalogId);
         startActivityForResult(intent, REQUEST_CODE_ADD_PRODUCT_IMAGE);
     }
 
@@ -298,17 +302,6 @@ public abstract class BaseProductAddEditFragment<T extends ProductAddPresenter>
                 0,
                 ImagesSelectView.DEFAULT_LIMIT));
     }
-
-//    public void uploadI mage(View view) {
-//        ImagePickerBuilder builder = new ImagePickerBuilder(getString(R.string.choose_shop_picture),
-//                new int[]{TYPE_GALLERY, TYPE_CAMERA,}, GalleryType.IMAGE_ONLY, DEFAULT_MAX_IMAGE_SIZE_IN_KB,
-//                DEFAULT_MIN_RESOLUTION, 1, 1, true,
-//                new ImagePickerEditorBuilder(new int[]{ACTION_BRIGHTNESS, ACTION_CONTRAST, ACTION_CROP, ACTION_ROTATE},
-//                        false)
-//                ,null);
-//        Intent intent = ImagePickerAddProductActivity.getIntent(getContext(), builder, "1");
-//        startActivityForResult(intent, REQUEST_CODE_SHOP_IMAGE);
-//    }
 
     @Override
     public void onImagePickerItemClicked(int position, boolean isPrimary) {
