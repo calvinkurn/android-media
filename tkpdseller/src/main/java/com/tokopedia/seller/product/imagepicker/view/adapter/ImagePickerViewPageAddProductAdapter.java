@@ -34,13 +34,13 @@ public class ImagePickerViewPageAddProductAdapter extends ImagePickerViewPagerAd
     @Override
     public CharSequence getPageTitle(int position) {
         switch (position) {
-            case 1:
+            case 0:
                 return context.getString(R.string.catalog);
-            case 2:
+            case 1:
                 return context.getString(R.string.gallery);
-            case 3:
+            case 2:
                 return context.getString(R.string.camera);
-            case 4:
+            case 3:
                 return context.getString(R.string.instagram);
             default:
                 return context.getString(R.string.gallery);
@@ -50,13 +50,13 @@ public class ImagePickerViewPageAddProductAdapter extends ImagePickerViewPagerAd
     @Override
     public Fragment getItem(int position) {
         switch (position) {
-            case 1:
+            case 0:
                 return ImagePickerCatalogFragment.createInstance(catalogId);
-            case 2:
+            case 1:
                 return createGalleryFragment();
-            case 3:
+            case 2:
                 return createCameraFragment();
-            case 4:
+            case 3:
                 return createInstagramFragment();
             default:
                 return new Fragment();
