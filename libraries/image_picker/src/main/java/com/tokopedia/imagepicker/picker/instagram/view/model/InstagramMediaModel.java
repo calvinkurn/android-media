@@ -16,13 +16,21 @@ public class InstagramMediaModel implements Visitable<ImageInstagramAdapterTypeF
     private int standardWidth;
     private int standardHeight;
 
+    private String caption;
+
     public InstagramMediaModel(String id, String thumbnail, String imageStandardResolutionUrl,
-                               int standardWidth, int standardHeight) {
+                               int standardWidth, int standardHeight,
+                               String caption) {
         this.id = id;
         this.thumbnail = thumbnail;
         this.imageStandardResolutionUrl = imageStandardResolutionUrl;
         this.standardWidth = standardWidth;
         this.standardHeight = standardHeight;
+        this.caption = caption;
+    }
+
+    public String getCaption() {
+        return caption;
     }
 
     public String getId() {

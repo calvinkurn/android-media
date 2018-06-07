@@ -67,14 +67,14 @@ public class ProductAddImageEditProductDialogFragment extends DialogFragment {
             imageMenu = new CharSequence[]{
                     getString(R.string.title_img_delete),
                     getString(R.string.change_image),
-                    getString(R.string.action_editor),
-                    getString(R.string.title_img_desc)};
+                    getString(R.string.action_editor)/*,
+                    getString(R.string.title_img_desc)*/};
         } else {
             imageMenu = new CharSequence[]{
                     getString(R.string.title_img_delete),
                     getString(R.string.change_image),
                     getString(R.string.action_editor),
-                    getString(R.string.title_img_desc),
+                    /*getString(R.string.title_img_desc),*/
                     getString(R.string.title_img_default)};
         }
         builder.setItems(imageMenu, getImageAddProductListener());
