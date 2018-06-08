@@ -30,6 +30,7 @@ import com.tokopedia.flight.search.view.fragment.FlightSearchFilterFragment;
 import com.tokopedia.flight.search.view.fragment.flightinterface.OnFlightBaseFilterListener;
 import com.tokopedia.flight.search.view.model.filter.FlightFilterModel;
 import com.tokopedia.flight.search.view.model.resultstatistics.FlightSearchStatisticModel;
+import android.support.graphics.drawable.VectorDrawableCompat;
 
 import java.util.List;
 
@@ -228,7 +229,7 @@ public class FlightSearchFilterActivity extends BaseSimpleActivity
 
     private void updateToolbarBackIcon() {
         if (getSupportActionBar() != null && isShowCloseButton()) {
-            getSupportActionBar().setHomeAsUpIndicator(ContextCompat.getDrawable(this, com.tokopedia.abstraction.R.drawable.ic_close_default));
+            getSupportActionBar().setHomeAsUpIndicator(VectorDrawableCompat.create(getResources(), com.tokopedia.abstraction.R.drawable.ic_close_default, null));
         } else {
             getSupportActionBar().setHomeAsUpIndicator(null);
         }

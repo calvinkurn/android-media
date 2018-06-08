@@ -171,7 +171,7 @@ public class DigitalsViewHolder extends AbstractViewHolder<DigitalsViewModel> im
 
             @Override
             public void onTabUnselected(TabLayout.Tab tab) {
-                View focus = ((Activity) context).getCurrentFocus();
+                View focus = com.tokopedia.abstraction.common.utils.view.CommonUtils.getActivity(context).getCurrentFocus();
                 if (focus != null) {
                     hideKeyboard(focus);
                 }
@@ -179,7 +179,7 @@ public class DigitalsViewHolder extends AbstractViewHolder<DigitalsViewModel> im
 
             @Override
             public void onTabReselected(TabLayout.Tab tab) {
-                View focus = ((Activity) context).getCurrentFocus();
+                View focus = com.tokopedia.abstraction.common.utils.view.CommonUtils.getActivity(context).getCurrentFocus();
                 if (focus != null) {
                     hideKeyboard(focus);
                 }
@@ -236,7 +236,9 @@ public class DigitalsViewHolder extends AbstractViewHolder<DigitalsViewModel> im
     }
 
     private void hideKeyboard(View v) {
-        CommonUtils.hideKeyboard((Activity) context, v);
+        CommonUtils.hideKeyboard(
+                com.tokopedia.abstraction.common.utils.view.CommonUtils.getActivity(context),
+                v);
     }
 
 }
