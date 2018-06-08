@@ -26,6 +26,7 @@ import com.tokopedia.transaction.bcaoneklik.model.creditcard.authenticator.Authe
 import com.tokopedia.transaction.bcaoneklik.presenter.CreditCardAuthenticationPresenterImpl;
 
 import javax.inject.Inject;
+import android.support.graphics.drawable.VectorDrawableCompat;
 
 /**
  * Created by kris on 10/10/17. Tokopedia
@@ -136,8 +137,7 @@ public class CreditCardAuthenticationActivity extends TActivity
             toolbar.setBackgroundResource(com.tokopedia.core.R.drawable.bg_white_toolbar_drop_shadow);
         }
 
-        Drawable drawable = ContextCompat.getDrawable(
-                this, com.tokopedia.core.R.drawable.ic_toolbar_overflow_level_two_black);
+        Drawable drawable = VectorDrawableCompat.create(getResources(), com.tokopedia.core.R.drawable.ic_toolbar_overflow_level_two_black, null);
         drawable.setBounds(5, 5, 5, 5);
         toolbar.setOverflowIcon(drawable);
 

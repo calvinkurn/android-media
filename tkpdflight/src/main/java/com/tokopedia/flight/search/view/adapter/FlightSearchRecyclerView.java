@@ -8,6 +8,7 @@ import android.util.AttributeSet;
 import com.tokopedia.abstraction.base.view.recyclerview.VerticalRecyclerView;
 import com.tokopedia.abstraction.base.view.widget.DividerItemDecoration;
 import com.tokopedia.flight.R;
+import android.support.graphics.drawable.VectorDrawableCompat;
 
 /**
  * Created by zulfikarrahman on 11/14/17.
@@ -28,6 +29,6 @@ public class FlightSearchRecyclerView extends VerticalRecyclerView {
 
     @Override
     protected ItemDecoration getItemDecoration() {
-        return new DividerItemDecoration(getContext(), ContextCompat.getDrawable(getContext(), R.drawable.line_divider_flight_search));
+        return new DividerItemDecoration(getContext(), VectorDrawableCompat.create(getResources(), R.drawable.line_divider_flight_search, null));
     }
 }

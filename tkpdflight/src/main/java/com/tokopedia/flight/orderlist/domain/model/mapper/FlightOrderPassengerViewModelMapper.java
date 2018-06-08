@@ -55,8 +55,8 @@ public class FlightOrderPassengerViewModelMapper {
 
     public List<FlightOrderPassengerViewModel> transform(List<PassengerEntity> entities, List<CancellationEntity> cancellations) {
         List<FlightOrderPassengerViewModel> viewModels = new ArrayList<>();
-        FlightOrderPassengerViewModel viewModel;
         for (PassengerEntity entity : entities) {
+            FlightOrderPassengerViewModel viewModel;
             viewModel = transform(entity);
             if (viewModel != null) {
                 viewModel.setStatus(getPassengerStatus(entity.getId(), cancellations));
@@ -84,5 +84,19 @@ public class FlightOrderPassengerViewModelMapper {
             }
         }
         return status;
+    }
+
+    public int getCancelledPassengerCount(List<CancellationEntity> cancellations) {
+        ArrayList<String> cancelledPassengers = new ArrayList<>();
+
+        for (CancellationEntity item : cancellations) {
+            for (CancellationDetailsAttribute attribute : item.getDetails()) {
+                if (!cancelledPassengers.contains(attribute.getPassengerId() + item.getRefundId())) {
+                    cancelledPassengers.add(attribute.getPassengerId() + item.getRefundId());
+                }
+            }
+        }
+
+        return cancelledPassengers.size();
     }
 }

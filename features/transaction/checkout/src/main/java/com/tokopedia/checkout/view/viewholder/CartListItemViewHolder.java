@@ -32,6 +32,7 @@ import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
+import android.support.graphics.drawable.VectorDrawableCompat;
 
 /**
  * @author anggaprasetiyo on 13/03/18.
@@ -368,19 +369,19 @@ public class CartListItemViewHolder extends RecyclerView.ViewHolder {
         if (qty <= QTY_MIN || qty <= cartItemHolderData.getCartItemData().getOriginData().getMinimalQtyOrder()) {
             btnQtyMinus.setEnabled(false);
             btnQtyPlus.setEnabled(true);
-            btnQtyMinus.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.bg_button_counter_minus_disabled));
-            btnQtyPlus.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.bg_button_counter_plus));
+            btnQtyMinus.setImageDrawable(VectorDrawableCompat.create(context.getResources(), R.drawable.bg_button_counter_minus_disabled, null));
+            btnQtyPlus.setImageDrawable(VectorDrawableCompat.create(context.getResources(), R.drawable.bg_button_counter_plus, null));
         } else if (qty >= QTY_MAX || (cartItemHolderData.getCartItemData().getOriginData().getInvenageValue() != 0 &&
                 qty >= cartItemHolderData.getCartItemData().getOriginData().getInvenageValue())) {
             btnQtyPlus.setEnabled(false);
             btnQtyMinus.setEnabled(true);
-            btnQtyPlus.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.bg_button_counter_plus_disabled));
-            btnQtyMinus.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.bg_button_counter_minus));
+            btnQtyPlus.setImageDrawable(VectorDrawableCompat.create(context.getResources(), R.drawable.bg_button_counter_plus_disabled, null));
+            btnQtyMinus.setImageDrawable(VectorDrawableCompat.create(context.getResources(), R.drawable.bg_button_counter_minus, null));
         } else {
             btnQtyPlus.setEnabled(true);
             btnQtyMinus.setEnabled(true);
-            btnQtyPlus.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.bg_button_counter_plus));
-            btnQtyMinus.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.bg_button_counter_minus));
+            btnQtyPlus.setImageDrawable(VectorDrawableCompat.create(context.getResources(), R.drawable.bg_button_counter_plus, null));
+            btnQtyMinus.setImageDrawable(VectorDrawableCompat.create(context.getResources(), R.drawable.bg_button_counter_minus, null));
         }
     }
 
