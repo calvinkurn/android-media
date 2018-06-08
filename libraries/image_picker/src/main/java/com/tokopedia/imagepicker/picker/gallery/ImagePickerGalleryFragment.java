@@ -221,6 +221,9 @@ public class ImagePickerGalleryFragment extends TkpdBaseV4Fragment
             new Handler().post(new Runnable() {
                 @Override
                 public void run() {
+                    if (cursor.isClosed()) {
+                        return;
+                    }
                     if (selectedAlbumPosition > 0) {
                         cursor.moveToPosition(selectedAlbumPosition);
                     } else {
