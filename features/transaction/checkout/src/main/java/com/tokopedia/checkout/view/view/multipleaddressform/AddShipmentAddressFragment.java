@@ -273,7 +273,9 @@ public class AddShipmentAddressFragment extends BaseCheckoutFragment {
         ImageView productImage = view.findViewById(R.id.product_image);
         ImageHandler.LoadImage(productImage, productData.getProductImageUrl());
         TextView productName = view.findViewById(R.id.product_name);
+        TextView productPrice = view.findViewById(R.id.product_price);
         productName.setText(productData.getProductName());
+        productPrice.setText(productData.getProductPrice());
     }
 
     private void setProductQuantityView(View view, MultipleAddressItemData itemData) {
@@ -309,7 +311,7 @@ public class AddShipmentAddressFragment extends BaseCheckoutFragment {
         notesLayout = view.findViewById(R.id.notes_layout);
         notesEditText = view.findViewById(R.id.notes_edit_text);
         notesEditText.addTextChangedListener(notesTextWatcher(itemData));
-        if (itemData.getProductNotes().isEmpty()) {
+        if (TextUtils.isEmpty(itemData.getProductNotes())) {
             emptyNotesLayout.setVisibility(View.VISIBLE);
             insertNotesButton.setOnClickListener(
                     onInsertNotesButtonClickedListener(emptyNotesLayout, notesLayout)

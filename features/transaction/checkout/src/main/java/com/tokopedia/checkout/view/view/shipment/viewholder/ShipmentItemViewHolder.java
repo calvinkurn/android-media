@@ -439,6 +439,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder {
 
             if (shipmentCartItemModel.isStateDropshipperHasError()) {
                 textInputLayoutShipperName.setError(textInputLayoutShipperName.getContext().getString(R.string.message_error_dropshipper_name_empty));
+                etShipperName.setText(shipmentCartItemModel.getSelectedShipmentDetailData().getDropshipperName());
                 mActionListener.onCartDataDisableToCheckout();
             } else {
                 textInputLayoutShipperName.setErrorEnabled(false);
@@ -474,6 +475,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder {
             Pattern pattern = Pattern.compile(PHONE_NUMBER_REGEX_PATTERN);
             if (shipmentCartItemModel.isStateDropshipperHasError()) {
                 textInputLayoutShipperPhone.setError(textInputLayoutShipperName.getContext().getString(R.string.message_error_dropshipper_phone_empty));
+                etShipperPhone.setText(shipmentCartItemModel.getSelectedShipmentDetailData().getDropshipperPhone());
                 mActionListener.onCartDataDisableToCheckout();
             } else {
                 textInputLayoutShipperPhone.setErrorEnabled(false);
