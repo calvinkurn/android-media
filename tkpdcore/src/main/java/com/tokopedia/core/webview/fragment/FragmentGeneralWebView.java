@@ -234,7 +234,7 @@ public class FragmentGeneralWebView extends Fragment implements BaseWebViewClien
 
         Uri uri = null;
         try {
-            Uri.parse(url);
+            uri = Uri.parse(url);
         } catch (Exception ex) {}
 
         if (uri == null || uri.getHost() == null) {
