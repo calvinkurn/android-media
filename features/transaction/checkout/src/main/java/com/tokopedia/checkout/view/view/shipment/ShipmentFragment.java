@@ -60,7 +60,7 @@ import javax.inject.Inject;
 
 /**
  * @author Irfan Khoirul on 23/04/18.
- *         Originaly authored by Aghny, Angga, Kris
+ * Originaly authored by Aghny, Angga, Kris
  */
 
 public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentContract.View,
@@ -550,7 +550,6 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         Intent intent = CartAddressChoiceActivity.createInstance(getActivity(),
                 shipmentPresenter.getRecipientAddressModel(),
                 CartAddressChoiceActivity.TYPE_REQUEST_SELECT_ADDRESS_FROM_SHORT_LIST);
-
         startActivityForResult(intent, CartAddressChoiceActivity.REQUEST_CODE);
     }
 

@@ -45,7 +45,7 @@ import static com.tokopedia.core.manage.people.address.ManageAddressConstant.EXT
 
 /**
  * @author Irfan Khoirul on 05/02/18
- *         Aghny A. Putra on 27/02/18
+ * Aghny A. Putra on 27/02/18
  */
 
 public class CartAddressChoiceFragment extends BaseCheckoutFragment
@@ -307,8 +307,8 @@ public class CartAddressChoiceFragment extends BaseCheckoutFragment
     }
 
     private void onSendToMultipleAddress() {
-        mCartAddressChoiceListener.finishSendResultActionToMultipleAddressForm();
         checkoutAnalyticsChangeAddress.eventClickChangeAddressClickKirimKeBeberapaAlamatFromGantiAlamat();
+        mCartAddressChoiceListener.finishSendResultActionToMultipleAddressForm();
     }
 
     private void onSendToCurrentAddress() {
