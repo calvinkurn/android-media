@@ -23,7 +23,7 @@ public class GraphqlClient {
 
     }
 
-    public static void init(@NonNull Context context) {
+    public synchronized static void init(@NonNull Context context) {
         if (sRetrofit == null) {
             UserSession userSession = new UserSession(context.getApplicationContext());
             sRetrofit = CommonNetwork.createRetrofit(context.getApplicationContext(),
@@ -36,7 +36,7 @@ public class GraphqlClient {
         }
     }
 
-    public static Retrofit getRetrofit() {
+    private static Retrofit getRetrofit() {
         if (sRetrofit == null) {
             throw new RuntimeException("Please call init() before using graphql library");
         }
@@ -44,9 +44,9 @@ public class GraphqlClient {
         return sRetrofit;
     }
 
-    public static GraphqlApi getApiInterface() {
+    private static GraphqlApi getApiInterface() {
         if (sGraphqlApi == null) {
-            return getRetrofit().create(GraphqlApi.class);
+            sGraphqlApi = getRetrofit().create(GraphqlApi.class);
         }
         return sGraphqlApi;
     }
