@@ -1,11 +1,13 @@
 package com.tokopedia.feedplus.data.mapper;
 
 import com.google.gson.Gson;
+import com.tokopedia.abstraction.common.data.model.response.GraphqlResponse;
 import com.tokopedia.feedplus.data.pojo.ContentFeedKol;
 import com.tokopedia.feedplus.data.pojo.Feed;
 import com.tokopedia.feedplus.data.pojo.FeedContent;
 import com.tokopedia.feedplus.data.pojo.FeedKolRecommendedType;
 import com.tokopedia.feedplus.data.pojo.FeedKolType;
+import com.tokopedia.feedplus.data.pojo.FeedQuery;
 import com.tokopedia.feedplus.data.pojo.FeedSource;
 import com.tokopedia.feedplus.data.pojo.Feeds;
 import com.tokopedia.feedplus.data.pojo.FeedsFavoriteCta;
@@ -16,22 +18,18 @@ import com.tokopedia.feedplus.data.pojo.ShopDetail;
 import com.tokopedia.feedplus.data.pojo.TagsFeedKol;
 import com.tokopedia.feedplus.data.pojo.TopAd;
 import com.tokopedia.feedplus.data.pojo.Wholesale;
-import com.tokopedia.feedplus.domain.model.TopPicksDomain;
 import com.tokopedia.feedplus.domain.model.feed.ContentFeedDomain;
 import com.tokopedia.feedplus.domain.model.feed.DataFeedDomain;
 import com.tokopedia.feedplus.domain.model.feed.FavoriteCtaDomain;
 import com.tokopedia.feedplus.domain.model.feed.FeedDomain;
-import com.tokopedia.feedplus.domain.model.feed.InspirationDomain;
 import com.tokopedia.feedplus.domain.model.feed.KolCtaDomain;
 import com.tokopedia.feedplus.domain.model.feed.KolPostDomain;
 import com.tokopedia.feedplus.domain.model.feed.KolRecommendationDomain;
 import com.tokopedia.feedplus.domain.model.feed.KolRecommendationItemDomain;
 import com.tokopedia.feedplus.domain.model.feed.ProductFeedDomain;
-import com.tokopedia.feedplus.domain.model.feed.PromotionFeedDomain;
 import com.tokopedia.feedplus.domain.model.feed.ShopFeedDomain;
 import com.tokopedia.feedplus.domain.model.feed.SourceFeedDomain;
 import com.tokopedia.feedplus.domain.model.feed.WholesaleDomain;
-import com.tokopedia.feedplus.domain.model.officialstore.OfficialStoreDomain;
 import com.tokopedia.topads.sdk.domain.model.Data;
 
 import org.json.JSONException;
@@ -42,21 +40,46 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import retrofit2.Response;
 import rx.functions.Func1;
 
 /**
  * @author ricoharisin .
  */
 
-public class FeedListMapper implements Func1<Feeds, FeedDomain> {
+public class FeedListMapper implements Func1<Response<GraphqlResponse<FeedQuery>>, FeedDomain> {
+
+    private static final String ERROR_SERVER = "ERROR_SERVER";
+    private static final String ERROR_NETWORK = "ERROR_NETWORK";
+    private static final String ERROR_EMPTY_RESPONSE = "ERROR_EMPTY_RESPONSE";
 
     @Inject
     public FeedListMapper() {
     }
 
     @Override
-    public FeedDomain call(Feeds data) {
+    public FeedDomain call(Response<GraphqlResponse<FeedQuery>> feedQueryResponse) {
+        Feeds data = getDataOrError(feedQueryResponse);
         return convertToDataFeedDomain(data);
+    }
+
+    private Feeds getDataOrError(Response<GraphqlResponse<FeedQuery>> feedQueryResponse) {
+        if (feedQueryResponse != null
+                && feedQueryResponse.body() != null
+                && feedQueryResponse.body().getData() != null) {
+            if (feedQueryResponse.isSuccessful()) {
+                FeedQuery feedQuery = feedQueryResponse.body().getData();
+                if (feedQuery.getFeed() != null) {
+                    return feedQuery.getFeed();
+                } else {
+                    throw new RuntimeException(ERROR_SERVER);
+                }
+            } else {
+                throw new RuntimeException(ERROR_NETWORK);
+            }
+        } else {
+            throw new RuntimeException(ERROR_EMPTY_RESPONSE);
+        }
     }
 
     private ProductFeedDomain createProductFeedDomain(String cursor,
@@ -117,10 +140,6 @@ public class FeedListMapper implements Func1<Feeds, FeedDomain> {
 
     private ContentFeedDomain createContentFeedDomain(FeedContent content,
                             List<ProductFeedDomain> productFeedDomains,
-                            List<PromotionFeedDomain> promotionFeedDomains,
-                            List<OfficialStoreDomain> officialStoreDomains,
-                            List<TopPicksDomain> topPicksDomains,
-                            List<InspirationDomain> inspirationDomains,
                             KolPostDomain kolPostDomain,
                             KolRecommendationDomain kolRecommendations,
                             FavoriteCtaDomain favoriteCtaDomain,
@@ -135,10 +154,10 @@ public class FeedListMapper implements Func1<Feeds, FeedDomain> {
                 content.getType(),
                 content.getTotal_product() != null ? content.getTotal_product() : 0,
                 productFeedDomains,
-                promotionFeedDomains,
-                officialStoreDomains,
-                topPicksDomains,
-                inspirationDomains,
+                null,
+                null,
+                null,
+                null,
                 topadsData,
                 kolPostDomain,
                 kolRecommendations,
@@ -193,10 +212,6 @@ public class FeedListMapper implements Func1<Feeds, FeedDomain> {
                 ContentFeedDomain contentFeedDomain = createContentFeedDomain(
                         datum.getContent(),
                         productFeedDomains,
-                        null,
-                        null,
-                        null,
-                        null,
                         kolPostDomain,
                         kolRecommendations,
                         favoriteCta,

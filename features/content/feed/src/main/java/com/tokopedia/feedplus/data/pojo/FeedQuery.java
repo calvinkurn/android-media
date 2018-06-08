@@ -11,4 +11,8 @@ public class FeedQuery {
     @SerializedName("feed")
     @Expose
     private Feeds feed;
+
+    public Feeds getFeed() {
+        return feed;
+    }
 }

@@ -1,8 +1,8 @@
-package com.tokopedia.feedplus.data;
+package com.tokopedia.feedplus.data.api;
 
 import com.tokopedia.abstraction.common.data.model.request.GraphqlRequest;
 import com.tokopedia.abstraction.common.data.model.response.GraphqlResponse;
-import com.tokopedia.kol.feature.post.data.pojo.GetUserKolPostResponse;
+import com.tokopedia.feedplus.data.pojo.FeedQuery;
 
 import retrofit2.Response;
 import retrofit2.http.Body;
@@ -17,6 +17,6 @@ import rx.Observable;
 public interface FeedApi {
     @POST("./")
     @Headers({"Content-Type: application/json"})
-    Observable<Response<GraphqlResponse<GetUserKolPostResponse>>>
-    getProfileKolData(@Body GraphqlRequest requestBody);
+    Observable<Response<GraphqlResponse<FeedQuery>>>
+    getFeedData(@Body GraphqlRequest requestBody);
 }
