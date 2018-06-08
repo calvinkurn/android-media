@@ -233,12 +233,6 @@ public abstract class TopAdsKeywordAdListFragment extends TopAdsBaseListFragment
     }
 
     @Override
-    public void onAdClicked(KeywordAd ad) {
-        presenter.saveSourceTagging(getSourceTagging());
-        startActivityForResult(TopAdsKeywordDetailActivity.createInstance(getActivity(), ad, ad.getId()), REQUEST_CODE_AD_CHANGE);
-    }
-
-    @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putParcelable(TopAdsExtraConstant.EXTRA_FILTER_CURRECT_GROUP_SELECTION, groupAd);
