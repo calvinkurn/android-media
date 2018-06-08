@@ -9,6 +9,7 @@ import com.tokopedia.feedplus.view.viewmodel.FavoriteCtaViewModel;
 import com.tokopedia.feedplus.view.viewmodel.RetryModel;
 import com.tokopedia.feedplus.view.viewmodel.blog.BlogViewModel;
 import com.tokopedia.feedplus.view.viewmodel.inspiration.InspirationViewModel;
+import com.tokopedia.feedplus.view.viewmodel.kol.ContentProductViewModel;
 import com.tokopedia.feedplus.view.viewmodel.kol.KolRecommendationViewModel;
 import com.tokopedia.feedplus.view.viewmodel.kol.PollViewModel;
 import com.tokopedia.feedplus.view.viewmodel.kol.ProductCommunicationViewModel;
@@ -61,6 +62,8 @@ public interface FeedPlusTypeFactory {
     int type(FeedTopAdsViewModel feedTopAdsViewModel);
 
     int type(FavoriteCtaViewModel favoriteCtaViewModel);
+
+    int type(ContentProductViewModel contentProductViewModel);
 
     int type(ProductCommunicationViewModel productCommunicationViewModel);
 

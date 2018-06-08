@@ -10,6 +10,7 @@ import com.tokopedia.feedplus.view.adapter.viewholder.blog.ImageBlogViewHolder;
 import com.tokopedia.feedplus.view.adapter.viewholder.blog.VideoBlogViewHolder;
 import com.tokopedia.feedplus.view.adapter.viewholder.favoritecta.FavoriteCtaViewHolder;
 import com.tokopedia.feedplus.view.adapter.viewholder.inspiration.InspirationViewHolder;
+import com.tokopedia.feedplus.view.adapter.viewholder.kol.ContentProductViewHolder;
 import com.tokopedia.feedplus.view.adapter.viewholder.kol.KolRecommendationViewHolder;
 import com.tokopedia.feedplus.view.adapter.viewholder.kol.PollViewHolder;
 import com.tokopedia.feedplus.view.adapter.viewholder.kol.ProductCommunicationViewHolder;
@@ -32,6 +33,7 @@ import com.tokopedia.feedplus.view.viewmodel.FavoriteCtaViewModel;
 import com.tokopedia.feedplus.view.viewmodel.RetryModel;
 import com.tokopedia.feedplus.view.viewmodel.blog.BlogViewModel;
 import com.tokopedia.feedplus.view.viewmodel.inspiration.InspirationViewModel;
+import com.tokopedia.feedplus.view.viewmodel.kol.ContentProductViewModel;
 import com.tokopedia.feedplus.view.viewmodel.kol.KolRecommendationViewModel;
 import com.tokopedia.feedplus.view.viewmodel.kol.PollViewModel;
 import com.tokopedia.feedplus.view.viewmodel.kol.ProductCommunicationViewModel;
@@ -167,6 +169,11 @@ public class FeedPlusTypeFactoryImpl extends BaseAdapterTypeFactory
     }
 
     @Override
+    public int type(ContentProductViewModel contentProductViewModel) {
+        return ContentProductViewHolder.LAYOUT;
+    }
+
+    @Override
     public int type(ProductCommunicationViewModel productCommunicationViewModel) {
         return ProductCommunicationViewHolder.LAYOUT;
     }
@@ -227,6 +234,8 @@ public class FeedPlusTypeFactoryImpl extends BaseAdapterTypeFactory
                     topAdsInfoClickListener);
         else if (type == FavoriteCtaViewHolder.LAYOUT)
             viewHolder = new FavoriteCtaViewHolder(view, viewListener);
+        else if (type == ContentProductViewHolder.LAYOUT)
+            viewHolder = new ContentProductViewHolder(view, viewListener);
         else if (type == ProductCommunicationViewHolder.LAYOUT)
             viewHolder = new ProductCommunicationViewHolder(view, viewListener);
         else if (type == PollViewHolder.LAYOUT)
