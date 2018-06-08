@@ -5,7 +5,7 @@ import android.content.Context;
 import android.graphics.Typeface;
 import android.os.Build;
 import android.support.annotation.Nullable;
-import android.support.graphics.drawable.VectorDrawableCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.AppCompatCheckBox;
 import android.support.v7.widget.AppCompatImageView;
 import android.support.v7.widget.AppCompatTextView;
@@ -155,7 +155,8 @@ public class FlightInsuranceView extends LinearLayout {
         tvHighlight.setText(highlightBenefit.getTitle());
         tvHighlightDetail.setText(highlightBenefit.getDescription());
         ImageHandler.loadImageWithoutPlaceholder(ivHighlight, highlightBenefit.getIcon(),
-                VectorDrawableCompat.create(getResources(), R.drawable.ic_airline_default, getContext().getTheme()));
+                ContextCompat.getDrawable(getContext(), R.drawable.ic_airline_default)
+        );
     }
 
     private void renderMoreBenefit(FlightInsuranceViewModel insuranceViewModel) {

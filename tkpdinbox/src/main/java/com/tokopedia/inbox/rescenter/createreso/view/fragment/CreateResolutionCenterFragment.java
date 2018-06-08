@@ -40,7 +40,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
-import android.support.graphics.drawable.VectorDrawableCompat;
 
 /**
  * Created by yoasfs on 11/08/17.
@@ -249,8 +248,8 @@ public class CreateResolutionCenterFragment extends BaseDaggerFragment implement
 
         if (resultViewModel.problem.size() != 0) {
             ffSolution.setEnabled(true);
-            ivChooseProductProblem.setImageDrawable(VectorDrawableCompat.create(getActivity().getResources(),
-                    R.drawable.ic_complete, null));
+            ivChooseProductProblem.setImageDrawable(ContextCompat.getDrawable(getActivity(),
+                    R.drawable.ic_complete));
             ffChooseProductProblem.setBackground(ContextCompat.getDrawable(getActivity(),
                     R.drawable.bg_layout_enable_with_green));
             ffSolution.setBackground(ContextCompat.getDrawable(getActivity(),
@@ -280,8 +279,8 @@ public class CreateResolutionCenterFragment extends BaseDaggerFragment implement
         }
 
         if (resultViewModel.solution != 0) {
-            ivSolution.setImageDrawable(VectorDrawableCompat.create(context.getResources(),
-                    R.drawable.ic_complete, null));
+            ivSolution.setImageDrawable(ContextCompat.getDrawable(getActivity(),
+                    R.drawable.ic_complete));
             ffSolution.setBackground(ContextCompat.getDrawable(getActivity(),
                     R.drawable.bg_layout_enable_with_green));
             ffUploadProve.setBackground(ContextCompat.getDrawable(getActivity(),
@@ -326,8 +325,8 @@ public class CreateResolutionCenterFragment extends BaseDaggerFragment implement
                     btnCreateResolution.setEnabled(true);
                     btnCreateResolution.setBackground(ContextCompat.getDrawable(getActivity(),
                             R.drawable.bg_button_enable));
-                    ivUploadProve.setImageDrawable(VectorDrawableCompat.create(context.getResources(),
-                            R.drawable.ic_complete, null));
+                    ivUploadProve.setImageDrawable(ContextCompat.getDrawable(getActivity(),
+                            R.drawable.ic_complete));
                     ffUploadProve.setBackground(ContextCompat.getDrawable(getActivity(),
                             R.drawable.bg_layout_enable_with_green));
                     btnCreateResolution.setTextColor(context.getResources().getColor(R.color.white));

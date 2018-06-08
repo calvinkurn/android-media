@@ -31,7 +31,6 @@ import com.tokopedia.discovery.search.view.DiscoverySearchView;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
-import android.support.graphics.drawable.VectorDrawableCompat;
 
 public class IntermediaryActivity extends BasePresenterActivity implements MenuItemCompat.OnActionExpandListener,YoutubeViewHolder.YouTubeThumbnailLoadInProcess{
 
@@ -173,7 +172,7 @@ public class IntermediaryActivity extends BasePresenterActivity implements MenuI
         }else {
             toolbar.setBackgroundResource(com.tokopedia.core.R.drawable.bg_white_toolbar_drop_shadow);
         }
-        Drawable drawable = VectorDrawableCompat.create(getResources(), com.tokopedia.core.R.drawable.ic_toolbar_overflow_level_two_black, null);
+        Drawable drawable = ContextCompat.getDrawable(this, com.tokopedia.core.R.drawable.ic_toolbar_overflow_level_two_black);
         drawable.setBounds(5, 5, 5, 5);
         toolbar.setOverflowIcon(drawable);
 

@@ -30,7 +30,6 @@ import com.tokopedia.seller.base.view.adapter.ItemType;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
-import android.support.graphics.drawable.VectorDrawableCompat;
 
 /**
  * @author vishal.gupta on 20/02/2017.
@@ -335,7 +334,7 @@ public class SellerReputationAdapter extends BaseLinearRecyclerViewAdapter {
             dateUtilHelper.setsDate(emptyListModel.getSetDateHeaderModel().getsDate());
             dateUtilHelper.seteDate(emptyListModel.getSetDateHeaderModel().geteDate());
             if(emptyListModel.isEmptyShop()){
-                imageEmptyReputation.setImageDrawable(VectorDrawableCompat.create(context.getResources(), R.drawable.ic_penalti_reputasi_zero, null));
+                imageEmptyReputation.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_penalti_reputasi_zero));
                 reputationInfo.setText(context.getString(R.string.reputation_history_label_congrats_no_penalty));
                 descReputationInfo.setText(context.getString(R.string.reputation_history_label_improve_selling_get_badge));
             }

@@ -19,7 +19,6 @@ import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.productproblem.Pr
 
 import java.util.ArrayList;
 import java.util.List;
-import android.support.graphics.drawable.VectorDrawableCompat;
 
 /**
  * Created by yoasfs on 14/08/17.
@@ -93,7 +92,7 @@ public class ProductProblemAdapter extends RecyclerView.Adapter<ProductProblemAd
             }
             if (productProblem.getProblem().getType() == ITEM_TEXT) {
                 holder.tvProductName.setText(productProblem.getProblem().getName());
-                holder.ivProduct.setImageDrawable(VectorDrawableCompat.create(context.getResources(), R.drawable.ic_ongkir, null));
+                holder.ivProduct.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_ongkir));
             } else {
                 if (productProblem.getOrder() != null) {
                     if (productProblem.getOrder().getDetail().getReturnable() == FREE_RETURN) {

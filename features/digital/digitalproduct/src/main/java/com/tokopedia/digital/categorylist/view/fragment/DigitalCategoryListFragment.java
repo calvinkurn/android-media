@@ -426,6 +426,9 @@ public class DigitalCategoryListFragment extends BasePresenterFragment<IDigitalC
     @Override
     public void onClickCategoryHeaderMenu(DigitalCategoryItemHeader data) {
         switch (data.getTypeMenu()) {
+            case TRANSACTION:
+                startActivity(((IDigitalModuleRouter) getActivity().getApplication()).getOrderListIntent(getActivity()));
+                break;
             default:
                 startActivity(DigitalWebActivity.newInstance(getActivity(), data.getSiteUrl()));
                 break;

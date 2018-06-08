@@ -9,7 +9,6 @@ import com.tokopedia.seller.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.topads.R;
 import com.tokopedia.topads.dashboard.constant.SortTopAdsOption;
 import com.tokopedia.topads.dashboard.view.fragment.TopAdsSortByFragment;
-import android.support.graphics.drawable.VectorDrawableCompat;
 
 /**
  * Created by nakama on 10/04/18.
@@ -37,6 +36,6 @@ public class TopAdsSortByActivity extends BaseSimpleActivity {
     @Override
     protected void setToolbarColorWhite() {
         super.setToolbarColorWhite();
-        getSupportActionBar().setHomeAsUpIndicator(VectorDrawableCompat.create(getResources(), R.drawable.ic_close_default, null));
+        getSupportActionBar().setHomeAsUpIndicator(ContextCompat.getDrawable(this, R.drawable.ic_close_default));
     }
 }
