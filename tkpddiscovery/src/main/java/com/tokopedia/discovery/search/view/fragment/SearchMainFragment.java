@@ -212,14 +212,16 @@ public class SearchMainFragment extends TkpdBaseV4Fragment implements SearchCont
                 && getActivity().getApplicationContext() instanceof ApplinkRouter) {
             ApplinkRouter router = ((ApplinkRouter) getActivity().getApplicationContext());
             if (router.isSupportApplink(applink)) {
+                getActivity().finish();
                 router.goToApplinkActivity(getActivity(), applink);
             } else {
                 openWebViewURL(webUrl, getActivity());
+                getActivity().finish();
             }
         } else {
             openWebViewURL(webUrl, getActivity());
+            getActivity().finish();
         }
-        getActivity().finish();
     }
 
     public void openWebViewURL(String url, Context context) {
