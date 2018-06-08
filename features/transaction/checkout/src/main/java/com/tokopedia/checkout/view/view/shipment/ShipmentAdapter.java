@@ -296,18 +296,17 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         return false;
     }
 
-    public void updateSelectedAddress(RecipientAddressModel recipientAddress) {
+    public void updateSelectedAddress(RecipientAddressModel newlySelectedAddress) {
         int addressIndex = 0;
         for (ShipmentData item : shipmentDataList) {
             if (item instanceof RecipientAddressModel) {
-                if (!((RecipientAddressModel) item).getId().equalsIgnoreCase(recipientAddress.getId())) {
-                    addressIndex = shipmentDataList.indexOf(item);
-                }
+                addressIndex = shipmentDataList.indexOf(item);
+                break;
             }
         }
         if (addressIndex != 0) {
-            shipmentDataList.set(addressIndex, recipientAddress);
-            this.recipientAddressModel = recipientAddress;
+            shipmentDataList.set(addressIndex, newlySelectedAddress);
+            this.recipientAddressModel = newlySelectedAddress;
             resetCourier();
             notifyDataSetChanged();
             shipmentAdapterActionListener.resetTotalPrice();
@@ -411,7 +410,7 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             }
         }
         if (cartItemCounter == shipmentCartItemModelList.size()) {
-            RequestData requestData = getRequestData();
+            RequestData requestData = getRequestData(null);
             shipmentAdapterActionListener.onFinishChoosingShipment(requestData.getPromoRequestData(),
                     requestData.getCheckoutRequestData());
         }
@@ -570,8 +569,14 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         return false;
     }
 
-    public RequestData getRequestData() {
-        return shipmentDataRequestConverter.generateRequestData(shipmentCartItemModelList, recipientAddressModel);
+    public RequestData getRequestData(RecipientAddressModel recipientAddressModel) {
+        RecipientAddressModel addressModel;
+        if (recipientAddressModel != null) {
+            addressModel = recipientAddressModel;
+        } else {
+            addressModel = this.recipientAddressModel;
+        }
+        return shipmentDataRequestConverter.generateRequestData(shipmentCartItemModelList, addressModel);
     }
 
     public void clearData() {

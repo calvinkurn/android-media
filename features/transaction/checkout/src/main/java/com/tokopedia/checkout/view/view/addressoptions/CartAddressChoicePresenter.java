@@ -59,7 +59,7 @@ public class CartAddressChoicePresenter extends BaseDaggerPresenter<ICartAddress
     }
 
     @Override
-    public void getAddressShortedList(Context context, final RecipientAddressModel currentAddress) {
+    public void getAddressShortedList(Context context, final RecipientAddressModel currentAddress, boolean isNewlyCreatedAddress) {
         getView().showLoading();
         mGetPeopleAddressUseCase.execute(mGetPeopleAddressUseCase.getRequestParams(
                 context, DEFAULT_ORDER, DEFAULT_QUERY, DEFAULT_PAGE),
@@ -98,10 +98,10 @@ public class CartAddressChoicePresenter extends BaseDaggerPresenter<ICartAddress
                         if (!peopleAddressModel.getRecipientAddressModelList().isEmpty()) {
                             if (isViewAttached()) {
                                 getView().hideLoading();
+                                getView().setToken(peopleAddressModel.getToken());
                                 getView().renderRecipientData(
                                         shortList(peopleAddressModel.getRecipientAddressModelList(),
-                                                currentAddress));
-                                getView().setToken(peopleAddressModel.getToken());
+                                                currentAddress), isNewlyCreatedAddress);
                             }
                         } else {
                             if (isViewAttached()) {
@@ -124,7 +124,7 @@ public class CartAddressChoicePresenter extends BaseDaggerPresenter<ICartAddress
         return mSelectedRecipientAddress;
     }
 
-    private List<RecipientAddressModel> shortList(final List<RecipientAddressModel> addressList,
+    private List<RecipientAddressModel> shortList(List<RecipientAddressModel> addressList,
                                                   RecipientAddressModel currentAddress) {
 
         if (currentAddress != null) {
