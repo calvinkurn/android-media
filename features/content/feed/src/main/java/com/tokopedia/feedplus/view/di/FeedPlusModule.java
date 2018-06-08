@@ -138,7 +138,7 @@ public class FeedPlusModule {
 
     @FeedPlusScope
     @Provides
-    public FeedApi provideFeedApi(Retrofit.Builder retrofitBuilder,
+    FeedApi provideFeedApi(Retrofit.Builder retrofitBuilder,
                                   OkHttpClient okHttpClient) {
         return retrofitBuilder.baseUrl(TkpdBaseURL.GRAPHQL_DOMAIN)
                 .client(okHttpClient)
