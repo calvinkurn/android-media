@@ -16,6 +16,7 @@ import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
 import android.preference.RingtonePreference;
 import android.text.TextUtils;
+import android.util.Log;
 
 import com.tkpd.library.ui.utilities.CustomCheckBoxPreference;
 import com.tokopedia.core.R;
@@ -86,14 +87,10 @@ public class SettingsFragment extends TkpdBasePreferenceFragment {
 
         bindPreferenceSummaryToValue(findPreference(Constants.Settings.NOTIFICATION_RINGTONE));
         optionShakeShake = (CustomCheckBoxPreference) findPreference(SETTING_NOTIFICATION_SHAKE_SHAKE);
-        optionShakeShake.setOnPreferenceClickListener(new OnPreferenceClickListener() {
+        optionShakeShake.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
             @Override
-            public boolean onPreferenceClick(Preference preference) {
-                SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences
-                        (context);
-                SharedPreferences.Editor editor = settings.edit();
-                editor.putBoolean(SETTING_NOTIFICATION_SHAKE_SHAKE, preference.isEnabled());
-                editor.apply();
+            public boolean onPreferenceChange(Preference preference, Object newValue) {
+
                 return true;
             }
         });

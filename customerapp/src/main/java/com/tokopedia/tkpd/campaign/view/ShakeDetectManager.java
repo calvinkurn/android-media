@@ -65,6 +65,7 @@ public class ShakeDetectManager implements ShakeDetector.Listener {
         if (!screenName.equals(ShakeDetectCampaignActivity.SCREEN_NAME)) {
             mOpenedActivity = screenName;
         }
+        initSettingConfig();
         if (isShakeShakeEnable()) {
             sd.registerListener(this);
             sd.start(sensorManager);
@@ -84,8 +85,8 @@ public class ShakeDetectManager implements ShakeDetector.Listener {
             sd = new ShakeDetector();
             sensorManager = (SensorManager)mContext.getSystemService(SENSOR_SERVICE);
             initRemoteConfig();
-            initSettingConfig();
         }
+
     }
     boolean isNotificationOn = true;
 
@@ -98,6 +99,7 @@ public class ShakeDetectManager implements ShakeDetector.Listener {
 
     public void disableShakeShake() {
         sharedPreferences.edit().putBoolean(NOTIFICATION_SHAKE_SHAKE, false).apply();
+        isNotificationOn = false;
     }
 
     private void initRemoteConfig() {
