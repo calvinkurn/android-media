@@ -140,7 +140,7 @@ public class FeedPlusModule {
     @Provides
     public FeedApi provideFeedApi(Retrofit.Builder retrofitBuilder,
                                   OkHttpClient okHttpClient) {
-        return retrofitBuilder.baseUrl("https://gql.tokopedia.com/")
+        return retrofitBuilder.baseUrl(TkpdBaseURL.GRAPHQL_DOMAIN)
                 .client(okHttpClient)
                 .build()
                 .create(FeedApi.class);
