@@ -61,7 +61,7 @@ public class MediaGrid extends SquareFrameLayout implements View.OnClickListener
         mPreBindInfo = info;
     }
 
-    public void bindMedia(MediaItem item, ArrayList<Long> selectionIdList) {
+    public void bindMedia(MediaItem item, ArrayList<String> selectionIdList) {
         mMedia = item;
         setImage();
         setVideoDuration();
@@ -87,8 +87,8 @@ public class MediaGrid extends SquareFrameLayout implements View.OnClickListener
         }
     }
 
-    private void setSelection(ArrayList<Long> selectionIdList) {
-        if (selectionIdList.contains(mMedia.getId())) {
+    private void setSelection(ArrayList<String> selectionIdList) {
+        if (selectionIdList.contains(mMedia.getRealPath())) {
             ivCheck.setVisibility(View.VISIBLE);
         } else {
             ivCheck.setVisibility(View.GONE);

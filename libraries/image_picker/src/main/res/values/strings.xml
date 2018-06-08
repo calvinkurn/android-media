@@ -40,4 +40,6 @@
     <string name="max_file_size_reached">Maksimum ukuran gambar adalah %1$dMB</string>
     <string name="permission_enabled_needed">Untuk dapat mengakses media, permissions harus diaktifkan di bagian pengaturan aplikasi</string>
     <string name="label_return">Kembali</string>
+    <string name="use_image">Gunakan</string>
+    <string name="retake_image">Ulangi</string>
 </resources>
