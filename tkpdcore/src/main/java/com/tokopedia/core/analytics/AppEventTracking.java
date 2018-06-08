@@ -156,7 +156,6 @@ public interface AppEventTracking {
         String EVENT_MANAGE_PRODUCT = "eventManageProduct";
 
         String EVENT_CLICK_USER_PROFILE = "clickUserProfile";
-        String EVENT_CLICK_PROFILE = "eventClickProfile";
         String EVENT_INTERNAL_PROMO = "internalPromo";
         String EVENT_INTERNAL_PROMO_MULTI = "internalPromoEvent";
         String EVENT_CLICK_HOME_DIGITAL_WIDGET = "clickHomeDigitalWidget";

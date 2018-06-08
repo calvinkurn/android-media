@@ -9,7 +9,7 @@ import com.tokopedia.core.analytics.nishikino.model.EventTracking;
 public class ChangePhoneNumberAnalytics {
 
     public static class Event {
-        static final String CLICK_PROFILE = "eventClickProfile";
+        static final String CLICK_PROFILE = "clickUserProfile";
     }
 
     public static class Category {

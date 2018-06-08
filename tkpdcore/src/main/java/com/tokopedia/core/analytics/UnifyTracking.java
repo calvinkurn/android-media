@@ -3117,7 +3117,7 @@ public class UnifyTracking extends TrackingUtils {
 
     public static void eventClickChangePhoneNumber() {
         sendGTMEvent(new EventTracking(
-                AppEventTracking.Event.EVENT_CLICK_PROFILE,
+                AppEventTracking.Event.EVENT_CLICK_USER_PROFILE,
                 AppEventTracking.Category.PROFILE_PAGE,
                 AppEventTracking.Action.CLICK_CHANGE_PHONE_NUMBER,
                 ""
