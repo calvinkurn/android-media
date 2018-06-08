@@ -53,4 +53,7 @@
     <string name="train_homepage_destination_label">Tujuan</string>
     <string name="train_homepage_destination_hint">Kota/Statiun Tujuan</string>
     <string name="train_station_all_station_label">Semua Stasiun</string>
+    <string name="train_homepage_origin_should_not_empty_error_message">Stasiun asal belum diisi.</string>
+    <string name="train_homepage_destination_should_not_empty_error_message">Stasiun tujuan belum diisi</string>
+    <string name="train_homepage_origin_destination_should_not_same_error_message">Kota/Stasiun asal harus berbeda dengan tujuan</string>
 </resources>

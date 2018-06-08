@@ -39,4 +39,9 @@ public interface TrainHomepageView extends CustomerView {
 
     Activity getActivity();
 
+    void showOriginStationEmptyError(@StringRes int resId);
+
+    void showDestinationStationEmptyError(@StringRes int resId);
+
+    void getShowOriginAndDestinationShouldNotSameError(@StringRes int resId);
 }

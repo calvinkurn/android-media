@@ -347,4 +347,19 @@ public class TrainHomepageFragment extends BaseDaggerFragment implements TrainHo
         return viewModel;
     }
 
+    @Override
+    public void showOriginStationEmptyError(int resId) {
+        showMessageErrorInSnackBar(resId);
+    }
+
+    @Override
+    public void showDestinationStationEmptyError(int resId) {
+        showMessageErrorInSnackBar(resId);
+    }
+
+    @Override
+    public void getShowOriginAndDestinationShouldNotSameError(int resId) {
+        showMessageErrorInSnackBar(resId);
+    }
+
 }
