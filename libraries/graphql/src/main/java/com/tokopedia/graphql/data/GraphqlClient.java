@@ -44,7 +44,7 @@ public class GraphqlClient {
         return sRetrofit;
     }
 
-    private static GraphqlApi getApiInterface() {
+    public static GraphqlApi getApiInterface() {
         if (sGraphqlApi == null) {
             sGraphqlApi = getRetrofit().create(GraphqlApi.class);
         }
