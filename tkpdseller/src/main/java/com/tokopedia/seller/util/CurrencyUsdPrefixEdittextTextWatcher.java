@@ -77,15 +77,15 @@ public class CurrencyUsdPrefixEdittextTextWatcher extends NumberTextWatcher {
     }
 
     public void setCursorPosition(int tempCursorPos, int tempLength){
-        if(editText.length() - tempLength == 1) // Untuk majuin cursor ketika nambah koma
+        if(editText.length() - tempLength == 1)
         {
             if(editText.length()<4)
                 tempCursorPos += 1;
             else if(tempCursorPos>-1)
-                if(editText.getText().charAt(tempCursorPos) != ',') // Untuk mundur ketika mencoba menghapus koma
+                if(editText.getText().charAt(tempCursorPos) != ',')
                     tempCursorPos += 1;
         }
-        else if(editText.length() - tempLength == -1) // Mundurin cursor ketika hapus koma
+        else if(editText.length() - tempLength == -1)
         {
             tempCursorPos -= 1;
         }
