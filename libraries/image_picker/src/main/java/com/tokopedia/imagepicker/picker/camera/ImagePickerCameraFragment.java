@@ -59,7 +59,7 @@ public class ImagePickerCameraFragment extends TkpdBaseV4Fragment {
     private List<Flash> supportedFlashList;
     private int flashIndex;
     private ProgressDialog progressDialog;
-    private File file;
+    private File cameraResultFile;
 
     public interface OnImagePickerCameraFragmentListener {
         void onImageTaken(String filePath);
@@ -226,7 +226,7 @@ public class ImagePickerCameraFragment extends TkpdBaseV4Fragment {
         useImageLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                onImagePickerCameraFragmentListener.onImageTaken(file.getAbsolutePath());
+                onImagePickerCameraFragmentListener.onImageTaken(cameraResultFile.getAbsolutePath());
 
                 //if multiple selection, will continue preview camera
                 if (onImagePickerCameraFragmentListener.needShowCameraPreview()) {
@@ -279,16 +279,17 @@ public class ImagePickerCameraFragment extends TkpdBaseV4Fragment {
             mCaptureNativeSize = cameraView.getPictureSize();
         }
         try {
+            //rotate the bitmap using the library
             CameraUtils.decodeBitmap(imageByte, mCaptureNativeSize.getWidth(), mCaptureNativeSize.getHeight(), new CameraUtils.BitmapCallback() {
                 @Override
                 public void onBitmapReady(Bitmap bitmap) {
-                    file = ImageUtils.writeImageToTkpdPath(ImageUtils.DirectoryDef.DIRECTORY_TOKOPEDIA_CACHE_CAMERA, bitmap, false);
-                    onSuccessImageTaken(file);
+                    cameraResultFile = ImageUtils.writeImageToTkpdPath(ImageUtils.DirectoryDef.DIRECTORY_TOKOPEDIA_CACHE_CAMERA, bitmap, false);
+                    onSuccessBitmapTaken(bitmap, cameraResultFile);
                 }
             });
         } catch (OutOfMemoryError error) {
-            file = ImageUtils.writeImageToTkpdPath(ImageUtils.DirectoryDef.DIRECTORY_TOKOPEDIA_CACHE_CAMERA, imageByte, false);
-            onSuccessImageTaken(file);
+            cameraResultFile = ImageUtils.writeImageToTkpdPath(ImageUtils.DirectoryDef.DIRECTORY_TOKOPEDIA_CACHE_CAMERA, imageByte, false);
+            onSuccessImageTaken(cameraResultFile);
         }
     }
 
@@ -303,6 +304,17 @@ public class ImagePickerCameraFragment extends TkpdBaseV4Fragment {
             } catch (Exception e) {
                 onImagePickerCameraFragmentListener.onImageTaken(file.getAbsolutePath());
             }
+        } else {
+            onImagePickerCameraFragmentListener.onImageTaken(file.getAbsolutePath());
+        }
+        reset();
+    }
+
+    private void onSuccessBitmapTaken(Bitmap bitmap, File file) {
+        //TODO crop the bitmap if it is not aligned with the expected ratio
+        if (onImagePickerCameraFragmentListener.needShowCameraPreview()) {
+            previewImageView.setImageBitmap(bitmap);
+            showPreviewView();
         } else {
             onImagePickerCameraFragmentListener.onImageTaken(file.getAbsolutePath());
         }

@@ -25,8 +25,10 @@ import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.imagepicker.R;
 import com.tokopedia.imagepicker.common.exception.FileSizeAboveMaximumException;
+import com.tokopedia.imagepicker.picker.main.builder.ImagePickerBuilder;
 import com.tokopedia.imagepicker.picker.main.builder.ImagePickerEditorBuilder;
 import com.tokopedia.imagepicker.picker.main.builder.ImagePickerTabTypeDef;
+import com.tokopedia.imagepicker.picker.main.builder.ImageRatioTypeDef;
 import com.tokopedia.imagepicker.picker.main.view.ImagePickerPresenter;
 import com.tokopedia.imagepicker.common.util.ImageUtils;
 import com.tokopedia.imagepicker.common.widget.NonSwipeableViewPager;
@@ -58,8 +60,7 @@ public class ImageEditorActivity extends BaseSimpleActivity implements ImageEdit
     public static final String EXTRA_IMAGE_URLS = "IMG_URLS";
     public static final String EXTRA_MIN_RESOLUTION = "MIN_IMG_RESOLUTION";
     public static final String EXTRA_EDIT_ACTION_TYPE = "EDIT_ACTION_TYPE";
-    public static final String EXTRA_RATIO_X = "RATIO_X";
-    public static final String EXTRA_RATIO_Y = "RATIO_Y";
+    public static final String EXTRA_RATIO = "RATIO";
     public static final String EXTRA_IS_CIRCLE_PREVIEW = "IS_CIRCLE_PREVIEW";
     public static final String EXTRA_MAX_FILE_SIZE = "MAX_FILE_SIZE";
 
@@ -89,7 +90,7 @@ public class ImageEditorActivity extends BaseSimpleActivity implements ImageEdit
     private boolean isInEditMode;
     private @ImageEditActionTypeDef
     int currentEditActionType;
-    private int ratioX, ratioY;
+    private ArrayList<ArrayList<ImageRatioTypeDef>> imageRatioTypeDefStepList;
     private boolean isCirclePreview;
 
     private View vgDownloadProgressBar;
@@ -122,18 +123,18 @@ public class ImageEditorActivity extends BaseSimpleActivity implements ImageEdit
     //to give flag if the image is editted or not, in case the caller need it.
     private ArrayList<Boolean> isEdittedList;
     private boolean isPermissionGotDenied;
+    private ImageRatioTypeDef defaultRatio;
 
     public static Intent getIntent(Context context, ArrayList<String> imageUrls, int minResolution,
                                    @ImageEditActionTypeDef int[] imageEditActionType,
-                                   int ratioX, int ratioY,
+                                   ImageRatioTypeDef imageRatioTypeDef,
                                    boolean isCirclePreview,
                                    long maxFileSize) {
         Intent intent = new Intent(context, ImageEditorActivity.class);
         intent.putExtra(EXTRA_IMAGE_URLS, imageUrls);
         intent.putExtra(EXTRA_MIN_RESOLUTION, minResolution);
         intent.putExtra(EXTRA_EDIT_ACTION_TYPE, imageEditActionType);
-        intent.putExtra(EXTRA_RATIO_X, ratioX);
-        intent.putExtra(EXTRA_RATIO_Y, ratioY);
+        intent.putExtra(EXTRA_RATIO, imageRatioTypeDef);
         intent.putExtra(EXTRA_IS_CIRCLE_PREVIEW, isCirclePreview);
         intent.putExtra(EXTRA_MAX_FILE_SIZE, maxFileSize);
         return intent;
@@ -141,12 +142,12 @@ public class ImageEditorActivity extends BaseSimpleActivity implements ImageEdit
 
     public static Intent getIntent(Context context, String imageUrl, int minResolution,
                                    @ImageEditActionTypeDef int[] imageEditActionType,
-                                   int ratioX, int ratioY,
+                                   ImageRatioTypeDef imageRatioTypeDef,
                                    boolean isCirclePreview,
                                    long maxFileSize) {
         ArrayList<String> imageUrls = new ArrayList<>();
         imageUrls.add(imageUrl);
-        return getIntent(context, imageUrls, minResolution, imageEditActionType, ratioX, ratioY, isCirclePreview, maxFileSize);
+        return getIntent(context, imageUrls, minResolution, imageEditActionType, imageRatioTypeDef, isCirclePreview, maxFileSize);
     }
 
     @Override
@@ -154,6 +155,7 @@ public class ImageEditorActivity extends BaseSimpleActivity implements ImageEdit
         return R.layout.activity_image_editor;
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
 
@@ -169,10 +171,9 @@ public class ImageEditorActivity extends BaseSimpleActivity implements ImageEdit
         }
         minResolution = intent.getIntExtra(EXTRA_MIN_RESOLUTION, 0);
         imageEditActionType = intent.getIntArrayExtra(EXTRA_EDIT_ACTION_TYPE);
-        ratioX = intent.getIntExtra(EXTRA_RATIO_X, 1);
-        ratioY = intent.getIntExtra(EXTRA_RATIO_Y, 1);
         isCirclePreview = intent.getBooleanExtra(EXTRA_IS_CIRCLE_PREVIEW, false);
         maxFileSize = intent.getLongExtra(EXTRA_MAX_FILE_SIZE, DEFAULT_MAX_IMAGE_SIZE_IN_KB);
+        defaultRatio = (ImageRatioTypeDef) intent.getSerializableExtra(EXTRA_RATIO);
 
         if (savedInstanceState == null) {
             currentImageIndex = 0;
@@ -180,6 +181,13 @@ public class ImageEditorActivity extends BaseSimpleActivity implements ImageEdit
             isInEditMode = false;
             currentEditActionType = ImageEditActionTypeDef.ACTION_CROP_ROTATE;
             currentEditStepIndexList = new ArrayList<>();
+
+            imageRatioTypeDefStepList = new ArrayList<>();
+            for (int i = 0, sizei = extraImageUrls.size(); i<sizei; i++) {
+                ArrayList<ImageRatioTypeDef> imageRatioTypeDefArrayList = new ArrayList<>();
+                imageRatioTypeDefArrayList.add(defaultRatio);
+                imageRatioTypeDefStepList.add(imageRatioTypeDefArrayList);
+            }
         } else {
             currentImageIndex = savedInstanceState.getInt(SAVED_IMAGE_INDEX, 0);
             //noinspection unchecked
@@ -187,6 +195,8 @@ public class ImageEditorActivity extends BaseSimpleActivity implements ImageEdit
             isInEditMode = savedInstanceState.getBoolean(SAVED_IN_EDIT_MODE);
             currentEditActionType = savedInstanceState.getInt(SAVED_EDIT_TYPE);
             currentEditStepIndexList = savedInstanceState.getIntegerArrayList(SAVED_CURRENT_STEP_INDEX);
+            imageRatioTypeDefStepList = (ArrayList<ArrayList<ImageRatioTypeDef>>)
+                    savedInstanceState.getSerializable(EXTRA_RATIO);
         }
 
         super.onCreate(savedInstanceState);
@@ -330,11 +340,15 @@ public class ImageEditorActivity extends BaseSimpleActivity implements ImageEdit
                 String pathToDelete = edittedImagePaths.get(currentImageIndex).get(j);
                 ImageUtils.deleteFile(pathToDelete);
                 edittedImagePaths.get(currentImageIndex).remove(j);
+                imageRatioTypeDefStepList.get(currentImageIndex).remove(j);
             }
         }
         // append the path to array
         int lastEmptyStep = getCurrentStepForCurrentImage() + 1;
         edittedImagePaths.get(currentImageIndex).add(path);
+
+        //TODO getselectedRatio from view
+        imageRatioTypeDefStepList.get(currentImageIndex).add(defaultRatio);
         currentEditStepIndexList.set(currentImageIndex, lastEmptyStep);
 
         // if already 5 steps or more, delete the step no 1, we don't want to spam the history.
@@ -671,16 +685,18 @@ public class ImageEditorActivity extends BaseSimpleActivity implements ImageEdit
         blockingView.setVisibility(View.VISIBLE);
 
         ArrayList<String> resultList = new ArrayList<>();
+        ArrayList<ImageRatioTypeDef> ratioResultList = new ArrayList<>();
         isEdittedList = new ArrayList<>();
         for (int i = 0, sizei = edittedImagePaths.size(); i < sizei; i++) {
             int currentStep = currentEditStepIndexList.get(i);
             resultList.add(edittedImagePaths.get(i).get(currentStep));
+            ratioResultList.add(imageRatioTypeDefStepList.get(i).get(currentStep));
             isEdittedList.add(currentStep > 0);
         }
 
         showDoneLoading();
         initImageEditorPresenter();
-        imageEditorPresenter.cropBitmapToExpectedRatio(resultList, ratioX, ratioY);
+        imageEditorPresenter.cropBitmapToExpectedRatio(resultList, ratioResultList);
     }
 
     @Override
@@ -866,7 +882,7 @@ public class ImageEditorActivity extends BaseSimpleActivity implements ImageEdit
                     edittedImagePaths,
                     currentEditStepIndexList,
                     minResolution,
-                    ratioX, ratioY,
+                    imageRatioTypeDefStepList,
                     isCirclePreview);
             viewPager.setAdapter(imageEditorViewPagerAdapter);
         }
@@ -962,6 +978,7 @@ public class ImageEditorActivity extends BaseSimpleActivity implements ImageEdit
         outState.putIntegerArrayList(SAVED_CURRENT_STEP_INDEX, currentEditStepIndexList);
         outState.putBoolean(SAVED_IN_EDIT_MODE, isInEditMode);
         outState.putInt(SAVED_EDIT_TYPE, currentEditActionType);
+        outState.putSerializable(EXTRA_RATIO, imageRatioTypeDefStepList);
     }
 
     @Override

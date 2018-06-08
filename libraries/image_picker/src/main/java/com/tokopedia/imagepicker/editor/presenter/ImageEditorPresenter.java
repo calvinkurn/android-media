@@ -11,6 +11,7 @@ import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.imagepicker.common.exception.FileSizeAboveMaximumException;
 import com.tokopedia.imagepicker.common.util.ImageUtils;
+import com.tokopedia.imagepicker.picker.main.builder.ImageRatioTypeDef;
 
 import java.io.File;
 import java.io.IOException;
@@ -94,16 +95,22 @@ public class ImageEditorPresenter extends BaseDaggerPresenter<ImageEditorPresent
         compositeSubscription.add(subscription);
     }
 
-    public void cropBitmapToExpectedRatio(final List<String> localImagePaths, final int ratioX, final int ratioY) {
-        if (ratioX <= 0 || ratioY <= 0 ) {
-            getView().onSuccessCropImageToRatio((ArrayList<String>) localImagePaths, new ArrayList<Boolean>(localImagePaths.size()));
-        }
+    public void cropBitmapToExpectedRatio(final List<String> localImagePaths, final ArrayList<ImageRatioTypeDef> imageRatioList) {
         Subscription subscription =
-                Observable.from(localImagePaths)
-                        .concatMap(new Func1<String, Observable<String>>() {
+                Observable.zip(
+                        Observable.from(localImagePaths),
+                        Observable.from(imageRatioList),
+                        new Func2<String, ImageRatioTypeDef, String>() {
                             @Override
-                            public Observable<String> call(String imagePath) {
+                            public String call(String imagePath, ImageRatioTypeDef imageRatioTypeDef) {
                                 System.gc();
+
+                                int ratioX = imageRatioTypeDef.getRatioX();
+                                int ratioY = imageRatioTypeDef.getRatioY();
+
+                                if (ratioX <= 0 || ratioY <= 0) {
+                                    return imagePath;
+                                }
                                 // if the dimension is not expected dimension, crop it
                                 float expectedRatio = (float) ratioX / ratioY;
                                 int[] widthHeight = ImageUtils.getWidthAndHeight(imagePath);
@@ -125,11 +132,11 @@ public class ImageEditorPresenter extends BaseDaggerPresenter<ImageEditorPresent
                                 }
                                 float currentRatio = (float) width / height;
                                 if (expectedRatio == currentRatio) {
-                                    return Observable.just(imagePath);
+                                    return imagePath;
                                 } else {
                                     String outputPath;
                                     outputPath = ImageUtils.trimBitmap(imagePath, expectedRatio, currentRatio, true);
-                                    return Observable.just(outputPath);
+                                    return outputPath;
                                 }
                             }
                         })
