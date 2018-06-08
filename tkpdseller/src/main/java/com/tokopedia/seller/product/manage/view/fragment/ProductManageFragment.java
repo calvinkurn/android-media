@@ -280,7 +280,6 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
 
     @NeedsPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)
     public void importFromInstagram() {
-        UnifyTracking.eventClickInstoped();
         InstopedSellerCropperActivity.startInstopedActivityForResult(getContext(), ProductManageFragment.this,
                 INSTAGRAM_SELECT_REQUEST_CODE, ProductManageSellerFragment.MAX_INSTAGRAM_SELECT);
         UnifyTracking.eventClickInstoped();
@@ -351,10 +350,13 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
                 }
                 break;
             case INSTAGRAM_SELECT_REQUEST_CODE:
-                ArrayList<String> imageUrls = intent.getStringArrayListExtra(GalleryActivity.IMAGE_URLS);
-                ArrayList<String> imageDescList = intent.getStringArrayListExtra(InstopedSellerActivity.EXTRA_IMAGE_DESC_LIST);
-                if (imageUrls != null) {
-                    ProductDraftListActivity.startInstagramSaveBulkFromLocal(getContext(), imageUrls, imageDescList);
+                if (resultCode == Activity.RESULT_OK &&
+                        intent != null) {
+                    ArrayList<String> imageUrls = intent.getStringArrayListExtra(GalleryActivity.IMAGE_URLS);
+                    ArrayList<String> imageDescList = intent.getStringArrayListExtra(InstopedSellerActivity.EXTRA_IMAGE_DESC_LIST);
+                    if (imageUrls != null) {
+                        ProductDraftListActivity.startInstagramSaveBulkFromLocal(getContext(), imageUrls, imageDescList);
+                    }
                 }
                 break;
             case ProductManageConstant.REQUEST_CODE_FILTER:
