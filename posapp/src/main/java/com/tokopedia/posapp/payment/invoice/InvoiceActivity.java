@@ -3,10 +3,15 @@ package com.tokopedia.posapp.payment.invoice;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.facebook.react.ReactApplication;
 import com.facebook.react.ReactInstanceManager;
+import com.facebook.react.bridge.Arguments;
+import com.facebook.react.bridge.ReactContext;
+import com.facebook.react.bridge.WritableMap;
+import com.facebook.react.modules.core.DeviceEventManagerModule;
 import com.tokopedia.posapp.applink.PosAppLink;
 import com.tokopedia.tkpdreactnative.react.app.ReactFragmentActivity;
 import com.tokopedia.tkpdreactnative.react.app.ReactNativeFragment;
@@ -21,6 +26,7 @@ public class InvoiceActivity extends ReactFragmentActivity {
     private static final String IS_ERROR = "isError";
     public static final String ERROR_TITLE = "errorTitle";
     public static final String ERROR_MESSAGE = "errorMessage";
+    public static final String BACK_BUTTON_PRESSED = "backButtonPressed";
 
     private ReactInstanceManager reactInstanceManager;
 
@@ -70,6 +76,23 @@ public class InvoiceActivity extends ReactFragmentActivity {
 
     @Override
     public void onBackPressed() {
-        // no-op
+        backButtonPressed();
+    }
+
+    private void backButtonPressed() {
+        if(getIntent() != null && getIntent().getExtras() != null && getIntent().getExtras().getBoolean(IS_ERROR)) {
+            WritableMap params = Arguments.createMap();
+            params.putBoolean(BACK_BUTTON_PRESSED, true);
+            sendEmitter(reactInstanceManager.getCurrentReactContext(), BACK_BUTTON_PRESSED, params);
+        }
+    }
+
+    private void sendEmitter(ReactContext reactContext,
+                             String eventName,
+                             @Nullable WritableMap params) {
+        if(reactContext != null) {
+            reactContext.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
+                    .emit(eventName, params);
+        }
     }
 }
