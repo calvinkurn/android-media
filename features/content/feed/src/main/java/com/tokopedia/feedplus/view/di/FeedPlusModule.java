@@ -18,6 +18,7 @@ import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.shopinfo.facades.authservices.ActionService;
 import com.tokopedia.feedplus.FeedModuleRouter;
 import com.tokopedia.feedplus.data.FeedAuthInterceptor;
+import com.tokopedia.feedplus.data.api.FeedApi;
 import com.tokopedia.feedplus.data.factory.FavoriteShopFactory;
 import com.tokopedia.feedplus.data.factory.FeedFactory;
 import com.tokopedia.feedplus.data.factory.WishlistFactory;
@@ -137,6 +138,16 @@ public class FeedPlusModule {
 
     @FeedPlusScope
     @Provides
+    public FeedApi provideFeedApi(Retrofit.Builder retrofitBuilder,
+                                  OkHttpClient okHttpClient) {
+        return retrofitBuilder.baseUrl("https://gql.tokopedia.com/")
+                .client(okHttpClient)
+                .build()
+                .create(FeedApi.class);
+    }
+
+    @FeedPlusScope
+    @Provides
     ApolloClient providesApolloClient(OkHttpClient okHttpClient) {
         return ApolloClient.builder()
                 .okHttpClient(okHttpClient)
@@ -178,10 +189,11 @@ public class FeedPlusModule {
     @FeedPlusScope
     @Provides
     FeedFactory provideFeedFactory(@ApplicationContext Context context,
+                                   FeedApi feedApi,
                                    ApolloClient apolloClient,
                                    FeedListMapper feedListMapper,
-                                   @Named(NAME_CLOUD) FeedResultMapper feedResultMapperCloud,
                                    @Named(NAME_LOCAL) FeedResultMapper feedResultMapperLocal,
+                                   @Named(NAME_CLOUD) FeedResultMapper feedResultMapperCloud,
                                    FeedDetailListMapper feedDetailListMapper,
                                    GlobalCacheManager globalCacheManager,
                                    MojitoService mojitoService,
@@ -189,6 +201,7 @@ public class FeedPlusModule {
                                    CheckNewFeedMapper checkNewFeedMapper) {
         return new FeedFactory(
                 context,
+                feedApi,
                 apolloClient,
                 feedListMapper,
                 feedResultMapperCloud,
