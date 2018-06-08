@@ -165,7 +165,8 @@ public class ImageEditorActivity extends BaseSimpleActivity implements ImageEdit
         // extraImageUrls.add("https://scontent-sit4-1.cdninstagram.com/vp/4d462c7e62452e54862602872a4f2f55/5B772ADA/t51.2885-15/e35/30603662_2044572549200360_6725615414816014336_n.jpg");
         if (intent.hasExtra(EXTRA_IMAGE_URLS)) {
             extraImageUrls = intent.getStringArrayListExtra(EXTRA_IMAGE_URLS);
-        } else {
+        }
+        if (extraImageUrls == null || extraImageUrls.size() == 0) {
             finish();
             return;
         }

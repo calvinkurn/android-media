@@ -152,7 +152,8 @@ public class ImagePickerActivity extends BaseSimpleActivity
     private void setupPreview() {
         imagePickerPreviewWidget = findViewById(R.id.image_picker_preview_widget);
         if (imagePickerBuilder.supportMultipleSelection()) {
-            imagePickerPreviewWidget.setData(selectedImagePaths);
+            imagePickerPreviewWidget.setData(selectedImagePaths,
+                    imagePickerBuilder.getImagePickerMultipleSelectionBuilder().getPrimaryImageStringRes());
             imagePickerPreviewWidget.setVisibility(View.VISIBLE);
             imagePickerPreviewWidget.setOnImagePickerThumbnailListWidgetListener(this);
             imagePickerPreviewWidget.setMaxAdapterSize(imagePickerBuilder.getMaximumNoPick());
