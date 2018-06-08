@@ -14,6 +14,8 @@ import com.tokopedia.core.util.BranchSdkUtils;
 public class DefaultShare {
 
     private static final String TYPE = "text/plain";
+    public static final String KEY_OTHER = "lainnya";
+    public static final String TITLE_OTHER = "Lainnya";
 
     private ShareData shareData;
     private Activity activity;
@@ -24,12 +26,12 @@ public class DefaultShare {
     }
 
     public void show() {
-//        BranchSdkUtils.generateBranchLink(shareData, activity,
-//                (shareContents, shareUri, branchUrl) -> {
-//            Intent intent = getIntent(shareContents);
-//            activity.startActivity(Intent.createChooser(intent, "Lainnya"));
-//            sendTracker();
-//        });
+        BranchSdkUtils.generateBranchLink(shareData, activity,
+                (shareContents, shareUri, branchUrl) -> {
+            Intent intent = getIntent(shareContents);
+            activity.startActivity(Intent.createChooser(intent, TITLE_OTHER));
+            sendTracker();
+        });
     }
 
     private Intent getIntent(String contains) {
@@ -58,22 +60,22 @@ public class DefaultShare {
     private void shareCategory(ShareData data) {
         String[] shareParam = data.getSplittedDescription(",");
         if (shareParam.length == 2) {
-            UnifyTracking.eventShareCategory(shareParam[0], shareParam[1] + "-lainnya");
+            UnifyTracking.eventShareCategory(shareParam[0], shareParam[1] + "-" + KEY_OTHER);
         }
     }
 
     private void sendAnalyticsToGtm(String type) {
         switch (type) {
             case ShareData.REFERRAL_TYPE:
-                UnifyTracking.eventReferralAndShare(AppEventTracking.Action.SELECT_CHANNEL, "lainnya");
-                TrackingUtils.sendMoEngageReferralShareEvent("lainnya");
+                UnifyTracking.eventReferralAndShare(AppEventTracking.Action.SELECT_CHANNEL, KEY_OTHER);
+                TrackingUtils.sendMoEngageReferralShareEvent(KEY_OTHER);
                 break;
             case ShareData.APP_SHARE_TYPE:
                 UnifyTracking.eventAppShareWhenReferralOff(AppEventTracking.Action.SELECT_CHANNEL,
-                        "lainnya");
+                        KEY_OTHER);
                 break;
             default:
-                UnifyTracking.eventShare("lainnya");
+                UnifyTracking.eventShare(KEY_OTHER);
                 break;
         }
     }
