@@ -5,6 +5,7 @@ import android.content.Context;
 import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.annotation.StringRes;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SimpleItemAnimator;
@@ -73,8 +74,8 @@ public class ImagePickerPreviewWidget extends FrameLayout implements ImagePicker
         this.onImagePickerThumbnailListWidgetListener = onImagePickerThumbnailListWidgetListener;
     }
 
-    public void setData(ArrayList<String> imagePathList) {
-        imagePickerThumbnailAdapter.setData(imagePathList);
+    public void setData(ArrayList<String> imagePathList, @StringRes int primaryImageStringRes) {
+        imagePickerThumbnailAdapter.setData(imagePathList, primaryImageStringRes);
     }
 
     public void addData(String imagePath){

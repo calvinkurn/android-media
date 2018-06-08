@@ -142,12 +142,7 @@ public class ImagePickerActivity extends BaseSimpleActivity
     private void onDoneClicked() {
         if (selectedImagePaths.size() > 0) {
             if (imagePickerBuilder.isContinueToEditAfterPick()) {
-                Intent intent = ImageEditorActivity.getIntent(this, selectedImagePaths,
-                        imagePickerBuilder.getMinResolution(), imagePickerBuilder.getImageEditActionType(),
-                        imagePickerBuilder.getRatioX(), imagePickerBuilder.getRatioY(),
-                        imagePickerBuilder.isCirclePreview(),
-                        imagePickerBuilder.getMaxFileSizeInKB());
-                startActivityForResult(intent, REQUEST_CODE_EDITOR);
+                startEditorActivity(selectedImagePaths);
             } else {
                 onFinishWithMultipleImageValidateNetworkPath(selectedImagePaths);
             }
@@ -157,7 +152,8 @@ public class ImagePickerActivity extends BaseSimpleActivity
     private void setupPreview() {
         imagePickerPreviewWidget = findViewById(R.id.image_picker_preview_widget);
         if (imagePickerBuilder.supportMultipleSelection()) {
-            imagePickerPreviewWidget.setData(selectedImagePaths);
+            imagePickerPreviewWidget.setData(selectedImagePaths,
+                    imagePickerBuilder.getImagePickerMultipleSelectionBuilder().getPrimaryImageStringRes());
             imagePickerPreviewWidget.setVisibility(View.VISIBLE);
             imagePickerPreviewWidget.setOnImagePickerThumbnailListWidgetListener(this);
             imagePickerPreviewWidget.setMaxAdapterSize(imagePickerBuilder.getMaximumNoPick());
@@ -446,15 +442,25 @@ public class ImagePickerActivity extends BaseSimpleActivity
 
     private void onSingleImagePicked(String imageUrlOrPath) {
         if (imagePickerBuilder.isContinueToEditAfterPick()) {
-            Intent intent = ImageEditorActivity.getIntent(this, imageUrlOrPath,
-                    imagePickerBuilder.getMinResolution(), imagePickerBuilder.getImageEditActionType(),
-                    imagePickerBuilder.getRatioX(), imagePickerBuilder.getRatioY(),
-                    imagePickerBuilder.isCirclePreview(),
-                    imagePickerBuilder.getMaxFileSizeInKB());
-            startActivityForResult(intent, REQUEST_CODE_EDITOR);
+            startEditorActivity(imageUrlOrPath);
         } else {
             onFinishWithSingleImage(imageUrlOrPath);
         }
+    }
+
+    private void startEditorActivity(String imageUrlOrPath){
+        ArrayList<String> imageUrls = new ArrayList<>();
+        imageUrls.add(imageUrlOrPath);
+        startEditorActivity(imageUrls);
+    }
+
+    private void startEditorActivity(ArrayList<String> selectedImagePaths){
+        Intent intent = ImageEditorActivity.getIntent(this, selectedImagePaths,
+                imagePickerBuilder.getMinResolution(), imagePickerBuilder.getImageEditActionType(),
+                imagePickerBuilder.getImageRatioTypeDef(),
+                imagePickerBuilder.isCirclePreview(),
+                imagePickerBuilder.getMaxFileSizeInKB());
+        startActivityForResult(intent, REQUEST_CODE_EDITOR);
     }
 
     private void onFinishWithSingleImage(String imageUrlOrPath) {
