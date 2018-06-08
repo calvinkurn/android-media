@@ -59,6 +59,7 @@ public class InstagramLoginFragment extends BaseDaggerFragment{
         WebSettings ws = instagramWebview.getSettings();
         ws.setDomStorageEnabled(true);
         ws.setAppCacheEnabled(false);
+        ws.setCacheMode(WebSettings.LOAD_NO_CACHE);
         ws.setSaveFormData(false);
         ws.setSavePassword(false);
         ws.setJavaScriptEnabled(true);
