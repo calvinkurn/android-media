@@ -7,6 +7,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.core.analytics.FeedTracking;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.network.retrofit.response.ErrorHandler;
+import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.util.TimeConverter;
 import com.tokopedia.feedplus.domain.model.InspirationItemDomain;
@@ -33,6 +34,7 @@ import com.tokopedia.feedplus.view.viewmodel.FavoriteCtaViewModel;
 import com.tokopedia.feedplus.view.viewmodel.LabelsViewModel;
 import com.tokopedia.feedplus.view.viewmodel.inspiration.InspirationProductViewModel;
 import com.tokopedia.feedplus.view.viewmodel.inspiration.InspirationViewModel;
+import com.tokopedia.feedplus.view.viewmodel.kol.ContentProductViewModel;
 import com.tokopedia.feedplus.view.viewmodel.kol.KolRecommendItemViewModel;
 import com.tokopedia.feedplus.view.viewmodel.kol.KolRecommendationViewModel;
 import com.tokopedia.feedplus.view.viewmodel.kol.PollViewModel;
@@ -106,7 +108,10 @@ public class GetFirstPageFeedsSubscriber extends Subscriber<FeedResult> {
 
     @Override
     public void onError(Throwable e) {
-        e.printStackTrace();
+        if (GlobalConfig.isAllowDebuggingTools()) {
+            e.printStackTrace();
+        }
+
         viewListener.onErrorGetFeedFirstPage(
                 ErrorHandler.getErrorMessage(e));
     }
@@ -443,17 +448,10 @@ public class GetFirstPageFeedsSubscriber extends Subscriber<FeedResult> {
                     case TYPE_KOL_CTA:
                         if (domain.getContent() != null
                                 && domain.getContent().getKolCtaDomain() != null) {
-
-                            ProductCommunicationViewModel productCommunicationViewModel =
-                                    convertToProductCommunicationViewModel(
-                                            domain.getContent().getKolCtaDomain()
-                                    );
-                            if (productCommunicationViewModel != null) {
-                                listFeedView.add(productCommunicationViewModel);
-                            }
-
-                            //TODO milhamj remove or move this
-                            PollViewModel pollViewModel;
+                            ContentProductViewModel contentProductViewModel =
+                                    convertContentProductViewModel(domain.getContent().getKolCtaDomain());
+                            if (contentProductViewModel.isContentProductShowing())
+                                listFeedView.add(contentProductViewModel);
                         }
                         break;
                     default:
@@ -751,6 +749,24 @@ public class GetFirstPageFeedsSubscriber extends Subscriber<FeedResult> {
         addSeeMorePromo(dataFeedDomain, listPromo);
 
         return listPromo;
+    }
+
+    private ContentProductViewModel convertContentProductViewModel(KolCtaDomain domain) {
+        if (!TextUtils.isEmpty(domain.getImageUrl())
+                || !TextUtils.isEmpty(domain.getApplink())
+                || !TextUtils.isEmpty(domain.getButtonTitle())
+                || !TextUtils.isEmpty(domain.getApplink())
+                || !TextUtils.isEmpty(domain.getTextHeader())
+                || !TextUtils.isEmpty(domain.getTextDescription()))
+            return new ContentProductViewModel(
+                    domain.getImageUrl(),
+                    domain.getApplink(),
+                    domain.getButtonTitle(),
+                    domain.getTextHeader(),
+                    domain.getTextDescription(),
+                    true);
+        return new ContentProductViewModel(
+                false);
     }
 
     private ProductCommunicationViewModel convertToProductCommunicationViewModel(
