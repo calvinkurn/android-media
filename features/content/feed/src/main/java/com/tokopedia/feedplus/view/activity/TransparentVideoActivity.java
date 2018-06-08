@@ -15,6 +15,7 @@ import android.widget.Toast;
 import android.widget.VideoView;
 
 import com.tokopedia.feedplus.R;
+import android.support.v7.app.AppCompatDelegate;
 
 
 /**
@@ -22,6 +23,9 @@ import com.tokopedia.feedplus.R;
  */
 
 public class TransparentVideoActivity extends AppCompatActivity {
+    static {
+        AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
+    }
 
 
     private static final String PARAM_VIDEO_URL = "PARAM_VIDEO_URL";

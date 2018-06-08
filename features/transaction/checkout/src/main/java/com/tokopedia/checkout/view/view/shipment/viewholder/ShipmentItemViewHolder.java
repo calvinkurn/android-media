@@ -41,7 +41,6 @@ import com.tokopedia.showcase.ShowCaseObject;
 
 import java.util.ArrayList;
 import java.util.List;
-import android.support.graphics.drawable.VectorDrawableCompat;
 
 /**
  * @author Irfan Khoirul on 23/04/18.
@@ -719,7 +718,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder {
         tvPreOrder.setTextColor(ContextCompat.getColor(tvPreOrder.getContext(), R.color.font_black_secondary_54));
         tvNoteToSellerLabel.setTextColor(ContextCompat.getColor(tvNoteToSellerLabel.getContext(), R.color.black_38));
         tvOptionalNoteToSeller.setTextColor(ContextCompat.getColor(tvOptionalNoteToSeller.getContext(), R.color.black_70));
-        tvCashback.setBackground(VectorDrawableCompat.create(tvCashback.getContext().getResources(), R.drawable.bg_cashback, null));
+        tvCashback.setBackground(ContextCompat.getDrawable(tvCashback.getContext(), R.drawable.bg_cashback));
         setImageFilterNormal();
     }
 

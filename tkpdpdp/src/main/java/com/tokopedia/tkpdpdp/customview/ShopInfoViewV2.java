@@ -30,7 +30,6 @@ import com.tokopedia.tkpdpdp.R;
 import com.tokopedia.tkpdpdp.listener.ProductDetailView;
 
 import static com.tokopedia.core.product.model.productdetail.ProductShopInfo.SHOP_OFFICIAL_VALUE;
-import android.support.graphics.drawable.VectorDrawableCompat;
 
 
 /**
@@ -108,7 +107,7 @@ public class ShopInfoViewV2 extends BaseView<ProductDetailData, ProductDetailVie
     public void renderData(@NonNull final ProductDetailData data) {
         tvShopName.setText(MethodChecker.fromHtml(data.getShopInfo().getShopName()));
         if (data.getShopInfo().getShopIsOfficial()==SHOP_OFFICIAL_VALUE) {
-            ivLocation.setImageDrawable(VectorDrawableCompat.create(getResources(),com.tokopedia.core.R.drawable.ic_icon_authorize_grey, null));
+            ivLocation.setImageDrawable(ContextCompat.getDrawable(getContext(),com.tokopedia.core.R.drawable.ic_icon_authorize_grey));
             tvShopLoc.setText(getResources().getString(com.tokopedia.core.R.string.authorized));
         } else {
             tvShopLoc.setText(data.getShopInfo().getShopLocation());

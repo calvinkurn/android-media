@@ -36,6 +36,7 @@ import org.json.JSONObject;
 
 import io.branch.referral.Branch;
 import io.branch.referral.BranchError;
+import android.support.v7.app.AppCompatDelegate;
 
 /**
  * modified by m.normansyah
@@ -45,6 +46,10 @@ import io.branch.referral.BranchError;
  * fetch some data from server in order to worked around.
  */
 public class SplashScreen extends AppCompatActivity implements DownloadResultReceiver.Receiver {
+    static {
+        AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
+    }
+
     public static final int TIME_DELAY = 300;
     public static final String IS_LOADING = "IS_LOADING";
     public static final String RE_INIT_DATA_FOR_THE_FIRST_TIME = "RE-INIT-DATA-FOR-THE-FIRST-TIME";

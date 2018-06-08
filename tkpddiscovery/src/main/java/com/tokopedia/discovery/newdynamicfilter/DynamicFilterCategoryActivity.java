@@ -20,6 +20,7 @@ import com.tokopedia.discovery.newdynamicfilter.helper.OptionHelper;
 import org.parceler.Parcels;
 
 import java.util.List;
+import android.support.v7.app.AppCompatDelegate;
 
 /**
  * Created by henrypriyono on 8/24/17.
@@ -27,6 +28,10 @@ import java.util.List;
 
 public class DynamicFilterCategoryActivity extends AppCompatActivity
         implements CategoryParentAdapter.OnItemClickListener, CategoryChildAdapter.OnItemClickListener {
+
+    static {
+        AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
+    }
 
     public static final int REQUEST_CODE = 221;
     public static final String EXTRA_SELECTED_CATEGORY_ID = "EXTRA_SELECTED_CATEGORY_ID";
