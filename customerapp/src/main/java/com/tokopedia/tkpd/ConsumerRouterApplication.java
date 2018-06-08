@@ -2164,8 +2164,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-
-    @Override
     public void goToCreateTopadsPromo(Context context, String productId, String shopId, String source) {
         Intent topadsIntent = context.getPackageManager()
                 .getLaunchIntentForPackage(DrawerBuyerHelper.TOP_SELLER_APPLICATION_PACKAGE);
