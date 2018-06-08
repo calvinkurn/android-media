@@ -4,6 +4,7 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -19,7 +20,7 @@ import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.imagepicker.R;
 import com.tokopedia.imagepicker.picker.gallery.type.GalleryType;
 import com.tokopedia.imagepicker.picker.gallery.widget.MediaGridInset;
-import com.tokopedia.imagepicker.picker.instagram.InstagramConstant;
+import com.tokopedia.imagepicker.picker.instagram.util.InstagramConstant;
 import com.tokopedia.imagepicker.picker.instagram.data.source.exception.ShouldLoginInstagramException;
 import com.tokopedia.imagepicker.picker.instagram.di.DaggerInstagramComponent;
 
@@ -120,6 +121,18 @@ public class ImagePickerInstagramFragment extends BaseListFragment<InstagramMedi
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_image_picker_instagram, container, false);
+    }
+
+    @Nullable
+    @Override
+    public SwipeRefreshLayout getSwipeRefreshLayout(View view) {
+        return view.findViewById(R.id.swipe_refresh_layout);
+    }
+
+    @Override
+    public void onSwipeRefresh() {
+        imagePickerInstagramPresenter.clearCacheInstagramMedia();
+        super.onSwipeRefresh();
     }
 
     @Override

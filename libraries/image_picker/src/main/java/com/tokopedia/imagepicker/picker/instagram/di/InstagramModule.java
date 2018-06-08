@@ -4,7 +4,9 @@ import android.content.Context;
 
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
-import com.tokopedia.imagepicker.picker.instagram.InstagramConstant;
+import com.tokopedia.cacheapi.interceptor.CacheApiInterceptor;
+import com.tokopedia.imagepicker.picker.instagram.domain.interactor.ClearCacheMediaInstagramUseCase;
+import com.tokopedia.imagepicker.picker.instagram.util.InstagramConstant;
 import com.tokopedia.imagepicker.picker.instagram.data.InstagramRepositoryImpl;
 import com.tokopedia.imagepicker.picker.instagram.data.source.InstagramDataSourceFactory;
 import com.tokopedia.imagepicker.picker.instagram.data.source.cloud.InstagramApi;
@@ -18,7 +20,6 @@ import java.util.concurrent.TimeUnit;
 import dagger.Module;
 import dagger.Provides;
 import okhttp3.OkHttpClient;
-import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
 
 /**
@@ -34,8 +35,9 @@ public class InstagramModule {
     @InstagramScope
     @Provides
     ImagePickerInstagramPresenter provideImagePickerInstagramPresenter(GetListMediaInstagramUseCase getListMediaInstagramUseCase,
-                                                                       SaveCookiesInstagramUseCase saveCookiesInstagramUseCase) {
-        return new ImagePickerInstagramPresenter(getListMediaInstagramUseCase, saveCookiesInstagramUseCase);
+                                                                       SaveCookiesInstagramUseCase saveCookiesInstagramUseCase,
+                                                                       ClearCacheMediaInstagramUseCase clearCacheMediaInstagramUseCase) {
+        return new ImagePickerInstagramPresenter(getListMediaInstagramUseCase, saveCookiesInstagramUseCase, clearCacheMediaInstagramUseCase);
     }
 
     @InstagramScope
@@ -54,6 +56,7 @@ public class InstagramModule {
     @Provides
     InstagramApi provideInstagramApi(Retrofit.Builder retrofit) {
         return retrofit.client(new OkHttpClient.Builder()
+                .addInterceptor(new CacheApiInterceptor())
                 .writeTimeout(TIMEOUT, TimeUnit.SECONDS)
                 .readTimeout(TIMEOUT, TimeUnit.SECONDS)
                 .connectTimeout(TIMEOUT, TimeUnit.SECONDS)

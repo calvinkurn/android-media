@@ -1,12 +1,9 @@
 package com.tokopedia.imagepicker.picker.instagram.view.dialog;
 
 import android.app.Dialog;
-import android.content.Context;
-import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.net.http.SslError;
-import android.support.design.widget.BottomSheetBehavior;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.WindowManager;
@@ -21,11 +18,9 @@ import android.widget.ProgressBar;
 
 import com.tokopedia.design.component.BottomSheets;
 import com.tokopedia.imagepicker.R;
-import com.tokopedia.imagepicker.picker.instagram.InstagramConstant;
+import com.tokopedia.imagepicker.picker.instagram.util.InstagramConstant;
 
-import javax.inject.Inject;
-
-import static com.tokopedia.imagepicker.picker.instagram.InstagramConstant.SESSIONID;
+import static com.tokopedia.imagepicker.picker.instagram.util.InstagramConstant.SESSIONID;
 
 /**
  * Created by zulfikarrahman on 5/4/18.
