@@ -22,6 +22,7 @@ public class FilterSearchData implements Parcelable {
     private List<String> selectedDepartureTimeList;
     private List<String> selectedTrains;
     private List<String> selectedTrainClass;
+    private boolean hasFilter;
 
     public FilterSearchData() {
     }
@@ -37,25 +38,7 @@ public class FilterSearchData implements Parcelable {
         selectedDepartureTimeList = in.createStringArrayList();
         selectedTrains = in.createStringArrayList();
         selectedTrainClass = in.createStringArrayList();
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeLong(minPrice);
-        dest.writeLong(maxPrice);
-        dest.writeStringList(departureTimeList);
-        dest.writeStringList(trains);
-        dest.writeStringList(trainClass);
-        dest.writeLong(selectedMinPrice);
-        dest.writeLong(selectedMaxPrice);
-        dest.writeStringList(selectedDepartureTimeList);
-        dest.writeStringList(selectedTrains);
-        dest.writeStringList(selectedTrainClass);
-    }
-
-    @Override
-    public int describeContents() {
-        return 0;
+        hasFilter = in.readByte() != 0;
     }
 
     public static final Creator<FilterSearchData> CREATOR = new Creator<FilterSearchData>() {
@@ -69,6 +52,30 @@ public class FilterSearchData implements Parcelable {
             return new FilterSearchData[size];
         }
     };
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel parcel, int i) {
+        parcel.writeLong(minPrice);
+        parcel.writeLong(maxPrice);
+        parcel.writeStringList(departureTimeList);
+        parcel.writeStringList(trains);
+        parcel.writeStringList(trainClass);
+        parcel.writeLong(selectedMinPrice);
+        parcel.writeLong(selectedMaxPrice);
+        parcel.writeStringList(selectedDepartureTimeList);
+        parcel.writeStringList(selectedTrains);
+        parcel.writeStringList(selectedTrainClass);
+        parcel.writeByte((byte) (hasFilter ? 1 : 0));
+    }
+
+    public boolean isHasFilter() {
+        return hasFilter;
+    }
 
     public long getMinPrice() {
         return minPrice;
@@ -164,5 +171,12 @@ public class FilterSearchData implements Parcelable {
         filterSearchData.setSelectedTrains(getSelectedTrains());
         filterSearchData.setSelectedTrainClass(getSelectedTrainClass());
         return filterSearchData;
+    }
+
+    public void setHasFilter(FilterSearchData filterSearchData) {
+        this.hasFilter = filterSearchData.getSelectedMinPrice() >= 0 || filterSearchData.getSelectedMaxPrice() >= 0 ||
+                         filterSearchData.getSelectedTrains() != null && !filterSearchData.getSelectedTrains().isEmpty() ||
+                         filterSearchData.getSelectedTrainClass() != null && !filterSearchData.getSelectedTrainClass().isEmpty() ||
+                         filterSearchData.getSelectedDepartureTimeList() != null && !filterSearchData.getSelectedDepartureTimeList().isEmpty();
     }
 }

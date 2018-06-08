@@ -52,6 +52,7 @@ public abstract class TrainSearchFragment extends BaseListFragment<TrainSchedule
         TrainSearchAdapterTypeFactory> implements TrainSearchContract.View {
 
     private static final String TAG = TrainSearchFragment.class.getSimpleName();
+    private static final String SELECTED_SORT = "selected_sort";
     private static final int EMPTY_MARGIN = 0;
     private static final float DEFAULT_DIMENS_MULTIPLIER = 0.5f;
     private static final int PADDING_SEARCH_LIST = 60;
@@ -71,6 +72,7 @@ public abstract class TrainSearchFragment extends BaseListFragment<TrainSchedule
     private LinearLayout tripInfoLinearLayout;
     protected TrainSearchComponent trainSearchComponent;
     private int selectedSortOption;
+    private FilterSearchData filterSearchData;
 
     private BottomActionView filterAndSortBottomAction;
 
@@ -102,16 +104,30 @@ public abstract class TrainSearchFragment extends BaseListFragment<TrainSchedule
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         getDataFromFragment();
+
+        if (savedInstanceState == null) {
+            filterSearchData = new FilterSearchData();
+            selectedSortOption = TrainSortOption.CHEAPEST;
+        } else {
+            selectedSortOption = savedInstanceState.getInt(SELECTED_SORT);
+        }
+
         showLoading();
         presenter.getTrainSchedules(getScheduleVariant());
 
         setUpButtonActionView(view);
-        selectedSortOption = TrainSortOption.CHEAPEST;
 
         originCodeTv.setText(originCode);
         originCityTv.setText(originCity);
         destinationCodeTv.setText(destinationCode);
         destinationCityTv.setText(destinationCity);
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putInt(SELECTED_SORT, selectedSortOption);
+
     }
 
     @NonNull
@@ -137,7 +153,7 @@ public abstract class TrainSearchFragment extends BaseListFragment<TrainSchedule
             @Override
             public void onClick(View view) {
                 startActivityForResult(TrainFilterSearchActivity.getCallingIntent(getActivity(),
-                        getRequestParam().getParameters(), getScheduleVariant()), 133);
+                        getRequestParam().getParameters(), getScheduleVariant(), filterSearchData), 133);
             }
         });
         filterAndSortBottomAction.setButton2OnClickListener(new View.OnClickListener() {
@@ -146,7 +162,25 @@ public abstract class TrainSearchFragment extends BaseListFragment<TrainSchedule
                 showSortBottomSheets();
             }
         });
+
+        markUiSortAndFilterOption();
     }
+
+    private void markUiSortAndFilterOption() {
+        if (selectedSortOption == TrainSortOption.NO_PREFERENCE) {
+            filterAndSortBottomAction.setMarkRight(false);
+        } else {
+            filterAndSortBottomAction.setMarkRight(true);
+        }
+
+        if (filterSearchData.isHasFilter()) {
+            filterAndSortBottomAction.setMarkLeft(true);
+        } else {
+            filterAndSortBottomAction.setMarkLeft(false);
+        }
+    }
+
+
 
     @Override
     protected Visitable getEmptyDataViewModel() {
@@ -187,8 +221,8 @@ public abstract class TrainSearchFragment extends BaseListFragment<TrainSchedule
         requestParams.putString(GetScheduleUseCase.DEST_CITY, destinationCity);
 
         //not yet implemented in query gql staging
-//        requestParams.putInt(GetScheduleUseCase.TOTAL_ADULT, adultPassanger);
-//        requestParams.putInt(GetScheduleUseCase.TOTAL_INFANT, infantPassanger);
+        //requestParams.putInt(GetScheduleUseCase.TOTAL_ADULT, adultPassanger);
+        //requestParams.putInt(GetScheduleUseCase.TOTAL_INFANT, infantPassanger);
         return requestParams;
     }
 
@@ -231,6 +265,7 @@ public abstract class TrainSearchFragment extends BaseListFragment<TrainSchedule
     @Override
     public void setSortOptionId(int sortOptionId) {
         selectedSortOption = sortOptionId;
+        markUiSortAndFilterOption();
     }
 
     @Override
@@ -302,7 +337,7 @@ public abstract class TrainSearchFragment extends BaseListFragment<TrainSchedule
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == Activity.RESULT_OK && requestCode == 133) {
-            FilterSearchData filterSearchData = data.getExtras().getParcelable("model_filter");
+            filterSearchData = data.getExtras().getParcelable("model_filter");
             long minPrice = filterSearchData.getSelectedMinPrice() == 0 ? filterSearchData.getMinPrice() : filterSearchData.getSelectedMinPrice();
             long maxPrice = filterSearchData.getSelectedMaxPrice() == 0 ? filterSearchData.getMaxPrice() : filterSearchData.getSelectedMaxPrice();
             List<String> trains = filterSearchData.getSelectedTrains() != null && !filterSearchData.getSelectedTrains().isEmpty() ?
@@ -313,7 +348,7 @@ public abstract class TrainSearchFragment extends BaseListFragment<TrainSchedule
                     filterSearchData.getSelectedDepartureTimeList() : filterSearchData.getDepartureTimeList();
 
             presenter.getFilteredAndSortedSchedules(minPrice, maxPrice, trainsClass, trains,
-                    departureHours, TrainSortOption.NO_PREFERENCE);
+                    departureHours, selectedSortOption);
         }
     }
 }

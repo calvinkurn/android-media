@@ -36,8 +36,8 @@
     <string name="search_no_connection_title">Tidak Ada Koneksi Internet</string>
     <string name="search_no_connection">Periksa kembali koneksi internet Anda dan coba lagi.</string>
 
-    <string name="sort">Urutkan</string>
-    <string name="filter">Filter</string>
+    <string name="train_search_sort">Urutkan</string>
+    <string name="train_search_filter">Filter</string>
     <string name="filter_time_departure">Waktu Berangkat</string>
     <string name="filter_train_name">Kereta</string>
     <string name="filter_class_name">Kelas</string>
