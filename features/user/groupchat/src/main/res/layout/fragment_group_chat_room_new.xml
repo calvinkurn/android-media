@@ -15,27 +15,18 @@
         android:background="@color/white"
         android:orientation="vertical">
 
+
         <android.support.constraint.ConstraintLayout
             android:id="@+id/bottom"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="bottom"
+            android:paddingTop="@dimen/dp_8"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
             tools:layout_editor_absoluteX="58dp"
             tools:layout_editor_absoluteY="451dp">
-
-            <View
-                android:id="@+id/view"
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:layout_marginBottom="8dp"
-                android:background="@color/grey_300"
-                app:layout_constraintStart_toStartOf="@id/bottom"
-                app:layout_constraintTop_toTopOf="@id/bottom"
-                android:visibility="gone"
-                tools:visibility="gone"/>
 
             <ImageView
                 android:id="@+id/button_send"
@@ -43,14 +34,18 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentEnd="true"
                 android:layout_alignParentRight="true"
-                android:padding="@dimen/dp_16"
                 app:layout_constraintBottom_toBottomOf="@id/bottom"
                 app:layout_constraintEnd_toEndOf="@id/bottom"
                 app:layout_constraintRight_toRightOf="@id/bottom"
                 app:srcCompat="@drawable/ic_send_24dp_green"
                 tools:layout_editor_absoluteX="42dp"
                 tools:layout_editor_absoluteY="460dp"
-                tools:visibility="gone"/>
+                app:layout_constraintTop_toTopOf="@id/reply_edit_text"
+                android:paddingBottom="@dimen/dp_8"
+                android:paddingLeft="@dimen/dp_16"
+                android:paddingRight="@dimen/dp_16"
+
+                tools:visibility="visible"/>
 
             <EditText
                 android:id="@+id/reply_edit_text"
@@ -74,7 +69,6 @@
                 app:layout_constraintRight_toLeftOf="@+id/button_send"
                 android:layout_marginTop="@dimen/dp_8"
                 app:layout_constraintStart_toStartOf="@id/bottom"
-                app:layout_constraintTop_toBottomOf="@id/view"
                 tools:text="dsajj\nfdfidjidfijdfijd\n asd\basd"
                 tools:visibility="visible"/>
 
@@ -97,7 +91,6 @@
                 tools:visibility="gone"
                 />
         </android.support.constraint.ConstraintLayout>
-
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/chat_list"
@@ -200,10 +193,18 @@
             android:orientation="horizontal"
             app:layout_constraintBottom_toTopOf="@id/bottom"
             app:layout_constraintEnd_toEndOf="parent"
-            android:layout_marginLeft="@dimen/dp_16"
-            android:layout_marginStart="@dimen/dp_16"
-            android:layout_marginRight="@dimen/dp_16"
-            android:layout_marginEnd="@dimen/dp_16"/>
+            />
+
+        <View
+            android:id="@+id/view"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/grey_300"
+            app:layout_constraintStart_toStartOf="@id/quick_reply"
+            app:layout_constraintTop_toTopOf="@id/quick_reply"
+            android:visibility="gone"
+            tools:visibility="gone"/>
+
 
         <include
             android:id="@+id/pinned_message"

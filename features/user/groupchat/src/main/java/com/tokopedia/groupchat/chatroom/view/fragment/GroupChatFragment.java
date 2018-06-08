@@ -62,6 +62,7 @@ import com.tokopedia.groupchat.common.analytics.EEPromotion;
 import com.tokopedia.groupchat.common.analytics.GroupChatAnalytics;
 import com.tokopedia.groupchat.common.data.GroupChatUrl;
 import com.tokopedia.groupchat.common.design.CloseableBottomSheetDialog;
+import com.tokopedia.groupchat.common.design.QuickReplyItemDecoration;
 import com.tokopedia.groupchat.common.design.SpaceItemDecoration;
 import com.tokopedia.groupchat.common.di.component.DaggerGroupChatComponent;
 import com.tokopedia.groupchat.common.di.component.GroupChatComponent;
@@ -198,6 +199,15 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
         list.add(new GroupChatQuickReplyViewModel("1","Hello &#128522"));
         list.add(new GroupChatQuickReplyViewModel("1","&#128512"));
         list.add(new GroupChatQuickReplyViewModel("1","&#128532"));
+        list.add(new GroupChatQuickReplyViewModel("1","Hello &#128522"));
+        list.add(new GroupChatQuickReplyViewModel("1","&#128512"));
+        list.add(new GroupChatQuickReplyViewModel("1","&#128532"));
+        list.add(new GroupChatQuickReplyViewModel("1","Hello &#128522"));
+        list.add(new GroupChatQuickReplyViewModel("1","&#128512"));
+        list.add(new GroupChatQuickReplyViewModel("1","&#128532"));
+        list.add(new GroupChatQuickReplyViewModel("1","Hello &#128522"));
+        list.add(new GroupChatQuickReplyViewModel("1","&#128512"));
+        list.add(new GroupChatQuickReplyViewModel("1","&#128532"));
         quickReplyAdapter.setList(list);
         layoutManager = new LinearLayoutManager(getActivity());
         layoutManager.setReverseLayout(true);
@@ -208,8 +218,10 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
         quickReplyRecyclerView.setAdapter(quickReplyAdapter);
         SpaceItemDecoration itemDecoration = new SpaceItemDecoration((int) getActivity()
                 .getResources().getDimension(R.dimen.space_chat));
+        QuickReplyItemDecoration quickReplyItemDecoration = new QuickReplyItemDecoration((int) getActivity()
+                .getResources().getDimension(R.dimen.dp_16));
         chatRecyclerView.addItemDecoration(itemDecoration);
-
+        quickReplyRecyclerView.addItemDecoration(quickReplyItemDecoration);
         chatRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
@@ -346,7 +358,8 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
         if (getView() != null) {
             ChannelInfoViewModel channelInfoViewModel = ((GroupChatContract.View) getActivity()).getChannelInfoViewModel();
             View pinnedMessageView = getView().findViewById(R.id.pinned_message);
-            if (pinnedMessage != null) {
+            if (pinnedMessage != null && !TextUtils.isEmpty(pinnedMessage.getTitle())
+                    && !TextUtils.isEmpty(pinnedMessage.getMessage())) {
                 pinnedMessageView.setVisibility(View.VISIBLE);
                 ((TextView) pinnedMessageView.findViewById(R.id.message)).setText(pinnedMessage.getTitle());
                 pinnedMessageView.setOnClickListener(new View.OnClickListener() {
@@ -472,6 +485,13 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
         int index = replyEditText.getSelectionStart();
         replyEditText.setText(Html.fromHtml(String.format("%s %s %s", text.substring(0, index), message, text
                 .substring(index))));
+        PendingChatViewModel pendingChatViewModel = new PendingChatViewModel
+                (presenter.checkText(replyEditText.getText().toString()),
+                        userSession.getUserId(),
+                        userSession.getName(),
+                        userSession.getProfilePicture(),
+                        false);
+        presenter.sendQuickReply(pendingChatViewModel, mChannel);
     }
 
     private void trackViewSprintSaleComponent(SprintSaleViewModel sprintSaleViewModel) {
@@ -614,6 +634,12 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
         replyEditText.setText("");
         scrollToBottom();
         setSendButtonEnabled(true);
+    }
+
+    @Override
+    public void onSuccessSendQuickReply(PendingChatViewModel pendingChatViewModel, ChatViewModel viewModel) {
+        onSuccessSendMessage(pendingChatViewModel, viewModel);
+        quickReplyRecyclerView.setVisibility(View.GONE);
     }
 
     @Override

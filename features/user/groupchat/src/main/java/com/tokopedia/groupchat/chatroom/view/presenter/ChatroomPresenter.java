@@ -94,6 +94,27 @@ public class ChatroomPresenter extends BaseDaggerPresenter<ChatroomContract.View
 
     }
 
+    @Override
+    public void sendQuickReply(final PendingChatViewModel pendingChatViewModel, OpenChannel mChannel) {
+        sendMessageUseCase.execute(getView().getContext(), pendingChatViewModel, mChannel,
+                new SendGroupChatMessageUseCase.SendGroupChatMessageListener() {
+
+                    @Override
+                    public void onSuccessSendMessage(ChatViewModel viewModel) {
+                        if (getView() != null) {
+                            getView().onSuccessSendQuickReply(pendingChatViewModel, viewModel);
+                        }
+                    }
+
+                    @Override
+                    public void onErrorSendMessage(PendingChatViewModel pendingChatViewModel,
+                                                   String errorMessage) {
+                        if (getView() != null) {
+                            getView().onErrorSendMessage(pendingChatViewModel, errorMessage);
+                        }
+                    }
+                });
+    }
 
     @Override
     public void loadPreviousMessages(OpenChannel mChannel, PreviousMessageListQuery mPrevMessageListQuery) {
@@ -154,5 +175,4 @@ public class ChatroomPresenter extends BaseDaggerPresenter<ChatroomContract.View
         super.detachView();
         sendVoteUseCase.unsubscribe();
     }
-
 }
