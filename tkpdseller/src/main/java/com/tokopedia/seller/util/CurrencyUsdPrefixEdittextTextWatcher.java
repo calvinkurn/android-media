@@ -19,13 +19,16 @@ public class CurrencyUsdPrefixEdittextTextWatcher extends NumberTextWatcher {
 
     private static final int DECIMAL_DIGITS = 2;
     private String currentValue = "0.00";
+    DecimalFormat decimalFormat;
 
     public CurrencyUsdPrefixEdittextTextWatcher(EditText editText) {
         super(editText);
+        decimalFormat =  (DecimalFormat) DecimalFormat.getCurrencyInstance(Locale.US);
     }
 
     public CurrencyUsdPrefixEdittextTextWatcher(EditText editText, String defaultValue) {
         super(editText, defaultValue);
+        decimalFormat =  (DecimalFormat) DecimalFormat.getCurrencyInstance(Locale.US);
     }
 
     @Override
@@ -52,23 +55,22 @@ public class CurrencyUsdPrefixEdittextTextWatcher extends NumberTextWatcher {
             }
 
             String decimalString = new StringBuilder(text).insert(text.length() - DECIMAL_DIGITS, '.').toString();
-
             double decimalValue = Double.valueOf(decimalString);
-            onNumberChanged(decimalValue);
 
             text = convertToDollarWithCurrency(decimalValue);
             setTextEditText(text);
             setCursorPosition(tempCursorPos, tempLength);
+
+            onNumberChanged(decimalValue);
         }
     }
 
     public String convertToDollarWithCurrency(Double decimalValue){
-        DecimalFormat currencyFormatter =  (DecimalFormat) DecimalFormat.getCurrencyInstance(Locale.US);
-        DecimalFormatSymbols dfs = new DecimalFormat().getDecimalFormatSymbols();
-        dfs.setCurrencySymbol("");
-        currencyFormatter.setDecimalFormatSymbols(dfs);
-        currencyFormatter.setMinimumFractionDigits(DECIMAL_DIGITS);
-        return currencyFormatter.format(decimalValue);
+        DecimalFormatSymbols decimalFormatSymbols = new DecimalFormat().getDecimalFormatSymbols();
+        decimalFormatSymbols.setCurrencySymbol("");
+        decimalFormat.setDecimalFormatSymbols(decimalFormatSymbols);
+        decimalFormat.setMinimumFractionDigits(DECIMAL_DIGITS);
+        return decimalFormat.format(decimalValue);
     }
 
     public void setTextEditText(String text){
