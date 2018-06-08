@@ -4,7 +4,7 @@ import com.google.gson.JsonArray;
 import com.tokopedia.CommonUtils;
 import com.tokopedia.graphql.FingerprintManager;
 import com.tokopedia.graphql.GraphqlCacheManager;
-import com.tokopedia.graphql.data.GqlClient;
+import com.tokopedia.graphql.data.GraphqlClient;
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy;
 import com.tokopedia.graphql.data.model.GraphqlRequest;
 import com.tokopedia.graphql.data.model.GraphqlResponseInternal;
@@ -31,9 +31,9 @@ public class GraphqlCloudDataStore implements GraphqlDataStore {
 
     @Inject
     public GraphqlCloudDataStore() {
-        this.mApi = GqlClient.getApiInterface();
+        this.mApi = GraphqlClient.getApiInterface();
         this.mCacheManager = new GraphqlCacheManager();
-        this.mFingerprintManager = GqlClient.getFingerPrintManager();
+        this.mFingerprintManager = GraphqlClient.getFingerPrintManager();
     }
 
     @Override

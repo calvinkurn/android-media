@@ -14,12 +14,12 @@ import com.tokopedia.user.session.UserSession;
 
 import retrofit2.Retrofit;
 
-public class GqlClient {
+public class GraphqlClient {
     private static Retrofit sRetrofit = null;
     private static GraphqlApi sGraphqlApi = null;
     private static FingerprintManager sFingerprintManager;
 
-    private GqlClient() {
+    private GraphqlClient() {
 
     }
 

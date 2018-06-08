@@ -3,7 +3,7 @@ package com.tokopedia.graphql.data.source.cache;
 import com.google.gson.JsonParser;
 import com.tokopedia.graphql.FingerprintManager;
 import com.tokopedia.graphql.GraphqlCacheManager;
-import com.tokopedia.graphql.data.GqlClient;
+import com.tokopedia.graphql.data.GraphqlClient;
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy;
 import com.tokopedia.graphql.data.model.GraphqlRequest;
 import com.tokopedia.graphql.data.model.GraphqlResponseInternal;
@@ -26,7 +26,7 @@ public class GraphqlCacheDataStore implements GraphqlDataStore {
     @Inject
     public GraphqlCacheDataStore() {
         this.mCacheManager = new GraphqlCacheManager();
-        this.mFingerprintManager = GqlClient.getFingerPrintManager();
+        this.mFingerprintManager = GraphqlClient.getFingerPrintManager();
     }
 
     @Override
