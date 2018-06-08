@@ -17,12 +17,10 @@ import android.widget.ProgressBar;
 
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.ride.R;
-import android.support.v7.app.AppCompatDelegate;
+
 
 public class ScroogeActivity extends AppCompatActivity {
-    static {
-        AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
-    }
+
 
     //callbacks URL's
     private static String ADD_CC_SUCESS_CALLBACK = "tokopedia://action_add_cc_success";

@@ -71,7 +71,7 @@ import org.json.JSONObject;
 
 import io.branch.referral.Branch;
 import io.branch.referral.BranchError;
-import android.support.v7.app.AppCompatDelegate;
+
 
 @DeepLinkHandler({
         ConsumerDeeplinkModule.class,
@@ -102,9 +102,7 @@ import android.support.v7.app.AppCompatDelegate;
 
 public class DeeplinkHandlerActivity extends AppCompatActivity {
 
-    static {
-        AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
-    }
+
 
     public static DeepLinkDelegate getDelegateInstance() {
         return new DeepLinkDelegate(

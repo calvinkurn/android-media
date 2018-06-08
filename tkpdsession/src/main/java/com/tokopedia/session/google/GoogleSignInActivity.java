@@ -31,12 +31,10 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
-import android.support.v7.app.AppCompatDelegate;
+
 
 public class GoogleSignInActivity extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener {
-    static {
-        AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
-    }
+
 
     private static final String LOG_TAG = "GoogleSignInActivity";
     public static final int RC_SIGN_IN_GOOGLE = 7777;

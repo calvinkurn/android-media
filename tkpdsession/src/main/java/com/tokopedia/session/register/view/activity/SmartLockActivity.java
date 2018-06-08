@@ -22,14 +22,12 @@ import com.google.android.gms.common.api.Status;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.session.R;
-import android.support.v7.app.AppCompatDelegate;
+
 
 public class SmartLockActivity extends AppCompatActivity implements
         GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener {
-    static {
-        AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
-    }
+
 
     private static final String TAG = "SmartLock";
     public static final int RC_SAVE = 1;

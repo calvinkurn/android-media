@@ -155,6 +155,7 @@ android {
             shrinkResources true
             buildConfigField "boolean", "ENABLE_DISTRIBUTION", allowDistribution()
             multiDexKeepFile file('multidex-config.txt')
+            multiDexKeepProguard file('multidex-config.pro')
             if (allowProguard()) {
                 proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
             } else {

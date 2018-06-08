@@ -40,7 +40,7 @@ import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
-import android.support.v7.app.AppCompatDelegate;
+
 
 /**
  * Created by nisie on 2/7/17.
@@ -54,9 +54,7 @@ import android.support.v7.app.AppCompatDelegate;
 public class BaseActivity extends AppCompatActivity implements SessionHandler.onLogoutListener,
         ErrorNetworkReceiver.ReceiveListener, ScreenTracking.IOpenScreenAnalytics {
 
-    static {
-        AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
-    }
+
 
     public static final String FORCE_LOGOUT = "com.tokopedia.tkpd.FORCE_LOGOUT";
     public static final String SERVER_ERROR = "com.tokopedia.tkpd.SERVER_ERROR";

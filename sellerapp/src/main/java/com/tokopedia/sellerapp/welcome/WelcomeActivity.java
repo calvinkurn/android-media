@@ -8,13 +8,11 @@ import android.support.v7.app.AppCompatActivity;
 
 import com.tokopedia.sellerapp.R;
 import com.tokopedia.sellerapp.welcome.view.WelcomeFragment;
-import android.support.v7.app.AppCompatDelegate;
+
 
 public class WelcomeActivity extends AppCompatActivity {
 
-    static {
-        AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
-    }
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

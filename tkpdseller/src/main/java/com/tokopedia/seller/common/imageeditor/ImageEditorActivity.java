@@ -16,16 +16,14 @@ import com.tokopedia.core.myproduct.utils.ImageDownloadHelper;
 import com.tokopedia.seller.R;
 
 import java.util.ArrayList;
-import android.support.v7.app.AppCompatDelegate;
+
 
 /**
  * Created by Hendry on 9/25/2017.
  */
 
 public class ImageEditorActivity extends AppCompatActivity implements ImageEditorFragment.OnImageEditorFragmentListener {
-    static {
-        AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
-    }
+
 
     public static final int REQUEST_CODE = 520;
     public static final String EXTRA_IMAGE_URLS = "IMG_URLS";
