@@ -40,8 +40,7 @@ public class GraphqlUseCase extends UseCase<GraphqlResponse> {
         this.mGson = gson;
         this.mRequests = new ArrayList<>();
     }
-
-    @Inject
+    
     public GraphqlUseCase() {
         this.mGraphqlRepository = new GraphqlRepositoryImpl(new GraphqlCloudDataStore(), new GraphqlCacheDataStore());
         this.mGson = new Gson();
