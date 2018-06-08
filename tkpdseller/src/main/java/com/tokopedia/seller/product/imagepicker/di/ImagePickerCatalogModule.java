@@ -7,13 +7,17 @@ import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.network.exception.HeaderErrorListResponse;
 import com.tokopedia.abstraction.common.network.interceptor.HeaderErrorResponseInterceptor;
 import com.tokopedia.abstraction.common.utils.GlobalConfig;
+import com.tokopedia.cacheapi.interceptor.CacheApiInterceptor;
+import com.tokopedia.cacheapi.util.CacheApiResponseValidator;
 import com.tokopedia.seller.product.imagepicker.data.source.CatalogApi;
 import com.tokopedia.seller.product.imagepicker.data.source.CatalogImageDataSource;
 import com.tokopedia.seller.product.imagepicker.domain.CatalogImageRepository;
 import com.tokopedia.seller.product.imagepicker.data.repository.CatalogImageRepositoryImpl;
+import com.tokopedia.seller.product.imagepicker.domain.interactor.ClearCacheCatalogUseCase;
 import com.tokopedia.seller.product.imagepicker.domain.interactor.GetCatalogImageUseCase;
 import com.tokopedia.seller.product.imagepicker.util.CatalogConstant;
 import com.tokopedia.seller.product.imagepicker.view.presenter.ImagePickerCatalogPresenter;
+import com.tokopedia.topads.common.data.util.CacheApiTKPDResponseValidator;
 
 import dagger.Module;
 import dagger.Provides;
@@ -31,8 +35,9 @@ public class ImagePickerCatalogModule {
 
     @CatalogImageScope
     @Provides
-    ImagePickerCatalogPresenter provideImagePickerCatalogPresenter(GetCatalogImageUseCase getCatalogImageUseCase){
-        return new ImagePickerCatalogPresenter(getCatalogImageUseCase);
+    ImagePickerCatalogPresenter provideImagePickerCatalogPresenter(GetCatalogImageUseCase getCatalogImageUseCase,
+                                                                   ClearCacheCatalogUseCase clearCacheCatalogUseCase){
+        return new ImagePickerCatalogPresenter(getCatalogImageUseCase, clearCacheCatalogUseCase);
     }
 
     @CatalogImageScope
@@ -57,6 +62,7 @@ public class ImagePickerCatalogModule {
     public OkHttpClient provideOkHttpClient(@ApplicationContext Context context) {
         OkHttpClient.Builder builder = new OkHttpClient.Builder();
         builder.addInterceptor(new HeaderErrorResponseInterceptor(HeaderErrorListResponse.class));
+        builder.addInterceptor(new CacheApiInterceptor(new CacheApiTKPDResponseValidator<>(HeaderErrorListResponse.class)));
         if(GlobalConfig.isAllowDebuggingTools()){
             builder.addInterceptor(new HttpLoggingInterceptor());
             builder.addInterceptor(new ChuckInterceptor(context));

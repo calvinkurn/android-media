@@ -10,6 +10,7 @@ import com.tokopedia.imagepicker.picker.main.builder.ImagePickerEditorBuilder;
 import com.tokopedia.imagepicker.picker.main.builder.ImagePickerMultipleSelectionBuilder;
 import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity;
 import com.tokopedia.seller.R;
+import com.tokopedia.seller.product.imagepicker.view.activity.ImagePickerAddProductActivity;
 
 import java.util.ArrayList;
 
@@ -69,6 +70,11 @@ public class AddProductImagePickerBuilder {
     public static Intent createPickerIntentPrimary(Context context, ArrayList<String> imageList) {
         ImagePickerBuilder builder = AddProductImagePickerBuilder.createPrimaryNewBuilder(context, imageList);
         return ImagePickerActivity.getIntent(context, builder);
+    }
+
+    public static Intent createPickerIntentWithCatalog(Context context, ArrayList<String> imageList, String catalogId) {
+        ImagePickerBuilder builder = AddProductImagePickerBuilder.createPrimaryNewBuilder(context, imageList);
+        return ImagePickerAddProductActivity.getIntent(context, builder, catalogId);
     }
 
     public static Intent createPickerIntentInstagram(Context context) {

@@ -248,8 +248,12 @@ public abstract class BaseProductAddEditFragment<T extends ProductAddPresenter>
 
     @Override
     public void onAddImagePickerClicked(final int imagePosition) {
-        Intent intent = AddProductImagePickerBuilder.createPickerIntentPrimary(getContext(),
-                productImageViewHolder.getImagesSelectView().getImageStringList());
+        String catalogId = "";
+        if(productInfoViewHolder.getCatalogId() > 0){
+            catalogId = String.valueOf(productInfoViewHolder.getCatalogId());
+        }
+        Intent intent = AddProductImagePickerBuilder.createPickerIntentWithCatalog(getContext(),
+                productImageViewHolder.getImagesSelectView().getImageStringList(), catalogId);
         startActivityForResult(intent, REQUEST_CODE_ADD_PRODUCT_IMAGE);
     }
 

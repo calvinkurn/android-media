@@ -1,22 +1,16 @@
-package com.tokopedia.tkpd.utils;
+package com.tokopedia.imagepicker.picker.instagram.util;
 
 import com.tokopedia.cacheapi.domain.model.CacheApiWhiteListDomain;
-import com.tokopedia.imagepicker.picker.instagram.util.InstagramCacheApiWhiteList;
-import com.tokopedia.seller.opportunity.common.util.OpportunityCacheApiWhiteList;
-import com.tokopedia.seller.product.common.utils.ProductCacheApiWhiteList;
-import com.tokopedia.seller.shop.common.utils.ShopOpenCacheApiWhiteList;
-import com.tokopedia.shop.common.util.ShopCacheApiWhiteList;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 /**
- * Created by nathan on 9/16/17.
+ * Created by zulfikarrahman on 6/8/18.
  */
 
-public class CacheApiWhiteList {
-
+public class InstagramCacheApiWhiteList {
     private static final long TEN_SECOND = TimeUnit.SECONDS.toSeconds(10);
     private static final long THIRTY_SECOND = TimeUnit.SECONDS.toSeconds(30);
     private static final long ONE_MINUTE = TimeUnit.MINUTES.toSeconds(1);
@@ -28,11 +22,10 @@ public class CacheApiWhiteList {
 
     public static List<CacheApiWhiteListDomain> getWhiteList() {
         List<CacheApiWhiteListDomain> cacheApiWhiteList = new ArrayList<>();
-        cacheApiWhiteList.addAll(ShopOpenCacheApiWhiteList.getWhiteList());
-        cacheApiWhiteList.addAll(ShopCacheApiWhiteList.getWhiteList());
-        cacheApiWhiteList.addAll(ProductCacheApiWhiteList.getWhiteList());
-        cacheApiWhiteList.addAll(OpportunityCacheApiWhiteList.getWhiteList());
-        cacheApiWhiteList.addAll(InstagramCacheApiWhiteList.getWhiteList());
+
+        // Opportunity category
+        cacheApiWhiteList.add(new CacheApiWhiteListDomain(InstagramConstant.URL_API_INSTAGRAM, InstagramConstant.URL_PATH_GET_LIST_MEDIA, ONE_HOUR));
+
         return cacheApiWhiteList;
     }
 }
