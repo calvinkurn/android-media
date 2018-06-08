@@ -19,7 +19,6 @@ public class EncoderDecoder {
 	    	cipher.init(Cipher.ENCRYPT_MODE, skeySpec, ivs);
 	    	byte[] encryptedData = cipher.doFinal(text.getBytes());     
 	    	encode_result = Base64.encodeToString(encryptedData, 0);
-	    	encode_result = encode_result.replace("\n", "");
     	}
     	catch (Exception e) {
     		e.printStackTrace();  		
@@ -57,7 +56,7 @@ public class EncoderDecoder {
 	    	byte[] decryptedData = cipher.doFinal(data);     
 	    	decode_result = new String(decryptedData);
 	    	//decode_result = Base64.encodeToString(encryptedData, 0);
-	    	//decode_result.replace("\n", "");
+	    	decode_result = decode_result.replace("\n", "");
     	}
     	catch (Exception e) {
     		e.printStackTrace();  		
@@ -78,7 +77,7 @@ public class EncoderDecoder {
 			byte[] decryptedData = cipher.doFinal(data);
 			decode_result = new String(decryptedData);
 			//decode_result = Base64.encodeToString(encryptedData, 0);
-			//decode_result.replace("\n", "");
+			decode_result = decode_result.replace("\n", "");
 		}
 		catch (Exception e) {
 			e.printStackTrace();
