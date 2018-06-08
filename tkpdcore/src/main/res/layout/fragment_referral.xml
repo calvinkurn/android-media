@@ -116,53 +116,54 @@
                 </RelativeLayout>
 
                 <LinearLayout
+                    android:id="@+id/ll_share_icons"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal">
 
-                    <ImageButton
-                        android:id="@+id/img_referral_1"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:background="@null"
-                        android:src="@drawable/ic_whatsapp_share" />
+                    <!--<ImageButton-->
+                        <!--android:id="@+id/img_share_1"-->
+                        <!--android:layout_width="wrap_content"-->
+                        <!--android:layout_height="wrap_content"-->
+                        <!--android:layout_weight="1"-->
+                        <!--android:background="@null"-->
+                        <!--android:src="@drawable/ic_whatsapp_share" />-->
 
-                    <ImageButton
-                        android:id="@+id/img_referral_2"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:background="@null"
+                    <!--<ImageButton-->
+                        <!--android:id="@+id/img_share_2"-->
+                        <!--android:layout_width="wrap_content"-->
+                        <!--android:layout_height="wrap_content"-->
+                        <!--android:layout_weight="1"-->
+                        <!--android:background="@null"-->
 
-                        android:src="@drawable/ic_line_share" />
+                        <!--android:src="@drawable/ic_line_share" />-->
 
-                    <ImageButton
-                        android:id="@+id/img_referral_3"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:background="@null"
+                    <!--<ImageButton-->
+                        <!--android:id="@+id/img_share_3"-->
+                        <!--android:layout_width="wrap_content"-->
+                        <!--android:layout_height="wrap_content"-->
+                        <!--android:layout_weight="1"-->
+                        <!--android:background="@null"-->
 
-                        android:src="@drawable/ic_instagram_share" />
+                        <!--android:src="@drawable/ic_instagram_share" />-->
 
-                    <ImageButton
-                        android:id="@+id/img_referral_4"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:background="@null"
+                    <!--<ImageButton-->
+                        <!--android:id="@+id/img_share_4"-->
+                        <!--android:layout_width="wrap_content"-->
+                        <!--android:layout_height="wrap_content"-->
+                        <!--android:layout_weight="1"-->
+                        <!--android:background="@null"-->
 
-                        android:src="@drawable/ic_facebook_share" />
+                        <!--android:src="@drawable/ic_facebook_share" />-->
 
-                    <ImageButton
-                        android:id="@+id/img_referral_more"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:background="@null"
+                    <!--<ImageButton-->
+                        <!--android:id="@+id/img_share_more"-->
+                        <!--android:layout_width="wrap_content"-->
+                        <!--android:layout_height="wrap_content"-->
+                        <!--android:layout_weight="1"-->
+                        <!--android:background="@null"-->
 
-                        android:src="@drawable/ic_more_share" />
+                        <!--android:src="@drawable/ic_more_share" />-->
                 </LinearLayout>
 
                 <TextView

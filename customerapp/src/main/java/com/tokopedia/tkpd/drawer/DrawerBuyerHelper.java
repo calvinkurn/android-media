@@ -2,7 +2,6 @@ package com.tokopedia.tkpd.drawer;
 
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.view.GravityCompat;
@@ -19,7 +18,6 @@ import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.TkpdCoreRouter;
-import com.tokopedia.seller.SellerModuleRouter;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.deposit.activity.DepositActivity;
 import com.tokopedia.core.drawer2.data.factory.ProfileSourceFactory;
@@ -52,6 +50,7 @@ import com.tokopedia.flight.orderlist.view.FlightOrderListActivity;
 import com.tokopedia.loyalty.view.activity.TokoPointWebviewActivity;
 import com.tokopedia.profile.view.activity.TopProfileActivity;
 import com.tokopedia.profilecompletion.view.activity.ProfileCompletionActivity;
+import com.tokopedia.seller.SellerModuleRouter;
 import com.tokopedia.seller.seller.info.view.activity.SellerInfoActivity;
 import com.tokopedia.seller.shopsettings.etalase.activity.EtalaseShopEditor;
 import com.tokopedia.tkpd.R;
@@ -752,19 +751,16 @@ public class DrawerBuyerHelper extends DrawerHelper
     }
 
     private void showAppShareButton(ArrayList<DrawerItem> data) {
-//        if (remoteConfig.getBoolean(TkpdCache.RemoteConfigKey.MAINAPP_SHOW_APP_SHARE_BUTTON)) {
-//            if (remoteConfig.getBoolean(TkpdCache.RemoteConfigKey.APP_SHOW_REFERRAL_BUTTON)) {
-//                data.add(new DrawerItem(remoteConfig.getString(TkpdCache.RemoteConfigKey.APP_REFERRAL_TITLE, context.getString(R.string.drawer_title_referral_appshare)),
-//                        R.drawable.share_ke_teman, TkpdState.DrawerPosition.APPSHARE,
-//                        true, true));
-//            } else {
-//                data.add(new DrawerItem(context.getString(R.string.drawer_title_appshare),
-//                        R.drawable.share_ke_teman, TkpdState.DrawerPosition.APPSHARE,
-//                        true, true));
-//            }
-//        }
-        data.add(new DrawerItem(remoteConfig.getString(TkpdCache.RemoteConfigKey.APP_REFERRAL_TITLE, context.getString(R.string.drawer_title_referral_appshare)),
-                R.drawable.share_ke_teman, TkpdState.DrawerPosition.APPSHARE,
-                true, true));
+        if (remoteConfig.getBoolean(TkpdCache.RemoteConfigKey.MAINAPP_SHOW_APP_SHARE_BUTTON)) {
+            if (remoteConfig.getBoolean(TkpdCache.RemoteConfigKey.APP_SHOW_REFERRAL_BUTTON)) {
+                data.add(new DrawerItem(remoteConfig.getString(TkpdCache.RemoteConfigKey.APP_REFERRAL_TITLE, context.getString(R.string.drawer_title_referral_appshare)),
+                        R.drawable.share_ke_teman, TkpdState.DrawerPosition.APPSHARE,
+                        true, true));
+            } else {
+                data.add(new DrawerItem(context.getString(R.string.drawer_title_appshare),
+                        R.drawable.share_ke_teman, TkpdState.DrawerPosition.APPSHARE,
+                        true, true));
+            }
+        }
     }
 }
