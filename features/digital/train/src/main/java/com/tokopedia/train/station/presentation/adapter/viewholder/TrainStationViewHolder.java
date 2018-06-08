@@ -35,7 +35,22 @@ public class TrainStationViewHolder extends AbstractViewHolder<TrainStationViewM
     @Override
     public void bind(TrainStationViewModel element) {
         this.element = element;
-        stationNameTextView.setText(String.format("%s (%s)", element.getStationName(), element.getStationCode()));
+        stationNameTextView.setText(String.format("%s (%s)", getCapsSentences(element.getStationName()), element.getStationCode()));
         stationCityTextView.setText(element.getCityName());
+    }
+
+    private String getCapsSentences(String tagName) {
+        String[] splits = tagName.toLowerCase().split(" ");
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < splits.length; i++) {
+            String eachWord = splits[i];
+            if (i > 0 && eachWord.length() > 0) {
+                sb.append(" ");
+            }
+            String cap = eachWord.substring(0, 1).toUpperCase()
+                    + eachWord.substring(1);
+            sb.append(cap);
+        }
+        return sb.toString();
     }
 }
