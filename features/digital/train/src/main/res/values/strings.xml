@@ -59,4 +59,6 @@
     <string name="train_station_all_stations_label">Semua Stasiun</string>
     <string name="train_station_station_label">Stasiun</string>
     <string name="train_station_city_label">Kota</string>
+    <string name="train_station_origin_toolbar">Pilih Kota atau Stasiun Asal</string>
+    <string name="train_station_destination_toolbar">Pilih Kota atau Stasiun Tujuan</string>
 </resources>

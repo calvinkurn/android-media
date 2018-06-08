@@ -95,14 +95,14 @@ public class TrainHomepageFragment extends BaseDaggerFragment implements TrainHo
         layoutOriginStation.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivityForResult(TrainStationsActivity.getCallingIntent(getActivity()), ORIGIN_STATION_REQUEST_CODE);
+                startActivityForResult(TrainStationsActivity.getCallingIntent(getActivity(), getString(R.string.train_station_origin_toolbar)), ORIGIN_STATION_REQUEST_CODE);
             }
         });
 
         layoutDestinationStation.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivityForResult(TrainStationsActivity.getCallingIntent(getActivity()), DESTINATION_STATION_REQUEST_CODE);
+                startActivityForResult(TrainStationsActivity.getCallingIntent(getActivity(), getString(R.string.train_station_destination_toolbar)), DESTINATION_STATION_REQUEST_CODE);
             }
         });
 
