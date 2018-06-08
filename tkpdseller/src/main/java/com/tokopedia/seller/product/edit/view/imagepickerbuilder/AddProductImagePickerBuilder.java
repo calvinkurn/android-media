@@ -8,6 +8,7 @@ import com.tokopedia.imagepicker.picker.gallery.type.GalleryType;
 import com.tokopedia.imagepicker.picker.main.builder.ImagePickerBuilder;
 import com.tokopedia.imagepicker.picker.main.builder.ImagePickerEditorBuilder;
 import com.tokopedia.imagepicker.picker.main.builder.ImagePickerMultipleSelectionBuilder;
+import com.tokopedia.imagepicker.picker.main.builder.ImageRatioTypeDef;
 import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.product.imagepicker.view.activity.ImagePickerAddProductActivity;
@@ -35,7 +36,7 @@ public class AddProductImagePickerBuilder {
     public static ImagePickerBuilder createPrimaryNewBuilder(Context context, ArrayList<String> imageList) {
         return new ImagePickerBuilder(context.getString(R.string.choose_image),
                 new int[]{TYPE_GALLERY, TYPE_CAMERA, TYPE_INSTAGRAM}, GalleryType.IMAGE_ONLY, DEFAULT_MAX_IMAGE_SIZE_IN_KB,
-                DEFAULT_MIN_RESOLUTION, new int[]{1, 1}, true,
+                DEFAULT_MIN_RESOLUTION, ImageRatioTypeDef.RATIO_1_1, true,
                 new ImagePickerEditorBuilder(new int[]{ACTION_BRIGHTNESS, ACTION_CONTRAST, ACTION_CROP, ACTION_ROTATE},
                         false)
                 , new ImagePickerMultipleSelectionBuilder(
@@ -48,7 +49,7 @@ public class AddProductImagePickerBuilder {
     public static ImagePickerBuilder createInstagramImportBuilder(Context context) {
         return new ImagePickerBuilder(context.getString(R.string.choose_image),
                 new int[]{TYPE_INSTAGRAM}, GalleryType.IMAGE_ONLY, DEFAULT_MAX_IMAGE_SIZE_IN_KB,
-                DEFAULT_MIN_RESOLUTION, new int[]{1, 1}, true,
+                DEFAULT_MIN_RESOLUTION, ImageRatioTypeDef.RATIO_1_1, true,
                 new ImagePickerEditorBuilder(new int[]{ACTION_BRIGHTNESS, ACTION_CONTRAST, ACTION_CROP, ACTION_ROTATE},
                         false)
                 , new ImagePickerMultipleSelectionBuilder(
@@ -61,7 +62,7 @@ public class AddProductImagePickerBuilder {
     public static ImagePickerBuilder createVariantNewBuilder(Context context) {
         return new ImagePickerBuilder(context.getString(R.string.choose_image),
                 new int[]{TYPE_GALLERY, TYPE_CAMERA, TYPE_INSTAGRAM}, GalleryType.IMAGE_ONLY, DEFAULT_MAX_IMAGE_SIZE_IN_KB,
-                DEFAULT_MIN_RESOLUTION, new int[]{1, 1}, true,
+                DEFAULT_MIN_RESOLUTION, ImageRatioTypeDef.RATIO_1_1, true,
                 new ImagePickerEditorBuilder(new int[]{ACTION_BRIGHTNESS, ACTION_CONTRAST, ACTION_CROP, ACTION_ROTATE},
                         false)
                 , null);
@@ -90,7 +91,7 @@ public class AddProductImagePickerBuilder {
     public static Intent createEditorIntent(Context context, String uriOrPath) {
         return ImageEditorActivity.getIntent(context, uriOrPath, ImagePickerBuilder.DEFAULT_MIN_RESOLUTION,
                 new int[]{ACTION_BRIGHTNESS, ACTION_CONTRAST, ACTION_CROP, ACTION_ROTATE},
-                1, 1, false,
+                ImageRatioTypeDef.RATIO_1_1, false,
                 ImagePickerBuilder.DEFAULT_MAX_IMAGE_SIZE_IN_KB);
     }
 }

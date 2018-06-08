@@ -2,12 +2,15 @@ package com.tokopedia.imagepicker.picker.adapter;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.support.annotation.StringRes;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
 import android.support.v7.widget.RecyclerView;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -29,6 +32,8 @@ public class ImagePickerThumbnailAdapter extends RecyclerView.Adapter<RecyclerVi
     private Context context;
     private ArrayList<String> imagePathList;
     private int maxSize;
+    private @StringRes
+    int primaryImageStringRes;
 
     private OnImageEditThumbnailAdapterListener onImageEditThumbnailAdapterListener;
     private final float roundedSize;
@@ -51,12 +56,14 @@ public class ImagePickerThumbnailAdapter extends RecyclerView.Adapter<RecyclerVi
     public class ImagePickerThumbnailViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         private ImageView imageView;
         private TextView tvCounter;
+        private TextView tvCounterPrimary;
         private ImageView ivDelete;
 
         public ImagePickerThumbnailViewHolder(View itemView) {
             super(itemView);
             imageView = itemView.findViewById(R.id.image_view);
             tvCounter = itemView.findViewById(R.id.tv_counter);
+            tvCounterPrimary = itemView.findViewById(R.id.tv_counter_primary);
             ivDelete = itemView.findViewById(R.id.iv_delete);
             itemView.setOnClickListener(this);
             ivDelete.setOnClickListener(this);
@@ -88,8 +95,16 @@ public class ImagePickerThumbnailAdapter extends RecyclerView.Adapter<RecyclerVi
                             imageView.setImageDrawable(circularBitmapDrawable);
                         }
                     });
-            String positionString = String.valueOf(position + 1);
-            tvCounter.setText(positionString);
+            if (position == 0 && primaryImageStringRes > 0) {
+                tvCounterPrimary.setText(primaryImageStringRes);
+                tvCounterPrimary.setVisibility(View.VISIBLE);
+                tvCounter.setVisibility(View.GONE);
+            } else {
+                String positionString = String.valueOf(position + 1);
+                tvCounter.setText(positionString);
+                tvCounterPrimary.setVisibility(View.GONE);
+                tvCounter.setVisibility(View.VISIBLE);
+            }
         }
     }
 
@@ -108,8 +123,9 @@ public class ImagePickerThumbnailAdapter extends RecyclerView.Adapter<RecyclerVi
         }
     }
 
-    public void setData(ArrayList<String> imagePathList) {
+    public void setData(ArrayList<String> imagePathList, @StringRes int primaryImageStringRes) {
         this.imagePathList = imagePathList;
+        this.primaryImageStringRes = primaryImageStringRes;
         notifyDataSetChanged();
     }
 
@@ -130,7 +146,7 @@ public class ImagePickerThumbnailAdapter extends RecyclerView.Adapter<RecyclerVi
 
     public void removeData(int index) {
         if (index > -1) {
-            String imagePath = this.imagePathList.remove(index);
+            this.imagePathList.remove(index);
             onImageEditThumbnailAdapterListener.onThumbnailRemoved();
             notifyDataSetChanged();
         }
@@ -157,7 +173,8 @@ public class ImagePickerThumbnailAdapter extends RecyclerView.Adapter<RecyclerVi
             String imagePath = imagePathList.get(position);
             ((ImagePickerThumbnailViewHolder) holder).bind(imagePath, position);
         } else {
-            // draw the empty preview
+            // else draw the empty preview
+            //TODO will use the placeholder given
         }
     }
 
