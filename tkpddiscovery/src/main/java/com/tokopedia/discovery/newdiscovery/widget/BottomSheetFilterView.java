@@ -57,6 +57,7 @@ public class BottomSheetFilterView extends BaseCustomView implements BottomSheet
 
     public static final String FILTER_CHECKED_STATE_PREF = "filter_checked_state";
     public static final String FILTER_TEXT_PREF = "filter_text";
+    public static final String FILTER_SHOWN_IN_MAIN_PREF = "filter_shown_in_main";
     public static final String FILTER_SELECTED_CATEGORY_ROOT_ID_PREF = "filter_selected_category_root_id";
     public static final String FILTER_SELECTED_CATEGORY_ID_PREF = "filter_selected_category_id";
     public static final String FILTER_SELECTED_CATEGORY_NAME_PREF = "filter_selected_category_name";
@@ -129,6 +130,7 @@ public class BottomSheetFilterView extends BaseCustomView implements BottomSheet
     private void recoverLastFilterState(Bundle savedInstanceState) {
         savedCheckedState = (HashMap<String, Boolean>) savedInstanceState.getSerializable(FILTER_CHECKED_STATE_PREF);
         savedTextInput = (HashMap<String, String>) savedInstanceState.getSerializable(FILTER_TEXT_PREF);
+        shownInMainState = (HashMap<String, Boolean>) savedInstanceState.getSerializable(FILTER_SHOWN_IN_MAIN_PREF);
         selectedCategoryId = savedInstanceState.getString(FILTER_SELECTED_CATEGORY_ID_PREF);
         selectedCategoryName = savedInstanceState.getString(FILTER_SELECTED_CATEGORY_NAME_PREF);
         selectedCategoryRootId = savedInstanceState.getString(FILTER_SELECTED_CATEGORY_ROOT_ID_PREF);
@@ -304,6 +306,7 @@ public class BottomSheetFilterView extends BaseCustomView implements BottomSheet
         resetSelectedCategory();
         clearPriceRangeRecentValue();
         savedCheckedState.clear();
+        shownInMainState.clear();
         savedTextInput.clear();
         filterMainAdapter.notifyDataSetChanged();
         updateResetButtonVisibility();
@@ -754,6 +757,15 @@ public class BottomSheetFilterView extends BaseCustomView implements BottomSheet
                 bottomSheetLayout.requestFocus();
             }
         });
+    }
+
+    public void onSaveInstanceState(Bundle outState) {
+        outState.putSerializable(FILTER_CHECKED_STATE_PREF, savedCheckedState);
+        outState.putSerializable(FILTER_TEXT_PREF, savedTextInput);
+        outState.putSerializable(FILTER_SHOWN_IN_MAIN_PREF, shownInMainState);
+        outState.putString(FILTER_SELECTED_CATEGORY_ID_PREF, selectedCategoryId);
+        outState.putString(FILTER_SELECTED_CATEGORY_ROOT_ID_PREF, selectedCategoryRootId);
+        outState.putString(FILTER_SELECTED_CATEGORY_NAME_PREF, selectedCategoryName);
     }
 
     public interface Callback {
