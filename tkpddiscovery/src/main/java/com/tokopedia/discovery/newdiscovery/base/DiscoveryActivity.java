@@ -33,6 +33,7 @@ import com.tokopedia.discovery.helper.OfficialStoreQueryHelper;
 import com.tokopedia.discovery.newdiscovery.util.SearchParameter;
 import com.tokopedia.discovery.search.view.DiscoverySearchView;
 import com.tokopedia.discovery.search.view.fragment.SearchMainFragment;
+import com.tokopedia.discovery.util.AutoCompleteTracking;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -180,6 +181,7 @@ public class DiscoveryActivity extends BaseDiscoveryActivity implements
 
     @Override
     public boolean onQueryTextSubmit(String query) {
+        AutoCompleteTracking.eventClickSubmit(this, query);
         if (OfficialStoreQueryHelper.isOfficialStoreSearchQuery(query)) {
             onHandleOfficialStorePage();
             sendSearchProductGTM(query);

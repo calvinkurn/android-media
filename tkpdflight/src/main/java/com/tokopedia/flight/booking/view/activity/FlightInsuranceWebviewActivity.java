@@ -11,6 +11,7 @@ import com.tokopedia.abstraction.common.di.component.HasComponent;
 import com.tokopedia.flight.FlightComponentInstance;
 import com.tokopedia.flight.booking.view.fragment.FlightInsuranceWebViewFragment;
 import com.tokopedia.flight.common.di.component.FlightComponent;
+import android.support.graphics.drawable.VectorDrawableCompat;
 
 public class FlightInsuranceWebviewActivity extends BaseSimpleActivity implements HasComponent<FlightComponent> {
     private static final String EXTRA_URL = "EXTRA_URL";
@@ -29,7 +30,7 @@ public class FlightInsuranceWebviewActivity extends BaseSimpleActivity implement
         updateTitle(getIntent().getStringExtra(EXTRA_TITLE));
         if (getSupportActionBar() != null) {
             getSupportActionBar().setHomeAsUpIndicator(
-                    ContextCompat.getDrawable(this, com.tokopedia.abstraction.R.drawable.ic_close_default)
+                    VectorDrawableCompat.create(getResources(), com.tokopedia.abstraction.R.drawable.ic_close_default, null)
             );
         }
     }

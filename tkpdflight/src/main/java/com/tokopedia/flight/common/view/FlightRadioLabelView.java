@@ -13,6 +13,7 @@ import android.widget.TextView;
 
 import com.tokopedia.design.base.BaseCustomView;
 import com.tokopedia.flight.R;
+import android.support.graphics.drawable.VectorDrawableCompat;
 
 public class FlightRadioLabelView extends BaseCustomView {
     private TextView titleTextView;
@@ -58,9 +59,9 @@ public class FlightRadioLabelView extends BaseCustomView {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (isChecked) {
-                    toggleSwitchCompat.setThumbDrawable(ContextCompat.getDrawable(getContext(), R.drawable.ic_flight_check_thumb));
+                    toggleSwitchCompat.setThumbDrawable(VectorDrawableCompat.create(getResources(), R.drawable.ic_flight_check_thumb, null));
                 } else {
-                    toggleSwitchCompat.setThumbDrawable(ContextCompat.getDrawable(getContext(), R.drawable.ic_flight_uncheck_thumb));
+                    toggleSwitchCompat.setThumbDrawable(VectorDrawableCompat.create(getResources(), R.drawable.ic_flight_uncheck_thumb, null));
                 }
                 if (listener != null) {
                     listener.onCheckedChanged(isChecked);
@@ -82,9 +83,9 @@ public class FlightRadioLabelView extends BaseCustomView {
 
     public void setChecked(boolean checked) {
         if (checked) {
-            toggleSwitchCompat.setThumbDrawable(ContextCompat.getDrawable(getContext(), R.drawable.ic_flight_check_thumb));
+            toggleSwitchCompat.setThumbDrawable(VectorDrawableCompat.create(getResources(), R.drawable.ic_flight_check_thumb, null));
         } else {
-            toggleSwitchCompat.setThumbDrawable(ContextCompat.getDrawable(getContext(), R.drawable.ic_flight_uncheck_thumb));
+            toggleSwitchCompat.setThumbDrawable(VectorDrawableCompat.create(getResources(), R.drawable.ic_flight_uncheck_thumb, null));
         }
         toggleSwitchCompat.setChecked(checked);
     }

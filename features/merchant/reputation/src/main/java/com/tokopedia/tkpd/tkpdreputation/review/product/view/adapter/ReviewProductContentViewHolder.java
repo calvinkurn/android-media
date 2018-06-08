@@ -22,6 +22,7 @@ import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.inboxdetail.ImageU
 
 import java.util.ArrayList;
 import java.util.List;
+import android.support.graphics.drawable.VectorDrawableCompat;
 
 /**
  * Created by zulfikarrahman on 1/16/18.
@@ -155,9 +156,9 @@ public class ReviewProductContentViewHolder extends AbstractViewHolder<ReviewPro
 
     void setLikeStatus(ReviewProductModelContent element) {
         if (element.isLikeStatus()) {
-            iconLike.setImageDrawable(ContextCompat.getDrawable(itemView.getContext(), R.drawable.ic_like_pressed));
+            iconLike.setImageDrawable(VectorDrawableCompat.create(itemView.getContext().getResources(), R.drawable.ic_like_pressed, null));
         } else {
-            iconLike.setImageDrawable(ContextCompat.getDrawable(itemView.getContext(), R.drawable.ic_like_normal));
+            iconLike.setImageDrawable(VectorDrawableCompat.create(itemView.getContext().getResources(), R.drawable.ic_like_normal, null));
         }
         if (element.isLogin()) {
             if (element.isLikeStatus() && element.getTotalLike() > 1) {

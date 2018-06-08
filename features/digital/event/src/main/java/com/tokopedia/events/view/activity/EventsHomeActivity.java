@@ -62,6 +62,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.Unbinder;
+import android.support.graphics.drawable.VectorDrawableCompat;
 
 /**
  * Created by ashwanityagi on 02/11/17.
@@ -155,9 +156,9 @@ public class EventsHomeActivity extends TActivity
         mPresenter.getEventsList();
         setupToolbar();
         toolbar.setTitle("Events");
-        addToCalendar.setCompoundDrawablesWithIntrinsicBounds(getResources().getDrawable(R.drawable.ic_event_calendar_green), null,
+        addToCalendar.setCompoundDrawablesWithIntrinsicBounds(VectorDrawableCompat.create(getResources(), R.drawable.ic_event_calendar_green, null), null,
                 null, null);
-        searchView.setCompoundDrawablesWithIntrinsicBounds(getResources().getDrawable(R.drawable.ic_search_icon),
+        searchView.setCompoundDrawablesWithIntrinsicBounds(VectorDrawableCompat.create(getResources(), R.drawable.ic_search_icon, null),
                 null, null, null);
         appBarLayout.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
             @Override
