@@ -1,4 +1,4 @@
-package com.tokopedia.settingbank
+package com.tokopedia.settingbank.common.analytics
 
 /**
  * @author by nisie on 6/7/18.

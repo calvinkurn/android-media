@@ -1,10 +1,11 @@
-package com.tokopedia.settingbank
+package com.tokopedia.settingbank.view.activity
 
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
+import com.tokopedia.settingbank.view.fragment.SettingBankFragment
 
 /**
  * @author by nisie on 6/7/18.

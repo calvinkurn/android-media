@@ -1,4 +1,4 @@
-package com.tokopedia.settingbank
+package com.tokopedia.settingbank.view.listener
 
 import android.content.Context
 import com.tokopedia.abstraction.base.view.listener.CustomerView
