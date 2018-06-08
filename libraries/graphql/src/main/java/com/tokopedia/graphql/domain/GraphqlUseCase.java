@@ -8,6 +8,8 @@ import com.tokopedia.graphql.data.model.GraphqlRequest;
 import com.tokopedia.graphql.data.model.GraphqlResponse;
 import com.tokopedia.graphql.data.model.GraphqlResponseInternal;
 import com.tokopedia.graphql.data.repository.GraphqlRepositoryImpl;
+import com.tokopedia.graphql.data.source.cache.GraphqlCacheDataStore;
+import com.tokopedia.graphql.data.source.cloud.GraphqlCloudDataStore;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.usecase.UseCase;
 
@@ -36,6 +38,13 @@ public class GraphqlUseCase extends UseCase<GraphqlResponse> {
     public GraphqlUseCase(GraphqlRepositoryImpl graphqlRepository, Gson gson) {
         this.mGraphqlRepository = graphqlRepository;
         this.mGson = gson;
+        this.mRequests = new ArrayList<>();
+    }
+
+    @Inject
+    public GraphqlUseCase() {
+        this.mGraphqlRepository = new GraphqlRepositoryImpl(new GraphqlCloudDataStore(), new GraphqlCacheDataStore());
+        this.mGson = new Gson();
         this.mRequests = new ArrayList<>();
     }
 
