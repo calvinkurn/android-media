@@ -17,38 +17,17 @@ import rx.Subscriber;
 public class ImagePickerInstagramPresenter extends BaseDaggerPresenter<ImagePickerInstagramContract.View> implements ImagePickerInstagramContract.Presenter {
 
     private GetListMediaInstagramUseCase getListMediaInstagramUseCase;
-    private SaveCookiesInstagramUseCase saveCookiesInstagramUseCase;
     private ClearCacheMediaInstagramUseCase clearCacheMediaInstagramUseCase;
 
     public ImagePickerInstagramPresenter(GetListMediaInstagramUseCase getListMediaInstagramUseCase,
-                                         SaveCookiesInstagramUseCase saveCookiesInstagramUseCase,
                                          ClearCacheMediaInstagramUseCase clearCacheMediaInstagramUseCase) {
         this.getListMediaInstagramUseCase = getListMediaInstagramUseCase;
-        this.saveCookiesInstagramUseCase = saveCookiesInstagramUseCase;
         this.clearCacheMediaInstagramUseCase = clearCacheMediaInstagramUseCase;
     }
 
     @Override
     public void getListMediaInstagram(String code, String nextMediaId) {
         getListMediaInstagramUseCase.execute(getListMediaInstagramUseCase.createRequestParams(code, nextMediaId), getSubscriberListMediaInstagram());
-    }
-
-    @Override
-    public void saveCookies(String cookies) {
-        saveCookiesInstagramUseCase.execute(SaveCookiesInstagramUseCase.createRequestParams(cookies), new Subscriber<String>() {
-            @Override
-            public void onCompleted() {
-
-            }
-
-            @Override
-            public void onError(Throwable e) {
-            }
-
-            @Override
-            public void onNext(String s) {
-            }
-        });
     }
 
     private Subscriber<InstagramMediaResponse> getSubscriberListMediaInstagram() {
@@ -74,7 +53,6 @@ public class ImagePickerInstagramPresenter extends BaseDaggerPresenter<ImagePick
     @Override
     public void detachView() {
         super.detachView();
-        saveCookiesInstagramUseCase.unsubscribe();
         getListMediaInstagramUseCase.unsubscribe();
     }
 

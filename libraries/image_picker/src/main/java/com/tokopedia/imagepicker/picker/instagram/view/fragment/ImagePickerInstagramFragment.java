@@ -1,6 +1,7 @@
 package com.tokopedia.imagepicker.picker.instagram.view.fragment;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -26,10 +27,10 @@ import com.tokopedia.imagepicker.picker.instagram.di.DaggerInstagramComponent;
 
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment;
 import com.tokopedia.imagepicker.picker.instagram.di.InstagramModule;
+import com.tokopedia.imagepicker.picker.instagram.view.activity.InstagramLoginActivity;
 import com.tokopedia.imagepicker.picker.instagram.view.adapter.ImageInstagramAdapter;
 import com.tokopedia.imagepicker.picker.instagram.view.adapter.ImageInstagramAdapterTypeFactory;
 import com.tokopedia.imagepicker.picker.instagram.view.adapter.ImagePickerInstagramViewHolder;
-import com.tokopedia.imagepicker.picker.instagram.view.dialog.InstagramLoginDialog;
 import com.tokopedia.imagepicker.picker.instagram.view.model.InstagramErrorLoginModel;
 import com.tokopedia.imagepicker.picker.instagram.view.model.InstagramMediaModel;
 import com.tokopedia.imagepicker.picker.instagram.view.presenter.ImagePickerInstagramContract;
@@ -47,13 +48,14 @@ import javax.inject.Inject;
  */
 
 public class ImagePickerInstagramFragment extends BaseListFragment<InstagramMediaModel, ImageInstagramAdapterTypeFactory>
-        implements ImagePickerInstagramContract.View, InstagramLoginDialog.ListenerLoginInstagram,
-        InstagramErrorLoginModel.ListenerLoginInstagram, ImageInstagramAdapter.OnImageInstagramAdapterListener,
+        implements ImagePickerInstagramContract.View, InstagramErrorLoginModel.ListenerLoginInstagram,
+        ImageInstagramAdapter.OnImageInstagramAdapterListener,
         ImagePickerInterface {
 
     public static final String ARGS_GALLERY_TYPE = "args_gallery_type";
     public static final String ARGS_SUPPORT_MULTIPLE = "args_support_multiple";
     public static final String ARGS_MIN_RESOLUTION = "args_min_resolution";
+    public static final int REQUEST_CODE_INSTAGRAM_LOGIN = 342;
 
     @Inject
     ImagePickerInstagramPresenter imagePickerInstagramPresenter;
@@ -214,21 +216,18 @@ public class ImagePickerInstagramFragment extends BaseListFragment<InstagramMedi
     }
 
     @Override
-    public void onSuccessLogin(String code) {
-        this.code = code;
-        loadInitialData();
-    }
-
-    @Override
-    public void saveCookies(String cookies) {
-        imagePickerInstagramPresenter.saveCookies(cookies);
-    }
-
-    @Override
     public void onClickLoginInstagram() {
-        InstagramLoginDialog instagramLoginDialog = new InstagramLoginDialog();
-        instagramLoginDialog.setListenerLoginInstagram(this);
-        instagramLoginDialog.show(getActivity().getSupportFragmentManager(), "instagram_dialog");
+        Intent intent = new Intent(getActivity(), InstagramLoginActivity.class);
+        startActivityForResult(intent, REQUEST_CODE_INSTAGRAM_LOGIN);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if(requestCode == REQUEST_CODE_INSTAGRAM_LOGIN && resultCode == InstagramLoginActivity.RESULT_OK){
+            this.code = data.getStringExtra(InstagramConstant.EXTRA_CODE_LOGIN);
+            loadInitialData();
+        }
+        super.onActivityResult(requestCode, resultCode, data);
     }
 
     @Override
