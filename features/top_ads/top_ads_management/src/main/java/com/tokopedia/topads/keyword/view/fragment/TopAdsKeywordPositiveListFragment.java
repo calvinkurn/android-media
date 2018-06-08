@@ -3,6 +3,8 @@ package com.tokopedia.topads.keyword.view.fragment;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel;
 import com.tokopedia.topads.R;
+import com.tokopedia.topads.keyword.view.activity.TopAdsKeywordDetailActivity;
+import com.tokopedia.topads.keyword.view.model.KeywordAd;
 import com.tokopedia.topads.sourcetagging.constant.TopAdsSourceOption;
 
 /**
@@ -36,5 +38,11 @@ public class TopAdsKeywordPositiveListFragment extends TopAdsKeywordAdListFragme
     @Override
     protected String getScreenName() {
         return getClass().getSimpleName();
+    }
+
+    @Override
+    public void onAdClicked(KeywordAd ad) {
+        presenter.saveSourceTagging(getSourceTagging());
+        startActivityForResult(TopAdsKeywordDetailActivity.createInstance(getActivity(), ad, ad.getId()), REQUEST_CODE_AD_CHANGE);
     }
 }

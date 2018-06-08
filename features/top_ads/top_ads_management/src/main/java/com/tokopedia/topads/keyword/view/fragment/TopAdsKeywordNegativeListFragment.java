@@ -8,6 +8,8 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel;
 import com.tokopedia.topads.R;
 import com.tokopedia.topads.dashboard.data.model.data.GroupAd;
+import com.tokopedia.topads.keyword.view.activity.TopAdsKeywordDetailNegativeActivity;
+import com.tokopedia.topads.keyword.view.model.KeywordAd;
 import com.tokopedia.topads.sourcetagging.constant.TopAdsSourceOption;
 
 import java.util.List;
@@ -50,5 +52,11 @@ public class TopAdsKeywordNegativeListFragment extends TopAdsKeywordAdListFragme
     @Override
     protected String getScreenName() {
         return getClass().getSimpleName();
+    }
+
+    @Override
+    public void onAdClicked(KeywordAd ad) {
+        presenter.saveSourceTagging(getSourceTagging());
+        startActivityForResult(TopAdsKeywordDetailNegativeActivity.createInstance(getActivity(), ad, ""), REQUEST_CODE_AD_CHANGE);
     }
 }
