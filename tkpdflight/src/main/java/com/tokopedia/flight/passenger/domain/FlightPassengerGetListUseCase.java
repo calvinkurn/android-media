@@ -35,11 +35,12 @@ public class FlightPassengerGetListUseCase extends UseCase<List<FlightBookingPas
 
     @Override
     public Observable<List<FlightBookingPassengerViewModel>> createObservable(RequestParams requestParams) {
-        return flightRepository.getPassengerList(requestParams.getString(PARAM_PASSENGER_ID, DEFAULT_STRING_VALUE))
-                .flatMap((Func1<List<FlightPassengerDb>, Observable<List<FlightBookingPassengerViewModel>>>) flightPassengerDbs -> Observable.just(listPassengerViewModelMapper.transform(flightPassengerDbs)))
-                .flatMap((Func1<List<FlightBookingPassengerViewModel>, Observable<List<FlightBookingPassengerViewModel>>>) flightBookingPassengerViewModelList -> Observable.from(flightBookingPassengerViewModelList)
-                        .flatMap((Func1<FlightBookingPassengerViewModel, Observable<FlightBookingPassengerViewModel>>) this::getPassportData)
-                        .toList());
+//        return flightRepository.getPassengerList(requestParams.getString(PARAM_PASSENGER_ID, DEFAULT_STRING_VALUE))
+//                .flatMap((Func1<List<FlightPassengerDb>, Observable<List<FlightBookingPassengerViewModel>>>) flightPassengerDbs -> Observable.just(listPassengerViewModelMapper.transform(flightPassengerDbs)))
+//                .flatMap((Func1<List<FlightBookingPassengerViewModel>, Observable<List<FlightBookingPassengerViewModel>>>) flightBookingPassengerViewModelList -> Observable.from(flightBookingPassengerViewModelList)
+//                        .flatMap((Func1<FlightBookingPassengerViewModel, Observable<FlightBookingPassengerViewModel>>) this::getPassportData)
+//                        .toList());
+        return null;
     }
 
     public RequestParams createEmptyRequestParams() {
@@ -55,37 +56,38 @@ public class FlightPassengerGetListUseCase extends UseCase<List<FlightBookingPas
     }
 
     private Observable<FlightBookingPassengerViewModel> getPassportData(FlightBookingPassengerViewModel flightBookingPassengerViewModel) {
-        return Observable.just(flightBookingPassengerViewModel)
-                .flatMap((Func1<FlightBookingPassengerViewModel, Observable<FlightBookingPassengerViewModel>>) flightBookingPassengerViewModel1 -> {
-                    if (flightBookingPassengerViewModel1.getPassportNationality() != null) {
-                        return Observable.zip(Observable.just(flightBookingPassengerViewModel1), flightRepository.getAirportByCountryId(flightBookingPassengerViewModel1.getPassportNationality().getCountryId()),
-                                (flightBookingPassengerViewModel11, nationality) -> {
-                                    FlightBookingPhoneCodeViewModel passportNationality = new FlightBookingPhoneCodeViewModel();
-                                    passportNationality.setCountryId(nationality.getCountryId());
-                                    passportNationality.setCountryName(nationality.getCountryName());
-                                    passportNationality.setCountryPhoneCode(String.valueOf(nationality.getPhoneCode()));
-
-                                    flightBookingPassengerViewModel11.setPassportNationality(passportNationality);
-                                    return flightBookingPassengerViewModel11;
-                                });
-                    } else {
-                        return Observable.just(flightBookingPassengerViewModel1);
-                    }
-                })
-                .flatMap((Func1<FlightBookingPassengerViewModel, Observable<FlightBookingPassengerViewModel>>) flightBookingPassengerViewModel12 -> {
-                    if (flightBookingPassengerViewModel12.getPassportIssuerCountry() != null) {
-                        return Observable.zip(Observable.just(flightBookingPassengerViewModel12), flightRepository.getAirportByCountryId(flightBookingPassengerViewModel12.getPassportIssuerCountry().getCountryId()),
-                                (flightBookingPassengerViewModel121, issuerCountry) -> {
-                                    FlightBookingPhoneCodeViewModel passportIssuerCountry = new FlightBookingPhoneCodeViewModel();
-                                    passportIssuerCountry.setCountryId(issuerCountry.getCountryId());
-                                    passportIssuerCountry.setCountryName(issuerCountry.getCountryName());
-                                    passportIssuerCountry.setCountryPhoneCode(String.valueOf(issuerCountry.getPhoneCode()));
-
-                                    flightBookingPassengerViewModel121.setPassportIssuerCountry(passportIssuerCountry);
-                                    return flightBookingPassengerViewModel121;
-                                });
-                    }
-                    return Observable.just(flightBookingPassengerViewModel12);
-                });
+//        return Observable.just(flightBookingPassengerViewModel)
+//                .flatMap((Func1<FlightBookingPassengerViewModel, Observable<FlightBookingPassengerViewModel>>) flightBookingPassengerViewModel1 -> {
+//                    if (flightBookingPassengerViewModel1.getPassportNationality() != null) {
+//                        return Observable.zip(Observable.just(flightBookingPassengerViewModel1), flightRepository.getAirportByCountryId(flightBookingPassengerViewModel1.getPassportNationality().getCountryId()),
+//                                (flightBookingPassengerViewModel11, nationality) -> {
+//                                    FlightBookingPhoneCodeViewModel passportNationality = new FlightBookingPhoneCodeViewModel();
+//                                    passportNationality.setCountryId(nationality.getCountryId());
+//                                    passportNationality.setCountryName(nationality.getCountryName());
+//                                    passportNationality.setCountryPhoneCode(String.valueOf(nationality.getPhoneCode()));
+//
+//                                    flightBookingPassengerViewModel11.setPassportNationality(passportNationality);
+//                                    return flightBookingPassengerViewModel11;
+//                                });
+//                    } else {
+//                        return Observable.just(flightBookingPassengerViewModel1);
+//                    }
+//                })
+//                .flatMap((Func1<FlightBookingPassengerViewModel, Observable<FlightBookingPassengerViewModel>>) flightBookingPassengerViewModel12 -> {
+//                    if (flightBookingPassengerViewModel12.getPassportIssuerCountry() != null) {
+//                        return Observable.zip(Observable.just(flightBookingPassengerViewModel12), flightRepository.getAirportByCountryId(flightBookingPassengerViewModel12.getPassportIssuerCountry().getCountryId()),
+//                                (flightBookingPassengerViewModel121, issuerCountry) -> {
+//                                    FlightBookingPhoneCodeViewModel passportIssuerCountry = new FlightBookingPhoneCodeViewModel();
+//                                    passportIssuerCountry.setCountryId(issuerCountry.getCountryId());
+//                                    passportIssuerCountry.setCountryName(issuerCountry.getCountryName());
+//                                    passportIssuerCountry.setCountryPhoneCode(String.valueOf(issuerCountry.getPhoneCode()));
+//
+//                                    flightBookingPassengerViewModel121.setPassportIssuerCountry(passportIssuerCountry);
+//                                    return flightBookingPassengerViewModel121;
+//                                });
+//                    }
+//                    return Observable.just(flightBookingPassengerViewModel12);
+//                });
+        return null;
     }
 }

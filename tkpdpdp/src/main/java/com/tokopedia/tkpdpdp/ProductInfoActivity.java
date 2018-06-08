@@ -191,7 +191,6 @@ public class ProductInfoActivity extends BasePresenterNoLayoutActivity<ProductIn
     public void shareProductInfo(@NonNull ShareData shareData) {
         presenter.processToShareProduct(this, shareData);
         new DefaultShare(this, shareData).show();
-//        ShareBottomSheet.show(getSupportFragmentManager(), shareData);
     }
 
     @Override

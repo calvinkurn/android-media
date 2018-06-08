@@ -24,12 +24,12 @@ public class DefaultShare {
     }
 
     public void show() {
-        BranchSdkUtils.generateBranchLink(shareData, activity,
-                (shareContents, shareUri, branchUrl) -> {
-            Intent intent = getIntent(shareContents);
-            activity.startActivity(Intent.createChooser(intent, "Lainnya"));
-            sendTracker();
-        });
+//        BranchSdkUtils.generateBranchLink(shareData, activity,
+//                (shareContents, shareUri, branchUrl) -> {
+//            Intent intent = getIntent(shareContents);
+//            activity.startActivity(Intent.createChooser(intent, "Lainnya"));
+//            sendTracker();
+//        });
     }
 
     private Intent getIntent(String contains) {

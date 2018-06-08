@@ -49,7 +49,6 @@ import com.tokopedia.core.router.SellerAppRouter;
 import com.tokopedia.core.router.discovery.BrowseProductRouter;
 import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.share.DefaultShare;
-import com.tokopedia.core.share.ShareBottomSheet;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.discovery.BuildConfig;
 import com.tokopedia.discovery.R;
@@ -694,7 +693,6 @@ public class BrowseProductActivity extends TActivity implements DiscoverySearchV
     @Override
     public void startShareActivity(ShareData shareData) {
         new DefaultShare(this, shareData).show();
-//        ShareBottomSheet.show(getSupportFragmentManager(), shareData);
     }
 
     @Override

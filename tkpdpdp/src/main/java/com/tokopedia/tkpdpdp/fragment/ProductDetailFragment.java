@@ -74,7 +74,6 @@ import com.tokopedia.core.router.transactionmodule.TransactionCartRouter;
 import com.tokopedia.core.router.transactionmodule.TransactionRouter;
 import com.tokopedia.core.router.transactionmodule.passdata.ProductCartPass;
 import com.tokopedia.core.share.DefaultShare;
-import com.tokopedia.core.share.ShareBottomSheet;
 import com.tokopedia.core.util.AppIndexHandler;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.MethodChecker;
@@ -636,7 +635,6 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
     @Override
     public void onProductShareClicked(@NonNull ShareData data) {
         new DefaultShare(getActivity(), data).show();
-//        ShareBottomSheet.show(getFragmentManager(), data);
     }
 
     @NeedsPermission(Manifest.permission.READ_EXTERNAL_STORAGE)
