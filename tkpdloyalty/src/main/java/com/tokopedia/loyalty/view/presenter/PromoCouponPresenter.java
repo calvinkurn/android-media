@@ -205,9 +205,15 @@ public class PromoCouponPresenter implements IPromoCouponPresenter {
 
                     @Override
                     public void onNext(CouponViewModel couponViewModel) {
-                        couponViewModel.setTitle(couponData.getTitle());
-                        view.receiveResult(couponViewModel);
-                        view.hideProgressLoading();
+                        if (couponViewModel.isSuccess()) {
+                            couponViewModel.setTitle(couponData.getTitle());
+                            view.receiveResult(couponViewModel);
+                            view.hideProgressLoading();
+                        } else {
+                            couponData.setErrorMessage(couponViewModel.getMessage());
+                            view.couponError();
+                        }
+
                     }
                 }
 
