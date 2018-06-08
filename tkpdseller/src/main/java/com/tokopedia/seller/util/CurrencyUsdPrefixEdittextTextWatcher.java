@@ -19,7 +19,7 @@ public class CurrencyUsdPrefixEdittextTextWatcher extends NumberTextWatcher {
 
     private static final int DECIMAL_DIGITS = 2;
     private String currentValue = "0.00";
-    DecimalFormat decimalFormat;
+    private DecimalFormat decimalFormat;
 
     public CurrencyUsdPrefixEdittextTextWatcher(EditText editText) {
         super(editText);
@@ -81,13 +81,11 @@ public class CurrencyUsdPrefixEdittextTextWatcher extends NumberTextWatcher {
     public void setCursorPosition(int tempCursorPos, int tempLength){
         if(editText.length() - tempLength == 1)
         {
-            if(editText.length()<4)
-                tempCursorPos += 1;
-            else if(tempCursorPos>-1)
+           if(tempCursorPos>-1)
                 if(editText.getText().charAt(tempCursorPos) != ',')
                     tempCursorPos += 1;
-        }
-        else if(editText.length() - tempLength == -1)
+
+        }  else if(editText.length() - tempLength == -1)
         {
             tempCursorPos -= 1;
         }
