@@ -14,6 +14,7 @@ import android.view.WindowManager;
 
 import com.tokopedia.abstraction.R;
 import com.tokopedia.abstraction.common.utils.view.MenuTintUtils;
+import android.support.graphics.drawable.VectorDrawableCompat;
 
 /**
  * Created by nathan on 7/11/17.
@@ -47,7 +48,7 @@ abstract class BaseToolbarActivity extends BaseActivity {
 
     private void setupActionBarHomeIndicatorIcon() {
         if (getSupportActionBar() != null && isShowCloseButton()) {
-            getSupportActionBar().setHomeAsUpIndicator(ContextCompat.getDrawable(this, R.drawable.ic_close_default));
+            getSupportActionBar().setHomeAsUpIndicator(VectorDrawableCompat.create(getResources(), R.drawable.ic_close_default, null));
         }
     }
 

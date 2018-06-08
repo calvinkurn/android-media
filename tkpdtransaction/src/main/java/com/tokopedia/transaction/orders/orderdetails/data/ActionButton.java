@@ -1,10 +1,23 @@
 package com.tokopedia.transaction.orders.orderdetails.data;
 
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
+
 public class ActionButton {
+    @SerializedName("label")
+    @Expose
         private String label;
+    @SerializedName("buttonType")
+    @Expose
         private String buttonType;
+    @SerializedName("uri")
+    @Expose
         private String uri;
+    @SerializedName("mappingUri")
+    @Expose
         private String mappingUri;
+    @SerializedName("weight")
+    @Expose
         private String weight;
 
         public ActionButton(String label, String buttonType, String uri, String mappingUri, String weight) {
