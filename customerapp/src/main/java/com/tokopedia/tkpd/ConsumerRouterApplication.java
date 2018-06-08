@@ -353,7 +353,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         ImageUploaderRouter,
         ContactUsModuleRouter,
         ITransactionOrderDetailRouter,
-        ILogisticUploadAwbRouter,
         NetworkRouter,
         InstantLoanChuckRouter,
         InstantLoanRouter,

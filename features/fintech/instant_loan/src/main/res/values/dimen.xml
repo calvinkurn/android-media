@@ -25,7 +25,7 @@
     <dimen name="il_padding_xsmall">4dp</dimen>
     <dimen name="il_padding_small">8dp</dimen>
     <dimen name="il_padding_regular">12dp</dimen>
-    <dimen name="il_padding_medium">16dp</dimen>
+    <dimen name="il_padding_medium">18dp</dimen>
     <dimen name="il_padding_large">24dp</dimen>
     <dimen name="il_padding_xlarge">32dp</dimen>
 

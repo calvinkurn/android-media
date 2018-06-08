@@ -9,6 +9,9 @@ import com.google.gson.annotations.SerializedName;
 
 public class UserProfileLoanEntity {
 
+    public UserProfileLoanEntity(){
+
+    }
     public UserProfileLoanEntity(Boolean isWhitelist, String whiteListUrl,
                                  Boolean dataCollection, Boolean dataCollected) {
         this.isWhitelist = isWhitelist;
@@ -32,6 +35,10 @@ public class UserProfileLoanEntity {
     @SerializedName("data_collected")
     @Expose
     private boolean dataCollected;
+
+    @SerializedName("redirect_url")
+    @Expose
+    private String redirectUrl;
 
     public boolean getWhitelist() {
         return isWhitelist;
@@ -63,5 +70,13 @@ public class UserProfileLoanEntity {
 
     public void setWhiteListUrl(String whiteListUrl) {
         this.whiteListUrl = whiteListUrl;
+    }
+
+    public String getRedirectUrl() {
+        return redirectUrl;
+    }
+
+    public void setRedirectUrl(String redirectUrl) {
+        this.redirectUrl = redirectUrl;
     }
 }

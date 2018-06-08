@@ -11,6 +11,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.text.TextUtils;
+import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
@@ -215,10 +216,18 @@ public class InstantLoanActivity extends BaseSimpleActivity implements HasCompon
         });
 
         mDialogIntro = new Dialog(this);
-        mDialogIntro.setCanceledOnTouchOutside(false);
+
+
         mDialogIntro.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        mDialogIntro.setContentView(view, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+        mDialogIntro.setContentView(view);//, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+        WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
+        lp.copyFrom(mDialogIntro.getWindow().getAttributes());
+        lp.width = WindowManager.LayoutParams.MATCH_PARENT;
+        lp.height = WindowManager.LayoutParams.WRAP_CONTENT;
+        lp.gravity = Gravity.CENTER;
+        mDialogIntro.setCanceledOnTouchOutside(false);
         mDialogIntro.show();
+        mDialogIntro.getWindow().setAttributes(lp);
     }
 
     @Override
@@ -228,7 +237,7 @@ public class InstantLoanActivity extends BaseSimpleActivity implements HasCompon
 
     @Override
     public void openWebView(String url) {
-        Intent intent = SimpleWebViewWithFilePickerActivity.getIntentWithTitle(this, url,"Pinjaman Online");
+        Intent intent = SimpleWebViewWithFilePickerActivity.getIntentWithTitle(this, url, "Pinjaman Online");
         startActivity(intent);
     }
 
@@ -246,7 +255,8 @@ public class InstantLoanActivity extends BaseSimpleActivity implements HasCompon
         if (mPresenter.isUserLoggedIn()) {
             switch (mCurrentTab) {
                 case TAB_INSTANT_FUND:
-                    mPresenter.getLoanProfileStatus();
+                    /*mPresenter.getLoanProfileStatus();*/
+                    startIntroSlider();
                     break;
                 case TAB_NO_COLLATERAL:
                     openWebView(WEB_LINK_NO_COLLATERAL + mSpinnerLoanAmount.getSelectedItem().toString().split(" ")[1]);
@@ -344,14 +354,18 @@ public class InstantLoanActivity extends BaseSimpleActivity implements HasCompon
         } else if (!data.getDataCollection() ||
                 (data.getDataCollection() && data.getDataCollected())) {
 
-            // TODO: 6/5/18 check has fintech profile builded
-            Toast.makeText(this, "Check if fintech profile is build", Toast.LENGTH_SHORT).show();
+            if (!TextUtils.isEmpty(data.getRedirectUrl())) {
+                // TODO: 6/6/18 open webview activity
 
-        } /*else if (data.getDataCollection() && data.getDataCollected()) {
+                Toast.makeText(this, data.getRedirectUrl(), Toast.LENGTH_SHORT).show();
+                com.tkpd.library.utils.CommonUtils.dumper(data.getWhiteListUrl());
+                openWebView(data.getRedirectUrl());
 
-            // TODO: 6/5/18 check has fintech profile builded
-            Toast.makeText(this, "Check if fintech profile is build", Toast.LENGTH_SHORT).show();
-        }*/ else {
+            } else {
+                Toast.makeText(this, "Check if fintech profile is build", Toast.LENGTH_SHORT).show();
+            }
+
+        } else {
             startIntroSlider();
         }
 

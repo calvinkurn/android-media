@@ -28,9 +28,6 @@ public class LoanProfileStatusMapper {
 
     @Nullable
     public UserProfileLoanEntity transformResponse(@NonNull ResponseUserProfileStatus response) {
-        return response.getUserProfileLoanEntity() == null
-                ? null : new UserProfileLoanEntity(response.getUserProfileLoanEntity().getWhitelist(),
-                response.getUserProfileLoanEntity().getWhiteListUrl(),
-                response.getUserProfileLoanEntity().getDataCollection(), response.getUserProfileLoanEntity().getDataCollected());
+        return response.getUserProfileLoanEntity();
     }
 }
