@@ -7,10 +7,10 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 /**
  * @author by yfsx on 07/06/18.
  */
-public class CreatePostMerchantFragment extends BaseDaggerFragment {
+public class CreatePostFragment extends BaseDaggerFragment {
 
-    public static CreatePostMerchantFragment newInstance(Bundle bundle) {
-        CreatePostMerchantFragment fragment = new CreatePostMerchantFragment();
+    public static CreatePostFragment newInstance(Bundle bundle) {
+        CreatePostFragment fragment = new CreatePostFragment();
         fragment.setArguments(bundle);
         return fragment;
     }
