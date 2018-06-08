@@ -593,7 +593,11 @@ public class GroupChatActivity extends BaseSimpleActivity
 
     @Override
     public void onBackPressed() {
+<<<<<<< HEAD
         if (currentlyLoadingFragment()) {
+=======
+        if(currentlyLoadingFragment() || hasErrorEmptyState()){
+>>>>>>> b17620fa2c... hotfix pinned message ( pinned message null, exit message)
             finish();
             super.onBackPressed();
         } else {
@@ -603,6 +607,11 @@ public class GroupChatActivity extends BaseSimpleActivity
                 showDialogConfirmToExit();
             }
         }
+    }
+
+    private boolean hasErrorEmptyState() {
+        return rootView.findViewById(R.id.main_retry)!=null
+                && rootView.findViewById(R.id.main_retry).getVisibility() == View.VISIBLE;
     }
 
     private void showDialogConfirmToExit() {

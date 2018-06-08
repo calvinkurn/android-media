@@ -328,7 +328,8 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
         if (getView() != null) {
             ChannelInfoViewModel channelInfoViewModel = ((GroupChatContract.View) getActivity()).getChannelInfoViewModel();
             View pinnedMessageView = getView().findViewById(R.id.pinned_message);
-            if (pinnedMessage != null) {
+            if (pinnedMessage != null && !TextUtils.isEmpty(pinnedMessage.getTitle())
+                    && !TextUtils.isEmpty(pinnedMessage.getMessage())) {
                 pinnedMessageView.setVisibility(View.VISIBLE);
                 ((TextView) pinnedMessageView.findViewById(R.id.message)).setText(pinnedMessage.getTitle());
                 pinnedMessageView.setOnClickListener(new View.OnClickListener() {
