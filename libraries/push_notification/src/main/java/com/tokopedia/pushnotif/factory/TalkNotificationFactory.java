@@ -30,7 +30,6 @@ public class TalkNotificationFactory extends BaseNotificationFactory {
                 .bigText(applinkNotificationModel.getFullName() + " : " + applinkNotificationModel.getSummary()));
         if (ApplinkNotificationHelper.allowGroup()) {
             builder.setGroup(generateGroupKey(applinkNotificationModel.getApplinks()));
-            builder.setGroupAlertBehavior(Notification.GROUP_ALERT_SUMMARY);
         }
         builder.setContentIntent(createPendingIntent(applinkNotificationModel.getApplinks(), notifcationType, notificationId));
         builder.setDeleteIntent(createDismissPendingIntent(notifcationType, notificationId));
