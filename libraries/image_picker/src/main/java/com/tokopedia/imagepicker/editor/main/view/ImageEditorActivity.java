@@ -359,6 +359,7 @@ public class ImageEditorActivity extends BaseSimpleActivity implements ImageEdit
             ImageUtils.deleteFile(stepNo1Path);
 
             edittedImagePaths.get(currentImageIndex).remove(1);
+            imageRatioTypeDefStepList.get(currentImageIndex).remove(1);
             //since the paths is removed by 1, decrease the lastStep by 1.
             currentEditStepIndexList.set(currentImageIndex, lastEmptyStep - 1);
         }
