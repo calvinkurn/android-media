@@ -3,13 +3,11 @@ package com.tokopedia.imagepicker.picker.instagram.data.source.cloud;
 import android.support.v4.util.ArrayMap;
 
 import com.google.gson.Gson;
-import com.tokopedia.imagepicker.picker.instagram.InstagramConstant;
+import com.tokopedia.imagepicker.picker.instagram.util.InstagramConstant;
 import com.tokopedia.imagepicker.picker.instagram.data.source.exception.ShouldLoginInstagramException;
 import com.tokopedia.imagepicker.picker.instagram.data.model.ResponseGetAccessToken;
 import com.tokopedia.imagepicker.picker.instagram.data.model.ResponseListMediaInstagram;
 import com.tokopedia.imagepicker.picker.instagram.data.source.InstagramDataSource;
-
-import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.Map;

@@ -1,4 +1,4 @@
-package com.tokopedia.imagepicker.picker.instagram;
+package com.tokopedia.imagepicker.picker.instagram.util;
 
 /**
  * Created by zulfikarrahman on 5/4/18.
@@ -25,4 +25,5 @@ public class InstagramConstant {
             + CLIENT_ID + "&redirect_uri=" + CALLBACK_URL + "&response_type=code&scope=basic+public_content";
     public static final int SPAN_COUNT = 3;
     public static final int SPAN_LOOK_UP = 1;
+    public static final String URL_PATH_GET_LIST_MEDIA = "/v1/users/self/media/recent";
 }

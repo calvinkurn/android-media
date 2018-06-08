@@ -3,8 +3,8 @@ package com.tokopedia.imagepicker.picker.instagram.view.presenter;
 import android.text.TextUtils;
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
+import com.tokopedia.imagepicker.picker.instagram.domain.interactor.ClearCacheMediaInstagramUseCase;
 import com.tokopedia.imagepicker.picker.instagram.domain.interactor.GetListMediaInstagramUseCase;
-import com.tokopedia.imagepicker.picker.instagram.data.source.exception.ShouldLoginInstagramException;
 import com.tokopedia.imagepicker.picker.instagram.domain.interactor.SaveCookiesInstagramUseCase;
 import com.tokopedia.imagepicker.picker.instagram.view.model.InstagramMediaResponse;
 
@@ -18,11 +18,14 @@ public class ImagePickerInstagramPresenter extends BaseDaggerPresenter<ImagePick
 
     private GetListMediaInstagramUseCase getListMediaInstagramUseCase;
     private SaveCookiesInstagramUseCase saveCookiesInstagramUseCase;
+    private ClearCacheMediaInstagramUseCase clearCacheMediaInstagramUseCase;
 
     public ImagePickerInstagramPresenter(GetListMediaInstagramUseCase getListMediaInstagramUseCase,
-                                         SaveCookiesInstagramUseCase saveCookiesInstagramUseCase) {
+                                         SaveCookiesInstagramUseCase saveCookiesInstagramUseCase,
+                                         ClearCacheMediaInstagramUseCase clearCacheMediaInstagramUseCase) {
         this.getListMediaInstagramUseCase = getListMediaInstagramUseCase;
         this.saveCookiesInstagramUseCase = saveCookiesInstagramUseCase;
+        this.clearCacheMediaInstagramUseCase = clearCacheMediaInstagramUseCase;
     }
 
     @Override
@@ -73,5 +76,9 @@ public class ImagePickerInstagramPresenter extends BaseDaggerPresenter<ImagePick
         super.detachView();
         saveCookiesInstagramUseCase.unsubscribe();
         getListMediaInstagramUseCase.unsubscribe();
+    }
+
+    public void clearCacheInstagramMedia() {
+        clearCacheMediaInstagramUseCase.executeSync();
     }
 }

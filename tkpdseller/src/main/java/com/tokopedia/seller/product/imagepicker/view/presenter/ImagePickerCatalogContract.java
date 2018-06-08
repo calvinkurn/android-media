@@ -16,5 +16,7 @@ public interface ImagePickerCatalogContract {
     interface Presenter extends CustomerPresenter<View>{
 
         void getCatalogImage(String catalogId);
+
+        void clearCacheCatalog();
     }
 }

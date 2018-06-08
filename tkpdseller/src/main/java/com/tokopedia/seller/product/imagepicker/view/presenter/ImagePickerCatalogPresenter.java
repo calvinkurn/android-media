@@ -1,6 +1,7 @@
 package com.tokopedia.seller.product.imagepicker.view.presenter;
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
+import com.tokopedia.seller.product.imagepicker.domain.interactor.ClearCacheCatalogUseCase;
 import com.tokopedia.seller.product.imagepicker.domain.interactor.GetCatalogImageUseCase;
 import com.tokopedia.seller.product.imagepicker.view.model.CatalogModelView;
 
@@ -16,9 +17,12 @@ public class ImagePickerCatalogPresenter extends BaseDaggerPresenter<ImagePicker
         implements ImagePickerCatalogContract.Presenter {
 
     private GetCatalogImageUseCase getCatalogImageUseCase;
+    private ClearCacheCatalogUseCase clearCacheCatalogUseCase;
 
-    public ImagePickerCatalogPresenter(GetCatalogImageUseCase getCatalogImageUseCase) {
+    public ImagePickerCatalogPresenter(GetCatalogImageUseCase getCatalogImageUseCase,
+                                       ClearCacheCatalogUseCase clearCacheCatalogUseCase) {
         this.getCatalogImageUseCase = getCatalogImageUseCase;
+        this.clearCacheCatalogUseCase = clearCacheCatalogUseCase;
     }
 
     @Override
@@ -45,6 +49,11 @@ public class ImagePickerCatalogPresenter extends BaseDaggerPresenter<ImagePicker
                 getView().renderList(catalogModelViews);
             }
         };
+    }
+
+    @Override
+    public void clearCacheCatalog() {
+        clearCacheCatalogUseCase.executeSync();
     }
 
     @Override
