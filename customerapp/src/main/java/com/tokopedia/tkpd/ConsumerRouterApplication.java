@@ -101,7 +101,6 @@ import com.tokopedia.core.router.transactionmodule.sharedata.CheckPromoCodeCartS
 import com.tokopedia.core.router.transactionmodule.sharedata.CouponListResult;
 import com.tokopedia.core.router.wallet.IWalletRouter;
 import com.tokopedia.core.share.DefaultShare;
-import com.tokopedia.core.share.ShareBottomSheet;
 import com.tokopedia.core.shopinfo.limited.fragment.ShopTalkLimitedFragment;
 import com.tokopedia.core.util.AccessTokenRefresh;
 import com.tokopedia.core.util.BranchSdkUtils;
@@ -1865,7 +1864,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
                 .setId(shopId)
                 .build();
         new DefaultShare(activity, shareData).show();
-//        ShareBottomSheet.show(fragmentManager, shareData);
     }
 
     @Override
@@ -2145,8 +2143,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
                 .setType(ShareData.GROUPCHAT_TYPE)
                 .build();
         new DefaultShare(activity, shareData).show();
-
-//        ShareBottomSheet.show(fragmentManager, shareData);
     }
 
     @Override
