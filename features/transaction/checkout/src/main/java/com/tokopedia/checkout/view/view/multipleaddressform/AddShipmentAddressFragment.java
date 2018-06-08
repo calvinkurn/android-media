@@ -299,9 +299,21 @@ public class AddShipmentAddressFragment extends BaseCheckoutFragment {
         ));
         decreaseButton.setOnClickListener(onDecreaseButtonClickedListener(quantityField));
         increaseButton.setOnClickListener(onIncreaseButtonClickedListener(quantityField));
-        if (itemData.getProductQty().equals("1")) {
+        if (itemData.getProductQty().equals("1") || Integer.parseInt(itemData.getProductQty()) <= itemData.getMinQuantity()) {
             decreaseButton.setEnabled(false);
             decreaseButton.setClickable(false);
+        } else {
+            decreaseButton.setEnabled(true);
+            decreaseButton.setClickable(true);
+        }
+
+        if (Integer.parseInt(itemData.getProductQty()) >= MAX_QTY_DEFAULT ||
+                Integer.parseInt(itemData.getProductQty()) >= itemData.getMaxQuantity()) {
+            increaseButton.setEnabled(false);
+            increaseButton.setClickable(false);
+        } else {
+            increaseButton.setEnabled(true);
+            increaseButton.setClickable(true);
         }
     }
 
