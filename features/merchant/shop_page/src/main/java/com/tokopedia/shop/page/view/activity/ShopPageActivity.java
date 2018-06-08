@@ -57,7 +57,6 @@ import com.tokopedia.shop.product.view.fragment.ShopProductListLimitedFragment;
 import com.tokopedia.shop.product.view.widget.ShopPagePromoWebView;
 
 import javax.inject.Inject;
-import android.support.graphics.drawable.VectorDrawableCompat;
 
 /**
  * Created by nathan on 2/3/18.
@@ -314,7 +313,7 @@ public class ShopPageActivity extends BaseTabActivity implements ShopPagePromoWe
                     getSupportActionBar().setHomeAsUpIndicator(icBackRes);
                 }
                 if (menu != null && menu.size() > 0) {
-                    menu.findItem(R.id.action_share).setIcon(VectorDrawableCompat.create(ShopPageActivity.this.getResources(), icShareRes, null));
+                    menu.findItem(R.id.action_share).setIcon(ContextCompat.getDrawable(ShopPageActivity.this, icShareRes));
                 }
             }
         };

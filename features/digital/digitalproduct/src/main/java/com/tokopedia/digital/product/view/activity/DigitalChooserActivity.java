@@ -17,7 +17,6 @@ import com.tokopedia.digital.product.view.fragment.DigitalChooserOperatorFragmen
 import com.tokopedia.digital.product.view.fragment.DigitalChooserProductFragment;
 import com.tokopedia.digital.product.view.model.Operator;
 import com.tokopedia.digital.product.view.model.Product;
-import android.support.graphics.drawable.VectorDrawableCompat;
 
 /**
  * @author anggaprasetiyo on 5/8/17.
@@ -191,7 +190,7 @@ public class DigitalChooserActivity extends BasePresenterActivity implements
 
     private void invalidateHomeUpToolbarIndicator(){
         if (getSupportActionBar() != null) {
-            getSupportActionBar().setHomeAsUpIndicator(VectorDrawableCompat.create(getResources(), com.tokopedia.abstraction.R.drawable.ic_close_default, null));
+            getSupportActionBar().setHomeAsUpIndicator(ContextCompat.getDrawable(this, com.tokopedia.abstraction.R.drawable.ic_close_default));
         }
     }
 

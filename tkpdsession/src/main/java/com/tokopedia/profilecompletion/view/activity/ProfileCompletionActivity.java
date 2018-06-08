@@ -6,11 +6,10 @@ import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.graphics.drawable.VectorDrawableCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AppCompatDelegate;
+
 
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.core.base.di.component.AppComponent;
@@ -65,9 +64,8 @@ public class ProfileCompletionActivity extends BasePresenterActivity implements 
         }
         toolbar.setPadding(toolbar.getPaddingLeft(), toolbar.getPaddingTop(), 30, toolbar.getPaddingBottom());
 
-        AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
-        Drawable upArrow = VectorDrawableCompat.create(getResources(), R.drawable
-                .ic_action_back, null);
+
+        Drawable upArrow = ContextCompat.getDrawable(this, R.drawable.ic_action_back);
         if (upArrow != null) {
             upArrow.setColorFilter(ContextCompat.getColor(this, com.tokopedia.core.R.color.grey_700), PorterDuff.Mode.SRC_ATOP);
             getSupportActionBar().setHomeAsUpIndicator(upArrow);

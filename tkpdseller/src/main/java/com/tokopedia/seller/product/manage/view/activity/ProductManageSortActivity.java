@@ -13,7 +13,6 @@ import com.tokopedia.seller.product.common.di.component.ProductComponent;
 import com.tokopedia.seller.product.manage.constant.ProductManageConstant;
 import com.tokopedia.seller.product.manage.constant.SortProductOption;
 import com.tokopedia.seller.product.manage.view.fragment.ProductManageSortFragment;
-import android.support.graphics.drawable.VectorDrawableCompat;
 
 /**
  * Created by zulfikarrahman on 9/26/17.
@@ -40,7 +39,7 @@ public class ProductManageSortActivity extends BaseSimpleActivity implements Has
     @Override
     protected void setToolbarColorWhite() {
         super.setToolbarColorWhite();
-        getSupportActionBar().setHomeAsUpIndicator(VectorDrawableCompat.create(getResources(), R.drawable.ic_close_default, null));
+        getSupportActionBar().setHomeAsUpIndicator(ContextCompat.getDrawable(this, R.drawable.ic_close_default));
     }
 
     @Override

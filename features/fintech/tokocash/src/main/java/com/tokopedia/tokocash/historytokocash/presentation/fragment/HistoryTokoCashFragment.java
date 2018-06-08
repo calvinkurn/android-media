@@ -50,7 +50,6 @@ import java.util.List;
 import java.util.Locale;
 
 import javax.inject.Inject;
-import android.support.graphics.drawable.VectorDrawableCompat;
 
 /**
  * Created by nabillasabbaha on 2/5/18.
@@ -360,13 +359,13 @@ public class HistoryTokoCashFragment extends BaseDaggerFragment implements TokoC
         for (HeaderHistory header : headerHistoryList) {
             if (header.isSelected()) {
                 if (!header.getType().equals(ALL_TRANSACTION_TYPE)) {
-                    emptyIconTransaction.setImageDrawable(VectorDrawableCompat.create(getActivity().getResources(),
-                            R.drawable.history_ic_no_category, null));
+                    emptyIconTransaction.setImageDrawable(ContextCompat.getDrawable(getActivity(),
+                            R.drawable.history_ic_no_category));
                     emptyDescTransaction.setText(getString(R.string.desc_empty_page_tokocash));
                     emptyTextTransaction.setText(getString(R.string.message_no_transaction) + " " + header.getName());
                 } else {
-                    emptyIconTransaction.setImageDrawable(VectorDrawableCompat.create(getActivity().getResources(),
-                            R.drawable.history_ic_no_transaction, null));
+                    emptyIconTransaction.setImageDrawable(ContextCompat.getDrawable(getActivity(),
+                            R.drawable.history_ic_no_transaction));
                     emptyDescTransaction.setText(getString(R.string.desc_empty_page_no_transaction_tokocash));
                     emptyTextTransaction.setText(getString(R.string.message_no_transaction));
                 }
