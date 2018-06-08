@@ -364,7 +364,7 @@ public class ShopPageActivity extends BaseTabActivity implements ShopPagePromoWe
             shopPageTracking.eventClickShareShop(getTitlePage(viewPager.getCurrentItem()), shopId,
                     shopPagePresenter.isMyShop(shopId), ShopPageTracking.getShopType(shopInfo.getInfo()));
         }
-        ((ShopModuleRouter) getApplication()).goToShareShop(getSupportFragmentManager(), shopId, shopInfo.getInfo().getShopUrl(),
+        ((ShopModuleRouter) getApplication()).goToShareShop(this, shopId, shopInfo.getInfo().getShopUrl(),
                 getString(R.string.shop_label_share_formatted, shopName, shopInfo.getInfo().getShopLocation()));
     }
 
