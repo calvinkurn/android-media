@@ -594,7 +594,11 @@ public class GroupChatActivity extends BaseSimpleActivity
     @Override
     public void onBackPressed() {
 <<<<<<< HEAD
+<<<<<<< HEAD
         if (currentlyLoadingFragment()) {
+=======
+        if(currentlyLoadingFragment() || hasErrorEmptyState()){
+>>>>>>> b17620fa2c... hotfix pinned message ( pinned message null, exit message)
 =======
         if(currentlyLoadingFragment() || hasErrorEmptyState()){
 >>>>>>> b17620fa2c... hotfix pinned message ( pinned message null, exit message)
