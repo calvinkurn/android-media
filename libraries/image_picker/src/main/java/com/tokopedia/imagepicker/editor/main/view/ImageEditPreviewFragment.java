@@ -420,7 +420,11 @@ public class ImageEditPreviewFragment extends Fragment implements ImageEditPrevi
         overlayView.setCropGridColor(getResources().getColor(R.color.white_65));
         overlayView.setCropGridStrokeWidth(getResources().getDimensionPixelSize(R.dimen.dp_1));
 
-        gestureCropImageView.setTargetAspectRatio((float) expectedRatioX / expectedRatioY);
+        if (expectedRatioX <= 0 || expectedRatioY <= 0) {
+            gestureCropImageView.setTargetAspectRatio((float) widthHeight[0] / widthHeight[1]);
+        } else {
+            gestureCropImageView.setTargetAspectRatio((float) expectedRatioX / expectedRatioY);
+        }
 
         int maxSizeX = ImageUtils.DEF_WIDTH;
         int maxSizeY = ImageUtils.DEF_HEIGHT;

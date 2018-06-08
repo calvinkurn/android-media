@@ -25,9 +25,7 @@ import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.imagepicker.R;
 import com.tokopedia.imagepicker.common.exception.FileSizeAboveMaximumException;
-import com.tokopedia.imagepicker.picker.main.builder.ImagePickerBuilder;
-import com.tokopedia.imagepicker.picker.main.builder.ImagePickerEditorBuilder;
-import com.tokopedia.imagepicker.picker.main.builder.ImagePickerTabTypeDef;
+import com.tokopedia.imagepicker.editor.widget.ImageEditCropListWidget;
 import com.tokopedia.imagepicker.picker.main.builder.ImageRatioTypeDef;
 import com.tokopedia.imagepicker.picker.main.view.ImagePickerPresenter;
 import com.tokopedia.imagepicker.common.util.ImageUtils;
@@ -55,7 +53,7 @@ import static com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity.PIC
  */
 
 public class ImageEditorActivity extends BaseSimpleActivity implements ImageEditorPresenter.ImageEditorView,
-        ImageEditPreviewFragment.OnImageEditPreviewFragmentListener, ImageEditThumbnailListWidget.OnImageEditThumbnailListWidgetListener, ImageEditActionMainWidget.OnImageEditActionMainWidgetListener, ImagePickerPresenter.ImagePickerView {
+        ImageEditPreviewFragment.OnImageEditPreviewFragmentListener, ImageEditThumbnailListWidget.OnImageEditThumbnailListWidgetListener, ImageEditActionMainWidget.OnImageEditActionMainWidgetListener, ImagePickerPresenter.ImagePickerView, ImageEditCropListWidget.OnImageEditCropWidgetListener {
 
     public static final String EXTRA_IMAGE_URLS = "IMG_URLS";
     public static final String EXTRA_MIN_RESOLUTION = "MIN_IMG_RESOLUTION";
@@ -124,6 +122,7 @@ public class ImageEditorActivity extends BaseSimpleActivity implements ImageEdit
     private ArrayList<Boolean> isEdittedList;
     private boolean isPermissionGotDenied;
     private ImageRatioTypeDef defaultRatio;
+    private ImageEditCropListWidget imageEditCropListWidget;
 
     public static Intent getIntent(Context context, ArrayList<String> imageUrls, int minResolution,
                                    @ImageEditActionTypeDef int[] imageEditActionType,
@@ -455,6 +454,7 @@ public class ImageEditorActivity extends BaseSimpleActivity implements ImageEdit
                         fragment.setEditCropMode(true);
                     }
                     hideAllControls();
+                    setupCropWidget();
                     layoutCrop.setVisibility(View.VISIBLE);
                     tvActionTitle.setText(getString(R.string.crop));
                     break;
@@ -583,6 +583,22 @@ public class ImageEditorActivity extends BaseSimpleActivity implements ImageEdit
             });
         }
         rotateSeekbar.setValue(0);
+    }
+
+    private void setupCropWidget() {
+        if (imageEditCropListWidget == null) {
+            imageEditCropListWidget = findViewById(R.id.image_edit_crop_list_widget);
+            imageEditCropListWidget.setOnImageEditCropWidgetListener(this);
+            //TODO will include ratio from the builder
+            ArrayList<ImageRatioTypeDef> ratioTypeDefs = new ArrayList<>();
+            ratioTypeDefs.add(defaultRatio);
+            imageEditCropListWidget.setData(ratioTypeDefs);
+        }
+    }
+
+    @Override
+    public void onEditCropClicked(ImageRatioTypeDef imageRatioTypeDef) {
+        //TODO change imageRatio
     }
 
     private void setupContrastWidget() {
@@ -993,6 +1009,7 @@ public class ImageEditorActivity extends BaseSimpleActivity implements ImageEdit
         return isInEditMode && (currentEditActionType == ImageEditActionTypeDef.ACTION_CROP
                 || currentEditActionType == ImageEditActionTypeDef.ACTION_CROP_ROTATE);
     }
+
 
 
 }

@@ -10,7 +10,7 @@ import static com.tokopedia.imagepicker.picker.main.builder.ImageSelectionTypeDe
  */
 
 public enum ImageRatioTypeDef {
-    FREE(new int[]{-1, -1}),
+    ORIGINAL(new int[]{-1, -1}),
     RATIO_1_1(new int[]{1, 1}),
     RATIO_3_4(new int[]{3, 4}),
     RATIO_4_3(new int[]{4, 3}),

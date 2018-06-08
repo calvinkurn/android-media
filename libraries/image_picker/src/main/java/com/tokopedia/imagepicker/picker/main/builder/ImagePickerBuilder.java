@@ -62,7 +62,7 @@ public class ImagePickerBuilder implements Parcelable {
         this.maxFileSizeInKB = maxFileSizeInKB;
         this.minResolution = minResolution;
         this.imageRatioTypeDef = imageRatioTypeDef == null ?
-                ImageRatioTypeDef.FREE:
+                ImageRatioTypeDef.ORIGINAL :
                 imageRatioTypeDef;
         this.moveImageResultToLocal = moveImageResultToLocal;
         this.imagePickerEditorBuilder = imagePickerEditorBuilder;
