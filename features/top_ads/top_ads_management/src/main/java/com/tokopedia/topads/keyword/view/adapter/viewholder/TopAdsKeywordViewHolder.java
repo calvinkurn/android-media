@@ -29,6 +29,7 @@ public class TopAdsKeywordViewHolder extends BaseMultipleCheckViewHolder<Keyword
     private final TextView groupName;
     private final View statusActiveDot;
     private final LinearLayout promoPriceUsedContainer;
+    private final LinearLayout promoPerClickContainer;
     private final TextView keywordTypeDescription;
     private final LinearLayout statusActiveContainer;
     private View optionImageButton;
@@ -43,6 +44,7 @@ public class TopAdsKeywordViewHolder extends BaseMultipleCheckViewHolder<Keyword
         groupName = (TextView) itemView.findViewById(R.id.group_name);
         statusActiveDot = itemView.findViewById(R.id.status_active_dot);
         promoPriceUsedContainer = (LinearLayout) itemView.findViewById(R.id.promo_price_used_container);
+        promoPerClickContainer = (LinearLayout) itemView.findViewById(R.id.promo_per_click_container);
         keywordTypeDescription = (TextView) itemView.findViewById(R.id.title_keyword_type_description);
         statusActiveContainer = (LinearLayout) itemView.findViewById(R.id.status_active_container);
         optionImageButton = itemView.findViewById(R.id.image_button_option);
@@ -55,11 +57,18 @@ public class TopAdsKeywordViewHolder extends BaseMultipleCheckViewHolder<Keyword
             promoPriceUsedContainer.setVisibility(View.GONE);
             pricePromoPerClick.setVisibility(View.GONE);
             statusActiveContainer.setVisibility(View.GONE);
+            promoPerClickContainer.setVisibility(View.GONE);
+        } else {
+            promoPriceUsedContainer.setVisibility(View.VISIBLE);
+            pricePromoPerClick.setVisibility(View.VISIBLE);
+            statusActiveContainer.setVisibility(View.VISIBLE);
+            promoPerClickContainer.setVisibility(View.VISIBLE);
         }
         keywordTypeDescription.setText(keywordAd.getKeywordTypeDesc());
         titleProduct.setText(keywordAd.getKeywordTag());
         statusActive.setText(keywordAd.getStatusDesc());
-        pricePromoPerClick.setText(getString(R.string.top_ads_per_click_detail, keywordAd.getPriceBidFmt()));
+        pricePromoPerClick.setText(itemView.getContext()
+                .getString(R.string.top_ads_bid_format_text, keywordAd.getPriceBidFmt(), keywordAd.getLabelPerClick()));
         promoPriceUsed.setText(keywordAd.getStatTotalSpent());
         groupName.setText(itemView.getContext().getString(R.string.top_ads_keywords_groups_format, keywordAd.getGroupName()));
         switch (keywordAd.getStatus()) {

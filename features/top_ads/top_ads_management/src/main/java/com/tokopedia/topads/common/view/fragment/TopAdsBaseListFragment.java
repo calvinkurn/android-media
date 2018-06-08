@@ -34,7 +34,6 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.EmptyResultViewHo
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment;
 import com.tokopedia.abstraction.base.view.listener.EndlessLayoutManagerListener;
 import com.tokopedia.design.button.BottomActionView;
-import com.tokopedia.design.component.Menus;
 import com.tokopedia.design.label.LabelView;
 import com.tokopedia.design.text.SearchInputView;
 import com.tokopedia.design.utils.DateLabelUtils;
@@ -96,6 +95,7 @@ public abstract class TopAdsBaseListFragment<V extends Visitable, F extends Adap
     private AppBarLayout appBarLayout;
     private LabelView dateLabelView;
     private BottomActionView buttonActionView;
+    private CoordinatorLayout coordinatorLayout;
     private CoordinatorLayout.Behavior appBarBehaviour;
     private RecyclerView recyclerView;
     private MenuItem menuAdd;
@@ -132,8 +132,6 @@ public abstract class TopAdsBaseListFragment<V extends Visitable, F extends Adap
             listener = (OnAdListFragmentListener) context;
         }
     }
-
-
 
     @Nullable
     @Override
@@ -172,6 +170,7 @@ public abstract class TopAdsBaseListFragment<V extends Visitable, F extends Adap
     }
 
     private void initComponentView(View view) {
+        coordinatorLayout = (CoordinatorLayout) view.findViewById(R.id.coordinator_layout);
         appBarLayout = (AppBarLayout) view.findViewById(R.id.app_bar_layout);
         dateLabelView = (LabelView) view.findViewById(R.id.date_label_view);
         dateLabelView.setOnClickListener(new View.OnClickListener() {
@@ -523,12 +522,21 @@ public abstract class TopAdsBaseListFragment<V extends Visitable, F extends Adap
             @Override
             public boolean onMenuItemClick(MenuItem menuItem) {
                 if (listener != null) {
-                    recyclerView.scrollTo(0, 0);
+                    recyclerView.scrollToPosition(0);
+                    appBarLayout.setExpanded(true, true);
+                    showButtonActionView();
                     listener.startShowCase();
                 }
                 return true;
             }
         });
+    }
+
+    private void showButtonActionView(){
+        View containerActionView = getView().findViewById(R.id.container_action_view);
+        CoordinatorLayout.LayoutParams params = (CoordinatorLayout.LayoutParams) containerActionView.getLayoutParams();
+        CoordinatorLayout.Behavior behavior = params.getBehavior();
+        behavior.onNestedPreScroll(coordinatorLayout, containerActionView, null, 0, -1000, null);
     }
 
     @Override
