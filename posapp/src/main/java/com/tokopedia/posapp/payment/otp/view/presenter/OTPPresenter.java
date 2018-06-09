@@ -163,6 +163,12 @@ public class OTPPresenter implements OTP.Presenter {
         }
     }
 
+    @Override
+    public void detachView() {
+        viewListener = null;
+        checkTransactionWithRetryUseCase.unsubscribe();
+    }
+
     private BankDomain getBankData(JSONObject response) {
         try {
             if(response.has(PARAM_BANK_ID) && !response.isNull(PARAM_BANK_ID)

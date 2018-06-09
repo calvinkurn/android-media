@@ -16,6 +16,8 @@ public interface OTP {
         void checkTransaction();
 
         void setTransactionId(String transactionId);
+
+        void detachView();
     }
 
     interface View {

@@ -52,7 +52,7 @@ public class OTPActivity extends BasePresenterActivity<OTP.Presenter>
 
     private WebView scroogeWebView;
     private ProgressBar progressBar;
-    TkpdProgressDialog tkpdProgressDialog;
+    private TkpdProgressDialog tkpdProgressDialog;
 
     @Inject
     OTPPresenter otpPresenter;
@@ -245,11 +245,21 @@ public class OTPActivity extends BasePresenterActivity<OTP.Presenter>
 
     private void confirmPayment() {
         tkpdProgressDialog.showDialog();
-        scroogeWebView.stopLoading();
-        scroogeWebView.destroy();
-        scroogeWebView.setEnabled(false);
-        scroogeWebView.setVisibility(View.GONE);
+        destroyWebView();
         otpPresenter.checkTransaction();
+    }
+
+    private void destroyWebView() {
+        try {
+            if (scroogeWebView != null) {
+                scroogeWebView.stopLoading();
+                scroogeWebView.destroy();
+                scroogeWebView.setEnabled(false);
+                scroogeWebView.setVisibility(View.GONE);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     private class OTPWebViewChromeClient extends WebChromeClient {
@@ -298,5 +308,11 @@ public class OTPActivity extends BasePresenterActivity<OTP.Presenter>
     public void onBackPressed() {
         LocalCartActivity.newTopInstance(this).startActivities();
         finish();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        otpPresenter.detachView();
     }
 }
