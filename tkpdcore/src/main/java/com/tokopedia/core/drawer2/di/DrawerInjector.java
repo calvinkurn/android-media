@@ -44,7 +44,6 @@ public class DrawerInjector {
 
     public static DrawerDataManager getDrawerDataManager(Context context,
                                                          DrawerDataListener drawerDataListener,
-                                                         SessionHandler sessionHandler,
                                                          LocalCacheHandler drawerCache) {
 
         JobExecutor jobExecutor = new JobExecutor();
@@ -54,7 +53,7 @@ public class DrawerInjector {
         UserSession userSession = new UserSession(context);
 
         UserAttributesRepository userAttributesRepository = new UserAttributesRepositoryImpl(
-                new UserAttributesFactory(context, new DrawerService(context, userSession, networkRouter), drawerCache)
+                new UserAttributesFactory(new DrawerService(), drawerCache)
         );
 
         GetUserAttributesUseCase getUserAttributesUseCase = new GetUserAttributesUseCase(jobExecutor,
