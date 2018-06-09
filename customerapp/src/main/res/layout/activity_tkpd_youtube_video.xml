@@ -1,89 +1,92 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_gravity="top|center_horizontal"
-    android:background="#dd000000"
+    android:background="#FFFFFF"
     android:orientation="vertical">
 
-    <LinearLayout
-        android:id="@+id/header_layout_main"
+    <TextView
+        android:id="@+id/btn_cta"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_gravity="top|center_horizontal"
-        android:background="@color/white"
-        android:orientation="vertical">
-
+        android:layout_gravity="bottom"
+        android:layout_margin="@dimen/margin_sm"
+        android:background="@color/green_buy"
+        android:gravity="center"
+        android:padding="@dimen/padding_small"
+        android:text="CTA Here"
+        android:textColor="@color/white"
+        android:textSize="@dimen/font_large" />
         <LinearLayout
-            android:id="@+id/ll_header"
+            android:id="@+id/header_layout_main"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="center_vertical"
-            android:padding="@dimen/padding_vs">
+            android:layout_above="@+id/btn_cta"
+            android:layout_gravity="top|center_horizontal"
+            android:background="@color/white"
+            android:orientation="vertical">
 
-            <ImageView
-                android:id="@+id/img_cross"
-                android:layout_width="25dp"
-                android:layout_height="25dp"
-                android:padding="@dimen/padding_vs"
-                android:scaleType="fitXY"
-                android:src="@drawable/icon_close" />
-
-            <TextView
-                android:id="@+id/tv_head_title"
+            <LinearLayout
+                android:id="@+id/ll_header"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:layout_marginTop="@dimen/margin_small"
+                android:layout_marginBottom="@dimen/margin_small"
+                android:padding="@dimen/padding_vs">
+
+                <ImageView
+                    android:id="@+id/img_cross"
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
+                    android:padding="@dimen/padding_vs"
+                    android:scaleType="fitXY"
+                    android:src="@drawable/icon_close" />
+
+                <TextView
+                    android:id="@+id/tv_head_title"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingLeft="@dimen/padding_detail"
+                    android:paddingRight="@dimen/padding_detail"
+                    android:text="Title of information"
+                    android:textColor="@color/grey"
+                    android:textSize="@dimen/font_medium"
+                    android:textStyle="bold" />
+            </LinearLayout>
+
+
+            <com.google.android.youtube.player.YouTubePlayerView
+                android:id="@+id/youtube_view"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+            <TextView
+                android:id="@+id/tv_title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/margin_med"
                 android:paddingLeft="@dimen/padding_detail"
                 android:paddingRight="@dimen/padding_detail"
-                android:text="Title of information"
-                android:textStyle="bold"
+                android:text="Loren Impsum"
                 android:textColor="@color/grey"
-                android:textSize="@dimen/font_medium" />
+                android:textSize="@dimen/font_medium"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/tv_desc"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/margin_3"
+                android:paddingLeft="@dimen/padding_detail"
+                android:paddingRight="@dimen/padding_detail"
+                android:text="Loren Impsum Loren Impsum Loren ImpsumLoren Impsum"
+                android:textColor="@color/grey"
+                android:textSize="@dimen/font_small" />
+
         </LinearLayout>
 
 
-        <com.google.android.youtube.player.YouTubePlayerView
-            android:id="@+id/youtube_view"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
-
-        <TextView
-            android:id="@+id/tv_title"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:paddingLeft="@dimen/padding_detail"
-            android:paddingRight="@dimen/padding_detail"
-            android:layout_marginTop="@dimen/margin_sm"
-            android:text="Loren Impsum"
-            android:textStyle="bold"
-            android:textColor="@color/grey"
-            android:textSize="@dimen/font_medium" />
-
-        <TextView
-            android:id="@+id/tv_desc"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:paddingLeft="@dimen/padding_detail"
-            android:paddingRight="@dimen/padding_detail"
-            android:layout_marginTop="@dimen/margin_3"
-            android:text="Loren Impsum Loren Impsum Loren ImpsumLoren Impsum"
-            android:textColor="@color/grey"
-            android:textSize="@dimen/font_small" />
-
-        <TextView
-            android:id="@+id/btn_cta"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="@dimen/margin_sm"
-            android:background="@color/green_buy"
-            android:gravity="center"
-            android:padding="@dimen/padding_small"
-            android:text="CTA Here"
-            android:textColor="@color/white"
-            android:textSize="@dimen/font_large" />
-    </LinearLayout>
-
-
-</RelativeLayout>
+</FrameLayout>

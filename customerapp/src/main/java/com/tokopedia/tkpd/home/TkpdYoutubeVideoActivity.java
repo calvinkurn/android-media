@@ -2,8 +2,9 @@ package com.tokopedia.tkpd.home;
 
 import android.content.Context;
 import android.content.Intent;
-import android.net.Uri;
+import android.content.res.Configuration;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -15,8 +16,8 @@ import com.google.android.youtube.player.YouTubeInitializationResult;
 import com.google.android.youtube.player.YouTubePlayer;
 import com.google.android.youtube.player.YouTubePlayerView;
 import com.tokopedia.applink.ApplinkConst;
+import com.tokopedia.applink.RouteManager;
 import com.tokopedia.tkpd.R;
-import com.tokopedia.tkpd.deeplink.activity.DeepLinkActivity;
 
 public class TkpdYoutubeVideoActivity extends YouTubeBaseActivity implements
         YouTubePlayer.OnInitializedListener {
@@ -65,14 +66,28 @@ public class TkpdYoutubeVideoActivity extends YouTubeBaseActivity implements
         imgClose.setOnClickListener(v -> finish());
 
         btnCta.setOnClickListener(v -> {
-            Intent intent = new Intent(TkpdYoutubeVideoActivity.this, DeepLinkActivity.class);
-            intent.setData(Uri.parse(videoLand));
-            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            startActivity(intent);
-            finish();
+            if (!TextUtils.isEmpty(videoLand)) {
+
+                RouteManager.route(TkpdYoutubeVideoActivity.this, videoLand);
+                finish();
+            }
         });
 
         extractValues(getIntent().getExtras());
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        // Checks the orientation of the screen
+        if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            Toast.makeText(this, "landscape", Toast.LENGTH_SHORT).show();
+            // btnCta.setVisibility(View.GONE);
+        } else if (newConfig.orientation == Configuration.ORIENTATION_PORTRAIT) {
+            Toast.makeText(this, "portrait", Toast.LENGTH_SHORT).show();
+            // btnCta.setVisibility(View.VISIBLE);
+
+        }
     }
 
     @Override
@@ -97,7 +112,7 @@ public class TkpdYoutubeVideoActivity extends YouTubeBaseActivity implements
             player.loadVideo(videoUrl);
             // Hiding player controls
             // player.setPlayerStyle(YouTubePlayer.PlayerStyle.CHROMELESS);
-            player.setShowFullscreenButton(false);
+            //player.setShowFullscreenButton(false);
         }
     }
 
@@ -114,11 +129,11 @@ public class TkpdYoutubeVideoActivity extends YouTubeBaseActivity implements
     }
 
     private void extractValues(Bundle bundle) {
-        Log.e("bundle"," bundle " + bundle);
+        Log.e("bundle", " bundle " + bundle);
         videoUrl = "tOgX9e75Zvg";
         if (bundle != null) {
             videoUrl = bundle.getString(videoUrlKey, "tOgX9e75Zvg");
-            Log.e("url",videoUrl);
+            Log.e("url", videoUrl);
             tvHeadTitle.setText(bundle.getString(videoTitleKey, ""));
             tvHeadTitle.setText(bundle.getString(videoDescHeadKey, ""));
             tvDesc.setText(bundle.getString(videoDescKey, ""));
