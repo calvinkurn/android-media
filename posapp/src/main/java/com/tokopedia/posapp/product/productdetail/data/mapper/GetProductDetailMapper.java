@@ -28,7 +28,7 @@ public class GetProductDetailMapper implements Func1<Response<PosSimpleResponse<
     public ProductDetailData call(Response<PosSimpleResponse<List<ProductDetail>>> response) {
         if(response.isSuccessful()
                 && response.body() != null
-                & response.body().getData() != null
+                && response.body().getData() != null
                 && response.body().getData().getData() != null
                 && response.body().getData().getData().size() > 0) {
             ProductDetail productResponse = response.body().getData().getData().get(0);

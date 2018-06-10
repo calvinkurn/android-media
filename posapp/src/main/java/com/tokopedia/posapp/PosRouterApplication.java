@@ -39,6 +39,9 @@ import com.tokopedia.core.router.digitalmodule.passdata.DigitalCheckoutPassData;
 import com.tokopedia.core.router.posapp.PosAppDataGetter;
 import com.tokopedia.core.router.reactnative.IReactNativeRouter;
 import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.core.util.SessionRefresh;
+import com.tokopedia.network.NetworkRouter;
+import com.tokopedia.network.data.model.FingerprintModel;
 import com.tokopedia.posapp.applink.DeepLinkDelegate;
 import com.tokopedia.posapp.applink.DeeplinkHandlerActivity;
 import com.tokopedia.posapp.auth.login.view.activity.PosLoginActivity;
@@ -69,7 +72,7 @@ import rx.Observable;
 
 public class PosRouterApplication extends MainApplication implements
         TkpdCoreRouter, IDigitalModuleRouter, IReactNativeRouter, ReactApplication, PosAppDataGetter,
-        AbstractionRouter, SessionRouter {
+        AbstractionRouter, SessionRouter, NetworkRouter {
 
     @Inject
     ReactNativeHost reactNativeHost;
@@ -705,6 +708,21 @@ public class PosRouterApplication extends MainApplication implements
     @Override
     public void logInvalidGrant(Response response) {
         AnalyticsLog.logInvalidGrant(response.request().url().toString());
+    }
+
+    @Override
+    public FingerprintModel getFingerprintModel() {
+        return null;
+    }
+
+    @Override
+    public void doRelogin(String newAccessToken) {
+        SessionRefresh sessionRefresh = new SessionRefresh(newAccessToken);
+        try {
+            sessionRefresh.gcmUpdate();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public PosAppComponent getPosAppComponent() {
