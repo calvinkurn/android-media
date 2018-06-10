@@ -8,14 +8,9 @@ import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.network.OkHttpRetryPolicy;
 import com.tokopedia.abstraction.common.network.interceptor.DebugInterceptor;
 import com.tokopedia.abstraction.common.utils.GlobalConfig;
-import com.tokopedia.cacheapi.interceptor.CacheApiInterceptor;
-import com.tokopedia.core.network.di.qualifier.PosGatewayAuth;
 import com.tokopedia.core.network.retrofit.interceptors.FingerprintInterceptor;
-import com.tokopedia.core.network.retrofit.response.TkpdV4ResponseError;
-import com.tokopedia.core.network.validator.CacheApiTKPDResponseValidator;
 import com.tokopedia.posapp.PosSessionHandler;
 import com.tokopedia.posapp.common.PosAuthInterceptor;
-import com.tokopedia.posapp.common.PosCacheApiResponseValidator;
 import com.tokopedia.posapp.common.PosUrl;
 import com.tokopedia.posapp.di.scope.PosApplicationScope;
 

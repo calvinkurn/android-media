@@ -129,13 +129,6 @@ public class ForgotPasswordActivity extends BasePresenterActivity {
         return intent;
     }
 
-    public static Intent getCallingIntentWithoutFooter(Context context, String email) {
-        Intent intent = new Intent(context, ForgotPasswordActivity.class);
-        intent.putExtra(INTENT_EXTRA_PARAM_EMAIL, email);
-        intent.putExtra(INTENT_EXTRA_REMOVE_FOOTER, true);
-        return intent;
-    }
-
     @Override
     protected boolean isLightToolbarThemes() {
         return true;

@@ -19,13 +19,7 @@ import com.tokopedia.core.network.di.qualifier.MojitoQualifier;
 import com.tokopedia.core.network.di.qualifier.MojitoSmallTimeoutNoAuth;
 import com.tokopedia.core.network.di.qualifier.MojitoWishlistActionQualifier;
 import com.tokopedia.core.network.di.qualifier.NoAuth;
-import com.tokopedia.core.network.di.qualifier.PaymentNoAuth;
-import com.tokopedia.core.network.di.qualifier.PosGatewayAuth;
-import com.tokopedia.core.network.di.qualifier.PosGatewayNoAuth;
 import com.tokopedia.core.network.di.qualifier.ResolutionQualifier;
-import com.tokopedia.core.network.di.qualifier.ScroogeCreditCardOkHttp;
-import com.tokopedia.core.network.di.qualifier.ScroogeCreditCardRetrofit;
-import com.tokopedia.core.network.di.qualifier.ScroogeNoAuth;
 import com.tokopedia.core.network.di.qualifier.TomeBearerAuth;
 import com.tokopedia.core.network.di.qualifier.TomeQualifier;
 import com.tokopedia.core.network.di.qualifier.TopAdsQualifier;
@@ -164,62 +158,6 @@ public class NetModule {
     public Retrofit provideUploadWsV4Retrofit(@UploadWsV4Auth OkHttpClient okHttpClient,
                                               Retrofit.Builder retrofitBuilder) {
         return retrofitBuilder.baseUrl(TkpdBaseURL.BASE_DOMAIN).client(okHttpClient).build();
-    }
-
-    @ScroogeCreditCardRetrofit
-    @ApplicationScope
-    @Provides
-    public Retrofit provideScroogeCreditCardRetrofit(@ScroogeCreditCardOkHttp OkHttpClient okHttpClient,
-                                                     Retrofit.Builder retrofitBuilder) {
-        return retrofitBuilder
-                .baseUrl(TkpdBaseURL.SCROOGE_CREDIT_CARD_DOMAIN)
-                .client(okHttpClient)
-                .build();
-    }
-
-    @ScroogeNoAuth
-    @ApplicationScope
-    @Provides
-    public Retrofit provideScroogeNoAuthRetrofit(@NoAuth OkHttpClient okHttpClient,
-                                                 Retrofit.Builder retrofitBuilder) {
-        return retrofitBuilder
-                .baseUrl(TkpdBaseURL.SCROOGE_DOMAIN)
-                .client(okHttpClient)
-                .build();
-    }
-
-    @PaymentNoAuth
-    @ApplicationScope
-    @Provides
-    public Retrofit providePaymentNoAuthRetrofit(@NoAuth OkHttpClient okHttpClient,
-                                                 Retrofit.Builder retrofitBuilder) {
-        return retrofitBuilder
-                .baseUrl(TkpdBaseURL.PAYMENT_DOMAIN)
-                .client(okHttpClient)
-                .build();
-    }
-
-    @PosGatewayNoAuth
-    @ApplicationScope
-    @Provides
-    public Retrofit providePosNoAuthRetrofit(@NoAuth OkHttpClient okHttpClient,
-                                             Retrofit.Builder retrofitBuilder) {
-        return retrofitBuilder
-                .baseUrl(TkpdBaseURL.POS_DOMAIN)
-                .client(okHttpClient)
-                .build();
-    }
-
-
-    @PosGatewayAuth
-    @ApplicationScope
-    @Provides
-    public Retrofit providePosAuthRetrofit(@BearerAuthTypeJsonUt OkHttpClient okHttpClient,
-                                           Retrofit.Builder retrofitBuilder) {
-        return retrofitBuilder
-                .baseUrl(TkpdBaseURL.POS_DOMAIN)
-                .client(okHttpClient)
-                .build();
     }
 
     @TopAdsQualifier

@@ -26,12 +26,7 @@ import com.tokopedia.core.network.di.qualifier.MerlinQualifier;
 import com.tokopedia.core.network.di.qualifier.MojitoGetWishlistQualifier;
 import com.tokopedia.core.network.di.qualifier.MojitoQualifier;
 import com.tokopedia.core.network.di.qualifier.MojitoWishlistActionQualifier;
-import com.tokopedia.core.network.di.qualifier.PaymentNoAuth;
-import com.tokopedia.core.network.di.qualifier.PosGatewayAuth;
-import com.tokopedia.core.network.di.qualifier.PosGatewayNoAuth;
 import com.tokopedia.core.network.di.qualifier.ResolutionQualifier;
-import com.tokopedia.core.network.di.qualifier.ScroogeCreditCardRetrofit;
-import com.tokopedia.core.network.di.qualifier.ScroogeNoAuth;
 import com.tokopedia.core.network.di.qualifier.TomeQualifier;
 import com.tokopedia.core.network.di.qualifier.TopAdsQualifier;
 import com.tokopedia.core.network.di.qualifier.UploadWsV4Qualifier;
@@ -121,21 +116,6 @@ public interface AppComponent {
 
     @WsV4QualifierWithErrorHander
     Retrofit baseDomainWithErrorHandlerRetrofit();
-
-    @ScroogeCreditCardRetrofit
-    Retrofit scroogeCreditCardRetrofit();
-
-    @ScroogeNoAuth
-    Retrofit scroogeNoAuth();
-
-    @PaymentNoAuth
-    Retrofit paymentNoAuth();
-
-    @PosGatewayNoAuth
-    Retrofit posNoAuth();
-
-    @PosGatewayAuth
-    Retrofit posAuth();
 
     ThreadExecutor threadExecutor();
 

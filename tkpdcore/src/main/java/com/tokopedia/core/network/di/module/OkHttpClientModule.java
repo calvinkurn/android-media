@@ -16,7 +16,6 @@ import com.tokopedia.core.network.di.qualifier.MojitoNoRetryAuth;
 import com.tokopedia.core.network.di.qualifier.MojitoSmallTimeoutNoAuth;
 import com.tokopedia.core.network.di.qualifier.NoAuth;
 import com.tokopedia.core.network.di.qualifier.NoAuthNoFingerprint;
-import com.tokopedia.core.network.di.qualifier.ScroogeCreditCardOkHttp;
 import com.tokopedia.core.network.di.qualifier.TomeBearerAuth;
 import com.tokopedia.core.network.di.qualifier.TopAdsQualifier;
 import com.tokopedia.core.network.di.qualifier.UploadWsV4Auth;
@@ -274,15 +273,6 @@ public class OkHttpClientModule {
                 okHttpRetryPolicy,
                 chuckInterceptor,
                 debugInterceptor);
-    }
-
-    @ScroogeCreditCardOkHttp
-    @ApplicationScope
-    @Provides
-    public OkHttpClient provideOkHttpClientScroogeCreditCard(FingerprintInterceptor fingerprintInterceptor,
-                                                             CreditCardInterceptor creditCardInterceptor) {
-        return OkHttpFactory.create()
-                .buildDaggerClientCreditCardAuth(fingerprintInterceptor, creditCardInterceptor);
     }
 
     @TopAdsQualifier
